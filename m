@@ -2,60 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F5879B450
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9816C79B05D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233838AbjIKUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
+        id S238663AbjIKV6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237924AbjIKNVu (ORCPT
+        with ESMTP id S237951AbjIKNY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:21:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9A212A;
-        Mon, 11 Sep 2023 06:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694438505; x=1725974505;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=QOPz+1ukpcx12QXvhZL9GsyAaOLTdAYD+OdMwseGgJq/yIMgdZ3XnaXX
-   MAcuFBc39EzazGSjQYKz6s1jsjuxKvwgc/4Dyyt1Zi1fFKzPtBWB8Hzvs
-   Swgmthvqe1zwVVCmi0xK/Zwr3ILYwJr2G8VQzKfeZATBRBVknRDTw2Bn4
-   N6eamOPLACg00KmMqx2F9PLv5KN3GeLYdT75u3obBi9/jH1mKbm0DZ4cJ
-   ihaYUGa/hJonfO0hJLA/SYS9302QONB8BRGqg2fd/aR3n+QxLJ/mwxS5+
-   k2+zsjt1q6cYXNZUoNt1sy1HDP90pG0cMbZ07XvcprFvU1fYz/iaScMAJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357517054"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="357517054"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:21:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858312447"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="858312447"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2023 06:21:42 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        dinguyen@kernel.org, linux-kernel@vger.kernel.org,
-        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
-Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 18:52:13 +0530
-Message-Id: <20230911132214.1776157-2-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911132214.1776157-1-sharath.kumar.d.m@intel.com>
-References: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
- <20230911132214.1776157-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 09:24:28 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E9AE12A;
+        Mon, 11 Sep 2023 06:24:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B530BD75;
+        Mon, 11 Sep 2023 06:24:59 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AB0F3F766;
+        Mon, 11 Sep 2023 06:24:20 -0700 (PDT)
+Message-ID: <04823db9-ed6c-0695-b9de-5a63bfa0aa5a@arm.com>
+Date:   Mon, 11 Sep 2023 14:24:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] perf cs-etm: Fix kernel timestamp handling
+Content-Language: en-US
+To:     Leo Yan <leo.yan@linaro.org>
+References: <20230910092413.53538-1-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230910092413.53538-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,224 +58,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
+On 10/09/2023 10:24, Leo Yan wrote:
+> The timestamp can originate from two sources: the kernel timestamp,
+> which is recorded in the event PERF_RECORD_AUX, and the Arm CoreSight
+> hardware trace data.  On some Arm platforms, CoreSight trace data fails
+> to support timestamp tracing.  This can be due to either a missed
+> connection between the timer counter and Arm CoreSight or the absence
+> of support for the virtual timestamp.  If Arm CoreSight fails to support
+> hardware timestamp tracing, we need to fall back on using the kernel
+> timestamp.
+> 
+> The current code can support both timestamp sources when synthesizing
+> samples. However, the decoding flow only relies on the hardware
+> timestamp.  If the hardware timestamp is zero, it becomes impossible to
+> decode the trace data.  Consequently, in this case, the commands below
+> won't output any samples:
+> 
+>     perf record -e cs_etm// --per-thread --timestamp -- ls
+>     perf script
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
- 
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
--- 
-2.34.1
+Hi Leo,
 
+I couldn't reproduce this issue, even when hard coding the hardware
+timestamp to zero in cs_etm_decoder__do_hard_timestamp() like this:
+
+ converted_timestamp = 0;
+
+I'm not sure why this would result in no samples being generated either,
+because we don't actually use the timestamps for anything yet [1]. We
+always wait until the very end of the file before decoding to ensure
+that all of the mmaps are loaded. And the timestamp is just assigned to
+the samples, but they shouldn't affect whether they are generated or not.
+
+Unless there is something else I'm missing?
+
+Also, in cs_etm__queue_first_cs_timestamp(), cs_timestamp is used for
+sorting the decoding order between CPUs, but if the hardware timestamp
+is 0, then it's 0 on all trace. So the sorting would be the same if you
+change that to be the kernel timestamp. They're all still the same
+static number, but just a different number (because we wait until the
+end of the file, 'latest_kernel_timestamp' is always the timestamp of
+the last AUX event in the file).
+
+[1]: I still plan to change the decoding to decode up to the current
+time in the file, rather than waiting for the end of the file before
+starting. That way decoding trace when there were overlapping mmap
+regions in time will be more accurate.
+
+Thanks
+James
+
+> 
+> To fix this issue, this patch unifies the method of resolving time:
+> 
+> 1) It renames cs_etm__resolve_sample_time() to the more general name
+>    cs_etm__resolve_time();
+> 2) It changes the function argument type from 'cs_etm_traceid_queue' to
+>    'cs_etm_packet_queue';
+> 3) In the end, both the decoding flow and the assignment of timestamps
+>    to samples call cs_etm__resolve_time() to obtain timestamp.
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/util/cs-etm.c | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index 9729d006550d..fa88e731933d 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -400,6 +400,17 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
+>  	etmq->pending_timestamp_chan_id = trace_chan_id;
+>  }
+>  
+> +static u64 cs_etm__resolve_time(struct cs_etm_queue *etmq,
+> +				struct cs_etm_packet_queue *packet_queue)
+> +{
+> +	struct cs_etm_auxtrace *etm = etmq->etm;
+> +
+> +	if (!etm->timeless_decoding && etm->has_virtual_ts)
+> +		return packet_queue->cs_timestamp;
+> +	else
+> +		return etm->latest_kernel_timestamp;
+> +}
+> +
+>  static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+>  				      u8 *trace_chan_id)
+>  {
+> @@ -419,8 +430,7 @@ static u64 converted_timestamp = 0;(struct cs_etm_queue *etmq,
+>  	/* Acknowledge pending status */
+>  	etmq->pending_timestamp_chan_id = 0;
+>  
+> -	/* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
+> -	return packet_queue->cs_timestamp;
+> +	return cs_etm__resolve_time(etmq, packet_queue);
+>  }
+>  
+>  static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
+> @@ -1434,18 +1444,6 @@ u64 cs_etm__convert_sample_time(struct cs_etm_queue *etmq, u64 cs_timestamp)
+>  		return cs_timestamp;
+>  }
+>  
+> -static inline u64 cs_etm__resolve_sample_time(struct cs_etm_queue *etmq,
+> -					       struct cs_etm_traceid_queue *tidq)
+> -{
+> -	struct cs_etm_auxtrace *etm = etmq->etm;
+> -	struct cs_etm_packet_queue *packet_queue = &tidq->packet_queue;
+> -
+> -	if (!etm->timeless_decoding && etm->has_virtual_ts)
+> -		return packet_queue->cs_timestamp;
+> -	else
+> -		return etm->latest_kernel_timestamp;
+> -}
+> -
+>  static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
+>  					    struct cs_etm_traceid_queue *tidq,
+>  					    u64 addr, u64 period)
+> @@ -1454,13 +1452,14 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
+>  	struct cs_etm_auxtrace *etm = etmq->etm;
+>  	union perf_event *event = tidq->event_buf;
+>  	struct perf_sample sample = {.ip = 0,};
+> +	struct cs_etm_packet_queue *packet_queue = &tidq->packet_queue;
+>  
+>  	event->sample.header.type = PERF_RECORD_SAMPLE;
+>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr, tidq->el);
+>  	event->sample.header.size = sizeof(struct perf_event_header);
+>  
+>  	/* Set time field based on etm auxtrace config. */
+> -	sample.time = cs_etm__resolve_sample_time(etmq, tidq);
+> +	sample.time = cs_etm__resolve_time(etmq, packet_queue);
+>  
+>  	sample.ip = addr;
+>  	sample.pid = thread__pid(tidq->thread);
+> @@ -1505,6 +1504,7 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
+>  	struct cs_etm_auxtrace *etm = etmq->etm;
+>  	struct perf_sample sample = {.ip = 0,};
+>  	union perf_event *event = tidq->event_buf;
+> +	struct cs_etm_packet_queue *packet_queue = &tidq->packet_queue;
+>  	struct dummy_branch_stack {
+>  		u64			nr;
+>  		u64			hw_idx;
+> @@ -1520,7 +1520,7 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
+>  	event->sample.header.size = sizeof(struct perf_event_header);
+>  
+>  	/* Set time field based on etm auxtrace config. */
+> -	sample.time = cs_etm__resolve_sample_time(etmq, tidq);
+> +	sample.time = cs_etm__resolve_time(etmq, packet_queue);
+>  
+>  	sample.ip = ip;
+>  	sample.pid = thread__pid(tidq->prev_packet_thread);
