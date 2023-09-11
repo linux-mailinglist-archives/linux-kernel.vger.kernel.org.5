@@ -2,51 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6A279C18F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A7879C160
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbjILBS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        id S232369AbjILA5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 20:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjILBSH (ORCPT
+        with ESMTP id S232408AbjILA5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:18:07 -0400
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD727BE1A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:47:44 -0700 (PDT)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1c395534687so34776535ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:47:44 -0700 (PDT)
+        Mon, 11 Sep 2023 20:57:49 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B62719C365;
+        Mon, 11 Sep 2023 17:53:46 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a64619d8fbso639726966b.0;
+        Mon, 11 Sep 2023 17:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694479944; x=1695084744; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XWTcwow2et7upqcwf54DyK1wVNFfm6M3zpWLMMZDCl4=;
+        b=o2Oh1/rCeX8rHZN2WMmHEjVvCGzUaQ3zbPowULhStxfYG86nXYTXFteHCt4b/7iK4E
+         L3PLr5uecXIsd9czgMEevISeSbbCC0NVI2VreFmnm1QTgosD67J8GQjD8fq8YfmYSD7M
+         PC9DQxnXvp8Z0yhhorq2Eel+Ept6ObM1h6nrbCABx3H7bNkMqmKA6ouXHRK7taPouSBh
+         45klUpwTcfQ76xuOdKLbMnLS+ISTcCrGx7F5AUTFcuiEyjiYOcoBCgDKJKC+Mgu+vxWp
+         m+bT2LRZ22o3nWpggkpnPKYz8dUfVnwPYRgkMccFhc9nuQgUcb1mBoCGaiAa1OafJjih
+         5AvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694472364; x=1695077164;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nGkwF0gYaz4cY8e4zOPO10SheJVop81xTC7Gspn6wAQ=;
-        b=PERiVHg9RCkn+yTpINPZa6OuaWvttf1NuqOqAb5m02R8xML0x0Ii9G/2dTY4D9ySg6
-         zGwgF2Ro9TZfNHsrI9R1IXwZVsSwCzBt6rgFuLnyukOrjbIEj2eesOYXMEehjLE+MRpe
-         Vzfql3km6D4w8Ad65fgaUMfpXC212neFJFz0wa5MSgYg4LVquTdgHfDGBNM9YhCe0T2R
-         z9AiG6rGqvb3eW2Gq1gvsWD2Is++vCpjNMPhATuDrfoHLqNEwezDOM7GEzLQABUub/rx
-         EpmnwqHoi7DA+/YUEt0CE2yoDUr4f+VQMjne68kRU0UAEoa8VQUIokAxcVHhLyAnggcS
-         I01w==
-X-Gm-Message-State: AOJu0YymZSbhY4HNCTdcVhwsAfNL/tS8QYsCuQOZ7MNA4NVZnpiJ+jmt
-        ir2RCh9MtixzXhu4Y9XuNdKwkeCUWCLUITwvuJMfh2isR9iL
-X-Google-Smtp-Source: AGHT+IGOHBSTES1Jhg24gmV93v8EzHDuOqQQrx+qi2cRYhfOD1Z+VsaGSxDET7SIecNgCzg4HGTRR3Lfcha3DO9zipDO1K8RElwS
+        d=1e100.net; s=20230601; t=1694479944; x=1695084744;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XWTcwow2et7upqcwf54DyK1wVNFfm6M3zpWLMMZDCl4=;
+        b=o66WqNv1R0eX6fUQvkk8P+Nz397cBzAjV98qsMgzxQGoBoFL+sSFsDTqE1ihVe7k4k
+         GkAS4TrTOx/uSbaOHBO0+FC3TRixsjSKPNmOTURBFJAEK3htUJWI1e5+4pb3kZZ/qpM/
+         7Z6s79pgtMtgZu3DZe8nN6xzPln9Es5nzGdrR0DEHzpqAkPyioC+jlnmowhQc5qszRqv
+         E3RDhxXgWFoJCzH3YagxULsCSCkaKesLmdYCL/CrvIMLZ12blT2STMrNKw04J+yUUHiG
+         /iCvVNY6vstSGX1eOq2gOwC7/iJ7JQVF2O+aU813ISID0yIUeQejV71WS94lpiclMH4s
+         us9A==
+X-Gm-Message-State: AOJu0YxRJF7M0m+mBNxwsbTW3O0JIFqtJhnT0C4fKmCAvtJcpwakgeIX
+        oBUxbCOQrENpeAnofWWuxbtw1Y4WLwN7Xw==
+X-Google-Smtp-Source: AGHT+IG4neBUt+ie4pzDoZiQeWUSKTNp1+XgRuVaZj4s2RJQC3CdsSSnlnDEU6xXFuAqvt2am5jxOw==
+X-Received: by 2002:a17:906:30da:b0:99d:fc31:242f with SMTP id b26-20020a17090630da00b0099dfc31242fmr9012606ejb.66.1694472689910;
+        Mon, 11 Sep 2023 15:51:29 -0700 (PDT)
+Received: from skbuf ([188.26.56.202])
+        by smtp.gmail.com with ESMTPSA id dx22-20020a170906a85600b0099d959f9536sm6023945ejb.12.2023.09.11.15.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 15:51:29 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 01:51:26 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <20230911225126.rk23g3u3bzo3agby@skbuf>
+References: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:22cc:b0:1c3:1ceb:97b6 with SMTP id
- y12-20020a17090322cc00b001c31ceb97b6mr4263397plg.7.1694472364628; Mon, 11 Sep
- 2023 15:46:04 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 15:46:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000601fc406051d17bc@google.com>
-Subject: [syzbot] [hfs?] kernel BUG in hfs_btree_open (2)
-From:   syzbot <syzbot+f8aee4b1409f7e8e6e46@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,103 +104,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Sep 09, 2023 at 11:53:50AM +0300, Arınç ÜNAL wrote:
+> What to do:
+> - For mscc,vsc7514-switch, enforce phylink bindings for ports.
+> - For mscc,vsc7512-switch, enforce phylink bindings for user ports.
 
-syzbot found the following issue on:
+you can also look at dsa_switches_apply_workarounds[], and if the switch
+isn't there, then you can replace "user ports" with "ports" here and
+everywhere.
 
-HEAD commit:    0bb80ecc33a8 Linux 6.6-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16abc6c7a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=f8aee4b1409f7e8e6e46
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> - renesas,rzn1-a5psw.yaml
+>   - renesas,r9a06g032-a5psw, renesas,rzn1-a5psw
+> 
+> What to do:
+> - Document "mdio".
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Not clear here and for all the schemas quoted below.. is "mdio" not documented already?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d506cf29d25/disk-0bb80ecc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ca5b56af4b3e/vmlinux-0bb80ecc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/aa88aed611c1/bzImage-0bb80ecc.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f8aee4b1409f7e8e6e46@syzkaller.appspotmail.com
-
-loop2: detected capacity change from 0 to 64
-------------[ cut here ]------------
-kernel BUG at fs/hfs/btree.c:41!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 11852 Comm: syz-executor.2 Not tainted 6.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:hfs_btree_open+0xf09/0xf20 fs/hfs/btree.c:41
-Code: 7e ff e9 7e fa ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 9b fa ff ff 4c 89 f7 e8 c1 ca 7e ff e9 8e fa ff ff e8 c7 df 24 ff <0f> 0b e8 c0 df 24 ff 0f 0b e8 b9 df 24 ff 0f 0b 0f 1f 80 00 00 00
-RSP: 0000:ffffc900034cf738 EFLAGS: 00010283
-RAX: ffffffff8268c3c9 RBX: ffff888036585ad0 RCX: 0000000000040000
-RDX: ffffc9000b664000 RSI: 000000000000586c RDI: 000000000000586d
-RBP: 0000000000000000 R08: ffffffff8268b627 R09: 1ffff11006cb0b75
-R10: dffffc0000000000 R11: ffffed1006cb0b76 R12: ffff8880210a2000
-R13: ffff888028f54008 R14: ffff888028f54000 R15: dffffc0000000000
-FS:  00007f73a031a6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8c2a9ba000 CR3: 0000000023db4000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- hfs_mdb_get+0x1443/0x21b0 fs/hfs/mdb.c:199
- hfs_fill_super+0x107d/0x1790 fs/hfs/super.c:406
- mount_bdev+0x237/0x300 fs/super.c:1629
- legacy_get_tree+0xef/0x190 fs/fs_context.c:638
- vfs_get_tree+0x8c/0x280 fs/super.c:1750
- do_new_mount+0x28f/0xae0 fs/namespace.c:3335
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f739f67e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f73a0319ee8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f73a0319f80 RCX: 00007f739f67e1ea
-RDX: 0000000020000240 RSI: 0000000020000040 RDI: 00007f73a0319f40
-RBP: 0000000020000240 R08: 00007f73a0319f80 R09: 0000000000004012
-R10: 0000000000004012 R11: 0000000000000202 R12: 0000000020000040
-R13: 00007f73a0319f40 R14: 0000000000000285 R15: 0000000020000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:hfs_btree_open+0xf09/0xf20 fs/hfs/btree.c:41
-Code: 7e ff e9 7e fa ff ff 44 89 f1 80 e1 07 80 c1 03 38 c1 0f 8c 9b fa ff ff 4c 89 f7 e8 c1 ca 7e ff e9 8e fa ff ff e8 c7 df 24 ff <0f> 0b e8 c0 df 24 ff 0f 0b e8 b9 df 24 ff 0f 0b 0f 1f 80 00 00 00
-RSP: 0000:ffffc900034cf738 EFLAGS: 00010283
-RAX: ffffffff8268c3c9 RBX: ffff888036585ad0 RCX: 0000000000040000
-RDX: ffffc9000b664000 RSI: 000000000000586c RDI: 000000000000586d
-RBP: 0000000000000000 R08: ffffffff8268b627 R09: 1ffff11006cb0b75
-R10: dffffc0000000000 R11: ffffed1006cb0b76 R12: ffff8880210a2000
-R13: ffff888028f54008 R14: ffff888028f54000 R15: dffffc0000000000
-FS:  00007f73a031a6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff38ded7086 CR3: 0000000023db4000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> - realtek.yaml
+>   - realtek,rtl8365mb
+>   - realtek,rtl8366rb
+> 
+> drivers/net/dsa/realtek/realtek-mdio.c:
+> - The DSA subdriver lets the DSA driver register the bus.
+> 
+> What to do:
+> - Document "mdio".
+>   - Require "mdio". (Can't do because it's not required for MDIO controlled
+>     switches that share the compatible string with SMI controlled switches.
+>     This is why I would like Luiz to unify the bus registeration process.)
+> - Document compatible string "realtek,smi-mdio" on "mdio" child node.
+>   - Require compatible. (Can't do because the same as above.)
+> - Enforce phylink bindings for user ports. (Can't do because the same as
+>   above.)
+>   - Enforce phylink bindings for user ports if "mdio" is defined.
+> 
+> ---
+> 
+> - qca8k.yaml
+>   - qca,qca8327
+>   - qca,qca8328
+>   - qca,qca8334
+>   - qca,qca8337
+> 
+> drivers/net/dsa/qca/qca8k-8xxx.c:
+> - The DSA subdriver won't let the DSA driver register the bus.
+>   - No ds->ops->phy_read() or ds->ops->phy_write().
+> - Registers the bus non-OF-based or OF-based. Registers OF-based if "mdio"
+>   child node is defined.
+>   - mdio = of_get_child_by_name(priv->dev->of_node, "mdio");
+> 
+> What to do:
+> - Document "mdio".
+> - Enforce phylink bindings for user ports if "mdio" is defined.
+> 
+> ---
+> 
+> - nxp,sja1105.yaml
+>   - nxp,sja1105e
+>   - nxp,sja1105t
+>   - nxp,sja1105p
+>   - nxp,sja1105q
+>   - nxp,sja1105r
+>   - nxp,sja1105s
+>   - nxp,sja1110a
+>   - nxp,sja1110b
+>   - nxp,sja1110c
+>   - nxp,sja1110d
+> 
+> What to do:
+> - Document "mdios".
+>   - Document child node pattern property under "mdios".
+>     - Document "nxp,sja1110-base-tx-mdio" and "nxp,sja1110-base-t1-mdio"
+>       compatible strings.
+> ---
+> 
+> - microchip,lan937x.yaml
+>   - microchip,lan9370
+>   - microchip,lan9371
+>   - microchip,lan9372
+>   - microchip,lan9373
+>   - microchip,lan9374
+> - microchip,ksz.yaml
+>   - microchip,ksz8765
+>   - microchip,ksz8794
+>   - microchip,ksz8795
+>   - microchip,ksz8863
+>   - microchip,ksz8873
+>   - microchip,ksz9477
+>   - microchip,ksz9897
+>   - microchip,ksz9896
+>   - microchip,ksz9567
+>   - microchip,ksz8565
+>   - microchip,ksz9893
+>   - microchip,ksz9563
+>   - microchip,ksz8563
+> 
+> What to do:
+> - Document "mdio".
