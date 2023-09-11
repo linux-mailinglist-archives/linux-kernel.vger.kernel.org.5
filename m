@@ -2,56 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABAC79B576
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF1B79B353
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbjIKU6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        id S239464AbjIKV4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242901AbjIKQbV (ORCPT
+        with ESMTP id S242953AbjIKQg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:31:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE6FC5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:31:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3DAC433C8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 16:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694449875;
-        bh=f3Qo6vrFojIPwWqmmZcbQ18TQJdcfxhyQGQLG3jKQTQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FCDAh3+lVLkldKUGjU089uedxOobflo8NE7QBVwSUeOeZY/HE2dsrqtbzUunspkxV
-         DxaMX7tTQYQLvpgj2B2bMFVUcX82nXTRqwhGG5xBeeIZHLMT71IA00XrxUjmkJi2QE
-         W0JcdypccA9nVQB3j6YGhtfwUE2ZhN+NFcR221G/11nuHwm8q/gLhArLxdGzHaDPC7
-         XM7YVffg12FPAVg7uNZ1qhmdm7fGZthHeQXEorK3aF973wvhbHz5ygH1daiwjm+DwJ
-         tU7JXRi48nitrD7dfF02JkhmIa8p8MNOKthxcRhZJfOZy6xv7JZJAAs0GJN/bc4Jrj
-         RlpeiVGtS5yjA==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-500a398cda5so7724568e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:31:15 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxdAWlXp8MkJ5G7/gNOqOH+Sj8gpqHToc8NwcYzHnarUdGFCfR7
-        wcWQlppmPobBlwu/G/GvWRh9y7kb+qMtusbxxaQ=
-X-Google-Smtp-Source: AGHT+IFUCSWoNbCnVdv+73dqZmj9FkBmSsJ2WzqpqM3ykhn0+wQPE5+sRP8nObYHWezRHG2xouoG5bQu8UF0YTh+jWU=
-X-Received: by 2002:a05:6512:281c:b0:4fe:ecd:4950 with SMTP id
- cf28-20020a056512281c00b004fe0ecd4950mr10349873lfb.1.1694449873780; Mon, 11
- Sep 2023 09:31:13 -0700 (PDT)
+        Mon, 11 Sep 2023 12:36:28 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37734D3;
+        Mon, 11 Sep 2023 09:36:23 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-986d8332f50so622213066b.0;
+        Mon, 11 Sep 2023 09:36:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694450181; x=1695054981; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tn6ORcYdF7wmn9zYudPCVDeUReDbRM6yHR4pM4CXkGQ=;
+        b=nl5SiwbyX54Hy0jNU+vPyEf2BEHaaAAd9i1P3I2vwU1OLziQBT3fzU/cOsxfZsbsmQ
+         VyLrwQBFVYR63f6gOIkVeTuNNIZGWO2IhhjYmIMqSOwjpDS8FwR6zL+kcgk6EYmS7ElV
+         eWVqgx6SJWsCTYrJaLRGEBMt/Bdtfurq7m9ljkkPsGv4E3MDKgArQQLh5mfeuE0y1IQK
+         0QihY1yWabQutSzCp2U+KV7FeaYgLooYjYJIN+kEZOFWonk0J0TOjEHzFYZoEu0gxe00
+         t8cnev2XHmJoL4DTTVbr+HXNqjRjukjrGs7RPhQinAYnJe01kligiwMaMgXZLp7A1fBM
+         SX3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694450181; x=1695054981;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tn6ORcYdF7wmn9zYudPCVDeUReDbRM6yHR4pM4CXkGQ=;
+        b=M6FNdumC4Wd6AFBx5txdWPgaNTVvQHL8JhMWFV+hGTjR3jO0hdTslKG4Bs8TogilTv
+         qJeKmi/Jr1EQQQzSddlttG/efSHz8l75aaqxhETSJM/LzbVQrMDefjdbGBmuUAVueNfa
+         oojVFBFr0vvVQmQx38TI3J3iTF+2r510pZdE99LM61AC2rwge8yhsGbROubvEgs19FYY
+         RKP/TFBgAu6ly3x898tyAFijZ/iS4EPjFplkRbVScLvzA3bELXoIEpiHyCg9ILtskw9p
+         +Kd/ti5SwxjRxTLbAoZFts4kB+fn4QTwA8DE1L1mxDpz2sG71ZJRlzLHjrtbWxZHcnAM
+         oGaw==
+X-Gm-Message-State: AOJu0YwckpsVrfym9YeXvK9yb2Dr1MYsoBL2CHXxJ7JbTcbZf6+eEs+q
+        ZLaMyuhAMSKxZvF7ytkd7XA=
+X-Google-Smtp-Source: AGHT+IEZkDEwJehDR4fKggLpjoJhnXiAupV9qorq7MLXFhFfk7fRQqvtYUP3Mho6rsQ4juPA6IGloQ==
+X-Received: by 2002:a17:906:224a:b0:9a9:e6c3:ad28 with SMTP id 10-20020a170906224a00b009a9e6c3ad28mr9042772ejr.69.1694450181242;
+        Mon, 11 Sep 2023 09:36:21 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id h17-20020a170906261100b00999bb1e01dfsm5534149ejc.52.2023.09.11.09.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:36:20 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 14/18] media: verisilicon: vp9: Use destination buffer height
+ to compute chroma offset
+Date:   Mon, 11 Sep 2023 18:36:19 +0200
+Message-ID: <3248154.aeNJFYEL58@jernej-laptop>
+In-Reply-To: <7da0a2ab-032a-9de9-e136-58f973238c5b@collabora.com>
+References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+ <4856958.31r3eYUQgx@jernej-laptop>
+ <7da0a2ab-032a-9de9-e136-58f973238c5b@collabora.com>
 MIME-Version: 1.0
-References: <20230908231244.1092614-1-song@kernel.org> <CAKwvOdmGSNj0FF0Mx97xAq6Zn5nc816k1QMzXQtR2C+VDq_3+Q@mail.gmail.com>
-In-Reply-To: <CAKwvOdmGSNj0FF0Mx97xAq6Zn5nc816k1QMzXQtR2C+VDq_3+Q@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 11 Sep 2023 09:31:01 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4CejZE443U1U+Svc-auPvOp97UcS3Die=rkstz0HRExw@mail.gmail.com>
-Message-ID: <CAPhsuW4CejZE443U1U+Svc-auPvOp97UcS3Die=rkstz0HRExw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/purgatory: Remove LTO flags
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        kexec@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,119 +82,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 9:00=E2=80=AFAM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Sep 8, 2023 at 4:13=E2=80=AFPM Song Liu <song@kernel.org> wrote:
-> >
-> > With LTO enabled, ld.lld generates multiple .text sections for
-> > purgatory.ro:
-> >
-> > $ readelf -S purgatory.ro  | grep " .text"
-> >   [ 1] .text             PROGBITS         0000000000000000  00000040
-> >   [ 7] .text.purgatory   PROGBITS         0000000000000000  000020e0
-> >   [ 9] .text.warn        PROGBITS         0000000000000000  000021c0
-> >   [13] .text.sha256_upda PROGBITS         0000000000000000  000022f0
-> >   [15] .text.sha224_upda PROGBITS         0000000000000000  00002be0
-> >   [17] .text.sha256_fina PROGBITS         0000000000000000  00002bf0
-> >   [19] .text.sha224_fina PROGBITS         0000000000000000  00002cc0
-> >
-> > This cause WARNING from kexec_purgatory_setup_sechdrs():
-> >
-> > WARNING: CPU: 26 PID: 110894 at kernel/kexec_file.c:919
-> > kexec_load_purgatory+0x37f/0x390
-> >
-> > Fix this by disabling LTO for purgatory.
->
-> Thanks for the v2!
->
-> >
-> > Fixes: 8652d44f466a ("kexec: support purgatories with .text.hot section=
-s")
->
-> Dunno that this fixes tag is precise.  I think perhaps
->
-> Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
+Dne ponedeljek, 11. september 2023 ob 10:55:02 CEST je Benjamin Gaignard=20
+napisal(a):
+> Le 10/09/2023 =C3=A0 15:21, Jernej =C5=A0krabec a =C3=A9crit :
+> > Hi Benjamin!
+> >=20
+> > Dne petek, 01. september 2023 ob 14:44:10 CEST je Benjamin Gaignard
+> >=20
+> > napisal(a):
+> >> Source and destination buffer height may not be the same because
+> >> alignment constraint are different.
+> >> Use destination height to compute chroma offset because we target
+> >> this buffer as hardware output.
+> >>=20
+> >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> >> Fixes: e2da465455ce ("media: hantro: Support VP9 on the G2 core")
+> >> ---
+> >>=20
+> >>   drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c | 4 +---
+> >>   1 file changed, 1 insertion(+), 3 deletions(-)
+> >>=20
+> >> diff --git a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
+> >> b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c index
+> >> 6db1c32fce4d..1f3f5e7ce978 100644
+> >> --- a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
+> >> +++ b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
+> >> @@ -93,9 +93,7 @@ static int start_prepare_run(struct hantro_ctx *ctx,
+> >> const struct v4l2_ctrl_vp9_ static size_t chroma_offset(const struct
+> >> hantro_ctx *ctx,
+> >>=20
+> >>   			    const struct v4l2_ctrl_vp9_frame
+> >=20
+> > *dec_params)
+> >=20
+> >>   {
+> >>=20
+> >> -	int bytes_per_pixel =3D dec_params->bit_depth =3D=3D 8 ? 1 : 2;
+> >> -
+> >> -	return ctx->src_fmt.width * ctx->src_fmt.height * bytes_per_pixel;
+> >> +	return ctx->dst_fmt.width * ctx->dst_fmt.height * ctx->bit_depth /
+> >=20
+> > 8;
+> >=20
+> > Commit message doesn't mention bit_depth change at all. While I think
+> > there is no difference between dec_params->bit_depth and ctx->bit_depth,
+> > you shouldn't just use ordinary division. If bit_depth is 10, it will be
+> > rounded down. And if you decide to use bit_depth from context, please
+> > remove dec_params argument.
+>=20
+> I will change this patch and create a helpers function for chroma and mot=
+ion
+> vectors offsets that VP9 and HEVC code will use since they are identical.
+> I don't see issue with the division. If you have in mind a solution please
+> write it so I could test it.
 
-Thanks for the correction!
+Solution is same as the code that you removed:
+int bytes_per_pixel =3D dec_params->bit_depth =3D=3D 8 ? 1 : 2;
 
->
-> would be more precise.
->
-> > Cc: Ricardo Ribalda <ribalda@chromium.org>
-> > Cc: Sami Tolvanen <samitolvanen@google.com>
-> > Cc: kexec@lists.infradead.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: x86@kernel.org
-> > Cc: llvm@lists.linux.dev
-> > Signed-off-by: Song Liu <song@kernel.org>
-> >
-> > ---
-> > AFAICT, x86 is the only arch that supports LTO and purgatory.
-> >
-> > Changes in v2:
-> > 1. Use CC_FLAGS_LTO instead of hardcode -flto. (Nick Desaulniers)
-> > ---
-> >  arch/x86/purgatory/Makefile | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-> > index c2a29be35c01..08aa0f25f12a 100644
-> > --- a/arch/x86/purgatory/Makefile
-> > +++ b/arch/x86/purgatory/Makefile
-> > @@ -19,6 +19,10 @@ CFLAGS_sha256.o :=3D -D__DISABLE_EXPORTS -D__NO_FORT=
-IFY
-> >  # optimization flags.
-> >  KBUILD_CFLAGS :=3D $(filter-out -fprofile-sample-use=3D% -fprofile-use=
-=3D%,$(KBUILD_CFLAGS))
-> >
-> > +# When LTO is enabled, llvm emits many text sections, which is not sup=
-ported
-> > +# by kexec. Remove -flto=3D* flags.
->
-> -flto* in LLVM implies -ffunction-sections, which creates a .text.<fn
-> name> section per function definition to facilitate -Wl,--gc-sections.
->
-> Overall the question here is "do we really need to optimize kexec?"
->
-> If the answer is yes, then this patch AND 8652d44f466a are both
-> pessimizing kexec (though having it work at all is strictly better
-> than not at all).  The best fix IMO would be to provide a linker
-> script for this purgatory image that rejoins the text sections back
-> into one .text.  For example:
->
-> commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
->
-> I assume people do care about the time to kexec, hence the raison
-> d'etre for projects like kpatch.
+Or alternatively:
+int bytes_per_pixel =3D DIV_ROUND_UP(dec_params->bit_depth, 8);
 
-AFAICT, optimizations like LTO and PGO can give a few % of
-improvement, which is probably not important for kexec. The benefit
-is in the order of seconds (or less?). The benefit of kpatch is that we
-can keep the workload running while fixing the kernel bug. Based on
-our experience at Meta, it may take hours to graceful shutdown the
-application to run kexec. In this case, a few seconds of improvement
-(via LTO/PGO purgatory) doesn't save us much.
+Consider bit_depth being 10. With old code you get 2, with yours you get 1.
 
-Thanks,
-Song
+Best regards,
+Jernej
 
->
-> I'm fine to sign off on this approach if we don't really care, or want
-> to care more later, but we can do better here.
->
-> > +KBUILD_CFLAGS :=3D $(filter-out $(CC_FLAGS_LTO),$(KBUILD_CFLAGS))
-> > +
-> >  # When linking purgatory.ro with -r unresolved symbols are not checked=
-,
-> >  # also link a purgatory.chk binary without -r to check for unresolved =
-symbols.
-> >  PURGATORY_LDFLAGS :=3D -e purgatory_start -z nodefaultlib
-> > --
-> > 2.34.1
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+>=20
+> Regards,
+> Benjamin
+>=20
+> > Best regards,
+> > Jernej
+> >=20
+> >>   }
+> >>  =20
+> >>   static size_t mv_offset(const struct hantro_ctx *ctx,
+
+
+
+
