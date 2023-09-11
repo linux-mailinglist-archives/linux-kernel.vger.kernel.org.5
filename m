@@ -2,281 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A14279B5AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF97379AD9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346734AbjIKVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S240013AbjIKUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236574AbjIKLBR (ORCPT
+        with ESMTP id S236594AbjIKLCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:01:17 -0400
-Received: from out-219.mta0.migadu.com (out-219.mta0.migadu.com [91.218.175.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4588E198
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:01:11 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694430069;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=E5yHKp0OcXp3JHJgg+0qOrM4VXGsFKESg9vuY4j64KM=;
-        b=RFgJBw48EPZafs2msT138v8SXX3p9xUpN/mvU6RgMl44mFl5tuNwYlwSB0mKtJRoeAdXUJ
-        C1g5Lk5GblE6HBE93nzpeDZldouoYN22NM8R+3AHXm+4Q85V5H++AgcpRZ8xxh5kYJFzwH
-        SMsGTEyx07SRu2mkQtSXMN2LZfpAFAE=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        mhiramat@kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] sched: Change the name of preempt mode from full to low_latency
-Date:   Mon, 11 Sep 2023 19:00:46 +0800
-Message-Id: <20230911110046.3877123-1-yajun.deng@linux.dev>
+        Mon, 11 Sep 2023 07:02:40 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418FECE5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:02:34 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-501bd6f7d11so6967930e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694430152; x=1695034952; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IeK6HQWOkE6erW/8t8XvbP/nXkU1GU8xBhJ8mesdBUw=;
+        b=MWQoaKSNNKbir7N9+SzvDmj2SFq6UAe42uI1SAjtnda44Z9mmSnCJwr2Rktw77xcn1
+         i69EnN8jP3N6VGXk1WdT0uXYGxFpN5E4es2KeZj7OygHMh3JrHlu/9t8EvFtFLxDEKN1
+         9Va8bIBXyWG1Tyte3CKxHhiT+UxH0LTndXcz5Gzpg0mnGBIJ4AcCWUH4YYBmqYUF6MbP
+         FTDIu0vG3+VhxVP+FFhot94pnnhsfTnJuZxraeLHaBSakr+eiomuw4wFLRH0vFlA66UE
+         gcFr/BCvD8xHD2nXVMPBYicQU69chSnP+f5BxsKI+tKGa9t+JoiDQ24skodTUaauKb+6
+         C3nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694430152; x=1695034952;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IeK6HQWOkE6erW/8t8XvbP/nXkU1GU8xBhJ8mesdBUw=;
+        b=WfXL0mQD2UomPy6rFED2Bv1Z9/XhKFdvQ7d+GITHva8mUGGujQYPQ3PcVaQ8EU9ozB
+         rtXt3WQH5trs/fpW1AodSUbHPFn8PmqaFSD/8LusjxTBBdZYNsyCGaFO7Pdch4mmMN/f
+         Vwf2rDXVlIYh07unybU/m5ZrOq27vfV/GBzjcxOg2Bd7iaoSdb9kdFGHaMOHcTAns98j
+         8I5+zrrB05BUP3EjZoqLPF8hyMKnFGlUzx76gZsULTnujTq03+Lk2h0neCyS0pHztfKR
+         jpLDJXNE/iqzZPmsnFmZva1XGOIZIuNNkZZqL0MV6UOP0wJcIJ7KrLUlcLQbFCoFyX29
+         2RYw==
+X-Gm-Message-State: AOJu0Yy14gsG2+Iyu6tLFPanw/LL8EdQ3ZZiEYRp16seCz9OphYzmngL
+        pw9LGdJ7IeODDyOvPo1fsuHr/w==
+X-Google-Smtp-Source: AGHT+IEKKrXTCBCABNJdmP3x5+smqQBfXEnldaNpLWrHhAXFPqtMZ9mgYBI5HztaY0OQCZFgFLOtDg==
+X-Received: by 2002:ac2:5bc8:0:b0:4fe:15b5:a5f9 with SMTP id u8-20020ac25bc8000000b004fe15b5a5f9mr6933428lfn.54.1694430152499;
+        Mon, 11 Sep 2023 04:02:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id pk24-20020a170906d7b800b0098d2d219649sm5250690ejb.174.2023.09.11.04.02.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 04:02:31 -0700 (PDT)
+Message-ID: <e833b9c1-23e3-f8ad-feec-000c053bd020@linaro.org>
+Date:   Mon, 11 Sep 2023 13:02:28 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [REBASE PATCH v5 01/17] docs: qcom: Add qualcomm minidump guide
+Content-Language: en-US
+To:     Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, keescook@chromium.org, tony.luck@intel.com,
+        gpiccoli@igalia.com, mathieu.poirier@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, linus.walleij@linaro.org,
+        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
+        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
+        bmasney@redhat.com, quic_tsoni@quicinc.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
+ <1694429639-21484-2-git-send-email-quic_mojha@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1694429639-21484-2-git-send-email-quic_mojha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a similar name fully in Kconfig.preempt, but it corresponds to
-PREEMPT_RT. In order to distinguish them, change the name of preempt mode
-from full to low_latency.
+On 11/09/2023 12:53, Mukesh Ojha wrote:
+> Add the qualcomm minidump guide for the users which tries to cover
+> the dependency, API use and the way to test and collect minidump
+> on Qualcomm supported SoCs.
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
 
-Also, define a global array and variable that used to save preempt mode
-name and size.
+Please let us review your previous patch before sending new versions or
+resends or rebases.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- .../admin-guide/kernel-parameters.txt         |  2 +-
- include/linux/sched.h                         |  8 ++--
- kernel/sched/core.c                           | 43 ++++++++++---------
- kernel/sched/debug.c                          |  5 +--
- kernel/sched/sched.h                          |  2 +
- kernel/trace/trace.c                          |  4 +-
- 6 files changed, 32 insertions(+), 32 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0a1731a0f0ef..9284fd7999d7 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4581,7 +4581,7 @@
- 			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
- 			none - Limited to cond_resched() calls
- 			voluntary - Limited to cond_resched() and might_sleep() calls
--			full - Any section that isn't explicitly preempt disabled
-+			low_latency - Any section that isn't explicitly preempt disabled
- 			       can be preempted anytime.
- 
- 	print-fatal-signals=
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 6d1341b1673f..ea607a0ce6f6 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2181,7 +2181,7 @@ static inline void cond_resched_rcu(void)
- 
- extern bool preempt_model_none(void);
- extern bool preempt_model_voluntary(void);
--extern bool preempt_model_full(void);
-+extern bool preempt_model_low_latency(void);
- 
- #else
- 
-@@ -2193,14 +2193,14 @@ static inline bool preempt_model_voluntary(void)
- {
- 	return IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY);
- }
--static inline bool preempt_model_full(void)
-+static inline bool preempt_model_low_latency(void)
- {
- 	return IS_ENABLED(CONFIG_PREEMPT);
- }
- 
- #endif
- 
--static inline bool preempt_model_rt(void)
-+static inline bool preempt_model_fully(void)
- {
- 	return IS_ENABLED(CONFIG_PREEMPT_RT);
- }
-@@ -2215,7 +2215,7 @@ static inline bool preempt_model_rt(void)
-  */
- static inline bool preempt_model_preemptible(void)
- {
--	return preempt_model_full() || preempt_model_rt();
-+	return preempt_model_low_latency() || preempt_model_fully();
- }
- 
- /*
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2299a5cfbfb9..2abbc0baaae7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8705,7 +8705,7 @@ EXPORT_SYMBOL(__cond_resched_rwlock_write);
-  *   preempt_schedule_notrace   <- NOP
-  *   irqentry_exit_cond_resched <- NOP
-  *
-- * FULL:
-+ * LOW_LATENCY:
-  *   cond_resched               <- RET0
-  *   might_resched              <- RET0
-  *   preempt_schedule           <- preempt_schedule
-@@ -8717,21 +8717,25 @@ enum {
- 	preempt_dynamic_undefined = -1,
- 	preempt_dynamic_none,
- 	preempt_dynamic_voluntary,
--	preempt_dynamic_full,
-+	preempt_dynamic_low_latency,
- };
--
- int preempt_dynamic_mode = preempt_dynamic_undefined;
- 
-+const char *preempt_modes[] = {
-+	[preempt_dynamic_none]        = "none",
-+	[preempt_dynamic_voluntary]   = "voluntary",
-+	[preempt_dynamic_low_latency] = "low_latency",
-+};
-+int preempt_modes_size = ARRAY_SIZE(preempt_modes);
-+
- int sched_dynamic_mode(const char *str)
- {
--	if (!strcmp(str, "none"))
--		return preempt_dynamic_none;
--
--	if (!strcmp(str, "voluntary"))
--		return preempt_dynamic_voluntary;
-+	int i;
- 
--	if (!strcmp(str, "full"))
--		return preempt_dynamic_full;
-+	for (i = 0; i < preempt_modes_size; i++) {
-+		if (!strcmp(str, preempt_modes[i]))
-+			return i;
-+	}
- 
- 	return -EINVAL;
- }
-@@ -8752,7 +8756,7 @@ static bool klp_override;
- static void __sched_dynamic_update(int mode)
- {
- 	/*
--	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
-+	 * Avoid {NONE,VOLUNTARY} -> LOW_LATENCY transitions from ever ending up in
- 	 * the ZERO state, which is invalid.
- 	 */
- 	if (!klp_override)
-@@ -8770,8 +8774,6 @@ static void __sched_dynamic_update(int mode)
- 		preempt_dynamic_disable(preempt_schedule);
- 		preempt_dynamic_disable(preempt_schedule_notrace);
- 		preempt_dynamic_disable(irqentry_exit_cond_resched);
--		if (mode != preempt_dynamic_mode)
--			pr_info("Dynamic Preempt: none\n");
- 		break;
- 
- 	case preempt_dynamic_voluntary:
-@@ -8781,22 +8783,21 @@ static void __sched_dynamic_update(int mode)
- 		preempt_dynamic_disable(preempt_schedule);
- 		preempt_dynamic_disable(preempt_schedule_notrace);
- 		preempt_dynamic_disable(irqentry_exit_cond_resched);
--		if (mode != preempt_dynamic_mode)
--			pr_info("Dynamic Preempt: voluntary\n");
- 		break;
- 
--	case preempt_dynamic_full:
-+	case preempt_dynamic_low_latency:
- 		if (!klp_override)
- 			preempt_dynamic_disable(cond_resched);
- 		preempt_dynamic_disable(might_resched);
- 		preempt_dynamic_enable(preempt_schedule);
- 		preempt_dynamic_enable(preempt_schedule_notrace);
- 		preempt_dynamic_enable(irqentry_exit_cond_resched);
--		if (mode != preempt_dynamic_mode)
--			pr_info("Dynamic Preempt: full\n");
- 		break;
- 	}
- 
-+	if (mode != preempt_dynamic_mode)
-+		pr_info("Dynamic Preempt: %s\n", preempt_modes[mode]);
-+
- 	preempt_dynamic_mode = mode;
- }
- 
-@@ -8860,8 +8861,8 @@ static void __init preempt_dynamic_init(void)
- 		} else {
- 			/* Default static call setting, nothing to do */
- 			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT));
--			preempt_dynamic_mode = preempt_dynamic_full;
--			pr_info("Dynamic Preempt: full\n");
-+			preempt_dynamic_mode = preempt_dynamic_low_latency;
-+			pr_info("Dynamic Preempt: %s\n", preempt_modes[preempt_dynamic_mode]);
- 		}
- 	}
- }
-@@ -8876,7 +8877,7 @@ static void __init preempt_dynamic_init(void)
- 
- PREEMPT_MODEL_ACCESSOR(none);
- PREEMPT_MODEL_ACCESSOR(voluntary);
--PREEMPT_MODEL_ACCESSOR(full);
-+PREEMPT_MODEL_ACCESSOR(low_latency);
- 
- #else /* !CONFIG_PREEMPT_DYNAMIC */
- 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 4c3d0d9f3db6..fd516dcff988 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -244,12 +244,9 @@ static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
- 
- static int sched_dynamic_show(struct seq_file *m, void *v)
- {
--	static const char * preempt_modes[] = {
--		"none", "voluntary", "full"
--	};
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
-+	for (i = 0; i < preempt_modes_size; i++) {
- 		if (preempt_dynamic_mode == i)
- 			seq_puts(m, "(");
- 		seq_puts(m, preempt_modes[i]);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 04846272409c..6210c40f35da 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -3276,6 +3276,8 @@ extern int try_to_wake_up(struct task_struct *tsk, unsigned int state, int wake_
- 
- #ifdef CONFIG_PREEMPT_DYNAMIC
- extern int preempt_dynamic_mode;
-+extern const char *preempt_modes[];
-+extern int preempt_modes_size;
- extern int sched_dynamic_mode(const char *str);
- extern void sched_dynamic_update(int mode);
- #endif
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2b4ded753367..3d731b4fea65 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4394,8 +4394,8 @@ print_trace_header(struct seq_file *m, struct trace_iterator *iter)
- 		   buf->cpu,
- 		   preempt_model_none()      ? "server" :
- 		   preempt_model_voluntary() ? "desktop" :
--		   preempt_model_full()      ? "preempt" :
--		   preempt_model_rt()        ? "preempt_rt" :
-+		   preempt_model_low_latency() ? "preempt" :
-+		   preempt_model_fully()     ? "preempt_rt" :
- 		   "unknown",
- 		   /* These are reserved for later use */
- 		   0, 0, 0, 0);
--- 
-2.25.1
+Best regards,
+Krzysztof
 
