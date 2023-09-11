@@ -2,280 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B3879C152
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1AB79C20B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjILAsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 20:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60918 "EHLO
+        id S233285AbjILB6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjILAsD (ORCPT
+        with ESMTP id S233980AbjILB6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 20:48:03 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB91E238C;
-        Mon, 11 Sep 2023 16:09:47 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-792623074edso145880239f.1;
-        Mon, 11 Sep 2023 16:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694473706; x=1695078506; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4QPvsUCuesDbdqzdhDuBEQMp4BSGGOAe53BRO5DTLhU=;
-        b=WAsfvyAm4nq/T0d542lY7eJYNEWKx1KrHiO7uKGUjfRQxMplaCVuQHW6Q2kC8YkqOZ
-         eVaN/pNeQzYSRumFzAIigbjqS6i77zjpFG/LzXvrtGeSb9xg56Yd6GisaXs1nGrA2dD7
-         Sga5bxd4aWJ0yHKCEB3mXw6Y7R6khtCfOizyS0YbOa91EqLxgcx4yajRbQY3LyC2ilwr
-         aNuGaGGTuklrEltmizJCHjuVbMn70EjHB1T9h0aOMMln/YJTG41arbdKmb9wpiQ7yA3K
-         c1vh4vCeH6KEuJc7OgoCt+tUJROPdm4gCt1aWjW6Zl6y+ULqSb4cdIBsQ7FXoIQa0xpl
-         a7HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694473706; x=1695078506;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4QPvsUCuesDbdqzdhDuBEQMp4BSGGOAe53BRO5DTLhU=;
-        b=HHvV+Ykiv8Hqb3iHSSxiKsUoXesEWNNxKWzl/fw9wyIu3jVPdaTNr9VWpIsyIQbuoa
-         kDqU6WyOM8uBjMx6pDTSQH5SnE+K8PUfzkU9y3VJMx+TS2KDAbFMB7OIMYzDOFBExqI9
-         daQTW6HGynu9+WmyyPc+5h7VyDRthYF0tDY+NJbcOvzCaH8dSPqlQ0fliBB4KSveQ3de
-         05e26Bqk8oCcdEbXw/+4b+qauDAbk/nQHp1E/X1LERsseZ+Oz00s72O1kUDePNFEIPsP
-         EgsmwD3pEjznGX7x5p0wehgl6AKam6QdscfaCFGAEjPkyd77QfJKibeP7SpeWAz61JBO
-         5veA==
-X-Gm-Message-State: AOJu0Yz/gqIlLj8c5WL5hpNggpEFz8VOcsygQm0GR4g0zpa+7C5c2UQP
-        f4QxsSymIAy+wD0hnrE6DOE=
-X-Google-Smtp-Source: AGHT+IG7bYicJCrmUYKVqmd3OJOt+rHV8pZgZGqdIESBV9//RY1GB+4nospOwL2Y8hO5uFJ5BARkiQ==
-X-Received: by 2002:a05:6602:2e89:b0:792:8c29:7b with SMTP id m9-20020a0566022e8900b007928c29007bmr1041872iow.10.1694473705771;
-        Mon, 11 Sep 2023 16:08:25 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id u1-20020a02c041000000b0042b1061c6a8sm2518671jam.84.2023.09.11.16.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 16:08:25 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, gregkh@linuxfoundation.org, mcgrof@kernel.org,
-        daniel.vetter@ffwll.ch
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, jani.nikula@intel.com,
-        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
-        robdclark@gmail.com, linux-doc@vger.kernel.org,
-        Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v6 00/22] fix DRM_USE_DYNAMIC_DEBUG regression
-Date:   Mon, 11 Sep 2023 17:07:55 -0600
-Message-ID: <20230911230817.14402-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
+        Mon, 11 Sep 2023 21:58:40 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FF11B5A9D;
+        Mon, 11 Sep 2023 18:29:18 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BMt0tG021187;
+        Mon, 11 Sep 2023 23:08:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=9yANKZK3PeF72Ck5nYKGP3CLYCYiOXQukLLlpdLxsZk=;
+ b=Sc/BgO92r3Nr0L9du0pIbS4ZYOwGmzhaiUTvu5Jz5WjeRk14Bc79S39nL9i0hm9XnJWc
+ N8OE49rH0CPB1z9sELV+peSAalp7cR5OG2f2juihcrlUo99C09VSUA6ajRPSWJasoVpq
+ IDPhiVG4NSmy/4b4Ifx95jBbsp4uG5lkwQvMC9qKhTQhDSYjeEYdIUzRpHtOQqasOlU5
+ SzVkIloKaOUvdcjrEsHyGl19aqI1P/LyRzbrTjyI5CqFFTyQYi6tFLEu8vKEc73mgB2O
+ ETyA2EVLXAnknYP/e1mIMOhLeS3qAOhPqqB1V5eKTUT+YUFlYCe8bTtuu0T6V1xf8PL2 pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2c3t89j6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 23:08:27 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38BN7cfC024214;
+        Mon, 11 Sep 2023 23:08:24 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2c3t892h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 23:08:23 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BLBwJl012151;
+        Mon, 11 Sep 2023 23:08:12 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t13dyenca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 23:08:12 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BN8BJq21299608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Sep 2023 23:08:11 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75A9D5806D;
+        Mon, 11 Sep 2023 23:08:11 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 875EC58064;
+        Mon, 11 Sep 2023 23:08:10 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.27.137])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Sep 2023 23:08:10 +0000 (GMT)
+Message-ID: <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
+Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
+ trusted keyring
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "mic@linux.microsoft.com" <mic@linux.microsoft.com>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Date:   Mon, 11 Sep 2023 19:08:10 -0400
+In-Reply-To: <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
+References: <20230908213428.731513-1-eric.snowberg@oracle.com>
+         <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
+         <20230911.chaeghaeJ4ei@digikod.net>
+         <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kkjBCp2-VPoL_2zflu0Z7U41ZsF6CM5T
+X-Proofpoint-GUID: lnMviTOdAeqOlz24WYyt4frcndq9oSzZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_19,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 clxscore=1011 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0 bulkscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110212
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes the regression in DRM_USE_DYNAMIC_DEBUG=y
+On Mon, 2023-09-11 at 22:17 +0000, Eric Snowberg wrote:
+> 
+> > On Sep 11, 2023, at 10:51 AM, Mickaël Salaün <mic@digikod.net> wrote:
+> > 
+> > On Mon, Sep 11, 2023 at 09:29:07AM -0400, Mimi Zohar wrote:
+> >> Hi Eric,
+> >> 
+> >> On Fri, 2023-09-08 at 17:34 -0400, Eric Snowberg wrote:
+> >>> Currently root can dynamically update the blacklist keyring if the hash
+> >>> being added is signed and vouched for by the builtin trusted keyring.
+> >>> Currently keys in the secondary trusted keyring can not be used.
+> >>> 
+> >>> Keys within the secondary trusted keyring carry the same capabilities as
+> >>> the builtin trusted keyring.  Relax the current restriction for updating
+> >>> the .blacklist keyring and allow the secondary to also be referenced as
+> >>> a trust source.  Since the machine keyring is linked to the secondary
+> >>> trusted keyring, any key within it may also be used.
+> >>> 
+> >>> An example use case for this is IMA appraisal.  Now that IMA both
+> >>> references the blacklist keyring and allows the machine owner to add
+> >>> custom IMA CA certs via the machine keyring, this adds the additional
+> >>> capability for the machine owner to also do revocations on a running
+> >>> system.
+> >>> 
+> >>> IMA appraisal usage example to add a revocation for /usr/foo:
+> >>> 
+> >>> sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
+> >>> 
+> >>> openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
+> >>>       -signer machine-certificate.pem -noattr -binary -outform DER \
+> >>>       -out hash.p7s
+> >>> 
+> >>> keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
+> >>> 
+> >>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> >> 
+> >> The secondary keyring may include both CA and code signing keys.  With
+> >> this change any key loaded onto the secondary keyring may blacklist a
+> >> hash.  Wouldn't it make more sense to limit blacklisting
+> >> certificates/hashes to at least CA keys? 
+> > 
+> > Some operational constraints may limit what a CA can sign.
+> 
+> Agreed.  
+> 
+> Is there precedents for requiring this S/MIME to be signed by a CA? 
+> 
+> > This change is critical and should be tied to a dedicated kernel config
+> > (disabled by default), otherwise existing systems using this feature
+> > will have their threat model automatically changed without notice.
+> 
+> Today we have INTEGRITY_CA_MACHINE_KEYRING_MAX.  This can 
+> be enabled to enforce CA restrictions on the machine keyring.  Mimi, would 
+> this be a suitable solution for what you are after?
 
-blame analysis: (all mine)
+There needs to be some correlation between the file hashes being added
+to the blacklist and the certificate that signed them.  Without that
+correlation, any key on the secondary trusted keyring could add any
+file hashes it wants to the blacklist.
 
-1. my early test scripts did a lot of 'modprobe $m $*',
-   with dyndbg=.. and debug=.. args
-   this obscured the lack of drm.debug -> drivers propagation
+Mimi
 
-2. I broke K&R rule: "define once, refer many times".
-   the classmaps DECLAREd by the drivers would run on args in 1
+> 
+> I suppose root could add another key to the secondary keyring if it was 
+> signed by a key in the machine keyring.  But then we are getting into an 
+> area of key usage enforcement which really only exists for things added 
+> to the .ima keyring.
+> 
+> >>> ---
+> >>> certs/Kconfig     | 2 +-
+> >>> certs/blacklist.c | 4 ++--
+> >>> 2 files changed, 3 insertions(+), 3 deletions(-)
+> >>> 
+> >>> diff --git a/certs/Kconfig b/certs/Kconfig
+> >>> index 1f109b070877..23dc87c52aff 100644
+> >>> --- a/certs/Kconfig
+> >>> +++ b/certs/Kconfig
+> >>> @@ -134,7 +134,7 @@ config SYSTEM_BLACKLIST_AUTH_UPDATE
+> >>> 	depends on SYSTEM_DATA_VERIFICATION
+> >>> 	help
+> >>> 	  If set, provide the ability to load new blacklist keys at run time if
+> >>> -	  they are signed and vouched by a certificate from the builtin trusted
+> >>> +	  they are signed and vouched by a certificate from the secondary trusted
+> >> 
+> >> If CONFIG_SECONDARY_TRUSTED_KEYRING is not enabled, it falls back to
+> >> the builtin keyring.  Please update the comment accordingly.
+> 
+> I’ll fix these in the next round, thanks.
+> 
 
-The thinko beneath that was imitating the "static struct" in the
-definition of DEFINE_DYNAMIC_DEBUG_METADATA.  Imitating __drm_debug
-export instead broke the mental logjam.
-
-So the patchset splits DECLARE_DYNDBG_CLASSMAP duty in 2: with
-DYNDBG_CLASSMAP_DEFINE/_USE, where _DEFINE exports the classmap, so
-_USE can reference it.  The _USEs are added into a new section:
-__dyndbg_class_users.
-
-ddebug_add_module() now also scans class_users at modprobe time,
-whence it finds the kernel-param that refs the classmap, and applies
-its initialized state to the user/driver.
-
-test-dynamic-debug is extended with a _submod, allowing it to
-recapitulate the drm.ddebug -/-> drivers failure scenario.
-
-
-NOTE: patch-14 does the DECLARE -> _DEFINE/_USE, so it also changes
-DRM to follow the API change.  That makes it buildable, but crosses 2
-trees, which isn't so great.  But since the feature is marked BROKEN
-at this point, perhaps I should have split them.
-
-Finally 3 DRM patches: drops BROKEN on DRM_USE_DYNAMIC_DEBUG, fixes
-drm/Makefile, and wires a bunch more drivers to _USE DRM's
-drm_debug_classmap.
-
-You can bang at the test module with:
-#!/bin/bash
-
-ddcmd () {
-    echo $* > /proc/dynamic_debug/control
-}
-vx () {
-    echo $1 > /sys/module/dynamic_debug/parameters/verbose
-}
-ddgrep () {
-    grep $1 /proc/dynamic_debug/control
-}
-doprints () {
-    cat   /sys/module/test_dynamic_debug/parameters/do_prints
-}
-
-note () {
-    echo NOTE: $* >&2
-    $*
-}
-ddparms () {
-    note ls -l /sys/module/test_dynamic_debug/parameters/
-    note cat   /sys/module/test_dynamic_debug/parameters/*
-}
-up () {
-    modprobe drm debug=0x03 debug_trace=0x1ff
-}
-dn () {
-    rmmod drm
-}
-ddtraceon () {
-    echo 1 > /sys/kernel/tracing/tracing_on
-    echo 1 > /sys/kernel/tracing/events/dyndbg/enable
-}
-
-# replay drm.debug dependent-module scenario
-submod () {
-    echo  MP test_dynamic_debug $1 $2 dyndbg=+pm $3 $4
-
-    # extra complexity to avoid passing param=s since theyre explicit inits
-    if [[ -z $1 ]] ; then
-	modprobe test_dynamic_debug dyndbg=+pm
-    elif [[ -z $2 ]] ; then
-	modprobe test_dynamic_debug dyndbg=+pm \
-		 p_disjoint_bits=${1:-0}
-    elif [[ -z $3 ]] ; then
-	# force 3,4 off, undoing DEBUG - declutter
-	modprobe test_dynamic_debug dyndbg=+pm \
-		 p_disjoint_bits=${1:-0} p_level_num=${2:-0}
-		 # p_disjoint_names=${3:-MID,-LOW,-HI} p_level_names=${4:-L3}
-    elif [[ -z $4 ]] ; then
-	modprobe test_dynamic_debug dyndbg=+pm \
-		 p_disjoint_bits=${1:-0} p_level_num=${2:-0}
-		 # p_disjoint_names=${3:-MID}
-    else
-	modprobe test_dynamic_debug dyndbg=+pm \
-		 p_disjoint_bits=${1:-0} p_level_num=${2:-0}
-		 # p_disjoint_names=${3:-MID} p_level_names=${4:-L3}
-    fi
-    
-    # _submod should pick up kparams
-    echo  MP test_dynamic_debug_submod dyndbg=+pmf
-    modprobe test_dynamic_debug_submod dyndbg=+pmf
-}
-unmod () {
-    rmmod test_dynamic_debug_submod
-    rmmod test_dynamic_debug
-}
-
-# The test:
-submod_test () {
-    unmod
-    submod $*
-    sleep 1
-    
-    note "above submod.s D2_* prdbgs should have printed"
-    note "because they are enabled here:"
-    ddgrep _submod
-
-    echo 1 > /sys/module/test_dynamic_debug/parameters/do_prints
-
-    note submod prdbgs should print here
-    echo 1 > /sys/module/test_dynamic_debug_submod/parameters/do_prints
-}
-
-# old-code: triggered jump-label init panic, fixed by doing
-# dyndbg-init in notifier, after jump-label
-submod_force () {
-    unmod
-    submod $*
-    sleep 1
-    # force all classes off, then on
-    note trigger toggled warning by turning off the supposed enabled prdbgs in submod
-
-    echo 0     > /sys/module/test_dynamic_debug/parameters/disjoint_bits
-    echo 0x2ff > /sys/module/test_dynamic_debug/parameters/disjoint_bits
-
-    note now theyre on
-    doprints
-}
-
-setup () {
-    echo dynbg-verbose-0, clearing kmsg, and running submod_test
-    vx 0
-    dmesg -W &
-    submod_test  7 7
-    ddcmd class V +mfl
-    ddcmd class V2 +tmfsl
-    ddcmd class V3 +mfsl
-    ddcmd class V4 +mfs
-    ddcmd class V5 +mf
-    ddcmd class V6 +m
-    doprints
-}
-
-
-
-Jim Cromie (22):
-  test-dyndbg: fixup CLASSMAP usage error
-  dyndbg: make ddebug_class_param union members same size
-  dyndbg: replace classmap list with a vector
-  dyndbg: ddebug_apply_class_bitmap - add module arg, select on it
-  dyndbg: split param_set_dyndbg_classes to module/wrapper fns
-  dyndbg: drop NUM_TYPE_ARRAY
-  dyndbg: reduce verbose/debug clutter
-  dyndbg: silence debugs with no-change updates
-  dyndbg: tighten ddebug_class_name() 1st arg type
-  dyndbg: tighten fn-sig of ddebug_apply_class_bitmap
-  dyndbg-API: remove DD_CLASS_TYPE_(DISJOINT|LEVEL)_NAMES and code
-  dyndbg-API: fix CONFIG_DRM_USE_DYNAMIC_DEBUG regression
-  dyndbg: add for_each_boxed_vector
-  dyndbg: refactor ddebug_classparam_clamp_input
-  dyndbg-API: promote DYNDBG_CLASSMAP_PARAM to API
-  dyndbg-test: build it with just CONFIG_DYNAMIC_DEBUG_CORE
-  dyndbg-doc: add classmap info to howto
-  dyndbg: reserve flag bit _DPRINTK_FLAGS_PREFIX_CACHED
-  dyndbg: add _DPRINTK_FLAGS_INCL_LOOKUP
-  drm: use correct ccflags-y spelling
-  drm-drivers: DRM_CLASSMAP_USE in 2nd batch of drivers, helpers
-  drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG un-BROKEN
-
- .../admin-guide/dynamic-debug-howto.rst       |  60 ++-
- MAINTAINERS                                   |   2 +-
- drivers/gpu/drm/Kconfig                       |   3 +-
- drivers/gpu/drm/Makefile                      |   3 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  12 +-
- drivers/gpu/drm/display/drm_dp_helper.c       |  12 +-
- drivers/gpu/drm/drm_crtc_helper.c             |  12 +-
- drivers/gpu/drm/drm_gem_shmem_helper.c        |   2 +
- drivers/gpu/drm/drm_print.c                   |  35 +-
- drivers/gpu/drm/gud/gud_drv.c                 |   2 +
- drivers/gpu/drm/i915/i915_params.c            |  12 +-
- drivers/gpu/drm/mgag200/mgag200_drv.c         |   2 +
- drivers/gpu/drm/nouveau/nouveau_drm.c         |  12 +-
- drivers/gpu/drm/qxl/qxl_drv.c                 |   2 +
- drivers/gpu/drm/radeon/radeon_drv.c           |   2 +
- drivers/gpu/drm/udl/udl_main.c                |   2 +
- drivers/gpu/drm/vkms/vkms_drv.c               |   2 +
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   2 +
- include/asm-generic/vmlinux.lds.h             |   1 +
- include/drm/drm_print.h                       |  12 +-
- include/linux/dynamic_debug.h                 | 122 ++++--
- kernel/module/main.c                          |   3 +
- lib/Kconfig.debug                             |  10 +-
- lib/Makefile                                  |   4 +-
- lib/dynamic_debug.c                           | 407 +++++++++++-------
- lib/test_dynamic_debug.c                      | 137 +++---
- lib/test_dynamic_debug_submod.c               |  17 +
- 27 files changed, 546 insertions(+), 346 deletions(-)
- create mode 100644 lib/test_dynamic_debug_submod.c
-
--- 
-2.41.0
 
