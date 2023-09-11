@@ -2,47 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB5C79BFDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9035A79BDC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378886AbjIKWht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54480 "EHLO
+        id S236059AbjIKUtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237933AbjIKNXQ (ORCPT
+        with ESMTP id S237956AbjIKNYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:23:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD322193;
-        Mon, 11 Sep 2023 06:23:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20A65C433C7;
-        Mon, 11 Sep 2023 13:23:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694438591;
-        bh=9c86DeoJl8jPh2wNBHyQjlcM9oD3W5Uj+epx+7R7eJw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0MaO5HNviSut7sksefXMT1eJkSifD0wIZPiLIQ9+wNjQcbNLI603jBv4CT38SU5QQ
-         bKUIZtO4FEfTBt5ixp5VUc8pXfOO/We0js9r9O91G2Za1KUxzwn+VB2cWopAyy+FfD
-         DzXNY+yhXmFN3Jv62Oojj+2328hWqQh+X17okHeU=
-Date:   Mon, 11 Sep 2023 15:23:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco)" 
-        <deeratho@cisco.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in
- btsdio_remove due to race condition
-Message-ID: <2023091116-disband-modulator-e451@gregkh>
-References: <20230906121525.3946250-1-deeratho@cisco.com>
- <2023091012-python-image-6f03@gregkh>
- <DM4PR11MB61891026BF701EB7254CECF4C4F2A@DM4PR11MB6189.namprd11.prod.outlook.com>
+        Mon, 11 Sep 2023 09:24:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE9012A;
+        Mon, 11 Sep 2023 06:24:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694438679; x=1725974679;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=6hZ/scxqcpisakdOuYAsA4BjUmqsqsB5dHsi1FpGb4o=;
+  b=IP/RlOV7fdaAJMEd/pX95BgCQ9zJlyrA12z3W3teXcCr/2H6OqO1hFnN
+   fHANh2Neok8hpIKcRNfShttaicA8iaNxt1IBfipJ/iW+4J1dbr3K8ZZqs
+   XpzieqpgR6RJgepl3UI0buIucInfvAYlJY3hOQZ1d551589aNIQ6ddVTf
+   RRpD5fkPVmnTw806wAPYjYb75iZaCUtwZAjCNKiNgPckx51RjfE8Gb6+2
+   P0nDF6FR4YtkbNPiWCXQYvIPBPGH3cneooR4geSzFSy9klAEnhkFj+W6X
+   U5I1yyEsvAuaJC0hObakm79u0bmbCLmBGl8Xmaz88LIcrXmxWnfqHwY8s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375432451"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="375432451"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:24:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693085025"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="693085025"
+Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
+  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 06:24:34 -0700
+From:   sharath.kumar.d.m@intel.com
+To:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, dinguyen@kernel.org,
+        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Subject: [PATCH v3 2/2] PCI: altera: add support for agilex family fpga
+Date:   Mon, 11 Sep 2023 18:55:03 +0530
+Message-Id: <20230911132503.1776279-3-sharath.kumar.d.m@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230911132503.1776279-1-sharath.kumar.d.m@intel.com>
+References: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
+ <20230911132503.1776279-1-sharath.kumar.d.m@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR11MB61891026BF701EB7254CECF4C4F2A@DM4PR11MB6189.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,52 +64,313 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 01:17:47PM +0000, Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) wrote:
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org> 
-> Sent: Monday, September 11, 2023 1:56 AM
-> To: Deepak Rathore -X (deeratho - E-INFO CHIPS INC at Cisco) <deeratho@cisco.com>
-> Cc: stable@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: Re: [v6.1.52][PATCH] Bluetooth: btsdio: fix use after free bug in btsdio_remove due to race condition
-> 
-> On Wed, Sep 06, 2023 at 05:45:25PM +0530, Deepak Rathore wrote:
-> > From: Zheng Wang <zyytlz.wz@163.com>
-> > 
-> > [ Upstream commit 73f7b171b7c09139eb3c6a5677c200dc1be5f318 ]
-> > 
-> > In btsdio_probe, the data->work is bound with btsdio_work. It will be 
-> > started in btsdio_send_frame.
-> > 
-> > If the btsdio_remove runs with a unfinished work, there may be a race 
-> > condition that hdev is freed but used in btsdio_work. Fix it by 
-> > canceling the work before do cleanup in btsdio_remove.
-> > 
-> > Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-> > Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-> > Signed-off-by: Deepak Rathore <deeratho@cisco.com>
-> 
-> > Meta-comment, are you SURE you want this applied?  If so, why was it reverted upstream in 6.4 in commit db2bf510bd5d ("Revert "Bluetooth:
-> > btsdio: fix use after free bug in btsdio_remove due to unfinished
-> > work"")
-> 
-> > What testing did you do that determined this should be added to the tree?  How did you come up with just this one commit to be requested to be applied to just this one branch?
-> 
-> > thanks,
-> 
-> > greg k-h-
-> 
-> Hi Greg,
-> 
-> Yes. I am sure that this fix should be applied to v6.1 stable branch. Our CVERT tool reported kernel CVE CVE-2023-1989 on v6.1 kernel and this fix is also missing in upstream kernel v6.1 as well.
+From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-I have no idea what a CVERT tool is, only that you can almost guarantee
-that it will not work well for kernel cves given the way that cves are
-broken for the kernel.  But good luck with it!  :)
+create new instance of struct altera_pcie_data for
+"altr,pcie-root-port-3.0"
+provide corresponding callback
+"port_conf_off" points to avmm port config register base
 
-> In the reverted upstream commit db2bf510bd5d ("Revert "Bluetooth: btsdio: fix use after free bug in btsdio_remove due to unfinished work""), it is clearly mentioned that this commit db2bf510bd5d is causing null-ptr-def problem and fixed bug by this patch have resolved by another commit 73f7b171b7c0. I have backported same commit 73f7b171b7c0 and sent this for review. Please see the below commit message of commit db2bf510bd5d:
+Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+---
+ drivers/pci/controller/pcie-altera.c | 207 ++++++++++++++++++++++++++-
+ 1 file changed, 206 insertions(+), 1 deletion(-)
 
-So, can you verify that the latest 6.1.y released kernel is correct now?
+diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
+index 878f86b1cc6b..aa14ea588487 100644
+--- a/drivers/pci/controller/pcie-altera.c
++++ b/drivers/pci/controller/pcie-altera.c
+@@ -79,9 +79,20 @@
+ #define S10_TLP_FMTTYPE_CFGWR0		0x45
+ #define S10_TLP_FMTTYPE_CFGWR1		0x44
+ 
++#define AGLX_RP_CFG_ADDR(pcie, reg)     \
++	(((pcie)->hip_base) + (reg))
++#define AGLX_RP_SECONDARY(pcie)         \
++	readb(AGLX_RP_CFG_ADDR(pcie, PCI_SECONDARY_BUS))
++
++#define AGLX_BDF_REG			0x00002004
++#define AGLX_ROOT_PORT_IRQ_STATUS	0x14c
++#define AGLX_ROOT_PORT_IRQ_ENABLE	0x150
++#define AGLX_CFG_AER			(1<<4)
++
+ enum altera_pcie_version {
+ 	ALTERA_PCIE_V1 = 0,
+ 	ALTERA_PCIE_V2,
++	ALTERA_PCIE_V3, /* AGILEX p-tile, f-tile */
+ };
+ 
+ struct altera_pcie {
+@@ -93,6 +104,8 @@ struct altera_pcie {
+ 	struct irq_domain	*irq_domain;
+ 	struct resource		bus_range;
+ 	const struct altera_pcie_data	*pcie_data;
++	void __iomem		*cs_base;
++	u32			port_conf_off;
+ };
+ 
+ struct altera_pcie_ops {
+@@ -138,6 +151,39 @@ static inline u32 cra_readl(struct altera_pcie *pcie, const u32 reg)
+ 	return readl_relaxed(pcie->cra_base + reg);
+ }
+ 
++static inline void cs_writel(struct altera_pcie *pcie, const u32 value,
++				const u32 reg)
++{
++	writel_relaxed(value, pcie->cs_base + reg);
++}
++
++static inline void cs_writew(struct altera_pcie *pcie, const u32 value,
++				const u32 reg)
++{
++	writew_relaxed(value, pcie->cs_base + reg);
++}
++
++static inline void cs_writeb(struct altera_pcie *pcie, const u32 value,
++				const u32 reg)
++{
++	writeb_relaxed(value, pcie->cs_base + reg);
++}
++
++static inline u32 cs_readl(struct altera_pcie *pcie, const u32 reg)
++{
++	return readl_relaxed(pcie->cs_base + reg);
++}
++
++static inline u32 cs_readw(struct altera_pcie *pcie, const u32 reg)
++{
++	return readw_relaxed(pcie->cs_base + reg);
++}
++
++static inline u32 cs_readb(struct altera_pcie *pcie, const u32 reg)
++{
++	return readb_relaxed(pcie->cs_base + reg);
++}
++
+ static bool altera_pcie_link_up(struct altera_pcie *pcie)
+ {
+ 	return !!((cra_readl(pcie, RP_LTSSM) & RP_LTSSM_MASK) == LTSSM_L0);
+@@ -152,6 +198,14 @@ static bool s10_altera_pcie_link_up(struct altera_pcie *pcie)
+ 	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
+ }
+ 
++static bool aglx_altera_pcie_link_up(struct altera_pcie *pcie)
++{
++	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie,
++		pcie->pcie_data->cap_offset + PCI_EXP_LNKSTA);
++
++	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
++}
++
+ /*
+  * Altera PCIe port uses BAR0 of RC's configuration space as the translation
+  * from PCI bus to native BUS.  Entire DDR region is mapped into PCIe space
+@@ -432,6 +486,101 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
++static int aglx_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
++			int where, int size, u32 *value)
++{
++	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
++
++	switch (size) {
++	case 1:
++		*value = readb(addr);
++		break;
++	case 2:
++		*value = readw(addr);
++		break;
++	default:
++		*value = readl(addr);
++		break;
++	}
++
++	/* interrupt pin not programmed in hardware, set to INTA*/
++	if (where == PCI_INTERRUPT_PIN && size == 1)
++		*value = 0x01;
++	else if (where == PCI_INTERRUPT_LINE)
++		*value |= 0x0100;
++
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int aglx_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
++			int where, int size, u32 value)
++{
++	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
++
++	switch (size) {
++	case 1:
++		writeb(value, addr);
++		break;
++	case 2:
++		writew(value, addr);
++		break;
++	default:
++		writel(value, addr);
++		break;
++	}
++
++	/*
++	 * Monitor changes to PCI_PRIMARY_BUS register on root port
++	 * and update local copy of root bus number accordingly.
++	 */
++	if (busno == pcie->root_bus_nr && where == PCI_PRIMARY_BUS)
++		pcie->root_bus_nr = value & 0xff;
++
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int aglx_nonrp_write_cfg(struct altera_pcie *pcie, u8 busno,
++		unsigned int devfn, int where, int size, u32 value)
++{
++	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
++	if (busno > AGLX_RP_SECONDARY(pcie))
++		where |= (1<<12); /* type 1 */
++
++	switch (size) {
++	case 1:
++		cs_writeb(pcie, value, where);
++		break;
++	case 2:
++		cs_writew(pcie, value, where);
++		break;
++	default:
++		cs_writel(pcie, value, where);
++		break;
++	}
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int aglx_nonrp_read_cfg(struct altera_pcie *pcie, u8 busno,
++		unsigned int devfn, int where, int size, u32 *value)
++{
++	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
++	if (busno > AGLX_RP_SECONDARY(pcie))
++		where |= (1<<12); /* type 1 */
++
++	switch (size) {
++	case 1:
++		*value = cs_readb(pcie, where);
++		break;
++	case 2:
++		*value = cs_readw(pcie, where);
++		break;
++	default:
++		*value = cs_readl(pcie, where);
++		break;
++	}
++	return PCIBIOS_SUCCESSFUL;
++}
++
+ static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
+ 		int where, int size, u32 *value)
+ {
+@@ -688,6 +837,30 @@ static void altera_pcie_isr(struct irq_desc *desc)
+ 	chained_irq_exit(chip, desc);
+ }
+ 
++static void aglx_isr(struct irq_desc *desc)
++{
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	struct altera_pcie *pcie;
++	struct device *dev;
++	u32 status;
++	int ret;
++
++	chained_irq_enter(chip, desc);
++	pcie = irq_desc_get_handler_data(desc);
++	dev = &pcie->pdev->dev;
++
++	status = readl((pcie->hip_base + pcie->port_conf_off
++		+ AGLX_ROOT_PORT_IRQ_STATUS));
++	if (status & AGLX_CFG_AER) {
++		ret = generic_handle_domain_irq(pcie->irq_domain, 0);
++		if (ret)
++			dev_err_ratelimited(dev, "unexpected IRQ\n");
++	}
++	writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
++		+ AGLX_ROOT_PORT_IRQ_STATUS));
++	chained_irq_exit(chip, desc);
++}
++
+ static int altera_pcie_init_irq_domain(struct altera_pcie *pcie)
+ {
+ 	struct device *dev = &pcie->pdev->dev;
+@@ -723,13 +896,25 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
+ 			return PTR_ERR(pcie->cra_base);
+ 	}
+ 
+-	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
++	if ((pcie->pcie_data->version == ALTERA_PCIE_V2) ||
++		(pcie->pcie_data->version == ALTERA_PCIE_V3)) {
+ 		pcie->hip_base =
+ 			devm_platform_ioremap_resource_byname(pdev, "Hip");
+ 		if (IS_ERR(pcie->hip_base))
+ 			return PTR_ERR(pcie->hip_base);
+ 	}
+ 
++	if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
++		pcie->cs_base =
++			devm_platform_ioremap_resource_byname(pdev, "Cs");
++		if (IS_ERR(pcie->cs_base))
++			return PTR_ERR(pcie->cs_base);
++		of_property_read_u32(pcie->pdev->dev.of_node, "port_conf_stat",
++			&pcie->port_conf_off);
++		dev_dbg(&pcie->pdev->dev, "port_conf_stat_off =%#x\n",
++				pcie->port_conf_off);
++	}
++
+ 	/* setup IRQ */
+ 	pcie->irq = platform_get_irq(pdev, 0);
+ 	if (pcie->irq < 0)
+@@ -767,6 +952,15 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
+ 	.rp_isr = altera_pcie_isr,
+ };
+ 
++static const struct altera_pcie_ops altera_pcie_ops_3_0 = {
++	.rp_read_cfg = aglx_rp_read_cfg,
++	.rp_write_cfg = aglx_rp_write_cfg,
++	.get_link_status = aglx_altera_pcie_link_up,
++	.nonrp_read_cfg = aglx_nonrp_read_cfg,
++	.nonrp_write_cfg = aglx_nonrp_write_cfg,
++	.rp_isr = aglx_isr,
++};
++
+ static const struct altera_pcie_data altera_pcie_1_0_data = {
+ 	.ops = &altera_pcie_ops_1_0,
+ 	.cap_offset = 0x80,
+@@ -787,11 +981,19 @@ static const struct altera_pcie_data altera_pcie_2_0_data = {
+ 	.cfgwr1 = S10_TLP_FMTTYPE_CFGWR1,
+ };
+ 
++static const struct altera_pcie_data altera_pcie_3_0_data = {
++	.ops = &altera_pcie_ops_3_0,
++	.version = ALTERA_PCIE_V3,
++	.cap_offset = 0x70,
++};
++
+ static const struct of_device_id altera_pcie_of_match[] = {
+ 	{.compatible = "altr,pcie-root-port-1.0",
+ 	 .data = &altera_pcie_1_0_data },
+ 	{.compatible = "altr,pcie-root-port-2.0",
+ 	 .data = &altera_pcie_2_0_data },
++	{.compatible = "altr,pcie-root-port-3.0",
++	.data = &altera_pcie_3_0_data },
+ 	{},
+ };
+ 
+@@ -836,6 +1038,9 @@ static int altera_pcie_probe(struct platform_device *pdev)
+ 		/* enable all interrupts */
+ 		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
+ 		altera_pcie_host_init(pcie);
++	} else if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
++		writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
++			+ AGLX_ROOT_PORT_IRQ_ENABLE));
+ 	}
+ 
+ 	bridge->sysdata = pcie;
+-- 
+2.34.1
 
-thanks,
-
-greg k-h
