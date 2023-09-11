@@ -2,219 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CCA79B44A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340C379B2CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240283AbjIKWWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S1350683AbjIKVkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243677AbjIKR3T (ORCPT
+        with ESMTP id S243684AbjIKR3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:29:19 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B24189;
-        Mon, 11 Sep 2023 10:29:13 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BHT3PV082643;
-        Mon, 11 Sep 2023 12:29:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694453343;
-        bh=PVQPaRp5IlzLcS2dTVXIMLqYtvoC7+GRQ7NX6AOEpAw=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Yee2TpbU3ox5yEBjLBgZPoDZS2NNJWrvxLZOAN25pHxycm6ndEJBnlvdEPDctXP8j
-         zuGoYp/twkC1DKvuNaYvPJkVHoOnzDh8piBPMdTdDgLsNnGSjTABq8nlhlEhtkbyEm
-         IyiMrCBQkMMW/T5KQojwa4YNA45/T33vJyVeyJaQ=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BHT3Tp065690
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 12:29:03 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 12:29:03 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 12:29:03 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BHT3aN109063;
-        Mon, 11 Sep 2023 12:29:03 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Vignesh <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Tom Rini <trini@konsulko.com>, Bryan <bb@ti.com>,
-        Praneeth <praneeth@ti.com>, Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH 1/3] arm64: dts: ti: k3-am64: Add phase tags marking
-Date:   Mon, 11 Sep 2023 12:29:00 -0500
-Message-ID: <20230911172902.1057417-2-nm@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230911172902.1057417-1-nm@ti.com>
-References: <20230911172902.1057417-1-nm@ti.com>
+        Mon, 11 Sep 2023 13:29:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0457E125
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694453380; x=1725989380;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=t0MChbT9anmwCTW4aLxtvuNYSMoznXBB+c/G4YEPAAI=;
+  b=ZE+L5NEVPpVCVY4NXVeu6uBtZLdxS0Zx64WPi7komrMRNK9935XdSGp/
+   jsInvwGMUgUGoBlmv+xl6sfP7i9lS2tE4c17CweoZSjGw/DUhtdUb5+eG
+   55KkSiRqN0gBnvJFdhrZLtRDd5ycqqxpD1LX8fmE++X45h+YPQ4TorptZ
+   B0u/cMSbRmVthTypqJeFf4IpaA1oHuDoMjEwFKjyDod32+u/p5I/qLrsX
+   UqAL6Wq6N8Ji5DfDUgmZM6ZOGXtK2R4PvmVVn0DSwtKXbNrNVm44GpDE9
+   BGorNnu0jurHv6XMONR4xNyqZgcuVQUrno4kSvnzeQgbPUbyfdYtYz9uu
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378063524"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="378063524"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:29:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833590628"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="833590628"
+Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:29:38 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Allen Ballway <ballway@chromium.org>, ballway@chromium.org
+Cc:     arun.r.murthy@intel.com, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, josh@joshtriplett.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RESEND] drm/i915/quirk: Add quirk for devices that
+ cannot be dimmed
+In-Reply-To: <20230808173957.2017765-1-ballway@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230629172106.3798019-1-ballway@chromium.org>
+ <20230808173957.2017765-1-ballway@chromium.org>
+Date:   Mon, 11 Sep 2023 20:29:35 +0300
+Message-ID: <87fs3kehz4.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bootph-all as phase tag was added to dt-schema
-(dtschema/schemas/bootph.yaml) to describe various node usage during
-boot phases with DT.
+On Tue, 08 Aug 2023, Allen Ballway <ballway@chromium.org> wrote:
+> Cybernet T10C cannot be dimmed without the backlight strobing. Create a
+> new quirk to lock the minimum brightness to the highest supported value.
+> This aligns the device with its behavior on Windows, which will not
+> lower the brightness below maximum.
 
-On TI K3 AM642 SoC, only esm nodes are exclusively used by R5
-bootloader, rest of the dts nodes with bootph-* are used by later boot
-stages also.
+Noting here for the benefit of others, it's possible to make the
+brightness work [1], now we "just" need to figure out how to do that
+nicely. So we should drop this patch.
 
-Add bootph-all for all other nodes that are used in the bootloader on
-K3 AM642 SoC, and bootph-pre-ram is not needed specifically for any
-other node in kernel dts.
+BR,
+Jani.
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 11 +++++++++++
- arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi  |  2 ++
- arch/arm64/boot/dts/ti/k3-am64.dtsi      |  2 ++
- 3 files changed, 15 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 0df54a741824..1933c9dd1d9f 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -38,6 +38,7 @@ sproxy-sram@1fc000 {
- 	};
- 
- 	main_conf: syscon@43000000 {
-+		bootph-all;
- 		compatible = "ti,j721e-system-controller", "syscon", "simple-mfd";
- 		reg = <0x0 0x43000000 0x0 0x20000>;
- 		#address-cells = <1>;
-@@ -45,6 +46,7 @@ main_conf: syscon@43000000 {
- 		ranges = <0x0 0x0 0x43000000 0x20000>;
- 
- 		chipid@14 {
-+			bootph-all;
- 			compatible = "ti,am654-chipid";
- 			reg = <0x00000014 0x4>;
- 		};
-@@ -96,6 +98,7 @@ gic_its: msi-controller@1820000 {
- 	};
- 
- 	dmss: bus@48000000 {
-+		bootph-all;
- 		compatible = "simple-mfd";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -105,6 +108,7 @@ dmss: bus@48000000 {
- 		ti,sci-dev-id = <25>;
- 
- 		secure_proxy_main: mailbox@4d000000 {
-+			bootph-all;
- 			compatible = "ti,am654-secure-proxy";
- 			#mbox-cells = <1>;
- 			reg-names = "target_data", "rt", "scfg";
-@@ -188,6 +192,7 @@ main_pktdma: dma-controller@485c0000 {
- 	};
- 
- 	dmsc: system-controller@44043000 {
-+		bootph-all;
- 		compatible = "ti,k2g-sci";
- 		ti,host-id = <12>;
- 		mbox-names = "rx", "tx";
-@@ -197,22 +202,26 @@ dmsc: system-controller@44043000 {
- 		reg = <0x00 0x44043000 0x00 0xfe0>;
- 
- 		k3_pds: power-controller {
-+			bootph-all;
- 			compatible = "ti,sci-pm-domain";
- 			#power-domain-cells = <2>;
- 		};
- 
- 		k3_clks: clock-controller {
-+			bootph-all;
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
- 
- 		k3_reset: reset-controller {
-+			bootph-all;
- 			compatible = "ti,sci-reset";
- 			#reset-cells = <2>;
- 		};
- 	};
- 
- 	main_pmx0: pinctrl@f4000 {
-+		bootph-all;
- 		compatible = "pinctrl-single";
- 		reg = <0x00 0xf4000 0x00 0x2d0>;
- 		#pinctrl-cells = <1>;
-@@ -221,6 +230,7 @@ main_pmx0: pinctrl@f4000 {
- 	};
- 
- 	main_timer0: timer@2400000 {
-+		bootph-all;
- 		compatible = "ti,am654-timer";
- 		reg = <0x00 0x2400000 0x00 0x400>;
- 		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-@@ -365,6 +375,7 @@ main_timer11: timer@24b0000 {
- 	};
- 
- 	main_esm: esm@420000 {
-+		bootph-pre-ram;
- 		compatible = "ti,j721e-esm";
- 		reg = <0x00 0x420000 0x00 0x1000>;
- 		ti,esm-pins = <160>, <161>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-index 686d49790721..b9508072bebb 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-mcu.dtsi
-@@ -146,6 +146,7 @@ mcu_gpio0: gpio@4201000 {
- 	};
- 
- 	mcu_pmx0: pinctrl@4084000 {
-+		bootph-all;
- 		compatible = "pinctrl-single";
- 		reg = <0x00 0x4084000 0x00 0x84>;
- 		#pinctrl-cells = <1>;
-@@ -154,6 +155,7 @@ mcu_pmx0: pinctrl@4084000 {
- 	};
- 
- 	mcu_esm: esm@4100000 {
-+		bootph-pre-ram;
- 		compatible = "ti,j721e-esm";
- 		reg = <0x00 0x4100000 0x00 0x1000>;
- 		ti,esm-pins = <0>, <1>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am64.dtsi b/arch/arm64/boot/dts/ti/k3-am64.dtsi
-index 8e9c2bc70f4d..0187c42aed4f 100644
---- a/arch/arm64/boot/dts/ti/k3-am64.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64.dtsi
-@@ -47,6 +47,7 @@ pmu: pmu {
- 	};
- 
- 	cbass_main: bus@f4000 {
-+		bootph-all;
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -85,6 +86,7 @@ cbass_main: bus@f4000 {
- 			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>;
- 
- 		cbass_mcu: bus@4000000 {
-+			bootph-all;
- 			compatible = "simple-bus";
- 			#address-cells = <2>;
- 			#size-cells = <2>;
+[1] https://gitlab.freedesktop.org/drm/intel/-/issues/8187#note_2072633
+
+>
+> Signed-off-by: Allen Ballway <ballway@chromium.org>
+> ---
+> V2 -> V3: Fix typo.
+> V1 -> V2: Fix style issue.
+>
+> .../gpu/drm/i915/display/intel_backlight.c    |  5 ++++
+>  drivers/gpu/drm/i915/display/intel_quirks.c   | 27 +++++++++++++++++++
+>  drivers/gpu/drm/i915/display/intel_quirks.h   |  1 +
+>  3 files changed, 33 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_backlight.c b/drivers/gpu/drm/i915/display/intel_backlight.c
+> index 2e8f17c045222..f015563d3ebd5 100644
+> --- a/drivers/gpu/drm/i915/display/intel_backlight.c
+> +++ b/drivers/gpu/drm/i915/display/intel_backlight.c
+> @@ -1192,6 +1192,11 @@ static u32 get_backlight_min_vbt(struct intel_connector *connector)
+>
+>  	drm_WARN_ON(&i915->drm, panel->backlight.pwm_level_max == 0);
+>
+> +	if (intel_has_quirk(i915, QUIRK_NO_DIM)) {
+> +		/* Cannot dim backlight, set minimum to highest value */
+> +		return panel->backlight.pwm_level_max - 1;
+> +	}
+> +
+>  	/*
+>  	 * XXX: If the vbt value is 255, it makes min equal to max, which leads
+>  	 * to problems. There are such machines out there. Either our
+> diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
+> index a280448df771a..910c95840a539 100644
+> --- a/drivers/gpu/drm/i915/display/intel_quirks.c
+> +++ b/drivers/gpu/drm/i915/display/intel_quirks.c
+> @@ -65,6 +65,12 @@ static void quirk_no_pps_backlight_power_hook(struct drm_i915_private *i915)
+>  	drm_info(&i915->drm, "Applying no pps backlight power quirk\n");
+>  }
+>
+> +static void quirk_no_dim(struct drm_i915_private *i915)
+> +{
+> +	intel_set_quirk(i915, QUIRK_NO_DIM);
+> +	drm_info(&i915->drm, "Applying no dim quirk\n");
+> +}
+> +
+>  struct intel_quirk {
+>  	int device;
+>  	int subsystem_vendor;
+> @@ -90,6 +96,12 @@ static int intel_dmi_no_pps_backlight(const struct dmi_system_id *id)
+>  	return 1;
+>  }
+>
+> +static int intel_dmi_no_dim(const struct dmi_system_id *id)
+> +{
+> +	DRM_INFO("No dimming allowed on %s\n", id->ident);
+> +	return 1;
+> +}
+> +
+>  static const struct intel_dmi_quirk intel_dmi_quirks[] = {
+>  	{
+>  		.dmi_id_list = &(const struct dmi_system_id[]) {
+> @@ -136,6 +148,20 @@ static const struct intel_dmi_quirk intel_dmi_quirks[] = {
+>  		},
+>  		.hook = quirk_no_pps_backlight_power_hook,
+>  	},
+> +	{
+> +		.dmi_id_list = &(const struct dmi_system_id[]) {
+> +			{
+> +				.callback = intel_dmi_no_dim,
+> +				.ident = "Cybernet T10C Tablet",
+> +				.matches = {DMI_EXACT_MATCH(DMI_BOARD_VENDOR,
+> +							    "Cybernet Manufacturing Inc."),
+> +					    DMI_EXACT_MATCH(DMI_BOARD_NAME, "T10C Tablet"),
+> +				},
+> +			},
+> +			{ }
+> +		},
+> +		.hook = quirk_no_dim,
+> +	},
+>  };
+>
+>  static struct intel_quirk intel_quirks[] = {
+> @@ -218,6 +244,7 @@ void intel_init_quirks(struct drm_i915_private *i915)
+>  		     q->subsystem_device == PCI_ANY_ID))
+>  			q->hook(i915);
+>  	}
+> +
+>  	for (i = 0; i < ARRAY_SIZE(intel_dmi_quirks); i++) {
+>  		if (dmi_check_system(*intel_dmi_quirks[i].dmi_id_list) != 0)
+>  			intel_dmi_quirks[i].hook(i915);
+> diff --git a/drivers/gpu/drm/i915/display/intel_quirks.h b/drivers/gpu/drm/i915/display/intel_quirks.h
+> index 10a4d163149fd..b41c7bbf0a5e3 100644
+> --- a/drivers/gpu/drm/i915/display/intel_quirks.h
+> +++ b/drivers/gpu/drm/i915/display/intel_quirks.h
+> @@ -17,6 +17,7 @@ enum intel_quirk_id {
+>  	QUIRK_INVERT_BRIGHTNESS,
+>  	QUIRK_LVDS_SSC_DISABLE,
+>  	QUIRK_NO_PPS_BACKLIGHT_POWER_HOOK,
+> +	QUIRK_NO_DIM,
+>  };
+>
+>  void intel_init_quirks(struct drm_i915_private *i915);
+> --
+> 2.41.0.255.g8b1d071c50-goog
+>
+
 -- 
-2.40.0
-
+Jani Nikula, Intel Open Source Graphics Center
