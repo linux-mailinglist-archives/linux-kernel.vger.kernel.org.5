@@ -2,131 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F27FD79BF42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B2779BED4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbjIKUum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
+        id S241059AbjIKWfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236813AbjIKL14 (ORCPT
+        with ESMTP id S236817AbjIKL2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:27:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07B64CDD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694431625;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8XU8RLh7grKPuWPmu4OmjyaOM+2R9QefqTD05IQ9xwE=;
-        b=Jy2t/uVC26skgIrD673uWv+DeO3dZQYI8y9ow3y2GQtKgQ5wbME5LO2++xoYOM3GHT5vxf
-        TsBeUmaEdXKe3sXZ3Eh1Mho+7CVLxNGCjnp8F9vToo/q5YvSI8BH6sMkqAHNGdyCcJjknx
-        DmNYAvrm3K7nGZR71wvr8BAH23rIjJM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-15-kkJZIAxZN3CuNdZAwjSJkg-1; Mon, 11 Sep 2023 07:27:03 -0400
-X-MC-Unique: kkJZIAxZN3CuNdZAwjSJkg-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9ad73eb9668so30494766b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:27:03 -0700 (PDT)
+        Mon, 11 Sep 2023 07:28:50 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8607CCDD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:28:45 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d80121cba8cso2789503276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694431724; x=1695036524; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7aH+LgtXU/bZep1051Dmp3W7xLVGoC7LOjeeK6uQUB0=;
+        b=mfl1vtlAR0BVJni1RAdlYmCjR2EghvE6QIsVDjYjSw+z5uVpYMRm7tdZVjp0h17RB/
+         IuIEZJhVJfoAy/J7xTK0o47g/FS96KdRYCG7JtvqHAVrICneMVmcXg1wZhdbAN0un9J2
+         z9kry21+AIsonOz6J5xx1/hjhBapHIm8j67/BqUv1zU8wLePXtUffNrDkt8cgIE/rqrc
+         /ZcoUSvbUltrJn2ud3c1s13f4c9wuTPVHqQ0NpG2CmqEWVFMndLrbiLASJ8hgbxl9jRf
+         GCQ5nAHr1WmT/BSeG7rHqJnzR1VEhivnvIQKv5W8I72PCzoICtFd7rtYioRrb7zGYGyf
+         AlKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694431623; x=1695036423;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8XU8RLh7grKPuWPmu4OmjyaOM+2R9QefqTD05IQ9xwE=;
-        b=DfGeQRwGYn+oJTnkn39QsUr6N0Ohs5Sp6z7028LmwxtN+cA+eA9HPb8I1yDoLeWhKv
-         aw7KgsfOgZ4IJDRghZd7qB8Zmy/0xFKFflNieG3nJS74nKDVPBoWeauKKBvC4VKH+gvR
-         i2tXgYVXB5ua6sOJjw7C1CLAvzH1WtjK5tIZ9ML0J+XoRq58bJtxOIwWzxgZ8VabPyn/
-         Atrq1KjGJ2NDRq+NelJFYPD6Q8BsRvpEiav7iW1TpHjQ1emRMPEmoiEiYhzOEDjMeYgY
-         hc2a+R3BmB80HQ8vM4oOJHzg2xIGng3O49JKNYdfepUpM25WuwD0d3RQvTDWi6eKJVsk
-         WjZw==
-X-Gm-Message-State: AOJu0Yyp765h+XOEd3JT8gaqZs+3z399RUp48l9A+wvoaBmBXLPZAYGB
-        Xhr4BzgDQoNGRLsIMm26mS4FMqad56y5jJGCK8TFLSZX64T426kCccW6QjDSZQ8Jp7Xf2VRhb5Z
-        kmDaZVXcDjXBV2AU1Dwss7e8l
-X-Received: by 2002:a17:907:9724:b0:9a5:962c:cb6c with SMTP id jg36-20020a170907972400b009a5962ccb6cmr17846765ejc.31.1694431622919;
-        Mon, 11 Sep 2023 04:27:02 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFZ/AHu7nLmYgByLaPLMmYUvX4ccy5bwEbWpR+GUk2r/aBtLdPjo047ti0Vrwz7SNb+Q3eH2A==
-X-Received: by 2002:a17:907:9724:b0:9a5:962c:cb6c with SMTP id jg36-20020a170907972400b009a5962ccb6cmr17846740ejc.31.1694431622681;
-        Mon, 11 Sep 2023 04:27:02 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id q24-20020a170906941800b0098921e1b064sm5185543ejx.181.2023.09.11.04.27.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 04:27:02 -0700 (PDT)
-Message-ID: <aa427e7e-374d-facb-883f-0b9b69ce00c0@redhat.com>
-Date:   Mon, 11 Sep 2023 13:27:01 +0200
+        d=1e100.net; s=20230601; t=1694431724; x=1695036524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7aH+LgtXU/bZep1051Dmp3W7xLVGoC7LOjeeK6uQUB0=;
+        b=xPqnpLs8JBq987Q1Q4fPcE8+zvevIUrvc2sMe3OWXKFuBIeuM77cvMjel7Pd7tSaTe
+         8+cIY0p406Jj07LS5Iud/Ea0HVGT5NXftlmbW3eow8mcrr4i6SiXLK7xz6YM8JaCgpjM
+         SIiJzKIjxBp+UjUam0bmIPt20khoZatTGeWT2iRj8RNjiBfO10hPlUIuYN92Wfmkh4eK
+         0RwYrKY1SqmV0y/mAMt5boXdH9u46o7ae6WFjOX90/243nGqtwwxULRHyVrerm3mhsod
+         MMfIbPo2fUniLzcgOzp7fAmBAX/IUBKFRZxqqDhKV1E9AVJzHfxG6ZMi5nI6vOyNv8Nt
+         0nLQ==
+X-Gm-Message-State: AOJu0YzDdEkkRg0xBPde8g1m5raLXJqMbMUk/kt425mOyqWH+kA0Hoib
+        CIi0oj7BEGwK/h/2aHeITPimyApddFxMGspOp/I4Hw==
+X-Google-Smtp-Source: AGHT+IEswWwSSaXU++NcaMiC0Ujkjj+Vn04CKhSZv7TtPGdjUYWT5Z8lgFE+X0lYJNg7DMjyqZlAFXqETyStZY8C9vo=
+X-Received: by 2002:a25:b16:0:b0:d7f:cdc8:e17c with SMTP id
+ 22-20020a250b16000000b00d7fcdc8e17cmr7889180ybl.51.1694431724711; Mon, 11 Sep
+ 2023 04:28:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform/x86: asus-wmi: Support 2023 ROG X16 tablet mode
-Content-Language: en-US
-To:     "Luke D. Jones" <luke@ljones.dev>
-Cc:     corentin.chary@gmail.com, markgross@kernel.org,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-References: <20230905082813.13470-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230905082813.13470-1-luke@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829213441.310655-1-ulf.hansson@linaro.org>
+ <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
+ <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
+ <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
+ <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
+ <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com>
+ <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com> <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
+In-Reply-To: <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 11 Sep 2023 13:28:08 +0200
+Message-ID: <CAPDyKFpUUJeGD77GTYCk59cvW=SdGTkOEXH4dap1JQWekAa0Eg@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 11 Sept 2023 at 09:52, Geert Uytterhoeven <geert@linux-m68k.org> wr=
+ote:
+>
+> Hi Ulf,
+>
+> On Thu, Aug 31, 2023 at 1:39=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.o=
+rg> wrote:
+> > On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wro=
+te:
+> > > If I may suggest something, I would call this "pmdomain" instead of
+> > > "genpd".  I don't think that /drivers/power/ is a particularly
+> > > suitable location for it, because it doesn't really have much to do
+> > > with power supplies and more to do with device PM.
+> >
+> > "pmdomain" is probably giving a reasonable good hint of what goes on
+> > in this subsystem. This works fine for me, thanks!
+>
+> Sounds nice!
+> All of this lives in <linux/pm_domain.h> (with underscore?) anyway,
+> and "PM Domains" is the usual naming, as it covers both Power and
+> Clock Domains.
+>
+> However, although I am quite familiar with genpd, I am still wondering
+> what is the meaning of the "generic" part in the name? And what is a
+> non-generic PM Domain?
 
-On 9/5/23 10:28, Luke D. Jones wrote:
-> Add quirk for ASUS ROG X16 (GV601V, 2023 versions) Flow 2-in-1
-> to enable tablet mode with lid flip (all screen rotations).
-> 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
+I guess generic here means "works for most cases".
 
-Thank you for your patch, I've applied this patch to my fixes
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
+There are certainly a bunch of other "non-generic", like the ACPI,
+pm_clk, OMAP2, etc.
 
-Note it will show up in my fixes branch once I've pushed my
-local branch there, which might take a while.
+Maybe some of them could be converted to genpd, but that's another story.
 
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
+>
+> > > Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
+> > > (and rename it to something like core.c), because it would be a bette=
+r
+> > > location for that fiile IMO.
+> >
+> > We could certainly do that, let's discuss it a bit more.
+> >
+> > Although, at this point I want to focus on the genpd providers, as to
+> > release some of the burden from arm-soc maintainers.
+> >
+> > > I can also handle future pull requests for this if that's fine with e=
+veryone.
+> >
+> > Thanks a lot for your offer! However, if a re-route is preferred (I
+> > think not?), this is probably better suited via arm-soc, as most
+> > changes are going to be arm platform specific.
+>
+> Which brings me to the final question: what is the upstream path
+> for changes to drivers/genpd/*/ (or whatever it's gonna be called)?
+> Before, we sent PRs to (arm-)soc.  Do you expect us to send them to
+> you? There's usually quite some interaction between drivers/soc/reneas/
+> and drivers/genpd/renesas (and there are DT binding definitions),
+> but not more than with e.g. drivers/clk/renesas/.
 
-Regards,
+I would be happy to pick this up and funnel this via my new genpd
+tree. As long as it's coupled with changes affecting "genpd
+providers", of course.
 
-Hans
+I can certainly also collect patches directly from the
+mailing-list/patch-tracker too. Whatever works for you the best. Of
+course, in that case I need your acks before I pick up the relevant
+patches.
 
+If we need "immutable" branches, let's discuss that on a case by case basis=
+.
 
+>
+> And I just realized you moved the code and Makefiles to drivers/genpd/,
+> but not the Kconfig symbols and logic, which still lives under
+> drivers/soc/.  So resolving that (and the name) is something that
+> should be resolved sooner rather than later...
 
-> ---
->  drivers/platform/x86/asus-nb-wmi.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
-> index fdf7da06af30..d85d895fee89 100644
-> --- a/drivers/platform/x86/asus-nb-wmi.c
-> +++ b/drivers/platform/x86/asus-nb-wmi.c
-> @@ -478,6 +478,15 @@ static const struct dmi_system_id asus_quirks[] = {
->  		},
->  		.driver_data = &quirk_asus_tablet_mode,
->  	},
-> +	{
-> +		.callback = dmi_matched,
-> +		.ident = "ASUS ROG FLOW X16",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "GV601V"),
-> +		},
-> +		.driver_data = &quirk_asus_tablet_mode,
-> +	},
->  	{
->  		.callback = dmi_matched,
->  		.ident = "ASUS VivoBook E410MA",
+In regards to the name, I am relying on input from Linus to make a
+final decision before I send a patch. In regards to this, I have also
+started working on a documentation patch for genpd. It needs some more
+polishing before I can send it though.
 
+When it comes to the Kconfig move, I will send out a series for it, this we=
+ek.
+
+[...]
+
+Kind regards
+Uffe
