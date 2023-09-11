@@ -2,136 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 282A179A4E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DE279A4F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbjIKHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43308 "EHLO
+        id S231842AbjIKHs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbjIKHrh (ORCPT
+        with ESMTP id S232965AbjIKHs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:47:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4602A10EC;
-        Mon, 11 Sep 2023 00:46:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 11 Sep 2023 03:48:26 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A40CE0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:47:52 -0700 (PDT)
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4788D218DF;
-        Mon, 11 Sep 2023 07:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694418320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJNZv4oXxKfQte9TmKBOGgbcbZkRHW4Xw8D72ufYQcU=;
-        b=FXLMifnFPT7Hb2E+ShASn04gLJntaLjHbkNCb5FIgVq+TQHG4ji0js9e+MaxWqd87JMUtf
-        aYYWObtWLVLBQyYCcSY88Q0nU7ydYBIuobf0nFnW053ZEronfsYxdSi8uUodVfUF6LNfnb
-        iyv3X0jfskigaZ0/y2JzFgdHqO763vw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694418320;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MJNZv4oXxKfQte9TmKBOGgbcbZkRHW4Xw8D72ufYQcU=;
-        b=4sbFVSbW7T87o/hysAf1k2UEqWUhYOWt8vEOal8rAj0tiWDlPuyYtl68yTIiyJojt7nuia
-        t0DOtzliX3u6XTAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF5C9139CC;
-        Mon, 11 Sep 2023 07:45:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mrbHNY/F/mTKbAAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 11 Sep 2023 07:45:19 +0000
-Message-ID: <19be4f1f-dc2a-47e7-a7d0-94f3a18778d3@suse.de>
-Date:   Mon, 11 Sep 2023 09:45:19 +0200
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E71B73F314
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694418400;
+        bh=IPxNhe9yzpK5O52TUCbZ/EbR8ChkH7a/aRDhzHHm/WA=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=hXuOxx41YUyxeZ1IgozM8eFQwQxKcERSO722M8NO490ZJ/8vsEOktlNOhtPHdCbCc
+         gbIAfGkrBXewcTV2rzorpX00cOrJ1Nb0FCGFN+wS8A6yMs7Znz/62yYr5qE1Y1eXTj
+         ePZJELjlz7UkCH2ID8eyzIRgbO4kmgKS4yX5A86RPWwRkMLYLt7QzERb1vazb73/yU
+         Vb8gGYx9Hr6zk1kjLS7b/NE3SwMfgXRYk0h+osy1ztJLAQtEVnq2V1Z9M0KVGd2MLU
+         hx+IJ4K7E/Xom6kzd9TkWVrjBEitcDXSoBoRjj7KF7Z+y24YA87jjQnmlfrPh/FW6m
+         B78aJi6s+hIiQ==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so30910975e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:46:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694418400; x=1695023200;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IPxNhe9yzpK5O52TUCbZ/EbR8ChkH7a/aRDhzHHm/WA=;
+        b=QIl6eHiNyKxLHX95dr1NNXzbjLR17pjpirBJqqjjrAta1CvgHS3ziaHocmEtgz1syi
+         7mGJtm9N2WcvnlcDMSyIl7XUUzRnFKqcJScwpund1YIUymTLhX+RNc927j7D8eoqLG11
+         pP7ee88bWbogKjLLaAGxgJk8Fir4yLWutKP1rALnVnp1uB4SQOycEtjdDnC/YkAqThgi
+         jilhsGHfVeLxuyuzTGnmX7KbIwQ53EGKr5LakACaK1CE5rSAc6dzh5EX+UWkA71z54zC
+         BmMwz9j9BK0+pnp0XOH9TnytMy2Ot6zZ0eYtIoIOpI+vGoy4sAcrWwrVXDmurTTNX0UQ
+         LuIg==
+X-Gm-Message-State: AOJu0YxMiTLLcxz1/mSezBYocHQk9CgnUXEdSG2UW6VJHl5aA1AmX1Vk
+        DvLFCiZfOZrMrcavIOQhEiConfq8NnYxunv4JEPuXTbCt9nnW9GFr2lB//RqAcXD1n4ger3vb/p
+        ypEkdpWeARwOkeOZX2sAkRgo8T+gjn0ZIwDWYzCU1kA==
+X-Received: by 2002:a7b:cc8f:0:b0:401:d5bb:9b40 with SMTP id p15-20020a7bcc8f000000b00401d5bb9b40mr7864222wma.15.1694418400608;
+        Mon, 11 Sep 2023 00:46:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFBR25riedYFwjDgILjYdbNzDPPyrpVfLqCp+IsQt6sVUU1sRcksZotaCsCxa4fVAQSzFajBw==
+X-Received: by 2002:a7b:cc8f:0:b0:401:d5bb:9b40 with SMTP id p15-20020a7bcc8f000000b00401d5bb9b40mr7864208wma.15.1694418400176;
+        Mon, 11 Sep 2023 00:46:40 -0700 (PDT)
+Received: from [192.168.123.94] (ip-178-202-040-247.um47.pools.vodafone-ip.de. [178.202.40.247])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c025100b00402c0a8a084sm12409865wmj.17.2023.09.11.00.46.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 00:46:39 -0700 (PDT)
+Message-ID: <27e76823-5464-4fd7-844d-7ed273a8a902@canonical.com>
+Date:   Mon, 11 Sep 2023 09:47:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 09/12] dm: Add support for copy offload
+Subject: Re: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Anisse Astier <anisse@astier.eu>, Jeremy Kerr <jk@ozlabs.org>,
+        Anisse Astier <an.astier@criteo.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+References: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
+ <ZP4QEvhzO5cOt6lT@gpdmax>
+ <1bc137b6-6006-42cd-9f6d-c523fc753d63@canonical.com>
+ <CAMj1kXGChp5TOk5h1EC9R7TBn=QDVo_FU5VhHjp8nSz2GJ6wtA@mail.gmail.com>
 Content-Language: en-US
-To:     Nitesh Shetty <nj.shetty@samsung.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, mcgrof@kernel.org,
-        gost.dev@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
-References: <20230906163844.18754-1-nj.shetty@samsung.com>
- <CGME20230906164407epcas5p3f9e9f33e15d7648fd1381cdfb97d11f2@epcas5p3.samsung.com>
- <20230906163844.18754-10-nj.shetty@samsung.com>
- <cb767dc9-1732-4e31-bcc6-51c187750d66@suse.de>
- <20230911070724.GA28177@green245>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230911070724.GA28177@green245>
+From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+In-Reply-To: <CAMj1kXGChp5TOk5h1EC9R7TBn=QDVo_FU5VhHjp8nSz2GJ6wtA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 09:07, Nitesh Shetty wrote:
-> On Fri, Sep 08, 2023 at 08:13:37AM +0200, Hannes Reinecke wrote:
->> On 9/6/23 18:38, Nitesh Shetty wrote:
->>> Before enabling copy for dm target, check if underlying devices and
->>> dm target support copy. Avoid split happening inside dm target.
->>> Fail early if the request needs split, currently splitting copy
->>> request is not supported.
+On 9/11/23 08:45, Ard Biesheuvel wrote:
+> On Sun, 10 Sept 2023 at 22:42, Heinrich Schuchardt
+> <heinrich.schuchardt@canonical.com> wrote:
+>>
+>> On 9/10/23 20:53, Anisse Astier wrote:
+>>> Hi Heinrich,
 >>>
->> And here is where I would have expected the emulation to take place;
->> didn't you have it in one of the earlier iterations?
+>>> On Sun, Sep 10, 2023 at 06:54:45AM +0200, Heinrich Schuchardt wrote:
+>>>> Some firmware (notably U-Boot) provides GetVariable() and
+>>>> GetNextVariableName() but not QueryVariableInfo().
+>>>
+>>>   From a quick search, it seems u-boot, does support QueryVariableInfo, is
+>>> it on a given version ?
+>>>
+>>> https://elixir.bootlin.com/u-boot/v2023.07.02/source/lib/efi_loader/efi_variable.c#L391
+>>
+>> QueryVariableInfo() and SetVariable() are available before
+>> ExitBootServices(), i.e. in Linux' EFI stub.
+>>
+>> ExitBootServices() results in calling efi_variables_boot_exit_notify()
+>> which disables these services during the UEFI runtime.
+>>
+>>>
+>>>>
+>>>> With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
+>>>> statfs syscall was broken for such firmware.
+>>>
+>>> Could you be more specific ? What breaks, and what regressed ? I imagine
+>>> it could be some scripts running df, but maybe you had something else in
+>>> mind ?
+>>
+>> Some more details can be found in
+>> https://bugs.launchpad.net/ubuntu/+source/linux-meta-riscv/+bug/2034705.
+>>
+>> Though EFI variables are exposed via GetVariable() and
+>> GetNextVariableName() the efivar command refuses to display variables
+>> when statfs() reports an error.
+>>
+>>>
+>>>>
+>>>> If QueryVariableInfo() does not exist or returns an error, just report the
+>>>> file-system size as 0 as statfs_simple() previously did.
+>>>
+>>> I considered doing this [2] , but we settled on returning an error
+>>> instead for clarity:
+>>> https://lore.kernel.org/linux-efi/20230515-vorgaben-portrait-bb1b4255d31a@brauner/
+>>>
+>>> I still think it would be a good idea if necessary.
+>>
+>> We should never break user APIs.
+>>
 > 
-> No, but it was the other way round.
-> In dm-kcopyd we used device offload, if that was possible, before using default
-> dm-mapper copy. It was dropped in the current series,
-> to streamline the patches and make the series easier to review.
+> Indeed.
 > 
->> After all, device-mapper already has the infrastructure for copying
->> data between devices, so adding a copy-offload emulation for device-mapper
->> should be trivial.
-> I did not understand this, can you please elaborate ?
+>>>
+>>> On the approach, I prefer what Ard proposed, to fall back to the old
+>>> approach. I think the difference in block size could also be a good
+>>> marker that something wrong is happening:
+>>> https://lore.kernel.org/linux-efi/CAMj1kXEkNSoqG4zWfCZ8Ytte5b2SzwXggZp21Xt17Pszd-q0dg@mail.gmail.com/
+>>
+>> This will allow user code making assumptions based on block size:
+>> If block size > 1, assume setting variables is possible.
+>>
+>> We should really avoid this.
+>>
 > 
-Please see my comments to patch 04.
-We should only implement copy-offload if there is a dedicated 
-infrastructure in place. But we should not have a 'generic' copy-offload 
-emulation.
-Problem is that 'real' copy-offload functionalities (ie for NVMe or 
-SCSI) are riddled with corner-cases where copy-offload does _not_ work,
-and where commands might fail if particular conditions are not met.
-Falling back to a generic implementation will cause applications to 
-assume that copy-offload worked, and that it gained performance as
-the application just had to issue a single command.
-Whereas in fact the opposite is true; it wasn't a single command, and 
-the application might have performed better by issuing the commands
-itself.
-Returning -EOPNOTSUPP in these cases will inform the application that 
-the attempt didn't work, and that it will have to fall back to the
-'normal' copy.
+> I agree that having different block sizes depending on which code path
+> is taken is not great. But that is the situation we are already in,
+> given that older kernels will always report PAGE_SIZE. And actually,
+> PAGE_SIZE does not make sense either - PAGE_SIZE could be larger than
+> 4k on ARM for instance, so the efivarfs block size will be dependent
+> on the page size of the kernel you happened to boot.
+> 
+> So I think we should go with the below:
+> 
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -32,10 +32,16 @@ static int efivarfs_statfs(struct dentry *dentry,
+> struct kstatfs *buf)
+>          u64 storage_space, remaining_space, max_variable_size;
+>          efi_status_t status;
+> 
+> -       status = efivar_query_variable_info(attr, &storage_space,
+> &remaining_space,
+> -                                           &max_variable_size);
+> -       if (status != EFI_SUCCESS)
+> -               return efi_status_to_err(status);
+> +       /* Some UEFI firmware does not implement QueryVariableInfo() */
+> +       storage_space = remaining_space = 0;
+> +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
+> +               status = efivar_query_variable_info(attr, &storage_space,
+> +                                                   &remaining_space,
+> +                                                   &max_variable_size);
+> +               if (status != EFI_SUCCESS && status != EFI_UNSUPPORTED)
+> +                       pr_warn_ratelimited("query_variable_info()
+> failed: 0x%lx\n",
+> +                                           status);
 
-Cheers,
+Adding a warning here is helpful. The else branch would be:
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
++		} else {
++			buf->f_blocks	= storage_space;
++			buf->f_bfree	= remaining_space;
++		}
+
+Best regards
+
+Heinrich
+
+> +       }
+> 
+>          /*
+>           * This is not a normal filesystem, so no point in pretending
+> it has a block
 
