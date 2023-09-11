@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1461779BDFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D73E79B91A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357206AbjIKWFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        id S1378726AbjIKWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235339AbjIKI1L (ORCPT
+        with ESMTP id S235345AbjIKI1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:27:11 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A65B110;
-        Mon, 11 Sep 2023 01:27:06 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38B8Qs2C080008;
-        Mon, 11 Sep 2023 03:26:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694420814;
-        bh=nou6XV5HrZutUro+1SS2+mIlpVh2z5I+ijBXzWViANc=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=dNifVKpUiCdzMKhvUZGkw/F2KMBpcyA8jOOBuANQ8jYaBhk6xfA72fFudDdtdpJRo
-         vPtx24qiYDbPOpS3RwlMrOBxIJjpORaRzy3kCF3cpd88G6pq8JKHRfDHKGnvqJDV8U
-         JPIVMKbr/eoYfZK4PEDr4ZK1EgZvqIeFbYLtit8Y=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38B8Qsic062818
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 03:26:54 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 03:26:54 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 03:26:54 -0500
-Received: from [10.249.141.75] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38B8Qoun005857;
-        Mon, 11 Sep 2023 03:26:50 -0500
-Message-ID: <a5c650c9-3bb5-44d7-8191-8e122f1077df@ti.com>
-Date:   Mon, 11 Sep 2023 13:56:49 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 0/7] arm64: ti: k3-j7: Add the ESM & main domain
- watchdog nodes
-To:     Keerthy <j-keerthy@ti.com>, <robh+dt@kernel.org>, <nm@ti.com>,
-        <vigneshr@ti.com>, <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <u-kumar1@ti.com>
-References: <20230911040942.31031-1-j-keerthy@ti.com>
-Content-Language: en-US
-From:   "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <20230911040942.31031-1-j-keerthy@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Mon, 11 Sep 2023 04:27:36 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246E4FB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:27:31 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso26484305ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694420850; x=1695025650; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ex0ifdiIlLUyDJYX4AiACl56tngQcIliDLvNik7wRDk=;
+        b=FPAubZ5eAW5wdlDAkRhDcSoo+RXKetG0dDgg3LLpFTdXvRnwPgTaV6ZIHtLedA2Qy7
+         aEzaapv8VTp0UgWeCQAdkReAD5NFeXvIZBazi61pq5sAUEGby7rO2RrZL0UNMUFu/goR
+         avvzFiCtPukJ31enEGllewMdhRibA918++a81gUqwGk5ViioEnhiUlT8K5UCHc9SvKVR
+         EwTx4hm83r0ShK2ujtu9ZZ4wadGYYYPjZyPaZQM4t3c4Jb4AkGvoqAlzqI+co/3jwEMi
+         toqqlOt5f2H2zo0VdkV3lzBd3/kWCFa0cHa1z7dtMg2r2wvw1XcojFvx0mEkI+CWR0NF
+         zFAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694420850; x=1695025650;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ex0ifdiIlLUyDJYX4AiACl56tngQcIliDLvNik7wRDk=;
+        b=UD0d4C1g9O3Ujnho0ReX0Fbr74rTnaLw+gxJN1+4dKo7oEhTG9/FSwQNSpsjhgiXRv
+         HMXANQ25luJxPJGYF9KQ458SkR6ihNT12k58ZhlrTGY6lEgcHwKFo7+DRwCn4OV1hZBd
+         rX9wV54ZJM/YKSB5MhuBP4ONYLxkVkgNCodbEmmpCvcCM7GMQ+tBJlHMN9NFqCpug4Il
+         cJHcoAMlKofUoQ1OO//HnTuEhxc/jOq0AOWHR1wVvp/3FvyvfKmwb6pIWdLURTaQ3zxJ
+         A7LeoRrTR0ybeWR+/ZV7nMDsOHUpcQoqh/GbBGo8my17QwLqGDKgJlVxOeBik4yb14Fj
+         RXHQ==
+X-Gm-Message-State: AOJu0YzPhpYtKUUgnc243XF/j//XaPB3GM9PO6ynSNrBum5qFJjGbZXQ
+        VjiLwS7g2K1x78l4lU0wT6g=
+X-Google-Smtp-Source: AGHT+IERuUMCD7CesULLvcI9MmGqQ5ToI2zNW+u3g1Ukr05GViXTn91EtVpdS2CxSojPAxdXI5iVGw==
+X-Received: by 2002:a17:903:54d:b0:1b8:28f6:20e6 with SMTP id jo13-20020a170903054d00b001b828f620e6mr6045668plb.34.1694420850513;
+        Mon, 11 Sep 2023 01:27:30 -0700 (PDT)
+Received: from MSCND1355B05.fareast.nevint.com ([183.242.39.186])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c25500b001c1ef9d2215sm5786842plg.270.2023.09.11.01.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 01:27:30 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     tj@kernel.org, jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] workqueue: Fix missed pwq_release_worker creation in wq_cpu_intensive_thresh_init()
+Date:   Mon, 11 Sep 2023 16:27:22 +0800
+Message-Id: <20230911082722.453-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,63 +65,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keerthy
+Currently, if the wq_cpu_intensive_thresh_us is set to specific
+value, will cause the wq_cpu_intensive_thresh_init() early exit
+and missed creation of pwq_release_worker. this commit therefore
+create the pwq_release_worker in advance before checking the
+wq_cpu_intensive_thresh_us.
 
-On 9/11/2023 9:39 AM, Keerthy wrote:
-> The series add the ESM & main domain watchdog nodes for j721s2,
-> j784s4 SOCs.
->
-> Changes in v3:
->
-> 	* Added all the RTI events for MAIN_ESM for j784s4 as 8 instances
-> 	  are enabled.
-> 	* Rebased on top of 6.6-rc1
-> 	* Tested for the watchdog reset
->
-> RESEND series - corrected krzysztof.kozlowski+dt@linaro.org ID
->
-> Changes in v2:
->
->          * Added all the instances of watchdog on j784s4/j721s2
->          * Fixed all 0x0 in dts to 0x00
->          * Fixed couple of ESM event numbers for j721s2
->          * Rebased to linux-next branch
->
-> Keerthy (7):
->    arm64: dts: ti: k3-j721s2: Add ESM instances
->    arm64: dts: ti: k3-j784s4: Add ESM instances
->    arm64: dts: ti: k3-j7200: Add MCU domain ESM instance
->    arm64: dts: ti: k3-j784s4-main: Add the main domain watchdog instances
->    arm64: dts: ti: k3-j784s4-mcu: Add the main domain watchdog instances
->    arm64: dts: ti: k3-j721s2-main: Add the main domain watchdog instances
->    arm64: dts: ti: k3-j721s2-mcu: Add the main domain watchdog instances
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/workqueue.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks for series,
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c85825e17df8..fd3988583c8b 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -6605,13 +6605,13 @@ static void __init wq_cpu_intensive_thresh_init(void)
+ 	unsigned long thresh;
+ 	unsigned long bogo;
+ 
++	pwq_release_worker = kthread_create_worker(0, "pool_workqueue_release");
++	BUG_ON(IS_ERR(pwq_release_worker));
++
+ 	/* if the user set it to a specific value, keep it */
+ 	if (wq_cpu_intensive_thresh_us != ULONG_MAX)
+ 		return;
+ 
+-	pwq_release_worker = kthread_create_worker(0, "pool_workqueue_release");
+-	BUG_ON(IS_ERR(pwq_release_worker));
+-
+ 	/*
+ 	 * The default of 10ms is derived from the fact that most modern (as of
+ 	 * 2023) processors can do a lot in 10ms and that it's just below what
+-- 
+2.17.1
 
-Two minor suggestions.
-
-1) Order of patches , since J721S2 esm is added first , it will be 
-better to have  watchdog for J721S2 first
-
-2) I understand, to add watchdog entries, for J784S4 and J721S2, you 
-followed ascending device id order
-
-due to that there is mix of entries like watchdog16 coming before 
-watchdog15.
-
-
-Let maintainers to take call on these minor one.
-
-
-For me, with or without above suggestions fix.
-
-Reviewed-by: Udit Kumar <u-kumar1@ti.com>
-
-
->   .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      |   6 +
->   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    |  94 +++++++++
->   .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  32 +++
->   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi    | 189 ++++++++++++++++++
->   .../boot/dts/ti/k3-j784s4-mcu-wakeup.dtsi     |  32 +++
->   5 files changed, 353 insertions(+)
->
