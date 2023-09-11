@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3994179B14D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D8679B17B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357239AbjIKWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
+        id S239103AbjIKVRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236301AbjIKKMH (ORCPT
+        with ESMTP id S236306AbjIKKNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:12:07 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83CAE68;
-        Mon, 11 Sep 2023 03:12:01 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BA8h6f001974;
-        Mon, 11 Sep 2023 10:11:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=z6iXJSAk8VmaOLsZImHUbYEz4LKyvswZEgeBjuY2lOI=;
- b=NC2nu3qsNFYty64bCThdR6LQScP43BZL598N+3iPJb/6j/GDOJVPgve66hxp6FZp0qFZ
- Y/0VmL7/NDFu98a1u6mno1y7MBVL9039BlrfFEJcsvYEPH9IVz+DbQZLdfub9nWDZUGK
- HSdiDgks9WqMvjx/gmMf7JgedO4LQHpZG/4ckAbo85TQ9KOpBC5H8ypalphreyseAw63
- Jr89u7b+cu6a3m6rb5fXEhWp+tQES+G2EgL/8SeggbgSiMloj/dmdvJAWdkSuI7CdlWg
- 6RgqxDy3j3monInrq+4wIFmUyf6kIlmf7tbr3lCviTnniK1R4ZNwdtp8eNzBydYC7Yju 7A== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t1y9sjh1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:11:53 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38B9A7V1024061;
-        Mon, 11 Sep 2023 10:11:53 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131st1dj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:11:53 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BABp8P27460180
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Sep 2023 10:11:51 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C0702004F;
-        Mon, 11 Sep 2023 10:11:51 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24DB02004E;
-        Mon, 11 Sep 2023 10:11:51 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Sep 2023 10:11:51 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
+        Mon, 11 Sep 2023 06:13:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7989E5F;
+        Mon, 11 Sep 2023 03:13:16 -0700 (PDT)
+Received: from loongson.cn (unknown [10.40.46.158])
+        by gateway (Coremail) with SMTP id _____8DxPOs76P5k24skAA--.576S3;
+        Mon, 11 Sep 2023 18:13:15 +0800 (CST)
+Received: from [192.168.124.126] (unknown [10.40.46.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxjiM56P5keyh3AA--.47114S3;
+        Mon, 11 Sep 2023 18:13:14 +0800 (CST)
+Subject: Re: [PATCH v20 09/30] LoongArch: KVM: Implement vcpu get, vcpu set
+ registers
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] usb: pci-quirks: handle HAS_IOPORT dependency for AMD quirk
-Date:   Mon, 11 Sep 2023 12:11:48 +0200
-Message-Id: <20230911101149.4113303-3-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230911101149.4113303-1-schnelle@linux.ibm.com>
-References: <20230911101149.4113303-1-schnelle@linux.ibm.com>
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-10-zhaotianrui@loongson.cn>
+ <CAAhV-H6=e-Tg1tCdFhN5i2CSQpL-NDLovJdc9A=Sxt=3h-3Z0g@mail.gmail.com>
+ <5bb1f2fa-c41d-9f0b-7eab-173af09df5a0@loongson.cn>
+Message-ID: <839321b9-fe5b-9548-84d7-1d0867a65ffd@loongson.cn>
+Date:   Mon, 11 Sep 2023 18:13:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <5bb1f2fa-c41d-9f0b-7eab-173af09df5a0@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UJ3-Be1LSfI3xyUIypOSLEPEVDuW964Q
-X-Proofpoint-ORIG-GUID: UJ3-Be1LSfI3xyUIypOSLEPEVDuW964Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- adultscore=0 mlxlogscore=716 lowpriorityscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110092
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8AxjiM56P5keyh3AA--.47114S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9fXoW3ZFW3KFyDXFWUGryrGw4DAwc_yoW8Gry5Ao
+        WUKr1fJr15Xr1jgr1UJw4UJry3JF1UJr1DtryUGry7Jr1jyw1UA3yUJrWUt3yUJr18Gr1U
+        Jr1UJry0yFyjvr15l-sFpf9Il3svdjkaLaAFLSUrUUUUeb8apTn2vfkv8UJUUUU8wcxFpf
+        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+        UjIYCTnIWjp_UUUO87kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+        Y2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
+        6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVW8ZVWrXwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jz5lbUUU
+        UU=
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,167 +76,353 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
-not being declared. In the pci-quirks case the I/O port acceses are
-used in the quirks for several AMD south bridges, Add a config option
-for the AMD quirks to depend on HAS_IOPORT and #ifdef the quirk code.
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- drivers/usb/Kconfig           | 10 ++++++++++
- drivers/usb/core/hcd-pci.c    |  3 +--
- drivers/usb/host/pci-quirks.c |  2 ++
- drivers/usb/host/pci-quirks.h | 34 ++++++++++++++++++++++++----------
- include/linux/usb/hcd.h       | 17 +++++++++++++++++
- 5 files changed, 54 insertions(+), 12 deletions(-)
+在 2023/9/11 下午6:03, zhaotianrui 写道:
+>
+> 在 2023/9/11 下午5:03, Huacai Chen 写道:
+>> Hi, Tianrui,
+>>
+>> On Thu, Aug 31, 2023 at 4:30 PM Tianrui Zhao 
+>> <zhaotianrui@loongson.cn> wrote:
+>>> Implement LoongArch vcpu get registers and set registers operations, it
+>>> is called when user space use the ioctl interface to get or set regs.
+>>>
+>>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>>> ---
+>>>   arch/loongarch/kvm/csr_ops.S |  67 ++++++++++++
+>>>   arch/loongarch/kvm/vcpu.c    | 206 
+>>> +++++++++++++++++++++++++++++++++++
+>>>   2 files changed, 273 insertions(+)
+>>>   create mode 100644 arch/loongarch/kvm/csr_ops.S
+>>>
+>>> diff --git a/arch/loongarch/kvm/csr_ops.S 
+>>> b/arch/loongarch/kvm/csr_ops.S
+>>> new file mode 100644
+>>> index 0000000000..53e44b23a5
+>>> --- /dev/null
+>>> +++ b/arch/loongarch/kvm/csr_ops.S
+>>> @@ -0,0 +1,67 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+>>> + */
+>>> +
+>>> +#include <asm/regdef.h>
+>>> +#include <linux/linkage.h>
+>>> +       .text
+>>> +       .cfi_sections   .debug_frame
+>>> +/*
+>>> + * we have splited hw gcsr into three parts, so we can
+>>> + * calculate the code offset by gcsrid and jump here to
+>>> + * run the gcsrwr instruction.
+>>> + */
+>>> +SYM_FUNC_START(set_hw_gcsr)
+>>> +       addi.d      t0,   a0,   0
+>>> +       addi.w      t1,   zero, 96
+>>> +       bltu        t1,   t0,   1f
+>>> +       la.pcrel    t0,   10f
+>>> +       alsl.d      t0,   a0,   t0, 3
+>>> +       jr          t0
+>>> +1:
+>>> +       addi.w      t1,   a0,   -128
+>>> +       addi.w      t2,   zero, 15
+>>> +       bltu        t2,   t1,   2f
+>>> +       la.pcrel    t0,   11f
+>>> +       alsl.d      t0,   t1,   t0, 3
+>>> +       jr          t0
+>>> +2:
+>>> +       addi.w      t1,   a0,   -384
+>>> +       addi.w      t2,   zero, 3
+>>> +       bltu        t2,   t1,   3f
+>>> +       la.pcrel    t0,   12f
+>>> +       alsl.d      t0,   t1,   t0, 3
+>>> +       jr          t0
+>>> +3:
+>>> +       addi.w      a0,   zero, -1
+>>> +       jr          ra
+>>> +
+>>> +/* range from 0x0(KVM_CSR_CRMD) to 0x60(KVM_CSR_LLBCTL) */
+>>> +10:
+>>> +       csrnum = 0
+>>> +       .rept 0x61
+>>> +       gcsrwr a1, csrnum
+>>> +       jr ra
+>>> +       csrnum = csrnum + 1
+>>> +       .endr
+>>> +
+>>> +/* range from 0x80(KVM_CSR_IMPCTL1) to 0x8f(KVM_CSR_TLBRPRMD) */
+>>> +11:
+>>> +       csrnum = 0x80
+>>> +       .rept 0x10
+>>> +       gcsrwr a1, csrnum
+>>> +       jr ra
+>>> +       csrnum = csrnum + 1
+>>> +       .endr
+>>> +
+>>> +/* range from 0x180(KVM_CSR_DMWIN0) to 0x183(KVM_CSR_DMWIN3) */
+>>> +12:
+>>> +       csrnum = 0x180
+>>> +       .rept 0x4
+>>> +       gcsrwr a1, csrnum
+>>> +       jr ra
+>>> +       csrnum = csrnum + 1
+>>> +       .endr
+>>> +
+>>> +SYM_FUNC_END(set_hw_gcsr)
+>>> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+>>> index ca4e8d074e..f17422a942 100644
+>>> --- a/arch/loongarch/kvm/vcpu.c
+>>> +++ b/arch/loongarch/kvm/vcpu.c
+>>> @@ -13,6 +13,212 @@
+>>>   #define CREATE_TRACE_POINTS
+>>>   #include "trace.h"
+>>>
+>>> +int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *v)
+>>> +{
+>>> +       unsigned long val;
+>>> +       struct loongarch_csrs *csr = vcpu->arch.csr;
+>>> +
+>>> +       if (get_gcsr_flag(id) & INVALID_GCSR)
+>>> +               return -EINVAL;
+>>> +
+>>> +       if (id == LOONGARCH_CSR_ESTAT) {
+>>> +               /* interrupt status IP0 -- IP7 from GINTC */
+>>> +               val = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_GINTC) & 
+>>> 0xff;
+>>> +               *v = kvm_read_sw_gcsr(csr, id) | (val << 2);
+>>> +               return 0;
+>>> +       }
+>>> +
+>>> +       /*
+>>> +        * get software csr state if csrid is valid, since software
+>>> +        * csr state is consistent with hardware
+>>> +        */
+>> After a long time thinking, I found this is wrong. Of course
+>> _kvm_setcsr() saves a software copy of the hardware registers, but the
+>> hardware status will change. For example, during a VM running, it may
+>> change the EUEN register if it uses fpu.
+>>
+>> So, we should do things like what we do in our internal repo,
+>> _kvm_getcsr() should get values from hardware for HW_GCSR registers.
+>> And we also need a get_hw_gcsr assembly function.
+>>
+>>
+>> Huacai
+> This is a asynchronous vcpu ioctl action, that is to say  this action 
+> take place int the vcpu thread after vcpu get out of guest mode, and 
+> the guest registers have been saved in software, so we could return 
+> software register value when get guest csr.
+>
+> Thanks
+> Tianrui Zhao
+This sentence should be This is a **synchronous** vcpu ioctl action, ... ...
+Sorry this is my spelling mistake.
 
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 7f33bcc315f2..abf8c6cdea9e 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -91,6 +91,16 @@ config USB_PCI
- 	  If you have such a device you may say N here and PCI related code
- 	  will not be built in the USB driver.
- 
-+config USB_PCI_AMD
-+	bool "AMD PCI USB host support"
-+	depends on USB_PCI && HAS_IOPORT
-+	default X86 || MACH_LOONGSON64 || PPC_PASEMI
-+	help
-+	  Enable workarounds for USB implementation quirks in SB600/SB700/SB800
-+	  and later south bridge implementations. These are common on x86 PCs
-+	  with AMD CPUs but rarely used elsewhere, with the exception of a few
-+	  powerpc and mips desktop machines.
-+
- if USB
- 
- source "drivers/usb/core/Kconfig"
-diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-index 990280688b25..ee3156f49533 100644
---- a/drivers/usb/core/hcd-pci.c
-+++ b/drivers/usb/core/hcd-pci.c
-@@ -206,8 +206,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct hc_driver *driver)
- 		goto free_irq_vectors;
- 	}
- 
--	hcd->amd_resume_bug = (usb_hcd_amd_remote_wakeup_quirk(dev) &&
--			driver->flags & (HCD_USB11 | HCD_USB3)) ? 1 : 0;
-+	hcd->amd_resume_bug = usb_hcd_amd_resume_bug(dev, driver);
- 
- 	if (driver->flags & HCD_MEMORY) {
- 		/* EHCI, OHCI */
-diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 5e06fad82a22..10813096d00c 100644
---- a/drivers/usb/host/pci-quirks.c
-+++ b/drivers/usb/host/pci-quirks.c
-@@ -76,6 +76,7 @@
- #define USB_INTEL_USB3_PSSEN   0xD8
- #define USB_INTEL_USB3PRM      0xDC
- 
-+#ifdef CONFIG_USB_PCI_AMD
- /* AMD quirk use */
- #define	AB_REG_BAR_LOW		0xe0
- #define	AB_REG_BAR_HIGH		0xe1
-@@ -587,6 +588,7 @@ bool usb_amd_pt_check_port(struct device *device, int port)
- 	return !(value & BIT(port_shift));
- }
- EXPORT_SYMBOL_GPL(usb_amd_pt_check_port);
-+#endif /* CONFIG_USB_PCI_AMD */
- 
- static int usb_asmedia_wait_write(struct pci_dev *pdev)
- {
-diff --git a/drivers/usb/host/pci-quirks.h b/drivers/usb/host/pci-quirks.h
-index cde2263a9d2e..a5230b0b9e91 100644
---- a/drivers/usb/host/pci-quirks.h
-+++ b/drivers/usb/host/pci-quirks.h
-@@ -2,7 +2,7 @@
- #ifndef __LINUX_USB_PCI_QUIRKS_H
- #define __LINUX_USB_PCI_QUIRKS_H
- 
--#ifdef CONFIG_USB_PCI
-+#ifdef CONFIG_USB_PCI_AMD
- int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev);
- bool usb_amd_hang_symptom_quirk(void);
- bool usb_amd_prefetch_quirk(void);
-@@ -12,7 +12,30 @@ void usb_amd_quirk_pll_disable(void);
- void usb_amd_quirk_pll_enable(void);
- void sb800_prefetch(struct device *dev, int on);
- bool usb_amd_pt_check_port(struct device *device, int port);
-+#else
-+static inline bool usb_amd_hang_symptom_quirk(void)
-+{
-+	return false;
-+};
-+static inline bool usb_amd_prefetch_quirk(void)
-+{
-+	return false;
-+}
-+static inline void usb_amd_quirk_pll_disable(void) {}
-+static inline void usb_amd_quirk_pll_enable(void) {}
-+static inline void usb_amd_dev_put(void) {}
-+static inline bool usb_amd_quirk_pll_check(void)
-+{
-+	return false;
-+}
-+static inline void sb800_prefetch(struct device *dev, int on) {}
-+static inline bool usb_amd_pt_check_port(struct device *device, int port)
-+{
-+	return false;
-+}
-+#endif /* CONFIG_USB_PCI_AMD */
- 
-+#ifdef CONFIG_USB_PCI
- void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
- int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
- void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
-@@ -20,15 +43,6 @@ void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
- void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
- #else
- struct pci_dev;
--static inline void usb_amd_quirk_pll_disable(void) {}
--static inline void usb_amd_quirk_pll_enable(void) {}
--static inline void usb_amd_dev_put(void) {}
--static inline void sb800_prefetch(struct device *dev, int on) {}
--static inline bool usb_amd_pt_check_port(struct device *device, int port)
--{
--	return false;
--}
--
- static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
- static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
- #endif  /* CONFIG_USB_PCI */
-diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-index 61d4f0b793dc..00724b4f6e12 100644
---- a/include/linux/usb/hcd.h
-+++ b/include/linux/usb/hcd.h
-@@ -484,8 +484,25 @@ extern int usb_hcd_pci_probe(struct pci_dev *dev,
- extern void usb_hcd_pci_remove(struct pci_dev *dev);
- extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
- 
-+#ifdef CONFIG_USB_PCI_AMD
- extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
- 
-+static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
-+					  const struct hc_driver *driver)
-+{
-+	if (!usb_hcd_amd_remote_wakeup_quirk(dev))
-+		return false;
-+	if (driver->flags & (HCD_USB11 | HCD_USB3))
-+		return true;
-+	return false;
-+}
-+#else /* CONFIG_USB_PCI_AMD */
-+static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
-+					  const struct hc_driver *driver)
-+{
-+	return false;
-+}
-+#endif
- extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
- #endif /* CONFIG_USB_PCI */
- 
--- 
-2.39.2
+Thanks
+Tianrui Zhao
+>>
+>>> +       *v = kvm_read_sw_gcsr(csr, id);
+>>> +
+>>> +       return 0;
+>>> +}
+>>> +
+>>> +int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
+>>> +{
+>>> +       struct loongarch_csrs *csr = vcpu->arch.csr;
+>>> +       int ret = 0, gintc;
+>>> +
+>>> +       if (get_gcsr_flag(id) & INVALID_GCSR)
+>>> +               return -EINVAL;
+>>> +
+>>> +       if (id == LOONGARCH_CSR_ESTAT) {
+>>> +               /* estat IP0~IP7 inject through guestexcept */
+>>> +               gintc = (val >> 2) & 0xff;
+>>> +               write_csr_gintc(gintc);
+>>> +               kvm_set_sw_gcsr(csr, LOONGARCH_CSR_GINTC, gintc);
+>>> +
+>>> +               gintc = val & ~(0xffUL << 2);
+>>> +               write_gcsr_estat(gintc);
+>>> +               kvm_set_sw_gcsr(csr, LOONGARCH_CSR_ESTAT, gintc);
+>>> +
+>>> +               return ret;
+>>> +       }
+>>> +
+>>> +       if (get_gcsr_flag(id) & HW_GCSR) {
+>>> +               set_hw_gcsr(id, val);
+>>> +               /* write sw gcsr to keep consistent with hardware */
+>>> +               kvm_write_sw_gcsr(csr, id, val);
+>>> +       } else
+>>> +               kvm_write_sw_gcsr(csr, id, val);
+>>> +
+>>> +       return ret;
+>>> +}
+>>> +
+>>> +static int _kvm_get_one_reg(struct kvm_vcpu *vcpu,
+>>> +               const struct kvm_one_reg *reg, s64 *v)
+>>> +{
+>>> +       int reg_idx, ret = 0;
+>>> +
+>>> +       if ((reg->id & KVM_REG_LOONGARCH_MASK) == 
+>>> KVM_REG_LOONGARCH_CSR) {
+>>> +               reg_idx = KVM_GET_IOC_CSRIDX(reg->id);
+>>> +               ret = _kvm_getcsr(vcpu, reg_idx, v);
+>>> +       } else if (reg->id == KVM_REG_LOONGARCH_COUNTER)
+>>> +               *v = drdtime() + vcpu->kvm->arch.time_offset;
+>>> +       else
+>>> +               ret = -EINVAL;
+>>> +
+>>> +       return ret;
+>>> +}
+>>> +
+>>> +static int _kvm_get_reg(struct kvm_vcpu *vcpu, const struct 
+>>> kvm_one_reg *reg)
+>>> +{
+>>> +       int ret = -EINVAL;
+>>> +       s64 v;
+>>> +
+>>> +       if ((reg->id & KVM_REG_SIZE_MASK) != KVM_REG_SIZE_U64)
+>>> +               return ret;
+>>> +
+>>> +       if (_kvm_get_one_reg(vcpu, reg, &v))
+>>> +               return ret;
+>>> +
+>>> +       return put_user(v, (u64 __user *)(long)reg->addr);
+>>> +}
+>>> +
+>>> +static int _kvm_set_one_reg(struct kvm_vcpu *vcpu,
+>>> +                       const struct kvm_one_reg *reg,
+>>> +                       s64 v)
+>>> +{
+>>> +       int ret = 0;
+>>> +       unsigned long flags;
+>>> +       u64 val;
+>>> +       int reg_idx;
+>>> +
+>>> +       val = v;
+>>> +       if ((reg->id & KVM_REG_LOONGARCH_MASK) == 
+>>> KVM_REG_LOONGARCH_CSR) {
+>>> +               reg_idx = KVM_GET_IOC_CSRIDX(reg->id);
+>>> +               ret = _kvm_setcsr(vcpu, reg_idx, val);
+>>> +       } else if (reg->id == KVM_REG_LOONGARCH_COUNTER) {
+>>> +               local_irq_save(flags);
+>>> +               /*
+>>> +                * gftoffset is relative with board, not vcpu
+>>> +                * only set for the first time for smp system
+>>> +                */
+>>> +               if (vcpu->vcpu_id == 0)
+>>> +                       vcpu->kvm->arch.time_offset = (signed 
+>>> long)(v - drdtime());
+>>> + write_csr_gcntc((ulong)vcpu->kvm->arch.time_offset);
+>>> +               local_irq_restore(flags);
+>>> +       } else if (reg->id == KVM_REG_LOONGARCH_VCPU_RESET) {
+>>> +               kvm_reset_timer(vcpu);
+>>> +               memset(&vcpu->arch.irq_pending, 0, 
+>>> sizeof(vcpu->arch.irq_pending));
+>>> +               memset(&vcpu->arch.irq_clear, 0, 
+>>> sizeof(vcpu->arch.irq_clear));
+>>> +       } else
+>>> +               ret = -EINVAL;
+>>> +
+>>> +       return ret;
+>>> +}
+>>> +
+>>> +static int _kvm_set_reg(struct kvm_vcpu *vcpu, const struct 
+>>> kvm_one_reg *reg)
+>>> +{
+>>> +       s64 v;
+>>> +       int ret = -EINVAL;
+>>> +
+>>> +       if ((reg->id & KVM_REG_SIZE_MASK) != KVM_REG_SIZE_U64)
+>>> +               return ret;
+>>> +
+>>> +       if (get_user(v, (u64 __user *)(long)reg->addr))
+>>> +               return ret;
+>>> +
+>>> +       return _kvm_set_one_reg(vcpu, reg, v);
+>>> +}
+>>> +
+>>> +int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
+>>> +                                 struct kvm_sregs *sregs)
+>>> +{
+>>> +       return -ENOIOCTLCMD;
+>>> +}
+>>> +
+>>> +int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
+>>> +                                 struct kvm_sregs *sregs)
+>>> +{
+>>> +       return -ENOIOCTLCMD;
+>>> +}
+>>> +
+>>> +int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct 
+>>> kvm_regs *regs)
+>>> +{
+>>> +       int i;
+>>> +
+>>> +       vcpu_load(vcpu);
+>>> +
+>>> +       for (i = 0; i < ARRAY_SIZE(vcpu->arch.gprs); i++)
+>>> +               regs->gpr[i] = vcpu->arch.gprs[i];
+>>> +
+>>> +       regs->pc = vcpu->arch.pc;
+>>> +
+>>> +       vcpu_put(vcpu);
+>>> +       return 0;
+>>> +}
+>>> +
+>>> +int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct 
+>>> kvm_regs *regs)
+>>> +{
+>>> +       int i;
+>>> +
+>>> +       vcpu_load(vcpu);
+>>> +
+>>> +       for (i = 1; i < ARRAY_SIZE(vcpu->arch.gprs); i++)
+>>> +               vcpu->arch.gprs[i] = regs->gpr[i];
+>>> +       vcpu->arch.gprs[0] = 0; /* zero is special, and cannot be 
+>>> set. */
+>>> +       vcpu->arch.pc = regs->pc;
+>>> +
+>>> +       vcpu_put(vcpu);
+>>> +       return 0;
+>>> +}
+>>> +
+>>> +long kvm_arch_vcpu_ioctl(struct file *filp,
+>>> +                        unsigned int ioctl, unsigned long arg)
+>>> +{
+>>> +       struct kvm_vcpu *vcpu = filp->private_data;
+>>> +       void __user *argp = (void __user *)arg;
+>>> +       long r;
+>>> +
+>>> +       vcpu_load(vcpu);
+>>> +
+>>> +       switch (ioctl) {
+>>> +       case KVM_SET_ONE_REG:
+>>> +       case KVM_GET_ONE_REG: {
+>>> +               struct kvm_one_reg reg;
+>>> +
+>>> +               r = -EFAULT;
+>>> +               if (copy_from_user(&reg, argp, sizeof(reg)))
+>>> +                       break;
+>>> +               if (ioctl == KVM_SET_ONE_REG)
+>>> +                       r = _kvm_set_reg(vcpu, &reg);
+>>> +               else
+>>> +                       r = _kvm_get_reg(vcpu, &reg);
+>>> +               break;
+>>> +       }
+>>> +       default:
+>>> +               r = -ENOIOCTLCMD;
+>>> +               break;
+>>> +       }
+>>> +
+>>> +       vcpu_put(vcpu);
+>>> +       return r;
+>>> +}
+>>> +
+>>>   int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+>>>   {
+>>>          return 0;
+>>> -- 
+>>> 2.27.0
+>>>
 
