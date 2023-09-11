@@ -2,230 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 120FE79BB50
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6277579BDDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376286AbjIKWTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        id S1378119AbjIKWa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238911AbjIKOHp (ORCPT
+        with ESMTP id S238900AbjIKOHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:07:45 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F947E4B
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:07:40 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BE7Ccm002273;
-        Mon, 11 Sep 2023 09:07:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694441232;
-        bh=8FAlNaoK0DNRCOuHhPsCy+Grb868tPFNeabgQpNF+ig=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=SMpcMhD8z7RjaT5OkwKatqcsr0AMllF7hrBY71ay9IRKXakoni46VWGzanB9to1pN
-         aSe/Wb1MUd/MpfnBaSAbUGyus9A+kNFGON6GOg0lMS6vNQombDLVI0rOv9PN5/HjG6
-         ZRTdA2NMC8Pm2J/n32H+zL4ZYQgo/ETBKu/FAnTY=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BE7C7X014154
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 09:07:12 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 09:07:11 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 09:07:11 -0500
-Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BE765k120291;
-        Mon, 11 Sep 2023 09:07:11 -0500
-From:   Andrew Davis <afd@ti.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 8/8] ARM: mach-hpe: Rework support and directory structure
-Date:   Mon, 11 Sep 2023 09:07:05 -0500
-Message-ID: <20230911140705.59297-9-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230911140705.59297-1-afd@ti.com>
-References: <20230911140705.59297-1-afd@ti.com>
+        Mon, 11 Sep 2023 10:07:36 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D636E40;
+        Mon, 11 Sep 2023 07:07:29 -0700 (PDT)
+Received: from www.ideasonboard.com (unknown [103.238.109.17])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B8986EF0;
+        Mon, 11 Sep 2023 16:05:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694441156;
+        bh=niTbFgya0+hu3Loc83yrR5ypdB/OFDUSCHZJNBJCx30=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Sq2dR0SYfJR8ZGMWsLf+ioYWA4MEdA2a4CeymlbETLppOa8M/PJ8ls7dsekAZ3JFm
+         P4LYsgq31a1AgqRC3CgbfNw2kA8k/C/53cPgsm+BhOdCXB90bsrVoM2nBafvmMOsnW
+         q22ebig0yGWyuT4UoVcDh0chlXl4lbqrkSrCdP+4=
+From:   Umang Jain <umang.jain@ideasonboard.com>
+To:     linux-staging@lists.linux.dev,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     stefan.wahren@i2se.com, gregkh@linuxfoundation.org,
+        f.fainelli@gmail.com, athierry@redhat.com, error27@gmail.com,
+        kieran.bingham@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        dave.stevenson@raspberrypi.com,
+        Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v10 1/5] staging: vc04_services: vchiq_arm: Add new bus type and device type
+Date:   Mon, 11 Sep 2023 10:07:08 -0400
+Message-ID: <20230911140712.180751-2-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230911140712.180751-1-umang.jain@ideasonboard.com>
+References: <20230911140712.180751-1-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a platform need a mach-* directory should be seen as a negative,
-it means the platform needs special non-standard handling. ARM64 support
-does not allow mach-* directories at all. While we may not get to that
-given all the non-standard architectures we support, we should still try
-to get as close as we can and reduce the number of mach directories.
+The devices that the vchiq interface registers (bcm2835-audio,
+bcm2835-camera) are implemented and exposed by the VC04 firmware.
+The device tree describes the VC04 itself with the resources required
+to communicate with it through a mailbox interface. However, the
+vchiq interface registers these devices as platform devices. This
+also means the specific drivers for these devices are getting
+registered as platform drivers. This is not correct and a blatant
+abuse of platform device/driver.
 
-The mach-hpe/ directory and files, provides just one "feature":
-having the kernel print the machine name if the DTB does not also contain
-a "model" string (which they always do). To reduce the number of mach-*
-directories let's do without that feature and remove this directory.
+Add a new bus type, vchiq_bus_type and device type (struct vchiq_device)
+which will be used to migrate child devices that the vchiq interfaces
+creates/registers from the platform device/driver.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 ---
- MAINTAINERS                |  1 -
- arch/arm/Kconfig           |  2 --
- arch/arm/Kconfig.platforms | 25 +++++++++++++++++++++++++
- arch/arm/Makefile          |  1 -
- arch/arm/mach-hpe/Kconfig  | 23 -----------------------
- arch/arm/mach-hpe/Makefile |  1 -
- arch/arm/mach-hpe/gxp.c    | 15 ---------------
- 7 files changed, 25 insertions(+), 43 deletions(-)
- delete mode 100644 arch/arm/mach-hpe/Kconfig
- delete mode 100644 arch/arm/mach-hpe/Makefile
- delete mode 100644 arch/arm/mach-hpe/gxp.c
+ drivers/staging/vc04_services/Makefile        |   1 +
+ .../interface/vchiq_arm/vchiq_device.c        | 111 ++++++++++++++++++
+ .../interface/vchiq_arm/vchiq_device.h        |  54 +++++++++
+ 3 files changed, 166 insertions(+)
+ create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+ create mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1cde1173e8ae2..11bcf8164a3a7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2193,7 +2193,6 @@ F:	Documentation/devicetree/bindings/spi/hpe,gxp-spifi.yaml
- F:	Documentation/devicetree/bindings/timer/hpe,gxp-timer.yaml
- F:	Documentation/hwmon/gxp-fan-ctrl.rst
- F:	arch/arm/boot/dts/hpe/
--F:	arch/arm/mach-hpe/
- F:	drivers/clocksource/timer-gxp.c
- F:	drivers/hwmon/gxp-fan-ctrl.c
- F:	drivers/i2c/busses/i2c-gxp.c
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 772e7f4df3cd5..808608f0e157c 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -382,8 +382,6 @@ source "arch/arm/mach-highbank/Kconfig"
+diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+index 44794bdf6173..2d071e55e175 100644
+--- a/drivers/staging/vc04_services/Makefile
++++ b/drivers/staging/vc04_services/Makefile
+@@ -5,6 +5,7 @@ vchiq-objs := \
+    interface/vchiq_arm/vchiq_core.o  \
+    interface/vchiq_arm/vchiq_arm.o \
+    interface/vchiq_arm/vchiq_debugfs.o \
++   interface/vchiq_arm/vchiq_device.o \
+    interface/vchiq_arm/vchiq_connected.o \
  
- source "arch/arm/mach-hisi/Kconfig"
- 
--source "arch/arm/mach-hpe/Kconfig"
--
- source "arch/arm/mach-imx/Kconfig"
- 
- source "arch/arm/mach-ixp4xx/Kconfig"
-diff --git a/arch/arm/Kconfig.platforms b/arch/arm/Kconfig.platforms
-index acaced2f0ab04..b4ad800a17b7e 100644
---- a/arch/arm/Kconfig.platforms
-+++ b/arch/arm/Kconfig.platforms
-@@ -87,6 +87,31 @@ config MACH_ASM9260
- 	help
- 	  Support for Alphascale ASM9260 based platform.
- 
-+menuconfig ARCH_HPE
-+	bool "HPE SoC support"
-+	depends on ARCH_MULTI_V7
-+	help
-+	  This enables support for HPE ARM based BMC chips.
+ ifdef CONFIG_VCHIQ_CDEV
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+new file mode 100644
+index 000000000000..aad55c461905
+--- /dev/null
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.c
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * vchiq_device.c - VCHIQ generic device and bus-type
++ *
++ * Copyright (c) 2023 Ideas On Board Oy
++ */
 +
-+if ARCH_HPE
++#include <linux/device/bus.h>
++#include <linux/dma-mapping.h>
++#include <linux/of_device.h>
++#include <linux/slab.h>
++#include <linux/string.h>
 +
-+config ARCH_HPE_GXP
-+	bool "HPE GXP SoC"
-+	depends on ARCH_MULTI_V7
-+	select ARM_VIC
-+	select GENERIC_IRQ_CHIP
-+	select CLKSRC_MMIO
-+	help
-+	  HPE GXP is the name of the HPE Soc. This SoC is used to implement many
-+	  BMC features at HPE. It supports ARMv7 architecture based on the Cortex
-+	  A9 core. It is capable of using an AXI bus to which a memory controller
-+	  is attached. It has multiple SPI interfaces to connect boot flash and
-+	  BIOS flash. It uses a 10/100/1000 MAC for network connectivity. It
-+	  has multiple i2c engines to drive connectivity with a host
-+	  infrastructure.
++#include "vchiq_device.h"
 +
-+endif
++static int vchiq_bus_type_match(struct device *dev, struct device_driver *drv)
++{
++	if (dev->bus == &vchiq_bus_type &&
++	    strcmp(dev_name(dev), drv->name) == 0)
++		return 1;
 +
- menuconfig ARCH_MOXART
- 	bool "MOXA ART SoC"
- 	depends on ARCH_MULTI_V4
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 63808ed5cf9fd..0a7eb41313b6a 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -184,7 +184,6 @@ machine-$(CONFIG_ARCH_FOOTBRIDGE)	+= footbridge
- machine-$(CONFIG_ARCH_GEMINI)		+= gemini
- machine-$(CONFIG_ARCH_HIGHBANK)		+= highbank
- machine-$(CONFIG_ARCH_HISI)		+= hisi
--machine-$(CONFIG_ARCH_HPE)		+= hpe
- machine-$(CONFIG_ARCH_IXP4XX)		+= ixp4xx
- machine-$(CONFIG_ARCH_KEYSTONE)		+= keystone
- machine-$(CONFIG_ARCH_LPC18XX)		+= lpc18xx
-diff --git a/arch/arm/mach-hpe/Kconfig b/arch/arm/mach-hpe/Kconfig
-deleted file mode 100644
-index 3372bbf38d383..0000000000000
---- a/arch/arm/mach-hpe/Kconfig
-+++ /dev/null
-@@ -1,23 +0,0 @@
--menuconfig ARCH_HPE
--	bool "HPE SoC support"
--	depends on ARCH_MULTI_V7
--	help
--	  This enables support for HPE ARM based BMC chips.
--if ARCH_HPE
--
--config ARCH_HPE_GXP
--	bool "HPE GXP SoC"
--	depends on ARCH_MULTI_V7
--	select ARM_VIC
--	select GENERIC_IRQ_CHIP
--	select CLKSRC_MMIO
--	help
--	  HPE GXP is the name of the HPE Soc. This SoC is used to implement many
--	  BMC features at HPE. It supports ARMv7 architecture based on the Cortex
--	  A9 core. It is capable of using an AXI bus to which a memory controller
--	  is attached. It has multiple SPI interfaces to connect boot flash and
--	  BIOS flash. It uses a 10/100/1000 MAC for network connectivity. It
--	  has multiple i2c engines to drive connectivity with a host
--	  infrastructure.
--
--endif
-diff --git a/arch/arm/mach-hpe/Makefile b/arch/arm/mach-hpe/Makefile
-deleted file mode 100644
-index 8b0a91234df4e..0000000000000
---- a/arch/arm/mach-hpe/Makefile
-+++ /dev/null
-@@ -1 +0,0 @@
--obj-$(CONFIG_ARCH_HPE_GXP) += gxp.o
-diff --git a/arch/arm/mach-hpe/gxp.c b/arch/arm/mach-hpe/gxp.c
-deleted file mode 100644
-index 581c8da517b86..0000000000000
---- a/arch/arm/mach-hpe/gxp.c
-+++ /dev/null
-@@ -1,15 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (C) 2022 Hewlett-Packard Enterprise Development Company, L.P. */
--
--#include <asm/mach/arch.h>
--
--static const char * const gxp_board_dt_compat[] = {
--	"hpe,gxp",
--	NULL,
--};
--
--DT_MACHINE_START(GXP_DT, "HPE GXP")
--	.dt_compat	= gxp_board_dt_compat,
--	.l2c_aux_val = 0,
--	.l2c_aux_mask = ~0,
--MACHINE_END
++	return 0;
++}
++
++static int vchiq_bus_uevent(const struct device *dev, struct kobj_uevent_env *env)
++{
++	const struct vchiq_device *device = container_of_const(dev, struct vchiq_device, dev);
++
++	return add_uevent_var(env, "MODALIAS=%s", dev_name(&device->dev));
++}
++
++static int vchiq_bus_probe(struct device *dev)
++{
++	struct vchiq_device *device = to_vchiq_device(dev);
++	struct vchiq_driver *driver = to_vchiq_driver(dev->driver);
++	int ret;
++
++	ret = driver->probe(device);
++	if (ret == 0)
++		return 0;
++
++	return ret;
++}
++
++struct bus_type vchiq_bus_type = {
++	.name   = "vchiq-bus",
++	.match  = vchiq_bus_type_match,
++	.uevent = vchiq_bus_uevent,
++	.probe  = vchiq_bus_probe,
++};
++
++static void vchiq_device_release(struct device *dev)
++{
++	struct vchiq_device *device = to_vchiq_device(dev);
++
++	kfree(device);
++}
++
++struct vchiq_device *
++vchiq_device_register(struct device *parent, const char *name)
++{
++	struct vchiq_device *device;
++	int ret;
++
++	device = kzalloc(sizeof(*device), GFP_KERNEL);
++	if (!device) {
++		dev_err(parent, "Cannot register %s: Insufficient memory\n",
++			name);
++		return NULL;
++	}
++
++	device->dev.init_name = name;
++	device->dev.parent = parent;
++	device->dev.bus = &vchiq_bus_type;
++	device->dev.release = vchiq_device_release;
++
++	of_dma_configure(&device->dev, parent->of_node, true);
++	ret = dma_set_mask_and_coherent(&device->dev, DMA_BIT_MASK(32));
++	if (ret) {
++		dev_err(&device->dev, "32-bit DMA enable failed\n");
++		return NULL;
++	}
++
++	ret = device_register(&device->dev);
++	if (ret) {
++		dev_err(parent, "Cannot register %s: %d\n", name, ret);
++		put_device(&device->dev);
++		return NULL;
++	}
++
++	return device;
++}
++
++void vchiq_device_unregister(struct vchiq_device *vchiq_dev)
++{
++	device_unregister(&vchiq_dev->dev);
++}
++
++int vchiq_driver_register(struct vchiq_driver *vchiq_drv)
++{
++	vchiq_drv->driver.bus = &vchiq_bus_type;
++
++	return driver_register(&vchiq_drv->driver);
++}
++EXPORT_SYMBOL_GPL(vchiq_driver_register);
++
++void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv)
++{
++	driver_unregister(&vchiq_drv->driver);
++}
++EXPORT_SYMBOL_GPL(vchiq_driver_unregister);
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+new file mode 100644
+index 000000000000..7eaaf9a91cda
+--- /dev/null
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_device.h
+@@ -0,0 +1,54 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (c) 2023 Ideas On Board Oy
++ */
++
++#ifndef _VCHIQ_DEVICE_H
++#define _VCHIQ_DEVICE_H
++
++#include <linux/device.h>
++
++struct vchiq_device {
++	struct device dev;
++};
++
++struct vchiq_driver {
++	int		(*probe)(struct vchiq_device *device);
++	void		(*remove)(struct vchiq_device *device);
++	int		(*resume)(struct vchiq_device *device);
++	int		(*suspend)(struct vchiq_device *device,
++				   pm_message_t state);
++	struct device_driver driver;
++};
++
++static inline struct vchiq_device *to_vchiq_device(struct device *d)
++{
++	return container_of(d, struct vchiq_device, dev);
++}
++
++static inline struct vchiq_driver *to_vchiq_driver(struct device_driver *d)
++{
++	return container_of(d, struct vchiq_driver, driver);
++}
++
++extern struct bus_type vchiq_bus_type;
++
++struct vchiq_device *
++vchiq_device_register(struct device *parent, const char *name);
++void vchiq_device_unregister(struct vchiq_device *dev);
++
++int vchiq_driver_register(struct vchiq_driver *vchiq_drv);
++void vchiq_driver_unregister(struct vchiq_driver *vchiq_drv);
++
++/**
++ * module_vchiq_driver() - Helper macro for registering a vchiq driver
++ * @__vchiq_driver: vchiq driver struct
++ *
++ * Helper macro for vchiq drivers which do not do anything special in
++ * module init/exit. This eliminates a lot of boilerplate. Each module may only
++ * use this macro once, and calling it replaces module_init() and module_exit()
++ */
++#define module_vchiq_driver(__vchiq_driver) \
++	module_driver(__vchiq_driver, vchiq_driver_register, vchiq_driver_unregister)
++
++#endif /* _VCHIQ_DEVICE_H */
 -- 
-2.39.2
+2.41.0
 
