@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E84579B978
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124E379BBF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348752AbjIKVar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        id S1353659AbjIKVsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240322AbjIKOlX (ORCPT
+        with ESMTP id S240374AbjIKOms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:41:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C33E6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694443279; x=1725979279;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fP6lcYAEFq9U7qSWfa1lBWDCFuWhwBgw5CCzMRcZCBs=;
-  b=RVABoi2VPi9HvoRUnFhPmwPUIrednC4UJA3VORY3GZi2ED7ebuowLx+z
-   y3IrWPaxezMrM/luRMjZofMJq5g5ZXAKNKe5tCMK456KVPRwr4SYVDi3S
-   Yj+N8jcDalzqaOv5/Ij0DUccJRpYCD7xnl+XT5Zm4enqSDh7xmwMkArhL
-   gg0Q5WYphGt9VIubJNx/aNRiiaCX7i0yVAp9+2Rt1Omz0wW5b18+aouxZ
-   0s/fwHhiYFIMf3NCZ3SGpwszVixI4FSySZHtNkW5SAJaqNbEsxSwiOPEZ
-   OISs5U25YfGGWNNfgXYFs6H7BZXepXn2VJAVNisPD7pZ3tCKhq8c0HMi/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="377011639"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="377011639"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:41:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808847165"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="808847165"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2023 07:41:18 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     eranian@google.com, ak@linux.intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH] perf/x86/intel: Extend the ref-cycles event to GP counters
-Date:   Mon, 11 Sep 2023 07:41:38 -0700
-Message-Id: <20230911144139.2354015-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+        Mon, 11 Sep 2023 10:42:48 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244A012A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:42:44 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ad749473baso49806866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694443362; x=1695048162; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=6D80ZZPlzZTYiu/9bQG8irFdtGvZCgvK+mghRHHLOSI=;
+        b=rKdRUU+yqZbHkXY7SazbHWkcUqJr0uRUJeAH9JyXUnujnMo6e10jFtNI+Q33qnKkxf
+         CS5pgu02fPxyKA0ykY/KN+dw85vIWyIp3Tna14seZNcUfStYwsFapgGr9bq9uATvyUR6
+         6FLv9khgUothNH10EpZc8oX8BzXZdWsDW9ezu8fO6VpUrmlxZYZL9mjfiYXPHCk5nLQs
+         yGzlThC70CfL4At0yuTK5/r/sRed4xxpQHC2VQFyAJBu4rpuFtsiDOell7VcXPbrzhbt
+         wyQN85513R9BOzHfLfWODF8i6kS6rn1CYVInb+EqUHvO47BYNruaXef6nbJPDjP9jBkc
+         DzHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694443362; x=1695048162;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6D80ZZPlzZTYiu/9bQG8irFdtGvZCgvK+mghRHHLOSI=;
+        b=UVs/KGI3sb5Sy6euw0s9mK0MlXZnLp6HXOjDY/dvy1RpADfg7Pv62kSNhUj4y8lt+M
+         whAQSqqpVnyMlzzkrk961SOvwhcrps7Zbjz4ltJOLUddwemDyna/Ye3dIZ4nOrAsQdQE
+         6xQJlz9B5dpwBvdgAXYSmUmkq51ElRVremjSOjSK2z6HDN2TIRGMY3P20UhzrGxrKjW6
+         abqt49OK8Hnn/36IBqcnV0LQc0B5aYl6pTVWhXyt0txxy2au9mRVs+I1Q5voGXKdhk7W
+         amkH71sLJpF07uK+/uMYQEnqQJu3Fn4hxm6wOax9HZWAwQ0zL5Djvo58cyzzuaAUeJOw
+         eRBw==
+X-Gm-Message-State: AOJu0YxVcl67ljXjzoVAm+wjJ2a7pC5tnNc6nl0/QBwBuWCrfWrB/+7a
+        QEPY7xpx3uoIrmawjmSyLFRj6Q==
+X-Google-Smtp-Source: AGHT+IGZ6BAm+BNseM9dLIErk0Fd9vodlBsob22D6rHK/pzDdm5HODd0tU/6G4M7A+HhDA5Ec4sUJQ==
+X-Received: by 2002:a17:907:762d:b0:9a1:ec3d:9004 with SMTP id jy13-20020a170907762d00b009a1ec3d9004mr9036507ejc.9.1694443362588;
+        Mon, 11 Sep 2023 07:42:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id k12-20020a17090646cc00b0098669cc16b2sm5429610ejs.83.2023.09.11.07.42.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 07:42:42 -0700 (PDT)
+Message-ID: <f4f0ed21-1e3b-a7c5-79f8-3469c4cfc471@linaro.org>
+Date:   Mon, 11 Sep 2023 16:42:40 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] fixes the pin settings of two LEDs on board nanopi neo
+ plus2
+To:     longqi <longqi90@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230911140959.2046340-1-longqi90@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230911140959.2046340-1-longqi90@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On 11/09/2023 16:09, longqi wrote:
+> Signed-off-by: longqi <longqi90@gmail.com>
 
-The current ref-cycles event is only available on the fixed counter 2.
-Starting from the GLC and GRT core, the architectural UnHalted Reference
-Cycles event (0x013c) which is available on general-purpose counters
-can collect the exact same events as the fixed counter 2.
+Thank you for your patch. There is something to discuss/improve.
 
-Update the mapping of ref-cycles to 0x013c. So the ref-cycles can be
-available on both fixed counter 2 and general-purpose counters.
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/core.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Your commit msg is missing. Please describe the bug or the problem thus
+it will be obvious why this change is needed.
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index e1543d6dc48a..a08f794a0e79 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -211,6 +211,14 @@ static struct event_constraint intel_slm_event_constraints[] __read_mostly =
- 	EVENT_CONSTRAINT_END
- };
- 
-+static struct event_constraint intel_grt_event_constraints[] __read_mostly = {
-+	FIXED_EVENT_CONSTRAINT(0x00c0, 0), /* INST_RETIRED.ANY */
-+	FIXED_EVENT_CONSTRAINT(0x003c, 1), /* CPU_CLK_UNHALTED.CORE */
-+	FIXED_EVENT_CONSTRAINT(0x0300, 2), /* pseudo CPU_CLK_UNHALTED.REF */
-+	FIXED_EVENT_CONSTRAINT(0x013c, 2), /* CPU_CLK_UNHALTED.REF_TSC_P */
-+	EVENT_CONSTRAINT_END
-+};
-+
- static struct event_constraint intel_skl_event_constraints[] = {
- 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
- 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
-@@ -314,6 +322,7 @@ static struct event_constraint intel_glc_event_constraints[] = {
- 	FIXED_EVENT_CONSTRAINT(0x0100, 0),	/* INST_RETIRED.PREC_DIST */
- 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
- 	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
-+	FIXED_EVENT_CONSTRAINT(0x013c, 2),	/* CPU_CLK_UNHALTED.REF_TSC_P */
- 	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
- 	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_RETIRING, 0),
- 	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BAD_SPEC, 1),
-@@ -5983,6 +5992,12 @@ static __always_inline int intel_pmu_init_hybrid(enum hybrid_pmu_type pmus)
- 	return 0;
- }
- 
-+static __always_inline void intel_pmu_ref_cycles_ext(void)
-+{
-+	if (!(x86_pmu.events_maskl & (INTEL_PMC_MSK_FIXED_REF_CYCLES >> INTEL_PMC_IDX_FIXED)))
-+		intel_perfmon_event_map[PERF_COUNT_HW_REF_CPU_CYCLES] = 0x013c;
-+}
-+
- static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
- {
- 	x86_pmu.late_ack = true;
-@@ -6005,6 +6020,8 @@ static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
- 	memcpy(hybrid_var(pmu, hw_cache_extra_regs), glc_hw_cache_extra_regs, sizeof(hw_cache_extra_regs));
- 	hybrid(pmu, event_constraints) = intel_glc_event_constraints;
- 	hybrid(pmu, pebs_constraints) = intel_glc_pebs_event_constraints;
-+
-+	intel_pmu_ref_cycles_ext();
- }
- 
- static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
-@@ -6021,9 +6038,11 @@ static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
- 	memcpy(hybrid_var(pmu, hw_cache_event_ids), glp_hw_cache_event_ids, sizeof(hw_cache_event_ids));
- 	memcpy(hybrid_var(pmu, hw_cache_extra_regs), tnt_hw_cache_extra_regs, sizeof(hw_cache_extra_regs));
- 	hybrid_var(pmu, hw_cache_event_ids)[C(ITLB)][C(OP_READ)][C(RESULT_ACCESS)] = -1;
--	hybrid(pmu, event_constraints) = intel_slm_event_constraints;
-+	hybrid(pmu, event_constraints) = intel_grt_event_constraints;
- 	hybrid(pmu, pebs_constraints) = intel_grt_pebs_event_constraints;
- 	hybrid(pmu, extra_regs) = intel_grt_extra_regs;
-+
-+	intel_pmu_ref_cycles_ext();
- }
- 
- __init int intel_pmu_init(void)
--- 
-2.35.1
+
+Best regards,
+Krzysztof
 
