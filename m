@@ -2,287 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF41C79B236
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3B879AF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345070AbjIKVPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S230176AbjIKUrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242826AbjIKQXQ (ORCPT
+        with ESMTP id S242834AbjIKQY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:23:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E2DCC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:23:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 54CEB1F88C;
-        Mon, 11 Sep 2023 16:23:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694449389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=O4KvfJvNifaqg6M/GRoEaRUwz5YRGBylZkZlSzC5HTY=;
-        b=Osy2cVXlRluXOG9o+EaR+0pghLH+oFXRjJitAtuEk+bJLXrHTB/0WwtKzRk5ypa2R0CHhd
-        qUzRshukM0ISlMozx89Lt2eE4wd0lw3w2jQpjkvs4rXuPP5VsYKYyKZ3JkexYoKdPr8pEN
-        XEMrgzJLyFwhGxKDOKpKQ34M9V7MnDI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694449389;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=O4KvfJvNifaqg6M/GRoEaRUwz5YRGBylZkZlSzC5HTY=;
-        b=H8T9HyNdY+KCsWAlHahC0YYvdYenZpCFE6sEFD+3fbF53T18DurXHa08aXmZ/BVuhPZYyA
-        Uczgt1YIXlvEt9CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23480139CC;
-        Mon, 11 Sep 2023 16:23:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AhLeB+0+/2QnCAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 16:23:09 +0000
-Message-ID: <1d634412-c0e5-4c16-92a4-447bde684ad6@suse.cz>
-Date:   Mon, 11 Sep 2023 18:23:08 +0200
+        Mon, 11 Sep 2023 12:24:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 51518CCA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694449414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zetrdZPONeG9YLHuQzoKZ5HDVObBlNiSzaWhvus5y8s=;
+        b=DMsuNpC23QXrD/mHlBEb6MTr3jEQ29d+0OGnkP8u5X1JAUKowRnK94Cnq9aY5K29z8lNXh
+        41RmMacqFucnKsE1DFjZoxViXVy87KSWkIrms1S2RJKAiAjo3q3QuI4I14u3PvwHHu27xo
+        ZZ0ofZV/l3vId3pGqnmGvk5oytUYzPc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-370-qgKWdzcBMMyIgB963955gA-1; Mon, 11 Sep 2023 12:23:32 -0400
+X-MC-Unique: qgKWdzcBMMyIgB963955gA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9aa05c1934aso367048766b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:23:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694449411; x=1695054211;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zetrdZPONeG9YLHuQzoKZ5HDVObBlNiSzaWhvus5y8s=;
+        b=FS5VpmsfpEac2Cg9xa3BG00LtmeDYKcaK/PnDxESXNTF2X+MDqMNElM3s67hiVHpTm
+         qcePKBoR0pMPj5cTBEK4dWA7Ed3yZUtaV+3MPwQd2h0qtoE1R/CpuS/mGinqhIdvkyN+
+         wI317lqSptnvFkWFIz+OsgoE9gPDhqTX41rYEAoegRUVEoPauG4tWOK/l4l6HZUNR+cT
+         tdGD9nNyOQ/bwBVXxPw2s6yn3zG5I3YRgDnLoruuBun3xC/uObYNbierDXoG+rs1zUxt
+         zS1UlrhDDARcVI4uHjBU+Go59Ky6yBGB/YOuOcztEuq/CT55eFPxpr8jdiY7q4jr0HMX
+         LqYw==
+X-Gm-Message-State: AOJu0YwSUDVqjes0ykzmYsqNQb50sT1F8wN/NF3uMPNvBoO8SqnNh0zT
+        jutzlqFovi6XDnExIY3F0PXCdS+J2j9ytihzjc5iBInzWt044kEbZaN14uD+8P0pq3RqX7g1+BK
+        Ul2qbWqJSP7lNHhC1RYxecVkX
+X-Received: by 2002:a17:907:75d6:b0:9a5:a543:2744 with SMTP id jl22-20020a17090775d600b009a5a5432744mr126866ejc.33.1694449411598;
+        Mon, 11 Sep 2023 09:23:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG6VUL0cDAfKiEJclPyM0psTdVvLtqVKNpq4PjGwwT80miyhI3PvRW23DdYuYlfXDJJgNat4Q==
+X-Received: by 2002:a17:907:75d6:b0:9a5:a543:2744 with SMTP id jl22-20020a17090775d600b009a5a5432744mr126835ejc.33.1694449411248;
+        Mon, 11 Sep 2023 09:23:31 -0700 (PDT)
+Received: from cassiopeiae ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
+        by smtp.gmail.com with ESMTPSA id e10-20020a170906044a00b0099d0a8ccb5fsm5610916eja.152.2023.09.11.09.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:23:29 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 18:23:26 +0200
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <ZP8+/gjvKFBGR/Y4@cassiopeiae>
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-7-dakr@redhat.com>
+ <20230911123526.6c67feb0@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Kees Cook' <keescook@chromium.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
- <202309071235.CB4F6B2@keescook>
- <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
- <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
- <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- tR6d+JzM8nFUZA==
-In-Reply-To: <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911123526.6c67feb0@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 18:12, David Laight wrote:
-> From: Vlastimil Babka
->> Sent: 11 September 2023 16:54
->> 
->> On 9/8/23 10:26, David Laight wrote:
->> > From: Kees Cook
->> >> Sent: 07 September 2023 20:38
->> >>
->> >> On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
->> >> > The typical use of kmalloc_size_roundup() is:
->> >> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
->> >> > 	if (!ptr) return -ENOMEM.
->> >> > This means it is vitally important that the returned value isn't
->> >> > less than the argument even if the argument is insane.
->> >> > In particular if kmalloc_slab() fails or the value is above
->> >> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
->> >> > it's single zero-length buffer.
->> >> >
->> >> > Fix by returning the input size on error or if the size exceeds
->> >> > a 'sanity' limit.
->> >> > kmalloc() will then return NULL is the size really is too big.
->> >> >
->> >> >
->> >> > Signed-off-by: David Laight <david.laight@aculab.com>
->> >> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
->> >> > ---
->> >> > v2:
->> >> >     - Use KMALLOC_MAX_SIZE for upper limit.
->> >> >       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
->> >> >     - Invert test for overlarge for consistency.
->> >> >     - Put a likely() on result of kmalloc_slab().
->> >> >
->> >> >  mm/slab_common.c | 26 +++++++++++++-------------
->> >> >  1 file changed, 13 insertions(+), 13 deletions(-)
->> >> >
->> >> > diff --git a/mm/slab_common.c b/mm/slab_common.c
->> >> > index cd71f9581e67..0fb7c7e19bad 100644
->> >> > --- a/mm/slab_common.c
->> >> > +++ b/mm/slab_common.c
->> >> > @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
->> >> >  {
->> >> >  	struct kmem_cache *c;
->> >> >
->> >> > -	/* Short-circuit the 0 size case. */
->> >> > -	if (unlikely(size == 0))
->> >> > -		return 0;
->> >>
->> >> If we want to allow 0, let's just leave this case as-is: the compiler
->> >> will optimize it against the other tests.
->> >
->> > I doubt the compiler will optimise it away - especially with
->> > the unlikely().
->> 
->> Yeah I also think compiler can't do much optimizations except for build-time
->> constant 0 here.
+On Mon, Sep 11, 2023 at 12:35:26PM +0200, Boris Brezillon wrote:
+> Hello Danilo,
 > 
-> Only relevant if the code were inlined - and it isn't.
-
-Aha, I thought it was, good point.
-
-> (and is probably a bit big.)
-> I'm not sure you'd want to expose kmalloc_slab() to the wider kernel.
-
-No, let's keep it that way.
-
-> OTOH, it could have an inline version for constants > KMALLOC_CACHE_SIZE.
-> But they may not happen often enough to make any difference.
-
-Yeah, unnecessary.
-
->> 
->> > OTOH the explicit checks for (size && size <= LIMIT) do
->> > get optimised to ((size - 1) <= LIMIT - 1) so become
->> > a single compare.
->> >
->> > Then returning 'size' at the bottom means that zero is returned
->> > in the arg is zero - which is fine.
->> >
->> >>
->> >> > -	/* Short-circuit saturated "too-large" case. */
->> >> > -	if (unlikely(size == SIZE_MAX))
->> >> > -		return SIZE_MAX;
->> >> > +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
->> >> > +		/*
->> >> > +		 * The flags don't matter since size_index is common to all.
->> >> > +		 * Neither does the caller for just getting ->object_size.
->> >> > +		 */
->> >> > +		c = kmalloc_slab(size, GFP_KERNEL, 0);
->> >> > +		return likely(c) ? c->object_size : size;
->> >>
->> >> I would like to have this fail "safe". c should never be NULL here, so
->> >> let's return "KMALLOC_MAX_SIZE + 1" to force failures.
->> >
->> > Why even try to force failure here?
->> > The whole function is just an optimisation so that the caller
->> > can use the spare space.
->> >
->> > The only thing it mustn't do is return a smaller value.
->> 
->> If "c" is NULL it means either the kernel build must be broken e.g. by
->> somebody breaking the KMALLOC_MAX_CACHE_SIZE value, and we could just ignore
->> c being NULL and let it crash because of that.
->> But I think it can also be NULL due to trying to call kmalloc_size_roundup()
->> too early, when kmalloc_caches array is not yet populated. Note if we call
->> kmalloc() itself too early, we get a NULL as a result, AFAICS. I can imagine
->> two scenarios:
->> 
->> - kmalloc_size_roundup() is called with result immediately fed to kmalloc()
->> that happens too early, in that case we best should not crash on c being
->> NULL and make sure the kmalloc() returns NULL.
->> - kmalloc_size_roundup() is called in some init code to get a value that
->> some later kmalloc() call uses. We might want also not crash in that case,
->> but informing the developer that they did something wrong would be also useful?
->> 
->> Clearly returning 0 if c == NULL, as done currently, is wrong for both
->> scenarios. Retuning "size" is OK for the first scenario, also valid for the
->> second one, but the caller will silently lose the benefit of
->> kmalloc_size_roundup() and the developer introducing that won't realize it's
->> done too early and could be fixed.
+> On Sat,  9 Sep 2023 17:31:13 +0200
+> Danilo Krummrich <dakr@redhat.com> wrote:
 > 
-> I'm sure that won't matter.
-
-For the performance, sure. It just feels silly to me to have a code that
-looks like it does something, but silently doesn't. Leads to cargo cult
-copying it to other places etc.
-
->> So perhaps the best would be to return size for c == NULL, but also do a
->> WARN_ONCE?
 > 
-> That would add a real function call to an otherwise leaf function
-> and almost certainly require the compiler create a stack frame.
-
-Hm I thought WARN is done by tripping on undefined instruction like BUG
-these days. Also any code that accepts the call to kmalloc_size_roundup
-probably could accept that too.
-
+> > @@ -632,6 +661,131 @@
+> >   *	}
+> >   */
+> >  
+> > +/**
+> > + * get_next_vm_bo_from_list() - get the next vm_bo element
+> > + * @__gpuvm: The GPU VM
+> > + * @__list_name: The name of the list we're iterating on
+> > + * @__local_list: A pointer to the local list used to store already iterated items
+> > + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
+> > + *
+> > + * This helper is here to provide lockless list iteration. Lockless as in, the
+> > + * iterator releases the lock immediately after picking the first element from
+> > + * the list, so list insertion deletion can happen concurrently.
+> > + *
+> > + * Elements popped from the original list are kept in a local list, so removal
+> > + * and is_empty checks can still happen while we're iterating the list.
+> > + */
+> > +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, __prev_vm_bo)	\
+> > +	({										\
+> > +		struct drm_gpuvm_bo *__vm_bo;						\
+> > +											\
+> > +		drm_gpuvm_bo_put(__prev_vm_bo);						\
+> > +											\
+> > +		spin_lock(&(__gpuvm)->__list_name.lock);				\
 > 
-> ...
+> I'm tempted to add a drm_gpuvm::<list_name>::local_list field, so we
+> can catch concurrent iterations with something like:
 > 
-> I did have an interesting 'lateral thought' idea.
-> It is all very silly doing all the work twice, what you really
-> want is kmalloc() to return both the pointer and actual size.
-> But returning a 'two word' structure is done by reference and
-> would kill performance/
-> OTOH a lot of archs can return two word integers in a register pair
-> (dx:ax on x86).
-> Could you have the real function return ((unsigned __int64)size << 64 | (long)ptr)
-> and then extract the size in a wrapper macro?
-> (With different types for 32bit)
+> 		if (!(__gpuvm)->__list_name.local_list)
+> 			(__gpuvm)->__list_name.local_list = __local_list;
+> 		else
+> 			WARN_ON((__gpuvm)->__list_name.local_list != __local_list);
 > 
-> That will, of course, break the 'it's like malloc' checks the
-> compiler is doing - unless it is taught what is going on.
+> with (__gpuvm)->__list_name.local_list being restored to NULL
+> in restore_vm_bo_list().
+> 
+> > +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
+> > +			__vm_bo = list_first_entry(&(__gpuvm)->__list_name.list,	\
+> > +						   struct drm_gpuvm_bo,			\
+> > +						   list.entry.__list_name);		\
+> > +			if (drm_gpuvm_bo_get_unless_zero(__vm_bo)) {			\
+> > +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
+> > +					       __local_list);				\
+> > +				break;							\
+> > +			} else {							\
+> > +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
+> > +				__vm_bo = NULL;						\
+> > +			}								\
+> > +		}									\
+> > +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
+> > +											\
+> > +		__vm_bo;								\
+> > +	})
+> > +
+> > +/**
+> > + * for_each_vm_bo_in_list() - internal vm_bo list iterator
+> > + *
+> > + * This helper is here to provide lockless list iteration. Lockless as in, the
+> > + * iterator releases the lock immediately after picking the first element from the
+> > + * list, so list insertion and deletion can happen concurrently.
+> > + *
+> > + * Typical use:
+> > + *
+> > + *	struct drm_gpuvm_bo *vm_bo;
+> > + *	LIST_HEAD(my_local_list);
+> > + *
+> > + *	ret = 0;
+> > + *	drm_gpuvm_for_each_vm_bo(gpuvm, <list_name>, &my_local_list, vm_bo) {
+> > + *		ret = do_something_with_vm_bo(..., vm_bo);
+> > + *		if (ret)
+> > + *			break;
+> > + *	}
+> > + *	drm_gpuvm_bo_put(vm_bo);
+> > + *	drm_gpuvm_restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
+> 
+> The names in this example and the helper names don't match.
+> 
+> > + *
+> > + *
+> > + * Only used for internal list iterations, not meant to be exposed to the outside
+> > + * world.
+> > + */
+> > +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, __vm_bo)	\
+> > +	for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
+> > +						__local_list, NULL);		\
+> > +	     __vm_bo;								\
+> > +	     __vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
+> > +						__local_list, __vm_bo))		\
+> > +
+> > +/**
+> > + * restore_vm_bo_list() - move vm_bo elements back to their original list
+> > + * @__gpuvm: The GPU VM
+> > + * @__list_name: The name of the list we're iterating on
+> > + * @__local_list: A pointer to the local list used to store already iterated items
+> > + *
+> > + * When we're done iterating a vm_bo list, we should call restore_vm_bo_list()
+> > + * to restore the original state and let new iterations take place.
+> > + */
+> > +#define restore_vm_bo_list(__gpuvm, __list_name, __local_list)				\
+> > +	do {										\
+> > +		/* Merge back the two lists, moving local list elements to the		\
+> > +		 * head to preserve previous ordering, in case it matters.		\
+> > +		 */									\
+> > +		spin_lock(&(__gpuvm)->__list_name.lock);				\
+> > +		list_splice(__local_list, &(__gpuvm)->__list_name.list);		\
+> > +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
+> > +	} while (0)
+> > +/**
+> > + * drm_gpuvm_bo_list_add() - insert a vm_bo into the given list
+> > + * @__vm_bo: the &drm_gpuvm_bo
+> > + * @__list_name: the name of the list to insert into
+> > + *
+> > + * Inserts the given @__vm_bo into the list specified by @__list_name and
+> > + * increases the vm_bo's reference count.
+> > + */
+> > +#define drm_gpuvm_bo_list_add(__vm_bo, __list_name)				\
+> > +	do {									\
+> > +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
+> > +		if (list_empty(&(__vm_bo)->list.entry.__list_name))		\
+> > +			list_add_tail(&(__vm_bo)->list.entry.__list_name,	\
+> > +				      &(__vm_bo)->vm->__list_name.list);	\
+> > +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
+> > +	} while (0)
+> > +
+> > +/**
+> > + * drm_gpuvm_bo_list_del() - remove a vm_bo from the given list
+> > + * @__vm_bo: the &drm_gpuvm_bo
+> > + * @__list_name: the name of the list to insert into
+> > + *
+> > + * Removes the given @__vm_bo from the list specified by @__list_name and
+> > + * decreases the vm_bo's reference count.
+> > + */
+> > +#define drm_gpuvm_bo_list_del(__vm_bo, __list_name)				\
+> > +	do {									\
+> > +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
+> > +		if (!list_empty(&(__vm_bo)->list.entry.__list_name))		\
+> > +			list_del_init(&(__vm_bo)->list.entry.__list_name);	\
+> > +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
+> > +	} while (0)
+> > +
+> > +static int __must_check
+> > +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo);
+> 
+> I see no obvious reason to have a forward declaration for this helper,
+> if we decide to keep it, let's at least move the declaration here.
+> 
+> 
+> > @@ -807,6 +1262,14 @@ drm_gpuvm_bo_destroy(struct kref *kref)
+> >  
+> >  	drm_gem_gpuva_assert_lock_held(vm_bo->obj);
+> >  
+> > +	spin_lock(&gpuvm->extobj.lock);
+> > +	list_del(&vm_bo->list.entry.extobj);
+> > +	spin_unlock(&gpuvm->extobj.lock);
+> > +
+> > +	spin_lock(&gpuvm->evict.lock);
+> > +	list_del(&vm_bo->list.entry.evict);
+> > +	spin_unlock(&gpuvm->evict.lock);
+> > +
+> >  	list_del(&vm_bo->list.entry.gem);
+> >  
+> >  	drm_gem_object_put(obj);
+> > @@ -822,6 +1285,11 @@ drm_gpuvm_bo_destroy(struct kref *kref)
+> >   * @vm_bo: the &drm_gpuvm_bo to release the reference of
+> >   *
+> >   * This releases a reference to @vm_bo.
+> > + *
+> > + * If the reference count drops to zero, the &gpuvm_bo is destroyed, which
+> > + * includes removing it from the GEMs gpuva list. Hence, if a call to this
+> > + * function can potentially let the reference count to zero the caller must
+> > + * hold the dma-resv or driver specific GEM gpuva lock.
+> 
+> Looks like this should have been part of the previous patch. I hate
+> the fact we have to worry about GEM gpuva lock being held when we call
+> _put() only if the ref drops to zero though. I think I'd feel more
+> comfortable if the function was named differently. Maybe _return() or
+> _release() to match the _obtain() function, where the object is inserted
+> in the GEM vm_bo list. I would also do the lock_is_held() check
+> unconditionally, move the list removal in this function with a del_init(),
+> and have a WARN_ON(!list_empty) in vm_bo_destroy().
+> 
 
-Probably this is something not worth all the trouble.
+We can't move the list removal to drm_gpuvm_bo_put(), we need to make sure we
+can't create duplicate drm_gpuvm_bo structures. Everything else pretty much goes
+away with a dedicated GEM gpuva list lock, as I had in my first patch series
+when I introduced the GPUVA manager. At that time it wasn't always needed, hence
+the optional driver specific lock, however with the VM_BO abstraction it really
+makes sense to have a dedicated one.
 
-> 	David
+
+I agree with the other feedback from this reply and will address it in a V4.
+
+> >   */
+> >  void
+> >  drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
+> > @@ -831,6 +1299,12 @@ drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
+> >  }
+> >  EXPORT_SYMBOL_GPL(drm_gpuvm_bo_put);
+> >  
+> > +static int __must_check
+> > +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo)
+> > +{
+> > +	return kref_get_unless_zero(&vm_bo->kref);
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> Not convinced this helper is needed. It's only used once, and I
+> don't think we'll need it elsewhere.
+> 
+> > +}
+> > +
+> >  static struct drm_gpuvm_bo *
+> >  __drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
+> >  		    struct drm_gem_object *obj)
+> 
+> 
+> Regards,
+> 
+> Boris
+> 
 
