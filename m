@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7772079A599
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C9B79A59F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbjIKIJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
+        id S234618AbjIKIKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjIKIJW (ORCPT
+        with ESMTP id S230059AbjIKIKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:09:22 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA04AE51
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:09:11 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40061928e5aso47073505e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694419750; x=1695024550; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EbUzjiy4o1vK6+eGTRCo3FmI8I3JuBmYotzF+QEDbUg=;
-        b=G5pIpSUlLgrywcZWVhzKgWYPT26G6N/WUlfY/qJQVA+MbiO8BHJdZW46oar0f+qHvC
-         BMC1yzrf57EMuCMCMPv2cGVUJkdbOp3hsOB4mYFtz0Yvx1xfNtVFrU1SgF1zlap3A9I6
-         MbMhYTzX6FumWOORTqccuKJa5ZemtD1EuX30Hr9gHBrvMQzocW4CD2g6m1C80fS7jTvL
-         wZAkg9fTY73ek15pkCs4IQoqDDk/vnZPXOFkULdufboBwdD2asAkIc/Bp+kN0rrAmrzX
-         Q5Gslp30yhkVZ+NyzqyGHsFpjCGYNKNowWTUvKVVw0olHYl0AYotXJWIwXyK+1mDT/Yw
-         V9Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694419750; x=1695024550;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EbUzjiy4o1vK6+eGTRCo3FmI8I3JuBmYotzF+QEDbUg=;
-        b=uzMYfdG/0sWQyM8FCArAdbj6Wdr2AA7ufqoDZizy5V8weEAFen9rGFM6m0Bs/ulRvj
-         QBOUuZ0FMcSpSJz7yC9+ozeFure+wGkQmtym7mrOvnPCGznOqxS4bwlOfw+IsiZfXQQ+
-         S7c7+STfQ/Ont9w1cxKQHn3ygNMO3AU06qt6UNGQTO5jhrby2UyiycQQEhSbz8qFOag6
-         E6DKVtrSyxPE9F2wHKOVt03hRHRLzaGtN66b1dOeiz1+H6Ly6aZv9+JsLVlBOvDOxdy4
-         /GgoVa/eapZy2ast01suLYevwGu3Hss0wDWHQCQfKML4QUkxWFDRb/iM47KsC15hez0F
-         9RDg==
-X-Gm-Message-State: AOJu0YzhWcFiW4rShzk2fbK5AvMYEd1PK73lMhOOtor8U/6zeeEtthdB
-        Wnfpsr5QcMoXoMWuof553DwoxQ==
-X-Google-Smtp-Source: AGHT+IH17NjBNGmOzEesnEW9tcv/zDzsg0kaDQGZfVp6yr4OvabsTsarBsJUqtBSDTS43yE6uYtPtQ==
-X-Received: by 2002:a05:600c:b5a:b0:3fe:15f0:dfbc with SMTP id k26-20020a05600c0b5a00b003fe15f0dfbcmr7767575wmr.12.1694419750151;
-        Mon, 11 Sep 2023 01:09:10 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id w18-20020a5d6092000000b0031c52e81490sm9359869wrt.72.2023.09.11.01.09.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 01:09:09 -0700 (PDT)
-Message-ID: <9476d20e-a0f2-e8cf-db4f-d07dda86bb28@linaro.org>
-Date:   Mon, 11 Sep 2023 10:09:05 +0200
+        Mon, 11 Sep 2023 04:10:03 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC603CFE;
+        Mon, 11 Sep 2023 01:09:37 -0700 (PDT)
+X-UUID: 8a636e3e507a11eea33bb35ae8d461a2-20230911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=8W/rAUiPcskFPX+ufYSNJ1mxz6QAHbHSoUfVwMrzPIo=;
+        b=eJlj6x1/st2by1U55DzLVayQXIksxFeDZqAfzYeFH+sPkEo9qg9B09Ma97Q5KV2DOmmhZlQxt9RMn+GreR8fjUXcxN4LnShsJOSYSus3waL2irTFxrOCDAJj8Mg4ohWtOV5uIbqFUXjIJw2O2rVfMIvM9mJBSkxci5FqAaufK2s=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:a29b896f-9bdd-4874-a163-10d7c818de8c,IP:0,U
+        RL:0,TC:0,Content:29,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:29
+X-CID-META: VersionHash:0ad78a4,CLOUDID:5d52b1be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:4,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 8a636e3e507a11eea33bb35ae8d461a2-20230911
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+        (envelope-from <chun-jen.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 225850226; Mon, 11 Sep 2023 16:09:33 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Sep 2023 16:09:31 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 11 Sep 2023 16:09:31 +0800
+From:   Mark Tseng <chun-jen.tseng@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <chun-jen.tseng@mediatek.com>
+Subject: [PATCH] arm64: dts: mediatek: mt8186: change CCI OPP scaling mapping
+Date:   Mon, 11 Sep 2023 16:09:27 +0800
+Message-ID: <20230911080927.17457-1-chun-jen.tseng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 2/9] arm64: dts: qcom: apq8016-sbc: Add overlay for usb
- host mode
-Content-Language: en-US
-To:     Vignesh Raman <vignesh.raman@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        daniels@collabora.com, gustavo.padovan@collabora.com,
-        angelogioacchino.delregno@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, mripard@kernel.org,
-        dmitry.baryshkov@linaro.org, matthias.bgg@gmail.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230908152225.432139-1-vignesh.raman@collabora.com>
- <20230908152225.432139-3-vignesh.raman@collabora.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230908152225.432139-3-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--5.027300-8.000000
+X-TMASE-MatchedRID: /BnZajOwp9c77EsBOi8++riMC5wdwKqdMZm0+sEE9msZs8aIepa/RnTv
+        v/bTZRlo1rH4Rg0AOT2N6fDbnTu0nx8TzIzimOwPC24oEZ6SpSkj80Za3RRg8EzLGtcUyG9kVBW
+        ulG+2IksTqMpkTCkeGqC8ayqaa9oyZnYyx+3zDYE=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--5.027300-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 76E66E642CD04C75C9B5E2BAFB56464D44FBF6D8AF957EEB7C525FFBCD04261C2000:8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,35 +81,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 17:22, Vignesh Raman wrote:
-> Due to the presence of the fastboot micro cable in the CI farm,
-> it causes the hardware to remain in gadget mode instead of host mode.
-> So it doesn't find the network, which results in failure to mount root
-> fs via NFS.
-> 
-> Add an overlay dtso file that sets the dr_mode to host, allowing
-> the USB controllers to work in host mode. This dtso file will be used
-> in drm-ci, mesa-ci.
-> 
-> Overlay DT file uses the sugar syntax [suggested by Dmitry Baryshkov and Maxime Ripard]
-> 
-> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Signed-off-by: David Heidelberg <david.heidelberg@collabora.com>
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> ---
-> 
-> v3:
->   - New patch in the series to add device tree overlay in arch/arm64/boot/dts/qcom
-> 
-> ---
->  arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso | 8 ++++++++
->  1 file changed, 8 insertions(+)
+The original CCI OPP table minimum frequency 500Mhz is too low to cause
+system stall, So it need update to new version, 1.4G ~ 1.05G.
 
-Split unrelated patches to separate patchsets. This has nothing to do
-with DRM CI system.
+Fixes: 32dfbc03fc26 ("arm64: dts: mediatek: mt8186: Add CCI node and CCI OPP table")
 
-Best regards,
-Krzysztof
+Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8186.dtsi | 90 ++++++++++++------------
+ 1 file changed, 45 insertions(+), 45 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+index f04ae70c470a..b98832d032eb 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
+@@ -39,79 +39,79 @@
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+-		cci_opp_0: opp-500000000 {
+-			opp-hz = /bits/ 64 <500000000>;
+-			opp-microvolt = <600000>;
++		cci_opp_0: opp-1050000000 {
++			opp-hz = /bits/ 64 <1050000000>;
++			opp-microvolt = <843750>;
+ 		};
+ 
+-		cci_opp_1: opp-560000000 {
+-			opp-hz = /bits/ 64 <560000000>;
+-			opp-microvolt = <675000>;
++		cci_opp_1: opp-1073000000 {
++			opp-hz = /bits/ 64 <1073000000>;
++			opp-microvolt = <850000>;
+ 		};
+ 
+-		cci_opp_2: opp-612000000 {
+-			opp-hz = /bits/ 64 <612000000>;
+-			opp-microvolt = <693750>;
++		cci_opp_2: opp-1096000000 {
++			opp-hz = /bits/ 64 <1096000000>;
++			opp-microvolt = <856250>;
+ 		};
+ 
+-		cci_opp_3: opp-682000000 {
+-			opp-hz = /bits/ 64 <682000000>;
+-			opp-microvolt = <718750>;
++		cci_opp_3: opp-1120000000 {
++			opp-hz = /bits/ 64 <1120000000>;
++			opp-microvolt = <862500>;
+ 		};
+ 
+-		cci_opp_4: opp-752000000 {
+-			opp-hz = /bits/ 64 <752000000>;
+-			opp-microvolt = <743750>;
++		cci_opp_4: opp-1143000000 {
++			opp-hz = /bits/ 64 <1143000000>;
++			opp-microvolt = <881250>;
+ 		};
+ 
+-		cci_opp_5: opp-822000000 {
+-			opp-hz = /bits/ 64 <822000000>;
+-			opp-microvolt = <768750>;
++		cci_opp_5: opp-1166000000 {
++			opp-hz = /bits/ 64 <1166000000>;
++			opp-microvolt = <893750>;
+ 		};
+ 
+-		cci_opp_6: opp-875000000 {
+-			opp-hz = /bits/ 64 <875000000>;
+-			opp-microvolt = <781250>;
++		cci_opp_6: opp-1190000000 {
++			opp-hz = /bits/ 64 <1190000000>;
++			opp-microvolt = <906250>;
+ 		};
+ 
+-		cci_opp_7: opp-927000000 {
+-			opp-hz = /bits/ 64 <927000000>;
+-			opp-microvolt = <800000>;
++		cci_opp_7: opp-1213000000 {
++			opp-hz = /bits/ 64 <1213000000>;
++			opp-microvolt = <918750>;
+ 		};
+ 
+-		cci_opp_8: opp-980000000 {
+-			opp-hz = /bits/ 64 <980000000>;
+-			opp-microvolt = <818750>;
++		cci_opp_8: opp-1236000000 {
++			opp-hz = /bits/ 64 <1236000000>;
++			opp-microvolt = <937500>;
+ 		};
+ 
+-		cci_opp_9: opp-1050000000 {
+-			opp-hz = /bits/ 64 <1050000000>;
+-			opp-microvolt = <843750>;
++		cci_opp_9: opp-1260000000 {
++			opp-hz = /bits/ 64 <1260000000>;
++			opp-microvolt = <950000>;
+ 		};
+ 
+-		cci_opp_10: opp-1120000000 {
+-			opp-hz = /bits/ 64 <1120000000>;
+-			opp-microvolt = <862500>;
++		cci_opp_10: opp-1283000000 {
++			opp-hz = /bits/ 64 <1283000000>;
++			opp-microvolt = <962500>;
+ 		};
+ 
+-		cci_opp_11: opp-1155000000 {
+-			opp-hz = /bits/ 64 <1155000000>;
+-			opp-microvolt = <887500>;
++		cci_opp_11: opp-1306000000 {
++			opp-hz = /bits/ 64 <1306000000>;
++			opp-microvolt = <975000>;
+ 		};
+ 
+-		cci_opp_12: opp-1190000000 {
+-			opp-hz = /bits/ 64 <1190000000>;
+-			opp-microvolt = <906250>;
++		cci_opp_12: opp-1330000000 {
++			opp-hz = /bits/ 64 <1330000000>;
++			opp-microvolt = <993750>;
+ 		};
+ 
+-		cci_opp_13: opp-1260000000 {
+-			opp-hz = /bits/ 64 <1260000000>;
+-			opp-microvolt = <950000>;
++		cci_opp_13: opp-1353000000 {
++			opp-hz = /bits/ 64 <1353000000>;
++			opp-microvolt = <1006250>;
+ 		};
+ 
+-		cci_opp_14: opp-1330000000 {
+-			opp-hz = /bits/ 64 <1330000000>;
+-			opp-microvolt = <993750>;
++		cci_opp_14: opp-1376000000 {
++			opp-hz = /bits/ 64 <1376000000>;
++			opp-microvolt = <1018750>;
+ 		};
+ 
+ 		cci_opp_15: opp-1400000000 {
+-- 
+2.18.0
 
