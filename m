@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECF579A251
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91FA79A258
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbjIKEKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 00:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
+        id S233398AbjIKELJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 00:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjIKEK2 (ORCPT
+        with ESMTP id S233610AbjIKEKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 00:10:28 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9651CCA;
-        Sun, 10 Sep 2023 21:10:20 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38B4AG90130198;
-        Sun, 10 Sep 2023 23:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694405416;
-        bh=YujZEUssrlbH/9FGuudc+2vsBtPLhKL2GTlDe8Yd7MM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=XVNI1WN7qbxJ+9SfEaeEOqTKOIZhnIH1LqDQwOHLiJXMPBaMSdvL81fnw8VILhnRA
-         u7AugSvRS5ZOU+Mqo2qlUpca+n8QZ5TRg6mvAbsFXzPBf/shUjdzfXDodXv35WvXnn
-         /w4Q79zpcytlsuebp/6InDQIBLqPYqSzGYttja3Q=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38B4AGIV073588
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 10 Sep 2023 23:10:16 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 10
- Sep 2023 23:10:15 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 10 Sep 2023 23:10:15 -0500
-Received: from keerthy.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38B49mK2094719;
-        Sun, 10 Sep 2023 23:10:12 -0500
-From:   Keerthy <j-keerthy@ti.com>
-To:     <robh+dt@kernel.org>, <nm@ti.com>, <vigneshr@ti.com>,
-        <conor+dt@kernel.org>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>
-CC:     <j-keerthy@ti.com>, <u-kumar1@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 7/7] arm64: dts: ti: k3-j721s2-mcu: Add the main domain watchdog instances
-Date:   Mon, 11 Sep 2023 09:39:42 +0530
-Message-ID: <20230911040942.31031-8-j-keerthy@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230911040942.31031-1-j-keerthy@ti.com>
-References: <20230911040942.31031-1-j-keerthy@ti.com>
+        Mon, 11 Sep 2023 00:10:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B236EE7F;
+        Sun, 10 Sep 2023 21:10:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39338C433C9;
+        Mon, 11 Sep 2023 04:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694405431;
+        bh=S41KxFRM7F/NmmMk//E+BluTJ5Y6UZiLpvFzn731U5A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=eh0r4fiKVmf9rUYQaIZPdBHfJ0u363MVuSpO6iNV4jS+5kiBzDyZvWcYcJ5xBNs29
+         D1QpHGQUGO/XNuE1dz6ta789d4UaxQz8LS4qkuTyvjQ+OJx0TbYEfSKlwS3QM7KYHi
+         Rw5Ql5tWT8JVJhDnU7BdNi+FcyVl+6HhhFwMQUQTCVokI7cRhoMAH0e6yROLRZDnGw
+         4hk8x1ALxF3OFe5M7Nwvb1QqAswtFTkoTPQo9iO5XFzQn+FrtE7gmN/MUjwQnOXWdB
+         Dalz0As4ITxK0cvzFxl6oxpfLj0BUKqg+pCgG6dA1+HKF7U/lFMQSHV7eA0ipNvFNb
+         oHT7lFe6/VsGA==
+Received: (nullmailer pid 380490 invoked by uid 1000);
+        Mon, 11 Sep 2023 04:10:29 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+From:   Rob Herring <robh@kernel.org>
+To:     Saravanan Sekar <saravanan@linumiz.com>
+Cc:     sravanhome@gmail.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux@roeck-us.net, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, jdelvare@suse.com, conor+dt@kernel.org
+In-Reply-To: <20230911034150.181880-3-saravanan@linumiz.com>
+References: <20230911034150.181880-1-saravanan@linumiz.com>
+ <20230911034150.181880-3-saravanan@linumiz.com>
+Message-Id: <169440542910.380472.16578898431474841864.robh@kernel.org>
+Subject: Re: [PATCH 2/3] dt-bindings: regulator: Add mps,mpq2286
+ power-management IC
+Date:   Sun, 10 Sep 2023 23:10:29 -0500
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are totally 2 instances of watchdog module in MCU domain.
 
-Signed-off-by: Keerthy <j-keerthy@ti.com>
----
- .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+On Mon, 11 Sep 2023 09:11:49 +0530, Saravanan Sekar wrote:
+> Document mpq2286 power-management IC
+> 
+> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+> ---
+>  .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+> 
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-index e3f597f3e169..b5e3d6fb5e64 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi
-@@ -667,4 +667,24 @@
- 		reg = <0x00 0x42080000 0x00 0x1000>;
- 		ti,esm-pins = <63>;
- 	};
-+
-+	mcu_watchdog0: watchdog@40600000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40600000 0x00 0x100>;
-+		clocks = <&k3_clks 295 1>;
-+		power-domains = <&k3_pds 295 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 295 1>;
-+		assigned-clock-parents = <&k3_clks 295 5>;
-+		status = "disabled";
-+	};
-+
-+	mcu_watchdog1: watchdog@40610000 {
-+		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x40610000 0x00 0x100>;
-+		clocks = <&k3_clks 296 1>;
-+		power-domains = <&k3_pds 296 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 296 1>;
-+		assigned-clock-parents = <&k3_clks 296 5>;
-+		status = "disabled";
-+	};
- };
--- 
-2.17.1
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/mps,mpq2286.example.dtb: pmic@3: regulators: 'buck' does not match any of the regexes: 'pinctrl-[0-9]+'
+	from schema $id: http://devicetree.org/schemas/regulator/mps,mpq2286.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230911034150.181880-3-saravanan@linumiz.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
