@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B89A79BA5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C6379BD73
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349176AbjIKVcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        id S233044AbjIKUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244243AbjIKTsE (ORCPT
+        with ESMTP id S244284AbjIKTwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:48:04 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5B11A2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:48:00 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfmt0-0001wQ-C2; Mon, 11 Sep 2023 21:47:54 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfmsy-005cTP-2P; Mon, 11 Sep 2023 21:47:52 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfmsx-000lo0-DE; Mon, 11 Sep 2023 21:47:51 +0200
-Date:   Mon, 11 Sep 2023 21:47:51 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        jarkko.nikula@linux.intel.com
-Subject: Re: [PATCH v9 4/6] pwm: dwc: use clock rate in hz to avoid rounding
- issues
-Message-ID: <20230911194751.mohdwipo74ccgail@pengutronix.de>
-References: <20230907161242.67190-1-ben.dooks@codethink.co.uk>
- <20230907161242.67190-5-ben.dooks@codethink.co.uk>
- <20230907213419.aqzwoppznj5tx7w6@pengutronix.de>
- <d45c3d25-13ca-474f-a3e3-c295d3cea866@codethink.co.uk>
+        Mon, 11 Sep 2023 15:52:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED35D1A2;
+        Mon, 11 Sep 2023 12:52:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866FDC433C9;
+        Mon, 11 Sep 2023 19:51:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694461916;
+        bh=G21JeuejQT7napK47qwQ3mWfWxYoI1kT9b4AieRElDA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XnueDFqXkzFyd8n3fyZlYQAKlJIBZfDFoINZbyVigqXkeoXufs8jcHZg82KVuNI7r
+         91J32n+Ncb82W5eyqTQdsh48zTOED2Pbgb9HQoBBqVAdud96vmPof0kc4xzOYDehuS
+         0XK4sltwFQk72ufRQFVDcORXJMPSDNeOWcJmqlLj0Ua6ektyJ/lCUYOEjAZ5menhat
+         SdrPjcM4iW44wskRDxdYJDOO/rHhOLx9wdhM6ZF98sX6zAPfFcbwReSgikbeU67KjO
+         D1rKFX94GZ1rk4Ik4FENER19f9uvyPXX1whkALHDm5kHPSdPDg0F+/wCPl8lskpfaE
+         +8H+PoNQUjZmQ==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-501ce655fcbso7775506e87.2;
+        Mon, 11 Sep 2023 12:51:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwYO9y2Hj4TzmN1zdNpKtJxVrc4ICtyxwRoeYDTpdtPA4ctHkJi
+        nhG/2PlOm7Ebw4hsHt9pHPRKvFdCTaPrDy2fbg==
+X-Google-Smtp-Source: AGHT+IH5pf2sDl25rbz7w518Lh3YTl7THtqx7rSMbkIlLFoE0f3fSzHpolKm+Cb4RC/Jb0STKAIDjyLn35REO3cEScA=
+X-Received: by 2002:a05:6512:33c8:b0:502:a56b:65f7 with SMTP id
+ d8-20020a05651233c800b00502a56b65f7mr7434456lfg.16.1694461914773; Mon, 11 Sep
+ 2023 12:51:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uwxa5sotju3k4kg3"
-Content-Disposition: inline
-In-Reply-To: <d45c3d25-13ca-474f-a3e3-c295d3cea866@codethink.co.uk>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230901072730.13571-1-linux@fw-web.de>
+In-Reply-To: <20230901072730.13571-1-linux@fw-web.de>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 11 Sep 2023 14:51:42 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+f9bq5Mab9m1pzDeiw304TMeNDmJk+ofG6M8J9QD3cvQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+f9bq5Mab9m1pzDeiw304TMeNDmJk+ofG6M8J9QD3cvQ@mail.gmail.com>
+Subject: Re: [PATCH v1] arm64: dts: mt7986: add overlay for SATA power socket
+ on BPI-R3
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 1, 2023 at 2:27=E2=80=AFAM Frank Wunderlich <linux@fw-web.de> w=
+rote:
+>
+> From: Frank Wunderlich <frank-w@public-files.de>
+>
+> Bananapi R3 has a Power socket entended for using external SATA drives.
+> This Socket is off by default but can be switched with gpio 8.
+>
+> Add an overlay to activate it.
+>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>  arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+>  .../mt7986a-bananapi-bpi-r3-sata.dtso         | 39 +++++++++++++++++++
+>  2 files changed, 40 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r3-=
+sata.dtso
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/=
+mediatek/Makefile
+> index c99c3372a4b5..822d3e36d3df 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r=
+3-emmc.dtbo
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-nand.dtbo
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-nor.dtbo
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-sd.dtbo
+> +dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-sata.dtbo
 
---uwxa5sotju3k4kg3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The requirement for overlays is they have a target base dt in tree and
+that you apply the overlay to it. All these existing overlays have the
+same problem which I pointed out when you submitted them. Please fix
+the existing ones before adding more.
 
-Hello Ben,
 
-On Mon, Sep 11, 2023 at 08:33:02AM +0100, Ben Dooks wrote:
-> On 07/09/2023 22:34, Uwe Kleine-K=F6nig wrote:
-> > > +	duty *=3D NSEC_PER_SEC;
-> > > +	period *=3D NSEC_PER_SEC;
-> >=20
-> > A comment that/why this cannot overflow would be nice. (I didn't check,
-> > maybe it can?)
->=20
-> I /think/ that as long as NSEC_PER_SEC  2^32 then this shouldn't
-> overflow.
-
-I guess NSEC_PER_SEC won't change in the near future :-)
-
-double checking and writing the result down in a comment would be
-appreciated.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---uwxa5sotju3k4kg3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmT/buYACgkQj4D7WH0S
-/k7fkAf1HwAtY7KGch3Cs4SdN1Y6smI/ObhPJ69Yi+fc+PidJZKGgdJO4OOaWNmD
-cH1uqZwbQMe7W3ktv1bM7ZE85/IK9krstGiFKnEoiDSxzUqggCXo3yLr9jHuslzB
-OxwIreyiCJWTOp6L2DixbWd8JEm+RxVDjx4ZfOr+G45m4bT9Eic1pZVvw1HR/cL6
-LuAFKvhcqYygQ7WOa8ts1ZqkfmQ/vdR5fLCde7AUY7Y9r/fyB9fmmmiekxTX4HG1
-VGGanMyG2afGK3XVMimFeuezH1LZwr0b6JI7+CSFqzMHxy4MHdvjsubO4K7vTuWx
-PZBP5tENw1htEY5LYD0Jlr7hqzew
-=wPVQ
------END PGP SIGNATURE-----
-
---uwxa5sotju3k4kg3--
+Rob
