@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3F179C1CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C31C79C1AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbjILBnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S235395AbjILB3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235667AbjILBm5 (ORCPT
+        with ESMTP id S234552AbjILB3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:42:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432F29032
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:19:25 -0700 (PDT)
-Received: from [192.168.2.112] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 756AF66072EF;
-        Tue, 12 Sep 2023 00:42:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694475722;
-        bh=OrWMPUr9xPwnLGNG5ZZ649t03TEnkQ5xzPfCCOrwjzk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bdkmqOWWnk55xFgdFOACT+6rfydSIOpX7SnniGRcA4p2N8h9vRVMKm/y7OLu6xKZ2
-         Hb/AO/1RAjJ1xVJFzvvvegmg81DMjAFc2tx2lorj27emHCLTY/7gX66mhM/iuxXre4
-         YS08ebmyCGsPBrRwIRWOZAUrdFAB4c8Kj85ds8VudrCe5U3lSX7cuhUgpKX/2HTyi8
-         RHgGUQQu8TiSGvSzDAzwqmzFBbSzQ2KYtzKFTAD/bbhrUYCmq5yx8aywMX4zMUbv2H
-         qFq3nohe37BOrJBUuRSKc59EAbH/I51ZBwfjcvlV8X2b5ZF4NuAMcOO9E5IHwOyGoE
-         zFncu+0P3Yf0g==
-Message-ID: <297f5209-603e-a50d-c27b-8e50d23f86de@collabora.com>
-Date:   Tue, 12 Sep 2023 02:41:58 +0300
+        Mon, 11 Sep 2023 21:29:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5850D16479E;
+        Mon, 11 Sep 2023 18:13:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694481192; x=1726017192;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X1EJVBAr5si3B8nlNmvY+MmhcTC0HYp8CfIRkvp3yw4=;
+  b=LGtV9ftMf5MUgCtAGLT/Un2AIkm9nUYLxTV6psjV1Wp42cLwiU51Y7/5
+   vWTPZv7KpgNon6AGpB2zPFMQ7ALM0ypwkJCtE6CeUBoz435ifsFaxsoIn
+   1JvQlLVP3uSd31ykUuwD6d2Q0Yo0YrbKLWgASn7+pQ/1SB5p41y890kvP
+   JQdMfxEu9bTpx6TIOHbOH6PIA7qzt/5/XhkY1QEtIbTPImSdVhWMlCpYz
+   SBQWmKGgcbiECo+M9FVK/pjlYgmLkoyKW+uRv/SMNFfpao/+UqHzy2tnn
+   KHwrdfmcvhin2QrO8hMhph3aFfYOnD3my+F9coXKD+IVQPJkm2+8UxyH+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444673301"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="444673301"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 16:54:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="886733766"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="886733766"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2023 16:53:32 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfqj5-0006uM-1y;
+        Mon, 11 Sep 2023 23:53:55 +0000
+Date:   Tue, 12 Sep 2023 07:53:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dikshita Agarwal <quic_dikshita@quicinc.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH RFT 11/20] media: venus: core: Drop cache properties in
+ resource struct
+Message-ID: <202309120738.fip6vVJN-lkp@intel.com>
+References: <20230911-topic-mars-v1-11-a7d38bf87bdb@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v16 02/20] drm/shmem-helper: Use flag for tracking page
- count bumped by get_pages_sgt()
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
- <20230903170736.513347-3-dmitry.osipenko@collabora.com>
- <20230905094050.3c918a43@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230905094050.3c918a43@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911-topic-mars-v1-11-a7d38bf87bdb@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 10:40, Boris Brezillon wrote:
-> On Sun,  3 Sep 2023 20:07:18 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> Use separate flag for tracking page count bumped by shmem->sgt to avoid
->> imbalanced page counter during of drm_gem_shmem_free() time. It's fragile
->> to assume that populated shmem->pages at a freeing time means that the
->> count was bumped by drm_gem_shmem_get_pages_sgt(), using a flag removes
->> the ambiguity.
->>
->> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_gem_shmem_helper.c | 11 ++++++++++-
->>  drivers/gpu/drm/lima/lima_gem.c        |  1 +
->>  include/drm/drm_gem_shmem_helper.h     |  7 +++++++
->>  3 files changed, 18 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> index 6693d4061ca1..848435e08eb2 100644
->> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> @@ -152,8 +152,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->>  			sg_free_table(shmem->sgt);
->>  			kfree(shmem->sgt);
->>  		}
->> -		if (shmem->pages)
->> +		if (shmem->pages) {
->>  			drm_gem_shmem_put_pages(shmem);
->> +			drm_WARN_ON(obj->dev, !shmem->got_pages_sgt);
->> +		}
-> 
-> Already mentioned in v15, but I keep thinking the following:
-> 
-> 		if (shmem->sgt) {
-> 			// existing code in the preceding
-> 			// if (shmem->sgt) branch
-> 			...
-> 
-> 			/*
-> 			 * Release the implicit pages ref taken in
-> 			 * drm_gem_shmem_get_pages_sgt_locked().
-> 			 */
-> 			drm_gem_shmem_put_pages(shmem);
-> 		}
-> 
-> does exactly the same without requiring the addition of a new field.
+Hi Konrad,
 
-I'll factor out these "flag" patches into separate patchset since they
-cause too many questions. This is a fix for a minor bug that existed for
-many years and is difficult to trigger in practice, it can wait.
+kernel test robot noticed the following build warnings:
 
-For now will be better to focus on finishing and landing the refcnt and
-shrinker patches, the rest of drm-shmem core improvements can be done
-afterwards.
+[auto build test WARNING on 7bc675554773f09d88101bf1ccfc8537dc7c0be9]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/media-venus-pm_helpers-Only-set-rate-of-the-core-clock-in-core_clks_enable/20230912-051942
+base:   7bc675554773f09d88101bf1ccfc8537dc7c0be9
+patch link:    https://lore.kernel.org/r/20230911-topic-mars-v1-11-a7d38bf87bdb%40linaro.org
+patch subject: [PATCH RFT 11/20] media: venus: core: Drop cache properties in resource struct
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230912/202309120738.fip6vVJN-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120738.fip6vVJN-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120738.fip6vVJN-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/media/platform/qcom/venus/hfi_venus.c: In function 'venus_isr_thread':
+>> drivers/media/platform/qcom/venus/hfi_venus.c:1060:39: warning: variable 'res' set but not used [-Wunused-but-set-variable]
+    1060 |         const struct venus_resources *res;
+         |                                       ^~~
+
+
+vim +/res +1060 drivers/media/platform/qcom/venus/hfi_venus.c
+
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1056  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1057  static irqreturn_t venus_isr_thread(struct venus_core *core)
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1058  {
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1059  	struct venus_hfi_device *hdev = to_hfi_priv(core);
+4cb3548a87c4a3 Stanimir Varbanov 2017-06-15 @1060  	const struct venus_resources *res;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1061  	void *pkt;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1062  	u32 msg_ret;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1063  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1064  	if (!hdev)
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1065  		return IRQ_NONE;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1066  
+4cb3548a87c4a3 Stanimir Varbanov 2017-06-15  1067  	res = hdev->core->res;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1068  	pkt = hdev->pkt_buf;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1069  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1070  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1071  	while (!venus_iface_msgq_read(hdev, pkt)) {
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1072  		msg_ret = hfi_process_msg_packet(core, pkt);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1073  		switch (msg_ret) {
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1074  		case HFI_MSG_EVENT_NOTIFY:
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1075  			venus_process_msg_sys_error(hdev, pkt);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1076  			break;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1077  		case HFI_MSG_SYS_INIT:
+8b05e503e6c2dd Konrad Dybcio     2023-09-11  1078  			/* Disable OCMEM/VMEM unconditionally until support is added */
+8b05e503e6c2dd Konrad Dybcio     2023-09-11  1079  			venus_hfi_core_set_resource(core, VIDC_RESOURCE_NONE,
+8b05e503e6c2dd Konrad Dybcio     2023-09-11  1080  						    0,
+8b05e503e6c2dd Konrad Dybcio     2023-09-11  1081  						    0,
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1082  						    hdev);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1083  			break;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1084  		case HFI_MSG_SYS_RELEASE_RESOURCE:
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1085  			complete(&hdev->release_resource);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1086  			break;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1087  		case HFI_MSG_SYS_PC_PREP:
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1088  			complete(&hdev->pwr_collapse_prep);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1089  			break;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1090  		default:
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1091  			break;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1092  		}
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1093  	}
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1094  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1095  	venus_flush_debug_queue(hdev);
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1096  
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1097  	return IRQ_HANDLED;
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1098  }
+d96d3f30c0f2f5 Stanimir Varbanov 2017-06-15  1099  
 
 -- 
-Best regards,
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
