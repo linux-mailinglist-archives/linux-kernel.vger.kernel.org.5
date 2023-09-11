@@ -2,122 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9976A79BA3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB8679BFB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236191AbjIKWmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
+        id S233702AbjIKXUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 19:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357677AbjIKWFx (ORCPT
+        with ESMTP id S1350957AbjIKVm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 18:05:53 -0400
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780B022308
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:35:09 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so8158565e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694467745; x=1695072545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aEQHy8E6gWOE1flUwFUnaS7D8iHYGNq6LI3SdRK8uDk=;
-        b=ZBrPhiK4Y0dWc2PAYlIAmWa7TCnWtHEprmaFEMd6chcmN+OYiHhQv60xnSnIGJtCaw
-         rQJilhDtfaPfLsMhcN0L2figGgrKTveO8/HRKCnmEgSPL/igNip9FDkprfiEYkeQRa7n
-         iydApAjPbT/hiwUTFrO31u0FyI3yZpQ93xsiM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694467745; x=1695072545;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aEQHy8E6gWOE1flUwFUnaS7D8iHYGNq6LI3SdRK8uDk=;
-        b=YNad8Xy0h7iW47gXpk4/mNbt++AwSkxa4fpswbmrDeBzvZ/oYRmB5KHKedxgrpHWCQ
-         YW6WZviVxuPMNGO9EC/WcR4Usu1IL7hhSPArEeU92SkONezNrAjJ5g2i8bHCNIemBH+i
-         DF95SeqTX7rwYPttH59YkbLVnpHTIWzOEXm7nfSLaZS16ePHO4DUA9CY6j35/D1VafQF
-         80f/+e66JxpRRDRN4TzwKSIk8IB+bvX4CAbdHf0jB3rpH9F8xp5tRM3EKnOoffY47r2c
-         L/CCKc+X2SxUlv3qJheYHeEMSw/6C/JqNl5zf2gIDIkvluIMIAZWir/g7Ch3ArXDHpli
-         VNjw==
-X-Gm-Message-State: AOJu0Yz+eukfc13KohiF0U+XlOB9rmQD+r0nCb2Y//pOlI03l0gSRsm0
-        /2a+mq+0e51JrI5zsMG4rNpNfqsdyBlDdO4gwVOrIg1L
-X-Google-Smtp-Source: AGHT+IEhZezHlpvmd2XaqIu4HTut5QFwUdypsBBDFoXzLrX75fk2inlBbR2EzNzIA6VDgN6SmtCY7A==
-X-Received: by 2002:a05:6512:3ba9:b0:502:c950:592e with SMTP id g41-20020a0565123ba900b00502c950592emr778129lfv.25.1694466998000;
-        Mon, 11 Sep 2023 14:16:38 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id i10-20020a056512006a00b004ffa0350851sm1480454lfo.78.2023.09.11.14.16.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 14:16:36 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so83577221fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:16:36 -0700 (PDT)
-X-Received: by 2002:a05:651c:203:b0:2bc:f439:b5a5 with SMTP id
- y3-20020a05651c020300b002bcf439b5a5mr9138299ljn.14.1694466995798; Mon, 11 Sep
- 2023 14:16:35 -0700 (PDT)
+        Mon, 11 Sep 2023 17:42:27 -0400
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [IPv6:2001:4b98:dc4:8::240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34657DBD;
+        Mon, 11 Sep 2023 14:25:35 -0700 (PDT)
+Received: from relay3-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::223])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id AC672CDF42;
+        Mon, 11 Sep 2023 21:22:32 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 543F660007;
+        Mon, 11 Sep 2023 21:18:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dustri.org; s=gm1;
+        t=1694467271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=b0XvMYLh9/MC3gxuFXLDQKkOMU9w8ZJazb0YgA6oPTk=;
+        b=mPNTD/3CCFlTXK8D2tNaHmgm4PIe6xtxAwQ8tWGMhi9PN67MtdJceeexPzaWzCAMRhfY6j
+        VHP6P8F7h6MwB+kd/ARwiqBvFZ36hRdm28LMhLBiPBNrZxjV+PHHphwHne6fhpt2tyi8KU
+        NGfGgFCiKJnMUSEXwfdcE115+yUKuTYaRK+m6zVjehHHHnGedSyRUEjbmgyKhpHA05SNvA
+        XhJ0XRi30fADIBZt/cQtqBXCpAjS+hlDGD2V/djdSSCP46hkP2yz/1BYKqpBfBYngcoBZj
+        ORMLdx4mHn+rdWRU4lAaaMLaOzRa2CVqwcbCyVpXSZFufli89yIXcU8qKGh1Yw==
+Message-ID: <e14c547e-bb3f-4ede-8f0a-dcaa548fe5af@dustri.org>
+Date:   Mon, 11 Sep 2023 23:18:15 +0200
 MIME-Version: 1.0
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com> <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com> <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <20230911124856.453fba22@gandalf.local.home> <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
-In-Reply-To: <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 11 Sep 2023 14:16:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whc0Jsji_h-vLyDLT6Q-NCjSTMOg9qXACmoPZOdWqMovg@mail.gmail.com>
-Message-ID: <CAHk-=whc0Jsji_h-vLyDLT6Q-NCjSTMOg9qXACmoPZOdWqMovg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, tglx@linutronix.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+To:     gongruiqi@huaweicloud.com
+Cc:     42.hyeyoo@gmail.com, akpm@linux-foundation.org,
+        aleksander.lobakin@intel.com, cl@linux.com, dennis@kernel.org,
+        dvyukov@google.com, elver@google.com, glider@google.com,
+        gongruiqi1@huawei.com, iamjoonsoo.kim@lge.com, jannh@google.com,
+        jmorris@namei.org, keescook@chromium.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, paul@paul-moore.com, pedro.falcato@gmail.com,
+        penberg@kernel.org, rientjes@google.com, roman.gushchin@linux.dev,
+        serge@hallyn.com, tj@kernel.org, vbabka@suse.cz,
+        wangweiyang2@huawei.com, xiujianfeng@huawei.com
+References: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
+Subject: Re: [PATCH v5] Randomized slab caches for kmalloc()
+Content-Language: en-US
+From:   jvoisin <julien.voisin@dustri.org>
+Autocrypt: addr=julien.voisin@dustri.org; keydata=
+ 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
+ 766VTOg4l2PTPCnIdNFy1Os=
+In-Reply-To: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: julien.voisin@dustri.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 13:50, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Except we've actually been *adding* to this whole mess, rather than
-> removing it. So we have actively *expanded* on that preemption choice
-> with PREEMPT_DYNAMIC.
+I wrote a small blogpost[1] about this series, and was told[2] that it
+would be interesting to share it on this thread, so here it is, copied
+verbatim:
 
-Actually, that config option makes no sense.
+Ruiqi Gong and Xiu Jianfeng got their
+[Randomized slab caches for
+kmalloc()](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c6152940584290668b35fa0800026f6a1ae05fe)
+patch series merged upstream, and I've and enough discussions about it to
+warrant summarising them into a small blogpost.
 
-It makes the sched_cond() behavior conditional with a static call.
+The main idea is to have multiple slab caches, and pick one at random
+based on
+the address of code calling `kmalloc()` and a per-boot seed, to make
+heap-spraying harder.
+It's a great idea, but comes with some shortcomings for now:
 
-But all the *real* overhead is still there and unconditional (ie all
-the preempt count updates and the "did it go down to zero and we need
-to check" code).
+- Objects being allocated via wrappers around `kmalloc()`, like
+`sock_kmalloc`,
+  `f2fs_kmalloc`, `aligned_kmalloc`, … will end up in the same slab cache.
+- The slabs needs to be pinned, otherwise an attacker could
+[feng-shui](https://en.wikipedia.org/wiki/Heap_feng_shui) their way
+  into having the whole slab free'ed, garbage-collected, and have a slab for
+  another type allocated at the same VA. [Jann Horn](https://thejh.net/)
+and [Matteo Rizzo](https://infosec.exchange/@nspace) have a [nice
+  set of
+patches](https://github.com/torvalds/linux/compare/master...thejh:linux:slub-virtual-upstream),
+  discussed a bit in [this Project Zero
+blogpost](https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html),
+  for a feature called [`SLAB_VIRTUAL`](
+https://github.com/torvalds/linux/commit/f3afd3a2152353be355b90f5fd4367adbf6a955e),
+  implementing precisely this.
+- There are 16 slabs by default, so one chance out of 16 to end up in
+the same
+  slab cache as the target.
+- There are no guard pages between caches, so inter-caches overflows are
+  possible.
+- As pointed by
+[andreyknvl](https://twitter.com/andreyknvl/status/1700267669336080678)
+  and [minipli](https://infosec.exchange/@minipli/111045336853055793),
+  the fewer allocations hitting a given cache means less noise,
+  so it might even help with some heap feng-shui.
+- minipli also pointed that "randomized caches still freely
+  mix kernel allocations with user controlled ones (`xattr`, `keyctl`,
+`msg_msg`, …).
+  So even though merging is disabled for these caches, i.e. no direct
+overlap
+  with `cred_jar` etc., other object types can still be targeted (`struct
+  pipe_buffer`, BPF maps, its verifier state objects,…). It’s just a
+matter of
+  probing which allocation index the targeted object falls into.",
+  but I considered this out of scope, since it's much more involved;
+  albeit something like
+[`CONFIG_KMALLOC_SPLIT_VARSIZE`](https://github.com/thejh/linux/blob/slub-virtual/MITIGATION_README)
+  wouldn't significantly increase complexity.
 
-That just seems stupid. It seems to have all the overhead of a
-preemptible kernel, just not doing the preemption.
+Also, while code addresses as a source of entropy has historically be a
+great
+way to provide [KASLR](https://lwn.net/Articles/569635/) bypasses,
+`hash_64(caller ^
+random_kmalloc_seed, ilog2(RANDOM_KMALLOC_CACHES_NR + 1))` shouldn't
+trivially
+leak offsets.
 
-So I must be mis-reading this, or just missing something important.
+The segregation technique is a bit like a weaker version of grsecurity's
+[AUTOSLAB](https://grsecurity.net/how_autoslab_changes_the_memory_unsafety_game),
+or a weaker kernel-land version of
+[PartitionAlloc](https://chromium.googlesource.com/chromium/src/+/master/base/allocator/partition_allocator/PartitionAlloc.md),
+but to be fair, making use-after-free exploitation harder, and significantly
+harder once pinning lands, with only ~150 lines of code and negligible
+performance impact is amazing and should be praised. Moreover, I wouldn't be
+surprised if this was backported in [Google's
+KernelCTF](https://google.github.io/security-research/kernelctf/rules.html)
+soon, so we should see if my analysis is correct.
 
-The real cost seems to be
+1.
+https://dustri.org/b/some-notes-on-randomized-slab-caches-for-kmalloc.html
+2. https://infosec.exchange/@vbabka@social.kernel.org/111046740392510260
 
-   PREEMPT_BUILD -> PREEMPTION -> PREEMPT_COUNT
+-- 
+Julien (jvoisin) Voisin
+GPG: 04D041E8171901CC
+dustri.org
 
-and PREEMPT vs PREEMPT_DYNAMIC makes no difference to that, since both
-will end up with that, and thus both cases will have all the spinlock
-preempt count stuff.
-
-There must be some non-preempt_count cost that people worry about.
-
-Or maybe I'm just mis-reading the Kconfig stuff entirely. That's
-possible, because this seems *so* pointless to me.
-
-Somebody please hit me with a clue-bat to the noggin.
-
-                Linus
