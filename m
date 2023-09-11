@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F185179A497
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32ECF79A49D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbjIKHdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        id S234235AbjIKHet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjIKHdg (ORCPT
+        with ESMTP id S229761AbjIKHes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:33:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2A7CE3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:32:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694417567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ti9FCfW1EJ3qUQT7yyqBbpgulOtJV84klUH5rxYtG5k=;
-        b=WxniAN6eLKqyE25VuIO9t7mczbaD446EqnmITJ3Sf9YqKFpjr2/Vh3UnN2dLBailSvP2jx
-        8CPJ8crnz4ExJ/wmdBUZSiWHTi8Uc5q+mno2WOVhYPPUqXnAsVUBws6HjB95leGdouQWZ9
-        zUnzkmEu1PwwMQidUgpCoOMIzZi4B/o=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-80-nl1WGxcDNYOrds3R2T2x5w-1; Mon, 11 Sep 2023 03:32:45 -0400
-X-MC-Unique: nl1WGxcDNYOrds3R2T2x5w-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-98e40d91fdfso284511566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:32:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694417564; x=1695022364;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ti9FCfW1EJ3qUQT7yyqBbpgulOtJV84klUH5rxYtG5k=;
-        b=i4JkRFMXrxEF3E83+JYQw3VSX5JBsxJ9C14TjgvFwmG0r2113A3atTfjI6oNBKx526
-         Eag4eDBmEjAwM0hHo3xIIwt5CggaSSrENH7nEzfOBBT4ymwShHBx0CkSQUA6g7s87+RD
-         7DtyV1Iqv5A+Wmfppv2glDpdjXGaolBRzmXJL4BCHthrd/rlMugOiGdUtsRMSy4M4+cW
-         SKFvAQMuK6Rg+Nfi+39XRhTskfpor0I7ztdQUTjKoDjxJ3AwuEuWdMfW4xcsb3Uub3/y
-         sGuxTF6y+Vp7NrB+9ZIDgzDQyWuBjZaBSu0xlfuAgnpjvgilNVDtUTIUEG9GauAnZ70G
-         2l8g==
-X-Gm-Message-State: AOJu0YzKTsi6DsMVQ70HTE4UPvEv7qsG4law/ZeYHyZm6V/Rw+P+jB/d
-        lmVKMo8HO4J8mIvnCoC3db89t/YRWm5bi3DhEzNRoCKkCUpYb3Vt2wpF14L7cyNIZVFugpnICDK
-        Vb6lfdUstwTfa9wU5k2W/3UkN
-X-Received: by 2002:a17:906:9713:b0:9a1:be5b:f4aa with SMTP id k19-20020a170906971300b009a1be5bf4aamr6744838ejx.0.1694417564842;
-        Mon, 11 Sep 2023 00:32:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IExhalxJVf0F18gM/jp5U3ZKr9e554M+9sO0YAvyRPyjka+NsJmLY4uGpzCLIAn+0gN52Sy4w==
-X-Received: by 2002:a17:906:9713:b0:9a1:be5b:f4aa with SMTP id k19-20020a170906971300b009a1be5bf4aamr6744823ejx.0.1694417564487;
-        Mon, 11 Sep 2023 00:32:44 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id g1-20020a170906394100b0099bc038eb2bsm4835138eje.58.2023.09.11.00.32.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 00:32:43 -0700 (PDT)
-Message-ID: <9d2dff10-5a3b-b24a-c3d8-3c843891966d@redhat.com>
-Date:   Mon, 11 Sep 2023 09:32:42 +0200
+        Mon, 11 Sep 2023 03:34:48 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D242CCD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:34:43 -0700 (PDT)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230911073441epoutp0259133d651bf835f1ba594340ced84627~Dx_dV4DdB1311513115epoutp02W
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:34:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230911073441epoutp0259133d651bf835f1ba594340ced84627~Dx_dV4DdB1311513115epoutp02W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694417681;
+        bh=IKpHLoRkEZ25dLla5ObOQQje8kvo8BLHGCCdBwGXhCQ=;
+        h=From:To:In-Reply-To:Subject:Date:References:From;
+        b=XxjfDhCcXxzOKarTNZ9pAXPpP8Q4gLvv6bir/t7tkAbWvHMOzT0cpN5vdNTZaU7sA
+         BOhlva9HDN+apw/ckIVrp16Ep7IjDyxluAXc6zTii3lVvkxEO496qD3gDtHOgKRSI9
+         5y4rEbOBSFYtjQGhh3GPP9mC6nhL08+30060ifgg=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230911073438epcas2p1ee7b4aba97e141f987e4b4e65d6bc33d~Dx_bK0NqM0846908469epcas2p10;
+        Mon, 11 Sep 2023 07:34:38 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.101]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4RkdlL2RDjz4x9Q6; Mon, 11 Sep
+        2023 07:34:38 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        59.EB.09765.E03CEF46; Mon, 11 Sep 2023 16:34:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230911073437epcas2p13fff13f4756dd4949cf88c3716d3011c~Dx_aJN0Kp0659906599epcas2p12;
+        Mon, 11 Sep 2023 07:34:37 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230911073437epsmtrp1b3a429076c6b686e3f7813b1dcca8ce6~Dx_aIW3Oq2620326203epsmtrp1R;
+        Mon, 11 Sep 2023 07:34:37 +0000 (GMT)
+X-AuditID: b6c32a48-40fff70000002625-59-64fec30edf42
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AE.51.08649.D03CEF46; Mon, 11 Sep 2023 16:34:37 +0900 (KST)
+Received: from KORCO011456 (unknown [10.229.38.105]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230911073437epsmtip1bc7841b7be0509ff455477cc2e20a694~Dx_Z3PnS61614516145epsmtip1G;
+        Mon, 11 Sep 2023 07:34:37 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <beanhuo@micron.com>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <kwangwon.min@samsung.com>, <junwoo80.lee@samsung.com>,
+        <wkon.kim@samsung.com>
+In-Reply-To: <1694051306-172962-1-git-send-email-kwmad.kim@samsung.com>
+Subject: RE: [PATCH v4] ufs: poll pmc until another pa request is completed
+Date:   Mon, 11 Sep 2023 16:34:37 +0900
+Message-ID: <000801d9e482$6b023b10$4106b130$@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] USB: add ignore remote wakeup quirk for one of Logitech's
- receivers
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        linux-usb@vger.kernel.org
-Cc:     stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        =?UTF-8?Q?=c5=81ukasz_Bartosik?= <lb@semihalf.com>,
-        Nicolas Dumazet <ndumazet@google.com>,
-        Jean-Francois Le Fillatre <jflf_kernel@gmx.com>,
-        Mark Pearson <mpearson-lenovo@squebb.ca>,
-        Hannu Hartikainen <hannu@hrtk.in>, linux-kernel@vger.kernel.org
-References: <20230910163751.4210-1-someguy@effective-light.com>
-Content-Language: en-US
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230910163751.4210-1-someguy@effective-light.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQHCOs06MSlmgDNb/VB40Dx452KEGwMC5LjvsCx3ivA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGJsWRmVeSWpSXmKPExsWy7bCmqS7f4X8pBu9+CFicfLKGzeLBvG1s
+        Fi9/XmWzOPiwk8Vi2oefzBarFz9gsVh0YxuTxa6/zUwWW2/sZLG4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LBabL31jceD3uHzF22PxnpdMHhMWHWD0+L6+g83j49NbLB59W1YxenzeJOfR
+        fqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0z
+        B+h4JYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWleul5eaomVoYGB
+        kSlQYUJ2xoH3YgUrGSuObp3G3MDYydjFyMkhIWAi8XDzKnYQW0hgB6PE7x/yEPYnRokbs3m6
+        GLmA7G+MEp3HHrLDNEy//ogRIrGXUeJwx0ImCOclo8S0Tf/AxrIJaEtMe7ibFSQhItDHLHFx
+        2QIWkASngLvEo32f2boYOTiEBbwlTvRYgoRZBFQlfjz+wg4S5hWwlJj/SAYkzCsgKHFy5hOw
+        TmYBeYntb+cwQxyhIPHz6TJWiLiIxOzONmaQVhEBK4lv+9lBtkoI3OGQmP7uDytIXELARWL5
+        cS+IVmGJV8e3QP0iJfGyv40doiRbYs9CMYhwhcTiaW9ZIGxjiVnP2hlBSpgFNCXW79KHqFaW
+        OHIL6i4+iY7Df6GG8Ep0tAlBNCpL/Jo0GRrIkhIzb96B2ukh0XPrLMsERsVZSD6cheTDWUi+
+        moWwdwEjyypGsdSC4tz01GKjAhN4LCfn525iBCdoLY8djLPfftA7xMjEwXiIUYKDWUmEt+TQ
+        3xQh3pTEyqrUovz4otKc1OJDjKbAIJ/ILCWanA/MEXkl8YYmlgYmZmaG5kamBuZK4rz3Wuem
+        CAmkJ5akZqemFqQWwfQxcXBKNTAlXvHpXxN75bfXwTvplnVd266f1Z9U2hr26FWUidz5v46v
+        GQv4LOsqKpaxhIYlyAdkCiUfS5Th11yyvmGXaKFYWL9+0IRtKzc4lO39ZSbdfqE/5eeSaZfC
+        JllMZvqk+Idx6uuYkmn9gi3e1mJqf265+3rV6HXUa3Qd+HZaZOJ2/qtGJ9pdmdx3PfgQXhjx
+        6nXlvPNSbBxFZ7fqXdzb4Du1S4xb1ezilU+Wz+54z77+as2CM882zJz74onBoVqRufod52o6
+        yv3nWiXdtN34Ret+tOz+g832/Ukzz1xa9kTk+ew1yipzXzVNrHDYkrx6C/O5khOaPjevMX24
+        XxZ1O1518cQ0mX//bX9MMup7zsijxFKckWioxVxUnAgAy6biiFkEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsWy7bCSnC7v4X8pBo//aVqcfLKGzeLBvG1s
+        Fi9/XmWzOPiwk8Vi2oefzBarFz9gsVh0YxuTxa6/zUwWW2/sZLG4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LBabL31jceD3uHzF22PxnpdMHhMWHWD0+L6+g83j49NbLB59W1YxenzeJOfR
+        fqCbKYAjissmJTUnsyy1SN8ugSvjwHuxgpWMFUe3TmNuYOxk7GLk5JAQMJGYfv0RmC0ksJtR
+        Yt1bDoi4pMSJnc+haoQl7rccYYWoec4o0bFAFsRmE9CWmPZwN1Cci0NEYAGzxLXVS1lAHCGB
+        GYwS33s7mECqOAXcJR7t+8zWxcjBISzgLXGixxIkzCKgKvHj8Rd2kDCvgKXE/EcyIGFeAUGJ
+        kzOfsIDYzEDzex+2MkLY8hLb385hhrhHQeLn02WsEHERidmdbcwgY0QErCS+7WefwCg0C8mk
+        WUgmzUIyaRaS7gWMLKsYJVMLinPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYJjU0tjB+O9+f/0
+        DjEycTAeYpTgYFYS4S059DdFiDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkpQgLpiSWp2amp
+        BalFMFkmDk6pBqap//3WezBWSqdOyu721WBgj3rXbh/LVb7v9uPkN/uar7a4n77OGhrt9uiI
+        /+JXi3hmz+TrP9LfZsoWdLnDJ8yS6ebaqIuh+dtrFXa6rFrht3TfQ4vfqz/3fnA+VdP3a+K6
+        E/8bJp+Wu8Qb16DEdGnxny8cTr9YlzG4qv245SPz4krrj1r1dfuOeP3+dShpyxOTJuPdgRoz
+        1d7tfzV9p3980mqrO6y27/PPRZ9TF91+40DO7Ef+ij+7Hl+ZESNo/TE+sklPLiltvkG20s/5
+        1Z9bzpx6P73rkmev9slJx3a37he2PZl4+uGio9fP/vzE8rrs2JL1a07MtN98I/CXxuVT547k
+        /WzX/jnlhIZx+Yq+tUosxRmJhlrMRcWJAF7f30U8AwAA
+X-CMS-MailID: 20230911073437epcas2p13fff13f4756dd4949cf88c3716d3011c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8
+References: <CGME20230907015925epcas2p3b9850bb03126e9caa43530e164884ae8@epcas2p3.samsung.com>
+        <1694051306-172962-1-git-send-email-kwmad.kim@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hamza,
-
-On 9/10/23 18:37, Hamza Mahfooz wrote:
-> This device causes the system to wake up from suspend, as soon as it
-> enters it (even if the device attached to the receiver is powered off).
-> So, ignore remote wakeup events from it.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
-> ---
->  drivers/usb/core/quirks.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> index 15e9bd180a1d..d2e2a2873f34 100644
-> --- a/drivers/usb/core/quirks.c
-> +++ b/drivers/usb/core/quirks.c
-> @@ -264,6 +264,10 @@ static const struct usb_device_id usb_quirk_list[] = {
->  	/* Logitech Harmony 700-series */
->  	{ USB_DEVICE(0x046d, 0xc122), .driver_info = USB_QUIRK_DELAY_INIT },
->  
-> +	/* Logitech lightspeed receiver (0xc547) */
-> +	{ USB_DEVICE(0x046d, 0xc547), .driver_info =
-> +			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
-> +
->  	/* Philips PSC805 audio device */
->  	{ USB_DEVICE(0x0471, 0x0155), .driver_info = USB_QUIRK_RESET_RESUME },
->  
-
-If this is a lightspeed receiver then it really should be handled by
-hid-logitech-dj.c unless this new receiver is using a new protocol ?
-
-I wonder if adding it there also fixes the remote
-wakeup issue (I doubt it fixes it but worth a try) ?
-
-Regards,
-
-Hans
-
+Thinking again, removing the mutex completely doesn't seem properly
+because this could hurting atomicity of UIC command process.
+Let me modify and post it again.
 
 
