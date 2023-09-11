@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2654079BCBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184C579B8EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbjIKUxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
+        id S240102AbjIKWja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235900AbjIKJpz (ORCPT
+        with ESMTP id S235904AbjIKJqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:45:55 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE0FE4E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:45:34 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68cc1b70e05so1080976b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:45:34 -0700 (PDT)
+        Mon, 11 Sep 2023 05:46:17 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9FCE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:46:11 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0efe0c4acso7083875ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425534; x=1695030334; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694425571; x=1695030371; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oUoMNQAb0HDNERTf3y3lU6vkCLiBk8akZS8yI7+n5rc=;
-        b=CoasD1d31XlhCnitJBmmOtobDcAOcLVXMBlgePDlpoEVWi0XIhce2Lb2mpsz2Ugdfc
-         m5ujhriWdZWO/81Hj+NDQkqrJC00K/OVER7H6X6v3TqPNuIKQoRrXw6WVNHrnQLmpJPz
-         VjADbX3K3BL37cRJTTf8iXGaaYyWoePNhT4x5emVAvXq1HpwHQ0fSPYTug38SORXF+qr
-         gel4ubEo5a4MM/zNKOIfpbAuZsg8QFL+6qF2IbrUzzOuGPmQFzkRHkVFrcBtv/n7PDBE
-         TRxQrYm3qtEt2VINVOICoQ+h467/wwoV4HZ6nB9tkKptwobT/ibvywYWgSaq0vob9VrM
-         zCIw==
+        bh=r2z5ZP0td7rQio33ZrusFB6X25vGZrzEp4fIJ4zc7l4=;
+        b=HSpP6V8JhO7VGQ498iaJcQvf8Rf9W7pEOTG1Ylcv2Z5iBXeI/rdJxydxeluCIFALFF
+         hE3FoN2SSZFvLUUx5tuOuipaYQO4NG8Tj8eqJqZjzEO41XsOBWN8QW+qM5acytu3VIri
+         m8ONKUMBc77sU11Nt9RAHikB/6NJkdOBnxfrX4sVFsa6KUYLDZyp+FJkmWucWmZTDeDP
+         lC3rnkG5+7K/WokzPQTHdFqbe8ciitg2sgANNs4xKEDdcCLqHvtKaMvR5IOmXhXWgthz
+         bMXrnaSNT7hOdAZOMwN7kklUzK0Pcl/OrFRkFJtCgij1xk9cfdi6EL71tlk7HOQ47nYH
+         wScQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425534; x=1695030334;
+        d=1e100.net; s=20230601; t=1694425571; x=1695030371;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oUoMNQAb0HDNERTf3y3lU6vkCLiBk8akZS8yI7+n5rc=;
-        b=emfdFZKBmz79LgkO2sKh6tOOJ7U0gHjqfAngWFfNMA6TvnYWaLiPZWsg3fNSrijAHb
-         kekW2zDKKSeT3bnOSb3Du9xCfNrLlYzPsTGf33v2K5QkIvPB6Vse1jopDmK0o8t8S49m
-         blMQdyyzs1gVOzwbgl6EqkxdL6KbEjUKaZVsrnz0rkRJbFRievH8UpCrmur8vMoy2mmN
-         8oOT1snPXYnPgk3fPBhG5RSehq6F8FGOJut3kgW9qxhxtFWz+I1h5NdpYubGb7sBqPrn
-         A2OwcEVXqB8r+V30evc12kd3oCehyylFENHI/j/mcQeVB+0nGzOYXi1BY6InxfOFwRI1
-         Qt0A==
-X-Gm-Message-State: AOJu0YxYZf8nE8V91RRNFLOhXwtoI4k5HL7WQYjdxEYVw27POraYFYve
-        nEcI+aoRv904D73jdXe58DDwHw==
-X-Google-Smtp-Source: AGHT+IFTLTKyDsfu1NylfkAEUjAx8ahS4NnLvg9xanza3vKrJB8S7jYrE7HTHnlVMC2Ur/FZ9D9EPw==
-X-Received: by 2002:a05:6a20:394c:b0:13d:7aa3:aa6c with SMTP id r12-20020a056a20394c00b0013d7aa3aa6cmr9989617pzg.0.1694425533979;
-        Mon, 11 Sep 2023 02:45:33 -0700 (PDT)
+        bh=r2z5ZP0td7rQio33ZrusFB6X25vGZrzEp4fIJ4zc7l4=;
+        b=CnngHVoAwGkME7pMxRb5oCs35RSSuq1uYBlKl7nfw/e8ImsMNzcLIAXOD/3O1rtyfO
+         VlziDzJsJL7p27/RXf8DD+wTgHuW34RvzfxneMxSD7hZwjRFhTgfqlN5LxBkBivq9xqS
+         gdjMACCA/0YdOHtktN0YoyPuded+erSD5SK2VRHLdxnLuyFT+cZl+ueERBwt22+RO8H+
+         hE/PsMj6J77dZSPEuWXNYCOnqXShgYGRyuu+bpwF4UdvUUZ/3BKUoE8cmmnH9Cm8qZv2
+         VD3ECMA+AbYnH67n2XgCsZOOpHrW68pPj4Ni188fMu3hVqcoLCwjJujZ35rmMNCFZAHA
+         XZdg==
+X-Gm-Message-State: AOJu0YwKpy/P8vVIQc5EK9qU210sqmmepdWI3s80y/KruCLTmJHY2gri
+        VECkZ658ijTpKOwkZlEZcPb4Ag==
+X-Google-Smtp-Source: AGHT+IGMazOb/vYj+YAbB56aNimJAjHvQ95oEZj3vNPDNUhDjsPyS/sjYbZ6xZxadrVaoBmmMuhKhg==
+X-Received: by 2002:a17:902:da92:b0:1b8:2ba0:c9a8 with SMTP id j18-20020a170902da9200b001b82ba0c9a8mr11823440plx.2.1694425571312;
+        Mon, 11 Sep 2023 02:46:11 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.45.24
+        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.46.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:45:33 -0700 (PDT)
+        Mon, 11 Sep 2023 02:46:10 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -61,10 +61,11 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>,
-        Carlos Llamas <cmllamas@google.com>
-Subject: [PATCH v6 03/45] binder: dynamically allocate the android-binder shrinker
-Date:   Mon, 11 Sep 2023 17:44:02 +0800
-Message-Id: <20230911094444.68966-4-zhengqi.arch@bytedance.com>
+        Chao Yu <chao@kernel.org>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH v6 07/45] f2fs: dynamically allocate the f2fs-shrinker
+Date:   Mon, 11 Sep 2023 17:44:06 +0800
+Message-Id: <20230911094444.68966-8-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
 References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
@@ -79,70 +80,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new APIs to dynamically allocate the android-binder shrinker.
+Use new APIs to dynamically allocate the f2fs-shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Carlos Llamas <cmllamas@google.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Chao Yu <chao@kernel.org>
+CC: Jaegeuk Kim <jaegeuk@kernel.org>
+CC: linux-f2fs-devel@lists.sourceforge.net
 ---
- drivers/android/binder_alloc.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ fs/f2fs/super.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index e3db8297095a..138f6d43d13b 100644
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -1053,11 +1053,7 @@ binder_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 			    NULL, sc->nr_to_scan);
- }
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index a8c8232852bb..fe25ff9cebbe 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -83,11 +83,26 @@ void f2fs_build_fault_attr(struct f2fs_sb_info *sbi, unsigned int rate,
+ #endif
  
--static struct shrinker binder_shrinker = {
--	.count_objects = binder_shrink_count,
--	.scan_objects = binder_shrink_scan,
+ /* f2fs-wide shrinker description */
+-static struct shrinker f2fs_shrinker_info = {
+-	.scan_objects = f2fs_shrink_scan,
+-	.count_objects = f2fs_shrink_count,
 -	.seeks = DEFAULT_SEEKS,
 -};
-+static struct shrinker *binder_shrinker;
- 
- /**
-  * binder_alloc_init() - called by binder_open() for per-proc initialization
-@@ -1077,19 +1073,29 @@ void binder_alloc_init(struct binder_alloc *alloc)
- 
- int binder_alloc_shrinker_init(void)
- {
--	int ret = list_lru_init(&binder_alloc_lru);
-+	int ret;
- 
--	if (ret == 0) {
--		ret = register_shrinker(&binder_shrinker, "android-binder");
--		if (ret)
--			list_lru_destroy(&binder_alloc_lru);
-+	ret = list_lru_init(&binder_alloc_lru);
-+	if (ret)
-+		return ret;
++static struct shrinker *f2fs_shrinker_info;
 +
-+	binder_shrinker = shrinker_alloc(0, "android-binder");
-+	if (!binder_shrinker) {
-+		list_lru_destroy(&binder_alloc_lru);
++static int __init f2fs_init_shrinker(void)
++{
++	f2fs_shrinker_info = shrinker_alloc(0, "f2fs-shrinker");
++	if (!f2fs_shrinker_info)
 +		return -ENOMEM;
- 	}
--	return ret;
 +
-+	binder_shrinker->count_objects = binder_shrink_count;
-+	binder_shrinker->scan_objects = binder_shrink_scan;
++	f2fs_shrinker_info->count_objects = f2fs_shrink_count;
++	f2fs_shrinker_info->scan_objects = f2fs_shrink_scan;
 +
-+	shrinker_register(binder_shrinker);
++	shrinker_register(f2fs_shrinker_info);
 +
 +	return 0;
- }
++}
++
++static void f2fs_exit_shrinker(void)
++{
++	shrinker_free(f2fs_shrinker_info);
++}
  
- void binder_alloc_shrinker_exit(void)
- {
--	unregister_shrinker(&binder_shrinker);
-+	shrinker_free(binder_shrinker);
- 	list_lru_destroy(&binder_alloc_lru);
- }
- 
+ enum {
+ 	Opt_gc_background,
+@@ -4944,7 +4959,7 @@ static int __init init_f2fs_fs(void)
+ 	err = f2fs_init_sysfs();
+ 	if (err)
+ 		goto free_garbage_collection_cache;
+-	err = register_shrinker(&f2fs_shrinker_info, "f2fs-shrinker");
++	err = f2fs_init_shrinker();
+ 	if (err)
+ 		goto free_sysfs;
+ 	err = register_filesystem(&f2fs_fs_type);
+@@ -4989,7 +5004,7 @@ static int __init init_f2fs_fs(void)
+ 	f2fs_destroy_root_stats();
+ 	unregister_filesystem(&f2fs_fs_type);
+ free_shrinker:
+-	unregister_shrinker(&f2fs_shrinker_info);
++	f2fs_exit_shrinker();
+ free_sysfs:
+ 	f2fs_exit_sysfs();
+ free_garbage_collection_cache:
+@@ -5021,7 +5036,7 @@ static void __exit exit_f2fs_fs(void)
+ 	f2fs_destroy_post_read_processing();
+ 	f2fs_destroy_root_stats();
+ 	unregister_filesystem(&f2fs_fs_type);
+-	unregister_shrinker(&f2fs_shrinker_info);
++	f2fs_exit_shrinker();
+ 	f2fs_exit_sysfs();
+ 	f2fs_destroy_garbage_collection_cache();
+ 	f2fs_destroy_extent_cache();
 -- 
 2.30.2
 
