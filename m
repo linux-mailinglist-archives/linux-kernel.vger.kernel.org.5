@@ -2,276 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFD179B854
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FE679BFBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356268AbjIKWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        id S1354923AbjIKVzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244294AbjIKT7Z (ORCPT
+        with ESMTP id S244295AbjIKT76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:59:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DBD1B6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:59:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 27DEC21847;
-        Mon, 11 Sep 2023 19:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694462359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=+p2m7UgnkUSiHTyAXD1jna8XsdMkwtgK1kLByeG9vTM=;
-        b=ntjmq27GM80x+OpYvzystCexsbSMssz3V/bcKXNWrLKXkt6ssrX7IAub5UphM0J68yJGWU
-        039VterJyEzk9v+6YzpDewzfGUS1ceqwMszUcj9ZsFn1Sw4uBSWje2Vnt/W6uwSGUwVTqp
-        ozgRyW6cr6Q6DVkCpT7R5QmOZTQzwig=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694462359;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=+p2m7UgnkUSiHTyAXD1jna8XsdMkwtgK1kLByeG9vTM=;
-        b=Er7ZVz3PZBGapE6XeyryHbpPiio0XAGGCwQaEOAPSWDbzrb+UdKXWz6DuFn2edOqvG2sPF
-        AG7RmlI+qZWObJCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EF94913780;
-        Mon, 11 Sep 2023 19:59:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FayhOZZx/2Q7aAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 19:59:18 +0000
-Message-ID: <e3186253-ce35-4634-8380-bd8da0c6d6fe@suse.cz>
-Date:   Mon, 11 Sep 2023 21:59:18 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: page_alloc: fix cma pageblock was stolen in rmqueue
- fallback
-Content-Language: en-US
+        Mon, 11 Sep 2023 15:59:58 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2078.outbound.protection.outlook.com [40.107.244.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2996F1B6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:59:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZWVIEggbiTrmniiIztFl/BUsFwiqCFrbeT1jTWN1mxxIMhI+VYxldlmmjPGBnSIu4P0yUFGcqK5pCo8v8fwIV/+8mdAciAK9CJTc7n/ngsSF+e5S0MuBkAPGbNVS0bUvlYgnMRFLNgGq3csy/+pedGXVb2J2qvzjGyYhxQV8hIPSZX/QR7la51HHB+bViHYK9verbKC8pEkH1rfNksgHxL97km9SMVIr8VIYQCPavJ404N63ebY3A28bx965Vp9YGJvmodaMq/NigPmfS1AmLNM1Q9tZzdyjLkm26dbglO7fPr8wWyWh9EjjAIJfFflaql0Rnc2asyKu/7y7G0ID6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8KFlMm6z/5M+jGVdKJlC5n+CO2o3a0XlaR4DMKcGVKw=;
+ b=iVBazroC1Ms8oP/l4DTAW3REtXeQKmnwnAYxk0hgCtIK1TJNzusJMu56IBvK2bjut8kXNSwY4YmxbAyRYiWjWjNLbrx2XBIEbSD/QtAZxL07X+4PQYFbArUwNCmUvoValyhaBDQBP9yKqxYy2zXGjb1pks6q8F34SmnKjC+vFDnpRpN8VVD1Oa8O8n3wM7qf7M/Ozjxf1nngqnEyudWzCGHlu873+oe5effxwsk3UQitM/Ce2m36oxcY1SX7YSp763PDGHOopfl1crttESkZIkINHgQj4+JS6SgkMAvIU4ZcEM3SCt9D1VTR7mEPQZHMFZQBdYHx03ZHIJMIgbkKgg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8KFlMm6z/5M+jGVdKJlC5n+CO2o3a0XlaR4DMKcGVKw=;
+ b=prfgtVV5otNy+ogVbDPwM8TGdJcWzUKCtD9G1O/Aaf8xyFAt0jL6QKyHXvZ4PpMtGU9+UB9rhxInYDQ9po6LxC3BERJKkNqO6a5Zri9jErs+/eV8Os9/bsQqgxuvTgzxFkmggHL9i30eaDdLLXmzi4/A4DbQ7Y4eKZy8zCnlApKxMO4F5AWzmpwQOCIz5OT5nagzSInTIVtKYppGNQ5h/cxb5UAMAlhFv7mZgLpJOIqpIRE/wlAmqPIRoNE7Kz99mm34thyn1TSP8GdF3g1SBoBySwl+Radv344QYBEuWcIelXaBnBrM/+x+PiVL6fV/aaQ3kT4LZBsn0ncsg4BkdA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ IA0PR12MB9048.namprd12.prod.outlook.com (2603:10b6:208:408::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Mon, 11 Sep
+ 2023 19:59:46 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::4b09:197c:609a:1013%7]) with mapi id 15.20.6745.020; Mon, 11 Sep 2023
+ 19:59:46 +0000
+From:   Zi Yan <ziy@nvidia.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, nsaenzju@redhat.com, yj.chiang@mediatek.com,
-        Mark-pk Tsai <mark-pk.tsai@mediatek.com>,
-        Joe Liu <joe.liu@mediatek.com>
-References: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
- <20230905090922.zy7srh33rg5c3zao@techsingularity.net>
- <20230911155727.GA102237@cmpxchg.org>
- <e8d5cb3d-2588-4e72-b42d-c10fd47fcbdf@suse.cz>
- <20230911181108.GA104295@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- tR6d+JzM8nFUZA==
-In-Reply-To: <20230911181108.GA104295@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
+Date:   Mon, 11 Sep 2023 15:59:43 -0400
+X-Mailer: MailMate (1.14r5978)
+Message-ID: <931839F8-3D9B-4203-9FD1-BDAF998B3C97@nvidia.com>
+In-Reply-To: <20230911195023.247694-2-hannes@cmpxchg.org>
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230911195023.247694-2-hannes@cmpxchg.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_EBA60356-A746-4A6A-AD8E-D5275D2CB35B_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR17CA0005.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::18) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|IA0PR12MB9048:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0d56515-987f-4921-0133-08dbb301a5c1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Dh+xl/GAvQY5zKShv2UjBuigRfJ/pBOBAaNDO0x8GQDdYYVnHGs75stDeKI+IRurCQWBGkAhbqVJGPijJNDxISNXmIwA1gDf+i4QfvW8wUggUAGncSX1BvRUzJlh/63vs30gILwiUw3a1Oh3S2Rxc+swVsXorNfeLIq0sWYC5nuZf+LA9HM2df+pzwbAnzNzk2v2fboFOWc2LJQEO18bRH/VqV2x/H7RmW04u0QEPooHGa+EEeEjkIJ/BVEQY+lo8zlaRvxZSoYwEmTkWF5XB7STA+NyH5MAKL79ZPXTDLwBwUDnc51IqtwketTFPy7we05q4hiM7jBp740EQ4SxrEPQoK3w4NpVrLq/FA5NmtDAO7KuNhasQG5to4ElUfl2c/zsV1g1CZpq8OfzwkxQqvm6U0Lht0k8+FwU4Ok+nsb8N6bqQKfw3pt9mQbwS+2Ipkj7Jnp0l7IMAGJHfsyvsduJSBpYloScA5oe4HRWubUM31gX/88nN35Ju7O2v7S+hDd30+P/EWhFkBOVV9Hbz1jHYKg9cvUG3wB8XNrbyx+dEdG+W24dGFFb2QwU4ODYy+YZtxFgiIfJrF4gI2WQfHT6XUSNn6zpvNMtvsRPij9Sj1zVvx5Ae4BUIv9z3vTD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(376002)(366004)(1800799009)(451199024)(186009)(53546011)(6506007)(6486002)(6666004)(66556008)(36756003)(86362001)(38100700002)(33656002)(5660300002)(26005)(2906002)(83380400001)(6512007)(66476007)(66946007)(2616005)(8936002)(54906003)(478600001)(8676002)(6916009)(4326008)(41300700001)(235185007)(316002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7zsAO1IItgdM+ENEu+ipOwYMtMr1hgByB58etZsXjVNaQm/DehFnot3D4pSz?=
+ =?us-ascii?Q?G6CLR/SqTtBCCbhiNmOHV4sz9W4SfOGbgN5a4sihu7GyZbKwwxKkGfr4ruX5?=
+ =?us-ascii?Q?ZQlB1NkfmWZmIj7FOhrggJiXfY5HYKCXobSMd/1YE36SCnq/CtnvDrLSnQPl?=
+ =?us-ascii?Q?kIX2Z7iUJFPY+y2800vDydhFjbsdWwu3wu9Px64702ApJFnCkJmC0KWhbqt5?=
+ =?us-ascii?Q?2AT7iCWh+SRGUW+1OovCftisMEy3QWAFTxHFPfOT4hn0vbZihy9PaI73+r21?=
+ =?us-ascii?Q?BjLxeKEb4GVxrvRqxpBrk3pRDkjejH5edngHZbdweHL4gQEn78Q1flOGCe3L?=
+ =?us-ascii?Q?vgCrWOn+B3csXTz9Nw2UjkkEwEoIokG3tfSbo+knJaM01WgPajEDZFaOGxrJ?=
+ =?us-ascii?Q?A4MCicP3Xc1worrctWfs5Q7RfHoJjq1s0PErN6QZ6RRp2Hai1P9C/UenQ9+L?=
+ =?us-ascii?Q?s8tWgdtVDjO/mIczirwrWpApCntmntn7jhGTWSLHpj0xV83AKaduAWM653Pi?=
+ =?us-ascii?Q?NdEGfYp42vYS+Zcu+9N6zkjSkNq1WouY29boFtIWu/gKRAosYUhkVoKtKnaE?=
+ =?us-ascii?Q?NWKSVh3CvSr675Lf8vbBPtctHOUOKNYZRZj+rHkPLRPJOePobvP637FV9tOh?=
+ =?us-ascii?Q?N+CpFgRkkZv7sae3e9Tty5IOZVw4OuhyDwfzfB0pcSv5N3AUVEuCFK/BF2tA?=
+ =?us-ascii?Q?ccDqoQ4TedJpYz8SlapZIkGWHzG3lT9F2qewKpW9KNVqbq/p9K7Li3m8PFwE?=
+ =?us-ascii?Q?nugmn+lM0upKLP6ZXNOR0jcm3o27s8k6pavNh1aDlkmMf6SpUNih4NM2PAVg?=
+ =?us-ascii?Q?hkmNhS4qChoxpSn0pn+U9kQknMA0MHbiRL3bmGgHmVHFLrzPr8fCpAoFYrzl?=
+ =?us-ascii?Q?kxZyXt6odmTb5A4/T4asztFvU5wQ1UFXRTa750WhDhvArdDEOkW02vx0w1vh?=
+ =?us-ascii?Q?RRV3O9wPDOAKtuBno3U/VMUodZm59asTZfq4zGJ1uf1fInXmLarBNSKI3FP1?=
+ =?us-ascii?Q?s6ukK8v9lfNCy8NjrMaBR4l5JMS78gdeCxvY6+ceZKATC20QXK9FnSY5i7S0?=
+ =?us-ascii?Q?5edyDb5STzft8HvbH2FCzeFziCaxttey4TGbT8WyASnxThEOZZx74r8zDsfN?=
+ =?us-ascii?Q?uydQC0u76yxSygrsIY7+w0zUle2UpYQOErYfc7PpIpGJJWuMAUwL/6VtKRXk?=
+ =?us-ascii?Q?b2GghgPKzUKPsohK9XFy51P4wZ+02+eDaCm6a91LvBFQd7DTnwqF2iqEWQM4?=
+ =?us-ascii?Q?WulNvV8w1KeEV0M/NKASd2ycs7NpvZ/NE+m5hclsOYZ9B3X4e4bpwNxdx31V?=
+ =?us-ascii?Q?Somo6blIQfjauBZkWe6lJZAmYFLA7/qQJAiwjsCYvB3Da/ypnHsIen7jbTcM?=
+ =?us-ascii?Q?SFb3Wi1WK5pkVAulBjj0yAPU1ghcqAPktV32XwyfelmGQ55cxN3sJHbN9+6L?=
+ =?us-ascii?Q?GvVF/TCn3PkEkPP9rxgMnqga/MRtlaLYO09ZdsYnhVtOLNwEsJTToamDfIgD?=
+ =?us-ascii?Q?fGmuqHAISzttq9ySThrg3TpIWaFYn+S5wIeqyDSVqalSbTY7Yw2fYjgxIa/y?=
+ =?us-ascii?Q?B2yHqhI6ATurEDepW7k=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0d56515-987f-4921-0133-08dbb301a5c1
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 19:59:46.1888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CCGeotuWHpuAVzEq7gkzkL3OM/jdTxbOPQZyHDQMm+PvGIKAPf8t+a/cxooVPX6v
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9048
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 20:11, Johannes Weiner wrote:
-> On Mon, Sep 11, 2023 at 06:13:59PM +0200, Vlastimil Babka wrote:
->> On 9/11/23 17:57, Johannes Weiner wrote:
->> > On Tue, Sep 05, 2023 at 10:09:22AM +0100, Mel Gorman wrote:
->> >> mm: page_alloc: Free pages to correct buddy list after PCP lock contention
->> >> 
->> >> Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
->> >> returns pages to the buddy list on PCP lock contention. However, for
->> >> migratetypes that are not MIGRATE_PCPTYPES, the migratetype may have
->> >> been clobbered already for pages that are not being isolated. In
->> >> practice, this means that CMA pages may be returned to the wrong
->> >> buddy list. While this might be harmless in some cases as it is
->> >> MIGRATE_MOVABLE, the pageblock could be reassigned in rmqueue_fallback
->> >> and prevent a future CMA allocation. Lookup the PCP migratetype
->> >> against unconditionally if the PCP lock is contended.
->> >> 
->> >> [lecopzer.chen@mediatek.com: CMA-specific fix]
->> >> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
->> >> Reported-by: Joe Liu <joe.liu@mediatek.com>
->> >> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
->> >> ---
->> >>  mm/page_alloc.c | 8 +++++++-
->> >>  1 file changed, 7 insertions(+), 1 deletion(-)
->> >> 
->> >> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> >> index 452459836b71..4053c377fee8 100644
->> >> --- a/mm/page_alloc.c
->> >> +++ b/mm/page_alloc.c
->> >> @@ -2428,7 +2428,13 @@ void free_unref_page(struct page *page, unsigned int order)
->> >>  		free_unref_page_commit(zone, pcp, page, migratetype, order);
->> >>  		pcp_spin_unlock(pcp);
->> >>  	} else {
->> >> -		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
->> >> +		/*
->> >> +		 * The page migratetype may have been clobbered for types
->> >> +		 * (type >= MIGRATE_PCPTYPES && !is_migrate_isolate) so
->> >> +		 * must be rechecked.
->> >> +		 */
->> >> +		free_one_page(zone, page, pfn, order,
->> >> +			      get_pcppage_migratetype(page), FPI_NONE);
->> >>  	}
->> >>  	pcp_trylock_finish(UP_flags);
->> >>  }
->> >> 
->> > 
->> > I had sent a (similar) fix for this here:
->> > 
->> > https://lore.kernel.org/lkml/20230821183733.106619-4-hannes@cmpxchg.org/
->> > 
->> > The context wasn't CMA, but HIGHATOMIC pages going to the movable
->> > freelist. But the class of bug is the same: the migratetype tweaking
->> > really only applies to the pcplist, not the buddy slowpath; I added a
->> > local pcpmigratetype to make it more clear, and hopefully prevent bugs
->> > of this nature down the line.
->> 
->> Seems to be the cleanest solution to me, indeed.
->> 
->> > I'm just preparing v2 of the above series. Do you want me to break
->> > this change out and send it separately?
->> 
->> Works for me, if you combine the it with the information about what commit
->> that fixes, the CMA implications reported, and Cc stable.
-> 
-> How about this? Based on v6.6-rc1.
-> 
-> ---
-> 
-> From 84e4490095ed3d1f2991e7f0e58e2968e56cc7c0 Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Fri, 28 Jul 2023 14:29:41 -0400
-> Subject: [PATCH] mm: page_alloc: fix CMA and HIGHATOMIC landing on the wrong
->  buddy list
-> 
-> Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a
-> spinlock") bypasses the pcplist on lock contention and returns the
-> page directly to the buddy list of the page's migratetype.
-> 
-> For pages that don't have their own pcplist, such as CMA and
-> HIGHATOMIC, the migratetype is temporarily updated such that the page
-> can hitch a ride on the MOVABLE pcplist. Their true type is later
-> reassessed when flushing in free_pcppages_bulk(). However, when lock
-> contention is detected after the type was already overriden, the
-> bypass will then put the page on the wrong buddy list.
-> 
-> Once on the MOVABLE buddy list, the page becomes eligible for
-> fallbacks and even stealing. In the case of HIGHATOMIC, otherwise
-> ineligible allocations can dip into the highatomic reserves. In the
-> case of CMA, the page can be lost from the CMA region permanently.
-> 
-> Use a separate pcpmigratetype variable for the pcplist override. Use
-> the original migratetype when going directly to the buddy. This fixes
-> the bug and should make the intentions more obvious in the code.
-> 
-> Originally sent here to address the HIGHATOMIC case:
-> https://lore.kernel.org/lkml/20230821183733.106619-4-hannes@cmpxchg.org/
-> 
-> Changelog updated in response to the CMA-specific bug report.
-> 
-> [mgorman@techsingularity.net: updated changelog]
-> Reported-by: Joe Liu <joe.liu@mediatek.com>
-> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
-> Cc: stable@vger.kernel.org
+--=_MailMate_EBA60356-A746-4A6A-AD8E-D5275D2CB35B_=
+Content-Type: text/plain
+
+On 11 Sep 2023, at 15:41, Johannes Weiner wrote:
+
+> The idea behind the cache is to save get_pageblock_migratetype()
+> lookups during bulk freeing. A microbenchmark suggests this isn't
+> helping, though. The pcp migratetype can get stale, which means that
+> bulk freeing has an extra branch to check if the pageblock was
+> isolated while on the pcp.
+>
+> While the variance overlaps, the cache write and the branch seem to
+> make this a net negative. The following test allocates and frees
+> batches of 10,000 pages (~3x the pcp high marks to trigger flushing):
+>
+> Before:
+>           8,668.48 msec task-clock                       #   99.735 CPUs utilized               ( +-  2.90% )
+>                 19      context-switches                 #    4.341 /sec                        ( +-  3.24% )
+>                  0      cpu-migrations                   #    0.000 /sec
+>             17,440      page-faults                      #    3.984 K/sec                       ( +-  2.90% )
+>     41,758,692,473      cycles                           #    9.541 GHz                         ( +-  2.90% )
+>    126,201,294,231      instructions                     #    5.98  insn per cycle              ( +-  2.90% )
+>     25,348,098,335      branches                         #    5.791 G/sec                       ( +-  2.90% )
+>         33,436,921      branch-misses                    #    0.26% of all branches             ( +-  2.90% )
+>
+>          0.0869148 +- 0.0000302 seconds time elapsed  ( +-  0.03% )
+>
+> After:
+>           8,444.81 msec task-clock                       #   99.726 CPUs utilized               ( +-  2.90% )
+>                 22      context-switches                 #    5.160 /sec                        ( +-  3.23% )
+>                  0      cpu-migrations                   #    0.000 /sec
+>             17,443      page-faults                      #    4.091 K/sec                       ( +-  2.90% )
+>     40,616,738,355      cycles                           #    9.527 GHz                         ( +-  2.90% )
+>    126,383,351,792      instructions                     #    6.16  insn per cycle              ( +-  2.90% )
+>     25,224,985,153      branches                         #    5.917 G/sec                       ( +-  2.90% )
+>         32,236,793      branch-misses                    #    0.25% of all branches             ( +-  2.90% )
+>
+>          0.0846799 +- 0.0000412 seconds time elapsed  ( +-  0.05% )
+>
+> A side effect is that this also ensures that pages whose pageblock
+> gets stolen while on the pcplist end up on the right freelist and we
+> don't perform potentially type-incompatible buddy merges (or skip
+> merges when we shouldn't), whis is likely beneficial to long-term
+
+s/whis/this
+
+> fragmentation management, although the effects would be harder to
+> measure. Settle for simpler and faster code as justification here.
+>
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
 > ---
->  mm/page_alloc.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0c5be12f9336..95546f376302 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2400,7 +2400,7 @@ void free_unref_page(struct page *page, unsigned int order)
->  	struct per_cpu_pages *pcp;
->  	struct zone *zone;
->  	unsigned long pfn = page_to_pfn(page);
-> -	int migratetype;
-> +	int migratetype, pcpmigratetype;
->  
->  	if (!free_unref_page_prepare(page, pfn, order))
->  		return;
-> @@ -2408,24 +2408,24 @@ void free_unref_page(struct page *page, unsigned int order)
->  	/*
->  	 * We only track unmovable, reclaimable and movable on pcp lists.
->  	 * Place ISOLATE pages on the isolated list because they are being
-> -	 * offlined but treat HIGHATOMIC as movable pages so we can get those
-> -	 * areas back if necessary. Otherwise, we may have to free
-> +	 * offlined but treat HIGHATOMIC and CMA as movable pages so we can
-> +	 * get those areas back if necessary. Otherwise, we may have to free
->  	 * excessively into the page allocator
->  	 */
-> -	migratetype = get_pcppage_migratetype(page);
-> +	migratetype = pcpmigratetype = get_pcppage_migratetype(page);
->  	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
->  		if (unlikely(is_migrate_isolate(migratetype))) {
->  			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
->  			return;
->  		}
-> -		migratetype = MIGRATE_MOVABLE;
-> +		pcpmigratetype = MIGRATE_MOVABLE;
->  	}
->  
->  	zone = page_zone(page);
->  	pcp_trylock_prepare(UP_flags);
->  	pcp = pcp_spin_trylock(zone->per_cpu_pageset);
->  	if (pcp) {
-> -		free_unref_page_commit(zone, pcp, page, migratetype, order);
-> +		free_unref_page_commit(zone, pcp, page, pcpmigratetype, order);
->  		pcp_spin_unlock(pcp);
->  	} else {
->  		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
+>  mm/page_alloc.c | 61 ++++++++++++-------------------------------------
+>  1 file changed, 14 insertions(+), 47 deletions(-)
+>
 
+Acked-by: Zi Yan <ziy@nvidia.com>
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_EBA60356-A746-4A6A-AD8E-D5275D2CB35B_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmT/ca8PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUEZ0P/1hlFSHAuNOtTDHY+/RpFIWQ0LbqaDsMYwMu
+6ny1/05EWYzA5fspOO32/IDYHjkRCCGbUnAgCbp8ek9C9bcwzTb+c1gnksiFefl6
+EOMC7yW0QjjT7ZRslNYiWeLLrwFHbq1gEhpEQ9i6lMUtA8BPzCoWzONytjmaH8Nx
+8a71Ra4PB8+Gh8d1C38ZB3+/XWumEd5bRLE4MsdQ404sZ/V5oQjjRH6s61xU8r5c
+V/gpYTleWg2zw5rWAuQKn6Foh4NhlaQSev0msCXUJEKlUWJE9b35J6vYqyHR+9/h
+T7TMTylNBbyb3Y3o7vK6DBvwvrlWyjAesV232uQKQWAIXX17YGusmPu/Pn8K3MLI
+ZdAuTvP/n8lkbkjP+tTVPWtM8x1UmLSTBpPVyTwEIsZ5RD3tyuh++OEDHCM1HLcY
+GrKaR6ybuOGbfmA4rWIvltQWwODbWRYR/DtNS3CawQHKU18ENkJdec3EGv7QrlF3
+umYM2r5h/0S8gWKpLvyqZUqmOPMERNJECEoeVk51x0M2ctx1k0wxFG7Jh2/03LKT
+cZoGXi5RMBMqW5ljHJIMILDVZ0jAhiYuWbJvU3XpSLxebNmB5kAg+LI23Ih8eT4P
+lua2UsMHuzhdRYpqP3KLW1T5oRY1al6hDaEASgyX5UKuYfLPyY8GGacpOT0aFPnQ
+zsRJN+kr
+=x54p
+-----END PGP SIGNATURE-----
+
+--=_MailMate_EBA60356-A746-4A6A-AD8E-D5275D2CB35B_=--
