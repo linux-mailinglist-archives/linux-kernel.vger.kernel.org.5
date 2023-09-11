@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A13479ADDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F1479B23C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377818AbjIKW2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
+        id S1346799AbjIKVYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235716AbjIKJ0Q (ORCPT
+        with ESMTP id S235708AbjIKJZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:26:16 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DA0CA;
-        Mon, 11 Sep 2023 02:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694424372; x=1725960372;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QvL+SL9gHty/FSezWrpd62ssnAIuePB7hN7uQnSWCDM=;
-  b=vkLD0G2Zep+ieDjFn5TDrzOY1vFKFEMAoOPLBg4f2v8rvHFKdp8j2tOC
-   rYrXA+u7k4ll4kenkg9S9+1svBx6+gB2/iDdsqBQmwiks4zoH6zEPx0ob
-   ILQx3MshNSxHskRFQyFGYQfElE1TaXz7gtM06Kh5iCM/uL8O4zEVycNRu
-   wClP1AhNWgSWf70YC9kz+HdP9kNoZY89WvlzFVZJFJKKkvxY/qHHBQsoR
-   FRDEhiDjNV2i7s0z4biUwu+uRJHJzEyVdIquFPP7eOmJ754B1J9f9+/Zh
-   N5C1cMF4eIsYiCPhMnw/Gg/1r6rozVqKCLPGzps4+dxGmeEBE/Mw8S/wm
-   Q==;
-X-CSE-ConnectionGUID: phHXbYbgQ+2foijEDjr92w==
-X-CSE-MsgGUID: nmIUrtpoTNO3i/3JAJPbWw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="3955482"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 02:26:10 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 11 Sep 2023 02:26:03 -0700
-Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Mon, 11 Sep 2023 02:25:58 -0700
-From:   Balamanikandan Gunasundar 
-        <balamanikandan.gunasundar@microchip.com>
-To:     <linus.walleij@linaro.org>, <dmitry.torokhov@gmail.com>,
-        <ulf.hansson@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <nicolas.ferre@microchip.com>, <aubin.constans@microchip.com>,
-        <alexandre.belloni@bootlin.com>
-CC:     <hari.prasathge@microchip.com>,
-        <balamanikandan.gunasundar@microchip.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] mmc: atmel-mci: Add description for struct member
-Date:   Mon, 11 Sep 2023 14:55:40 +0530
-Message-ID: <20230911092540.76334-1-balamanikandan.gunasundar@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Sep 2023 05:25:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E494CD3;
+        Mon, 11 Sep 2023 02:25:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 14996C433C9;
+        Mon, 11 Sep 2023 09:25:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694424342;
+        bh=WpA2HSmOVnDSDp9vUx/6sCnejIWAz21QU/ikOzyuZyI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=J1bK6F0j/wB+fJQr4Kt2LbjQu31XTnJldrWV6fRSwa+M1taFaNRtmK7Retp2iW85v
+         QGnjIcPDSaM1GBi7GploYD2QGH9LX/gKrnIfTZtrZOlw/5MNF8Ayf+yNas4tQGcbG0
+         LWPnw6BjjSOEQe+b7Eo3A/zRUghv0FV9bR6fdcBCbFHLiworBLw4tpVW0x0+/O9XqR
+         oKQcs0VGmGGKl0yr8HEX4wx/FiEB8GX61ExY77SncAOG+ZsbGSKkACDS+y5wBiCdHl
+         +zGc7DeZR7ssi4fVNxh6JxMDun1HstF8CZvwLYHLePZKa/iwokQD3dnWDni7I3myN4
+         qV7PsihENvfaw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03E26E1C280;
+        Mon, 11 Sep 2023 09:25:42 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net] r8152: check budget for r8152_poll()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169442434201.22330.8875438731088949212.git-patchwork-notify@kernel.org>
+Date:   Mon, 11 Sep 2023 09:25:42 +0000
+References: <20230908070152.26484-422-nic_swsd@realtek.com>
+In-Reply-To: <20230908070152.26484-422-nic_swsd@realtek.com>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description for dma filtering function in struct
-mci_platform_data. Fixes the warning: Function parameter or member
-'dma_filter' not described in 'mci_platform_data'.
+Hello:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309020937.C5S2sRnr-lkp@intel.com/
-Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
----
- drivers/mmc/host/atmel-mci.c | 1 +
- 1 file changed, 1 insertion(+)
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/drivers/mmc/host/atmel-mci.c b/drivers/mmc/host/atmel-mci.c
-index 535783c43105..33d02a7e72fb 100644
---- a/drivers/mmc/host/atmel-mci.c
-+++ b/drivers/mmc/host/atmel-mci.c
-@@ -227,6 +227,7 @@ struct mci_slot_pdata {
- /**
-  * struct mci_platform_data - board-specific MMC/SDcard configuration
-  * @dma_slave: DMA slave interface to use in data transfers.
-+ * @dma_filter: Filtering function to filter the DMA channel
-  * @slot: Per-slot configuration data.
-  */
- struct mci_platform_data {
+On Fri, 8 Sep 2023 15:01:52 +0800 you wrote:
+> According to the document of napi, there is no rx process when the
+> budget is 0. Therefore, r8152_poll() has to return 0 directly when the
+> budget is equal to 0.
+> 
+> Fixes: d2187f8e4454 ("r8152: divide the tx and rx bottom functions")
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] r8152: check budget for r8152_poll()
+    https://git.kernel.org/netdev/net/c/a7b8d60b3723
+
+You are awesome, thank you!
 -- 
-2.25.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
