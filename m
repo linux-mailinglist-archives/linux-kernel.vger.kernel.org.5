@@ -2,57 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674DA79A530
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCA179A538
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbjIKH5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S233801AbjIKIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjIKH5h (ORCPT
+        with ESMTP id S231214AbjIKIAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:57:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93999BB;
-        Mon, 11 Sep 2023 00:57:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E43C433CA;
-        Mon, 11 Sep 2023 07:57:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694419050;
-        bh=HGA58eRNTJRiVEXtx1sSsGz1XtJ0X3tvzq40Mcr7LVg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XV2av1NlmHvoHt+8pbBDijmsvUFKnB8iy+HP9fV1gjXKyYMYFDVGz7/3ORNnht3/R
-         RIe9ZmOkYsRuU7bJYSn7QNHnsKwBoMsYDTPDKQvQ3iPFmE7avEQYG9EYFFZJyZCTkC
-         o4OIxNd7pFiERuOsBxdUrICSoLmFkfNHrt7J3RwQ56bQ2HcGQPzVYliaVO5DJlsIZ1
-         +1tRkg3BSrVa1lm2EjV+n893FCpfJZ30rTZhvTmJM8SK9jNRxLHa1f9tvo2dn/fZfk
-         CxwnuD+2qw5dFT4x/fYBMzHHsNGqsyXH0LFN/yWE3x5FB5IUiMUAamkXhPZVyfAS6A
-         LCTnC7svv4cnw==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b703a0453fso69135091fa.3;
-        Mon, 11 Sep 2023 00:57:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0Ywbh0lou2/ncZ5im7wd3Erk9lEUeYi96Xl6CY1XusjVP/YEAzks
-        Z0oersWEhGYUs1gPw56vx1hlAh6+CwvjVCyKLP0=
-X-Google-Smtp-Source: AGHT+IHVQNnrKc5b+hWWufet/lOVWBC7JLLz/fIr4ezY5N8/YbulkHtkaFVky8nlNxamAjl7qERQrT24w0TEK+4CIxY=
-X-Received: by 2002:a2e:818f:0:b0:2bc:d33e:ccc5 with SMTP id
- e15-20020a2e818f000000b002bcd33eccc5mr7883415ljg.41.1694419048318; Mon, 11
- Sep 2023 00:57:28 -0700 (PDT)
+        Mon, 11 Sep 2023 04:00:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61A3BB;
+        Mon, 11 Sep 2023 00:59:57 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B6JXTn018071;
+        Mon, 11 Sep 2023 07:59:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=j4P0iwKezHc+FaJKHNn7RJ5R8SdPoiUvrT3JIUc3ZIA=;
+ b=l8a9IpdojD2+5RiZ1IcIYDZhFCQ3OpZplNSmZimlmnObkbMIf7fjFRjXTZMZMphZ2gEN
+ 1Blku+OSFS0FM3mwxZPK3X5GbsCtSSAnSS8BJVeDftGGyDYxQrx4fNKlnTEc0f1S74NI
+ KepQv6v43udG3wD+5dvcQd8n97w26GncMhSg4h4y1KLDhiSNhhu+EjVbQHX59errn2tz
+ xaiYEm2Ddue0ld6/242FjTOBfYyela6k4PRh/s3Y7KoQekILXiTtO3XX/zdT/QPe0b8L
+ 3XByQnVMCyQQfdCVwA52ZsCRc/7KpId7sISQZ4suX1LDdKek2vjAK3Pf8YsjMftQ93WL jg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0hfqk0xv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 07:59:19 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B7xI2W027340
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 07:59:18 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 00:59:07 -0700
+Message-ID: <0f7a24a6-bcc5-54d5-0b6a-884f8a0fe8d7@quicinc.com>
+Date:   Mon, 11 Sep 2023 13:28:57 +0530
 MIME-Version: 1.0
-References: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
- <ZP4QEvhzO5cOt6lT@gpdmax> <1bc137b6-6006-42cd-9f6d-c523fc753d63@canonical.com>
- <CAMj1kXGChp5TOk5h1EC9R7TBn=QDVo_FU5VhHjp8nSz2GJ6wtA@mail.gmail.com> <27e76823-5464-4fd7-844d-7ed273a8a902@canonical.com>
-In-Reply-To: <27e76823-5464-4fd7-844d-7ed273a8a902@canonical.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 11 Sep 2023 09:57:17 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG6g=obpUgptBvQwYtikaDk6biQiTrW6-tJAfhuDCXx0g@mail.gmail.com>
-Message-ID: <CAMj1kXG6g=obpUgptBvQwYtikaDk6biQiTrW6-tJAfhuDCXx0g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
-To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Cc:     Anisse Astier <anisse@astier.eu>, Jeremy Kerr <jk@ozlabs.org>,
-        Anisse Astier <an.astier@criteo.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 11/17] qcom_minidump: Register ramoops region with
+ minidump
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
+ <3119f3f6-92a5-4db1-85cf-bd16e31ae5a0@quicinc.com>
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <3119f3f6-92a5-4db1-85cf-bd16e31ae5a0@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vr9xvYvA760iWL4_izSZwApqXxVLD0G_
+X-Proofpoint-GUID: vr9xvYvA760iWL4_izSZwApqXxVLD0G_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_05,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=822 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110072
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,114 +96,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 09:46, Heinrich Schuchardt
-<heinrich.schuchardt@canonical.com> wrote:
->
-> On 9/11/23 08:45, Ard Biesheuvel wrote:
-> > On Sun, 10 Sept 2023 at 22:42, Heinrich Schuchardt
-> > <heinrich.schuchardt@canonical.com> wrote:
-> >>
-> >> On 9/10/23 20:53, Anisse Astier wrote:
-> >>> Hi Heinrich,
-> >>>
-> >>> On Sun, Sep 10, 2023 at 06:54:45AM +0200, Heinrich Schuchardt wrote:
-> >>>> Some firmware (notably U-Boot) provides GetVariable() and
-> >>>> GetNextVariableName() but not QueryVariableInfo().
-> >>>
-> >>>   From a quick search, it seems u-boot, does support QueryVariableInfo, is
-> >>> it on a given version ?
-> >>>
-> >>> https://elixir.bootlin.com/u-boot/v2023.07.02/source/lib/efi_loader/efi_variable.c#L391
-> >>
-> >> QueryVariableInfo() and SetVariable() are available before
-> >> ExitBootServices(), i.e. in Linux' EFI stub.
-> >>
-> >> ExitBootServices() results in calling efi_variables_boot_exit_notify()
-> >> which disables these services during the UEFI runtime.
-> >>
-> >>>
-> >>>>
-> >>>> With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
-> >>>> statfs syscall was broken for such firmware.
-> >>>
-> >>> Could you be more specific ? What breaks, and what regressed ? I imagine
-> >>> it could be some scripts running df, but maybe you had something else in
-> >>> mind ?
-> >>
-> >> Some more details can be found in
-> >> https://bugs.launchpad.net/ubuntu/+source/linux-meta-riscv/+bug/2034705.
-> >>
-> >> Though EFI variables are exposed via GetVariable() and
-> >> GetNextVariableName() the efivar command refuses to display variables
-> >> when statfs() reports an error.
-> >>
-> >>>
-> >>>>
-> >>>> If QueryVariableInfo() does not exist or returns an error, just report the
-> >>>> file-system size as 0 as statfs_simple() previously did.
-> >>>
-> >>> I considered doing this [2] , but we settled on returning an error
-> >>> instead for clarity:
-> >>> https://lore.kernel.org/linux-efi/20230515-vorgaben-portrait-bb1b4255d31a@brauner/
-> >>>
-> >>> I still think it would be a good idea if necessary.
-> >>
-> >> We should never break user APIs.
-> >>
-> >
-> > Indeed.
-> >
-> >>>
-> >>> On the approach, I prefer what Ard proposed, to fall back to the old
-> >>> approach. I think the difference in block size could also be a good
-> >>> marker that something wrong is happening:
-> >>> https://lore.kernel.org/linux-efi/CAMj1kXEkNSoqG4zWfCZ8Ytte5b2SzwXggZp21Xt17Pszd-q0dg@mail.gmail.com/
-> >>
-> >> This will allow user code making assumptions based on block size:
-> >> If block size > 1, assume setting variables is possible.
-> >>
-> >> We should really avoid this.
-> >>
-> >
-> > I agree that having different block sizes depending on which code path
-> > is taken is not great. But that is the situation we are already in,
-> > given that older kernels will always report PAGE_SIZE. And actually,
-> > PAGE_SIZE does not make sense either - PAGE_SIZE could be larger than
-> > 4k on ARM for instance, so the efivarfs block size will be dependent
-> > on the page size of the kernel you happened to boot.
-> >
-> > So I think we should go with the below:
-> >
-> > --- a/fs/efivarfs/super.c
-> > +++ b/fs/efivarfs/super.c
-> > @@ -32,10 +32,16 @@ static int efivarfs_statfs(struct dentry *dentry,
-> > struct kstatfs *buf)
-> >          u64 storage_space, remaining_space, max_variable_size;
-> >          efi_status_t status;
-> >
-> > -       status = efivar_query_variable_info(attr, &storage_space,
-> > &remaining_space,
-> > -                                           &max_variable_size);
-> > -       if (status != EFI_SUCCESS)
-> > -               return efi_status_to_err(status);
-> > +       /* Some UEFI firmware does not implement QueryVariableInfo() */
-> > +       storage_space = remaining_space = 0;
-> > +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
-> > +               status = efivar_query_variable_info(attr, &storage_space,
-> > +                                                   &remaining_space,
-> > +                                                   &max_variable_size);
-> > +               if (status != EFI_SUCCESS && status != EFI_UNSUPPORTED)
-> > +                       pr_warn_ratelimited("query_variable_info()
-> > failed: 0x%lx\n",
-> > +                                           status);
->
-> Adding a warning here is helpful. The else branch would be:
->
-> +               } else {
-> +                       buf->f_blocks   = storage_space;
-> +                       buf->f_bfree    = remaining_space;
-> +               }
->
 
-The else branch is redundant if we leave the assignments of f_blocks
-and f_bfree where they were before.
+
+On 9/11/2023 11:31 AM, Pavan Kondeti wrote:
+> On Sun, Sep 10, 2023 at 01:46:12AM +0530, Mukesh Ojha wrote:
+>> Register all the pstore frontend with minidump, so that they can
+>> be dumped as default Linux minidump region to be collected on
+>> SoC where minidump is enabled.
+>>
+>> Helper functions is written in separate file and built along with
+>> the minidump driver, since it is client of minidump and also call
+>> it at appropriate place from minidump probe so that they always
+>> get registered.
+>>
+>> While at it also rename the out minidump module object name during
+>> build as qcom_apss_minidump which basically depicts as Qualcomm
+>> Application processor subsystem minidump.
+>>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>>   drivers/soc/qcom/Kconfig                 |  1 +
+>>   drivers/soc/qcom/Makefile                |  3 +-
+>>   drivers/soc/qcom/qcom_minidump.c         |  4 ++
+>>   drivers/soc/qcom/qcom_ramoops_minidump.c | 88 ++++++++++++++++++++++++++++++++
+>>   drivers/soc/qcom/qcom_ramoops_minidump.h | 10 ++++
+>>   5 files changed, 105 insertions(+), 1 deletion(-)
+>>   create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.c
+>>   create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.h
+>>
+>> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+>> index 4b36d46807bc..b3977f1687d8 100644
+>> --- a/drivers/soc/qcom/Kconfig
+>> +++ b/drivers/soc/qcom/Kconfig
+>> @@ -305,6 +305,7 @@ config QCOM_MINIDUMP
+>>   	tristate "QCOM APSS Minidump driver"
+>>   	depends on ARCH_QCOM || COMPILE_TEST
+>>   	depends on QCOM_SMEM
+>> +	depends on PSTORE
+> 
+> Can't we make QC minidump available without PSTORE? PSTORE is another
+> cllient for minidump, so other clients can still use minidump right?
+> Where is this hard dependency coming from?
+
+Thanks for asking this question, this was intentionally put here to
+continue the discussion forward about minidump existence in kernel tree
+and how community want to see it in kernel tree.
+
+Actually, there is no hard dependency of minidump on pstore and  as i 
+have said in cover-letter about minidump is going to collect what 
+ramoops is offering now or going to offer in future as a default
+regions.
+
+So, main minidump driver does not depends on pstore since, i have 
+integrated even the minidump client with this
+qcom_ramoops_minidump_{register|unregister}()
+
+I may guard this entire qcom_ramoops_minidump_{register|unregister}()
+function under CONFIG_PSTORE_RAM, if everyone agree ?
+
+-Mukesh
+> 
+> Thanks,
+> Pavan
