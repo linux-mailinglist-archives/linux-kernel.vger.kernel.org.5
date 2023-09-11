@@ -2,339 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B279ACEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E5679B543
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238096AbjIKVaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
+        id S1350302AbjIKVgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242854AbjIKQZz (ORCPT
+        with ESMTP id S242857AbjIKQ0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:25:55 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E94CC3;
-        Mon, 11 Sep 2023 09:25:50 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BGPfRZ080864;
-        Mon, 11 Sep 2023 11:25:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694449541;
-        bh=4EVgKzgPc050aVJVwL7z50ZmTH52CC1RhdLxWJRyLfY=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=GxOF+fhT6mfq4/GvpuLanlkUEF8P7HTW+TtwraGGc38nY+sATQ+iGgTx+gPdCsO7Y
-         ViptLOLtomCwVCDUQGKRmTQJkGgsQ0hZ6RSVPSnzFU156ywH1kMKp5Z1WLtebUyz8S
-         VnWih8g0s/T5KKB3PVBTd0L90gqY58GKyPYVFfGA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BGPe2O022100
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 11:25:40 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 11:25:40 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 11:25:40 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BGPedi057134;
-        Mon, 11 Sep 2023 11:25:40 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Vignesh <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Tom Rini <trini@konsulko.com>, Bryan <bb@ti.com>,
-        Praneeth <praneeth@ti.com>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-am625-sk: Add boot phase tags marking
-Date:   Mon, 11 Sep 2023 11:25:35 -0500
-Message-ID: <20230911162535.1044560-4-nm@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230911162535.1044560-1-nm@ti.com>
-References: <20230911162535.1044560-1-nm@ti.com>
-MIME-Version: 1.0
+        Mon, 11 Sep 2023 12:26:01 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2046.outbound.protection.outlook.com [40.107.220.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1753CC3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:25:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J9sz7E8L+yntiRSty0SnLdnGC4114rChVBo+BteX/9Oni7nmluDciZCq5eOMrB5yw49osuuGWx17AuaiaFV2qGwveR5yVLtjbmYwHxzy7xacgYyOKLvM9/ehtJB7axQu9BZ5osF2/YtXDVZiGWCEdXFb1A7zTkilQmN4QVfQTDHJ71Gr2cBRIFDStMkmt3Ay1dvM6U9KLwKgdoCCGmRNkiLjFBuxpPff4CdjUMRk+9uS2EZeWhdPplgdCwgbvqLvD6v1Bugso0RUgJcDhuOK31mwP92xtQdO9BTSVNdYQ1TCXgjG58zAp7uFRo50uUgwEO+ew0LEbny5VvzZBEfJeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yFztlHopyWHnlWAR2kpQzEtB4cbev9XuCMAymk3+EtA=;
+ b=W8q+mI281OGt7piB2IrTqVJZ+ET2Qb+bN+wgfEQru76XYfQ8yNxKtJ/Z9VQb0Z7z9lldel0dSrh0yZE7gJHiHnyq4/bfA23vtqVZ01CAGHZn5Ylo0lo8NCG1iAi4e9KKlBCA7rdt1bDvGHJexOtV/KQOPENmaPUJ0ziIokgfIXabVLZVYzu0mDx2msqS4p1U6ln7n8phBVVbXVIXRXQjUaBfvYEefhdrXJZMIHzLeWuiXF/uBvMMin+ifNPvRlhlz4+V5gqyH3N0SqfNqDN7rznHw5+EYke6nFOMIiYaUBJTyo2qCk1BzanpUD3RIM7LLQTPzuTQPCcp/9XiTV/LBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yFztlHopyWHnlWAR2kpQzEtB4cbev9XuCMAymk3+EtA=;
+ b=3X12AUgVZVKaAGuoqJ+oysvQMr91uoWlpB2otf3J6ZXsmgVqsITUl4fmY+4OOTI/U1B91E1pLSikOEU43cK01gGJ8MXvjFObuWmJFvQlMuOBH5AEdXlOmSGTF9PHEQDfgPHoKHnK5yGDfICFJ8eJDtSsggfR+xl1KoGzTxUianQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ CYYPR12MB8729.namprd12.prod.outlook.com (2603:10b6:930:c2::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6768.30; Mon, 11 Sep 2023 16:25:51 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::4196:c9c9:dfe9:8079]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::4196:c9c9:dfe9:8079%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 16:25:51 +0000
+Message-ID: <c6823590-4955-439e-b8ce-94be184d6db5@amd.com>
+Date:   Mon, 11 Sep 2023 12:25:47 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] Merge all debug module parameters
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        christian.koenig@amd.com, alexander.deucher@amd.com
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com
+References: <20230831152903.521404-1-andrealmeid@igalia.com>
+ <63b44028-8f80-4de6-9f17-25c9f713caba@igalia.com>
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <63b44028-8f80-4de6-9f17-25c9f713caba@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: YQZPR01CA0052.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:88::21) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CYYPR12MB8729:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44b8d4b3-ad8c-494f-20cd-08dbb2e3c35a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z5fPAGERMu/zZX4+uodxNfYet6hlXEh4CSHHRxtuVa2jYdyw/1dWtY5ga+eXC8uqykCQEAsQee95Xj5wknn9ICXSjMnfojRPyHsMNfgzdJOIBkXPH+Bk9DACBVWsNFkUqI2N2sIUy+rZSLxzW/danWcNE8aKl9laccFlv/s1Om6Y+ObXyO0QK2N0sB0a0W1mxl6JUTPTh+pnJr4q0QtI6VuDthh7NvdXu6poCLBMB1Siuw9hySVn6+wfxffZ3Oc4u2kg451F5TI00V7YAYDaLomG6G/TajWfZg0WuDeqGekGGntT9ekZdPkgTdsSVhaga3KW6GqCkmLMPXtJ3g9Ui2QX9HHrqwUwSlIA4VMNJJGACtA+VCduejsNkGMpuCGxpQ3XfkHM1ayY9zPzJzeq2EAqkkWlXumIizKn6EAWFK/umJTx6C44CMeH2WXCVGbtoow7MG3OxFOcGeUSuwshdOenya7ZvQ+WPhNG5IaGYIcHjnQt33yP2EnaDH3zPFTdZccXH63z49V2nMZ1zke6BSsuNWDnV2IlCV62tD0zO90pBPfZgSnYCdaXi3YudOptdVy/go2LDHJ7S7s1LUQ/eF/YfHynqZKZAOH1G5o061QdtP3jl3KloMp7NTwelchLJwMECqrLoQMrwtev8KEzf2riHYu0z1gA9OghrOVArls=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(1800799009)(451199024)(186009)(31686004)(6666004)(6486002)(6506007)(53546011)(36756003)(38100700002)(31696002)(86362001)(4326008)(2616005)(41300700001)(6512007)(966005)(83380400001)(478600001)(66946007)(316002)(8676002)(26005)(5660300002)(8936002)(6636002)(2906002)(66556008)(44832011)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnJXaDJzQlBMNWR2WUh4bXVEdjJncmxjNERrVzBUb0xVWlVtMU13MncrUm05?=
+ =?utf-8?B?V3JyZVpIQllJU3dPRjFWcXBBdXJOZHI2bkZZTGM2bS9sbXVFd1VRYnR1MkRy?=
+ =?utf-8?B?UnZjQXQyYzFsZUp4L0VCTk5EeGt6Q1N1dmI1SU9DTk02VUMvWEZ4WE10cXRz?=
+ =?utf-8?B?eXZUMW5YTVlDWGozZFVyaE15cWZweldOOFZBU0JmNWw1Q3pGRmlVa21saElN?=
+ =?utf-8?B?MzVqOU9wUVZLV05PRXFQQmtVeUhJRUJJUXcrRHgvME9ld3piK09RZ1FzdGZQ?=
+ =?utf-8?B?UU93VjgrK3NoejUwem52ZFozR284QzJONENRWWhwTTJGRTJJTERaeEJkRDFJ?=
+ =?utf-8?B?MXFnZXlueEFBck1sS1crOXplZGdvUzZud05KbGVkZWlnN3U1Q1J3WHNVeUlv?=
+ =?utf-8?B?Si82US8yNFZOODJkd1RRWkVRenRZMGVXWld6OXd5R2xZRDlhbDk2V1c4M2U5?=
+ =?utf-8?B?YmdPUTdlRHVnZEpVWFJNcmZveXlFRW1Id2VPSjBEMER4amhDWG16M1h2TmRG?=
+ =?utf-8?B?U3VYeTBtSUdDWkZrZmhLb05wSUdyMUM3M0NqZU80N3RYM0REYmxvOGRPazJS?=
+ =?utf-8?B?a0Z6TXJSM0pyT0VCUG5SOVZTR3lMZ1J1ek5aOTNOUE4rKytPVW0wNWJlL29v?=
+ =?utf-8?B?K0NncGVETGFBK3oydnlWVnJXL3Yyd3ZwU1hYL1NFOWplNmU4TzhQNFF5WHY5?=
+ =?utf-8?B?bWxkM0RjeFgyTEppd0JtTXFFakFiTnhVYVBpZ25CMkxXbTJnWmQ4OXFWMFNZ?=
+ =?utf-8?B?M0laQkJzUzk0VGdpVktQZXRXV1ZMSTFYd3ZrVDNlQ1hwYUx1SGdDM0ozbHBC?=
+ =?utf-8?B?d0Fnd1p4KzJPSU9GYTdLbXZHT3l6WU8wUDJhRTR3NW9JK2U5bmtPa1pTckJ6?=
+ =?utf-8?B?NEY3cW9iNFA5VGQrL0ZWbVZrOVJDYi90UFRaanBWTVhaYXJ5NFg2cHlyK25G?=
+ =?utf-8?B?N3ZqSmh4RytnelU2OExIOWo5MDMralJEMkZlWlpjcHc4bEI2YmliQ0kySlBL?=
+ =?utf-8?B?b28rZ1F3TDZxSUF1NFFYS3IxazE1YVkwNldWQm1wRkxhY2Vqc3dUUFI1SEpv?=
+ =?utf-8?B?ZnU2SCtNOGFYMEJ3N1BzYjdWeUhkK1B2cVBCRGM4cVZCb3BPUlhJMEh6YVBV?=
+ =?utf-8?B?TWhibWZBYys4STF3M1V1eXJMdUF3SWpidXgwS1B1QVBSWWx5a2pBR1QyY2Rz?=
+ =?utf-8?B?YzNERkxvUXhyYnFlci9iL0pEQWgzVkZMYlArQ2I3T3Vkc0wwRDBhMXk3dlQ2?=
+ =?utf-8?B?aExRS3VJV2dSa1VMMjA4ZmdvMThoWE9MdzdZQ3REbGpKUGNmZzBVcWl5cEpU?=
+ =?utf-8?B?VEcyZmZKWjM0SUNGU1pWdGNLM2N0TDJPNlNWR2FOendIZ2hRY3grcHZFK0FC?=
+ =?utf-8?B?V2MzaHpuUjNUbzZrcjJvRTZnbkVySFJRZVl5dUZZU2tCMlBnb0xybjlqZFRF?=
+ =?utf-8?B?OHo4QU1VVzZCakVRNjUrYkFyWlNvVGFXRy8wZFo4bWVNTkJ2T0E1RlZsTnNB?=
+ =?utf-8?B?eWlYM1h3MmkwVnYrb003MGtwQzBBZVNIYng1aTlrUTRUc0VlMmpjT2F3MmNo?=
+ =?utf-8?B?S3czRDdSKzdLdnFxVGFHSE5RdUFZbTZjeDNmKzl4MjU4ekVweXJ6MlpOOFRm?=
+ =?utf-8?B?NTZ5S2pKamJtMWtrSnYyUmI2OHZyMkFLRVpzSTAxMmVXYzBCMXV0UnZwbFJT?=
+ =?utf-8?B?RmJWS1QyRDhvRjdrNmFxaUNVcThPdzM5S1F4a1QrVlZYb0hQaXJhM0hBWnQ0?=
+ =?utf-8?B?c09ucm9RUERzMC9zQVpYWkhHS29oUXhIWlA2Zm1GMURqWmN4d2p3ZDl6UDhz?=
+ =?utf-8?B?Z2VGUSt5Z1hIbmFKWTVUb1Iya0JwYUIzR1dHM2dTNGJScTdXbjI3NUV6bmRY?=
+ =?utf-8?B?L3JOS2RQS3pxMGJiMVVPTGJsd0YrRXRVT3cwMXdocm1WWWxhWExqYnZVUUNy?=
+ =?utf-8?B?TG9ycHZxb1RmbVgyQlJaQytmYzZDRzVuUDJqVFpYQ01OL3lOWkk4MEtIQmJr?=
+ =?utf-8?B?c1ZTQ1F6NDZiMXVBaDlGSk10cytyS1ZwVy9jVmU3aWNPT1Zia0JRSEpnVUJ6?=
+ =?utf-8?B?ZnNUWTErVWpvaDNDM25Tc3FZb2RXWHFXRVZmQXFxNmhVeDZxZTZRbE5mOWIy?=
+ =?utf-8?Q?dbXRjRTx8ab8G1kUkQ1pQ0Rb+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44b8d4b3-ad8c-494f-20cd-08dbb2e3c35a
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 16:25:51.2943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /qd/RXTpgSp7pSTEVIw1QugHsCO1Z1vbWbdx9Sk/NbArYinC187XFXBHcgpEsbpgHnRxoUv/kDEG/4xMYjQ9Eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8729
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bootph-all as phase tag was added to dt-schema
-(dtschema/schemas/bootph.yaml) to describe various node usage during
-boot phases with DT.
 
-Describe the same for am625-sk boot devices.
+On 9/11/23 09:54, André Almeida wrote:
+> Christian, Alex, I think this series is ready to be picked as well.
 
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am625-sk.dts        | 27 +++++++++++++++++++
- .../arm64/boot/dts/ti/k3-am62x-sk-common.dtsi | 16 +++++++++++
- 2 files changed, 43 insertions(+)
+Can you rebase this onto amd-staging-drm-next
+(https://gitlab.freedesktop.org/agd5f/linux)? Since it currently doesn't
+apply there.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-sk.dts b/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-index 7c98c1b855d1..b18092497c9a 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-sk.dts
-@@ -31,6 +31,7 @@ memory@80000000 {
- 
- 	vmain_pd: regulator-0 {
- 		/* TPS65988 PD CONTROLLER OUTPUT */
-+		bootph-all;
- 		compatible = "regulator-fixed";
- 		regulator-name = "vmain_pd";
- 		regulator-min-microvolt = <5000000>;
-@@ -41,6 +42,7 @@ vmain_pd: regulator-0 {
- 
- 	vcc_5v0: regulator-1 {
- 		/* Output of LM34936 */
-+		bootph-all;
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc_5v0";
- 		regulator-min-microvolt = <5000000>;
-@@ -52,6 +54,7 @@ vcc_5v0: regulator-1 {
- 
- 	vcc_3v3_sys: regulator-2 {
- 		/* output of LM61460-Q1 */
-+		bootph-all;
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc_3v3_sys";
- 		regulator-min-microvolt = <3300000>;
-@@ -63,6 +66,7 @@ vcc_3v3_sys: regulator-2 {
- 
- 	vdd_mmc1: regulator-3 {
- 		/* TPS22918DBVR */
-+		bootph-all;
- 		compatible = "regulator-fixed";
- 		regulator-name = "vdd_mmc1";
- 		regulator-min-microvolt = <3300000>;
-@@ -75,6 +79,7 @@ vdd_mmc1: regulator-3 {
- 
- 	vdd_sd_dv: regulator-4 {
- 		/* Output of TLV71033 */
-+		bootph-all;
- 		compatible = "regulator-gpio";
- 		regulator-name = "tlv71033";
- 		pinctrl-names = "default";
-@@ -102,6 +107,7 @@ vcc_1v8: regulator-5 {
- 
- &main_pmx0 {
- 	main_rgmii2_pins_default: main-rgmii2-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x184, PIN_INPUT, 0) /* (AE23) RGMII2_RD0 */
- 			AM62X_IOPAD(0x188, PIN_INPUT, 0) /* (AB20) RGMII2_RD1 */
-@@ -119,6 +125,7 @@ AM62X_IOPAD(0x164, PIN_OUTPUT, 0) /* (AA19) RGMII2_TX_CTL */
- 	};
- 
- 	ospi0_pins_default: ospi0-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x000, PIN_OUTPUT, 0) /* (H24) OSPI0_CLK */
- 			AM62X_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F23) OSPI0_CSn0 */
-@@ -135,20 +142,32 @@ AM62X_IOPAD(0x008, PIN_INPUT, 0) /* (J24) OSPI0_DQS */
- 	};
- 
- 	vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x07c, PIN_OUTPUT, 7) /* (P25) GPMC0_CLK.GPIO0_31 */
- 		>;
- 	};
- 
- 	main_gpio1_ioexp_intr_pins_default: main-gpio1-ioexp-intr-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x01d4, PIN_INPUT, 7) /* (B15) UART0_RTSn.GPIO1_23 */
- 		>;
- 	};
- };
- 
-+&main_gpio0 {
-+	bootph-all;
-+};
-+
-+&main_gpio1 {
-+	bootph-all;
-+};
-+
- &main_i2c1 {
-+	bootph-all;
- 	exp1: gpio@22 {
-+		bootph-all;
- 		compatible = "ti,tca6424";
- 		reg = <0x22>;
- 		gpio-controller;
-@@ -207,12 +226,18 @@ mbox_m4_0: mbox-m4-0 {
- 	};
- };
- 
-+&fss {
-+	bootph-all;
-+};
-+
- &ospi0 {
-+	bootph-all;
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&ospi0_pins_default>;
- 
- 	flash@0 {
-+		bootph-all;
- 		compatible = "jedec,spi-nor";
- 		reg = <0x0>;
- 		spi-tx-bus-width = <8>;
-@@ -225,6 +250,7 @@ flash@0 {
- 		cdns,read-delay = <4>;
- 
- 		partitions {
-+			bootph-all;
- 			compatible = "fixed-partitions";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-@@ -260,6 +286,7 @@ partition@800000 {
- 			};
- 
- 			partition@3fc0000 {
-+				bootph-pre-ram;
- 				label = "ospi.phypattern";
- 				reg = <0x3fc0000 0x40000>;
- 			};
-diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-index 677ff8de4b6e..19f57ead4ebd 100644
---- a/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi
-@@ -28,6 +28,7 @@ chosen {
- 	};
- 
- 	memory@80000000 {
-+		bootph-pre-ram;
- 		device_type = "memory";
- 		/* 2G RAM */
- 		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
-@@ -130,6 +131,7 @@ hdmi_connector_in: endpoint {
- &main_pmx0 {
- 	/* First pad number is ALW package and second is AMC package */
- 	main_uart0_pins_default: main-uart0-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x1c8, PIN_INPUT, 0) /* (D14/A13) UART0_RXD */
- 			AM62X_IOPAD(0x1cc, PIN_OUTPUT, 0) /* (E14/E11) UART0_TXD */
-@@ -137,6 +139,7 @@ AM62X_IOPAD(0x1cc, PIN_OUTPUT, 0) /* (E14/E11) UART0_TXD */
- 	};
- 
- 	main_uart1_pins_default: main-uart1-default-pins {
-+		bootph-pre-ram;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x194, PIN_INPUT, 2) /* (B19/B18) MCASP0_AXR3.UART1_CTSn */
- 			AM62X_IOPAD(0x198, PIN_OUTPUT, 2) /* (A19/B17) MCASP0_AXR2.UART1_RTSn */
-@@ -167,6 +170,7 @@ AM62X_IOPAD(0x0b4, PIN_INPUT_PULLUP, 1) /* (K24/H19) GPMC0_CSn3.I2C2_SDA */
- 	};
- 
- 	main_mmc0_pins_default: main-mmc0-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x220, PIN_INPUT, 0) /* (Y3/V3) MMC0_CMD */
- 			AM62X_IOPAD(0x218, PIN_INPUT, 0) /* (AB1/Y1) MMC0_CLK */
-@@ -182,6 +186,7 @@ AM62X_IOPAD(0x1f8, PIN_INPUT, 0) /* (AC2/V4) MMC0_DAT7 */
- 	};
- 
- 	main_mmc1_pins_default: main-mmc1-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x23c, PIN_INPUT, 0) /* (A21/C18) MMC1_CMD */
- 			AM62X_IOPAD(0x234, PIN_INPUT, 0) /* (B22/A20) MMC1_CLK */
-@@ -207,6 +212,7 @@ AM62X_IOPAD(0x15c, PIN_INPUT, 0) /* (AB22/U16) MDIO0_MDIO */
- 	};
- 
- 	main_rgmii1_pins_default: main-rgmii1-default-pins {
-+		bootph-all;
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x14c, PIN_INPUT, 0) /* (AB17/W15) RGMII1_RD0 */
- 			AM62X_IOPAD(0x150, PIN_INPUT, 0) /* (AC17/Y16) RGMII1_RD1 */
-@@ -274,6 +280,7 @@ AM62X_IOPAD(0x078, PIN_OUTPUT, 1) /* (U24) GPMC0_AD15.VOUT0_DATA23 */
- 
- &mcu_pmx0 {
- 	wkup_uart0_pins_default: wkup-uart0-default-pins {
-+		bootph-pre-ram;
- 		pinctrl-single,pins = <
- 			AM62X_MCU_IOPAD(0x02c, PIN_INPUT, 0) /* (C6/A7) WKUP_UART0_CTSn */
- 			AM62X_MCU_IOPAD(0x030, PIN_OUTPUT, 0) /* (A4/B4) WKUP_UART0_RTSn */
-@@ -285,12 +292,14 @@ AM62X_MCU_IOPAD(0x028, PIN_OUTPUT, 0) /* (C5/C6) WKUP_UART0_TXD */
- 
- &wkup_uart0 {
- 	/* WKUP UART0 is used by DM firmware */
-+	bootph-pre-ram;
- 	status = "reserved";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&wkup_uart0_pins_default>;
- };
- 
- &main_uart0 {
-+	bootph-all;
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_uart0_pins_default>;
-@@ -298,6 +307,7 @@ &main_uart0 {
- 
- &main_uart1 {
- 	/* Main UART1 is used by TIFS firmware */
-+	bootph-pre-ram;
- 	status = "reserved";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_uart1_pins_default>;
-@@ -390,6 +400,7 @@ sii9022_out: endpoint {
- };
- 
- &sdhci0 {
-+	bootph-all;
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mmc0_pins_default>;
-@@ -399,6 +410,7 @@ &sdhci0 {
- 
- &sdhci1 {
- 	/* SD/MMC */
-+	bootph-all;
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mmc1_pins_default>;
-@@ -407,21 +419,25 @@ &sdhci1 {
- };
- 
- &cpsw3g {
-+	bootph-all;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_rgmii1_pins_default>;
- };
- 
- &cpsw_port1 {
-+	bootph-all;
- 	phy-mode = "rgmii-rxid";
- 	phy-handle = <&cpsw3g_phy0>;
- };
- 
- &cpsw3g_mdio {
-+	bootph-all;
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mdio1_pins_default>;
- 
- 	cpsw3g_phy0: ethernet-phy@0 {
-+		bootph-all;
- 		reg = <0>;
- 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
- 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> 
+> Em 31/08/2023 12:29, André Almeida escreveu:
+>> As suggested by Christian at [0], this patchset merges all debug modules
+>> parameters and creates a new one for disabling soft recovery:
+>>
+>>> Maybe we can overload the amdgpu_gpu_recovery module option with this.
+>>> Or even better merge all the developer module parameter into a
+>>> amdgpu_debug option. This way it should be pretty obvious that this
+>>> isn't meant to be used by someone who doesn't know how to use it.
+>>
+>> [0] 
+>> https://lore.kernel.org/dri-devel/55f69184-1aa2-55d6-4a10-1560d75c7324@amd.com/
+>>
+>> Changelog:
+>> - move enum from include/amd_shared.h to amdgpu/amdgpu_drv.c
+>> v2: 
+>> https://lore.kernel.org/lkml/20230830220808.421935-1-andrealmeid@igalia.com/
+>>
+>> - drop old module params
+>> - use BIT() macros
+>> - replace global var with adev-> vars
+>> v1: 
+>> https://lore.kernel.org/lkml/20230824162505.173399-1-andrealmeid@igalia.com/
+>>
+>> André Almeida (2):
+>>    drm/amdgpu: Merge debug module parameters
+>>    drm/amdgpu: Create an option to disable soft recovery
+>>
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h      |  5 ++
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c   |  2 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 63 ++++++++++++++++--------
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c  |  2 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c |  6 ++-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  2 +-
+>>   drivers/gpu/drm/amd/amdkfd/kfd_chardev.c |  2 +-
+>>   drivers/gpu/drm/amd/amdkfd/kfd_crat.c    |  2 +-
+>>   8 files changed, 58 insertions(+), 26 deletions(-)
+>>
 -- 
-2.40.0
+Hamza
 
