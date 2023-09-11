@@ -2,372 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F5D79B94B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D510A79BD84
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbjIKVEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44400 "EHLO
+        id S243925AbjIKVIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237858AbjIKNPi (ORCPT
+        with ESMTP id S237743AbjIKNNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:15:38 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93519EB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:15:32 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-403012f27e1so23418325e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694438131; x=1695042931; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nqYb5Vu8dCDUBKbfeLnWwY3UtdJspJqfkbvYUWs56pc=;
-        b=E+tslBdIxbMHSUp30W8BlVy29pmiEBopVhkQQs02cim9x5GoOj9pnrnTyhPKOaaZEZ
-         +kjgqOscEvCVTTuwX2EnyNSDpZQzTCE+/mPQf0HAmWXz2d388r20YL+STC16B0gR/jhI
-         ax7W52zskGl8UsLtmJcE/XtfNS09yWhQscmL/0tKLbTXOx2i7/Wd8NpLelVyAnmzcuWR
-         25xDClpNjGEaZ4QY3LbyqEKQ0hqCDDDVEYoDQZeGXFylUFjnGfHPV+F6chpCwwp6RaG+
-         u7WP7Yw4gmXXyrGby6xM3wzqU+S9LBq89hBbZUgyzQnJTFoDjDCnW/Fsundp9ZfJQFRn
-         seVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438131; x=1695042931;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nqYb5Vu8dCDUBKbfeLnWwY3UtdJspJqfkbvYUWs56pc=;
-        b=c65+FLHY1BNmitaNIhQZF0rg1MeWjaNzYMY7FjxvYm01XocIoRNcf5Qcr6JomH1Lpl
-         31Wo9xM+M7+jaO8mjv0mmrC7OuGax9hQ6OxMJXroqsVyodZKNJMQDFz/jCo8XTKuY/1G
-         yLYjxKmPLoJTMAL/Imd28/qBB2NN9s0OM8zMl3CJ+bDkSPF4JozE9xBg7pCEO0k4sc/x
-         BcVGMT3CS8ZaF6JNI5+zlSNbJ+Y4WQPMtw1bPOEArW0LxkK0gZo7bzGUJjtIOJnqimow
-         HTOlubPbG9/UcFBsWrc4ddLi41445/YQ33XJkW4v+bjYH+JxZJoYdJOSGcqxuZTiJJMO
-         vXWA==
-X-Gm-Message-State: AOJu0YwR8Bext6M0iSX6lY4fxNSrn0C4kgHke7SEVgNNdqlMBgnXQGb3
-        BtMeoxv9LKhXYhilox8vdcjkZA==
-X-Google-Smtp-Source: AGHT+IGSM7mk4P/JNlSdasDtYzZnQXEd3SbuOn7pwwi1IoVXpt21uzh3Nx2y9SMVd5/QCh9kvlN/TA==
-X-Received: by 2002:a05:600c:2301:b0:400:ce4f:f184 with SMTP id 1-20020a05600c230100b00400ce4ff184mr8883368wmo.41.1694438130933;
-        Mon, 11 Sep 2023 06:15:30 -0700 (PDT)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id m31-20020a05600c3b1f00b00402f7e473b7sm9878654wms.15.2023.09.11.06.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:15:30 -0700 (PDT)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>
-Subject: [PATCH v4 3/4] riscv: Make __flush_tlb_range() loop over pte instead of flushing the whole tlb
-Date:   Mon, 11 Sep 2023 15:12:23 +0200
-Message-Id: <20230911131224.61924-4-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230911131224.61924-1-alexghiti@rivosinc.com>
-References: <20230911131224.61924-1-alexghiti@rivosinc.com>
+        Mon, 11 Sep 2023 09:13:35 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F37CD7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:13:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TR+bArBYyGNkjeWav50rlNhUyeHL+PpvKPHW1Nu9Mk4iOzsqA4jlaSccMQI+X7hBw/1nsePbfp6bkmToCnTMTHA/w9dIkgva3eJRfG97Y44olU4yzjVhtClTnaxa+rUy6zpTGM8W18DH+JsvOSpb3v3EJ2C9MPPN+U6woVEH8KoLPxB0S1FPFzVIerFzrkTkUHFNhIa+j5OWt2b1mNN6B1LAaZmxooCXamLsnLXtpmLCf69XI72TEBvz8TZNTSGv1vJWxhCXA0YMafCpRaDXEhfu8GXULnYjSawibAwPbtqclLG4772Rl/tXnK8zNcQiXpEm2Pfph4IYGiSgO+POpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YQshHsJVCBz68e6TzJ6QMDlC5zu28yQOUVDHnLwnmnA=;
+ b=dy1BHO3Cdk5XVmVFkxpQ4Ho8Llyt1D6Rz6Pt5K4hmjjYNjrC7ew+Pk7gnY209MoLQ2fFTdVPwrNktdu8NSDG8aiqTh5yKyRY2W+Cp7R65uwvkm23Y8WaBP+2j/tionkTB0QotqYYhqmGjYnNUraR8MeP+jhI/2Rl7+k0nq/wBhrZ5QSm4URDU/gDfaCVqZXjzO/F3SUYNFPeUQ4wUtCsOtawWxdkI3cjDpxweSmXAkrJ/aKUNBl5yNxx/7dB0BOhqmrgjT4Hw2mT404KkXU4KPffTEBGqXPcmAcLgrFkIETtfJpNhFOuk1MDGBdMXGRHaZ4E/s5685N4pYB9F391qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YQshHsJVCBz68e6TzJ6QMDlC5zu28yQOUVDHnLwnmnA=;
+ b=ou22cBVbg2ZAcME3B3YEXRgpouJ5FuKA08R6mfD3TkEjSrQI1SeBzy5lRDzYn7eRu21ZWxiXwmi23zqZTEd97qRRxbIhUWcsYJtxAEKiyr9fS+0IvG1y1XiHxMSV+/pYBo8xc/pXvZR+JpnARWHCv3xgwvsq2BB16DbyW7h4AJM=
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by BN9PR12MB5210.namprd12.prod.outlook.com (2603:10b6:408:11b::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
+ 2023 13:13:28 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 13:13:27 +0000
+From:   "Sharma, Shashank" <Shashank.Sharma@amd.com>
+To:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        =?utf-8?B?QW5kcsOpIEFsbWVpZGE=?= <andrealmeid@igalia.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "kernel-dev@igalia.com" <kernel-dev@igalia.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Pelloux-Prayer, Pierre-Eric" <Pierre-eric.Pelloux-prayer@amd.com>
+Subject: RE: [PATCH v6 1/5] drm/amdgpu: Allocate coredump memory in a
+ nonblocking way
+Thread-Topic: [PATCH v6 1/5] drm/amdgpu: Allocate coredump memory in a
+ nonblocking way
+Thread-Index: AQHZ5F82qJ0nSbk17kC9ALrdxBJq37AVeaOAgAAhB4A=
+Date:   Mon, 11 Sep 2023 13:13:27 +0000
+Message-ID: <MW4PR12MB5667BFFD978A330AD51E579CF2F2A@MW4PR12MB5667.namprd12.prod.outlook.com>
+References: <20230911030018.73540-1-andrealmeid@igalia.com>
+ <20230911030018.73540-2-andrealmeid@igalia.com>
+ <4a6622b8-231e-74fc-f558-0f124b851308@amd.com>
+In-Reply-To: <4a6622b8-231e-74fc-f558-0f124b851308@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=b827f38d-a74a-43d9-9bce-cd7607253397;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-09-11T13:13:07Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MW4PR12MB5667:EE_|BN9PR12MB5210:EE_
+x-ms-office365-filtering-correlation-id: 987cdc49-6cf9-410b-023f-08dbb2c8e320
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9Q3ZL40+CjrNq4m0mVvUz/Pk+SYPyQDmvXOfVbS2aEvPe5CBZOhcG563vVxefbPTPLS0v3i6l8MOIcYCkaXegVzWjcXen7huPiM2/yfnEoDjE0XFImar1RtT/oKId4oNHojxNQtPZFiUep31T2fNKVPqJATPShUOPpiECpO2Yk9G0ESSfSh81quHzxgfC1gLngpGR0eHXFSM41fbvYwvEN+YI980ua8xkGfkSSnoM6W4aNmSdEHKyFeaL+g8/kSNKnc6Iro2EruaZA6nVQhHFS3S5BFb5Nxk/VKx2dXZo3SqoGnBJcDL3KplvHDT5ao10XwISSwGGV8Um2m8bOV3PpbjTDOxd2cC4B7cJT7l8lDniWfzfxyUnFyn2ZbM9xrb10HR4lVSWiy4nFGG72gDvn8lqg97moEvdwTFiXfzKfMAZwAbHwUy8BF1eWfqmbwHpqVf02NM7Q0j0YMKzdMuasaAnmLRA7fs/fhHFSZ+b4lKnw1Wu5VqdqyFCbFa4o9CGW9jSHVNVXiE05+LtB9cyopkXwc3A1ymB+Vqk7X8165iJodN/Si5fGb3396oESJWNWjaqutGmmHnhgLWHO4lVX5WRgVrbSrzkAdYQH83DDwz15oUXbSH27vINA00iIzA
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(186009)(451199024)(1800799009)(6506007)(7696005)(53546011)(9686003)(71200400001)(83380400001)(122000001)(86362001)(33656002)(38100700002)(38070700005)(66574015)(55016003)(26005)(52536014)(316002)(41300700001)(8936002)(4326008)(2906002)(76116006)(8676002)(66946007)(54906003)(478600001)(66556008)(66446008)(66476007)(64756008)(110136005)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?alB2eE1IUEh4dDJ3WHgrbzhFSzFLMzhrbmp1ZW5jRDZzT2pMaTcwVU5lRHMv?=
+ =?utf-8?B?VFlIUE9qem51Uk9aTTR6YysydVVNdDdRcjhuLzhVN1RVYTUwd2h1SXc4VW51?=
+ =?utf-8?B?b0FUTloxalFEUmI0V2Rpc3JaUzEweVdieHdTUVd5bi9CVmRqdmhtclVKNXcz?=
+ =?utf-8?B?aHE1UVVwdkxwOTdYQjZhamFqS01LVUk1REM3NHdpTWt2dUtWSiszZUVVdDhE?=
+ =?utf-8?B?NGd6Y1hzb2M0SW56MFNkS3NLaTZhdm9jM0pDNEpoK3Y1NE9reklucGthbjll?=
+ =?utf-8?B?dVROK3EzT1M0OXh5YjQ4emxjeWxSNWhaeEZiU3g4dkFoOTJ1V2hpREM5YUYw?=
+ =?utf-8?B?T1J0cU8vd0kxem5vSkFqay9kRmtsaFZpM3psbDVrM0RRR2Ivd2I1WUdDdVJC?=
+ =?utf-8?B?bmtOZ09qSFBrbnc0bTBkU1ZFZXV3YjlSU2lKckRxVXdMdVFrOVJvQ1RFRSty?=
+ =?utf-8?B?emNoZzF3V0ovenVjM3VlM2czcDByalNvYVlYSnFONDAzUlg4N0J6MSthSXZj?=
+ =?utf-8?B?UDJLM0VNQ3dHZ0NQdXNkV0RmOUh0OEVDb09uMWZzOXNVV1Z2OTFRMk1BeExU?=
+ =?utf-8?B?QWlWS3dxSU5TNTMvU25JNVJ3QWxOUmtjaVFZbjZnTlQxU0lJbnkvam82Q1hU?=
+ =?utf-8?B?SVhjQTFEcWUvUHozc1ZnODUxeUp2UWpLRFBKc1NZdytKQWgzZXdGREdwUGJS?=
+ =?utf-8?B?UWM1OFF3bXB2YVhFRmVlQ0R5allXSnNLOU5sUWlqZDRIeVgzQ3I1SXdaYjg5?=
+ =?utf-8?B?UXVNRVZiTXhmZFpxSmcwWHdzR0F6T1FCcU1xNkx4WTRxTC9pbVU0a00xN0U5?=
+ =?utf-8?B?d3ExdU5odnVlODhjbTlreG1GY2tZNmY5emlWSVBVZE5aN0prbW5DMWdDUlZ1?=
+ =?utf-8?B?VDZOelFleVRVSWVmRjBkZnJmcGNVNzNtcUdmQ1VNT0c5aFpyRmVKWXF5OGxE?=
+ =?utf-8?B?UVpxL2dvZHArb1Z0YXFxUWpDTFlyTk1vMXVETXRGaG5VQ25UcDBkaTFIV0Qv?=
+ =?utf-8?B?TXpFa3hpdlp2b0grYzQrajh0NHBkaG1DZDdQR0F3MUZqU0xVeGdHdW9pNXpq?=
+ =?utf-8?B?bjlKby9ZcmZzYUs4VGt2N1ZwSm84VVAzWE5wT01ESDZFZWVMaVJVNWI4UUFQ?=
+ =?utf-8?B?V3RtZ3p1T3BBUlF4NHFEQ0t6ZjdYQU5sZ2I1cXltNUFXVzcwRHBFOUpQeVNG?=
+ =?utf-8?B?Vm82bXMvSDFNNzI0citkUko1RVkzVlZjQ1ZYNWVlczlnR3lSbmM2ak8rOW1x?=
+ =?utf-8?B?ZHFrREpwT09LWTNybzFLYi9nTGRySDl6S3N2OVV1L3lSRUF1R25jS3VSYlY5?=
+ =?utf-8?B?OHFIZlpMeXMyZnA1ZmdkenpMNmtERzBJNGJiQW85d0FSTmFlZDQ3NWd4RStk?=
+ =?utf-8?B?TkN4TGFtcXJtRDJOT0dQeUVsbTIzTWc0eFJyRUw5QWs4cElyNzFtczBOL2dG?=
+ =?utf-8?B?cE1pTHNvbFpoSzUrQTE5RU1UVjBKSEFsL3hsMlp5OGNlQjlKWGtKQ0lwY2N3?=
+ =?utf-8?B?djZIdGZtRkY5R0o4TEJHYmRHOXEzWC96cHpjdE42RUFGVU1nVlpyNXVRV3hk?=
+ =?utf-8?B?ZGZoUjJrbytkN2RzNWNsRDJHUW5GcjJlb3pTZ2NnNVJjOXJhV3FNZGtPRXYv?=
+ =?utf-8?B?dm1rWlAzQ1RZS3Iwcnd6TmE3TzAzeFRMbTZ5Z3BMeERXNlZyQkwxenR6MFE3?=
+ =?utf-8?B?dlgySVY2amJ1bVBTa2R6YlVDTHlPZ0Q2bFBTVUw2NzJQMUxhaE94dTdReklT?=
+ =?utf-8?B?cUtCVkhBMlNDbGVLRmx0dFhaZkEvZ2R3bHQ2NGFNQXZyL1c3OWhFREtyOHJa?=
+ =?utf-8?B?YzNzNEgweTFTeTgrNURCL2F0T1hEdTBsRFlpempITnpxMlBWaXBXeEg2ZGE0?=
+ =?utf-8?B?SkZMQ3VqMlVERUNvRjZQakh1UVhJWGRKQVFHbE1EbTlGWE4rNzZMQy9zRU5i?=
+ =?utf-8?B?c2lPU245bGlSeTZXaUxocldGbVpLOE5JT0pVRFRwa2pSNlBsOHlneTUwdUxO?=
+ =?utf-8?B?WGlPRUpZa2dxZEhxaEdtdWFEc1NJMHVUWDJzdk1FclNUZm5hUmFnaTlUZkly?=
+ =?utf-8?B?c1NTdk5GYlA2ZVdGK3VzODdJZEJ4bFduUklkc1ZVTllTbVpIdzIvUHFpQ1RS?=
+ =?utf-8?Q?iAvM=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 987cdc49-6cf9-410b-023f-08dbb2c8e320
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 13:13:27.6337
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ztygtBYoWflda8STb9XUBdM8Ro+7yZznm/Yin8m0+/q82mzirmw40r3AG6u90jy8R3l4x3q6ILJmtvgNsvsqnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5210
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when the range to flush covers more than one page (a 4K page or
-a hugepage), __flush_tlb_range() flushes the whole tlb. Flushing the whole
-tlb comes with a greater cost than flushing a single entry so we should
-flush single entries up to a certain threshold so that:
-threshold * cost of flushing a single entry < cost of flushing the whole
-tlb.
-
-Co-developed-by: Mayuresh Chitale <mchitale@ventanamicro.com>
-Signed-off-by: Mayuresh Chitale <mchitale@ventanamicro.com>
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
----
- arch/riscv/include/asm/sbi.h      |   3 -
- arch/riscv/include/asm/tlbflush.h |   3 +
- arch/riscv/kernel/sbi.c           |  32 +++------
- arch/riscv/mm/tlbflush.c          | 115 +++++++++++++++---------------
- 4 files changed, 72 insertions(+), 81 deletions(-)
-
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 5b4a1bf5f439..b79d0228144f 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -273,9 +273,6 @@ void sbi_set_timer(uint64_t stime_value);
- void sbi_shutdown(void);
- void sbi_send_ipi(unsigned int cpu);
- int sbi_remote_fence_i(const struct cpumask *cpu_mask);
--int sbi_remote_sfence_vma(const struct cpumask *cpu_mask,
--			   unsigned long start,
--			   unsigned long size);
- 
- int sbi_remote_sfence_vma_asid(const struct cpumask *cpu_mask,
- 				unsigned long start,
-diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index f5c4fb0ae642..170a49c531c6 100644
---- a/arch/riscv/include/asm/tlbflush.h
-+++ b/arch/riscv/include/asm/tlbflush.h
-@@ -11,6 +11,9 @@
- #include <asm/smp.h>
- #include <asm/errata_list.h>
- 
-+#define FLUSH_TLB_MAX_SIZE      ((unsigned long)-1)
-+#define FLUSH_TLB_NO_ASID       ((unsigned long)-1)
-+
- #ifdef CONFIG_MMU
- extern unsigned long asid_mask;
- 
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index c672c8ba9a2a..5a62ed1da453 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -11,6 +11,7 @@
- #include <linux/reboot.h>
- #include <asm/sbi.h>
- #include <asm/smp.h>
-+#include <asm/tlbflush.h>
- 
- /* default SBI version is 0.1 */
- unsigned long sbi_spec_version __ro_after_init = SBI_SPEC_VERSION_DEFAULT;
-@@ -376,32 +377,15 @@ int sbi_remote_fence_i(const struct cpumask *cpu_mask)
- }
- EXPORT_SYMBOL(sbi_remote_fence_i);
- 
--/**
-- * sbi_remote_sfence_vma() - Execute SFENCE.VMA instructions on given remote
-- *			     harts for the specified virtual address range.
-- * @cpu_mask: A cpu mask containing all the target harts.
-- * @start: Start of the virtual address
-- * @size: Total size of the virtual address range.
-- *
-- * Return: 0 on success, appropriate linux error code otherwise.
-- */
--int sbi_remote_sfence_vma(const struct cpumask *cpu_mask,
--			   unsigned long start,
--			   unsigned long size)
--{
--	return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
--			    cpu_mask, start, size, 0, 0);
--}
--EXPORT_SYMBOL(sbi_remote_sfence_vma);
--
- /**
-  * sbi_remote_sfence_vma_asid() - Execute SFENCE.VMA instructions on given
-- * remote harts for a virtual address range belonging to a specific ASID.
-+ * remote harts for a virtual address range belonging to a specific ASID or not.
-  *
-  * @cpu_mask: A cpu mask containing all the target harts.
-  * @start: Start of the virtual address
-  * @size: Total size of the virtual address range.
-- * @asid: The value of address space identifier (ASID).
-+ * @asid: The value of address space identifier (ASID), or FLUSH_TLB_NO_ASID
-+ * for flushing all address spaces.
-  *
-  * Return: 0 on success, appropriate linux error code otherwise.
-  */
-@@ -410,8 +394,12 @@ int sbi_remote_sfence_vma_asid(const struct cpumask *cpu_mask,
- 				unsigned long size,
- 				unsigned long asid)
- {
--	return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
--			    cpu_mask, start, size, asid, 0);
-+	if (asid == FLUSH_TLB_NO_ASID)
-+		return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA,
-+				    cpu_mask, start, size, 0, 0);
-+	else
-+		return __sbi_rfence(SBI_EXT_RFENCE_REMOTE_SFENCE_VMA_ASID,
-+				    cpu_mask, start, size, asid, 0);
- }
- EXPORT_SYMBOL(sbi_remote_sfence_vma_asid);
- 
-diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index 5bda6d4fed90..2c1136d73411 100644
---- a/arch/riscv/mm/tlbflush.c
-+++ b/arch/riscv/mm/tlbflush.c
-@@ -9,28 +9,50 @@
- 
- static inline void local_flush_tlb_all_asid(unsigned long asid)
- {
--	__asm__ __volatile__ ("sfence.vma x0, %0"
--			:
--			: "r" (asid)
--			: "memory");
-+	if (asid != FLUSH_TLB_NO_ASID)
-+		__asm__ __volatile__ ("sfence.vma x0, %0"
-+				:
-+				: "r" (asid)
-+				: "memory");
-+	else
-+		local_flush_tlb_all();
- }
- 
- static inline void local_flush_tlb_page_asid(unsigned long addr,
- 		unsigned long asid)
- {
--	__asm__ __volatile__ ("sfence.vma %0, %1"
--			:
--			: "r" (addr), "r" (asid)
--			: "memory");
-+	if (asid != FLUSH_TLB_NO_ASID)
-+		__asm__ __volatile__ ("sfence.vma %0, %1"
-+				:
-+				: "r" (addr), "r" (asid)
-+				: "memory");
-+	else
-+		local_flush_tlb_page(addr);
- }
- 
--static inline void local_flush_tlb_range(unsigned long start,
--		unsigned long size, unsigned long stride)
-+/*
-+ * Flush entire TLB if number of entries to be flushed is greater
-+ * than the threshold below.
-+ */
-+static unsigned long tlb_flush_all_threshold __read_mostly = 64;
-+
-+static void local_flush_tlb_range_threshold_asid(unsigned long start,
-+						 unsigned long size,
-+						 unsigned long stride,
-+						 unsigned long asid)
- {
--	if (size <= stride)
--		local_flush_tlb_page(start);
--	else
--		local_flush_tlb_all();
-+	u16 nr_ptes_in_range = DIV_ROUND_UP(size, stride);
-+	int i;
-+
-+	if (nr_ptes_in_range > tlb_flush_all_threshold) {
-+		local_flush_tlb_all_asid(asid);
-+		return;
-+	}
-+
-+	for (i = 0; i < nr_ptes_in_range; ++i) {
-+		local_flush_tlb_page_asid(start, asid);
-+		start += stride;
-+	}
- }
- 
- static inline void local_flush_tlb_range_asid(unsigned long start,
-@@ -38,8 +60,10 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
- {
- 	if (size <= stride)
- 		local_flush_tlb_page_asid(start, asid);
--	else
-+	else if (size == FLUSH_TLB_MAX_SIZE)
- 		local_flush_tlb_all_asid(asid);
-+	else
-+		local_flush_tlb_range_threshold_asid(start, size, stride, asid);
- }
- 
- static void __ipi_flush_tlb_all(void *info)
-@@ -52,7 +76,7 @@ void flush_tlb_all(void)
- 	if (riscv_use_ipi_for_rfence())
- 		on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
- 	else
--		sbi_remote_sfence_vma(NULL, 0, -1);
-+		sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, FLUSH_TLB_NO_ASID);
- }
- 
- struct flush_tlb_range_data {
-@@ -69,18 +93,12 @@ static void __ipi_flush_tlb_range_asid(void *info)
- 	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
- }
- 
--static void __ipi_flush_tlb_range(void *info)
--{
--	struct flush_tlb_range_data *d = info;
--
--	local_flush_tlb_range(d->start, d->size, d->stride);
--}
--
- static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 			      unsigned long size, unsigned long stride)
- {
- 	struct flush_tlb_range_data ftd;
- 	struct cpumask *cmask = mm_cpumask(mm);
-+	unsigned long asid = FLUSH_TLB_NO_ASID;
- 	unsigned int cpuid;
- 	bool broadcast;
- 
-@@ -90,39 +108,24 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 	cpuid = get_cpu();
- 	/* check if the tlbflush needs to be sent to other CPUs */
- 	broadcast = cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
--	if (static_branch_unlikely(&use_asid_allocator)) {
--		unsigned long asid = atomic_long_read(&mm->context.id) & asid_mask;
--
--		if (broadcast) {
--			if (riscv_use_ipi_for_rfence()) {
--				ftd.asid = asid;
--				ftd.start = start;
--				ftd.size = size;
--				ftd.stride = stride;
--				on_each_cpu_mask(cmask,
--						 __ipi_flush_tlb_range_asid,
--						 &ftd, 1);
--			} else
--				sbi_remote_sfence_vma_asid(cmask,
--							   start, size, asid);
--		} else {
--			local_flush_tlb_range_asid(start, size, stride, asid);
--		}
-+
-+	if (static_branch_unlikely(&use_asid_allocator))
-+		asid = atomic_long_read(&mm->context.id) & asid_mask;
-+
-+	if (broadcast) {
-+		if (riscv_use_ipi_for_rfence()) {
-+			ftd.asid = asid;
-+			ftd.start = start;
-+			ftd.size = size;
-+			ftd.stride = stride;
-+			on_each_cpu_mask(cmask,
-+					 __ipi_flush_tlb_range_asid,
-+					 &ftd, 1);
-+		} else
-+			sbi_remote_sfence_vma_asid(cmask,
-+						   start, size, asid);
- 	} else {
--		if (broadcast) {
--			if (riscv_use_ipi_for_rfence()) {
--				ftd.asid = 0;
--				ftd.start = start;
--				ftd.size = size;
--				ftd.stride = stride;
--				on_each_cpu_mask(cmask,
--						 __ipi_flush_tlb_range,
--						 &ftd, 1);
--			} else
--				sbi_remote_sfence_vma(cmask, start, size);
--		} else {
--			local_flush_tlb_range(start, size, stride);
--		}
-+		local_flush_tlb_range_asid(start, size, stride, asid);
- 	}
- 
- 	put_cpu();
-@@ -130,7 +133,7 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 
- void flush_tlb_mm(struct mm_struct *mm)
- {
--	__flush_tlb_range(mm, 0, -1, PAGE_SIZE);
-+	__flush_tlb_range(mm, 0, FLUSH_TLB_MAX_SIZE, PAGE_SIZE);
- }
- 
- void flush_tlb_mm_range(struct mm_struct *mm,
--- 
-2.39.2
-
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhleSBDaHJpc3RpYW4sDQoNCldp
+bGwgZG8gdGhhdC4NCg0KUmVnYXJkcw0KU2hhc2hhbmsNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdl
+LS0tLS0NCkZyb206IEtvZW5pZywgQ2hyaXN0aWFuIDxDaHJpc3RpYW4uS29lbmlnQGFtZC5jb20+
+DQpTZW50OiBNb25kYXksIFNlcHRlbWJlciAxMSwgMjAyMyAxOjE1IFBNDQpUbzogQW5kcsOpIEFs
+bWVpZGEgPGFuZHJlYWxtZWlkQGlnYWxpYS5jb20+OyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnOyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZzsgU2hhcm1hLCBTaGFzaGFuayA8U2hhc2hhbmsuU2hhcm1hQGFtZC5jb20+DQpD
+Yzoga2VybmVsLWRldkBpZ2FsaWEuY29tOyBEZXVjaGVyLCBBbGV4YW5kZXIgPEFsZXhhbmRlci5E
+ZXVjaGVyQGFtZC5jb20+OyBQZWxsb3V4LVByYXllciwgUGllcnJlLUVyaWMgPFBpZXJyZS1lcmlj
+LlBlbGxvdXgtcHJheWVyQGFtZC5jb20+DQpTdWJqZWN0OiBSZTogW1BBVENIIHY2IDEvNV0gZHJt
+L2FtZGdwdTogQWxsb2NhdGUgY29yZWR1bXAgbWVtb3J5IGluIGEgbm9uYmxvY2tpbmcgd2F5DQoN
+CkFtIDExLjA5LjIzIHVtIDA1OjAwIHNjaHJpZWIgQW5kcsOpIEFsbWVpZGE6DQo+IER1cmluZyBh
+IEdQVSByZXNldCwgYSBub3JtYWwgbWVtb3J5IHJlY2xhaW0gY291bGQgYmxvY2sgdG8gcmVjbGFp
+bQ0KPiBtZW1vcnkuIEdpdmluZyB0aGF0IGNvcmVkdW1wIGlzIGEgYmVzdCBlZmZvcnQgbWVjaGFu
+aXNtLCBpdCBzaG91bGRuJ3QNCj4gZGlzdHVyYiB0aGUgcmVzZXQgcGF0aC4gQ2hhbmdlIGl0cyBt
+ZW1vcnkgYWxsb2NhdGlvbiBmbGFnIHRvIGENCj4gbm9uYmxvY2tpbmcgb25lLg0KDQpTaW5jZSBp
+dCBpcyBhIGJ1ZyBmaXggSSd2ZSBhbHJlYWR5IHB1c2hlZCB0aGlzIG9uZSBpbnRvIG91ciBpbnRl
+cm5hbCBicmFuY2ggcXVpdGUgYSB3aGlsZSBhZ28uDQoNClNoYXNoYW5rIGNhbiB5b3UgdGFrZSBj
+YXJlIG9mIHBpY2tpbmcgdXAgdGhlIHJlbWFpbmluZyBwYXRjaGVzIGFuZCBwdXNoaW5nIHRoZW0g
+dG8gYW1kLXN0YWdpbmctZHJtLW5leHQ/DQoNClRoYW5rcywNCkNocmlzdGlhbi4NCg0KPg0KPiBT
+aWduZWQtb2ZmLWJ5OiBBbmRyw6kgQWxtZWlkYSA8YW5kcmVhbG1laWRAaWdhbGlhLmNvbT4NCj4g
+UmV2aWV3ZWQtYnk6IENocmlzdGlhbiBLw7ZuaWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4N
+Cj4gLS0tDQo+IHY1OiBubyBjaGFuZ2UNCj4gLS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9h
+bWRncHUvYW1kZ3B1X2RldmljZS5jIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
+dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
+L2FtZC9hbWRncHUvYW1kZ3B1X2RldmljZS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
+cHUvYW1kZ3B1X2RldmljZS5jDQo+IGluZGV4IGFhMTcxZGI2ODYzOS4uYmY0NzgxNTUxZjg4IDEw
+MDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZGV2aWNlLmMN
+Cj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2RldmljZS5jDQo+IEBA
+IC00ODQ3LDcgKzQ4NDcsNyBAQCBzdGF0aWMgdm9pZCBhbWRncHVfcmVzZXRfY2FwdHVyZV9jb3Jl
+ZHVtcG0oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpDQo+ICAgICAgIHN0cnVjdCBkcm1fZGV2
+aWNlICpkZXYgPSBhZGV2X3RvX2RybShhZGV2KTsNCj4NCj4gICAgICAga3RpbWVfZ2V0X3RzNjQo
+JmFkZXYtPnJlc2V0X3RpbWUpOw0KPiAtICAgICBkZXZfY29yZWR1bXBtKGRldi0+ZGV2LCBUSElT
+X01PRFVMRSwgYWRldiwgMCwgR0ZQX0tFUk5FTCwNCj4gKyAgICAgZGV2X2NvcmVkdW1wbShkZXYt
+PmRldiwgVEhJU19NT0RVTEUsIGFkZXYsIDAsIEdGUF9OT1dBSVQsDQo+ICAgICAgICAgICAgICAg
+ICAgICAgYW1kZ3B1X2RldmNvcmVkdW1wX3JlYWQsIGFtZGdwdV9kZXZjb3JlZHVtcF9mcmVlKTsN
+Cj4gICB9DQo+ICAgI2VuZGlmDQoNCg==
