@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CC779BDE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDD879B866
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjIKUxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
+        id S1377865AbjIKW3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbjIKLI7 (ORCPT
+        with ESMTP id S236664AbjIKLKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:08:59 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715A0CDD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:08:54 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5007abb15e9so7291840e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:08:54 -0700 (PDT)
+        Mon, 11 Sep 2023 07:10:12 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE861CDC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:10:07 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-44e8d9e6ca0so1347341137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694430532; x=1695035332; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2r1pG42saIT1hQx+TELlhxvqJ0mmluvD/XCTWLDnio4=;
-        b=wiqYEoqFcRjvUJ+brPwmPIQsX601vW9w8Tsnu1Wq2ODfoOBinAdHwM3udjpT3NfpEK
-         zLbJBfRuKP+MLBUMAZiCe99wJxw+X2fQ+VR5yT1EBUSGY8AabfTWSoysZYMpfXQyc9Du
-         JrVYOLgEK9BfgDRt7NmU0QIVpWCeIAPrR7CgOhNasQf94iOBsDOvQNXcXZeoo8hdosBD
-         GeXkBMRu2nGTISH60Aytf/E/4KtaK8E3go5IWxtzr4bUnt5hao6xA8gkHo0WPp3c5F1H
-         Lm+XJ1OnEGwCw4FIdj0HoZtu9/RtexxM4UGAmSMmV730x5eC3PaZXJVp5MklhADw4O3o
-         r/Qw==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694430607; x=1695035407; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ygzI44NeTHTXZv1CATzGbcxyMKxYdJM78sd/Ui4mbh4=;
+        b=S43RlbxgMRIDxaYPaKhgHxFMDEy0YycLcdWKGNBFWNq47kUz/NhhofQvphaQpnnNxA
+         rds3vE4/NWKTO/pCmnSC4FhHUg+M40LqaQ06VSDlukuh8FqhZZYBFXONsm10ihTBcxFg
+         Bq6mZsekZCorKFbhzsTLz0J3tWCufljGqV8C/jDsHw/wECFgV7QGkvtq4dvZ++yfcMKk
+         crn3f7v3a5vweADREqwCWgCnqCMffVF3YlZhK4Q7K0kgWAsgDCrrcwwpOSzZulggjX5P
+         tTVCpNbLuc2uQtV1zkW0M/loqKJ4PXklWOB/oXmyBtH7YGIWN3nB93ojRPszCIZyyjpY
+         bwwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694430532; x=1695035332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2r1pG42saIT1hQx+TELlhxvqJ0mmluvD/XCTWLDnio4=;
-        b=Z/ktQzvOR/R7bWebv+9uunT3gw3/3ZKDefpLJ8rVIH/wsAd+CzOGeQ5XsIBlbrPdbC
-         a2UmsvTpO4Axx7vj/Ztxp+NuGKOv0Qli+pqZxGpjql++iuCS+v3b1VH0WIfd3x2BH7Qg
-         QRICOmkJX+8zxxVVIGgGgdaalnoOmj59ZqhcuEjJWs/Pov4oUqf2X/6gFMK5spKPkXW1
-         xrl8xdJJQ9cdiqVKNqDGAOU9eTwCDNX7/TYI7Ni5kvTE+zQY8oGgXFLTpZPRaL4+IAWn
-         Bt1XW4FJORY6KZCT1VoZw78h6ZtjlQBl4GYQHpAVeS/OxF4OH3HFgEL3vo62/ENKn44n
-         hIyg==
-X-Gm-Message-State: AOJu0YwOgzzdvhugaZgxHqYK6GulxXHM+XmHW6Q4mIU02jr8xQX043Dk
-        3bdbvwFV7mS84ye84md0XJMlvw==
-X-Google-Smtp-Source: AGHT+IFhJr6aCH0nOA8CkPBUhMy540nMaAY+Mvm7js3Wpv0+d0W8u8lZbEJt3lbAgLcQPiDqKMNL3g==
-X-Received: by 2002:a05:651c:1994:b0:2bf:789e:b5dd with SMTP id bx20-20020a05651c199400b002bf789eb5ddmr5800990ljb.53.1694430532675;
-        Mon, 11 Sep 2023 04:08:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id si28-20020a170906cedc00b009786c8249d6sm5244877ejb.175.2023.09.11.04.08.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 04:08:52 -0700 (PDT)
-Message-ID: <75466db4-3d19-33f6-b2de-db714186a96b@linaro.org>
-Date:   Mon, 11 Sep 2023 13:08:48 +0200
+        d=1e100.net; s=20230601; t=1694430607; x=1695035407;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ygzI44NeTHTXZv1CATzGbcxyMKxYdJM78sd/Ui4mbh4=;
+        b=ssoIHTFQ5ZTXgdQg+hPuzcBaK0QJqKQADER4mHksGBPH3IpPyzJijaNBVLEmLd7Vay
+         2Xx5DlDItaQsEN8z4eEo11WDiRUbDTWS0nl6+XZKrC/cQdJ/FBMLK4HopcEJintg9wrk
+         elmYyHzhRaGKU9gXK3SJuWqK9WJxbzzHYLGI7KNlZmount7dF84pjzMrgDc4XathwH8u
+         9tQiqfs8LZh/DWEiO+RAn1vzkpoG2Kx/IBSBMMHRgchr+Eo+wBKwYflB2UOPHSqfW0FV
+         D/+poQbdUvlejMZB2MWI2wrUyRiH6HMD70ysSXErzCjcJLVGhuDwpGJg7Yg8jt6eYkml
+         BBkw==
+X-Gm-Message-State: AOJu0YyDd4yzigjkNm+XFr0sW02XpO1kPiD/HrVRmD0xbeNV1LZSHUD7
+        T1UWTQzONkt82Y2DHlohLdIKUUIbnGA2svAFYkvYUQ==
+X-Google-Smtp-Source: AGHT+IHKoGdBmULT8rxuDZNFn4KOQlQw0ew3QXPEPQ2cSj+YIXX/HcTVOBuC3A6SmscStWmmEPnPXA1WJ+6yAFCejlE=
+X-Received: by 2002:a67:f557:0:b0:44d:5b62:bcd5 with SMTP id
+ z23-20020a67f557000000b0044d5b62bcd5mr8865170vsn.23.1694430607044; Mon, 11
+ Sep 2023 04:10:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 07/17] soc: qcom: minidump: Add pending region
- registration
-Content-Language: en-US
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, keescook@chromium.org, tony.luck@intel.com,
-        gpiccoli@igalia.com, mathieu.poirier@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, linus.walleij@linaro.org,
-        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
-        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
-        bmasney@redhat.com, quic_tsoni@quicinc.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-8-git-send-email-quic_mojha@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1694290578-17733-8-git-send-email-quic_mojha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230905185309.131295-1-brgl@bgdev.pl> <20230905185309.131295-16-brgl@bgdev.pl>
+ <CACRpkdaVUPNYVjAi2XsNKVhwmtk2qpVp62Lke4xeDOwhhBXLtg@mail.gmail.com> <6555932.G0QQBjFxQf@dell>
+In-Reply-To: <6555932.G0QQBjFxQf@dell>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 11 Sep 2023 13:09:56 +0200
+Message-ID: <CAMRc=Mfrk9q6fJyEAuxDXYPpbjVHeLJaTjHEcKiYHzrE3r+_7A@mail.gmail.com>
+Subject: Re: [RFT PATCH 15/21] arm: omap1: ams-delta: stop using gpiochip_find()
+To:     Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dipen Patel <dipenp@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
+        linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/09/2023 22:16, Mukesh Ojha wrote:
->  static int qcom_apss_minidump_probe(struct platform_device *pdev)
->  {
->  	struct minidump_global_toc *mdgtoc;
-> @@ -571,7 +688,10 @@ static int qcom_apss_minidump_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	mutex_lock(&md_plist.plock);
->  	platform_set_drvdata(pdev, md);
+On Fri, Sep 8, 2023 at 8:07=E2=80=AFPM Janusz Krzysztofik <jmkrzyszt@gmail.=
+com> wrote:
+>
+> Dnia czwartek, 7 wrze=C5=9Bnia 2023 09:31:01 CEST Linus Walleij pisze:
+> > On Tue, Sep 5, 2023 at 8:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.=
+pl> wrote:
+> >
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > gpiochip_find() is going away as it's not hot-unplug safe. This platf=
+orm
+> > > is not affected by any of the related problems as this GPIO controlle=
+r
+> > > cannot really go away but in order to finally remove this function, w=
+e
+> > > need to convert it to using gpio_device_find() as well.
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > I was cleaning this one just some merge cycle ago, now it
+> > looks even better!
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Acked-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+>
 
-Why this is locked?
+Janusz,
 
-> +	qcom_apss_register_pending_regions(md);
+Is it fine if I take it through the GPIO tree?
 
-Why this one is locked? It seems ordering of your operations is not
-correct if you need to lock the providers probe().
+Bartosz
 
-> +	mutex_unlock(&md_plist.plock);
-
-
-Best regards,
-Krzysztof
-
+> Thanks,
+> Janusz
+>
+> >
+> > Yours,
+> > Linus Walleij
+> >
+>
+>
+>
+>
