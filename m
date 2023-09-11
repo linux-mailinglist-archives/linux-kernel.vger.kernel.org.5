@@ -2,68 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7220179C37E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D27679C3A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241347AbjILDAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        id S241783AbjILDER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241089AbjILDAA (ORCPT
+        with ESMTP id S241362AbjILDD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:00:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7D0298A7A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:38:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA3971007;
-        Mon, 11 Sep 2023 15:01:03 -0700 (PDT)
-Received: from [10.57.0.19] (unknown [10.57.0.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A98F3F5A1;
-        Mon, 11 Sep 2023 15:00:25 -0700 (PDT)
-Message-ID: <15a0de3a-086a-b30d-0512-02e3bbf69662@arm.com>
-Date:   Mon, 11 Sep 2023 23:00:18 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] iommu/sun50i: Allow page sizes between 4K and 1M
-Content-Language: en-GB
-To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@gmail.com>,
-        joro@8bytes.org, will@kernel.org
-Cc:     wens@csie.org, samuel@sholland.org, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230911190218.1758812-1-jernej.skrabec@gmail.com>
- <40649946-739b-fec6-d743-f7828613fec5@arm.com> <5707055.DvuYhMxLoT@archlinux>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <5707055.DvuYhMxLoT@archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 11 Sep 2023 23:03:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDC1F9F5A;
+        Mon, 11 Sep 2023 18:37:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2359C116A9;
+        Mon, 11 Sep 2023 22:01:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694469695;
+        bh=t0v/8DwhZ2XTEQS0bqVLXsYjSFysr5rhj5sH1kGkl+U=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=Jqu8WLZlx+u3A+ZjgZ4w+1ZrSjel5diyioaKxfCD3EU4XjjB2m/aNRfzgYqQuUCmO
+         hNRXEjBrfRAV8+ZFgysEQt3/HLfNMErWaCdVpTGeYgwNreWYltqqDDf7rq41cntP0W
+         imp1fr8hgHnuu4othbADNuOgzJgb7YPbleLcAen5LQRUWNXz1P9QfWof9QDLU5B+uS
+         S3B1NVPN3ieNkEFr6+lmY3qWgIhKHZHsrKls42c8YqkevUmzbRPeXOp32QAkslaNRX
+         P7PjG0CH64wEI5u0QrXzYO/kSKQ3Xxob7bbvsGHYvsPJFyEJqW3ugQ6iNTjjWLSRj2
+         A1cXjKiQ7b+Kg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 01:01:31 +0300
+Message-Id: <CVGFDI2VELSN.2E98O6TF5TZ0E@suppilovahvero>
+Cc:     <mic@linux.microsoft.com>, <kanth.ghatraju@oracle.com>,
+        <konrad.wilk@oracle.com>, <linux-integrity@vger.kernel.org>,
+        <keyrings@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
+ trusted keyring
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Eric Snowberg" <eric.snowberg@oracle.com>, <zohar@linux.ibm.com>,
+        <dhowells@redhat.com>, <dwmw2@infradead.org>
+X-Mailer: aerc 0.14.0
+References: <20230908213428.731513-1-eric.snowberg@oracle.com>
+In-Reply-To: <20230908213428.731513-1-eric.snowberg@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-11 20:29, Jernej Škrabec wrote:
-> On Monday, September 11, 2023 9:06:12 PM CEST Robin Murphy wrote:
->> On 2023-09-11 20:02, Jernej Skrabec wrote:
->>> While peripheral supports only 4K page sizes, we can easily emulate
->>> support for bigger page sizes, up to 1M. This is done by making multiple
->>> entries in map function or clearing multiple entries in unmap.
->>
->> No, it's done by converting over to the {map,unmap}_pages ops. There's
->> no need to resurrect this horrible bodge.
-> 
-> Missed those, thanks! In any case, logic to implement those isn't that
-> different than here.
+On Sat Sep 9, 2023 at 12:34 AM EEST, Eric Snowberg wrote:
+> Currently root can dynamically update the blacklist keyring if the hash
+> being added is signed and vouched for by the builtin trusted keyring.
+> Currently keys in the secondary trusted keyring can not be used.
+>
+> Keys within the secondary trusted keyring carry the same capabilities as
+> the builtin trusted keyring.  Relax the current restriction for updating
+> the .blacklist keyring and allow the secondary to also be referenced as
+> a trust source.  Since the machine keyring is linked to the secondary
+> trusted keyring, any key within it may also be used.
+>
+> An example use case for this is IMA appraisal.  Now that IMA both
+> references the blacklist keyring and allows the machine owner to add
+> custom IMA CA certs via the machine keyring, this adds the additional
+> capability for the machine owner to also do revocations on a running
+> system.
+>
+> IMA appraisal usage example to add a revocation for /usr/foo:
+>
+> sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
+>
+> openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
+>        -signer machine-certificate.pem -noattr -binary -outform DER \
+>        -out hash.p7s
+>
+> keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
+>
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> ---
+>  certs/Kconfig     | 2 +-
+>  certs/blacklist.c | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/certs/Kconfig b/certs/Kconfig
+> index 1f109b070877..23dc87c52aff 100644
+> --- a/certs/Kconfig
+> +++ b/certs/Kconfig
+> @@ -134,7 +134,7 @@ config SYSTEM_BLACKLIST_AUTH_UPDATE
+>  	depends on SYSTEM_DATA_VERIFICATION
+>  	help
+>  	  If set, provide the ability to load new blacklist keys at run time if
+> -	  they are signed and vouched by a certificate from the builtin trusted
+> +	  they are signed and vouched by a certificate from the secondary trust=
+ed
+>  	  keyring.  The PKCS#7 signature of the description is set in the key
+>  	  payload.  Blacklist keys cannot be removed.
+> =20
+> diff --git a/certs/blacklist.c b/certs/blacklist.c
+> index 675dd7a8f07a..0b346048ae2d 100644
+> --- a/certs/blacklist.c
+> +++ b/certs/blacklist.c
+> @@ -102,12 +102,12 @@ static int blacklist_key_instantiate(struct key *ke=
+y,
+> =20
+>  #ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
+>  	/*
+> -	 * Verifies the description's PKCS#7 signature against the builtin
+> +	 * Verifies the description's PKCS#7 signature against the secondary
+>  	 * trusted keyring.
+>  	 */
+>  	err =3D verify_pkcs7_signature(key->description,
+>  			strlen(key->description), prep->data, prep->datalen,
+> -			NULL, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
+> +			VERIFY_USE_SECONDARY_KEYRING, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, =
+NULL);
+>  	if (err)
+>  		return err;
+>  #else
+> --=20
+> 2.39.3
 
-Indeed, if anything it should be even simpler since you don't need to 
-worry about specific sizes at all - any tricky boundary you don't want 
-to iterate through, just return short at that point and let the core 
-call you back again with the remainder.
+What if a live system in the wild assumes the old policy? I feel that
+this is "sort of" breaking backwards compatibility but please prove me
+wrong.
 
-(In fact this reminds me one of the low-priority cleanup jobs 
-outstanding was to trivially convert all the remaining drivers and 
-retire the old interfaces altogether)
-
-Cheers,
-Robin.
+BR, Jarkko
