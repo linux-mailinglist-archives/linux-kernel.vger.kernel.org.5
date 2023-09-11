@@ -2,166 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00A479AD3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF41C79B236
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjIKUvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S1345070AbjIKVPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242795AbjIKQUt (ORCPT
+        with ESMTP id S242826AbjIKQXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:20:49 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2045.outbound.protection.outlook.com [40.107.92.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9531BE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:20:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=em7sX2PfJ8Ptj1vQp6IcHt1ysrGIZOYsKmkOciikSafjIFgq656HcZnH+cZO2/8sR1AYv51Cg2Yovxs0+8oQhLdh1pPWg4n+dX4F19X1eS8iEZ/tFSyU5x3M1bYLADnOS7aM12bwp4NHLorxtUKA8qYUiOfiL6TNU1Ip8n4TLN9Wv4fuqxFDtOr0+TUEAa3zT6cqiIe5WYKpWqwb7QswXGGV/1YgoKjFoWpKpQjbi4Z5PQqrNc+sKJHy0otn0q+NFMrUzyHR9Y58q5cXCDA/WTZas5J9SKoDkpPJlmlfb7Lult67ClCbyEzDRBg8ofMdmHz8+VmIo3Grbrcdg1709g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oQCFYc1t/h61X0LCmLE5dmLPKp9sz79uS2p+dFKj5kY=;
- b=BhC1lji+FgApg9hqcwoglD/FxW1L4dZ7h5UJXdcoXbbe4t0SxBQhHfkx+B3MmMzXlinHYbSDH6ekuQLpfA1oVgacSvtPQfVYW2ytGHhGEPTrfZXGJEsmm6pW0zOb8pJz/GAUg9tRgjQuWXbiHB+AGSgeueNaThSTWdv3NTk1B8TJ43GtYcrc3eEhWP+hJGmx91xcQoQLMwyieLc2Fr4ZCfz5XGam34qcwUTf1Ol+4/zk/1jPgWUxpZJtw+E890bb3p3f6ABLAijVc0VRPQbvguRBtwk9mHE2dBAfZbkQ+7vGZcJk0R+d+89hmugEDS7o+Y11GqVZ7Bo+JD7NquagCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oQCFYc1t/h61X0LCmLE5dmLPKp9sz79uS2p+dFKj5kY=;
- b=OeuGM9ZCwQsBXjZZk3v7I3l4a53Xo1pAkgEnFYWF2K4LlATMtW1hFlwZMl5owfjQ5ehn80lE5ZjqQLG4XG534b4YCAo9WwbLSjSAeNDUdxeqS9xJa6N0zFSNB6EAGfofq7Ygvu0B3ktII+BcpZwbQgrptVtoIPjNLgrtnnYlavk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- SA0PR12MB7090.namprd12.prod.outlook.com (2603:10b6:806:2d5::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
- 2023 16:20:42 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 16:20:42 +0000
-Message-ID: <fb96e7c8-e153-4cdc-b7f2-6cb9eb0102e9@amd.com>
-Date:   Mon, 11 Sep 2023 12:20:41 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: fix replay_mode kernel-doc warning
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>, Leo Li <sunpeng.li@amd.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <20230910234450.15962-1-rdunlap@infradead.org>
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20230910234450.15962-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQZPR01CA0034.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:86::18) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+        Mon, 11 Sep 2023 12:23:16 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E2DCC3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:23:10 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 54CEB1F88C;
+        Mon, 11 Sep 2023 16:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694449389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=O4KvfJvNifaqg6M/GRoEaRUwz5YRGBylZkZlSzC5HTY=;
+        b=Osy2cVXlRluXOG9o+EaR+0pghLH+oFXRjJitAtuEk+bJLXrHTB/0WwtKzRk5ypa2R0CHhd
+        qUzRshukM0ISlMozx89Lt2eE4wd0lw3w2jQpjkvs4rXuPP5VsYKYyKZ3JkexYoKdPr8pEN
+        XEMrgzJLyFwhGxKDOKpKQ34M9V7MnDI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694449389;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=O4KvfJvNifaqg6M/GRoEaRUwz5YRGBylZkZlSzC5HTY=;
+        b=H8T9HyNdY+KCsWAlHahC0YYvdYenZpCFE6sEFD+3fbF53T18DurXHa08aXmZ/BVuhPZYyA
+        Uczgt1YIXlvEt9CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 23480139CC;
+        Mon, 11 Sep 2023 16:23:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AhLeB+0+/2QnCAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 16:23:09 +0000
+Message-ID: <1d634412-c0e5-4c16-92a4-447bde684ad6@suse.cz>
+Date:   Mon, 11 Sep 2023 18:23:08 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SA0PR12MB7090:EE_
-X-MS-Office365-Filtering-Correlation-Id: 594e4b54-cf24-477e-2c34-08dbb2e30b7f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dp4frathtFd7ll3ZopttNgBpuv8mQFPmLYYyeRelGh5UA2b9E9ZWItRyTvGpfrf6JeI++bxF8C1yTF/qsY1NfV7ld/1nVHpsjuxRlW6BMj4yEo+8w2FxvoCTLeqohWErpHk5165wiI0IE5hMBW9CPovH2m0Y2hr9mZODVjv2eBi4wvt7qsHTobFDHXANQ0M6JSO0XnuqV4/12n4bkw8NHbDdl3tImNhIJbKdUq6rwiOCQMHcbzWFzn5bWd2ZDJTQFl1eznqAVLMD1vXiMSgzrELOHGrZCdwtWketxgpA3Xqn0sMOeoXlS+xR5lo2g3PGAWDQJTtNzmHE6wRtYPOoQJe0IwamslvU+ntbT5Lv0alGfa+fHwtug1jpXd2XdDdAAHhUuHcnpvdHirV8oaw210zsCeXAF20ZzaHWf56rbpXt3vswTFeyvl9gka5SQ/akJQiRJCe4/rz/NA8sYDPBo3lb5Z+boIciBqMj/H0BVe0PLLsg19Y9FfbHyi62mRDgsAosKEKK/toShcj33Htz6EMzmzI8v+M6+dTMOHEnTMX1mG41fsP0t2i7Qi6hMGUAnjIcM/9D0PxAZMpsCXEO9AaNNYUg977SRYuaYZviY40AMGOdTXHHCA+EflC6eF3SX1y1KqZyAHbD7pfkebn6xg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(1800799009)(186009)(451199024)(6506007)(6486002)(53546011)(6512007)(478600001)(83380400001)(2616005)(2906002)(44832011)(66476007)(54906003)(66556008)(66946007)(26005)(316002)(4326008)(5660300002)(8676002)(8936002)(36756003)(31696002)(86362001)(38100700002)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TTVibm9PSkJzT3RZWTcwZ3U0aGtETi9BUC9wN0cwZ3lTcGdhWldFbEY0MHNp?=
- =?utf-8?B?TDV1UW5xdU9zSllvZHJUZDZIWDZWUVVKemtTVnJPYStmK2p0RFNZWklaUVhr?=
- =?utf-8?B?UUxzaE1WemFzN2g3SUl4TzJ0NTc5bU1yWkFiYVVTbG85eVUrVHNxZUcwWEFu?=
- =?utf-8?B?RnA0bGc3TlI5cW1aOWFPYzMxdTFhRi9mZDJ3djl1ZlRvaFNVT3Bib3FCU1lW?=
- =?utf-8?B?RGJXaVJkRnJjT0lRVGNtc3J3bjlwL0pBaEtudldsWEJqNEF6WE1CVzNQd3Rs?=
- =?utf-8?B?MFQ4VWhRZW91b1lxMTBqWG9kTmxnL056bmdTOVhpNVFlckVEU2pSL2ZQeTNC?=
- =?utf-8?B?N1VmVXM5TGZ0dkFsMkFGd3EvRmV4aS9EVklqMEVyTnZLckduZXdkaVZpdnZK?=
- =?utf-8?B?SGZYZUE1SS9TMXBwTXpIZTAwU3dNTDIraFFmTzhRMFdOTjlHRDdxeVYvRU4x?=
- =?utf-8?B?NFQyOFh5MmMzOHVlSTVVczhHTklxczJrbkF2TTF5dnRWUy9GSE5KSWtKLyt5?=
- =?utf-8?B?K1hJQldDVkNvWDJNSVVlcGhLSVA0RGJqa2huMDVHcjZuOU1BdHVRaFF6SWlO?=
- =?utf-8?B?SS9MblhhZkpkcnFISDBXK3h4VFdZRXVzRFpESjNoRXVVVndyaWVZVVVVNUxL?=
- =?utf-8?B?N04zdzZ4RlNDdThFT1p4R0E1YzJNN0J5dXpEcFNPRExSdjdzS3dVQkN3bXBD?=
- =?utf-8?B?bDg2d1NVTUZqUlJBSjU3U3ozSUVRcVV0WXNHclhUM2xxWWdTVXpqWUxOb3FI?=
- =?utf-8?B?WlE1WEdtOE9EUGVTWmtnVHNtQUJjdFRkQk10aXVjREJqTElpQTVsSE1TRm5X?=
- =?utf-8?B?eTNiRDB4L05ZNDJJR200RmkzVkh3TTg4aDVoTldkT0Jlcm9hWEFOc3V4Z0tB?=
- =?utf-8?B?WThYdW11NURkSkZkUkZMTDgrRlc4bFFCL0pRN1ZCQmdVd0RIeVo0MUlGT2d1?=
- =?utf-8?B?eHBia2NwZ1BxLzh5WDhNSmM4ZVlualY5L05hWUpWV0dYbVNySG5DeFJoSkIx?=
- =?utf-8?B?ZG9BbEJtLzlhZUZyanFhZW5nanlpM2RWdndGeHV1QlBVbks4YWtxTU9uenBv?=
- =?utf-8?B?emdwQzRaVmhOVjhoOXZ5dEN2SlpyYkFqVW5uamM3ekZKWG5sY3M2MFJKaFM0?=
- =?utf-8?B?elp1R3Q1eUlXM0ZmODJoWEY1YmplUFhMcnlheGlTUTZ2ZG4vcE1sdlBIbWVq?=
- =?utf-8?B?TUllaWp4amZDZm11aUFjS0l0OEhsa3RPdmFpVjFpTjArNS9CR2ZHeTh5V1lo?=
- =?utf-8?B?ZEFhRmVpMUQyL05vS0ExWmFEVm9uRCtFaXFTUHp4SmpPbmJmOUwxQXdHUGRB?=
- =?utf-8?B?OHlwWVZjU2phN1dubmdFc0t0cVdlUG1VQllkZ2ozaTcwakIrS1hLcXN4OU90?=
- =?utf-8?B?K3QxY1A4eHlCSXBhR3orUWxhQVlVZWZyUGFUUlVTYjQwQlA5aEx0UGU1M29S?=
- =?utf-8?B?VzJFdDBicmZFSVJra2RwS1F6RGdYNHM0NTE5bCtsdmtaeVBIcTJ4MGtHZzlu?=
- =?utf-8?B?dTBleVBTQXFtem9qZjdRL2N0ZzhvRjZJem9hc205MmdJNzQxVlhheE84UWx2?=
- =?utf-8?B?OHAyUW1XZGI5Yll1dW5FdHZwZ1YxVS9VRWdNeFRCY3ZTcGFsMUpJMmNwRHJZ?=
- =?utf-8?B?RVZMK2NmS2NyUUQ0dUVMblBuc0NjdDdIUXF1Z29wR3dHY2NtdE1LZktwa3J4?=
- =?utf-8?B?WldpL1hsTnMvZEtWN28zbUM0cExhZ3ZHcnJSTFpLYlo5d245TlhWT0N1QU1V?=
- =?utf-8?B?bjBoaVpVOUxud2xHVTh3ZDVHRXpzVUhJWUNUL0NraHZZNzNENkpMc0x2U1ZI?=
- =?utf-8?B?ZE5aSFNVRk91dzR4Y2kxeXR3QzBoalpralpkSDh6dFdHcGxqUGpOWGoyRnN3?=
- =?utf-8?B?Y1doaDlpQ3JxWUY1T005eU54TkxqZVR0TUxNUktkcnpXL0tOZkM1dHhWUzlY?=
- =?utf-8?B?Y2NCS240VXBTeHg3eUgrK0hXc3ZwTmFuSHNXUFdaOHZrblRERzVhdnVBT050?=
- =?utf-8?B?aVluN2hHR1hxb2VsandTcnJvek1tUmhJeHJvTjRwZmdhUHRBUmMzT0twY0x1?=
- =?utf-8?B?OWI5c3NlTXg4c2F1eHF6akFPR2ZYdDhBOEFhWEtDbTJLTmVoVjhMMy9QQ0ZX?=
- =?utf-8?Q?rYVhgYda+Ze3yRkvtQZrA8UMw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 594e4b54-cf24-477e-2c34-08dbb2e30b7f
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 16:20:42.6140
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xSIv2hAN4uwZgK3uchiMcNB576K7u9+PnfBEqQyGEH3TUJUwwneGJdPFpA40HvCBdwuPj9HSA+6FgbAoNt0LGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7090
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
+ 0 for non-zero size
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Kees Cook' <keescook@chromium.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
+        'Christoph Lameter' <cl@linux.com>,
+        'Pekka Enberg' <penberg@kernel.org>,
+        'David Rientjes' <rientjes@google.com>,
+        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        'Eric Dumazet' <edumazet@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
+ <202309071235.CB4F6B2@keescook>
+ <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
+ <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
+ <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ tR6d+JzM8nFUZA==
+In-Reply-To: <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/23 19:44, Randy Dunlap wrote:
-> Fix the typo in the kernel-doc for @replay_mode to prevent
-> kernel-doc warnings:
+On 9/11/23 18:12, David Laight wrote:
+> From: Vlastimil Babka
+>> Sent: 11 September 2023 16:54
+>> 
+>> On 9/8/23 10:26, David Laight wrote:
+>> > From: Kees Cook
+>> >> Sent: 07 September 2023 20:38
+>> >>
+>> >> On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
+>> >> > The typical use of kmalloc_size_roundup() is:
+>> >> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
+>> >> > 	if (!ptr) return -ENOMEM.
+>> >> > This means it is vitally important that the returned value isn't
+>> >> > less than the argument even if the argument is insane.
+>> >> > In particular if kmalloc_slab() fails or the value is above
+>> >> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
+>> >> > it's single zero-length buffer.
+>> >> >
+>> >> > Fix by returning the input size on error or if the size exceeds
+>> >> > a 'sanity' limit.
+>> >> > kmalloc() will then return NULL is the size really is too big.
+>> >> >
+>> >> >
+>> >> > Signed-off-by: David Laight <david.laight@aculab.com>
+>> >> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
+>> >> > ---
+>> >> > v2:
+>> >> >     - Use KMALLOC_MAX_SIZE for upper limit.
+>> >> >       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
+>> >> >     - Invert test for overlarge for consistency.
+>> >> >     - Put a likely() on result of kmalloc_slab().
+>> >> >
+>> >> >  mm/slab_common.c | 26 +++++++++++++-------------
+>> >> >  1 file changed, 13 insertions(+), 13 deletions(-)
+>> >> >
+>> >> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+>> >> > index cd71f9581e67..0fb7c7e19bad 100644
+>> >> > --- a/mm/slab_common.c
+>> >> > +++ b/mm/slab_common.c
+>> >> > @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
+>> >> >  {
+>> >> >  	struct kmem_cache *c;
+>> >> >
+>> >> > -	/* Short-circuit the 0 size case. */
+>> >> > -	if (unlikely(size == 0))
+>> >> > -		return 0;
+>> >>
+>> >> If we want to allow 0, let's just leave this case as-is: the compiler
+>> >> will optimize it against the other tests.
+>> >
+>> > I doubt the compiler will optimise it away - especially with
+>> > the unlikely().
+>> 
+>> Yeah I also think compiler can't do much optimizations except for build-time
+>> constant 0 here.
 > 
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:623: warning: Incorrect use of kernel-doc format:          * @replay mode: Replay supported
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:626: warning: Function parameter or member 'replay_mode' not described in 'amdgpu_hdmi_vsdb_info'
-> 
-> Fixes: ec8e59cb4e0c ("drm/amd/display: Get replay info from VSDB")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
+> Only relevant if the code were inlined - and it isn't.
 
-Applied, thanks!
+Aha, I thought it was, good point.
 
-> ---
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |    2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> (and is probably a bit big.)
+> I'm not sure you'd want to expose kmalloc_slab() to the wider kernel.
+
+No, let's keep it that way.
+
+> OTOH, it could have an inline version for constants > KMALLOC_CACHE_SIZE.
+> But they may not happen often enough to make any difference.
+
+Yeah, unnecessary.
+
+>> 
+>> > OTOH the explicit checks for (size && size <= LIMIT) do
+>> > get optimised to ((size - 1) <= LIMIT - 1) so become
+>> > a single compare.
+>> >
+>> > Then returning 'size' at the bottom means that zero is returned
+>> > in the arg is zero - which is fine.
+>> >
+>> >>
+>> >> > -	/* Short-circuit saturated "too-large" case. */
+>> >> > -	if (unlikely(size == SIZE_MAX))
+>> >> > -		return SIZE_MAX;
+>> >> > +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
+>> >> > +		/*
+>> >> > +		 * The flags don't matter since size_index is common to all.
+>> >> > +		 * Neither does the caller for just getting ->object_size.
+>> >> > +		 */
+>> >> > +		c = kmalloc_slab(size, GFP_KERNEL, 0);
+>> >> > +		return likely(c) ? c->object_size : size;
+>> >>
+>> >> I would like to have this fail "safe". c should never be NULL here, so
+>> >> let's return "KMALLOC_MAX_SIZE + 1" to force failures.
+>> >
+>> > Why even try to force failure here?
+>> > The whole function is just an optimisation so that the caller
+>> > can use the spare space.
+>> >
+>> > The only thing it mustn't do is return a smaller value.
+>> 
+>> If "c" is NULL it means either the kernel build must be broken e.g. by
+>> somebody breaking the KMALLOC_MAX_CACHE_SIZE value, and we could just ignore
+>> c being NULL and let it crash because of that.
+>> But I think it can also be NULL due to trying to call kmalloc_size_roundup()
+>> too early, when kmalloc_caches array is not yet populated. Note if we call
+>> kmalloc() itself too early, we get a NULL as a result, AFAICS. I can imagine
+>> two scenarios:
+>> 
+>> - kmalloc_size_roundup() is called with result immediately fed to kmalloc()
+>> that happens too early, in that case we best should not crash on c being
+>> NULL and make sure the kmalloc() returns NULL.
+>> - kmalloc_size_roundup() is called in some init code to get a value that
+>> some later kmalloc() call uses. We might want also not crash in that case,
+>> but informing the developer that they did something wrong would be also useful?
+>> 
+>> Clearly returning 0 if c == NULL, as done currently, is wrong for both
+>> scenarios. Retuning "size" is OK for the first scenario, also valid for the
+>> second one, but the caller will silently lose the benefit of
+>> kmalloc_size_roundup() and the developer introducing that won't realize it's
+>> done too early and could be fixed.
 > 
-> diff -- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> @@ -620,7 +620,7 @@ struct amdgpu_hdmi_vsdb_info {
->   	unsigned int max_refresh_rate_hz;
->   
->   	/**
-> -	 * @replay mode: Replay supported
-> +	 * @replay_mode: Replay supported
->   	 */
->   	bool replay_mode;
->   };
--- 
-Hamza
+> I'm sure that won't matter.
+
+For the performance, sure. It just feels silly to me to have a code that
+looks like it does something, but silently doesn't. Leads to cargo cult
+copying it to other places etc.
+
+>> So perhaps the best would be to return size for c == NULL, but also do a
+>> WARN_ONCE?
+> 
+> That would add a real function call to an otherwise leaf function
+> and almost certainly require the compiler create a stack frame.
+
+Hm I thought WARN is done by tripping on undefined instruction like BUG
+these days. Also any code that accepts the call to kmalloc_size_roundup
+probably could accept that too.
+
+> 
+> ...
+> 
+> I did have an interesting 'lateral thought' idea.
+> It is all very silly doing all the work twice, what you really
+> want is kmalloc() to return both the pointer and actual size.
+> But returning a 'two word' structure is done by reference and
+> would kill performance/
+> OTOH a lot of archs can return two word integers in a register pair
+> (dx:ax on x86).
+> Could you have the real function return ((unsigned __int64)size << 64 | (long)ptr)
+> and then extract the size in a wrapper macro?
+> (With different types for 32bit)
+> 
+> That will, of course, break the 'it's like malloc' checks the
+> compiler is doing - unless it is taught what is going on.
+
+Probably this is something not worth all the trouble.
+
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
 
