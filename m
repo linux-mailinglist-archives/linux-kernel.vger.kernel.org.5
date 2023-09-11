@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 115F079A4FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C9579A510
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjIKHuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35772 "EHLO
+        id S234110AbjIKHxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233487AbjIKHuW (ORCPT
+        with ESMTP id S234122AbjIKHwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:50:22 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD05E51;
-        Mon, 11 Sep 2023 00:49:37 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BE2A466072F4;
-        Mon, 11 Sep 2023 08:48:59 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694418540;
-        bh=yxwpTAPyHaYbVsbWh810fGVyGlWADLqxOAqOHIMcmJo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=C3ApnLRXYKyFNabPBH/6hhNdg3noz4gDCQjXf/ULk+LP1q2qjLBtbAd3RjPD3FPo7
-         4vJ+P/Zv3+Oz/kej7k0yg5ASCSjTzEe4WPK1nNPybwsKDjMy1HWFJ3cZoRfTCdo1KV
-         4Yf4pVixs24IVTXGSr3YlYExeUUK1esV6nkCKmiNvhKDo4fD0cwtHafF5xduI8W9Q/
-         iDpPTwH+vyAi11PlvBMjYWONFfUamHqIj0enMp6OuGsC9fpTbxCiYIpW9fuF1kQpvA
-         08jcUPIrLa7HgOKdh+uJkA6AZYiy8ReCB6b69hjJasrXOVyHOkK5/Vdr7FoNoX04Sc
-         quoksSYvegGlQ==
-Date:   Mon, 11 Sep 2023 09:48:56 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v3 8/8] drm/drm-file: Show finer-grained BO sizes in
- drm_show_memory_stats
-Message-ID: <20230911094856.5c89aee5@collabora.com>
-In-Reply-To: <dgo4x2tbdqvpfjf7cnspq2xvvkacc7pv2rdk5fesrqcv2xr3pi@mbwmqsg742hu>
-References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
-        <20230905184533.959171-9-adrian.larumbe@collabora.com>
-        <20230906101101.04f4e1a2@collabora.com>
-        <dgo4x2tbdqvpfjf7cnspq2xvvkacc7pv2rdk5fesrqcv2xr3pi@mbwmqsg742hu>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 03:52:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2733FFA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694418724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lo9kYBjcwcg+Bla6VGzlFJ7YdU16409moEvZnL5aPOs=;
+        b=gOShqcza/FmmznebLzHIMEl5fiHa5WP8w/XYAI033eBvAHkDiC6tD8J/DIM4Ajxbm1btLL
+        xfmeLGyCOWkQNTGToGlRduFp7cw7Yu+BiZQu/oBuTnpKwPAjaWLtblK8z5tK8RLfyIrSdB
+        v+DjfIBbfMO4Bs9ed1X5kY9tUunjGtw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-614-xFSAOZBJNQioQWFRVjNn9g-1; Mon, 11 Sep 2023 03:52:02 -0400
+X-MC-Unique: xFSAOZBJNQioQWFRVjNn9g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbdf341934so32220665e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:52:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694418721; x=1695023521;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lo9kYBjcwcg+Bla6VGzlFJ7YdU16409moEvZnL5aPOs=;
+        b=jTeYlFbFCWqPDhvOGiAIc3R4FBSRKVButIL46DQ1ZMkiEeAGRzSmPWwveV/woOHkxs
+         yH6Sd+ZN7d8X61siBxTBj2DtVuNoYB+X0cWaDRaJD1MzoybRkgAgr+GZtHNtZ2xzPacr
+         EKkqp6kiuAT46xAYXzavsxxl4lNfG7s7xCO8KKxbGPz+hxJ1TlEId0wsSbQRGSFkblgl
+         U+eZvq7sFvjJUEP9BzLPaRsS4Z/rW26NH5DrCP4+4MvWt2jILhXCDtscHASfawdhXFym
+         z7JFTOCcASNrUPI8jjCZatFST0/94hOHZW6xA0mj+Hx852kk8JDtdYFQI3mafoRuIkWa
+         AucQ==
+X-Gm-Message-State: AOJu0YwwFGqlQTPY8tKCCzI0jaR4yehCNE6ZSd+CvkuJKk2tW263umWR
+        hOV/EG5UB6isuRBr0Lk35U1EeGHd91Wa+cRb8NXYli5Hnqv46UhKm5FG6OzdwMf0Wp8WXxMxprp
+        eb/12wbXAkP4wNsJMSwc6zEYA
+X-Received: by 2002:adf:e588:0:b0:317:6edb:6138 with SMTP id l8-20020adfe588000000b003176edb6138mr8529462wrm.62.1694418721173;
+        Mon, 11 Sep 2023 00:52:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFu4smCOXh0ckAScKZWq5ZVlJNUH98a/3xcVhXZs5uFbXyEKKZKRW0Nm8vAmbIPCHmr5lkBWQ==
+X-Received: by 2002:adf:e588:0:b0:317:6edb:6138 with SMTP id l8-20020adfe588000000b003176edb6138mr8529453wrm.62.1694418720807;
+        Mon, 11 Sep 2023 00:52:00 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
+        by smtp.gmail.com with ESMTPSA id r18-20020a5d6952000000b003141a3c4353sm9348450wrw.30.2023.09.11.00.51.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 00:52:00 -0700 (PDT)
+Message-ID: <85a25d3b-c37d-9255-1fe2-19917a81f1ef@redhat.com>
+Date:   Mon, 11 Sep 2023 09:51:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm/mm_init.c: remove redundant pr_info when node is
+ memoryless
+Content-Language: en-US
+To:     Yajun Deng <yajun.deng@linux.dev>, rppt@kernel.org,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230906091113.4029983-1-yajun.deng@linux.dev>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230906091113.4029983-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Sep 2023 17:55:17 +0100
-Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
+On 06.09.23 11:11, Yajun Deng wrote:
+> There is a similar pr_info in free_area_init_node(), so remove the
+> redundant pr_info.
+> 
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> ---
+>   mm/mm_init.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 50f2f34745af..6be6f50813b1 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -1871,8 +1871,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+>   		pg_data_t *pgdat;
+>   
+>   		if (!node_online(nid)) {
+> -			pr_info("Initializing node %d as memoryless\n", nid);
+> -
+>   			/* Allocator not initialized yet */
+>   			pgdat = arch_alloc_nodedata(nid);
+>   			if (!pgdat)
 
-> On 06.09.2023 10:11, Boris Brezillon wrote:
-> >On Tue,  5 Sep 2023 19:45:24 +0100
-> >Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
-> > =20
-> >> The current implementation will try to pick the highest available size
-> >> display unit as soon as the BO size exceeds that of the previous
-> >> multiplier.
-> >>=20
-> >> By selecting a higher threshold, we could show more accurate size numb=
-ers.
-> >>=20
-> >> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> >> ---
-> >>  drivers/gpu/drm/drm_file.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>=20
-> >> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> >> index 762965e3d503..0b5fbd493e05 100644
-> >> --- a/drivers/gpu/drm/drm_file.c
-> >> +++ b/drivers/gpu/drm/drm_file.c
-> >> @@ -879,7 +879,7 @@ static void print_size(struct drm_printer *p, cons=
-t char *stat,
-> >>  	unsigned u;
-> >> =20
-> >>  	for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
-> >> -		if (sz < SZ_1K)
-> >> +		if (sz < (SZ_1K * 10000))
-> >>  			break; =20
-> >
-> >This threshold looks a bit random. How about picking a unit that allows
-> >us to print the size with no precision loss?
-> >
-> >	for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
-> >		if (sz & (SZ_1K - 1))
-> >			break;
-> >	} =20
->=20
-> In this case I picked up on Rob Clark's suggestion of choosing a hard lim=
-it of
-> perhaps 10k or 100k times the current unit before moving on to the next o=
-ne.
-> While this approach guarantees that we don't lose precision, it would ren=
-der a
-> tad too long a number in KiB for BO's that aren't a multiple of a MiB.
 
-I'd expect big BOs to have their size naturally aligned on something
-bigger than a 4k page anyway, so I don't expect multi-MB/GB buffers to
-be using the KiB unit in practice. It's just that it's weird to have,
-8MiB printed as 8192KiB when we could have used the upper unit,
-because it's naturally aligned on a megabyte.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Maybe we should have something like that instead:
+-- 
+Cheers,
 
-	for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
-		if ((sz & (SZ_1K - 1)) &&
-		    sz < UPPER_UNIT_THRESHOLD * SZ_1K)
-			break;
-
-		sz =3D div_u64(sz, SZ_1K);
-	}
->=20
-> >>  		sz =3D div_u64(sz, SZ_1K);
-> >>  	} =20
+David / dhildenb
 
