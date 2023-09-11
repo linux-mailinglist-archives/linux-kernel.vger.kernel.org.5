@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7037579B656
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B100879B943
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbjIKUrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S1345199AbjIKVPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:15:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242687AbjIKQHR (ORCPT
+        with ESMTP id S242698AbjIKQIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:07:17 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9437A1B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:07:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2FD8FC433CA;
-        Mon, 11 Sep 2023 16:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694448433;
-        bh=tmX2pVfVNI/+1kYGhGjNbTdmCPLP9KsEEtgDj6OGzTc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cYEKcVUcXtLchc89h1zMTm7bx/jEQFjR8mRaNRm3NOWZbYbdiY3DpRQQatuYATHH7
-         v/6XeGAcgmBUfUcpmFBu50EaUsZ5BVfpBSwxnUAeQ5dOSl6swrfWBGXWz4hpuBKSBy
-         7PnKyAREgRRaqw8ajGa9+jwmoror6gIw7H35YFT/+/JzGAjbQAJ3kWVQWMrnWi9Jdj
-         T5Nzj4baIXtTGCNMy+nQfy5pOoFGYIJXvHgbs1K4fjX2s4/DhjCt6a/vOayaRO8dRi
-         y3wimlY6tdJm9dOsSfz5W9Y8RhuBLoK7b7NL6YoXv+qvldLaVwu5L9NluAOoqLPlMl
-         WPq06TYjLOB/A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A516E1C281;
-        Mon, 11 Sep 2023 16:07:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 11 Sep 2023 12:08:31 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF5FCC3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:08:26 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-655de2a5121so12836486d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694448506; x=1695053306; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OpK471urcTKFhaEEiu2Y7Ctk71H7kGAYVejmdBrLuVg=;
+        b=qXBzv6zXqpFaPW0WDtiAxbUeFE2eeqfUM0Ioy+Gby2UX3k8jg8ihHdQM8fTTwRSJ3X
+         bVXI5M2XAoYmskSSdzLL9ca/823siSnYgN5xe0r3kbXb4OPrE+g2G774G4WYA7hm/3A4
+         OlRFVa6jm9bRcFjFDto+Ywe4e/OB97U1PnAeFSaS5eA5SBV0S5eXeui3XQ5cZCPbRz0V
+         VALgcZQ9Jd0XdeGgsuTH5cqr+jo5KzR5lvM2lL+baJTkU2kD94fEPbqN/RznDTN8/ewk
+         hG/qDobfKa4PLboTR6RvJepKYf//CQrC3XnRR8K+z7dknwHO/QhdBEa+xxXXtksk2EPz
+         hyIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694448506; x=1695053306;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OpK471urcTKFhaEEiu2Y7Ctk71H7kGAYVejmdBrLuVg=;
+        b=myH9/3DWLdlQTP3ueq6Gh/Rdqx9LNWwQzJlP+gPuBcTCXC9dEI/jRnFW6KXG04m3Ob
+         XfUmzzSZatzmzupewRd0qK6db4wF1px6TgZiE+ceC9aiMH6VMO381OsgFdPAskJJSmRp
+         VldVUmJL8RZkbHhNPgFFulB+/fhCNHR6+h5GLqt1Eve3KdLBDa+7xaawfvd29Rh2KAn8
+         tI2S8E5OM/Pe1e/CAw1lCKTf/li2XjQ0dmDHVksLyQCxaFSxJjhY1BEhSNd24lMFJQCT
+         CPlmoM9vALYa6WGk1ZoTBZEb8paCZbj0E3B3MNTvVzLA6GU0Ub/dC7Z4dgP4jrUaOrpP
+         4YOw==
+X-Gm-Message-State: AOJu0YwR//vhwak0NK/H6WBl4AcWWIQPEQGGnDfsQI/8kptRb1ODcgcJ
+        cKqmpXH0pRrE+kXgQh5dnaKYhteVJgXnQuLQTxc=
+X-Google-Smtp-Source: AGHT+IFO1yeb4lCNE0WAccBqbLcdu+KdRUkm4PTopxo1o8AH7WuyX6E2VktVhHwaQ4F1MKaR+oEl8A==
+X-Received: by 2002:a0c:b34f:0:b0:64f:7751:9d46 with SMTP id a15-20020a0cb34f000000b0064f77519d46mr9827259qvf.62.1694448505863;
+        Mon, 11 Sep 2023 09:08:25 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id l4-20020a0ce504000000b0064a5de64668sm2986998qvm.141.2023.09.11.09.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:08:25 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 12:08:24 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Xin Hao <haoxing990@gmail.com>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: add THP swap out info for anonymous reclaim
+Message-ID: <20230911160824.GB103342@cmpxchg.org>
+References: <20230909155242.22767-1-vernhao@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 2 (try 2)
-From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169444843310.24126.17288767595067619083.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Sep 2023 16:07:13 +0000
-References: <mhng-2cae48f5-f42a-4432-b0e2-bc1ee3e01ce5@palmer-ri-x1c9>
-In-Reply-To: <mhng-2cae48f5-f42a-4432-b0e2-bc1ee3e01ce5@palmer-ri-x1c9>
-To:     Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     linux-riscv@lists.infradead.org, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230909155242.22767-1-vernhao@tencent.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This pull request was applied to riscv/linux.git (for-next)
-by Linus Torvalds <torvalds@linux-foundation.org>:
-
-On Sat, 09 Sep 2023 07:25:43 -0700 (PDT) you wrote:
-> merged tag 'riscv-for-linus-6.6-mw1'
-> The following changes since commit e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9:
+On Sat, Sep 09, 2023 at 11:52:41PM +0800, Xin Hao wrote:
+> At present, we support per-memcg reclaim strategy, however we do not
+> know the number of transparent huge pages being reclaimed, as we know
+> the transparent huge pages need to be splited before reclaim them, and
+> they will bring some performance bottleneck effect. for example, when
+> two memcg (A & B) are doing reclaim for anonymous pages at same time,
+> and 'A' memcg is reclaiming a large number of transparent huge pages, we
+> can better analyze that the performance bottleneck will be caused by 'A'
+> memcg.  therefore, in order to better analyze such problems, there add
+> THP swap out info for per-memcg.
 > 
->   Merge tag 'riscv-for-linus-6.6-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux (2023-09-01 08:09:48 -0700)
-> 
-> are available in the Git repository at:
-> 
-> [...]
+> Signed-off-by: Xin Hao <vernhao@tencent.com>
 
-Here is the summary with links:
-  - [GIT,PULL] RISC-V Patches for the 6.6 Merge Window, Part 2 (try 2)
-    https://git.kernel.org/riscv/c/1b37a0a2d46f
+That sounds reasonable. A few comments below:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> @@ -4131,6 +4133,10 @@ static const unsigned int memcg1_events[] = {
+>  	PGPGOUT,
+>  	PGFAULT,
+>  	PGMAJFAULT,
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	THP_SWPOUT,
+> +	THP_SWPOUT_FALLBACK,
+> +#endif
+>  };
 
+Cgroup1 is maintenance-only, please drop this hunk.
 
+>  static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index fe4c21af23f2..008ada2e024a 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -208,8 +208,10 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+>  static inline void count_swpout_vm_event(struct folio *folio)
+>  {
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	if (unlikely(folio_test_pmd_mappable(folio)))
+> +	if (unlikely(folio_test_pmd_mappable(folio))) {
+> +		count_memcg_events(folio_memcg(folio), THP_SWPOUT, 1);
+
+count_memcg_folio_events()
+
+>  		count_vm_event(THP_SWPOUT);
+> +	}
+>  #endif
+>  	count_vm_events(PSWPOUT, folio_nr_pages(folio));
+>  }
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index ea57a43ebd6b..29a82b72345a 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1928,6 +1928,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>  								folio_list))
+>  						goto activate_locked;
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +					count_memcg_events(folio_memcg(folio),
+> +							   THP_SWPOUT_FALLBACK, 1);
+
+count_memcg_folio_events()
