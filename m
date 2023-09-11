@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6547979BCB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE49E79BFE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376369AbjIKWTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
+        id S1358768AbjIKWNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237992AbjIKN3m (ORCPT
+        with ESMTP id S238007AbjIKNcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:29:42 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDE612A;
-        Mon, 11 Sep 2023 06:29:38 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qfgyt-0006dJ-My; Mon, 11 Sep 2023 15:29:35 +0200
-Message-ID: <c7e70f54-9696-4b39-aa17-576987ffce85@leemhuis.info>
-Date:   Mon, 11 Sep 2023 15:29:35 +0200
+        Mon, 11 Sep 2023 09:32:00 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF91106;
+        Mon, 11 Sep 2023 06:31:56 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BCV4ZU007447;
+        Mon, 11 Sep 2023 13:31:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=O63r+J28cNbGOpiNq4cMLtaHF6nnRo/Cxol0qirBkXc=;
+ b=a3kHObqdCk/G2NIJKJ/5fC8uOFdPV2Btib9SiES1K6DZFS+OXY4mkRN1wYxhLBjIzxap
+ h8jj+FwswXZXUdopk1D29QaQDqfRPeIrxqKucE1PE7qhhFNwSji+NWnt6x4b6BHyR2yj
+ CT/24JMaSBuiu23f6k8ueBVjIwWHwmv+9kgA5kJbqLN8wOdDAyyQuJ0ckooUkhlfDHmb
+ Ss0kdCz794ZmbVOhwfioWEyMfm28/6QEWbhgF4UNTTYWu5zzxt34ke44YS5dMwDA3fFg
+ azDGOq9C3e+yGNo0v4srDrOScT3JmJeqEsLdZZbMPdusUzZ4Nvuo9Z52xGkieG3K5Yoc gQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t22kp8523-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 13:31:31 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BDVUDN005956
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 13:31:30 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 11 Sep 2023 06:31:24 -0700
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To:     <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charnte@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_pkondeti@quicinc.com>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Subject: [PATCH v2] mtd: nand: qcom: Fix the node for nand unmap resource
+Date:   Mon, 11 Sep 2023 19:00:26 +0530
+Message-ID: <20230911133026.29868-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: 5c8a79e8e12b ("wifi: rtw88: correct PS calculation for
- SUPPORTS_DYNAMIC_PS", 2023-05-27) increases CPU usage usage for irq
-Content-Language: en-US, de-DE
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Brett Hassall <brett.hassall@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-References: <5a7f2a6e-46a4-a5c8-fe6a-c2581496b5cd@gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <5a7f2a6e-46a4-a5c8-fe6a-c2581496b5cd@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694438978;814be900;
-X-HE-SMSGID: 1qfgyt-0006dJ-My
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: osf6R_TXGXnkkWxYpRDvk0unVrq8VOXf
+X-Proofpoint-ORIG-GUID: osf6R_TXGXnkkWxYpRDvk0unVrq8VOXf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_08,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ impostorscore=0 adultscore=0 clxscore=1015 bulkscore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110123
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.08.23 04:37, Bagas Sanjaya wrote:
-> 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
-> 
->> This commit improves power saving - it enables the kernel to
->> achieve package C8. To achieve package C8, 3 Ubuntu VMD commits
->> must be applied as well. [...]
+Fix addr argument to dma_unmap_resource() in the error path of probe.
+The addr argument should be dma address instead of physical address.
 
-To me that sounds like there is no upstream problem, hence this
-shouldn't be tracked as a regression. Please correct me if I'm wrong.
+Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+v2: Incorporated comments from Pavan/Mani.
 
-> #regzbot introduced: 26a125f550a3bf
-> https://bugzilla.kernel.org/show_bug.cgi?id=217828 #regzbot title:
-> correcting SUPPORTS_DYNAMIC_PS calculation for rtw88 increases CPU
-> utilization #regzbot link:
-> https://bugs.launchpad.net/ubuntu/+source/linux-hwe-6.2/+bug/2025040
-> 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217828
+v1: https://lore.kernel.org/all/20230907092854.11408-1-quic_bibekkum@quicinc.com/
 
-#regzbot resolved: invalid: seems to only be a problem with a patched kernel
-#regzbot ignore-activity
+ drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 64499c1b3603..b079605c84d3 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3444,7 +3444,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ err_aon_clk:
+ 	clk_disable_unprepare(nandc->core_clk);
+ err_core_clk:
+-	dma_unmap_resource(dev, res->start, resource_size(res),
++	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+ 			   DMA_BIDIRECTIONAL, 0);
+ 	return ret;
+ }
 --
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
+2.17.1
 
