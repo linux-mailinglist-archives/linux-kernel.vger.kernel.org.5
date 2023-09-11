@@ -2,180 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB9A79B91C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9976A79BA3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379291AbjIKWmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
+        id S236191AbjIKWmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352370AbjIKVpE (ORCPT
+        with ESMTP id S1357677AbjIKWFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 17:45:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C4F5252;
-        Mon, 11 Sep 2023 14:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694466969; x=1726002969;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wdu/qy8147uIVVSTXdWZn2iHz/+9TqVoz5bgFNXyio4=;
-  b=d6DhgI3elWCUDyG9EI14WLd+3/UzzR1WqFxMD6DmKA+iNVTK9QH+m47S
-   eeHy0G+EkP9ZnXHkRhcbjcTgV43wKZ39qQu/BLWzwiZ5PC8BC5GC8aFVf
-   Q9j/jmQXxlsXZj3Gu7BgYc0Iecf/SW+T1nvw4f1Obd8jNJzsFW75C8YNW
-   WgRMnnLIdRygpD52cQUrR9zVkN8n7KxNHfHH9Vhi4kvapfkQtOkiFOsxd
-   vYVqbmKG+uEATN4MSUCsCBYcnOIyfbv1sG0JGDK69Q7h5xV5rcBPDikn1
-   9wsqjFvj37S+SAKcF3bTM9bLPFgi9B4ByS83hCgCO3xPF6Q0rqAdl+lzA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378115893"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="378115893"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:13:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858492595"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="858492595"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:13:47 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfoE4-008QR8-1H;
-        Tue, 12 Sep 2023 00:13:44 +0300
-Date:   Tue, 12 Sep 2023 00:13:44 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, max.zhen@amd.com, sonal.santan@amd.com,
-        stefano.stabellini@xilinx.com,
-        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
-Message-ID: <ZP+DCFqQIKth5eAL@smile.fi.intel.com>
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
- <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
- <20230911154856.000076c3@Huawei.com>
- <20230911173503.0db85e4b@bootlin.com>
- <20230911164741.00003904@Huawei.com>
- <20230911172256.00002ee3@Huawei.com>
+        Mon, 11 Sep 2023 18:05:53 -0400
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780B022308
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:35:09 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so8158565e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1694467745; x=1695072545; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aEQHy8E6gWOE1flUwFUnaS7D8iHYGNq6LI3SdRK8uDk=;
+        b=ZBrPhiK4Y0dWc2PAYlIAmWa7TCnWtHEprmaFEMd6chcmN+OYiHhQv60xnSnIGJtCaw
+         rQJilhDtfaPfLsMhcN0L2figGgrKTveO8/HRKCnmEgSPL/igNip9FDkprfiEYkeQRa7n
+         iydApAjPbT/hiwUTFrO31u0FyI3yZpQ93xsiM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694467745; x=1695072545;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aEQHy8E6gWOE1flUwFUnaS7D8iHYGNq6LI3SdRK8uDk=;
+        b=YNad8Xy0h7iW47gXpk4/mNbt++AwSkxa4fpswbmrDeBzvZ/oYRmB5KHKedxgrpHWCQ
+         YW6WZviVxuPMNGO9EC/WcR4Usu1IL7hhSPArEeU92SkONezNrAjJ5g2i8bHCNIemBH+i
+         DF95SeqTX7rwYPttH59YkbLVnpHTIWzOEXm7nfSLaZS16ePHO4DUA9CY6j35/D1VafQF
+         80f/+e66JxpRRDRN4TzwKSIk8IB+bvX4CAbdHf0jB3rpH9F8xp5tRM3EKnOoffY47r2c
+         L/CCKc+X2SxUlv3qJheYHeEMSw/6C/JqNl5zf2gIDIkvluIMIAZWir/g7Ch3ArXDHpli
+         VNjw==
+X-Gm-Message-State: AOJu0Yz+eukfc13KohiF0U+XlOB9rmQD+r0nCb2Y//pOlI03l0gSRsm0
+        /2a+mq+0e51JrI5zsMG4rNpNfqsdyBlDdO4gwVOrIg1L
+X-Google-Smtp-Source: AGHT+IEhZezHlpvmd2XaqIu4HTut5QFwUdypsBBDFoXzLrX75fk2inlBbR2EzNzIA6VDgN6SmtCY7A==
+X-Received: by 2002:a05:6512:3ba9:b0:502:c950:592e with SMTP id g41-20020a0565123ba900b00502c950592emr778129lfv.25.1694466998000;
+        Mon, 11 Sep 2023 14:16:38 -0700 (PDT)
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
+        by smtp.gmail.com with ESMTPSA id i10-20020a056512006a00b004ffa0350851sm1480454lfo.78.2023.09.11.14.16.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 14:16:36 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so83577221fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:16:36 -0700 (PDT)
+X-Received: by 2002:a05:651c:203:b0:2bc:f439:b5a5 with SMTP id
+ y3-20020a05651c020300b002bcf439b5a5mr9138299ljn.14.1694466995798; Mon, 11 Sep
+ 2023 14:16:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911172256.00002ee3@Huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+ <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+ <87zg1v3xxh.fsf@oracle.com> <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+ <87edj64rj1.fsf@oracle.com> <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <20230911124856.453fba22@gandalf.local.home> <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
+In-Reply-To: <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 11 Sep 2023 14:16:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whc0Jsji_h-vLyDLT6Q-NCjSTMOg9qXACmoPZOdWqMovg@mail.gmail.com>
+Message-ID: <CAHk-=whc0Jsji_h-vLyDLT6Q-NCjSTMOg9qXACmoPZOdWqMovg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, tglx@linutronix.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:22:56PM +0100, Jonathan Cameron wrote:
-> On Mon, 11 Sep 2023 16:47:41 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > On Mon, 11 Sep 2023 17:35:03 +0200
-> > Herve Codina <herve.codina@bootlin.com> wrote:
-> > > On Mon, 11 Sep 2023 15:48:56 +0100
-> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > > On Tue, 15 Aug 2023 10:19:57 -0700
-> > > > Lizhi Hou <lizhi.hou@amd.com> wrote:
+On Mon, 11 Sept 2023 at 13:50, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Except we've actually been *adding* to this whole mess, rather than
+> removing it. So we have actively *expanded* on that preemption choice
+> with PREEMPT_DYNAMIC.
 
-> > > > > The PCI endpoint device such as Xilinx Alveo PCI card maps the register
-> > > > > spaces from multiple hardware peripherals to its PCI BAR. Normally,
-> > > > > the PCI core discovers devices and BARs using the PCI enumeration process.
-> > > > > There is no infrastructure to discover the hardware peripherals that are
-> > > > > present in a PCI device, and which can be accessed through the PCI BARs.
-> > > > > 
-> > > > > Apparently, the device tree framework requires a device tree node for the
-> > > > > PCI device. Thus, it can generate the device tree nodes for hardware
-> > > > > peripherals underneath. Because PCI is self discoverable bus, there might
-> > > > > not be a device tree node created for PCI devices. Furthermore, if the PCI
-> > > > > device is hot pluggable, when it is plugged in, the device tree nodes for
-> > > > > its parent bridges are required. Add support to generate device tree node
-> > > > > for PCI bridges.
-> > > > > 
-> > > > > Add an of_pci_make_dev_node() interface that can be used to create device
-> > > > > tree node for PCI devices.
-> > > > > 
-> > > > > Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
-> > > > > the kernel will generate device tree nodes for PCI bridges unconditionally.
-> > > > > 
-> > > > > Initially, add the basic properties for the dynamically generated device
-> > > > > tree nodes which include #address-cells, #size-cells, device_type,
-> > > > > compatible, ranges, reg.
-> > > > > 
-> > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>      
-> > > > 
-> > > > I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
-> > > > machine.
-> > > > 
-> > > > There are some missing parts that were present in Clements series, but not this
-> > > > one, particularly creation of the root pci object.
-> > > > 
-> > > > Anyhow, hit an intermittent crash...    
-> > > 
-> > > I am facing the same issues.
-> > > 
-> > > I use a custom PCIe board too but on x86 ACPI machine.
-> > > 
-> > > In order to have a working system, I need also to build a DT node for the PCI
-> > > Host bridge (previously done by Clement's patch) and I am a bit stuck with
-> > > interrupts.
-> > > 
-> > > On your side (ACPI machine) how do you handle this ?  
-> > 
-> > That was next on my list to look at now I've gotten the device tree stuff
-> > to show up.
-> > 
-> > > I mean is your PCI host bridge provided by ACPI ? And if so, you probably need
-> > > to build a DT node for this PCI host bridge and add some interrupt-map,
-> > > interrupt-map-mask properties in the DT node.  
-> > 
-> > Agreed. Potentially some other stuff, but interrupts are the thing that
-> > showed up first as an issue.
-> > 
-> > Given the only reason I'm looking at this is to potentially solve
-> > a long term CXL / MCTP over I2C upstreaming problem on QEMU side, I've only
-> > limited time to throw at this (thought it was a short activity
-> > for a Friday afternoon :)  Will see if it turns out not too be
-> > too hard to build the rest.
-> > 
-> > I can at least boot same system with device tree and check I'm matching
-> > what is being generated by QEMU.
-> 
-> So, I'm not really sure how to approach this.  It seems 'unwise'/'unworkable' to
-> instantiate the device tree blob for the interrupt controller we already have
-> ACPI for and without that I have nothing to route to.
-> 
-> Or can we just ignore the interrupt map stuff completely and instead
-> rely on instantiating an interrupt controller on the card (that under
-> the hood uses non DT paths to make interrupts actually happen?)
-> 
-> That path to me seems workable and keeps the boundary of ACPI vs DT
-> actually getting used within the card specific driver.
-> 
-> Suggestions welcome!
+Actually, that config option makes no sense.
 
-Interestingly I haven't got your message in the thread via `b4`.
-Anyways, I think that was has been discussed at some point and
-DT appears just to be handy blob format to be supplied along with
-the device as "description of its configuration". Whatever format
-is chosen it should be available for ACPI/DT/etc platforms and
-be uniform. ACPI also supports overlays (as a debug feature, though)
-but would it make sense to have AML (compiled ASL) for ACPI and DTB
-for DT platforms and etc for etc platforms with duplicative data
-inside with all limitations of the each of those formats and their
-respective parsers/interpreters?
+It makes the sched_cond() behavior conditional with a static call.
 
--- 
-With Best Regards,
-Andy Shevchenko
+But all the *real* overhead is still there and unconditional (ie all
+the preempt count updates and the "did it go down to zero and we need
+to check" code).
 
+That just seems stupid. It seems to have all the overhead of a
+preemptible kernel, just not doing the preemption.
 
+So I must be mis-reading this, or just missing something important.
+
+The real cost seems to be
+
+   PREEMPT_BUILD -> PREEMPTION -> PREEMPT_COUNT
+
+and PREEMPT vs PREEMPT_DYNAMIC makes no difference to that, since both
+will end up with that, and thus both cases will have all the spinlock
+preempt count stuff.
+
+There must be some non-preempt_count cost that people worry about.
+
+Or maybe I'm just mis-reading the Kconfig stuff entirely. That's
+possible, because this seems *so* pointless to me.
+
+Somebody please hit me with a clue-bat to the noggin.
+
+                Linus
