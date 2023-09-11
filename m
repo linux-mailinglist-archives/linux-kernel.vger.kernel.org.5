@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2E779C3D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C95979C438
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241704AbjILDOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S236791AbjILDds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242149AbjILDOd (ORCPT
+        with ESMTP id S236864AbjILDdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:14:33 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A026693044;
-        Mon, 11 Sep 2023 18:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694473788;
-        bh=SPZkBkQK5gCnAGsU5Ak0Rh1EpGsLTAu/VUGJGlVD5KI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LMVhncbeze3ctHt4H7tocUFxHSW5+ZUj2dqsTBp3/UfQVMrQHlBrD1qSy6Zw/Y7CT
-         AHy7ynlHZaZsf+KdeFG5hFqLPqMho6Y5O6wiTXYDdWo6hYFFipWprW8CiaQ0+gnIpw
-         tkmKNwBq5wBlMuOeMonsnd2arnuhXVXV3EZb333Z4xQLMbgjZuvf+r1TFTGnVVUYMV
-         1QC6jpr5kHrQk5m/MGg4e/BGh10jC5sNCLn4GKEQDSbNlGIRif8NCFX7MVGNpU+wmx
-         RPoIQ+nntTa9Z3Bhw8AWbaGeYkcW448au236UM3E/KafL5ZgGKsWTdNtYLaiOJLwZd
-         x5QV+41vCgEWQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rl2VN26H2z4xWH;
-        Tue, 12 Sep 2023 09:09:48 +1000 (AEST)
-Date:   Tue, 12 Sep 2023 09:09:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the scmi tree
-Message-ID: <20230912090947.7a099d53@canb.auug.org.au>
+        Mon, 11 Sep 2023 23:33:31 -0400
+Received: from shiva.jussieu.fr (shiva.jussieu.fr [134.157.0.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EC16EDFBFC;
+        Mon, 11 Sep 2023 19:43:24 -0700 (PDT)
+Received: from mailix1.insp.jussieu.fr (mailix1.insp.jussieu.fr [134.157.37.11])
+          by shiva.jussieu.fr (8.15.2/jtpda-5.4) with ESMTP id 38BND3rE010543
+          ; Tue, 12 Sep 2023 01:13:03 +0200 (CEST)
+X-Ids:  164
+Received: from hordix.insp.jussieu.fr (hordix.insp.jussieu.fr [134.157.37.9])
+        by mailix1.insp.jussieu.fr (Postfix-INSP-2.10.1) with ESMTPSA id 7D618C05BF1E;
+        Tue, 12 Sep 2023 01:12:58 +0200 (CEST)
+Received: from [105.112.109.164] ([105.112.109.164]) by
+ webmail.insp.jussieu.fr (Horde Framework) with HTTPS; Mon, 11 Sep 2023
+ 23:12:58 +0000
+Date:   Mon, 11 Sep 2023 23:12:58 +0000
+Message-ID: <20230911231258.Horde.2QB43wZ_VH8gGo06-lllZor@webmail.insp.jussieu.fr>
+From:   Victoria Cleland <essaoui@insp.jussieu.fr>
+Subject: Hallo
+Reply-to: v.cleland10@aol.com
+User-Agent: Horde Application Framework 5
+Organization: Institut des NanoSciences de Paris
+X-InspUpmcSession: essaoui
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_K6jicT0X1.B+akV=sbagA0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Miltered: at jchkmail2.reseau.jussieu.fr with ID 64FF9EFF.004 by Joe's j-chkmail (http : // j-chkmail dot ensmp dot fr)!
+X-j-chkmail-Enveloppe: 64FF9EFF.004 from mailix1.insp.jussieu.fr/mailix1.insp.jussieu.fr/134.157.37.11/mailix1.insp.jussieu.fr/<lamya.essaoui@insp.jussieu.fr>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_K6jicT0X1.B+akV=sbagA0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+11. September 2023.
 
-Commit
+Hallo,
 
-  2326b2f5bfe9 ("power: vexpress: Fix -Wvoid-pointer-to-enum-cast warning")
+Ich möchte Ihnen einen Geschäftsvorschlag mitteilen. Für weitere  
+Details antworten Sie auf Englisch.
 
-is missing a Signed-off-by from its committer.
+Grüße
+Frau Victoria Cleland
+_______________________
+Sekretär: Essaoui Alan
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/_K6jicT0X1.B+akV=sbagA0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/njsACgkQAVBC80lX
-0GwSDwf+LWs2fgc3wUo4dv3cCtNmgdR0+81eECOcyfbLZrcQ0ZuMGn3KAsFrSvGg
-pEVRn9nXFM0qhuS3OpFJSxbngf7P42JOUG2YnAbMs6MU5BToZmEQKOWJ7qEf1ZSX
-/lnQypyn+RZRHc+nbzqCTNS/7UB7UM8v1EzoS9s0JdumVHOXRr4qrKxBIXK4i1yD
-xAwklpbXxhugL1d8sROxo0RmjCU02Bf2GXzTJWr2wPCtx3kyndH6jfPjpK88ysbE
-mdGFhZbt0m7DU8twTGEvN3F10anX2v5W4F6aDq5QK/BeWltLpe77nMkrQvXMxl8+
-tOCaHxh59F4c1DhBDG1IgndPuHS40g==
-=NDvJ
------END PGP SIGNATURE-----
-
---Sig_/_K6jicT0X1.B+akV=sbagA0--
