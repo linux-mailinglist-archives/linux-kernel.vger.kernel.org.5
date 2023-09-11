@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE5379B4A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EC979AEF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377551AbjIKW1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S1351227AbjIKVmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235939AbjIKJql (ORCPT
+        with ESMTP id S235970AbjIKJrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:46:41 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A96BE4A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:46:36 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-401187f8071so26232225e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694425595; x=1695030395; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sQuS2BsowzkIWazbpQjvlfNfkQEbmTp9QyiIj+7bzpE=;
-        b=q9W3tzqpkq3o2DkIs7037oyM7IGIDDHbM5tD5iMFcVNZblG6H7PKtlEgK3M4zPIdsH
-         FPXaKvQtfYgzEte3tkbzTwjdxEu+QvV1GgPxRUXwzEVUDFMSEP6jhpHT7sA4GdwWMvxn
-         k+viEzCMVs7BnGrt21Lf4EUaKtQtOKNDPphgwsqeMIKXMbC9r3hEkUWXTbsjChb9nzlV
-         Aj9D9H+cr7SPQfApiU7JNcjSAoBaPQqUDKx9quODTwkwhBs+k7IqXuIzjnMXh0rfUpn+
-         jfEMUgrOQPFt+uFoQFIJK7wPjkYVA5H8+Em0f5/c5oiPig0Wc+wPSs3qu9oCENEB6iDg
-         2o3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425595; x=1695030395;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sQuS2BsowzkIWazbpQjvlfNfkQEbmTp9QyiIj+7bzpE=;
-        b=kthLtlSJDRr4+tqhIjMuMIrvo7c6a7rQMfBtZRAzej1a9+MXOWDd3zWtFm/fn8CHY8
-         Kh1ZOl3xbsuTjXQUuobnfMMXegnE9u4zjJtrUmcopgofAnVn5wllmrpaSDvM63wpFtjo
-         IueWJdNLS3f9LsJl7jurGlwqcNUKaehkSvJSnDVgH7pre258pLvVMWAHUEJHOKuhaoGM
-         5YqAo+1J6j0NB1U6RyyxYZpndYXcrg2JmmjwbA1d2SzO5pxlmCGgWfRmBuIvcZUgM2qp
-         9uBvOtaYDjku+S6vs6lX/qojHDf0jHaRNM6RB72vRoLkRh7IIal9q5S4ekMrjsNJjiMf
-         rG7w==
-X-Gm-Message-State: AOJu0Yw6Jess9g5Kuj2sxLz8ed3DdE4UYxLSerDmoMNRqoVeLbe9UCqn
-        yZqze9kI8eK4WTnW/lf5+UlMtg==
-X-Google-Smtp-Source: AGHT+IE+dacoiI3EJshUztkwZYbtUVUfQH+ts8646ie2hzrqg4cqFndrT0+5nykG0OuaI8QpwY44mQ==
-X-Received: by 2002:a05:600c:4f02:b0:403:aced:f7f4 with SMTP id l2-20020a05600c4f0200b00403acedf7f4mr839734wmq.12.1694425594969;
-        Mon, 11 Sep 2023 02:46:34 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id d13-20020adff84d000000b00317909f9985sm9503496wrq.113.2023.09.11.02.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:46:34 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     oxffffaa@gmail.com, kernel@sberdevices.ru,
-        Liang Yang <liang.yang@amlogic.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230828133647.3712644-1-avkrasnov@salutedevices.com>
-References: <20230828133647.3712644-1-avkrasnov@salutedevices.com>
-Subject: Re: [PATCH v1] arm64: dts: amlogic: meson-axg: Meson NAND node
-Message-Id: <169442559402.3235506.17344571540273411910.b4-ty@linaro.org>
-Date:   Mon, 11 Sep 2023 11:46:34 +0200
+        Mon, 11 Sep 2023 05:47:36 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695A4E50;
+        Mon, 11 Sep 2023 02:47:31 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 109AC1C0004; Mon, 11 Sep 2023 11:47:30 +0200 (CEST)
+Date:   Mon, 11 Sep 2023 11:47:29 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        John Watts <contact@jookia.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>, wg@grandegger.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH AUTOSEL 6.1 10/26] can: sun4i_can: Add support for the
+ Allwinner D1
+Message-ID: <ZP7iMa8xv7RhxWU7@duo.ucw.cz>
+References: <20230908181806.3460164-1-sashal@kernel.org>
+ <20230908181806.3460164-10-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="W6zyC+oVbfVKM7Mx"
+Content-Disposition: inline
+In-Reply-To: <20230908181806.3460164-10-sashal@kernel.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Mon, 28 Aug 2023 16:36:47 +0300, Arseniy Krasnov wrote:
-> Add description of the Meson NAND controller node.
-> 
-> 
+--W6zyC+oVbfVKM7Mx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.7/arm64-dt)
+Hi!
 
-[1/1] arm64: dts: amlogic: meson-axg: Meson NAND node
-      https://git.kernel.org/amlogic/c/7ca2ef33179f4e1887727c1b5fac39721db8050e
+> From: John Watts <contact@jookia.org>
+>=20
+> [ Upstream commit 8abb95250ae6af2d51993da8fcae18da2ce24cc4 ]
+>=20
+> The controllers present in the D1 are extremely similar to the R40
+> and require the same reset quirks, but An extra quirk is needed to support
+> receiving packets.
 
-These changes has been applied on the intermediate git tree [1].
+Well, we are not adding the rest of support to 6.1, so we don't need
+this, either. It will be unused.
 
-The v6.7/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
+BR,
+								Pavel
 
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
+> +++ b/drivers/net/can/Kconfig
+> @@ -174,10 +174,10 @@ config CAN_SLCAN
+> =20
+>  config CAN_SUN4I
+>  	tristate "Allwinner A10 CAN controller"
+> -	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
+> +	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
+>  	help
+>  	  Say Y here if you want to use CAN controller found on Allwinner
+> -	  A10/A20 SoCs.
+> +	  A10/A20/D1 SoCs.
+> =20
+>  	  To compile this driver as a module, choose M here: the module will
+>  	  be called sun4i_can.
+> diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+> index dd0c6cd76c5f5..c3a6b028ea4d6 100644
+> --- a/drivers/net/can/sun4i_can.c
+> +++ b/drivers/net/can/sun4i_can.c
+> @@ -91,6 +91,8 @@
+>  #define SUN4I_REG_BUF12_ADDR	0x0070	/* CAN Tx/Rx Buffer 12 */
+>  #define SUN4I_REG_ACPC_ADDR	0x0040	/* CAN Acceptance Code 0 */
+>  #define SUN4I_REG_ACPM_ADDR	0x0044	/* CAN Acceptance Mask 0 */
+> +#define SUN4I_REG_ACPC_ADDR_D1	0x0028	/* CAN Acceptance Code 0 on the D1=
+ */
+> +#define SUN4I_REG_ACPM_ADDR_D1	0x002C	/* CAN Acceptance Mask 0 on the D1=
+ */
+>  #define SUN4I_REG_RBUF_RBACK_START_ADDR	0x0180	/* CAN transmit buffer st=
+art */
+>  #define SUN4I_REG_RBUF_RBACK_END_ADDR	0x01b0	/* CAN transmit buffer end =
+*/
+> =20
+> @@ -779,6 +781,11 @@ static const struct sun4ican_quirks sun4ican_quirks_=
+r40 =3D {
+>  	.acp_offset =3D 0,
+>  };
+> =20
+> +static const struct sun4ican_quirks sun4ican_quirks_d1 =3D {
+> +	.has_reset =3D true,
+> +	.acp_offset =3D (SUN4I_REG_ACPC_ADDR_D1 - SUN4I_REG_ACPC_ADDR),
+> +};
+> +
+>  static const struct of_device_id sun4ican_of_match[] =3D {
+>  	{
+>  		.compatible =3D "allwinner,sun4i-a10-can",
+> @@ -789,6 +796,9 @@ static const struct of_device_id sun4ican_of_match[] =
+=3D {
+>  	}, {
+>  		.compatible =3D "allwinner,sun8i-r40-can",
+>  		.data =3D &sun4ican_quirks_r40
+> +	}, {
+> +		.compatible =3D "allwinner,sun20i-d1-can",
+> +		.data =3D &sun4ican_quirks_d1
+>  	}, {
+>  		/* sentinel */
+>  	},
+> @@ -915,4 +925,4 @@ module_platform_driver(sun4i_can_driver);
+>  MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+>  MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+>  MODULE_LICENSE("Dual BSD/GPL");
+> -MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");
+> +MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20/D1)");
 
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
+--W6zyC+oVbfVKM7Mx
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Neil
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZP7iMQAKCRAw5/Bqldv6
+8iNHAKCr9iGC2Pae585vS5gdFDGcVzZNgQCgouu4FKM/lvI8gqIRrcpjyUG7DsQ=
+=22Uz
+-----END PGP SIGNATURE-----
 
+--W6zyC+oVbfVKM7Mx--
