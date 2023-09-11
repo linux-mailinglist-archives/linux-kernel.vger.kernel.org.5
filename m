@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11BD79BCC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33B279B9AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354434AbjIKVyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        id S229481AbjIKUrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235624AbjIKJHr (ORCPT
+        with ESMTP id S235635AbjIKJK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:07:47 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C27CCC;
-        Mon, 11 Sep 2023 02:07:42 -0700 (PDT)
-Received: from ideasonboard.com (mob-5-90-67-213.net.vodafone.it [5.90.67.213])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C9C1C9D5;
-        Mon, 11 Sep 2023 11:06:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694423171;
-        bh=dB3BAFn1tvsxsRIUshagD2Y62dXixykRmP5IatNzS/k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h9ducT+tCgVKKj2LoRNLZxnWo0jmgFjKp9kXI2vWDubJEC/0wXqXt7JGGkEiNU0BU
-         lKoq7HH6k0a5wSC611dLgAQNAmNaWKOYLbi/dvVQVxWiDGPr7XfsPX+H702fZkF+Px
-         W8BuV2Vtf02IgpkuhMboV6Siv6kM8sYPp1ojpZCU=
-Date:   Mon, 11 Sep 2023 11:07:38 +0200
-From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 2/2] media: mt9p031: Drop CONFIG_OF ifdeffery
-Message-ID: <tgsuqxirofyrbz4cg2ougwa2auhs57qzlheqj4sbt36rxi4o5r@gfi3mypt2rdv>
-References: <20230910160126.70122-1-biju.das.jz@bp.renesas.com>
- <20230910160126.70122-3-biju.das.jz@bp.renesas.com>
+        Mon, 11 Sep 2023 05:10:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1217ACCD;
+        Mon, 11 Sep 2023 02:10:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B6DC433C8;
+        Mon, 11 Sep 2023 09:10:48 +0000 (UTC)
+Message-ID: <be6b41e0-c610-49c3-ae6c-e811b56aca30@xs4all.nl>
+Date:   Mon, 11 Sep 2023 11:10:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230910160126.70122-3-biju.das.jz@bp.renesas.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 15/17] media: qcom: camss: Move vfe_disable into a
+ common routine where applicable
+Content-Language: en-US, nl
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, laurent.pinchart@ideasonboard.com,
+        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907164410.36651-1-bryan.odonoghue@linaro.org>
+ <20230907164410.36651-16-bryan.odonoghue@linaro.org>
+ <8b424303-09c9-4270-abfd-4f209f5c41e0@linaro.org>
+ <41d1e364-40a4-48b2-97ef-6c76d238002e@linaro.org>
+ <c9570c8e-c9a5-43f5-8b69-d5c38d214061@linaro.org>
+ <c5d64d12-668a-4d70-85ee-e4111d85a1be@linaro.org>
+ <e1ab1df4-8431-483d-8f20-74de5349cfbc@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <e1ab1df4-8431-483d-8f20-74de5349cfbc@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Biju
+On 08/09/2023 12:36, Bryan O'Donoghue wrote:
+> On 08/09/2023 11:24, Konrad Dybcio wrote:
+>> On 8.09.2023 12:21, Bryan O'Donoghue wrote:
+>>> On 08/09/2023 11:04, Konrad Dybcio wrote:
+>>>> On 8.09.2023 12:02, Konrad Dybcio wrote:
+>>>>> On 7.09.2023 18:44, Bryan O'Donoghue wrote:
+>>>>>> We can move vfe_disable() into a common routine in the core VFE file
+>>>>>> provided we make wm_stop() a VFE specific callback.
+>>>>>>
+>>>>>> The callback is required to capture the case where VFE 17x currently isn't
+>>>>>> VC enabled where as VFE 480 is.
+>>>>>>
+>>>>>> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>>>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>>>>> ---
+>>>>> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>>>
+>>>>> Konrad
+>>>> Actually there's
+>>>>
+>>>> ret = vfe_reset(vfe);
+>>>>
+>>>> return ret;
+>>>>
+>>>>
+>>>> which could just be
+>>>>
+>>>> return vfe_reset(vfe);
+>>>>
+>>>>
+>>>> Konrad
+>>>
+>>> On purpose.
+>>>
+>>> I prefer the ret = ; return ret; pattern since it makes it easier / less work to
+>>>
+>>> ret = fn();
+>>> if (ret)
+>>>      goto error;
+>>>
+>>> error:
+>>>      return ret;
+>> There's no error label in vfe_disable_output
+>>
+>> Konrad
+> 
+> No there is not. Its a pattern I use to make adding jump labels easier later on.
 
-On Sun, Sep 10, 2023 at 05:01:26PM +0100, Biju Das wrote:
-> Drop of_match_ptr() from mt9p031_i2c_driver and get rid of ugly CONFIG_OF
-> if check. This slightly increases the size of mt9p031_i2c_driver on non-OF
-> system and shouldn't be an issue.
->
-> Add mod_devicetable.h include.
->
-> It also allows, in case if needed, to enumerate this device via ACPI with
-> PRP0001 magic.
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+This adds a bunch of extra lines just in case something might happen in the
+future. That is generally a bad idea, so please change this. As you can see
+it just causes reviewers to trip over this with exactly the question you got
+here.
 
-Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+> 
+> Just like you use the pattern of appending "," to aggregate initialisation.
 
-Thanks
-  j
+Adding a comma at the end doesn't add extra lines. To be honest, I don't
+have a strong opinion on this either way. Personally I would probably use a
+comma if it is likely that the list would be extended in the future, and
+leave it out if I am pretty certain that won't happen. In any case, I don't
+mind either way.
 
+Regards,
+
+	Hans
+
+> 
 > ---
->  drivers/media/i2c/mt9p031.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-> index 540cb519915c..91d5de5b95f0 100644
-> --- a/drivers/media/i2c/mt9p031.c
-> +++ b/drivers/media/i2c/mt9p031.c
-> @@ -15,6 +15,7 @@
->  #include <linux/gpio/consumer.h>
->  #include <linux/i2c.h>
->  #include <linux/log2.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_graph.h>
-> @@ -1222,7 +1223,6 @@ static const struct i2c_device_id mt9p031_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, mt9p031_id);
->
-> -#if IS_ENABLED(CONFIG_OF)
->  static const struct of_device_id mt9p031_of_match[] = {
->  	{ .compatible = "aptina,mt9p006", .data = (void *)MEDIA_BUS_FMT_SGRBG12_1X12 },
->  	{ .compatible = "aptina,mt9p031", .data = (void *)MEDIA_BUS_FMT_SGRBG12_1X12 },
-> @@ -1230,11 +1230,10 @@ static const struct of_device_id mt9p031_of_match[] = {
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, mt9p031_of_match);
-> -#endif
->
->  static struct i2c_driver mt9p031_i2c_driver = {
->  	.driver = {
-> -		.of_match_table = of_match_ptr(mt9p031_of_match),
-> +		.of_match_table = mt9p031_of_match,
->  		.name = "mt9p031",
->  	},
->  	.probe          = mt9p031_probe,
-> --
-> 2.25.1
->
+> bod
+
