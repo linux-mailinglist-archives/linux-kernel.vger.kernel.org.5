@@ -2,130 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD2279BF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB63479BCA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349573AbjIKVd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        id S1378564AbjIKWff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235658AbjIKJRq (ORCPT
+        with ESMTP id S235666AbjIKJTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:17:46 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 508C0CD3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:17:41 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcc187e0b5so71335021fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694423859; x=1695028659; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQH9ivnhVEuNYoZ7gWrE/2JTu+vTayND8NJxuSu5kuQ=;
-        b=mgHYMS2RA1BDYgh+qsNoAhbltSkA4epdgjPimN9W8mrGjNRHrwKTKtAcjf3EC2c6qp
-         zJK88O67LCLfVpr4zeoXXp+BWJhuOyvzEtwMfTC/ub/dhdZf+He/g/RfnAUi3fVKW2fp
-         /Waz0OICsAGQQpflODoRjHwEDPj+4AS1iT8dReCpwilOFyKGkg11R8yCFpE4iISTT+B6
-         LlEdrsaVxIFtw74OMHd5hC60HW5Po4Kb2CNSty9KyoOOQubZPpZDHOjkH8g2cIeeR7Jd
-         OW+BBg08xnuSED3GyCASZkfp5567oQrU/EbzDhVwVAFdyNUIaYgsnQPyBoCmmlRFOXU+
-         5z6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694423859; x=1695028659;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JQH9ivnhVEuNYoZ7gWrE/2JTu+vTayND8NJxuSu5kuQ=;
-        b=vd6pJKVj3k78fgbbke+jsU/3ZZsFFnaZ/rQFyHyijjpwc9JVf4nE/Q06RWy2n0vlT1
-         fo9J9FrQOtNlVAWFbhifVC1JQs7XKHfKQhZpTMl9TGuOQYbqxYcrAumkoWVwzQN5lHrn
-         RFgmxkBlAjSUor6lQ6e+4hmlQ/4NUeO3gwKfiQ+ASfQiUCU8ZvevNMvwjTG9mdFv9JCS
-         qqDzKKkBCeOhYLUucRVAIHuNGNkJf5isrX/sV3nkZapT7mOHsjrj8nfDgGN82pnBg5y6
-         xEwX9HjMKQhsTj3QnKk3hnBqncKX39PNxVWRAPkkw29vixc2naRqIAjGciM28lLjO2cA
-         b0kw==
-X-Gm-Message-State: AOJu0YzIcmp7/MbUc1Sxtv0VUboZmNosarQROhwEeg2ebsXf4UdKMi7/
-        7dSelIfJYTI/kGUIZ1yj6akvDg==
-X-Google-Smtp-Source: AGHT+IEQbWgY9VKd4s2CeTD2F0I8xGKbPG1hks7s179vVqmQi67UpBcT0Z4xa+gu9MXya89Y9g3Z+w==
-X-Received: by 2002:a2e:9783:0:b0:2bc:d582:e724 with SMTP id y3-20020a2e9783000000b002bcd582e724mr7008765lji.31.1694423859488;
-        Mon, 11 Sep 2023 02:17:39 -0700 (PDT)
-Received: from [192.168.37.41] (178235177061.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.61])
-        by smtp.gmail.com with ESMTPSA id lc1-20020a170906dfe100b00982a92a849asm5028765ejc.91.2023.09.11.02.17.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 02:17:39 -0700 (PDT)
-Message-ID: <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
-Date:   Mon, 11 Sep 2023 11:17:37 +0200
+        Mon, 11 Sep 2023 05:19:11 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A581ACD5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:19:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nYLEOv0HILn2xhhTXkhNSa4UuugLo7xoYlPmswbzkgT7FdnRVd/VCE6J1ZXtQyqamQCTfMZYi1Qpmrz0Gzh2goMOePKpdyFo2xLwoywGkqbzL6p9zDKGNxeFkwR4dglwp3tGMWdXE683QzueeigLBHxK0h4vG51VDe3CuSyxB/3YVF24FjFOjPioINx61m/KfiDBat4hur8CXF/9P1R52oY08COelUlfinZYHUbmrI6OQmyMUNikp1cKvT/8oo0MmmSkQDlSwynStDTUwp2d6W1rMmmBnbKu13CittRO5yiOQLF7tDUl0JjRwMGNl0PeHzjkcMr3dIOjjMnXHPr97A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o1FONpADl/hn7RG4+3KRZ0biRadqxGK9fmPAL0XLPsQ=;
+ b=oOT3jogJLf5JCqW4qSfoJX4IP6EP8koeBQZY0C8vxBQ0yxhXmIj5D2v8NEV7IVwZXefoYjnOGbNTli3xZhNGEFnSET3dpkRj2x94HpcYgFEOSWZubWjKGTfiry9qbW2uUmmSImw9MOq0zPz3wvH0gCkeb1P0SYuZ/GEj6oWuJu04ggqEN6Jr2D2LzePZN6i8p/RNqDqWXwkeVg2DDhWI1PSFCdgRWsPed9n/zPrTsblFXf1JmGofDTbBs2eIKfbwJqvN/S9mKAJcKV0L+rQG3N8QtAjgXmGHIPqEQCUeEa+ckFDguRYAI4wI+rQmz7FPSD/OZ9kiFzso0qlCUeEFKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o1FONpADl/hn7RG4+3KRZ0biRadqxGK9fmPAL0XLPsQ=;
+ b=DeGZed9RtLZDcDGd3z31Gj7EY+E/Rl/pGOQxNih1HQ2dPlwlideLVkrRVnk6RHbmYjAPdRR7fK9zy0tik3aALOr0B4ix8Xq5BREC8spQnqk96VBeV0g/KHOnrQ0SsRgjk7HQpeATCIXvDcib6qSP2mrl0HIyJ9TTEf1Puf5GjGE=
+Received: from DM6PR10CA0034.namprd10.prod.outlook.com (2603:10b6:5:60::47) by
+ BY5PR12MB4869.namprd12.prod.outlook.com (2603:10b6:a03:1d9::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.32; Mon, 11 Sep
+ 2023 09:19:03 +0000
+Received: from CY4PEPF0000EDD2.namprd03.prod.outlook.com
+ (2603:10b6:5:60:cafe::c3) by DM6PR10CA0034.outlook.office365.com
+ (2603:10b6:5:60::47) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35 via Frontend
+ Transport; Mon, 11 Sep 2023 09:19:03 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD2.mail.protection.outlook.com (10.167.241.206) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6792.16 via Frontend Transport; Mon, 11 Sep 2023 09:19:02 +0000
+Received: from cjq-desktop.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
+ 2023 04:18:57 -0500
+From:   Jiqian Chen <Jiqian.Chen@amd.com>
+To:     David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        =?UTF-8?q?Marc-Andr=C3=A9=20Lureau?= <marcandre.lureau@gmail.com>,
+        "Gurchetan Singh" <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        "Juergen Gross" <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <qemu-devel@nongnu.org>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        "Christian Koenig" <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>,
+        Jiqian Chen <Jiqian.Chen@amd.com>
+Subject: [RESEND LINUX KERNEL PATCH 0/1] add S3 support for virtgpu
+Date:   Mon, 11 Sep 2023 17:18:30 +0800
+Message-ID: <20230911091831.1383180-1-Jiqian.Chen@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
- version detection
-To:     Can Guo <quic_cang@quicinc.com>, mani@kernel.org,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
- <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD2:EE_|BY5PR12MB4869:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d85fde4-26e8-4c84-9a1b-08dbb2a823fa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OhI/dH0qsfkJQEVA1q9cmWOJSbTVyDoX37WKlena/BBvHLyGqjowhpBNu5bXZ8TJ920CCqgo79scryf7WQTBgp7DBsRzGGHaFccaHDoKjMWS2ghymE0VQhIjLoihg31K8CLgaGuCG6iyKlbQMsp54HS4OOEiPvfU+oCTrDRBM2XV7jSQvj5glmwT6dRU6b8rMcm4XAavZtopOf3n8MNmvdI8Pa4kMkQRHJR4TiNBUGZTYz/jxjFllvrdXnVGV58IKAxPPyG/JP3Ztt1kX6kTingFUb4FDMMWRW9ucm4Bj5eKpdvNf4ml7ahuR6vwVADis5uowZdYO5mxvKQKIZEv4Fs9k38Xcn3Bas9qtGr5PGN4SWV9/UmbjUitiQdXvhtKbu//ziYLq37mfobsmrHhQEXAt77RnUKvsi03qYxtxXF8Gu6aKoBlR+bwHYues2YuCYcdJVWznGJyPHJgNSf7btMIeVW2khEKz9q+CEoA6gegcq7Z1z3pcLNhZofWqkUEyFx0re46XyWLiI40cTJNl0pgL1VmyG/qlJaVxLSOxX7r8C9bzLOl3gBQe1pTqqlvVUEMEiqKIAbGM1TwLu9t2/oiak5Nf4r6RfIG79BcU3cf1vRELUz3uCLOEqKuDjkiIFF5am/RZVdOmRbl3K3OwB+IrjgNnff303DNRoFW7HohrLlZutT9t6JlU+XZV5Qyv/stR3Lh8+GB5yB2VME1Viy2d95rSGGnnKOiS5hnf7rMYszglI64ZTh5QIMVMr4cuydTMamp5k1cxCfPEwJ4ltJUkEpIYhSPYmDTB5NtnD4znU2rOsqFumArK5FGR/B0
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39850400004)(1800799009)(186009)(82310400011)(451199024)(40470700004)(36840700001)(46966006)(7696005)(40460700003)(6666004)(83380400001)(921005)(356005)(82740400003)(81166007)(86362001)(36860700001)(47076005)(36756003)(2616005)(336012)(426003)(1076003)(26005)(40480700001)(16526019)(70586007)(70206006)(54906003)(110136005)(7416002)(316002)(41300700001)(2906002)(4326008)(8936002)(8676002)(5660300002)(966005)(478600001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 09:19:02.9839
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d85fde4-26e8-4c84-9a1b-08dbb2a823fa
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4869
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.2023 07:59, Can Guo wrote:
-> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
-> 
-> Retrieve UFS device version from UFS host controller's spare register
-> which is populated by bootloader, and use the UFS device version together
-> with host controller's HW version to decide the proper power modes which
-> should be used to configure the UFS PHY.
-That sounds a bit fishy.. is there no bootloader-independent
-solution to that? Can't we bring in the code that the bootloader
-uses to determine these values?
+Hi all,
+I hope you’ll forgive me if this disturb you. Since it has been almost two
+months since the latest patch was sent out, I didn't receive any reply, so I
+rebase the latest master branch and sent it again. I am looking forward to
+getting your response.
 
-Konrad
+Best regards,
+Jiqian Chen
+
+v3:
+Hi all,
+Thanks for Gerd Hoffmann's advice. V3 makes below changes:
+* Use enum for freeze mode, so this can be extended with more
+  modes in the future.
+* Rename functions and paratemers with "_S3" postfix.
+And no functional changes.
+
+V4(latest version) of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230720120816.8751-1-Jiqian.Chen@amd.com/
+
+
+v2:
+Hi all,
+Thanks to Marc-André Lureau, Robert Beckett and Gerd Hoffmann for their advice
+and guidance. V2 makes below changes:
+* Change VIRTIO_CPU_CMD_STATUS_FREEZING to 0x0400 (<0x1000)
+* Add a new feature flag VIRTIO_GPU_F_FREEZING, so that guest and
+  host can negotiate whenever freezing is supported or not.
+
+Link:
+https://lore.kernel.org/lkml/20230630073448.842767-1-Jiqian.Chen@amd.com/T/#t
+V2 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230630070016.841459-1-Jiqian.Chen@amd.com/T/#t
+
+
+v1:
+Hi all,
+I am working to implement virtgpu S3 function on Xen.
+
+Currently on Xen, if we start a guest who enables virtgpu, and then run "echo mem >
+/sys/power/state" to suspend guest. And run "sudo xl trigger <guest id> s3resume"
+to resume guest. We can find that the guest kernel comes back, but the display
+doesn't. It just shows a black screen.
+
+In response to the above phenomenon, I have found two problems.
+
+First, if we move mouse on the black screen, guest kernel still sends a cursor
+request to Qemu, but Qemu doesn't response. Because when guest is suspending, it
+calls device_suspend, and then call into Qemu to call
+virtio_reset->__virtio_queue_reset. In __virtio_queue_reset, it clears all virtqueue
+information on Qemu end. So, after guest resumes, Qemu can't get message from
+virtqueue.
+
+Second, the reason why display can't come back is that when guest is suspending, it
+calls into Qemu to call virtio_reset->virtio_gpu_gl_reset. In virtio_gpu_gl_reset,
+it destroys all resources and resets renderer, which are used for display. So after
+guest resumes, the display can't come back to the status when guest is suspended.
+
+This patch initializes virtqueue when guest is resuming to solve first problem. And
+it notifies Qemu that guest is suspending to prevent Qemu destroying resources, this
+is to solve second problem. And then, I can bring the display back, and everything
+continues their actions after guest resumes.
+
+Link:
+https://lore.kernel.org/lkml/20230608063857.1677973-1-Jiqian.Chen@amd.com/
+V1 of Qemu patch:
+https://lore.kernel.org/qemu-devel/20230608025655.1674357-2-Jiqian.Chen@amd.com/
+
+
+Jiqian Chen (1):
+  virtgpu: init vq during resume and notify qemu guest status
+
+ drivers/gpu/drm/virtio/virtgpu_debugfs.c |  1 +
+ drivers/gpu/drm/virtio/virtgpu_drv.c     | 39 ++++++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_drv.h     |  5 +++
+ drivers/gpu/drm/virtio/virtgpu_kms.c     | 36 ++++++++++++++++------
+ drivers/gpu/drm/virtio/virtgpu_vq.c      | 16 ++++++++++
+ include/uapi/linux/virtio_gpu.h          | 19 ++++++++++++
+ 6 files changed, 107 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
+
