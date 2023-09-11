@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAE279C186
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3F179C1CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234332AbjILBPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:15:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
+        id S235746AbjILBnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbjILBPL (ORCPT
+        with ESMTP id S235667AbjILBm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:15:11 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F81217A9F3;
-        Mon, 11 Sep 2023 18:02:18 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BNPkoX026380;
-        Mon, 11 Sep 2023 23:41:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=OAKZowELMuTGKnR3vCC2jgfxXUTvEmcpCXqGHpnuwxw=;
- b=QiNeGZnnFkgUr5bLatGDZ3L/hLj7ocODy7sHRKTKt+0oTGA26Y+W7IILD92lWUCeueOO
- fPpayg3hf7CMho7ziO1+zowQr+K8qzt9dwghgR+nu/nRUv/VEnu4dpwiS2ne+ZkRWkOV
- AT/Wxb87oajjUA9uMCCnSRYwvjXzlpQSxOiByknadCt29bun17ha2YhtLEjXWv+QKbv4
- e8h8BZ8moSyVgEI4Q50HfcSedr/Nw57X4d/0hN7hnHnLvfqfckQ5VHvLOhW8Py18Pl7K
- J3ustVdeeClc5l5zX82c1+o9Pira2RtgrLacu5HuXf+8FDo1z0SNjKt7VW2bNShiKfss lA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xkjt2s8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 23:41:34 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BNfXww030391
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 23:41:33 GMT
-Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 11 Sep 2023 16:41:32 -0700
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <quic_jackp@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH] usb: xhci: xhci-ring: Use sysdev for mapping bounce buffer
-Date:   Mon, 11 Sep 2023 16:41:22 -0700
-Message-ID: <20230911234122.1408-1-quic_wcheng@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 Sep 2023 21:42:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432F29032
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:19:25 -0700 (PDT)
+Received: from [192.168.2.112] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 756AF66072EF;
+        Tue, 12 Sep 2023 00:42:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694475722;
+        bh=OrWMPUr9xPwnLGNG5ZZ649t03TEnkQ5xzPfCCOrwjzk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=bdkmqOWWnk55xFgdFOACT+6rfydSIOpX7SnniGRcA4p2N8h9vRVMKm/y7OLu6xKZ2
+         Hb/AO/1RAjJ1xVJFzvvvegmg81DMjAFc2tx2lorj27emHCLTY/7gX66mhM/iuxXre4
+         YS08ebmyCGsPBrRwIRWOZAUrdFAB4c8Kj85ds8VudrCe5U3lSX7cuhUgpKX/2HTyi8
+         RHgGUQQu8TiSGvSzDAzwqmzFBbSzQ2KYtzKFTAD/bbhrUYCmq5yx8aywMX4zMUbv2H
+         qFq3nohe37BOrJBUuRSKc59EAbH/I51ZBwfjcvlV8X2b5ZF4NuAMcOO9E5IHwOyGoE
+         zFncu+0P3Yf0g==
+Message-ID: <297f5209-603e-a50d-c27b-8e50d23f86de@collabora.com>
+Date:   Tue, 12 Sep 2023 02:41:58 +0300
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: zZnjhJT5fv20qI2n5qC9w05YDJj8v4Ag
-X-Proofpoint-ORIG-GUID: zZnjhJT5fv20qI2n5qC9w05YDJj8v4Ag
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_19,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- adultscore=0 malwarescore=0 mlxlogscore=742 mlxscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309110217
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 02/20] drm/shmem-helper: Use flag for tracking page
+ count bumped by get_pages_sgt()
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+ <20230903170736.513347-3-dmitry.osipenko@collabora.com>
+ <20230905094050.3c918a43@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230905094050.3c918a43@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As mentioned in:
-  commit 474ed23a6257 ("xhci: align the last trb before link if it is
-easily splittable.")
+On 9/5/23 10:40, Boris Brezillon wrote:
+> On Sun,  3 Sep 2023 20:07:18 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> Use separate flag for tracking page count bumped by shmem->sgt to avoid
+>> imbalanced page counter during of drm_gem_shmem_free() time. It's fragile
+>> to assume that populated shmem->pages at a freeing time means that the
+>> count was bumped by drm_gem_shmem_get_pages_sgt(), using a flag removes
+>> the ambiguity.
+>>
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>> ---
+>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 11 ++++++++++-
+>>  drivers/gpu/drm/lima/lima_gem.c        |  1 +
+>>  include/drm/drm_gem_shmem_helper.h     |  7 +++++++
+>>  3 files changed, 18 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> index 6693d4061ca1..848435e08eb2 100644
+>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> @@ -152,8 +152,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>  			sg_free_table(shmem->sgt);
+>>  			kfree(shmem->sgt);
+>>  		}
+>> -		if (shmem->pages)
+>> +		if (shmem->pages) {
+>>  			drm_gem_shmem_put_pages(shmem);
+>> +			drm_WARN_ON(obj->dev, !shmem->got_pages_sgt);
+>> +		}
+> 
+> Already mentioned in v15, but I keep thinking the following:
+> 
+> 		if (shmem->sgt) {
+> 			// existing code in the preceding
+> 			// if (shmem->sgt) branch
+> 			...
+> 
+> 			/*
+> 			 * Release the implicit pages ref taken in
+> 			 * drm_gem_shmem_get_pages_sgt_locked().
+> 			 */
+> 			drm_gem_shmem_put_pages(shmem);
+> 		}
+> 
+> does exactly the same without requiring the addition of a new field.
 
-A bounce buffer is utilized for ensuring that transfers that span across
-ring segments are aligned to the EP's max packet size.  However, the device
-that is used to map the DMA buffer to is currently using the XHCI HCD,
-which does not carry any DMA operations in certain configrations.
-Migration to using the sysdev entry was introduced for DWC3 based
-implementations where the IOMMU operations are present.
+I'll factor out these "flag" patches into separate patchset since they
+cause too many questions. This is a fix for a minor bug that existed for
+many years and is difficult to trigger in practice, it can wait.
 
-Replace the reference to the controller device to sysdev instead.  This
-allows the bounce buffer to be properly mapped to any implementations that
-have an IOMMU involved.
+For now will be better to focus on finishing and landing the refcnt and
+shrinker patches, the rest of drm-shmem core improvements can be done
+afterwards.
 
-cc: <stable@vger.kernel.org>
-Fixes: 4c39d4b949d3 ("usb: xhci: use bus->sysdev for DMA configuration")
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
----
- drivers/usb/host/xhci-ring.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-- 
+Best regards,
+Dmitry
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index 1dde53f6eb31..98389b568633 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -798,7 +798,7 @@ static void xhci_giveback_urb_in_irq(struct xhci_hcd *xhci,
- static void xhci_unmap_td_bounce_buffer(struct xhci_hcd *xhci,
- 		struct xhci_ring *ring, struct xhci_td *td)
- {
--	struct device *dev = xhci_to_hcd(xhci)->self.controller;
-+	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
- 	struct xhci_segment *seg = td->bounce_seg;
- 	struct urb *urb = td->urb;
- 	size_t len;
-@@ -3469,7 +3469,7 @@ static u32 xhci_td_remainder(struct xhci_hcd *xhci, int transferred,
- static int xhci_align_td(struct xhci_hcd *xhci, struct urb *urb, u32 enqd_len,
- 			 u32 *trb_buff_len, struct xhci_segment *seg)
- {
--	struct device *dev = xhci_to_hcd(xhci)->self.controller;
-+	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
- 	unsigned int unalign;
- 	unsigned int max_pkt;
- 	u32 new_buff_len;
