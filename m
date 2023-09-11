@@ -2,153 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6436479B05F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A14279B5AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245459AbjIKVJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        id S1346734AbjIKVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236742AbjIKLTw (ORCPT
+        with ESMTP id S236574AbjIKLBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:19:52 -0400
-X-Greylist: delayed 1514 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Sep 2023 04:19:47 PDT
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4760CCF0;
-        Mon, 11 Sep 2023 04:19:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=s4yjkV/pIz1Vcb7FiZ8Ua8Yc/T0wGlJCAfzhWGKV9mc=; b=EEEzfSXqHRN61nA/x4jRX04R0S
-        s639BpadglyijZ5FsHagoNl1EvLo3n7P4kd5kT9MWtOYDyFAka8hf6gcJtmZUnv0YnyVPWHumaPTz
-        VhABBeRVgIh0WsP9e324C6Q82CVeQWLU5DnZkgdqLHObh4OVlT9CiSYlWU1gmtx/YUaPHhK82Zid9
-        KZ0KBEil9l56sZSyySWLUPqTcYaIM9sb2UnJhzPVyBN2jF7OyTxzCWJmwvMWXpUb1CZEZI26JEkJk
-        5c1m4Z/5rnOLADEyr8qczZ+/qBIqFI6UZrrzOdEJoANjG3q3899sXuDqJfIuYwlKfvCw+B/TCE6Ha
-        c1nTHcMg==;
-Received: from [146.50.220.87]
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qfeYc-002Ii9-OD; Mon, 11 Sep 2023 12:54:18 +0200
-Message-ID: <47520d7b-6209-46c7-9ee0-be50181bf61f@igalia.com>
-Date:   Mon, 11 Sep 2023 12:54:17 +0200
+        Mon, 11 Sep 2023 07:01:17 -0400
+Received: from out-219.mta0.migadu.com (out-219.mta0.migadu.com [91.218.175.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4588E198
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:01:11 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694430069;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E5yHKp0OcXp3JHJgg+0qOrM4VXGsFKESg9vuY4j64KM=;
+        b=RFgJBw48EPZafs2msT138v8SXX3p9xUpN/mvU6RgMl44mFl5tuNwYlwSB0mKtJRoeAdXUJ
+        C1g5Lk5GblE6HBE93nzpeDZldouoYN22NM8R+3AHXm+4Q85V5H++AgcpRZ8xxh5kYJFzwH
+        SMsGTEyx07SRu2mkQtSXMN2LZfpAFAE=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        mhiramat@kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] sched: Change the name of preempt mode from full to low_latency
+Date:   Mon, 11 Sep 2023 19:00:46 +0800
+Message-Id: <20230911110046.3877123-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-User-Agent: Thunderbird Daily
-Subject: Re: [PATCH v2] drm/msm/dpu: change _dpu_plane_calc_bw() to use u64 to
- avoid overflow
-Content-Language: en-US
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <quic_kalyant@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230908012616.20654-1-quic_abhinavk@quicinc.com>
-From:   Nia Espera <nespera@igalia.com>
-Autocrypt: addr=nespera@igalia.com; keydata=
- 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
- T+I7o407lOB8a/PJA2YXM4VVC/iyMBM=
-In-Reply-To: <20230908012616.20654-1-quic_abhinavk@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 03:26, Abhinav Kumar wrote:
-> _dpu_plane_calc_bw() uses integer variables to calculate the bandwidth
-> used during plane bandwidth calculations. However for high resolution
-> displays this overflows easily and leads to below errors
->
-> [dpu error]crtc83 failed performance check -7
->
-> Promote the intermediate variables to u64 to avoid overflow.
->
-> changes in v2:
-> 	- change to u64 where actually needed in the math
->
-> Fixes: c33b7c0389e1 ("drm/msm/dpu: add support for clk and bw scaling for display")
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/32
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Reported-by: Nia Espera <nespera@igalia.com>
-Tested-by: Nia Espera <nespera@igalia.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index c2aaaded07ed..98c1b22e9bca 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -119,6 +119,7 @@ static u64 _dpu_plane_calc_bw(const struct dpu_mdss_cfg *catalog,
->   	struct dpu_sw_pipe_cfg *pipe_cfg)
->   {
->   	int src_width, src_height, dst_height, fps;
-> +	u64 plane_pixel_rate, plane_bit_rate;
->   	u64 plane_prefill_bw;
->   	u64 plane_bw;
->   	u32 hw_latency_lines;
-> @@ -136,13 +137,12 @@ static u64 _dpu_plane_calc_bw(const struct dpu_mdss_cfg *catalog,
->   	scale_factor = src_height > dst_height ?
->   		mult_frac(src_height, 1, dst_height) : 1;
->   
-> -	plane_bw =
-> -		src_width * mode->vtotal * fps * fmt->bpp *
-> -		scale_factor;
-> +	plane_pixel_rate = src_width * mode->vtotal * fps;
-> +	plane_bit_rate = plane_pixel_rate * fmt->bpp;
->   
-> -	plane_prefill_bw =
-> -		src_width * hw_latency_lines * fps * fmt->bpp *
-> -		scale_factor * mode->vtotal;
-> +	plane_bw = plane_bit_rate * scale_factor;
-> +
-> +	plane_prefill_bw = plane_bw * hw_latency_lines;
->   
->   	if ((vbp+vpw) > hw_latency_lines)
->   		do_div(plane_prefill_bw, (vbp+vpw));
+There is a similar name fully in Kconfig.preempt, but it corresponds to
+PREEMPT_RT. In order to distinguish them, change the name of preempt mode
+from full to low_latency.
 
+Also, define a global array and variable that used to save preempt mode
+name and size.
+
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ .../admin-guide/kernel-parameters.txt         |  2 +-
+ include/linux/sched.h                         |  8 ++--
+ kernel/sched/core.c                           | 43 ++++++++++---------
+ kernel/sched/debug.c                          |  5 +--
+ kernel/sched/sched.h                          |  2 +
+ kernel/trace/trace.c                          |  4 +-
+ 6 files changed, 32 insertions(+), 32 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0a1731a0f0ef..9284fd7999d7 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4581,7 +4581,7 @@
+ 			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
+ 			none - Limited to cond_resched() calls
+ 			voluntary - Limited to cond_resched() and might_sleep() calls
+-			full - Any section that isn't explicitly preempt disabled
++			low_latency - Any section that isn't explicitly preempt disabled
+ 			       can be preempted anytime.
+ 
+ 	print-fatal-signals=
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 6d1341b1673f..ea607a0ce6f6 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2181,7 +2181,7 @@ static inline void cond_resched_rcu(void)
+ 
+ extern bool preempt_model_none(void);
+ extern bool preempt_model_voluntary(void);
+-extern bool preempt_model_full(void);
++extern bool preempt_model_low_latency(void);
+ 
+ #else
+ 
+@@ -2193,14 +2193,14 @@ static inline bool preempt_model_voluntary(void)
+ {
+ 	return IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY);
+ }
+-static inline bool preempt_model_full(void)
++static inline bool preempt_model_low_latency(void)
+ {
+ 	return IS_ENABLED(CONFIG_PREEMPT);
+ }
+ 
+ #endif
+ 
+-static inline bool preempt_model_rt(void)
++static inline bool preempt_model_fully(void)
+ {
+ 	return IS_ENABLED(CONFIG_PREEMPT_RT);
+ }
+@@ -2215,7 +2215,7 @@ static inline bool preempt_model_rt(void)
+  */
+ static inline bool preempt_model_preemptible(void)
+ {
+-	return preempt_model_full() || preempt_model_rt();
++	return preempt_model_low_latency() || preempt_model_fully();
+ }
+ 
+ /*
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 2299a5cfbfb9..2abbc0baaae7 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8705,7 +8705,7 @@ EXPORT_SYMBOL(__cond_resched_rwlock_write);
+  *   preempt_schedule_notrace   <- NOP
+  *   irqentry_exit_cond_resched <- NOP
+  *
+- * FULL:
++ * LOW_LATENCY:
+  *   cond_resched               <- RET0
+  *   might_resched              <- RET0
+  *   preempt_schedule           <- preempt_schedule
+@@ -8717,21 +8717,25 @@ enum {
+ 	preempt_dynamic_undefined = -1,
+ 	preempt_dynamic_none,
+ 	preempt_dynamic_voluntary,
+-	preempt_dynamic_full,
++	preempt_dynamic_low_latency,
+ };
+-
+ int preempt_dynamic_mode = preempt_dynamic_undefined;
+ 
++const char *preempt_modes[] = {
++	[preempt_dynamic_none]        = "none",
++	[preempt_dynamic_voluntary]   = "voluntary",
++	[preempt_dynamic_low_latency] = "low_latency",
++};
++int preempt_modes_size = ARRAY_SIZE(preempt_modes);
++
+ int sched_dynamic_mode(const char *str)
+ {
+-	if (!strcmp(str, "none"))
+-		return preempt_dynamic_none;
+-
+-	if (!strcmp(str, "voluntary"))
+-		return preempt_dynamic_voluntary;
++	int i;
+ 
+-	if (!strcmp(str, "full"))
+-		return preempt_dynamic_full;
++	for (i = 0; i < preempt_modes_size; i++) {
++		if (!strcmp(str, preempt_modes[i]))
++			return i;
++	}
+ 
+ 	return -EINVAL;
+ }
+@@ -8752,7 +8756,7 @@ static bool klp_override;
+ static void __sched_dynamic_update(int mode)
+ {
+ 	/*
+-	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
++	 * Avoid {NONE,VOLUNTARY} -> LOW_LATENCY transitions from ever ending up in
+ 	 * the ZERO state, which is invalid.
+ 	 */
+ 	if (!klp_override)
+@@ -8770,8 +8774,6 @@ static void __sched_dynamic_update(int mode)
+ 		preempt_dynamic_disable(preempt_schedule);
+ 		preempt_dynamic_disable(preempt_schedule_notrace);
+ 		preempt_dynamic_disable(irqentry_exit_cond_resched);
+-		if (mode != preempt_dynamic_mode)
+-			pr_info("Dynamic Preempt: none\n");
+ 		break;
+ 
+ 	case preempt_dynamic_voluntary:
+@@ -8781,22 +8783,21 @@ static void __sched_dynamic_update(int mode)
+ 		preempt_dynamic_disable(preempt_schedule);
+ 		preempt_dynamic_disable(preempt_schedule_notrace);
+ 		preempt_dynamic_disable(irqentry_exit_cond_resched);
+-		if (mode != preempt_dynamic_mode)
+-			pr_info("Dynamic Preempt: voluntary\n");
+ 		break;
+ 
+-	case preempt_dynamic_full:
++	case preempt_dynamic_low_latency:
+ 		if (!klp_override)
+ 			preempt_dynamic_disable(cond_resched);
+ 		preempt_dynamic_disable(might_resched);
+ 		preempt_dynamic_enable(preempt_schedule);
+ 		preempt_dynamic_enable(preempt_schedule_notrace);
+ 		preempt_dynamic_enable(irqentry_exit_cond_resched);
+-		if (mode != preempt_dynamic_mode)
+-			pr_info("Dynamic Preempt: full\n");
+ 		break;
+ 	}
+ 
++	if (mode != preempt_dynamic_mode)
++		pr_info("Dynamic Preempt: %s\n", preempt_modes[mode]);
++
+ 	preempt_dynamic_mode = mode;
+ }
+ 
+@@ -8860,8 +8861,8 @@ static void __init preempt_dynamic_init(void)
+ 		} else {
+ 			/* Default static call setting, nothing to do */
+ 			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT));
+-			preempt_dynamic_mode = preempt_dynamic_full;
+-			pr_info("Dynamic Preempt: full\n");
++			preempt_dynamic_mode = preempt_dynamic_low_latency;
++			pr_info("Dynamic Preempt: %s\n", preempt_modes[preempt_dynamic_mode]);
+ 		}
+ 	}
+ }
+@@ -8876,7 +8877,7 @@ static void __init preempt_dynamic_init(void)
+ 
+ PREEMPT_MODEL_ACCESSOR(none);
+ PREEMPT_MODEL_ACCESSOR(voluntary);
+-PREEMPT_MODEL_ACCESSOR(full);
++PREEMPT_MODEL_ACCESSOR(low_latency);
+ 
+ #else /* !CONFIG_PREEMPT_DYNAMIC */
+ 
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 4c3d0d9f3db6..fd516dcff988 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -244,12 +244,9 @@ static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
+ 
+ static int sched_dynamic_show(struct seq_file *m, void *v)
+ {
+-	static const char * preempt_modes[] = {
+-		"none", "voluntary", "full"
+-	};
+ 	int i;
+ 
+-	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
++	for (i = 0; i < preempt_modes_size; i++) {
+ 		if (preempt_dynamic_mode == i)
+ 			seq_puts(m, "(");
+ 		seq_puts(m, preempt_modes[i]);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 04846272409c..6210c40f35da 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3276,6 +3276,8 @@ extern int try_to_wake_up(struct task_struct *tsk, unsigned int state, int wake_
+ 
+ #ifdef CONFIG_PREEMPT_DYNAMIC
+ extern int preempt_dynamic_mode;
++extern const char *preempt_modes[];
++extern int preempt_modes_size;
+ extern int sched_dynamic_mode(const char *str);
+ extern void sched_dynamic_update(int mode);
+ #endif
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2b4ded753367..3d731b4fea65 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4394,8 +4394,8 @@ print_trace_header(struct seq_file *m, struct trace_iterator *iter)
+ 		   buf->cpu,
+ 		   preempt_model_none()      ? "server" :
+ 		   preempt_model_voluntary() ? "desktop" :
+-		   preempt_model_full()      ? "preempt" :
+-		   preempt_model_rt()        ? "preempt_rt" :
++		   preempt_model_low_latency() ? "preempt" :
++		   preempt_model_fully()     ? "preempt_rt" :
+ 		   "unknown",
+ 		   /* These are reserved for later use */
+ 		   0, 0, 0, 0);
+-- 
+2.25.1
 
