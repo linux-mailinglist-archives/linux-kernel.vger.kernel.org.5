@@ -2,127 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EFE879AC9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF3079AE52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350620AbjIKVjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S1345180AbjIKVPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235486AbjIKIns (ORCPT
+        with ESMTP id S235490AbjIKIoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:43:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9F21A1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694421777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v1O9Hjy9rHsZrvC8iggQtpHWHNRqlOhd3zFoat4Zny8=;
-        b=F+Ix0Kyi9m67PD+UASIxPMGnwg4PVkOaeSvZ4OmPKFni343TBBGKVTGhY6ksrhFvGaZ1A9
-        I3ylTFoi5rAk2vHcLVXZHMX8TByjd7Ey2BBmgsgm9yH9qk0vNOFZwNNqw7wS6A7nep/cpo
-        EKiEmPQo7jt6f+XM8L2RLAk8LReWXGU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-X9FwE8bMOBGxqcIr9jM9Vw-1; Mon, 11 Sep 2023 04:42:54 -0400
-X-MC-Unique: X9FwE8bMOBGxqcIr9jM9Vw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fd0fa4d08cso31441435e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:42:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694421773; x=1695026573;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v1O9Hjy9rHsZrvC8iggQtpHWHNRqlOhd3zFoat4Zny8=;
-        b=IgPhCBBO7QJvlbFzQ5K/NKwIAyoX2xPOQrMBqFVLh1rCzf7MB3QUazT2vj/nPLk1Qq
-         oVaJ/UdtmwK+xCbW4FAv2lB6ygnzG4v0hUyqcJLlw4sPuQzX9nBOtZgKNh/s+kIt8YXU
-         TDeH3AxkqlRkd88pby0vT6o8odI4TOqYw5Sy7Mb59ERW6QGmxNnm97Be6ruDbGEsA2Ll
-         FHnQHtimYQN6K0R1zL12DqHd9ZKHHH/iJWfCH2WjA5PlHgeE7pNwgPr/FiZEH2mNAmo1
-         yqHCuNmx+AJnQunrhFRn09UeyB0Wth8vEb2F6ikl1J/UWNEmOO43H4c8gAfGc1HkpSZ0
-         MMMQ==
-X-Gm-Message-State: AOJu0YxChMR3icYsPQEIEX82dBCzQj/FwEWByhCjHM4VdzJneWKU8A26
-        /lX1iKNvkqRty91AwcN7p95JHmqUjOnFwXqJanD/2AoJxY/7oB/2pl3VOhVEYj7EACD6pHryjD8
-        Yn2S3s/R9AoUb1FxzFsWofiQI
-X-Received: by 2002:a1c:ed0b:0:b0:3fc:21:2c43 with SMTP id l11-20020a1ced0b000000b003fc00212c43mr7346844wmh.13.1694421773452;
-        Mon, 11 Sep 2023 01:42:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH8aoBWfTO9D3ZTCmaaRT0GwaH8BSrY/roXA5t7CzHxEaXPavXU1Y6T8UuPI7Q1KEVVmKAG3w==
-X-Received: by 2002:a1c:ed0b:0:b0:3fc:21:2c43 with SMTP id l11-20020a1ced0b000000b003fc00212c43mr7346817wmh.13.1694421772969;
-        Mon, 11 Sep 2023 01:42:52 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
-        by smtp.gmail.com with ESMTPSA id g12-20020a7bc4cc000000b003fee849df23sm9372755wmk.22.2023.09.11.01.42.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 01:42:52 -0700 (PDT)
-Message-ID: <49ab74c8-553b-b3d0-6a72-2d259a2b5bdf@redhat.com>
-Date:   Mon, 11 Sep 2023 10:42:51 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] proc/vmcore: Do not map unaccepted memory
+        Mon, 11 Sep 2023 04:44:07 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2067.outbound.protection.outlook.com [40.107.244.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE5F125;
+        Mon, 11 Sep 2023 01:44:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZAcNrI3BJ20mbiuts070uxZwO3Hns7gQj/pxtKGU7iiBGuCkjuYiPCKQBguz5/2DhZtkiRHAHp5BlOtRJGpLmpxc6xhELGVt5irjjS7XStLu4b5emUSa92B4RgPMFukEzgv5TbcWpHijQ3PsHAhqBjJsyGxOIC5oOCKFbyHw+QQ7OYEqo/zwmUQdmUrXRic/EjzwqA2u9QRukX/WjLf/Z5uGI8++O1ATEknh74awIMMa1fZ87G1ZFN9JHoKLBQBr11H4374Yg9XECPbCvSpGT1GUNuPbT7vlpQK928CRSvEFevyAZ2pksTvtkWLiUsihpeOxcj7jeDv/TZq8bhYyRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U1V9j6vu9hJ8aINllAtwkAovPybu+lwMDibnRLp4Slg=;
+ b=keGvbtaWFIgzmCoyteGxvlIxcr3iFGLqSzj525cYrLEKVLDQhZcI7UgeORc+PtQeQcyN7FE3WcG+Vgh2YmYK1d4OwAWhuAaJ2uMygExxfNET6q8hNEg3i6+jDiMpcx66cq9DwfQ8PGwIK4VAzfKDQVpMcXF+4oBdOnxbIxKhqXbBF28W1Aeu0p7oS31VM2omTjPJIlqeuKqHw9bbjtJdqvTjamGLIJ8Kn1hPR7UPOkCB0QH8IUD3oRBgYOGqsIrCNfUOdy9FWUfnm2AZGprhO9zfgJukD/y3/9n/MLoro2QNUZe15r7k4lqTDKnUWsGUxj67a5hDK/FcJK5i+ecuYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U1V9j6vu9hJ8aINllAtwkAovPybu+lwMDibnRLp4Slg=;
+ b=yyC4J/1YfK2HxXlLscwSZgVfRSA6OdvFAJqpbP/9BP+D5rmrIWo04ejNVOTZ59eVF6g0opIKgTb7TQmb7U4UkeeSFz6izzhEdWsiW4GbwXAYs2UMb8p74/UPxotUG0GBPKUDIyvJ1XJfP99HAgBF/7vJWD0iB+CecSo3mAx/w7w=
+Received: from DM4PR12MB6351.namprd12.prod.outlook.com (2603:10b6:8:a2::6) by
+ CH0PR12MB5073.namprd12.prod.outlook.com (2603:10b6:610:e0::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6768.35; Mon, 11 Sep 2023 08:43:59 +0000
+Received: from DM4PR12MB6351.namprd12.prod.outlook.com
+ ([fe80::d713:8aa1:8769:af10]) by DM4PR12MB6351.namprd12.prod.outlook.com
+ ([fe80::d713:8aa1:8769:af10%7]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 08:43:59 +0000
+From:   "Meng, Li (Jassmine)" <Li.Meng@amd.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        "Huang, Ray" <Ray.Huang@amd.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Fontenot, Nathan" <Nathan.Fontenot@amd.com>,
+        "Sharma, Deepak" <Deepak.Sharma@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "Huang, Shimmer" <Shimmer.Huang@amd.com>,
+        "Yuan, Perry" <Perry.Yuan@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: RE: [PATCH V5 4/7] cpufreq: Add a notification message that the
+ highest perf has changed
+Thread-Topic: [PATCH V5 4/7] cpufreq: Add a notification message that the
+ highest perf has changed
+Thread-Index: AQHZ35uTcby90ScWIUu95x3lucaRQrAQ8D8AgARnniA=
+Date:   Mon, 11 Sep 2023 08:43:59 +0000
+Message-ID: <DM4PR12MB63511F8BB2B229120DC8D9AFF7F2A@DM4PR12MB6351.namprd12.prod.outlook.com>
+References: <20230905015116.2268926-1-li.meng@amd.com>
+ <20230905015116.2268926-5-li.meng@amd.com>
+ <20230908132402.GH19320@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230908132402.GH19320@noisy.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-References: <20230906073902.4229-1-adrian.hunter@intel.com>
- <20230906073902.4229-2-adrian.hunter@intel.com>
- <ef97f466-b27a-a883-7131-c2051480dd87@redhat.com>
- <20230911084148.l6han7jxob42rdvm@box.shutemov.name>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230911084148.l6han7jxob42rdvm@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=8661df81-ca34-4eb2-90ac-08801417f685;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-09-11T08:39:55Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR12MB6351:EE_|CH0PR12MB5073:EE_
+x-ms-office365-filtering-correlation-id: 2bfaf359-4926-4356-2076-08dbb2a33e0c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j/FweT1YQYJfgoG/4y1zUfkPqU92nqSmW1ulCCwQilzMRH8nQpX9ElYSWe9f9yhe4E8T3iktKsLjI/pApW+poZ7MBwAF0y67WcnQUQ0KmIIK9FMYNwORX2qmulpQ3puZ2SmfVfC7JXna81hFdaFgp7GSSpHKPiRUQqU0wDdPJXefWKZKImJIEsCP1uXANEaPxgTaF1fO6QbTYMZvIUYYgeLmsc+5ZqLXF8TG3jBeR1o606YPTnctWWFiBbY5ExMFXmOCT5KP3bwRFxz5kW938wQ032O9KvogpunagVidFdElPOtJGsVfMXvd8CNdLnWZkxd6cnhrDxG/VZhl+U3N9voOxksHqMdPStsES2mi6bTjektpJskooBP3v/fMxSn4Kzmukn548vcHP/z9HSvoFwIoksplMb4LVXArCZeHCGzo5soSnWaobHMFQfN1QCOnRw5UdUZxa/uNnTE67aD7kP9JvQxWy4y2hl2jknUDLLELZCWVyR24Gyw7hcDhrEiadqZeOr/ZKQfebrR/3M38cexup2lPdhcutlHT7xQ4gZQmohW5DRwWbA8P7GfizLo/KYdUkt50mzvvcLf2sGeEIjJ9BYRoPPI9avNvClkPEBLsFpz3tVSIbR626qmfgR5HH9QGmhl273DqnJiBf5bFhoB1mbpVoTXaSEJwzHvC5NM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6351.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(39860400002)(346002)(451199024)(1800799009)(186009)(2906002)(26005)(86362001)(83380400001)(7696005)(9686003)(53546011)(55016003)(71200400001)(15650500001)(6506007)(33656002)(7416002)(38070700005)(38100700002)(122000001)(478600001)(966005)(52536014)(5660300002)(4326008)(8676002)(8936002)(66556008)(66476007)(66446008)(316002)(6916009)(64756008)(54906003)(41300700001)(76116006)(66946007)(226483002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aqQRm7P9IZWV0c971EB+carEwjJnar8CscVpDB0ebEAj9IETE1ynBpuwgmSS?=
+ =?us-ascii?Q?m4CZ/YugRdnFlBhBc8hPX2Vm2v6hb787ZNMmcrEEVF7L5LfK2iGDEbfJqELs?=
+ =?us-ascii?Q?37Ky4G+2dhk57KlhrikGsMTL9KiLhtqAfsW86O5uN9dKP76u3/RWHIZYMUX7?=
+ =?us-ascii?Q?dEbBlHAKQ87pSKeXYzSZF3dbg6B7U4cKRIRxnsM+Fdy1gRrX4GLzpZo21R82?=
+ =?us-ascii?Q?L+h3Sxjx09TqBgEGaOc6DPL+0geWgqOhmpcpTt0Zmba0TTOkyfvDZEVQvXkp?=
+ =?us-ascii?Q?/4zftZ6HsyGLKiL4yqOFP1LMC/NcsJJohmz1XFMuV293HfXfvCWHNnuSz9ED?=
+ =?us-ascii?Q?f3vVPvJFkmAW5G+j36WsR09s3mS9I+G4g0GfLCDITPfTdyg+tSGrSLYlw1Ik?=
+ =?us-ascii?Q?S9COFuYLpKxWMDDPdACNmRewXrtukzXH+3Z7+Rik6mve7HSWVHwxm09+IZz4?=
+ =?us-ascii?Q?cJT3ScT7rpQTBdJsejY6lbCLb/xmuwLX2C8T+UVgqYhIIXq2o4bcbPZaVrtp?=
+ =?us-ascii?Q?WviYaEmwNofOKT03g2H5cRQ6Ws3DS5YtWwGNcgwnTkOTCado/0Li2dBTAYnR?=
+ =?us-ascii?Q?Xb6Nzm9Jx1QlvdHszcOdfPYgZNg6SIgrJhpO93qUYT4PVmO+t1A1K84s5fJA?=
+ =?us-ascii?Q?KeBGvZ0zdlHAWoQ5ucZZhUeK4pB54git5BwLTgmWWiw3H9hbjFiLoOgPV1V2?=
+ =?us-ascii?Q?by6VHYnHbJSk8mtgB1ePxb/HlM4d3992IqLOc9hGn102W11y6/452sjSmQf+?=
+ =?us-ascii?Q?GQlUGi6zsfSAKegqyQARiwjzV/VQ93MvSzsKuhFsKvYCz6XRi/YfAQ8cjtyA?=
+ =?us-ascii?Q?b+LXTUwcTVhbvXS69yFLe/ZDdTDxBhQXYdwFbf/nE6AfCL2EZja+LP6pWpgu?=
+ =?us-ascii?Q?DVQdYbmI6GeGrPl93wADeg7HrUP+mYqrHz/ttc5TIqoSKbbnBh7byjqfsdo+?=
+ =?us-ascii?Q?IGixEQwWGGLmDC8K+01IBuYQ0zOwez6WcQXVc0sXMgrVmEmptloTN0seb2RF?=
+ =?us-ascii?Q?khE13iXc+lec98qVfV6s9UOIB6CoCvNPo5xG1l8zxY01qWgWsdevttJ3fTz5?=
+ =?us-ascii?Q?WGWwZxtoysdS32FHcFXPeWbM9+PHkRJcdByIhYeRZrYdC9fDu/mSfofs0iUG?=
+ =?us-ascii?Q?5LXm3ffoCyZ+h21gt5JjNmjbbQGSDyyLV4tx8U78UxeYnrgt30WudL+DYXve?=
+ =?us-ascii?Q?Huy3m8L3HcWwPZWnj8AKRhMDLbAsNvodljlIfpMRyAYqDndWcKLRvypS9bYA?=
+ =?us-ascii?Q?EScyAKYOD2qTge6SeNY30u0tq+64HcacpWbbLjY6R8RyQhBvuIWz/Q+/Vetu?=
+ =?us-ascii?Q?evc/OCQE1OpU0AyjiDn/uSN8cNWgYjKc7RraumJHmsFs17AN/xBq0uShboay?=
+ =?us-ascii?Q?S+5oae6yCgncOWwY5wxfpJDB5L+yClvQJhBeLHnWlpnTNKksgRz8Azcuqelv?=
+ =?us-ascii?Q?8OyDSxt9QEkpaqTBcWUxXrGE36YaRmrXiqnaNQrL43ze+yuQZbTMxpQyxfjA?=
+ =?us-ascii?Q?YkPgD3ApkCoBRgasYU4HPDMWYDFT2cfg4VIIW62TT9iU4JDXR+42zEzmzc0K?=
+ =?us-ascii?Q?Uz7rLopUJnJY8ei8FuU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6351.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2bfaf359-4926-4356-2076-08dbb2a33e0c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 08:43:59.3447
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yOrj+wnhURJK4OIRXpzDXwW8wObGiM1KjtmiiSrYfRXWCI0Il04hA5DM8zPPaDhUBi2U5KQNAJ3RD3Z7+xZZTQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5073
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.23 10:41, Kirill A. Shutemov wrote:
-> On Mon, Sep 11, 2023 at 10:03:36AM +0200, David Hildenbrand wrote:
->> On 06.09.23 09:39, Adrian Hunter wrote:
->>> Support for unaccepted memory was added recently, refer commit
->>> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
->>> a virtual machine may need to accept memory before it can be used.
->>>
->>> Do not map unaccepted memory because it can cause the guest to fail.
->>>
->>> For /proc/vmcore, which is read-only, this means a read or mmap of
->>> unaccepted memory will return zeros.
->>
->> Does a second (kdump) kernel that exposes /proc/vmcore reliably get access
->> to the information whether memory of the first kernel is unaccepted (IOW,
->> not its memory, but the memory of the first kernel it is supposed to expose
->> via /proc/vmcore)?
-> 
-> There are few patches in my queue to few related issue, but generally,
-> yes, the information is available to the target kernel via EFI
-> configuration table.
+[AMD Official Use Only - General]
 
-I assume that table provided by the first kernel, and not read directly 
-from HW, correct?
+Hi Peter:
 
--- 
-Cheers,
-
-David / dhildenb
+> -----Original Message-----
+> From: Peter Zijlstra <peterz@infradead.org>
+> Sent: Friday, September 8, 2023 9:24 PM
+> To: Meng, Li (Jassmine) <Li.Meng@amd.com>
+> Cc: Rafael J . Wysocki <rafael.j.wysocki@intel.com>; Huang, Ray
+> <Ray.Huang@amd.com>; linux-pm@vger.kernel.org; linux-
+> kernel@vger.kernel.org; x86@kernel.org; linux-acpi@vger.kernel.org; Shuah
+> Khan <skhan@linuxfoundation.org>; linux-kselftest@vger.kernel.org;
+> Fontenot, Nathan <Nathan.Fontenot@amd.com>; Sharma, Deepak
+> <Deepak.Sharma@amd.com>; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Limonciello, Mario
+> <Mario.Limonciello@amd.com>; Huang, Shimmer
+> <Shimmer.Huang@amd.com>; Yuan, Perry <Perry.Yuan@amd.com>; Du,
+> Xiaojian <Xiaojian.Du@amd.com>; Viresh Kumar <viresh.kumar@linaro.org>;
+> Borislav Petkov <bp@alien8.de>
+> Subject: Re: [PATCH V5 4/7] cpufreq: Add a notification message that the
+> highest perf has changed
+>
+> Caution: This message originated from an External Source. Use proper
+> caution when opening attachments, clicking links, or responding.
+>
+>
+> On Tue, Sep 05, 2023 at 09:51:13AM +0800, Meng Li wrote:
+> > ACPI 6.5 section 8.4.6.1.1.1 specifies that Notify event 0x85 can be
+> > emmitted to cause the the OSPM to re-evaluate the highest performance
+> > register. Add support for this event.
+> >
+> > Signed-off-by: Meng Li <li.meng@amd.com>
+> > Link:
+> > https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control
+> > .html?highlight=3Dcppc#cpc-continuous-performance-control
+> > ---
+> >  drivers/acpi/processor_driver.c |  6 ++++++
+> >  drivers/cpufreq/cpufreq.c       | 13 +++++++++++++
+> >  include/linux/cpufreq.h         |  5 +++++
+> >  3 files changed, 24 insertions(+)
+> >
+> > diff --git a/drivers/acpi/processor_driver.c
+> > b/drivers/acpi/processor_driver.c index 4bd16b3f0781..29b2fb68a35d
+> > 100644
+> > --- a/drivers/acpi/processor_driver.c
+> > +++ b/drivers/acpi/processor_driver.c
+> > @@ -27,6 +27,7 @@
+> >  #define ACPI_PROCESSOR_NOTIFY_PERFORMANCE 0x80  #define
+> > ACPI_PROCESSOR_NOTIFY_POWER  0x81
+> >  #define ACPI_PROCESSOR_NOTIFY_THROTTLING     0x82
+> > +#define ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED    0x85
+> >
+> >  MODULE_AUTHOR("Paul Diefenbaugh");
+> >  MODULE_DESCRIPTION("ACPI Processor Driver"); @@ -83,6 +84,11 @@
+> > static void acpi_processor_notify(acpi_handle handle, u32 event, void
+> *data)
+> >               acpi_bus_generate_netlink_event(device->pnp.device_class,
+> >                                                 dev_name(&device->dev),=
+ event, 0);
+> >               break;
+> > +     case ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED:
+> > +             cpufreq_update_highest_perf(pr->id);
+> > +             acpi_bus_generate_netlink_event(device->pnp.device_class,
+> > +                                               dev_name(&device->dev),=
+ event, 0);
+> > +             break;
+> >       default:
+> >               acpi_handle_debug(handle, "Unsupported event [0x%x]\n", e=
+vent);
+> >               break;
+>
+> I've obviously not read the link, but the above seems to suggest that eve=
+ry
+> CPU that has its limits changed gets the 'interrupt' ?
+[Meng, Li (Jassmine)]
+Yes.
+I will modify the link to https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_=
+Programming_Model.html#processor-device-notification-values
 
