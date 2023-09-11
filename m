@@ -2,109 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04DC79BA06
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D12A79B996
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354619AbjIKVyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S235857AbjIKVSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:18:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237292AbjIKM2K (ORCPT
+        with ESMTP id S237620AbjIKNBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:28:10 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33810CEB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:28:05 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41517088479so6616191cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:28:05 -0700 (PDT)
+        Mon, 11 Sep 2023 09:01:31 -0400
+Received: from sanan-e.com (unknown [218.107.219.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5E2C7CC;
+        Mon, 11 Sep 2023 06:01:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1694435284; x=1695040084; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zn0VPuMCaZZ/Sf/x4SYpp1ksKQN06bPb7JpCjgEI2sE=;
-        b=B05FJTJUZo5uh7ARxi2MN21gm18GqcbV2vFpeMM+EIaf7tjg8rJW0s7PQ7/2mVxA1T
-         ELzKGDeDQ5xd+1Mumw0N/APzXyy78EkvlbARtR6Xr4P8xeyDjgSP6I9aXrcNYQdi/+Q8
-         Ohg4rUkQ79eva4bNcwZxphmqeczHPlc66aVjgDe1t/2MCFnC3p1eDyHHRHOC73NJAXHA
-         dTu2ZT78jOjBa0i3s8MxS450KFKqMur8nfrAFwWMnGSmhDmkF5JL7EwzenP48zpmOrlj
-         bQvb0BLfFgSUZW2MjsQQteMN/DAQKyr3v6O2mlD4k1nX8Vbr6435Eq2eRf4XDpTIySXG
-         KiiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694435284; x=1695040084;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zn0VPuMCaZZ/Sf/x4SYpp1ksKQN06bPb7JpCjgEI2sE=;
-        b=ZHSdFpH1S3gc1tidDSwPsm5+Np8On0jkiMnp2XXbFTtjBjisL9GU1mZrIYI6phtw18
-         KJSQe3lhs1kK6dpYJsMW9vRmXUn4uw7K9kOTao5k53rgWY1MaavGC5LG7eRGAE9ce89t
-         herf1yT22Ix1BPNbQp3oDvxuy5KQQXf24wwuKWVHZ2tFhLkoogzpRoMXZEvVQjogLNZu
-         jpEq7y7ypUDuOBJCCGJj+E6qeMiXnKuldR9UO4jtfm48JVlEudf2gG0yXLGI0/Rl+mA5
-         S/YWFeBBktmxfJEOESdO9y0tslJzrdk9fG49dINex0BcrtR1C3J//wBC/A8ru/LjCiYA
-         k1Xw==
-X-Gm-Message-State: AOJu0Yyk9V4vjmVTjTC2eX3PFf08Qd56WrUjA9Ca4VVRcIlbI5+12ABH
-        UHvQTv9lRuD9S73fX9Ik1LzoYA==
-X-Google-Smtp-Source: AGHT+IEuiBqhh8flWvXQjI9qVYyi7SQ+iMh9AbQCI6PHKvz8gvU9yEMKJFwQ3Xcbwzjo+nZxgEPrMw==
-X-Received: by 2002:a05:622a:2c42:b0:410:92ca:3dcd with SMTP id kl2-20020a05622a2c4200b0041092ca3dcdmr11567113qtb.9.1694435284073;
-        Mon, 11 Sep 2023 05:28:04 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
-        by smtp.gmail.com with ESMTPSA id ih10-20020a05622a6a8a00b0041072408126sm2559963qtb.5.2023.09.11.05.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 05:28:03 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qfg1K-001XgC-L8;
-        Mon, 11 Sep 2023 09:28:02 -0300
-Date:   Mon, 11 Sep 2023 09:28:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     oushixiong <oushixiong@kylinos.cn>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Brett Creeley <brett.creeley@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vfio/pds: Using pci_physfn() to fix a compilation issue
-Message-ID: <ZP8H0puYJeYF33fn@ziepe.ca>
-References: <20230911080828.635184-1-oushixiong@kylinos.cn>
- <BN9PR11MB527657CA940184579FD31CAC8CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        d=sanan-e.com; s=dkim; h=Received:Content-Type:MIME-Version:
+        Content-Transfer-Encoding:Content-Description:Subject:To:From:
+        Date:Reply-To:Message-Id; bh=JlB5+d9LM8owbqGfrdZXyhb3r+ZFKQaAdOH
+        ATpJsLVA=; b=a17fpS473FQnn4axBxBmoqjQSlIHu+8a1yOF1RX0cDikrBt1hnC
+        Vm32Bp26DzMLVACewy+2bZs33ohbZdF7ZfgTWObTtK5nKHG8+1h6sn5hF7O3T64J
+        LkRJprXTUo7BzvTWhIPp3c/xlTgyx8dADA/rhvl3p+wQobKEsMt5dkvY=
+Received: from [156.96.56.92] (unknown [128.14.67.204])
+        by MailDR (Coremail) with SMTP id AQAAfwCHMgc5A_9kRtObAA--.2315S207;
+        Mon, 11 Sep 2023 20:35:07 +0800 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BN9PR11MB527657CA940184579FD31CAC8CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Help
+To:     Recipients <olena@sanan-e.com>
+From:   olena@sanan-e.com
+Date:   Mon, 11 Sep 2023 05:34:52 -0700
+Reply-To: olenasheve73@gmail.com
+X-CM-TRANSID: AQAAfwCHMgc5A_9kRtObAA--.2315S207
+Message-Id: <64FF0F97.47AB38.70031@sanan-e.com>
+Authentication-Results: MailDR; spf=neutral smtp.mail=olena@sanan-e.co
+        m;
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRUUUUUUUUU
+        =
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 08:25:18AM +0000, Tian, Kevin wrote:
-> > From: oushixiong <oushixiong@kylinos.cn>
-> > Sent: Monday, September 11, 2023 4:08 PM
-> > 
-> > From: Shixiong Ou <oushixiong@kylinos.cn>
-> > 
-> > If PCI_ATS isn't set, then pdev->physfn is not defined.
-> > it causes a compilation issue:
-> > 
-> > ../drivers/vfio/pci/pds/vfio_dev.c:165:30: error: ‘struct pci_dev’ has no
-> > member named ‘physfn’; did you mean ‘is_physfn’?
-> >   165 |   __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
-> >       |                              ^~~~~~
-> > 
-> > So using pci_physfn() rather than using pdev->physfn directly.
-> > 
-> > Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Hi,
+I am a Ukrainian, I have funds for investment, can you please help me reloc=
+ate and invest in your country?
+Thank you as i possibly wait to hear from you, Olena.
 
-Yes, we should do both patches
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
