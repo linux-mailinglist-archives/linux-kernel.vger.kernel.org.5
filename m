@@ -2,107 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F098479AE29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AF579B205
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241466AbjIKU5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        id S1348017AbjIKVZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237177AbjIKMLT (ORCPT
+        with ESMTP id S237196AbjIKMOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:11:19 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FE0193
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:11:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8C7EC433C8;
-        Mon, 11 Sep 2023 12:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694434275;
-        bh=R+ql+mzGwM93y+MReTjjqW4uZhvIVp9cZ/7Q+YuOjf8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jvJLyYjzCnVwb66Q7aIf4Frmxb3Tc+AM3h9ijkk20KXu5nQE1FTLzJz8L9YJH9TJB
-         2uG0YXoj99CekIZmlt9VMQkhdudYozBzK4PGaNApqUosJYayC3yUvld2VvrBnm5vab
-         +50mjNHA1JmoE8e98xqkK05wsunF3DfYPbBz3Do9gwVcD4AHu/fPpB1Kmo2SDWfsYq
-         FutrJHByJrrVHRYR8W3RKGFtqq/AGaLOP2AXCFATo/RctMAPz/mkpes25H+BPPv5gE
-         bkPNyyDPs5+dOUyvVI41fy5QFDwCBl6f+kgOBYsDeiiE415e04v57opKcCtYzxqgrG
-         ZLAhtwEJAWq/w==
-Date:   Mon, 11 Sep 2023 13:11:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Joerg Schambacher <joerg.hifiberry@gmail.com>
-Cc:     a-krasser@ti.com, joerg@hifiberry.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
-Message-ID: <ZP8D3QMXX0TyVYs9@finisterre.sirena.org.uk>
-References: <20230907161207.14426-1-joerg.hifiberry@gmail.com>
- <a9c3d43a-af26-44a0-9352-4666107f9f56@sirena.org.uk>
- <ZPn4nsypsSXdB3J7@ubuntu>
- <bb3e5ccf-6eb5-4a36-9af0-b33f2db68445@sirena.org.uk>
- <ZP8BMkDeZakUyACL@ubuntu>
+        Mon, 11 Sep 2023 08:14:02 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFC2CEB;
+        Mon, 11 Sep 2023 05:13:55 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4RklxS0gY7z9sqm;
+        Mon, 11 Sep 2023 14:13:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1694434428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EG47cdFKJCzGjz8BT6HLdIq6G6HHROaavD+7fvm6pRA=;
+        b=gk/WPBL/AeACiFu13DVcyVgLkskOoCAH52EePYIAkLR/yZHSovN0zCc4IQtSSJgEOfm1N7
+        AMu2PcpH6mVf7lRUXFyL8dKl2WG0P5jVzg7xgLVXGOgeqr4G30a6sNRf/teOmSBgl1Qt2/
+        P33mCkIAWDp2yL4mBFIRC+rpcHyn8MKPifBqDhsYy+R5BkHFSfwgX8/7gtZjw43jHbD4bE
+        4S84wiL3owYxagam6VNGz17C1kVw/u+zVnqElckoGWIIXCc0vnB1FPAAfCooK8Y3aE6lNA
+        kWNU+EkQZ6R40yusQNWo10kXZteR/QKRGP2qmFQKKI0GZZl0luz9MUtoZFaOcw==
+Message-ID: <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org>
+Date:   Mon, 11 Sep 2023 14:13:43 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XTxCuQJGmxqT6raY"
-Content-Disposition: inline
-In-Reply-To: <ZP8BMkDeZakUyACL@ubuntu>
-X-Cookie: Save energy:  Drive a smaller shell.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
+To:     Maxime Ripard <mripard@kernel.org>,
+        Daniel Stone <daniels@collabora.com>
+Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
+        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
+        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
+        corbet@lwn.net, khilman@baylibre.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        linux-rockchip@lists.infradead.org, tzimmermann@suse.de,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
+        linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org
+References: <20230811171953.176431-1-helen.koike@collabora.com>
+ <ZOTFfhtzzWkrQ23Y@phenom.ffwll.local>
+ <zorvxwffshrsqx5cy76pe3gn52qrqav7qusz5acav2un2ydvwr@fwjd56qg2xve>
+ <87bkeo23vs.fsf@intel.com>
+ <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
+ <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com>
+ <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
+ <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com>
+ <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
+ <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com>
+ <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
+Content-Language: en-CA
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-META: ehasp3x5p4ksus1eoywnq1ujg96e9qzj
+X-MBO-RS-ID: 28267585246936505e8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/11/23 11:34, Maxime Ripard wrote:
+> On Thu, Sep 07, 2023 at 01:40:02PM +0200, Daniel Stone wrote:
+>> Yeah, this is what our experience with Mesa (in particular) has taught us.
+>>
+>> Having 100% of the tests pass 100% of the time on 100% of the platforms is a
+>> great goal that everyone should aim for. But it will also never happen.
+>>
+>> Firstly, we're just not there yet today. Every single GPU-side DRM driver
+>> has userspace-triggerable faults which cause occasional errors in GL/Vulkan
+>> tests. Every single one. We deal with these in Mesa by retrying; if we
+>> didn't retry, across the breadth of hardware we test, I'd expect 99% of
+>> should-succeed merges to fail because of these intermittent bugs in the DRM
+>> drivers.
+> 
+> So the plan is only to ever test rendering devices? It should have been
+> made clearer then.
+> 
+>> We don't have the same figure for KMS - because we don't test it - but
+>> I'd be willing to bet no driver is 100% if you run tests often enough.
+> 
+> And I would still consider that a bug that we ought to fix, and
+> certainly not something we should sweep under the rug. If half the tests
+> are not running on a driver, then fine, they aren't. I'm not really
+> against having failing tests, I'm against not flagging unreliable tests
+> on a given hardware as failing tests.
 
---XTxCuQJGmxqT6raY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+A flaky test will by definition give a "pass" result at least some of the time, which would be considered a failure by the CI if the test is marked as failing.
 
-On Mon, Sep 11, 2023 at 01:59:46PM +0200, Joerg Schambacher wrote:
-> Am 07.09.2023 um 17:28 hat Mark Brown geschrieben:
-> > On Thu, Sep 07, 2023 at 06:21:50PM +0200, Joerg Schambacher wrote:
 
-> > > But in the case of the TAS-devices we even then need the PLL to
-> > > drive the AMP clocks.
+>> Secondly, we will never be there. If we could pause for five years and sit
+>> down making all the current usecases for all the current hardware on the
+>> current kernel run perfectly, we'd probably get there. But we can't: there's
+>> new hardware, new userspace, and hundreds of new kernel trees.
+> 
+> Not with that attitude :)
 
-> > That's definitely a separate quirk, and does sound like it should be
-> > driven from the bias management or DAPM more than hw_params.
+Attitude is not the issue, the complexity of the multiple systems involved is.
 
-> Then it makes sense to use a DT-param 'force_pll_on' and even
-> remove the compatible string fixes from the patch series.
 
-If this device always needs the PLL then we should just figure it out
-=66rom the compatible rather than requiring a DT property which every
-system with the device is going to need to set.
+> I'm not sure it's actually an argument, really. 10 years ago, we would
+> never have been at "every GPU on the market has an open-source driver"
+> here. 5 years ago, we would never have been at this-series-here. That
+> didn't stop anyone making progress, everyone involved in that thread
+> included.
 
-> Still, I think, this is the best part of the code to act on the PLL.
-> Simply instead of checking 'do we need it or not' just let it run.
-> What do you think?
+Even assuming perfection is achievable at all (which is very doubtful, given the experience from the last few years of CI in Mesa and other projects), if you demand perfection before even taking the first step, it will never get off the ground.
 
-It's probably fine.
 
---XTxCuQJGmxqT6raY
-Content-Type: application/pgp-signature; name="signature.asc"
+> How are we even supposed to detect those failures in the first
+> place if tests are flagged as unreliable?
 
------BEGIN PGP SIGNATURE-----
+Based on experience with Mesa, only a relatively small minority of tests should need to be marked as flaky / not run at all. The majority of tests are reliable and can catch regressions even while some tests are not yet.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT/A90ACgkQJNaLcl1U
-h9C9Vwf8CN87CIUnOdszx1yA2ch0s+QLbm/OlXB++k5xtAT7ZT2GAoWr93CkBwa7
-KSV2AjgMVMsT7MYDaLoVLa9AVaWpT+Q2IQnaWNn4yoqfLOONAyc+WgKVgIaAPmYC
-oSVrF2/hlk7Wlg2+xZwoXEYTCk+YdozTddQyAcUSVKVWclZSt3YE+ot3YWhmxlUh
-i5LG2/KGKL3Yj8Q1GL2EOrZRvM3vqrmoiC5agHCaPfXsvObJImd7CnMgBQ5Zx/TF
-F7lvgm44lRpwJVP006vdwelLCLO7L1hKEC4NOIBhsxELmQ9EgV+eUks5ADvZ1pcH
-C+4ikfO+mg0em7+2oX/aIRVVHB3JVw==
-=OddO
------END PGP SIGNATURE-----
 
---XTxCuQJGmxqT6raY--
+> No matter what we do here, what you describe will always happen. Like,
+> if we do flag those tests as unreliable, what exactly prevents another
+> issue to come on top undetected, and what will happen when we re-enable
+> testing?
+
+Any issues affecting a test will need to be fixed before (re-)enabling the test for CI.
+
+
+> On top of that, you kind of hinted at that yourself, but what set of
+> tests will pass is a property linked to a single commit. Having that
+> list within the kernel already alters that: you'll need to merge a new
+> branch, add a bunch of fixes and then change the test list state. You
+> won't have the same tree you originally tested (and defined the test
+> state list for).
+
+Ideally, the test state lists should be changed in the same commits which affect the test results. It'll probably take a while yet to get there for the kernel.
+
+> It might or might not be an issue for Linus' release, but I can
+> definitely see the trouble already for stable releases where fixes will
+> be backported, but the test state list certainly won't be updated.
+
+If the stable branch maintainers want to take advantage of CI for the stable branches, they may need to hunt for corresponding state list commits sometimes. They'll need to take that into account for their decision.
+
+
+>> By keeping those sets of expectations, we've been able to keep Mesa pretty
+>> clear of regressions, whilst having a very clear set of things that should
+>> be fixed to point to. It would be great if those set of things were zero,
+>> but it just isn't. Having that is far better than the two alternatives:
+>> either not testing at all (obviously bad), or having the test always be red
+>> so it's always ignored (might as well just not test).
+> 
+> Isn't that what happens with flaky tests anyway?
+
+For a small minority of tests. Daniel was referring to whole test suites.
+
+> Even more so since we have 0 context when updating that list.
+
+The commit log can provide whatever context is needed.
+
+
+> I've asked a couple of times, I'll ask again. In that other series, on
+> the MT8173, kms_hdmi_inject@inject-4k is setup as flaky (which is a KMS
+> test btw).
+> 
+> I'm a maintainer for that part of the kernel, I'd like to look into it,
+> because it's seriously something that shouldn't fail, ever, the hardware
+> isn't involved.
+> 
+> How can I figure out now (or worse, let's say in a year) how to
+> reproduce it? What kernel version was affected? With what board? After
+> how many occurences?
+> 
+> Basically, how can I see that the bug is indeed there (or got fixed
+> since), and how to start fixing it?
+
+Many of those things should be documented in the commit log of the state list change.
+
+How the CI works in general should be documented in some appropriate place in tree.
+
+
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
