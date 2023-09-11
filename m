@@ -2,179 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0568179C24C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7AA79C3CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237093AbjILCIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S241925AbjILDOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbjILBzb (ORCPT
+        with ESMTP id S241704AbjILDOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:55:31 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2041.outbound.protection.outlook.com [40.107.21.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9FF1B7EB2;
-        Mon, 11 Sep 2023 18:26:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ys7D5ZsP6PsywLDbvxEZI8q4r/EG7vkiA6/7R+eBrzHBb/QJVmyzuKWkxilEHLQ/4mpE3gV2lYADQ4tksPCeJQKkohGiR4NQ4MpsPvEsVrxbvXWzRla+YLG4r2IqC2NvYmvtrdBhY8WvKEOz52f+vbDg9LqMdxTav8Johw0tFDXB1kXYmPnLMzG/o+RkntvqZf1LaxCxH1zKythzsru80x9oiyj+EVPw9jLQN044ETLB9I4EJW6qJwMKffeytDcRJ7KjoJo0KZki2Bysf2GGVtQJ4ZphZgUfBYhrYxxOw7OOw+/Ts1OPWJM4jz8Aw3ePYPi5OidtSzM0ZEp6hyOr+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=swA+Mv5Ko8rpGiwnsn9lzKn2XyQXSyIoXb5iBljgaCI=;
- b=cXPIG3VUN8tVkQT4/m11oYl/QLR39Sjq9kcRpbiXNJLMxYMTlgIOWJ1VWxRYyO4XuDdypvBhcRm3RL3vnrJSk/GoEZIdvBC+zNPdmoYvqXBEX8+nwQmea/hgQaLYNbMeAPEHkK5YVgTGLtnYeKoxQsJejthpzvOQAEmulVOVVIpC+5YpHFJkTAllp+4OghMBMltF5fefl9hT2A4q1kdQCOzv9ExA65L4CxnLCfbzh7B1hpHfCKmstgTmov6gUV08YBQ6LqYJvbVJHNJWRMnYDan2A/E5Or+5toVAQOJO9cfdTsB4qfsSPCcw/tkJ28XT3IFKVqmiB6F865IdE10uvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=swA+Mv5Ko8rpGiwnsn9lzKn2XyQXSyIoXb5iBljgaCI=;
- b=clebLMIRCDx3MxQJ8DwR/S3KbqXE+kueZCi/ZAfTMyW3t6YCDSDRVTeFQ4koVnXD9zQGWb5SCzw4rN1VzUKi0wAjIDmvu6kkK9eZpy8oaHJ+lxnA7p9aORHzHF0R3IC7n68vwokOtb4SoVu/G249epezxBUv0THyL5WC4wWA9zY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by PAXPR04MB8125.eurprd04.prod.outlook.com (2603:10a6:102:1cc::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
- 2023 22:10:07 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::aa90:117d:c1d0:346a]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::aa90:117d:c1d0:346a%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 22:10:07 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     Frank.li@nxp.com, aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: [PATCH v2 5/5] tools: PCI: Add 'B' option for test doorbell
-Date:   Mon, 11 Sep 2023 18:09:20 -0400
-Message-Id: <20230911220920.1817033-6-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911220920.1817033-1-Frank.Li@nxp.com>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR07CA0010.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 11 Sep 2023 23:14:25 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE9352A93
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:22:48 -0700 (PDT)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3a5a7e7cd61so2636419b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694470868; x=1695075668; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cQYSEPVjdWUsd7o+3V8/FiE1Fuh3XipjtHvOOZSgOwY=;
+        b=cUfw+1GxVIfvW1tP+pSl0mTOW4eY/cVWaKzqigeioNf+sVxlpPUX/+Ze7RR0y43MjM
+         mjGshIE4u+b/WCCLUBgi9eeuiKHtI+dAqi9igPP9wt/E1/h7V5bC8WGUNOE7/x/I1uZ+
+         qqRqPcSlriAt5H3efo+RMbTP4Rr5eLtgNPM2g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694470868; x=1695075668;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cQYSEPVjdWUsd7o+3V8/FiE1Fuh3XipjtHvOOZSgOwY=;
+        b=M6k7lW3C4GCFrc3iHl7BXZShZORKQbtrwhuyB31Sweq8mA6WYw37AT8hGrs0LaPxXN
+         IfHu3rgCOEJpeWSC7Y4sgbfiWjrOap4KXd9dmyy7FkHhuzgP9TL9ljGM7LgpDeuaoUdA
+         diT81EZ5k2rtkQ5+ZMP/S06Oes0c50VZSThOn8UqsUTZzQqG8cnApEC3BQArZQd3ii+a
+         ro881+b5EncpcKupPTOvHYuUHBgbKAsrGWO6aWFXtT8Ns2PHXnKXSudraZdOpMi8VVtB
+         oQA3RF3ZwiuKlgOU/nAYnZpOUrb7+8r0zH1TYr8mbtz648VqYg5ufBN8Bc6K+GytoDgt
+         +dPA==
+X-Gm-Message-State: AOJu0YwPJ/gxbz2luVurLy8uZ6c/eOWCKxGAFaR1MHcq/MsJ5OYHiwxL
+        JYrJYWHixKZGIsU2h4MplPhssTEAPvAlK56cv8E=
+X-Google-Smtp-Source: AGHT+IG3HeocsPT3k/k788MsyUecmkaP+/Gvq4BeZ0yHot7638R5mqQQmQNC/GLej1PL60e+LZfgRw==
+X-Received: by 2002:a17:902:e748:b0:1bb:8cb6:3f99 with SMTP id p8-20020a170902e74800b001bb8cb63f99mr1080109plf.14.1694470335094;
+        Mon, 11 Sep 2023 15:12:15 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o12-20020a170902778c00b001bc6536051bsm6949622pll.184.2023.09.11.15.12.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 15:12:14 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 15:12:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     jvoisin <julien.voisin@dustri.org>
+Cc:     gongruiqi@huaweicloud.com, 42.hyeyoo@gmail.com,
+        akpm@linux-foundation.org, aleksander.lobakin@intel.com,
+        cl@linux.com, dennis@kernel.org, dvyukov@google.com,
+        elver@google.com, glider@google.com, gongruiqi1@huawei.com,
+        iamjoonsoo.kim@lge.com, jannh@google.com, jmorris@namei.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, paul@paul-moore.com, pedro.falcato@gmail.com,
+        penberg@kernel.org, rientjes@google.com, roman.gushchin@linux.dev,
+        serge@hallyn.com, tj@kernel.org, vbabka@suse.cz,
+        wangweiyang2@huawei.com, xiujianfeng@huawei.com,
+        laurentsimon@google.com
+Subject: Re: [PATCH v5] Randomized slab caches for kmalloc()
+Message-ID: <202309111428.6F36672F57@keescook>
+References: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
+ <e14c547e-bb3f-4ede-8f0a-dcaa548fe5af@dustri.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PAXPR04MB8125:EE_
-X-MS-Office365-Filtering-Correlation-Id: e66a8d84-6a46-43c7-904c-08dbb313db80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r2LdZ4NGK+EPRmiJGRz+eBPgr7ZJOC6Rm02C11ij6NlJhkp2sFTxySoNTpk/BMH5VQi/2RanHIz98WHQ8sOSHOWfnmOvGdK9GzEX5oZnigIqP9Cy56ZPV+cD53osdWsSx+uV0htOhPih+ts04LfeQNmv8pv/3i9qO5P6WLmHWvo9x/usf3ZDMbpA/f8dmiozXMhPOiIEQEXRYO5CEDvXWfRFmI+teywJvxuGbi7kGMbskrZm9g5hyQrWyArhMvnQQ61b8G3LlcUwU8rIV2rFHpLQpixbEL7D48hnWO68+30DrX8dsTdsTIGD9+CwfGhJ5YfsohavI/yixQHoTFzX/qq7DzAE/IJfY7gks2AK/ch8rgPSFwHTw4kPW3eU3aC+uZ8CYxpLIGsyCHs+nkT+DujHaKgdeaizvSUKxwvjbh2tUWysLC1Wv6VZQYwziGC5e4Kd66588M7cQYOeb1qNQJYutO0d/Uw+62Lyp63lAlRUDUgWb5oXTqiLH/jtVKuENVbrLn52E8fd91gPO2j689NxHmLbRzA+bpRGTML/W1TbJ7b1/L5WIaWSYjrJMueK43jA5gcPmmzjS8tksMvf4zZrrfT+2JqsuexiK/NiQg4mB8fwC+qlJnTvDgx2qzji
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(136003)(396003)(346002)(1800799009)(186009)(451199024)(6512007)(26005)(1076003)(86362001)(2906002)(83380400001)(6486002)(2616005)(52116002)(6506007)(6666004)(7416002)(38350700002)(478600001)(38100700002)(36756003)(5660300002)(8676002)(8936002)(66476007)(66556008)(4326008)(6916009)(316002)(66946007)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XNqEVW8xHXXaA2vMQOdiUzBYMShA7HxIl5558OUEU/+tT8ExO2Uxaw9fKXn3?=
- =?us-ascii?Q?/sRL7IdfaIZ5x9OfQn/pftf5AI/GHjFYEPgL/6ce4h6xYtu0c2angq/sgurB?=
- =?us-ascii?Q?WBzRMEAS2mD7RPhmnrAsMDDkYjXGIlavvoScUsGDGmxNKTwYFxsRp5fCus6u?=
- =?us-ascii?Q?fHVFEcsromlbb2MSXtWtk4K0omfe5DCZopn8yALXIZtQh6yJ27w3CIZ2/nVU?=
- =?us-ascii?Q?Ud1VCo4pFsG+TzzxvJwnDUvbZaOD3mr81b5E5qJwrttP5jT6leHq6K1IPUMR?=
- =?us-ascii?Q?IxuCXmG5ENCiVmz1YEDsBKQGdwmMykA65mbJtPQ+EsSveXc33LPtcDuirVJ4?=
- =?us-ascii?Q?q6/zUAlKPu5IIYgsccrFbqkHPc7GG1tZLGhDWWPxTQf/ErxsGwbGRMPjWVvC?=
- =?us-ascii?Q?++d5EyP6kw5Eg7GbM0pLG2rHHLV3KrvfPFfYZq+Xan1KL7qVsJa9RjNqCpUt?=
- =?us-ascii?Q?RFKs/rJ9V73b2lDZ7eJIxvzfTtKB9WjK8N9uWN2eWmZD6QgPuXrJ0i4gsFe7?=
- =?us-ascii?Q?unn8nG64B0xCWYbeMtw/dfXbSqrB3Bh1t9bhwLkxRXmiINqqwqpUrGPSz1Km?=
- =?us-ascii?Q?4X8z6x2X6J/AA5Y3MhjNFKrsfoOwvIrwysnq+o8luSSA7QoxXPKu1Mp0YqPO?=
- =?us-ascii?Q?86O6JjkETE9aAOjxMSuQcYMx9CnHitsNUDvMHxSypCYWs4+u+Vkbv78gpPWt?=
- =?us-ascii?Q?aGwr1Bh34nUCdRT1C2DfZPxTztw+vEh5mxZs2HGxzAoJigycJMcF/MJ9tuTO?=
- =?us-ascii?Q?xPqSaPCWdtZjyKRqe/do1MjGMiXyAZall+6JsnU5Kodaem2DK+OM7XuKYG/j?=
- =?us-ascii?Q?FfhTWdL+LwlSpqv7IPyZFKkmZbx0s5CK3qZynqcJEF+XXU9cBzd4SpnWGKN3?=
- =?us-ascii?Q?If0Jv6KnHfbd2YPZ79eZ0RrnWOAtT/DMISlL1MrezJCsOysfMDGbK8SkKkMW?=
- =?us-ascii?Q?tiNrbvZOsvxFKJwGzRKyfJABS/IaiC+yhcWuTTam40WKf5jfUd+PeTlR8hgx?=
- =?us-ascii?Q?lXlJAXhBTVgMDBULmaaHV1AQDXxCD1LRe2tncmcZIO+1UZXU0GSKtXvdWjR8?=
- =?us-ascii?Q?Vjcgk/QjobAqO9ZawBAjhHOqZs6BmbyZfu+YCGAbhqjclBFZx/L5Jm6VXAgK?=
- =?us-ascii?Q?RwEIvKKQRTXDCE2WgwkHdNDlcjvcTBar9oQTDCZkfhWQsMVFubWJsJtZjpv6?=
- =?us-ascii?Q?57/pfbTLuehehKA2hf/4Nj4k6mOtBtvw0c2pBwhv4XsoelRvtDr2acP1N7DK?=
- =?us-ascii?Q?GDGjgUpnNdFdR3tcey5kfnsl92G56B2/1Z04RmkzBTym9ctbBm4dbVzzpwu/?=
- =?us-ascii?Q?Dw9xlAMbABxV6ilPwKueeUqk3nBmZUcJlg9mAbCmiPH0Nd3byrRWrQr02mhE?=
- =?us-ascii?Q?Gr1xKoje9HyXAQpHhN6eoeyEyuV6VEpGKAaDTJywI0Ufz6IFfk4PlhwEsBFY?=
- =?us-ascii?Q?fzn3UwVWltUpHBigxGZbhEz7JtpdkUZzTqnPIf4HaFnC/dEuFpQzO0a2RP2j?=
- =?us-ascii?Q?KCixoekAuceN71XOFV2VEl5b6iHV/vB9qeLvtjjyPk26tc6mtcMZ+PUxmY43?=
- =?us-ascii?Q?Rv66BBD0Qbc9rfaQxjGSwFcwOBSxCSYN8BgPP+Ex?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e66a8d84-6a46-43c7-904c-08dbb313db80
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 22:10:07.3149
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F6zgntwo0w6LJ86NUEJyaRQOnt4KlBm9G6tW39cGqBCbmb0pIhlf5Z7gSzeWQjBfwUE7atMgT+eOTiahrS8bfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8125
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e14c547e-bb3f-4ede-8f0a-dcaa548fe5af@dustri.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add doorbell test support.
+On Mon, Sep 11, 2023 at 11:18:15PM +0200, jvoisin wrote:
+> I wrote a small blogpost[1] about this series, and was told[2] that it
+> would be interesting to share it on this thread, so here it is, copied
+> verbatim:
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- tools/pci/pcitest.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Thanks for posting!
 
-diff --git a/tools/pci/pcitest.c b/tools/pci/pcitest.c
-index 441b542346354..215d0aa8a09fe 100644
---- a/tools/pci/pcitest.c
-+++ b/tools/pci/pcitest.c
-@@ -36,6 +36,7 @@ struct pci_test {
- 	bool		copy;
- 	unsigned long	size;
- 	bool		use_dma;
-+	bool		doorbell;
- };
- 
- static int run_test(struct pci_test *test)
-@@ -149,6 +150,15 @@ static int run_test(struct pci_test *test)
- 			fprintf(stdout, "%s\n", result[ret]);
- 	}
- 
-+	if (test->doorbell) {
-+		ret = ioctl(fd, PCITEST_DOORBELL, 0);
-+		fprintf(stdout, "Push doorbell\t\t");
-+		if (ret < 0)
-+			fprintf(stdout, "TEST FAILED\n");
-+		else
-+			fprintf(stdout, "%s\n", result[ret]);
-+	}
-+
- 	fflush(stdout);
- 	close(fd);
- 	return (ret < 0) ? ret : 1 - ret; /* return 0 if test succeeded */
-@@ -174,7 +184,7 @@ int main(int argc, char **argv)
- 	/* set default endpoint device */
- 	test->device = "/dev/pci-endpoint-test.0";
- 
--	while ((c = getopt(argc, argv, "D:b:m:x:i:deIlhrwcs:")) != EOF)
-+	while ((c = getopt(argc, argv, "D:b:m:x:i:BdeIlhrwcs:")) != EOF)
- 	switch (c) {
- 	case 'D':
- 		test->device = optarg;
-@@ -224,6 +234,9 @@ int main(int argc, char **argv)
- 	case 'd':
- 		test->use_dma = true;
- 		continue;
-+	case 'B':
-+		test->doorbell = true;
-+		continue;
- 	case 'h':
- 	default:
- usage:
-@@ -243,6 +256,7 @@ int main(int argc, char **argv)
- 			"\t-w			Write buffer test\n"
- 			"\t-c			Copy buffer test\n"
- 			"\t-s <size>		Size of buffer {default: 100KB}\n"
-+			"\t-B			Doorbell test\n"
- 			"\t-h			Print this help message\n",
- 			argv[0]);
- 		return -EINVAL;
+> Ruiqi Gong and Xiu Jianfeng got their
+> [Randomized slab caches for
+> kmalloc()](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c6152940584290668b35fa0800026f6a1ae05fe)
+> patch series merged upstream, and I've and enough discussions about it to
+> warrant summarising them into a small blogpost.
+> 
+> The main idea is to have multiple slab caches, and pick one at random
+> based on
+> the address of code calling `kmalloc()` and a per-boot seed, to make
+> heap-spraying harder.
+> It's a great idea, but comes with some shortcomings for now:
+> 
+> - Objects being allocated via wrappers around `kmalloc()`, like
+> `sock_kmalloc`,
+>   `f2fs_kmalloc`, `aligned_kmalloc`, … will end up in the same slab cache.
+
+I'd love to see some way to "unwrap" these kinds of allocators. Right
+now we try to manually mark them so the debugging options can figure out
+what did the allocation, but it's not complete by any means.
+
+I'd kind of like to see a common front end that specified some set of
+"do stuff" routines. e.g. to replace devm_kmalloc(), we could have:
+
+	void *alloc(size_t usable, gfp_t flags,
+		    size_t (*prepare)(size_t, gfp_t, void *ctx),
+		    void * (*finish)(size_t, gfp_t, void *ctx, void *allocated)
+		    void * ctx)
+
+	ssize_t devm_prep(size_t usable, gfp_t *flags, void *ctx)
+	{
+		ssize_t tot_size;
+
+		if (unlikely(check_add_overflow(sizeof(struct devres),
+					size, &tot_size)))
+			return -ENOMEM;
+
+		tot_size = kmalloc_size_roundup(tot_size);
+		*flags |= __GFP_ZERO;
+
+		return tot_size;
+	}
+
+	void *devm_finish(size_t usable, gfp_t flags, void *ctx, void *allocated)
+	{
+		struct devres *dr = allocated;
+		struct device *dev = ctx;
+
+		INIT_LIST_HEAD(&dr->node.entry);
+		dr->node.release = devm_kmalloc_release;
+
+		set_node_dbginfo(&dr->node, "devm_kzalloc_release", usable);
+		devres_add(dev, dr->data);
+		return dr->data;
+	}
+
+	#define devm_kmalloc(dev, size, gfp)	\
+		alloc(size, gfp, devm_prep, devm_finish, dev)
+
+And now there's no wrapper any more, just a routine to get the actual
+size, and a routine to set up the memory and return the "usable"
+pointer.
+
+> - The slabs needs to be pinned, otherwise an attacker could
+> [feng-shui](https://en.wikipedia.org/wiki/Heap_feng_shui) their way
+>   into having the whole slab free'ed, garbage-collected, and have a slab for
+>   another type allocated at the same VA. [Jann Horn](https://thejh.net/)
+> and [Matteo Rizzo](https://infosec.exchange/@nspace) have a [nice
+>   set of
+> patches](https://github.com/torvalds/linux/compare/master...thejh:linux:slub-virtual-upstream),
+>   discussed a bit in [this Project Zero
+> blogpost](https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html),
+>   for a feature called [`SLAB_VIRTUAL`](
+> https://github.com/torvalds/linux/commit/f3afd3a2152353be355b90f5fd4367adbf6a955e),
+>   implementing precisely this.
+
+I'm hoping this will get posted to LKML soon.
+
+> - There are 16 slabs by default, so one chance out of 16 to end up in
+> the same
+>   slab cache as the target.
+
+Future work can make this more deterministic.
+
+> - There are no guard pages between caches, so inter-caches overflows are
+>   possible.
+
+This may be addressed by SLAB_VIRTUAL.
+
+> - As pointed by
+> [andreyknvl](https://twitter.com/andreyknvl/status/1700267669336080678)
+>   and [minipli](https://infosec.exchange/@minipli/111045336853055793),
+>   the fewer allocations hitting a given cache means less noise,
+>   so it might even help with some heap feng-shui.
+
+That may be true, but I suspect it'll be mitigated by the overall
+reduction shared caches.
+
+> - minipli also pointed that "randomized caches still freely
+>   mix kernel allocations with user controlled ones (`xattr`, `keyctl`,
+> `msg_msg`, …).
+>   So even though merging is disabled for these caches, i.e. no direct
+> overlap
+>   with `cred_jar` etc., other object types can still be targeted (`struct
+>   pipe_buffer`, BPF maps, its verifier state objects,…). It’s just a
+> matter of
+>   probing which allocation index the targeted object falls into.",
+>   but I considered this out of scope, since it's much more involved;
+>   albeit something like
+> [`CONFIG_KMALLOC_SPLIT_VARSIZE`](https://github.com/thejh/linux/blob/slub-virtual/MITIGATION_README)
+>   wouldn't significantly increase complexity.
+
+Now that we have a mechanism to easily deal with "many kmalloc buckets",
+I think we can easily start carving out specific variable-sized caches
+(like msg_msg). Basically doing a manual type-based separation.
+
+So, yeah, we're in a better place that we were before, and better
+positioned to continue to make improvements here. I think an easy win
+would be doing this last one: separate out the user controlled
+variable-sized caches and give them their own distinct buckets outside
+of the 16 random ones. Can you give that a try and send patches?
+
+-Kees
+
 -- 
-2.34.1
-
+Kees Cook
