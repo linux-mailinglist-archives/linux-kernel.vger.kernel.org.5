@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D84E79C02B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7242D79BEE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348531AbjIKV1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
+        id S1344786AbjIKVOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242439AbjIKPfC (ORCPT
+        with ESMTP id S242450AbjIKPgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:35:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A2DE5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694446498; x=1725982498;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zm/fyZaPMSdCXnW917uk4EPzTwyVK6jhAhdlA1UwJq8=;
-  b=m2H/Eeznnfx1rLQRW6KsCuEvWg40bxUEOPsfdxzqh3cYgRzHvDMrGviv
-   2l0bryGDPvwO5X7VdE/aV3+jp8wj9EIj3/Xnr+sJT0bWItcd9tBc4SHeE
-   e4enrSZzQOVU40HU1SEMEgvGQWWH2GiLdLMZlZZEADhrILULe9JQzj5O+
-   LEnBMN7v8M2IWivXeOYoEqvj0iAhxojdfDAzJaEhVYy+7p/mO9mAXFx3H
-   6wTKL5ll81D80EhzKxhoqw2b8h4uaf9xRjT5EvujFky2eVVrgINDBkJiU
-   y/Tij90IJPAdzuA/9JtNZr0g+d7nxyy5D0FFMZVdOT/oUogS4UuIAUT76
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="358408569"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="358408569"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:34:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="990119092"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="990119092"
-Received: from cdaubert-mobl13.amr.corp.intel.com (HELO [10.212.203.41]) ([10.212.203.41])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:34:57 -0700
-Message-ID: <f3379aeb-f394-8c99-5143-f93e82400320@intel.com>
-Date:   Mon, 11 Sep 2023 08:34:57 -0700
+        Mon, 11 Sep 2023 11:36:25 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B49E9;
+        Mon, 11 Sep 2023 08:36:19 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BAB6C40004;
+        Mon, 11 Sep 2023 15:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694446577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3ANDeLZjV5lzAaJjoCPyh76BQ46mQC+o7bmbGehRwMY=;
+        b=X//OkO1AojU8koknd9JyYVKBEmbSLqFNl9OMqJS8PHtuhmXasUTxRa8dd4d432BoBRTAa3
+        liY5GQszHTiWjz1YCdXghxRFaeAXGSeCDkfyR6aQYey1c/yvEWPjm+16dK+eDv89BWP7tL
+        thlyLBEhWXqlsMO0EZQUsbi5wJLMnJ0W3TB73HdjYnmPjLPkxZdPbZznbdcu42ZCPSzyGO
+        TwqcJkY0YxKFXCdci0kpINnBoVJxuqyPmXj11A4/Y2Y9JnUA1OCp4gjAzmObtaLwXOQmfr
+        /L2yxRRMzThTPfumWfup1XLJeNwYthK0yvuv0qxs3uI/fJGeiuv7Z0oXwQmpLQ==
+Date:   Mon, 11 Sep 2023 17:35:03 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Lizhi Hou <lizhi.hou@amd.com>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <robh@kernel.org>, <max.zhen@amd.com>, <sonal.santan@amd.com>,
+        <stefano.stabellini@xilinx.com>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
+Message-ID: <20230911173503.0db85e4b@bootlin.com>
+In-Reply-To: <20230911154856.000076c3@Huawei.com>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+        <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
+        <20230911154856.000076c3@Huawei.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>
-Cc:     syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-References: <000000000000d099fa0604f03351@google.com>
- <0465d13d-83b6-163d-438d-065d03e9ba76@intel.com>
- <ZP8VcUIXTjvR3z54@casper.infradead.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <ZP8VcUIXTjvR3z54@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 06:26, Matthew Wilcox wrote:
-> @@ -231,7 +235,10 @@ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
->  		if (--nr == 0)
->  			break;
->  		ptep++;
-> -		pte = __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
-> +		if (__pte_needs_invert(pte_val(pte)))
-> +			pte = __pte(pte_val(pte) - (1UL << PFN_PTE_SHIFT));
-> +		else
-> +			pte = __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
->  	}
->  	arch_leave_lazy_mmu_mode();
->  }
+Hi Jonathan,
 
-This is much better than a whole x86 fork of set_ptes().  But it's still
-a bit wonky because it exposes the PTE inversion logic to generic code.
+On Mon, 11 Sep 2023 15:48:56 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Could we do something like this instead?  It'll (probably) end up
-repeating the PTE inversion logic each way though the loop, so it's less
-efficient than what you have above.  But unless I buggered something, it
-"just works" without exposing any of the inversion logic to generic code.
+> On Tue, 15 Aug 2023 10:19:57 -0700
+> Lizhi Hou <lizhi.hou@amd.com> wrote:
+> 
+> > The PCI endpoint device such as Xilinx Alveo PCI card maps the register
+> > spaces from multiple hardware peripherals to its PCI BAR. Normally,
+> > the PCI core discovers devices and BARs using the PCI enumeration process.
+> > There is no infrastructure to discover the hardware peripherals that are
+> > present in a PCI device, and which can be accessed through the PCI BARs.
+> > 
+> > Apparently, the device tree framework requires a device tree node for the
+> > PCI device. Thus, it can generate the device tree nodes for hardware
+> > peripherals underneath. Because PCI is self discoverable bus, there might
+> > not be a device tree node created for PCI devices. Furthermore, if the PCI
+> > device is hot pluggable, when it is plugged in, the device tree nodes for
+> > its parent bridges are required. Add support to generate device tree node
+> > for PCI bridges.
+> > 
+> > Add an of_pci_make_dev_node() interface that can be used to create device
+> > tree node for PCI devices.
+> > 
+> > Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
+> > the kernel will generate device tree nodes for PCI bridges unconditionally.
+> > 
+> > Initially, add the basic properties for the dynamically generated device
+> > tree nodes which include #address-cells, #size-cells, device_type,
+> > compatible, ranges, reg.
+> > 
+> > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>  
+> 
+> I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
+> machine.
+> 
+> There are some missing parts that were present in Clements series, but not this
+> one, particularly creation of the root pci object.
+> 
+> Anyhow, hit an intermittent crash...
 
-The trick is that pte_pfn() undoes the inversion and then pfn_pte()
-re-does it on each trip through the loop.
+I am facing the same issues.
 
-static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-                pte_t *ptep, pte_t pte, unsigned int nr)
-{
-	pgprot_t prot = pte_pgprot(x);
-	unsigned long pfn = pte_pfn(pte);
+I use a custom PCIe board too but on x86 ACPI machine.
 
-        page_table_check_ptes_set(mm, ptep, pte, nr);
+In order to have a working system, I need also to build a DT node for the PCI
+Host bridge (previously done by Clement's patch) and I am a bit stuck with
+interrupts.
 
-        arch_enter_lazy_mmu_mode();
-        for (;;) {
-                set_pte(ptep, pte);
-                if (--nr == 0)
-                        break;
-                ptep++;
-		pfn++;
-                pte = pfn_pte(pfn, pgprot);
-        }
-        arch_leave_lazy_mmu_mode();
-}
+On your side (ACPI machine) how do you handle this ?
+I mean is your PCI host bridge provided by ACPI ? And if so, you probably need
+to build a DT node for this PCI host bridge and add some interrupt-map,
+interrupt-map-mask properties in the DT node.
 
-Obviously completely untested. :)
+Best regards,
+Hervé
+
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
