@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B09179C07B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243179B87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355109AbjIKV4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S1356836AbjIKWE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236022AbjIKJtK (ORCPT
+        with ESMTP id S236049AbjIKJtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:49:10 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127A7ED
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:48:48 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1befe39630bso9367075ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:48:48 -0700 (PDT)
+        Mon, 11 Sep 2023 05:49:46 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BE9ED
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:49:26 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c3c4eafe95so468425ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425727; x=1695030527; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694425766; x=1695030566; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ruGIazUIgd5W3iD+fpVWztgrL7hXLBFpKRJYJNwmlEs=;
-        b=YiW+8KILgSoWru6b25H9K+NTkpIyom43BmVp1MF5DsETvby961PhVRWP42xPPIXl5r
-         vvVgcEwxC3PkTxeddhoZWEhUvCy6N9JKQQHHxetu8bDpt9CWI2te5uilZV/J9FHypaE9
-         b+tOaeVKF3qB6lrc/8/+9sOLvO7TQ6sdE/l4+qjvFWTBBcx3o30g4g/UzN5WiTMu3L+8
-         jelz3Qi8ox0ryVmV66FKymbPhge1GLTuvWrsOig4FeZOk5ZtuDBuU1VmHR2IKUkg7ImT
-         M2LHUoKBfTDm6rJwcb3+bbGY6ReXulGoc2K0f3Jzc96XQ4tKA4OSqSjh+WsvbsYLM12U
-         WmZA==
+        bh=EOFLy8aeJhd3LY/OhniqtUCJXkFQlNJLK1Gu0rv7etI=;
+        b=PwsYykAGeRm1LMFnCOnXSEssUJlijcCLgN2DDAMGhdKKzPStOgksiV7+gXk/lHChiO
+         tv1g6tycdghdPdcM/Ut9n5V8qKtXWp+RIORlQjjL46cUJOU8RR8/fx69s0pTNLU/D5jF
+         pZOASRHB26JFkVtS5tzxw6EfjJH3PKjQhErePXe1uB8DfnX7LsMgIPH3u7btGVLvY3+G
+         aLZNtMDkX65DUqVK6Nmz7+TfJmV1a/JajBVPCXQRAxVos5odvCINs/qd4SOu9hVFZ2JN
+         7OidZaCCvkWyF4IuXbMp0m24R0Od/F7tL1vcgElU7EIAHRthekCjX2wty1fwk2Lkzk0P
+         nsEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425727; x=1695030527;
+        d=1e100.net; s=20230601; t=1694425766; x=1695030566;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ruGIazUIgd5W3iD+fpVWztgrL7hXLBFpKRJYJNwmlEs=;
-        b=RecxRgjKsOXmuthbTF4dvk/uNQqsRVlxw+cH/8X8NBlg35GTh7dy2kdVaBXyni3NOq
-         h3AULHPUITDpZxWOmNYfqn7UqaWR+ZOnAPKQo4QGBwH3+kLNFWo8+sW03+JRINjxByaL
-         e0GdRXt0Z8pkbal2UQJuyY/CQK9/IG+AJFvJ80d7cWUbPg1nUAbGemj8Hpz6xiGH+tJJ
-         AkaWW8J4SHeycNf7f1U/KeOsHXpem6Mp4B2GP3Zp6eLIpWhbmfVzjtiZv4S4U3w4TTxu
-         zO+kEOwzNFGmWeIQVEa7erAgGatAlPrul68IQhWA4HZ6ss4ZEw/nvDZfSx8pBUKCzYaI
-         vQsQ==
-X-Gm-Message-State: AOJu0Yw+NpHCV3VUt+/YYGPAlQKPfGb33Aa9z4xkJ+YPk5S96jJAXwCT
-        Jp4+rqiB0br5v5DX4QDhWj3zAw==
-X-Google-Smtp-Source: AGHT+IGGBhJFk/SRU3E2zGlQ2j/g+CUjwQeV+kN/9j9QP3+HgtWpTi+Be+pjzGQyb1HeKYNZhEoDDA==
-X-Received: by 2002:a17:902:e849:b0:1b8:aded:524c with SMTP id t9-20020a170902e84900b001b8aded524cmr10985885plg.1.1694425727595;
-        Mon, 11 Sep 2023 02:48:47 -0700 (PDT)
+        bh=EOFLy8aeJhd3LY/OhniqtUCJXkFQlNJLK1Gu0rv7etI=;
+        b=K0XqcC4qwa7rObUAWZ9XgGEMMDYovltWaP9o9fNZrs7QXRhKoPY/Uh18vdjPJQ6e8l
+         2YiTRbswc4VZRBaT3HTSL89TJvWljeohbVaWjvMtRmlzLuv1jxlf79tm6sQRll/4eAhZ
+         8N4uS+lDEy7aTmDI1yyuMzzdNjQtmmwOqga7WjTAQvDdhFGKsF6W4TPa0ZP0017Ev7sN
+         3u1lDtNypv1DSh7wBkgdKlhupidaaMtzXBKxuIhaUMZl1D18Gp5/yL0PuJvE+gw2MZ/f
+         DLuAmlP7/ScJIaYUOyIAAmxX/E7OzwaSKKJzmNm/0kNqBGHYxP3LjLE8G2kY9NW8OihX
+         VzRg==
+X-Gm-Message-State: AOJu0YyURXISvxeImeXq3wWSk1uaMPUl5k0bPIZ35k9RezmPRlA/negy
+        I1JM8CGXSME9gjGhaEaalssJEQ==
+X-Google-Smtp-Source: AGHT+IFDkXMADJzJ5jjUq9PfJV9F8/TFu1J7WhBiuuPnpwyRrr8PIbDWnsDRVAoYbT3X6OqKjBwp8A==
+X-Received: by 2002:a17:90a:6d26:b0:26b:5fad:e71c with SMTP id z35-20020a17090a6d2600b0026b5fade71cmr8202972pjj.2.1694425765927;
+        Mon, 11 Sep 2023 02:49:25 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.48.38
+        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.49.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:48:47 -0700 (PDT)
+        Mon, 11 Sep 2023 02:49:25 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -61,11 +61,14 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>,
         Muchun Song <songmuchun@bytedance.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com
-Subject: [PATCH v6 24/45] dm zoned: dynamically allocate the dm-zoned-meta shrinker
-Date:   Mon, 11 Sep 2023 17:44:23 +0800
-Message-Id: <20230911094444.68966-25-zhengqi.arch@bytedance.com>
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v6 28/45] virtio_balloon: dynamically allocate the virtio-balloon shrinker
+Date:   Mon, 11 Sep 2023 17:44:27 +0800
+Message-Id: <20230911094444.68966-29-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
 References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
@@ -81,91 +84,82 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 In preparation for implementing lockless slab shrink, use new APIs to
-dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
+dynamically allocate the virtio-balloon shrinker, so that it can be freed
 asynchronously via RCU. Then it doesn't need to wait for RCU read-side
-critical section when releasing the struct dmz_metadata.
+critical section when releasing the struct virtio_balloon.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: Alasdair Kergon <agk@redhat.com>
-CC: Mike Snitzer <snitzer@kernel.org>
-CC: dm-devel@redhat.com
+CC: "Michael S. Tsirkin" <mst@redhat.com>
+CC: David Hildenbrand <david@redhat.com>
+CC: Jason Wang <jasowang@redhat.com>
+CC: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC: virtualization@lists.linux-foundation.org
 ---
- drivers/md/dm-zoned-metadata.c | 28 ++++++++++++++++------------
- 1 file changed, 16 insertions(+), 12 deletions(-)
+ drivers/virtio/virtio_balloon.c | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
-index 9d3cca8e3dc9..60a4dc01ea18 100644
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -187,7 +187,7 @@ struct dmz_metadata {
- 	struct rb_root		mblk_rbtree;
- 	struct list_head	mblk_lru_list;
- 	struct list_head	mblk_dirty_list;
--	struct shrinker		mblk_shrinker;
-+	struct shrinker		*mblk_shrinker;
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 5b15936a5214..5cdc7b081baa 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -111,7 +111,7 @@ struct virtio_balloon {
+ 	struct virtio_balloon_stat stats[VIRTIO_BALLOON_S_NR];
  
- 	/* Zone allocation management */
- 	struct mutex		map_lock;
-@@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
- static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
- 					       struct shrink_control *sc)
+ 	/* Shrinker to return free pages - VIRTIO_BALLOON_F_FREE_PAGE_HINT */
+-	struct shrinker shrinker;
++	struct shrinker *shrinker;
+ 
+ 	/* OOM notifier to deflate on OOM - VIRTIO_BALLOON_F_DEFLATE_ON_OOM */
+ 	struct notifier_block oom_nb;
+@@ -816,8 +816,7 @@ static unsigned long shrink_free_pages(struct virtio_balloon *vb,
+ static unsigned long virtio_balloon_shrinker_scan(struct shrinker *shrinker,
+ 						  struct shrink_control *sc)
  {
--	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
-+	struct dmz_metadata *zmd = shrink->private_data;
+-	struct virtio_balloon *vb = container_of(shrinker,
+-					struct virtio_balloon, shrinker);
++	struct virtio_balloon *vb = shrinker->private_data;
  
- 	return atomic_read(&zmd->nr_mblks);
+ 	return shrink_free_pages(vb, sc->nr_to_scan);
  }
-@@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
- static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
- 					      struct shrink_control *sc)
+@@ -825,8 +824,7 @@ static unsigned long virtio_balloon_shrinker_scan(struct shrinker *shrinker,
+ static unsigned long virtio_balloon_shrinker_count(struct shrinker *shrinker,
+ 						   struct shrink_control *sc)
  {
--	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
-+	struct dmz_metadata *zmd = shrink->private_data;
- 	unsigned long count;
+-	struct virtio_balloon *vb = container_of(shrinker,
+-					struct virtio_balloon, shrinker);
++	struct virtio_balloon *vb = shrinker->private_data;
  
- 	spin_lock(&zmd->mblk_lock);
-@@ -2936,19 +2936,23 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
- 	 */
- 	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
- 	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
--	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
--	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
--	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
- 
- 	/* Metadata cache shrinker */
--	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
--				MAJOR(dev->bdev->bd_dev),
--				MINOR(dev->bdev->bd_dev));
--	if (ret) {
--		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
-+	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
-+					    MAJOR(dev->bdev->bd_dev),
-+					    MINOR(dev->bdev->bd_dev));
-+	if (!zmd->mblk_shrinker) {
-+		ret = -ENOMEM;
-+		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
- 		goto err;
- 	}
- 
-+	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
-+	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
-+	zmd->mblk_shrinker->private_data = zmd;
-+
-+	shrinker_register(zmd->mblk_shrinker);
-+
- 	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
- 	for (i = 0; i < zmd->nr_devs; i++)
- 		dmz_print_dev(zmd, i);
-@@ -2995,7 +2999,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
-  */
- void dmz_dtr_metadata(struct dmz_metadata *zmd)
- {
--	unregister_shrinker(&zmd->mblk_shrinker);
-+	shrinker_free(zmd->mblk_shrinker);
- 	dmz_cleanup_metadata(zmd);
- 	kfree(zmd);
+ 	return vb->num_free_page_blocks * VIRTIO_BALLOON_HINT_BLOCK_PAGES;
  }
+@@ -847,16 +845,22 @@ static int virtio_balloon_oom_notify(struct notifier_block *nb,
+ 
+ static void virtio_balloon_unregister_shrinker(struct virtio_balloon *vb)
+ {
+-	unregister_shrinker(&vb->shrinker);
++	shrinker_free(vb->shrinker);
+ }
+ 
+ static int virtio_balloon_register_shrinker(struct virtio_balloon *vb)
+ {
+-	vb->shrinker.scan_objects = virtio_balloon_shrinker_scan;
+-	vb->shrinker.count_objects = virtio_balloon_shrinker_count;
+-	vb->shrinker.seeks = DEFAULT_SEEKS;
++	vb->shrinker = shrinker_alloc(0, "virtio-balloon");
++	if (!vb->shrinker)
++		return -ENOMEM;
+ 
+-	return register_shrinker(&vb->shrinker, "virtio-balloon");
++	vb->shrinker->scan_objects = virtio_balloon_shrinker_scan;
++	vb->shrinker->count_objects = virtio_balloon_shrinker_count;
++	vb->shrinker->private_data = vb;
++
++	shrinker_register(vb->shrinker);
++
++	return 0;
+ }
+ 
+ static int virtballoon_probe(struct virtio_device *vdev)
 -- 
 2.30.2
 
