@@ -2,112 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A47579A5B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2FC79A5BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjIKIML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S234367AbjIKIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbjIKIMH (ORCPT
+        with ESMTP id S229498AbjIKINC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:12:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDA6FC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:12:02 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-93-xpYnoRY3Nwem60r5SNClpQ-1; Mon, 11 Sep 2023 09:11:55 +0100
-X-MC-Unique: xpYnoRY3Nwem60r5SNClpQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
- 2023 09:11:44 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 11 Sep 2023 09:11:44 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Namhyung Kim' <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
-Subject: RE: [PATCH] perf annotate: Add more x86 mov instruction cases
-Thread-Topic: [PATCH] perf annotate: Add more x86 mov instruction cases
-Thread-Index: AQHZ4rAUrSROyt/pQUyYWZsk6XFaNLAVR23w
-Date:   Mon, 11 Sep 2023 08:11:44 +0000
-Message-ID: <ad8a8d46151142a883d2d259c884acc0@AcuMS.aculab.com>
-References: <20230908052216.566148-1-namhyung@kernel.org>
- <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
- <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
-In-Reply-To: <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Sep 2023 04:13:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A220597;
+        Mon, 11 Sep 2023 01:12:57 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B7bWL8016890;
+        Mon, 11 Sep 2023 08:12:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6rPP/oyLv+DfB2DvzWmhNfrkCcAKlx6hjXYBTO7KNhM=;
+ b=hIc9QCuhz3e5PZMVDH9o73rY833f9J3ijuppLllKwgSocYgnK1Y3lTkHwYFrmfQk06/W
+ A9bP/Lr6lZFa/xHl9ZIVw0y/FKyjSPMcasifN74BFnHlbfixPwOm3lKhefqGtemBN37u
+ K9FK6l3chePj3+qlHkhJfuLLWXdRWnu6NwSGPTzBcNfaT9n75MvR04crY8rSuwIxtz66
+ JpomuzIaQDXdMYnafyafzhws1QgpOk0aLIGENRZeMlMyyR+wz+/uXHu26pN4SYhBSMa+
+ EJ8mm1Thtav2bmuMa4O25Nffdli2N+jT+XM33OsRd708MkEMIVfX3BF0ev7fqr0Hvu2I jQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0ga6jtr5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 08:12:29 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B8C78X027237
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 08:12:08 GMT
+Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 01:11:56 -0700
+Message-ID: <32c6708d-a5a9-420e-bfb8-08ea11b3eb1e@quicinc.com>
+Date:   Mon, 11 Sep 2023 13:41:56 +0530
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 13/17] firmware: qcom_scm: provide a read-modify-write
+ function
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-14-git-send-email-quic_mojha@quicinc.com>
+ <9d9bba92-f92e-469a-b0a5-9ca24f5caaca@quicinc.com>
+In-Reply-To: <9d9bba92-f92e-469a-b0a5-9ca24f5caaca@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: PHohQQwa3uKW6oMZQgu4uMjAUIRy2Isi
+X-Proofpoint-ORIG-GUID: PHohQQwa3uKW6oMZQgu4uMjAUIRy2Isi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_05,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 spamscore=0 lowpriorityscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110074
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmFtaHl1bmcgS2ltDQo+IFNlbnQ6IDA5IFNlcHRlbWJlciAyMDIzIDAwOjU2DQo+IA0K
-PiBIaSBJYW4sDQo+IA0KPiBPbiBUaHUsIFNlcCA3LCAyMDIzIGF0IDExOjI04oCvUE0gSWFuIFJv
-Z2VycyA8aXJvZ2Vyc0Bnb29nbGUuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIFRodSwgU2VwIDcs
-IDIwMjMgYXQgMTA6MjLigK9QTSBOYW1oeXVuZyBLaW0gPG5hbWh5dW5nQGtlcm5lbC5vcmc+IHdy
-b3RlOg0KPiA+ID4NCj4gPiA+IEluc3RydWN0aW9ucyB3aXRoIHNpZ24tIGFuZCB6ZXJvLSBleHRl
-bnRpb24gbGlrZSBtb3ZzYmwgYW5kIG1vdnp3cSB3ZXJlDQo+ID4gPiBub3QgaGFuZGxlZCBwcm9w
-ZXJseS4gIEFzIGl0IGNhbiBjaGVjayBkaWZmZXJlbnQgc2l6ZSBzdWZmaXggKC1iLCAtdywgLWwN
-Cj4gPiA+IG9yIC1xKSB3ZSBjYW4gb21pdCB0aGF0IGFuZCBhZGQgdGhlIGNvbW1vbiBwYXJ0cyBl
-dmVuIHRob3VnaCBzb21lDQo+ID4gPiBjb21iaW5hdGlvbnMgYXJlIG5vdCBwb3NzaWJsZS4NCj4g
-PiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBOYW1oeXVuZyBLaW0gPG5hbWh5dW5nQGtlcm5lbC5v
-cmc+DQo+ID4gPiAtLS0NCj4gPiA+ICB0b29scy9wZXJmL2FyY2gveDg2L2Fubm90YXRlL2luc3Ry
-dWN0aW9ucy5jIHwgOSArKysrKystLS0NCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRp
-b25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS90b29scy9w
-ZXJmL2FyY2gveDg2L2Fubm90YXRlL2luc3RydWN0aW9ucy5jDQo+IGIvdG9vbHMvcGVyZi9hcmNo
-L3g4Ni9hbm5vdGF0ZS9pbnN0cnVjdGlvbnMuYw0KPiA+ID4gaW5kZXggNWY0YWM0ZmM3ZmNmLi41
-Y2RmNDU3ZjVjYmUgMTAwNjQ0DQo+ID4gPiAtLS0gYS90b29scy9wZXJmL2FyY2gveDg2L2Fubm90
-YXRlL2luc3RydWN0aW9ucy5jDQo+ID4gPiArKysgYi90b29scy9wZXJmL2FyY2gveDg2L2Fubm90
-YXRlL2luc3RydWN0aW9ucy5jDQo+ID4gPiBAQCAtNzQsMTIgKzc0LDE1IEBAIHN0YXRpYyBzdHJ1
-Y3QgaW5zIHg4Nl9faW5zdHJ1Y3Rpb25zW10gPSB7DQo+ID4gPiAgICAgICAgIHsgLm5hbWUgPSAi
-bW92ZHFhIiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAgIHsgLm5hbWUg
-PSAibW92ZHF1IiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAgIHsgLm5h
-bWUgPSAibW92c2QiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAtICAgICAgIHsg
-Lm5hbWUgPSAibW92c2xxIiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAg
-IHsgLm5hbWUgPSAibW92c3MiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiArICAg
-ICAgIHsgLm5hbWUgPSAibW92c2IiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAr
-ICAgICAgIHsgLm5hbWUgPSAibW92c3ciLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4g
-PiArICAgICAgIHsgLm5hbWUgPSAibW92c2wiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+
-ID4NCj4gPiBJbiBJbnRlbCdzIG1hbnVhbCBzb21lIG9mIHRoZXNlIG5hbWVzIGFyZSAiTW92ZSBE
-YXRhIEZyb20gU3RyaW5nIHRvDQo+ID4gU3RyaW5nIiBvcGVyYXRpb25zLCBtb3ZzYiBhbmQgbW92
-c3cgaW4gcGFydGljdWxhci4gVGhlc2UgaW5zdHJ1Y3Rpb25zDQo+ID4gY2FuIGJlIHVzZWQgdG8g
-bWFrZSBzaW1wbGUgbWVtY3B5IGxvb3BzLiBDb3VsZCBpdCBiZSB0aGUgcGFzdCBvbWlzc2lvbg0K
-PiA+IHdhcyBkZWxpYmVyYXRlIGR1ZSB0byB0aGUgZGlmZmVyZW50IHdheSB0aGUgYWRkcmVzc2lu
-ZyB3b3JrcyBpbiB0aGUNCj4gPiBpbnN0cnVjdGlvbnM/DQo+IA0KPiBJIGRvbid0IGtub3cgYnV0
-IGluIHRlcm1zIG9mIGluc3RydWN0aW9uIHBhcnNpbmcsIHRoZXkgYXJlIHRoZSBzYW1lDQo+ICJN
-T1ZFIiB3aXRoIHR3byBvcGVyYW5kcy4gIEknbSBub3QgYXdhcmUgb2YgYW55dGhpbmcgaW4gcGVy
-ZiB3aXRoDQo+IHRoZSBvcGVyYW5kcyBvZiB0aGVzZSBpbnN0cnVjdGlvbnMuICBTbyBJIGd1ZXNz
-IGl0J2QgYmUgZmluZSB0byBhZGQNCj4gdGhlc2UgaW5zdHJ1Y3Rpb25zIGV2ZW4gaWYgdGhleSBo
-YXZlIGRpZmZlcmVudCB1bmRlcmx5aW5nIGJlaGF2aW9ycy4NCg0KSSdtIHByZXR0eSBzdXJlIHRo
-YXQgJ3JlcCBtb3ZzW2J3bHFdJyAoYWthIHdoaWxlIChjeC0tKSAqZGkrKyA9ICpzaSsrKQ0KaXMg
-bGlrZWx5IHRvIGJlIG1pc3NpbmcgdGhlIG1lbW9yeSBhcmd1bWVudCBwYXJhbWV0ZXJzLg0KVGhl
-cmUgaXMgYWxzbyAnZnVuIGFuZCBnYW1lcycgd2l0aCBvbmUgdmFyaWFudCAtIGlpcmMgJ3JlcCBt
-b3ZzZCcNCndoYXQgaGFzIGJlZW4gdXNlZCBmb3IgNjRiaXQsIGJ1dCBnb3QgaGlqYWNrZWQgYnkg
-b25lIG9mIHRoZSBTSU1EIHNldHMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
-TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
-VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
+On 9/11/2023 1:38 PM, Kathiravan Thirumoorthy wrote:
+>
+> On 9/10/2023 1:46 AM, Mukesh Ojha wrote:
+>> It was realized by Srinivas K. that there is a need of
+>> read-modify-write scm exported function so that it can
+>> be used by multiple clients.
+>>
+>> Let's introduce qcom_scm_io_update_field() which masks
+>> out the bits and write the passed value to that
+>> bit-offset. Subsequent patch will use this function.
+>>
+>> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>
+>
+> Validated this change on IPQ9574 and IPQ53332 and system is entering 
+> into the download mode.
+>
+> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # 
+> IP9574 and IPQ5332
+
+
+Couple of typos. Apologize...
+
+Validated this change on IPQ9574 and IPQ5332 and system is entering into 
+the download mode.
+
+Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 
+and IPQ5332
+
+
+>
+>
+>>   drivers/firmware/qcom_scm.c            | 20 ++++++++++++++++++++
+>>   include/linux/firmware/qcom/qcom_scm.h |  2 ++
+>>   2 files changed, 22 insertions(+)
+>>
+>> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+>> index fde33acd46b7..5ea8fc4fd4e8 100644
+>> --- a/drivers/firmware/qcom_scm.c
+>> +++ b/drivers/firmware/qcom_scm.c
+>> @@ -78,6 +78,7 @@ static const char * const 
+>> qcom_scm_convention_names[] = {
+>>   };
+>>     static struct qcom_scm *__scm;
+>> +static DEFINE_SPINLOCK(lock);
+>>     static int qcom_scm_clk_enable(void)
+>>   {
+>> @@ -407,6 +408,25 @@ int qcom_scm_set_remote_state(u32 state, u32 id)
+>>   }
+>>   EXPORT_SYMBOL(qcom_scm_set_remote_state);
+>>   +int qcom_scm_io_update_field(phys_addr_t addr, unsigned int mask, 
+>> unsigned int val)
+>> +{
+>> +    unsigned int old, new;
+>> +    int ret;
+>> +
+>> +    spin_lock(&lock);
+>> +    ret = qcom_scm_io_readl(addr, &old);
+>> +    if (ret)
+>> +        goto unlock;
+>> +
+>> +    new = (old & ~mask) | (val & mask);
+>> +
+>> +    ret = qcom_scm_io_writel(addr, new);
+>> +unlock:
+>> +    spin_unlock(&lock);
+>> +    return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_scm_io_update_field);
+>> +
+>>   static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+>>   {
+>>       struct qcom_scm_desc desc = {
+>> diff --git a/include/linux/firmware/qcom/qcom_scm.h 
+>> b/include/linux/firmware/qcom/qcom_scm.h
+>> index 250ea4efb7cb..ca41e4eb33ad 100644
+>> --- a/include/linux/firmware/qcom/qcom_scm.h
+>> +++ b/include/linux/firmware/qcom/qcom_scm.h
+>> @@ -84,6 +84,8 @@ extern bool qcom_scm_pas_supported(u32 peripheral);
+>>     extern int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val);
+>>   extern int qcom_scm_io_writel(phys_addr_t addr, unsigned int val);
+>> +extern int qcom_scm_io_update_field(phys_addr_t addr, unsigned int 
+>> mask,
+>> +                    unsigned int val);
+>>     extern bool qcom_scm_restore_sec_cfg_available(void);
+>>   extern int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
