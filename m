@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C21A79BE69
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E77C79BFA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241101AbjIKWYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S1357694AbjIKWFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241550AbjIKPKm (ORCPT
+        with ESMTP id S241555AbjIKPKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:10:42 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33E0FA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:36 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso5768397a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:36 -0700 (PDT)
+        Mon, 11 Sep 2023 11:10:44 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43692CCC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:39 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso6050105a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694445035; x=1695049835; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694445037; x=1695049837; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a74mAUWyNjQUrLkNN32VnDJFxKb6KoEOU6sRKzb9I4w=;
-        b=AK/WtdjbYakEDa9RXDC6KeojelzjuSwH9+PJkfJ9gTPiSESTd/s7rEoGUDR2Y8O2RZ
-         Grcord7fKnsDBx/YiG8vDnZIYF95ZSEfjRHX5Dh6uD69T59OE88qSSN284K6XL4padO4
-         vGKP0fefE4gE3MgRO0NSfsn0LI2Wp7Ruzasgd45wrkQWvMVbuyTQahMD/004pUw5/mab
-         Mm+YaHh57lO6eG7Km+218fpEdTR8lD7qC+mBi3OSkWlaILYMqWyLpC+SUYqYuRLgcEkN
-         /tuhA1ZAJt6QFydtSNbJfl6qWXgDDvkbhU9ogiZWFWz0S/3/ywdjgmKc67xuIM2Tu0ZE
-         oyLw==
+        bh=hB07AWQ6+/HjqLThhLj5XIDObxfEfer4Yjs2PDgZbco=;
+        b=ZOtQyqzyDIvSBpOgiZn5wCN03fcMB8DKKexIkzt9gck0m4rhhhRweF+RLj+E1x22b0
+         W7HTTlJx9v73qxNjbP4ARBv8I6j2nnXKPllW0xMgQ+HZ4HL0XNtKfm4CFi0gE31dmSp4
+         zdxnYymR6lcOQwNj0Hqg05RxA8xM0qHorJY4Vlp7uS53wpywrg93uT0fC5ndfp/K4iI5
+         ep9jV30RkrC5j3AJFzrmgI62IxTAHcjLDnNsZg1E8BdX+b6tliC/h2X7i1ss8XP70NWV
+         NjAJ3ozguAZdqlaV5LELJY3LgGJPBO8jH3t3y+D2zNCwP8M5lbtNE808bhdwumgTSsax
+         oFUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694445035; x=1695049835;
+        d=1e100.net; s=20230601; t=1694445037; x=1695049837;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a74mAUWyNjQUrLkNN32VnDJFxKb6KoEOU6sRKzb9I4w=;
-        b=dTEgnPL42SZ651YI+N2pm5fYwjWtQNq3O6t9x+B64357UdYS6c5hMfsb/LahF8dr+Q
-         ScLre3cDP4fMIjTpmmAt5NK2Q3+te0sUUafrmBrfi6y+GrWoOWgSvdIlm8ENjBDMz7dA
-         dzT5olaGbRJQo+NOlgxvNym0+R762jkZRCa/30DXpUzw1bWrsizBUvkl96RRIlAMWAl9
-         LVdQgF/oUuxOZ30+dpcwD96KB9zgnetlJTPAs5BJhqe3tEd8aqNiUyeuthPIo2ZIs2jQ
-         ja7ftNBqDQOfLnL/EWkqfvukEJLL86BvvcgY8AQ8/rVacYnQ1q7v+Dy33QpwnyIP4iLu
-         s2jw==
-X-Gm-Message-State: AOJu0YzXO5Vrcosw+7bvtb8tdeObxLsOWnmsLsjTsMU/0k2mNPnuI4RY
-        W91KeHSFpcYSZxXrmfb2jCKqZojK2xTQdjiw0K67EA==
-X-Google-Smtp-Source: AGHT+IFgjmU2G+Cish/os/XJgU5/mjj81gMqFgSuu1O6gF75c7LT4BNdQoX7X5W2JPKjCrV6VKqnjQ==
-X-Received: by 2002:a05:6402:510:b0:522:ca6b:ad7d with SMTP id m16-20020a056402051000b00522ca6bad7dmr8349316edv.9.1694445035554;
-        Mon, 11 Sep 2023 08:10:35 -0700 (PDT)
+        bh=hB07AWQ6+/HjqLThhLj5XIDObxfEfer4Yjs2PDgZbco=;
+        b=Z4iso+CA5OkeDApHYeH8aC1NcZbEttWdgiHT/Xl0qadsR7K9mZ9aEeYvWxlCtF2Nxi
+         NlQrn5g3ZPSbWfDKopbHQOgRpC96esEKgO+Y+u9ESIsOeHvJ+MGUJO8pHsqWVHYUzX3p
+         ActtjurhCzynz0xlvfTSZ6nicVRJsOOpFFwvi4shsk2bh1+GrCDSunsCzQP2W/WcFDp2
+         mBcwhtIGG/y8WrjhuYdphODfzU/hulWWu566I7IfgNnQG1ie2M+Dm8AdnlRH+kYNL4F8
+         e0JEOkfkLbm2/AaP6f0l06K50sOeEP15JnaTQv101gUwK/wWwkpVkVtSqnSMZhNBEC8c
+         34UA==
+X-Gm-Message-State: AOJu0YwQ7fgRjdfCAm2eblOXXbQqM00jUE8k5LPNwO3A+L0Ls/N8vh2b
+        lv+QsjAQWXCueOXjxLiExo9pzQ==
+X-Google-Smtp-Source: AGHT+IHJPABWpI7Eq8rnPAY/s+Tohmf2Ji1RKKVtBhUqvuYbf4fo8qwJMluBqGhBSsrvs20bqX1bFg==
+X-Received: by 2002:a05:6402:8c3:b0:522:20a0:7eb8 with SMTP id d3-20020a05640208c300b0052220a07eb8mr7959403edz.33.1694445037678;
+        Mon, 11 Sep 2023 08:10:37 -0700 (PDT)
 Received: from [10.167.154.1] (178235177061.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.61])
-        by smtp.gmail.com with ESMTPSA id n4-20020a056402060400b0052a3ad836basm4681281edv.41.2023.09.11.08.10.34
+        by smtp.gmail.com with ESMTPSA id n4-20020a056402060400b0052a3ad836basm4681281edv.41.2023.09.11.08.10.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 08:10:35 -0700 (PDT)
+        Mon, 11 Sep 2023 08:10:37 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 11 Sep 2023 17:10:18 +0200
-Subject: [PATCH RFT 04/20] media: venus: core: Set OPP clkname in a common
- code path
+Date:   Mon, 11 Sep 2023 17:10:19 +0200
+Subject: [PATCH RFT 05/20] media: venus: pm_helpers: Kill dead code
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-topic-mars-v1-4-a7d38bf87bdb@linaro.org>
+Message-Id: <20230911-topic-mars-v1-5-a7d38bf87bdb@linaro.org>
 References: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
 In-Reply-To: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
 To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
@@ -75,11 +74,11 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694445027; l=2651;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694445027; l=2141;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=yWKtspCHH6VembG1lbkjXWBw413nk6iKNGzpyELOez8=;
- b=n21L3hKCSxuzjuglNuE7A8iIdmVtwk6Vqfkoet7bRWuHYWBjVCo76Z2Ah8Ynj6I31FRrZEjgs
- SWe8DcyMYZcB/X1vw5cGVJjEuMOhJR3OkbLOJve02C3YZ4/PS4MvkjG
+ bh=QMvOYSIDhNKQG6pzBZaUv6e9JhH/er8ZMPeUWk6srGI=;
+ b=XK0JQo551H+KBf+i/fiVuIM7cxliwEN1dSWCIJuOIUFCAvdHNT1EBk3XeoIB/hy/oghd/Gh6b
+ LIBRGGfXgMcCgxb3Vkt4cp666O9latCD1vNrsCFGEnccpEky0ql/Vv1
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -92,97 +91,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling devm_pm_opp_set_clkname() is repeated for all HFI versions in
-pm_ops->core_power.
+A situation like:
 
-Move it to the common codepath.
+if (!foo)
+	goto bar;
 
-This also lets us get rid of core_get_v1.
+for (i = 0; i < foo; i++)
+	...1...
+
+bar:
+	...2...
+
+is totally identical to:
+
+for (i = 0; i < 0; i++) // === if (0)
+	...1...
+
+...2...
+
+Get rid of such boilerplate.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/media/platform/qcom/venus/core.c       |  5 +++++
- drivers/media/platform/qcom/venus/pm_helpers.c | 23 ++---------------------
- 2 files changed, 7 insertions(+), 21 deletions(-)
+ drivers/media/platform/qcom/venus/pm_helpers.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 054b8e74ba4f..f32b20c3a565 100644
---- a/drivers/media/platform/qcom/venus/core.c
-+++ b/drivers/media/platform/qcom/venus/core.c
-@@ -14,6 +14,7 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_opp.h>
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/pm_runtime.h>
-@@ -317,6 +318,10 @@ static int venus_probe(struct platform_device *pdev)
- 	if (!core->pm_ops)
- 		return -ENODEV;
- 
-+	ret = devm_pm_opp_set_clkname(dev, "core");
-+	if (ret)
-+		return ret;
-+
- 	if (core->pm_ops->core_get) {
- 		ret = core->pm_ops->core_get(core);
- 		if (ret)
 diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 59e3eaad97ed..9bedb3bc7223 100644
+index 9bedb3bc7223..f5130aa3ddfc 100644
 --- a/drivers/media/platform/qcom/venus/pm_helpers.c
 +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -318,21 +318,6 @@ static int load_scale_v1(struct venus_inst *inst)
- 	return ret;
- }
+@@ -875,9 +875,6 @@ static int vcodec_domains_get(struct venus_core *core)
+ 	struct device *pd;
+ 	unsigned int i;
  
--static int core_get_v1(struct venus_core *core)
--{
--	int ret;
+-	if (!res->vcodec_pmdomains_num)
+-		goto skip_pmdomains;
 -
--	ret = venus_clks_get(core);
--	if (ret)
--		return ret;
--
--	ret = devm_pm_opp_set_clkname(core->dev, "core");
--	if (ret)
--		return ret;
--
--	return 0;
--}
--
- static void core_put_v1(struct venus_core *core)
- {
- }
-@@ -350,7 +335,7 @@ static int core_power_v1(struct venus_core *core, int on)
- }
+ 	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+ 		pd = dev_pm_domain_attach_by_name(dev,
+ 						  res->vcodec_pmdomains[i]);
+@@ -886,7 +883,6 @@ static int vcodec_domains_get(struct venus_core *core)
+ 		core->pmdomains[i] = pd;
+ 	}
  
- static const struct venus_pm_ops pm_ops_v1 = {
--	.core_get = core_get_v1,
-+	.core_get = venus_clks_get,
- 	.core_put = core_put_v1,
- 	.core_power = core_power_v1,
- 	.load_scale = load_scale_v1,
-@@ -423,7 +408,7 @@ static int venc_power_v3(struct device *dev, int on)
- }
- 
- static const struct venus_pm_ops pm_ops_v3 = {
--	.core_get = core_get_v1,
-+	.core_get = venus_clks_get,
- 	.core_put = core_put_v1,
- 	.core_power = core_power_v1,
- 	.vdec_get = vdec_get_v3,
-@@ -1030,10 +1015,6 @@ static int core_get_v4(struct venus_core *core)
- 	if (legacy_binding)
+-skip_pmdomains:
+ 	if (!core->res->opp_pmdomain)
  		return 0;
  
--	ret = devm_pm_opp_set_clkname(dev, "core");
--	if (ret)
--		return ret;
+@@ -922,16 +918,12 @@ static void vcodec_domains_put(struct venus_core *core)
+ 	const struct venus_resources *res = core->res;
+ 	unsigned int i;
+ 
+-	if (!res->vcodec_pmdomains_num)
+-		goto skip_pmdomains;
 -
- 	ret = vcodec_domains_get(core);
- 	if (ret)
- 		return ret;
+ 	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+ 		if (IS_ERR_OR_NULL(core->pmdomains[i]))
+ 			continue;
+ 		dev_pm_domain_detach(core->pmdomains[i], true);
+ 	}
+ 
+-skip_pmdomains:
+ 	if (!core->has_opp_table)
+ 		return;
+ 
+@@ -945,9 +937,6 @@ static int core_resets_reset(struct venus_core *core)
+ 	unsigned int i;
+ 	int ret;
+ 
+-	if (!res->resets_num)
+-		return 0;
+-
+ 	for (i = 0; i < res->resets_num; i++) {
+ 		ret = reset_control_assert(core->resets[i]);
+ 		if (ret)
+@@ -970,9 +959,6 @@ static int core_resets_get(struct venus_core *core)
+ 	unsigned int i;
+ 	int ret;
+ 
+-	if (!res->resets_num)
+-		return 0;
+-
+ 	for (i = 0; i < res->resets_num; i++) {
+ 		core->resets[i] =
+ 			devm_reset_control_get_exclusive(dev, res->resets[i]);
 
 -- 
 2.42.0
