@@ -2,222 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A96879B6F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED32E79B96E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354642AbjIKVys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        id S240770AbjIKVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240423AbjIKOnw (ORCPT
+        with ESMTP id S240410AbjIKOnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:43:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0718CF0;
-        Mon, 11 Sep 2023 07:43:47 -0700 (PDT)
+        Mon, 11 Sep 2023 10:43:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48EB12A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:43:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694443427; x=1725979427;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=MH97cnF+5Qv+emz25BekGtjCyzMk4NnbKgG4Dj56NPg=;
-  b=U29c6b7GE1r3RdCiEwarM2RqnkAXXoGbutBoMP5C8vpyZMlVACK0fKSD
-   MtjCa3sknDdCMI7GSmBEDVWe/LKoMyyo5yKHg0bobk3Qe0KM6o0GIsX6x
-   C2dxaGmofSqd/aaYl+XozW9RtCrYfuZmtRYuqKcyZjDAEtg8lSLELCzIE
-   Bg5V6jDDVNhw+p/du/Zf8CPBftH/JJYMpQr6KVSoyGOTkQkWgdr08Jdm+
-   NRv+H4iSiHoHPNIgZl9I2TNZG8v0Rxrtp7Xr77q2gdVF6Zh873AZ1bNvG
-   IS3pOr4zEEx4/7632uh3cJbkdyKLnDcQ3gvC8jUTcPGXDKy9a1uZdPsPn
+  t=1694443406; x=1725979406;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=g6LNZoXHOiKMGWRLpT6oIKoFZc/vg7KVOmyjC4U+09E=;
+  b=iH89hCsWCE/o5S6XX1fmbbn/n5mx7bvPQAbF8wfRJgVDCrmYzzPQM6dU
+   nGDbh/FXZg/Tfol3W6Ebdkk7XA9hXDo81BMeFSLJEYxuoWkCSjXh9JW6k
+   pj6pdkadSG5+odXKmjoL5ms8H6FWYM3RG4kJ9Frd0PDKGaOHZuX54UVF2
+   SCdygW5r5dv6Shrr1rHc6Gwrw0tSuWL31GpWDaR/FgFf6R1459EPdbtZD
+   IqnSMsCDEMnV+5EyMg487Vc51UKOjNZ4TiSCLsis8coowogdKXq9kIpmt
+   3fpE6zYFLHPKFr+nAz0if1DmzN8AThk1kM2FTtFso9cTSVXKhSuzzH+0k
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375449407"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381904370"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="375449407"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:42 -0700
+   d="scan'208";a="381904370"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="990106653"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917045930"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="990106653"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 07:43:41 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 07:43:41 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 07:43:41 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 07:43:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WGulvxBXRAI4y9szbCaym3VjOD/2kiHXZ9EwFfJMMmaqxkzgXATq++sdApbF1xGOwO/y3UgkCPsbawGb+YiYkfy+iGI/f6M306i/CvkeUF1ho5y/OW3iBmoYNGSXShI05NdIjT3lbQmLiwXwU3MKwcvE38NeUSBEYKOGlHTqZePCEtJnQXYVx6ErMopIDi5f2KfcI1lBJtWBWnAfexrneVacT3OEOfkD9sd9Ba7EZQqZmvuO6aAqTdC9RxPjCNAKBhxMz7Px/+qU9ALptsrDKCzQ9LYGDisyng0A9jzI6IDYR7EZYI1uom068hoKil+yNwBP90e+Mo2FVjDIjfv01w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LiXw83iaIKHTbIZL8lfPB6/uc40sP5zp/S5kEM9XJLQ=;
- b=gUru1iDk5h51psYJ7RBZF+bhC0pIJs7BklxKndIB4tdyeFDsbKaffjE9mpcm4/gSimvKE2+gBN9Ff0QDy0VaNakQi2ARIts+NA7LPKGmBYDBrTRkWM2+ooJPmdEUGH+15Lb3RpccxcdIOrK1UgrRvAQqziQiAZkSpB+HKgABghk2ITE1CIisrVAko8yfjFnpmr9kCBW/a3DqhbS++aUX/lNQ2xmQcnNRkQx0p/O63LDanc7NFcMWX24nqrIOoQA5gEu0ZmqxsYVSvs9mbWBZjDvYAFbR2o6ryZOrQSuJLOiwij1t2W0mRE4qWu3X+qLI/Zec9h3hX/a+Vw1W0Jae7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by PH8PR11MB7144.namprd11.prod.outlook.com (2603:10b6:510:22c::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Mon, 11 Sep
- 2023 14:43:34 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::bede:bd20:31e9:fcb4]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::bede:bd20:31e9:fcb4%7]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 14:43:34 +0000
-Message-ID: <75000ef9-4ab6-9777-8497-8f786c30a2fe@intel.com>
-Date:   Mon, 11 Sep 2023 16:42:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 1/1] bitops: Share BYTES_TO_BITS() for everyone
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Uros Bizjak <ubizjak@gmail.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20230824123728.2761663-1-andriy.shevchenko@linux.intel.com>
- <a5574786-0a49-454d-67e3-571983e6a6e8@intel.com>
- <ZPCT2vV0r8l/wxim@smile.fi.intel.com>
- <05febba8-49a5-5f9d-34b0-d85d976e1416@intel.com>
- <ZPiSogB2GdyM+oJx@smile.fi.intel.com> <ZP3NlPOGtbT7CGQ1@yury-ThinkPad>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <ZP3NlPOGtbT7CGQ1@yury-ThinkPad>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DU7PR01CA0022.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:50f::10) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+   d="scan'208";a="917045930"
+Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:22 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, j@jannau.net,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        asahi@lists.linux.dev
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+In-Reply-To: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+ <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
+Date:   Mon, 11 Sep 2023 17:43:20 +0300
+Message-ID: <87tts0epo7.fsf@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|PH8PR11MB7144:EE_
-X-MS-Office365-Filtering-Correlation-Id: 040bbfdf-a734-4ffa-b0e3-08dbb2d57992
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zOBeqsJL8OPz+ondQw0qvatfhSAjHYS8TB+l7IKYItpQ4UgvcvWCk+OWohCVdtedzo8MZoS4ZE7NVaY8fmkl1YpPKKtaLqg3W41T8UdwlarcJUXY8leu53Hxz4ct0JRLnR0Bo4qfg5TacXG6gHx8ndAVKa707HYwufXNK3gWCIE879tTHe0qMmGi5DdhQasbpQa5cboLsDh6q+6Yo6Jg4/wTGR8r91JhinViSCNZB6zn/KhxeIc9RIiTiedYGFbGvyY6PKrlQho6DAZWSbxpQnsJ5qfOYjVW51M+rn5kZgwdx4tc4K9GOwfkn4aIV8Z/vXhnaIH03Vx1VGVY+iGRHzUtdrRVYtQ0+8bUVvQnYcnR6LOeBtL77QyxeNHQdu8X03qLm75uyJFnDK9Y3U9q6sadGAIhSk9LXv9f8fJEDBeiCVC8JbtRoHv1hT3kxih6iGKETpRIdPa+XECfF8jy4a9OLFumx+hhuAHS6o9dXPR56JNUJKHliIv4CqXS7cgXK1ZLx7MgZCQZ6OHPmqGGupxRFiYcb8KCoQmCnSG3MOc5mRJ2whwe+Wa9OTgWn0unti7hueGV+33NV4mCZ3ZlnPmjR8iyktIdOlH0wqcFdB+WK2zfkJvgZN0hvJOv68E0vajdxY2fCvR1ma/pyfpiAQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(376002)(366004)(39860400002)(186009)(1800799009)(451199024)(41300700001)(31686004)(6486002)(6506007)(6666004)(86362001)(36756003)(31696002)(38100700002)(82960400001)(2616005)(2906002)(6512007)(83380400001)(478600001)(110136005)(316002)(8676002)(8936002)(4326008)(5660300002)(26005)(66946007)(66556008)(66476007)(54906003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VTVEd2FGOW5QLzNDb1ExZU51aFVtZmlnd0tzMTdaRkU2WGd5Q2hRYjhGZ3hO?=
- =?utf-8?B?WE9iUGczdTB0ME13NHZHdUlyYlZHYzMvUmVkenl4My83Qjc0OXA2M3Z5eXUr?=
- =?utf-8?B?VHV1a05TSlEzZE5JNWFmQ0NPVUhwSVhDLzEyWXJPQzNQazViQ3pFMTRZTTND?=
- =?utf-8?B?S2o4TDI5ai9vVmx6YmxGKzhTQkdVcFYyTDVEM0ZkV2VGbmVWNmNPTHZ5cEV0?=
- =?utf-8?B?ZTJ4dXk2bVAxZlo3NFUveWF5dVRhUkZmTEhWOGU1VU9OYzQxUDI1bk9UZVFC?=
- =?utf-8?B?ZVI4eWNhUlNHVWZHcFNJWXZDSVJmNmxTd0gzZjNySFlMSURnQWNpZnBtZis3?=
- =?utf-8?B?RWVHRzI2dlFjRXUrdCtQdEhnQVlBSEJ4dFBpclg4amNkeVI0Q1UyeGxtWVR3?=
- =?utf-8?B?dkU0amNNemN3UVN5N3ptUi9qRm4wQnV6TjVWbkt5ZXkvMDNGdENBUmF1YkhH?=
- =?utf-8?B?T0VRZG00dk1OclZ6K09uR1ppZjkrSGIxdWNJNEtQSWJMQXJKMVpRNG1Md3dO?=
- =?utf-8?B?ZHAyRE5ndFZKazNWczQzWnVqL1YrNkJTQ3QvL2Q3YkkvRlh6UTY5eitoTVdi?=
- =?utf-8?B?Y1NaUWdkS2FUZFl4b1NKNW9ueUU5L0JiMTEwZVVXTVgvT29rbFNrQVhQY1Z2?=
- =?utf-8?B?eU9WSDQvZi9jeGtpYlZKSzZnNDVoUGJkVG0zTTlVc1RiTE82Y1pjNmJVaG5w?=
- =?utf-8?B?eStBYXB4eGdRMUdhUG0zeWI5MmdHRDdKaElrb3BLS3ZlVTF5WURrNXBpbmZV?=
- =?utf-8?B?NE8xcFRFOVpwYzVlRHdlQkN3MmdZeFFzYXZRQ09PczE5cFQ0U25OL2U2dGlE?=
- =?utf-8?B?YTNXY3djNHlvcXozNFFLSUhpVTVGWjUrYkNodTd5VFczRGo2QTBsUHVkQ09R?=
- =?utf-8?B?bUxyckNyeE9UVG5Nd3p6R0JnRW12MHpkNSt1VjgxbXczcCsxaXloQ1pRRU90?=
- =?utf-8?B?c041UXRmRWtaSzYvMU1xUVE4clArOVZPUGJMbWhYVjBIUzczYVRnbWpRT05r?=
- =?utf-8?B?VEtINDFVYmRuNHJpQTRyaklvZkZSdVArT3ZUcXBLMmZMKzNXamRmY2JSVDhh?=
- =?utf-8?B?MUhqb3BTUzFaZ0VZNysyMG8vK2lMTWwyc2V6ZlNYTFRrN0dGTXY5OGE1SFdw?=
- =?utf-8?B?cG1wKzZYeEdHSjcyL0FDMFZYUnU5aWdCeE40cHVZWGdWTWk0eUNMalhMK3VP?=
- =?utf-8?B?MzJqbUZ5UUtTOUpwRUZBaUNDR2VYb3RvNEFkVzV6b3NSQVJSUnVXTE5JNDRk?=
- =?utf-8?B?MGtFVms4VWtyYUE0WFRwaGhuSkpvb2c2bWxsNTdUbVIxRTI5SmpydjVRM2Ix?=
- =?utf-8?B?SHVpL2UvaWZnblhONk9TLzQvSHFVb2FtWDlKcmhNNVYySWtyMHBpQWRoUjh6?=
- =?utf-8?B?OHlJSERRdHBvTkFOVG1IQnRBMFNoSy9rUGRndlNPTU5URDhxQ3VUcFZXY0Z5?=
- =?utf-8?B?SDFOMmszdmh5Z1ZkdTl4ckRyZmFEdlVBamxBWnE3eEw4ZjF5emFPWXJGMll6?=
- =?utf-8?B?S1J2RHZnclVLQ1ZVTVZpZFpJUk9QZUMxdEcwL2xURHNWdEFNTllYMlhTTVhk?=
- =?utf-8?B?bUVrNGQrendzUERQbVN2dDdQcVB1TkdnUktDU1FQL0tRYXFsZ0VOb2NFTTF5?=
- =?utf-8?B?cGdoanBSUEtWbnBwRGxTdkdKdk9tbkx2S0VlbDVYNkl2S3V2eE9CUmxBQTFR?=
- =?utf-8?B?QnBIY0djYXp0M1dMbzVSSzNTRk0rM1lON043VUZOUjR1QlpheUZTYzhreVRE?=
- =?utf-8?B?dGEyemxJdDlDd0YwSXVIZkpGOTdIek9ZSUdLbmlMdUMwN3Y2M2x4cE5XNFFP?=
- =?utf-8?B?dmZ5QWlzcllGM0VSRWVoZHB5RGFCb1o2UVV6OTR2V3pCWWpQRTZpZFNYWUtY?=
- =?utf-8?B?bENOVFRiQXk1bGRaNFBKYlBIaXp4VHJPSkxtKzdRNVVvM3BuQW5CM2pEamJr?=
- =?utf-8?B?Yzl1a3FFK3JlNDFkNUdzTVJIMnVCK2hUMzBKdGdCWWZvQnpxRitJY1VYbHNr?=
- =?utf-8?B?UW5QSXJOQ3Z6R2NLSzdGeDlYblY4R1VGMmpTak5YcUJqZHFBaE9yTW04TGh6?=
- =?utf-8?B?YU5MWW8wN3Y4Z0J0QUFXcGdTdVJMQXptOWsra2krUW9LZUNWLzU5YVpTUjJL?=
- =?utf-8?B?YnhyaUk4UDVvc3p4SDhHR0tycG9xZWtyWmxBZXZOM1RHQnZubEZRbDA1NjdD?=
- =?utf-8?B?TWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 040bbfdf-a734-4ffa-b0e3-08dbb2d57992
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 14:43:34.3403
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hTvpjAAMowxt1Bna6ItaF5DpQL1YVXpgOxIOjohNFSE5Idfv3wYUTkSedwniWOPPgPPXOAmB4fPVzbxEVIvd++Brulf2UuI9560pPQnP2HA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7144
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yury Norov <yury.norov@gmail.com>
-Date: Sun, 10 Sep 2023 07:07:16 -0700
+On Mon, 11 Sep 2023, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Hi
+>
+> Am 10.09.23 um 18:39 schrieb Janne Grunau via B4 Relay:
+>> From: Janne Grunau <j@jannau.net>
+>> 
+>> Multiple power domains need to be handled explicitly in each driver. The
+>> driver core can not handle it automatically since it is not aware of
+>> power sequencing requirements the hardware might have. This is not a
+>> problem for simpledrm since everything is expected to be powered on by
+>> the bootloader. simpledrm has just ensure it remains powered on during
+>> its lifetime.
+>> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
+>> systems. The HDMI output initialized by the bootloader requires keeping
+>> the display controller and a DP phy power domain on.
+>> 
+>> Signed-off-by: Janne Grunau <j@jannau.net>
+>> ---
+>>   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 106 insertions(+)
+>> 
+>> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+>> index ff86ba1ae1b8..efedede57d42 100644
+>> --- a/drivers/gpu/drm/tiny/simpledrm.c
+>> +++ b/drivers/gpu/drm/tiny/simpledrm.c
+>> @@ -6,6 +6,7 @@
+>>   #include <linux/of_address.h>
+>>   #include <linux/platform_data/simplefb.h>
+>>   #include <linux/platform_device.h>
+>> +#include <linux/pm_domain.h>
+>>   #include <linux/regulator/consumer.h>
+>>   
+>>   #include <drm/drm_aperture.h>
+>> @@ -227,6 +228,12 @@ struct simpledrm_device {
+>>   	unsigned int regulator_count;
+>>   	struct regulator **regulators;
+>>   #endif
+>> +	/* power-domains */
+>> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+>> +	int pwr_dom_count;
+>> +	struct device **pwr_dom_devs;
+>> +	struct device_link **pwr_dom_links;
+>> +#endif
+>>   
+>>   	/* simplefb settings */
+>>   	struct drm_display_mode mode;
+>> @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
+>>   }
+>>   #endif
+>>   
+>> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+>> +/*
+>> + * Generic power domain handling code.
+>> + *
+>> + * Here we handle the power-domains properties of our "simple-framebuffer"
+>> + * dt node. This is only necessary if there is more than one power-domain.
+>> + * A single power-domains is handled automatically by the driver core. Multiple
+>> + * power-domains have to be handled by drivers since the driver core can't know
+>> + * the correct power sequencing. Power sequencing is not an issue for simpledrm
+>> + * since the bootloader has put the power domains already in the correct state.
+>> + * simpledrm has only to ensure they remain active for its lifetime.
+>> + *
+>> + * When the driver unloads, we detach from the power-domains.
+>> + *
+>> + * We only complain about errors here, no action is taken as the most likely
+>> + * error can only happen due to a mismatch between the bootloader which set
+>> + * up the "simple-framebuffer" dt node, and the PM domain providers in the
+>> + * device tree. Chances are that there are no adverse effects, and if there are,
+>> + * a clean teardown of the fb probe will not help us much either. So just
+>> + * complain and carry on, and hope that the user actually gets a working fb at
+>> + * the end of things.
+>> + */
+>> +static void simpledrm_device_detach_genpd(void *res)
+>> +{
+>> +	int i;
+>> +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
+>> +
+>> +
+>> +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
+>
+> If anything, drm_dbg()
 
-> On Wed, Sep 06, 2023 at 05:54:26PM +0300, Andy Shevchenko wrote:
->> On Wed, Sep 06, 2023 at 04:40:39PM +0200, Alexander Lobakin wrote:
->>> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>> Date: Thu, 31 Aug 2023 16:21:30 +0300
->>>> On Fri, Aug 25, 2023 at 04:49:07PM +0200, Alexander Lobakin wrote:
->>>>> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>>>> Date: Thu, 24 Aug 2023 15:37:28 +0300
->>>>>
->>>>>> It may be new callers for the same macro, share it.
->>>>>>
->>>>>> Note, it's unknown why it's represented in the current form instead of
->>>>>> simple multiplication and commit 1ff511e35ed8 ("tracing/kprobes: Add
->>>>>> bitfield type") doesn't explain that neither. Let leave it as is and
->>>>>> we may improve it in the future.
->>>>>
->>>>> Maybe symmetrical change in tools/ like I did[0] an aeon ago?
->>>>
->>>> Hmm... Why can't you simply upstream your version? It seems better than mine.
->>>
->>> It was a part of the Netlink bigint API which is a bit on hold for now
->>> (I needed this macro available treewide).
->>> But I can send it as standalone if you're fine with that.
->>
->> I'm fine. Yury?
-> 
-> Do we have opencoded BYTES_TO_BITS() somewhere else? If so, it should be
-> fixed in the same series.
+Drive-by comment, drm_dbg() already prints the function, there's no need
+to use __func__.
 
-Treewide -- a ton.
-We could add it so that devs could start using it and stop open-coding :D
+BR,
+Jani.
 
-> 
-> Regarding implementation, the current:
-> 
->         #define BYTES_TO_BITS(nb)      ((BITS_PER_LONG * (nb)) / sizeof(long))
-> 
-> looks weird. Maybe there are some special considerations in a tracing
-> subsystem to make it like this, but as per Masami's email - there's
-> not. 
-> 
-> For a general purpose I'd suggest a simpler:
->         #define BYTES_TO_BITS(nb)      ((nb) * BITS_PER_BYTE)
+>
+>> +	if (sdev->pwr_dom_count <= 1)
+>> +		return;
+>> +
+>> +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
+>> +		if (!sdev->pwr_dom_links[i])
+>> +			device_link_del(sdev->pwr_dom_links[i]);
+>> +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
+>> +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
+>> +	}
+>> +}
+>> +
+>> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+>> +{
+>> +	struct device *dev = sdev->dev.dev;
+>> +	int i;
+>> +
+>> +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
+>> +							 "#power-domain-cells");
+>> +	/*
+>> +	 * Single power-domain devices are handled by driver core nothing to do
+>> +	 * here. The same for device nodes without "power-domains" property.
+>> +	 */
+>> +	if (sdev->pwr_dom_count <= 1)
+>> +		return 0;
+>> +
+>> +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
+>> +					       sizeof(*sdev->pwr_dom_devs),
+>> +					       GFP_KERNEL);
+>> +	if (!sdev->pwr_dom_devs)
+>> +		return -ENOMEM;
+>> +
+>> +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
+>> +						sizeof(*sdev->pwr_dom_links),
+>> +						GFP_KERNEL);
+>> +	if (!sdev->pwr_dom_links)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < sdev->pwr_dom_count; i++) {
+>> +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
+>> +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
+>> +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
+>> +			if (ret == -EPROBE_DEFER) {
+>> +				simpledrm_device_detach_genpd(sdev);
+>> +				return PTR_ERR(sdev->pwr_dom_devs[i]);
+>> +			}
+>> +			drm_err(&sdev->dev,
+>> +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
+>
+> The driver's not really failing to initialize AFAICT. CAlling drm_warn() 
+> might be more appropriate.
+>
+>> +		}
+>> +
+>> +		sdev->pwr_dom_links[i] = device_link_add(dev,
+>> +							 sdev->pwr_dom_devs[i],
+>> +							 DL_FLAG_STATELESS |
+>> +							 DL_FLAG_PM_RUNTIME |
+>> +							 DL_FLAG_RPM_ACTIVE);
+>> +		if (!sdev->pwr_dom_links[i])
+>> +			drm_err(&sdev->dev, "failed to link power-domain %u\n", i);
+>
+> Also drm_warn() ?
+>
+> Best regards
+> Thomas
+>
+>> +	}
+>> +
+>> +	return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
+>> +}
+>> +#else
+>> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+>> +{
+>> +	return 0;
+>> +}
+>> +#endif
+>> +
+>>   /*
+>>    * Modesetting
+>>    */
+>> @@ -651,6 +754,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
+>>   	if (ret)
+>>   		return ERR_PTR(ret);
+>>   	ret = simpledrm_device_init_regulators(sdev);
+>> +	if (ret)
+>> +		return ERR_PTR(ret);
+>> +	ret = simpledrm_device_attach_genpd(sdev);
+>>   	if (ret)
+>>   		return ERR_PTR(ret);
+>>   
+>> 
+>> ---
+>> base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
+>> change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
+>> 
+>> Best regards,
 
-I also didn't notice anything that would require using logic more
-complex than this one. It would probably make more sense to define
-it that way when moving.
-
-> 
-> Thanks,
-> Yury
-
-Thanks,
-Olek
+-- 
+Jani Nikula, Intel Open Source Graphics Center
