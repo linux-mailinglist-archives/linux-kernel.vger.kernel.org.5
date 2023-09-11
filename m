@@ -2,284 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B66B79BFC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0380A79BFEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbjIKUri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        id S237288AbjIKUxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236387AbjIKKcw (ORCPT
+        with ESMTP id S236395AbjIKKdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:32:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4232120;
-        Mon, 11 Sep 2023 03:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694428367; x=1725964367;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=kAVbRW0ySMZcckN7/b++bvW0Duip5r04psYC9w9FIXx+bLrXK57t4A9c
-   hw/D+Bw/hStOn41H7rif4Sc56C0I3/DL7CHsGSkARVVyACiOzw2d79sa/
-   FtNetwGThmScsQovUh+plLfvBvywO2UcpckFhQT6kB+lwbAijUe/QvkDp
-   yyShaorAWR0cteRaEL/7FANfPqRNG90Ay+71kjQ4rlD8SFQzxME+7mw/P
-   uW8MGw2+AKhaO0e96k5NtXdJS3hsjkgQ6nzDdnMURkrpaDTPamWS1mjFj
-   DwccJ8mrAqCyD0692ybe15NkIIxRWAoXjFAay1A1S6klIMjBy/DYUf4FA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="376960758"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="376960758"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:32:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="990052842"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="990052842"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Sep 2023 03:32:43 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
-Subject: [PATCH 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 16:03:19 +0530
-Message-Id: <20230911103319.1770292-1-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230908195242.GA304243@bhelgaas>
-References: <20230908195242.GA304243@bhelgaas>
+        Mon, 11 Sep 2023 06:33:44 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201E5E6C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:33:39 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d80f4ef8so45604275e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694428417; x=1695033217; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hd5+bavmQbtOKvL+wey92Vxqp4guJA0VMGCPEUn7ND4=;
+        b=OcN3pzI+cftP7u1zx8oh7h+ytbnm6G1s3UGRke/JIt53C6kjU8cZWmZNwTr97cWyFn
+         cxi8uRmaTCl9ljdxGQZLf1+ivEYaZSxMEf3nm+1eqj0sF+60Nr6/KT+mUQ8YpLOoIOOV
+         joTy8Rw92yPqmxxPnX3kKzVK/6QDbQvwYwCl4kU4BASVvby2G+1yIppS/0O/PeKbgmTP
+         vCuDiK8ZHilHB3EXn/aTzUPeeNUw9IpPgzmM6eRaP8NaOi1s/+WQDYuMupHqX+BhiaZi
+         uVELXkrlikpJQ2pTnIRxKjSE2xyUbAsGo5N2rmAZXJeUSpPo3CLPbv7mjYVCDYuYmIli
+         r/dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694428417; x=1695033217;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hd5+bavmQbtOKvL+wey92Vxqp4guJA0VMGCPEUn7ND4=;
+        b=omE2vAP4hOY+maSCgtw5dtueqoLd157ueEX1DagvkEwWGF8fhKsCxErdadv/uwBGV1
+         QHvGyd04r1OARu2Ciz2dPwNihVxlJa701n1X2ih5dERIwdlq9kd6DDRWf7fdca+BQOb2
+         vZn600GmnUKltZOHZJX33jlRJ8O5XCSvNhnsTCkNX8tl7p394q6Sn+Dqjf2G/YTtFjBu
+         qIFRvL8gu+g9TTDXaRPxOUBSsWyXxbsBhfX5LGWEz9Qye+PaGZLC7xpLtUULdd0kWEVN
+         IFSgprJMRFYr42Ri3kwmMTBraSMYY554jAGrsw1A/Lq6lp/NFqZelfE4oqPRRJfRwCge
+         LpKg==
+X-Gm-Message-State: AOJu0YwiDdfJCxhFY4gKi18wt6y0mKX6VvsgnhExRnqVkNj5aipUCU+/
+        f3s9eKg+hoRjtbZfnKOj5ZUFyA==
+X-Google-Smtp-Source: AGHT+IHVdvs08TyzRIACfwL0Gt+0zksvifLWePCc/mECez0aCu5F00s8w2auWW3JiOasBbnRnPrQnA==
+X-Received: by 2002:a05:600c:2196:b0:401:b493:f7c1 with SMTP id e22-20020a05600c219600b00401b493f7c1mr8249860wme.35.1694428417556;
+        Mon, 11 Sep 2023 03:33:37 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:daaa:8bc3:eeb7:ce8? ([2a01:e0a:982:cbb0:daaa:8bc3:eeb7:ce8])
+        by smtp.gmail.com with ESMTPSA id r17-20020adfce91000000b003198a9d758dsm9726204wrn.78.2023.09.11.03.33.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 03:33:37 -0700 (PDT)
+Message-ID: <d226525d-b025-48c8-8176-4a3356ba23b8@linaro.org>
+Date:   Mon, 11 Sep 2023 12:33:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 3/3] arch/arm64: dts: meson-s4: add hwrng node
+Content-Language: en-US, fr
+To:     Alexey Romanov <avromanov@salutedevices.com>,
+        narmstrong@baylibre.com, olivia@selenic.com,
+        herbert@gondor.apana.org.au, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        conor@kernel.org, khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, lists@kaiser.cx
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-crypto@vger.kernel.org,
+        kernel@sberdevices.ru, Alexey Romanov <avromanov@sberdevices.ru>
+References: <20230911101129.10604-1-avromanov@salutedevices.com>
+ <20230911101129.10604-4-avromanov@salutedevices.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20230911101129.10604-4-avromanov@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+On 11/09/2023 12:11, Alexey Romanov wrote:
+> From: Alexey Romanov <avromanov@sberdevices.ru>
+> 
+> Using this node, we can obtain random numbers via
+> hardware random number generator.
+> 
+> Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
+> ---
+>   arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+> index f24460186d3d..b3a1ecf36467 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+> @@ -133,6 +133,11 @@ reset: reset-controller@2000 {
+>   				reg = <0x0 0x2000 0x0 0x98>;
+>   				#reset-cells = <1>;
+>   			};
+> +
+> +			hwrng: rng@440788 {
+> +				compatible = "amlogic,meson-s4-rng";
+> +				reg = <0x0 0x440788 0x0 0x0c>;
+> +			};
+>   		};
+>   	};
+>   };
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
-
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
- 
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
--- 
-2.34.1
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
