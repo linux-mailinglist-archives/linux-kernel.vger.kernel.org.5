@@ -2,241 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEB579B7F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E075E79B702
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348167AbjIKVZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        id S1377573AbjIKW1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242750AbjIKQQD (ORCPT
+        with ESMTP id S242758AbjIKQQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:16:03 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA521B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:15:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so50040475e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694448957; x=1695053757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HV5y47B9k2tibzGJFcIzC3Wh2s45fqlwzyzXAYAyLZU=;
-        b=z8y66fNgAKCrE8HM53F80h2KHSbY1gumOB3bzhz6J59gV1adggHukPtDk7hUH3bQ3M
-         +JTuyhyZbJD4DorNMYMaE1ZJ7F2xvroixDHqmNzT9g7wzhZc+pz3eY+AXdFtM4Upo429
-         fY6kZk1FBc20n4X3w+O06oo9WOFm7c/Wq467OgkuuQMvL9Q51IdSEF6g67kq8QkQL1Bt
-         QeutQ3/KZ0I61lzYjJC9p2KF2OA2soxXelNBhNaRe2Og17gxc5/ZIh3uCtTmSHoxia/A
-         a6WdhM+2J1gjP6KejY9SKlOhNNrpOFYg17kgTpUUX+hduXsY5g9CWcFFoXRBxlwaIujn
-         R4XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694448957; x=1695053757;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HV5y47B9k2tibzGJFcIzC3Wh2s45fqlwzyzXAYAyLZU=;
-        b=EBsHkshLpad5ZTY19QLNffcj0jDi0K1P4mILOY/qGhUSr7sMKOPw0+BGbfm7k2L+hG
-         /QqmUJNbE4JKlmLibLW6IRYQ8SNXXcrcVV81E9Nk1STIRvJo4FbayVxJQpPRpr8WdO9j
-         6axm0gHxmOyd9SB+YIQaIAqkWxch+1yR8P4JLUyyOt1o2NLhDcV5SaqrpH9M0s63Pl1V
-         oyU2ARx7ut+NmjNhuojolPScy2+vDkzaKAbACyNyN5yifQ60wuU96czANKvYUz/ErRT0
-         GqAPQBj6cwzoKVJLTr9Q58GzXn9cS3n/l4ixwFkKhAo3g8KGSnUnZ0dxqbYdUYynbN10
-         X3QA==
-X-Gm-Message-State: AOJu0YyLV7JXQQMdQHo0KFqIH6cpnZqChEIA2DaAvuDjnTh+b5blh5I/
-        VUYTvmqQKpd4kIBQWUnm2vvNew==
-X-Google-Smtp-Source: AGHT+IH4VJSvvSxbVOwJYo159Cuu4FuAwlQeRg83/jubmlshB8+C2StDaNviQOqqFhUF8K4JCTIomg==
-X-Received: by 2002:a05:600c:2257:b0:3fe:ef11:d79f with SMTP id a23-20020a05600c225700b003feef11d79fmr8329151wmm.36.1694448956816;
-        Mon, 11 Sep 2023 09:15:56 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:c2b1:675e:119e:2497])
-        by smtp.gmail.com with ESMTPSA id u5-20020a05600c00c500b003fe2de3f94fsm10397693wmm.12.2023.09.11.09.15.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:15:56 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v3] spi: bcm2835: reduce the abuse of the GPIO API
-Date:   Mon, 11 Sep 2023 18:15:53 +0200
-Message-Id: <20230911161553.24313-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Mon, 11 Sep 2023 12:16:10 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2063.outbound.protection.outlook.com [40.107.94.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B886B1B8;
+        Mon, 11 Sep 2023 09:16:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NfrQobkP+XCH/q/Rd2XsQuOEDyzDog3ckwkTZKYNDiT6dZ+cIAFDwzCuUU3EU9/Ax/1K52sKMI7KZboy0HClsqlFN5oZF3A/WjRJhMJgLtgfW8umiGtYwlXM9bmoxv/OLVn7SGvke5abyI74Rc8JN1+czk5karHyn+jYCZ+wE7rERbTHGPL+heLxgCBh9WtLf/QS/Z67z7OlBwRZird+DNCvbEX+gVYVUD//isj5CvWRTUfk57+o7qOhgRcxpVvll+cIFJG0eaSeo3nlM3MuNVjs+QQtOITyftbuQSUiXFeOnkqczKVTEpgtr+ytupKLh3JwiJnTZ/nVZ95z5JejYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CB4qXlChKXG8c63sQi0EVUaEAq8VIJ3RRkfBH64WjqM=;
+ b=eWOareB4DD3qIVxJlHkjfQNy04WoN7Mkh7rWGjhmFEb6JpURvKirRiRdXepYZH3NVhZVxo/gVJ2ZWymlE37tl9h/4zOsIPNXGH9hOxv0gCHtN5o1wseZVomlXRe2jHBH+JmqkyFOSFqgrFpGIsTD6PFJNVJlga+uH8Bzr4OOrE4DQpLD/yCk0lbl9jK3ibieoud1HJ9SPaQHchVF5hsn+xzB12uTIrAUD4GtT3g+gXUNnMW8on9HVnFKKDNZFpYAJfZcLeJRMPSxrisAGvjdicNWGve5/s8XwJaRcE8ROV7Yz9E8mxCWpjFTxD/NHh9zLIj3xZ3Kr8S+a58gu5l/cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CB4qXlChKXG8c63sQi0EVUaEAq8VIJ3RRkfBH64WjqM=;
+ b=S8B9bSacZo43Q7MwkuRtj34xuLuTs8K/qDpoLnVIDUZJXodOrs/FzTG8xVCHQ5gfc3LdX790aE2h8vKxJ4/pcgohX5a+DARsxV6rD/cz+fauotLQnaZAPxzI+3d7aN6tEhWOV+8NXyDv/0RMkTaCCAj6J7aOFEoY1xgSo8UeDyH9nqE3AeuxDUlnT33u4u0e1ZVcBqW4vKq7Hs813OAQEnTxR0O131bfUQlHAOa6+y85SiJMr7QupwlWBw+aCMJALXJ7fzMa6ReznIbWDxLAMumLGmgC0hdf/wReDp/TzY4PeHpLLp+oE2Sk0muKEHRyGlgjp06vKoCbHzrwVZ3MrQ==
+Received: from DM6PR12MB3371.namprd12.prod.outlook.com (2603:10b6:5:116::27)
+ by CYXPR12MB9427.namprd12.prod.outlook.com (2603:10b6:930:d6::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Mon, 11 Sep
+ 2023 16:15:59 +0000
+Received: from DM6PR12MB3371.namprd12.prod.outlook.com
+ ([fe80::ed2:99a4:2e77:89bc]) by DM6PR12MB3371.namprd12.prod.outlook.com
+ ([fe80::ed2:99a4:2e77:89bc%5]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 16:15:59 +0000
+From:   Jeshua Smith <jeshuas@nvidia.com>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "gpiccoli@igalia.com" <gpiccoli@igalia.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "bp@alien8.de" <bp@alien8.de>
+CC:     "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+Thread-Topic: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
+Thread-Index: AQHZtREytrmSwIEvT06Ibqr95x6guq/abXNggAAKnoCAAI5FkIAVd3TwgCWuaxA=
+Date:   Mon, 11 Sep 2023 16:15:58 +0000
+Message-ID: <DM6PR12MB337153EE2DDDB427096446F0DBF2A@DM6PR12MB3371.namprd12.prod.outlook.com>
+References: <20230712223448.145079-1-jeshuas@nvidia.com>
+ <DM6PR12MB3371BA50E3B76D2266273901DB09A@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <SJ1PR11MB6083426D3C663F47E707CF1AFC09A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <DM6PR12MB3371D86F80417641B8479B28DB0EA@DM6PR12MB3371.namprd12.prod.outlook.com>
+ <DM6PR12MB3371FA3AEEA4D17D94C889D5DB1BA@DM6PR12MB3371.namprd12.prod.outlook.com>
+In-Reply-To: <DM6PR12MB3371FA3AEEA4D17D94C889D5DB1BA@DM6PR12MB3371.namprd12.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB3371:EE_|CYXPR12MB9427:EE_
+x-ms-office365-filtering-correlation-id: cd8de1b0-0324-491d-7464-08dbb2e26292
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bK6sFXYhxXmL976gkfn48w+VXrk3ESWqzBNu/2Tff8GURxFbikOhAvubSqMay/BdbTyxd3FVxqR7HtV1afY5GsFBWMkG6rgVUeImIwMBGcXLxQyS1DsDhLCBjiLCmdz38FYO8km7O2CPza/Ylmn1xzLMu9LtzsBJ1PV/1z1qKsYuiIXeN1ebC2avMzZCWAEV0TkhxTVV4ponL8MNUJs38zddN5dMIUBf+nyhv2efX7QpBLACG6WmEd3Uh+oNzLHFzOwBOk1PZOSYT9ZFsOQdBDOSq0PdZAGGsbH+da/nahWM4Nra09DUJhlQAaRFRRI9cE7X7mJQ9+M0zvSKp2JYXiNgjIQlW/ELkpssrkZtJq2J/mql8z/GfC457xjgfeNW8m/Zbjkw/UFo7uOgGbWUk4ty3kJK/wfdIITmXFhWvJIPUQkUWPEm252SY/8I7GDj/XV58r3F3mh6lorMbLOTRJYZAC0G+Lz9f8fLcT8GTWpMdCEf7CJquFriEDAvNMFE1N8UVGKo0VGkUzrAIeD0I+l1AOu/c1LZSHhpvDMk3R1/BgZfZlIve1kGrJxsav/mnLPh7qvhx0Nh2LI7keMykJculwKmtDqertYxusNjja1fe1UfyukhFM/q5mM9tIVeuk36Se3OXpLbG93Ev7sy3m4I/0+Iw5iG7GLi+TutkmU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3371.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(376002)(346002)(366004)(1800799009)(186009)(451199024)(83380400001)(122000001)(966005)(478600001)(26005)(6506007)(107886003)(55016003)(53546011)(7696005)(86362001)(71200400001)(9686003)(8936002)(2906002)(64756008)(7416002)(52536014)(4326008)(5660300002)(8676002)(66476007)(66946007)(316002)(66556008)(54906003)(66446008)(76116006)(41300700001)(33656002)(110136005)(38070700005)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8szRVZlPjXrlD+1So8rcITRJWIHNGFsZOLFNZVF5qkd7Sr8zvUIC7YIisDCT?=
+ =?us-ascii?Q?3NPE3OJM8PJwPr1rD72U+Na42XAI7Oduei26Kat8ng5Q8pewWjBTQITsQBaK?=
+ =?us-ascii?Q?EBVohtNJTrRbe7RJfLYwWP7D4cbf3bCvDMjYMsqf4iOR63uTRwDTFhdXwoqf?=
+ =?us-ascii?Q?pL8LjesTRj22xP9+eNaw1IhTx75UMG/FiGRn2boIT2nIKRt06EjtM2vgqWoN?=
+ =?us-ascii?Q?Zm2LceXkz0NezGg8khyBQFU9aGZR5Lj8yw1jj0xgMTcHuCu0JLBSHgeyLsGR?=
+ =?us-ascii?Q?CLdDKz+/aFQC7wecsGB3vbhlOaj0HMAH7LzuBjszBeCsWrvAAVlPCkn0kX9G?=
+ =?us-ascii?Q?oE9ioLFMpCzG4qO01ayfhtpuxiWZApV4Pv9CFxtCIcRqtHeJThkkSYm+1Ln3?=
+ =?us-ascii?Q?Qcczmt1nfTD42Fjec4lDTGaYhsDSryHtOvImSMRD06IZGRf3aqRrRoPnciGp?=
+ =?us-ascii?Q?U2KKS7MnxnKBhDa2fRU418F+vgAL4kOOOh3kqpMXXOOJw9juARlNNjYz2Ut0?=
+ =?us-ascii?Q?UYaXZVT6JmtJ5v143y8Z7JCutqak1mzjtt9538a94Nnfu8YFzPL+BrDjvsS+?=
+ =?us-ascii?Q?rlykSpr7AuJl89P3qg5c5oKjIkhcfzOq/7nWQzLdQIBVxKI9DMXZbnE6KmeQ?=
+ =?us-ascii?Q?vZPHja106px6BdyxZ+ROyk1TKxkOoFofuV84TJm60gMNLap5JE/sOYaINrc1?=
+ =?us-ascii?Q?2amp3IW08OHe3824rc4JWcg3Zv0XLhuMAFPuKjMyU1jLcPBS8v+BDG9mMG2X?=
+ =?us-ascii?Q?lQkV3iHXs3xWMFAfAMmpTZeAYn3SmiRDXJnveVzR4moqH5jQuKbC1u/uWLeZ?=
+ =?us-ascii?Q?eyIXfVUdpNZkT0oEYFs1W9KJxzyPsabMm+YZZFP3gz6/8nHFmEC6vu2g6/qA?=
+ =?us-ascii?Q?X+L912zvLA9/+wIBjcCXWfzh7A/S2+6UvvMhkQevFu+XBbFIFdKAbOpfWDlX?=
+ =?us-ascii?Q?YsXwGaLoi42AQ/8eWoVJP1BpkjCF5tS9tpec4vQWmCy5DiVhP0SbVNLPpu4/?=
+ =?us-ascii?Q?i/xuZARat2pqRl8rZjsDnbTFnJBb9PopKzEbqtxK2KQ5t1ZTahHOp8SiXGZI?=
+ =?us-ascii?Q?2wIQUe3vKGH9REhSZkV/DDdQFA3B7QF8jMt8OzzxNiBfoSiW5FvHjNnqGlt0?=
+ =?us-ascii?Q?n5nmpJwQ37A7Xov2bD9TX6z4KYDhkEm2pfyplRdDGeg07xiT8H0qQUdcZLhl?=
+ =?us-ascii?Q?mHd/4sedw3cGCyDIiFTwwELAILVacyBDX43vmm196G9/Lh3RDozxKQA49dGE?=
+ =?us-ascii?Q?x/DWaI5PiYYD7B5ssEP4Jj7HfVyOGe5kKEqs7oSRm1P8ZcTB14GdJRffAnDu?=
+ =?us-ascii?Q?DuG8D0AH/4m9Htv6rRoAGjq74t4ZOxFx0Iqzs5sHE18A+R1IVGdJOjBdg8op?=
+ =?us-ascii?Q?SLaIMyzxrrlYo9GNKe9nZVozkJaoPlUfNHhVsXKe6GGb7qDtrv2gArkM0bj1?=
+ =?us-ascii?Q?uQfraLvUiNdYBjtr0RmNyAU+sV7+aHZHxsn4OXCD06g3MGj8FaLHStk/xHkE?=
+ =?us-ascii?Q?DKXv/LkAKJZY2hQwbHh1iPeXsTHS5V5o4AS+o6sZzrl1h/XfP/42EedUzzKA?=
+ =?us-ascii?Q?ekP2OD1qwkzjqtFFBuWrv/dhhR30o95N3u4R5Pzm?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3371.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd8de1b0-0324-491d-7464-08dbb2e26292
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 16:15:58.8926
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ioB81pA4S7GF0hZADHje6f53soflkwcHOckOor/bmoJ6fndxsnVWJDCcuj7J91v01Kqfh6lFxPn1Knj0gnH5aA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR12MB9427
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Any further questions? Anything else holding up this patch?
 
-Currently the bcm2835 SPI driver uses functions that are available
-exclusively to GPIO providers as a way to handle a platform quirk. Let's
-use a slightly better alternative that avoids poking around in GPIOLIB's
-internals and use GPIO lookup tables.
+-----Original Message-----
+From: Jeshua Smith <jeshuas@nvidia.com>=20
+Sent: Friday, August 4, 2023 7:05 PM
+To: Luck, Tony <tony.luck@intel.com>; keescook@chromium.org; gpiccoli@igali=
+a.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.d=
+e
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
 
-Link: https://www.spinics.net/lists/linux-gpio/msg36218.html
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-This is only build-tested. It should work, but it would be great if
-someone from broadcom could test this.
+Thanks for the reply.
 
-Andy pointed out elsewhere that we can use GPIO_LOOKUP() even in
-dynamically allocated tables, hence v3.
+It's not very easy to see. It's just a bit down from the link you sent. It'=
+s the last possible action in the Serialization Actions table:
+https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#serializa=
+tion-actions
 
-v1 -> v2:
-- don't use devres for managing the GPIO but put it manually in .cleanup()
-- add a mailing list link explaining the background of the bug
-- fix kerneldoc
+18.5.1.1. Serialization Actions
 
-v2 -> v3:
-- use GPIO_LOOKUP() macro for creating the lookup entry as it looks
-  better and results in less LOC
+GET_EXECUTE-_OPERATION_TIMINGS
 
- drivers/spi/spi-bcm2835.c | 60 +++++++++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 25 deletions(-)
+Returns an encoded QWORD:
+[63:32] value in microseconds that the platform expects would be the maximu=
+m amount of time it will take to process and complete an EXECUTE_OPERATION.
+[31:0] value in microseconds that the platform expects would be the nominal=
+ amount of time it will take to process and complete an EXECUTE_OPERATION.
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index e7bb2714678a..dfd9c4997052 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -11,6 +11,7 @@
-  * spi-atmel.c, Copyright (C) 2006 Atmel Corporation
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/debugfs.h>
-@@ -26,9 +27,10 @@
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/gpio/consumer.h>
--#include <linux/gpio/machine.h> /* FIXME: using chip internals */
--#include <linux/gpio/driver.h> /* FIXME: using chip internals */
-+#include <linux/gpio/machine.h> /* FIXME: using GPIO lookup tables */
- #include <linux/of_irq.h>
-+#include <linux/overflow.h>
-+#include <linux/slab.h>
- #include <linux/spi/spi.h>
- 
- /* SPI register offsets */
-@@ -83,6 +85,7 @@ MODULE_PARM_DESC(polling_limit_us,
-  * struct bcm2835_spi - BCM2835 SPI controller
-  * @regs: base address of register map
-  * @clk: core clock, divided to calculate serial clock
-+ * @cs_gpio: chip-select GPIO descriptor
-  * @clk_hz: core clock cached speed
-  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
-  * @tfr: SPI transfer currently processed
-@@ -117,6 +120,7 @@ MODULE_PARM_DESC(polling_limit_us,
- struct bcm2835_spi {
- 	void __iomem *regs;
- 	struct clk *clk;
-+	struct gpio_desc *cs_gpio;
- 	unsigned long clk_hz;
- 	int irq;
- 	struct spi_transfer *tfr;
-@@ -1156,15 +1160,11 @@ static void bcm2835_spi_handle_err(struct spi_controller *ctlr,
- 	bcm2835_spi_reset_hw(bs);
- }
- 
--static int chip_match_name(struct gpio_chip *chip, void *data)
--{
--	return !strcmp(chip->label, data);
--}
--
- static void bcm2835_spi_cleanup(struct spi_device *spi)
- {
- 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
- 	struct spi_controller *ctlr = spi->controller;
-+	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 
- 	if (target->clear_rx_desc)
- 		dmaengine_desc_free(target->clear_rx_desc);
-@@ -1175,6 +1175,9 @@ static void bcm2835_spi_cleanup(struct spi_device *spi)
- 				 sizeof(u32),
- 				 DMA_TO_DEVICE);
- 
-+	gpiod_put(bs->cs_gpio);
-+	spi_set_csgpiod(spi, 0, NULL);
-+
- 	kfree(target);
- }
- 
-@@ -1221,7 +1224,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	struct spi_controller *ctlr = spi->controller;
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
--	struct gpio_chip *chip;
-+	struct gpiod_lookup_table *lookup __free(kfree) = NULL;
- 	int ret;
- 	u32 cs;
- 
-@@ -1288,29 +1291,36 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	}
- 
- 	/*
--	 * Translate native CS to GPIO
-+	 * TODO: The code below is a slightly better alternative to the utter
-+	 * abuse of the GPIO API that I found here before. It creates a
-+	 * temporary lookup table, assigns it to the SPI device, gets the GPIO
-+	 * descriptor and then releases the lookup table.
- 	 *
--	 * FIXME: poking around in the gpiolib internals like this is
--	 * not very good practice. Find a way to locate the real problem
--	 * and fix it. Why is the GPIO descriptor in spi->cs_gpiod
--	 * sometimes not assigned correctly? Erroneous device trees?
-+	 * More on the problem that it addresses:
-+	 *   https://www.spinics.net/lists/linux-gpio/msg36218.html
- 	 */
-+	lookup = kzalloc(struct_size(lookup, table, 1), GFP_KERNEL);
-+	if (!lookup) {
-+		ret = -ENOMEM;
-+		goto err_cleanup;
-+	}
-+
-+	lookup->dev_id = dev_name(&spi->dev);
-+	lookup->table[0] = GPIO_LOOKUP("pinctrl-bcm2835",
-+				       8 - (spi_get_chipselect(spi, 0)),
-+				       "cs", GPIO_LOOKUP_FLAGS_DEFAULT);
- 
--	/* get the gpio chip for the base */
--	chip = gpiochip_find("pinctrl-bcm2835", chip_match_name);
--	if (!chip)
--		return 0;
--
--	spi_set_csgpiod(spi, 0, gpiochip_request_own_desc(chip,
--							  8 - (spi_get_chipselect(spi, 0)),
--							  DRV_NAME,
--							  GPIO_LOOKUP_FLAGS_DEFAULT,
--							  GPIOD_OUT_LOW));
--	if (IS_ERR(spi_get_csgpiod(spi, 0))) {
--		ret = PTR_ERR(spi_get_csgpiod(spi, 0));
-+	gpiod_add_lookup_table(lookup);
-+
-+	bs->cs_gpio = gpiod_get(&spi->dev, "cs", GPIOD_OUT_LOW);
-+	gpiod_remove_lookup_table(lookup);
-+	if (IS_ERR(bs->cs_gpio)) {
-+		ret = PTR_ERR(bs->cs_gpio);
- 		goto err_cleanup;
- 	}
- 
-+	spi_set_csgpiod(spi, 0, bs->cs_gpio);
-+
- 	/* and set up the "mode" and level */
- 	dev_info(&spi->dev, "setting up native-CS%i to use GPIO\n",
- 		 spi_get_chipselect(spi, 0));
--- 
-2.39.2
+-----Original Message-----
+From: Luck, Tony <tony.luck@intel.com>=20
+Sent: Friday, August 4, 2023 10:31 AM
+To: Jeshua Smith <jeshuas@nvidia.com>; keescook@chromium.org; gpiccoli@igal=
+ia.com; rafael@kernel.org; lenb@kernel.org; james.morse@arm.com; bp@alien8.=
+de
+Cc: linux-acpi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-hardeni=
+ng@vger.kernel.org; linux-tegra@vger.kernel.org; Thierry Reding <treding@nv=
+idia.com>; Jonathan Hunter <jonathanh@nvidia.com>
+Subject: RE: [PATCH V2] ACPI: APEI: Use ERST timeout for slow devices
 
+External email: Use caution opening links or attachments
+
+
+> Can the maintainers please respond to my patch?
+
+Can you give a reference to the ACPI spec where this timing information is =
+documented? I'm looking at ACPI 6.5 and don't see anything about this.
+
+https://uefi.org/specs/ACPI/6.5/18_Platform_Error_Interfaces.html#error-ser=
+ialization
+
+-Tony
