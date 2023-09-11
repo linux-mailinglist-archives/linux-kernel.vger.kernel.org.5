@@ -2,82 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D98479C2CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9CC79C2AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238268AbjILC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        id S237309AbjILCXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237649AbjILC2C (ORCPT
+        with ESMTP id S237197AbjILCXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:28:02 -0400
+        Mon, 11 Sep 2023 22:23:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1845B114112;
-        Mon, 11 Sep 2023 18:52:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C90AC07616;
-        Mon, 11 Sep 2023 21:47:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E7C13C454;
+        Mon, 11 Sep 2023 18:47:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D8AC116A0;
+        Mon, 11 Sep 2023 21:48:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694468875;
-        bh=V1/4qYoS5i83IaWV3Li0Ak1OZFvqoZ3kUw55Zk3yyRs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hz9D28Z37OI76V5gXXxgFSPt/cPlL5BKMffWrUkSyAR9wFdMONbOhKnVTBir4McnB
-         8qwlPlEvLh6STAshvvGAdqH+LXK4dyYCxplTiiheahGdDFDGXstRJp81UmdV98ebce
-         nT2Awui41JA7Djts4w1Wp0aXtosj4VUA1UP8rmMV0QQ4DlFTwEkGcasM+8zEyIuZ6S
-         q7FC5MFGlvU4J8ENT2t+IwegJgwXezjUcHyp9VMX6tqTQgS5z4k9TIe6dTWb0IPC9t
-         kca7YFy7o6LMBKAEauRN289diUhH+9n8sQ4g2g3zZ2GxS4np8ErobGKoCooT8ylihm
-         QT8wAkDaN9Urg==
-Received: (nullmailer pid 2203086 invoked by uid 1000);
-        Mon, 11 Sep 2023 21:47:53 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: xilinx: Apply overlays to base dtbs
-Date:   Mon, 11 Sep 2023 16:47:47 -0500
-Message-Id: <20230911214751.2202913-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1694468924;
+        bh=Ulze66Ad1d6zNhaVNx6J3lAT+v/UnU3+VUAUHHsD9Wc=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=Quy73ISD2M2qEMMOFwoDTOfqKWgeMvZcMQFXSXKIuhE2hLDYgvStxPxYrPkZaDemz
+         o1wiunENyCPPcicT/TzpaCcrxkDAJJdH+DiaqJGQ/tpvlaFGBex4MJ6pqOXf+/c+s2
+         hoit0GRyD/1ao9orNmCgLdqK7zP7knutRoCFOKMByajH9cG+xntFC3cHlL6gZwRTG+
+         yiVoQbL4OXgUtQIaeX/sK4bteLCRhOnKmg1S1nwHS00arQ5g11Tj4/Yux4a27Vy2zq
+         eah+eCA/AJjg8vEQ1vErPo/ufncYryDQxWotzDw8i1pU7sJ+e2eSI63to26gekFwfI
+         YXoTT1rs8InRQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 00:48:41 +0300
+Message-Id: <CVGF3OAVF2W6.3V99S2XAHPTHC@suppilovahvero>
+Cc:     <jmforbes@linuxtx.org>
+Subject: Re: [PATCH] Fix typo in tpmrm class definition
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
+        "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Ivan Orlov" <ivan.orlov0322@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230908140629.2930150-1-jforbes@fedoraproject.org>
+In-Reply-To: <20230908140629.2930150-1-jforbes@fedoraproject.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DT overlays in tree need to be applied to a base DTB to validate they
-apply, to run schema checks on them, and to catch any errors at compile
-time. Defining the "-dtbs" variable is not enough as the combined DT must
-be added to dtbs-y.
+On Fri Sep 8, 2023 at 5:06 PM EEST, Justin M. Forbes wrote:
+> Commit d2e8071bed0be ("tpm: make all 'class' structures const")
+> unfortunately had a typo for the name on tpmrm.
+>
+> Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
+> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> ---
+>  drivers/char/tpm/tpm-chip.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 23f6f2eda84c..42b1062e33cd 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -33,7 +33,7 @@ const struct class tpm_class =3D {
+>  	.shutdown_pre =3D tpm_class_shutdown,
+>  };
+>  const struct class tpmrm_class =3D {
+> -	.name =3D "tmprm",
+> +	.name =3D "tpmrm",
+>  };
+>  dev_t tpm_devt;
+>
+> --=20
+> 2.41.0
 
-zynqmp-sck-kr-g-revA.dtso and zynqmp-sck-kr-g-revB.dtso don't exist, so drop
-them.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- arch/arm64/boot/dts/xilinx/Makefile | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Thanks, I'll queue this up for rc2.
 
-diff --git a/arch/arm64/boot/dts/xilinx/Makefile b/arch/arm64/boot/dts/xilinx/Makefile
-index 5e40c0b4fa0a..1068b0fa8e98 100644
---- a/arch/arm64/boot/dts/xilinx/Makefile
-+++ b/arch/arm64/boot/dts/xilinx/Makefile
-@@ -22,11 +22,10 @@ dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA.dtb
- dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA.dtb
- 
- zynqmp-sm-k26-revA-sck-kv-g-revA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA-sck-kv-g-revA.dtb
- zynqmp-sm-k26-revA-sck-kv-g-revB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-sm-k26-revA-sck-kv-g-revB.dtb
- zynqmp-smk-k26-revA-sck-kv-g-revA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revA.dtbo
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA-sck-kv-g-revA.dtb
- zynqmp-smk-k26-revA-sck-kv-g-revB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kv-g-revB.dtbo
--
--zynqmp-sm-k26-revA-sck-kr-g-revA-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kr-g-revA.dtbo
--zynqmp-sm-k26-revA-sck-kr-g-revB-dtbs := zynqmp-sm-k26-revA.dtb zynqmp-sck-kr-g-revB.dtbo
--zynqmp-smk-k26-revA-sck-kr-g-revA-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kr-g-revA.dtbo
--zynqmp-smk-k26-revA-sck-kr-g-revB-dtbs := zynqmp-smk-k26-revA.dtb zynqmp-sck-kr-g-revB.dtbo
-+dtb-$(CONFIG_ARCH_ZYNQMP) += zynqmp-smk-k26-revA-sck-kv-g-revB.dtb
--- 
-2.40.1
-
+BR, Jarkko
