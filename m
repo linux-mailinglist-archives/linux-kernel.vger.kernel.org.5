@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179E379B9C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA6F79B985
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbjIKV1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        id S232375AbjIKUuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242594AbjIKPxu (ORCPT
+        with ESMTP id S242597AbjIKPx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:53:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00395193
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694447626; x=1725983626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=X3au/kS7+xlc1DadqPxAfLqVMyeQTdx0TDMJbbvFtqQ=;
-  b=m8SGKveUf1ic8OEdcs2QZecfKd5x/6p5rz0sQ51QfdznoEXfcuEjKmWB
-   863qfYoWvGpeF/amP2vXN4aYzpH5OSGDQ737zDWqocyaN3lHfVkSQGwRr
-   KE327QaW+ggF4TfiPXfx3ciEYPyxXi1OTTHZZtsMcUo+nZsvqgDxrFLQ0
-   8LuBR9nz0s3IFgy7ERxnZR7FJOEX7PxPtNMd9uX/MDmVZuI54GdXVtdaF
-   EKVFcgo4cunh3LsPUmyKS6u8IvyOKUQTUcr6TqzIonhUdAEfvi7PPxR5Y
-   506Icc5onXt1klvIGayL1U21THABYDJc3OeYiNQHc46CEYp4sDG2Rl5yD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="358414865"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="358414865"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:53:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="990131344"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="990131344"
-Received: from aabuleil-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.192])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:53:43 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 4FC9810940E; Mon, 11 Sep 2023 18:53:40 +0300 (+03)
-Date:   Mon, 11 Sep 2023 18:53:40 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Dave Young <dyoung@redhat.com>, Ard Biesheuvel <ardb@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        kexec@lists.infradead.org
-Subject: Re: kexec reboot failed due to commit 75d090fd167ac
-Message-ID: <20230911155340.mzfngcnjpazwsn76@box.shutemov.name>
-References: <20230829140451.GA509854@ziqianlu-dell>
- <20230907131409.masxz42ik6u456qp@box.shutemov.name>
- <20230908060230.GA283801@ziqianlu-dell>
- <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
- <202309080856.F066F92C98@keescook>
- <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
- <20230909113209.actnan6hczrclz2d@box.shutemov.name>
- <CALu+AoSKpgbbKmsL8iuWpQB2ANqnhhfXR5pN5m0EsKZeFUBPkw@mail.gmail.com>
- <20230911145707.hslq47ngknshrlyk@box.shutemov.name>
- <b41a26ae-52f5-f9d9-edc7-32ee665f2482@amd.com>
+        Mon, 11 Sep 2023 11:53:58 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B56198
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:53:52 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31c5c06e8bbso4651639f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694447631; x=1695052431; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p3zHV6iao/svbvabAHUWRziqjkkVulJ/SFHDJG1zdw8=;
+        b=Jo1Ez3MVKvg1qxcMEU5pA1KjKQ+RXNTPuCDGSWySWwGVifm9m3pPSGfGHe9//4vDMj
+         KBlmdbEuvnGD4jb4Qsgf1M7pRsUx+MshbpHCjbWGvANGPCoGlvGPgvA9mMTX7qNhvifo
+         Xo0KAUXBfywtLae4R3KS3QjdzLzgRQeBWliqwHiVjCzZMOT/9nK6mZkYAAJLinNapAnV
+         hfYZ7HRJTHg+Dd5yYxGtB5bYSrzxTI/rtwuGeJYrMjXI7Uu28N++OVCHPMX86qdh+s8w
+         GHqg7NpNKrOQ7vQVzFdYoIplw0WmH2+U6NxvBMf8QeiOJbMtpwE8UF94qmThlzxAVh1N
+         2jtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694447631; x=1695052431;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p3zHV6iao/svbvabAHUWRziqjkkVulJ/SFHDJG1zdw8=;
+        b=eXJSRkV7rpobHlOMPfyuc7gc6p+9JV62iy7Ab3SAKsuzLEcOtiHXyZOCnURP5TpQYd
+         6tNyj53uAY0Eo6aLZV1U1iVJD9Y40EVsm0RRCkak07Fq+KGwGGP+YIKMeKZGy3iAgcLc
+         LgtePh+kReCweWlJ27Zf0TOQQTNgLv/jNBLwTN+Km/RjWaDQXIcaYFTJoSUu7LeoHjwg
+         Ph/0se6yJNaoAELJ9FVopZ32RcxBzYj8WbKdJT5R0n4odYt+KYMWm9fSlOXkxM5T+sWO
+         xTI4ygnYGogdzFvz+1TJCdqmI/a4/chjphAaXc0D/vY4eJBgToLsotyApydyaBsonVxK
+         OA8A==
+X-Gm-Message-State: AOJu0Yxg+mN8nPtbqP/J2Yp1pPSrvkUVHvxchKgbxBLHVZUJqVNfntgk
+        PaUt2RWuxtKeICwo1ri4RcRiKA==
+X-Google-Smtp-Source: AGHT+IH9qzC3rYF8IeSOT1RPV7CsdG0ReQBfjcjNjLurVYgv7naSOiSTRp7oUKIY9gGW+TXEpd81cQ==
+X-Received: by 2002:adf:de8a:0:b0:306:46c4:d313 with SMTP id w10-20020adfde8a000000b0030646c4d313mr7882614wrl.28.1694447630648;
+        Mon, 11 Sep 2023 08:53:50 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05600c3b9000b003fe407ca05bsm14047580wms.37.2023.09.11.08.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 08:53:50 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     devicetree@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230911154541.471484-1-jbrunet@baylibre.com>
+References: <20230911154541.471484-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH 0/5] arm64: dts: meson: u200 audio clean up
+Message-Id: <169444762970.3994411.2239837675633536062.b4-ty@linaro.org>
+Date:   Mon, 11 Sep 2023 17:53:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b41a26ae-52f5-f9d9-edc7-32ee665f2482@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 10:33:01AM -0500, Tom Lendacky wrote:
-> On 9/11/23 09:57, Kirill A. Shutemov wrote:
-> > On Mon, Sep 11, 2023 at 10:56:36PM +0800, Dave Young wrote:
-> > > > early console in extract_kernel
-> > > > input_data: 0x000000807eb433a8
-> > > > input_len: 0x0000000000d26271
-> > > > output: 0x000000807b000000
-> > > > output_len: 0x0000000004800c10
-> > > > kernel_total_size: 0x0000000003e28000
-> > > > needed_size: 0x0000000004a00000
-> > > > trampoline_32bit: 0x000000000009d000
-> > > > 
-> > > > Decompressing Linux... out of pgt_buf in arch/x86/boot/compressed/ident_map_64.c!?
-> > > > pages->pgt_buf_offset: 0x0000000000006000
-> > > > pages->pgt_buf_size: 0x0000000000006000
-> > > > 
-> > > > 
-> > > > Error: kernel_ident_mapping_init() failed
-> > > > 
-> > > > It crashes on #PF due to stbl->nr_tables dereference in
-> > > > efi_get_conf_table() called from init_unaccepted_memory().
-> > > > 
-> > > > I don't see anything special about stbl location: 0x775d6018.
-> > > > 
-> > > > One other bit of information: disabling 5-level paging also helps the
-> > > > issue.
-> > > > 
-> > > > I will debug further.
-> > 
-> > The problem is not limited to unaccepted memory, it also triggers if we
-> > reach efi_get_rsdp_addr() in the same setup.
-> > 
-> > I think we have several problems here.
-> > 
-> > - 6 pages for !RANDOMIZE_BASE is only enough for kernel, cmdline,
-> >    boot_data and setup_data if we assume that they are in different 1G
-> >    regions and do not cross the 1G boundaries. 4-level paging: 1 for PGD, 1
-> >    for PUD, 4 for PMD tables.
-> > 
-> >    Looks like we never map EFI/ACPI memory explicitly.
-> > 
-> >    It might work if kernel/cmdline/... are in single 1G and we have
-> >    spare pages to handle page faults.
-> > 
-> > - No spare memory to handle mapping for cc_info and cc_info->cpuid_phys;
-> > 
-> > - I didn't increase BOOT_INIT_PGT_SIZE when added 5-level paging support.
-> >    And if start pagetables from scratch ('else' case of 'if (p4d_offset...))
-> >    we run out of memory.
-> > 
-> > I believe similar logic would apply for BOOT_PGT_SIZE for RANDOMIZE_BASE=y
-> > case.
-> > 
-> > I don't know what the right fix here. We can increase the constants to be
-> > enough to cover existing cases, but it is very fragile. I am not sure I
-> > saw all users. Some of them could silently handled with pagefault handler
-> > in some setups. And it is hard to catch new users during code review.
-> > 
-> > Also I'm not sure why do we need pagefault handler there. Looks like it
-> > just masking problems. I think everything has to be mapped explicitly.
-> > 
-> > Any comments?
-> 
-> There was a similar related issue around the cc_info blob that is captured
-> here: https://lore.kernel.org/lkml/20230601072043.24439-1-ltao@redhat.com/
-> 
-> Personally, I'm a fan of mapping the EFI tables that will be passed to the
-> kexec/kdump kernel. To me, that seems to more closely match the valid
-> mappings for the tables when control is transferred to the OS from UEFI on
-> the initial boot.
+Hi,
 
-I don't see how it would help if initialize_identity_maps() resets
-pagetables. See 'else' case of 'if (p4d_offset...).
+On Mon, 11 Sep 2023 17:45:36 +0200, Jerome Brunet wrote:
+> This patchset fixes the recently merged audio support for u200 and adds the
+> missing onboard audio devices
+> 
+> Jerome Brunet (5):
+>   arm64: dts: meson: u200: fix spdif output pin
+>   arm64: dts: meson: u200: add missing audio clock controller
+>   arm64: dts: meson: u200: add spdifout b routes
+>   arm64: dts: meson: u200: use TDM C for HDMI
+>   arm64: dts: meson: u200: add onboard devices
+> 
+> [...]
+
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.7/arm64-dt)
+
+[1/5] arm64: dts: meson: u200: fix spdif output pin
+      https://git.kernel.org/amlogic/c/66561cb158d0a25054bbcf423d59dd782311f60d
+[2/5] arm64: dts: meson: u200: add missing audio clock controller
+      https://git.kernel.org/amlogic/c/f9dc2d96e1bfb33635df7edf0a1b8572bbb20954
+[3/5] arm64: dts: meson: u200: add spdifout b routes
+      https://git.kernel.org/amlogic/c/4e47ea869289dab588c0152ec90d6eb5bf7f7169
+[4/5] arm64: dts: meson: u200: use TDM C for HDMI
+      https://git.kernel.org/amlogic/c/956236a24aec8364a3ee5d287e23c0c01cfb9c7c
+[5/5] arm64: dts: meson: u200: add onboard devices
+      https://git.kernel.org/amlogic/c/f1decbd5629bf0dbd3af3b2f803f72a27eb01c7f
+
+These changes has been applied on the intermediate git tree [1].
+
+The v6.7/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
+for inclusion in their intermediate git branches in order to be sent to Linus during
+the next merge window, or sooner if it's a set of fixes.
+
+In the cases of fixes, those will be merged in the current release candidate
+kernel and as soon they appear on the Linux master branch they will be
+backported to the previous Stable and Long-Stable kernels [2].
+
+The intermediate git branches are merged daily in the linux-next tree [3],
+people are encouraged testing these pre-release kernels and report issues on the
+relevant mailing-lists.
+
+If problems are discovered on those changes, please submit a signed-off-by revert
+patch followed by a corrective changeset.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Neil
+
