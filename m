@@ -2,310 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB7879B619
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA8D79B835
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242283AbjIKWKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        id S1358821AbjIKWNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242574AbjIKPuj (ORCPT
+        with ESMTP id S242598AbjIKPx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:50:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5EF18D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694447432; x=1725983432;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=N5ehCu/UnoLKemmz7dCtH+67qXqwmgu+HAINdk3HhGM=;
-  b=YsGzdokD0e3ThpeQ6GzHH8r/QLjsltPUlTfIAXvUzzoA+s7kG6S10ys3
-   ZNxvZynDl9m7bcheDeEm+xicK12qQHHeVNKw4DoVtGqVkhi0psGnxIsc0
-   7mO0CQ+fd6HDzhWRAT9XWoI5ReDjbAQmPMDmZ+p/8jmClv5BVnKLXiEVp
-   7fZj7Se6nNeRSy/aIry9hSdx+UYuDOkWHaIesf5WY2xaW/IiX2xoNz5md
-   9VWOupsBBw52S1n2inSiviyB6AL12ctKNfGSk0HH+d3YqBxJslegXcnCi
-   DBrbOuiacHl9c3aENkC+3FPCRL0aPLSQ5zg0Qne3yuJ6bwD1hUdkTiHOc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444541641"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="444541641"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:48:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917062287"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="917062287"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:48:13 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        Mon, 11 Sep 2023 11:53:59 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D10C1B6;
+        Mon, 11 Sep 2023 08:53:52 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E264560010;
+        Mon, 11 Sep 2023 15:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694447631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VlumLDfPViZc0xloFKIh644KDGw78c+ut/NV7iKNtlQ=;
+        b=PGYyhmBDNxgZ23BYOsmdh+lwPt+28Bu0FcRd5Y0euqtud4y8TVkLV5w1nqSLU3RhGc0ged
+        ZMx0YS7XU4RIMdFShZSRG+7+4uq+tYiS7oSIvMd/O0umfw/ZAh+O89Y0qHI5+XaI8QdMw7
+        tqBE/RfhWXmIMGu0bqpYBl9i17WwJxQfRZ0Pwalccef1RMGombaFZaiT387NI50rfg6ehm
+        hJWDgZ/ITNPFRxUySAvfzy0G9acnFCbnvJacSil2KtV/76zis/Ay+tXHP5buSv2KQoCUSC
+        xKAnqYm3NFswi6TeVP9y2dpSpk9C1s6tcx3+my40GVlrHjqceleGPILjemvVwA==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Ricardo Ribalda <ribalda@kernel.org>
+Cc:     linux-mtd@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [RESEND PATCH V3 6/6] perf tools: Add branch event knob
-Date:   Mon, 11 Sep 2023 08:48:22 -0700
-Message-Id: <20230911154822.2559213-6-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230911154822.2559213-1-kan.liang@linux.intel.com>
-References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+Subject: Re: [PATCH] mtd: physmap-core: Restore map_rom fallback
+Date:   Mon, 11 Sep 2023 17:52:42 +0200
+Message-Id: <20230911155242.610991-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To:  <550e8c8c1da4c4baeb3d71ff79b14a18d4194f9e.1693407371.git.geert+renesas@glider.be>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'6792b7fce610bcd1cf3e07af3607fe7e2c38c1d8'
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Wed, 2023-08-30 at 15:00:34 UTC, Geert Uytterhoeven wrote:
+> When the exact mapping type driver was not available, the old
+> physmap_of_core driver fell back to mapping the region as ROM.
+> Unfortunately this feature was lost when the DT and pdata cases were
+> merged.  Revive this useful feature.
+> 
+> Fixes: 642b1e8dbed7bbbf ("mtd: maps: Merge physmap_of.c into physmap-core.c")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Add a new branch filter, "event", for the branch event option. It is
-used to mark the events which should be logged in the branch. If it is
-applied with the -j option, all the events should be logged in the
-branch. If the legacy kernel doesn't support the new branch sample type,
-switching off the branch event filter.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes, thanks.
 
-The branch event requires extra space. If the "event" branch filter is
-detected, the PERF_SAMPLE_BRANCH_EXTRA is applied automatically for the
-entire group.
-
-The new extra space of each branch is dumped right after the regular
-branch stack information via perf report -D.
-
-Usage examples:
-
-perf record -e "{branch-instructions,branch-misses}:S" -j any,event
-
-Only the first event, branch-instructions, collect the LBR. Both
-branch-instructions and branch-misses are marked as logged events.
-The occurrences information of them can be found in the branch stack
-extension space of each branch.
-
-perf record -e "{cpu/branch-instructions,branch_type=any/,
-cpu/branch-misses,branch_type=event/}"
-
-Only the first event, branch-instructions, collect the LBR. Only the
-branch-misses event is marked as a logged event.
-
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
-
-Changes since V2:
-- Drop the new bit in struct perf_branch_entry
-- Support PERF_SAMPLE_BRANCH_EXTRA
-
- tools/perf/Documentation/perf-record.txt  |  4 ++++
- tools/perf/arch/x86/util/evsel.c          | 17 ++++++++++++++-
- tools/perf/util/evsel.c                   | 26 ++++++++++++++++++++++-
- tools/perf/util/evsel.h                   | 12 +++++++++++
- tools/perf/util/parse-branch-options.c    |  1 +
- tools/perf/util/perf_event_attr_fprintf.c |  1 +
- tools/perf/util/sample.h                  |  1 +
- tools/perf/util/session.c                 |  8 +++++++
- 8 files changed, 68 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 680396c56bd1..91a77fae11bb 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -456,6 +456,10 @@ following filters are defined:
- 		     4th-Gen Xeon+ server), the save branch type is unconditionally enabled
- 		     when the taken branch stack sampling is enabled.
- 	- priv: save privilege state during sampling in case binary is not available later
-+	- event: save occurrences of the event since the last branch entry. Currently, the
-+		 feature is only supported by a newer CPU, e.g., Intel Sierra Forest and
-+		 later platforms. An error out is expected if it's used on the unsupported
-+		 kernel or CPUs.
- 
- +
- The option requires at least one branch type among any, any_call, any_ret, ind_call, cond.
-diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
-index 81d22657922a..038c3454d76f 100644
---- a/tools/perf/arch/x86/util/evsel.c
-+++ b/tools/perf/arch/x86/util/evsel.c
-@@ -9,6 +9,7 @@
- #include "evsel.h"
- #include "util/debug.h"
- #include "env.h"
-+#include "../../../util/evlist.h"
- 
- #define IBS_FETCH_L3MISSONLY   (1ULL << 59)
- #define IBS_OP_L3MISSONLY      (1ULL << 16)
-@@ -80,9 +81,23 @@ void arch__post_evsel_config(struct evsel *evsel, struct perf_event_attr *attr)
- 	struct perf_pmu *evsel_pmu, *ibs_fetch_pmu, *ibs_op_pmu;
- 	static int warned_once;
- 
--	if (warned_once || !x86__is_amd_cpu())
-+	if (warned_once)
- 		return;
- 
-+	if (!x86__is_amd_cpu()) {
-+		if (evsel__has_branch_evt_cntrs(evsel)) {
-+			struct evsel *cur, *leader = evsel__leader(evsel);
-+
-+			/* The extra space is required for the LBR event group */
-+			evlist__for_each_entry(evsel->evlist, cur) {
-+				if (leader == evsel__leader(cur))
-+					cur->core.attr.branch_sample_type |= PERF_SAMPLE_BRANCH_EXTRA;
-+			}
-+		}
-+
-+		return;
-+	}
-+
- 	evsel_pmu = evsel__find_pmu(evsel);
- 	if (!evsel_pmu)
- 		return;
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 762e2b2634a5..a70007beab14 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1828,6 +1828,10 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
- 
- static void evsel__disable_missing_features(struct evsel *evsel)
- {
-+	if (perf_missing_features.branch_extra)
-+		evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_EXTRA;
-+	if (perf_missing_features.branch_event)
-+		evsel->core.attr.branch_sample_type &= ~PERF_SAMPLE_BRANCH_EVT_CNTRS;
- 	if (perf_missing_features.read_lost)
- 		evsel->core.attr.read_format &= ~PERF_FORMAT_LOST;
- 	if (perf_missing_features.weight_struct) {
-@@ -1881,7 +1885,17 @@ bool evsel__detect_missing_features(struct evsel *evsel)
- 	 * Must probe features in the order they were added to the
- 	 * perf_event_attr interface.
- 	 */
--	if (!perf_missing_features.read_lost &&
-+	if (!perf_missing_features.branch_extra &&
-+	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_EXTRA)) {
-+		perf_missing_features.branch_extra = true;
-+		pr_debug2("switching off branch extra space support\n");
-+		return true;
-+	} else if (!perf_missing_features.branch_event &&
-+	    (evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_EVT_CNTRS)) {
-+		perf_missing_features.branch_event = true;
-+		pr_debug2("switching off branch event support\n");
-+		return true;
-+	} else if (!perf_missing_features.read_lost &&
- 	    (evsel->core.attr.read_format & PERF_FORMAT_LOST)) {
- 		perf_missing_features.read_lost = true;
- 		pr_debug2("switching off PERF_FORMAT_LOST support\n");
-@@ -2574,6 +2588,16 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 
- 		OVERFLOW_CHECK(array, sz, max_size);
- 		array = (void *)array + sz;
-+
-+		if (evsel__has_branch_extra(evsel)) {
-+			OVERFLOW_CHECK_u64(array);
-+
-+			data->branch_stack_ext = (u64 *)array;
-+			sz = data->branch_stack->nr * sizeof(u64);
-+
-+			OVERFLOW_CHECK(array, sz, max_size);
-+			array = (void *)array + sz;
-+		}
- 	}
- 
- 	if (type & PERF_SAMPLE_REGS_USER) {
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 848534ec74fa..f476dd68bb4c 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -191,6 +191,8 @@ struct perf_missing_features {
- 	bool code_page_size;
- 	bool weight_struct;
- 	bool read_lost;
-+	bool branch_event;
-+	bool branch_extra;
- };
- 
- extern struct perf_missing_features perf_missing_features;
-@@ -499,6 +501,16 @@ static inline bool evsel__has_branch_hw_idx(const struct evsel *evsel)
- 	return evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX;
- }
- 
-+static inline bool evsel__has_branch_evt_cntrs(const struct evsel *evsel)
-+{
-+	return evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_EVT_CNTRS;
-+}
-+
-+static inline bool evsel__has_branch_extra(const struct evsel *evsel)
-+{
-+	return evsel->core.attr.branch_sample_type & PERF_SAMPLE_BRANCH_EXTRA;
-+}
-+
- static inline bool evsel__has_callchain(const struct evsel *evsel)
- {
- 	/*
-diff --git a/tools/perf/util/parse-branch-options.c b/tools/perf/util/parse-branch-options.c
-index fd67d204d720..ab5d6dabe659 100644
---- a/tools/perf/util/parse-branch-options.c
-+++ b/tools/perf/util/parse-branch-options.c
-@@ -36,6 +36,7 @@ static const struct branch_mode branch_modes[] = {
- 	BRANCH_OPT("stack", PERF_SAMPLE_BRANCH_CALL_STACK),
- 	BRANCH_OPT("hw_index", PERF_SAMPLE_BRANCH_HW_INDEX),
- 	BRANCH_OPT("priv", PERF_SAMPLE_BRANCH_PRIV_SAVE),
-+	BRANCH_OPT("event", PERF_SAMPLE_BRANCH_EVT_CNTRS),
- 	BRANCH_END
- };
- 
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index 2247991451f3..7c9fdd62d920 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -55,6 +55,7 @@ static void __p_branch_sample_type(char *buf, size_t size, u64 value)
- 		bit_name(COND), bit_name(CALL_STACK), bit_name(IND_JUMP),
- 		bit_name(CALL), bit_name(NO_FLAGS), bit_name(NO_CYCLES),
- 		bit_name(TYPE_SAVE), bit_name(HW_INDEX), bit_name(PRIV_SAVE),
-+		bit_name(EVT_CNTRS), bit_name(EXTRA),
- 		{ .name = NULL, }
- 	};
- #undef bit_name
-diff --git a/tools/perf/util/sample.h b/tools/perf/util/sample.h
-index c92ad0f51ecd..3abe892aae60 100644
---- a/tools/perf/util/sample.h
-+++ b/tools/perf/util/sample.h
-@@ -113,6 +113,7 @@ struct perf_sample {
- 	void *raw_data;
- 	struct ip_callchain *callchain;
- 	struct branch_stack *branch_stack;
-+	u64 *branch_stack_ext;
- 	struct regs_dump  user_regs;
- 	struct regs_dump  intr_regs;
- 	struct stack_dump user_stack;
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 00d18c74c090..b58cfef5d767 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1153,6 +1153,7 @@ static void callchain__printf(struct evsel *evsel,
- static void branch_stack__printf(struct perf_sample *sample, bool callstack)
- {
- 	struct branch_entry *entries = perf_sample__branch_entries(sample);
-+	u64 *branch_stack_ext = sample->branch_stack_ext;
- 	uint64_t i;
- 
- 	if (!callstack) {
-@@ -1194,6 +1195,13 @@ static void branch_stack__printf(struct perf_sample *sample, bool callstack)
- 			}
- 		}
- 	}
-+
-+	if (branch_stack_ext) {
-+		printf("... branch stack extra: nr:%" PRIu64 "\n", sample->branch_stack->nr);
-+		for (i = 0; i < sample->branch_stack->nr; i++) {
-+			printf("..... %2"PRIu64": %016" PRIx64 "\n", i, branch_stack_ext[i]);
-+		}
-+	}
- }
- 
- static void regs_dump__printf(u64 mask, u64 *regs, const char *arch)
--- 
-2.35.1
-
+Miquel
