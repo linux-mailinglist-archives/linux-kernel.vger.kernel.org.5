@@ -2,191 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8E479B31B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A5E79B01B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241377AbjIKWj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:39:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        id S230194AbjIKUue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237300AbjIKM3x (ORCPT
+        with ESMTP id S237306AbjIKMbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:29:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B363CEB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694435348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DHwDjcrul9YxmPEcQYx4HYVTPitVbFTJsMO8Jxfoen4=;
-        b=PpBbTIXDCLfnPYlUlQTZyTXWW9iko0onGiJho1tlEcuDiMQOxmdWdiKnJMf1kOZ5GqSRn/
-        sQTIuWaO+qvN4hcg84bxwHuXdPh+sqi3zqNEqm/io6/36cXj6G2Elq+/Mm+N6zUqKJjhHj
-        6evGTUoODgCaj6GeCU3pP64m2ISh9r0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-486-Meb5plMHNfecFLX8nUD6Cw-1; Mon, 11 Sep 2023 08:29:07 -0400
-X-MC-Unique: Meb5plMHNfecFLX8nUD6Cw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4011fa32e99so32886225e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:29:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694435346; x=1695040146;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DHwDjcrul9YxmPEcQYx4HYVTPitVbFTJsMO8Jxfoen4=;
-        b=hQ1ZnwKt1YBVxmVxjPpbRHBhCl8vNI+KdDxISnNaCG8xMAyNz5uzDiry23w8sS4NAe
-         KOoUGHVobljtACAd2flq/wDdRzSNhYgHkRZbkVyAyK5tTrYIPqIjRjJW55aDCniPWt4J
-         YNlgB3Y8ywzgP7YMyBHKxaE3uMjYrw0UCIs25pYciJ4hhzmM4IeGoxmV0l2t433vpCtM
-         /U8p+qhhQtjSONrQRe26L75JQ9Dq0CkU8RRQowsTn9GbplCm3rvMFyB7GI4Li33syybT
-         n1AMXhnYX4p2x+E28onZDx0v6Oa2GeC3OGGeNeV18pKuFanJXRFptec0sFsHtaeyJjxF
-         Y6aA==
-X-Gm-Message-State: AOJu0YyajlFYY1Sh9SxJXwqn4/MdzGxzzVTDKDJVzaBybV99z4ncxU3A
-        qq8gf3tBOOy6dr4X8P+hzI6Ul2Aiz5nOiwL9mfhnqcy7qnN/Xj4E8WbBz3wyXTI+LeXHnBhb9zX
-        1nVfEGkO+ByBIyhLGtrmX2rAU
-X-Received: by 2002:a05:600c:2208:b0:3fe:f667:4e4c with SMTP id z8-20020a05600c220800b003fef6674e4cmr8229311wml.12.1694435346278;
-        Mon, 11 Sep 2023 05:29:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF0LpLhNizaUMU3zKfHh49aqw4McELTtqbEdG0mSCPhvh4bG6htIZyW8h2QYhMj39he9TwHvA==
-X-Received: by 2002:a05:600c:2208:b0:3fe:f667:4e4c with SMTP id z8-20020a05600c220800b003fef6674e4cmr8229290wml.12.1694435345880;
-        Mon, 11 Sep 2023 05:29:05 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
-        by smtp.gmail.com with ESMTPSA id z18-20020a1c4c12000000b003fedcd02e2asm9929615wmf.35.2023.09.11.05.29.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 05:29:05 -0700 (PDT)
-Message-ID: <0cc8a118-2522-f666-5bcc-af06263fd352@redhat.com>
-Date:   Mon, 11 Sep 2023 14:29:03 +0200
+        Mon, 11 Sep 2023 08:31:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C8D1B9;
+        Mon, 11 Sep 2023 05:31:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B54C433C7;
+        Mon, 11 Sep 2023 12:31:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694435506;
+        bh=QRpBAeUI3hitgnSMQW2yEao4wcbtSpYQNtObb57edb8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NDMtglzWsJ2DbsIiZrdGnYwd6+mP2wjZ02Dtk3Hglx+MAmOwc/gEQW3/UPuVhfi99
+         bpg9lHNV+D2jbHm4URzIqXXvOxKTeswLHS2AftA+xA555vRElqfWQubv6JOfUVC7N5
+         jnW2A9liKkfXz3c5IU2KtQtz4lceDvVosjoAxck/C9ruvwr/huyRC7oDHtB4t1YBOH
+         BLVoBo/7HckY7lmbYhUDo3L+Ytp8suRxpJrWZzDL7HNsZ5R/bEPRNnMDiXIhsTpmgi
+         r2rqwQvl4bcnkTDc+Wubloqer55o5Wxw0m28TDeg3QRnjkZe8Bc6h0TB0hsMpyRPXW
+         AeZ8v+243VBzA==
+Date:   Mon, 11 Sep 2023 13:31:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Myunguk Kim <mwkim@gaonchips.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Uw e =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jose Abreu <joabreu@synopsys.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
+Message-ID: <ZP8Irf6g+sG6Ax9j@finisterre.sirena.org.uk>
+References: <20230911024023.43833-1-mwkim@gaonchips.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
-        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-        arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
- <33def4fe-fdb8-6388-1151-fabd2adc8220@redhat.com> <ZOc0fehF02MohuWr@arm.com>
- <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
- <0b9c122a-c05a-b3df-c69f-85f520294adc@redhat.com> <ZOd2LvUKMguWdlgq@arm.com>
- <ZPhfNVWXhabqnknK@monolith> <ZP7/e8YFiosElvTm@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
- reuse
-In-Reply-To: <ZP7/e8YFiosElvTm@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DtMfBSD3gbWfkN9d"
+Content-Disposition: inline
+In-Reply-To: <20230911024023.43833-1-mwkim@gaonchips.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.23 13:52, Catalin Marinas wrote:
-> On Wed, Sep 06, 2023 at 12:23:21PM +0100, Alexandru Elisei wrote:
->> On Thu, Aug 24, 2023 at 04:24:30PM +0100, Catalin Marinas wrote:
->>> On Thu, Aug 24, 2023 at 01:25:41PM +0200, David Hildenbrand wrote:
->>>> On 24.08.23 13:06, David Hildenbrand wrote:
->>>>> Regarding one complication: "The kernel needs to know where to allocate
->>>>> a PROT_MTE page from or migrate a current page if it becomes PROT_MTE
->>>>> (mprotect()) and the range it is in does not support tagging.",
->>>>> simplified handling would be if it's in a MIGRATE_CMA pageblock, it
->>>>> doesn't support tagging. You have to migrate to a !CMA page (for
->>>>> example, not specifying GFP_MOVABLE as a quick way to achieve that).
->>>>
->>>> Okay, I now realize that this patch set effectively duplicates some CMA
->>>> behavior using a new migrate-type.
-> [...]
->> I considered mixing the tag storage memory memory with normal memory and
->> adding it to MIGRATE_CMA. But since tag storage memory cannot be tagged,
->> this means that it's not enough anymore to have a __GFP_MOVABLE allocation
->> request to use MIGRATE_CMA.
->>
->> I considered two solutions to this problem:
->>
->> 1. Only allocate from MIGRATE_CMA is the requested memory is not tagged =>
->> this effectively means transforming all memory from MIGRATE_CMA into the
->> MIGRATE_METADATA migratetype that the series introduces. Not very
->> appealing, because that means treating normal memory that is also on the
->> MIGRATE_CMA lists as tagged memory.
-> 
-> That's indeed not ideal. We could try this if it makes the patches
-> significantly simpler, though I'm not so sure.
-> 
-> Allocating metadata is the easier part as we know the correspondence
-> from the tagged pages (32 PROT_MTE page) to the metadata page (1 tag
-> storage page), so alloc_contig_range() does this for us. Just adding it
-> to the CMA range is sufficient.
-> 
-> However, making sure that we don't allocate PROT_MTE pages from the
-> metadata range is what led us to another migrate type. I guess we could
-> achieve something similar with a new zone or a CPU-less NUMA node,
 
-Ideally, no significant core-mm changes to optimize for an architecture 
-oddity. That implies, no new zones and no new migratetypes -- unless it 
-is unavoidable and you are confident that you can convince core-MM 
-people that the use case (giving back 3% of system RAM at max in some 
-setups) is worth the trouble.
+--DtMfBSD3gbWfkN9d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I also had CPU-less NUMA nodes in mind when thinking about that, but not 
-sure how easy it would be to integrate it. If the tag memory has 
-actually different performance characteristics as well, a NUMA node 
-would be the right choice.
+On Mon, Sep 11, 2023 at 11:40:23AM +0900, Myunguk Kim wrote:
+> There is a SoC between dwc and DMA block (ie. PL330)
+> that does not have a burst signal and supports only single.
+>=20
+> So write not-support-burst property on dts, it support single DMA mode.
 
-If we could find some way to easily support this either via CMA or 
-CPU-less NUMA nodes, that would be much preferable; even if we cannot 
-cover each and every future use case right now. I expect some issues 
-with CXL+MTE either way , but are happy to be taught otherwise :)
+This feels like something we ought to be discovering from the DMA API
+somehow, while it's not quite a property of the DMA controller (but
+rather of the SoC integration) in this case it could be a property of
+some DMA controller elsewhere and the whole process of finding and
+figuring out the properties of the DMA controler is handled by the DMA
+API.
 
+--DtMfBSD3gbWfkN9d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Another thought I had was adding something like CMA memory 
-characteristics. Like, asking if a given CMA area/page supports tagging 
-(i.e., flag for the CMA area set?)?
+-----BEGIN PGP SIGNATURE-----
 
-When you need memory that supports tagging and have a page that does not 
-support tagging (CMA && taggable), simply migrate to !MOVABLE memory 
-(eventually we could also try adding !CMA).
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT/CKcACgkQJNaLcl1U
+h9Dq6wf8D1e8icWFQphCSuOBQy9bjVPvV7mJb6wbO9yIefWMNrYj/sberQ5lGM5h
+1/R+G76ou+eLpYY6O1qXHwb4LK6DO9Tp9MV7zxM+RJ3LhD2qzRyswhHFbAXlPXJb
+KfJuHSq7npMz7EMEAi/Exoq0wJpMvsCeL8ekSWDBdOcoceB5FYAbeKtIRIrWvg0h
+/rJlufpWyGYRrDY14C+bZSNivHhFaL3FfvKmBeRYw68kjZyjSH6cmo9dbWAzhVW4
+yePTL5XZ7plwQMtpmwAg0GjF3HywcFSFXecr5AqbabTuQxL3hctZSquKn8h5XMrB
+D8DoHnP6I+L0B1yA9XsEcRTXudElNA==
+=dtYL
+-----END PGP SIGNATURE-----
 
-Was that discussed and what would be the challenges with that? Page 
-migration due to compaction comes to mind, but it might also be easy to 
-handle if we can just avoid CMA memory for that.
-
-> though the latter is not guaranteed not to allocate memory from the
-> range, only make it less likely. Both these options are less flexible in
-> terms of size/alignment/placement.
-> 
-> Maybe as a quick hack - only allow PROT_MTE from ZONE_NORMAL and
-> configure the metadata range in ZONE_MOVABLE but at some point I'd
-> expect some CXL-attached memory to support MTE with additional carveout
-> reserved.
-
-I have no idea how we could possibly cleanly support memory hotplug in 
-virtual environments (virtual DIMMs, virtio-mem) with MTE. In contrast 
-to s390x storage keys, the approach that arm64 with MTE took here 
-(exposing tag memory to the VM) makes it rather hard and complicated.
-
--- 
-Cheers,
-
-David / dhildenb
-
+--DtMfBSD3gbWfkN9d--
