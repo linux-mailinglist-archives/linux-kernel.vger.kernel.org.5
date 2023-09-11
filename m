@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176E379B26D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0AD79B3B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347961AbjIKVZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S241239AbjIKU5D convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 16:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbjIKIYD (ORCPT
+        with ESMTP id S235293AbjIKIZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:24:03 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EAB110
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:23:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500c37d479aso6641376e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694420636; x=1695025436; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RoFqFLIfT/Pj/zYgo2TV8TIm3I2iaBuNZRSIlIfashI=;
-        b=Sz/xdsGbzAb50fv7LSSeYbW54cSwqmAfepV+Gf2mGArfvEdasNpls9WtoLKIdniGX5
-         cfxQooafGXPZsnvEui7qOTUTwEQ4MktL7ghgoFw1l6w8cqwIP7BNCNmLWCjY+S5QhACJ
-         2aC2MbhnlvDH5ehStWyoebIV+KleXYMwI0CyZ/DX+Y9XP/Mk9XtL3wIWyxz3E6hUIV3b
-         1xx9ubJ6K+2OGe+YR+2OX4reQqyUA/2RKic1Hya7qpzWCRrBdRmUwBwG2UxLuWlJj7Ji
-         4waq6AMRCKKm7iQ8JsPs5/e2l4PaKTABlZWUxDSXHrucnbS/HGYwrJVL73GS+iHLYcVi
-         I00A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694420636; x=1695025436;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RoFqFLIfT/Pj/zYgo2TV8TIm3I2iaBuNZRSIlIfashI=;
-        b=lbriFiKUu8QCuZMuzguyMUHPKEr3A4RyYfV/74/rz8VKycAQRmPI2l0rpnfiCAjZ0A
-         yC9SyWm/GD91W4Fe7G7KylxeQpESaEgQ3naLq6E0Rd18gU2I22Y1k3q5/WVXGQ4ldWpX
-         hUTPpuAb3fp/NMj4IKkNqjFu2Glx5/1gzOYlgFZGPkTBzbzJo1bQ7jF4rNvF/Upc7rTP
-         REMZOIBdcf/wtZnwJfzMn8/+el9l86MHWr2rcC+BdZTxap3lYneH1oWu2cvkyISKUoGk
-         RGNtosoqwnZ0SGV8zZmd01pCOQdQeykzvi5th85eNYxEKxRvvitOsmvouL4n5MFJm+EO
-         aHtw==
-X-Gm-Message-State: AOJu0YwiqlPEhsMJsOnYz6DW4RSUktjlI0g9nI3bU2T29Xg84vl0Ug/A
-        KxmUPWFzEJdhU3NvzVtHyPi02Q==
-X-Google-Smtp-Source: AGHT+IH/CI+1Aa8xWX3l3qD+VArAvLQxWZ8YfL/GW2vDk7MBZhMam+A68zhQz0zu3t/vzQtZwPJeiA==
-X-Received: by 2002:ac2:4c48:0:b0:500:c765:bbe with SMTP id o8-20020ac24c48000000b00500c7650bbemr8797463lfk.0.1694420635941;
-        Mon, 11 Sep 2023 01:23:55 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id a8-20020a19f808000000b00500968ddca9sm1247712lff.136.2023.09.11.01.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 01:23:55 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 11 Sep 2023 10:23:54 +0200
-Subject: [PATCH v2 7/7] ASoC: max98927: Drop pointless includes
+        Mon, 11 Sep 2023 04:25:21 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E0AE7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:25:16 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id DE13A24E2C1;
+        Mon, 11 Sep 2023 16:25:14 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 11 Sep
+ 2023 16:25:15 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX066.cuchost.com
+ (172.16.6.66) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 11 Sep
+ 2023 16:25:12 +0800
+From:   Joshua Yeong <joshua.yeong@starfivetech.com>
+To:     <alexandre.belloni@bootlin.com>
+CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Joshua Yeong" <joshua.yeong@starfivetech.com>
+Subject: [PATCH 0/1] Fallback mechanism for GETMXDS CCC
+Date:   Mon, 11 Sep 2023 16:24:55 +0800
+Message-ID: <20230911082456.23239-1-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-descriptors-asoc-max-v2-7-b9d793fb768e@linaro.org>
-References: <20230911-descriptors-asoc-max-v2-0-b9d793fb768e@linaro.org>
-In-Reply-To: <20230911-descriptors-asoc-max-v2-0-b9d793fb768e@linaro.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is already using solely GPIO descriptors and
-do not need to include the legacy headers <linux/gpio.h>
-or <linux/of_gpio.h>. Drop them.
+Some I3C hardware will report error when incorrect length is received from
+device. GETMXDS CCC are availble in 2 formats; without turnaround time (format
+1) and with turnaround time (format 2). There is no mechanics to determine which
+format is supported by device. In case sending GETMXDS CCC format 2 resulted
+failure, try sending GETMXDS CCC format 1 instead.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/soc/codecs/max98927.c | 2 --
- 1 file changed, 2 deletions(-)
+Joshua Yeong (1):
+  i3c: Add fallback method for GETMXDS CCC
 
-diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index 776f23d38ac5..70db9d3ff5a5 100644
---- a/sound/soc/codecs/max98927.c
-+++ b/sound/soc/codecs/max98927.c
-@@ -15,9 +15,7 @@
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
--#include <linux/gpio.h>
- #include <linux/gpio/consumer.h>
--#include <linux/of_gpio.h>
- #include <sound/tlv.h>
- #include "max98927.h"
- 
+ drivers/i3c/master.c    | 33 ++++++++++++++++++++++++++++-----
+ include/linux/i3c/ccc.h | 17 +++++++++++++++--
+ 2 files changed, 43 insertions(+), 7 deletions(-)
 
--- 
-2.34.1
+--
+2.25.1
 
