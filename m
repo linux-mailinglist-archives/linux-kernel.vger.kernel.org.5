@@ -2,135 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD6279B27C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0112879ADC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236423AbjIKUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46228 "EHLO
+        id S1345097AbjIKVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243213AbjIKQ7i (ORCPT
+        with ESMTP id S243152AbjIKQyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:59:38 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E922110
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:59:33 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401da71b7faso55038045e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:59:33 -0700 (PDT)
+        Mon, 11 Sep 2023 12:54:01 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07261110
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:56 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so12410678a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694451572; x=1695056372; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=b6zpEfFwTnyi86KDgClkEQHR3xaNBEnZrwWpoCsbQ28=;
-        b=RARINvHL11MYZnNct4IXAzzWSq8gUqr9PhVeMGIkPC3R9BqpRgy0BsxcLRXruAOMSt
-         VVtucy2AqLK49jwMQCcARNFoVK/Dyy35W+kF/TMM+56izSlT4j8nJYzkLO8d7yQweIWx
-         f984INLuJXGu02LZnlxi/2+yHK1HsNaD16CdZYJ1vlRK7j8xZkM5qCFjW/uefXuVJlVf
-         e1bmkZzCpXuvEwyJuOroR4/l4zspB7PPYWjQ+QmcBwP2QY9uHrLylr3Ro4DD7cAmU2+y
-         MIB2mKPw17L1pwb2mfenuvkxz4yZ4xeqskM8+JwmsQCG+oX7++J9KLLmegjBgnldJEKI
-         tQOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694451572; x=1695056372;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1694451234; x=1695056034; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b6zpEfFwTnyi86KDgClkEQHR3xaNBEnZrwWpoCsbQ28=;
-        b=g20ELJDf4rKUkmhFW/HtC3AKYLgYAjtzuKv8r5aCzxPeITP32diyKpBMl0Mb5x5eat
-         rN/oQ8p66V2ev10A/CiWeyUAei98J+kaZmnCxFiTJ8mETOPwZ31G6BzQwCvEfFHLCAUS
-         Rz0REKOYamCmJ1470iY1ik8Ed4kbrhPgxjvEax7I+nD1F7BJBHCLZqavPA2lVt+/y7xo
-         02EY2t8Hz1757lUfIFlHa8uzPiK4dfWCcZSRalLKy1SCZfeeETbRduW5P3rXBCD2ojY6
-         tfHpj0IXBrt2CrhTQ9nDIQtBCM4gP+KmKgawfknQ6/nROgfTscpGTm9COBfxkqVLkyPC
-         nEoQ==
-X-Gm-Message-State: AOJu0YwjtlEQC/zBXnluDtV5ZZlrkzKRPW4d30d78Kf/L53SIF9oyHrH
-        vhl4nRFRTEG/E6MnbbErWepHvQ==
-X-Google-Smtp-Source: AGHT+IEd7G9QslE1ZtHxoDPCKdw54RbxizV0I6HFmOXEbzd4jr7xHnnQtJ22ouuYqItKPr+D/yJB6A==
-X-Received: by 2002:a7b:cc95:0:b0:401:2fab:43e8 with SMTP id p21-20020a7bcc95000000b004012fab43e8mr9096813wma.15.1694451572036;
-        Mon, 11 Sep 2023 09:59:32 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:55be:8f7e:5f59:7ed1])
-        by smtp.gmail.com with ESMTPSA id r18-20020a5d6952000000b003141a3c4353sm10655684wrw.30.2023.09.11.09.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:59:31 -0700 (PDT)
-References: <20230911154541.471484-1-jbrunet@baylibre.com>
- <20230911154541.471484-6-jbrunet@baylibre.com>
- <eedc9787-06b7-bac5-a1f5-ba07d23f4ac7@linaro.org>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 5/5] arm64: dts: meson: u200: add onboard devices
-Date:   Mon, 11 Sep 2023 18:52:44 +0200
-In-reply-to: <eedc9787-06b7-bac5-a1f5-ba07d23f4ac7@linaro.org>
-Message-ID: <1j5y4g4pe4.fsf@starbuckisacylon.baylibre.com>
+        bh=1Dil3AF3ivz/ToEVTlg8BOkOK0mtIGthLdRVu/NjOrE=;
+        b=0uyxQRPUp5LSOnxrxCrdFg2T+QXNOArb0HjIfPbSDnIYpiIBtKEgO2DxFd7k9hSQcA
+         EIyVOH0MawWk/QoOUucxOvCCiQXYY5AgziczsHmYrWLC9GE8tBqprl59ZnHKoZlLK1wP
+         J+I9m4ea2KW1lvfLSq0wNsULgzWvvcrKiXKObjk8Y3zZwx/7fyvgTdVQ7KxRE9BpG41f
+         K1qLMaqFtQHEBO04ZZJiZQfSGawER8l8TsNjo6l+CaJZzkAQFfPtXOrMAGHbTrYek7PY
+         b83pyAdQ/Vvu44mQ895Sa/NOykSjQ3bghd0G0PpZptp1aZv42iI/ZHX6EVVkW0YmT0qW
+         5Zew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694451234; x=1695056034;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Dil3AF3ivz/ToEVTlg8BOkOK0mtIGthLdRVu/NjOrE=;
+        b=ATqLXjp6dO5d2XzPaPWzhVi/mfVi38UUgLHF1RLUxHK770dJMq9qq6oBiRBj6uRQMf
+         It4gMm4l+lHMUCRZD3H13oqUxOd6MUa2c/6iPM+TF3Dezq2HF6EDgMQ8kQMRaaaIowFk
+         JOCTOmq84Q7ikQ0DTzKbBfKphaIjxI5poMpfEe9EbhfNg6oVo7M3XNVD8OCPz1irPfbO
+         LwIi31EQK5G+AwBeMWXVqLoxWgtTyuXbebkLUrFsj7fqp30xnMllicZxKr2Nfy5Vcgm2
+         z/gQjORQ80hu6K6X9LCduOBr9IG8IED1qa/DNJfExPxxMpPhNUGIDbnUtEwwWCvPkwft
+         poWA==
+X-Gm-Message-State: AOJu0YxIhsg4t0fGvby/6tITYZg+2VcE/V4V+270aR4Aj4EJcEUO6GlY
+        trhndabWhbbOA7pc9qsKf8BVsNKU2LNFC5e0+QK9HQ==
+X-Google-Smtp-Source: AGHT+IHpnsplbhCWyXsLea9xYfcD8KhYxmy/z4GHnoz3De2gJtqqVq+4rH/NcrjQl6AWw6VQpu+zBtispfqR1F8E6MQ=
+X-Received: by 2002:a50:ee89:0:b0:523:37f0:2d12 with SMTP id
+ f9-20020a50ee89000000b0052337f02d12mr304272edr.17.1694451234408; Mon, 11 Sep
+ 2023 09:53:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com> <1fae4a2f-eaf1-c54c-9ec5-040b2714709e@efficios.com>
+In-Reply-To: <1fae4a2f-eaf1-c54c-9ec5-040b2714709e@efficios.com>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Mon, 11 Sep 2023 09:53:42 -0700
+Message-ID: <CAFhGd8rHmQrThrCVHmVAp7fDFRidOAPR9Z6JFBpqAswX8dLGgw@mail.gmail.com>
+Subject: Re: [PATCH RFC] selftests/rseq: fix kselftest Clang build warnings
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 9, 2023 at 5:37=E2=80=AFAM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> On 9/8/23 19:03, Justin Stitt wrote:
+> > Hi,
+> >
+> > I am experiencing many warnings when trying to build tools/testing/self=
+tests.
+> >
+> > Here's one such example from rseq tree:
+> > |  param_test.c:1234:10: error: address argument to atomic operation mu=
+st be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
+> > |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
+> > |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
+> > |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/l=
+ib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_l=
+oad'
+> > |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOM=
+IC_SEQ_CST)
+> > |        |                             ^                 ~~~~~~
+> >
+> > I added the _Atomic type in various locations to silence _all_ (10) of =
+these
+> > warnings. I'm wondering, though, perhaps the absence of these _Atomic
+> > types in the first place is on purpose? Am I on the right track to fix
+> > these warnings without damaging the legitimacy of the tests at hand?
+> >
+> > I'd like some feedback about where to go from here and if others are
+> > experiencing the same issues. Thanks!
+> >
+> > FWIW here's my specific build incantation on Clang-18 (49d41de57896e935=
+cd5726719c5208bce22694ae):
+> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers defconfig kselftes=
+t-merge
+> > $ make LLVM=3D1 ARCH=3Dx86_64 -C tools/testing/selftests
+>
+> I should have used the __atomic_load_n() compiler builtin rather than
+> atomic_load(), mainly because it does not require the _Atomic annotation
+> to each type it touches.
 
-On Mon 11 Sep 2023 at 17:56, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-
-> On 11/09/2023 17:45, Jerome Brunet wrote:
->> Add missing audio devices found on the u200 PCB. This includes
->> * Lineout connected to the internal DAC
->> * SPDIF input connected to a coaxial socket
->> * TDM input decoders allowing output loopback
->> * TDM A and B output encoders and interfaces
->> 
->> TDM A and B link format is set by the related external codec.
->> Internal audio DAC can hook to any TDM output.
->> 
->> This change does not include support necessary the optional the speaker and
->> PDM Mic headers
->> 
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>  .../boot/dts/amlogic/meson-g12a-u200.dts      | 228 +++++++++++++++++-
->>  1 file changed, 218 insertions(+), 10 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> index da66e2e1dffb..9abe37b5b227 100644
->> --- a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> +++ b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> @@ -9,6 +9,7 @@
->>  #include <dt-bindings/gpio/gpio.h>
->>  #include <dt-bindings/gpio/meson-g12a-gpio.h>
->>  #include <dt-bindings/sound/meson-g12a-tohdmitx.h>
->> +#include <dt-bindings/sound/meson-g12a-toacodec.h>
->>  
->>  / {
->>  	compatible = "amlogic,u200", "amlogic,g12a";
->> @@ -19,6 +20,22 @@ aliases {
->>  		ethernet0 = &ethmac;
->>  	};
->>  
->> +	dioo2133: audio-amplifier-0 {
->> +		#sound-dai-cells = <0>;
->> +		compatible = "simple-audio-amplifier";
->
-> compatible is by convention first property. Do you have different style
-> in Amlogic/Meson?
->
->> +		status = "okay";
->
-> status is by default.
->
-
-It look odd to me too but this was be consistent with the other codec
-introduced by the change being fixed by this patchset.
+Would you like me to send a patch in with this change?
 
 >
-> Best regards,
-> Krzysztof
-
+> Thanks,
+>
+> Mathieu
+>
+>
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+> > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues=
+/61
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> >   tools/testing/selftests/rseq/param_test.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/=
+selftests/rseq/param_test.c
+> > index bf951a490bb4..94802aeed2c6 100644
+> > --- a/tools/testing/selftests/rseq/param_test.c
+> > +++ b/tools/testing/selftests/rseq/param_test.c
+> > @@ -356,7 +356,7 @@ struct inc_thread_test_data {
+> >   };
+> >
+> >   struct percpu_list_node {
+> > -     intptr_t data;
+> > +     _Atomic intptr_t data;
+> >       struct percpu_list_node *next;
+> >   };
+> >
+> > @@ -1212,8 +1212,8 @@ static int set_signal_handler(void)
+> >   /* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command=
+. */
+> >   #ifdef TEST_MEMBARRIER
+> >   struct test_membarrier_thread_args {
+> > -     int stop;
+> > -     intptr_t percpu_list_ptr;
+> > +     _Atomic int stop;
+> > +     _Atomic intptr_t percpu_list_ptr;
+> >   };
+> >
+> >   /* Worker threads modify data in their "active" percpu lists. */
+> > @@ -1240,7 +1240,7 @@ void *test_membarrier_worker_thread(void *arg)
+> >                       int cpu =3D get_current_cpu_id();
+> >
+> >                       ret =3D rseq_offset_deref_addv(RSEQ_MO_RELAXED, R=
+SEQ_PERCPU,
+> > -                             &args->percpu_list_ptr,
+> > +                             (intptr_t*)&args->percpu_list_ptr,
+> >                               sizeof(struct percpu_list_entry) * cpu, 1=
+, cpu);
+> >               } while (rseq_unlikely(ret));
+> >       }
+> >
+> > ---
+> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> > change-id: 20230908-kselftest-param_test-c-1763b62e762f
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+>
