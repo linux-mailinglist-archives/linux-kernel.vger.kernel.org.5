@@ -2,165 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E7979ADA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C4479B3AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354892AbjIKVzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        id S1347849AbjIKVZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238701AbjIKODK (ORCPT
+        with ESMTP id S238926AbjIKOHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:03:10 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8001DCE5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:03:05 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6beff322a97so3112425a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694440985; x=1695045785; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=htSTLHjXjD8vt5EAYXqSVCO6HargxzSV7gX/AB30oB8=;
-        b=pQ8DucXuZEPvnGjYPK6Xp6eHioid+dT2sQzVmKr7+vDnV6OsM7bPZeg4uE8b79zsv5
-         obCWZrboJP2tNwW+xt6Si608UY1uBJcTAqIK7QtpmwX429uEytiJ2w1JSEUMGBR+bQxn
-         DUL8oyRp6vGnqKKJ33js55BqS2bOVPgd24IcsZrHBAkZU92ZFT/mMYkfNktvPLnM3i5H
-         sxkme+ZYw2zigoIehhygpTpYSsxcKOvIs1UKzxKzUMiVd71Fq4cb9XTDmMlPVdtNU4im
-         D0LQchJyidfyTyJKQkLWt87DLb3EZ8oTy+YpobA2Uv3IYGpj+J71umZgbfZncoRxwPBL
-         V3cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694440985; x=1695045785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=htSTLHjXjD8vt5EAYXqSVCO6HargxzSV7gX/AB30oB8=;
-        b=Wrl4nm2IPT8uOmx/d9c8gaRUqY0IPsSGGcg10RkH3BUEymEtncIhykniQ78KNa9nOn
-         FsppJxjAhzbA9Emx2vIAJ3BJU0tTiyd6KKenUpr9rrWENJpC6g6KxCdy3dk/Du0Ti96C
-         5MKfJSu8Y0LSrwfR3T0HQWATGgchtrbD7Ig4aRS+MsYe/uZWmcGmK9IRandjzGFtuoWV
-         KMsQJltcCg3AFXfCGMPpQwtJVOXU7oexwPEQxg4tie9sc+HsYMSPQ0ULVeMeiGHr0Vmx
-         XPO2eh02cmzzLCKCZuRNC66Yx0kVxJrI8RJHtBh4PqXNRtTsfUuyw3mm4D4HBCZboCyK
-         kT3g==
-X-Gm-Message-State: AOJu0YxXplkUnQ34o73LU5uHWdtALwkXImfGrRrg5DDFksxa9WW3Lxrf
-        uiZLd3DCVd9sDMTpK8RKBsSE898L/5m0v1otsaLUpg==
-X-Google-Smtp-Source: AGHT+IE9jU1FIU4/f7jfsz9Rxe7QJ58u0dK8sOWYKbT++bpDZ1zCqq2z618I6/2zgrXrXtGljoG5HE5wpdQJfoU3BhM=
-X-Received: by 2002:a05:6830:457:b0:6b9:9e4f:5f4c with SMTP id
- d23-20020a056830045700b006b99e4f5f4cmr9593916otc.29.1694440984758; Mon, 11
- Sep 2023 07:03:04 -0700 (PDT)
+        Mon, 11 Sep 2023 10:07:48 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824E0E4B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:07:42 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BE78xC002262;
+        Mon, 11 Sep 2023 09:07:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694441228;
+        bh=huwJojy39HABdzylSPQSJ1ncFEW1uB+lHPr5rBDqcT0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=JrTBg6VSBM0mE4iBEbjh9vIMAca/4D0d1LjfuPSgCCVhSi4TIBY0OCSZ2VUIkLro5
+         O9ylYI+lvLUkujP4UH8zfiDkmGGzCbYSvhaAhiudd2ro6DB8WL6qyHIEQxRHGnX/IC
+         b7nr7PNWaGZIviUPdSa3rz8pPNqJYEd65//AO0Dg=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BE78wD130585
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Sep 2023 09:07:08 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Sep 2023 09:07:08 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Sep 2023 09:07:08 -0500
+Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BE765e120291;
+        Mon, 11 Sep 2023 09:07:07 -0500
+From:   Andrew Davis <afd@ti.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH v2 2/8] ARM: mach-asm9260: Move ASM9260 support into Kconfig.platforms
+Date:   Mon, 11 Sep 2023 09:06:59 -0500
+Message-ID: <20230911140705.59297-3-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230911140705.59297-1-afd@ti.com>
+References: <20230911140705.59297-1-afd@ti.com>
 MIME-Version: 1.0
-References: <20230828140849.21724-1-tmaimon77@gmail.com> <20230828140849.21724-3-tmaimon77@gmail.com>
-In-Reply-To: <20230828140849.21724-3-tmaimon77@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 11 Sep 2023 16:02:53 +0200
-Message-ID: <CACRpkdZk8dKGx2HUoRhkRo6DBkycKh5EkYiGWcFot3OOZnvdpg@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] pinctrl: nuvoton: add NPCM8XX pinctrl and GPIO driver
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 4:09=E2=80=AFPM Tomer Maimon <tmaimon77@gmail.com> =
-wrote:
+This removes the need for a dedicated Kconfig and mach directory.
 
-> Add pinctrl and GPIO controller driver support to Arbel BMC NPCM8XX SoC.
->
-> Arbel BMC NPCM8XX pinctrl driver based on Poleg NPCM7XX, except the
-> pin mux mapping difference the NPCM8XX GPIO supports adjust debounce
-> period time.
->
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Signed-off-by: Andrew Davis <afd@ti.com>
+Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ arch/arm/Kconfig              | 2 --
+ arch/arm/Kconfig.platforms    | 9 +++++++++
+ arch/arm/mach-asm9260/Kconfig | 9 ---------
+ 3 files changed, 9 insertions(+), 11 deletions(-)
+ delete mode 100644 arch/arm/mach-asm9260/Kconfig
 
-As mentioned the patch is already applied, consider the following
-as nitpicks you can address in followup patches.
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index e8a1cb1fdcb48..75cb085a7dae5 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -363,8 +363,6 @@ source "arch/arm/mach-alpine/Kconfig"
+ 
+ source "arch/arm/mach-artpec/Kconfig"
+ 
+-source "arch/arm/mach-asm9260/Kconfig"
+-
+ source "arch/arm/mach-aspeed/Kconfig"
+ 
+ source "arch/arm/mach-at91/Kconfig"
+diff --git a/arch/arm/Kconfig.platforms b/arch/arm/Kconfig.platforms
+index ed1f6da11e243..b80a5b49d276d 100644
+--- a/arch/arm/Kconfig.platforms
++++ b/arch/arm/Kconfig.platforms
+@@ -66,3 +66,12 @@ config ARCH_VIRT
+ 	select ARM_GIC_V3_ITS if PCI
+ 	select ARM_PSCI
+ 	select HAVE_ARM_ARCH_TIMER
++
++config MACH_ASM9260
++	bool "Alphascale ASM9260"
++	depends on ARCH_MULTI_V5
++	depends on CPU_LITTLE_ENDIAN
++	select CPU_ARM926T
++	select ASM9260_TIMER
++	help
++	  Support for Alphascale ASM9260 based platform.
+diff --git a/arch/arm/mach-asm9260/Kconfig b/arch/arm/mach-asm9260/Kconfig
+deleted file mode 100644
+index 74e0f61c74c88..0000000000000
+--- a/arch/arm/mach-asm9260/Kconfig
++++ /dev/null
+@@ -1,9 +0,0 @@
+-# SPDX-License-Identifier: GPL-2.0-only
+-config MACH_ASM9260
+-	bool "Alphascale ASM9260"
+-	depends on ARCH_MULTI_V5
+-	depends on CPU_LITTLE_ENDIAN
+-	select CPU_ARM926T
+-	select ASM9260_TIMER
+-	help
+-	  Support for Alphascale ASM9260 based platform.
+-- 
+2.39.2
 
-> +struct npcm8xx_gpio {
-> +       struct gpio_chip        gc;
-> +       void __iomem            *base;
-> +       struct debounce_time    debounce;
-> +       int                     irqbase;
-
-You're not really using this are you? Delete it.
-Also the assignment further down: you do not use it I think.
-
-> +       int                     irq;
-
-You're not using this either. Delete it.
-
-> +       struct irq_chip         irq_chip;
-
-Not this either. Delete it.
-
-> +static int npcm8xx_dt_node_to_map(struct pinctrl_dev *pctldev,
-> +                                 struct device_node *np_config,
-> +                                 struct pinctrl_map **map,
-> +                                 u32 *num_maps)
-> +{
-> +       return pinconf_generic_dt_node_to_map(pctldev, np_config,
-> +                                             map, num_maps,
-> +                                             PIN_MAP_TYPE_INVALID);
-> +}
-> +
-> +static void npcm8xx_dt_free_map(struct pinctrl_dev *pctldev,
-> +                               struct pinctrl_map *map, u32 num_maps)
-> +{
-> +       kfree(map);
-> +}
-
-Can't you just call the generic functions directly?
-
-> +static const struct pinctrl_ops npcm8xx_pinctrl_ops =3D {
-> +       .get_groups_count =3D npcm8xx_get_groups_count,
-> +       .get_group_name =3D npcm8xx_get_group_name,
-> +       .get_group_pins =3D npcm8xx_get_group_pins,
-> +       .dt_node_to_map =3D npcm8xx_dt_node_to_map,
-> +       .dt_free_map =3D npcm8xx_dt_free_map,
-
-Here?
-
-(...)
-> +static int npcm8xx_gpio_request_enable(struct pinctrl_dev *pctldev,
-> +                                      struct pinctrl_gpio_range *range,
-> +                                      unsigned int offset)
-> +{
-> +       struct npcm8xx_pinctrl *npcm =3D pinctrl_dev_get_drvdata(pctldev)=
-;
-> +       const unsigned int *pin =3D &offset;
-> +       int mode =3D fn_gpio;
-> +
-> +       if (pin[0] >=3D 183 && pin[0] <=3D 189)
-> +               mode =3D pincfg[pin[0]].fn0;
-
-These magic numbers should really be definies.
-
-> +static void npcm8xx_gpio_request_free(struct pinctrl_dev *pctldev,
-> +                                     struct pinctrl_gpio_range *range,
-> +                                     unsigned int offset)
-> +{
-> +       struct npcm8xx_pinctrl *npcm =3D pinctrl_dev_get_drvdata(pctldev)=
-;
-> +       int virq;
-> +
-> +       virq =3D irq_find_mapping(npcm->domain, offset);
-> +       if (virq)
-> +               irq_dispose_mapping(virq);
-> +}
-
-I would just rename "virq" to "irq", it is a Linux IRQ, not really
-"virtual" which is what the "v" sometimes stand for.
-
-Yours,
-Linus Walleij
