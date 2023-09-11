@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 056B079B48D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF9779B0BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349699AbjIKVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
+        id S1354184AbjIKVwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237601AbjIKNAG (ORCPT
+        with ESMTP id S237576AbjIKM7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:00:06 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F256E4D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:59:37 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c1e128135aso35101915ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694437177; x=1695041977; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M9K9PV8rCUk+B/IC15F5p4JTJ+5tMZARiqrSac1yaAY=;
-        b=cvKetsLBva9j2NCTgC84iEPcynqNMGv3GC1OmMtPJ3rRrTD3A7i7crbt7BiCiB9UJR
-         wvWYw4qDFjvQPJDr+l7t5Sa1EtJDrt2k5NZQ3M8fDRZT2H1cwe3I2aEkuBmvnvLROGcO
-         q3e8EZIdqx+DjNzNIeStmLklD8qNnYPNwG9oW+47GiHIK2kK39AoM9TkPhzMSEryNNLa
-         PY3tC86a20Y0FIcjqXZmibbrfwrarVyXcsUczBPp+Dpz+jwOCqLZtYLemKOdW0mognx7
-         guO3OhD3yqqyDzbJQMEqeQRdHmhr4PMJKmU0TFs7kR1o3DqVZx/I+shcJn8Ab1K22+U9
-         nC1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694437177; x=1695041977;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=M9K9PV8rCUk+B/IC15F5p4JTJ+5tMZARiqrSac1yaAY=;
-        b=BVXEWA7dVKSVUgL4KB+JicB2wmVyDEifLzdgSPCi2o0jyNNkzCyJtYVkBgqdFcc32p
-         gJ/1OBLJmig9mtAmli0rE9SM4txwmXHpG/jCFdC8xMD88pW/xg+W5OkLtnhtXhdWeIqI
-         5zuI3gs2l77mtJVBIIsyDFEMf0SjajqHVxqPK6yqD64CqC9wKXgogj8XpixuNdi5FRgR
-         yKruyR2f8YVNq33pVCn44/Tph4cG4SMB/s2AQFiDfSWIYXQY05/mCLJeHe95Z87jjEi6
-         Kx9poBHnoiU4VAnr2RIwvy6XV5srz9+1X9B2qIUVrFbv+QJg3BqkIeyMGBQGYKteeBlo
-         AWLg==
-X-Gm-Message-State: AOJu0Yy/RU3HVAtN8Cdai2nk8hwROvY4IMBxDmv02FHjkDGFXWBjpWj4
-        P6LK/uIxoM22zRg66pSWoe4+Yw==
-X-Google-Smtp-Source: AGHT+IF0oOYT6OYBqZ+NhEZ/u0pJPEqP5WDyQnKZHqRlsJf7LY3KaXHXMZJ7AMyMKhj/KCQHODv8Xg==
-X-Received: by 2002:a17:903:2291:b0:1c0:8bf3:eb15 with SMTP id b17-20020a170903229100b001c08bf3eb15mr9519352plh.30.1694437176737;
-        Mon, 11 Sep 2023 05:59:36 -0700 (PDT)
-Received: from [10.84.144.104] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902778a00b001b53953f306sm6436614pll.178.2023.09.11.05.59.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 05:59:36 -0700 (PDT)
-Message-ID: <d388a9e5-560a-72c2-4db5-1f39827740c9@bytedance.com>
+        Mon, 11 Sep 2023 08:59:55 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCDBE40;
+        Mon, 11 Sep 2023 05:59:50 -0700 (PDT)
+X-UUID: 14c0c5c250a311ee8051498923ad61e6-20230911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=CPMWACJAgviKQmxWnosmzeeZGzhy0KOH7WEjCylhAbA=;
+        b=UXrlXGnLtlvmK/Ecl0mGTFJZNqLesmpcXlsLvHcOQGs3HCRSgUGtC0n0nQRP6tjhvz1TSrV26aDflrIBrUiwbiXwpoVnCB9ov62gQVe9wc1BzpnU4x7Mixh0Cvis4+IcWixwuqGpUp2b+kLlDugHzo7vSKTaM4fzGkSsR4yZnkk=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:93868120-3ad3-4977-87d1-055a39356b7a,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:ba17b4be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 14c0c5c250a311ee8051498923ad61e6-20230911
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1323316282; Mon, 11 Sep 2023 20:59:45 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Sep 2023 20:59:43 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 11 Sep 2023 20:59:42 +0800
+From:   Yunfei Dong <yunfei.dong@mediatek.com>
+To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+CC:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Steve Cho" <stevecho@chromium.org>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH 05/14] media: mediatek: vcodec: using encoder's device to alloc/free memory
 Date:   Mon, 11 Sep 2023 20:59:27 +0800
+Message-ID: <20230911125936.10648-6-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 2/6] maple_tree: Introduce interfaces __mt_dup() and
- mtree_dup()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, corbet@lwn.net,
-        akpm@linux-foundation.org, willy@infradead.org, brauner@kernel.org,
-        surenb@google.com, michael.christie@oracle.com,
-        peterz@infradead.org, mathieu.desnoyers@efficios.com,
-        npiggin@gmail.com, avagin@gmail.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20230830125654.21257-1-zhangpeng.00@bytedance.com>
- <20230830125654.21257-3-zhangpeng.00@bytedance.com>
- <20230907201333.nyydilmlbbf2wzf7@revolver>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20230907201333.nyydilmlbbf2wzf7@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--4.085200-8.000000
+X-TMASE-MatchedRID: zZxKUkmlWrQ/IVzSvtxQYQI0yP/uoH+DxKAxBgoYewn2MjGUf5GHscRr
+        vjvFKTaxteurRsMx+tiioN2/kJflOJCoy9iDotiwDB+ErBr0bAMoUVkB7ifJngFfXDffRHpWo8W
+        MkQWv6iXBcIE78YqRWvcUt5lc1lLgjMejjvPkBr48VX82z7b6LJCqOkDtL4siGdAHOCGgtWJQ+s
+        FRlQzcIsYGgHVcQ3yHEgBWaZYZAD/VgtwXM1+7jEdjxzx4+7OW49jp+6BdmVYc/j4aI5S1Lnr9G
+        D0zfOvEAaqvv/mhgrEIcy9ODq9nmVZca9RSYo/b
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--4.085200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 0048BDD6841D6C775C768961CDCE27A7FD85A2B3FAE2FF121962545F219E47C02000:8
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,409 +94,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Using encoder's device to allocate/free secure memory calling:
+mtk_vcodec_mem_alloc/mtk_vcodec_mem_free, not decoder's.
 
+'Fixes: 01abf5fbb081c ("media: mediatek: vcodec: separate struct 'mtk_vcodec_ctx'")'
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+---
+ .../mediatek/vcodec/common/mtk_vcodec_util.c  | 66 ++++++++++++++++++-
+ 1 file changed, 64 insertions(+), 2 deletions(-)
 
-在 2023/9/8 04:13, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230830 08:57]:
->> Introduce interfaces __mt_dup() and mtree_dup(), which are used to
->> duplicate a maple tree. Compared with traversing the source tree and
->> reinserting entry by entry in the new tree, it has better performance.
->> The difference between __mt_dup() and mtree_dup() is that mtree_dup()
->> handles locks internally.
-> 
-> __mt_dup() should be called mas_dup() to indicate the advanced interface
-> which requires users to handle their own locks.
-Changing to the mas_dup() interface may look like this:
-mas_dup(mas_old, mas_new)
+diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
+index 908602031fd0..62bb7290c56d 100644
+--- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
++++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_util.c
+@@ -45,7 +45,7 @@ int mtk_vcodec_write_vdecsys(struct mtk_vcodec_dec_ctx *ctx, unsigned int reg,
+ }
+ EXPORT_SYMBOL(mtk_vcodec_write_vdecsys);
+ 
+-int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
++static int mtk_vcodec_mem_dec_alloc(void *priv, struct mtk_vcodec_mem *mem)
+ {
+ 	unsigned long size = mem->size;
+ 	struct mtk_vcodec_dec_ctx *ctx = priv;
+@@ -64,9 +64,39 @@ int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
+ 
+ 	return 0;
+ }
++
++static int mtk_vcodec_mem_enc_alloc(void *priv, struct mtk_vcodec_mem *mem)
++{
++	unsigned long size = mem->size;
++	struct mtk_vcodec_enc_ctx *ctx = priv;
++	struct device *dev = &ctx->dev->plat_dev->dev;
++
++	mem->va = dma_alloc_coherent(dev, size, &mem->dma_addr, GFP_KERNEL);
++	if (!mem->va) {
++		mtk_v4l2_venc_err(ctx, "%s dma_alloc size=%ld failed!", dev_name(dev), size);
++		return -ENOMEM;
++	}
++
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - va      = %p", ctx->id, mem->va);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - dma     = 0x%lx", ctx->id,
++			  (unsigned long)mem->dma_addr);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]    size = 0x%lx", ctx->id, size);
++
++	return 0;
++}
++
++int mtk_vcodec_mem_alloc(void *priv, struct mtk_vcodec_mem *mem)
++{
++	enum mtk_instance_type inst_type = *((unsigned int *)priv);
++
++	if (inst_type == MTK_INST_ENCODER)
++		return mtk_vcodec_mem_enc_alloc(priv, mem);
++	else
++		return mtk_vcodec_mem_dec_alloc(priv, mem);
++}
+ EXPORT_SYMBOL(mtk_vcodec_mem_alloc);
+ 
+-void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
++static void mtk_vcodec_mem_dec_free(void *priv, struct mtk_vcodec_mem *mem)
+ {
+ 	unsigned long size = mem->size;
+ 	struct mtk_vcodec_dec_ctx *ctx = priv;
+@@ -87,6 +117,38 @@ void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
+ 	mem->dma_addr = 0;
+ 	mem->size = 0;
+ }
++
++static void mtk_vcodec_mem_enc_free(void *priv, struct mtk_vcodec_mem *mem)
++{
++	unsigned long size = mem->size;
++	struct mtk_vcodec_enc_ctx *ctx = priv;
++	struct device *dev = &ctx->dev->plat_dev->dev;
++
++	if (!mem->va) {
++		mtk_v4l2_venc_err(ctx, "%s dma_free size=%ld failed!", dev_name(dev), size);
++		return;
++	}
++
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - va      = %p", ctx->id, mem->va);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]  - dma     = 0x%lx", ctx->id,
++			  (unsigned long)mem->dma_addr);
++	mtk_v4l2_venc_dbg(3, ctx, "[%d]    size = 0x%lx", ctx->id, size);
++
++	dma_free_coherent(dev, size, mem->va, mem->dma_addr);
++	mem->va = NULL;
++	mem->dma_addr = 0;
++	mem->size = 0;
++}
++
++void mtk_vcodec_mem_free(void *priv, struct mtk_vcodec_mem *mem)
++{
++	enum mtk_instance_type inst_type = *((unsigned int *)priv);
++
++	if (inst_type == MTK_INST_ENCODER)
++		mtk_vcodec_mem_enc_free(priv, mem);
++	else
++		mtk_vcodec_mem_dec_free(priv, mem);
++}
+ EXPORT_SYMBOL(mtk_vcodec_mem_free);
+ 
+ void *mtk_vcodec_get_hw_dev(struct mtk_vcodec_dec_dev *dev, int hw_idx)
+-- 
+2.18.0
 
-This still encounters the problem we discussed before. You expect both
-mas_old and mas_new to point to the first element after the function
-returns, but for_each_vma(vmi, mpnt) in dup_mmap() does not support
-this, and will skip the first element.
-
-Unless we have an iterator similar to "do {} while()", we have to reset 
-mas_new. There is still additional overhead in making both mas_old and
-mas_new point to the first element, because mas will point to the last
-node after dfs order traversal.
-
-In fact, I think mtree_dup() and __mt_dup() are enough. They seem to
-match mtree_destroy() and __mt_destroy() very well. Underlines indicate
-that users need to handle the lock themselves.
-> 
->>
->> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
->> ---
->>   include/linux/maple_tree.h |   3 +
->>   lib/maple_tree.c           | 265 +++++++++++++++++++++++++++++++++++++
->>   2 files changed, 268 insertions(+)
->>
->> diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
->> index e41c70ac7744..44fe8a57ecbd 100644
->> --- a/include/linux/maple_tree.h
->> +++ b/include/linux/maple_tree.h
->> @@ -327,6 +327,9 @@ int mtree_store(struct maple_tree *mt, unsigned long index,
->>   		void *entry, gfp_t gfp);
->>   void *mtree_erase(struct maple_tree *mt, unsigned long index);
->>   
->> +int mtree_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp);
->> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp);
->> +
->>   void mtree_destroy(struct maple_tree *mt);
->>   void __mt_destroy(struct maple_tree *mt);
->>   
->> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
->> index ef234cf02e3e..8f841682269c 100644
->> --- a/lib/maple_tree.c
->> +++ b/lib/maple_tree.c
->> @@ -6370,6 +6370,271 @@ void *mtree_erase(struct maple_tree *mt, unsigned long index)
->>   }
->>   EXPORT_SYMBOL(mtree_erase);
->>   
->> +/*
->> + * mas_dup_free() - Free a half-constructed tree.
-> 
-> Maybe "Free an incomplete duplication of a tree" ?
-> 
->> + * @mas: Points to the last node of the half-constructed tree.
-> 
-> Your use of "Points to" seems to indicate someone knows you are talking
-> about a "maple state that has a node pointing to".  Can this be made
-> more clear?
-> @mas: The maple state of a incomplete tree.
-> 
-> Then add a note that @mas->node points to the last successfully
-> allocated node?
-> 
-> Or something along those lines.
-> 
->> + *
->> + * This function frees all nodes starting from @mas->node in the reverse order
->> + * of mas_dup_build(). There is no need to hold the source tree lock at this
->> + * time.
->> + */
->> +static void mas_dup_free(struct ma_state *mas)
->> +{
->> +	struct maple_node *node;
->> +	enum maple_type type;
->> +	void __rcu **slots;
->> +	unsigned char count, i;
->> +
->> +	/* Maybe the first node allocation failed. */
->> +	if (!mas->node)
->> +		return;
->> +
->> +	while (!mte_is_root(mas->node)) {
->> +		mas_ascend(mas);
->> +
->> +		if (mas->offset) {
->> +			mas->offset--;
->> +			do {
->> +				mas_descend(mas);
->> +				mas->offset = mas_data_end(mas);
->> +			} while (!mte_is_leaf(mas->node));
-> 
-> Can you blindly descend and check !mte_is_leaf()?  What happens when the
-> tree duplication fails at random internal nodes?  Maybe I missed how
-> this cannot happen?
-> 
->> +
->> +			mas_ascend(mas);
->> +		}
->> +
->> +		node = mte_to_node(mas->node);
->> +		type = mte_node_type(mas->node);
->> +		slots = (void **)ma_slots(node, type);
->> +		count = mas_data_end(mas) + 1;
->> +		for (i = 0; i < count; i++)
->> +			((unsigned long *)slots)[i] &= ~MAPLE_NODE_MASK;
->> +
->> +		mt_free_bulk(count, slots);
->> +	}
-> 
-> 
->> +
->> +	node = mte_to_node(mas->node);
->> +	mt_free_one(node);
->> +}
->> +
->> +/*
->> + * mas_copy_node() - Copy a maple node and allocate child nodes.
-> 
-> if required. "..and allocate child nodes if required."
-> 
->> + * @mas: Points to the source node.
->> + * @new_mas: Points to the new node.
->> + * @parent: The parent node of the new node.
->> + * @gfp: The GFP_FLAGS to use for allocations.
->> + *
->> + * Copy @mas->node to @new_mas->node, set @parent to be the parent of
->> + * @new_mas->node and allocate new child nodes for @new_mas->node.
->> + * If memory allocation fails, @mas is set to -ENOMEM.
->> + */
->> +static inline void mas_copy_node(struct ma_state *mas, struct ma_state *new_mas,
->> +		struct maple_node *parent, gfp_t gfp)
->> +{
->> +	struct maple_node *node = mte_to_node(mas->node);
->> +	struct maple_node *new_node = mte_to_node(new_mas->node);
->> +	enum maple_type type;
->> +	unsigned long val;
->> +	unsigned char request, count, i;
->> +	void __rcu **slots;
->> +	void __rcu **new_slots;
->> +
->> +	/* Copy the node completely. */
->> +	memcpy(new_node, node, sizeof(struct maple_node));
->> +
->> +	/* Update the parent node pointer. */
->> +	if (unlikely(ma_is_root(node)))
->> +		val = MA_ROOT_PARENT;
->> +	else
->> +		val = (unsigned long)node->parent & MAPLE_NODE_MASK;
-> 
-> If you treat the root as special and outside the loop, then you can
-> avoid the check for root for every non-root node.  For root, you just
-> need to copy and do this special parent thing before the main loop in
-> mas_dup_build().  This will avoid an extra branch for each VMA over 14,
-> so that would add up to a lot of instructions.
-> 
->> +
->> +	new_node->parent = ma_parent_ptr(val | (unsigned long)parent);
->> +
->> +	if (mte_is_leaf(mas->node))
->> +		return;
-> 
-> You are checking here and in mas_dup_build() for the leaf, splitting the
-> function into parent assignment and allocate would allow you to check
-> once. Copy could be moved to the main loop or with the parent setting,
-> depending on how you handle the root suggestion above.
-> 
->> +
->> +	/* Allocate memory for child nodes. */
->> +	type = mte_node_type(mas->node);
->> +	new_slots = ma_slots(new_node, type);
->> +	request = mas_data_end(mas) + 1;
->> +	count = mt_alloc_bulk(gfp, request, new_slots);
->> +	if (unlikely(count < request)) {
->> +		if (count)
->> +			mt_free_bulk(count, new_slots);
-> 
-> The new_slots will still contain the addresses of the freed nodes.
-> Don't you need to clear it here to avoid a double free?  Is there a
-> test case for this in your testing?  Again, I may have missed how this
-> is not possible..
-> 
->> +		mas_set_err(mas, -ENOMEM);
->> +		return;
->> +	}
->> +
->> +	/* Restore node type information in slots. */
->> +	slots = ma_slots(node, type);
->> +	for (i = 0; i < count; i++)
->> +		((unsigned long *)new_slots)[i] |=
->> +			((unsigned long)mt_slot_locked(mas->tree, slots, i) &
->> +			MAPLE_NODE_MASK);
-> 
-> Can you expand this to multiple lines to make it more clear what is
-> going on?
-> 
->> +}
->> +
->> +/*
->> + * mas_dup_build() - Build a new maple tree from a source tree
->> + * @mas: The maple state of source tree.
->> + * @new_mas: The maple state of new tree.
->> + * @gfp: The GFP_FLAGS to use for allocations.
->> + *
->> + * This function builds a new tree in DFS preorder. If the memory allocation
->> + * fails, the error code -ENOMEM will be set in @mas, and @new_mas points to the
->> + * last node. mas_dup_free() will free the half-constructed tree.
->> + *
->> + * Note that the attributes of the two trees must be exactly the same, and the
->> + * new tree must be empty, otherwise -EINVAL will be returned.
->> + */
->> +static inline void mas_dup_build(struct ma_state *mas, struct ma_state *new_mas,
->> +		gfp_t gfp)
->> +{
->> +	struct maple_node *node, *parent;
-> 
-> Could parent be struct maple_pnode?
-> 
->> +	struct maple_enode *root;
->> +	enum maple_type type;
->> +
->> +	if (unlikely(mt_attr(mas->tree) != mt_attr(new_mas->tree)) ||
->> +	    unlikely(!mtree_empty(new_mas->tree))) {
->> +		mas_set_err(mas, -EINVAL);
->> +		return;
->> +	}
->> +
->> +	mas_start(mas);
->> +	if (mas_is_ptr(mas) || mas_is_none(mas)) {
->> +		/*
->> +		 * The attributes of the two trees must be the same before this.
->> +		 * The following assignment makes them the same height.
->> +		 */
->> +		new_mas->tree->ma_flags = mas->tree->ma_flags;
->> +		rcu_assign_pointer(new_mas->tree->ma_root, mas->tree->ma_root);
->> +		return;
->> +	}
->> +
->> +	node = mt_alloc_one(gfp);
->> +	if (!node) {
->> +		new_mas->node = NULL;
-> 
-> We don't have checks around for node == NULL, MAS_NONE would be a safer
-> choice.  It is unlikely that someone would dup the tree and fail then
-> call something else, but I avoid setting node to NULL.
-> 
->> +		mas_set_err(mas, -ENOMEM);
->> +		return;
->> +	}
->> +
->> +	type = mte_node_type(mas->node);
->> +	root = mt_mk_node(node, type);
->> +	new_mas->node = root;
->> +	new_mas->min = 0;
->> +	new_mas->max = ULONG_MAX;
->> +	parent = ma_mnode_ptr(new_mas->tree);
->> +
->> +	while (1) {
->> +		mas_copy_node(mas, new_mas, parent, gfp);
->> +
->> +		if (unlikely(mas_is_err(mas)))
->> +			return;
->> +
->> +		/* Once we reach a leaf, we need to ascend, or end the loop. */
->> +		if (mte_is_leaf(mas->node)) {
->> +			if (mas->max == ULONG_MAX) {
->> +				new_mas->tree->ma_flags = mas->tree->ma_flags;
->> +				rcu_assign_pointer(new_mas->tree->ma_root,
->> +						   mte_mk_root(root));
->> +				break;
-> 
-> If you move this to the end of the function, you can replace the same
-> block above with a goto.  That will avoid breaking the line up.
-> 
->> +			}
->> +
->> +			do {
->> +				/*
->> +				 * Must not at the root node, because we've
->> +				 * already end the loop when we reach the last
->> +				 * leaf.
->> +				 */
-> 
-> I'm not sure what the comment above is trying to say.  Do you mean "This
-> won't reach the root node because the loop will break when the last leaf
-> is hit"?  I don't think that is accurate.. it will hit the root node but
-> not the end of the root node, right?  Anyways, the comment isn't clear
-> so please have a look.
-> 
->> +				mas_ascend(mas);
->> +				mas_ascend(new_mas);
->> +			} while (mas->offset == mas_data_end(mas));
->> +
->> +			mas->offset++;
->> +			new_mas->offset++;
->> +		}
->> +
->> +		mas_descend(mas);
->> +		parent = mte_to_node(new_mas->node);
->> +		mas_descend(new_mas);
->> +		mas->offset = 0;
->> +		new_mas->offset = 0;
->> +	}
->> +}
->> +
->> +/**
->> + * __mt_dup(): Duplicate a maple tree
->> + * @mt: The source maple tree
->> + * @new: The new maple tree
->> + * @gfp: The GFP_FLAGS to use for allocations
->> + *
->> + * This function duplicates a maple tree using a faster method than traversing
->> + * the source tree and inserting entries into the new tree one by one.
-> 
-> Can you make this comment more about what your code does instead of the
-> "one by one" description?
-> 
->> + * The user needs to ensure that the attributes of the source tree and the new
->> + * tree are the same, and the new tree needs to be an empty tree, otherwise
->> + * -EINVAL will be returned.
->> + * Note that the user needs to manually lock the source tree and the new tree.
->> + *
->> + * Return: 0 on success, -ENOMEM if memory could not be allocated, -EINVAL If
->> + * the attributes of the two trees are different or the new tree is not an empty
->> + * tree.
->> + */
->> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
->> +{
->> +	int ret = 0;
->> +	MA_STATE(mas, mt, 0, 0);
->> +	MA_STATE(new_mas, new, 0, 0);
->> +
->> +	mas_dup_build(&mas, &new_mas, gfp);
->> +
->> +	if (unlikely(mas_is_err(&mas))) {
->> +		ret = xa_err(mas.node);
->> +		if (ret == -ENOMEM)
->> +			mas_dup_free(&new_mas);
->> +	}
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(__mt_dup);
->> +
->> +/**
->> + * mtree_dup(): Duplicate a maple tree
->> + * @mt: The source maple tree
->> + * @new: The new maple tree
->> + * @gfp: The GFP_FLAGS to use for allocations
->> + *
->> + * This function duplicates a maple tree using a faster method than traversing
->> + * the source tree and inserting entries into the new tree one by one.
-> 
-> Again, it's more interesting to state it uses the DFS preorder copy.
-> 
-> It is also worth mentioning the superior allocation behaviour since that
-> is a desirable trait for many.  In fact, you should add the allocation
-> behaviour in your cover letter.
-> 
->> + * The user needs to ensure that the attributes of the source tree and the new
->> + * tree are the same, and the new tree needs to be an empty tree, otherwise
->> + * -EINVAL will be returned.
->> + *
->> + * Return: 0 on success, -ENOMEM if memory could not be allocated, -EINVAL If
->> + * the attributes of the two trees are different or the new tree is not an empty
->> + * tree.
->> + */
->> +int mtree_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
->> +{
->> +	int ret = 0;
->> +	MA_STATE(mas, mt, 0, 0);
->> +	MA_STATE(new_mas, new, 0, 0);
->> +
->> +	mas_lock(&new_mas);
->> +	mas_lock(&mas);
->> +
->> +	mas_dup_build(&mas, &new_mas, gfp);
->> +	mas_unlock(&mas);
->> +
->> +	if (unlikely(mas_is_err(&mas))) {
->> +		ret = xa_err(mas.node);
->> +		if (ret == -ENOMEM)
->> +			mas_dup_free(&new_mas);
->> +	}
->> +
->> +	mas_unlock(&new_mas);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL(mtree_dup);
->> +
->>   /**
->>    * __mt_destroy() - Walk and free all nodes of a locked maple tree.
->>    * @mt: The maple tree
->> -- 
->> 2.20.1
->>
