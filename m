@@ -2,248 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E718279BA34
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038C479B797
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355587AbjIKWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        id S1354304AbjIKVxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242511AbjIKPo4 (ORCPT
+        with ESMTP id S242540AbjIKPqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:44:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61346FB;
-        Mon, 11 Sep 2023 08:44:50 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 662AA660730D;
-        Mon, 11 Sep 2023 16:44:47 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694447089;
-        bh=Y54cO3Keiy0/M19Pg2PI3OmwZpoo7rXctVpgGOi2oTE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=c2raOA8o0CsQSjmro9YZXyZsNqpRy95YSTcN91QCUPZnyprbFEAF8LJ6lfk8KFL+U
-         3ISTu7F3OMY7IxYKmkbKCm6cBqOC5ClYwI6rn5HP2QnH6JddjGjsDgh4ktHWX/5J1A
-         LmHYlrLEB95RdJ7j8KMjKHZFVpO8sjucF5HuQylPJM9fXcE7mvvZ/bdH//LXAA0vXX
-         sbyiBVaDh84F4mWUFIoPgpCASZrElMc3d1enm8kfle6m38yzHUhojyvOOKMvya7/Se
-         hf/gvQRBC5pyxXYoZDran6530ebt5M4ET3eYvjDpPXxSUnbeIfbyMmogJmIKptUJpw
-         rDS0JwhU4uDeg==
-Message-ID: <4ff89457cbcc0582d312c8af919dab7a16b1943b.camel@collabora.com>
-Subject: Re: [PATCH 08/14] media: medkatek: vcodec: support one plane
- capture buffer
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
-        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Date:   Mon, 11 Sep 2023 11:44:37 -0400
-In-Reply-To: <20230911125936.10648-9-yunfei.dong@mediatek.com>
-References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
-         <20230911125936.10648-9-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 11 Sep 2023 11:46:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371C9FB;
+        Mon, 11 Sep 2023 08:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694447168; x=1725983168;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EGZf1+DVn+gyziuqfigDtm3H2lqewI5JtUnRehH1Sco=;
+  b=AkFbVm+J18qg7N9laCG+ojqAJcic/iItPCXhCoq+5Qi0+sGGUrx9Uc/G
+   iytz3AzMU+yjO/Qla/AFmv7sfilboc8AiCM5hZ28/S8pKOnjhIcwIrUzt
+   QeGwCwbUF4BWe9h9AhoCyKDTcC9IPGxyFIg32T/cXR9urm6ITQL+zOMsG
+   qY91Rq1TjAGF6fy9qar+w9Lo94pzswV12P4JJkPoj1MfAtp5/QkPPydBT
+   C58JlHN2xGIPT/Pg+YN3KFxDxYQsdNB+Zyupva6NBxs5ANL1z2nppwojI
+   OnKfqK5rSLtxWqQCALqoVQP7Q5ncwNER0wE/bAEMJXSXPCxISdv1pq517
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444539598"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="444539598"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:45:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917061944"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="917061944"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:45:36 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id DB1B145B; Mon, 11 Sep 2023 18:45:35 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
+Date:   Mon, 11 Sep 2023 18:45:34 +0300
+Message-Id: <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+It's rather a gigantic list of heards that is very hard to follow.
+Sorting helps to see what's already included and what's not.
+It improves a maintainability in a long term.
 
-Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9crit=C2=
-=A0:
-> The capture buffer has two planes for format MM21, but user space only
-> allocate secure memory for plane[0], and the size is Y data + uv data.
-> The driver need to support one plane decoder for svp mode.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ net/core/dev.c | 135 +++++++++++++++++++++++++------------------------
+ 1 file changed, 69 insertions(+), 66 deletions(-)
 
-I'm sorry, but in current V4L2 status, you must introduce a new format. Ass=
-uming
-the second M means MPLANE, this format would be MT21 (though you already us=
-ed
-that fourcc for MT21C) ?
-
-Nicolas
-
->=20
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 24 ++++++++++++-------
->  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 13 ++++++----
->  .../decoder/vdec/vdec_h264_req_common.c       | 16 +++++++------
->  .../mediatek/vcodec/decoder/vdec_drv_if.c     |  4 ++--
->  4 files changed, 34 insertions(+), 23 deletions(-)
->=20
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
-c.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> index 91ed576d6821..457c3e2979c9 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> @@ -541,14 +541,15 @@ static int vidioc_vdec_s_fmt(struct file *file, voi=
-d *priv,
->  			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D
->  				ctx->picinfo.buf_w;
->  		} else {
-> -			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D
-> -				ctx->picinfo.fb_sz[0];
-> -			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D
-> -				ctx->picinfo.buf_w;
-> -			ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =3D
-> -				ctx->picinfo.fb_sz[1];
-> -			ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =3D
-> -				ctx->picinfo.buf_w;
-> +			if (ctx->is_svp_mode)
-> +				ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D
-> +					ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1];
-> +			else
-> +				ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D ctx->picinfo.fb_sz[0];
-> +
-> +			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D ctx->picinfo.buf_w;
-> +			ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =3D ctx->picinfo.fb_sz[1];
-> +			ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =3D ctx->picinfo.buf_w;
->  		}
-> =20
->  		ctx->q_data[MTK_Q_DATA_DST].coded_width =3D ctx->picinfo.buf_w;
-> @@ -673,7 +674,12 @@ static int vidioc_vdec_g_fmt(struct file *file, void=
- *priv,
->  		 * So we just return picinfo yet, and update picinfo in
->  		 * stop_streaming hook function
->  		 */
-> -		q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0];
-> +
-> +		if (ctx->is_svp_mode)
-> +			q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1=
-];
-> +		else
-> +			q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0];
-> +
->  		q_data->sizeimage[1] =3D ctx->picinfo.fb_sz[1];
->  		q_data->bytesperline[0] =3D ctx->last_decoded_picinfo.buf_w;
->  		q_data->bytesperline[1] =3D ctx->last_decoded_picinfo.buf_w;
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
-c_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_d=
-ec_stateless.c
-> index e29c9c58f3da..2ea517883a86 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> @@ -256,11 +256,12 @@ static struct vdec_fb *vdec_get_cap_buffer(struct m=
-tk_vcodec_dec_ctx *ctx)
->  	framebuf =3D container_of(vb2_v4l2, struct mtk_video_dec_buf, m2m_buf.v=
-b);
-> =20
->  	pfb =3D &framebuf->frame_buffer;
-> -	pfb->base_y.va =3D vb2_plane_vaddr(dst_buf, 0);
-> +	if (!ctx->is_svp_mode)
-> +		pfb->base_y.va =3D vb2_plane_vaddr(dst_buf, 0);
->  	pfb->base_y.dma_addr =3D vb2_dma_contig_plane_dma_addr(dst_buf, 0);
->  	pfb->base_y.size =3D ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
-> =20
-> -	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2) {
-> +	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2 && !ctx->is_sv=
-p_mode) {
->  		pfb->base_c.va =3D vb2_plane_vaddr(dst_buf, 1);
->  		pfb->base_c.dma_addr =3D
->  			vb2_dma_contig_plane_dma_addr(dst_buf, 1);
-> @@ -310,16 +311,18 @@ static void mtk_vdec_worker(struct work_struct *wor=
-k)
->  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] (%d) id=3D%d, vb=3D%p", ctx->id,
->  			  vb2_src->vb2_queue->type, vb2_src->index, vb2_src);
-> =20
-> -	bs_src->va =3D vb2_plane_vaddr(vb2_src, 0);
-> -	bs_src->dma_addr =3D vb2_dma_contig_plane_dma_addr(vb2_src, 0);
-> -	bs_src->size =3D (size_t)vb2_src->planes[0].bytesused;
-> +	if (!ctx->is_svp_mode) {
-> +		bs_src->va =3D vb2_plane_vaddr(vb2_src, 0);
->  	if (!bs_src->va) {
->  		v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
->  		mtk_v4l2_vdec_err(ctx, "[%d] id=3D%d source buffer is NULL", ctx->id,
->  				  vb2_src->index);
->  		return;
-> +		}
->  	}
-> =20
-> +	bs_src->dma_addr =3D vb2_dma_contig_plane_dma_addr(vb2_src, 0);
-> +	bs_src->size =3D (size_t)vb2_src->planes[0].bytesused;
->  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] Bitstream VA=3D%p DMA=3D%pad Size=3D%zx=
- vb=3D%p",
->  			  ctx->id, bs_src->va, &bs_src->dma_addr, bs_src->size, vb2_src);
->  	/* Apply request controls. */
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h26=
-4_req_common.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h=
-264_req_common.c
-> index 5ca20d75dc8e..838f0eeea6e2 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_c=
-ommon.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_c=
-ommon.c
-> @@ -81,13 +81,15 @@ void mtk_vdec_h264_fill_dpb_info(struct mtk_vcodec_de=
-c_ctx *ctx,
-> =20
->  		h264_dpb_info[index].y_dma_addr =3D
->  			vb2_dma_contig_plane_dma_addr(vb, 0);
-> -		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2)
-> -			h264_dpb_info[index].c_dma_addr =3D
-> -				vb2_dma_contig_plane_dma_addr(vb, 1);
-> -		else
-> -			h264_dpb_info[index].c_dma_addr =3D
-> -				h264_dpb_info[index].y_dma_addr +
-> -				ctx->picinfo.fb_sz[0];
-> +		if (!ctx->is_svp_mode) {
-> +			if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2)
-> +				h264_dpb_info[index].c_dma_addr =3D
-> +					vb2_dma_contig_plane_dma_addr(vb, 1);
-> +			else
-> +				h264_dpb_info[index].c_dma_addr =3D
-> +					h264_dpb_info[index].y_dma_addr +
-> +					ctx->picinfo.fb_sz[0];
-> +		}
->  	}
->  }
-> =20
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c=
- b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> index d0b459b1603f..c7d33e540a13 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> @@ -73,14 +73,14 @@ int vdec_if_decode(struct mtk_vcodec_dec_ctx *ctx, st=
-ruct mtk_vcodec_mem *bs,
->  {
->  	int ret =3D 0;
-> =20
-> -	if (bs) {
-> +	if (bs && !ctx->is_svp_mode) {
->  		if ((bs->dma_addr & 63) !=3D 0) {
->  			mtk_v4l2_vdec_err(ctx, "bs dma_addr should 64 byte align");
->  			return -EINVAL;
->  		}
->  	}
-> =20
-> -	if (fb) {
-> +	if (fb && !ctx->is_svp_mode) {
->  		if (((fb->base_y.dma_addr & 511) !=3D 0) ||
->  		    ((fb->base_c.dma_addr & 511) !=3D 0)) {
->  			mtk_v4l2_vdec_err(ctx, "frame buffer dma_addr should 512 byte align")=
-;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 85df22f05c38..d795a6c5a591 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -68,91 +68,94 @@
+  *				        - netif_rx() feedback
+  */
+ 
+-#include <linux/uaccess.h>
++#include <linux/audit.h>
+ #include <linux/bitmap.h>
++#include <linux/bpf.h>
++#include <linux/bpf_trace.h>
+ #include <linux/capability.h>
+ #include <linux/cpu.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/hash.h>
+-#include <linux/slab.h>
+-#include <linux/sched.h>
+-#include <linux/sched/mm.h>
+-#include <linux/mutex.h>
+-#include <linux/rwsem.h>
+-#include <linux/string.h>
+-#include <linux/mm.h>
+-#include <linux/socket.h>
+-#include <linux/sockios.h>
++#include <linux/cpu_rmap.h>
++#include <linux/crash_dump.h>
++#include <linux/ctype.h>
++#include <linux/delay.h>
++#include <linux/dmaengine.h>
++#include <linux/err.h>
+ #include <linux/errno.h>
+-#include <linux/interrupt.h>
+-#include <linux/if_ether.h>
+-#include <linux/netdevice.h>
++#include <linux/errqueue.h>
+ #include <linux/etherdevice.h>
+ #include <linux/ethtool.h>
+-#include <linux/skbuff.h>
++#include <linux/hash.h>
++#include <linux/hashtable.h>
++#include <linux/highmem.h>
++#include <linux/hrtimer.h>
++#include <linux/if_arp.h>
++#include <linux/if_ether.h>
++#include <linux/if_macvlan.h>
++#include <linux/if_vlan.h>
++#include <linux/indirect_call_wrapper.h>
++#include <linux/inetdevice.h>
++#include <linux/in.h>
++#include <linux/init.h>
++#include <linux/interrupt.h>
++#include <linux/ip.h>
++#include <linux/ipv6.h>
++#include <linux/jhash.h>
++#include <linux/kernel.h>
+ #include <linux/kthread.h>
+-#include <linux/bpf.h>
+-#include <linux/bpf_trace.h>
+-#include <net/net_namespace.h>
+-#include <net/sock.h>
+-#include <net/busy_poll.h>
++#include <linux/mm.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/netdevice.h>
++#include <linux/netfilter_netdev.h>
++#include <linux/net_namespace.h>
++#include <linux/netpoll.h>
++#include <linux/once_lite.h>
++#include <linux/pm_runtime.h>
++#include <linux/prandom.h>
++#include <linux/random.h>
++#include <linux/rcupdate.h>
+ #include <linux/rtnetlink.h>
++#include <linux/rwsem.h>
++#include <linux/sched.h>
++#include <linux/sched/mm.h>
++#include <linux/sctp.h>
++#include <linux/skbuff.h>
++#include <linux/slab.h>
++#include <linux/socket.h>
++#include <linux/sockios.h>
+ #include <linux/stat.h>
++#include <linux/static_key.h>
++#include <linux/string.h>
++#include <linux/types.h>
++#include <linux/uaccess.h>
++#include <linux/vmalloc.h>
++
++#include <asm/current.h>
++
++#include <net/busy_poll.h>
++#include <net/checksum.h>
++#include <net/devlink.h>
+ #include <net/dsa.h>
+ #include <net/dst.h>
+ #include <net/dst_metadata.h>
+ #include <net/gro.h>
+-#include <net/pkt_sched.h>
+-#include <net/pkt_cls.h>
+-#include <net/checksum.h>
+-#include <net/xfrm.h>
+-#include <net/tcx.h>
+-#include <linux/highmem.h>
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/netpoll.h>
+-#include <linux/rcupdate.h>
+-#include <linux/delay.h>
+-#include <net/iw_handler.h>
+-#include <asm/current.h>
+-#include <linux/audit.h>
+-#include <linux/dmaengine.h>
+-#include <linux/err.h>
+-#include <linux/ctype.h>
+-#include <linux/if_arp.h>
+-#include <linux/if_vlan.h>
+-#include <linux/ip.h>
+ #include <net/ip.h>
++#include <net/iw_handler.h>
+ #include <net/mpls.h>
+-#include <linux/ipv6.h>
+-#include <linux/in.h>
+-#include <linux/jhash.h>
+-#include <linux/random.h>
++#include <net/netdev_rx_queue.h>
++#include <net/net_namespace.h>
++#include <net/pkt_cls.h>
++#include <net/pkt_sched.h>
++#include <net/sock.h>
++#include <net/tcx.h>
++#include <net/udp_tunnel.h>
++#include <net/xfrm.h>
++
+ #include <trace/events/napi.h>
+ #include <trace/events/net.h>
+-#include <trace/events/skb.h>
+ #include <trace/events/qdisc.h>
++#include <trace/events/skb.h>
+ #include <trace/events/xdp.h>
+-#include <linux/inetdevice.h>
+-#include <linux/cpu_rmap.h>
+-#include <linux/static_key.h>
+-#include <linux/hashtable.h>
+-#include <linux/vmalloc.h>
+-#include <linux/if_macvlan.h>
+-#include <linux/errqueue.h>
+-#include <linux/hrtimer.h>
+-#include <linux/netfilter_netdev.h>
+-#include <linux/crash_dump.h>
+-#include <linux/sctp.h>
+-#include <net/udp_tunnel.h>
+-#include <linux/net_namespace.h>
+-#include <linux/indirect_call_wrapper.h>
+-#include <net/devlink.h>
+-#include <linux/pm_runtime.h>
+-#include <linux/prandom.h>
+-#include <linux/once_lite.h>
+-#include <net/netdev_rx_queue.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+-- 
+2.40.0.1.gaa8946217a0b
 
