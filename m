@@ -2,138 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B9079BAF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2B479BC18
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355549AbjIKWAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
+        id S1377992AbjIKW3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244137AbjIKTKV (ORCPT
+        with ESMTP id S244150AbjIKTPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:10:21 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF02DD;
-        Mon, 11 Sep 2023 12:10:17 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BGsgtC012385;
-        Mon, 11 Sep 2023 19:09:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yhQj70atmgvOsT2e/TS2qijd+F031F5vj/yr5hSo3NI=;
- b=PMq83McfwsxSX5TjgyapKf9sl6HiVFHrY8Ua0OU0LGSwlf8dDct/0Rf72FodkvRzLYJG
- jdOrbn9zzhlIKX57BFLI/nDFIsvCSLEpFFEi6YlKKPTB6PP/6yAsEbfClZ5nlj1CFq4Z
- 8m2N2X+5cUUfzhg+ozceCIl2A2I6Y2/uHHYbgVfT/gHfO9E9A1n/1hOT00yyRg8VZfBJ
- vLZiUpMMWf9vJTcXVEgdxwagMk1+K//S9E/doUQosffx+VyvCsLlHvqBiPcBGhqpCGRv
- d48SRjFEWXsxR0oH4DTJHhhcafze2l36DXy2XQOSwGOgyGQxMHPc7HMMSy/3F51BK9Mq sw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t24ra8r01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 19:09:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BJ9axL023805
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 19:09:36 GMT
-Received: from [10.111.183.71] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
- 2023 12:09:32 -0700
-Message-ID: <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
-Date:   Mon, 11 Sep 2023 12:09:30 -0700
+        Mon, 11 Sep 2023 15:15:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D3BF9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694459707; x=1725995707;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=07/p9oDn31rTGw7P//H58/j97irnDVEbpN9U4gK1A4E=;
+  b=mDFEbDlwazsk434avJ7H8sxUzgToh8012w0byRy7H9UHzNNXf73faDQJ
+   mcmBP2Py1SclRmhbHKSV7yWtLvwyyLrZNTfrnUdNccOdZdbnFb03LKxo3
+   4KDylN4ImKI9GIVc6/qZ2CHpNjqu+ei3ve2zn+2QzIAOpAh3jSjZJpd/Z
+   QmfO31EeolV4grWGTm3YudwlPTpl4IvlzBDzPs3EiLTghdDDTVpQ31c3y
+   jxrlFO5LcIuySilikyhT9vgsMFgcGMwigk5JrpNrtO/VUtS0MR7uZjHDL
+   wZ10ujYJl+q9s9d4Ivz6RrQpRmTeh+MU9wVWEUGSfGgtNobwuTUoKbxRh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375519363"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="375519363"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 12:13:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736875361"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="736875361"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 12:13:34 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfmLk-0006dm-0I;
+        Mon, 11 Sep 2023 19:13:32 +0000
+Date:   Tue, 12 Sep 2023 03:12:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: kernel/task_work.c:73: warning: Function parameter or member 'data'
+ not described in 'task_work_cancel_match'
+Message-ID: <202309120307.zis3yQGe-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 06/17] soc: qcom: Add Qualcomm APSS minidump kernel
- driver
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
- <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7KeKQW4RhvHCzdB5VM5NQ_6O6ebGKDeO
-X-Proofpoint-ORIG-GUID: 7KeKQW4RhvHCzdB5VM5NQ_6O6ebGKDeO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_14,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110175
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/2023 4:07 AM, Krzysztof Kozlowski wrote:
-> On 09/09/2023 22:16, Mukesh Ojha wrote:
->> +/**
->> + * qcom_minidump_region_register() - Register region in APSS Minidump table.
->> + * @region: minidump region.
->> + *
->> + * Return: On success, it returns 0 and negative error value on failure.
->> + */
->> +int qcom_minidump_region_register(const struct qcom_minidump_region *region)
->> +{
->> +	struct minidump *md;
->> +	int ret;
->> +
->> +	md = qcom_smem_minidump_ready();
->> +	if (!md)
->> +		return -EPROBE_DEFER;
->> +
->> +	if (!qcom_minidump_valid_region(region))
->> +		return -EINVAL;
->> +
->> +	mutex_lock(&md->md_lock);
->> +	ret = qcom_md_region_register(md, region);
->> +	if (ret)
->> +		goto unlock;
->> +
->> +	qcom_md_update_elfheader(md, region);
->> +unlock:
->> +	mutex_unlock(&md->md_lock);
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
-> 
-> NAK, there is no user for this.
-> 
-> Drop all exports from minidump drivers. Your upstream driver *must not*
-> expose stuff to your vendor drivers.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+commit: c7aab1a7c52b82d9afd7e03c398eb03dc2aa0507 task_work: add helper for more targeted task_work canceling
+date:   2 years, 5 months ago
+config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20230912/202309120307.zis3yQGe-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120307.zis3yQGe-lkp@intel.com/reproduce)
 
-Do we not expect that upstream drivers would want to register?
-Mind you, in the downstream code the following was a bad limitation:
-#define MAX_NUM_OF_SS           10
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120307.zis3yQGe-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/task_work.c:73: warning: Function parameter or member 'data' not described in 'task_work_cancel_match'
 
 
+vim +73 kernel/task_work.c
+
+e73f8959af0439 Oleg Nesterov 2012-05-11  60  
+892f6668f3a708 Oleg Nesterov 2013-09-11  61  /**
+c7aab1a7c52b82 Jens Axboe    2021-04-01  62   * task_work_cancel_match - cancel a pending work added by task_work_add()
+892f6668f3a708 Oleg Nesterov 2013-09-11  63   * @task: the task which should execute the work
+c7aab1a7c52b82 Jens Axboe    2021-04-01  64   * @match: match function to call
+892f6668f3a708 Oleg Nesterov 2013-09-11  65   *
+892f6668f3a708 Oleg Nesterov 2013-09-11  66   * RETURNS:
+892f6668f3a708 Oleg Nesterov 2013-09-11  67   * The found work or NULL if not found.
+892f6668f3a708 Oleg Nesterov 2013-09-11  68   */
+67d1214551e800 Al Viro       2012-06-27  69  struct callback_head *
+c7aab1a7c52b82 Jens Axboe    2021-04-01  70  task_work_cancel_match(struct task_struct *task,
+c7aab1a7c52b82 Jens Axboe    2021-04-01  71  		       bool (*match)(struct callback_head *, void *data),
+c7aab1a7c52b82 Jens Axboe    2021-04-01  72  		       void *data)
+e73f8959af0439 Oleg Nesterov 2012-05-11 @73  {
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  74  	struct callback_head **pprev = &task->task_works;
+205e550a0fb469 Oleg Nesterov 2013-09-11  75  	struct callback_head *work;
+e73f8959af0439 Oleg Nesterov 2012-05-11  76  	unsigned long flags;
+61e96496d3c949 Oleg Nesterov 2016-08-02  77  
+61e96496d3c949 Oleg Nesterov 2016-08-02  78  	if (likely(!task->task_works))
+61e96496d3c949 Oleg Nesterov 2016-08-02  79  		return NULL;
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  80  	/*
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  81  	 * If cmpxchg() fails we continue without updating pprev.
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  82  	 * Either we raced with task_work_add() which added the
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  83  	 * new entry before this work, we will find it again. Or
+9da33de62431c7 Oleg Nesterov 2012-08-26  84  	 * we raced with task_work_run(), *pprev == NULL/exited.
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  85  	 */
+e73f8959af0439 Oleg Nesterov 2012-05-11  86  	raw_spin_lock_irqsave(&task->pi_lock, flags);
+506458efaf153c Will Deacon   2017-10-24  87  	while ((work = READ_ONCE(*pprev))) {
+c7aab1a7c52b82 Jens Axboe    2021-04-01  88  		if (!match(work, data))
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  89  			pprev = &work->next;
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  90  		else if (cmpxchg(pprev, work, work->next) == work)
+158e1645e07f3e Al Viro       2012-06-27  91  			break;
+158e1645e07f3e Al Viro       2012-06-27  92  	}
+e73f8959af0439 Oleg Nesterov 2012-05-11  93  	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  94  
+ac3d0da8f3290b Oleg Nesterov 2012-08-26  95  	return work;
+e73f8959af0439 Oleg Nesterov 2012-05-11  96  }
+e73f8959af0439 Oleg Nesterov 2012-05-11  97  
+
+:::::: The code at line 73 was first introduced by commit
+:::::: e73f8959af0439d114847eab5a8a5ce48f1217c4 task_work_add: generic process-context callbacks
+
+:::::: TO: Oleg Nesterov <oleg@redhat.com>
+:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
