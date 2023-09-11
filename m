@@ -2,144 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D48479A3F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E4579A3F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbjIKGyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
+        id S230469AbjIKGzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjIKGyy (ORCPT
+        with ESMTP id S229648AbjIKGzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:54:54 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F275612E
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:54:49 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-49441300156so2195595e0c.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694415289; x=1695020089; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WXyOh/69L+jj7btllxiqwEkB6oTOH+/vnWCCjG27dFA=;
-        b=EfUZRQoXMnqf5+GCzhjWkcbmYPD7oYTMpyMhfwHWiIOMg1RuQqTS8pvIgxj8kfE6bg
-         3Kn+FNx2Tk2vYjitAwQR0qJ/enRvTj0MFZI94tR1RV2iJtkEQxtDEHW6+QUejmBL6xfR
-         SG+gLKdsHZtjTJmTuWwHmlEK/H+nIrl5+gJ/uWs40gq986cvaeuVMwgp0SDnwGGbVERw
-         jbcsoV/djpVS+qeSQJ28ITnRozoq1MbZ0eRr0Brx7Be/4LkV2XPwhxLQDv14p263CaKd
-         91C2jKDTM3eXV+ggumhfnrSqLncdALkGcOLDZa3BUT82G8vjjTFQwyAW68j5ww260Qpi
-         QuHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694415289; x=1695020089;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WXyOh/69L+jj7btllxiqwEkB6oTOH+/vnWCCjG27dFA=;
-        b=Q8oX1O65uOI4HUrzGcrPl64bjxX8LMfsiCR9XZ7sNmX879gxVfqabpk0eZodLQf06O
-         OSb7hkn8yc041FZ3IX0sn/oC40l7f5goWtyL8gv9C4NuRVSbx606xgR88OQ6O2KGptgH
-         IusBPDKf/Ho3th25XLRvC3J8byf6HLYrplhKjm9jstQZrIwdI+uhClTVWzF++fBkdF6Y
-         p8QxaklMwUrBk8IyBhmv+iExRGkPmH2MRpaBBkztEAPN6TkesWdeQ+B/7h/xO53Zn2s8
-         0bQpU46uWKRDZqik0ulStbdrwdSDTNcQY9WTxG9et4klAN81WTeaedifYDB3v62pMLLr
-         06Nw==
-X-Gm-Message-State: AOJu0YxchEmej7aFWf/SjR+cr+T2Zgvr7V0Jlm9+fG9+Tz+Toj/Um4wp
-        af/sIrACpqNlTOc9fGtz8JQ5fgrz9pD661LwjxY/DA==
-X-Google-Smtp-Source: AGHT+IHMaBeRWzx5kAez/oDd4wxSARcUvFTxaLdrWRenoyGrKpOx/Yvan6s1lQB6Ld6Y9huwGl7YpPxR8EaYgMz5dSs=
-X-Received: by 2002:a05:6122:12eb:b0:493:fbe7:e71d with SMTP id
- k11-20020a05612212eb00b00493fbe7e71dmr4048706vkp.6.1694415288993; Sun, 10 Sep
- 2023 23:54:48 -0700 (PDT)
+        Mon, 11 Sep 2023 02:55:54 -0400
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786CB131
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:55:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VrmdUvU_1694415344;
+Received: from localhost(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0VrmdUvU_1694415344)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Sep 2023 14:55:46 +0800
+From:   Ruidong Tian <tianruidong@linux.alibaba.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     coresight@lists.linaro.org, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org,
+        Ruidong Tian <tianruidong@linux.alibaba.com>
+Subject: [PATCH] perf test: Update cs_etm testcase for Arm ETE
+Date:   Mon, 11 Sep 2023 14:55:41 +0800
+Message-Id: <20230911065541.91293-1-tianruidong@linux.alibaba.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <20230902174547.71316-1-biju.das.jz@bp.renesas.com>
-In-Reply-To: <20230902174547.71316-1-biju.das.jz@bp.renesas.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 11 Sep 2023 08:54:37 +0200
-Message-ID: <CAMRc=MctvBdH91mfSr-1ODy3sEKtPtvcWR03NiHr6rFbrA82Lw@mail.gmail.com>
-Subject: Re: [PATCH] eeprom: at24: Drop at24_get_chip_data()
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 2, 2023 at 7:45=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.com=
-> wrote:
->
-> Replace at24_get_chip_data()->i2c_get_match_data() as it is
-> redundant.
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  drivers/misc/eeprom/at24.c | 32 +++-----------------------------
->  1 file changed, 3 insertions(+), 29 deletions(-)
->
-> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> index dbbf7db4ff2f..af83aca452b7 100644
-> --- a/drivers/misc/eeprom/at24.c
-> +++ b/drivers/misc/eeprom/at24.c
-> @@ -509,32 +509,6 @@ static int at24_write(void *priv, unsigned int off, =
-void *val, size_t count)
->         return 0;
->  }
->
-> -static const struct at24_chip_data *at24_get_chip_data(struct device *de=
-v)
-> -{
-> -       struct device_node *of_node =3D dev->of_node;
-> -       const struct at24_chip_data *cdata;
-> -       const struct i2c_device_id *id;
-> -
-> -       id =3D i2c_match_id(at24_ids, to_i2c_client(dev));
-> -
-> -       /*
-> -        * The I2C core allows OF nodes compatibles to match against the
-> -        * I2C device ID table as a fallback, so check not only if an OF
-> -        * node is present but also if it matches an OF device ID entry.
-> -        */
-> -       if (of_node && of_match_device(at24_of_match, dev))
-> -               cdata =3D of_device_get_match_data(dev);
-> -       else if (id)
-> -               cdata =3D (void *)id->driver_data;
-> -       else
-> -               cdata =3D acpi_device_get_match_data(dev);
-> -
-> -       if (!cdata)
-> -               return ERR_PTR(-ENODEV);
-> -
-> -       return cdata;
-> -}
-> -
->  static int at24_make_dummy_client(struct at24_data *at24, unsigned int i=
-ndex,
->                                   struct i2c_client *base_client,
->                                   struct regmap_config *regmap_config)
-> @@ -601,9 +575,9 @@ static int at24_probe(struct i2c_client *client)
->         i2c_fn_block =3D i2c_check_functionality(client->adapter,
->                                                I2C_FUNC_SMBUS_WRITE_I2C_B=
-LOCK);
->
-> -       cdata =3D at24_get_chip_data(dev);
-> -       if (IS_ERR(cdata))
-> -               return PTR_ERR(cdata);
-> +       cdata =3D i2c_get_match_data(client);
-> +       if (!cdata)
-> +               return -ENODEV;
->
->         err =3D device_property_read_u32(dev, "pagesize", &page_size);
->         if (err)
-> --
-> 2.25.1
->
+Add ETE as one of the supported device types in perf cs_etm testcase.
 
-Applied, thanks!
+Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+---
+ tools/perf/tests/shell/test_arm_coresight.sh | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Bart
+diff --git a/tools/perf/tests/shell/test_arm_coresight.sh b/tools/perf/tests/shell/test_arm_coresight.sh
+index f1bf5621160f..fe78c4626e45 100755
+--- a/tools/perf/tests/shell/test_arm_coresight.sh
++++ b/tools/perf/tests/shell/test_arm_coresight.sh
+@@ -11,6 +11,19 @@
+ 
+ glb_err=0
+ 
++cs_etm_dev_name() {
++	cs_etm_path=$(find  /sys/bus/event_source/devices/cs_etm/ -name cpu* -print -quit)
++	trcdevarch=$(cat ${cs_etm_path}/mgmt/trcdevarch)
++	archhver=$((($trcdevarch >> 12) & 0xf))
++	archpart=$(($trcdevarch & 0xfff))
++
++	if [ $archhver -eq 5 -a "$(printf "0x%X\n" $archpart)" = "0xA13" ] ; then
++		echo "ete"
++	else
++		echo "etm"
++	fi
++}
++
+ skip_if_no_cs_etm_event() {
+ 	perf list | grep -q 'cs_etm//' && return 0
+ 
+@@ -136,7 +149,7 @@ arm_cs_iterate_devices() {
+ 
+ arm_cs_etm_traverse_path_test() {
+ 	# Iterate for every ETM device
+-	for dev in /sys/bus/coresight/devices/etm*; do
++	for dev in /sys/bus/coresight/devices/$(cs_etm_dev_name)*; do
+ 
+ 		# Find the ETM device belonging to which CPU
+ 		cpu=`cat $dev/cpu`
+-- 
+2.33.1
+
