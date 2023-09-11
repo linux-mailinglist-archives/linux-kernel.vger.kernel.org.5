@@ -2,51 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA1A79AEB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AAC79B000
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353796AbjIKVuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
+        id S234406AbjIKUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240244AbjIKOju (ORCPT
+        with ESMTP id S240345AbjIKOmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:39:50 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585D1CF0;
-        Mon, 11 Sep 2023 07:39:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51429C433CA;
-        Mon, 11 Sep 2023 14:39:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694443185;
-        bh=WMdHXTlK/F0alepEMWR0Tsn0KrNf5+HlS3u9OgTC6Ek=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hAz0KziwdfpN4FcKQKXqH6M4J//hyNrlyd84XO9W6PhD2igr2qtJrbIBjTiB15MVV
-         i6T+QMQZl5+4IljzbFHvWJPjTTK6kUrui9qkZP0z3n8i/ebIm/TGr+3tPlur1VIdh5
-         2nUKG+FpEvbZQVCQIVO3mOxEKoywJY2wP+NtKR/SF0CMtba8T73y9w+zav1DhnIIfn
-         Rgu4Mv40CCXGgz+ZQsrTbYQGvSUAqma1FYAjq+aZWGPyXNGl8oDIfMzE9wNsHB+kwc
-         2kRivVCxk2drPt6KDtXlpqtKelFPmYiBZBOms8Y8K7YEJnJon2O0RwE1CFBcSH5YKe
-         4uaJbUuQtNKsA==
-Subject: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
-From:   Chuck Lever <cel@kernel.org>
-To:     linux-nfs@vger.kernel.org
-Cc:     NeilBrown <neilb@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>
-Date:   Mon, 11 Sep 2023 10:39:43 -0400
-Message-ID: <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>
-In-Reply-To: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
-References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
-User-Agent: StGit/1.5
+        Mon, 11 Sep 2023 10:42:09 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B771012A;
+        Mon, 11 Sep 2023 07:42:01 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bdf4752c3cso30794045ad.2;
+        Mon, 11 Sep 2023 07:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694443321; x=1695048121; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V9mEfdNRBv36Id6cA4R/qaRT3o+SLZtHn5FXKarxxl0=;
+        b=eWaY4oWEtOSQLEjmOIoh68uWloyti+GLsFACOlDTqFssjAefpC5xbWk81KW8iEfpa5
+         nGE9VL4lHxrrPVnZjSxOlvmmnDw/QDQLYAeg3R+Y4DhrfQf+8aSo2n5taTJaLvwQxSMk
+         J0XSZhh+7k4/oe2efkIRmscoJE5zpTdrdSRuTXEJv1Ob4xTQMdrGXCJmMIUv4IwSH85x
+         0GXoDYlPWMQY2HQNsgoizzPaU9T3V8W+OQyppWVfxxCbPGdw7daG+/yhoFPoNgceci53
+         rWrBG5eTWq+uVm+Z2MZU8rOkZCZMBSF3Edegb9GPRpX57deFLEJubTO2m6gju6xVYnrm
+         0EeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694443321; x=1695048121;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V9mEfdNRBv36Id6cA4R/qaRT3o+SLZtHn5FXKarxxl0=;
+        b=xNOhNokChhKu5uF34vFDhA3WfTAD7OEX0A7j2t9Hx4HGIjwqRFq6p3+7aPc6GDBF9R
+         8ftuZ66tasg/9+VPwWbFao8oW3c1+CadNN77zpsc19CmV83mGp/kkoxinr69wVwYH68U
+         WRUVQM4ZEpilsEs7f/Sq2IgsmrQLAz30uTJPkNcCHncr0XZ6h3Rz/gScLJLmciwrR7Qt
+         QGELEpgf991A7QinrsWJXXWGS7iZO9MaWnI9b2DXWGYnrxN5U0hIN9Z4VGmGxqEyx+JF
+         19ELhhLinThJXQFrKJleToUzEaZMaZ0T+WD5j/jHmHUNw2eDSG3Ui7rhoXNHEYgQuFXh
+         MTKg==
+X-Gm-Message-State: AOJu0YyIH0oyfvHJUAc3bBbH0+pscfcjHHWQDAW8C16RE/ZTK2O0RkrB
+        QJZcfav9ZQjlcQHI23Y7agQ=
+X-Google-Smtp-Source: AGHT+IHerRZcuoZ5Ogx/usT5Z5o59ZjgUHMFuEAUjJXNeU3xg03bZYLFnT5ZxjM6OQ/cK0kZZ9R6vg==
+X-Received: by 2002:a17:902:d4c6:b0:1c3:8464:cad1 with SMTP id o6-20020a170902d4c600b001c38464cad1mr9611340plg.26.1694443320803;
+        Mon, 11 Sep 2023 07:42:00 -0700 (PDT)
+Received: from localhost.localdomain (220-133-92-232.hinet-ip.hinet.net. [220.133.92.232])
+        by smtp.googlemail.com with ESMTPSA id kb14-20020a170903338e00b001b8a2edab6asm6594337plb.244.2023.09.11.07.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 07:42:00 -0700 (PDT)
+From:   xx777 <zenmchen@gmail.com>
+To:     zenmchen@gmail.com
+Cc:     Jes.Sorensen@gmail.com, kvalo@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        pkshih@realtek.com, rtl8821cerfe2@gmail.com
+Subject: Re: [PATCH] wifi: rtl8xxxu: fix LED control code of RTL8192FU
+Date:   Mon, 11 Sep 2023 22:41:45 +0800
+Message-ID: <20230911144155.5871-1-zenmchen@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230910002038.56362-1-zenmchen@gmail.com>
+References: <20230910002038.56362-1-zenmchen@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,343 +74,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+Bitterblue Smith <rtl8821cerfe2@gmail.com> wrote：
+>
+> Can you explain in the commit message why you changed the
+> LED_ON and LED_OFF branches? It's not obvious to me and they
+> don't have anything to do with the hardware-controlled blinking.
+>
 
-lwq is a FIFO single-linked queue that only requires a spinlock
-for dequeueing, which happens in process context.  Enqueueing is atomic
-with no spinlock and can happen in any context.
+Hi,
 
-Include a unit test for basic functionality - runs at boot time.  Does
-not use kunit framework.
+Sorry that I didn't explain this clearly.
+After some researches these days, I came to some conclusions:
 
-Signed-off-by: NeilBrown <neilb@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: David Gow <davidgow@google.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
----
- include/linux/lwq.h |  120 +++++++++++++++++++++++++++++++++++++++++
- lib/Kconfig         |    5 ++
- lib/Makefile        |    2 -
- lib/lwq.c           |  151 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 277 insertions(+), 1 deletion(-)
- create mode 100644 include/linux/lwq.h
- create mode 100644 lib/lwq.c
+1. The LED of MERCURY MW310UH and COMFAST CF-826F seems to be controlled by
+   REG_LEDCFG1, and currently rtl8xxxu controls the LED through writing
+   some suitable values to this register, so MW310UH and CF-826F work fine
+   with rtl8xxxu.
 
-diff --git a/include/linux/lwq.h b/include/linux/lwq.h
-new file mode 100644
-index 000000000000..52b9c81b493a
---- /dev/null
-+++ b/include/linux/lwq.h
-@@ -0,0 +1,120 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef LWQ_H
-+#define LWQ_H
-+/*
-+ * light-weight single-linked queue built from llist
-+ *
-+ * Entries can be enqueued from any context with no locking.
-+ * Entries can be dequeued from process context with integrated locking.
-+ */
-+#include <linux/container_of.h>
-+#include <linux/spinlock.h>
-+#include <linux/llist.h>
-+
-+struct lwq_node {
-+	struct llist_node node;
-+};
-+
-+struct lwq {
-+	spinlock_t		lock;
-+	struct llist_node	*ready;		/* entries to be dequeued */
-+	struct llist_head	new;		/* entries being enqueued */
-+};
-+
-+/**
-+ * lwq_init - initialise a lwq
-+ * @q:	the lwq object
-+ */
-+static inline void lwq_init(struct lwq *q)
-+{
-+	spin_lock_init(&q->lock);
-+	q->ready = NULL;
-+	init_llist_head(&q->new);
-+}
-+
-+/**
-+ * lwq_empty - test if lwq contains any entry
-+ * @q:	the lwq object
-+ *
-+ * This empty test contains an acquire barrier so that if a wakeup
-+ * is sent when lwq_dequeue returns true, it is safe to go to sleep after
-+ * a test on lwq_empty().
-+ */
-+static inline bool lwq_empty(struct lwq *q)
-+{
-+	/* acquire ensures ordering wrt lwq_enqueue() */
-+	return smp_load_acquire(&q->ready) == NULL && llist_empty(&q->new);
-+}
-+
-+struct llist_node *__lwq_dequeue(struct lwq *q);
-+/**
-+ * lwq_dequeue - dequeue first (oldest) entry from lwq
-+ * @q:		the queue to dequeue from
-+ * @type:	the type of object to return
-+ * @member:	them member in returned object which is an lwq_node.
-+ *
-+ * Remove a single object from the lwq and return it.  This will take
-+ * a spinlock and so must always be called in the same context, typcially
-+ * process contet.
-+ */
-+#define lwq_dequeue(q, type, member)					\
-+	({ struct llist_node *_n = __lwq_dequeue(q);			\
-+	  _n ? container_of(_n, type, member.node) : NULL; })
-+
-+struct llist_node *lwq_dequeue_all(struct lwq *q);
-+
-+/**
-+ * lwq_for_each_safe - iterate over detached queue allowing deletion
-+ * @_n:		iterator variable
-+ * @_t1:	temporary struct llist_node **
-+ * @_t2:	temporary struct llist_node *
-+ * @_l:		address of llist_node pointer from lwq_dequeue_all()
-+ * @_member:	member in _n where lwq_node is found.
-+ *
-+ * Iterate over members in a dequeued list.  If the iterator variable
-+ * is set to NULL, the iterator removes that entry from the queue.
-+ */
-+#define lwq_for_each_safe(_n, _t1, _t2, _l, _member)			\
-+	for (_t1 = (_l);						\
-+	     *(_t1) ? (_n = container_of(*(_t1), typeof(*(_n)), _member.node),\
-+		       _t2 = ((*_t1)->next),				\
-+		       true)						\
-+	     : false;							\
-+	     (_n) ? (_t1 = &(_n)->_member.node.next, 0)			\
-+	     : ((*(_t1) = (_t2)),  0))
-+
-+/**
-+ * lwq_enqueue - add a new item to the end of the queue
-+ * @n	- the lwq_node embedded in the item to be added
-+ * @q	- the lwq to append to.
-+ *
-+ * No locking is needed to append to the queue so this can
-+ * be called from any context.
-+ * Return %true is the list may have previously been empty.
-+ */
-+static inline bool lwq_enqueue(struct lwq_node *n, struct lwq *q)
-+{
-+	/* acquire enqures ordering wrt lwq_dequeue */
-+	return llist_add(&n->node, &q->new) &&
-+		smp_load_acquire(&q->ready) == NULL;
-+}
-+
-+/**
-+ * lwq_enqueue_batch - add a list of new items to the end of the queue
-+ * @n	- the lwq_node embedded in the first item to be added
-+ * @q	- the lwq to append to.
-+ *
-+ * No locking is needed to append to the queue so this can
-+ * be called from any context.
-+ * Return %true is the list may have previously been empty.
-+ */
-+static inline bool lwq_enqueue_batch(struct llist_node *n, struct lwq *q)
-+{
-+	struct llist_node *e = n;
-+
-+	/* acquire enqures ordering wrt lwq_dequeue */
-+	return llist_add_batch(llist_reverse_order(n), e, &q->new) &&
-+		smp_load_acquire(&q->ready) == NULL;
-+}
-+#endif /* LWQ_H */
-diff --git a/lib/Kconfig b/lib/Kconfig
-index c686f4adc124..76fe64f933fc 100644
---- a/lib/Kconfig
-+++ b/lib/Kconfig
-@@ -729,6 +729,11 @@ config PARMAN
- config OBJAGG
- 	tristate "objagg" if COMPILE_TEST
- 
-+config LWQ_TEST
-+	bool "Boot-time test for lwq queuing"
-+	help
-+          Run boot-time test of light-weight queuing.
-+
- endmenu
- 
- config GENERIC_IOREMAP
-diff --git a/lib/Makefile b/lib/Makefile
-index 740109b6e2c8..d0c116b706e6 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -45,7 +45,7 @@ obj-y	+= lockref.o
- obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
- 	 bust_spinlocks.o kasprintf.o bitmap.o scatterlist.o \
- 	 list_sort.o uuid.o iov_iter.o clz_ctz.o \
--	 bsearch.o find_bit.o llist.o memweight.o kfifo.o \
-+	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
- 	 percpu-refcount.o rhashtable.o base64.o \
- 	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
- 	 generic-radix-tree.o
-diff --git a/lib/lwq.c b/lib/lwq.c
-new file mode 100644
-index 000000000000..7fe6c7125357
---- /dev/null
-+++ b/lib/lwq.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Light weight single-linked queue.
-+ *
-+ * Entries are enqueued to the head of an llist, with no blocking.
-+ * This can happen in any context.
-+ *
-+ * Entries are dequeued using a spinlock to protect against
-+ * multiple access.  The llist is staged in reverse order, and refreshed
-+ * from the llist when it exhausts.
-+ */
-+#include <linux/rcupdate.h>
-+#include <linux/lwq.h>
-+
-+struct llist_node *__lwq_dequeue(struct lwq *q)
-+{
-+	struct llist_node *this;
-+
-+	if (lwq_empty(q))
-+		return NULL;
-+	spin_lock(&q->lock);
-+	this = q->ready;
-+	if (!this && !llist_empty(&q->new)) {
-+		/* ensure queue doesn't appear transiently lwq_empty */
-+		smp_store_release(&q->ready, (void *)1);
-+		this = llist_reverse_order(llist_del_all(&q->new));
-+		if (!this)
-+			q->ready = NULL;
-+	}
-+	if (this)
-+		q->ready = llist_next(this);
-+	spin_unlock(&q->lock);
-+	return this;
-+}
-+EXPORT_SYMBOL_GPL(__lwq_dequeue);
-+
-+/**
-+ * lwq_dequeue_all - dequeue all currently enqueued objects
-+ * @q:	the queue to dequeue from
-+ *
-+ * Remove and return a linked list of llist_nodes of all the objects that were
-+ * in the queue. The first on the list will be the object that was least
-+ * recently enqueued.
-+ */
-+struct llist_node *lwq_dequeue_all(struct lwq *q)
-+{
-+	struct llist_node *r, *t, **ep;
-+
-+	if (lwq_empty(q))
-+		return NULL;
-+
-+	spin_lock(&q->lock);
-+	r = q->ready;
-+	q->ready = NULL;
-+	t = llist_del_all(&q->new);
-+	spin_unlock(&q->lock);
-+	ep = &r;
-+	while (*ep)
-+		ep = &(*ep)->next;
-+	*ep = llist_reverse_order(t);
-+	return r;
-+}
-+EXPORT_SYMBOL_GPL(lwq_dequeue_all);
-+
-+#if IS_ENABLED(CONFIG_LWQ_TEST)
-+
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/wait_bit.h>
-+#include <linux/kthread.h>
-+#include <linux/delay.h>
-+struct tnode {
-+	struct lwq_node n;
-+	int i;
-+	int c;
-+};
-+
-+static int lwq_exercise(void *qv)
-+{
-+	struct lwq *q = qv;
-+	int cnt;
-+	struct tnode *t;
-+
-+	for (cnt = 0; cnt < 10000; cnt++) {
-+		wait_var_event(q, (t = lwq_dequeue(q, struct tnode, n)) != NULL);
-+		t->c++;
-+		if (lwq_enqueue(&t->n, q))
-+			wake_up_var(q);
-+	}
-+	while (!kthread_should_stop())
-+		schedule_timeout_idle(1);
-+	return 0;
-+}
-+
-+static int lwq_test(void)
-+{
-+	int i;
-+	struct lwq q;
-+	struct llist_node *l, **t1, *t2;
-+	struct tnode *t;
-+	struct task_struct *threads[8];
-+
-+	printk(KERN_INFO "testing lwq....\n");
-+	lwq_init(&q);
-+	printk(KERN_INFO " lwq: run some threads\n");
-+	for (i = 0; i < ARRAY_SIZE(threads); i++)
-+		threads[i] = kthread_run(lwq_exercise, &q, "lwq-test-%d", i);
-+	for (i = 0; i < 100; i++) {
-+		t = kmalloc(sizeof(*t), GFP_KERNEL);
-+		t->i = i;
-+		t->c = 0;
-+		if (lwq_enqueue(&t->n, &q))
-+			wake_up_var(&q);
-+	};
-+	/* wait for threads to exit */
-+	for (i = 0; i < ARRAY_SIZE(threads); i++)
-+		if (!IS_ERR_OR_NULL(threads[i]))
-+			kthread_stop(threads[i]);
-+	printk(KERN_INFO " lwq: dequeue first 50:");
-+	for (i = 0; i < 50 ; i++) {
-+		if (i && (i % 10) == 0) {
-+			printk(KERN_CONT "\n");
-+			printk(KERN_INFO " lwq: ... ");
-+		}
-+		t = lwq_dequeue(&q, struct tnode, n);
-+		printk(KERN_CONT " %d(%d)", t->i, t->c);
-+		kfree(t);
-+	}
-+	printk(KERN_CONT "\n");
-+	l = lwq_dequeue_all(&q);
-+	printk(KERN_INFO " lwq: delete the multiples of 3 (test lwq_for_each_safe())\n");
-+	lwq_for_each_safe(t, t1, t2, &l, n) {
-+		if ((t->i % 3) == 0) {
-+			t->i = -1;
-+			kfree(t);
-+			t = NULL;
-+		}
-+	}
-+	if (l)
-+		lwq_enqueue_batch(l, &q);
-+	printk(KERN_INFO " lwq: dequeue remaining:");
-+	while ((t = lwq_dequeue(&q, struct tnode, n)) != NULL) {
-+		printk(KERN_CONT " %d", t->i);
-+		kfree(t);
-+	}
-+	printk(KERN_CONT "\n");
-+	return 0;
-+}
-+
-+module_init(lwq_test);
-+#endif /* CONFIG_LWQ_TEST*/
+2. The LED of ASUS USB-N13 C1 seems to be controlled by another register 
+   "REG_LEDCFG0" for unknown reason, so when I write 1 or 2 to 
+   /sys/class/leds/rtl8xxxu-usbX-Y/brightness, the LED doesn't turn on 
+   or blink because the register "REG_LEDCFG0" is not filled with a suitable 
+   value, This is why I changed the LED_ON and LED_OFF branches.
 
-
+I will modify the commit message in the next version of patch, thanks.
