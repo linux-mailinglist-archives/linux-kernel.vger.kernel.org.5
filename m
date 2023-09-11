@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 031E379A2A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D7379A28F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233748AbjIKEtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 00:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
+        id S233690AbjIKEtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 00:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbjIKEtF (ORCPT
+        with ESMTP id S231517AbjIKEtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 00:49:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B00F1B8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9920118;
         Sun, 10 Sep 2023 21:49:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 593E7C43395;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E1D7C433C8;
         Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694407740;
-        bh=4lLgVJb3LOG8DBSrlEzmuFBXuW0+M3lIby4bathQEJQ=;
+        bh=jRbGX37pKE/flPAVK4KmRTNNYn+YjmtCaP+B5V/gVX0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=C6/eNd9fiXyxGRt5Q8ahEQOhSgCzOfaDjiTl1H8jdUB7+nyLMvI8Z8jnvHGjBdQ49
-         pDudL3FXplQYq7jTK8HLgIy9ITXlxnbVaDIU/4PMDDSn6qJkGjrWtox5bdK/GK3F5p
-         C4G4DS2Wf1CiQbnf16oHi2/OLxkMc9s/eBeQrSQGCwpUsCE1in9Is3GDGfvYRWlM/7
-         2tlXMXWIRD3zJvcrlFXk8QeGnir5Z0kGUyv09GiSS8f+5ARo1lX8qkv1qJbHYp6gz6
-         YuEAVFmOzlKTCXnu+2B+mWUy9DGN2PXOf9rTw2PXn8k2N7iypmSeDiYERSZBfuV9XL
-         EZljecptFgb1A==
+        b=hRTK/O7zd2EVcyRIHv/i0CAjz9UpjidahDXSIXk4ACb38jZ+6K0Q30pzOqZOLqypY
+         C75nnrtT8Yv6GiMTvD61pKvkFLRfhtUBVWtZcBLARUs5c+zflqjKF2vVtznLpozQoM
+         GCNDa18FhndrrkuE6m/0q7HCv7yOAC6mlWVm+BRnredL6UXg7U1td5nMObALXI8tDQ
+         4sZzvZ12uCsLziIZXf9AsxgF8FMszCNitekMmUlSZhzGlOAtLbZ6bAuUGQovA8xlPE
+         s6xIC6qIfoHYkDG9jnYDNje1UTc0fpBvjr9tsdVWGYlC4/aJBTcr3g4fKbEVro77gN
+         eo2XoPvZ0aheA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3D213E21EC1;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 122E7E1F67E;
         Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] pwm: Explicitly include correct DT includes
+Subject: Re: [PATCH] mfd: Explicitly include correct DT includes
 From:   patchwork-bot+chrome-platform@kernel.org
-Message-Id: <169440774024.22573.12945048122079663648.git-patchwork-notify@kernel.org>
+Message-Id: <169440774007.22573.6670993122914766002.git-patchwork-notify@kernel.org>
 Date:   Mon, 11 Sep 2023 04:49:00 +0000
-References: <20230714174852.4062251-1-robh@kernel.org>
-In-Reply-To: <20230714174852.4062251-1-robh@kernel.org>
+References: <20230714174731.4059811-1-robh@kernel.org>
+In-Reply-To: <20230714174731.4059811-1-robh@kernel.org>
 To:     Rob Herring <robh@kernel.org>
-Cc:     thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        marcan@marcan.st, sven@svenpeter.dev, alyssa@rosenzweig.io,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, bleung@chromium.org,
-        groeck@chromium.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        paul@crapouillou.net, vz@mleia.com, neil.armstrong@linaro.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, conor.dooley@microchip.com,
-        daire.mcnamara@microchip.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, michael@walle.cc, orsonzhai@gmail.com,
-        baolin.wang@linux.alibaba.com, zhang.lyra@gmail.com, wens@csie.org,
-        jernej.skrabec@gmail.com, samuel@sholland.org,
-        hammerh0314@gmail.com, jonathanh@nvidia.com,
-        nobuhiro1.iwamatsu@toshiba.co.jp, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        chrome-platform@lists.linux.dev, linux-mips@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org
+Cc:     linus.walleij@linaro.org, lee@kernel.org,
+        thor.thayer@linux.intel.com, mani@kernel.org,
+        cristian.ciocaltea@gmail.com, bleung@chromium.org,
+        groeck@chromium.org, support.opensource@diasemi.com,
+        ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
+        cw00.choi@samsung.com, krzysztof.kozlowski@linaro.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        tony@atomide.com, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, mazziesaccount@gmail.com,
+        orsonzhai@gmail.com, baolin.wang@linux.alibaba.com,
+        zhang.lyra@gmail.com, fabrice.gasnier@foss.st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        linux-actions@lists.infradead.org, chrome-platform@lists.linux.dev,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-mtd@lists.infradead.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,9 +75,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hello:
 
 This patch was applied to chrome-platform/linux.git (for-next)
-by Thierry Reding <thierry.reding@gmail.com>:
+by Lee Jones <lee@kernel.org>:
 
-On Fri, 14 Jul 2023 11:48:50 -0600 you wrote:
+On Fri, 14 Jul 2023 11:47:27 -0600 you wrote:
 > The DT of_device.h and of_platform.h date back to the separate
 > of_platform_bus_type before it as merged into the regular platform bus.
 > As part of that merge prepping Arm DT support 13 years ago, they
@@ -90,8 +90,8 @@ On Fri, 14 Jul 2023 11:48:50 -0600 you wrote:
 > [...]
 
 Here is the summary with links:
-  - pwm: Explicitly include correct DT includes
-    https://git.kernel.org/chrome-platform/c/0a41b0c5d97a
+  - mfd: Explicitly include correct DT includes
+    https://git.kernel.org/chrome-platform/c/dc0c386e09a7
 
 You are awesome, thank you!
 -- 
