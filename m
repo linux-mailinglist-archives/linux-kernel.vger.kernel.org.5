@@ -2,167 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B2779BED4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFF579BEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241059AbjIKWfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S1354591AbjIKVyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236817AbjIKL2u (ORCPT
+        with ESMTP id S236816AbjIKL2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:28:50 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8607CCDD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:28:45 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d80121cba8cso2789503276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:28:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694431724; x=1695036524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7aH+LgtXU/bZep1051Dmp3W7xLVGoC7LOjeeK6uQUB0=;
-        b=mfl1vtlAR0BVJni1RAdlYmCjR2EghvE6QIsVDjYjSw+z5uVpYMRm7tdZVjp0h17RB/
-         IuIEZJhVJfoAy/J7xTK0o47g/FS96KdRYCG7JtvqHAVrICneMVmcXg1wZhdbAN0un9J2
-         z9kry21+AIsonOz6J5xx1/hjhBapHIm8j67/BqUv1zU8wLePXtUffNrDkt8cgIE/rqrc
-         /ZcoUSvbUltrJn2ud3c1s13f4c9wuTPVHqQ0NpG2CmqEWVFMndLrbiLASJ8hgbxl9jRf
-         GCQ5nAHr1WmT/BSeG7rHqJnzR1VEhivnvIQKv5W8I72PCzoICtFd7rtYioRrb7zGYGyf
-         AlKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694431724; x=1695036524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7aH+LgtXU/bZep1051Dmp3W7xLVGoC7LOjeeK6uQUB0=;
-        b=xPqnpLs8JBq987Q1Q4fPcE8+zvevIUrvc2sMe3OWXKFuBIeuM77cvMjel7Pd7tSaTe
-         8+cIY0p406Jj07LS5Iud/Ea0HVGT5NXftlmbW3eow8mcrr4i6SiXLK7xz6YM8JaCgpjM
-         SIiJzKIjxBp+UjUam0bmIPt20khoZatTGeWT2iRj8RNjiBfO10hPlUIuYN92Wfmkh4eK
-         0RwYrKY1SqmV0y/mAMt5boXdH9u46o7ae6WFjOX90/243nGqtwwxULRHyVrerm3mhsod
-         MMfIbPo2fUniLzcgOzp7fAmBAX/IUBKFRZxqqDhKV1E9AVJzHfxG6ZMi5nI6vOyNv8Nt
-         0nLQ==
-X-Gm-Message-State: AOJu0YzDdEkkRg0xBPde8g1m5raLXJqMbMUk/kt425mOyqWH+kA0Hoib
-        CIi0oj7BEGwK/h/2aHeITPimyApddFxMGspOp/I4Hw==
-X-Google-Smtp-Source: AGHT+IEswWwSSaXU++NcaMiC0Ujkjj+Vn04CKhSZv7TtPGdjUYWT5Z8lgFE+X0lYJNg7DMjyqZlAFXqETyStZY8C9vo=
-X-Received: by 2002:a25:b16:0:b0:d7f:cdc8:e17c with SMTP id
- 22-20020a250b16000000b00d7fcdc8e17cmr7889180ybl.51.1694431724711; Mon, 11 Sep
- 2023 04:28:44 -0700 (PDT)
+        Mon, 11 Sep 2023 07:28:48 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5AACDD;
+        Mon, 11 Sep 2023 04:28:44 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 655AC6600BB0;
+        Mon, 11 Sep 2023 12:28:41 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694431722;
+        bh=VCO8hFhrrVLv5Zdp1yxb+bem6zXtstRZklPiz0+rgd4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Uk2qcLfxmAsXKNnobr9UNWX4/Ixh2BMKHQizFVNm6y/5eJw/LNhXRmE076AoXbeb2
+         KNz58L4dve0LM/UXPpGDrjBwXVKxXhvw5P51AwyLvh34KSGxD69kIsN7LM8j2PMSK5
+         MCajBCmrgbPfeIyr+6ETuuxKdVDc5Z7o7JyCLuDorWYeeCLWNdzAWi9grFLIG2fc9K
+         BUgSM7KUdFx0SzGwjsKUaFaGbVzCKVtCoevH40yqAHtKO4GrsosIXsrvaShGuwSdym
+         M7iAZg7SgY7HvPozqZvAaTCiS6RG/8j8mlBLA469IM0D8cBMMH222+BFB49eTZC+kW
+         wWrOP2B9rYW3A==
+Message-ID: <247d0b44-9359-2682-7e64-313eb1dd3e67@collabora.com>
+Date:   Mon, 11 Sep 2023 13:28:39 +0200
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
- <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
- <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
- <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com>
- <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com> <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
-In-Reply-To: <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 11 Sep 2023 13:28:08 +0200
-Message-ID: <CAPDyKFpUUJeGD77GTYCk59cvW=SdGTkOEXH4dap1JQWekAa0Eg@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RESEND PATCH v6 20/20] drm/mediatek: Set DPI input to 1T2P mode
+Content-Language: en-US
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
+        <nfraprado@collabora.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Singo Chang <singo.chang@mediatek.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
+References: <20230911074233.31556-1-shawn.sung@mediatek.com>
+ <20230911074233.31556-21-shawn.sung@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230911074233.31556-21-shawn.sung@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 09:52, Geert Uytterhoeven <geert@linux-m68k.org> wr=
-ote:
->
-> Hi Ulf,
->
-> On Thu, Aug 31, 2023 at 1:39=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.o=
-rg> wrote:
-> > On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wro=
-te:
-> > > If I may suggest something, I would call this "pmdomain" instead of
-> > > "genpd".  I don't think that /drivers/power/ is a particularly
-> > > suitable location for it, because it doesn't really have much to do
-> > > with power supplies and more to do with device PM.
-> >
-> > "pmdomain" is probably giving a reasonable good hint of what goes on
-> > in this subsystem. This works fine for me, thanks!
->
-> Sounds nice!
-> All of this lives in <linux/pm_domain.h> (with underscore?) anyway,
-> and "PM Domains" is the usual naming, as it covers both Power and
-> Clock Domains.
->
-> However, although I am quite familiar with genpd, I am still wondering
-> what is the meaning of the "generic" part in the name? And what is a
-> non-generic PM Domain?
+Il 11/09/23 09:42, Hsiao Chien Sung ha scritto:
+> DPI input is in 1T2P mode on MT8195,
+> align the setting of MT8188 with it,
+> otherwise the screen will glitch.
+> 
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
 
-I guess generic here means "works for most cases".
+First of all, this commit needs a Fixes tag... but then, instead of getting a
+1:1 duplicate of mt8195_dpintf_conf you can, at this point, entirely remove
+mt8188_dpintf_conf and assign the 8195 one to the 8188 compatible: please do so.
 
-There are certainly a bunch of other "non-generic", like the ACPI,
-pm_clk, OMAP2, etc.
+Thanks,
+Angelo
 
-Maybe some of them could be converted to genpd, but that's another story.
+> ---
+>   drivers/gpu/drm/mediatek/mtk_dpi.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> index 2f931e4e2b60..c6ee21e275ba 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -963,7 +963,7 @@ static const struct mtk_dpi_conf mt8188_dpintf_conf = {
+>   	.output_fmts = mt8195_output_fmts,
+>   	.num_output_fmts = ARRAY_SIZE(mt8195_output_fmts),
+>   	.pixels_per_iter = 4,
+> -	.input_2pixel = false,
+> +	.input_2pixel = true,
+>   	.dimension_mask = DPINTF_HPW_MASK,
+>   	.hvsize_mask = DPINTF_HSIZE_MASK,
+>   	.channel_swap_shift = DPINTF_CH_SWAP,
+> --
+> 2.18.0
+> 
 
->
-> > > Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
-> > > (and rename it to something like core.c), because it would be a bette=
-r
-> > > location for that fiile IMO.
-> >
-> > We could certainly do that, let's discuss it a bit more.
-> >
-> > Although, at this point I want to focus on the genpd providers, as to
-> > release some of the burden from arm-soc maintainers.
-> >
-> > > I can also handle future pull requests for this if that's fine with e=
-veryone.
-> >
-> > Thanks a lot for your offer! However, if a re-route is preferred (I
-> > think not?), this is probably better suited via arm-soc, as most
-> > changes are going to be arm platform specific.
->
-> Which brings me to the final question: what is the upstream path
-> for changes to drivers/genpd/*/ (or whatever it's gonna be called)?
-> Before, we sent PRs to (arm-)soc.  Do you expect us to send them to
-> you? There's usually quite some interaction between drivers/soc/reneas/
-> and drivers/genpd/renesas (and there are DT binding definitions),
-> but not more than with e.g. drivers/clk/renesas/.
-
-I would be happy to pick this up and funnel this via my new genpd
-tree. As long as it's coupled with changes affecting "genpd
-providers", of course.
-
-I can certainly also collect patches directly from the
-mailing-list/patch-tracker too. Whatever works for you the best. Of
-course, in that case I need your acks before I pick up the relevant
-patches.
-
-If we need "immutable" branches, let's discuss that on a case by case basis=
-.
-
->
-> And I just realized you moved the code and Makefiles to drivers/genpd/,
-> but not the Kconfig symbols and logic, which still lives under
-> drivers/soc/.  So resolving that (and the name) is something that
-> should be resolved sooner rather than later...
-
-In regards to the name, I am relying on input from Linus to make a
-final decision before I send a patch. In regards to this, I have also
-started working on a documentation patch for genpd. It needs some more
-polishing before I can send it though.
-
-When it comes to the Kconfig move, I will send out a series for it, this we=
-ek.
-
-[...]
-
-Kind regards
-Uffe
