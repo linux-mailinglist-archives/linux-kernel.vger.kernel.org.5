@@ -2,75 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0354D79A2FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E4A79A2FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbjIKFoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 01:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S233616AbjIKFpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 01:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbjIKFoC (ORCPT
+        with ESMTP id S229596AbjIKFpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 01:44:02 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F45CE6;
-        Sun, 10 Sep 2023 22:43:55 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38B5hkOS024316;
-        Mon, 11 Sep 2023 00:43:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694411027;
-        bh=O103J3a2New29edXGv3mAv1bSKtchcP1rssqRPD2WPA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=MVVKOU6vc0VopqjENkB96kn2383V6N8tngb1CinPHS8rKNfZviO+bIjhhzq1Lw79r
-         +USCcx96a6J1ojVdVI09ccRiU4UMJ3qfkOzg+hI33wB2p2NzPs/BWMdnxVXUS+rmW+
-         1mLaJZoCKCQhGOHoD20w/BM3+gIz/rWTW9F98I74=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38B5hklJ094211
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 00:43:46 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 00:43:46 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 00:43:46 -0500
-Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38B5hk54080516;
-        Mon, 11 Sep 2023 00:43:46 -0500
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.199])
-        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 38B5hjUh024557;
-        Mon, 11 Sep 2023 00:43:46 -0500
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@ti.com>,
-        MD Danish Anwar <danishanwar@ti.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Simon Horman <horms@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH net-next v2 2/2] net: ti: icssg-prueth: Add AM64x icssg support
-Date:   Mon, 11 Sep 2023 11:13:08 +0530
-Message-ID: <20230911054308.2163076-3-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911054308.2163076-1-danishanwar@ti.com>
-References: <20230911054308.2163076-1-danishanwar@ti.com>
+        Mon, 11 Sep 2023 01:45:00 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A227A1B9;
+        Sun, 10 Sep 2023 22:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694411084;
+        bh=HzQvLUQwMKRJOGwaKIdUdtJzzIIHyVPa8y2c1AfBN3s=;
+        h=From:Date:Subject:To:Cc:From;
+        b=AnWVzpt9O/StzyRMMt6av2FDQ8F1kJoTgVsc9pGwkKh8uStIM8vyEtwv5KwPv/FQ+
+         OQu56p1UATOAHDmzufuIbF7gUUKvokidxNM3q1sslo2WfkZ8j6Ll1hUMREVyFjhPjG
+         3D5eCYG8QIMlwXSR5AL1mqj13ejdaRrMRupiuSpY=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Mon, 11 Sep 2023 07:44:42 +0200
+Subject: [PATCH] hwmon: powerz: add support for ChargerLAB KM002C
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+Message-Id: <20230911-powerz-km002c-v1-1-898bd79b9bae@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAEmp/mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDS0ND3YL88tSiKt3sXAMDo2RdS5PEtCSTFOMUMxNTJaCegqLUtMwKsHn
+ RsbW1AGHvg/VfAAAA
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694411082; l=1216;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=HzQvLUQwMKRJOGwaKIdUdtJzzIIHyVPa8y2c1AfBN3s=;
+ b=khnT8josulM1Hj9pQSr9R4fpFEf1NPwW4bbk1zSa6hfk0FfQ/M6RvkXBDEKKNmGuE53Hk57ue
+ tWUigKj/NqqDFMfs1Ghlg5Bw0iyljOjnUkRndMKPCmel906DZFcNyFP
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,35 +54,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add AM64x ICSSG support which is similar to am65x SR2.0, but required:
-- all ring configured in exposed ring mode
-- always fill both original and buffer fields in cppi5 desc
+The KM002C is similar to the KM003C and seems to use the same
+protocol and firmware.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Roger Quadros <rogerq@kernel.org>
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+Reported-by: Douglas Gilbert <dgilbert@interlog.com>
+Closes: https://lore.kernel.org/lkml/290ebce4-54f0-8ac1-2a13-cbc806d80d64@interlog.com/
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/net/ethernet/ti/icssg/icssg_prueth.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-index 410612f43cbd..92b13057d4de 100644
---- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-+++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
-@@ -2313,8 +2313,13 @@ static const struct prueth_pdata am654_icssg_pdata = {
- 	.quirk_10m_link_issue = 1,
- };
+This patch is based on hwmon-next,
+commit 80369d9e1f2f ("hwmon: (sch5627) Document behaviour of limit registers").
+
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ drivers/hwmon/powerz.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
+index 2b9693aee6f6..cfb635f94d66 100644
+--- a/drivers/hwmon/powerz.c
++++ b/drivers/hwmon/powerz.c
+@@ -254,6 +254,7 @@ static void powerz_disconnect(struct usb_interface *intf)
+ }
  
-+static const struct prueth_pdata am64x_icssg_pdata = {
-+	.fdqring_mode = K3_RINGACC_RING_MODE_RING,
-+};
-+
- static const struct of_device_id prueth_dt_match[] = {
- 	{ .compatible = "ti,am654-icssg-prueth", .data = &am654_icssg_pdata },
-+	{ .compatible = "ti,am642-icssg-prueth", .data = &am64x_icssg_pdata },
- 	{ /* sentinel */ }
+ static const struct usb_device_id powerz_id_table[] = {
++	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0061, 0x00) },	/* ChargerLAB POWER-Z KM002C */
+ 	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0063, 0x00) },	/* ChargerLAB POWER-Z KM003C */
+ 	{ }
  };
- MODULE_DEVICE_TABLE(of, prueth_dt_match);
+
+---
+base-commit: 80369d9e1f2f16993ae6d148553c37bf65a209e4
+change-id: 20230911-powerz-km002c-94afb4d3d645
+
+Best regards,
 -- 
-2.34.1
+Thomas Weißschuh <linux@weissschuh.net>
 
