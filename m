@@ -2,278 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB7D79B8D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2093379BCA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242370AbjIKU5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
+        id S1358738AbjIKWNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242601AbjIKPy2 (ORCPT
+        with ESMTP id S242621AbjIKP5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:54:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEE9193
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:54:24 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B198921858;
-        Mon, 11 Sep 2023 15:54:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694447662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ZdEZzTCi1Qv5M3fqfhRCBlSPg3Eg/DkRRb1C3EMN/Pc=;
-        b=djbRf8c2O3l1ryRnfxT1+EQt++7yt9L5qUAFvEXThBGYjkJ18MeA9PCkZ2t2civfRDv42u
-        AFq4a8UkknLYqb7SHFsj8z+MaEtazy3Llb3lczV5Eeapsthb9arURLVXBWv63LvlEYoosv
-        RhjTnc9wdJvGy6+NKsdmPBMhQpPXVZM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694447662;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ZdEZzTCi1Qv5M3fqfhRCBlSPg3Eg/DkRRb1C3EMN/Pc=;
-        b=sqateda9BhsWxsQGACoqerFl89rYE9OOPvXSFqE73X3vPnBs5rvbvPW+YrpdFaOElvCzkX
-        4Bqou12983rWaYCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7DEA313780;
-        Mon, 11 Sep 2023 15:54:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Q7GjHS44/2QBeAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 15:54:22 +0000
-Message-ID: <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
-Date:   Mon, 11 Sep 2023 17:54:22 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
+        Mon, 11 Sep 2023 11:57:38 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2084.outbound.protection.outlook.com [40.107.7.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E641AE;
+        Mon, 11 Sep 2023 08:57:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i8bq0wyLEbYYymvYV6W+Kkyy56hf8MahMTYPO51VSvMbgM2IgkrgynUYkklLLuGmSp2r8FwpDUHher7hy2cTDzfjBbjxGn1YIJulocZW9QTosXren+DWCOKbd7QHj2fNWWgfxN1oAIpxxvl5faTvjopA1RHi2f7gaqhPBhItOPQFACPEM8UFBend36S22wUrzk3DcGHo98RLEL3RzGgdszSb2Z/8UVB33Jg6ES8CPNq2NrLV7EGbQaARKhrN6+XPIhYHLmjdsbfd3mzxLQ1Tp25XvGAE9l7trOxcPkCW+uF77oGfs4L+nGfFQEZmouEQuCcH/0EqPCryMwNlKnglTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zGy4NPAN5yE0/IMp4kaDPVtbbpXsg7g+UH8eOL/1eWE=;
+ b=DUwAYJ51p0cyca49f9F4E3xGmN5BwwCAMYnQNmveJwaszQZJEu4NyFF1xfLFzCdxkd//Ak7z2kgz1BxUgWQKdmY9rNXQjH4OEOB2kRvVR2ORMqVr6WsIJi6Osko0VrUmHdxXRnSNm2VEYjU8px1WaGAOigM87hd8RUg3T9hz6oY0xbPysBkSwGDz4Zzt8YImU1JTBIH3Y9Z46jXy+LZV1W2yldP8sH/o0hPjViYJwPOF4+l02W1Vk4spLWOAsuxEvUByMSM8bLkhGHxIvCKBA+j3l8drlGeih1dxF+npQmBM8t0t8i+krnLBNw31VQ8mzteS8yYZ5csTGMB6mwumSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zGy4NPAN5yE0/IMp4kaDPVtbbpXsg7g+UH8eOL/1eWE=;
+ b=hjFmwJgd1Urj7SwMxAIrdjVH0LrS9ekeunouhwl3U7HA2+DHG12CoXISJKqtEMlD68b+neS3GtYnSumPW+9b7UC1HUlx2mxWtG8gd5+ynDVzsy077q4El5rBPJgzlgltVZhQM5+Mp99nIJwyaXQQcyd0b7oI9EqY3qTl8aifXDg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by AS5PR04MB10058.eurprd04.prod.outlook.com (2603:10a6:20b:683::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Mon, 11 Sep
+ 2023 15:57:29 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 15:57:29 +0000
+Message-ID: <e169bc7e-b0af-a87b-e549-5fdcf447f381@oss.nxp.com>
+Date:   Mon, 11 Sep 2023 18:57:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC net-next v3 4/6] net: phy: nxp-c45-tja11xx: add MACsec
+ support
 Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Kees Cook' <keescook@chromium.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
- <202309071235.CB4F6B2@keescook>
- <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- tR6d+JzM8nFUZA==
-In-Reply-To: <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Sabrina Dubroca <sd@queasysnail.net>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com,
+        sebastian.tobuschat@nxp.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230906160134.311993-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230906160134.311993-5-radu-nicolae.pirea@oss.nxp.com>
+ <ZP8BXxD0WZtdJ913@hog>
+From:   "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
+In-Reply-To: <ZP8BXxD0WZtdJ913@hog>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: AS4P192CA0053.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:20b:658::17) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AS5PR04MB10058:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4733cb9-06ab-483d-a42e-08dbb2dfcd3b
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w26zQsJfIuhnQcK6WKHpmao/LaE7/YNQjN49BaYI5+IU40600BY3uTugCLKtd1oUgzD2mf+ok9JY3GkjyEAjv1yXUEXKaki73FFFrSpffctRmj3PZpB9rrXkqHoPdTVKamxmyQwWINzBrQiKicA4t0QiuHHayYyZRHZ8FZedPdjxzqRa4Y4TuqA5HY9Rvs02huI+Y/mSvksHVhHwcDt9oMUhtZm/5LxNJUauksKi3pTi6hgS5hFiPl1t+YcLFTUB5vThcDXyrphoLcftV6e5NJCd7PD7mwv/nZ9ZIORwyjLYRxk3PZOfw2E3qFI40RLwz1mLmnU0QuNR2jtFH7Xw4LCBPrC6emlgb0J4azYmxVtLaWLZanN3Ud0cwvz0/hhle5HlflvCQ1UsqLw+Z0HkZowZFCtcfySIRqyvjTJ/CtOyrF+vJCuXh2UD9h/KGmZG6IYKmtcGs4p7Go9S+xijYALqRgk4XkHV2TpSqPPiUQgW0RIDyLR0lEcE/tJUFChkJ3GEGldiwlAgESRFRh7H6kvxqLCaz1l+uYm8u3aqT2poO6H1JAxnwnUwq8cEOyshsBBNclbYTcdnRU5MsyHrESI+UY3OTLzsxKr0uXcqYsLnJRQKa2JpJeNo1buGRc2nD6/iBYL/oDZkhPSggD71aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(1800799009)(186009)(451199024)(6506007)(6486002)(53546011)(6666004)(6512007)(478600001)(83380400001)(2616005)(2906002)(7416002)(66476007)(66556008)(66946007)(6916009)(26005)(316002)(4326008)(5660300002)(8676002)(8936002)(31696002)(86362001)(38100700002)(31686004)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R24zM3U3KzRGK0drU3JmcjhMcDJnL3psY21Ta1ZCNzc3cGZCblZTQkJzUXdP?=
+ =?utf-8?B?aytiYUlNcEM3VmZpOFZUNkY0Z05QT1F1TVpyQkxhTW9TNUkrR0xBSVNuNWk0?=
+ =?utf-8?B?cytlWWNsM0JFQ1ZaK2hsNTByR3dKRUtrbk4vdEI4UGN5R0NueDJlaU9iTlpr?=
+ =?utf-8?B?eEFYV1g5Y0lyc2VKbk9oWk5rYTlNMWswaXQxWDRJZk1xcEFBaHI5MHhIS05Y?=
+ =?utf-8?B?U1pDY004S1FrRWpYSnArS3kvYWJoUTRRbEgvZFBTbjRLSUVOZVVURVZHWW4w?=
+ =?utf-8?B?eVVCWVlUK01FaEo3dlhOUWRwUE9Sd3NhMlJJeU5wM0M0WENoOHdqYjZpaGFW?=
+ =?utf-8?B?dDQxK3lXeldrWVJhTzdzaHB2MUh1bVg5VjFjcFVlNGIrUzlENTFWTTl3dFor?=
+ =?utf-8?B?UzRERll5Mm9qWHFCc2Iva1prVlRFbGtBZnJIbis3a1Z6VjJrYkRuRlRIUFlh?=
+ =?utf-8?B?b2ZreUxIY21uZkovQy82SnpEdXRrZG9zbm03UUhtbDlFMGg4UEQ4cHR1ajU5?=
+ =?utf-8?B?UUFLVm5UMCtyQytLbU5yNFIvZ0xqLy9zR0pqZWFNU2MwL0FkSWNRcEttaHBo?=
+ =?utf-8?B?dTd2OGNBcmVIVGx3WGxQQmdLVVY1WjFsN1N6MDFySFUweFNkT0hHQ2huMmUw?=
+ =?utf-8?B?eEMvRUVHRWppeDJYM0F4V2R6QW9xZEZpbDhpbHlINFBDeHdtTER0L280MWRT?=
+ =?utf-8?B?TVJ6Y0I5ZnlGMkhrcWVaa0hJYklneU9NbTFmcFM0WDBMdCtuYkFlcUlUTXA2?=
+ =?utf-8?B?d0tzRklRYThWaEJ2YllUUTluYmpIcll1dVdMazUyMitqY0kxaXUzZ2pycFAv?=
+ =?utf-8?B?T2dHOFFUU2JrRUFCdzJ2YnoybXpvZ2xtaEhKSXcxYldBRGZEZHBZcy9zK3Jx?=
+ =?utf-8?B?SWRxRitobmROcmU0TldqejVQS0s4QXdPSk96b2Q5MGFRdGM2Q2x1T0xQUVlx?=
+ =?utf-8?B?V0tNWHRvaXdEc1o0Yk4zS3dBU1pFYmh3dmFReE1xbE9PN3BHR0N4dUFPWDZF?=
+ =?utf-8?B?dytNcXRyV2djU2JRdGlDbzArMEZ2eUJuQUU2UzJ2K2lpR3QwWkQrWVQvRUxW?=
+ =?utf-8?B?UE9XK3F5Q2lDaTJLYzhwU3VtT3RxY2FtVmZ0V1RHU04vdzd5NHgwdnZjNDVz?=
+ =?utf-8?B?VEQ0TXZSUXk1SG0rRkN2SzF5bHkzdEFyMWhSRTU3N3V3WXdDcWdPMUxUbU9U?=
+ =?utf-8?B?MGNEUE5HVmlwUWdXTkZlS24yV0EzeksxR2tXZnNQRVhYam9XR3VJTVNzNVVk?=
+ =?utf-8?B?a1hGWDVDdUpJWDRoazhPaVNia2N3MFJWcWNrSUhkYkh4elF3dHJMSm1pVTZY?=
+ =?utf-8?B?amo0YzRtMERYL0FnZXNFa0ZEbCtFaUZiYzFtZjJDb3Z6Nnc4amZGR2VHSngy?=
+ =?utf-8?B?bURheHU4d1RydjhvZFRYRzdkZS9sMFNsZlVhODRaZEo5cW1aQi9CZTJHOG84?=
+ =?utf-8?B?NlgyQU1QalQ5UnJ2dWFwdHpMSGlmR0txZkkxcUJ2Sms1RktYMzlpMUFDM01u?=
+ =?utf-8?B?SHdnd2lJQ2ZhSW1pdGdGM2p1M0pEOWRpQml5bHdzWlVrZU8xa1E2bXd3UFQ2?=
+ =?utf-8?B?Q2JmQjl3OUk4ajBzOTVvZWtnQ3RpdW1XMTlMZ2dvd1FJRERBMVdlZlp1NStk?=
+ =?utf-8?B?cGRFWEVDSkFFOWhHUFVYTmZnSys1NlZxZGRkMS9nbXJsdkhkTmtpcmdqWTJI?=
+ =?utf-8?B?VEFGeDMyaWYrSGl1N3RPeWJoQTk2WmxLOUdMRDIyWUJWaW5vMm10NHc4MWxu?=
+ =?utf-8?B?TVFLSEJjOEZTRnJtWnFTWE9Rayt4NjFXMzlEK205cUhuSjVYLzRGWEVHUmJk?=
+ =?utf-8?B?KzgrVk1QN2kvYzAwSXA3RjBlWVU3RE9pNlg2di9aNzNUU1pxaDBpbG81RG4w?=
+ =?utf-8?B?NklDNTd2V3pRc1J5dnJrMlBGbFhCV3lBeGdQaVBZbS9sWDR1akp2NXcweGpa?=
+ =?utf-8?B?dmZzZXYzMndjNnowVmFMbmJLdGlXUWlkNnovK05UVlRYaHJTcmM3OFVZWkF0?=
+ =?utf-8?B?dWNFUHZ5QS9ydCtMSmxTQ2I4eEpZRkdMUHlRbDY3dm50MjlycnZzaUZjNkhG?=
+ =?utf-8?B?enovb3BnV3VQbWNzVFYxaGVCRmd5amMzckovYmR2L01QZmdQUU5McEtBUVZK?=
+ =?utf-8?B?M1I1dm1RaElaR0ZLSXVxWUNoc09oMDVmczVHOVFUMDFMQ0VCLytVOTNjT25M?=
+ =?utf-8?B?R2c9PQ==?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4733cb9-06ab-483d-a42e-08dbb2dfcd3b
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 15:57:29.6649
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g3qby8obDnVXJJPICW56BhhwpfMFjQihHAdZZgFmNvNYN0+OD2VNFI4JtuiUQa98JclEG7fKTCjsjrEHTb7bjD5CLgkLBJTBnmgCbbCsXkQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB10058
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 10:26, David Laight wrote:
-> From: Kees Cook
->> Sent: 07 September 2023 20:38
->> 
->> On Thu, Sep 07, 2023 at 12:42:20PM +0000, David Laight wrote:
->> > The typical use of kmalloc_size_roundup() is:
->> > 	ptr = kmalloc(sz = kmalloc_size_roundup(size), ...);
->> > 	if (!ptr) return -ENOMEM.
->> > This means it is vitally important that the returned value isn't
->> > less than the argument even if the argument is insane.
->> > In particular if kmalloc_slab() fails or the value is above
->> > (MAX_ULONG - PAGE_SIZE) zero is returned and kmalloc() will return
->> > it's single zero-length buffer.
->> >
->> > Fix by returning the input size on error or if the size exceeds
->> > a 'sanity' limit.
->> > kmalloc() will then return NULL is the size really is too big.
->> >
->> >
->> > Signed-off-by: David Laight <david.laight@aculab.com>
->> > Fixes: 05a940656e1eb ("slab: Introduce kmalloc_size_roundup()")
->> > ---
->> > v2:
->> >     - Use KMALLOC_MAX_SIZE for upper limit.
->> >       (KMALLOC_MAX_SIZE + 1 may give better code on some archs!)
->> >     - Invert test for overlarge for consistency.
->> >     - Put a likely() on result of kmalloc_slab().
->> >
->> >  mm/slab_common.c | 26 +++++++++++++-------------
->> >  1 file changed, 13 insertions(+), 13 deletions(-)
->> >
->> > diff --git a/mm/slab_common.c b/mm/slab_common.c
->> > index cd71f9581e67..0fb7c7e19bad 100644
->> > --- a/mm/slab_common.c
->> > +++ b/mm/slab_common.c
->> > @@ -747,22 +747,22 @@ size_t kmalloc_size_roundup(size_t size)
->> >  {
->> >  	struct kmem_cache *c;
->> >
->> > -	/* Short-circuit the 0 size case. */
->> > -	if (unlikely(size == 0))
->> > -		return 0;
->> 
->> If we want to allow 0, let's just leave this case as-is: the compiler
->> will optimize it against the other tests.
+
+
+On 11.09.2023 15:00, Sabrina Dubroca wrote:
+> 2023-09-06, 19:01:32 +0300, Radu Pirea (NXP OSS) wrote:
+>> +static bool nxp_c45_sci_valid(sci_t sci, bool scb)
+>> +{
+>> +	u16 port = sci_to_cpu(sci);
+>> +
+>> +	if (scb && port != 0)
+>> +		return false;
+>> +	if (!scb && port != 1)
+>> +		return false;
 > 
-> I doubt the compiler will optimise it away - especially with
-> the unlikely().
+> For non-SCB (ie normal case), only port 1 is allowed? That doesn't
+> seem to match what nxp_c45_rx_sc_valid was doing in v2, but it is also
+> called from nxp_c45_mdo_add_rxsc..
 
-Yeah I also think compiler can't do much optimizations except for build-time
-constant 0 here.
-
-> OTOH the explicit checks for (size && size <= LIMIT) do
-> get optimised to ((size - 1) <= LIMIT - 1) so become
-> a single compare.
-> 
-> Then returning 'size' at the bottom means that zero is returned
-> in the arg is zero - which is fine.
-> 
->> 
->> > -	/* Short-circuit saturated "too-large" case. */
->> > -	if (unlikely(size == SIZE_MAX))
->> > -		return SIZE_MAX;
->> > +	if (size && size <= KMALLOC_MAX_CACHE_SIZE) {
->> > +		/*
->> > +		 * The flags don't matter since size_index is common to all.
->> > +		 * Neither does the caller for just getting ->object_size.
->> > +		 */
->> > +		c = kmalloc_slab(size, GFP_KERNEL, 0);
->> > +		return likely(c) ? c->object_size : size;
->> 
->> I would like to have this fail "safe". c should never be NULL here, so
->> let's return "KMALLOC_MAX_SIZE + 1" to force failures.
-> 
-> Why even try to force failure here?
-> The whole function is just an optimisation so that the caller
-> can use the spare space.
-> 
-> The only thing it mustn't do is return a smaller value.
-
-If "c" is NULL it means either the kernel build must be broken e.g. by
-somebody breaking the KMALLOC_MAX_CACHE_SIZE value, and we could just ignore
-c being NULL and let it crash because of that.
-But I think it can also be NULL due to trying to call kmalloc_size_roundup()
-too early, when kmalloc_caches array is not yet populated. Note if we call
-kmalloc() itself too early, we get a NULL as a result, AFAICS. I can imagine
-two scenarios:
-
-- kmalloc_size_roundup() is called with result immediately fed to kmalloc()
-that happens too early, in that case we best should not crash on c being
-NULL and make sure the kmalloc() returns NULL.
-- kmalloc_size_roundup() is called in some init code to get a value that
-some later kmalloc() call uses. We might want also not crash in that case,
-but informing the developer that they did something wrong would be also useful?
-
-Clearly returning 0 if c == NULL, as done currently, is wrong for both
-scenarios. Retuning "size" is OK for the first scenario, also valid for the
-second one, but the caller will silently lose the benefit of
-kmalloc_size_roundup() and the developer introducing that won't realize it's
-done too early and could be fixed.
-
-So perhaps the best would be to return size for c == NULL, but also do a
-WARN_ONCE?
-
->> 
->> > +	}
->> > +
->> >  	/* Above the smaller buckets, size is a multiple of page size. */
->> > -	if (size > KMALLOC_MAX_CACHE_SIZE)
->> > +	if (size && size <= KMALLOC_MAX_SIZE)
->> >  		return PAGE_SIZE << get_order(size);
->> >
->> > -	/*
->> > -	 * The flags don't matter since size_index is common to all.
->> > -	 * Neither does the caller for just getting ->object_size.
->> > -	 */
->> > -	c = kmalloc_slab(size, GFP_KERNEL, 0);
->> > -	return c ? c->object_size : 0;
->> > +	/* Return 'size' for 0 and very large - kmalloc() may fail. */
->> 
->> I want to _be certain_ failure happens. If we get here we need to return
->> "KMALLOC_MAX_SIZE + 1"
-> 
-> Why care?
-
-Yeah no need for that.
+This port number restriction is valid only if end_station is true.
+In nxp_c45_mdo_add_rxsc I forgot to check end_station flag.
 
 > 
-> 	David
+>> +
+>> +	return true;
+>> +}
+>> +
 > 
->> 
->> -Kees
->> 
->> > +	return size;
->> > +
->> >  }
->> >  EXPORT_SYMBOL(kmalloc_size_roundup);
->> >
->> > --
->> > 2.17.1
->> >
->> > -
->> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
->> > Registration No: 1397386 (Wales)
->> >
->> 
->> --
->> Kees Cook
+> [...]
+>> +static void nxp_c45_tx_sa_next(struct nxp_c45_secy *phy_secy,
+>> +			       struct nxp_c45_sa *next_sa, u8 encoding_sa)
+>> +{
+>> +	struct nxp_c45_sa *sa;
+>> +
+>> +	sa = nxp_c45_find_sa(&phy_secy->sa_list, TX_SA, encoding_sa);
+>> +	if (!IS_ERR(sa)) {
+>> +		memcpy(next_sa, sa, sizeof(*sa));
+>> +	} else {
+>> +		next_sa->is_key_a = true;
+>> +		next_sa->an = encoding_sa;
+>> +	}
+>> +}
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> What is this doing? Why are you filling a fake SA struct when none is
+> currently configured?
 > 
 
+To reuse nxp_c45_tx_sa_update.
+
+> 
+> 
+>> +static int nxp_c45_mdo_upd_txsa(struct macsec_context *ctx)
+>> +{
+>> +	struct macsec_tx_sa *tx_sa = ctx->sa.tx_sa;
+>> +	struct phy_device *phydev = ctx->phydev;
+>> +	struct nxp_c45_phy *priv = phydev->priv;
+>> +	struct nxp_c45_secy *phy_secy;
+>> +	u8 an = ctx->sa.assoc_num;
+>> +	struct nxp_c45_sa *sa;
+>> +
+>> +	phydev_dbg(phydev, "update TX SA %u %s to TX SC %016llx\n",
+>> +		   an, ctx->sa.tx_sa->active ? "enabled" : "disabled",
+>> +		   sci_to_cpu(ctx->secy->sci));
+>> +
+>> +	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
+>> +	if (IS_ERR(phy_secy))
+>> +		return PTR_ERR(phy_secy);
+>> +
+>> +	sa = nxp_c45_find_sa(&phy_secy->sa_list, TX_SA, an);
+>> +	if (IS_ERR(sa))
+>> +		return PTR_ERR(sa);
+>> +
+>> +	nxp_c45_select_secy(phydev, phy_secy->secy_id);
+>> +	nxp_c45_sa_set_pn(phydev, sa, tx_sa->next_pn, 0);
+> 
+> The macsec core doesn't increment its PN when we're offloading. If
+> userspace didn't pass a new PN, aren't we resetting the HW's PN back
+> to its initial value here? That would cause replay protection to fail,
+> and the PN reuse would break GCM.
+> 
+> Could you check by inspecting the sequence numbers sent by the device
+> before and after this:
+> 
+>      ip macsec set macsec0 tx sa 0 on
+
+Here the tx sa 0 pn is set 1. I will store the initial pn, and if the sa 
+is updated with the same pn or if the new pn is 0, I will not update it.
+Thank you for pointing that out.
+
+> 
+> 
+> And same for nxp_c45_mdo_upd_rxsa -> nxp_c45_sa_set_pn. Testing would
+> require enabling replay protection and making the PN go backward on
+> the TX side.
+> 
+>> +	nxp_c45_tx_sa_update(phydev, sa, ctx->secy->tx_sc.encoding_sa,
+>> +			     tx_sa->active);
+>> +	return 0;
+>> +}
+> 
+
+-- 
+Radu P.
