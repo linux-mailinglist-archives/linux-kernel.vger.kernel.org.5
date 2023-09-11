@@ -2,158 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A95C79B65C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB9D79BD5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343579AbjIKVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:11:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
+        id S1359667AbjIKWST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243082AbjIKQsp (ORCPT
+        with ESMTP id S243086AbjIKQtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:48:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6A7EE7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:47:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694450874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SlE5hxD39QAwP7iSa7A3UcuUWfmPcVu6XAYVvHUfNKU=;
-        b=jQJRFw7dlS6CJbiiyVAu3Hm9bh2nhDHvf/3uLiZMNVb9kQsvd0WjSIbxTkDCfcWzHtocdy
-        kVshMD/3Ph/zhmkvwAL9vQbeKwLtc46tO1ibF47lkP4LtTzN8LovcG0hzEqvfZncckWcD0
-        N+a8LEMRS/QTfCm7cqihYdd3dfn29PE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-642-dKd75GJuOlmpkmOBMSDFWw-1; Mon, 11 Sep 2023 12:47:51 -0400
-X-MC-Unique: dKd75GJuOlmpkmOBMSDFWw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D42D3C19371;
-        Mon, 11 Sep 2023 16:47:50 +0000 (UTC)
-Received: from optiplex-fbsd (unknown [10.22.48.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A13D2156702;
-        Mon, 11 Sep 2023 16:47:49 +0000 (UTC)
-Date:   Mon, 11 Sep 2023 12:47:47 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Waiman Long <longman@redhat.com>,
-        Rafael Aquini <raquini@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/slab_common: fix slab_caches list corruption after
- kmem_cache_destroy()
-Message-ID: <ZP9Es3zK1XCY7i6-@optiplex-fbsd>
-References: <20230908230649.802560-1-aquini@redhat.com>
- <afaa8691-0be9-4574-a87d-aab68c7a49b3@suse.cz>
+        Mon, 11 Sep 2023 12:49:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4F510C2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:49:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CAE8C433C8;
+        Mon, 11 Sep 2023 16:48:42 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 12:48:56 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, tglx@linutronix.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+Message-ID: <20230911124856.453fba22@gandalf.local.home>
+In-Reply-To: <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+        <20230830184958.2333078-8-ankur.a.arora@oracle.com>
+        <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+        <87zg1v3xxh.fsf@oracle.com>
+        <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+        <87edj64rj1.fsf@oracle.com>
+        <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afaa8691-0be9-4574-a87d-aab68c7a49b3@suse.cz>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:06:15PM +0200, Vlastimil Babka wrote:
-> On 9/9/23 01:06, Rafael Aquini wrote:
-> > After the commit in Fixes:, if a module that created a slab cache does not
-> > release all of its allocated objects before destroying the cache (at rmmod
-> > time), we might end up releasing the kmem_cache object without removing it
-> > from the slab_caches list thus corrupting the list as kmem_cache_destroy()
-> > ignores the return value from shutdown_cache(), which in turn never removes
-> > the kmem_cache object from slabs_list in case __kmem_cache_shutdown() fails
-> > to release all of the cache's slabs.
-> > 
-> > This is easily observable on a kernel built with CONFIG_DEBUG_LIST=y
-> > as after that ill release the system will immediately trip on list_add,
-> > or list_del, assertions similar to the one shown below as soon as another
-> > kmem_cache gets created, or destroyed:
-> > 
-> >   [ 1041.213632] list_del corruption. next->prev should be ffff89f596fb5768, but was 52f1e5016aeee75d. (next=ffff89f595a1b268)
-> >   [ 1041.219165] ------------[ cut here ]------------
-> >   [ 1041.221517] kernel BUG at lib/list_debug.c:62!
-> >   [ 1041.223452] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> >   [ 1041.225408] CPU: 2 PID: 1852 Comm: rmmod Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
-> >   [ 1041.228244] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
-> >   [ 1041.231212] RIP: 0010:__list_del_entry_valid+0xae/0xb0
-> > 
-> > Another quick way to trigger this issue, in a kernel with CONFIG_SLUB=y,
-> > is to set slub_debug to poison the released objects and then just run
-> > cat /proc/slabinfo after removing the module that leaks slab objects,
-> > in which case the kernel will panic:
-> > 
-> >   [   50.954843] general protection fault, probably for non-canonical address 0xa56b6b6b6b6b6b8b: 0000 [#1] PREEMPT SMP PTI
-> >   [   50.961545] CPU: 2 PID: 1495 Comm: cat Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
-> >   [   50.966808] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
-> >   [   50.972663] RIP: 0010:get_slabinfo+0x42/0xf0
-> > 
-> > This patch fixes this issue by properly checking shutdown_cache()'s
-> > return value before taking the kmem_cache_release() branch.
-> > 
-> > Fixes: 0495e337b703 ("mm/slab_common: Deleting kobject in kmem_cache_destroy() without holding slab_mutex/cpu_hotplug_lock")
-> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
-> > Cc: stable@vger.kernel.org
-> 
-> Thanks, added to slab.git. Tweaked the code a bit:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/commit/?h=slab/for-6.6/hotfixes&id=46a9ea6681907a3be6b6b0d43776dccc62cad6cf
->
+On Sat, 9 Sep 2023 21:35:54 -0700
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Thank you, Vlastimil.
-
- 
-> > ---
-> >  mm/slab_common.c | 13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index cd71f9581e67..31e581dc6e85 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -479,7 +479,7 @@ void slab_kmem_cache_release(struct kmem_cache *s)
-> >  
-> >  void kmem_cache_destroy(struct kmem_cache *s)
+> On Sat, 9 Sept 2023 at 20:49, Ankur Arora <ankur.a.arora@oracle.com> wrote:
+> >
+> > I think we can keep these checks, but with this fixed definition of
+> > resched_allowed(). This might be better:
+> >
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -2260,7 +2260,8 @@ static inline void disallow_resched(void)
+> >
+> >  static __always_inline bool resched_allowed(void)
 > >  {
-> > -	int refcnt;
-> > +	int err;
-> >  	bool rcu_set;
-> >  
-> >  	if (unlikely(!s) || !kasan_check_byte(s))
-> > @@ -490,17 +490,20 @@ void kmem_cache_destroy(struct kmem_cache *s)
-> >  
-> >  	rcu_set = s->flags & SLAB_TYPESAFE_BY_RCU;
-> >  
-> > -	refcnt = --s->refcount;
-> > -	if (refcnt)
-> > +	s->refcount--;
-> > +	if (s->refcount) {
-> > +		err = -EBUSY;
-> >  		goto out_unlock;
-> > +	}
-> >  
-> > -	WARN(shutdown_cache(s),
-> > +	err = shutdown_cache(s);
-> > +	WARN(err,
-> >  	     "%s %s: Slab cache still has objects when called from %pS",
-> >  	     __func__, s->name, (void *)_RET_IP_);
-> >  out_unlock:
-> >  	mutex_unlock(&slab_mutex);
-> >  	cpus_read_unlock();
-> > -	if (!refcnt && !rcu_set)
-> > +	if (!err && !rcu_set)
-> >  		kmem_cache_release(s);
-> >  }
-> >  EXPORT_SYMBOL(kmem_cache_destroy);
+> > -       return unlikely(test_tsk_thread_flag(current, TIF_RESCHED_ALLOW));
+> > +       return unlikely(!preempt_count() &&
+> > +                        test_tsk_thread_flag(current, TIF_RESCHED_ALLOW));
+> >  }  
 > 
+> I'm not convinced (at all) that the preempt count is the right thing.
 > 
+> It works for interrupts, yes, because interrupts will increment the
+> preempt count even on non-preempt kernels (since the preempt count is
+> also the interrupt context level).
+> 
+> But what about any synchronous trap handling?
+> 
+> In other words, just something like a page fault? A page fault doesn't
+> increment the preemption count (and in fact many page faults _will_
+> obviously re-schedule as part of waiting for IO).
 
+I wonder if we should make it a rule to not allow page faults when
+RESCHED_ALLOW is set? Yeah, we can preempt in page faults, but that's not
+what the allow_resched() is about. Since the main purpose of that function,
+according to the change log, is for kernel threads. Do kernel threads page
+fault? (perhaps for vmalloc? but do we take locks in those cases?).
+
+That is, treat allow_resched() like preempt_disable(). If we page fault
+with "preempt_disable()" we usually complain about that (unless we do some
+magic with *_nofault() functions).
+
+Then we could just add checks in the page fault handlers to see if
+allow_resched() is set, and if so, complain about it like we do with
+preempt_disable in the might_fault() function.
+
+
+-- Steve
