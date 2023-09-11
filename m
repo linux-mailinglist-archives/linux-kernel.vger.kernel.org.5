@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A5E79AFBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8C779AEBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350221AbjIKVgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S1377938AbjIKW3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244183AbjIKTdD (ORCPT
+        with ESMTP id S244205AbjIKThe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:33:03 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F0C18D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:58 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bbbda48904so81048211fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:58 -0700 (PDT)
+        Mon, 11 Sep 2023 15:37:34 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC30712A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:37:29 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6b9e478e122so3366936a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:37:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694460776; x=1695065576; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SmoYn1hZC3xQGtyelzNab1Xu6ODmKiyQRbBS/HxAMC4=;
-        b=UotyASXNe8JaMvNQqj492rQLsq2hxrshnwenGUpD3NUMHSn+HT6x10/hFdJeDse7g5
-         kEGHkcu+vsDxGPD9e5/Sl3bzciD25WZ4YWva1ZlXtiqwaChGSrTK/phZpekApygfaWKt
-         Er4mssrD8c4a5Q1YbGjHoX9w8/v4HcSmzf538k33Zq15b2UDWwyNPt1x67XDjr4Q9/3G
-         zlWOWePvaJplD7SX9b+aSOVf8JN8rjz5Fb8RpoQ1AFWmbP6/O+yRIKzq8vLbqZCOHxPv
-         ooM6NNwzZ2T32RkamjRoqL2/abGutacfvcNqRAsKxrRpq4cOXNqpHZuF5G11Ke99KYKN
-         F+qA==
+        d=linaro.org; s=google; t=1694461049; x=1695065849; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=equAb98+MDoXTFD0Qn2BcTK9XaWv7WQjzYAJlfVROPE=;
+        b=UBEaA+R7N4LkgvfN1y9xN5UtpJIwYXcboYlrRfp4E9r+F+m5YqKKu2X5YAJN6rOSOu
+         /2xbLg9UBiqVQyeoIrjIzUd63CciKD1+6jUeWo+rvKqnPoH7c+Jw0Aln4eb1RFiYt3/6
+         NYqGWcrpuAaUVAnVdvbV0RFdbQjnwGMQkZmg1XggZVgjmFu13+csIaGFM5cDGM9jsbsv
+         GpDW3c9C1+KXmJ6YBVtR7RXUJa6K1whn8MA3eaQUUQlKXHvUfBCJg/CSazhcZtf8LjIK
+         GTDbx8S4EfynRyUB63DAcZnHdkv4/7CE8exFT0y59BdQUGZqg1EhIRwG/c6s0ty+Qg9h
+         smvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694460776; x=1695065576;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SmoYn1hZC3xQGtyelzNab1Xu6ODmKiyQRbBS/HxAMC4=;
-        b=LTInSWBOeZ7w4naG/HUVjzjSs3UhJzu9mBEylOGM1LPRzeGhcWF4gOLzjo0lfbHQ1k
-         2PCVfdGUAqpFEVVPZpMCmQrZzBchcGsf/gPVc9LRKm+ANsZW1+0PezGYmiwanzVhDICP
-         ECBW1tCM9cTxO8K4VlPth3sqNiHDi6r7TzDtUOSDIjtbVm11F7SCYA3wfmfPhSo8SFWy
-         Yh69NmhlYeDZCwLfqyQd26OQZ105nJ+DVPlFMXSp/DUftAp3cmXMpbpTB/yClEfbrUJw
-         16HYyqoFrFRrR/oQXdFc+EQrbYVOvcmOkHgT52Oo8x1UX9BpxFSN9BaOKlBMgv/eNvPn
-         rN8Q==
-X-Gm-Message-State: AOJu0Yxwh1HbersWBdJiaW8qJhPNMbc7gDBafn/XGJ/lJ8tDPHB0JJ/e
-        OT4j23jcT9NFEyL7u2f99l6Qqg==
-X-Google-Smtp-Source: AGHT+IGVpfF1mPPSu5kGATO/g/0PYmS6AMm2ETruxKwXin501vgUXJVjft33cKKtyBHE1FmZOylGaA==
-X-Received: by 2002:a2e:3a10:0:b0:2bc:b6ce:eab with SMTP id h16-20020a2e3a10000000b002bcb6ce0eabmr8601981lja.51.1694460776479;
-        Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
-Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170906410400b0099cc402d3ddsm5698607ejk.202.2023.09.11.12.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 11 Sep 2023 21:32:49 +0200
-Subject: [PATCH v2 2/2] phy: qcom-qmp-combo: initialize PCS_USB registers
+        d=1e100.net; s=20230601; t=1694461049; x=1695065849;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=equAb98+MDoXTFD0Qn2BcTK9XaWv7WQjzYAJlfVROPE=;
+        b=Qah8RQIhoiG9xcD21xVO/8oYNJf6CmIrtoExOi2lDEA1cbYIqHJZ9mS2B6P36YmHZy
+         ra1L/MI9x7nx7LNf6ONlhn7gohdD7o1tLqmSCrrzKxHEwbr3wHIFtq8FbUTG/PWPNUCV
+         O3JbH81a2zwR/iiZHS2vQdF9G4KgyNIohMIbqt3dbB7hpHG/DuiMUby9nzGzSYkhu+5o
+         N03pyItPAq1oaiaOxsf8TxT5QRqp2EDHz+JxA+8+fJbtXjFzVos6RPnYc7YPig5sJvn7
+         UpRcZfkp4VQDxAndMjAPZoHJHDiA1JN4mA9LnfxexQOTaF/GYoV8V8f37rUbM1y9KWhX
+         3jHw==
+X-Gm-Message-State: AOJu0Yw0mb8kyqZn6HuWCfCs0I7X7iZZpyvPyExIiRaC6Ge8piVFyp8+
+        UTitNCpPGiSyOvyp26BcaSZF14ctWCtSsNfL7QqlkB7pmAvjP26Q
+X-Google-Smtp-Source: AGHT+IHlhxgtmO7tiyrDYj+HzY/4j2EIuZNEIP9VA79lo1De8xszz8bgpU9rqTSS45gbydj/7QtcRpuKH4sFAZZm+uk=
+X-Received: by 2002:a9d:6e03:0:b0:6b7:4efe:a9a4 with SMTP id
+ e3-20020a9d6e03000000b006b74efea9a4mr12026934otr.23.1694461049001; Mon, 11
+ Sep 2023 12:37:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230829-topic-8550_usbphy-v2-2-a72f43311d19@linaro.org>
-References: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
-In-Reply-To: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
+References: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org> <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
+In-Reply-To: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 11 Sep 2023 22:37:17 +0300
+Message-ID: <CAA8EJppHVs18rhb3p7_LGrE02wD_tYzTbOMr46cAHV7imG+rDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550 POWER_STATE_CONFIG1
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>,
         Abel Vesa <abel.vesa@linaro.org>,
         Johan Hovold <johan+linaro@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Adrien Thierry <athierry@redhat.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694460770; l=1296;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=DV4nuVtUL74YZJK1G0aNcuFg9vdKLsrw5ToJmi5Mtx8=;
- b=7QsJOM+zXh00ZIJeXd4vj/+bQ02B5nc7LfNYHDIXk8dqEvIVOII2KvHp/HmaBQI2RgI0gJtJs
- 7lKj3zZExUtByiiJ7vkNGAsC5j2WzscJL6a9Omhf20n3LffmXcbnglQ
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,40 +73,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, PCS_USB registers that have their initialization data in a
-pcs_usb_tbl table are never initialized. Fix that.
+On Mon, 11 Sept 2023 at 22:32, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+>
+> There are two instances of the POWER_STATE_CONFIG1 register: one in
+> the PCS space and another one in PCS_USB.
+>
+> The downstream init sequence pokes the latter one while we've been poking
+> the former one (and misnamed it as the latter one, impostor!). Fix that
+> up to avoid UB.
+>
+> Fixes: 49742e9edab3 ("phy: qcom-qmp-combo: Add support for SM8550")
+> Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp-combo.c      | 2 +-
+>  drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h | 3 ++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> index cbb28afce135..843099d314bf 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+> @@ -859,10 +859,10 @@ static const struct qmp_phy_init_tbl sm8550_usb3_pcs_tbl[] = {
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG1, 0x4b),
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG5, 0x10),
+> -       QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
+>  };
+>
+>  static const struct qmp_phy_init_tbl sm8550_usb3_pcs_usb_tbl[] = {
+> +       QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
 
-Fixes: fc64623637da ("phy: qcom-qmp-combo,usb: add support for separate PCS_USB region")
-Reported-by: Adrien Thierry <athierry@redhat.com>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 4 ++++
- 1 file changed, 4 insertions(+)
+And this is still _Q6_
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-index 843099d314bf..1922b05403ac 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-@@ -2555,6 +2555,7 @@ static int qmp_combo_usb_power_on(struct phy *phy)
- 	void __iomem *tx2 = qmp->tx2;
- 	void __iomem *rx2 = qmp->rx2;
- 	void __iomem *pcs = qmp->pcs;
-+	void __iomem *pcs_usb = qmp->pcs_usb;
- 	void __iomem *status;
- 	unsigned int val;
- 	int ret;
-@@ -2576,6 +2577,9 @@ static int qmp_combo_usb_power_on(struct phy *phy)
- 
- 	qmp_combo_configure(pcs, cfg->pcs_tbl, cfg->pcs_tbl_num);
- 
-+	if (pcs_usb)
-+		qmp_combo_configure(pcs_usb, cfg->pcs_usb_tbl, cfg->pcs_usb_tbl_num);
-+
- 	if (cfg->has_pwrdn_delay)
- 		usleep_range(10, 20);
- 
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
+>         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
+> index 9510e63ba9d8..c38530d6776b 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
+> @@ -12,7 +12,7 @@
+>  #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG3            0xcc
+>  #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG6            0xd8
+>  #define QPHY_USB_V6_PCS_REFGEN_REQ_CONFIG1             0xdc
+> -#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1       0x90
+> +#define QPHY_USB_V6_PCS_POWER_STATE_CONFIG1            0x90
+>  #define QPHY_USB_V6_PCS_RX_SIGDET_LVL                  0x188
+>  #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_L           0x190
+>  #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_H           0x194
+> @@ -23,6 +23,7 @@
+>  #define QPHY_USB_V6_PCS_EQ_CONFIG1                     0x1dc
+>  #define QPHY_USB_V6_PCS_EQ_CONFIG5                     0x1ec
+>
+> +#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1       0x00
+>  #define QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL   0x18
+>  #define QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2  0x3c
+>  #define QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L                0x40
+>
+> --
+> 2.42.0
+>
+
 
 -- 
-2.42.0
-
+With best wishes
+Dmitry
