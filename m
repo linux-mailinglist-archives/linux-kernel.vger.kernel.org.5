@@ -2,125 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B2179C271
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC79579C22E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbjILCND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S236490AbjILCHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbjILCMu (ORCPT
+        with ESMTP id S241742AbjILCEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:12:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162B26E89;
-        Mon, 11 Sep 2023 14:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694467455; x=1726003455;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HcGBa4u1K5hnQPCpGg0DbVeBeHvuKVebaPsTI8ufq4M=;
-  b=ktyosDzGwoHvH8GCGscLM0uY+67+YM3Y+RpsBZqCHw7fbSLsgOSYwn8t
-   tIgDdtziYCiJBRdj8ZZ3OGm8wm1aRxwbSx9TVmimBYGVyfJBlNMl4xBI2
-   H0s34U8iKZrVyTZ5umf3E/iVzmP3NAKQdeYmo9LS6GyT9vBGonfK2GZYx
-   KpiPZwvpHVsAtSewgll/GEruDUUrlOBk6lORNXd2nq4H3pb2rIgPJ9FVz
-   zYVkUbsQTWWRytFtPcFTA7aAkAjXrylu55/fpmQ0cDu1hVlvPOorIT9Fh
-   nj7LfHMdMaVC95m+/njFfZDkn8ls4cEJS6Lz1w2iqT5xePwXosnncqgz1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="380908530"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="380908530"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:22:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813546290"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="813546290"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:22:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfoMg-008QX4-2Z;
-        Tue, 12 Sep 2023 00:22:38 +0300
-Date:   Tue, 12 Sep 2023 00:22:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v3 4/4] platform/x86: intel_scu_ipc: Fail IPC send if
- still busy
-Message-ID: <ZP+FHs+GBROf0zH8@smile.fi.intel.com>
-References: <20230911193937.302552-1-swboyd@chromium.org>
- <20230911193937.302552-5-swboyd@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911193937.302552-5-swboyd@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+        Mon, 11 Sep 2023 22:04:40 -0400
+Received: from abi149hd125.arn1.oracleemaildelivery.com (abi149hd125.arn1.oracleemaildelivery.com [129.149.84.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B0224854
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=H8VUP4moo1XVYiRBDWgPNjnI1wJ8sH7VT2dNJjvItbc=;
+ b=Ui1++Qndmy2QHhaV+7pzDFIxdz19lDQ0nF7u5P6pgSLjeCeOtMSqM5zkmDVx+nGlDeF+npYf/EDo
+   xgYGFzn6QLN9Uq1Wq4tq3lTs2kEq+Mx+/FQbYVQf2dfTNp+YIHzEkRVetZYzd2C45mJShkP64aHZ
+   m+nXLmrw32PM87K7zAMGTevje5ToT3Le5K0IsROXVJ3cIRaWduucnjS1HFVbdwONUO8KQ+/SgKBF
+   3GMI3jq+fQMmcqusgZ8+9M36tASH19foDu9O9FaM/EKh0BJ6GyB7cYp7/+Lf0Ump+yCMNd3+Km4l
+   QpKknvb60SIngLeqJNN+sitEX6ljptF9VjSOOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=H8VUP4moo1XVYiRBDWgPNjnI1wJ8sH7VT2dNJjvItbc=;
+ b=JSopP8Ez2n2cBaDICKbnGcBItDOAOI+phWUeuAV0HdXGhhtiUckXkRMBX8+Tp742pFsMlPFs0a6X
+   KCRYseziCIFozk1feU7wnNam+wtVNkp0uohT8J/HTzx0vHn3jmh+yVqLITNyCiKrzbhnwaAw0SYl
+   Q8+LbOEp6XhNtvmgr1ZUyeXC/wH0WCGjK0wCO/yW7TNz5TRfPkFRE0dUuV9ivVFsA1gVCy0w1h7Q
+   Izvye0882rP14tePg/LIFYNTnLKTpW1F7PQWZ9mmknwvUPMJLf6p82ZjLjYL7nQsE1b6TgS7uN8/
+   9nOrVLuLO9hCvnWz/+9bOJ7Gf36foUXrqEFWgA==
+Received: by omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230808 64bit (built Aug  8
+ 2023))
+ with ESMTPS id <0S0U005OABY4GX50@omta-ad1-fd1-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for linux-kernel@vger.kernel.org; Mon, 11 Sep 2023 21:34:52 +0000 (GMT)
+From:   August Wikerfors <git@augustwikerfors.se>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev,
+        August Wikerfors <git@augustwikerfors.se>
+Subject: [PATCH] ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG
+Date:   Mon, 11 Sep 2023 23:34:09 +0200
+Message-id: <20230911213409.6106-1-git@augustwikerfors.se>
+MIME-version: 1.0
+Content-transfer-encoding: 8bit
+Reporting-Meta: AAFMhxbHdTEVooZy00RNFw7yNWnRQQsRpdo9xMUMs12GakU/CcQg5lXkTxfeIA1j
+ UFC2bx3C9ai1vUeHgw7IlDUTwUvNnakXPNvwpL3UE58m4KcFRUYpn1W4Tle0cSEv
+ agPVEEbWRoh2nvxmASr82sKMXWL7Oed7IQtKIkVPVyzNrBtBVY6wSsxUs4Q/uWmp
+ DFnzz1LRQ745NtmwZJXpAPViGlpFf+wr0OaskmbuCQa+3XRM7pV/kY9gmc0oLFNf
+ hkhtzxkQ4YTso0uVOCe4TZWUwL4f4FcCbUiA6+gOxx4XS7HHvD+nhyd7ZgWjels1
+ k4E/oe90BaQil/sGfJlHjyFoeCVNIEUfN0Ju677DPspDf3igStE25wR9KXv3+jOY
+ NtLEukU8iYcq8VfFNzM/kuxRNYXg+R6ZCzp/h54m/taP4qQkHYEJ8Gbd8D2Og/p7 QQMAigA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:39:36PM -0700, Stephen Boyd wrote:
-> It's possible for interrupts to get significantly delayed to the point
-> that callers of intel_scu_ipc_dev_command() and friends can call the
-> function once, hit a timeout, and call it again while the interrupt
-> still hasn't been processed. This driver will get seriously confused if
-> the interrupt is finally processed after the second IPC has been sent
-> with ipc_command(). It won't know which IPC has been completed. This
-> could be quite disastrous if calling code assumes something has happened
-> upon return from intel_scu_ipc_dev_simple_command() when it actually
-> hasn't.
-> 
-> Let's avoid this scenario by simply returning -EBUSY in this case.
-> Hopefully higher layers will know to back off or fail gracefully when
-> this happens. It's all highly unlikely anyway, but it's better to be
-> correct here as we have no way to know which IPC the status register is
-> telling us about if we send a second IPC while the previous IPC is still
-> processing.
+Like the Lenovo 82TL and 82V2, the Lenovo 82QF (Yoga 7 14ARB7) and 82UG
+(Legion S7 16ARHA7) both need a quirk entry for the internal microphone to
+function. Commit c008323fe361 ("ASoC: amd: yc: Fix a non-functional mic on
+Lenovo 82SJ") restricted the quirk that previously matched "82" to "82V2",
+breaking microphone functionality on these devices. Fix this by adding
+specific quirks for these models, as was done for the Lenovo 82TL.
 
-...
+Fixes: c008323fe361 ("ASoC: amd: yc: Fix a non-functional mic on Lenovo 82SJ")
+Closes: https://github.com/tomsom/yoga-linux/issues/51
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=208555#c780
+Cc: stable@vger.kernel.org
+Signed-off-by: August Wikerfors <git@augustwikerfors.se>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-> +static struct intel_scu_ipc_dev *intel_scu_ipc_get(struct intel_scu_ipc_dev *scu)
-> +{
-> +	u8 status;
-
-> +	if (!scu)
-> +		scu = ipcdev;
-
-I would write this as
-
-	scu = scu ?: ipcdev;
-
-> +	if (!scu)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	status = ipc_read_status(scu);
-> +	if (status & IPC_STATUS_BUSY) {
-> +		dev_dbg(&scu->dev, "device is busy\n");
-> +		return ERR_PTR(-EBUSY);
-> +	}
-> +
-> +	return scu;
-> +}
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 59aa2e9d3a79..94e9eb8e73f2 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -213,6 +213,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "82QF"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+@@ -220,6 +227,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "82TL"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "82UG"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.42.0
 
