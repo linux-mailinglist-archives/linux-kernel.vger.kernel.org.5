@@ -2,284 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36B579B2E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2324D79B4EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377058AbjIKWVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
+        id S1350471AbjIKVir convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 17:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238174AbjIKNpQ (ORCPT
+        with ESMTP id S238211AbjIKNvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:45:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446C6CD7;
-        Mon, 11 Sep 2023 06:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694439912; x=1725975912;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=EgjA2vIJjuiwS7EJKS1FOe5M+fyBn77LnP6VqUqfuNsdqUn07f4hrctY
-   hMPL2fSFqpVipfeuokvocUgXjwC+ZfUnAJrYXgJPBjDti/I9XfEh7NkCn
-   H1YMg4xMvZcTFTvggDGsEFEQoIckn2WoZOuSxAwzDgo76YFlliLHS8G6J
-   qxV8DSqLSKD8iC/eGyujNK1dNCTPmns7UcXmdFtqPxWDu8+ATnHwA+9xA
-   aY9F0ChnTJVbrja6TcdC9yh+aPdyNAlmB9j00IEm/k4D2yfV08x7HWHVR
-   i+CfMG2SorhNL5bEzGHBNFEHJuTPylzm1PFL99iaUICmaZXaaBjnB1sS8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444500457"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="444500457"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:45:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813379972"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="813379972"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2023 06:45:08 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org, dinguyen@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
-Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 19:15:40 +0530
-Message-Id: <20230911134541.1777043-2-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911134541.1777043-1-sharath.kumar.d.m@intel.com>
-References: <20230616063313.862996-2-sharath.kumar.d.m@intel.com>
- <20230911134541.1777043-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 09:51:19 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E812CD7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:15 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5924093a9b2so43711027b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694440274; x=1695045074;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rDloSeE/RMJ8xb0vN0WHP8xkcaLq8Ztl0V6yiAC98sM=;
+        b=r9sFX8hWbTPT52bROUSe/+eE2tafdA0lf0mPl6GFHlvWIX0sr0C31N/I5M2dG4iYsZ
+         NJAPZ/KEX3Gzsq9e0Tjq5TFKys8qKOm2QEqOIaNNipB6XVqnt4cW2I9Yx7+HTe/vv8Sp
+         azPKrWWfB4u1qiNmcaAY7jouuLSZe9OKG2dm7difW/Z4RBl3OHyiqUpeprSRdNOq6pMJ
+         z90ffM25nv4XDruTjaom9kwezaVFfjA02L1QDyqR0maRO+DwiaFimmcZcoWWnPnLO6g0
+         5wQdedSSyvOoNTqIbcaqWeiQO6xjLhyg7y/q71FRg9dhJu5thx6//yESN+LEbCWu+yyO
+         CnAg==
+X-Gm-Message-State: AOJu0YycwF2lAVjd+nL6o01KKh+BMRWrjAVs5Q1Pm7Fau9YaPlwOxZOK
+        3ABwcCEOrSh96teIJvBfSsBgiZL6B/i7jA==
+X-Google-Smtp-Source: AGHT+IHBo+6fD75/x2bRXOeZsmXKeXcOGXXSbSPYdbCqEPNwBziQjhJ/ZnEdxSD119ZrnljtHI00ug==
+X-Received: by 2002:a81:dd12:0:b0:586:a003:b0b9 with SMTP id e18-20020a81dd12000000b00586a003b0b9mr10887884ywn.49.1694440274244;
+        Mon, 11 Sep 2023 06:51:14 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id b65-20020a0df244000000b005869fd2b5bcsm1972241ywf.127.2023.09.11.06.51.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d80211e8df8so2815198276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
+X-Received: by 2002:a5b:191:0:b0:d08:5a25:e6b4 with SMTP id
+ r17-20020a5b0191000000b00d085a25e6b4mr9656076ybl.28.1694440273428; Mon, 11
+ Sep 2023 06:51:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1694093327.git.geert@linux-m68k.org> <6894409da1a0d8667bf74b9100067485ce3c37ac.1694093327.git.geert@linux-m68k.org>
+ <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
+In-Reply-To: <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Sep 2023 15:51:02 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
+Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
+Subject: Re: [PATCH 06/52] m68k: kernel: Add and use "process.h"
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        Laurent Vivier <laurent@vivier.eu>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Hi Greg,
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
+On Mon, Sep 11, 2023 at 3:42 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
+> Nice cleanups. My plan is to clean up the ColdFire/68000 warnings as well.
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
+Thanks in advance!
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
- 
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
+> On 7/9/23 23:41, Geert Uytterhoeven wrote:
+> > --- a/arch/m68k/kernel/process.c
+> > +++ b/arch/m68k/kernel/process.c
+> > @@ -38,6 +38,7 @@
+> >   #include <asm/machdep.h>
+> >   #include <asm/setup.h>
+> >
+> > +#include <process.h>
+>
+> I applied all 52 patches to linux-6.6-rc1 and see this:
+>
+>      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make amiga_defconfig
+>      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make W=1
+>      ...
+>        CC      arch/m68k/kernel/process.o
+>      arch/m68k/kernel/process.c:41:10: fatal error: process.h: No such file or directory
+>       #include <process.h>
+>                ^~~~~~~~~~~
+>
+> Of course trivially fixed by doing this:
+>
+> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+> index d2d6a5735650..2584e94e2134 100644
+> --- a/arch/m68k/kernel/process.c
+> +++ b/arch/m68k/kernel/process.c
+> @@ -38,7 +38,7 @@
+>   #include <asm/machdep.h>
+>   #include <asm/setup.h>
+>
+> -#include <process.h>
+> +#include "process.h"
+
+Thanks, will fix (and any other similar typos, if any).
+
+I usually build in separate output directories, which causes
+
+    -I${srcdir}/include
+    -I${srcdir}/arch/m68k/kernel
+    -I./arch/m68k/kernel
+
+to be added to the include path, causing <...> to work as well :-(
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.34.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
