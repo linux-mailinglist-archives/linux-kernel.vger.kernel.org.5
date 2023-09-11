@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B6579A337
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAF979A33D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbjIKGDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        id S232501AbjIKGDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbjIKGDF (ORCPT
+        with ESMTP id S233974AbjIKGD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:03:05 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B451CD2;
-        Sun, 10 Sep 2023 23:02:06 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5e8Yt002248;
-        Mon, 11 Sep 2023 06:01:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=RR5dflBIS+AjZvT9GMXk42NHZjPTycEkvcZES8b7aR8=;
- b=N+NsLtqFvZRHWyRg/h2XVaRehmpL94AQJXG/AjhjOHjvMn9a6Bc+s9nQ6NiD1lnz4hKo
- fQ8Vv/yTiSC54oq8pWcTrZ0FwVAniOCIjV9dhIYcwCY9xkPgtxFbJMJ5MDmAntSgoB5u
- X7ENsQDEry+P0F8K2jDmJPwq0Xy7WJlhN4/LrTDuuwQ1BN4TZvcdqwCecdW9ozy7ramT
- meSXsO3MCItDNHRfx41CnS19fFAQgMdLFyAX5UCOv+18yhHW3GeBlbJPYisuZsQuyn3r
- jvfudDKO126JFYBnDGWr5P8X7lLimOcH0T1eUrn3svDd5uTpOrajghuRormce2DHmXGY aA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0j0fjrv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 06:01:31 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B61URt024641
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 06:01:30 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Sun, 10 Sep 2023 23:01:18 -0700
-Date:   Mon, 11 Sep 2023 11:31:15 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-Subject: Re: [PATCH v5 11/17] qcom_minidump: Register ramoops region with
- minidump
-Message-ID: <3119f3f6-92a5-4db1-85cf-bd16e31ae5a0@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
+        Mon, 11 Sep 2023 02:03:26 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3874B1BE;
+        Sun, 10 Sep 2023 23:02:40 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38B629cH000420;
+        Mon, 11 Sep 2023 01:02:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694412129;
+        bh=9ATVOVPWJwJ8fvU0+Op5VStbUwr5g7KLMfdJN1X3w/Q=;
+        h=From:To:CC:Subject:Date;
+        b=AfJ6yI00hfHsA2gv4azcAW/7xHdOYxNHDkT9umOj4k9s2fLGYnQeX3/BBJnz6rQ7a
+         QVZdh4YFI+y0ZGDr6H9Jt9Jv14lfeB2mCDqVl+yfxsxNT0d4UDzv9pqcQ0SI8JcoRd
+         oo5R5HnBkA2/WVo/pXe0nEGg3osF4TZtTSlprq0w=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38B629jr010613
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Sep 2023 01:02:09 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Sep 2023 01:02:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Sep 2023 01:02:09 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38B629fO016131;
+        Mon, 11 Sep 2023 01:02:09 -0500
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.199])
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 38B628UP000503;
+        Mon, 11 Sep 2023 01:02:08 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Andrew Lunn <andrew@lunn.ch>, Roger Quadros <rogerq@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Simon Horman <horms@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+Subject: [PATCH net-next v2 0/2] Add Half Duplex support for ICSSG Driver
+Date:   Mon, 11 Sep 2023 11:31:58 +0530
+Message-ID: <20230911060200.2164771-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xBrk-Pn9mM0MxC_5RsdRbWjljej3GIpW
-X-Proofpoint-GUID: xBrk-Pn9mM0MxC_5RsdRbWjljej3GIpW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=618 bulkscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309110054
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 10, 2023 at 01:46:12AM +0530, Mukesh Ojha wrote:
-> Register all the pstore frontend with minidump, so that they can
-> be dumped as default Linux minidump region to be collected on
-> SoC where minidump is enabled.
-> 
-> Helper functions is written in separate file and built along with
-> the minidump driver, since it is client of minidump and also call
-> it at appropriate place from minidump probe so that they always
-> get registered.
-> 
-> While at it also rename the out minidump module object name during
-> build as qcom_apss_minidump which basically depicts as Qualcomm
-> Application processor subsystem minidump.
-> 
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> ---
->  drivers/soc/qcom/Kconfig                 |  1 +
->  drivers/soc/qcom/Makefile                |  3 +-
->  drivers/soc/qcom/qcom_minidump.c         |  4 ++
->  drivers/soc/qcom/qcom_ramoops_minidump.c | 88 ++++++++++++++++++++++++++++++++
->  drivers/soc/qcom/qcom_ramoops_minidump.h | 10 ++++
->  5 files changed, 105 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.c
->  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.h
-> 
-> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-> index 4b36d46807bc..b3977f1687d8 100644
-> --- a/drivers/soc/qcom/Kconfig
-> +++ b/drivers/soc/qcom/Kconfig
-> @@ -305,6 +305,7 @@ config QCOM_MINIDUMP
->  	tristate "QCOM APSS Minidump driver"
->  	depends on ARCH_QCOM || COMPILE_TEST
->  	depends on QCOM_SMEM
-> +	depends on PSTORE
+This series adds support for half duplex operation for ICSSG driver.
 
-Can't we make QC minidump available without PSTORE? PSTORE is another
-cllient for minidump, so other clients can still use minidump right?
-Where is this hard dependency coming from?
+In order to support half-duplex operation at 10M and 100M link speeds, the
+PHY collision detection signal (COL) should be routed to ICSSG GPIO pin
+(PRGx_PRU0/1_GPI10) so that firmware can detect collision signal and apply
+the CSMA/CD algorithm applicable for half duplex operation. A DT property,
+"ti,half-duplex-capable" is introduced for this purpose in the first patch
+of the series. If board has PHY COL pin conencted to PRGx_PRU1_GPIO10,
+this DT property can be added to eth node of ICSSG, MII port to support
+half duplex operation at that port.
 
-Thanks,
-Pavan
+Second patch of the series configures driver to support half-duplex
+operation if the DT property "ti,half-duplex-capable" is enabled.
+
+This series addresses comments on [v1] (which was posted as RFC).
+This series is based on the latest net-next/main. This series has no
+dependency.
+
+Changes from v1 to v2:
+*) Dropped the RFC tag.
+*) Added RB tags of Andrew and Roger.
+
+[1] https://lore.kernel.org/all/20230830113134.1226970-1-danishanwar@ti.com/
+
+Thanks and Regards,
+Md Danish Anwar
+
+MD Danish Anwar (2):
+  dt-bindings: net: Add documentation for Half duplex support.
+  net: ti: icssg-prueth: Add support for half duplex operation
+
+ .../bindings/net/ti,icssg-prueth.yaml           |  7 +++++++
+ drivers/net/ethernet/ti/icssg/icssg_config.c    | 14 ++++++++++++++
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c    | 17 +++++++++++++++--
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h    |  2 ++
+ 4 files changed, 38 insertions(+), 2 deletions(-)
+
+
+base-commit: 73be7fb14e83d24383f840a22f24d3ed222ca319
+-- 
+2.34.1
+
