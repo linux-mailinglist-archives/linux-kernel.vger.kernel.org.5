@@ -2,153 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E1379B4DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C16D79AE84
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242085AbjIKU5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
+        id S1348347AbjIKV0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240542AbjIKOq6 (ORCPT
+        with ESMTP id S240561AbjIKOrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:46:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676BC106;
-        Mon, 11 Sep 2023 07:46:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E72C433C8;
-        Mon, 11 Sep 2023 14:46:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694443613;
-        bh=GajsJSo2epB55/QXlHa/vb50gsyMmkBm0dq/dBU22L0=;
+        Mon, 11 Sep 2023 10:47:19 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F53E40;
+        Mon, 11 Sep 2023 07:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694443633;
+        bh=aUWLB29r0a9TYsvda4pRCCh9tA1GN6DQXSmmKb9Dj38=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5mC1L6tFXnJ3XqZxh9lRAwUouQwGfHGue4LGkWDhnduL1VU6VZD3Tq60Xhm5Af+M
-         w1sPRi8BL2meLINNTko9B91ikEGFc6P3AETxVrohj5BlgO2Yi3EuSjqTnynyKjxxCV
-         6fL18lMOmQFgpsZqnVnOMfyDDgwXZ9iACQ8hKYR27JvtjdXQYYMmLZRUg1EsRhwHIo
-         yKjnxS3BNYy0JX9PurDrL38poPpk7Ia7oP/Q1S6uoI1mFNZ+daJ6HVlg4ua/saJZ1V
-         xSPw7Wjab/NW+2VYUGEA9g4ABOGf7eE/2OtvOPN3zDUzbnLoC/K+8FHbBSr8YzJqox
-         hyWwCrhU//CNQ==
-Date:   Mon, 11 Sep 2023 16:46:50 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>
-Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
-        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
-        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
-        corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        linux-rockchip@lists.infradead.org,
-        Daniel Stone <daniels@collabora.com>,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
-Message-ID: <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
-References: <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
- <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com>
- <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
- <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com>
- <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
- <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com>
- <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
- <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org>
- <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
- <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org>
+        b=fN7dshKiZHKAqsfaN0r2KVj5ZB9eHpVD12wnp3zIz1ogPNo4K8MNN6YVWxvciU0rR
+         +iqRvnz1NlGpAsLJFlzGMB0V68HNkJ4n8+L3W0vTqXagytHxLqflAyS/ghZgD2yVZB
+         tRIp/qORrIHOFpL7G+Mpe59QuXcKOAPoQENcGhs0=
+Date:   Mon, 11 Sep 2023 16:47:12 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: libc-test: avoid -Wstringop-overflow
+ warnings
+Message-ID: <96597a87-89f2-4ec0-bf89-d1d8920f0d29@t-8ch.de>
+References: <20230910-nolibc-poll-fault-v1-1-2b7a16f48259@weissschuh.net>
+ <ZP6uAT0jmseRHkzG@1wt.eu>
+ <cf5a2308-e241-4146-85c6-67ad924fb67c@t-8ch.de>
+ <ZP8kgXhP/UjsMoD4@1wt.eu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uuq5zmkty6dwz5s2"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZP8kgXhP/UjsMoD4@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-09-11 16:30:25+0200, Willy Tarreau wrote:
+> On Mon, Sep 11, 2023 at 04:26:41PM +0200, Thomas Weißschuh wrote:
+> > On 2023-09-11 08:04:49+0200, Willy Tarreau wrote:
+> > > On Sun, Sep 10, 2023 at 09:29:01PM +0200, Thomas Weißschuh wrote:
+> > > > Newer versions of glibc annotate the poll() function with
+> > > > __attribute__(access) which triggers a compiler warning inside the
+> > > > testcase poll_fault.
+> > > > Avoid this by using a plain NULL which is enough for the testcase.
+> > > > To avoid potential future warnings also adapt the other EFAULT
+> > > > testcases, except select_fault as NULL is a valid value for its
+> > > > argument.
+> > > (...)
+> > > 
+> > > Looks good to me. I wouldn't be surprised if we're soon forced to do
+> > > the same with select() on some archs where it might be emulated.
+> > > 
+> > > Feel free to push it to the shared repo.
+> > 
+> > Thanks, I pushed it to the "next" branch.
+> > 
+> > I'd also like to rebase the next branch onto v6.6-rc1, any objections?
+> 
+> Yes, please go on!
 
---uuq5zmkty6dwz5s2
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Done.
 
-Replying one more time, because I certainly don't want to create any
-hard feeling here.
+I used "git rebase --signoff" and dropped the duplicate signoffs it
+generated on my own commits.
 
-On Mon, Sep 11, 2023 at 03:30:55PM +0200, Michel D=E4nzer wrote:
-> >>>> By keeping those sets of expectations, we've been able to keep Mesa =
-pretty
-> >>>> clear of regressions, whilst having a very clear set of things that =
-should
-> >>>> be fixed to point to. It would be great if those set of things were =
-zero,
-> >>>> but it just isn't. Having that is far better than the two alternativ=
-es:
-> >>>> either not testing at all (obviously bad), or having the test always=
- be red
-> >>>> so it's always ignored (might as well just not test).
-> >>>
-> >>> Isn't that what happens with flaky tests anyway?
-> >>
-> >> For a small minority of tests. Daniel was referring to whole test suit=
-es.
-> >>
-> >>> Even more so since we have 0 context when updating that list.
-> >>
-> >> The commit log can provide whatever context is needed.
-> >=20
-> > Sure, I've yet to see that though.
-> >=20
-> > There's in 6.6-rc1 around 240 reported flaky tests. None of them have
-> > any context. That new series hads a few dozens too, without any context
-> > either. And there's no mention about that being a plan, or a patch
-> > adding a new policy for all tests going forward.
->=20
-> That does sound bad, would need to be raised in review.
->
-> > Any concern I raised were met with a giant "it worked on Mesa" handwave
->=20
-> Lessons learned from years of experience with big real-world CI
-> systems like this are hardly "handwaving".
+It's also pushed to git.kernel.org, could you double-check it?
 
-Your (and others) experience certainly isn't. It is valuable, welcome,
-and very much appreciated.
-
-However, my questions and concerns being ignored time and time again
-about things like what is the process is going to be like, what is going
-to be tested, who is going to be maintaining that test list, how that
-interacts with stable, how we can possibly audit the flaky tests list,
-etc. have felt like they were being handwaived away.
-
-I'm not saying that because I disagree, I still do on some, but that's
-fine to some extent. However, most of these issues are not so much an
-infrastructure issue, but a community issue. And I don't even expect a
-perfect solution right now, unlike what you seem to think. But I do
-expect some kind of plan instead of just ignoring that problem.
-
-Like, I had to ask the MT8173 question 3 times in order to get an
-answer, and I'm still not sure what is going to be done to address that
-particular issue.
-
-So, I'm sorry, but I certainly feel like it here.
-
-Maxime
-
---uuq5zmkty6dwz5s2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZP8oWgAKCRDj7w1vZxhR
-xeoaAQCel+s1l4ON0RwLsGGIhWRQkRm3rOPEl1s1oAgC7ibXSwEAp4V+2IAQRlWC
-JJT0CY046wasZ7fQ6QP2X7LhxQsGdgA=
-=uxXU
------END PGP SIGNATURE-----
-
---uuq5zmkty6dwz5s2--
+Thanks,
+Thomas
