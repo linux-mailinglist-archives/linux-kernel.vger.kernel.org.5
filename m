@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69CA79BD88
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04DC79BA06
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349260AbjIKVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
+        id S1354619AbjIKVyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237289AbjIKM1S (ORCPT
+        with ESMTP id S237292AbjIKM2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:27:18 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CCF1B9;
-        Mon, 11 Sep 2023 05:27:13 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qfg0T-0000WD-Fw; Mon, 11 Sep 2023 14:27:09 +0200
-Message-ID: <7e9735bf-c42b-4f03-8645-8cdbf87a75f3@leemhuis.info>
-Date:   Mon, 11 Sep 2023 14:27:08 +0200
+        Mon, 11 Sep 2023 08:28:10 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33810CEB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:28:05 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41517088479so6616191cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1694435284; x=1695040084; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zn0VPuMCaZZ/Sf/x4SYpp1ksKQN06bPb7JpCjgEI2sE=;
+        b=B05FJTJUZo5uh7ARxi2MN21gm18GqcbV2vFpeMM+EIaf7tjg8rJW0s7PQ7/2mVxA1T
+         ELzKGDeDQ5xd+1Mumw0N/APzXyy78EkvlbARtR6Xr4P8xeyDjgSP6I9aXrcNYQdi/+Q8
+         Ohg4rUkQ79eva4bNcwZxphmqeczHPlc66aVjgDe1t/2MCFnC3p1eDyHHRHOC73NJAXHA
+         dTu2ZT78jOjBa0i3s8MxS450KFKqMur8nfrAFwWMnGSmhDmkF5JL7EwzenP48zpmOrlj
+         bQvb0BLfFgSUZW2MjsQQteMN/DAQKyr3v6O2mlD4k1nX8Vbr6435Eq2eRf4XDpTIySXG
+         KiiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694435284; x=1695040084;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zn0VPuMCaZZ/Sf/x4SYpp1ksKQN06bPb7JpCjgEI2sE=;
+        b=ZHSdFpH1S3gc1tidDSwPsm5+Np8On0jkiMnp2XXbFTtjBjisL9GU1mZrIYI6phtw18
+         KJSQe3lhs1kK6dpYJsMW9vRmXUn4uw7K9kOTao5k53rgWY1MaavGC5LG7eRGAE9ce89t
+         herf1yT22Ix1BPNbQp3oDvxuy5KQQXf24wwuKWVHZ2tFhLkoogzpRoMXZEvVQjogLNZu
+         jpEq7y7ypUDuOBJCCGJj+E6qeMiXnKuldR9UO4jtfm48JVlEudf2gG0yXLGI0/Rl+mA5
+         S/YWFeBBktmxfJEOESdO9y0tslJzrdk9fG49dINex0BcrtR1C3J//wBC/A8ru/LjCiYA
+         k1Xw==
+X-Gm-Message-State: AOJu0Yyk9V4vjmVTjTC2eX3PFf08Qd56WrUjA9Ca4VVRcIlbI5+12ABH
+        UHvQTv9lRuD9S73fX9Ik1LzoYA==
+X-Google-Smtp-Source: AGHT+IEuiBqhh8flWvXQjI9qVYyi7SQ+iMh9AbQCI6PHKvz8gvU9yEMKJFwQ3Xcbwzjo+nZxgEPrMw==
+X-Received: by 2002:a05:622a:2c42:b0:410:92ca:3dcd with SMTP id kl2-20020a05622a2c4200b0041092ca3dcdmr11567113qtb.9.1694435284073;
+        Mon, 11 Sep 2023 05:28:04 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
+        by smtp.gmail.com with ESMTPSA id ih10-20020a05622a6a8a00b0041072408126sm2559963qtb.5.2023.09.11.05.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 05:28:03 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qfg1K-001XgC-L8;
+        Mon, 11 Sep 2023 09:28:02 -0300
+Date:   Mon, 11 Sep 2023 09:28:02 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     oushixiong <oushixiong@kylinos.cn>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+        Brett Creeley <brett.creeley@amd.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] vfio/pds: Using pci_physfn() to fix a compilation issue
+Message-ID: <ZP8H0puYJeYF33fn@ziepe.ca>
+References: <20230911080828.635184-1-oushixiong@kylinos.cn>
+ <BN9PR11MB527657CA940184579FD31CAC8CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
- readers are possible
-Content-Language: en-US, de-DE
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
- <20230819004356.1454718-2-Liam.Howlett@oracle.com>
- <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
-From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694435233;82f00e33;
-X-HE-SMSGID: 1qfg0T-0000WD-Fw
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <BN9PR11MB527657CA940184579FD31CAC8CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: I'm adding this report to the list of tracked Linux kernel
-regressions; the text you find below is based on a few templates
-paragraphs you might have encountered already in similar form.
-See link in footer if these mails annoy you.]
-
-On 29.08.23 18:42, Geert Uytterhoeven wrote:
+On Mon, Sep 11, 2023 at 08:25:18AM +0000, Tian, Kevin wrote:
+> > From: oushixiong <oushixiong@kylinos.cn>
+> > Sent: Monday, September 11, 2023 4:08 PM
+> > 
+> > From: Shixiong Ou <oushixiong@kylinos.cn>
+> > 
+> > If PCI_ATS isn't set, then pdev->physfn is not defined.
+> > it causes a compilation issue:
+> > 
+> > ../drivers/vfio/pci/pds/vfio_dev.c:165:30: error: ‘struct pci_dev’ has no
+> > member named ‘physfn’; did you mean ‘is_physfn’?
+> >   165 |   __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
+> >       |                              ^~~~~~
+> > 
+> > So using pci_physfn() rather than using pdev->physfn directly.
+> > 
+> > Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
 > 
-> On Fri, 18 Aug 2023, Liam R. Howlett wrote:
->> The current implementation of append may cause duplicate data and/or
->> incorrect ranges to be returned to a reader during an update.  Although
->> this has not been reported or seen, disable the append write operation
->> while the tree is in rcu mode out of an abundance of caution.
->>
->> During the analysis of the mas_next_slot() the following was
->> artificially created by separating the writer and reader code:
-> [...]
-> Thanks for your patch, which is now commit cfeb6ae8bcb96ccf
-> ("maple_tree: disable mas_wr_append() when other readers are
-> possible") in v6.5, and is being backported to stable.
-> 
-> On Renesas RZ/A1 and RZ/A2 (single-core Cortex-A9), this causes the
-> following warning:
-> > […]
-> Reverting this commit fixes the issue.
+> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
-Thanks for the report. To be sure the issue doesn't fall through the
-cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-tracking bot:
+Yes, we should do both patches
 
-#regzbot ^introduced cfeb6ae8bcb96ccf
-#regzbot title maple_tree: warning on Renesas RZ/A1 and RZ/A2
-(single-core Cortex-A9
-#regzbot ignore-activity
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
-
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Jason
