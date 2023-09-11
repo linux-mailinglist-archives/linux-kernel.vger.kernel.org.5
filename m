@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C6679AD83
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E0C79B231
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379090AbjIKWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S1376786AbjIKWU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242710AbjIKQLK (ORCPT
+        with ESMTP id S242726AbjIKQNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:11:10 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7208E1B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:11:05 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-501be2d45e0so7779865e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:11:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694448662; x=1695053462; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+QeZPdiVCIBARaAlW5frnuN99j3rzp4a9OMhyKJX2M8=;
-        b=lLQZ0I63WuBe4AasGpOPDr2nXXBQeM8jXgrfxEH2M7ajrqYBUzCOpkzOR081WvJqDe
-         3UKXAyK18Tsn98syEDTkLBUxUVgcJMPezus7jmQLk0Cwd93X1Gr/mjCxbej4d7R+kjQT
-         5opnZf6BrdOLDsDXo9Yppfzyp8lxZpCRcwo5A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694448662; x=1695053462;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+QeZPdiVCIBARaAlW5frnuN99j3rzp4a9OMhyKJX2M8=;
-        b=E6eXoQ6YQ4voGOCfA5BUjrSjqBF8ctfCu9XDU7e5SKtNwYYpSgr6vW/KCUtIgIPE7C
-         q4fIb4olRSa3EKF9LY3YnLhkKx89KFqMH7XUyZEH6IZlMHjBlMQpOzzy7zrHIh/d54ZG
-         ca30zc/CCvqsGYQ5oGZbeztUZLrDm4XMhpS86ljToaBkMIm8JuelgVR4g/K0F+0NDHlV
-         Oj5VsOiOh72qVwNyhieXq29qNkjsHEFEdKwWvk1t+dMyGFZ4jPLDQNETBNHn8e2pOo9K
-         E2Dc14WMpiDTYYuSyj6FTu6G6GcVNYKMhmyUh501d7C0CA3bvpbUxVrfUDc7mSby/i4T
-         zOcw==
-X-Gm-Message-State: AOJu0Yzqsbw5eMA2QMa6+KoRtwAI48LvKoJS3kEM3u2lxf13rxFxiY1z
-        HchpuxB7r3JPZX062op0PhabU9AInCWD61HH0SjC+g==
-X-Google-Smtp-Source: AGHT+IHCfG7+ZQQVyGknh6ihvpW/m36tavfyZNiaqMyN636KQhdvOKK0YsrXIeuIr3nIDfsMOWh+JQ==
-X-Received: by 2002:a19:4f10:0:b0:501:c49b:7673 with SMTP id d16-20020a194f10000000b00501c49b7673mr6175619lfb.28.1694448661864;
-        Mon, 11 Sep 2023 09:11:01 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id qp2-20020a170907206200b0098748422178sm5560483ejb.56.2023.09.11.09.11.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 09:11:00 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-52f1f1f5125so18157a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:11:00 -0700 (PDT)
-X-Received: by 2002:a50:9faa:0:b0:525:573c:6444 with SMTP id
- c39-20020a509faa000000b00525573c6444mr340372edf.1.1694448660156; Mon, 11 Sep
- 2023 09:11:00 -0700 (PDT)
+        Mon, 11 Sep 2023 12:13:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 708F21B8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:13:03 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-285-mYiHEOWIMmCSSS6iWUQVLQ-1; Mon, 11 Sep 2023 17:12:55 +0100
+X-MC-Unique: mYiHEOWIMmCSSS6iWUQVLQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
+ 2023 17:12:43 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 11 Sep 2023 17:12:43 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Vlastimil Babka' <vbabka@suse.cz>,
+        'Kees Cook' <keescook@chromium.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
+        'Christoph Lameter' <cl@linux.com>,
+        'Pekka Enberg' <penberg@kernel.org>,
+        'David Rientjes' <rientjes@google.com>,
+        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
+        "'Andrew Morton'" <akpm@linux-foundation.org>,
+        'Eric Dumazet' <edumazet@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: RE: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
+ 0 for non-zero size
+Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
+ 0 for non-zero size
+Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5gAMq8SAABymU5AApLGGAAACRmZQ
+Date:   Mon, 11 Sep 2023 16:12:43 +0000
+Message-ID: <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
+References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
+ <202309071235.CB4F6B2@keescook>
+ <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
+ <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
+In-Reply-To: <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.5.I2b014f90afc4729b6ecc7b5ddd1f6dedcea4625b@changeid> <CAC=S1niYAC3PFQoAmwVc=1FcK29uu5sC9c1pGo-mku__y7eHcA@mail.gmail.com>
-In-Reply-To: <CAC=S1niYAC3PFQoAmwVc=1FcK29uu5sC9c1pGo-mku__y7eHcA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 11 Sep 2023 09:10:44 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VT8ZQkcLn4nsxCygC5SG16qYW5igFfwM762jEK42p12g@mail.gmail.com>
-Message-ID: <CAD=FV=VT8ZQkcLn4nsxCygC5SG16qYW5igFfwM762jEK42p12g@mail.gmail.com>
-Subject: Re: [RFT PATCH 05/15] drm/mediatek: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Fei Shao <fshao@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        angelogioacchino.delregno@collabora.com, chunkuang.hu@kernel.org,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, p.zabel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,45 +70,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+RnJvbTogVmxhc3RpbWlsIEJhYmthDQo+IFNlbnQ6IDExIFNlcHRlbWJlciAyMDIzIDE2OjU0DQo+
+IA0KPiBPbiA5LzgvMjMgMTA6MjYsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBLZWVz
+IENvb2sNCj4gPj4gU2VudDogMDcgU2VwdGVtYmVyIDIwMjMgMjA6MzgNCj4gPj4NCj4gPj4gT24g
+VGh1LCBTZXAgMDcsIDIwMjMgYXQgMTI6NDI6MjBQTSArMDAwMCwgRGF2aWQgTGFpZ2h0IHdyb3Rl
+Og0KPiA+PiA+IFRoZSB0eXBpY2FsIHVzZSBvZiBrbWFsbG9jX3NpemVfcm91bmR1cCgpIGlzOg0K
+PiA+PiA+IAlwdHIgPSBrbWFsbG9jKHN6ID0ga21hbGxvY19zaXplX3JvdW5kdXAoc2l6ZSksIC4u
+Lik7DQo+ID4+ID4gCWlmICghcHRyKSByZXR1cm4gLUVOT01FTS4NCj4gPj4gPiBUaGlzIG1lYW5z
+IGl0IGlzIHZpdGFsbHkgaW1wb3J0YW50IHRoYXQgdGhlIHJldHVybmVkIHZhbHVlIGlzbid0DQo+
+ID4+ID4gbGVzcyB0aGFuIHRoZSBhcmd1bWVudCBldmVuIGlmIHRoZSBhcmd1bWVudCBpcyBpbnNh
+bmUuDQo+ID4+ID4gSW4gcGFydGljdWxhciBpZiBrbWFsbG9jX3NsYWIoKSBmYWlscyBvciB0aGUg
+dmFsdWUgaXMgYWJvdmUNCj4gPj4gPiAoTUFYX1VMT05HIC0gUEFHRV9TSVpFKSB6ZXJvIGlzIHJl
+dHVybmVkIGFuZCBrbWFsbG9jKCkgd2lsbCByZXR1cm4NCj4gPj4gPiBpdCdzIHNpbmdsZSB6ZXJv
+LWxlbmd0aCBidWZmZXIuDQo+ID4+ID4NCj4gPj4gPiBGaXggYnkgcmV0dXJuaW5nIHRoZSBpbnB1
+dCBzaXplIG9uIGVycm9yIG9yIGlmIHRoZSBzaXplIGV4Y2VlZHMNCj4gPj4gPiBhICdzYW5pdHkn
+IGxpbWl0Lg0KPiA+PiA+IGttYWxsb2MoKSB3aWxsIHRoZW4gcmV0dXJuIE5VTEwgaXMgdGhlIHNp
+emUgcmVhbGx5IGlzIHRvbyBiaWcuDQo+ID4+ID4NCj4gPj4gPg0KPiA+PiA+IFNpZ25lZC1vZmYt
+Ynk6IERhdmlkIExhaWdodCA8ZGF2aWQubGFpZ2h0QGFjdWxhYi5jb20+DQo+ID4+ID4gRml4ZXM6
+IDA1YTk0MDY1NmUxZWIgKCJzbGFiOiBJbnRyb2R1Y2Uga21hbGxvY19zaXplX3JvdW5kdXAoKSIp
+DQo+ID4+ID4gLS0tDQo+ID4+ID4gdjI6DQo+ID4+ID4gICAgIC0gVXNlIEtNQUxMT0NfTUFYX1NJ
+WkUgZm9yIHVwcGVyIGxpbWl0Lg0KPiA+PiA+ICAgICAgIChLTUFMTE9DX01BWF9TSVpFICsgMSBt
+YXkgZ2l2ZSBiZXR0ZXIgY29kZSBvbiBzb21lIGFyY2hzISkNCj4gPj4gPiAgICAgLSBJbnZlcnQg
+dGVzdCBmb3Igb3ZlcmxhcmdlIGZvciBjb25zaXN0ZW5jeS4NCj4gPj4gPiAgICAgLSBQdXQgYSBs
+aWtlbHkoKSBvbiByZXN1bHQgb2Yga21hbGxvY19zbGFiKCkuDQo+ID4+ID4NCj4gPj4gPiAgbW0v
+c2xhYl9jb21tb24uYyB8IDI2ICsrKysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ID4+ID4gIDEg
+ZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkNCj4gPj4gPg0K
+PiA+PiA+IGRpZmYgLS1naXQgYS9tbS9zbGFiX2NvbW1vbi5jIGIvbW0vc2xhYl9jb21tb24uYw0K
+PiA+PiA+IGluZGV4IGNkNzFmOTU4MWU2Ny4uMGZiN2M3ZTE5YmFkIDEwMDY0NA0KPiA+PiA+IC0t
+LSBhL21tL3NsYWJfY29tbW9uLmMNCj4gPj4gPiArKysgYi9tbS9zbGFiX2NvbW1vbi5jDQo+ID4+
+ID4gQEAgLTc0NywyMiArNzQ3LDIyIEBAIHNpemVfdCBrbWFsbG9jX3NpemVfcm91bmR1cChzaXpl
+X3Qgc2l6ZSkNCj4gPj4gPiAgew0KPiA+PiA+ICAJc3RydWN0IGttZW1fY2FjaGUgKmM7DQo+ID4+
+ID4NCj4gPj4gPiAtCS8qIFNob3J0LWNpcmN1aXQgdGhlIDAgc2l6ZSBjYXNlLiAqLw0KPiA+PiA+
+IC0JaWYgKHVubGlrZWx5KHNpemUgPT0gMCkpDQo+ID4+ID4gLQkJcmV0dXJuIDA7DQo+ID4+DQo+
+ID4+IElmIHdlIHdhbnQgdG8gYWxsb3cgMCwgbGV0J3MganVzdCBsZWF2ZSB0aGlzIGNhc2UgYXMt
+aXM6IHRoZSBjb21waWxlcg0KPiA+PiB3aWxsIG9wdGltaXplIGl0IGFnYWluc3QgdGhlIG90aGVy
+IHRlc3RzLg0KPiA+DQo+ID4gSSBkb3VidCB0aGUgY29tcGlsZXIgd2lsbCBvcHRpbWlzZSBpdCBh
+d2F5IC0gZXNwZWNpYWxseSB3aXRoDQo+ID4gdGhlIHVubGlrZWx5KCkuDQo+IA0KPiBZZWFoIEkg
+YWxzbyB0aGluayBjb21waWxlciBjYW4ndCBkbyBtdWNoIG9wdGltaXphdGlvbnMgZXhjZXB0IGZv
+ciBidWlsZC10aW1lDQo+IGNvbnN0YW50IDAgaGVyZS4NCg0KT25seSByZWxldmFudCBpZiB0aGUg
+Y29kZSB3ZXJlIGlubGluZWQgLSBhbmQgaXQgaXNuJ3QuDQooYW5kIGlzIHByb2JhYmx5IGEgYml0
+IGJpZy4pDQpJJ20gbm90IHN1cmUgeW91J2Qgd2FudCB0byBleHBvc2Uga21hbGxvY19zbGFiKCkg
+dG8gdGhlIHdpZGVyIGtlcm5lbC4NCg0KT1RPSCwgaXQgY291bGQgaGF2ZSBhbiBpbmxpbmUgdmVy
+c2lvbiBmb3IgY29uc3RhbnRzID4gS01BTExPQ19DQUNIRV9TSVpFLg0KQnV0IHRoZXkgbWF5IG5v
+dCBoYXBwZW4gb2Z0ZW4gZW5vdWdoIHRvIG1ha2UgYW55IGRpZmZlcmVuY2UuDQoNCj4gDQo+ID4g
+T1RPSCB0aGUgZXhwbGljaXQgY2hlY2tzIGZvciAoc2l6ZSAmJiBzaXplIDw9IExJTUlUKSBkbw0K
+PiA+IGdldCBvcHRpbWlzZWQgdG8gKChzaXplIC0gMSkgPD0gTElNSVQgLSAxKSBzbyBiZWNvbWUN
+Cj4gPiBhIHNpbmdsZSBjb21wYXJlLg0KPiA+DQo+ID4gVGhlbiByZXR1cm5pbmcgJ3NpemUnIGF0
+IHRoZSBib3R0b20gbWVhbnMgdGhhdCB6ZXJvIGlzIHJldHVybmVkDQo+ID4gaW4gdGhlIGFyZyBp
+cyB6ZXJvIC0gd2hpY2ggaXMgZmluZS4NCj4gPg0KPiA+Pg0KPiA+PiA+IC0JLyogU2hvcnQtY2ly
+Y3VpdCBzYXR1cmF0ZWQgInRvby1sYXJnZSIgY2FzZS4gKi8NCj4gPj4gPiAtCWlmICh1bmxpa2Vs
+eShzaXplID09IFNJWkVfTUFYKSkNCj4gPj4gPiAtCQlyZXR1cm4gU0laRV9NQVg7DQo+ID4+ID4g
+KwlpZiAoc2l6ZSAmJiBzaXplIDw9IEtNQUxMT0NfTUFYX0NBQ0hFX1NJWkUpIHsNCj4gPj4gPiAr
+CQkvKg0KPiA+PiA+ICsJCSAqIFRoZSBmbGFncyBkb24ndCBtYXR0ZXIgc2luY2Ugc2l6ZV9pbmRl
+eCBpcyBjb21tb24gdG8gYWxsLg0KPiA+PiA+ICsJCSAqIE5laXRoZXIgZG9lcyB0aGUgY2FsbGVy
+IGZvciBqdXN0IGdldHRpbmcgLT5vYmplY3Rfc2l6ZS4NCj4gPj4gPiArCQkgKi8NCj4gPj4gPiAr
+CQljID0ga21hbGxvY19zbGFiKHNpemUsIEdGUF9LRVJORUwsIDApOw0KPiA+PiA+ICsJCXJldHVy
+biBsaWtlbHkoYykgPyBjLT5vYmplY3Rfc2l6ZSA6IHNpemU7DQo+ID4+DQo+ID4+IEkgd291bGQg
+bGlrZSB0byBoYXZlIHRoaXMgZmFpbCAic2FmZSIuIGMgc2hvdWxkIG5ldmVyIGJlIE5VTEwgaGVy
+ZSwgc28NCj4gPj4gbGV0J3MgcmV0dXJuICJLTUFMTE9DX01BWF9TSVpFICsgMSIgdG8gZm9yY2Ug
+ZmFpbHVyZXMuDQo+ID4NCj4gPiBXaHkgZXZlbiB0cnkgdG8gZm9yY2UgZmFpbHVyZSBoZXJlPw0K
+PiA+IFRoZSB3aG9sZSBmdW5jdGlvbiBpcyBqdXN0IGFuIG9wdGltaXNhdGlvbiBzbyB0aGF0IHRo
+ZSBjYWxsZXINCj4gPiBjYW4gdXNlIHRoZSBzcGFyZSBzcGFjZS4NCj4gPg0KPiA+IFRoZSBvbmx5
+IHRoaW5nIGl0IG11c3RuJ3QgZG8gaXMgcmV0dXJuIGEgc21hbGxlciB2YWx1ZS4NCj4gDQo+IElm
+ICJjIiBpcyBOVUxMIGl0IG1lYW5zIGVpdGhlciB0aGUga2VybmVsIGJ1aWxkIG11c3QgYmUgYnJv
+a2VuIGUuZy4gYnkNCj4gc29tZWJvZHkgYnJlYWtpbmcgdGhlIEtNQUxMT0NfTUFYX0NBQ0hFX1NJ
+WkUgdmFsdWUsIGFuZCB3ZSBjb3VsZCBqdXN0IGlnbm9yZQ0KPiBjIGJlaW5nIE5VTEwgYW5kIGxl
+dCBpdCBjcmFzaCBiZWNhdXNlIG9mIHRoYXQuDQo+IEJ1dCBJIHRoaW5rIGl0IGNhbiBhbHNvIGJl
+IE5VTEwgZHVlIHRvIHRyeWluZyB0byBjYWxsIGttYWxsb2Nfc2l6ZV9yb3VuZHVwKCkNCj4gdG9v
+IGVhcmx5LCB3aGVuIGttYWxsb2NfY2FjaGVzIGFycmF5IGlzIG5vdCB5ZXQgcG9wdWxhdGVkLiBO
+b3RlIGlmIHdlIGNhbGwNCj4ga21hbGxvYygpIGl0c2VsZiB0b28gZWFybHksIHdlIGdldCBhIE5V
+TEwgYXMgYSByZXN1bHQsIEFGQUlDUy4gSSBjYW4gaW1hZ2luZQ0KPiB0d28gc2NlbmFyaW9zOg0K
+PiANCj4gLSBrbWFsbG9jX3NpemVfcm91bmR1cCgpIGlzIGNhbGxlZCB3aXRoIHJlc3VsdCBpbW1l
+ZGlhdGVseSBmZWQgdG8ga21hbGxvYygpDQo+IHRoYXQgaGFwcGVucyB0b28gZWFybHksIGluIHRo
+YXQgY2FzZSB3ZSBiZXN0IHNob3VsZCBub3QgY3Jhc2ggb24gYyBiZWluZw0KPiBOVUxMIGFuZCBt
+YWtlIHN1cmUgdGhlIGttYWxsb2MoKSByZXR1cm5zIE5VTEwuDQo+IC0ga21hbGxvY19zaXplX3Jv
+dW5kdXAoKSBpcyBjYWxsZWQgaW4gc29tZSBpbml0IGNvZGUgdG8gZ2V0IGEgdmFsdWUgdGhhdA0K
+PiBzb21lIGxhdGVyIGttYWxsb2MoKSBjYWxsIHVzZXMuIFdlIG1pZ2h0IHdhbnQgYWxzbyBub3Qg
+Y3Jhc2ggaW4gdGhhdCBjYXNlLA0KPiBidXQgaW5mb3JtaW5nIHRoZSBkZXZlbG9wZXIgdGhhdCB0
+aGV5IGRpZCBzb21ldGhpbmcgd3Jvbmcgd291bGQgYmUgYWxzbyB1c2VmdWw/DQo+IA0KPiBDbGVh
+cmx5IHJldHVybmluZyAwIGlmIGMgPT0gTlVMTCwgYXMgZG9uZSBjdXJyZW50bHksIGlzIHdyb25n
+IGZvciBib3RoDQo+IHNjZW5hcmlvcy4gUmV0dW5pbmcgInNpemUiIGlzIE9LIGZvciB0aGUgZmly
+c3Qgc2NlbmFyaW8sIGFsc28gdmFsaWQgZm9yIHRoZQ0KPiBzZWNvbmQgb25lLCBidXQgdGhlIGNh
+bGxlciB3aWxsIHNpbGVudGx5IGxvc2UgdGhlIGJlbmVmaXQgb2YNCj4ga21hbGxvY19zaXplX3Jv
+dW5kdXAoKSBhbmQgdGhlIGRldmVsb3BlciBpbnRyb2R1Y2luZyB0aGF0IHdvbid0IHJlYWxpemUg
+aXQncw0KPiBkb25lIHRvbyBlYXJseSBhbmQgY291bGQgYmUgZml4ZWQuDQoNCkknbSBzdXJlIHRo
+YXQgd29uJ3QgbWF0dGVyLg0KDQo+IFNvIHBlcmhhcHMgdGhlIGJlc3Qgd291bGQgYmUgdG8gcmV0
+dXJuIHNpemUgZm9yIGMgPT0gTlVMTCwgYnV0IGFsc28gZG8gYQ0KPiBXQVJOX09OQ0U/DQoNClRo
+YXQgd291bGQgYWRkIGEgcmVhbCBmdW5jdGlvbiBjYWxsIHRvIGFuIG90aGVyd2lzZSBsZWFmIGZ1
+bmN0aW9uDQphbmQgYWxtb3N0IGNlcnRhaW5seSByZXF1aXJlIHRoZSBjb21waWxlciBjcmVhdGUg
+YSBzdGFjayBmcmFtZS4NCg0KLi4uDQoNCkkgZGlkIGhhdmUgYW4gaW50ZXJlc3RpbmcgJ2xhdGVy
+YWwgdGhvdWdodCcgaWRlYS4NCkl0IGlzIGFsbCB2ZXJ5IHNpbGx5IGRvaW5nIGFsbCB0aGUgd29y
+ayB0d2ljZSwgd2hhdCB5b3UgcmVhbGx5DQp3YW50IGlzIGttYWxsb2MoKSB0byByZXR1cm4gYm90
+aCB0aGUgcG9pbnRlciBhbmQgYWN0dWFsIHNpemUuDQpCdXQgcmV0dXJuaW5nIGEgJ3R3byB3b3Jk
+JyBzdHJ1Y3R1cmUgaXMgZG9uZSBieSByZWZlcmVuY2UgYW5kDQp3b3VsZCBraWxsIHBlcmZvcm1h
+bmNlLw0KT1RPSCBhIGxvdCBvZiBhcmNocyBjYW4gcmV0dXJuIHR3byB3b3JkIGludGVnZXJzIGlu
+IGEgcmVnaXN0ZXIgcGFpcg0KKGR4OmF4IG9uIHg4NikuDQpDb3VsZCB5b3UgaGF2ZSB0aGUgcmVh
+bCBmdW5jdGlvbiByZXR1cm4gKCh1bnNpZ25lZCBfX2ludDY0KXNpemUgPDwgNjQgfCAobG9uZylw
+dHIpDQphbmQgdGhlbiBleHRyYWN0IHRoZSBzaXplIGluIGEgd3JhcHBlciBtYWNybz8NCihXaXRo
+IGRpZmZlcmVudCB0eXBlcyBmb3IgMzJiaXQpDQoNClRoYXQgd2lsbCwgb2YgY291cnNlLCBicmVh
+ayB0aGUgJ2l0J3MgbGlrZSBtYWxsb2MnIGNoZWNrcyB0aGUNCmNvbXBpbGVyIGlzIGRvaW5nIC0g
+dW5sZXNzIGl0IGlzIHRhdWdodCB3aGF0IGlzIGdvaW5nIG9uLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Fri, Sep 8, 2023 at 4:51=E2=80=AFAM Fei Shao <fshao@chromium.org> wrote:
->
-> Hi,
->
-> On Sat, Sep 2, 2023 at 7:42=E2=80=AFAM Douglas Anderson <dianders@chromiu=
-m.org> wrote:
-> ...<snip>
-> > @@ -952,6 +960,7 @@ static const struct dev_pm_ops mtk_drm_pm_ops =3D {
-> >  static struct platform_driver mtk_drm_platform_driver =3D {
-> >         .probe  =3D mtk_drm_probe,
-> >         .remove =3D mtk_drm_remove,
->
-> I think this patch, and perhaps some others in this series, will have
-> a trivial conflict to Uwe's work about the remove callback conversion
-> e.g. [1], so you might want to rebase the series onto the latest
-> linux-next.
->
-> On the other hand, I tested this patch on MT8195 and MT8188
-> Chromebooks and I don't see issues during boot / reboot, so
->
-> Reviewed-by: Fei Shao <fshao@chromium.org>
-> Tested-by: Fei Shao <fshao@chromium.org>
->
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.g=
-it/commit/?h=3Dmediatek-drm-next&id=3Db3af12a0b46888340e024ba8b231605bcf2d0=
-ab3
-
-That makes sense. I had based this series on drm-misc-next which
-didn't have those, but now that a new -rc1 is out it then
-drm-misc-next should rebase shortly. I'll make sure that the next
-version includes Uwe's changes as much as possible.
-
-That being said, I also wouldn't object if the maintainer of this DRM
-driver wanted to resolve conflicts themselves and land the patch
-without me needing to resend. The conflict is trivial, there are no
-dependencies and no reason to land the series all at once, so landing
-this patch early would mean less spam for the maintainer since they
-would no longer get CCed on future versions. :-P Just sayin...
-
--Doug
