@@ -2,215 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D010179BB3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E718279BA34
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358146AbjIKWHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S1355587AbjIKWBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242496AbjIKPne (ORCPT
+        with ESMTP id S242511AbjIKPo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:43:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42D0FB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:43:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694447009; x=1725983009;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=v/MlG8OnIpfJsDW2XforrUD9Xqjrrjy5pCVGM+jlezE=;
-  b=T9+oPYIDvFLdsS8UQQ/As7HbXMxnK2n1xEuMrbnnc5wt0+NSH8DWuiFq
-   IP02HH0d77v0QP2Ia6m7Hg9BqjDBe+dUH1QCMiYGuvvIFfoxw3Lm1i/3V
-   ddbMsgCSX4HBd/pvSaV1D23sTK04IvVqKSGd1AR9bXTGJ3LVCKyfMPjDT
-   EUfJk5Qf2DfA3uF7EkV2PWQ5bqsvi0XyG+N8FXYzvpGruXPgEYI4+yHhH
-   yy4ubDW5IBN9MVt118IFBtp/6fJc+xGXPWpy+oN+zuUXz4VbyQzVLTHJ9
-   3I2CFVaJQWQAzVhoKZTY8L3Do5eOHmwWxNlaD79Q8H+9IQQZrbUqXvpYe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="464484933"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="464484933"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:43:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="866982302"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="866982302"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 11 Sep 2023 08:43:19 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfj4H-0006Pc-1T;
-        Mon, 11 Sep 2023 15:43:17 +0000
-Date:   Mon, 11 Sep 2023 23:42:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: kernel/sched/core.c:711:31: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202309112301.4vKPFCLT-lkp@intel.com>
+        Mon, 11 Sep 2023 11:44:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61346FB;
+        Mon, 11 Sep 2023 08:44:50 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nicolas)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 662AA660730D;
+        Mon, 11 Sep 2023 16:44:47 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694447089;
+        bh=Y54cO3Keiy0/M19Pg2PI3OmwZpoo7rXctVpgGOi2oTE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c2raOA8o0CsQSjmro9YZXyZsNqpRy95YSTcN91QCUPZnyprbFEAF8LJ6lfk8KFL+U
+         3ISTu7F3OMY7IxYKmkbKCm6cBqOC5ClYwI6rn5HP2QnH6JddjGjsDgh4ktHWX/5J1A
+         LmHYlrLEB95RdJ7j8KMjKHZFVpO8sjucF5HuQylPJM9fXcE7mvvZ/bdH//LXAA0vXX
+         sbyiBVaDh84F4mWUFIoPgpCASZrElMc3d1enm8kfle6m38yzHUhojyvOOKMvya7/Se
+         hf/gvQRBC5pyxXYoZDran6530ebt5M4ET3eYvjDpPXxSUnbeIfbyMmogJmIKptUJpw
+         rDS0JwhU4uDeg==
+Message-ID: <4ff89457cbcc0582d312c8af919dab7a16b1943b.camel@collabora.com>
+Subject: Re: [PATCH 08/14] media: medkatek: vcodec: support one plane
+ capture buffer
+From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
+        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Date:   Mon, 11 Sep 2023 11:44:37 -0400
+In-Reply-To: <20230911125936.10648-9-yunfei.dong@mediatek.com>
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+         <20230911125936.10648-9-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 52b1364ba0b105122d6de0e719b36db705011ac1 sched/psi: Add PSI_IRQ to track IRQ/SOFTIRQ pressure
-date:   1 year ago
-config: i386-randconfig-061-20230909 (https://download.01.org/0day-ci/archive/20230911/202309112301.4vKPFCLT-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309112301.4vKPFCLT-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309112301.4vKPFCLT-lkp@intel.com/
+Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9crit=C2=
+=A0:
+> The capture buffer has two planes for format MM21, but user space only
+> allocate secure memory for plane[0], and the size is Y data + uv data.
+> The driver need to support one plane decoder for svp mode.
 
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/core.c:711:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *task @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:711:31: sparse:     expected struct task_struct *task
-   kernel/sched/core.c:711:31: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:1028:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:1028:38: sparse:     expected struct task_struct *curr
-   kernel/sched/core.c:1028:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:2192:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:2192:33: sparse:     expected struct task_struct *p
-   kernel/sched/core.c:2192:33: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:2192:68: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:2192:68: sparse:     expected struct task_struct *tsk
-   kernel/sched/core.c:2192:68: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:5441:38: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *curr @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:5441:38: sparse:     expected struct task_struct *curr
-   kernel/sched/core.c:5441:38: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:6387:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *prev @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:6387:14: sparse:     expected struct task_struct *prev
-   kernel/sched/core.c:6387:14: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:6913:17: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/core.c:6913:17: sparse:    struct task_struct *
-   kernel/sched/core.c:6913:17: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/core.c:7129:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/core.c:7129:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/core.c:7129:22: sparse:    struct task_struct *
-   kernel/sched/core.c:11188:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *p @@     got struct task_struct [noderef] __rcu *curr @@
-   kernel/sched/core.c:11188:25: sparse:     expected struct task_struct *p
-   kernel/sched/core.c:11188:25: sparse:     got struct task_struct [noderef] __rcu *curr
-   kernel/sched/core.c:537:6: sparse: sparse: context imbalance in 'raw_spin_rq_lock_nested' - wrong count at exit
-   kernel/sched/core.c:570:23: sparse: sparse: context imbalance in 'raw_spin_rq_trylock' - wrong count at exit
-   kernel/sched/core.c:586:6: sparse: sparse: context imbalance in 'raw_spin_rq_unlock' - unexpected unlock
-   kernel/sched/core.c:624:36: sparse: sparse: context imbalance in '__task_rq_lock' - wrong count at exit
-   kernel/sched/core.c:665:36: sparse: sparse: context imbalance in 'task_rq_lock' - wrong count at exit
-   kernel/sched/core.c:2183:33: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:2184:19: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:2185:18: sparse: sparse: dereference of noderef expression
-   kernel/sched/core.c:3713:25: sparse: sparse: context imbalance in 'ttwu_runnable' - wrong count at exit
-   kernel/sched/core.c:4266:9: sparse: sparse: context imbalance in 'task_call_func' - wrong count at exit
-   kernel/sched/core.c: note: in included file:
-   include/trace/events/sched.h:185:1: sparse: sparse: context imbalance in 'wake_up_new_task' - wrong count at exit
-   kernel/sched/core.c:5100:9: sparse: sparse: context imbalance in 'finish_task_switch' - wrong count at exit
-   kernel/sched/core.c: note: in included file:
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2060:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2060:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2217:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2217:9: sparse:    struct task_struct *
+I'm sorry, but in current V4L2 status, you must introduce a new format. Ass=
+uming
+the second M means MPLANE, this format would be MT21 (though you already us=
+ed
+that fourcc for MT21C) ?
 
-vim +711 kernel/sched/core.c
+Nicolas
 
-   675	
-   676	/*
-   677	 * RQ-clock updating methods:
-   678	 */
-   679	
-   680	static void update_rq_clock_task(struct rq *rq, s64 delta)
-   681	{
-   682	/*
-   683	 * In theory, the compile should just see 0 here, and optimize out the call
-   684	 * to sched_rt_avg_update. But I don't trust it...
-   685	 */
-   686		s64 __maybe_unused steal = 0, irq_delta = 0;
-   687	
-   688	#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-   689		irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
-   690	
-   691		/*
-   692		 * Since irq_time is only updated on {soft,}irq_exit, we might run into
-   693		 * this case when a previous update_rq_clock() happened inside a
-   694		 * {soft,}irq region.
-   695		 *
-   696		 * When this happens, we stop ->clock_task and only update the
-   697		 * prev_irq_time stamp to account for the part that fit, so that a next
-   698		 * update will consume the rest. This ensures ->clock_task is
-   699		 * monotonic.
-   700		 *
-   701		 * It does however cause some slight miss-attribution of {soft,}irq
-   702		 * time, a more accurate solution would be to update the irq_time using
-   703		 * the current rq->clock timestamp, except that would require using
-   704		 * atomic ops.
-   705		 */
-   706		if (irq_delta > delta)
-   707			irq_delta = delta;
-   708	
-   709		rq->prev_irq_time += irq_delta;
-   710		delta -= irq_delta;
- > 711		psi_account_irqtime(rq->curr, irq_delta);
-   712	#endif
-   713	#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
-   714		if (static_key_false((&paravirt_steal_rq_enabled))) {
-   715			steal = paravirt_steal_clock(cpu_of(rq));
-   716			steal -= rq->prev_steal_time_rq;
-   717	
-   718			if (unlikely(steal > delta))
-   719				steal = delta;
-   720	
-   721			rq->prev_steal_time_rq += steal;
-   722			delta -= steal;
-   723		}
-   724	#endif
-   725	
-   726		rq->clock_task += delta;
-   727	
+>=20
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>  .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 24 ++++++++++++-------
+>  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 13 ++++++----
+>  .../decoder/vdec/vdec_h264_req_common.c       | 16 +++++++------
+>  .../mediatek/vcodec/decoder/vdec_drv_if.c     |  4 ++--
+>  4 files changed, 34 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
+c.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> index 91ed576d6821..457c3e2979c9 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> @@ -541,14 +541,15 @@ static int vidioc_vdec_s_fmt(struct file *file, voi=
+d *priv,
+>  			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D
+>  				ctx->picinfo.buf_w;
+>  		} else {
+> -			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D
+> -				ctx->picinfo.fb_sz[0];
+> -			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D
+> -				ctx->picinfo.buf_w;
+> -			ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =3D
+> -				ctx->picinfo.fb_sz[1];
+> -			ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =3D
+> -				ctx->picinfo.buf_w;
+> +			if (ctx->is_svp_mode)
+> +				ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D
+> +					ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1];
+> +			else
+> +				ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =3D ctx->picinfo.fb_sz[0];
+> +
+> +			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =3D ctx->picinfo.buf_w;
+> +			ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =3D ctx->picinfo.fb_sz[1];
+> +			ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =3D ctx->picinfo.buf_w;
+>  		}
+> =20
+>  		ctx->q_data[MTK_Q_DATA_DST].coded_width =3D ctx->picinfo.buf_w;
+> @@ -673,7 +674,12 @@ static int vidioc_vdec_g_fmt(struct file *file, void=
+ *priv,
+>  		 * So we just return picinfo yet, and update picinfo in
+>  		 * stop_streaming hook function
+>  		 */
+> -		q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0];
+> +
+> +		if (ctx->is_svp_mode)
+> +			q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1=
+];
+> +		else
+> +			q_data->sizeimage[0] =3D ctx->picinfo.fb_sz[0];
+> +
+>  		q_data->sizeimage[1] =3D ctx->picinfo.fb_sz[1];
+>  		q_data->bytesperline[0] =3D ctx->last_decoded_picinfo.buf_w;
+>  		q_data->bytesperline[1] =3D ctx->last_decoded_picinfo.buf_w;
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
+c_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_d=
+ec_stateless.c
+> index e29c9c58f3da..2ea517883a86 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
+less.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
+less.c
+> @@ -256,11 +256,12 @@ static struct vdec_fb *vdec_get_cap_buffer(struct m=
+tk_vcodec_dec_ctx *ctx)
+>  	framebuf =3D container_of(vb2_v4l2, struct mtk_video_dec_buf, m2m_buf.v=
+b);
+> =20
+>  	pfb =3D &framebuf->frame_buffer;
+> -	pfb->base_y.va =3D vb2_plane_vaddr(dst_buf, 0);
+> +	if (!ctx->is_svp_mode)
+> +		pfb->base_y.va =3D vb2_plane_vaddr(dst_buf, 0);
+>  	pfb->base_y.dma_addr =3D vb2_dma_contig_plane_dma_addr(dst_buf, 0);
+>  	pfb->base_y.size =3D ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
+> =20
+> -	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2) {
+> +	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2 && !ctx->is_sv=
+p_mode) {
+>  		pfb->base_c.va =3D vb2_plane_vaddr(dst_buf, 1);
+>  		pfb->base_c.dma_addr =3D
+>  			vb2_dma_contig_plane_dma_addr(dst_buf, 1);
+> @@ -310,16 +311,18 @@ static void mtk_vdec_worker(struct work_struct *wor=
+k)
+>  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] (%d) id=3D%d, vb=3D%p", ctx->id,
+>  			  vb2_src->vb2_queue->type, vb2_src->index, vb2_src);
+> =20
+> -	bs_src->va =3D vb2_plane_vaddr(vb2_src, 0);
+> -	bs_src->dma_addr =3D vb2_dma_contig_plane_dma_addr(vb2_src, 0);
+> -	bs_src->size =3D (size_t)vb2_src->planes[0].bytesused;
+> +	if (!ctx->is_svp_mode) {
+> +		bs_src->va =3D vb2_plane_vaddr(vb2_src, 0);
+>  	if (!bs_src->va) {
+>  		v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+>  		mtk_v4l2_vdec_err(ctx, "[%d] id=3D%d source buffer is NULL", ctx->id,
+>  				  vb2_src->index);
+>  		return;
+> +		}
+>  	}
+> =20
+> +	bs_src->dma_addr =3D vb2_dma_contig_plane_dma_addr(vb2_src, 0);
+> +	bs_src->size =3D (size_t)vb2_src->planes[0].bytesused;
+>  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] Bitstream VA=3D%p DMA=3D%pad Size=3D%zx=
+ vb=3D%p",
+>  			  ctx->id, bs_src->va, &bs_src->dma_addr, bs_src->size, vb2_src);
+>  	/* Apply request controls. */
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h26=
+4_req_common.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h=
+264_req_common.c
+> index 5ca20d75dc8e..838f0eeea6e2 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_c=
+ommon.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_c=
+ommon.c
+> @@ -81,13 +81,15 @@ void mtk_vdec_h264_fill_dpb_info(struct mtk_vcodec_de=
+c_ctx *ctx,
+> =20
+>  		h264_dpb_info[index].y_dma_addr =3D
+>  			vb2_dma_contig_plane_dma_addr(vb, 0);
+> -		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2)
+> -			h264_dpb_info[index].c_dma_addr =3D
+> -				vb2_dma_contig_plane_dma_addr(vb, 1);
+> -		else
+> -			h264_dpb_info[index].c_dma_addr =3D
+> -				h264_dpb_info[index].y_dma_addr +
+> -				ctx->picinfo.fb_sz[0];
+> +		if (!ctx->is_svp_mode) {
+> +			if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes =3D=3D 2)
+> +				h264_dpb_info[index].c_dma_addr =3D
+> +					vb2_dma_contig_plane_dma_addr(vb, 1);
+> +			else
+> +				h264_dpb_info[index].c_dma_addr =3D
+> +					h264_dpb_info[index].y_dma_addr +
+> +					ctx->picinfo.fb_sz[0];
+> +		}
+>  	}
+>  }
+> =20
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c=
+ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> index d0b459b1603f..c7d33e540a13 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> @@ -73,14 +73,14 @@ int vdec_if_decode(struct mtk_vcodec_dec_ctx *ctx, st=
+ruct mtk_vcodec_mem *bs,
+>  {
+>  	int ret =3D 0;
+> =20
+> -	if (bs) {
+> +	if (bs && !ctx->is_svp_mode) {
+>  		if ((bs->dma_addr & 63) !=3D 0) {
+>  			mtk_v4l2_vdec_err(ctx, "bs dma_addr should 64 byte align");
+>  			return -EINVAL;
+>  		}
+>  	}
+> =20
+> -	if (fb) {
+> +	if (fb && !ctx->is_svp_mode) {
+>  		if (((fb->base_y.dma_addr & 511) !=3D 0) ||
+>  		    ((fb->base_c.dma_addr & 511) !=3D 0)) {
+>  			mtk_v4l2_vdec_err(ctx, "frame buffer dma_addr should 512 byte align")=
+;
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
