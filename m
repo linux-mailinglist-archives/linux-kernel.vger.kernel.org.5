@@ -2,141 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C59AD79A2BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A540279A2C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjIKFQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 01:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S233817AbjIKFWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 01:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjIKFP7 (ORCPT
+        with ESMTP id S229446AbjIKFW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 01:15:59 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7251AE;
-        Sun, 10 Sep 2023 22:15:54 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5008d16cc36so6751050e87.2;
-        Sun, 10 Sep 2023 22:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694409353; x=1695014153; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2xXSO1mNrtCurS91ej22fH2JzQkdqZJz5EMO/iglVMo=;
-        b=YNDqSvIRbWy8Y1doVaeo59emu0Dt8Xsq1ATolu1rL0oBs43ntFXFdZmua9a9V0rOLc
-         /rw1RAqNkd4xQozKXms+MByNTq21XxIFurAuGcZmAbzEXytMnN55mNfnnHGYP+JAu68P
-         Qkd7vVKJtSwnrol5mLjIKbbrBZw0ADuUQc7TCmHPiweDzat+xRTeULHl2aJCfJ076Uvx
-         jK7bt2BJwYhUJvdqhyYI1guMV5n4rn2J/I/M/zC88U9ILdicO2A3J6aEOM8ZGAVFqHV4
-         BV8d4dhxxr8gLn4VIQv3mOWTQeWi+U7wyKPNPXsIECK6+6cWct3vXZao/VWlUAXkSYfN
-         E9Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694409353; x=1695014153;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2xXSO1mNrtCurS91ej22fH2JzQkdqZJz5EMO/iglVMo=;
-        b=T8clg0yEBJghgSOTklc2xvyRR5ohrKIqIHyrX2yl/GpvJ+KhVvLKzw5M4M74RW0+PF
-         gQTayKmPwFMd7dY6CpdgxOkOPR11DzhT8+eSZRdyLLfoCIxHTy5awOLztrFBzPzjmhFq
-         e/U6LII1BRZTxCz8dewpalFcHJgY2ML4FskGH1osTBRoDrVL/BHJjKUBlY/C5j4TsvrB
-         fLoWgGyHOGEhXOVQM+CBcyBStSYFaLFjn5ab7NWe4ifFRyY0RWcs7Hh2b//i7w1u6LE2
-         KyfQ4BuW9OYK4jm6Qf+jerfjFLQV1Nvv/6ZhxA5usulx0CuDV6b6Yw2Dip2cp4lNmJ9Z
-         dkZw==
-X-Gm-Message-State: AOJu0YzxxpK7BjyGlPX6fSblK8uxof4UxC2W+rYoKarlloiVicKR8UX6
-        j19BrOWC16FYmPesm5ChQJD5/58WST4=
-X-Google-Smtp-Source: AGHT+IGO8I1Qvg+29UQ+u4ehq9VfswEVbtP4werFdBe+QXk0tytJT3fmcv1xbHyWzKQmBO7dHKdfpg==
-X-Received: by 2002:a05:6512:5d0:b0:4ff:9a75:211e with SMTP id o16-20020a05651205d000b004ff9a75211emr6102872lfo.42.1694409352821;
-        Sun, 10 Sep 2023 22:15:52 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::1? (dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::1])
-        by smtp.gmail.com with ESMTPSA id u9-20020a056512040900b004fb9536bc99sm1202886lfk.169.2023.09.10.22.15.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 22:15:52 -0700 (PDT)
-Message-ID: <6077edb2-8076-10e8-d34f-70426188a0f0@gmail.com>
-Date:   Mon, 11 Sep 2023 08:15:51 +0300
+        Mon, 11 Sep 2023 01:22:28 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A763C1AD;
+        Sun, 10 Sep 2023 22:22:23 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38B5M3fo017105;
+        Mon, 11 Sep 2023 00:22:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694409723;
+        bh=5cleaUm8YNGL9skVPFyhu64T32xBmrMgeDzWV8+lHHA=;
+        h=From:To:CC:Subject:Date;
+        b=RtOkScFHmQvAo+KHupaq0vrTFCwd76M5HK3I1jKqIxtKizyGag/fON/GCzie0XcsN
+         23a1hb5P0ueiVe6UPlmZOqZ9BaxiDQVcoqOK+y3aIctXQnX5yrkkSVnQemJ9sWpNit
+         PTSvN7GnMXX2FrxPwbY3O8bz3V6WcbJD/72ExGJ0=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38B5M3I6114607
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Sep 2023 00:22:03 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Sep 2023 00:22:02 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Sep 2023 00:22:02 -0500
+Received: from uda0492258.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38B5LwrA043443;
+        Mon, 11 Sep 2023 00:21:59 -0500
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-j721s2-evm-gesi: Specify base dtb for overlay file
+Date:   Mon, 11 Sep 2023 10:51:58 +0530
+Message-ID: <20230911052158.89185-1-s-vadapalli@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US, en-GB
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andreas Klinger <ak@it-klinger.de>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1694001462.git.mazziesaccount@gmail.com>
- <08f7085ba1af2fae21c942f6c20a94c237df53ba.1694001462.git.mazziesaccount@gmail.com>
- <20230908194509.6a4f4adc@jic23-huawei>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH 2/3] iio: pressure: Support ROHM BU1390
-In-Reply-To: <20230908194509.6a4f4adc@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/8/23 21:45, Jonathan Cameron wrote:
-> 
->> +static int bm1390_read_temp(struct bm1390_data *data, int *temp)
->> +{
->> +	u8 temp_reg[2] __aligned(2);
->> +	__be16 *temp_raw;
->> +	int ret;
->> +	s16 val;
->> +	bool negative;
->> +
->> +	ret = regmap_bulk_read(data->regmap, BM1390_REG_TEMP_HI, &temp_reg,
->> +			       sizeof(temp_reg));
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (temp_reg[0] & 0x80)
->> +		negative = true;
->> +	else
->> +		negative = false;
->> +
->> +	temp_raw = (__be16 *)&temp_reg[0];
->> +	val = be16_to_cpu(*temp_raw);
->> +
->> +	if (negative) {
->> +		/*
->> +		 * Two's complement. I am not sure if all supported
->> +		 * architectures actually use 2's complement represantation of
-> 
-> AFAIK they do. Many IIO drivers would be broken if not..
+Specify the base dtb file k3-j721s2-common-proc-board.dtb on which the
+k3-j721s2-evm-gesi-exp-board.dtbo overlay has to be applied. Name the
+resulting dtb as k3-j721s2-evm.dtb.
 
-Great. Then I think it means we really can treat the combined value of 
-the registers as s16 BE. Should make this much simpler :)
+Fixes: cac04e27f093 ("arm64: dts: ti: k3-j721s2: Add overlay to enable main CPSW2G with GESI")
+Reported-by: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+---
 
-> 
->> +		 * signed ints. If yes, then we could just do the endianes
->> +		 * conversion and say this is the s16 value. However, as I
->> +		 * don't know, and as the conversion is pretty simple. let's
->> +		 * just convert the signed 2's complement to absolute value and
->> +		 * multiply by -1.
->> +		 */
->> +		val = ~val + 1;
->> +		val *= -1;
->> +	}
->> +
->> +	*temp = val;
->> +
->> +	return 0;
->> +}
+Note: This patch is based on linux-next tagged next-20230911.
 
+ arch/arm64/boot/dts/ti/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+index e7b8e2e7f083..ef8ca50fbb36 100644
+--- a/arch/arm64/boot/dts/ti/Makefile
++++ b/arch/arm64/boot/dts/ti/Makefile
+@@ -63,9 +63,9 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
+ 
+ # Boards with J721s2 SoC
++k3-j721s2-evm-dtbs := k3-j721s2-common-proc-board.dtb k3-j721s2-evm-gesi-exp-board.dtbo
+ dtb-$(CONFIG_ARCH_K3) += k3-am68-sk-base-board.dtb
+-dtb-$(CONFIG_ARCH_K3) += k3-j721s2-common-proc-board.dtb
+-dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
++dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb
+ 
+ # Boards with J784s4 SoC
+ dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
+2.34.1
 
