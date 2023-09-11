@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADDD79B20F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406FA79AFA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356532AbjIKWEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
+        id S1356011AbjIKWCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236275AbjIKKGI (ORCPT
+        with ESMTP id S236280AbjIKKHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:06:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61338101;
-        Mon, 11 Sep 2023 03:06:04 -0700 (PDT)
+        Mon, 11 Sep 2023 06:07:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594E7101;
+        Mon, 11 Sep 2023 03:07:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694426764; x=1725962764;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lNlcOiZRhunRghkzUThcrr1D7ym3FdZ/wyvyoGKtnUY=;
-  b=fCmvdokSaTW12ZMJxc9GZFuHMyIJPBtFCGZAqN7nHAbvGA7bIREBM4zZ
-   JjZX68gFEKS3MOnuaWcbmpB9y2l1gnXYGwGSeNOLjW5m31xX0UjF2qIcV
-   G6YrPHAlbR8NAqnpmwfdbeuPlCrTeYsuaVFpRZ7Vp4KwYbt2wEvxzk4GN
-   KUPJHxhZvPdvQNX/CvKujQhCmXMtB/lPvj4NhVtq+qQN468sTJDoOWuG+
-   DO4y4qk8PJUlz0McoCl/cUShZiDULS9Jc8a9DrVsH7C1gECn56UiDwpyV
-   0ySpwEEOOvj7kzVAImo0r3FbZHWMk4QQbAfTAsuou2w4RJWWTSCldIayH
+  t=1694426862; x=1725962862;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=oh0Zy/V3VyMAu5In2Ipg/gMQQV8/i4gpEGPeqw7tFXI=;
+  b=PUtX8EWJ7889ia3CxNJ0vCuyNykqr+UM54a895lj/V7+5QR8JB3kqUNE
+   2azyUzKXm4uqRMhEXb6ZjtbzJIi77CIdn98lFAQnMzISUYsdcvK1pKqmt
+   ou8656UWlev5Vd44GL8qc9M5Uwqqva0Pi5xo5lQo2CZjO6qffSVGpWFQ4
+   yFAQIsHRcj+kw8JRPutNML4ERBCvGnFqZiow9lQjeQ1HihUFAgT4peW+9
+   Z5J0uqEv225BehkgqxA10dpnCzKfLs132UlZfW6+s6HSyJT8wUYh7VE+0
+   3IGxrn22OWP1OHCoP/3THv8UplvysQWss+Wev8JheJbfbKrr9iN1EfKbu
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="381843780"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="357484290"
 X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="381843780"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:06:02 -0700
+   d="scan'208";a="357484290"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:07:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="813308505"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="719938160"
 X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="813308505"
-Received: from aabuleil-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.192])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:05:58 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id ED55210940E; Mon, 11 Sep 2023 13:05:55 +0300 (+03)
-Date:   Mon, 11 Sep 2023 13:05:55 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH 1/3] proc/vmcore: Do not map unaccepted memory
-Message-ID: <20230911100555.mjjnx3ujnjlaxgsy@box.shutemov.name>
-References: <20230906073902.4229-1-adrian.hunter@intel.com>
- <20230906073902.4229-2-adrian.hunter@intel.com>
- <ef97f466-b27a-a883-7131-c2051480dd87@redhat.com>
- <20230911084148.l6han7jxob42rdvm@box.shutemov.name>
- <49ab74c8-553b-b3d0-6a72-2d259a2b5bdf@redhat.com>
- <20230911092712.2ps55mylf7elfqp6@box.shutemov.name>
- <476456e1-ac50-8e48-260d-5cbe5e8b085e@redhat.com>
+   d="scan'208";a="719938160"
+Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:07:37 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        =?utf-8?Q?Ma=C3=ADra?= Canal <mairacanal@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com
+Subject: Re: [PATCH 1/2] kunit: Warn if tests are slow
+In-Reply-To: <20230911-kms-slow-tests-v1-1-d3800a69a1a1@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230911-kms-slow-tests-v1-0-d3800a69a1a1@kernel.org>
+ <20230911-kms-slow-tests-v1-1-d3800a69a1a1@kernel.org>
+Date:   Mon, 11 Sep 2023 13:07:35 +0300
+Message-ID: <87leddf2fs.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <476456e1-ac50-8e48-260d-5cbe5e8b085e@redhat.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -79,42 +69,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 11:50:31AM +0200, David Hildenbrand wrote:
-> On 11.09.23 11:27, Kirill A. Shutemov wrote:
-> > On Mon, Sep 11, 2023 at 10:42:51AM +0200, David Hildenbrand wrote:
-> > > On 11.09.23 10:41, Kirill A. Shutemov wrote:
-> > > > On Mon, Sep 11, 2023 at 10:03:36AM +0200, David Hildenbrand wrote:
-> > > > > On 06.09.23 09:39, Adrian Hunter wrote:
-> > > > > > Support for unaccepted memory was added recently, refer commit
-> > > > > > dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
-> > > > > > a virtual machine may need to accept memory before it can be used.
-> > > > > > 
-> > > > > > Do not map unaccepted memory because it can cause the guest to fail.
-> > > > > > 
-> > > > > > For /proc/vmcore, which is read-only, this means a read or mmap of
-> > > > > > unaccepted memory will return zeros.
-> > > > > 
-> > > > > Does a second (kdump) kernel that exposes /proc/vmcore reliably get access
-> > > > > to the information whether memory of the first kernel is unaccepted (IOW,
-> > > > > not its memory, but the memory of the first kernel it is supposed to expose
-> > > > > via /proc/vmcore)?
-> > > > 
-> > > > There are few patches in my queue to few related issue, but generally,
-> > > > yes, the information is available to the target kernel via EFI
-> > > > configuration table.
-> > > 
-> > > I assume that table provided by the first kernel, and not read directly from
-> > > HW, correct?
-> > 
-> > The table is constructed by the EFI stub in the first kernel based on EFI
-> > memory map.
-> > 
-> 
-> Okay, should work then once that's done by the first kernel.
-> 
-> Maybe include this patch in your series?
+On Mon, 11 Sep 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> Kunit recently gained support to setup attributes, the first one being
+> the speed of a given test, then allowing to filter out slow tests.
+>
+> A slow test is defined in the documentation as taking more than one
+> second. There's an another speed attribute called "super slow" but whose
+> definition is less clear.
+>
+> Add support to the test runner to check the test execution time, and
+> report tests that should be marked as slow but aren't.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+>  lib/kunit/test.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 49698a168437..a3b924501f3d 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -379,6 +379,9 @@ static void kunit_run_case_internal(struct kunit *test,
+>  				    struct kunit_suite *suite,
+>  				    struct kunit_case *test_case)
+>  {
+> +	struct timespec64 start, end;
+> +	struct timespec64 duration;
+> +
+>  	if (suite->init) {
+>  		int ret;
+>  
+> @@ -390,7 +393,20 @@ static void kunit_run_case_internal(struct kunit *test,
+>  		}
+>  	}
+>  
+> +	ktime_get_ts64(&start);
+> +
+>  	test_case->run_case(test);
+> +
+> +	ktime_get_ts64(&end);
+> +
+> +	duration = timespec64_sub(end, start);
+> +
+> +	if (duration.tv_sec >= 1 &&
+> +	    (test_case->attr.speed == KUNIT_SPEED_UNSET ||
+> +	     test_case->attr.speed >= KUNIT_SPEED_NORMAL))
+> +		kunit_warn(test,
+> +			   "Test should be marked slow (runtime: %lld.%09lds)",
+> +			   duration.tv_sec, duration.tv_nsec);
 
-Can do. But the other two patches are not related to kexec. Hm.
+Two thoughts:
+
+Should there be some tolerance here? Otherwise we're flagging this on
+the slowest machines, and we'll be defining tests slow based on
+that. Like, warn if it takes more than 2 seconds.
+
+What if someone makes a test faster, but forgets to update the
+attribute? Should we also flag slow tests that are in fact fast?
+
+
+BR,
+Jani.
+
+
+>  }
+>  
+>  static void kunit_case_internal_cleanup(struct kunit *test)
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Jani Nikula, Intel Open Source Graphics Center
