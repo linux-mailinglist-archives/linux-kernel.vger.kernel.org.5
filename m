@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A2A79A18B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729A279A1D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbjIKC5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 22:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        id S232904AbjIKDXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 23:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjIKC5j (ORCPT
+        with ESMTP id S231564AbjIKDXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 22:57:39 -0400
-Received: from out-211.mta1.migadu.com (out-211.mta1.migadu.com [95.215.58.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D396B5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:57:34 -0700 (PDT)
+        Sun, 10 Sep 2023 23:23:44 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABDB1727
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 20:23:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=EsQxGpmTl6fVVk5TnRnxhwh5yeoTGl0hLF5hWy+ixQ4=; b=GtCN67Yv/GOJLHfyipWkUzzY4T
+        ysJ3Par1ipJ15UCgHTxqnyIIi9tPyTandW31WqjGovb0EIh+sKzD3dixrFhktXC2O6Q5ToSWI9FUV
+        285ISMlLzJuU4ns2+VjuEus26/7KI0bQc5NvgxSp6INZFwG0U+4Is2zwFFL8KohF2pOfdYqfsqO6v
+        8H8eA+4TEahEPCLkNbJ4AaybzsbChV4hIePyUNlDpipoJTLfV/0xuYNrIFvO4/s1MT+zpEbnRPDSa
+        Jywnx3Cv45ka3+n4ZlvitCSj3TMDGN0sX6/fZW4CLI9K5U9jWVC3SXKBhF5WHTHKDYGPSzDk3jnte
+        KeQnn80A==;
+Received: from [187.10.204.7] (helo=steammachine.lan)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qfX9z-002C6C-VD; Mon, 11 Sep 2023 05:00:24 +0200
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v6 0/5] drm/amdgpu: Rework coredump memory allocation 
+Date:   Mon, 11 Sep 2023 00:00:13 -0300
+Message-ID: <20230911030018.73540-1-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694401052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BJ23BKSZ8d0LOPN83ClcZC21pXI2hUitVI920Cs+wWM=;
-        b=sFd42ph1SA24QuRQw6httzBuJq+8R+O/LQwhAMWUh2nu5YwYKrb9Aca5SQmwDyHtpqjckZ
-        C5/KtGVzkpMX3Xd4BcBgSNWaoW2sqJATxpHRyVUb5OYOjo3wEED07zuOrx6dzIDIVfWEu0
-        ODNrpSDnMv2MO3wmy5d7/50ptjz/ONo=
-Date:   Mon, 11 Sep 2023 02:57:31 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   "Yajun Deng" <yajun.deng@linux.dev>
-Message-ID: <9c1bfbeb50ac0d4fe728c45329c958607f13d88c@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH] mm/mm_init.c: remove redundant pr_info when node is
- memoryless
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     rppt@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230910143004.e8191c8ebabbe7ddd0fec6fa@linux-foundation.org>
-References: <20230910143004.e8191c8ebabbe7ddd0fec6fa@linux-foundation.org>
- <20230906091113.4029983-1-yajun.deng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -50,49 +54,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-September 11, 2023 at 5:30 AM, "Andrew Morton" <akpm@linux-foundation.org=
-> wrote:
+Hi,
 
+The patches of this set are a rework to alloc devcoredump dynamically and to
+move it to a better source file.
 
->=20
->=20On Wed, 6 Sep 2023 17:11:13 +0800 Yajun Deng <yajun.deng@linux.dev> w=
-rote:
->=20
->=20>=20
->=20> There is a similar pr_info in free_area_init_node(), so remove the
-> >  redundant pr_info.
-> >=20
->=20
-> Please quote the before and after dmesg output so we can better
-> understand this proposal, thanks.
->
+Thanks,
+	André
 
-before:
-[    0.006314] Initializing node 0 as memoryless
-[    0.006445] Initmem setup node 0 as memoryless
-[    0.006450] Initmem setup node 1 [mem 0x0000000000001000-0x000000003ff=
-fffff]
-[    0.006453] Initmem setup node 2 [mem 0x0000000040000000-0x000000007ff=
-d7fff]
-[    0.006454] Initializing node 3 as memoryless
-[    0.006584] Initmem setup node 3 as memoryless
-[    0.006585] Initmem setup node 4 [mem 0x0000000100000000-0x00000001bff=
-fffff]
-[    0.006586] Initmem setup node 5 [mem 0x00000001c0000000-0x00000001fff=
-fffff]
-[    0.006587] Initmem setup node 6 [mem 0x0000000200000000-0x000000023ff=
-fffff]
+Changelog:
 
-after:
-[    0.004147] Initmem setup node 0 as memoryless
-[    0.004148] Initmem setup node 1 [mem 0x0000000000001000-0x000000003ff=
-fffff]
-[    0.004150] Initmem setup node 2 [mem 0x0000000040000000-0x000000007ff=
-d7fff]
-[    0.004154] Initmem setup node 3 as memoryless
-[    0.004155] Initmem setup node 4 [mem 0x0000000100000000-0x00000001bff=
-fffff]
-[    0.004156] Initmem setup node 5 [mem 0x00000001c0000000-0x00000001fff=
-fffff]
-[    0.004157] Initmem setup node 6 [mem 0x0000000200000000-0x000000023ff=
-fffff]
+v5: https://lore.kernel.org/lkml/20230817182050.205925-1-andrealmeid@igalia.com/
+- Added Shashank Sharma R-b tag
+
+v4: https://lore.kernel.org/dri-devel/20230815195100.294458-1-andrealmeid@igalia.com/
+- New patch to encapsulate all reset info in a struct
+
+v3: https://lore.kernel.org/dri-devel/20230810192330.198326-1-andrealmeid@igalia.com/
+- Changed from kmalloc to kzalloc
+- Dropped "Create a module param to disable soft recovery" for now
+
+v2: https://lore.kernel.org/dri-devel/20230713213242.680944-1-andrealmeid@igalia.com/
+- Drop the IB and ring patch
+- Drop patch that limited information from kernel threads
+- Add patch to move coredump to amdgpu_reset
+
+v1: https://lore.kernel.org/dri-devel/20230711213501.526237-1-andrealmeid@igalia.com/
+ - Drop "Mark contexts guilty for causing soft recoveries" patch
+ - Use GFP_NOWAIT for devcoredump allocatio
+
+André Almeida (5):
+  drm/amdgpu: Allocate coredump memory in a nonblocking way
+  drm/amdgpu: Rework coredump to use memory dynamically
+  drm/amdgpu: Encapsulate all device reset info
+  drm/amdgpu: Move coredump code to amdgpu_reset file
+  drm/amdgpu: Create version number for coredumps
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h         | 21 +++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 10 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c  | 75 ++------------------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c   | 77 +++++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h   | 13 ++++
+ 5 files changed, 114 insertions(+), 82 deletions(-)
+
+-- 
+2.42.0
+
