@@ -2,150 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3694B79BCE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D3E79B641
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236294AbjIKV4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
+        id S1348742AbjIKVal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbjIKIll (ORCPT
+        with ESMTP id S235482AbjIKInb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:41:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D631125
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694421697; x=1725957697;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=XyQqE6ua6KWD89cngxqd4htyditGGfSXApdeUeV+fL0=;
-  b=NDkJiBO8SZ+Q4FF/JNMmtUa7/yAlT4w0CCVXbgEiJGzPamc+2hNcY2mX
-   040oeRvm5iX34kYjaGzHtwsVz4z9j7u26l6EXkZF2oca25EfZUVSGnUSc
-   AZ8pbSmm20vzxWhudS4jqsi3fpg/061LE8F8o2VPDsFZ/L/wB/521NBi2
-   rZHUkeBDZVm4Y2RhwS3n0MbZp7+aW46bCLvBDho9CK6b2t68R1mdTQUAG
-   iI88ZSJlbMTq6fY2Zerc69Ud2IsbeaV9oadtZGtYGbFtlDETTrh+mMSqo
-   +OKbhYaZ5IBLV5V9fpJ/73VuWWeMP1fU6U4f/Kwgn7M7b1Idxoms2kZQd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="442024220"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="442024220"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 01:41:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1074063909"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="1074063909"
-Received: from djustese-mobl.ger.corp.intel.com (HELO fedora..) ([10.249.254.185])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 01:41:12 -0700
-From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        intel-xe@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedestkop.org
-Subject: [RFC PATCH] locking/ww_mutex: Adjust to lockdep nest_lock requirements
-Date:   Mon, 11 Sep 2023 10:40:42 +0200
-Message-ID: <20230911084042.5160-1-thomas.hellstrom@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 11 Sep 2023 04:43:31 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6471A5;
+        Mon, 11 Sep 2023 01:43:26 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9338e4695so67908241fa.2;
+        Mon, 11 Sep 2023 01:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694421804; x=1695026604; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VXFTsP12wrxAzUjCCRboSM4a3IaTPoXxwWoK/D998/w=;
+        b=ZnHnDJLjc0GjCqMA4/Z/mZbcL7LVy8Y+yu/mUiA8nzCYT5DMvWQKasVt/iKo7Urrrq
+         u5ZukdaeMKSjgTKSdsKx0U+H1wk7ANRNUzcQNeRbXKn1ljj4kn58TwoTOiziOiV2Uh0m
+         MRdrZTugI/ZYc3Qljjuwz2m27xUi1OZcFxVYOLsJ+d7M/ozxPGqOBpU9dAVLdXAN1QEl
+         r+oWQZN5/iD4EQVz3FxHphkFK4KXR3FJhgspzWtzM2y22laaWubF4EMp46snK36YXWj1
+         CRiCozEGdqAtJ1e7dINaUBhl2Y97RRaBOibcsMG50+SwGKA9W+BIVbapX0uzzqxwgc0P
+         F1QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694421804; x=1695026604;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VXFTsP12wrxAzUjCCRboSM4a3IaTPoXxwWoK/D998/w=;
+        b=HQ0hxA6RSH0yanhxMjc/j7STMmEAj334+UycXxFQjH34qiUnjd7v1mSQg/TWpu/Eml
+         oOL85jyGlyrx5E49n7XG3vi/GFuvK0MEgsNoIIEigRE7LB7uP8xzgUl8gG+Y1aizLt9Q
+         snqmsElmnZPJOM6PlkJNqXVOM2qFASNpFF2Nh2wNs7ketwzJMF3kQWrg1xM7fM/aKQ9h
+         hCtXzK1hF+nMmsPUGHMEYHEb47OhyYUWPRy+2aiqOYwzCcLzHkTxAlBc/n70zWHkNGo6
+         aqMJvzVkzdebWNGFJr37ih215PoS6/RRFoj8qnNiEfTljglk4ZM0OEgoY4MPWZEr91GR
+         xkPg==
+X-Gm-Message-State: AOJu0YxtJidUuynkgdeYrBwsj9ycXuOo3sxNc8LXct6VlM0GMwlYcACU
+        srAOMFU+clSOMBj+KBoFAhQ=
+X-Google-Smtp-Source: AGHT+IEBePdY5vRblamEOb4Bxr3m/BHlMOLZkfFn36ztGoB0yxzSBu2uVVDZkqtjqnQUqPnzTh0XJA==
+X-Received: by 2002:a2e:9f45:0:b0:2b6:9da9:2884 with SMTP id v5-20020a2e9f45000000b002b69da92884mr6670730ljk.40.1694421804210;
+        Mon, 11 Sep 2023 01:43:24 -0700 (PDT)
+Received: from [192.168.100.74] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id f2-20020a1709064dc200b0099cc15f09a0sm4945462ejw.55.2023.09.11.01.43.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 01:43:23 -0700 (PDT)
+Message-ID: <32c8cfb6-e14b-326d-1415-63c4bf46b23e@gmail.com>
+Date:   Mon, 11 Sep 2023 10:43:21 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: rtc: pcf2123: convert to YAML
+Content-Language: en-US
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chris Verges <chrisv@cyberswitching.com>,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230907-topic-pcf2123_yaml-v1-1-40e82bed2066@gmail.com>
+ <202309101217447eae4bc4@mail.local>
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <202309101217447eae4bc4@mail.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using mutex_acquire_nest() with a nest_lock, lockdep refcounts the
-number of acquired lockdep_maps of mutexes of the same class, and also
-keeps a pointer to the first acquired lockdep_map of a class. That pointer
-is then used for various comparison-, printing- and checking purposes,
-but there is no mechanism to actively ensure that lockdep_map stays in
-memory. Instead, a warning is printed if the lockdep_map is freed and
-there are still held locks of the same lock class, even if the lockdep_map
-itself has been released.
 
-In the context of WW/WD transactions that means that if a user unlocks
-and frees a ww_mutex from within an ongoing ww transaction, and that
-mutex happens to be the first ww_mutex grabbed in the transaction,
-such a warning is printed and there might be a risk of a UAF.
+On 10.09.23 14:17, Alexandre Belloni wrote:
+> On 10/09/2023 13:00:27+0200, Javier Carrasco wrote:
+>> Convert the existing txt binding to the preferred YAML format.
+>>
+>> The pcf2123 node may contain SPI settings such as spi-cs-high and
+>> spi-max-frequency, which keeps it from being added to the trivial-rtc
+>> binding with its current definition. Add a reference to
+>> spi-peripheral-props.yaml to account for that.
+>>
+>> The "interrupts" property was missing in the binding although it is
+>> already supported. Add the missing property in the new binding.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> ---
+>>  .../devicetree/bindings/rtc/nxp,pcf2123.yaml       | 45 ++++++++++++++++++++++
+>>  .../devicetree/bindings/rtc/nxp,rtc-2123.txt       | 17 --------
+>>  2 files changed, 45 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
+>> new file mode 100644
+>> index 000000000000..013e5e5dc0ae
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
+>> @@ -0,0 +1,45 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/rtc/nxp,pcf2123.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: NXP PCF2123 SPI Real Time Clock
+>> +
+>> +maintainers:
+>> +  - Chris Verges <chrisv@cyberswitching.com>
+> 
+> Is Chris willing to maintain the binding?
+> 
+The email address chrisv@cyberswitching.com does not exist anymore so it
+is likely that Chris will not reply unless he is subscribed to the
+mailing list with a different email address. I would propose that I add
+myself as the binding maintainer and send a v2.
 
-Note that this is only problem when lockdep is enabled and affects only
-dereferences of struct lockdep_map.
-
-Adjust to this by adding a fake lockdep_map to the acquired context and
-make sure it is the first acquired lockdep map of the associated
-ww_mutex class. Then hold it for the duration of the WW/WD transaction.
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Christian König <christian.koenig@amd.com>
-Cc: intel-xe@lists.freedesktop.org
-Cc: intel-gfx@lists.freedesktop.org
-Cc: dri-devel@lists.freedestkop.org
-Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
----
- include/linux/ww_mutex.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
-index bb763085479a..a401a2f31a77 100644
---- a/include/linux/ww_mutex.h
-+++ b/include/linux/ww_mutex.h
-@@ -65,6 +65,16 @@ struct ww_acquire_ctx {
- #endif
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	struct lockdep_map dep_map;
-+	/**
-+	 * @first_lock_dep_map: fake lockdep_map for first locked ww_mutex.
-+	 *
-+	 * lockdep requires the lockdep_map for the first locked ww_mutex
-+	 * in a ww transaction to remain in memory until all ww_mutexes of
-+	 * the transaction have been unlocked. Ensure this by keeping a
-+	 * fake locked ww_mutex lockdep map between ww_acquire_init() and
-+	 * ww_acquire_fini().
-+	 */
-+	struct lockdep_map first_lock_dep_map;
- #endif
- #ifdef CONFIG_DEBUG_WW_MUTEX_SLOWPATH
- 	unsigned int deadlock_inject_interval;
-@@ -146,7 +156,10 @@ static inline void ww_acquire_init(struct ww_acquire_ctx *ctx,
- 	debug_check_no_locks_freed((void *)ctx, sizeof(*ctx));
- 	lockdep_init_map(&ctx->dep_map, ww_class->acquire_name,
- 			 &ww_class->acquire_key, 0);
-+	lockdep_init_map(&ctx->first_lock_dep_map, ww_class->mutex_name,
-+			 &ww_class->mutex_key, 0);
- 	mutex_acquire(&ctx->dep_map, 0, 0, _RET_IP_);
-+	mutex_acquire_nest(&ctx->first_lock_dep_map, 0, 0, &ctx->dep_map, _RET_IP_);
- #endif
- #ifdef CONFIG_DEBUG_WW_MUTEX_SLOWPATH
- 	ctx->deadlock_inject_interval = 1;
-@@ -185,6 +198,7 @@ static inline void ww_acquire_done(struct ww_acquire_ctx *ctx)
- static inline void ww_acquire_fini(struct ww_acquire_ctx *ctx)
- {
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	mutex_release(&ctx->first_lock_dep_map, _THIS_IP_);
- 	mutex_release(&ctx->dep_map, _THIS_IP_);
- #endif
- #ifdef DEBUG_WW_MUTEXES
--- 
-2.41.0
-
+>> +
+>> +allOf:
+>> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+>> +  - $ref: rtc.yaml#
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - nxp,pcf2123
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +unevaluatedProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    spi {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +
+>> +        rtc@3 {
+>> +            compatible = "nxp,pcf2123";
+>> +            reg = <3>;
+>> +            spi-cs-high;
+>> +        };
+>> +    };
+>> +...
+>> diff --git a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt b/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
+>> deleted file mode 100644
+>> index 7371f525a687..000000000000
+>> --- a/Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
+>> +++ /dev/null
+>> @@ -1,17 +0,0 @@
+>> -NXP PCF2123 SPI Real Time Clock
+>> -
+>> -Required properties:
+>> -- compatible: should be: "nxp,pcf2123"
+>> -                      or "microcrystal,rv2123"
+>> -- reg: should be the SPI slave chipselect address
+>> -
+>> -Optional properties:
+>> -- spi-cs-high: PCF2123 needs chipselect high
+>> -
+>> -Example:
+>> -
+>> -pcf2123: rtc@3 {
+>> -	compatible = "nxp,pcf2123"
+>> -	reg = <3>
+>> -	spi-cs-high;
+>> -};
+>>
+>> ---
+>> base-commit: 535a265d7f0dd50d8c3a4f8b4f3a452d56bd160f
+>> change-id: 20230907-topic-pcf2123_yaml-2ce57f4e77d7
+>>
+>> Best regards,
+>> -- 
+>> Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>>
+> 
+Best regards,
+Javier Carrasco
