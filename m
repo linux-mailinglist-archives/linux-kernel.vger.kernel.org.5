@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECF479C159
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9832979C173
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjILAyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 20:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        id S233151AbjILBLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbjILAyf (ORCPT
+        with ESMTP id S233120AbjILBLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 20:54:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7998211D163;
-        Mon, 11 Sep 2023 16:56:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A3A6D1F38D;
-        Mon, 11 Sep 2023 23:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694474407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Snvxo2P0yNaIi5ptaSVycgyop4uja1YqdxoLJrtrWv8=;
-        b=UObtITlE/n8JJOmzDxCaqsdU7nYw3IEUWd/9FHP0KiZ36o3fok68y2pkIonUrBkwPuR674
-        S/WHPIEG4KXtZINrFCTevvm/w3ZYrVpL4JVxsZStBagvtmiOI4lWb763Tkx/hTDwrp8aTC
-        VYQp2SlM9K3gU8vhcceQhfQNxs6DjdM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694474407;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Snvxo2P0yNaIi5ptaSVycgyop4uja1YqdxoLJrtrWv8=;
-        b=//nTrIoTsQRfLCq8DgiGSOTrCkPynSEClk0e/SWV5dISSBY3yW4WIkX3iIrY5Er4Ut96/3
-        2SJXw8BGdiufnmBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 878DA139CC;
-        Mon, 11 Sep 2023 23:20:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id pYq1DqSg/2RBOQAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 11 Sep 2023 23:20:04 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Sep 2023 21:11:34 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C173DE9C61;
+        Mon, 11 Sep 2023 17:05:53 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500b66f8b27so8676359e87.3;
+        Mon, 11 Sep 2023 17:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694477079; x=1695081879; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iJwIMS70R7O4xotSYAbycvkE7LIixxz2BRpxlkaoOuQ=;
+        b=C8BV1JRqYxqHAChV3nFK1KomnNYklmGkbaEoMZYJTAsAImfDBPVRq4k6SQAQyJCZkX
+         T+rgQjinDmWeI8atE7x3y0Aq50ZPUS+MLXAx63ZaLrgS4eyGJv+s7ovfLFNMNIGrmF+h
+         3lpnewbNJ/kZsc4bOvOJNxXr1t95CoFur8UIlgaFd0pZT2ipLkksxGuVz9uS72M5D2KG
+         hwRwBJMaITd2yevT/K5jbZa2iHsvB3FUdbga+QvrPPCSoly95fnfP8vYO2e0S5MgiO5n
+         PDqPi8xqSFAMnSUlp6FcjQLcx8rtFUupVKy05Mw+9YwTQRbW4IL1bLxdTniafv7gqtGI
+         QR9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694477079; x=1695081879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iJwIMS70R7O4xotSYAbycvkE7LIixxz2BRpxlkaoOuQ=;
+        b=v5pKfZn2HuLx3t/wI2mspUQSAJiW+MjZRLaNBD/SusYSUrIbDggO8OMMErvms3S3/V
+         juXUuj/CkQ6pusZ65oMiU+NDRhEjhDOAYTajOHhZ1bfZusXwbZkHOD6WcP0zVYkyutpe
+         reS82Cz1XesjZ4HAoh9AzrsWCKH/id+DGAvWDIzvxYBZ9rh86Cylm6yXE5YEF/hXJ5CL
+         GQ1OzZcekQE0SA/q3ubp9QH04urXyLzivsT722+dEk+H08VDuIh0ks0vvuC9dtAg4sDE
+         iFsmh6p8ICfI8HTCtB+CcWs9eMtV5bY9yTJPdP2k9/KsJSXUHbZ5pSoEOtrTzQwPaocy
+         MYVw==
+X-Gm-Message-State: AOJu0YySNZifylj1F2xFeKAsQM+IoRnDk/JVGT6QFz8od9pzNFdPDDn0
+        +5ZErLDLqitm/ShUczpAafa0S3TR+apbGv2SUEbpyjiI87Faig==
+X-Google-Smtp-Source: AGHT+IFf2hqEyBFntRVpYOdqr6T6TV+V1ehJ8cSgQpPXcwsMJ4j+xNm6xYRtTw0/JaZaMQZr0SNrgfCVx6jkQoSCZXk=
+X-Received: by 2002:a17:906:1d9:b0:9a5:a44a:86f3 with SMTP id
+ 25-20020a17090601d900b009a5a44a86f3mr9128275ejj.25.1694474448340; Mon, 11 Sep
+ 2023 16:20:48 -0700 (PDT)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     "Chuck Lever III" <chuck.lever@oracle.com>,
-        "Chuck Lever" <cel@kernel.org>,
-        "Linux NFS Mailing List" <linux-nfs@vger.kernel.org>,
-        "Liam Howlett" <liam.howlett@oracle.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "David Gow" <davidgow@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
-In-reply-to: <20230911140439.b273bf9e120881f038da0de7@linux-foundation.org>
-References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>,
- <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>,
- <20230911111333.4d1a872330e924a00acb905b@linux-foundation.org>,
- <4D5C2693-40E9-467D-9F2F-59D92CBE9D3B@oracle.com>,
- <20230911140439.b273bf9e120881f038da0de7@linux-foundation.org>
-Date:   Tue, 12 Sep 2023 09:19:59 +1000
-Message-id: <169447439989.19905.9386812394578844629@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230909161851.223627-1-kernel@jfarr.cc> <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+In-Reply-To: <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Mon, 11 Sep 2023 19:20:12 -0400
+Message-ID: <CAEg-Je9GF5S+QcsspM_CzDSxzCN8h2eRp7BbctC1x7-rH8j68g@mail.gmail.com>
+Subject: Re: [systemd-devel] [PATCH 0/1] x86/kexec: UKI support
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Jan Hendrik Farr <kernel@jfarr.cc>, linux-kernel@vger.kernel.org,
+        systemd-devel@lists.freedesktop.org, x86@kernel.org,
+        kexec@lists.infradead.org, dhowells@redhat.com,
+        keyrings@vger.kernel.org, bluca@debian.org, bhelgaas@google.com,
+        tglx@linutronix.de, akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023, Andrew Morton wrote:
-> On Mon, 11 Sep 2023 20:30:40 +0000 Chuck Lever III <chuck.lever@oracle.com>=
+On Mon, Sep 11, 2023 at 7:15=E2=80=AFPM Jarkko Sakkinen <jarkko@kernel.org>=
  wrote:
->=20
-> >=20
-> >=20
-> > > On Sep 11, 2023, at 2:13 PM, Andrew Morton <akpm@linux-foundation.org> =
-wrote:
-> > >=20
-> > > On Mon, 11 Sep 2023 10:39:43 -0400 Chuck Lever <cel@kernel.org> wrote:
-> > >=20
-> > >> lwq is a FIFO single-linked queue that only requires a spinlock
-> > >> for dequeueing, which happens in process context.  Enqueueing is atomic
-> > >> with no spinlock and can happen in any context.
-> > >=20
-> > > What is the advantage of this over using one of the library
-> > > facilities which we already have?
-> >=20
-> > I'll let the patch author respond to that question, but let me pose
-> > one of my own: What pre-existing facilities are you thinking of, so
-> > that I may have a look?
->=20
-> Well, I assume that plain old list_heads could be recruited for this
-> requirement.  And I hope that a FIFO could be implemented using kfifo ;)
->=20
+>
+> On Sat Sep 9, 2023 at 7:18 PM EEST, Jan Hendrik Farr wrote:
+> > Hello,
+> >
+> > this patch implements UKI support for kexec_file_load. It will require =
+support
+> > in the kexec-tools userspace utility. For testing purposes the followin=
+g can be used:
+> > https://github.com/Cydox/kexec-test/
+> >
+> > There has been discussion on this topic in an issue on GitHub that is l=
+inked below
+> > for reference.
+> >
+> >
+> > Some links:
+> > - Related discussion: https://github.com/systemd/systemd/issues/28538
+> > - Documentation of UKIs: https://uapi-group.org/specifications/specs/un=
+ified_kernel_image/
+> >
+> > Jan Hendrik Farr (1):
+> >   x86/kexec: UKI support
+> >
+> >  arch/x86/include/asm/kexec-uki.h       |   7 ++
+> >  arch/x86/include/asm/parse_pefile.h    |  32 +++++++
+> >  arch/x86/kernel/Makefile               |   2 +
+> >  arch/x86/kernel/kexec-uki.c            | 113 +++++++++++++++++++++++++
+> >  arch/x86/kernel/machine_kexec_64.c     |   2 +
+> >  arch/x86/kernel/parse_pefile.c         | 110 ++++++++++++++++++++++++
+> >  crypto/asymmetric_keys/mscode_parser.c |   2 +-
+> >  crypto/asymmetric_keys/verify_pefile.c | 110 +++---------------------
+> >  crypto/asymmetric_keys/verify_pefile.h |  16 ----
+> >  9 files changed, 278 insertions(+), 116 deletions(-)
+> >  create mode 100644 arch/x86/include/asm/kexec-uki.h
+> >  create mode 100644 arch/x86/include/asm/parse_pefile.h
+> >  create mode 100644 arch/x86/kernel/kexec-uki.c
+> >  create mode 100644 arch/x86/kernel/parse_pefile.c
+> >
+> > --
+> > 2.40.1
+>
+> What the heck is UKI?
 
-Plain old list_heads (which the code currently uses) require a spinlock
-to be taken to insert something into the queue.  As this is usually in
-bh context, it needs to be a spin_lock_bh().  My understanding is that
-the real-time developers don't much like us disabling bh.  It isn't an
-enormous win switching from a list_head list to a llist_node list, but
-there are small gains such as object size reduction and less locking.  I
-particularly wanted an easy-to-use library facility that could be
-plugged in to two different uses cases in the sunrpc code and there
-didn't seem to be one.  I could have written one using list_head, but
-llist seemed a better fix.  I think the code in sunrpc that uses this
-lwq looks a lot neater after the conversion.
+Unified Kernel Images. More details available here:
+https://uapi-group.org/specifications/specs/unified_kernel_image/
 
-I wasn't aware of kfifo.  Having now looked at it I don't think it would
-be suitable.  It is designed to provide a fixed-size buffer for data
-with cycling "head" and "tail" pointers - typically for data coming from
-or to a device.  It doesn't provide any locking support so we would need
-locking both to enqueue and to dequeue.  Thus it would be no better than
-the list_head approach, and the different interface style would make it
-harder to use (an "impedance mismatch"?).  A simple summary might be
-that kfifo provides a buffer, not a queue.
+It's a way of creating initramfs-style images as fully generic,
+reproducible images that can be built server-side.
 
-Thanks,
-NeilBrown
+It is a requirement for creating locked down Linux devices for
+appliances that can be tamper-resistant too.
+
+
+
+
+--
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
