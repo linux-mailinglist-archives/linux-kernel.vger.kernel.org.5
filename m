@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6C579B9A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4DF79BE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345310AbjIKVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S1378901AbjIKWhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244174AbjIKTaW (ORCPT
+        with ESMTP id S244176AbjIKTc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:30:22 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F4118D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:30:18 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-58fc4d319d2so48069107b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:30:18 -0700 (PDT)
+        Mon, 11 Sep 2023 15:32:59 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A2A12A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:54 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52a39a1c4d5so6319266a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ixsystems.com; s=google; t=1694460617; x=1695065417; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dOzBaZVEt5gQY++7RqjQswx+b33XCIagh1muoGrlAno=;
-        b=cLy7dpCcKCTkDIsY3lsxi72OTB55Lk97JUppEvXQ2oBu0dzvRO/MgeGlDMUhBUC6ea
-         N7h8RBx0X17+PKj9r7uG0BTTu1XRyQJDcodFOXBC7RM12CUnyRd5SLNaKhJifgA110Y6
-         18pUBAlsf1fbkly6EDnh8W1ZTcYjPsUxf9MmH1le+FiCfE8lsld/5acIySyirfLNKWfP
-         EnpgXvdYujmiYhbE1Z7Dy3gnZzMCXovnaYCXJFiwL4U/mGFgYKAuhUeX4fj0+YL4PPSD
-         Ghkkzgv8dKCwDHLV2OCX2Kq8cDYTYv2R54No+6Rdqgdk/LrQxSltGqxBP+XF1xcwOB8J
-         rYrA==
+        d=linaro.org; s=google; t=1694460773; x=1695065573; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5UMn+F1EegjHCQSiGIpyYjyy5ijgml80Jw1Zt5EbFAY=;
+        b=nWiyP+bLLMJQ6NzMFaeyyhkPNbxhvGPJ/kdx9Mk4qI+tZOmTmx0/IIRL7Gt4VdY5O9
+         wDzwU9FpaBgMFQwRMCCjqtw246ME6vTdbI2/BH7pY81Tay0kbHnny70tJNDVXa576IVt
+         XcSju+R2uRV4OzQ9GnjhnUuw7WRFEqsGfezL2RQV0za/j6bqHpptrmPRTYGuinBF5FS8
+         WgyM4QgvsxrQltPRC2VxUhIzv8qruTdRNVYa2s7YXKaw0txsVS3tE8Iy3x2Ts2GDw45v
+         K2EVOIp4yIpnsbfwhtflUbBzK062J1o2Ro3fUw4iSeija24I7KKjK4bzjW7LFGKARWmJ
+         E+rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694460617; x=1695065417;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dOzBaZVEt5gQY++7RqjQswx+b33XCIagh1muoGrlAno=;
-        b=Oh1PD11HUlu/UNE9a0Vmd8bgKLVZAt50eoFFUPrVl3Z+dKlOxHslYMsQc/uoUtgWKd
-         /N+6dWdSWFJNJBcjlefoudZSQhZvWgqea5TMe0U41VenO0d41eLfHwH+o20wq5biJY2H
-         OzE5gA9w+zJ+DTx4hzXpnzZgWf7kd7eX+LTJreiXghLqhjKynZPUXkjOeNZkXT9TOIq2
-         1J/judyfcZe9/JT5i1hxcY/yiCn8PDI9nChveHSSLrJ/BD9bzeV5ujsYP/mSE37RHDsQ
-         01tAEF6D1AMELSjuYFVkshniY7D3XuiMQ/ByafBw7AjLlVZ91NKXtX0CoG/vFi+NLBpb
-         7mCQ==
-X-Gm-Message-State: AOJu0YyicWhzafoh2fvXuyek38/A67a3UUSIeDcTO/9oDpliBh4J/93X
-        j4TurdJOfhM1pbjTza9i3yFBUg==
-X-Google-Smtp-Source: AGHT+IESxrLOaWegF5gTHmBHYw+/IUhEQGmX3/l2Ji8Z3+aAqLldkGtB6pMnrMVyRK3tlfdNewm/Zg==
-X-Received: by 2002:a0d:e20e:0:b0:58c:57c1:138a with SMTP id l14-20020a0de20e000000b0058c57c1138amr10944186ywe.19.1694460616784;
-        Mon, 11 Sep 2023 12:30:16 -0700 (PDT)
-Received: from [10.230.45.5] ([38.32.73.2])
-        by smtp.gmail.com with ESMTPSA id m83-20020a0dca56000000b00589e84acafasm2133892ywd.48.2023.09.11.12.30.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 12:30:16 -0700 (PDT)
-Message-ID: <2f1414ab-9152-17ab-d2c6-96f4f5de7d45@ixsystems.com>
-Date:   Mon, 11 Sep 2023 15:29:34 -0400
+        d=1e100.net; s=20230601; t=1694460773; x=1695065573;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5UMn+F1EegjHCQSiGIpyYjyy5ijgml80Jw1Zt5EbFAY=;
+        b=M/ORycHNE9MOSAmQR7fSNr2jjTDM6cxTFwwQ6YCDRuj0Q3pRJdsA3e+GsxW/XZ2wMz
+         DrdANOZbH81OOeYs4PsdyDdRWS0oNgSLJe2B5XRkZSrfdH23K4e6A9+OTDfI0ViyBLvS
+         bWOeYAhj6xb94WaLNv7omdHGVpEycUG+aI1obp++etBx86K8nO+xnvjSoOr/iy+tX6U9
+         6hf4G8Ne4ohSr6eXd2Agv3LBIoX0jZQVcFjMVNV0HiHF6GaRXvRd4x4XATA4Vq/92sY9
+         zxdBt0nQh6MqAHo32a+lAR2+CAewc95HD0mk2mBSoqBSrlfxRAx6tVC401+7XoCjRR7a
+         nX3g==
+X-Gm-Message-State: AOJu0Yx11qseqSLTBXmhuW/vQsV3L4WYIEuRNxf02iVGz3KfFymtUXr4
+        53p335pUw7ndi938Uqk19ZLj1g==
+X-Google-Smtp-Source: AGHT+IEN5RIi2xcSnwPNjVQSja3SRb0xD2tJCeAWxHBcwbpnLaq6G6YhG1w4oLwsBjzDuJ/UWy83rg==
+X-Received: by 2002:a17:906:2d1:b0:9ad:7d5b:dc11 with SMTP id 17-20020a17090602d100b009ad7d5bdc11mr296841ejk.33.1694460773048;
+        Mon, 11 Sep 2023 12:32:53 -0700 (PDT)
+Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170906410400b0099cc402d3ddsm5698607ejk.202.2023.09.11.12.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 12:32:52 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/2] 8550 USB QMPPHY fixups
+Date:   Mon, 11 Sep 2023 21:32:47 +0200
+Message-Id: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; FreeBSD amd64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] nvme: prevent id ctrl csi for specs below 2.0
-Content-Language: en-US
-To:     Keith Busch <kbusch@kernel.org>, Ameer Hamza <ahamza@ixsystems.com>
-Cc:     linux-nvme@lists.infradead.org, axboe@kernel.dk, hch@lst.de,
-        sagi@grimberg.me, linux-kernel@vger.kernel.org,
-        edmund.nadolski@ixsystems.com
-References: <20230910212641.338438-1-ahamza@ixsystems.com>
- <ZP9fOBSl59u8u0hq@kbusch-mbp.dhcp.thefacebook.com>
-From:   Alexander Motin <mav@ixsystems.com>
-In-Reply-To: <ZP9fOBSl59u8u0hq@kbusch-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+X-B4-Tracking: v=1; b=H4sIAF9r/2QC/32NQQqDMBAAvyJ7bkqM1Zqe+o8iJdHVLEgiG5WK+
+ PemPqDHGRhmh4hMGOGR7cC4UqTgE6hLBq0zfkBBXWJQUhWyVlrMYaJW1GUp30u0k9tEpfO+qO5
+ W2wIhddZEFJaNb10q/TKOSU6MPX3O0atJ7CjOgbfzu+Y/+2+x5kKKUuuus72R+maeI3nD4Rp4g
+ OY4ji8cU/RZyAAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Adrien Thierry <athierry@redhat.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694460770; l=919;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=gGhpM1D6PVCOQ2pV5FmkVKUb1CkrT+N170vl0E9tfxI=;
+ b=Ha/wnW7hzeLkLBHibTEtEvqo8nAhkwUGnW0MVSw09JpsRyfBQ1RXCS1a48fZi0rmDT7C0iKNk
+ iDxD9HO0T14BqbGIJWT/oxlVa0Ro+6WNo8FEByr/DZfxjWvpbMqMJEG
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,25 +89,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.2023 14:40, Keith Busch wrote:
-> On Mon, Sep 11, 2023 at 02:26:41AM +0500, Ameer Hamza wrote:
->> The 'id ctrl csi' command was introduced in version 2.0, as specified
->> in Section 5.17.2.6 of the NVME Base Specification 2.0. Executing this
->> command on previous NVMe versions returns an "Invalid Field" error,
->> and the error entry is saved in the log page. Although, Commit
->> c917dd96fe41 ("nvme: skip optional id ctrl csi if it failed") reduced
->> the error occurrences, but the error persisted during the initial
->> module load. This patch ensures the command isn't executed on versions
->> older than 2.0, and it also eliminates the skip implementation because
->> NVME_ID_CNS_CS_CTRL is expected to succeed with version 2.0.
-> 
-> NVMe TP's are allowed to be implemented by versions lower than the
-> release that first included it. I recall the first nvme controller I'd
-> seen that implemented this identification reported itself as 1.4.
+Inspired by [1] I went over the 8550 QMPPHY init sequences and found
+some inconsistencies. This series attempts to fix them.
 
-Then there must be a way to detect it.  How otherwise it is not a 
-standard violation to send arbitrary effectively vendor-specific 
-commands to a drive?
+[1] https://lore.kernel.org/linux-arm-msm/20230828152353.16529-1-athierry@redhat.com/
 
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Changes in v2:
+- Pick up tags
+- "Q6" -> "V6"
+- Link to v1: https://lore.kernel.org/r/20230829-topic-8550_usbphy-v1-0-599ddbfa094a@linaro.org
+
+---
+Konrad Dybcio (2):
+      phy: qcom-qmp-combo: Square out 8550 POWER_STATE_CONFIG1
+      phy: qcom-qmp-combo: initialize PCS_USB registers
+
+ drivers/phy/qualcomm/phy-qcom-qmp-combo.c      | 6 +++++-
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h | 3 ++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+---
+base-commit: 7bc675554773f09d88101bf1ccfc8537dc7c0be9
+change-id: 20230829-topic-8550_usbphy-691f367b9b3e
+
+Best regards,
 -- 
-Alexander Motin
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
