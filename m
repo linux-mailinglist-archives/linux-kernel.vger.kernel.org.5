@@ -2,376 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875BE79AB49
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 22:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3886879AB45
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 22:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjIKUrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        id S229500AbjIKUrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236734AbjIKLS3 (ORCPT
+        with ESMTP id S236936AbjIKLne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:18:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D8E4CDD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:17:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694431054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=kLYWjYvFwv4/s+HtYDIjsdK1LYTgvhIhfGvJ4mVWT5Q=;
-        b=Qovzk81U+4/4XR7+8MJZ6LWYcENKpFKBa0cOev8kSzNIcUqoE5/cZTpq6kChwoZuWFhFmF
-        U6AO0mfVMO3MYLpUG42VAqzW6k7RBBZVRr1DyUUNMV/M5QzwTA6YRy4QeubZBew0WaxyUx
-        p16mAdyix1yubNC6RsPOFh+0KRco0r4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-60-iP-LBR5kODm1LSeCIuktlA-1; Mon, 11 Sep 2023 07:17:32 -0400
-X-MC-Unique: iP-LBR5kODm1LSeCIuktlA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8B643803902;
-        Mon, 11 Sep 2023 11:17:31 +0000 (UTC)
-Received: from pasta.redhat.com (unknown [10.45.226.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D42E42156701;
-        Mon, 11 Sep 2023 11:17:30 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        mm-commits@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] kthread: Add kthread_stop_put
-Date:   Mon, 11 Sep 2023 13:17:30 +0200
-Message-Id: <20230911111730.2565537-1-agruenba@redhat.com>
+        Mon, 11 Sep 2023 07:43:34 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751E7E50
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:43:28 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31f915c3c42so1726407f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694432607; x=1695037407; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zhvqmtlPbl/ToiLBkS2C664oW0NpQWmg1Qdfqpzz/ks=;
+        b=h85qjoOzihIC+Jfm/OgJKc4r5B0bSGnKrJPXJzit6opvv+s72AytROOKIJwpVsL0hG
+         6SkGak0t3IIVzqDzPAFSQdHqwZ319hzXuWe/SayI/RLJA7r7hU+xSl4fZYUz8kZ0Ui5j
+         IOzNBPhcW1wOlGRiHqn1Zmfz030RUBC5LmyfA5RIzlFNpye7jCf3s/9nnPUUaMcn1f+n
+         MzeDofjuT9JXein4Qje7K7cCr3piT2UpaaqDoiXDV2DudODEtMluqwHgWBS9RuXlGy3w
+         kB+dOFMqH8gHfLqMFpRyw/GDG875jW7CfRuAkA+31gn1VY5NZvD65PAgLyGuTv4sSNg0
+         1hgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694432607; x=1695037407;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zhvqmtlPbl/ToiLBkS2C664oW0NpQWmg1Qdfqpzz/ks=;
+        b=rvo9shyqRLC87wuIZaPFNOOH1pAOKcCWKTVWK6v2KWC0+ynGqhyxeS0uOGj8cL0gHB
+         nkbFmU6rPhYn0b6otVosBIoZzEwyg+G32saxYaR/A7rhzKqUzb2K1TJ7M3vqbw5fxlEH
+         n3jKPJ9bfQF7F4ZPOEPuiCJfazjDOuKevPMXs4lvaV3x8WY3rZN6FYJZ+g5tSiQ2yS+B
+         2IHWZgtK/V5QRus0u/U/PAQCihg3wKMH6wpnvNJohcs8+bZ88XiEAuvnDrJvQBiQDVDT
+         PfxryO7Bp7s0nLL6sAJWg/cgxCOjpiC1i3YJHtI2r9Fd00uGONy8kXwjgGWAYV6Ftk9N
+         tPwg==
+X-Gm-Message-State: AOJu0YxYvpjjBlpQKzYeT9NbioyiUF2Va4/ltSZ7tK2daqvG4JGA6hmH
+        QaouGBAmXeQMM7RMlmI62PdDjg==
+X-Google-Smtp-Source: AGHT+IHDWHlDL5vz5A1MoSOGg/s1su6sfKxPHNvw4o1B8UIig50Xaff6LXy44TsmqogO5HVIRr8EMQ==
+X-Received: by 2002:a5d:6302:0:b0:316:f3cf:6f12 with SMTP id i2-20020a5d6302000000b00316f3cf6f12mr7051795wru.48.1694432606716;
+        Mon, 11 Sep 2023 04:43:26 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id r15-20020a056000014f00b0031c6dc684f8sm9771891wrx.20.2023.09.11.04.43.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 04:43:25 -0700 (PDT)
+Message-ID: <15898954-3b47-651d-43f4-844f45da171e@linaro.org>
+Date:   Mon, 11 Sep 2023 13:43:23 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/3] dt-bindings: interconnect: Add Qualcomm SM4450
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     will@kernel.org, arnd@arndb.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_kaushalk@quicinc.com,
+        peng.fan@nxp.com, kernel@quicinc.com, catalin.marinas@arm.com,
+        rafal@milecki.pl, krzysztof.kozlowski+dt@linaro.org,
+        nfraprado@collabora.com, quic_shashim@quicinc.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        linux-pm@vger.kernel.org, quic_tsoni@quicinc.com,
+        geert+renesas@glider.be, andersson@kernel.org, conor+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, agross@kernel.org,
+        quic_tdas@quicinc.com, djakov@kernel.org, konrad.dybcio@linaro.org
+References: <20230908064427.26999-1-quic_tengfan@quicinc.com>
+ <20230908064427.26999-2-quic_tengfan@quicinc.com>
+ <169415894359.3239551.14338430937225080028.robh@kernel.org>
+ <375df554-e661-42ad-8a6f-f862aa05b654@quicinc.com>
+ <5f172a8f-ecd7-44b0-9b02-48eb13d40497@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <5f172a8f-ecd7-44b0-9b02-48eb13d40497@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On 11/09/2023 12:15, Tengfei Fan wrote:
+>>>
+>>> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+>>> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>>>
+>>> yamllint warnings/errors:
+>>>
+>>> dtschema/dtc warnings/errors:
+>>> Documentation/devicetree/bindings/interconnect/qcom,sm4450-rpmh.example.dts:18:18: fatal error: dt-bindings/clock/qcom,gcc-sm4450.h: No such file or directory
+>>>     18 |         #include <dt-bindings/clock/qcom,gcc-sm4450.h>
+>>>        |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> compilation terminated.
+>>> make[2]: *** [scripts/Makefile.lib:419: 
+>>> Documentation/devicetree/bindings/interconnect/qcom,sm4450-rpmh.example.dtb] Error 1
+>>> make[2]: *** Waiting for unfinished jobs....
+>>> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: 
+>>> dt_binding_check] Error 2
+>>> make: *** [Makefile:234: __sub-make] Error 2
+>>>
+>>> doc reference errors (make refcheckdocs):
+>>>
+>>> See 
+>>> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230908064427.26999-2-quic_tengfan@quicinc.com
+>>>
+>>> The base for the series is generally the latest rc1. A different 
+>>> dependency
+>>> should be noted in *this* patch.
+>>>
+>>> If you already ran 'make dt_binding_check' and didn't see the above
+>>> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>>> date:
+>>>
+>>> pip3 install dtschema --upgrade
+>>>
+>>> Please check and re-submit after running the above command yourself. Note
+>>> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+>>> your schema. However, it must be unset to test all examples with your 
+>>> schema.
+>>>
+>> Thanks review this patch, will setup new env for verify again.
+>>
+> this error is due to have dependence with: 
+> https://lore.kernel.org/linux-arm-msm/20230824173410.550126-1-quic_ajipan@quicinc.com/, 
+> will add this link to coverletter.
 
-thanks for picking this up.  The kernel test robot has since told me
-that it's uhappy about the kerneldoc comment I've added for
-kthread_stio_put().
+The patch should have it for the bot to understand it.
 
-So here's an updated version that has the comment fixed, rebased against
-the latest for-next kernel.
-
-https://lore.kernel.org/oe-kbuild-all/202309081653.IMl41FhS-lkp@intel.com/
-
-Thanks,
-Andreas
-
---
-
-Add a kthread_stop_put() helper that stops a thread and puts its task
-struct.  Use it to replace the various instances of kthread_stop()
-followed by put_task_struct().
-
-Remove the kthread_stop_put() macro in usbip that is similar but
-doesn't return the result of kthread_stop().
-
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- drivers/accel/ivpu/ivpu_job.c              |  3 +--
- drivers/dma-buf/st-dma-fence-chain.c       | 12 ++++--------
- drivers/dma-buf/st-dma-fence.c             |  4 +---
- drivers/gpu/drm/i915/gt/selftest_migrate.c |  4 +---
- drivers/net/xen-netback/interface.c        |  3 +--
- drivers/usb/usbip/usbip_common.h           |  6 ------
- fs/gfs2/ops_fstype.c                       |  9 +++------
- include/linux/kthread.h                    |  1 +
- kernel/irq/manage.c                        | 15 +++++----------
- kernel/kthread.c                           | 17 +++++++++++++++++
- kernel/smpboot.c                           |  3 +--
- mm/damon/core.c                            |  3 +--
- net/core/pktgen.c                          |  3 +--
- 13 files changed, 37 insertions(+), 46 deletions(-)
-
-diff --git a/drivers/accel/ivpu/ivpu_job.c b/drivers/accel/ivpu/ivpu_job.c
-index de9e69f70af7..76f468c9f761 100644
---- a/drivers/accel/ivpu/ivpu_job.c
-+++ b/drivers/accel/ivpu/ivpu_job.c
-@@ -618,6 +618,5 @@ int ivpu_job_done_thread_init(struct ivpu_device *vdev)
- 
- void ivpu_job_done_thread_fini(struct ivpu_device *vdev)
- {
--	kthread_stop(vdev->job_done_thread);
--	put_task_struct(vdev->job_done_thread);
-+	kthread_stop_put(vdev->job_done_thread);
- }
-diff --git a/drivers/dma-buf/st-dma-fence-chain.c b/drivers/dma-buf/st-dma-fence-chain.c
-index c0979c8049b5..9c2a0c082a76 100644
---- a/drivers/dma-buf/st-dma-fence-chain.c
-+++ b/drivers/dma-buf/st-dma-fence-chain.c
-@@ -476,10 +476,9 @@ static int find_race(void *arg)
- 	for (i = 0; i < ncpus; i++) {
- 		int ret;
- 
--		ret = kthread_stop(threads[i]);
-+		ret = kthread_stop_put(threads[i]);
- 		if (ret && !err)
- 			err = ret;
--		put_task_struct(threads[i]);
- 	}
- 	kfree(threads);
- 
-@@ -591,8 +590,7 @@ static int wait_forward(void *arg)
- 	for (i = 0; i < fc.chain_length; i++)
- 		dma_fence_signal(fc.fences[i]);
- 
--	err = kthread_stop(tsk);
--	put_task_struct(tsk);
-+	err = kthread_stop_put(tsk);
- 
- err:
- 	fence_chains_fini(&fc);
-@@ -621,8 +619,7 @@ static int wait_backward(void *arg)
- 	for (i = fc.chain_length; i--; )
- 		dma_fence_signal(fc.fences[i]);
- 
--	err = kthread_stop(tsk);
--	put_task_struct(tsk);
-+	err = kthread_stop_put(tsk);
- 
- err:
- 	fence_chains_fini(&fc);
-@@ -669,8 +666,7 @@ static int wait_random(void *arg)
- 	for (i = 0; i < fc.chain_length; i++)
- 		dma_fence_signal(fc.fences[i]);
- 
--	err = kthread_stop(tsk);
--	put_task_struct(tsk);
-+	err = kthread_stop_put(tsk);
- 
- err:
- 	fence_chains_fini(&fc);
-diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fence.c
-index fb6e0a6ae2c9..b7c6f7ea9e0c 100644
---- a/drivers/dma-buf/st-dma-fence.c
-+++ b/drivers/dma-buf/st-dma-fence.c
-@@ -548,11 +548,9 @@ static int race_signal_callback(void *arg)
- 		for (i = 0; i < ARRAY_SIZE(t); i++) {
- 			int err;
- 
--			err = kthread_stop(t[i].task);
-+			err = kthread_stop_put(t[i].task);
- 			if (err && !ret)
- 				ret = err;
--
--			put_task_struct(t[i].task);
- 		}
- 	}
- 
-diff --git a/drivers/gpu/drm/i915/gt/selftest_migrate.c b/drivers/gpu/drm/i915/gt/selftest_migrate.c
-index 3def5ca72dec..0fb07f073baa 100644
---- a/drivers/gpu/drm/i915/gt/selftest_migrate.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_migrate.c
-@@ -719,11 +719,9 @@ static int threaded_migrate(struct intel_migrate *migrate,
- 		if (IS_ERR_OR_NULL(tsk))
- 			continue;
- 
--		status = kthread_stop(tsk);
-+		status = kthread_stop_put(tsk);
- 		if (status && !err)
- 			err = status;
--
--		put_task_struct(tsk);
- 	}
- 
- 	kfree(thread);
-diff --git a/drivers/net/xen-netback/interface.c b/drivers/net/xen-netback/interface.c
-index f3f2c07423a6..33c8143619f0 100644
---- a/drivers/net/xen-netback/interface.c
-+++ b/drivers/net/xen-netback/interface.c
-@@ -672,8 +672,7 @@ int xenvif_connect_ctrl(struct xenvif *vif, grant_ref_t ring_ref,
- static void xenvif_disconnect_queue(struct xenvif_queue *queue)
- {
- 	if (queue->task) {
--		kthread_stop(queue->task);
--		put_task_struct(queue->task);
-+		kthread_stop_put(queue->task);
- 		queue->task = NULL;
- 	}
- 
-diff --git a/drivers/usb/usbip/usbip_common.h b/drivers/usb/usbip/usbip_common.h
-index d8cbd2dfc2c2..282efca64a01 100644
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -298,12 +298,6 @@ struct usbip_device {
- 	__k;								   \
- })
- 
--#define kthread_stop_put(k)		\
--	do {				\
--		kthread_stop(k);	\
--		put_task_struct(k);	\
--	} while (0)
--
- /* usbip_common.c */
- void usbip_dump_urb(struct urb *purb);
- void usbip_dump_header(struct usbip_header *pdu);
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index 33ca04733e93..ecf789b7168c 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -1126,8 +1126,7 @@ static int init_threads(struct gfs2_sbd *sdp)
- 	return 0;
- 
- fail:
--	kthread_stop(sdp->sd_logd_process);
--	put_task_struct(sdp->sd_logd_process);
-+	kthread_stop_put(sdp->sd_logd_process);
- 	sdp->sd_logd_process = NULL;
- 	return error;
- }
-@@ -1135,13 +1134,11 @@ static int init_threads(struct gfs2_sbd *sdp)
- void gfs2_destroy_threads(struct gfs2_sbd *sdp)
- {
- 	if (sdp->sd_logd_process) {
--		kthread_stop(sdp->sd_logd_process);
--		put_task_struct(sdp->sd_logd_process);
-+		kthread_stop_put(sdp->sd_logd_process);
- 		sdp->sd_logd_process = NULL;
- 	}
- 	if (sdp->sd_quotad_process) {
--		kthread_stop(sdp->sd_quotad_process);
--		put_task_struct(sdp->sd_quotad_process);
-+		kthread_stop_put(sdp->sd_quotad_process);
- 		sdp->sd_quotad_process = NULL;
- 	}
- }
-diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-index 2c30ade43bc8..b11f53c1ba2e 100644
---- a/include/linux/kthread.h
-+++ b/include/linux/kthread.h
-@@ -86,6 +86,7 @@ void free_kthread_struct(struct task_struct *k);
- void kthread_bind(struct task_struct *k, unsigned int cpu);
- void kthread_bind_mask(struct task_struct *k, const struct cpumask *mask);
- int kthread_stop(struct task_struct *k);
-+int kthread_stop_put(struct task_struct *k);
- bool kthread_should_stop(void);
- bool kthread_should_park(void);
- bool kthread_should_stop_or_park(void);
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index d309ba84e08a..1782f90cd8c6 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1852,15 +1852,13 @@ __setup_irq(unsigned int irq, struct irq_desc *desc, struct irqaction *new)
- 		struct task_struct *t = new->thread;
- 
- 		new->thread = NULL;
--		kthread_stop(t);
--		put_task_struct(t);
-+		kthread_stop_put(t);
- 	}
- 	if (new->secondary && new->secondary->thread) {
- 		struct task_struct *t = new->secondary->thread;
- 
- 		new->secondary->thread = NULL;
--		kthread_stop(t);
--		put_task_struct(t);
-+		kthread_stop_put(t);
- 	}
- out_mput:
- 	module_put(desc->owner);
-@@ -1971,12 +1969,9 @@ static struct irqaction *__free_irq(struct irq_desc *desc, void *dev_id)
- 	 * the same bit to a newly requested action.
- 	 */
- 	if (action->thread) {
--		kthread_stop(action->thread);
--		put_task_struct(action->thread);
--		if (action->secondary && action->secondary->thread) {
--			kthread_stop(action->secondary->thread);
--			put_task_struct(action->secondary->thread);
--		}
-+		kthread_stop_put(action->thread);
-+		if (action->secondary && action->secondary->thread)
-+			kthread_stop_put(action->secondary->thread);
- 	}
- 
- 	/* Last action releases resources */
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index c46128ec0c0a..c4453181daf9 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -715,6 +715,23 @@ int kthread_stop(struct task_struct *k)
- }
- EXPORT_SYMBOL(kthread_stop);
- 
-+/**
-+ * kthread_stop_put - stop a thread and put its task struct
-+ *
-+ * Stops a thread created by kthread_create() and put its task_struct.
-+ * Only use when holding an extra task struct reference obtained by
-+ * calling get_task_struct().
-+ */
-+int kthread_stop_put(struct task_struct *k)
-+{
-+	int ret;
-+
-+	ret = kthread_stop(k);
-+	put_task_struct(k);
-+	return ret;
-+}
-+EXPORT_SYMBOL(kthread_stop_put);
-+
- int kthreadd(void *unused)
- {
- 	struct task_struct *tsk = current;
-diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-index f47d8f375946..1992b62e980b 100644
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -272,8 +272,7 @@ static void smpboot_destroy_threads(struct smp_hotplug_thread *ht)
- 		struct task_struct *tsk = *per_cpu_ptr(ht->store, cpu);
- 
- 		if (tsk) {
--			kthread_stop(tsk);
--			put_task_struct(tsk);
-+			kthread_stop_put(tsk);
- 			*per_cpu_ptr(ht->store, cpu) = NULL;
- 		}
- 	}
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index bcd2bd9d6c10..2f54f153d7f5 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -699,8 +699,7 @@ static int __damon_stop(struct damon_ctx *ctx)
- 	if (tsk) {
- 		get_task_struct(tsk);
- 		mutex_unlock(&ctx->kdamond_lock);
--		kthread_stop(tsk);
--		put_task_struct(tsk);
-+		kthread_stop_put(tsk);
- 		return 0;
- 	}
- 	mutex_unlock(&ctx->kdamond_lock);
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index f56b8d697014..826250a0f5b1 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -3982,8 +3982,7 @@ static void __net_exit pg_net_exit(struct net *net)
- 	list_for_each_safe(q, n, &list) {
- 		t = list_entry(q, struct pktgen_thread, th_list);
- 		list_del(&t->th_list);
--		kthread_stop(t->tsk);
--		put_task_struct(t->tsk);
-+		kthread_stop_put(t->tsk);
- 		kfree(t);
- 	}
- 
--- 
-2.40.1
+Best regards,
+Krzysztof
 
