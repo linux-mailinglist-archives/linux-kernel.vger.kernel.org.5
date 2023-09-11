@@ -2,154 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFCE79B88B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DAD79BE93
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242358AbjIKVHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
+        id S235401AbjIKWVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236556AbjIKK5G (ORCPT
+        with ESMTP id S236534AbjIKKzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:57:06 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A95F3;
-        Mon, 11 Sep 2023 03:57:01 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BAov3n011117;
-        Mon, 11 Sep 2023 10:56:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=BciqlRm1IXuJGPGGFANUuS6+s1Ocn2xvnDLrENlUd70=;
- b=YOtpL6iC9R4FChfnR4PXO2BcTiAkfs+JSz7WDX7bdwxDujJAOaPVpwCdzEskI2iNeE3/
- BB/jO0srmLAimGgKHXC0C3m4ojxb2/n9WVo6XSyPHBVjcTHd6f00y/mKRRgmsDTbnCir
- lexC1x0EK0yGaMW8do3vRBO9kLxY5Vg4AR/J5oK8RT/nf0zTbIDeNCqw93Yj/jjcN8Pp
- k8fYTPhmq8Qtu2L+BZeU/2LDvDngm3nK8OxEVfJcuLU9sp5EzP7CiqrlBmMx78nFmrpl
- JlWlk3PMlDgQQ5Vr326ubiX89FLXNGZwpySvgiPLru6HZm2jwKgiYTQffYDCOo2cokgj Cw== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmkqab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:56:31 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BAuUpG006543
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:56:30 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 11 Sep 2023 03:56:20 -0700
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-To:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_mojha@quicinc.com>,
-        Poovendhan Selvaraj <quic_poovendh@quicinc.com>
-Subject: [REBASE PATCH v5 15/17] firmware: scm: Modify only the download bits in TCSR register
-Date:   Mon, 11 Sep 2023 16:23:57 +0530
-Message-ID: <1694429639-21484-16-git-send-email-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
-References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
+        Mon, 11 Sep 2023 06:55:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BEFFF0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694429695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fBDznZ1NcY+7kTzOq5QgicLpSsWwk7CW2AB2TmBxpc8=;
+        b=Ov+WphyOECTU3yWjfXgiit/bYRRbkStobLFqg0FP0sJ7bhk28ClHdEwNETkEnHoRmDOmUn
+        MsT5LRKjLThBzGLQmxDDR5pAQqUntk73W0mg8OrEQBZqKmUSHcPNSE/OwYY53tRBP8DqWT
+        v+y7+uu0ttJlSiMBwqti4vNRaoBzIeM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-393-hYHPLJaKPSWdZzjZhVJEgQ-1; Mon, 11 Sep 2023 06:54:53 -0400
+X-MC-Unique: hYHPLJaKPSWdZzjZhVJEgQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3f5df65fa35so32211345e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:54:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694429692; x=1695034492;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fBDznZ1NcY+7kTzOq5QgicLpSsWwk7CW2AB2TmBxpc8=;
+        b=msXr3aEShmzfRuGMtK97EixAftLSLIEZ7t2yclcdmJc4iIfkVNlVQ8cmx55TiWdeZN
+         m3wWKXtCTfqMlRoL8e/C1envhE96BChDgmdoKq21lq8hH/ccHIu9JPv92jykaId4ay82
+         I3TMO+NNYMUvT9HvmNf66kA4TUaKefphXQqJc1iDjMeYQkbRfmmnq5olB8Pw0BFS6ME7
+         QCFKTO+nbbopUbbL8F+hHyPLItU9jgRMDhm/WwHOBvGXON0RPbqri++D1ieqLfi8aOG8
+         ojsfUvSoVTpAVXWxDrIhRn2eZaCUicY8aw0gKHB8zBlKSG2fTdOEQngfdR4iuK1on5gN
+         0u2w==
+X-Gm-Message-State: AOJu0Yz6zlhymCXhkuSfY0q8d+av+dY8UbkUPhcxHQXSt0wa8tJ6NG3T
+        QqAvvX9vFDSJQGivJeVIsyq4wMinougt6ohlsq4nw4bHnkLDCwaPHl2ND29SxshFke89hLphIjI
+        zoaHGNtlsdmYwTZ5Q3463CyCg
+X-Received: by 2002:a05:600c:249:b0:3fe:d630:f568 with SMTP id 9-20020a05600c024900b003fed630f568mr7717355wmj.39.1694429692722;
+        Mon, 11 Sep 2023 03:54:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF50YB7Ue7xxaZk2iNmJa1z42Fnq+Igzt0pM0794Ssr0+h60H9NLHrzlrwiAa8iMSfy1Kc54w==
+X-Received: by 2002:a05:600c:249:b0:3fe:d630:f568 with SMTP id 9-20020a05600c024900b003fed630f568mr7717347wmj.39.1694429692425;
+        Mon, 11 Sep 2023 03:54:52 -0700 (PDT)
+Received: from vschneid.remote.csb (anice-256-1-26-111.w86-203.abo.wanadoo.fr. [86.203.135.111])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c230900b003fe1a092925sm9598521wmo.19.2023.09.11.03.54.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 03:54:51 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] sched/rt: Make rt_rq->pushable_tasks updates drive
+ rto_mask
+In-Reply-To: <20230815142121.MoZplZUr@linutronix.de>
+References: <20230811112044.3302588-1-vschneid@redhat.com>
+ <20230815142121.MoZplZUr@linutronix.de>
+Date:   Mon, 11 Sep 2023 12:54:50 +0200
+Message-ID: <xhsmhpm2prnd1.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vE-OmmTlA0fMtTl4BcpSQY1pdiC7iSC8
-X-Proofpoint-GUID: vE-OmmTlA0fMtTl4BcpSQY1pdiC7iSC8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 malwarescore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110099
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Crashdump collection is based on the DLOAD bit of TCSR register.
-To retain other bits, we read the register and modify only the
-DLOAD bit as the other bits have their own significance.
+Ok, back to this :)
 
-Co-developed-by: Poovendhan Selvaraj <quic_poovendh@quicinc.com>
-Signed-off-by: Poovendhan Selvaraj <quic_poovendh@quicinc.com>
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 and IPQ5332
----
- drivers/firmware/qcom_scm.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+On 15/08/23 16:21, Sebastian Andrzej Siewior wrote:
+> What I still observe is:
+> - CPU0 is idle. CPU0 gets a task assigned from CPU1. That task receives
+>   a wakeup. CPU0 returns from idle and schedules the task.
+>   pull_rt_task() on CPU1 and sometimes on other CPU observe this, too.
+>   CPU1 sends irq_work to CPU0 while at the time rto_next_cpu() sees that
+>   has_pushable_tasks() return 0. That bit was cleared earlier (as per
+>   tracing).
+>
+> - CPU0 is idle. CPU0 gets a task assigned from CPU1. The task on CPU0 is
+>   woken up without an IPI (yay). But then pull_rt_task() decides that
+>   send irq_work and has_pushable_tasks() said that is has tasks left
+>   so=E2=80=A6.
+>   Now: rto_push_irq_work_func() run once once on CPU0, does nothing,
+>   rto_next_cpu() return CPU0 again and enqueues itself again on CPU0.
+>   Usually after the second or third round the scheduler on CPU0 makes
+>   enough progress to remove the task/ clear the CPU from mask.
+>
 
-diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-index 321133f0950d..5cacae63ee2a 100644
---- a/drivers/firmware/qcom_scm.c
-+++ b/drivers/firmware/qcom_scm.c
-@@ -5,6 +5,8 @@
- #include <linux/platform_device.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
- #include <linux/completion.h>
- #include <linux/cpumask.h>
- #include <linux/export.h>
-@@ -26,6 +28,14 @@
- static bool download_mode = IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MODE_DEFAULT);
- module_param(download_mode, bool, 0);
- 
-+#define SCM_HAS_CORE_CLK	BIT(0)
-+#define SCM_HAS_IFACE_CLK	BIT(1)
-+#define SCM_HAS_BUS_CLK		BIT(2)
-+
-+#define QCOM_DLOAD_MASK		GENMASK(5, 4)
-+#define QCOM_DLOAD_FULLDUMP	0x1
-+#define QCOM_DLOAD_NODUMP	0x0
-+
- struct qcom_scm {
- 	struct device *dev;
- 	struct clk *core_clk;
-@@ -440,6 +450,7 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
- 
- static void qcom_scm_set_download_mode(bool enable)
- {
-+	u32 val = enable ? QCOM_DLOAD_FULLDUMP : QCOM_DLOAD_NODUMP;
- 	bool avail;
- 	int ret = 0;
- 
-@@ -449,8 +460,9 @@ static void qcom_scm_set_download_mode(bool enable)
- 	if (avail) {
- 		ret = __qcom_scm_set_dload_mode(__scm->dev, enable);
- 	} else if (__scm->dload_mode_addr) {
--		ret = qcom_scm_io_writel(__scm->dload_mode_addr,
--				enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0);
-+		ret = qcom_scm_io_update_field(__scm->dload_mode_addr,
-+					       QCOM_DLOAD_MASK,
-+					       FIELD_PREP(QCOM_DLOAD_MASK, val));
- 	} else {
- 		dev_err(__scm->dev,
- 			"No available mechanism for setting download mode\n");
--- 
-2.7.4
+If CPU0 is selected for the push IPI, then we should have
+
+  rd->rto_cpu =3D=3D CPU0
+
+So per the
+
+  cpumask_next(rd->rto_cpu, rd->rto_mask);
+
+in rto_next_cpu(), it shouldn't be able to re-select itself.
+
+Do you have a simple enough reproducer I could use to poke at this?
+
+> I understand that there is a race and the CPU is cleared from rto_mask
+> shortly after checking. Therefore I would suggest to look at
+> has_pushable_tasks() before returning a CPU in rto_next_cpu() as I did
+> just to avoid the interruption which does nothing.
+>
+> For the second case the irq_work seems to make no progress. I don't see
+> any trace_events in hardirq, the mask is cleared outside hardirq (idle
+> code). The NEED_RESCHED bit is set for current therefore it doesn't make
+> sense to send irq_work to reschedule if the current already has this on
+> its agenda.
+>
+> So what about something like:
+>
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index 00e0e50741153..d963408855e25 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -2247,8 +2247,23 @@ static int rto_next_cpu(struct root_domain *rd)
+>
+>               rd->rto_cpu =3D cpu;
+>
+> -		if (cpu < nr_cpu_ids)
+> +		if (cpu < nr_cpu_ids) {
+> +			struct task_struct *t;
+> +
+> +			if (!has_pushable_tasks(cpu_rq(cpu)))
+> +				continue;
+> +
+
+IIUC that's just to plug the race between the CPU emptying its
+pushable_tasks list and it removing itself from the rto_mask - that looks
+fine to me.
+
+> +			rcu_read_lock();
+> +			t =3D rcu_dereference(rq->curr);
+> +			/* if (test_preempt_need_resched_cpu(cpu_rq(cpu))) */
+> +			if (test_tsk_need_resched(t)) {
+
+We need to make sure this doesn't cause us to loose IPIs we actually need.
+
+We do have a call to put_prev_task_balance() through entering __schedule()
+if the previous task is RT/DL, and balance_rt() can issue a push
+IPI, but AFAICT only if the previous task was the last DL task. So I don't
+think we can do this.
+
+> +				rcu_read_unlock();
+> +				continue;
+> +			}
+> +			rcu_read_unlock();
+> +
+>                       return cpu;
+> +		}
+>
+>               rd->rto_cpu =3D -1;
+>
+> Sebastian
 
