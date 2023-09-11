@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B12AD79C0BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D671479BCE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348304AbjIKVZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
+        id S1355449AbjIKV7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237500AbjIKMy1 (ORCPT
+        with ESMTP id S237508AbjIKMyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:54:27 -0400
+        Mon, 11 Sep 2023 08:54:44 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8C3E4B;
-        Mon, 11 Sep 2023 05:54:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97597E40;
+        Mon, 11 Sep 2023 05:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694436863; x=1725972863;
+  t=1694436880; x=1725972880;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tnx7Bflw7Y/aVGaG8EH0QBwqdgCKqxJb3mqsR3QL2Es=;
-  b=ipEenqZC/TbR4sspeEDz6DPiQH7eglzBAWTy0KtnvVno1wIb3IcZwGVF
-   DKpIwFdkeEE69H+yFAS/CCiPo+fo1RBXedZLPzxwoGljadGaS1+6X7nww
-   pqgxpsAGh1lsefVbii/JgN+YTZrl9yHpx2nsOxHk1lKG0P4ZOwHejMRog
-   3PSLllKj9S8VP/FRe0uNvWmbRQ0XQGlXKdodzbxGwnJVCp4xdH+EPRaf0
-   vYflbBgSCp/6FI68vcXa0nag3ewDsJ30f3BpYwscO3fOXBaEqYHtA5sGY
-   18ZMdCGXNe3RLXARK4SowECS1R+TFL+vPVr3HCwSLAA8gbDIprvj/c8kJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357511201"
+  bh=QCUHLcOIhxBRk27P/kLo+OYYTB7a6Wv3t3NHhSYLmJ0=;
+  b=gyuhulO1f4sSNWvKqFVmH51yb9CiwI0WX0vTlhOdWgZEkzRDh8i7oSUI
+   1HiI4MH5LzbH08Jlv96YouT0MWOVBEuA03qRfGoDE4Wfe03shkkf4vmmj
+   bjE1jNGb/c9u/ZxxxJvYxrzyjdbpr35vg2+vp97tehXw9JCNkd7LoAI2T
+   EZWKq1K2w365gAXnXvI0D5y8/hCRbY+7ub+CXWVpDJ02LEWoNz6VNxo1K
+   eZbrHc77ibTY91otw+Lcjg8Li0Xt7msRsQbLZCcsySLO0oz9d9KynZqSS
+   qWnov/S6qEfw5f5WQgfbOd9bJugrKROiUQrdrT32/2sJn7t0A1zLW7Sqv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357511257"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="357511201"
+   d="scan'208";a="357511257"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:54:22 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:54:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858304223"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858304426"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="858304223"
+   d="scan'208";a="858304426"
 Received: from mzarkov-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.36.200])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:54:16 -0700
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:54:34 -0700
 From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To:     Rob Herring <robh@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        linux-pci@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     3chas3@gmail.com, brking@us.ibm.com, ink@jurassic.park.msu.ru,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org
+Cc:     3chas3@gmail.com, brking@us.ibm.com, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, ink@jurassic.park.msu.ru,
         jejb@linux.ibm.com, kw@linux.com, linux-alpha@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-atm-general@lists.sourceforge.net,
-        linux-scsi@vger.kernel.org, lpieralisi@kernel.org,
-        martin.petersen@oracle.com, mattst88@gmail.com,
-        netdev@vger.kernel.org, richard.henderson@linaro.org,
-        toan@os.amperecomputing.com,
+        linux-scsi@vger.kernel.org, linux-sh@vger.kernel.org,
+        lpieralisi@kernel.org, martin.petersen@oracle.com,
+        mattst88@gmail.com, netdev@vger.kernel.org,
+        richard.henderson@linaro.org, toan@os.amperecomputing.com,
+        ysato@users.sourceforge.jp,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 2/6] sh: pci: Do PCI error check on own line
-Date:   Mon, 11 Sep 2023 15:53:50 +0300
-Message-Id: <20230911125354.25501-3-ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v3 4/6] PCI: Do error check on own line to split long if conditions
+Date:   Mon, 11 Sep 2023 15:53:52 +0300
+Message-Id: <20230911125354.25501-5-ilpo.jarvinen@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230911125354.25501-1-ilpo.jarvinen@linux.intel.com>
 References: <20230911125354.25501-1-ilpo.jarvinen@linux.intel.com>
@@ -73,41 +72,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of a if condition with a line split, use the usual error
-handling pattern with a separate variable to improve readability.
+Placing PCI error code check inside if condition usually results in
+need to split lines. Combined with additional conditions the if
+condition becomes messy.
+
+Convert to the usual error handling pattern with an additional variable
+to improve code readability. In addition, reverse the logic in
+pci_find_vsec_capability() to get rid of &&.
 
 No functional changes intended.
 
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 ---
- arch/sh/drivers/pci/common.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/pci/pci.c    | 9 ++++++---
+ drivers/pci/probe.c  | 6 +++---
+ drivers/pci/quirks.c | 6 +++---
+ 3 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/arch/sh/drivers/pci/common.c b/arch/sh/drivers/pci/common.c
-index 2fd2b77e12ce..f59e5b9a6a80 100644
---- a/arch/sh/drivers/pci/common.c
-+++ b/arch/sh/drivers/pci/common.c
-@@ -53,15 +53,16 @@ int __init pci_is_66mhz_capable(struct pci_channel *hose,
- 	unsigned short vid;
- 	int cap66 = -1;
- 	u16 stat;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 59c01d68c6d5..5e51e8bd5c13 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -732,15 +732,18 @@ u16 pci_find_vsec_capability(struct pci_dev *dev, u16 vendor, int cap)
+ {
+ 	u16 vsec = 0;
+ 	u32 header;
 +	int ret;
  
- 	pr_info("PCI: Checking 66MHz capabilities...\n");
+ 	if (vendor != dev->vendor)
+ 		return 0;
  
- 	for (pci_devfn = 0; pci_devfn < 0xff; pci_devfn++) {
- 		if (PCI_FUNC(pci_devfn))
- 			continue;
--		if (early_read_config_word(hose, top_bus, current_bus,
--					   pci_devfn, PCI_VENDOR_ID, &vid) !=
--		    PCIBIOS_SUCCESSFUL)
-+		ret = early_read_config_word(hose, top_bus, current_bus,
-+					     pci_devfn, PCI_VENDOR_ID, &vid);
+ 	while ((vsec = pci_find_next_ext_capability(dev, vsec,
+ 						     PCI_EXT_CAP_ID_VNDR))) {
+-		if (pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER,
+-					  &header) == PCIBIOS_SUCCESSFUL &&
+-		    PCI_VNDR_HEADER_ID(header) == cap)
++		ret = pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER, &header);
 +		if (ret != PCIBIOS_SUCCESSFUL)
- 			continue;
- 		if (vid == 0xffff)
- 			continue;
++			continue;
++
++		if (PCI_VNDR_HEADER_ID(header) == cap)
+ 			return vsec;
+ 	}
+ 
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index ab2a4a3a4c06..0ad440190a32 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1651,15 +1651,15 @@ static void pci_set_removable(struct pci_dev *dev)
+ static bool pci_ext_cfg_is_aliased(struct pci_dev *dev)
+ {
+ #ifdef CONFIG_PCI_QUIRKS
+-	int pos;
++	int pos, ret;
+ 	u32 header, tmp;
+ 
+ 	pci_read_config_dword(dev, PCI_VENDOR_ID, &header);
+ 
+ 	for (pos = PCI_CFG_SPACE_SIZE;
+ 	     pos < PCI_CFG_SPACE_EXP_SIZE; pos += PCI_CFG_SPACE_SIZE) {
+-		if (pci_read_config_dword(dev, pos, &tmp) != PCIBIOS_SUCCESSFUL
+-		    || header != tmp)
++		ret = pci_read_config_dword(dev, pos, &tmp);
++		if ((ret != PCIBIOS_SUCCESSFUL) || (header != tmp))
+ 			return false;
+ 	}
+ 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 5de09d2eb014..0d2e6b0f56cc 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5383,7 +5383,7 @@ int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
+  */
+ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
+ {
+-	int pos, i = 0;
++	int pos, i = 0, ret;
+ 	u8 next_cap;
+ 	u16 reg16, *cap;
+ 	struct pci_cap_saved_state *state;
+@@ -5429,8 +5429,8 @@ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
+ 		pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+ 
+ 		pdev->cfg_size = PCI_CFG_SPACE_EXP_SIZE;
+-		if (pci_read_config_dword(pdev, PCI_CFG_SPACE_SIZE, &status) !=
+-		    PCIBIOS_SUCCESSFUL || (status == 0xffffffff))
++		ret = pci_read_config_dword(pdev, PCI_CFG_SPACE_SIZE, &status);
++		if ((ret != PCIBIOS_SUCCESSFUL) || (status == 0xffffffff))
+ 			pdev->cfg_size = PCI_CFG_SPACE_SIZE;
+ 
+ 		if (pci_find_saved_cap(pdev, PCI_CAP_ID_EXP))
 -- 
 2.30.2
 
