@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8363E79C190
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D0C79C194
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbjILBUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        id S234499AbjILBVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234564AbjILBUB (ORCPT
+        with ESMTP id S234739AbjILBVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:20:01 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6769059D
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:39:24 -0700 (PDT)
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3ab244e7113so3572689b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 15:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1694471566; x=1695076366; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=vyG3UChShGVJO9DWooQ063oFbpwzovAkingO0YTtxfI=;
-        b=HRMIuoHkXChuW/mCQPKxDRiHUsWsx4hj51j6cqR3yYGUv5PLx6KuJEArpatC6KoQcq
-         jAnNat/CHB74YhMyApFrNyMXASu/Up4GjzRS1rLp5FSx0PLAY8jwlnZ9iB1kPk2TwOIj
-         FimlhqOMg7Uh7XlvNDPrAyzYqeFhgiym79K1M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694471566; x=1695076366;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vyG3UChShGVJO9DWooQ063oFbpwzovAkingO0YTtxfI=;
-        b=OTvgu5Vet1P0LBV5+z5PGFW4WaGs1snRcSDz+7Eh9GZOnz3BYmUvvx79NBk7BV37vA
-         Ai50QYSZysa4iZeTT9oH9CzixRHwx0eKKExF4uiuJZkV622jJp5OnH4tVfaqAqYiO1Gf
-         skB1u1IWTHeYeFUy/Iek/H5RrJzQOjluDbA+Ucch49F5PY45mcOX0xQHqFqvHvT2kxZf
-         I9G9rpjVKLy8VzfCXYwMDP/kiTXKL/Ucv7Lt4ajrgSHCb5tDJ994FvCHxZURV19Kx6ZT
-         ri4dLk9iAVBVuvSgy/rQmEr9630hgJv57zrk/YVTAnhAqyTlxc3YqJllJdmf+mwLAa+c
-         DbKw==
-X-Gm-Message-State: AOJu0YzWI9GfcktLDbqrLoDigzVnr7woGEGQRX9vZ3u+C1n8gxYk0v+1
-        lY+yS23PlLlgxli8gCShwXMtUA==
-X-Google-Smtp-Source: AGHT+IGNNzNZoTkPqBRBvBWifr5nO33Ye5UrwbovWJsNmOlq8W6uLmJ6fD/Xbsecw0HjypP7x1zI6g==
-X-Received: by 2002:aca:1a0d:0:b0:3a8:68a9:29d3 with SMTP id a13-20020aca1a0d000000b003a868a929d3mr10800812oia.19.1694471565811;
-        Mon, 11 Sep 2023 15:32:45 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id l10-20020aca190a000000b003a8715d7f9esm3658017oii.19.2023.09.11.15.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 15:32:45 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-From:   "Justin M. Forbes" <jforbes@fedoraproject.org>
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Justin M. Forbes" <jforbes@fedoraproject.org>
-Subject: [PATCH] tpm: Fix typo in tpmrm class definition
-Date:   Mon, 11 Sep 2023 17:32:37 -0500
-Message-ID: <20230911223238.3495955-1-jforbes@fedoraproject.org>
-X-Mailer: git-send-email 2.41.0
+        Mon, 11 Sep 2023 21:21:12 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9748810BF7F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:04:55 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BMaIDh005903;
+        Mon, 11 Sep 2023 22:38:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=E70P61/oVD66UlqVXZL0NZzpdFMigFyNdZGLIAd+Auk=;
+ b=j5EHaUVFU7uuAEcnafKcu/omLf4ts8NVPrPk5tKn6gbBO8cbdBl+U0dbJzRfJ3et9PHn
+ EKli1pWggWzX3cMM4ybz74U/C7t/mWAkEvL65/WcNKXRyXcuazvLVAin3ALM9XRCkjYY
+ amyHII64Yy/Wv5+JZhOWVr7CkPHRFUEiECQ8MOqIcXJzNNOV8ZdEoak8DJndIeLkaC6k
+ EiMYEK1WRtR6xtX+SLDOQ2RwxVjyQtPCh9qinJ2jj7G5PY68TDZUvBpsmBR1VUNwFcjy
+ WiMbUWBka0QvIl7cJUbM5ks9x1auQmjljYakr0xuyoEsenbwesowVa3r17UUqFgaujdC 8g== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2b6frt5p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 22:38:14 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BLRTcL012070;
+        Mon, 11 Sep 2023 22:38:13 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t13dyegh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 22:38:13 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BMcChO66322746
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Sep 2023 22:38:12 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6230A5806E;
+        Mon, 11 Sep 2023 22:38:12 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1686658072;
+        Mon, 11 Sep 2023 22:38:12 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Sep 2023 22:38:12 +0000 (GMT)
+From:   Ninad Palsule <ninad@linux.ibm.com>
+To:     jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
+        eajames@linux.ibm.com, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ninad Palsule <ninad@linux.ibm.com>
+Subject: [PATCH v2 1/2] fsi: sbefifo: Bump up user write cmd length
+Date:   Mon, 11 Sep 2023 17:38:08 -0500
+Message-Id: <20230911223809.3505431-2-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230911223809.3505431-1-ninad@linux.ibm.com>
+References: <20230911223809.3505431-1-ninad@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iRxb1VQcIcsrrCGnxkNQvnU0oEV2bzoq
+X-Proofpoint-ORIG-GUID: iRxb1VQcIcsrrCGnxkNQvnU0oEV2bzoq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_18,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 bulkscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 priorityscore=1501 suspectscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110207
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d2e8071bed0be ("tpm: make all 'class' structures const")
-unfortunately had a typo for the name on tpmrm.
+This commit increases user write limit for command length from 1MB to
+4MB. This is required to support images larger than 1MB.
 
-Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
-Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+As per 'commit 15e2a7218c27 ("fsi: sbefifo: Bump max command length")'
+the alternate solution is to break image into 1MB pieces by cronous
+server that means kernel driver needs to provide way to send end of
+message command once all pieces are transferred. This requires
+restructuring of both kernel driver and cronus server (application).
+Hence this commit chose to bump up cmd length to reduce code impact.
+
+Testing:
+  Loaded 3 MB image through cronus server.
+
+Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
 ---
- drivers/char/tpm/tpm-chip.c | 2 +-
+v2:
+  - Add the cmd length check back and changed it to 4MB
+---
+ drivers/fsi/fsi-sbefifo.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index 23f6f2eda84c..42b1062e33cd 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -33,7 +33,7 @@ const struct class tpm_class = {
- 	.shutdown_pre = tpm_class_shutdown,
- };
- const struct class tpmrm_class = {
--	.name = "tmprm",
-+	.name = "tpmrm",
- };
- dev_t tpm_devt;
-
+diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+index 9912b7a6a4b9..a95b32461f8f 100644
+--- a/drivers/fsi/fsi-sbefifo.c
++++ b/drivers/fsi/fsi-sbefifo.c
+@@ -113,7 +113,7 @@ enum sbe_state
+ #define SBEFIFO_TIMEOUT_IN_RSP		1000
+ 
+ /* Other constants */
+-#define SBEFIFO_MAX_USER_CMD_LEN	(0x100000 + PAGE_SIZE)
++#define SBEFIFO_MAX_USER_CMD_LEN       (0x400000 + PAGE_SIZE)
+ #define SBEFIFO_RESET_MAGIC		0x52534554 /* "RSET" */
+ 
+ struct sbefifo {
 -- 
-2.41.0
+2.39.2
 
