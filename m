@@ -2,205 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAB579AD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E70679AFBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354651AbjIKVyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S233042AbjIKUuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242602AbjIKPy3 (ORCPT
+        with ESMTP id S242645AbjIKQB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:54:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E5F1AB;
-        Mon, 11 Sep 2023 08:54:25 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 11 Sep 2023 12:01:27 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4878D1AE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:01:20 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 9CFDF100015;
+        Mon, 11 Sep 2023 19:01:17 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9CFDF100015
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694448077;
+        bh=MroP4rwnsamgJLJnZYVtPvV46wh4z7pTWxArWfdDHq4=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=QnKewWnmeMtPyX16ACf/TBj8I81H+/b99Mhbily/nj8kLg82A/FRFTfTbCVCs/P9q
+         3d5NkywuHl+yNWpd9+uO3lV9sfa1e/Mmv6YiVHeExm5kO9SvBgDQMmHNZ8IKWfa74S
+         oG0UNYNLBQ7+KA31uPIXA8wLaYfto2+anzaYjrqL9bSc7YqN8at/AUU26qpzyaljcy
+         18l52HVhXekxOVfb8B5QgxtWgEw+RCVaD9xtc5lbGFsk8vFULKWahqgoKtoWNeXyAl
+         LYhHVciV2wceJ3xaggB46hYM9TC9unTKwJeTWwt3+xp4yhx4lbv7OknHRnuOEfiSdW
+         JhjOSoLkLd0Xw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 61C656606F85;
-        Mon, 11 Sep 2023 16:54:22 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694447663;
-        bh=eWLSPASCjyGijVC47zrvGFOyHTG4k8kAENH0R7NxTcM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=UyUfrPOVxFRaJigHjAhHDgT1CbGBXybqfMEDdYaT3Hv2y4xqCxeNgrNq/JIXeZCus
-         HxU10jMMUA+9csM0/B2DoJGtwrkueHQgReK1bR27lL1TjoKVAY/xtCRdo+YHbyYxZF
-         MkaenK5FjSalz2bQXtzqc31ON5vGgD7iJFQyzMLL2f90Np2jTFlrlCB0gfJem9ffoY
-         S05FJUfDe5H9MQr73CuruZqS9aAIZ4CXQ6bf4gsQpC/iGdpNf6rkwuUTGQQBoJNc+K
-         6iQBCc+rSSr81habwkSz1reaM9LOUnRkAPeehadIIiV4x2MV0hioDvWmVoeR9ijV1n
-         KCrVd/15Hxh5w==
-Message-ID: <1df3e79b84933dda0313d0d9719220dbc06c9022.camel@collabora.com>
-Subject: Re: [PATCH 12/14] media: medkatek: vcodec: set secure mode to
- decoder driver
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
-        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Date:   Mon, 11 Sep 2023 11:54:14 -0400
-In-Reply-To: <20230911125936.10648-13-yunfei.dong@mediatek.com>
-References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
-         <20230911125936.10648-13-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Mon, 11 Sep 2023 19:01:17 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 11 Sep 2023 19:01:17 +0300
+Message-ID: <23fdbc3d-415b-32cd-988d-54c2dac43341@salutedevices.com>
+Date:   Mon, 11 Sep 2023 18:54:40 +0300
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
+Content-Language: en-US
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Johan Jonker <jbx6244@gmail.com>, <oxffffaa@gmail.com>,
+        <kernel@sberdevices.ru>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
+ <7ab06111-5208-77b2-0f09-0751de23ae66@salutedevices.com>
+ <20230911151110.09cf4c00@xps-13>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20230911151110.09cf4c00@xps-13>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179781 [Sep 11 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 06:02:00 #21866861
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9crit=C2=
-=A0:
-> Setting secure mode flag to kernel when trying to play secure video,
-> then decoder driver will initialize tee related interface to support
-> svp.
 
 
-This is not what the patch is doing, please rework. This patch is an vendor=
- API
-addition introducing V4L2_CID_MPEG_MTK_SET_SECURE_MODE. I should not have t=
-o
-read your patch to understand this.
+On 11.09.2023 16:11, Miquel Raynal wrote:
+> Hi Arseniy,
+> 
+> avkrasnov@salutedevices.com wrote on Mon, 11 Sep 2023 13:30:00 +0300:
+> 
+>> Please, ping
+> 
+> Please, -rc1 was tagged yesterday night...
 
->=20
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  .../vcodec/decoder/mtk_vcodec_dec_stateless.c     | 15 ++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c         |  5 +++++
->  include/uapi/linux/v4l2-controls.h                |  1 +
->  3 files changed, 20 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
-c_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_d=
-ec_stateless.c
-> index d2b09ce9f1cf..a981178c25d9 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> @@ -535,6 +535,17 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
->  		ctrl->val =3D mtk_dma_contig_get_secure_handle(ctx, ctrl->val);
->  		mtk_v4l2_vdec_dbg(3, ctx, "get secure handle: %d =3D> 0x%x", sec_fd, c=
-trl->val);
->  		break;
-> +	case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:
+Got it, thanks!
 
-Stepping back a little and focusing on the API, what makes your driver so
-special that it should be the only one having a "secure mode" ? We are touc=
-hing
-in gap in the media pipeline in Linux, and this should come with considerat=
-ion
-of the global API.
+Thanks, Arseniy
 
-Why is this API better then let's say Google Android one, were they expose =
-2
-device nodes in their fork of the MFC driver (a secure and a non secure one=
-) ?
-
-regards,
-Nicolas
-
-p.s. you forgot to document your control in the RST doc, please do in follo=
-wing
-release.
-
-> +		ctx->is_svp_mode =3D ctrl->val;
-> +
-> +		if (ctx->is_svp_mode) {
-> +			ret =3D mtk_vcodec_dec_optee_open(ctx->dev->optee_private);
-> +			if (ret)
-> +				mtk_v4l2_vdec_err(ctx, "open secure mode failed.");
-> +			else
-> +				mtk_v4l2_vdec_dbg(3, ctx, "decoder in secure mode: %d", ctrl->val);
-> +		}
-> +		break;
->  	default:
->  		mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl id: 0x%x\n", hdr_=
-ctrl->id);
->  		return ret;
-> @@ -573,7 +584,7 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcod=
-ec_dec_ctx *ctx)
->  	unsigned int i;
->  	struct v4l2_ctrl *ctrl;
-> =20
-> -	v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 1);
-> +	v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 2);
->  	if (ctx->ctrl_hdl.error) {
->  		mtk_v4l2_vdec_err(ctx, "v4l2_ctrl_handler_init failed\n");
->  		return ctx->ctrl_hdl.error;
-> @@ -592,6 +603,8 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcod=
-ec_dec_ctx *ctx)
-> =20
->  	ctrl =3D v4l2_ctrl_new_std(&ctx->ctrl_hdl, &mtk_vcodec_dec_ctrl_ops,
->  				 V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE, 0, 65535, 1, 0);
-> +	ctrl =3D v4l2_ctrl_new_std(&ctx->ctrl_hdl, &mtk_vcodec_dec_ctrl_ops,
-> +				 V4L2_CID_MPEG_MTK_SET_SECURE_MODE, 0, 65535, 1, 0);
-> =20
->  	v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
-> =20
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4=
-l2-core/v4l2-ctrls-defs.c
-> index d8cf01f76aab..a507045a3f30 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -1042,6 +1042,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES:	return "Reference Fram=
-es for a P-Frame";
->  	case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:		return "Prepend SPS an=
-d PPS to IDR";
->  	case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:		return "MediaTek Decoder get=
- secure handle";
-> +	case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:			return "MediaTek Decoder set =
-secure mode";
-> =20
->  	/* AV1 controls */
->  	case V4L2_CID_MPEG_VIDEO_AV1_PROFILE:			return "AV1 Profile";
-> @@ -1442,6 +1443,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enu=
-m v4l2_ctrl_type *type,
->  		*type =3D V4L2_CTRL_TYPE_INTEGER;
->  		*flags |=3D V4L2_CTRL_FLAG_WRITE_ONLY;
->  		break;
-> +	case V4L2_CID_MPEG_MTK_SET_SECURE_MODE:
-> +		*type =3D V4L2_CTRL_TYPE_INTEGER;
-> +		*flags |=3D V4L2_CTRL_FLAG_WRITE_ONLY;
-> +		break;
->  	case V4L2_CID_USER_CLASS:
->  	case V4L2_CID_CAMERA_CLASS:
->  	case V4L2_CID_CODEC_CLASS:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2=
--controls.h
-> index 7b3694985366..88e90d943e38 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -957,6 +957,7 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
->  /*  MPEG-class control IDs specific to the MediaTek Decoder driver as de=
-fined by V4L2 */
->  #define V4L2_CID_MPEG_MTK_BASE			(V4L2_CTRL_CLASS_CODEC | 0x2000)
->  #define V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE	(V4L2_CID_MPEG_MTK_BASE+8)
-> +#define V4L2_CID_MPEG_MTK_SET_SECURE_MODE	(V4L2_CID_MPEG_MTK_BASE+9)
-> =20
->  /*  Camera class control IDs */
-> =20
-
+> 
+>> Thanks, Arseniy
+>>
+>> On 23.08.2023 13:52, Arseniy Krasnov wrote:
+>>> This function is exported and its prototype is already placed in
+>>> include/linux/mtd/rawnand.h.
+>>>
+>>> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+>>> ---
+>>>  drivers/mtd/nand/raw/internals.h | 1 -
+>>>  1 file changed, 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+>>> index e9932da18bdd..b7162ced9efa 100644
+>>> --- a/drivers/mtd/nand/raw/internals.h
+>>> +++ b/drivers/mtd/nand/raw/internals.h
+>>> @@ -106,7 +106,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
+>>>  			       int oob_required, int page);
+>>>  int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
+>>>  				int oob_required, int page);
+>>> -int nand_exit_status_op(struct nand_chip *chip);
+>>>  int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
+>>>  			    unsigned int len);
+>>>  void nand_decode_ext_id(struct nand_chip *chip);
