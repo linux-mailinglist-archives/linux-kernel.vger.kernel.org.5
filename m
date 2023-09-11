@@ -2,216 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE59379BE05
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DB979BC79
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236898AbjIKUuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S1377621AbjIKW1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244358AbjIKUKq (ORCPT
+        with ESMTP id S244359AbjIKULM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 16:10:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2851185
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694463041; x=1725999041;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0xWLHe7NkDlXoKQHWTZn+No1mBECYYmu9UVDtprxQS8=;
-  b=U0fw7ksXEedxeKx4nKgRJgagQbYK1KbEdxbNt/oGyR4vkTcXO78uOsdh
-   uzeOyBuQ00rWjePYiXuGo2S0rUoE4zKQXLEAu48/5p+VZKPkCSPEFiRkj
-   bVJWd8by9Nwr/xka5/8cvJMf+uPiENpA6zXpRXTnMAp9RsOkfmazsVTAd
-   7KfLsGjsSvpR8VOsiezqpo3sk0K3ATroNGZkadvK6/9aYrL5IYYsFKtSg
-   iMrV7UUxXKwzU5L1M4jHajkBGizS/+C41Rx6EwQDV5BO96g2hBc/+qwgy
-   SnAFGkQGPP2iTOb/FYH1QH9h/bRVaMv4F/lIPjXXlTXvLRKT1ELMGDLco
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409152621"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="409152621"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 13:10:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746579510"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="746579510"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Sep 2023 13:10:39 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfnEz-0006gq-0z;
-        Mon, 11 Sep 2023 20:10:37 +0000
-Date:   Tue, 12 Sep 2023 04:09:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viktor Malik <vmalik@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: net/bpf/test_run.c:563:14: warning: no previous declaration for
- 'bpf_fentry_shadow_test'
-Message-ID: <202309120423.DpcjZ6lB-lkp@intel.com>
+        Mon, 11 Sep 2023 16:11:12 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB69CD;
+        Mon, 11 Sep 2023 13:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
+ s=s31663417; t=1694463047; x=1695067847; i=frank-w@public-files.de;
+ bh=HHmkmeHxY0x6YELBcMZPjeob1XxmshaXuwNwkwj92vI=;
+ h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:Referenc
+ es;
+ b=Iap7nAKROgCwPmgSJaT8FhHs91+z7oHAU69G6ls+/qVzqNoGrfyDZHaBLgx/H0FGpaKzJpR
+ LYFmccw0XPcDmlv15+9lVD5UaJxwg/yANyTP4UKS42eepBTNUqqvd2JWz7BEToMGHGDe13rAb
+ if4GTYf7GIrqXmfTvw9GSB21OHBjOjrcJZAHWdFK9sq7F4UrTeDynd7ctyNTxMyQTjd6ZUO2X
+ AYLgHe3grA1iXG1ve5r1xNUuVJRK6B2l+LCLSIFfa/Fn4g7BbAhXQX1jASr579QhyXL0SuTxH
+ O5Rq7DC9fU1oVHEF9udVIk3na59vHtsKw7k8n1kupn7etcgk+ipA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [127.0.0.1] ([217.61.151.158]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MbRfl-1q4Ghb3kSX-00bwPd; Mon, 11
+ Sep 2023 22:10:47 +0200
+Date:   Mon, 11 Sep 2023 22:10:46 +0200
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Wunderlich <linux@fw-web.de>
+CC:     linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v1=5D_arm64=3A_dts=3A_mt7986=3A_add_?= =?US-ASCII?Q?overlay_for_SATA_power_socket_on_BPI-R3?=
+User-Agent: K-9 Mail for Android
+Reply-to: frank-w@public-files.de
+In-Reply-To: <CAL_Jsq+f9bq5Mab9m1pzDeiw304TMeNDmJk+ofG6M8J9QD3cvQ@mail.gmail.com>
+References: <20230901072730.13571-1-linux@fw-web.de> <CAL_Jsq+f9bq5Mab9m1pzDeiw304TMeNDmJk+ofG6M8J9QD3cvQ@mail.gmail.com>
+Message-ID: <76060BF0-B432-4BB8-A5C8-39EFF3D628EA@public-files.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9L+xgTcJUdckurYVAOzn9vZIma2+w/AOEA09dsu3M0K0DzZShi7
+ VMW6t5/tANLoeS4Hinp4N/v7pvljhATwL/lTUV/rWrxw3eO9SLDmTwd/tyPbl4mZdG0reVe
+ FUUu7oR3lsutQgDwNwXNRkZOredEJ6fbpp0/IhKyC9+oGTFjX9rG/lwaJXUfDMbl/4z3J1g
+ q5ARG/5K+J9M6iOYXFHxg==
+UI-OutboundReport: notjunk:1;M01:P0:Ss/nr+jQw9E=;KQ95qghdY1pu9I5xgPu52kh2iwU
+ 5qVj231gP+5kSSXN4Z0SJ5EsFE2m0mpGMqEqdyxUsSFy8MIn3oCTG3z0OYRKlp7YK38y64GW2
+ DHLibRH5iTfl5rjCWTuw76PdbctbUkQmJ6E/76dzmMSoKSGrsjgDE1wz6BGYOVN9wK0TbGn5H
+ T05pICixPkzfU6ETBzAtcB3106/duTjXsDRdgG8cC1QTEUIKpHeBf5lYIN5Ts0dVH7hKu2OkT
+ ZCgaEejYh/XXOxckIX3S6AJH6cTWPEz2H7JwNb+swKSl66QrXb6Kg99U+IsrM+D91aqnF5dQD
+ N/6XMSdHuMzTjQ8BvEiqD+JxzETcvIrFKSCu6pEceRSeUaAtCRqLAjP26IL/Ap61MdmGSNynv
+ LfJlVGWdD6Y+4ba65zu2qecPGJ5Ij+51rXT9eICi5upd3z3mcn+Ur2mVDYGbSAfO9NT2/+KxQ
+ LMCVEGfG/fjVpE/zqVoxg1i1MZDwTSX8icHod80r5GyF265w81nz6pul4J+944YAPXtBfe7hS
+ 4X2hvFB7UZG8wvwPV3rBU6jYwRHb6I0faSayNUvkMn4ln0P+KVQ7spZ17tvlJB+ZkDYPmXjfX
+ 3nhH3+tkTnrWXQyihRESXgacVpkcfMfnSmLSudCDq8R9Lgk8eJ+m+gwvXDgVOjHERq17jF8oU
+ CJX1CJD+hcmw4JD2lBHOwujuJrqpapRh3T9eHRwRaVY259Jj/wcDi0fcpYrPMdHjoE1ep/0KB
+ Fjt5eI1tFaUoLFLeXyXL1cl34mAVpuNFhFqJtBcO0ngQ2311tgZX7UNm+ejJNep+3t53KucCb
+ FKtRgI09Dphvz/QhN6R7fySZcgavIFgYPcJssLFRsqSGNgEnMUwkLnY3LpkAW8iy4qgOiG9YY
+ N/SdjSjuMXbH76KKn5ty2cWu+zabHnhKu0Amqca77mvKJ36pwNGldiZznteKhiXTsX2lxtbBr
+ lD0MtA==
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: aa3d65de4b9004d799f97700751a86d3ebd7d5f9 bpf/selftests: Test fentry attachment to shadowed functions
-date:   6 months ago
-config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230912/202309120423.DpcjZ6lB-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120423.DpcjZ6lB-lkp@intel.com/reproduce)
+Am 11=2E September 2023 21:51:42 MESZ schrieb Rob Herring <robh+dt@kernel=
+=2Eorg>:
+>On Fri, Sep 1, 2023 at 2:27=E2=80=AFAM Frank Wunderlich <linux@fw-web=2Ed=
+e> wrote:
+>>
+>> From: Frank Wunderlich <frank-w@public-files=2Ede>
+>>
+>> Bananapi R3 has a Power socket entended for using external SATA drives=
+=2E
+>> This Socket is off by default but can be switched with gpio 8=2E
+>>
+>> Add an overlay to activate it=2E
+>>
+>> Signed-off-by: Frank Wunderlich <frank-w@public-files=2Ede>
+>> ---
+>>  arch/arm64/boot/dts/mediatek/Makefile         |  1 +
+>>  =2E=2E=2E/mt7986a-bananapi-bpi-r3-sata=2Edtso         | 39 +++++++++++=
+++++++++
+>>  2 files changed, 40 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt7986a-bananapi-bpi-r=
+3-sata=2Edtso
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dt=
+s/mediatek/Makefile
+>> index c99c3372a4b5=2E=2E822d3e36d3df 100644
+>> --- a/arch/arm64/boot/dts/mediatek/Makefile
+>> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+>> @@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi=
+-r3-emmc=2Edtbo
+>>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-nand=2Edtbo
+>>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-nor=2Edtbo
+>>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-sd=2Edtbo
+>> +dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt7986a-bananapi-bpi-r3-sata=2Edtbo
+>
+>The requirement for overlays is they have a target base dt in tree and
+>that you apply the overlay to it=2E All these existing overlays have the
+>same problem which I pointed out when you submitted them=2E Please fix
+>the existing ones before adding more=2E
+>
+>
+>Rob
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309120423.DpcjZ6lB-lkp@intel.com/
+Hi Rob,
 
-All warnings (new ones prefixed by >>):
+i do not understand the problem as there is a target base dt=2E=2E=2Emt798=
+6a-bananapi-bpi-r3=2Edtb=2E
 
-   net/bpf/test_run.c:489:17: warning: no previous declaration for 'bpf_fentry_test1' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_fentry_test1(int a)
-                    ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:495:14: warning: no previous declaration for 'bpf_fentry_test2' [-Wmissing-declarations]
-    int noinline bpf_fentry_test2(int a, u64 b)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:500:14: warning: no previous declaration for 'bpf_fentry_test3' [-Wmissing-declarations]
-    int noinline bpf_fentry_test3(char a, int b, u64 c)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:505:14: warning: no previous declaration for 'bpf_fentry_test4' [-Wmissing-declarations]
-    int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:510:14: warning: no previous declaration for 'bpf_fentry_test5' [-Wmissing-declarations]
-    int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:515:14: warning: no previous declaration for 'bpf_fentry_test6' [-Wmissing-declarations]
-    int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:524:14: warning: no previous declaration for 'bpf_fentry_test7' [-Wmissing-declarations]
-    int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:529:14: warning: no previous declaration for 'bpf_fentry_test8' [-Wmissing-declarations]
-    int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
-                 ^~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:534:17: warning: no previous declaration for 'bpf_modify_return_test' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_modify_return_test(int a, int *b)
-                    ^~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:540:17: warning: no previous declaration for 'bpf_kfunc_call_test1' [-Wmissing-declarations]
-    __bpf_kfunc u64 bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
-                    ^~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:545:17: warning: no previous declaration for 'bpf_kfunc_call_test2' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_kfunc_call_test2(struct sock *sk, u32 a, u32 b)
-                    ^~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:550:26: warning: no previous declaration for 'bpf_kfunc_call_test3' [-Wmissing-declarations]
-    __bpf_kfunc struct sock *bpf_kfunc_call_test3(struct sock *sk)
-                             ^~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:555:15: warning: no previous declaration for 'bpf_kfunc_call_test4' [-Wmissing-declarations]
-    long noinline bpf_kfunc_call_test4(signed char a, short b, int c, long d)
-                  ^~~~~~~~~~~~~~~~~~~~
->> net/bpf/test_run.c:563:14: warning: no previous declaration for 'bpf_fentry_shadow_test' [-Wmissing-declarations]
-    int noinline bpf_fentry_shadow_test(int a)
-                 ^~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:593:1: warning: no previous declaration for 'bpf_kfunc_call_test_acquire' [-Wmissing-declarations]
-    bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr)
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:600:1: warning: no previous declaration for 'bpf_kfunc_call_memb_acquire' [-Wmissing-declarations]
-    bpf_kfunc_call_memb_acquire(void)
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:606:18: warning: no previous declaration for 'bpf_kfunc_call_test_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:614:18: warning: no previous declaration for 'bpf_kfunc_call_memb_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_memb_release(struct prog_test_member *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:618:18: warning: no previous declaration for 'bpf_kfunc_call_memb1_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:631:18: warning: no previous declaration for 'bpf_kfunc_call_test_get_rdwr_mem' [-Wmissing-declarations]
-    __bpf_kfunc int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p,
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:637:18: warning: no previous declaration for 'bpf_kfunc_call_test_get_rdonly_mem' [-Wmissing-declarations]
-    __bpf_kfunc int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p,
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:648:18: warning: no previous declaration for 'bpf_kfunc_call_test_acq_rdonly_mem' [-Wmissing-declarations]
-    __bpf_kfunc int *bpf_kfunc_call_test_acq_rdonly_mem(struct prog_test_ref_kfunc *p,
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:654:18: warning: no previous declaration for 'bpf_kfunc_call_int_mem_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_int_mem_release(int *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:659:1: warning: no previous declaration for 'bpf_kfunc_call_test_kptr_get' [-Wmissing-declarations]
-    bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **pp, int a, int b)
-    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:707:18: warning: no previous declaration for 'bpf_kfunc_call_test_pass_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:711:18: warning: no previous declaration for 'bpf_kfunc_call_test_pass1' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:715:18: warning: no previous declaration for 'bpf_kfunc_call_test_pass2' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:719:18: warning: no previous declaration for 'bpf_kfunc_call_test_fail1' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_fail1(struct prog_test_fail1 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:723:18: warning: no previous declaration for 'bpf_kfunc_call_test_fail2' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_fail2(struct prog_test_fail2 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:727:18: warning: no previous declaration for 'bpf_kfunc_call_test_fail3' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_fail3(struct prog_test_fail3 *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:731:18: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_pass1' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_mem_len_pass1(void *mem, int mem__sz)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:735:18: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_fail1' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_mem_len_fail1(void *mem, int len)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:739:18: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_fail2' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_mem_len_fail2(u64 *mem, int len)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:743:18: warning: no previous declaration for 'bpf_kfunc_call_test_ref' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
-                     ^~~~~~~~~~~~~~~~~~~~~~~
-   net/bpf/test_run.c:748:18: warning: no previous declaration for 'bpf_kfunc_call_test_destructive' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_kfunc_call_test_destructive(void)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Do you mean that overlays should be merged with basedt at compiletime?
 
+We pack the base-dt and all overlays into one fit image and let uboot dyna=
+mically select the combination to apply=2E E=2Eg=2E check if emmc is availa=
+ble, if yes apply emmc overlay else the sd one,same for nand/nor=2E
 
-vim +/bpf_fentry_shadow_test +563 net/bpf/test_run.c
+Else i do not know *how* to fix as i don't see it as broken=2E
 
-   544	
- > 545	__bpf_kfunc int bpf_kfunc_call_test2(struct sock *sk, u32 a, u32 b)
-   546	{
-   547		return a + b;
-   548	}
-   549	
-   550	__bpf_kfunc struct sock *bpf_kfunc_call_test3(struct sock *sk)
-   551	{
-   552		return sk;
-   553	}
-   554	
-   555	long noinline bpf_kfunc_call_test4(signed char a, short b, int c, long d)
-   556	{
-   557		/* Provoke the compiler to assume that the caller has sign-extended a,
-   558		 * b and c on platforms where this is required (e.g. s390x).
-   559		 */
-   560		return (long)a + (long)b + (long)c + d;
-   561	}
-   562	
- > 563	int noinline bpf_fentry_shadow_test(int a)
-   564	{
-   565		return a + 1;
-   566	}
-   567	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+regards Frank
