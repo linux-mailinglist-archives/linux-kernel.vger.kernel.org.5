@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9CC79C2AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F8D79C2AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237309AbjILCXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S236239AbjILCXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237197AbjILCXa (ORCPT
+        with ESMTP id S237094AbjILCXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 22:23:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E7C13C454;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B796013C47C;
         Mon, 11 Sep 2023 18:47:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D8AC116A0;
-        Mon, 11 Sep 2023 21:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694468924;
-        bh=Ulze66Ad1d6zNhaVNx6J3lAT+v/UnU3+VUAUHHsD9Wc=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=Quy73ISD2M2qEMMOFwoDTOfqKWgeMvZcMQFXSXKIuhE2hLDYgvStxPxYrPkZaDemz
-         o1wiunENyCPPcicT/TzpaCcrxkDAJJdH+DiaqJGQ/tpvlaFGBex4MJ6pqOXf+/c+s2
-         hoit0GRyD/1ao9orNmCgLdqK7zP7knutRoCFOKMByajH9cG+xntFC3cHlL6gZwRTG+
-         yiVoQbL4OXgUtQIaeX/sK4bteLCRhOnKmg1S1nwHS00arQ5g11Tj4/Yux4a27Vy2zq
-         eah+eCA/AJjg8vEQ1vErPo/ufncYryDQxWotzDw8i1pU7sJ+e2eSI63to26gekFwfI
-         YXoTT1rs8InRQ==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 00:48:41 +0300
-Message-Id: <CVGF3OAVF2W6.3V99S2XAHPTHC@suppilovahvero>
-Cc:     <jmforbes@linuxtx.org>
-Subject: Re: [PATCH] Fix typo in tpmrm class definition
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Ivan Orlov" <ivan.orlov0322@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230908140629.2930150-1-jforbes@fedoraproject.org>
-In-Reply-To: <20230908140629.2930150-1-jforbes@fedoraproject.org>
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA5C7C116A4;
+        Mon, 11 Sep 2023 21:51:59 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 17:52:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ajay Kaher <akaher@vmware.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH] tracefs/eventfs: Use list_for_each_srcu() in
+ dcache_dir_open_wrapper()
+Message-ID: <20230911175215.7f3b89f0@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Sep 8, 2023 at 5:06 PM EEST, Justin M. Forbes wrote:
-> Commit d2e8071bed0be ("tpm: make all 'class' structures const")
-> unfortunately had a typo for the name on tpmrm.
->
-> Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
-> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> ---
->  drivers/char/tpm/tpm-chip.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 23f6f2eda84c..42b1062e33cd 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -33,7 +33,7 @@ const struct class tpm_class =3D {
->  	.shutdown_pre =3D tpm_class_shutdown,
->  };
->  const struct class tpmrm_class =3D {
-> -	.name =3D "tmprm",
-> +	.name =3D "tpmrm",
->  };
->  dev_t tpm_devt;
->
-> --=20
-> 2.41.0
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+The eventfs files list is protected by SRCU. In earlier iterations it was
+protected with just RCU, but because it needed to also call sleepable
+code, it had to be switch to SRCU. The dcache_dir_open_wrapper()
+list_for_each_rcu() was missed and did not get converted over to
+list_for_each_srcu(). That needs to be fixed.
 
-Thanks, I'll queue this up for rc2.
+Link: https://lore.kernel.org/linux-trace-kernel/20230911120053.ca82f545e7f46ea753deda18@kernel.org/
 
-BR, Jarkko
+Reported-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Fixes: 63940449555e7 ("eventfs: Implement eventfs lookup, read, open functions")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index f168aca45458..9f64e7332796 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -452,7 +452,8 @@ static int dcache_dir_open_wrapper(struct inode *inode, struct file *file)
+ 
+ 	ei = ti->private;
+ 	idx = srcu_read_lock(&eventfs_srcu);
+-	list_for_each_entry_rcu(ef, &ei->e_top_files, list) {
++	list_for_each_entry_srcu(ef, &ei->e_top_files, list,
++				 srcu_read_lock_held(&eventfs_srcu)) {
+ 		create_dentry(ef, dentry, false);
+ 	}
+ 	srcu_read_unlock(&eventfs_srcu, idx);
+-- 
+2.40.1
+
