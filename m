@@ -2,157 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326C079B6CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E9279BCCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356800AbjIKWEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
+        id S1359613AbjIKWSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236375AbjIKKbT (ORCPT
+        with ESMTP id S236386AbjIKKch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:31:19 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B0DE5F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:31:14 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-273d10d3df3so2488000a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1694428274; x=1695033074; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W/uIdUtu+7l5UMbKFZD59eNB3mb3PdH3zACB6TXRSY8=;
-        b=MEM6QiwKGi0DmPacJ752dEVd8lwz5z6RYNEtqqgE8tzQ1Xqj/JP3n8R5OHRndN9xjH
-         ClacmV87N/J2x54EpebbATZfgI9kCiGimmXM/THoqptXKA93Y719WTaLxpefKC4LSqIY
-         dMTHg3pQncgkpzf8Uc4WLsE1eagcrA2q4hdHIjjXQH50TbgqWv2rGSnfwBcx9dIcqQRZ
-         PQuFPKMt0Po7Cc2bEBmCW0AroIpLMhK2BmbIdLrlbtu60Yjpb3FQX6cK34E8ZUYHEpCo
-         bMX4BC0wBaKOWP0i9f+8DGBN1eWTd9I7OsL3X/NdRfrzSWSSnYtQT9fsND+k20nerAG4
-         d00g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694428274; x=1695033074;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W/uIdUtu+7l5UMbKFZD59eNB3mb3PdH3zACB6TXRSY8=;
-        b=Gggd90pnG0uRw++3XmZVAMyxIg3iaOt4AEfhmP1fKFwhLKddoNGVnzmMHDN7K0FcTU
-         oDDZ2W9tC87AH51/6kHSpEjU0+xPIZDxlFMVzDSVtExJrnS7pDiOMub1BQ32A6x1ey0N
-         Q/U590GI05cZvz4PZxVvhGffdGmD7nvtaIPI4OVL+h9Qn482pHW72Zep0pvznqqQUudb
-         odgB2/2P0ctk/8bBcx849UNLyO+43rkTHdekzpY2vTNkFWFVeCKcy27lXInpRNN5U+hO
-         UWZO2cHgRytMHyiiyntT6ESP0ySlVNQjGxKDOtX1rcHZvmXE481QZ5KssWd5XjUMq5hO
-         349w==
-X-Gm-Message-State: AOJu0YweY+7fWX0rdSrBeT+1+9H8YeH2CE1VbrUTf16OUIXRcKdgz45r
-        IbFji8Sxq7YKqQwQD/Kn/v7jlRfAbqKv2fqGQdNSQQ==
-X-Google-Smtp-Source: AGHT+IHZqqMaKWb42G94RFUbOIJRNKvkvFRzVoexrnn+glFoO9u6eRJUbV26Xq1UJ3sAdlXN4LMxSzxm4IvxlQzoXco=
-X-Received: by 2002:a17:90b:1488:b0:268:ac99:4bb4 with SMTP id
- js8-20020a17090b148800b00268ac994bb4mr7192497pjb.46.1694428273778; Mon, 11
- Sep 2023 03:31:13 -0700 (PDT)
+        Mon, 11 Sep 2023 06:32:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A6F3120
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694428306;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=scL+PN7rvFW0rRtuvyrop8LP1MAlxFU5fgMf6KSanRA=;
+        b=BYgJ8S/7aluC2EL4MIos0W/eh+Tdcm+5FgV2saBF1+/y1Uh+t4+mliikjaRdoPky2Xmoo1
+        RL+5AA0Rp6U583CXYqtZsm1hCbvqeHWwPXw9rHOO5i+lJBlKru2bRyVXX3U0TaOLtOmsKx
+        QMIBijMKBhv9d21YbrLm7rKh/Wvnc0E=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-630-bOa0vEtiPUa0zpz8zjb7vQ-1; Mon, 11 Sep 2023 06:31:44 -0400
+X-MC-Unique: bOa0vEtiPUa0zpz8zjb7vQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 662A5382254A;
+        Mon, 11 Sep 2023 10:31:44 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4FB1F40C200A;
+        Mon, 11 Sep 2023 10:31:42 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 18:31:39 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Hari Bathini <hbathini@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Dave Young <dyoung@redhat.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>
+Subject: Re: [PATCH v2 2/3] vmcore: allow fadump to export vmcore even if
+ is_kdump_kernel() is false
+Message-ID: <ZP7si3UMVpPfYV+w@MiWiFi-R3L-srv>
+References: <20230905183604.568996-1-hbathini@linux.ibm.com>
+ <20230905183604.568996-2-hbathini@linux.ibm.com>
+ <8734zltc6z.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <20230831101513.2042773-1-Naresh.Solanki@9elements.com> <0b7cb454-4c31-569c-7609-7931e6fb798a@linaro.org>
-In-Reply-To: <0b7cb454-4c31-569c-7609-7931e6fb798a@linaro.org>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Mon, 11 Sep 2023 16:01:03 +0530
-Message-ID: <CABqG17g8QOgU7cObe=4EMLbEC1PeZWxdPXt7zzFs35JGqpRbfg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: i2c: Add custom properties for MAX7357/MAX7358
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Peter Rosin <peda@axentia.se>, Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8734zltc6z.fsf@mail.lhotse>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On Thu, 31 Aug 2023 at 17:33, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 31/08/2023 12:15, Naresh Solanki wrote:
-> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> >
-> > Both chips have a configuration register to enable additional
-> > features. These features aren't enabled by default & it's up to
-> > board designer to enable the same.
-> >
-> > Add booleans for:
-> >  - maxim,isolate-stuck-channel
-> >  - maxim,send-flush-out-sequence
-> >  - maxim,preconnection-wiggle-test-enable
-> >
-> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->
-> Subject: still did not improve. You waited exactly 30 minutes for my
-> feedback after sending your response.
-Will update the subject prefix to: 'dt-bindings: i2c: pca954x:'
-Also I'm adding three properties here so I guess 'Add custom
-properties..' should be fine.
-If you have a better suggestion then please let me know.
-
->
->
->
-> > ---
-> > Changes in V2:
-> > - Update properties.
-> > ---
-> >  .../bindings/i2c/i2c-mux-pca954x.yaml         | 31 +++++++++++++++++++
-> >  1 file changed, 31 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> > index 2d7bb998b0e9..fa73eadfdf7b 100644
-> > --- a/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> > +++ b/Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-> > @@ -71,6 +71,23 @@ properties:
-> >      description: A voltage regulator supplying power to the chip. On PCA9846
-> >        the regulator supplies power to VDD2 (core logic) and optionally to VDD1.
-> >
-> > +  maxim,isolate-stuck-channel:
-> > +    type: boolean
-> > +    description: Allows to use non faulty channels while a stuck channel is
-> > +      isolated from the upstream bus. If not set all channels are isolated from
-> > +      the upstream bus until the fault is cleared.
->
-> Nothing improved here. As I said, please provide arguments or drop this
-> property.
-These features cannot be enabled by default because doing so may lead
-to unexpected behavior, such as bus disconnections(although that
-wasn't expected).
-These features should only be enabled after they have been validated
-by the board designer.
-Therefore, they cannot be enabled by default.
-
-Regards,
-Naresh
->
+On 09/11/23 at 05:13pm, Michael Ellerman wrote:
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+> > Currently, is_kdump_kernel() returns true when elfcorehdr_addr is set.
+> > While elfcorehdr_addr is set for kexec based kernel dump mechanism,
+> > alternate dump capturing methods like fadump [1] also set it to export
+> > the vmcore. Since, is_kdump_kernel() is used to restrict resources in
+> > crash dump capture kernel and such restrictions are not desirable for
+> > fadump, allow is_kdump_kernel() to be defined differently for fadump
+> > case. With that change, include is_fadump_active() check in functions
+> > is_vmcore_usable() & vmcore_unusable() to be able to export vmcore for
+> > fadump case too.
+> ...
+> > diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+> > index 0f3a656293b0..de8a9fabfb6f 100644
+> > --- a/include/linux/crash_dump.h
+> > +++ b/include/linux/crash_dump.h
+> > @@ -50,6 +50,7 @@ void vmcore_cleanup(void);
+> >  #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
+> >  #endif
+> >  
+> > +#ifndef is_kdump_kernel
+> >  /*
+> >   * is_kdump_kernel() checks whether this kernel is booting after a panic of
+> >   * previous kernel or not. This is determined by checking if previous kernel
+> > @@ -64,6 +65,19 @@ static inline bool is_kdump_kernel(void)
+> >  {
+> >  	return elfcorehdr_addr != ELFCORE_ADDR_MAX;
+> >  }
+> > +#endif
 > > +
-> > +  maxim,send-flush-out-sequence:
-> > +    type: boolean
-> > +    description: Send a flush-out sequence to stuck auxiliary buses
-> > +      automatically after a stuck channel is being detected.
->
-> Ditto
->
-> > +
-> > +  maxim,preconnection-wiggle-test-enable:
-> > +    type: boolean
-> > +    description: Send a STOP condition to the auxiliary buses when the switch
-> > +      register activates a channel to detect a stuck high fault. On fault the
-> > +      channel is isolated from the upstream bus.
->
-> Ditto
->
->
-> Best regards,
-> Krzysztof
->
+> > +#ifndef is_fadump_active
+> > +/*
+> > + * If f/w assisted dump capturing mechanism (fadump), instead of kexec based
+> > + * dump capturing mechanism (kdump) is exporting the vmcore, then this function
+> > + * will be defined in arch specific code to return true, when appropriate.
+> > + */
+> > +static inline bool is_fadump_active(void)
+> > +{
+> > +	return false;
+> > +}
+> > +#endif
+> >  
+> >  /* is_vmcore_usable() checks if the kernel is booting after a panic and
+> >   * the vmcore region is usable.
+> > @@ -75,7 +89,8 @@ static inline bool is_kdump_kernel(void)
+> >  
+> >  static inline int is_vmcore_usable(void)
+> >  {
+> > -	return is_kdump_kernel() && elfcorehdr_addr != ELFCORE_ADDR_ERR ? 1 : 0;
+> > +	return (is_kdump_kernel() || is_fadump_active())
+> > +		&& elfcorehdr_addr != ELFCORE_ADDR_ERR ? 1 : 0;
+> >  }
+> >  
+> >  /* vmcore_unusable() marks the vmcore as unusable,
+> > @@ -84,7 +99,7 @@ static inline int is_vmcore_usable(void)
+> >  
+> >  static inline void vmcore_unusable(void)
+> >  {
+> > -	if (is_kdump_kernel())
+> > +	if (is_kdump_kernel() || is_fadump_active())
+> >  		elfcorehdr_addr = ELFCORE_ADDR_ERR;
+> >  }
+> 
+> I think it would be cleaner to decouple is_vmcore_usable() and
+> vmcore_usable() from is_kdump_kernel().
+> 
+> ie, make them operate solely based on the value of elforehdr_addr:
+> 
+> static inline int is_vmcore_usable(void)
+> {
+> 	elfcorehdr_addr != ELFCORE_ADDR_ERR && \
+> 		elfcorehdr_addr != ELFCORE_ADDR_MAX;
+
+Agree. I fell into the blind corner of thinking earlier. Above change
+is better.
+
+> }
+> 
+> static inline void vmcore_unusable(void)
+> {
+> 	elfcorehdr_addr = ELFCORE_ADDR_ERR;
+> }
+> 
+> 
+> Then all we need on powerpc is a way to override is_kdump_kernel().
+> 
+> cheers
+> 
+
