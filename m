@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF479B5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D81F79B4D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353676AbjIKVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
+        id S1350281AbjIKVgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236146AbjIKJvg (ORCPT
+        with ESMTP id S236161AbjIKJwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:51:36 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAB5E4A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:51:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1befe39630bso9371335ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:51:30 -0700 (PDT)
+        Mon, 11 Sep 2023 05:52:03 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763ECE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:51:38 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-273e3d8b57aso548858a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425890; x=1695030690; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694425898; x=1695030698; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CZ/9E5fVY8FPsUp4wjjHgLtQNfwCba8B+s0lf1gVAsM=;
-        b=BJoxDX3nlaOw49gQ8vg3wMQxRI1dCYp5UxKdwwVqZVAyNiq08pzXeQXtAXE2H0g+rk
-         hmLTxHhmFxhl/85sisUQoJCoDGe/xPVm9VPCOfgDRZeh/qMERZ1SA8aVyr863uSWW0W5
-         AecMzaYeHpWzj0pGZ40UId4HbbRl1fyGS+p0nggDWDxGFGEMU/M88vz6pwDsKjevwMg+
-         4u3m5l4NiPWKA0SXgwOLY8q/XyLmkeoBPZn6au3942ecv3bLoCjAMAuGrVnhwRDnItE4
-         hjWNE+H0pLdjWw1w7NFrXZwJ6OJEe+zK7w4HWoEIjSjrjRdl/6eGm6M+PXLghDExZy9U
-         fOYA==
+        bh=02oN8W08zjTxUZl21U6+DV55wPZPOOOcomDUkgbjeeM=;
+        b=eb2NCWfziWPjr3d/T+ODGwOVe4Nh+Tj0dozANXldfp23HfwIbQ6T3iNc7oTNwUWztZ
+         M+RLbFRPJSBvdaZ2B4+Oo2IacG7D2kokrlxdd9ygstNr0+jIQOLN9/yZ7yj3n7xp9yJ6
+         JjAO1V++EQNwUjZjqpfqn9eSH9gYguwrhYlkCyO1KLzt6M15thI6sov60Iqow5pJI0Zl
+         3Oahb4E3IqtGvGYXLpmRllLyF6SCXcNUx9aaa71EGqa6MfEkXkehq5PDlQliCvvy2LVq
+         edP/UJ8VZaHbluN1YeXZWv0AEtg011meG8MwdZBekch9w73yM/cdOEE3Bwx7t5c4rgZD
+         8PlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425890; x=1695030690;
+        d=1e100.net; s=20230601; t=1694425898; x=1695030698;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CZ/9E5fVY8FPsUp4wjjHgLtQNfwCba8B+s0lf1gVAsM=;
-        b=bOykxrhCHdf7AB8q9ToTUOf1qDLdKS02uvaJ67Jmw7pVnZXEwt95hJ1DWqsONbNerB
-         QXLgsWHxNuor98+nuvo33PId7LRc0NeKZZ/BBS/sO1f6e8ZoF+OkxBTFCCq6uvcG4Xql
-         xSEnpBWtTAsTOUdvCtq4RX8ifN30TBCGimq1w6icgNMNq/P98sdfvTtlwzBRgRGCsy7j
-         OuADwZS4xCmjUfsL1pMevhquCtr0CHuAOrZNuSdNYHW3rDLiziuLckkn7hP/Apu05e8x
-         yGxtXbYy9KOj//zXIBsZYY1JPw5lWdNDkkFFx0iG7jL7yyFHEdDyJpPi7h0buoAdCKA7
-         axXg==
-X-Gm-Message-State: AOJu0Yxww1oRsnM2R4yQ+BiunDgrz8ueLCDGbyY+ytanrkjclUjdQJf0
-        la3UvHi7N6WnDVlxx5q81DiJo9yxCd7ifgUCkYE=
-X-Google-Smtp-Source: AGHT+IHVmg0SPBTxibarM4Nfz7v4+7j0jTley3X4jyAk2nq0f4+4LMApDrslEJNjDGHU4l29lE3i3A==
-X-Received: by 2002:a17:902:d645:b0:1c3:c687:478a with SMTP id y5-20020a170902d64500b001c3c687478amr334044plh.2.1694425889725;
-        Mon, 11 Sep 2023 02:51:29 -0700 (PDT)
+        bh=02oN8W08zjTxUZl21U6+DV55wPZPOOOcomDUkgbjeeM=;
+        b=PzOyViQIMFhQ5azbLGkfnYzKmP1jL5wRAmsRxdV9BpX6GFltih2z4IN/pVwZaQAPqb
+         07Z1ModvV3EziTL8gn4abE+oO0FFrxjg9jZ4OxvmOw8Mp2mCxhvdk4x+tzgDcdtTwVaU
+         Wh05oCX4siiwZGlD1FqS0/E9rnuWk2Wj0HFxQnvVysaSot52NHqlNPRcyQIb84PIQJj5
+         DY9xlO0kMZqC/E1Hhqbd4kvLsDwrIlyJX+tMtZ/+rGObvVSflHr1AeP/GmN6Nutof22t
+         OXvEkcJWFGBOuM3eoga43cbFz1Y+xFAe0Ti3eNuycWMNf+Tw8GAp6T70zyJiH+TngtKO
+         TXyA==
+X-Gm-Message-State: AOJu0Yx4ulRdlPqcb+HZBrw/ZJ6G2iqC6ARg17oRxDmvNdq8vyVxmlW+
+        8FUGI7VkG+Z1xT1nAmXJxkT98A==
+X-Google-Smtp-Source: AGHT+IH97cG96KOmpoktz2XA7SklxuW0ceeXqXRZ1DysovZgTlaqQRndvB65TuUAaXsE5amMaJ1n9w==
+X-Received: by 2002:a05:6a21:6da4:b0:137:3941:17b3 with SMTP id wl36-20020a056a216da400b00137394117b3mr12294593pzb.6.1694425897928;
+        Mon, 11 Sep 2023 02:51:37 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.51.22
+        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:51:29 -0700 (PDT)
+        Mon, 11 Sep 2023 02:51:37 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -60,9 +60,9 @@ To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
         Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v6 42/45] mm: shrinker: make global slab shrink lockless
-Date:   Mon, 11 Sep 2023 17:44:41 +0800
-Message-Id: <20230911094444.68966-43-zhengqi.arch@bytedance.com>
+Subject: [PATCH v6 43/45] mm: shrinker: make memcg slab shrink lockless
+Date:   Mon, 11 Sep 2023 17:44:42 +0800
+Message-Id: <20230911094444.68966-44-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
 References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
@@ -70,306 +70,255 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The shrinker_rwsem is a global read-write lock in shrinkers subsystem,
-which protects most operations such as slab shrink, registration and
-unregistration of shrinkers, etc. This can easily cause problems in the
-following cases.
+Like global slab shrink, this commit also uses refcount+RCU method to make
+memcg slab shrink lockless.
 
-1) When the memory pressure is high and there are many filesystems
-   mounted or unmounted at the same time, slab shrink will be affected
-   (down_read_trylock() failed).
+Use the following script to do slab shrink stress test:
 
-   Such as the real workload mentioned by Kirill Tkhai:
+```
 
-   ```
-   One of the real workloads from my experience is start
-   of an overcommitted node containing many starting
-   containers after node crash (or many resuming containers
-   after reboot for kernel update). In these cases memory
-   pressure is huge, and the node goes round in long reclaim.
-   ```
+DIR="/root/shrinker/memcg/mnt"
 
-2) If a shrinker is blocked (such as the case mentioned
-   in [1]) and a writer comes in (such as mount a fs),
-   then this writer will be blocked and cause all
-   subsequent shrinker-related operations to be blocked.
+do_create()
+{
+    mkdir -p /sys/fs/cgroup/memory/test
+    echo 4G > /sys/fs/cgroup/memory/test/memory.limit_in_bytes
+    for i in `seq 0 $1`;
+    do
+        mkdir -p /sys/fs/cgroup/memory/test/$i;
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        mkdir -p $DIR/$i;
+    done
+}
 
-Even if there is no competitor when shrinking slab, there may still be a
-problem. The down_read_trylock() may become a perf hotspot with frequent
-calls to shrink_slab(). Because of the poor multicore scalability of
-atomic operations, this can lead to a significant drop in IPC
-(instructions per cycle).
+do_mount()
+{
+    for i in `seq $1 $2`;
+    do
+        mount -t tmpfs $i $DIR/$i;
+    done
+}
 
-We used to implement the lockless slab shrink with SRCU [2], but then
-kernel test robot reported -88.8% regression in
-stress-ng.ramfs.ops_per_sec test case [3], so we reverted it [4].
+do_touch()
+{
+    for i in `seq $1 $2`;
+    do
+        echo $$ > /sys/fs/cgroup/memory/test/$i/cgroup.procs;
+        dd if=/dev/zero of=$DIR/$i/file$i bs=1M count=1 &
+    done
+}
 
-This commit uses the refcount+RCU method [5] proposed by Dave Chinner
-to re-implement the lockless global slab shrink. The memcg slab shrink is
-handled in the subsequent patch.
+case "$1" in
+  touch)
+    do_touch $2 $3
+    ;;
+  test)
+    do_create 4000
+    do_mount 0 4000
+    do_touch 0 3000
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+```
 
-For now, all shrinker instances are converted to dynamically allocated and
-will be freed by call_rcu(). So we can use rcu_read_{lock,unlock}() to
-ensure that the shrinker instance is valid.
+Save the above script, then run test and touch commands. Then we can use
+the following perf command to view hotspots:
 
-And the shrinker instance will not be run again after unregistration. So
-the structure that records the pointer of shrinker instance can be safely
-freed without waiting for the RCU read-side critical section.
-
-In this way, while we implement the lockless slab shrink, we don't need to
-be blocked in unregister_shrinker().
-
-The following are the test results:
-
-stress-ng --timeout 60 --times --verify --metrics-brief --ramfs 9 &
+perf top -U -F 999
 
 1) Before applying this patchset:
 
-setting to a 60 second run per stressor
-dispatching hogs: 9 ramfs
-stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
-                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
-ramfs            473062     60.00      8.00    279.13      7884.12        1647.59
-for a 60.01s run time:
-   1440.34s available CPU time
-      7.99s user time   (  0.55%)
-    279.13s system time ( 19.38%)
-    287.12s total time  ( 19.93%)
-load average: 7.12 2.99 1.15
-successful run completed in 60.01s (1 min, 0.01 secs)
+  33.15%  [kernel]          [k] down_read_trylock
+  25.38%  [kernel]          [k] shrink_slab
+  21.75%  [kernel]          [k] up_read
+   4.45%  [kernel]          [k] _find_next_bit
+   2.27%  [kernel]          [k] do_shrink_slab
+   1.80%  [kernel]          [k] intel_idle_irq
+   1.79%  [kernel]          [k] shrink_lruvec
+   0.67%  [kernel]          [k] xas_descend
+   0.41%  [kernel]          [k] mem_cgroup_iter
+   0.40%  [kernel]          [k] shrink_node
+   0.38%  [kernel]          [k] list_lru_count_one
 
 2) After applying this patchset:
 
-setting to a 60 second run per stressor
-dispatching hogs: 9 ramfs
-stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
-                          (secs)    (secs)    (secs)   (real time) (usr+sys time)
-ramfs            477165     60.00      8.13    281.34      7952.55        1648.40
-for a 60.01s run time:
-   1440.33s available CPU time
-      8.12s user time   (  0.56%)
-    281.34s system time ( 19.53%)
-    289.46s total time  ( 20.10%)
-load average: 6.98 3.03 1.19
-successful run completed in 60.01s (1 min, 0.01 secs)
+  64.56%  [kernel]          [k] shrink_slab
+  12.18%  [kernel]          [k] do_shrink_slab
+   3.30%  [kernel]          [k] __rcu_read_unlock
+   2.61%  [kernel]          [k] shrink_lruvec
+   2.49%  [kernel]          [k] __rcu_read_lock
+   1.93%  [kernel]          [k] intel_idle_irq
+   0.89%  [kernel]          [k] shrink_node
+   0.81%  [kernel]          [k] mem_cgroup_iter
+   0.77%  [kernel]          [k] mem_cgroup_calculate_protection
+   0.66%  [kernel]          [k] list_lru_count_one
 
-We can see that the ops/s has hardly changed.
-
-[1]. https://lore.kernel.org/lkml/20191129214541.3110-1-ptikhomirov@virtuozzo.com/
-[2]. https://lore.kernel.org/lkml/20230313112819.38938-1-zhengqi.arch@bytedance.com/
-[3]. https://lore.kernel.org/lkml/202305230837.db2c233f-yujie.liu@intel.com/
-[4]. https://lore.kernel.org/all/20230609081518.3039120-1-qi.zheng@linux.dev/
-[5]. https://lore.kernel.org/lkml/ZIJhou1d55d4H1s0@dread.disaster.area/
+We can see that the first perf hotspot becomes shrink_slab, which is what
+we expect.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 ---
- include/linux/shrinker.h | 24 +++++++++++
- mm/shrinker.c            | 89 ++++++++++++++++++++++++++++++----------
- 2 files changed, 92 insertions(+), 21 deletions(-)
+ mm/shrinker.c | 85 +++++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 66 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-index eb342994675a..4908109d924f 100644
---- a/include/linux/shrinker.h
-+++ b/include/linux/shrinker.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/atomic.h>
- #include <linux/types.h>
-+#include <linux/refcount.h>
-+#include <linux/completion.h>
- 
- #define SHRINKER_UNIT_BITS	BITS_PER_LONG
- 
-@@ -87,6 +89,17 @@ struct shrinker {
- 	int seeks;	/* seeks to recreate an obj */
- 	unsigned flags;
- 
-+	/*
-+	 * The reference count of this shrinker. Registered shrinker have an
-+	 * initial refcount of 1, then the lookup operations are now allowed
-+	 * to use it via shrinker_try_get(). Later in the unregistration step,
-+	 * the initial refcount will be discarded, and will free the shrinker
-+	 * asynchronously via RCU after its refcount reaches 0.
-+	 */
-+	refcount_t refcount;
-+	struct completion done;	/* use to wait for refcount to reach 0 */
-+	struct rcu_head rcu;
-+
- 	void *private_data;
- 
- 	/* These are for internal use */
-@@ -120,6 +133,17 @@ struct shrinker *shrinker_alloc(unsigned int flags, const char *fmt, ...);
- void shrinker_register(struct shrinker *shrinker);
- void shrinker_free(struct shrinker *shrinker);
- 
-+static inline bool shrinker_try_get(struct shrinker *shrinker)
-+{
-+	return refcount_inc_not_zero(&shrinker->refcount);
-+}
-+
-+static inline void shrinker_put(struct shrinker *shrinker)
-+{
-+	if (refcount_dec_and_test(&shrinker->refcount))
-+		complete(&shrinker->done);
-+}
-+
- #ifdef CONFIG_SHRINKER_DEBUG
- extern int __printf(2, 3) shrinker_debugfs_rename(struct shrinker *shrinker,
- 						  const char *fmt, ...);
 diff --git a/mm/shrinker.c b/mm/shrinker.c
-index 0b9a43ce2d6f..82dc61133c5b 100644
+index 82dc61133c5b..ad64cac5248c 100644
 --- a/mm/shrinker.c
 +++ b/mm/shrinker.c
-@@ -2,6 +2,7 @@
- #include <linux/memcontrol.h>
- #include <linux/rwsem.h>
- #include <linux/shrinker.h>
-+#include <linux/rculist.h>
- #include <trace/events/vmscan.h>
+@@ -218,7 +218,6 @@ static int shrinker_memcg_alloc(struct shrinker *shrinker)
+ 		return -ENOSYS;
  
- #include "internal.h"
-@@ -576,33 +577,50 @@ unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
- 	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
- 		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
+ 	down_write(&shrinker_rwsem);
+-	/* This may call shrinker, so it must use down_read_trylock() */
+ 	id = idr_alloc(&shrinker_idr, shrinker, 0, 0, GFP_KERNEL);
+ 	if (id < 0)
+ 		goto unlock;
+@@ -252,10 +251,15 @@ static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+ {
+ 	struct shrinker_info *info;
+ 	struct shrinker_info_unit *unit;
++	long nr_deferred;
+ 
+-	info = shrinker_info_protected(memcg, nid);
++	rcu_read_lock();
++	info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+ 	unit = info->unit[shrinker_id_to_index(shrinker->id)];
+-	return atomic_long_xchg(&unit->nr_deferred[shrinker_id_to_offset(shrinker->id)], 0);
++	nr_deferred = atomic_long_xchg(&unit->nr_deferred[shrinker_id_to_offset(shrinker->id)], 0);
++	rcu_read_unlock();
++
++	return nr_deferred;
+ }
+ 
+ static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+@@ -263,10 +267,16 @@ static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+ {
+ 	struct shrinker_info *info;
+ 	struct shrinker_info_unit *unit;
++	long nr_deferred;
+ 
+-	info = shrinker_info_protected(memcg, nid);
++	rcu_read_lock();
++	info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+ 	unit = info->unit[shrinker_id_to_index(shrinker->id)];
+-	return atomic_long_add_return(nr, &unit->nr_deferred[shrinker_id_to_offset(shrinker->id)]);
++	nr_deferred =
++		atomic_long_add_return(nr, &unit->nr_deferred[shrinker_id_to_offset(shrinker->id)]);
++	rcu_read_unlock();
++
++	return nr_deferred;
+ }
+ 
+ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+@@ -463,18 +473,54 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 	if (!mem_cgroup_online(memcg))
+ 		return 0;
  
 -	if (!down_read_trylock(&shrinker_rwsem))
--		goto out;
+-		return 0;
 -
--	list_for_each_entry(shrinker, &shrinker_list, list) {
+-	info = shrinker_info_protected(memcg, nid);
 +	/*
-+	 * lockless algorithm of global shrink.
++	 * lockless algorithm of memcg shrink.
 +	 *
-+	 * In the unregistration setp, the shrinker will be freed asynchronously
-+	 * via RCU after its refcount reaches 0. So both rcu_read_lock() and
-+	 * shrinker_try_get() can be used to ensure the existence of the shrinker.
++	 * The shrinker_info may be freed asynchronously via RCU in the
++	 * expand_one_shrinker_info(), so the rcu_read_lock() needs to be used
++	 * to ensure the existence of the shrinker_info.
 +	 *
-+	 * So in the global shrink:
-+	 *  step 1: use rcu_read_lock() to guarantee existence of the shrinker
-+	 *          and the validity of the shrinker_list walk.
-+	 *  step 2: use shrinker_try_get() to try get the refcount, if successful,
-+	 *          then the existence of the shrinker can also be guaranteed,
-+	 *          so we can release the RCU lock to do do_shrink_slab() that
++	 * The shrinker_info_unit is never freed unless its corresponding memcg
++	 * is destroyed. Here we already hold the refcount of memcg, so the
++	 * memcg will not be destroyed, and of course shrinker_info_unit will
++	 * not be freed.
++	 *
++	 * So in the memcg shrink:
++	 *  step 1: use rcu_read_lock() to guarantee existence of the
++	 *          shrinker_info.
++	 *  step 2: after getting shrinker_info_unit we can safely release the
++	 *          RCU lock.
++	 *  step 3: traverse the bitmap and calculate shrinker_id
++	 *  step 4: use rcu_read_lock() to guarantee existence of the shrinker.
++	 *  step 5: use shrinker_id to find the shrinker, then use
++	 *          shrinker_try_get() to guarantee existence of the shrinker,
++	 *          then we can release the RCU lock to do do_shrink_slab() that
 +	 *          may sleep.
-+	 *  step 3: *MUST* to reacquire the RCU lock before calling shrinker_put(),
-+	 *          which ensures that neither this shrinker nor the next shrinker
-+	 *          will be freed in the next traversal operation.
-+	 *  step 4: do shrinker_put() paired with step 2 to put the refcount,
++	 *  step 6: do shrinker_put() paired with step 5 to put the refcount,
 +	 *          if the refcount reaches 0, then wake up the waiter in
 +	 *          shrinker_free() by calling complete().
++	 *          Note: here is different from the global shrink, we don't
++	 *                need to acquire the RCU lock to guarantee existence of
++	 *                the shrinker, because we don't need to use this
++	 *                shrinker to traverse the next shrinker in the bitmap.
++	 *  step 7: we have already exited the read-side of rcu critical section
++	 *          before calling do_shrink_slab(), the shrinker_info may be
++	 *          released in expand_one_shrinker_info(), so go back to step 1
++	 *          to reacquire the shrinker_info.
 +	 */
++again:
 +	rcu_read_lock();
-+	list_for_each_entry_rcu(shrinker, &shrinker_list, list) {
- 		struct shrink_control sc = {
- 			.gfp_mask = gfp_mask,
- 			.nid = nid,
- 			.memcg = memcg,
- 		};
++	info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
+ 	if (unlikely(!info))
+ 		goto unlock;
  
-+		if (!shrinker_try_get(shrinker))
-+			continue;
-+
+-	for (; index < shrinker_id_to_index(info->map_nr_max); index++) {
++	if (index < shrinker_id_to_index(info->map_nr_max)) {
+ 		struct shrinker_info_unit *unit;
+ 
+ 		unit = info->unit[index];
+ 
 +		rcu_read_unlock();
 +
- 		ret = do_shrink_slab(&sc, shrinker, priority);
- 		if (ret == SHRINK_EMPTY)
- 			ret = 0;
- 		freed += ret;
--		/*
--		 * Bail out if someone want to register a new shrinker to
--		 * prevent the registration from being stalled for long periods
--		 * by parallel ongoing shrinking.
--		 */
--		if (rwsem_is_contended(&shrinker_rwsem)) {
--			freed = freed ? : 1;
--			break;
--		}
-+
-+		rcu_read_lock();
-+		shrinker_put(shrinker);
- 	}
+ 		for_each_set_bit(offset, unit->map, SHRINKER_UNIT_BITS) {
+ 			struct shrink_control sc = {
+ 				.gfp_mask = gfp_mask,
+@@ -484,12 +530,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 			struct shrinker *shrinker;
+ 			int shrinker_id = calc_shrinker_id(index, offset);
  
++			rcu_read_lock();
+ 			shrinker = idr_find(&shrinker_idr, shrinker_id);
+-			if (unlikely(!shrinker || !(shrinker->flags & SHRINKER_REGISTERED))) {
+-				if (!shrinker)
+-					clear_bit(offset, unit->map);
++			if (unlikely(!shrinker || !shrinker_try_get(shrinker))) {
++				clear_bit(offset, unit->map);
++				rcu_read_unlock();
+ 				continue;
+ 			}
++			rcu_read_unlock();
+ 
+ 			/* Call non-slab shrinkers even though kmem is disabled */
+ 			if (!memcg_kmem_online() &&
+@@ -522,15 +570,14 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 					set_shrinker_bit(memcg, nid, shrinker_id);
+ 			}
+ 			freed += ret;
+-
+-			if (rwsem_is_contended(&shrinker_rwsem)) {
+-				freed = freed ? : 1;
+-				goto unlock;
+-			}
++			shrinker_put(shrinker);
+ 		}
++
++		index++;
++		goto again;
+ 	}
+ unlock:
 -	up_read(&shrinker_rwsem);
--out:
 +	rcu_read_unlock();
- 	cond_resched();
  	return freed;
  }
-@@ -671,13 +689,29 @@ void shrinker_register(struct shrinker *shrinker)
- 	}
- 
- 	down_write(&shrinker_rwsem);
--	list_add_tail(&shrinker->list, &shrinker_list);
-+	list_add_tail_rcu(&shrinker->list, &shrinker_list);
- 	shrinker->flags |= SHRINKER_REGISTERED;
- 	shrinker_debugfs_add(shrinker);
- 	up_write(&shrinker_rwsem);
-+
-+	init_completion(&shrinker->done);
-+	/*
-+	 * Now the shrinker is fully set up, take the first reference to it to
-+	 * indicate that lookup operations are now allowed to use it via
-+	 * shrinker_try_get().
-+	 */
-+	refcount_set(&shrinker->refcount, 1);
- }
- EXPORT_SYMBOL_GPL(shrinker_register);
- 
-+static void shrinker_free_rcu_cb(struct rcu_head *head)
-+{
-+	struct shrinker *shrinker = container_of(head, struct shrinker, rcu);
-+
-+	kfree(shrinker->nr_deferred);
-+	kfree(shrinker);
-+}
-+
- void shrinker_free(struct shrinker *shrinker)
- {
- 	struct dentry *debugfs_entry = NULL;
-@@ -686,9 +720,25 @@ void shrinker_free(struct shrinker *shrinker)
- 	if (!shrinker)
- 		return;
- 
-+	if (shrinker->flags & SHRINKER_REGISTERED) {
-+		/* drop the initial refcount */
-+		shrinker_put(shrinker);
-+		/*
-+		 * Wait for all lookups of the shrinker to complete, after that,
-+		 * no shrinker is running or will run again, then we can safely
-+		 * free it asynchronously via RCU and safely free the structure
-+		 * where the shrinker is located, such as super_block etc.
-+		 */
-+		wait_for_completion(&shrinker->done);
-+	}
-+
- 	down_write(&shrinker_rwsem);
- 	if (shrinker->flags & SHRINKER_REGISTERED) {
--		list_del(&shrinker->list);
-+		/*
-+		 * Now we can safely remove it from the shrinker_list and then
-+		 * free it.
-+		 */
-+		list_del_rcu(&shrinker->list);
- 		debugfs_entry = shrinker_debugfs_detach(shrinker, &debugfs_id);
- 		shrinker->flags &= ~SHRINKER_REGISTERED;
- 	} else {
-@@ -702,9 +752,6 @@ void shrinker_free(struct shrinker *shrinker)
- 	if (debugfs_entry)
- 		shrinker_debugfs_remove(debugfs_entry, debugfs_id);
- 
--	kfree(shrinker->nr_deferred);
--	shrinker->nr_deferred = NULL;
--
--	kfree(shrinker);
-+	call_rcu(&shrinker->rcu, shrinker_free_rcu_cb);
- }
- EXPORT_SYMBOL_GPL(shrinker_free);
+ #else /* !CONFIG_MEMCG */
 -- 
 2.30.2
 
