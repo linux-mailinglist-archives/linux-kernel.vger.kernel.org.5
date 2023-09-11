@@ -2,133 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F9A79BF97
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CDA79B786
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354334AbjIKVx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S1344914AbjIKVPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236183AbjIKJyw (ORCPT
+        with ESMTP id S236195AbjIKJzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:54:52 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DC6E61;
-        Mon, 11 Sep 2023 02:54:48 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B7XSv6005635;
-        Mon, 11 Sep 2023 09:54:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=GRULuPbaAq4rhfbd2zh23G3T9zGgh8FFEsrsWq/V+FA=;
- b=nyx62mOkl91YSah3bdudoUsjaeSduZylMBZHgavo+KxQUFGPAmyEdc5xE/b2U/NS7urs
- hztlCPRTvWYnpgpgfiDivlxHQlWgKzQS0sEiSO/D41hyIgitI8etAP40sbvavgUvkXWD
- 0MYSvsA4m5XI7VSyyj0CHUo1vBPRHUfebuvM0LXAFw/TzlRM/F7kirPpwgho4J0yl3bA
- Zbz/UddlZovoT4FKxMMnP5P/uiUX25ndUPw4h8oOt+R76tneLMr8kW4enkqL3SYSqq1X
- +K/pv7Cx/XZNBsajuBPL0Unx8CBmFThUaYder1Jnp9S3YF/NytPo+wMBFsBfdxBKNpzo JA== 
-Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xjmrbaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 09:54:36 +0000
-Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38B9sX58018265;
-        Mon, 11 Sep 2023 09:54:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3t0hsk9dp3-1;
-        Mon, 11 Sep 2023 09:54:33 +0000
-Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38B9sXE1018270;
-        Mon, 11 Sep 2023 09:54:33 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 38B9sXQk018269;
-        Mon, 11 Sep 2023 09:54:33 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
-        id B365C489A; Mon, 11 Sep 2023 17:54:32 +0800 (CST)
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-To:     mani@kernel.org, quic_jhugo@quicinc.com
-Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        quic_mrana@quicinc.com, Hemant Kumar <quic_hemantk@quicinc.com>,
-        Lazarus Motha <quic_lmotha@quicinc.com>,
-        Qiang Yu <quic_qianyu@quicinc.com>
-Subject: [PATCH 2/2] bus: mhi: host: Take irqsave lock after TRE is generated
-Date:   Mon, 11 Sep 2023 17:54:29 +0800
-Message-Id: <1694426069-74140-3-git-send-email-quic_qianyu@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1694426069-74140-1-git-send-email-quic_qianyu@quicinc.com>
-References: <1694426069-74140-1-git-send-email-quic_qianyu@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 8m7bhk4l3wD7WkqCdMro7Z8RC_JckqM-
-X-Proofpoint-GUID: 8m7bhk4l3wD7WkqCdMro7Z8RC_JckqM-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=691
- malwarescore=0 adultscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110090
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 05:55:14 -0400
+Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45618E69
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:55:08 -0700 (PDT)
+X-ASG-Debug-ID: 1694426104-086e234a2b485f0001-xx1T2L
+Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx1.zhaoxin.com with ESMTP id Y8LIEnxLF2E8zCXN (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 11 Sep 2023 17:55:04 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX2.zhaoxin.com
+ (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
+ 2023 17:55:02 +0800
+Received: from [192.168.1.204] (125.76.214.122) by ZXBJMBX03.zhaoxin.com
+ (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
+ 2023 17:54:56 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
+Message-ID: <9e4fa680-f96e-4dfc-a047-37a2a5f8b779@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 192.168.1.204
+Date:   Mon, 11 Sep 2023 17:54:54 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] ACPI/APEI: Remove static from apei_hest_parse()
+To:     Bjorn Helgaas <helgaas@kernel.org>
+X-ASG-Orig-Subj: Re: [PATCH v3 2/5] ACPI/APEI: Remove static from apei_hest_parse()
+CC:     <lenb@kernel.org>, <james.morse@arm.com>, <tony.luck@intel.com>,
+        <bp@alien8.de>, <bhelgaas@google.com>, <robert.moore@intel.com>,
+        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        <acpica-devel@lists.linuxfoundation.org>, <ErosZhang@zhaoxin.com>
+References: <20230810231718.GA49532@bhelgaas>
+From:   LeoLiu-oc <leoliu-oc@zhaoxin.com>
+In-Reply-To: <20230810231718.GA49532@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [125.76.214.122]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
+X-Barracuda-Start-Time: 1694426104
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 3311
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.113956
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hemant Kumar <quic_hemantk@quicinc.com>
 
-Take irqsave lock after TRE is generated to avoid deadlock due to core
-getting interrupts enabled as local_bh_enable must not be called with
-irqs disabled based on upstream patch.
 
-Signed-off-by: Hemant Kumar <quic_hemantk@quicinc.com>
-Signed-off-by: Lazarus Motha <quic_lmotha@quicinc.com>
-Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
----
- drivers/bus/mhi/host/main.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+在 2023/8/11 7:17, Bjorn Helgaas 写道:
+> On Tue, Jul 04, 2023 at 08:05:17PM +0800, LeoLiu-oc wrote:
+>> From: leoliu-oc <leoliu-oc@zhaoxin.com>
+>>
+>> Each dev with AER capability needs to call the apei_hest_parse function to
+>> match and extract register values from HEST PCIe AER structures.
+>> Therefore, remove static from apei_hest_parse() so that it can be called
+>> in another file.
+> 
+> Can you reword the subject line and commit log in the positive?
+> "Removing static" is a negative thing and it's semantically a bit too
+> low level -- it's clearly what the *code* does, but we can see that
+> from the patch, and what we want to know here is *why* it's important.
+> What this really does is expose apei_hest_parse() for use by other
+> subsystems.
+> 
+> Browsing the drivers/acpi commit log history, I see that Rafael adds
+> "()" after function names, so please do the same here (you did do that
+> once above, but not in the first line).
+> 
 
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index ce42205..0a0b205 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -1124,17 +1124,15 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
- 	if (unlikely(MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
--
- 	ret = mhi_is_ring_full(mhi_cntrl, tre_ring);
--	if (unlikely(ret)) {
--		ret = -EAGAIN;
--		goto exit_unlock;
--	}
-+	if (unlikely(ret))
-+		return -EAGAIN;
- 
- 	ret = mhi_gen_tre(mhi_cntrl, mhi_chan, buf_info, mflags);
- 	if (unlikely(ret))
--		goto exit_unlock;
-+		return ret;
-+
-+	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
- 
- 	/* Packet is queued, take a usage ref to exit M3 if necessary
- 	 * for host->device buffer, balanced put is done on buffer completion
-@@ -1154,7 +1152,6 @@ static int mhi_queue(struct mhi_device *mhi_dev, struct mhi_buf_info *buf_info,
- 	if (dir == DMA_FROM_DEVICE)
- 		mhi_cntrl->runtime_put(mhi_cntrl);
- 
--exit_unlock:
- 	read_unlock_irqrestore(&mhi_cntrl->pm_lock, flags);
- 
- 	return ret;
--- 
-2.7.4
 
+This function is required in patch v3 4/5 to traverse the HEST to find 
+the HEST AER structures, so changed the definition to be global.
+
+I will pay attention to this matter in the next version.
+
+LeoLiu-oc
+
+>> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
+>> ---
+>>   drivers/acpi/apei/hest.c | 2 +-
+>>   include/acpi/apei.h      | 5 +++++
+>>   2 files changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+>> index fb839a5c480ee..fd40c035c9b2e 100644
+>> --- a/drivers/acpi/apei/hest.c
+>> +++ b/drivers/acpi/apei/hest.c
+>> @@ -132,7 +132,7 @@ static bool hest_match_pci(struct acpi_hest_header *hest_hdr,
+>>   	return false;
+>>   }
+>>   
+>> -static int apei_hest_parse(apei_hest_func_t func, void *data)
+>> +int apei_hest_parse(apei_hest_func_t func, void *data)
+> 
+> If this is going to exported to the PCI subsystem, I think it needs
+> some kernel-doc.  For example, it's important to know that it stops
+> parsing the HEST if func returns anything non-zero.  This is how
+> pci_acpi_program_hest_aer_params() knows that it got good data that
+> matches the device it wants.
+> 
+> Given the fact that apei_hest_parse_aer() fills in the struct
+> acpi_hest_parse_aer_info with pointers into the HEST table data, it's
+> also important to know that this HEST table data is persistent.
+>
+Thank you suggestion, and I will consider carefully.
+
+Best Regards.
+LeoLiu-oc
+
+>>   {
+>>   	struct acpi_hest_header *hest_hdr;
+>>   	int i, rc, len;
+>> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+>> index 8a0b2b9edbafe..f975e4fe78fcb 100644
+>> --- a/include/acpi/apei.h
+>> +++ b/include/acpi/apei.h
+>> @@ -37,9 +37,14 @@ typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
+>>   
+>>   #ifdef CONFIG_ACPI_APEI
+>>   void __init acpi_hest_init(void);
+>> +int apei_hest_parse(apei_hest_func_t func, void *data);
+>>   int apei_hest_parse_aer(struct acpi_hest_header *hest_hdr, void *data);
+>>   #else
+>>   static inline void acpi_hest_init(void) { }
+>> +static inline int apei_hest_parse(apei_hest_func_t func, void *data)
+>> +{
+>> +	return -EINVAL;
+>> +}
+>>   static inline int apei_hest_parse_aer(struct acpi_hest_header *hest_hdr, void *data)
+>>   {
+>>   	return -EINVAL;
+>> -- 
+>> 2.34.1
+>>
