@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C3479A382
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B34E79A383
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbjIKG1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        id S234235AbjIKG34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbjIKG1m (ORCPT
+        with ESMTP id S232478AbjIKG3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:27:42 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182B6100
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:27:37 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-403012f27e1so19236655e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694413655; x=1695018455; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RJTJsFK3T0/Rm5w8uJvF7R9ahpNsdXBenI0aBQZljWI=;
-        b=rounOXkfgIZsC7NkU4+jT+m5JD86820sfpExxOV1KSiPKJlRzc7IwKUk/tBvbcw5EY
-         giLs9dV67Bp6yj6m/WnrEmSZ9DDJc/HuTF7xVoqeUtcO2MyPnQfNuU/cusM7j1Kgc5PN
-         g/DxBMED7De/96bncj7UkyTmDdEL5scsnFtDY94XLLdMuxMWJeraBiJOavs40I1XxSsl
-         J124lf19yYH+9Q5/gI+6lNQu1bxJEzQ4YLeZFQaECakijfHi8+tMGAUWXn6HXOE5K0k1
-         jImOeUDt+qlQyri5authxf6sx0/JoIp+lxVKKQRyAoYXY3VqhzUAb4oRx29dQAdc8Qzx
-         U0IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694413655; x=1695018455;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJTJsFK3T0/Rm5w8uJvF7R9ahpNsdXBenI0aBQZljWI=;
-        b=INcySPnawiRhajmivuQuxlhyvhkB4VBje4vkrimNXmN2i0SyziGZDoWB4CmXK6N/Jc
-         /wy9vdXpfgEvqQtJgdby8iJnIxtOnzctCOvr5S6xIMYZcCRYZV7iUT+NMj67KLT/fkmF
-         e+4WHVm5ukFyFj3Ua0cvUZi/eP+7ElxNWIYcXyyUfjGRdTzjWPnqOvJ5YyLA3ngbVts2
-         Uq/XIXza0mYng5d/BJF49izsYvOZB+R96R6gUVtwfMyh3rvec0OclW0iPh50zVcgCdKy
-         xC1Ar63f2JpA8xoZisCaCljmqByjScnXQgy6eWoc4iCRy0R/FwHZoZ+D4+YIOgh8FTDL
-         jkEw==
-X-Gm-Message-State: AOJu0YwEmZbuxEyZWbbOAGI3s9JFnlYAZDzlqIZv/YSC0ynd/Ql9NeHX
-        tXa10mzhyBFL8mDuWAu6D+0pdQ==
-X-Google-Smtp-Source: AGHT+IHdUYdZOEzSeRxYewp5a8kC9KI+sz7pgbVDMTSbrYiymqBDmQF9SeR7P0v4wf06XCXdnmaRsA==
-X-Received: by 2002:a5d:4e02:0:b0:317:5f04:bc00 with SMTP id p2-20020a5d4e02000000b003175f04bc00mr6273595wrt.27.1694413655449;
-        Sun, 10 Sep 2023 23:27:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id a11-20020aa7d74b000000b0052a404e5929sm4095585eds.66.2023.09.10.23.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 23:27:34 -0700 (PDT)
-Message-ID: <0231fa19-bc71-db11-ffd4-8c922d110447@linaro.org>
-Date:   Mon, 11 Sep 2023 08:27:32 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] scsi: ufs: qcom: dt-bindings: Add MCQ ESI property
-Content-Language: en-US
-To:     Ziqi Chen <quic_ziqichen@quicinc.com>, quic_asutoshd@quicinc.com,
-        quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
-        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com
-Cc:     linux-scsi@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1694163203-39123-1-git-send-email-quic_ziqichen@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1694163203-39123-1-git-send-email-quic_ziqichen@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 02:29:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BA1EA
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:29:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 3FBEC21954;
+        Mon, 11 Sep 2023 06:29:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694413790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tr/bSdM83dCsFkG0lgZwfeOVd5FVEbn88zt0hKpSIi0=;
+        b=BraPm3c0n2pCVnkk0GlJVS1mvUw0g+FI25kMy7FqcLLV8lN5VhCYbTkXBohgsYZ5Ps7A6j
+        aQyxS0XgaDHWqIPRq8NGQv4cMWocGrlevZ0599sfqaeudw1NUfcjaFOR2JpyxNIX3WOBjO
+        u1mJ2wD9AXu3AfJIEJsFm4CDIaOSHWA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694413790;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tr/bSdM83dCsFkG0lgZwfeOVd5FVEbn88zt0hKpSIi0=;
+        b=hBjPE4wSYIyTP2SkjDlix+APmnvtQX2JCCd0K0yrMUPqpp9KUTUMClHdwG+yNxlAsCOFkj
+        OyofnT+E/D0PdhAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 161F913780;
+        Mon, 11 Sep 2023 06:29:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 7tNzBN6z/mSDRgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 11 Sep 2023 06:29:50 +0000
+Date:   Mon, 11 Sep 2023 08:29:49 +0200
+Message-ID: <87sf7l6x42.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ALSA: hda: cs35l56: Call pm_runtime_dont_use_autosuspend()
+In-Reply-To: <20230908101223.2656901-1-rf@opensource.cirrus.com>
+References: <20230908101223.2656901-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/09/2023 10:53, Ziqi Chen wrote:
-> Document the description for the qcom,esi-affinity-mask.
-
-This tells me nothing what is this feature for.
-
+On Fri, 08 Sep 2023 12:12:23 +0200,
+Richard Fitzgerald wrote:
 > 
-> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+> Driver remove() must call pm_runtime_dont_use_autosuspend().
+> 
+> Drivers that call pm_runtime_use_autosuspend() must disable
+> it in driver remove(). Unfortunately until recently this was
+> only mentioned in 1 line in a 900+ line document so most
+> people hadn't noticed this. It has only recently been added
+> to the kerneldoc of pm_runtime_use_autosuspend().
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Fixes: 2a930a6da8ec ("ALSA: hda/cs35l56: Add driver for Cirrus Logic CS35L56 amplifier")
+
+Applied now.
+The Fixes tag points to a non-existing ID, so I corrected in my side
+to 73cfbfa9caea.
+
+
+thanks,
+
+Takashi
+
 > ---
->  Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+>  sound/pci/hda/cs35l56_hda.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> index bdfa86a..323595f 100644
-> --- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> @@ -97,6 +97,10 @@ properties:
->      description:
->        GPIO connected to the RESET pin of the UFS memory device.
+> diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+> index 76b9c685560b..9e4976bdb5e0 100644
+> --- a/sound/pci/hda/cs35l56_hda.c
+> +++ b/sound/pci/hda/cs35l56_hda.c
+> @@ -1003,6 +1003,7 @@ void cs35l56_hda_remove(struct device *dev)
+>  {
+>  	struct cs35l56_hda *cs35l56 = dev_get_drvdata(dev);
 >  
-> +  qcom,esi-affinity-mask:
-
-Not tested. You also miss proper type.
-
-> +    description:
-> +       UFS MCQ ESI affinity mask. Affine ESI on registration according to this CPU mask.
-
-And why is this a property of DT? Aren't you now describing driver?
-
-
-
-Best regards,
-Krzysztof
-
+> +	pm_runtime_dont_use_autosuspend(cs35l56->base.dev);
+>  	pm_runtime_get_sync(cs35l56->base.dev);
+>  	pm_runtime_disable(cs35l56->base.dev);
+>  
+> -- 
+> 2.30.2
+> 
