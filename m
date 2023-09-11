@@ -2,241 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A3779A1A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91679A1AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbjIKDKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 23:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        id S233155AbjIKDRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 23:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232095AbjIKDKl (ORCPT
+        with ESMTP id S232089AbjIKDQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 23:10:41 -0400
-Received: from out-225.mta1.migadu.com (out-225.mta1.migadu.com [IPv6:2001:41d0:203:375::e1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B914F103
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 20:10:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694401833;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7uvq5FhhnljMN3Um+NMD1L9HxaijOwDWaM8/TobTFo=;
-        b=j7U67lS0wfc2hHBLw72gaCHQEi0Eujt+ayOWyXCZeuwGBGx0Mv2vOKHyCh1z8plGBlgPsw
-        LKMD3BTXrypijV/6QIoL+g6erYBfwO8bnC8i3ehQCIaDZQOwvsY3GmJ+JlQ8t6UoALtGmz
-        Io2ssCgauX8CWcLcaUMfVPvdrEeAHRc=
-Mime-Version: 1.0
-Subject: Re: [PATCH v2 07/11] hugetlb: perform vmemmap restoration on a list
- of pages
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230908205340.GA62663@monkey>
-Date:   Mon, 11 Sep 2023 11:10:18 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BFE00D00-1DFF-4AF8-BB10-5B76BF06E012@linux.dev>
-References: <20230905214412.89152-1-mike.kravetz@oracle.com>
- <20230905214412.89152-8-mike.kravetz@oracle.com>
- <5e091211-9a32-8480-55fb-faff6a0fadef@linux.dev>
- <38E2F051-E00B-4104-A616-0EEB2729386F@linux.dev>
- <20230906211234.GC3612@monkey>
- <B8F68838-8C78-4BF1-AEC8-D89BCD49ECC7@linux.dev>
- <20230907185421.GD3640@monkey> <20230908205340.GA62663@monkey>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 10 Sep 2023 23:16:52 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1A6115
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 20:16:47 -0700 (PDT)
+X-UUID: a011722c505111ee8051498923ad61e6-20230911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=P/xh8LLjglbBDLC4ylTbCB0rsbjDqqmy1RdqQs9RxwE=;
+        b=F7zUcV/KfVzTGb08u2DL9cwk2oX0kRtj6Dlj1ff7vK2BKYzmbpRt/nlw7u8XEh6QRtygsAnjITiK8NGMW2oXc4PPGuSZsBSba86IbFcecV2tV/wwZV/yYUm8vqZZrPqa7dCSP1fMiUMI13fOCVGKJKAwOaKUWFDBi2LGtdZ7QQY=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:5c1ec8e2-ac8a-4b91-9812-bf470a4c8169,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:0322c813-4929-4845-9571-38c601e9c3c9,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: a011722c505111ee8051498923ad61e6-20230911
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
+        (envelope-from <shawn.sung@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 972710428; Mon, 11 Sep 2023 11:16:40 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Sep 2023 11:16:38 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 11 Sep 2023 11:16:38 +0800
+From:   Hsiao Chien Sung <shawn.sung@mediatek.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Jason-JH Lin <jason-jh.lin@mediatek.com>,
+        Hsiao Chien Sung <shawn.sung@mediatek.com>
+Subject: [PATCH v6 00/20] Add display driver for MT8188 VDOSYS1
+Date:   Mon, 11 Sep 2023 11:16:10 +0800
+Message-ID: <20230911031630.12613-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--6.619200-8.000000
+X-TMASE-MatchedRID: a9kaGDGTtUZYXTxImR5ZvIa7OiQBC9buWjWsWQUWzVoOkJQR4QWbsO/S
+        cgNpr80IQx8Td33i8d2uJFuPllf7ymjez20/QikW4bl1FkKDELdo3Yq5PCwLAjRCaZSKE/OsjBH
+        2O7lhl4DL5aw8frs3tCsSrChctaUl7H2DvWppibMXKqR+w9a7UJFLUnnvueyB0pEcoXqJQB2QP7
+        8+ZDAwILLAsxfbhF+E41HTVfNlY5/DmEfzPAj6Oh+WEMjoO9WWKhNpTcvbdUKbKItl61J/yZ+in
+        TK0bC9eKrauXd3MZDWiZ3sWC9weZPl6k2ye1XLCUWVtiCFltaZlbKOMhqs+K4Dgg8P9QZMv
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--6.619200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 2FEFC1DCB34FB1A5D39A564376FA7000D2209471E1F4816C351A11C7081256DD2000:8
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v6:
+- Separate the commits into smaller ones
+- Add DPI input mode setting
 
+Changes in v5:
+- Reuse .clk_enable/.clk_disable in struct mtk_ddp_comp_funcs
+  in mtk_disp_ovl_adaptor.c
+- Adjust commits order
 
-> On Sep 9, 2023, at 04:53, Mike Kravetz <mike.kravetz@oracle.com> =
-wrote:
->=20
-> On 09/07/23 11:54, Mike Kravetz wrote:
->> On 09/07/23 11:33, Muchun Song wrote:
->>>=20
->>>=20
->>>> On Sep 7, 2023, at 05:12, Mike Kravetz <mike.kravetz@oracle.com> =
-wrote:
->>>>=20
->>>> On 09/06/23 16:07, Muchun Song wrote:
->>>>>> On Sep 6, 2023, at 15:33, Muchun Song <muchun.song@linux.dev> =
-wrote:
->>>>>> On 2023/9/6 05:44, Mike Kravetz wrote:
->>>>>>> When removing hugetlb pages from the pool, we first create a =
-list
->>>>>>> of removed pages and then free those pages back to low level =
-allocators.
->>>>>>> Part of the 'freeing process' is to restore vmemmap for all base =
-pages
->>>>>>> if necessary.  Pass this list of pages to a new routine
->>>>>>> hugetlb_vmemmap_restore_folios() so that vmemmap restoration can =
-be
->>>>>>> performed in bulk.
->>>>>>>=20
->>>>>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>>>>> ---
->>>>>>> mm/hugetlb.c         |  3 +++
->>>>>>> mm/hugetlb_vmemmap.c | 13 +++++++++++++
->>>>>>> mm/hugetlb_vmemmap.h |  5 +++++
->>>>>>> 3 files changed, 21 insertions(+)
->>>>>>>=20
->>>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>>>>> index 554be94b07bd..dd2dbc256172 100644
->>>>>>> --- a/mm/hugetlb.c
->>>>>>> +++ b/mm/hugetlb.c
->>>>>>> @@ -1838,6 +1838,9 @@ static void =
-update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
->>>>>>> {
->>>>>>> struct folio *folio, *t_folio;
->>>>>>> + /* First restore vmemmap for all pages on list. */
->>>>>>> + hugetlb_vmemmap_restore_folios(h, list);
->>>>>>> +
->>>>>>> list_for_each_entry_safe(folio, t_folio, list, lru) {
->>>>>>> update_and_free_hugetlb_folio(h, folio, false);
->>>>>>> cond_resched();
->>>>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>>>>>> index ac5577d372fe..79de984919ef 100644
->>>>>>> --- a/mm/hugetlb_vmemmap.c
->>>>>>> +++ b/mm/hugetlb_vmemmap.c
->>>>>>> @@ -481,6 +481,19 @@ int hugetlb_vmemmap_restore(const struct =
-hstate *h, struct page *head)
->>>>>>> return ret;
->>>>>>> }
->>>>>>> +/*
->>>>>>> + * This function will attempt to resore vmemmap for a list of =
-folios.  There
->>>>>>> + * is no guarantee that restoration will be successful for all =
-or any folios.
->>>>>>> + * This is used in bulk operations, and no feedback is given to =
-the caller.
->>>>>>> + */
->>>>>>> +void hugetlb_vmemmap_restore_folios(const struct hstate *h, =
-struct list_head *folio_list)
->>>>>>> +{
->>>>>>> + struct folio *folio;
->>>>>>> +
->>>>>>> + list_for_each_entry(folio, folio_list, lru)
->>>>>>> + (void)hugetlb_vmemmap_restore(h, &folio->page);
->>>>>>=20
->>>>>> I am curious about the purpose of "void" here, seems it it not =
-necessnary,
->>>>>> ritgh? We cound see so many palces where we do not add the void =
-if the caller
->>>>>> does not care about the return value of the callee.
->>>>>=20
->>>>> Another question: should we stop restoring vmemmap pages when
->>>>> hugetlb_vmemmap_restore() fails? In which case, I suspect there
->>>>> is no memory probably, there is no need to continue, right?
->>>>=20
->>>> Recall that the list of hugetlb pages may be from multiple nodes.  =
-My first
->>>> thought was that we should continue because memory allocation may =
-fail on one
->>>> node but succeed on another.  However, with
->>>> =
-https://lore.kernel.org/linux-mm/20230905031312.91929-1-yuancan@huawei.com=
-/
->>>> memory allocation should fall back to other nodes.  So, yes I do =
-believe it
->>>> would make sense to stop when hugetlb_vmemmap_restore returns =
-ENOMEM as
->>>> we are unlikely to make forward progress.
->>>=20
->>> Agree.
->>>=20
->>>>=20
->>>> Today's behavior will try to restore vmemmap for all pages.  No =
-stopping
->>>> on error.
->>>>=20
->>>> I have mixed thoughts on this.  Quitting on error 'seems =
-reasonable'.
->>>> However, if we continue we 'might' be able to allocate vmemmap for =
-one
->>>> hugetlb page.  And, if we free one hugetlb page that should provide
->>>> vmemmap for several more and we may be able to free most pages on =
-the
->>>> list.
->>>=20
->>> Yes. A good point. But there should be a non-optimized huge page =
-been
->>> freed somewhere in parallel, otherwise we still cannot allocate =
-memory.
->>=20
->> It does not have to be another huge page being freed in parallel.  It
->> could be that when allocating vmemmap for a 1G hugetlb page we were =
-one
->> (4K) page short of what was required.  If someone else frees a 4K =
-page,
->> freeing the next 1G page may succeed.
+Changes in v4:
+- Add new functions in mtk_disp_ovl_adaptor.c to enable/disable
+  components and reuse them when clock enable/disable
+- Rename components in mtk_disp_ovl_adaptor.c and sort them in
+  alphabetical order
 
-Right. I missed that.
+Changes in v3:
+- Define macro MMSYS_RST_NR in mtk-mmsys.h and update reset table
+- Fix typos (ETDHR -> ETHDR, VSNYC -> VSYNC)
+- Rebase dt-bindings on linux-next
+- Refine description of Padding
+- Squash reset bit map commits for VDO0 and VDO1 into one
 
->> --=20
->> Mike Kravetz
->>=20
->>> However, the freeing operation happens after =
-hugetlb_vmemmap_restore_folios.
->>> If we want to handle this, we should rework =
-update_and_free_pages_bulk()
->>> to do a try when at least a huge pages is freed.
->=20
-> This seemed familiar.  Recall this patch which Muchun Reviewed and =
-James Acked,
-> =
-https://lore.kernel.org/linux-mm/20230718004942.113174-3-mike.kravetz@orac=
-le.com/
->=20
-> If we can not restore vmemmap for a page, then it must be turned into =
-a
-> surplus huge page.  In this patch (not the previous one referenced), =
-we
-> will try to restore vmemmap one more time in a later call to
-> update_and_free_hugetlb_folio.  Certainly, we do not want to try =
-twice!
->=20
-> My 'plan' is to include the previous patch as part of this series.  =
-With
-> that patch in place, the list_for_each_entry calls to =
-hugetlb_vmemmap_restore
-> can be replaced with a call to hugetlb_vmemmap_restore_folios.  We =
-would
-> change the behavior of hugetlb_vmemmap_restore_folios to return an =
-error
-> instead of being of type void.  If an error is returned, then we will
-> make another pass through the list looking for unoptimized pages and =
-add
-> them as surplus.
->=20
-> I think it best if we try to restore vmemmap at least once before
-> converting to a surplus page.
+Changes in v2:
+- Remove redundant compatibles of MT8188 because it shares the same
+  configuration with MT8195
+- Separate dt-bindings by modules
+- Support reset bit mapping in mmsys driver
 
-Make sense.
+Hsiao Chien Sung (20):
+  dt-bindings: display: mediatek: ethdr: Add compatible for MT8188
+  dt-bindings: display: mediatek: mdp-rdma: Add compatible for MT8188
+  dt-bindings: display: mediatek: merge: Add compatible for MT8188
+  dt-bindings: display: mediatek: padding: Add MT8188
+  dt-bindings: arm: mediatek: Add compatible for MT8188
+  dt-bindings: reset: mt8188: Add VDOSYS reset control bits
+  soc: mediatek: Support MT8188 VDOSYS1 in mtk-mmsys
+  soc: mediatek: Support MT8188 VDOSYS1 Padding in mtk-mmsys
+  soc: mediatek: Support reset bit mapping in mmsys driver
+  soc: mediatek: Add MT8188 VDOSYS reset bit map
+  drm/mediatek: Rename OVL_ADAPTOR_TYPE_RDMA
+  drm/mediatek: Refine device table of OVL adaptor
+  drm/mediatek: Sort OVL adaptor components
+  drm/mediatek: Add component ID to component match structure
+  drm/mediatek: Manage component's clock with function pointers
+  drm/mediatek: Make sure the power-on sequence of LARB and RDMA
+  drm/mediatek: Support MT8188 Padding in display driver
+  drm/mediatek: Add Padding to OVL adaptor
+  drm/mediatek: Support MT8188 VDOSYS1 in display driver
+  drm/mediatek: Set DPI input to 1T2P mode
 
-Muchun
+ .../bindings/arm/mediatek/mediatek,mmsys.yaml |   1 +
+ .../display/mediatek/mediatek,ethdr.yaml      |   6 +-
+ .../display/mediatek/mediatek,mdp-rdma.yaml   |   6 +-
+ .../display/mediatek/mediatek,merge.yaml      |   3 +
+ .../display/mediatek/mediatek,padding.yaml    |  81 +++++++
+ drivers/gpu/drm/mediatek/Makefile             |   3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h       |   3 +
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 216 +++++++++---------
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |   2 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   4 +
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   2 +-
+ drivers/gpu/drm/mediatek/mtk_mdp_rdma.c       |  20 +-
+ drivers/gpu/drm/mediatek/mtk_padding.c        | 136 +++++++++++
+ drivers/soc/mediatek/mt8188-mmsys.h           | 210 +++++++++++++++++
+ drivers/soc/mediatek/mtk-mmsys.c              |  23 ++
+ drivers/soc/mediatek/mtk-mmsys.h              |  32 +++
+ drivers/soc/mediatek/mtk-mutex.c              |  51 +++++
+ include/dt-bindings/reset/mt8188-resets.h     |  75 ++++++
+ include/linux/soc/mediatek/mtk-mmsys.h        |   8 +
+ 19 files changed, 764 insertions(+), 118 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,padding.yaml
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_padding.c
 
-> --=20
-> Mike Kravetz
+--
+2.18.0
 
