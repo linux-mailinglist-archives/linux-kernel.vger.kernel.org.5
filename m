@@ -2,222 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21A179A3F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AFA79A3ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbjIKGzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58884 "EHLO
+        id S233086AbjIKGwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjIKGzc (ORCPT
+        with ESMTP id S229459AbjIKGwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:55:32 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF91C12D;
-        Sun, 10 Sep 2023 23:55:26 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rkcsz4ct9z4f3knb;
-        Mon, 11 Sep 2023 14:55:19 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgD3jd3Zuf5k8FC7AA--.8928S4;
-        Mon, 11 Sep 2023 14:55:23 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     mariusz.tkaczyk@linux.intel.com, song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next] md: simplify md_seq_ops
-Date:   Mon, 11 Sep 2023 14:50:10 +0800
-Message-Id: <20230911065010.3530461-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 11 Sep 2023 02:52:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC80C106
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:52:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694415145; x=1725951145;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
+  b=WKua4m95IaMDYpXoH7yZroqz2WnLcZYw+gfRZZmKsg9Fvgbh4+XKY+AX
+   UTMBQEQQQJLu4I8VRCxl6CvJxKbNVrWBdxxXNbAtBmMAGzljMx81F5Y3Y
+   /XaT3D/SNjv+0DmPJU3kbvJQpWy81llZHfhgjpTfqVS00jr83j+fPoehX
+   WNoSTPSia3DH2m8GtKdoyRsEjNDBga/8WzXlPBtRdPme8CPHz08bnJoGi
+   7ejVDMoFfBTtmJMJrXACoRhpa2hUWDXEladGB5nnGvH0RDckWgh6Dca02
+   6OxGL9QYabVCFF1AQ7PZkIUph5N4AQ/BUCW22AgR9My/6xsVP+JgT7wkv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="380707657"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="380707657"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 23:51:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="746303083"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="746303083"
+Received: from vcouthon-mobl1.ger.corp.intel.com (HELO [10.251.216.222]) ([10.251.216.222])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 23:51:52 -0700
+Message-ID: <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
+Date:   Mon, 11 Sep 2023 09:51:41 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+ <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+ <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgD3jd3Zuf5k8FC7AA--.8928S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw43GrWUGFyUWr17AFWrZrb_yoWrGF18pF
-        sI9FW3Ar48X3yFqa1DJa1Du3W5XwnFg34qgr9rG3s3Cr1UJry3ZF1fXw40qr90gay8Wrn8
-        Wa1DKa4UWr18G37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On 07/09/2023 20:29, Pierre-Louis Bossart wrote:
+>> I think find all this very confusing, because there is no workqueue used
+>> in the remove steps. The workqueue is only used ONCE during the probe.
+> 
+> Maybe we should just remove any references to workqueues, and have
+> 
+> probe_start (cannot run in a wq)
+> probe (may run in a wq)
+> remove (cannot run in a wq, needs to call cancel_work_sync() if the
+> probe runs in a wq)
+> remove_last (cannot run in a wq, releases all resources acquired in
+> probe_start)
+> 
+> Or something similar that shows the symmetry between steps and when the
+> wq is allowed.
 
-Use seq_list_start/next/stop() directly. Move printing "Personalities"
-to md_sep_start() and "unsed devices" to md_seq_stop().
+What we have atm:
+snd_sof_probe - might be called from wq
+snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+		 step)
 
-Cc: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 124 ++++++++++++------------------------------------
- 1 file changed, 31 insertions(+), 93 deletions(-)
+We want a callbacks for hardware/device probing, right, split the
+snd_sof_probe (and remove) to be able to support a sane level of
+deferred probing support.
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 0fe7ab6e8ab9..9c1155042335 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -8192,105 +8192,14 @@ static int status_resync(struct seq_file *seq, struct mddev *mddev)
- 	return 1;
- }
- 
--static void *md_seq_start(struct seq_file *seq, loff_t *pos)
--{
--	struct list_head *tmp;
--	loff_t l = *pos;
--	struct mddev *mddev;
--
--	if (l == 0x10000) {
--		++*pos;
--		return (void *)2;
--	}
--	if (l > 0x10000)
--		return NULL;
--	if (!l--)
--		/* header */
--		return (void*)1;
--
--	spin_lock(&all_mddevs_lock);
--	list_for_each(tmp,&all_mddevs)
--		if (!l--) {
--			mddev = list_entry(tmp, struct mddev, all_mddevs);
--			if (!mddev_get(mddev))
--				continue;
--			spin_unlock(&all_mddevs_lock);
--			return mddev;
--		}
--	spin_unlock(&all_mddevs_lock);
--	if (!l--)
--		return (void*)2;/* tail */
--	return NULL;
--}
--
--static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
--{
--	struct list_head *tmp;
--	struct mddev *next_mddev, *mddev = v;
--	struct mddev *to_put = NULL;
--
--	++*pos;
--	if (v == (void*)2)
--		return NULL;
--
--	spin_lock(&all_mddevs_lock);
--	if (v == (void*)1) {
--		tmp = all_mddevs.next;
--	} else {
--		to_put = mddev;
--		tmp = mddev->all_mddevs.next;
--	}
--
--	for (;;) {
--		if (tmp == &all_mddevs) {
--			next_mddev = (void*)2;
--			*pos = 0x10000;
--			break;
--		}
--		next_mddev = list_entry(tmp, struct mddev, all_mddevs);
--		if (mddev_get(next_mddev))
--			break;
--		mddev = next_mddev;
--		tmp = mddev->all_mddevs.next;
--	}
--	spin_unlock(&all_mddevs_lock);
--
--	if (to_put)
--		mddev_put(mddev);
--	return next_mddev;
--
--}
--
--static void md_seq_stop(struct seq_file *seq, void *v)
--{
--	struct mddev *mddev = v;
--
--	if (mddev && v != (void*)1 && v != (void*)2)
--		mddev_put(mddev);
--}
--
- static int md_seq_show(struct seq_file *seq, void *v)
- {
--	struct mddev *mddev = v;
-+	struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
- 	sector_t sectors;
- 	struct md_rdev *rdev;
- 
--	if (v == (void*)1) {
--		struct md_personality *pers;
--		seq_printf(seq, "Personalities : ");
--		spin_lock(&pers_lock);
--		list_for_each_entry(pers, &pers_list, list)
--			seq_printf(seq, "[%s] ", pers->name);
--
--		spin_unlock(&pers_lock);
--		seq_printf(seq, "\n");
--		seq->poll_event = atomic_read(&md_event_count);
--		return 0;
--	}
--	if (v == (void*)2) {
--		status_unused(seq);
-+	if (test_bit(MD_DELETED, &mddev->flags))
- 		return 0;
--	}
- 
- 	spin_lock(&mddev->lock);
- 	if (mddev->pers || mddev->raid_disks || !list_empty(&mddev->disks)) {
-@@ -8366,6 +8275,35 @@ static int md_seq_show(struct seq_file *seq, void *v)
- 	return 0;
- }
- 
-+static void *md_seq_start(struct seq_file *seq, loff_t *pos)
-+{
-+	struct md_personality *pers;
-+
-+	seq_puts(seq, "Personalities : ");
-+	spin_lock(&pers_lock);
-+	list_for_each_entry(pers, &pers_list, list)
-+		seq_printf(seq, "[%s] ", pers->name);
-+
-+	spin_unlock(&pers_lock);
-+	seq_puts(seq, "\n");
-+	seq->poll_event = atomic_read(&md_event_count);
-+
-+	spin_lock(&all_mddevs_lock);
-+
-+	return seq_list_start(&all_mddevs, *pos);
-+}
-+
-+static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	return seq_list_next(v, &all_mddevs, pos);
-+}
-+
-+static void md_seq_stop(struct seq_file *seq, void *v)
-+{
-+	status_unused(seq);
-+	spin_unlock(&all_mddevs_lock);
-+}
-+
- static const struct seq_operations md_seq_ops = {
- 	.start  = md_seq_start,
- 	.next   = md_seq_next,
+With that in mind:
+snd_sof_device_probe - Not called from wq (to handle deferred probing)
+snd_sof_probe - might be called from wq
+
+snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
+		 step)
+snd_sof_device_remove - Not called from wq (to up the
+			snd_sof_device_probe step)
+
+Naming option: s/device/hardware
+
+However, I think the snd_sof_device_remove itself is redundant and we
+might not need it at all as in case we have wq and there is a failure in
+there we do want to release resources as much as possible. The module
+will be kept loaded (no deferred handling in wq) and that might block
+PM, other devices to behave correctly. Iow, if the wq has failure we
+should do a cleanup to the best effort to reach a level like the driver
+is not even loaded.
+
+Doable? I thin it is.
+
 -- 
-2.39.2
-
+Péter
