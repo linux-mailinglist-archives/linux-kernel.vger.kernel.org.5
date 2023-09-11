@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF0279BCD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D30379BF93
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379028AbjIKWlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S1378141AbjIKWae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239900AbjIKObI (ORCPT
+        with ESMTP id S239970AbjIKOcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:31:08 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E06E50
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:31:02 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d801c83325fso2855125276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:31:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694442662; x=1695047462; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MRMbduXBtm2u3hpR450ozQ9ET1j6hRdg7A226yfqXL4=;
-        b=IV60T76h5W9/i/guaWR4U3emnwbgbSJJC3vrAhyqCyMzYnggSjL/CPbSdCMJE01WdY
-         uXwFGBxMdGvBsx3Qxc5p1AGgTD+VIYFCt0T+dnQ6/8+0ey0RBp73QeaeMkxqrEl23eBL
-         AxqVz2NLI9ojxbv6xIbQhLsGEEMykQBJglD6oVVv+NZggCYAw2wU4DJhk/EzpqqT4l4z
-         9rA9e9vLg4P0PbhKbzFovKVUQ9A0iOimkPqXIiKdA3EtagA8a/MCo0DhuemZ0e+PZ8EA
-         oj1s3O84DNyg+OxXCY3RgzFuP64at/H4/MeLsTq8PDfQooE1vYsXLwz/xjuNFujN/kmY
-         e6lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694442662; x=1695047462;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MRMbduXBtm2u3hpR450ozQ9ET1j6hRdg7A226yfqXL4=;
-        b=ir1J5U2VfgcMluD5PrlSe0TDRpJADb+8Vvl5ECCMwTgGqgmeyMJQhaYJRBrG9Uv08a
-         JDgxzpl4pGW0cNBB05C4ItoO32H4V2McSXaj5lBaJafJHatIXv5Ob6VAcGfqi5VtyEcB
-         OUHcBcoWieKEf+UxK2iOrkV9ME1YB6zsr9/VlBVNku/R6Eb3FUbnWdWvLr/uS2pVsgVt
-         u4sGfs3rvuBRT+hz6AgGu613CQfqIW0LS241nK7DNjI5CwlU/EWN8jT2FGk4Oe/4fLB+
-         rIzZVaBqLk4xC5Rv1c+K5skrSxSVIO2WYrTDSqz7GDllA36bdcHDq/AK05F9mLC0YqrO
-         H87Q==
-X-Gm-Message-State: AOJu0YydOEbkQ49w5yErfcU3V6B1elQ30shgAmkRH8UflVmJjNUo+jlz
-        6d5dfWLwByI09CGGNdiHsU7xUtJhpa4oL+8Y5XYJhQ==
-X-Google-Smtp-Source: AGHT+IHM9lDnQetC5LLtRbUDBIR/L+NWqkeueFcXF7OnhW3zZVv6Wnt9N3vGRRwv0ZYdb7tOzOpDbqjMCh4fQJ5M7tk=
-X-Received: by 2002:a25:7392:0:b0:d7e:761d:cc83 with SMTP id
- o140-20020a257392000000b00d7e761dcc83mr7054140ybc.14.1694442661879; Mon, 11
- Sep 2023 07:31:01 -0700 (PDT)
+        Mon, 11 Sep 2023 10:32:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346F7CF0;
+        Mon, 11 Sep 2023 07:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694442768; x=1725978768;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GBvaxapfraK64H6oc4OtRUMWrhE97kyIgzhCWgEuG4k=;
+  b=RgS6YBbsEeF6GNpDm2PyTwljgQNqnzwsZiU2SoQX07jlfB7zATrMUh+e
+   AaIhd2tqwZ8ZRUdVJ4bD6uq0d6uhsAZNm2LDDCFUn38AjsoKSCIrI0E8N
+   LQNaciK9omXUm+ZNHgX4IXOKmjRdO41kA3OMEEVNWd0iQMLEePK4tyPov
+   0APX1YwEI+y47U1JBKLmLxM9/7ZIk2YhWE2qfESbUdcgQHy2wTG7bPf1t
+   jsJdYdy4p9odRM/r7joCAM68761hJ9jlW8banBiwD/e8yHBktZgDlfr1W
+   BBXdmx6glZdg1dWD6ButI6gCcHCSajlETsvCzgblzIXH/15u0++DWD8dR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378012085"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="378012085"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:32:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="720000764"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="720000764"
+Received: from cdaubert-mobl13.amr.corp.intel.com (HELO [10.212.203.41]) ([10.212.203.41])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:32:46 -0700
+Message-ID: <40a363b1-80be-89ce-6527-ac2a4c04917f@intel.com>
+Date:   Mon, 11 Sep 2023 07:32:46 -0700
 MIME-Version: 1.0
-References: <20230911025223.3433776-1-xianwei.zhao@amlogic.com>
-In-Reply-To: <20230911025223.3433776-1-xianwei.zhao@amlogic.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 11 Sep 2023 16:30:25 +0200
-Message-ID: <CAPDyKFqTs=mRnBRREbT+WFj_4qTLd8LTKigY_1TAZOqGGUKk3A@mail.gmail.com>
-Subject: Re: [PATCH V3 RESEND 0/6] Power: T7: add power domain driver
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/3] /dev/mem: Do not map unaccepted memory
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-4-adrian.hunter@intel.com>
+ <9ffb7a3b-cf20-617a-e4f1-8a6a8a2c5972@intel.com>
+ <20230907142510.vcj57cvnewqt4m37@box.shutemov.name>
+ <7a50d04f-63ee-a901-6f39-7d341e423a77@intel.com>
+ <c60df0e4-4214-bbd0-7fc6-8f04e5888f53@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <c60df0e4-4214-bbd0-7fc6-8f04e5888f53@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 04:52, Xianwei Zhao <xianwei.zhao@amlogic.com> wrote:
->
-> First patch is that remove C3 some power domain ALWAYS_ON property.
-> Second patch is that add driver to support power parent node.
-> Third patch is that turn on power if initial power domain with
-> "AWAY_ON" property state is off.
->
-> Other patchs adds power controller driver support for Amlogic T7 SoC.
->
-> Changes Since v2:
->  -Modify subject.
->  -Define PWRC_NO_PARENT UINT_MAX
->  -Remove modification that transform is_off into 1 or 0 using !!
->
-> Changes Since v1:
->  -Fix license from "GPL-2.0-only OR .*" to "GPL-2.0-only OR MIT".
->  -Modify T7_NIC flag  "ALWAYS_ON"
->
-> xianwei.zhao (6):
->   genpd: amlogic: modify some power domains property
->   genpd: amlogic: add driver to support power parent node
->   genpd: amlogic: init power domain state
->   dt-bindings: power: add Amlogic T7 power domains
->   genpd: amlogic: Add support for T7 power domains controller
->   arm64: dts: amlogic: t7: add power domain controller node
->
->  .../power/amlogic,meson-sec-pwrc.yaml         |   3 +-
->  arch/arm64/boot/dts/amlogic/amlogic-t7.dtsi   |   6 +
->  drivers/genpd/amlogic/meson-secure-pwrc.c     | 127 ++++++++++++++++--
->  include/dt-bindings/power/amlogic,t7-pwrc.h   |  63 +++++++++
->  4 files changed, 185 insertions(+), 14 deletions(-)
->  create mode 100644 include/dt-bindings/power/amlogic,t7-pwrc.h
->
->
-> base-commit: 413f5c02929bb33042bbc4ee233166550a5fca70
-> --
-> 2.37.1
->
+On 9/11/23 01:09, David Hildenbrand wrote:
+> So, making unaccepted memory similarly depend on "!DEVMEM ||
+> STRICT_DEVMEM" does not sound too far off ...
 
-Patch 1 to 5, applied for next!
-
-The DT patch (patch4), is available on an immutable branch "genpd_dt" too.
-
-From now on, I will continue to put changes for genpd DT bindings on
-the above branch, to allow SoC maintainers to pull it in to manage
-potential dependent updates to DTS files.
-
-Kind regards
-Uffe
+Yeah, considering all of the invasive work folks want to do to "harden"
+the kernel for TDX, doing that ^ is just about the best
+bang-for-your-buck "hardening" that you can get.
