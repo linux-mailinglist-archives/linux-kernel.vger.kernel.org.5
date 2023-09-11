@@ -2,107 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1726679B9C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DA479BDD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354964AbjIKVzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S1346013AbjIKVWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235705AbjIKJZX (ORCPT
+        with ESMTP id S235704AbjIKJZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:25:23 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D155ECD3;
-        Mon, 11 Sep 2023 02:25:18 -0700 (PDT)
-Received: from localhost.localdomain (unknown [59.103.218.185])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 339F366072EE;
-        Mon, 11 Sep 2023 10:25:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694424317;
-        bh=9wEA6kj/8qL09liKb87plaPguZEAHq2kFG8kWKL8ugk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=g6cyi+l3p+hseuUSou0jYQPkZXTIadufJl7IaQgUWWpwt5Ab5Y/Uo71MWpKh4FF6n
-         e2jMzXLQQMlhTcCPL1/VBriOClgZpZEEXp58o6IURJw0ZNwtaC/bCOwaklmeZLIW8r
-         bgzIL0h7j4BjSQC55gEkiunqUvQ3oRg7Zh9Hr3MLFPyvdW/DqZ/Z8AZdQSdhR0zc55
-         3O6McOeSplTsUjU1yULKsHdV8IlNvY+tOOOdAZ5VPQ+p6Do4+T5mdRjyPjSXT7Yh0a
-         H9gppZ8912chGTdaI+yvB/acLKV+XaNDu72FB8HKihIKEe06FqNA+VuBKKxtew2sgz
-         zv5L7o/1UvQBw==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Allison Henderson <achender@linux.vnet.ibm.com>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC] ext4: don't remove already removed extent
-Date:   Mon, 11 Sep 2023 14:24:53 +0500
-Message-Id: <20230911092454.3558231-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 11 Sep 2023 05:25:14 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284BCCD3;
+        Mon, 11 Sep 2023 02:25:09 -0700 (PDT)
+Received: from ideasonboard.com (mob-5-90-67-213.net.vodafone.it [5.90.67.213])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 704719D5;
+        Mon, 11 Sep 2023 11:23:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1694424217;
+        bh=n6rXlKjFASGndBSb18CY4EOGmJFkRWJrFyLOeyblPIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vds7MDwxhfWhF49DI4/HeeWD69Hu6m2WvMiSgVPEc7UVYSpC+eJqcyR2ZGDNXGbLo
+         b+yxh6mZXRd8j5HsDfvebPyVrR8ZMm8Up9GTXBUu8inIBhY6llny3EzFtUrPGk3U44
+         G+fdrzkBzWtxNF/YVCgwR07IKW3xNrN91ubQut58=
+Date:   Mon, 11 Sep 2023 11:25:03 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH 1/2] media: mt9p031: Extend match support for OF tables
+Message-ID: <spi52a754wa4ghwvfa6hkoqiz5rws27jlrdfnintx7dfm5ccqv@cngal3bh6eje>
+References: <20230910160126.70122-1-biju.das.jz@bp.renesas.com>
+ <20230910160126.70122-2-biju.das.jz@bp.renesas.com>
+ <tlaikk73c5gc6y3bk6evuwtlizletaws7tuc5nk36hz2adkydp@duv2tjpqnios>
+ <OS0PR01MB59226056EAA42B93D123CFB586F2A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB59226056EAA42B93D123CFB586F2A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot has hit the following bug on current and all older kernels:
-BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
-BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
-Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
+Hi Biju
 
-On investigation, I've found that eh->eh_entries is zero, ex is
-referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
-Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
-buffer read.
+On Mon, Sep 11, 2023 at 09:14:35AM +0000, Biju Das wrote:
+> Hi Jacopo Mondi,
+>
+> Thanks for the feedback.
+>
+> > Subject: Re: [PATCH 1/2] media: mt9p031: Extend match support for OF tables
+> >
+> > Hi Biju
+> >
+> > On Sun, Sep 10, 2023 at 05:01:25PM +0100, Biju Das wrote:
+> > > The driver has an OF match table, still, it uses an ID lookup table
+> > > for retrieving match data. Currently, the driver is working on the
+> > > assumption that an I2C device registered via OF will always match a
+> > > legacy I2C device ID. The correct approach is to have an OF device ID
+> > > table using i2c_get_match_data() if the devices are registered via OF/ID.
+> > >
+> > > Unify the OF/ID table by using MEDIA_BUS_FMT as match data for both
+> > > these tables and replace the ID lookup table for the match data by
+> > > i2c_get_match_data() and simplifly probe() and mt9p031_init_cfg()
+> > >
+> > > Drop mt9p031_init_cfg as there is no user.
+> > >
+> > > While at it, remove the trailing comma in the terminator entry for the
+> > > OF table making code robust against (theoretical) misrebases or other
+> > > similar things where the new entry goes _after_ the termination
+> > > without the compiler noticing.
+> > >
+> > > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > ---
+> > >  drivers/media/i2c/mt9p031.c | 33 +++++++++++----------------------
+> > >  1 file changed, 11 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> > > index 348f1e1098fb..540cb519915c 100644
+> > > --- a/drivers/media/i2c/mt9p031.c
+> > > +++ b/drivers/media/i2c/mt9p031.c
+> > > @@ -112,11 +112,6 @@
+> > >  #define MT9P031_TEST_PATTERN_RED			0xa2
+> > >  #define MT9P031_TEST_PATTERN_BLUE			0xa3
+> > >
+> > > -enum mt9p031_model {
+> > > -	MT9P031_MODEL_COLOR,
+> > > -	MT9P031_MODEL_MONOCHROME,
+> > > -};
+> > > -
+> > >  struct mt9p031 {
+> > >  	struct v4l2_subdev subdev;
+> > >  	struct media_pad pad;
+> > > @@ -129,7 +124,7 @@ struct mt9p031 {
+> > >  	struct clk *clk;
+> > >  	struct regulator_bulk_data regulators[3];
+> > >
+> > > -	enum mt9p031_model model;
+> > > +	u32 code;
+> > >  	struct aptina_pll pll;
+> > >  	unsigned int clk_div;
+> > >  	bool use_pll;
+> > > @@ -714,12 +709,7 @@ static int mt9p031_init_cfg(struct v4l2_subdev
+> > *subdev,
+> > >  	crop->height = MT9P031_WINDOW_HEIGHT_DEF;
+> > >
+> > >  	format = __mt9p031_get_pad_format(mt9p031, sd_state, 0, which);
+> > > -
+> > > -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> > > -		format->code = MEDIA_BUS_FMT_Y12_1X12;
+> > > -	else
+> > > -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> > > -
+> > > +	format->code = mt9p031->code;
+> > >  	format->width = MT9P031_WINDOW_WIDTH_DEF;
+> > >  	format->height = MT9P031_WINDOW_HEIGHT_DEF;
+> > >  	format->field = V4L2_FIELD_NONE;
+> > > @@ -1104,7 +1094,6 @@ mt9p031_get_pdata(struct i2c_client *client)
+> > >
+> > >  static int mt9p031_probe(struct i2c_client *client)  {
+> > > -	const struct i2c_device_id *did = i2c_client_get_device_id(client);
+> > >  	struct mt9p031_platform_data *pdata = mt9p031_get_pdata(client);
+> > >  	struct i2c_adapter *adapter = client->adapter;
+> > >  	struct mt9p031 *mt9p031;
+> > > @@ -1129,7 +1118,7 @@ static int mt9p031_probe(struct i2c_client *client)
+> > >  	mt9p031->pdata = pdata;
+> > >  	mt9p031->output_control	= MT9P031_OUTPUT_CONTROL_DEF;
+> > >  	mt9p031->mode2 = MT9P031_READ_MODE_2_ROW_BLC;
+> > > -	mt9p031->model = did->driver_data;
+> > > +	mt9p031->code = (uintptr_t)i2c_get_match_data(client);
+> > >
+> > >  	mt9p031->regulators[0].supply = "vdd";
+> > >  	mt9p031->regulators[1].supply = "vdd_io";
+> > > @@ -1226,19 +1215,19 @@ static void mt9p031_remove(struct i2c_client
+> > *client)
+> > >  }
+> > >
+> > >  static const struct i2c_device_id mt9p031_id[] = {
+> > > -	{ "mt9p006", MT9P031_MODEL_COLOR },
+> > > -	{ "mt9p031", MT9P031_MODEL_COLOR },
+> > > -	{ "mt9p031m", MT9P031_MODEL_MONOCHROME },
+> > > -	{ }
+> > > +	{ "mt9p006", MEDIA_BUS_FMT_SGRBG12_1X12 },
+> > > +	{ "mt9p031", MEDIA_BUS_FMT_SGRBG12_1X12 },
+> > > +	{ "mt9p031m", MEDIA_BUS_FMT_Y12_1X12 },
+> > > +	{ /* sentinel */ }
+> > >  };
+> > >  MODULE_DEVICE_TABLE(i2c, mt9p031_id);
+> > >
+> > >  #if IS_ENABLED(CONFIG_OF)
+> > >  static const struct of_device_id mt9p031_of_match[] = {
+> > > -	{ .compatible = "aptina,mt9p006", },
+> > > -	{ .compatible = "aptina,mt9p031", },
+> > > -	{ .compatible = "aptina,mt9p031m", },
+> > > -	{ /* sentinel */ },
+> > > +	{ .compatible = "aptina,mt9p006", .data = (void
+> > *)MEDIA_BUS_FMT_SGRBG12_1X12 },
+> > > +	{ .compatible = "aptina,mt9p031", .data = (void
+> > *)MEDIA_BUS_FMT_SGRBG12_1X12 },
+> > > +	{ .compatible = "aptina,mt9p031m", .data = (void
+> > *)MEDIA_BUS_FMT_Y12_1X12 },
+> > > +	{ /* sentinel */ }
+> >
+> > I know it might sound not necessary, but isn't it better to wrap the
+> > format in some sort of per-model structure. It would avoid a few type
+> > casts too. Up to you though
+>
+> The problem with structure is, it will have one
+> variable entry. I got some feedback related to similar
+> patches not to add a single variable to structure
+> and use the value directly instead.
+>
 
-element: FFFF8882F8F0D06C       <----- ex
-element: FFFF8882F8F0D060
-element: FFFF8882F8F0D054
-element: FFFF8882F8F0D048
-element: FFFF8882F8F0D03C
-element: FFFF8882F8F0D030
-element: FFFF8882F8F0D024
-element: FFFF8882F8F0D018
-element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
-header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
+Ok then, a matter of preferences I think. Up to you, really.
 
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
-Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
-Fixes: d583fb87a3ff ("ext4: punch out extents")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-This patch is only fixing the local issue. There may be bigger bug. Why
-is ex set to last entry if the eh->eh_entries is 0. If any ext4
-developer want to look at the bug, please don't hesitate.
----
- fs/ext4/extents.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cheers
+  j
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index e4115d338f101..7b7779b4cb87f 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
- 		 * If the extent was completely released,
- 		 * we need to remove it from the leaf
- 		 */
--		if (num == 0) {
-+		if (num == 0 && eh->eh_entries) {
- 			if (end != EXT_MAX_BLOCKS - 1) {
- 				/*
- 				 * For hole punching, we need to scoot all the
--- 
-2.40.1
-
+> Cheers,
+> Biju
+>
+> >
+> > >  };
+> > >  MODULE_DEVICE_TABLE(of, mt9p031_of_match);
+> > >  #endif
+> > > --
+> > > 2.25.1
+> > >
