@@ -2,262 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C82B79B136
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8E479B31B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347037AbjIKVYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S241377AbjIKWj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbjIKM0S (ORCPT
+        with ESMTP id S237300AbjIKM3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:26:18 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768021A2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:26:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2F09F1F8A6;
-        Mon, 11 Sep 2023 12:26:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694435171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=HT4Y4nq/J5g00fCgUPdjuBKcMR4zQ+Ni+YCDnYKeA54=;
-        b=DDZzAoUEucLB9oIlC9fTncVKsqTQbFWodv/VxDq0cCWDfxARJfhFUmfEuypnINVC3jJDcA
-        GJmyTV8ObdFU/9dX8SK+ROSQGAWheM1hsH7HefacTTxFLK0jSjWe1k32+pTy/M1JpFz1pU
-        BhQ6vBb9nP6WRzlg+baY5nb7NkhItZw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694435171;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=HT4Y4nq/J5g00fCgUPdjuBKcMR4zQ+Ni+YCDnYKeA54=;
-        b=idQKo5LSb2MP7w21NOZsgcYbVUBd155j1ZDgrAeXcW+433mEqv7jQhacClZVkGjJp/yNff
-        WlcJ1HsplNeG7fBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0547F139CC;
-        Mon, 11 Sep 2023 12:26:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id z+csAGMH/2QuCgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 11 Sep 2023 12:26:11 +0000
-Message-ID: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
-Date:   Mon, 11 Sep 2023 14:26:10 +0200
+        Mon, 11 Sep 2023 08:29:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B363CEB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694435348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DHwDjcrul9YxmPEcQYx4HYVTPitVbFTJsMO8Jxfoen4=;
+        b=PpBbTIXDCLfnPYlUlQTZyTXWW9iko0onGiJho1tlEcuDiMQOxmdWdiKnJMf1kOZ5GqSRn/
+        sQTIuWaO+qvN4hcg84bxwHuXdPh+sqi3zqNEqm/io6/36cXj6G2Elq+/Mm+N6zUqKJjhHj
+        6evGTUoODgCaj6GeCU3pP64m2ISh9r0=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-Meb5plMHNfecFLX8nUD6Cw-1; Mon, 11 Sep 2023 08:29:07 -0400
+X-MC-Unique: Meb5plMHNfecFLX8nUD6Cw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4011fa32e99so32886225e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:29:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694435346; x=1695040146;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DHwDjcrul9YxmPEcQYx4HYVTPitVbFTJsMO8Jxfoen4=;
+        b=hQ1ZnwKt1YBVxmVxjPpbRHBhCl8vNI+KdDxISnNaCG8xMAyNz5uzDiry23w8sS4NAe
+         KOoUGHVobljtACAd2flq/wDdRzSNhYgHkRZbkVyAyK5tTrYIPqIjRjJW55aDCniPWt4J
+         YNlgB3Y8ywzgP7YMyBHKxaE3uMjYrw0UCIs25pYciJ4hhzmM4IeGoxmV0l2t433vpCtM
+         /U8p+qhhQtjSONrQRe26L75JQ9Dq0CkU8RRQowsTn9GbplCm3rvMFyB7GI4Li33syybT
+         n1AMXhnYX4p2x+E28onZDx0v6Oa2GeC3OGGeNeV18pKuFanJXRFptec0sFsHtaeyJjxF
+         Y6aA==
+X-Gm-Message-State: AOJu0YyajlFYY1Sh9SxJXwqn4/MdzGxzzVTDKDJVzaBybV99z4ncxU3A
+        qq8gf3tBOOy6dr4X8P+hzI6Ul2Aiz5nOiwL9mfhnqcy7qnN/Xj4E8WbBz3wyXTI+LeXHnBhb9zX
+        1nVfEGkO+ByBIyhLGtrmX2rAU
+X-Received: by 2002:a05:600c:2208:b0:3fe:f667:4e4c with SMTP id z8-20020a05600c220800b003fef6674e4cmr8229311wml.12.1694435346278;
+        Mon, 11 Sep 2023 05:29:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF0LpLhNizaUMU3zKfHh49aqw4McELTtqbEdG0mSCPhvh4bG6htIZyW8h2QYhMj39he9TwHvA==
+X-Received: by 2002:a05:600c:2208:b0:3fe:f667:4e4c with SMTP id z8-20020a05600c220800b003fef6674e4cmr8229290wml.12.1694435345880;
+        Mon, 11 Sep 2023 05:29:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
+        by smtp.gmail.com with ESMTPSA id z18-20020a1c4c12000000b003fedcd02e2asm9929615wmf.35.2023.09.11.05.29.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 05:29:05 -0700 (PDT)
+Message-ID: <0cc8a118-2522-f666-5bcc-af06263fd352@redhat.com>
+Date:   Mon, 11 Sep 2023 14:29:03 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
 Content-Language: en-US
-To:     j@jannau.net, Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        asahi@lists.linux.dev
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------4M8cdUHyfNjDPiRMngCSk0qn"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     will@kernel.org, oliver.upton@linux.dev, maz@kernel.org,
+        james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        arnd@arndb.de, akpm@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+References: <20230823131350.114942-1-alexandru.elisei@arm.com>
+ <33def4fe-fdb8-6388-1151-fabd2adc8220@redhat.com> <ZOc0fehF02MohuWr@arm.com>
+ <ebd3f142-43cc-dc92-7512-8f1c99073fce@redhat.com>
+ <0b9c122a-c05a-b3df-c69f-85f520294adc@redhat.com> <ZOd2LvUKMguWdlgq@arm.com>
+ <ZPhfNVWXhabqnknK@monolith> <ZP7/e8YFiosElvTm@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH RFC 00/37] Add support for arm64 MTE dynamic tag storage
+ reuse
+In-Reply-To: <ZP7/e8YFiosElvTm@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------4M8cdUHyfNjDPiRMngCSk0qn
-Content-Type: multipart/mixed; boundary="------------kpzYvdaKcjH0xuuH5zw29EU8";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: j@jannau.net, Javier Martinez Canillas <javierm@redhat.com>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- asahi@lists.linux.dev
-Message-ID: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
-In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+On 11.09.23 13:52, Catalin Marinas wrote:
+> On Wed, Sep 06, 2023 at 12:23:21PM +0100, Alexandru Elisei wrote:
+>> On Thu, Aug 24, 2023 at 04:24:30PM +0100, Catalin Marinas wrote:
+>>> On Thu, Aug 24, 2023 at 01:25:41PM +0200, David Hildenbrand wrote:
+>>>> On 24.08.23 13:06, David Hildenbrand wrote:
+>>>>> Regarding one complication: "The kernel needs to know where to allocate
+>>>>> a PROT_MTE page from or migrate a current page if it becomes PROT_MTE
+>>>>> (mprotect()) and the range it is in does not support tagging.",
+>>>>> simplified handling would be if it's in a MIGRATE_CMA pageblock, it
+>>>>> doesn't support tagging. You have to migrate to a !CMA page (for
+>>>>> example, not specifying GFP_MOVABLE as a quick way to achieve that).
+>>>>
+>>>> Okay, I now realize that this patch set effectively duplicates some CMA
+>>>> behavior using a new migrate-type.
+> [...]
+>> I considered mixing the tag storage memory memory with normal memory and
+>> adding it to MIGRATE_CMA. But since tag storage memory cannot be tagged,
+>> this means that it's not enough anymore to have a __GFP_MOVABLE allocation
+>> request to use MIGRATE_CMA.
+>>
+>> I considered two solutions to this problem:
+>>
+>> 1. Only allocate from MIGRATE_CMA is the requested memory is not tagged =>
+>> this effectively means transforming all memory from MIGRATE_CMA into the
+>> MIGRATE_METADATA migratetype that the series introduces. Not very
+>> appealing, because that means treating normal memory that is also on the
+>> MIGRATE_CMA lists as tagged memory.
+> 
+> That's indeed not ideal. We could try this if it makes the patches
+> significantly simpler, though I'm not so sure.
+> 
+> Allocating metadata is the easier part as we know the correspondence
+> from the tagged pages (32 PROT_MTE page) to the metadata page (1 tag
+> storage page), so alloc_contig_range() does this for us. Just adding it
+> to the CMA range is sufficient.
+> 
+> However, making sure that we don't allocate PROT_MTE pages from the
+> metadata range is what led us to another migrate type. I guess we could
+> achieve something similar with a new zone or a CPU-less NUMA node,
 
---------------kpzYvdaKcjH0xuuH5zw29EU8
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Ideally, no significant core-mm changes to optimize for an architecture 
+oddity. That implies, no new zones and no new migratetypes -- unless it 
+is unavoidable and you are confident that you can convince core-MM 
+people that the use case (giving back 3% of system RAM at max in some 
+setups) is worth the trouble.
 
-SGkNCg0KQW0gMTAuMDkuMjMgdW0gMTg6Mzkgc2NocmllYiBKYW5uZSBHcnVuYXUgdmlhIEI0
-IFJlbGF5Og0KPiBGcm9tOiBKYW5uZSBHcnVuYXUgPGpAamFubmF1Lm5ldD4NCj4gDQo+IE11
-bHRpcGxlIHBvd2VyIGRvbWFpbnMgbmVlZCB0byBiZSBoYW5kbGVkIGV4cGxpY2l0bHkgaW4g
-ZWFjaCBkcml2ZXIuIFRoZQ0KPiBkcml2ZXIgY29yZSBjYW4gbm90IGhhbmRsZSBpdCBhdXRv
-bWF0aWNhbGx5IHNpbmNlIGl0IGlzIG5vdCBhd2FyZSBvZg0KPiBwb3dlciBzZXF1ZW5jaW5n
-IHJlcXVpcmVtZW50cyB0aGUgaGFyZHdhcmUgbWlnaHQgaGF2ZS4gVGhpcyBpcyBub3QgYQ0K
-PiBwcm9ibGVtIGZvciBzaW1wbGVkcm0gc2luY2UgZXZlcnl0aGluZyBpcyBleHBlY3RlZCB0
-byBiZSBwb3dlcmVkIG9uIGJ5DQo+IHRoZSBib290bG9hZGVyLiBzaW1wbGVkcm0gaGFzIGp1
-c3QgZW5zdXJlIGl0IHJlbWFpbnMgcG93ZXJlZCBvbiBkdXJpbmcNCj4gaXRzIGxpZmV0aW1l
-Lg0KPiBUaGlzIGlzIHJlcXVpcmVkIG9uIEFwcGxlIHNpbGljb24gTTIgYW5kIE0yIFByby9N
-YXgvVWx0cmEgZGVza3RvcA0KPiBzeXN0ZW1zLiBUaGUgSERNSSBvdXRwdXQgaW5pdGlhbGl6
-ZWQgYnkgdGhlIGJvb3Rsb2FkZXIgcmVxdWlyZXMga2VlcGluZw0KPiB0aGUgZGlzcGxheSBj
-b250cm9sbGVyIGFuZCBhIERQIHBoeSBwb3dlciBkb21haW4gb24uDQo+IA0KPiBTaWduZWQt
-b2ZmLWJ5OiBKYW5uZSBHcnVuYXUgPGpAamFubmF1Lm5ldD4NCj4gLS0tDQo+ICAgZHJpdmVy
-cy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJtLmMgfCAxMDYgKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEwNiBpbnNlcnRpb25z
-KCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJt
-LmMgYi9kcml2ZXJzL2dwdS9kcm0vdGlueS9zaW1wbGVkcm0uYw0KPiBpbmRleCBmZjg2YmEx
-YWUxYjguLmVmZWRlZGU1N2Q0MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3Rp
-bnkvc2ltcGxlZHJtLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJt
-LmMNCj4gQEAgLTYsNiArNiw3IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2FkZHJlc3Mu
-aD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGF0YS9zaW1wbGVmYi5oPg0KPiAg
-ICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51
-eC9wbV9kb21haW4uaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcmVndWxhdG9yL2NvbnN1bWVy
-Lmg+DQo+ICAgDQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fYXBlcnR1cmUuaD4NCj4gQEAgLTIy
-Nyw2ICsyMjgsMTIgQEAgc3RydWN0IHNpbXBsZWRybV9kZXZpY2Ugew0KPiAgIAl1bnNpZ25l
-ZCBpbnQgcmVndWxhdG9yX2NvdW50Ow0KPiAgIAlzdHJ1Y3QgcmVndWxhdG9yICoqcmVndWxh
-dG9yczsNCj4gICAjZW5kaWYNCj4gKwkvKiBwb3dlci1kb21haW5zICovDQo+ICsjaWYgZGVm
-aW5lZCBDT05GSUdfT0YgJiYgZGVmaW5lZCBDT05GSUdfUE1fR0VORVJJQ19ET01BSU5TDQo+
-ICsJaW50IHB3cl9kb21fY291bnQ7DQo+ICsJc3RydWN0IGRldmljZSAqKnB3cl9kb21fZGV2
-czsNCj4gKwlzdHJ1Y3QgZGV2aWNlX2xpbmsgKipwd3JfZG9tX2xpbmtzOw0KPiArI2VuZGlm
-DQo+ICAgDQo+ICAgCS8qIHNpbXBsZWZiIHNldHRpbmdzICovDQo+ICAgCXN0cnVjdCBkcm1f
-ZGlzcGxheV9tb2RlIG1vZGU7DQo+IEBAIC00NjgsNiArNDc1LDEwMiBAQCBzdGF0aWMgaW50
-IHNpbXBsZWRybV9kZXZpY2VfaW5pdF9yZWd1bGF0b3JzKHN0cnVjdCBzaW1wbGVkcm1fZGV2
-aWNlICpzZGV2KQ0KPiAgIH0NCj4gICAjZW5kaWYNCj4gICANCj4gKyNpZiBkZWZpbmVkIENP
-TkZJR19PRiAmJiBkZWZpbmVkIENPTkZJR19QTV9HRU5FUklDX0RPTUFJTlMNCj4gKy8qDQo+
-ICsgKiBHZW5lcmljIHBvd2VyIGRvbWFpbiBoYW5kbGluZyBjb2RlLg0KPiArICoNCj4gKyAq
-IEhlcmUgd2UgaGFuZGxlIHRoZSBwb3dlci1kb21haW5zIHByb3BlcnRpZXMgb2Ygb3VyICJz
-aW1wbGUtZnJhbWVidWZmZXIiDQo+ICsgKiBkdCBub2RlLiBUaGlzIGlzIG9ubHkgbmVjZXNz
-YXJ5IGlmIHRoZXJlIGlzIG1vcmUgdGhhbiBvbmUgcG93ZXItZG9tYWluLg0KPiArICogQSBz
-aW5nbGUgcG93ZXItZG9tYWlucyBpcyBoYW5kbGVkIGF1dG9tYXRpY2FsbHkgYnkgdGhlIGRy
-aXZlciBjb3JlLiBNdWx0aXBsZQ0KPiArICogcG93ZXItZG9tYWlucyBoYXZlIHRvIGJlIGhh
-bmRsZWQgYnkgZHJpdmVycyBzaW5jZSB0aGUgZHJpdmVyIGNvcmUgY2FuJ3Qga25vdw0KPiAr
-ICogdGhlIGNvcnJlY3QgcG93ZXIgc2VxdWVuY2luZy4gUG93ZXIgc2VxdWVuY2luZyBpcyBu
-b3QgYW4gaXNzdWUgZm9yIHNpbXBsZWRybQ0KPiArICogc2luY2UgdGhlIGJvb3Rsb2FkZXIg
-aGFzIHB1dCB0aGUgcG93ZXIgZG9tYWlucyBhbHJlYWR5IGluIHRoZSBjb3JyZWN0IHN0YXRl
-Lg0KPiArICogc2ltcGxlZHJtIGhhcyBvbmx5IHRvIGVuc3VyZSB0aGV5IHJlbWFpbiBhY3Rp
-dmUgZm9yIGl0cyBsaWZldGltZS4NCj4gKyAqDQo+ICsgKiBXaGVuIHRoZSBkcml2ZXIgdW5s
-b2Fkcywgd2UgZGV0YWNoIGZyb20gdGhlIHBvd2VyLWRvbWFpbnMuDQo+ICsgKg0KPiArICog
-V2Ugb25seSBjb21wbGFpbiBhYm91dCBlcnJvcnMgaGVyZSwgbm8gYWN0aW9uIGlzIHRha2Vu
-IGFzIHRoZSBtb3N0IGxpa2VseQ0KPiArICogZXJyb3IgY2FuIG9ubHkgaGFwcGVuIGR1ZSB0
-byBhIG1pc21hdGNoIGJldHdlZW4gdGhlIGJvb3Rsb2FkZXIgd2hpY2ggc2V0DQo+ICsgKiB1
-cCB0aGUgInNpbXBsZS1mcmFtZWJ1ZmZlciIgZHQgbm9kZSwgYW5kIHRoZSBQTSBkb21haW4g
-cHJvdmlkZXJzIGluIHRoZQ0KPiArICogZGV2aWNlIHRyZWUuIENoYW5jZXMgYXJlIHRoYXQg
-dGhlcmUgYXJlIG5vIGFkdmVyc2UgZWZmZWN0cywgYW5kIGlmIHRoZXJlIGFyZSwNCj4gKyAq
-IGEgY2xlYW4gdGVhcmRvd24gb2YgdGhlIGZiIHByb2JlIHdpbGwgbm90IGhlbHAgdXMgbXVj
-aCBlaXRoZXIuIFNvIGp1c3QNCj4gKyAqIGNvbXBsYWluIGFuZCBjYXJyeSBvbiwgYW5kIGhv
-cGUgdGhhdCB0aGUgdXNlciBhY3R1YWxseSBnZXRzIGEgd29ya2luZyBmYiBhdA0KPiArICog
-dGhlIGVuZCBvZiB0aGluZ3MuDQo+ICsgKi8NCj4gK3N0YXRpYyB2b2lkIHNpbXBsZWRybV9k
-ZXZpY2VfZGV0YWNoX2dlbnBkKHZvaWQgKnJlcykNCj4gK3sNCj4gKwlpbnQgaTsNCj4gKwlz
-dHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2RldiA9IC8qKHN0cnVjdCBzaW1wbGVkcm1fZGV2
-aWNlICopKi9yZXM7DQo+ICsNCj4gKw0KPiArCWRybV9lcnIoJnNkZXYtPmRldiwgIiUgcG93
-ZXItZG9tYWlucyBjb3VudDolZFxuIiwgX19mdW5jX18sIHNkZXYtPnB3cl9kb21fY291bnQp
-Ow0KDQpJZiBhbnl0aGluZywgZHJtX2RiZygpDQoNCj4gKwlpZiAoc2Rldi0+cHdyX2RvbV9j
-b3VudCA8PSAxKQ0KPiArCQlyZXR1cm47DQo+ICsNCj4gKwlmb3IgKGkgPSBzZGV2LT5wd3Jf
-ZG9tX2NvdW50IC0gMTsgaSA+PSAwOyBpLS0pIHsNCj4gKwkJaWYgKCFzZGV2LT5wd3JfZG9t
-X2xpbmtzW2ldKQ0KPiArCQkJZGV2aWNlX2xpbmtfZGVsKHNkZXYtPnB3cl9kb21fbGlua3Nb
-aV0pOw0KPiArCQlpZiAoIUlTX0VSUl9PUl9OVUxMKHNkZXYtPnB3cl9kb21fZGV2c1tpXSkp
-DQo+ICsJCQlkZXZfcG1fZG9tYWluX2RldGFjaChzZGV2LT5wd3JfZG9tX2RldnNbaV0sIHRy
-dWUpOw0KPiArCX0NCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBzaW1wbGVkcm1fZGV2aWNl
-X2F0dGFjaF9nZW5wZChzdHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2RldikNCj4gK3sNCj4g
-KwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBzZGV2LT5kZXYuZGV2Ow0KPiArCWludCBpOw0KPiAr
-DQo+ICsJc2Rldi0+cHdyX2RvbV9jb3VudCA9IG9mX2NvdW50X3BoYW5kbGVfd2l0aF9hcmdz
-KGRldi0+b2Zfbm9kZSwgInBvd2VyLWRvbWFpbnMiLA0KPiArCQkJCQkJCSAiI3Bvd2VyLWRv
-bWFpbi1jZWxscyIpOw0KPiArCS8qDQo+ICsJICogU2luZ2xlIHBvd2VyLWRvbWFpbiBkZXZp
-Y2VzIGFyZSBoYW5kbGVkIGJ5IGRyaXZlciBjb3JlIG5vdGhpbmcgdG8gZG8NCj4gKwkgKiBo
-ZXJlLiBUaGUgc2FtZSBmb3IgZGV2aWNlIG5vZGVzIHdpdGhvdXQgInBvd2VyLWRvbWFpbnMi
-IHByb3BlcnR5Lg0KPiArCSAqLw0KPiArCWlmIChzZGV2LT5wd3JfZG9tX2NvdW50IDw9IDEp
-DQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJc2Rldi0+cHdyX2RvbV9kZXZzID0gZGV2bV9r
-Y2FsbG9jKGRldiwgc2Rldi0+cHdyX2RvbV9jb3VudCwNCj4gKwkJCQkJICAgICAgIHNpemVv
-Zigqc2Rldi0+cHdyX2RvbV9kZXZzKSwNCj4gKwkJCQkJICAgICAgIEdGUF9LRVJORUwpOw0K
-PiArCWlmICghc2Rldi0+cHdyX2RvbV9kZXZzKQ0KPiArCQlyZXR1cm4gLUVOT01FTTsNCj4g
-Kw0KPiArCXNkZXYtPnB3cl9kb21fbGlua3MgPSBkZXZtX2tjYWxsb2MoZGV2LCBzZGV2LT5w
-d3JfZG9tX2NvdW50LA0KPiArCQkJCQkJc2l6ZW9mKCpzZGV2LT5wd3JfZG9tX2xpbmtzKSwN
-Cj4gKwkJCQkJCUdGUF9LRVJORUwpOw0KPiArCWlmICghc2Rldi0+cHdyX2RvbV9saW5rcykN
-Cj4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ICsNCj4gKwlmb3IgKGkgPSAwOyBpIDwgc2Rldi0+
-cHdyX2RvbV9jb3VudDsgaSsrKSB7DQo+ICsJCXNkZXYtPnB3cl9kb21fZGV2c1tpXSA9IGRl
-dl9wbV9kb21haW5fYXR0YWNoX2J5X2lkKGRldiwgaSk7DQo+ICsJCWlmIChJU19FUlIoc2Rl
-di0+cHdyX2RvbV9kZXZzW2ldKSkgew0KPiArCQkJaW50IHJldCA9IFBUUl9FUlIoc2Rldi0+
-cHdyX2RvbV9kZXZzW2ldKTsNCj4gKwkJCWlmIChyZXQgPT0gLUVQUk9CRV9ERUZFUikgew0K
-PiArCQkJCXNpbXBsZWRybV9kZXZpY2VfZGV0YWNoX2dlbnBkKHNkZXYpOw0KPiArCQkJCXJl
-dHVybiBQVFJfRVJSKHNkZXYtPnB3cl9kb21fZGV2c1tpXSk7DQo+ICsJCQl9DQo+ICsJCQlk
-cm1fZXJyKCZzZGV2LT5kZXYsDQo+ICsJCQkJInBtX2RvbWFpbl9hdHRhY2hfYnlfaWQoJXUp
-IGZhaWxlZDogJWRcbiIsIGksIHJldCk7DQoNClRoZSBkcml2ZXIncyBub3QgcmVhbGx5IGZh
-aWxpbmcgdG8gaW5pdGlhbGl6ZSBBRkFJQ1QuIENBbGxpbmcgZHJtX3dhcm4oKSANCm1pZ2h0
-IGJlIG1vcmUgYXBwcm9wcmlhdGUuDQoNCj4gKwkJfQ0KPiArDQo+ICsJCXNkZXYtPnB3cl9k
-b21fbGlua3NbaV0gPSBkZXZpY2VfbGlua19hZGQoZGV2LA0KPiArCQkJCQkJCSBzZGV2LT5w
-d3JfZG9tX2RldnNbaV0sDQo+ICsJCQkJCQkJIERMX0ZMQUdfU1RBVEVMRVNTIHwNCj4gKwkJ
-CQkJCQkgRExfRkxBR19QTV9SVU5USU1FIHwNCj4gKwkJCQkJCQkgRExfRkxBR19SUE1fQUNU
-SVZFKTsNCj4gKwkJaWYgKCFzZGV2LT5wd3JfZG9tX2xpbmtzW2ldKQ0KPiArCQkJZHJtX2Vy
-cigmc2Rldi0+ZGV2LCAiZmFpbGVkIHRvIGxpbmsgcG93ZXItZG9tYWluICV1XG4iLCBpKTsN
-Cg0KQWxzbyBkcm1fd2FybigpID8NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiArCX0N
-Cj4gKw0KPiArCXJldHVybiBkZXZtX2FkZF9hY3Rpb25fb3JfcmVzZXQoZGV2LCBzaW1wbGVk
-cm1fZGV2aWNlX2RldGFjaF9nZW5wZCwgc2Rldik7DQo+ICt9DQo+ICsjZWxzZQ0KPiArc3Rh
-dGljIGludCBzaW1wbGVkcm1fZGV2aWNlX2F0dGFjaF9nZW5wZChzdHJ1Y3Qgc2ltcGxlZHJt
-X2RldmljZSAqc2RldikNCj4gK3sNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKyNlbmRpZg0K
-PiArDQo+ICAgLyoNCj4gICAgKiBNb2Rlc2V0dGluZw0KPiAgICAqLw0KPiBAQCAtNjUxLDYg
-Kzc1NCw5IEBAIHN0YXRpYyBzdHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2ltcGxlZHJtX2Rl
-dmljZV9jcmVhdGUoc3RydWN0IGRybV9kcml2ZXIgKmRydiwNCj4gICAJaWYgKHJldCkNCj4g
-ICAJCXJldHVybiBFUlJfUFRSKHJldCk7DQo+ICAgCXJldCA9IHNpbXBsZWRybV9kZXZpY2Vf
-aW5pdF9yZWd1bGF0b3JzKHNkZXYpOw0KPiArCWlmIChyZXQpDQo+ICsJCXJldHVybiBFUlJf
-UFRSKHJldCk7DQo+ICsJcmV0ID0gc2ltcGxlZHJtX2RldmljZV9hdHRhY2hfZ2VucGQoc2Rl
-dik7DQo+ICAgCWlmIChyZXQpDQo+ICAgCQlyZXR1cm4gRVJSX1BUUihyZXQpOw0KPiAgIA0K
-PiANCj4gLS0tDQo+IGJhc2UtY29tbWl0OiAxNWQzMGI0NjU3M2Q3NWY1Y2I1OGNmYWNkZWQ4
-ZWJhYjljNzZhMmIwDQo+IGNoYW5nZS1pZDogMjAyMzA5MTAtc2ltcGxlZHJtLW11bHRpcGxl
-LXBvd2VyLWRvbWFpbnMtZjQxZWZhNmFkOWJjDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQoNCi0t
-IA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0Ug
-U29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5
-MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywg
-QW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5i
-ZXJnKQ0K
+I also had CPU-less NUMA nodes in mind when thinking about that, but not 
+sure how easy it would be to integrate it. If the tag memory has 
+actually different performance characteristics as well, a NUMA node 
+would be the right choice.
 
---------------kpzYvdaKcjH0xuuH5zw29EU8--
+If we could find some way to easily support this either via CMA or 
+CPU-less NUMA nodes, that would be much preferable; even if we cannot 
+cover each and every future use case right now. I expect some issues 
+with CXL+MTE either way , but are happy to be taught otherwise :)
 
---------------4M8cdUHyfNjDPiRMngCSk0qn
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Another thought I had was adding something like CMA memory 
+characteristics. Like, asking if a given CMA area/page supports tagging 
+(i.e., flag for the CMA area set?)?
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT/B2IFAwAAAAAACgkQlh/E3EQov+Ca
-GhAArL3TRY+oyOxEkqlrxxZuCcKkj2M6aU6FLjW8zbN6SfT0fhoHFhjnaai7n5pE35yzQYEylleG
-CkEt33cwaAm4tT4ErV5IUOpMYizzAuk6Q273SwizxbJiw6Wulp89wXldSMAoeLZFoNrolqG4YzX+
-8cpvv4zPCCgm+B2HNaH6AZCQsZsy6ACLaHjkP1zMhS5XF6g5X8GKYK+2B7ShEHI8OO93fK2M1f6+
-t6vypQ2fKcWSGl4rjP9G02MNg5OtFug3UbrCHRV7410DAFbWowOZqSh+wETgV20YgWsQrbYoOiCF
-TNnkcNBywndTr/uh+PPiqSOaj9VxTV4UjEwgjVB69ectqm6fZ79GW37ZYcX4wYnBPS5h6yw+AvzD
-ZfKVD7vB9a5GqxDTH/6o7FP1MwZ2Io1+TC5pVI5+psF319YJNEL7X2zYXdauQOEMQYwpfOPGQZ7P
-AWImrNefJQTNK4DmkYInb7S5ZqrO6uFJxLHLWPDft7MG0gW+D49n7T/pP+J7oa7Yv8Kq7v/AgOHb
-glu9xMpwwcNLo0oh8vPYZ66c5CwQO/f9tfJx4UZK+CN35vsVg5ikVAWadX/k0oWYGF9il6/u2cFn
-KCtNr5b7OEwFX3pWRu7EUBnni5Tzhzpv3KfYZ6gl/enoXT8oweerdUbYeRK+GLyNp0sfeV2AGI8x
-0co=
-=kcaf
------END PGP SIGNATURE-----
+When you need memory that supports tagging and have a page that does not 
+support tagging (CMA && taggable), simply migrate to !MOVABLE memory 
+(eventually we could also try adding !CMA).
 
---------------4M8cdUHyfNjDPiRMngCSk0qn--
+Was that discussed and what would be the challenges with that? Page 
+migration due to compaction comes to mind, but it might also be easy to 
+handle if we can just avoid CMA memory for that.
+
+> though the latter is not guaranteed not to allocate memory from the
+> range, only make it less likely. Both these options are less flexible in
+> terms of size/alignment/placement.
+> 
+> Maybe as a quick hack - only allow PROT_MTE from ZONE_NORMAL and
+> configure the metadata range in ZONE_MOVABLE but at some point I'd
+> expect some CXL-attached memory to support MTE with additional carveout
+> reserved.
+
+I have no idea how we could possibly cleanly support memory hotplug in 
+virtual environments (virtual DIMMs, virtio-mem) with MTE. In contrast 
+to s390x storage keys, the approach that arm64 with MTE took here 
+(exposing tag memory to the VM) makes it rather hard and complicated.
+
+-- 
+Cheers,
+
+David / dhildenb
+
