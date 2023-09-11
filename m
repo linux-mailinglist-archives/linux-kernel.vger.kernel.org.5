@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93BF79B3E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1C579ADAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbjIKUwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:52:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S231917AbjIKVFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236887AbjIKLiX (ORCPT
+        with ESMTP id S236910AbjIKLji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:38:23 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA0F12E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:38:18 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qffF8-0007PM-HL; Mon, 11 Sep 2023 13:38:14 +0200
-Message-ID: <66bc5229-8131-4111-96fe-bd5ee90314b0@leemhuis.info>
-Date:   Mon, 11 Sep 2023 13:38:13 +0200
+        Mon, 11 Sep 2023 07:39:38 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668E812E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:39:34 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a49a42353so5663615a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694432373; x=1695037173; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CNTfpAlLwJmILsM2ML8AYXqOfMhJFlBtfc+NKYRir1U=;
+        b=ghEBbB1urKJGeO8Bdy6HofhhQiZ1S9/1NhPG7BsncRMDGG0s5wlXonQOGlxx3mCzEp
+         TilWMdnEyOCs0gkiHJmjCkgpyd7ExzLF/Tu34fhN8/6+VnBwsxwCzeWgexmuIvBaMw8Z
+         dJ82hwi84usc0wlEKfbGtWoTaNixYew8o60dxoh0hKzNbt9GXjAKhoJTD/+sQdS8BdUS
+         d3ZU+GHBp4Vlq1QX7zPgn44yoRm1EpADc37AqjLbxRr1uhgKl1FBR4lg4ahRVeRfWtZz
+         9+FRq50oD3WMRi4cIC8zBX2iQY5tOmdmeVnRLUW9Fn7kwgZ7sPR2rb45+qfElWJ2n8v5
+         qPQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694432373; x=1695037173;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CNTfpAlLwJmILsM2ML8AYXqOfMhJFlBtfc+NKYRir1U=;
+        b=rZ8D1LOtaWTNBG5UzmYltqbNQRRl6dC+ojmICX7zC0bugzySem3qfIZr4YyXOXBJt9
+         /OyQBTzhP9ee2CC6i/mmj4rDxjMweyUgd0KvYbxSriILgV4zCRXMHoa/Y+oHpL4+6FbH
+         c6z3xnk84qoq2aFS2U8RHH+1EB19N2hcqI/FjP5wV2u4NkdHJ7Bl2sC1m/7M6g1hZw+I
+         Gn/4Hc5Hfn19amBhLpK/S3w4xWhtAQVmruC+k8nXNKj9Rdsk00EwC82W4FpSflxKsWVa
+         WmpcbjrOtP3rtusCQeCSKrqeKWnEk8jX1Dl1JBPt13UZDWV26g/d9GVlwoBa1qeC9Auo
+         fa3g==
+X-Gm-Message-State: AOJu0Yyhi92XHGAHZ3mxIsBs1D0cNjZDH82KECB4KrVSQ79eZ6lvnbqn
+        Kry8mk5gK7sxzXmuDf2EFeNIag==
+X-Google-Smtp-Source: AGHT+IHwEnPhO+VHQG0S+VrfAHaLii+tG8XXkAqNaOPbo0YVPvNOqmH3dpTLzyBvYyQwoxAyv+FnFA==
+X-Received: by 2002:a05:6402:1254:b0:522:3ef1:b10 with SMTP id l20-20020a056402125400b005223ef10b10mr7390345edw.6.1694432373037;
+        Mon, 11 Sep 2023 04:39:33 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id g15-20020a056402180f00b00523b1335618sm4431003edy.97.2023.09.11.04.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 04:39:32 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Alim Akhtar <alim.akhtar@samsung.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arm@kernel.org, soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] arm64: defconfig: enable syscon-poweroff driver
+Date:   Mon, 11 Sep 2023 13:39:24 +0200
+Message-Id: <169443234708.34398.6225536362107834291.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230901115732.45854-1-krzysztof.kozlowski@linaro.org>
+References: <20230901115732.45854-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Possible nvme regression in 6.4.11
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-To:     Genes Lists <lists@sapience.com>, Ricky WU <ricky_wu@realtek.com>,
-        Keith Busch <kbusch@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "hch@lst.de" <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
- <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
- <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
- <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
- <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
- <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
- <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
- <903830f8-9f9a-4071-9ced-761a55018c5a@sapience.com>
- <97cee217-e438-4fff-836a-186f59d6d256@sapience.com>
- <fa82d9dcbe83403abc644c20922b47f9@realtek.com>
- <5d38cf11-114a-4997-a0fc-4627402468f8@sapience.com>
- <d544fac1-ed2b-4417-8edd-1a81ed8a41d6@leemhuis.info>
-In-Reply-To: <d544fac1-ed2b-4417-8edd-1a81ed8a41d6@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694432298;6b4c9ed6;
-X-HE-SMSGID: 1qffF8-0007PM-HL
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.23 10:02, Linux regression tracking (Thorsten Leemhuis) wrote:
-> Hi, Thorsten here, the Linux kernel's regression tracker.
+
+On Fri, 01 Sep 2023 13:57:32 +0200, Krzysztof Kozlowski wrote:
+> Enable the generic syscon-poweroff driver used on all Exynos ARM64 SoCs
+> (e.g. Exynos5433) and few APM SoCs.
 > 
-> On 30.08.23 23:09, Genes Lists wrote:
->> ...
->>> I think maybe it is a system power saving issue....
->>> In the past if the BIOS(config space) not set L1-substate, our driver
->>> will keep drive low CLKREQ# when HOST want to enter power saving state
->>> that make whole system not enter the power saving state.
->>> But this patch we release the CLKREQ# to HOST, make whole system can
->>> enter power saving state success when the HOST want to enter the power
->>> saving state, but I don't  know why your system can not wake out
->>> success from power saving stat on the platform
->>
->>    Thanks for continuing to look into this. Can you share your thoughts
->> on best way to proceed going forward - do you plan to revert or
->> something else?
 > 
-> Hmmm. This looks like it fell through the cracks. Or am I missing something?
-> 
-> Anyway, 6.4.y will likely be EOL in a week or two. Which bears the
-> question: are 6.5.y and 6.6-rc1 working better for you? From the
-> bugzilla ticket (https://bugzilla.kernel.org/show_bug.cgi?id=217802) and
-> comments from others that are affected it sounds like that's not the
-> case. If that's how it is I guess it overdue that the 101bd907b4244a
-> ("misc: rtsx: judge ASPM Mode to set PETXCFG Reg") is reverted. Or am I
-> missing something?
 
-According to feedback in bugzilla.kernel.org 6.5.y is affected as well.
-And openSUSE apparently reverted the culprit about a week ago due to the
-problems it causes:
-https://bugzilla.suse.com/show_bug.cgi?id=1214428
+Applied, thanks!
 
-Guess that means we should do the same for mainline with a CC:
-stable@... tag.
+[1/1] arm64: defconfig: enable syscon-poweroff driver
+      https://git.kernel.org/krzk/linux/c/471eed5ad217fc8e83089e708d5cf5a1d0b205f7
 
-Ricky WU, or do you have a better idea? Yes, from earlier in the thread
-the root of the problem might not be in the patch you contributed, but
-it exposes the problem, hence it should be reverted unless a better
-solution can be found quickly. And that hasn't happened in the past two
-weeks, hence it's afaics time for a revert.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Best regards,
+-- 
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
