@@ -2,205 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF0279A436
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0278479A433
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbjIKHNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S233308AbjIKHMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233350AbjIKHNE (ORCPT
+        with ESMTP id S232767AbjIKHMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:13:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F9AE47
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:12:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694416369; x=1725952369;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=hcgE4JUGvacvxdy8cNZjqrTjfaM3Jxa8S+BC98wbNtw=;
-  b=F09riTPnnZbV2rWZJ+VNRIZ3jaFB59hKTYz53j1Yi8P1nmd61/bRVzJD
-   aoHMpkxlAlVccTBD0VPGtCc/plDLmXTL//3tnJ3KkvPwQdWaqUyfjaUZ/
-   l3U2Fc409zKpbFPhrpE76e7DOan8aJ8FAIUmwiEhWc/mS/jKuXtovlUPL
-   Qq4aksM1sw2lYJ5ULobwzRiZG0m6yDS+H3LMv/ZHtM6gF+GVwlus2G8/q
-   82O5aj+RZLRtA6MsVlJv1pnrtxYSYMtee5Gwfg43j93DZGKGmO1aeR8xC
-   0a5Jvf8ERlN1cfDKuWPaTQ2yCV6y5k1wt0vD1/i+VZWrxnq0asEBXFUFv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="408981174"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="408981174"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 00:12:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="866816011"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="866816011"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 00:12:45 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 00:12:45 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 00:12:44 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 00:12:44 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.175)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 00:12:44 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h/hR4DpRewz1OPp6/dR+Tes1OTjKB5fMUqwYp06xpxthcW1BKrZRrCvy4U3eesM4nmFKn8I/V7bDfj63z0k7VBtSKt2a2nlTdSo2nWBmR5uOQdintpe1v3e9WcdRKCTscaw2PCOqFa61033EFndzRY+6DA4lPeYAaH3MqLICcHXEsnlJ8TkvG1TncWiIXnj4RWiSdVwe2r4XHBGD9kFsCXMqk21Y3xEyKvZHora7vo8uAI0J8uM5KJr2CwY4YfK4cggJgqCBWqWeJz/JpJbUv+Suy6s6H+IvjuCo0kLloZk5C15Cd2k7atq1xi6rLnfAEE70/A5zoSqTXFhChpbZRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l48vNs6SZdNKPjdoyO0pQiL16zKhM5bp1BPtY1rbgp0=;
- b=BCZt3VsvVqfPOuz4pJvMd3s4D3c4sGhj+d1IvG/JgbpR3/3FmWipFGv2Wi9rtV8bGNDZVEKos0IHxhJjZ9OiQOO3wMkc8WimTmh9xBUh8kvE2e//yAnRwP8pmhIfemZhr2LXmDrDS4e0ruAvV+agdJV8tgtQiyGDkC2svM2Nq1sTzvKbgfG1RMWHEVhBLVMYiOYfNUlna0X2ZxsV+z3Q4UXfaHio0C7X4KMUyUTENhLFJVYoFBoooZw6iYwzdD/MIQ0NrXlLn3KCup2Ni2QAmLuB1WLxPkIdw8ydDGmgb7XpJXrcdTFWuclh8VN4vL1A0a1a4z+22/ALeumsdSuhmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by CH0PR11MB5298.namprd11.prod.outlook.com (2603:10b6:610:bd::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Mon, 11 Sep
- 2023 07:12:42 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::2846:e5f8:b2e8:1da6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::2846:e5f8:b2e8:1da6%4]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 07:12:42 +0000
-Message-ID: <0465d13d-83b6-163d-438d-065d03e9ba76@intel.com>
-Date:   Mon, 11 Sep 2023 15:12:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.11.0
-Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
-Content-Language: en-US
-To:     syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>,
-        <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <syzkaller-bugs@googlegroups.com>,
-        <willy@infradead.org>
-References: <000000000000d099fa0604f03351@google.com>
-From:   Yin Fengwei <fengwei.yin@intel.com>
-In-Reply-To: <000000000000d099fa0604f03351@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2P153CA0014.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::6)
- To CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+        Mon, 11 Sep 2023 03:12:49 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AF7CD9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:12:38 -0700 (PDT)
+Received: from eig-obgw-5006a.ext.cloudfilter.net ([10.0.29.179])
+        by cmsmtp with ESMTP
+        id fLw6qhsttOzKlfb66qWn5a; Mon, 11 Sep 2023 07:12:38 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+        by cmsmtp with ESMTPS
+        id fb63qG6I8fN5Mfb65qF9H7; Mon, 11 Sep 2023 07:12:37 +0000
+X-Authority-Analysis: v=2.4 cv=TMJW9npa c=1 sm=1 tr=0 ts=64febde5
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=CKMxHAookNUaJbGn3r6bzg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=oz0wMknONp8A:10 a=vU9dKmh3AAAA:8
+ a=gEfo2CItAAAA:8 a=6mVVujuaWLD2RSIlgPwA:9 a=QEXdDO2ut3YA:10
+ a=rsP06fVo5MYu2ilr0aT5:22 a=sptkURWiP4Gy88Gu7hUp:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+        ; s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=QwK69sTp47zzTxJYCYeDtYYJkekjiU87kUvd/a6irY0=; b=FK8SkZGaN1qDF2eagOyHMzuz7q
+        0zemE53JshI4zJKlOwsaKtJzgHHMzUTgDTUZqTF9C9UmF+Lz5ANZaFfa3JjhDE5Cmc7QywK5OC/Sb
+        uM0zkzQBOohF0GNAWJ/UtnoBjpH+sFfBkww3QIc7aAKCB5bMec0Rsgt7hv/vGq+Q1w1FqWCOwfpCQ
+        fmCRtIqoNkhuijNIdTP4XRmaGushDzvS1IT4gsYE61dKo8WyXrXJVxmgB5M6b/BggWhlziJuBDjJb
+        N1d9jjkVyPKb25ZFFehA1fS6fuFP17fLP2jS/C++Cz6GYWUh6sbkxsls4EvP6lhjshurJRvDUl7Qk
+        wYu+2fHA==;
+Received: from [103.163.95.214] (port=49564 helo=[192.168.1.105])
+        by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <saravanan@linumiz.com>)
+        id 1qfb61-001Jaz-1T;
+        Mon, 11 Sep 2023 12:42:33 +0530
+Message-ID: <d7eb272e-8abb-c307-4aa8-b0af3f943453@linumiz.com>
+Date:   Mon, 11 Sep 2023 12:42:29 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CH0PR11MB5298:EE_
-X-MS-Office365-Filtering-Correlation-Id: c06de69a-b3e2-49db-349c-08dbb2967d6d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oofcDYplx4Aii037D4CrHVvTf+95HMsWcu6lvljJiQbLT1rxEs6+UKJmM6jKe0nV5PLRZfY6h9OhiNl5iaihozS1xtXP7W91sfCGs6KGtDAtUm8DxcYgDzIHZ/yH108dmtiDtfR/kTVXeox/h0Uv2ldqK5TPBWRIxLF/FDZqh7+GV6PU8lU2QEU4tlGVmDBFBv0u+Zaj0LQQj93XFUnlbznGnvbhBRf64OpiNkKmhSHWPp19zZcJMy3K/YHDIOamhl58WOA6XhZbpgWmQgVW3lkPB+mxL8ySDP2w8qCr928VEDr1OS2L1PrtSDJdPCpa+LEHW9xLGrS0j+gnrVhqihRJV8LKk/RM6DftkelxEungOR5YQbpB4/nctffh2ql4UyRcQ9Nf3GzlLcXa/sskgaRTHlZq9bW3fsztP68aO6oOOCAtOnuNM2+yNB9645tJQ2pRhBKK9iTK4KGAm1yAncArX2WP/7c+QKsZxTVm3GouzErTiysxDuMgxGqI9X6P6ZNBrLCyOlgd4zPKy27+br1qQ5/RAGBlfO08nSEKUmJrCPOCh2B2w05ODf83tXahmanq++HJYEGEvQRp/Zo4kNocGQJyu/ccHhWoyg63bGpEOPKe+Mr9MpYXp8lecjlBCk0EMyhM2nWa04UvbTwaQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(136003)(346002)(396003)(1800799009)(451199024)(186009)(6506007)(53546011)(6666004)(6486002)(478600001)(6512007)(41300700001)(2906002)(2616005)(26005)(66476007)(66556008)(66946007)(316002)(8936002)(8676002)(5660300002)(82960400001)(31696002)(86362001)(36756003)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Uy9mNHc5OFRpNXhiM3BXVW1SWktCakovTzM2VE9GMjgrRFkzS2ZyakJndnph?=
- =?utf-8?B?T1FCNFFjdm5wMTdKYnJ1dGYrRW1TaktYMzFrR1N2SlIyay9TMDdrTWJJQVN0?=
- =?utf-8?B?a1piNFh6cURaVHhHaVF5dDFSK250cFlmOVZSZlJkckkwVVMwak9tQWlVd2dz?=
- =?utf-8?B?UlRoOXBock82Mzk0OFAxVnJGRzFTYUpobG5hMVAvRnJEc1FnUldERHlkRVpV?=
- =?utf-8?B?bUxOYWFTUzRBcy9ZSjhLbWw4NWJHbTMyRXVXQ3EvM3N3bisvTzU3eVhKSERt?=
- =?utf-8?B?SE9YUG5Qck81TjlaN2wxZWVlVmJGWWZ6R1ZEZFA0QkhpTkxqakdYSGhNUjE1?=
- =?utf-8?B?OVZwYnVsQ2VUNnZWQThaeXl0QjVHMmJuVHNhdFEwV0dDNzhkenJHOE15VVBj?=
- =?utf-8?B?NkVxcjlmZFFOUHFMZU5hb3pBaDVMMFRiSUtqMUhKZ0ZmcGU1Rm83eXgxVnJ5?=
- =?utf-8?B?VTFudHNLcWJUeFFocTFGTEJxdEkzQTVORS9OSUkxckg1WjhHTkZYaWpLTWRu?=
- =?utf-8?B?NXJLQllNanUwN0tISEJGZkl4cXBMSDJtcWl6QStDUmlOTWo3dHNBSVBYM0lD?=
- =?utf-8?B?WitVKzBKR3pSVDd3L2REaHVXcldGK3lWaHdnQ1RHVTJwVXl3aTdyMXJieDJQ?=
- =?utf-8?B?ZTZFZU9nSVpwYXNHVVJDKzFYYUYxYWcwcE1XejVxS2I4aEhvckExQkZHT1di?=
- =?utf-8?B?NUNUdlhZRDNwWWsyMWNQV2tMazl4cTkvK00ySXU1R0ptOG01WG95WXlVQzBu?=
- =?utf-8?B?SXZDRUt6UHA4Qm9DdHg2czQwNjFWVFdpQ1YzeFdBb1BTTkJnemhlaVg4cmRO?=
- =?utf-8?B?MzRTYU1iWCtsd1FQMnlaR0Zoc1N1RWRVZ0NPbzYrVmM0bGVOSFN2R2pLanFN?=
- =?utf-8?B?RWRRaklJRVh3S1oyZVFpd2k3eWtmZXRNa1hPelZRTmFaSDV2SlBoVFRUV2lY?=
- =?utf-8?B?ZXRnMHFCSGNacjVqcE1qeDdjaU1DSERFaWppYzh3MUQ5d1hhbS9YU2RFZ0VW?=
- =?utf-8?B?N3Q5NUZjSU9xdU1yQXZBNEsrSHlHRWNKRVFHb1hYcWh4dmNlZFBLalJsM003?=
- =?utf-8?B?eXl5QjR5Nk5PcStPbnIwNkVhYUozKzFZRnpEUm9IaFZjTFE2NEZpa01icjcx?=
- =?utf-8?B?b21WQVlZazI3a1VZMHVsQ0tndDNncXhGWDM1R0thZTduSXRBMGVudksyekxq?=
- =?utf-8?B?TUpQYVRCYVNsRlcxdTRBVW9HYXozdmJmM0RSbktwMk9paE1sV1ZwazZaSlg0?=
- =?utf-8?B?Mk1zbHRVYUxia3dsUy9oWi9DQ3oxeUM2dkovdmlpaTBGU0hQOHJYNWx0WXNC?=
- =?utf-8?B?dkp0WVRtVGhFdUp6QnZac2JIUXFsU1dYM0ZnWjBhNzVGV3ljcnNGSG9rdTNJ?=
- =?utf-8?B?Vzk2ckxta1l1M2VteGFjN0t3TjlHcEh3Z2JZTnVjNFhqN24xMkloZHkzRmkv?=
- =?utf-8?B?WWFuMlBKVjE4ZFN1UGViYnJCUDIvNmZvRTZwbXFISjNRdk04bjJycm81Qm9G?=
- =?utf-8?B?M1UzekNCSGxxaDF0RTIwNGQ3QURYNm8rbFgzbW55V2IzWmJCY0M3ZENuMzlO?=
- =?utf-8?B?NTc2SnBxOXoxdXVDZUpaaTNlNkdTVW1ZeStkLzRBYk90c0pudmE5MlIxa3Vp?=
- =?utf-8?B?TkdzcEo2aksvZ0cyb0FBTmsyL25CQXRiMnM5anhNam4vVGFrRHZkSDA1R2RY?=
- =?utf-8?B?T0swdHd2bFZTQjJGWjFUR0d2WGUxZnFkbTFiZEM0bFJGS3I0SGFaS2pCTmV3?=
- =?utf-8?B?V3dmbjdDQXJyL0tIcks1Y20rVzZBcCtCZkNvblUvNjFjU2xTcXhBR0dUdUpU?=
- =?utf-8?B?RG5WTFZWbm41RmJFVXJ0UldHZTJIM1VvbGg2eTA3QnVnNUtHL0hzbnU5c1lF?=
- =?utf-8?B?T3o5c2dzT1dtZW9QYTVXaEl6K0lIVmtSakUzTVlvNWpjcEFkT1VnTnBwNXJu?=
- =?utf-8?B?M0pQUnZwdWlIWE01clVzWXA3cVBWVVRHc1lmU1FMaS9VT3RKdzVEMG1XZFQy?=
- =?utf-8?B?c01aR0VYaGZUUllaSjFuNDdtc1lBcmhWQi9NRkp0RjJpVlpkWk9NV1ExVkkr?=
- =?utf-8?B?MkFidjlyUkpJR0N0M3FyN2RKVHFOYUtNKytxa0l6NDVuMXdyMkRYcW1XVzYz?=
- =?utf-8?Q?FbElOYwqA1X4QgYxsTfKLRenQ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c06de69a-b3e2-49db-349c-08dbb2967d6d
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 07:12:42.5032
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7KE9ccbMmPuLPh+r/qpgb+xptG2WAq9QZFe4ExXhr4oPtfukXZmxDEX5QMUG5h62BOlTiycUa1CADU9PFxyTbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5298
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/3] dt-bindings: regulator: Add mps,mpq2286
+ power-management IC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        sravanhome@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230911034150.181880-1-saravanan@linumiz.com>
+ <20230911034150.181880-3-saravanan@linumiz.com>
+ <34ede760-d612-4628-17e6-600c133ee878@linaro.org>
+Content-Language: en-US
+From:   Saravanan Sekar <saravanan@linumiz.com>
+In-Reply-To: <34ede760-d612-4628-17e6-600c133ee878@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 103.163.95.214
+X-Source-L: No
+X-Exim-ID: 1qfb61-001Jaz-1T
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.105]) [103.163.95.214]:49564
+X-Source-Auth: saravanan@linumiz.com
+X-Email-Count: 3
+X-Org:  HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfIvykdVJKxQzo9E/Xj2SfJPtKgkAkmFzRwSWfsc7MYO0l7duz5BDk8Iquw05ZOSyOlUVkxX7bhj8+mCrjC2OQS8iPhX9clqkn0VkAThzXd0GcX/mVNht
+ QfQ7zNnwAAvx+6xw9Zk7nSkxua8/8AW7VPbUpUTHi765NnBAfH/XsYcPJ/P1aDd/1jcCNOJn3TlJH0I5RtGqrsMNfAzbtpe7mAA=
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/10/23 01:12, syzbot wrote:
-> commit 617c28ecab22d98a3809370eb6cb50fa24b7bfe1
-> Author: Yin Fengwei <fengwei.yin@intel.com>
-> Date:   Wed Aug 2 15:14:05 2023 +0000
+On 11/09/23 11:56, Krzysztof Kozlowski wrote:
+> On 11/09/2023 05:41, Saravanan Sekar wrote:
+>> Document mpq2286 power-management IC
+>>
+>> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
 > 
->     filemap: batch PTE mappings
+> Please use subject prefixes matching the subsystem. You can get them for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching. It's: regulator: dt-bindings:
 
-#syz test
+Thanks for your time to review. git log has mix of "regulator: 
+dt-bindings" and "dt-bindings: regualtor". I had referred my own 
+accepted driver regulator/mps,mpq7932.yaml
 
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index a629b1b9f65a6..2701b47efa8f7 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -168,6 +168,28 @@ static inline void native_pgd_clear(pgd_t *pgd)
-        native_set_pgd(pgd, native_make_pgd(0));
- }
- 
-+static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
-+               pte_t *ptep, pte_t pte, unsigned int nr)
-+{
-+       bool protnone = (pte_flags(pte) & (_PAGE_PROTNONE | _PAGE_PRESENT))
-+                       == _PAGE_PROTNONE;
-+
-+       page_table_check_ptes_set(mm, ptep, pte, nr);
-+
-+       for(;;) {
-+               native_set_pte(ptep, pte);
-+               if (--nr == 0)
-+                       break;
-+
-+               ptep++;
-+               if (protnone)
-+                       pte = __pte(pte_val(pte) - (1UL << PFN_PTE_SHIFT));
-+               else
-+                       pte = __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
-+       }
-+}
-+#define set_ptes set_ptes
-+
- /*
-  * Conversion functions: convert a page and protection to a page entry,
-  * and a page entry and page directory to the page they refer to.
+> 
+>> ---
+>>   .../bindings/regulator/mps,mpq2286.yaml       | 59 +++++++++++++++++++
+>>   1 file changed, 59 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>> new file mode 100644
+>> index 000000000000..d00d887870a9
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/regulator/mps,mpq2286.yaml
+>> @@ -0,0 +1,59 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/regulator/mps,mpq2286.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Monolithic Power System MPQ2286 PMIC
+>> +
+>> +maintainers:
+>> +  - Saravanan Sekar <saravanan@linumiz.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - mps,mpq2286
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  regulators:
+>> +    type: object
+>> +
+>> +    properties:
+>> +      "buck0":
+> 
+> You did not test it... Sigh. Anyway, there is no need for entire
+> regulators node for one regulator. Can the device do anything else than
+> being a regulator?
+> 
+
+I tested it, but documentation is not updated with test findings (buck0).
+
+Other chipset has multiple regulator so dts has regulators node to keep 
+the driver common
+
+Primarily device is a regulator with pmbus capability like fault status 
+(OV,OC, VIN, VOUT, Power good status), temperature status.
+
+> Best regards,
+> Krzysztof
+>
+Thanks,
+Saravanan
+
+
