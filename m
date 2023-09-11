@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DD279AFA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28F979B1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376883AbjIKWUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S1358255AbjIKWIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241598AbjIKPKz (ORCPT
+        with ESMTP id S241604AbjIKPK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:10:55 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F9BE40
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:49 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52683b68c2fso6017730a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:49 -0700 (PDT)
+        Mon, 11 Sep 2023 11:10:57 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0852FE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:52 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so5915173a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:10:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694445048; x=1695049848; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694445050; x=1695049850; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JB7dev33CQqq2PRU515LRyfUHgQkgO8/svwIwjBxrso=;
-        b=nXBvtg2cYBFaYKERUnVFQptVoWCmSUKpDt+wIKO1oTai6FfArVnq2T1YLT9ZZpdsdX
-         RRWLEZ7II/wav8FWN1yUU9HXh3pa7Vn75G6AM1fFrcEfQWK2zuMnIH3BD78XGdbCdzgw
-         MsK4dn9DeGiRETAcSsw+H0hBzW9qLnqa9ggd8o1yGHhyyxM6/BB5k8ljDOaXcSOyhqOJ
-         SutHGuhrNQDIVFY6fTgm4nDXw+nAN5eTYru7nSOEwzRcy3eQUOiuMM5OsMInezlxfb7k
-         aA31VW3sNiC1BEbiZp2lRDEqVwsHdxtSJHzAqNvIvgBzzci34zNEQ9TKUME+39PRHDiM
-         /46g==
+        bh=dl99i48dgkFaFiuiu5aVJ8kJhbaWRuqEuatgk+IWw2o=;
+        b=bB3xlBfauwKWWh6/VqQaM0saC7TVMEgb8exvJY+TC2Ll4kYlFjolOF0jhadlMEMFTZ
+         tVd3b1rMiQlpIm208lr0IrvotSsC+c8xy9lzdDUTiX/gQBxo8WEaaQSKHTAQLSUkrp/b
+         Lj70KCI6B7iQGmzmFzLgMHshxxhHzb9ltKZtloIvoSVUt/a2QcsP0FqykMtWOGUA3Jy+
+         mbcocYFWgSTpnvwK4OqM0FiBRAA4AyxRinXy8I8mGJlBa7RCW1YPtweMJNd6UDVo3N/m
+         0wG1j2lwILOR7qtPDog/Q4LUQ7PmNmZ5ScFkTcDRi61nnEAlPAomqLMOJ6pXZeXJOCAm
+         SWcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694445048; x=1695049848;
+        d=1e100.net; s=20230601; t=1694445050; x=1695049850;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JB7dev33CQqq2PRU515LRyfUHgQkgO8/svwIwjBxrso=;
-        b=KnyBRij2l/ZLrkQ8byk0RQragMCkosrckjnomOJRIIkXhnjFlWd0qhym70EerHeIvZ
-         7n5ulpBEpzuKwmZaYJ2K2y6OTyu/mYxB7mRJCfMoULlqCT0OcBNJ3A7lEpEhn9oUhSt0
-         mM4CYXE2djJSBl2EF8gpcsAgi1eSXKcmYxZdeW+SINLB334yk4uGb88x3nwTL0ceUsqf
-         NwWTb4H2QHpX1vvMRK1qr8xyC9D8A9rYgabm8Z02w7mqnVk6y4Y6/LpbbK7GiHCE+iKV
-         jxbqWm6ZV05WIWAIX35bXENAS/zL3xzuswkN4J8GUcKL0aBqeJmNlfb2AFO+S2fjvDDv
-         cBjA==
-X-Gm-Message-State: AOJu0Ywp+Z3DlWR+wEJPD6evYU9hABRItab5YI5Iooc+ng33ZrwFhhOH
-        BM8vw5FvVsMLr6gfvg+nUUPfCA==
-X-Google-Smtp-Source: AGHT+IHOrUawuw+u7QVtpnfwQLDVGjW95dOdTx3R9QAqJJ8vsJmZNzqMq3h8nCnS59f0knKZHoFyuw==
-X-Received: by 2002:a50:fc08:0:b0:522:31d5:ee8e with SMTP id i8-20020a50fc08000000b0052231d5ee8emr7942862edr.8.1694445048504;
-        Mon, 11 Sep 2023 08:10:48 -0700 (PDT)
+        bh=dl99i48dgkFaFiuiu5aVJ8kJhbaWRuqEuatgk+IWw2o=;
+        b=pVBxd64HbTGMVLgetRj3q7dAkRjqXlqT/4SusL0RSj2ia6fBOOJM2ltOGxOUwax5fc
+         l2h7jiV9g28fgp9HNMW8SxXRQUADgxTt0Sjpi4jVBJRhHmIM/1OMkZT1J6SvKj0gAlYY
+         AHo5GPJvV2rjfcHupa9HyQbU4b2mbAfvIUX12jheenWRhmYVUW32M/aGkvcdWjVQJjU5
+         /bZpNMfDDQI25P5UKfMfKJ8o1DytDSyc0Y1M4+P50NimcGt5OXE9148hTay2xUqZoIly
+         Tms8PwWzaJpV1oBu1OapKXchKgcbJSuaRDI7myE6aSwA3nRtyeeAZDSydVuMRQBUfGvI
+         k/fg==
+X-Gm-Message-State: AOJu0YwHz60sEwWvAmJcy4XyJz3B2WcwlUvc+CU+MeWTffYZccKj01dv
+        4EZC/IohCYzxCaSJLeoirkuGwQ==
+X-Google-Smtp-Source: AGHT+IGjTwoKuO/nF9f+giZJp6zZCYwNV0et/hED8EkqY7QJ0N5afC2ym6nB9rOu5fmSKCdB4pPe6w==
+X-Received: by 2002:aa7:d753:0:b0:522:2711:863 with SMTP id a19-20020aa7d753000000b0052227110863mr8641195eds.1.1694445050506;
+        Mon, 11 Sep 2023 08:10:50 -0700 (PDT)
 Received: from [10.167.154.1] (178235177061.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.61])
-        by smtp.gmail.com with ESMTPSA id n4-20020a056402060400b0052a3ad836basm4681281edv.41.2023.09.11.08.10.47
+        by smtp.gmail.com with ESMTPSA id n4-20020a056402060400b0052a3ad836basm4681281edv.41.2023.09.11.08.10.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 08:10:48 -0700 (PDT)
+        Mon, 11 Sep 2023 08:10:50 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 11 Sep 2023 17:10:26 +0200
-Subject: [PATCH RFT 12/20] media: venus: core: Use GENMASK for dma_mask
+Date:   Mon, 11 Sep 2023 17:10:27 +0200
+Subject: [PATCH RFT 13/20] media: venus: core: Remove cp_start
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-topic-mars-v1-12-a7d38bf87bdb@linaro.org>
+Message-Id: <20230911-topic-mars-v1-13-a7d38bf87bdb@linaro.org>
 References: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
 In-Reply-To: <20230911-topic-mars-v1-0-a7d38bf87bdb@linaro.org>
 To:     Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
@@ -74,97 +74,94 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694445027; l=2674;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694445027; l=2989;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=0i/wL/gXye6AMRW7xTiL3gEDEa6DSycySKcFuITtV7c=;
- b=9njRxETBp6BVf2eTPJnydMws8pDjU9hmhMA9EAXKj2fwspYSCUtrrbXXXzUDtbMNERpTc4XGC
- o9auiXwoKyfB6CwEhwV+FjPvOlFqusbM8zqbH2pm+pJ/7Xq5t3xAfWW
+ bh=h53ZKh/yNo0bLYPAMV5n1Zw9RfUgxMBrX/Tc7gbPrsU=;
+ b=MyR4nzOnMYNiQhw1jH6W3MyPjnn9iMncEi0lurWq1TO1u8q7eGsXCtmFz5wNbn4MLq1ZYMleS
+ 2DmBMguD4EUCFp4kFzbiIdckpfA+/Nsvm4/o53Hzrpc+oIcI4AflYkB
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The raw literals mean very little. Substitute it with more telling
-bitops macros.
+It's hardcoded to be zero. Always. Ever since msm-3.10. Or maybe
+even before. Remove it!
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/media/platform/qcom/venus/core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/media/platform/qcom/venus/core.c     | 3 ---
+ drivers/media/platform/qcom/venus/core.h     | 1 -
+ drivers/media/platform/qcom/venus/firmware.c | 3 +--
+ 3 files changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-index 5d4d62751357..4dec10d21b05 100644
+index 4dec10d21b05..bd624e965a92 100644
 --- a/drivers/media/platform/qcom/venus/core.c
 +++ b/drivers/media/platform/qcom/venus/core.c
-@@ -565,7 +565,7 @@ static const struct venus_resources msm8916_res = {
- 	.clks_num = 3,
- 	.max_load = 352800, /* 720p@30 + 1080p@30 */
- 	.hfi_version = HFI_VERSION_1XX,
--	.dma_mask = 0xddc00000 - 1,
-+	.dma_mask = (GENMASK(31, 30) | GENMASK(28, 26) | GENMASK(24, 22)) - 1,
- 	.fwname = "qcom/venus-1.8/venus.mdt",
- };
- 
-@@ -595,7 +595,7 @@ static const struct venus_resources msm8996_res = {
+@@ -650,7 +650,6 @@ static const struct venus_resources sdm660_res = {
  	.vcodec_clks_num = 1,
- 	.max_load = 2563200,
+ 	.max_load = 1036800,
  	.hfi_version = HFI_VERSION_3XX,
--	.dma_mask = 0xddc00000 - 1,
-+	.dma_mask = (GENMASK(31, 30) | GENMASK(28, 26) | GENMASK(24, 22)) - 1,
- 	.fwname = "qcom/venus-4.2/venus.mdt",
- };
- 
-@@ -696,7 +696,7 @@ static const struct venus_resources sdm845_res = {
- 	.max_load = 3110400,	/* 4096x2160@90 */
+-	.cp_start = 0,
+ 	.cp_size = 0x79000000,
+ 	.cp_nonpixel_start = 0x1000000,
+ 	.cp_nonpixel_size = 0x28000000,
+@@ -719,7 +718,6 @@ static const struct venus_resources sdm845_res_v2 = {
  	.hfi_version = HFI_VERSION_4XX,
  	.vpu_version = VPU_VERSION_AR50,
--	.dma_mask = 0xe0000000 - 1,
-+	.dma_mask = GENMASK(31, 29) - 1,
- 	.fwname = "qcom/venus-5.2/venus.mdt",
- };
- 
-@@ -718,7 +718,7 @@ static const struct venus_resources sdm845_res_v2 = {
- 	.max_load = 3110400,	/* 4096x2160@90 */
- 	.hfi_version = HFI_VERSION_4XX,
- 	.vpu_version = VPU_VERSION_AR50,
--	.dma_mask = 0xe0000000 - 1,
-+	.dma_mask = GENMASK(31, 29) - 1,
- 	.cp_start = 0,
+ 	.dma_mask = GENMASK(31, 29) - 1,
+-	.cp_start = 0,
  	.cp_size = 0x70800000,
  	.cp_nonpixel_start = 0x1000000,
-@@ -762,7 +762,7 @@ static const struct venus_resources sc7180_res = {
- 	.opp_pmdomain = pd_names_cx,
+ 	.cp_nonpixel_size = 0x24800000,
+@@ -763,7 +761,6 @@ static const struct venus_resources sc7180_res = {
  	.hfi_version = HFI_VERSION_4XX,
  	.vpu_version = VPU_VERSION_AR50,
--	.dma_mask = 0xe0000000 - 1,
-+	.dma_mask = GENMASK(31, 29) - 1,
- 	.cp_start = 0,
+ 	.dma_mask = GENMASK(31, 29) - 1,
+-	.cp_start = 0,
  	.cp_size = 0x70800000,
  	.cp_nonpixel_start = 0x1000000,
-@@ -817,7 +817,7 @@ static const struct venus_resources sm8250_res = {
- 	.hfi_version = HFI_VERSION_6XX,
- 	.vpu_version = VPU_VERSION_IRIS2,
- 	.num_vpp_pipes = 4,
--	.dma_mask = 0xe0000000 - 1,
-+	.dma_mask = GENMASK(31, 29) - 1,
- 	.fwname = "qcom/vpu-1.0/venus.mbn",
- };
- 
-@@ -871,7 +871,7 @@ static const struct venus_resources sc7280_res = {
- 	.hfi_version = HFI_VERSION_6XX,
- 	.vpu_version = VPU_VERSION_IRIS2_1,
- 	.num_vpp_pipes = 1,
--	.dma_mask = 0xe0000000 - 1,
-+	.dma_mask = GENMASK(31, 29) - 1,
- 	.fwname = "qcom/vpu-2.0/venus.mbn",
- };
- 
+ 	.cp_nonpixel_size = 0x24800000,
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index fe4cb566d8e9..16acf738fd6c 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -81,7 +81,6 @@ struct venus_resources {
+ 	const enum vpu_version vpu_version;
+ 	const u8 num_vpp_pipes;
+ 	const u32 max_load;
+-	const u32 cp_start;
+ 	const u32 cp_size;
+ 	const u32 cp_nonpixel_start;
+ 	const u32 cp_nonpixel_size;
+diff --git a/drivers/media/platform/qcom/venus/firmware.c b/drivers/media/platform/qcom/venus/firmware.c
+index fe7da2b30482..16e578780be7 100644
+--- a/drivers/media/platform/qcom/venus/firmware.c
++++ b/drivers/media/platform/qcom/venus/firmware.c
+@@ -245,7 +245,6 @@ int venus_boot(struct venus_core *core)
+ 	if (core->use_tz && res->cp_size) {
+ 		/*
+ 		 * Clues for porting using downstream data:
+-		 * cp_start = 0
+ 		 * cp_size = venus_ns/virtual-addr-pool[0] - yes, address and not size!
+ 		 *   This works, as the non-secure context bank is placed
+ 		 *   contiguously right after the Content Protection region.
+@@ -253,7 +252,7 @@ int venus_boot(struct venus_core *core)
+ 		 * cp_nonpixel_start = venus_sec_non_pixel/virtual-addr-pool[0]
+ 		 * cp_nonpixel_size = venus_sec_non_pixel/virtual-addr-pool[1]
+ 		 */
+-		ret = qcom_scm_mem_protect_video_var(res->cp_start,
++		ret = qcom_scm_mem_protect_video_var(0,
+ 						     res->cp_size,
+ 						     res->cp_nonpixel_start,
+ 						     res->cp_nonpixel_size);
 
 -- 
 2.42.0
