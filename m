@@ -2,177 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8677679B9C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C7679BE38
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240599AbjIKVs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:48:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
+        id S1376387AbjIKWTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236231AbjIKKBq (ORCPT
+        with ESMTP id S236245AbjIKKDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:01:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B4AE69
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694426499; x=1725962499;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=moAD8ETIrzJt++zuRKA+nwunHQzH6hhO6GbQC1kba0k=;
-  b=NYmdivh9q490HmJXNOZgiDE12NBBs/1pvMpvWq4L0pMEHCRXBcdpWiyR
-   C4tfxZrwaZiBGzgXCwZpAOqThlHZScUJd7ulyrh36zXujIyDIp98nD1+3
-   FiYknY4dOkHm4UvBwBuCdf1nM5bcdHPRVrGjflXLo+jK1u3RONRzZmAaO
-   qWvUOIAexJQBTM3+uq6ruDqove3SPYRtpM2MCHZbJXd0l5gBGI0uKVebZ
-   poiu29WM+VSIai5ub+e6NkoqURHj7mgLzjD6gGBd7J+lwyyLFrOjo4SNC
-   4wBFQUUeHJxzNema/fp8yQiCqYhBv3LnL1j5LVYbSal3c5Zcdu/yS863J
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="376955564"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="376955564"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:01:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="916963501"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="916963501"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 03:01:37 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 03:01:37 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 03:01:37 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 03:01:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dl9CcKBSicYAXU84WROGKxDoSWiHTi29v0cHVxhlQd4IpEeczQMCN2SRrcimsji0rhkXcHWhWVkeOFlm3LlIeBOqqh2E50MH4D8y96aO8+AdAJGDqXdBD2INO0lHJURnHTSJuS0NmplKUhNrVDNzxpngbgN9yn+iNp5+VICKGbgyQO45RnQLaXIi4jk7pq0rahKn9PjDEL6rtEI9tpMjoswuMaRk7P6eAoCFQuK5sPMNgZCcUXQmhrnYdKsLWOx+InX0jClhzfbo2XmmYuTqBAs8JCbRStvj4v/gfyubAoqClxYtLGjCnZAMfg+yfoD8b2BgGjt+QrNyKCOECKyV6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=moAD8ETIrzJt++zuRKA+nwunHQzH6hhO6GbQC1kba0k=;
- b=fb2k/cS97qeoau6FNgJNYhA6B5hzqGSUlAJAimFvTnEkeQynjjKOjHd68Agb0qslkoeNtlINVtt3VqUMTRNgD8iLgXgnPHXuP632R2Q+h4q6k1bovtHw+ClCqp4Q1JdxB5D6jcrjrQ9OpjfVnzRCOoTyB6vyU8EsD01xcmoh9QsxurIZVz3WYt7bA23UnAwc8j4Lqkbsewwy+x21JUDDMH2ntJvdtN0ujN/bXGIOVaSbV81cRp9BQMSvz0zTGBroLs5seOzjEHkafZ2OTpuKdlgJ/BlpEOzprsuBoeWB7HL6N/oP8xYFkPqB6peXN0BFheH9/KJvY0Uf7M+X6cX1Rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by PH0PR11MB5111.namprd11.prod.outlook.com (2603:10b6:510:3c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Mon, 11 Sep
- 2023 10:01:25 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 10:01:25 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-CC:     "Yu, Guorui" <guorui.yu@linux.alibaba.com>,
-        "qinkun@apache.org" <qinkun@apache.org>,
-        "wander@redhat.com" <wander@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "dionnaglaze@google.com" <dionnaglaze@google.com>,
-        "Aktas, Erdem" <erdemaktas@google.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v1] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Thread-Topic: [PATCH v1] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Thread-Index: AQHZ4Tat9x0/TMaw9keTjiStSWxYFbAQXXIAgADApQCAA6gjAIAApS4A
-Date:   Mon, 11 Sep 2023 10:01:25 +0000
-Message-ID: <0ea15aadac56856fceca19205d077a9b97f55437.camel@intel.com>
-References: <20230907025405.2310931-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-         <da4a6c3f4cb9118e10866cb1d624ad5ec5c96d7d.camel@intel.com>
-         <64fb499862936_7318294a0@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-         <2371c186-ccd4-48c7-b302-e289adb30dec@linux.intel.com>
-In-Reply-To: <2371c186-ccd4-48c7-b302-e289adb30dec@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|PH0PR11MB5111:EE_
-x-ms-office365-filtering-correlation-id: 3245d6e4-4c82-4584-72fb-08dbb2ae0f2c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ncf+U9871MtrKjikeAMeFSJscghrZXFiecaYDnUzn0r8kvvNM4yuU1pHL47ZaAEXM87YraNoM1uM2EmZeG6wT7tqJiIUqw2tRq0RLL+5/OF2jYXhf5+2cLpCrIcWvhTuX4xo3SuOndomMBXkDVx/F43xq1ivqrk37/jsMQE8k2SPrF0ND3RnR+krTtzR0UA85o+Tuj13uCD0ymFcVMjt8QRwbHVpVIWprMoULWoZAn74N+L/H2yG/EraixIAFe3DZ9NAO1vnzlLefdo0l8J+MhDtuiCG3czQSk6ji4CtLYpwOd7e+IVcWThnNVGyMxR4R0LSwJDJ+vr7Jjq2QE8XFlYuIJv7l0SDSuote6k8UzQJR+vzVb6lcSon1U4sHy2y7G9uKykO22jdLf9jYxoviOoOLWjYgKjJ5GUSMh1RxpQIdMrL9AtairAZ/DFgZDHIol2gyxgzfpiGIZEKJPwvKP5HFYdy1QgSpnLUX/2kWRV7jRBuAhZdkDFRXpSSesr/dl8MDNahH5Vdb45JeAorwDXrHR6mLmnoAtqz8At6RvYOVimL/ff7JcNc2kwF9UTFGJNuYKSNfviK5bJBdD7dNu2HE3trVXnFdI1MIoauewPbIsSfXWq7gY9zLsPPo7Y4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(136003)(366004)(396003)(186009)(1800799009)(451199024)(8676002)(316002)(54906003)(66556008)(66946007)(66476007)(64756008)(66446008)(91956017)(110136005)(76116006)(26005)(71200400001)(2616005)(36756003)(83380400001)(122000001)(53546011)(6486002)(6512007)(6506007)(38100700002)(38070700005)(86362001)(82960400001)(478600001)(7416002)(2906002)(5660300002)(41300700001)(4326008)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MmJ6SkRrZWNtMHlRTURaT0g3SVU0S0c5Y0liUWNjWFVZMHRrU056a1Bna24w?=
- =?utf-8?B?ZStuaEoyQTdwRzlzZlVUbG5KdlE4SmJ2WWhRYUhVcjZkZk9ZTXdBS0dsTUhH?=
- =?utf-8?B?MEFZRlQvVWhXdHNOeldhVVVDYUF0b093K243QmFUaTQ0TCtMeXpBRDlmL0JJ?=
- =?utf-8?B?V1J3Mmp3Q21BSlRlVkdKZkd4ZERob2xWaGlZeEJqbzkrSCt0RURTUnI1SVBF?=
- =?utf-8?B?N1puUWRaSlN6b3RLTmwwbFNEbm5GT08xbGNjbWJvRmpJdHNNNTJrTU0xZWZV?=
- =?utf-8?B?TGVJaEsyZkwxUEFlTi9FdVFjK1V2QktHL25EWDR2c21NdHl2bE1wNStrZjZo?=
- =?utf-8?B?OE9zYldSOWg4OWlQQ3kzUW8xQkI1azBVK0k1cWlUcTdjRzRIVnNEZzI3Vzlv?=
- =?utf-8?B?bHFtYXpXenBrYmtCZ2dleGZOZk0wQ3ErVmxmbWNmYWV6N2Joek15ZW5mTWln?=
- =?utf-8?B?Z0lIenZNeWZNV21FOG90akNzYk5IVTJ0Q2FCU1Zya1dMc1pSU085RHd4ZGdO?=
- =?utf-8?B?S1Z0bFVwejB1R3BnOGozWm9rQTJlaU9JWXU1cDlWRDZuSExMVFZzd0lFS2Vi?=
- =?utf-8?B?WmJ0ZXROL21TSDRGY004alJHbkFBVHJJTDhJOVVXWnJMYW9wZ2VKQ0I5Qytl?=
- =?utf-8?B?Q2MzRFpPaXlQeEl2V0pPTTlFeFhZajhGTG1IN0lGVDFPdlJvTmxHaDkzcUdS?=
- =?utf-8?B?YTROQlJwS3F4TG5Ld3FwZG1LZUVJTXpRUkJEMWUxZG4vNTRTa1VyTitGaTBO?=
- =?utf-8?B?U2tZeHZCUDBtNnVWdnI1R3IyaHJmMWtDbkUyT2p6dGNTWGs0bnpUbjF5UW4v?=
- =?utf-8?B?SkpuVzZCd1NZeFVTek9ob1UyZUs3ZjJ1Sm80cGE4RjFCOUtqOHVSWHNvanhW?=
- =?utf-8?B?VmJNclQwTnNJYUdrcDJpcTdoVUpnaFZoUjFUWUxOdkRPMjNzYzUxbFdhWnhN?=
- =?utf-8?B?bG5teUhrYXhhQzdWcEY5cFF2cG9hT1lqS2NvcHY4b0tPSURiZHVpRldDYklC?=
- =?utf-8?B?WjlXdDZSYkJIWkVTN0wvNFBSTTZBOVpMWHNzY0FwTU9WQ3Z1ZnNPdVJ4NlM5?=
- =?utf-8?B?cUdCMnRnZGZBRDQ0VUxEZGdVRmZ1QThuN09VMzR1Y09UcHlGQ3BEclphYVg0?=
- =?utf-8?B?YjB1N3pSZ1dDd3NlcHN1aUlBeDJqQzBZT0ZEaVUxN0dwNFdiM09DYS9RNlVD?=
- =?utf-8?B?SFc2NmZ4cThFZU4ybnlUNDlhMFUxQ09KaW0xZ04wMVFIUEhGUkhkUG1HNlBJ?=
- =?utf-8?B?bmJxYXZVWk83cG5rdXQyVmY5enVJZVVCdS9sUGlvc3N1S2JEdlpvd1F1VVNj?=
- =?utf-8?B?NXdtOVdkNFZQTnZDYUsvbkY0TGh3ZEpNdEIxMENrZzRYUmU4YjZhT0NPcEdX?=
- =?utf-8?B?WWQra1VCRDR1Z0hGYk1qMUFvaG9IOHpIbjBHVUwreHZHdzNuSmloa0tIcDZM?=
- =?utf-8?B?Y2VPeUtodmxDTCt5WitoNTFUK01Md1Izb2lwUnhMZTZXMmxpRjlIbWZXMzUr?=
- =?utf-8?B?ay9YQ3hXcVFINGFqTFNudklqTHZxdWxKU1UvRHBBL2lLWmVwT213UmJLNTQ3?=
- =?utf-8?B?UUZydVhkZk1GQnI4RkRnVzlhTzR5OGR3cEFiVDRuNEljUFJWTm1VbVpDRTdn?=
- =?utf-8?B?TjUvWU9nSjRXRXdRWGx1clowNUxHc0ZxQ2o5L2tEbzc3NW95ckF0aXVlNkVY?=
- =?utf-8?B?UkQxZWROQzk0blZUYVlVMm9tV2hEN1lUR1dBRmxnL0Z5NENxRUN0Z0xPYXFS?=
- =?utf-8?B?M3ljZkt1WmxqUWp1bDNmdHowQlQvQUU0THFUNDZlU2dzUDVrNi8yYmxqTHhm?=
- =?utf-8?B?b3k0QitLMHcyNS9ZZEZUdnpsTG91V01CcHRyNVNoRGJHZUxQNmVPcTZQb2hn?=
- =?utf-8?B?QWFWb3hOVW1PWE1sa0svS0g3eWdhOEtjRmc0RGtnaEZIN3p0MDNRVVo1TGNr?=
- =?utf-8?B?Tnk3aDBzeXJHRHRuNWRhdDN0M0ZsUmhuKzkwdWZ6d2QvbGdPazBxbTVlSzhx?=
- =?utf-8?B?V3ZSV2xmclNHd0pqKzdITlIwbUU4TWhrSzVuN0lpRldpUUtIdFkzbFRPbEVY?=
- =?utf-8?B?eDJuN1poTTRKWjArSVlwb3kyb2thQ1UzZ3F2b29EWkVYcysxZ1BIdGhzMjVq?=
- =?utf-8?Q?eb8v3GmZImljLnMgl9pM4dbV5?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E1FEEB8C6712FC478304B3E99D0FBE73@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 11 Sep 2023 06:03:44 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24482E6B;
+        Mon, 11 Sep 2023 03:03:37 -0700 (PDT)
+Received: from loongson.cn (unknown [10.40.46.158])
+        by gateway (Coremail) with SMTP id _____8Cxc_D35f5k0ookAA--.6137S3;
+        Mon, 11 Sep 2023 18:03:35 +0800 (CST)
+Received: from [192.168.124.126] (unknown [10.40.46.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSP15f5kCSZ3AA--.39206S3;
+        Mon, 11 Sep 2023 18:03:34 +0800 (CST)
+Subject: Re: [PATCH v20 09/30] LoongArch: KVM: Implement vcpu get, vcpu set
+ registers
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
+        Xi Ruoyao <xry111@xry111.site>
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-10-zhaotianrui@loongson.cn>
+ <CAAhV-H6=e-Tg1tCdFhN5i2CSQpL-NDLovJdc9A=Sxt=3h-3Z0g@mail.gmail.com>
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <5bb1f2fa-c41d-9f0b-7eab-173af09df5a0@loongson.cn>
+Date:   Mon, 11 Sep 2023 18:03:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3245d6e4-4c82-4584-72fb-08dbb2ae0f2c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 10:01:25.1199
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kC65fzFhIzUnrTWejRNOBbAfhpfa4pwWp8+wqdnat4L8IQoQaGLBhHx9NRXXiG4w6oi2RfG0VM6+z1MlOciMUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5111
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <CAAhV-H6=e-Tg1tCdFhN5i2CSQpL-NDLovJdc9A=Sxt=3h-3Z0g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8DxfSP15f5kCSZ3AA--.39206S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxKF43uFyDJF4rAr1DZF48Xwc_yoWfGF13pF
+        WUCan8Xr48tryxCw1Iqr4qgF9Iqr97Kr17ZFy7Kayayr1qyryFyF40krW3CFyrGr18uF1I
+        va4jqF1I9FsYy3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8uc_3UUUU
+        U==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -180,26 +75,332 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIzLTA5LTEwIGF0IDE3OjEwIC0wNzAwLCBLdXBwdXN3YW15IFNhdGh5YW5hcmF5
-YW5hbiB3cm90ZToNCj4gDQo+IE9uIDkvOC8yMDIzIDk6MTkgQU0sIERhbiBXaWxsaWFtcyB3cm90
-ZToNCj4gPiA+ID4gQ2hhbmdlcyBzaW5jZSBwcmV2aW91cyB2ZXJzaW9uOg0KPiA+ID4gPiAqIFVz
-ZWQgQ29uZmlnRlMgaW50ZXJmYWNlIGluc3RlYWQgb2YgSU9DVEwgaW50ZXJmYWNlLg0KPiA+ID4g
-PiAqIFVzZWQgcG9sbGluZyBtb2RlbCBmb3IgUXVvdGUgZ2VuZXJhdGlvbiBhbmQgZHJvcHBlZCB0
-aGUgZXZlbnQgbm90aWZpY2F0aW9uIElSUSBzdXBwb3J0Lg0KPiA+ID4gQ2FuIHlvdSBlbGFib3Jh
-dGUgd2h5IHRoZSBub3RpZmljYXRpb24gSVJRIGlzIGRyb3BwZWQ/DQo+ID4gQmVjYXVzZSBpdCB3
-YXMgYSBwaWxlIG9mIGhhY2tzIGFuZCBub24taWRpb21hdGljIGNvbXBsZXhpdHkuIEl0IGNhbiBj
-b21lDQo+ID4gYmFjayB3aGVuIC8gaWYgZHJpdmVyIGNvZGUgY2FuIHRyZWF0IGl0IGxpa2UgYSB0
-eXBpY2FsIGludGVycnVwdC4NCj4gDQo+IEN1cnJlbnRseSwgdGhlIFZNTSBhc3N1bWVzIHRoYXQg
-dGhlIHZDUFUgdGhhdCBleGVjdXRlcyB0aGUgVERHLlZQLlZNQ0FMTA0KPiA8U2V0dXBFdmVudE5v
-dGlmeUludGVycnVwdD4gaHlwZXJjYWxsIGFzIHRoZSB0YXJnZXQgdkNQVSBmb3IgZXZlbnQNCj4g
-bm90aWZpY2F0aW9uIElSUS4gVG8gc2F0aXNmeSB0aGlzIGFzc3VtcHRpb24sIHRoZSBndWVzdCBk
-cml2ZXIgdGhhdCB1c2VzDQo+IHRoaXMgaHlwZXJjYWxsL0lSUSBoYWQgdG8gaW5jbHVkZSBDUFUv
-SVJRIGFmZmluaXR5IHJlbGF0ZWQgY29kZSBjaGFuZ2VzLiBUaGlzDQo+IGFkZHMgdW5uZWNlc3Nh
-cnkgY29tcGxpY2F0aW9uIHRvIHRoZSBndWVzdCBkcml2ZXIgY29kZSB3aXRob3V0IGFueSByZWFs
-DQo+IEFSQ0ggbmVlZCBvciBiZW5lZml0LiBTbyB3ZSB3YW50IHRvIG1vZGlmeSB0aGUgR0hDSSBB
-QkkgdG8gbGV0IFREIGd1ZXN0IHBhc3MNCj4gdGhlIHRhcmdldCBDUFUgYXMgYW4gYXJndW1lbnQu
-IFdpdGggdGhpcyBjaGFuZ2UsIHdlIGNhbiBoaWRlIHRoZSBJUlEgcmVsYXRlZA0KPiBjb25maWd1
-cmF0aW9uIGluIHRoZSBJUlEgY2hpcCBjb2RlIGFuZCBsZXQgdGhlIGd1ZXN0IGRyaXZlciB0cmVh
-dCB0aGUNCj4gZXZlbnQgbm90aWZpY2F0aW9uIElSUSBhcyBhIHJlZ3VsYXIgaW50ZXJydXB0Lg0K
-PiANCg0KU29ycnkgSSBtaXNzZWQgc29tZSBpbnRlcm5hbCBkaXNjdXNzaW9uLiAgUGxlYXNlIGZl
-ZWwgZnJlZSB0byBpZ25vcmUgbXkNCmNvbW1lbnRzLiANCg==
+
+在 2023/9/11 下午5:03, Huacai Chen 写道:
+> Hi, Tianrui,
+>
+> On Thu, Aug 31, 2023 at 4:30 PM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
+>> Implement LoongArch vcpu get registers and set registers operations, it
+>> is called when user space use the ioctl interface to get or set regs.
+>>
+>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>> ---
+>>   arch/loongarch/kvm/csr_ops.S |  67 ++++++++++++
+>>   arch/loongarch/kvm/vcpu.c    | 206 +++++++++++++++++++++++++++++++++++
+>>   2 files changed, 273 insertions(+)
+>>   create mode 100644 arch/loongarch/kvm/csr_ops.S
+>>
+>> diff --git a/arch/loongarch/kvm/csr_ops.S b/arch/loongarch/kvm/csr_ops.S
+>> new file mode 100644
+>> index 0000000000..53e44b23a5
+>> --- /dev/null
+>> +++ b/arch/loongarch/kvm/csr_ops.S
+>> @@ -0,0 +1,67 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+>> + */
+>> +
+>> +#include <asm/regdef.h>
+>> +#include <linux/linkage.h>
+>> +       .text
+>> +       .cfi_sections   .debug_frame
+>> +/*
+>> + * we have splited hw gcsr into three parts, so we can
+>> + * calculate the code offset by gcsrid and jump here to
+>> + * run the gcsrwr instruction.
+>> + */
+>> +SYM_FUNC_START(set_hw_gcsr)
+>> +       addi.d      t0,   a0,   0
+>> +       addi.w      t1,   zero, 96
+>> +       bltu        t1,   t0,   1f
+>> +       la.pcrel    t0,   10f
+>> +       alsl.d      t0,   a0,   t0, 3
+>> +       jr          t0
+>> +1:
+>> +       addi.w      t1,   a0,   -128
+>> +       addi.w      t2,   zero, 15
+>> +       bltu        t2,   t1,   2f
+>> +       la.pcrel    t0,   11f
+>> +       alsl.d      t0,   t1,   t0, 3
+>> +       jr          t0
+>> +2:
+>> +       addi.w      t1,   a0,   -384
+>> +       addi.w      t2,   zero, 3
+>> +       bltu        t2,   t1,   3f
+>> +       la.pcrel    t0,   12f
+>> +       alsl.d      t0,   t1,   t0, 3
+>> +       jr          t0
+>> +3:
+>> +       addi.w      a0,   zero, -1
+>> +       jr          ra
+>> +
+>> +/* range from 0x0(KVM_CSR_CRMD) to 0x60(KVM_CSR_LLBCTL) */
+>> +10:
+>> +       csrnum = 0
+>> +       .rept 0x61
+>> +       gcsrwr a1, csrnum
+>> +       jr ra
+>> +       csrnum = csrnum + 1
+>> +       .endr
+>> +
+>> +/* range from 0x80(KVM_CSR_IMPCTL1) to 0x8f(KVM_CSR_TLBRPRMD) */
+>> +11:
+>> +       csrnum = 0x80
+>> +       .rept 0x10
+>> +       gcsrwr a1, csrnum
+>> +       jr ra
+>> +       csrnum = csrnum + 1
+>> +       .endr
+>> +
+>> +/* range from 0x180(KVM_CSR_DMWIN0) to 0x183(KVM_CSR_DMWIN3) */
+>> +12:
+>> +       csrnum = 0x180
+>> +       .rept 0x4
+>> +       gcsrwr a1, csrnum
+>> +       jr ra
+>> +       csrnum = csrnum + 1
+>> +       .endr
+>> +
+>> +SYM_FUNC_END(set_hw_gcsr)
+>> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+>> index ca4e8d074e..f17422a942 100644
+>> --- a/arch/loongarch/kvm/vcpu.c
+>> +++ b/arch/loongarch/kvm/vcpu.c
+>> @@ -13,6 +13,212 @@
+>>   #define CREATE_TRACE_POINTS
+>>   #include "trace.h"
+>>
+>> +int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *v)
+>> +{
+>> +       unsigned long val;
+>> +       struct loongarch_csrs *csr = vcpu->arch.csr;
+>> +
+>> +       if (get_gcsr_flag(id) & INVALID_GCSR)
+>> +               return -EINVAL;
+>> +
+>> +       if (id == LOONGARCH_CSR_ESTAT) {
+>> +               /* interrupt status IP0 -- IP7 from GINTC */
+>> +               val = kvm_read_sw_gcsr(csr, LOONGARCH_CSR_GINTC) & 0xff;
+>> +               *v = kvm_read_sw_gcsr(csr, id) | (val << 2);
+>> +               return 0;
+>> +       }
+>> +
+>> +       /*
+>> +        * get software csr state if csrid is valid, since software
+>> +        * csr state is consistent with hardware
+>> +        */
+> After a long time thinking, I found this is wrong. Of course
+> _kvm_setcsr() saves a software copy of the hardware registers, but the
+> hardware status will change. For example, during a VM running, it may
+> change the EUEN register if it uses fpu.
+>
+> So, we should do things like what we do in our internal repo,
+> _kvm_getcsr() should get values from hardware for HW_GCSR registers.
+> And we also need a get_hw_gcsr assembly function.
+>
+>
+> Huacai
+This is a asynchronous vcpu ioctl action, that is to say  this action 
+take place int the vcpu thread after vcpu get out of guest mode, and the 
+guest registers have been saved in software, so we could return software 
+register value when get guest csr.
+
+Thanks
+Tianrui Zhao
+>
+>> +       *v = kvm_read_sw_gcsr(csr, id);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
+>> +{
+>> +       struct loongarch_csrs *csr = vcpu->arch.csr;
+>> +       int ret = 0, gintc;
+>> +
+>> +       if (get_gcsr_flag(id) & INVALID_GCSR)
+>> +               return -EINVAL;
+>> +
+>> +       if (id == LOONGARCH_CSR_ESTAT) {
+>> +               /* estat IP0~IP7 inject through guestexcept */
+>> +               gintc = (val >> 2) & 0xff;
+>> +               write_csr_gintc(gintc);
+>> +               kvm_set_sw_gcsr(csr, LOONGARCH_CSR_GINTC, gintc);
+>> +
+>> +               gintc = val & ~(0xffUL << 2);
+>> +               write_gcsr_estat(gintc);
+>> +               kvm_set_sw_gcsr(csr, LOONGARCH_CSR_ESTAT, gintc);
+>> +
+>> +               return ret;
+>> +       }
+>> +
+>> +       if (get_gcsr_flag(id) & HW_GCSR) {
+>> +               set_hw_gcsr(id, val);
+>> +               /* write sw gcsr to keep consistent with hardware */
+>> +               kvm_write_sw_gcsr(csr, id, val);
+>> +       } else
+>> +               kvm_write_sw_gcsr(csr, id, val);
+>> +
+>> +       return ret;
+>> +}
+>> +
+>> +static int _kvm_get_one_reg(struct kvm_vcpu *vcpu,
+>> +               const struct kvm_one_reg *reg, s64 *v)
+>> +{
+>> +       int reg_idx, ret = 0;
+>> +
+>> +       if ((reg->id & KVM_REG_LOONGARCH_MASK) == KVM_REG_LOONGARCH_CSR) {
+>> +               reg_idx = KVM_GET_IOC_CSRIDX(reg->id);
+>> +               ret = _kvm_getcsr(vcpu, reg_idx, v);
+>> +       } else if (reg->id == KVM_REG_LOONGARCH_COUNTER)
+>> +               *v = drdtime() + vcpu->kvm->arch.time_offset;
+>> +       else
+>> +               ret = -EINVAL;
+>> +
+>> +       return ret;
+>> +}
+>> +
+>> +static int _kvm_get_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+>> +{
+>> +       int ret = -EINVAL;
+>> +       s64 v;
+>> +
+>> +       if ((reg->id & KVM_REG_SIZE_MASK) != KVM_REG_SIZE_U64)
+>> +               return ret;
+>> +
+>> +       if (_kvm_get_one_reg(vcpu, reg, &v))
+>> +               return ret;
+>> +
+>> +       return put_user(v, (u64 __user *)(long)reg->addr);
+>> +}
+>> +
+>> +static int _kvm_set_one_reg(struct kvm_vcpu *vcpu,
+>> +                       const struct kvm_one_reg *reg,
+>> +                       s64 v)
+>> +{
+>> +       int ret = 0;
+>> +       unsigned long flags;
+>> +       u64 val;
+>> +       int reg_idx;
+>> +
+>> +       val = v;
+>> +       if ((reg->id & KVM_REG_LOONGARCH_MASK) == KVM_REG_LOONGARCH_CSR) {
+>> +               reg_idx = KVM_GET_IOC_CSRIDX(reg->id);
+>> +               ret = _kvm_setcsr(vcpu, reg_idx, val);
+>> +       } else if (reg->id == KVM_REG_LOONGARCH_COUNTER) {
+>> +               local_irq_save(flags);
+>> +               /*
+>> +                * gftoffset is relative with board, not vcpu
+>> +                * only set for the first time for smp system
+>> +                */
+>> +               if (vcpu->vcpu_id == 0)
+>> +                       vcpu->kvm->arch.time_offset = (signed long)(v - drdtime());
+>> +               write_csr_gcntc((ulong)vcpu->kvm->arch.time_offset);
+>> +               local_irq_restore(flags);
+>> +       } else if (reg->id == KVM_REG_LOONGARCH_VCPU_RESET) {
+>> +               kvm_reset_timer(vcpu);
+>> +               memset(&vcpu->arch.irq_pending, 0, sizeof(vcpu->arch.irq_pending));
+>> +               memset(&vcpu->arch.irq_clear, 0, sizeof(vcpu->arch.irq_clear));
+>> +       } else
+>> +               ret = -EINVAL;
+>> +
+>> +       return ret;
+>> +}
+>> +
+>> +static int _kvm_set_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+>> +{
+>> +       s64 v;
+>> +       int ret = -EINVAL;
+>> +
+>> +       if ((reg->id & KVM_REG_SIZE_MASK) != KVM_REG_SIZE_U64)
+>> +               return ret;
+>> +
+>> +       if (get_user(v, (u64 __user *)(long)reg->addr))
+>> +               return ret;
+>> +
+>> +       return _kvm_set_one_reg(vcpu, reg, v);
+>> +}
+>> +
+>> +int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
+>> +                                 struct kvm_sregs *sregs)
+>> +{
+>> +       return -ENOIOCTLCMD;
+>> +}
+>> +
+>> +int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
+>> +                                 struct kvm_sregs *sregs)
+>> +{
+>> +       return -ENOIOCTLCMD;
+>> +}
+>> +
+>> +int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
+>> +{
+>> +       int i;
+>> +
+>> +       vcpu_load(vcpu);
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(vcpu->arch.gprs); i++)
+>> +               regs->gpr[i] = vcpu->arch.gprs[i];
+>> +
+>> +       regs->pc = vcpu->arch.pc;
+>> +
+>> +       vcpu_put(vcpu);
+>> +       return 0;
+>> +}
+>> +
+>> +int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
+>> +{
+>> +       int i;
+>> +
+>> +       vcpu_load(vcpu);
+>> +
+>> +       for (i = 1; i < ARRAY_SIZE(vcpu->arch.gprs); i++)
+>> +               vcpu->arch.gprs[i] = regs->gpr[i];
+>> +       vcpu->arch.gprs[0] = 0; /* zero is special, and cannot be set. */
+>> +       vcpu->arch.pc = regs->pc;
+>> +
+>> +       vcpu_put(vcpu);
+>> +       return 0;
+>> +}
+>> +
+>> +long kvm_arch_vcpu_ioctl(struct file *filp,
+>> +                        unsigned int ioctl, unsigned long arg)
+>> +{
+>> +       struct kvm_vcpu *vcpu = filp->private_data;
+>> +       void __user *argp = (void __user *)arg;
+>> +       long r;
+>> +
+>> +       vcpu_load(vcpu);
+>> +
+>> +       switch (ioctl) {
+>> +       case KVM_SET_ONE_REG:
+>> +       case KVM_GET_ONE_REG: {
+>> +               struct kvm_one_reg reg;
+>> +
+>> +               r = -EFAULT;
+>> +               if (copy_from_user(&reg, argp, sizeof(reg)))
+>> +                       break;
+>> +               if (ioctl == KVM_SET_ONE_REG)
+>> +                       r = _kvm_set_reg(vcpu, &reg);
+>> +               else
+>> +                       r = _kvm_get_reg(vcpu, &reg);
+>> +               break;
+>> +       }
+>> +       default:
+>> +               r = -ENOIOCTLCMD;
+>> +               break;
+>> +       }
+>> +
+>> +       vcpu_put(vcpu);
+>> +       return r;
+>> +}
+>> +
+>>   int kvm_arch_vcpu_precreate(struct kvm *kvm, unsigned int id)
+>>   {
+>>          return 0;
+>> --
+>> 2.27.0
+>>
+
