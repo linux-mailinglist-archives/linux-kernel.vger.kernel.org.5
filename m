@@ -2,42 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F3579C23F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F13479C251
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236786AbjILCIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        id S237186AbjILCIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237213AbjILCCD (ORCPT
+        with ESMTP id S237246AbjILCCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 22:02:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FE81A4BD6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:32:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F3FC3277C;
-        Mon, 11 Sep 2023 23:57:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA001A8281;
+        Mon, 11 Sep 2023 18:32:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92D23C3277F;
+        Mon, 11 Sep 2023 23:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694476670;
-        bh=9OtbIZUFBDxgyKkdw+GLmc+PCE/ZFLEZDyNbZabaVqM=;
+        s=k20201202; t=1694476673;
+        bh=WoSZuuZToBcsek+2qM1hUT4GFK4S9ngVS3iIz4yb0c8=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=vMKpS6+Pu8B/ZHOewr5w0gXcJNEhTABbIJE36iU/vzxR70DAj8UEZEIyiLzFXfMMa
-         uXy6G/31UvvxAB/XaimBtjUbH/FO07qD8KUOwBsO2V9fzqA/7J/fMD0z9OEJjPoqFN
-         Ql8bSzf45eVy6ptY+N6Ynr96CPWFFA60aP4xu2THa24ZAdevpYXdZiwcW4V+BKeTTA
-         /1Mgs2zO2oMB5C/Aj0pQqz2/mkwwGdy87WQFOUia/GeqRH+A6JJH8N9VhebU+jyV0I
-         RHqgWCIZ8k9MAGvolokKzzmQvEv4Gqywq7T0sYHGZDopn9pCyIRp4vYWdEk+eMv3IQ
-         uwODw1UhMeQFg==
+        b=uarpI7vhSp5ytnyWont9pj3X6rOugfLaoj8jWIU0g+Na2eaj0zXBTzdaEimi8dcFM
+         JBYubp7AJYghYtFpkymWGTlWNDDnJilpvKEKnRrPKlR41vw0+t7PbGxuvStEE6/O/C
+         eYI3P7o9TXFhOGjzX3KCJEQbacjuIUSA1y/oCKnzX/b3UCAVFpxDTw6riNLTI5c0Dp
+         zAQCjAXV4Iz9HVPyE1gFZe/JO4svqitiqxeqhBH2xnkoUHkBckFaqxNK6rQcAI084R
+         XnJFncvxMNLRUTulicOxkgrDW4MVPSHrBNs9j+OnzgjvSWxItXsnII5CSRHsmngl8c
+         RdTz9x08jIeWA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-In-Reply-To: <20230907090910.13546-1-jbrunet@baylibre.com>
-References: <20230907090910.13546-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: meson: axg: extend TDM maximum sample rate to
- 384kHz
-Message-Id: <169447666857.2387538.11157727345218045709.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 00:57:48 +0100
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+In-Reply-To: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+References: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+Subject: Re: [PATCH v3 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+Message-Id: <169447667032.2387538.4844060984020698450.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 00:57:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -46,11 +52,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Sep 2023 11:09:10 +0200, Jerome Brunet wrote:
-> The TDM HW on the axg SoC families and derivatives actually supports
-> 384kHz sampling rate.
-> 
-> Update the fifo and tdm interface constraints accordingly.
+On Thu, 31 Aug 2023 11:20:39 -0500, Vlad Karpovich wrote:
+> Checks the index computed by the virq offset before printing the
+> error condition in cs35l45_spk_safe_err() handler.
 > 
 > 
 
@@ -60,8 +64,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: meson: axg: extend TDM maximum sample rate to 384kHz
-      commit: 43f2d432e47ebf2d7518fdef50d7cc70da376b0e
+[1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+      commit: 44f37b6ce041c838cb2f49f08998c41f1ab3b08c
+[2/4] ASoC: cs35l45: Analog PCM Volume and Amplifier Mode controls
+      commit: 18050443b9fc4e809c077fbf0967349410e86117
+[3/4] ASoC: cs35l45: Connect DSP to the monitoring signals
+      commit: 3fecf69aa7fdf1910267dee1dbaa8ed865cf2cb6
+[4/4] ASoC: cs35l45: Add AMP Enable Switch control
+      commit: c3c9b17d27887f7b2f6b85d0a364b009b8436539
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
