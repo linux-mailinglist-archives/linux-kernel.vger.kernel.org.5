@@ -2,126 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B3A79A18D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A3779A1A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbjIKDBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 23:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
+        id S232220AbjIKDKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 23:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjIKDBC (ORCPT
+        with ESMTP id S232095AbjIKDKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 23:01:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2764EB0;
-        Sun, 10 Sep 2023 20:00:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE05C433C7;
-        Mon, 11 Sep 2023 03:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694401257;
-        bh=Zb7G9oX8iegZtBsmuXgSqpVqEQBV6K+Fp0vyiTnpncg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NxRbMGrreQxY0Lky1aNLhQC7ns0e8bXWzjuIarTimGyS1ota/Krv5YkhRuyPYI6r4
-         5S/UAQoNRSHSUcNHm9vrPtv5ReRqENayqQkCuelL8mf8uk61RZE39lQewT2NPthaz9
-         5VHpTVYYA9KfKVuAa4BGxYQVtaftT2WANM7HeYNcENRs8+ojiMg8tRO694QJtbDNrW
-         NRlejlewZYaeeSXlpegbihmBmXtjibub7zs9ur9C7n3J9EzEd0nB6LkFzABEse/g1v
-         4lTFC0Fb9PsyLdsCodAuTFsZECHdjFWVb1zJBzAEcb0tvBYhqtOrGbE8jY0zG1tnpD
-         wkrytWS61qxOA==
-Date:   Mon, 11 Sep 2023 12:00:53 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: suspicious RCU usage warning on tracing/urgent
-Message-Id: <20230911120053.ca82f545e7f46ea753deda18@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 10 Sep 2023 23:10:41 -0400
+Received: from out-225.mta1.migadu.com (out-225.mta1.migadu.com [IPv6:2001:41d0:203:375::e1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B914F103
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 20:10:35 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694401833;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X7uvq5FhhnljMN3Um+NMD1L9HxaijOwDWaM8/TobTFo=;
+        b=j7U67lS0wfc2hHBLw72gaCHQEi0Eujt+ayOWyXCZeuwGBGx0Mv2vOKHyCh1z8plGBlgPsw
+        LKMD3BTXrypijV/6QIoL+g6erYBfwO8bnC8i3ehQCIaDZQOwvsY3GmJ+JlQ8t6UoALtGmz
+        Io2ssCgauX8CWcLcaUMfVPvdrEeAHRc=
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 07/11] hugetlb: perform vmemmap restoration on a list
+ of pages
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230908205340.GA62663@monkey>
+Date:   Mon, 11 Sep 2023 11:10:18 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Rientjes <rientjes@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <BFE00D00-1DFF-4AF8-BB10-5B76BF06E012@linux.dev>
+References: <20230905214412.89152-1-mike.kravetz@oracle.com>
+ <20230905214412.89152-8-mike.kravetz@oracle.com>
+ <5e091211-9a32-8480-55fb-faff6a0fadef@linux.dev>
+ <38E2F051-E00B-4104-A616-0EEB2729386F@linux.dev>
+ <20230906211234.GC3612@monkey>
+ <B8F68838-8C78-4BF1-AEC8-D89BCD49ECC7@linux.dev>
+ <20230907185421.GD3640@monkey> <20230908205340.GA62663@monkey>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
 
-I got this suspicious RCU usage warning when I ran ftracetest on
-tracing/urgent branch.
 
-[1] Basic trace file check[   17.172817] 
-[   17.174621] =============================
-[   17.177730] WARNING: suspicious RCU usage
-[   17.180962] 6.5.0-10750-g595efe1079cd #47 Tainted: G                 N
-[   17.185528] -----------------------------
-[   17.188685] fs/tracefs/event_inode.c:455 RCU-list traversed in non-reader section!!
-[   17.194633] 
-[   17.194633] other info that might help us debug this:
-[   17.194633] 
-[   17.200969] 
-[   17.200969] rcu_scheduler_active = 2, debug_locks = 1
-[   17.206086] 1 lock held by ftracetest/171:
-[   17.209265]  #0: ffffffff829c2d30 (eventfs_srcu){.+.+}-{0:0}, at: dcache_dir_open_wrapper+0x3f/0x190
-[   17.215551] 
-[   17.215551] stack backtrace:
-[   17.218498] CPU: 5 PID: 171 Comm: ftracetest Tainted: G                 N 6.5.0-10750-g595efe1079cd #47
-[   17.223364] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-[   17.228206] Call Trace:
-[   17.230076]  <TASK>
-[   17.231812]  dump_stack_lvl+0x66/0x80
-[   17.234260]  lockdep_rcu_suspicious+0x158/0x1c0
-[   17.237113]  ? __pfx_dcache_dir_open_wrapper+0x10/0x10
-[   17.240026]  dcache_dir_open_wrapper+0x14c/0x190
-[   17.242663]  ? __pfx_dcache_dir_open_wrapper+0x10/0x10
-[   17.245592]  do_dentry_open+0x16a/0x550
-[   17.248203]  do_open+0x272/0x3d0
-[   17.250584]  path_openat+0x119/0x290
-[   17.253046]  ? __lock_acquire+0x504/0xb70
-[   17.255658]  do_filp_open+0xb6/0x160
-[   17.258015]  ? find_held_lock+0x2b/0x80
-[   17.260421]  ? alloc_fd+0x12b/0x220
-[   17.262839]  ? trace_preempt_on+0x7a/0x90
-[   17.265763]  ? preempt_count_sub+0x4b/0x60
-[   17.268631]  ? _raw_spin_unlock+0x2d/0x50
-[   17.271249]  do_sys_openat2+0x96/0xd0
-[   17.273499]  __x64_sys_openat+0x57/0xa0
-[   17.275808]  do_syscall_64+0x3f/0x90
-[   17.277995]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[   17.281250] RIP: 0033:0x4bce8c
-[   17.283498] Code: 24 18 31 c0 41 83 e2 40 75 44 89 f0 25 00 00 41 00 3d 00 00 41 00 74 36 44 89 c2 4c 89 ce bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 44 48 8b 4c 24 18 64 48 33 0c 25 28 00 00 00
-[   17.294543] RSP: 002b:00007fffa59a3e20 EFLAGS: 00000287 ORIG_RAX: 0000000000000101
-[   17.299479] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004bce8c
-[   17.303935] RDX: 0000000000090800 RSI: 000000000130b0c0 RDI: 00000000ffffff9c
-[   17.308187] RBP: 00007fffa59a4098 R08: 0000000000090800 R09: 000000000130b0c0
-[   17.312483] R10: 0000000000000000 R11: 0000000000000287 R12: 00000000013099ff
-[   17.316401] R13: 0000000000000012 R14: 0000000001309a00 R15: 000000000130b0c7
-[   17.320543]  </TASK>
+> On Sep 9, 2023, at 04:53, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>=20
+> On 09/07/23 11:54, Mike Kravetz wrote:
+>> On 09/07/23 11:33, Muchun Song wrote:
+>>>=20
+>>>=20
+>>>> On Sep 7, 2023, at 05:12, Mike Kravetz <mike.kravetz@oracle.com> =
+wrote:
+>>>>=20
+>>>> On 09/06/23 16:07, Muchun Song wrote:
+>>>>>> On Sep 6, 2023, at 15:33, Muchun Song <muchun.song@linux.dev> =
+wrote:
+>>>>>> On 2023/9/6 05:44, Mike Kravetz wrote:
+>>>>>>> When removing hugetlb pages from the pool, we first create a =
+list
+>>>>>>> of removed pages and then free those pages back to low level =
+allocators.
+>>>>>>> Part of the 'freeing process' is to restore vmemmap for all base =
+pages
+>>>>>>> if necessary.  Pass this list of pages to a new routine
+>>>>>>> hugetlb_vmemmap_restore_folios() so that vmemmap restoration can =
+be
+>>>>>>> performed in bulk.
+>>>>>>>=20
+>>>>>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>>>>>> ---
+>>>>>>> mm/hugetlb.c         |  3 +++
+>>>>>>> mm/hugetlb_vmemmap.c | 13 +++++++++++++
+>>>>>>> mm/hugetlb_vmemmap.h |  5 +++++
+>>>>>>> 3 files changed, 21 insertions(+)
+>>>>>>>=20
+>>>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>>>>> index 554be94b07bd..dd2dbc256172 100644
+>>>>>>> --- a/mm/hugetlb.c
+>>>>>>> +++ b/mm/hugetlb.c
+>>>>>>> @@ -1838,6 +1838,9 @@ static void =
+update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
+>>>>>>> {
+>>>>>>> struct folio *folio, *t_folio;
+>>>>>>> + /* First restore vmemmap for all pages on list. */
+>>>>>>> + hugetlb_vmemmap_restore_folios(h, list);
+>>>>>>> +
+>>>>>>> list_for_each_entry_safe(folio, t_folio, list, lru) {
+>>>>>>> update_and_free_hugetlb_folio(h, folio, false);
+>>>>>>> cond_resched();
+>>>>>>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+>>>>>>> index ac5577d372fe..79de984919ef 100644
+>>>>>>> --- a/mm/hugetlb_vmemmap.c
+>>>>>>> +++ b/mm/hugetlb_vmemmap.c
+>>>>>>> @@ -481,6 +481,19 @@ int hugetlb_vmemmap_restore(const struct =
+hstate *h, struct page *head)
+>>>>>>> return ret;
+>>>>>>> }
+>>>>>>> +/*
+>>>>>>> + * This function will attempt to resore vmemmap for a list of =
+folios.  There
+>>>>>>> + * is no guarantee that restoration will be successful for all =
+or any folios.
+>>>>>>> + * This is used in bulk operations, and no feedback is given to =
+the caller.
+>>>>>>> + */
+>>>>>>> +void hugetlb_vmemmap_restore_folios(const struct hstate *h, =
+struct list_head *folio_list)
+>>>>>>> +{
+>>>>>>> + struct folio *folio;
+>>>>>>> +
+>>>>>>> + list_for_each_entry(folio, folio_list, lru)
+>>>>>>> + (void)hugetlb_vmemmap_restore(h, &folio->page);
+>>>>>>=20
+>>>>>> I am curious about the purpose of "void" here, seems it it not =
+necessnary,
+>>>>>> ritgh? We cound see so many palces where we do not add the void =
+if the caller
+>>>>>> does not care about the return value of the callee.
+>>>>>=20
+>>>>> Another question: should we stop restoring vmemmap pages when
+>>>>> hugetlb_vmemmap_restore() fails? In which case, I suspect there
+>>>>> is no memory probably, there is no need to continue, right?
+>>>>=20
+>>>> Recall that the list of hugetlb pages may be from multiple nodes.  =
+My first
+>>>> thought was that we should continue because memory allocation may =
+fail on one
+>>>> node but succeed on another.  However, with
+>>>> =
+https://lore.kernel.org/linux-mm/20230905031312.91929-1-yuancan@huawei.com=
+/
+>>>> memory allocation should fall back to other nodes.  So, yes I do =
+believe it
+>>>> would make sense to stop when hugetlb_vmemmap_restore returns =
+ENOMEM as
+>>>> we are unlikely to make forward progress.
+>>>=20
+>>> Agree.
+>>>=20
+>>>>=20
+>>>> Today's behavior will try to restore vmemmap for all pages.  No =
+stopping
+>>>> on error.
+>>>>=20
+>>>> I have mixed thoughts on this.  Quitting on error 'seems =
+reasonable'.
+>>>> However, if we continue we 'might' be able to allocate vmemmap for =
+one
+>>>> hugetlb page.  And, if we free one hugetlb page that should provide
+>>>> vmemmap for several more and we may be able to free most pages on =
+the
+>>>> list.
+>>>=20
+>>> Yes. A good point. But there should be a non-optimized huge page =
+been
+>>> freed somewhere in parallel, otherwise we still cannot allocate =
+memory.
+>>=20
+>> It does not have to be another huge page being freed in parallel.  It
+>> could be that when allocating vmemmap for a 1G hugetlb page we were =
+one
+>> (4K) page short of what was required.  If someone else frees a 4K =
+page,
+>> freeing the next 1G page may succeed.
 
-But it seems correctly taking srcu_read_lock().
+Right. I missed that.
 
-    452 
-    453         ei = ti->private;
-    454         idx = srcu_read_lock(&eventfs_srcu);
-    455         list_for_each_entry_rcu(ef, &ei->e_top_files, list) {
-    456                 create_dentry(ef, dentry, false);
-    457         }
-    458         srcu_read_unlock(&eventfs_srcu, idx);
-    459         return dcache_dir_open(inode, file);
-    460 }
-    461 
+>> --=20
+>> Mike Kravetz
+>>=20
+>>> However, the freeing operation happens after =
+hugetlb_vmemmap_restore_folios.
+>>> If we want to handle this, we should rework =
+update_and_free_pages_bulk()
+>>> to do a try when at least a huge pages is freed.
+>=20
+> This seemed familiar.  Recall this patch which Muchun Reviewed and =
+James Acked,
+> =
+https://lore.kernel.org/linux-mm/20230718004942.113174-3-mike.kravetz@orac=
+le.com/
+>=20
+> If we can not restore vmemmap for a page, then it must be turned into =
+a
+> surplus huge page.  In this patch (not the previous one referenced), =
+we
+> will try to restore vmemmap one more time in a later call to
+> update_and_free_hugetlb_folio.  Certainly, we do not want to try =
+twice!
+>=20
+> My 'plan' is to include the previous patch as part of this series.  =
+With
+> that patch in place, the list_for_each_entry calls to =
+hugetlb_vmemmap_restore
+> can be replaced with a call to hugetlb_vmemmap_restore_folios.  We =
+would
+> change the behavior of hugetlb_vmemmap_restore_folios to return an =
+error
+> instead of being of type void.  If an error is returned, then we will
+> make another pass through the list looking for unoptimized pages and =
+add
+> them as surplus.
+>=20
+> I think it best if we try to restore vmemmap at least once before
+> converting to a surplus page.
 
-This may false-positive warning, or srcu_read_lock() is not enough for
-list_for_each_entry_rcu(). In latter case, maybe we need to use a
-mutex instead of srcu for update the ef.
+Make sense.
 
-BTW, the ftracetest itself passed without any problem.
+Muchun
 
-Thank you,
+> --=20
+> Mike Kravetz
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
