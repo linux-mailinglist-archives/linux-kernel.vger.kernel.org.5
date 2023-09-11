@@ -2,121 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B94FB79B1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F368579B1CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345725AbjIKVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
+        id S1350809AbjIKVlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243842AbjIKR7K (ORCPT
+        with ESMTP id S243856AbjIKSDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:59:10 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A495E0;
-        Mon, 11 Sep 2023 10:59:06 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BFrOYO018104;
-        Mon, 11 Sep 2023 17:58:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=w+G3DneCyl/+8+LM2jmeftpB3JPy3zCmFZHnSrYU5mU=;
- b=Ljc6fkhgtobFwtqAIDDoA1TTdsrgilgiCV1+x27KZCbuTejyk67Qe0dDVT66omP26EV6
- MDv5vdrsa5n+3LQnYmlPkBFslr5P//xEIJInSigOG38WS696gy5I/qwIuO66sgf0zE9q
- ZvHXpVqxxZikIM741tNJdOQTWhLP8Eol6R7Odc1/IUFYE2KNfZ7jwP1VGJodjkrlgjgM
- qRtKll7XWP8zE14G39vniGK7jtNQlinwSz/12IP8bRq9sdkWeu2aV4s+HiztRfguo76Y
- w7YVo2/6/qNDQoYSi653fsuNi01xRxjJRkcOYARE0BK4w+yWfyAJaVsPm5S9Vh0En5As NA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xjmscqx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 17:58:48 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BHwkPY013802
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 17:58:47 GMT
-Received: from [10.110.109.129] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
- 2023 10:58:45 -0700
-Message-ID: <6a7ff8ae-1ce5-84a9-8cec-b785e88b6fda@quicinc.com>
-Date:   Mon, 11 Sep 2023 10:58:45 -0700
+        Mon, 11 Sep 2023 14:03:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCD6103;
+        Mon, 11 Sep 2023 11:03:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694455408; x=1725991408;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kxCm8IPxO4Adx3HaWS72d7S3asKhB+RqeSR07UfgL5Q=;
+  b=TgH4ZcvVeLgcJBMx88q+zt+rnhR/XRfuO/nxy/Ozi0X2cpYXH4HE64yE
+   j4PeTqTgQ1pE7xsMbvKBDjvUV3dHOaKnXYaQzFOxFkmFjMxlfXscIU4uV
+   t5M/C2DEPcLN6vUKsoLbTn6FVeytlnO9OZI40vOQiVzZxYKyjaYjTxK+P
+   jqWA5m5kF9XHSqvBJzfHvJUi4BzKSRf7MkHRuEGlFh/Rl86gIRZubwHqz
+   0ej0Fpyy9u/zLIvZEZr3LmRfZnfkJcx/O0nvzAihVAg5kky/2xMsbjQvX
+   OOj6q3VwwaBI2omjAlgvm0Vfs8s0PHkMGhLQpeP0Sdh4RXpaOPcA8ZTEy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368416937"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="368416937"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 11:03:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808905950"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="808905950"
+Received: from sohilmeh.sc.intel.com ([172.25.103.65])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2023 11:03:26 -0700
+From:   Sohil Mehta <sohil.mehta@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Cc:     Sohil Mehta <sohil.mehta@intel.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sergei Trofimovich <slyich@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Deepak Gupta <debug@rivosinc.com>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/2] arch: Sync all syscall tables with 2 newly added system calls
+Date:   Mon, 11 Sep 2023 18:02:08 +0000
+Message-Id: <20230911180210.1060504-1-sohil.mehta@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v5 12/32] sound: usb: Export USB SND APIs for modules
-Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
- <20230829210657.9904-13-quic_wcheng@quicinc.com>
- <874jk6at85.wl-tiwai@suse.de>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <874jk6at85.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: s0XTIQ5vwfRw4gnEAniwQbfVq5ML631d
-X-Proofpoint-GUID: s0XTIQ5vwfRw4gnEAniwQbfVq5ML631d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=709
- malwarescore=0 adultscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110164
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
+6.6-rc1 has added support for 2 new system calls:
+[1] fchmodat2()
+[2] x86-specific map_shadow_stack()
 
-On 9/7/2023 8:38 AM, Takashi Iwai wrote:
-> On Tue, 29 Aug 2023 23:06:37 +0200,
-> Wesley Cheng wrote:
->> -/*
->> - * hw_params callback
->> - *
->> - * allocate a buffer and set the given audio format.
->> - *
->> - * so far we use a physically linear buffer although packetize transfer
->> - * doesn't need a continuous area.
->> - * if sg buffer is supported on the later version of alsa, we'll follow
->> - * that.
->> - */
->> -static int snd_usb_hw_params(struct snd_pcm_substream *substream,
->> -			     struct snd_pcm_hw_params *hw_params)
->> +int snd_usb_attach_endpoints(struct snd_usb_substream *subs,
->> +				struct snd_pcm_hw_params *hw_params)
-> 
-> This doesn't only "attach" endpoints, but it does more other things
-> that are needed for PCM hw_params procedure.  I'd rather keep
-> hw_params in the function name instead of creating completely
-> different one.
-> 
-> Ditto for hw_free.
-> 
+This series mainly synchronizes the syscall tables arcoss the core kernel and
+tools to reflect the recent updates.
 
-Sure I'll keep the same nomenclature as it was previously.
+For fchmodat2(), it fixes the missing entries in the tools directory.
 
-Thanks
-Wesley Cheng
+For map_shadow_stack(), it reserves the syscall across the board. Since
+map_shadow_stack() is x86 specific for now, it is marked as a conditional
+syscall in sys_ni.c. Adding it to the syscall tables of other architectures is
+harmless and would return ENOSYS when exercised.
+
+Reserving arch-specific syscall numbers in the tables of all architectures is
+good practice and would help avoid future conflicts.
+
+[1]: https://lore.kernel.org/lkml/20230824-frohlocken-vorabend-725f6fdaad50@brauner/
+[2]: https://lore.kernel.org/lkml/20230830234752.19858-1-dave.hansen@linux.intel.com/
+
+Sohil Mehta (2):
+  tools headers UAPI: Sync fchmodat2() syscall table entries
+  arch: Reserve map_shadow_stack() syscall number for all architectures
+
+ arch/alpha/kernel/syscalls/syscall.tbl              | 1 +
+ arch/arm/tools/syscall.tbl                          | 1 +
+ arch/arm64/include/asm/unistd.h                     | 2 +-
+ arch/arm64/include/asm/unistd32.h                   | 2 ++
+ arch/ia64/kernel/syscalls/syscall.tbl               | 1 +
+ arch/m68k/kernel/syscalls/syscall.tbl               | 1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl         | 1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl           | 1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl           | 1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl           | 1 +
+ arch/parisc/kernel/syscalls/syscall.tbl             | 1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl            | 1 +
+ arch/s390/kernel/syscalls/syscall.tbl               | 1 +
+ arch/sh/kernel/syscalls/syscall.tbl                 | 1 +
+ arch/sparc/kernel/syscalls/syscall.tbl              | 1 +
+ arch/x86/entry/syscalls/syscall_32.tbl              | 1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl             | 1 +
+ include/uapi/asm-generic/unistd.h                   | 5 ++++-
+ tools/include/uapi/asm-generic/unistd.h             | 8 +++++++-
+ tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl | 2 ++
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl  | 2 ++
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl     | 2 ++
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl   | 2 ++
+ 23 files changed, 37 insertions(+), 3 deletions(-)
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+2.34.1
+
