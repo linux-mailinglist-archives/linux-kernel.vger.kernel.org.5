@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3141D79BD66
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B9879BB15
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376836AbjIKWUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        id S236224AbjIKWd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236751AbjIKLUG (ORCPT
+        with ESMTP id S236757AbjIKLVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:20:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD869CDD;
-        Mon, 11 Sep 2023 04:20:02 -0700 (PDT)
+        Mon, 11 Sep 2023 07:21:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB8FCDD;
+        Mon, 11 Sep 2023 04:21:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694431202; x=1725967202;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qVo58leRfHfx78TMUsQ9bFhX9krqsCC7gNZleGpHRMg=;
-  b=N33mWU54WRfvoBR9KZvg/lHODg6GHHsFyuhtjDHz7vZj7YkpJNBDE6CN
-   LcrREw3VpAtdx7iCzn22LxreZimvLdVicO9wJsI4HZti5fwJm5xPTe6Y+
-   FIHK9PexuFULjtHaHSmbxV2A+xKXVf6586bDST/YjGAYuVTBF3hFuZIJR
-   1bTaYOIJcWiZPAPCeq2bxj7Ig1XEX6W/y+BEOlDyuCTLVjibfzELFTBwY
-   a2KGwsERLrLbKE8ge9Ok3zakID7Fp/qTvCDr4RNGieIkNnW0/h7mZ+GHB
-   LEI0fa328bB3AALujlf1zCYoGHk/g44umiKyjFmmMZq8+ZLLjeeErVwJa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="464428640"
+  t=1694431293; x=1725967293;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+I5yoxhnq9XTmgsh71v3IPq8MLK5vdTB+aRt5bb4Pkw=;
+  b=QqY0VN/S6CTEv6tVzjUPZulxbUU3fG5uGri+OPzmCq00G7I2t8JOC81R
+   HFja1Cv6FauQO0osZdnmOx1UHdkvM59HuHAmxBM0j7N09aCbdyR4wcIMV
+   I9Pf78D9/sdWEdWkqVPtQCKiTSo6ApN++QTxtaYuc1u8LTu9rFBtTPkhb
+   4wkz4ePZx2EMpjVIWdTLmZjRai7YEOFmvztnqlQ4rT1G6EHTvkLPa1TiQ
+   smIp08T63btG2b8/866lOmLzFhTHYM2kszuJiqoLbbhR270oG4ySXV7BD
+   3EOB2ZXskyNs4KldOwtEgsFxGVZ/5v2gMC5c98QkbJPtppDGqHF1hYPpZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="358358396"
 X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="464428640"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 04:20:02 -0700
+   d="scan'208";a="358358396"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 04:21:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="916990588"
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="778356390"
 X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="916990588"
-Received: from mzarkov-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.36.200])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 04:19:59 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 5/5] selftests/resctrl: Reduce failures due to outliers in MBA/MBM tests
-Date:   Mon, 11 Sep 2023 14:19:30 +0300
-Message-Id: <20230911111930.16088-6-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com>
-References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com>
+   d="scan'208";a="778356390"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.251.216.218])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 04:21:25 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: [PATCH V2 0/2] Do not try to access unaccepted memory
+Date:   Mon, 11 Sep 2023 14:21:12 +0300
+Message-Id: <20230911112114.91323-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,47 +70,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5% difference upper bound for success is a bit on the low side for the
-MBA and MBM tests. Some platforms produce outliers that are slightly
-above that, typically 6-7%.
+Hi
 
-Relaxing the MBA/MBM success bound to 8% removes most of the failures
-due those frequent outliers.
+Support for unaccepted memory was added recently, refer commit
+dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
+a virtual machine may need to accept memory before it can be used.
 
-Fixes: 06bd03a57f8c ("selftests/resctrl: Fix MBA/MBM results reporting format")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- tools/testing/selftests/resctrl/mba_test.c | 2 +-
- tools/testing/selftests/resctrl/mbm_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Plug a few gaps where RAM is exposed without checking if it is
+unaccepted memory.
 
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index cf8284dadcb2..d3bf4368341e 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -12,7 +12,7 @@
- 
- #define RESULT_FILE_NAME	"result_mba"
- #define NUM_OF_RUNS		5
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define ALLOCATION_MAX		100
- #define ALLOCATION_MIN		10
- #define ALLOCATION_STEP		10
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 1ae131a2e246..d3c0d30c676a 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -11,7 +11,7 @@
- #include "resctrl.h"
- 
- #define RESULT_FILE_NAME	"result_mbm"
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define NUM_OF_RUNS		5
- 
- static int
--- 
-2.30.2
 
+Changes in V2:
+
+      efi/unaccepted: Do not let /proc/vmcore try to access unaccepted memory
+          Change patch subject and commit message
+          Use vmcore_cb->.pfn_is_ram() instead of changing vmcore.c
+
+      proc/kcore: Do not try to access unaccepted memory
+          Change patch subject and commit message
+          Do not open code pfn_is_unaccepted_memory()
+
+      /dev/mem: Do not map unaccepted memory
+          Patch dropped because it is not required
+
+
+Adrian Hunter (2):
+      efi/unaccepted: Do not let /proc/vmcore try to access unaccepted memory
+      proc/kcore: Do not try to access unaccepted memory
+
+ drivers/firmware/efi/unaccepted_memory.c | 20 ++++++++++++++++++++
+ fs/proc/kcore.c                          |  3 ++-
+ include/linux/mm.h                       |  7 +++++++
+ 3 files changed, 29 insertions(+), 1 deletion(-)
+
+
+Regards
+Adrian
