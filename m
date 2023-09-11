@@ -2,176 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E5679B543
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390C479B4E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350302AbjIKVgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        id S1350329AbjIKVhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242857AbjIKQ0B (ORCPT
+        with ESMTP id S243106AbjIKQu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:26:01 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2046.outbound.protection.outlook.com [40.107.220.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1753CC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:25:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J9sz7E8L+yntiRSty0SnLdnGC4114rChVBo+BteX/9Oni7nmluDciZCq5eOMrB5yw49osuuGWx17AuaiaFV2qGwveR5yVLtjbmYwHxzy7xacgYyOKLvM9/ehtJB7axQu9BZ5osF2/YtXDVZiGWCEdXFb1A7zTkilQmN4QVfQTDHJ71Gr2cBRIFDStMkmt3Ay1dvM6U9KLwKgdoCCGmRNkiLjFBuxpPff4CdjUMRk+9uS2EZeWhdPplgdCwgbvqLvD6v1Bugso0RUgJcDhuOK31mwP92xtQdO9BTSVNdYQ1TCXgjG58zAp7uFRo50uUgwEO+ew0LEbny5VvzZBEfJeg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yFztlHopyWHnlWAR2kpQzEtB4cbev9XuCMAymk3+EtA=;
- b=W8q+mI281OGt7piB2IrTqVJZ+ET2Qb+bN+wgfEQru76XYfQ8yNxKtJ/Z9VQb0Z7z9lldel0dSrh0yZE7gJHiHnyq4/bfA23vtqVZ01CAGHZn5Ylo0lo8NCG1iAi4e9KKlBCA7rdt1bDvGHJexOtV/KQOPENmaPUJ0ziIokgfIXabVLZVYzu0mDx2msqS4p1U6ln7n8phBVVbXVIXRXQjUaBfvYEefhdrXJZMIHzLeWuiXF/uBvMMin+ifNPvRlhlz4+V5gqyH3N0SqfNqDN7rznHw5+EYke6nFOMIiYaUBJTyo2qCk1BzanpUD3RIM7LLQTPzuTQPCcp/9XiTV/LBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yFztlHopyWHnlWAR2kpQzEtB4cbev9XuCMAymk3+EtA=;
- b=3X12AUgVZVKaAGuoqJ+oysvQMr91uoWlpB2otf3J6ZXsmgVqsITUl4fmY+4OOTI/U1B91E1pLSikOEU43cK01gGJ8MXvjFObuWmJFvQlMuOBH5AEdXlOmSGTF9PHEQDfgPHoKHnK5yGDfICFJ8eJDtSsggfR+xl1KoGzTxUianQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- CYYPR12MB8729.namprd12.prod.outlook.com (2603:10b6:930:c2::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.30; Mon, 11 Sep 2023 16:25:51 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 16:25:51 +0000
-Message-ID: <c6823590-4955-439e-b8ce-94be184d6db5@amd.com>
-Date:   Mon, 11 Sep 2023 12:25:47 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] Merge all debug module parameters
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        christian.koenig@amd.com, alexander.deucher@amd.com
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com
-References: <20230831152903.521404-1-andrealmeid@igalia.com>
- <63b44028-8f80-4de6-9f17-25c9f713caba@igalia.com>
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <63b44028-8f80-4de6-9f17-25c9f713caba@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0052.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:88::21) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+        Mon, 11 Sep 2023 12:50:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905BCE74;
+        Mon, 11 Sep 2023 09:50:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694451005; x=1725987005;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Rnth3nk9w2P6WubF+nrU/c+EVNi8f/hUpA3i3yINb04=;
+  b=P4HbMeKEWkOQ/2ZuZqCtjUatg6h1B5ykXsrJKeZFKPERscVXuVxlUo5X
+   zegcQvnlXzepE2ZFIaR2Zg3w7V0G9jK8iPoSoHP3cIAKaQz0pIQVERzRg
+   c/rGIzHDn+LnTa1NECse6pxigkmdzYINV8jNK+Fr/6kxHCQeT0rQ7oqIs
+   nqJZyvG0DDlUO7l9yoChPVAXHBFCAddzJOPPHHaybnd05iEIfoC1wggT0
+   oUgVmc2Tea798DkZ4RrMH/n2u+oownu22yORzjpRIkv1ODxKQtCkWlC9U
+   +GQYSc50Hb42IOee1dS3dL8x088Nmpyx15W2JbgvwrkemPHYLAeiK9NTZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444568878"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="444568878"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 09:27:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833563832"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="833563832"
+Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
+  by FMSMGA003.fm.intel.com with ESMTP; 11 Sep 2023 09:27:21 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Saranya Gopal <saranya.gopal@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] usb: typec: ucsi: Release debugfs only if it has been allocated
+Date:   Tue, 12 Sep 2023 00:27:06 +0800
+Message-Id: <20230911162706.2856910-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CYYPR12MB8729:EE_
-X-MS-Office365-Filtering-Correlation-Id: 44b8d4b3-ad8c-494f-20cd-08dbb2e3c35a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z5fPAGERMu/zZX4+uodxNfYet6hlXEh4CSHHRxtuVa2jYdyw/1dWtY5ga+eXC8uqykCQEAsQee95Xj5wknn9ICXSjMnfojRPyHsMNfgzdJOIBkXPH+Bk9DACBVWsNFkUqI2N2sIUy+rZSLxzW/danWcNE8aKl9laccFlv/s1Om6Y+ObXyO0QK2N0sB0a0W1mxl6JUTPTh+pnJr4q0QtI6VuDthh7NvdXu6poCLBMB1Siuw9hySVn6+wfxffZ3Oc4u2kg451F5TI00V7YAYDaLomG6G/TajWfZg0WuDeqGekGGntT9ekZdPkgTdsSVhaga3KW6GqCkmLMPXtJ3g9Ui2QX9HHrqwUwSlIA4VMNJJGACtA+VCduejsNkGMpuCGxpQ3XfkHM1ayY9zPzJzeq2EAqkkWlXumIizKn6EAWFK/umJTx6C44CMeH2WXCVGbtoow7MG3OxFOcGeUSuwshdOenya7ZvQ+WPhNG5IaGYIcHjnQt33yP2EnaDH3zPFTdZccXH63z49V2nMZ1zke6BSsuNWDnV2IlCV62tD0zO90pBPfZgSnYCdaXi3YudOptdVy/go2LDHJ7S7s1LUQ/eF/YfHynqZKZAOH1G5o061QdtP3jl3KloMp7NTwelchLJwMECqrLoQMrwtev8KEzf2riHYu0z1gA9OghrOVArls=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(1800799009)(451199024)(186009)(31686004)(6666004)(6486002)(6506007)(53546011)(36756003)(38100700002)(31696002)(86362001)(4326008)(2616005)(41300700001)(6512007)(966005)(83380400001)(478600001)(66946007)(316002)(8676002)(26005)(5660300002)(8936002)(6636002)(2906002)(66556008)(44832011)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bnJXaDJzQlBMNWR2WUh4bXVEdjJncmxjNERrVzBUb0xVWlVtMU13MncrUm05?=
- =?utf-8?B?V3JyZVpIQllJU3dPRjFWcXBBdXJOZHI2bkZZTGM2bS9sbXVFd1VRYnR1MkRy?=
- =?utf-8?B?UnZjQXQyYzFsZUp4L0VCTk5EeGt6Q1N1dmI1SU9DTk02VUMvWEZ4WE10cXRz?=
- =?utf-8?B?eXZUMW5YTVlDWGozZFVyaE15cWZweldOOFZBU0JmNWw1Q3pGRmlVa21saElN?=
- =?utf-8?B?MzVqOU9wUVZLV05PRXFQQmtVeUhJRUJJUXcrRHgvME9ld3piK09RZ1FzdGZQ?=
- =?utf-8?B?UU93VjgrK3NoejUwem52ZFozR284QzJONENRWWhwTTJGRTJJTERaeEJkRDFJ?=
- =?utf-8?B?MXFnZXlueEFBck1sS1crOXplZGdvUzZud05KbGVkZWlnN3U1Q1J3WHNVeUlv?=
- =?utf-8?B?Si82US8yNFZOODJkd1RRWkVRenRZMGVXWld6OXd5R2xZRDlhbDk2V1c4M2U5?=
- =?utf-8?B?YmdPUTdlRHVnZEpVWFJNcmZveXlFRW1Id2VPSjBEMER4amhDWG16M1h2TmRG?=
- =?utf-8?B?U3VYeTBtSUdDWkZrZmhLb05wSUdyMUM3M0NqZU80N3RYM0REYmxvOGRPazJS?=
- =?utf-8?B?a0Z6TXJSM0pyT0VCUG5SOVZTR3lMZ1J1ek5aOTNOUE4rKytPVW0wNWJlL29v?=
- =?utf-8?B?K0NncGVETGFBK3oydnlWVnJXL3Yyd3ZwU1hYL1NFOWplNmU4TzhQNFF5WHY5?=
- =?utf-8?B?bWxkM0RjeFgyTEppd0JtTXFFakFiTnhVYVBpZ25CMkxXbTJnWmQ4OXFWMFNZ?=
- =?utf-8?B?M0laQkJzUzk0VGdpVktQZXRXV1ZMSTFYd3ZrVDNlQ1hwYUx1SGdDM0ozbHBC?=
- =?utf-8?B?d0Fnd1p4KzJPSU9GYTdLbXZHT3l6WU8wUDJhRTR3NW9JK2U5bmtPa1pTckJ6?=
- =?utf-8?B?NEY3cW9iNFA5VGQrL0ZWbVZrOVJDYi90UFRaanBWTVhaYXJ5NFg2cHlyK25G?=
- =?utf-8?B?N3ZqSmh4RytnelU2OExIOWo5MDMralJEMkZlWlpjcHc4bEI2YmliQ0kySlBL?=
- =?utf-8?B?b28rZ1F3TDZxSUF1NFFYS3IxazE1YVkwNldWQm1wRkxhY2Vqc3dUUFI1SEpv?=
- =?utf-8?B?ZnU2SCtNOGFYMEJ3N1BzYjdWeUhkK1B2cVBCRGM4cVZCb3BPUlhJMEh6YVBV?=
- =?utf-8?B?TWhibWZBYys4STF3M1V1eXJMdUF3SWpidXgwS1B1QVBSWWx5a2pBR1QyY2Rz?=
- =?utf-8?B?YzNERkxvUXhyYnFlci9iL0pEQWgzVkZMYlArQ2I3T3Vkc0wwRDBhMXk3dlQ2?=
- =?utf-8?B?aExRS3VJV2dSa1VMMjA4ZmdvMThoWE9MdzdZQ3REbGpKUGNmZzBVcWl5cEpU?=
- =?utf-8?B?VEcyZmZKWjM0SUNGU1pWdGNLM2N0TDJPNlNWR2FOendIZ2hRY3grcHZFK0FC?=
- =?utf-8?B?V2MzaHpuUjNUbzZrcjJvRTZnbkVySFJRZVl5dUZZU2tCMlBnb0xybjlqZFRF?=
- =?utf-8?B?OHo4QU1VVzZCakVRNjUrYkFyWlNvVGFXRy8wZFo4bWVNTkJ2T0E1RlZsTnNB?=
- =?utf-8?B?eWlYM1h3MmkwVnYrb003MGtwQzBBZVNIYng1aTlrUTRUc0VlMmpjT2F3MmNo?=
- =?utf-8?B?S3czRDdSKzdLdnFxVGFHSE5RdUFZbTZjeDNmKzl4MjU4ekVweXJ6MlpOOFRm?=
- =?utf-8?B?NTZ5S2pKamJtMWtrSnYyUmI2OHZyMkFLRVpzSTAxMmVXYzBCMXV0UnZwbFJT?=
- =?utf-8?B?RmJWS1QyRDhvRjdrNmFxaUNVcThPdzM5S1F4a1QrVlZYb0hQaXJhM0hBWnQ0?=
- =?utf-8?B?c09ucm9RUERzMC9zQVpYWkhHS29oUXhIWlA2Zm1GMURqWmN4d2p3ZDl6UDhz?=
- =?utf-8?B?Z2VGUSt5Z1hIbmFKWTVUb1Iya0JwYUIzR1dHM2dTNGJScTdXbjI3NUV6bmRY?=
- =?utf-8?B?L3JOS2RQS3pxMGJiMVVPTGJsd0YrRXRVT3cwMXdocm1WWWxhWExqYnZVUUNy?=
- =?utf-8?B?TG9ycHZxb1RmbVgyQlJaQytmYzZDRzVuUDJqVFpYQ01OL3lOWkk4MEtIQmJr?=
- =?utf-8?B?c1ZTQ1F6NDZiMXVBaDlGSk10cytyS1ZwVy9jVmU3aWNPT1Zia0JRSEpnVUJ6?=
- =?utf-8?B?ZnNUWTErVWpvaDNDM25Tc3FZb2RXWHFXRVZmQXFxNmhVeDZxZTZRbE5mOWIy?=
- =?utf-8?Q?dbXRjRTx8ab8G1kUkQ1pQ0Rb+?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44b8d4b3-ad8c-494f-20cd-08dbb2e3c35a
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 16:25:51.2943
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /qd/RXTpgSp7pSTEVIw1QugHsCO1Z1vbWbdx9Sk/NbArYinC187XFXBHcgpEsbpgHnRxoUv/kDEG/4xMYjQ9Eg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8729
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following NULL pointer exception was found during boot up:
 
-On 9/11/23 09:54, André Almeida wrote:
-> Christian, Alex, I think this series is ready to be picked as well.
+ calling  ucsi_acpi_platform_driver_init+0x0/0xff0 [ucsi_acpi] @ 394
+ initcall mac_hid_init+0x0/0xff0 [mac_hid] returned 0 after 5 usecs
+ BUG: kernel NULL pointer dereference, address: 0000000000000020
+ Call Trace:
+  ? ucsi_debugfs_unregister+0x15/0x30 [typec_ucsi]
+  ucsi_destroy+0x17/0x30 [typec_ucsi]
+  ucsi_acpi_probe+0x1d5/0x230 [ucsi_acpi]
 
-Can you rebase this onto amd-staging-drm-next
-(https://gitlab.freedesktop.org/agd5f/linux)? Since it currently doesn't
-apply there.
+It is possible that ucsi_acpi_probe() fails to install the notifier,
+and calls ucsi_destroy() to release the resource. However at that
+moment the debugfs has not been registered yet, thus the NULL pointer
+exception is triggered. Add the check for debugfs pointer.
 
-> 
-> Em 31/08/2023 12:29, André Almeida escreveu:
->> As suggested by Christian at [0], this patchset merges all debug modules
->> parameters and creates a new one for disabling soft recovery:
->>
->>> Maybe we can overload the amdgpu_gpu_recovery module option with this.
->>> Or even better merge all the developer module parameter into a
->>> amdgpu_debug option. This way it should be pretty obvious that this
->>> isn't meant to be used by someone who doesn't know how to use it.
->>
->> [0] 
->> https://lore.kernel.org/dri-devel/55f69184-1aa2-55d6-4a10-1560d75c7324@amd.com/
->>
->> Changelog:
->> - move enum from include/amd_shared.h to amdgpu/amdgpu_drv.c
->> v2: 
->> https://lore.kernel.org/lkml/20230830220808.421935-1-andrealmeid@igalia.com/
->>
->> - drop old module params
->> - use BIT() macros
->> - replace global var with adev-> vars
->> v1: 
->> https://lore.kernel.org/lkml/20230824162505.173399-1-andrealmeid@igalia.com/
->>
->> André Almeida (2):
->>    drm/amdgpu: Merge debug module parameters
->>    drm/amdgpu: Create an option to disable soft recovery
->>
->>   drivers/gpu/drm/amd/amdgpu/amdgpu.h      |  5 ++
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c   |  2 +-
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 63 ++++++++++++++++--------
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c  |  2 +-
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c |  6 ++-
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  2 +-
->>   drivers/gpu/drm/amd/amdkfd/kfd_chardev.c |  2 +-
->>   drivers/gpu/drm/amd/amdkfd/kfd_crat.c    |  2 +-
->>   8 files changed, 58 insertions(+), 26 deletions(-)
->>
+Fixes: Commit df0383ffad64 ("usb: typec: ucsi: Add debugfs for ucsi commands")
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ drivers/usb/typec/ucsi/debugfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/typec/ucsi/debugfs.c b/drivers/usb/typec/ucsi/debugfs.c
+index 0c7bf88d4a7f..55533dc3d539 100644
+--- a/drivers/usb/typec/ucsi/debugfs.c
++++ b/drivers/usb/typec/ucsi/debugfs.c
+@@ -84,7 +84,8 @@ void ucsi_debugfs_register(struct ucsi *ucsi)
+ 
+ void ucsi_debugfs_unregister(struct ucsi *ucsi)
+ {
+-	debugfs_remove_recursive(ucsi->debugfs->dentry);
++	if (ucsi->debugfs)
++		debugfs_remove_recursive(ucsi->debugfs->dentry);
+ 	kfree(ucsi->debugfs);
+ }
+ 
 -- 
-Hamza
+2.25.1
 
