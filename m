@@ -2,272 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A7679C16F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAE279C186
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbjILBLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58858 "EHLO
+        id S234332AbjILBPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbjILBLf (ORCPT
+        with ESMTP id S232959AbjILBPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:11:35 -0400
-Received: from mail-vs1-f80.google.com (mail-vs1-f80.google.com [209.85.217.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057EFF90F1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:04:23 -0700 (PDT)
-Received: by mail-vs1-f80.google.com with SMTP id ada2fe7eead31-450b73ab85dso1005142137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:04:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694476978; x=1695081778;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cLNqe0waU0vWs6WPgQQQfHWM0cAFJrnUfdwq9iT01aw=;
-        b=Eavp6RkJX/YFqqiZSS3ozb3rPIui6xNaVMTWv3idbHDU1KksR1qsMjHudqAYwoWo33
-         /cE1bBFNkgTlByawjnr+FAjtWAycdSMUm6eH1nHdAFgFwQw25dzOCfpjhxdpEDVLF2ar
-         TiMI2+TLqhpomIH42sWAtT1f9kM09aMfxgwPlsbPK0ZcduccYtlmQP8FBJEkbwOZg9z9
-         1aLZoaQg5Cc3GZ2cgLcxY8/+7tndQakhiTAzmttdykBgoMEL03cxwgo8T/YVO2i4PGyf
-         c8//Vo+eCIs+n5v4zuuFtuseCWx+uUMC5S586cIEheeYl0zSgwIwgK+gA013nqaTtNaQ
-         gGQw==
-X-Gm-Message-State: AOJu0YysD3es8Q5jpZspxIs3l/KiI1LQx4QGfMZ7w3SmnjcrntHLoSM3
-        1v5XOMXV3qLUlppDRjNHAsV5n38+LV49XfWV98VoAIzUZ0bv
-X-Google-Smtp-Source: AGHT+IFs1yrquwoHqfPZkpXHNGT+N/Migq2QN9BSa8CWZDf0+l+v+7weWgR6gLRv0Phkhw6svkF187lCi8wo/7A2IjNId5bUtybg
+        Mon, 11 Sep 2023 21:15:11 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F81217A9F3;
+        Mon, 11 Sep 2023 18:02:18 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BNPkoX026380;
+        Mon, 11 Sep 2023 23:41:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=OAKZowELMuTGKnR3vCC2jgfxXUTvEmcpCXqGHpnuwxw=;
+ b=QiNeGZnnFkgUr5bLatGDZ3L/hLj7ocODy7sHRKTKt+0oTGA26Y+W7IILD92lWUCeueOO
+ fPpayg3hf7CMho7ziO1+zowQr+K8qzt9dwghgR+nu/nRUv/VEnu4dpwiS2ne+ZkRWkOV
+ AT/Wxb87oajjUA9uMCCnSRYwvjXzlpQSxOiByknadCt29bun17ha2YhtLEjXWv+QKbv4
+ e8h8BZ8moSyVgEI4Q50HfcSedr/Nw57X4d/0hN7hnHnLvfqfckQ5VHvLOhW8Py18Pl7K
+ J3ustVdeeClc5l5zX82c1+o9Pira2RtgrLacu5HuXf+8FDo1z0SNjKt7VW2bNShiKfss lA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xkjt2s8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 23:41:34 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BNfXww030391
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 23:41:33 GMT
+Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 11 Sep 2023 16:41:32 -0700
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+To:     <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_jackp@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] usb: xhci: xhci-ring: Use sysdev for mapping bounce buffer
+Date:   Mon, 11 Sep 2023 16:41:22 -0700
+Message-ID: <20230911234122.1408-1-quic_wcheng@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:100a:b0:268:776:e26 with SMTP id
- gm10-20020a17090b100a00b0026807760e26mr2939684pjb.5.1694474999131; Mon, 11
- Sep 2023 16:29:59 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 16:29:58 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006777d506051db4fd@google.com>
-Subject: [syzbot] [ntfs3?] KASAN: slab-use-after-free Read in ntfs_write_bh
-From:   syzbot <syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zZnjhJT5fv20qI2n5qC9w05YDJj8v4Ag
+X-Proofpoint-ORIG-GUID: zZnjhJT5fv20qI2n5qC9w05YDJj8v4Ag
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_19,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=742 mlxscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110217
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+As mentioned in:
+  commit 474ed23a6257 ("xhci: align the last trb before link if it is
+easily splittable.")
 
-syzbot found the following issue on:
+A bounce buffer is utilized for ensuring that transfers that span across
+ring segments are aligned to the EP's max packet size.  However, the device
+that is used to map the DMA buffer to is currently using the XHCI HCD,
+which does not carry any DMA operations in certain configrations.
+Migration to using the sysdev entry was introduced for DWC3 based
+implementations where the IOMMU operations are present.
 
-HEAD commit:    0bb80ecc33a8 Linux 6.6-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d3b308680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=bc79f8d1898960d41073
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Replace the reference to the controller device to sysdev instead.  This
+allows the bounce buffer to be properly mapped to any implementations that
+have an IOMMU involved.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1d506cf29d25/disk-0bb80ecc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ca5b56af4b3e/vmlinux-0bb80ecc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/aa88aed611c1/bzImage-0bb80ecc.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bc79f8d1898960d41073@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in ntfs_write_bh+0x49/0x7b0 fs/ntfs3/fsntfs.c:1401
-Read of size 8 at addr ffff88807c08a000 by task syz-executor.0/29687
-
-CPU: 1 PID: 29687 Comm: syz-executor.0 Not tainted 6.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- ntfs_write_bh+0x49/0x7b0 fs/ntfs3/fsntfs.c:1401
- mi_write+0x9b/0x200 fs/ntfs3/record.c:346
- ni_write_inode+0x619/0x1080 fs/ntfs3/frecord.c:3360
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0x69b/0xfa0 fs/fs-writeback.c:1668
- writeback_single_inode+0x21b/0x790 fs/fs-writeback.c:1724
- sync_inode_metadata+0xcc/0x130 fs/fs-writeback.c:2786
- ntfs_set_state+0x556/0x730 fs/ntfs3/fsntfs.c:995
- ntfs_create_inode+0x502/0x3b00 fs/ntfs3/inode.c:1307
- ntfs_atomic_open+0x423/0x570 fs/ntfs3/namei.c:422
- atomic_open fs/namei.c:3358 [inline]
- lookup_open fs/namei.c:3466 [inline]
- open_last_lookups fs/namei.c:3563 [inline]
- path_openat+0x1044/0x3180 fs/namei.c:3793
- do_filp_open+0x234/0x490 fs/namei.c:3823
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1448
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f4ee967cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f4eea3170c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00007f4ee979bf80 RCX: 00007f4ee967cae9
-RDX: 000000000000275a RSI: 0000000020000040 RDI: ffffffffffffff9c
-RBP: 00007f4ee96c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0b00000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f4ee979bf80 R15: 00007ffda859bad8
- </TASK>
-
-Allocated by task 5123:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1023 [inline]
- __kmalloc_node_track_caller+0xb6/0x230 mm/slab_common.c:1043
- kmalloc_reserve+0xf3/0x260 net/core/skbuff.c:581
- __alloc_skb+0x1b1/0x420 net/core/skbuff.c:650
- alloc_skb include/linux/skbuff.h:1286 [inline]
- nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:748 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:805 [inline]
- nsim_dev_trap_report_work+0x250/0xa90 drivers/net/netdevsim/dev.c:850
- process_one_work+0x781/0x1130 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0xabf/0x1060 kernel/workqueue.c:2784
- kthread+0x2b8/0x350 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-Freed by task 5123:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
- skb_kfree_head net/core/skbuff.c:945 [inline]
- skb_free_head net/core/skbuff.c:957 [inline]
- skb_release_data+0x660/0x850 net/core/skbuff.c:987
- skb_release_all net/core/skbuff.c:1053 [inline]
- __kfree_skb net/core/skbuff.c:1067 [inline]
- consume_skb+0xb3/0x150 net/core/skbuff.c:1283
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:821 [inline]
- nsim_dev_trap_report_work+0x761/0xa90 drivers/net/netdevsim/dev.c:850
- process_one_work+0x781/0x1130 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0xabf/0x1060 kernel/workqueue.c:2784
- kthread+0x2b8/0x350 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-The buggy address belongs to the object at ffff88807c08a000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 0 bytes inside of
- freed 4096-byte region [ffff88807c08a000, ffff88807c08b000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001f02200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7c088
-head:ffffea0001f02200 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888012842140 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 4483, tgid 4483 (udevd), ts 395872759792, free_ts 395835757815
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xade/0x1100 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1022 [inline]
- __kmalloc+0xa8/0x230 mm/slab_common.c:1036
- kmalloc include/linux/slab.h:603 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x254/0x4e0 security/tomoyo/file.c:771
- security_file_open+0x63/0xa0 security/security.c:2836
- do_dentry_open+0x325/0x1430 fs/open.c:916
- do_open fs/namei.c:3639 [inline]
- path_openat+0x27bb/0x3180 fs/namei.c:3796
- do_filp_open+0x234/0x490 fs/namei.c:3823
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __x64_sys_openat+0x247/0x290 fs/open.c:1448
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
- discard_slab mm/slub.c:2116 [inline]
- __unfreeze_partials+0x1dc/0x220 mm/slub.c:2655
- put_cpu_partial+0x116/0x180 mm/slub.c:2731
- __slab_free+0x2b6/0x390 mm/slub.c:3679
- qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:188 [inline]
- slab_post_alloc_hook+0x6c/0x3b0 mm/slab.h:762
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x123/0x300 mm/slub.c:3502
- getname_flags+0xbc/0x4e0 fs/namei.c:140
- user_path_at_empty+0x2e/0x180 fs/namei.c:2909
- do_readlinkat+0x118/0x3b0 fs/stat.c:533
- __do_sys_readlink fs/stat.c:566 [inline]
- __se_sys_readlink fs/stat.c:563 [inline]
- __x64_sys_readlink+0x7f/0x90 fs/stat.c:563
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff88807c089f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88807c089f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff88807c08a000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff88807c08a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807c08a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+cc: <stable@vger.kernel.org>
+Fixes: 4c39d4b949d3 ("usb: xhci: use bus->sysdev for DMA configuration")
+Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/usb/host/xhci-ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 1dde53f6eb31..98389b568633 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -798,7 +798,7 @@ static void xhci_giveback_urb_in_irq(struct xhci_hcd *xhci,
+ static void xhci_unmap_td_bounce_buffer(struct xhci_hcd *xhci,
+ 		struct xhci_ring *ring, struct xhci_td *td)
+ {
+-	struct device *dev = xhci_to_hcd(xhci)->self.controller;
++	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
+ 	struct xhci_segment *seg = td->bounce_seg;
+ 	struct urb *urb = td->urb;
+ 	size_t len;
+@@ -3469,7 +3469,7 @@ static u32 xhci_td_remainder(struct xhci_hcd *xhci, int transferred,
+ static int xhci_align_td(struct xhci_hcd *xhci, struct urb *urb, u32 enqd_len,
+ 			 u32 *trb_buff_len, struct xhci_segment *seg)
+ {
+-	struct device *dev = xhci_to_hcd(xhci)->self.controller;
++	struct device *dev = xhci_to_hcd(xhci)->self.sysdev;
+ 	unsigned int unalign;
+ 	unsigned int max_pkt;
+ 	u32 new_buff_len;
