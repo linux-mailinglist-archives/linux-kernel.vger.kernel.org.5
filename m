@@ -2,211 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A8179BB55
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0637D79BE47
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351166AbjIKVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
+        id S1354234AbjIKVxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236675AbjIKLNK (ORCPT
+        with ESMTP id S236340AbjIKKXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:13:10 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753C2CEB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:13:04 -0700 (PDT)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230911111301epoutp01c9c0c1733deafda2264bd21a15a90f08~D09GEYobO1098410984epoutp01E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:13:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230911111301epoutp01c9c0c1733deafda2264bd21a15a90f08~D09GEYobO1098410984epoutp01E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694430781;
-        bh=D7RBEh7nV1S0rVx+M93psp96QfuSer88Ud6SLkBPMCo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Hr1HvrOvgGOoSyxx2n6bY9NNgKcTqT3jTJuPsHMM4JFyH0gRqfU1+3e9Un4TBXf9Q
-         tx01JwLS9nzkdA3SO1fIEGr+Bv3QG9F4Syu6QH01ZKOhI9OIzaKEPcyzwY3EnisVnv
-         zfJtozvAcB1OiHYHhDMKJiCdCd+OWzJ1ABDFbSZU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230911111301epcas5p1051fd04e6eaa20056ab0a6d1098f1299~D09FfFYzh0749607496epcas5p1m;
-        Mon, 11 Sep 2023 11:13:01 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RkkbG2NSNz4x9Px; Mon, 11 Sep
-        2023 11:12:58 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A5.5E.09635.A36FEF46; Mon, 11 Sep 2023 20:12:58 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230911102615epcas5p15b9cfa2c6817ea714cc133bf4ef010c1~D0URCYF2b2326023260epcas5p1K;
-        Mon, 11 Sep 2023 10:26:15 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230911102615epsmtrp1ac75e977eb94c081885a477796d7e0d6~D0URBTKhF2477824778epsmtrp1S;
-        Mon, 11 Sep 2023 10:26:15 +0000 (GMT)
-X-AuditID: b6c32a4b-563fd700000025a3-77-64fef63a36bd
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        19.BB.08649.74BEEF46; Mon, 11 Sep 2023 19:26:15 +0900 (KST)
-Received: from green245 (unknown [107.99.41.245]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20230911102612epsmtip23a32d0526f1beeef4865e18f2fd80bbf~D0UOL6Nzl0239702397epsmtip2Z;
-        Mon, 11 Sep 2023 10:26:12 +0000 (GMT)
-Date:   Mon, 11 Sep 2023 15:50:10 +0530
-From:   Nitesh Shetty <nj.shetty@samsung.com>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, mcgrof@kernel.org,
-        gost.dev@samsung.com, Vincent Fu <vincent.fu@samsung.com>,
-        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v15 04/12] block: add emulation for copy
-Message-ID: <20230911102010.nr5tvrcc754vo73r@green245>
+        Mon, 11 Sep 2023 06:23:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FD31AB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694427818; x=1725963818;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qk8TuabgJtSCp7j499WRZJ0KpjibtjkaxhKDixdWBxA=;
+  b=YxWZk5/0mURZuutiUdPwofoEPTC9cHN7iYcEpoimrykS84lX/vrfxMnq
+   RYgKCg1xpUZuLa2sXFHE8j7CrFR2SbkQMs9BNOehVhTQFrhD0FcQ7Zmxp
+   wWRVFfsG8Kleo/1ElLLSxL57upyXiQ9zNugAvB1GDV304uZsFspArdLau
+   Zx8glPUlEqoxl8rIQg0ijaVYLSajHBGCLkhUNn7aVkJ/zTEUn2ne5kPsB
+   UShmvos15ZowyJsp2cjgs550RUXX/m+cMuk5WgXJkDQyNdxzyQt9THUeU
+   HcgFyE/rQBuFBlG3C4gALPM77RMaKZECndzxuiINEA3vgRUt04e0Dixu9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444462277"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="444462277"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:23:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="858268504"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="858268504"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:23:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qfe4n-008I1A-2f;
+        Mon, 11 Sep 2023 13:23:29 +0300
+Date:   Mon, 11 Sep 2023 13:23:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Shenghao Ding <shenghao-ding@ti.com>
+Cc:     tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com,
+        perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+        kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
+ TIAS2781
+Message-ID: <ZP7qoamIicmnbsB0@smile.fi.intel.com>
+References: <20230910072704.1359-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <ec35111d-ba31-497b-ab01-b198d3feb814@suse.de>
-User-Agent: NeoMutt/20171215
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTdxTH/d0+wXW7Kw9/4IsUTQQCtrOUC8Jgg7lrZAmZwyjGQEdvgFDa
-        pg+dM0bkoaPKYzw2qALiOhAQ2IBVBAqsyEAc4OSlbAWEwhCkPAyMhQCjtCz+9/mdc77n/M45
-        OXQSU0lzpMeI5IRUxBeyqNZkTauLq7vP8rqAPfaAgVV1/kbCEjLWSFi5Pp2KzbQuAszQch1g
-        WuMtCvai5SGCNd7NRLDS8jYEy9QNAGyiX4Vg2iE3rOiamow1ah+Tsd7621SssHiChpW0ryPY
-        84wJgFXOzJGxjqHd2PiNbwDWs9ZOCbDHe4Z/JuO9XQq8uiyFiteor+ANL+Kp+A9pWRQ8NdFI
-        xRcmhsj4XFM/FU+rLQN4zZNL+JvqfXi1YRYJYYTF+kYTfAEhdSJEkWJBjCjKj3XiZHhguCeP
-        zXHneGNeLCcRP47wYwUFh7gfixFuNs1yOs8XKjZNIXyZjHX4Q1+pWCEnnKLFMrkfi5AIhBKu
-        xEPGj5MpRFEeIkLuw2GzP/DcDIyIjU4x6igSvcNXN26uIPEg304JrOgQ5cLK1A6aEljTmWgD
-        gOuJBprJwUQXAdQ++8TsWAbwnvo+sq3ofWCwKLQA3s7rpJgfkwBmDWeTTFFk9CD89VUTVQno
-        dCrqBp9s0E1mW5QFF67rtsQktIwC9YnDW+VsUF84O/k71cQMlAcrCo00M78PH+cZyCa2Qo/C
-        7tHSrfx26B6Y++MSyZQIooVWsCiti2z+XhD8fkFDM7MNnG6vtbAjfJV+zcIXYGn2PapZnASg
-        alAFzA5/mNyZvlWBhEbD4poaS897YU5nJWK2vwtTVw0WOwPWFWyzM7xfdYdqZgc48M9VC+Ow
-        wfCcYh5qGwJH1OcywH7VW82p3ipnZh+YMp9AUW0Oj4TuhiXrdDO6wKr6w3cApQw4EBJZXBQh
-        85QcEREX/t94pDiuGmwdheuJOjA2Ou+hAwgd6ACkk1i2DLluTcBkCPgXvyak4nCpQkjIdMBz
-        c1nfkhztIsWbVyWSh3O43mwuj8fjeh/hcVi7GDPJ+QImGsWXE7EEISGk2zqEbuUYjwwWT+b+
-        cSC3Y7zEmFshc/S4/Lr19Ud1tO8Cgn3K9Tncff6hvjlBAQbntG7bi18++iJ/5/HmkTfkwLaG
-        7hj+ed2ZlQI39vC/1jdFYR0vL2Vx9ElTeZr3eh4F9IVNpe44cDauKHCwaWopLGQloKT+jN54
-        2mu699jTq6fO/XJllz3tlvOfjcxngcLPDk2HRkTYz/Ysbpz+u+qpIF7x+R6bow8DU3dq/IaW
-        Cro0cyFeWrayghh6+Wnt1PFTA/F9exPU6/VdPzFPEmCi+S9S16hm5Oz8x+9sHAqSNve1JK72
-        Z4+P4ZJM5V3gH5wtXVVoXcZ6gpJdQpOW1Y2zB3VY2v7LeuOOxalVFlkWzee4kqQy/n9j1eHb
-        nQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02RWUwTURSGc2emMwNaHQrqRQjGJiYIYWk0eFXcTRzUuMQ1YtRqR7a2YFtc
-        MEFQAUUttRhUaqkiQoAoWogLCEIRKy7FpAGVCIJ2RNMA7jtFCxp9+3O+7z/n4dC46AExno5T
-        ajiVUioXk57E1UbxhJBFTpcs3Jgehiru3cHRft0Ajso7ckjkbHwPkKM+C6DaPoMAPa2/gaGb
-        hXoMlZY3YUhvaQOIb83HUG17MDqXWUSgm7XNBLJXnyGRqZinUInVhaEnOh6gS85+At1t90Mv
-        jxwCqGXAKpg7lm3pvEKw9ofJrLnsMMlWFu1ja56mkex5ba6APXagj2Tf8e0E21/XSrLaqjLA
-        Vt7fy34wB7BmRy+2QrjBM1LGyeN2cqqw2Vs8Y7tKq6iknHG7c8oq8DTwRpQNPGjITIX2aw4q
-        G3jSIqYGwOqOEmoY+MLigdv4cPaGpa6eP5IDwIK8XOAGBDMJNrypI7MBTZNMMLw/SLvHPowY
-        vsuyDPk4c0kAB3UNAjfwZiJh76sHpDsLmQh40dT3Z2kTBi+nv8aHgRdsPu0g3Bn/LRVUduPu
-        AzjjB0tcQwc8mJnQ1lU6pI9h/OGpC59wHfDK/6+d/187/1/7LMDLgC+XpFbEKLZJkiRKbleo
-        WqpQJytjQrclKsxg6OFBgddBp8kVagEYDSwA0rjYR6ixDMhEQpl0TwqnStysSpZzagvwownx
-        OKHklEEmYmKkGi6B45I41V+K0R7j07DZ4mXPLcXA6JwyNZvpXzJrYnzeW76tudtnZE/ll31d
-        ZzdvzZqZ0bIycAfenUC9aPpco92wsbDx1iyZ0tU32phLRa2ztr36HhE5bY7Nf7XBltoSd9yx
-        MGKj/E5diHLPAfOVvJEd33jKNFlf85g3hhNjlmodH+dNX5wh6rY160TRxAg9pLzTVzun26ob
-        okZ5b59XfzzXEJ6RGr0s6PkZZ0ja3rknq/iU2MHEBWGJ2hMhXvMlHWvsnRojxUuL/DJPhOuj
-        U7Fycm1/j6+C+pnydZc99Pwmg391b7JTvmq9ZvnBwosBwZ1g4dcf8QFNj6gKynoatQpMFsMz
-        s/WTfkbDUTGhjpVKgnCVWvoLo9a+hF8DAAA=
-X-CMS-MailID: 20230911102615epcas5p15b9cfa2c6817ea714cc133bf4ef010c1
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----ooWIhDQPe4iZ41CGDouWrWpJ8fGFR_EcoxWGaJuqOMoSQ.xs=_4ba1b_"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230906164321epcas5p4dad5b1c64fcf85e2c4f9fc7ddb855ea7
-References: <20230906163844.18754-1-nj.shetty@samsung.com>
-        <CGME20230906164321epcas5p4dad5b1c64fcf85e2c4f9fc7ddb855ea7@epcas5p4.samsung.com>
-        <20230906163844.18754-5-nj.shetty@samsung.com>
-        <e6fc7e65-ad31-4ca2-8b1b-4d97ba32926e@suse.de>
-        <20230911070937.GB28177@green245>
-        <ec35111d-ba31-497b-ab01-b198d3feb814@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230910072704.1359-1-shenghao-ding@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------ooWIhDQPe4iZ41CGDouWrWpJ8fGFR_EcoxWGaJuqOMoSQ.xs=_4ba1b_
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
+On Sun, Sep 10, 2023 at 03:27:03PM +0800, Shenghao Ding wrote:
+> Support ACPI_ID both TXNW2781 and TIAS2781, TXNW2781 is the only one legal
+> ACPI ID, TIAS2781 is the widely-used ACPI ID named by our customers, so
+> far it is not registered. We have discussed this with them, they requested
+> TIAS2781 must be supported for the laptops already released to market,
+> their new laptops will switch to TXNW2781.
 
-On 11/09/23 09:39AM, Hannes Reinecke wrote:
->On 9/11/23 09:09, Nitesh Shetty wrote:
->>On Fri, Sep 08, 2023 at 08:06:38AM +0200, Hannes Reinecke wrote:
->>>On 9/6/23 18:38, Nitesh Shetty wrote:
->>>>For the devices which does not support copy, copy emulation is added.
->>>>It is required for in-kernel users like fabrics, where file descriptor is
->>>>not available and hence they can't use copy_file_range.
->>>>Copy-emulation is implemented by reading from source into memory and
->>>>writing to the corresponding destination.
->>>>Also emulation can be used, if copy offload fails or partially completes.
->>>>At present in kernel user of emulation is NVMe fabrics.
->>>>
->>>Leave out the last sentence; I really would like to see it enabled for SCSI,
->>>too (we do have copy offload commands for SCSI ...).
->>>
->>Sure, will do that
->>
->>>And it raises all the questions which have bogged us down right from the
->>>start: where is the point in calling copy offload if copy offload is not
->>>implemented or slower than copying it by hand?
->>>And how can the caller differentiate whether copy offload bring a benefit to
->>>him?
->>>
->>>IOW: wouldn't it be better to return -EOPNOTSUPP if copy offload is not
->>>available?
->>
->>Present approach treats copy as a background operation and the idea is to
->>maximize the chances of achieving copy by falling back to emulation.
->>Having said that, it should be possible to return -EOPNOTSUPP,
->>in case of offload IO failure or device not supporting offload.
->>We will update this in next version.
->>
->That is also what I meant with my comments to patch 09/12: I don't see 
->it as a benefit to _always_ fall back to a generic copy-offload 
->emulation. After all, that hardly brings any benefit.
+...
 
-Agreed, we will correct this by returning error to user in case copy offload
-fails, instead of falling back to block layer emulation.
+> +/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
+> + * TXNW2781 is the official ACPI id, and will be used in the new devices.
+> + * Check TIAS2781 or TXNW2781
+> + */
 
-We do need block layer emulation for fabrics, where we call emulation
-if target doesn't support offload. In fabrics scenarios sending
-offload command from host and achieve copy using block layer
-emulation on target is better than sending read+write from host.
+/*
+ * This style is only for networking.
+ * please use one as in this example.
+ */
 
->Where I do see a benefit is to tie in the generic copy-offload 
->_infrastructure_ to existing mechanisms (like dm-kcopyd).
->But if there is no copy-offload infrastructure available then we 
->really should return -EOPNOTSUPP as it really is not supported.
->
-Agreed, we will add this in next phase, once present series gets merged.
+...
 
->In the end, copy offload is not a command which 'always works'.
->It's a command which _might_ deliver benefits (ie better performance) 
->if dedicated implementations are available and certain parameters are 
->met. If not then copy offload is not the best choice, and applications 
->will need to be made aware of that.
+> +	const char c[][10] = { "TXNW2781", "TIAS2781" };
 
-Agreed. We will leave the choice to user, to use either block layer offload
-or emulation.
+Can you put this to the ACPI device ID table, it will be easier to use it with
+some other acpi_*() APIs?
+That table might need a comment why it has no MODULE_DEVICE_TABLE() with it.
+
+...
+
+> +	int n = strlen(bus), i;
+
+>  
+> -	if (strncmp(d, p->bus, n))
+> +	if (strncmp(d, bus, n))
+>  		return 0;
+
+It means you need to use str_has_prefix().
+
+...
+
+> +	for (i = 0; i < ARRAY_SIZE(c); i++) {
+> +		/* the rest must be exact matching */
+> +		snprintf(tmp, sizeof(tmp), "-%s:00", c[i]);
+> +
+> +		if (!strcmp(d + n, tmp))
+> +			return 1;
+> +	}
+
+This can be done differently.
+You are comparing the instance of the device to the actual id, right?
+We have ACPI match APIs for that. Have you tried to look at them?
+
+...
+
+> +/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
+> + * TXNW2781 is the official ACPI id, and will be used in the new devices.
+> + */
+> +static const struct acpi_device_id tas2781_acpi_hda_match[] = {
+> +	{"TIAS2781", 0 },
+> +	{"TXNW2781", 1 },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
+
+So, besides the style of the comment, why do you have two different data
+structures for the same? Can you find a common place and deduplicate it?
+
+...
+
+> -MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
+
+Ah, I see now, it's used for probing. Please, don't move it. The hid is
+available via device pointer.
+
+...
+
+This patch requires much more work, and esp. be redesigned to use proper
+ACPI APIs.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Thank you,
-Nitesh Shetty
-
-------ooWIhDQPe4iZ41CGDouWrWpJ8fGFR_EcoxWGaJuqOMoSQ.xs=_4ba1b_
-Content-Type: text/plain; charset="utf-8"
-
-
-------ooWIhDQPe4iZ41CGDouWrWpJ8fGFR_EcoxWGaJuqOMoSQ.xs=_4ba1b_--
