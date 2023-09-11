@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B765479C058
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0F379BB79
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354991AbjIKVz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
+        id S1348256AbjIKVZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236277AbjIKKHG (ORCPT
+        with ESMTP id S236295AbjIKKLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:07:06 -0400
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39229101
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:07:01 -0700 (PDT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c09d82dfc7so51643185ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:07:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694426820; x=1695031620;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Kn6A6MYcXE+j88oNxDe3/daUUC6zADm+hwEsDU4Ahrc=;
-        b=pgJglt63w2QRBQpQF4lc5570Uk8nOMvowpqBgyw4ElUOx0Haxt3Xv0QlHoUiACqZKt
-         ntIK01c+4u3RfYywvZeN9Lv992eXs4lF6Xks4PixsPC9DGnOoSlAxnTKlCbzh3W7tuGC
-         aDXsU/vHUWNeRNYE7rus25zTrErYVoZJT1ouIGalGVIfpdWAa5g7zW5Jhcy4avAPpWtU
-         7kyLPZtd8KMl+aBZ3CwRF3jSknozRsjSy43uk81yYWo4vn//2e8LRCQYrBBM4oxW8u08
-         hyoZHFp703h+slT+1Zopi0Ika6El/duDFs2Ogu4RJZZM5AHBGzrDkqC3qHHfTwd0gYMQ
-         Nnxw==
-X-Gm-Message-State: AOJu0YxyRbYBAfvrY4Wl4Ga0loyr7Ceu746KSpEhhA3K7fm5sssT0r3g
-        1YxO1vkb763iKEv8N9Xx2ynZHBiAG4sbBB5nDkGGJi2OT3dvVbA=
-X-Google-Smtp-Source: AGHT+IG6mXJDpmdeUBL9OZSbOUIhgFezEBWn3LvzotsRYGhNK97V+aQPFbiQd/IFTTFbhTf4mW06MVZrPFfV+bD4n908ss6fMGMX
+        Mon, 11 Sep 2023 06:11:48 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91669E68;
+        Mon, 11 Sep 2023 03:11:42 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 3E3D4100004;
+        Mon, 11 Sep 2023 13:11:38 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 3E3D4100004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694427098;
+        bh=CUCA25pe+EJ7rjxGI1Dne/+MwMfzDg+e7/fpUBa8JFE=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=bgwj6E3VB+Nmeo/oywFsvAj9hVK0PiszDXwQ8xCHld0b03OWEVfXy9rZR3uzEn1sO
+         vZol+Ujk9Tb5/HY9s1dOHaAKLo2+Eje6K/fg7PtOq3jOr8sOdfO1B5M0Br0OseBb/y
+         P5ndPouLdIe2mBiPCoYuQ069zec02AjvVe2jYMoOXQLhw2uSy+3MWtFa+omzUwe5Te
+         czqTssX/yWWLnCbhJVB8w37ZCxJs/gwlSlVfrKggRXJbYr75ZrwWHeDToKrpE4Gq0U
+         fEHN+3OtblOE8MLD40f3m+4I/L1GnTYWNqY9WbeEZLJGWXPt5w1z5Y118qLE22fS3s
+         YCDTd1cBVpn8g==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Mon, 11 Sep 2023 13:11:37 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 11 Sep 2023 13:11:36 +0300
+From:   Alexey Romanov <avromanov@salutedevices.com>
+To:     <narmstrong@baylibre.com>, <neil.armstrong@linaro.org>,
+        <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <conor@kernel.org>, <khilman@baylibre.com>,
+        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
+        <f.fainelli@gmail.com>, <hkallweit1@gmail.com>, <lists@kaiser.cx>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>, <kernel@sberdevices.ru>,
+        Alexey Romanov <avromanov@salutedevices.com>
+Subject: [PATCH v3 0/3]  Meson S4 HW RNG Support
+Date:   Mon, 11 Sep 2023 13:11:26 +0300
+Message-ID: <20230911101129.10604-1-avromanov@salutedevices.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d48e:b0:1b8:95fc:d18 with SMTP id
- c14-20020a170902d48e00b001b895fc0d18mr4147826plg.8.1694426820797; Mon, 11 Sep
- 2023 03:07:00 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 03:07:00 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c06b600605127cb3@google.com>
-Subject: [syzbot] Monthly mm report (Sep 2023)
-From:   syzbot <syzbot+listc8cdc93771323fa630f7@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179765 [Sep 11 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 06:02:00 #21866861
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello mm maintainers/developers,
+Hello!
 
-This is a 31-day syzbot report for the mm subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/mm
+This patch series adds hwrng support for Amlogic S4-series.
+Now, S4 uses a new random number generation algorithm.
+This changes implemnents new algo and also adds description
+to meson-s4.dtsi.
 
-During the period, 7 new issues were detected and 2 were fixed.
-In total, 43 issues are still open and 232 have been fixed so far.
+V2:
 
-Some of the still happening issues:
+- Use readl_relaxed_poll_timeout_atomic() function instead of loop.
+- Use two different functions: meson_rng_read() and meson_s4_rng_read().
+- Fix naming in DT schema (meson-s4-hwrng instead of meson-hwrng-s4).
+- A little code style fixes.
 
-Ref Crashes Repro Title
-<1> 7345    Yes   WARNING in ext4_dirty_folio
-                  https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
-<2> 566     No    KCSAN: data-race in generic_fillattr / shmem_mknod (2)
-                  https://syzkaller.appspot.com/bug?extid=702361cf7e3d95758761
-<3> 519     No    KCSAN: data-race in generic_fillattr / shmem_unlink (3)
-                  https://syzkaller.appspot.com/bug?extid=f682b67a78ce05867e78
-<4> 85      No    KCSAN: data-race in __filemap_remove_folio / folio_mapping (2)
-                  https://syzkaller.appspot.com/bug?extid=606f94dfeaaa45124c90
-<5> 30      No    upstream boot error: KASAN: slab-out-of-bounds Read in bootstrap
-                  https://syzkaller.appspot.com/bug?extid=2f508e913916096bf53a
-<6> 13      Yes   memory leak in xas_create
-                  https://syzkaller.appspot.com/bug?extid=a785d07959bc94837d51
-<7> 6       No    BUG: unable to handle kernel paging request in list_lru_add
-                  https://syzkaller.appspot.com/bug?extid=2403e3909382fbdeaf6c
-<8> 4       Yes   kernel BUG in do_page_mkwrite
-                  https://syzkaller.appspot.com/bug?extid=cfba1abcb2cf7b39a320
-<9> 3       No    upstream boot error: KASAN: slab-out-of-bounds Read in deactivate_slab
-                  https://syzkaller.appspot.com/bug?extid=b51786cce3a38fa8a4f4
+V3:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+- Fix commit message in patch with dt-bindings schema changes.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Alexey Romanov (3):
+  drivers: rng: meson: add support for S4
+  dt-bindings: rng: meson: add meson-rng-s4 compatible
+  arch/arm64: dts: meson-s4: add hwrng node
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+ .../bindings/rng/amlogic,meson-rng.yaml       |  1 +
+ arch/arm64/boot/dts/amlogic/meson-s4.dtsi     |  5 ++
+ drivers/char/hw_random/meson-rng.c            | 80 ++++++++++++++++++-
+ 3 files changed, 83 insertions(+), 3 deletions(-)
 
-You may send multiple commands in a single email message.
+-- 
+2.25.1
+
