@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EA879B3B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3051C79B1C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350192AbjIKVgC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 17:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
+        id S1358357AbjIKWIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242550AbjIKPrx (ORCPT
+        with ESMTP id S242555AbjIKPs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:47:53 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C01121;
-        Mon, 11 Sep 2023 08:47:45 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RkrfP5T1Pz67KPR;
-        Mon, 11 Sep 2023 23:46:05 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 11 Sep
- 2023 16:47:42 +0100
-Date:   Mon, 11 Sep 2023 16:47:41 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-CC:     Lizhi Hou <lizhi.hou@amd.com>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <robh@kernel.org>, <max.zhen@amd.com>, <sonal.santan@amd.com>,
-        <stefano.stabellini@xilinx.com>,
-        =?ISO-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
-Message-ID: <20230911164741.00003904@Huawei.com>
-In-Reply-To: <20230911173503.0db85e4b@bootlin.com>
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
-        <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
-        <20230911154856.000076c3@Huawei.com>
-        <20230911173503.0db85e4b@bootlin.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 11 Sep 2023 11:48:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8760D121;
+        Mon, 11 Sep 2023 08:48:25 -0700 (PDT)
+Received: from localhost.localdomain (unknown [171.76.82.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: vignesh)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 273F1660730D;
+        Mon, 11 Sep 2023 16:48:19 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694447304;
+        bh=ze+691gluuYjd9QZFnsV1mOxXtAD9BcYbDEUMd5HdqA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=d5HmoLaP3nDDR6SjO8DPkA5j40pJ6od+w0ZpxP9tduK4CLWJecfYSWjGMzMAmQV9A
+         dVL5JOI0QzY4g1bLh9cm/gbNZMitL1s+Lc/OuKl+ZTnB/hrPzgMAKnDRnje8N4tXl+
+         t3CPT4/3pXidlet0VbWwiquUT7eMl81CmtqpBfSd7h/xGg4mSIJekmlLiYsw15ACMz
+         34mNj8MbLmVp2+In/x7fzIgZLwTryPZJiDx9D+YY6uDnS8QI8Hyfu71xqy+yGh+XUD
+         uofzQuR2QgQ9QQ00tQDdwV9Y2N1MsxMUa5c0EzUTnc8gXutrFrNF74RNNbXvML3tCQ
+         2OX8nZWqxsgng==
+From:   Vignesh Raman <vignesh.raman@collabora.com>
+To:     devicetree@vger.kernel.org
+Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        daniels@collabora.com, emma@anholt.net, robdclark@gmail.com,
+        mripard@kernel.org, dmitry.baryshkov@linaro.org,
+        krzysztof.kozlowski@linaro.org, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: apq8016-sbc: Add overlay for usb host mode
+Date:   Mon, 11 Sep 2023 21:17:42 +0530
+Message-Id: <20230911154742.648057-1-vignesh.raman@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,86 +57,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 17:35:03 +0200
-Herve Codina <herve.codina@bootlin.com> wrote:
+Due to the presence of the fastboot micro cable in the CI farm,
+it causes the hardware to remain in gadget mode instead of host mode.
+So it doesn't find the network, which results in failure to mount root
+fs via NFS.
 
-> Hi Jonathan,
-> 
-> On Mon, 11 Sep 2023 15:48:56 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Tue, 15 Aug 2023 10:19:57 -0700
-> > Lizhi Hou <lizhi.hou@amd.com> wrote:
-> >   
-> > > The PCI endpoint device such as Xilinx Alveo PCI card maps the register
-> > > spaces from multiple hardware peripherals to its PCI BAR. Normally,
-> > > the PCI core discovers devices and BARs using the PCI enumeration process.
-> > > There is no infrastructure to discover the hardware peripherals that are
-> > > present in a PCI device, and which can be accessed through the PCI BARs.
-> > > 
-> > > Apparently, the device tree framework requires a device tree node for the
-> > > PCI device. Thus, it can generate the device tree nodes for hardware
-> > > peripherals underneath. Because PCI is self discoverable bus, there might
-> > > not be a device tree node created for PCI devices. Furthermore, if the PCI
-> > > device is hot pluggable, when it is plugged in, the device tree nodes for
-> > > its parent bridges are required. Add support to generate device tree node
-> > > for PCI bridges.
-> > > 
-> > > Add an of_pci_make_dev_node() interface that can be used to create device
-> > > tree node for PCI devices.
-> > > 
-> > > Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
-> > > the kernel will generate device tree nodes for PCI bridges unconditionally.
-> > > 
-> > > Initially, add the basic properties for the dynamically generated device
-> > > tree nodes which include #address-cells, #size-cells, device_type,
-> > > compatible, ranges, reg.
-> > > 
-> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>    
-> > 
-> > I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
-> > machine.
-> > 
-> > There are some missing parts that were present in Clements series, but not this
-> > one, particularly creation of the root pci object.
-> > 
-> > Anyhow, hit an intermittent crash...  
-> 
-> I am facing the same issues.
-> 
-> I use a custom PCIe board too but on x86 ACPI machine.
-> 
-> In order to have a working system, I need also to build a DT node for the PCI
-> Host bridge (previously done by Clement's patch) and I am a bit stuck with
-> interrupts.
-> 
-> On your side (ACPI machine) how do you handle this ?
+Add an overlay dtso file that sets the dr_mode to host, allowing the
+USB controllers to work in host mode. With commit 15d16d6dadf6
+("kbuild: Add generic rule to apply fdtoverlay"), overlay target can
+be used to simplify the build of DTB overlays. It uses fdtoverlay to
+merge base device tree with the overlay dtso. apq8016-sbc-usb-host.dtb
+file can be used by drm-ci, mesa-ci.
 
-That was next on my list to look at now I've gotten the device tree stuff
-to show up.
+Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Suggested-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Helen Koike <helen.koike@collabora.com>
+Signed-off-by: David Heidelberg <david.heidelberg@collabora.com>
+Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+---
+ arch/arm64/boot/dts/qcom/Makefile                  | 4 ++++
+ arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso | 8 ++++++++
+ 2 files changed, 12 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
 
-> I mean is your PCI host bridge provided by ACPI ? And if so, you probably need
-> to build a DT node for this PCI host bridge and add some interrupt-map,
-> interrupt-map-mask properties in the DT node.
-
-Agreed. Potentially some other stuff, but interrupts are the thing that
-showed up first as an issue.
-
-Given the only reason I'm looking at this is to potentially solve
-a long term CXL / MCTP over I2C upstreaming problem on QEMU side, I've only
-limited time to throw at this (thought it was a short activity
-for a Friday afternoon :)  Will see if it turns out not too be
-too hard to build the rest.
-
-I can at least boot same system with device tree and check I'm matching
-what is being generated by QEMU.
-
-Jonathan
-
-
-> 
-> Best regards,
-> Hervé
-> 
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index 2cca20563a1d..99190a6ba6ff 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -1,5 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb
++
++apq8016-sbc-usb-host-dtbs	:= apq8016-sbc.dtb apq8016-sbc-usb-host.dtbo
++
++dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-usb-host.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc-d3-camera-mezzanine.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8039-t2.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= apq8094-sony-xperia-kitakami-karin_windy.dtb
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso b/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
+new file mode 100644
+index 000000000000..a82c26b7eae8
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
+@@ -0,0 +1,8 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++/dts-v1/;
++/plugin/;
++
++&usb {
++         dr_mode = "host";
++};
+-- 
+2.40.1
 
