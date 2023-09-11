@@ -2,123 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3779B304
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC94079B0D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350080AbjIKVfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        id S1378700AbjIKWgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243828AbjIKRxC (ORCPT
+        with ESMTP id S243840AbjIKR6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:53:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F405DF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:52:57 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59593051dd8so48570667b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694454776; x=1695059576; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FfX6RSRA/tErdP/6b3BPnVn+Cseh6Qa8GqkXP+/ygfU=;
-        b=XeaiYAC9+CQfh11TsC0QXPCO3rfzkOtVEeyEzdjXndeYy4ATbmwq2pqCp5djujoZ+C
-         TKF0ggE95q7zog6ODW7gOxgSBLOur9eKWQIqST1N0Cqfn4NFfGXMmjpkK5Tri7rp2ktw
-         tIvZvTLAb5XSuzgO0dzyKNHqkq2i7RPm16tkELQ1rqLFoftr7t3YoOWso0shnWGfrXZu
-         M6gEPYEUAIKp4vMu9xeGEoo76CWq4RVxns2qQThY1vcblQFDSVFi6HJi4xfnJHIR2xnh
-         ypkQEivqfgt2Yh4gwvmac68t+vgCp8jWU5etdzHFS81li7twShz4VYH4QKB8Rnn0GD+S
-         PZGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694454776; x=1695059576;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FfX6RSRA/tErdP/6b3BPnVn+Cseh6Qa8GqkXP+/ygfU=;
-        b=miOErs/U6SyQFOmDX6QNIlYAteQenMredNo8cA9siOJLv81PRxvM0sJ9vJz3wJmQr4
-         xIjr8Y3mYBAvMQJlh2ouxz16oHFjgavP2uJUr24P6e4FeCXB2lCJL8hVJ11PXNNGp3pX
-         cqM7DXoS/XnujVkA+fkf3+3UebkMcK2ipEsUM6DECNmF+H83tRWR3CfXXGXN3hlXiNVL
-         0bs0GoR23y590dPHcVyEnpJZBM+jGStVzM5E3DUyfeUKzKUwqvjL2VSYsHnTozgXVgD9
-         y6YDwqLYnJsmHjsL+2tIXXdJF2qkf23+qTdvB8tVhIfhDzaQzBmiRR5zRIQtOvEf5Avi
-         NikA==
-X-Gm-Message-State: AOJu0YypuU32mHaoO5HXAzAOvoZ16QX3hfJ07B95szx+VfehCXQTIz98
-        pjabBDukFn0s9xubsZnU+j0UmaGV7qc51J3IQw==
-X-Google-Smtp-Source: AGHT+IEA/Fl4erMnmYdtrmI9xarwhf9E5DXlxyKwU8nOP9w68+WoAh6IzaJY9FBWx8oyGyINbpWCxI9Xum07nwJFww==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:b706:0:b0:58c:74ec:3397 with SMTP
- id v6-20020a81b706000000b0058c74ec3397mr248983ywh.1.1694454776558; Mon, 11
- Sep 2023 10:52:56 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 17:52:44 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOtT/2QC/x3NQQqDMBBA0avIrDuQKJamVylFJBmbgTaGmUQs4
- t0buvyb9w9QEiaFe3eA0MbKa2phLx34OKcXIYfW0Jt+MM5a1CLJ5y/O4iPWD66Kb051xyC8kSh SiSRlzlNtNHq8jc5eTbDDMjpobBZaeP8vH8/z/AG03h9UggAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694454775; l=1822;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=Wgwz6kVMUOE/MdaR7dFrpNbwIMGBA/OsTf12jDBzZgQ=; b=msb87huM5Q1fxVqPK+dd7EGT/+zyiEGIFJ8brAYfbNJVy1XYEB3ede05shCahtgbcub2GG4VL
- XXvEL7We+4lCTj6XZm5nuJguI+xwBOM+eD8TJpQ3x7NELmT7z7rybnE
-X-Mailer: b4 0.12.3
-Message-ID: <20230911-strncpy-arch-um-os-linux-drivers-ethertap_user-c-v1-1-d9e53f52ab32@google.com>
-Subject: [PATCH] um,ethertap: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 11 Sep 2023 13:58:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CCCE0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694455112; x=1725991112;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Gxf0vmQoEIhvZqod62jZG9UmG56BBOre7Atf5NAKTnE=;
+  b=l3dEOkvqLzAjjs9cSxfaUiHn9sl/8gUxJFwSysNFWr2P7G3WbsPv0bth
+   e8r3DEMR8AR3nnsIHZ1q8H9clhK2WtwWnGw/bE0/qrXZ0iPSs4UiZQy36
+   AFAHzZqYd0Nin74w9e3Wp09IQm7aetkRqU/nJQd4GB2L6B+SLZeykFpWf
+   DnEnNYBlP5uNNxTLtgH3d7hCf3oVhffRHy3gTWe6oo2dMBFt5k7JDEdSU
+   xkwS8v9p6iw+TlEjUUEfLmMtSYZ5x8KECu2TrK/K6Ba0FERRHmJacZaL+
+   MhWEpBeHcjgM2GdyvxhDtxA95m3D09V4jBHsRGnClDpowbBuItLuGSMGp
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="363196796"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="363196796"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:58:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693180664"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="693180664"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 10:58:30 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qflB6-0006Ya-12;
+        Mon, 11 Sep 2023 17:58:28 +0000
+Date:   Tue, 12 Sep 2023 01:57:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: kernel/bpf/bpf_iter.c:789:17: warning: no previous declaration for
+ 'bpf_iter_num_new'
+Message-ID: <202309120150.uX27LKII-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+commit: 6018e1f407cccf39b804d1f75ad4de7be4e6cc45 bpf: implement numbers iterator
+date:   6 months ago
+config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230912/202309120150.uX27LKII-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120150.uX27LKII-lkp@intel.com/reproduce)
 
-`gate_buf` should always be NUL-terminated and does not require
-NUL-padding. It is used as a string arg inside an argv array given to
-`run_helper()`. Due to this, let's use `strscpy` as it guarantees
-NUL-terminated on the destination buffer preventing potential buffer
-overreads [2].
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120150.uX27LKII-lkp@intel.com/
 
-This exact invocation was changed from `strcpy` to `strncpy` in commit
-7879b1d94badb ("um,ethertap: use strncpy") back in 2015. Let's continue
-hardening our `str*cpy` apis and use the newer and safer `strscpy`!
+All warnings (new ones prefixed by >>):
 
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- arch/um/os-Linux/drivers/ethertap_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> kernel/bpf/bpf_iter.c:789:17: warning: no previous declaration for 'bpf_iter_num_new' [-Wmissing-declarations]
+    __bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
+                    ^~~~~~~~~~~~~~~~
+>> kernel/bpf/bpf_iter.c:822:18: warning: no previous declaration for 'bpf_iter_num_next' [-Wmissing-declarations]
+    __bpf_kfunc int *bpf_iter_num_next(struct bpf_iter_num* it)
+                     ^~~~~~~~~~~~~~~~~
+>> kernel/bpf/bpf_iter.c:841:18: warning: no previous declaration for 'bpf_iter_num_destroy' [-Wmissing-declarations]
+    __bpf_kfunc void bpf_iter_num_destroy(struct bpf_iter_num *it)
+                     ^~~~~~~~~~~~~~~~~~~~
 
-diff --git a/arch/um/os-Linux/drivers/ethertap_user.c b/arch/um/os-Linux/drivers/ethertap_user.c
-index 9483021d86dd..3363851a4ae8 100644
---- a/arch/um/os-Linux/drivers/ethertap_user.c
-+++ b/arch/um/os-Linux/drivers/ethertap_user.c
-@@ -105,7 +105,7 @@ static int etap_tramp(char *dev, char *gate, int control_me,
- 	sprintf(data_fd_buf, "%d", data_remote);
- 	sprintf(version_buf, "%d", UML_NET_VERSION);
- 	if (gate != NULL) {
--		strncpy(gate_buf, gate, 15);
-+		strscpy(gate_buf, gate, sizeof(gate_buf));
- 		args = setup_args;
- 	}
- 	else args = nosetup_args;
 
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230911-strncpy-arch-um-os-linux-drivers-ethertap_user-c-859160d13f59
+vim +/bpf_iter_num_new +789 kernel/bpf/bpf_iter.c
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+   784	
+   785	__diag_push();
+   786	__diag_ignore_all("-Wmissing-prototypes",
+   787			  "Global functions as their definitions will be in vmlinux BTF");
+   788	
+ > 789	__bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
+   790	{
+   791		struct bpf_iter_num_kern *s = (void *)it;
+   792	
+   793		BUILD_BUG_ON(sizeof(struct bpf_iter_num_kern) != sizeof(struct bpf_iter_num));
+   794		BUILD_BUG_ON(__alignof__(struct bpf_iter_num_kern) != __alignof__(struct bpf_iter_num));
+   795	
+   796		BTF_TYPE_EMIT(struct btf_iter_num);
+   797	
+   798		/* start == end is legit, it's an empty range and we'll just get NULL
+   799		 * on first (and any subsequent) bpf_iter_num_next() call
+   800		 */
+   801		if (start > end) {
+   802			s->cur = s->end = 0;
+   803			return -EINVAL;
+   804		}
+   805	
+   806		/* avoid overflows, e.g., if start == INT_MIN and end == INT_MAX */
+   807		if ((s64)end - (s64)start > BPF_MAX_LOOPS) {
+   808			s->cur = s->end = 0;
+   809			return -E2BIG;
+   810		}
+   811	
+   812		/* user will call bpf_iter_num_next() first,
+   813		 * which will set s->cur to exactly start value;
+   814		 * underflow shouldn't matter
+   815		 */
+   816		s->cur = start - 1;
+   817		s->end = end;
+   818	
+   819		return 0;
+   820	}
+   821	
+ > 822	__bpf_kfunc int *bpf_iter_num_next(struct bpf_iter_num* it)
+   823	{
+   824		struct bpf_iter_num_kern *s = (void *)it;
+   825	
+   826		/* check failed initialization or if we are done (same behavior);
+   827		 * need to be careful about overflow, so convert to s64 for checks,
+   828		 * e.g., if s->cur == s->end == INT_MAX, we can't just do
+   829		 * s->cur + 1 >= s->end
+   830		 */
+   831		if ((s64)(s->cur + 1) >= s->end) {
+   832			s->cur = s->end = 0;
+   833			return NULL;
+   834		}
+   835	
+   836		s->cur++;
+   837	
+   838		return &s->cur;
+   839	}
+   840	
+ > 841	__bpf_kfunc void bpf_iter_num_destroy(struct bpf_iter_num *it)
+   842	{
+   843		struct bpf_iter_num_kern *s = (void *)it;
+   844	
+   845		s->cur = s->end = 0;
+   846	}
+   847	
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
