@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E8679B3A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0077079B196
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345635AbjIKVVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
+        id S1347910AbjIKVZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242566AbjIKPue (ORCPT
+        with ESMTP id S242567AbjIKPuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:50:34 -0400
+        Mon, 11 Sep 2023 11:50:35 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7676B18D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C4D121
         for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1694447430; x=1725983430;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=RJQpqVhp/J0JVh9w0dugk99Po3YUskR+nXFrDSlLI1E=;
-  b=KPrcyjeMIWpObxuDu9Eb5J1a8HZXqta70vj1gmsR6J2ws6zV+AZvPUyS
-   qhePszcPqp+D8nFT4WnOICxNzCAmHhx7CXsFMTxSUYCAaNjjjxwj0e4uE
-   3cmS1ohq9ileQ+cnrPql6RQ6vTjRLuj4icoafvW7fFNDcfUMJ1k0t1g5/
-   axk0PytABmlGoEqGnnMqeFyZf5/K0f96VoXYKZKRw8MmeUyIddSBgUYYm
-   /cKodAZhv4Y4ZIzP2rbBHzBnxYQuvtUmc5BW+cGkptYeMXWfcNKlSphdg
-   YRKzwYvyXtoIg14wYP4VzjYU5Yd/OICrg0I2auQopBZqbxam7ANoeogBJ
+  bh=OyKPNhRoXHCMy1Q27SfkblCl7ccMMEKKhLj4ca17UTo=;
+  b=K7Hv3avI/NvfbiVupgDPXV6dZHw/hSCLT9GnpFQQfag0d2CyyvTZaomZ
+   e8U6jHS26erHCKUr3CvaXGzckHhZk/v17U26ZAXqeiU3oQIGTyvBdAk+p
+   z/dnUp7Nfd6+OtucD7d7pMTE/hQgMQTYF6CI7cwDHh1ZCpNEtsp3X3PA9
+   qSB54AnxkA52ArlkTdQpUN8t44kwhXHGC7de3c3oGjM7Ftbd9HT9z/TU+
+   LgIS1FR2/oJRt4SYFaHMsvqYPy918YHUDKmYxBSbkJD4PUK/bVv9DTPBB
+   LhUJueEsY14SVQlnxZQeBAQkmLt3IL5P5+/HYvFeoiD3rsPyGF2kP3PKm
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444541611"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444541620"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="444541611"
+   d="scan'208";a="444541620"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
   by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:48:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917062275"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917062278"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="917062275"
+   d="scan'208";a="917062278"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:48:12 -0700
+  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:48:13 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
         alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [RESEND PATCH V3 2/6] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK flag
-Date:   Mon, 11 Sep 2023 08:48:18 -0700
-Message-Id: <20230911154822.2559213-2-kan.liang@linux.intel.com>
+Subject: [RESEND PATCH V3 3/6] perf: Add branch_sample_call_stack
+Date:   Mon, 11 Sep 2023 08:48:19 -0700
+Message-Id: <20230911154822.2559213-3-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230911154822.2559213-1-kan.liang@linux.intel.com>
 References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
@@ -66,79 +66,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Currently, branch_sample_type !=0 is used to check whether a branch
-stack setup is required. But it doesn't check the sample type,
-unnecessary branch stack setup may be done for a counting event. E.g.,
-perf record -e "{branch-instructions,branch-misses}:S" -j any
-Also, the event with the new PERF_SAMPLE_BRANCH_EVT_CNTRS branch sample
-type may not require a branch stack setup either.
+Add a helper function to check call stack sample type.
 
-Add a new flag NEEDS_BRANCH_STACK to indicate whether the event requires
-a branch stack setup. Replace the needs_branch_stack() by checking the
-new flag.
-
-The counting event check is implemented here. The later patch will take
-the new PERF_SAMPLE_BRANCH_EVT_CNTRS into account.
+The later patch will invoke the function in several places.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
 
 New patch
 
- arch/x86/events/intel/core.c       | 14 +++++++++++---
- arch/x86/events/perf_event_flags.h |  1 +
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ arch/x86/events/core.c     | 2 +-
+ include/linux/perf_event.h | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 0f4ce79de4f8..8434315b765f 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2518,9 +2518,14 @@ static void intel_pmu_assign_event(struct perf_event *event, int idx)
- 		perf_report_aux_output_id(event, idx);
- }
- 
-+static __always_inline bool intel_pmu_needs_branch_stack(struct perf_event *event)
-+{
-+	return event->hw.flags & PERF_X86_EVENT_NEEDS_BRANCH_STACK;
-+}
-+
- static void intel_pmu_del_event(struct perf_event *event)
- {
--	if (needs_branch_stack(event))
-+	if (intel_pmu_needs_branch_stack(event))
- 		intel_pmu_lbr_del(event);
- 	if (event->attr.precise_ip)
- 		intel_pmu_pebs_del(event);
-@@ -2831,7 +2836,7 @@ static void intel_pmu_add_event(struct perf_event *event)
- {
- 	if (event->attr.precise_ip)
- 		intel_pmu_pebs_add(event);
--	if (needs_branch_stack(event))
-+	if (intel_pmu_needs_branch_stack(event))
- 		intel_pmu_lbr_add(event);
- }
- 
-@@ -3908,7 +3913,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 			x86_pmu.pebs_aliases(event);
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 2919bb5a53a0..b56e9c3a0cc8 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -601,7 +601,7 @@ int x86_pmu_hw_config(struct perf_event *event)
+ 		}
  	}
  
--	if (needs_branch_stack(event)) {
-+	if (needs_branch_stack(event) && is_sampling_event(event))
-+		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
+-	if (event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_CALL_STACK)
++	if (branch_sample_call_stack(event))
+ 		event->attach_state |= PERF_ATTACH_TASK_DATA;
+ 
+ 	/*
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index c4877924d43c..58ad6745cdda 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1147,6 +1147,11 @@ static inline bool branch_sample_evt_cntrs(const struct perf_event *event)
+ 	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_EVT_CNTRS;
+ }
+ 
++static inline bool branch_sample_call_stack(const struct perf_event *event)
++{
++	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_CALL_STACK;
++}
 +
-+	if (intel_pmu_needs_branch_stack(event)) {
- 		ret = intel_pmu_setup_lbr_filter(event);
- 		if (ret)
- 			return ret;
-diff --git a/arch/x86/events/perf_event_flags.h b/arch/x86/events/perf_event_flags.h
-index 1dc19b9b4426..a1685981c520 100644
---- a/arch/x86/events/perf_event_flags.h
-+++ b/arch/x86/events/perf_event_flags.h
-@@ -20,3 +20,4 @@ PERF_ARCH(TOPDOWN,		0x04000) /* Count Topdown slots/metrics events */
- PERF_ARCH(PEBS_STLAT,		0x08000) /* st+stlat data address sampling */
- PERF_ARCH(AMD_BRS,		0x10000) /* AMD Branch Sampling */
- PERF_ARCH(PEBS_LAT_HYBRID,	0x20000) /* ld and st lat for hybrid */
-+PERF_ARCH(NEEDS_BRANCH_STACK,	0x40000) /* require branch stack setup */
+ struct perf_sample_data {
+ 	/*
+ 	 * Fields set by perf_sample_data_init() unconditionally,
 -- 
 2.35.1
 
