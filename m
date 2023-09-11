@@ -2,199 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2CB79B3CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D094C79B592
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355327AbjIKV5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
+        id S1349163AbjIKVcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236383AbjIKKcW (ORCPT
+        with ESMTP id S236408AbjIKKeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:32:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B736E5F;
-        Mon, 11 Sep 2023 03:32:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0F4FC433C7;
-        Mon, 11 Sep 2023 10:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694428336;
-        bh=NxlAgdm0zBlYQHGHYk0vtHQiaU9QKg+ESRgOgI623QA=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=YPRP152AYRqv5SeEqG2TuzRr1x/m+fO7cpvR0iJom99pBq3WtSTzem7asxaeCIOiW
-         F4fdOOx0PKr1+kqKegAMJTDs1mk2xBUpZ6j0hXL4kThf7PdV2mINHs2l3DVIRwB1Ig
-         +/bx2ApTF8w9Yl5RPIIVNymDA9D0St3XrQ1YGG3bOEy+m845bowZZz03NcoxwDfZcU
-         PY1Pi3XcSq0XAfQdAEnIj/+0RytcIMw/OkEkJxXVLHr0fAGcJXFsFvUlyYWKKZ9a8a
-         l5bcQrdTAv6s3sqwir8369BhcVy8BEvq8LXWA2ZxiOFgcrVq2OYRzALNDk2e28f1oF
-         g5oh1VYx8KEQg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 11 Sep 2023 13:32:12 +0300
-Message-Id: <CVG0PQ1NV1XZ.1R2BD85Z1M3FO@suppilovahvero>
-Cc:     <linux-integrity@vger.kernel.org>, <keyrings@vger.kernel.org>,
-        "Jens Wiklander" <jens.wiklander@linaro.org>, <jejb@linux.ibm.com>,
-        <zohar@linux.ibm.com>, <sudeep.holla@arm.com>,
-        <achin.gupta@arm.com>, <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KEYS: trusted: tee: Refactor register SHM usage
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Sumit Garg" <sumit.garg@linaro.org>
-X-Mailer: aerc 0.14.0
-References: <20230822112933.1550062-1-sumit.garg@linaro.org>
- <20230822125555.GA82256@rayden>
- <CAFA6WYPy=yxGg1HbT+ipWJFpxiJeUGK6BSgMhtRPd=zmKef-cw@mail.gmail.com>
- <CAHUa44G9jCeHcRq=AZeieaTPWN_tpOVKeJNY=777QAh-bw1QNg@mail.gmail.com>
- <CAFA6WYPY70iYCmQhzCkATGinqK_C1i4SEZzTdv4yDwntpGNzew@mail.gmail.com>
- <CAHUa44H5eG6N0M_aAiWsYJorWVt4pYEZPWXgOJHgXAYVmR=cww@mail.gmail.com>
- <CAFA6WYNAifDVZy-pLSTJWonGTJBECijsTFw4OQdqToW3u6Lj_Q@mail.gmail.com>
-In-Reply-To: <CAFA6WYNAifDVZy-pLSTJWonGTJBECijsTFw4OQdqToW3u6Lj_Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 06:34:31 -0400
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BEEE5F;
+        Mon, 11 Sep 2023 03:34:25 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso543476766b.1;
+        Mon, 11 Sep 2023 03:34:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694428464; x=1695033264;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RuxWzi0SpMhBfa5qiwgBKVDj1sBIBDVRjmMU4662HK8=;
+        b=SQbuzEmyic9K5mXSE3/2mx4IMzJF/HmbjQ/3zXMKqoMtscI8hQhEX7xDDA8Gf1twUv
+         jNTsUEvJg/DRp9t71tWrRzg2JMTNcYwmXnXFU3omTjtwdmvwwsM4BTy72rcw4LHJ8t7F
+         ZIYkq/yIDJ2q2Cw4bD4dwJnhzioeXgxw/mja6uu6d8Z2g52krVVdVMxzR4LI6mD13y1m
+         yrk5IoSoBfZnQq4YXCRLdYbAga5S41BqlLkO4m+UqyT5koKpKJh9BVZ3pCW7XZbDZH1u
+         ZOT9Qc3wbUvXKXVsO9cdDi/ZwxeqY2Q70Ph/KoUFbOto3d9s61V7mn0e8ki32Ywn3O7d
+         MekA==
+X-Gm-Message-State: AOJu0YymrcdeaOUHwzFMzyj6hPdFY8+qzA9Vbgdv7g9lpXdYfpTTYKJy
+        DCZFSWG+kRIODj2RHGcQId4=
+X-Google-Smtp-Source: AGHT+IFHynsKgWq4NgUjq4OKLyUzMvXPVvvjbbjYd6PD4qMpJEvDfhgLeYH8m3839btK71/4rp846Q==
+X-Received: by 2002:a17:906:8b:b0:9a2:1ce5:1243 with SMTP id 11-20020a170906008b00b009a21ce51243mr8687836ejc.60.1694428463664;
+        Mon, 11 Sep 2023 03:34:23 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-019.fbsv.net. [2a03:2880:31ff:13::face:b00c])
+        by smtp.gmail.com with ESMTPSA id hb5-20020a170906b88500b009828e26e519sm5079289ejb.122.2023.09.11.03.34.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 03:34:23 -0700 (PDT)
+From:   Breno Leitao <leitao@debian.org>
+To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
+        martin.lau@linux.dev, krisman@suse.de
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org, pabeni@redhat.com
+Subject: [PATCH v5 0/8] io_uring: Initial support for {s,g}etsockopt commands
+Date:   Mon, 11 Sep 2023 03:33:59 -0700
+Message-Id: <20230911103407.1393149-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Sep 5, 2023 at 2:04 PM EEST, Sumit Garg wrote:
-> Hi Jarkko,
->
-> On Wed, 23 Aug 2023 at 19:58, Jens Wiklander <jens.wiklander@linaro.org> =
-wrote:
-> >
-> > On Wed, Aug 23, 2023 at 3:04=E2=80=AFPM Sumit Garg <sumit.garg@linaro.o=
-rg> wrote:
-> > >
-> > > On Wed, 23 Aug 2023 at 13:32, Jens Wiklander <jens.wiklander@linaro.o=
-rg> wrote:
-> > > >
-> > > > On Wed, Aug 23, 2023 at 8:55=E2=80=AFAM Sumit Garg <sumit.garg@lina=
-ro.org> wrote:
-> > > > >
-> > > > > On Tue, 22 Aug 2023 at 18:25, Jens Wiklander <jens.wiklander@lina=
-ro.org> wrote:
-> > > > > >
-> > > > > > On Tue, Aug 22, 2023 at 04:59:33PM +0530, Sumit Garg wrote:
-> > > > > > > The OP-TEE driver using the old SMC based ABI permits overlap=
-ping shared
-> > > > > > > buffers, but with the new FF-A based ABI each physical page m=
-ay only
-> > > > > > > be registered once.
-> > > > > > >
-> > > > > > > As the key and blob buffer are allocated adjancently, there i=
-s no need
-> > > > > > > for redundant register shared memory invocation. Also, it is =
-incompatibile
-> > > > > > > with FF-A based ABI limitation. So refactor register shared m=
-emory
-> > > > > > > implementation to use only single invocation to register both=
- key and blob
-> > > > > > > buffers.
-> > > > > > >
-> > > > > > > Fixes: 4615e5a34b95 ("optee: add FF-A support")
-> > > > > > > Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > > ---
-> > > > > > >  security/keys/trusted-keys/trusted_tee.c | 64 ++++++++------=
-----------
-> > > > > > >  1 file changed, 20 insertions(+), 44 deletions(-)
-> > > > > > >
-> > > > > > > diff --git a/security/keys/trusted-keys/trusted_tee.c b/secur=
-ity/keys/trusted-keys/trusted_tee.c
-> > > > > > > index ac3e270ade69..aa3d477de6db 100644
-> > > > > > > --- a/security/keys/trusted-keys/trusted_tee.c
-> > > > > > > +++ b/security/keys/trusted-keys/trusted_tee.c
-> > > > > > > @@ -65,24 +65,16 @@ static int trusted_tee_seal(struct truste=
-d_key_payload *p, char *datablob)
-> > > > > > >       int ret;
-> > > > > > >       struct tee_ioctl_invoke_arg inv_arg;
-> > > > > > >       struct tee_param param[4];
-> > > > > > > -     struct tee_shm *reg_shm_in =3D NULL, *reg_shm_out =3D N=
-ULL;
-> > > > > > > +     struct tee_shm *reg_shm =3D NULL;
-> > > > > > >
-> > > > > > >       memset(&inv_arg, 0, sizeof(inv_arg));
-> > > > > > >       memset(&param, 0, sizeof(param));
-> > > > > > >
-> > > > > > > -     reg_shm_in =3D tee_shm_register_kernel_buf(pvt_data.ctx=
-, p->key,
-> > > > > > > -                                              p->key_len);
-> > > > > > > -     if (IS_ERR(reg_shm_in)) {
-> > > > > > > -             dev_err(pvt_data.dev, "key shm register failed\=
-n");
-> > > > > > > -             return PTR_ERR(reg_shm_in);
-> > > > > > > -     }
-> > > > > > > -
-> > > > > > > -     reg_shm_out =3D tee_shm_register_kernel_buf(pvt_data.ct=
-x, p->blob,
-> > > > > > > -                                               sizeof(p->blo=
-b));
-> > > > > > > -     if (IS_ERR(reg_shm_out)) {
-> > > > > > > -             dev_err(pvt_data.dev, "blob shm register failed=
-\n");
-> > > > > > > -             ret =3D PTR_ERR(reg_shm_out);
-> > > > > > > -             goto out;
-> > > > > > > +     reg_shm =3D tee_shm_register_kernel_buf(pvt_data.ctx, p=
-->key,
-> > > > > > > +                                           sizeof(p->key) + =
-sizeof(p->blob));
-> > > > > >
-> > > > > > This is somewhat fragile. What if struct trusted_key_payload ha=
-s a small
-> > > > > > unexpected change in layout?
-> > > > >
-> > > > > key and blob buffers are just two adjacent fixed sized byte array=
-s. So
-> > > > > I am not worried here as long as they stay adjacent (which has be=
-en
-> > > > > the case since trusted keys were introduced in the kernel).
-> > > >
-> > > > Yeah, that was my point, but fine if you don't believe it's an issu=
-e.
-> > > >
-> > >
-> > > Does it resolve the issue with FFA ABI for you? It would be good to
-> > > have your Tested-by tag.
-> >
-> > It does:
-> > Tested-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
-> >
->
-> Can you help pick up this fix for v6.6 kernel release?
+This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+SOCKET_URING_OP_SETSOCKOPT and SOCKET_URING_OP_GETSOCKOPT implement generic
+case, covering all levels and optnames (a change from the previous
+version, where getsockopt was limited to level=SOL_SOCKET).
 
-I pushed it and also added the missing stable tag:
+In order to keep the implementation (and tests) simple, some refactors
+were done prior to the changes, as follows:
 
-commit 1037d6ec29cdfaaec5277c194b0278eb0a30c3f8 (HEAD -> master, origin/mas=
-ter, origin/HEAD)
-Author: Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue Aug 22 16:59:33 2023 +0530
+Patch 1-2:  Remove the core {s,g}etsockopt() core function from
+__sys_{g,s}etsockopt, so, the code could be reused by other callers,
+such as io_uring.
 
-    KEYS: trusted: tee: Refactor register SHM usage
+Patch 3: Pass compat mode to the file/socket callbacks
 
-    The OP-TEE driver using the old SMC based ABI permits overlapping share=
-d
-    buffers, but with the new FF-A based ABI each physical page may only
-    be registered once.
+Patch 4: Move io_uring helpers from io_uring_zerocopy_tx to a generic
+io_uring headers. This simplify the test case (last patch)
 
-    As the key and blob buffer are allocated adjancently, there is no need
-    for redundant register shared memory invocation. Also, it is incompatib=
-ile
-    with FF-A based ABI limitation. So refactor register shared memory
-    implementation to use only single invocation to register both key and b=
-lob
-    buffers.
+Patch 5: Protect io_uring_cmd_sock() to not be called if CONFIG_NET is
+disabled.
 
-    [jarkko: Added cc to stable.]
-    Cc: stable@vger.kernel.org # v5.16+
-    Fixes: 4615e5a34b95 ("optee: add FF-A support")
-    Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
-    Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-    Tested-by: Jens Wiklander <jens.wiklander@linaro.org>
-    Reviewed-by: Jens Wiklander <jens.wiklander@linaro.org>
-    Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Important to say that userspace pointers need to be alive until the
+operation is completed, as in the systemcall.
 
+These changes were tested with a new test[1] in liburing, LTP sockopt*
+tests, as also with bpf/progs/sockopt test case, which is now adapted to
+run using both system calls and io_uring commands.
 
-BR, Jarkko
+[1] Link: https://github.com/leitao/liburing/blob/getsock/test/socket-getsetsock-cmd.c
+
+RFC -> V1:
+	* Copy user memory at io_uring subsystem, and call proto_ops
+	  callbacks using kernel memory
+	* Implement all the cases for SOCKET_URING_OP_SETSOCKOPT
+
+V1 -> V2
+	* Implemented the BPF part
+	* Using user pointers from optval to avoid kmalloc in io_uring part.
+
+V2 -> V3:
+	* Break down __sys_setsockopt and reuse the core code, avoiding
+	  duplicated code. This removed the requirement to expose
+	  sock_use_custom_sol_socket().
+	* Added io_uring test to selftests/bpf/sockopt.
+	* Fixed compat argument, by passing it to the issue_flags.
+
+V3 -> V4:
+	* Rebase on top of commit 1ded5e5a5931b ("net: annotate data-races around sock->ops")
+	* Also broke down __sys_setsockopt() to reuse the core function
+	  from io_uring.
+	* Create a new patch to return -EOPNOTSUPP if CONFIG_NET is
+	  disabled
+	* Added two SOL_SOCKET tests in bpf/prog_tests/sockopt.
+
+V4 -> V5:
+	* Do not use sockptr anymore, by changing the optlen getsock argument
+	  to be a user pointer (instead of a kernel pointer). This change also drop
+	  the limitation on getsockopt from previous versions, and now all
+	  levels are supported.
+	* Simplified the BPF sockopt test, since there is no more limitation on
+	  the io_uring commands.
+	* No more changes in the BPF subsystem.
+	* Moved the optlen field in the SQE struct. It is now a pointer instead
+	  of u32.
+
+Breno Leitao (8):
+  net/socket: Break down __sys_setsockopt
+  net/socket: Break down __sys_getsockopt
+  io_uring/cmd: Pass compat mode in issue_flags
+  selftests/net: Extract uring helpers to be reusable
+  io_uring/cmd: return -EOPNOTSUPP if net is disabled
+  io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+  io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
+  selftests/bpf/sockopt: Add io_uring support
+
+ include/linux/io_uring.h                      |   1 +
+ include/net/sock.h                            |   5 +
+ include/uapi/linux/io_uring.h                 |  10 +
+ io_uring/uring_cmd.c                          |  41 +++
+ net/socket.c                                  |  89 ++++--
+ tools/include/io_uring/mini_liburing.h        | 292 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockopt.c        |  95 +++++-
+ tools/testing/selftests/net/Makefile          |   1 +
+ .../selftests/net/io_uring_zerocopy_tx.c      | 268 +---------------
+ 9 files changed, 497 insertions(+), 305 deletions(-)
+ create mode 100644 tools/include/io_uring/mini_liburing.h
+
+-- 
+2.34.1
+
