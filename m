@@ -2,127 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E8779BAEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41E679BD9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348079AbjIKVZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
+        id S1345835AbjIKVW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236727AbjIKLP5 (ORCPT
+        with ESMTP id S236716AbjIKLPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:15:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91D0CCC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694430908;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NKHpLK/1F+7Ung4H62+PvTO3aeU4hK38bQgvzhP99xY=;
-        b=Tx2/MLjcLW9ozyGOyR9p3DSfk2ce0EjCgHXSy/9e+k8omE9CnGA6gGrSe+efQtcNrfth8j
-        m3kifJkurVo5mjJqyqHENkMTlOgJjzJ4+qP964bkjee8AiSx+JPnhlH68/56t97PUevom3
-        3u0Da7e6lod43EvJ0F1nOXvxfbWO++Y=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-231-vqws_SQTM3WRnZDlkej5Nw-1; Mon, 11 Sep 2023 07:15:07 -0400
-X-MC-Unique: vqws_SQTM3WRnZDlkej5Nw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a5952a0b20so327564466b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:15:07 -0700 (PDT)
+        Mon, 11 Sep 2023 07:15:54 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807BAE4B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:15:47 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401b3ea0656so45442715e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:15:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694430946; x=1695035746; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7oYncRXl8MdgOuj5ecatA5YK1hlf20bUpcsVqj8+B7w=;
+        b=iy6Ly+qSIjUUd4/DUtUNVlBHa1u5LTfvhrT/hl4O1wLhMitDehJL8lXvytikvsFVcS
+         H/IAUTW7iN5XWLire2POO6epX+pXGgn4E1jMTwlhTDG8n8FR4auFzhs98SAplSxmp1PF
+         bCbAY+tCpf2+Udd+6x6m1+oZCxZmzbcRVDo1OptZ06DKeRET75y72J2q0sp08bLPoB+k
+         OxnYZYAJotbPiTq/56PeJKOhtcJoOhBkc2b9P1KJDV+DqEW2j0pagLTiXDdOSHI402xq
+         GAc7Vmi75iRRMsaf2Jmorz88gcd2/B4xIT1h+3+/oKVyP66b10KM/HrGpbTDYE+j8qt1
+         rWiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694430906; x=1695035706;
+        d=1e100.net; s=20230601; t=1694430946; x=1695035746;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKHpLK/1F+7Ung4H62+PvTO3aeU4hK38bQgvzhP99xY=;
-        b=EP19Ku8RhOQIA/mZtAk4LgbJTcHdNcoptg7E3kDBhpikpdszCh/SBzJlGb00IkCpE0
-         XlGh1pZ+tCzYh9u70A5Eq8HNNDZCC3hk4iz7eD1Bz/+/j6CTDvcDxJ0WUUSrjvk4NGti
-         LhH/w7lx1achnFEuxvb5e+y5HSflgot3+Qa7W7JUUPk0Y76zl6JdthDcszI0CSzkn6nI
-         qoJ3B+6t4/EoPQFUiG0PwRVcRfS35oPjO90kNSXHh6Nk1rMXSpwHq+Z5/16XoCuXpV6y
-         QHR4ex4T5hTkWiFOcK5sb6KKrNJJA9AaLan1mw1a3L8rABKDM5of5mnP5j0oehTpweir
-         0jVg==
-X-Gm-Message-State: AOJu0YwG1nzsohYsZ7uE+qI7fMxo01y8T64i8HUlkFIt2tUbyuCx//Vn
-        pN7P4LiszWBzuFa/7dN+V1P8+U+tZjOe8/gfTBmzgXTuD+sR4isrIeEq/kG2cXyns0hBv5O61uh
-        F7hE4YPMQcy0KZFpTg/AFPBWr
-X-Received: by 2002:a17:906:5307:b0:9aa:20b2:35e7 with SMTP id h7-20020a170906530700b009aa20b235e7mr3501696ejo.9.1694430906248;
-        Mon, 11 Sep 2023 04:15:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFzOJs3bCQUw1AJYelMXONDCh7w6Ao2vLa35tCxdoFi2n1i3pBsgz7Xx2aiczwOSGCAUexSTg==
-X-Received: by 2002:a17:906:5307:b0:9aa:20b2:35e7 with SMTP id h7-20020a170906530700b009aa20b235e7mr3501682ejo.9.1694430905991;
-        Mon, 11 Sep 2023 04:15:05 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id me15-20020a170906aecf00b009a193a5acffsm5127626ejb.121.2023.09.11.04.15.05
+        bh=7oYncRXl8MdgOuj5ecatA5YK1hlf20bUpcsVqj8+B7w=;
+        b=uRJYXtZ+tupT6RGkOkdFn8W0a0a60aRLxEtedeZkGjuLjb1TCTKKaO8IMLM9BTTyny
+         PYFjeYZufgFswOUCy3nYeZirWG4K6Q4lZ9KusKt3lRcOFOwbnS9EJ84vBixklWzSDHMW
+         ZccnzTPCqLMwGOFdnxxKYWbKmj14pNyj+FWAMat012l9P/IY3ItEfe6NzdYicFbwYHVG
+         nbCiIsD9xuwDwMaXZyu5MFpDadJxRf9lRzh1ZqB6hprGZeZNsSYsP90rRURvXU7XD+ad
+         Df2WmtenKnagJMCg9Qtwn4r4jG4MlOhg7vfd41LtV3WWQ+SWuLUIEeTQAK4WIPVBn5AO
+         VXOw==
+X-Gm-Message-State: AOJu0YxJAG5tVkA56HIC7N1PC6OjOKJMdXTDWnaYiipOEQg2S4Ou81HJ
+        /3bRWLphHWB8o3PHCsndFVxa3Q==
+X-Google-Smtp-Source: AGHT+IFMPWetHW3X3w0vf7JC2rs7SsnHakGdeLJ9bxL9NSEuCvaDE4Qf7g+s2Jq63JasENDVFi2WvA==
+X-Received: by 2002:a05:600c:6028:b0:402:f55e:ac11 with SMTP id az40-20020a05600c602800b00402f55eac11mr7826062wmb.20.1694430945795;
+        Mon, 11 Sep 2023 04:15:45 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id b13-20020a5d634d000000b0031c5e9c2ed7sm9783914wrw.92.2023.09.11.04.15.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 04:15:05 -0700 (PDT)
-Message-ID: <646ef8f8-b2a0-09e6-5136-f04e0261f093@redhat.com>
-Date:   Mon, 11 Sep 2023 13:15:04 +0200
+        Mon, 11 Sep 2023 04:15:45 -0700 (PDT)
+Message-ID: <bd418fae-accc-bd79-969a-b3b5791efd35@linaro.org>
+Date:   Mon, 11 Sep 2023 13:15:43 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] mlxbf-bootctl: add NET dependency into Kconfig
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 04/11] arm64: dts: qcom: pm7250b: make SID configurable
 Content-Language: en-US
-To:     David Thompson <davthompson@nvidia.com>, markgross@kernel.org,
-        vadimp@nvidia.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-References: <20230905133243.31550-1-davthompson@nvidia.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230905133243.31550-1-davthompson@nvidia.com>
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
+ <20230830-fp5-initial-v1-4-5a954519bbad@fairphone.com>
+ <b82f4683-e8b5-b424-8f7a-6d2ba1cab61f@linaro.org>
+ <CV6NF0466658.20DGU7QKF2UBR@otso>
+ <CAA8EJpr1+W3f08X-FpiiVrJ98kg52HaMwbbKn=fG15Whm4C8aQ@mail.gmail.com>
+ <728003b9-db27-fdc0-e761-197a02a38c24@linaro.org>
+ <CAA8EJpoXreHpxZQ2G10n0OiQzUX4ffk=gvo87dAU4-r+Svqpeg@mail.gmail.com>
+ <CVAUDGBO4S08.1F0O66ZE6I4IG@otso> <CVFY7D7ND3WS.2B2EYB4ZO86P@otso>
+ <cae7261a-6727-6163-1420-01039bfb8396@linaro.org>
+ <CVFZZ0YSWQ6J.2AKRML6LWRMUH@otso>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CVFZZ0YSWQ6J.2AKRML6LWRMUH@otso>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/5/23 15:32, David Thompson wrote:
-> The latest version of the mlxbf_bootctl driver utilizes
-> "sysfs_format_mac", and this API is only available if
-> NET is defined in the kernel configuration. This patch
-> changes the mlxbf_bootctl Kconfig to depend on NET.
+On 11/09/2023 11:59, Luca Weiss wrote:
+> On Mon Sep 11, 2023 at 11:44 AM CEST, Krzysztof Kozlowski wrote:
+>> On 11/09/2023 10:34, Luca Weiss wrote:
+>>> On Tue Sep 5, 2023 at 10:30 AM CEST, Luca Weiss wrote:
+>>>> On Thu Aug 31, 2023 at 2:27 PM CEST, Dmitry Baryshkov wrote:
+>>>>> On Thu, 31 Aug 2023 at 14:54, Krzysztof Kozlowski
+>>>>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>>>>
+>>>>>> On 31/08/2023 13:33, Dmitry Baryshkov wrote:
+>>>>>>> On Thu, 31 Aug 2023 at 13:13, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>>>>>>>
+>>>>>>>> On Wed Aug 30, 2023 at 12:06 PM CEST, Krzysztof Kozlowski wrote:
+>>>>>>>>> On 30/08/2023 11:58, Luca Weiss wrote:
+>>>>>>>>>> Like other Qualcomm PMICs the PM7250B can be used on different addresses
+>>>>>>>>>> on the SPMI bus. Use similar defines like the PMK8350 to make this
+>>>>>>>>>> possible.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>>>>>>>>> ---
+>>>>>>>>>>  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 23 ++++++++++++++++-------
+>>>>>>>>>>  1 file changed, 16 insertions(+), 7 deletions(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>>>>>>>> index e8540c36bd99..3514de536baa 100644
+>>>>>>>>>> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>>>>>>>> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>>>>>>>> @@ -7,6 +7,15 @@
+>>>>>>>>>>  #include <dt-bindings/interrupt-controller/irq.h>
+>>>>>>>>>>  #include <dt-bindings/spmi/spmi.h>
+>>>>>>>>>>
+>>>>>>>>>> +/* This PMIC can be configured to be at different SIDs */
+>>>>>>>>>> +#ifndef PM7250B_SID
+>>>>>>>>>> +   #define PM7250B_SID 2
+>>>>>>>>>> +#endif
+>>>>>>>>>
+>>>>>>>>> Why do you send the same patch as v1, without any reference to previous
+>>>>>>>>> discussions?
+>>>>>>>>>
+>>>>>>>>> You got here feedback already.
+>>>>>>>>>
+>>>>>>>>> https://lore.kernel.org/linux-arm-msm/f52524da-719b-790f-ad2c-0c3f313d9fe9@linaro.org/
+>>>>>>>>
+>>>>>>>> Hi Krzysztof,
+>>>>>>>>
+>>>>>>>> I did mention that original patch in the cover letter of this series.
+>>>>>>>> I'm definitely aware of the discussion earlier this year there but also
+>>>>>>>> tried to get an update lately if there's any update with no response.
+>>>>>>>
+>>>>>>> I think the overall consensus was that my proposal is too complicated
+>>>>>>> for the DT files.
+>>>>>>
+>>>>>> I proposed to duplicate the entries. Do you keep QUP nodes in DTSI and
+>>>>>> customize per address? No.
+>>>>>
+>>>>> At the same time, we do keep SoC files separate from the board files.
+>>>>> Yes, I'm slightly exaggerating here.
+>>>>>
+>>>>> I think that for PMIC files it makes sense to extract common parts if
+>>>>> that eases reuse of the common parts.
+>>>>
+>>>> Hi all,
+>>>>
+>>>> what can I do for v2 now?
+>>>>
+>>>> 1. Keep this patch as-is, and keep pm7250b in device dts.
+>>
+>> This was NAKed by me. What Qualcomm SoC maintainers decide (or not
+>> decide) about other options, should not cause the wrong solution to be
+>> re-posted...
+>>
+>>>>
+>>>> 2. Drop pm7250b patch and drop from device dts, until _someone_ figures
+>>>> out a solution talking to the PMIC on different SID.
+>>>>
+>>>> 3. Something else like copy-pasting pm7250b.dtsi to pm7250-8.dtsi and
+>>>> changing the SID there, and using that in device dts.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309031058.JvwNDBKt-lkp@intel.com/
-> Signed-off-by: David Thompson <davthompson@nvidia.com>
-
-Thank you for your patch, I've applied this patch to my fixes
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
-
-Note it will show up in my fixes branch once I've pushed my
-local branch there, which might take a while.
-
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/platform/mellanox/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> @Konrad, @Bjorn: Can you give any feedback here what's preferable?
+> Otherwise I'm just blocked on this series.
 > 
-> diff --git a/drivers/platform/mellanox/Kconfig b/drivers/platform/mellanox/Kconfig
-> index 382793e73a60..e52aea996ca5 100644
-> --- a/drivers/platform/mellanox/Kconfig
-> +++ b/drivers/platform/mellanox/Kconfig
-> @@ -60,6 +60,7 @@ config MLXBF_BOOTCTL
->  	tristate "Mellanox BlueField Firmware Boot Control driver"
->  	depends on ARM64
->  	depends on ACPI
-> +	depends on NET
->  	help
->  	  The Mellanox BlueField firmware implements functionality to
->  	  request swapping the primary and alternate eMMC boot partition,
+>>>>
+>>>> Please let me know what to do.
+>>>>
+>>>> Regards
+>>>> Luca
+>>>
+>>> Hi,
+>>>
+>>> if there's no feedback I'll keep this patch in v2 of this series and we
+>>> can continue to discuss there (if necessary).
+>>
+>> Sorry, I still do not agree and there were no arguments convincing me to
+>> change the mind.
+>>
+>> I gave you the solution from my perspective. Why do you decided to
+>> ignore it and send it as is?
+> 
+> I get it that you are not final decider for qcom dts changes but it's
+> quite difficult for someone sending patches to not get any feedback what
+> other change to replace this is appropriate. I doubt it's a good idea to
+> just implement some random pm7250-8.dtsi or whatever to potentially
+> immediately get a response that that way is also bad.
+> 
+> That's why I'm trying to get some info before working on something and
+> sending it. Hopefully Bjorn or Konrad can add their thoughts above.
+
+I understand, and it is frustrating. If such case happens the solution
+in upstream is not sending the same NAKed version but send something else.
+
+> 
+> Also I don't recall me ever reading a "solution" from your side but
+> maybe I need to dig through the old emails again.
+
+Here:
+"I proposed to duplicate the entries. Do you keep QUP nodes in DTSI and
+customize per address? No."
+
+Dmitry responded that having PMICs extracted help re-using. He is right.
+But here you hit the limit of such re-usage.
+
+Best regards,
+Krzysztof
 
