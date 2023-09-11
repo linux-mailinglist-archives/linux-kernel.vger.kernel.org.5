@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D88379BC82
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205A079C08C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242350AbjIKVuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55696 "EHLO
+        id S245510AbjIKVJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243180AbjIKQ47 (ORCPT
+        with ESMTP id S243123AbjIKQvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:56:59 -0400
-Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [83.166.143.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D99110
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:56:52 -0700 (PDT)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Rkt6132vMzMq8R6;
-        Mon, 11 Sep 2023 16:51:37 +0000 (UTC)
-Received: from unknown by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Rkt5z6QN4zMpnPm;
-        Mon, 11 Sep 2023 18:51:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1694451097;
-        bh=pqqrQta8piJdqnMvVdURjJa1eNsNKhKxvBLmVj6CI+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sEOjdUnCGTTs0ZUOaxZHYuk/JaLYbF9GJAN45a7K0gH43z4OQXSviIscARZ2muRwD
-         a4/LIqxUqgo19pinerOWoDZSQCWKntWA18zSrEuVFKQNRS9k60eyJrkhEN1tXh8ZIi
-         /3MS9EU1KLREDKF2R2I5n1RNSPDseMcDXOQuPAcs=
-Date:   Mon, 11 Sep 2023 18:51:33 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>, jarkko@kernel.org,
-        dhowells@redhat.com, dwmw2@infradead.org, mic@linux.microsoft.com,
-        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
- trusted keyring
-Message-ID: <20230911.chaeghaeJ4ei@digikod.net>
-References: <20230908213428.731513-1-eric.snowberg@oracle.com>
- <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
+        Mon, 11 Sep 2023 12:51:52 -0400
+Received: from mail.enpas.org (zhong.enpas.org [IPv6:2a03:4000:2:537::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F5B110;
+        Mon, 11 Sep 2023 09:51:45 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.enpas.org (Postfix) with ESMTPSA id A74BA1007E0;
+        Mon, 11 Sep 2023 16:51:40 +0000 (UTC)
+Message-ID: <bf984d34-e9bd-c94f-e264-07ff8eca16e6@enpas.org>
+Date:   Tue, 12 Sep 2023 01:51:37 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   Max Staudt <max@enpas.org>
+Subject: Re: [PATCH 2/2] hid-sony: DS3: Report analog buttons for Sixaxis
+To:     Roderick Colenbrander <thunderbird2k@gmail.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Vicki Pfau <vi@endrift.com>,
+        Pavel Rojtberg <rojtberg@gmail.com>,
+        Roderick Colenbrander <roderick@gaikai.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230826152111.13525-1-max@enpas.org>
+ <20230826152111.13525-3-max@enpas.org>
+ <ec4d07de-4944-a7ea-2b74-c4162af75b16@enpas.org>
+ <CAEc3jaDoRESqJ_6KAa6FHvbF=R4ZRV0P+=4KY5pjYPCrwroqCQ@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAEc3jaDoRESqJ_6KAa6FHvbF=R4ZRV0P+=4KY5pjYPCrwroqCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 09:29:07AM -0400, Mimi Zohar wrote:
-> Hi Eric,
-> 
-> On Fri, 2023-09-08 at 17:34 -0400, Eric Snowberg wrote:
-> > Currently root can dynamically update the blacklist keyring if the hash
-> > being added is signed and vouched for by the builtin trusted keyring.
-> > Currently keys in the secondary trusted keyring can not be used.
-> > 
-> > Keys within the secondary trusted keyring carry the same capabilities as
-> > the builtin trusted keyring.  Relax the current restriction for updating
-> > the .blacklist keyring and allow the secondary to also be referenced as
-> > a trust source.  Since the machine keyring is linked to the secondary
-> > trusted keyring, any key within it may also be used.
-> > 
-> > An example use case for this is IMA appraisal.  Now that IMA both
-> > references the blacklist keyring and allows the machine owner to add
-> > custom IMA CA certs via the machine keyring, this adds the additional
-> > capability for the machine owner to also do revocations on a running
-> > system.
-> > 
-> > IMA appraisal usage example to add a revocation for /usr/foo:
-> > 
-> > sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
-> > 
-> > openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
-> >        -signer machine-certificate.pem -noattr -binary -outform DER \
-> >        -out hash.p7s
-> > 
-> > keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
-> > 
-> > Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> 
-> The secondary keyring may include both CA and code signing keys.  With
-> this change any key loaded onto the secondary keyring may blacklist a
-> hash.  Wouldn't it make more sense to limit blacklisting
-> certificates/hashes to at least CA keys? 
+Hi Roderick,
 
-Some operational constraints may limit what a CA can sign.
+Thanks for pointing out the 2018 thread!
 
-This change is critical and should be tied to a dedicated kernel config
-(disabled by default), otherwise existing systems using this feature
-will have their threat model automatically changed without notice.
+Since lore.kernel.org doesn't seem to have an archive of it, I hope this one is complete:
 
-> 
-> > ---
-> >  certs/Kconfig     | 2 +-
-> >  certs/blacklist.c | 4 ++--
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/certs/Kconfig b/certs/Kconfig
-> > index 1f109b070877..23dc87c52aff 100644
-> > --- a/certs/Kconfig
-> > +++ b/certs/Kconfig
-> > @@ -134,7 +134,7 @@ config SYSTEM_BLACKLIST_AUTH_UPDATE
-> >  	depends on SYSTEM_DATA_VERIFICATION
-> >  	help
-> >  	  If set, provide the ability to load new blacklist keys at run time if
-> > -	  they are signed and vouched by a certificate from the builtin trusted
-> > +	  they are signed and vouched by a certificate from the secondary trusted
-> 
-> If CONFIG_SECONDARY_TRUSTED_KEYRING is not enabled, it falls back to
-> the builtin keyring.  Please update the comment accordingly.
-> 
-> >  	  keyring.  The PKCS#7 signature of the description is set in the key
-> >  	  payload.  Blacklist keys cannot be removed.
-> >  
-> > diff --git a/certs/blacklist.c b/certs/blacklist.c
-> > index 675dd7a8f07a..0b346048ae2d 100644
-> > --- a/certs/blacklist.c
-> > +++ b/certs/blacklist.c
-> > @@ -102,12 +102,12 @@ static int blacklist_key_instantiate(struct key *key,
-> >  
-> >  #ifdef CONFIG_SYSTEM_BLACKLIST_AUTH_UPDATE
-> >  	/*
-> > -	 * Verifies the description's PKCS#7 signature against the builtin
-> > +	 * Verifies the description's PKCS#7 signature against the secondary
-> >  	 * trusted keyring.
-> >  	 */
-> 
-> And similarly here ...
-> 
-> >  	err = verify_pkcs7_signature(key->description,
-> >  			strlen(key->description), prep->data, prep->datalen,
-> > -			NULL, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
-> > +			VERIFY_USE_SECONDARY_KEYRING, VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
-> >  	if (err)
-> >  		return err;
-> >  #else
-> 
-> -- 
-> thanks,
-> 
-> Mimi
-> 
+   https://www.spinics.net/lists/linux-input/msg57662.html
+
+
+It's been 5 years since the thread you mentioned. There were many outstanding ideas, and yet as of today, Linux still has no support for pressure sensitive buttons. Hence, maybe we can find a "good enough" solution that covers most or all of what we've seen so far, without future-proofing too much?
+
+
+My experience with controllers comes from sniffing and emulating wire protocols on older consoles, and from looking at the reports from USB devices such as DualShock 3. I presume you have a wider overview, but maybe we can complement each other here :)
+
+
+As for keyboards, I think that we could simply report a pressure value in parallel with EV_KEY events - like you originally suggested. Maybe we can bundle the two using EV_SYN, given that I see my keyboard combining EV_MSC and EV_KEY in this manner?
+
+
+As for gamepads, it seems to me like the world has converged to an Xbox360/PS3 style layout for the face buttons and joysticks. SDL, which is used for a vast array of games, maintains a mapping from raw evdev events onto a virtual Xbox 360 gamepad - gamecontrollerdb.txt - which allows games to consistently map, say, the NORTH button, according to the physical geometry rather than what evdev claims. This is something that unfortunately is not unified in the kernel UAPI, and now userspace needs to have knowledge of all devices.
+
+The original thread mentioned the Gamecube controller. I feel that designs that stray from the Xbox360/PS3 layout, such as the Gamecube's separate digital buttons that are hidden beneath the triggers (beyond the 255 point), have disappeared. Please correct me if I'm too short-sighted, but since I don't see such designs on the horizon, I wouldn't worry about describing them in the kernel. Those buttons can be exported as e.g. L3/R3 (which the GC does not have), and userspace then needs to know about the odd physical geometry anyway. The geometry is really a separate property of the controller and breaks modern games' assumptions (see SDL above), so I'd worry about this on the kernel side only once this really comes up as a kernel problem.
+
+
+There was the idea of Multitouch like event slots, to allow for future expandability. I like it. But do we really need this? We could always add this as yet another event type, or maybe even in a reserved zone within EV_PSB, but for now, all devices that I've seen report a value in the exact range 0-255, with 0 meaning that the button is released. I also don't remember seeing a controller that flakes in its idle state - it has always been a solid 0 when I released the buttons. A flaking button would currently report as EV_KEY 1 anyway, since e.g. the DS3 treats an analog reading of 1 as digital down, I believe.
+
+Hence, how about simply adding an EV_PSB report in parallel with EV_KEY, and this report works exactly the same, except that the range is not 0-1, but 0-255? This keeps backwards compatibility through EV_KEY, and is easy to handle on all ends.
+
+
+There was also the idea of an expandable array of PSB properties. In the end, it is still up to userspace to make sense of anything we feed it, and there are things we can add in retrospect, and things we can't add without breaking userspace's assumptions.
+
+For example, which value is interpreted as "down" or "up" is something I'd again leave to userspace, or even the hardware itself - after all, up until now, userspace has happily lived with the kernel's binary EV_KEY. If we really want to, we can always add a non-binding "hint" or "suggestion" later.
+
+The only thing I can see as really important right now is pretty much the same info as in input_absinfo - namely, the minimum/maximum values. If we avoid such a structure, and simply tell userspace that values are always 0-255, then we cannot change this afterwards.
+
+But are there any devices that report PSB in a range that is not 0-255, or at least easily scaled into this range? DS2, DS3, Xbox face buttons are all 0-255. So are all L2/R2 triggers that I've seen. Do you know about controllers or keyboards that don't fit well in this range? If there are none, then we could skip describing minimum/maximum values, and cross our fingers for the future.
+
+
+As for letting userspace detect which buttons support PSB, we could keep a bitmap like for EV_KEY. Or, we could guarantee (in the kernel driver spec) to always send EV_PSB before EV_KEY, and then userspace can dynamically learn which keys are PSBs. Since EV_PSB comes first, it can then ignore any following EV_KEY for that keycode. This way, we don't need to keep a key bitmap either.
+
+
+As for high-speed chatter overloading the event pipeline, I'd report only changes to a button's value (just like EV_KEY and EV_ABS), not all buttons' state all the time, like the DS3/4 do in their wire protocols.
+
+
+To avoid analog keyboards overloading classic event loops, I suggest hiding EV_PSB events until they are enabled via some ioctl() or write().
+
+
+
+So many ideas, and I hope we can pare it down to an easy to manage minimum - maybe we can get away without any ioctl(EVIOCGPSR) at all :)
+
+
+
+Thanks for your help!
+
+Max
+
