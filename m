@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEF279AD7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8104B79AD22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349889AbjIKVfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
+        id S1359598AbjIKWSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236530AbjIKKza (ORCPT
+        with ESMTP id S236549AbjIKK4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:55:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5BBF2;
-        Mon, 11 Sep 2023 03:55:25 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BAmQjQ022508;
-        Mon, 11 Sep 2023 10:55:02 GMT
+        Mon, 11 Sep 2023 06:56:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D4BF3;
+        Mon, 11 Sep 2023 03:56:49 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BAmZOB029187;
+        Mon, 11 Sep 2023 10:56:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=47U0wjkLNNzJMzGRtWIy9DXhXMW8cvfyRnreZaE9VOA=;
- b=ZqHcl/YCTG5QP7TbSQXjQnLBWP01iiyXExRlqLh/6aKXMjIo8E2E5PrscrslBPytJLdT
- 6vynw0tIyarHh1kER8SKsgKMZzrgC9N33QDe+dc5dAL/+7dhDSlukVdld5URcxAfxu8S
- 8VpV1+YIKXNcgtu6bVaKaX/HFXxxnRs+IbzyjHJZNdyT9Y6AhskeBiMQlNP/p809Lhmz
- D79lt3BNX9r4GCAThASsuXnUugVyyaFW0z+QW2JvevXL9+b5kiQaKXtYUtWPRMKOu9WH
- wg/YpsCiMf9zCqWBTe3craNRtLBKVNeWPQwDjWb3lVj54wfk5iPSHw7K2ocVzxe9MANd 9A== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0h3du6t9-1
+ bh=4gOSVhCipTQhqe7KQujCKS59XbGovpmGhKA4BrqGRG4=;
+ b=EoobLeUT13AVt3PTwJqXJwFoFY711k/p9kBdt8sNyDx2SYQiL2+AlkP3xxwlsm4ADRKL
+ +CzLEZHmHgE2tbzMTwJIg01wXHipHedMIRBYX64gw0cpiwnoQ0m8KJZ+30IWYBj7ls68
+ O4B6FJ6tr5X16QUK15HuMSBPqsZyVw+PPXXXx6cjegZDhcGpXAU4QQc+yJDv9VxJVABk
+ uHmq+CbUt6d/izNUgnDhZT4krttKpKCPF18dXXSMYOK9dEqV1UCY1RdxDgpFJh4tWW5v
+ csaOh3NHadUqNs2Wdu7Rg2hP7Q3vXSKunSAhJqi/948dEUQt0c7M/c9lIo0ipGPJSY7i lQ== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0j0fkfm0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:55:02 +0000
+        Mon, 11 Sep 2023 10:56:13 +0000
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BAt1uL032425
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BAuCVt006051
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 10:55:01 GMT
+        Mon, 11 Sep 2023 10:56:13 GMT
 Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 11 Sep 2023 03:54:18 -0700
+ 15.2.1118.36; Mon, 11 Sep 2023 03:55:37 -0700
 From:   Mukesh Ojha <quic_mojha@quicinc.com>
 To:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
@@ -57,9 +57,9 @@ CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
         <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
         <quic_mojha@quicinc.com>
-Subject: [REBASE PATCH v5 01/17] docs: qcom: Add qualcomm minidump guide
-Date:   Mon, 11 Sep 2023 16:23:43 +0530
-Message-ID: <1694429639-21484-2-git-send-email-quic_mojha@quicinc.com>
+Subject: [REBASE PATCH v5 10/17] pstore: Add pstore_region_defined() helper and export it
+Date:   Mon, 11 Sep 2023 16:23:52 +0530
+Message-ID: <1694429639-21484-11-git-send-email-quic_mojha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
 References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
@@ -70,16 +70,16 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ML-0oLKKeDCY_UT_3AXm2a1E5kKc1PrX
-X-Proofpoint-ORIG-GUID: ML-0oLKKeDCY_UT_3AXm2a1E5kKc1PrX
+X-Proofpoint-ORIG-GUID: XyQCjwjHOG0scL4SF1euCldLbQ6NjV_y
+X-Proofpoint-GUID: XyQCjwjHOG0scL4SF1euCldLbQ6NjV_y
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- suspectscore=0 impostorscore=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309110099
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=999 bulkscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110099
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -89,307 +89,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the qualcomm minidump guide for the users which tries to cover
-the dependency, API use and the way to test and collect minidump
-on Qualcomm supported SoCs.
+There are users like Qualcomm minidump which is interested in
+knowing the pstore frontend addresses and sizes from the backend
+(ram) to be able to register it with firmware to finally collect
+them during crash for debugging.
 
 Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 ---
- Documentation/admin-guide/index.rst         |   1 +
- Documentation/admin-guide/qcom_minidump.rst | 272 ++++++++++++++++++++++++++++
- 2 files changed, 273 insertions(+)
- create mode 100644 Documentation/admin-guide/qcom_minidump.rst
+ fs/pstore/platform.c   | 15 +++++++++++++++
+ fs/pstore/ram.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/pstore.h |  6 ++++++
+ 3 files changed, 63 insertions(+)
 
-diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
-index 43ea35613dfc..251d070486c2 100644
---- a/Documentation/admin-guide/index.rst
-+++ b/Documentation/admin-guide/index.rst
-@@ -120,6 +120,7 @@ configure specific aspects of kernel behavior to your liking.
-    perf-security
-    pm/index
-    pnp
-+   qcom_minidump
-    rapidio
-    ras
-    rtc
-diff --git a/Documentation/admin-guide/qcom_minidump.rst b/Documentation/admin-guide/qcom_minidump.rst
-new file mode 100644
-index 000000000000..20202da8ca40
---- /dev/null
-+++ b/Documentation/admin-guide/qcom_minidump.rst
-@@ -0,0 +1,272 @@
-+Qualcomm minidump feature
-+=========================
+diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
+index e5bca9a004cc..fdac951059c1 100644
+--- a/fs/pstore/platform.c
++++ b/fs/pstore/platform.c
+@@ -139,6 +139,21 @@ enum pstore_type_id pstore_name_to_type(const char *name)
+ }
+ EXPORT_SYMBOL_GPL(pstore_name_to_type);
+ 
++int pstore_region_defined(struct pstore_record *record,
++			  void **virt, phys_addr_t *phys,
++			  size_t *size, unsigned int *max_dump_cnt)
++{
++	if (!psinfo)
++		return -EINVAL;
 +
-+Introduction
-+------------
++	record->psi = psinfo;
 +
-+Minidump is a best effort mechanism to collect useful and predefined
-+data for first level of debugging on end user devices running on
-+Qualcomm SoCs. It is built on the premise that System on Chip (SoC)
-+or subsystem part of SoC crashes, due to a range of hardware and
-+software bugs. Hence, the ability to collect accurate data is only
-+a best-effort. The data collected could be invalid or corrupted, data
-+collection itself could fail, and so on.
++	return psinfo->region_info ?
++	       psinfo->region_info(record, virt, phys, size, max_dump_cnt) :
++	       -EINVAL;
++}
++EXPORT_SYMBOL_GPL(pstore_region_defined);
 +
-+Qualcomm devices in engineering mode provides a mechanism for generating
-+full system RAM dumps for post-mortem debugging. But in some cases it's
-+however not feasible to capture the entire content of RAM. The minidump
-+mechanism provides the means for selected region should be included in
-+the ramdump.
+ static void pstore_timer_kick(void)
+ {
+ 	if (pstore_update_ms < 0)
+diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+index ab551caa1d2a..62202f3ddf63 100644
+--- a/fs/pstore/ram.c
++++ b/fs/pstore/ram.c
+@@ -437,6 +437,47 @@ static int ramoops_pstore_erase(struct pstore_record *record)
+ 	return 0;
+ }
+ 
++static int ramoops_region_info(struct pstore_record *record,
++			       void **virt, phys_addr_t *phys,
++			       size_t *size, unsigned int *max_dump_cnt)
++{
++	struct ramoops_context *cxt = record->psi->data;
++	struct persistent_ram_zone *prz;
 +
++	switch (record->type) {
++	case PSTORE_TYPE_DMESG:
++		if (record->id >= cxt->max_dump_cnt)
++			return -EINVAL;
++		prz = cxt->dprzs[record->id];
++		*max_dump_cnt = cxt->max_dump_cnt;
++		break;
++	case PSTORE_TYPE_CONSOLE:
++		if (!cxt->console_size)
++			return -EINVAL;
++		prz = cxt->cprz;
++		break;
++	case PSTORE_TYPE_FTRACE:
++		if (record->id >= cxt->max_ftrace_cnt)
++			return -EINVAL;
++		prz = cxt->fprzs[record->id];
++		*max_dump_cnt = cxt->max_ftrace_cnt;
++		break;
++	case PSTORE_TYPE_PMSG:
++		if (!cxt->pmsg_size)
++			return -EINVAL;
++		prz = cxt->mprz;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+::
++	*virt = prz->vaddr;
++	*phys = prz->paddr;
++	*size = prz->size;
 +
-+   +-----------------------------------------------+
-+   |   DDR                       +-------------+   |
-+   |                             |      SS0-ToC|   |
-+   | +----------------+     +----------------+ |   |
-+   | |Shared memory   |     |         SS1-ToC| |   |
-+   | |(SMEM)          |     |                | |   |
-+   | |                | +-->|--------+       | |   |
-+   | |G-ToC           | |   | SS-ToC  \      | |   |
-+   | |+-------------+ | |   | +-----------+  | |   |
-+   | ||-------------| | |   | |-----------|  | |   |
-+   | || SS0-ToC     | | | +-|<|SS1 region1|  | |   |
-+   | ||-------------| | | | | |-----------|  | |   |
-+   | || SS1-ToC     |-|>+ | | |SS1 region2|  | |   |
-+   | ||-------------| |   | | |-----------|  | |   |
-+   | || SS2-ToC     | |   | | |  ...      |  | |   |
-+   | ||-------------| |   | | |-----------|  | |   |
-+   | ||  ...        | |   |-|<|SS1 regionN|  | |   |
-+   | ||-------------| |   | | |-----------|  | |   |
-+   | || SSn-ToC     | |   | | +-----------+  | |   |
-+   | |+-------------+ |   | |                | |   |
-+   | |                |   | |----------------| |   |
-+   | |                |   +>|  regionN       | |   |
-+   | |                |   | |----------------| |   |
-+   | +----------------+   | |                | |   |
-+   |                      | |----------------| |   |
-+   |                      +>|  region1       | |   |
-+   |                        |----------------| |   |
-+   |                        |                | |   |
-+   |                        |----------------|-+   |
-+   |                        |  region5       |     |
-+   |                        |----------------|     |
-+   |                        |                |     |
-+   |  Region information    +----------------+     |
-+   | +---------------+                             |
-+   | |region name    |                             |
-+   | |---------------|                             |
-+   | |region address |                             |
-+   | |---------------|                             |
-+   | |region size    |                             |
-+   | +---------------+                             |
-+   +-----------------------------------------------+
-+       G-ToC: Global table of contents
-+       SS-ToC: Subsystem table of contents
-+       SS0-SSn: Subsystem numbered from 0 to n
++	return 0;
++}
 +
-+It depends on SoC where the underlying firmware is keeping the
-+minidump global table taking care of subsystem ToC part for
-+minidump like for above diagram, it is for shared memory sitting
-+in DDR and it is shared among various master however it is possible
-+that this could be implemented via memory mapped regions but the
-+general idea should remain same. Here, various subsystem could be
-+DSP's like ADSP/CDSP/MODEM etc, along with Application processor
-+(APSS) where Linux runs. DSP minidump gets collected when DSP's goes
-+for recovery followed by a crash. The minidump part of code for
-+that resides in ``qcom_rproc_minidump.c``.
-+
-+
-+SMEM as backend
-+----------------
-+
-+In this document, SMEM will be used as the backend implementation
-+of minidump.
-+
-+The core of minidump feature is part of Qualcomm's boot firmware code.
-+It initializes shared memory (SMEM), which is a part of DDR and
-+allocates a small section of it to minidump table, i.e. also called
-+global table of contents (G-ToC). Each subsystem (APSS, ADSP, ...) has
-+its own table of segments to be included in the minidump, all
-+references from a descriptor in SMEM (G-ToC). Each segment/region has
-+some details like name, physical address and its size etc. and it
-+could be anywhere scattered in the DDR.
-+
-+Qualcomm APSS Minidump kernel driver concept
-+--------------------------------------------
-+::
-+
-+Qualcomm APSS minidump kernel driver adds the capability to add Linux
-+region to be dumped as part of RAM dump collection. At the moment,
-+shared memory driver creates platform device for minidump driver and
-+give a means to APSS minidump to initialize itself on probe.
-+
-+This driver provides ``qcom_minidump_region_register`` and
-+``qcom_minidump_region_unregister`` API's to register and unregister
-+APSS minidump region. It also supports registration for the clients
-+who came before minidump driver was initialized. It maintains pending
-+list of clients who came before minidump and once minidump is initialized
-+it registers them in one go.
-+
-+To simplify post-mortem debugging, driver creates and maintain an ELF
-+header as first region that gets updated each time a new region gets
-+registered.
-+
-+The solution supports extracting the RAM dump/minidump produced either
-+over USB or stored to an attached storage device.
-+
-+Dependency of minidump kernel driver
-+------------------------------------
-+
-+It is to note that whole of minidump depends on Qualcomm boot firmware
-+whether it supports minidump or not. So, if the minidump SMEM ID is
-+present in shared memory, it indicates that minidump is supported from
-+boot firmware and it is possible to dump Linux (APSS) region as part
-+of minidump collection.
-+
-+How a kernel client driver can register region with minidump
-+------------------------------------------------------------
-+
-+Client driver can use ``qcom_minidump_region_register`` API's to register
-+and ``qcom_minidump_region_unregister`` to unregister their region from
-+minidump driver.
-+
-+Client needs to fill their region by filling ``qcom_minidump_region``
-+structure object which consists of the region name, region's virtual
-+and physical address and its size.
-+
-+Below, is one sample client driver snippet which tries to allocate a
-+region from kernel heap of certain size and it writes a certain known
-+pattern (that can help in verification after collection that we got
-+the exact pattern, what we wrote) and registers it with minidump.
-+
-+ .. code-block:: c
-+
-+  #include <soc/qcom/qcom_minidump.h>
-+  [...]
-+
-+
-+  [... inside a function ...]
-+  struct qcom_minidump_region region;
-+
-+  [...]
-+
-+  client_mem_region = kzalloc(region_size, GFP_KERNEL);
-+  if (!client_mem_region)
-+	return -ENOMEM;
-+
-+  [... Just write a pattern ...]
-+  memset(client_mem_region, 0xAB, region_size);
-+
-+  [... Fill up the region object ...]
-+  strlcpy(region.name, "REGION_A", sizeof(region.name));
-+  region.virt_addr = client_mem_region;
-+  region.phys_addr = virt_to_phys(client_mem_region);
-+  region.size = region_size;
-+
-+  ret = qcom_minidump_region_register(&region);
-+  if (ret < 0) {
-+	pr_err("failed to add region in minidump: err: %d\n", ret);
-+	return ret;
-+  }
-+
-+  [...]
-+
-+
-+Test
-+----
-+
-+Existing Qualcomm devices already supports entire RAM dump (also called
-+full dump) by writing appropriate value to Qualcomm's top control and
-+status register (tcsr) in ``driver/firmware/qcom_scm.c`` .
-+
-+SCM device Tree bindings required to support download mode
-+For example (sm8450) ::
-+
-+	/ {
-+
-+	[...]
-+
-+		firmware {
-+			scm: scm {
-+				compatible = "qcom,scm-sm8450", "qcom,scm";
-+				[... tcsr register ... ]
-+				qcom,dload-mode = <&tcsr 0x13000>;
-+
-+				[...]
-+			};
-+		};
-+
-+	[...]
-+
-+		soc: soc@0 {
-+
-+			[...]
-+
-+			tcsr: syscon@1fc0000 {
-+				compatible = "qcom,sm8450-tcsr", "syscon";
-+				reg = <0x0 0x1fc0000 0x0 0x30000>;
-+			};
-+
-+			[...]
-+		};
-+	[...]
-+
-+	};
-+
-+User of minidump can pass ``qcom_scm.download_mode="mini"`` to kernel
-+commandline to set the current download mode to minidump.
-+Similarly, ``"full"`` is passed to set the download mode to full dump
-+where entire RAM dump will be collected while setting it ``"full,mini"``
-+will collect minidump along with fulldump.
-+
-+Writing to sysfs node can also be used to set the mode to minidump::
-+
-+	echo "mini" > /sys/module/qcom_scm/parameter/download_mode
-+
-+Once the download mode is set, any kind of crash will make the device collect
-+respective dump as per set download mode.
-+
-+Dump collection
-+---------------
-+
-+	+-----------+
-+	|           |
-+	|           |         +------+
-+	|           |         |      |
-+	|           |         +--+---+ Product(Qualcomm SoC)
-+	+-----------+             |
-+	|+++++++++++|<------------+
-+	|+++++++++++|    usb cable
-+	+-----------+
-+            x86_64 PC
-+
-+The solution supports a product running with Qualcomm SoC (where minidump)
-+is supported from the firmware) connected to x86_64 host PC running PCAT
-+tool. It supports downloading the minidump produced from product to the
-+host PC over USB or to save the minidump to the product attached storage
-+device(UFS/eMMC/SD Card) into minidump dedicated partition.
-+
-+By default, dumps are downloaded via USB to the attached x86_64 PC running
-+PCAT (Qualcomm tool) software. Upon download, we will see a set of binary
-+blobs starting with name ``md_*`` in PCAT configured directory in x86_64
-+machine, so for above example from the client it will be ``md_REGION_A.BIN``.
-+This binary blob depends on region content to determine whether it needs
-+external parser support to get the content of the region, so for simple
-+plain ASCII text we don't need any parsing and the content can be seen
-+just opening the binary file.
-+
-+To collect the dump to attached storage type, one needs to write appropriate
-+value to IMEM register, in that case dumps are collected in rawdump
-+partition on the product device itself.
-+
-+One needs to read the entire rawdump partition and pull out content to
-+save it onto the attached x86_64 machine over USB. Later, this rawdump
-+can be passed to another tool (``dexter.exe`` [Qualcomm tool]) which
-+converts this into the similar binary blobs which we have got it when
-+download type was set to USB, i.e. a set of registered regions as blobs
-+and their name starts with ``md_*``.
-+
-+Replacing the ``dexter.exe`` with some open source tool can be added as future
-+scope of this document.
+ static struct ramoops_context oops_cxt = {
+ 	.pstore = {
+ 		.owner	= THIS_MODULE,
+@@ -446,6 +487,7 @@ static struct ramoops_context oops_cxt = {
+ 		.write	= ramoops_pstore_write,
+ 		.write_user	= ramoops_pstore_write_user,
+ 		.erase	= ramoops_pstore_erase,
++		.region_info = ramoops_region_info,
+ 	},
+ };
+ 
+diff --git a/include/linux/pstore.h b/include/linux/pstore.h
+index 638507a3c8ff..a64d866e8711 100644
+--- a/include/linux/pstore.h
++++ b/include/linux/pstore.h
+@@ -199,6 +199,9 @@ struct pstore_info {
+ 	int		(*write_user)(struct pstore_record *record,
+ 				      const char __user *buf);
+ 	int		(*erase)(struct pstore_record *record);
++	int		(*region_info)(struct pstore_record *record,
++				       void **virt, phys_addr_t *phys,
++				       size_t *size, unsigned int *max_dump_cnt);
+ };
+ 
+ /* Supported frontends */
+@@ -230,6 +233,9 @@ struct pstore_ftrace_record {
+ #define TS_CPU_SHIFT 8
+ #define TS_CPU_MASK (BIT(TS_CPU_SHIFT) - 1)
+ 
++int pstore_region_defined(struct pstore_record *record,
++			  void **virt, phys_addr_t *phys,
++			  size_t *size, unsigned int *max_dump_cnt);
+ /*
+  * If CPU number can be stored in IP, store it there, otherwise store it in
+  * the time stamp. This means more timestamp resolution is available when
 -- 
 2.7.4
 
