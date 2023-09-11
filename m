@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4402E79BA77
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB3D79B6D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242500AbjIKU57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S1347790AbjIKVZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244399AbjIKUVb (ORCPT
+        with ESMTP id S244423AbjIKU3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 16:21:31 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A38E0;
-        Mon, 11 Sep 2023 13:21:27 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0ecb9a075so34417225ad.2;
-        Mon, 11 Sep 2023 13:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694463687; x=1695068487; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=djFVbSPSCUqIznFcytjoMNrEsFpZVt4WCJe34ZTsb1w=;
-        b=RSwAmzG8v/RqCT8e5xiIlSED1U2WtlkcohA8oOCPRcBgqo0YpBwFqq+LiCxbbofVqE
-         x58Z7l/ELwkOhe5hNLVkTFD8NFeUplhHtv0/DzKf/WfSxj4tEZrPR9T+mRVUsnOjqSkw
-         +sAfCCfuOPvMmXyGlcolRxuvyVJh0pGrmw5MlsooghFxVcMmZW/rnl6WeQVoGwPx3scG
-         xae3habIc8WRwHw3tyqyaEToqY4cJ3Bzo3u6zb9f+jROIu7yvZOtORAZCck8/1NTB5O9
-         h8WH64IFfMrdjZ1f16Kr1fDRZ81PtKksGft/ARURIAaRPbbw3pD+DVwSvFq6GS3Ks982
-         gsrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694463687; x=1695068487;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=djFVbSPSCUqIznFcytjoMNrEsFpZVt4WCJe34ZTsb1w=;
-        b=c0gqG+vvQB+bgle0OyL57FNCZVi8SuOoQVrAZGo4q1ZUS9L4jd+m80ccYM8j/aQ9oa
-         l89qQqaFlujyteWrdWh+Wmi/0iHj1pK/djWxdlGzjOxarrnz3WL2fKihU9bf1HpDb7ts
-         gC4HGJlxBiINbYMILJ6w8KyfVn25JNK2yO/eTkC5WgfvKNfQVGtPP4/pRyKvYNzOBFzt
-         bG203VsFttBV4yfNxHxxC7wh27gpPwNrWdHqR0c4dl4vXbHVMbPU+w/bE0DKS1TBRsx9
-         QNfLZ5C+DCYcf2M+uF3N0+C1t35y+QfDj9e5vRLTWl/12xhEVKoKrWdiuoxmNiumkRzG
-         DMOg==
-X-Gm-Message-State: AOJu0Yymtg8d3/BwKv3zr11NHxhLG7PDLTHxMcaDyyCUwO/d02iJtRI5
-        wRaBxzAcLoQaSmD06ijHQFg=
-X-Google-Smtp-Source: AGHT+IFm3ORyZOdteaHbLXIuoVa/NrrR2S6J5B8bPeL3jC8guAY4KfF9nPYEgzTFr2rj3NbEjiNNWQ==
-X-Received: by 2002:a17:902:e811:b0:1c3:2df4:8791 with SMTP id u17-20020a170902e81100b001c32df48791mr10280357plg.27.1694463686599;
-        Mon, 11 Sep 2023 13:21:26 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id h8-20020a170902748800b001b8b2b95068sm6827631pll.204.2023.09.11.13.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 13:21:26 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 11 Sep 2023 10:21:24 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZP92xP5rdKdeps7Z@mtj.duckdns.org>
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-5-yosryahmed@google.com>
- <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
- <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
- <ZP8SDdjut9VEVpps@dhcp22.suse.cz>
- <CAAPL-u8NndkB2zHRtF8pVBSTsz854YmUbx62G7bpw6BMJiLaiQ@mail.gmail.com>
- <ZP9rtiRwRv2bQvde@dhcp22.suse.cz>
- <CAAPL-u9XwMcrqVRu871tGNKa3LKmJSy9pZQ7A98uDbG6ACzMxQ@mail.gmail.com>
+        Mon, 11 Sep 2023 16:29:39 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5501AB;
+        Mon, 11 Sep 2023 13:29:33 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 42316100008;
+        Mon, 11 Sep 2023 23:29:32 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 42316100008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1694464172;
+        bh=PPup1iy6Pk59YU23frjAokTVyJxaZrQB5U26AeX9NCA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=r/C4NCtUY4moJNGHfW9lYtEPyR0Hxxm12ud/sBicojm5+2Z/CmooKyhaWJOj0sHeP
+         QyYlq0BkoS8j3MdZZ4A+5sHj+oHQg18GtEfilQlXPpJHUQVf+isy+WKg41SBbe6yHb
+         E/ouy8449O9vqWilsOp52A1FkjvoDCHdgsOpnHgSpDwYdEJH2DiuIBfg56XR8PavDq
+         gbgaBVDrObEJo/IMjyP+pBAAohzhQf69EwqFPd7/CFBXj9NNhJ7mSbe7Yyt+4o06jq
+         rjlG022DLShkUotKIAbDEgA3ROqTwHGrE6BYzd9MIVqQYisXMGHa7lT1yZVsYKblLH
+         qdMJrwf8ofBDw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Mon, 11 Sep 2023 23:29:32 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 11 Sep 2023 23:29:31 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v8 0/4] vsock/virtio/vhost: MSG_ZEROCOPY preparations
+Date:   Mon, 11 Sep 2023 23:22:30 +0300
+Message-ID: <20230911202234.1932024-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAPL-u9XwMcrqVRu871tGNKa3LKmJSy9pZQ7A98uDbG6ACzMxQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179791 [Sep 11 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1;git.kernel.org:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/11 13:14:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/11 15:43:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/11 15:53:00 #21884588
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -93,36 +89,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On Mon, Sep 11, 2023 at 01:01:25PM -0700, Wei Xu wrote:
-> Yes, it is the same test (10K contending readers). The kernel change
-> is to remove stats_user_flush_mutex from mem_cgroup_user_flush_stats()
-> so that the concurrent mem_cgroup_user_flush_stats() requests directly
-> contend on cgroup_rstat_lock in cgroup_rstat_flush().
+this patchset is first of three parts of another big patchset for
+MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
-I don't think it'd be a good idea to twist rstat and other kernel internal
-code to accommodate 10k parallel readers. If we want to support that, let's
-explicitly support that by implementing better batching in the read path.
-The only guarantee you need is that there has been at least one flush since
-the read attempt started, so we can do sth like the following in the read
-path:
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
 
-1. Grab a waiter lock. Remember the current timestamp.
+1) virtio and vhost updates (for fragged skbs) <--- this patchset
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/.
+3) Updates for tests and utils.
 
-2. Try lock flush mutex. If obtained, drop the waiter lock, flush. Regrab
-   the waiter lock, update the latest flush time to my start time, wake up
-   waiters on the waitqueue (maybe do custom wakeups based on start time?).
+This series enables handling of fragged skbs in virtio and vhost parts.
+Newly logic won't be triggered, because SO_ZEROCOPY options is still
+impossible to enable at this moment (next bunch of patches from big
+set above will enable it).
 
-3. Release the waiter lock and sleep on the waitqueue.
+I've included changelog to some patches anyway, because there were some
+comments during review of last big patchset from the link above.
 
-4. When woken up, regarb the waiter lock, compare whether the latest flush
-   timestamp is later than my start time, if so, return the latest result.
-   If not go back to #2.
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=73be7fb14e83d24383f840a22f24d3ed222ca319
 
-Maybe the above isn't the best way to do it but you get the general idea.
-When you have that many concurrent readers, most of them won't need to
-actually flush.
+Link to v1:
+https://lore.kernel.org/netdev/20230717210051.856388-1-AVKrasnov@sberdevices.ru/
+Link to v2:
+https://lore.kernel.org/netdev/20230718180237.3248179-1-AVKrasnov@sberdevices.ru/
+Link to v3:
+https://lore.kernel.org/netdev/20230720214245.457298-1-AVKrasnov@sberdevices.ru/
+Link to v4:
+https://lore.kernel.org/netdev/20230727222627.1895355-1-AVKrasnov@sberdevices.ru/
+Link to v5:
+https://lore.kernel.org/netdev/20230730085905.3420811-1-AVKrasnov@sberdevices.ru/
+Link to v6:
+https://lore.kernel.org/netdev/20230814212720.3679058-1-AVKrasnov@sberdevices.ru/
+Link to v7:
+https://lore.kernel.org/netdev/20230827085436.941183-1-avkrasnov@salutedevices.com/
 
-Thanks.
+Changelog:
+ v3 -> v4:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ v4 -> v5:
+ * See per-patch changelog after ---.
+ v5 -> v6:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v6 -> v7:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+ v7 -> v8:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+
+Arseniy Krasnov (4):
+  vsock/virtio/vhost: read data from non-linear skb
+  vsock/virtio: support to send non-linear skb
+  vsock/virtio: non-linear skb handling for tap
+  vsock/virtio: MSG_ZEROCOPY flag support
+
+ drivers/vhost/vsock.c                   |  14 +-
+ include/linux/virtio_vsock.h            |  10 +
+ net/vmw_vsock/virtio_transport.c        |  92 ++++++-
+ net/vmw_vsock/virtio_transport_common.c | 309 ++++++++++++++++++------
+ 4 files changed, 344 insertions(+), 81 deletions(-)
 
 -- 
-tejun
+2.25.1
+
