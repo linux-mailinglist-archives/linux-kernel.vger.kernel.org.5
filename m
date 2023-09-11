@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E0179BE75
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D00179C029
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbjIKUtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
+        id S1354758AbjIKVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241098AbjIKPBy (ORCPT
+        with ESMTP id S241095AbjIKPBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:01:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A9125;
-        Mon, 11 Sep 2023 08:01:49 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 17:01:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694444507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmtb7inBfN9yXnfv6q7DROjKL4bqbMgCux9ZhSeiIQs=;
-        b=DRVy5+d1O/qYZ/B9tsOCtlyHj9HMbQFTR0+QYAYk8xLu+TM98PycdU2p2De7DupP4HjoGc
-        hqWLZHnWDatKHG77b/Ald3gip4AR5lTiMgA17mbPXe0NSVZWsQYkt8/n/GeLmJo8uHLXcI
-        IQkxDcwn4AYO/OlU8ya/cq9BQZ5y3deQefiIVRnnw+eW+e8SXugVQVNPatYs0mCGdAspqA
-        F7j1qUT3RucjjRBlumVudUtjTwXYnUnfx9SpkwKHyds/DhS88dhbyOLTI5Iln7Hf3TMnwp
-        8y0jrJOGpm2jXzShu0elZYtUX4JR065tMSVUWJsyO8Sp1AExlf6mia7WW6Ra+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694444507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmtb7inBfN9yXnfv6q7DROjKL4bqbMgCux9ZhSeiIQs=;
-        b=Z50ZZcZC0GsPfc1bExnGheRaWqEM9Hj5agGmTmwuv8gxhOuOkmYpSo5q2nOzpRFBDgMOkG
-        tLptfM7GimhI0zCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        davem@davemloft.net, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kristian Overskeid <koverskeid@gmail.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Oetken <ennoerlangen@gmail.com>
-Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
- decoding
-Message-ID: <20230911150144.cG1ZHTCC@linutronix.de>
-References: <20230825153111.228768-1-lukma@denx.de>
- <20230905080614.ImjTS6iw@linutronix.de>
- <20230905115512.3ac6649c@wsk>
- <20230911165708.0bc32e3c@wsk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230911165708.0bc32e3c@wsk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 11:01:51 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609D01B9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:01:46 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58fb8933e18so47905857b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694444505; x=1695049305; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0h492hhBpi4c7QjU/Eg4y9r9cK5ab5e3uk7UqAdbaQ=;
+        b=Pr8mt8rkLiApjr2WrJ6nHLqYYW68/+aAH9BAVW69JalJsNr5mqyqVJdDnmbXH69CRj
+         pzOAXCCmgcSRn+hE3qCSq5xZcnhWqAFiJjxdU0YYBblqO48BnSEeRnhCiVEjXIjwtoUF
+         K7sGeU7d/qm4WPZ3nFtjqhcrw9aL53pUWZRK2OOphWXPKBWnBTXPdK1NErt15qSN/mQx
+         CG1ZflvNRt7MajJi2Ga7aaaPnXYvTDJA3suETB/+JPJC8eAw98ZxGrFsfU8RKrqPyiQ+
+         yqz5oL3RANHdCY/++y931JrR8VvVaWKyjAOA/JbMd/4no95cA5N2BChMvd8uTadp/vE1
+         DISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694444505; x=1695049305;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b0h492hhBpi4c7QjU/Eg4y9r9cK5ab5e3uk7UqAdbaQ=;
+        b=tU4iSLS9pEOAh5Q2cqQdaD3NoC4OnXnpIg4ah/20/qcByjEsUdFWfOoMA+6pu60QZp
+         I835EWucT+8Nkb7r2RHBl+nW51a0VZVRbm721qP1pWuEwMJBZ6XaaTmTK0N9NmkRdAUc
+         c88o9SXfRT4lqDSMszan9NSb5xhsBzwwpN2Z8suriIUUolxmME5FQ90TdgPzkQaP4vN4
+         Sz1yvUAMCQK1T4TjLmDTG4DYDh+4qZnTl5p1Y3gBQX7ybJ4RqlhE+x2bYdGq+KiYT+HC
+         i8Z/r4DMHSPFncjefVl0lXG/BWOgN4qxdLGrtEo7exgFYQc2TdVIPP1SfZyo5NSBCC7X
+         tG9g==
+X-Gm-Message-State: AOJu0Yyquuc56wmYbdaXluR9TbFkkzPKnkcXaAY1szfYppKonTSQwtBk
+        QRerTlqCLpBpTomz8AjkodE+s15Q09Q=
+X-Google-Smtp-Source: AGHT+IHFy6Z2B6TX5cvZ3QqsmLTdgDZNZyoDuthM3YMwP4/tCuZIqq0zhX3hLRzEEghmYVjFBeHBbfVKodU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:168e:b0:d7f:2cb6:7d8c with SMTP id
+ bx14-20020a056902168e00b00d7f2cb67d8cmr223777ybb.13.1694444505636; Mon, 11
+ Sep 2023 08:01:45 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 08:01:44 -0700
+In-Reply-To: <20230911061147.409152-1-mizhang@google.com>
+Mime-Version: 1.0
+References: <20230911061147.409152-1-mizhang@google.com>
+Message-ID: <ZP8r2CDsv3JkGYzX@google.com>
+Subject: Re: [PATCH] KVM: vPMU: Use atomic bit operations for global_status
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>, Like Xu <likexu@tencent.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-11 16:57:08 [+0200], Lukasz Majewski wrote:
-> Hi Sebastian,
-Hi,
+On Mon, Sep 11, 2023, Mingwei Zhang wrote:
+> Use atomic bit operations for pmu->global_status because it may suffer from
+> race conditions between emulated overflow in KVM vPMU and PEBS overflow in
+> host PMI handler.
 
->=20
-> Have you had time to review this patch?
+Only if the host PMI occurs on a different pCPU, and if that can happen don't we
+have a much larger problem?
 
-got distracted a few times. I need a quiet moment=E2=80=A6 Will do this wee=
-k=E2=80=A6
-
-> Your comments are more than welcome.
-
-Sebastian
+> Fixes: f331601c65ad ("KVM: x86/pmu: Don't generate PEBS records for emulated instructions")
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/pmu.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index edb89b51b383..00b48f25afdb 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -117,11 +117,11 @@ static inline void __kvm_perf_overflow(struct kvm_pmc *pmc, bool in_pmi)
+>  			skip_pmi = true;
+>  		} else {
+>  			/* Indicate PEBS overflow PMI to guest. */
+> -			skip_pmi = __test_and_set_bit(GLOBAL_STATUS_BUFFER_OVF_BIT,
+> -						      (unsigned long *)&pmu->global_status);
+> +			skip_pmi = test_and_set_bit(GLOBAL_STATUS_BUFFER_OVF_BIT,
+> +						    (unsigned long *)&pmu->global_status);
+>  		}
+>  	} else {
+> -		__set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
+> +		set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
+>  	}
+>  
+>  	if (!pmc->intr || skip_pmi)
+> 
+> base-commit: e2013f46ee2e721567783557c301e5c91d0b74ff
+> -- 
+> 2.42.0.283.g2d96d420d3-goog
+> 
