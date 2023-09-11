@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF2C79A544
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1584179A547
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjIKIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        id S233084AbjIKICd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:02:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234074AbjIKIBi (ORCPT
+        with ESMTP id S229445AbjIKICb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:01:38 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC159BB;
-        Mon, 11 Sep 2023 01:01:30 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 749D11F38D;
-        Mon, 11 Sep 2023 08:01:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694419289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc;
-        bh=6itrlTfHSmO99MfE7NAbLdU9YS0CJgPDLtuNCYJ8Yps=;
-        b=hSy/0bU2Gy29rUOLalrzqxje69Bm1z5bVULbGKS7lqVlECloMcxd0zHeD0c7qQ3R/87668
-        chYbCHyKZiafZbyE2msUbuvLIe31xL0wAiH/9nBN/FRi23atmG4xXDPSU6rfabtWayLSOY
-        +bHSGm2hwG/ydbCViO3M+AveQo+W8rk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694419289;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc;
-        bh=6itrlTfHSmO99MfE7NAbLdU9YS0CJgPDLtuNCYJ8Yps=;
-        b=wU1myPCNw6AJyFLjQTur+2NvESVhBCBdoG9uUVLTs1uBLEO8CMNUsgdTokpt6TN7mKloWn
-        vSpP61/km5gix4BA==
-Received: from lion.mk-sys.cz (mkubecek.udp.ovpn2.prg.suse.de [10.100.200.14])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 608272C142;
-        Mon, 11 Sep 2023 08:01:29 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 38BA12016B; Mon, 11 Sep 2023 10:01:29 +0200 (CEST)
-From:   Michal Kubecek <mkubecek@suse.cz>
-Subject: [PATCH] kbuild: avoid long argument lists in make modules_install
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <20230911080129.38BA12016B@lion.mk-sys.cz>
-Date:   Mon, 11 Sep 2023 10:01:29 +0200 (CEST)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 04:02:31 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97A2CA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:02:26 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qfbsB-0006KC-TZ; Mon, 11 Sep 2023 10:02:20 +0200
+Message-ID: <d544fac1-ed2b-4417-8edd-1a81ed8a41d6@leemhuis.info>
+Date:   Mon, 11 Sep 2023 10:02:19 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Possible nvme regression in 6.4.11
+Content-Language: en-US, de-DE
+To:     Genes Lists <lists@sapience.com>, Ricky WU <ricky_wu@realtek.com>,
+        Keith Busch <kbusch@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "hch@lst.de" <hch@lst.de>, "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
+ <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
+ <30b69186-5a6e-4f53-b24c-2221926fc3b4@sapience.com>
+ <570d465a-7500-4b58-98f0-fd781c8740cc@sapience.com>
+ <ZOZEwafA8+tknJNT@kbusch-mbp.dhcp.thefacebook.com>
+ <7cf188d0-77b4-4e80-8da6-2045a7f29866@sapience.com>
+ <180a2bbd2c314ede8f6c4c16cc4603bf@realtek.com>
+ <903830f8-9f9a-4071-9ced-761a55018c5a@sapience.com>
+ <97cee217-e438-4fff-836a-186f59d6d256@sapience.com>
+ <fa82d9dcbe83403abc644c20922b47f9@realtek.com>
+ <5d38cf11-114a-4997-a0fc-4627402468f8@sapience.com>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <5d38cf11-114a-4997-a0fc-4627402468f8@sapience.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694419346;02a3fa7e;
+X-HE-SMSGID: 1qfbsB-0006KC-TZ
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running "make modules_install" may fail with
+Hi, Thorsten here, the Linux kernel's regression tracker.
 
-  make[2]: execvp: /bin/sh: Argument list too long
+On 30.08.23 23:09, Genes Lists wrote:
+> ...
+>> I think maybe it is a system power saving issue....
+>> In the past if the BIOS(config space) not set L1-substate, our driver
+>> will keep drive low CLKREQ# when HOST want to enter power saving state
+>> that make whole system not enter the power saving state.
+>> But this patch we release the CLKREQ# to HOST, make whole system can
+>> enter power saving state success when the HOST want to enter the power
+>> saving state, but I don't  know why your system can not wake out
+>> success from power saving stat on the platform
+> 
+>    Thanks for continuing to look into this. Can you share your thoughts
+> on best way to proceed going forward - do you plan to revert or
+> something else?
 
-if many modules are built and INSTALL_MOD_PATH is long. This is because
-scripts/Makefile.modinst creates all directories with one mkdir command.
-Use $(foreach ...) instead to prevent an excessive argument list.
+Hmmm. This looks like it fell through the cracks. Or am I missing something?
 
-Fixes: 2dfec887c0fd ("kbuild: reduce the number of mkdir calls during modules_install")
-Signed-off-by: Michal Kubecek <mkubecek@suse.cz>
----
- scripts/Makefile.modinst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Anyway, 6.4.y will likely be EOL in a week or two. Which bears the
+question: are 6.5.y and 6.6-rc1 working better for you? From the
+bugzilla ticket (https://bugzilla.kernel.org/show_bug.cgi?id=217802) and
+comments from others that are affected it sounds like that's not the
+case. If that's how it is I guess it overdue that the 101bd907b4244a
+("misc: rtsx: judge ASPM Mode to set PETXCFG Reg") is reverted. Or am I
+missing something?
 
-diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-index c59cc57286ba..346f5ec50682 100644
---- a/scripts/Makefile.modinst
-+++ b/scripts/Makefile.modinst
-@@ -113,7 +113,7 @@ quiet_cmd_sign :=
- endif
- 
- # Create necessary directories
--$(shell mkdir -p $(sort $(dir $(install-y))))
-+$(foreach dir, $(sort $(dir $(install-y))), $(shell mkdir -p $(dir)))
- 
- $(dst)/%.ko: $(extmod_prefix)%.ko FORCE
- 	$(call cmd,install)
--- 
-2.42.0
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
+#regzbot poke
