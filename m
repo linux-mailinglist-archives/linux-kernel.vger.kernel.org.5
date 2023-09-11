@@ -2,257 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A304579AE49
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E8679B3A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377020AbjIKWVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S1345635AbjIKVVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242552AbjIKPsC (ORCPT
+        with ESMTP id S242566AbjIKPue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:48:02 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE21E121;
-        Mon, 11 Sep 2023 08:47:55 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A76EE660730D;
-        Mon, 11 Sep 2023 16:47:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694447274;
-        bh=E4HBHzn8alNm5fzzwR5QnPhLQJgodALjT2MB97bXQk4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=MwU/aQawRxER/8Dix/c7+2LXDW30p1G80OlPZRDfzPT/h1UCGM74ibXR5wNpfw1zT
-         drc1dgS8k3asnVw+gyVjDxTVPCfYd/tQHuGR5w7Uk22+Q+uH+tKeKeVwuoffZCaL40
-         J0WNRYAYBPeMjoAVUBMLJDglfcY9W5+CbrIGcI9iVttA6cTcTUESUEXLh3kfu/DWFC
-         Jk6GCYYM8csYJTeUUoh0HUAziNW4csDkTZDzo1sz6yhymerKXC53g58VfXxmgoCfBv
-         ShEzFAmLG+7wteHBWMtLG6oHl1qDm/jtRbs1qMB4+49uTIepD24f7HG58BxnBma37J
-         Gp4xOsFOGhqFw==
-Message-ID: <4867b91b3bbc9267982dd80ad79f3e73a7bab6fc.camel@collabora.com>
-Subject: Re: [PATCH 11/14] media: medkatek: vcodec: covert secure fd to
- secure handle
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        =?ISO-8859-1?Q?N=EDcolas?= "F . R . A . Prado" 
-        <nfraprado@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Date:   Mon, 11 Sep 2023 11:47:44 -0400
-In-Reply-To: <20230911125936.10648-12-yunfei.dong@mediatek.com>
-References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
-         <20230911125936.10648-12-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 11 Sep 2023 11:50:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7676B18D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694447430; x=1725983430;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=RJQpqVhp/J0JVh9w0dugk99Po3YUskR+nXFrDSlLI1E=;
+  b=KPrcyjeMIWpObxuDu9Eb5J1a8HZXqta70vj1gmsR6J2ws6zV+AZvPUyS
+   qhePszcPqp+D8nFT4WnOICxNzCAmHhx7CXsFMTxSUYCAaNjjjxwj0e4uE
+   3cmS1ohq9ileQ+cnrPql6RQ6vTjRLuj4icoafvW7fFNDcfUMJ1k0t1g5/
+   axk0PytABmlGoEqGnnMqeFyZf5/K0f96VoXYKZKRw8MmeUyIddSBgUYYm
+   /cKodAZhv4Y4ZIzP2rbBHzBnxYQuvtUmc5BW+cGkptYeMXWfcNKlSphdg
+   YRKzwYvyXtoIg14wYP4VzjYU5Yd/OICrg0I2auQopBZqbxam7ANoeogBJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444541611"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="444541611"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:48:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917062275"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="917062275"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:48:12 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [RESEND PATCH V3 2/6] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK flag
+Date:   Mon, 11 Sep 2023 08:48:18 -0700
+Message-Id: <20230911154822.2559213-2-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Le lundi 11 septembre 2023 =C3=A0 20:59 +0800, Yunfei Dong a =C3=A9crit=C2=
-=A0:
-> User driver will fill or parse data in optee-os with secure handle,
-> need to covert secure fd to secure handle in kernel.
+Currently, branch_sample_type !=0 is used to check whether a branch
+stack setup is required. But it doesn't check the sample type,
+unnecessary branch stack setup may be done for a counting event. E.g.,
+perf record -e "{branch-instructions,branch-misses}:S" -j any
+Also, the event with the new PERF_SAMPLE_BRANCH_EVT_CNTRS branch sample
+type may not require a branch stack setup either.
 
-A major rework of the wording is needed in this patchset, to fix the obviou=
-s
-typos like covert->convert, but also to stop calling dmabuf allocated from
-secure heap, secure fd, its not precise enough to understand what this patc=
-h is
-going to be about.
+Add a new flag NEEDS_BRANCH_STACK to indicate whether the event requires
+a branch stack setup. Replace the needs_branch_stack() by checking the
+new flag.
 
->=20
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  .../vcodec/decoder/mtk_vcodec_dec_drv.c       |  1 +
->  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 54 ++++++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |  5 ++
->  include/uapi/linux/v4l2-controls.h            |  4 ++
->  4 files changed, 62 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
-c_drv.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv=
-.c
-> index 0a89ce452ac3..64e006820f43 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
-> @@ -571,3 +571,4 @@ module_platform_driver(mtk_vcodec_dec_driver);
-> =20
->  MODULE_LICENSE("GPL v2");
->  MODULE_DESCRIPTION("Mediatek video codec V4L2 decoder driver");
-> +MODULE_IMPORT_NS(DMA_BUF);
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
-c_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_d=
-ec_stateless.c
-> index 2ea517883a86..d2b09ce9f1cf 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_state=
-less.c
-> @@ -426,6 +426,46 @@ static int mtk_vcodec_get_pic_info(struct mtk_vcodec=
-_dec_ctx *ctx)
->  	return ret;
->  }
-> =20
-> +static int mtk_dma_contig_get_secure_handle(struct mtk_vcodec_dec_ctx *c=
-tx, int fd)
-> +{
-> +	int secure_handle =3D 0;
-> +	struct dma_buf *buf;
-> +	struct dma_buf_attachment *dba;
-> +	struct sg_table *sgt;
-> +	struct device *dev =3D &ctx->dev->plat_dev->dev;
-> +
-> +	buf =3D dma_buf_get(fd);
-> +	if (IS_ERR(buf)) {
-> +		mtk_v4l2_vdec_err(ctx, "dma_buf_get fail fd:%d", fd);
-> +		return 0;
-> +	}
-> +
-> +	dba =3D dma_buf_attach(buf, dev);
-> +	if (IS_ERR(dba)) {
-> +		mtk_v4l2_vdec_err(ctx, "dma_buf_attach fail fd:%d", fd);
-> +		goto err_attach;
-> +	}
-> +
-> +	sgt =3D dma_buf_map_attachment(dba, DMA_BIDIRECTIONAL);
-> +	if (IS_ERR(sgt)) {
-> +		mtk_v4l2_vdec_err(ctx, "dma_buf_map_attachment fail fd:%d", fd);
-> +		goto err_map;
-> +	}
-> +	secure_handle =3D sg_dma_address(sgt->sgl);
-> +
-> +	dma_buf_unmap_attachment(dba, sgt, DMA_BIDIRECTIONAL);
-> +	dma_buf_detach(buf, dba);
-> +	dma_buf_put(buf);
-> +
-> +	return secure_handle;
-> +err_map:
-> +	dma_buf_detach(buf, dba);
-> +err_attach:
-> +	dma_buf_put(buf);
-> +
-> +	return 0;
-> +}
-> +
->  static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
->  {
->  	struct mtk_vcodec_dec_ctx *ctx =3D ctrl_to_dec_ctx(ctrl);
-> @@ -436,7 +476,7 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
->  	struct v4l2_ctrl *hdr_ctrl;
->  	const struct mtk_vcodec_dec_pdata *dec_pdata =3D ctx->dev->vdec_pdata;
->  	const struct mtk_video_fmt *fmt;
-> -	int i =3D 0, ret =3D 0;
-> +	int i =3D 0, ret =3D 0, sec_fd;
-> =20
->  	hdr_ctrl =3D ctrl;
->  	if (!hdr_ctrl || !hdr_ctrl->p_new.p)
-> @@ -489,6 +529,12 @@ static int mtk_vdec_s_ctrl(struct v4l2_ctrl *ctrl)
->  			return -EINVAL;
->  		}
->  		break;
-> +	case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
-> +		sec_fd =3D ctrl->val;
-> +
-> +		ctrl->val =3D mtk_dma_contig_get_secure_handle(ctx, ctrl->val);
-> +		mtk_v4l2_vdec_dbg(3, ctx, "get secure handle: %d =3D> 0x%x", sec_fd, c=
-trl->val);
-> +		break;
->  	default:
->  		mtk_v4l2_vdec_dbg(3, ctx, "Not supported to set ctrl id: 0x%x\n", hdr_=
-ctrl->id);
->  		return ret;
-> @@ -525,8 +571,9 @@ static const struct v4l2_ctrl_ops mtk_vcodec_dec_ctrl=
-_ops =3D {
->  static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcodec_dec_ctx *ctx)
->  {
->  	unsigned int i;
-> +	struct v4l2_ctrl *ctrl;
-> =20
-> -	v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS);
-> +	v4l2_ctrl_handler_init(&ctx->ctrl_hdl, NUM_CTRLS + 1);
->  	if (ctx->ctrl_hdl.error) {
->  		mtk_v4l2_vdec_err(ctx, "v4l2_ctrl_handler_init failed\n");
->  		return ctx->ctrl_hdl.error;
-> @@ -543,6 +590,9 @@ static int mtk_vcodec_dec_ctrls_setup(struct mtk_vcod=
-ec_dec_ctx *ctx)
->  		}
->  	}
-> =20
-> +	ctrl =3D v4l2_ctrl_new_std(&ctx->ctrl_hdl, &mtk_vcodec_dec_ctrl_ops,
-> +				 V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE, 0, 65535, 1, 0);
-> +
->  	v4l2_ctrl_handler_setup(&ctx->ctrl_hdl);
-> =20
->  	return 0;
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4=
-l2-core/v4l2-ctrls-defs.c
-> index 8696eb1cdd61..d8cf01f76aab 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -1041,6 +1041,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_HEVC_SIZE_OF_LENGTH_FIELD:	return "HEVC Size o=
-f Length Field";
->  	case V4L2_CID_MPEG_VIDEO_REF_NUMBER_FOR_PFRAMES:	return "Reference Fram=
-es for a P-Frame";
->  	case V4L2_CID_MPEG_VIDEO_PREPEND_SPSPPS_TO_IDR:		return "Prepend SPS an=
-d PPS to IDR";
-> +	case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:		return "MediaTek Decoder get=
- secure handle";
-> =20
->  	/* AV1 controls */
->  	case V4L2_CID_MPEG_VIDEO_AV1_PROFILE:			return "AV1 Profile";
-> @@ -1437,6 +1438,10 @@ void v4l2_ctrl_fill(u32 id, const char **name, enu=
-m v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_VPX_NUM_REF_FRAMES:
->  		*type =3D V4L2_CTRL_TYPE_INTEGER_MENU;
->  		break;
-> +	case V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE:
-> +		*type =3D V4L2_CTRL_TYPE_INTEGER;
-> +		*flags |=3D V4L2_CTRL_FLAG_WRITE_ONLY;
-> +		break;
->  	case V4L2_CID_USER_CLASS:
->  	case V4L2_CID_CAMERA_CLASS:
->  	case V4L2_CID_CODEC_CLASS:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2=
--controls.h
-> index c3604a0a3e30..7b3694985366 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -954,6 +954,10 @@ enum v4l2_mpeg_mfc51_video_force_frame_type {
->  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_ADAPTIVE_RC_STATIC		(V4L2_CID_COD=
-EC_MFC51_BASE+53)
->  #define V4L2_CID_MPEG_MFC51_VIDEO_H264_NUM_REF_PIC_FOR_P		(V4L2_CID_CODE=
-C_MFC51_BASE+54)
-> =20
-> +/*  MPEG-class control IDs specific to the MediaTek Decoder driver as de=
-fined by V4L2 */
-> +#define V4L2_CID_MPEG_MTK_BASE			(V4L2_CTRL_CLASS_CODEC | 0x2000)
-> +#define V4L2_CID_MPEG_MTK_GET_SECURE_HANDLE	(V4L2_CID_MPEG_MTK_BASE+8)
-> +
->  /*  Camera class control IDs */
-> =20
->  #define V4L2_CID_CAMERA_CLASS_BASE	(V4L2_CTRL_CLASS_CAMERA | 0x900)
+The counting event check is implemented here. The later patch will take
+the new PERF_SAMPLE_BRANCH_EVT_CNTRS into account.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+
+New patch
+
+ arch/x86/events/intel/core.c       | 14 +++++++++++---
+ arch/x86/events/perf_event_flags.h |  1 +
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 0f4ce79de4f8..8434315b765f 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2518,9 +2518,14 @@ static void intel_pmu_assign_event(struct perf_event *event, int idx)
+ 		perf_report_aux_output_id(event, idx);
+ }
+ 
++static __always_inline bool intel_pmu_needs_branch_stack(struct perf_event *event)
++{
++	return event->hw.flags & PERF_X86_EVENT_NEEDS_BRANCH_STACK;
++}
++
+ static void intel_pmu_del_event(struct perf_event *event)
+ {
+-	if (needs_branch_stack(event))
++	if (intel_pmu_needs_branch_stack(event))
+ 		intel_pmu_lbr_del(event);
+ 	if (event->attr.precise_ip)
+ 		intel_pmu_pebs_del(event);
+@@ -2831,7 +2836,7 @@ static void intel_pmu_add_event(struct perf_event *event)
+ {
+ 	if (event->attr.precise_ip)
+ 		intel_pmu_pebs_add(event);
+-	if (needs_branch_stack(event))
++	if (intel_pmu_needs_branch_stack(event))
+ 		intel_pmu_lbr_add(event);
+ }
+ 
+@@ -3908,7 +3913,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 			x86_pmu.pebs_aliases(event);
+ 	}
+ 
+-	if (needs_branch_stack(event)) {
++	if (needs_branch_stack(event) && is_sampling_event(event))
++		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
++
++	if (intel_pmu_needs_branch_stack(event)) {
+ 		ret = intel_pmu_setup_lbr_filter(event);
+ 		if (ret)
+ 			return ret;
+diff --git a/arch/x86/events/perf_event_flags.h b/arch/x86/events/perf_event_flags.h
+index 1dc19b9b4426..a1685981c520 100644
+--- a/arch/x86/events/perf_event_flags.h
++++ b/arch/x86/events/perf_event_flags.h
+@@ -20,3 +20,4 @@ PERF_ARCH(TOPDOWN,		0x04000) /* Count Topdown slots/metrics events */
+ PERF_ARCH(PEBS_STLAT,		0x08000) /* st+stlat data address sampling */
+ PERF_ARCH(AMD_BRS,		0x10000) /* AMD Branch Sampling */
+ PERF_ARCH(PEBS_LAT_HYBRID,	0x20000) /* ld and st lat for hybrid */
++PERF_ARCH(NEEDS_BRANCH_STACK,	0x40000) /* require branch stack setup */
+-- 
+2.35.1
 
