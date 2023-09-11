@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF10879A302
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136BA79A304
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 07:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbjIKFqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 01:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
+        id S234137AbjIKFwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 01:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjIKFqn (ORCPT
+        with ESMTP id S229596AbjIKFwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 01:46:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E0E1AE;
-        Sun, 10 Sep 2023 22:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694411199; x=1725947199;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wWthW3CAQOeR24yqLtHN12hyt+cgqArE3vdOGuNIP74=;
-  b=aGGRWsZJnRY4xxiH+mk4ZOyZXtup42L4hv1pXyKncOUrqwNxWGpCPC3O
-   onFGQIqcqJTRwaVcF3fGVcsBfaSOKlQH3Rh9Xsi/B65XmAQ+Wj9SjMVTO
-   /rhflb0mfG0JKO9K9OBM3SvQP3G5TuJtwbCMfP4GjNkk9xi1u81MS8c28
-   JFruAwDQaDm0n1s7JUO+iCQ9ytKZBSOyiIPlNcLP5duihTSw4K/LYQC1a
-   GbnOCrLbh0/204KtTUziza0134+NMtF/tWNu8/rTkML0oPkKCCl0PcXs2
-   bPt2FJkNE2SI7WEAFLfn+/teQgOHQ0r26jrNgcwQE3WVpvqygzsbCzv3Y
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="375353787"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="375353787"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 22:46:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="858188074"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="858188074"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Sep 2023 22:46:35 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfZkn-0005qa-1u;
-        Mon, 11 Sep 2023 05:46:33 +0000
-Date:   Mon, 11 Sep 2023 13:46:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, jdelvare@suse.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Saravanan Sekar <saravanan@linumiz.com>
-Subject: Re: [PATCH 1/3] hwmon: (pmbus/mpq7932) Get page count based on chip
- info
-Message-ID: <202309111345.BXkwu3pD-lkp@intel.com>
-References: <20230911034150.181880-2-saravanan@linumiz.com>
+        Mon, 11 Sep 2023 01:52:43 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AD91AE
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 22:52:39 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a645e54806so495657866b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 22:52:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google; t=1694411557; x=1695016357; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IXsq6kTPsGHqyjk5fsR6TPrgdDZmLIAvnZrI6SR/zXw=;
+        b=PpKFKKKxLO/EsKNcxb9craa70PAVsM3c3rGc6jxceaxYo8dMrksyUTDfPXyj1kKORm
+         +7q1l+x9iBQf/fSKIDERvHvFA2ez0ejHKlcET5nPf9/YH/URLnLLhVA5ra4ngPgXD33e
+         cBmdNJK+JwuMuTL7XtkOK7nk0Z9lbBX9bmD3o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694411557; x=1695016357;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IXsq6kTPsGHqyjk5fsR6TPrgdDZmLIAvnZrI6SR/zXw=;
+        b=WbaH7ELCZdWl8l/Ljefoax/6jglJbl9aaq3tcF+jIrgZzbWPUMrc9qureYJhCLdGxB
+         9XAvJt/A51cuDbSmjZRm0C4AkyDLST/MZL5hCx+BpPf4HuSwMPGbBFGlSsmB4KtX32Bm
+         5gVxoy19FqTrwuXHlc4EXlhpON836FtNBEQEA561hFPV9iTMvhfzd9UHAKVDrl8GSmY4
+         uVcTKv2jRkrBAl89DVbmzj7kgXZd05iMuWd13r4jTt2gBGU6zBv6CiODFpummbVfTDcH
+         bBhmHlq3vTmWC+Dj0GfjJ+jyqSf7+M8Hwkx02lZ+jvvUChmcDNQXHwu+FL2SGXJnBbvl
+         rOIw==
+X-Gm-Message-State: AOJu0YzhNtYFqPtbPUFWTWEaGoR/ezQMrPeWZEVLVGZhoWQPIY259oKN
+        aNWaRVeRNHnLZS2h3MyIEv/k8PvdiV3pMO7DXY0=
+X-Google-Smtp-Source: AGHT+IFyJUJhT3+/OJUTHkJ3l4taTJROUEO6Q14uL96KuCJUVC64SsI0JnDiDqpEiRK6oA6LaBltQVVq40xikY0z5h4=
+X-Received: by 2002:a17:906:2921:b0:99d:dce8:41d6 with SMTP id
+ v1-20020a170906292100b0099ddce841d6mr7606114ejd.71.1694411557430; Sun, 10 Sep
+ 2023 22:52:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911034150.181880-2-saravanan@linumiz.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230907221016.2978802-1-ninad@linux.ibm.com> <20230907221016.2978802-3-ninad@linux.ibm.com>
+In-Reply-To: <20230907221016.2978802-3-ninad@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 11 Sep 2023 05:52:25 +0000
+Message-ID: <CACPK8XcUkwNS85Ept62xyCabELHO9xTdMYvxVg2W+GZfAxTa3A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] fsi: sbefifo: Validate pending user write
+To:     Ninad Palsule <ninad@linux.ibm.com>, eajames@linux.ibm.com
+Cc:     jk@ozlabs.org, alistair@popple.id.au, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravanan,
+On Thu, 7 Sept 2023 at 22:10, Ninad Palsule <ninad@linux.ibm.com> wrote:
+>
+> This commit fails user write operation if previous write operation is
+> still pending.
+>
+> As per the driver design write operation only prepares the buffer, the
+> actual FSI write is performed on next read operation. so if buggy
+> application sends two back to back writes or two parallel writes then
+> that could cause memory leak.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on broonie-regulator/for-next linus/master v6.6-rc1 next-20230911]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Saravanan-Sekar/hwmon-pmbus-mpq7932-Get-page-count-based-on-chip-info/20230911-114451
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230911034150.181880-2-saravanan%40linumiz.com
-patch subject: [PATCH 1/3] hwmon: (pmbus/mpq7932) Get page count based on chip info
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20230911/202309111345.BXkwu3pD-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309111345.BXkwu3pD-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309111345.BXkwu3pD-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/hwmon/pmbus/mpq7932.c: In function 'mpq7932_probe':
->> drivers/hwmon/pmbus/mpq7932.c:108:23: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-     108 |         info->pages = (int)device_get_match_data(&client->dev);
-         |                       ^
+The driver already has this code:
 
 
-vim +108 drivers/hwmon/pmbus/mpq7932.c
+>
+> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> ---
+>  drivers/fsi/fsi-sbefifo.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+> index b771dff27f7f..824e2a921a25 100644
+> --- a/drivers/fsi/fsi-sbefifo.c
+> +++ b/drivers/fsi/fsi-sbefifo.c
+> @@ -874,6 +874,12 @@ static ssize_t sbefifo_user_write(struct file *file, const char __user *buf,
+>
+>         mutex_lock(&user->file_lock);
+>
+> +       /* Previous write is still in progress */
+> +       if (user->pending_cmd) {
+> +               mutex_unlock(&user->file_lock);
+> +               return -EALREADY;
 
-    95	
-    96	static int mpq7932_probe(struct i2c_client *client)
-    97	{
-    98		struct mpq7932_data *data;
-    99		struct pmbus_driver_info *info;
-   100		struct device *dev = &client->dev;
-   101		int i;
-   102	
-   103		data = devm_kzalloc(dev, sizeof(struct mpq7932_data), GFP_KERNEL);
-   104		if (!data)
-   105			return -ENOMEM;
-   106	
-   107		info = &data->info;
- > 108		info->pages = (int)device_get_match_data(&client->dev);
-   109		info->format[PSC_VOLTAGE_OUT] = direct;
-   110		info->m[PSC_VOLTAGE_OUT] = 160;
-   111		info->b[PSC_VOLTAGE_OUT] = -33;
-   112		for (i = 0; i < info->pages; i++) {
-   113			info->func[i] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-   114					| PMBUS_HAVE_STATUS_TEMP;
-   115		}
-   116	
+That's an unusual return code. I guess it makes sense in this context.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+It's good to fix the potential memory leak, and we should add code to
+catch that case.
+
+This will change the behaviour of the character device from "overwrite
+the previous operation" to "reject operation until a read is
+performed". Do you think there's existing code that depends on the old
+behaviour?
+
+> +       }
+> +
+>         /* Can we use the pre-allocate buffer ? If not, allocate */
+>         if (len <= PAGE_SIZE)
+>                 user->pending_cmd = user->cmd_page;
+> --
+> 2.39.2
+>
