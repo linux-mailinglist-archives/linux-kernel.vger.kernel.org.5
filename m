@@ -2,196 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E456A79ADB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4422479B1C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238024AbjIKUx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        id S242139AbjIKVSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238107AbjIKNjJ (ORCPT
+        with ESMTP id S238111AbjIKNjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:39:09 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA88CC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:39:05 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-570836f1c79so3105235a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:39:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694439544; x=1695044344; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yzjWWSPat2JgzSDnNcTFgX4QJsPLKM/SCLEwhPsOghY=;
-        b=Isg+TPirVyWMTpcQTAfXXmt1HRxb2HDYuUDvW8+7EY7dlUUG2iu9oExSMqg6rhuDUP
-         LffvaEKglPmov46522x4910NVaRvrXQA3koGbqUqVRwOuOHEYRyWHyrKIxKkp/4jb8RQ
-         C/asoWQ1ZNJdsaE8wZ01NquJZr+afpInSOxKduWw7CvRPJSFpZQYmpjiWpILTM0oIYw8
-         lHqPqFQe/ghM7IEnhR+ZNcHW4mevy25l1MeqOfCh6QeG8TN4CEADXSH5m96HaKBNU4iq
-         +MKGRYpsE9ScofefHBVQl6zOuCczmRKsZmGQF0MaBMDpFb3vUf11dOL/3AGSKuY1QR7x
-         Yxig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694439544; x=1695044344;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yzjWWSPat2JgzSDnNcTFgX4QJsPLKM/SCLEwhPsOghY=;
-        b=qfFhs9Eu9HHKkwwoqSepbNx8WB9zh2ulyEdLsjj8Hz/ix5aF685UpCIO4cHH654WHf
-         NRO7z1MCABV8kBsebVFb+1Zr0+xLsTVktYuddYyObbu/suLR1DhO8Dx3UXG7Xj2M5WaF
-         UmFiBnh3u/+ZwmKoQHoju+jSt2LJm/PF7GIasZDFttdd2IJW8QnJJx1iSUEKKXhoTbuN
-         LB1dxmmtpaqc6pQrgLALny02Ws0bv8oPL4xeqODhyjg/2kzRNqFF5edNnlXvr5zU+fGj
-         7apPoWjzM9V8Hu5Vwv3uUq0sUFZMMg9a/IjfqJ0LzFtVQO1ln/w66mwLqrSZQirgQ57D
-         CThg==
-X-Gm-Message-State: AOJu0YyNlR8z8S0wOp7tUz0ayppM+s4h/zugQMhPOsaPzpUaTDBdsAR3
-        TQO7nFzwG4qs+bk4ftcrnXZVYGWcTkZW7Q==
-X-Google-Smtp-Source: AGHT+IH8HWLxoNkhA8I8mAWSHBs8jufPtqLVvAu/k6LkGMx57d5cT/PNbs9sTc0ZdSx9AHJg7UZbCw==
-X-Received: by 2002:a05:6a20:3c9f:b0:153:4ea6:d127 with SMTP id b31-20020a056a203c9f00b001534ea6d127mr9849451pzj.18.1694439544396;
-        Mon, 11 Sep 2023 06:39:04 -0700 (PDT)
-Received: from localhost ([58.37.145.245])
-        by smtp.gmail.com with ESMTPSA id m26-20020a63941a000000b0056ae1af610asm5475157pge.58.2023.09.11.06.39.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:39:03 -0700 (PDT)
-From:   Liam Ni <zhiguangni01@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, rppt@kernel.org
-Cc:     dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, akpm@linux-foundation.org,
-        Liam Ni <zhiguangni01@gmail.com>
-Subject: [PATCH V4] NUMA:Improve the efficiency of calculating pages loss
-Date:   Mon, 11 Sep 2023 21:38:52 +0800
-Message-Id: <20230911133852.2545-1-zhiguangni01@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Sep 2023 09:39:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FA7CC3;
+        Mon, 11 Sep 2023 06:39:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50D03C433C7;
+        Mon, 11 Sep 2023 13:39:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694439588;
+        bh=+9srjINeKNt/1Wh3YwTUXUqr5Tf9xG7aEal0R+t5o3A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QtrGc7bTRKLv4EUs0y1DkLGPtq+xhldaIQ+Bbhd1GOXJ9q4Fkd2IEeWlWol7B8Hod
+         EM7Qv0lYJbhCch5pEv9KD5t44AuP0BTZLdv5zUrAgxOniuoe6gHmBr8f/ZoR881G3q
+         qZVZmG1RmNK006SsQEEC/tVAs2Ru3t8kQyF1kXNUB9rGqy632xS2IuihWE9hQPnCwC
+         Yacd2Cvmw2akSUzLHU78i0XJJ4NCZd1f4Nb5Uw1XIPXpTK05SUNcmwE//kok3Q0N2C
+         Fj5aGVs6z0nN0/06Ajhwf4FGHQEEngfXz9/kTp4X6RkXm3YN4pcQEewZ26flJ9nAs6
+         4B4UsVy5r6EVw==
+Date:   Mon, 11 Sep 2023 15:39:43 +0200
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, linux-input@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] selftests/hid: ensure we can compile the tests on
+ kernels pre-6.3
+Message-ID: <hnmbc2vo6ylihwvxbmtiylw6kseqbyk5iydne4vmshssjhrcac@ijbyzhoeag34>
+References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+ <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
+ <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optimize the way of calculating missing pages.
+On Sep 11 2023, Eduard Zingerman wrote:
+> On Fri, 2023-09-08 at 22:22 +0000, Justin Stitt wrote:
+> > From: Benjamin Tissoires <bentiss@kernel.org>
+> > 
+> > For the hid-bpf tests to compile, we need to have the definition of
+> > struct hid_bpf_ctx. This definition is an internal one from the kernel
+> > and it is supposed to be defined in the generated vmlinux.h.
+> > 
+> > This vmlinux.h header is generated based on the currently running kernel
+> > or if the kernel was already compiled in the tree. If you just compile
+> > the selftests without compiling the kernel beforehand and you are running
+> > on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
+> > definition.
+> > 
+> > Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
+> > to force the definition of that symbol in case we don't find it in the
+> > BTF and also add __attribute__((preserve_access_index)) to further
+> > support CO-RE functionality for these tests.
+> > 
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> > ---
+> >  tools/testing/selftests/hid/progs/hid.c            |  3 --
+> >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++++++++
+> >  2 files changed, 49 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/selftests/hid/progs/hid.c
+> > index 88c593f753b5..1e558826b809 100644
+> > --- a/tools/testing/selftests/hid/progs/hid.c
+> > +++ b/tools/testing/selftests/hid/progs/hid.c
+> > @@ -1,8 +1,5 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /* Copyright (c) 2022 Red hat */
+> > -#include "vmlinux.h"
+> > -#include <bpf/bpf_helpers.h>
+> > -#include <bpf/bpf_tracing.h>
+> >  #include "hid_bpf_helpers.h"
+> >  
+> >  char _license[] SEC("license") = "GPL";
+> > diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > index 4fff31dbe0e7..ab3b18ba48c4 100644
+> > --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> > @@ -5,6 +5,55 @@
+> >  #ifndef __HID_BPF_HELPERS_H
+> >  #define __HID_BPF_HELPERS_H
+> >  
+> > +/* "undefine" structs in vmlinux.h, because we "override" them below */
+> 
+> Hi Justin,
+> 
+> What you have here should work, however I still think that the trick
+> with "___local" suffix I refer to in [1] is a bit less hacky, e.g.:
+> 
+>     enum hid_report_type___local { ... };
+>     struct hid_bpf_ctx___local {
+>        __u32 index;
+>        const struct hid_device *hid; // this one should be in vmlinux.h with any config
+>        __u32 allocated_size;
+>        enum hid_report_type___local report_type;
+>        union {
+>            __s32 retval;
+>            __s32 size;
+>        };
+>     } __attribute__((preserve_access_index));
+>     
+>     enum hid_class_request___local { ... };
+>     enum hid_bpf_attach_flags___local { ... };
+>     ...
+>     extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
+>                                   unsigned int offset,
+> 
+> 
+> (sorry for being a bore, won't bring this up anymore).
 
-In the previous implementation, We calculate missing pages as follows:
-1. calculate numaram by traverse all the numa_meminfo's and for each of
-them traverse all the regions in memblock.memory to prepare for
-counting missing pages.
+No need to apologies for trying to make the code better :)
 
-2. Traverse all the regions in memblock.memory again to get e820ram.
+I specifically asked Justin to not use this because I intend the
+examples to be here to use the same API in the selftests dir than users
+in the wild. So if your suggestion definitely makes the header code
+much better, it also means that everybody will start using `___local`
+annotations for anything HID-BPF related, which is not what I want.
 
-3. the missing page is (e820ram - numaram )
+This header file is supposed to be included in the BPF, and IMO it's not
+that important that we have the cleanest code, as long as the users have
+the proper API.
 
-But,it's enough to count memory in ‘memblock.memory’ that doesn't have
-the node assigned.
+Feel free to share your concerns :)
 
-V3:https://lore.kernel.org/all/CACZJ9cUXiWxDb6hF4JFhWe7Np82k6LopVQ+_AoGFOccN4kjJqA@mail.gmail.com/#r
-V2:https://lore.kernel.org/all/20230619075315.49114-1-zhiguangni01@gmail.com/
-V1:https://lore.kernel.org/all/20230615142016.419570-1-zhiguangni01@gmail.com/
+Cheers,
+Benjamin
 
-Signed-off-by: Liam Ni <zhiguangni01@gmail.com>
----
- arch/x86/mm/numa.c       | 33 +--------------------------------
- include/linux/memblock.h |  1 +
- mm/memblock.c            | 21 +++++++++++++++++++++
- 3 files changed, 23 insertions(+), 32 deletions(-)
-
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 2aadb2019b4f..ee5f08adfaf6 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -447,37 +447,6 @@ int __node_distance(int from, int to)
- }
- EXPORT_SYMBOL(__node_distance);
- 
--/*
-- * Sanity check to catch more bad NUMA configurations (they are amazingly
-- * common).  Make sure the nodes cover all memory.
-- */
--static bool __init numa_meminfo_cover_memory(const struct numa_meminfo *mi)
--{
--	u64 numaram, e820ram;
--	int i;
--
--	numaram = 0;
--	for (i = 0; i < mi->nr_blks; i++) {
--		u64 s = mi->blk[i].start >> PAGE_SHIFT;
--		u64 e = mi->blk[i].end >> PAGE_SHIFT;
--		numaram += e - s;
--		numaram -= __absent_pages_in_range(mi->blk[i].nid, s, e);
--		if ((s64)numaram < 0)
--			numaram = 0;
--	}
--
--	e820ram = max_pfn - absent_pages_in_range(0, max_pfn);
--
--	/* We seem to lose 3 pages somewhere. Allow 1M of slack. */
--	if ((s64)(e820ram - numaram) >= (1 << (20 - PAGE_SHIFT))) {
--		printk(KERN_ERR "NUMA: nodes only cover %LuMB of your %LuMB e820 RAM. Not used.\n",
--		       (numaram << PAGE_SHIFT) >> 20,
--		       (e820ram << PAGE_SHIFT) >> 20);
--		return false;
--	}
--	return true;
--}
--
- /*
-  * Mark all currently memblock-reserved physical memory (which covers the
-  * kernel's own memory ranges) as hot-unswappable.
-@@ -583,7 +552,7 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
- 			return -EINVAL;
- 		}
- 	}
--	if (!numa_meminfo_cover_memory(mi))
-+	if (!memblock_validate_numa_coverage(SZ_1M))
- 		return -EINVAL;
- 
- 	/* Finally register nodes. */
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 1c1072e3ca06..0c3a193ebc58 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -120,6 +120,7 @@ int memblock_physmem_add(phys_addr_t base, phys_addr_t size);
- void memblock_trim_memory(phys_addr_t align);
- bool memblock_overlaps_region(struct memblock_type *type,
- 			      phys_addr_t base, phys_addr_t size);
-+bool memblock_validate_numa_coverage(const u64 limit);
- int memblock_mark_hotplug(phys_addr_t base, phys_addr_t size);
- int memblock_clear_hotplug(phys_addr_t base, phys_addr_t size);
- int memblock_mark_mirror(phys_addr_t base, phys_addr_t size);
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 0863222af4a4..8f61f868bec1 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -734,6 +734,27 @@ int __init_memblock memblock_add(phys_addr_t base, phys_addr_t size)
- 	return memblock_add_range(&memblock.memory, base, size, MAX_NUMNODES, 0);
- }
- 
-+bool __init_memblock memblock_validate_numa_coverage(const u64 limit)
-+{
-+	unsigned long lose_pg = 0;
-+	unsigned long start_pfn, end_pfn;
-+	int nid, i;
-+
-+	/* calculate lose page */
-+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, &nid) {
-+		if (nid == NUMA_NO_NODE)
-+			lose_pg += end_pfn - start_pfn;
-+	}
-+
-+	if (lose_pg >= limit) {
-+		pr_err("NUMA: We lost %ld pages.\n", lose_pg);
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+
- /**
-  * memblock_isolate_range - isolate given range into disjoint memblocks
-  * @type: memblock type to isolate range for
--- 
-2.25.1
-
+> 
+> Thanks,
+> Eduard
+> 
+> [1] https://lore.kernel.org/bpf/e99b4226bd450fedfebd4eb5c37054f032432b4f.camel@gmail.com/
+> 
+> > +#define hid_bpf_ctx hid_bpf_ctx___not_used
+> > +#define hid_report_type hid_report_type___not_used
+> > +#define hid_class_request hid_class_request___not_used
+> > +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
+> > +#include "vmlinux.h"
+> > +#undef hid_bpf_ctx
+> > +#undef hid_report_type
+> > +#undef hid_class_request
+> > +#undef hid_bpf_attach_flags
+> > +
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +#include <linux/const.h>
+> > +
+> > +enum hid_report_type {
+> > +	HID_INPUT_REPORT		= 0,
+> > +	HID_OUTPUT_REPORT		= 1,
+> > +	HID_FEATURE_REPORT		= 2,
+> > +
+> > +	HID_REPORT_TYPES,
+> > +};
+> > +
+> > +struct hid_bpf_ctx {
+> > +	__u32 index;
+> > +	const struct hid_device *hid;
+> > +	__u32 allocated_size;
+> > +	enum hid_report_type report_type;
+> > +	union {
+> > +		__s32 retval;
+> > +		__s32 size;
+> > +	};
+> > +} __attribute__((preserve_access_index));
+> > +
+> > +enum hid_class_request {
+> > +	HID_REQ_GET_REPORT		= 0x01,
+> > +	HID_REQ_GET_IDLE		= 0x02,
+> > +	HID_REQ_GET_PROTOCOL		= 0x03,
+> > +	HID_REQ_SET_REPORT		= 0x09,
+> > +	HID_REQ_SET_IDLE		= 0x0A,
+> > +	HID_REQ_SET_PROTOCOL		= 0x0B,
+> > +};
+> > +
+> > +enum hid_bpf_attach_flags {
+> > +	HID_BPF_FLAG_NONE = 0,
+> > +	HID_BPF_FLAG_INSERT_HEAD = _BITUL(0),
+> > +	HID_BPF_FLAG_MAX,
+> > +};
+> > +
+> >  /* following are kfuncs exported by HID for HID-BPF */
+> >  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+> >  			      unsigned int offset,
+> > 
+> 
