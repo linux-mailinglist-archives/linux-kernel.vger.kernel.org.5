@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BBE79BD03
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F2A79C01E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376477AbjIKWTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S1358471AbjIKWLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:11:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241378AbjIKPH0 (ORCPT
+        with ESMTP id S241390AbjIKPHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:07:26 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334F4FA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:07:21 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401b5516104so48612755e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:07:21 -0700 (PDT)
+        Mon, 11 Sep 2023 11:07:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B4ECCC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:07:38 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so49004665e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:07:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694444839; x=1695049639; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1694444856; x=1695049656; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dOpTUAby7ZVIO6+YPrYOI97+9Zg13vBp8MSTW+q41J4=;
-        b=zS0IrBMC2DQJ4CUL13xIePZJxujhUYTFHX9YKiKrYhdJ4rwlSI+0kAuWnDHnMiDqQP
-         ZPu/pWa6/W85/K+0t7ujy7aZfEl4/hIN4+hHik/00/HWjFesycVTjCSlnmv/rnlqU3Hi
-         OhCV3fAMC+ZsVdztQ6NA3juPIjPBoalQSUOdwp5fcIw2WsYVW0lKNSvQ4Hb8sHdfhF3R
-         jcjZ7zblOhmlU54TmVfqeYHvX/mKHwSRtAQ2DPtnl19JqKvogcB0Jnak+2tiozHRJ+kC
-         XadNpS8Vpv5lLI4SSZ7gjBda45QsJ7s2EoZDogGo6aRLji0JS3Ti4WQ701CgMxrwcxhg
-         KZ7Q==
+        bh=FOHcmU4SPBlFSrepvb7+SqS7flL0n1Vuqk9odxNTsOE=;
+        b=WRhp0V9hKqAO77KDi//ETl8WMUU3eFr5tvU3nnQSt1CcJpmUSfAFNqPa6OYjA9ZCV2
+         SrZ6C5/BvAXQkK3cSTp16DyAWPJvsFLP5EaQQsyJkAlxSyFCEzp19VLzPwKAS2PVrhaz
+         X2U/W8ozyA09qMB5EmkddhMQRh1zYJoG+jrqnmHCzJa8vVyfomWmd5Ke0+vpYl93iJYF
+         pTc+NP5apNdyvKx5MVklSOjNpIrlLsKI2zd6OFnkaobEj4bi+JH60yixu5G3tB0UCnE2
+         kIRl1PJ9Qwe7JXN5HQT0N5Oo1xHrxVtGkiOErpGUIzGIGxauFBw2Rmt6R7RnEYHqrrLJ
+         XUBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694444839; x=1695049639;
+        d=1e100.net; s=20230601; t=1694444856; x=1695049656;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=dOpTUAby7ZVIO6+YPrYOI97+9Zg13vBp8MSTW+q41J4=;
-        b=OZcWcwlsuNv+DwPGXnIBVBDOzyhudqEYPD3JafieYFC0npNT09jsFpd6DPqGDoKmqr
-         L9sTork65T3nM6Qn+fwOxjpUcBO0Zy5E9uQ0CWTyeOkYMQdpy3Qv5lESFPIz7v0IpIEW
-         n/ooBMA7URsCIk+iO/HnEK/k/EK64pK0NHOj8xFxqGwVyBL/tcdHTgWParnjbjZVtOag
-         O33hmEE5PCIH0aUDPkyzZYjLBF7yGHUx/2+lfraLf/S9nyR0KVThL8urDds4Aq7BEJG7
-         zSPN35lwxCk2uZeA7H17+RwWU8GoyQOvKu02g6hWxWDDA3Dnzrj2+VBnE0qaEDBfpOOA
-         FvFg==
-X-Gm-Message-State: AOJu0Yzyqy+ccsQlZsKA9KsFuqxIxm9+yI9MiB0SkaFQ3EBdNAzGTPS4
-        hArT+w66Qy0CZw7YwFb1GYOGDfO0q2DX33wss2CMtA==
-X-Google-Smtp-Source: AGHT+IFkSM8rCd+Ax4dNRpcacBlnBuDTSYOCnAOBXnLUsAtz+uztZOZO0zxzP7ZTobe3xjzx0Qi8LQI0Q9NOMxwQj/A=
-X-Received: by 2002:a05:600c:b44:b0:401:dc7c:2488 with SMTP id
- k4-20020a05600c0b4400b00401dc7c2488mr8666846wmr.11.1694444839305; Mon, 11 Sep
- 2023 08:07:19 -0700 (PDT)
+        bh=FOHcmU4SPBlFSrepvb7+SqS7flL0n1Vuqk9odxNTsOE=;
+        b=o6HeaQnqSPKSoIXgc95VT3GIGMg0ICydYsAwJItEg+OFrY8N9QvsxfnO/btHpYESVJ
+         XcpY+abcC3wUGRaFx7H74SR8GiKkTg1MJ8BQVhAL5e9Z1ZO/7dObT1T3MUv7uMlHq9fy
+         v9oo0u8ia+QjdFdSvHRWlKmYvCsXLps9BujL5Ylx7RFLdY2dMO+Zk2apJjAf313lH224
+         yUFe+AJsTvArmKbYge0kPqJvLbH0A+wXO2K6n7Yikau5nr2abTbFf/S/MxA3L8iuWbKi
+         PeGkjJ/f6hFdczSegEPZJWs7tHgRBWepquNTPQkgdVln9bYG5ki2kBG41mcG7j/Xw/Ob
+         Ap5w==
+X-Gm-Message-State: AOJu0Yz6HD5HIHwnKPo7jQJRJegZMq6uePaYYz6tx25yGALh3tM4KyVR
+        uBTMzbq3SeWNq2Q7Tjx3ErPebiSCHsnRmhyMo6wXPQ==
+X-Google-Smtp-Source: AGHT+IHJwjh/esyBhhgQWt69PjwsvB4s+p0GsaI4PnNXFSErHyI+u2wqbc2C6yPHrGQm2qHssYYi8IYTl8FnbqIJH2Y=
+X-Received: by 2002:a05:600c:452:b0:402:cc5c:c98 with SMTP id
+ s18-20020a05600c045200b00402cc5c0c98mr8376028wmb.13.1694444856665; Mon, 11
+ Sep 2023 08:07:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230911145702.2663753-1-glider@google.com> <20230911145702.2663753-3-glider@google.com>
-In-Reply-To: <20230911145702.2663753-3-glider@google.com>
+References: <20230911145702.2663753-1-glider@google.com> <20230911145702.2663753-2-glider@google.com>
+In-Reply-To: <20230911145702.2663753-2-glider@google.com>
 From:   Marco Elver <elver@google.com>
-Date:   Mon, 11 Sep 2023 17:06:42 +0200
-Message-ID: <CANpmjNP61zOdXR=FYjtzUqcjxg=j_Otqotqv_OTN_Hi2E-LXLg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] kmsan: merge test_memcpy_aligned_to_unaligned{,2}()
- together
+Date:   Mon, 11 Sep 2023 17:07:00 +0200
+Message-ID: <CANpmjNNhtYPf82=o+NYB64xkHy-8aRy2w9BZgjERbN_+fuK=DA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] kmsan: prevent optimizations in memcpy tests
 To:     Alexander Potapenko <glider@google.com>
 Cc:     dvyukov@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
@@ -71,89 +70,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, 11 Sept 2023 at 16:57, Alexander Potapenko <glider@google.com> wrote:
 >
-> Introduce report_reset() that allows checking for more than one KMSAN
-> report per testcase.
-> Fold test_memcpy_aligned_to_unaligned2() into
-> test_memcpy_aligned_to_unaligned(), so that they share the setup phase
-> and check the behavior of a single memcpy() call.
+> Clang 18 learned to optimize away memcpy() calls of small uninitialized
+> scalar values. To ensure that memcpy tests in kmsan_test.c still perform
+> calls to memcpy() (which KMSAN replaces with __msan_memcpy()), declare a
+> separate memcpy_noinline() function with volatile parameters, which
+> won't be optimized.
+>
+> Also retire DO_NOT_OPTIMIZE(), as memcpy_noinline() is apparently
+> enough.
 >
 > Signed-off-by: Alexander Potapenko <glider@google.com>
 
 Acked-by: Marco Elver <elver@google.com>
 
 > ---
->  mm/kmsan/kmsan_test.c | 37 +++++++++++++------------------------
->  1 file changed, 13 insertions(+), 24 deletions(-)
+> v2:
+>  - fix W=1 warnings reported by LKP test robot
+> ---
+>  mm/kmsan/kmsan_test.c | 41 ++++++++++++++++-------------------------
+>  1 file changed, 16 insertions(+), 25 deletions(-)
 >
 > diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
-> index a8d4ca4a1066d..6eb1e1a4d08f9 100644
+> index 312989aa2865c..a8d4ca4a1066d 100644
 > --- a/mm/kmsan/kmsan_test.c
 > +++ b/mm/kmsan/kmsan_test.c
-> @@ -67,6 +67,17 @@ static bool report_available(void)
->         return READ_ONCE(observed.available);
+> @@ -407,33 +407,25 @@ static void test_printk(struct kunit *test)
+>         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
 >  }
 >
-> +/* Reset observed.available, so that the test can trigger another report. */
-> +static void report_reset(void)
+> -/*
+> - * Prevent the compiler from optimizing @var away. Without this, Clang may
+> - * notice that @var is uninitialized and drop memcpy() calls that use it.
+> - *
+> - * There is OPTIMIZER_HIDE_VAR() in linux/compier.h that we cannot use here,
+> - * because it is implemented as inline assembly receiving @var as a parameter
+> - * and will enforce a KMSAN check. Same is true for e.g. barrier_data(var).
+> - */
+> -#define DO_NOT_OPTIMIZE(var) barrier()
+> +/* Prevent the compiler from inlining a memcpy() call. */
+> +static noinline void *memcpy_noinline(volatile void *dst,
+> +                                     const volatile void *src, size_t size)
 > +{
-> +       unsigned long flags;
-> +
-> +       spin_lock_irqsave(&observed.lock, flags);
-> +       WRITE_ONCE(observed.available, false);
-> +       observed.ignore = false;
-> +       spin_unlock_irqrestore(&observed.lock, flags);
+> +       return memcpy((void *)dst, (const void *)src, size);
 > +}
-> +
->  /* Information we expect in a report. */
->  struct expect_report {
->         const char *error_type; /* Error type. */
-> @@ -454,7 +465,7 @@ static void test_memcpy_aligned_to_aligned(struct kunit *test)
->   *
->   * Copying aligned 4-byte value to an unaligned one leads to touching two
->   * aligned 4-byte values. This test case checks that KMSAN correctly reports an
-> - * error on the first of the two values.
-> + * error on the mentioned two values.
->   */
->  static void test_memcpy_aligned_to_unaligned(struct kunit *test)
+>
+> -/*
+> - * Test case: ensure that memcpy() correctly copies initialized values.
+> - * Also serves as a regression test to ensure DO_NOT_OPTIMIZE() does not cause
+> - * extra checks.
+> - */
+> +/* Test case: ensure that memcpy() correctly copies initialized values. */
+>  static void test_init_memcpy(struct kunit *test)
 >  {
-> @@ -470,28 +481,7 @@ static void test_memcpy_aligned_to_unaligned(struct kunit *test)
->                         sizeof(uninit_src));
+>         EXPECTATION_NO_REPORT(expect);
+> -       volatile int src;
+> -       volatile int dst = 0;
+> +       volatile long long src;
+> +       volatile long long dst = 0;
+>
+> -       DO_NOT_OPTIMIZE(src);
+>         src = 1;
+>         kunit_info(
+>                 test,
+>                 "memcpy()ing aligned initialized src to aligned dst (no reports)\n");
+> -       memcpy((void *)&dst, (void *)&src, sizeof(src));
+> +       memcpy_noinline((void *)&dst, (void *)&src, sizeof(src));
+>         kmsan_check_memory((void *)&dst, sizeof(dst));
+>         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+>  }
+> @@ -451,8 +443,7 @@ static void test_memcpy_aligned_to_aligned(struct kunit *test)
+>         kunit_info(
+>                 test,
+>                 "memcpy()ing aligned uninit src to aligned dst (UMR report)\n");
+> -       DO_NOT_OPTIMIZE(uninit_src);
+> -       memcpy((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
+> +       memcpy_noinline((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
+>         kmsan_check_memory((void *)&dst, sizeof(dst));
+>         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
+>  }
+> @@ -474,8 +465,9 @@ static void test_memcpy_aligned_to_unaligned(struct kunit *test)
+>         kunit_info(
+>                 test,
+>                 "memcpy()ing aligned uninit src to unaligned dst (UMR report)\n");
+> -       DO_NOT_OPTIMIZE(uninit_src);
+> -       memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
+> +       kmsan_check_memory((void *)&uninit_src, sizeof(uninit_src));
+> +       memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
+> +                       sizeof(uninit_src));
 >         kmsan_check_memory((void *)dst, 4);
 >         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-> -}
-> -
-> -/*
-> - * Test case: ensure that memcpy() correctly copies uninitialized values between
-> - * aligned `src` and unaligned `dst`.
-> - *
-> - * Copying aligned 4-byte value to an unaligned one leads to touching two
-> - * aligned 4-byte values. This test case checks that KMSAN correctly reports an
-> - * error on the second of the two values.
-> - */
-> -static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
-> -{
-> -       EXPECTATION_UNINIT_VALUE_FN(expect,
-> -                                   "test_memcpy_aligned_to_unaligned2");
-> -       volatile int uninit_src;
-> -       volatile char dst[8] = { 0 };
-> -
-> -       kunit_info(
-> -               test,
-> -               "memcpy()ing aligned uninit src to unaligned dst - part 2 (UMR report)\n");
-> -       memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
-> -                       sizeof(uninit_src));
-> +       report_reset();
+>  }
+> @@ -498,8 +490,8 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
+>         kunit_info(
+>                 test,
+>                 "memcpy()ing aligned uninit src to unaligned dst - part 2 (UMR report)\n");
+> -       DO_NOT_OPTIMIZE(uninit_src);
+> -       memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
+> +       memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
+> +                       sizeof(uninit_src));
 >         kmsan_check_memory((void *)&dst[4], sizeof(uninit_src));
 >         KUNIT_EXPECT_TRUE(test, report_matches(&expect));
 >  }
-> @@ -589,7 +579,6 @@ static struct kunit_case kmsan_test_cases[] = {
->         KUNIT_CASE(test_init_memcpy),
->         KUNIT_CASE(test_memcpy_aligned_to_aligned),
->         KUNIT_CASE(test_memcpy_aligned_to_unaligned),
-> -       KUNIT_CASE(test_memcpy_aligned_to_unaligned2),
->         KUNIT_CASE(test_memset16),
->         KUNIT_CASE(test_memset32),
->         KUNIT_CASE(test_memset64),
+> @@ -513,7 +505,6 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
+>                                                                              \
+>                 kunit_info(test,                                            \
+>                            "memset" #size "() should initialize memory\n"); \
+> -               DO_NOT_OPTIMIZE(uninit);                                    \
+>                 memset##size((uint##size##_t *)&uninit, 0, 1);              \
+>                 kmsan_check_memory((void *)&uninit, sizeof(uninit));        \
+>                 KUNIT_EXPECT_TRUE(test, report_matches(&expect));           \
 > --
 > 2.42.0.283.g2d96d420d3-goog
 >
