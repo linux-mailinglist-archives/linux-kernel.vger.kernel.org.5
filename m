@@ -2,192 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D8579B74B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C99879B9FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240497AbjIKV6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
+        id S1344471AbjIKV7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238000AbjIKNbR (ORCPT
+        with ESMTP id S238001AbjIKNbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:31:17 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA42106;
-        Mon, 11 Sep 2023 06:31:09 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Rknfc2Jtlz9smc;
-        Mon, 11 Sep 2023 15:31:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1694439064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ssPtRhzagK/d9RC/A8i5dkXgGiUcU7PPGH+ptkQbYgk=;
-        b=yjg5muxkqrF115Eg74FhgWcpucBCqqIZVB6zpdeKqWgFPxSesDwfq9HHz5A2ewKkGtXMLk
-        SSPhlTQlT4kkBz66FCvKb+Osxf59CFHQ9CCcbQqiqWw+V60evAGbGKN0yFdQyxmCOnjqVz
-        z+veeOK1T2qRPmi7kNk6e7B3H6ecreFc+o2pwOV4jyDNfMmpeeOXLjf4FcFRDeZvoGJR1Y
-        kR7qHSp04oA/t1s6/zP6P4FD3/IaTZpAAykSq7IOYurkjj7ATUJaU+J9LCcF/eEf4VjqNc
-        psAFjEt3eRSeTkKCe8TpP/ZDxi5U3+oql7q/5zEIjt02gWa0hjyTCJ0LzdQLQA==
-Message-ID: <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org>
-Date:   Mon, 11 Sep 2023 15:30:55 +0200
+        Mon, 11 Sep 2023 09:31:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F197106;
+        Mon, 11 Sep 2023 06:31:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694439075; x=1725975075;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hhntH08KwDzWZFhlYntAoxLtfPyiIglkNSydQprvVBY=;
+  b=JXCyl1ilgELaFhRR5bLOXC5MBMBzaR7qhljTvj78arjCgJzXm1lfPfRH
+   iZk8HX4Lua6RmW1H1RfB/zltRZg58/7HdfPNUxB97ag3O2MSppWFAp2K/
+   mT2v/4yTtqc7TtE2d2Jvmu6jo4Y5KuEn/cA4Rsc2P+qlgC53KOIDozf8a
+   kiPTc0jrSJOkbIi73Nek3btTnr9XLRfxS1s/bDf+ikab9UADIa6QOM4wI
+   3NT/JWiwNixwdxflkeCJxELz8zpj9UfM7KzV/eXiB+DK3T8g19Jc3m45t
+   vYPrRFE3uTkwNCjV8bkW5DvsBBjjxRYQqqgNNbycj2qk3XXMuwONj/PZf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409050010"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="409050010"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:31:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736771632"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="736771632"
+Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
+  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 06:31:04 -0700
+From:   sharath.kumar.d.m@intel.com
+To:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, dinguyen@kernel.org,
+        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Subject: [PATCH v3 0/2] PCI: altera: add support to agilex family
+Date:   Mon, 11 Sep 2023 19:01:38 +0530
+Message-Id: <20230911133140.1776551-1-sharath.kumar.d.m@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230906110918.1501376-1-sharath.kumar.d.m@intel.com>
+References: <20230906110918.1501376-1-sharath.kumar.d.m@intel.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
-        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
-        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
-        corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        linux-rockchip@lists.infradead.org,
-        Daniel Stone <daniels@collabora.com>,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-References: <zorvxwffshrsqx5cy76pe3gn52qrqav7qusz5acav2un2ydvwr@fwjd56qg2xve>
- <87bkeo23vs.fsf@intel.com>
- <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
- <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com>
- <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
- <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com>
- <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
- <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com>
- <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
- <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org>
- <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
-Content-Language: en-CA
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 859e5b194a06fb7bf8b
-X-MBO-RS-META: 65ehrkuf6iokmf66d98o95pexrmxssjh
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 14:51, Maxime Ripard wrote:
-> On Mon, Sep 11, 2023 at 02:13:43PM +0200, Michel Dänzer wrote:
->> On 9/11/23 11:34, Maxime Ripard wrote:
->>> On Thu, Sep 07, 2023 at 01:40:02PM +0200, Daniel Stone wrote:
->>>>
->>>> Secondly, we will never be there. If we could pause for five years and sit
->>>> down making all the current usecases for all the current hardware on the
->>>> current kernel run perfectly, we'd probably get there. But we can't: there's
->>>> new hardware, new userspace, and hundreds of new kernel trees.
->>>
->>> [...]
->>> 
->>> I'm not sure it's actually an argument, really. 10 years ago, we would
->>> never have been at "every GPU on the market has an open-source driver"
->>> here. 5 years ago, we would never have been at this-series-here. That
->>> didn't stop anyone making progress, everyone involved in that thread
->>> included.
->>
->> Even assuming perfection is achievable at all (which is very doubtful,
->> given the experience from the last few years of CI in Mesa and other
->> projects), if you demand perfection before even taking the first step,
->> it will never get off the ground.
-> 
-> Perfection and scale from the get-go isn't reasonable, yes. Building a
-> small, "perfect" (your words, not mine) system that you can later expand
-> is doable.
+From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-I mean "perfect" as in every single available test runs, is reliable and gates CI. Which seems to be what you're asking for. The only possible expansion of such a system would be adding new 100% reliable tests.
+added new callback for
+1) read,write to root port configuration registers
+2) read,write to endpoint configuration registers
+3) root port interrupt handler
 
-What is being proposed here is an "imperfect" system which takes into account the reality that some tests are not 100% reliable, and can be improved gradually while already preventing some regressions from getting merged.
+agilex and newer platforms need to implemant the callback and generic root 
+port driver should work ( without much changes ) , legacy platforms (arria
+ and startix) implement configuration read,write directly in wrapper 
+api _altera_pcie_cfg_read/_altera_pcie_cfg_write
+
+changelog v2:
+saperated into two patches
+1.refactored the driver for easily portability to future Altera FPGA
+platforms
+2.added support for "Agilex" FPGA
+
+this driver supports PCI RP IP on Agilex FPGA, as these are FPGA its up
+to the user to add PCI RP or not ( as per his needs). we are not adding
+the device tree as part of this commit. we are expecting the add device
+tree changes only if he is adding PCI RP IP in his design
+
+changelog v3:
+incorporate review comments from Bjorn Helgaas
 
 
->>> How are we even supposed to detect those failures in the first
->>> place if tests are flagged as unreliable?
->>
->> Based on experience with Mesa, only a relatively small minority of
->> tests should need to be marked as flaky / not run at all. The majority
->> of tests are reliable and can catch regressions even while some tests
->> are not yet.
-> 
-> I understand and acknowledge that it worked with Mesa. That's great for
-> Mesa. That still doesn't mean that it's the panacea and is for every
-> project.
+D M Sharath Kumar (2):
+  PCI: altera: refactor driver for supporting new platforms
+  PCI: altera: add support for agilex family fpga
 
-Not sure what you're referring to by panacea, or how it relates to "some tests can be useful even while others aren't yet".
-
-
->>> No matter what we do here, what you describe will always happen. Like,
->>> if we do flag those tests as unreliable, what exactly prevents another
->>> issue to come on top undetected, and what will happen when we re-enable
->>> testing?
->>
->> Any issues affecting a test will need to be fixed before (re-)enabling
->> the test for CI.
-> 
-> If that underlying issue is never fixed, at which point do we consider
-> that it's a failure and should never be re-enabled? Who has that role?
-
-Not sure what you're asking. Anybody can (re-)enable a test in CI, they just need to make sure first that it is reliable. Until somebody does that work, it'll stay disabled in CI.
-
-
->>> It might or might not be an issue for Linus' release, but I can
->>> definitely see the trouble already for stable releases where fixes will
->>> be backported, but the test state list certainly won't be updated.
->>
->> If the stable branch maintainers want to take advantage of CI for the
->> stable branches, they may need to hunt for corresponding state list
->> commits sometimes. They'll need to take that into account for their
->> decision.
-> 
-> So we just expect the stable maintainers to track each and every patches
-> involved in a test run, make sure that they are in a stable tree, and
-> then update the test list? Without having consulted them at all?
-
-I don't expect them to do anything. See the If at the start of what I wrote.
-
-
->>>> By keeping those sets of expectations, we've been able to keep Mesa pretty
->>>> clear of regressions, whilst having a very clear set of things that should
->>>> be fixed to point to. It would be great if those set of things were zero,
->>>> but it just isn't. Having that is far better than the two alternatives:
->>>> either not testing at all (obviously bad), or having the test always be red
->>>> so it's always ignored (might as well just not test).
->>>
->>> Isn't that what happens with flaky tests anyway?
->>
->> For a small minority of tests. Daniel was referring to whole test suites.
->>
->>> Even more so since we have 0 context when updating that list.
->>
->> The commit log can provide whatever context is needed.
-> 
-> Sure, I've yet to see that though.
-> 
-> There's in 6.6-rc1 around 240 reported flaky tests. None of them have
-> any context. That new series hads a few dozens too, without any context
-> either. And there's no mention about that being a plan, or a patch
-> adding a new policy for all tests going forward.
-
-That does sound bad, would need to be raised in review.
-
-
-> Any concern I raised were met with a giant "it worked on Mesa" handwave
-
-Lessons learned from years of experience with big real-world CI systems like this are hardly "handwaving".
-
+ drivers/pci/controller/pcie-altera.c | 305 ++++++++++++++++++++++++---
+ 1 file changed, 275 insertions(+), 30 deletions(-)
 
 -- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+2.34.1
 
