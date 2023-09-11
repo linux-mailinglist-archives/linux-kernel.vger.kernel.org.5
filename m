@@ -2,171 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7787579B3D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD9E79AFB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350046AbjIKVfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
+        id S241841AbjIKV5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242644AbjIKQBJ (ORCPT
+        with ESMTP id S242663AbjIKQFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:01:09 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333B71B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:01:04 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-313e742a787so2889070f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:01:04 -0700 (PDT)
+        Mon, 11 Sep 2023 12:05:11 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208271AE;
+        Mon, 11 Sep 2023 09:05:06 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a21b6d105cso587471266b.3;
+        Mon, 11 Sep 2023 09:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694448062; x=1695052862; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s2glCAHgqqUPWc3CP1OHlMrR0Qn4lq/01XXCsFqva+s=;
-        b=SY5tXYSL3U0PP/qZ2RJPEX8XX/Ll4iOZBCdPuex9hsdzhZ+C3ru461B8OLjaALH476
-         1AdXOSm3C+yDtkKaI7RWZvjBAmsGgekfnEEh9Q6rs43zfndBKIs4EgTJgH3Q8xn79eaq
-         MWqqyaId4JVXpZDFD1kyhb6qIE7HjgQLgbnxM+5mt7wQq+8ZEGjfSGUu4O9iKf5koYY8
-         MvaOkoPxuwM5N4rI69PpZJQ+i5oJTU7n9iuLv385kU7b33Sb0bSpGurrobyszWmw23T4
-         GvQaZU/AbMAoJGN/nsnZCt4d3pLlrRVzGAWkANGF7RfQBR/Xuxn1Whg3/7VTexWKb2Nv
-         7rdA==
+        d=gmail.com; s=20221208; t=1694448304; x=1695053104; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6u7WBE0C2GBolYTrm9eS0oWBeCuxRHF6Iy68Vs1pLw=;
+        b=bbbFJfqJKO1QgHRKmYELxz9X4//WwTxUxABc88n5/goVD+6GAaMCyyJYYy5xS+iBaf
+         fhE45KGUKt5hq41bZVEyUebzLFqr0UHE00d1r+COKeoU1qjpgb+q6tkI4Qyp8z/I2Eru
+         Fl7hGDfTEhxkIzkzlnhNwmY+7n+qmF1xZTSzH1eTdTFR+z6QEsLgt/A/42QDHMWBQRcJ
+         I09zpI+3R21fUpkd6E1dYI48giJqeKth1mSqnXILAj206AH88uakyLBjI5wdle/WYWnh
+         //CSEaMYnKA2Y5qDHt6BI4OF5M5Q1CxNMIC7ETiZzk7m2i0iHHz2j1yl6twxTz4JnUse
+         s65Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694448062; x=1695052862;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=s2glCAHgqqUPWc3CP1OHlMrR0Qn4lq/01XXCsFqva+s=;
-        b=NTYBGJJ6lM+8cStzN3GYQKkG68ThHec9QxEAQxFhzTnZAfSUsprMwR0co2ngw1d74w
-         F2TZyYSswGeAn4LB33z5evmw5WS8xGLZtVgBVs/PJX5RRlBMjTWQRv8riJfyYLqrKqrs
-         x120MPCDqDtQIDv8Y10I9a9VUPpBd5Io+8/1SD0MOfrJBohtyU7q8nCZlpdKI8Px0rnL
-         7dxtqZnlFVu/yaoXbJc5XNCGh+YLXImonGFDzi9BsiyCvsDqV6tBcioJSep7XSc1I4zc
-         i6z26xlBOUMO/Uik0fWajqPgQLPDxgBA4UQY/vabIYp0GQ2zEYn5JnhXlunpGp+di1PR
-         SQCA==
-X-Gm-Message-State: AOJu0Yyoiu6/kBWcrxBkcmOM9tNQVtjv51tYlEQ9b/GysRGn4CP+7qSC
-        Plf2djqH0sbgJC4/H1su6msXlA==
-X-Google-Smtp-Source: AGHT+IEGZdz3zyhtcZpXFiMnEoQFm/pxuP8ny4P7dx2LWdM6dxPR5OqpTxSezqhBaOeX4ArFri4Nlw==
-X-Received: by 2002:a5d:568f:0:b0:314:3e96:bd7e with SMTP id f15-20020a5d568f000000b003143e96bd7emr27788wrv.4.1694448062135;
-        Mon, 11 Sep 2023 09:01:02 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:daaa:8bc3:eeb7:ce8? ([2a01:e0a:982:cbb0:daaa:8bc3:eeb7:ce8])
-        by smtp.gmail.com with ESMTPSA id z20-20020a1c4c14000000b00402e942561fsm13648037wmf.38.2023.09.11.09.01.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 09:01:01 -0700 (PDT)
-Message-ID: <eb89a5df-dcac-408d-bf4a-c0f80e0b9da9@linaro.org>
-Date:   Mon, 11 Sep 2023 18:01:00 +0200
+        d=1e100.net; s=20230601; t=1694448304; x=1695053104;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n6u7WBE0C2GBolYTrm9eS0oWBeCuxRHF6Iy68Vs1pLw=;
+        b=usyiaUyeyGEqa63Df+kUH91flGmu9nDEtdPBu2uJfLRcE1izqEFBDQmUYp2s0XB9Ne
+         t4dIATN4MXDgYlYbnXy+Q2dPdOBI8CiN19/XNsg7DsOLdF5nhpOvq3A96gM+gU88y0j6
+         Rxvxi58BIej1zs9WVIaJ45ni00GR+gLRLEJxOgGYSUNNshpxtWNjfByQJAQ3N8UiChXR
+         ADwH2Wpx/MSNfnzrGWVlECDb3EqWJcffX4pF1Ev5PNq46W3iy2l+2FBMNSyErAgHrwJn
+         F5S9qf+MjD4o8WV9TtJVmFY8xab2G5+rUjzHC6ZwGezefm8IZLSC+yGoNzl58gwUy4zN
+         /bWA==
+X-Gm-Message-State: AOJu0YxUA+kQjz+GWmFw+2t6XppjOFV8Kc3JHOgESD/nc0JNabk2lj2x
+        jw0BuV87N4nbZH282cJy75+bv2lnL0tFSA==
+X-Google-Smtp-Source: AGHT+IEgeuFO5IlATMrpoHlg0qKxO7fWdTmPbs4L1udB6qxv6lG+9vyujy+4QgW4aS3c6DFh/lFrNQ==
+X-Received: by 2002:a17:906:3192:b0:9a5:cc2b:50f1 with SMTP id 18-20020a170906319200b009a5cc2b50f1mr8608355ejy.67.1694448304269;
+        Mon, 11 Sep 2023 09:05:04 -0700 (PDT)
+Received: from skbuf ([188.26.56.202])
+        by smtp.gmail.com with ESMTPSA id y19-20020a17090668d300b0098884f86e41sm5490193ejr.123.2023.09.11.09.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:05:03 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 19:05:01 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
+ offloading for KSZ9477
+Message-ID: <20230911160501.5vc4nttz6fnww56h@skbuf>
+References: <20230906152801.921664-1-lukma@denx.de>
+ <20230911165848.0741c03c@wsk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 5/5] arm64: dts: meson: u200: add onboard devices
-Content-Language: en-US, fr
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org
-References: <20230911154541.471484-1-jbrunet@baylibre.com>
- <20230911154541.471484-6-jbrunet@baylibre.com>
- <eedc9787-06b7-bac5-a1f5-ba07d23f4ac7@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <eedc9787-06b7-bac5-a1f5-ba07d23f4ac7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911165848.0741c03c@wsk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2023 17:56, Krzysztof Kozlowski wrote:
-> On 11/09/2023 17:45, Jerome Brunet wrote:
->> Add missing audio devices found on the u200 PCB. This includes
->> * Lineout connected to the internal DAC
->> * SPDIF input connected to a coaxial socket
->> * TDM input decoders allowing output loopback
->> * TDM A and B output encoders and interfaces
->>
->> TDM A and B link format is set by the related external codec.
->> Internal audio DAC can hook to any TDM output.
->>
->> This change does not include support necessary the optional the speaker and
->> PDM Mic headers
->>
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>   .../boot/dts/amlogic/meson-g12a-u200.dts      | 228 +++++++++++++++++-
->>   1 file changed, 218 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> index da66e2e1dffb..9abe37b5b227 100644
->> --- a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> +++ b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
->> @@ -9,6 +9,7 @@
->>   #include <dt-bindings/gpio/gpio.h>
->>   #include <dt-bindings/gpio/meson-g12a-gpio.h>
->>   #include <dt-bindings/sound/meson-g12a-tohdmitx.h>
->> +#include <dt-bindings/sound/meson-g12a-toacodec.h>
->>   
->>   / {
->>   	compatible = "amlogic,u200", "amlogic,g12a";
->> @@ -19,6 +20,22 @@ aliases {
->>   		ethernet0 = &ethmac;
->>   	};
->>   
->> +	dioo2133: audio-amplifier-0 {
->> +		#sound-dai-cells = <0>;
->> +		compatible = "simple-audio-amplifier";
+On Mon, Sep 11, 2023 at 04:58:48PM +0200, Lukasz Majewski wrote:
+> Dear Community,
 > 
-> compatible is by convention first property. Do you have different style
-> in Amlogic/Meson?
-
-Not really, no specific style
-
-> 
->> +		status = "okay";
-> 
-> status is by default.
-
-I'll fix the patch on my tree.
-
-Thanks,
-Neil
-
-> 
+> Are there any comments regarding this new revision of the HSR support
+> for KSZ9477 switch?
 > 
 > Best regards,
-> Krzysztof
 > 
+> Lukasz Majewski
 
+Yeah, the integration with the DSA master's MAC address is not quite
+what I was expecting to see.
+
+See, both the DSA master's MAC address, as well as the HSR device's MAC
+address, can be changed at runtime with:
+
+ip link set eth0 address AA:BB:CC:DD:EE:FF # DSA master
+ip link set lan1 address AA:BB:CC:DD:EE:FF # indirectly changes the HSR's address too
+
+which is problematic because the hardware does not get updated in that
+case, but the address change is not refused either.
+
+Actually, the reason why I haven't yet said anything is because it made
+me realize that there is a pre-existing bug in net/dsa/slave.c where we
+have this pattern:
+
+	if (!ether_addr_equal(dev->dev_addr, master->dev_addr))
+		dev_uc_add(master, dev->dev_addr);
+
+but there is no replay of the dev_uc_add() call when the master->dev_addr
+changes. This really results in RX packet loss, as I have tested. I don't
+know what is the best way to solve it.
+
+Anyway, programming the MAC address of the DSA master or of the HSR
+device to hardware seems to require tracking the NETDEV_CHANGEADDR and
+NETDEV_PRE_CHANGEADDR events, even if only to reject those changes.
