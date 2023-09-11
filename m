@@ -2,300 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176C579C05F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FFB779B6F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239673AbjIKV1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
+        id S1354798AbjIKVzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:55:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242716AbjIKQMZ (ORCPT
+        with ESMTP id S242739AbjIKQOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:12:25 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B547DCCA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:12:19 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-6515d44b562so30591436d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:12:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1694448739; x=1695053539; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2Fm3Bafxaxq7OSAQ9sLz+uyVn20YSYfcySqL/LZ4QTY=;
-        b=xVoNK0QImeLqDCKRcU2xdLyyzVSwQ1SLU0z2IoV3hZPfoWgY4mSAq5oVhrIZQ1iF8m
-         V+tN2tVKcrE2bnNbH3EiCAykqcyfNlQEEUri3xHrNKQD7+Gd8DzDHGM2DO4CsCMNGecr
-         jVctEEq12U3kCHNsu/I+zRLLIxdnkhh4HyDNncnjTpt96TNoAV6Qu10hlL4g74611e0+
-         reikrBecMJT3kiWE6JSxDPO1IUFdRXVQb5k06gO56C9RKegU73kFL1RPkvenXQp/GW3h
-         Ju1+ftVUIqVUXZDQ6qUNtrFx5pMalb5+kwQpNlvmZeXCE7QMlkhTj1qc9fOy36khfZxh
-         5adA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694448739; x=1695053539;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2Fm3Bafxaxq7OSAQ9sLz+uyVn20YSYfcySqL/LZ4QTY=;
-        b=MIKX0vRZ8jXOYpslZA32IJDufU6v6CfFZv4fAz/mL5buDDljH07QL5RYNJXXVExsLn
-         lufTdWWoHghF65Q3HEznK0n3zTos9tga9snAbnm6CDwWCiWXSAOvJYS0N7wKeVvKkW8z
-         um6pEe6TdtcWFqulwaZHg1u9ypZc8YfXfagnM4+EwLzrjBKRl8mfoHLMKqNVcB58d8Fs
-         x2eBvmjC6e602qBLsmzhpopPtYyDyIlO694JtP+nQ/K8wbdeB9Wxt+MQh6/jC7UeZmnv
-         nvnCyuziH4+TSX5VLbQSwCZWkcXBkAbFOI0KI+zAtkYh83dlc7fLGJDi0VLhmdbDXZ3w
-         8Png==
-X-Gm-Message-State: AOJu0YzzsmdSlmaQRIyU3xVY0mnBODoTdqX8Ly/m+Durcpdvjbo3t9+I
-        hTCFF5A/nkxnODNl8T+7Dr5Dzw==
-X-Google-Smtp-Source: AGHT+IHfJzEj3YN+IDLa6c5OoOh5gMCnU53CNkVDYUfVOD27Y4SNqPHEBMqIhlGup6+WHXcBbS4pwQ==
-X-Received: by 2002:a05:6214:12da:b0:64f:43b9:fe4c with SMTP id s26-20020a05621412da00b0064f43b9fe4cmr10140146qvv.47.1694448738736;
-        Mon, 11 Sep 2023 09:12:18 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
-        by smtp.gmail.com with ESMTPSA id e12-20020a0ce3cc000000b0063d30c10f1esm3038666qvl.70.2023.09.11.09.12.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:12:18 -0700 (PDT)
-Message-ID: <827b859e3ff8176ef0b18c29bc17481b4105e368.camel@ndufresne.ca>
-Subject: Re: [PATCH 3/9] dma-heap: Provide accessors so that in-kernel
- drivers can allocate dmabufs from specific heaps
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>, tjmercier@google.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
-        kuohong.wang@mediatek.com
-Date:   Mon, 11 Sep 2023 12:12:17 -0400
-In-Reply-To: <20230911023038.30649-4-yong.wu@mediatek.com>
-References: <20230911023038.30649-1-yong.wu@mediatek.com>
-         <20230911023038.30649-4-yong.wu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 11 Sep 2023 12:14:06 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5511B8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:14:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4C59621842;
+        Mon, 11 Sep 2023 16:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694448840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=xIAPPZSGR1irVlnoEVDmksfeQUhXgr0/wuH56ipIsSo=;
+        b=hGUePpX6IGz+S3javqQr6Ra6HdZJfauKeZW2oI0F35uGA0jBxLGlYwyqcX98GFDpNX479q
+        7NV/Vn2w79NCE/qZkq87qlHePjn+z9xHHtlIITWjqMdQOtkN+G8VirHTdBR3mObVbuZd5Y
+        JCkYejhji9YOhcVKFuk3EMjPuIer92w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694448840;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=xIAPPZSGR1irVlnoEVDmksfeQUhXgr0/wuH56ipIsSo=;
+        b=m5H4tCaBxmu4H3QExqGFNozeiWGQ2s/i6g0VXg9u3TfLc3f1Bqk3e3Jxdm3uxYtj8qrRcj
+        BKlBjqK6wtI3cfBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FF0913780;
+        Mon, 11 Sep 2023 16:14:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id a9sZB8g8/2SGAwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 16:14:00 +0000
+Message-ID: <e8d5cb3d-2588-4e72-b42d-c10fd47fcbdf@suse.cz>
+Date:   Mon, 11 Sep 2023 18:13:59 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: page_alloc: fix cma pageblock was stolen in rmqueue
+ fallback
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, nsaenzju@redhat.com, yj.chiang@mediatek.com,
+        Mark-pk Tsai <mark-pk.tsai@mediatek.com>,
+        Joe Liu <joe.liu@mediatek.com>
+References: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
+ <20230905090922.zy7srh33rg5c3zao@techsingularity.net>
+ <20230911155727.GA102237@cmpxchg.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ tR6d+JzM8nFUZA==
+In-Reply-To: <20230911155727.GA102237@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/11/23 17:57, Johannes Weiner wrote:
+> On Tue, Sep 05, 2023 at 10:09:22AM +0100, Mel Gorman wrote:
+>> mm: page_alloc: Free pages to correct buddy list after PCP lock contention
+>> 
+>> Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+>> returns pages to the buddy list on PCP lock contention. However, for
+>> migratetypes that are not MIGRATE_PCPTYPES, the migratetype may have
+>> been clobbered already for pages that are not being isolated. In
+>> practice, this means that CMA pages may be returned to the wrong
+>> buddy list. While this might be harmless in some cases as it is
+>> MIGRATE_MOVABLE, the pageblock could be reassigned in rmqueue_fallback
+>> and prevent a future CMA allocation. Lookup the PCP migratetype
+>> against unconditionally if the PCP lock is contended.
+>> 
+>> [lecopzer.chen@mediatek.com: CMA-specific fix]
+>> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+>> Reported-by: Joe Liu <joe.liu@mediatek.com>
+>> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+>> ---
+>>  mm/page_alloc.c | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 452459836b71..4053c377fee8 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -2428,7 +2428,13 @@ void free_unref_page(struct page *page, unsigned int order)
+>>  		free_unref_page_commit(zone, pcp, page, migratetype, order);
+>>  		pcp_spin_unlock(pcp);
+>>  	} else {
+>> -		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
+>> +		/*
+>> +		 * The page migratetype may have been clobbered for types
+>> +		 * (type >= MIGRATE_PCPTYPES && !is_migrate_isolate) so
+>> +		 * must be rechecked.
+>> +		 */
+>> +		free_one_page(zone, page, pfn, order,
+>> +			      get_pcppage_migratetype(page), FPI_NONE);
+>>  	}
+>>  	pcp_trylock_finish(UP_flags);
+>>  }
+>> 
+> 
+> I had sent a (similar) fix for this here:
+> 
+> https://lore.kernel.org/lkml/20230821183733.106619-4-hannes@cmpxchg.org/
+> 
+> The context wasn't CMA, but HIGHATOMIC pages going to the movable
+> freelist. But the class of bug is the same: the migratetype tweaking
+> really only applies to the pcplist, not the buddy slowpath; I added a
+> local pcpmigratetype to make it more clear, and hopefully prevent bugs
+> of this nature down the line.
 
-Le lundi 11 septembre 2023 =C3=A0 10:30 +0800, Yong Wu a =C3=A9crit=C2=A0:
-> From: John Stultz <jstultz@google.com>
->=20
-> This allows drivers who don't want to create their own
-> DMA-BUF exporter to be able to allocate DMA-BUFs directly
-> from existing DMA-BUF Heaps.
->=20
-> There is some concern that the premise of DMA-BUF heaps is
-> that userland knows better about what type of heap memory
-> is needed for a pipeline, so it would likely be best for
-> drivers to import and fill DMA-BUFs allocated by userland
-> instead of allocating one themselves, but this is still
-> up for debate.
+Seems to be the cleanest solution to me, indeed.
 
+> I'm just preparing v2 of the above series. Do you want me to break
+> this change out and send it separately?
 
-Would be nice for the reviewers to provide the information about the user o=
-f
-this new in-kernel API. I noticed it because I was CCed, but strangely it d=
-idn't
-make it to the mailing list yet and its not clear in the cover what this is=
- used
-with.=20
-
-I can explain in my words though, my read is that this is used to allocate =
-both
-user visible and driver internal memory segments in MTK VCODEC driver.
-
-I'm somewhat concerned that DMABuf objects are used to abstract secure memo=
-ry
-allocation from tee. For framebuffers that are going to be exported and sha=
-red
-its probably fair use, but it seems that internal shared memory and codec
-specific reference buffers also endup with a dmabuf fd (often called a secu=
-re fd
-in the v4l2 patchset) for data that is not being shared, and requires a 1:1
-mapping to a tee handle anyway. Is that the design we'd like to follow ? Ca=
-n't
-we directly allocate from the tee, adding needed helper to make this as sim=
-ple
-as allocating from a HEAP ?
-
-Nicolas
-
->=20
-> Signed-off-by: John Stultz <jstultz@google.com>
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> [Yong: Fix the checkpatch alignment warning]
-> ---
->  drivers/dma-buf/dma-heap.c | 60 ++++++++++++++++++++++++++++----------
->  include/linux/dma-heap.h   | 25 ++++++++++++++++
->  2 files changed, 69 insertions(+), 16 deletions(-)
->=20
-> diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-> index dcc0e38c61fa..908bb30dc864 100644
-> --- a/drivers/dma-buf/dma-heap.c
-> +++ b/drivers/dma-buf/dma-heap.c
-> @@ -53,12 +53,15 @@ static dev_t dma_heap_devt;
->  static struct class *dma_heap_class;
->  static DEFINE_XARRAY_ALLOC(dma_heap_minors);
-> =20
-> -static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
-> -				 unsigned int fd_flags,
-> -				 unsigned int heap_flags)
-> +struct dma_buf *dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
-> +				      unsigned int fd_flags,
-> +				      unsigned int heap_flags)
->  {
-> -	struct dma_buf *dmabuf;
-> -	int fd;
-> +	if (fd_flags & ~DMA_HEAP_VALID_FD_FLAGS)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
-> +		return ERR_PTR(-EINVAL);
-> =20
->  	/*
->  	 * Allocations from all heaps have to begin
-> @@ -66,9 +69,20 @@ static int dma_heap_buffer_alloc(struct dma_heap *heap=
-, size_t len,
->  	 */
->  	len =3D PAGE_ALIGN(len);
->  	if (!len)
-> -		return -EINVAL;
-> +		return ERR_PTR(-EINVAL);
-> =20
-> -	dmabuf =3D heap->ops->allocate(heap, len, fd_flags, heap_flags);
-> +	return heap->ops->allocate(heap, len, fd_flags, heap_flags);
-> +}
-> +EXPORT_SYMBOL_GPL(dma_heap_buffer_alloc);
-> +
-> +static int dma_heap_bufferfd_alloc(struct dma_heap *heap, size_t len,
-> +				   unsigned int fd_flags,
-> +				   unsigned int heap_flags)
-> +{
-> +	struct dma_buf *dmabuf;
-> +	int fd;
-> +
-> +	dmabuf =3D dma_heap_buffer_alloc(heap, len, fd_flags, heap_flags);
->  	if (IS_ERR(dmabuf))
->  		return PTR_ERR(dmabuf);
-> =20
-> @@ -106,15 +120,9 @@ static long dma_heap_ioctl_allocate(struct file *fil=
-e, void *data)
->  	if (heap_allocation->fd)
->  		return -EINVAL;
-> =20
-> -	if (heap_allocation->fd_flags & ~DMA_HEAP_VALID_FD_FLAGS)
-> -		return -EINVAL;
-> -
-> -	if (heap_allocation->heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
-> -		return -EINVAL;
-> -
-> -	fd =3D dma_heap_buffer_alloc(heap, heap_allocation->len,
-> -				   heap_allocation->fd_flags,
-> -				   heap_allocation->heap_flags);
-> +	fd =3D dma_heap_bufferfd_alloc(heap, heap_allocation->len,
-> +				     heap_allocation->fd_flags,
-> +				     heap_allocation->heap_flags);
->  	if (fd < 0)
->  		return fd;
-> =20
-> @@ -205,6 +213,7 @@ const char *dma_heap_get_name(struct dma_heap *heap)
->  {
->  	return heap->name;
->  }
-> +EXPORT_SYMBOL_GPL(dma_heap_get_name);
-> =20
->  struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_inf=
-o)
->  {
-> @@ -290,6 +299,24 @@ struct dma_heap *dma_heap_add(const struct dma_heap_=
-export_info *exp_info)
->  	kfree(heap);
->  	return err_ret;
->  }
-> +EXPORT_SYMBOL_GPL(dma_heap_add);
-> +
-> +struct dma_heap *dma_heap_find(const char *name)
-> +{
-> +	struct dma_heap *h;
-> +
-> +	mutex_lock(&heap_list_lock);
-> +	list_for_each_entry(h, &heap_list, list) {
-> +		if (!strcmp(h->name, name)) {
-> +			kref_get(&h->refcount);
-> +			mutex_unlock(&heap_list_lock);
-> +			return h;
-> +		}
-> +	}
-> +	mutex_unlock(&heap_list_lock);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(dma_heap_find);
-> =20
->  static void dma_heap_release(struct kref *ref)
->  {
-> @@ -315,6 +342,7 @@ void dma_heap_put(struct dma_heap *h)
->  	kref_put(&h->refcount, dma_heap_release);
->  	mutex_unlock(&heap_list_lock);
->  }
-> +EXPORT_SYMBOL_GPL(dma_heap_put);
-> =20
->  static char *dma_heap_devnode(const struct device *dev, umode_t *mode)
->  {
-> diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
-> index f3c678892c5c..59e70f6c7a60 100644
-> --- a/include/linux/dma-heap.h
-> +++ b/include/linux/dma-heap.h
-> @@ -64,10 +64,35 @@ const char *dma_heap_get_name(struct dma_heap *heap);
->   */
->  struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_inf=
-o);
-> =20
-> +/**
-> + * dma_heap_find - get the heap registered with the specified name
-> + * @name: Name of the DMA-Heap to find
-> + *
-> + * Returns:
-> + * The DMA-Heap with the provided name.
-> + *
-> + * NOTE: DMA-Heaps returned from this function MUST be released using
-> + * dma_heap_put() when the user is done to enable the heap to be unloade=
-d.
-> + */
-> +struct dma_heap *dma_heap_find(const char *name);
-> +
->  /**
->   * dma_heap_put - drops a reference to a dmabuf heap, potentially freein=
-g it
->   * @heap: the heap whose reference count to decrement
->   */
->  void dma_heap_put(struct dma_heap *heap);
-> =20
-> +/**
-> + * dma_heap_buffer_alloc - Allocate dma-buf from a dma_heap
-> + * @heap:	DMA-Heap to allocate from
-> + * @len:	size to allocate in bytes
-> + * @fd_flags:	flags to set on returned dma-buf fd
-> + * @heap_flags: flags to pass to the dma heap
-> + *
-> + * This is for internal dma-buf allocations only. Free returned buffers =
-with dma_buf_put().
-> + */
-> +struct dma_buf *dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
-> +				      unsigned int fd_flags,
-> +				      unsigned int heap_flags);
-> +
->  #endif /* _DMA_HEAPS_H */
-
+Works for me, if you combine the it with the information about what commit
+that fixes, the CMA implications reported, and Cc stable.
