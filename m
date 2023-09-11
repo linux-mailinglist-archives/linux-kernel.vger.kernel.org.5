@@ -2,153 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5BD79A328
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B6579A337
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjIKGBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
+        id S231979AbjIKGDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234288AbjIKGBF (ORCPT
+        with ESMTP id S229601AbjIKGDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:01:05 -0400
+        Mon, 11 Sep 2023 02:03:05 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D8DCD2;
-        Sun, 10 Sep 2023 23:00:58 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5iYfV026956;
-        Mon, 11 Sep 2023 06:00:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=G6KhS/41CnEp4pd00YTwr0gP5hZO7WDTthOGelST+0w=;
- b=kj2I0Rj5rqMoYJSg7qiVJpZGerZkIfdMge9m27A2V2arGlvK+r8vru83JOcZ1yd+2z6t
- Lx/57mjb+2g4nGfcNOCgjQyXGdadWBxdqk2MjjXM5m8E3i3nnvB96o67gQpDnBdP658S
- Id8zr9j7TlK8snpVyRCr0yCGpp5k1DW748DvQykLko+uLss6yckFh/TGIdrCF9DpCDep
- vW/37wi+imebiQ5wHiDz5oyy21i+qtBWtwwkTKmCGJIfsbNlSvOgmiXDljpXEn1Ef/S6
- 0msJUIohyWmiIKqbUaXoR2xvBK1xHr+mCNm9OfvyuabsLGdjpyG3hJLKuTAbSEdCET4B WA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmk1ap-1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B451CD2;
+        Sun, 10 Sep 2023 23:02:06 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5e8Yt002248;
+        Mon, 11 Sep 2023 06:01:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=RR5dflBIS+AjZvT9GMXk42NHZjPTycEkvcZES8b7aR8=;
+ b=N+NsLtqFvZRHWyRg/h2XVaRehmpL94AQJXG/AjhjOHjvMn9a6Bc+s9nQ6NiD1lnz4hKo
+ fQ8Vv/yTiSC54oq8pWcTrZ0FwVAniOCIjV9dhIYcwCY9xkPgtxFbJMJ5MDmAntSgoB5u
+ X7ENsQDEry+P0F8K2jDmJPwq0Xy7WJlhN4/LrTDuuwQ1BN4TZvcdqwCecdW9ozy7ramT
+ meSXsO3MCItDNHRfx41CnS19fFAQgMdLFyAX5UCOv+18yhHW3GeBlbJPYisuZsQuyn3r
+ jvfudDKO126JFYBnDGWr5P8X7lLimOcH0T1eUrn3svDd5uTpOrajghuRormce2DHmXGY aA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0j0fjrv1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 06:00:52 +0000
-Received: from pps.filterd (NASANPPMTA01.qualcomm.com [127.0.0.1])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38B60Ncv021160;
-        Mon, 11 Sep 2023 06:00:51 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by NASANPPMTA01.qualcomm.com (PPS) with ESMTP id 3t0ht30048-1;
-        Mon, 11 Sep 2023 06:00:51 +0000
-Received: from NASANPPMTA01.qualcomm.com (NASANPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38B60pes021538;
-        Mon, 11 Sep 2023 06:00:51 GMT
-Received: from stor-dylan.qualcomm.com (stor-dylan.qualcomm.com [192.168.140.207])
-        by NASANPPMTA01.qualcomm.com (PPS) with ESMTP id 38B60p2w021537;
-        Mon, 11 Sep 2023 06:00:51 +0000
-Received: by stor-dylan.qualcomm.com (Postfix, from userid 359480)
-        id D7FDC20DEF; Sun, 10 Sep 2023 23:00:50 -0700 (PDT)
-From:   Can Guo <quic_cang@quicinc.com>
-To:     quic_cang@quicinc.com, mani@kernel.org, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Bean Huo <beanhuo@micron.com>, Lu Hongfei <luhongfei@vivo.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 6/6] scsi: ufs: ufs-sysfs: Introduce UFS power info sysfs nodes
-Date:   Sun, 10 Sep 2023 22:59:27 -0700
-Message-Id: <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
-References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
-X-QCInternal: smtphost
+        Mon, 11 Sep 2023 06:01:31 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B61URt024641
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 06:01:30 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Sun, 10 Sep 2023 23:01:18 -0700
+Date:   Mon, 11 Sep 2023 11:31:15 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+Subject: Re: [PATCH v5 11/17] qcom_minidump: Register ramoops region with
+ minidump
+Message-ID: <3119f3f6-92a5-4db1-85cf-bd16e31ae5a0@quicinc.com>
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: dI6VzXJHbKw-myoyrGk76uyywg1jL1a2
-X-Proofpoint-GUID: dI6VzXJHbKw-myoyrGk76uyywg1jL1a2
+X-Proofpoint-ORIG-GUID: xBrk-Pn9mM0MxC_5RsdRbWjljej3GIpW
+X-Proofpoint-GUID: xBrk-Pn9mM0MxC_5RsdRbWjljej3GIpW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-11_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=486 malwarescore=0 spamscore=0
- impostorscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110054
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=618 bulkscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110054
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having UFS power info available in sysfs makes it easier to tell the state
-of the link during runtime considering we have a bounch of power saving
-features and various combinations for backward compatiblity.
+On Sun, Sep 10, 2023 at 01:46:12AM +0530, Mukesh Ojha wrote:
+> Register all the pstore frontend with minidump, so that they can
+> be dumped as default Linux minidump region to be collected on
+> SoC where minidump is enabled.
+> 
+> Helper functions is written in separate file and built along with
+> the minidump driver, since it is client of minidump and also call
+> it at appropriate place from minidump probe so that they always
+> get registered.
+> 
+> While at it also rename the out minidump module object name during
+> build as qcom_apss_minidump which basically depicts as Qualcomm
+> Application processor subsystem minidump.
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+>  drivers/soc/qcom/Kconfig                 |  1 +
+>  drivers/soc/qcom/Makefile                |  3 +-
+>  drivers/soc/qcom/qcom_minidump.c         |  4 ++
+>  drivers/soc/qcom/qcom_ramoops_minidump.c | 88 ++++++++++++++++++++++++++++++++
+>  drivers/soc/qcom/qcom_ramoops_minidump.h | 10 ++++
+>  5 files changed, 105 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.c
+>  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.h
+> 
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 4b36d46807bc..b3977f1687d8 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -305,6 +305,7 @@ config QCOM_MINIDUMP
+>  	tristate "QCOM APSS Minidump driver"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+>  	depends on QCOM_SMEM
+> +	depends on PSTORE
 
-Signed-off-by: Can Guo <quic_cang@quicinc.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs | 48 ++++++++++++++++++++++++++----
- 1 file changed, 43 insertions(+), 5 deletions(-)
+Can't we make QC minidump available without PSTORE? PSTORE is another
+cllient for minidump, so other clients can still use minidump right?
+Where is this hard dependency coming from?
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 0c7efaf..25169f2 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1214,12 +1214,50 @@ Description:	This file shows the average latency (in micro seconds) of write
- 
- 		The file is read only.
- 
--What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
--What:		/sys/bus/platform/devices/*.ufs/monitor/write_req_latency_sum
--Date:		January 2021
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
-+What:		/sys/bus/platform/devices/*.ufs/power_info/gear
-+Date:		September 2023
- Contact:	Can Guo <quic_cang@quicinc.com>
--Description:	This file shows the total latency (in micro seconds) of write
--		requests after monitor gets started.
-+Description:	This file shows the gear of UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/lane
-+What:		/sys/bus/platform/devices/*.ufs/power_info/lane
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows how many lanes are enabled on the UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
-+What:		/sys/bus/platform/devices/*.ufs/power_info/mode
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the power mode of UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
-+What:		/sys/bus/platform/devices/*.ufs/power_info/rate
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the high speed rate of UFS link.
-+
-+		The file is read only.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
-+What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the UFS device power mode, i.e., the power mode
-+		set to UFS device via the Start Stop Unit command.
-+
-+What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
-+What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
-+Date:		September 2023
-+Contact:	Can Guo <quic_cang@quicinc.com>
-+Description:	This file shows the the state of the UFS link.
- 
- 		The file is read only.
- 
--- 
-2.7.4
-
+Thanks,
+Pavan
