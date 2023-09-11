@@ -2,49 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923EC79A1E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4337A79A1DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 05:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbjIKDkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 23:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        id S232593AbjIKDc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 23:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjIKDkh (ORCPT
+        with ESMTP id S230169AbjIKDc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 23:40:37 -0400
-X-Greylist: delayed 542 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 10 Sep 2023 20:40:31 PDT
-Received: from mail-m3137.qiye.163.com (mail-m3137.qiye.163.com [103.74.31.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F215B11A;
-        Sun, 10 Sep 2023 20:40:31 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256;
-        b=ZWP9zoHe+DX5RxpMpCDvktXejZkc/mXd3WUzK83Kb/0HH9PEdF6I4ISrT5GZ5hjMgh289NLHxa6K4VCxPpPGda3Uy/H35COe2M8xCqyXKBZCRj62AF/ctCqP5OO2ZPJAnRH5fzOjCNG2Woeg+Q9l+SYP499fNofGzzFm9c3qW84=;
-        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-        bh=yTyYR259NicqyaHlLq9RVb03xhYZ/gDfQr/E+onC0KM=;
-        h=date:mime-version:subject:message-id:from;
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by mail-m11880.qiye.163.com (Hmail) with ESMTPA id 976BC204F6;
-        Mon, 11 Sep 2023 11:31:16 +0800 (CST)
-From:   William Wu <william.wu@rock-chips.com>
-To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        william.wu@rock-chips.com, frank.wang@rock-chips.com,
-        jianwei.zheng@rock-chips.com, yangbin@rock-chips.com
-Subject: [PATCH v2] usb: dwc3: core: Avoid resume dwc3 if already suspended in pm resume
-Date:   Mon, 11 Sep 2023 11:31:12 +0800
-Message-Id: <20230911033112.3321-1-william.wu@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRhCHlYZQhkdQkJPGUNMSExVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSkpLQ0hJVUpLS1VLWQ
-        Y+
-X-HM-Tid: 0a8a824b22c72eb6kusn976bc204f6
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PUk6Mzo5Hz0CQhYPGj8YFzMQ
-        Mi4wCwNVSlVKTUJPT0tIS0xMSEJJVTMWGhIXVQwSFxcSGhZVDA47CRQYEFYYExILCFUYFBZFWVdZ
-        EgtZQVlOQ1VJSVVMVUpKT1lXWQgBWUFJQkpLNwY+
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
+        Sun, 10 Sep 2023 23:32:28 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3CA99;
+        Sun, 10 Sep 2023 20:32:24 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-565403bda57so2460845a12.3;
+        Sun, 10 Sep 2023 20:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694403143; x=1695007943; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8Jb9MR9AYWtXuR6qO0QNDU334MaQE9Bv7HRVUlFV5Tc=;
+        b=RjCjmPw2oXyH3N7ix4jSZT0UHIHPoEi1HMY+osW9x4O5BKVu4hQ4z9kc5N2f3gtxZQ
+         prfQ7GfX1XL9EydTpvSp5aiNZwM8CCa+ZfTj+lk9SDyMvOSjo98lWvUlx6tAXeFiNoaB
+         +nir9ranF7SUkDc1jYrPSypJOic3EznlycNR5HXy7P7EPFr2NjG7T5InGpCHvgidoml5
+         m/+hdpPKcihXNtVUM82Y5nMyhrB7ApCta2/QtdbEoXu/goIv+LhkMOwgTW48Rv6eEwFl
+         6MwHGnvrPHCcbHtYmnOTUX/xkH3mKYgHI6q3mVgAY1dhLIOsxtHU8a9GSSxpMmBbIodX
+         eGSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694403143; x=1695007943;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Jb9MR9AYWtXuR6qO0QNDU334MaQE9Bv7HRVUlFV5Tc=;
+        b=RFnVPtHBeoyoev4+xlD0Sv7Y9TRcxxijn+pRGkKiCu2GglFdg7YTk413XLoRlwMYPA
+         ahn3JMZQc3hwOqNT0P1aVlTqbJjnSBy6AsoA1W7/itnaCT+FYXiUNChFgb/CB+d89JkQ
+         tYFZ4Vj8ufwLf1rfMMfvKsbhmeKuj9tdpxO3IUSgoCqJLvUJsoRZjyvM7YRVF3OPEQY5
+         HdR/cV/rBLd63VkXj6DH8zyIwQ0HC5KxdAQF7rtk9zzJZfVa0coqG3VxnAhLg1DxyDel
+         JxvzAZHI0jxaVnp8L0D4+3+zeqN5i2sjgTEGBdstuleWdJUIeIVsJcyOl/xqzMPZLRx8
+         YThg==
+X-Gm-Message-State: AOJu0Yx4tqk43nCjyRjLsLkIWF/zpUUm3ZpuPK++kRXb4E5j1Vbxn5wL
+        U3I8mNbFHQNZyotiUdigA9HLXZk/s0Y=
+X-Google-Smtp-Source: AGHT+IH28xYTAgPl0RVhvaqH04wckRRe7XsPUqKo6rZdXRzEo8tnOW2t7O3KvkMJLZrLr20XTBjBaQ==
+X-Received: by 2002:a05:6a20:7d84:b0:129:3bb4:77f1 with SMTP id v4-20020a056a207d8400b001293bb477f1mr8689250pzj.0.1694403142987;
+        Sun, 10 Sep 2023 20:32:22 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id q25-20020a62e119000000b00686236718d8sm4593817pfh.41.2023.09.10.20.32.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Sep 2023 20:32:22 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 09:02:13 +0530
+Message-Id: <87zg1tbd1e.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Li Zetao <lizetao1@huawei.com>, tytso@mit.edu, jack@suse.com,
+        yi.zhang@huawei.com
+Cc:     lizetao1@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jbd2: Fix memory leak in journal_init_common()
+In-Reply-To: <20230911025138.983101-1-lizetao1@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,68 +67,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we enable PM runtime auto suspend for dwc3 on rockchip
-platforms (e.g. RK3562), it allows the dwc3 controller to
-enter runtime suspend if usb cable detached and power off
-the power domain of the controller. When system resume, if
-the dwc3 already in runtime suspended, it Shouldn't access
-the dwc3 registers in dwc3_resume() because its power domain
-maybe power off.
+Li Zetao <lizetao1@huawei.com> writes:
 
-Test on RK3562 tablet, this patch can help to avoid kernel
-panic when accessing the dwc3 registers in dwc3_resume() if
-the dwc3 is in runtime suspended and it's power domain is
-power off.
+> There is a memory leak reported by kmemleak:
+>
+>   unreferenced object 0xff11000105903b80 (size 64):
+>     comm "mount", pid 3382, jiffies 4295032021 (age 27.826s)
+>     hex dump (first 32 bytes):
+>       04 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
+>       ff ff ff ff 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     backtrace:
+>       [<ffffffffae86ac40>] __kmalloc_node+0x50/0x160
+>       [<ffffffffaf2486d8>] crypto_alloc_tfmmem.isra.0+0x38/0x110
+>       [<ffffffffaf2498e5>] crypto_create_tfm_node+0x85/0x2f0
+>       [<ffffffffaf24a92c>] crypto_alloc_tfm_node+0xfc/0x210
+>       [<ffffffffaedde777>] journal_init_common+0x727/0x1ad0
+>       [<ffffffffaede1715>] jbd2_journal_init_inode+0x2b5/0x500
+>       [<ffffffffaed786b5>] ext4_load_and_init_journal+0x255/0x2440
+>       [<ffffffffaed8b423>] ext4_fill_super+0x8823/0xa330
+>       ...
+>
+> The root cause was traced to an error handing path in journal_init_common()
+> when malloc memory failed in register_shrinker(). The checksum driver is
+> used to reference to checksum algorithm via cryptoapi and the user should
+> release the memory when the driver is no longer needed or the journal
+> initialization failed.
+>
+> Fix it by calling crypto_free_shash() on the "err_cleanup" error handing
+> path in journal_init_common().
+>
+> Fixes: c30713084ba5 ("jbd2: move load_superblock() into journal_init_common()")
+> Signed-off-by: Li Zetao <lizetao1@huawei.com>
 
-Kernel panic - not syncing: Asynchronous SError Interrupt
-Hardware name: Rockchip RK3562 RK817 TABLET LP4 Board (DT)
-Call trace:
-dump_backtrace.cfi_jt+0x0/0x8
-  dump_stack_lvl+0xc0/0x13c
-  panic+0x174/0x468
-  arm64_serror_panic+0x1b0/0x200
-  do_serror+0x184/0x1e4
-  el1_error+0x94/0x118
-  el1_abort+0x40/0x68
-  el1_sync_handler+0x58/0x88
-  el1_sync+0x8c/0x140
-  dwc3_readl+0x30/0x1a0
-  dwc3_phy_setup+0x38/0x510
-  dwc3_core_init+0x68/0xcd4
-  dwc3_core_init_for_resume+0x10c/0x25c
-  dwc3_resume_common+0x44/0x3d0
-  dwc3_resume+0x5c/0xb8
-  dpm_run_callback+0x70/0x488
-  device_resume+0x250/0x2f8
-  dpm_resume+0x258/0x9dc
+Thanks for the fix. I looked at your patch and it looks correct to me. 
+The patch mentioned in the "Fixes" tag moved the "load_superblock"
+function into journal_init_common() and from there onwards the cleanup
+routine in case of an error was not properly handled for
+crypto_alloc_shash()/j_chcksum_driver.
+IMO too, the correct place to handle the cleanup routine is
+journal_init_common() which is where this patch adds the cleanup.
 
-Signed-off-by: William Wu <william.wu@rock-chips.com>
----
-Changes in v2:
-- Remove Change-Id.
+Looks good to me. Feel free to add:-
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
- drivers/usb/dwc3/core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 9c6bf054f15d..8274a44f2d6a 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -2185,9 +2185,11 @@ static int dwc3_resume(struct device *dev)
- 
- 	pinctrl_pm_select_default_state(dev);
- 
--	ret = dwc3_resume_common(dwc, PMSG_RESUME);
--	if (ret)
--		return ret;
-+	if (!pm_runtime_suspended(dwc->dev)) {
-+		ret = dwc3_resume_common(dwc, PMSG_RESUME);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	pm_runtime_disable(dev);
- 	pm_runtime_set_active(dev);
--- 
-2.17.1
-
+> ---
+>  fs/jbd2/journal.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 768fa05bcbed..30dec2bd2ecc 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -1601,6 +1601,8 @@ static journal_t *journal_init_common(struct block_device *bdev,
+>  
+>  err_cleanup:
+>  	percpu_counter_destroy(&journal->j_checkpoint_jh_count);
+> +	if (journal->j_chksum_driver)
+> +		crypto_free_shash(journal->j_chksum_driver);
+>  	kfree(journal->j_wbuf);
+>  	jbd2_journal_destroy_revoke(journal);
+>  	journal_fail_superblock(journal);
+> -- 
+> 2.34.1
