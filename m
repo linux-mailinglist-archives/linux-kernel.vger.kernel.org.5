@@ -2,130 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D303E79B020
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F95A79B3BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240741AbjIKVt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        id S1353622AbjIKVuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237654AbjIKNFa (ORCPT
+        with ESMTP id S237655AbjIKNFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:05:30 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753A5DF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:05:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1694437526; x=1725973526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SMSvAIK8f24bxto0iuALkwzOXDi8ggcjv/HOf5OUMyk=;
-  b=k+VdmTfLDceV7nYACQaP9x2UQQQfcTPjS8R4nPSrUt/fJagBhboSRnnA
-   bLNpJULT6/6y6EoExhvViLKS9vxGxoW467sG8l4+T/YBp8AfWSAuYkxLo
-   hHriLFLmj/niKuQphTXVxxy0c775Ib/9LdSCzZSf3s4esDW3hCPkNrvSH
-   9rjRna+gBmOgI4IxT4F/UU+F+jvjZex8C2dRMnERBxM7KMWczAW4jXQsu
-   ZABJCfoxDs4QldJVBZOa+riKeSW9RACtX251mUx1fn7imhtWiUch0/7BQ
-   LwBcSHQwtVdOCwJsKM72GwZ0CwCtbQcHI/zd5wHSgyYu+mL1C+tDot7HO
-   w==;
-X-CSE-ConnectionGUID: VDayhyd4Rw2TIoz7MS5k0Q==
-X-CSE-MsgGUID: 1DSYGvUiRcaFtXRwQG1SZw==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="asc'?scan'208";a="3886195"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 06:05:23 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 11 Sep 2023 06:05:23 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 11 Sep 2023 06:05:21 -0700
-Date:   Mon, 11 Sep 2023 14:05:06 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Jinyu Tang <tangjinyu@tinylab.org>
-CC:     <william.qiu@starfivetech.com>, <hal.feng@starfivetech.com>,
-        <palmer@dabbelt.com>, <apatel@ventanamicro.com>,
-        <ttjjyystupid@163.com>, <falcon@tinylab.org>,
-        <wangjiexun@tinylab.org>, <linux-riscv@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] riscv: defconfig : add CONFIG_MMC_DW for starfive
-Message-ID: <20230911-uneaten-shuffling-27c862d5fb10@wendy>
-References: <20230911125955.8937-1-tangjinyu@tinylab.org>
+        Mon, 11 Sep 2023 09:05:31 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0503E0;
+        Mon, 11 Sep 2023 06:05:26 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BD59bk127073;
+        Mon, 11 Sep 2023 08:05:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694437509;
+        bh=1FoHF9ni6Hwn735OpvazjUIK8ceKZ/orTvVXyBvOC8s=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=TBWnProI8OC+E3Cf61uKOn+bBsCwim1O4KsOMHtlrsOjUdXdaTNVprGXTIHGkVxz0
+         iUTKh+tlzPR28kkiOLF3YLrpZMp9kCxdYA4gOBhsYoKOdaVujBu+vznIeUd42BZH7a
+         pSajfMftZWvXRVGq5c6/0VYB5IiIWbGSVALLOWyA=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BD59Te016792
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Sep 2023 08:05:09 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Sep 2023 08:05:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Sep 2023 08:05:08 -0500
+Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BD58nk030651;
+        Mon, 11 Sep 2023 08:05:08 -0500
+Message-ID: <1e1577a5-fb01-c84b-ede0-38058387ec23@ti.com>
+Date:   Mon, 11 Sep 2023 08:05:08 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5zK+w15ftwOdzKYN"
-Content-Disposition: inline
-In-Reply-To: <20230911125955.8937-1-tangjinyu@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/3] arm64: dts: ti: am654-base-board: add ICSSG2 Ethernet
+ support
+To:     MD Danish Anwar <danishanwar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <kristo@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
+        <r-gunasekaran@ti.com>
+References: <20230911071245.2173520-1-danishanwar@ti.com>
+ <20230911071245.2173520-3-danishanwar@ti.com>
+Content-Language: en-US
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230911071245.2173520-3-danishanwar@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---5zK+w15ftwOdzKYN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Sep 11, 2023 at 08:59:55PM +0800, Jinyu Tang wrote:
-> If these config not set, mmc can't run for jh7110, rootfs can't
-> be found when using SD card. So set CONFIG_MMC_DW=3Dy like arm64
-> defconfig, and set CONFIG_MMC_DW_STARFIVE=3Dy for starfive. Then
-> starfive vf2 can start SD card rootfs with mainline defconfig and
-> dtb.
->=20
-> Signed-off-by: Jinyu Tang <tangjinyu@tinylab.org>
+On 9/11/23 2:12 AM, MD Danish Anwar wrote:
+> ICSSG2 provides dual Gigabit Ethernet support.
+> 
+> For support SR2.0 ICSSG Ethernet firmware:
+> - provide different firmware blobs and use TX_PRU.
+> - IEP0 is used as PTP Hardware Clock and can only be used for one port.
+> - TX timestamp notification comes via INTC interrupt.
+> 
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 > ---
->  arch/riscv/configs/defconfig | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index ab86ec3b9..0664b92d1 100644
-> --- a/arch/riscv/configs/defconfig
-> +++ b/arch/riscv/configs/defconfig
-> @@ -170,6 +170,8 @@ CONFIG_MMC_SDHCI_PLTFM=3Dy
->  CONFIG_MMC_SDHCI_CADENCE=3Dy
->  CONFIG_MMC_SPI=3Dy
->  CONFIG_MMC_SUNXI=3Dy
-> +CONFIG_MMC_DW=3Dy
-> +CONFIG_MMC_DW_STARFIVE=3Dy
+>   .../arm64/boot/dts/ti/k3-am654-base-board.dts | 123 ++++++++++++++++++
 
-Is this where savedefconfig puts them? The order here looks different to
-the arm64 defconfig.
+Adding this to the base dts? What if I want to use my PRUs for something
+else? These "application nodes" define a single usecase out of many
+possible, and should IMHO always be in overlays so users can select which
+they want easily.
 
-Thanks,
-Conor.
+Andrew
 
->  CONFIG_RTC_CLASS=3Dy
->  CONFIG_RTC_DRV_SUN6I=3Dy
->  CONFIG_DMADEVICES=3Dy
-> --=20
-> 2.39.2
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
---5zK+w15ftwOdzKYN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZP8QgQAKCRB4tDGHoIJi
-0u/kAP0VaymayQ4ZAvwWzzzA6lrwMVpsmhM3WvJUeveCP5FEAgD+O6xt7cT5wC+X
-dKTvwNOFq60zyYKn/kFF3XNdxk6l8Ag=
-=Dg11
------END PGP SIGNATURE-----
-
---5zK+w15ftwOdzKYN--
+>   1 file changed, 123 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> index f5c26e9fba98..5cf9546ff9f7 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+> @@ -25,6 +25,8 @@ aliases {
+>   		ethernet0 = &cpsw_port1;
+>   		mmc0 = &sdhci0;
+>   		mmc1 = &sdhci1;
+> +		ethernet1 = &icssg2_emac0;
+> +		ethernet2 = &icssg2_emac1;
+>   	};
+>   
+>   	chosen {
+> @@ -144,6 +146,72 @@ vtt_supply: regulator-3 {
+>   		vin-supply = <&vcc3v3_io>;
+>   		gpio = <&wkup_gpio0 28 GPIO_ACTIVE_HIGH>;
+>   	};
+> +
+> +	/* Dual Ethernet application node on PRU-ICSSG2 */
+> +	icssg2_eth: icssg2-eth {
+> +		compatible = "ti,am654-icssg-prueth";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&icssg2_rgmii_pins_default>;
+> +		sram = <&msmc_ram>;
+> +		ti,prus = <&pru2_0>, <&rtu2_0>, <&tx_pru2_0>,
+> +			<&pru2_1>, <&rtu2_1>, <&tx_pru2_1>;
+> +		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
+> +				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
+> +
+> +		ti,pruss-gp-mux-sel = <2>,      /* MII mode */
+> +				      <2>,
+> +				      <2>,
+> +				      <2>,	/* MII mode */
+> +				      <2>,
+> +				      <2>;
+> +
+> +		ti,mii-g-rt = <&icssg2_mii_g_rt>;
+> +		ti,mii-rt = <&icssg2_mii_rt>;
+> +		ti,iep = <&icssg2_iep0>, <&icssg2_iep1>;
+> +
+> +		interrupt-parent = <&icssg2_intc>;
+> +		interrupts = <24 0 2>, <25 1 3>;
+> +		interrupt-names = "tx_ts0", "tx_ts1";
+> +
+> +		dmas = <&main_udmap 0xc300>, /* egress slice 0 */
+> +		       <&main_udmap 0xc301>, /* egress slice 0 */
+> +		       <&main_udmap 0xc302>, /* egress slice 0 */
+> +		       <&main_udmap 0xc303>, /* egress slice 0 */
+> +		       <&main_udmap 0xc304>, /* egress slice 1 */
+> +		       <&main_udmap 0xc305>, /* egress slice 1 */
+> +		       <&main_udmap 0xc306>, /* egress slice 1 */
+> +		       <&main_udmap 0xc307>, /* egress slice 1 */
+> +		       <&main_udmap 0x4300>, /* ingress slice 0 */
+> +		       <&main_udmap 0x4301>; /* ingress slice 1 */
+> +
+> +		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
+> +			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
+> +			    "rx0", "rx1";
+> +		ethernet-ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			icssg2_emac0: port@0 {
+> +				reg = <0>;
+> +				phy-handle = <&icssg2_phy0>;
+> +				phy-mode = "rgmii-id";
+> +				ti,syscon-rgmii-delay = <&scm_conf 0x4120>;
+> +				/* Filled in by bootloader */
+> +				local-mac-address = [00 00 00 00 00 00];
+> +			};
+> +			icssg2_emac1: port@1 {
+> +				reg = <1>;
+> +				phy-handle = <&icssg2_phy1>;
+> +				phy-mode = "rgmii-id";
+> +				ti,syscon-rgmii-delay = <&scm_conf 0x4124>;
+> +				/* Filled in by bootloader */
+> +				local-mac-address = [00 00 00 00 00 00];
+> +			};
+> +		};
+> +	};
+>   };
+>   
+>   &wkup_pmx0 {
+> @@ -300,6 +368,43 @@ usb1_pins_default: usb1-default-pins {
+>   			AM65X_IOPAD(0x02c0, PIN_OUTPUT, 0) /* (AC8) USB1_DRVVBUS */
+>   		>;
+>   	};
+> +
+> +	icssg2_mdio_pins_default: icssg2-mdio-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM65X_IOPAD(0x0094, PIN_INPUT, 2) /* (AC19) PRG2_PRU0_GPO7.PRG2_MDIO0_MDIO */
+> +			AM65X_IOPAD(0x00c8, PIN_OUTPUT, 2) /* (AE15) PRG2_PRU1_GPO7.PRG2_MDIO0_MDC */
+> +		>;
+> +	};
+> +
+> +	icssg2_rgmii_pins_default: icssg2-rgmii-default-pins {
+> +		pinctrl-single,pins = <
+> +			AM65X_IOPAD(0x00ac, PIN_INPUT, 2) /* (AH15) PRG2_PRU1_GPO0.PRG2_RGMII2_RD0 */
+> +			AM65X_IOPAD(0x00b0, PIN_INPUT, 2) /* (AC16) PRG2_PRU1_GPO1.PRG2_RGMII2_RD1 */
+> +			AM65X_IOPAD(0x00b4, PIN_INPUT, 2) /* (AD17) PRG2_PRU1_GPO2.PRG2_RGMII2_RD2 */
+> +			AM65X_IOPAD(0x00b8, PIN_INPUT, 2) /* (AH14) PRG2_PRU1_GPO3.PRG2_RGMII2_RD3 */
+> +			AM65X_IOPAD(0x00cc, PIN_OUTPUT, 2) /* (AD15) PRG2_PRU1_GPO8.PRG2_RGMII2_TD0 */
+> +			AM65X_IOPAD(0x00d0, PIN_OUTPUT, 2) /* (AF14) PRG2_PRU1_GPO9.PRG2_RGMII2_TD1 */
+> +			AM65X_IOPAD(0x00d4, PIN_OUTPUT, 2) /* (AC15) PRG2_PRU1_GPO10.PRG2_RGMII2_TD2 */
+> +			AM65X_IOPAD(0x00d8, PIN_OUTPUT, 2) /* (AD14) PRG2_PRU1_GPO11.PRG2_RGMII2_TD3 */
+> +			AM65X_IOPAD(0x00dc, PIN_INPUT, 2) /* (AE14) PRG2_PRU1_GPO16.PRG2_RGMII2_TXC */
+> +			AM65X_IOPAD(0x00c4, PIN_OUTPUT, 2) /* (AC17) PRG2_PRU1_GPO6.PRG2_RGMII2_TX_CTL */
+> +			AM65X_IOPAD(0x00c0, PIN_INPUT, 2) /* (AG15) PRG2_PRU1_GPO5.PRG2_RGMII2_RXC */
+> +			AM65X_IOPAD(0x00bc, PIN_INPUT, 2) /* (AG14) PRG2_PRU1_GPO4.PRG2_RGMII2_RX_CTL */
+> +
+> +			AM65X_IOPAD(0x0078, PIN_INPUT, 2) /* (AF18) PRG2_PRU0_GPO0.PRG2_RGMII1_RD0 */
+> +			AM65X_IOPAD(0x007c, PIN_INPUT, 2) /* (AE18) PRG2_PRU0_GPO1.PRG2_RGMII1_RD1 */
+> +			AM65X_IOPAD(0x0080, PIN_INPUT, 2) /* (AH17) PRG2_PRU0_GPO2.PRG2_RGMII1_RD2 */
+> +			AM65X_IOPAD(0x0084, PIN_INPUT, 2) /* (AG18) PRG2_PRU0_GPO3.PRG2_RGMII1_RD3 */
+> +			AM65X_IOPAD(0x0098, PIN_OUTPUT, 2) /* (AH16) PRG2_PRU0_GPO8.PRG2_RGMII1_TD0 */
+> +			AM65X_IOPAD(0x009c, PIN_OUTPUT, 2) /* (AG16) PRG2_PRU0_GPO9.PRG2_RGMII1_TD1 */
+> +			AM65X_IOPAD(0x00a0, PIN_OUTPUT, 2) /* (AF16) PRG2_PRU0_GPO10.PRG2_RGMII1_TD2 */
+> +			AM65X_IOPAD(0x00a4, PIN_OUTPUT, 2) /* (AE16) PRG2_PRU0_GPO11.PRG2_RGMII1_TD3 */
+> +			AM65X_IOPAD(0x00a8, PIN_INPUT, 2) /* (AD16) PRG2_PRU0_GPO16.PRG2_RGMII1_TXC */
+> +			AM65X_IOPAD(0x0090, PIN_OUTPUT, 2) /* (AE17) PRG2_PRU0_GPO6.PRG2_RGMII1_TX_CTL */
+> +			AM65X_IOPAD(0x008c, PIN_INPUT, 2) /* (AF17) PRG2_PRU0_GPO5.PRG2_RGMII1_RXC */
+> +			AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
+> +		>;
+> +	};
+>   };
+>   
+>   &main_pmx1 {
+> @@ -621,3 +726,21 @@ &cpsw_port1 {
+>   &dss {
+>   	status = "disabled";
+>   };
+> +
+> +&icssg2_mdio {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&icssg2_mdio_pins_default>;
+> +
+> +	icssg2_phy0: ethernet-phy@0 {
+> +		reg = <0>;
+> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> +	};
+> +
+> +	icssg2_phy1: ethernet-phy@3 {
+> +		reg = <3>;
+> +		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> +		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> +	};
+> +};
