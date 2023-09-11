@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6DE79B99D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F3179C0BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239056AbjIKUzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36252 "EHLO
+        id S1349296AbjIKVdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243845AbjIKSA0 (ORCPT
+        with ESMTP id S243850AbjIKSBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 14:00:26 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F26E0;
-        Mon, 11 Sep 2023 11:00:20 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BEfMvf012701;
-        Mon, 11 Sep 2023 17:59:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=PeQHtPpk5JOrsMlNiiPboshfw1HH4mh9rMq+8dlgflc=;
- b=iHNrhf/9PKvS8HmRJc/rmi9cmePzZo2vLIAAOuiwsM/QYRFIAPFwvHG0n93gRVi0yw7V
- xIuKe0cdAYYi0fFU4gbnprnJGTP+yg0Q2CQxGrQJ/4PaC3s/LSSfLzjKob5b9zWkuvDR
- 6bHm5Z9movOsm/LRCf4CLZp2fvjlo+Ctgy+EEIYj4T0dRdLjurvzCzoF3bIlY4vGVLJe
- F6MqE+EoCHtvnDd20jVB6IKELKiGqSZ3RLJLtl12WRZq7rtKFGnVc3hj5Ef2H+XpwRXp
- LGKyP6+RWtYx+XAudrSAPy+HpGeVq/jgITdOjPcQ8/j7PukLl6n40c12GKk4nzedhpEu iQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1whx9ksa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 17:59:42 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BHxMGs022130
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 17:59:22 GMT
-Received: from [10.110.109.129] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
- 2023 10:59:21 -0700
-Message-ID: <cbe35766-a805-3791-3ff8-93aef4dc9f4c@quicinc.com>
-Date:   Mon, 11 Sep 2023 10:59:20 -0700
+        Mon, 11 Sep 2023 14:01:32 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19C6E4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:01:27 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-655de2a5121so13445586d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694455287; x=1695060087; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xjDfbVG7Z0f4VRf2UrtEhKHET6lYtFmHzIWX+qMQT4w=;
+        b=joDU89foLETwducOUmy0Czh5myFh4v87rXJbSXxJOGWGn2LYz6ElQbl8QUdLNd0w9T
+         6I0si2CqmLqbPBA1SZvuO4B8wvqEXLuqQ8g9alrobLLFcpRvZX/OGrxPRAd4BNknwWKV
+         e6g4j4c1wLwJbvKyUWorDRaog+ztkhb/WoKDkrkjmIh9BQNzcjpbwLNMCE52g6FBBCnh
+         McFYB4yAJRpqwmB7TsH8hpGP+k8BcMpgUk9UOITXMVeQ2lr7IT/Pb8ihFHBHjm5kgWvc
+         QzznxuPUhrc8DkgVP4mepP5AudBFBJND9CdP/P0S2h10Pmmd0GIzOPfQQh9PPCujSqH0
+         lwYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694455287; x=1695060087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xjDfbVG7Z0f4VRf2UrtEhKHET6lYtFmHzIWX+qMQT4w=;
+        b=CB374zAxYzLPjVFSeCXkfzxAm6dwPs2TRAAW4tOAdgo4hJI1pq4dznRekNdkedyNFH
+         xcsxrx8/abrOpOmwb999R4mrmdiHpg17cjefakcad9b3tswBxp/oePuvkFamKjNPOa4w
+         DADqCpdkXoT0Lz4vsvORM4uogiATLzoBE782nh8ywPYkbxZnbk3WxyMdL0ZNWXOHjCC9
+         Uqlvn0as6Bfue+2DjQj8HehN7rGExce237PLD3R1rgSz0i0aWxeVUKorlmRyS6unhSv8
+         3bhh65eLbyKUhhG3zli+QOwVYpn4Z/PR0bWtRe8A0+yZd4F+5usleGUdsLOIhdFd2RyU
+         uaUQ==
+X-Gm-Message-State: AOJu0YznlJe0XBks8hugbFB//0Xrnq/mhJnJZNcNCoWyPFc9tY5/FXTi
+        kTFlbhGerOQ6hFiGVq2vWNoqbnSFaSQi55HPKmv+FA==
+X-Google-Smtp-Source: AGHT+IFlV+rbxVmLpOVjETaXMQmsUmYNkJcDNdsKKjIGa+QzT0JjiVzwUSu5k2nyYtxJ0IWGyOzO5f20FKr+R7mrBaA=
+X-Received: by 2002:a0c:ea4e:0:b0:64f:3699:90cd with SMTP id
+ u14-20020a0cea4e000000b0064f369990cdmr9751242qvp.42.1694455286702; Mon, 11
+ Sep 2023 11:01:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v5 18/32] sound: usb: Introduce QC USB SND offloading
- support
-Content-Language: en-US
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
- <20230829210657.9904-19-quic_wcheng@quicinc.com>
- <8734zqasmz.wl-tiwai@suse.de>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <8734zqasmz.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: U_IGeaWnzPKkXe9MF91P2eA5e-XGQJrg
-X-Proofpoint-ORIG-GUID: U_IGeaWnzPKkXe9MF91P2eA5e-XGQJrg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- suspectscore=0 impostorscore=0 phishscore=0 adultscore=0 mlxlogscore=835
- bulkscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110165
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230911061147.409152-1-mizhang@google.com> <ZP8r2CDsv3JkGYzX@google.com>
+In-Reply-To: <ZP8r2CDsv3JkGYzX@google.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 11 Sep 2023 11:00:50 -0700
+Message-ID: <CAL715WKyS4sTH3yEOX2OyV+fxMLMOAV6tX-A7fvEAKEUGj8uxw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: vPMU: Use atomic bit operations for global_status
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>, Like Xu <likexu@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,88 +72,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
+On Mon, Sep 11, 2023 at 8:01=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Mon, Sep 11, 2023, Mingwei Zhang wrote:
+> > Use atomic bit operations for pmu->global_status because it may suffer =
+from
+> > race conditions between emulated overflow in KVM vPMU and PEBS overflow=
+ in
+> > host PMI handler.
+>
+> Only if the host PMI occurs on a different pCPU, and if that can happen d=
+on't we
+> have a much larger problem?
 
-On 9/7/2023 8:51 AM, Takashi Iwai wrote:
-> On Tue, 29 Aug 2023 23:06:43 +0200,
-> Wesley Cheng wrote:
->>
->> Several Qualcomm SoCs have a dedicated audio DSP, which has the ability to
->> support USB sound devices.  This vendor driver will implement the required
->> handshaking with the DSP, in order to pass along required resources that
->> will be utilized by the DSP's USB SW.  The communication channel used for
->> this handshaking will be using the QMI protocol.  Required resources
->> include:
->> - Allocated secondary event ring address
->> - EP transfer ring address
->> - Interrupter number
->>
->> The above information will allow for the audio DSP to execute USB transfers
->> over the USB bus.  It will also be able to support devices that have an
->> implicit feedback and sync endpoint as well.  Offloading these data
->> transfers will allow the main/applications processor to enter lower CPU
->> power modes, and sustain a longer duration in those modes.
->>
->> Audio offloading is initiated with the following sequence:
->> 1. Userspace configures to route audio playback to USB backend and starts
->> playback on the platform soundcard.
->> 2. The Q6DSP AFE will communicate to the audio DSP to start the USB AFE
->> port.
->> 3. This results in a QMI packet with a STREAM enable command.
->> 4. The QC audio offload driver will fetch the required resources, and pass
->> this information as part of the QMI response to the STREAM enable command.
->> 5. Once the QMI response is received the audio DSP will start queuing data
->> on the USB bus.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   sound/usb/Kconfig                 |   15 +
->>   sound/usb/Makefile                |    2 +-
->>   sound/usb/qcom/Makefile           |    2 +
->>   sound/usb/qcom/qc_audio_offload.c | 1813 +++++++++++++++++++++++++++++
->>   4 files changed, 1831 insertions(+), 1 deletion(-)
->>   create mode 100644 sound/usb/qcom/Makefile
->>   create mode 100644 sound/usb/qcom/qc_audio_offload.c
->>
->> diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
->> index 4a9569a3a39a..da5838656baa 100644
->> --- a/sound/usb/Kconfig
->> +++ b/sound/usb/Kconfig
->> @@ -176,6 +176,21 @@ config SND_BCD2000
->>   	  To compile this driver as a module, choose M here: the module
->>   	  will be called snd-bcd2000.
->>   
->> +config QC_USB_AUDIO_OFFLOAD
-> 
-> Keep SND_ prefix for consistency.  And, at best, align with the module
-> name.
-> 
->> +	tristate "Qualcomm Audio Offload driver"
->> +	depends on QCOM_QMI_HELPERS && SND_USB_AUDIO && USB_XHCI_SIDEBAND
->> +	select SND_PCM
->> +	help
->> +	  Say Y here to enable the Qualcomm USB audio offloading feature.
->> +
->> +	  This module sets up the required QMI stream enable/disable
->> +	  responses to requests generated by the audio DSP.  It passes the
->> +	  USB transfer resource references, so that the audio DSP can issue
->> +	  USB transfers to the host controller.
->> +
->> +	  To compile this driver as a module, choose M here: the module
->> +	  will be called qc-audio-offload.
-> 
-> Hmm, you renamed it differently, no?  In the below:
-> 
->> --- /dev/null
->> +++ b/sound/usb/qcom/Makefile
->> @@ -0,0 +1,2 @@
->> +snd-usb-audio-qmi-objs := usb_audio_qmi_v01.o qc_audio_offload.o
->> +obj-$(CONFIG_QC_USB_AUDIO_OFFLOAD) += snd-usb-audio-qmi.o
-> 
-> ... it's called snd-usb-audio-qmi.
-> 
+Why on different pCPU?  For vPMU, I think there is always contention
+between the vCPU thread and the host PMI handler running on the same
+pCPU, no?
 
-Will fix this, thanks.
+So, in that case, anything that __kvm_perf_overflow(..., in_pmi=3Dtrue)
+touches on struct kvm_pmu will potentially race with the functions
+like reprogram_counter() -> __kvm_perf_overflow(..., in_pmi=3Dfalse).
 
-Thanks
-Wesley Cheng
+-Mingwei
+>
+> > Fixes: f331601c65ad ("KVM: x86/pmu: Don't generate PEBS records for emu=
+lated instructions")
+> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > ---
+> >  arch/x86/kvm/pmu.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> > index edb89b51b383..00b48f25afdb 100644
+> > --- a/arch/x86/kvm/pmu.c
+> > +++ b/arch/x86/kvm/pmu.c
+> > @@ -117,11 +117,11 @@ static inline void __kvm_perf_overflow(struct kvm=
+_pmc *pmc, bool in_pmi)
+> >                       skip_pmi =3D true;
+> >               } else {
+> >                       /* Indicate PEBS overflow PMI to guest. */
+> > -                     skip_pmi =3D __test_and_set_bit(GLOBAL_STATUS_BUF=
+FER_OVF_BIT,
+> > -                                                   (unsigned long *)&p=
+mu->global_status);
+> > +                     skip_pmi =3D test_and_set_bit(GLOBAL_STATUS_BUFFE=
+R_OVF_BIT,
+> > +                                                 (unsigned long *)&pmu=
+->global_status);
+> >               }
+> >       } else {
+> > -             __set_bit(pmc->idx, (unsigned long *)&pmu->global_status)=
+;
+> > +             set_bit(pmc->idx, (unsigned long *)&pmu->global_status);
+> >       }
+> >
+> >       if (!pmc->intr || skip_pmi)
+> >
+> > base-commit: e2013f46ee2e721567783557c301e5c91d0b74ff
+> > --
+> > 2.42.0.283.g2d96d420d3-goog
+> >
