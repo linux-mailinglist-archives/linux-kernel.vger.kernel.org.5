@@ -2,174 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E0C79B231
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFCC79B42C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376786AbjIKWU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        id S1378037AbjIKW35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242726AbjIKQNJ (ORCPT
+        with ESMTP id S242740AbjIKQON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:13:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 708F21B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:13:03 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-285-mYiHEOWIMmCSSS6iWUQVLQ-1; Mon, 11 Sep 2023 17:12:55 +0100
-X-MC-Unique: mYiHEOWIMmCSSS6iWUQVLQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
- 2023 17:12:43 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 11 Sep 2023 17:12:43 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Vlastimil Babka' <vbabka@suse.cz>,
-        'Kees Cook' <keescook@chromium.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        "'Andrew Morton'" <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: RE: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5gAMq8SAABymU5AApLGGAAACRmZQ
-Date:   Mon, 11 Sep 2023 16:12:43 +0000
-Message-ID: <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
- <202309071235.CB4F6B2@keescook>
- <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
- <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
-In-Reply-To: <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Sep 2023 12:14:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178271B8;
+        Mon, 11 Sep 2023 09:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694448849; x=1725984849;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=PCK5N7MTX0TyDy4xAO7NmL2IUmc1Gi2m4JoFRYk5vSI=;
+  b=F7/AegDloF8uqJB+DF15yRougZ6Mf6QwoxwcraAk8E8OnviuTyEzdyyJ
+   wctg9KpZNpTIIuNt9VM3+BbHsSmxh81Z3qbwBNrSm7zf24LXM/4XK+W2u
+   ge2JFW1+OY9MWic0KTazlZBYQsy5yqvun7EWeZ4QjBe0jkgX3lk0JFgxr
+   k8CeBZrJGa53MY2fAda6s/JnIQnFBd7XIWjri1e9rSSeYiFmt3ASkvj+v
+   Zgmir4+9nUejsMtR6HdLjIsLK3pHeFdRVT0I3ISD2pTwfCjaa9h2k/FBj
+   QL+jYQ/IAmljfE/7efPIRTEPxhSN62dbbWI9Y0gj2vhWRR8MccX1K1K8z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409093577"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="409093577"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 09:14:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858397637"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="858397637"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.255.229.210])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 09:14:07 -0700
+Message-ID: <f35db90cd67adf4b0f48cd6f2a6ad8fbd0c1a679.camel@linux.intel.com>
+Subject: Re: [PATCH 00/10] Add PCIe Bandwidth Controller
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 11 Sep 2023 09:14:07 -0700
+In-Reply-To: <25bf206e-864b-644-9b4-a0f461b4285@linux.intel.com>
+References: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com>
+         <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
+         <21b95d9-86a5-dcb0-9dda-3f1cdd426b9e@linux.intel.com>
+         <647e2b5e-6064-dbfa-bb56-f74358efd1fe@quicinc.com>
+         <25bf206e-864b-644-9b4-a0f461b4285@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVmxhc3RpbWlsIEJhYmthDQo+IFNlbnQ6IDExIFNlcHRlbWJlciAyMDIzIDE2OjU0DQo+
-IA0KPiBPbiA5LzgvMjMgMTA6MjYsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBLZWVz
-IENvb2sNCj4gPj4gU2VudDogMDcgU2VwdGVtYmVyIDIwMjMgMjA6MzgNCj4gPj4NCj4gPj4gT24g
-VGh1LCBTZXAgMDcsIDIwMjMgYXQgMTI6NDI6MjBQTSArMDAwMCwgRGF2aWQgTGFpZ2h0IHdyb3Rl
-Og0KPiA+PiA+IFRoZSB0eXBpY2FsIHVzZSBvZiBrbWFsbG9jX3NpemVfcm91bmR1cCgpIGlzOg0K
-PiA+PiA+IAlwdHIgPSBrbWFsbG9jKHN6ID0ga21hbGxvY19zaXplX3JvdW5kdXAoc2l6ZSksIC4u
-Lik7DQo+ID4+ID4gCWlmICghcHRyKSByZXR1cm4gLUVOT01FTS4NCj4gPj4gPiBUaGlzIG1lYW5z
-IGl0IGlzIHZpdGFsbHkgaW1wb3J0YW50IHRoYXQgdGhlIHJldHVybmVkIHZhbHVlIGlzbid0DQo+
-ID4+ID4gbGVzcyB0aGFuIHRoZSBhcmd1bWVudCBldmVuIGlmIHRoZSBhcmd1bWVudCBpcyBpbnNh
-bmUuDQo+ID4+ID4gSW4gcGFydGljdWxhciBpZiBrbWFsbG9jX3NsYWIoKSBmYWlscyBvciB0aGUg
-dmFsdWUgaXMgYWJvdmUNCj4gPj4gPiAoTUFYX1VMT05HIC0gUEFHRV9TSVpFKSB6ZXJvIGlzIHJl
-dHVybmVkIGFuZCBrbWFsbG9jKCkgd2lsbCByZXR1cm4NCj4gPj4gPiBpdCdzIHNpbmdsZSB6ZXJv
-LWxlbmd0aCBidWZmZXIuDQo+ID4+ID4NCj4gPj4gPiBGaXggYnkgcmV0dXJuaW5nIHRoZSBpbnB1
-dCBzaXplIG9uIGVycm9yIG9yIGlmIHRoZSBzaXplIGV4Y2VlZHMNCj4gPj4gPiBhICdzYW5pdHkn
-IGxpbWl0Lg0KPiA+PiA+IGttYWxsb2MoKSB3aWxsIHRoZW4gcmV0dXJuIE5VTEwgaXMgdGhlIHNp
-emUgcmVhbGx5IGlzIHRvbyBiaWcuDQo+ID4+ID4NCj4gPj4gPg0KPiA+PiA+IFNpZ25lZC1vZmYt
-Ynk6IERhdmlkIExhaWdodCA8ZGF2aWQubGFpZ2h0QGFjdWxhYi5jb20+DQo+ID4+ID4gRml4ZXM6
-IDA1YTk0MDY1NmUxZWIgKCJzbGFiOiBJbnRyb2R1Y2Uga21hbGxvY19zaXplX3JvdW5kdXAoKSIp
-DQo+ID4+ID4gLS0tDQo+ID4+ID4gdjI6DQo+ID4+ID4gICAgIC0gVXNlIEtNQUxMT0NfTUFYX1NJ
-WkUgZm9yIHVwcGVyIGxpbWl0Lg0KPiA+PiA+ICAgICAgIChLTUFMTE9DX01BWF9TSVpFICsgMSBt
-YXkgZ2l2ZSBiZXR0ZXIgY29kZSBvbiBzb21lIGFyY2hzISkNCj4gPj4gPiAgICAgLSBJbnZlcnQg
-dGVzdCBmb3Igb3ZlcmxhcmdlIGZvciBjb25zaXN0ZW5jeS4NCj4gPj4gPiAgICAgLSBQdXQgYSBs
-aWtlbHkoKSBvbiByZXN1bHQgb2Yga21hbGxvY19zbGFiKCkuDQo+ID4+ID4NCj4gPj4gPiAgbW0v
-c2xhYl9jb21tb24uYyB8IDI2ICsrKysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ID4+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkNCj4gPj4gPg0K
-PiA+PiA+IGRpZmYgLS1naXQgYS9tbS9zbGFiX2NvbW1vbi5jIGIvbW0vc2xhYl9jb21tb24uYw0K
-PiA+PiA+IGluZGV4IGNkNzFmOTU4MWU2Ny4uMGZiN2M3ZTE5YmFkIDEwMDY0NA0KPiA+PiA+IC0t
-LSBhL21tL3NsYWJfY29tbW9uLmMNCj4gPj4gPiArKysgYi9tbS9zbGFiX2NvbW1vbi5jDQo+ID4+
-ID4gQEAgLTc0NywyMiArNzQ3LDIyIEBAIHNpemVfdCBrbWFsbG9jX3NpemVfcm91bmR1cChzaXpl
-X3Qgc2l6ZSkNCj4gPj4gPiAgew0KPiA+PiA+ICAJc3RydWN0IGttZW1fY2FjaGUgKmM7DQo+ID4+
-ID4NCj4gPj4gPiAtCS8qIFNob3J0LWNpcmN1aXQgdGhlIDAgc2l6ZSBjYXNlLiAqLw0KPiA+PiA+
-IC0JaWYgKHVubGlrZWx5KHNpemUgPT0gMCkpDQo+ID4+ID4gLQkJcmV0dXJuIDA7DQo+ID4+DQo+
-ID4+IElmIHdlIHdhbnQgdG8gYWxsb3cgMCwgbGV0J3MganVzdCBsZWF2ZSB0aGlzIGNhc2UgYXMt
-aXM6IHRoZSBjb21waWxlcg0KPiA+PiB3aWxsIG9wdGltaXplIGl0IGFnYWluc3QgdGhlIG90aGVy
-IHRlc3RzLg0KPiA+DQo+ID4gSSBkb3VidCB0aGUgY29tcGlsZXIgd2lsbCBvcHRpbWlzZSBpdCBh
-d2F5IC0gZXNwZWNpYWxseSB3aXRoDQo+ID4gdGhlIHVubGlrZWx5KCkuDQo+IA0KPiBZZWFoIEkg
-YWxzbyB0aGluayBjb21waWxlciBjYW4ndCBkbyBtdWNoIG9wdGltaXphdGlvbnMgZXhjZXB0IGZv
-ciBidWlsZC10aW1lDQo+IGNvbnN0YW50IDAgaGVyZS4NCg0KT25seSByZWxldmFudCBpZiB0aGUg
-Y29kZSB3ZXJlIGlubGluZWQgLSBhbmQgaXQgaXNuJ3QuDQooYW5kIGlzIHByb2JhYmx5IGEgYml0
-IGJpZy4pDQpJJ20gbm90IHN1cmUgeW91J2Qgd2FudCB0byBleHBvc2Uga21hbGxvY19zbGFiKCkg
-dG8gdGhlIHdpZGVyIGtlcm5lbC4NCg0KT1RPSCwgaXQgY291bGQgaGF2ZSBhbiBpbmxpbmUgdmVy
-c2lvbiBmb3IgY29uc3RhbnRzID4gS01BTExPQ19DQUNIRV9TSVpFLg0KQnV0IHRoZXkgbWF5IG5v
-dCBoYXBwZW4gb2Z0ZW4gZW5vdWdoIHRvIG1ha2UgYW55IGRpZmZlcmVuY2UuDQoNCj4gDQo+ID4g
-T1RPSCB0aGUgZXhwbGljaXQgY2hlY2tzIGZvciAoc2l6ZSAmJiBzaXplIDw9IExJTUlUKSBkbw0K
-PiA+IGdldCBvcHRpbWlzZWQgdG8gKChzaXplIC0gMSkgPD0gTElNSVQgLSAxKSBzbyBiZWNvbWUN
-Cj4gPiBhIHNpbmdsZSBjb21wYXJlLg0KPiA+DQo+ID4gVGhlbiByZXR1cm5pbmcgJ3NpemUnIGF0
-IHRoZSBib3R0b20gbWVhbnMgdGhhdCB6ZXJvIGlzIHJldHVybmVkDQo+ID4gaW4gdGhlIGFyZyBp
-cyB6ZXJvIC0gd2hpY2ggaXMgZmluZS4NCj4gPg0KPiA+Pg0KPiA+PiA+IC0JLyogU2hvcnQtY2ly
-Y3VpdCBzYXR1cmF0ZWQgInRvby1sYXJnZSIgY2FzZS4gKi8NCj4gPj4gPiAtCWlmICh1bmxpa2Vs
-eShzaXplID09IFNJWkVfTUFYKSkNCj4gPj4gPiAtCQlyZXR1cm4gU0laRV9NQVg7DQo+ID4+ID4g
-KwlpZiAoc2l6ZSAmJiBzaXplIDw9IEtNQUxMT0NfTUFYX0NBQ0hFX1NJWkUpIHsNCj4gPj4gPiAr
-CQkvKg0KPiA+PiA+ICsJCSAqIFRoZSBmbGFncyBkb24ndCBtYXR0ZXIgc2luY2Ugc2l6ZV9pbmRl
-eCBpcyBjb21tb24gdG8gYWxsLg0KPiA+PiA+ICsJCSAqIE5laXRoZXIgZG9lcyB0aGUgY2FsbGVy
-IGZvciBqdXN0IGdldHRpbmcgLT5vYmplY3Rfc2l6ZS4NCj4gPj4gPiArCQkgKi8NCj4gPj4gPiAr
-CQljID0ga21hbGxvY19zbGFiKHNpemUsIEdGUF9LRVJORUwsIDApOw0KPiA+PiA+ICsJCXJldHVy
-biBsaWtlbHkoYykgPyBjLT5vYmplY3Rfc2l6ZSA6IHNpemU7DQo+ID4+DQo+ID4+IEkgd291bGQg
-bGlrZSB0byBoYXZlIHRoaXMgZmFpbCAic2FmZSIuIGMgc2hvdWxkIG5ldmVyIGJlIE5VTEwgaGVy
-ZSwgc28NCj4gPj4gbGV0J3MgcmV0dXJuICJLTUFMTE9DX01BWF9TSVpFICsgMSIgdG8gZm9yY2Ug
-ZmFpbHVyZXMuDQo+ID4NCj4gPiBXaHkgZXZlbiB0cnkgdG8gZm9yY2UgZmFpbHVyZSBoZXJlPw0K
-PiA+IFRoZSB3aG9sZSBmdW5jdGlvbiBpcyBqdXN0IGFuIG9wdGltaXNhdGlvbiBzbyB0aGF0IHRo
-ZSBjYWxsZXINCj4gPiBjYW4gdXNlIHRoZSBzcGFyZSBzcGFjZS4NCj4gPg0KPiA+IFRoZSBvbmx5
-IHRoaW5nIGl0IG11c3RuJ3QgZG8gaXMgcmV0dXJuIGEgc21hbGxlciB2YWx1ZS4NCj4gDQo+IElm
-ICJjIiBpcyBOVUxMIGl0IG1lYW5zIGVpdGhlciB0aGUga2VybmVsIGJ1aWxkIG11c3QgYmUgYnJv
-a2VuIGUuZy4gYnkNCj4gc29tZWJvZHkgYnJlYWtpbmcgdGhlIEtNQUxMT0NfTUFYX0NBQ0hFX1NJ
-WkUgdmFsdWUsIGFuZCB3ZSBjb3VsZCBqdXN0IGlnbm9yZQ0KPiBjIGJlaW5nIE5VTEwgYW5kIGxl
-dCBpdCBjcmFzaCBiZWNhdXNlIG9mIHRoYXQuDQo+IEJ1dCBJIHRoaW5rIGl0IGNhbiBhbHNvIGJl
-IE5VTEwgZHVlIHRvIHRyeWluZyB0byBjYWxsIGttYWxsb2Nfc2l6ZV9yb3VuZHVwKCkNCj4gdG9v
-IGVhcmx5LCB3aGVuIGttYWxsb2NfY2FjaGVzIGFycmF5IGlzIG5vdCB5ZXQgcG9wdWxhdGVkLiBO
-b3RlIGlmIHdlIGNhbGwNCj4ga21hbGxvYygpIGl0c2VsZiB0b28gZWFybHksIHdlIGdldCBhIE5V
-TEwgYXMgYSByZXN1bHQsIEFGQUlDUy4gSSBjYW4gaW1hZ2luZQ0KPiB0d28gc2NlbmFyaW9zOg0K
-PiANCj4gLSBrbWFsbG9jX3NpemVfcm91bmR1cCgpIGlzIGNhbGxlZCB3aXRoIHJlc3VsdCBpbW1l
-ZGlhdGVseSBmZWQgdG8ga21hbGxvYygpDQo+IHRoYXQgaGFwcGVucyB0b28gZWFybHksIGluIHRo
-YXQgY2FzZSB3ZSBiZXN0IHNob3VsZCBub3QgY3Jhc2ggb24gYyBiZWluZw0KPiBOVUxMIGFuZCBt
-YWtlIHN1cmUgdGhlIGttYWxsb2MoKSByZXR1cm5zIE5VTEwuDQo+IC0ga21hbGxvY19zaXplX3Jv
-dW5kdXAoKSBpcyBjYWxsZWQgaW4gc29tZSBpbml0IGNvZGUgdG8gZ2V0IGEgdmFsdWUgdGhhdA0K
-PiBzb21lIGxhdGVyIGttYWxsb2MoKSBjYWxsIHVzZXMuIFdlIG1pZ2h0IHdhbnQgYWxzbyBub3Qg
-Y3Jhc2ggaW4gdGhhdCBjYXNlLA0KPiBidXQgaW5mb3JtaW5nIHRoZSBkZXZlbG9wZXIgdGhhdCB0
-aGV5IGRpZCBzb21ldGhpbmcgd3Jvbmcgd291bGQgYmUgYWxzbyB1c2VmdWw/DQo+IA0KPiBDbGVh
-cmx5IHJldHVybmluZyAwIGlmIGMgPT0gTlVMTCwgYXMgZG9uZSBjdXJyZW50bHksIGlzIHdyb25n
-IGZvciBib3RoDQo+IHNjZW5hcmlvcy4gUmV0dW5pbmcgInNpemUiIGlzIE9LIGZvciB0aGUgZmly
-c3Qgc2NlbmFyaW8sIGFsc28gdmFsaWQgZm9yIHRoZQ0KPiBzZWNvbmQgb25lLCBidXQgdGhlIGNh
-bGxlciB3aWxsIHNpbGVudGx5IGxvc2UgdGhlIGJlbmVmaXQgb2YNCj4ga21hbGxvY19zaXplX3Jv
-dW5kdXAoKSBhbmQgdGhlIGRldmVsb3BlciBpbnRyb2R1Y2luZyB0aGF0IHdvbid0IHJlYWxpemUg
-aXQncw0KPiBkb25lIHRvbyBlYXJseSBhbmQgY291bGQgYmUgZml4ZWQuDQoNCkknbSBzdXJlIHRo
-YXQgd29uJ3QgbWF0dGVyLg0KDQo+IFNvIHBlcmhhcHMgdGhlIGJlc3Qgd291bGQgYmUgdG8gcmV0
-dXJuIHNpemUgZm9yIGMgPT0gTlVMTCwgYnV0IGFsc28gZG8gYQ0KPiBXQVJOX09OQ0U/DQoNClRo
-YXQgd291bGQgYWRkIGEgcmVhbCBmdW5jdGlvbiBjYWxsIHRvIGFuIG90aGVyd2lzZSBsZWFmIGZ1
-bmN0aW9uDQphbmQgYWxtb3N0IGNlcnRhaW5seSByZXF1aXJlIHRoZSBjb21waWxlciBjcmVhdGUg
-YSBzdGFjayBmcmFtZS4NCg0KLi4uDQoNCkkgZGlkIGhhdmUgYW4gaW50ZXJlc3RpbmcgJ2xhdGVy
-YWwgdGhvdWdodCcgaWRlYS4NCkl0IGlzIGFsbCB2ZXJ5IHNpbGx5IGRvaW5nIGFsbCB0aGUgd29y
-ayB0d2ljZSwgd2hhdCB5b3UgcmVhbGx5DQp3YW50IGlzIGttYWxsb2MoKSB0byByZXR1cm4gYm90
-aCB0aGUgcG9pbnRlciBhbmQgYWN0dWFsIHNpemUuDQpCdXQgcmV0dXJuaW5nIGEgJ3R3byB3b3Jk
-JyBzdHJ1Y3R1cmUgaXMgZG9uZSBieSByZWZlcmVuY2UgYW5kDQp3b3VsZCBraWxsIHBlcmZvcm1h
-bmNlLw0KT1RPSCBhIGxvdCBvZiBhcmNocyBjYW4gcmV0dXJuIHR3byB3b3JkIGludGVnZXJzIGlu
-IGEgcmVnaXN0ZXIgcGFpcg0KKGR4OmF4IG9uIHg4NikuDQpDb3VsZCB5b3UgaGF2ZSB0aGUgcmVh
-bCBmdW5jdGlvbiByZXR1cm4gKCh1bnNpZ25lZCBfX2ludDY0KXNpemUgPDwgNjQgfCAobG9uZylw
-dHIpDQphbmQgdGhlbiBleHRyYWN0IHRoZSBzaXplIGluIGEgd3JhcHBlciBtYWNybz8NCihXaXRo
-IGRpZmZlcmVudCB0eXBlcyBmb3IgMzJiaXQpDQoNClRoYXQgd2lsbCwgb2YgY291cnNlLCBicmVh
-ayB0aGUgJ2l0J3MgbGlrZSBtYWxsb2MnIGNoZWNrcyB0aGUNCmNvbXBpbGVyIGlzIGRvaW5nIC0g
-dW5sZXNzIGl0IGlzIHRhdWdodCB3aGF0IGlzIGdvaW5nIG9uLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Mon, 2023-09-11 at 18:47 +0300, Ilpo J=C3=A4rvinen wrote:
+> + thermal people.
+>=20
+>=20
+
+...
+
+> Hi,
+>=20
+> Okay, thanks for the clarification. So the point is to plan for
+> adding=20
+> support for Link Width later and currently only support throttling
+> Link=20
+> Speed. In any case, the Link Width control seems to be controlled
+> using=20
+> a different approach (Link Width change does not require Link
+> Retraining).
+>=20
+> I don't know either how such 2 dimensioned throttling (Link Speed and
+> Link Width) is supposed to be realized using the thermal/cooling
+> device=20
+> interface which only provides a single integer as the current state.
+> That=20
+> is, whether to provide a single cooling device (with a single integer
+> exposed to userspace) or separate cooling device for each dimension?
+>=20
+> Perhaps thermal people could provide some insight on this? Is there
+> some=20
+> precedent I could take look at?
+Yes. The processor cooling device does similar. 1-3 are reserved for P-
+state and and 4-7 for T-states.
+
+But I don't suggest using such method. This causes confusion and
+difficult to change. For example if we increase range of P-state
+control, then there is no way to know what is the start point of T-
+states.
+
+It is best to create to separate cooling devices for BW and link width.
+
+Also there is a requirement that anything you add to thermal sysfs, it
+should have some purpose for thermal control. I hope Link width control
+is targeted to similar use case BW control.
+
+Thanks,
+Srinivas
+
+
+>=20
 
