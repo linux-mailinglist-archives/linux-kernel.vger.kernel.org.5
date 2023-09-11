@@ -2,140 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3714279BFE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6C579B9A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354482AbjIKVyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
+        id S1345310AbjIKVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244164AbjIKTZq (ORCPT
+        with ESMTP id S244174AbjIKTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:25:46 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2045.outbound.protection.outlook.com [40.107.100.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E6810D;
-        Mon, 11 Sep 2023 12:25:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D67BpoU+eBHxV1gJr2uHgpNMS6h7tDcp4pF4JajrprxIX/aPm10sAdw/VJtc4UDezI0x7lmd17Y1nq0CG3x9djOggDBOJedvUHimdl8WS+H/lyaDsfugSvAWXoFXhijsAY/gWOtVXh8pV/FHy6cO8/k/NBBmf5eC5ZnewTHxkgYiuQK8sXD4M/gJGESqUzu68ncbzlGn+YTBF1NKsY7qdB5Uzf773/TayERo0yBYjrd2F8MUuB436sy6lShOKfk0/U882r23X3klO8SvPTlUIxJIIpxZ3aE2zWtzu0sHSRoB7rvs2S0iMv9nMDdr4xJxup/7cLoIRrAKVP9WBQ4iUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nihn8RGe6nEhpTkGzgmZ4KKgFBThZzxYJySDzvUqwuc=;
- b=T9KP2udDLzeLOHii32n5RfjtJZSesxm9Y7XE3btrpo2mhGtze6pE/DUZJDyWmuwWzD+pWOS7T8gTh5NIsQYibgZLa5MrQNkNMpk3g/Xw2pXY9XOu3j8ibOzV2lPTgdBNxxO2zEmTtRXYlh/H19W7P6lYM1eX+MuzHH//Ov+SqmNW32HScRl8TkKz+k5EqBGX/xneNq1ZLX/+Kj/mrJBIOVfqL5PuOcyJkxN/CGQhRTDkPlM5F1M44F89B4QsRx+moZwNdvsWJBuq6UmMC3dbtkJ9zNnN6t5Xic7uf3/iYGQouiYYwCrBPHxsc54qFNACV+xzpD3plqpbjRrdFYqFTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nihn8RGe6nEhpTkGzgmZ4KKgFBThZzxYJySDzvUqwuc=;
- b=FchRcglM/E8Ezj3QbSk/sdjmS5JrtxSeATPsG+K1vC18YV5Jmk1mfi6I60LJ0vO3XABYsJNmu3yJ77FmLVvWukFd6l5PqmEHB9lRTo/49SIM5yi/ZB2A3mMC5an3yuIt4+CPJg/9ovGNwEKdZPydD4SG50hCYgAMVGITElLazLs=
-Received: from DS7PR03CA0174.namprd03.prod.outlook.com (2603:10b6:5:3b2::29)
- by SJ0PR12MB6686.namprd12.prod.outlook.com (2603:10b6:a03:479::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Mon, 11 Sep
- 2023 19:25:38 +0000
-Received: from DS3PEPF000099DC.namprd04.prod.outlook.com
- (2603:10b6:5:3b2:cafe::8e) by DS7PR03CA0174.outlook.office365.com
- (2603:10b6:5:3b2::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35 via Frontend
- Transport; Mon, 11 Sep 2023 19:25:38 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099DC.mail.protection.outlook.com (10.167.17.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6792.17 via Frontend Transport; Mon, 11 Sep 2023 19:25:38 +0000
-Received: from sanjuamdntb2.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 11 Sep
- 2023 14:25:35 -0500
-From:   Sanjay R Mehta <Sanju.Mehta@amd.com>
-To:     <vkoul@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <dan.j.williams@intel.com>,
-        <robh@kernel.org>, <mchehab+samsung@kernel.org>,
-        <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <dmaengine@vger.kernel.org>, Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: [PATCH 0/3] Add support for AMD AE4DMA controller driver
-Date:   Mon, 11 Sep 2023 14:25:21 -0500
-Message-ID: <1694460324-60346-1-git-send-email-Sanju.Mehta@amd.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 11 Sep 2023 15:30:22 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F4118D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:30:18 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-58fc4d319d2so48069107b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ixsystems.com; s=google; t=1694460617; x=1695065417; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dOzBaZVEt5gQY++7RqjQswx+b33XCIagh1muoGrlAno=;
+        b=cLy7dpCcKCTkDIsY3lsxi72OTB55Lk97JUppEvXQ2oBu0dzvRO/MgeGlDMUhBUC6ea
+         N7h8RBx0X17+PKj9r7uG0BTTu1XRyQJDcodFOXBC7RM12CUnyRd5SLNaKhJifgA110Y6
+         18pUBAlsf1fbkly6EDnh8W1ZTcYjPsUxf9MmH1le+FiCfE8lsld/5acIySyirfLNKWfP
+         EnpgXvdYujmiYhbE1Z7Dy3gnZzMCXovnaYCXJFiwL4U/mGFgYKAuhUeX4fj0+YL4PPSD
+         Ghkkzgv8dKCwDHLV2OCX2Kq8cDYTYv2R54No+6Rdqgdk/LrQxSltGqxBP+XF1xcwOB8J
+         rYrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694460617; x=1695065417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOzBaZVEt5gQY++7RqjQswx+b33XCIagh1muoGrlAno=;
+        b=Oh1PD11HUlu/UNE9a0Vmd8bgKLVZAt50eoFFUPrVl3Z+dKlOxHslYMsQc/uoUtgWKd
+         /N+6dWdSWFJNJBcjlefoudZSQhZvWgqea5TMe0U41VenO0d41eLfHwH+o20wq5biJY2H
+         OzE5gA9w+zJ+DTx4hzXpnzZgWf7kd7eX+LTJreiXghLqhjKynZPUXkjOeNZkXT9TOIq2
+         1J/judyfcZe9/JT5i1hxcY/yiCn8PDI9nChveHSSLrJ/BD9bzeV5ujsYP/mSE37RHDsQ
+         01tAEF6D1AMELSjuYFVkshniY7D3XuiMQ/ByafBw7AjLlVZ91NKXtX0CoG/vFi+NLBpb
+         7mCQ==
+X-Gm-Message-State: AOJu0YyicWhzafoh2fvXuyek38/A67a3UUSIeDcTO/9oDpliBh4J/93X
+        j4TurdJOfhM1pbjTza9i3yFBUg==
+X-Google-Smtp-Source: AGHT+IESxrLOaWegF5gTHmBHYw+/IUhEQGmX3/l2Ji8Z3+aAqLldkGtB6pMnrMVyRK3tlfdNewm/Zg==
+X-Received: by 2002:a0d:e20e:0:b0:58c:57c1:138a with SMTP id l14-20020a0de20e000000b0058c57c1138amr10944186ywe.19.1694460616784;
+        Mon, 11 Sep 2023 12:30:16 -0700 (PDT)
+Received: from [10.230.45.5] ([38.32.73.2])
+        by smtp.gmail.com with ESMTPSA id m83-20020a0dca56000000b00589e84acafasm2133892ywd.48.2023.09.11.12.30.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 12:30:16 -0700 (PDT)
+Message-ID: <2f1414ab-9152-17ab-d2c6-96f4f5de7d45@ixsystems.com>
+Date:   Mon, 11 Sep 2023 15:29:34 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (X11; FreeBSD amd64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] nvme: prevent id ctrl csi for specs below 2.0
+Content-Language: en-US
+To:     Keith Busch <kbusch@kernel.org>, Ameer Hamza <ahamza@ixsystems.com>
+Cc:     linux-nvme@lists.infradead.org, axboe@kernel.dk, hch@lst.de,
+        sagi@grimberg.me, linux-kernel@vger.kernel.org,
+        edmund.nadolski@ixsystems.com
+References: <20230910212641.338438-1-ahamza@ixsystems.com>
+ <ZP9fOBSl59u8u0hq@kbusch-mbp.dhcp.thefacebook.com>
+From:   Alexander Motin <mav@ixsystems.com>
+In-Reply-To: <ZP9fOBSl59u8u0hq@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DC:EE_|SJ0PR12MB6686:EE_
-X-MS-Office365-Filtering-Correlation-Id: 974a33db-ff20-46c3-a7ae-08dbb2fce12c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: p28ffX7KrDdoW/wvs8qyhHRbONUatoOGCjWj5kuLGjVs+rTp1D7iLk7KauYTin+Q6FTi1zK6NoBhOsIpgb+JOMXM2+457WoWfmhX3cpRWWV4eIZ17MwwSGpgdZgHHitwdcYSRuLy6RALNzN7igPY+vRBJIZJqhI7TOQCSfu9l5A707zogDZuObpUnK4sQYhztUtPfaudFm2UH0EyBHQOFltmvC8CReTsgCXpsTAFGRc0Mornb1N16JitZmpfqwn1BW+lZtzdx4PKy59xiZGWD06Cx+/g9IHX5gQnsH0Ip4f86He21CoCbxL+ajzmFPMzU+lfqHTY8prpw/RdPYvzgZ7K+DUe1yk38eLyrQJDRYfBX0LO4NS8S5cJPcW/19S6m/B/7Iv4GzYgtOALW57ufh5AQGHqhGQNkjLvhEqTKifjXvTwrd5MUtB3khy+0P8e2p+3cmfCKau4RN2Ayhr+EKc0vqwkUfW4wnPVyiXWGrnBswI5jjt2L+6iiEApAuHETi5FNVlub4LhiV93AkEdxsg9kxFYP2+VqzGscyv8IOhy5YGl8dDKOOavKA4kuh91xYT7DNGKwbKYw6xE+2NRBn7nTpZG8q5n9b10VOeA59z9s1xYzBVkoOrqjioR5oPgs/GcafvBYqQHb7IueYEMjK2I+DH3bTNAzGnjJNVQwY6qpyzqGW03rGNNpwb3+QHvIszAgzdNdzVngA0tscqs+b2G1cuLi78YEsbE59agu9yKoeQvPojgBTlh4UEPgx2hnZG0meGiAB+smnqvi6xTLSkGa6PUfoEZmayyfzkFl2A=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(376002)(346002)(1800799009)(451199024)(82310400011)(186009)(40470700004)(46966006)(36840700001)(81166007)(356005)(7696005)(6666004)(41300700001)(70586007)(40460700003)(36756003)(86362001)(2616005)(82740400003)(36860700001)(47076005)(40480700001)(426003)(336012)(2906002)(478600001)(8676002)(8936002)(5660300002)(316002)(4326008)(16526019)(54906003)(70206006)(6916009)(26005)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 19:25:38.1422
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 974a33db-ff20-46c3-a7ae-08dbb2fce12c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099DC.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6686
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+On 11.09.2023 14:40, Keith Busch wrote:
+> On Mon, Sep 11, 2023 at 02:26:41AM +0500, Ameer Hamza wrote:
+>> The 'id ctrl csi' command was introduced in version 2.0, as specified
+>> in Section 5.17.2.6 of the NVME Base Specification 2.0. Executing this
+>> command on previous NVMe versions returns an "Invalid Field" error,
+>> and the error entry is saved in the log page. Although, Commit
+>> c917dd96fe41 ("nvme: skip optional id ctrl csi if it failed") reduced
+>> the error occurrences, but the error persisted during the initial
+>> module load. This patch ensures the command isn't executed on versions
+>> older than 2.0, and it also eliminates the skip implementation because
+>> NVME_ID_CNS_CS_CTRL is expected to succeed with version 2.0.
+> 
+> NVMe TP's are allowed to be implemented by versions lower than the
+> release that first included it. I recall the first nvme controller I'd
+> seen that implemented this identification reported itself as 1.4.
 
-This patch series add support for AMD AE4DMA controller which
-performs high bandwidth memory-to-memory and IO copy operation,
-performs DMA transfer through queue based descriptor management.
-
-The AE4DMA controller allows for configuration of the number of
-queues per controller, with a range from 1 to 16. This configuration
-can be conveniently adjusted using the driver's "max_hw_q" parameter.
-
-The AMD Processor features multiple ae4dma device instances,
-with each controller supporting a maximum of 16 DMA queues.
-
-Sanjay R Mehta (3):
-  dmaengine: ae4dma: Initial ae4dma controller driver with multi channel
-  dmaengine: ae4dma: register AE4DMA controller as a DMA resource
-  dmaengine: ae4dma: Add debugfs entries for AE4DMA
-
- MAINTAINERS                           |   6 +
- drivers/dma/Kconfig                   |   2 +
- drivers/dma/Makefile                  |   1 +
- drivers/dma/ae4dma/Kconfig            |  13 ++
- drivers/dma/ae4dma/Makefile           |  10 +
- drivers/dma/ae4dma/ae4dma-debugfs.c   |  98 ++++++++
- drivers/dma/ae4dma/ae4dma-dev.c       | 353 ++++++++++++++++++++++++++++
- drivers/dma/ae4dma/ae4dma-dmaengine.c | 425 ++++++++++++++++++++++++++++++++++
- drivers/dma/ae4dma/ae4dma-pci.c       | 247 ++++++++++++++++++++
- drivers/dma/ae4dma/ae4dma.h           | 374 ++++++++++++++++++++++++++++++
- 10 files changed, 1529 insertions(+)
- create mode 100644 drivers/dma/ae4dma/Kconfig
- create mode 100644 drivers/dma/ae4dma/Makefile
- create mode 100644 drivers/dma/ae4dma/ae4dma-debugfs.c
- create mode 100644 drivers/dma/ae4dma/ae4dma-dev.c
- create mode 100644 drivers/dma/ae4dma/ae4dma-dmaengine.c
- create mode 100644 drivers/dma/ae4dma/ae4dma-pci.c
- create mode 100644 drivers/dma/ae4dma/ae4dma.h
+Then there must be a way to detect it.  How otherwise it is not a 
+standard violation to send arbitrary effectively vendor-specific 
+commands to a drive?
 
 -- 
-2.7.4
-
+Alexander Motin
