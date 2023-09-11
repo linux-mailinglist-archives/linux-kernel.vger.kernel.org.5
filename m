@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0F679C377
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE01E79C2A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241196AbjILC7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S237581AbjILCUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241325AbjILC7E (ORCPT
+        with ESMTP id S237363AbjILCUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:59:04 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D95116B0C;
-        Mon, 11 Sep 2023 18:22:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E053C116AE;
-        Mon, 11 Sep 2023 22:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694469891;
-        bh=d7+LLwsZ5NfE/HD2sW7mmL/65WCoPD7FlRtaiVBTjTU=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=Fwvnn18e5ySS+jeBQ5Z7YYsIXDqZs5bd9/Bkd3tAZ1j7Q5rXp877lI4+WZ6Z9uTcl
-         IOP0R1j5clAdbPvdxnxkQlkKXDV6l5jZ90mx33q6hgYcrcmt0+5w1Z3fJqLPmNp9sC
-         AOe1MoaMobwA0MpjLBEf9OPKkKtSG3Jr1KfZOu7ghKRB1e1s4Avuk/aqlEaBhJDPGV
-         wptddAH6X+eKOTS/CwqlmWlQWl9rsEnt7R4ZT/v71jgSDk1ktfJf+Xo7mYav42/fgw
-         yaRLP6yZIdQ2JhnAkcctN54Oo2oHdyWRcAWK1wJdtj/W8oMO4+0NSe94wmtsZjLIKJ
-         gwDGimdkS7DYw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        Mon, 11 Sep 2023 22:20:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244B7141938;
+        Mon, 11 Sep 2023 18:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=o91i0BrRYW6i4ggXpHFxM6+k8TqRwA2kmbfi7bWB11I=; b=jtOtBkVi85VfoTYtK70HkFQRhV
+        7n1exiuutzIDGv0/lTYyDrXxLtRiyFs8vVVQiPwvxfGaHKcUS5fwsX/80Lm6JEH8l4+uWkSQYHUsS
+        f/TLIAunPWJqd2nMjW2U4mbs3tL7bIi1bCXAnBtel9fmVehJDx0/8xZF8xtdzqvOXt7XDKQoXdVUT
+        NNWBdJHbG1Rc+uGGzV17Xp15A1LuIAjVfvT2hiW8XHgn/lvlEjQyqF/NLy1OHl5SUmX8QH1KsBZ/e
+        YQpQBAYQGc1C3qON0ke0vT+ov5P/V2dHPc73RvV+WTvSiVzv9wMXgCPdFJADLBU4ZDfrYvsJteYfx
+        I0O2cwjg==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qfp2e-001SmM-1a;
+        Mon, 11 Sep 2023 22:06:00 +0000
+Message-ID: <85563fd1-b9c1-60a9-24bc-4e5f7ee3bea4@infradead.org>
+Date:   Mon, 11 Sep 2023 15:05:56 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH 1/1] scripts: Introduce a default git.orderFile
+Content-Language: en-US
+To:     Leonardo Bras <leobras@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+References: <20230911193752.27642-2-leobras@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230911193752.27642-2-leobras@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 01:04:47 +0300
-Message-Id: <CVGFG0625KNL.3B8Z118U3IGBY@suppilovahvero>
-Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
- trusted keyring
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Mimi Zohar" <zohar@linux.ibm.com>,
-        "Eric Snowberg" <eric.snowberg@oracle.com>, <dhowells@redhat.com>,
-        <dwmw2@infradead.org>
-Cc:     <mic@linux.microsoft.com>, <kanth.ghatraju@oracle.com>,
-        <konrad.wilk@oracle.com>, <linux-integrity@vger.kernel.org>,
-        <keyrings@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230908213428.731513-1-eric.snowberg@oracle.com>
- <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
-In-Reply-To: <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Sep 11, 2023 at 4:29 PM EEST, Mimi Zohar wrote:
-> Hi Eric,
->
-> On Fri, 2023-09-08 at 17:34 -0400, Eric Snowberg wrote:
-> > Currently root can dynamically update the blacklist keyring if the hash
-> > being added is signed and vouched for by the builtin trusted keyring.
-> > Currently keys in the secondary trusted keyring can not be used.
-> >=20
-> > Keys within the secondary trusted keyring carry the same capabilities a=
-s
-> > the builtin trusted keyring.  Relax the current restriction for updatin=
-g
-> > the .blacklist keyring and allow the secondary to also be referenced as
-> > a trust source.  Since the machine keyring is linked to the secondary
-> > trusted keyring, any key within it may also be used.
-> >=20
-> > An example use case for this is IMA appraisal.  Now that IMA both
-> > references the blacklist keyring and allows the machine owner to add
-> > custom IMA CA certs via the machine keyring, this adds the additional
-> > capability for the machine owner to also do revocations on a running
-> > system.
-> >=20
-> > IMA appraisal usage example to add a revocation for /usr/foo:
-> >=20
-> > sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
-> >=20
-> > openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
-> >        -signer machine-certificate.pem -noattr -binary -outform DER \
-> >        -out hash.p7s
-> >=20
-> > keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
-> >=20
-> > Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
->
-> The secondary keyring may include both CA and code signing keys.  With
-> this change any key loaded onto the secondary keyring may blacklist a
-> hash.  Wouldn't it make more sense to limit blacklisting
-> certificates/hashes to at least CA keys?=20
 
-I think a bigger issue is that if a kernel is updated with this patch
-it will change the behavior. It is nothing to do whether the "old" or
-"new" is better but more like kind of backwards compatibility issue.
 
-BR, Jarkko
+On 9/11/23 12:37, Leonardo Bras wrote:
+> When reviewing patches, it looks much nicer to have some changes shown
+> before others, which allow better understanding of the patch before the
+> the .c files reviewing.
+> 
+> Introduce a default git.orderFile, in order to help developers getting the
+> best ordering easier.
+> 
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> ---
+> 
+> Please provide feedback on what else to add / remove / reorder here!
+> 
+>  scripts/git.orderFile | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>  create mode 100644 scripts/git.orderFile
+> 
+> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+> new file mode 100644
+> index 000000000000..3434028be2f2
+> --- /dev/null
+> +++ b/scripts/git.orderFile
+> @@ -0,0 +1,31 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +# order file for git, to produce patches which are easier to review
+> +# by diffing the important stuff like header changes first.
+> +#
+> +# one-off usage:
+> +#   git diff -O scripts/git.orderfile ...
+> +#
+> +# add to git config:
+> +#   git config diff.orderFile scripts/git.orderfile
+> +#
+> +
+> +MAINTAINERS
+> +
+> +# Documentation
+> +Documentation/*
+> +*.rst
+> +
+> +# build system
+> +Kbuild
+> +Makefile*
+> +*.mak
+
+Can we have Kconfig* here also?
+thanks.
+
+> +
+> +# semantic patches
+> +*.cocci
+> +
+> +# headers
+> +*.h
+> +
+> +# code
+> +*.c
+
+-- 
+~Randy
