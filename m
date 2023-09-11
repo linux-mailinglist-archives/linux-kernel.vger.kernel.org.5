@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 772A479BF33
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D8B79BEE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbjIKUrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S245063AbjIKVIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238131AbjIKNlR (ORCPT
+        with ESMTP id S241289AbjIKPFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:41:17 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF37ECD7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:41:12 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d78328bc2abso4168133276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:41:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694439672; x=1695044472; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3nSmSHdLay9tWo1ueOBouSeDs8BbyLWV7Pc0CpX32Vg=;
-        b=fRx+MwvlaMHxRM8TIa8O3Dmjq+9Z7V3HFZu+twFoLTLJfkq4SBP2jauRjs2u+Jd9/3
-         KfBH/zjn8/K3dlw2Ix4kcBiyVc8mJsVoPWWX05x8yhTX0McdvEyOcmyskY4xT3lOV3fM
-         rmytmlssrHhbnSeGQyeRkiWWx+O1LKHe3O0U4IrnlqOH+8el/OCAPNoic9Uu0yB5x8xZ
-         g0RY7kZHWRKig/E/glt9PUeIT1mI6x1PKQgiJRwz6zhXzRUPczRwjAo+3RRJ4oJ5N8mr
-         5QGPr4D09UL2Azvc7I5zQWoxDIi/a1Ggu3/+SArSyu5gZ3b3G7yNJGJ4eC+0COID1hEe
-         CSeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694439672; x=1695044472;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3nSmSHdLay9tWo1ueOBouSeDs8BbyLWV7Pc0CpX32Vg=;
-        b=NP55lh8FCK3nLHEquWokb+TlGa+5uDrVQUW6MhVw/NmjgT+Bb+bkBU0rMiT28Bhn3c
-         kwpaFzZv3QzTOsAgxytwuJC3jNFe+X6+5L1rr8/wYTMEg4yKUUZZaSZCXfz5pcK/OOGi
-         g9g72TAxTLQ590n+gr7RagkB2EkeNjKXofXgn/qDUdLKgjDuwUMXIKWfRKJSkzKqVJkm
-         QB8SCR/6f/8X0UWMG+F+TELklwp/UxPvGchR1E9VZ+D6OHPTrpH2Jtr3K4uv5o3LVvWz
-         6dYu2KkhTFExJR3j5sf/4TIPmZMz922cUXAL5WGm4BXLAESlxOhZlgoKeYzCG7tpSijz
-         IS3Q==
-X-Gm-Message-State: AOJu0Yx7T1PPh3l2Z4W3VmQQq/q6XAi/OXgKGfjddYn08lvEHMPs4JuA
-        yQpyYf5yorEb2adnkC/DYMm8Gp6GgcDNoxmUvGa5PamZzG4W89JL
-X-Google-Smtp-Source: AGHT+IEWBodMRYoPw67CDfe1qi/gAWKjCx2VF+eFj06Y3kZgEZ3CDzO8HvC6ljEaTiF2RSH76zpapCoshLhrfKyRQsg=
-X-Received: by 2002:a25:410f:0:b0:d80:8497:72c7 with SMTP id
- o15-20020a25410f000000b00d80849772c7mr3990786yba.15.1694439672060; Mon, 11
- Sep 2023 06:41:12 -0700 (PDT)
+        Mon, 11 Sep 2023 11:05:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502F2125;
+        Mon, 11 Sep 2023 08:05:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70962C433C8;
+        Mon, 11 Sep 2023 15:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694444750;
+        bh=u7MkkHj2jXsj867e4hujRxIDesuvCKsimNKlIdaX/N8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YSRnd1/kXrCRvIdvCJd/nxDIpFX1j8YgtInf8jTKpDXChBba6uOLva1Vez1yvNGAs
+         ro4SneVk4RHA3g8b8Gf9/cj21+ibFwmedVc5Nt1caARwgmwvnm5npsEgq1xmKIQM7m
+         +B7/XbD+cbi7/blm8rilKA1p/EXw4jyM5tYbx0AI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Wen Yang <wenyang.linux@foxmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Dylan Yudaken <dylany@fb.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.1 102/600] eventfd: prevent underflow for eventfd semaphores
+Date:   Mon, 11 Sep 2023 15:42:15 +0200
+Message-ID: <20230911134636.612656955@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911134633.619970489@linuxfoundation.org>
+References: <20230911134633.619970489@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
-In-Reply-To: <20230908055146.18347-1-Linhua.xu@unisoc.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 11 Sep 2023 15:41:00 +0200
-Message-ID: <CACRpkdbUOM7KD2h+mSZ4xj7UCCe_Gj_Dzcc7hSmOfOftve_kyg@mail.gmail.com>
-Subject: Re: [PATCH V2 0/6] pinctrl: sprd: Modification of UNIOC Platform
- pinctrl Driver
-To:     Linhua Xu <Linhua.xu@unisoc.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 7:52=E2=80=AFAM Linhua Xu <Linhua.xu@unisoc.com> wro=
-te:
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
->
-> Recently, some bugs have been discovered during use, and patch2 and patch=
-3
-> are bug fixes. Also, this patchset add new features: patch1 is for
-> compatibility with more platforms, patch4 add pinctrl support for UMS512,
-> patch5 Increase the range of register values, patch6 add pinctrl support
-> for UMS9621.
->
-> change in V2
+------------------
 
-V2 is starting to look good, please address Andy's comments, especially
-move the fixes first in the series so they can be queued as fixes
-if need be.
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-I would really appreciate if Baolin can review the patches as well as
-he knows this hardware very well and wrote the initial version.
+[ Upstream commit 758b492047816a3158d027e9fca660bc5bcf20bf ]
 
-Yours,
-Linus Walleij
+For eventfd with flag EFD_SEMAPHORE, when its ctx->count is 0, calling
+eventfd_ctx_do_read will cause ctx->count to overflow to ULLONG_MAX.
+
+An underflow can happen with EFD_SEMAPHORE eventfds in at least the
+following three subsystems:
+
+(1) virt/kvm/eventfd.c
+(2) drivers/vfio/virqfd.c
+(3) drivers/virt/acrn/irqfd.c
+
+where (2) and (3) are just modeled after (1). An eventfd must be
+specified for use with the KVM_IRQFD ioctl(). This can also be an
+EFD_SEMAPHORE eventfd. When the eventfd count is zero or has been
+decremented to zero an underflow can be triggered when the irqfd is shut
+down by raising the KVM_IRQFD_FLAG_DEASSIGN flag in the KVM_IRQFD
+ioctl():
+
+        // ctx->count == 0
+        kvm_vm_ioctl()
+        -> kvm_irqfd()
+           -> kvm_irqfd_deassign()
+              -> irqfd_deactivate()
+                 -> irqfd_shutdown()
+                    -> eventfd_ctx_remove_wait_queue(&cnt)
+                       -> eventfd_ctx_do_read(&cnt)
+
+Userspace polling on the eventfd wouldn't notice the underflow because 1
+is always returned as the value from eventfd_read() while ctx->count
+would've underflowed. It's not a huge deal because this should only be
+happening when the irqfd is shutdown but we should still fix it and
+avoid the spurious wakeup.
+
+Fixes: cb289d6244a3 ("eventfd - allow atomic read and waitqueue remove")
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Dylan Yudaken <dylany@fb.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Message-Id: <tencent_7588DFD1F365950A757310D764517A14B306@qq.com>
+[brauner: rewrite commit message and add explanation how this underflow can happen]
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/eventfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/eventfd.c b/fs/eventfd.c
+index 249ca6c0b7843..4a60ea932e3d9 100644
+--- a/fs/eventfd.c
++++ b/fs/eventfd.c
+@@ -189,7 +189,7 @@ void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
+ {
+ 	lockdep_assert_held(&ctx->wqh.lock);
+ 
+-	*cnt = (ctx->flags & EFD_SEMAPHORE) ? 1 : ctx->count;
++	*cnt = ((ctx->flags & EFD_SEMAPHORE) && ctx->count) ? 1 : ctx->count;
+ 	ctx->count -= *cnt;
+ }
+ EXPORT_SYMBOL_GPL(eventfd_ctx_do_read);
+-- 
+2.40.1
+
+
+
