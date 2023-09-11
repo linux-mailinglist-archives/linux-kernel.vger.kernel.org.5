@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982579C0FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C3879BFF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355312AbjIKV5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S242186AbjIKU5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243069AbjIKQr0 (ORCPT
+        with ESMTP id S243064AbjIKQq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:47:26 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA5EF1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:47:20 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso50510735e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694450839; x=1695055639; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=MLi2NYLPm6QlVeP45t3wgNfRYbdJeJf3EXFD0UEeti0=;
-        b=kG+c+hskCaJPO0tlisFVyDres3F0rVFxb0AsajmbY9A3iSJie6puebauGp0NYIM8Qt
-         JgU2dB501+Lp9x08fFDRq478Mva3PFnqIExB9/UG0PYeBgVTmsKBAuQk4cf42hd/W0Tz
-         gjbzJ7Yh7jR3YviNal1+sIvDkhWW0kPIz73c/PmuDV6NvIYcFylq9cjBmzpVV3dMnAJh
-         DSYqRu2ILejrqHrWLRYQDcD5eNsQt2HuaL9E7TweaOvKXz1vcW23AVpSWDRMhggux99x
-         chqoZRmeLe1mlaqtU5D1SS7CvCWcMqvxRNkaL0LMggxK0j0cLdffn46Dc1ToN9EiVjS2
-         m2pQ==
+        Mon, 11 Sep 2023 12:46:59 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DEE3;
+        Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so5868206a12.2;
+        Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694450839; x=1695055639;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1694450812; x=1695055612;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MLi2NYLPm6QlVeP45t3wgNfRYbdJeJf3EXFD0UEeti0=;
-        b=ZozAa/7KIzFKJsUCsLbBr7XBDjCfdIgNoAm6QC926m9Q2ySrS1HxXA/fV9wvi/zm/3
-         qXXlXBAIQ5KX8x8hIo6GNN0qxLG2m6XsDWh9HEna0WaJiMusHffCFt9/En4FFElKnfZ7
-         zrzaIATUOD344FrqDJgW/gm0xb9YXwVaTbiIEFz8e66nooWztGKuwvp6yIHoJBS4tqzV
-         HUyUu4lCAk3zoURTdf1j/3uUqoeFfYFN2Cd/fGiDLgnInYeIRK5G68mZDsuP7Fuu6jMH
-         wvQB0biHkboi36Z7lLd5Fp3CkjQGAIdvjHD9ljZnsJEJ0faDMWKtZb//+j107WVzloEU
-         9D2Q==
-X-Gm-Message-State: AOJu0Yxe0FWtB5nOqPQJWT0cEoUQzBi3IM1awaGRpbHJI+2v0hK55/g1
-        mAEJVVRmCcIJ8IlLC3Rp+Zjpsg==
-X-Google-Smtp-Source: AGHT+IFkb0O/V7HCO+aYY6YxoLwvjjcsYi5plgGFEpi6ITWRePKQPNfgLMXwdf+kEXJSlctGXSdMlw==
-X-Received: by 2002:a05:600c:214d:b0:3fe:ba7:f200 with SMTP id v13-20020a05600c214d00b003fe0ba7f200mr8179098wml.20.1694450838602;
-        Mon, 11 Sep 2023 09:47:18 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:55be:8f7e:5f59:7ed1])
-        by smtp.gmail.com with ESMTPSA id m23-20020a7bcb97000000b003fbe791a0e8sm10507045wmi.0.2023.09.11.09.47.17
+        bh=fz0qgG1xAQKjyAXZ1F3HGmELYa8PYKoGe3IryD6lsZo=;
+        b=s5RVSmQLJqz8+OiqDIN1LxVChoA5KOHTVWvtEZPg2RyF+bBuNP94pnUquLrSWAaDJk
+         fZvZ7jA7mYsaSAYDA/2tdV/xzrICaOJLlBGGCs0gamcpdPgZybrGYotZppsL7A/jpTlh
+         yMdm53+MeZBKx2Tk8KRKkLQyhm8lNPuKqI5HsmByi2RLXFnppWdF8nqhJkcNlQZaTpiD
+         U3PGWTZAl5fhzwebX9ycxBThtvkzAmwRbv5nvCEyeMDNfAnO+smSntP6y3q/RdNyuwgu
+         szpp+vMx2E2dPBxaMgctmL8LbgngyS23uYpxAA59nkave2vR7cvypaTpJbZLQxFQetHK
+         ZXgA==
+X-Gm-Message-State: AOJu0Yzlg7DgwwyP5whvYAqsZnowsF4Rp7C8hw3OmPk/hwgAM2l3wcWw
+        ylBp9qBby5JnmD2LcMB6iCk=
+X-Google-Smtp-Source: AGHT+IGbKXR5utsZSAcjo25hC+LWL6BmnRTWGZSSZF/5ZDH7OKutTBo9ihUXtpcWszGOcfOQii6Fxg==
+X-Received: by 2002:aa7:c1d5:0:b0:522:2f8c:8953 with SMTP id d21-20020aa7c1d5000000b005222f8c8953mr7573057edp.39.1694450812406;
+        Mon, 11 Sep 2023 09:46:52 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i23-20020a0564020f1700b0052f8c67a399sm538287eda.37.2023.09.11.09.46.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:47:18 -0700 (PDT)
-References: <20230808100746.391365-1-jbrunet@baylibre.com>
- <20230808100746.391365-2-jbrunet@baylibre.com>
- <20230810231748.GA1543958-robh@kernel.org>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Da Xue <da@libre.computer>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: usb: add device for Genesys Logic hub
- gl3510
-Date:   Mon, 11 Sep 2023 18:46:24 +0200
-In-reply-to: <20230810231748.GA1543958-robh@kernel.org>
-Message-ID: <1ja5ts4pyi.fsf@starbuckisacylon.baylibre.com>
+        Mon, 11 Sep 2023 09:46:51 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 09:46:50 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
+        martin.lau@linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is
+ disabled
+Message-ID: <ZP9EeunfcbWos80w@gmail.com>
+References: <20230911103407.1393149-1-leitao@debian.org>
+ <20230911103407.1393149-6-leitao@debian.org>
+ <87ledc904p.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ledc904p.fsf@suse.de>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
+> 
+> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
+> > network is not enabled, but io_uring is, then we want to return
+> > -EOPNOTSUPP for any possible socket operation.
+> >
+> > This is helpful because io_uring_cmd_sock() can now call functions that
+> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
+> > inside the function itself.
+> >
+> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> > ---
+> >  io_uring/uring_cmd.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> > index 60f843a357e0..a7d6a7d112b7 100644
+> > --- a/io_uring/uring_cmd.c
+> > +++ b/io_uring/uring_cmd.c
+> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
+> >  }
+> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+> >  
+> > +#if defined(CONFIG_NET)
+> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  {
+> >  	struct socket *sock = cmd->file->private_data;
+> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  	}
+> >  }
+> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
+> > +#else
+> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> > +{
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +#endif
+> > +
+> 
+> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
+> the alternative EOPNOTSUPP implementation.
 
-On Thu 10 Aug 2023 at 17:17, Rob Herring <robh@kernel.org> wrote:
+It seems so. net/socket.o is part of obj-y:
 
-> On Tue, Aug 08, 2023 at 12:07:45PM +0200, Jerome Brunet wrote:
->> Add gl3510 USB 3 root hub device id
->> 
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>  Documentation/devicetree/bindings/usb/genesys,gl850g.yaml | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->> 
->> diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
->> index cc4cf92b70d1..a7e7142651f8 100644
->> --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
->> +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
->> @@ -4,7 +4,7 @@
->>  $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
->>  $schema: http://devicetree.org/meta-schemas/core.yaml#
->>  
->> -title: Genesys Logic GL850G USB 2.0 hub controller
->> +title: Genesys Logic USB hub controller
->>  
->>  maintainers:
->>    - Icenowy Zheng <uwu@icenowy.me>
->> @@ -17,6 +17,7 @@ properties:
->>      enum:
->>        - usb5e3,608
->>        - usb5e3,610
->> +      - usb5e3.626
->
-> Should be a comma, not a period.
->
-
-Good catch, thanks a lot
-
->>  
->>    reg: true
->>  
->> -- 
->> 2.40.1
->> 
-
+https://github.com/torvalds/linux/blob/master/net/Makefile#L9
