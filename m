@@ -2,55 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BD479BD8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D197579B7D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349862AbjIKVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
+        id S240309AbjIKWAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236422AbjIKKfh (ORCPT
+        with ESMTP id S236430AbjIKKhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:35:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB30E5F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:35:31 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2525E66072F9;
-        Mon, 11 Sep 2023 11:35:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694428529;
-        bh=6r3vx57qtWVMn0QKt1NqNPP3mFc3ALPRcicl0VS/gvI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h31UFadycnV6ySm4bv5Hvh70nlQgnoHlrJP4f8/JQDi/B4DN7yF7WWkzYc1ajvA4G
-         jXU/AFJBx4KYha6LIy9AXN9i7RbMHYfLsEJceRymKCePFdOXvkhFa027hn0RY+9qR7
-         +WO5ghNiH+s2FVgTzfhHnc7WFu7J4rakRN8I70URy5Q3x0trm+r/QfTSXjT2/EpwXd
-         Oh+VXfVH39bzdYPP9XRylweA++CLGfZW5DGtmIaivHMJQsb97UiOTe87UXVUstKCfl
-         Glm/jAiCd+kzmvdAeKobGRLdkeI+D1C6oooa1CPI5uDrG7TmZj55DEn++fadHkoNsv
-         SkwcutlaCSCpg==
-Date:   Mon, 11 Sep 2023 12:35:26 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Message-ID: <20230911123526.6c67feb0@collabora.com>
-In-Reply-To: <20230909153125.30032-7-dakr@redhat.com>
-References: <20230909153125.30032-1-dakr@redhat.com>
-        <20230909153125.30032-7-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 06:37:47 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D13E69
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:37:42 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26d49cf1811so2755700a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1694428662; x=1695033462; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Po8IS4DRMtQvmgPVXjH58qy9Rqo/kKZSvAUadebqBp4=;
+        b=F5+2kUx330xrTBjysIEeGshORGE1FhL24CGmIHwUzCrJblsIpZ/H2Psn2ChN7KXU+8
+         6dh5n3pwOr3Eb7F+UQxAdjI86fqnThoR0hBdtby5E+ssxCBqBoA6z97zkKhAsheyna3I
+         GTuaxnq+s+Z5HiLWy87YxBOV7oSW6OisCNKluEqhq9arL8CsULm0ZORTMc0IsABgHDtD
+         l/bEfLRvX7MTLxMkuSG9orwUMK9FZPuyK2GBP3zab1R9K1tVEJoJk++GFLQ+2xeyliIi
+         woJAfZZROzBWZukqneM2mQqGnldxV7JGaGW0S+c4qRaZxPAGYX7lEB8GWsskMvItRYT3
+         qG4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694428662; x=1695033462;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Po8IS4DRMtQvmgPVXjH58qy9Rqo/kKZSvAUadebqBp4=;
+        b=aW2MVRJ3xDg8rW0Wt6raRjkWOqLvBp/yJE249RxEWQATQ21WFkRBllYeiP+DHrySTG
+         1Qg2IGOZQs89BWqi5yj7wZqdsmhjgk424UWaOT1fL2klu5bhsX5l5HY3W8BG2Q63vtFF
+         bL6vyAVk5LgzD4NPypn7Yd3MJ2LhUizU+g7Tm+3AjtktTCxVDUxBmIfxnVgwnR0VrkVL
+         kB3AkGxhQkasIbOhwGMtoPl0Q56bqF6Kq87n8AlxtURu2V7dByEbEd7RScPjSgp3W/BR
+         qGmKZPw1GVNWFpXv/raWov5+PKDxOycuCrRTCmum/VsD8j9VeDGjxa9D605+OrlTbWYO
+         z/Ew==
+X-Gm-Message-State: AOJu0YwaOAX2kKqhshB+njn0qbPYUQDgOKGQnCysuT6neQqi7VJrBIfj
+        B0BDcx1aBcA1CU76/YrmyAqVbT5VFF+BJ3w3Mt53A9jG/BbvUXyY
+X-Google-Smtp-Source: AGHT+IHmOIqa/z6dMpq8pdMxxAGEDuHNj5xcEgKDzqBAe8nBbBBoEdwfdK2+IK8kAeHSnZ6SVg4Hu4N7waaldgyLK1Q=
+X-Received: by 2002:a17:90a:4ce4:b0:263:1f1c:ef4d with SMTP id
+ k91-20020a17090a4ce400b002631f1cef4dmr7075991pjh.10.1694428662010; Mon, 11
+ Sep 2023 03:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20230901093449.838414-1-Naresh.Solanki@9elements.com> <83f2afcc-aa9a-2d60-f5e2-971f7d669e00@roeck-us.net>
+In-Reply-To: <83f2afcc-aa9a-2d60-f5e2-971f7d669e00@roeck-us.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Mon, 11 Sep 2023 16:07:31 +0530
+Message-ID: <CABqG17iOLLb8qJkMRc7YCLMLE5mL9AV0fu7ckQz==FihFOUsKQ@mail.gmail.com>
+Subject: Re: [PATCH v2] regulator (max5970): Add hwmon support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -60,216 +68,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Danilo,
+Hi
 
-On Sat,  9 Sep 2023 17:31:13 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
-
-
-> @@ -632,6 +661,131 @@
->   *	}
->   */
->  
-> +/**
-> + * get_next_vm_bo_from_list() - get the next vm_bo element
-> + * @__gpuvm: The GPU VM
-> + * @__list_name: The name of the list we're iterating on
-> + * @__local_list: A pointer to the local list used to store already iterated items
-> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
-> + *
-> + * This helper is here to provide lockless list iteration. Lockless as in, the
-> + * iterator releases the lock immediately after picking the first element from
-> + * the list, so list insertion deletion can happen concurrently.
-> + *
-> + * Elements popped from the original list are kept in a local list, so removal
-> + * and is_empty checks can still happen while we're iterating the list.
-> + */
-> +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, __prev_vm_bo)	\
-> +	({										\
-> +		struct drm_gpuvm_bo *__vm_bo;						\
-> +											\
-> +		drm_gpuvm_bo_put(__prev_vm_bo);						\
-> +											\
-> +		spin_lock(&(__gpuvm)->__list_name.lock);				\
-
-I'm tempted to add a drm_gpuvm::<list_name>::local_list field, so we
-can catch concurrent iterations with something like:
-
-		if (!(__gpuvm)->__list_name.local_list)
-			(__gpuvm)->__list_name.local_list = __local_list;
-		else
-			WARN_ON((__gpuvm)->__list_name.local_list != __local_list);
-
-with (__gpuvm)->__list_name.local_list being restored to NULL
-in restore_vm_bo_list().
-
-> +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
-> +			__vm_bo = list_first_entry(&(__gpuvm)->__list_name.list,	\
-> +						   struct drm_gpuvm_bo,			\
-> +						   list.entry.__list_name);		\
-> +			if (drm_gpuvm_bo_get_unless_zero(__vm_bo)) {			\
-> +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
-> +					       __local_list);				\
-> +				break;							\
-> +			} else {							\
-> +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> +				__vm_bo = NULL;						\
-> +			}								\
-> +		}									\
-> +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> +											\
-> +		__vm_bo;								\
-> +	})
-> +
-> +/**
-> + * for_each_vm_bo_in_list() - internal vm_bo list iterator
-> + *
-> + * This helper is here to provide lockless list iteration. Lockless as in, the
-> + * iterator releases the lock immediately after picking the first element from the
-> + * list, so list insertion and deletion can happen concurrently.
-> + *
-> + * Typical use:
-> + *
-> + *	struct drm_gpuvm_bo *vm_bo;
-> + *	LIST_HEAD(my_local_list);
-> + *
-> + *	ret = 0;
-> + *	drm_gpuvm_for_each_vm_bo(gpuvm, <list_name>, &my_local_list, vm_bo) {
-> + *		ret = do_something_with_vm_bo(..., vm_bo);
-> + *		if (ret)
-> + *			break;
-> + *	}
-> + *	drm_gpuvm_bo_put(vm_bo);
-> + *	drm_gpuvm_restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
-
-The names in this example and the helper names don't match.
-
-> + *
-> + *
-> + * Only used for internal list iterations, not meant to be exposed to the outside
-> + * world.
-> + */
-> +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, __vm_bo)	\
-> +	for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> +						__local_list, NULL);		\
-> +	     __vm_bo;								\
-> +	     __vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> +						__local_list, __vm_bo))		\
-> +
-> +/**
-> + * restore_vm_bo_list() - move vm_bo elements back to their original list
-> + * @__gpuvm: The GPU VM
-> + * @__list_name: The name of the list we're iterating on
-> + * @__local_list: A pointer to the local list used to store already iterated items
-> + *
-> + * When we're done iterating a vm_bo list, we should call restore_vm_bo_list()
-> + * to restore the original state and let new iterations take place.
-> + */
-> +#define restore_vm_bo_list(__gpuvm, __list_name, __local_list)				\
-> +	do {										\
-> +		/* Merge back the two lists, moving local list elements to the		\
-> +		 * head to preserve previous ordering, in case it matters.		\
-> +		 */									\
-> +		spin_lock(&(__gpuvm)->__list_name.lock);				\
-> +		list_splice(__local_list, &(__gpuvm)->__list_name.list);		\
-> +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> +	} while (0)
-> +/**
-> + * drm_gpuvm_bo_list_add() - insert a vm_bo into the given list
-> + * @__vm_bo: the &drm_gpuvm_bo
-> + * @__list_name: the name of the list to insert into
-> + *
-> + * Inserts the given @__vm_bo into the list specified by @__list_name and
-> + * increases the vm_bo's reference count.
-> + */
-> +#define drm_gpuvm_bo_list_add(__vm_bo, __list_name)				\
-> +	do {									\
-> +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
-> +		if (list_empty(&(__vm_bo)->list.entry.__list_name))		\
-> +			list_add_tail(&(__vm_bo)->list.entry.__list_name,	\
-> +				      &(__vm_bo)->vm->__list_name.list);	\
-> +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
-> +	} while (0)
-> +
-> +/**
-> + * drm_gpuvm_bo_list_del() - remove a vm_bo from the given list
-> + * @__vm_bo: the &drm_gpuvm_bo
-> + * @__list_name: the name of the list to insert into
-> + *
-> + * Removes the given @__vm_bo from the list specified by @__list_name and
-> + * decreases the vm_bo's reference count.
-> + */
-> +#define drm_gpuvm_bo_list_del(__vm_bo, __list_name)				\
-> +	do {									\
-> +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
-> +		if (!list_empty(&(__vm_bo)->list.entry.__list_name))		\
-> +			list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
-> +	} while (0)
-> +
-> +static int __must_check
-> +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo);
-
-I see no obvious reason to have a forward declaration for this helper,
-if we decide to keep it, let's at least move the declaration here.
-
-
-> @@ -807,6 +1262,14 @@ drm_gpuvm_bo_destroy(struct kref *kref)
->  
->  	drm_gem_gpuva_assert_lock_held(vm_bo->obj);
->  
-> +	spin_lock(&gpuvm->extobj.lock);
-> +	list_del(&vm_bo->list.entry.extobj);
-> +	spin_unlock(&gpuvm->extobj.lock);
-> +
-> +	spin_lock(&gpuvm->evict.lock);
-> +	list_del(&vm_bo->list.entry.evict);
-> +	spin_unlock(&gpuvm->evict.lock);
-> +
->  	list_del(&vm_bo->list.entry.gem);
->  
->  	drm_gem_object_put(obj);
-> @@ -822,6 +1285,11 @@ drm_gpuvm_bo_destroy(struct kref *kref)
->   * @vm_bo: the &drm_gpuvm_bo to release the reference of
->   *
->   * This releases a reference to @vm_bo.
-> + *
-> + * If the reference count drops to zero, the &gpuvm_bo is destroyed, which
-> + * includes removing it from the GEMs gpuva list. Hence, if a call to this
-> + * function can potentially let the reference count to zero the caller must
-> + * hold the dma-resv or driver specific GEM gpuva lock.
-
-Looks like this should have been part of the previous patch. I hate
-the fact we have to worry about GEM gpuva lock being held when we call
-_put() only if the ref drops to zero though. I think I'd feel more
-comfortable if the function was named differently. Maybe _return() or
-_release() to match the _obtain() function, where the object is inserted
-in the GEM vm_bo list. I would also do the lock_is_held() check
-unconditionally, move the list removal in this function with a del_init(),
-and have a WARN_ON(!list_empty) in vm_bo_destroy().
-
->   */
->  void
->  drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
-> @@ -831,6 +1299,12 @@ drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
->  }
->  EXPORT_SYMBOL_GPL(drm_gpuvm_bo_put);
->  
-> +static int __must_check
-> +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo)
-> +{
-> +	return kref_get_unless_zero(&vm_bo->kref);
-
-Not convinced this helper is needed. It's only used once, and I
-don't think we'll need it elsewhere.
-
-> +}
-> +
->  static struct drm_gpuvm_bo *
->  __drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
->  		    struct drm_gem_object *obj)
-
-
-Regards,
-
-Boris
+On Fri, 1 Sept 2023 at 20:52, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 9/1/23 02:34, Naresh Solanki wrote:
+> > Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
+> > and current monitoring. This feature is seamlessly integrated through
+> > the hwmon subsystem.
+> >
+> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+>
+> Nit, but you still have this:
+>
+> CHECK: From:/Signed-off-by: email comments mismatch: 'From: Naresh Solanki <naresh.solanki@9elements.com>' != 'Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>'
+Ack. Will fix it in V3.
+>
+> > ---
+> > Changes in V2:
+> > - default case added for switch statement
+> > - Add dependency on HWMON
+> > ---
+> >   drivers/regulator/Kconfig             |   1 +
+> >   drivers/regulator/max5970-regulator.c | 123 ++++++++++++++++++++++++++
+> >   2 files changed, 124 insertions(+)
+> >
+> > diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+> > index 965d4f0c18a6..ab245893033d 100644
+> > --- a/drivers/regulator/Kconfig
+> > +++ b/drivers/regulator/Kconfig
+> > @@ -559,6 +559,7 @@ config REGULATOR_MAX5970
+> >       depends on I2C
+> >       depends on OF
+> >       depends on MFD_MAX5970
+> > +     depends on HWMON
+>
+> Not sure if that is acceptable. The maintainer will have to decide.
+>
+> >       help
+> >         This driver controls a Maxim 5970/5978 switch via I2C bus.
+> >         The MAX5970/5978 is a smart switch with no output regulation, but
+> > diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+> > index b56a174cde3d..c337044e1523 100644
+> > --- a/drivers/regulator/max5970-regulator.c
+> > +++ b/drivers/regulator/max5970-regulator.c
+> > @@ -10,6 +10,7 @@
+> >   #include <linux/bitops.h>
+> >   #include <linux/device.h>
+> >   #include <linux/err.h>
+> > +#include <linux/hwmon.h>
+> >   #include <linux/module.h>
+> >   #include <linux/io.h>
+> >   #include <linux/of.h>
+> > @@ -32,6 +33,120 @@ enum max597x_regulator_id {
+> >       MAX597X_SW1,
+> >   };
+> >
+> > +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
+> > +{
+> > +     u8 reg_data[2];
+> > +     int ret;
+> > +
+> > +     ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     *val = (reg_data[0] << 2) | (reg_data[1] & 3);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
+> > +                     u32 attr, int channel, long *val)
+> > +{
+> > +     struct max5970_data *ddata = dev_get_drvdata(dev);
+> > +     struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
+> > +     int ret;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
+> > +                     /*
+> > +                      * Calculate current from ADC value, IRNG range & shunt resistor value.
+> > +                      * ddata->irng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the IRNG range (in
+> > +                      * millivolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = (*val * ddata->irng[channel]) >> 10;
+> > +                     /* Convert the voltage meansurement across shunt resistor to current */
+> > +                     *val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
+> > +                     return ret;
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
+> > +                     /*
+> > +                      * Calculate voltage from ADC value and MON range.
+> > +                      * ddata->mon_rng holds the voltage corresponding to the maximum value the
+> > +                      * 10-bit ADC can measure.
+> > +                      * To obtain the output, multiply the ADC value by the MON range (in
+> > +                      * microvolts) and then divide it by the maximum value of the 10-bit ADC.
+> > +                      */
+> > +                     *val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
+> > +                     /* uV to mV */
+> > +                     *val = *val / 1000;
+> > +                     return ret;
+> > +             default:
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +     default:
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +}
+> > +
+> > +static umode_t max5970_is_visible(const void *data,
+> > +                               enum hwmon_sensor_types type,
+> > +                               u32 attr, int channel)
+> > +{
+> > +     struct max5970_data *ddata = (struct max5970_data *)data;
+> > +
+> > +     if (channel >= ddata->num_switches)
+> > +             return 0;
+> > +
+> > +     switch (type) {
+> > +     case hwmon_in:
+> > +             switch (attr) {
+> > +             case hwmon_in_input:
+> > +                     return 0444;
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> > +     case hwmon_curr:
+> > +             switch (attr) {
+> > +             case hwmon_curr_input:
+> > +                     /* Current measurement requires knowledge of the shunt resistor value. */
+> > +                     if (ddata->shunt_micro_ohms[channel])
+> > +                             return 0444;
+>
+> missing break;
+>
+> Interesting, I thought the compiler would complain about that nowadays,
+> but apparently it doesn't.
+>
+> Guenter
+>
+> > +             default:
+> > +                     break;
+> > +             }
+> > +             break;
+> > +     default:
+> > +             break;
+> > +     }
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct hwmon_ops max5970_hwmon_ops = {
+> > +     .is_visible = max5970_is_visible,
+> > +     .read = max5970_read,
+> > +};
+> > +
+> > +static const struct hwmon_channel_info *max5970_info[] = {
+> > +     HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
+> > +     HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
+> > +     NULL
+> > +};
+> > +
+> > +static const struct hwmon_chip_info max5970_chip_info = {
+> > +     .ops = &max5970_hwmon_ops,
+> > +     .info = max5970_info,
+> > +};
+> > +
+> >   static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
+> >   {
+> >       int ret, reg;
+> > @@ -432,6 +547,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >       struct regulator_config config = { };
+> >       struct regulator_dev *rdev;
+> >       struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+> > +     struct device *hwmon_dev;
+> >       int num_switches;
+> >       int ret, i;
+> >
+> > @@ -485,6 +601,13 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+> >               max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+> >       }
+> >
+> > +     hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970_hwmon", max597x,
+> > +                                                      &max5970_chip_info, NULL);
+> > +     if (IS_ERR(hwmon_dev)) {
+> > +             return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev), \
+> > +                                  "Unable to register hwmon device\n");
+> > +     }
+> > +
+> >       if (i2c->irq) {
+> >               ret =
+> >                   max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+> >
+> > base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+>
