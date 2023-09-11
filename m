@@ -2,239 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7279179B776
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5ACD79B8E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376725AbjIKWUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        id S234012AbjIKUtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236570AbjIKLAB (ORCPT
+        with ESMTP id S236580AbjIKLBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:00:01 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5370DF3;
-        Mon, 11 Sep 2023 03:59:56 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 84DB566072EF;
-        Mon, 11 Sep 2023 11:59:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694429995;
-        bh=jBzaFr5k4/eZ3Li9acpMFw0WcWRQMS/ZD6V8L5702SE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QHWsiitFmF6Nw68ryThCOJXIDQ6fKSBwr0ryO+wXkp/oUGHye9i6KwPfEYe0LaZKL
-         8HPS7oEQ7fzxbnkLGGIgX/kWjCBO80BWRVtdy2UijbV0ZvtDHozSibN/8CRc/J6CqE
-         bmWaqZwFNf235+QS5GhBv48A7nNW88tfTjrnDLJMpdhosmPR0I6OsFOzQHiGbU64X5
-         2ipfpjgOGjVZ5u7+6qZIQmds3/BzbKWBOjelG1R5qIlRQaMCUZWoHU/215g4HfbZ39
-         IlePE3zz52r7wXuqFGNRdiYh+jcyXLDdITMAp5UTfj2L8AQXqT3MFD6GAi7IboFtMX
-         at2yGrvPxBdGA==
-Message-ID: <799325f5-29b5-f0c0-16ea-d47c06830ed3@collabora.com>
-Date:   Mon, 11 Sep 2023 12:59:52 +0200
+        Mon, 11 Sep 2023 07:01:54 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECCDBCDC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:01:48 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502a25ab777so4116886e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694430107; x=1695034907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6D6uZQx0A7zu9HZThgkhNF6gppfDzg14ZGsi8FUaY4Q=;
+        b=GOSoTT4UaccjQcJnHUj1GeXqRlrNKXB4d25DwVPYJKxntS9nhJJNn1WSq6r1ePDHNM
+         sWFeeWxUuGPmO3IAqiFCte0rME8/AAv4w444Tg/1OI7KzGUphVg9kJ8x9wKwqs+tjE3s
+         4A8nI4rEZa96jRO/0mqlPbRnkef19ToR6L1RzHtIKsvTpaXv3XBDZY3CmrCTTGRhPtEZ
+         FRsnsLVKFFPTPn3vkpC2Ypvi4CYQnw7/rprROjDOmdd9dgcY6HGsPjFuCjOs/wqIzDQ7
+         6TUhAU2zJ8r1kh1pIesiHL/xfm82X/q0h/nHMLjyR82LlFTdSUp4OGmtjLM+zGC68z4+
+         gnfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694430107; x=1695034907;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6D6uZQx0A7zu9HZThgkhNF6gppfDzg14ZGsi8FUaY4Q=;
+        b=JCmRNkekbXOnKNjlhDNA45MbUtu9J2Sgu+H7SxMFhEEAG2ImvSBlR61lJWPRhAvnC4
+         +1XQJYFaUe/NEYCciMPs3kky07bgpthUz8AqXk6n2o81vV7dWeZLK1c3Ev2rh1rWd5je
+         BzuOO0rk50dCOxHzrdAcjIaX5bYgb3BJa/3jODKOO8+5tnrs0UdZUlqOlhvDyLmeAKE6
+         JvueKdhW8noiLeGFOG4oHs07Yl6tCga9IkNOd8S/jQhbaJ4eo9TIWJMyM2Em0dle9RFl
+         03+8rwiGBkZVE4jQyAOiFKNzzImOiVH2MKr9MtZWt+oxvVnPwV4cQeKbjKk3INx+PrMc
+         4/Eg==
+X-Gm-Message-State: AOJu0YznH5OvfDSH9RjaP2QAjGB6bp6JmUNP4hE5N/M9KcFpxelTbB8G
+        yNi38PpzrMEpIt+ItRZFPKbF1Q==
+X-Google-Smtp-Source: AGHT+IGuUFRIM5BpeluBoo5NEliARLhu4KUj73ZJ5zv60HnO5TW4G54nipJsf0t1IIjq2gfhWbu1wg==
+X-Received: by 2002:a05:6512:3d1c:b0:4ff:8c9e:eb0d with SMTP id d28-20020a0565123d1c00b004ff8c9eeb0dmr9569849lfv.0.1694430107080;
+        Mon, 11 Sep 2023 04:01:47 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id r16-20020a170906351000b0099bd86f9248sm5175514eja.63.2023.09.11.04.01.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 04:01:43 -0700 (PDT)
+Message-ID: <3bb1e84f-3b65-0596-1b6b-6decb0ff53cc@linaro.org>
+Date:   Mon, 11 Sep 2023 13:01:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH] arm64: dts: mediatek: mt8186: change CCI OPP scaling
- mapping
+Subject: Re: [PATCH v5 06/17] soc: qcom: Add Qualcomm APSS minidump kernel
+ driver
 Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Mark Tseng <chun-jen.tseng@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+To:     Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, keescook@chromium.org, tony.luck@intel.com,
+        gpiccoli@igalia.com, mathieu.poirier@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, linus.walleij@linaro.org,
+        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
+        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
+        bmasney@redhat.com, quic_tsoni@quicinc.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20230911080927.17457-1-chun-jen.tseng@mediatek.com>
- <CAGXv+5Gqpuu+QVtixOK=ULKkBaqhScFz7tgVqtczknx6CbdjLA@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CAGXv+5Gqpuu+QVtixOK=ULKkBaqhScFz7tgVqtczknx6CbdjLA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/09/23 11:47, Chen-Yu Tsai ha scritto:
-> On Mon, Sep 11, 2023 at 4:09 PM Mark Tseng <chun-jen.tseng@mediatek.com> wrote:
->>
->> The original CCI OPP table minimum frequency 500Mhz is too low to cause
->> system stall, So it need update to new version, 1.4G ~ 1.05G.
-> 
-> This doesn't read as you think it does. I suggest the following instead:
-> 
-> The original CCI OPP table's lowest frequency 500 MHz is too low and causes
-> system stalls. Increase the frequency range to 1.05 GHz ~ 1.4 GHz and adjust
-> the OPPs accordingly.
-> 
-> 
-> I also suggest making the subject more precise, like "Increase CCI frequency".
-> 
+On 09/09/2023 22:16, Mukesh Ojha wrote:
+> Minidump is a best effort mechanism to collect useful and predefined
+> data for first level of debugging on end user devices running on
+> Qualcomm SoCs. It is built on the premise that System on Chip (SoC)
+> or subsystem part of SoC crashes, due to a range of hardware and
+> software bugs. Hence, the ability to collect accurate data is only
+> a best-effort. The data collected could be invalid or corrupted,
+> data collection itself could fail, and so on.
 
-I agree with the commit title/description suggestion, but I wonder if it'd be
-possible to solve this issue in another way, as this is going to increase the
-heat output (even if only sensibly) and to also increase the power consumption
-of the SoC.
+...
 
-I'm thinking about more aggressive scale-up and/or maybe interconnect votes.
+> +static int qcom_apss_md_table_init(struct minidump *md,
+> +				   struct minidump_subsystem *mdss_toc)
+> +{
+> +	struct minidump_ss_data *mdss_data;
+> +
+> +	mdss_data = devm_kzalloc(md->dev, sizeof(*mdss_data), GFP_KERNEL);
+> +	if (!mdss_data)
+> +		return -ENOMEM;
+> +
+> +	mdss_data->md_ss_toc = mdss_toc;
+> +	mdss_data->md_regions = devm_kcalloc(md->dev, MAX_NUM_ENTRIES,
+> +					     sizeof(struct minidump_region),
+> +					     GFP_KERNEL);
+> +	if (!mdss_data->md_regions)
+> +		return -ENOMEM;
+> +
+> +	mdss_toc = mdss_data->md_ss_toc;
+> +	mdss_toc->regions_baseptr = cpu_to_le64(virt_to_phys(mdss_data->md_regions));
+> +	mdss_toc->enabled = cpu_to_le32(MINIDUMP_SS_ENABLED);
+> +	mdss_toc->status = cpu_to_le32(1);
+> +	mdss_toc->region_count = cpu_to_le32(0);
+> +
+> +	/* Tell bootloader not to encrypt the regions of this subsystem */
+> +	mdss_toc->encryption_status = cpu_to_le32(MINIDUMP_SS_ENCR_DONE);
+> +	mdss_toc->encryption_required = cpu_to_le32(MINIDUMP_SS_ENCR_NOTREQ);
+> +
+> +	md->apss_data = mdss_data;
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_apss_minidump_probe(struct platform_device *pdev)
+> +{
+> +	struct minidump_global_toc *mdgtoc;
+> +	struct minidump *md;
+> +	size_t size;
+> +	int ret;
+> +
+> +	md = devm_kzalloc(&pdev->dev, sizeof(struct minidump), GFP_KERNEL);
 
-Ideas?
+sizeof(*)
 
-Cheers,
-Angelo
+Didn't you get such comments already?
 
-> ChenYu
-> 
->>
->> Fixes: 32dfbc03fc26 ("arm64: dts: mediatek: mt8186: Add CCI node and CCI OPP table")
->>
->> Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8186.dtsi | 90 ++++++++++++------------
->>   1 file changed, 45 insertions(+), 45 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> index f04ae70c470a..b98832d032eb 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> @@ -39,79 +39,79 @@
->>                  compatible = "operating-points-v2";
->>                  opp-shared;
->>
->> -               cci_opp_0: opp-500000000 {
->> -                       opp-hz = /bits/ 64 <500000000>;
->> -                       opp-microvolt = <600000>;
->> +               cci_opp_0: opp-1050000000 {
->> +                       opp-hz = /bits/ 64 <1050000000>;
->> +                       opp-microvolt = <843750>;
->>                  };
->>
->> -               cci_opp_1: opp-560000000 {
->> -                       opp-hz = /bits/ 64 <560000000>;
->> -                       opp-microvolt = <675000>;
->> +               cci_opp_1: opp-1073000000 {
->> +                       opp-hz = /bits/ 64 <1073000000>;
->> +                       opp-microvolt = <850000>;
->>                  };
->>
->> -               cci_opp_2: opp-612000000 {
->> -                       opp-hz = /bits/ 64 <612000000>;
->> -                       opp-microvolt = <693750>;
->> +               cci_opp_2: opp-1096000000 {
->> +                       opp-hz = /bits/ 64 <1096000000>;
->> +                       opp-microvolt = <856250>;
->>                  };
->>
->> -               cci_opp_3: opp-682000000 {
->> -                       opp-hz = /bits/ 64 <682000000>;
->> -                       opp-microvolt = <718750>;
->> +               cci_opp_3: opp-1120000000 {
->> +                       opp-hz = /bits/ 64 <1120000000>;
->> +                       opp-microvolt = <862500>;
->>                  };
->>
->> -               cci_opp_4: opp-752000000 {
->> -                       opp-hz = /bits/ 64 <752000000>;
->> -                       opp-microvolt = <743750>;
->> +               cci_opp_4: opp-1143000000 {
->> +                       opp-hz = /bits/ 64 <1143000000>;
->> +                       opp-microvolt = <881250>;
->>                  };
->>
->> -               cci_opp_5: opp-822000000 {
->> -                       opp-hz = /bits/ 64 <822000000>;
->> -                       opp-microvolt = <768750>;
->> +               cci_opp_5: opp-1166000000 {
->> +                       opp-hz = /bits/ 64 <1166000000>;
->> +                       opp-microvolt = <893750>;
->>                  };
->>
->> -               cci_opp_6: opp-875000000 {
->> -                       opp-hz = /bits/ 64 <875000000>;
->> -                       opp-microvolt = <781250>;
->> +               cci_opp_6: opp-1190000000 {
->> +                       opp-hz = /bits/ 64 <1190000000>;
->> +                       opp-microvolt = <906250>;
->>                  };
->>
->> -               cci_opp_7: opp-927000000 {
->> -                       opp-hz = /bits/ 64 <927000000>;
->> -                       opp-microvolt = <800000>;
->> +               cci_opp_7: opp-1213000000 {
->> +                       opp-hz = /bits/ 64 <1213000000>;
->> +                       opp-microvolt = <918750>;
->>                  };
->>
->> -               cci_opp_8: opp-980000000 {
->> -                       opp-hz = /bits/ 64 <980000000>;
->> -                       opp-microvolt = <818750>;
->> +               cci_opp_8: opp-1236000000 {
->> +                       opp-hz = /bits/ 64 <1236000000>;
->> +                       opp-microvolt = <937500>;
->>                  };
->>
->> -               cci_opp_9: opp-1050000000 {
->> -                       opp-hz = /bits/ 64 <1050000000>;
->> -                       opp-microvolt = <843750>;
->> +               cci_opp_9: opp-1260000000 {
->> +                       opp-hz = /bits/ 64 <1260000000>;
->> +                       opp-microvolt = <950000>;
->>                  };
->>
->> -               cci_opp_10: opp-1120000000 {
->> -                       opp-hz = /bits/ 64 <1120000000>;
->> -                       opp-microvolt = <862500>;
->> +               cci_opp_10: opp-1283000000 {
->> +                       opp-hz = /bits/ 64 <1283000000>;
->> +                       opp-microvolt = <962500>;
->>                  };
->>
->> -               cci_opp_11: opp-1155000000 {
->> -                       opp-hz = /bits/ 64 <1155000000>;
->> -                       opp-microvolt = <887500>;
->> +               cci_opp_11: opp-1306000000 {
->> +                       opp-hz = /bits/ 64 <1306000000>;
->> +                       opp-microvolt = <975000>;
->>                  };
->>
->> -               cci_opp_12: opp-1190000000 {
->> -                       opp-hz = /bits/ 64 <1190000000>;
->> -                       opp-microvolt = <906250>;
->> +               cci_opp_12: opp-1330000000 {
->> +                       opp-hz = /bits/ 64 <1330000000>;
->> +                       opp-microvolt = <993750>;
->>                  };
->>
->> -               cci_opp_13: opp-1260000000 {
->> -                       opp-hz = /bits/ 64 <1260000000>;
->> -                       opp-microvolt = <950000>;
->> +               cci_opp_13: opp-1353000000 {
->> +                       opp-hz = /bits/ 64 <1353000000>;
->> +                       opp-microvolt = <1006250>;
->>                  };
->>
->> -               cci_opp_14: opp-1330000000 {
->> -                       opp-hz = /bits/ 64 <1330000000>;
->> -                       opp-microvolt = <993750>;
->> +               cci_opp_14: opp-1376000000 {
->> +                       opp-hz = /bits/ 64 <1376000000>;
->> +                       opp-microvolt = <1018750>;
->>                  };
->>
->>                  cci_opp_15: opp-1400000000 {
->> --
->> 2.18.0
->>
+
+> +	if (!md)
+> +		return -ENOMEM;
+> +
+> +	md->dev = &pdev->dev;
+> +	mdgtoc = qcom_smem_get(QCOM_SMEM_HOST_ANY, SBL_MINIDUMP_SMEM_ID, &size);
+> +	if (IS_ERR(mdgtoc)) {
+> +		ret = PTR_ERR(mdgtoc);
+> +		dev_err(md->dev, "Couldn't find minidump smem item: %d\n", ret);
+> +		return ret;
+
+The syntax is:
+return dev_err_probe
+
+> +	}
+> +
+> +	if (size < sizeof(*mdgtoc) || !mdgtoc->status) {
+> +		dev_err(md->dev, "minidump table is not initialized: %d\n", ret);
+
+ret is uninitialized here. Please use automated tools for checking your
+code:
+coccinelle, smatch and sparse
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_init(&md->md_lock);
+> +	ret = qcom_apss_md_table_init(md, &mdgtoc->subsystems[MINIDUMP_APSS_DESC]);
+> +	if (ret) {
+> +		dev_err(md->dev, "apss minidump initialization failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* First entry would be ELF header */
+> +	ret = qcom_md_add_elfheader(md);
+> +	if (ret) {
+> +		dev_err(md->dev, "Failed to add elf header: %d\n", ret);
+> +		memset(md->apss_data->md_ss_toc, 0, sizeof(struct minidump_subsystem));
+
+Why do you need it?
+
+> +		return ret;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, md);
+> +
+> +	return ret;
+> +}
+> +
+> +static int qcom_apss_minidump_remove(struct platform_device *pdev)
+> +{
+> +	struct minidump *md = platform_get_drvdata(pdev);
+> +	struct minidump_ss_data *mdss_data;
+> +
+> +	mdss_data = md->apss_data;
+> +	memset(mdss_data->md_ss_toc, cpu_to_le32(0), sizeof(struct minidump_subsystem));
+
+Why do you need it?
+
+> +	md = NULL;
+
+That's useless assignment.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver qcom_minidump_driver = {
+> +	.probe = qcom_apss_minidump_probe,
+> +	.remove = qcom_apss_minidump_remove,
+> +	.driver  = {
+> +		.name = "qcom-minidump-smem",
+> +	},
+> +};
+> +
+> +module_platform_driver(qcom_minidump_driver);
+> +
+> +MODULE_DESCRIPTION("Qualcomm APSS minidump driver");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:qcom-minidump-smem");
+
+Add a proper ID table instead of re-inventing it with module aliases.
+
+Best regards,
+Krzysztof
 
