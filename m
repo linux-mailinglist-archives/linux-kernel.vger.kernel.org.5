@@ -2,241 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7E079B730
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9193E79BDBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349531AbjIKVdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:33:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S1378603AbjIKWfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242853AbjIKQZz (ORCPT
+        with ESMTP id S242895AbjIKQbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:25:55 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855EFCCA;
-        Mon, 11 Sep 2023 09:25:50 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BGPeKB083440;
-        Mon, 11 Sep 2023 11:25:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694449540;
-        bh=xXNNi9ecgv9n4lP0nkXFlMFa2mNAsjzCTU9VoQct/FE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=VTI4bWQBA/DjcNP4McbwHGzxW5LB6s8OXC1gJWlvyLhCNldrWAdvJeXgxJybfUWAJ
-         jUKC/zTKgXSfRSG3cNpFKXmh37SJV4lfn7uIKjqhXkIjtaCme96iJskcKMbWneIVdU
-         TQyy4FKuj3nntkrNwWnIiYhfg4eWru7ktYjnEqdE=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BGPeN7022338
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 11:25:40 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 11:25:40 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 11:25:40 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BGPeo8012541;
-        Mon, 11 Sep 2023 11:25:40 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Vignesh <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Tom Rini <trini@konsulko.com>, Bryan <bb@ti.com>,
-        Praneeth <praneeth@ti.com>,
-        Robert Nelson <robertcnelson@gmail.com>
-Subject: [PATCH 1/3] arm64: dts: ti: k3-am625: Add boot phase tags marking
-Date:   Mon, 11 Sep 2023 11:25:33 -0500
-Message-ID: <20230911162535.1044560-2-nm@ti.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230911162535.1044560-1-nm@ti.com>
-References: <20230911162535.1044560-1-nm@ti.com>
+        Mon, 11 Sep 2023 12:31:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 73A70CCD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694449816;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RnHJHN5Cfj592B1txIAsnJFDj1FO7IjqCo2I3g3K4yE=;
+        b=iMYs9f0tBk8L0mtfEs92zj/d4zkNoWucwae951Wq2DyWQkwMX0o6kGOZlv7Jw7bRTI6IqC
+        raeK2PQvYVDIz7IqRYXfRO4saoRxAW630llyZvAkLklYs31nYFFOl3wN+Yas9ZnY/8aHGQ
+        5ZhD+UOJ3gr1UILSGolWiAMVvfLRHQc=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-688-lOfPn6UbMj2ixN7pudwOeg-1; Mon, 11 Sep 2023 12:30:14 -0400
+X-MC-Unique: lOfPn6UbMj2ixN7pudwOeg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a9e12a3093so649813666b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:30:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694449813; x=1695054613;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RnHJHN5Cfj592B1txIAsnJFDj1FO7IjqCo2I3g3K4yE=;
+        b=ICfssURDcQ1WddATj2M+KKE0La03pRnSehWlz0+w2reXBCzNG1U4lHkeyGuRQrOnO9
+         bAbOyLBbv+pJpfBf0BPEatvjhAXO8XXsb9tCJf7OEXD1tbqGwr/HlZ7v0qX365rj+gJ0
+         A9gN13PC+wV/PS0fx0v1qFRo/MihFTOBPcIVwtksRVeEz/8XfeRA9JMpApaa+DaJechT
+         wC6mXAMbLWUdJ5bjkueOrsuqNBaojZMUpWKLMzTGSLwzoXd2DYUAPat67o5NlqMNY+19
+         0U8i2sYheGSrMN/zx0qaSTezREE7MKpdddiuy+4CVvOYlPTOWfOnjrlJ82ZzSoHeILBC
+         Lptw==
+X-Gm-Message-State: AOJu0YzAThM2AXXQnNeM4eK6yy1gy/qlAZ2sgoGaoWgJQp4HEY9Oz35j
+        x88WU8h42itbeECJi3jUM4Dp8auhruit4IbJzgjzdRhYrhEdl/ZzW9yS2G3aG9G1O9dR7HUcjrB
+        VvmHKINUjoE36WeDsd9qhhFRb
+X-Received: by 2002:a17:907:8a1c:b0:982:a022:a540 with SMTP id sc28-20020a1709078a1c00b00982a022a540mr206927ejc.11.1694449813781;
+        Mon, 11 Sep 2023 09:30:13 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNhPmNNStTZs5PE2OQ6KZzdKOTE5Av9U7Sptz++UFQy/HCfVuMVhM7hDiKm6FA6tPHtenKgA==
+X-Received: by 2002:a17:907:8a1c:b0:982:a022:a540 with SMTP id sc28-20020a1709078a1c00b00982a022a540mr206903ejc.11.1694449813470;
+        Mon, 11 Sep 2023 09:30:13 -0700 (PDT)
+Received: from cassiopeiae ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
+        by smtp.gmail.com with ESMTPSA id f5-20020a170906138500b0099cb1a2cab0sm5590017ejc.28.2023.09.11.09.30.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:30:12 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 18:30:10 +0200
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <ZP9AkkJ1FruZGSVV@cassiopeiae>
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-7-dakr@redhat.com>
+ <20230911164526.0192a686@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911164526.0192a686@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bootph-all as phase tag was added to dt-schema
-(dtschema/schemas/bootph.yaml) to describe various node usage during
-boot phases with DT.
+On Mon, Sep 11, 2023 at 04:45:26PM +0200, Boris Brezillon wrote:
+> On Sat,  9 Sep 2023 17:31:13 +0200
+> Danilo Krummrich <dakr@redhat.com> wrote:
+> 
+> > @@ -807,6 +1262,14 @@ drm_gpuvm_bo_destroy(struct kref *kref)
+> >  
+> >  	drm_gem_gpuva_assert_lock_held(vm_bo->obj);
+> >  
+> > +	spin_lock(&gpuvm->extobj.lock);
+> > +	list_del(&vm_bo->list.entry.extobj);
+> > +	spin_unlock(&gpuvm->extobj.lock);
+> > +
+> > +	spin_lock(&gpuvm->evict.lock);
+> > +	list_del(&vm_bo->list.entry.evict);
+> > +	spin_unlock(&gpuvm->evict.lock);
+> > +
+> >  	list_del(&vm_bo->list.entry.gem);
+> >  
+> >  	drm_gem_object_put(obj);
+> 
+> I ran into a UAF situation when the drm_gpuvm_bo object is the last
+> owner of obj, because the lock that's supposed to be held when calling
+> this function (drm_gem_gpuva_assert_lock_held() call above), belongs to
+> obj (either obj->resv, or a driver specific lock that's attached to the
+> driver-specific GEM object). I worked around it by taking a ref to obj
+> before calling lock()+drm_gpuvm_bo_put()+unlock(), and releasing it
+> after I'm node with the lock, but that just feels wrong.
+> 
+As mentioned in a previous reply, I think we want to bring the dedicated GEM
+gpuva list lock back instead of abusing the dma-resv lock. This way we can
+handle locking internally and don't run into such issues.
 
-On TI K3 AM625 SoC, only secure_proxy_sa3 and esm nodes are
-exclusively used by R5 bootloader, rest of the dts nodes with bootph-* are
-used by later boot stages also.
-
-Add bootph-all for all other nodes that are used in the bootloader on
-K3 AM625 SoC, and bootph-pre-ram is not needed specifically for any
-other node in kernel dts.
-
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi   | 10 ++++++++++
- arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi    |  2 ++
- arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi |  2 ++
- arch/arm64/boot/dts/ti/k3-am62.dtsi        |  3 +++
- 4 files changed, 17 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index 284b90c94da8..ac760d9b831d 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -81,6 +81,7 @@ audio_refclk1: clock-controller@82e4 {
- 	};
- 
- 	dmss: bus@48000000 {
-+		bootph-all;
- 		compatible = "simple-mfd";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -90,6 +91,7 @@ dmss: bus@48000000 {
- 		ti,sci-dev-id = <25>;
- 
- 		secure_proxy_main: mailbox@4d000000 {
-+			bootph-all;
- 			compatible = "ti,am654-secure-proxy";
- 			#mbox-cells = <1>;
- 			reg-names = "target_data", "rt", "scfg";
-@@ -165,6 +167,7 @@ main_pktdma: dma-controller@485c0000 {
- 	};
- 
- 	dmsc: system-controller@44043000 {
-+		bootph-all;
- 		compatible = "ti,k2g-sci";
- 		ti,host-id = <12>;
- 		mbox-names = "rx", "tx";
-@@ -174,16 +177,19 @@ dmsc: system-controller@44043000 {
- 		reg = <0x00 0x44043000 0x00 0xfe0>;
- 
- 		k3_pds: power-controller {
-+			bootph-all;
- 			compatible = "ti,sci-pm-domain";
- 			#power-domain-cells = <2>;
- 		};
- 
- 		k3_clks: clock-controller {
-+			bootph-all;
- 			compatible = "ti,k2g-sci-clk";
- 			#clock-cells = <2>;
- 		};
- 
- 		k3_reset: reset-controller {
-+			bootph-all;
- 			compatible = "ti,sci-reset";
- 			#reset-cells = <2>;
- 		};
-@@ -202,6 +208,7 @@ crypto: crypto@40900000 {
- 	};
- 
- 	secure_proxy_sa3: mailbox@43600000 {
-+		bootph-pre-ram;
- 		compatible = "ti,am654-secure-proxy";
- 		#mbox-cells = <1>;
- 		reg-names = "target_data", "rt", "scfg";
-@@ -217,6 +224,7 @@ secure_proxy_sa3: mailbox@43600000 {
- 	};
- 
- 	main_pmx0: pinctrl@f4000 {
-+		bootph-all;
- 		compatible = "pinctrl-single";
- 		reg = <0x00 0xf4000 0x00 0x2ac>;
- 		#pinctrl-cells = <1>;
-@@ -225,12 +233,14 @@ main_pmx0: pinctrl@f4000 {
- 	};
- 
- 	main_esm: esm@420000 {
-+		bootph-pre-ram;
- 		compatible = "ti,j721e-esm";
- 		reg = <0x00 0x420000 0x00 0x1000>;
- 		ti,esm-pins = <160>, <161>, <162>, <163>, <177>, <178>;
- 	};
- 
- 	main_timer0: timer@2400000 {
-+		bootph-all;
- 		compatible = "ti,am654-timer";
- 		reg = <0x00 0x2400000 0x00 0x400>;
- 		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-index 80a3e1db26a9..0e0b234581c6 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-mcu.dtsi
-@@ -7,6 +7,7 @@
- 
- &cbass_mcu {
- 	mcu_pmx0: pinctrl@4084000 {
-+		bootph-all;
- 		compatible = "pinctrl-single";
- 		reg = <0x00 0x04084000 0x00 0x88>;
- 		#pinctrl-cells = <1>;
-@@ -15,6 +16,7 @@ mcu_pmx0: pinctrl@4084000 {
- 	};
- 
- 	mcu_esm: esm@4100000 {
-+		bootph-pre-ram;
- 		compatible = "ti,j721e-esm";
- 		reg = <0x00 0x4100000 0x00 0x1000>;
- 		ti,esm-pins = <0>, <1>, <2>, <85>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-index eae052887186..fef76f52a52e 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi
-@@ -7,6 +7,7 @@
- 
- &cbass_wakeup {
- 	wkup_conf: syscon@43000000 {
-+		bootph-all;
- 		compatible = "syscon", "simple-mfd";
- 		reg = <0x00 0x43000000 0x00 0x20000>;
- 		#address-cells = <1>;
-@@ -14,6 +15,7 @@ wkup_conf: syscon@43000000 {
- 		ranges = <0x0 0x00 0x43000000 0x20000>;
- 
- 		chipid: chipid@14 {
-+			bootph-all;
- 			compatible = "ti,am654-chipid";
- 			reg = <0x14 0x4>;
- 		};
-diff --git a/arch/arm64/boot/dts/ti/k3-am62.dtsi b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-index 11f14eef2d44..f1e15206e1ce 100644
---- a/arch/arm64/boot/dts/ti/k3-am62.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62.dtsi
-@@ -47,6 +47,7 @@ pmu: pmu {
- 	};
- 
- 	cbass_main: bus@f0000 {
-+		bootph-all;
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -86,6 +87,7 @@ cbass_main: bus@f0000 {
- 			 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>;
- 
- 		cbass_mcu: bus@4000000 {
-+			bootph-all;
- 			compatible = "simple-bus";
- 			#address-cells = <2>;
- 			#size-cells = <2>;
-@@ -93,6 +95,7 @@ cbass_mcu: bus@4000000 {
- 		};
- 
- 		cbass_wakeup: bus@b00000 {
-+			bootph-all;
- 			compatible = "simple-bus";
- 			#address-cells = <2>;
- 			#size-cells = <2>;
--- 
-2.40.0
+There is also no reason for a driver to already hold the GEM gpuva list lock
+when when calling drm_gpuvm_bo_put(). Drivers would only acquire the lock to
+iterate the GEMs list of drm_gpuvm_bos or the drm_gpuvm_bos list of drm_gpuvas.
+And dropping the drm_gpuvm_bo from within such a loop is forbidden anyways.
 
