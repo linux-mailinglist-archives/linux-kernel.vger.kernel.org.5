@@ -2,241 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1560F79A48D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F070279A490
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjIKHcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
+        id S234650AbjIKHcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjIKHb6 (ORCPT
+        with ESMTP id S233528AbjIKHck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:31:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB346E7E;
-        Mon, 11 Sep 2023 00:31:45 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DC8E966072F1;
-        Mon, 11 Sep 2023 08:31:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694417504;
-        bh=YKhGN9VTyZEcfKGJln7GGYD4tp1inT9sEtPJGXJfsvc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PJwWxTO0XRp9UCS3QFq2jFhLK5cpK2ZATCaYWxrXCXq6NbluLIeH91WwZ1utIMJUR
-         9wF4263r6H+Qy9dSeSd0YnnaI43rO6tXJQzluEHq/hqCEpnLVVYwAXo6XZkqOaT090
-         lXNyZCm1a3JGYEd4374ZrXF6n2cGxPoibhGWlc8217ujCQ4YdV5yvlmeoUc8/ATZtG
-         MwwR30zbrRhhYxSV9bL3SrzzS6UIlVr4dr+OgceMlrAxEb2SmntbocruymwPGwWFMV
-         fwWvTS7dNmS8EZBHDoHHjTaZSo4AMmqrhg0AOffOVKtyWahie5HhOfs7nLXkFtTbZL
-         /X52MaM/SdjmA==
-Date:   Mon, 11 Sep 2023 09:31:40 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        healych@amazon.com, kernel@collabora.com,
-        freedreno@lists.freedesktop.org
-Subject: Re: [PATCH v3 7/8] drm/panfrost: Implement generic DRM object RSS
- reporting function
-Message-ID: <20230911093140.121f2fbf@collabora.com>
-In-Reply-To: <vullvbu3eepdci5dzotppoydeoyfwebpf7e6wle3ubwf6sdrg6@v6luzft4no4r>
-References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
-        <20230905184533.959171-8-adrian.larumbe@collabora.com>
-        <20230906100130.530c4e4a@collabora.com>
-        <vullvbu3eepdci5dzotppoydeoyfwebpf7e6wle3ubwf6sdrg6@v6luzft4no4r>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 03:32:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A2ACCD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694417549; x=1725953549;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=IXYkAW4mIni4ezg5KAcImj5oU6r8pKkJ6FIcHEF51es=;
+  b=S5AnRk9ONo09CXpSJKRTKmrTFI8Ae1NZwfUUja41d32aPtPVBLFzPBfg
+   qm43aplpZSJKnZPsI29sAdJO8WJ1naK8wOHLNwZpPxs7c0+vXDU99vwZi
+   Zbb/FtgndFv4W9eHwUM5N3zAXZDYHP+6XSEgfyEyY+hKAJnI9BjpZfiPs
+   CMnjKrsP1B5hMES/9fLNQteKqmNqpUZ0fnuw9QhGiCY7CM1cPmsgryUXL
+   BTPihc5NH3eOMjmU+ryXkpNm8NcFkAlmu/zfIEjaOMNV70ZGfu12/JZuH
+   KX1EfazZB7mRBTQs6c8fzO7HNYIOs7UJkTiiQ4v7Tp9nBvNGnAgs/9OaC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="376931069"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="376931069"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 00:32:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="833399956"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="833399956"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 00:32:29 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 11 Sep 2023 00:32:28 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 00:32:28 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 11 Sep 2023 00:32:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EfPlZn/6h9OXJF/L/eGXhiiScwB9vChaEw50ORe8QOcXBki/4FleWpZjrqfB71bvNS7dzEWj9LBgVz8FZvyWVnT1wtkwML/UwVsMsREFIcdtvsRTSlJBUpvoJL+kMEN+pbPhET3X+AejoFwkyrK84NjTxt0PNCBMorcaAKT9hp6VD6U30MA/qXd9gnkn4SLe29lDQPapn9Qi6glrIU6iKnIFybiLenPD5A6djfjEWbpcAyf41DPRPM1J17eVDBsDAwajYlF+caiqj5H7qaA1BOJnyE1QUEJaOGtMJz/GvgcfBulDFH4WmPXX5Tag78JDwYOVaU7hVjauwpQ3i52vJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OPPJbE6c/1mV31Rn7Ss9YQdxUG5LJtxISXRvqLaNThs=;
+ b=YjRATTOfFiauXaLZjmZv8TM6eI7Uc4SrHvIJiH3fi6FSoh7HqA+tw0Z5SAVDL0e9IfIVcGgkSwmqn8bZscfQL2fWDdRP1xTrPuCcnPe7Cl5ArReKIo5rF1fvOXgbqMVr4cpuLUb+MT+vngVe3xxReu/dM9EG/o0uiJ20zqSiPKdYHW4nslqXlpWU71uSKSbPuPfwZP5sNDTqowVbuF63H/oO2Q9/lJdSTIEIT+cWpjrW033HM73XRAXEhj74pSWYAoORHSUUnxVn7sgRPndgmTmo5oZSnyK6iWQZuLhq2LqNVukFqJsujUsDvE2aBDEBPEuZnB29LlgXUe3Jqz59Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ by CH0PR11MB5315.namprd11.prod.outlook.com (2603:10b6:610:be::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
+ 2023 07:32:21 +0000
+Received: from CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::2846:e5f8:b2e8:1da6]) by CO1PR11MB4820.namprd11.prod.outlook.com
+ ([fe80::2846:e5f8:b2e8:1da6%4]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 07:32:21 +0000
+Message-ID: <5f8423f1-26d1-2116-ce63-bfb4d5bc2634@intel.com>
+Date:   Mon, 11 Sep 2023 15:32:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.11.0
+Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
+Content-Language: en-US
+From:   Yin Fengwei <fengwei.yin@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>,
+        syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>
+CC:     <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <syzkaller-bugs@googlegroups.com>
+References: <000000000000d099fa0604f03351@google.com>
+ <ZP0xyFnnghM42GcW@casper.infradead.org>
+ <ba941c8f-381b-3db0-7ec6-ba1094759056@intel.com>
+In-Reply-To: <ba941c8f-381b-3db0-7ec6-ba1094759056@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR04CA0015.apcprd04.prod.outlook.com
+ (2603:1096:4:197::21) To CO1PR11MB4820.namprd11.prod.outlook.com
+ (2603:10b6:303:6f::8)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CH0PR11MB5315:EE_
+X-MS-Office365-Filtering-Correlation-Id: fa0f1648-cfa2-429a-5621-08dbb2993c44
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yqEnmr829/m1/OLUCsiLT1J3Xb2HY6k0oilt7g9u9gjOLYTQ9pJJFZn9DVplOPuZRAdaPLvb9UCHL6/GLtJeIpz/mSBx6CJicZR1SHfpaCzXs67cNbcQLNew8nZZV8fpQUNpZ0jHIRyDLcnzCqTAmb5oJpc1W4QLDIV15dPfoPcY4bXJsBv4I0LjSMTmt1HQGl4IcxYIaUp27q3Z2Ap9cbnp6vkTk3xo5BJUutRDMRr9238npopzyeKrgzguhobEKSr93Flpkj70SOesNv0fa000K7IEFjsVJco9u7Zq6tIAcDmGCKNLA+LyFK+tI+ZFeWwBo1D3H5ZGmLKUfIm7Xw5HYxnDRmlYycrJBoaNJueCeDwd1kk7XBH8SCdDwWXshlenYW3WggNfU4/XNfvzUwW7zQ1DHD9OmHGhY+uCpwLMmdNxrKIyxnkcacrRjDpK/WbuUqgk6lxuhfT+nKI4mGQLp3GNwmIsE9BX6z5LM48n0U0CobaglV+TPwq+gyNN5DwaSVLAq2/8t7VCj2gfldt+p2SGTtObyxF64cWnMojtahDJHdbB0LsPv3QRFc3T9c1Esx1aRO7A8cecbe5JF0tKkXzHMVv8gRFeaatD5jmMfMQqlmV2qemjyBimzphOK8ykP5VewCidAVzI1Qcx5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(39860400002)(396003)(136003)(1800799009)(186009)(451199024)(6506007)(6486002)(53546011)(6512007)(478600001)(83380400001)(26005)(2616005)(2906002)(66476007)(66556008)(66946007)(110136005)(316002)(5660300002)(41300700001)(4326008)(8676002)(8936002)(31696002)(82960400001)(86362001)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djZvOUQ1SytDUDJtZW5oN0Uza3lKdHY2QWxYSXg2clNPMCtoK0ppVkFsdGhl?=
+ =?utf-8?B?OS9tTytYTWcxdWsyRmxnSGlVdGNiYkEweTBOa0t2TmRnTFRrQWtCbVk4SFdv?=
+ =?utf-8?B?ZThvZERjSnAwUXVqTVkyL3h2RlFDNFNKZEtyYzk4dEZJZFc4a0U5MllEYWtC?=
+ =?utf-8?B?djJXY0tqM1NJTlZJbWlDK3pXdERaY0REN0pYQy9ocEtTaVVJQSt3bU8rSThM?=
+ =?utf-8?B?SXhidXBNaXpDNmd5UkxOVHRid2VjMzZsZ2NJUXBHdVJZaWczb3Q5NE5yT1M4?=
+ =?utf-8?B?S0twNnBURmVhU0F4MWpBTzE2RjFMVEdiNlRoOGpodkVaWkxCNWJwa21mMWlX?=
+ =?utf-8?B?MWFBL053WThMLzNpNStpeS82RkdhODZnWWlwTXcwdWxmS1BWcm53MVNsY3Q3?=
+ =?utf-8?B?aGFhdloxR3B4VTViTlFVVk44QkF1dzBDd256UHkxY3pUbmNROHJhTU44QU9p?=
+ =?utf-8?B?MFV1anU3VjlSbHBJM0Z5d0FEL3ExR3Y0dTY0QmoweFpVMnZVNCsrVWl0K21E?=
+ =?utf-8?B?eWxFMnIzaVREQ0Qvbk52bkwvV1NyZzU0OXBLaVNFakl5WmlQRjM2SEtCK1pa?=
+ =?utf-8?B?MEI4aE05L2wydXJBVThkYWZxRzl3NUszZDNJVE9peTM4dHA0NXJ1aGlBYXNO?=
+ =?utf-8?B?Rk9IMUQ3WllwVXpGcVNYQThjZjh4L01vTlRTS3ZOUmhLbTBzM0w0Y1o2ZkE0?=
+ =?utf-8?B?b3dVU3RrYzlvYXR6ZVdaVXVhemhvby9obVUrQkJPSmlrVkdtL04zTkp3aDI4?=
+ =?utf-8?B?SmFpYlVJekZ3c1VLZlVPek1uc3F0aHBkTlpDNUt0U1dwWUpaS2pKZi9mNW5Y?=
+ =?utf-8?B?SzZ3RzdxSnl1bWc2aTNtckVabll6YVI5NC96U0lxdTREbjZ6RUJNdklSSXJZ?=
+ =?utf-8?B?M1M5bUpjNU52UjU3WlJaYmU4dGZnZDloRnI0ZEZoUncyTjZzYjBqdDc2TEwx?=
+ =?utf-8?B?Uy9ZTGROcmx2d2hlL0RqR3JlU1VnQ2h6V1J5TVNKMkc1TXVkRFFFcVFpcFdw?=
+ =?utf-8?B?akovTXRMRitpYVlnTDF2Q0dya2FISHlyT2xRWkxmNmp2N2pZZk0rdGN1MTdR?=
+ =?utf-8?B?bUZkbXdtVU1nMVVjamRnQWVNRGxLVkF1REZ4QjRZQmZwL241VEhNWnpmM29D?=
+ =?utf-8?B?Q3YwVUFUcXVVa3NBanhyd0pKWUo0S29DSlU3SmdLZWd6Qlp1bkhwUEhFODV6?=
+ =?utf-8?B?VXlwdWNvRVFhS2wxazVUMURtdkc5NUR1c3NZWVFUbm9BUi9YUXY2cjdZN25n?=
+ =?utf-8?B?dytNdHNxbXBLY0pVOE1uTzA5Q25mQ1VQVXdJZXRtR3RqcWpxazRObGZiQmgz?=
+ =?utf-8?B?ajF0Wm5Qb0ZqVXdKQVg2dUtEbkIxcFFMZEU1QXUyNTljZlorVURkZUtyaEVa?=
+ =?utf-8?B?ekJxa0xNcnltWnpPckI4ZGxIdjFZeXZVVThRLzJ2aEVzR1BkRldEOXlUdkNN?=
+ =?utf-8?B?b2VJVzdQL0Q4QjFTdkh5OFd1dDRlZWFLL2RTalpQYnpuLzFpYXNlTXBnekdT?=
+ =?utf-8?B?MzBqeTRibmI3NHA4QTh4ejRSQWZtcG5TVTltZnRwYmpPRUVpbnZ4MGNDZ1RF?=
+ =?utf-8?B?RVp5WmpIakRqRXJVMSt4QzhqRVN5S2N3WmJ4L1pvNmlUdHpQd3R6UytHeWlJ?=
+ =?utf-8?B?N29TTnl0ZkxiNVBNNHJpV1JVcUlGaUNKMUsyaVV2aFB4TGFWakZRa1B1UTJt?=
+ =?utf-8?B?ZUp1UmQwOEVOSS9nRElTZllickJMcEE2eEl3Lzc5OERldloyWmpQQWRreHhR?=
+ =?utf-8?B?aVlCb0xBUk01RXU5SGVzaW1MMEkvRUhqZU1qVllIM0RnVUhPcCsrdnN3N2Va?=
+ =?utf-8?B?aVNaRjkvT3piQ1pJTjVDVVR0dTFRYk5ab3dzdHhZUWFSSzlGcENsQ2ZES1hB?=
+ =?utf-8?B?SVpzYzhCUTZ1WFlDMU5QNzR6QUJXbGcwZC96eE5BT20ya1pSdlk3L0o1djYv?=
+ =?utf-8?B?UUM1cHc5RXhCUFo4bWpKTW5DTXM3NmZabFVyV3V4UU8xY2REZWsrWllnZ3Fj?=
+ =?utf-8?B?dDBBcllFb1dqTjBIMHYwSUlyM2pLMlpCbTZEenVsWGJWbjZjZy9paTZWUlVR?=
+ =?utf-8?B?ZmxaeHY0ZS9zRGFPOU5uUVEyK0RXbE11cS9vbXJrR3JoMWsrY2VjRndZMnVH?=
+ =?utf-8?Q?Frj0c1VC30XmMFOZK7jDMWFQh?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa0f1648-cfa2-429a-5621-08dbb2993c44
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 07:32:21.6359
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w/bBNlfpgJD+TciXwdsGMgWjSPCLVzd2l/TFA2aWw0E5KGbe5nAVc98asm90r9yiDXDK+3DHxOC0Rxrsf5OwFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5315
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Sep 2023 17:42:02 +0100
-Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-> On 06.09.2023 10:01, Boris Brezillon wrote:
-> >On Tue,  5 Sep 2023 19:45:23 +0100
-> >Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
-> > =20
-> >> BO's RSS is updated every time new pages are allocated on demand and m=
-apped
-> >> for the object at GPU page fault's IRQ handler, but only for heap buff=
-ers.
-> >> The reason this is unnecessary for non-heap buffers is that they are m=
-apped
-> >> onto the GPU's VA space and backed by physical memory in their entiret=
-y at
-> >> BO creation time.
-> >>=20
-> >> This calculation is unnecessary for imported PRIME objects, since heap
-> >> buffers cannot be exported by our driver, and the actual BO RSS size i=
-s the
-> >> one reported in its attached dmabuf structure.
-> >>=20
-> >> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> >> ---
-> >>  drivers/gpu/drm/panfrost/panfrost_gem.c | 14 ++++++++++++++
-> >>  drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
-> >>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 12 ++++++++----
-> >>  3 files changed, 27 insertions(+), 4 deletions(-)
-> >>=20
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm=
-/panfrost/panfrost_gem.c
-> >> index 7d8f83d20539..cb92c0ed7615 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-> >> @@ -208,6 +208,19 @@ static enum drm_gem_object_status panfrost_gem_st=
-atus(struct drm_gem_object *obj
-> >>  	return res;
-> >>  }
-> >> =20
-> >> +static size_t panfrost_gem_rss(struct drm_gem_object *obj)
-> >> +{
-> >> +	struct panfrost_gem_object *bo =3D to_panfrost_bo(obj);
-> >> +
-> >> +	if (bo->is_heap)
-> >> +		return bo->heap_rss_size;
-> >> +	else if (bo->base.pages) {
-> >> +		WARN_ON(bo->heap_rss_size);
-> >> +		return bo->base.base.size;
-> >> +	} else
-> >> +		return 0; =20
-> >
-> >Nit: please add brackets on all conditional blocks, even if only the
-> >second one needs it.
-> > =20
-> >> +}
-> >> +
-> >>  static const struct drm_gem_object_funcs panfrost_gem_funcs =3D {
-> >>  	.free =3D panfrost_gem_free_object,
-> >>  	.open =3D panfrost_gem_open,
-> >> @@ -220,6 +233,7 @@ static const struct drm_gem_object_funcs panfrost_=
-gem_funcs =3D {
-> >>  	.vunmap =3D drm_gem_shmem_object_vunmap,
-> >>  	.mmap =3D drm_gem_shmem_object_mmap,
-> >>  	.status =3D panfrost_gem_status,
-> >> +	.rss =3D panfrost_gem_rss,
-> >>  	.vm_ops =3D &drm_gem_shmem_vm_ops,
-> >>  };
-> >> =20
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm=
-/panfrost/panfrost_gem.h
-> >> index ad2877eeeccd..13c0a8149c3a 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-> >> @@ -36,6 +36,11 @@ struct panfrost_gem_object {
-> >>  	 */
-> >>  	atomic_t gpu_usecount;
-> >> =20
-> >> +	/*
-> >> +	 * Object chunk size currently mapped onto physical memory
-> >> +	 */
-> >> +	size_t heap_rss_size;
-> >> +
-> >>  	bool noexec		:1;
-> >>  	bool is_heap		:1;
-> >>  };
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm=
-/panfrost/panfrost_mmu.c
-> >> index d54d4e7b2195..67c206124781 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> >> @@ -285,17 +285,19 @@ static void panfrost_mmu_flush_range(struct panf=
-rost_device *pfdev,
-> >>  	pm_runtime_put_autosuspend(pfdev->dev);
-> >>  }
-> >> =20
-> >> -static int mmu_map_sg(struct panfrost_device *pfdev, struct panfrost_=
-mmu *mmu,
-> >> +static size_t mmu_map_sg(struct panfrost_device *pfdev, struct panfro=
-st_mmu *mmu,
-> >>  		      u64 iova, int prot, struct sg_table *sgt)
-> >>  {
-> >>  	unsigned int count;
-> >>  	struct scatterlist *sgl;
-> >>  	struct io_pgtable_ops *ops =3D mmu->pgtbl_ops;
-> >>  	u64 start_iova =3D iova;
-> >> +	size_t total =3D 0;
-> >> =20
-> >>  	for_each_sgtable_dma_sg(sgt, sgl, count) {
-> >>  		unsigned long paddr =3D sg_dma_address(sgl);
-> >>  		size_t len =3D sg_dma_len(sgl);
-> >> +		total +=3D len;
-> >> =20
-> >>  		dev_dbg(pfdev->dev, "map: as=3D%d, iova=3D%llx, paddr=3D%lx, len=3D=
-%zx", mmu->as, iova, paddr, len);
-> >> =20
-> >> @@ -315,7 +317,7 @@ static int mmu_map_sg(struct panfrost_device *pfde=
-v, struct panfrost_mmu *mmu,
-> >> =20
-> >>  	panfrost_mmu_flush_range(pfdev, mmu, start_iova, iova - start_iova);
-> >> =20
-> >> -	return 0;
-> >> +	return total;
-> >>  }
-> >> =20
-> >>  int panfrost_mmu_map(struct panfrost_gem_mapping *mapping)
-> >> @@ -447,6 +449,7 @@ static int panfrost_mmu_map_fault_addr(struct panf=
-rost_device *pfdev, int as,
-> >>  	pgoff_t page_offset;
-> >>  	struct sg_table *sgt;
-> >>  	struct page **pages;
-> >> +	size_t mapped_size;
-> >> =20
-> >>  	bomapping =3D addr_to_mapping(pfdev, as, addr);
-> >>  	if (!bomapping)
-> >> @@ -518,10 +521,11 @@ static int panfrost_mmu_map_fault_addr(struct pa=
-nfrost_device *pfdev, int as,
-> >>  	if (ret)
-> >>  		goto err_map;
-> >> =20
-> >> -	mmu_map_sg(pfdev, bomapping->mmu, addr,
-> >> -		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
-> >> +	mapped_size =3D mmu_map_sg(pfdev, bomapping->mmu, addr,
-> >> +				 IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
-> >> =20
-> >>  	bomapping->active =3D true;
-> >> +	bo->heap_rss_size +=3D mapped_size; =20
-> >
-> >The alloc-on-fault granularity is set static (2MB), so no need to
-> >make mmu_map_sg() return the mapped size, we can just do +=3D SZ_2M if
-> >things worked. =20
->=20
-> At the moment mmu_map_sg is treated as though it always succeeds in mappi=
-ng the
-> page. Would it be alright if I changed it so that we take into account the
-> unlikely case that ops->map_pages might fail?
 
-Yep, that would probably be a good thing to gracefully handle
-allocation failures happening in ops->map_pages(), but I'd do that in a
-follow-up patch, because that's orthogonal to the fdinfo stuff.
+On 9/11/23 15:24, Yin Fengwei wrote:
+> Hi Matthew,
+> 
+> On 9/10/23 11:02, Matthew Wilcox wrote:
+>> On Sat, Sep 09, 2023 at 10:12:48AM -0700, syzbot wrote:
+>>> commit 617c28ecab22d98a3809370eb6cb50fa24b7bfe1
+>>> Author: Yin Fengwei <fengwei.yin@intel.com>
+>>> Date:   Wed Aug 2 15:14:05 2023 +0000
+>>>
+>>>     filemap: batch PTE mappings
+>>
+>> Hmm ... I don't know if this is the bug, but ...
+> I do think we should merge your patch here. LKP already noticed some performance
+> regressions. I suppose this patch can fix some of them.
+I will verify this patch to see whether the regressions noticed by LKP can be
+fixed. Will keep you updated for any progress. Thanks.
 
-> Something like this: https://gitlab.collabora.com/-/snippets/323
 
-Nit: I would change the mmu_unmap_range() prototype for something like:
+Regards
+Yin, Fengwei
 
-static void mmu_unmap_range(struct panfrost_mmu *mmu,
-			    u64 iova, size_t len);
-
-No need for this is_heap argument if you pass rss_size to
-mmu_unmap_range() for heap BOs.
-
-Note that ops->unmap_pages() can fail on mem allocation too, when an
-unmap triggers a 2M -> 4k page table split. But I don't think this can
-happen in panfrost, because, for regular BOs, we always map/unmap the
-whole BO, and for heaps, we map/unmap 2M at a time.
+> 
+> 
+> I root caused the this "bad page map" issue in my local env. It's related with pte
+> with protnone on x86_64. So if pte is not protnone, advancing pte by adding
+> 1UL << PFN_PTE_SHIFT is correct. But if pte is protnone, should subtract
+> 1UL << PFN_PTE_SHIFT. I saw pfn_pte() had pfn ^= protnone_mask() and just realized
+> it.
+> 
+> 
+> The producer mmap with PROT_NONE and then trigger SIGXFSZ and create core file.
+> That will cause GUP with FOLL_FORCE and create protnone pte.
+> 
+> I submitted request to sysbot to test the fixing worked on my local env. Thanks.
+> 
+> 
+> Regards
+> Yin, Fengwei
+> 
+>>
+>> #syz test
+>>
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 582f5317ff71..580d0b2b1a7c 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -3506,7 +3506,7 @@ static vm_fault_t filemap_map_folio_range(struct vm_fault *vmf,
+>>  		if (count) {
+>>  			set_pte_range(vmf, folio, page, count, addr);
+>>  			folio_ref_add(folio, count);
+>> -			if (in_range(vmf->address, addr, count))
+>> +			if (in_range(vmf->address, addr, count * PAGE_SIZE))
+>>  				ret = VM_FAULT_NOPAGE;
+>>  		}
+>>  
+>> @@ -3520,7 +3520,7 @@ static vm_fault_t filemap_map_folio_range(struct vm_fault *vmf,
+>>  	if (count) {
+>>  		set_pte_range(vmf, folio, page, count, addr);
+>>  		folio_ref_add(folio, count);
+>> -		if (in_range(vmf->address, addr, count))
+>> +		if (in_range(vmf->address, addr, count * PAGE_SIZE))
+>>  			ret = VM_FAULT_NOPAGE;
+>>  	}
+>>  
+>>
