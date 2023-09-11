@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B54C79C2A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA8479C236
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236751AbjILCVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43208 "EHLO
+        id S236701AbjILCH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbjILCUA (ORCPT
+        with ESMTP id S238288AbjILCCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:20:00 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B252769E0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:43:09 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BMSZG0010734;
-        Mon, 11 Sep 2023 22:38:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=kTFHJn2S/c7IFWD+LKXoP8nJNVtexf0j4tHWjlm2E1s=;
- b=K/M6fhjARGvLiOr9XsWVjgwLiiuc94pEqU4ldVxoK6NPGD+dsIxlUObCKe3vLyas5+V2
- +2KE7n5tMTOf1C7Wo/3LfM0P6hPKQfLLKUAmqXkGKD9eEN7dq084ThwtcxO9fbFEkNiJ
- mCkxmfTaHQ/WyaldKmr9jmZQFJEFaLDkQihLL8E5lJ0mBCPC123dOr3KCA75zj8+5L7Z
- QYIzCWh0jvptd3AjbgqzU5a+VnhISWybF6DmCTvgpl+JzeJQAkqu3Pu/2+gwCmK8wvda
- riGYLar78+F+VcyRpk81plhlSHhism9ZNE4nMGyVHE/q20aJtv5lRBOaG8oxNj+lu1Is OA== 
+        Mon, 11 Sep 2023 22:02:33 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29C8179D99
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:33:36 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BMcqCO020075;
+        Mon, 11 Sep 2023 22:40:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aNgBgv9OnusrgebcCk0iaXwksweRjqepyQABV/DjNqw=;
+ b=PwaMAhcI1hdAEASKo1Xa3u6bPYA4CWN6otLl3pg1VdrwLR5jeEdBK9Dv3e17WyvzGBjU
+ 5RjMNSeuGQkUOAkR6206W2MqxnTqpcoau6AYosSTci2NhggIbXyNbEeCI5/0MXvYzT4R
+ ojUXX5EQQQkwtDOFj5tDY+qVxT/dayLncY/n87OxpGVNQg8NWoXtcsg/Rei+jsD544pj
+ uwNYq1pwURodbT3wxTsZKFOi5XH7w8lvl/lZ9mDNVisWP1GfkZ9KUJrjs+4/PFf4d2ts
+ ymCKrEShbvju6DJ7FSZjUJsvdDhd/hK0FEtxX6yTIr03DnVOppfZtrHoJmQ6l9DJxU3X Zw== 
 Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2bq9rdsv-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2a9qj5wn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 22:38:14 +0000
+        Mon, 11 Sep 2023 22:40:44 +0000
 Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BKeBTA002410;
-        Mon, 11 Sep 2023 22:38:13 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t158jwww6-1
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BKc2tv002304;
+        Mon, 11 Sep 2023 22:40:43 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t158jwxa4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 22:38:13 +0000
+        Mon, 11 Sep 2023 22:40:43 +0000
 Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BMcCWe61473032
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BMeguT20906448
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Sep 2023 22:38:12 GMT
+        Mon, 11 Sep 2023 22:40:43 GMT
 Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0958A5806D;
-        Mon, 11 Sep 2023 22:38:12 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id E07675805D;
+        Mon, 11 Sep 2023 22:40:42 +0000 (GMT)
 Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0C3C5806E;
-        Mon, 11 Sep 2023 22:38:11 +0000 (GMT)
-Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by IMSVA (Postfix) with ESMTP id A255158052;
+        Mon, 11 Sep 2023 22:40:42 +0000 (GMT)
+Received: from [9.61.88.151] (unknown [9.61.88.151])
         by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Sep 2023 22:38:11 +0000 (GMT)
-From:   Ninad Palsule <ninad@linux.ibm.com>
-To:     jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
-        eajames@linux.ibm.com, linux-fsi@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ninad Palsule <ninad@linux.ibm.com>
-Subject: [PATCH v2 0/2] fsi: sbefifo: fixes
-Date:   Mon, 11 Sep 2023 17:38:07 -0500
-Message-Id: <20230911223809.3505431-1-ninad@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 11 Sep 2023 22:40:42 +0000 (GMT)
+Message-ID: <73ba1505-d619-466e-981a-badb2658e6cb@linux.ibm.com>
+Date:   Mon, 11 Sep 2023 17:40:42 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/2] fsi: sbefifo: Validate pending user write
+To:     Joel Stanley <joel@jms.id.au>, eajames@linux.ibm.com
+Cc:     jk@ozlabs.org, alistair@popple.id.au, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20230907221016.2978802-1-ninad@linux.ibm.com>
+ <20230907221016.2978802-3-ninad@linux.ibm.com>
+ <CACPK8XcUkwNS85Ept62xyCabELHO9xTdMYvxVg2W+GZfAxTa3A@mail.gmail.com>
+Content-Language: en-US
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <CACPK8XcUkwNS85Ept62xyCabELHO9xTdMYvxVg2W+GZfAxTa3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Ab-sd5BAAgRjS7JKi55JudtDsqj6ytSX
-X-Proofpoint-ORIG-GUID: Ab-sd5BAAgRjS7JKi55JudtDsqj6ytSX
+X-Proofpoint-GUID: FCy-hNz47PhGTfzDvErvaY40I0Xkr7hN
+X-Proofpoint-ORIG-GUID: FCy-hNz47PhGTfzDvErvaY40I0Xkr7hN
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-11_18,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- phishscore=0 mlxlogscore=646 clxscore=1015 malwarescore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110207
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110207
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-Please review the version 2 of patchset. I have incorporated review
-comments by Joel.
+Hi Joel,
 
-Ninad Palsule (2):
-  fsi: sbefifo: Bump up user write cmd length
-  fsi: sbefifo: Validate pending user write
-
- drivers/fsi/fsi-sbefifo.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
--- 
-2.39.2
-
+On 9/11/23 00:52, Joel Stanley wrote:
+> On Thu, 7 Sept 2023 at 22:10, Ninad Palsule <ninad@linux.ibm.com> wrote:
+>> This commit fails user write operation if previous write operation is
+>> still pending.
+>>
+>> As per the driver design write operation only prepares the buffer, the
+>> actual FSI write is performed on next read operation. so if buggy
+>> application sends two back to back writes or two parallel writes then
+>> that could cause memory leak.
+> The driver already has this code:
+Yes, I have improved the comment.
+>
+>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   drivers/fsi/fsi-sbefifo.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+>> index b771dff27f7f..824e2a921a25 100644
+>> --- a/drivers/fsi/fsi-sbefifo.c
+>> +++ b/drivers/fsi/fsi-sbefifo.c
+>> @@ -874,6 +874,12 @@ static ssize_t sbefifo_user_write(struct file *file, const char __user *buf,
+>>
+>>          mutex_lock(&user->file_lock);
+>>
+>> +       /* Previous write is still in progress */
+>> +       if (user->pending_cmd) {
+>> +               mutex_unlock(&user->file_lock);
+>> +               return -EALREADY;
+> That's an unusual return code. I guess it makes sense in this context.
+>
+> It's good to fix the potential memory leak, and we should add code to
+> catch that case.
+>
+> This will change the behaviour of the character device from "overwrite
+> the previous operation" to "reject operation until a read is
+> performed". Do you think there's existing code that depends on the old
+> behaviour?
+I do not see any issue with this rejection. I thought user may wants to 
+send reset while command is hung but that case is not valid as pending 
+command will hold the lock. User can always close the connection and 
+reopen if required. How do I find if this could cause the regression?
+>
+>> +       }
+>> +
+>>          /* Can we use the pre-allocate buffer ? If not, allocate */
+>>          if (len <= PAGE_SIZE)
+>>                  user->pending_cmd = user->cmd_page;
+>> --
+>> 2.39.2
+>>
