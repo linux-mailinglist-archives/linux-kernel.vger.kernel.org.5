@@ -2,285 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D073979BE3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E11D79B6E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351036AbjIKVmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
+        id S1378153AbjIKWag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237676AbjIKNIK (ORCPT
+        with ESMTP id S237693AbjIKNJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:08:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CBDE7;
-        Mon, 11 Sep 2023 06:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694437683; x=1725973683;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=SgQkuEp5bOh77/zqId9c1QlJ+vEDt3/ql/9r2lbNLAEnD8LWcv/hgv4u
-   i4jCHfIXf6ZqI1dxD9ac7ZXkqDHJNASSKMsx0dXt9305wo/tzdhzz0YZO
-   cex8C1Z2uJa8k3jSrXpsN+XnwiccOOTDLBN2Qd9ZWvROhRhNOfg8ZeNJn
-   F0w4AlSxHzQxfrozcmAxxzJnoR6P5T5+DoKHkU4J/boxmlkh1DBGIJKEw
-   fJkYezxIvPrJnhuudAc+z9keknZu7avcylRFNovZzyf8QJ0Bfk/3Fnc4d
-   iNpdLqKKacFt56gsnn9CBlksnuAYkhnndQCv+Uey9p8ZuL4naEc/n02iu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357514654"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="357514654"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:08:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858309842"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="858309842"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2023 06:08:00 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
-Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 18:38:32 +0530
-Message-Id: <20230911130833.1775668-2-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911130833.1775668-1-sharath.kumar.d.m@intel.com>
-References: <20230908194842.GA304176@bhelgaas>
- <20230911130833.1775668-1-sharath.kumar.d.m@intel.com>
-MIME-Version: 1.0
+        Mon, 11 Sep 2023 09:09:43 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2047.outbound.protection.outlook.com [40.107.93.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E6FE6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:09:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S0+LvL/ur1UN9j8ZbDmX4SPs6u6FOYoTcBZ7aT94EAWogNmRjYuEk70xscxrXXadGgrliqFARJyn4rlgjSbYDGIvgEqBoyoqR2S79z0B/G09BBq410e+gLHZbezpWcAj2ZTFN/ZmAjtytMQlGS0ip0wbuSxH6ud9UfoBUGzkfOuYaqo4ueVuTFpSDNWz22+42Ce4ZckMTBD/myXgGidSMisMX/YZ67FQFomu3tfdWQJJ+Pj0y5HQL5UBo8k2UtHtgfestKdMJ4TV5IFiT0smA16ukDDNFUu+WUTWOXyuWlbyEAMURhB+aV4lKqJlpdl0q1i+6gLbVHmqV+5RQms5Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TMCabexB434PuRwooTe2LtOM9WbB4vZoNo5aozCkbmU=;
+ b=fQYAO13mR9leEH7ljT58A2V/W/47yL3cqIKPOq02N0eFzN/9ay5L6Gvyl85n2tPpPqee6wvddPU5Cf+MjWG8+54Kga2FLd/BpjVL4LdMdZfZqBmFObfevbeX01R/3gFvhImH7gOTmchb0C3hSwthG1eh3bcMKR+FbPgRin4oQgu/oFimV3Xs6R+YGsty9RX74EKY/5f7OzOwlPb+dSF1haavzXusltE6j/AbG/rkCBSLfEiFPnZ8+r9VzigvkT2I7+LwWJhuXX0i8YZv+JE7v5kKpxO5n6uPy3GZ51PmVCM/JA9ACq48z/AQzgHyl+WB5AnjcOKjyC3U1Y4UFSBQQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TMCabexB434PuRwooTe2LtOM9WbB4vZoNo5aozCkbmU=;
+ b=J77m754ZGNFbKm2DLpfIALGvtqXs4OrZo/JJ8HF22am6EF5h35Ii1mNAk21T7jhz3tCGHxWF4GBDBcJiHvry2xuqY2fkZoThpiD7z4+vhfKllJliJ/l/RqHkFNhyEZ/vghTtGPdLyQzi+1L+OS022nlsQ/aI4avFbMybocPp+F4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by MN2PR12MB4269.namprd12.prod.outlook.com (2603:10b6:208:1d4::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Mon, 11 Sep
+ 2023 13:09:35 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::55cb:215b:389e:eced]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::55cb:215b:389e:eced%5]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 13:09:35 +0000
+Message-ID: <211f3f89-edd8-b2b3-5f51-93066e60ebd6@amd.com>
+Date:   Mon, 11 Sep 2023 15:09:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH drm-misc-next v3 2/7] drm/gpuvm: allow building as module
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230909153125.30032-1-dakr@redhat.com>
+ <20230909153125.30032-3-dakr@redhat.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230909153125.30032-3-dakr@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: VI1PR02CA0047.eurprd02.prod.outlook.com
+ (2603:10a6:802:14::18) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|MN2PR12MB4269:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b9ee42a-e8fb-462b-943a-08dbb2c858c9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IToq6q/5ByhWxSLLftYM19p8uLUHjTGcrG4eT93S9TAdS6Svuc47Pwd7Zhl7qMyrBDJDZa2Q7NG4T/4/+tmyCvuM2b6RgYiHbKxcd2N1gK9CXxV1JpGTs8BpJFDcFZm2O0YLIazIuVDbyp2tB4Ant7EsOpMu6JlxZYDRhKbbQYxDuWJNTuyBHImgegr0ZOU3FkLvglEhexgIsWCliqbp/D2Y2DuP/0lkd1SK9PFMIfECKGIzU+2h8SLODYVNInbQvCOhEloEUCR/qHHmg7GQLivtcGn7s+9ENfb53VCo0VY8jpb4YVx44MAcVj7xUPJnY8qxYLA2wOehbuQrl8rMP0zW4azofiwsQZJJxy3k/kIbl/sHEFcrzTwAuex+XLZAk8TbA0AiQHvXlRxn70KZ7sryDYGugNHVxB7nDxj/7zX13vNDrjv5jQ7OiRmO2GnvM4pw/XK0g+1qeM9KO4wT/YxEw3c0xOAPzzWcZ4GKhMXWfnvnU2z7f8dpzvZ6MwB62+y1pTl39BZ9/BliP+uz6GMlQ/niIFPtETGbOx/hAoDGfY70w9kM9SEu4Wdear7ejHAOLo8f1gWIN5u9Q1CX2ubUgZVYtk2DbDstzeVxYA2QUNhH4nmt9iIZHnrfv3L41x14sInhzJEboA6hcpOBtw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(376002)(366004)(39860400002)(186009)(1800799009)(451199024)(6486002)(6506007)(6666004)(6512007)(478600001)(83380400001)(66574015)(26005)(2616005)(7416002)(66476007)(66556008)(66946007)(4326008)(316002)(2906002)(41300700001)(5660300002)(8936002)(8676002)(86362001)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q3ZETVU1Rjdaa211eFJWZUJCK05tenp5T0xONW1UeXRQbTUyUGRsZGZGekk1?=
+ =?utf-8?B?ZmdnMlN5citHZm1ncGZkaWhzMGREMVNBSm5PRUNUU0pWVjYwdVhsc01NSFB0?=
+ =?utf-8?B?T0h1cmdMVU4vbFBybWFkV2xCbHlDd1RZNmZNYzdtU2xOYjFvU2JyMGtETlhr?=
+ =?utf-8?B?RHYycVBOMkd2VmxSck5OQmhSbDJDazV5OFk5NjBUOVNvK2NmOW1lTEw2bkxy?=
+ =?utf-8?B?S3VDKzYvT1hyVGEyODRRTVVkUGt4bHhVR3ZtVEx3NDU1RlpiS0Flb29NNklh?=
+ =?utf-8?B?aEhPRlFWNDdQdHQyWHZwd1RBbVhKR3RUTmZQRTBDYlpCZHE2R2JBYm9TL2JZ?=
+ =?utf-8?B?RmJIQWNoOUtKUFI3c1pveC9LQWVKYWh4Nnk1NlpXY2pVKzRjOUlwaU95ZkRk?=
+ =?utf-8?B?U2NRT1Nwc3hKbi81Wm5UN2RkNmd5L0dNVFZqa2dXQm5HM0Z4ZmQ5cXBsT21v?=
+ =?utf-8?B?dVc5Ukg1SVZqdG9QT3pUaWVZN2VyOGRwdmZwQUJUYlNqVTZqYWZXa3E0SWZG?=
+ =?utf-8?B?bys3T3gvQmdTSDJ5ZmVRZEJaak9oV3FaVitKaVhiclRobkt6Zy9qaU1GQ3pv?=
+ =?utf-8?B?VmpKR1dGWXZnRUQ4Wm5OR2IzOE1ZRjFyWUtyemdQdkhqc1lSNlJ4eVNrUXNh?=
+ =?utf-8?B?eHByZjI1Mmd1TU5FdHVUbkNBdzNwc2VlM3Q1TzNVRHEvMXZyUWt1UGwzRnQr?=
+ =?utf-8?B?b2VzYkVQT3hGYTNGRkkxMUdCSXNoVHZOTHpkeGRkUUFrTkdlbUFkRHVZTkZE?=
+ =?utf-8?B?dU5GTlJXaU42cCs0c3ZvU3NxcnZkUkNzQytldTFBS3JCMldPWk1EYU9VY1Az?=
+ =?utf-8?B?dksza2Y4bVgxRDdmZEFQVmZNSnF6L1Y0ZUlacGFqV2tlZ0RZMVpaUmF6YUxI?=
+ =?utf-8?B?Kzd2aVdCMWZlMjJ6UjdLMXo1RHQ5TW1MVlRVYWJyNVJNelNxRXNEZ05HajdL?=
+ =?utf-8?B?c2d0cVgxWnhGRnpUZGIvWmpJNzVCUFRWM3pSUzBRNGIrdmxiQ0NOMkhIOHBX?=
+ =?utf-8?B?WU5lbkxnT0hLT0R6RHRVZXpaYUNZZ3NqZXpQdyt6RVh5eVp5MTJnekptNTZq?=
+ =?utf-8?B?Q0RaZ1ZrUjVSRjYwMEFIeGMrK1AzRjRxTVFZK0lPdERlTkNiTVRHMUZJdUc0?=
+ =?utf-8?B?YzVKMER1U1NTUWZ4NWR2NG8wZHBtUjQwVXlFQjFvUUMwZEtaQTBIWmVvaFpt?=
+ =?utf-8?B?K1B6QXM0d1F6QjZqaThsaktxZ0FIbGNOT3pQVHlWc3lyckthWXo3RFEzMXY4?=
+ =?utf-8?B?bXVTSlorL0J6RGdYc01QQlJSeDRNVFRtK21OUmNaOE5HVkY2NzI3TVRsRis2?=
+ =?utf-8?B?TzUyVVJ1UjcwNWYxUFBUYnoyYldmbE9RRGlqUnU1SXg1UUxEcjVwVlBtQUNT?=
+ =?utf-8?B?dnFwQVNOU2t3Z3JkMDJzdGw5YTN2c1JVclI2d3U5dFFUdlhXK2pwek1Rc05U?=
+ =?utf-8?B?TFFjVU1lcFdxbk55Qms3M2pqRlcyeGQ1d1pWMHZMdE91V1BVZ2dGa25yb3B6?=
+ =?utf-8?B?Ry9sVnZ5eUE5UDlRWmk0UStPaC9Qc3dQOHFyRnovRkR5ekRIWXo1MGRzVStD?=
+ =?utf-8?B?ZkYxTkdxZkhGbnBJc0tNSnY4TkFWM1lLSDNtelRCRVBGbHE4MWpDTU8zU05P?=
+ =?utf-8?B?Vk9yUmRVQk82bjU4NlMyM25teS9VeXBTdldaOW1FMlp3NUE1RG1QN1FJVElJ?=
+ =?utf-8?B?LzBCYXNTb1d4Y1ZQbkNwUHRqdkRrNnQvanVvbWR5OGF3R3NSTjMxMkhrRlRC?=
+ =?utf-8?B?eUM2UXhESHN1Ujh3SGhFY1ZaU3JTNG5NOUhlV0s4R3hJcFN3RW9BbElUZEcw?=
+ =?utf-8?B?cE9FNkhoSnVHMWliZTJ5V09LcTh2cU1pZ2dtd05sSDdHdExQKzVRMDdncGh5?=
+ =?utf-8?B?ODYveEJjdmdxMlpYdGZBTnZpMTlDNHUrcGlJQlRnbDQ4eHVYSHc1T0h6ZVJZ?=
+ =?utf-8?B?V25pSjc2TzhhNDlEM2tQRXpFMTFkSEJqdVJkQmVoMWlNT0wyRFZxZ0NHd1Jh?=
+ =?utf-8?B?cUR5Y0ZobnVxREIzN21nVkI1STFWT1hXellIaXBxVVJLbjAzSi9GdUxCbzYw?=
+ =?utf-8?B?L1BoYWdNd3RVbXYyaFgxZ1NYblNBam5GZ1BteWdsLzZmVEk1Y3hId0RiKzRD?=
+ =?utf-8?Q?3nGmeoQzMM+L0aMll5JS6wiwf?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b9ee42a-e8fb-462b-943a-08dbb2c858c9
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 13:09:35.7738
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bKBWs7KZ80LiMabBY+qwo8TKdTmEgjsBz+Q+s2Lkph9mHJevyfhySesTTtbFCOEW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4269
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Am 09.09.23 um 17:31 schrieb Danilo Krummrich:
+> Currently, the DRM GPUVM does not have any core dependencies preventing
+> a module build.
+>
+> Also, new features from subsequent patches require helpers (namely
+> drm_exec) which can be built as module.
+>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
+Reviewed-by: Christian König <christian.koenig@amd.com> for this one here.
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
+I hope that I can get somebody to work on the remaining patches with the 
+end goal of using this in amdgpu as well.
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
- 
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
--- 
-2.34.1
+Regards,
+Christian.
+
+> ---
+>   drivers/gpu/drm/Kconfig         | 7 +++++++
+>   drivers/gpu/drm/Makefile        | 2 +-
+>   drivers/gpu/drm/drm_gpuvm.c     | 3 +++
+>   drivers/gpu/drm/nouveau/Kconfig | 1 +
+>   4 files changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> index ab9ef1c20349..0f78a03e4e84 100644
+> --- a/drivers/gpu/drm/Kconfig
+> +++ b/drivers/gpu/drm/Kconfig
+> @@ -216,6 +216,13 @@ config DRM_EXEC
+>   	help
+>   	  Execution context for command submissions
+>   
+> +config DRM_GPUVM
+> +	tristate
+> +	depends on DRM && DRM_EXEC
+> +	help
+> +	  GPU-VM representation providing helpers to manage a GPUs virtual
+> +	  address space
+> +
+>   config DRM_BUDDY
+>   	tristate
+>   	depends on DRM
+> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+> index 7a84b3cddeab..8e1bde059170 100644
+> --- a/drivers/gpu/drm/Makefile
+> +++ b/drivers/gpu/drm/Makefile
+> @@ -45,7 +45,6 @@ drm-y := \
+>   	drm_vblank.o \
+>   	drm_vblank_work.o \
+>   	drm_vma_manager.o \
+> -	drm_gpuvm.o \
+>   	drm_writeback.o
+>   drm-$(CONFIG_DRM_LEGACY) += \
+>   	drm_agpsupport.o \
+> @@ -81,6 +80,7 @@ obj-$(CONFIG_DRM_PANEL_ORIENTATION_QUIRKS) += drm_panel_orientation_quirks.o
+>   #
+>   #
+>   obj-$(CONFIG_DRM_EXEC) += drm_exec.o
+> +obj-$(CONFIG_DRM_GPUVM) += drm_gpuvm.o
+>   
+>   obj-$(CONFIG_DRM_BUDDY) += drm_buddy.o
+>   
+> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+> index de1a69bc4a44..aae086deaa2b 100644
+> --- a/drivers/gpu/drm/drm_gpuvm.c
+> +++ b/drivers/gpu/drm/drm_gpuvm.c
+> @@ -1723,3 +1723,6 @@ drm_gpuva_ops_free(struct drm_gpuvm *gpuvm,
+>   	kfree(ops);
+>   }
+>   EXPORT_SYMBOL_GPL(drm_gpuva_ops_free);
+> +
+> +MODULE_DESCRIPTION("DRM GPUVM");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/gpu/drm/nouveau/Kconfig b/drivers/gpu/drm/nouveau/Kconfig
+> index c52e8096cca4..1e6aaf95ff7c 100644
+> --- a/drivers/gpu/drm/nouveau/Kconfig
+> +++ b/drivers/gpu/drm/nouveau/Kconfig
+> @@ -11,6 +11,7 @@ config DRM_NOUVEAU
+>   	select DRM_TTM
+>   	select DRM_TTM_HELPER
+>   	select DRM_EXEC
+> +	select DRM_GPUVM
+>   	select DRM_SCHED
+>   	select I2C
+>   	select I2C_ALGOBIT
 
