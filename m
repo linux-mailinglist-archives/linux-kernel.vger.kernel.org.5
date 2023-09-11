@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2A779BDFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5271479BA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbjIKUta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        id S1347764AbjIKVZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237653AbjIKNFY (ORCPT
+        with ESMTP id S237648AbjIKNFI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:05:24 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC51DF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:05:19 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BD4WjN020555;
-        Mon, 11 Sep 2023 08:04:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694437472;
-        bh=l3EsvSktChO7TrFPn0emVwsdyYD0XfMxdQQKc9ZTbHk=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=RgrZJ6I5abBlaqQ0Lct0j5m+QJXF5iPD34MARIPidmmM6bVGTvzIu97IcjAsHUA7J
-         eIjybEqc2UldeP7u6MDqSDOC4QiEwhesJhFDa5muMM1QBzQqPn9Na0LV47pqFeW3ML
-         GEr/2yxIV3cceV0fg/dVh9LJjCuFLSBQQY7Al95o=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BD4Wq9006471
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 08:04:32 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 08:04:31 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 08:04:31 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BD4VYn029854;
-        Mon, 11 Sep 2023 08:04:31 -0500
-Date:   Mon, 11 Sep 2023 08:04:31 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Andrew Davis <afd@ti.com>,
-        Zhizhou Zhang <zhizhou.zh@gmail.com>, <rppt@kernel.org>,
-        <akpm@linux-foundation.org>, <vishal.moola@gmail.com>,
-        <arnd@arndb.de>, <wangkefeng.wang@huawei.com>,
-        <willy@infradead.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhizhou Zhang <zhizhouzhang@asrmicro.com>
-Subject: Re: [PATCH] ARM: mm: fix stack corruption when CONFIG_ARM_PV_FIXUP=y
-Message-ID: <20230911130431.k35xp7gszgwqigl4@vendetta>
-References: <20230907143302.4940-1-zhizhou.zh@gmail.com>
- <CACRpkdY=EYQfRrUaw5JL5e0x2p=KurYfwvfunJ+GF1PmupKNqg@mail.gmail.com>
- <ZPsmiV9I4qbqpAsO@shell.armlinux.org.uk>
- <CACRpkdYdf9H=LNRZMPurzTcA+bqoOHC1n-8TeCnVdz_iF7H+NA@mail.gmail.com>
+        Mon, 11 Sep 2023 09:05:08 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B37DF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:05:03 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38BBmDlB032392;
+        Mon, 11 Sep 2023 08:04:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=t9rLgJyqGBBWmI5mVTftAC82FZUKd++pMb8l16x//Is=; b=
+        JGhJozYkAgX5SttnFoUGkzWkwwwCbjZQA6EaSEC50bqZvb+WLRktIYcUUKf8XxXm
+        I9szVhBHU6CW7qKzjNP0imMhup+e+G9gJwoSfdbgbFB7C3krBZJ2oQA28sdOSVD1
+        FCvcEMffegOa8uQbCs9uuaWkpI+f+ATFIWWkBQRMCnzeR2gvPCq9oGfdVjkRnOwh
+        gqJbzGuXm03QcvO1w83vTjRS5ipYcyVf5YmhRqAFVrDUBL82Bi9Ojv+goPiA6ugw
+        QA5VEbgHkEuTOBRIDgGdOJiHgw3lPTf0KBtm80UKD8J7YhYwHNvliad/uMvywM3F
+        YY5IJzakOiRBE2PpXhvvRg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3t0p3xj4jv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 08:04:48 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 11 Sep
+ 2023 14:04:43 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Mon, 11 Sep 2023 14:04:43 +0100
+Received: from [198.90.251.125] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.125])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4C83C11AA;
+        Mon, 11 Sep 2023 13:04:43 +0000 (UTC)
+Message-ID: <f03eac55-04ac-b99f-f545-ef8bb7e80f42@opensource.cirrus.com>
+Date:   Mon, 11 Sep 2023 14:04:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYdf9H=LNRZMPurzTcA+bqoOHC1n-8TeCnVdz_iF7H+NA@mail.gmail.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] mtd: cs42l43: use modern PM macro helpers
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Lee Jones" <lee@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, <alsa-devel@alsa-project.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
+References: <20230911111623.705640-1-arnd@kernel.org>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20230911111623.705640-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: qehUIOxXHOmuDR3xb9R94T1SvScaXpGn
+X-Proofpoint-GUID: qehUIOxXHOmuDR3xb9R94T1SvScaXpGn
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23:00-20230908, Linus Walleij wrote:
-> On Fri, Sep 8, 2023 at 3:50 PM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
+On 11/09/2023 12:16, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> > However, it makes a total nonsense of the comment, which explains
-> > precisely why the flush_cache_all() is where it is. Moving it before
-> > that comment means that the comment is now rediculous.
+> The old SET_SYSTEM_SLEEP_PM_OPS/SET_RUNTIME_PM_OPS macros required enclosing
+> the function definitions in an #ifdef or marking them __maybe_unused:
 > 
-> Zhizhou, can you look over the comment placement?
-> 
-> > So, please don't put it in the patch system.
-> >
-> > The patch certainly needs to be tested on TI Keystone which is the
-> > primary user of this code.
-> 
-> Added Andrew Davis and Nishanth Menon to the thread:
-> can you folks review and test this for Keystone?
+<SNIP>
 
-next-20230911 alone: (boots fine):
-https://gist.github.com/nmenon/c097b4a7ce3971964a5a56a34b018c4d
+>   
+>   EXPORT_NS_GPL_DEV_PM_OPS(cs42l43_pm_ops, MFD_CS42L43) = {
+> -	SET_SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
+> -	SET_RUNTIME_PM_OPS(cs42l43_runtime_suspend, cs42l43_runtime_resume, NULL)
+> +	SYSTEM_SLEEP_PM_OPS(cs42l43_suspend, cs42l43_resume)
+> +	RUNTIME_PM_OPS(cs42l43_runtime_suspend, cs42l43_runtime_resume, NULL)
+>   };
 
-
-With
-https://lore.kernel.org/all/20230907143302.4940-1-zhizhou.zh@gmail.com/
-applied on top (fails to boot):
-https://gist.github.com/nmenon/308cfeb84098f41d340cd0e61845a507
-
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Charles already sent a patch for this. We're waiting for Lee to merge it.
+https://lore.kernel.org/all/20230822114914.340359-1-ckeepax@opensource.cirrus.com/
