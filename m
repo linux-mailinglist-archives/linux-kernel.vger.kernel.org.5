@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D501479C258
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C7179C2C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236550AbjILCIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        id S237970AbjILC2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241865AbjILCEo (ORCPT
+        with ESMTP id S237741AbjILC2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:04:44 -0400
+        Mon, 11 Sep 2023 22:28:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5683A1108E7;
-        Mon, 11 Sep 2023 16:28:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC8AC433BD;
-        Mon, 11 Sep 2023 21:45:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9823611AA48;
+        Mon, 11 Sep 2023 18:52:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFAA7C43215;
+        Mon, 11 Sep 2023 21:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694468739;
-        bh=eot6/mvNlQGR8WEUI/rQfkdZZuCigz0bZZ+hXnR05is=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=hweH9oyYSnVaxt37kN0ZC6yGITYBrv2suuRC69GZXCGCBw43231DH8BE+7B7pnlNt
-         a7XrA2fj0AOiIXiJDDG6hYYyNn1SJXKjulFkZ+AJDEEGXZ1s2DBEJSI4negVxUh7CP
-         Q50aXvJSgsDNIgORtYPsuUaZGI0rEBYqNgPdVf0KFUXpObVGTtu3MWIGTL/R7Q+1FU
-         6u+g5lzv8hiGZi5WOvb9oNc8LgmUwcGykUuoJfkYQ0vYwecuixRjFSqaZWfuUMEeM0
-         +RO9DZrZxAalPrQI/KaLls+3g+QYWeXzLrjF3zXE/1HLbobvF6CuzuRjYFDPlcW+7O
-         wfL+Ct28P8kKw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 00:45:35 +0300
-Message-Id: <CVGF1AQT9WI4.2660NVII9NIDU@suppilovahvero>
-Cc:     "Mimi Zohar" <zohar@linux.ibm.com>,
-        "Dmitry Kasatkin" <dmitry.kasatkin@gmail.com>,
-        "Paul Moore" <paul@paul-moore.com>,
-        "James Morris" <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, "joeyli" <jlee@suse.com>
-Subject: Re: [PATCH] integrity: powerpc: Do not select CA_MACHINE_KEYRING
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Michal Suchanek" <msuchanek@suse.de>,
-        <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230907165224.32256-1-msuchanek@suse.de>
-In-Reply-To: <20230907165224.32256-1-msuchanek@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+        s=k20201202; t=1694468761;
+        bh=A93qPH1BvZpug+kRF/tIkw7aL3cJtamMq810m6gI13w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZnLmBUYqXzg8bTl7kfUw7AkOW9M7cMNX9QlQPNt+JziqdnnQYyh8mJoRQjGE4lIUp
+         Rx7w5aALRJTaKDc+C7Iwpefrbu0XsmvQBonjJbsO18Q7TphiCT76LJcsSjUf1LKOET
+         7VGGKU8ya+KdfTwa8plNdvnMaQ4sP3Hz2oBHyeguwKTLupuGDNN8VVO6AHfIwjYdIS
+         r3n6+5swJPnrUGgFBsyG91kYbi7P4ArM8RVxVMN1HLvZSlk6/a4vMpgwuopIbu8JTW
+         M2enhTIKSEsydFLWW01xNMWazav3+d7TpqOjj/hTgfnEzMfE+fJJ+XW1OJVPyrv1qb
+         SJrI6kXcw1FAw==
+Received: (nullmailer pid 2200995 invoked by uid 1000);
+        Mon, 11 Sep 2023 21:45:59 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        David Jander <david@protonic.nl>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx: Add imx8mm-prt8mm.dtb to build
+Date:   Mon, 11 Sep 2023 16:45:37 -0500
+Message-Id: <20230911214547.2200528-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Sep 7, 2023 at 7:52 PM EEST, Michal Suchanek wrote:
-> No other platform needs CA_MACHINE_KEYRING, either.
->
-> This is policy that should be decided by the administrator, not Kconfig
+imx8mm-prt8mm.dts was not getting built. Add it to the build.
 
-s/administrator/distributor/ ?
+Fixes: 58497d7a13ed ("arm64: dts: imx: add Protonic PRT8MM board")
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ arch/arm64/boot/dts/freescale/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-> dependencies.
->
-> cc: joeyli <jlee@suse.com>
-> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> ---
->  security/integrity/Kconfig | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
-> index 232191ee09e3..b6e074ac0227 100644
-> --- a/security/integrity/Kconfig
-> +++ b/security/integrity/Kconfig
-> @@ -68,8 +68,6 @@ config INTEGRITY_MACHINE_KEYRING
->  	depends on INTEGRITY_ASYMMETRIC_KEYS
->  	depends on SYSTEM_BLACKLIST_KEYRING
->  	depends on LOAD_UEFI_KEYS || LOAD_PPC_KEYS
-> -	select INTEGRITY_CA_MACHINE_KEYRING if LOAD_PPC_KEYS
-> -	select INTEGRITY_CA_MACHINE_KEYRING_MAX if LOAD_PPC_KEYS
->  	help
->  	 If set, provide a keyring to which Machine Owner Keys (MOK) may
->  	 be added. This keyring shall contain just MOK keys.  Unlike keys
-> --=20
-> 2.41.0
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index c6872b7e9471..0935626c3dfb 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -65,6 +65,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-bl-osm-s.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-mx8menlo.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-nitrogen-r2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-phg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-prt8mm.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-phyboard-polis-rdk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-tqma8mqml-mba8mx.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+-- 
+2.40.1
 
-I'd suggest to add even fixes tag.
-
-BR, Jarkko
