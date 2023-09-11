@@ -2,64 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E283379A4A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58DC79A4A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbjIKHgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:36:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
+        id S231214AbjIKHjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjIKHgW (ORCPT
+        with ESMTP id S229678AbjIKHjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:36:22 -0400
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222D1118;
-        Mon, 11 Sep 2023 00:36:18 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-52eed139ec2so3653755a12.2;
-        Mon, 11 Sep 2023 00:36:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694417776; x=1695022576;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E++QcmaSCqRTogZf0py8lxCDiY1aiEIVkjD7gfQ6xAc=;
-        b=Vix8Uty22l3e5DfXDB+cTLX9hkZ1niPg5oW8q1M+wea03bw3cjlZECMMz5BewQVYRQ
-         X4xaiqfYfL78Wdvt3l53n8p6JvDB53VT7d9bTUzEa7+eMVm2khVU8RB0S6Z3Wx5CHqt0
-         S9916vnEvFLY814yP6MR/+oB78mOxwrUrcA0iAS3ogr5xuJMClNfDtuhyHGbhoSdG8fN
-         CkF69HINce36Pcg8GkISqpWYVZIGY+jVG6C8UrY5tIcpn+Kgo5ixTHqh6nPEHqkYjXCH
-         2q4fNEwTB2KAP6kd0h7wM/dmFDiZRu9RflxzXzPFjepCfkLxhG4cLyNH795evp1Jf4+T
-         hWxg==
-X-Gm-Message-State: AOJu0Yy0ct5vZS/MVClzt+cvJvO1chXUojjK9281iYaQxqq6W60le4EH
-        AuT2sIjrEAly+2Cl9ACJ1zg=
-X-Google-Smtp-Source: AGHT+IFjbgI2p7VIOt+A7f05oIS5iZ+7BHD5jL8GSbm3gtDeDn6DEJ4gzH5WlS5acf6oV4/HaPfRgQ==
-X-Received: by 2002:a17:906:530c:b0:99d:f056:5d6b with SMTP id h12-20020a170906530c00b0099df0565d6bmr8124022ejo.20.1694417776464;
-        Mon, 11 Sep 2023 00:36:16 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id ga17-20020a170906b85100b009a1e0349c4csm4892779ejb.23.2023.09.11.00.36.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 00:36:15 -0700 (PDT)
-Message-ID: <d3a92651-d427-af84-70c2-bc6004e79c80@kernel.org>
-Date:   Mon, 11 Sep 2023 09:36:15 +0200
+        Mon, 11 Sep 2023 03:39:44 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE00A118;
+        Mon, 11 Sep 2023 00:39:39 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 84077218E2;
+        Mon, 11 Sep 2023 07:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694417978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBms2MbanL4wowScFpok83vxiu9MRRYrFtiJ5kFMiJE=;
+        b=Q5EX8/qmTXzGMeQWXuJS40ntpaFw6uw7YuzJLn4QC1cRBcdVuZhlurw12eoTsd+Qrc7uSQ
+        KJBjLOHROwY8WXSmX+JHN6Pi3NE8nwDeN8So4vWuhQSOK7lyCHwDvtYR1Q+UIb3mZ06QDD
+        B9MT/yvLWruHEjdBXDkzV33IRfxLSmY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694417978;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OBms2MbanL4wowScFpok83vxiu9MRRYrFtiJ5kFMiJE=;
+        b=LMm4dmczMri57uE8kWxOMnIlLIQex3ylAcOwrBlFAC+AdFCYxBx9BJBABNDOvjlGWvWW5+
+        X3k9Qg/oKPfViKBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EA7F6139CC;
+        Mon, 11 Sep 2023 07:39:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id e2KjNznE/mT1aAAAMHmgww
+        (envelope-from <hare@suse.de>); Mon, 11 Sep 2023 07:39:37 +0000
+Message-ID: <ec35111d-ba31-497b-ab01-b198d3feb814@suse.de>
+Date:   Mon, 11 Sep 2023 09:39:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] serial: stm32: add support for break control
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 04/12] block: add emulation for copy
 Content-Language: en-US
-To:     Valentin Caron <valentin.caron@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Erwan Le Ray <erwan.leray@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20230906151547.840302-1-valentin.caron@foss.st.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230906151547.840302-1-valentin.caron@foss.st.com>
+To:     Nitesh Shetty <nj.shetty@samsung.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        martin.petersen@oracle.com, mcgrof@kernel.org,
+        gost.dev@samsung.com, Vincent Fu <vincent.fu@samsung.com>,
+        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
+References: <20230906163844.18754-1-nj.shetty@samsung.com>
+ <CGME20230906164321epcas5p4dad5b1c64fcf85e2c4f9fc7ddb855ea7@epcas5p4.samsung.com>
+ <20230906163844.18754-5-nj.shetty@samsung.com>
+ <e6fc7e65-ad31-4ca2-8b1b-4d97ba32926e@suse.de>
+ <20230911070937.GB28177@green245>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230911070937.GB28177@green245>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,19 +88,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 09. 23, 17:15, Valentin Caron wrote:
-> From: Erwan Le Ray <erwan.leray@foss.st.com>
+On 9/11/23 09:09, Nitesh Shetty wrote:
+> On Fri, Sep 08, 2023 at 08:06:38AM +0200, Hannes Reinecke wrote:
+>> On 9/6/23 18:38, Nitesh Shetty wrote:
+>>> For the devices which does not support copy, copy emulation is added.
+>>> It is required for in-kernel users like fabrics, where file descriptor is
+>>> not available and hence they can't use copy_file_range.
+>>> Copy-emulation is implemented by reading from source into memory and
+>>> writing to the corresponding destination.
+>>> Also emulation can be used, if copy offload fails or partially completes.
+>>> At present in kernel user of emulation is NVMe fabrics.
+>>>
+>> Leave out the last sentence; I really would like to see it enabled for SCSI,
+>> too (we do have copy offload commands for SCSI ...).
+>>
+> Sure, will do that
 > 
-> Add support for break control to the stm32 serial driver.
+>> And it raises all the questions which have bogged us down right from the
+>> start: where is the point in calling copy offload if copy offload is not
+>> implemented or slower than copying it by hand?
+>> And how can the caller differentiate whether copy offload bring a benefit to
+>> him?
+>>
+>> IOW: wouldn't it be better to return -EOPNOTSUPP if copy offload is not
+>> available?
 > 
-> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
-> Signed-off-by: Valentin Caron <valentin.caron@foss.st.com>
+> Present approach treats copy as a background operation and the idea is to
+> maximize the chances of achieving copy by falling back to emulation.
+> Having said that, it should be possible to return -EOPNOTSUPP,
+> in case of offload IO failure or device not supporting offload.
+> We will update this in next version.
+> 
+That is also what I meant with my comments to patch 09/12: I don't see 
+it as a benefit to _always_ fall back to a generic copy-offload 
+emulation. After all, that hardly brings any benefit.
+Where I do see a benefit is to tie in the generic copy-offload 
+_infrastructure_ to existing mechanisms (like dm-kcopyd).
+But if there is no copy-offload infrastructure available then we really 
+should return -EOPNOTSUPP as it really is not supported.
 
-LGTM
+In the end, copy offload is not a command which 'always works'.
+It's a command which _might_ deliver benefits (ie better performance) if 
+dedicated implementations are available and certain parameters are met. 
+If not then copy offload is not the best choice, and applications will 
+need to be made aware of that.
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Cheers,
 
+Hannes
 -- 
-js
-suse labs
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
