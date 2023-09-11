@@ -2,352 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E495579AF2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA78E79B21E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350464AbjIKVim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
+        id S236068AbjIKVUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238034AbjIKNev (ORCPT
+        with ESMTP id S238080AbjIKNgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:34:51 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B3B106;
-        Mon, 11 Sep 2023 06:34:47 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Rknkq2wrQz9sWC;
-        Mon, 11 Sep 2023 15:34:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-        s=MBO0001; t=1694439283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0WN7ulzjMpysFWDYCmd+jc2KprSgNcNXEQOmRucvEQI=;
-        b=teeid22MXH+w10HGGofK/1vRz+6CBeRd2wRWCS+MBDUIjAT5NY1nMUrTmJgCAgkaetPWNX
-        1/YyMGJ3RA8mPhSR5qWybpwzdBdp24pCPNvi5UhJwNj5ZUL9PDvzKFbVdUdYsjYE8IM9Gj
-        RtEKjPPMEZItqXO79/TOKxiTg7IYoAoSoeQ9k/KCQ7ebLtVD4Ia6BiEFFQTafJlMJDqYWz
-        XtlLn9hpYNoADus+IhNqkrHTVfQBLFS/+pL0Sdn7quhNGo7Dj6bLw6mX+NP9xCjmyjnZrs
-        oryOhgib7zia2MWzUG8SqtjAgbyhEI9EJdvd1nrvoIEiFNIQJxIRPYZNAD7iww==
-From:   Pankaj Raghav <kernel@pankajraghav.com>
-To:     minchan@kernel.org, senozhatsky@chromium.org
-Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk,
-        p.raghav@samsung.com, linux-block@vger.kernel.org,
-        kernel@pankajraghav.com, gost.dev@samsung.com
-Subject: [PATCH 4/5] zram: batch IOs during writeback to improve performance
+        Mon, 11 Sep 2023 09:36:25 -0400
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108971A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:36:21 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20230911133619euoutp0207ed62a7a7da049c34cf022575630dbd~D26N1vsdi1631916319euoutp02S
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:36:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20230911133619euoutp0207ed62a7a7da049c34cf022575630dbd~D26N1vsdi1631916319euoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694439379;
+        bh=AAP3lLPpv5qsQMoGVy1YUvE2PsB1a2G8WmcojJFngHc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HtBGZ2S811lW7DksCnRHuiskKatvLOtRnzlmEhilIVAEq7Jw5gcrkSiQPFqZFvtDE
+         vGHeT5KIg1DN9/5wvhwJBoOa0BD+y0CTawBKK2WkYfrL5wTS0rA+YVo4eikGIy0CS+
+         TxtERhwVFQy3jjOZZ9kvE3mSLXoYWtw2KaXK7lI8=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230911133619eucas1p26167a4c2db92fefc14bdf12855d54026~D26NXQxeB1560815608eucas1p2V;
+        Mon, 11 Sep 2023 13:36:19 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 5B.B1.42423.3D71FF46; Mon, 11
+        Sep 2023 14:36:19 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230911133618eucas1p2d40b075ee6baebbec9f991eb01f21d89~D26M5xJ5x2314623146eucas1p2d;
+        Mon, 11 Sep 2023 13:36:18 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230911133618eusmtrp22a0face45ce4adcde68bbd79a49352ed~D26M5AlLS0862108621eusmtrp2u;
+        Mon, 11 Sep 2023 13:36:18 +0000 (GMT)
+X-AuditID: cbfec7f2-a3bff7000002a5b7-6b-64ff17d3cd0b
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id C3.8A.14344.2D71FF46; Mon, 11
+        Sep 2023 14:36:18 +0100 (BST)
+Received: from AMDC4515.eu.corp.samsungelectronics.net (unknown
+        [106.120.51.28]) by eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230911133617eusmtip25e8141ecc53adabce50419a6af992bef~D26L0r9QR0735907359eusmtip22;
+        Mon, 11 Sep 2023 13:36:17 +0000 (GMT)
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Majewski <m.majewski2@samsung.com>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH v2 5/7] thermal: exynos: stop using the threshold mechanism
+ on Exynos 4210
 Date:   Mon, 11 Sep 2023 15:34:29 +0200
-Message-Id: <20230911133430.1824564-5-kernel@pankajraghav.com>
-In-Reply-To: <20230911133430.1824564-1-kernel@pankajraghav.com>
-References: <20230911133430.1824564-1-kernel@pankajraghav.com>
+Message-ID: <20230911133435.14061-6-m.majewski2@samsung.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230911133435.14061-1-m.majewski2@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPKsWRmVeSWpSXmKPExsWy7djP87qXxf+nGPSuErV4MG8bm8Xh+RUW
+        Ux8+YbP4vuU6k8W8z7IWe19vZbf4dqWDyWLT42usFpd3zWGz+Nx7hNFixvl9TBYTj01mtlh7
+        5C67xdwvU5ktnjzsY3Pg99g56y67x+I9L5k8Nq3qZPO4c20Pm8fmJfUefVtWMXp83iQXwB7F
+        ZZOSmpNZllqkb5fAlXH9xRbGgpX8FYdaP7E0ML7j6WLk5JAQMJG4umACYxcjF4eQwApGiWkf
+        n7FAOF8YJX5t/8IM4XxmlLi78QsrTMvDX0ehqpYzSjTe38YO4bQySez+cIIFpIpNwEDiwZtl
+        7CC2iEAro8TMJnWQImaBS8wSd2+uBSsSFoiRODbtO5jNIqAqsfP+UbAVvAI2EpcXvmeGWCcv
+        8fzWHbBBnAK2EmfXTmeHqBGUODnzCVgvM1BN89bZYLdKCDRzSnxrbIK61UXi7KpNjBC2sMSr
+        41vYIWwZif875zNB2PkSMza/BxrEAWRXSNw96AVhWkt8PMMMYjILaEqs36UPUewocXbXMkaI
+        Cj6JG28FIQ7gk5i0bTozRJhXoqNNCKJaVeL4nklQf0hLPGm5DbXSQ+LH5x9MExgVZyF5ZRaS
+        V2Yh7F3AyLyKUTy1tDg3PbXYMC+1XK84Mbe4NC9dLzk/dxMjMI2d/nf80w7Gua8+6h1iZOJg
+        PMQowcGsJMJbcuhvihBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFebduTyUIC6YklqdmpqQWpRTBZ
+        Jg5OqQamjEVNKZ8qRA5fWyrhb//t0Rcx32/HF3zMsD7bbnJZvCE/4e+rs/cXGMf9nHRO5nLd
+        HYf5PRNu5KlwPC+dnCwjYcnsxul6a+ffA5UR3RPEQ39ULL10/8vy9L9rXwbervcI+HrB9ZTd
+        pGcPE3+Ivp+wyNZogplcj7XEwfqyAqc9vp1zU1ee4fC1CJmhnLBy7c+Naj+ESqJCRX+1x+QK
+        rEqb9NTs2gE5gVXXTfLCs5mfmek9nXxikezrRYf3lfbrHuj5ViElWVDP47KvSfvS0tt7vSb5
+        l+Yl7v2owaAXWWy80VD3zopPF8I+5Ku3+e70Xej8Q2nhoaXKcy97/Ipj4pc8K1rtX+yVrSLC
+        rRu39JO2EktxRqKhFnNRcSIAubsW1dIDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsVy+t/xe7qXxP+nGHR1m1g8mLeNzeLw/AqL
+        qQ+fsFl833KdyWLeZ1mLva+3slt8u9LBZLHp8TVWi8u75rBZfO49wmgx4/w+JouJxyYzW6w9
+        cpfdYu6XqcwWTx72sTnwe+ycdZfdY/Gel0wem1Z1snncubaHzWPzknqPvi2rGD0+b5ILYI/S
+        synKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy7j+Ygtj
+        wUr+ikOtn1gaGN/xdDFyckgImEg8/HWUBcQWEljKKDGpSREiLi1x+MsUdghbWOLPtS62LkYu
+        oJpmJok9T7+BJdgEDCQevFnGDpIQEehklOjafI4JJMEscItZ4v5rLRBbWCBK4uqrV4wgNouA
+        qsTO+0dZQWxeARuJywvfM0NskJd4fusO2FBOAVuJs2unA9kcQNtsJPrP6ECUC0qcnPmEBWK8
+        vETz1tnMExgFZiFJzUKSWsDItIpRJLW0ODc9t9hIrzgxt7g0L10vOT93EyMw4rYd+7llB+PK
+        Vx/1DjEycTAeYpTgYFYS4S059DdFiDclsbIqtSg/vqg0J7X4EKMp0NkTmaVEk/OBMZ9XEm9o
+        ZmBqaGJmaWBqaWasJM7rWdCRKCSQnliSmp2aWpBaBNPHxMEp1cC05lnwZP3FL3Vzj0SIdU3a
+        FWSTHu50+btF4M8ANi+FazyBR17/XnX1Cc+boAlvdU4L2k7jDJBsriw4e/r05SOMoSvuWs9/
+        ey/XIbVi49poL4tYNt/cqFp+K9t9hzbuWbD67tRpi79veRb2J11+17evL14nNn0VV3A6v6ml
+        mu37IcdpkRHWe+02uq+yT5pkH9vpX/Nu/422L3wZQVtqXWwMDn14/njvX1f7UwwrO4KOa919
+        demj/sRs8/IJa/xXHZVWKjr7/oQt8ySjILuqinPfuTl1xF+UbLVUmNARLJ7Y/2He3ZcbZr/q
+        mvb40/TF+UuZvJObOLavavXbMiF4TmJfnPuCD8KMf8qshDTnF6+qUWIpzkg01GIuKk4EADSU
+        f/RBAwAA
+X-CMS-MailID: 20230911133618eucas1p2d40b075ee6baebbec9f991eb01f21d89
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20230911133618eucas1p2d40b075ee6baebbec9f991eb01f21d89
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230911133618eucas1p2d40b075ee6baebbec9f991eb01f21d89
+References: <20230911133435.14061-1-m.majewski2@samsung.com>
+        <CGME20230911133618eucas1p2d40b075ee6baebbec9f991eb01f21d89@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pankaj Raghav <p.raghav@samsung.com>
+Exynos 4210 supports setting a base threshold value, which is added to
+all trip points. This might be useful, but is not really necessary in
+our usecase, so we always set it to 0 to simplify the code a bit.
 
-This crosses off one of the TODO that was there as a part of
-writeback_store() function:
-A single page IO would be inefficient for write...
+Additionally, this change makes it so that we convert the value to the
+calibrated one in a slightly different place. This is more correct
+morally, though it does not make any change when single-point
+calibration is being used (which is the case currently).
 
-This reduces the time of writeback of 4G data to a nvme backing device from
-68 secs to 15 secs (more than 4x improvement).
-
-The idea is to batch the IOs until to a certain limit before the data is
-flushed to the backing device. The batch limit is initially chosen based
-on the bdi->io_pages value with an upper limit of 32 pages (128k on
-x86). The limit is modified based writeback_limit, if set.
-
-Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
 ---
- drivers/block/zram/zram_drv.c | 186 +++++++++++++++++++++-------------
- 1 file changed, 113 insertions(+), 73 deletions(-)
+ drivers/thermal/samsung/exynos_tmu.c | 17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 0b8f814e11dd..27313c2d781d 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -551,22 +551,6 @@ static ssize_t backing_dev_store(struct device *dev,
- 	return err;
- }
- 
--static unsigned long alloc_block_bdev(struct zram *zram)
--{
--	unsigned long blk_idx = 1;
--retry:
--	/* skip 0 bit to confuse zram.handle = 0 */
--	blk_idx = find_next_zero_bit(zram->bitmap, zram->nr_pages, blk_idx);
--	if (blk_idx == zram->nr_pages)
--		return 0;
--
--	if (test_and_set_bit(blk_idx, zram->bitmap))
--		goto retry;
--
--	atomic64_inc(&zram->stats.bd_count);
--	return blk_idx;
--}
--
- static void free_block_bdev(struct zram *zram, unsigned long blk_idx)
+diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
+index 8451deb65f43..77afbf9f2db0 100644
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -343,20 +343,7 @@ static void exynos_tmu_control(struct platform_device *pdev, bool on)
+ static void exynos4210_tmu_set_trip_temp(struct exynos_tmu_data *data,
+ 					 int trip_id, u8 temp)
  {
- 	int was_set;
-@@ -628,6 +612,15 @@ static void read_from_bdev_async(struct zram *zram, struct page *page,
- #define IDLE_WRITEBACK			(1<<1)
- #define INCOMPRESSIBLE_WRITEBACK	(1<<2)
- 
-+#define MAX_INDEX_ENTRIES_ORDER 5
-+#define MAX_INDEX_ENTRIES (1U << MAX_INDEX_ENTRIES_ORDER)
-+struct index_mapping {
-+	/* Cap the maximum indices to 32 before we flush */
-+	unsigned long arr[MAX_INDEX_ENTRIES];
-+	unsigned int nr_of_entries;
-+};
-+
-+
- /*
-  * Returns: true if the index was prepared for further processing
-  *          false if the index can be skipped
-@@ -668,39 +661,36 @@ static bool writeback_prep_or_skip_index(struct zram *zram, int mode,
- 	return ret;
- }
- 
--static int writeback_flush_to_bdev(struct zram *zram, unsigned long index,
--				   struct page *page, unsigned long *blk_idx)
-+static int writeback_flush_to_bdev(struct zram *zram, struct folio *folio,
-+				   struct index_mapping *map,
-+				   unsigned long blk_idx, unsigned int io_pages)
- {
- 	struct bio bio;
- 	struct bio_vec bio_vec;
--	int ret;
-+	int ret = 0;
-+
-+	if (!map->nr_of_entries)
-+		return ret;
- 
- 	bio_init(&bio, zram->bdev, &bio_vec, 1, REQ_OP_WRITE | REQ_SYNC);
--	bio.bi_iter.bi_sector = *blk_idx * (PAGE_SIZE >> 9);
--	__bio_add_page(&bio, page, PAGE_SIZE, 0);
-+	bio.bi_iter.bi_sector = blk_idx * (PAGE_SIZE >> 9);
-+
-+	if (!bio_add_folio(&bio, folio, io_pages * PAGE_SIZE, 0))
-+		goto cleanup;
- 
--	/*
--	 * XXX: A single page IO would be inefficient for write
--	 * but it would be not bad as starter.
--	 */
- 	ret = submit_bio_wait(&bio);
--	if (ret) {
--		zram_slot_lock(zram, index);
--		zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--		zram_clear_flag(zram, index, ZRAM_IDLE);
--		zram_slot_unlock(zram, index);
--		/*
--		 * BIO errors are not fatal, we continue and simply
--		 * attempt to writeback the remaining objects (pages).
--		 * At the same time we need to signal user-space that
--		 * some writes (at least one, but also could be all of
--		 * them) were not successful and we do so by returning
--		 * the most recent BIO error.
--		 */
--		return ret;
+-	struct thermal_trip trip;
+-	u8 ref, th_code;
+-
+-	if (thermal_zone_get_trip(data->tzd, 0, &trip))
+-		return;
+-
+-	ref = trip.temperature / MCELSIUS;
+-
+-	if (trip_id == 0) {
+-		th_code = temp_to_code(data, ref);
+-		writeb(th_code, data->base + EXYNOS4210_TMU_REG_THRESHOLD_TEMP);
 -	}
-+	/*
-+	 * BIO errors are not fatal, we continue and simply
-+	 * attempt to writeback the remaining objects (pages).
-+	 * At the same time we need to signal user-space that
-+	 * some writes (at least one, but also could be all of
-+	 * them) were not successful and we do so by returning
-+	 * the most recent BIO error.
-+	 */
-+	if (ret)
-+		goto cleanup;
- 
--	atomic64_inc(&zram->stats.bd_writes);
-+	atomic64_add(map->nr_of_entries, &zram->stats.bd_writes);
- 	/*
- 	 * We released zram_slot_lock so need to check if the slot was
- 	 * changed. If there is freeing for the slot, we can catch it
-@@ -710,28 +700,40 @@ static int writeback_flush_to_bdev(struct zram *zram, unsigned long index,
- 	 * mark ZRAM_IDLE once it found the slot was ZRAM_UNDER_WB.
- 	 * Thus, we could close the race by checking ZRAM_IDLE bit.
- 	 */
--	zram_slot_lock(zram, index);
--	if (!zram_allocated(zram, index) ||
--	    !zram_test_flag(zram, index, ZRAM_IDLE)) {
--		zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--		zram_clear_flag(zram, index, ZRAM_IDLE);
--		goto skip;
-+	for (int iter = 0; iter < map->nr_of_entries; iter++) {
-+		zram_slot_lock(zram, map->arr[iter]);
-+		if (!zram_allocated(zram, map->arr[iter]) ||
-+		    !zram_test_flag(zram, map->arr[iter], ZRAM_IDLE)) {
-+			zram_clear_flag(zram, map->arr[iter], ZRAM_UNDER_WB);
-+			zram_clear_flag(zram, map->arr[iter], ZRAM_IDLE);
-+			zram_slot_unlock(zram, map->arr[iter]);
-+			free_block_bdev(zram, blk_idx + iter);
-+			continue;
-+		}
-+
-+		zram_free_page(zram, map->arr[iter]);
-+		zram_clear_flag(zram, map->arr[iter], ZRAM_UNDER_WB);
-+		zram_set_flag(zram, map->arr[iter], ZRAM_WB);
-+		zram_set_element(zram, map->arr[iter], blk_idx + iter);
-+		zram_slot_unlock(zram, map->arr[iter]);
-+		atomic64_inc(&zram->stats.pages_stored);
-+
-+		spin_lock(&zram->wb_limit_lock);
-+		if (zram->wb_limit_enable && zram->bd_wb_limit > 0)
-+			zram->bd_wb_limit -= 1UL << (PAGE_SHIFT - 12);
-+		spin_unlock(&zram->wb_limit_lock);
- 	}
-+	return ret;
- 
--	zram_free_page(zram, index);
--	zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--	zram_set_flag(zram, index, ZRAM_WB);
--	zram_set_element(zram, index, *blk_idx);
--	atomic64_inc(&zram->stats.pages_stored);
--	*blk_idx = 0;
 -
--	spin_lock(&zram->wb_limit_lock);
--	if (zram->wb_limit_enable && zram->bd_wb_limit > 0)
--		zram->bd_wb_limit -= 1UL << (PAGE_SHIFT - 12);
--	spin_unlock(&zram->wb_limit_lock);
--skip:
--	zram_slot_unlock(zram, index);
--	return 0;
-+cleanup:
-+	for (int iter = 0; iter < map->nr_of_entries; iter++) {
-+		zram_slot_lock(zram, map->arr[iter]);
-+		zram_clear_flag(zram, map->arr[iter], ZRAM_UNDER_WB);
-+		zram_clear_flag(zram, map->arr[iter], ZRAM_IDLE);
-+		zram_slot_unlock(zram, map->arr[iter]);
-+	}
-+	free_block_bdev_range(zram, blk_idx, map->nr_of_entries);
-+	return ret;
+-	temp -= ref;
++	temp = temp_to_code(data, temp);
+ 	writeb(temp, data->base + EXYNOS4210_TMU_REG_TRIG_LEVEL0 + trip_id * 4);
  }
  
- static ssize_t writeback_store(struct device *dev,
-@@ -741,9 +743,15 @@ static ssize_t writeback_store(struct device *dev,
- 	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
- 	unsigned long index = 0;
- 	struct page *page;
-+	struct folio *folio;
- 	ssize_t ret = len;
- 	int mode, err;
- 	unsigned long blk_idx = 0;
-+	unsigned int io_pages;
-+	u64 bd_wb_limit_pages = ULONG_MAX;
-+	struct index_mapping map = {};
-+	unsigned int order = min(MAX_INDEX_ENTRIES_ORDER,
-+				 ilog2(zram->bdev->bd_disk->bdi->io_pages));
+@@ -371,6 +358,8 @@ static void exynos4210_tmu_initialize(struct platform_device *pdev)
+ 	struct exynos_tmu_data *data = platform_get_drvdata(pdev);
  
- 	if (sysfs_streq(buf, "idle"))
- 		mode = IDLE_WRITEBACK;
-@@ -776,32 +784,48 @@ static ssize_t writeback_store(struct device *dev,
- 		goto release_init_lock;
- 	}
- 
--	page = alloc_page(GFP_KERNEL);
--	if (!page) {
-+	folio = folio_alloc(GFP_KERNEL, order);
-+	if (!folio) {
- 		ret = -ENOMEM;
- 		goto release_init_lock;
- 	}
- 
- 	for (; nr_pages != 0; index++, nr_pages--) {
- 		spin_lock(&zram->wb_limit_lock);
--		if (zram->wb_limit_enable && !zram->bd_wb_limit) {
--			spin_unlock(&zram->wb_limit_lock);
--			ret = -EIO;
--			break;
-+		if (zram->wb_limit_enable) {
-+			if (!zram->bd_wb_limit) {
-+				spin_unlock(&zram->wb_limit_lock);
-+				ret = -EIO;
-+				break;
-+			}
-+			bd_wb_limit_pages = zram->bd_wb_limit >>
-+					    (PAGE_SHIFT - 12);
- 		}
- 		spin_unlock(&zram->wb_limit_lock);
- 
- 		if (!blk_idx) {
--			blk_idx = alloc_block_bdev(zram);
-+			io_pages = min(1UL << order, nr_pages);
-+			io_pages = min_t(u64, bd_wb_limit_pages, io_pages);
+ 	sanitize_temp_error(data, readl(data->base + EXYNOS_TMU_REG_TRIMINFO));
 +
-+			blk_idx = alloc_block_bdev_range(zram, &io_pages);
- 			if (!blk_idx) {
- 				ret = -ENOSPC;
- 				break;
- 			}
- 		}
++	writeb(0, data->base + EXYNOS4210_TMU_REG_THRESHOLD_TEMP);
+ }
  
--		if (!writeback_prep_or_skip_index(zram, mode, index))
--			continue;
-+		if (!writeback_prep_or_skip_index(zram, mode, index)) {
-+			if (nr_pages > 1 || map.nr_of_entries == 0)
-+				continue;
-+			/* There are still some unfinished IOs that
-+			 * needs to be flushed
-+			 */
-+			err = writeback_flush_to_bdev(zram, folio, &map,
-+						      blk_idx, io_pages);
-+			goto next;
-+		}
- 
-+		page = folio_page(folio, map.nr_of_entries);
- 		if (zram_read_page(zram, page, index, NULL)) {
- 			zram_slot_lock(zram, index);
- 			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
-@@ -810,15 +834,31 @@ static ssize_t writeback_store(struct device *dev,
- 			continue;
- 		}
- 
--		err = writeback_flush_to_bdev(zram, index, page, &blk_idx);
-+		map.arr[map.nr_of_entries++] = index;
-+		if (map.nr_of_entries < io_pages)
-+			continue;
- 
-+		err = writeback_flush_to_bdev(zram, folio, &map, blk_idx,
-+					      io_pages);
-+next:
- 		if (err)
- 			ret = err;
-+
-+		/*
-+		 * Check if all the blocks have been utilized before
-+		 * allocating the next batch. This is necessary to free
-+		 * the unused blocks after looping through all indices.
-+		 */
-+		if (map.nr_of_entries == io_pages) {
-+			blk_idx = 0;
-+			map.nr_of_entries = 0;
-+		}
- 	}
- 
- 	if (blk_idx)
--		free_block_bdev(zram, blk_idx);
--	__free_page(page);
-+		free_block_bdev_range(zram, blk_idx + map.nr_of_entries,
-+				      io_pages - map.nr_of_entries);
-+	folio_put(folio);
- release_init_lock:
- 	up_read(&zram->init_lock);
- 
+ static void exynos4412_tmu_set_trip_temp(struct exynos_tmu_data *data,
 -- 
-2.40.1
+2.41.0
 
