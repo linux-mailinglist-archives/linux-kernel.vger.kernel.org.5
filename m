@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9832979C173
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC2279C1F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbjILBLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
+        id S234072AbjILBtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbjILBLe (ORCPT
+        with ESMTP id S234206AbjILBs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:11:34 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C173DE9C61;
-        Mon, 11 Sep 2023 17:05:53 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500b66f8b27so8676359e87.3;
-        Mon, 11 Sep 2023 17:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694477079; x=1695081879; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iJwIMS70R7O4xotSYAbycvkE7LIixxz2BRpxlkaoOuQ=;
-        b=C8BV1JRqYxqHAChV3nFK1KomnNYklmGkbaEoMZYJTAsAImfDBPVRq4k6SQAQyJCZkX
-         T+rgQjinDmWeI8atE7x3y0Aq50ZPUS+MLXAx63ZaLrgS4eyGJv+s7ovfLFNMNIGrmF+h
-         3lpnewbNJ/kZsc4bOvOJNxXr1t95CoFur8UIlgaFd0pZT2ipLkksxGuVz9uS72M5D2KG
-         hwRwBJMaITd2yevT/K5jbZa2iHsvB3FUdbga+QvrPPCSoly95fnfP8vYO2e0S5MgiO5n
-         PDqPi8xqSFAMnSUlp6FcjQLcx8rtFUupVKy05Mw+9YwTQRbW4IL1bLxdTniafv7gqtGI
-         QR9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694477079; x=1695081879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iJwIMS70R7O4xotSYAbycvkE7LIixxz2BRpxlkaoOuQ=;
-        b=v5pKfZn2HuLx3t/wI2mspUQSAJiW+MjZRLaNBD/SusYSUrIbDggO8OMMErvms3S3/V
-         juXUuj/CkQ6pusZ65oMiU+NDRhEjhDOAYTajOHhZ1bfZusXwbZkHOD6WcP0zVYkyutpe
-         reS82Cz1XesjZ4HAoh9AzrsWCKH/id+DGAvWDIzvxYBZ9rh86Cylm6yXE5YEF/hXJ5CL
-         GQ1OzZcekQE0SA/q3ubp9QH04urXyLzivsT722+dEk+H08VDuIh0ks0vvuC9dtAg4sDE
-         iFsmh6p8ICfI8HTCtB+CcWs9eMtV5bY9yTJPdP2k9/KsJSXUHbZ5pSoEOtrTzQwPaocy
-         MYVw==
-X-Gm-Message-State: AOJu0YySNZifylj1F2xFeKAsQM+IoRnDk/JVGT6QFz8od9pzNFdPDDn0
-        +5ZErLDLqitm/ShUczpAafa0S3TR+apbGv2SUEbpyjiI87Faig==
-X-Google-Smtp-Source: AGHT+IFf2hqEyBFntRVpYOdqr6T6TV+V1ehJ8cSgQpPXcwsMJ4j+xNm6xYRtTw0/JaZaMQZr0SNrgfCVx6jkQoSCZXk=
-X-Received: by 2002:a17:906:1d9:b0:9a5:a44a:86f3 with SMTP id
- 25-20020a17090601d900b009a5a44a86f3mr9128275ejj.25.1694474448340; Mon, 11 Sep
- 2023 16:20:48 -0700 (PDT)
+        Mon, 11 Sep 2023 21:48:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362CE130F8C;
+        Mon, 11 Sep 2023 18:22:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 291B4C116B2;
+        Mon, 11 Sep 2023 23:27:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694474823;
+        bh=NJ/M71WDi1QkA4y2AsQdvINQobLZEouTyfxhdb+/rTw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FVAUGHzTi4iB7U/MVoLNzWRQ1S+LqBGGTyw5bZj4QGTXs+BORi0OQXUm1NCwAPINf
+         mGZ9RFvUv/gcsnVU8VquXHYKJxDDffWVrURGZhKDInW8Y96hfxRSvCEdpHSVK4/ksP
+         /wnW3tLjE7lMn5bnHskEgh9Z0Wg1P26VUPOpJY4vjPQER+39aPxpeOnU1c46YVjjsY
+         Ky32ISstAItKJwyvvbWTAtzM1bW4WuWWLELZvk5w72VNSP3XMoiJiTEe2xWHW2Zq89
+         JZp4ApL1hCWo81eS8wT4ccy5i1IbNqTXxEM1CK7OPmrBofNbv069nuPDxDEEAxce2n
+         2MGSp+9qQEtWA==
+Date:   Mon, 11 Sep 2023 17:27:59 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] RDMA/core: Use size_{add,mul}() in calls to
+ struct_size()
+Message-ID: <ZP+if342EMhModzZ@work>
 MIME-Version: 1.0
-References: <20230909161851.223627-1-kernel@jfarr.cc> <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
-In-Reply-To: <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Mon, 11 Sep 2023 19:20:12 -0400
-Message-ID: <CAEg-Je9GF5S+QcsspM_CzDSxzCN8h2eRp7BbctC1x7-rH8j68g@mail.gmail.com>
-Subject: Re: [systemd-devel] [PATCH 0/1] x86/kexec: UKI support
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Jan Hendrik Farr <kernel@jfarr.cc>, linux-kernel@vger.kernel.org,
-        systemd-devel@lists.freedesktop.org, x86@kernel.org,
-        kexec@lists.infradead.org, dhowells@redhat.com,
-        keyrings@vger.kernel.org, bluca@debian.org, bhelgaas@google.com,
-        tglx@linutronix.de, akpm@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 7:15=E2=80=AFPM Jarkko Sakkinen <jarkko@kernel.org>=
- wrote:
->
-> On Sat Sep 9, 2023 at 7:18 PM EEST, Jan Hendrik Farr wrote:
-> > Hello,
-> >
-> > this patch implements UKI support for kexec_file_load. It will require =
-support
-> > in the kexec-tools userspace utility. For testing purposes the followin=
-g can be used:
-> > https://github.com/Cydox/kexec-test/
-> >
-> > There has been discussion on this topic in an issue on GitHub that is l=
-inked below
-> > for reference.
-> >
-> >
-> > Some links:
-> > - Related discussion: https://github.com/systemd/systemd/issues/28538
-> > - Documentation of UKIs: https://uapi-group.org/specifications/specs/un=
-ified_kernel_image/
-> >
-> > Jan Hendrik Farr (1):
-> >   x86/kexec: UKI support
-> >
-> >  arch/x86/include/asm/kexec-uki.h       |   7 ++
-> >  arch/x86/include/asm/parse_pefile.h    |  32 +++++++
-> >  arch/x86/kernel/Makefile               |   2 +
-> >  arch/x86/kernel/kexec-uki.c            | 113 +++++++++++++++++++++++++
-> >  arch/x86/kernel/machine_kexec_64.c     |   2 +
-> >  arch/x86/kernel/parse_pefile.c         | 110 ++++++++++++++++++++++++
-> >  crypto/asymmetric_keys/mscode_parser.c |   2 +-
-> >  crypto/asymmetric_keys/verify_pefile.c | 110 +++---------------------
-> >  crypto/asymmetric_keys/verify_pefile.h |  16 ----
-> >  9 files changed, 278 insertions(+), 116 deletions(-)
-> >  create mode 100644 arch/x86/include/asm/kexec-uki.h
-> >  create mode 100644 arch/x86/include/asm/parse_pefile.h
-> >  create mode 100644 arch/x86/kernel/kexec-uki.c
-> >  create mode 100644 arch/x86/kernel/parse_pefile.c
-> >
-> > --
-> > 2.40.1
->
-> What the heck is UKI?
+Harden calls to struct_size() with size_add() and size_mul().
 
-Unified Kernel Images. More details available here:
-https://uapi-group.org/specifications/specs/unified_kernel_image/
+Fixes: 467f432a521a ("RDMA/core: Split port and device counter sysfs attributes")
+Fixes: a4676388e2e2 ("RDMA/core: Simplify how the gid_attrs sysfs is created")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Update changelog text: remove the part about binary differences (it
+   was added by mistake).
 
-It's a way of creating initramfs-style images as fully generic,
-reproducible images that can be built server-side.
+ drivers/infiniband/core/sysfs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-It is a requirement for creating locked down Linux devices for
-appliances that can be tamper-resistant too.
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index ee59d7391568..ec5efdc16660 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -903,7 +903,7 @@ alloc_hw_stats_device(struct ib_device *ibdev)
+ 	 * Two extra attribue elements here, one for the lifespan entry and
+ 	 * one to NULL terminate the list for the sysfs core code
+ 	 */
+-	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
++	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+ 		       GFP_KERNEL);
+ 	if (!data)
+ 		goto err_free_stats;
+@@ -1009,7 +1009,7 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
+ 	 * Two extra attribue elements here, one for the lifespan entry and
+ 	 * one to NULL terminate the list for the sysfs core code
+ 	 */
+-	data = kzalloc(struct_size(data, attrs, stats->num_counters + 1),
++	data = kzalloc(struct_size(data, attrs, size_add(stats->num_counters, 1)),
+ 		       GFP_KERNEL);
+ 	if (!data)
+ 		goto err_free_stats;
+@@ -1140,7 +1140,7 @@ static int setup_gid_attrs(struct ib_port *port,
+ 	int ret;
+ 
+ 	gid_attr_group = kzalloc(struct_size(gid_attr_group, attrs_list,
+-					     attr->gid_tbl_len * 2),
++					     size_mul(attr->gid_tbl_len, 2)),
+ 				 GFP_KERNEL);
+ 	if (!gid_attr_group)
+ 		return -ENOMEM;
+@@ -1205,8 +1205,8 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
+ 	int ret;
+ 
+ 	p = kvzalloc(struct_size(p, attrs_list,
+-				attr->gid_tbl_len + attr->pkey_tbl_len),
+-		    GFP_KERNEL);
++				size_add(attr->gid_tbl_len, attr->pkey_tbl_len)),
++		     GFP_KERNEL);
+ 	if (!p)
+ 		return ERR_PTR(-ENOMEM);
+ 	p->ibdev = device;
+-- 
+2.34.1
 
-
-
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
