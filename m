@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFC879A5AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A47579A5B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbjIKILl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S233389AbjIKIML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjIKILk (ORCPT
+        with ESMTP id S233319AbjIKIMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:11:40 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43E3CA;
-        Mon, 11 Sep 2023 01:11:35 -0700 (PDT)
-X-UUID: d05c8f4c507a11eea33bb35ae8d461a2-20230911
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=MCzMA/GKqrIMNYCo11r8rcE/gg74N+QZEyVO4RIJqXA=;
-        b=blKIeseZtv1iF6cZ/3PUZjowugp603e+9fSlSEST4OPVPNW8XtPE1J8hgF5uOZTf+ZOi/PK+ewMQAAj/bcTTdB6PeoNokGDMU5HGcnvue1NngCOrkEjxomL3jRQXv0L+VyTxkGkoIzgQ2k6gjAxWxAgx4najstg7Iv29szLtfhg=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:e2db2430-a1c1-462f-9a50-b58eb874fafd,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:0ad78a4,CLOUDID:f258b1be-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: d05c8f4c507a11eea33bb35ae8d461a2-20230911
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1198893063; Mon, 11 Sep 2023 16:11:30 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 11 Sep 2023 16:11:28 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 11 Sep 2023 16:11:28 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-Subject: [PATCH v2] dt-bindings: arm64: dts: mediatek: add description for mt8365-evk board
-Date:   Mon, 11 Sep 2023 16:11:26 +0800
-Message-ID: <20230911081126.18463-1-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 11 Sep 2023 04:12:07 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDA6FC
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:12:02 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-93-xpYnoRY3Nwem60r5SNClpQ-1; Mon, 11 Sep 2023 09:11:55 +0100
+X-MC-Unique: xpYnoRY3Nwem60r5SNClpQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
+ 2023 09:11:44 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 11 Sep 2023 09:11:44 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Namhyung Kim' <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>
+CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: RE: [PATCH] perf annotate: Add more x86 mov instruction cases
+Thread-Topic: [PATCH] perf annotate: Add more x86 mov instruction cases
+Thread-Index: AQHZ4rAUrSROyt/pQUyYWZsk6XFaNLAVR23w
+Date:   Mon, 11 Sep 2023 08:11:44 +0000
+Message-ID: <ad8a8d46151142a883d2d259c884acc0@AcuMS.aculab.com>
+References: <20230908052216.566148-1-namhyung@kernel.org>
+ <CAP-5=fUtEvW9h7N=w3vvYBB3vytnTXJsXrHDD6zLA2DzYFOBHQ@mail.gmail.com>
+ <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
+In-Reply-To: <CAM9d7cj1rEjGy0QM2tkJhBn=hac-9Jya+ZJ4SNhBmB29u5KVMg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--3.991800-8.000000
-X-TMASE-MatchedRID: v+sphrBU45FrtoObOqfJT2wbuvhCHs3cnF8rflXuiRVcKZwALwMGs5dA
-        ax/AUFGFEkRA7FpRUXDGSpNZ5mudiuwAaNLqXHEqGVyS87Wb4lxUENBIMyKD0Zsoi2XrUn/Jn6K
-        dMrRsL14qtq5d3cxkNer8b64MjOU7NxIZfPBYfs3PxUHo/8SRSO/9bGTORaX+PzWVQViFxV655u
-        o7QuyaKruiuncE07wHQyzVzkrZQ0NxuBXbgRj7dk9Oyzyjz1pl82Gj2QC3yG0smXVK/H8eHzG7s
-        r7xobSAsPEFD+rZA81DDKa3G4nrLQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.991800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: B89D0CF8A93DA5404C3D0C43E5887390FB7D8EC9D4090551A434DC8120325C802000:8
-X-MTK:  N
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the missing description for MediaTek mt8365-evk board.
-
-Fixes: 4f5fc078ac6f ("dt-bindings: arm64: dts: mediatek: Add mt8365-evk board")
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
----
- Documentation/devicetree/bindings/arm/mediatek.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-change for v2:
- - rebase this patch to follow the v5 patch set of mt8395.
-  - depends on https://lore.kernel.org/lkml/20230909132819.21626-2-macpaul.lin@mediatek.com/T/
- - Fix description as a single board.
-
-diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-index 2e8ad49c3479..b163995e32d5 100644
---- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-@@ -244,7 +244,8 @@ properties:
-           - enum:
-               - mediatek,mt8183-pumpkin
-           - const: mediatek,mt8183
--      - items:
-+      - description: MediaTek Genio 350 Board (Genio 350 EVK)
-+        items:
-           - enum:
-               - mediatek,mt8365-evk
-           - const: mediatek,mt8365
--- 
-2.18.0
+RnJvbTogTmFtaHl1bmcgS2ltDQo+IFNlbnQ6IDA5IFNlcHRlbWJlciAyMDIzIDAwOjU2DQo+IA0K
+PiBIaSBJYW4sDQo+IA0KPiBPbiBUaHUsIFNlcCA3LCAyMDIzIGF0IDExOjI04oCvUE0gSWFuIFJv
+Z2VycyA8aXJvZ2Vyc0Bnb29nbGUuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIFRodSwgU2VwIDcs
+IDIwMjMgYXQgMTA6MjLigK9QTSBOYW1oeXVuZyBLaW0gPG5hbWh5dW5nQGtlcm5lbC5vcmc+IHdy
+b3RlOg0KPiA+ID4NCj4gPiA+IEluc3RydWN0aW9ucyB3aXRoIHNpZ24tIGFuZCB6ZXJvLSBleHRl
+bnRpb24gbGlrZSBtb3ZzYmwgYW5kIG1vdnp3cSB3ZXJlDQo+ID4gPiBub3QgaGFuZGxlZCBwcm9w
+ZXJseS4gIEFzIGl0IGNhbiBjaGVjayBkaWZmZXJlbnQgc2l6ZSBzdWZmaXggKC1iLCAtdywgLWwN
+Cj4gPiA+IG9yIC1xKSB3ZSBjYW4gb21pdCB0aGF0IGFuZCBhZGQgdGhlIGNvbW1vbiBwYXJ0cyBl
+dmVuIHRob3VnaCBzb21lDQo+ID4gPiBjb21iaW5hdGlvbnMgYXJlIG5vdCBwb3NzaWJsZS4NCj4g
+PiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBOYW1oeXVuZyBLaW0gPG5hbWh5dW5nQGtlcm5lbC5v
+cmc+DQo+ID4gPiAtLS0NCj4gPiA+ICB0b29scy9wZXJmL2FyY2gveDg2L2Fubm90YXRlL2luc3Ry
+dWN0aW9ucy5jIHwgOSArKysrKystLS0NCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNiBpbnNlcnRp
+b25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS90b29scy9w
+ZXJmL2FyY2gveDg2L2Fubm90YXRlL2luc3RydWN0aW9ucy5jDQo+IGIvdG9vbHMvcGVyZi9hcmNo
+L3g4Ni9hbm5vdGF0ZS9pbnN0cnVjdGlvbnMuYw0KPiA+ID4gaW5kZXggNWY0YWM0ZmM3ZmNmLi41
+Y2RmNDU3ZjVjYmUgMTAwNjQ0DQo+ID4gPiAtLS0gYS90b29scy9wZXJmL2FyY2gveDg2L2Fubm90
+YXRlL2luc3RydWN0aW9ucy5jDQo+ID4gPiArKysgYi90b29scy9wZXJmL2FyY2gveDg2L2Fubm90
+YXRlL2luc3RydWN0aW9ucy5jDQo+ID4gPiBAQCAtNzQsMTIgKzc0LDE1IEBAIHN0YXRpYyBzdHJ1
+Y3QgaW5zIHg4Nl9faW5zdHJ1Y3Rpb25zW10gPSB7DQo+ID4gPiAgICAgICAgIHsgLm5hbWUgPSAi
+bW92ZHFhIiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAgIHsgLm5hbWUg
+PSAibW92ZHF1IiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAgIHsgLm5h
+bWUgPSAibW92c2QiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAtICAgICAgIHsg
+Lm5hbWUgPSAibW92c2xxIiwgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAgICAgICAg
+IHsgLm5hbWUgPSAibW92c3MiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiArICAg
+ICAgIHsgLm5hbWUgPSAibW92c2IiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4gPiAr
+ICAgICAgIHsgLm5hbWUgPSAibW92c3ciLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+ID4g
+PiArICAgICAgIHsgLm5hbWUgPSAibW92c2wiLCAgICAgIC5vcHMgPSAmbW92X29wcywgIH0sDQo+
+ID4NCj4gPiBJbiBJbnRlbCdzIG1hbnVhbCBzb21lIG9mIHRoZXNlIG5hbWVzIGFyZSAiTW92ZSBE
+YXRhIEZyb20gU3RyaW5nIHRvDQo+ID4gU3RyaW5nIiBvcGVyYXRpb25zLCBtb3ZzYiBhbmQgbW92
+c3cgaW4gcGFydGljdWxhci4gVGhlc2UgaW5zdHJ1Y3Rpb25zDQo+ID4gY2FuIGJlIHVzZWQgdG8g
+bWFrZSBzaW1wbGUgbWVtY3B5IGxvb3BzLiBDb3VsZCBpdCBiZSB0aGUgcGFzdCBvbWlzc2lvbg0K
+PiA+IHdhcyBkZWxpYmVyYXRlIGR1ZSB0byB0aGUgZGlmZmVyZW50IHdheSB0aGUgYWRkcmVzc2lu
+ZyB3b3JrcyBpbiB0aGUNCj4gPiBpbnN0cnVjdGlvbnM/DQo+IA0KPiBJIGRvbid0IGtub3cgYnV0
+IGluIHRlcm1zIG9mIGluc3RydWN0aW9uIHBhcnNpbmcsIHRoZXkgYXJlIHRoZSBzYW1lDQo+ICJN
+T1ZFIiB3aXRoIHR3byBvcGVyYW5kcy4gIEknbSBub3QgYXdhcmUgb2YgYW55dGhpbmcgaW4gcGVy
+ZiB3aXRoDQo+IHRoZSBvcGVyYW5kcyBvZiB0aGVzZSBpbnN0cnVjdGlvbnMuICBTbyBJIGd1ZXNz
+IGl0J2QgYmUgZmluZSB0byBhZGQNCj4gdGhlc2UgaW5zdHJ1Y3Rpb25zIGV2ZW4gaWYgdGhleSBo
+YXZlIGRpZmZlcmVudCB1bmRlcmx5aW5nIGJlaGF2aW9ycy4NCg0KSSdtIHByZXR0eSBzdXJlIHRo
+YXQgJ3JlcCBtb3ZzW2J3bHFdJyAoYWthIHdoaWxlIChjeC0tKSAqZGkrKyA9ICpzaSsrKQ0KaXMg
+bGlrZWx5IHRvIGJlIG1pc3NpbmcgdGhlIG1lbW9yeSBhcmd1bWVudCBwYXJhbWV0ZXJzLg0KVGhl
+cmUgaXMgYWxzbyAnZnVuIGFuZCBnYW1lcycgd2l0aCBvbmUgdmFyaWFudCAtIGlpcmMgJ3JlcCBt
+b3ZzZCcNCndoYXQgaGFzIGJlZW4gdXNlZCBmb3IgNjRiaXQsIGJ1dCBnb3QgaGlqYWNrZWQgYnkg
+b25lIG9mIHRoZSBTSU1EIHNldHMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
+TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
+VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
