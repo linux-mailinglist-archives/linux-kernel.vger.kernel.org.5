@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352C879BD2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A2179B6FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240343AbjIKWAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:00:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
+        id S1358557AbjIKWL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237718AbjIKNLr (ORCPT
+        with ESMTP id S237741AbjIKNNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:11:47 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40D2EB;
-        Mon, 11 Sep 2023 06:11:43 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C44C21846;
-        Mon, 11 Sep 2023 13:11:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694437902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dAnggcIlt7gXO1y/HPyY0b6GxiBZLKtzxMTmkT2O7rM=;
-        b=DJYa/aPW6CAm2WlLnbW5KJO3XGRc5Dai0Q10q1uOkqmgSNq0uKLo7puZ/HozKYaHC6603K
-        Xd0keI4YJWugG1I69OR92Hy+/F9seThNKxFw3laAgo+kygOX1MiZpicUjF72v0I8SIpx/E
-        oWAyV2AkEAWgRDXnn0R3Q+yNRRQLCoU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D05713780;
-        Mon, 11 Sep 2023 13:11:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id S2jtBw4S/2QNJAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 11 Sep 2023 13:11:42 +0000
-Date:   Mon, 11 Sep 2023 15:11:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Mon, 11 Sep 2023 09:13:34 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D0FEB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:13:29 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so47471435e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694438008; x=1695042808; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VJvQhuwass6T7QyQKJFHTMKHPeCPiB8wQ+ZaCt6WMq4=;
+        b=HMVF18wQjc6DGqjgcRT56k/Qc7TQBLsEFQr/u/7CslBI5TL9VDmxEfG21MuDQ1mqQ0
+         MzzAuSioeSPUXqwoxRJSWH/BHJL2cRO0R1D1W2iq7cXpubvpnbHetCIYce4Yrs1DzNDc
+         6ujewR7F2CvE/Xtpqo7IPTDtcQRSwjN400/wWye8QRxGlCK9EG9b6TjWRCHzw1PWssl2
+         6VjNe2sf5H4VXL0JbUP3ejfCorRb2KPuoovBtaenVugdLiPQO2xR4CMDeiZAIAhe54T/
+         P0BdYZIgJ/ruTOzDVnPLj/GWPs/2MLgFVd2acSFqE9udG3d1kPuxhoLt6FTncTdedCuZ
+         qbVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694438008; x=1695042808;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VJvQhuwass6T7QyQKJFHTMKHPeCPiB8wQ+ZaCt6WMq4=;
+        b=Y6oaePZKvIBv5lVYsJslOL1mwv94Uqi0o35j4jEI8RbcHt4n8ptCKlePSUCfRRL+PN
+         ZGGdPfIfcghwib1G1sr1Je78eCp5mWHjYB14vWQrK3hcWey6rNdl+JzRr1Mz9QeaoAXT
+         n7TYueQO5moHJvF7LZUytgdkW9bfcMHNrBE76/r60xJU+mWbDmVe6lQI6Uf0YEdW6fO1
+         9cSO/93BPBzPfH0WqjQt/zOR4VS1ptsHw2s9pEmEJDcJqNF2B2DkXfzCHcPivx10y0ec
+         b7eaSiWMTJHYPLwp8E6Kr0ZiH8CiCGCNoBzUpO2Dg/l9dDFdcER86HFaf3eOlDLAmdgg
+         toBA==
+X-Gm-Message-State: AOJu0YyHtnT3dW9pyNIQTHYEycwD5fjXNt3H73uDmOTxsdurzIuHOOR8
+        XlmPejvdpEk1H8On5P2Yq53ebw==
+X-Google-Smtp-Source: AGHT+IHDNb5CqLim35ose2q7WmJ+9tXpgSAwI6QOLAumXk8SMHKSu15qIwBWXUEtVo37x5UyrTFz2g==
+X-Received: by 2002:a05:6000:118f:b0:317:6d9d:1250 with SMTP id g15-20020a056000118f00b003176d9d1250mr7674314wrx.61.1694438008262;
+        Mon, 11 Sep 2023 06:13:28 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id b14-20020a5d550e000000b0031f34a395e7sm10072174wrv.45.2023.09.11.06.13.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:13:27 -0700 (PDT)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZP8SDdjut9VEVpps@dhcp22.suse.cz>
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-5-yosryahmed@google.com>
- <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
- <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>
+Subject: [PATCH v4 1/4] riscv: Improve flush_tlb()
+Date:   Mon, 11 Sep 2023 15:12:21 +0200
+Message-Id: <20230911131224.61924-2-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230911131224.61924-1-alexghiti@rivosinc.com>
+References: <20230911131224.61924-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-09-23 17:52:12, Wei Xu wrote:
-[...]
-> I tested this patch on a machine with 384 CPUs using a microbenchmark
-> that spawns 10K threads, each reading its memory.stat every 100
-> milliseconds.
+For now, flush_tlb() simply calls flush_tlb_mm() which results in a
+flush of the whole TLB. So let's use mmu_gather fields to provide a more
+fine-grained flush of the TLB.
 
-This is rather extreme case but I wouldn't call it utterly insane
-though.
+Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+---
+ arch/riscv/include/asm/tlb.h      | 8 +++++++-
+ arch/riscv/include/asm/tlbflush.h | 3 +++
+ arch/riscv/mm/tlbflush.c          | 7 +++++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
-> Most of memory.stat reads take 5ms-10ms in kernel, with
-> ~5% reads even exceeding 1 second.
-
-Just curious, what would numbers look like if the mutex is removed and
-those threads would be condending on the existing spinlock with lock
-dropping in place and removed. Would you be willing to give it a shot?
-
+diff --git a/arch/riscv/include/asm/tlb.h b/arch/riscv/include/asm/tlb.h
+index 120bcf2ed8a8..1eb5682b2af6 100644
+--- a/arch/riscv/include/asm/tlb.h
++++ b/arch/riscv/include/asm/tlb.h
+@@ -15,7 +15,13 @@ static void tlb_flush(struct mmu_gather *tlb);
+ 
+ static inline void tlb_flush(struct mmu_gather *tlb)
+ {
+-	flush_tlb_mm(tlb->mm);
++#ifdef CONFIG_MMU
++	if (tlb->fullmm || tlb->need_flush_all)
++		flush_tlb_mm(tlb->mm);
++	else
++		flush_tlb_mm_range(tlb->mm, tlb->start, tlb->end,
++				   tlb_get_unmap_size(tlb));
++#endif
+ }
+ 
+ #endif /* _ASM_RISCV_TLB_H */
+diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+index a09196f8de68..f5c4fb0ae642 100644
+--- a/arch/riscv/include/asm/tlbflush.h
++++ b/arch/riscv/include/asm/tlbflush.h
+@@ -32,6 +32,8 @@ static inline void local_flush_tlb_page(unsigned long addr)
+ #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+ void flush_tlb_all(void);
+ void flush_tlb_mm(struct mm_struct *mm);
++void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
++			unsigned long end, unsigned int page_size);
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ 		     unsigned long end);
+@@ -52,6 +54,7 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
+ }
+ 
+ #define flush_tlb_mm(mm) flush_tlb_all()
++#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
+ #endif /* !CONFIG_SMP || !CONFIG_MMU */
+ 
+ /* Flush a range of kernel pages */
+diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+index 77be59aadc73..fa03289853d8 100644
+--- a/arch/riscv/mm/tlbflush.c
++++ b/arch/riscv/mm/tlbflush.c
+@@ -132,6 +132,13 @@ void flush_tlb_mm(struct mm_struct *mm)
+ 	__flush_tlb_range(mm, 0, -1, PAGE_SIZE);
+ }
+ 
++void flush_tlb_mm_range(struct mm_struct *mm,
++			unsigned long start, unsigned long end,
++			unsigned int page_size)
++{
++	__flush_tlb_range(mm, start, end - start, page_size);
++}
++
+ void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+ {
+ 	__flush_tlb_range(vma->vm_mm, addr, PAGE_SIZE, PAGE_SIZE);
 -- 
-Michal Hocko
-SUSE Labs
+2.39.2
+
