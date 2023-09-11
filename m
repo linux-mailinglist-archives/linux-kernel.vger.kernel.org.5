@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C357479B372
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB0D79B458
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378092AbjIKWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S1354293AbjIKVxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243770AbjIKRmS (ORCPT
+        with ESMTP id S243775AbjIKRmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:42:18 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00955CF;
+        Mon, 11 Sep 2023 13:42:19 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308E61BB;
         Mon, 11 Sep 2023 10:42:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694454122; cv=none;
+ARC-Seal: i=1; a=rsa-sha256; t=1694454123; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=l5I2ENrYi6G07PG5/vyOfElCYpYYv4JP6NQpStcDR0AhkXYy0iXLbEQYVWFtj/dmlk
-    LVuyQ0qenwY4GezmAxy8psGQy0/aaVkH40iYcoF5ZWo+niS9Ylw+JqDX6mcnpCYqYMlE
-    sR2hmrC2DnncY+8hahU8wt5+JLbpKqa18pVAQ0KtGC9aYKHHkLw5XB33XEXK/ZllPAgn
-    yPw6pLzvwYw6g9zdZZ5rff5gVFJIBYTuIh70/jsU7AK2pHjr/GuWdk5Z8ew+cj5CpdzZ
-    VIUBqZ97hmmBf9ReSoSp25OR1/gIiqLJzZro71YKDeETN7Pe3p1coVzLRXeYLQxwHRL9
-    pXoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454122;
+    b=eTb0gE9hU8uBDBkpRRFbKGEuQ2RS1XoW45bbfW/aqGrghAmUJqN27msK+Sn7jDYL9j
+    OF/Xo9bjunBJXqDX1RYIdsxHsnKxKJyMEt01k7OL8zhRpkU/7FaX0PblT9+bkctOSOOm
+    U5bD6cPQ7GjTg05ZVCaWPjBcEn+Qpzg2z3xvIJviyIpBsA+j74ipmxbTElAoktEpg+A/
+    Q3ICuEcyczDXvbLMLzNunQmfVPc/cEJVDZ1adRYWNZI7LR+chFtssdMeh1UKBXclYLwx
+    MF+qYQNnrThY12DHi3925VUpfdKxtBb0Pyx59Vto8LZj/0wJ5U3wBmSlE0dg3s7RGF+V
+    m+Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
-    b=kLnbAx2yY+5POTDRNdSBUcIoVFfmH6x6qyVjA2Q76M44gBOQculOObU+5Eq6OVfT8u
-    3aK84s82bUg1hOZAYzCu01RFBF2N/VczAVj74uYuT9i6gwYjGJrccRvnGorDH69P97bW
-    ZVWppxf+1ooxObi95XeO4fL+26bxn7LYyavZoLYhmqGVHcyaiz39fSg0wgwYe5EJCh/C
-    ch3vpmynbtc+hnKffmdH/DB4dGs1tfyTeLRKNCsbnK5OknxKHXa6vivPArkRDEHmSf/p
-    gTPNiJsO90s5pyk8cx7dENHFJ+S1a0jexuYQC+cfiCVYNOhrzHJzt/tiHnkA5jGfHbWk
-    C4jA==
+    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
+    b=Qw3ftjW9e+rPBAXCpZ2kwGvvgZVLriLV47hqLOzHnk9nH1K/2POga+DzkXKGrgzYwY
+    xmDwXaQfvi8XPhQQvOP9gHUWGFale4KmaGvFn7pCZL++d0tm9pDSuFEoKJGerUpLImi5
+    b7u9cIQRdHEbRAF7LV40VvLC6v16BeEf7KSsGgkpM8mIi88z9plGtnpFxcX0OmWWsNha
+    UFwtqs/1AMvdaGNHXbCPUX4Q72oZEmXFZebnUH05MPNDEr5IFfcfqOfzaiek+GiXnFWy
+    f1RRjTzVdwiuJ5hN3T78GO+gj003NBS68XGOBsNyH4Y/4JFzY+YzMEIq6bceHaMQu8RA
+    fTFA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454122;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
-    b=C7q7Z7FmmkzY9pZPeCQsiOasQpz9pYn7gtFZUDmb997x+JFXCkp2IAw7BZDHUCfxVk
-    /Gd3x5qs6Jqz/0DY+DrKTDjbnu8QVgO5OMzqcfw51GU3GVlqDRlOvWyhg7dEcIt9xODO
-    zUiUWWXKZYEU25+5+gpVFbPN7+p93ZD564duhH0s5W6gllOmLazKMvMGL9dZ4xJHitm9
-    JBr7DAqz6Zww4g2g8mg3LIEBo41BEn2AhirDdrr2mcOSA82gFSHGYuAj15DIoU+NCTex
-    Ne/lga1rSE8MUKYAhXpFCitOOTROyNbMV1aWYut08zqVXNK0a38b4GtI2FyXsjFL49OV
-    zbfA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694454122;
+    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
+    b=B/g1M8tzFu5ZMhydu2fK9KclEHt/rWeXPwf3VkQzyA7o3/qQdDpFmPSnCH05Q72kyd
+    4jsqzE+CehyIrU3YLa9O6sV+a5qD2oqzEuF9sEPuNM1FkT2Ju06CJ38D6uSucIkp8MqA
+    jlfrmQkQl0JsUbUE74BjtmlUmkXTZhwB8jXGclp4klbc6iZaasnGT8CKb2ChcHZ2d3o/
+    ugEVtxl1bzvjN/rXitDLJpfPR1/5S+fxY2xEbuUeQqofvsks3H8ZnMAJgM/xJzAKgfGU
+    BNozXZxUop2HZCcsYSwehG0ar+Sxm0CE+JTk3kn7zzq3WQIo+RQijAK4u9zf4WB8PYID
+    8oIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
-    b=yYR7J5HQRuzYW5zy/wEoUz92ghM0g/paZpimiv8tsH+GYmY9ftm3k1xyV8fQcn22uL
-    iNwbZRkuvKSODBTcscDg==
+    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
+    b=vFB0HqYAUyPKZY/BAlA8jKRJyuQobCDHMjcUhiayunLFegR2BReZxQq7yJDBqWhJZx
+    bEwOHmFuYbwAAdY9A5AQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l38TY="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id 60372az8BHg2awM
+    with ESMTPSA id 60372az8BHg3awO
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 11 Sep 2023 19:42:02 +0200 (CEST)
+    Mon, 11 Sep 2023 19:42:03 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Mon, 11 Sep 2023 19:41:44 +0200
-Subject: [PATCH 2/9] arm64: dts: qcom: msm8916/39: Disable GPU by default
+Date:   Mon, 11 Sep 2023 19:41:46 +0200
+Subject: [PATCH 4/9] arm64: dts: qcom: msm8916: Reserve firmware memory
+ dynamically
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-msm8916-rmem-v1-2-b7089ec3e3a1@gerhold.net>
+Message-Id: <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
 References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
 In-Reply-To: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -82,133 +83,140 @@ Cc:     Andy Gross <agross@kernel.org>,
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSM8916/39 do not need signed GPU firmware so it is generally okay to
-have it enabled by default. However, currently the GPU does not work
-without also enabling MDSS and it's questionable if someone would
-really need it without a display in practice.
+Most of the reserved firmware memory on MSM8916 can be relocated when
+respecting the required alignment. To avoid having to precompute the
+reserved memory regions in every board DT, describe the actual
+requirements (size, alignment, alloc-ranges) using the dynamic reserved
+memory allocation.
 
-For consistency let's follow newer SoCs and disable the GPU by default.
-Enable it for all existing devices that already have &mdss enabled.
+This approach has several advantages:
+
+ 1. We can define "templates" for the reserved memory regions in
+    msm8916.dtsi and keep only device-specific details in the board DT.
+    This is useful for the "mpss" region size for example, which varies
+    from device to device. It is no longer necessary to redefine all
+    firmware regions to shift their addresses.
+
+ 2. When some of the functionality (e.g. WCNSS, Modem, Venus) is not
+    enabled or needed for a device, the reserved memory can stay
+    disabled, freeing up the unused reservation for Linux.
+
+ 3. Devices with special requirements for one of the firmware regions
+    are handled automatically. For example, msm8916-longcheer-l8150
+    has non-relocatable "wcnss" firmware that must be loaded exactly
+    at address 0x8b600000. When this is defined as a static region,
+    the other dynamic allocations automatically adjust to a different
+    place with suitable alignment.
+
+All in all this approach significantly reduces the boilerplate necessary
+to define the different firmware regions, and makes it easier to enable
+functionality on the different devices.
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- arch/arm64/boot/dts/qcom/apq8016-sbc.dts                      | 4 ++++
- arch/arm64/boot/dts/qcom/apq8039-t2.dts                       | 4 ++++
- arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi    | 4 ++++
- arch/arm64/boot/dts/qcom/msm8916.dtsi                         | 3 ++-
- arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts | 4 ++++
- arch/arm64/boot/dts/qcom/msm8939.dtsi                         | 3 ++-
- 6 files changed, 20 insertions(+), 2 deletions(-)
+ .../boot/dts/qcom/msm8916-longcheer-l8150.dts      |  9 +++++++--
+ arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi          | 11 ++++-------
+ arch/arm64/boot/dts/qcom/msm8916.dtsi              | 22 ++++++++++++++++++----
+ 3 files changed, 29 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-index c13230217c3c..bd68f4793acd 100644
---- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-+++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
-@@ -230,6 +230,10 @@ &camss {
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
+index a0bb8de54fb6..503155aefa55 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
+@@ -23,9 +23,14 @@ chosen {
+ 		stdout-path = "serial0";
+ 	};
+ 
++	/*
++	 * For some reason, the signed wcnss firmware is not relocatable.
++	 * It must be loaded at 0x8b600000. All other firmware is relocatable,
++	 * so place wcnss at the fixed address and then all other firmware
++	 * regions will be automatically allocated at a fitting place.
++	 */
+ 	reserved-memory {
+-		/* wcnss.mdt is not relocatable, so it must be loaded at 0x8b600000 */
+-		/delete-node/ wcnss@89300000;
++		/delete-node/ wcnss;
+ 
+ 		wcnss_mem: wcnss@8b600000 {
+ 			reg = <0x0 0x8b600000 0x0 0x600000>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi b/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
+index 69f268db4df9..1d92c2e57216 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
+@@ -17,13 +17,6 @@ chosen {
+ 		stdout-path = "serial0";
+ 	};
+ 
+-	reserved-memory {
+-		mpss_mem: mpss@86800000 {
+-			reg = <0x0 0x86800000 0x0 0x5500000>;
+-			no-map;
+-		};
+-	};
+-
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
+@@ -91,6 +84,10 @@ &mpss {
  	status = "okay";
  };
  
-+&gpu {
-+	status = "okay";
++&mpss_mem {
++	reg = <0x0 0x86800000 0x0 0x5500000>;
 +};
 +
- &lpass {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/apq8039-t2.dts b/arch/arm64/boot/dts/qcom/apq8039-t2.dts
-index 027d1da7e81d..f591d6e78d6e 100644
---- a/arch/arm64/boot/dts/qcom/apq8039-t2.dts
-+++ b/arch/arm64/boot/dts/qcom/apq8039-t2.dts
-@@ -131,6 +131,10 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+&gpu {
-+	status = "okay";
-+};
-+
- &lpass {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-index 5f78004a24bd..15d2486cdb45 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
-@@ -239,6 +239,10 @@ &blsp_uart2 {
- 	status = "okay";
- };
- 
-+&gpu {
-+	status = "okay";
-+};
-+
- &mdss {
+ &pm8916_usbin {
  	status = "okay";
  };
 diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index f093ab83938d..0257cbbb4971 100644
+index 0257cbbb4971..c237f3e48c86 100644
 --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -1750,7 +1750,7 @@ cci_i2c0: i2c-bus@0 {
- 			};
+@@ -74,17 +74,31 @@ rfsa@867e0000 {
  		};
  
--		gpu@1c00000 {
-+		gpu: gpu@1c00000 {
- 			compatible = "qcom,adreno-306.0", "qcom,adreno";
- 			reg = <0x01c00000 0x20000>;
- 			reg-names = "kgsl_3d0_reg_memory";
-@@ -1773,6 +1773,7 @@ gpu@1c00000 {
- 			power-domains = <&gcc OXILI_GDSC>;
- 			operating-points-v2 = <&gpu_opp_table>;
- 			iommus = <&gpu_iommu 1>, <&gpu_iommu 2>;
-+			status = "disabled";
- 
- 			gpu_opp_table: opp-table {
- 				compatible = "operating-points-v2";
-diff --git a/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts b/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
-index 89b6aebba404..cb893345c44b 100644
---- a/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
-@@ -39,6 +39,10 @@ usb_id: usb-id {
- 	};
- };
- 
-+&gpu {
-+	status = "okay";
-+};
-+
- &mdss {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-index 6e24f0f2374f..b0a64e468629 100644
---- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-@@ -1395,7 +1395,7 @@ mdss_dsi1_phy: phy@1aa0300 {
- 			};
+ 		mpss_mem: mpss@86800000 {
++			/*
++			 * The memory region for the mpss firmware is generally
++			 * relocatable and could be allocated dynamically.
++			 * However, many firmware versions tend to fail when
++			 * loaded to some special addresses, so it is hard to
++			 * define reliable alloc-ranges.
++			 *
++			 * alignment = <0x0 0x400000>;
++			 * alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
++			 */
+ 			reg = <0x0 0x86800000 0x0 0x2b00000>;
+ 			no-map;
  		};
  
--		gpu@1c00000 {
-+		gpu: gpu@1c00000 {
- 			compatible = "qcom,adreno-405.0", "qcom,adreno";
- 			reg = <0x01c00000 0x10000>;
- 			reg-names = "kgsl_3d0_reg_memory";
-@@ -1418,6 +1418,7 @@ gpu@1c00000 {
- 			power-domains = <&gcc OXILI_GDSC>;
- 			operating-points-v2 = <&opp_table>;
- 			iommus = <&gpu_iommu 1>, <&gpu_iommu 2>;
-+			status = "disabled";
+-		wcnss_mem: wcnss@89300000 {
+-			reg = <0x0 0x89300000 0x0 0x600000>;
++		wcnss_mem: wcnss {
++			size = <0x0 0x600000>;
++			alignment = <0x0 0x100000>;
++			alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
+ 			no-map;
+ 		};
  
- 			opp_table: opp-table {
- 				compatible = "operating-points-v2";
+-		venus_mem: venus@89900000 {
+-			reg = <0x0 0x89900000 0x0 0x600000>;
++		venus_mem: venus {
++			size = <0x0 0x600000>;
++			alignment = <0x0 0x100000>;
++			alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
+ 			no-map;
+ 		};
+ 
 
 -- 
 2.42.0
