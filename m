@@ -2,77 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AF879B9DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906BF79C0F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358605AbjIKWMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
+        id S1350407AbjIKViF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237385AbjIKMqh (ORCPT
+        with ESMTP id S237394AbjIKMrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:46:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782E210E;
-        Mon, 11 Sep 2023 05:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694436392; x=1725972392;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XG3f/Go4Kskr9FPWHx1DIAciSaD0sIA1smH1YceAZ4E=;
-  b=DXPDcL18Jf2M4EiM+0W6mNcnIKPagObXVag/Kzj17D//Vtik1vqRgai/
-   7u/CEJaLgwlLx+OkJS1YFFLDbW8O/X2QZMjznQk1NFfpDbQ1DrqxfmJDB
-   IDGgkaJiXaeLyEfUg94KopkNzqXCtg7dOmb/Wq9/VvVCyuXl3NizWImEx
-   5DQ2tNA10Ln7+QMo5QttRWK+HN9k3KPUg1ri6tfmc/RrM75aPG+d9WVJy
-   lGF0xSoRWROWExpm65KPof2041bJ5aTCw/WXUQ2Vk87aORj8YuT4G8pnn
-   m0SjQec5y0dFl+XRiq2ywZ8Lw9zvplM1EJ9FkWAtBgbwLYLVST/RHWMuY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409038057"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="409038057"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:46:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808815482"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="808815482"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.28.234]) ([10.255.28.234])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:46:28 -0700
-Message-ID: <eca39154-bc45-3c7d-88a9-b377f4d248f9@linux.intel.com>
-Date:   Mon, 11 Sep 2023 20:46:26 +0800
+        Mon, 11 Sep 2023 08:47:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955CCE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AT/HwmSFNvPgul/c1kKp5PbdGjEUzpII4wStP5rXfVI=; b=GAGPBrS4O64uc1P1Dkt0dT5nbd
+        wkftLVuzMLe1jQYqNe1N5/9Cs96OcwNv/MClUqUZ91ZRefOLLHW2HbHfd0oQKpWwbTDl1vC3ZJ3PY
+        f1shLDG53/7qYiki3xfy5Yg1KsPVFOZWrTklRGEjq7FV01u/3rWvmfYipKn22+fiXUUPkVQ3P0/UD
+        ywAyX66FLyzCCCs2349Z4YQdi+T1EojvXQkxelwPYxxCYretVYjxO3Ai5Gz+SzMssFYkheGfW0I7l
+        xv8+AFC++Pj0xJIGNdWwpKvuXaA7oQUD7LUaFppzv91Oqxf1qhfILlJUBIqG9Lo7Zt4q4ecnrebZH
+        ywR7pbpg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qfgJj-0010FI-FL; Mon, 11 Sep 2023 12:47:03 +0000
+Date:   Mon, 11 Sep 2023 13:47:03 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, ke.wang@unisoc.com
+Subject: Re: [PATCH] mm: remove redundant clear page when
+ CONFIG_INIT_ON_ALLOC_DEFAULT_ON configured
+Message-ID: <ZP8MR6N8512YDU/j@casper.infradead.org>
+References: <20230911104906.2058503-1-zhaoyang.huang@unisoc.com>
+ <ZP8EKWev8H9kMka3@dhcp22.suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
- <20230825023026.132919-10-baolu.lu@linux.intel.com>
- <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <cfd9e0b8-167e-a79b-9ef1-b3bfa38c9199@linux.intel.com>
- <BN9PR11MB5276926066CC3A8FCCFD3DB08CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ed11a5c4-7256-e6ea-e94e-0dfceba6ddbf@linux.intel.com>
- <BN9PR11MB5276622C8271402487FA44708CE4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <c9228377-0a5c-adf8-d0ef-9a791226603d@linux.intel.com>
- <BN9PR11MB52764790D53DF8AB4ED417098CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52764790D53DF8AB4ED417098CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP8EKWev8H9kMka3@dhcp22.suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,52 +52,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/11 14:57, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Tuesday, September 5, 2023 1:24 PM
->>
->> Hi Kevin,
->>
->> I am trying to address this issue in below patch. Does it looks sane to
->> you?
->>
->> iommu: Consolidate per-device fault data management
->>
->> The per-device fault data is a data structure that is used to store
->> information about faults that occur on a device. This data is allocated
->> when IOPF is enabled on the device and freed when IOPF is disabled. The
->> data is used in the paths of iopf reporting, handling, responding, and
->> draining.
->>
->> The fault data is protected by two locks:
->>
->> - dev->iommu->lock: This lock is used to protect the allocation and
->>     freeing of the fault data.
->> - dev->iommu->fault_parameter->lock: This lock is used to protect the
->>     fault data itself.
->>
->> Improve the iopf code to enforce this lock mechanism and add a reference
->> counter in the fault data to avoid use-after-free issue.
->>
+On Mon, Sep 11, 2023 at 02:12:25PM +0200, Michal Hocko wrote:
+> On Mon 11-09-23 18:49:06, zhaoyang.huang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > 
+> > There will be redundant clear page within vma_alloc_zeroed_movable_folio
+> > when CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on. Remove it by judging related
+> > configs.
 > 
-> Can you elaborate the use-after-free issue and why a new user count
-> is required?
+> Thanks for spotting this. I suspect this is a fix based on a code review
+> rather than a real performance issue, right? It is always good to
+> mention that. From a very quick look it seems that many architectures
+> just definte vma_alloc_zeroed_movable_folio to use __GFP_ZERO so they
+> are not affected by this. This means that only a subset of architectures
+> are really affected. This is an important information as well.
+> Finally I think it would be more appropriate to mention that the double
+> initialization is done when init_on_alloc is enabled rather than
+> referring to the above config option which only controls whether the
+> functionality is enabled by default.
 
-I was concerned that when iommufd uses iopf, page fault report/response
-may occur simultaneously with enable/disable PRI.
+This may well be an unsaafe change to make.  We're not just zeroing the
+page, we're calling clear_user_highpage() which tells the architecture
+which virtual address the page will be mapped at.  It could be that
+skipping the zeroing ("because the page is already zero") isn't enough;
+there will be traces of the former contents of some page in the D-cache
+for this address.
 
-Currently, this is not an issue as the enable/disable PRI is in its own
-path. In the future, we may discard this interface and enable PRI when
-attaching the first PRI-capable domain, and disable it when detaching
-the last PRI-capable domain.
+Or it might just be an optimisation.  The description of clear_user_page()
+isn't entirely clear; the port may be relying on clear_user_page()
+to have flushed the dcache aliases.
 
-> 
-> btw a Fix tag is required given this mislocking issue has been there for
-> quite some time...
-
-I don't see any real issue fixed by this change. It's only a lock
-refactoring after the code refactoring and preparing it for iommufd use.
-Perhaps I missed anything?
-
-Best regards,
-baolu
+At this point, I don't think this patch is worth the risk.  My mind is
+changable on this, but I think we'd need buy-in from ARM, SH and Xtensa
+(who directly define clear_user_highpage()) as well as Arc, csky, ia64,
+m68k, mips, nios2, parisc, powerpc, sparc who all seem to have non-trivial
+clear_user_page() implementations.
