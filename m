@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8C779AEBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3D079B584
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377938AbjIKW3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        id S1357148AbjIKWFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244205AbjIKThe (ORCPT
+        with ESMTP id S244211AbjIKTjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:37:34 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC30712A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:37:29 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6b9e478e122so3366936a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694461049; x=1695065849; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=equAb98+MDoXTFD0Qn2BcTK9XaWv7WQjzYAJlfVROPE=;
-        b=UBEaA+R7N4LkgvfN1y9xN5UtpJIwYXcboYlrRfp4E9r+F+m5YqKKu2X5YAJN6rOSOu
-         /2xbLg9UBiqVQyeoIrjIzUd63CciKD1+6jUeWo+rvKqnPoH7c+Jw0Aln4eb1RFiYt3/6
-         NYqGWcrpuAaUVAnVdvbV0RFdbQjnwGMQkZmg1XggZVgjmFu13+csIaGFM5cDGM9jsbsv
-         GpDW3c9C1+KXmJ6YBVtR7RXUJa6K1whn8MA3eaQUUQlKXHvUfBCJg/CSazhcZtf8LjIK
-         GTDbx8S4EfynRyUB63DAcZnHdkv4/7CE8exFT0y59BdQUGZqg1EhIRwG/c6s0ty+Qg9h
-         smvw==
+        Mon, 11 Sep 2023 15:39:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 401D318D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694461107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BAo7XhrjvK/3ybteqvsiiDZDbALbJjGeMr635r5XCfY=;
+        b=bnBUAY4PCodCziEBDwgg9V8Lm7JTNjkGLRgf8ihvbh29WVNoo/s07BLsXhpLXqAnwk42eV
+        tviZ9l0QysB2iHWnJDPrNBcxTelPcq1BkM+JjbLAVUX7m7CEkkJv1cZ2DEm8DOVhtUfV7G
+        tbITRgiUqKcFAa9Ebv3m9T6CRfDBQjw=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-73-HJGZUjlkPLmufVoz0y9s3g-1; Mon, 11 Sep 2023 15:38:16 -0400
+X-MC-Unique: HJGZUjlkPLmufVoz0y9s3g-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c0d4cb748bso2443482a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:38:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694461049; x=1695065849;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1694461095; x=1695065895;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=equAb98+MDoXTFD0Qn2BcTK9XaWv7WQjzYAJlfVROPE=;
-        b=Qah8RQIhoiG9xcD21xVO/8oYNJf6CmIrtoExOi2lDEA1cbYIqHJZ9mS2B6P36YmHZy
-         ra1L/MI9x7nx7LNf6ONlhn7gohdD7o1tLqmSCrrzKxHEwbr3wHIFtq8FbUTG/PWPNUCV
-         O3JbH81a2zwR/iiZHS2vQdF9G4KgyNIohMIbqt3dbB7hpHG/DuiMUby9nzGzSYkhu+5o
-         N03pyItPAq1oaiaOxsf8TxT5QRqp2EDHz+JxA+8+fJbtXjFzVos6RPnYc7YPig5sJvn7
-         UpRcZfkp4VQDxAndMjAPZoHJHDiA1JN4mA9LnfxexQOTaF/GYoV8V8f37rUbM1y9KWhX
-         3jHw==
-X-Gm-Message-State: AOJu0Yw0mb8kyqZn6HuWCfCs0I7X7iZZpyvPyExIiRaC6Ge8piVFyp8+
-        UTitNCpPGiSyOvyp26BcaSZF14ctWCtSsNfL7QqlkB7pmAvjP26Q
-X-Google-Smtp-Source: AGHT+IHlhxgtmO7tiyrDYj+HzY/4j2EIuZNEIP9VA79lo1De8xszz8bgpU9rqTSS45gbydj/7QtcRpuKH4sFAZZm+uk=
-X-Received: by 2002:a9d:6e03:0:b0:6b7:4efe:a9a4 with SMTP id
- e3-20020a9d6e03000000b006b74efea9a4mr12026934otr.23.1694461049001; Mon, 11
- Sep 2023 12:37:29 -0700 (PDT)
+        bh=BAo7XhrjvK/3ybteqvsiiDZDbALbJjGeMr635r5XCfY=;
+        b=gPz13cE6aMXTulyhRduDvMHOKVzlxRa7goO4QaWMCmGpbJYB1ASgz6mftTTdxnEEeE
+         QynwmTOSpCtQd0QSMGIKGaTVCEYBcKM0Bd2N5/+4u+LfEN/MIlBhGInTSnZyNMzs8g30
+         QaVNV0iw8rlz6A7SISyrZ2uInK375ZD7ch9skpQssfmrWwpljxULN7mjC58omS/ptvKp
+         xiAiqCjaSXvBlVTYVp3fa6IDgKTBGiPTSHQyLaRcBAXGjFkdJY6LIT/XfoZULUtex1PG
+         NiSzi3lNJKP16va4Itki/2vajHci3bLQM9w+HCpKD8ES/eXU/2rlDpjFLg2Jg5Uqk9vR
+         9SpA==
+X-Gm-Message-State: AOJu0Yyb2Ia9xM5mq07+d0CdslStcZHa7oPMZhWPFM1Hv9NE70oGMPkX
+        f0KK3VrVrPu8pw9z36pmqkPuf8w7dumUR1jIBc7B4geWpsuQ4UzMERbKUyE54DVDhFyJoxB3DPe
+        aXlN6sGU/HB/FQkpJwUJuTnow
+X-Received: by 2002:a05:6830:1692:b0:6bf:29d4:1886 with SMTP id k18-20020a056830169200b006bf29d41886mr10934392otr.34.1694461095423;
+        Mon, 11 Sep 2023 12:38:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEtvtstpw9gL5+/J9wmqaf20G5/bfkGVLGUBNzaC/2aa3xh3lly3d7FY52n+lm1dBU5D608bA==
+X-Received: by 2002:a05:6830:1692:b0:6bf:29d4:1886 with SMTP id k18-20020a056830169200b006bf29d41886mr10934379otr.34.1694461095225;
+        Mon, 11 Sep 2023 12:38:15 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a803:c91:da45:7fbc:86c3:920a])
+        by smtp.gmail.com with ESMTPSA id v62-20020a4a5a41000000b005634ef4f1c0sm3662444ooa.31.2023.09.11.12.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 12:38:14 -0700 (PDT)
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Leonardo Bras <leobras@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: [RFC PATCH 1/1] scripts: Introduce a default git.orderFile
+Date:   Mon, 11 Sep 2023 16:37:51 -0300
+Message-ID: <20230911193752.27642-2-leobras@redhat.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org> <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
-In-Reply-To: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 11 Sep 2023 22:37:17 +0300
-Message-ID: <CAA8EJppHVs18rhb3p7_LGrE02wD_tYzTbOMr46cAHV7imG+rDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550 POWER_STATE_CONFIG1
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sept 2023 at 22:32, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> There are two instances of the POWER_STATE_CONFIG1 register: one in
-> the PCS space and another one in PCS_USB.
->
-> The downstream init sequence pokes the latter one while we've been poking
-> the former one (and misnamed it as the latter one, impostor!). Fix that
-> up to avoid UB.
->
-> Fixes: 49742e9edab3 ("phy: qcom-qmp-combo: Add support for SM8550")
-> Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-combo.c      | 2 +-
->  drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h | 3 ++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> index cbb28afce135..843099d314bf 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-> @@ -859,10 +859,10 @@ static const struct qmp_phy_init_tbl sm8550_usb3_pcs_tbl[] = {
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG1, 0x4b),
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG5, 0x10),
-> -       QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
->  };
->
->  static const struct qmp_phy_init_tbl sm8550_usb3_pcs_usb_tbl[] = {
-> +       QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
+When reviewing patches, it looks much nicer to have some changes shown
+before others, which allow better understanding of the patch before the
+the .c files reviewing.
 
-And this is still _Q6_
+Introduce a default git.orderFile, in order to help developers getting the
+best ordering easier.
 
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
->         QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-> index 9510e63ba9d8..c38530d6776b 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-> @@ -12,7 +12,7 @@
->  #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG3            0xcc
->  #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG6            0xd8
->  #define QPHY_USB_V6_PCS_REFGEN_REQ_CONFIG1             0xdc
-> -#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1       0x90
-> +#define QPHY_USB_V6_PCS_POWER_STATE_CONFIG1            0x90
->  #define QPHY_USB_V6_PCS_RX_SIGDET_LVL                  0x188
->  #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_L           0x190
->  #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_H           0x194
-> @@ -23,6 +23,7 @@
->  #define QPHY_USB_V6_PCS_EQ_CONFIG1                     0x1dc
->  #define QPHY_USB_V6_PCS_EQ_CONFIG5                     0x1ec
->
-> +#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1       0x00
->  #define QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL   0x18
->  #define QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2  0x3c
->  #define QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L                0x40
->
-> --
-> 2.42.0
->
+Signed-off-by: Leonardo Bras <leobras@redhat.com>
+---
 
+Please provide feedback on what else to add / remove / reorder here!
 
+ scripts/git.orderFile | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+ create mode 100644 scripts/git.orderFile
+
+diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+new file mode 100644
+index 000000000000..3434028be2f2
+--- /dev/null
++++ b/scripts/git.orderFile
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++# order file for git, to produce patches which are easier to review
++# by diffing the important stuff like header changes first.
++#
++# one-off usage:
++#   git diff -O scripts/git.orderfile ...
++#
++# add to git config:
++#   git config diff.orderFile scripts/git.orderfile
++#
++
++MAINTAINERS
++
++# Documentation
++Documentation/*
++*.rst
++
++# build system
++Kbuild
++Makefile*
++*.mak
++
++# semantic patches
++*.cocci
++
++# headers
++*.h
++
++# code
++*.c
 -- 
-With best wishes
-Dmitry
+2.42.0
+
