@@ -2,253 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED32E79B96E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D72F79B953
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240770AbjIKVUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
+        id S1355412AbjIKV6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240410AbjIKOnb (ORCPT
+        with ESMTP id S240441AbjIKOoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:43:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48EB12A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694443406; x=1725979406;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=g6LNZoXHOiKMGWRLpT6oIKoFZc/vg7KVOmyjC4U+09E=;
-  b=iH89hCsWCE/o5S6XX1fmbbn/n5mx7bvPQAbF8wfRJgVDCrmYzzPQM6dU
-   nGDbh/FXZg/Tfol3W6Ebdkk7XA9hXDo81BMeFSLJEYxuoWkCSjXh9JW6k
-   pj6pdkadSG5+odXKmjoL5ms8H6FWYM3RG4kJ9Frd0PDKGaOHZuX54UVF2
-   SCdygW5r5dv6Shrr1rHc6Gwrw0tSuWL31GpWDaR/FgFf6R1459EPdbtZD
-   IqnSMsCDEMnV+5EyMg487Vc51UKOjNZ4TiSCLsis8coowogdKXq9kIpmt
-   3fpE6zYFLHPKFr+nAz0if1DmzN8AThk1kM2FTtFso9cTSVXKhSuzzH+0k
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381904370"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="381904370"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917045930"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="917045930"
-Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:22 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, j@jannau.net,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        asahi@lists.linux.dev
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-In-Reply-To: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
- <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
-Date:   Mon, 11 Sep 2023 17:43:20 +0300
-Message-ID: <87tts0epo7.fsf@intel.com>
+        Mon, 11 Sep 2023 10:44:17 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1879C12A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:44:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CD53721846;
+        Mon, 11 Sep 2023 14:44:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694443450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xr4ibqDuzuUnxUV/l1cvdGlA8SZbcOuzfT1Mj/uprVU=;
+        b=NfFY5JLCFkpg52Yo0SZyE7dtixYz5/S8ijG4dbkyXIrJtDbjBAx3d7DpjEqx1+4k+76K7a
+        2OMYRCCWd5wuVDb8gQOv+SPIhqSMCLuBT+MU+vSMSw/xi5lUKG061M/hCmid4l16PxFOy4
+        ETFJQnGXIOOwMmsQ4mw6n7hydMptImM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694443450;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xr4ibqDuzuUnxUV/l1cvdGlA8SZbcOuzfT1Mj/uprVU=;
+        b=Etp/FImonl8DmzxPuqfZ7G2KQfkBQ5zcbFpd5hjLYjrn5qH/fp+XVjD6QKIR+hOuNQ/c4b
+        7B1xLLPiXOxJ8iDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE607139CC;
+        Mon, 11 Sep 2023 14:44:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9AtbLron/2TcUwAAMHmgww
+        (envelope-from <dwagner@suse.de>); Mon, 11 Sep 2023 14:44:10 +0000
+Date:   Mon, 11 Sep 2023 16:44:46 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        James Smart <james.smart@broadcom.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>
+Subject: Re: [RFC v1 4/4] nvmet-discovery: do not use invalid port
+Message-ID: <ebfmki7mifmo67x27wwrdpabdbiamalj7rsevxvabyi4sff4ck@4d5fyvrjggkw>
+References: <20230829091350.16156-1-dwagner@suse.de>
+ <20230829091350.16156-5-dwagner@suse.de>
+ <20230905065032.GC19701@lst.de>
+ <vml2mmhjurjaalzcmugnu2c4cm4okfkl43swbmudmaotew4gsy@o4q44el473to>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <vml2mmhjurjaalzcmugnu2c4cm4okfkl43swbmudmaotew4gsy@o4q44el473to>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023, Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> Hi
->
-> Am 10.09.23 um 18:39 schrieb Janne Grunau via B4 Relay:
->> From: Janne Grunau <j@jannau.net>
->> 
->> Multiple power domains need to be handled explicitly in each driver. The
->> driver core can not handle it automatically since it is not aware of
->> power sequencing requirements the hardware might have. This is not a
->> problem for simpledrm since everything is expected to be powered on by
->> the bootloader. simpledrm has just ensure it remains powered on during
->> its lifetime.
->> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
->> systems. The HDMI output initialized by the bootloader requires keeping
->> the display controller and a DP phy power domain on.
->> 
->> Signed-off-by: Janne Grunau <j@jannau.net>
->> ---
->>   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
->>   1 file changed, 106 insertions(+)
->> 
->> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
->> index ff86ba1ae1b8..efedede57d42 100644
->> --- a/drivers/gpu/drm/tiny/simpledrm.c
->> +++ b/drivers/gpu/drm/tiny/simpledrm.c
->> @@ -6,6 +6,7 @@
->>   #include <linux/of_address.h>
->>   #include <linux/platform_data/simplefb.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/pm_domain.h>
->>   #include <linux/regulator/consumer.h>
->>   
->>   #include <drm/drm_aperture.h>
->> @@ -227,6 +228,12 @@ struct simpledrm_device {
->>   	unsigned int regulator_count;
->>   	struct regulator **regulators;
->>   #endif
->> +	/* power-domains */
->> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
->> +	int pwr_dom_count;
->> +	struct device **pwr_dom_devs;
->> +	struct device_link **pwr_dom_links;
->> +#endif
->>   
->>   	/* simplefb settings */
->>   	struct drm_display_mode mode;
->> @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
->>   }
->>   #endif
->>   
->> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
->> +/*
->> + * Generic power domain handling code.
->> + *
->> + * Here we handle the power-domains properties of our "simple-framebuffer"
->> + * dt node. This is only necessary if there is more than one power-domain.
->> + * A single power-domains is handled automatically by the driver core. Multiple
->> + * power-domains have to be handled by drivers since the driver core can't know
->> + * the correct power sequencing. Power sequencing is not an issue for simpledrm
->> + * since the bootloader has put the power domains already in the correct state.
->> + * simpledrm has only to ensure they remain active for its lifetime.
->> + *
->> + * When the driver unloads, we detach from the power-domains.
->> + *
->> + * We only complain about errors here, no action is taken as the most likely
->> + * error can only happen due to a mismatch between the bootloader which set
->> + * up the "simple-framebuffer" dt node, and the PM domain providers in the
->> + * device tree. Chances are that there are no adverse effects, and if there are,
->> + * a clean teardown of the fb probe will not help us much either. So just
->> + * complain and carry on, and hope that the user actually gets a working fb at
->> + * the end of things.
->> + */
->> +static void simpledrm_device_detach_genpd(void *res)
->> +{
->> +	int i;
->> +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
->> +
->> +
->> +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
->
-> If anything, drm_dbg()
+On Tue, Sep 05, 2023 at 12:40:25PM +0200, Daniel Wagner wrote:
+> > But I'm still confused how we can get here without req->port
+> > set.  Can you try to do a little more analysis as I suspect we have
+> > a deeper problem somewhere.
 
-Drive-by comment, drm_dbg() already prints the function, there's no need
-to use __func__.
+The problem is that nvme/005 starts to cleanup all resources and there
+is a race between the cleanup path and the host trying to figure out
+what's going on (get log page).
 
-BR,
-Jani.
+We have 3 association:
 
->
->> +	if (sdev->pwr_dom_count <= 1)
->> +		return;
->> +
->> +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
->> +		if (!sdev->pwr_dom_links[i])
->> +			device_link_del(sdev->pwr_dom_links[i]);
->> +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
->> +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
->> +	}
->> +}
->> +
->> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
->> +{
->> +	struct device *dev = sdev->dev.dev;
->> +	int i;
->> +
->> +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
->> +							 "#power-domain-cells");
->> +	/*
->> +	 * Single power-domain devices are handled by driver core nothing to do
->> +	 * here. The same for device nodes without "power-domains" property.
->> +	 */
->> +	if (sdev->pwr_dom_count <= 1)
->> +		return 0;
->> +
->> +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
->> +					       sizeof(*sdev->pwr_dom_devs),
->> +					       GFP_KERNEL);
->> +	if (!sdev->pwr_dom_devs)
->> +		return -ENOMEM;
->> +
->> +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
->> +						sizeof(*sdev->pwr_dom_links),
->> +						GFP_KERNEL);
->> +	if (!sdev->pwr_dom_links)
->> +		return -ENOMEM;
->> +
->> +	for (i = 0; i < sdev->pwr_dom_count; i++) {
->> +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
->> +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
->> +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
->> +			if (ret == -EPROBE_DEFER) {
->> +				simpledrm_device_detach_genpd(sdev);
->> +				return PTR_ERR(sdev->pwr_dom_devs[i]);
->> +			}
->> +			drm_err(&sdev->dev,
->> +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
->
-> The driver's not really failing to initialize AFAICT. CAlling drm_warn() 
-> might be more appropriate.
->
->> +		}
->> +
->> +		sdev->pwr_dom_links[i] = device_link_add(dev,
->> +							 sdev->pwr_dom_devs[i],
->> +							 DL_FLAG_STATELESS |
->> +							 DL_FLAG_PM_RUNTIME |
->> +							 DL_FLAG_RPM_ACTIVE);
->> +		if (!sdev->pwr_dom_links[i])
->> +			drm_err(&sdev->dev, "failed to link power-domain %u\n", i);
->
-> Also drm_warn() ?
->
-> Best regards
-> Thomas
->
->> +	}
->> +
->> +	return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
->> +}
->> +#else
->> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
->> +{
->> +	return 0;
->> +}
->> +#endif
->> +
->>   /*
->>    * Modesetting
->>    */
->> @@ -651,6 +754,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
->>   	if (ret)
->>   		return ERR_PTR(ret);
->>   	ret = simpledrm_device_init_regulators(sdev);
->> +	if (ret)
->> +		return ERR_PTR(ret);
->> +	ret = simpledrm_device_attach_genpd(sdev);
->>   	if (ret)
->>   		return ERR_PTR(ret);
->>   
->> 
->> ---
->> base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
->> change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
->> 
->> Best regards,
+ assoc 0: systemd/udev triggered 'nvme connect-all' discovery controller
+ assoc 1: discovery controller from nvme/005
+ assoc 2: i/o controller from nvme/005
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+nvme/005 issues a reset_controller but doesn't waiting or checking the
+result. Instead we go directly into the resource cleanup part, nvme
+disconnect which removes assoc 1 and assoc. Then the target cleanup
+part starts. At this point, assoc 0 is still around.
+
+ nvme nvme3: Removing ctrl: NQN "blktests-subsystem-1"
+ block nvme3n1: no available path - failing I/O
+ block nvme3n1: no available path - failing I/O
+ Buffer I/O error on dev nvme3n1, logical block 89584, async page read
+ (NULL device *): {0:2} Association deleted
+ nvmet_fc: nvmet_fc_portentry_unbind: tgtport 000000004f5c9138 pe 00000000e2a2da84
+ [321] nvmet: ctrl 2 stop keep-alive
+ (NULL device *): {0:1} Association freed
+ (NULL device *): Disconnect LS failed: No Association
+ general protection fault, probably for non-canonical address 0xdffffc00000000a4: 0000 [#1] PREEMPT SMP KASAN NOPTI
+ KASAN: null-ptr-deref in range [0x0000000000000520-0x0000000000000527]
+ CPU: 1 PID: 250 Comm: kworker/1:4 Tainted: G        W          6.5.0-rc2+ #20 e82c2becb08b573f1fa41dfeddc70ac8f6838a63
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
+ Workqueue: nvmet-wq fcloop_fcp_recv_work [nvme_fcloop]
+ RIP: 0010:nvmet_execute_disc_get_log_page+0x23f/0x8c0 [nvmet]
+
+The target cleanup removes the port from the subsystem
+(nvmet_fc_portentry_unbind) and does not check if there is still a
+association around. Right after we have removed assoc 1 and 2 the host
+sends a get log page command on assoc 0. Though we have remove the port
+binding and thus the pointer when nvmet_execute_disc_get_log_page gets
+executed.
+
+I am still pondering how to fix this.
