@@ -2,156 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0637D79BE47
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929AF79C048
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354234AbjIKVxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
+        id S238990AbjIKWWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236340AbjIKKXm (ORCPT
+        with ESMTP id S236345AbjIKKX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:23:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FD31AB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694427818; x=1725963818;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Qk8TuabgJtSCp7j499WRZJ0KpjibtjkaxhKDixdWBxA=;
-  b=YxWZk5/0mURZuutiUdPwofoEPTC9cHN7iYcEpoimrykS84lX/vrfxMnq
-   RYgKCg1xpUZuLa2sXFHE8j7CrFR2SbkQMs9BNOehVhTQFrhD0FcQ7Zmxp
-   wWRVFfsG8Kleo/1ElLLSxL57upyXiQ9zNugAvB1GDV304uZsFspArdLau
-   Zx8glPUlEqoxl8rIQg0ijaVYLSajHBGCLkhUNn7aVkJ/zTEUn2ne5kPsB
-   UShmvos15ZowyJsp2cjgs550RUXX/m+cMuk5WgXJkDQyNdxzyQt9THUeU
-   HcgFyE/rQBuFBlG3C4gALPM77RMaKZECndzxuiINEA3vgRUt04e0Dixu9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444462277"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="444462277"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:23:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="858268504"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="858268504"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 03:23:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfe4n-008I1A-2f;
-        Mon, 11 Sep 2023 13:23:29 +0300
-Date:   Mon, 11 Sep 2023 13:23:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Shenghao Ding <shenghao-ding@ti.com>
-Cc:     tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, pierre-louis.bossart@linux.intel.com,
-        kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-        mengdong.lin@intel.com, baojun.xu@ti.com,
-        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
-        broonie@kernel.org, gentuser@gmail.com
-Subject: Re: [PATCH v1] ALSA: hda/tas2781: Support ACPI_ID both TXNW2781 and
- TIAS2781
-Message-ID: <ZP7qoamIicmnbsB0@smile.fi.intel.com>
-References: <20230910072704.1359-1-shenghao-ding@ti.com>
+        Mon, 11 Sep 2023 06:23:59 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE60A1AB;
+        Mon, 11 Sep 2023 03:23:53 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8DxPOu36v5kWYwkAA--.578S3;
+        Mon, 11 Sep 2023 18:23:51 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx4eS26v5kGCx3AA--.21138S3;
+        Mon, 11 Sep 2023 18:23:50 +0800 (CST)
+Message-ID: <7379be58-30a5-1f0f-2e13-ca51b7cff096@loongson.cn>
+Date:   Mon, 11 Sep 2023 18:23:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230910072704.1359-1-shenghao-ding@ti.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v20 16/30] LoongArch: KVM: Implement update VM id function
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Xi Ruoyao <xry111@xry111.site>
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-17-zhaotianrui@loongson.cn>
+ <CAAhV-H497R=B3KaO8Z5ig2Nwst10dm63eiPnDpfNbFCxG4uVKg@mail.gmail.com>
+Content-Language: en-US
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <CAAhV-H497R=B3KaO8Z5ig2Nwst10dm63eiPnDpfNbFCxG4uVKg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Dx4eS26v5kGCx3AA--.21138S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxAryftF47Kw1xZw4UCrWUWrX_yoW5uFW5pF
+        W8C3Z5Gws7JF12v3sIq340qFnIg3s5Kr1j9Fy7ta4Yyr9Fk34kArs5KrWjkFWxJr1fCr4I
+        vF1YyFsrCF1DA3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUUUUU
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 10, 2023 at 03:27:03PM +0800, Shenghao Ding wrote:
-> Support ACPI_ID both TXNW2781 and TIAS2781, TXNW2781 is the only one legal
-> ACPI ID, TIAS2781 is the widely-used ACPI ID named by our customers, so
-> far it is not registered. We have discussed this with them, they requested
-> TIAS2781 must be supported for the laptops already released to market,
-> their new laptops will switch to TXNW2781.
 
-...
 
-> +/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
-> + * TXNW2781 is the official ACPI id, and will be used in the new devices.
-> + * Check TIAS2781 or TXNW2781
-> + */
+在 2023/9/11 18:00, Huacai Chen 写道:
+> Hi, Tianrui,
+> 
+> On Thu, Aug 31, 2023 at 4:30 PM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
+>>
+>> Implement kvm check vmid and update vmid, the vmid should be checked before
+>> vcpu enter guest.
+>>
+>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>> ---
+>>  arch/loongarch/kvm/vmid.c | 66 +++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 66 insertions(+)
+>>  create mode 100644 arch/loongarch/kvm/vmid.c
+>>
+>> diff --git a/arch/loongarch/kvm/vmid.c b/arch/loongarch/kvm/vmid.c
+>> new file mode 100644
+>> index 0000000000..fc25ddc3b7
+>> --- /dev/null
+>> +++ b/arch/loongarch/kvm/vmid.c
+>> @@ -0,0 +1,66 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+>> + */
+>> +
+>> +#include <linux/kvm_host.h>
+>> +#include "trace.h"
+>> +
+>> +static void _kvm_update_vpid(struct kvm_vcpu *vcpu, int cpu)
+>> +{
+>> +       struct kvm_context *context;
+>> +       unsigned long vpid;
+>> +
+>> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+>> +       vpid = context->vpid_cache + 1;
+>> +       if (!(vpid & vpid_mask)) {
+>> +               /* finish round of 64 bit loop */
+>> +               if (unlikely(!vpid))
+>> +                       vpid = vpid_mask + 1;
+>> +
+>> +               /* vpid 0 reserved for root */
+>> +               ++vpid;
+>> +
+>> +               /* start new vpid cycle */
+>> +               kvm_flush_tlb_all();
+>> +       }
+>> +
+>> +       context->vpid_cache = vpid;
+>> +       vcpu->arch.vpid = vpid;
+>> +}
+>> +
+>> +void _kvm_check_vmid(struct kvm_vcpu *vcpu)
+>> +{
+>> +       struct kvm_context *context;
+>> +       bool migrated;
+>> +       unsigned long ver, old, vpid;
+>> +       int cpu;
+>> +
+>> +       cpu = smp_processor_id();
+>> +       /*
+>> +        * Are we entering guest context on a different CPU to last time?
+>> +        * If so, the vCPU's guest TLB state on this CPU may be stale.
+>> +        */
+>> +       context = per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+>> +       migrated = (vcpu->cpu != cpu);
+>> +
+>> +       /*
+>> +        * Check if our vpid is of an older version
+>> +        *
+>> +        * We also discard the stored vpid if we've executed on
+>> +        * another CPU, as the guest mappings may have changed without
+>> +        * hypervisor knowledge.
+>> +        */
+>> +       ver = vcpu->arch.vpid & ~vpid_mask;
+>> +       old = context->vpid_cache  & ~vpid_mask;
+>> +       if (migrated || (ver != old)) {
+>> +               _kvm_update_vpid(vcpu, cpu);
+>> +               trace_kvm_vpid_change(vcpu, vcpu->arch.vpid);
+>> +               vcpu->cpu = cpu;
+>> +       }
+>> +
+>> +       /* Restore GSTAT(0x50).vpid */
+>> +       vpid = (vcpu->arch.vpid & vpid_mask)
+>> +               << CSR_GSTAT_GID_SHIFT;
+>> +       change_csr_gstat(vpid_mask << CSR_GSTAT_GID_SHIFT, vpid);
+>> +}
+> I believe that vpid and vmid are both GID in the gstat register, so
+> please unify their names. And I think vpid is better than vmid.
 
-/*
- * This style is only for networking.
- * please use one as in this example.
- */
+For processor 3A5000 vpid is the same with vmid, with next generation processor
+like 3A6000, it is seperated. vpid is for vcpu specific and represents
+translation from gva to gpa; vmid is the whole vm and represents translation
+from gpa to hpa, all vcpus shares the same vmid, so that tlb indexed with vpid
+will be still in effective when flushing shadow tlbs indexed with vmid.
 
-...
+Only that VM patch for 3A6000 is not submitted now, generation method for
+vpid and vmid will be much different. It is prepared for future processor
+update :)
 
-> +	const char c[][10] = { "TXNW2781", "TIAS2781" };
+Regards
+Bibo Mao
 
-Can you put this to the ACPI device ID table, it will be easier to use it with
-some other acpi_*() APIs?
-That table might need a comment why it has no MODULE_DEVICE_TABLE() with it.
-
-...
-
-> +	int n = strlen(bus), i;
-
->  
-> -	if (strncmp(d, p->bus, n))
-> +	if (strncmp(d, bus, n))
->  		return 0;
-
-It means you need to use str_has_prefix().
-
-...
-
-> +	for (i = 0; i < ARRAY_SIZE(c); i++) {
-> +		/* the rest must be exact matching */
-> +		snprintf(tmp, sizeof(tmp), "-%s:00", c[i]);
-> +
-> +		if (!strcmp(d + n, tmp))
-> +			return 1;
-> +	}
-
-This can be done differently.
-You are comparing the instance of the device to the actual id, right?
-We have ACPI match APIs for that. Have you tried to look at them?
-
-...
-
-> +/* TIAS2781 is the unofficial ACPI id, but widely used in current devices.
-> + * TXNW2781 is the official ACPI id, and will be used in the new devices.
-> + */
-> +static const struct acpi_device_id tas2781_acpi_hda_match[] = {
-> +	{"TIAS2781", 0 },
-> +	{"TXNW2781", 1 },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
-
-So, besides the style of the comment, why do you have two different data
-structures for the same? Can you find a common place and deduplicate it?
-
-...
-
-> -MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
-
-Ah, I see now, it's used for probing. Please, don't move it. The hid is
-available via device pointer.
-
-...
-
-This patch requires much more work, and esp. be redesigned to use proper
-ACPI APIs.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> 
+> Moreover, no need to create a vmid.c file, just putting them in main.c is OK.
+> 
+> Huacai
+> 
+>> --
+>> 2.27.0
+>>
 
