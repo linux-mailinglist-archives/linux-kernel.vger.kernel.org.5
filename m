@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E35379C235
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280B579C259
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236592AbjILCH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S237291AbjILCIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243658AbjILCGR (ORCPT
+        with ESMTP id S243634AbjILCGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:06:17 -0400
+        Mon, 11 Sep 2023 22:06:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5E4101101
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:37:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10A8C16ABD;
-        Mon, 11 Sep 2023 23:57:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC71F8FF9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:37:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A309AC197C4;
+        Mon, 11 Sep 2023 23:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694476652;
-        bh=ZLQwBDO9oB7DwHjbeEilVGbTlMbMwI68sm9U3hUF8Q0=;
+        s=k20201202; t=1694476654;
+        bh=LeuApLpG3v8SYN8BHFkhSYMJ/eALFnk+G1jkLasFDnM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pleTmCeOGpMp8OgSpvq2ZspmRywpezPrXCk/saOp8oLbJxHb1URIfoC2U+sXj6YQb
-         go7PMdiP3hem3qYezceAvWhuvcSVY5sHbCC4P3QuK/BjcBrG/53ifTGiH4LopCDjjb
-         9QtNWoKdiQoGZdy8AK89kia1vNZ5gciwl8DXLCMirJ+cEk0314moYlCPlZcf4ZJT2s
-         2bDllpNOWhsLOfbGSVC3AHO0AK2rX1Czs1VDy+CiD7Vda6nSQkH1324dK0dsJWBZR6
-         FMe6FnQj7cZWguglf1y8uLxO3OpQprUklkYJQRnrckKbKmcMzT+JmdDT4dXVqlUncW
-         i7rl6oIKaoT+w==
+        b=QEWWVVngtHVHAwR30+E8WivwUqjWkChBZJKrl/XHINMzEFqr7EXO+Xt7imEmwN7wm
+         +sSWtLmIIMAWnjBlZLv0YLOVtFB0d3nm0n3noo+yu3XaXQCCLce+IRQs8SZYgybSRP
+         16pZ7ovq1vukKeYwAdiwMHEAGDRc64iTZtY/rAEETPi69t2mRLAKQ7wpeLgnWzePgP
+         hItJ2WCw11kIGq3VwetC2krMWVmhjggnOUMHpNkRIegP3xuMuDAp9dmnP3GuepYBsR
+         c387xpjWPupQtc5Mbd/GYSIlE+Ni/OoGSY8ExMxxDoMIyZvUKxRzsFc7Sxki/t2EQ9
+         ZbjbUGJ/+Cc0g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Marian Postevca <posteuca@mutex.one>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <20230829220116.1159-1-posteuca@mutex.one>
-References: <20230829220116.1159-1-posteuca@mutex.one>
-Subject: Re: [PATCH v3 0/5] ASoC: amd: acp: Add sound support for a line of
- HUAWEI laptops
-Message-Id: <169447665042.2387538.16679409837029670258.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 00:57:30 +0100
+To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <x1077012@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230828191014.138310-1-biju.das.jz@bp.renesas.com>
+References: <20230828191014.138310-1-biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2 0/2] Match data improvements for tlv320aic32x4
+ driver
+Message-Id: <169447665230.2387538.10106285236700897579.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 00:57:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -46,14 +49,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 01:01:11 +0300, Marian Postevca wrote:
-> This series adds support for a line of HUAWEI laptops with
-> AMD CPUs that connect using the ACP3x module to a ES8336 CODEC.
+On Mon, 28 Aug 2023 20:10:12 +0100, Biju Das wrote:
+> This patch series aims to add match data improvements for tlv320aic32x4
+> driver.
 > 
-> The CODEC driver must be extended to support the S32 LE format
-> and the MCLK div by 2 option. MCLK div by 2 is needed for one specific
-> SKU, which uses a 48Mhz MCLK, which seems to be too high of a frequency
-> for the CODEC and must be divided by 2.
+> This patch series is only compile tested.
+> 
+> v1->v2:
+>  * Created patch#1 for adding enum aic32x4_type to aic32x4_probe() and
+>    drop using dev_set_drvdata() from tlv320aic32x4_{i2c,spi} drivers.
+>  * Return value of i2c_get_match_data() passed to type paramemter in
+>    aic32x4_probe().
 > 
 > [...]
 
@@ -63,16 +69,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: es8316: Enable support for S32 LE format
-      commit: 2f06f231f0bfe74711fee14e28a8789a3de9bc36
-[2/5] ASoC: es8316: Replace NR_SUPPORTED_MCLK_LRCK_RATIOS with ARRAY_SIZE()
-      commit: a43c0dc1004cbe2edbae9b6e6793db71f6896449
-[3/5] ASoC: es8316: Enable support for MCLK div by 2
-      commit: 869f30782cdad0a86598a700a864e4a2bf44f8cc
-[4/5] ASoC: amd: acp: Add support for splitting the codec specific code from the ACP driver
-      commit: c680f57095411559e7605af689c7ce01f2281005
-[5/5] ASoC: amd: acp: Add machine driver that enables sound for systems with a ES8336 codec
-      commit: 54fcd9dd44b2c82a0262e29b288c2d0b36c6bba5
+[1/2] ASoC: codec: tlv320aic32x4: Add enum aic32x4_type to aic32x4_probe()
+      commit: cac1636e214930b01b2f8ac9867771486554271a
+[2/2] ASoC: tlv320aic32x4-i2c: Simplify probe()
+      commit: d44f7bc9d181a2bec0dcff694d00b08c8f99284d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
