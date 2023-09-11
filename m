@@ -2,185 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA8F79A5CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758D279A5D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbjIKIRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:17:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
+        id S234267AbjIKIRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbjIKIRG (ORCPT
+        with ESMTP id S235116AbjIKIRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:17:06 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A802CBB;
-        Mon, 11 Sep 2023 01:16:55 -0700 (PDT)
-X-UUID: 8e1f4736507b11ee8051498923ad61e6-20230911
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=bLtsrzjxUtfjRXBTdg7ryD78RZbIUqX7HT6UlqEs7uw=;
-        b=UebW4fkJT4sinEnIj28vlOHdnCLNyrqN35wRKpPbWXzbYjEk4X/G0Ig3TIfNRKKKW0AZ0SKzcd78MAGk483f1viXvf3r18sF9tu9Tpzd+J8UYuZ+q7xkijAZbmQPixncfzCEJ9CxIqOJNWrnIKrJmur3C0OF1ODuCZmqGT+gY10=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:8e07ecf4-4cd3-4904-8247-805cc914e292,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:0b69b1be-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 8e1f4736507b11ee8051498923ad61e6-20230911
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 332041101; Mon, 11 Sep 2023 16:16:49 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 11 Sep 2023 16:16:47 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Mon, 11 Sep 2023 16:16:45 +0800
-Message-ID: <e697a23e-e677-c97b-269a-a7a11d338d95@mediatek.com>
-Date:   Mon, 11 Sep 2023 16:16:44 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] dt-bindings: arm64: dts: mediatek: add description for
- mt8365-evk board
+        Mon, 11 Sep 2023 04:17:44 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on20623.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5b::623])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F7ACDE;
+        Mon, 11 Sep 2023 01:17:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TAM8ehjCPZHG29mEIsvZQ/RCBzAvH2MaOZ+/bB2nYxpb0oINXay1PWWiJfNxVQYu3Iws/69WuVEBUgoq+dNdPLZ46Jftpb7tdfOa0StS/fVuRszPSS227OvL7h5cCJq95MkLF/x3eXkwpHcgruTK84VP7yE1sw5k52DygqLH6n95/PTT2rKimnuHGEdD6wtBe+xT8/290n7Rd4He2e+k+PMbmt9wEzAeGsO6+rlUhYy40wYGo71BKNJDXrV5YZ0wPQkQp/PM3u8Pxqbki1RQibiNYTVqRSiQeXrP1kozcpQqS2PTTg1Gqk1z4sarLspxPG2Zcv6Zz2UEB/tmrqcNgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+ksF+wG47CxhTtPSSpDAbD+cG2q/zOxT/WFTlvR72Xg=;
+ b=Fzy+gBeekZ5QoSIzJR8LWtxMBGkuTsfyhi6zRYn9vH/VPSryVG3BbPDoP2jZgqW1ZAv5S00fM04l5ySsj9Z7TOFa2wJI3CiX9SqTRLh8hBIW2n1fCgPcfcmpAsc55RY7lJzP48k1fhJB/pj4DyC6oxMNquFgQgjTz1ebFmpGW4j5yIJ1lWKS0a/yl16xZ4vRIxfInNV8V+fCydQfDjdEe+RcveK+pGvo9KrsTe3xbZG5/gYndNwAXekFaIcSLpjxhUDPQcrOVnk14u9engyi253scsqcbU6k592BivygoPsLa3/srRzKQ+3OveAVSRCCfifvcESqaExQp4yfJA17ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ksF+wG47CxhTtPSSpDAbD+cG2q/zOxT/WFTlvR72Xg=;
+ b=g1pVnS2JPe3iBc7aYIqFMSomHAheI+1O3Zq0Gvt80t5QssusvAxZSfAs3lAeN2yP/YDJRUFrH1RQf5mpgVsUshkx+8I/ibfzXCYcypwyzCEz1+QUsdHTjv87SYJcmz5RZjzD+3NgWcIdP+3y6WJsfAXn0MYdCt7H1Sb4fKga0ZmQk1wtMGzi/bSjGOpugdbHoTugYuxI14Grrry/xifFOB4PlAXc5Oz+XXXYXuYpCRSarsw5J09Pmc6VsjE2R0c67fHXLXSWtafeYss3kBIAVJtq9u1lBoyt7KgwXTLCipzfWHy82pFPfk/USJ3G3e43LJJM/0colDNPMlOUY2JmRQ==
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com (2603:10b6:a03:1a8::24)
+ by DS0PR12MB8503.namprd12.prod.outlook.com (2603:10b6:8:15a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Mon, 11 Sep
+ 2023 08:17:35 +0000
+Received: from BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::9e7a:4853:fa35:a060]) by BY5PR12MB3763.namprd12.prod.outlook.com
+ ([fe80::9e7a:4853:fa35:a060%2]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 08:17:35 +0000
+From:   Ankit Agrawal <ankita@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Thread-Topic: [PATCH v8 1/1] vfio/nvgpu: Add vfio pci variant module for grace
+ hopper
+Thread-Index: AQHZ11GEd4uKBig/Bk6gFqMLb5fS47AP2/IAgABN7YCAADqIAIAAUAcAgAA5YoCABGIpgIAAEEZX
+Date:   Mon, 11 Sep 2023 08:17:34 +0000
+Message-ID: <BY5PR12MB3763D6DA3374A84109D0B2E7B0F2A@BY5PR12MB3763.namprd12.prod.outlook.com>
+References: <20230825124138.9088-1-ankita@nvidia.com>
+ <20230907135546.70239f1b.alex.williamson@redhat.com>
+ <ZPpsIU3vAcfFh2e6@nvidia.com>
+ <20230907220410.31c6c2ab.alex.williamson@redhat.com>
+ <ZPrgXAfJvlDLsWqb@infradead.org> <ZPsQf9pGrSnbFI8p@nvidia.com>
+ <BN9PR11MB5276E36C876042AADD707AD08CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+In-Reply-To: <BN9PR11MB5276E36C876042AADD707AD08CF2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230910062852.15415-1-macpaul.lin@mediatek.com>
- <f8864242-daa1-e72f-4759-aac3fa1bbcf2@linaro.org>
- <12bdd17a-98f4-5551-4253-229dc36f0c77@mediatek.com>
- <ef81697f-473e-898e-ec13-4dd255e2e3d7@linaro.org>
- <82a0ab25-a3cc-3e87-e379-9b15b3fbbf76@mediatek.com>
- <649e89c3-343a-c00c-ae89-329833b38981@linaro.org>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <649e89c3-343a-c00c-ae89-329833b38981@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--17.294500-8.000000
-X-TMASE-MatchedRID: +f/wAVSGjujsYbGmK/WYxia1MaKuob8PCJpCCsn6HCHBnyal/eRn3gzR
-        CsGHURLuwpcJm2NYlPAF6GY0Fb6yChLn4nGgmm6XPJAf1AuYU6BbVWMeHOeZaFc/CedjlcvkASS
-        25Kb4JAK/PxUCMpGeRFQXB1s+iArFOkjQDRo1OZRor4yxPAz7WQ2AVSpm3nkDATjAbArJUsiqHZ
-        Z4aC7fIyJtQogTap1vmw8gErCz5evsPLr8JwjnkLGj3LN0+Ey97yrmaqIg0yAwEhHW5KVAz2J+P
-        WmHAknxnlSM1mB4TLLOHyiFumtKQSnixsypv8PSFPowz8xfffSeimGtNywjtpsoi2XrUn/JyeMt
-        MD9QOgChMIDkR/KfwI2j49Ftap9EOwBXM346/+zxKm+NrlRaJHxJwMK8LeRQaDATuz7r6ZYNxer
-        6R4Ih84VxIm5v/HGf
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--17.294500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 6EEA80FCF1E52590F8061DE403ECC5A07550DF81B15E6C606221868D3A8DE3472000:8
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR12MB3763:EE_|DS0PR12MB8503:EE_
+x-ms-office365-filtering-correlation-id: b210b13e-9ef7-4ac4-4b7b-08dbb29f8daf
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Sk4FP0jpItYOplnXm7UtEljF34TdTwMneCvRMgIlg2g8Bo6yahLRmSe5YBKgJIJJTmzlitNjHlrXjXg5NVfUyE4mP10Do97NKtgOmYvO4nSZBujfQ93zDEBJIATipm+iKlG4N7qbwox5hp8usdQdfXIDoCGk00NSPimcghQ7Se0hGnR+WMKpj2SQ4AOIFm7ZVVD9mI7ISXr6qBlvKSvR/5H/oPrGLVvQE2OJojp7kGa6oTjXgJBQTAh0eB++/pxS0wpFwpiEg8MeqnDZXZTZ4nc9ZXZoPYaI1U8K2DA+DTwhxoqnrVnbxLw8RFlOixHdx7ZuoKJU2ffKiISD59LGqGBeVIFlmPjXD3b0FVLUXXTFelJngCMNj4siITyn463RzK4eXS4FTd78e4pVJ/fTscXBzNFB7LeUJN6WrdrurJopsiiXKCoALMoiT7itdY/uneVW8cDaPXXtwa31AxV037v3mgYapbk3dIBlUWSBGUOVYmUhiXwajr/ZIGRRV6fVD+E6Byy8BPmRS/sd4mPtFGdUjFez399vt45x05jJ+8uS1XiCztWEuzV5SIgDyrT8rI9aNcYL0rehV9ptyXY6fl1muot0sLxBqomhlK+CO8BIqpHyQGA1Ma9wxkcCeSWrszxTK61hOTjYuzfNeGQvKYkGElYY4rpwuV7/6EKwR7M=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3763.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(396003)(376002)(346002)(451199024)(186009)(1800799009)(2906002)(52536014)(26005)(55016003)(41300700001)(316002)(66446008)(66556008)(54906003)(64756008)(66946007)(76116006)(66476007)(4744005)(110136005)(91956017)(478600001)(4326008)(8676002)(8936002)(5660300002)(7696005)(6506007)(9686003)(71200400001)(33656002)(38100700002)(38070700005)(86362001)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?S5Ta1LbF5MdPB8dnIoWfCj5ooNhykZYXJv/y+v7Cow/dfeU0wAFuN6WVmt?=
+ =?iso-8859-1?Q?hWpeqe/rDZz6NcQF/LY99rAGEuUY3TBY7k10iiZwfkZWzS3usHhqDdGDgo?=
+ =?iso-8859-1?Q?NGxnVsRU0x4chSEWxqnHryprmm+emrB5T25yAoQg6ZJE7D3jOlgrIgUvUJ?=
+ =?iso-8859-1?Q?NKwliU1ppK0kD7l6PuGpPB75BEGDYYS6wz3aKZ04y0AiY8esWRKPsaaRGa?=
+ =?iso-8859-1?Q?dDl2nM4RH/jvtGFLLHEmvqVRje1nIIAG5s8Z5/GCWkVTRDWRo9ZTS0wqYe?=
+ =?iso-8859-1?Q?mj6rIlowacdcBLe/Vba00PSXSLd7mdFPPNUp6KdyuFrqkCrTdUmOq1/qLD?=
+ =?iso-8859-1?Q?6pYeqBJ0+2nO6dgW0Vd6jK//3vrYKbTfcRyGCxC5J3T0PQcdXRJgNF8x6I?=
+ =?iso-8859-1?Q?mo2j23o5n0jyum0PasGIhwJzUZYoPS7B1KT9aCRuysLnapYBClURUSgsjg?=
+ =?iso-8859-1?Q?/WKDLIlwAULlpMuAFP1tMWk7B0HRSZoQS3PnaV//e+dgwqKyzauu3N6wtY?=
+ =?iso-8859-1?Q?XwDcB+hE0QR9iEsGNz7+1yM7QEca2NfCvPvQ5HJvcq3gbms0d4Tk+DHgWg?=
+ =?iso-8859-1?Q?xBbyMFQcfPZYZSbmd5y9rucHMSOXD86Hw4yaV/r1ktWE3hSiiatXvAmkRE?=
+ =?iso-8859-1?Q?c+NCUkMa3MFkUS5KZY8bSIkkxNPDqAiBOvLpyBIBjX34iqEtPHfhvi1aKB?=
+ =?iso-8859-1?Q?w0UXoWH5sDm245QDkiCdVBJQlCzQko7HYOHg8L21YsPeWbHjjLEzTHVxtE?=
+ =?iso-8859-1?Q?eBdReXZ4u4LYG7AFm0klcLP4p9+bP/uvtZck4PaEhoyZ8SeQ44SnS15hL1?=
+ =?iso-8859-1?Q?hwV5e2dfy3PH9X/SQShwzpdc/2pI3OaDwd/dseH03i9Vtfk/eiOzWDJd4C?=
+ =?iso-8859-1?Q?yPqR4oj9Iwvj50lWTmki/ZTzIoEPux7SH7Hxykwo3YDAiFXga8733zeyn2?=
+ =?iso-8859-1?Q?VpZX+tdhdIOAfsAVjFFJHEonawgCAmCAgU4gjZenijZzO3YpBQAgFdpkSG?=
+ =?iso-8859-1?Q?bxG/g7XOQjWOVRavYuVkumIMqiQBv+IJZicMytCPdZhSeTmOE4GyzMrYpj?=
+ =?iso-8859-1?Q?5gPOuWCq7HYoME9FPCws74ZyQlxFP9qEWhbaPomvZKKVmA8F0xGEDHiLE7?=
+ =?iso-8859-1?Q?UJ/qnZCdTeDrQV/VtiroF1jXOTUYPixQfdyoLvRAksc9eM+TF2/vlAf1ze?=
+ =?iso-8859-1?Q?NXL2S1tAxCj2MeaT9QjLTehAPo4XERyLe819+i4A/nreJ81gOpZJ6s0uZn?=
+ =?iso-8859-1?Q?KEMtoWpTl8FEiiU4zD6orLCLW7dVqfr/WRTqSHZNvF+PBTI366KT9OXQaY?=
+ =?iso-8859-1?Q?soFmp/2Qu+GvqiUuV8iQpuTQ2RCqH7UOIpZeYscJ1X1WirYh1GD9VY6Ya3?=
+ =?iso-8859-1?Q?od9CvlN3gyhNzRTHx25qtv7CyU/OmfMHOYrU0RlJ7G+DDC8XeQuABSv8IW?=
+ =?iso-8859-1?Q?FbhSUVXeUPEiCbeMNQQdzAKnhN2hN2igTYb/W6JccRv8PQC8d/FBqK2Nqx?=
+ =?iso-8859-1?Q?jtDZGgkwA2Licq4jxqLY6IMjzG6r5lVXqEXJN1KX6t1kDVGSOMy/aP+Q72?=
+ =?iso-8859-1?Q?/E9gg5zVp6tRPilUAmRjRSMgtnk3fJONj8ZnC3uAzJR78YxlZdlwCNGLii?=
+ =?iso-8859-1?Q?52BgpjPQnc+8o=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3763.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b210b13e-9ef7-4ac4-4b7b-08dbb29f8daf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 08:17:34.9207
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pNdgbrhJcfljmXr2TGZplQ+/7u///h3TI20v3ERRA7r8kQLpvJVbY9f9Ei3vyeyizdMSgdE4f/FcvBKgk7J0QA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8503
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/11/23 15:06, Krzysztof Kozlowski wrote:
-> 	
-> 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
-> 
-> On 11/09/2023 08:34, Macpaul Lin wrote:
->> On 9/11/23 14:09, Krzysztof Kozlowski wrote:
->>> 
->>>
->>> External email : Please do not click links or open attachments until you 
->>> have verified the sender or the content.
->>>
->>> On 10/09/2023 14:07, Macpaul Lin wrote:
->>>>
->>>>
->>>> On 9/10/23 17:09, Krzysztof Kozlowski wrote:
->>>>>> +      - description: MediaTek Genio 350 Boards (Genio 350 EVK)
->>>>>
->>>>> That's a bit confusing. So all of the boards here will be Genio 350 EVK?
->>>>> I don't get what is the point of this description.
->>>>>
->>>>>
->>>>>> +        items:
->>>>>>            - enum:
->>>>>>                - mediatek,mt8365-evk
->>>>>>            - const: mediatek,mt8365
->>>>
->>>> Thes boards with compatible 'mediatek,mt8365-evk' is indeed used by
->>>
->>> Boards?
->> 
->> I'm not sure if there will be more hardware version released to market.
->> Current the p1v3 is the final version of mt8365-evk.
-> 
-> Then your code (enum) does not match description. The code is saying:
-> this is for multiple boards based on mt8365.
-> 
-> Your description is saying: this is only for 350 boards.
-> 
-> Now your email is saying: there is only one 350 board.
-> 
-> Three different versions. Sorry, I am confused.
-> 
-
-Okay, this description has been modified to support single board.
-Since there is only one type of the hardware is available on the market.
-
->> 
->>>> Genio 350-EVK, which Baylibre helped to do upstream tasks. The only 
->>>> production version of hardware will be available on the market. The 
->>>> derived version of customer's hardware is not available yet.
->>>>
->>>> The separate patch for renaming mt8365-evk.dts file should be send next 
->>>> week for aligning the naming rules.
->>>
->>> So the description is not correct.
->>>
->>> Anyway, this patch does not make much sense to me considering nothing
->>> like this was merged. You just sent v5 doing the same!
->> 
->> 
->> Sorry I'm confused now.
->> These are independent patches.
->> This patch is for SOC mt83'6'5 and board mt8365-evk, which is not relate 
->> SOC mt83'9'5 and board mt8395-evk.
-> 
-> OK, I see my confusion. mt8365 and mt8395.
-> 
-> Still the description is not matching the code, at least to my limited
-> understanding of the description.
-> 
-
-patch v2 of this change has been send and rebase with that v5 change.
-This will generate a different base line for the v2 patch for avoiding 
-confusion. :)
-
-
-> Best regards,
-> Krzysztof
-> 
-
-Thanks
-Macpaul Lin
+>> I don't see the goal as perfect emulation of the real HW.=0A=
+>>=0A=
+>> Aiming for minimally disruptive to the ecosystem to support this=0A=
+>> quirky pre-CXL HW.=0A=
+>>=0A=
+>> Perfect emulation would need a unique VFIO uAPI and more complex qemu=0A=
+>> changes, and it really brings nothing of value.=0A=
+>>=0A=
+>=0A=
+> Does it mean that this requires maintaining a new guest driver=0A=
+> different from the existing one on bare metal?=0A=
+=0A=
+No, the VM would use the same Nvidia open source driver that is used by the=
+=0A=
+bare metal. (https://github.com/NVIDIA/open-gpu-kernel-modules).=0A=
+=0A=
