@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8244379B86E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF1079C0F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351509AbjIKVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        id S1354572AbjIKVyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237378AbjIKMqH (ORCPT
+        with ESMTP id S237388AbjIKMrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:46:07 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C945CCC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:46:03 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf57366ccdso37382655ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:46:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694436363; x=1695041163; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B5XvPZZqdirBPZjjGmlvzSk97lGyej6mdL4djNdnVCI=;
-        b=OwyYjWBxXY619PZ1p946e5YEvo9Jx33QPOGy4JI96bG/SMjazDKGfUF/fRbPapZB6R
-         soILrONHb4G3UUYBId5oMzWHXG3iaB0sRWSR64FcrQm/fLpRu92FLaCS48a64EQI2nF6
-         c9av2dJP9MJIRgtAeMGD3X8MQwCI6chTe0IZxceUTd3B65M4s9qEt8rhR47RQSUxC9Cg
-         8DOEYvmD6y4v+mpVd+gsO6RleB0npm0Ro9kArpLc3V0I4wyIWM5lDp16q+PLAIDpKU4W
-         zx8hsZQcD4PZjUmLqspadnvxeJ+83lkItvfnoBZKmmv7nZlANi1vrrsqL1EB5krYBwNF
-         I2WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694436363; x=1695041163;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B5XvPZZqdirBPZjjGmlvzSk97lGyej6mdL4djNdnVCI=;
-        b=WjSxXckthzAt/Xh10gaRK9VddwtLdql9oX9SpmV5pAc5xJXl1dHDYpQVppDVfYkE0M
-         vvGJXG2GqoypthZou1DZY9NIj8kjNC0Rop17Kn9P+tO0Q07Xn5y2lY7KAden8GYhA2uv
-         dohvr1LXuCf/lej3Ykr84RJWYvx9aAMRt2eZhVEKMoNQuXKZtywHQDkaJxXaheGl1iuS
-         ekc0ZuQyaGmD7Ij8fHT+RxveB4gT0qqQNr2+q4qBYWORpCaIAwz2GmOj+2Ty9sduj50k
-         qhIy4rKsCr3f/LtshhGop6TjFhcNnCxQ7s8x2sD9IVHFHnguoqOJNBxDuWELuh2M7Twy
-         zbnQ==
-X-Gm-Message-State: AOJu0YxsK09uyBMc5RbSn5BEETkFrFkgjJ+Z0YrCU3FbGzAefDlTzFwy
-        lUY3q7O/1bC5UW/CrUqyNWQ=
-X-Google-Smtp-Source: AGHT+IEoeaHrIceDWUgY90v7qFPznKsBTy2K/RKtRP79UVqR7O46yrZDjc+n2e5+BFUy3Q71/RjMjg==
-X-Received: by 2002:a17:90a:5794:b0:26b:513a:30b0 with SMTP id g20-20020a17090a579400b0026b513a30b0mr13923816pji.10.1694436362813;
-        Mon, 11 Sep 2023 05:46:02 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id d24-20020a17090ac25800b0026b30377c14sm5581863pjx.6.2023.09.11.05.46.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 05:46:02 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 0E96680DD549; Mon, 11 Sep 2023 19:45:58 +0700 (WIB)
-Date:   Mon, 11 Sep 2023 19:45:58 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Myunguk Kim <mwkim@gaonchips.com>, alsa-devel@alsa-project.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: dwc: fix typo in comment
-Message-ID: <ZP8MBll6ZsOlZyaj@debian.me>
-References: <20230911064646.168181-1-mwkim@gaonchips.com>
+        Mon, 11 Sep 2023 08:47:05 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B040D10E;
+        Mon, 11 Sep 2023 05:47:00 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B9AHUG027134;
+        Mon, 11 Sep 2023 12:46:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=F2GqWFAwwo6RJV4S/9uYLYRwfMTagSoppG6D6MLjYww=;
+ b=ZfCKNloy/JB5eSY+bMKm0AlzOxyDu7aecCh3pbc+SLooIKHqUQXJywgXDdeuX2iXfngi
+ FyUQMJQm2wiTpavDYhmsajlCY+NYUh5ZjsHyxFu8mbImuybR9RUvyYwEiJ1DWDCX9GEX
+ UEraAOqxgy7nNIVJxFA8LSyP8aOVOrz57wLMMoMvDeTGbJoIapf9U04qzA92fqfQmFoL
+ Dm+XL5XHPsUQbUFdS29/wMpaAVyRlzt/11xgqpVRv4jEeabbNSsLo1BarsVtQlN/fGxE
+ uNIAiCOtAmTei22mr4MJHoByO345hq8eK1c07C+ozos1ccK0HbmzXM4IjhYGRlQhhlg/ HQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0h3ducse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 12:46:34 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BCkXw5014435
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 12:46:33 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 11 Sep
+ 2023 05:46:28 -0700
+Message-ID: <7a69b1e7-7b08-433b-b201-f36ce93c7761@quicinc.com>
+Date:   Mon, 11 Sep 2023 18:16:19 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S+WQLwUYDDDtOHMY"
-Content-Disposition: inline
-In-Reply-To: <20230911064646.168181-1-mwkim@gaonchips.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mtd: nand: qcom: Fix the node for nand unmap resource
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>
+References: <20230907092854.11408-1-quic_bibekkum@quicinc.com>
+ <20230909060327.GA5847@thinkpad>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <20230909060327.GA5847@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8meB8A5DaHBM3mmj4I2wkeBP_UI2314i
+X-Proofpoint-ORIG-GUID: 8meB8A5DaHBM3mmj4I2wkeBP_UI2314i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309110115
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,53 +81,52 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---S+WQLwUYDDDtOHMY
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 11, 2023 at 03:46:46PM +0900, Myunguk Kim wrote:
-> This fixes typo in comment
+On 9/9/2023 11:33 AM, Manivannan Sadhasivam wrote:
+> On Thu, Sep 07, 2023 at 02:58:54PM +0530, Bibek Kumar Patro wrote:
+>> While unmapping the nand resource in case of err_core_clk
+>> the dev node being passed is res_start instead of nand->dma_base
+>> (where the iova returned from map operation is stored) causing
+>> failure in unmap operation. Hence modifying the unmap operation
+>> to pass the nand->base_dma instead of res_start.
+>>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index f583022755a2..e085a0f588eb 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -3322,7 +3322,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+>>   err_aon_clk:
+>>   	clk_disable_unprepare(nandc->core_clk);
+>>   err_core_clk:
+>> -	dma_unmap_resource(dev, res->start, resource_size(res),
+>> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+>>   			   DMA_BIDIRECTIONAL, 0);
+>>   	dev_err(&pdev->dev, "DEBUG: probe failed for nandc module\n");
+> 
+> This error indicates that you are sending the patch against downstream tree.
+> That's not appropriate. Please send your patches against mainline/mtd-next
+> instead and also validate properly.
+> 
+> - Mani
 
-On what? Can you describe the typofix in more detail?
+This patch is created against upstream tree only,
+These debug prints got added from a conflicting patch
+created for debugging.
+apologies for this mistake. Will revise this and send
+a new patch set.
 
->=20
-> Signed-off-by: Myunguk Kim <mwkim@gaonchips.com>
-> ---
->  sound/soc/dwc/dwc-i2s.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
-> index 71ff894035a4..45e55e550924 100644
-> --- a/sound/soc/dwc/dwc-i2s.c
-> +++ b/sound/soc/dwc/dwc-i2s.c
-> @@ -138,7 +138,7 @@ static irqreturn_t i2s_irq_handler(int irq, void *dev=
-_id)
->  			irq_valid =3D true;
->  		}
-> =20
-> -		/* Error Handling: TX */
-> +		/* Error Handling: RX */
->  		if (isr[i] & ISR_RXFO)=20
-> { 			dev_err_ratelimited(dev->dev, "RX overrun (ch_id=3D%d)\n", i);
->  			irq_valid =3D true;
+regards,
+Bibek
 
-Oh, you mean the code following the comment checks for RXFO overrun.
 
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---S+WQLwUYDDDtOHMY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZP8MAgAKCRD2uYlJVVFO
-o3MyAQDA9qZKWM+Xqnw1ZKiEx8pkr5GrsaLJ5HV6zN64vPqvOQD9F3v5H5vFLGqO
-0v230ZWsjXAWDA2rPXXP68hDNudhXA0=
-=aoyc
------END PGP SIGNATURE-----
-
---S+WQLwUYDDDtOHMY--
+> 
+>>   	return ret;
+>> -- 
+>> 2.17.1
+>>
+> 
