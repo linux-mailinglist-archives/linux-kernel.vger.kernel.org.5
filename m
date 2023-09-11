@@ -2,373 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D4779BC71
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5C179B81A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359227AbjIKWQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        id S1348369AbjIKV0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238180AbjIKNpV (ORCPT
+        with ESMTP id S238206AbjIKNtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:45:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAB9CD7;
-        Mon, 11 Sep 2023 06:45:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694439916; x=1725975916;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6hZ/scxqcpisakdOuYAsA4BjUmqsqsB5dHsi1FpGb4o=;
-  b=lWt9xhpRh6VfPFykuuz6dAUAvNkxyiKoECKE0DvpM/xU4kv8WkyWV1GW
-   6UQG04ZLFalGZydHv37DeIbbtl0ZjG+cnNa8HcvRRlamK1DkaCwbxldK3
-   1fS0xxyK+VLeTsTzIhMJpfKulljmAbrSprcpPtIBfgp0lfgjrWN1yyB/n
-   yTzbcIyn/LokxW8d9rR41eLVimxCgRbhINpQz5scoJXlkC8IWjxyZGFQt
-   2fze0yJI/clf8vJ0rqNlg4HwQ++/nOSenbv9Jd3YI/I7hyp94BKVtDCrQ
-   xtkKuQdV2pcKHfC5qOL13zBFK3VA6GMcSDr4rrzGhK/Lo3YM2GLZFH9XY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444500468"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="444500468"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:45:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813379979"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="813379979"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2023 06:45:12 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, linux-pci@vger.kernel.org, dinguyen@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
-Subject: [PATCH v3 2/2] PCI: altera: add support for agilex family fpga
-Date:   Mon, 11 Sep 2023 19:15:41 +0530
-Message-Id: <20230911134541.1777043-3-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911134541.1777043-1-sharath.kumar.d.m@intel.com>
-References: <20230616063313.862996-2-sharath.kumar.d.m@intel.com>
- <20230911134541.1777043-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 09:49:43 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DE8F5;
+        Mon, 11 Sep 2023 06:49:39 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-573449a364fso2914900eaf.1;
+        Mon, 11 Sep 2023 06:49:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694440179; x=1695044979; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UXNPbouy3kzuW6cEr2/zAGNQTmDNOg3cj29kcDr8jVg=;
+        b=b1jpZvlNtfsi5DB/9yhslbfEuSSKOJz/rQVzCa8FwN0GRfyJwAkcZ1IMFPrzjAMLEg
+         5fcROyU8mHE4oHCw8D7Aj8LbjpkVEWxeQAqSSmZPx+rf8Ur2xQpQ9d5OH2vfT8C2usUP
+         Z4mNyEnWpRsKhiL1LPCRCtFLg8ZyFZHOraAmdn0ooqkio6HvL8zjKYPrUsMZjh5mi7RN
+         8sTKQqtjQkQZjXJ90zMs4iQEz4BlswgZcd9dC8G+xnFMcNP5jhWWOORrmNiQCHq7mq5N
+         8ceEaZgGkQt9ICarOVI5E+TocYp4yj3D4mDO/sDcbv8VcsDTHXlFZkde9g4zAooMl52j
+         /0Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694440179; x=1695044979;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UXNPbouy3kzuW6cEr2/zAGNQTmDNOg3cj29kcDr8jVg=;
+        b=CdQEpKWw76nPpvQIErHxXKJmaxDSmANJ+jPNMtkjE/YwY+AVqXc8h0a41qFT+ZGucd
+         zbhpUQWJql+EV0RISgm+JBRE6CfY774wpqaLBZqXkptvLEIPkjoJ9d7cXes4WiUqCxPb
+         69a+0nfpL4rKVJC/bxTGasnWbiuFEwPt0DIeKzTCe7qoNODxIST87jHnJqZ1Iju3jlTh
+         hnqjF7IeABwYqVgqmvdBG1unP66ajrk9VsfUa2899yFzRSKH1ohtM8OrI1Q12IJ0R2Jf
+         1TFxf0iTPLLTnbGPP3P0QnVVZavQ8K5x89pCgN1S8AZYxdQNgdA1eBwECMS0WhnVRlvl
+         GnMw==
+X-Gm-Message-State: AOJu0YwpGR1kiuvsJBrX5WPQgcOKIkqDaOmUyOYY4Y2sNDOxaWvV3TBc
+        ugQiWYpcwEElynJgVNzZ3YMZ93PIukZ5mVsGuFc=
+X-Google-Smtp-Source: AGHT+IE4R9jl7ZSD4oR4TffX/ALcpWOZ4zwagoM4Tx84LF1QGH9ViZAd4OeqM7xUiHyfzOu7FdoyK4H2SxtpGRO8HUM=
+X-Received: by 2002:a05:6820:170:b0:576:8d6e:9a41 with SMTP id
+ k16-20020a056820017000b005768d6e9a41mr6173164ood.1.1694440178811; Mon, 11 Sep
+ 2023 06:49:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230906115928.3749928-1-alpic@google.com> <202309090600.NSyo7d2q-lkp@intel.com>
+ <CAEjxPJ4GOq3E4zqXbEMKUxqewopyeU5nmUg89rL+P5YsuEBi7A@mail.gmail.com>
+In-Reply-To: <CAEjxPJ4GOq3E4zqXbEMKUxqewopyeU5nmUg89rL+P5YsuEBi7A@mail.gmail.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 11 Sep 2023 09:49:27 -0400
+Message-ID: <CAEjxPJ4uoqkwmbeOOmUHJwoKiK3cnfJP5P2w+hOXr4BZNtQ+JQ@mail.gmail.com>
+Subject: Re: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
+To:     kernel test robot <lkp@intel.com>
+Cc:     Alfred Piccioni <alpic@google.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        oe-kbuild-all@lists.linux.dev, stable@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+On Mon, Sep 11, 2023 at 9:19=E2=80=AFAM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On Fri, Sep 8, 2023 at 6:54=E2=80=AFPM kernel test robot <lkp@intel.com> =
+wrote:
+> >
+> > Hi Alfred,
+> >
+> > kernel test robot noticed the following build errors:
+> >
+> > [auto build test ERROR on 50a510a78287c15cee644f345ef8bac8977986a7]
+> >
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Alfred-Piccioni/=
+SELinux-Check-correct-permissions-for-FS_IOC32_/20230906-200131
+> > base:   50a510a78287c15cee644f345ef8bac8977986a7
+> > patch link:    https://lore.kernel.org/r/20230906115928.3749928-1-alpic=
+%40google.com
+> > patch subject: [PATCH V2] SELinux: Check correct permissions for FS_IOC=
+32_*
+> > config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20230=
+909/202309090600.NSyo7d2q-lkp@intel.com/config)
+> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/arc=
+hive/20230909/202309090600.NSyo7d2q-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new ve=
+rsion of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202309090600.NSyo7d2q-l=
+kp@intel.com/
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    security/selinux/hooks.c: In function 'selinux_file_ioctl':
+> > >> security/selinux/hooks.c:3647:9: error: duplicate case value
+> >     3647 |         case FS_IOC32_GETFLAGS:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3645:9: note: previously used here
+> >     3645 |         case FS_IOC_GETFLAGS:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3648:9: error: duplicate case value
+> >     3648 |         case FS_IOC32_GETVERSION:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3646:9: note: previously used here
+> >     3646 |         case FS_IOC_GETVERSION:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3654:9: error: duplicate case value
+> >     3654 |         case FS_IOC32_SETFLAGS:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3652:9: note: previously used here
+> >     3652 |         case FS_IOC_SETFLAGS:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3655:9: error: duplicate case value
+> >     3655 |         case FS_IOC32_SETVERSION:
+> >          |         ^~~~
+> >    security/selinux/hooks.c:3653:9: note: previously used here
+> >     3653 |         case FS_IOC_SETVERSION:
+> >          |         ^~~~
+>
+> Not sure of the right way to fix this while addressing the original
+> issue that this patch was intended to fix. Looking in fs/ioctl.c, I
+> see that the some FS_IOC32 values are remapped to the corresponding
+> FS_IOC values by the compat ioctl syscall entrypoint. Also notice this
+> comment there:
+>
+>         /* RED-PEN how should LSM module know it's handling 32bit? */
+>         error =3D security_file_ioctl(f.file, cmd, arg);
+>         if (error)
+>                 goto out;
+>
+> So perhaps this is a defect in LSM that needs to be addressed?
 
-create new instance of struct altera_pcie_data for
-"altr,pcie-root-port-3.0"
-provide corresponding callback
-"port_conf_off" points to avmm port config register base
+Note btw that some of the 32-bit ioctl commands are only handled in
+the fs-specific compat_ioctl routines, e.g. ext4_compat_ioctl()
+handles EXT4_IOC32_GETVERSION =3D=3D FS_IOC32_GETVERSION and ditto for
+_SETVERSION.
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 207 ++++++++++++++++++++++++++-
- 1 file changed, 206 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index 878f86b1cc6b..aa14ea588487 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -79,9 +79,20 @@
- #define S10_TLP_FMTTYPE_CFGWR0		0x45
- #define S10_TLP_FMTTYPE_CFGWR1		0x44
- 
-+#define AGLX_RP_CFG_ADDR(pcie, reg)     \
-+	(((pcie)->hip_base) + (reg))
-+#define AGLX_RP_SECONDARY(pcie)         \
-+	readb(AGLX_RP_CFG_ADDR(pcie, PCI_SECONDARY_BUS))
-+
-+#define AGLX_BDF_REG			0x00002004
-+#define AGLX_ROOT_PORT_IRQ_STATUS	0x14c
-+#define AGLX_ROOT_PORT_IRQ_ENABLE	0x150
-+#define AGLX_CFG_AER			(1<<4)
-+
- enum altera_pcie_version {
- 	ALTERA_PCIE_V1 = 0,
- 	ALTERA_PCIE_V2,
-+	ALTERA_PCIE_V3, /* AGILEX p-tile, f-tile */
- };
- 
- struct altera_pcie {
-@@ -93,6 +104,8 @@ struct altera_pcie {
- 	struct irq_domain	*irq_domain;
- 	struct resource		bus_range;
- 	const struct altera_pcie_data	*pcie_data;
-+	void __iomem		*cs_base;
-+	u32			port_conf_off;
- };
- 
- struct altera_pcie_ops {
-@@ -138,6 +151,39 @@ static inline u32 cra_readl(struct altera_pcie *pcie, const u32 reg)
- 	return readl_relaxed(pcie->cra_base + reg);
- }
- 
-+static inline void cs_writel(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writel_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writew(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writew_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writeb(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writeb_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readl(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readl_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readw(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readw_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readb(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readb_relaxed(pcie->cs_base + reg);
-+}
-+
- static bool altera_pcie_link_up(struct altera_pcie *pcie)
- {
- 	return !!((cra_readl(pcie, RP_LTSSM) & RP_LTSSM_MASK) == LTSSM_L0);
-@@ -152,6 +198,14 @@ static bool s10_altera_pcie_link_up(struct altera_pcie *pcie)
- 	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static bool aglx_altera_pcie_link_up(struct altera_pcie *pcie)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie,
-+		pcie->pcie_data->cap_offset + PCI_EXP_LNKSTA);
-+
-+	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
-+}
-+
- /*
-  * Altera PCIe port uses BAR0 of RC's configuration space as the translation
-  * from PCI bus to native BUS.  Entire DDR region is mapped into PCIe space
-@@ -432,6 +486,101 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
-+static int aglx_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 *value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		*value = readb(addr);
-+		break;
-+	case 2:
-+		*value = readw(addr);
-+		break;
-+	default:
-+		*value = readl(addr);
-+		break;
-+	}
-+
-+	/* interrupt pin not programmed in hardware, set to INTA*/
-+	if (where == PCI_INTERRUPT_PIN && size == 1)
-+		*value = 0x01;
-+	else if (where == PCI_INTERRUPT_LINE)
-+		*value |= 0x0100;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		writeb(value, addr);
-+		break;
-+	case 2:
-+		writew(value, addr);
-+		break;
-+	default:
-+		writel(value, addr);
-+		break;
-+	}
-+
-+	/*
-+	 * Monitor changes to PCI_PRIMARY_BUS register on root port
-+	 * and update local copy of root bus number accordingly.
-+	 */
-+	if (busno == pcie->root_bus_nr && where == PCI_PRIMARY_BUS)
-+		pcie->root_bus_nr = value & 0xff;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_nonrp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		cs_writeb(pcie, value, where);
-+		break;
-+	case 2:
-+		cs_writew(pcie, value, where);
-+		break;
-+	default:
-+		cs_writel(pcie, value, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_nonrp_read_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 *value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		*value = cs_readb(pcie, where);
-+		break;
-+	case 2:
-+		*value = cs_readw(pcie, where);
-+		break;
-+	default:
-+		*value = cs_readl(pcie, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
- static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 		int where, int size, u32 *value)
- {
-@@ -688,6 +837,30 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 	chained_irq_exit(chip, desc);
- }
- 
-+static void aglx_isr(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct altera_pcie *pcie;
-+	struct device *dev;
-+	u32 status;
-+	int ret;
-+
-+	chained_irq_enter(chip, desc);
-+	pcie = irq_desc_get_handler_data(desc);
-+	dev = &pcie->pdev->dev;
-+
-+	status = readl((pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	if (status & AGLX_CFG_AER) {
-+		ret = generic_handle_domain_irq(pcie->irq_domain, 0);
-+		if (ret)
-+			dev_err_ratelimited(dev, "unexpected IRQ\n");
-+	}
-+	writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	chained_irq_exit(chip, desc);
-+}
-+
- static int altera_pcie_init_irq_domain(struct altera_pcie *pcie)
- {
- 	struct device *dev = &pcie->pdev->dev;
-@@ -723,13 +896,25 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 			return PTR_ERR(pcie->cra_base);
- 	}
- 
--	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V2) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V3)) {
- 		pcie->hip_base =
- 			devm_platform_ioremap_resource_byname(pdev, "Hip");
- 		if (IS_ERR(pcie->hip_base))
- 			return PTR_ERR(pcie->hip_base);
- 	}
- 
-+	if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		pcie->cs_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cs");
-+		if (IS_ERR(pcie->cs_base))
-+			return PTR_ERR(pcie->cs_base);
-+		of_property_read_u32(pcie->pdev->dev.of_node, "port_conf_stat",
-+			&pcie->port_conf_off);
-+		dev_dbg(&pcie->pdev->dev, "port_conf_stat_off =%#x\n",
-+				pcie->port_conf_off);
-+	}
-+
- 	/* setup IRQ */
- 	pcie->irq = platform_get_irq(pdev, 0);
- 	if (pcie->irq < 0)
-@@ -767,6 +952,15 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.rp_isr = altera_pcie_isr,
- };
- 
-+static const struct altera_pcie_ops altera_pcie_ops_3_0 = {
-+	.rp_read_cfg = aglx_rp_read_cfg,
-+	.rp_write_cfg = aglx_rp_write_cfg,
-+	.get_link_status = aglx_altera_pcie_link_up,
-+	.nonrp_read_cfg = aglx_nonrp_read_cfg,
-+	.nonrp_write_cfg = aglx_nonrp_write_cfg,
-+	.rp_isr = aglx_isr,
-+};
-+
- static const struct altera_pcie_data altera_pcie_1_0_data = {
- 	.ops = &altera_pcie_ops_1_0,
- 	.cap_offset = 0x80,
-@@ -787,11 +981,19 @@ static const struct altera_pcie_data altera_pcie_2_0_data = {
- 	.cfgwr1 = S10_TLP_FMTTYPE_CFGWR1,
- };
- 
-+static const struct altera_pcie_data altera_pcie_3_0_data = {
-+	.ops = &altera_pcie_ops_3_0,
-+	.version = ALTERA_PCIE_V3,
-+	.cap_offset = 0x70,
-+};
-+
- static const struct of_device_id altera_pcie_of_match[] = {
- 	{.compatible = "altr,pcie-root-port-1.0",
- 	 .data = &altera_pcie_1_0_data },
- 	{.compatible = "altr,pcie-root-port-2.0",
- 	 .data = &altera_pcie_2_0_data },
-+	{.compatible = "altr,pcie-root-port-3.0",
-+	.data = &altera_pcie_3_0_data },
- 	{},
- };
- 
-@@ -836,6 +1038,9 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		/* enable all interrupts */
- 		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
- 		altera_pcie_host_init(pcie);
-+	} else if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+			+ AGLX_ROOT_PORT_IRQ_ENABLE));
- 	}
- 
- 	bridge->sysdata = pcie;
--- 
-2.34.1
-
+>
+>
+> >
+> >
+> > vim +3647 security/selinux/hooks.c
+> >
+> >   3634
+> >   3635  static int selinux_file_ioctl(struct file *file, unsigned int c=
+md,
+> >   3636                                unsigned long arg)
+> >   3637  {
+> >   3638          const struct cred *cred =3D current_cred();
+> >   3639          int error =3D 0;
+> >   3640
+> >   3641          switch (cmd) {
+> >   3642          case FIONREAD:
+> >   3643          case FIBMAP:
+> >   3644          case FIGETBSZ:
+> >   3645          case FS_IOC_GETFLAGS:
+> >   3646          case FS_IOC_GETVERSION:
+> > > 3647          case FS_IOC32_GETFLAGS:
+> >   3648          case FS_IOC32_GETVERSION:
+> >   3649                  error =3D file_has_perm(cred, file, FILE__GETAT=
+TR);
+> >   3650                  break;
+> >   3651
+> >   3652          case FS_IOC_SETFLAGS:
+> >   3653          case FS_IOC_SETVERSION:
+> >   3654          case FS_IOC32_SETFLAGS:
+> >   3655          case FS_IOC32_SETVERSION:
+> >   3656                  error =3D file_has_perm(cred, file, FILE__SETAT=
+TR);
+> >   3657                  break;
+> >   3658
+> >   3659          /* sys_ioctl() checks */
+> >   3660          case FIONBIO:
+> >   3661          case FIOASYNC:
+> >   3662                  error =3D file_has_perm(cred, file, 0);
+> >   3663                  break;
+> >   3664
+> >   3665          case KDSKBENT:
+> >   3666          case KDSKBSENT:
+> >   3667                  error =3D cred_has_capability(cred, CAP_SYS_TTY=
+_CONFIG,
+> >   3668                                              CAP_OPT_NONE, true)=
+;
+> >   3669                  break;
+> >   3670
+> >   3671          case FIOCLEX:
+> >   3672          case FIONCLEX:
+> >   3673                  if (!selinux_policycap_ioctl_skip_cloexec())
+> >   3674                          error =3D ioctl_has_perm(cred, file, FI=
+LE__IOCTL, (u16) cmd);
+> >   3675                  break;
+> >   3676
+> >   3677          /* default case assumes that the command will go
+> >   3678           * to the file's ioctl() function.
+> >   3679           */
+> >   3680          default:
+> >   3681                  error =3D ioctl_has_perm(cred, file, FILE__IOCT=
+L, (u16) cmd);
+> >   3682          }
+> >   3683          return error;
+> >   3684  }
+> >   3685
