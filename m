@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D479B3E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3F879B0AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354511AbjIKVy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S235472AbjIKV6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244020AbjIKSp3 (ORCPT
+        with ESMTP id S244045AbjIKSz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 14:45:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CE721AD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:44:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694457875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ovvc9S0M0fusmEOptIxpRYf51VbT2wJC8z+64gwHvT4=;
-        b=hjgIAKEQ03bF2LZPoZO/epEHQdKhFDJn5A6an4pF5wNj34mUVzfXVaixzNtIG9qHqcgX0h
-        DHo36lB/cky3kVU4Ad65NyiD821BxkLksfehw3Qz6qGTNLZXp9WI9+bDvVXME3YNocpTA5
-        1RudtL6g7IAE17P+av/RV5VilOPpF6E=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-689-nfx6BQ6mNpixdhhwutjXtA-1; Mon, 11 Sep 2023 14:44:34 -0400
-X-MC-Unique: nfx6BQ6mNpixdhhwutjXtA-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-79554d73bd6so331862839f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:44:34 -0700 (PDT)
+        Mon, 11 Sep 2023 14:55:58 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0161B6;
+        Mon, 11 Sep 2023 11:55:53 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fba57030fso1321210b3a.3;
+        Mon, 11 Sep 2023 11:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694458553; x=1695063353; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X4v+SVoqNGZrG3L1cc4+LLVgiWOB/yAKVlnaBwPQuJw=;
+        b=fz1HmgzBMAHgvVObDmRvxhxfYOheslakSWVMIuXQb011jPTOl0M8vxXl4WKNFkOsQD
+         ABO1fQ7V1zR6uvTo8XcYn7zoMwjuohsnNtr3OUmiRm7/O4oAwsMcgKzrB0LxlcdfrYwq
+         FqNQQuc8WNJULf8A2ELczvMXnHRuJjR84m13WEm42SdLBKF97ZUGszojL1jj+gMg+61y
+         2HJ3R7IZEmfOLIL5bR6lwSTwC0byNROG69BI4VjQE4OOL1JuIrGzYQe1SAL4o3OI4Dv8
+         8Z0F9wXREizzvRpa84Whr1NpWUpPAVGBXD7wqrbsfv3Q8NX+gBufmtVQM727R6jXXrc9
+         y0vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694457873; x=1695062673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694458553; x=1695063353;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ovvc9S0M0fusmEOptIxpRYf51VbT2wJC8z+64gwHvT4=;
-        b=xQ43zdkjGicHTDNdt85tcMtek2zK+N7ANC9r1d7yidsfwxxdE06D33QF5lYrjzF/WW
-         h+OFkR57bt5QMsnWifT5R0qBZnTceOigYe5R4mYC96Um31Dt43sEKDG9jYV0TFRwme+L
-         905KV9FQk+/quzt3co9viPT6BZdFAB3kKlw1PxgO3cje5vWJybSW3FIn/yr100OneFOM
-         M3N8tiBA+BOLbe5CbmBxaOMPmvV4oJlIJRgPDAuNU8v67FrOv1jESPg7rrSkm9RtnjkQ
-         loL6jpatonv5TqUfS6TU9db1du+UW5WxB0K6QOyLMEc1NZZf1QrQBirwW/JCZCCQOfbR
-         oGPg==
-X-Gm-Message-State: AOJu0Yzl6/FDJvjzfdQ820LgMje2fGG6fRDzk8TRJVAulp+e1OoI9UU0
-        XZ7gcRAffuW6i/5YFll5VO54oZFsOphFpbIpvRpe0So0urWB2QXolK7eCCYoUPo99F7VnnHSp1K
-        HLRuoJE+uhR8+WPiUFCxdCGcofPpJk9u9
-X-Received: by 2002:a5e:9247:0:b0:792:792e:6616 with SMTP id z7-20020a5e9247000000b00792792e6616mr13444917iop.2.1694457873030;
-        Mon, 11 Sep 2023 11:44:33 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH5Ns8CF+cguv9IZKBefa7dViaNzCR4oy3BIhvny7IeDcQ2kl9cZDg3xsSJu4ZrwfVj50Pzow==
-X-Received: by 2002:a5e:9247:0:b0:792:792e:6616 with SMTP id z7-20020a5e9247000000b00792792e6616mr13444905iop.2.1694457872775;
-        Mon, 11 Sep 2023 11:44:32 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id g12-20020a0566380c4c00b004290f6c15bfsm2319678jal.145.2023.09.11.11.44.32
+        bh=X4v+SVoqNGZrG3L1cc4+LLVgiWOB/yAKVlnaBwPQuJw=;
+        b=iGl6R8oH7SAylUSlDlyCnVxp9Jwi/kcisKrBZ8+d1LK5F6YaOSRjowLMhj1zMEA9m9
+         U3C5ATC8iJnS5xQCwkJzM+a4weeLXAo8KCW+gwj1tl1kaErPZbQQFSHPVX4rSrAfVgr2
+         MVBlgHY+U91vDjjwwm538sJuS4kFttZVc59Wkv3XGxRqjiGldy3I7KnVQKYb2snnstkL
+         t5Qc06pL5iyBDiemwuZpsqcFngtz2S3hnyZnrEEUsU/20kjBtrdp6b3U2OjNvd0H5zIo
+         icIsO9kcgmg75CIuhq8dIePhx2zJS9P0BuBpycw+iv3wu/Z0EADyEo2Y5XOSMRWIm9oe
+         LKIQ==
+X-Gm-Message-State: AOJu0YzMXmK+jqH+lv+rsYfClWixm8xSzh37Y4+Tada0/Y7Vi5TB+Ivd
+        dscrQ74HJ9o/R6xt/FnHRYsMYOjWxa/eDA==
+X-Google-Smtp-Source: AGHT+IEorBOJmt+LDA4QY7gxpy//vazvi1cD7qOl3PDBlyGrzPrLA6zDS+OwMSagdNQj9a2OZaemfQ==
+X-Received: by 2002:a05:6a20:842a:b0:134:9f4e:623f with SMTP id c42-20020a056a20842a00b001349f4e623fmr10184955pzd.14.1694458553196;
+        Mon, 11 Sep 2023 11:55:53 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id j10-20020aa7800a000000b006661562429fsm6085648pfi.97.2023.09.11.11.55.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 11:44:32 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 12:44:31 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Cong Liu <liucong2@kylinos.cn>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fix build error in function vfio_combine_iova_ranges
-Message-ID: <20230911124431.5e09f53b.alex.williamson@redhat.com>
-In-Reply-To: <20230911094103.57771-1-liucong2@kylinos.cn>
-References: <20230911094103.57771-1-liucong2@kylinos.cn>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 11:55:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 11 Sep 2023 08:55:50 -1000
+From:   "tj@kernel.org" <tj@kernel.org>
+To:     "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
+Cc:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        NB-Core Team <NB-CoreTeam@nebius.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Andrey Ryabinin <arbn@yandex-team.com>
+Subject: Re: [RFC PATCH 1/3] cgroup: list all subsystem states in debugfs
+ files
+Message-ID: <ZP9itivlZQIb5wZ0@mtj.duckdns.org>
+References: <20230911075437.74027-1-zeil@nebius.com>
+ <20230911075437.74027-2-zeil@nebius.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911075437.74027-2-zeil@nebius.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 17:41:02 +0800
-Cong Liu <liucong2@kylinos.cn> wrote:
+On Mon, Sep 11, 2023 at 07:55:15AM +0000, Yakunin, Dmitry (Nebius) wrote:
+> +static void mem_cgroup_css_dump(struct cgroup_subsys_state *css,
+> +				struct seq_file *m)
+> +{
+> +	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> +
+> +	seq_printf(m, "mem_id=%u memory=%lu memsw=%lu kmem=%lu tcpmem=%lu shmem=%lu",
+> +		   mem_cgroup_id(memcg),
+> +		   page_counter_read(&memcg->memory),
+> +		   page_counter_read(&memcg->memsw),
+> +		   page_counter_read(&memcg->kmem),
+> +		   page_counter_read(&memcg->tcpmem),
+> +		   memcg_page_state(memcg, NR_SHMEM));
+> +}
 
-> when compiling with smatch check, the following errors were encountered:
-> 
-> drivers/vfio/vfio_main.c:957 vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
-> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
-> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
-> 
-> this patch fix these error.
-> 
-> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
-> ---
->  drivers/vfio/vfio_main.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index 40732e8ed4c6..0a9620409696 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -938,12 +938,13 @@ static int vfio_ioctl_device_feature_migration(struct vfio_device *device,
->  void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
->  			      u32 req_nodes)
->  {
-> -	struct interval_tree_node *prev, *curr, *comb_start, *comb_end;
-> +	struct interval_tree_node *prev, *curr;
-> +	struct interval_tree_node *comb_start, *comb_end;
+Can you please take a look at drgn (https://github.com/osandov/drgn) and see
+whether that satifies your needs? We can easily add drgn scripts under tools
+directory too (e.g. iocost already does that).
 
-This looks cosmetic, what did it fix?  It's not clear to me how any of
-this addresses the last two errors.  Thanks,
+Thanks.
 
-Alex
-
->  	unsigned long min_gap, curr_gap;
->  
->  	/* Special shortcut when a single range is required */
->  	if (req_nodes == 1) {
-> -		unsigned long last;
-> +		unsigned long last = 0;
->  
->  		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
->  		curr = comb_start;
-
+-- 
+tejun
