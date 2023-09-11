@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDAE79BFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A192379B853
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242570AbjIKU6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        id S240819AbjIKVEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236178AbjIKJyA (ORCPT
+        with ESMTP id S236182AbjIKJyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:54:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E91CE6;
-        Mon, 11 Sep 2023 02:53:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694426036; x=1725962036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SEOfbDIoCiImT7fNzulI3X+NzV6QoBIYFDXBTyvM/zw=;
-  b=etAPPbPhIC9O1BrcWJ+xa6J4d0Mj35Q7AS91BdjAgezlPQSCUCkc5OuY
-   +pP8242y7zgl3yw0tGhvvYUzmWhwx1LU9pxuzTMGM6aeJ2+x+hyt4kC8c
-   ZsV6CC5RV/ou48WFoSI8YzowteukNUWzZKXSkUqcxrLhkB+tLAwKiGxC2
-   IOPy01yGN5z0Ls6vBPxUcg3zcYfOWN3X6NFtd2/DmXQ0kygStoI01tQCM
-   8Eq55twW35quOA/6iL2FMdp5KvG3ZRF9l2fPtpLbtpAjye79p7xANqUZd
-   n57K5+k2a/1kwmzO0DuPFXzEbgbT8P7oUWM6rmfQiUDGxEPQb24m9fF6H
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444458013"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="444458013"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 02:53:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="833444760"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="833444760"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 02:53:52 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfdc6-008Hdd-0E;
-        Mon, 11 Sep 2023 12:53:50 +0300
-Date:   Mon, 11 Sep 2023 12:53:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linhua Xu <Linhua.xu@unisoc.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH V2 4/6] pinctrl: sprd: Add pinctrl support for UMS512
-Message-ID: <ZP7jratkdqCGg35I@smile.fi.intel.com>
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
- <20230908055146.18347-5-Linhua.xu@unisoc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908055146.18347-5-Linhua.xu@unisoc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 05:54:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E61BE5D;
+        Mon, 11 Sep 2023 02:54:46 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B6e6Xb003529;
+        Mon, 11 Sep 2023 09:54:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=dcisKaOxl88pO4ru3b/qyY3BiC0kLFNKOlg2+iCDKjM=;
+ b=GdO4eyyN3MiCEJCgSg3e8hkmifw/r1PYXzW2dUQFjIW37+ZR2WDk30cxBRw+QNfIXKMz
+ IHme0wWvmGK57mgwU/Tmom6ETfv3mYBxKmlrQBcmQflVVZQtl8puxwbBy/cqicezAA+e
+ DQt1jXMnc8KKYy8d3t9c0Pxs2Sdqsa3jJaZZFJJz87IVHUYF217ORQqam++cVmmRFUj3
+ dHA8pYOBHimvM9O1fbvVtDFSKaJb1nxsjwmu878UaNrLacuiIxsWz1R0qk3MZASFrXSe
+ MYYMXPMb6Rm0fRiNZNPCiIW3Oy4S+YIGR0bTiOlU8RC/MFEKOA7quWav+Z5NqVaqWrag +Q== 
+Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0gx9uewe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 09:54:35 +0000
+Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38B9sX57018265;
+        Mon, 11 Sep 2023 09:54:33 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3t0hsk9dnx-1;
+        Mon, 11 Sep 2023 09:54:33 +0000
+Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38B9sWJM018260;
+        Mon, 11 Sep 2023 09:54:33 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 38B9sWh8018259;
+        Mon, 11 Sep 2023 09:54:32 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id B277A482F; Mon, 11 Sep 2023 17:54:31 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH 0/2] Add lock to avoid race when ringing channel DB
+Date:   Mon, 11 Sep 2023 17:54:27 +0800
+Message-Id: <1694426069-74140-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BwgJDuJ1J3hqsDeTDlS_kzcF0gZx1syZ
+X-Proofpoint-GUID: BwgJDuJ1J3hqsDeTDlS_kzcF0gZx1syZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=551 malwarescore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110091
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:51:44PM +0800, Linhua Xu wrote:
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
-> 
-> Add the pin control driver for UNISOC UMS512 platform.
+1. We need a write lock in mhi_gen_tre otherwise there is race of the WP
+used for ringing channel DB between mhi_queue and M0 transition.
+2. We can not invoke local_bh_enable() when irqs are disabled, so move
+read_lock_irqsave() under the mhi_gen_tre() since we add write_lock_bh() in
+mhi_gen_tre().
 
-...
+Bhaumik Bhatt (1):
+  bus: mhi: host: Add spinlock to protect WP access when queueing TREs
 
-> +#define	PINCTRL_REG_OFFSET		0x34
+Hemant Kumar (1):
+  bus: mhi: host: Take irqsave lock after TRE is generated
 
-0x0034
-
-> +#define	PINCTRL_REG_MISC_OFFSET		0x434
-
-...
-
-> +static const struct of_device_id sprd_pinctrl_of_match[] = {
-> +	{ .compatible = "sprd,ums512-pinctrl", },
-
-Inner comma is not needed.
-
-> +	{ }
-> +};
+ drivers/bus/mhi/host/main.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.7.4
 
