@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E84179B5AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9E579AF10
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237339AbjIKUv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S245185AbjIKVJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244308AbjIKUBn (ORCPT
+        with ESMTP id S244334AbjIKUIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 16:01:43 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C2CC4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:01:39 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31f6ddb3047so4710927f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694462497; x=1695067297; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rc/ITscuXzrOZNzjOX81ClkWsxPRiA/63di+UZB/Fss=;
-        b=loVr5hheOIVu6QcpbW91kAq1raiTl38ExhJf72I1lu/K0nWWQ469avMmQXzMhv6z5A
-         mB4jLNCPgCkONX9xh9AQooa160FrsBB22SHjqDlVOx3DqEaYw/qVA1bNDTgLvtajW8dR
-         MYhpJ+/ltVZd5yes+IDWvg+AWy0pq7lrAKoMWgifahmI4Ocep8YkkamDSR//fi3FhFYa
-         k6rV6eQwg8/jJzqGhsWUebGgxg4+mYCDHKGws/FSVH3jFb+3bs+yxYdFdWp/2AJ5lJjr
-         qBVmQjJh1p2qWInGgN5+OQ3oT56vZjcczn8X9xKQfLhr5UywVbcT55CKtDccOvRbFFKi
-         hM7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694462497; x=1695067297;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rc/ITscuXzrOZNzjOX81ClkWsxPRiA/63di+UZB/Fss=;
-        b=s75mv2KF3P90gzT9dfhmlhkgHJxIjkm7yp7rdnqS0P08QhCrIB5wo0JC55nli4QyjX
-         VV4Yn9CPGZlwbpVdmJClTiP5OwWfa8tCR6c6dv63ez6w7uqrUcCiOXyC01GeI5hOqxYb
-         NGsvjkvLnRp6BGyc2wYNqn3NaiGqHNxmooQioR85WyHXTCGqT3077FaD+Ftoi7Q4ztTH
-         xYbu+irdHS+KZLWX73/sM6F4f+c4naXwaUfjRrDjgCJJyarBvR4duVnCuDf77srh9sMW
-         /0bRX38L18qHNb9kqNVxCnr7DJ44/dJobG4cDgCG3IIhqepFqHBzrQ0Jysv/iKA/ZihQ
-         Hp5A==
-X-Gm-Message-State: AOJu0Yxxyc42wXT4WfOAHKw7yt7EbZbGkp2pVOwcTZnWJVI22708pfcs
-        jVn/f1hIQAjEig9Jb/mKvYi/Wp4GCZItPclAG4p/ww==
-X-Google-Smtp-Source: AGHT+IFl+KdEdEZPM6dgoOAIbUh01xAe49DOxDPyclO9MjoDMPy6oI+PGBUbBzXjIZIb0Pzdpfqm23roWvQdVndSEEw=
-X-Received: by 2002:a5d:4f8c:0:b0:314:3e77:f210 with SMTP id
- d12-20020a5d4f8c000000b003143e77f210mr8531185wru.59.1694462497487; Mon, 11
- Sep 2023 13:01:37 -0700 (PDT)
+        Mon, 11 Sep 2023 16:08:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD327185;
+        Mon, 11 Sep 2023 13:08:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 041CCC433C8;
+        Mon, 11 Sep 2023 20:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694462890;
+        bh=3B66jcmtNtcZKdqnNjsSwE55H31iE3Fm1jeKR1LXZy4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZiPZf9IYSOHwWiD1bGM1gygzDdlgUugB2Tib7kVD/a8PKgNimxrivYA6uRT78K/RG
+         UDla10sEaXy6Q9UT37abR2Pq7V2wHzywFIdivk8YOliNW2mMxagw5dOjxXJK1tKn68
+         xDsJtH7NAkI7WnpbvhyM/T+UFwDN/ecI9vedup7FWL/h6gXlYvigRthUPGWY4nN6mT
+         AKvk9l+fq7bWfEl969+NmiBNyP9rYqEQrLS3YKnkKOFxGVqPndBiHSCV4GhV9hWlc5
+         8ZHbCJN1AMNPNok30IQ4MHePfJM+uKbnu92GAzRr7VO/dEqU1eKPnFVz5Sn3ng/zd4
+         L07jXL+fp0WmQ==
+Date:   Mon, 11 Sep 2023 15:08:08 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "D M, Sharath Kumar" <sharath.kumar.d.m@intel.com>
+Cc:     "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] PCI: altera: refactor driver for supporting new
+ platform
+Message-ID: <20230911200808.GA388026@bhelgaas>
 MIME-Version: 1.0
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-5-yosryahmed@google.com> <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
- <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
- <ZP8SDdjut9VEVpps@dhcp22.suse.cz> <CAAPL-u8NndkB2zHRtF8pVBSTsz854YmUbx62G7bpw6BMJiLaiQ@mail.gmail.com>
- <ZP9rtiRwRv2bQvde@dhcp22.suse.cz>
-In-Reply-To: <ZP9rtiRwRv2bQvde@dhcp22.suse.cz>
-From:   Wei Xu <weixugc@google.com>
-Date:   Mon, 11 Sep 2023 13:01:25 -0700
-Message-ID: <CAAPL-u9XwMcrqVRu871tGNKa3LKmJSy9pZQ7A98uDbG6ACzMxQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BY5PR11MB4306A066509DC8CB2ECEC164FDEDA@BY5PR11MB4306.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:34=E2=80=AFPM Michal Hocko <mhocko@suse.com> wro=
-te:
+On Fri, Sep 08, 2023 at 01:40:13PM +0000, D M, Sharath Kumar wrote:
+> > -----Original Message-----
+> > From: Bjorn Helgaas <helgaas@kernel.org>
+> > Sent: Friday, September 8, 2023 6:14 PM
+> > To: D M, Sharath Kumar <sharath.kumar.d.m@intel.com>
+> > Cc: lpieralisi@kernel.org; kw@linux.com; robh@kernel.org;
+> > bhelgaas@google.com; linux-pci@vger.kernel.org; dinguyen@kernel.org;
+> > linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH v2 1/2] PCI: altera: refactor driver for supporting new
+> > platform
+> > 
+> > On Fri, Sep 08, 2023 at 09:09:34AM +0000, D M, Sharath Kumar wrote:
+> > > > -----Original Message-----
+> > > > From: Bjorn Helgaas <helgaas@kernel.org> ...
+> > 
+> > > > > +	int (*ep_read_cfg)(struct altera_pcie *pcie, u8 busno,
+> > > > > +			unsigned int devfn, int where, int size, u32 *value);
+> > > > > +	int (*ep_write_cfg)(struct altera_pcie *pcie, u8 busno,
+> > > > > +			unsigned int devfn, int where, int size, u32 value);
+> > > >
+> > > > "ep_read_cfg" isn't the ideal name because it suggests "endpoint",
+> > > > but it may be either an endpoint or a switch upstream port.  The
+> > > > rockchip driver uses "other", which isn't super descriptive either but
+> > might be better.
+> > > >
+> > > Ok will change to "nonrp_read_cfg" ?
+> > 
+> > I think the important point is not whether it's a Root Port or not, but whether
+> > it's on the root *bus* or not.  In other words, I think the driver has to
+> > determine whether to generate a Type 0 (targeting something on the root
+> > bus) or a Type 1 (targeting something below a
+> > bridge) config transaction (see PCI-to-PCI Bridge spec r1.2, sec 3.1.2.1).
+> > 
+> > There can be non-Root Ports on the root bus, so "nonrp" doesn't seem quite
+> > right.  "Other" would be OK, since that's already used by other drivers.
+> > Maybe "type0" and "type1" would be better and would fit well with the
+> > root_bus_nr check you use to distinguish them?
 >
-> On Mon 11-09-23 12:15:24, Wei Xu wrote:
-> > On Mon, Sep 11, 2023 at 6:11=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Thu 07-09-23 17:52:12, Wei Xu wrote:
-> > > [...]
-> > > > I tested this patch on a machine with 384 CPUs using a microbenchma=
-rk
-> > > > that spawns 10K threads, each reading its memory.stat every 100
-> > > > milliseconds.
-> > >
-> > > This is rather extreme case but I wouldn't call it utterly insane
-> > > though.
-> > >
-> > > > Most of memory.stat reads take 5ms-10ms in kernel, with
-> > > > ~5% reads even exceeding 1 second.
-> > >
-> > > Just curious, what would numbers look like if the mutex is removed an=
-d
-> > > those threads would be condending on the existing spinlock with lock
-> > > dropping in place and removed. Would you be willing to give it a shot=
-?
-> >
-> > Without the mutex and with the spinlock only, the common read latency
-> > of memory.stat is still 5ms-10ms in kernel. There are very few reads
-> > (<0.003%) going above 10ms and none more than 1 second.
->
-> Is this with the existing spinlock dropping and same 10k potentially
-> contending readers?
+> Situation is
+> Root port configuration space  - memory mapped
 
-Yes, it is the same test (10K contending readers). The kernel change
-is to remove stats_user_flush_mutex from mem_cgroup_user_flush_stats()
-so that the concurrent mem_cgroup_user_flush_stats() requests directly
-contend on cgroup_rstat_lock in cgroup_rstat_flush().
+I don't quite believe the idea that the access method is based on
+whether it's a root port.  For one thing, you decide whether to use
+the memory-mapped accessor or the indirect accessor based on whether
+the read targets the *root bus*, not whether it targets a root port.
+And obviously you don't *know* whether the device at a B/D/F address
+is a root port until after you read the PCIe type.
 
-> --
-> Michal Hocko
-> SUSE Labs
+I think using names similar to other drivers will be helpful.
+
+These all work on the root bus:
+
+  exynos_pcie_rd_own_conf
+  meson_pcie_rd_own_conf
+  rockchip_pcie_rd_own_conf
+
+These work on non-root buses:
+
+  dw_pcie_rd_other_conf
+  rockchip_pcie_rd_other_conf
+
+> Non root port configuration space - indirect access/proprietary access
+>     Type 0 for devices directly connected to root port
+>     Type 1 for others
+
+> > > > > +static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
+> > > > > +				 unsigned int devfn, int where, int size,
+> > > > > +				 u32 *value)
+> > > > > +{
+> > > > > +	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops-
+> > > > >rp_read_cfg)
+> > > > > +		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno,
+> > > > devfn,
+> > > > > +							where, size, value);
+> > > > > +
+> > > > > +	if (pcie->pcie_data->ops->ep_read_cfg)
+> > > > > +		return pcie->pcie_data->ops->ep_read_cfg(pcie, busno,
+> > > > devfn,
+> > > > > +							where, size, value);
+> > > > > +	return PCIBIOS_FUNC_NOT_SUPPORTED; }
