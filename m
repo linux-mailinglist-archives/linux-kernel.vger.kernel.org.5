@@ -2,134 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2324D79B4EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DE079B02C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350471AbjIKVir convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 17:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        id S237619AbjIKUvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238211AbjIKNvT (ORCPT
+        with ESMTP id S238213AbjIKNv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:51:19 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E812CD7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:15 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5924093a9b2so43711027b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694440274; x=1695045074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rDloSeE/RMJ8xb0vN0WHP8xkcaLq8Ztl0V6yiAC98sM=;
-        b=r9sFX8hWbTPT52bROUSe/+eE2tafdA0lf0mPl6GFHlvWIX0sr0C31N/I5M2dG4iYsZ
-         NJAPZ/KEX3Gzsq9e0Tjq5TFKys8qKOm2QEqOIaNNipB6XVqnt4cW2I9Yx7+HTe/vv8Sp
-         azPKrWWfB4u1qiNmcaAY7jouuLSZe9OKG2dm7difW/Z4RBl3OHyiqUpeprSRdNOq6pMJ
-         z90ffM25nv4XDruTjaom9kwezaVFfjA02L1QDyqR0maRO+DwiaFimmcZcoWWnPnLO6g0
-         5wQdedSSyvOoNTqIbcaqWeiQO6xjLhyg7y/q71FRg9dhJu5thx6//yESN+LEbCWu+yyO
-         CnAg==
-X-Gm-Message-State: AOJu0YycwF2lAVjd+nL6o01KKh+BMRWrjAVs5Q1Pm7Fau9YaPlwOxZOK
-        3ABwcCEOrSh96teIJvBfSsBgiZL6B/i7jA==
-X-Google-Smtp-Source: AGHT+IHBo+6fD75/x2bRXOeZsmXKeXcOGXXSbSPYdbCqEPNwBziQjhJ/ZnEdxSD119ZrnljtHI00ug==
-X-Received: by 2002:a81:dd12:0:b0:586:a003:b0b9 with SMTP id e18-20020a81dd12000000b00586a003b0b9mr10887884ywn.49.1694440274244;
-        Mon, 11 Sep 2023 06:51:14 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id b65-20020a0df244000000b005869fd2b5bcsm1972241ywf.127.2023.09.11.06.51.13
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d80211e8df8so2815198276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:13 -0700 (PDT)
-X-Received: by 2002:a5b:191:0:b0:d08:5a25:e6b4 with SMTP id
- r17-20020a5b0191000000b00d085a25e6b4mr9656076ybl.28.1694440273428; Mon, 11
- Sep 2023 06:51:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1694093327.git.geert@linux-m68k.org> <6894409da1a0d8667bf74b9100067485ce3c37ac.1694093327.git.geert@linux-m68k.org>
- <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
-In-Reply-To: <0424526e-e9fd-7a3f-71ed-c43855ab1290@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Sep 2023 15:51:02 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
-Message-ID: <CAMuHMdU+KNa6VEydk0uA5E2qn96Jb+ejdd8NHjqFRaC3uuCxKg@mail.gmail.com>
-Subject: Re: [PATCH 06/52] m68k: kernel: Add and use "process.h"
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@arndb.de>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
+        Mon, 11 Sep 2023 09:51:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF867FA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:51:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694440279; x=1725976279;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7WbtEAdAV3mORur/JCQXAcOnjxvqrw8areo/T/vSAg0=;
+  b=nDkCjXnDLJZTmy5FK/pLy1aSUcdUE91Qyf9IR1k+L9MJAf2GPIwJLX38
+   GgUrZQl1g0e+Vb4GrjlmMYB3Ts51CPQ3JjkaNrYW5ZKOeVJZC4NU7LqH9
+   gJp8ncR0ljyztmCXjkbTCUqY6zIHa1ChMN3tVNOqw5TRAB20Z9h5ZcxSa
+   rU3bukgQW9X6Dg/42OMpxFseMOjYc2uWtGaEEndyj2Fd2H+LpsON1xn1p
+   i1hzoAtCshGjEI6MegJ/z/Vm5PWhjeitBxDfIJIRHV6m+9kNA11Ua/Oip
+   geuQZ4Xorz82E2LdAlWljElvjy+TqYTOmmUf1wmZ/gNnl8m2tokdYmie7
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375437544"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="375437544"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:51:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693090780"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="693090780"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 06:51:13 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Cc:     Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf/x86/intel: Fix broken fixed event constraints extension
+Date:   Mon, 11 Sep 2023 06:51:28 -0700
+Message-Id: <20230911135128.2322833-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On Mon, Sep 11, 2023 at 3:42 PM Greg Ungerer <gerg@linux-m68k.org> wrote:
-> Nice cleanups. My plan is to clean up the ColdFire/68000 warnings as well.
+Unnecessary multiplexing is triggered when running an "instructions"
+event on an MTL.
 
-Thanks in advance!
+perf stat -e cpu_core/instructions/,cpu_core/instructions/ -a sleep 1
 
-> On 7/9/23 23:41, Geert Uytterhoeven wrote:
-> > --- a/arch/m68k/kernel/process.c
-> > +++ b/arch/m68k/kernel/process.c
-> > @@ -38,6 +38,7 @@
-> >   #include <asm/machdep.h>
-> >   #include <asm/setup.h>
-> >
-> > +#include <process.h>
->
-> I applied all 52 patches to linux-6.6-rc1 and see this:
->
->      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make amiga_defconfig
->      $ ARCH=m68k CROSS_COMPILE=m68k-linux- make W=1
->      ...
->        CC      arch/m68k/kernel/process.o
->      arch/m68k/kernel/process.c:41:10: fatal error: process.h: No such file or directory
->       #include <process.h>
->                ^~~~~~~~~~~
->
-> Of course trivially fixed by doing this:
->
-> diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
-> index d2d6a5735650..2584e94e2134 100644
-> --- a/arch/m68k/kernel/process.c
-> +++ b/arch/m68k/kernel/process.c
-> @@ -38,7 +38,7 @@
->   #include <asm/machdep.h>
->   #include <asm/setup.h>
->
-> -#include <process.h>
-> +#include "process.h"
+ Performance counter stats for 'system wide':
 
-Thanks, will fix (and any other similar typos, if any).
+       115,489,000      cpu_core/instructions/                (50.02%)
+       127,433,777      cpu_core/instructions/                (49.98%)
 
-I usually build in separate output directories, which causes
+       1.002294504 seconds time elapsed
 
-    -I${srcdir}/include
-    -I${srcdir}/arch/m68k/kernel
-    -I./arch/m68k/kernel
+Linux architectural perf events, e.g., cycles and instructions, usually
+have dedicated fixed counters. These events also have equivalent events
+which can be used in the general-purpose counters. The counters are
+precious. In the intel_pmu_check_event_constraints(), perf check/extend
+the event constraints of these events. So these events can utilize both
+fixed counters and general-purpose counters.
 
-to be added to the include path, causing <...> to work as well :-(
+The cleanup code commit 97588df87b56
+("perf/x86/intel: Add common intel_pmu_init_hybrid()") forgot adding
+the intel_pmu_check_event_constraints() into update_pmu_cap(). The
+architectural perf events cannot utilize the general-purpose counters.
 
-Gr{oetje,eeting}s,
+The codes to check and update the counters, event constraints and
+extra_regs are the same among hybrid systems. Move
+intel_pmu_check_hybrid_pmus() to the init_hybrid_pmu().
+Remove the duplicate check in the update_pmu_cap().
 
-                        Geert
+Fixes: 97588df87b56 ("perf/x86/intel: Add common intel_pmu_init_hybrid()")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/core.c | 65 +++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 39 deletions(-)
 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 83dfbba1ee69..e1543d6dc48a 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4598,6 +4598,13 @@ static void intel_pmu_check_num_counters(int *num_counters,
+ 					 int *num_counters_fixed,
+ 					 u64 *intel_ctrl, u64 fixed_mask);
+ 
++static void intel_pmu_check_event_constraints(struct event_constraint *event_constraints,
++					      int num_counters,
++					      int num_counters_fixed,
++					      u64 intel_ctrl);
++
++static void intel_pmu_check_extra_regs(struct extra_reg *extra_regs);
++
+ static inline bool intel_pmu_broken_perf_cap(void)
+ {
+ 	/* The Perf Metric (Bit 15) is always cleared */
+@@ -4618,12 +4625,6 @@ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ 			    &eax, &ebx, &ecx, &edx);
+ 		pmu->num_counters = fls(eax);
+ 		pmu->num_counters_fixed = fls(ebx);
+-		intel_pmu_check_num_counters(&pmu->num_counters, &pmu->num_counters_fixed,
+-					     &pmu->intel_ctrl, ebx);
+-		pmu->max_pebs_events = min_t(unsigned, MAX_PEBS_EVENTS, pmu->num_counters);
+-		pmu->unconstrained = (struct event_constraint)
+-				     __EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
+-							0, pmu->num_counters, 0, 0);
+ 	}
+ 
+ 
+@@ -4631,6 +4632,16 @@ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ 		/* Perf Metric (Bit 15) and PEBS via PT (Bit 16) are hybrid enumeration */
+ 		rdmsrl(MSR_IA32_PERF_CAPABILITIES, pmu->intel_cap.capabilities);
+ 	}
++}
++
++static void intel_pmu_check_hybrid_pmus(struct x86_hybrid_pmu *pmu)
++{
++	intel_pmu_check_num_counters(&pmu->num_counters, &pmu->num_counters_fixed,
++				     &pmu->intel_ctrl, (1ULL << pmu->num_counters_fixed) - 1);
++	pmu->max_pebs_events = min_t(unsigned, MAX_PEBS_EVENTS, pmu->num_counters);
++	pmu->unconstrained = (struct event_constraint)
++			     __EVENT_CONSTRAINT(0, (1ULL << pmu->num_counters) - 1,
++						0, pmu->num_counters, 0, 0);
+ 
+ 	if (pmu->intel_cap.perf_metrics)
+ 		pmu->intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+@@ -4641,6 +4652,13 @@ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ 		pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
+ 	else
+ 		pmu->pmu.capabilities |= ~PERF_PMU_CAP_AUX_OUTPUT;
++
++	intel_pmu_check_event_constraints(pmu->event_constraints,
++					  pmu->num_counters,
++					  pmu->num_counters_fixed,
++					  pmu->intel_ctrl);
++
++	intel_pmu_check_extra_regs(pmu->extra_regs);
+ }
+ 
+ static struct x86_hybrid_pmu *find_hybrid_pmu_for_cpu(void)
+@@ -4696,6 +4714,8 @@ static bool init_hybrid_pmu(int cpu)
+ 	if (this_cpu_has(X86_FEATURE_ARCH_PERFMON_EXT))
+ 		update_pmu_cap(pmu);
+ 
++	intel_pmu_check_hybrid_pmus(pmu);
++
+ 	if (!check_hw_exists(&pmu->pmu, pmu->num_counters, pmu->num_counters_fixed))
+ 		return false;
+ 
+@@ -5915,36 +5935,6 @@ static void intel_pmu_check_extra_regs(struct extra_reg *extra_regs)
+ 	}
+ }
+ 
+-static void intel_pmu_check_hybrid_pmus(u64 fixed_mask)
+-{
+-	struct x86_hybrid_pmu *pmu;
+-	int i;
+-
+-	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+-		pmu = &x86_pmu.hybrid_pmu[i];
+-
+-		intel_pmu_check_num_counters(&pmu->num_counters,
+-					     &pmu->num_counters_fixed,
+-					     &pmu->intel_ctrl,
+-					     fixed_mask);
+-
+-		if (pmu->intel_cap.perf_metrics) {
+-			pmu->intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+-			pmu->intel_ctrl |= INTEL_PMC_MSK_FIXED_SLOTS;
+-		}
+-
+-		if (pmu->intel_cap.pebs_output_pt_available)
+-			pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
+-
+-		intel_pmu_check_event_constraints(pmu->event_constraints,
+-						  pmu->num_counters,
+-						  pmu->num_counters_fixed,
+-						  pmu->intel_ctrl);
+-
+-		intel_pmu_check_extra_regs(pmu->extra_regs);
+-	}
+-}
+-
+ static const struct { enum hybrid_pmu_type id; char *name; } intel_hybrid_pmu_type_map[] __initconst = {
+ 	{ hybrid_small, "cpu_atom" },
+ 	{ hybrid_big, "cpu_core" },
+@@ -6869,9 +6859,6 @@ __init int intel_pmu_init(void)
+ 	if (!is_hybrid() && x86_pmu.intel_cap.perf_metrics)
+ 		x86_pmu.intel_ctrl |= 1ULL << GLOBAL_CTRL_EN_PERF_METRICS;
+ 
+-	if (is_hybrid() && !boot_cpu_has(X86_FEATURE_ARCH_PERFMON_EXT))
+-		intel_pmu_check_hybrid_pmus((u64)fixed_mask);
+-
+ 	if (x86_pmu.intel_cap.pebs_timing_info)
+ 		x86_pmu.flags |= PMU_FL_RETIRE_LATENCY;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.35.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
