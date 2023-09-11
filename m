@@ -2,374 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B35E79B1AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C82B79B136
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348888AbjIKVbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S1347037AbjIKVYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237265AbjIKMYS (ORCPT
+        with ESMTP id S237275AbjIKM0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:24:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6C9CDC;
-        Mon, 11 Sep 2023 05:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694435052; x=1725971052;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6hZ/scxqcpisakdOuYAsA4BjUmqsqsB5dHsi1FpGb4o=;
-  b=cZgHMbVVpq8M4sv7LommPmuf/kafSaoGLzN2k1kR6gCzW6eP6FG3qBKs
-   t4U+En5c6b9W0n9cH6SHnAR4lMWi0AwCe+CqrQZwMB23jggewELTrXHnV
-   ItcKOuFsg7gOqVddxrpUQlz6NDltwNzgbdxr5imVmDT6fGZ9hUsgrKF7P
-   YoDwKzem9wQaLfdxf1J6bNIZNMdHXVFND6ZQTufu6aFCg1jlf6q/ZiKFa
-   IF4vvGem7KKLCEsjfecKEx/8eNgGgzhSWN4v3oHLKDZRPIKXT8TXtdaVz
-   AjFb+t5saJh6W7tCkyQ2H1oARjmr6r6wTFpVAxN8MXbzS1/FP0bYnkQOw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="376979044"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="376979044"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:24:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736754063"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="736754063"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 05:24:07 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
-Subject: [PATCH v3 2/2] PCI: altera: add support for agilex family fpga
-Date:   Mon, 11 Sep 2023 17:54:35 +0530
-Message-Id: <20230911122435.1774301-3-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911122435.1774301-1-sharath.kumar.d.m@intel.com>
-References: <20230908195242.GA304243@bhelgaas>
- <20230911122435.1774301-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 08:26:18 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768021A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:26:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2F09F1F8A6;
+        Mon, 11 Sep 2023 12:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694435171; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HT4Y4nq/J5g00fCgUPdjuBKcMR4zQ+Ni+YCDnYKeA54=;
+        b=DDZzAoUEucLB9oIlC9fTncVKsqTQbFWodv/VxDq0cCWDfxARJfhFUmfEuypnINVC3jJDcA
+        GJmyTV8ObdFU/9dX8SK+ROSQGAWheM1hsH7HefacTTxFLK0jSjWe1k32+pTy/M1JpFz1pU
+        BhQ6vBb9nP6WRzlg+baY5nb7NkhItZw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694435171;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HT4Y4nq/J5g00fCgUPdjuBKcMR4zQ+Ni+YCDnYKeA54=;
+        b=idQKo5LSb2MP7w21NOZsgcYbVUBd155j1ZDgrAeXcW+433mEqv7jQhacClZVkGjJp/yNff
+        WlcJ1HsplNeG7fBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0547F139CC;
+        Mon, 11 Sep 2023 12:26:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id z+csAGMH/2QuCgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 11 Sep 2023 12:26:11 +0000
+Message-ID: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
+Date:   Mon, 11 Sep 2023 14:26:10 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+Content-Language: en-US
+To:     j@jannau.net, Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        asahi@lists.linux.dev
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------4M8cdUHyfNjDPiRMngCSk0qn"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------4M8cdUHyfNjDPiRMngCSk0qn
+Content-Type: multipart/mixed; boundary="------------kpzYvdaKcjH0xuuH5zw29EU8";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: j@jannau.net, Javier Martinez Canillas <javierm@redhat.com>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ asahi@lists.linux.dev
+Message-ID: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+In-Reply-To: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
 
-create new instance of struct altera_pcie_data for
-"altr,pcie-root-port-3.0"
-provide corresponding callback
-"port_conf_off" points to avmm port config register base
+--------------kpzYvdaKcjH0xuuH5zw29EU8
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 207 ++++++++++++++++++++++++++-
- 1 file changed, 206 insertions(+), 1 deletion(-)
+SGkNCg0KQW0gMTAuMDkuMjMgdW0gMTg6Mzkgc2NocmllYiBKYW5uZSBHcnVuYXUgdmlhIEI0
+IFJlbGF5Og0KPiBGcm9tOiBKYW5uZSBHcnVuYXUgPGpAamFubmF1Lm5ldD4NCj4gDQo+IE11
+bHRpcGxlIHBvd2VyIGRvbWFpbnMgbmVlZCB0byBiZSBoYW5kbGVkIGV4cGxpY2l0bHkgaW4g
+ZWFjaCBkcml2ZXIuIFRoZQ0KPiBkcml2ZXIgY29yZSBjYW4gbm90IGhhbmRsZSBpdCBhdXRv
+bWF0aWNhbGx5IHNpbmNlIGl0IGlzIG5vdCBhd2FyZSBvZg0KPiBwb3dlciBzZXF1ZW5jaW5n
+IHJlcXVpcmVtZW50cyB0aGUgaGFyZHdhcmUgbWlnaHQgaGF2ZS4gVGhpcyBpcyBub3QgYQ0K
+PiBwcm9ibGVtIGZvciBzaW1wbGVkcm0gc2luY2UgZXZlcnl0aGluZyBpcyBleHBlY3RlZCB0
+byBiZSBwb3dlcmVkIG9uIGJ5DQo+IHRoZSBib290bG9hZGVyLiBzaW1wbGVkcm0gaGFzIGp1
+c3QgZW5zdXJlIGl0IHJlbWFpbnMgcG93ZXJlZCBvbiBkdXJpbmcNCj4gaXRzIGxpZmV0aW1l
+Lg0KPiBUaGlzIGlzIHJlcXVpcmVkIG9uIEFwcGxlIHNpbGljb24gTTIgYW5kIE0yIFByby9N
+YXgvVWx0cmEgZGVza3RvcA0KPiBzeXN0ZW1zLiBUaGUgSERNSSBvdXRwdXQgaW5pdGlhbGl6
+ZWQgYnkgdGhlIGJvb3Rsb2FkZXIgcmVxdWlyZXMga2VlcGluZw0KPiB0aGUgZGlzcGxheSBj
+b250cm9sbGVyIGFuZCBhIERQIHBoeSBwb3dlciBkb21haW4gb24uDQo+IA0KPiBTaWduZWQt
+b2ZmLWJ5OiBKYW5uZSBHcnVuYXUgPGpAamFubmF1Lm5ldD4NCj4gLS0tDQo+ICAgZHJpdmVy
+cy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJtLmMgfCAxMDYgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEwNiBpbnNlcnRpb25z
+KCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJt
+LmMgYi9kcml2ZXJzL2dwdS9kcm0vdGlueS9zaW1wbGVkcm0uYw0KPiBpbmRleCBmZjg2YmEx
+YWUxYjguLmVmZWRlZGU1N2Q0MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3Rp
+bnkvc2ltcGxlZHJtLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL3Rpbnkvc2ltcGxlZHJt
+LmMNCj4gQEAgLTYsNiArNiw3IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2FkZHJlc3Mu
+aD4NCj4gICAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGF0YS9zaW1wbGVmYi5oPg0KPiAg
+ICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51
+eC9wbV9kb21haW4uaD4NCj4gICAjaW5jbHVkZSA8bGludXgvcmVndWxhdG9yL2NvbnN1bWVy
+Lmg+DQo+ICAgDQo+ICAgI2luY2x1ZGUgPGRybS9kcm1fYXBlcnR1cmUuaD4NCj4gQEAgLTIy
+Nyw2ICsyMjgsMTIgQEAgc3RydWN0IHNpbXBsZWRybV9kZXZpY2Ugew0KPiAgIAl1bnNpZ25l
+ZCBpbnQgcmVndWxhdG9yX2NvdW50Ow0KPiAgIAlzdHJ1Y3QgcmVndWxhdG9yICoqcmVndWxh
+dG9yczsNCj4gICAjZW5kaWYNCj4gKwkvKiBwb3dlci1kb21haW5zICovDQo+ICsjaWYgZGVm
+aW5lZCBDT05GSUdfT0YgJiYgZGVmaW5lZCBDT05GSUdfUE1fR0VORVJJQ19ET01BSU5TDQo+
+ICsJaW50IHB3cl9kb21fY291bnQ7DQo+ICsJc3RydWN0IGRldmljZSAqKnB3cl9kb21fZGV2
+czsNCj4gKwlzdHJ1Y3QgZGV2aWNlX2xpbmsgKipwd3JfZG9tX2xpbmtzOw0KPiArI2VuZGlm
+DQo+ICAgDQo+ICAgCS8qIHNpbXBsZWZiIHNldHRpbmdzICovDQo+ICAgCXN0cnVjdCBkcm1f
+ZGlzcGxheV9tb2RlIG1vZGU7DQo+IEBAIC00NjgsNiArNDc1LDEwMiBAQCBzdGF0aWMgaW50
+IHNpbXBsZWRybV9kZXZpY2VfaW5pdF9yZWd1bGF0b3JzKHN0cnVjdCBzaW1wbGVkcm1fZGV2
+aWNlICpzZGV2KQ0KPiAgIH0NCj4gICAjZW5kaWYNCj4gICANCj4gKyNpZiBkZWZpbmVkIENP
+TkZJR19PRiAmJiBkZWZpbmVkIENPTkZJR19QTV9HRU5FUklDX0RPTUFJTlMNCj4gKy8qDQo+
+ICsgKiBHZW5lcmljIHBvd2VyIGRvbWFpbiBoYW5kbGluZyBjb2RlLg0KPiArICoNCj4gKyAq
+IEhlcmUgd2UgaGFuZGxlIHRoZSBwb3dlci1kb21haW5zIHByb3BlcnRpZXMgb2Ygb3VyICJz
+aW1wbGUtZnJhbWVidWZmZXIiDQo+ICsgKiBkdCBub2RlLiBUaGlzIGlzIG9ubHkgbmVjZXNz
+YXJ5IGlmIHRoZXJlIGlzIG1vcmUgdGhhbiBvbmUgcG93ZXItZG9tYWluLg0KPiArICogQSBz
+aW5nbGUgcG93ZXItZG9tYWlucyBpcyBoYW5kbGVkIGF1dG9tYXRpY2FsbHkgYnkgdGhlIGRy
+aXZlciBjb3JlLiBNdWx0aXBsZQ0KPiArICogcG93ZXItZG9tYWlucyBoYXZlIHRvIGJlIGhh
+bmRsZWQgYnkgZHJpdmVycyBzaW5jZSB0aGUgZHJpdmVyIGNvcmUgY2FuJ3Qga25vdw0KPiAr
+ICogdGhlIGNvcnJlY3QgcG93ZXIgc2VxdWVuY2luZy4gUG93ZXIgc2VxdWVuY2luZyBpcyBu
+b3QgYW4gaXNzdWUgZm9yIHNpbXBsZWRybQ0KPiArICogc2luY2UgdGhlIGJvb3Rsb2FkZXIg
+aGFzIHB1dCB0aGUgcG93ZXIgZG9tYWlucyBhbHJlYWR5IGluIHRoZSBjb3JyZWN0IHN0YXRl
+Lg0KPiArICogc2ltcGxlZHJtIGhhcyBvbmx5IHRvIGVuc3VyZSB0aGV5IHJlbWFpbiBhY3Rp
+dmUgZm9yIGl0cyBsaWZldGltZS4NCj4gKyAqDQo+ICsgKiBXaGVuIHRoZSBkcml2ZXIgdW5s
+b2Fkcywgd2UgZGV0YWNoIGZyb20gdGhlIHBvd2VyLWRvbWFpbnMuDQo+ICsgKg0KPiArICog
+V2Ugb25seSBjb21wbGFpbiBhYm91dCBlcnJvcnMgaGVyZSwgbm8gYWN0aW9uIGlzIHRha2Vu
+IGFzIHRoZSBtb3N0IGxpa2VseQ0KPiArICogZXJyb3IgY2FuIG9ubHkgaGFwcGVuIGR1ZSB0
+byBhIG1pc21hdGNoIGJldHdlZW4gdGhlIGJvb3Rsb2FkZXIgd2hpY2ggc2V0DQo+ICsgKiB1
+cCB0aGUgInNpbXBsZS1mcmFtZWJ1ZmZlciIgZHQgbm9kZSwgYW5kIHRoZSBQTSBkb21haW4g
+cHJvdmlkZXJzIGluIHRoZQ0KPiArICogZGV2aWNlIHRyZWUuIENoYW5jZXMgYXJlIHRoYXQg
+dGhlcmUgYXJlIG5vIGFkdmVyc2UgZWZmZWN0cywgYW5kIGlmIHRoZXJlIGFyZSwNCj4gKyAq
+IGEgY2xlYW4gdGVhcmRvd24gb2YgdGhlIGZiIHByb2JlIHdpbGwgbm90IGhlbHAgdXMgbXVj
+aCBlaXRoZXIuIFNvIGp1c3QNCj4gKyAqIGNvbXBsYWluIGFuZCBjYXJyeSBvbiwgYW5kIGhv
+cGUgdGhhdCB0aGUgdXNlciBhY3R1YWxseSBnZXRzIGEgd29ya2luZyBmYiBhdA0KPiArICog
+dGhlIGVuZCBvZiB0aGluZ3MuDQo+ICsgKi8NCj4gK3N0YXRpYyB2b2lkIHNpbXBsZWRybV9k
+ZXZpY2VfZGV0YWNoX2dlbnBkKHZvaWQgKnJlcykNCj4gK3sNCj4gKwlpbnQgaTsNCj4gKwlz
+dHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2RldiA9IC8qKHN0cnVjdCBzaW1wbGVkcm1fZGV2
+aWNlICopKi9yZXM7DQo+ICsNCj4gKw0KPiArCWRybV9lcnIoJnNkZXYtPmRldiwgIiUgcG93
+ZXItZG9tYWlucyBjb3VudDolZFxuIiwgX19mdW5jX18sIHNkZXYtPnB3cl9kb21fY291bnQp
+Ow0KDQpJZiBhbnl0aGluZywgZHJtX2RiZygpDQoNCj4gKwlpZiAoc2Rldi0+cHdyX2RvbV9j
+b3VudCA8PSAxKQ0KPiArCQlyZXR1cm47DQo+ICsNCj4gKwlmb3IgKGkgPSBzZGV2LT5wd3Jf
+ZG9tX2NvdW50IC0gMTsgaSA+PSAwOyBpLS0pIHsNCj4gKwkJaWYgKCFzZGV2LT5wd3JfZG9t
+X2xpbmtzW2ldKQ0KPiArCQkJZGV2aWNlX2xpbmtfZGVsKHNkZXYtPnB3cl9kb21fbGlua3Nb
+aV0pOw0KPiArCQlpZiAoIUlTX0VSUl9PUl9OVUxMKHNkZXYtPnB3cl9kb21fZGV2c1tpXSkp
+DQo+ICsJCQlkZXZfcG1fZG9tYWluX2RldGFjaChzZGV2LT5wd3JfZG9tX2RldnNbaV0sIHRy
+dWUpOw0KPiArCX0NCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBzaW1wbGVkcm1fZGV2aWNl
+X2F0dGFjaF9nZW5wZChzdHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2RldikNCj4gK3sNCj4g
+KwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBzZGV2LT5kZXYuZGV2Ow0KPiArCWludCBpOw0KPiAr
+DQo+ICsJc2Rldi0+cHdyX2RvbV9jb3VudCA9IG9mX2NvdW50X3BoYW5kbGVfd2l0aF9hcmdz
+KGRldi0+b2Zfbm9kZSwgInBvd2VyLWRvbWFpbnMiLA0KPiArCQkJCQkJCSAiI3Bvd2VyLWRv
+bWFpbi1jZWxscyIpOw0KPiArCS8qDQo+ICsJICogU2luZ2xlIHBvd2VyLWRvbWFpbiBkZXZp
+Y2VzIGFyZSBoYW5kbGVkIGJ5IGRyaXZlciBjb3JlIG5vdGhpbmcgdG8gZG8NCj4gKwkgKiBo
+ZXJlLiBUaGUgc2FtZSBmb3IgZGV2aWNlIG5vZGVzIHdpdGhvdXQgInBvd2VyLWRvbWFpbnMi
+IHByb3BlcnR5Lg0KPiArCSAqLw0KPiArCWlmIChzZGV2LT5wd3JfZG9tX2NvdW50IDw9IDEp
+DQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJc2Rldi0+cHdyX2RvbV9kZXZzID0gZGV2bV9r
+Y2FsbG9jKGRldiwgc2Rldi0+cHdyX2RvbV9jb3VudCwNCj4gKwkJCQkJICAgICAgIHNpemVv
+Zigqc2Rldi0+cHdyX2RvbV9kZXZzKSwNCj4gKwkJCQkJICAgICAgIEdGUF9LRVJORUwpOw0K
+PiArCWlmICghc2Rldi0+cHdyX2RvbV9kZXZzKQ0KPiArCQlyZXR1cm4gLUVOT01FTTsNCj4g
+Kw0KPiArCXNkZXYtPnB3cl9kb21fbGlua3MgPSBkZXZtX2tjYWxsb2MoZGV2LCBzZGV2LT5w
+d3JfZG9tX2NvdW50LA0KPiArCQkJCQkJc2l6ZW9mKCpzZGV2LT5wd3JfZG9tX2xpbmtzKSwN
+Cj4gKwkJCQkJCUdGUF9LRVJORUwpOw0KPiArCWlmICghc2Rldi0+cHdyX2RvbV9saW5rcykN
+Cj4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ICsNCj4gKwlmb3IgKGkgPSAwOyBpIDwgc2Rldi0+
+cHdyX2RvbV9jb3VudDsgaSsrKSB7DQo+ICsJCXNkZXYtPnB3cl9kb21fZGV2c1tpXSA9IGRl
+dl9wbV9kb21haW5fYXR0YWNoX2J5X2lkKGRldiwgaSk7DQo+ICsJCWlmIChJU19FUlIoc2Rl
+di0+cHdyX2RvbV9kZXZzW2ldKSkgew0KPiArCQkJaW50IHJldCA9IFBUUl9FUlIoc2Rldi0+
+cHdyX2RvbV9kZXZzW2ldKTsNCj4gKwkJCWlmIChyZXQgPT0gLUVQUk9CRV9ERUZFUikgew0K
+PiArCQkJCXNpbXBsZWRybV9kZXZpY2VfZGV0YWNoX2dlbnBkKHNkZXYpOw0KPiArCQkJCXJl
+dHVybiBQVFJfRVJSKHNkZXYtPnB3cl9kb21fZGV2c1tpXSk7DQo+ICsJCQl9DQo+ICsJCQlk
+cm1fZXJyKCZzZGV2LT5kZXYsDQo+ICsJCQkJInBtX2RvbWFpbl9hdHRhY2hfYnlfaWQoJXUp
+IGZhaWxlZDogJWRcbiIsIGksIHJldCk7DQoNClRoZSBkcml2ZXIncyBub3QgcmVhbGx5IGZh
+aWxpbmcgdG8gaW5pdGlhbGl6ZSBBRkFJQ1QuIENBbGxpbmcgZHJtX3dhcm4oKSANCm1pZ2h0
+IGJlIG1vcmUgYXBwcm9wcmlhdGUuDQoNCj4gKwkJfQ0KPiArDQo+ICsJCXNkZXYtPnB3cl9k
+b21fbGlua3NbaV0gPSBkZXZpY2VfbGlua19hZGQoZGV2LA0KPiArCQkJCQkJCSBzZGV2LT5w
+d3JfZG9tX2RldnNbaV0sDQo+ICsJCQkJCQkJIERMX0ZMQUdfU1RBVEVMRVNTIHwNCj4gKwkJ
+CQkJCQkgRExfRkxBR19QTV9SVU5USU1FIHwNCj4gKwkJCQkJCQkgRExfRkxBR19SUE1fQUNU
+SVZFKTsNCj4gKwkJaWYgKCFzZGV2LT5wd3JfZG9tX2xpbmtzW2ldKQ0KPiArCQkJZHJtX2Vy
+cigmc2Rldi0+ZGV2LCAiZmFpbGVkIHRvIGxpbmsgcG93ZXItZG9tYWluICV1XG4iLCBpKTsN
+Cg0KQWxzbyBkcm1fd2FybigpID8NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiArCX0N
+Cj4gKw0KPiArCXJldHVybiBkZXZtX2FkZF9hY3Rpb25fb3JfcmVzZXQoZGV2LCBzaW1wbGVk
+cm1fZGV2aWNlX2RldGFjaF9nZW5wZCwgc2Rldik7DQo+ICt9DQo+ICsjZWxzZQ0KPiArc3Rh
+dGljIGludCBzaW1wbGVkcm1fZGV2aWNlX2F0dGFjaF9nZW5wZChzdHJ1Y3Qgc2ltcGxlZHJt
+X2RldmljZSAqc2RldikNCj4gK3sNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKyNlbmRpZg0K
+PiArDQo+ICAgLyoNCj4gICAgKiBNb2Rlc2V0dGluZw0KPiAgICAqLw0KPiBAQCAtNjUxLDYg
+Kzc1NCw5IEBAIHN0YXRpYyBzdHJ1Y3Qgc2ltcGxlZHJtX2RldmljZSAqc2ltcGxlZHJtX2Rl
+dmljZV9jcmVhdGUoc3RydWN0IGRybV9kcml2ZXIgKmRydiwNCj4gICAJaWYgKHJldCkNCj4g
+ICAJCXJldHVybiBFUlJfUFRSKHJldCk7DQo+ICAgCXJldCA9IHNpbXBsZWRybV9kZXZpY2Vf
+aW5pdF9yZWd1bGF0b3JzKHNkZXYpOw0KPiArCWlmIChyZXQpDQo+ICsJCXJldHVybiBFUlJf
+UFRSKHJldCk7DQo+ICsJcmV0ID0gc2ltcGxlZHJtX2RldmljZV9hdHRhY2hfZ2VucGQoc2Rl
+dik7DQo+ICAgCWlmIChyZXQpDQo+ICAgCQlyZXR1cm4gRVJSX1BUUihyZXQpOw0KPiAgIA0K
+PiANCj4gLS0tDQo+IGJhc2UtY29tbWl0OiAxNWQzMGI0NjU3M2Q3NWY1Y2I1OGNmYWNkZWQ4
+ZWJhYjljNzZhMmIwDQo+IGNoYW5nZS1pZDogMjAyMzA5MTAtc2ltcGxlZHJtLW11bHRpcGxl
+LXBvd2VyLWRvbWFpbnMtZjQxZWZhNmFkOWJjDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQoNCi0t
+IA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0Ug
+U29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5
+MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywg
+QW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5i
+ZXJnKQ0K
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index 878f86b1cc6b..aa14ea588487 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -79,9 +79,20 @@
- #define S10_TLP_FMTTYPE_CFGWR0		0x45
- #define S10_TLP_FMTTYPE_CFGWR1		0x44
- 
-+#define AGLX_RP_CFG_ADDR(pcie, reg)     \
-+	(((pcie)->hip_base) + (reg))
-+#define AGLX_RP_SECONDARY(pcie)         \
-+	readb(AGLX_RP_CFG_ADDR(pcie, PCI_SECONDARY_BUS))
-+
-+#define AGLX_BDF_REG			0x00002004
-+#define AGLX_ROOT_PORT_IRQ_STATUS	0x14c
-+#define AGLX_ROOT_PORT_IRQ_ENABLE	0x150
-+#define AGLX_CFG_AER			(1<<4)
-+
- enum altera_pcie_version {
- 	ALTERA_PCIE_V1 = 0,
- 	ALTERA_PCIE_V2,
-+	ALTERA_PCIE_V3, /* AGILEX p-tile, f-tile */
- };
- 
- struct altera_pcie {
-@@ -93,6 +104,8 @@ struct altera_pcie {
- 	struct irq_domain	*irq_domain;
- 	struct resource		bus_range;
- 	const struct altera_pcie_data	*pcie_data;
-+	void __iomem		*cs_base;
-+	u32			port_conf_off;
- };
- 
- struct altera_pcie_ops {
-@@ -138,6 +151,39 @@ static inline u32 cra_readl(struct altera_pcie *pcie, const u32 reg)
- 	return readl_relaxed(pcie->cra_base + reg);
- }
- 
-+static inline void cs_writel(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writel_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writew(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writew_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline void cs_writeb(struct altera_pcie *pcie, const u32 value,
-+				const u32 reg)
-+{
-+	writeb_relaxed(value, pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readl(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readl_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readw(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readw_relaxed(pcie->cs_base + reg);
-+}
-+
-+static inline u32 cs_readb(struct altera_pcie *pcie, const u32 reg)
-+{
-+	return readb_relaxed(pcie->cs_base + reg);
-+}
-+
- static bool altera_pcie_link_up(struct altera_pcie *pcie)
- {
- 	return !!((cra_readl(pcie, RP_LTSSM) & RP_LTSSM_MASK) == LTSSM_L0);
-@@ -152,6 +198,14 @@ static bool s10_altera_pcie_link_up(struct altera_pcie *pcie)
- 	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
- }
- 
-+static bool aglx_altera_pcie_link_up(struct altera_pcie *pcie)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie,
-+		pcie->pcie_data->cap_offset + PCI_EXP_LNKSTA);
-+
-+	return !!(readw(addr) & PCI_EXP_LNKSTA_DLLLA);
-+}
-+
- /*
-  * Altera PCIe port uses BAR0 of RC's configuration space as the translation
-  * from PCI bus to native BUS.  Entire DDR region is mapped into PCIe space
-@@ -432,6 +486,101 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
-+static int aglx_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 *value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		*value = readb(addr);
-+		break;
-+	case 2:
-+		*value = readw(addr);
-+		break;
-+	default:
-+		*value = readl(addr);
-+		break;
-+	}
-+
-+	/* interrupt pin not programmed in hardware, set to INTA*/
-+	if (where == PCI_INTERRUPT_PIN && size == 1)
-+		*value = 0x01;
-+	else if (where == PCI_INTERRUPT_LINE)
-+		*value |= 0x0100;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			int where, int size, u32 value)
-+{
-+	void __iomem *addr = AGLX_RP_CFG_ADDR(pcie, where);
-+
-+	switch (size) {
-+	case 1:
-+		writeb(value, addr);
-+		break;
-+	case 2:
-+		writew(value, addr);
-+		break;
-+	default:
-+		writel(value, addr);
-+		break;
-+	}
-+
-+	/*
-+	 * Monitor changes to PCI_PRIMARY_BUS register on root port
-+	 * and update local copy of root bus number accordingly.
-+	 */
-+	if (busno == pcie->root_bus_nr && where == PCI_PRIMARY_BUS)
-+		pcie->root_bus_nr = value & 0xff;
-+
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_nonrp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		cs_writeb(pcie, value, where);
-+		break;
-+	case 2:
-+		cs_writew(pcie, value, where);
-+		break;
-+	default:
-+		cs_writel(pcie, value, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
-+static int aglx_nonrp_read_cfg(struct altera_pcie *pcie, u8 busno,
-+		unsigned int devfn, int where, int size, u32 *value)
-+{
-+	cs_writel(pcie, ((busno<<8) | devfn), AGLX_BDF_REG);
-+	if (busno > AGLX_RP_SECONDARY(pcie))
-+		where |= (1<<12); /* type 1 */
-+
-+	switch (size) {
-+	case 1:
-+		*value = cs_readb(pcie, where);
-+		break;
-+	case 2:
-+		*value = cs_readw(pcie, where);
-+		break;
-+	default:
-+		*value = cs_readl(pcie, where);
-+		break;
-+	}
-+	return PCIBIOS_SUCCESSFUL;
-+}
-+
- static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 		int where, int size, u32 *value)
- {
-@@ -688,6 +837,30 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 	chained_irq_exit(chip, desc);
- }
- 
-+static void aglx_isr(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	struct altera_pcie *pcie;
-+	struct device *dev;
-+	u32 status;
-+	int ret;
-+
-+	chained_irq_enter(chip, desc);
-+	pcie = irq_desc_get_handler_data(desc);
-+	dev = &pcie->pdev->dev;
-+
-+	status = readl((pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	if (status & AGLX_CFG_AER) {
-+		ret = generic_handle_domain_irq(pcie->irq_domain, 0);
-+		if (ret)
-+			dev_err_ratelimited(dev, "unexpected IRQ\n");
-+	}
-+	writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+		+ AGLX_ROOT_PORT_IRQ_STATUS));
-+	chained_irq_exit(chip, desc);
-+}
-+
- static int altera_pcie_init_irq_domain(struct altera_pcie *pcie)
- {
- 	struct device *dev = &pcie->pdev->dev;
-@@ -723,13 +896,25 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 			return PTR_ERR(pcie->cra_base);
- 	}
- 
--	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V2) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V3)) {
- 		pcie->hip_base =
- 			devm_platform_ioremap_resource_byname(pdev, "Hip");
- 		if (IS_ERR(pcie->hip_base))
- 			return PTR_ERR(pcie->hip_base);
- 	}
- 
-+	if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		pcie->cs_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cs");
-+		if (IS_ERR(pcie->cs_base))
-+			return PTR_ERR(pcie->cs_base);
-+		of_property_read_u32(pcie->pdev->dev.of_node, "port_conf_stat",
-+			&pcie->port_conf_off);
-+		dev_dbg(&pcie->pdev->dev, "port_conf_stat_off =%#x\n",
-+				pcie->port_conf_off);
-+	}
-+
- 	/* setup IRQ */
- 	pcie->irq = platform_get_irq(pdev, 0);
- 	if (pcie->irq < 0)
-@@ -767,6 +952,15 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.rp_isr = altera_pcie_isr,
- };
- 
-+static const struct altera_pcie_ops altera_pcie_ops_3_0 = {
-+	.rp_read_cfg = aglx_rp_read_cfg,
-+	.rp_write_cfg = aglx_rp_write_cfg,
-+	.get_link_status = aglx_altera_pcie_link_up,
-+	.nonrp_read_cfg = aglx_nonrp_read_cfg,
-+	.nonrp_write_cfg = aglx_nonrp_write_cfg,
-+	.rp_isr = aglx_isr,
-+};
-+
- static const struct altera_pcie_data altera_pcie_1_0_data = {
- 	.ops = &altera_pcie_ops_1_0,
- 	.cap_offset = 0x80,
-@@ -787,11 +981,19 @@ static const struct altera_pcie_data altera_pcie_2_0_data = {
- 	.cfgwr1 = S10_TLP_FMTTYPE_CFGWR1,
- };
- 
-+static const struct altera_pcie_data altera_pcie_3_0_data = {
-+	.ops = &altera_pcie_ops_3_0,
-+	.version = ALTERA_PCIE_V3,
-+	.cap_offset = 0x70,
-+};
-+
- static const struct of_device_id altera_pcie_of_match[] = {
- 	{.compatible = "altr,pcie-root-port-1.0",
- 	 .data = &altera_pcie_1_0_data },
- 	{.compatible = "altr,pcie-root-port-2.0",
- 	 .data = &altera_pcie_2_0_data },
-+	{.compatible = "altr,pcie-root-port-3.0",
-+	.data = &altera_pcie_3_0_data },
- 	{},
- };
- 
-@@ -836,6 +1038,9 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		/* enable all interrupts */
- 		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
- 		altera_pcie_host_init(pcie);
-+	} else if (pcie->pcie_data->version == ALTERA_PCIE_V3) {
-+		writel(AGLX_CFG_AER, (pcie->hip_base + pcie->port_conf_off
-+			+ AGLX_ROOT_PORT_IRQ_ENABLE));
- 	}
- 
- 	bridge->sysdata = pcie;
--- 
-2.34.1
+--------------kpzYvdaKcjH0xuuH5zw29EU8--
 
+--------------4M8cdUHyfNjDPiRMngCSk0qn
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT/B2IFAwAAAAAACgkQlh/E3EQov+Ca
+GhAArL3TRY+oyOxEkqlrxxZuCcKkj2M6aU6FLjW8zbN6SfT0fhoHFhjnaai7n5pE35yzQYEylleG
+CkEt33cwaAm4tT4ErV5IUOpMYizzAuk6Q273SwizxbJiw6Wulp89wXldSMAoeLZFoNrolqG4YzX+
+8cpvv4zPCCgm+B2HNaH6AZCQsZsy6ACLaHjkP1zMhS5XF6g5X8GKYK+2B7ShEHI8OO93fK2M1f6+
+t6vypQ2fKcWSGl4rjP9G02MNg5OtFug3UbrCHRV7410DAFbWowOZqSh+wETgV20YgWsQrbYoOiCF
+TNnkcNBywndTr/uh+PPiqSOaj9VxTV4UjEwgjVB69ectqm6fZ79GW37ZYcX4wYnBPS5h6yw+AvzD
+ZfKVD7vB9a5GqxDTH/6o7FP1MwZ2Io1+TC5pVI5+psF319YJNEL7X2zYXdauQOEMQYwpfOPGQZ7P
+AWImrNefJQTNK4DmkYInb7S5ZqrO6uFJxLHLWPDft7MG0gW+D49n7T/pP+J7oa7Yv8Kq7v/AgOHb
+glu9xMpwwcNLo0oh8vPYZ66c5CwQO/f9tfJx4UZK+CN35vsVg5ikVAWadX/k0oWYGF9il6/u2cFn
+KCtNr5b7OEwFX3pWRu7EUBnni5Tzhzpv3KfYZ6gl/enoXT8oweerdUbYeRK+GLyNp0sfeV2AGI8x
+0co=
+=kcaf
+-----END PGP SIGNATURE-----
+
+--------------4M8cdUHyfNjDPiRMngCSk0qn--
