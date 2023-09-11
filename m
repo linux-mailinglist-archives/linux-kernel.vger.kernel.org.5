@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92F079B037
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B7079AF07
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240000AbjIKV30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
+        id S1358652AbjIKWMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236206AbjIKJ5E (ORCPT
+        with ESMTP id S236207AbjIKJ5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:57:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B663E67;
-        Mon, 11 Sep 2023 02:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694426219; x=1725962219;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ccQZ6EnQu6CIa4qQy8IVpBeF7c/wK9EQzEgUbK0W49o=;
-  b=dZrlgsMSh0TpyU355X8TOEnys/BiZwbTIQZZgbryD7p94/ae/NPAyG+3
-   yunQwMDXHYFtQI6V1rhghUfhhu9I8U1BVzxZA/LzdMijCERUcrI2XcY3P
-   UVc+swih/50JEIEPKCFA6u7Lpoersr0PRa+UMqzu0ahACSXliskUB4jxD
-   Min+NXyekbaOWnO7Qx5FRXvMmW1ZZwEqI5eMLDw66/6dgXJRiLEb4L1cz
-   3Z8PpFSOFE6wpaqf7AS4Tv+997LvPF2zVgsZI7fnFBxlm4a9raWgA7vBS
-   udtyDCZXlm361j6VPN4zHHEwqNV1MmFE9AwwyCksQ1vfU7aeH1WLZwo0J
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="363064646"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="363064646"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 02:56:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="866883398"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="866883398"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 02:56:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfdf3-008HgA-19;
-        Mon, 11 Sep 2023 12:56:53 +0300
-Date:   Mon, 11 Sep 2023 12:56:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linhua Xu <Linhua.xu@unisoc.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH V2 6/6] pinctrl: sprd: Add pinctrl support for UMS9621
-Message-ID: <ZP7kZUV2MQPYLZwM@smile.fi.intel.com>
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
- <20230908055146.18347-7-Linhua.xu@unisoc.com>
+        Mon, 11 Sep 2023 05:57:19 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7AFE67;
+        Mon, 11 Sep 2023 02:57:14 -0700 (PDT)
+Received: from [192.168.239.158] (unknown [182.191.140.203])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2133966072F4;
+        Mon, 11 Sep 2023 10:57:08 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694426233;
+        bh=0N+FDH5z9szp/PjtzByqIq81sfNr/YB7TLbioWmeuX8=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=RV6bxxbUrVnYcz+Wdo5hmrV+Guw7rVAMzIq3kHY10hoH9LoCTK0SrfTxbrn1D5XOi
+         rOYQhLx68y9YmiI4qrmQmn3ueZvSrWFHSYH5g8atBGg7CRLEHpS3HS/gW1Hq0aVt3B
+         X3a9y2p0BwKys6fvGNUXZJn/gFb1bdJjk+SjyHknp+swm0raZc0GbnNz/4GnHV6kcv
+         H41/JREAMO9vwK1lrJL+/3EXsSxn37e/SLaRBfe0aRQCBl5vBdZjOQUV+fAwfj8t3Y
+         tq1t/CjxD/W6NPPaSmSmGKVZnpFghDcgkvHdnwaAybPXv1RLI5scBUCMgawDqvEifQ
+         +Lq1vcPdKgWxw==
+Message-ID: <4af6a370-6d31-4413-b78e-e693be5f01a9@collabora.com>
+Date:   Mon, 11 Sep 2023 14:57:02 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908055146.18347-7-Linhua.xu@unisoc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        kernel@collabora.com, stable@vger.kernel.org,
+        syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] ext4: don't remove already removed extent
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Allison Henderson <achender@linux.vnet.ibm.com>
+References: <20230911094038.3602508-1-usama.anjum@collabora.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20230911094038.3602508-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 01:51:46PM +0800, Linhua Xu wrote:
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
+Apologies for sending multiple copies of same email. There was some issue
+on my side.
+
+On 9/11/23 2:40 PM, Muhammad Usama Anjum wrote:
+> Syzbot has hit the following bug on current and all older kernels:
+> BUG: KASAN: out-of-bounds in ext4_ext_rm_leaf fs/ext4/extents.c:2736 [inline]
+> BUG: KASAN: out-of-bounds in ext4_ext_remove_space+0x2482/0x4d90 fs/ext4/extents.c:2958
+> Read of size 18446744073709551508 at addr ffff888073aea078 by task syz-executor420/6443
 > 
-> Add the pin control driver for UNISOC UMS9621 platform.
-
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +
-
-...
-
-> +#define	PINCTRL_REG_OFFSET		0x44
-
-0x0044
-
-> +#define	PINCTRL_REG_MISC_OFFSET		0x444
-
-...
-
-> +static const struct of_device_id sprd_pinctrl_of_match[] = {
-> +	{ .compatible = "sprd,ums9621-pinctrl", },
-
-Inner comma is not needed.
-
-> +	{ }
-> +};
-
+> On investigation, I've found that eh->eh_entries is zero, ex is
+> referring to last entry and EXT_LAST_EXTENT(eh) is referring to first.
+> Hence EXT_LAST_EXTENT(eh) - ex becomes negative and causes the wrong
+> buffer read.
+> 
+> element: FFFF8882F8F0D06C       <----- ex
+> element: FFFF8882F8F0D060
+> element: FFFF8882F8F0D054
+> element: FFFF8882F8F0D048
+> element: FFFF8882F8F0D03C
+> element: FFFF8882F8F0D030
+> element: FFFF8882F8F0D024
+> element: FFFF8882F8F0D018
+> element: FFFF8882F8F0D00C	<------  EXT_FIRST_EXTENT(eh)
+> header:  FFFF8882F8F0D000	<------  EXT_LAST_EXTENT(eh) and eh
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: syzbot+6e5f2db05775244c73b7@syzkaller.appspotmail.com
+> Closes: https://groups.google.com/g/syzkaller-bugs/c/G6zS-LKgDW0/m/63MgF6V7BAAJ
+> Fixes: d583fb87a3ff ("ext4: punch out extents")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> This patch is only fixing the local issue. There may be bigger bug. Why
+> is ex set to last entry if the eh->eh_entries is 0. If any ext4
+> developer want to look at the bug, please don't hesitate.
+> ---
+>  fs/ext4/extents.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e4115d338f101..7b7779b4cb87f 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -2726,7 +2726,7 @@ ext4_ext_rm_leaf(handle_t *handle, struct inode *inode,
+>  		 * If the extent was completely released,
+>  		 * we need to remove it from the leaf
+>  		 */
+> -		if (num == 0) {
+> +		if (num == 0 && eh->eh_entries) {
+>  			if (end != EXT_MAX_BLOCKS - 1) {
+>  				/*
+>  				 * For hole punching, we need to scoot all the
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+BR,
+Muhammad Usama Anjum
