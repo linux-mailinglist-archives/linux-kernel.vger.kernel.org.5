@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87AE79A17A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7A379A17E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjIKCqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 22:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        id S233096AbjIKCtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 22:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjIKCqn (ORCPT
+        with ESMTP id S232983AbjIKCty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 22:46:43 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9C1B0;
-        Sun, 10 Sep 2023 19:46:38 -0700 (PDT)
-Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RkWGj60jyzNnHc;
-        Mon, 11 Sep 2023 10:42:53 +0800 (CST)
-Received: from [10.69.136.139] (10.69.136.139) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 11 Sep 2023 10:46:35 +0800
-Message-ID: <110c02bf-3133-971c-750b-4a2d18bc9bf9@huawei.com>
-Date:   Mon, 11 Sep 2023 10:46:35 +0800
+        Sun, 10 Sep 2023 22:49:54 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC598B0;
+        Sun, 10 Sep 2023 19:49:47 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 38B2mndQ062834;
+        Mon, 11 Sep 2023 10:48:49 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Mon, 11 Sep 2023 10:48:48 +0800
+Date:   Mon, 11 Sep 2023 10:48:44 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     <linux-riscv@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <conor.dooley@microchip.com>,
+        <atishp@atishpatra.org>, <anup@brainfault.org>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <ajones@ventanamicro.com>, <heiko@sntech.de>,
+        <samuel@sholland.org>, <geert+renesas@glider.be>,
+        <n.shubin@yadro.com>, <dminus@andestech.com>,
+        <ycliang@andestech.com>, <tim609@andestech.com>,
+        <locus84@andestech.com>, <dylan@andestech.com>
+Subject: Re: [PATCH 3/4] riscv: errata: Add Andes PMU errata
+Message-ID: <ZP6ADIAqZn0kkxwB@APC323>
+References: <20230907021635.1002738-1-peterlin@andestech.com>
+ <20230907021635.1002738-4-peterlin@andestech.com>
+ <20230907-158e1f7e1e866d8c02726c9c@fedora>
+ <20230907-7bc08398d2f95c14e1c0bc76@fedora>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     <shaojijie@huawei.com>, <shenjian15@huawei.com>,
-        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 ethtool] hns3: add support dump registers for hns3
- driver
-To:     <mkubecek@suse.cz>
-References: <20230829065656.2725081-1-shaojijie@huawei.com>
-From:   Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <20230829065656.2725081-1-shaojijie@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.136.139]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600007.china.huawei.com (7.193.23.208)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230907-7bc08398d2f95c14e1c0bc76@fedora>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 38B2mndQ062834
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 07, 2023 at 12:02:46PM +0100, Conor Dooley wrote:
+> On Thu, Sep 07, 2023 at 10:27:03AM +0100, Conor Dooley wrote:
+> > Hey,
+> > 
+> > On Thu, Sep 07, 2023 at 10:16:34AM +0800, Yu Chien Peter Lin wrote:
+> > > Before the ratification of Sscofpmf, the Andes PMU extension
+> > > implements the same mechanism and is compatible with existing
+> > > SBI PMU driver of perf to support event sampling and mode
+> > > filtering with programmable hardware performance counters.
+> > 
+> > If it actually was, you'd not need to modify the driver ;)
+> > 
+> > > This patch adds PMU support for Andes 45-series CPUs by
+> > > introducing a CPU errata.
+> > 
+> > I don't really understand this in all honesty. You don't have Sscofpmf
+> > support with a bug, you have something that is Sscofpmf-adjactent that
+> > predates it. Why claim to support an extension that you do not, only to
+> > have to come along and try to clean things up afterwards, instead of
+> > accurately declaring what you do support from the outset?
+> 
+> Reading this again, I don't think that I have been particularly clear,
+> sorry. My point is that this is not a fix for a bug in your
+> implementation of Sscofpmf, but rather adding probing for what is
+> effectively a custom ISA extension that happens to be very similar to
+> the standard one. As it is not an implementation bug, errata should
+> not be abused to support vendor extensions, and either DT or ACPI should
+> be used to inform the operating system about its presence.
+> 
+> Cheers,
+> Conor.
+> 
+> > 
+> > (and just because someone already got away with it, doesn't mean that
+> > you get a free pass on it, sorry)
 
-on 2023/8/29 14:56, Jijie Shao wrote:
-> Add support pretty printer for the registers of hns3 driver.
-> This printer supports PF and VF, and is compatible with hns3
-> drivers of earlier versions.
->
-> Sample output:
->
-> $ ethtool -d eth1
-> [cmdq_regs]
->    comm_nic_csq_baseaddr_l : 0x48168000
->    comm_nic_csq_baseaddr_h : 0x00000000
->    comm_nic_csq_depth      : 0x00000080
->    comm_nic_csq_tail       : 0x00000050
->    comm_nic_csq_head       : 0x00000050
->    comm_nic_crq_baseaddr_l : 0x48170000
->    comm_nic_crq_baseaddr_h : 0x00000000
->    comm_nic_crq_depth      : 0x00000080
->    comm_nic_crq_tail       : 0x00000000
->    comm_nic_crq_head       : 0x00000000
->    comm_vector0_cmdq_src   : 0x00000000
->    comm_cmdq_intr_sts      : 0x00000000
->    comm_cmdq_intr_en       : 0x00000002
->    comm_cmdq_intr_gen      : 0x00000000
-> [common_regs]
->    misc_vector_base    : 0x00000001
->    pf_other_int        : 0x00000040
->    misc_reset_sts      : 0x00000000
->    misc_vector_int_sts : 0x00000000
->    global_reset        : 0x00000000
->    fun_rst_ing         : 0x00000000
->    gro_en              : 0x00000001
-> ...
->
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
-> changeLog:
->    v2: remove #pragma suggested by Michal
->    v1: https://lore.kernel.org/all/20230818085611.2483909-1-shaojijie@huawei.com/
-> ---
+Apologize for any confusion caused by the name. I thought it would make it
+easier to find the related functions and files in OpenSBI, didn't expect
+that it may have misled people to abuse the use of errata, you are right,
+I should have chosen my words more carefully.
 
-Hi Michal:
+In my opinion, this is simply a pre-sepc solution to enable missing perf
+features before the standard is finalized. The underlying logic remains the
+same, so we can still use the errata to patch a few lines of CSR accesses
+and align with other vendors. This way, we can make minimal changes and
+avoid performance overhead to the driver.
 
-   This patch has been uploaded for more than 10 days and has not been merged.
-   Please review this patch. and if you have any problems, please inform me in time.
+> > Thanks,
+> > Conor.
+> > 
+> > > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > > Signed-off-by: Locus Wei-Han Chen <locus84@andestech.com>
+> > 
+> > btw, what did Locus Wei-Han Chen do here? Are you missing
+> > a Co-developed-by: tag?
 
-  Thanks！
-  Jijie Shao
+Yes I missed the CD-tag, will fix it.
+Thanks for the review.
 
+> > > Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> > > Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> > > ---
+> > >  arch/riscv/Kconfig.errata            | 13 ++++++++
+> > >  arch/riscv/errata/andes/errata.c     | 45 +++++++++++++++++++++++++++-
+> > >  arch/riscv/include/asm/errata_list.h | 43 ++++++++++++++++++++++++--
+> > >  drivers/perf/riscv_pmu_sbi.c         | 20 +++++++++----
+> > >  4 files changed, 111 insertions(+), 10 deletions(-)
+
+Best regards,
+Peter Lin
