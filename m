@@ -2,217 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C179B3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB7E79B280
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238853AbjIKWix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
+        id S1355033AbjIKV4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237892AbjIKNTc (ORCPT
+        with ESMTP id S237915AbjIKNVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:19:32 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6988AEE;
-        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a9cd066db5so563945366b.0;
-        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694438365; x=1695043165; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
-        b=loGRq68sbDK7K+nxJ7ch/PVyC1246xfq++YioxtPOK0QK623lWmq4XvGfVMA0zc7dZ
-         N9rYdqPxhOTftehIlGYdg5VzWoQ5Yn6z7PpuYfv+i1AneAyuHITELVt6GXBCOrRHmGj7
-         AI2egPnVwy/4M0hWrv2IA6Dw4vPANpGpvFMUS8PSpaXavDaTkcXMcOZrnSIi2MQxG7d0
-         kIEc/ckl83J5JV83D7Lm8PYdUXHbXQGWXkOfAh7JncTzR+smytQ+DGozX95j4fx2sEyM
-         sJOuOW/lHSVKAtUyGyCQwdo8JXvT1m/IYofv58vYKHW5cXiMe3GS9/DR/RmBdrag5n5R
-         cpAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438365; x=1695043165;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
-        b=suqx47OM+1kVz72Q+zpnI4+zrKPblhEsyj5q8ZigmJ4wL7VT4DFFkIjF3FoyNUtO+K
-         CwpLTt37fw/A9S5UfI4IlM9SZ4ApniUU1Nt3sQOBKbj/iUI+SdLSU9JsjI+ZvSUwsGzG
-         lr8aLT+sghJZpu2vVZqoErOElBls0w9YyMwoJJ1nSV8pDIu5Aj85HqfSuiCpWQPEMGXl
-         BXsXdXe+vsjrCmL4IYlCEgd/USFot24W+C4MdhllG7G8tjNSDYmPKO7JwlzU2Sgm8dhk
-         ryoGRnFBGxu77ssW50p+BFE8uK/bpPbK7hybgM5tPSeaQ689fBErjiHEACDkJ6OPkAla
-         Kkmw==
-X-Gm-Message-State: AOJu0Yx8U/CDwFHwmnv2EBIoKgxSWdn1xFcSMCohTLjPJNY22MUxhsdY
-        NDIblvLVD0eVe179zH5Ngq1DMXCYHx0=
-X-Google-Smtp-Source: AGHT+IF8gRl9y19pvIHmim64bQq1N0gu6atCEteh1ulReooZA/H5+YH+OytdKZ0jIXcwJe1ywmIUSw==
-X-Received: by 2002:a17:906:301b:b0:9a1:c39a:8bfd with SMTP id 27-20020a170906301b00b009a1c39a8bfdmr7755321ejz.57.1694438363659;
-        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id h3-20020a170906718300b0098e34446464sm5359448ejk.25.2023.09.11.06.19.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
-Message-ID: <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
-Subject: Re: [PATCH v2 1/3] selftests/hid: ensure we can compile the tests
- on kernels pre-6.3
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Justin Stitt <justinstitt@google.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Benjamin Tissoires <bentiss@kernel.org>
-Date:   Mon, 11 Sep 2023 16:19:21 +0300
-In-Reply-To: <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
-         <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Mon, 11 Sep 2023 09:21:37 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3185F12A;
+        Mon, 11 Sep 2023 06:21:33 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BCVApY001138;
+        Mon, 11 Sep 2023 13:21:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=rX6uV9pMq+YZxXFlkOtDCFvmFDUZ4BTGpEAG11LI7UA=;
+ b=eQUJlvTI8Z+G/ojrbbKhTJn5ZkRMYd12miibC4fEJMmK9DPZ+0H+iHqxC7HG+VeYfUyk
+ qvkRGLAJUu+JSPbRls3eR5Oh816KFXGEXGujDZBkfUYz3+ycL2b2eGV+y0fNW+zK+Y3Q
+ EfLXXQRmHpENDiG4StmqeTuqjBRNSsAn6Dd9d9L8LYZMCeacZQr08LVHxw47Lpv/JoZG
+ kbtBxaPzeCtxChvbOuJBfbq2z+uZtI6mFjckllFfwz3UaNyL7zN7BPUubtgVAmIxZGOB
+ 5oll1FJR1dh/BvdmKny8ri5cQ8bmkhQfJfnU6AYgqM/mE6hwVXD3dHq1XiX/j57PNEJ0 Tg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0hfqkpvp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 13:21:18 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BDLHaw020493
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 13:21:17 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 06:21:13 -0700
+Message-ID: <647e2b5e-6064-dbfa-bb56-f74358efd1fe@quicinc.com>
+Date:   Mon, 11 Sep 2023 18:51:10 +0530
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 00/10] Add PCIe Bandwidth Controller
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+References: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com>
+ <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
+ <21b95d9-86a5-dcb0-9dda-3f1cdd426b9e@linux.intel.com>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <21b95d9-86a5-dcb0-9dda-3f1cdd426b9e@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: A7sIrciLOOLmIWHlA08WbhTGL190U4SX
+X-Proofpoint-GUID: A7sIrciLOOLmIWHlA08WbhTGL190U4SX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_08,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110122
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-08 at 22:22 +0000, Justin Stitt wrote:
-> From: Benjamin Tissoires <bentiss@kernel.org>
->=20
-> For the hid-bpf tests to compile, we need to have the definition of
-> struct hid_bpf_ctx. This definition is an internal one from the kernel
-> and it is supposed to be defined in the generated vmlinux.h.
->=20
-> This vmlinux.h header is generated based on the currently running kernel
-> or if the kernel was already compiled in the tree. If you just compile
-> the selftests without compiling the kernel beforehand and you are running
-> on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
-> definition.
->=20
-> Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
-> to force the definition of that symbol in case we don't find it in the
-> BTF and also add __attribute__((preserve_access_index)) to further
-> support CO-RE functionality for these tests.
->=20
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
->  tools/testing/selftests/hid/progs/hid.c            |  3 --
->  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++=
-++++++
->  2 files changed, 49 insertions(+), 3 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/self=
-tests/hid/progs/hid.c
-> index 88c593f753b5..1e558826b809 100644
-> --- a/tools/testing/selftests/hid/progs/hid.c
-> +++ b/tools/testing/selftests/hid/progs/hid.c
-> @@ -1,8 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright (c) 2022 Red hat */
-> -#include "vmlinux.h"
-> -#include <bpf/bpf_helpers.h>
-> -#include <bpf/bpf_tracing.h>
->  #include "hid_bpf_helpers.h"
-> =20
->  char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index 4fff31dbe0e7..ab3b18ba48c4 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -5,6 +5,55 @@
->  #ifndef __HID_BPF_HELPERS_H
->  #define __HID_BPF_HELPERS_H
-> =20
-> +/* "undefine" structs in vmlinux.h, because we "override" them below */
 
-Hi Justin,
+On 9/4/2023 4:46 PM, Ilpo Järvinen wrote:
+> On Mon, 4 Sep 2023, Krishna Chaitanya Chundru wrote:
+>
+>> On 8/17/2023 5:46 PM, Ilpo Järvinen wrote:
+>>> Hi all,
+>>>
+>>> This series adds PCIe bandwidth controller (bwctrl) and associated PCIe
+>>> cooling driver to the thermal core side for limiting PCIe link speed
+>>> due to thermal reasons. PCIe bandwidth controller is a PCI express bus
+>>> port service driver. A cooling device is created for each port the
+>>> service driver finds if they support changing speeds.
+>> I see we had support for only link speed changes here but we need to add
+>> support for
+>>
+>> link width change also as bandwidth notification from PCIe supports both link
+>> speed and link width.
+> Hi,
+>
+> Thanks for the comment. In case you mean that the changes in Link Width
+> should be reported correctly, they already are since the sysfs interface
+> reads them directly from LNKSTA register.
+>
+> Or did you perhaps mean that Bandwidth Controller should support also
+> changing Link Width? If this is the case I don't know how it can be
+> realized so a pointer on how it can be achieved would be appreciated.
 
-What you have here should work, however I still think that the trick
-with "___local" suffix I refer to in [1] is a bit less hacky, e.g.:
+Hi,
 
-    enum hid_report_type___local { ... };
-    struct hid_bpf_ctx___local {
-       __u32 index;
-       const struct hid_device *hid; // this one should be in vmlinux.h wit=
-h any config
-       __u32 allocated_size;
-       enum hid_report_type___local report_type;
-       union {
-           __s32 retval;
-           __s32 size;
-       };
-    } __attribute__((preserve_access_index));
-   =20
-    enum hid_class_request___local { ... };
-    enum hid_bpf_attach_flags___local { ... };
-    ...
-    extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
-                                  unsigned int offset,
+I didn't have any idea on how thermal framework works.
 
+But as we are adding bandwidth controller support we need to add support 
+for width change also, may be we are not using this now, but we may need 
+it in the future.
 
-(sorry for being a bore, won't bring this up anymore).
+We had similar use case based on the bandwidth requirement on devices 
+like WLAN, the client try to reduce or increase the link speed and link 
+width.
 
-Thanks,
-Eduard
+So in the bandwidth controller driver we can add support for link width 
+also. So any client can easily use the driver to change link speed or 
+width or both to reduce the power consumption.
 
-[1] https://lore.kernel.org/bpf/e99b4226bd450fedfebd4eb5c37054f032432b4f.ca=
-mel@gmail.com/
+Adding link width support should be similar to how you added the link 
+speed supported.
 
-> +#define hid_bpf_ctx hid_bpf_ctx___not_used
-> +#define hid_report_type hid_report_type___not_used
-> +#define hid_class_request hid_class_request___not_used
-> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-> +#include "vmlinux.h"
-> +#undef hid_bpf_ctx
-> +#undef hid_report_type
-> +#undef hid_class_request
-> +#undef hid_bpf_attach_flags
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <linux/const.h>
-> +
-> +enum hid_report_type {
-> +	HID_INPUT_REPORT		=3D 0,
-> +	HID_OUTPUT_REPORT		=3D 1,
-> +	HID_FEATURE_REPORT		=3D 2,
-> +
-> +	HID_REPORT_TYPES,
-> +};
-> +
-> +struct hid_bpf_ctx {
-> +	__u32 index;
-> +	const struct hid_device *hid;
-> +	__u32 allocated_size;
-> +	enum hid_report_type report_type;
-> +	union {
-> +		__s32 retval;
-> +		__s32 size;
-> +	};
-> +} __attribute__((preserve_access_index));
-> +
-> +enum hid_class_request {
-> +	HID_REQ_GET_REPORT		=3D 0x01,
-> +	HID_REQ_GET_IDLE		=3D 0x02,
-> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
-> +	HID_REQ_SET_REPORT		=3D 0x09,
-> +	HID_REQ_SET_IDLE		=3D 0x0A,
-> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
-> +};
-> +
-> +enum hid_bpf_attach_flags {
-> +	HID_BPF_FLAG_NONE =3D 0,
-> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
-> +	HID_BPF_FLAG_MAX,
-> +};
-> +
->  /* following are kfuncs exported by HID for HID-BPF */
->  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
->  			      unsigned int offset,
->=20
+Please correct me if I misunderstood something here.
+
+Thanks & Regards,
+
+Krishna Chaitanya.
 
