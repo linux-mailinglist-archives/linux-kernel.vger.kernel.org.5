@@ -2,184 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340C379B2CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A314979B354
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350683AbjIKVkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        id S238372AbjIKV4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243684AbjIKR3q (ORCPT
+        with ESMTP id S243703AbjIKRcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:29:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0457E125
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694453380; x=1725989380;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=t0MChbT9anmwCTW4aLxtvuNYSMoznXBB+c/G4YEPAAI=;
-  b=ZE+L5NEVPpVCVY4NXVeu6uBtZLdxS0Zx64WPi7komrMRNK9935XdSGp/
-   jsInvwGMUgUGoBlmv+xl6sfP7i9lS2tE4c17CweoZSjGw/DUhtdUb5+eG
-   55KkSiRqN0gBnvJFdhrZLtRDd5ycqqxpD1LX8fmE++X45h+YPQ4TorptZ
-   B0u/cMSbRmVthTypqJeFf4IpaA1oHuDoMjEwFKjyDod32+u/p5I/qLrsX
-   UqAL6Wq6N8Ji5DfDUgmZM6ZOGXtK2R4PvmVVn0DSwtKXbNrNVm44GpDE9
-   BGorNnu0jurHv6XMONR4xNyqZgcuVQUrno4kSvnzeQgbPUbyfdYtYz9uu
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378063524"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="378063524"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:29:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833590628"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="833590628"
-Received: from kschuele-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.63.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:29:38 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Allen Ballway <ballway@chromium.org>, ballway@chromium.org
-Cc:     arun.r.murthy@intel.com, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, josh@joshtriplett.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RESEND] drm/i915/quirk: Add quirk for devices that
- cannot be dimmed
-In-Reply-To: <20230808173957.2017765-1-ballway@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230629172106.3798019-1-ballway@chromium.org>
- <20230808173957.2017765-1-ballway@chromium.org>
-Date:   Mon, 11 Sep 2023 20:29:35 +0300
-Message-ID: <87fs3kehz4.fsf@intel.com>
+        Mon, 11 Sep 2023 13:32:43 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5291B8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:32:38 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-414c54b2551so20761cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694453557; x=1695058357; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vS06nh80KVOxCFrHKBzqbQxcQAoLQCJ5U5egzLZgpvg=;
+        b=hSh0fiY+s1CC1IB4r862zcw/5DKCCf85AF480c8QKu0+YQtUfbDhL9wtVNaGdsLrZ0
+         Dowx21XZhq7KtUJhltvrCrkMqh8ks2bdvnrnNeXY+xKSMB90Eqxl8xsqYTxYgfd/W4A2
+         JGKqLsTlaAqzAXIWlK9C2flf6D7sMqEwt4iYivr6eRoDV5DmykkPAuIE92svGUjd9l1b
+         /4wg4V8J/zytPe3CXrowh5nmtVELwtnFQIrPKzkOFF/C2ruemP2xofL4EXDxLSuaHsNG
+         1PJoGrF3t0M/3Q509sPpClbFwoIMVNJwnhCDNuX5Zu4f/1gJfq8xshpYMpcxUTn7UBKd
+         xP/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694453557; x=1695058357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vS06nh80KVOxCFrHKBzqbQxcQAoLQCJ5U5egzLZgpvg=;
+        b=rxXFX6gFdqfnuCKIdMETHvUBIECVAOeluzD5JSYp67ZgF8qhconvOKfpyoN8zZW0uf
+         qUVUQD/wlirmVp2TY4hOg12xtNx6KBmdYTj3BtGl+ssrQgIMXrw/ra6gsIB93PKK7G0r
+         WPjoiLaYeHlYF0rveHDh57xYQyA/YruQn2GBlv1uR3lmQVxxuG4K5ciAdPzs/TrB99JN
+         tfEegYh++/3WkjUWYMbzDj2N84jPO27RKdeIE4OCjuEC086tlBdARhhkoHcPVONpky5w
+         1xaBK8vrU+qBBSESRcsdmfDqh6J6Hlo6wWRHOwfgycqEKKcSWAvgyk1WsqysCh4OcBdZ
+         4lag==
+X-Gm-Message-State: AOJu0YyfTT2JGuvBLCIXJ9oMshtRqUznmWL6ORJXLBuYGzXF3hLeInjK
+        R9r/RBP4l7+cWt9rkdRz8uwTAjYa3DUhMAQZaTd2Tg==
+X-Google-Smtp-Source: AGHT+IFB8vpoAIVESpU9czT1w5x6NETkoKez+IqbAgOCvDM9Mj42QoUPaJWihBoHkb7DhpDrqULeeeUau23CM5Xzwdo=
+X-Received: by 2002:a05:622a:13ce:b0:412:16f:c44f with SMTP id
+ p14-20020a05622a13ce00b00412016fc44fmr26090qtk.6.1694453557215; Mon, 11 Sep
+ 2023 10:32:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <1694087913-46144-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1694087913-46144-2-git-send-email-renyu.zj@linux.alibaba.com>
+ <CAP-5=fVWcQrqLeuc-k4HRNrNdb_=9CbqTSOAX=HDR7f=j8b0Hg@mail.gmail.com> <8bab7404-8e24-8606-558c-db3495429f2f@linux.alibaba.com>
+In-Reply-To: <8bab7404-8e24-8606-558c-db3495429f2f@linux.alibaba.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 11 Sep 2023 10:32:25 -0700
+Message-ID: <CAP-5=fU4jWHnbt8BirMZHa7cuLhkAAMAfD28AdRc23zx-e3EyQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/8] perf pmu: "Compat" supports matching multiple identifiers
+To:     Jing Zhang <renyu.zj@linux.alibaba.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Aug 2023, Allen Ballway <ballway@chromium.org> wrote:
-> Cybernet T10C cannot be dimmed without the backlight strobing. Create a
-> new quirk to lock the minimum brightness to the highest supported value.
-> This aligns the device with its behavior on Windows, which will not
-> lower the brightness below maximum.
+On Sun, Sep 10, 2023 at 7:32=E2=80=AFPM Jing Zhang <renyu.zj@linux.alibaba.=
+com> wrote:
+>
+>
+>
+> =E5=9C=A8 2023/9/9 =E4=B8=8A=E5=8D=885:33, Ian Rogers =E5=86=99=E9=81=93:
+> > On Thu, Sep 7, 2023 at 4:58=E2=80=AFAM Jing Zhang <renyu.zj@linux.aliba=
+ba.com> wrote:
+> >>
+> >> The jevent "Compat" is used for uncore PMU alias or metric definitions=
+.
+> >>
+> >> The same PMU driver has different PMU identifiers due to different
+> >> hardware versions and types, but they may have some common PMU event.
+> >> Since a Compat value can only match one identifier, when adding the
+> >> same event alias to PMUs with different identifiers, each identifier
+> >> needs to be defined once, which is not streamlined enough.
+> >>
+> >> So let "Compat" supports matching multiple identifiers for uncore PMU
+> >> alias. For example, the Compat value {43401;436*} can match the PMU
+> >> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
+> >> the prefix "436", that is, all CMN650, where "*" is a wildcard.
+> >> Tokens in Unit field are delimited by ';' with no spaces.
+> >>
+> >> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+> >> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> >> ---
+> >>  tools/perf/util/pmu.c | 28 ++++++++++++++++++++++++++--
+> >>  tools/perf/util/pmu.h |  1 +
+> >>  2 files changed, 27 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> >> index e215985..c3c3818 100644
+> >> --- a/tools/perf/util/pmu.c
+> >> +++ b/tools/perf/util/pmu.c
+> >> @@ -875,6 +875,30 @@ static bool pmu_uncore_alias_match(const char *pm=
+u_name, const char *name)
+> >>         return res;
+> >>  }
+> >>
+> >> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
+> >> +{
+> >> +       char *tmp =3D NULL, *tok, *str;
+> >> +       bool res =3D false;
+> >> +
+> >> +       /*
+> >> +        * The strdup() call is necessary here because "compat" is a c=
+onst str*
+> >> +        * type and cannot be used as an argument to strtok_r().
+> >> +        */
+> >> +       str =3D strdup(compat);
+> >> +       if (!str)
+> >> +               return false;
+> >> +
+> >> +       tok =3D strtok_r(str, ";", &tmp);
+> >
+> > Did the comma vs semicolon difference get explained? It seems to add
+> > inconsistency to use a semicolon.
+> >
+>
+> Hi Ian,
+>
+> Yes, I explained the reason for using semicolons instead of commas in v7.
+>
+> I use a semicolon instead of a comma because I want to distinguish it fro=
+m the function
+> of the comma in "Unit" and avoid confusion between the use of commas in "=
+Unit" and "Compat".
+> Because in Unit, commas act as wildcards, and in =E2=80=9CCompat=E2=80=9D=
+, the semicolon means =E2=80=9Cor=E2=80=9D. So
+> I think semicolons are more appropriate.
+>
+> John also raised this issue earlier, and we finally agreed to use semicol=
+ons.
+> What do you think?
 
-Noting here for the benefit of others, it's possible to make the
-brightness work [1], now we "just" need to figure out how to do that
-nicely. So we should drop this patch.
+I'm okay with it, but thanks for capturing the why of this. I'd like
+at some point to make the wildcarding of things less ad hoc. For
+example, on x86 we use regular expressions to match cpuid:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/pmu-events/arch/x86/mapfile.csv?h=3Dperf-tools-next
+but file name style matching for pmus:
+https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
+ee/tools/perf/util/pmu.c?h=3Dperf-tools-next#n1974
+Given that we're okay with regular expressions then I don't see why
+everything shouldn't be a regular expression. This could, for example,
+make matching PMUs more specific than just adding a star and doing a
+file name match. For an example of why this is weird, on my laptop:
+```
+$ perf stat -e i/actual-frequency/ true
 
-BR,
-Jani.
+Performance counter stats for 'system wide':
+
+                0      i/actual-frequency/
+
+      0.001168195 seconds time elapsed
+```
+The PMU I used here as 'i' is /sys/devices/i915 as we allow arbitrary
+numbers after a PMU name for cases of multiple uncore PMUs.
+
+My feeling longer term is that the matching distinction of Unit and
+Compat, comma and semi-colon, would be better captured with regular
+expressions as I think they show the intent in the matching more
+clearly.
+
+Thanks,
+Ian
 
 
-[1] https://gitlab.freedesktop.org/drm/intel/-/issues/8187#note_2072633
-
+> Thanks,
+> Jing
 >
-> Signed-off-by: Allen Ballway <ballway@chromium.org>
-> ---
-> V2 -> V3: Fix typo.
-> V1 -> V2: Fix style issue.
->
-> .../gpu/drm/i915/display/intel_backlight.c    |  5 ++++
->  drivers/gpu/drm/i915/display/intel_quirks.c   | 27 +++++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_quirks.h   |  1 +
->  3 files changed, 33 insertions(+)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_backlight.c b/drivers/gpu/drm/i915/display/intel_backlight.c
-> index 2e8f17c045222..f015563d3ebd5 100644
-> --- a/drivers/gpu/drm/i915/display/intel_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_backlight.c
-> @@ -1192,6 +1192,11 @@ static u32 get_backlight_min_vbt(struct intel_connector *connector)
->
->  	drm_WARN_ON(&i915->drm, panel->backlight.pwm_level_max == 0);
->
-> +	if (intel_has_quirk(i915, QUIRK_NO_DIM)) {
-> +		/* Cannot dim backlight, set minimum to highest value */
-> +		return panel->backlight.pwm_level_max - 1;
-> +	}
-> +
->  	/*
->  	 * XXX: If the vbt value is 255, it makes min equal to max, which leads
->  	 * to problems. There are such machines out there. Either our
-> diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
-> index a280448df771a..910c95840a539 100644
-> --- a/drivers/gpu/drm/i915/display/intel_quirks.c
-> +++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-> @@ -65,6 +65,12 @@ static void quirk_no_pps_backlight_power_hook(struct drm_i915_private *i915)
->  	drm_info(&i915->drm, "Applying no pps backlight power quirk\n");
->  }
->
-> +static void quirk_no_dim(struct drm_i915_private *i915)
-> +{
-> +	intel_set_quirk(i915, QUIRK_NO_DIM);
-> +	drm_info(&i915->drm, "Applying no dim quirk\n");
-> +}
-> +
->  struct intel_quirk {
->  	int device;
->  	int subsystem_vendor;
-> @@ -90,6 +96,12 @@ static int intel_dmi_no_pps_backlight(const struct dmi_system_id *id)
->  	return 1;
->  }
->
-> +static int intel_dmi_no_dim(const struct dmi_system_id *id)
-> +{
-> +	DRM_INFO("No dimming allowed on %s\n", id->ident);
-> +	return 1;
-> +}
-> +
->  static const struct intel_dmi_quirk intel_dmi_quirks[] = {
->  	{
->  		.dmi_id_list = &(const struct dmi_system_id[]) {
-> @@ -136,6 +148,20 @@ static const struct intel_dmi_quirk intel_dmi_quirks[] = {
->  		},
->  		.hook = quirk_no_pps_backlight_power_hook,
->  	},
-> +	{
-> +		.dmi_id_list = &(const struct dmi_system_id[]) {
-> +			{
-> +				.callback = intel_dmi_no_dim,
-> +				.ident = "Cybernet T10C Tablet",
-> +				.matches = {DMI_EXACT_MATCH(DMI_BOARD_VENDOR,
-> +							    "Cybernet Manufacturing Inc."),
-> +					    DMI_EXACT_MATCH(DMI_BOARD_NAME, "T10C Tablet"),
-> +				},
-> +			},
-> +			{ }
-> +		},
-> +		.hook = quirk_no_dim,
-> +	},
->  };
->
->  static struct intel_quirk intel_quirks[] = {
-> @@ -218,6 +244,7 @@ void intel_init_quirks(struct drm_i915_private *i915)
->  		     q->subsystem_device == PCI_ANY_ID))
->  			q->hook(i915);
->  	}
-> +
->  	for (i = 0; i < ARRAY_SIZE(intel_dmi_quirks); i++) {
->  		if (dmi_check_system(*intel_dmi_quirks[i].dmi_id_list) != 0)
->  			intel_dmi_quirks[i].hook(i915);
-> diff --git a/drivers/gpu/drm/i915/display/intel_quirks.h b/drivers/gpu/drm/i915/display/intel_quirks.h
-> index 10a4d163149fd..b41c7bbf0a5e3 100644
-> --- a/drivers/gpu/drm/i915/display/intel_quirks.h
-> +++ b/drivers/gpu/drm/i915/display/intel_quirks.h
-> @@ -17,6 +17,7 @@ enum intel_quirk_id {
->  	QUIRK_INVERT_BRIGHTNESS,
->  	QUIRK_LVDS_SSC_DISABLE,
->  	QUIRK_NO_PPS_BACKLIGHT_POWER_HOOK,
-> +	QUIRK_NO_DIM,
->  };
->
->  void intel_init_quirks(struct drm_i915_private *i915);
-> --
-> 2.41.0.255.g8b1d071c50-goog
->
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> > Thanks,
+> > Ian
+> >
+> >> +       for (; tok; tok =3D strtok_r(NULL, ";", &tmp)) {
+> >> +               if (!fnmatch(tok, id, FNM_CASEFOLD)) {
+> >> +                       res =3D true;
+> >> +                       break;
+> >> +               }
+> >> +       }
+> >> +       free(str);
+> >> +       return res;
+> >> +}
+> >> +
+> >>  static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *p=
+e,
+> >>                                         const struct pmu_events_table =
+*table __maybe_unused,
+> >>                                         void *vdata)
+> >> @@ -915,8 +939,8 @@ static int pmu_add_sys_aliases_iter_fn(const struc=
+t pmu_event *pe,
+> >>         if (!pe->compat || !pe->pmu)
+> >>                 return 0;
+> >>
+> >> -       if (!strcmp(pmu->id, pe->compat) &&
+> >> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
+> >> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
+> >> +                       pmu_uncore_identifier_match(pmu->id, pe->compa=
+t)) {
+> >>                 perf_pmu__new_alias(pmu,
+> >>                                 pe->name,
+> >>                                 pe->desc,
+> >> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> >> index bd5d804..1bf5cf1 100644
+> >> --- a/tools/perf/util/pmu.h
+> >> +++ b/tools/perf/util/pmu.h
+> >> @@ -240,6 +240,7 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pm=
+u,
+> >>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
+> >>  const struct pmu_events_table *pmu_events_table__find(void);
+> >>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
+> >> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
+> >>
+> >>  int perf_pmu__convert_scale(const char *scale, char **end, double *sv=
+al);
+> >>
+> >> --
+> >> 1.8.3.1
+> >>
