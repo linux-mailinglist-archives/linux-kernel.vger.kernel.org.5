@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A2A79BE61
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0113979BECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355567AbjIKWA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S1377274AbjIKWVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244179AbjIKTdB (ORCPT
+        with ESMTP id S244185AbjIKTdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:33:01 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744361B6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so1041083066b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
+        Mon, 11 Sep 2023 15:33:53 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4368018D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:33:49 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-307d20548adso4888906f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:33:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694460775; x=1695065575; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qv0VFA8AXkB7cRCKN58lE+5+SoQOFu8EkIMD+Q2nh5A=;
-        b=gYffvhg+CGbFpoHsmhiatmK3W43qZMkFvnFOuBfkKR2Tqiec0yrvQQjWc6607G0B2Q
-         n6tV0pNzQePDEyUvQdO5nCKEqE41PxfqS4hfvJVBa5L6TVgCS8YQfxwXah37Jyx4DDO1
-         9xj7bhNJV+H72xafIvLtS5KWI9Yul4ZCo2lNuY42j4VEwee1hgsQfZ0pgh4bFyD+QC+Y
-         gjmF0irAWjekSzf9yRhYSNhQMdj0R4w/PHLhFmYAOYFWS5SDw2qMW6UmdvKJcvGGGyqn
-         MurW1Feft/HmAq/0n9FyVsZ3IxKPuLgm7yN4tPasaMoBqgOWpat+iCeiS9IKOmWM/q8o
-         csaQ==
+        d=linaro.org; s=google; t=1694460828; x=1695065628; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=inHsDNknLIsreaH/7mQ9fcoY03dG1phB2IV/CbQwYHw=;
+        b=mFEOtuiSTTU+v/GlQI4WyjnX39mrkym+osx8DihRHVm9cshQBluEk5F60ZGeJLOe1Y
+         v8h+2VTRaghV8CJFrGyPxL+UMGq9iThi3Oe5b/2p+iS6vu2aBb1sKHO5tj6zxEAFEY2m
+         JZJr9Ji3kazXz6Y6ZRFu8U3Mf1+tUzLP2j+1ZlsxyvG2lnPbmJRkK5YGyI+f/bS45Vi6
+         i/0s30bWI5hEeImXhPDlSX+bgJ/mIcnVTO5I/JIDu0RDB3grV+sYDUR9KLWf4J5dcZbv
+         qT/e3AUPWUaS82DsUwBmzhIWEpLMxQmdVSEVtDOTlmzvL7Ade1/8hN0A04Zq/joiVsL4
+         CY4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694460775; x=1695065575;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qv0VFA8AXkB7cRCKN58lE+5+SoQOFu8EkIMD+Q2nh5A=;
-        b=ADEYS0CbRfVYBVb/rJHdDn42yv9x+w1H4FKqAsiBBYUZMmnT/EPC7m2KM9PyugLXnR
-         73F/IR1CAcUz9ukr0CS/0iKKFwxBZDY/fx7xSwkwjLARSHLXnLkGOhIviXUlxA+R455t
-         0ZraMMrsL3rejG9aJsaQ9GR3Dlmg14ChjiJHQnA3+iaexip8JmBegTvSYQQ6VQoAeOel
-         fbND8hhVknvpaZNQ8s7TduSnPJs54UA+OsAShuxIdcujEE3mk2GNz1ID+LRTjFmso/+X
-         1HgtLTUVNNokm1NghrNF5x5gAnEMkRZEy36fkcg0l4a+EtbGgwP7xzuAYYcmTqfjZFRz
-         tJxw==
-X-Gm-Message-State: AOJu0Yzo6LPLGl4WavuxoRm0KQxvFzfjkvn7VziMTC87ikkGQt9xhQv6
-        BGN2GsAZyWDpieWODgf4UfM8YQ==
-X-Google-Smtp-Source: AGHT+IHp58GrysheyZ4KaZCssvpY0d5GCuHIUswb9q3RrsUP6gg75lzNfzitawynvFr6tipo8V2Kxw==
-X-Received: by 2002:a17:907:d17:b0:9a9:e3d2:ae4d with SMTP id gn23-20020a1709070d1700b009a9e3d2ae4dmr854344ejc.25.1694460774861;
-        Mon, 11 Sep 2023 12:32:54 -0700 (PDT)
-Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
-        by smtp.gmail.com with ESMTPSA id j4-20020a170906410400b0099cc402d3ddsm5698607ejk.202.2023.09.11.12.32.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 12:32:54 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 11 Sep 2023 21:32:48 +0200
-Subject: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550
- POWER_STATE_CONFIG1
+        d=1e100.net; s=20230601; t=1694460828; x=1695065628;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=inHsDNknLIsreaH/7mQ9fcoY03dG1phB2IV/CbQwYHw=;
+        b=O7lyiTGCJIMVLy29qVmWBRr24zWUmfXBIclaxY3WUi1HCzqbrRRUox+osGenXkCUeI
+         ot9j4soTXrK9V71lBNGJb9dqmZlbq7mDVnqyCKuNVRESkdRjPx53Cr45DLPTBdVZuyhu
+         INwAIeItrNuXFgPVCkduDlrb1D934WDqnNWqOP+hKU79aG/P/qxz6MiwFxX+dVWMYUEy
+         2c1Fga6EEKEV0OFBgzOPYzkloHI1GxS3+Ii3Fs8P4HiH7RHYTf2vr8i6gfTwUEu0dCVY
+         T50ynz+UnbHKISUTvXrfq6RYKuho6n9SLKxsMJZ5zO/LyLOio2dTdVh74HwErBuNoAxf
+         E8CQ==
+X-Gm-Message-State: AOJu0YyiOb192u0t0Af1jdBcznTxR09ZTNb58tmLTVKwfErde8VGmjAg
+        /iMGSjO5HggLlpge6w1klf6j+A==
+X-Google-Smtp-Source: AGHT+IHPh4+mNCvhlbAWncPBV2Sm+011b3XyySb0xj15kRO2fiVHvavlbXLcuAA8FfPzM2ZflHLaHA==
+X-Received: by 2002:a5d:560d:0:b0:31d:cd33:b30e with SMTP id l13-20020a5d560d000000b0031dcd33b30emr8891759wrv.4.1694460827797;
+        Mon, 11 Sep 2023 12:33:47 -0700 (PDT)
+Received: from [192.168.37.137] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
+        by smtp.gmail.com with ESMTPSA id e24-20020a056402089800b0052565298bedsm5043464edy.34.2023.09.11.12.33.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 12:33:47 -0700 (PDT)
+Message-ID: <ee8cc664-e698-4b0c-886d-ac33eb23b51e@linaro.org>
+Date:   Mon, 11 Sep 2023 21:33:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
-References: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
-In-Reply-To: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694460770; l=2669;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=JKFDScve4WE4FPTA0n+7atBY834sQWAUXpq8axVVF1o=;
- b=rmZ8TapO3mCnxCvhfMXw7fR47i9OFTqH0Ifon7ChEI1D6VCZ43FRyhfsPWPu+Bb/cwWFXWpKq
- mF1HQnuUQp6Cp33Y0y+iUN3D7zHvYp6gKu/wDUZx7yZ5R8Yc5pYIoIY
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 06/17] soc: qcom: Add Qualcomm APSS minidump kernel
+ driver
+Content-Language: en-US
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
+        agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        will@kernel.org, linus.walleij@linaro.org,
+        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
+        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
+        bmasney@redhat.com, quic_tsoni@quicinc.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
+ <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
+ <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -88,60 +126,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two instances of the POWER_STATE_CONFIG1 register: one in
-the PCS space and another one in PCS_USB.
+On 11.09.2023 21:09, Jeff Johnson wrote:
+> On 9/11/2023 4:07 AM, Krzysztof Kozlowski wrote:
+>> On 09/09/2023 22:16, Mukesh Ojha wrote:
+>>> +/**
+>>> + * qcom_minidump_region_register() - Register region in APSS Minidump table.
+>>> + * @region: minidump region.
+>>> + *
+>>> + * Return: On success, it returns 0 and negative error value on failure.
+>>> + */
+>>> +int qcom_minidump_region_register(const struct qcom_minidump_region *region)
+>>> +{
+>>> +    struct minidump *md;
+>>> +    int ret;
+>>> +
+>>> +    md = qcom_smem_minidump_ready();
+>>> +    if (!md)
+>>> +        return -EPROBE_DEFER;
+>>> +
+>>> +    if (!qcom_minidump_valid_region(region))
+>>> +        return -EINVAL;
+>>> +
+>>> +    mutex_lock(&md->md_lock);
+>>> +    ret = qcom_md_region_register(md, region);
+>>> +    if (ret)
+>>> +        goto unlock;
+>>> +
+>>> +    qcom_md_update_elfheader(md, region);
+>>> +unlock:
+>>> +    mutex_unlock(&md->md_lock);
+>>> +    return ret;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
+>>
+>> NAK, there is no user for this.
+>>
+>> Drop all exports from minidump drivers. Your upstream driver *must not*
+>> expose stuff to your vendor drivers.
+> 
+> Do we not expect that upstream drivers would want to register?
+> Mind you, in the downstream code the following was a bad limitation:
+> #define MAX_NUM_OF_SS           10
+No, Krzysztof meant that you are not allowed to export symbols
+without immediately providing a user for them - meaning if the
+functions are not going to be used upstream, this change will
+not be accepted.
 
-The downstream init sequence pokes the latter one while we've been poking
-the former one (and misnamed it as the latter one, impostor!). Fix that
-up to avoid UB.
-
-Fixes: 49742e9edab3 ("phy: qcom-qmp-combo: Add support for SM8550")
-Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c      | 2 +-
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-index cbb28afce135..843099d314bf 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-@@ -859,10 +859,10 @@ static const struct qmp_phy_init_tbl sm8550_usb3_pcs_tbl[] = {
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG1, 0x4b),
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG5, 0x10),
--	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
- };
- 
- static const struct qmp_phy_init_tbl sm8550_usb3_pcs_usb_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
- 	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-index 9510e63ba9d8..c38530d6776b 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v6.h
-@@ -12,7 +12,7 @@
- #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG3		0xcc
- #define QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG6		0xd8
- #define QPHY_USB_V6_PCS_REFGEN_REQ_CONFIG1		0xdc
--#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1	0x90
-+#define QPHY_USB_V6_PCS_POWER_STATE_CONFIG1		0x90
- #define QPHY_USB_V6_PCS_RX_SIGDET_LVL			0x188
- #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_L		0x190
- #define QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_H		0x194
-@@ -23,6 +23,7 @@
- #define QPHY_USB_V6_PCS_EQ_CONFIG1			0x1dc
- #define QPHY_USB_V6_PCS_EQ_CONFIG5			0x1ec
- 
-+#define QPHY_USB_V6_PCS_USB3_POWER_STATE_CONFIG1	0x00
- #define QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL	0x18
- #define QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2	0x3c
- #define QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L		0x40
-
--- 
-2.42.0
-
+Konrad
