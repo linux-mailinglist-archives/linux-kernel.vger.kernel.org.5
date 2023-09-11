@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC94079B0D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B94FB79B1F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378700AbjIKWgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        id S1345725AbjIKVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243840AbjIKR6h (ORCPT
+        with ESMTP id S243842AbjIKR7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:58:37 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CCCE0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694455112; x=1725991112;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Gxf0vmQoEIhvZqod62jZG9UmG56BBOre7Atf5NAKTnE=;
-  b=l3dEOkvqLzAjjs9cSxfaUiHn9sl/8gUxJFwSysNFWr2P7G3WbsPv0bth
-   e8r3DEMR8AR3nnsIHZ1q8H9clhK2WtwWnGw/bE0/qrXZ0iPSs4UiZQy36
-   AFAHzZqYd0Nin74w9e3Wp09IQm7aetkRqU/nJQd4GB2L6B+SLZeykFpWf
-   DnEnNYBlP5uNNxTLtgH3d7hCf3oVhffRHy3gTWe6oo2dMBFt5k7JDEdSU
-   xkwS8v9p6iw+TlEjUUEfLmMtSYZ5x8KECu2TrK/K6Ba0FERRHmJacZaL+
-   MhWEpBeHcjgM2GdyvxhDtxA95m3D09V4jBHsRGnClDpowbBuItLuGSMGp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="363196796"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="363196796"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:58:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693180664"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="693180664"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 10:58:30 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qflB6-0006Ya-12;
-        Mon, 11 Sep 2023 17:58:28 +0000
-Date:   Tue, 12 Sep 2023 01:57:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: kernel/bpf/bpf_iter.c:789:17: warning: no previous declaration for
- 'bpf_iter_num_new'
-Message-ID: <202309120150.uX27LKII-lkp@intel.com>
+        Mon, 11 Sep 2023 13:59:10 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A495E0;
+        Mon, 11 Sep 2023 10:59:06 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BFrOYO018104;
+        Mon, 11 Sep 2023 17:58:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=w+G3DneCyl/+8+LM2jmeftpB3JPy3zCmFZHnSrYU5mU=;
+ b=Ljc6fkhgtobFwtqAIDDoA1TTdsrgilgiCV1+x27KZCbuTejyk67Qe0dDVT66omP26EV6
+ MDv5vdrsa5n+3LQnYmlPkBFslr5P//xEIJInSigOG38WS696gy5I/qwIuO66sgf0zE9q
+ ZvHXpVqxxZikIM741tNJdOQTWhLP8Eol6R7Odc1/IUFYE2KNfZ7jwP1VGJodjkrlgjgM
+ qRtKll7XWP8zE14G39vniGK7jtNQlinwSz/12IP8bRq9sdkWeu2aV4s+HiztRfguo76Y
+ w7YVo2/6/qNDQoYSi653fsuNi01xRxjJRkcOYARE0BK4w+yWfyAJaVsPm5S9Vh0En5As NA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xjmscqx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 17:58:48 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BHwkPY013802
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 17:58:47 GMT
+Received: from [10.110.109.129] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 10:58:45 -0700
+Message-ID: <6a7ff8ae-1ce5-84a9-8cec-b785e88b6fda@quicinc.com>
+Date:   Mon, 11 Sep 2023 10:58:45 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v5 12/32] sound: usb: Export USB SND APIs for modules
+Content-Language: en-US
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
+        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
+        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
+        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
+References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
+ <20230829210657.9904-13-quic_wcheng@quicinc.com>
+ <874jk6at85.wl-tiwai@suse.de>
+From:   Wesley Cheng <quic_wcheng@quicinc.com>
+In-Reply-To: <874jk6at85.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: s0XTIQ5vwfRw4gnEAniwQbfVq5ML631d
+X-Proofpoint-GUID: s0XTIQ5vwfRw4gnEAniwQbfVq5ML631d
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=709
+ malwarescore=0 adultscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110164
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,99 +88,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 6018e1f407cccf39b804d1f75ad4de7be4e6cc45 bpf: implement numbers iterator
-date:   6 months ago
-config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230912/202309120150.uX27LKII-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120150.uX27LKII-lkp@intel.com/reproduce)
+Hi Takashi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309120150.uX27LKII-lkp@intel.com/
+On 9/7/2023 8:38 AM, Takashi Iwai wrote:
+> On Tue, 29 Aug 2023 23:06:37 +0200,
+> Wesley Cheng wrote:
+>> -/*
+>> - * hw_params callback
+>> - *
+>> - * allocate a buffer and set the given audio format.
+>> - *
+>> - * so far we use a physically linear buffer although packetize transfer
+>> - * doesn't need a continuous area.
+>> - * if sg buffer is supported on the later version of alsa, we'll follow
+>> - * that.
+>> - */
+>> -static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+>> -			     struct snd_pcm_hw_params *hw_params)
+>> +int snd_usb_attach_endpoints(struct snd_usb_substream *subs,
+>> +				struct snd_pcm_hw_params *hw_params)
+> 
+> This doesn't only "attach" endpoints, but it does more other things
+> that are needed for PCM hw_params procedure.  I'd rather keep
+> hw_params in the function name instead of creating completely
+> different one.
+> 
+> Ditto for hw_free.
+> 
 
-All warnings (new ones prefixed by >>):
+Sure I'll keep the same nomenclature as it was previously.
 
->> kernel/bpf/bpf_iter.c:789:17: warning: no previous declaration for 'bpf_iter_num_new' [-Wmissing-declarations]
-    __bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
-                    ^~~~~~~~~~~~~~~~
->> kernel/bpf/bpf_iter.c:822:18: warning: no previous declaration for 'bpf_iter_num_next' [-Wmissing-declarations]
-    __bpf_kfunc int *bpf_iter_num_next(struct bpf_iter_num* it)
-                     ^~~~~~~~~~~~~~~~~
->> kernel/bpf/bpf_iter.c:841:18: warning: no previous declaration for 'bpf_iter_num_destroy' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_iter_num_destroy(struct bpf_iter_num *it)
-                     ^~~~~~~~~~~~~~~~~~~~
-
-
-vim +/bpf_iter_num_new +789 kernel/bpf/bpf_iter.c
-
-   784	
-   785	__diag_push();
-   786	__diag_ignore_all("-Wmissing-prototypes",
-   787			  "Global functions as their definitions will be in vmlinux BTF");
-   788	
- > 789	__bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
-   790	{
-   791		struct bpf_iter_num_kern *s = (void *)it;
-   792	
-   793		BUILD_BUG_ON(sizeof(struct bpf_iter_num_kern) != sizeof(struct bpf_iter_num));
-   794		BUILD_BUG_ON(__alignof__(struct bpf_iter_num_kern) != __alignof__(struct bpf_iter_num));
-   795	
-   796		BTF_TYPE_EMIT(struct btf_iter_num);
-   797	
-   798		/* start == end is legit, it's an empty range and we'll just get NULL
-   799		 * on first (and any subsequent) bpf_iter_num_next() call
-   800		 */
-   801		if (start > end) {
-   802			s->cur = s->end = 0;
-   803			return -EINVAL;
-   804		}
-   805	
-   806		/* avoid overflows, e.g., if start == INT_MIN and end == INT_MAX */
-   807		if ((s64)end - (s64)start > BPF_MAX_LOOPS) {
-   808			s->cur = s->end = 0;
-   809			return -E2BIG;
-   810		}
-   811	
-   812		/* user will call bpf_iter_num_next() first,
-   813		 * which will set s->cur to exactly start value;
-   814		 * underflow shouldn't matter
-   815		 */
-   816		s->cur = start - 1;
-   817		s->end = end;
-   818	
-   819		return 0;
-   820	}
-   821	
- > 822	__bpf_kfunc int *bpf_iter_num_next(struct bpf_iter_num* it)
-   823	{
-   824		struct bpf_iter_num_kern *s = (void *)it;
-   825	
-   826		/* check failed initialization or if we are done (same behavior);
-   827		 * need to be careful about overflow, so convert to s64 for checks,
-   828		 * e.g., if s->cur == s->end == INT_MAX, we can't just do
-   829		 * s->cur + 1 >= s->end
-   830		 */
-   831		if ((s64)(s->cur + 1) >= s->end) {
-   832			s->cur = s->end = 0;
-   833			return NULL;
-   834		}
-   835	
-   836		s->cur++;
-   837	
-   838		return &s->cur;
-   839	}
-   840	
- > 841	__bpf_kfunc void bpf_iter_num_destroy(struct bpf_iter_num *it)
-   842	{
-   843		struct bpf_iter_num_kern *s = (void *)it;
-   844	
-   845		s->cur = s->end = 0;
-   846	}
-   847	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+Wesley Cheng
