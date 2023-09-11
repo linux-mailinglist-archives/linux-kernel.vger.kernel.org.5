@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE5D79B6A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F7879BF57
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356725AbjIKWET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        id S238528AbjIKUyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235852AbjIKJl6 (ORCPT
+        with ESMTP id S235856AbjIKJmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:41:58 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0CFFD
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:41:54 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so5584721a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694425312; x=1695030112; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UXHJJdbxzqcIQ7/jV1cMbzvwmre8W6Km5hkF3onYKso=;
-        b=G+jElKLrhjQ1AkGY7mJl1J1gE80AMZ4V132hMFdyAIxykIgfKwnYeVTSCVh06TpVNI
-         coIbQbRyhDPRkcJzbRFJj9fU8yvQq1dmDqMV58tlmz//YyIHNedd39vI7L6ctR7cstLC
-         kxlx5xBDb6Htzn71Xqiu+YliQfPLG28OhlQPapJaFq8DPdBTw8f6+a0bdiMm73xWgIO+
-         g0q6/ICoeycFGa5vZpnO+iwsRwtku3oHkpnXctYT+JMSgRLU8Nj4NvCz+IN/ihuWu/B6
-         PMBz+Q+NxoY+ytg70zIKbXldCy1DQ4B0G9HSm5iQNzKqsHfOSNfFGaUs7KgWUCvYT3rq
-         3TaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425313; x=1695030113;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UXHJJdbxzqcIQ7/jV1cMbzvwmre8W6Km5hkF3onYKso=;
-        b=atQs0w8YRpk73ZuUN0Fyum/EKS78arCf/9TieqKPEvDkkWOk9Si/cjm4TWEnkPrlTz
-         4W+6Pd5O4jD6pXnyiyPtHUZr9gsmrBzqLlrXBCSWe9IbUyNqUW1kIUePmsd5ZBzrrn4g
-         2zBcb57guc3rG+syY0XwAqr998zES6BC+ZPu1iwr14TLFzV9ntBtOLoTwTK4SmdIjqRF
-         h7ovzXWkBTJY7YlyFwdZ5DSU3piyQXNpzI6+Jfny393qshq8Pgjv+313+e0Qgq0aBU4h
-         EQ89OUKBprpjakRdcleyQlBx5jeP6EWJZqc7x2Re9TUijuNJP7w+aIyEgLYqtYgCiXSq
-         fnKg==
-X-Gm-Message-State: AOJu0YwSIdQEWhD2AbZG/FZR0D3t0trl5BbMHupwKsvTX7xs41JMLMYH
-        nXs4EFKEmg5HvsOjuAgW4ig1rw==
-X-Google-Smtp-Source: AGHT+IE7iZHF6KNh3bEWf9qZmU+mUmpM+L0mGI9OUUdk7KwOQH7iMgOFaFRxWJXmczhwjhmbN6mLiQ==
-X-Received: by 2002:aa7:de02:0:b0:525:6ab3:dd22 with SMTP id h2-20020aa7de02000000b005256ab3dd22mr7721098edv.38.1694425312792;
-        Mon, 11 Sep 2023 02:41:52 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id r25-20020aa7d599000000b005256d80cdaesm4311321edq.65.2023.09.11.02.41.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 02:41:51 -0700 (PDT)
-Message-ID: <d35a0c54-531a-24a1-dbf6-2b40eac12081@linaro.org>
-Date:   Mon, 11 Sep 2023 11:41:49 +0200
+        Mon, 11 Sep 2023 05:42:24 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE8D102;
+        Mon, 11 Sep 2023 02:42:20 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B7YVST007689;
+        Mon, 11 Sep 2023 09:42:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=65meyQ02zDJ9RS5oezOgVlLzi+P4MnDTHmSa6k7EHu0=;
+ b=pVLzyEa/3g63V1aOUyiIGR26qGeABWEclQKIS8AtllhpNnVnGrhOohnYwkmXeFRsOLlQ
+ ehcvCwE+FZ181/svY5aezM2+RSf7LapWZ5eylwW2UYue/0KVG0yEbBjkoYDVHrU71enK
+ htp0/A0g5RpOAlj3UlNZY7nfH7sdapFy4GlI80SK1x9hg9VGxgMDDwNoO0uWS3LkUCwj
+ EVnKZV7SqvrBdJ0tC8lDG0lmmvWPtXt7rOZpLi0NVKShxgJh6spRWfU8SLaBjVa+zqN/
+ htomcG4dvwWu9R/RPmrptnb2yV+9lMIQ76YdP9gnLHbTJicPVii62MgaWQArm49UbHrX pA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xjmr79r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 09:42:13 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B9gCd2004112
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 09:42:12 GMT
+Received: from [10.253.14.78] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 02:42:09 -0700
+Message-ID: <6225a132-4b7f-bbb4-e863-4e62b99dd79d@quicinc.com>
+Date:   Mon, 11 Sep 2023 17:42:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 7/8] dt-bindings: vendor-prefixes: Add fascontek
+Subject: Re: [PATCH 2/6] scsi: ufs: ufs-qcom: Add support for UFS device
+ version detection
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <mani@kernel.org>,
+        <quic_nguyenb@quicinc.com>, <quic_nitirawa@quicinc.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
+ <1694411968-14413-3-git-send-email-quic_cang@quicinc.com>
+ <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
 Content-Language: en-US
-To:     John Watts <contact@jookia.org>, dri-devel@lists.freedesktop.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-8-contact@jookia.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230911090206.3121440-8-contact@jookia.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <6055cd57-4de7-4b7e-a4f3-68a7de1aef28@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 6GygYcleddw3CRSgzKVR14os9b2zjpjH
+X-Proofpoint-GUID: 6GygYcleddw3CRSgzKVR14os9b2zjpjH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110088
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,32 +88,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2023 11:02, John Watts wrote:
-> Fascontek manufactures LCD panels such as the FS035VG158.
-> 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
+Hi Konrad,
+
+On 9/11/2023 5:17 PM, Konrad Dybcio wrote:
+> On 11.09.2023 07:59, Can Guo wrote:
+>> From: "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+>>
+>> Retrieve UFS device version from UFS host controller's spare register
+>> which is populated by bootloader, and use the UFS device version together
+>> with host controller's HW version to decide the proper power modes which
+>> should be used to configure the UFS PHY.
+> That sounds a bit fishy.. is there no bootloader-independent
+> solution to that? Can't we bring in the code that the bootloader
+> uses to determine these values?
+>
+> Konrad
 
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Agree, it is.
 
 
----
+All these complexities come from one request from PHY design team - 
+power saving.
 
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
+And to achieve power saving, Qualcomm UFS developers are requested to 
+use the
 
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
+lowest hanging PHY settings which can sustain the Max agreed HS Gear 
+(btw host
 
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+and UFS device) during UFS's lifecycle in High Level OS,  whereas the 
+power saving
 
-Best regards,
-Krzysztof
+request does not apply to bootloader, which works for only a few seconds 
+during
+
+bootup. Hence, there is no such version detect code in bootloader -  it 
+just uses the
+
+highest PHY settings to configure PHY, boot up UFS and put UFS device 
+version in this
+
+register.
+
+
+Thanks,
+
+Can Guo.
 
