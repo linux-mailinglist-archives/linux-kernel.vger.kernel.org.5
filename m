@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C4879B66C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9658E79C010
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbjIKUsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
+        id S1376913AbjIKWUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235832AbjIKJka (ORCPT
+        with ESMTP id S235849AbjIKJlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:40:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CC3EE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:40:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F2922C433C9;
-        Mon, 11 Sep 2023 09:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694425226;
-        bh=VexeRoFIErq8J/8XR03dPblD5jykwUeFBd2AKAgeJqM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iD8Gs+/zUl7AJMEAIqzv4fLwwsC/hjuq+KuN7Yjv3QLFuQmkjZLawgQUGB/P6UAnC
-         GlsV01t+ReHoEO5R23c4od0MQA4mS58cI7Mio6nU++NieWhV3xKLAMHUN2hfgQbDBM
-         5fM8ghU0AMeSNGQcvkkCfjo56KwB994dDDJXRoLrzIEy9Fa2Z42+7svf+CT/5cV5bV
-         PsEtAOqX8+5elt/qZxW/PTIxSG2zNL4UZy/b1tG/W6fakeDbh9UYCRl42oaZ3r624z
-         63oNifE/zTko5AqRQIPfAJyXDluxsx6KYcn/lsNKRZQ2GybM0oA2h1ygKVnbJBtcLD
-         zGsGnsAj4DIsA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D6F1BC00446;
-        Mon, 11 Sep 2023 09:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 11 Sep 2023 05:41:32 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97584FD;
+        Mon, 11 Sep 2023 02:41:24 -0700 (PDT)
+X-UUID: 8088b58ee61d4d0490327a99affca73d-20230911
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:316025f9-2973-41d4-90df-6fb23f8d9b2a,IP:5,U
+        RL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:16
+X-CID-INFO: VERSION:1.1.31,REQID:316025f9-2973-41d4-90df-6fb23f8d9b2a,IP:5,URL
+        :0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:16
+X-CID-META: VersionHash:0ad78a4,CLOUDID:ed74b2be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:2309111741135Y7Z3OCS,BulkQuantity:0,Recheck:0,SF:24|17|19|43|102,TC:
+        nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI
+        :0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: 8088b58ee61d4d0490327a99affca73d-20230911
+X-User: liucong2@kylinos.cn
+Received: from localhost.localdomain [(111.48.58.12)] by mailgw
+        (envelope-from <liucong2@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1026707665; Mon, 11 Sep 2023 17:41:11 +0800
+From:   Cong Liu <liucong2@kylinos.cn>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Cong Liu <liucong2@kylinos.cn>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fix build error in function vfio_combine_iova_ranges
+Date:   Mon, 11 Sep 2023 17:41:02 +0800
+Message-Id: <20230911094103.57771-1-liucong2@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: ethernet: mtk_eth_soc: fix uninitialized variable
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169442522587.29871.12263337568524186830.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Sep 2023 09:40:25 +0000
-References: <30044cf16ff83f73e5ef852c25682e9fde63af51.1694376191.git.daniel@makrotopia.org>
-In-Reply-To: <30044cf16ff83f73e5ef852c25682e9fde63af51.1694376191.git.daniel@makrotopia.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     dan.carpenter@linaro.org, nbd@nbd.name, john@phrozen.org,
-        sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-        lorenzo@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+when compiling with smatch check, the following errors were encountered:
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+drivers/vfio/vfio_main.c:957 vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
+drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
+drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
 
-On Sun, 10 Sep 2023 22:40:30 +0100 you wrote:
-> Variable dma_addr in function mtk_poll_rx can be uninitialized on
-> some of the error paths. In practise this doesn't matter, even random
-> data present in uninitialized stack memory can safely be used in the
-> way it happens in the error path.
-> 
-> However, in order to make Smatch happy make sure the variable is
-> always initialized.
-> 
-> [...]
+this patch fix these error.
 
-Here is the summary with links:
-  - [net,v2] net: ethernet: mtk_eth_soc: fix uninitialized variable
-    https://git.kernel.org/netdev/net/c/e10a35abb3da
+Signed-off-by: Cong Liu <liucong2@kylinos.cn>
+---
+ drivers/vfio/vfio_main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-You are awesome, thank you!
+diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+index 40732e8ed4c6..0a9620409696 100644
+--- a/drivers/vfio/vfio_main.c
++++ b/drivers/vfio/vfio_main.c
+@@ -938,12 +938,13 @@ static int vfio_ioctl_device_feature_migration(struct vfio_device *device,
+ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
+ 			      u32 req_nodes)
+ {
+-	struct interval_tree_node *prev, *curr, *comb_start, *comb_end;
++	struct interval_tree_node *prev, *curr;
++	struct interval_tree_node *comb_start, *comb_end;
+ 	unsigned long min_gap, curr_gap;
+ 
+ 	/* Special shortcut when a single range is required */
+ 	if (req_nodes == 1) {
+-		unsigned long last;
++		unsigned long last = 0;
+ 
+ 		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
+ 		curr = comb_start;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
