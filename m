@@ -2,183 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE25E79AE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AE179B4D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379051AbjIKWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
+        id S1355716AbjIKWBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243638AbjIKR0k (ORCPT
+        with ESMTP id S243645AbjIKR1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:26:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6123189
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694453195; x=1725989195;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Dr4FEXNz/stJi+V50/fd1tyGFjzqEyysU/Yv3GX+t5c=;
-  b=UWY4NwxMcFhME7yktFIASp/IhqackrIKRuo8hwhSbVdQN7fklof1ro/k
-   esj5wJG6JEtq3/oWF/oYGPaiFWsVCgVPF7ChhH/+RG6rmjHewdDCG2ari
-   0c3/8iioXfUyGR9ilFb31lf5tVB0Q1iJyU7TWGIljGgQjjJFEwWh/Awi/
-   JCuq8JXFM1P3OCXgQ7VaAZT9wKL8TEy+QvO27tRuG2R55/w+PReLkdDC8
-   apmZL2Ieu1CNlXRlWgkSDsBkxKWoD2X2SkM47T99+oJ8DR7p51BrFqaNN
-   p5RaAUimG67+Bx42S/xnTL8QkRPoDlNgh5RNeyAhZXh9hZEiwB3FH0oyQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409113777"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="409113777"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:26:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808899244"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="808899244"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2023 10:26:29 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfkg7-0006XI-0v;
-        Mon, 11 Sep 2023 17:26:27 +0000
-Date:   Tue, 12 Sep 2023 01:25:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: vmlinux.o: warning: objtool: svm_vcpu_enter_exit+0x34: call to
- context_tracking_enabled_this_cpu() leaves .noinstr.text section
-Message-ID: <202309120137.Eo6SpBIz-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 13:27:17 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E3B125;
+        Mon, 11 Sep 2023 10:27:09 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6FB9E5C0165;
+        Mon, 11 Sep 2023 13:27:08 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 11 Sep 2023 13:27:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694453228; x=1694539628; bh=Td
+        Gi7kVXEnEKoxN/ecGUPAlNClbuxU0h+eeQmE5muyU=; b=TPU3W6SYFJ7e/IDmmJ
+        xVpTiH4yGa4dS7/hYvgGW+IxFjo1AKWnWi0cxY73TQNDRBy95nX+2Ln16B8eX+uc
+        24420CK6I+1E3po3N/7w6h+xpUVQN5iakEs9SWqkGZzfaBWyS8mm6ZZcXDNM3Enj
+        DNcD+XPFH3/ihBtnnceAmRyohx2HuIkc5x0O3q3+DSBnjvcY+BkG+Ar6jfpTCZaC
+        MYz7GqU4CJ57CeyBG8ba0NMZMAqq9xuJb2lsZMjLUDlR55FsghaGUcXNfPHXYiMW
+        7BvR9RFZY0ARIWsZzZ1y0E+Ff1fiyeCC4tzrg5BS0lbP2yUy2A2/Za+2QGm0oS9a
+        Sg+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694453228; x=1694539628; bh=TdGi7kVXEnEKo
+        xN/ecGUPAlNClbuxU0h+eeQmE5muyU=; b=IjBdVEQ0w4QnMwyv3KzHbk003lgrX
+        CryomNEZLcLZtWdU9qgXMjkgPVvkDx0seprWJ02+laI36Kw20IGYJqHv9LDinrGQ
+        JBNearY/wXoxxZXuVopKdKzhu95lW9UDS2VBu/3UjrRHzRAWm2ZtFC2p9pA78atd
+        ialY5pN3M6gfMqfiGa5aAVs3etQoeHcj3+V+JvcPNB61AakLSWOO+CZt7G2pzoln
+        zF3O891DCL6ZY5tksw8iHqFr2maJLJzUSVak2EOiqAow0PSq/nj7BFYQlROoMtlX
+        ErBVjE/jeBLlJzqURyFTJd2ImY+ltCXPj09M1PRQ2td2j4mbPC1MAzZoA==
+X-ME-Sender: <xms:6U3_ZDAItsKohJrpOX0uEMEkEAxzm3QjJajwzyjZxdmAKPDrYWEDaA>
+    <xme:6U3_ZJi4Eudh4S8_7fjb7Yj_G8MTc8o7F7iYINwrkvR1lyqcfR2cuFcM0w4Sw7BtA
+    NNurCDYAE0hbrSo_0c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeigedgudduudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:6U3_ZOmAUShIz1HnYgmzBw2dyATGVeic8h1uMbmqjso3L3Sxe_HTOw>
+    <xmx:6U3_ZFylNI6c-B9sY4q6WZvBrRULVLHGeYUgy0FbbXzxh2U1dsV-LQ>
+    <xmx:6U3_ZITUDk4-y_jscr0qL5-f3PPv0XhwOAR7JoqXM3SVOFVH9MXQ3w>
+    <xmx:7E3_ZPLrOvvJLlcwP2woMLT2bK_I5P4HhJeKDGBmxqXR4N-uSRzmNg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C5A3EB60089; Mon, 11 Sep 2023 13:27:05 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <e80f9c6f-d194-41c7-bdb5-e6a78751f543@app.fastmail.com>
+In-Reply-To: <ZP28D8dZXz3+4s9v@memverge.com>
+References: <20230907075453.350554-1-gregory.price@memverge.com>
+ <20230907075453.350554-4-gregory.price@memverge.com>
+ <f73d0495-f575-4b97-bc74-a57bd427df98@app.fastmail.com>
+ <ZPrRcJCjRBvJ9c3N@memverge.com>
+ <2fe03345-01a2-4cfe-9648-ae088493d1af@app.fastmail.com>
+ <ZP28D8dZXz3+4s9v@memverge.com>
+Date:   Mon, 11 Sep 2023 19:26:45 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Gregory Price" <gregory.price@memverge.com>
+Cc:     "Gregory Price" <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-api@vger.kernel.org, linux-cxl@vger.kernel.org,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>, x86@kernel.org
+Subject: Re: [RFC PATCH 3/3] mm/migrate: Create move_phys_pages syscall
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 656d054e0a15ec327bd82801ccd58201e59f6896 jump_label,noinstr: Avoid instrumentation for JUMP_LABEL=n builds
-date:   1 year, 4 months ago
-config: x86_64-randconfig-102-20230911 (https://download.01.org/0day-ci/archive/20230912/202309120137.Eo6SpBIz-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120137.Eo6SpBIz-lkp@intel.com/reproduce)
+On Sun, Sep 10, 2023, at 14:52, Gregory Price wrote:
+> On Sat, Sep 09, 2023 at 05:18:13PM +0200, Arnd Bergmann wrote:
+>> 
+>> I think a pointer to '__u64' is the most appropriate here,
+>> that is compatible between 32-bit and 64-bit architectures
+>> and covers all addresses until we get architectures with
+>> 128-bit addressing.
+>> 
+>> Thinking about it more, I noticed an existing bug in
+>> both sys_move_pages and your current version of
+>> sys_move_phys_pages: the 'pages' array is in fact not
+>> suitable for compat tasks and needs an is_compat_task
+>> check to load a 32-bit address from compat userspace on
+>> the "if (get_user(p, pages + i))" line.
+>>
+>
+> I'll clean up the current implementation for what I have on a v2 of an
+> RFC, and then look at adding some pull-ahead patches to fix both
+> move_pages and move_phys_pages for compat processes.  Might take me a
+> bit, I've only done compat work once before and I remember it being
+> annoying to get right.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309120137.Eo6SpBIz-lkp@intel.com/
+I think what you want is roughly this (untested):
 
-All warnings (new ones prefixed by >>):
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2159,6 +2159,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+                         const int __user *nodes,
+                         int __user *status, int flags)
+ {
++       struct compat_uptr_t __user *compat_pages = (void __user *)pages;
+        int current_node = NUMA_NO_NODE;
+        LIST_HEAD(pagelist);
+        int start, i;
+@@ -2171,8 +2172,17 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+                int node;
+ 
+                err = -EFAULT;
+-               if (get_user(p, pages + i))
+-                       goto out_flush;
++               if (in_compat_syscall() {
++                       compat_uptr_t cp;
++
++                       if (get_user(cp, compat_pages + i))
++                               goto out_flush;
++
++                       p = compat_ptr(cp);
++               } else {
++                       if (get_user(p, pages + i))
++                               goto out_flush;
++               }
+                if (get_user(node, nodes + i))
+                        goto out_flush;
+ 
+alternatively you could use the get_compat_pages_array()
+helper that is already used in the do_pages_stat()
+function.
 
-   ld: warning: arch/x86/power/hibernate_asm_64.o: missing .note.GNU-stack section implies executable stack
-   ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
->> vmlinux.o: warning: objtool: svm_vcpu_enter_exit+0x34: call to context_tracking_enabled_this_cpu() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: enter_from_user_mode+0x52: call to on_thread_stack() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x56: call to on_thread_stack() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: syscall_enter_from_user_mode_prepare+0x52: call to on_thread_stack() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: irqentry_enter_from_user_mode+0x52: call to on_thread_stack() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: crc_pcl+0x7c: missing int3 after indirect jump
-   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
-   ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
-   ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
-   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
-   ld: warning: vmlinux has a LOAD segment with RWX permissions
+> I did see other work on migrate.c hanging around on the list, I'll
+> double check this hasn't already been discovered/handled.
 
+It looks like I broke it, and it was working before my own
+5b1b561ba73c8 ("mm: simplify compat_sys_move_pages"), which
+only handled the nodes=NULL path.
 
-objdump-func vmlinux.o svm_vcpu_enter_exit:
-0000 00000000000001eb <svm_vcpu_enter_exit>:
-0000      1eb:	41 55                	push   %r13
-0002      1ed:	41 54                	push   %r12
-0004      1ef:	55                   	push   %rbp
-0005      1f0:	53                   	push   %rbx
-0006      1f1:	48 8b 87 48 24 00 00 	mov    0x2448(%rdi),%rax
-000d      1f8:	48 89 fb             	mov    %rdi,%rbx
-0010      1fb:	4c 8b 68 08          	mov    0x8(%rax),%r13
-0014      1ff:	90                   	nop
-0015      200:	e8 00 00 00 00       	call   205 <svm_vcpu_enter_exit+0x1a>	201: R_X86_64_PLT32	trace_hardirqs_on_prepare-0x4
-001a      205:	e8 00 00 00 00       	call   20a <svm_vcpu_enter_exit+0x1f>	206: R_X86_64_PLT32	lockdep_hardirqs_on_prepare-0x4
-001f      20a:	90                   	nop
-0020      20b:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # 211 <svm_vcpu_enter_exit+0x26>	20d: R_X86_64_PC32	context_tracking_key-0x4
-0026      211:	85 c0                	test   %eax,%eax
-0028      213:	7e 0a                	jle    21f <svm_vcpu_enter_exit+0x34>
-002a      215:	bf 02 00 00 00       	mov    $0x2,%edi
-002f      21a:	e8 00 00 00 00       	call   21f <svm_vcpu_enter_exit+0x34>	21b: R_X86_64_PLT32	__context_tracking_enter-0x4
-0034      21f:	e8 00 00 00 00       	call   224 <svm_vcpu_enter_exit+0x39>	220: R_X86_64_PC32	.text+0x12b162
-0039      224:	84 c0                	test   %al,%al
-003b      226:	75 07                	jne    22f <svm_vcpu_enter_exit+0x44>
-003d      228:	90                   	nop
-003e      229:	e8 00 00 00 00       	call   22e <svm_vcpu_enter_exit+0x43>	22a: R_X86_64_PC32	.text+0x136e61
-0043      22e:	90                   	nop
-0044      22f:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
-0049      234:	e8 00 00 00 00       	call   239 <svm_vcpu_enter_exit+0x4e>	235: R_X86_64_PLT32	lockdep_hardirqs_on-0x4
-004e      239:	48 8b 03             	mov    (%rbx),%rax
-0051      23c:	80 b8 61 ab 00 00 00 	cmpb   $0x0,0xab61(%rax)
-0058      243:	74 19                	je     25e <svm_vcpu_enter_exit+0x73>
-005a      245:	80 b8 60 ab 00 00 00 	cmpb   $0x0,0xab60(%rax)
-0061      24c:	75 06                	jne    254 <svm_vcpu_enter_exit+0x69>
-0063      24e:	90                   	nop
-0064      24f:	0f 0b                	ud2
-0066      251:	90                   	nop
-0067      252:	eb 0a                	jmp    25e <svm_vcpu_enter_exit+0x73>
-0069      254:	4c 89 ef             	mov    %r13,%rdi
-006c      257:	e8 00 00 00 00       	call   25c <svm_vcpu_enter_exit+0x71>	258: R_X86_64_PLT32	__svm_sev_es_vcpu_run-0x4
-0071      25c:	eb 7d                	jmp    2db <svm_vcpu_enter_exit+0xf0>
-0073      25e:	4c 63 63 20          	movslq 0x20(%rbx),%r12
-0077      262:	48 c7 c5 00 00 00 00 	mov    $0x0,%rbp	265: R_X86_64_32S	svm_data
-007e      269:	49 81 fc ff 1f 00 00 	cmp    $0x1fff,%r12
-0085      270:	76 0f                	jbe    281 <svm_vcpu_enter_exit+0x96>
-0087      272:	4c 89 e6             	mov    %r12,%rsi
-008a      275:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	278: R_X86_64_32S	.data+0xc6500
-0091      27c:	e8 00 00 00 00       	call   281 <svm_vcpu_enter_exit+0x96>	27d: R_X86_64_PLT32	__ubsan_handle_out_of_bounds-0x4
-0096      281:	4a 8b 04 e5 00 00 00 00 	mov    0x0(,%r12,8),%rax	285: R_X86_64_32S	__per_cpu_offset
-009e      289:	48 8b 2c 28          	mov    (%rax,%rbp,1),%rbp
-00a2      28d:	48 8b 83 30 24 00 00 	mov    0x2430(%rbx),%rax
-00a9      294:	0f 01 da             	vmload
-00ac      297:	eb 05                	jmp    29e <svm_vcpu_enter_exit+0xb3>
-00ae      299:	e8 00 00 00 00       	call   29e <svm_vcpu_enter_exit+0xb3>	29a: R_X86_64_PLT32	kvm_spurious_fault-0x4
-00b3      29e:	48 8d b3 c0 01 00 00 	lea    0x1c0(%rbx),%rsi
-00ba      2a5:	4c 89 ef             	mov    %r13,%rdi
-00bd      2a8:	e8 00 00 00 00       	call   2ad <svm_vcpu_enter_exit+0xc2>	2a9: R_X86_64_PLT32	__svm_vcpu_run-0x4
-00c2      2ad:	48 8b 83 30 24 00 00 	mov    0x2430(%rbx),%rax
-00c9      2b4:	0f 01 db             	vmsave
-00cc      2b7:	eb 05                	jmp    2be <svm_vcpu_enter_exit+0xd3>
-00ce      2b9:	e8 00 00 00 00       	call   2be <svm_vcpu_enter_exit+0xd3>	2ba: R_X86_64_PLT32	kvm_spurious_fault-0x4
-00d3      2be:	48 8b 45 28          	mov    0x28(%rbp),%rax
-00d7      2c2:	48 2b 05 00 00 00 00 	sub    0x0(%rip),%rax        # 2c9 <svm_vcpu_enter_exit+0xde>	2c5: R_X86_64_PC32	vmemmap_base-0x4
-00de      2c9:	48 c1 f8 06          	sar    $0x6,%rax
-00e2      2cd:	48 c1 e0 0c          	shl    $0xc,%rax
-00e6      2d1:	0f 01 da             	vmload
-00e9      2d4:	eb 05                	jmp    2db <svm_vcpu_enter_exit+0xf0>
-00eb      2d6:	e8 00 00 00 00       	call   2db <svm_vcpu_enter_exit+0xf0>	2d7: R_X86_64_PLT32	kvm_spurious_fault-0x4
-00f0      2db:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
-00f5      2e0:	e8 00 00 00 00       	call   2e5 <svm_vcpu_enter_exit+0xfa>	2e1: R_X86_64_PLT32	lockdep_hardirqs_off-0x4
-00fa      2e5:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # 2eb <svm_vcpu_enter_exit+0x100>	2e7: R_X86_64_PC32	context_tracking_key-0x4
-0100      2eb:	85 c0                	test   %eax,%eax
-0102      2ed:	7e 0a                	jle    2f9 <svm_vcpu_enter_exit+0x10e>
-0104      2ef:	bf 02 00 00 00       	mov    $0x2,%edi
-0109      2f4:	e8 00 00 00 00       	call   2f9 <svm_vcpu_enter_exit+0x10e>	2f5: R_X86_64_PLT32	__context_tracking_exit-0x4
-010e      2f9:	90                   	nop
-010f      2fa:	e8 00 00 00 00       	call   2ff <svm_vcpu_enter_exit+0x114>	2fb: R_X86_64_PLT32	trace_hardirqs_off_finish-0x4
-0114      2ff:	90                   	nop
-0115      300:	5b                   	pop    %rbx
-0116      301:	5d                   	pop    %rbp
-0117      302:	41 5c                	pop    %r12
-0119      304:	41 5d                	pop    %r13
-011b      306:	31 c0                	xor    %eax,%eax
-011d      308:	31 f6                	xor    %esi,%esi
-011f      30a:	31 ff                	xor    %edi,%edi
-0121      30c:	c3                   	ret
-0122      30d:	cc                   	int3
-0123      30e:	66 90                	xchg   %ax,%ax
+I suppose nobody noticed the regression because there are very
+few 32-bit NUMA systems, and even fewer cases in which one
+would run compat userspace to manage a 64-bit NUMA machine.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> This only requires plumbing new 2 flags through do_pages_move, and no
+> new user-exposed types or information.
+>
+> Is there an ick-factor with the idea of adding the following?
+>
+> MPOL_MF_PHYS_ADDR : Treat page migration addresses as physical
+> MPOL_MF_PFN : Treat page migration addresses as PFNs
+
+I would strongly prefer supporting only one of the two, and
+a 64-bit physical address seems like the logical choice here.
+
+>> These do not seem to be problematic from the ASLR perspective, so
+>> I guess it may still be useful without CAP_SYS_ADMIN.
+>
+> After reviewing the capabilities documentation it seems like
+> CAP_SYS_NICE is the appropriate capability.  My last meassage I said
+> CAP_SYS_ADMIN was probably correct, but I think using CAP_SYS_NICE
+> is more appropriate unless there are strong feelings due to the use of
+> PFN and Physcall Address.
+>
+> I'm not sure rowhammer is of great concern in this interface because you
+> can't choose the destination address, only the destination node. Though
+> I suppose someone could go nuts and try to "massage" a node in some way
+> to get a statistical likelihood of placement (similar heap grooming).
+
+I agree that this doesn't introduce any additional risk for rowhammer
+attacks, but it seems slightly more logical to me to use CAP_SYS_ADMIN
+if that is what the other interfaces use that handle physical addresses
+and may leak address information.
+
+     Arnd
