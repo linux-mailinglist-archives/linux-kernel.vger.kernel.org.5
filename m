@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426B479C01F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A3379BCBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244072AbjIKVaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
+        id S1349275AbjIKVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240808AbjIKOy1 (ORCPT
+        with ESMTP id S240841AbjIKOz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:54:27 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D669BE40;
-        Mon, 11 Sep 2023 07:54:21 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA080D75;
-        Mon, 11 Sep 2023 07:54:58 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3DF563F5A1;
-        Mon, 11 Sep 2023 07:54:20 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 15:54:18 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     longqi <longqi90@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Allwinner
-        sunXi SoC support),
-        linux-sunxi@lists.linux.dev (open list:ARM/Allwinner sunXi SoC support),
+        Mon, 11 Sep 2023 10:55:29 -0400
+Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F16A118
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1694444118;
+        bh=W6nM7/UDdiAqrpjGPNvRU9poeoJlycuMqUU1DG3/VBE=;
+        h=From:To:Cc:Subject:Date;
+        b=GQfWDN/1dm3vnIPTdaTpc5j55wdc+4KKOI8kZJJHHEKgGxtHk58k1CXi3iuujuLT1
+         G4OikxZPhAC9vBtTAjx1cvvAIJ1H0DtO6iUtOpMvc++VZaYZ0VnbMjxtz85H///YJO
+         T712KGXm5qGmSlLVJl+mi65R/RLWvseS8FIf4/pA=
+Received: from rtoax.lan ([120.245.114.155])
+        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+        id DCF3DE64; Mon, 11 Sep 2023 22:55:15 +0800
+X-QQ-mid: xmsmtpt1694444115thrge2pa8
+Message-ID: <tencent_157A2A1CAF19A3F5885F0687426159A19708@qq.com>
+X-QQ-XMAILINFO: MyIXMys/8kCtMYRSom4Xuz+vWkITKDcXtZ3RPgANn8mZ+UPkUHBSOfH5JdTESQ
+         dyS2vnpWOKAdbZiEoIw+wM/cRuwLht26+trhW5+X9qqqSU2ZhRo8XHKDsjOtaCaa8GVxBvpsGyNJ
+         tRTQd67yj/w/ABpTtwKoJ6nSYLaxUlcM6PHXXaC8lTZxI70YdPhgQQKnROcyfny7lLVeDhSdYFDP
+         0l/8NXbYxusW8MaYmFLaR8Oy0o6QR5nthpkFyEOt9NXMjd2t/+0zx4C2aloEBKefzFYZQ58AI4Cb
+         69J660ermheGs7pdZ4TCe4AJTHmrzzV2Y6H+i/Ky8aZVdDDrfOSb6lLSQ1r9JXusXtIL8SaBMc1E
+         T0FavmzGinkFjlj6eZtJTcmGEIBh47E4KXwSiA3VcyGyep4pfFrapy4KP80FH+0gpKcV7Y1fbGUh
+         Fx8C+6Nz2QfTjVYVOfZ6BCzIKcXg79Tlz0WzhI7BXZ/KCjPUmV5RiYdhWjTIjr1G1cFW/gsThc6+
+         KjTzEjctT9HZM134wLnOVlPanTEQmBK+Qf8FlDX32axGWrrp4bWf5t8SgmHsZ86dhS31ZJ4I56St
+         rkC/Ku8izhoqBVKj1TJBbVmrzfiGva0kqb8aRo2H6ZDYL0e62WzxGn0RALW7h8h8ppCXTFjrPJt5
+         wBD/5C0950cjEdXpwdHBjoYIp84gHl0fUysmAzBEdeCQf0dr+UkXVZXG5WJrrOfgfI9QwBXmsXXp
+         B6Q8xLRtrGjGPk89bzjbuqHiydRU+94/qm8bsqFLzqthmhJOP6Zcii4uxNW37LjRDGsjQbdFSTQ/
+         lqsl4gWNXApNU5VneDG3ESjJ60Ou8FvOmVS1G3O2K3Kx8bpnjdvNU1zJfCm0SLrwBq07PmmrjPSG
+         bntXaPGBLyVrnO5aYUDyOEoYakGMaNIGYauCtKvo/OsNeOyzJu2prLjUUobPZ0F4WY2le0TcUREg
+         dv+abqG9XNy+vwtaec3tvQRZEguGYJzWSOqzIXcuZhO1ucziivA+HPqbAxnx0cDlUCoB2uciO+vE
+         FqtSEYl5OU9UW/Xik7FMBwjITAcGk/deryhQv/8YK7+Za6NKfkcxGrf/a1RqY=
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     akpm@linux-foundation.org, keescook@chromium.org,
+        brauner@kernel.org, rongtao@cestc.cn, rtoax@foxmail.com
+Cc:     Jeff Xu <jeffxu@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] fixes the pin settings of two LEDs on board nanopi neo
- plus2
-Message-ID: <20230911155418.330e2334@donnerap.manchester.arm.com>
-In-Reply-To: <20230911140959.2046340-1-longqi90@gmail.com>
-References: <20230911140959.2046340-1-longqi90@gmail.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+Subject: [PATCH] pid: pid_ns_ctl_handler: Remove useless comment
+Date:   Mon, 11 Sep 2023 22:55:09 +0800
+X-OQ-MSGID: <20230911145510.29246-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 22:09:59 +0800
-longqi <longqi90@gmail.com> wrote:
+From: Rong Tao <rongtao@cestc.cn>
 
-Hi,
+commit 95846ecf9dac("pid: replace pid bitmap implementation with IDR API")
+removes 'last_pid' element, and use the idr_get_cursor-idr_set_cursor pair
+to set the value of idr, so useless comments should be removed.
 
-please add a few lines here saying why you fix this: it looks like the red
-LED wasn't working at all, because of the wrong GPIO, and the colours were
-actually swapped? This would be good to know for everyone reading this
-patch.
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ kernel/pid_namespace.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-In general this is a good catch, so thanks for sending this!
-More below:
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index 619972c78774..3028b2218aa4 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -286,12 +286,6 @@ static int pid_ns_ctl_handler(struct ctl_table *table, int write,
+ 	if (write && !checkpoint_restore_ns_capable(pid_ns->user_ns))
+ 		return -EPERM;
+ 
+-	/*
+-	 * Writing directly to ns' last_pid field is OK, since this field
+-	 * is volatile in a living namespace anyway and a code writing to
+-	 * it should synchronize its usage with external means.
+-	 */
+-
+ 	next = idr_get_cursor(&pid_ns->idr) - 1;
+ 
+ 	tmp.data = &next;
+-- 
+2.41.0
 
-> Signed-off-by: longqi <longqi90@gmail.com>
-> ---
->  .../boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dts | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dts
-> index 4c3921ac236c..0cb7a07ab1de 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-nanopi-neo-plus2.dts
-> @@ -26,14 +26,15 @@ leds {
->  		compatible = "gpio-leds";
->  
->  		led-0 {
-> -			label = "nanopi:green:pwr";
-> -			gpios = <&r_pio 0 10 GPIO_ACTIVE_HIGH>;
-> -			default-state = "on";
-> +			label = "nanopi:red:pwr";
-
-label is now a deprecated property. That's fine for existing DTs, but I
-guess touching this node means you should update this, by using "function"
-and "color", as described in:
-Documentation/devicetree/bindings/leds/common.yaml
-
-> +			gpios = <&r_pio 0 10 GPIO_ACTIVE_HIGH>; /* PL10 */
-> +			linux,default-trigger = "default-on";
->  		};
->  
->  		led-1 {
-> -			label = "nanopi:red:status";
-> -			gpios = <&pio 0 20 GPIO_ACTIVE_HIGH>;
-> +			label = "nanopi:green:status";
-
-Same thing with label here, please use "function" and "color".
-
-> +			gpios = <&pio 0 10 GPIO_ACTIVE_HIGH>; /* PA10 */
-> +			linux,default-trigger = "heartbeat";
-
-I don't think we assign default triggers for LED merely labelled "status",
-as people might have different use cases for this. For instance I'd find
-a USB or eMMC trigger more useful. So you can just drop that line.
-
-Cheers,
-Andre
