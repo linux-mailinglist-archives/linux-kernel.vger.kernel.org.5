@@ -2,167 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C22B79BFD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B9079BAF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355960AbjIKWCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S1355549AbjIKWAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244130AbjIKTG3 (ORCPT
+        with ESMTP id S244137AbjIKTKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:06:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90991D8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:06:21 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EA228D75;
-        Mon, 11 Sep 2023 12:06:56 -0700 (PDT)
-Received: from [10.57.0.19] (unknown [10.57.0.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0A09A3F738;
-        Mon, 11 Sep 2023 12:06:17 -0700 (PDT)
-Message-ID: <40649946-739b-fec6-d743-f7828613fec5@arm.com>
-Date:   Mon, 11 Sep 2023 20:06:12 +0100
+        Mon, 11 Sep 2023 15:10:21 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF02DD;
+        Mon, 11 Sep 2023 12:10:17 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BGsgtC012385;
+        Mon, 11 Sep 2023 19:09:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yhQj70atmgvOsT2e/TS2qijd+F031F5vj/yr5hSo3NI=;
+ b=PMq83McfwsxSX5TjgyapKf9sl6HiVFHrY8Ua0OU0LGSwlf8dDct/0Rf72FodkvRzLYJG
+ jdOrbn9zzhlIKX57BFLI/nDFIsvCSLEpFFEi6YlKKPTB6PP/6yAsEbfClZ5nlj1CFq4Z
+ 8m2N2X+5cUUfzhg+ozceCIl2A2I6Y2/uHHYbgVfT/gHfO9E9A1n/1hOT00yyRg8VZfBJ
+ vLZiUpMMWf9vJTcXVEgdxwagMk1+K//S9E/doUQosffx+VyvCsLlHvqBiPcBGhqpCGRv
+ d48SRjFEWXsxR0oH4DTJHhhcafze2l36DXy2XQOSwGOgyGQxMHPc7HMMSy/3F51BK9Mq sw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t24ra8r01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 19:09:37 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38BJ9axL023805
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 19:09:36 GMT
+Received: from [10.111.183.71] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
+ 2023 12:09:32 -0700
+Message-ID: <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
+Date:   Mon, 11 Sep 2023 12:09:30 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] iommu/sun50i: Allow page sizes between 4K and 1M
-Content-Language: en-GB
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     wens@csie.org, samuel@sholland.org, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230911190218.1758812-1-jernej.skrabec@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230911190218.1758812-1-jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 06/17] soc: qcom: Add Qualcomm APSS minidump kernel
+ driver
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
+ <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7KeKQW4RhvHCzdB5VM5NQ_6O6ebGKDeO
+X-Proofpoint-ORIG-GUID: 7KeKQW4RhvHCzdB5VM5NQ_6O6ebGKDeO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_14,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309110175
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-11 20:02, Jernej Skrabec wrote:
-> While peripheral supports only 4K page sizes, we can easily emulate
-> support for bigger page sizes, up to 1M. This is done by making multiple
-> entries in map function or clearing multiple entries in unmap.
-
-No, it's done by converting over to the {map,unmap}_pages ops. There's 
-no need to resurrect this horrible bodge.
-
-Thanks,
-Robin.
-
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
->   drivers/iommu/sun50i-iommu.c | 49 +++++++++++++++++++++++-------------
->   1 file changed, 31 insertions(+), 18 deletions(-)
+On 9/11/2023 4:07 AM, Krzysztof Kozlowski wrote:
+> On 09/09/2023 22:16, Mukesh Ojha wrote:
+>> +/**
+>> + * qcom_minidump_region_register() - Register region in APSS Minidump table.
+>> + * @region: minidump region.
+>> + *
+>> + * Return: On success, it returns 0 and negative error value on failure.
+>> + */
+>> +int qcom_minidump_region_register(const struct qcom_minidump_region *region)
+>> +{
+>> +	struct minidump *md;
+>> +	int ret;
+>> +
+>> +	md = qcom_smem_minidump_ready();
+>> +	if (!md)
+>> +		return -EPROBE_DEFER;
+>> +
+>> +	if (!qcom_minidump_valid_region(region))
+>> +		return -EINVAL;
+>> +
+>> +	mutex_lock(&md->md_lock);
+>> +	ret = qcom_md_region_register(md, region);
+>> +	if (ret)
+>> +		goto unlock;
+>> +
+>> +	qcom_md_update_elfheader(md, region);
+>> +unlock:
+>> +	mutex_unlock(&md->md_lock);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
 > 
-> diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-> index 74c5cb93e900..93077575d60f 100644
-> --- a/drivers/iommu/sun50i-iommu.c
-> +++ b/drivers/iommu/sun50i-iommu.c
-> @@ -95,6 +95,10 @@
->   
->   #define SPAGE_SIZE			4096
->   
-> +#define SUN50I_IOMMU_PGSIZES		(SZ_4K | SZ_8K | SZ_16K | SZ_32K | \
-> +					 SZ_64K | SZ_128K | SZ_256K | \
-> +					 SZ_512K | SZ_1M)
-> +
->   struct sun50i_iommu {
->   	struct iommu_device iommu;
->   
-> @@ -593,10 +597,12 @@ static int sun50i_iommu_map(struct iommu_domain *domain, unsigned long iova,
->   {
->   	struct sun50i_iommu_domain *sun50i_domain = to_sun50i_domain(domain);
->   	struct sun50i_iommu *iommu = sun50i_domain->iommu;
-> -	u32 pte_index;
-> +	u32 pte_index, pages, i;
->   	u32 *page_table, *pte_addr;
->   	int ret = 0;
->   
-> +	pages = size / SPAGE_SIZE;
-> +
->   	page_table = sun50i_dte_get_page_table(sun50i_domain, iova, gfp);
->   	if (IS_ERR(page_table)) {
->   		ret = PTR_ERR(page_table);
-> @@ -604,18 +610,22 @@ static int sun50i_iommu_map(struct iommu_domain *domain, unsigned long iova,
->   	}
->   
->   	pte_index = sun50i_iova_get_pte_index(iova);
-> -	pte_addr = &page_table[pte_index];
-> -	if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> -		phys_addr_t page_phys = sun50i_pte_get_page_address(*pte_addr);
-> -		dev_err(iommu->dev,
-> -			"iova %pad already mapped to %pa cannot remap to %pa prot: %#x\n",
-> -			&iova, &page_phys, &paddr, prot);
-> -		ret = -EBUSY;
-> -		goto out;
-> +	for (i = 0; i < pages; i++) {
-> +		pte_addr = &page_table[pte_index + i];
-> +		if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> +			phys_addr_t page_phys = sun50i_pte_get_page_address(*pte_addr);
-> +
-> +			dev_err(iommu->dev,
-> +				"iova %pad already mapped to %pa cannot remap to %pa prot: %#x\n",
-> +				&iova, &page_phys, &paddr, prot);
-> +			ret = -EBUSY;
-> +			goto out;
-> +		}
-> +		*pte_addr = sun50i_mk_pte(paddr, prot);
-> +		paddr += SPAGE_SIZE;
->   	}
->   
-> -	*pte_addr = sun50i_mk_pte(paddr, prot);
-> -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> +	sun50i_table_flush(sun50i_domain, &page_table[pte_index], pages);
->   
->   out:
->   	return ret;
-> @@ -626,8 +636,10 @@ static size_t sun50i_iommu_unmap(struct iommu_domain *domain, unsigned long iova
->   {
->   	struct sun50i_iommu_domain *sun50i_domain = to_sun50i_domain(domain);
->   	phys_addr_t pt_phys;
-> +	u32 dte, pages, i;
->   	u32 *pte_addr;
-> -	u32 dte;
-> +
-> +	pages = size / SPAGE_SIZE;
->   
->   	dte = sun50i_domain->dt[sun50i_iova_get_dte_index(iova)];
->   	if (!sun50i_dte_is_pt_valid(dte))
-> @@ -636,13 +648,14 @@ static size_t sun50i_iommu_unmap(struct iommu_domain *domain, unsigned long iova
->   	pt_phys = sun50i_dte_get_pt_address(dte);
->   	pte_addr = (u32 *)phys_to_virt(pt_phys) + sun50i_iova_get_pte_index(iova);
->   
-> -	if (!sun50i_pte_is_page_valid(*pte_addr))
-> -		return 0;
-> +	for (i = 0; i < pages; i++)
-> +		if (!sun50i_pte_is_page_valid(pte_addr[i]))
-> +			return 0;
->   
-> -	memset(pte_addr, 0, sizeof(*pte_addr));
-> -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> +	memset(pte_addr, 0, sizeof(*pte_addr) * pages);
-> +	sun50i_table_flush(sun50i_domain, pte_addr, pages);
->   
-> -	return SZ_4K;
-> +	return size;
->   }
->   
->   static phys_addr_t sun50i_iommu_iova_to_phys(struct iommu_domain *domain,
-> @@ -827,7 +840,7 @@ static int sun50i_iommu_of_xlate(struct device *dev,
->   }
->   
->   static const struct iommu_ops sun50i_iommu_ops = {
-> -	.pgsize_bitmap	= SZ_4K,
-> +	.pgsize_bitmap	= SUN50I_IOMMU_PGSIZES,
->   	.device_group	= sun50i_iommu_device_group,
->   	.domain_alloc	= sun50i_iommu_domain_alloc,
->   	.of_xlate	= sun50i_iommu_of_xlate,
+> NAK, there is no user for this.
+> 
+> Drop all exports from minidump drivers. Your upstream driver *must not*
+> expose stuff to your vendor drivers.
+
+Do we not expect that upstream drivers would want to register?
+Mind you, in the downstream code the following was a bad limitation:
+#define MAX_NUM_OF_SS           10
+
+
