@@ -2,207 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A8F79B5A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189C179B3D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242621AbjIKWPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
+        id S238853AbjIKWix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237891AbjIKNTT (ORCPT
+        with ESMTP id S237892AbjIKNTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:19:19 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EBFEB;
-        Mon, 11 Sep 2023 06:19:14 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6bd8639e7e5so3288375a34.1;
-        Mon, 11 Sep 2023 06:19:14 -0700 (PDT)
+        Mon, 11 Sep 2023 09:19:32 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6988AEE;
+        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9a9cd066db5so563945366b.0;
+        Mon, 11 Sep 2023 06:19:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694438354; x=1695043154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dZAzIIMzf1qPGHHQFdp02fgFY8ovyjwDuzAUQe5+kww=;
-        b=Nd4oHenOHfHGXOPqHZ2VN4aefvLQBjoKU1RkgClvfYM54W7ADDIVhdzIZ/VJgEwdMe
-         SebwEdM1UgrzQJhJ73ljlqdq7Hrk6eVyeNHuZUG4E3ALESGq2r4QUI05F7OpYDNw3/08
-         5YojrUBHPVbnJKO3UHWcC30BMboRgj6fy8+6TzDZ47DZgMSmX2culGDDUTwBozrxYQ02
-         QLam8zpEq3R6Ny36DwE0TJT+qTVkJTpjqfu1WfT1Y5NAzt6p3Znd7GMtVJtkG1qPQ/lK
-         HWsSVrnC7Igw84jTsmZAclhpWpDYen/b+4AONJUv+3NxY4g+ZLMj7OUsyajyxGhGEKbA
-         yd0w==
+        d=gmail.com; s=20221208; t=1694438365; x=1695043165; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
+        b=loGRq68sbDK7K+nxJ7ch/PVyC1246xfq++YioxtPOK0QK623lWmq4XvGfVMA0zc7dZ
+         N9rYdqPxhOTftehIlGYdg5VzWoQ5Yn6z7PpuYfv+i1AneAyuHITELVt6GXBCOrRHmGj7
+         AI2egPnVwy/4M0hWrv2IA6Dw4vPANpGpvFMUS8PSpaXavDaTkcXMcOZrnSIi2MQxG7d0
+         kIEc/ckl83J5JV83D7Lm8PYdUXHbXQGWXkOfAh7JncTzR+smytQ+DGozX95j4fx2sEyM
+         sJOuOW/lHSVKAtUyGyCQwdo8JXvT1m/IYofv58vYKHW5cXiMe3GS9/DR/RmBdrag5n5R
+         cpAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438354; x=1695043154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dZAzIIMzf1qPGHHQFdp02fgFY8ovyjwDuzAUQe5+kww=;
-        b=QRtQk3dyzPKWGlurVUQugdjVldYRHkjtDl+P952qDSJ+Gavskgfc/2I6kWkjOS6JS9
-         tkwSyVzBVxtAPdxGyVOiKURZBMK4uU96IrPhqBsQ51QQH3Ff1870g6ZSTjFzUeRVSwop
-         h582LSdfJC9wd1xt07mQlNd9CjzCHGnpwk2DRFXK6jkQ1TSySgAhkow73x0PlLbRFucg
-         bywZJNZAiuOnHdq+RE4zmSalNC6IvvWNi/xQfVbew8ubKXyQh3ofo+cbgNxAzi/MDIMx
-         UOPfq6uTXSS6wQ2bTBvmzqImZEhD7DXljHqsNWHfdV5wd6t/toohmdurHT02qUv+ZF1P
-         uPRw==
-X-Gm-Message-State: AOJu0YycR1TbyZiUJtZ9gKg+WL+yyL2V22wkBA1LD8ZuPA8qgEizwAeO
-        Yarw+L4p/oNOnt9imINWBf3h9YzIYXGyp4mG1MM=
-X-Google-Smtp-Source: AGHT+IF8qbD6uz9otQZQEGtQsPL1DHxdrKK0dBiU8LawxxVZ1ppEHEbFpM8gS5aweNPYJmJhdCoyODSPMja4C28SAFU=
-X-Received: by 2002:a05:6830:2088:b0:6c0:b3fb:2e65 with SMTP id
- y8-20020a056830208800b006c0b3fb2e65mr10241850otq.16.1694438354175; Mon, 11
- Sep 2023 06:19:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230906115928.3749928-1-alpic@google.com> <202309090600.NSyo7d2q-lkp@intel.com>
-In-Reply-To: <202309090600.NSyo7d2q-lkp@intel.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Mon, 11 Sep 2023 09:19:02 -0400
-Message-ID: <CAEjxPJ4GOq3E4zqXbEMKUxqewopyeU5nmUg89rL+P5YsuEBi7A@mail.gmail.com>
-Subject: Re: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
-To:     kernel test robot <lkp@intel.com>
-Cc:     Alfred Piccioni <alpic@google.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        oe-kbuild-all@lists.linux.dev, stable@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1694438365; x=1695043165;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oYApqvgaLw3ymGGIpb89h6zPjC6eHwEbBV7sAXEoTx4=;
+        b=suqx47OM+1kVz72Q+zpnI4+zrKPblhEsyj5q8ZigmJ4wL7VT4DFFkIjF3FoyNUtO+K
+         CwpLTt37fw/A9S5UfI4IlM9SZ4ApniUU1Nt3sQOBKbj/iUI+SdLSU9JsjI+ZvSUwsGzG
+         lr8aLT+sghJZpu2vVZqoErOElBls0w9YyMwoJJ1nSV8pDIu5Aj85HqfSuiCpWQPEMGXl
+         BXsXdXe+vsjrCmL4IYlCEgd/USFot24W+C4MdhllG7G8tjNSDYmPKO7JwlzU2Sgm8dhk
+         ryoGRnFBGxu77ssW50p+BFE8uK/bpPbK7hybgM5tPSeaQ689fBErjiHEACDkJ6OPkAla
+         Kkmw==
+X-Gm-Message-State: AOJu0Yx8U/CDwFHwmnv2EBIoKgxSWdn1xFcSMCohTLjPJNY22MUxhsdY
+        NDIblvLVD0eVe179zH5Ngq1DMXCYHx0=
+X-Google-Smtp-Source: AGHT+IF8gRl9y19pvIHmim64bQq1N0gu6atCEteh1ulReooZA/H5+YH+OytdKZ0jIXcwJe1ywmIUSw==
+X-Received: by 2002:a17:906:301b:b0:9a1:c39a:8bfd with SMTP id 27-20020a170906301b00b009a1c39a8bfdmr7755321ejz.57.1694438363659;
+        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id h3-20020a170906718300b0098e34446464sm5359448ejk.25.2023.09.11.06.19.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:19:23 -0700 (PDT)
+Message-ID: <d168d22ba2133d3b38a09ee0e8dbbe0fa97f72d0.camel@gmail.com>
+Subject: Re: [PATCH v2 1/3] selftests/hid: ensure we can compile the tests
+ on kernels pre-6.3
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Justin Stitt <justinstitt@google.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Benjamin Tissoires <bentiss@kernel.org>
+Date:   Mon, 11 Sep 2023 16:19:21 +0300
+In-Reply-To: <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
+References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
+         <20230908-kselftest-09-08-v2-1-0def978a4c1b@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 6:54=E2=80=AFPM kernel test robot <lkp@intel.com> wr=
-ote:
->
-> Hi Alfred,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on 50a510a78287c15cee644f345ef8bac8977986a7]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Alfred-Piccioni/SE=
-Linux-Check-correct-permissions-for-FS_IOC32_/20230906-200131
-> base:   50a510a78287c15cee644f345ef8bac8977986a7
-> patch link:    https://lore.kernel.org/r/20230906115928.3749928-1-alpic%4=
-0google.com
-> patch subject: [PATCH V2] SELinux: Check correct permissions for FS_IOC32=
-_*
-> config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/2023090=
-9/202309090600.NSyo7d2q-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20230909/202309090600.NSyo7d2q-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309090600.NSyo7d2q-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
->    security/selinux/hooks.c: In function 'selinux_file_ioctl':
-> >> security/selinux/hooks.c:3647:9: error: duplicate case value
->     3647 |         case FS_IOC32_GETFLAGS:
->          |         ^~~~
->    security/selinux/hooks.c:3645:9: note: previously used here
->     3645 |         case FS_IOC_GETFLAGS:
->          |         ^~~~
->    security/selinux/hooks.c:3648:9: error: duplicate case value
->     3648 |         case FS_IOC32_GETVERSION:
->          |         ^~~~
->    security/selinux/hooks.c:3646:9: note: previously used here
->     3646 |         case FS_IOC_GETVERSION:
->          |         ^~~~
->    security/selinux/hooks.c:3654:9: error: duplicate case value
->     3654 |         case FS_IOC32_SETFLAGS:
->          |         ^~~~
->    security/selinux/hooks.c:3652:9: note: previously used here
->     3652 |         case FS_IOC_SETFLAGS:
->          |         ^~~~
->    security/selinux/hooks.c:3655:9: error: duplicate case value
->     3655 |         case FS_IOC32_SETVERSION:
->          |         ^~~~
->    security/selinux/hooks.c:3653:9: note: previously used here
->     3653 |         case FS_IOC_SETVERSION:
->          |         ^~~~
+On Fri, 2023-09-08 at 22:22 +0000, Justin Stitt wrote:
+> From: Benjamin Tissoires <bentiss@kernel.org>
+>=20
+> For the hid-bpf tests to compile, we need to have the definition of
+> struct hid_bpf_ctx. This definition is an internal one from the kernel
+> and it is supposed to be defined in the generated vmlinux.h.
+>=20
+> This vmlinux.h header is generated based on the currently running kernel
+> or if the kernel was already compiled in the tree. If you just compile
+> the selftests without compiling the kernel beforehand and you are running
+> on a 6.2 kernel, you'll end up with a vmlinux.h without the hid_bpf_ctx
+> definition.
+>=20
+> Use the clever trick from tools/testing/selftests/bpf/progs/bpf_iter.h
+> to force the definition of that symbol in case we don't find it in the
+> BTF and also add __attribute__((preserve_access_index)) to further
+> support CO-RE functionality for these tests.
+>=20
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+> ---
+>  tools/testing/selftests/hid/progs/hid.c            |  3 --
+>  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++=
+++++++
+>  2 files changed, 49 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/tools/testing/selftests/hid/progs/hid.c b/tools/testing/self=
+tests/hid/progs/hid.c
+> index 88c593f753b5..1e558826b809 100644
+> --- a/tools/testing/selftests/hid/progs/hid.c
+> +++ b/tools/testing/selftests/hid/progs/hid.c
+> @@ -1,8 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright (c) 2022 Red hat */
+> -#include "vmlinux.h"
+> -#include <bpf/bpf_helpers.h>
+> -#include <bpf/bpf_tracing.h>
+>  #include "hid_bpf_helpers.h"
+> =20
+>  char _license[] SEC("license") =3D "GPL";
+> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
+testing/selftests/hid/progs/hid_bpf_helpers.h
+> index 4fff31dbe0e7..ab3b18ba48c4 100644
+> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
+> @@ -5,6 +5,55 @@
+>  #ifndef __HID_BPF_HELPERS_H
+>  #define __HID_BPF_HELPERS_H
+> =20
+> +/* "undefine" structs in vmlinux.h, because we "override" them below */
 
-Not sure of the right way to fix this while addressing the original
-issue that this patch was intended to fix. Looking in fs/ioctl.c, I
-see that the some FS_IOC32 values are remapped to the corresponding
-FS_IOC values by the compat ioctl syscall entrypoint. Also notice this
-comment there:
+Hi Justin,
 
-        /* RED-PEN how should LSM module know it's handling 32bit? */
-        error =3D security_file_ioctl(f.file, cmd, arg);
-        if (error)
-                goto out;
+What you have here should work, however I still think that the trick
+with "___local" suffix I refer to in [1] is a bit less hacky, e.g.:
 
-So perhaps this is a defect in LSM that needs to be addressed?
+    enum hid_report_type___local { ... };
+    struct hid_bpf_ctx___local {
+       __u32 index;
+       const struct hid_device *hid; // this one should be in vmlinux.h wit=
+h any config
+       __u32 allocated_size;
+       enum hid_report_type___local report_type;
+       union {
+           __s32 retval;
+           __s32 size;
+       };
+    } __attribute__((preserve_access_index));
+   =20
+    enum hid_class_request___local { ... };
+    enum hid_bpf_attach_flags___local { ... };
+    ...
+    extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx___local *ctx,
+                                  unsigned int offset,
 
 
->
->
-> vim +3647 security/selinux/hooks.c
->
->   3634
->   3635  static int selinux_file_ioctl(struct file *file, unsigned int cmd=
-,
->   3636                                unsigned long arg)
->   3637  {
->   3638          const struct cred *cred =3D current_cred();
->   3639          int error =3D 0;
->   3640
->   3641          switch (cmd) {
->   3642          case FIONREAD:
->   3643          case FIBMAP:
->   3644          case FIGETBSZ:
->   3645          case FS_IOC_GETFLAGS:
->   3646          case FS_IOC_GETVERSION:
-> > 3647          case FS_IOC32_GETFLAGS:
->   3648          case FS_IOC32_GETVERSION:
->   3649                  error =3D file_has_perm(cred, file, FILE__GETATTR=
-);
->   3650                  break;
->   3651
->   3652          case FS_IOC_SETFLAGS:
->   3653          case FS_IOC_SETVERSION:
->   3654          case FS_IOC32_SETFLAGS:
->   3655          case FS_IOC32_SETVERSION:
->   3656                  error =3D file_has_perm(cred, file, FILE__SETATTR=
-);
->   3657                  break;
->   3658
->   3659          /* sys_ioctl() checks */
->   3660          case FIONBIO:
->   3661          case FIOASYNC:
->   3662                  error =3D file_has_perm(cred, file, 0);
->   3663                  break;
->   3664
->   3665          case KDSKBENT:
->   3666          case KDSKBSENT:
->   3667                  error =3D cred_has_capability(cred, CAP_SYS_TTY_C=
-ONFIG,
->   3668                                              CAP_OPT_NONE, true);
->   3669                  break;
->   3670
->   3671          case FIOCLEX:
->   3672          case FIONCLEX:
->   3673                  if (!selinux_policycap_ioctl_skip_cloexec())
->   3674                          error =3D ioctl_has_perm(cred, file, FILE=
-__IOCTL, (u16) cmd);
->   3675                  break;
->   3676
->   3677          /* default case assumes that the command will go
->   3678           * to the file's ioctl() function.
->   3679           */
->   3680          default:
->   3681                  error =3D ioctl_has_perm(cred, file, FILE__IOCTL,=
- (u16) cmd);
->   3682          }
->   3683          return error;
->   3684  }
->   3685
+(sorry for being a bore, won't bring this up anymore).
+
+Thanks,
+Eduard
+
+[1] https://lore.kernel.org/bpf/e99b4226bd450fedfebd4eb5c37054f032432b4f.ca=
+mel@gmail.com/
+
+> +#define hid_bpf_ctx hid_bpf_ctx___not_used
+> +#define hid_report_type hid_report_type___not_used
+> +#define hid_class_request hid_class_request___not_used
+> +#define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
+> +#include "vmlinux.h"
+> +#undef hid_bpf_ctx
+> +#undef hid_report_type
+> +#undef hid_class_request
+> +#undef hid_bpf_attach_flags
+> +
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <linux/const.h>
+> +
+> +enum hid_report_type {
+> +	HID_INPUT_REPORT		=3D 0,
+> +	HID_OUTPUT_REPORT		=3D 1,
+> +	HID_FEATURE_REPORT		=3D 2,
+> +
+> +	HID_REPORT_TYPES,
+> +};
+> +
+> +struct hid_bpf_ctx {
+> +	__u32 index;
+> +	const struct hid_device *hid;
+> +	__u32 allocated_size;
+> +	enum hid_report_type report_type;
+> +	union {
+> +		__s32 retval;
+> +		__s32 size;
+> +	};
+> +} __attribute__((preserve_access_index));
+> +
+> +enum hid_class_request {
+> +	HID_REQ_GET_REPORT		=3D 0x01,
+> +	HID_REQ_GET_IDLE		=3D 0x02,
+> +	HID_REQ_GET_PROTOCOL		=3D 0x03,
+> +	HID_REQ_SET_REPORT		=3D 0x09,
+> +	HID_REQ_SET_IDLE		=3D 0x0A,
+> +	HID_REQ_SET_PROTOCOL		=3D 0x0B,
+> +};
+> +
+> +enum hid_bpf_attach_flags {
+> +	HID_BPF_FLAG_NONE =3D 0,
+> +	HID_BPF_FLAG_INSERT_HEAD =3D _BITUL(0),
+> +	HID_BPF_FLAG_MAX,
+> +};
+> +
+>  /* following are kfuncs exported by HID for HID-BPF */
+>  extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+>  			      unsigned int offset,
+>=20
+
