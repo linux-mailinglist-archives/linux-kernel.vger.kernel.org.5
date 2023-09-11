@@ -2,184 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2FC79A5BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8CA79A5C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbjIKIND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S234102AbjIKINn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjIKINC (ORCPT
+        with ESMTP id S231817AbjIKINj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:13:02 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A220597;
-        Mon, 11 Sep 2023 01:12:57 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B7bWL8016890;
-        Mon, 11 Sep 2023 08:12:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6rPP/oyLv+DfB2DvzWmhNfrkCcAKlx6hjXYBTO7KNhM=;
- b=hIc9QCuhz3e5PZMVDH9o73rY833f9J3ijuppLllKwgSocYgnK1Y3lTkHwYFrmfQk06/W
- A9bP/Lr6lZFa/xHl9ZIVw0y/FKyjSPMcasifN74BFnHlbfixPwOm3lKhefqGtemBN37u
- K9FK6l3chePj3+qlHkhJfuLLWXdRWnu6NwSGPTzBcNfaT9n75MvR04crY8rSuwIxtz66
- JpomuzIaQDXdMYnafyafzhws1QgpOk0aLIGENRZeMlMyyR+wz+/uXHu26pN4SYhBSMa+
- EJ8mm1Thtav2bmuMa4O25Nffdli2N+jT+XM33OsRd708MkEMIVfX3BF0ev7fqr0Hvu2I jQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0ga6jtr5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 08:12:29 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B8C78X027237
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 08:12:08 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
- 2023 01:11:56 -0700
-Message-ID: <32c6708d-a5a9-420e-bfb8-08ea11b3eb1e@quicinc.com>
-Date:   Mon, 11 Sep 2023 13:41:56 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 13/17] firmware: qcom_scm: provide a read-modify-write
- function
-Content-Language: en-US
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
+        Mon, 11 Sep 2023 04:13:39 -0400
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA3DD9;
+        Mon, 11 Sep 2023 01:13:33 -0700 (PDT)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 38B8CmIs070091;
+        Mon, 11 Sep 2023 16:12:48 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Mon, 11 Sep 2023 16:12:45 +0800
+Date:   Mon, 11 Sep 2023 16:12:45 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Anup Patel <anup@brainfault.org>
+CC:     <linux-riscv@lists.infradead.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-14-git-send-email-quic_mojha@quicinc.com>
- <9d9bba92-f92e-469a-b0a5-9ca24f5caaca@quicinc.com>
-In-Reply-To: <9d9bba92-f92e-469a-b0a5-9ca24f5caaca@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <conor.dooley@microchip.com>,
+        <atishp@atishpatra.org>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <ajones@ventanamicro.com>, <heiko@sntech.de>,
+        <samuel@sholland.org>, <geert+renesas@glider.be>,
+        <n.shubin@yadro.com>, <dminus@andestech.com>,
+        <ycliang@andestech.com>, <tim609@andestech.com>,
+        <locus84@andestech.com>, <dylan@andestech.com>
+Subject: Re: [RFC PATCH 2/4] irqchip/riscv-intc: Support large non-standard
+ hwirq number
+Message-ID: <ZP7L_ahJOBXnCSP7@APC323>
+References: <20230907021635.1002738-1-peterlin@andestech.com>
+ <20230907021635.1002738-3-peterlin@andestech.com>
+ <CAAhSdy0iy_7-XaE0s97J8jUESUzV-4BMsxsJ8QFNDyHgtv63ZA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: PHohQQwa3uKW6oMZQgu4uMjAUIRy2Isi
-X-Proofpoint-ORIG-GUID: PHohQQwa3uKW6oMZQgu4uMjAUIRy2Isi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_05,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 spamscore=0 lowpriorityscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110074
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhSdy0iy_7-XaE0s97J8jUESUzV-4BMsxsJ8QFNDyHgtv63ZA@mail.gmail.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 38B8CmIs070091
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 07, 2023 at 06:36:52PM +0530, Anup Patel wrote:
+> On Thu, Sep 7, 2023 at 7:48 AM Yu Chien Peter Lin
+> <peterlin@andestech.com> wrote:
+> >
+> > Currently, the implementation of the RISC-V INTC driver uses the
+> > interrupt cause as hwirq and has a limitation of supporting a
+> > maximum of 64 hwirqs. However, according to the privileged spec,
+> > interrupt cause >= 16 are defined for platform use.
+> >
+> > This limitation prevents us from fully utilizing the available
+> > local interrupt sources. Additionally, the hwirqs used on RISC-V
+> > are sparse, with only interrupt numbers 1, 5 and 9 (plus Sscofpmf
+> > or T-Head's PMU irq) being currently used for supervisor mode.
+> >
+> > The patch switches to using irq_domain_create_tree() which
+> > creates the radix tree map, allowing us to handle a larger
+> > number of hwirqs.
+> >
+> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> > Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> >
+> > ---
+> > There are 3 hwirqs of local interrupt source exceed 64 defined in
+> > AX45MP datasheet [1] Table 56: AX45MP-1C scause Value After Trap:
+> > - 256+16 Slave port ECC error interrupt (S-mode)
+> > - 256+17 Bus write transaction error interrupt (S-mode)
+> > - 256+18 Performance monitor overflow interrupt(S-mode)
+> >
+> > [1] http://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-5.0.0-Datasheet.pdf
+> > ---
+> >  drivers/irqchip/irq-riscv-intc.c | 10 ++++------
+> >  1 file changed, 4 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+> > index 4adeee1bc391..76e1229c45de 100644
+> > --- a/drivers/irqchip/irq-riscv-intc.c
+> > +++ b/drivers/irqchip/irq-riscv-intc.c
+> > @@ -24,8 +24,8 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *regs)
+> >  {
+> >         unsigned long cause = regs->cause & ~CAUSE_IRQ_FLAG;
+> >
+> > -       if (unlikely(cause >= BITS_PER_LONG))
+> > -               panic("unexpected interrupt cause");
+> > +       if (!irq_find_mapping(intc_domain, cause))
+> > +               panic("unexpected interrupt cause: %ld", cause);
+> 
+> Checking irq_find_mapping() is redundant here instead check the return
+> value of generic_handle_domain_irq() and print warning on error.
+> 
+> >
+> >         generic_handle_domain_irq(intc_domain, cause);
+> >  }
+> > @@ -117,8 +117,8 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+> >  {
+> >         int rc;
+> >
+> > -       intc_domain = irq_domain_create_linear(fn, BITS_PER_LONG,
+> > -                                              &riscv_intc_domain_ops, NULL);
+> > +       intc_domain = irq_domain_create_tree(fn, &riscv_intc_domain_ops,
+> > +                                            NULL);
+> 
+> This is incomplete because you have additional customization on-top-of
+> vanilla RISC-V INTC.
+> 
+> I suggest to do the following:
+> 1) Define an enum of types of INTC (such as generic, andestech, etc)
+> 2) Define new compatible string "andestec,cpu-intc" for you custom INTC
+>     and pass that information to riscv_intc_init_common()
+> 3) Extend riscv_intc_domain_map() to use custom andestech_intc_chip
+>     for the custom local irqs. The andestech_intc_chip will provide andes
+>     specific mask/unmask mechanism.
 
-On 9/11/2023 1:38 PM, Kathiravan Thirumoorthy wrote:
->
-> On 9/10/2023 1:46 AM, Mukesh Ojha wrote:
->> It was realized by Srinivas K. that there is a need of
->> read-modify-write scm exported function so that it can
->> be used by multiple clients.
->>
->> Let's introduce qcom_scm_io_update_field() which masks
->> out the bits and write the passed value to that
->> bit-offset. Subsequent patch will use this function.
->>
->> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->> ---
->
->
-> Validated this change on IPQ9574 and IPQ53332 and system is entering 
-> into the download mode.
->
-> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # 
-> IP9574 and IPQ5332
+Hi Anup,
 
+Sure, we will introduce the Andes INTC for a custom IRQ chip.
 
-Couple of typos. Apologize...
+Thanks,
+Peter Lin
 
-Validated this change on IPQ9574 and IPQ5332 and system is entering into 
-the download mode.
-
-Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 
-and IPQ5332
-
-
->
->
->>   drivers/firmware/qcom_scm.c            | 20 ++++++++++++++++++++
->>   include/linux/firmware/qcom/qcom_scm.h |  2 ++
->>   2 files changed, 22 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index fde33acd46b7..5ea8fc4fd4e8 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -78,6 +78,7 @@ static const char * const 
->> qcom_scm_convention_names[] = {
->>   };
->>     static struct qcom_scm *__scm;
->> +static DEFINE_SPINLOCK(lock);
->>     static int qcom_scm_clk_enable(void)
->>   {
->> @@ -407,6 +408,25 @@ int qcom_scm_set_remote_state(u32 state, u32 id)
->>   }
->>   EXPORT_SYMBOL(qcom_scm_set_remote_state);
->>   +int qcom_scm_io_update_field(phys_addr_t addr, unsigned int mask, 
->> unsigned int val)
->> +{
->> +    unsigned int old, new;
->> +    int ret;
->> +
->> +    spin_lock(&lock);
->> +    ret = qcom_scm_io_readl(addr, &old);
->> +    if (ret)
->> +        goto unlock;
->> +
->> +    new = (old & ~mask) | (val & mask);
->> +
->> +    ret = qcom_scm_io_writel(addr, new);
->> +unlock:
->> +    spin_unlock(&lock);
->> +    return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(qcom_scm_io_update_field);
->> +
->>   static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
->>   {
->>       struct qcom_scm_desc desc = {
->> diff --git a/include/linux/firmware/qcom/qcom_scm.h 
->> b/include/linux/firmware/qcom/qcom_scm.h
->> index 250ea4efb7cb..ca41e4eb33ad 100644
->> --- a/include/linux/firmware/qcom/qcom_scm.h
->> +++ b/include/linux/firmware/qcom/qcom_scm.h
->> @@ -84,6 +84,8 @@ extern bool qcom_scm_pas_supported(u32 peripheral);
->>     extern int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val);
->>   extern int qcom_scm_io_writel(phys_addr_t addr, unsigned int val);
->> +extern int qcom_scm_io_update_field(phys_addr_t addr, unsigned int 
->> mask,
->> +                    unsigned int val);
->>     extern bool qcom_scm_restore_sec_cfg_available(void);
->>   extern int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
+> >         if (!intc_domain) {
+> >                 pr_err("unable to add IRQ domain\n");
+> >                 return -ENXIO;
+> > @@ -132,8 +132,6 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn)
+> >
+> >         riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+> >
+> > -       pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
+> > -
+> >         return 0;
+> >  }
+> >
+> > --
+> > 2.34.1
+> >
+> 
+> Regards,
+> Anup
