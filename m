@@ -2,161 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A4D79B1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A06779AE95
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbjIKUza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
+        id S1344860AbjIKVO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236111AbjIKJvC (ORCPT
+        with ESMTP id S236135AbjIKJv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:51:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498B2E44
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:50:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694425858; x=1725961858;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=vB9WN78z+dnoouhq3mXmuFXtYMMYqNoN4TPEw8Y9L0E=;
-  b=gMA/yhlo8po7cbfhiwCkRlmAvXlEHg8wSSnc4Lzk/PLbavBRRg1xVp63
-   nYHc8/EyPD3xl7zuSSjsi5GNPeS0yIGUn612hCm/UFfba4LxDCuH4PkEt
-   EnnNPVglbyvr33+nbG0M1+KVO9fwRdp5cLFyzBivafMRE3THpD/IC/75K
-   V9tpPF9quIHN54jrqmoCBoSlYpEpXrMOyCZYa4QXqtOaragu/nadCkgtp
-   bAN4TPN4BG0JXApyLG4KFMrYhm3iPSaf7VsKODZosWGm7NKMcFSVxFiU8
-   fsavhnzLp7Yhe0PNtSadfUdwA0Sz9Xses2Wse5spkyHJfom8VXgZWa5oE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444457386"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="444457386"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 02:50:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="833443257"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="833443257"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Sep 2023 02:50:55 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfdZF-00064i-2l;
-        Mon, 11 Sep 2023 09:50:53 +0000
-Date:   Mon, 11 Sep 2023 17:50:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: kernel/power/swap.c:1518: warning: Function parameter or member
- 'snapshot_test' not described in 'swsusp_check'
-Message-ID: <202309111712.x7XJ8EkV-lkp@intel.com>
+        Mon, 11 Sep 2023 05:51:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D66EBE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694425836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3hI7Q7HmJLGnvJ6TWSuqo/D2NRHYvfG0p6wZ2y0ko6s=;
+        b=YhXu0nK7mwCQWzxiDBSHYtg/wYz8g1lg0Y/2s8KiClw7tmLXhGjjfnqUNK/DX5jAsAVGOW
+        awea7Jh4vWhSRqOFbWDSr3esL6mQXwsDbWtZ6vhfn7wjrWdavx/331kRQTk+JW0DgQs1Ut
+        Tv0Sl6oXAo1DiMLsuz7ngxuA+yBTjXM=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-279-5eIu5RaaP6Gd0R4hwoRzEA-1; Mon, 11 Sep 2023 05:50:34 -0400
+X-MC-Unique: 5eIu5RaaP6Gd0R4hwoRzEA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-401b8089339so30917415e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:50:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694425833; x=1695030633;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3hI7Q7HmJLGnvJ6TWSuqo/D2NRHYvfG0p6wZ2y0ko6s=;
+        b=TzPIFARJ2RrIynmdM3y4PRKRq/uop3R79Lu+i+GHIUaVa8AsO7qZCEFwpR+kNzzrlY
+         SdcFtVm0PE45/NzoqdIaf9MKH7qehI7B7VdyevUfUmvPiFkoRqKCXkFasyW6A+iJPZad
+         2YapDeCiqJC2aXRfHcx3tv23SiA7nNOXFz408pQNlUrqXYj3MOvxdl6p80DYpFmaigtJ
+         heLeoaXI6BoRVoaU6ELwpMPK8mcVhSIP7SsY7G+Q3AJqs37VVwQHQKZIJcBUkcFldL3E
+         zjdXj1hbURkZSwqC9W2gHLxdPruIbRvShSBlOsL00xQ+EJM3gyVVT0z8c6TPuCcgcCeK
+         G5XQ==
+X-Gm-Message-State: AOJu0YwcSqqPcSicPoNN6au/+8Tzdain1oEECjVx6O+y91zOupVBbm5y
+        l5XJZO6d6R3N92miwNbFBZ1tmES4fyuRUSZ1VZZgzivypXzdsdvbTIq5hNqdy1Asq0I5E/AePaM
+        B5qecdJ2bsWU5G2C/+xYs8YM1
+X-Received: by 2002:a05:600c:ad2:b0:3fe:1871:1826 with SMTP id c18-20020a05600c0ad200b003fe18711826mr8233495wmr.27.1694425833710;
+        Mon, 11 Sep 2023 02:50:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEj8YJrIUf0UCqWXG8KH6oM4Y88u3/pmtlr2wHp0tLZ2zrPuhEBzJbkMb9F1qoq/xPMcrqORA==
+X-Received: by 2002:a05:600c:ad2:b0:3fe:1871:1826 with SMTP id c18-20020a05600c0ad200b003fe18711826mr8233473wmr.27.1694425833313;
+        Mon, 11 Sep 2023 02:50:33 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
+        by smtp.gmail.com with ESMTPSA id n8-20020a7bcbc8000000b003fe29f6b61bsm9506299wmi.46.2023.09.11.02.50.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 02:50:32 -0700 (PDT)
+Message-ID: <476456e1-ac50-8e48-260d-5cbe5e8b085e@redhat.com>
+Date:   Mon, 11 Sep 2023 11:50:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] proc/vmcore: Do not map unaccepted memory
+Content-Language: en-US
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-2-adrian.hunter@intel.com>
+ <ef97f466-b27a-a883-7131-c2051480dd87@redhat.com>
+ <20230911084148.l6han7jxob42rdvm@box.shutemov.name>
+ <49ab74c8-553b-b3d0-6a72-2d259a2b5bdf@redhat.com>
+ <20230911092712.2ps55mylf7elfqp6@box.shutemov.name>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230911092712.2ps55mylf7elfqp6@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On 11.09.23 11:27, Kirill A. Shutemov wrote:
+> On Mon, Sep 11, 2023 at 10:42:51AM +0200, David Hildenbrand wrote:
+>> On 11.09.23 10:41, Kirill A. Shutemov wrote:
+>>> On Mon, Sep 11, 2023 at 10:03:36AM +0200, David Hildenbrand wrote:
+>>>> On 06.09.23 09:39, Adrian Hunter wrote:
+>>>>> Support for unaccepted memory was added recently, refer commit
+>>>>> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
+>>>>> a virtual machine may need to accept memory before it can be used.
+>>>>>
+>>>>> Do not map unaccepted memory because it can cause the guest to fail.
+>>>>>
+>>>>> For /proc/vmcore, which is read-only, this means a read or mmap of
+>>>>> unaccepted memory will return zeros.
+>>>>
+>>>> Does a second (kdump) kernel that exposes /proc/vmcore reliably get access
+>>>> to the information whether memory of the first kernel is unaccepted (IOW,
+>>>> not its memory, but the memory of the first kernel it is supposed to expose
+>>>> via /proc/vmcore)?
+>>>
+>>> There are few patches in my queue to few related issue, but generally,
+>>> yes, the information is available to the target kernel via EFI
+>>> configuration table.
+>>
+>> I assume that table provided by the first kernel, and not read directly from
+>> HW, correct?
+> 
+> The table is constructed by the EFI stub in the first kernel based on EFI
+> memory map.
+> 
 
-FYI, the error/warning still remains.
+Okay, should work then once that's done by the first kernel.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: d6545e687271ab27472eebff770f2de6a5f1a464 PM: hibernate: remove the global snapshot_test variable
-date:   3 months ago
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230911/202309111712.x7XJ8EkV-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309111712.x7XJ8EkV-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309111712.x7XJ8EkV-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/power/swap.c:543: warning: Function parameter or member 'handle' not described in 'save_image'
-   kernel/power/swap.c:543: warning: Function parameter or member 'snapshot' not described in 'save_image'
-   kernel/power/swap.c:543: warning: Function parameter or member 'nr_to_write' not described in 'save_image'
-   kernel/power/swap.c:890: warning: Function parameter or member 'nr_pages' not described in 'enough_swap'
-   kernel/power/swap.c:1061: warning: Function parameter or member 'handle' not described in 'load_image'
-   kernel/power/swap.c:1061: warning: Function parameter or member 'snapshot' not described in 'load_image'
-   kernel/power/swap.c:1061: warning: Function parameter or member 'nr_to_read' not described in 'load_image'
->> kernel/power/swap.c:1518: warning: Function parameter or member 'snapshot_test' not described in 'swsusp_check'
-   kernel/power/swap.c:1572: warning: Function parameter or member 'mode' not described in 'swsusp_close'
-
-
-vim +1518 kernel/power/swap.c
-
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1512  
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1513  /**
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1514   *      swsusp_check - Check for swsusp signature in the resume device
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1515   */
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1516  
-d6545e687271ab Christoph Hellwig 2023-05-31  1517  int swsusp_check(bool snapshot_test)
-61159a314bca64 Rafael J. Wysocki 2006-03-23 @1518  {
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1519  	int error;
-39fbef4b0f77f9 Ye Bin            2021-10-13  1520  	void *holder;
-5904de0d735bbb Chen Yu           2023-04-14  1521  	fmode_t mode = FMODE_READ;
-5904de0d735bbb Chen Yu           2023-04-14  1522  
-5904de0d735bbb Chen Yu           2023-04-14  1523  	if (snapshot_test)
-5904de0d735bbb Chen Yu           2023-04-14  1524  		mode |= FMODE_EXCL;
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1525  
-d4d77629953eab Tejun Heo         2010-11-13  1526  	hib_resume_bdev = blkdev_get_by_dev(swsusp_resume_device,
-0718afd47f70cf Christoph Hellwig 2023-06-01  1527  					    mode, &holder, NULL);
-8a0d613fa12e1b Jiri Slaby        2010-05-01  1528  	if (!IS_ERR(hib_resume_bdev)) {
-8a0d613fa12e1b Jiri Slaby        2010-05-01  1529  		set_blocksize(hib_resume_bdev, PAGE_SIZE);
-3ecb01df3261d3 Jan Beulich       2010-10-26  1530  		clear_page(swsusp_header);
-568e34ed7339e3 Bart Van Assche   2022-07-14  1531  		error = hib_submit_io(REQ_OP_READ, swsusp_resume_block,
-1b29c1643c0d82 Vivek Goyal       2007-05-02  1532  					swsusp_header, NULL);
-9a154d9d95b7b9 Rafael J. Wysocki 2006-12-06  1533  		if (error)
-76b57e613f6006 Jiri Slaby        2009-10-07  1534  			goto put;
-9a154d9d95b7b9 Rafael J. Wysocki 2006-12-06  1535  
-3624eb04c24861 Rafael J. Wysocki 2010-10-04  1536  		if (!memcmp(HIBERNATE_SIG, swsusp_header->sig, 10)) {
-1b29c1643c0d82 Vivek Goyal       2007-05-02  1537  			memcpy(swsusp_header->sig, swsusp_header->orig_sig, 10);
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1538  			/* Reset swap signature now */
-568e34ed7339e3 Bart Van Assche   2022-07-14  1539  			error = hib_submit_io(REQ_OP_WRITE | REQ_SYNC,
-162b99e3119767 Mike Christie     2016-06-05  1540  						swsusp_resume_block,
-1b29c1643c0d82 Vivek Goyal       2007-05-02  1541  						swsusp_header, NULL);
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1542  		} else {
-76b57e613f6006 Jiri Slaby        2009-10-07  1543  			error = -EINVAL;
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1544  		}
-74d9555580c48a David Woodhouse   2021-11-08  1545  		if (!error && swsusp_header->flags & SF_HW_SIG &&
-74d9555580c48a David Woodhouse   2021-11-08  1546  		    swsusp_header->hw_sig != swsusp_hardware_signature) {
-74d9555580c48a David Woodhouse   2021-11-08  1547  			pr_info("Suspend image hardware signature mismatch (%08x now %08x); aborting resume.\n",
-74d9555580c48a David Woodhouse   2021-11-08  1548  				swsusp_header->hw_sig, swsusp_hardware_signature);
-74d9555580c48a David Woodhouse   2021-11-08  1549  			error = -EINVAL;
-74d9555580c48a David Woodhouse   2021-11-08  1550  		}
-76b57e613f6006 Jiri Slaby        2009-10-07  1551  
-76b57e613f6006 Jiri Slaby        2009-10-07  1552  put:
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1553  		if (error)
-5904de0d735bbb Chen Yu           2023-04-14  1554  			blkdev_put(hib_resume_bdev, mode);
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1555  		else
-64ec72a1ece37d Joe Perches       2017-09-27  1556  			pr_debug("Image signature found, resuming\n");
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1557  	} else {
-8a0d613fa12e1b Jiri Slaby        2010-05-01  1558  		error = PTR_ERR(hib_resume_bdev);
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1559  	}
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1560  
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1561  	if (error)
-64ec72a1ece37d Joe Perches       2017-09-27  1562  		pr_debug("Image not found (code %d)\n", error);
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1563  
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1564  	return error;
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1565  }
-61159a314bca64 Rafael J. Wysocki 2006-03-23  1566  
-
-:::::: The code at line 1518 was first introduced by commit
-:::::: 61159a314bca6408320c3173c1282c64f5cdaa76 [PATCH] swsusp: separate swap-writing/reading code
-
-:::::: TO: Rafael J. Wysocki <rjw@sisk.pl>
-:::::: CC: Linus Torvalds <torvalds@g5.osdl.org>
+Maybe include this patch in your series?
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
+
