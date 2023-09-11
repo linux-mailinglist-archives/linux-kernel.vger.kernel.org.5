@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEA679BBBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4037A79B8F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378637AbjIKWgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S245148AbjIKVIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242673AbjIKQFP (ORCPT
+        with ESMTP id S242680AbjIKQFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:05:15 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6AF31AE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:05:09 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6c0b727c1caso2932811a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:05:09 -0700 (PDT)
+        Mon, 11 Sep 2023 12:05:46 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1661B6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:05:40 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401b393df02so54241985e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:05:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694448309; x=1695053109; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NcImq2ANXyTU9IjWwqj61QAzOMpFgaQdLTxRaWVzyQ=;
-        b=gBIhswhdzeipcWeE3vvBPz7G00K8wQS7eXPqDNoe9Q/PmE4vY2ZxzkD2vBQXnJqLcf
-         PnMmy/RmFKiGFECVCYRIoD50VYZdrrfrUsi4uxJfJmvZCA/vVYf0BW0sArnAO4DEyba4
-         5eG0qn+pgf5iX2Rt1OPZtfMHKVvCcRhNmLjyBuN55oDUTYsFEm2TDeh5JsvRJ1KjGeVl
-         0XWHFrziXItfgxrZ9a6JTtE6WozqB9REx4v6tmTU9XxKMT3hlU33XXegYFo095TXmTIY
-         BK/0HI5NXXDwc4KEtkbGhwtsc34l14TO4Is4qJs5w57P26IQR/zskGDi9kGNJdPvNsO9
-         JCYQ==
+        d=linaro.org; s=google; t=1694448339; x=1695053139; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VBVJ2wHJ2/UKLMCz0YHp9T+QNyQaVPOEmzHr3wHgHAg=;
+        b=iirHIJlj/Q1ROqFAMDiIEBdBoauZRMnmRnc0msgGDaO9EZZmBmn7Cn8dQiejSkxgkl
+         SZ9JPgsKdOXkTdAAs2S7UEldKGnXJ9/ZkaRMc+wWG1VvhrY6I/AoZc5AG3h/P6jjDkew
+         J5WewO4CHKoEHL1E9jttRTqwo877Qj6S7BLSguonSMvbhto+YRaAs/foKBq5Bh+v7RrS
+         wuqoQot43wlKYK9H+9s9GUIBdER6EJVcd4rp0oiR/w+IeYwn73/SLAaiWOUGVzHVMv11
+         i4Zlmy6lA5S/gOOaT8GgxefdUKiyAQPc/wOQVILBKLVfPQlfGN2O1B4vo8OfuAsabtE1
+         J9LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694448309; x=1695053109;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3NcImq2ANXyTU9IjWwqj61QAzOMpFgaQdLTxRaWVzyQ=;
-        b=nvTzwBCb19OrHkfgmcaD5plNt2iV4F66ihg1VWSiFffmaaVtMICLXZdaHdZrjHv4gu
-         weZRgfZLb3g/96OdHY9vaBsKDk6lpAIkWBzEx/Ecdo5ht+fRyhnRd0AWzplawQ82ybXz
-         Rddz2FaL33ud394fs3VT/94iRmVDTyaJVqZEwJ/zHsIRHJpPoaibKJCjEN2gPs2PAQV9
-         QJG54mIrnwvnoZY5Fz/7cqP4/yEC0+zk6VQH0rJgOApqow2e3gvkDdwvJrlRD1NkU1U1
-         WpKQZ2KdX0bknEQCDhuyBl3kQViEiVedJP22GErmF4efL01V7HV6eKhyMQYDMAnZTlfk
-         3JRQ==
-X-Gm-Message-State: AOJu0Yy90Fy6rfxMux5kxnwtVYTC5IihMBRYV1aaWkkVMAlY6TIV/ySM
-        WXtJgctLiyft/I3Vdz3s8myaHg==
-X-Google-Smtp-Source: AGHT+IFgu4s3lCy20ZYftOE3FaCBjP14GK9MBKMm8PyBTvWDIGobThLDoRnBJtB+3pRvIgkjSWIaJA==
-X-Received: by 2002:a05:6358:9491:b0:134:d559:2590 with SMTP id i17-20020a056358949100b00134d5592590mr10251018rwb.14.1694448309102;
-        Mon, 11 Sep 2023 09:05:09 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id k5-20020ac81405000000b0040fdcd391d8sm2688274qtj.72.2023.09.11.09.05.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:05:08 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 12:05:08 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] zswap: change zswap's default allocator to zsmalloc
-Message-ID: <20230911160508.GA103342@cmpxchg.org>
-References: <20230908235115.2943486-1-nphamcs@gmail.com>
+        d=1e100.net; s=20230601; t=1694448339; x=1695053139;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VBVJ2wHJ2/UKLMCz0YHp9T+QNyQaVPOEmzHr3wHgHAg=;
+        b=DZ67T0ODyOvIgdZ9vr2gGc/bXTmSYGoP6fw89VjRyp+5IU730Zbjfc5X94EB3nIJAl
+         05lpmdwV3lcKxSln6TMZW5ifwrAM3t3TpNI9SWwA2JbcJWwduE7pg9swXabdfpwwJYjt
+         CHl8b7Hlu6Z4y6/H4M9LDn8UR5R5A5KCK2XTDcg1eUtaOlf+/yoe6+eOFdJ4srT1J0gE
+         NIyspvQJBo/cFVpQ7iPUKyNYRvbWBKGBUp7ndXJtx4wwG2P8qOfi/Iik2ES8O1hymO8P
+         JaDkc3/ILLFNQBCglGGieR6i8Qpkl8zGw9XXm04u+x9WJx5wOmsAiTh1WrkJHXuwT+ta
+         fudA==
+X-Gm-Message-State: AOJu0Yw6+C/WUjW7BvjgeTN0dJqh16/kSVgiFxZlu1J6+6eTVk+E9fuo
+        bnLFIcxrocqjpxoUAsFCpIK9xw==
+X-Google-Smtp-Source: AGHT+IGyuy2+dN6nVi/A8nEkH5DvEYQPGPUixpXjx1K6xC3tj2xMB32WaeVax7THWg5xlQU35kx7hg==
+X-Received: by 2002:a05:600c:2116:b0:401:c8b9:4b8a with SMTP id u22-20020a05600c211600b00401c8b94b8amr9091672wml.29.1694448339176;
+        Mon, 11 Sep 2023 09:05:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id 12-20020a05600c028c00b003fee6e170f9sm10490902wmk.45.2023.09.11.09.05.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 09:05:38 -0700 (PDT)
+Message-ID: <5f1791b4-78d8-9895-e639-238411b60f00@linaro.org>
+Date:   Mon, 11 Sep 2023 18:05:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908235115.2943486-1-nphamcs@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 04/11] thermal: exynos: remove fine-grained clk management
+Content-Language: en-US
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mateusz Majewski <m.majewski2@samsung.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+References: <20230829091853.626011-1-m.majewski2@samsung.com>
+ <CGME20230829092412eucas1p2b79a6f90b9077a3a5486845b7e68bbc6@eucas1p2.samsung.com>
+ <20230829091853.626011-5-m.majewski2@samsung.com>
+ <a3b9ff0f-fff9-9439-5ec9-95a4de9bdfaa@linaro.org>
+ <afbdce92-beb9-cb7f-305f-968c71dde838@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <afbdce92-beb9-cb7f-305f-968c71dde838@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,24 +92,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 04:51:15PM -0700, Nhat Pham wrote:
-> Out of zswap's 3 allocators, zsmalloc is the clear superior in terms of
-> memory utilization, both in theory and as observed in practice, with its
-> high storage density and low internal fragmentation. zsmalloc is also
-> more actively developed and maintained, since it is the allocator of
-> choice for zswap for many users, as well as the only allocator for zram.
+On 01/09/2023 10:40, Marek Szyprowski wrote:
+> On 29.08.2023 11:56, Krzysztof Kozlowski wrote:
+>> On 29/08/2023 11:18, Mateusz Majewski wrote:
+>>> This clock only controls the register operations. The gain in power
+>>> efficiency is therefore quite dubious, while there is price of added
+>>> complexity that is important to get right (as a register operation might
+>>> outright hang the CPU if the clock is not enabled).
+>> So once it is done right, this stops being argument. The benefit is to
+>> keep this clock disabled most of the time, which now we lost.
+>>
+>> I don't find this patch correct approach.
 > 
-> A historical objection to the selection of zsmalloc as the default
-> allocator for zswap is its lack of writeback capability. However, this
-> has changed, with the zsmalloc writeback patchset, and the subsequent
-> zswap LRU refactor. With this, there is not a lot of good reasons to
-> keep zbud, an otherwise inferior allocator, as the default instead of
-> zswap.
+> I've suggested this change while playing with this driver.
 > 
-> This patch changes the default allocator to zsmalloc. The only exception
-> is on settings without MMU, in which case zbud will remain as the
-> default.
+> For me turning AHB clock on/off during normal driver operation seems to 
+> be over-engineering and really gives no real power saving benefits, 
+> especially if thermal driver is the only one that does such fine-grained 
+> clock management (none of the Exynos supported in mainline does that). 
+> Removing it simplifies code and makes it easier to understand or read, 
+> as the current code already was somehow problematic to understand and 
+> unintuitive:
 > 
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> https://lore.kernel.org/all/c3258cb2-9a56-d048-5738-1132331a157d@linaro.org/
+> 
+> Taking into account that the driver is not really maintained, making it 
+> simpler without noticeable feature loss counts as a benefit for me.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hm, ok, let it be, although I bet once someone will come and start
+adding runtime PM for clock handling...
+
+Best regards,
+Krzysztof
+
