@@ -2,173 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4232B79A167
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E55A79A171
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjIKCeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 22:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S231699AbjIKCib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 22:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjIKCd6 (ORCPT
+        with ESMTP id S229631AbjIKCia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 22:33:58 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5511BF4;
-        Sun, 10 Sep 2023 19:33:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VrjjD3D_1694399569;
-Received: from 30.221.149.162(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VrjjD3D_1694399569)
-          by smtp.aliyun-inc.com;
-          Mon, 11 Sep 2023 10:32:51 +0800
-Message-ID: <8bab7404-8e24-8606-558c-db3495429f2f@linux.alibaba.com>
-Date:   Mon, 11 Sep 2023 10:32:45 +0800
+        Sun, 10 Sep 2023 22:38:30 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E77399;
+        Sun, 10 Sep 2023 19:38:23 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RkW9R5Rqsz4f3k6X;
+        Mon, 11 Sep 2023 10:38:19 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAnvdyaff5kPj6sAA--.61661S4;
+        Mon, 11 Sep 2023 10:38:20 +0800 (CST)
+From:   linan666@huaweicloud.com
+To:     josef@toxicpanda.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of index
+Date:   Mon, 11 Sep 2023 10:33:08 +0800
+Message-Id: <20230911023308.3467802-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v8 1/8] perf pmu: "Compat" supports matching multiple
- identifiers
-To:     Ian Rogers <irogers@google.com>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1694087913-46144-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1694087913-46144-2-git-send-email-renyu.zj@linux.alibaba.com>
- <CAP-5=fVWcQrqLeuc-k4HRNrNdb_=9CbqTSOAX=HDR7f=j8b0Hg@mail.gmail.com>
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-In-Reply-To: <CAP-5=fVWcQrqLeuc-k4HRNrNdb_=9CbqTSOAX=HDR7f=j8b0Hg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgAnvdyaff5kPj6sAA--.61661S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF47AF4fZFyrWw1fXw45GFg_yoWxJrW7pF
+        s8Ca93Gr4UGFy7urWrAayDCr1rK3yxKa9rGryxJ34Syrn5C3s5CFy0ka4jyF15CrW8AFsr
+        JFsYgF1rAw18A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
+        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
+        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF
+        7I0E8cxan2IY04v7M4kE6xkIj40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCT
+        nIWIevJa73UjIFyTuYvjxUwc_TUUUUU
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Li Nan <linan122@huawei.com>
 
+If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
+krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
+may occurs.
 
-在 2023/9/9 上午5:33, Ian Rogers 写道:
-> On Thu, Sep 7, 2023 at 4:58 AM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
->>
->> The jevent "Compat" is used for uncore PMU alias or metric definitions.
->>
->> The same PMU driver has different PMU identifiers due to different
->> hardware versions and types, but they may have some common PMU event.
->> Since a Compat value can only match one identifier, when adding the
->> same event alias to PMUs with different identifiers, each identifier
->> needs to be defined once, which is not streamlined enough.
->>
->> So let "Compat" supports matching multiple identifiers for uncore PMU
->> alias. For example, the Compat value {43401;436*} can match the PMU
->> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
->> the prefix "436", that is, all CMN650, where "*" is a wildcard.
->> Tokens in Unit field are delimited by ';' with no spaces.
->>
->> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
->> Reviewed-by: John Garry <john.g.garry@oracle.com>
->> ---
->>  tools/perf/util/pmu.c | 28 ++++++++++++++++++++++++++--
->>  tools/perf/util/pmu.h |  1 +
->>  2 files changed, 27 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index e215985..c3c3818 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -875,6 +875,30 @@ static bool pmu_uncore_alias_match(const char *pmu_name, const char *name)
->>         return res;
->>  }
->>
->> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
->> +{
->> +       char *tmp = NULL, *tok, *str;
->> +       bool res = false;
->> +
->> +       /*
->> +        * The strdup() call is necessary here because "compat" is a const str*
->> +        * type and cannot be used as an argument to strtok_r().
->> +        */
->> +       str = strdup(compat);
->> +       if (!str)
->> +               return false;
->> +
->> +       tok = strtok_r(str, ";", &tmp);
-> 
-> Did the comma vs semicolon difference get explained? It seems to add
-> inconsistency to use a semicolon.
-> 
+  T1
+  nbd_ioctl
+   __nbd_ioctl
+    nbd_add_socket
+     blk_mq_freeze_queue
+				T2
+  				recv_work
+  				 nbd_read_reply
+  				  sock_xmit
+     krealloc config->socks
+				   def config->socks
 
-Hi Ian,
+Pass nbd_sock to nbd_read_reply(). And introduce a new function
+sock_xmit_recv(), which differs from sock_xmit only in the way it get
+socket.
 
-Yes, I explained the reason for using semicolons instead of commas in v7.
+==================================================================
+BUG: KASAN: use-after-free in sock_xmit+0x525/0x550
+Read of size 8 at addr ffff8880188ec428 by task kworker/u12:1/18779
 
-I use a semicolon instead of a comma because I want to distinguish it from the function
-of the comma in "Unit" and avoid confusion between the use of commas in "Unit" and "Compat".
-Because in Unit, commas act as wildcards, and in “Compat”, the semicolon means “or”. So
-I think semicolons are more appropriate.
+Workqueue: knbd4-recv recv_work
+Call Trace:
+ __dump_stack
+ dump_stack+0xbe/0xfd
+ print_address_description.constprop.0+0x19/0x170
+ __kasan_report.cold+0x6c/0x84
+ kasan_report+0x3a/0x50
+ sock_xmit+0x525/0x550
+ nbd_read_reply+0xfe/0x2c0
+ recv_work+0x1c2/0x750
+ process_one_work+0x6b6/0xf10
+ worker_thread+0xdd/0xd80
+ kthread+0x30a/0x410
+ ret_from_fork+0x22/0x30
 
-John also raised this issue earlier, and we finally agreed to use semicolons.
-What do you think?
+Allocated by task 18784:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track
+ set_alloc_info
+ __kasan_kmalloc
+ __kasan_kmalloc.constprop.0+0xf0/0x130
+ slab_post_alloc_hook
+ slab_alloc_node
+ slab_alloc
+ __kmalloc_track_caller+0x157/0x550
+ __do_krealloc
+ krealloc+0x37/0xb0
+ nbd_add_socket
+ +0x2d3/0x880
+ __nbd_ioctl
+ nbd_ioctl+0x584/0x8e0
+ __blkdev_driver_ioctl
+ blkdev_ioctl+0x2a0/0x6e0
+ block_ioctl+0xee/0x130
+ vfs_ioctl
+ __do_sys_ioctl
+ __se_sys_ioctl+0x138/0x190
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x61/0xc6
 
+Freed by task 18784:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x40
+ __kasan_slab_free.part.0+0x13f/0x1b0
+ slab_free_hook
+ slab_free_freelist_hook
+ slab_free
+ kfree+0xcb/0x6c0
+ krealloc+0x56/0xb0
+ nbd_add_socket+0x2d3/0x880
+ __nbd_ioctl
+ nbd_ioctl+0x584/0x8e0
+ __blkdev_driver_ioctl
+ blkdev_ioctl+0x2a0/0x6e0
+ block_ioctl+0xee/0x130
+ vfs_ioctl
+ __do_sys_ioctl
+ __se_sys_ioctl+0x138/0x190
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x61/0xc6
 
-Thanks,
-Jing
+Signed-off-by: Li Nan <linan122@huawei.com>
+---
+ drivers/block/nbd.c | 35 ++++++++++++++++++++++-------------
+ 1 file changed, 22 insertions(+), 13 deletions(-)
 
-> Thanks,
-> Ian
-> 
->> +       for (; tok; tok = strtok_r(NULL, ";", &tmp)) {
->> +               if (!fnmatch(tok, id, FNM_CASEFOLD)) {
->> +                       res = true;
->> +                       break;
->> +               }
->> +       }
->> +       free(str);
->> +       return res;
->> +}
->> +
->>  static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *pe,
->>                                         const struct pmu_events_table *table __maybe_unused,
->>                                         void *vdata)
->> @@ -915,8 +939,8 @@ static int pmu_add_sys_aliases_iter_fn(const struct pmu_event *pe,
->>         if (!pe->compat || !pe->pmu)
->>                 return 0;
->>
->> -       if (!strcmp(pmu->id, pe->compat) &&
->> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
->> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
->> +                       pmu_uncore_identifier_match(pmu->id, pe->compat)) {
->>                 perf_pmu__new_alias(pmu,
->>                                 pe->name,
->>                                 pe->desc,
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index bd5d804..1bf5cf1 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -240,6 +240,7 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
->>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
->>  const struct pmu_events_table *pmu_events_table__find(void);
->>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
->> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
->>
->>  int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
->>
->> --
->> 1.8.3.1
->>
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index a346dbd73543..712b2d164eed 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -67,6 +67,7 @@ struct nbd_sock {
+ struct recv_thread_args {
+ 	struct work_struct work;
+ 	struct nbd_device *nbd;
++	struct nbd_sock *nsock;
+ 	int index;
+ };
+ 
+@@ -490,15 +491,9 @@ static enum blk_eh_timer_return nbd_xmit_timeout(struct request *req)
+ 	return BLK_EH_DONE;
+ }
+ 
+-/*
+- *  Send or receive packet. Return a positive value on success and
+- *  negtive value on failue, and never return 0.
+- */
+-static int sock_xmit(struct nbd_device *nbd, int index, int send,
+-		     struct iov_iter *iter, int msg_flags, int *sent)
++static int __sock_xmit(struct nbd_device *nbd, struct socket *sock, int send,
++		       struct iov_iter *iter, int msg_flags, int *sent)
+ {
+-	struct nbd_config *config = nbd->config;
+-	struct socket *sock = config->socks[index]->sock;
+ 	int result;
+ 	struct msghdr msg;
+ 	unsigned int noreclaim_flag;
+@@ -541,6 +536,19 @@ static int sock_xmit(struct nbd_device *nbd, int index, int send,
+ 	return result;
+ }
+ 
++/*
++ *  Send or receive packet. Return a positive value on success and
++ *  negtive value on failure, and never return 0.
++ */
++static int sock_xmit(struct nbd_device *nbd, int index, int send,
++		     struct iov_iter *iter, int msg_flags, int *sent)
++{
++	struct nbd_config *config = nbd->config;
++	struct socket *sock = config->socks[index]->sock;
++
++	return __sock_xmit(nbd, sock, send, iter, msg_flags, sent);
++}
++
+ /*
+  * Different settings for sk->sk_sndtimeo can result in different return values
+  * if there is a signal pending when we enter sendmsg, because reasons?
+@@ -697,7 +705,7 @@ static int nbd_send_cmd(struct nbd_device *nbd, struct nbd_cmd *cmd, int index)
+ 	return 0;
+ }
+ 
+-static int nbd_read_reply(struct nbd_device *nbd, int index,
++static int nbd_read_reply(struct nbd_device *nbd, struct socket *sock,
+ 			  struct nbd_reply *reply)
+ {
+ 	struct kvec iov = {.iov_base = reply, .iov_len = sizeof(*reply)};
+@@ -706,7 +714,7 @@ static int nbd_read_reply(struct nbd_device *nbd, int index,
+ 
+ 	reply->magic = 0;
+ 	iov_iter_kvec(&to, ITER_DEST, &iov, 1, sizeof(*reply));
+-	result = sock_xmit(nbd, index, 0, &to, MSG_WAITALL, NULL);
++	result = __sock_xmit(nbd, sock, 0, &to, MSG_WAITALL, NULL);
+ 	if (result < 0) {
+ 		if (!nbd_disconnected(nbd->config))
+ 			dev_err(disk_to_dev(nbd->disk),
+@@ -830,14 +838,14 @@ static void recv_work(struct work_struct *work)
+ 	struct nbd_device *nbd = args->nbd;
+ 	struct nbd_config *config = nbd->config;
+ 	struct request_queue *q = nbd->disk->queue;
+-	struct nbd_sock *nsock;
++	struct nbd_sock *nsock = args->nsock;
+ 	struct nbd_cmd *cmd;
+ 	struct request *rq;
+ 
+ 	while (1) {
+ 		struct nbd_reply reply;
+ 
+-		if (nbd_read_reply(nbd, args->index, &reply))
++		if (nbd_read_reply(nbd, nsock->sock, &reply))
+ 			break;
+ 
+ 		/*
+@@ -872,7 +880,6 @@ static void recv_work(struct work_struct *work)
+ 		percpu_ref_put(&q->q_usage_counter);
+ 	}
+ 
+-	nsock = config->socks[args->index];
+ 	mutex_lock(&nsock->tx_lock);
+ 	nbd_mark_nsock_dead(nbd, nsock, 1);
+ 	mutex_unlock(&nsock->tx_lock);
+@@ -1216,6 +1223,7 @@ static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
+ 		INIT_WORK(&args->work, recv_work);
+ 		args->index = i;
+ 		args->nbd = nbd;
++		args->nsock = nsock;
+ 		nsock->cookie++;
+ 		mutex_unlock(&nsock->tx_lock);
+ 		sockfd_put(old);
+@@ -1398,6 +1406,7 @@ static int nbd_start_device(struct nbd_device *nbd)
+ 		refcount_inc(&nbd->config_refs);
+ 		INIT_WORK(&args->work, recv_work);
+ 		args->nbd = nbd;
++		args->nsock = config->socks[i];
+ 		args->index = i;
+ 		queue_work(nbd->recv_workq, &args->work);
+ 	}
+-- 
+2.39.2
+
