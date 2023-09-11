@@ -2,249 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BBA279BD87
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E0379C0A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244971AbjIKVId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
+        id S242450AbjIKVkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236928AbjIKLmP (ORCPT
+        with ESMTP id S236945AbjIKLoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:42:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE47CDD;
-        Mon, 11 Sep 2023 04:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694432530; x=1725968530;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=1hksIPFcfvsurVCZOQDe9vqmt8yCAnOcf1QowBDXogo=;
-  b=RbNVaQecXtoSE9rJuPgAc01PAxQkh08awdSb5Td2xV8rrf6M6CdZzI86
-   YTZvMnvMNgFa476uupQP3YZVxXxOfkFFzfALrORrQCXCG7hWgBsbxGTIi
-   y9jOVnlRIPNI3iOShssmFHAUHVkj9gvjpwuVlO54RD1CfVyku6MP2IhEe
-   +vbHz7TSIizzHOY5fzcoa5A44Ko39Fr/tCq7RauUEoEHLympw3A0uWbdx
-   Pf59qbqGx/lvjL3gxhDQ4iekVoyINQu6BkV1Rc6/X1+Iqt5D5D6Vn9BAj
-   nKrmTzBbEeP0ZAcDP9BY0N4xHjV5doG2N5FaQS4RD/kr2a2IKifTJ6MmA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="358362651"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="358362651"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 04:41:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="1074110092"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="1074110092"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 04:41:41 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 04:41:41 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 04:41:40 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 04:41:40 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 04:41:40 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nlcj2NAH1ot4ik//gjBiooAnhAvAkXstfy7shppYdIR1Yvm+3Cw/3JSn+2x7zorxOa21mtkyc4LGH/WgJKiiV9x4TOS43wG6WLgPmXYFMK3HYULOM2bEmYKxU9hiMnH9TV5hJwf9BXPB1A/Jqnh+z+yOZ8CTx5j86b6HUwxIRP/golyx4ehNgg7zuewPnTw0/4WhA93NUMbnKNT5PSJTK48pzZK6GMEV6w4+EVy5WF+/1CCg16a9hm5XA9staf+9VgFyzY0tyqDJ1O1i0ZeiS5yo5nu8+H8ytyGxK8wInAOfOI0jF1gjT57eT/jwyJh9qRnlgzzpcPxsKlBhxF/rXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1hksIPFcfvsurVCZOQDe9vqmt8yCAnOcf1QowBDXogo=;
- b=oXMJaMya7VShBntoAbYZfP/irxSMZioLUaL4BrStSLJBPkcr7eGRzLow8kQizo/LlOal2nB1uQF3oFtZvfnV9umUp+Ib5ISSAOqqNMJKn+/QZDMDwmIR3xYGViDB16OpQxgHWmkkvq+u6gU8scOZE0wZpyXQ22DbBYfz0dzBfEvU5B9lrv2P/n41FWTTvG8uKMdS7qF8dgeLz+EjVkNqdE4rvMyDrOjVACGUhEMMGy8P2gsnE9VDPW7s/bMZHFzEDEtMzJiKxWIAiohBFHO2GCyRfCNt1eoEt0VUVVX1lcAKaoI1IKcXz6cqAZoPtekArZizrW/BEkh/sdYDbJ2biw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by SA0PR11MB4687.namprd11.prod.outlook.com (2603:10b6:806:96::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
- 2023 11:41:37 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 11:41:37 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "Raj, Ashok" <ashok.raj@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shahar, Sagi" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v13 05/22] x86/virt/tdx: Handle SEAMCALL no entropy error
- in common code
-Thread-Topic: [PATCH v13 05/22] x86/virt/tdx: Handle SEAMCALL no entropy error
- in common code
-Thread-Index: AQHZ101FhnZRwPhg0EWj68AddtBoNbARMmSAgARo14A=
-Date:   Mon, 11 Sep 2023 11:41:37 +0000
-Message-ID: <14e8f19b93f3e0eb381061320b47a8c4a048c9cd.camel@intel.com>
-References: <cover.1692962263.git.kai.huang@intel.com>
-         <c945c9a8db98b7a304c404a7ef18aa2f7770ffaf.1692962263.git.kai.huang@intel.com>
-         <0676101a-e781-81e0-2e0f-7f5e72595e5c@intel.com>
-In-Reply-To: <0676101a-e781-81e0-2e0f-7f5e72595e5c@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SA0PR11MB4687:EE_
-x-ms-office365-filtering-correlation-id: b23bd876-c06c-4349-c3a7-08dbb2bc0eb3
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5rFYXZ2unnhh638Mp1nOK54qaB9nFXO4hrvXzTzaUFI8XqcvxmtauoWsWFu22/ZJXRvYXMSlqNRGlT7XkgM94rA/jByfCwPd0IBYlhmApiDKnZIrv+7qdoYAu2iqqA35sswbF3kcu9VPCdjuZVZLO49jW8VNQB56hbpEu5ljAqt5heebMq+djE9GINM8PHox3diQz+b8YqzwNzMQcS/fQQQAN6XaUS6nnX8ty49EkffW8VhI9Tp9ka7ipmJHUu7nHSZH9btjdRN+nklF8PDJqvxVhxNovkklNqEfXNz3D1jbZPtCRIj4LTUAIoP8oXNf0hEuyaj3ygenhcOFKFZQbkFNWe0Zjhth9kTf03WGoQCuMa0nHxo3yiOLO5pnv+0UiAT2fGkG5Brkm5OsfjkeSOfM1Rb5HhrZqTtXjOqTp/4Oy29gidW+KXIGhcec9uj+1bB/V7sD/2mOZAuJWKvojrG+OPHy1oe6XbW1Z5cjbfTs9b94roRETp2b6hYfyPjMrNKfYkYOJ3VG+8mWBTSJXDwt1kQDEGBPtSgAffMw8fHYzs6e7OgSsj3hqGW9o2HO3kV6OKq4SmPo1g9CdAOEK81GckTUZvpT9zVDJ35wyMPm3K7X3Zb0M842KkXDwdre
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(186009)(451199024)(1800799009)(6506007)(53546011)(6486002)(6512007)(71200400001)(83380400001)(122000001)(86362001)(82960400001)(38100700002)(38070700005)(36756003)(2616005)(26005)(316002)(7416002)(41300700001)(8936002)(4326008)(2906002)(76116006)(8676002)(66556008)(66946007)(54906003)(66446008)(64756008)(66476007)(91956017)(110136005)(478600001)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d2VFanh2TXhTQWxaSzVwakI0ZHloMWtQWFNmQkJtTFRFVVMyRmV0TUZjb0tW?=
- =?utf-8?B?MmVuMnd0S3kvbzBRd2NyS2kxQ1J4Nk4xN01HMksrR1lHdi92Vm1IWUtOQlhE?=
- =?utf-8?B?dTVxVlIzUC8xSlhmV0NqR3ozVTBnRWVlSVJ4VUtDaFV3bjc3eGVZcWJTR2M4?=
- =?utf-8?B?dkdSdXVydDU3SEVqZ1JyU0VaSHhVWkNnZ2kydk5qNnJudmRLVTl1MzZxVHp5?=
- =?utf-8?B?b2xlb3d4VTNuQ1ZLRW1LVjRFZVp5RklpVzBnV0g3ditDazRZSmlxRmM0c1V3?=
- =?utf-8?B?MmFqZ3ZlN1E1Ulovc1JpYjRwWEkwNlFHS0k0VG9sTk5QbFBOTTZ5UlRSc0tJ?=
- =?utf-8?B?aGxqazMzM016b1VSblVIQy9PcFVyQ3NXZHRINmY5aFJvdXlJemtkYjhwS05p?=
- =?utf-8?B?QmZtQzQ2TjBoWUI3L0pVSTZLVWJuaFlwTzVIczhDNll1aVYzQ1I4d3RMRXRW?=
- =?utf-8?B?ZVRtc09RMWxVaTd2OERCTXpKYlkwYnF6aDlESkpyOGt6NDRVYVk2TCtiaEt2?=
- =?utf-8?B?Y01mR0ErNk1LdFhMeUpNV2lDM0o3L2JYbEpmYmNXQWJxenRZNFlOVkxFK21T?=
- =?utf-8?B?RjlyM3dqZ1JBVXFDNmFSdDFJallidHhpRlNhUTZiTEZra1pEUGZJdzVJOGMz?=
- =?utf-8?B?OWd5b2NwRUlITUNYWDZiZzk3UHlHVUlGNitmSU9tajVUUGFhOUtGL3lFZTR5?=
- =?utf-8?B?cTFnd3pFYzBNb2tPank2NDlDZzRCMDRtR3pOblk2a1k0VjRCTUtKU3h4VUQw?=
- =?utf-8?B?bHJQMzJxbXZLdng2N2xvamliRmhlVmlRK2hMWUxjQ1YvbjlBT2REc0I4RzVu?=
- =?utf-8?B?ekREMUJzUkUySjJVeTZKZCtEK1htRitDU2V4Nzg4aFJTMGpHdnFpdUNpWHpF?=
- =?utf-8?B?WE5LWVUxSW90djBtWCtSUzFDMU5iUGdRS2JJT1JoTDFDVHpueVdFdG1yYmx2?=
- =?utf-8?B?MTQrOFJUNTVFR3pVcVpSaTVhenJoY29uQXF0aWpwZkpkRjVoWktYUU9vU3Zj?=
- =?utf-8?B?a2g2NW5tNFlHbkUxZWxLU3ptcHBybjFYK2d0Vm5BS1NJdGFLQXRaTWxMbGNq?=
- =?utf-8?B?WFFyN0RSbE1MdlBVamVBeDZ6b3pHZmpBZWVHU3VEaUd4eUNVNWxpVjhoeGZ4?=
- =?utf-8?B?bVNpU1JBZC9FS2hra2ovNndzU2ZHc29id2oyZWNtbFpPRkRxUGlFVE1lN1Zv?=
- =?utf-8?B?eUdteUZZaHoxcno4bHZlVTBaVFhwbXQrajRsVHNOUk00M2grUFBaWnpqS2RS?=
- =?utf-8?B?aTcxMDRHdkZUVFkwdHBUQThrWldsd0lxMWdRWkt5Uis4ejRxZTl1cmtuYkZH?=
- =?utf-8?B?TVh1dmJXeFZYa1RHQ28rNjlOMWUxb1B4OGdUc3VVQ1ptdVJJWWcyL2VjQW9S?=
- =?utf-8?B?QTA4T1JYSE5RM01qZFNTeXdWNkxOUkZkODN0RzZXaExNMmZDVUh3KzJrR2ZM?=
- =?utf-8?B?Qm4xMlhoTU03U3F3ellLM01kZFBndkl0dk9rckUzbXFJa2xwcWNSdEozcGFZ?=
- =?utf-8?B?MXE3VGhYNjl0QURjSndSWlROTExIK2hlcWtFTGY2MEpnOUF6aUVQT2NrLzhT?=
- =?utf-8?B?SXByYjhWNW9JUW5yWjhqWVR2N1kwdEtGM0NCdW9xbDZCUzlpb0pueXlvV1JX?=
- =?utf-8?B?eW9rS0tlSHJueUpMb2xHMittUGlRc09veFJrVzJ6NjZOU2xjSjVBMVg1cUo1?=
- =?utf-8?B?aDlYbWpSZTA5OXJlRzdrL3g4a1llc2cwRVV5TmpSY0JuVUs0OW1PeGZUY3Rm?=
- =?utf-8?B?eWdOb1lNR0Q4RWZqY0RNV2d3Sml4eVZpWlBHdHRjMVN1dmQ3TUlzdnVxbmdJ?=
- =?utf-8?B?TWFRMDVUR1AzbVVoS1VXV0E5UitMNFlab1lXZDVXSEdIblRYT3BCUEF4RUVv?=
- =?utf-8?B?MU5wQk1HaE5lMnJKU0xjSk5OdU9KMkkySkJMOVNtbTBRclJob015UEVTOUpy?=
- =?utf-8?B?djQxRkNKVkZFcml6VVc5d1FESlRnczhmSHVneWpyWWV2OWUrbkpqNW9DT0I5?=
- =?utf-8?B?ZXNCbkxtWlcyV3p6ZnV4ZVh6YnNVNWpULzhXSnZnTTFDYjZ2N3hkT0lpdFFY?=
- =?utf-8?B?WmdjMTA0Ymx0NE8wY2xGalJxNytSMVQyOWxWcTZIY3I2VmwzSjQyd3oveFlK?=
- =?utf-8?Q?aPuX3ieMK+Iz4URyILlzjxWb0?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EA76BF1C8B5FF34FBDBB8CA150B35B32@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 11 Sep 2023 07:44:07 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06BBCEB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:44:01 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401da71b83cso49297275e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1694432640; x=1695037440; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FdxNots/ZdhIISnEaFRRuK2rgiRRh92V2Io2TUdmEu4=;
+        b=O9NAji9aimG+1hVXB0nHFXsXCZlWElY+LzqgsJ0wSoBAF+g7mztpAL/aZajd7Deun6
+         /pd8rGAIIPBZxEiB+JtpbKJKhMlEaaESsqqwGgMrR3HPglnSTRZjow9vn2y4TcUoN9g5
+         K+bTRejhwoHPBbr2VqHo23uJ6j19UyV2nnMRUnYF2wnts7bYXMubN02Us2nHr1qjlZE/
+         5kiYMSCkVssXJVXfzLAY2o3olEENWXsvAUVofrVtkPkfbGgiu3/j9i4FFRocSmSwhzzA
+         RWBHO9f74ZIpUfV9vkLCWSG5+HIkl0at5sXucLKk815Z9hMes714504civIq7Kn9+k0U
+         4w4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694432640; x=1695037440;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FdxNots/ZdhIISnEaFRRuK2rgiRRh92V2Io2TUdmEu4=;
+        b=ZqgCHqIMGNW0L7kOA1L/akf3IPBMpT7HpJwGHIlqks1kffpGIAQIdKH0JeMjqPOJEw
+         c6E/KKih70d1TxIbdaw7fkegfKHhSak8hXw1PQyztbsR0O7XhPm02dhMPB2K3HjFTmQ/
+         ta0TojbwSSwD72s254S/HyiA2dH9cdcVv6YP8I2nHUpaHH0JXZeejIXO7bMYcD2Cdrs4
+         HgBLKAt+svYMSUb0H3eUtOHfh3RBKBEeSaanYpeI6hWwJ4w2kg4/79ICM8wUBbGF+ZCY
+         sYKXi4tPeM0fw47dQgQceAkCkwDXstQ5GdP/aG53cml9u9fd7OamM2Ul7wYmShPBxFPN
+         TKFA==
+X-Gm-Message-State: AOJu0YyxJg0FSumYPfS6b/EyimB19STZb1GrroxjHqX68QPcQsSLubGh
+        yWA4T3FFMv61StHOe63wD8BAOwOfYoXiOWzsy+UoHw==
+X-Google-Smtp-Source: AGHT+IGODvX6beJZ5zvdfH+VxLt6+uAABmMvCiPydjYPQlmKzfiXP8yxNJSdULc9CFhOjcKGcex8m7OJN69MT8ZxIhM=
+X-Received: by 2002:a7b:c389:0:b0:401:d947:c8a9 with SMTP id
+ s9-20020a7bc389000000b00401d947c8a9mr7855842wmj.19.1694432640069; Mon, 11 Sep
+ 2023 04:44:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b23bd876-c06c-4349-c3a7-08dbb2bc0eb3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 11:41:37.2928
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zFm6NfjiJUoqg2oSEKW3b+BIsUAZd8SJIfhlXE3P7HswE291IoPeQiYNwSGr6pRTdN1eM1ZtUTpHvwO76s3A6w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4687
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230907130642.245222-1-glider@google.com>
+In-Reply-To: <20230907130642.245222-1-glider@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 11 Sep 2023 13:43:23 +0200
+Message-ID: <CANpmjNOO+LUgCWHPg4OXLzm9c7N3SNfLm1MsgME_ms07Ad5L=A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kmsan: simplify kmsan_internal_memmove_metadata()
+To:     Alexander Potapenko <glider@google.com>
+Cc:     dvyukov@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTA5LTA4IGF0IDA5OjIxIC0wNzAwLCBEYXZlIEhhbnNlbiB3cm90ZToNCj4g
-T24gOC8yNS8yMyAwNToxNCwgS2FpIEh1YW5nIHdyb3RlOg0KPiA+IFNvbWUgU0VBTUNBTExzIHVz
-ZSB0aGUgUkRSQU5EIGhhcmR3YXJlIGFuZCBjYW4gZmFpbCBmb3IgdGhlIHNhbWUgcmVhc29ucw0K
-PiA+IGFzIFJEUkFORC4gIFVzZSB0aGUga2VybmVsIFJEUkFORCByZXRyeSBsb2dpYyBmb3IgdGhl
-bS4NCj4gPiANCj4gPiBUaGVyZSBhcmUgdGhyZWUgX19zZWFtY2FsbCooKSB2YXJpYW50cy4gIEFk
-ZCBhIG1hY3JvIHRvIGRvIHRoZSBTRUFNQ0FMTA0KPiA+IHJldHJ5IGluIHRoZSBjb21tb24gY29k
-ZSBhbmQgZGVmaW5lIGEgd3JhcHBlciBmb3IgZWFjaCBfX3NlYW1jYWxsKigpDQo+ID4gdmFyaWFu
-dC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBLYWkgSHVhbmcgPGthaS5odWFuZ0BpbnRlbC5j
-b20+DQo+ID4gLS0tDQo+ID4gDQo+ID4gdjEyIC0+IHYxMzoNCj4gPiAgLSBOZXcgaW1wbGVtZW50
-YXRpb24gZHVlIHRvIFREQ0FMTCBhc3NlbWJseSBzZXJpZXMuDQo+ID4gDQo+ID4gLS0tDQo+ID4g
-IGFyY2gveDg2L2luY2x1ZGUvYXNtL3RkeC5oIHwgMjcgKysrKysrKysrKysrKysrKysrKysrKysr
-KysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAyNyBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlm
-ZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3RkeC5oIGIvYXJjaC94ODYvaW5jbHVkZS9h
-c20vdGR4LmgNCj4gPiBpbmRleCBhMjUyMzI4NzM0YzcuLmNmYWU4YjMxYTJlOSAxMDA2NDQNCj4g
-PiAtLS0gYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS90ZHguaA0KPiA+ICsrKyBiL2FyY2gveDg2L2lu
-Y2x1ZGUvYXNtL3RkeC5oDQo+ID4gQEAgLTI0LDYgKzI0LDExIEBADQo+ID4gICNkZWZpbmUgVERY
-X1NFQU1DQUxMX0dQCQkJKFREWF9TV19FUlJPUiB8IFg4Nl9UUkFQX0dQKQ0KPiA+ICAjZGVmaW5l
-IFREWF9TRUFNQ0FMTF9VRAkJCShURFhfU1dfRVJST1IgfCBYODZfVFJBUF9VRCkNCj4gPiAgDQo+
-ID4gKy8qDQo+ID4gKyAqIFREWCBtb2R1bGUgU0VBTUNBTEwgbGVhZiBmdW5jdGlvbiBlcnJvciBj
-b2Rlcw0KPiA+ICsgKi8NCj4gPiArI2RlZmluZSBURFhfUk5EX05PX0VOVFJPUFkJMHg4MDAwMDIw
-MzAwMDAwMDAwVUxMDQo+ID4gKw0KPiA+ICAjaWZuZGVmIF9fQVNTRU1CTFlfXw0KPiA+ICANCj4g
-PiAgLyoNCj4gPiBAQCAtODIsNiArODcsMjggQEAgdTY0IF9fc2VhbWNhbGwodTY0IGZuLCBzdHJ1
-Y3QgdGR4X21vZHVsZV9hcmdzICphcmdzKTsNCj4gPiAgdTY0IF9fc2VhbWNhbGxfcmV0KHU2NCBm
-biwgc3RydWN0IHRkeF9tb2R1bGVfYXJncyAqYXJncyk7DQo+ID4gIHU2NCBfX3NlYW1jYWxsX3Nh
-dmVkX3JldCh1NjQgZm4sIHN0cnVjdCB0ZHhfbW9kdWxlX2FyZ3MgKmFyZ3MpOw0KPiA+ICANCj4g
-PiArI2luY2x1ZGUgPGFzbS9hcmNocmFuZG9tLmg+DQo+ID4gKw0KPiA+ICsjZGVmaW5lIFNFQU1D
-QUxMX05PX0VOVFJPUFlfUkVUUlkoX19zZWFtY2FsbF9mdW5jLCBfX2ZuLCBfX2FyZ3MpCVwNCj4g
-PiArKHsJCQkJCQkJCQlcDQo+ID4gKwlpbnQgX19fcmV0cnkgPSBSRFJBTkRfUkVUUllfTE9PUFM7
-CQkJCVwNCj4gPiArCXU2NCBfX19zcmV0OwkJCQkJCQlcDQo+ID4gKwkJCQkJCQkJCVwNCj4gPiAr
-CWRvIHsJCQkJCQkJCVwNCj4gPiArCQlfX19zcmV0ID0gX19zZWFtY2FsbF9mdW5jKChfX2ZuKSwg
-KF9fYXJncykpOwkJXA0KPiA+ICsJfSB3aGlsZSAoX19fc3JldCA9PSBURFhfUk5EX05PX0VOVFJP
-UFkgJiYgLS1fX19yZXRyeSk7CQlcDQo+ID4gKwlfX19zcmV0OwkJCQkJCQlcDQo+ID4gK30pDQo+
-IA0KPiBUaGlzIGlzIGEgKkxPVCogbGVzcyBleWUtYmxlZWR5IGlmIHlvdSBkbyBpdCB3aXRob3V0
-IG1hY3JvczoNCj4gDQo+IA0KPiB0eXBlZGVmIHU2NCAoKnNjX2Z1bmNfdCkodTY0IGZuLCBzdHJ1
-Y3QgdGR4X21vZHVsZV9hcmdzICphcmdzKTsNCj4gDQo+IHN0YXRpYyBpbmxpbmUNCj4gdTY0IHNj
-X3JldHJ5KHNjX2Z1bmNfdCBmdW5jLCB1NjQgZm4sIHN0cnVjdCB0ZHhfbW9kdWxlX2FyZ3MgKmFy
-Z3MpDQo+IHsNCj4gICAgICAgICBpbnQgcmV0cnkgPSBSRFJBTkRfUkVUUllfTE9PUFM7DQo+ICAg
-ICAgICAgdTY0IHJldDsNCj4gDQo+ICAgICAgICAgZG8gew0KPiAgICAgICAgICAgICAgICAgcmV0
-ID0gZnVuYyhmbiwgYXJncyk7DQo+ICAgICAgICAgfSB3aGlsZSAocmV0ID09IFREWF9STkRfTk9f
-RU5UUk9QWSAmJiAtLXJldHJ5KTsNCj4gDQo+ICAgICAgICAgcmV0dXJuIHJldDsNCj4gfQ0KPiAN
-Cj4gI2RlZmluZSBzZWFtY2FsbChfZm4sIF9hcmdzKSAgICAgICAgICAgc2NfcmV0cnkoX3NlYW1j
-YWxsLA0KPiAoX2ZuKSwgKF9hcmdzKSkNCj4gI2RlZmluZSBzZWFtY2FsbF9yZXQoX2ZuLCBfYXJn
-cykgICAgICAgc2NfcmV0cnkoX3NlYW1jYWxsX3JldCwNCj4gKF9mbiksIChfYXJncykpDQo+ICNk
-ZWZpbmUgc2VhbWNhbGxfc2F2ZWRfcmV0KF9mbiwgX2FyZ3MpIHNjX3JldHJ5KF9zZWFtY2FsbF9z
-YXZlZF9yZXQsDQo+IChfZm4pLCAoX2FyZ3MpKQ0KPiANCj4gVGhlIGNvbXBpbGVyIGNhbiBmaWd1
-cmUgaXQgb3V0IGFuZCBhdm9pZCBtYWtpbmcgZnVuYygpIGFuIGluZGlyZWN0IGNhbGwNCj4gc2lu
-Y2UgaXQga25vd3MgdGhlIGNhbGwgbG9jYXRpb24gYXQgY29tcGlsZSB0aW1lLg0KDQpJbmRpcmVj
-dCBjYWxsIHdhcyBhIGNvbmNlcm4gd2hlbiBJIHdhcyBpbXBsZW1lbnRpbmcgdGhvc2UuICBJIGRp
-ZG4ndCBrbm93IGZvciANCnN1cmUgdGhhdCB0aGUgY29tcGlsZXIgY2FuIGF2b2lkIGl0LiAgSSds
-bCBjaGFuZ2UgdG8gdXNlIGFib3ZlLiAgVGhhbmtzIQ0KDQo+IA0KPiBZb3UgY2FuIGFsc28gZG8g
-dGhlIHNlYW1jYWxsKCkgI2RlZmluZSBhcyBhIHN0YXRpYyBpbmxpbmUsIGJ1dCBpdCBkb2VzDQo+
-IHRha2UgdXAgbW9yZSBzY3JlZW4gcmVhbCBlc3RhdGUuICBPaCwgYW5kIGdvaW5nIGEgd2VlIGJp
-dCBvdmVyIDgwDQo+IGNvbHVtbnMgaXMgT0sgZm9yIHRob3NlICNkZWZpbmVzLg0KDQpZZXMgSSB2
-ZXJpZmllZCB0aGUgY2hlY2twYXRjaC5wbCB3b3VsZG4ndCBjb21wbGFpbiBpZiB0aGUgI2RlZmlu
-ZSBleGNlZWRlZCA4MA0KY2hhcmFjdGVycyBpbiBvbmUgbGluZS4gIEknbGwgdXNlICNkZWZpbmUu
-ICBUaGFua3MhDQo=
+On Thu, 7 Sept 2023 at 15:06, Alexander Potapenko <glider@google.com> wrote:
+>
+> kmsan_internal_memmove_metadata() is the function that implements
+> copying metadata every time memcpy()/memmove() is called.
+> Because shadow memory stores 1 byte per each byte of kernel memory,
+> copying the shadow is trivial and can be done by a single memmove()
+> call.
+> Origins, on the other hand, are stored as 4-byte values corresponding
+> to every aligned 4 bytes of kernel memory. Therefore, if either the
+> source or the destination of kmsan_internal_memmove_metadata() is
+> unaligned, the number of origin slots corresponding to the source or
+> destination may differ:
+>
+>   1) memcpy(0xffff888080a00000, 0xffff888080900000, 4)
+>      copies 1 origin slot into 1 origin slot:
+>
+>      src (0xffff888080900000): xxxx
+>      src origins:              o111
+>      dst (0xffff888080a00000): xxxx
+>      dst origins:              o111
+>
+>   2) memcpy(0xffff888080a00001, 0xffff888080900000, 4)
+>      copies 1 origin slot into 2 origin slots:
+>
+>      src (0xffff888080900000): xxxx
+>      src origins:              o111
+>      dst (0xffff888080a00000): .xxx x...
+>      dst origins:              o111 o111
+>
+>   3) memcpy(0xffff888080a00000, 0xffff888080900001, 4)
+>      copies 2 origin slots into 1 origin slot:
+>
+>      src (0xffff888080900000): .xxx x...
+>      src origins:              o111 o222
+>      dst (0xffff888080a00000): xxxx
+>      dst origins:              o111
+>                            (or o222)
+>
+> Previously, kmsan_internal_memmove_metadata() tried to solve this
+> problem by copying min(src_slots, dst_slots) as is and cloning the
+> missing slot on one of the ends, if needed.
+> This was error-prone even in the simple cases where 4 bytes were copied,
+> and did not account for situations where the total number of nonzero
+> origin slots could have increased by more than one after copying:
+>
+>   memcpy(0xffff888080a00000, 0xffff888080900002, 8)
+>
+>   src (0xffff888080900002): ..xx .... xx..
+>   src origins:              o111 0000 o222
+>   dst (0xffff888080a00000): xx.. ..xx
+>                             o111 0000
+>                         (or 0000 o222)
+>
+> The new implementation simply copies the shadow byte by byte, and
+> updates the corresponding origin slot, if the shadow byte is nonzero.
+> This approach can handle complex cases with mixed initialized and
+> uninitialized bytes. Similarly to KMSAN inline instrumentation, latter
+> writes to bytes sharing the same origin slots take precedence.
+>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+
+I think this needs a Fixes tag.
+Also, is this corner case exercised by one of the KMSAN KUnit test cases?
+
+Otherwise,
+
+Acked-by: Marco Elver <elver@google.com>
+
+> ---
+>  mm/kmsan/core.c | 127 ++++++++++++------------------------------------
+>  1 file changed, 31 insertions(+), 96 deletions(-)
+>
+> diff --git a/mm/kmsan/core.c b/mm/kmsan/core.c
+> index 3adb4c1d3b193..c19f47af04241 100644
+> --- a/mm/kmsan/core.c
+> +++ b/mm/kmsan/core.c
+> @@ -83,131 +83,66 @@ depot_stack_handle_t kmsan_save_stack_with_flags(gfp_t flags,
+>  /* Copy the metadata following the memmove() behavior. */
+>  void kmsan_internal_memmove_metadata(void *dst, void *src, size_t n)
+>  {
+> +       depot_stack_handle_t prev_old_origin = 0, prev_new_origin = 0;
+> +       int i, iter, step, src_off, dst_off, oiter_src, oiter_dst;
+>         depot_stack_handle_t old_origin = 0, new_origin = 0;
+> -       int src_slots, dst_slots, i, iter, step, skip_bits;
+>         depot_stack_handle_t *origin_src, *origin_dst;
+> -       void *shadow_src, *shadow_dst;
+> -       u32 *align_shadow_src, shadow;
+> +       u8 *shadow_src, *shadow_dst;
+> +       u32 *align_shadow_dst;
+>         bool backwards;
+>
+>         shadow_dst = kmsan_get_metadata(dst, KMSAN_META_SHADOW);
+>         if (!shadow_dst)
+>                 return;
+>         KMSAN_WARN_ON(!kmsan_metadata_is_contiguous(dst, n));
+> +       align_shadow_dst =
+> +               (u32 *)ALIGN_DOWN((u64)shadow_dst, KMSAN_ORIGIN_SIZE);
+>
+>         shadow_src = kmsan_get_metadata(src, KMSAN_META_SHADOW);
+>         if (!shadow_src) {
+> -               /*
+> -                * @src is untracked: zero out destination shadow, ignore the
+> -                * origins, we're done.
+> -                */
+> -               __memset(shadow_dst, 0, n);
+> +               /* @src is untracked: mark @dst as initialized. */
+> +               kmsan_internal_unpoison_memory(dst, n, /*checked*/ false);
+>                 return;
+>         }
+>         KMSAN_WARN_ON(!kmsan_metadata_is_contiguous(src, n));
+>
+> -       __memmove(shadow_dst, shadow_src, n);
+> -
+>         origin_dst = kmsan_get_metadata(dst, KMSAN_META_ORIGIN);
+>         origin_src = kmsan_get_metadata(src, KMSAN_META_ORIGIN);
+>         KMSAN_WARN_ON(!origin_dst || !origin_src);
+> -       src_slots = (ALIGN((u64)src + n, KMSAN_ORIGIN_SIZE) -
+> -                    ALIGN_DOWN((u64)src, KMSAN_ORIGIN_SIZE)) /
+> -                   KMSAN_ORIGIN_SIZE;
+> -       dst_slots = (ALIGN((u64)dst + n, KMSAN_ORIGIN_SIZE) -
+> -                    ALIGN_DOWN((u64)dst, KMSAN_ORIGIN_SIZE)) /
+> -                   KMSAN_ORIGIN_SIZE;
+> -       KMSAN_WARN_ON((src_slots < 1) || (dst_slots < 1));
+> -       KMSAN_WARN_ON((src_slots - dst_slots > 1) ||
+> -                     (dst_slots - src_slots < -1));
+>
+>         backwards = dst > src;
+> -       i = backwards ? min(src_slots, dst_slots) - 1 : 0;
+> -       iter = backwards ? -1 : 1;
+> -
+> -       align_shadow_src =
+> -               (u32 *)ALIGN_DOWN((u64)shadow_src, KMSAN_ORIGIN_SIZE);
+> -       for (step = 0; step < min(src_slots, dst_slots); step++, i += iter) {
+> -               KMSAN_WARN_ON(i < 0);
+> -               shadow = align_shadow_src[i];
+> -               if (i == 0) {
+> -                       /*
+> -                        * If @src isn't aligned on KMSAN_ORIGIN_SIZE, don't
+> -                        * look at the first @src % KMSAN_ORIGIN_SIZE bytes
+> -                        * of the first shadow slot.
+> -                        */
+> -                       skip_bits = ((u64)src % KMSAN_ORIGIN_SIZE) * 8;
+> -                       shadow = (shadow >> skip_bits) << skip_bits;
+> +       step = backwards ? -1 : 1;
+> +       iter = backwards ? n - 1 : 0;
+> +       src_off = (u64)src % KMSAN_ORIGIN_SIZE;
+> +       dst_off = (u64)dst % KMSAN_ORIGIN_SIZE;
+> +
+> +       /* Copy shadow bytes one by one, updating the origins if necessary. */
+> +       for (i = 0; i < n; i++, iter += step) {
+> +               oiter_src = (iter + src_off) / KMSAN_ORIGIN_SIZE;
+> +               oiter_dst = (iter + dst_off) / KMSAN_ORIGIN_SIZE;
+> +               if (!shadow_src[iter]) {
+> +                       shadow_dst[iter] = 0;
+> +                       if (!align_shadow_dst[oiter_dst])
+> +                               origin_dst[oiter_dst] = 0;
+> +                       continue;
+>                 }
+> -               if (i == src_slots - 1) {
+> -                       /*
+> -                        * If @src + n isn't aligned on
+> -                        * KMSAN_ORIGIN_SIZE, don't look at the last
+> -                        * (@src + n) % KMSAN_ORIGIN_SIZE bytes of the
+> -                        * last shadow slot.
+> -                        */
+> -                       skip_bits = (((u64)src + n) % KMSAN_ORIGIN_SIZE) * 8;
+> -                       shadow = (shadow << skip_bits) >> skip_bits;
+> -               }
+> -               /*
+> -                * Overwrite the origin only if the corresponding
+> -                * shadow is nonempty.
+> -                */
+> -               if (origin_src[i] && (origin_src[i] != old_origin) && shadow) {
+> -                       old_origin = origin_src[i];
+> -                       new_origin = kmsan_internal_chain_origin(old_origin);
+> +               shadow_dst[iter] = shadow_src[iter];
+> +               old_origin = origin_src[oiter_src];
+> +               if (old_origin == prev_old_origin)
+> +                       new_origin = prev_new_origin;
+> +               else {
+>                         /*
+>                          * kmsan_internal_chain_origin() may return
+>                          * NULL, but we don't want to lose the previous
+>                          * origin value.
+>                          */
+> +                       new_origin = kmsan_internal_chain_origin(old_origin);
+>                         if (!new_origin)
+>                                 new_origin = old_origin;
+>                 }
+> -               if (shadow)
+> -                       origin_dst[i] = new_origin;
+> -               else
+> -                       origin_dst[i] = 0;
+> -       }
+> -       /*
+> -        * If dst_slots is greater than src_slots (i.e.
+> -        * dst_slots == src_slots + 1), there is an extra origin slot at the
+> -        * beginning or end of the destination buffer, for which we take the
+> -        * origin from the previous slot.
+> -        * This is only done if the part of the source shadow corresponding to
+> -        * slot is non-zero.
+> -        *
+> -        * E.g. if we copy 8 aligned bytes that are marked as uninitialized
+> -        * and have origins o111 and o222, to an unaligned buffer with offset 1,
+> -        * these two origins are copied to three origin slots, so one of then
+> -        * needs to be duplicated, depending on the copy direction (@backwards)
+> -        *
+> -        *   src shadow: |uuuu|uuuu|....|
+> -        *   src origin: |o111|o222|....|
+> -        *
+> -        * backwards = 0:
+> -        *   dst shadow: |.uuu|uuuu|u...|
+> -        *   dst origin: |....|o111|o222| - fill the empty slot with o111
+> -        * backwards = 1:
+> -        *   dst shadow: |.uuu|uuuu|u...|
+> -        *   dst origin: |o111|o222|....| - fill the empty slot with o222
+> -        */
+> -       if (src_slots < dst_slots) {
+> -               if (backwards) {
+> -                       shadow = align_shadow_src[src_slots - 1];
+> -                       skip_bits = (((u64)dst + n) % KMSAN_ORIGIN_SIZE) * 8;
+> -                       shadow = (shadow << skip_bits) >> skip_bits;
+> -                       if (shadow)
+> -                               /* src_slots > 0, therefore dst_slots is at least 2 */
+> -                               origin_dst[dst_slots - 1] =
+> -                                       origin_dst[dst_slots - 2];
+> -               } else {
+> -                       shadow = align_shadow_src[0];
+> -                       skip_bits = ((u64)dst % KMSAN_ORIGIN_SIZE) * 8;
+> -                       shadow = (shadow >> skip_bits) << skip_bits;
+> -                       if (shadow)
+> -                               origin_dst[0] = origin_dst[1];
+> -               }
+> +               origin_dst[oiter_dst] = new_origin;
+> +               prev_new_origin = new_origin;
+> +               prev_old_origin = old_origin;
+>         }
+>  }
+>
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
