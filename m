@@ -2,156 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837DB79A127
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3558079A126
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjIKCQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 22:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
+        id S232520AbjIKCQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 22:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjIKCQv (ORCPT
+        with ESMTP id S232166AbjIKCQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 22:16:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04B910F
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694398564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S/3lrXi36lgJXFC9YTvAy+juUVj3+3Iz/BRPulL9kwg=;
-        b=f1e7cnDajWwvspj8hHLucTNWweqglHqG0+q85e79PxcS9O2S9rlXwFcb184LzgQpO+q0jE
-        83oLk5QPGhRxmxt5JzDlGVEE5mFYbwGjmSIDrN6QSOndwPE8jaOpCaV15W/lT9TO6wuruK
-        BENOsuj8wEYavmB6xiUNJXYFC7ru6RA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-592-4YI_k2z9PEK9m95hQDnNUQ-1; Sun, 10 Sep 2023 22:16:00 -0400
-X-MC-Unique: 4YI_k2z9PEK9m95hQDnNUQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E4F00816502;
-        Mon, 11 Sep 2023 02:15:59 +0000 (UTC)
-Received: from [10.22.8.52] (unknown [10.22.8.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 70D69200B401;
-        Mon, 11 Sep 2023 02:15:59 +0000 (UTC)
-Message-ID: <70d89bf4-708b-f131-f90e-5250b6804d48@redhat.com>
-Date:   Sun, 10 Sep 2023 22:15:59 -0400
+        Sun, 10 Sep 2023 22:16:52 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A230B19C
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:16:47 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c0c6d4d650so32469995ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694398607; x=1695003407; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vqoA9GhDYxmGiRCW6kUKLzalkSujRXWk0xXWsVaqSl0=;
+        b=RT5yWhx3n44RuOqc/LXzstJ4VO9cuodC5ir2Oq1VpbOTsEUrC4UEclMtWwfpltZbc+
+         rfFuUshjQ9ZFZCH9+tvcN0sQGoyjf4F2jgYrlpsakKLxRn3fhbCGPDdZtYVMSnYGxnn7
+         YCIbZYwQ5eDNQoluaL9B6Ha09pWxcrYH1/Arc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694398607; x=1695003407;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vqoA9GhDYxmGiRCW6kUKLzalkSujRXWk0xXWsVaqSl0=;
+        b=CKi/6NOkDdXRvys6SZIVkuf9LLmnr4WYjSKamcEv4onO4D9yjI3xCm8cGYKMAlfM2w
+         7n2beF9QBfK7fs7Rh9oVwivTzlGvn/5r8m+T0HEqYS3+Y666JMpYRvHeKa00PIRCegOa
+         AKJD2Z8pwC1qmhkvxkA7fmXlg5KDCrCrBIWoidNlBZQn+R9WcafZQ6KVcPavfws8gO3e
+         Rbj1cp0mecjs+6gy6LbUhcX4hJs6VxMfGaDzHhiwmeRFeqYFU4T3HsrSOSK++KH9EmbU
+         9R2JPrlqLzFOg38cd3Bq01lBT2xc2idUwFM47mtiZVG8AxCzoNZ+6kwJVsNHOfO0Zwfy
+         kzbw==
+X-Gm-Message-State: AOJu0Yx6fVelE1NE+kNlnm4Fq2+O8fHIfTlrhhGMYoQevYerUZp0AOVc
+        +9w2xs//Vdfouu4vQkZREjc9yg==
+X-Google-Smtp-Source: AGHT+IHwrp4u7peThbJCv3jlphOZQ/t5wNetdYpbttfEVToV24awEthc+P0HA+ZZ6XmS9NnPtx+BLg==
+X-Received: by 2002:a17:902:ed53:b0:1bf:64c9:a67c with SMTP id y19-20020a170902ed5300b001bf64c9a67cmr8538505plb.22.1694398607060;
+        Sun, 10 Sep 2023 19:16:47 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:282a:59c8:cc3a:2d6])
+        by smtp.gmail.com with UTF8SMTPSA id g2-20020a1709026b4200b001b8a00d4f7asm5171961plt.9.2023.09.10.19.16.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Sep 2023 19:16:46 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH v9 0/6] KVM: allow mapping non-refcounted pages
+Date:   Mon, 11 Sep 2023 11:16:30 +0900
+Message-ID: <20230911021637.1941096-1-stevensd@google.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
-Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-References: <20230907174705.2976191-1-willy@infradead.org>
- <20230907174705.2976191-2-willy@infradead.org>
- <20230907190810.GA14243@noisy.programming.kicks-ass.net>
- <ZPoift7B3UDQgmWB@casper.infradead.org>
- <20230907193838.GB14243@noisy.programming.kicks-ass.net>
- <ZPpV+MeFqX6RHIYw@dread.disaster.area>
- <20230908104434.GB24372@noisy.programming.kicks-ass.net>
- <ZP5JrYOge3tSAvj7@dread.disaster.area>
- <ZP5OfhXhPkntaEkc@casper.infradead.org>
- <ZP5llBaVrJteHQf3@dread.disaster.area>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZP5llBaVrJteHQf3@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: David Stevens <stevensd@chromium.org>
 
-On 9/10/23 20:55, Dave Chinner wrote:
-> On Mon, Sep 11, 2023 at 12:17:18AM +0100, Matthew Wilcox wrote:
->> On Mon, Sep 11, 2023 at 08:56:45AM +1000, Dave Chinner wrote:
->>> On Fri, Sep 08, 2023 at 12:44:34PM +0200, Peter Zijlstra wrote:
->>>> Agreed, and this is fine. However there's been some very creative
->>>> 'use' of the _is_locked() class of functions in the past that did not
->>>> follow 'common' sense.
->>>>
->>>> If all usage was: I should be holding this, lets check. I probably
->>>> wouldn't have this bad feeling about things.
->>> So your argument against such an interface is essentially "we can't
->>> have nice things because someone might abuse them"?
->> Some people are very creative ...
-> Sure, but that's no reason to stop anyone else from making progress.
->
->> I was thinking about how to handle this better.  We could have
->>
->> static inline void rwsem_assert_locked(const struct rw_semaphore *sem)
->> {
->> 	BUG_ON(atomic_long_read(&sem->count) == 0);
->> }
->>
->> static inline void rwsem_assert_write_locked(const struct rw_semaphore *sem)
->> {
->> 	BUG_ON((atomic_long_read(&sem->count) & 1) != 1);
->> }
-> We already have CONFIG_DEBUG_RWSEMS, so we can put these
-> introspection interfaces inside debug code, and make any attempt to
-> use them outside of debug builds break the build. e.g:
->
-> #if DEBUG_RWSEMS
-> /*
->   * rwsem locked checks can only be used by conditionally compiled
->   * subsystem debug code. It is not valid to use them in normal
->   * production code.
->   */
-> static inline bool rwsem_is_write_locked()
-> {
-> 	....
-> }
->
-> static inline bool rwsem_is_locked()
-> {
-> 	....
-> }
-> #else /* !DEBUG_RWSEMS */
-> #define rwsem_is_write_locked()		BUILD_BUG()
-> #define rwsem_is_locked()		BUILD_BUG()
-> #endif /* DEBUG_RWSEMS */
->
-> And now we simply add a single line to subsystem Kconfig debug
-> options to turn on rwsem introspection for their debug checks like
-> so:
->
->   config XFS_DEBUG
->   	bool "XFS Debugging support"
->   	depends on XFS_FS
-> +	select RWSEM_DEBUG
->   	help
->   	  Say Y here to get an XFS build with many debugging features,
->   	  including ASSERT checks, function wrappers around macros,
+This patch series adds support for mapping VM_IO and VM_PFNMAP memory
+that is backed by struct pages that aren't currently being refcounted
+(e.g. tail pages of non-compound higher order allocations) into the
+guest.
 
-That may be a possible compromise. Actually, I am not against having 
-them defined even outside the DEBUG_RWSEMS. We already have 
-mutex_is_locked() defined and used in a lot of places. So this is just 
-providing the rwsem equivalents.
+Our use case is virtio-gpu blob resources [1], which directly map host
+graphics buffers into the guest as "vram" for the virtio-gpu device.
+This feature currently does not work on systems using the amdgpu driver,
+as that driver allocates non-compound higher order pages via
+ttm_pool_alloc_page.
 
-I also agreed that these APIs can be misused by other users. I think we 
-should clearly document the caveats of using these. So unless there are 
-other means of maintaining the stability of the lock state, the test 
-result may no longer be true right after the test. It is simply just the 
-lock state at a certain moment in time. Callers are using them at their 
-own risk.
+First, this series replaces the __gfn_to_pfn_memslot API with a more
+extensible __kvm_faultin_pfn API. The updated API rearranges
+__gfn_to_pfn_memslot's args into a struct and where possible packs the
+bool arguments into a FOLL_ flags argument. The refactoring changes do
+not change any behavior.
 
-Cheers,
-Longman
+From there, this series extends the __kvm_faultin_pfn API so that
+non-refconuted pages can be safely handled. This invloves adding an
+input parameter to indicate whether the caller can safely use
+non-refcounted pfns and an output parameter to tell the caller whether
+or not the returned page is refcounted. This change includes a breaking
+change, by disallowing non-refcounted pfn mappings by default, as such
+mappings are unsafe. To allow such systems to continue to function, an
+opt-in module parameter is added to allow the unsafe behavior.
+
+This series only adds support for non-refcounted pages to x86. Other
+MMUs can likely be updated without too much difficulty, but it is not
+needed at this point. Updating other parts of KVM (e.g. pfncache) is not
+straightforward [2].
+
+[1]
+https://patchwork.kernel.org/project/dri-devel/cover/20200814024000.2485-1-gurchetansingh@chromium.org/
+[2] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
+
+v8 -> v9:
+ - Make paying attention to is_refcounted_page mandatory. This means
+   that FOLL_GET is no longer necessary. For compatibility with
+   un-migrated callers, add a temporary parameter to sidestep
+   ref-counting issues.
+ - Add allow_unsafe_mappings, which is a breaking change.
+ - Migrate kvm_vcpu_map and other callsites used by x86 to the new API.
+ - Drop arm and ppc changes.
+v7 -> v8:
+ - Set access bits before releasing mmu_lock.
+ - Pass FOLL_GET on 32-bit x86 or !tdp_enabled.
+ - Refactor FOLL_GET handling, add kvm_follow_refcounted_pfn helper.
+ - Set refcounted bit on >4k pages.
+ - Add comments and apply formatting suggestions.
+ - rebase on kvm next branch.
+v6 -> v7:
+ - Replace __gfn_to_pfn_memslot with a more flexible __kvm_faultin_pfn,
+   and extend that API to support non-refcounted pages (complete
+   rewrite).
+
+David Stevens (5):
+  KVM: mmu: Introduce __kvm_follow_pfn function
+  KVM: mmu: Improve handling of non-refcounted pfns
+  KVM: Migrate kvm_vcpu_map to __kvm_follow_pfn
+  KVM: x86: Migrate to __kvm_follow_pfn
+  KVM: x86/mmu: Handle non-refcounted pages
+
+Sean Christopherson (1):
+  KVM: Assert that a page's refcount is elevated when marking
+    accessed/dirty
+
+ arch/x86/kvm/mmu/mmu.c          |  93 +++++++---
+ arch/x86/kvm/mmu/mmu_internal.h |   1 +
+ arch/x86/kvm/mmu/paging_tmpl.h  |   8 +-
+ arch/x86/kvm/mmu/spte.c         |   4 +-
+ arch/x86/kvm/mmu/spte.h         |  12 +-
+ arch/x86/kvm/mmu/tdp_mmu.c      |  22 ++-
+ arch/x86/kvm/x86.c              |  12 +-
+ include/linux/kvm_host.h        |  42 ++++-
+ virt/kvm/kvm_main.c             | 294 +++++++++++++++++++-------------
+ virt/kvm/kvm_mm.h               |   3 +-
+ virt/kvm/pfncache.c             |  11 +-
+ 11 files changed, 339 insertions(+), 163 deletions(-)
+
+-- 
+2.42.0.283.g2d96d420d3-goog
 
