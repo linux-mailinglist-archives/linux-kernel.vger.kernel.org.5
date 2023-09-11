@@ -2,201 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BFA79A518
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C410D79A51B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234731AbjIKHyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54264 "EHLO
+        id S234751AbjIKHzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 03:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbjIKHyu (ORCPT
+        with ESMTP id S234733AbjIKHzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:54:50 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D764F5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694418886; x=1725954886;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=40Vd/3MXLpUlXvowAcmvE9gBEIbt5RlbmY5yDYRdPlI=;
-  b=I4/QN9qO3RzxAZqWXRhFFC9NaxXU4ucBpFCwa/YBdmUuhtP82w59xo3t
-   M9u1v5pcC4nX3KsqGNrdMr1d28fD8Vk3+e7X6A3RCPHSce4KeKD9exGE1
-   DCzgxkr+BjwaUBu8Yrl5i2tDi7aYJR3DKDcv3Qx8rh+SjC27vgPjNqxDK
-   67l34RxfSVIuAszxYyQbSLnbYnrzEgHOFoxdkRYTqk9gHCyY+/Ju81H4v
-   HsyCkIxBI5q13B2fI1b2K0oc3DdOG3Drnvb54UqhLOoVur/SoWnTONakq
-   ZtzTJzhGBIffAgNd+2hY1tr0OXNLsuO03enUVTr73UYdQPIc+LjrS8rRA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="368260575"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="368260575"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 00:54:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="989995341"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="989995341"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Sep 2023 00:54:43 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfbkn-0005xQ-2j;
-        Mon, 11 Sep 2023 07:54:41 +0000
-Date:   Mon, 11 Sep 2023 15:54:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: kernel/time/hrtimer.c:1483:14: warning: variable
- 'expires_in_hardirq' set but not used
-Message-ID: <202309111514.seVql7NU-lkp@intel.com>
+        Mon, 11 Sep 2023 03:55:31 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on20723.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eaf::723])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564F2100;
+        Mon, 11 Sep 2023 00:55:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kZF/PJRVYdOQ7r00wfOb14bKj93GnfcLS1g2121vGLf7x1EexgasbMzoau5DCchZ12ipztxLmr5cYckFaTyXfb1Kz0hAj/+CTwcRcc/eSFnqvaB7jhlSKMADN/TtdmRVcy9oK6iL2gbMRYcwXm+kUouzVHCMqDSHCAUhQiJ2ezMGY4hbu4dAtuVMowaqa9uN6AJ3dBKAySr2W75x30ig4I96jSxEqiQoq0y3tAfsq73YxzYY3xc1iRVwChH8LKL5pwT06l254xGeSU9Wt2nP2edKv+2Gyup2AKhj8Y9XytJ5CWdE99t+qGCf1oHk6O4A/r/9+cJQUaKvtgvRBpQbbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nCI1H6vMT0KBMX/H5V39gmSgTZSv9N0KOerpNWmPBQM=;
+ b=D78tO/ClyvIUrb81kjjmcmDSlxcg4RyoSx/9r3I3766XWuBJoKSNWLV2bBhIDyupO8UDKTOMYr8JWP7HVze1GxyrVZoP3Gq1XGZl/3PLNiJkMNLgeMp4htRiG4fK4HYzk3FMHapl0KbBYYOCIVbRQLqM+cAhvaVItPIeV5WFGGdSl3uGQewygxS+G6sinkdHUT0qOVTQT+VUqXH9koSc/NM45G0EOBHOwuYh0riRF9CU0BUR1AO3/59/zrFMJg+RTaGEY3iEhShdRyvE+pTXu5aTRiNmQZu1EkNcwaFgJL05GM1nUKlrafP4PzYBlrAY0thYm7VQOTDSaAuPOq2A6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nebius.com; dmarc=pass action=none header.from=nebius.com;
+ dkim=pass header.d=nebius.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nebius.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nCI1H6vMT0KBMX/H5V39gmSgTZSv9N0KOerpNWmPBQM=;
+ b=HI/hnt3GWMfFJYCp5l2aSNd+QM2miP1r89KOAl/v1SjfB22RqQdjVjCqCeVM432EEcw7LKctZbETb7G8l9LkA4nc2BfYQQRSL/uR927efdU38zZ0XdbuGEPl/9f3u6aEnhifIHGacP8Xwk1SrOnc/njfocjrZaDKXFu97BfnMNnMb6Pnkz5KxOlfi29jaTy1OjYz2rN+xF3GrTFpWAG+8L2tZnOjieLPBRC06Ub3PoC5bzIh8ob1BDegjxFHRnjJramWi+UdC8/0JRs0jp5Yz1GMPI7bEOefNk5sntVuGMrnpFnd5Hug0Zh+OnK7yy9OUdnynm7jmOwJnlHDOZ2QHg==
+Received: from DU0P190MB1860.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:3a4::9) by
+ DBAP190MB0840.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:1a2::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6768.31; Mon, 11 Sep 2023 07:55:09 +0000
+Received: from DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
+ ([fe80::1dc2:35fa:896c:8ca3]) by DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
+ ([fe80::1dc2:35fa:896c:8ca3%5]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
+ 07:55:09 +0000
+From:   "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
+To:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+CC:     NB-Core Team <NB-CoreTeam@nebius.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "Yakunin, Dmitry (Nebius)" <zeil@nebius.com>
+Subject: [RFC PATCH 0/3] Helpers for debugging dying cgroups
+Thread-Topic: [RFC PATCH 0/3] Helpers for debugging dying cgroups
+Thread-Index: AQHZ5IVIEdx/726aRkuL9qbz7MGe6g==
+Date:   Mon, 11 Sep 2023 07:55:09 +0000
+Message-ID: <20230911075437.74027-1-zeil@nebius.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nebius.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0P190MB1860:EE_|DBAP190MB0840:EE_
+x-ms-office365-filtering-correlation-id: c3ffe015-d441-4e04-bdd9-08dbb29c6b97
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5XIdAGIM4hacVbUN9GesR+8QvtOksAClMan353EmWrP0UdF70Bxoq3qEt0QPPVqNsg69geqYBA31nZwj9BKIIsBZ5BCJUilpkHx9Gdyi7OPDw9mioodNu3fOzeVgWcvWnz+YIKFKGcWfIlr57BHcdYhe1kMZ+YG1uTHNhoxD+eTxR1dKZT+PL6sQbSdcgJz+M1q4DQzsZRr6wejajleqbrfjP04gjzE0ADBWbKT45TZ+sirLw3rlq8d2dFR60OQzCREpAO8hBCSY4HRVjYd3MK/Bj+Q23FwdKbhG62fKfiH0pHhKScf4E8EPXm7RqsTj0gYpRCsW8v6RDkQ/RRC7SE7ben+j27Amx/D0qn8NjJFUhpz8MRngHgAbr4mDymw1GzEdhc9+lJVGp6feEKgVi442dj57qtvdHjU9lJeuby+hoCCxyw2uoQYsl6NhBtv9jQ2YINvrl8U2BZSBqdydvhahl9gHv4hLTYm8yOEN78FUnCql7fxJl+WmxtnLOIeGEllpyyOu5eunfCfjdWLPXE62+Ch49AM+dQ7qradAD0P8DzCT/2suSzlcrSHDm78pdqWDllKSgD+sUUqnswB79iP4z8lRSCeaLhqeWC6b2s0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0P190MB1860.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(346002)(39830400003)(451199024)(1800799009)(186009)(6486002)(71200400001)(6506007)(36756003)(86362001)(38100700002)(38070700005)(122000001)(107886003)(26005)(2616005)(1076003)(2906002)(966005)(6512007)(478600001)(83380400001)(5660300002)(41300700001)(4326008)(76116006)(316002)(110136005)(8676002)(8936002)(66446008)(64756008)(54906003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?xC1ftVb5Kf9EweQaQEhiUSXrxqy3Ml+OZqpxNOrzhQZIVH7b2P90Ip7KGr?=
+ =?iso-8859-1?Q?rxt8EpBsoH0h/d8onnVMpEXmtvbWsmZZfqln42QVNmTMbJfuyFGzHigcQp?=
+ =?iso-8859-1?Q?EidtUuvwYmqictMNYvD+HK1q4e/FecP4YePHgRHaWOjwER8VjFFobaosTE?=
+ =?iso-8859-1?Q?LrgMAcenuVqe5jVc9wEgcfOHqUXvA7Nn+bz6jdURVqPgM2fjJZFGPfAzYP?=
+ =?iso-8859-1?Q?GM7t26BsiK26lrx1+ydAhxthR41Aafi4oTIZXxIN2ofs0i5rrBIhocPCID?=
+ =?iso-8859-1?Q?svj9sM3oU/YpKaX+Dre1EY+i/MujlB+RY9p2iUgMMt/rHsuQsakAPfIEWn?=
+ =?iso-8859-1?Q?4Is9dvEwJSlXGEmYcWJVjvxxypM1YpHH9qnk59v60Xrfq9FsCiY8JPg3x9?=
+ =?iso-8859-1?Q?5oykspr0VqFGBCW0btG20aUtxPNPAtxLG62EtqtwBefPf868pfX74eXTyE?=
+ =?iso-8859-1?Q?OTQkGHSDhd4NHrd36Ij1M5H49rrJOxf+mtmCqnxuCCX7p3h/9p7vDThJ9e?=
+ =?iso-8859-1?Q?LiyKqH3a4WEd74GH9VlA7cwcO1nTaz9O5gXfpkg/OwmdiD3wNB6m1LepS8?=
+ =?iso-8859-1?Q?MFq03VmzNyasSBJyyZyA89dYft4cabDnm5hwgfjajupvVG7PHerRzz95yu?=
+ =?iso-8859-1?Q?FNar3KLcURfZpg0FKU1Kuh8laQS3V2ZfVcWp4wiW+DLF/94UUpzPgwykQv?=
+ =?iso-8859-1?Q?3822kTXOwbhnrApLB0jAAaobP/3TdIOMkkijm1bG8YOxrpNoYjmm+k+40a?=
+ =?iso-8859-1?Q?XBJDQR5VI4SUfalsgzHc9Wla5y5FgnfzLF/uruvDKOeiIMyVI/ubqR5YPP?=
+ =?iso-8859-1?Q?KW8yGB8z3GT1YKStSXmpMkT9Q2ECl56lUsQjBBkuGPg6nQ0jLctW2WG1iL?=
+ =?iso-8859-1?Q?eTuZ+ClGrt0tZk0dSWB8yqrt7ihuYc49JHMgdVsBbmKUtPQACv0rENcBxE?=
+ =?iso-8859-1?Q?2R8cxEsfLl3+tJ1XKbcpmFqOobvV/BvT68WCzRE5L/fWQ4pOM5g/2Og7Ou?=
+ =?iso-8859-1?Q?K0sFwG0V2h8ZXCSv4SdCzVITLXtey4MIxX1SSBR0g+kArY9iMcMv4yaTvA?=
+ =?iso-8859-1?Q?6knxcCt8Qt/tprDVI0N5OAZVEuoGKKjb4NK1AM/h9ms6+JwDs0dZzMwl5q?=
+ =?iso-8859-1?Q?WceLSw4MVdJRQwo8QlKpcDVT1vSz6XaJnV3x19n1nde9M4C3T4jvkE02/5?=
+ =?iso-8859-1?Q?uj8K6crBxVGdjZ6LC0HVkwyiYSV5SIC7Y/PlOv3g5G1XgAa7zeQ8DZ3wHm?=
+ =?iso-8859-1?Q?tJzfS7bHW9ShFEkvJsO3Shx3R19MRANXcJOBDFTKu/WckhkBWiEV/VHJ3M?=
+ =?iso-8859-1?Q?rquXiyEgapVWMsnY/yqDYrJcieyi7fLEqLfrPnJZt6lvmDOVL0JijihsCv?=
+ =?iso-8859-1?Q?qcMJT/bQyQ/gI0MthJtWgJj/zksnLS901HozlBQq5owUME+STdjj7ViG50?=
+ =?iso-8859-1?Q?4qPa2fvRCgapVXX8C5dVvlNnNcx8ABON3GN797Q43t/11bt/GqCQAuW00I?=
+ =?iso-8859-1?Q?z3pNzzz0kNChG4Xs8kDdJHwIeDbMS7/5N6uOeC4UuqTDYfVI6ghMzs8uCk?=
+ =?iso-8859-1?Q?GXF4RacktYduqM713X3XG72xoKZRGaRmeOeT+KmqVi3yj4O66UYm+CbYXk?=
+ =?iso-8859-1?Q?J/XRIK2EWb/io=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nebius.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0P190MB1860.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3ffe015-d441-4e04-bdd9-08dbb29c6b97
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 07:55:09.2453
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4eb23c52-f3a5-49bc-b555-0b061267a984
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Fno9nJfDQrqQAVZhcaMnanGVG1hMQ2D2Fc+DJlaI7vjRUnwYXJ4TRHHWi1YDP0Al
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAP190MB0840
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 73d20564e0dcae003e0d79977f044d5e57496304 hrtimer: Don't dereference the hrtimer pointer after the callback
-date:   3 years, 5 months ago
-config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20230911/202309111514.seVql7NU-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309111514.seVql7NU-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309111514.seVql7NU-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/time/hrtimer.c:120:35: warning: initialized field overwritten [-Woverride-init]
-     120 |         [CLOCK_REALTIME]        = HRTIMER_BASE_REALTIME,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:120:35: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
-   kernel/time/hrtimer.c:121:35: warning: initialized field overwritten [-Woverride-init]
-     121 |         [CLOCK_MONOTONIC]       = HRTIMER_BASE_MONOTONIC,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:121:35: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
-   kernel/time/hrtimer.c:122:35: warning: initialized field overwritten [-Woverride-init]
-     122 |         [CLOCK_BOOTTIME]        = HRTIMER_BASE_BOOTTIME,
-         |                                   ^~~~~~~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:122:35: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
-   kernel/time/hrtimer.c:123:35: warning: initialized field overwritten [-Woverride-init]
-     123 |         [CLOCK_TAI]             = HRTIMER_BASE_TAI,
-         |                                   ^~~~~~~~~~~~~~~~
-   kernel/time/hrtimer.c:123:35: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
-   kernel/time/hrtimer.c: In function '__run_hrtimer':
->> kernel/time/hrtimer.c:1483:14: warning: variable 'expires_in_hardirq' set but not used [-Wunused-but-set-variable]
-    1483 |         bool expires_in_hardirq;
-         |              ^~~~~~~~~~~~~~~~~~
-
-
-vim +/expires_in_hardirq +1483 kernel/time/hrtimer.c
-
-  1458	
-  1459	/*
-  1460	 * The write_seqcount_barrier()s in __run_hrtimer() split the thing into 3
-  1461	 * distinct sections:
-  1462	 *
-  1463	 *  - queued:	the timer is queued
-  1464	 *  - callback:	the timer is being ran
-  1465	 *  - post:	the timer is inactive or (re)queued
-  1466	 *
-  1467	 * On the read side we ensure we observe timer->state and cpu_base->running
-  1468	 * from the same section, if anything changed while we looked at it, we retry.
-  1469	 * This includes timer->base changing because sequence numbers alone are
-  1470	 * insufficient for that.
-  1471	 *
-  1472	 * The sequence numbers are required because otherwise we could still observe
-  1473	 * a false negative if the read side got smeared over multiple consequtive
-  1474	 * __run_hrtimer() invocations.
-  1475	 */
-  1476	
-  1477	static void __run_hrtimer(struct hrtimer_cpu_base *cpu_base,
-  1478				  struct hrtimer_clock_base *base,
-  1479				  struct hrtimer *timer, ktime_t *now,
-  1480				  unsigned long flags) __must_hold(&cpu_base->lock)
-  1481	{
-  1482		enum hrtimer_restart (*fn)(struct hrtimer *);
-> 1483		bool expires_in_hardirq;
-  1484		int restart;
-  1485	
-  1486		lockdep_assert_held(&cpu_base->lock);
-  1487	
-  1488		debug_deactivate(timer);
-  1489		base->running = timer;
-  1490	
-  1491		/*
-  1492		 * Separate the ->running assignment from the ->state assignment.
-  1493		 *
-  1494		 * As with a regular write barrier, this ensures the read side in
-  1495		 * hrtimer_active() cannot observe base->running == NULL &&
-  1496		 * timer->state == INACTIVE.
-  1497		 */
-  1498		raw_write_seqcount_barrier(&base->seq);
-  1499	
-  1500		__remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE, 0);
-  1501		fn = timer->function;
-  1502	
-  1503		/*
-  1504		 * Clear the 'is relative' flag for the TIME_LOW_RES case. If the
-  1505		 * timer is restarted with a period then it becomes an absolute
-  1506		 * timer. If its not restarted it does not matter.
-  1507		 */
-  1508		if (IS_ENABLED(CONFIG_TIME_LOW_RES))
-  1509			timer->is_rel = false;
-  1510	
-  1511		/*
-  1512		 * The timer is marked as running in the CPU base, so it is
-  1513		 * protected against migration to a different CPU even if the lock
-  1514		 * is dropped.
-  1515		 */
-  1516		raw_spin_unlock_irqrestore(&cpu_base->lock, flags);
-  1517		trace_hrtimer_expire_entry(timer, now);
-  1518		expires_in_hardirq = lockdep_hrtimer_enter(timer);
-  1519	
-  1520		restart = fn(timer);
-  1521	
-  1522		lockdep_hrtimer_exit(expires_in_hardirq);
-  1523		trace_hrtimer_expire_exit(timer);
-  1524		raw_spin_lock_irq(&cpu_base->lock);
-  1525	
-  1526		/*
-  1527		 * Note: We clear the running state after enqueue_hrtimer and
-  1528		 * we do not reprogram the event hardware. Happens either in
-  1529		 * hrtimer_start_range_ns() or in hrtimer_interrupt()
-  1530		 *
-  1531		 * Note: Because we dropped the cpu_base->lock above,
-  1532		 * hrtimer_start_range_ns() can have popped in and enqueued the timer
-  1533		 * for us already.
-  1534		 */
-  1535		if (restart != HRTIMER_NORESTART &&
-  1536		    !(timer->state & HRTIMER_STATE_ENQUEUED))
-  1537			enqueue_hrtimer(timer, base, HRTIMER_MODE_ABS);
-  1538	
-  1539		/*
-  1540		 * Separate the ->running assignment from the ->state assignment.
-  1541		 *
-  1542		 * As with a regular write barrier, this ensures the read side in
-  1543		 * hrtimer_active() cannot observe base->running.timer == NULL &&
-  1544		 * timer->state == INACTIVE.
-  1545		 */
-  1546		raw_write_seqcount_barrier(&base->seq);
-  1547	
-  1548		WARN_ON_ONCE(base->running != timer);
-  1549		base->running = NULL;
-  1550	}
-  1551	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This patch series is mostly based on Konstantin's patches which he had sent=
+=0A=
+years ago [1].=0A=
+=0A=
+This functionality still seems very useful for debugging the difference=0A=
+between entities in cgroupfs and counters in /proc/cgroups, e.g.=0A=
+searching for files that have page cache which prevents destruction of memc=
+g.=0A=
+=0A=
+I saw the comments in the original thread but didn't understand the Tejun's=
+=0A=
+comment about usage of filehandle instead of ino. Also I saved the original=
+=0A=
+output format in debugfs with extra counters. We can rework this format in=
+=0A=
+the future but now it seems straightforward for just filtering through=0A=
+cmdline utilities.=0A=
+=0A=
+[1] https://lore.kernel.org/lkml/153414348591.737150.14229960913953276515.s=
+tgit@buzz/=0A=
+=0A=
+Dmitry Yakunin (3):=0A=
+  cgroup: list all subsystem states in debugfs files=0A=
+  proc/kpagecgroup: report also inode numbers of offline cgroups=0A=
+  tools/mm/page-types: add flag for showing inodes of offline cgroups=0A=
+=0A=
+ fs/proc/page.c              |  24 ++++++++-=0A=
+ include/linux/cgroup-defs.h |   1 +=0A=
+ include/linux/memcontrol.h  |   2 +-=0A=
+ kernel/cgroup/cgroup.c      | 101 ++++++++++++++++++++++++++++++++++++=0A=
+ mm/memcontrol.c             |  19 ++++++-=0A=
+ mm/memory-failure.c         |   2 +-=0A=
+ tools/mm/page-types.c       |  18 ++++++-=0A=
+ 7 files changed, 159 insertions(+), 8 deletions(-)=0A=
+=0A=
+-- =0A=
+2.25.1=0A=
+=0A=
