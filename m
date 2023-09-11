@@ -2,116 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C9579A510
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2759379A511
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 09:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbjIKHxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 03:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
+        id S234419AbjIKHxH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 03:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234122AbjIKHwq (ORCPT
+        with ESMTP id S234731AbjIKHwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 03:52:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2733FFA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694418724;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lo9kYBjcwcg+Bla6VGzlFJ7YdU16409moEvZnL5aPOs=;
-        b=gOShqcza/FmmznebLzHIMEl5fiHa5WP8w/XYAI033eBvAHkDiC6tD8J/DIM4Ajxbm1btLL
-        xfmeLGyCOWkQNTGToGlRduFp7cw7Yu+BiZQu/oBuTnpKwPAjaWLtblK8z5tK8RLfyIrSdB
-        v+DjfIBbfMO4Bs9ed1X5kY9tUunjGtw=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-xFSAOZBJNQioQWFRVjNn9g-1; Mon, 11 Sep 2023 03:52:02 -0400
-X-MC-Unique: xFSAOZBJNQioQWFRVjNn9g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbdf341934so32220665e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 00:52:02 -0700 (PDT)
+        Mon, 11 Sep 2023 03:52:50 -0400
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F17CCA;
+        Mon, 11 Sep 2023 00:52:45 -0700 (PDT)
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-49032a0ff13so1366618e0c.0;
+        Mon, 11 Sep 2023 00:52:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694418721; x=1695023521;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lo9kYBjcwcg+Bla6VGzlFJ7YdU16409moEvZnL5aPOs=;
-        b=jTeYlFbFCWqPDhvOGiAIc3R4FBSRKVButIL46DQ1ZMkiEeAGRzSmPWwveV/woOHkxs
-         yH6Sd+ZN7d8X61siBxTBj2DtVuNoYB+X0cWaDRaJD1MzoybRkgAgr+GZtHNtZ2xzPacr
-         EKkqp6kiuAT46xAYXzavsxxl4lNfG7s7xCO8KKxbGPz+hxJ1TlEId0wsSbQRGSFkblgl
-         U+eZvq7sFvjJUEP9BzLPaRsS4Z/rW26NH5DrCP4+4MvWt2jILhXCDtscHASfawdhXFym
-         z7JFTOCcASNrUPI8jjCZatFST0/94hOHZW6xA0mj+Hx852kk8JDtdYFQI3mafoRuIkWa
-         AucQ==
-X-Gm-Message-State: AOJu0YwwFGqlQTPY8tKCCzI0jaR4yehCNE6ZSd+CvkuJKk2tW263umWR
-        hOV/EG5UB6isuRBr0Lk35U1EeGHd91Wa+cRb8NXYli5Hnqv46UhKm5FG6OzdwMf0Wp8WXxMxprp
-        eb/12wbXAkP4wNsJMSwc6zEYA
-X-Received: by 2002:adf:e588:0:b0:317:6edb:6138 with SMTP id l8-20020adfe588000000b003176edb6138mr8529462wrm.62.1694418721173;
-        Mon, 11 Sep 2023 00:52:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFu4smCOXh0ckAScKZWq5ZVlJNUH98a/3xcVhXZs5uFbXyEKKZKRW0Nm8vAmbIPCHmr5lkBWQ==
-X-Received: by 2002:adf:e588:0:b0:317:6edb:6138 with SMTP id l8-20020adfe588000000b003176edb6138mr8529453wrm.62.1694418720807;
-        Mon, 11 Sep 2023 00:52:00 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c743:5500:a9bd:94ab:74e9:782f? (p200300cbc7435500a9bd94ab74e9782f.dip0.t-ipconnect.de. [2003:cb:c743:5500:a9bd:94ab:74e9:782f])
-        by smtp.gmail.com with ESMTPSA id r18-20020a5d6952000000b003141a3c4353sm9348450wrw.30.2023.09.11.00.51.59
+        d=1e100.net; s=20230601; t=1694418764; x=1695023564;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2PXs1GyVYmXtrD+FjszOVfgr8/0imMmquv9X/owM18E=;
+        b=gHkAsnQmst2FEwIcMYZ2yUrp50AEYj012p5BlKuP1KNBOH65YG1uFU//rBouUKAzhx
+         pQF5pHSs50/M5MFX7IKqrg7NEQm06Yobzxg2CUanNsRctISCU6fZsB8FIV9SW0Ioz4I9
+         iwsFl29dgoCIWOKNfYZa8pOrrS20R9kKa3kRK4c6fW/0vqhuTcxY9vKwV0Tuq806YM9v
+         E2achvO/0pCVOAaPAVpnv2/kJBstq4o3i01EM/YBwWmlNxUltv0VxG2cnGsxs58ASdrt
+         8o5dTBenSB/pb0F9DxDDW5ctVacWg0LrLx8NlN0Kr+TjDa7ccwNYatsI/WqktZ9qLe9m
+         8AQQ==
+X-Gm-Message-State: AOJu0YzjJgsQbbEu07E0OZ1A9SfkRmi5K1ew1vawmDN+eM06WikjIAsa
+        1BlMZ/URihwLax1xhrULhcv9k7lMFwzhhg==
+X-Google-Smtp-Source: AGHT+IF69ZiVX2vore5hd3Ds/sTi23jlUmQh9pYmLxAifSHFlChMiURo/ZmzG9WjGjXkdk2tuQwJDw==
+X-Received: by 2002:a1f:c742:0:b0:48d:d09:abb6 with SMTP id x63-20020a1fc742000000b0048d0d09abb6mr5915236vkf.6.1694418764487;
+        Mon, 11 Sep 2023 00:52:44 -0700 (PDT)
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
+        by smtp.gmail.com with ESMTPSA id f4-20020ac5c5a4000000b0048d2293695csm1378248vkl.38.2023.09.11.00.52.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 00:52:00 -0700 (PDT)
-Message-ID: <85a25d3b-c37d-9255-1fe2-19917a81f1ef@redhat.com>
-Date:   Mon, 11 Sep 2023 09:51:59 +0200
+        Mon, 11 Sep 2023 00:52:43 -0700 (PDT)
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-45088c95591so1923883137.3;
+        Mon, 11 Sep 2023 00:52:42 -0700 (PDT)
+X-Received: by 2002:a67:fdd9:0:b0:44d:40b1:926e with SMTP id
+ l25-20020a67fdd9000000b0044d40b1926emr7493009vsq.18.1694418762613; Mon, 11
+ Sep 2023 00:52:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mm/mm_init.c: remove redundant pr_info when node is
- memoryless
-Content-Language: en-US
-To:     Yajun Deng <yajun.deng@linux.dev>, rppt@kernel.org,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230906091113.4029983-1-yajun.deng@linux.dev>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230906091113.4029983-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829213441.310655-1-ulf.hansson@linaro.org>
+ <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
+ <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
+ <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
+ <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
+ <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com> <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
+In-Reply-To: <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Sep 2023 09:52:30 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
+Message-ID: <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.09.23 11:11, Yajun Deng wrote:
-> There is a similar pr_info in free_area_init_node(), so remove the
-> redundant pr_info.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->   mm/mm_init.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 50f2f34745af..6be6f50813b1 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -1871,8 +1871,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
->   		pg_data_t *pgdat;
->   
->   		if (!node_online(nid)) {
-> -			pr_info("Initializing node %d as memoryless\n", nid);
-> -
->   			/* Allocator not initialized yet */
->   			pgdat = arch_alloc_nodedata(nid);
->   			if (!pgdat)
+Hi Ulf,
 
+On Thu, Aug 31, 2023 at 1:39 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> > If I may suggest something, I would call this "pmdomain" instead of
+> > "genpd".  I don't think that /drivers/power/ is a particularly
+> > suitable location for it, because it doesn't really have much to do
+> > with power supplies and more to do with device PM.
+>
+> "pmdomain" is probably giving a reasonable good hint of what goes on
+> in this subsystem. This works fine for me, thanks!
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Sounds nice!
+All of this lives in <linux/pm_domain.h> (with underscore?) anyway,
+and "PM Domains" is the usual naming, as it covers both Power and
+Clock Domains.
+
+However, although I am quite familiar with genpd, I am still wondering
+what is the meaning of the "generic" part in the name? And what is a
+non-generic PM Domain?
+
+> > Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
+> > (and rename it to something like core.c), because it would be a better
+> > location for that fiile IMO.
+>
+> We could certainly do that, let's discuss it a bit more.
+>
+> Although, at this point I want to focus on the genpd providers, as to
+> release some of the burden from arm-soc maintainers.
+>
+> > I can also handle future pull requests for this if that's fine with everyone.
+>
+> Thanks a lot for your offer! However, if a re-route is preferred (I
+> think not?), this is probably better suited via arm-soc, as most
+> changes are going to be arm platform specific.
+
+Which brings me to the final question: what is the upstream path
+for changes to drivers/genpd/*/ (or whatever it's gonna be called)?
+Before, we sent PRs to (arm-)soc.  Do you expect us to send them to
+you? There's usually quite some interaction between drivers/soc/reneas/
+and drivers/genpd/renesas (and there are DT binding definitions),
+but not more than with e.g. drivers/clk/renesas/.
+
+And I just realized you moved the code and Makefiles to drivers/genpd/,
+but not the Kconfig symbols and logic, which still lives under
+drivers/soc/.  So resolving that (and the name) is something that
+should be resolved sooner rather than later...
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Cheers,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-David / dhildenb
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
