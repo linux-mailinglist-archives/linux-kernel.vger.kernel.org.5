@@ -2,113 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C3879BFF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A95C79B65C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242186AbjIKU5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33162 "EHLO
+        id S1343579AbjIKVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243064AbjIKQq7 (ORCPT
+        with ESMTP id S243082AbjIKQsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:46:59 -0400
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315DEE3;
-        Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52e297c7c39so5868206a12.2;
-        Mon, 11 Sep 2023 09:46:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694450812; x=1695055612;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fz0qgG1xAQKjyAXZ1F3HGmELYa8PYKoGe3IryD6lsZo=;
-        b=s5RVSmQLJqz8+OiqDIN1LxVChoA5KOHTVWvtEZPg2RyF+bBuNP94pnUquLrSWAaDJk
-         fZvZ7jA7mYsaSAYDA/2tdV/xzrICaOJLlBGGCs0gamcpdPgZybrGYotZppsL7A/jpTlh
-         yMdm53+MeZBKx2Tk8KRKkLQyhm8lNPuKqI5HsmByi2RLXFnppWdF8nqhJkcNlQZaTpiD
-         U3PGWTZAl5fhzwebX9ycxBThtvkzAmwRbv5nvCEyeMDNfAnO+smSntP6y3q/RdNyuwgu
-         szpp+vMx2E2dPBxaMgctmL8LbgngyS23uYpxAA59nkave2vR7cvypaTpJbZLQxFQetHK
-         ZXgA==
-X-Gm-Message-State: AOJu0Yzlg7DgwwyP5whvYAqsZnowsF4Rp7C8hw3OmPk/hwgAM2l3wcWw
-        ylBp9qBby5JnmD2LcMB6iCk=
-X-Google-Smtp-Source: AGHT+IGbKXR5utsZSAcjo25hC+LWL6BmnRTWGZSSZF/5ZDH7OKutTBo9ihUXtpcWszGOcfOQii6Fxg==
-X-Received: by 2002:aa7:c1d5:0:b0:522:2f8c:8953 with SMTP id d21-20020aa7c1d5000000b005222f8c8953mr7573057edp.39.1694450812406;
-        Mon, 11 Sep 2023 09:46:52 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id i23-20020a0564020f1700b0052f8c67a399sm538287eda.37.2023.09.11.09.46.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 09:46:51 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 09:46:50 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
-        martin.lau@linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is
- disabled
-Message-ID: <ZP9EeunfcbWos80w@gmail.com>
-References: <20230911103407.1393149-1-leitao@debian.org>
- <20230911103407.1393149-6-leitao@debian.org>
- <87ledc904p.fsf@suse.de>
+        Mon, 11 Sep 2023 12:48:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6A7EE7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:47:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694450874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SlE5hxD39QAwP7iSa7A3UcuUWfmPcVu6XAYVvHUfNKU=;
+        b=jQJRFw7dlS6CJbiiyVAu3Hm9bh2nhDHvf/3uLiZMNVb9kQsvd0WjSIbxTkDCfcWzHtocdy
+        kVshMD/3Ph/zhmkvwAL9vQbeKwLtc46tO1ibF47lkP4LtTzN8LovcG0hzEqvfZncckWcD0
+        N+a8LEMRS/QTfCm7cqihYdd3dfn29PE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-642-dKd75GJuOlmpkmOBMSDFWw-1; Mon, 11 Sep 2023 12:47:51 -0400
+X-MC-Unique: dKd75GJuOlmpkmOBMSDFWw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D42D3C19371;
+        Mon, 11 Sep 2023 16:47:50 +0000 (UTC)
+Received: from optiplex-fbsd (unknown [10.22.48.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8A13D2156702;
+        Mon, 11 Sep 2023 16:47:49 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 12:47:47 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>,
+        Rafael Aquini <raquini@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] mm/slab_common: fix slab_caches list corruption after
+ kmem_cache_destroy()
+Message-ID: <ZP9Es3zK1XCY7i6-@optiplex-fbsd>
+References: <20230908230649.802560-1-aquini@redhat.com>
+ <afaa8691-0be9-4574-a87d-aab68c7a49b3@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ledc904p.fsf@suse.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <afaa8691-0be9-4574-a87d-aab68c7a49b3@suse.cz>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
+On Mon, Sep 11, 2023 at 05:06:15PM +0200, Vlastimil Babka wrote:
+> On 9/9/23 01:06, Rafael Aquini wrote:
+> > After the commit in Fixes:, if a module that created a slab cache does not
+> > release all of its allocated objects before destroying the cache (at rmmod
+> > time), we might end up releasing the kmem_cache object without removing it
+> > from the slab_caches list thus corrupting the list as kmem_cache_destroy()
+> > ignores the return value from shutdown_cache(), which in turn never removes
+> > the kmem_cache object from slabs_list in case __kmem_cache_shutdown() fails
+> > to release all of the cache's slabs.
+> > 
+> > This is easily observable on a kernel built with CONFIG_DEBUG_LIST=y
+> > as after that ill release the system will immediately trip on list_add,
+> > or list_del, assertions similar to the one shown below as soon as another
+> > kmem_cache gets created, or destroyed:
+> > 
+> >   [ 1041.213632] list_del corruption. next->prev should be ffff89f596fb5768, but was 52f1e5016aeee75d. (next=ffff89f595a1b268)
+> >   [ 1041.219165] ------------[ cut here ]------------
+> >   [ 1041.221517] kernel BUG at lib/list_debug.c:62!
+> >   [ 1041.223452] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+> >   [ 1041.225408] CPU: 2 PID: 1852 Comm: rmmod Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
+> >   [ 1041.228244] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
+> >   [ 1041.231212] RIP: 0010:__list_del_entry_valid+0xae/0xb0
+> > 
+> > Another quick way to trigger this issue, in a kernel with CONFIG_SLUB=y,
+> > is to set slub_debug to poison the released objects and then just run
+> > cat /proc/slabinfo after removing the module that leaks slab objects,
+> > in which case the kernel will panic:
+> > 
+> >   [   50.954843] general protection fault, probably for non-canonical address 0xa56b6b6b6b6b6b8b: 0000 [#1] PREEMPT SMP PTI
+> >   [   50.961545] CPU: 2 PID: 1495 Comm: cat Kdump: loaded Tainted: G    B   W  OE      6.5.0 #15
+> >   [   50.966808] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc37 05/24/2023
+> >   [   50.972663] RIP: 0010:get_slabinfo+0x42/0xf0
+> > 
+> > This patch fixes this issue by properly checking shutdown_cache()'s
+> > return value before taking the kmem_cache_release() branch.
+> > 
+> > Fixes: 0495e337b703 ("mm/slab_common: Deleting kobject in kmem_cache_destroy() without holding slab_mutex/cpu_hotplug_lock")
+> > Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> > Cc: stable@vger.kernel.org
 > 
-> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
-> > network is not enabled, but io_uring is, then we want to return
-> > -EOPNOTSUPP for any possible socket operation.
-> >
-> > This is helpful because io_uring_cmd_sock() can now call functions that
-> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
-> > inside the function itself.
-> >
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
+> Thanks, added to slab.git. Tweaked the code a bit:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/commit/?h=slab/for-6.6/hotfixes&id=46a9ea6681907a3be6b6b0d43776dccc62cad6cf
+>
+
+Thank you, Vlastimil.
+
+ 
 > > ---
-> >  io_uring/uring_cmd.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > index 60f843a357e0..a7d6a7d112b7 100644
-> > --- a/io_uring/uring_cmd.c
-> > +++ b/io_uring/uring_cmd.c
-> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
-> >  }
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
+> >  mm/slab_common.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index cd71f9581e67..31e581dc6e85 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -479,7 +479,7 @@ void slab_kmem_cache_release(struct kmem_cache *s)
 > >  
-> > +#if defined(CONFIG_NET)
-> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  void kmem_cache_destroy(struct kmem_cache *s)
 > >  {
-> >  	struct socket *sock = cmd->file->private_data;
-> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> >  	}
+> > -	int refcnt;
+> > +	int err;
+> >  	bool rcu_set;
+> >  
+> >  	if (unlikely(!s) || !kasan_check_byte(s))
+> > @@ -490,17 +490,20 @@ void kmem_cache_destroy(struct kmem_cache *s)
+> >  
+> >  	rcu_set = s->flags & SLAB_TYPESAFE_BY_RCU;
+> >  
+> > -	refcnt = --s->refcount;
+> > -	if (refcnt)
+> > +	s->refcount--;
+> > +	if (s->refcount) {
+> > +		err = -EBUSY;
+> >  		goto out_unlock;
+> > +	}
+> >  
+> > -	WARN(shutdown_cache(s),
+> > +	err = shutdown_cache(s);
+> > +	WARN(err,
+> >  	     "%s %s: Slab cache still has objects when called from %pS",
+> >  	     __func__, s->name, (void *)_RET_IP_);
+> >  out_unlock:
+> >  	mutex_unlock(&slab_mutex);
+> >  	cpus_read_unlock();
+> > -	if (!refcnt && !rcu_set)
+> > +	if (!err && !rcu_set)
+> >  		kmem_cache_release(s);
 > >  }
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
-> > +#else
-> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +#endif
-> > +
+> >  EXPORT_SYMBOL(kmem_cache_destroy);
 > 
-> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
-> the alternative EOPNOTSUPP implementation.
+> 
 
-It seems so. net/socket.o is part of obj-y:
-
-https://github.com/torvalds/linux/blob/master/net/Makefile#L9
