@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E260779BC2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF0E79BB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344177AbjIKVNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S237791AbjIKUvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243291AbjIKRDz (ORCPT
+        with ESMTP id S243331AbjIKRGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:03:55 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDB6121;
-        Mon, 11 Sep 2023 10:03:51 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so595595166b.1;
-        Mon, 11 Sep 2023 10:03:51 -0700 (PDT)
+        Mon, 11 Sep 2023 13:06:11 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2267A127
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:06:07 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b50b45481so40098027b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:06:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694451829; x=1695056629; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh45NkM6d8BWFe6aEYm+B4fjovxJAqk+P+SIzP9SdD8=;
-        b=T6Li1t32k1m2HUrwlhsbuVr1SCIsqzc2211QQRswKqP7vfmYdIb0MPas44CJ58mBpk
-         Q/YKQpg8Ihzl/ShLq6th8HZvleEv4EZfqN3NDge8K/gQ6EGZSVM3JvV9lJya7ZLDK/sj
-         bSMKaVzTPX1dAbJfEuuJBCICYa1ZJX1PNsKYQaMCM/srmU4N2Ck3A8/tedFy/x1995yZ
-         Cb8T6HGEi6fuV60/NhRPnDB0eHx4NgTT/6+JNoqfVjVs4888UqDETQJyjSTQzyxPQ0Gs
-         u7dZ1JVHP/+yhA9e1jStrzvxMnOfqVe7cI8YVuGzXBKO7NwSU4tM4ZqPvef50B79OX8p
-         HBZQ==
+        d=google.com; s=20221208; t=1694451966; x=1695056766; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=B+1JF0nXPGoS/vVdsOZGIJs7CEBRG2VuSy9rJAtNprY=;
+        b=5BE5OcUUXBss0ejL7AyeJWL0MVOiaWhzHM7YmpFVYa7AUDz/z26MI4nTsRql0+s5gx
+         NmKvOyRNZc1KrLdWGpIxSKEawR2SLmZ+nCL014P9ikwZ78f3LN+PUudDS/hcz9op0EJy
+         bBMWTDpVqmkdLkDmWwr7MK/CA7eXeg33zQaaimfrqdlPxs951euiwm9ByI0MMGnPekSa
+         TVv84rz9pIQHh+v701zV153HB5a5Fpcsy2MDxLcO1EvrBQWJbHNYWtMOUslXGgD6c20b
+         Dyygp2aZGAAMVddit4/ZSIaOIgN8tmT0uVbWvY5Cj8XXGs1tuOUb94UEPiUwzb5Nj2Hc
+         WlCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694451829; x=1695056629;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Bh45NkM6d8BWFe6aEYm+B4fjovxJAqk+P+SIzP9SdD8=;
-        b=QYNXftLiLTJe9bqzzP1wHM1YqvHuTt03kov7MDTelcbpV93lPN32S2360YdU0S+XIS
-         nLB3AIs4OaMjs/ElSgeexRs+tuI9w0faR6W/qujOBjL5q6FyGW81xtkznUROHcsOK1hz
-         E60r/qay4WjrzX/qZZ9PtuY095g+YIuUkFNKz3Ve602tXRkJeMyEYHbbYtOxxWtf6alY
-         PfBsQl3ISVR9M7zkJt5EbsYOeD/+00vI3E5spaWGdpMx9o7qhTfUxuEe0A08W10O0Xet
-         RMI2V8vKNXp345jhvIAAnBU2DTZQB/7iY4qBHSzpFecFW7TDbHIA4GL9/5JcWGTaG6wa
-         DvGw==
-X-Gm-Message-State: AOJu0YwsXjgYd8kUbkSgvDXU6PPo2pjdRb/tYjdQvGyJU1DpoAm1g58U
-        KD06JA756HPS9bohjuAUuCw=
-X-Google-Smtp-Source: AGHT+IGIYCw4aLZaESMFDF/Tq0rdFzvqK0OG6gkCpZ8qHvDPE4Q2Nd8YyjWfadMSs3/mvmX0pisycA==
-X-Received: by 2002:a17:906:301b:b0:9a1:c39a:8bfd with SMTP id 27-20020a170906301b00b009a1c39a8bfdmr8262550ejz.57.1694451829504;
-        Mon, 11 Sep 2023 10:03:49 -0700 (PDT)
-Received: from skbuf ([188.26.56.202])
-        by smtp.gmail.com with ESMTPSA id n16-20020a170906379000b009930308425csm5646857ejc.31.2023.09.11.10.03.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 10:03:49 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 20:03:46 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230911170346.wm2ph3dspayplwd5@skbuf>
-References: <20230906152801.921664-1-lukma@denx.de>
- <20230911165848.0741c03c@wsk>
- <20230911160501.5vc4nttz6fnww56h@skbuf>
- <20230911170222.hip2pcyzbfu3olau@skbuf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911170222.hip2pcyzbfu3olau@skbuf>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1694451966; x=1695056766;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B+1JF0nXPGoS/vVdsOZGIJs7CEBRG2VuSy9rJAtNprY=;
+        b=vvb18qpiY8gWhumDMHFGliPCZo1xQP3hNufDOzUQES27n5rqdIL+xJbZ8n4N026Mz/
+         NDlo3LYkWuxwRAtAUfeH57JdgTqO9OuGdoeKkVG3HNbQYtNFEO/3Pwo46sbKd4skqWGE
+         bs+6zQWzE/nRPxAWalzqp76/tssD9wlQlEMgfNdn4WkxEPJ6T/rmWTzSS2+xI1KBHtim
+         twXIeeWRR58SNsBBBCnSK7G6wASniT00/bP/xbm8cDSkNnPo2EbcO9aX9YRhuTqqK4eC
+         Crusie0vsnS+y+tLsWVJL0S0jC8JrWlPkt3OJZQjLO2QNFILif5tadbk6Za2GL4eZwOS
+         JzkQ==
+X-Gm-Message-State: AOJu0YxVNAFNU6UCxQ4PmNkG8Y5Bsu0fdb7gpqdkgruA4TdnFkyJ33HS
+        mgoBp5gIQSnG4bYtGDPoANu6nXCE5AFx
+X-Google-Smtp-Source: AGHT+IEYi4t5k8LUPrFyZM7IByX5LTESJDfzfvk31cVZDMoClizybOgg9g6ptBh8r+jVlC5Vjlvh5W/Wtdhm
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6a92:55a:3ba0:c74b])
+ (user=irogers job=sendgmr) by 2002:a81:d441:0:b0:584:3d8f:a425 with SMTP id
+ g1-20020a81d441000000b005843d8fa425mr276417ywl.10.1694451966387; Mon, 11 Sep
+ 2023 10:06:06 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 10:05:55 -0700
+Message-Id: <20230911170559.4037734-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Subject: [PATCH v1 1/5] perf parse-events: Remove unused header files
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,7 +78,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 08:02:22PM +0300, Vladimir Oltean wrote:
-> Hi @Jakub, I remember you fixed some issues with the dev->dev_addr writes,
+The fnmatch header is now used in the PMU matching logic in pmu.c.
 
-I should have changed To: Jakub.. did that now.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/parse-events.y | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 21bfe7e0d944..ef03728b7ea3 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -9,11 +9,8 @@
+ #define YYDEBUG 1
+ 
+ #include <errno.h>
+-#include <fnmatch.h>
+-#include <stdio.h>
+ #include <linux/compiler.h>
+ #include <linux/types.h>
+-#include <linux/zalloc.h>
+ #include "pmu.h"
+ #include "pmus.h"
+ #include "evsel.h"
+-- 
+2.42.0.283.g2d96d420d3-goog
+
