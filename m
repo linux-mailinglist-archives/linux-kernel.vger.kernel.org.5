@@ -2,94 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BF479ACC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C679B433
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241617AbjIKU5O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 16:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39068 "EHLO
+        id S1359750AbjIKWSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244138AbjIKTKh (ORCPT
+        with ESMTP id S244145AbjIKTMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:10:37 -0400
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E46DDD;
-        Mon, 11 Sep 2023 12:10:31 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 616D0635DB56;
-        Mon, 11 Sep 2023 21:10:29 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id BhVzL38_nvWl; Mon, 11 Sep 2023 21:10:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 68B35635DB5A;
-        Mon, 11 Sep 2023 21:10:28 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id am1q5NFYuOSv; Mon, 11 Sep 2023 21:10:28 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 3DA8F635DB56;
-        Mon, 11 Sep 2023 21:10:28 +0200 (CEST)
-Date:   Mon, 11 Sep 2023 21:10:28 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        chengzhihao1 <chengzhihao1@huawei.com>, robh <robh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1097004835.16854.1694459428036.JavaMail.zimbra@nod.at>
-In-Reply-To: <ZP9kJYHMFwZ8GFnA@makrotopia.org>
-References: <cover.1691717480.git.daniel@makrotopia.org> <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org> <169263908218.2000617.16931192155432403196.robh@kernel.org> <ZP9kJYHMFwZ8GFnA@makrotopia.org>
-Subject: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
+        Mon, 11 Sep 2023 15:12:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7584F9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0uS/NLFKJ9+qD9P+01ghNQdJPyz/lWBftVtleHZ4QS8=; b=QD4FezIUTZYL/WXDGcAcsHQCpr
+        wARKzFwH3TOiA36ptvXZbEXU9Y0PRUmK/dsSYQdokaUamK0LM6Zxuzh5fdWRERGPxReRjCOLJek4a
+        XGkSeJpk3hF7elK7ssVrZzWchmFh/XKbE8F16O5QTAbZGi1UwZ2vYSfwozmkYkWD2pftNCPFwylxd
+        5FL30Mkz1SHB6eDPOvta8lL8+17TadtEoWN3vct43JyvbX8FDT9tz0Ew5f48uzjnrB5B7ZngESOR9
+        MMncgwSwYYtyBSrVTLdo9/Zoh1eMgLmGgz4bofq1gnMMQKtnZAPCSYfCEQOSj+8+CYQtB57pQzc8z
+        qqGymnGQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qfmKb-002bfo-3g; Mon, 11 Sep 2023 19:12:21 +0000
+Date:   Mon, 11 Sep 2023 20:12:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Yin Fengwei <fengwei.yin@intel.com>,
+        syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
+Message-ID: <ZP9mla26MWqKKUZ7@casper.infradead.org>
+References: <000000000000d099fa0604f03351@google.com>
+ <0465d13d-83b6-163d-438d-065d03e9ba76@intel.com>
+ <ZP8VcUIXTjvR3z54@casper.infradead.org>
+ <f3379aeb-f394-8c99-5143-f93e82400320@intel.com>
+ <ZP9D0q5MSVFobNbZ@casper.infradead.org>
+ <fb936bdb-6473-a956-8431-fe95f5940acc@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: dt-bindings: mtd: add basic bindings for UBI
-Thread-Index: LBx3qjf2tbmBuBCvCWOgaQQSzR540w==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb936bdb-6473-a956-8431-fe95f5940acc@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Daniel Golle" <daniel@makrotopia.org>
-> An: "linux-mtd" <linux-mtd@lists.infradead.org>
-> CC: "chengzhihao1" <chengzhihao1@huawei.com>, "robh" <robh@kernel.org>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Randy
-> Dunlap" <rdunlap@infradead.org>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "richard" <richard@nod.at>, "devicetree"
-> <devicetree@vger.kernel.org>, "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
-> <conor+dt@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "linux-kernel" <linux-kernel@vger.kernel.org>
-> Gesendet: Montag, 11. September 2023 21:01:57
-> Betreff: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
-
-> On Mon, Aug 21, 2023 at 12:31:22PM -0500, Rob Herring wrote:
->> On Fri, 11 Aug 2023 02:36:37 +0100, Daniel Golle wrote:
->> > Add basic bindings for UBI devices and volumes.
->> > 
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> 
+On Mon, Sep 11, 2023 at 09:55:37AM -0700, Dave Hansen wrote:
+> On 9/11/23 09:44, Matthew Wilcox wrote:
+> > After fixing your two typos, this assembles to 176 bytes more code than
+> > my version.  Not sure that's great.
 > 
-> Patch 3 - 7 have previously been discussed on the mailing list, patch
-> 1 and 2 have been reviewed by Rob, patch 8 ("mtd: ubi: provide NVMEM
-> layer over UBI volumes") still needs review.
+> Maybe I'm a fool, but 176 bytes of text bloat isn't scaring me off too
+> much.  I'd much rather have that than another window into x86 goofiness
+> to maintain.
 > 
-> Is there anything I can do from my end to have this series moving
-> forward?
-> 
-> Patchwork: https://patchwork.ozlabs.org/project/linux-mtd/list/?series=368347
+> Does that 176 bytes translate into meaningful performance, or is it just
+> a bunch of register bit twiddling that the CPU will sail through?
 
-It is on my review TODO.
-
-Thanks for your patience,
-//richard
+I'm ... not sure how to tell.  It's 1120 bytes vs 944 bytes and crawling
+through that much x86 assembly isn't my idea of a great time.  I can
+send you objdump -dr for all three options if you like?  Maybe there's
+a quick way to compare them that I've never known about.
