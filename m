@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CED79BD36
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E9F79B982
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbjIKVSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
+        id S1356695AbjIKWEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237183AbjIKMMf (ORCPT
+        with ESMTP id S237210AbjIKMP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:12:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF92CEB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:12:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 3DE74211C3;
-        Mon, 11 Sep 2023 12:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694434346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tf7tRdXV7UNidkw8jKJWLwlUfOkHdMG5nA5zEy+A7gU=;
-        b=AFfYbBiBycdQ/2GmktSMV/Pjt55ov/8QmZZf97c1lCCggS/qdwO6Y7QmVSqA0cAWWBt5zg
-        orVTV43YzbN/432DUSHe671rHSPe8G1zxlndiS1Dd9QhitBEujAnQpCEHk5RdvtIVWShKA
-        RLuidco961+1lUqdwpq33w9qVPmQ6fk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 199B9139CC;
-        Mon, 11 Sep 2023 12:12:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id cjAoAyoE/2SCAgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 11 Sep 2023 12:12:26 +0000
-Date:   Mon, 11 Sep 2023 14:12:25 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, ke.wang@unisoc.com
-Subject: Re: [PATCH] mm: remove redundant clear page when
- CONFIG_INIT_ON_ALLOC_DEFAULT_ON configured
-Message-ID: <ZP8EKWev8H9kMka3@dhcp22.suse.cz>
-References: <20230911104906.2058503-1-zhaoyang.huang@unisoc.com>
+        Mon, 11 Sep 2023 08:15:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EB5198;
+        Mon, 11 Sep 2023 05:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694434522; x=1725970522;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=UfjgEcn3j45qxnCU9n6VXDTvhnlTPXsfglb+ZF4euEo=;
+  b=bEtgS33yNbuzE9Pc7tW6Jm7PEe9dWZjbeeQkxjapG2dWSCF2c/+yJSqi
+   lJ9zEZvuIBFm0UzWNBeOFLt9FriRZk8j0LS5+4hoRUkHteiI3HGYP+nyK
+   YUbXLIt1EuYzKzKrIjHiMAvI5wFAa4FTt58b1ghkUX1RcQFPVnuTpKw5K
+   um2PoABYwiW/eWtH1oRGWkfr95n6QdXSMw/riivo8EkHE5Ouz4lQB8h1p
+   WfV359LblJORs5wB7elLleXsgXytjc1pNYI3XwBkLhl60g1VTQ0SUkfpH
+   CrY3JqVOHNoA6630+FsAPu0ErFHqYqi2aRuQth/+Wvr2vBJgHV2lNg1yL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381863502"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="381863502"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:15:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746383290"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="746383290"
+Received: from mzarkov-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.252.36.200])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:15:18 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 3/8] igb: Use FIELD_GET() to extract Link Width
+Date:   Mon, 11 Sep 2023 15:14:56 +0300
+Message-Id: <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
+References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911104906.2058503-1-zhaoyang.huang@unisoc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-09-23 18:49:06, zhaoyang.huang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> 
-> There will be redundant clear page within vma_alloc_zeroed_movable_folio
-> when CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on. Remove it by judging related
-> configs.
+Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+custom masking and shifting.
 
-Thanks for spotting this. I suspect this is a fix based on a code review
-rather than a real performance issue, right? It is always good to
-mention that. From a very quick look it seems that many architectures
-just definte vma_alloc_zeroed_movable_folio to use __GFP_ZERO so they
-are not affected by this. This means that only a subset of architectures
-are really affected. This is an important information as well.
-Finally I think it would be more appropriate to mention that the double
-initialization is done when init_on_alloc is enabled rather than
-referring to the above config option which only controls whether the
-functionality is enabled by default.
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ drivers/net/ethernet/intel/igb/e1000_mac.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I would rephrase as follows:
-Many architectures (alpha, arm64, ia64, m68k s390, x86) define their own
-vma_alloc_zeroed_movable_folio implementations which use __GFP_ZERO for
-the page allocation.
-
-Those which rely on the default implementation, however, would currently
-go through the initialization twice (oce in the page allocator and
-second in vma_alloc_zeroed_movable_folio) if init_on_alloc is enabled
-though. Fix this by checking want_init_on_alloc before calling
-clear_user_highpage.
-
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-
-With the changelog updates
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-
-> ---
->  include/linux/highmem.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> index 99c474de800d..3926f8414729 100644
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -227,7 +227,7 @@ struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
->  	struct folio *folio;
->  
->  	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vaddr, false);
-> -	if (folio)
-> +	if (folio && !want_init_on_alloc(GFP_HIGHUSER_MOVABLE))
->  		clear_user_highpage(&folio->page, vaddr);
->  
->  	return folio;
-> -- 
-> 2.25.1
-
+diff --git a/drivers/net/ethernet/intel/igb/e1000_mac.c b/drivers/net/ethernet/intel/igb/e1000_mac.c
+index caf91c6f52b4..5a23b9cfec6c 100644
+--- a/drivers/net/ethernet/intel/igb/e1000_mac.c
++++ b/drivers/net/ethernet/intel/igb/e1000_mac.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright(c) 2007 - 2018 Intel Corporation. */
+ 
++#include <linux/bitfield.h>
+ #include <linux/if_ether.h>
+ #include <linux/delay.h>
+ #include <linux/pci.h>
+@@ -50,9 +51,8 @@ s32 igb_get_bus_info_pcie(struct e1000_hw *hw)
+ 			break;
+ 		}
+ 
+-		bus->width = (enum e1000_bus_width)((pcie_link_status &
+-						     PCI_EXP_LNKSTA_NLW) >>
+-						     PCI_EXP_LNKSTA_NLW_SHIFT);
++		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
++							     pcie_link_status);
+ 	}
+ 
+ 	reg = rd32(E1000_STATUS);
 -- 
-Michal Hocko
-SUSE Labs
+2.30.2
+
