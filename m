@@ -2,82 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C16D79AE84
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF83F79B38C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348347AbjIKV0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S1353820AbjIKVup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240561AbjIKOrT (ORCPT
+        with ESMTP id S240635AbjIKOtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:47:19 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F53E40;
-        Mon, 11 Sep 2023 07:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694443633;
-        bh=aUWLB29r0a9TYsvda4pRCCh9tA1GN6DQXSmmKb9Dj38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fN7dshKiZHKAqsfaN0r2KVj5ZB9eHpVD12wnp3zIz1ogPNo4K8MNN6YVWxvciU0rR
-         +iqRvnz1NlGpAsLJFlzGMB0V68HNkJ4n8+L3W0vTqXagytHxLqflAyS/ghZgD2yVZB
-         tRIp/qORrIHOFpL7G+Mpe59QuXcKOAPoQENcGhs0=
-Date:   Mon, 11 Sep 2023 16:47:12 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: libc-test: avoid -Wstringop-overflow
- warnings
-Message-ID: <96597a87-89f2-4ec0-bf89-d1d8920f0d29@t-8ch.de>
-References: <20230910-nolibc-poll-fault-v1-1-2b7a16f48259@weissschuh.net>
- <ZP6uAT0jmseRHkzG@1wt.eu>
- <cf5a2308-e241-4146-85c6-67ad924fb67c@t-8ch.de>
- <ZP8kgXhP/UjsMoD4@1wt.eu>
+        Mon, 11 Sep 2023 10:49:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10A2EE4B
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:48:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694443724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=S08mZGZujRDp+IOI3MWVdjZ3/JmsDA0pjLrFY+IpTTA=;
+        b=ebs/ttLMCX4kODqk1Aoop3WjFbjOa4JYQagkCcdo2N4YDH+hc75CYvf8VQyvD5J7zfy9Ug
+        pqCmo6dvS58LCYVjoQX532u7uCE/eRKEjQ7Ik+eJa8IjQE2AilwbAgRKpQielmBcbAfTpJ
+        aAKIQVueIKsZSPwgLmVPpcBN+SlR59s=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-dpNgfb8sP0u7nMPMe6x8_Q-1; Mon, 11 Sep 2023 10:48:43 -0400
+X-MC-Unique: dpNgfb8sP0u7nMPMe6x8_Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a21e030751so62304466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:48:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694443722; x=1695048522;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S08mZGZujRDp+IOI3MWVdjZ3/JmsDA0pjLrFY+IpTTA=;
+        b=Imh6nZ8P3rQA5jEjK/lJvlUnycx1dnS1ZdPbVYIjbLoyt/v9lz8FptK88uGBCbll5K
+         kPvZ22yTtrsGs2hYIqvglJW2FSc6LZVn6ZAac1Wc9kqBNR3WdbRp84BXZpWof1Sftu3q
+         /x+5LtqrXCZsNoXOaF55WeID9Ljdh+ZdOb25Fw7muBO6g9WQHpMty5GrJ0MKq0eo0kxS
+         qbYEL4ZJeHMAAEUYKp1KZ1t7KmXkAtP9WWDrr6JnrYY7QhuDerxMjifkBjM+1bKhZrwP
+         Z2rUEjGlLaF4bhchIkaATmj26fyX8olCbRQnI2ADwzjbMSzK1k3eRhcFAHqfVcunBHmP
+         QMQA==
+X-Gm-Message-State: AOJu0Yx4AHSsggfpVlUkh1UOCf7GucN08ODLh2DVwkpCZGicp/moJs5n
+        o16RHFuxmeh8FVdm1kRxODhwaDYcVRxElSid0TcxgHchPOWz/cUegzERr0uVKjEB6n6aifhKPvQ
+        G8JwT55Zfs22LMr1GC03zidl9
+X-Received: by 2002:a17:906:21b:b0:9a6:7fee:8253 with SMTP id 27-20020a170906021b00b009a67fee8253mr8314825ejd.0.1694443722048;
+        Mon, 11 Sep 2023 07:48:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IELSqxTm7AKsC8+9cjnj6puOU+a+SSkrs4QmFCFxCKE1q5wHn/644wAdYoHmLIY0Vr2sUQeRw==
+X-Received: by 2002:a17:906:21b:b0:9a6:7fee:8253 with SMTP id 27-20020a170906021b00b009a67fee8253mr8314811ejd.0.1694443721710;
+        Mon, 11 Sep 2023 07:48:41 -0700 (PDT)
+Received: from fedorinator.. ([2a01:599:807:b633:fcca:c83d:d46b:a90a])
+        by smtp.gmail.com with ESMTPSA id y5-20020a170906070500b0099bcbaa242asm5452397ejb.9.2023.09.11.07.48.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 07:48:41 -0700 (PDT)
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Philipp Stanner <pstanner@redhat.com>
+Subject: [PATCH v3] xarray: Document necessary flag in alloc-functions
+Date:   Mon, 11 Sep 2023 16:48:37 +0200
+Message-ID: <20230911144837.13540-1-pstanner@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZP8kgXhP/UjsMoD4@1wt.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-11 16:30:25+0200, Willy Tarreau wrote:
-> On Mon, Sep 11, 2023 at 04:26:41PM +0200, Thomas Weißschuh wrote:
-> > On 2023-09-11 08:04:49+0200, Willy Tarreau wrote:
-> > > On Sun, Sep 10, 2023 at 09:29:01PM +0200, Thomas Weißschuh wrote:
-> > > > Newer versions of glibc annotate the poll() function with
-> > > > __attribute__(access) which triggers a compiler warning inside the
-> > > > testcase poll_fault.
-> > > > Avoid this by using a plain NULL which is enough for the testcase.
-> > > > To avoid potential future warnings also adapt the other EFAULT
-> > > > testcases, except select_fault as NULL is a valid value for its
-> > > > argument.
-> > > (...)
-> > > 
-> > > Looks good to me. I wouldn't be surprised if we're soon forced to do
-> > > the same with select() on some archs where it might be emulated.
-> > > 
-> > > Feel free to push it to the shared repo.
-> > 
-> > Thanks, I pushed it to the "next" branch.
-> > 
-> > I'd also like to rebase the next branch onto v6.6-rc1, any objections?
-> 
-> Yes, please go on!
+Calling functions that wrap __xa_alloc() or __xa_alloc_cyclic() without
+the xarray previously having been initialized with the flag
+XA_FLAGS_ALLOC being set in xa_init_flags() results in undefined
+behavior.
 
-Done.
+Document the necessity of setting this flag in all docstrings of
+functions that wrap said two functions.
 
-I used "git rebase --signoff" and dropped the duplicate signoffs it
-generated on my own commits.
+Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+---
+I used the time available until we can get this merged to create a
+version-3, improving a few things.
 
-It's also pushed to git.kernel.org, could you double-check it?
+Changes since v2:
+- Phrase the comment differently: say "requires [...] an xarray [...]"
+  instead of "must be operated on".
+- Improve the commit message and use the canonical format: a) describe
+  the problem, b) name the solution in imperative form.
 
-Thanks,
-Thomas
+Regards,
+P.
+---
+ include/linux/xarray.h | 18 ++++++++++++++++++
+ lib/xarray.c           |  6 ++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index 741703b45f61..746a17b64aa6 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -856,6 +856,9 @@ static inline int __must_check xa_insert_irq(struct xarray *xa,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock.  May sleep if
+  * the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -886,6 +889,9 @@ static inline __must_check int xa_alloc(struct xarray *xa, u32 *id,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock while
+  * disabling softirqs.  May sleep if the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -916,6 +922,9 @@ static inline int __must_check xa_alloc_bh(struct xarray *xa, u32 *id,
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Process context.  Takes and releases the xa_lock while
+  * disabling interrupts.  May sleep if the @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -949,6 +958,9 @@ static inline int __must_check xa_alloc_irq(struct xarray *xa, u32 *id,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock.  May sleep if
+  * the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+@@ -983,6 +995,9 @@ static inline int xa_alloc_cyclic(struct xarray *xa, u32 *id, void *entry,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Takes and releases the xa_lock while
+  * disabling softirqs.  May sleep if the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+@@ -1017,6 +1032,9 @@ static inline int xa_alloc_cyclic_bh(struct xarray *xa, u32 *id, void *entry,
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Process context.  Takes and releases the xa_lock while
+  * disabling interrupts.  May sleep if the @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 2071a3718f4e..2b07c332d26b 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1802,6 +1802,9 @@ EXPORT_SYMBOL(xa_get_order);
+  * stores the index into the @id pointer, then stores the entry at
+  * that index.  A concurrent lookup will not see an uninitialised @id.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Expects xa_lock to be held on entry.  May
+  * release and reacquire xa_lock if @gfp flags permit.
+  * Return: 0 on success, -ENOMEM if memory could not be allocated or
+@@ -1850,6 +1853,9 @@ EXPORT_SYMBOL(__xa_alloc);
+  * The search for an empty entry will start at @next and will wrap
+  * around if necessary.
+  *
++ * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC set
++ * in xa_init_flags().
++ *
+  * Context: Any context.  Expects xa_lock to be held on entry.  May
+  * release and reacquire xa_lock if @gfp flags permit.
+  * Return: 0 if the allocation succeeded without wrapping.  1 if the
+-- 
+2.41.0
+
