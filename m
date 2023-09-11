@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEE479C2D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0F679C2C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238645AbjILC2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S237804AbjILC23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237703AbjILC2J (ORCPT
+        with ESMTP id S237852AbjILC2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 22:28:09 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1F6134D3C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C15774092;
         Mon, 11 Sep 2023 18:52:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24B41C433BF;
-        Mon, 11 Sep 2023 21:46:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF727C4167D;
+        Mon, 11 Sep 2023 21:47:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694468775;
-        bh=vY7vawU4FZYoEgdX4LDl+2Hb+tqanE/PYLPwILCYrzU=;
+        s=k20201202; t=1694468866;
+        bh=P+vOPf+wwuHvorbjJWXCniSp0x7QhyhIsdAc2cl5EMM=;
         h=From:To:Cc:Subject:Date:From;
-        b=Jq/ie0C175g+KTBPmu5n84htYUDAi1mRxI4NyK4fvQTjM/LuZlK054qvUoGSVWBzb
-         lqMpADHgNYUdroXydWBpFZlhaQozAOY4m5iRRFs+I+ZmhO4muIR2bLcUeQhezgf45G
-         21njU3Mvd9JBaEWU50PZVrC8Zwj7Ta9k0bijWDJofATThy0FTB86ha/WcMscp+Ie44
-         t2aD14HVwW71epMXTsOf9x21tQr6Ug90O2jsy3XTAe1LosUODEYb8zExGVkKorjx6e
-         eU+/aYK3spBILJv7mFcFNwbKv740fdloCJf8IQpISjz7v75RYqWIvga+qJ6atpsIPV
-         8iMopSVxgiPiQ==
-Received: (nullmailer pid 2201291 invoked by uid 1000);
-        Mon, 11 Sep 2023 21:46:13 -0000
+        b=AGPd8y5jXohbk26C+fb1d2JLNarvGgMdoJbeo6FXx6LE9NxON2g6L34E60D3KVAe1
+         kKoOnS2ow3HOzXMbLbI9k4Kjgh+N8ZIjcHXClFP5F8fjB18DHtYLghYiWnABpmXF4C
+         is7y2mtbKO4S7OBvjuFnxtWiHgnibLYzpu7OtbAdHYbC9QlVzCnOacBt3CfB2AhMdO
+         PvKBC1u/ztWTC3ASaxU8QRMavYfdbE0uYHcT44SVbT8AE6kz1tuf67a9w9HbC0S0+1
+         bRdOU+47BcibMKfTNbkEXt4dLR8le9ZYA53qVGZrBWoiVrymcF7Ds6n11UY8zRP6ey
+         7E0wXO8Y8tXMA==
+Received: (nullmailer pid 2202875 invoked by uid 1000);
+        Mon, 11 Sep 2023 21:47:44 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arm: dts: omap: Apply am57xx-idk overlays to base dtbs
-Date:   Mon, 11 Sep 2023 16:46:02 -0500
-Message-Id: <20230911214609.2201040-1-robh@kernel.org>
+Subject: [PATCH] arm64: dts: renesas: Apply overlays to base dtbs
+Date:   Mon, 11 Sep 2023 16:46:15 -0500
+Message-Id: <20230911214623.2201324-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -52,36 +52,65 @@ time.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Note that I have no idea if this combination of overlays makes sense.
+Looks like some of these apply to multiple base DTs. I've only added them
+to 1 base.
 ---
- arch/arm/boot/dts/ti/omap/Makefile | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/renesas/Makefile | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/ti/omap/Makefile b/arch/arm/boot/dts/ti/omap/Makefile
-index d2b590004fed..d0c76d09fe70 100644
---- a/arch/arm/boot/dts/ti/omap/Makefile
-+++ b/arch/arm/boot/dts/ti/omap/Makefile
-@@ -129,6 +129,11 @@ dtb-$(CONFIG_SOC_AM43XX) += \
- am57xx-evm-dtbs := am57xx-beagle-x15.dtb am57xx-evm.dtbo
- am57xx-evm-reva3-dtbs := am57xx-beagle-x15-revc.dtb am57xx-evm.dtbo
+diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+index 7114cbbd8713..5b23bdb71804 100644
+--- a/arch/arm64/boot/dts/renesas/Makefile
++++ b/arch/arm64/boot/dts/renesas/Makefile
+@@ -56,7 +56,8 @@ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980a-condor-i.dtb
  
-+am571x-idk-overlays-dtbs := am571x-idk.dtb \
-+	am571x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2587.dtbo
-+am572x-idk-overlays-dtbs := am572x-idk.dtb \
-+	am572x-idk-touchscreen.dtbo am57xx-idk-lcd-osd101t2045.dtbo
+ dtb-$(CONFIG_ARCH_R8A77990) += r8a77990-ebisu.dtb
+ 
+-dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb
++r8a77995-draak-panel-aa104xd12-dtbs := r8a77995-draak.dtb draak-ebisu-panel-aa104xd12.dtbo
++dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb r8a77995-draak-panel-aa104xd12.dtb
+ 
+ dtb-$(CONFIG_ARCH_R8A779A0) += r8a779a0-falcon.dtb
+ 
+@@ -64,6 +65,8 @@ dtb-$(CONFIG_ARCH_R8A779F0) += r8a779f0-spider.dtb
+ 
+ dtb-$(CONFIG_ARCH_R8A779G0) += r8a779g0-white-hawk.dtb
+ dtb-$(CONFIG_ARCH_R8A779G0) += r8a779g0-white-hawk-ard-audio-da7212.dtbo
++r8a779g0-white-hawk-ard-audio-da7212-dtbs := r8a779g0-white-hawk.dtb r8a779g0-white-hawk-ard-audio-da7212.dtbo
++dtb-$(CONFIG_ARCH_R8A779G0) += r8a779g0-white-hawk-ard-audio-da7212.dtb
+ 
+ dtb-$(CONFIG_ARCH_R8A77951) += r8a779m1-salvator-xs.dtb
+ dtb-$(CONFIG_ARCH_R8A77951) += r8a779m1-ulcb.dtb
+@@ -73,18 +76,28 @@ dtb-$(CONFIG_ARCH_R8A77961) += r8a779m3-salvator-xs.dtb
+ dtb-$(CONFIG_ARCH_R8A77961) += r8a779m3-ulcb.dtb
+ dtb-$(CONFIG_ARCH_R8A77961) += r8a779m3-ulcb-kf.dtb
+ 
+-dtb-$(CONFIG_ARCH_R8A77965) += r8a779m5-salvator-xs.dtb
++r8a779m5-salvator-xs-panel-aa104xd12-dtbs := r8a779m5-salvator-xs.dtb salvator-panel-aa104xd12.dtbo
++dtb-$(CONFIG_ARCH_R8A77965) += r8a779m5-salvator-xs.dtb r8a779m5-salvator-xs-panel-aa104xd12.dtb
+ 
+ dtb-$(CONFIG_ARCH_R9A07G043) += r9a07g043u11-smarc.dtb
+ dtb-$(CONFIG_ARCH_R9A07G043) += r9a07g043-smarc-pmod.dtbo
++r9a07g043u11-smarc-pmod-dtbs := r9a07g043u11-smarc.dtb r9a07g043-smarc-pmod.dtbo
++dtb-$(CONFIG_ARCH_R9A07G043) += r9a07g043u11-smarc-pmod.dtb
+ 
+ dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044c2-smarc.dtb
+ dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044c2-smarc-cru-csi-ov5645.dtbo
++r9a07g044c2-smarc-cru-csi-ov5645-dtbs := r9a07g044c2-smarc.dtb r9a07g044c2-smarc-cru-csi-ov5645.dtbo
++dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044c2-smarc-cru-csi-ov5645.dtb
 +
- dtb-$(CONFIG_SOC_DRA7XX) += \
- 	am57xx-beagle-x15.dtb \
- 	am57xx-beagle-x15-revb1.dtb \
-@@ -145,6 +150,8 @@ dtb-$(CONFIG_SOC_DRA7XX) += \
- 	am574x-idk.dtb \
- 	am57xx-idk-lcd-osd101t2045.dtbo \
- 	am57xx-idk-lcd-osd101t2587.dtbo \
-+	am571x-idk-overlays.dtb \
-+	am572x-idk-overlays.dtb \
- 	dra7-evm.dtb \
- 	dra72-evm.dtb \
- 	dra72-evm-revc.dtb \
+ dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044l2-smarc.dtb
+ dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044l2-smarc-cru-csi-ov5645.dtbo
++r9a07g044l2-smarc-cru-csi-ov5645-dtbs := r9a07g044l2-smarc.dtb r9a07g044l2-smarc-cru-csi-ov5645.dtbo
++dtb-$(CONFIG_ARCH_R9A07G044) += r9a07g044l2-smarc-cru-csi-ov5645.dtb
+ 
+ dtb-$(CONFIG_ARCH_R9A07G054) += r9a07g054l2-smarc.dtb
+ dtb-$(CONFIG_ARCH_R9A07G054) += r9a07g054l2-smarc-cru-csi-ov5645.dtbo
++r9a07g054l2-smarc-cru-csi-ov5645-dtbs := r9a07g054l2-smarc.dtb r9a07g054l2-smarc-cru-csi-ov5645.dtbo
++dtb-$(CONFIG_ARCH_R9A07G054) += r9a07g054l2-smarc-cru-csi-ov5645.dtb
+ 
+ dtb-$(CONFIG_ARCH_R9A09G011) += r9a09g011-v2mevk2.dtb
+ 
 -- 
 2.40.1
 
