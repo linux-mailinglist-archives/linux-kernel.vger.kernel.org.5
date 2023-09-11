@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBF579A5D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA8F79A5CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbjIKIRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S234063AbjIKIRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235064AbjIKIRh (ORCPT
+        with ESMTP id S231646AbjIKIRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:17:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2032012C;
-        Mon, 11 Sep 2023 01:17:29 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5bFQp011277;
-        Mon, 11 Sep 2023 08:16:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vd49uihco+SPsQfPVH/VVRtFAb/2at6I8TeWhJKhFv8=;
- b=AYWSkM5Q/s/wucNIXiIS9TNkxtAPd2vpzozsS75c58wCvygZwFuqGPHKhF7CeNuFCdwG
- tIOP09TNOGeWkh7f+4EyQB5uzMD/c7kEzmgYsG0qUTpWw8XYEoAOAdwciN1oqPXSy6px
- B78WTWcbI1H824606dJQNyPUkAy4m/KS02V9lBxplCqEqGSLyt4/755mKQ2U4A3FHbTH
- aRizdEAy+SpOC92Gtpzp6EQZQsGViAYHKHKciTQYpqPFgAjIWP+5ZgeSeJI7odv+kJqv
- F1YbmTkSjiB1UaKWCQBCEbCX9g8X8fLVM9IrVYa6bMkQs2ymT/44ozNzfVWJh6OG8E+0 Og== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0hvyk1dn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 08:16:55 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B8Gr6H030203
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 08:16:54 GMT
-Received: from [10.201.2.96] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 11 Sep
- 2023 01:16:42 -0700
-Message-ID: <2c12d4a7-f790-42e6-84dc-d93783b1b2d5@quicinc.com>
-Date:   Mon, 11 Sep 2023 13:46:39 +0530
+        Mon, 11 Sep 2023 04:17:06 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A802CBB;
+        Mon, 11 Sep 2023 01:16:55 -0700 (PDT)
+X-UUID: 8e1f4736507b11ee8051498923ad61e6-20230911
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=bLtsrzjxUtfjRXBTdg7ryD78RZbIUqX7HT6UlqEs7uw=;
+        b=UebW4fkJT4sinEnIj28vlOHdnCLNyrqN35wRKpPbWXzbYjEk4X/G0Ig3TIfNRKKKW0AZ0SKzcd78MAGk483f1viXvf3r18sF9tu9Tpzd+J8UYuZ+q7xkijAZbmQPixncfzCEJ9CxIqOJNWrnIKrJmur3C0OF1ODuCZmqGT+gY10=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:8e07ecf4-4cd3-4904-8247-805cc914e292,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:0b69b1be-14cc-44ca-b657-2d2783296e72,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 8e1f4736507b11ee8051498923ad61e6-20230911
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 332041101; Mon, 11 Sep 2023 16:16:49 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 11 Sep 2023 16:16:47 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Mon, 11 Sep 2023 16:16:45 +0800
+Message-ID: <e697a23e-e677-c97b-269a-a7a11d338d95@mediatek.com>
+Date:   Mon, 11 Sep 2023 16:16:44 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 15/17] firmware: scm: Modify only the download bits in
- TCSR register
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] dt-bindings: arm64: dts: mediatek: add description for
+ mt8365-evk board
 Content-Language: en-US
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-16-git-send-email-quic_mojha@quicinc.com>
-From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <1694290578-17733-16-git-send-email-quic_mojha@quicinc.com>
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+References: <20230910062852.15415-1-macpaul.lin@mediatek.com>
+ <f8864242-daa1-e72f-4759-aac3fa1bbcf2@linaro.org>
+ <12bdd17a-98f4-5551-4253-229dc36f0c77@mediatek.com>
+ <ef81697f-473e-898e-ec13-4dd255e2e3d7@linaro.org>
+ <82a0ab25-a3cc-3e87-e379-9b15b3fbbf76@mediatek.com>
+ <649e89c3-343a-c00c-ae89-329833b38981@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <649e89c3-343a-c00c-ae89-329833b38981@linaro.org>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6qtM1FG44tF2q9BDqDrBGrPE85BHbk47
-X-Proofpoint-GUID: 6qtM1FG44tF2q9BDqDrBGrPE85BHbk47
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110075
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--17.294500-8.000000
+X-TMASE-MatchedRID: +f/wAVSGjujsYbGmK/WYxia1MaKuob8PCJpCCsn6HCHBnyal/eRn3gzR
+        CsGHURLuwpcJm2NYlPAF6GY0Fb6yChLn4nGgmm6XPJAf1AuYU6BbVWMeHOeZaFc/CedjlcvkASS
+        25Kb4JAK/PxUCMpGeRFQXB1s+iArFOkjQDRo1OZRor4yxPAz7WQ2AVSpm3nkDATjAbArJUsiqHZ
+        Z4aC7fIyJtQogTap1vmw8gErCz5evsPLr8JwjnkLGj3LN0+Ey97yrmaqIg0yAwEhHW5KVAz2J+P
+        WmHAknxnlSM1mB4TLLOHyiFumtKQSnixsypv8PSFPowz8xfffSeimGtNywjtpsoi2XrUn/JyeMt
+        MD9QOgChMIDkR/KfwI2j49Ftap9EOwBXM346/+zxKm+NrlRaJHxJwMK8LeRQaDATuz7r6ZYNxer
+        6R4Ih84VxIm5v/HGf
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--17.294500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 6EEA80FCF1E52590F8061DE403ECC5A07550DF81B15E6C606221868D3A8DE3472000:8
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,65 +99,88 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 9/10/2023 1:46 AM, Mukesh Ojha wrote:
-> Crashdump collection is based on the DLOAD bit of TCSR register.
-> To retain other bits, we read the register and modify only the
-> DLOAD bit as the other bits have their own significance.
->
-> Co-developed-by: Poovendhan Selvaraj <quic_poovendh@quicinc.com>
+
+On 9/11/23 15:06, Krzysztof Kozlowski wrote:
+> 	
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On 11/09/2023 08:34, Macpaul Lin wrote:
+>> On 9/11/23 14:09, Krzysztof Kozlowski wrote:
+>>> 
+>>>
+>>> External email : Please do not click links or open attachments until you 
+>>> have verified the sender or the content.
+>>>
+>>> On 10/09/2023 14:07, Macpaul Lin wrote:
+>>>>
+>>>>
+>>>> On 9/10/23 17:09, Krzysztof Kozlowski wrote:
+>>>>>> +      - description: MediaTek Genio 350 Boards (Genio 350 EVK)
+>>>>>
+>>>>> That's a bit confusing. So all of the boards here will be Genio 350 EVK?
+>>>>> I don't get what is the point of this description.
+>>>>>
+>>>>>
+>>>>>> +        items:
+>>>>>>            - enum:
+>>>>>>                - mediatek,mt8365-evk
+>>>>>>            - const: mediatek,mt8365
+>>>>
+>>>> Thes boards with compatible 'mediatek,mt8365-evk' is indeed used by
+>>>
+>>> Boards?
+>> 
+>> I'm not sure if there will be more hardware version released to market.
+>> Current the p1v3 is the final version of mt8365-evk.
+> 
+> Then your code (enum) does not match description. The code is saying:
+> this is for multiple boards based on mt8365.
+> 
+> Your description is saying: this is only for 350 boards.
+> 
+> Now your email is saying: there is only one 350 board.
+> 
+> Three different versions. Sorry, I am confused.
+> 
+
+Okay, this description has been modified to support single board.
+Since there is only one type of the hardware is available on the market.
+
+>> 
+>>>> Genio 350-EVK, which Baylibre helped to do upstream tasks. The only 
+>>>> production version of hardware will be available on the market. The 
+>>>> derived version of customer's hardware is not available yet.
+>>>>
+>>>> The separate patch for renaming mt8365-evk.dts file should be send next 
+>>>> week for aligning the naming rules.
+>>>
+>>> So the description is not correct.
+>>>
+>>> Anyway, this patch does not make much sense to me considering nothing
+>>> like this was merged. You just sent v5 doing the same!
+>> 
+>> 
+>> Sorry I'm confused now.
+>> These are independent patches.
+>> This patch is for SOC mt83'6'5 and board mt8365-evk, which is not relate 
+>> SOC mt83'9'5 and board mt8395-evk.
+> 
+> OK, I see my confusion. mt8365 and mt8395.
+> 
+> Still the description is not matching the code, at least to my limited
+> understanding of the description.
+> 
+
+patch v2 of this change has been send and rebase with that v5 change.
+This will generate a different base line for the v2 patch for avoiding 
+confusion. :)
 
 
-Poovendhan's signed-off is also required. Please refer [1]
+> Best regards,
+> Krzysztof
+> 
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/process/submitting-patches.rst#n489
-
-
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> ---
->   drivers/firmware/qcom_scm.c | 12 ++++++++++--
->   1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
-> index 5ea8fc4fd4e8..eda92f713019 100644
-> --- a/drivers/firmware/qcom_scm.c
-> +++ b/drivers/firmware/qcom_scm.c
-> @@ -5,6 +5,8 @@
->   #include <linux/platform_device.h>
->   #include <linux/init.h>
->   #include <linux/interrupt.h>
-> +#include <linux/bitfield.h>
-> +#include <linux/bits.h>
->   #include <linux/completion.h>
->   #include <linux/cpumask.h>
->   #include <linux/export.h>
-> @@ -30,6 +32,10 @@ module_param(download_mode, bool, 0);
->   #define SCM_HAS_IFACE_CLK	BIT(1)
->   #define SCM_HAS_BUS_CLK		BIT(2)
->   
-> +#define QCOM_DLOAD_MASK		GENMASK(5, 4)
-> +#define QCOM_DLOAD_FULLDUMP	0x1
-> +#define QCOM_DLOAD_NODUMP	0x0
-> +
->   struct qcom_scm {
->   	struct device *dev;
->   	struct clk *core_clk;
-> @@ -444,6 +450,7 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
->   
->   static void qcom_scm_set_download_mode(bool enable)
->   {
-> +	u32 val = enable ? QCOM_DLOAD_FULLDUMP : QCOM_DLOAD_NODUMP;
->   	bool avail;
->   	int ret = 0;
->   
-> @@ -453,8 +460,9 @@ static void qcom_scm_set_download_mode(bool enable)
->   	if (avail) {
->   		ret = __qcom_scm_set_dload_mode(__scm->dev, enable);
->   	} else if (__scm->dload_mode_addr) {
-> -		ret = qcom_scm_io_writel(__scm->dload_mode_addr,
-> -				enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0);
-> +		ret = qcom_scm_io_update_field(__scm->dload_mode_addr,
-> +					       QCOM_DLOAD_MASK,
-> +					       FIELD_PREP(QCOM_DLOAD_MASK, val));
->   	} else {
->   		dev_err(__scm->dev,
->   			"No available mechanism for setting download mode\n");
+Thanks
+Macpaul Lin
