@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB0D79B458
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D2F79B0A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354293AbjIKVxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
+        id S1344243AbjIKVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243775AbjIKRmT (ORCPT
+        with ESMTP id S243772AbjIKRmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:42:19 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308E61BB;
+        Mon, 11 Sep 2023 13:42:18 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E681BE;
         Mon, 11 Sep 2023 10:42:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; t=1694454123; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=eTb0gE9hU8uBDBkpRRFbKGEuQ2RS1XoW45bbfW/aqGrghAmUJqN27msK+Sn7jDYL9j
-    OF/Xo9bjunBJXqDX1RYIdsxHsnKxKJyMEt01k7OL8zhRpkU/7FaX0PblT9+bkctOSOOm
-    U5bD6cPQ7GjTg05ZVCaWPjBcEn+Qpzg2z3xvIJviyIpBsA+j74ipmxbTElAoktEpg+A/
-    Q3ICuEcyczDXvbLMLzNunQmfVPc/cEJVDZ1adRYWNZI7LR+chFtssdMeh1UKBXclYLwx
-    MF+qYQNnrThY12DHi3925VUpfdKxtBb0Pyx59Vto8LZj/0wJ5U3wBmSlE0dg3s7RGF+V
-    m+Lw==
+    b=pDIPJkfT0cEwV+CoJX1B2IhRFQVzbhnEubgz0fbw7JKMAHGgMFmMUEfQ0PxYPEfuFy
+    f97F3YjsLFoGbYfCT+WcNN8q2cQFXCk0RXpW0IKifBbGPeyQLQwPN/mjLczcAXDZbIGF
+    X+Nhnp6rrbBGXlqqWdwH8qI8m35eOS4wYOwODeLXahR40yD0oxx3AFqKuDIr+iyggD9U
+    q5Ed7swSvyPBKF9Qw9iFCX0IeJGRibgXFk4aV8CCdUp8dCGsgjuk9rx7ge4R4Mand99R
+    Uz0L80+65P3Zc/rEDsvh0gNX7q/RID7VWSkOHCMnTmuoxeE32Eb8jr9EGoOBn/+1/tU+
+    j/Ng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
-    b=Qw3ftjW9e+rPBAXCpZ2kwGvvgZVLriLV47hqLOzHnk9nH1K/2POga+DzkXKGrgzYwY
-    xmDwXaQfvi8XPhQQvOP9gHUWGFale4KmaGvFn7pCZL++d0tm9pDSuFEoKJGerUpLImi5
-    b7u9cIQRdHEbRAF7LV40VvLC6v16BeEf7KSsGgkpM8mIi88z9plGtnpFxcX0OmWWsNha
-    UFwtqs/1AMvdaGNHXbCPUX4Q72oZEmXFZebnUH05MPNDEr5IFfcfqOfzaiek+GiXnFWy
-    f1RRjTzVdwiuJ5hN3T78GO+gj003NBS68XGOBsNyH4Y/4JFzY+YzMEIq6bceHaMQu8RA
-    fTFA==
+    bh=ShrofkfKMpSbFwfO0X9kQ0kj/RhvfPGBMpcNqkTeAQY=;
+    b=OwPd+XEoTvILtvWUZKerhxLMAtcgSLF/bQ6Ezba+oRErMPlCV50C24JJENuHDK38Vp
+    D/UmfA5aYhM3Gl37naN7qbmu8XZAzN9PGSr3Ex2zUdpZjCnRncv+nxn51MgM0/OzYusc
+    y5hMp8BPk/XFG9ohaFW98TlXsy8vRt2mAg6QYio3Hc075werX9CtsiIxelUo2B4j6CSf
+    AW3H+uDGKzzin8Z5F4kaVx64S2vX0LmcSPMGZOjT/gxi++AHyREZKxvw6hlsZLZUggz2
+    8XJ8H3f2VsglzFdnYbj6W8CtCiABKF4qXwdEwP9bHsNf7g9Y9t/FY5S2gcGgN/9OkGjw
+    NAgw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
@@ -42,35 +42,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
-    b=B/g1M8tzFu5ZMhydu2fK9KclEHt/rWeXPwf3VkQzyA7o3/qQdDpFmPSnCH05Q72kyd
-    4jsqzE+CehyIrU3YLa9O6sV+a5qD2oqzEuF9sEPuNM1FkT2Ju06CJ38D6uSucIkp8MqA
-    jlfrmQkQl0JsUbUE74BjtmlUmkXTZhwB8jXGclp4klbc6iZaasnGT8CKb2ChcHZ2d3o/
-    ugEVtxl1bzvjN/rXitDLJpfPR1/5S+fxY2xEbuUeQqofvsks3H8ZnMAJgM/xJzAKgfGU
-    BNozXZxUop2HZCcsYSwehG0ar+Sxm0CE+JTk3kn7zzq3WQIo+RQijAK4u9zf4WB8PYID
-    8oIQ==
+    bh=ShrofkfKMpSbFwfO0X9kQ0kj/RhvfPGBMpcNqkTeAQY=;
+    b=cTu+U7/cbGgiC4zutzo34fDlTA7hu0MQMI9+9Xu935vADnzVVd0RM/ipYbNiOymwlA
+    0FGEfXIvV0C99Uu0BHoY9wWTBJRPEPStYC3jNZ2VyHgK0fXzGWYzCUqFTC0Bxif5gSCA
+    Qb91km8vNWj5CC5zUs0K4eADQUMx6q3zREXouB46VT7WE126vgrK2UUamo84kgUAIKcK
+    jOFY/tzZBUshIpZdY3cdmAahY1JYiTzKxXza+MMZTmMNpmYUiIHpJjuZz1GC5uIkfdzk
+    RBp16ie2GPzaFiYViZap//Jefw9NuW14oP+aBwUlIJTYq+KcUKq7t3ZcW80wLe6G2SB8
+    zJDw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694454123;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=53ctMRM8ae+O8gJORVGlhrL6VfPj4kCfzWruA73aqMI=;
-    b=vFB0HqYAUyPKZY/BAlA8jKRJyuQobCDHMjcUhiayunLFegR2BReZxQq7yJDBqWhJZx
-    bEwOHmFuYbwAAdY9A5AQ==
+    bh=ShrofkfKMpSbFwfO0X9kQ0kj/RhvfPGBMpcNqkTeAQY=;
+    b=JAlTjNjQ613e4IXroFSc7IoKPDGm64/AH0KUJ+YoSZhkkalxaoExrTIFngkwm/d9u/
+    +/NNq77RfC5TlqIT1WBQ==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l38TY="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id 60372az8BHg3awO
+    with ESMTPSA id 60372az8BHg3awP
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
     Mon, 11 Sep 2023 19:42:03 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Mon, 11 Sep 2023 19:41:46 +0200
-Subject: [PATCH 4/9] arm64: dts: qcom: msm8916: Reserve firmware memory
+Date:   Mon, 11 Sep 2023 19:41:47 +0200
+Subject: [PATCH 5/9] arm64: dts: qcom: msm8916: Reserve MBA memory
  dynamically
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
+Message-Id: <20230911-msm8916-rmem-v1-5-b7089ec3e3a1@gerhold.net>
 References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
 In-Reply-To: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -83,139 +83,55 @@ Cc:     Andy Gross <agross@kernel.org>,
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of the reserved firmware memory on MSM8916 can be relocated when
-respecting the required alignment. To avoid having to precompute the
-reserved memory regions in every board DT, describe the actual
-requirements (size, alignment, alloc-ranges) using the dynamic reserved
-memory allocation.
+At a first glance the MBA memory region on MSM8916 looks intentionally
+placed at the fixed address 0x8ea00000. This is what the ELF headers of
+the firmware specify as base address, and the typical Qualcomm-specific
+bits suggest the binary is not relocatable.
 
-This approach has several advantages:
+However, on a closer look this is pointless: Unlike other firmware
+images the hardware expects to have the raw ELF image loaded to the MBA
+region, including the ELF header (without parsing it at all). This
+means that we actually just load the ELF header (not the code!) at
+0x8ea00000. The real LOAD segments follow at arbitrary aligned
+addresses depending on the structure of the ELF binary.
 
- 1. We can define "templates" for the reserved memory regions in
-    msm8916.dtsi and keep only device-specific details in the board DT.
-    This is useful for the "mpss" region size for example, which varies
-    from device to device. It is no longer necessary to redefine all
-    firmware regions to shift their addresses.
+In practice it looks like we can use an arbitrary 1 MiB-aligned region
+for MBA. The downstream/vendor kernel just allocates this dynamically
+at an arbitrary (aligned) address.
 
- 2. When some of the functionality (e.g. WCNSS, Modem, Venus) is not
-    enabled or needed for a device, the reserved memory can stay
-    disabled, freeing up the unused reservation for Linux.
-
- 3. Devices with special requirements for one of the firmware regions
-    are handled automatically. For example, msm8916-longcheer-l8150
-    has non-relocatable "wcnss" firmware that must be loaded exactly
-    at address 0x8b600000. When this is defined as a static region,
-    the other dynamic allocations automatically adjust to a different
-    place with suitable alignment.
-
-All in all this approach significantly reduces the boilerplate necessary
-to define the different firmware regions, and makes it easier to enable
-functionality on the different devices.
+Drop the pointless fixed address and use the new dynamic reserved
+memory mechanism to allocate a region close to the others. This reduces
+gaps in the memory map and provides Linux with more contiguous memory.
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- .../boot/dts/qcom/msm8916-longcheer-l8150.dts      |  9 +++++++--
- arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi          | 11 ++++-------
- arch/arm64/boot/dts/qcom/msm8916.dtsi              | 22 ++++++++++++++++++----
- 3 files changed, 29 insertions(+), 13 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-index a0bb8de54fb6..503155aefa55 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
-@@ -23,9 +23,14 @@ chosen {
- 		stdout-path = "serial0";
- 	};
- 
-+	/*
-+	 * For some reason, the signed wcnss firmware is not relocatable.
-+	 * It must be loaded at 0x8b600000. All other firmware is relocatable,
-+	 * so place wcnss at the fixed address and then all other firmware
-+	 * regions will be automatically allocated at a fitting place.
-+	 */
- 	reserved-memory {
--		/* wcnss.mdt is not relocatable, so it must be loaded at 0x8b600000 */
--		/delete-node/ wcnss@89300000;
-+		/delete-node/ wcnss;
- 
- 		wcnss_mem: wcnss@8b600000 {
- 			reg = <0x0 0x8b600000 0x0 0x600000>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi b/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
-index 69f268db4df9..1d92c2e57216 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916-ufi.dtsi
-@@ -17,13 +17,6 @@ chosen {
- 		stdout-path = "serial0";
- 	};
- 
--	reserved-memory {
--		mpss_mem: mpss@86800000 {
--			reg = <0x0 0x86800000 0x0 0x5500000>;
--			no-map;
--		};
--	};
--
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 
-@@ -91,6 +84,10 @@ &mpss {
- 	status = "okay";
- };
- 
-+&mpss_mem {
-+	reg = <0x0 0x86800000 0x0 0x5500000>;
-+};
-+
- &pm8916_usbin {
- 	status = "okay";
- };
 diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index 0257cbbb4971..c237f3e48c86 100644
+index c237f3e48c86..38f6c8ea605a 100644
 --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -74,17 +74,31 @@ rfsa@867e0000 {
- 		};
- 
- 		mpss_mem: mpss@86800000 {
-+			/*
-+			 * The memory region for the mpss firmware is generally
-+			 * relocatable and could be allocated dynamically.
-+			 * However, many firmware versions tend to fail when
-+			 * loaded to some special addresses, so it is hard to
-+			 * define reliable alloc-ranges.
-+			 *
-+			 * alignment = <0x0 0x400000>;
-+			 * alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
-+			 */
- 			reg = <0x0 0x86800000 0x0 0x2b00000>;
+@@ -102,9 +102,11 @@ venus_mem: venus {
  			no-map;
  		};
  
--		wcnss_mem: wcnss@89300000 {
--			reg = <0x0 0x89300000 0x0 0x600000>;
-+		wcnss_mem: wcnss {
-+			size = <0x0 0x600000>;
+-		mba_mem: mba@8ea00000 {
++		mba_mem: mba {
++			size = <0x0 0x100000>;
 +			alignment = <0x0 0x100000>;
 +			alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
  			no-map;
+-			reg = <0 0x8ea00000 0 0x100000>;
  		};
- 
--		venus_mem: venus@89900000 {
--			reg = <0x0 0x89900000 0x0 0x600000>;
-+		venus_mem: venus {
-+			size = <0x0 0x600000>;
-+			alignment = <0x0 0x100000>;
-+			alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
- 			no-map;
- 		};
+ 	};
  
 
 -- 
