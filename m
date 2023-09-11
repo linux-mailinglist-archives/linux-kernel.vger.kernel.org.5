@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DA279A5DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8707C79A5E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjIKITp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 04:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S234866AbjIKIUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjIKITo (ORCPT
+        with ESMTP id S234863AbjIKIUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:19:44 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C9DBB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:19:39 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-189-w8d5djPVMbSXyTLkmnO9bg-1; Mon, 11 Sep 2023 09:19:31 +0100
-X-MC-Unique: w8d5djPVMbSXyTLkmnO9bg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
- 2023 09:19:20 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 11 Sep 2023 09:19:20 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>
-CC:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-Subject: RE: [PATCH v2] uapi: fix __DECLARE_FLEX_ARRAY for C++
-Thread-Topic: [PATCH v2] uapi: fix __DECLARE_FLEX_ARRAY for C++
-Thread-Index: AQHZ4m8cjJ3BuT/Tf0m9auRXbQbkb7AVTB0A
-Date:   Mon, 11 Sep 2023 08:19:20 +0000
-Message-ID: <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
-References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
- <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183> <202309080848.60319AF@keescook>
- <f1819874-2b91-4983-9ebe-6cd83d5d3bc3@p183> <202309080910.44BB7CEF@keescook>
-In-Reply-To: <202309080910.44BB7CEF@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Sep 2023 04:20:03 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3BE120
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:19:57 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500913779f5so7117663e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694420395; x=1695025195; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZgoHp4sSbdLPnwsP7QBEFkRKlD8fQKCxSLeR/YtKKwc=;
+        b=ZyjBhxd/4CH0ce0+zqDz4fqROmajy8086/Sw88k2Glm3NBnek5E/bSp796qDR7Sn/1
+         VHDimH1/nbwJfHprTCbG9eevCMibjpxI2uGyCYC3z2jyzz2vFCjzNdWXxtdslcAb01Kp
+         CAxdbkd1kdeXX8gLnu+QZhITl36K+w05+ef/I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694420395; x=1695025195;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZgoHp4sSbdLPnwsP7QBEFkRKlD8fQKCxSLeR/YtKKwc=;
+        b=E5lOpiv2HyefB9mR+UwyhQCHSl5p7doVUinkAzFZsl/nsoiNWwn+aaTU1iCPnIvgEU
+         6jvPmNMaRfwFHugWFSeAAmaBoz53lTGCFs9L9t3Cz55kAMDCS9HtoRio9sVJNmsDye3v
+         7oWQzdy9Ii2LEfXTl/Bv0uEdDorHGz7RLx5yc36EoASR4sLfIbe03W7wzHwY2lbKNOEa
+         NhgXX6kj8QhRK1g8CITOAVp0exZ2IeYw/WLZJUaNrL4Z6m1iXK+Bw0L3Z2v2p3CpNPVA
+         vZWiLCFBB5ylOKap3qhRia2GMTE5qblm9M8Dzc+Y5jLw+RCxlhVASMiqSVYXB8ZtGjIR
+         oNVw==
+X-Gm-Message-State: AOJu0YxNLFq5Qw286Q9poHwWyMx1pDvVkw6edJV+t7rOgSneVJcWYSLV
+        CoAj6ZH91+m5s/vae5KafiBqAw==
+X-Google-Smtp-Source: AGHT+IGKXkVlvpzb1jXGc7GPA/z62m6pR7a/3NtlCutcvnuu34bb7zCIn6QwlQhJ2uEpgzghSPTdTA==
+X-Received: by 2002:a05:6512:3f8:b0:501:bd77:a4b with SMTP id n24-20020a05651203f800b00501bd770a4bmr6358700lfq.9.1694420395351;
+        Mon, 11 Sep 2023 01:19:55 -0700 (PDT)
+Received: from localhost ([2620:0:1043:12:a329:942b:177a:d4d])
+        by smtp.gmail.com with UTF8SMTPSA id z28-20020ac25dfc000000b00500cede2786sm1268411lfq.65.2023.09.11.01.19.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 01:19:54 -0700 (PDT)
+From:   Stefan Adolfsson <sadolfsson@chromium.org>
+X-Google-Original-From: Stefan Adolfsson <sadolfsson@google.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Reka Norman <rekanorman@chromium.org>,
+        linux-media@vger.kernel.org, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Stefan Adolfsson <sadolfsson@chromium.org>
+Subject: [PATCH v2] media: cros-ec-cec: Add Constitution to the match table
+Date:   Mon, 11 Sep 2023 10:19:21 +0200
+Message-ID: <20230911081921.3515928-1-sadolfsson@google.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> Okay, can you please split the patch so they can be backported
-> separately? Then I'll get them landed, etc.
+From: Stefan Adolfsson <sadolfsson@chromium.org>
 
-Since the header with just the extra #endif is badly broken on C++
-isn't it best to ensure they get back-ported together?
-So one patch is probably better.
+Constitution has two HDMI ports which support CEC:
+    Port B is EC port 0
+    Port A is EC port 1
 
-	David
+This patch depends on "media: cros-ec-cec: Add Dibbi to the match
+table".
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Signed-off-by: Stefan Adolfsson <sadolfsson@chromium.org>
+---
+Changes in v2:
+ Use a NULL-terminated conns array for the match table entry
+
+ drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+index 21361eff50ff..85431af65224 100644
+--- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
++++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+@@ -296,6 +296,7 @@ struct cec_dmi_match {
+ 
+ static const char *const fizz_conns[] = { "Port B", NULL };
+ static const char *const dibbi_conns[] = { "Port D", "Port B", NULL };
++static const char *const constitution_conns[] = { "Port B", "Port A", NULL };
+ 
+ static const struct cec_dmi_match cec_dmi_match_table[] = {
+ 	/* Google Fizz */
+@@ -316,6 +317,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
+ 	{ "Google", "Lisbon", "0000:00:02.0", fizz_conns },
+ 	/* Google Dibbi */
+ 	{ "Google", "Dibbi", "0000:00:02.0", dibbi_conns },
++	/* Google Constitution */
++	{ "Google", "Constitution", "0000:00:02.0", constitution_conns },
+ };
+ 
+ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+-- 
+2.42.0.283.g2d96d420d3-goog
 
