@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD5F79A0BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 02:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B85579A0C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 02:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjIKAVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 20:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
+        id S231794AbjIKA0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 20:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjIKAVP (ORCPT
+        with ESMTP id S231303AbjIKA0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 20:21:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FA1125;
-        Sun, 10 Sep 2023 17:21:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75760C433C7;
-        Mon, 11 Sep 2023 00:21:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694391670;
-        bh=seGEeW6xHTnJ7ViTCB9/tGNmeW9Z+shSBEYPh4w8L/A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s6HxJ2xM3WjNraa4MmqjSPe/EuOlwCo63mg4MzSy9sUoDI4Q9ih47dTBLf/v9wVIF
-         ii1SqaY8wXhM7ykKqEoQt4yqHqBVu+s35FncjhKjft1GTGxBjistEedrxAxES7pXXf
-         t6iaZb6O7IELCfcQBCgcuB5I61U+40bXPRP8QCYAp6bLxHLPbxz/5aghMgD8dEIU94
-         +eWH3yiU3bB3/XgA2ICbU6Uof5u4Ii+Ywbijp97Cf9MucxuTA7uPBsweUajmJnRLFt
-         wmDwnYSDTWSkcEeujSLdOHxpacVP0o/u0mLzu8ibRsqQrWp+/acFbCiEfWIZkgwBg0
-         RraPH738J8tpg==
-Date:   Mon, 11 Sep 2023 09:21:05 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] ftrace/selftests: Add softlink to latest log directory
-Message-Id: <20230911092105.95425e2d773f79c9b3b4b94f@kernel.org>
-In-Reply-To: <20230908181721.00f7eb71@gandalf.local.home>
-References: <20230908181721.00f7eb71@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 10 Sep 2023 20:26:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85AC19B
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 17:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694391960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tPpLdpG4maiTSM6PN9I1fTjgodUcBS/7pIjObaruFGQ=;
+        b=ajXX9b+5RiKl4HeWm8zeTK9rRtFymGZhUmgDLhhc/4eB896NVmMycIZpsUplIW+7pR86Ug
+        7K6R9zTqX01eo3xrl4w62PVyH9ukIbzUWePRaraLPwQjoN5MWDjaQYP+15IWyqgqDN6mXa
+        fSp1+NlBMwrXExhzgQD+R/dHHh7lBNc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-645-X6kJb_mwOrivKjodFQX0cg-1; Sun, 10 Sep 2023 20:25:55 -0400
+X-MC-Unique: X6kJb_mwOrivKjodFQX0cg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9DCC929A9CAB;
+        Mon, 11 Sep 2023 00:25:54 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5301521D4F3D;
+        Mon, 11 Sep 2023 00:25:53 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 08:25:50 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
+        David Airlie <airlied@redhat.com>
+Subject: Re: [PATCH v2 2/5] kernel: kexec: copy user-array safely
+Message-ID: <ZP5ejovfsyEjTeg9@MiWiFi-R3L-srv>
+References: <cover.1694202430.git.pstanner@redhat.com>
+ <31313a8a1dd1baf9dd3c21fbe8dd46b9e111f20c.1694202430.git.pstanner@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31313a8a1dd1baf9dd3c21fbe8dd46b9e111f20c.1694202430.git.pstanner@redhat.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Sep 2023 18:17:21 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: Steven Rostedt (Google) <rostedt@goodmis.org>
+On 09/08/23 at 09:59pm, Philipp Stanner wrote:
+> Currently, there is no overflow-check with memdup_user().
 > 
-> When I'm debugging something with the ftrace selftests and need to look at
-> the logs, it becomes tedious that I need to do the following:
+> Use the new function memdup_array_user() instead of memdup_user() for
+> duplicating the user-space array safely.
 > 
->  ls -ltr logs
->  [ copy the last directory ]
->  ls logs/<paste-last-dir>
-> 
-> to see where the logs are.
-> 
-> Instead, do the common practice of having a "latest" softlink to the last
-> run selftest. This way after running the selftest I only need to do:
-> 
->  ls logs/latest/
-> 
-> and it will always give me the directory of the last run selftest logs!
-> 
-
-Nice! I like this and this looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you!
-
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Suggested-by: David Airlie <airlied@redhat.com>
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 > ---
+>  kernel/kexec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/ftrace/ftracetest b/tools/testing/selftests/ftrace/ftracetest
-> index cb5f18c06593..7df8baa0f98f 100755
-> --- a/tools/testing/selftests/ftrace/ftracetest
-> +++ b/tools/testing/selftests/ftrace/ftracetest
-> @@ -124,6 +124,7 @@ parse_opts() { # opts
->      ;;
->      --logdir|-l)
->        LOG_DIR=$2
-> +      LINK_PTR=
->        shift 2
->      ;;
->      *.tc)
-> @@ -181,7 +182,10 @@ fi
->  TOP_DIR=`absdir $0`
->  TEST_DIR=$TOP_DIR/test.d
->  TEST_CASES=`find_testcases $TEST_DIR`
-> -LOG_DIR=$TOP_DIR/logs/`date +%Y%m%d-%H%M%S`/
-> +LOG_TOP_DIR=$TOP_DIR/logs
-> +LOG_DATE=`date +%Y%m%d-%H%M%S`
-> +LOG_DIR=$LOG_TOP_DIR/$LOG_DATE/
-> +LINK_PTR=$LOG_TOP_DIR/latest
->  KEEP_LOG=0
->  KTAP=0
->  DEBUG=0
-> @@ -207,6 +211,10 @@ else
->    LOG_FILE=$LOG_DIR/ftracetest.log
->    mkdir -p $LOG_DIR || errexit "Failed to make a log directory: $LOG_DIR"
->    date > $LOG_FILE
-> +  if [ "x-$LINK_PTR" != "x-" ]; then
-> +    unlink $LINK_PTR
-> +    ln -fs $LOG_DATE $LINK_PTR
-> +  fi
->  fi
+> diff --git a/kernel/kexec.c b/kernel/kexec.c
+> index 107f355eac10..8f35a5a42af8 100644
+> --- a/kernel/kexec.c
+> +++ b/kernel/kexec.c
+> @@ -247,7 +247,7 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+>  		((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
+>  		return -EINVAL;
 >  
->  # Define text colors
+> -	ksegments = memdup_user(segments, nr_segments * sizeof(ksegments[0]));
+> +	ksegments = memdup_array_user(segments, nr_segments, sizeof(ksegments[0]));
 
+LGTM,
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Acked-by: Baoquan He <bhe@redhat.com>
+
+>  	if (IS_ERR(ksegments))
+>  		return PTR_ERR(ksegments);
+>  
+> -- 
+> 2.41.0
+> 
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
+
