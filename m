@@ -2,65 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D76CD79BEA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082579B96A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237933AbjIKWip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        id S243172AbjIKWQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240923AbjIKO5V (ORCPT
+        with ESMTP id S240968AbjIKO62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:57:21 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B09E4B
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:57:16 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-313c930ee0eso2827347f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694444235; x=1695049035; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TCSVjF+G/Yb3+dPBWGz9EuIiyh+/ldUAKZlZ+MbeoHM=;
-        b=alo7MMQz1MoiVX26Nna85O1ht7DzrLo13Y80EZEvIRzoNKOm/oR6/TGBaWp9WcwE1J
-         gDccdf7Nl6NILf799HOavx4Tbfp7GAQUiMpGXRIJxx0obnPgHrss0/qaSzyxuyTM5I5N
-         YGXSYIBWnuR3LByR7hEDPUT3UyEwRpgd9KJZ8GonoddcHvQQJVcr8H+YNO5NYOOAS25P
-         gsfa605kNP96KeaaYJL3pUDvIZ4LsBuFc9bnEKmvPioNDO2e1DnvAXwGKpzKPt0jHzgb
-         /2pUXkLK+JrzMW8tl1ip+1yaxOAfGXEGHVO4vggCvi9zSm4ivS1BaVjKBGVllcWhCXnF
-         SYlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694444235; x=1695049035;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TCSVjF+G/Yb3+dPBWGz9EuIiyh+/ldUAKZlZ+MbeoHM=;
-        b=DpF67JdNpUbX/q1aj0i5MXqMSD1CmLJ22xeg2rmPf0KS/QkniNCD15gOsLDhkegkCD
-         avwww6Jm5Y93luoJkb5+PRgPIS91VkB2zqVSBlAV9pIbZSYRjpE92GBGvNNVMRxSQTYq
-         MUu8YSusiA/1XVC0wpDArbLTHknQpPf+UMkybazfl9nc+GNgKvCfgbAbbJzKFsOdTpVG
-         j/wS5HzyAhNpBFAeAgwHuwtA5kaXUCnQVTebE6jlMJ0ZdTOIlRnsCTVOymSeIziFsUqV
-         og0PXoSnmJ/ouxZ3IFXBgioCCe4eQuXn/R0YvZOlHw+htI6VknLArByfPTO5HJ3Mz1x+
-         RE/A==
-X-Gm-Message-State: AOJu0YzYH9hjFwC/JoyboSm5VMUA6oTkph945QokIDzooWPLCvCRSI7J
-        qmmGDGT04aYCzuZRb5lQ1eIoDM6D9eY=
-X-Google-Smtp-Source: AGHT+IF8AQnXMqKw+wXUY955bd2z842BBltBx/W8SpN0YrTJ17nBacddlqEtoES1ZoK3oQ/7F/gHOXNEgb8=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:62e7:6658:cb4:b858])
- (user=glider job=sendgmr) by 2002:adf:ce84:0:b0:317:41be:d871 with SMTP id
- r4-20020adfce84000000b0031741bed871mr114853wrn.14.1694444235317; Mon, 11 Sep
- 2023 07:57:15 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 16:57:00 +0200
-In-Reply-To: <20230911145702.2663753-1-glider@google.com>
-Mime-Version: 1.0
-References: <20230911145702.2663753-1-glider@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230911145702.2663753-2-glider@google.com>
-Subject: [PATCH v2 2/4] kmsan: prevent optimizations in memcpy tests
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, dvyukov@google.com, elver@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Mon, 11 Sep 2023 10:58:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E6B1B9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694444304; x=1725980304;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FT4+8y4yqex+aCmnurGGSCi/Y+7+16wH2XrhNGt8psM=;
+  b=WD6OXOA9+t0PtgYQC4fJ1pK4mXD69i0sQRDJnOSsET1LgPMd4TC2qxgv
+   /vKDIe2yc4xhujeN9RqR/rAtvJ6J+1CNwWTwGn1mirZ6IQ+vssWyB9HKd
+   JgKHnwEwMnBJyCvy8twnJ+DvWbgkmHtglk5hlcegoQLX6ykR424uNbnxl
+   Lw36/iOmsWuPm7SZCSLYpq2OE3FrmlJx4BRQu6GnDkBUhO/tz1aisd/W0
+   Y1DmVtPwwIjpX9iT0K+XcWxGaMxC4+QqD6ywwYzjVDObwIXOVQa6lAaEY
+   kXGterM9qUNFjPvvN3ZxdaeUz/fETIkJKMmnNjFkPP48RoewGopKgz04F
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368342060"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="368342060"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:57:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917047573"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="917047573"
+Received: from aabuleil-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.192])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:57:10 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 729B810940E; Mon, 11 Sep 2023 17:57:07 +0300 (+03)
+Date:   Mon, 11 Sep 2023 17:57:07 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Ard Biesheuvel <ardb@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        kexec@lists.infradead.org, Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: kexec reboot failed due to commit 75d090fd167ac
+Message-ID: <20230911145707.hslq47ngknshrlyk@box.shutemov.name>
+References: <20230829125134.GA509331@ziqianlu-dell>
+ <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
+ <20230829140451.GA509854@ziqianlu-dell>
+ <20230907131409.masxz42ik6u456qp@box.shutemov.name>
+ <20230908060230.GA283801@ziqianlu-dell>
+ <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
+ <202309080856.F066F92C98@keescook>
+ <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
+ <20230909113209.actnan6hczrclz2d@box.shutemov.name>
+ <CALu+AoSKpgbbKmsL8iuWpQB2ANqnhhfXR5pN5m0EsKZeFUBPkw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALu+AoSKpgbbKmsL8iuWpQB2ANqnhhfXR5pN5m0EsKZeFUBPkw@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,113 +78,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang 18 learned to optimize away memcpy() calls of small uninitialized
-scalar values. To ensure that memcpy tests in kmsan_test.c still perform
-calls to memcpy() (which KMSAN replaces with __msan_memcpy()), declare a
-separate memcpy_noinline() function with volatile parameters, which
-won't be optimized.
+On Mon, Sep 11, 2023 at 10:56:36PM +0800, Dave Young wrote:
+> > early console in extract_kernel
+> > input_data: 0x000000807eb433a8
+> > input_len: 0x0000000000d26271
+> > output: 0x000000807b000000
+> > output_len: 0x0000000004800c10
+> > kernel_total_size: 0x0000000003e28000
+> > needed_size: 0x0000000004a00000
+> > trampoline_32bit: 0x000000000009d000
+> >
+> > Decompressing Linux... out of pgt_buf in arch/x86/boot/compressed/ident_map_64.c!?
+> > pages->pgt_buf_offset: 0x0000000000006000
+> > pages->pgt_buf_size: 0x0000000000006000
+> >
+> >
+> > Error: kernel_ident_mapping_init() failed
+> >
+> > It crashes on #PF due to stbl->nr_tables dereference in
+> > efi_get_conf_table() called from init_unaccepted_memory().
+> >
+> > I don't see anything special about stbl location: 0x775d6018.
+> >
+> > One other bit of information: disabling 5-level paging also helps the
+> > issue.
+> >
+> > I will debug further.
 
-Also retire DO_NOT_OPTIMIZE(), as memcpy_noinline() is apparently
-enough.
+The problem is not limited to unaccepted memory, it also triggers if we
+reach efi_get_rsdp_addr() in the same setup.
 
-Signed-off-by: Alexander Potapenko <glider@google.com>
+I think we have several problems here.
 
----
-v2:
- - fix W=1 warnings reported by LKP test robot
----
- mm/kmsan/kmsan_test.c | 41 ++++++++++++++++-------------------------
- 1 file changed, 16 insertions(+), 25 deletions(-)
+- 6 pages for !RANDOMIZE_BASE is only enough for kernel, cmdline,
+  boot_data and setup_data if we assume that they are in different 1G
+  regions and do not cross the 1G boundaries. 4-level paging: 1 for PGD, 1
+  for PUD, 4 for PMD tables.
 
-diff --git a/mm/kmsan/kmsan_test.c b/mm/kmsan/kmsan_test.c
-index 312989aa2865c..a8d4ca4a1066d 100644
---- a/mm/kmsan/kmsan_test.c
-+++ b/mm/kmsan/kmsan_test.c
-@@ -407,33 +407,25 @@ static void test_printk(struct kunit *test)
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
- 
--/*
-- * Prevent the compiler from optimizing @var away. Without this, Clang may
-- * notice that @var is uninitialized and drop memcpy() calls that use it.
-- *
-- * There is OPTIMIZER_HIDE_VAR() in linux/compier.h that we cannot use here,
-- * because it is implemented as inline assembly receiving @var as a parameter
-- * and will enforce a KMSAN check. Same is true for e.g. barrier_data(var).
-- */
--#define DO_NOT_OPTIMIZE(var) barrier()
-+/* Prevent the compiler from inlining a memcpy() call. */
-+static noinline void *memcpy_noinline(volatile void *dst,
-+				      const volatile void *src, size_t size)
-+{
-+	return memcpy((void *)dst, (const void *)src, size);
-+}
- 
--/*
-- * Test case: ensure that memcpy() correctly copies initialized values.
-- * Also serves as a regression test to ensure DO_NOT_OPTIMIZE() does not cause
-- * extra checks.
-- */
-+/* Test case: ensure that memcpy() correctly copies initialized values. */
- static void test_init_memcpy(struct kunit *test)
- {
- 	EXPECTATION_NO_REPORT(expect);
--	volatile int src;
--	volatile int dst = 0;
-+	volatile long long src;
-+	volatile long long dst = 0;
- 
--	DO_NOT_OPTIMIZE(src);
- 	src = 1;
- 	kunit_info(
- 		test,
- 		"memcpy()ing aligned initialized src to aligned dst (no reports)\n");
--	memcpy((void *)&dst, (void *)&src, sizeof(src));
-+	memcpy_noinline((void *)&dst, (void *)&src, sizeof(src));
- 	kmsan_check_memory((void *)&dst, sizeof(dst));
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
-@@ -451,8 +443,7 @@ static void test_memcpy_aligned_to_aligned(struct kunit *test)
- 	kunit_info(
- 		test,
- 		"memcpy()ing aligned uninit src to aligned dst (UMR report)\n");
--	DO_NOT_OPTIMIZE(uninit_src);
--	memcpy((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
-+	memcpy_noinline((void *)&dst, (void *)&uninit_src, sizeof(uninit_src));
- 	kmsan_check_memory((void *)&dst, sizeof(dst));
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
-@@ -474,8 +465,9 @@ static void test_memcpy_aligned_to_unaligned(struct kunit *test)
- 	kunit_info(
- 		test,
- 		"memcpy()ing aligned uninit src to unaligned dst (UMR report)\n");
--	DO_NOT_OPTIMIZE(uninit_src);
--	memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
-+	kmsan_check_memory((void *)&uninit_src, sizeof(uninit_src));
-+	memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
-+			sizeof(uninit_src));
- 	kmsan_check_memory((void *)dst, 4);
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
-@@ -498,8 +490,8 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
- 	kunit_info(
- 		test,
- 		"memcpy()ing aligned uninit src to unaligned dst - part 2 (UMR report)\n");
--	DO_NOT_OPTIMIZE(uninit_src);
--	memcpy((void *)&dst[1], (void *)&uninit_src, sizeof(uninit_src));
-+	memcpy_noinline((void *)&dst[1], (void *)&uninit_src,
-+			sizeof(uninit_src));
- 	kmsan_check_memory((void *)&dst[4], sizeof(uninit_src));
- 	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
- }
-@@ -513,7 +505,6 @@ static void test_memcpy_aligned_to_unaligned2(struct kunit *test)
-                                                                             \
- 		kunit_info(test,                                            \
- 			   "memset" #size "() should initialize memory\n"); \
--		DO_NOT_OPTIMIZE(uninit);                                    \
- 		memset##size((uint##size##_t *)&uninit, 0, 1);              \
- 		kmsan_check_memory((void *)&uninit, sizeof(uninit));        \
- 		KUNIT_EXPECT_TRUE(test, report_matches(&expect));           \
+  Looks like we never map EFI/ACPI memory explicitly.
+
+  It might work if kernel/cmdline/... are in single 1G and we have
+  spare pages to handle page faults.
+
+- No spare memory to handle mapping for cc_info and cc_info->cpuid_phys;
+
+- I didn't increase BOOT_INIT_PGT_SIZE when added 5-level paging support.
+  And if start pagetables from scratch ('else' case of 'if (p4d_offset...))
+  we run out of memory.
+
+I believe similar logic would apply for BOOT_PGT_SIZE for RANDOMIZE_BASE=y
+case.
+
+I don't know what the right fix here. We can increase the constants to be
+enough to cover existing cases, but it is very fragile. I am not sure I
+saw all users. Some of them could silently handled with pagefault handler
+in some setups. And it is hard to catch new users during code review.
+
+Also I'm not sure why do we need pagefault handler there. Looks like it
+just masking problems. I think everything has to be mapped explicitly.
+
+Any comments?
+
 -- 
-2.42.0.283.g2d96d420d3-goog
-
+  Kiryl Shutsemau / Kirill A. Shutemov
