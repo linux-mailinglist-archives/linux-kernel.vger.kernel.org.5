@@ -2,215 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CF779B131
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE25E79AE00
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356411AbjIKWDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
+        id S1379051AbjIKWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243634AbjIKRZ4 (ORCPT
+        with ESMTP id S243638AbjIKR0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:25:56 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE3FF5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:25:51 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BChWtX028465;
-        Mon, 11 Sep 2023 17:24:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- mime-version; s=corp-2023-03-30;
- bh=/A1JTTKL2FmXOMwshwDHsikN8yguFzpZoD9fIsIVw80=;
- b=CDZMhkeakCJbuv5xWK5m011EAtZos1MbgIDh2mDLsa1yOFoTMZ8hkN4DF4/20SH8rJWa
- pZ20huZ6uf2tP3GdvTaUEjYW6lPwQ8ozK0BZB4isqnsw3GwE54aETA3ZwmkTPiMGYkke
- 2XHma5IqZyKe+xAsEv/ezDF2VLJJwZlr3GXOGPkj6ptIWYSTFxitOyMO4Z3Ybs/5UI3f
- anHx6OdcEngDhjJ9/njre2+Jx1gRUtRbzPPNKTywKwFrtf6WXEMBDzpCaoB4upEcZtgO
- 4vkiIzLhqH5VgW3KvSxGjEIjAG8FmC+SE5Gr+QmphpqCoA28K7MH2pQnbcJPlWigJoec 8w== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t1jp7a17v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Sep 2023 17:24:34 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38BGUbuf007682;
-        Mon, 11 Sep 2023 17:24:33 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f54htdx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Sep 2023 17:24:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gv5iCa21Yp4ASaEAuDAb6CgU8xKVtupWtFNRLNcQZC0Fii596ZcUrg67QFiNedeo85YYs5pYoIwQi3NER5gYOuoWP1r4jjjSI5fZwYukojdxKvRX0YGCOqPenLGggSlBuloKZEdsaLWRa2Fn0FOfPvCUi9bf2LyUGFwfbViLJyl43yg8rpbWUBsnKo1Gam00hZdGasFogl2E6KAWqsnOnP4o76jV7hFmGewroiqCnXdAA8S9AhjFScIY3wZJDvt8CIErGQiV+RX6r+rP1eUVZnoOkB/Ka4p7j2DXLHGuZaiqazNML3n5T2F98cj/7caEuX3Df1JFspNrseZNkeFNVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/A1JTTKL2FmXOMwshwDHsikN8yguFzpZoD9fIsIVw80=;
- b=Jy9Etx/2afONh2OrN35jIpMZShoGqhxJ0IP7lAXvslR+rV2Frf9B3iMGtG5bwbQayC0ojp2MQj1PO/cEL7V1/XkUgpy0HMaw/Sx5pNQjFZ6l4WYB08uxQeFuzY59Ts6CgX+5GtxMfz4XVUHfjnxj9vHseg+MzrRYelscSv/gi2k5wkWWP4y4sFJ69yTMLUdAPuHS60bIeQLBxc5ttTrIEhIpp2LzMIhJIemtqxQtAhIxDhlE9y7P5BD1i+UKimACWhgbsXWB8UFtzaGHaAg6yP0bhMwCAzG0Z3fd4EgnVYsqBb6HFtWo7+Y3GGqPFo7YpxmMouLqR2hDXojOmC756w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/A1JTTKL2FmXOMwshwDHsikN8yguFzpZoD9fIsIVw80=;
- b=SQ1Lp/yaYa1yGJJsbJZG3B3+ZKzc6ZwxmKootuHob35MAiJrkzHoHn19TGi4mofot64H515+oM3DNboSmjDkYEoLkfUDCzTzBRxBNjuUsuOUJWmFoGf72XcgpW5N4QomPfRg9wb3U8JBPsZNh8QxVwu8MBQrIFwXDchHOv1pIRI=
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
- by SN7PR10MB6644.namprd10.prod.outlook.com (2603:10b6:806:2af::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Mon, 11 Sep
- 2023 17:24:30 +0000
-Received: from CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::864:27ff:9c9b:fc03]) by CO6PR10MB5409.namprd10.prod.outlook.com
- ([fe80::864:27ff:9c9b:fc03%5]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 17:24:30 +0000
-References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
- <20230830184958.2333078-9-ankur.a.arora@oracle.com>
- <20230908124201.GC19320@noisy.programming.kicks-ass.net>
-User-agent: mu4e 1.4.10; emacs 27.2
-From:   Ankur Arora <ankur.a.arora@oracle.com>
+        Mon, 11 Sep 2023 13:26:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6123189
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694453195; x=1725989195;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Dr4FEXNz/stJi+V50/fd1tyGFjzqEyysU/Yv3GX+t5c=;
+  b=UWY4NwxMcFhME7yktFIASp/IhqackrIKRuo8hwhSbVdQN7fklof1ro/k
+   esj5wJG6JEtq3/oWF/oYGPaiFWsVCgVPF7ChhH/+RG6rmjHewdDCG2ari
+   0c3/8iioXfUyGR9ilFb31lf5tVB0Q1iJyU7TWGIljGgQjjJFEwWh/Awi/
+   JCuq8JXFM1P3OCXgQ7VaAZT9wKL8TEy+QvO27tRuG2R55/w+PReLkdDC8
+   apmZL2Ieu1CNlXRlWgkSDsBkxKWoD2X2SkM47T99+oJ8DR7p51BrFqaNN
+   p5RaAUimG67+Bx42S/xnTL8QkRPoDlNgh5RNeyAhZXh9hZEiwB3FH0oyQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409113777"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="409113777"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 10:26:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="808899244"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="808899244"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Sep 2023 10:26:29 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfkg7-0006XI-0v;
+        Mon, 11 Sep 2023 17:26:27 +0000
+Date:   Tue, 12 Sep 2023 01:25:30 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, rostedt@goodmis.org,
-        tglx@linutronix.de, jon.grimm@amd.com, bharata@amd.com,
-        raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-        konrad.wilk@oracle.com
-Subject: Re: [PATCH v2 8/9] irqentry: define irqentry_exit_allow_resched()
-In-reply-to: <20230908124201.GC19320@noisy.programming.kicks-ass.net>
-Date:   Mon, 11 Sep 2023 10:24:28 -0700
-Message-ID: <8734zk1v3n.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0080.namprd04.prod.outlook.com
- (2603:10b6:303:6b::25) To CO6PR10MB5409.namprd10.prod.outlook.com
- (2603:10b6:5:357::14)
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: vmlinux.o: warning: objtool: svm_vcpu_enter_exit+0x34: call to
+ context_tracking_enabled_this_cpu() leaves .noinstr.text section
+Message-ID: <202309120137.Eo6SpBIz-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|SN7PR10MB6644:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b0a1e84-e925-4bd2-3f5c-08dbb2ebf52b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y3oBXc+/b/q0AUJ+VTR6Qm5Y2JcBW1JFvM6wdoECwLgYmkkp4lmE1rxfZg7Lcfp1wuFPiERiz4yaG1GwsiuM0ed1VULSYuyfSSJ0RX2UaFBEYefI68GtwlU5pdDL4ApiB4lLAO7xOL4sHbXpcibA2Vft/lF1UgeRIfcpxZphcdLMf5KVq15NQj6rNP3AbAZgIiksUFGDG3q1rcmy+xW8NW0BPWwoliUUmitSIzjt9x9cBbTfErwGXq6V+2PAs9svbxYQZ9YY0QVrkfvwEkfiBcGyhh8r/NEzmhkatbAivb9Gq1Xeg4hAUfeqsQYDRjvK7WDOoUz3uq/KpLBvLCa+S8Jml+PJ8JURiO+b944Dwkd8S1ErYn9D1xMGhedhmXSctcihpClhp013+HFPsg9zB2sUBAHk9ak+dvmuDMOrz4x5MY6r3vOhzHXAc79vl2smDA4NF1059YckSHd/b38ESXwYEVlRiinZsBSZ72UsaTSvOcN/3rA7BWtBFPmGapccEuXUYDYd9Y0Yr3iTSjUUO9lUbgBG07OJ265xzx9MiYKvpQlG3aBAySqFyZ3qfp6u
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(366004)(136003)(1800799009)(186009)(451199024)(38100700002)(7416002)(478600001)(5660300002)(4326008)(8676002)(41300700001)(66946007)(316002)(66476007)(66556008)(6916009)(26005)(2616005)(107886003)(36756003)(86362001)(83380400001)(6512007)(6506007)(6486002)(2906002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3LtqcBn/TwAyMIOHb5LRcVYYVITrPFCWA7leXqh+4Nd27GZ5JFgtV7s3qaDv?=
- =?us-ascii?Q?3cwRBjoW0VEszloKalhKG3SzlfAs9jPb1ujDICOqo4pLFgF8NWrNdRlVfd7N?=
- =?us-ascii?Q?x2RLLKScEMq8E7gxnZBPw3BHPPR0upSeEHk7EVM1BYjtFA4La7ewWPQc9pNv?=
- =?us-ascii?Q?ksLApBJXvO8L9qLLHbfW8qnVRAq9IMffp14VIhVYo+EiKDuCUT62LZfFR/ZZ?=
- =?us-ascii?Q?3m6jI+MIhmRr6uDHZRMxPurRr3S2w/Uqj2XCTP+pSU4kpjvDK2RbM/oDcniz?=
- =?us-ascii?Q?LNCOmLwGX4wnPoRnNgz79Ew5mBmYvIwb9lyYdL9dlwVfKP/4fgLFF46JoR9U?=
- =?us-ascii?Q?dZ3ryye+tJkuDBnIQmjhM+PmyKzLX8flGwNnnkTqFatFZEWA4HIZ+Kixz4O6?=
- =?us-ascii?Q?tBUOOFCdlUDCOxjjN/uUWUqumh/eguzPYH0LmkjdgGhK70DJ056tE1yx+VGs?=
- =?us-ascii?Q?S2XSv4JjFQm9nfg+lmNVt6HOKsZ7uqH0ZYUcZ7TM+WM+QhycppIOHcukMdjC?=
- =?us-ascii?Q?0VAhBpVwWuhIpVImHEyMi0115ERAQpgzry6SMo2FqtycXzTdZEAP/1SXxGmu?=
- =?us-ascii?Q?7l/VyOsLPCpLhnR2HL2rwEeW05SGuYmovElK9ZYmx4NZKAinT4QP9BwjpthI?=
- =?us-ascii?Q?/svuYdBddVT5lvI8SetyqAghuhBu1FFAsFvoDwrqmrCZKMjm7GfCzu8paLL3?=
- =?us-ascii?Q?3ItA8dBPJQtYpmdUWov8We+adH/3QF4wIXTxbl4nCjoFWeuVR8qNHSuZM5tf?=
- =?us-ascii?Q?qoDXakLhdp/2rESaMjrnGcSc4vn+nSv+lYdl5V1qFHUpbXSPNRSqSAkMCx48?=
- =?us-ascii?Q?ZZOe2tNi3CCnHbglUzMeG2rhixzPkUDz8XNjf8LoxoFPiu0vtrCdjqR3dUUA?=
- =?us-ascii?Q?LqJhRF9PDBE/bJ0IamRNiEzWXmwC+6buvOlfCg0w/4B1YvN197lG0Yv5Yc64?=
- =?us-ascii?Q?Ty2SJ7qDxy9TUWldMwrCmtvAwy8vp3wOrOyVV/mxKfBFF3tUdTL9JZP+rB2W?=
- =?us-ascii?Q?AX3WUOp9L/xa2ZjuAdvfGPz/AoZ6ybPP+sP8J+c032n1OBWBk/K4oRym0VPO?=
- =?us-ascii?Q?765R2rAWES1QoRk0qhIrhonlxPoGlvls6AqlyxX3QUF/dg2QnXUTyh8qiQEZ?=
- =?us-ascii?Q?damkQ4EwppCCNxwpvyj+AlTSsGq+z5EYXFCx6WyxIZsv5zwkJ9STL0/LZX2I?=
- =?us-ascii?Q?bARwDQ1Q32Fy+MwdrbZ1/O2NfdRhoKi5cydrp6Uvn4NbMRmcv/xteUPchUnw?=
- =?us-ascii?Q?GJKPub1XZ/40sh15yTEupK7eb/nG1JjwLOk4vcw0b1EYpZz/qxi6kltx541Y?=
- =?us-ascii?Q?scP/kivYGS9sRR1K08F50M9wDY+YO8bgG1wmtSChqFNvj8jvLHFOyQlQvCjR?=
- =?us-ascii?Q?Aja4Co5gpzzCiGitKqN1r1Ggke3A/vESktsnxUUfo/AxC88SE9EZSoFlJwTJ?=
- =?us-ascii?Q?4ITe2nzT6XfZt5YoYW2DqM5p+VPEAZwmyqcMXBAO5/58DtHyqIQR7nYirCcx?=
- =?us-ascii?Q?GNCn5JRpt6OMCTHhgVtkJfoMXC10QZ9siA6/d993oOVyAA0x1IeLf2eUfV1r?=
- =?us-ascii?Q?sZ2Uwf3aTKKZWp4Hy9GcqOMxWAD5nj1yLEdxCbcho+B44xnEoqKQu4wpD2b+?=
- =?us-ascii?Q?ww=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?BwCn8q1QWQJlxFrD1YqF1g3sAw3HIEpJv1WFEfOZuOLfr3IPwM9AvUF7Ny8F?=
- =?us-ascii?Q?Uy5+Ht6yG1QQpe1t0qRtUvNbmyELfyd7T1rgOtTeA7I0uDl6X6NGICjeugAR?=
- =?us-ascii?Q?LKtR6juQhQyYZvuCY+D3t6CNfo8/WGRoncEhcPdILKjrUviP1xWFpRHWpfTm?=
- =?us-ascii?Q?h6CMJS1L1dZpzFTIwERojVx1IY5jYpynOABrDHeTkx5J7bQW2lKi51VNWbDM?=
- =?us-ascii?Q?jpudUeiVFtr6DaSfeeEChzn/D2YfAywPCbPs76q5wlrzpSk1n4aHBzO4OhEA?=
- =?us-ascii?Q?vW9gwQQM/exX5gxzOxPl2DjzuuFvPxivbj9is3xOPDzhfMVukQXpPQlMock6?=
- =?us-ascii?Q?49idN5+iBq0a8WbXPxN9EmLIB6Jx8eSS6bcM7joKmR55mzhHQmYg87A/u8Jp?=
- =?us-ascii?Q?IK/mf5h2eJWId7XeQhhJ8qeHF7r0nS6D2ZQO+LxPl+9i+P6qVIiGYECMkDjF?=
- =?us-ascii?Q?bQ5/4tkamAW6ywHeW2PWIJyWvuUK1DRNZ3JvW8CZaPuulwbUfd3S2lxYpUtK?=
- =?us-ascii?Q?6fcpDUWglElang8GeJfIVkX5IJ0coEj1pGf6PelcPBSGYp2d29sUBI3TqYWC?=
- =?us-ascii?Q?06pMSVSfaLCu9/Jth+TuveVv/1LT55aOcEzwvb73Mdqy9F7VnxyQuAXv10GJ?=
- =?us-ascii?Q?fQ9pJm9FqoKTbnTAETyuR8M06dI/WuXaaQFwR4nTLEIE8Bj8SwI4wlkYsW3b?=
- =?us-ascii?Q?GkmeKGNAtIFVerI0WuvdOYGUryT6zhy27BN/+oIoz36y3+HOwJFHy62ieCQi?=
- =?us-ascii?Q?tPRFfgci1ipwpi5IXNbD4vgYPg9x6N66kAW1HAJF9Prj4d4tbWSEr5WHXrsj?=
- =?us-ascii?Q?n5mwVOlB8bNXG5AZyt7EdEd996Yxv/4xW6CkKD0auiMT3BlrISHOvk+eefcB?=
- =?us-ascii?Q?ZB5Cqz3nogrQVjzqsqr4K3wA/b9HrZTSSDX7vWe02zX9cDxRNRtGZXaf1T2M?=
- =?us-ascii?Q?c/oZcfQB5dIJIh/G+rQWNkDOJHXlKqWe9iaVqnvSrDHmPeB2dDIYhH/+j48g?=
- =?us-ascii?Q?/Zcj/TL0/vLBu3GJyNnYp7f6Xo9PXQ/76lmu2DqNNAiK4oNmX4zaMppemsjW?=
- =?us-ascii?Q?a4nzPC1g9aObfK2g34v6rIgEmXSy5r8ztvoZE5tQuzT01t5bpbqjanjWAW9E?=
- =?us-ascii?Q?JcY3XiSinsK6upjiyxaQQycdqFZP2gb9HzMf3zuWOZ7UipNNjigIcqY=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b0a1e84-e925-4bd2-3f5c-08dbb2ebf52b
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Sep 2023 17:24:30.5914
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SLakUGnPdtP5MCxTzLLUV5l+mSpNxMp8RqdH3VhPXTKfKlpBVTDsg9mQFT9jdTdQJUvz7pA8pB6gyYBVyavU6iclVAn2f3vC0kkgoObPy9E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6644
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-11_13,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- spamscore=0 mlxscore=0 mlxlogscore=731 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309110159
-X-Proofpoint-GUID: GPXtbESQn1QhgRVbA6tmu-T34qAk9ZgO
-X-Proofpoint-ORIG-GUID: GPXtbESQn1QhgRVbA6tmu-T34qAk9ZgO
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+commit: 656d054e0a15ec327bd82801ccd58201e59f6896 jump_label,noinstr: Avoid instrumentation for JUMP_LABEL=n builds
+date:   1 year, 4 months ago
+config: x86_64-randconfig-102-20230911 (https://download.01.org/0day-ci/archive/20230912/202309120137.Eo6SpBIz-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120137.Eo6SpBIz-lkp@intel.com/reproduce)
 
-Peter Zijlstra <peterz@infradead.org> writes:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120137.Eo6SpBIz-lkp@intel.com/
 
-> On Wed, Aug 30, 2023 at 11:49:57AM -0700, Ankur Arora wrote:
->
->> +#ifdef TIF_RESCHED_ALLOW
->> +#define irqentry_exit_cond_resched_dynamic_disabled	irqentry_exit_allow_resched
->> +#else
->>  #define irqentry_exit_cond_resched_dynamic_disabled	NULL
->> +#endif
->
-> per ^, the below comments are not entirely accurate, since not every
-> architecture has TIF_RESCHED_ALLOW, perhaps make it:
->
->> @@ -8692,25 +8694,25 @@ EXPORT_SYMBOL(__cond_resched_rwlock_write);
->>   *
->>   *
->>   * NONE:
->> - *   cond_resched               <- __cond_resched
->> - *   might_resched              <- RET0
->> - *   preempt_schedule           <- NOP
->> - *   preempt_schedule_notrace   <- NOP
->> - *   irqentry_exit_cond_resched <- NOP
->> + *   cond_resched                <- __cond_resched
->> + *   might_resched               <- RET0
->> + *   preempt_schedule            <- NOP
->> + *   preempt_schedule_notrace    <- NOP
->> + *   irqentry_exit_cond_resched  <- irqentry_exit_allow_resched
->
-> + *   irqentry_exit_cond_resched  <- NOP / irqentry_exit_allow_resched
->
-> Or something.
->
-> Also, why did you add that extra whilespace all over? Makes it a bit
-> harder to see what actually changed.
+All warnings (new ones prefixed by >>):
 
-Yeah, not sure why I didn't catch that. Will fix.
+   ld: warning: arch/x86/power/hibernate_asm_64.o: missing .note.GNU-stack section implies executable stack
+   ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+>> vmlinux.o: warning: objtool: svm_vcpu_enter_exit+0x34: call to context_tracking_enabled_this_cpu() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: enter_from_user_mode+0x52: call to on_thread_stack() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: syscall_enter_from_user_mode+0x56: call to on_thread_stack() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: syscall_enter_from_user_mode_prepare+0x52: call to on_thread_stack() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: irqentry_enter_from_user_mode+0x52: call to on_thread_stack() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: crc_pcl+0x7c: missing int3 after indirect jump
+   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
+   ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
+   ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
+   ld: warning: vmlinux.o: requires executable stack (because the .note.GNU-stack section is executable)
+   ld: warning: vmlinux has a LOAD segment with RWX permissions
 
---
-ankur
+
+objdump-func vmlinux.o svm_vcpu_enter_exit:
+0000 00000000000001eb <svm_vcpu_enter_exit>:
+0000      1eb:	41 55                	push   %r13
+0002      1ed:	41 54                	push   %r12
+0004      1ef:	55                   	push   %rbp
+0005      1f0:	53                   	push   %rbx
+0006      1f1:	48 8b 87 48 24 00 00 	mov    0x2448(%rdi),%rax
+000d      1f8:	48 89 fb             	mov    %rdi,%rbx
+0010      1fb:	4c 8b 68 08          	mov    0x8(%rax),%r13
+0014      1ff:	90                   	nop
+0015      200:	e8 00 00 00 00       	call   205 <svm_vcpu_enter_exit+0x1a>	201: R_X86_64_PLT32	trace_hardirqs_on_prepare-0x4
+001a      205:	e8 00 00 00 00       	call   20a <svm_vcpu_enter_exit+0x1f>	206: R_X86_64_PLT32	lockdep_hardirqs_on_prepare-0x4
+001f      20a:	90                   	nop
+0020      20b:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # 211 <svm_vcpu_enter_exit+0x26>	20d: R_X86_64_PC32	context_tracking_key-0x4
+0026      211:	85 c0                	test   %eax,%eax
+0028      213:	7e 0a                	jle    21f <svm_vcpu_enter_exit+0x34>
+002a      215:	bf 02 00 00 00       	mov    $0x2,%edi
+002f      21a:	e8 00 00 00 00       	call   21f <svm_vcpu_enter_exit+0x34>	21b: R_X86_64_PLT32	__context_tracking_enter-0x4
+0034      21f:	e8 00 00 00 00       	call   224 <svm_vcpu_enter_exit+0x39>	220: R_X86_64_PC32	.text+0x12b162
+0039      224:	84 c0                	test   %al,%al
+003b      226:	75 07                	jne    22f <svm_vcpu_enter_exit+0x44>
+003d      228:	90                   	nop
+003e      229:	e8 00 00 00 00       	call   22e <svm_vcpu_enter_exit+0x43>	22a: R_X86_64_PC32	.text+0x136e61
+0043      22e:	90                   	nop
+0044      22f:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
+0049      234:	e8 00 00 00 00       	call   239 <svm_vcpu_enter_exit+0x4e>	235: R_X86_64_PLT32	lockdep_hardirqs_on-0x4
+004e      239:	48 8b 03             	mov    (%rbx),%rax
+0051      23c:	80 b8 61 ab 00 00 00 	cmpb   $0x0,0xab61(%rax)
+0058      243:	74 19                	je     25e <svm_vcpu_enter_exit+0x73>
+005a      245:	80 b8 60 ab 00 00 00 	cmpb   $0x0,0xab60(%rax)
+0061      24c:	75 06                	jne    254 <svm_vcpu_enter_exit+0x69>
+0063      24e:	90                   	nop
+0064      24f:	0f 0b                	ud2
+0066      251:	90                   	nop
+0067      252:	eb 0a                	jmp    25e <svm_vcpu_enter_exit+0x73>
+0069      254:	4c 89 ef             	mov    %r13,%rdi
+006c      257:	e8 00 00 00 00       	call   25c <svm_vcpu_enter_exit+0x71>	258: R_X86_64_PLT32	__svm_sev_es_vcpu_run-0x4
+0071      25c:	eb 7d                	jmp    2db <svm_vcpu_enter_exit+0xf0>
+0073      25e:	4c 63 63 20          	movslq 0x20(%rbx),%r12
+0077      262:	48 c7 c5 00 00 00 00 	mov    $0x0,%rbp	265: R_X86_64_32S	svm_data
+007e      269:	49 81 fc ff 1f 00 00 	cmp    $0x1fff,%r12
+0085      270:	76 0f                	jbe    281 <svm_vcpu_enter_exit+0x96>
+0087      272:	4c 89 e6             	mov    %r12,%rsi
+008a      275:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	278: R_X86_64_32S	.data+0xc6500
+0091      27c:	e8 00 00 00 00       	call   281 <svm_vcpu_enter_exit+0x96>	27d: R_X86_64_PLT32	__ubsan_handle_out_of_bounds-0x4
+0096      281:	4a 8b 04 e5 00 00 00 00 	mov    0x0(,%r12,8),%rax	285: R_X86_64_32S	__per_cpu_offset
+009e      289:	48 8b 2c 28          	mov    (%rax,%rbp,1),%rbp
+00a2      28d:	48 8b 83 30 24 00 00 	mov    0x2430(%rbx),%rax
+00a9      294:	0f 01 da             	vmload
+00ac      297:	eb 05                	jmp    29e <svm_vcpu_enter_exit+0xb3>
+00ae      299:	e8 00 00 00 00       	call   29e <svm_vcpu_enter_exit+0xb3>	29a: R_X86_64_PLT32	kvm_spurious_fault-0x4
+00b3      29e:	48 8d b3 c0 01 00 00 	lea    0x1c0(%rbx),%rsi
+00ba      2a5:	4c 89 ef             	mov    %r13,%rdi
+00bd      2a8:	e8 00 00 00 00       	call   2ad <svm_vcpu_enter_exit+0xc2>	2a9: R_X86_64_PLT32	__svm_vcpu_run-0x4
+00c2      2ad:	48 8b 83 30 24 00 00 	mov    0x2430(%rbx),%rax
+00c9      2b4:	0f 01 db             	vmsave
+00cc      2b7:	eb 05                	jmp    2be <svm_vcpu_enter_exit+0xd3>
+00ce      2b9:	e8 00 00 00 00       	call   2be <svm_vcpu_enter_exit+0xd3>	2ba: R_X86_64_PLT32	kvm_spurious_fault-0x4
+00d3      2be:	48 8b 45 28          	mov    0x28(%rbp),%rax
+00d7      2c2:	48 2b 05 00 00 00 00 	sub    0x0(%rip),%rax        # 2c9 <svm_vcpu_enter_exit+0xde>	2c5: R_X86_64_PC32	vmemmap_base-0x4
+00de      2c9:	48 c1 f8 06          	sar    $0x6,%rax
+00e2      2cd:	48 c1 e0 0c          	shl    $0xc,%rax
+00e6      2d1:	0f 01 da             	vmload
+00e9      2d4:	eb 05                	jmp    2db <svm_vcpu_enter_exit+0xf0>
+00eb      2d6:	e8 00 00 00 00       	call   2db <svm_vcpu_enter_exit+0xf0>	2d7: R_X86_64_PLT32	kvm_spurious_fault-0x4
+00f0      2db:	48 8b 7c 24 20       	mov    0x20(%rsp),%rdi
+00f5      2e0:	e8 00 00 00 00       	call   2e5 <svm_vcpu_enter_exit+0xfa>	2e1: R_X86_64_PLT32	lockdep_hardirqs_off-0x4
+00fa      2e5:	8b 05 00 00 00 00    	mov    0x0(%rip),%eax        # 2eb <svm_vcpu_enter_exit+0x100>	2e7: R_X86_64_PC32	context_tracking_key-0x4
+0100      2eb:	85 c0                	test   %eax,%eax
+0102      2ed:	7e 0a                	jle    2f9 <svm_vcpu_enter_exit+0x10e>
+0104      2ef:	bf 02 00 00 00       	mov    $0x2,%edi
+0109      2f4:	e8 00 00 00 00       	call   2f9 <svm_vcpu_enter_exit+0x10e>	2f5: R_X86_64_PLT32	__context_tracking_exit-0x4
+010e      2f9:	90                   	nop
+010f      2fa:	e8 00 00 00 00       	call   2ff <svm_vcpu_enter_exit+0x114>	2fb: R_X86_64_PLT32	trace_hardirqs_off_finish-0x4
+0114      2ff:	90                   	nop
+0115      300:	5b                   	pop    %rbx
+0116      301:	5d                   	pop    %rbp
+0117      302:	41 5c                	pop    %r12
+0119      304:	41 5d                	pop    %r13
+011b      306:	31 c0                	xor    %eax,%eax
+011d      308:	31 f6                	xor    %esi,%esi
+011f      30a:	31 ff                	xor    %edi,%edi
+0121      30c:	c3                   	ret
+0122      30d:	cc                   	int3
+0123      30e:	66 90                	xchg   %ax,%ax
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
