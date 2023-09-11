@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413F379B207
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DAD79AEAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357088AbjIKWE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
+        id S1343783AbjIKVMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:12:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244394AbjIKUUd (ORCPT
+        with ESMTP id S244395AbjIKUUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 16:20:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7798185;
-        Mon, 11 Sep 2023 13:20:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5231EC433C7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BC61A7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:20:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F83EC433CC;
         Mon, 11 Sep 2023 20:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1694463628;
-        bh=t+7z6sKacC4bNsdeAQDIrInU1BgKBgiThKa36hekUHM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=vIA7WWczePJi65XG6iZtGohn8yGNCzh3/cU2eYLsksjybLNOvWmnArQt3wxDYNQS1
-         SF5roN/gdpcp9fOyl2dovpcqOthXqzPsJE/+iIqLHcmN4XyeHHr8GvWeIwsIKEnrae
-         zDVZtvLR8zSsL1k51qQl34iQpvhUDrtz30Gxb2sMCseAz6scW40t7Eib2PLwdndVhL
-         SOVxXWFzz6KclxMRfHZLDnIPvt3FU26jgjckhXOESfWfNVPF8XBVBD+mLX1JiZTyzD
-         oF8Jqac4h5svNOooBowUX7LEhi0/AAWpnbKZ7YZ4Uqk2/uWNQif/AEmxemdwOZRSlq
-         6XSJyrR/2ArwA==
-Message-ID: <a1b8a5bcbddc57cb3c62d3d81fdc4c4a.sboyd@kernel.org>
+        bh=/6boL5OvPgGQMj7fVM/E0w9tw38/mNOjDIHkGfDGg5U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SV27z0Us6CE7qvgYNHZTrncdrMrdHgaaPim/TIYX9fEZT36cJf2qSnFTphQ8BOC4E
+         /qT2O50iJQBzG+6adHB+WI4YMnwZwHgzSiMku3+oRfQtQ4m0dhL5SuFzwit9WZidS7
+         Hw5MqQv+/LOLZ/lgbShSstce/FoTrbl/QCsy/RHq109CeFASBGjq/iK+Lh9RQJf2db
+         p35CqBA/to6H0N8XB/X8B5wSdALIPX+kr5SFWBKGTpz1infh2vIaaW9HVes7ak1ljQ
+         m2knN09zlttmxo0Z3kjrcx+vulS2JQSw7+z0WbidYb4OQnMFLpy29cC40qYLbOseB+
+         PP9OWBK0G3UpQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 72759E1C282;
+        Mon, 11 Sep 2023 20:20:28 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230909000703.3478902-1-sboyd@kernel.org>
-References: <20230909000703.3478902-1-sboyd@kernel.org>
-Subject: Re: [PATCH] clk: asm9620: Remove 'hw' local variable that isn't checked
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        patches@lists.linux.dev,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        kernel test robot <lkp@intel.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Date:   Mon, 11 Sep 2023 13:20:26 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V2 ethtool] hns3: add support dump registers for hns3 driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169446362845.25976.158160732211905683.git-patchwork-notify@kernel.org>
+Date:   Mon, 11 Sep 2023 20:20:28 +0000
+References: <20230829065656.2725081-1-shaojijie@huawei.com>
+In-Reply-To: <20230829065656.2725081-1-shaojijie@huawei.com>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     mkubecek@suse.cz, shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -52,25 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Stephen Boyd (2023-09-08 17:07:02)
-> The 'hw' pointer local variable in this function became unused after
-> commit f5290d8e4f0c ("clk: asm9260: use parent index to link the
-> reference clock"). Remove it to silence an unused but set variable
-> warning.
->=20
->  drivers/clk/clk-asm9260.c:258:17: warning: variable 'hw' set but not use=
-d [-Wunused-but-set-variable]
->            struct clk_hw *hw, *pll_hw;
->                           ^
->    1 warning generated.
->=20
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Fixes: f5290d8e4f0c ("clk: asm9260: use parent index to link the referenc=
-e clock")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309042014.IWERPl09-lkp@i=
-ntel.com/
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
+Hello:
 
-Applied to clk-next
+This patch was applied to ethtool/ethtool.git (master)
+by Michal Kubecek <mkubecek@suse.cz>:
+
+On Tue, 29 Aug 2023 14:56:56 +0800 you wrote:
+> Add support pretty printer for the registers of hns3 driver.
+> This printer supports PF and VF, and is compatible with hns3
+> drivers of earlier versions.
+> 
+> Sample output:
+> 
+> $ ethtool -d eth1
+> [cmdq_regs]
+>   comm_nic_csq_baseaddr_l : 0x48168000
+>   comm_nic_csq_baseaddr_h : 0x00000000
+>   comm_nic_csq_depth      : 0x00000080
+>   comm_nic_csq_tail       : 0x00000050
+>   comm_nic_csq_head       : 0x00000050
+>   comm_nic_crq_baseaddr_l : 0x48170000
+>   comm_nic_crq_baseaddr_h : 0x00000000
+>   comm_nic_crq_depth      : 0x00000080
+>   comm_nic_crq_tail       : 0x00000000
+>   comm_nic_crq_head       : 0x00000000
+>   comm_vector0_cmdq_src   : 0x00000000
+>   comm_cmdq_intr_sts      : 0x00000000
+>   comm_cmdq_intr_en       : 0x00000002
+>   comm_cmdq_intr_gen      : 0x00000000
+> [common_regs]
+>   misc_vector_base    : 0x00000001
+>   pf_other_int        : 0x00000040
+>   misc_reset_sts      : 0x00000000
+>   misc_vector_int_sts : 0x00000000
+>   global_reset        : 0x00000000
+>   fun_rst_ing         : 0x00000000
+>   gro_en              : 0x00000001
+> ...
+> 
+> [...]
+
+Here is the summary with links:
+  - [V2,ethtool] hns3: add support dump registers for hns3 driver
+    https://git.kernel.org/pub/scm/network/ethtool/ethtool.git/commit/?id=a1f71f85d02e
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
