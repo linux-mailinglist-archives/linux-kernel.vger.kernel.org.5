@@ -2,152 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525AA79A0FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 03:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0327779A0FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 03:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbjIKBec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 21:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47754 "EHLO
+        id S232331AbjIKBfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 21:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjIKBeb (ORCPT
+        with ESMTP id S231730AbjIKBfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 21:34:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4132F121
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 18:34:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694396067; x=1725932067;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=lcMIg4ZUMdUPB+qingAv1Gk9sLiSwWr1iSzn0Vf2810=;
-  b=noJl12POqdPIovrrCvTvMnGYHzsvaqmXCp6Bk6fZA/LchBrodFu3mx+7
-   OQbCHFuWBfkiXXcC7hKsyy6rnX/UO3ubU6mbYtcwdjaoQdFuFTpOIzczQ
-   +7RHQiubGXBxv70tS/0hJflgnkN2ZhAxft46yWHlEytL1uyd/ZgeO9pWu
-   C2SopY5QesUaIn1hoNiBOj0DJgCgb4MwR2j588lF+RwiKiIZUDgz31Du3
-   zxEk0/Hm80cNLvh3J+VZo7Ovn0+nS3xiG8Ij6tB7nVdNpTbIwrdzJJB0T
-   5+Iflyp1ARUr9XpMNhgLo6qdkstR7mQnEjekMYAFg5tzTpaOfxJh7kfs6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="357420170"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="357420170"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 18:34:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="858124850"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="858124850"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Sep 2023 18:34:25 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfVol-0005eq-0F;
-        Mon, 11 Sep 2023 01:34:23 +0000
-Date:   Mon, 11 Sep 2023 09:33:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Namjae Jeon <linkinjeon@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Steve French <stfrench@microsoft.com>
-Subject: fs/smb/server/vfs.c:929: warning: Function parameter or member
- 'path' not described in 'ksmbd_vfs_setxattr'
-Message-ID: <202309110946.zgwPz5cN-lkp@intel.com>
+        Sun, 10 Sep 2023 21:35:38 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A2E121
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 18:35:32 -0700 (PDT)
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230911013530epoutp01f23a78109e8321752a2965d5c173f8bb~DtE2TB3Dz2299122991epoutp01X
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:35:30 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230911013530epoutp01f23a78109e8321752a2965d5c173f8bb~DtE2TB3Dz2299122991epoutp01X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694396130;
+        bh=8eJgZeaFbEsj0QhssoQfhVmof4A93dXSX4xLkpJuYSc=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=WMJvSpz9IazInBaj4LWe2DNIogwNql99+t2yu2wQu2i7zQJ4D/Q+BQ3d8Z5td41Ex
+         CsDdLNLYE24xC6EFbtgHsa5uZ2kT/qQ6C0iGeTh9kXXm4vbQqyrfZJb4yw7sP48LJT
+         qybBx+H3BxvP3nazMTWiZJ8OGFLDqNgNFbCZs4BQ=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230911013529epcas2p1009fec4ec3e20bfbf1d37f12ef633a0e~DtE1fa41Z1935419354epcas2p1_;
+        Mon, 11 Sep 2023 01:35:29 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.88]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4RkTmw4x6jz4x9Pw; Mon, 11 Sep
+        2023 01:35:28 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        90.69.09660.0EE6EF46; Mon, 11 Sep 2023 10:35:28 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230911013528epcas2p13cf413d9d41ab93ee1f6a924c4e3f935~DtE0k3Ypl2910929109epcas2p1U;
+        Mon, 11 Sep 2023 01:35:28 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230911013528epsmtrp205038945a3ba1db08fbc323537fec7d0~DtE0kF6cS0370003700epsmtrp2S;
+        Mon, 11 Sep 2023 01:35:28 +0000 (GMT)
+X-AuditID: b6c32a47-afdff700000025bc-e2-64fe6ee06bef
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        71.EA.08649.0EE6EF46; Mon, 11 Sep 2023 10:35:28 +0900 (KST)
+Received: from KORCO011456 (unknown [10.229.38.105]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230911013527epsmtip22961711704d618a2950bba6d3cb1c194~DtE0R_VgX2379423794epsmtip2r;
+        Mon, 11 Sep 2023 01:35:27 +0000 (GMT)
+From:   "Kiwoong Kim" <kwmad.kim@samsung.com>
+To:     "'Martin K. Petersen'" <martin.petersen@oracle.com>
+Cc:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <bvanassche@acm.org>, <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <adrian.hunter@intel.com>, <sc.suh@samsung.com>,
+        <hy50.seo@samsung.com>, <sh425.lee@samsung.com>,
+        <kwangwon.min@samsung.com>, <junwoo80.lee@samsung.com>,
+        <wkon.kim@samsung.com>
+In-Reply-To: <yq1jzt5j5go.fsf@ca-mkp.ca.oracle.com>
+Subject: RE: [RESEND PATCH v3 0/2] change UIC command handling
+Date:   Mon, 11 Sep 2023 10:35:27 +0900
+Message-ID: <02b701d9e450$3e7d5ca0$bb7815e0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIwe0l2XHSCkaXhuPDRLLuGM/RalAHEhVGBAhaVcJivSNAtgA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmue6DvH8pBjf+q1icfLKGzeLBvG1s
+        Fi9/XmWzOPiwk8Vi2oefzBarFz9gsVh0YxuTxa6/zUwWW2/sZLG4vGsOm0X39R1sFsuP/2Oy
+        6Lp7g9Fi6b+3LBabL31jceD3uHzF22PxnpdMHhMWHWD0+L6+g83j49NbLB59W1YxenzeJOfR
+        fqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA1y0z
+        B+h4JYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWleul5eaomVoYGB
+        kSlQYUJ2xvw1M5kK7vBWXNh2i7GB8RZ3FyMnh4SAicT/u7PZuxi5OIQEdjBKrL98ixnC+cQo
+        8ef+EyjnG6PE9hfPmGFaPn84CtWyl1Fi2rF5TBDOS0aJ5sZPbCBVbALaEtMe7mYFsUUEzCUm
+        TjjKAlLELPCBSWL97RlgRZwCxhLPl50Dsjk4hAXsJO7vkAMxWQRUJR4+rwap4BWwlOh/fIoF
+        whaUODnzCZjNLGAg8f7cfGYIW15i+9s5UMcpSPx8ugxqrZPEgSPfmSBqRCRmd7aBfSMh8IRD
+        4vq2/awQDS4S/WsghkoICEu8Or6FHcKWkvj8bi/YaRIC2RJ7FopBhCskFk97C1VuLDHrWTsj
+        RImyxJFbUKfxSXQc/ssOEeaV6GgTgqhWlvg1aTIjhC0pMfPmHfYJjEqzkDw2C8ljs5A8NgvJ
+        AwsYWVYxiqUWFOempxYbFRjDIzs5P3cTIzhda7nvYJzx9oPeIUYmDsZDjBIczEoivCWH/qYI
+        8aYkVlalFuXHF5XmpBYfYjQFBvVEZinR5HxgxsgriTc0sTQwMTMzNDcyNTBXEue91zo3RUgg
+        PbEkNTs1tSC1CKaPiYNTqoFp+V21OyIbIx7EHK6onbB5Pl+wgW1aiI8Si2burntCxqEae3c7
+        qfDrWgk6CngYcb3fH7GZhy2JZd7NOya72y8d5lR/2C/m4pi/Vc9IjZmlcp7xDJeWd64vNVIZ
+        vf4Uuld/Wl4589DSsKRJFfPcn+RpuH8P+vCY80ngCc7Nl59wHLWfcfpXY0jiWn6DD0kca4TD
+        +WIeaExnfqRUX1bxIf67f4DmI4YN97MvvrL2FRSblsowh7N80tvfzlGfneVamZI6707pKNkS
+        +njRAq/uJv5NpwyffXK0DNatUVn9p0KOv/mhqWni57m8WvyFiSGdCdvfNnyZdnth2G5Th5w5
+        bwKloq2v8pmWyQct8ToyRYmlOCPRUIu5qDgRAGcTHutgBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrBIsWRmVeSWpSXmKPExsWy7bCSvO6DvH8pBqcb2SxOPlnDZvFg3jY2
+        i5c/r7JZHHzYyWIx7cNPZovVix+wWCy6sY3JYtffZiaLrTd2slhc3jWHzaL7+g42i+XH/zFZ
+        dN29wWix9N9bFovNl76xOPB7XL7i7bF4z0smjwmLDjB6fF/fwebx8ektFo++LasYPT5vkvNo
+        P9DNFMARxWWTkpqTWZZapG+XwJUxf81MpoI7vBUXtt1ibGC8xd3FyMkhIWAi8fnDUXYQW0hg
+        N6PErPXqEHFJiRM7nzNC2MIS91uOsHYxcgHVPGeU+D7tEBNIgk1AW2Law92sILaIgLnExAlH
+        WUCKmAUamCUa1h9kg+jYyChxfOIWsCpOAWOJ58vOASU4OIQF7CTu75ADMVkEVCUePq8GqeAV
+        sJTof3yKBcIWlDg58wmYzSxgJHHu0H42CFteYvvbOcwQxylI/Hy6DOoGJ4kDR74zQdSISMzu
+        bGOewCg8C8moWUhGzUIyahaSlgWMLKsYJVMLinPTc5MNCwzzUsv1ihNzi0vz0vWS83M3MYIj
+        V0tjB+O9+f/0DjEycTAeYpTgYFYS4S059DdFiDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkp
+        QgLpiSWp2ampBalFMFkmDk6pBiaF7z3P2j/KCyvelDs9QTO0mfmTv74Ek+Vnjndf2hdE/trN
+        GfaoKkRxTsAVvVcNcbeuhfusEFI+u8k2wyzk3K6F9cuD2x75fgi7EzlZ6lwvv1JhnNPcie1N
+        Rre3/ljq9ubWmvm6vbFT6/b5H1PRVPAV+378ddHFjvdmYsV9z65t1321tvZoZX19l29Aiq/C
+        OQWR8mPmDGx7nmvyxF1fbJG5+12+kmKuWMQflTDVPWs+XVh7qyC39NBZls9/z5lObH1+67vr
+        ZDsD/rO3VXsuP1xw6mK25M11Jf+U9S233OBxjWE0k3gYUrX1LsfM/DQWey6GY74lvWF3HvCf
+        WFbV6ZvzfFVOrFF3TcyMDenz1ZVYijMSDbWYi4oTATt4iOtLAwAA
+X-CMS-MailID: 20230911013528epcas2p13cf413d9d41ab93ee1f6a924c4e3f935
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230904014146epcas2p37d6690a5eb3a5652571bb00e358231a3
+References: <CGME20230904014146epcas2p37d6690a5eb3a5652571bb00e358231a3@epcas2p3.samsung.com>
+        <cover.1693790060.git.kwmad.kim@samsung.com>
+        <yq1jzt5j5go.fsf@ca-mkp.ca.oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 40b268d384a22276dca1450549f53eed60e21deb ksmbd: add mnt_want_write to ksmbd vfs functions
-date:   3 months ago
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230911/202309110946.zgwPz5cN-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309110946.zgwPz5cN-lkp@intel.com/reproduce)
+> > v2 -> v3: rule out the change of polling w/ pmc from this thread.
+> > (I'll post the change later)
+> > v1 -> v2: remove an unused variable in __ufshcd_send_uic_cmd
+> >
+> > Kiwoong Kim (2):
+> >   ufs: make __ufshcd_send_uic_cmd not wrapped by host_lock
+> >   ufs: poll HCS.UCRDY before issuing a UIC command
+> 
+> Applied to 6.6/scsi-staging, thanks!
+> 
+> --
+> Martin K. Petersen	Oracle Linux Engineering
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309110946.zgwPz5cN-lkp@intel.com/
+Hi, Martin
 
-All warnings (new ones prefixed by >>):
+The following patch seems to make trouble because of using
+read_poll_timeout.
+Its initial version used udelay and after discussion it's been changed.
+Could you revert this patch set?
 
-   fs/smb/server/vfs.c:54: warning: Function parameter or member 'parent' not described in 'ksmbd_vfs_lock_parent'
-   fs/smb/server/vfs.c:54: warning: Function parameter or member 'child' not described in 'ksmbd_vfs_lock_parent'
-   fs/smb/server/vfs.c:372: warning: Function parameter or member 'fp' not described in 'ksmbd_vfs_read'
-   fs/smb/server/vfs.c:372: warning: Excess function parameter 'fid' description in 'ksmbd_vfs_read'
-   fs/smb/server/vfs.c:488: warning: Function parameter or member 'fp' not described in 'ksmbd_vfs_write'
-   fs/smb/server/vfs.c:488: warning: Excess function parameter 'fid' description in 'ksmbd_vfs_write'
-   fs/smb/server/vfs.c:551: warning: Function parameter or member 'path' not described in 'ksmbd_vfs_getattr'
-   fs/smb/server/vfs.c:551: warning: Function parameter or member 'stat' not described in 'ksmbd_vfs_getattr'
-   fs/smb/server/vfs.c:551: warning: Excess function parameter 'work' description in 'ksmbd_vfs_getattr'
-   fs/smb/server/vfs.c:551: warning: Excess function parameter 'fid' description in 'ksmbd_vfs_getattr'
-   fs/smb/server/vfs.c:551: warning: Excess function parameter 'attrs' description in 'ksmbd_vfs_getattr'
-   fs/smb/server/vfs.c:568: warning: Function parameter or member 'p_id' not described in 'ksmbd_vfs_fsync'
-   fs/smb/server/vfs.c:591: warning: Function parameter or member 'work' not described in 'ksmbd_vfs_remove_file'
-   fs/smb/server/vfs.c:591: warning: Function parameter or member 'path' not described in 'ksmbd_vfs_remove_file'
-   fs/smb/server/vfs.c:591: warning: Excess function parameter 'name' description in 'ksmbd_vfs_remove_file'
-   fs/smb/server/vfs.c:634: warning: Function parameter or member 'work' not described in 'ksmbd_vfs_link'
-   fs/smb/server/vfs.c:811: warning: Function parameter or member 'fp' not described in 'ksmbd_vfs_truncate'
-   fs/smb/server/vfs.c:811: warning: Excess function parameter 'fid' description in 'ksmbd_vfs_truncate'
-   fs/smb/server/vfs.c:852: warning: Excess function parameter 'size' description in 'ksmbd_vfs_listxattr'
->> fs/smb/server/vfs.c:929: warning: Function parameter or member 'path' not described in 'ksmbd_vfs_setxattr'
->> fs/smb/server/vfs.c:929: warning: Excess function parameter 'dentry' description in 'ksmbd_vfs_setxattr'
-   fs/smb/server/vfs.c:954: warning: Function parameter or member 'option' not described in 'ksmbd_vfs_set_fadvise'
-   fs/smb/server/vfs.c:954: warning: Excess function parameter 'options' description in 'ksmbd_vfs_set_fadvise'
-   fs/smb/server/vfs.c:1168: warning: Function parameter or member 'um' not described in 'ksmbd_vfs_lookup_in_dir'
-   fs/smb/server/vfs.c:1203: warning: Function parameter or member 'work' not described in 'ksmbd_vfs_kern_path_locked'
+> ufs: poll HCS.UCRDY before issuing a UIC command
 
+[ 4671.226480] [3: kworker/u20:29:17140] BUG: scheduling while atomic:
+kworker/u20:29/17140/0x00000002
+..
+[ 4671.228723] [3: kworker/u20:29:17140]  panic+0x16c/0x388
+[ 4671.228745] [3: kworker/u20:29:17140]  check_panic_on_warn+0x60/0x94
+[ 4671.228764] [3: kworker/u20:29:17140]  __schedule_bug+0x6c/0x94
+[ 4671.228786] [3: kworker/u20:29:17140]  __schedule+0x6f4/0xa64
+[ 4671.228806] [3: kworker/u20:29:17140]  schedule+0x7c/0xe8
+[ 4671.228824] [3: kworker/u20:29:17140]
+schedule_hrtimeout_range_clock+0x98/0x114
+[ 4671.228841] [3: kworker/u20:29:17140]  schedule_hrtimeout_range+0x14/0x24
+[ 4671.228856] [3: kworker/u20:29:17140]  usleep_range_state+0x60/0x94
+[ 4671.228871] [3: kworker/u20:29:17140]  __ufshcd_send_uic_cmd+0xa0/0x1c4
+[ 4671.228893] [3: kworker/u20:29:17140]  ufshcd_uic_pwr_ctrl+0x15c/0x390
+[ 4671.228908] [3: kworker/u20:29:17140]
+ufshcd_uic_hibern8_enter+0x9c/0x25c
+[ 4671.228922] [3: kworker/u20:29:17140]
+ufshcd_link_state_transition+0x34/0xb0
+[ 4671.228939] [3: kworker/u20:29:17140]  __ufshcd_wl_suspend+0x3f0/0x4b4
 
-vim +929 fs/smb/server/vfs.c
+Thanks you.
 
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  914  
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  915  /**
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  916   * ksmbd_vfs_setxattr() - vfs helper for smb set extended attributes value
-4609e1f18e19c3 fs/ksmbd/vfs.c      Christian Brauner 2023-01-13  917   * @idmap:	idmap of the relevant mount
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  918   * @dentry:	dentry to set XATTR at
-63f09a9986eb58 fs/ksmbd/vfs.c      Jiapeng Chong     2023-02-08  919   * @attr_name:	xattr name for setxattr
-63f09a9986eb58 fs/ksmbd/vfs.c      Jiapeng Chong     2023-02-08  920   * @attr_value:	xattr value to set
-63f09a9986eb58 fs/ksmbd/vfs.c      Jiapeng Chong     2023-02-08  921   * @attr_size:	size of xattr value
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  922   * @flags:	destination buffer length
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  923   *
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  924   * Return:	0 on success, otherwise error
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  925   */
-4609e1f18e19c3 fs/ksmbd/vfs.c      Christian Brauner 2023-01-13  926  int ksmbd_vfs_setxattr(struct mnt_idmap *idmap,
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  927  		       const struct path *path, const char *attr_name,
-0c5fd887d2bb47 fs/ksmbd/vfs.c      Christian Brauner 2022-07-06  928  		       void *attr_value, size_t attr_size, int flags)
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16 @929  {
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  930  	int err;
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  931  
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  932  	err = mnt_want_write(path->mnt);
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  933  	if (err)
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  934  		return err;
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  935  
-4609e1f18e19c3 fs/ksmbd/vfs.c      Christian Brauner 2023-01-13  936  	err = vfs_setxattr(idmap,
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  937  			   path->dentry,
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  938  			   attr_name,
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  939  			   attr_value,
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  940  			   attr_size,
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  941  			   flags);
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  942  	if (err)
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  943  		ksmbd_debug(VFS, "setxattr failed, err %d\n", err);
-40b268d384a222 fs/smb/server/vfs.c Namjae Jeon       2023-06-15  944  	mnt_drop_write(path->mnt);
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  945  	return err;
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  946  }
-f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon       2021-03-16  947  
-
-:::::: The code at line 929 was first introduced by commit
-:::::: f44158485826c076335d6860d35872271a83791d cifsd: add file operations
-
-:::::: TO: Namjae Jeon <namjae.jeon@samsung.com>
-:::::: CC: Steve French <stfrench@microsoft.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
