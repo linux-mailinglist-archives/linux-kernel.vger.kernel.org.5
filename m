@@ -2,66 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D7379A28F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545FA79A2A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbjIKEtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 00:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
+        id S233771AbjIKE7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 00:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231517AbjIKEtF (ORCPT
+        with ESMTP id S231184AbjIKE7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 00:49:05 -0400
+        Mon, 11 Sep 2023 00:59:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9920118;
-        Sun, 10 Sep 2023 21:49:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2E1D7C433C8;
-        Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2E3138;
+        Sun, 10 Sep 2023 21:59:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8414DC433C7;
+        Mon, 11 Sep 2023 04:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694407740;
-        bh=jRbGX37pKE/flPAVK4KmRTNNYn+YjmtCaP+B5V/gVX0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hRTK/O7zd2EVcyRIHv/i0CAjz9UpjidahDXSIXk4ACb38jZ+6K0Q30pzOqZOLqypY
-         C75nnrtT8Yv6GiMTvD61pKvkFLRfhtUBVWtZcBLARUs5c+zflqjKF2vVtznLpozQoM
-         GCNDa18FhndrrkuE6m/0q7HCv7yOAC6mlWVm+BRnredL6UXg7U1td5nMObALXI8tDQ
-         4sZzvZ12uCsLziIZXf9AsxgF8FMszCNitekMmUlSZhzGlOAtLbZ6bAuUGQovA8xlPE
-         s6xIC6qIfoHYkDG9jnYDNje1UTc0fpBvjr9tsdVWGYlC4/aJBTcr3g4fKbEVro77gN
-         eo2XoPvZ0aheA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 122E7E1F67E;
-        Mon, 11 Sep 2023 04:49:00 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1694408352;
+        bh=1sKqWrxuZZ/FU8NiZPNr1J2lRE5UCnUUAPwMbQ5ieAo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UMGDw9r37FVQoS5uJYfNjzGi1EpPlHfX1xuzY1CeE5zzVELAk5UtS1n1cPtFBZpqX
+         QVcHNooVzNrbuMSAE2ygWmVIEr+qAFxx5XuqJsjriRp2zkQ04EXAZvf6fpmp9uesa0
+         BC0qJXy9fBzlVM6Mec8GlZ0ybZdpPn04N3qbGInNi5CMMnRyQyPx2ZtYaxWRhArc4B
+         7gOAmoj1uL5iyvITgICR7bFb6jCL3iCEynmOfErNMwFOovowCywu/7oyo0FFyObUwn
+         ZyRIwu0nKmT3z9RA1A+cQjH1EiGmzY5KZdbmq3lpbGW8sy9SW9Bsyi9am+7cu8vcUu
+         ZkgINsxEYw/kA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] mm/damon: add a tracepoint for damos apply target regions
+Date:   Mon, 11 Sep 2023 04:59:06 +0000
+Message-Id: <20230911045908.97649-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] mfd: Explicitly include correct DT includes
-From:   patchwork-bot+chrome-platform@kernel.org
-Message-Id: <169440774007.22573.6670993122914766002.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Sep 2023 04:49:00 +0000
-References: <20230714174731.4059811-1-robh@kernel.org>
-In-Reply-To: <20230714174731.4059811-1-robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linus.walleij@linaro.org, lee@kernel.org,
-        thor.thayer@linux.intel.com, mani@kernel.org,
-        cristian.ciocaltea@gmail.com, bleung@chromium.org,
-        groeck@chromium.org, support.opensource@diasemi.com,
-        ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
-        cw00.choi@samsung.com, krzysztof.kozlowski@linaro.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        tony@atomide.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mazziesaccount@gmail.com,
-        orsonzhai@gmail.com, baolin.wang@linux.alibaba.com,
-        zhang.lyra@gmail.com, fabrice.gasnier@foss.st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        wens@csie.org, jernej.skrabec@gmail.com, samuel@sholland.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        linux-actions@lists.infradead.org, chrome-platform@lists.linux.dev,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-mtd@lists.infradead.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -72,30 +49,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Changes from RFC
+(https://lore.kernel.org/damon/20230827004045.49516-1-sj@kernel.org/)
+- Fix the 4 byte hole (Steven Rostedt)
+- Add documentation
 
-This patch was applied to chrome-platform/linux.git (for-next)
-by Lee Jones <lee@kernel.org>:
+DAMON provides damon_aggregated tracepoint to let users record full monitoring
+results.  Sometimes, users need to record monitoring results of specific
+pattern.  DAMOS tried regions directory of DAMON sysfs interface allows it, but
+the interface is mainly designed for snapshots and therefore would be
+inefficient for such recording.  Implement yet another tracepoint for efficient
+support of the usecase.
 
-On Fri, 14 Jul 2023 11:47:27 -0600 you wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> [...]
+SeongJae Park (2):
+  mm/damon/core: add a tracepoint for damos apply target regions
+  Docs/admin-guide/mm/damon/usage: document damos_before_apply
+    tracepoint
 
-Here is the summary with links:
-  - mfd: Explicitly include correct DT includes
-    https://git.kernel.org/chrome-platform/c/dc0c386e09a7
+ Documentation/admin-guide/mm/damon/usage.rst | 37 ++++++++++++++++----
+ include/trace/events/damon.h                 | 37 ++++++++++++++++++++
+ mm/damon/core.c                              | 27 +++++++++++++-
+ 3 files changed, 93 insertions(+), 8 deletions(-)
 
-You are awesome, thank you!
+
+base-commit: b4c5d592acb5a939aa4f6c08543daf6e2b435343
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
