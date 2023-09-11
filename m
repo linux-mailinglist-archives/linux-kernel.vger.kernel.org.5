@@ -2,132 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794A179ACF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E1379B4DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378738AbjIKWhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
+        id S242085AbjIKU5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240399AbjIKOnV (ORCPT
+        with ESMTP id S240542AbjIKOq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:43:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91750E40;
-        Mon, 11 Sep 2023 07:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694443396; x=1725979396;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=I4/ojXmeBQapC+xcNa44W6610Ukxsr716DrBWlchx7o=;
-  b=NtlsQqGpxw8h/SeIsQiKs0lXaCE2jO2uAPEGGQf0uq/mMc8fAyTC5OJm
-   jaOSCkcEDTBbkoO4dBbdmcVVC5YNo7hkMBsRwbDsij132/M8jaxDoU56d
-   BCo3l0tLq0deXH/7+A6R3Q/wTTSd93A+hfWUeXFRFvbnjTiKe+0VEM9cG
-   PnNIL+TkX8PYMUaw1t+SZ0tdbm3J1T+gFGjDeWmvHg5fQHuB+qSc85DGv
-   /GRhGteoVbh18Rit2KISmZvg9RhRcfA6FYIrgprcWUqN59WfqBZrkligu
-   GyQ9O9Rbd1RSnnHR/eAxDBJCPLdReRaO5bsaORuHbAbASiX79u1AatvQx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409067664"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="409067664"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 07:43:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="886531624"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="886531624"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Sep 2023 07:42:49 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AA14C45B; Mon, 11 Sep 2023 17:43:12 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] serial: 8250_port: Introduce UART_IIR_FIFO_ENABLED_16750
-Date:   Mon, 11 Sep 2023 17:43:08 +0300
-Message-Id: <20230911144308.4169752-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Mon, 11 Sep 2023 10:46:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676BC106;
+        Mon, 11 Sep 2023 07:46:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E72C433C8;
+        Mon, 11 Sep 2023 14:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694443613;
+        bh=GajsJSo2epB55/QXlHa/vb50gsyMmkBm0dq/dBU22L0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p5mC1L6tFXnJ3XqZxh9lRAwUouQwGfHGue4LGkWDhnduL1VU6VZD3Tq60Xhm5Af+M
+         w1sPRi8BL2meLINNTko9B91ikEGFc6P3AETxVrohj5BlgO2Yi3EuSjqTnynyKjxxCV
+         6fL18lMOmQFgpsZqnVnOMfyDDgwXZ9iACQ8hKYR27JvtjdXQYYMmLZRUg1EsRhwHIo
+         yKjnxS3BNYy0JX9PurDrL38poPpk7Ia7oP/Q1S6uoI1mFNZ+daJ6HVlg4ua/saJZ1V
+         xSPw7Wjab/NW+2VYUGEA9g4ABOGf7eE/2OtvOPN3zDUzbnLoC/K+8FHbBSr8YzJqox
+         hyWwCrhU//CNQ==
+Date:   Mon, 11 Sep 2023 16:46:50 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Michel =?utf-8?Q?D=C3=A4nzer?= <michel.daenzer@mailbox.org>
+Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
+        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
+        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
+        corbet@lwn.net, khilman@baylibre.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        linux-rockchip@lists.infradead.org,
+        Daniel Stone <daniels@collabora.com>,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
+        linux-arm-kernel@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
+Message-ID: <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
+References: <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
+ <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com>
+ <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
+ <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com>
+ <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
+ <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com>
+ <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
+ <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org>
+ <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
+ <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uuq5zmkty6dwz5s2"
+Content-Disposition: inline
+In-Reply-To: <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UART_IIR_64BYTE_FIFO is always being used in conjunction with
-UART_IIR_FIFO_ENABLED. Introduce a joined UART_IIR_FIFO_ENABLED_16750
-definition and use it.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_port.c | 11 +++++------
- include/uapi/linux/serial_reg.h     |  1 +
- 2 files changed, 6 insertions(+), 6 deletions(-)
+--uuq5zmkty6dwz5s2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index fb891b67968f..a064698c2be0 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1008,12 +1008,11 @@ static void autoconfig_16550a(struct uart_8250_port *up)
- 			serial_out(up, UART_LCR, 0);
- 			serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO |
- 				   UART_FCR7_64BYTE);
--			status1 = serial_in(up, UART_IIR) & (UART_IIR_64BYTE_FIFO |
--							     UART_IIR_FIFO_ENABLED);
-+			status1 = serial_in(up, UART_IIR) & UART_IIR_FIFO_ENABLED_16750;
- 			serial_out(up, UART_FCR, 0);
- 			serial_out(up, UART_LCR, 0);
- 
--			if (status1 == (UART_IIR_64BYTE_FIFO | UART_IIR_FIFO_ENABLED))
-+			if (status1 == UART_IIR_FIFO_ENABLED_16750)
- 				up->port.type = PORT_16550A_FSL64;
- 			else
- 				DEBUG_AUTOCONF("Motorola 8xxx DUART ");
-@@ -1081,12 +1080,12 @@ static void autoconfig_16550a(struct uart_8250_port *up)
- 	 */
- 	serial_out(up, UART_LCR, 0);
- 	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO | UART_FCR7_64BYTE);
--	status1 = serial_in(up, UART_IIR) & (UART_IIR_64BYTE_FIFO | UART_IIR_FIFO_ENABLED);
-+	status1 = serial_in(up, UART_IIR) & UART_IIR_FIFO_ENABLED_16750;
- 	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO);
- 
- 	serial_out(up, UART_LCR, UART_LCR_CONF_MODE_A);
- 	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO | UART_FCR7_64BYTE);
--	status2 = serial_in(up, UART_IIR) & (UART_IIR_64BYTE_FIFO | UART_IIR_FIFO_ENABLED);
-+	status2 = serial_in(up, UART_IIR) & UART_IIR_FIFO_ENABLED_16750;
- 	serial_out(up, UART_FCR, UART_FCR_ENABLE_FIFO);
- 
- 	serial_out(up, UART_LCR, 0);
-@@ -1094,7 +1093,7 @@ static void autoconfig_16550a(struct uart_8250_port *up)
- 	DEBUG_AUTOCONF("iir1=%d iir2=%d ", status1, status2);
- 
- 	if (status1 == UART_IIR_FIFO_ENABLED_16550A &&
--	    status2 == (UART_IIR_64BYTE_FIFO | UART_IIR_FIFO_ENABLED_16550A)) {
-+	    status2 == UART_IIR_FIFO_ENABLED_16750) {
- 		up->port.type = PORT_16750;
- 		up->capabilities |= UART_CAP_AFE | UART_CAP_SLEEP;
- 		return;
-diff --git a/include/uapi/linux/serial_reg.h b/include/uapi/linux/serial_reg.h
-index 08b3527e1b93..9c987b04e2d0 100644
---- a/include/uapi/linux/serial_reg.h
-+++ b/include/uapi/linux/serial_reg.h
-@@ -49,6 +49,7 @@
- #define  UART_IIR_FIFO_ENABLED_8250	0x00	/* 8250: no FIFO */
- #define  UART_IIR_FIFO_ENABLED_16550	0x80	/* 16550: (broken/unusable) FIFO */
- #define  UART_IIR_FIFO_ENABLED_16550A	0xc0	/* 16550A: FIFO enabled */
-+#define  UART_IIR_FIFO_ENABLED_16750	0xe0	/* 16750: 64 bytes FIFO enabled */
- 
- #define UART_FCR	2	/* Out: FIFO Control Register */
- #define UART_FCR_ENABLE_FIFO	0x01 /* Enable the FIFO */
--- 
-2.40.0.1.gaa8946217a0b
+Replying one more time, because I certainly don't want to create any
+hard feeling here.
 
+On Mon, Sep 11, 2023 at 03:30:55PM +0200, Michel D=E4nzer wrote:
+> >>>> By keeping those sets of expectations, we've been able to keep Mesa =
+pretty
+> >>>> clear of regressions, whilst having a very clear set of things that =
+should
+> >>>> be fixed to point to. It would be great if those set of things were =
+zero,
+> >>>> but it just isn't. Having that is far better than the two alternativ=
+es:
+> >>>> either not testing at all (obviously bad), or having the test always=
+ be red
+> >>>> so it's always ignored (might as well just not test).
+> >>>
+> >>> Isn't that what happens with flaky tests anyway?
+> >>
+> >> For a small minority of tests. Daniel was referring to whole test suit=
+es.
+> >>
+> >>> Even more so since we have 0 context when updating that list.
+> >>
+> >> The commit log can provide whatever context is needed.
+> >=20
+> > Sure, I've yet to see that though.
+> >=20
+> > There's in 6.6-rc1 around 240 reported flaky tests. None of them have
+> > any context. That new series hads a few dozens too, without any context
+> > either. And there's no mention about that being a plan, or a patch
+> > adding a new policy for all tests going forward.
+>=20
+> That does sound bad, would need to be raised in review.
+>
+> > Any concern I raised were met with a giant "it worked on Mesa" handwave
+>=20
+> Lessons learned from years of experience with big real-world CI
+> systems like this are hardly "handwaving".
+
+Your (and others) experience certainly isn't. It is valuable, welcome,
+and very much appreciated.
+
+However, my questions and concerns being ignored time and time again
+about things like what is the process is going to be like, what is going
+to be tested, who is going to be maintaining that test list, how that
+interacts with stable, how we can possibly audit the flaky tests list,
+etc. have felt like they were being handwaived away.
+
+I'm not saying that because I disagree, I still do on some, but that's
+fine to some extent. However, most of these issues are not so much an
+infrastructure issue, but a community issue. And I don't even expect a
+perfect solution right now, unlike what you seem to think. But I do
+expect some kind of plan instead of just ignoring that problem.
+
+Like, I had to ask the MT8173 question 3 times in order to get an
+answer, and I'm still not sure what is going to be done to address that
+particular issue.
+
+So, I'm sorry, but I certainly feel like it here.
+
+Maxime
+
+--uuq5zmkty6dwz5s2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZP8oWgAKCRDj7w1vZxhR
+xeoaAQCel+s1l4ON0RwLsGGIhWRQkRm3rOPEl1s1oAgC7ibXSwEAp4V+2IAQRlWC
+JJT0CY046wasZ7fQ6QP2X7LhxQsGdgA=
+=uxXU
+-----END PGP SIGNATURE-----
+
+--uuq5zmkty6dwz5s2--
