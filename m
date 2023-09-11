@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ADF79B44E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B673C79B338
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351700AbjIKVnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
+        id S1344420AbjIKVOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:14:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236473AbjIKKmO (ORCPT
+        with ESMTP id S236482AbjIKKmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:42:14 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDA3E6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:42:09 -0700 (PDT)
-Received: from localhost.localdomain (unknown [171.76.82.102])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: vignesh)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 527E46606F5E;
-        Mon, 11 Sep 2023 11:42:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694428927;
-        bh=uOfKmnGqS1mdLmWpPUw+MA783YWewPk/pzRvEU2KZgw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aCG3wBPhRkqT6IY1WGsg6Gz1Uz0s4qR5o1gnSdwN+UQ2nnImc2gdhCjavnBRWfEyS
-         WfEMwBSm3vw/o/ihz78mi/QYOOiT8e5Mbflp9BMNk40y+qIMZayPfKqZqB0QhL12Fi
-         4GjdQb6kbda3VFxdI2lebCBDMN4967z6EhdPpofi+ikZjmNF9DF6SXMWoLZfJDBNPs
-         FFs/RLizTKYuQrMw3ri/EYGZ49xcjJsZN32ikmz6ijAffLlDWS6VorSDccR1w9N5gI
-         fa9rYtBxVAicWhJVm2ciAqp9vzqvX6zUzgp8rwG1k7wVD9cc5+8o26CxofGPtcuWOs
-         L7pi6614WvGWQ==
-From:   Vignesh Raman <vignesh.raman@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     angelogioacchino.delregno@collabora.com, helen.koike@collabora.com,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        david.heidelberg@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, mripard@kernel.org,
-        dmitry.baryshkov@linaro.org, matthias.bgg@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, krzysztof.kozlowski@linaro.org,
-        geert+renesas@glider.be, arnd@arndb.de, konrad.dybcio@linaro.org,
-        neil.armstrong@linaro.org, nfraprado@collabora.com,
-        rafal@milecki.pl, peng.fan@nxp.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH] arm64: defconfig: Enable DA9211 regulator
-Date:   Mon, 11 Sep 2023 16:11:39 +0530
-Message-Id: <20230911104139.617448-1-vignesh.raman@collabora.com>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Mon, 11 Sep 2023 06:42:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C12E5;
+        Mon, 11 Sep 2023 03:42:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAC2C433C7;
+        Mon, 11 Sep 2023 10:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694428962;
+        bh=uWJY/w9fi0ck8832Ox7eif8IXgu2yYhH8rrmB2yxmvA=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=GaoJtjdRaiKbyK6BJ1KHNENgj4HjJLwDRzJQsF3rXDOUqB1WYyeJr0k4aKfiRGo9H
+         yFeoqB793oiRQ8Zvoq64r1hRJySOkl7ukYEs9skFQmPTDQKYcM2FEPD0Co5Soiix9a
+         cuJEpWlIddBAsdOHMiKw9EnPUXTL0qCvQ4hqhMPkbGrhSd9FnTMjaAt9Uqzbcm3bJQ
+         LHpI4mufHn2GoNE7LykXvO6N6fwijzPBkAFIid8bW+Tif8ErWBXMEngtBJkQWPdcaO
+         F4KjMi+ftTpDqX1EmSaEUVv0eK+OtIJ/+od/vb7wL8I/bfs1paS7imbdPwnyvPDd6r
+         dUtsmewgVG5kQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 11 Sep 2023 13:42:37 +0300
+Message-Id: <CVG0XP0M7KNM.2NA8DSD0TGK4V@suppilovahvero>
+Cc:     <linux-integrity@vger.kernel.org>,
+        "Jerry Snitselaar" <jsnitsel@redhat.com>, <stable@vger.kernel.org>,
+        "Todd Brandt" <todd.e.brandt@intel.com>,
+        "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-kernel@vger.kernel.org>,
+        "Patrick Steinhardt" <ps@pks.im>, "Ronan Pigott" <ronan@rjp.ie>,
+        "Raymond Jay Golo" <rjgolo@gmail.com>,
+        "Linux kernel regressions list" <regressions@lists.linux.dev>,
+        "Dusty Mabe" <dusty@dustymabe.com>,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        "Paul Menzel" <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
+        "Thorsten Leemhuis" <regressions@leemhuis.info>,
+        "Mario Limonciello" <mario.limonciello@amd.com>
+X-Mailer: aerc 0.14.0
+References: <20230822231510.2263255-1-jarkko@kernel.org>
+ <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
+ <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+ <1eeddbdc-c1f0-4499-b3d1-24c96f42a50b@amd.com>
+ <CV3J3TCMB74C.1WA96NQ9J593U@suppilovahvero>
+ <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
+ <fcf2f600-d1f0-de14-956b-4d4f3f0cb3fa@leemhuis.info>
+ <116dd56f-695f-4ecd-dace-805db83f5c3e@leemhuis.info>
+ <CVAHNI7PWVDL.W8194GZA0SMK@suppilovahvero>
+ <8dc067e5-d81f-4c5b-be76-bf0c1227b71e@leemhuis.info>
+ <CVG0VPRMC759.2LT3BCT7Q6M9H@suppilovahvero>
+In-Reply-To: <CVG0VPRMC759.2LT3BCT7Q6M9H@suppilovahvero>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,30 +70,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mediatek mt8173 board fails to boot with DA9211 regulator disabled.
-Enabling CONFIG_REGULATOR_DA9211=y in drm-ci fixes the issue.
+On Mon Sep 11, 2023 at 1:40 PM EEST, Jarkko Sakkinen wrote:
+> Personally I think bugzilla, being user approachable system, should
+> be better defined but *theoretically*, at least by the process, it
+> can be fully ignored.
 
-So enable it in the defconfig since kernel-ci also requires it.
+I.e. I don't think it should be ignored :-) </disclaimer>
 
-Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5315789f4868..8359899d291f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -729,6 +729,7 @@ CONFIG_REGULATOR_AXP20X=y
- CONFIG_REGULATOR_BD718XX=y
- CONFIG_REGULATOR_BD9571MWV=y
- CONFIG_REGULATOR_CROS_EC=y
-+CONFIG_REGULATOR_DA9211=m
- CONFIG_REGULATOR_FAN53555=y
- CONFIG_REGULATOR_GPIO=y
- CONFIG_REGULATOR_HI6421V530=y
--- 
-2.40.1
-
+BR, Jarkko
