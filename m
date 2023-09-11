@@ -2,181 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CA879B5B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A9079B5E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240156AbjIKVEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
+        id S1348058AbjIKVZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243419AbjIKRKy (ORCPT
+        with ESMTP id S243462AbjIKRNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:10:54 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A628D1AB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:10:48 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-501bd164fbfso7622327e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:10:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694452247; x=1695057047; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=n6syMadHgFPAkfE/eyX/0s8O+02EDKPP57+xWFdRX0k=;
-        b=nEo8kgODiVpY1wvDP1LlKWpiGLZLKE/pqC3zWnBU2YgSx/FI9Z6fjilb9TAcWYGxMW
-         3BDGKxHpaXgQix3TfZApy3CUSLnVjzO3tzNhQ49skW3Fv7v/OzClJo/pP2iXbFFUAVdN
-         MbvATiszS7qZzqJj/YAR3s96yEfftfyFI4hpqYkiM5UdRULfYtjP0TaBWY9GnZVetwDL
-         eCpidkpwkw3nljRD8ihGTH54HRmaOHZr8RagmQXJOWICaaLhrKmfqbOkMnhRzamUaRMS
-         nbysjAAUn8krVYj7HuQBxwIO6kg8lKAKHZTaYvIfxAwlwuArROYz4Ho6GPG9Bx5kiZpS
-         Uong==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694452247; x=1695057047;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n6syMadHgFPAkfE/eyX/0s8O+02EDKPP57+xWFdRX0k=;
-        b=f/2PjGqJ5VQgfnqAocaNB58ddPbiZyULV+BwLZd1Pqx2B1ov3rScVQCPQ9CEMetQxO
-         8g7mdbhE8bY7if7/JbUnd8f+HdVPbEAdcgUojuJP2fI4YkQGnyZdMCC8HgjV8/3fP1om
-         UcslyA68m2V43QV2mmuy9DeniYVznZx7YVgvm9vcfMlaoZxaXWSGHKIrK5pHc+KrxiOj
-         wx8gBgK4Dt2A8QIqBwjUb6dUgIoFQal3OIU8uHRGqRV9CIMuiv/30VuB1O1l1Ki+sAGg
-         nlVi1Bl2WRxbN4chQuhBjPGUlqDnhs/188AuckY7J1igfwcGwAxTmBIdKoqdOoUYPi5H
-         ZFow==
-X-Gm-Message-State: AOJu0YxWTLnY6vPp1l5xtMW6m5RuFTUjVEkxRmBK6eaC9QrM4Rmt+HLo
-        LHSDXXLrk3rTH2SCLSmm08QcwU6t6QdbdA==
-X-Google-Smtp-Source: AGHT+IE44z9fPP/pxu0glLigR7PbpHaue9z+DSqHcXr9ybgrwq7WhRS1Ll8N+R95mx1ubxx/q+tjzA==
-X-Received: by 2002:a05:6512:36cd:b0:502:bdbd:8442 with SMTP id e13-20020a05651236cd00b00502bdbd8442mr2528153lfs.50.1694452246410;
-        Mon, 11 Sep 2023 10:10:46 -0700 (PDT)
-Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id q21-20020ac25295000000b004fe1bc7e4acsm1388027lfm.131.2023.09.11.10.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 10:10:45 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 11 Sep 2023 19:10:43 +0200
-To:     Baoquan He <bhe@redhat.com>
-Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 6/9] mm: vmalloc: Offload free_vmap_area_lock lock
-Message-ID: <ZP9KE8bU+c1Tp2Rg@pc636>
-References: <20230829081142.3619-1-urezki@gmail.com>
- <20230829081142.3619-7-urezki@gmail.com>
- <ZP6IjeCpDIqHgV0y@MiWiFi-R3L-srv>
+        Mon, 11 Sep 2023 13:13:12 -0400
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AE61AD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
+        In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=mJAnqqvASsAP6Cixlu7hXANHs+0IQlO63puyqsOwXww=; b=lQND+Zn3GuxZg3IU27z403exPs
+        D/4jWDcvICU1MA5RjUEqGiEJEVD5xn6A1BOqQTqcNlHj8MQAgPAozhXt1Vv6yTFITI5SaWkoAlhKi
+        lTJ0Ycnvtr13fLaTJD2X2ZCyHsleGDmsNiNy6kS7js+2M9vL5QSuLbA1J+Vu1rz/Id/rYtur4aY2F
+        kT6wQPWfoRSoSBO+Zj0gTbs1UCTjCukwRWZMTarIV/Huri+zMfgz2IQWY865mvNKxG1tB7PLiBiBa
+        qFmJnMT3MDrQlMt6BJ+rOrsG+Bny3MLMPEcDuDzfZBtDlRqp31qAurJJ6KUO6uQbF7BYGvyShStJR
+        7JRzp2Fg==;
+Received: from [187.10.203.89] (helo=steammachine.lan)
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+        id 1qfkT9-002OoM-Pi; Mon, 11 Sep 2023 19:13:04 +0200
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        hamza.mahfooz@amd.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v4 1/2] drm/amdgpu: Merge debug module parameters
+Date:   Mon, 11 Sep 2023 14:12:54 -0300
+Message-ID: <20230911171255.143992-2-andrealmeid@igalia.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911171255.143992-1-andrealmeid@igalia.com>
+References: <20230911171255.143992-1-andrealmeid@igalia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZP6IjeCpDIqHgV0y@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 11:25:01AM +0800, Baoquan He wrote:
-> On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
-> > Concurrent access to a global vmap space is a bottle-neck.
-> > We can simulate a high contention by running a vmalloc test
-> > suite.
-> > 
-> > To address it, introduce an effective vmap node logic. Each
-> > node behaves as independent entity. When a node is accessed
-> > it serves a request directly(if possible) also it can fetch
-> > a new block from a global heap to its internals if no space
-> > or low capacity is left.
-> > 
-> > This technique reduces a pressure on the global vmap lock.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > ---
-> >  mm/vmalloc.c | 316 +++++++++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 279 insertions(+), 37 deletions(-)
-> > 
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 5a8a9c1370b6..4fd4915c532d 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -779,6 +779,7 @@ struct rb_list {
-> >  
-> >  struct vmap_node {
-> >  	/* Bookkeeping data of this node. */
-> > +	struct rb_list free;
-> >  	struct rb_list busy;
-> >  	struct rb_list lazy;
-> >  
-> > @@ -786,6 +787,13 @@ struct vmap_node {
-> >  	 * Ready-to-free areas.
-> >  	 */
-> >  	struct list_head purge_list;
-> > +	struct work_struct purge_work;
-> > +	unsigned long nr_purged;
-> > +
-> > +	/*
-> > +	 * Control that only one user can pre-fetch this node.
-> > +	 */
-> > +	atomic_t fill_in_progress;
-> >  };
-> >  
-> >  static struct vmap_node *nodes, snode;
-> > @@ -804,6 +812,32 @@ addr_to_node(unsigned long addr)
-> >  	return &nodes[addr_to_node_id(addr)];
-> >  }
-> >  
-> > +static inline struct vmap_node *
-> > +id_to_node(int id)
-> > +{
-> > +	return &nodes[id % nr_nodes];
-> > +}
-> > +
-> > +static inline int
-> > +this_node_id(void)
-> > +{
-> > +	return raw_smp_processor_id() % nr_nodes;
-> > +}
-> > +
-> > +static inline unsigned long
-> > +encode_vn_id(int node_id)
-> > +{
-> > +	/* Can store U8_MAX [0:254] nodes. */
-> > +	return (node_id + 1) << BITS_PER_BYTE;
-> > +}
-> > +
-> > +static inline int
-> > +decode_vn_id(unsigned long val)
-> > +{
-> > +	/* Can store U8_MAX [0:254] nodes. */
-> > +	return (val >> BITS_PER_BYTE) - 1;
-> > +}
-> 
-> This patch looks good to me. However, should we split out the encoding
-> vn_id into va->flags optimization into another patch? It looks like an
-> independent optimization which can be described better with specific
-> log. At least, in the pdf file pasted or patch log, it's not obvious
-> that:
-> 1) node's free tree could contains any address range;
-> 2) nodes' busy tree only contains address range belonging to this node;
->    - could contain crossing node range, corner case.
-> 3) nodes' purge tree could contain any address range;
->    - decided by encoded vn_id in va->flags.
->    - decided by address via addr_to_node(va->va_start).
-> 
-> Personal opinion, feel it will make reviewing easier.
-> 
-Sure, if it is easier to review, then i will split these two parts.
-All three statements are correct and valid. The pdf file only covers
-v1, so it is not up to date.
+Merge all developer debug options available as separated module
+parameters in one, making it obvious that are for developers.
 
-Anyway i will update a cover letter in v3 with more details.
+Drop the obsolete module options in favor of the new ones.
 
---
-Uladzislau Rezki
+Signed-off-by: André Almeida <andrealmeid@igalia.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+---
+v3:
+- move from include/amd_shared.h to amdgpu/amdgpu_drv.c
+v2:
+- drop old module params
+- use BIT() macros
+- replace global var with adev-> vars
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h      |  4 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c   |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 56 +++++++++++++++---------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c  |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c |  2 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c    |  2 +-
+ 7 files changed, 45 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+index 83a9607a87b8..37eb9b3790a0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+@@ -1099,6 +1099,10 @@ struct amdgpu_device {
+ 	bool                            dc_enabled;
+ 	/* Mask of active clusters */
+ 	uint32_t			aid_mask;
++
++	/* Debug */
++	bool                            debug_vm;
++	bool                            debug_largebar;
+ };
+ 
+ static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+index db5ecde8f0ec..74769afaa33d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
+@@ -1181,7 +1181,7 @@ static int amdgpu_cs_vm_handling(struct amdgpu_cs_parser *p)
+ 		job->vm_pd_addr = amdgpu_gmc_pd_addr(vm->root.bo);
+ 	}
+ 
+-	if (amdgpu_vm_debug) {
++	if (adev->debug_vm) {
+ 		/* Invalidate all BOs to test for userspace bugs */
+ 		amdgpu_bo_list_for_each_entry(e, p->bo_list) {
+ 			struct amdgpu_bo *bo = ttm_to_amdgpu_bo(e->tv.bo);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index ef713806dd60..830146bd61c0 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -118,6 +118,14 @@
+ #define KMS_DRIVER_MINOR	54
+ #define KMS_DRIVER_PATCHLEVEL	0
+ 
++/*
++ * amdgpu.debug module options. Are all disabled by default
++ */
++enum AMDGPU_DEBUG_MASK {
++	AMDGPU_DEBUG_VM = BIT(0),
++	AMDGPU_DEBUG_LARGEBAR = BIT(1),
++};
++
+ unsigned int amdgpu_vram_limit = UINT_MAX;
+ int amdgpu_vis_vram_limit;
+ int amdgpu_gart_size = -1; /* auto */
+@@ -140,7 +148,6 @@ int amdgpu_vm_size = -1;
+ int amdgpu_vm_fragment_size = -1;
+ int amdgpu_vm_block_size = -1;
+ int amdgpu_vm_fault_stop;
+-int amdgpu_vm_debug;
+ int amdgpu_vm_update_mode = -1;
+ int amdgpu_exp_hw_support;
+ int amdgpu_dc = -1;
+@@ -195,6 +202,7 @@ int amdgpu_vcnfw_log;
+ int amdgpu_sg_display = -1; /* auto */
+ int amdgpu_user_partt_mode = AMDGPU_AUTO_COMPUTE_PARTITION_MODE;
+ int amdgpu_umsch_mm;
++uint amdgpu_debug_mask;
+ 
+ static void amdgpu_drv_delayed_reset_work_handler(struct work_struct *work);
+ 
+@@ -406,13 +414,6 @@ module_param_named(vm_block_size, amdgpu_vm_block_size, int, 0444);
+ MODULE_PARM_DESC(vm_fault_stop, "Stop on VM fault (0 = never (default), 1 = print first, 2 = always)");
+ module_param_named(vm_fault_stop, amdgpu_vm_fault_stop, int, 0444);
+ 
+-/**
+- * DOC: vm_debug (int)
+- * Debug VM handling (0 = disabled, 1 = enabled). The default is 0 (Disabled).
+- */
+-MODULE_PARM_DESC(vm_debug, "Debug VM handling (0 = disabled (default), 1 = enabled)");
+-module_param_named(vm_debug, amdgpu_vm_debug, int, 0644);
+-
+ /**
+  * DOC: vm_update_mode (int)
+  * Override VM update mode. VM updated by using CPU (0 = never, 1 = Graphics only, 2 = Compute only, 3 = Both). The default
+@@ -744,18 +745,6 @@ module_param(send_sigterm, int, 0444);
+ MODULE_PARM_DESC(send_sigterm,
+ 	"Send sigterm to HSA process on unhandled exception (0 = disable, 1 = enable)");
+ 
+-/**
+- * DOC: debug_largebar (int)
+- * Set debug_largebar as 1 to enable simulating large-bar capability on non-large bar
+- * system. This limits the VRAM size reported to ROCm applications to the visible
+- * size, usually 256MB.
+- * Default value is 0, diabled.
+- */
+-int debug_largebar;
+-module_param(debug_largebar, int, 0444);
+-MODULE_PARM_DESC(debug_largebar,
+-	"Debug large-bar flag used to simulate large-bar capability on non-large bar machine (0 = disable, 1 = enable)");
+-
+ /**
+  * DOC: halt_if_hws_hang (int)
+  * Halt if HWS hang is detected. Default value, 0, disables the halt on hang.
+@@ -948,6 +937,18 @@ module_param_named(user_partt_mode, amdgpu_user_partt_mode, uint, 0444);
+ module_param(enforce_isolation, bool, 0444);
+ MODULE_PARM_DESC(enforce_isolation, "enforce process isolation between graphics and compute . enforce_isolation = on");
+ 
++/**
++ * DOC: debug_mask (uint)
++ * Debug options for amdgpu, work as a binary mask with the following options:
++ *
++ * - 0x1: Debug VM handling
++ * - 0x2: Enable simulating large-bar capability on non-large bar system. This
++ *   limits the VRAM size reported to ROCm applications to the visible
++ *   size, usually 256MB.
++ */
++MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by default");
++module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
++
+ /* These devices are not supported by amdgpu.
+  * They are supported by the mach64, r128, radeon drivers
+  */
+@@ -2052,6 +2053,19 @@ static void amdgpu_get_secondary_funcs(struct amdgpu_device *adev)
+ 	}
+ }
+ 
++static void amdgpu_init_debug_options(struct amdgpu_device *adev)
++{
++	if (amdgpu_debug_mask & AMDGPU_DEBUG_VM) {
++		pr_info("debug: VM handling debug enabled\n");
++		adev->debug_vm = true;
++	}
++
++	if (amdgpu_debug_mask & AMDGPU_DEBUG_LARGEBAR) {
++		pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
++		adev->debug_largebar = true;
++	}
++}
++
+ static int amdgpu_pci_probe(struct pci_dev *pdev,
+ 			    const struct pci_device_id *ent)
+ {
+@@ -2230,6 +2244,8 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
+ 			amdgpu_get_secondary_funcs(adev);
+ 	}
+ 
++	amdgpu_init_debug_options(adev);
++
+ 	return 0;
+ 
+ err_pci:
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+index 1134e29a7915..849fffbb367d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
+@@ -794,7 +794,7 @@ int amdgpu_gem_va_ioctl(struct drm_device *dev, void *data,
+ 	default:
+ 		break;
+ 	}
+-	if (!r && !(args->flags & AMDGPU_VM_DELAY_UPDATE) && !amdgpu_vm_debug)
++	if (!r && !(args->flags & AMDGPU_VM_DELAY_UPDATE) && !adev->debug_vm)
+ 		amdgpu_gem_va_update_vm(adev, &fpriv->vm, bo_va,
+ 					args->operation);
+ 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index edaebabc8e60..07a4bcbeb4b8 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -1320,7 +1320,7 @@ int amdgpu_vm_handle_moved(struct amdgpu_device *adev,
+ 		spin_unlock(&vm->status_lock);
+ 
+ 		/* Try to reserve the BO to avoid clearing its ptes */
+-		if (!amdgpu_vm_debug && dma_resv_trylock(resv))
++		if (!adev->debug_vm && dma_resv_trylock(resv))
+ 			clear = false;
+ 		/* Somebody else is using the BO right now */
+ 		else
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+index 08687ce0aa8b..65d2b9ae16bb 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+@@ -1021,7 +1021,7 @@ static int kfd_ioctl_acquire_vm(struct file *filep, struct kfd_process *p,
+ 
+ bool kfd_dev_is_large_bar(struct kfd_node *dev)
+ {
+-	if (debug_largebar) {
++	if (dev->kfd->adev->debug_largebar) {
+ 		pr_debug("Simulate large-bar allocation on non large-bar machine\n");
+ 		return true;
+ 	}
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+index 2e9612cf56ae..b05e06f89814 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+@@ -2115,7 +2115,7 @@ static int kfd_create_vcrat_image_gpu(void *pcrat_image,
+ 	sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
+ 			sub_type_hdr->length);
+ 
+-	if (debug_largebar)
++	if (kdev->adev->debug_largebar)
+ 		local_mem_info.local_mem_size_private = 0;
+ 
+ 	if (local_mem_info.local_mem_size_private == 0)
+-- 
+2.42.0
+
