@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5819A79BDF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419BA79B73B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbjIKUzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S1357384AbjIKWF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235994AbjIKJsS (ORCPT
+        with ESMTP id S235995AbjIKJsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:48:18 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F020E40
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:51 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c0efe0c4acso7087575ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:51 -0700 (PDT)
+        Mon, 11 Sep 2023 05:48:22 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F9DE4E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:59 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1befe39630bso9366185ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425670; x=1695030470; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694425679; x=1695030479; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4+dyOdEpvdrL2eUxAXXyGxIB/NcoZnEV+TKBfmBMmgQ=;
-        b=fPaC9EAUYalffszD3hRRgazLNMEK9qm4ndUZC6m65bAdOtNemq0DISEDKQnkDoLF63
-         2VnYneZGKHtMaWTF4GywyKohNXZkwEehmSPYhN7wnwJBkf+QEtT/syKn7AHVbDea/z5w
-         YsjsqlHEoTm442ae6vU9iirPQFH5h9TmOSN3xWQxUPsuupD8/q0wek/7/bVGJGkVHlls
-         Od9ws817GuViLEFSzgSc/NTphiXMk3zdIcSpf48tUyw3hYdkGstq+srxvWh6LxJuO54w
-         VGz89I3HZfLpm47+TffPhew9jYk4YyyU7gBM4Ej0VllMBtXU4353yQ7qjEm/g19ZEMG3
-         vL+w==
+        bh=hBwbAk8n+4/KwMrK4IB+eTsyBHwRgi9e5IimtDnToKs=;
+        b=grxfq7WvsSoVHQNxPULxBS6QQSQl2lb0Y7fX+PN3c7TaFHTQ7mmNI5OlV5WQQKs7zs
+         ewKmM8JecqhYTs69yf9EfS0QavN/btWrM7c6uMSfLht7f1GeoeiN5BhjlfOUnY1tr4tJ
+         YZgrLGadJELJNp2umYJ56oJP9uJSW4Mx4Lb2lT0Q9fRny9nNJn7VYbbKrlj3ZcePTLXM
+         44lsfWsdHejTMlbDd/FLeT5yAtAfd+fO+0bbY0JMCL00pRtaZj+WwLn5xKx9WAaz21r0
+         3DOHnddKesPhvnUfdPkiCKoozx/cyfTvYprlzYaxrXCnfREmFj6sfCwJ7ugVajt1M6xP
+         RPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425670; x=1695030470;
+        d=1e100.net; s=20230601; t=1694425679; x=1695030479;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4+dyOdEpvdrL2eUxAXXyGxIB/NcoZnEV+TKBfmBMmgQ=;
-        b=O2hxN7xtp8wwePJ2oK3PBLoXpozf51DbbfPAEp61jBdGt7DZ6PDpKfHSua9bAviwvj
-         +k2JIJpZM5TlYePiiqnoL+pd+3AL8nWIeIZ9zF1yLmA9rghhuuSJ5SzpmrPU819N46tD
-         Ljm+5O4ulJYh4aoG3m+vYMe0WMXAAnIYS/WQHizp9opfkujxNWHv4fHWBqp9D2/a69e/
-         c0VO7RyhyO8W91TFmSK6CGF5uZJBPAnjIsSOAFVjvygzL1CJQfYJ+MDeXMITYZrtQUy2
-         KoSHj7VWduUZhxKcmqVd7l+wnewlXLYKmqTd3mXBCLXmxI5EWwmkNB9tGCr2r0PAEuOg
-         odtA==
-X-Gm-Message-State: AOJu0YwOviXmM6xPiHXgAuR/kCO3tLdiC/EZLgH6prepU01WbAXdBpIX
-        aSZNZ8hs7FcmInxcE49TZEtOGw==
-X-Google-Smtp-Source: AGHT+IFJHaBKDBa9FsHXtzux2UkvFgC3UTp4BhhdsEjv8fCLAr/6/KNue5g8DvDfgdf99+Ek70M0DA==
-X-Received: by 2002:a17:902:ec8b:b0:1c0:cbaf:6939 with SMTP id x11-20020a170902ec8b00b001c0cbaf6939mr11608160plg.3.1694425670620;
-        Mon, 11 Sep 2023 02:47:50 -0700 (PDT)
+        bh=hBwbAk8n+4/KwMrK4IB+eTsyBHwRgi9e5IimtDnToKs=;
+        b=RWHevDOILGKTQvaOijkcplQZ72YyjhiawkoHTzl2sUS/aVzKcft86Yn2AuvpGei5Gz
+         C48pAT4JaE+DAv8ddx34uHzpJQRjAr6hxK5FApMgP1qkvZ7tzm6kNGoSlPi3fwIuYdFI
+         0gL5RR3ts9PuKSQfXMJWXI4mx59V6I14q8znpE1LkURK9R5TZx75s8wIhimjsXoX0MD4
+         58uT1NObjMlU5DciwThoms4bsBr1xm0RZhBIngUIZ61L0/HkLOBzHkHeSuBnFhJfwzGJ
+         zfzreokvk5YiIyNImpCnnnteWkTcvzpWlq7u2jOyWT6a0ErfNKevVEKQ5ETWrlcAUDoi
+         NWsg==
+X-Gm-Message-State: AOJu0YyqjZwV5Dkw+mQHJGgHX/I8nYyzXznXnl0X+pkFfYsFiAYFq56l
+        rrfd0COmQym2rbHMrYV00DbJIg==
+X-Google-Smtp-Source: AGHT+IGdro6LiLO9vRH4IIg6fznBAneFLTeHoPfwnGVLVhVa7r8b9KXvi4A+Mo8zyY74vr4cIKuVLg==
+X-Received: by 2002:a17:902:e546:b0:1bb:9e6e:a9f3 with SMTP id n6-20020a170902e54600b001bb9e6ea9f3mr10988406plf.4.1694425678844;
+        Mon, 11 Sep 2023 02:47:58 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.39
+        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:47:50 -0700 (PDT)
+        Mon, 11 Sep 2023 02:47:58 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -59,18 +59,10 @@ To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         muchun.song@linux.dev
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v6 18/45] sunrpc: dynamically allocate the sunrpc_cred shrinker
-Date:   Mon, 11 Sep 2023 17:44:17 +0800
-Message-Id: <20230911094444.68966-19-zhengqi.arch@bytedance.com>
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v6 19/45] mm: workingset: dynamically allocate the mm-shadow shrinker
+Date:   Mon, 11 Sep 2023 17:44:18 +0800
+Message-Id: <20230911094444.68966-20-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
 References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
@@ -78,75 +70,81 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new APIs to dynamically allocate the sunrpc_cred shrinker.
+Use new APIs to dynamically allocate the mm-shadow shrinker.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-CC: Chuck Lever <chuck.lever@oracle.com>
-CC: Jeff Layton <jlayton@kernel.org>
-CC: Neil Brown <neilb@suse.de>
-CC: Olga Kornievskaia <kolga@netapp.com>
-CC: Dai Ngo <Dai.Ngo@oracle.com>
-CC: Tom Talpey <tom@talpey.com>
-CC: Trond Myklebust <trond.myklebust@hammerspace.com>
-CC: Anna Schumaker <anna@kernel.org>
-CC: linux-nfs@vger.kernel.org
-CC: netdev@vger.kernel.org
 ---
- net/sunrpc/auth.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ mm/workingset.c | 29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/net/sunrpc/auth.c b/net/sunrpc/auth.c
-index 2f16f9d17966..c9c270eececc 100644
---- a/net/sunrpc/auth.c
-+++ b/net/sunrpc/auth.c
-@@ -861,11 +861,7 @@ rpcauth_uptodatecred(struct rpc_task *task)
- 		test_bit(RPCAUTH_CRED_UPTODATE, &cred->cr_flags) != 0;
+diff --git a/mm/workingset.c b/mm/workingset.c
+index da58a26d0d4d..b192e44a0e7c 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -763,13 +763,6 @@ static unsigned long scan_shadow_nodes(struct shrinker *shrinker,
+ 					NULL);
  }
  
--static struct shrinker rpc_cred_shrinker = {
--	.count_objects = rpcauth_cache_shrink_count,
--	.scan_objects = rpcauth_cache_shrink_scan,
--	.seeks = DEFAULT_SEEKS,
+-static struct shrinker workingset_shadow_shrinker = {
+-	.count_objects = count_shadow_nodes,
+-	.scan_objects = scan_shadow_nodes,
+-	.seeks = 0, /* ->count reports only fully expendable nodes */
+-	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
 -};
-+static struct shrinker *rpc_cred_shrinker;
+-
+ /*
+  * Our list_lru->lock is IRQ-safe as it nests inside the IRQ-safe
+  * i_pages lock.
+@@ -778,9 +771,10 @@ static struct lock_class_key shadow_nodes_key;
  
- int __init rpcauth_init_module(void)
+ static int __init workingset_init(void)
  {
-@@ -874,9 +870,17 @@ int __init rpcauth_init_module(void)
- 	err = rpc_init_authunix();
- 	if (err < 0)
- 		goto out1;
--	err = register_shrinker(&rpc_cred_shrinker, "sunrpc_cred");
--	if (err < 0)
-+	rpc_cred_shrinker = shrinker_alloc(0, "sunrpc_cred");
-+	if (!rpc_cred_shrinker) {
-+		err = -ENOMEM;
- 		goto out2;
-+	}
++	struct shrinker *workingset_shadow_shrinker;
+ 	unsigned int timestamp_bits;
+ 	unsigned int max_order;
+-	int ret;
++	int ret = -ENOMEM;
+ 
+ 	BUILD_BUG_ON(BITS_PER_LONG < EVICTION_SHIFT);
+ 	/*
+@@ -797,17 +791,26 @@ static int __init workingset_init(void)
+ 	pr_info("workingset: timestamp_bits=%d max_order=%d bucket_order=%u\n",
+ 	       timestamp_bits, max_order, bucket_order);
+ 
+-	ret = prealloc_shrinker(&workingset_shadow_shrinker, "mm-shadow");
+-	if (ret)
++	workingset_shadow_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
++						    SHRINKER_MEMCG_AWARE,
++						    "mm-shadow");
++	if (!workingset_shadow_shrinker)
+ 		goto err;
 +
-+	rpc_cred_shrinker->count_objects = rpcauth_cache_shrink_count;
-+	rpc_cred_shrinker->scan_objects = rpcauth_cache_shrink_scan;
+ 	ret = __list_lru_init(&shadow_nodes, true, &shadow_nodes_key,
+-			      &workingset_shadow_shrinker);
++			      workingset_shadow_shrinker);
+ 	if (ret)
+ 		goto err_list_lru;
+-	register_shrinker_prepared(&workingset_shadow_shrinker);
 +
-+	shrinker_register(rpc_cred_shrinker);
++	workingset_shadow_shrinker->count_objects = count_shadow_nodes;
++	workingset_shadow_shrinker->scan_objects = scan_shadow_nodes;
++	/* ->count reports only fully expendable nodes */
++	workingset_shadow_shrinker->seeks = 0;
 +
++	shrinker_register(workingset_shadow_shrinker);
  	return 0;
- out2:
- 	rpc_destroy_authunix();
-@@ -887,5 +891,5 @@ int __init rpcauth_init_module(void)
- void rpcauth_remove_module(void)
- {
- 	rpc_destroy_authunix();
--	unregister_shrinker(&rpc_cred_shrinker);
-+	shrinker_free(rpc_cred_shrinker);
+ err_list_lru:
+-	free_prealloced_shrinker(&workingset_shadow_shrinker);
++	shrinker_free(workingset_shadow_shrinker);
+ err:
+ 	return ret;
  }
 -- 
 2.30.2
