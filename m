@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA9979B1D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B428679B4F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377601AbjIKW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S241039AbjIKWKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237877AbjIKNRc (ORCPT
+        with ESMTP id S237865AbjIKNQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:17:32 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E7BEB;
-        Mon, 11 Sep 2023 06:17:28 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso49214365e9.3;
-        Mon, 11 Sep 2023 06:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694438247; x=1695043047; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=VlerAEPk5ZbRg5PAlIL60EpQx7Cq2EyqtsP8OX4iUb0=;
-        b=luLfubuqD9dno+nlaYd5BmXcLyl4KlzfBQHqFIb1DkzAAUuZAeEj8b7Q+GlGt48LB/
-         X8L9xqWoaRdvGYuzqs+yMy+UtfOkVjV2vUohOteiMc7KXSIbSDxOwZqhg9eQJhl5O/vM
-         w8hSVdlIm/47Qr3ZrhGqox/fHkSFdbuCXcg++yd0jLm7ZCtikGDlCWuU4c6Tiux3ETiE
-         rz458p+ld32wjf3hriUjil5GnebNmzzVVlky8gjlqJI+uuShf5k/zwE9vsXZxP/C9FAn
-         bRaeWhq8e33AHEumkZRrnX8YCY7IyrK2kVzdFN82QUNNt9JqxfCXRc7qc4lAUgZzRzgT
-         94Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438247; x=1695043047;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VlerAEPk5ZbRg5PAlIL60EpQx7Cq2EyqtsP8OX4iUb0=;
-        b=gNSD59TosZgqxJcrJtyDLLKbgsSn4JMEJ/Mmlv197LcGWrLgWqL8xxJHV71tqjYaBh
-         ZCMLgVxrHJYMUotMV7ups33SZZB+yHhSJWDm4tnHgqZNI51eC28noS1vy/jQf8IMU9rg
-         yxaEdkcn7lRYqetv7qPUE8sZMFtvJXzZxlKCrJ9Ekpc6hjOas3ruJVae9fh4tMzqvrLV
-         23EvRO/6cMZ9L5cbr/aSeJm/R67rmdK9gb93Q/HhSDEXVuMBM7bAgTiNS3pQllEam5W2
-         JzBWVnpePeDwPbYNRH/wdLD/8cOXVXBwp8SY4ZY4ijJZqWAMd9qstlEev2zTyz06NKs3
-         lzCQ==
-X-Gm-Message-State: AOJu0YxKLKlvgXkGh7VE+uURVdWnVBr68t/8xGLEsnR4jm7J68W2rPqP
-        DWVHZnJIC0+1QqDSfMiDL5scyk8+z41tWA==
-X-Google-Smtp-Source: AGHT+IEPI6QFXgxg449sbeQSA4HtBFOyu5itUrch2mlFiWIh68Lx1OCYtTJqQqRdsjLm00GVmiQudQ==
-X-Received: by 2002:a1c:7912:0:b0:401:bf56:8baf with SMTP id l18-20020a1c7912000000b00401bf568bafmr7934172wme.8.1694438246711;
-        Mon, 11 Sep 2023 06:17:26 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2501:c701:6716:11bf:1bf:eca1])
-        by smtp.gmail.com with ESMTPSA id l10-20020a1c790a000000b003fed70fb09dsm10057913wme.26.2023.09.11.06.17.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 06:17:26 -0700 (PDT)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2] pinctrl: renesas: pinctrl-rzg2l: Add validation of GPIO pin in rzg2l_gpio_request()
-Date:   Mon, 11 Sep 2023 14:16:38 +0100
-Message-Id: <20230911131638.443055-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Mon, 11 Sep 2023 09:16:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12F4EB;
+        Mon, 11 Sep 2023 06:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694438180; x=1725974180;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
+  b=NvjEyQC/csS8o51b0UCqrtsRPyZnVoD+YvzH9/dGwYQsbgWEhfQfi1Eo
+   T18G1BWT12eFQfSesvM7fIPDJsHzWSw/0SziijGRNqYnAvtVoZD4Sac8N
+   JCKd6sDXafvRrOxarSAX8IPU3xeMVkQcBPTFMZ9dm1TEmspi+40ODR9S6
+   cVTPWvbfbHraVCY1Os9ZsYtf1aBB96sQ+18bFpQ0fJmi0R5J6EorMy0B9
+   D5/muVsG7wGFqBERTL0iqrTH0KMtGLlAUd9dXmZy7xSYeIwv/8BFufFgg
+   SdbnGetlq3E4lY2Fle1GIQlkhgDY8wYa4rzoqAYY0iNXgZi9JWSfJQkxT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="377990543"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="377990543"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:16:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="719982429"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="719982429"
+Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
+  by orsmga006.jf.intel.com with ESMTP; 11 Sep 2023 06:16:16 -0700
+From:   sharath.kumar.d.m@intel.com
+To:     helgaas@kernel.org
+Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
+Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
+Date:   Mon, 11 Sep 2023 18:46:48 +0530
+Message-Id: <20230911131649.1775971-2-sharath.kumar.d.m@intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230911131649.1775971-1-sharath.kumar.d.m@intel.com>
+References: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
+ <20230911131649.1775971-1-sharath.kumar.d.m@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,46 +63,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-Validate the GPIO pin request in rzg2l_gpio_request() callback using
-rzg2l_validate_gpio_pin() function. This stops any accidental usage
-of GPIO pins which are not supported by the SoCs.
+added the below callbacks that eases is supporting newer platforms
+for read/write to root port configuration space registers
+for read/write to non root port (endpoint, switch) cfg space regs
+root port interrupt handler
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 ---
-v1->v2
-* Maintained reverse christmas tree order.
-* Included RB/TB tags from Claudiu.
----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
+ 1 file changed, 70 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 37cdfe4b04f9..cc52a154d201 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -795,12 +795,18 @@ static const struct pinconf_ops rzg2l_pinctrl_confops = {
- static int rzg2l_gpio_request(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
-+	const struct pinctrl_pin_desc *pin = &pctrl->desc.pins[offset];
- 	u32 port = RZG2L_PIN_ID_TO_PORT(offset);
- 	u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
-+	u64 *pin_data = pin->drv_data;
- 	unsigned long flags;
- 	u8 reg8;
- 	int ret;
+diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
+index a9536dc4bf96..878f86b1cc6b 100644
+--- a/drivers/pci/controller/pcie-altera.c
++++ b/drivers/pci/controller/pcie-altera.c
+@@ -3,6 +3,7 @@
+  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
+  *
+  * Author: Ley Foon Tan <lftan@altera.com>
++ * Author: sharath <sharath.kumar.d.m@intel.com>
+  * Description: Altera PCIe host controller driver
+  */
  
-+	ret = rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit);
-+	if (ret)
-+		return ret;
+@@ -99,10 +100,15 @@ struct altera_pcie_ops {
+ 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
+ 			      u32 data, bool align);
+ 	bool (*get_link_status)(struct altera_pcie *pcie);
+-	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
+-			   int size, u32 *value);
++	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
++			unsigned int devfn, int where, int size, u32 *value);
+ 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
+-			    int where, int size, u32 value);
++			unsigned int devfn, int where, int size, u32 value);
++	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
++			unsigned int devfn, int where, int size, u32 *value);
++	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
++			unsigned int devfn, int where, int size, u32 value);
++	void (*rp_isr)(struct irq_desc *desc);
+ };
+ 
+ struct altera_pcie_data {
+@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
+-			   int size, u32 *value)
++static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
++		int where, int size, u32 *value)
+ {
+ 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
+ 
+@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
++static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
+ 			    int where, int size, u32 value)
+ {
+ 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
+@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
+-				 unsigned int devfn, int where, int size,
+-				 u32 *value)
++static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
++		int where, int size, u32 *value)
+ {
+ 	int ret;
+ 	u32 data;
+ 	u8 byte_en;
+ 
+-	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
+-		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
+-							 size, value);
+-
+ 	switch (size) {
+ 	case 1:
+ 		byte_en = 1 << (where & 3);
+@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+ 
+-static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
+-				  unsigned int devfn, int where, int size,
+-				  u32 value)
++static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
++			    int where, int size, u32 value)
+ {
+ 	u32 data32;
+ 	u32 shift = 8 * (where & 3);
+ 	u8 byte_en;
+ 
+-	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
+-		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
+-						     where, size, value);
+-
+ 	switch (size) {
+ 	case 1:
+ 		data32 = (value & 0xff) << shift;
+@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
+ 
+ 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
+ 				   byte_en, data32);
 +
- 	ret = pinctrl_gpio_request(chip->base + offset);
- 	if (ret)
++}
++
++static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
++				 unsigned int devfn, int where, int size,
++				 u32 *value)
++{
++	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
++		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
++							where, size, value);
++
++	if (pcie->pcie_data->ops->nonrp_read_cfg)
++		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
++							where, size, value);
++	return PCIBIOS_FUNC_NOT_SUPPORTED;
++}
++
++static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
++				  unsigned int devfn, int where, int size,
++				  u32 value)
++{
++	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
++		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
++						     where, size, value);
++
++	if (pcie->pcie_data->ops->nonrp_write_cfg)
++		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
++						     where, size, value);
++	return PCIBIOS_FUNC_NOT_SUPPORTED;
+ }
+ 
+ static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
+@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
+ 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
+ 		}
+ 	}
+-
+ 	chained_irq_exit(chip, desc);
+ }
+ 
+@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
+ {
+ 	struct platform_device *pdev = pcie->pdev;
+ 
+-	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
+-	if (IS_ERR(pcie->cra_base))
+-		return PTR_ERR(pcie->cra_base);
++	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
++		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
++		pcie->cra_base =
++			devm_platform_ioremap_resource_byname(pdev, "Cra");
++		if (IS_ERR(pcie->cra_base))
++			return PTR_ERR(pcie->cra_base);
++	}
+ 
+ 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
+ 		pcie->hip_base =
+@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
+ 	if (pcie->irq < 0)
+ 		return pcie->irq;
+ 
+-	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
++	irq_set_chained_handler_and_data(pcie->irq,
++		pcie->pcie_data->ops->rp_isr, pcie);
+ 	return 0;
+ }
+ 
+@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
+ 	.tlp_read_pkt = tlp_read_packet,
+ 	.tlp_write_pkt = tlp_write_packet,
+ 	.get_link_status = altera_pcie_link_up,
++	.rp_read_cfg = arr_read_cfg,
++	.rp_write_cfg = arr_write_cfg,
++	.nonrp_read_cfg = arr_read_cfg,
++	.nonrp_write_cfg = arr_write_cfg,
++	.rp_isr = altera_pcie_isr,
+ };
+ 
+ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
+@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
+ 	.get_link_status = s10_altera_pcie_link_up,
+ 	.rp_read_cfg = s10_rp_read_cfg,
+ 	.rp_write_cfg = s10_rp_write_cfg,
++	.nonrp_read_cfg = arr_read_cfg,
++	.nonrp_write_cfg = arr_write_cfg,
++	.rp_isr = altera_pcie_isr,
+ };
+ 
+ static const struct altera_pcie_data altera_pcie_1_0_data = {
+@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
  		return ret;
+ 	}
+ 
+-	/* clear all interrupts */
+-	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
+-	/* enable all interrupts */
+-	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
+-	altera_pcie_host_init(pcie);
++	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
++		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
++		/* clear all interrupts */
++		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
++		/* enable all interrupts */
++		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
++		altera_pcie_host_init(pcie);
++	}
+ 
+ 	bridge->sysdata = pcie;
+ 	bridge->busnr = pcie->root_bus_nr;
 -- 
 2.34.1
 
