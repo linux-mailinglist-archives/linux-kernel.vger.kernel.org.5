@@ -2,172 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D510A79BD84
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ED279C0F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243925AbjIKVIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
+        id S1348697AbjIKVaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237743AbjIKNNf (ORCPT
+        with ESMTP id S237759AbjIKNOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:13:35 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2083.outbound.protection.outlook.com [40.107.243.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F37CD7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:13:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TR+bArBYyGNkjeWav50rlNhUyeHL+PpvKPHW1Nu9Mk4iOzsqA4jlaSccMQI+X7hBw/1nsePbfp6bkmToCnTMTHA/w9dIkgva3eJRfG97Y44olU4yzjVhtClTnaxa+rUy6zpTGM8W18DH+JsvOSpb3v3EJ2C9MPPN+U6woVEH8KoLPxB0S1FPFzVIerFzrkTkUHFNhIa+j5OWt2b1mNN6B1LAaZmxooCXamLsnLXtpmLCf69XI72TEBvz8TZNTSGv1vJWxhCXA0YMafCpRaDXEhfu8GXULnYjSawibAwPbtqclLG4772Rl/tXnK8zNcQiXpEm2Pfph4IYGiSgO+POpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YQshHsJVCBz68e6TzJ6QMDlC5zu28yQOUVDHnLwnmnA=;
- b=dy1BHO3Cdk5XVmVFkxpQ4Ho8Llyt1D6Rz6Pt5K4hmjjYNjrC7ew+Pk7gnY209MoLQ2fFTdVPwrNktdu8NSDG8aiqTh5yKyRY2W+Cp7R65uwvkm23Y8WaBP+2j/tionkTB0QotqYYhqmGjYnNUraR8MeP+jhI/2Rl7+k0nq/wBhrZ5QSm4URDU/gDfaCVqZXjzO/F3SUYNFPeUQ4wUtCsOtawWxdkI3cjDpxweSmXAkrJ/aKUNBl5yNxx/7dB0BOhqmrgjT4Hw2mT404KkXU4KPffTEBGqXPcmAcLgrFkIETtfJpNhFOuk1MDGBdMXGRHaZ4E/s5685N4pYB9F391qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YQshHsJVCBz68e6TzJ6QMDlC5zu28yQOUVDHnLwnmnA=;
- b=ou22cBVbg2ZAcME3B3YEXRgpouJ5FuKA08R6mfD3TkEjSrQI1SeBzy5lRDzYn7eRu21ZWxiXwmi23zqZTEd97qRRxbIhUWcsYJtxAEKiyr9fS+0IvG1y1XiHxMSV+/pYBo8xc/pXvZR+JpnARWHCv3xgwvsq2BB16DbyW7h4AJM=
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by BN9PR12MB5210.namprd12.prod.outlook.com (2603:10b6:408:11b::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Mon, 11 Sep
- 2023 13:13:28 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 13:13:27 +0000
-From:   "Sharma, Shashank" <Shashank.Sharma@amd.com>
-To:     "Koenig, Christian" <Christian.Koenig@amd.com>,
-        =?utf-8?B?QW5kcsOpIEFsbWVpZGE=?= <andrealmeid@igalia.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "kernel-dev@igalia.com" <kernel-dev@igalia.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Pelloux-Prayer, Pierre-Eric" <Pierre-eric.Pelloux-prayer@amd.com>
-Subject: RE: [PATCH v6 1/5] drm/amdgpu: Allocate coredump memory in a
- nonblocking way
-Thread-Topic: [PATCH v6 1/5] drm/amdgpu: Allocate coredump memory in a
- nonblocking way
-Thread-Index: AQHZ5F82qJ0nSbk17kC9ALrdxBJq37AVeaOAgAAhB4A=
-Date:   Mon, 11 Sep 2023 13:13:27 +0000
-Message-ID: <MW4PR12MB5667BFFD978A330AD51E579CF2F2A@MW4PR12MB5667.namprd12.prod.outlook.com>
-References: <20230911030018.73540-1-andrealmeid@igalia.com>
- <20230911030018.73540-2-andrealmeid@igalia.com>
- <4a6622b8-231e-74fc-f558-0f124b851308@amd.com>
-In-Reply-To: <4a6622b8-231e-74fc-f558-0f124b851308@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=b827f38d-a74a-43d9-9bce-cd7607253397;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-09-11T13:13:07Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MW4PR12MB5667:EE_|BN9PR12MB5210:EE_
-x-ms-office365-filtering-correlation-id: 987cdc49-6cf9-410b-023f-08dbb2c8e320
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9Q3ZL40+CjrNq4m0mVvUz/Pk+SYPyQDmvXOfVbS2aEvPe5CBZOhcG563vVxefbPTPLS0v3i6l8MOIcYCkaXegVzWjcXen7huPiM2/yfnEoDjE0XFImar1RtT/oKId4oNHojxNQtPZFiUep31T2fNKVPqJATPShUOPpiECpO2Yk9G0ESSfSh81quHzxgfC1gLngpGR0eHXFSM41fbvYwvEN+YI980ua8xkGfkSSnoM6W4aNmSdEHKyFeaL+g8/kSNKnc6Iro2EruaZA6nVQhHFS3S5BFb5Nxk/VKx2dXZo3SqoGnBJcDL3KplvHDT5ao10XwISSwGGV8Um2m8bOV3PpbjTDOxd2cC4B7cJT7l8lDniWfzfxyUnFyn2ZbM9xrb10HR4lVSWiy4nFGG72gDvn8lqg97moEvdwTFiXfzKfMAZwAbHwUy8BF1eWfqmbwHpqVf02NM7Q0j0YMKzdMuasaAnmLRA7fs/fhHFSZ+b4lKnw1Wu5VqdqyFCbFa4o9CGW9jSHVNVXiE05+LtB9cyopkXwc3A1ymB+Vqk7X8165iJodN/Si5fGb3396oESJWNWjaqutGmmHnhgLWHO4lVX5WRgVrbSrzkAdYQH83DDwz15oUXbSH27vINA00iIzA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(366004)(396003)(186009)(451199024)(1800799009)(6506007)(7696005)(53546011)(9686003)(71200400001)(83380400001)(122000001)(86362001)(33656002)(38100700002)(38070700005)(66574015)(55016003)(26005)(52536014)(316002)(41300700001)(8936002)(4326008)(2906002)(76116006)(8676002)(66946007)(54906003)(478600001)(66556008)(66446008)(66476007)(64756008)(110136005)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?alB2eE1IUEh4dDJ3WHgrbzhFSzFLMzhrbmp1ZW5jRDZzT2pMaTcwVU5lRHMv?=
- =?utf-8?B?VFlIUE9qem51Uk9aTTR6YysydVVNdDdRcjhuLzhVN1RVYTUwd2h1SXc4VW51?=
- =?utf-8?B?b0FUTloxalFEUmI0V2Rpc3JaUzEweVdieHdTUVd5bi9CVmRqdmhtclVKNXcz?=
- =?utf-8?B?aHE1UVVwdkxwOTdYQjZhamFqS01LVUk1REM3NHdpTWt2dUtWSiszZUVVdDhE?=
- =?utf-8?B?NGd6Y1hzb2M0SW56MFNkS3NLaTZhdm9jM0pDNEpoK3Y1NE9reklucGthbjll?=
- =?utf-8?B?dVROK3EzT1M0OXh5YjQ4emxjeWxSNWhaeEZiU3g4dkFoOTJ1V2hpREM5YUYw?=
- =?utf-8?B?T1J0cU8vd0kxem5vSkFqay9kRmtsaFZpM3psbDVrM0RRR2Ivd2I1WUdDdVJC?=
- =?utf-8?B?bmtOZ09qSFBrbnc0bTBkU1ZFZXV3YjlSU2lKckRxVXdMdVFrOVJvQ1RFRSty?=
- =?utf-8?B?emNoZzF3V0ovenVjM3VlM2czcDByalNvYVlYSnFONDAzUlg4N0J6MSthSXZj?=
- =?utf-8?B?UDJLM0VNQ3dHZ0NQdXNkV0RmOUh0OEVDb09uMWZzOXNVV1Z2OTFRMk1BeExU?=
- =?utf-8?B?QWlWS3dxSU5TNTMvU25JNVJ3QWxOUmtjaVFZbjZnTlQxU0lJbnkvam82Q1hU?=
- =?utf-8?B?SVhjQTFEcWUvUHozc1ZnODUxeUp2UWpLRFBKc1NZdytKQWgzZXdGREdwUGJS?=
- =?utf-8?B?UWM1OFF3bXB2YVhFRmVlQ0R5allXSnNLOU5sUWlqZDRIeVgzQ3I1SXdaYjg5?=
- =?utf-8?B?UXVNRVZiTXhmZFpxSmcwWHdzR0F6T1FCcU1xNkx4WTRxTC9pbVU0a00xN0U5?=
- =?utf-8?B?d3ExdU5odnVlODhjbTlreG1GY2tZNmY5emlWSVBVZE5aN0prbW5DMWdDUlZ1?=
- =?utf-8?B?VDZOelFleVRVSWVmRjBkZnJmcGNVNzNtcUdmQ1VNT0c5aFpyRmVKWXF5OGxE?=
- =?utf-8?B?UVpxL2dvZHArb1Z0YXFxUWpDTFlyTk1vMXVETXRGaG5VQ25UcDBkaTFIV0Qv?=
- =?utf-8?B?TXpFa3hpdlp2b0grYzQrajh0NHBkaG1DZDdQR0F3MUZqU0xVeGdHdW9pNXpq?=
- =?utf-8?B?bjlKby9ZcmZzYUs4VGt2N1ZwSm84VVAzWE5wT01ESDZFZWVMaVJVNWI4UUFQ?=
- =?utf-8?B?V3RtZ3p1T3BBUlF4NHFEQ0t6ZjdYQU5sZ2I1cXltNUFXVzcwRHBFOUpQeVNG?=
- =?utf-8?B?Vm82bXMvSDFNNzI0citkUko1RVkzVlZjQ1ZYNWVlczlnR3lSbmM2ak8rOW1x?=
- =?utf-8?B?ZHFrREpwT09LWTNybzFLYi9nTGRySDl6S3N2OVV1L3lSRUF1R25jS3VSYlY5?=
- =?utf-8?B?OHFIZlpMeXMyZnA1ZmdkenpMNmtERzBJNGJiQW85d0FSTmFlZDQ3NWd4RStk?=
- =?utf-8?B?TkN4TGFtcXJtRDJOT0dQeUVsbTIzTWc0eFJyRUw5QWs4cElyNzFtczBOL2dG?=
- =?utf-8?B?cE1pTHNvbFpoSzUrQTE5RU1UVjBKSEFsL3hsMlp5OGNlQjlKWGtKQ0lwY2N3?=
- =?utf-8?B?djZIdGZtRkY5R0o4TEJHYmRHOXEzWC96cHpjdE42RUFGVU1nVlpyNXVRV3hk?=
- =?utf-8?B?ZGZoUjJrbytkN2RzNWNsRDJHUW5GcjJlb3pTZ2NnNVJjOXJhV3FNZGtPRXYv?=
- =?utf-8?B?dm1rWlAzQ1RZS3Iwcnd6TmE3TzAzeFRMbTZ5Z3BMeERXNlZyQkwxenR6MFE3?=
- =?utf-8?B?dlgySVY2amJ1bVBTa2R6YlVDTHlPZ0Q2bFBTVUw2NzJQMUxhaE94dTdReklT?=
- =?utf-8?B?cUtCVkhBMlNDbGVLRmx0dFhaZkEvZ2R3bHQ2NGFNQXZyL1c3OWhFREtyOHJa?=
- =?utf-8?B?YzNzNEgweTFTeTgrNURCL2F0T1hEdTBsRFlpempITnpxMlBWaXBXeEg2ZGE0?=
- =?utf-8?B?SkZMQ3VqMlVERUNvRjZQakh1UVhJWGRKQVFHbE1EbTlGWE4rNzZMQy9zRU5i?=
- =?utf-8?B?c2lPU245bGlSeTZXaUxocldGbVpLOE5JT0pVRFRwa2pSNlBsOHlneTUwdUxO?=
- =?utf-8?B?WGlPRUpZa2dxZEhxaEdtdWFEc1NJMHVUWDJzdk1FclNUZm5hUmFnaTlUZkly?=
- =?utf-8?B?c1NTdk5GYlA2ZVdGK3VzODdJZEJ4bFduUklkc1ZVTllTbVpIdzIvUHFpQ1RS?=
- =?utf-8?Q?iAvM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 11 Sep 2023 09:14:22 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910DAE4D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:14:17 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52e828ad46bso5799228a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694438056; x=1695042856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hWSBg2m/DFeH+pSop6GqXEz6uLfYv88RDnyNFoEgOcM=;
+        b=jxVn70YRsNZwmomWMm63Ty5/BHsHYO6Xu5bmh7B5fmRp4lhawwvH0MZ3P50o9UsToG
+         aErVSymVDqgXhJ7oGXj9bvM++ARDlD6BiaF6eplgY3VYvX7tRmQPJyPvXb7+2/LErHSA
+         9D1ZRtbUW1i0o8cQfYlyAQoM7h8gkNfIsLo8YSZP43dBcAAQjngZQmBWEY/Na+UiWo0w
+         59fyS8YNcMpn1U82eREAGzfqK3XYpd9hTpYlEOzwKamaOKM00z+1qVowvTpayh6172HQ
+         1ok4K6M+pSv5FWMiARQf6WmBuGBtC6Qb7zQKWPPEIgBosH5tWDcnlz9xgmQH6jQAKKmo
+         sSJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694438056; x=1695042856;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hWSBg2m/DFeH+pSop6GqXEz6uLfYv88RDnyNFoEgOcM=;
+        b=jIZA7Rhz08OlQaA9baIRpeyr7qqtaxcc1DtCe1abYbTqJaJWwAEnOUgAN5w7QVWMsq
+         q6h8s9+vGIfloKtYRtIy4U2auLOKGeVBDTEjKRHPdlN3K0WShgmPAWlw80r2eBIjT2ua
+         AYXcghrSyBRkxt6rQryPwli73S1G+o611RTt/kBjdDm5nRevqauvicZttC8ZbSEFB6a9
+         YnzGmi0MCQTS5PoADAK9bPxG6YvVws7hKYaz76Ghw6MxvtODaTgfQngc5Z3aNQdudsTs
+         SF3I70xf5lE8dkjo/DZDjMUPeRmPRKRZmpmPaSgP+eruvTW/WcnOECOy6d/UXc1YnfSo
+         5quw==
+X-Gm-Message-State: AOJu0Yw6MSQyt17h/v1/2Lw0qSnPBevWLqjd39D5Jqfir1YKtMZVOG7Y
+        5Q5mzAkskNTWCMvRbEbhwOjiLw==
+X-Google-Smtp-Source: AGHT+IGYCXemrhj8aJqa9udV4YnDokNhFiwufrPafQvWkkAFQKCRQCUxnoJ/pvLn3HAF4gTH2IE89Q==
+X-Received: by 2002:a17:906:106:b0:9a1:c352:b6a2 with SMTP id 6-20020a170906010600b009a1c352b6a2mr8650202eje.52.1694438056087;
+        Mon, 11 Sep 2023 06:14:16 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id kt8-20020a170906aac800b00988e953a586sm5313648ejb.61.2023.09.11.06.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:14:15 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 02/17] media: qcom: camss: Rename camss struct resources to camss_subdev_resources
+Date:   Mon, 11 Sep 2023 14:13:56 +0100
+Message-ID: <20230911131411.196033-3-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230911131411.196033-1-bryan.odonoghue@linaro.org>
+References: <20230911131411.196033-1-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 987cdc49-6cf9-410b-023f-08dbb2c8e320
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 13:13:27.6337
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ztygtBYoWflda8STb9XUBdM8Ro+7yZznm/Yin8m0+/q82mzirmw40r3AG6u90jy8R3l4x3q6ILJmtvgNsvsqnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5210
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCkhleSBDaHJpc3RpYW4sDQoNCldp
-bGwgZG8gdGhhdC4NCg0KUmVnYXJkcw0KU2hhc2hhbmsNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdl
-LS0tLS0NCkZyb206IEtvZW5pZywgQ2hyaXN0aWFuIDxDaHJpc3RpYW4uS29lbmlnQGFtZC5jb20+
-DQpTZW50OiBNb25kYXksIFNlcHRlbWJlciAxMSwgMjAyMyAxOjE1IFBNDQpUbzogQW5kcsOpIEFs
-bWVpZGEgPGFuZHJlYWxtZWlkQGlnYWxpYS5jb20+OyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnOyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgbGludXgta2VybmVsQHZnZXIu
-a2VybmVsLm9yZzsgU2hhcm1hLCBTaGFzaGFuayA8U2hhc2hhbmsuU2hhcm1hQGFtZC5jb20+DQpD
-Yzoga2VybmVsLWRldkBpZ2FsaWEuY29tOyBEZXVjaGVyLCBBbGV4YW5kZXIgPEFsZXhhbmRlci5E
-ZXVjaGVyQGFtZC5jb20+OyBQZWxsb3V4LVByYXllciwgUGllcnJlLUVyaWMgPFBpZXJyZS1lcmlj
-LlBlbGxvdXgtcHJheWVyQGFtZC5jb20+DQpTdWJqZWN0OiBSZTogW1BBVENIIHY2IDEvNV0gZHJt
-L2FtZGdwdTogQWxsb2NhdGUgY29yZWR1bXAgbWVtb3J5IGluIGEgbm9uYmxvY2tpbmcgd2F5DQoN
-CkFtIDExLjA5LjIzIHVtIDA1OjAwIHNjaHJpZWIgQW5kcsOpIEFsbWVpZGE6DQo+IER1cmluZyBh
-IEdQVSByZXNldCwgYSBub3JtYWwgbWVtb3J5IHJlY2xhaW0gY291bGQgYmxvY2sgdG8gcmVjbGFp
-bQ0KPiBtZW1vcnkuIEdpdmluZyB0aGF0IGNvcmVkdW1wIGlzIGEgYmVzdCBlZmZvcnQgbWVjaGFu
-aXNtLCBpdCBzaG91bGRuJ3QNCj4gZGlzdHVyYiB0aGUgcmVzZXQgcGF0aC4gQ2hhbmdlIGl0cyBt
-ZW1vcnkgYWxsb2NhdGlvbiBmbGFnIHRvIGENCj4gbm9uYmxvY2tpbmcgb25lLg0KDQpTaW5jZSBp
-dCBpcyBhIGJ1ZyBmaXggSSd2ZSBhbHJlYWR5IHB1c2hlZCB0aGlzIG9uZSBpbnRvIG91ciBpbnRl
-cm5hbCBicmFuY2ggcXVpdGUgYSB3aGlsZSBhZ28uDQoNClNoYXNoYW5rIGNhbiB5b3UgdGFrZSBj
-YXJlIG9mIHBpY2tpbmcgdXAgdGhlIHJlbWFpbmluZyBwYXRjaGVzIGFuZCBwdXNoaW5nIHRoZW0g
-dG8gYW1kLXN0YWdpbmctZHJtLW5leHQ/DQoNClRoYW5rcywNCkNocmlzdGlhbi4NCg0KPg0KPiBT
-aWduZWQtb2ZmLWJ5OiBBbmRyw6kgQWxtZWlkYSA8YW5kcmVhbG1laWRAaWdhbGlhLmNvbT4NCj4g
-UmV2aWV3ZWQtYnk6IENocmlzdGlhbiBLw7ZuaWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4N
-Cj4gLS0tDQo+IHY1OiBubyBjaGFuZ2UNCj4gLS0tDQo+ICAgZHJpdmVycy9ncHUvZHJtL2FtZC9h
-bWRncHUvYW1kZ3B1X2RldmljZS5jIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L2FtZC9hbWRncHUvYW1kZ3B1X2RldmljZS5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvYW1kZ3B1X2RldmljZS5jDQo+IGluZGV4IGFhMTcxZGI2ODYzOS4uYmY0NzgxNTUxZjg4IDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZGV2aWNlLmMN
-Cj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2RldmljZS5jDQo+IEBA
-IC00ODQ3LDcgKzQ4NDcsNyBAQCBzdGF0aWMgdm9pZCBhbWRncHVfcmVzZXRfY2FwdHVyZV9jb3Jl
-ZHVtcG0oc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYpDQo+ICAgICAgIHN0cnVjdCBkcm1fZGV2
-aWNlICpkZXYgPSBhZGV2X3RvX2RybShhZGV2KTsNCj4NCj4gICAgICAga3RpbWVfZ2V0X3RzNjQo
-JmFkZXYtPnJlc2V0X3RpbWUpOw0KPiAtICAgICBkZXZfY29yZWR1bXBtKGRldi0+ZGV2LCBUSElT
-X01PRFVMRSwgYWRldiwgMCwgR0ZQX0tFUk5FTCwNCj4gKyAgICAgZGV2X2NvcmVkdW1wbShkZXYt
-PmRldiwgVEhJU19NT0RVTEUsIGFkZXYsIDAsIEdGUF9OT1dBSVQsDQo+ICAgICAgICAgICAgICAg
-ICAgICAgYW1kZ3B1X2RldmNvcmVkdW1wX3JlYWQsIGFtZGdwdV9kZXZjb3JlZHVtcF9mcmVlKTsN
-Cj4gICB9DQo+ICAgI2VuZGlmDQoNCg==
+Rename non-specific struct resources {} to struct camss_subdev_resources {}
+
+Each logical block in CAMSS has a number of regulators, clocks and resets
+associated with it. We represent these blocks as v4l subdevices.
+
+The name "struct camss_subdev_resources" is a more descriptive and accurate
+name.
+
+Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ .../media/platform/qcom/camss/camss-csid.c    |  2 +-
+ .../media/platform/qcom/camss/camss-csid.h    |  4 +-
+ .../media/platform/qcom/camss/camss-csiphy.c  |  2 +-
+ .../media/platform/qcom/camss/camss-csiphy.h  |  4 +-
+ .../media/platform/qcom/camss/camss-ispif.c   |  2 +-
+ .../media/platform/qcom/camss/camss-ispif.h   |  4 +-
+ drivers/media/platform/qcom/camss/camss-vfe.c |  2 +-
+ drivers/media/platform/qcom/camss/camss-vfe.h |  4 +-
+ drivers/media/platform/qcom/camss/camss.c     | 44 +++++++++----------
+ drivers/media/platform/qcom/camss/camss.h     |  2 +-
+ 10 files changed, 35 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+index 9d7fb1adebb98..b1113decdb305 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.c
++++ b/drivers/media/platform/qcom/camss/camss-csid.c
+@@ -566,7 +566,7 @@ static const struct v4l2_ctrl_ops csid_ctrl_ops = {
+  * Return 0 on success or a negative error code otherwise
+  */
+ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+-			 const struct resources *res, u8 id)
++			 const struct camss_subdev_resources *res, u8 id)
+ {
+ 	struct device *dev = camss->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+index d4b48432a0973..30d94eb2eb041 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.h
++++ b/drivers/media/platform/qcom/camss/camss-csid.h
+@@ -172,7 +172,7 @@ struct csid_device {
+ 	const struct csid_hw_ops *ops;
+ };
+ 
+-struct resources;
++struct camss_subdev_resources;
+ 
+ /*
+  * csid_find_code - Find a format code in an array using array index or format code
+@@ -200,7 +200,7 @@ const struct csid_format *csid_get_fmt_entry(const struct csid_format *formats,
+ 					     u32 code);
+ 
+ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+-			 const struct resources *res, u8 id);
++			 const struct camss_subdev_resources *res, u8 id);
+ 
+ int msm_csid_register_entity(struct csid_device *csid,
+ 			     struct v4l2_device *v4l2_dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+index c5ae9c61ee0b1..b1b6c4cf18385 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+@@ -546,7 +546,7 @@ static int csiphy_init_formats(struct v4l2_subdev *sd,
+  */
+ int msm_csiphy_subdev_init(struct camss *camss,
+ 			   struct csiphy_device *csiphy,
+-			   const struct resources *res, u8 id)
++			   const struct camss_subdev_resources *res, u8 id)
+ {
+ 	struct device *dev = camss->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+index 1c14947f92d35..c9b7fe82b1f0d 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.h
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+@@ -83,11 +83,11 @@ struct csiphy_device {
+ 	unsigned int nformats;
+ };
+ 
+-struct resources;
++struct camss_subdev_resources;
+ 
+ int msm_csiphy_subdev_init(struct camss *camss,
+ 			   struct csiphy_device *csiphy,
+-			   const struct resources *res, u8 id);
++			   const struct camss_subdev_resources *res, u8 id);
+ 
+ int msm_csiphy_register_entity(struct csiphy_device *csiphy,
+ 			       struct v4l2_device *v4l2_dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
+index 61765b874b9a2..75b8a60806b22 100644
+--- a/drivers/media/platform/qcom/camss/camss-ispif.c
++++ b/drivers/media/platform/qcom/camss/camss-ispif.c
+@@ -1095,7 +1095,7 @@ static int ispif_init_formats(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+  * Return 0 on success or a negative error code otherwise
+  */
+ int msm_ispif_subdev_init(struct camss *camss,
+-			  const struct resources *res)
++			  const struct camss_subdev_resources *res)
+ {
+ 	struct device *dev = camss->dev;
+ 	struct ispif_device *ispif = camss->ispif;
+diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
+index c7c41f7afcaad..dff6d5b35c72e 100644
+--- a/drivers/media/platform/qcom/camss/camss-ispif.h
++++ b/drivers/media/platform/qcom/camss/camss-ispif.h
+@@ -66,10 +66,10 @@ struct ispif_device {
+ 	struct camss *camss;
+ };
+ 
+-struct resources;
++struct camss_subdev_resources;
+ 
+ int msm_ispif_subdev_init(struct camss *camss,
+-			  const struct resources *res);
++			  const struct camss_subdev_resources *res);
+ 
+ int msm_ispif_register_entities(struct ispif_device *ispif,
+ 				struct v4l2_device *v4l2_dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index b021f81cef123..e84dcf0f4b2da 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1279,7 +1279,7 @@ static int vfe_init_formats(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+  * Return 0 on success or a negative error code otherwise
+  */
+ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+-			const struct resources *res, u8 id)
++			const struct camss_subdev_resources *res, u8 id)
+ {
+ 	struct device *dev = camss->dev;
+ 	struct platform_device *pdev = to_platform_device(dev);
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
+index cbc314c4e244b..b4bae9f65c68f 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.h
++++ b/drivers/media/platform/qcom/camss/camss-vfe.h
+@@ -153,10 +153,10 @@ struct vfe_device {
+ 	struct camss_video_ops video_ops;
+ };
+ 
+-struct resources;
++struct camss_subdev_resources;
+ 
+ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+-			const struct resources *res, u8 id);
++			const struct camss_subdev_resources *res, u8 id);
+ 
+ int msm_vfe_register_entities(struct vfe_device *vfe,
+ 			      struct v4l2_device *v4l2_dev);
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index fa0eb30d77c26..718ef8e4f5938 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -31,7 +31,7 @@
+ #define CAMSS_CLOCK_MARGIN_NUMERATOR 105
+ #define CAMSS_CLOCK_MARGIN_DENOMINATOR 100
+ 
+-static const struct resources csiphy_res_8x16[] = {
++static const struct camss_subdev_resources csiphy_res_8x16[] = {
+ 	/* CSIPHY0 */
+ 	{
+ 		.regulators = {},
+@@ -57,7 +57,7 @@ static const struct resources csiphy_res_8x16[] = {
+ 	}
+ };
+ 
+-static const struct resources csid_res_8x16[] = {
++static const struct camss_subdev_resources csid_res_8x16[] = {
+ 	/* CSID0 */
+ 	{
+ 		.regulators = { "vdda" },
+@@ -93,7 +93,7 @@ static const struct resources csid_res_8x16[] = {
+ 	},
+ };
+ 
+-static const struct resources ispif_res_8x16 = {
++static const struct camss_subdev_resources ispif_res_8x16 = {
+ 	/* ISPIF */
+ 	.clock = { "top_ahb", "ahb", "ispif_ahb",
+ 		   "csi0", "csi0_pix", "csi0_rdi",
+@@ -104,7 +104,7 @@ static const struct resources ispif_res_8x16 = {
+ 
+ };
+ 
+-static const struct resources vfe_res_8x16[] = {
++static const struct camss_subdev_resources vfe_res_8x16[] = {
+ 	/* VFE0 */
+ 	{
+ 		.regulators = {},
+@@ -126,7 +126,7 @@ static const struct resources vfe_res_8x16[] = {
+ 	}
+ };
+ 
+-static const struct resources csiphy_res_8x96[] = {
++static const struct camss_subdev_resources csiphy_res_8x96[] = {
+ 	/* CSIPHY0 */
+ 	{
+ 		.regulators = {},
+@@ -164,7 +164,7 @@ static const struct resources csiphy_res_8x96[] = {
+ 	}
+ };
+ 
+-static const struct resources csid_res_8x96[] = {
++static const struct camss_subdev_resources csid_res_8x96[] = {
+ 	/* CSID0 */
+ 	{
+ 		.regulators = { "vdda" },
+@@ -234,7 +234,7 @@ static const struct resources csid_res_8x96[] = {
+ 	}
+ };
+ 
+-static const struct resources ispif_res_8x96 = {
++static const struct camss_subdev_resources ispif_res_8x96 = {
+ 	/* ISPIF */
+ 	.clock = { "top_ahb", "ahb", "ispif_ahb",
+ 		   "csi0", "csi0_pix", "csi0_rdi",
+@@ -246,7 +246,7 @@ static const struct resources ispif_res_8x96 = {
+ 	.interrupt = { "ispif" }
+ };
+ 
+-static const struct resources vfe_res_8x96[] = {
++static const struct camss_subdev_resources vfe_res_8x96[] = {
+ 	/* VFE0 */
+ 	{
+ 		.regulators = {},
+@@ -284,7 +284,7 @@ static const struct resources vfe_res_8x96[] = {
+ 	}
+ };
+ 
+-static const struct resources csiphy_res_660[] = {
++static const struct camss_subdev_resources csiphy_res_660[] = {
+ 	/* CSIPHY0 */
+ 	{
+ 		.regulators = {},
+@@ -328,7 +328,7 @@ static const struct resources csiphy_res_660[] = {
+ 	}
+ };
+ 
+-static const struct resources csid_res_660[] = {
++static const struct camss_subdev_resources csid_res_660[] = {
+ 	/* CSID0 */
+ 	{
+ 		.regulators = { "vdda", "vdd_sec" },
+@@ -410,7 +410,7 @@ static const struct resources csid_res_660[] = {
+ 	}
+ };
+ 
+-static const struct resources ispif_res_660 = {
++static const struct camss_subdev_resources ispif_res_660 = {
+ 	/* ISPIF */
+ 	.clock = { "top_ahb", "ahb", "ispif_ahb",
+ 		   "csi0", "csi0_pix", "csi0_rdi",
+@@ -422,7 +422,7 @@ static const struct resources ispif_res_660 = {
+ 	.interrupt = { "ispif" }
+ };
+ 
+-static const struct resources vfe_res_660[] = {
++static const struct camss_subdev_resources vfe_res_660[] = {
+ 	/* VFE0 */
+ 	{
+ 		.regulators = {},
+@@ -466,7 +466,7 @@ static const struct resources vfe_res_660[] = {
+ 	}
+ };
+ 
+-static const struct resources csiphy_res_845[] = {
++static const struct camss_subdev_resources csiphy_res_845[] = {
+ 	/* CSIPHY0 */
+ 	{
+ 		.regulators = {},
+@@ -540,7 +540,7 @@ static const struct resources csiphy_res_845[] = {
+ 	}
+ };
+ 
+-static const struct resources csid_res_845[] = {
++static const struct camss_subdev_resources csid_res_845[] = {
+ 	/* CSID0 */
+ 	{
+ 		.regulators = { "vdda-phy", "vdda-pll" },
+@@ -602,7 +602,7 @@ static const struct resources csid_res_845[] = {
+ 	}
+ };
+ 
+-static const struct resources vfe_res_845[] = {
++static const struct camss_subdev_resources vfe_res_845[] = {
+ 	/* VFE0 */
+ 	{
+ 		.regulators = {},
+@@ -663,7 +663,7 @@ static const struct resources vfe_res_845[] = {
+ 	}
+ };
+ 
+-static const struct resources csiphy_res_8250[] = {
++static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 	/* CSIPHY0 */
+ 	{
+ 		.regulators = {},
+@@ -720,7 +720,7 @@ static const struct resources csiphy_res_8250[] = {
+ 	}
+ };
+ 
+-static const struct resources csid_res_8250[] = {
++static const struct camss_subdev_resources csid_res_8250[] = {
+ 	/* CSID0 */
+ 	{
+ 		.regulators = { "vdda-phy", "vdda-pll" },
+@@ -769,7 +769,7 @@ static const struct resources csid_res_8250[] = {
+ 	}
+ };
+ 
+-static const struct resources vfe_res_8250[] = {
++static const struct camss_subdev_resources vfe_res_8250[] = {
+ 	/* VFE0 */
+ 	{
+ 		.regulators = {},
+@@ -1120,10 +1120,10 @@ static int camss_of_parse_ports(struct camss *camss)
+  */
+ static int camss_init_subdevices(struct camss *camss)
+ {
+-	const struct resources *csiphy_res;
+-	const struct resources *csid_res;
+-	const struct resources *ispif_res;
+-	const struct resources *vfe_res;
++	const struct camss_subdev_resources *csiphy_res;
++	const struct camss_subdev_resources *csid_res;
++	const struct camss_subdev_resources *ispif_res;
++	const struct camss_subdev_resources *vfe_res;
+ 	unsigned int i;
+ 	int ret;
+ 
+diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+index e95211cdb1fd6..9d6ba7b17ff02 100644
+--- a/drivers/media/platform/qcom/camss/camss.h
++++ b/drivers/media/platform/qcom/camss/camss.h
+@@ -41,7 +41,7 @@
+ 
+ #define CAMSS_RES_MAX 17
+ 
+-struct resources {
++struct camss_subdev_resources {
+ 	char *regulators[CAMSS_RES_MAX];
+ 	char *clock[CAMSS_RES_MAX];
+ 	char *clock_for_reset[CAMSS_RES_MAX];
+-- 
+2.42.0
+
