@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5059879C2C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038E379C2C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238203AbjILC2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        id S238263AbjILC20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237848AbjILC2B (ORCPT
+        with ESMTP id S237850AbjILC2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:28:01 -0400
+        Mon, 11 Sep 2023 22:28:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E0F11411D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C1F11AA5A
         for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:52:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4199C433BA;
-        Mon, 11 Sep 2023 23:56:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55E72C116D4;
+        Mon, 11 Sep 2023 23:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694476581;
-        bh=u8grHSUih0zlT7CklXW0wcQgc5UDX4ocDwoCjXz+YmA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YnRzXMFyyF3dBrvBj16uexyMo4wqHU4lETNKicL+cfyBex9ZS0TN4zPYnSCfJz2m0
-         KQycwz1aNJrMtq+UTlY1AWW6vhYKYXNRPu4NYdiGUl9Q4fbHUraiLt2q4dgGHGZiIX
-         i88MYFkn1AEOmbxgElmBMd6DvJfSwVuqskZx+iHBJFLUghyMcTmlTIRITgxQ4uK9st
-         toTf/fGcll9uW+r+dWVM6M2e9S//jXpR39mhhgIFvgW1+lRGdIpLBUqjCnMCt5UBXQ
-         NAUSfRVYgskJ5asuyl5XKQDeAe1dMjDbqemZrlqFbx9X6014jhlJytMT39f2f2AOMw
-         r0UEqsXP5exlg==
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] objtool: Fix _THIS_IP_ detection for cold functions
-Date:   Mon, 11 Sep 2023 16:56:13 -0700
-Message-ID: <d8f1ab6a23a6105bc023c132b105f245c7976be6.1694476559.git.jpoimboe@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        s=k20201202; t=1694476631;
+        bh=eOmDusuTp1utIJYuSczsLIAkbuZQLw7Sxoi8jQp9lAk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=cVzAtPbk9FxAp/DM3cm0Jw4Z3tqtzaiTutJkJD5vd7PDjSz02Blz+Hxkaeoiez6j1
+         GTUbU27tSlkpodhs7NZ/pvQM69djJLYrtnUVpJcfcqBkSKJfgTfnS+9IgEhbP8yJzB
+         DHvCCKk7UZMHATdPec+GzX/Z6t0GGv7YM+Xf+o5bUQ3vFCQKTcAtSKvyhEeAwP3dFA
+         PCCUbRxA6RqQv4yjJgH3WabWCcmbhaLpKKMj2t9siX3nIS1xQpkgey/d1yal58MYz0
+         1Ob0MRSRxexi6dGYcCdNnvDY1MIaYu0qlzM/mXQzn+/RRPSgoQ9xyN75nFaQv2tl3G
+         GnpGD2lVRKNaQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
+References: <20230825-descriptors-asoc-max-v1-0-b212292b2f08@linaro.org>
+Subject: Re: [PATCH 0/7] ASoC: Convert some Maxim codecs to use GPIO
+ descriptors
+Message-Id: <169447662997.2387538.6093833545457230678.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 00:57:09 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cold functions and their non-cold counterparts can use _THIS_IP_ to
-reference each other.  Don't warn about !ENDBR in that case.
+On Fri, 25 Aug 2023 10:12:10 +0200, Linus Walleij wrote:
+> The Maxim devices are pretty straight-forward to convert
+> over to use GPIO descriptors, so let's do it.
+> 
+> Tested with some x86_64 allmodconfig and aarch64 allmodconfig
+> to smoke out the worst bugs this time.
+> 
+> 
+> [...]
 
-Note that for GCC this is currently irrelevant in light of the following
-commit
+Applied to
 
-  c27cd083cfb9 ("Compiler attributes: GCC cold function alignment workarounds")
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-which disabled cold functions in the kernel.  However this may still be
-possible with Clang.
+Thanks!
 
-Fixes several warnings like the following:
+[1/7] ASoC: max9768: Convert to use GPIO descriptors
+      commit: 0015a18acf9ceafbf7e24f5addefce566326132b
+[2/7] ASoC: max98357a: Drop pointless include
+      commit: a3b68ba9f594ae4f9a96e0730e9aeadb9f64c43e
+[3/7] ASoC: max98373: Convert to use GPIO descriptors
+      commit: c5cb83a104a2d95ba4ba182051eff2a8c82d5beb
+[4/7] ASoC: max98388: Correct the includes
+      commit: 4b0dfc0e8cdebd6aa6ce25593c0dcc71d9d21961
+[5/7] ASoC: max98396: Drop pointless include
+      commit: 70f29a3078f7bc1f1011b7b5fee41fcd52ff189f
+[6/7] ASoC: max98520: Drop pointless includes
+      commit: d9241aaea1418fa4bd6653bee093f63cf47a2c6e
+[7/7] ASoC: max98927: Drop pointless includes
+      commit: 0307ba5420cd785615efc94be6b101b4ac2538cf
 
-  drivers/scsi/bnx2i/bnx2i.prelink.o: warning: objtool: bnx2i_hw_ep_disconnect+0x19d: relocation to !ENDBR: bnx2i_hw_ep_disconnect.cold+0x0
-  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr4_event.cold+0x28: relocation to !ENDBR: ipvlan_addr4_event+0xda
-  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr6_event.cold+0x26: relocation to !ENDBR: ipvlan_addr6_event+0xb7
-  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_set_ringparam.cold+0x17: relocation to !ENDBR: tg3_set_ringparam+0x115
-  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_self_test.cold+0x17: relocation to !ENDBR: tg3_self_test+0x2e1
-  drivers/target/iscsi/cxgbit/cxgbit.prelink.o: warning: objtool: __cxgbit_free_conn.cold+0x24: relocation to !ENDBR: __cxgbit_free_conn+0xfb
-  net/can/can.prelink.o: warning: objtool: can_rx_unregister.cold+0x2c: relocation to !ENDBR: can_rx_unregister+0x11b
-  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_spq_post+0xc0: relocation to !ENDBR: qed_spq_post.cold+0x9a
-  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_iwarp_ll2_comp_syn_pkt.cold+0x12f: relocation to !ENDBR: qed_iwarp_ll2_comp_syn_pkt+0x34b
-  net/tipc/tipc.prelink.o: warning: objtool: tipc_nametbl_publish.cold+0x21: relocation to !ENDBR: tipc_nametbl_publish+0xa6
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- tools/objtool/check.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 1384090530db..e308d1ba664e 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -4333,7 +4333,8 @@ static int validate_ibt_insn(struct objtool_file *file, struct instruction *insn
- 			continue;
- 		}
- 
--		if (insn_func(dest) && insn_func(dest) == insn_func(insn)) {
-+		if (insn_func(dest) && insn_func(insn) &&
-+		    insn_func(dest)->pfunc == insn_func(insn)->pfunc) {
- 			/*
- 			 * Anything from->to self is either _THIS_IP_ or
- 			 * IRET-to-self.
--- 
-2.41.0
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
