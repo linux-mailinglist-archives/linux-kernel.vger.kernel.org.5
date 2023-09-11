@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EF979BF19
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3682979BC6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354815AbjIKVzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52530 "EHLO
+        id S1358523AbjIKWLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236294AbjIKKLs (ORCPT
+        with ESMTP id S236297AbjIKKLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:11:48 -0400
+        Mon, 11 Sep 2023 06:11:50 -0400
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5842FE5F;
-        Mon, 11 Sep 2023 03:11:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A315E5F;
+        Mon, 11 Sep 2023 03:11:46 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 7DA8B12000D;
-        Mon, 11 Sep 2023 13:11:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 7DA8B12000D
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D08AB12000B;
+        Mon, 11 Sep 2023 13:11:44 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D08AB12000B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1694427100;
-        bh=/zWi+Ev4PZp5gdRSiHVwOx5T2Q5lYL39HTOGFJdsJM0=;
+        s=mail; t=1694427104;
+        bh=HYf8McE/KgI584XKTUFEDPyTBWG+zEFIbhzlJzNcCy8=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=BNaWyKxWkIYWO101eFaqwtqhf5f0+gkiwjkdbd9X6QdImXqpL3SWZgvsAnH35MWIf
-         uETnLrPKe07AEDkjS+c+tlg8EpiRP/tDSHCZCOAqGcS3VSdqC4cRBhLtinJEqxt3uQ
-         saNAKptatAYWeM7T5EVLHje4NNEwmHRWMy2oyF6TbG19zHlxKxJxlcgljwMxhQS/eU
-         Dsdoy0L4DkJhrAbEnhJ+Tqkl8CKJzCDdsG5ApGpuCGe8qJatB74GB2wgcPVJ6bcOmq
-         q+ftE2rd1wziPZ7tEXOpiflnF0+5vWJjxBdqd1owonruWbfxSQJGTHS7zmML1sOm+T
-         nlCNH6toKqP4w==
+        b=v0tywm2JIPy+EBcifQD3Y3fOPnMctuB/aWu0AxdYkxB4xbiCMf71+hkUYQgE3ZQZQ
+         lKnlVI3tRmeVCqJ+qjfdIHvw/Dk1qa+CzCfZZ5ZgMWYMfMuwWgDGG2PmiE4rKJ7tN1
+         cTI/mm2aebxherGFmqirEzpJ9VnE9kVBHIQEbUm3jb6Rv27HR+OSvsdXFdbkHoPMYo
+         cslJFMnGGQToMHsq52TwBbqqtjfx5DFp4Pg4IVS1MDnvQqy8ZpT3oHA5TBgSDxX5vU
+         l3yC2lGxtDqc7zzlKmIywFMH3TZxhtSj2se9HqrHO8yVJa8YdUmf7Z1tB7iKii46dK
+         81Catdd4NF3Qg==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Mon, 11 Sep 2023 13:11:40 +0300 (MSK)
+        Mon, 11 Sep 2023 13:11:44 +0300 (MSK)
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 11 Sep 2023 13:11:38 +0300
+ 15.2.1118.30; Mon, 11 Sep 2023 13:11:43 +0300
 From:   Alexey Romanov <avromanov@salutedevices.com>
 To:     <narmstrong@baylibre.com>, <neil.armstrong@linaro.org>,
         <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
@@ -50,9 +50,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-crypto@vger.kernel.org>, <kernel@sberdevices.ru>,
         Alexey Romanov <avromanov@sberdevices.ru>
-Subject: [PATCH v3 1/3] drivers: rng: meson: add support for S4
-Date:   Mon, 11 Sep 2023 13:11:27 +0300
-Message-ID: <20230911101129.10604-2-avromanov@salutedevices.com>
+Subject: [PATCH v3 3/3] arch/arm64: dts: meson-s4: add hwrng node
+Date:   Mon, 11 Sep 2023 13:11:29 +0300
+Message-ID: <20230911101129.10604-4-avromanov@salutedevices.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230911101129.10604-1-avromanov@salutedevices.com>
 References: <20230911101129.10604-1-avromanov@salutedevices.com>
@@ -89,136 +89,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexey Romanov <avromanov@sberdevices.ru>
 
-For some Amlogic SOC's, mechanism to obtain random number
-has been changed. For example, S4 now uses status bit waiting algo.
+Using this node, we can obtain random numbers via
+hardware random number generator.
 
 Signed-off-by: Alexey Romanov <avromanov@sberdevices.ru>
 ---
- drivers/char/hw_random/meson-rng.c | 80 ++++++++++++++++++++++++++++--
- 1 file changed, 77 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/char/hw_random/meson-rng.c b/drivers/char/hw_random/meson-rng.c
-index a4eb8e35f13d..5e1dee659866 100644
---- a/drivers/char/hw_random/meson-rng.c
-+++ b/drivers/char/hw_random/meson-rng.c
-@@ -13,12 +13,24 @@
- #include <linux/types.h>
- #include <linux/of.h>
- #include <linux/clk.h>
-+#include <linux/iopoll.h>
- 
--#define RNG_DATA 0x00
-+#define RNG_DATA	0x00
-+#define RNG_S4_DATA	0x08
-+#define RNG_S4_CFG	0x00
+diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+index f24460186d3d..b3a1ecf36467 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
+@@ -133,6 +133,11 @@ reset: reset-controller@2000 {
+ 				reg = <0x0 0x2000 0x0 0x98>;
+ 				#reset-cells = <1>;
+ 			};
 +
-+#define RUN_BIT		BIT(0)
-+#define SEED_READY_STS_BIT	BIT(31)
-+
-+struct meson_rng_priv {
-+	int (*read)(struct hwrng *rng, void *buf, size_t max, bool wait);
-+};
- 
- struct meson_rng_data {
- 	void __iomem *base;
- 	struct hwrng rng;
-+	struct device *dev;
-+	const struct meson_rng_priv *priv;
++			hwrng: rng@440788 {
++				compatible = "amlogic,meson-s4-rng";
++				reg = <0x0 0x440788 0x0 0x0c>;
++			};
+ 		};
+ 	};
  };
- 
- static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-@@ -31,6 +43,47 @@ static int meson_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
- 	return sizeof(u32);
- }
- 
-+static int meson_rng_wait_status(void __iomem *cfg_addr, int bit)
-+{
-+	u32 status = 0;
-+	int ret;
-+
-+	ret = readl_relaxed_poll_timeout_atomic(cfg_addr,
-+						status, !(status & bit),
-+						10, 10000);
-+	if (ret)
-+		return -EBUSY;
-+
-+	return 0;
-+}
-+
-+static int meson_s4_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-+{
-+	struct meson_rng_data *data =
-+			container_of(rng, struct meson_rng_data, rng);
-+
-+	void __iomem *cfg_addr = data->base + RNG_S4_CFG;
-+	int err;
-+
-+	writel_relaxed(readl_relaxed(cfg_addr) | SEED_READY_STS_BIT, cfg_addr);
-+
-+	err = meson_rng_wait_status(cfg_addr, SEED_READY_STS_BIT);
-+	if (err) {
-+		dev_err(data->dev, "Seed isn't ready, try again\n");
-+		return err;
-+	}
-+
-+	err = meson_rng_wait_status(cfg_addr, RUN_BIT);
-+	if (err) {
-+		dev_err(data->dev, "Can't get random number, try again\n");
-+		return err;
-+	}
-+
-+	*(u32 *)buf = readl_relaxed(data->base + RNG_S4_DATA);
-+
-+	return sizeof(u32);
-+}
-+
- static int meson_rng_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -41,6 +94,10 @@ static int meson_rng_probe(struct platform_device *pdev)
- 	if (!data)
- 		return -ENOMEM;
- 
-+	data->priv = device_get_match_data(&pdev->dev);
-+	if (!data->priv)
-+		return -ENODEV;
-+
- 	data->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(data->base))
- 		return PTR_ERR(data->base);
-@@ -51,13 +108,30 @@ static int meson_rng_probe(struct platform_device *pdev)
- 				     "Failed to get core clock\n");
- 
- 	data->rng.name = pdev->name;
--	data->rng.read = meson_rng_read;
-+	data->rng.read = data->priv->read;
-+
-+	data->dev = &pdev->dev;
- 
- 	return devm_hwrng_register(dev, &data->rng);
- }
- 
-+static const struct meson_rng_priv meson_rng_priv = {
-+	.read = meson_rng_read,
-+};
-+
-+static const struct meson_rng_priv meson_rng_priv_s4 = {
-+	.read = meson_s4_rng_read,
-+};
-+
- static const struct of_device_id meson_rng_of_match[] = {
--	{ .compatible = "amlogic,meson-rng", },
-+	{
-+		.compatible = "amlogic,meson-rng",
-+		.data = (void *)&meson_rng_priv,
-+	},
-+	{
-+		.compatible = "amlogic,meson-s4-rng",
-+		.data = (void *)&meson_rng_priv_s4,
-+	},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, meson_rng_of_match);
 -- 
 2.25.1
 
