@@ -2,114 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8707C79A5E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49EB79A5E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234866AbjIKIUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
+        id S234367AbjIKIUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbjIKIUD (ORCPT
+        with ESMTP id S229546AbjIKIUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:20:03 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3BE120
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:19:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-500913779f5so7117663e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:19:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694420395; x=1695025195; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZgoHp4sSbdLPnwsP7QBEFkRKlD8fQKCxSLeR/YtKKwc=;
-        b=ZyjBhxd/4CH0ce0+zqDz4fqROmajy8086/Sw88k2Glm3NBnek5E/bSp796qDR7Sn/1
-         VHDimH1/nbwJfHprTCbG9eevCMibjpxI2uGyCYC3z2jyzz2vFCjzNdWXxtdslcAb01Kp
-         CAxdbkd1kdeXX8gLnu+QZhITl36K+w05+ef/I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694420395; x=1695025195;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZgoHp4sSbdLPnwsP7QBEFkRKlD8fQKCxSLeR/YtKKwc=;
-        b=E5lOpiv2HyefB9mR+UwyhQCHSl5p7doVUinkAzFZsl/nsoiNWwn+aaTU1iCPnIvgEU
-         6jvPmNMaRfwFHugWFSeAAmaBoz53lTGCFs9L9t3Cz55kAMDCS9HtoRio9sVJNmsDye3v
-         7oWQzdy9Ii2LEfXTl/Bv0uEdDorHGz7RLx5yc36EoASR4sLfIbe03W7wzHwY2lbKNOEa
-         NhgXX6kj8QhRK1g8CITOAVp0exZ2IeYw/WLZJUaNrL4Z6m1iXK+Bw0L3Z2v2p3CpNPVA
-         vZWiLCFBB5ylOKap3qhRia2GMTE5qblm9M8Dzc+Y5jLw+RCxlhVASMiqSVYXB8ZtGjIR
-         oNVw==
-X-Gm-Message-State: AOJu0YxNLFq5Qw286Q9poHwWyMx1pDvVkw6edJV+t7rOgSneVJcWYSLV
-        CoAj6ZH91+m5s/vae5KafiBqAw==
-X-Google-Smtp-Source: AGHT+IGKXkVlvpzb1jXGc7GPA/z62m6pR7a/3NtlCutcvnuu34bb7zCIn6QwlQhJ2uEpgzghSPTdTA==
-X-Received: by 2002:a05:6512:3f8:b0:501:bd77:a4b with SMTP id n24-20020a05651203f800b00501bd770a4bmr6358700lfq.9.1694420395351;
-        Mon, 11 Sep 2023 01:19:55 -0700 (PDT)
-Received: from localhost ([2620:0:1043:12:a329:942b:177a:d4d])
-        by smtp.gmail.com with UTF8SMTPSA id z28-20020ac25dfc000000b00500cede2786sm1268411lfq.65.2023.09.11.01.19.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 01:19:54 -0700 (PDT)
-From:   Stefan Adolfsson <sadolfsson@chromium.org>
-X-Google-Original-From: Stefan Adolfsson <sadolfsson@google.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Reka Norman <rekanorman@chromium.org>,
-        linux-media@vger.kernel.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Stefan Adolfsson <sadolfsson@chromium.org>
-Subject: [PATCH v2] media: cros-ec-cec: Add Constitution to the match table
-Date:   Mon, 11 Sep 2023 10:19:21 +0200
-Message-ID: <20230911081921.3515928-1-sadolfsson@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+        Mon, 11 Sep 2023 04:20:42 -0400
+Received: from out-216.mta1.migadu.com (out-216.mta1.migadu.com [95.215.58.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18379BB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:20:37 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694420436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=w8KgKH+XjJLXOnaYRASDb5V6iMHBTszQ5jP3aUDJPyM=;
+        b=GDg0wedFWadWwg2xEaAmtg9r1uKbJBgDY3VuvBno+uV/us+TU+Tybz0KzEK8T5xLHRyM0G
+        sn5ysv8xw9YFLGSxuvaZFhKQrIyWAWnjITVN2FTSMpmgBMRssfGpMLmranpvZXpvV/oTG8
+        mW9Gq3w7upw/hJnUq8YZITIoGDihbDQ=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, horms@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] net/core: Export dev_core_stats_rx_dropped_inc sets
+Date:   Mon, 11 Sep 2023 16:20:16 +0800
+Message-Id: <20230911082016.3694700-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Adolfsson <sadolfsson@chromium.org>
+Although there is a kfree_skb_reason() helper function that can be used
+to find the reason for dropped packets, but most callers didn't increase
+one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
 
-Constitution has two HDMI ports which support CEC:
-    Port B is EC port 0
-    Port A is EC port 1
+For the users, people are more concerned about why the dropped in ifconfig
+is increasing. So we can export dev_core_stats_rx_dropped_inc sets,
+which users would trace them know why rx_dropped is increasing.
 
-This patch depends on "media: cros-ec-cec: Add Dibbi to the match
-table".
+Export dev_core_stats_{rx_dropped, tx_dropped, rx_nohandler,
+rx_otherhost_dropped}_inc for trace. Also, move dev_core_stats()
+and netdev_core_stats_alloc() in dev.c, because they are not called
+externally.
 
-Signed-off-by: Stefan Adolfsson <sadolfsson@chromium.org>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
-Changes in v2:
- Use a NULL-terminated conns array for the match table entry
+ include/linux/netdevice.h | 32 +++++---------------------------
+ net/core/dev.c            | 30 ++++++++++++++++++++++++++++--
+ 2 files changed, 33 insertions(+), 29 deletions(-)
 
- drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-index 21361eff50ff..85431af65224 100644
---- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-+++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-@@ -296,6 +296,7 @@ struct cec_dmi_match {
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 0896aaa91dd7..879b01c85ba4 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3954,6 +3954,11 @@ int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb);
+ bool is_skb_forwardable(const struct net_device *dev,
+ 			const struct sk_buff *skb);
  
- static const char *const fizz_conns[] = { "Port B", NULL };
- static const char *const dibbi_conns[] = { "Port D", "Port B", NULL };
-+static const char *const constitution_conns[] = { "Port B", "Port A", NULL };
++void dev_core_stats_rx_dropped_inc(struct net_device *dev);
++void dev_core_stats_tx_dropped_inc(struct net_device *dev);
++void dev_core_stats_rx_nohandler_inc(struct net_device *dev);
++void dev_core_stats_rx_otherhost_dropped_inc(struct net_device *dev);
++
+ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+ 						 const struct sk_buff *skb,
+ 						 const bool check_mtu)
+@@ -3980,33 +3985,6 @@ static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+ 	return false;
+ }
  
- static const struct cec_dmi_match cec_dmi_match_table[] = {
- 	/* Google Fizz */
-@@ -316,6 +317,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
- 	{ "Google", "Lisbon", "0000:00:02.0", fizz_conns },
- 	/* Google Dibbi */
- 	{ "Google", "Dibbi", "0000:00:02.0", dibbi_conns },
-+	/* Google Constitution */
-+	{ "Google", "Constitution", "0000:00:02.0", constitution_conns },
- };
+-struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev);
+-
+-static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
+-{
+-	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
+-	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
+-
+-	if (likely(p))
+-		return p;
+-
+-	return netdev_core_stats_alloc(dev);
+-}
+-
+-#define DEV_CORE_STATS_INC(FIELD)						\
+-static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev)		\
+-{										\
+-	struct net_device_core_stats __percpu *p;				\
+-										\
+-	p = dev_core_stats(dev);						\
+-	if (p)									\
+-		this_cpu_inc(p->FIELD);						\
+-}
+-DEV_CORE_STATS_INC(rx_dropped)
+-DEV_CORE_STATS_INC(tx_dropped)
+-DEV_CORE_STATS_INC(rx_nohandler)
+-DEV_CORE_STATS_INC(rx_otherhost_dropped)
+-
+ static __always_inline int ____dev_forward_skb(struct net_device *dev,
+ 					       struct sk_buff *skb,
+ 					       const bool check_mtu)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index ccff2b6ef958..32ba730405b4 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10475,7 +10475,7 @@ void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+ }
+ EXPORT_SYMBOL(netdev_stats_to_stats64);
  
- static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+-struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
++static struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device *dev)
+ {
+ 	struct net_device_core_stats __percpu *p;
+ 
+@@ -10488,7 +10488,33 @@ struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct net_device
+ 	/* This READ_ONCE() pairs with the cmpxchg() above */
+ 	return READ_ONCE(dev->core_stats);
+ }
+-EXPORT_SYMBOL(netdev_core_stats_alloc);
++
++static inline struct net_device_core_stats __percpu *dev_core_stats(struct net_device *dev)
++{
++	/* This READ_ONCE() pairs with the write in netdev_core_stats_alloc() */
++	struct net_device_core_stats __percpu *p = READ_ONCE(dev->core_stats);
++
++	if (likely(p))
++		return p;
++
++	return netdev_core_stats_alloc(dev);
++}
++
++#define DEV_CORE_STATS_INC(FIELD)				\
++void dev_core_stats_##FIELD##_inc(struct net_device *dev)	\
++{								\
++	struct net_device_core_stats __percpu *p;		\
++								\
++	p = dev_core_stats(dev);				\
++	if (p)							\
++		this_cpu_inc(p->FIELD);				\
++}								\
++EXPORT_SYMBOL(dev_core_stats_##FIELD##_inc)
++
++DEV_CORE_STATS_INC(rx_dropped);
++DEV_CORE_STATS_INC(tx_dropped);
++DEV_CORE_STATS_INC(rx_nohandler);
++DEV_CORE_STATS_INC(rx_otherhost_dropped);
+ 
+ /**
+  *	dev_get_stats	- get network device statistics
 -- 
-2.42.0.283.g2d96d420d3-goog
+2.25.1
 
