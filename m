@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 288FD79B960
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96BB79B6B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343841AbjIKVMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S233034AbjIKUwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237545AbjIKM5N (ORCPT
+        with ESMTP id S237542AbjIKM5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:57:13 -0400
+        Mon, 11 Sep 2023 08:57:12 -0400
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F572E4B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5CDE4D;
         Mon, 11 Sep 2023 05:57:07 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BCamNN005306;
-        Mon, 11 Sep 2023 12:56:57 GMT
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38BCrWI9011971;
+        Mon, 11 Sep 2023 12:56:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=2PMXF7xCyEnPAiLN6sfOXhE+KPKwpxCRYQ1TraqbuI4=;
- b=MmFY33MT1x6qqwL5UVXcWq9KN9hg0CJKJoZ7AIzO+xU2c58suWXXBVW7fefJv7U32QLT
- z/t+Su33t8luKrCW4dj4z9E8ac84MnhjZLMdS6BhKz2yVOnKLgKuLtSCN3f1LCm3TrS5
- mSA56neMUmIOxEVQ8AgvEqHcDxOkZ+ML+6Qbo9sif9umTsxFIpOitPNJZ0n3MMTSQNCS
- FqALtw/zQcE8rJN8wNR6j8ilhkI1/ZxDR/1jQdf73zqHggWTDqIhHc7gpNZ+GnGPSpyf
- QcudhF1uwMzmZrneE7sG1bdtIt+BElSssnGz4/w4YeKeOMQ43xYXo5zyxjuRMOodGPSW Nw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t228ga7t2-1
+ bh=z6iXJSAk8VmaOLsZImHUbYEz4LKyvswZEgeBjuY2lOI=;
+ b=lxV1STxlQCwhkR+GYRo7z8ppSxeh8odjuUE92fkORbV+R4DqShFJnrK/xvssTHxYVgET
+ JFEmnpDBNE7QgOnOvpYbZRMiIXjvYleyVNuuett1MnNEU3I+xZdj49H/a4h7oDsTVE6q
+ 5ME/Eg9SuPf9zgYfHHYZI+hCkiPf3NVImI+k+mys6KO+s6NfZfvVSc7VhMPhD9eZCcN2
+ lGj2/GGcXp4oF5PP4ms80UkvRdoW+Bu135npUzbaGR5HOeOWCCcD4u9k1QqVk+/v4RkM
+ 1NRNKXV2u8zTLK0lIetIIaf8spNOEQsdhaU824/BAiyu7ci4nLmeYG4xyj95dCKkImfm yQ== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t23a1g2rk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 12:56:57 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BBjCOo011953;
-        Mon, 11 Sep 2023 12:56:56 GMT
+        Mon, 11 Sep 2023 12:56:58 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38BAcuVX002755;
+        Mon, 11 Sep 2023 12:56:57 GMT
 Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1j078-1
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hkjd2w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Mon, 11 Sep 2023 12:56:56 +0000
 Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BCurPG44433942
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38BCureb36045154
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Sep 2023 12:56:53 GMT
+        Mon, 11 Sep 2023 12:56:54 GMT
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9ACA020040;
+        by IMSVA (Postfix) with ESMTP id CECBC20040;
         Mon, 11 Sep 2023 12:56:53 +0000 (GMT)
 Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 644DE2004D;
+        by IMSVA (Postfix) with ESMTP id A14FE20043;
         Mon, 11 Sep 2023 12:56:53 +0000 (GMT)
 Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
         by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
@@ -60,24 +60,24 @@ Cc:     Alan Stern <stern@rowland.harvard.edu>,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Arnd Bergmann <arnd@arndb.de>,
         Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 1/3] usb: pci-quirks: group AMD specific quirk code together
-Date:   Mon, 11 Sep 2023 14:56:51 +0200
-Message-Id: <20230911125653.1393895-2-schnelle@linux.ibm.com>
+Subject: [PATCH 2/3] usb: pci-quirks: handle HAS_IOPORT dependency for AMD quirk
+Date:   Mon, 11 Sep 2023 14:56:52 +0200
+Message-Id: <20230911125653.1393895-3-schnelle@linux.ibm.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230911125653.1393895-1-schnelle@linux.ibm.com>
 References: <20230911125653.1393895-1-schnelle@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: mKow-FLPMrEy6pYsfUON9HudJ3CIggn8
-X-Proofpoint-GUID: mKow-FLPMrEy6pYsfUON9HudJ3CIggn8
+X-Proofpoint-GUID: TkT6YA5maFBUQff1ElDBk_pHcG0Aq2vS
+X-Proofpoint-ORIG-GUID: TkT6YA5maFBUQff1ElDBk_pHcG0Aq2vS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-11_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 bulkscore=0 adultscore=0 suspectscore=0 impostorscore=0
- mlxlogscore=649 priorityscore=1501 spamscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=705
+ clxscore=1015 priorityscore=1501 spamscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309110114
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
@@ -89,216 +89,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A follow on patch will introduce CONFIG_USB_PCI_AMD governing the AMD
-quirk and adding its compile time dependency on HAS_IOPORT. In order to
-minimize the number of #ifdefs in C files and make that patch easier
-to read first group the code together. This is pure code movement
-no functional change is intended.
+In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
+not being declared. In the pci-quirks case the I/O port acceses are
+used in the quirks for several AMD south bridges, Add a config option
+for the AMD quirks to depend on HAS_IOPORT and #ifdef the quirk code.
 
 Co-developed-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
 ---
- drivers/usb/host/pci-quirks.c | 119 +++++++++++++++++-----------------
- drivers/usb/host/pci-quirks.h |  14 ++--
- 2 files changed, 68 insertions(+), 65 deletions(-)
+ drivers/usb/Kconfig           | 10 ++++++++++
+ drivers/usb/core/hcd-pci.c    |  3 +--
+ drivers/usb/host/pci-quirks.c |  2 ++
+ drivers/usb/host/pci-quirks.h | 34 ++++++++++++++++++++++++----------
+ include/linux/usb/hcd.h       | 17 +++++++++++++++++
+ 5 files changed, 54 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
+index 7f33bcc315f2..abf8c6cdea9e 100644
+--- a/drivers/usb/Kconfig
++++ b/drivers/usb/Kconfig
+@@ -91,6 +91,16 @@ config USB_PCI
+ 	  If you have such a device you may say N here and PCI related code
+ 	  will not be built in the USB driver.
+ 
++config USB_PCI_AMD
++	bool "AMD PCI USB host support"
++	depends on USB_PCI && HAS_IOPORT
++	default X86 || MACH_LOONGSON64 || PPC_PASEMI
++	help
++	  Enable workarounds for USB implementation quirks in SB600/SB700/SB800
++	  and later south bridge implementations. These are common on x86 PCs
++	  with AMD CPUs but rarely used elsewhere, with the exception of a few
++	  powerpc and mips desktop machines.
++
+ if USB
+ 
+ source "drivers/usb/core/Kconfig"
+diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
+index 990280688b25..ee3156f49533 100644
+--- a/drivers/usb/core/hcd-pci.c
++++ b/drivers/usb/core/hcd-pci.c
+@@ -206,8 +206,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct hc_driver *driver)
+ 		goto free_irq_vectors;
+ 	}
+ 
+-	hcd->amd_resume_bug = (usb_hcd_amd_remote_wakeup_quirk(dev) &&
+-			driver->flags & (HCD_USB11 | HCD_USB3)) ? 1 : 0;
++	hcd->amd_resume_bug = usb_hcd_amd_resume_bug(dev, driver);
+ 
+ 	if (driver->flags & HCD_MEMORY) {
+ 		/* EHCI, OHCI */
 diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 2665832f9add..5e06fad82a22 100644
+index 5e06fad82a22..10813096d00c 100644
 --- a/drivers/usb/host/pci-quirks.c
 +++ b/drivers/usb/host/pci-quirks.c
-@@ -60,6 +60,22 @@
- #define EHCI_USBLEGCTLSTS	4		/* legacy control/status */
- #define EHCI_USBLEGCTLSTS_SOOE	(1 << 13)	/* SMI on ownership change */
+@@ -76,6 +76,7 @@
+ #define USB_INTEL_USB3_PSSEN   0xD8
+ #define USB_INTEL_USB3PRM      0xDC
  
-+/* ASMEDIA quirk use */
-+#define ASMT_DATA_WRITE0_REG	0xF8
-+#define ASMT_DATA_WRITE1_REG	0xFC
-+#define ASMT_CONTROL_REG	0xE0
-+#define ASMT_CONTROL_WRITE_BIT	0x02
-+#define ASMT_WRITEREG_CMD	0x10423
-+#define ASMT_FLOWCTL_ADDR	0xFA30
-+#define ASMT_FLOWCTL_DATA	0xBA
-+#define ASMT_PSEUDO_DATA	0
-+
-+/* Intel quirk use */
-+#define USB_INTEL_XUSB2PR      0xD0
-+#define USB_INTEL_USB2PRM      0xD4
-+#define USB_INTEL_USB3_PSSEN   0xD8
-+#define USB_INTEL_USB3PRM      0xDC
-+
++#ifdef CONFIG_USB_PCI_AMD
  /* AMD quirk use */
  #define	AB_REG_BAR_LOW		0xe0
  #define	AB_REG_BAR_HIGH		0xe1
-@@ -93,21 +109,6 @@
- #define	NB_PIF0_PWRDOWN_0	0x01100012
- #define	NB_PIF0_PWRDOWN_1	0x01100013
- 
--#define USB_INTEL_XUSB2PR      0xD0
--#define USB_INTEL_USB2PRM      0xD4
--#define USB_INTEL_USB3_PSSEN   0xD8
--#define USB_INTEL_USB3PRM      0xDC
--
--/* ASMEDIA quirk use */
--#define ASMT_DATA_WRITE0_REG	0xF8
--#define ASMT_DATA_WRITE1_REG	0xFC
--#define ASMT_CONTROL_REG	0xE0
--#define ASMT_CONTROL_WRITE_BIT	0x02
--#define ASMT_WRITEREG_CMD	0x10423
--#define ASMT_FLOWCTL_ADDR	0xFA30
--#define ASMT_FLOWCTL_DATA	0xBA
--#define ASMT_PSEUDO_DATA	0
--
- /*
-  * amd_chipset_gen values represent AMD different chipset generations
-  */
-@@ -458,50 +459,6 @@ void usb_amd_quirk_pll_disable(void)
- }
- EXPORT_SYMBOL_GPL(usb_amd_quirk_pll_disable);
- 
--static int usb_asmedia_wait_write(struct pci_dev *pdev)
--{
--	unsigned long retry_count;
--	unsigned char value;
--
--	for (retry_count = 1000; retry_count > 0; --retry_count) {
--
--		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
--
--		if (value == 0xff) {
--			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
--			return -EIO;
--		}
--
--		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
--			return 0;
--
--		udelay(50);
--	}
--
--	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
--	return -ETIMEDOUT;
--}
--
--void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
--{
--	if (usb_asmedia_wait_write(pdev) != 0)
--		return;
--
--	/* send command and address to device */
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
--	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
--
--	if (usb_asmedia_wait_write(pdev) != 0)
--		return;
--
--	/* send data to device */
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
--	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
--}
--EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
--
- void usb_amd_quirk_pll_enable(void)
- {
- 	usb_amd_quirk_pll(0);
-@@ -631,6 +588,50 @@ bool usb_amd_pt_check_port(struct device *device, int port)
+@@ -587,6 +588,7 @@ bool usb_amd_pt_check_port(struct device *device, int port)
+ 	return !(value & BIT(port_shift));
  }
  EXPORT_SYMBOL_GPL(usb_amd_pt_check_port);
++#endif /* CONFIG_USB_PCI_AMD */
  
-+static int usb_asmedia_wait_write(struct pci_dev *pdev)
-+{
-+	unsigned long retry_count;
-+	unsigned char value;
-+
-+	for (retry_count = 1000; retry_count > 0; --retry_count) {
-+
-+		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
-+
-+		if (value == 0xff) {
-+			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
-+			return -EIO;
-+		}
-+
-+		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
-+			return 0;
-+
-+		udelay(50);
-+	}
-+
-+	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
-+	return -ETIMEDOUT;
-+}
-+
-+void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
-+{
-+	if (usb_asmedia_wait_write(pdev) != 0)
-+		return;
-+
-+	/* send command and address to device */
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
-+	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
-+
-+	if (usb_asmedia_wait_write(pdev) != 0)
-+		return;
-+
-+	/* send data to device */
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
-+	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
-+}
-+EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
-+
- /*
-  * Make sure the controller is completely inactive, unable to
-  * generate interrupts or do DMA.
+ static int usb_asmedia_wait_write(struct pci_dev *pdev)
+ {
 diff --git a/drivers/usb/host/pci-quirks.h b/drivers/usb/host/pci-quirks.h
-index e729de21fad7..cde2263a9d2e 100644
+index cde2263a9d2e..a5230b0b9e91 100644
 --- a/drivers/usb/host/pci-quirks.h
 +++ b/drivers/usb/host/pci-quirks.h
-@@ -3,8 +3,6 @@
+@@ -2,7 +2,7 @@
+ #ifndef __LINUX_USB_PCI_QUIRKS_H
  #define __LINUX_USB_PCI_QUIRKS_H
  
- #ifdef CONFIG_USB_PCI
--void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
--int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+-#ifdef CONFIG_USB_PCI
++#ifdef CONFIG_USB_PCI_AMD
  int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev);
  bool usb_amd_hang_symptom_quirk(void);
  bool usb_amd_prefetch_quirk(void);
-@@ -12,23 +10,27 @@ void usb_amd_dev_put(void);
- bool usb_amd_quirk_pll_check(void);
- void usb_amd_quirk_pll_disable(void);
+@@ -12,7 +12,30 @@ void usb_amd_quirk_pll_disable(void);
  void usb_amd_quirk_pll_enable(void);
-+void sb800_prefetch(struct device *dev, int on);
-+bool usb_amd_pt_check_port(struct device *device, int port);
-+
-+void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
-+int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+ void sb800_prefetch(struct device *dev, int on);
+ bool usb_amd_pt_check_port(struct device *device, int port);
++#else
++static inline bool usb_amd_hang_symptom_quirk(void)
++{
++	return false;
++};
++static inline bool usb_amd_prefetch_quirk(void)
++{
++	return false;
++}
++static inline void usb_amd_quirk_pll_disable(void) {}
++static inline void usb_amd_quirk_pll_enable(void) {}
++static inline void usb_amd_dev_put(void) {}
++static inline bool usb_amd_quirk_pll_check(void)
++{
++	return false;
++}
++static inline void sb800_prefetch(struct device *dev, int on) {}
++static inline bool usb_amd_pt_check_port(struct device *device, int port)
++{
++	return false;
++}
++#endif /* CONFIG_USB_PCI_AMD */
+ 
++#ifdef CONFIG_USB_PCI
+ void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
+ int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
  void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
- void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
+@@ -20,15 +43,6 @@ void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
  void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
--void sb800_prefetch(struct device *dev, int on);
--bool usb_amd_pt_check_port(struct device *device, int port);
  #else
  struct pci_dev;
- static inline void usb_amd_quirk_pll_disable(void) {}
- static inline void usb_amd_quirk_pll_enable(void) {}
--static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
- static inline void usb_amd_dev_put(void) {}
--static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
- static inline void sb800_prefetch(struct device *dev, int on) {}
- static inline bool usb_amd_pt_check_port(struct device *device, int port)
- {
- 	return false;
- }
-+
-+static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
-+static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
+-static inline void usb_amd_quirk_pll_disable(void) {}
+-static inline void usb_amd_quirk_pll_enable(void) {}
+-static inline void usb_amd_dev_put(void) {}
+-static inline void sb800_prefetch(struct device *dev, int on) {}
+-static inline bool usb_amd_pt_check_port(struct device *device, int port)
+-{
+-	return false;
+-}
+-
+ static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
+ static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
  #endif  /* CONFIG_USB_PCI */
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index 61d4f0b793dc..00724b4f6e12 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -484,8 +484,25 @@ extern int usb_hcd_pci_probe(struct pci_dev *dev,
+ extern void usb_hcd_pci_remove(struct pci_dev *dev);
+ extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
  
- #endif  /*  __LINUX_USB_PCI_QUIRKS_H  */
++#ifdef CONFIG_USB_PCI_AMD
+ extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
+ 
++static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
++					  const struct hc_driver *driver)
++{
++	if (!usb_hcd_amd_remote_wakeup_quirk(dev))
++		return false;
++	if (driver->flags & (HCD_USB11 | HCD_USB3))
++		return true;
++	return false;
++}
++#else /* CONFIG_USB_PCI_AMD */
++static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
++					  const struct hc_driver *driver)
++{
++	return false;
++}
++#endif
+ extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
+ #endif /* CONFIG_USB_PCI */
+ 
 -- 
 2.39.2
 
