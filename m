@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 618F479B844
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E358079B814
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355085AbjIKV4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
+        id S1359488AbjIKWRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243611AbjIKRYM (ORCPT
+        with ESMTP id S243678AbjIKR3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:24:12 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDD21A5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:24:04 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-77dcff76e35so54673239f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1694453044; x=1695057844; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=sphhBNof8zq1/caB4nqaNWdPiAfc/xDFKkO3FH9aqFw=;
-        b=FAalRym1fnQhG167KJjjqHUA5oDh7BuYJrCUoAo2zpeSzDPNUb5tDtRsNezXqTq3Jb
-         +RwGU1/bjIcHblaQQ25SNvEGYr/28Gf6wgnJtZYMNEZgX6O+Hdyg2dMlQl99xxj2Dz16
-         3K5lWSj7pF6h+ntJ6a3gT79WaMSGK/2CqnAqY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694453044; x=1695057844;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sphhBNof8zq1/caB4nqaNWdPiAfc/xDFKkO3FH9aqFw=;
-        b=GoJ+LCuol0tubF5ygaVMoAIstHK9RHZ91MJj6iH318VAOy6tojeaOaOB1/6CGBnpf7
-         7iTdnVeY0XsMPYy60vYtCqKaXj+tupwjvpxwfTpgHY1uqExzIZcxzhc5WsnGiYGDD3tx
-         2TV7RagLhZsxfjHnwlrBAnwiJY1qRwFdNfQnUFYIrMC1BTVq1KlROM/qYnDg5WWakZUj
-         i5al8xrIQOPOgaoy77Hb/Bs4IOhIrEftPsPPzvpDma/PX7H1T+6rg1KjqCEbx87LfiQm
-         +PsEEVrF5PqkUqME6sztj3PIZ8NzoG7QQpmVIio27i4i6KAgWutxVEcR3c0341VE8Qe0
-         /VPQ==
-X-Gm-Message-State: AOJu0Yw4wbJ1iIy7wISB3hKmqrs3TxID110jOJl6sJqbjbGfDkEaLqE3
-        UD4fvKtTSqNobKCJ8FW4t7/53Q==
-X-Google-Smtp-Source: AGHT+IFbPp+CfbE1tmZWB+A8e6PyXi82Tle2mAGJx5YIB6jIjrlb44dzOhAyXsLG8p3bV2QyoQByDQ==
-X-Received: by 2002:a05:6e02:60d:b0:345:e438:7381 with SMTP id t13-20020a056e02060d00b00345e4387381mr11302429ils.2.1694453043753;
-        Mon, 11 Sep 2023 10:24:03 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id x16-20020a920610000000b0034f3faebfddsm552048ilg.77.2023.09.11.10.24.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 10:24:03 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------F4BtTa1otajnCWynCa05KEj6"
-Message-ID: <d08e3af8-b48d-ee6f-9e9c-b9a0129de405@linuxfoundation.org>
-Date:   Mon, 11 Sep 2023 11:24:02 -0600
+        Mon, 11 Sep 2023 13:29:20 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A031B9;
+        Mon, 11 Sep 2023 10:29:13 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BHT3jr117420;
+        Mon, 11 Sep 2023 12:29:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1694453343;
+        bh=SPycI+Uz/iJAyU3N4/P4D2p8LNzzmiX2j6aMQOFsstY=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=BMjSIjXlD0wrdyduMan0CN7nMNQFqSzBNYsf84b1PowCOKJDNmXDSEEfx/SlJ2Tm3
+         Zty8yAHMN446jFsjhK5EKZHWhljKG4rX1PzD7mtG2uV+7RKgsBj0vgpkVJPcvJeIAr
+         l/V2Ye/PWU5mR8x4g1nfI0VJF6/MtX6KPyejH930=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BHT3UK010080
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Sep 2023 12:29:03 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
+ Sep 2023 12:29:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 11 Sep 2023 12:29:03 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BHT3hI003693;
+        Mon, 11 Sep 2023 12:29:03 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Vignesh <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Tom Rini <trini@konsulko.com>, Bryan <bb@ti.com>,
+        Praneeth <praneeth@ti.com>, Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH 2/3] arm64: dts: ti: k3-am642-evm: Add boot phase tags marking
+Date:   Mon, 11 Sep 2023 12:29:01 -0500
+Message-ID: <20230911172902.1057417-3-nm@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230911172902.1057417-1-nm@ti.com>
+References: <20230911172902.1057417-1-nm@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest fixes update for Linux 6.6-rc2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,189 +69,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------F4BtTa1otajnCWynCa05KEj6
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+bootph-all as phase tag was added to dt-schema
+(dtschema/schemas/bootph.yaml) to describe various node usage during
+boot phases with DT.
 
-Hi Linus,
+Describe the same for AM642-evm boot devices.
 
-Please pull the following Kselftest fixes update for Linux 6.6-rc2.
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts | 28 +++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-This kselftest fixes update for Linux 6.6-rc2 consists of fixes
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index b4a1f73d4fb1..d0e1191baecd 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -35,6 +35,7 @@ aliases {
+ 	};
+ 
+ 	memory@80000000 {
++		bootph-all;
+ 		device_type = "memory";
+ 		/* 2G RAM */
+ 		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
+@@ -108,6 +109,7 @@ rtos_ipc_memory_region: ipc-memories@a5000000 {
+ 
+ 	evm_12v0: regulator-0 {
+ 		/* main DC jack */
++		bootph-all;
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "evm_12v0";
+ 		regulator-min-microvolt = <12000000>;
+@@ -129,6 +131,7 @@ vsys_5v0: regulator-1 {
+ 
+ 	vsys_3v3: regulator-2 {
+ 		/* output of LM5140 */
++		bootph-all;
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vsys_3v3";
+ 		regulator-min-microvolt = <3300000>;
+@@ -140,6 +143,7 @@ vsys_3v3: regulator-2 {
+ 
+ 	vdd_mmc1: regulator-3 {
+ 		/* TPS2051BD */
++		bootph-all;
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vdd_mmc1";
+ 		regulator-min-microvolt = <3300000>;
+@@ -161,6 +165,7 @@ vddb: regulator-4 {
+ 	};
+ 
+ 	vtt_supply: regulator-5 {
++		bootph-all;
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vtt";
+ 		pinctrl-names = "default";
+@@ -251,6 +256,7 @@ AM64X_IOPAD(0x0244, PIN_OUTPUT, 0)		/* (E14) UART1_TXD */
+ 	};
+ 
+ 	main_uart0_pins_default: main-uart0-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x0238, PIN_INPUT, 0) /* (B16) UART0_CTSn */
+ 			AM64X_IOPAD(0x023c, PIN_OUTPUT, 0) /* (A16) UART0_RTSn */
+@@ -269,6 +275,7 @@ AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
+ 	};
+ 
+ 	main_i2c0_pins_default: main-i2c0-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x0260, PIN_INPUT_PULLUP, 0) /* (A18) I2C0_SCL */
+ 			AM64X_IOPAD(0x0264, PIN_INPUT_PULLUP, 0) /* (B18) I2C0_SDA */
+@@ -276,6 +283,7 @@ AM64X_IOPAD(0x0264, PIN_INPUT_PULLUP, 0) /* (B18) I2C0_SDA */
+ 	};
+ 
+ 	main_i2c1_pins_default: main-i2c1-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x0268, PIN_INPUT_PULLUP, 0) /* (C18) I2C1_SCL */
+ 			AM64X_IOPAD(0x026c, PIN_INPUT_PULLUP, 0) /* (B19) I2C1_SDA */
+@@ -283,6 +291,7 @@ AM64X_IOPAD(0x026c, PIN_INPUT_PULLUP, 0) /* (B19) I2C1_SDA */
+ 	};
+ 
+ 	mdio1_pins_default: mdio1-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x01fc, PIN_OUTPUT, 4) /* (R2) PRG0_PRU1_GPO19.MDIO0_MDC */
+ 			AM64X_IOPAD(0x01f8, PIN_INPUT, 4) /* (P5) PRG0_PRU1_GPO18.MDIO0_MDIO */
+@@ -290,6 +299,7 @@ AM64X_IOPAD(0x01f8, PIN_INPUT, 4) /* (P5) PRG0_PRU1_GPO18.MDIO0_MDIO */
+ 	};
+ 
+ 	rgmii1_pins_default: rgmii1-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x01cc, PIN_INPUT, 4) /* (W5) PRG0_PRU1_GPO7.RGMII1_RD0 */
+ 			AM64X_IOPAD(0x01d4, PIN_INPUT, 4) /* (Y5) PRG0_PRU1_GPO9.RGMII1_RD1 */
+@@ -307,6 +317,7 @@ AM64X_IOPAD(0x00dc, PIN_OUTPUT, 4) /* (U15) PRG1_PRU0_GPO9.RGMII1_TX_CTL */
+ 	};
+ 
+        rgmii2_pins_default: rgmii2-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x0108, PIN_INPUT, 4) /* (W11) PRG1_PRU1_GPO0.RGMII2_RD0 */
+ 			AM64X_IOPAD(0x010c, PIN_INPUT, 4) /* (V11) PRG1_PRU1_GPO1.RGMII2_RD1 */
+@@ -324,6 +335,7 @@ AM64X_IOPAD(0x0144, PIN_OUTPUT, 4) /* (Y11) PRG1_PRU1_GPO15.RGMII2_TX_CTL */
+ 	};
+ 
+ 	main_usb0_pins_default: main-usb0-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
+ 		>;
+@@ -366,6 +378,7 @@ AM64X_IOPAD(0x0258, PIN_OUTPUT, 0) /* (C17) MCAN1_TX */
+ 	};
+ 
+ 	ddr_vtt_pins_default: ddr-vtt-default-pins {
++		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM64X_IOPAD(0x0030, PIN_OUTPUT_PULLUP, 7) /* (L18) OSPI0_CSN1.GPIO0_12 */
+ 		>;
+@@ -373,6 +386,7 @@ AM64X_IOPAD(0x0030, PIN_OUTPUT_PULLUP, 7) /* (L18) OSPI0_CSN1.GPIO0_12 */
+ };
+ 
+ &main_uart0 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_uart0_pins_default>;
+@@ -387,6 +401,7 @@ &main_uart1 {
+ };
+ 
+ &main_i2c0 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_i2c0_pins_default>;
+@@ -400,12 +415,14 @@ eeprom@50 {
+ };
+ 
+ &main_i2c1 {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_i2c1_pins_default>;
+ 	clock-frequency = <400000>;
+ 
+ 	exp1: gpio@22 {
++		bootph-all;
+ 		compatible = "ti,tca6424";
+ 		reg = <0x22>;
+ 		gpio-controller;
+@@ -438,6 +455,10 @@ display@3c {
+ 	};
+ };
+ 
++&main_gpio0 {
++	bootph-all;
++};
++
+ /* mcu_gpio0 is reserved for mcu firmware usage */
+ &mcu_gpio0 {
+ 	status = "reserved";
+@@ -467,6 +488,7 @@ &sdhci0 {
+ 
+ &sdhci1 {
+ 	/* SD/MMC */
++	bootph-all;
+ 	vmmc-supply = <&vdd_mmc1>;
+ 	pinctrl-names = "default";
+ 	bus-width = <4>;
+@@ -476,11 +498,13 @@ &sdhci1 {
+ };
+ 
+ &usbss0 {
++	bootph-all;
+ 	ti,vbus-divider;
+ 	ti,usb2-only;
+ };
+ 
+ &usb0 {
++	bootph-all;
+ 	dr_mode = "otg";
+ 	maximum-speed = "high-speed";
+ 	pinctrl-names = "default";
+@@ -488,11 +512,13 @@ &usb0 {
+ };
+ 
+ &cpsw3g {
++	bootph-all;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii1_pins_default>, <&rgmii2_pins_default>;
+ };
+ 
+ &cpsw_port1 {
++	bootph-all;
+ 	phy-mode = "rgmii-rxid";
+ 	phy-handle = <&cpsw3g_phy0>;
+ };
+@@ -503,11 +529,13 @@ &cpsw_port2 {
+ };
+ 
+ &cpsw3g_mdio {
++	bootph-all;
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mdio1_pins_default>;
+ 
+ 	cpsw3g_phy0: ethernet-phy@0 {
++		bootph-all;
+ 		reg = <0>;
+ 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+ 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+-- 
+2.40.0
 
--- kselftest runner script to propagate SIGTERM to runner child
-    to avoid kselftest hang.
--- to install symlinks required for test execution to avoid test
-    failures.
--- kselftest dependency checker script argument parsing.
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-The following changes since commit 9b1db732866bee060b9bca9493e5ebf5e8874c48:
-
-   selftests: cachestat: use proper syscall number macro (2023-08-16 11:12:44 -0600)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-6.6-rc2
-
-for you to fetch changes up to 3f3f384139ed147c71e1d770accf610133d5309b:
-
-   selftests: Keep symlinks, when possible (2023-09-08 10:06:56 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-next-6.6-rc2
-
-This kselftest fixes update for Linux 6.6-rc2 consists of fixes
-
--- kselftest runner script to propagate SIGTERM to runner child
-    to avoid kselftest hang.
--- to install symlinks required for test execution to avoid test
-    failures.
--- kselftest dependency checker script argument parsing.
-
-----------------------------------------------------------------
-Björn Töpel (2):
-       kselftest/runner.sh: Propagate SIGTERM to runner child
-       selftests: Keep symlinks, when possible
-
-Ricardo B. Marliere (1):
-       selftests: fix dependency checker script
-
-Zheng Yejian (1):
-       selftests/ftrace: Correctly enable event in instance-event.tc
-
-  .../ftrace/test.d/instances/instance-event.tc      |  2 +-
-  tools/testing/selftests/kselftest/runner.sh        |  3 +-
-  tools/testing/selftests/kselftest_deps.sh          | 77 ++++++++++++++++++----
-  tools/testing/selftests/lib.mk                     |  4 +-
-  4 files changed, 70 insertions(+), 16 deletions(-)
-----------------------------------------------------------------
---------------F4BtTa1otajnCWynCa05KEj6
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-next-6.6-rc2.diff"
-Content-Disposition: attachment; filename="linux-kselftest-next-6.6-rc2.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvaW5z
-dGFuY2VzL2luc3RhbmNlLWV2ZW50LnRjIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvZnRy
-YWNlL3Rlc3QuZC9pbnN0YW5jZXMvaW5zdGFuY2UtZXZlbnQudGMKaW5kZXggMGViNDdmYmIz
-ZjQ0Li40MjQyMmU0MjUxMDcgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
-L2Z0cmFjZS90ZXN0LmQvaW5zdGFuY2VzL2luc3RhbmNlLWV2ZW50LnRjCisrKyBiL3Rvb2xz
-L3Rlc3Rpbmcvc2VsZnRlc3RzL2Z0cmFjZS90ZXN0LmQvaW5zdGFuY2VzL2luc3RhbmNlLWV2
-ZW50LnRjCkBAIC0zOSw3ICszOSw3IEBAIGluc3RhbmNlX3JlYWQoKSB7CiAKIGluc3RhbmNl
-X3NldCgpIHsKICAgICAgICAgd2hpbGUgOjsgZG8KLSAgICAgICAgICAgICAgICBlY2hvIDEg
-PiBmb28vZXZlbnRzL3NjaGVkL3NjaGVkX3N3aXRjaAorICAgICAgICAgICAgICAgIGVjaG8g
-MSA+IGZvby9ldmVudHMvc2NoZWQvc2NoZWRfc3dpdGNoL2VuYWJsZQogICAgICAgICBkb25l
-IDI+IC9kZXYvbnVsbAogfQogCmRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0
-cy9rc2VsZnRlc3QvcnVubmVyLnNoIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMva3NlbGZ0
-ZXN0L3J1bm5lci5zaAppbmRleCAxYzk1MmQxNDAxZDQuLjcwZTBhNDY1ZTMwZCAxMDA2NDQK
-LS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMva3NlbGZ0ZXN0L3J1bm5lci5zaAorKysg
-Yi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2VsZnRlc3QvcnVubmVyLnNoCkBAIC0zNiw3
-ICszNiw4IEBAIHRhcF90aW1lb3V0KCkKIHsKIAkjIE1ha2Ugc3VyZSB0ZXN0cyB3aWxsIHRp
-bWUgb3V0IGlmIHV0aWxpdHkgaXMgYXZhaWxhYmxlLgogCWlmIFsgLXggL3Vzci9iaW4vdGlt
-ZW91dCBdIDsgdGhlbgotCQkvdXNyL2Jpbi90aW1lb3V0IC0tZm9yZWdyb3VuZCAiJGtzZWxm
-dGVzdF90aW1lb3V0IiAkMQorCQkvdXNyL2Jpbi90aW1lb3V0IC0tZm9yZWdyb3VuZCAiJGtz
-ZWxmdGVzdF90aW1lb3V0IiBcCisJCQkvdXNyL2Jpbi90aW1lb3V0ICIka3NlbGZ0ZXN0X3Rp
-bWVvdXQiICQxCiAJZWxzZQogCQkkMQogCWZpCmRpZmYgLS1naXQgYS90b29scy90ZXN0aW5n
-L3NlbGZ0ZXN0cy9rc2VsZnRlc3RfZGVwcy5zaCBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
-L2tzZWxmdGVzdF9kZXBzLnNoCmluZGV4IDRiYzE0ZDllOGZmMS4uZGU1OWNjOGYwM2MzIDEw
-MDc1NQotLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2VsZnRlc3RfZGVwcy5zaAor
-KysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rc2VsZnRlc3RfZGVwcy5zaApAQCAtNDYs
-MTEgKzQ2LDExIEBAIGZpCiBwcmludF90YXJnZXRzPTAKIAogd2hpbGUgZ2V0b3B0cyAicCIg
-YXJnOyBkbwotICAgIGNhc2UgJGFyZyBpbgotICAgICAgICBwKQorCWNhc2UgJGFyZyBpbgor
-CQlwKQogCQlwcmludF90YXJnZXRzPTEKIAlzaGlmdDs7Ci0gICAgZXNhYworCWVzYWMKIGRv
-bmUKIAogaWYgWyAkIyAtZXEgMCBdCkBAIC05Miw2ICs5MiwxMCBAQCBwYXNzX2NudD0wCiAj
-IEdldCBhbGwgVEFSR0VUUyBmcm9tIHNlbGZ0ZXN0cyBNYWtlZmlsZQogdGFyZ2V0cz0kKGdy
-ZXAgLUUgIl5UQVJHRVRTICt8XlRBUkdFVFMgPSIgTWFrZWZpbGUgfCBjdXQgLWQgIj0iIC1m
-MikKIAorIyBJbml0aWFsbHksIGluIExETElCUyByZWxhdGVkIGxpbmVzLCB0aGUgZGVwIGNo
-ZWNrZXIgbmVlZHMKKyMgdG8gaWdub3JlIGxpbmVzIGNvbnRhaW5pbmcgdGhlIGZvbGxvd2lu
-ZyBzdHJpbmdzOgorZmlsdGVyPSJcJChWQVJfTERMSUJTKVx8cGtnLWNvbmZpZ1x8UEtHX0NP
-TkZJR1x8SU9VUklOR19FWFRSQV9MSUJTIgorCiAjIFNpbmdsZSB0ZXN0IGNhc2UKIGlmIFsg
-JCMgLWVxIDIgXQogdGhlbgpAQCAtMTAwLDYgKzEwNCw4IEBAIHRoZW4KIAlsMV90ZXN0ICR0
-ZXN0CiAJbDJfdGVzdCAkdGVzdAogCWwzX3Rlc3QgJHRlc3QKKwlsNF90ZXN0ICR0ZXN0CisJ
-bDVfdGVzdCAkdGVzdAogCiAJcHJpbnRfcmVzdWx0cyAkMSAkMgogCWV4aXQgJD8KQEAgLTEx
-Myw3ICsxMTksNyBAQCBmaQogIyBBcHBlbmQgc3BhY2UgYXQgdGhlIGVuZCBvZiB0aGUgbGlz
-dCB0byBhcHBlbmQgbW9yZSB0ZXN0cy4KIAogbDFfdGVzdHM9JChncmVwIC1yIC0taW5jbHVk
-ZT1NYWtlZmlsZSAiXkxETElCUyIgfCBcCi0JCWdyZXAgLXYgIlZBUl9MRExJQlMiIHwgYXdr
-IC1GOiAne3ByaW50ICQxfScpCisJCWdyZXAgLXYgIiRmaWx0ZXIiIHwgYXdrIC1GOiAne3By
-aW50ICQxfScgfCB1bmlxKQogCiAjIExldmVsIDI6IExETElCUyBzZXQgZHluYW1pY2FsbHku
-CiAjCkBAIC0xMjYsNyArMTMyLDcgQEAgbDFfdGVzdHM9JChncmVwIC1yIC0taW5jbHVkZT1N
-YWtlZmlsZSAiXkxETElCUyIgfCBcCiAjIEFwcGVuZCBzcGFjZSBhdCB0aGUgZW5kIG9mIHRo
-ZSBsaXN0IHRvIGFwcGVuZCBtb3JlIHRlc3RzLgogCiBsMl90ZXN0cz0kKGdyZXAgLXIgLS1p
-bmNsdWRlPU1ha2VmaWxlICI6IExETElCUyIgfCBcCi0JCWdyZXAgLXYgIlZBUl9MRExJQlMi
-IHwgYXdrIC1GOiAne3ByaW50ICQxfScpCisJCWdyZXAgLXYgIiRmaWx0ZXIiIHwgYXdrIC1G
-OiAne3ByaW50ICQxfScgfCB1bmlxKQogCiAjIExldmVsIDMKICMgbWVtZmQgYW5kIG90aGVy
-cyB1c2UgcGtnLWNvbmZpZyB0byBmaW5kIG1vdW50IGFuZCBmdXNlIGxpYnMKQEAgLTEzOCwx
-MSArMTQ0LDMyIEBAIGwyX3Rlc3RzPSQoZ3JlcCAtciAtLWluY2x1ZGU9TWFrZWZpbGUgIjog
-TERMSUJTIiB8IFwKICMJVkFSX0xETElCUyA6PSAkKHNoZWxsIHBrZy1jb25maWcgZnVzZSAt
-LWxpYnMgMj4vZGV2L251bGwpCiAKIGwzX3Rlc3RzPSQoZ3JlcCAtciAtLWluY2x1ZGU9TWFr
-ZWZpbGUgIl5WQVJfTERMSUJTIiB8IFwKLQkJZ3JlcCAtdiAicGtnLWNvbmZpZyIgfCBhd2sg
-LUY6ICd7cHJpbnQgJDF9JykKKwkJZ3JlcCAtdiAicGtnLWNvbmZpZ1x8UEtHX0NPTkZJRyIg
-fCBhd2sgLUY6ICd7cHJpbnQgJDF9JyB8IHVuaXEpCiAKLSNlY2hvICRsMV90ZXN0cwotI2Vj
-aG8gJGwyXzFfdGVzdHMKLSNlY2hvICRsM190ZXN0cworIyBMZXZlbCA0CisjIHNvbWUgdGVz
-dHMgbWF5IGZhbGwgYmFjayB0byBkZWZhdWx0IHVzaW5nIGB8fCBlY2hvIC1sPGxpYm5hbWU+
-YAorIyBpZiBwa2ctY29uZmlnIGRvZXNuJ3QgZmluZCB0aGUgbGlicywgaW5zdGVhZCBvZiB1
-c2luZyBWQVJfTERMSUJTCisjIGFzIHBlciBsZXZlbCAzIGNoZWNrcy4KKyMgZS5nOgorIyBu
-ZXRmaWx0ZXIvTWFrZWZpbGUKKyMJTERMSUJTICs9ICQoc2hlbGwgJChIT1NUUEtHX0NPTkZJ
-RykgLS1saWJzIGxpYm1ubCAyPi9kZXYvbnVsbCB8fCBlY2hvIC1sbW5sKQorbDRfdGVzdHM9
-JChncmVwIC1yIC0taW5jbHVkZT1NYWtlZmlsZSAiXkxETElCUyIgfCBcCisJCWdyZXAgInBr
-Zy1jb25maWdcfFBLR19DT05GSUciIHwgYXdrIC1GOiAne3ByaW50ICQxfScgfCB1bmlxKQor
-CisjIExldmVsIDUKKyMgc29tZSB0ZXN0cyBtYXkgdXNlIElPVVJJTkdfRVhUUkFfTElCUyB0
-byBhZGQgZXh0cmEgbGlicyB0byBMRExJQlMsCisjIHdoaWNoIGluIHR1cm4gbWF5IGJlIGRl
-ZmluZWQgaW4gYSBzdWItTWFrZWZpbGUKKyMgZS5nLjoKKyMgbW0vTWFrZWZpbGUKKyMJJChP
-VVRQVVQpL2d1cF9sb25ndGVybTogTERMSUJTICs9ICQoSU9VUklOR19FWFRSQV9MSUJTKQor
-bDVfdGVzdHM9JChncmVwIC1yIC0taW5jbHVkZT1NYWtlZmlsZSAiTERMSUJTICs9LipcJChJ
-T1VSSU5HX0VYVFJBX0xJQlMpIiB8IFwKKwlhd2sgLUY6ICd7cHJpbnQgJDF9JyB8IHVuaXEp
-CisKKyNlY2hvIGwxX3Rlc3RzICRsMV90ZXN0cworI2VjaG8gbDJfdGVzdHMgJGwyX3Rlc3Rz
-CisjZWNobyBsM190ZXN0cyAkbDNfdGVzdHMKKyNlY2hvIGw0X3Rlc3RzICRsNF90ZXN0cwor
-I2VjaG8gbDVfdGVzdHMgJGw1X3Rlc3RzCiAKIGFsbF90ZXN0cwogcHJpbnRfcmVzdWx0cyAk
-MSAkMgpAQCAtMTY0LDI0ICsxOTEsMzIgQEAgYWxsX3Rlc3RzKCkKIAlmb3IgdGVzdCBpbiAk
-bDNfdGVzdHM7IGRvCiAJCWwzX3Rlc3QgJHRlc3QKIAlkb25lCisKKwlmb3IgdGVzdCBpbiAk
-bDRfdGVzdHM7IGRvCisJCWw0X3Rlc3QgJHRlc3QKKwlkb25lCisKKwlmb3IgdGVzdCBpbiAk
-bDVfdGVzdHM7IGRvCisJCWw1X3Rlc3QgJHRlc3QKKwlkb25lCiB9CiAKICMgVXNlIHNhbWUg
-cGFyc2luZyB1c2VkIGZvciBsMV90ZXN0cyBhbmQgcGljayBsaWJyYXJpZXMgdGhpcyB0aW1l
-LgogbDFfdGVzdCgpCiB7CiAJdGVzdF9saWJzPSQoZ3JlcCAtLWluY2x1ZGU9TWFrZWZpbGUg
-Il5MRExJQlMiICR0ZXN0IHwgXAotCQkJZ3JlcCAtdiAiVkFSX0xETElCUyIgfCBcCisJCQln
-cmVwIC12ICIkZmlsdGVyIiB8IFwKIAkJCXNlZCAtZSAncy9cOi8gLycgfCBcCiAJCQlzZWQg
-LWUgJ3MvKy8gLycgfCBjdXQgLWQgIj0iIC1mIDIpCiAKIAljaGVja19saWJzICR0ZXN0ICR0
-ZXN0X2xpYnMKIH0KIAotIyBVc2Ugc2FtZSBwYXJzaW5nIHVzZWQgZm9yIGwyX190ZXN0cyBh
-bmQgcGljayBsaWJyYXJpZXMgdGhpcyB0aW1lLgorIyBVc2Ugc2FtZSBwYXJzaW5nIHVzZWQg
-Zm9yIGwyX3Rlc3RzIGFuZCBwaWNrIGxpYnJhcmllcyB0aGlzIHRpbWUuCiBsMl90ZXN0KCkK
-IHsKIAl0ZXN0X2xpYnM9JChncmVwIC0taW5jbHVkZT1NYWtlZmlsZSAiOiBMRExJQlMiICR0
-ZXN0IHwgXAotCQkJZ3JlcCAtdiAiVkFSX0xETElCUyIgfCBcCisJCQlncmVwIC12ICIkZmls
-dGVyIiB8IFwKIAkJCXNlZCAtZSAncy9cOi8gLycgfCBzZWQgLWUgJ3MvKy8gLycgfCBcCiAJ
-CQljdXQgLWQgIj0iIC1mIDIpCiAKQEAgLTE5Nyw2ICsyMzIsMjQgQEAgbDNfdGVzdCgpCiAJ
-Y2hlY2tfbGlicyAkdGVzdCAkdGVzdF9saWJzCiB9CiAKK2w0X3Rlc3QoKQoreworCXRlc3Rf
-bGlicz0kKGdyZXAgLS1pbmNsdWRlPU1ha2VmaWxlICJeVkFSX0xETElCU1x8XkxETElCUyIg
-JHRlc3QgfCBcCisJCQlncmVwICJcKHBrZy1jb25maWdcfFBLR19DT05GSUdcKS4qfHwgZWNo
-byAiIHwgXAorCQkJc2VkIC1lICdzLy4qfHwgZWNobyAvLycgfCBzZWQgLWUgJ3MvKSQvLycp
-CisKKwljaGVja19saWJzICR0ZXN0ICR0ZXN0X2xpYnMKK30KKworbDVfdGVzdCgpCit7CisJ
-dGVzdHM9JChmaW5kICQoZGlybmFtZSAiJHRlc3QiKSAtdHlwZSBmIC1uYW1lICIqLm1rIikK
-Kwl0ZXN0X2xpYnM9JChncmVwICJeSU9VUklOR19FWFRSQV9MSUJTICtcPz0iICR0ZXN0cyB8
-IFwKKwkJCWN1dCAtZCAiPSIgLWYgMikKKworCWNoZWNrX2xpYnMgJHRlc3QgJHRlc3RfbGli
-cworfQorCiBjaGVja19saWJzKCkKIHsKIApkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9z
-ZWxmdGVzdHMvbGliLm1rIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbGliLm1rCmluZGV4
-IGQxNzg1NDI4NWYyYi4uMTE4ZTA5NjRiZGE5IDEwMDY0NAotLS0gYS90b29scy90ZXN0aW5n
-L3NlbGZ0ZXN0cy9saWIubWsKKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbGliLm1r
-CkBAIC0xMDYsNyArMTA2LDcgQEAgZW5kZWYKIHJ1bl90ZXN0czogYWxsCiBpZmRlZiBidWls
-ZGluZ19vdXRfb2Zfc3JjdHJlZQogCUBpZiBbICJYJChURVNUX1BST0dTKSQoVEVTVF9QUk9H
-U19FWFRFTkRFRCkkKFRFU1RfRklMRVMpIiAhPSAiWCIgXTsgdGhlbiBcCi0JCXJzeW5jIC1h
-THEgJChURVNUX1BST0dTKSAkKFRFU1RfUFJPR1NfRVhURU5ERUQpICQoVEVTVF9GSUxFUykg
-JChPVVRQVVQpOyBcCisJCXJzeW5jIC1hcSAtLWNvcHktdW5zYWZlLWxpbmtzICQoVEVTVF9Q
-Uk9HUykgJChURVNUX1BST0dTX0VYVEVOREVEKSAkKFRFU1RfRklMRVMpICQoT1VUUFVUKTsg
-XAogCWZpCiAJQGlmIFsgIlgkKFRFU1RfUFJPR1MpIiAhPSAiWCIgXTsgdGhlbiBcCiAJCSQo
-Y2FsbCBSVU5fVEVTVFMsICQoVEVTVF9HRU5fUFJPR1MpICQoVEVTVF9DVVNUT01fUFJPR1Mp
-IFwKQEAgLTEyMCw3ICsxMjAsNyBAQCBlbmRpZgogCiBkZWZpbmUgSU5TVEFMTF9TSU5HTEVf
-UlVMRQogCSQoaWYgJChJTlNUQUxMX0xJU1QpLEBta2RpciAtcCAkKElOU1RBTExfUEFUSCkp
-Ci0JJChpZiAkKElOU1RBTExfTElTVCkscnN5bmMgLWFMICQoSU5TVEFMTF9MSVNUKSAkKElO
-U1RBTExfUEFUSCkvKQorCSQoaWYgJChJTlNUQUxMX0xJU1QpLHJzeW5jIC1hIC0tY29weS11
-bnNhZmUtbGlua3MgJChJTlNUQUxMX0xJU1QpICQoSU5TVEFMTF9QQVRIKS8pCiBlbmRlZgog
-CiBkZWZpbmUgSU5TVEFMTF9SVUxFCg==
-
---------------F4BtTa1otajnCWynCa05KEj6--
