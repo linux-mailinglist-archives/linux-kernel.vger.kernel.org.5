@@ -2,138 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB6079B4CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D21E79AE90
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242369AbjIKWKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
+        id S1349328AbjIKVdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236660AbjIKLJ6 (ORCPT
+        with ESMTP id S236708AbjIKLP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 07:09:58 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805F1E40
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:09:51 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso71834591fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694430590; x=1695035390; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ItV/PafZYbRtZG+3EH6sRu97i9Pet4QO+NBJ8/y2iuI=;
-        b=tg4h2AL9gT7/qUV0jFTrvkPJl9a/skFZyfbwb9lpcls46kdOpKy/0zULUF05nAJKrw
-         ITd7nMPZiaS5PsZzg1uTs9LpnOIGc5IQoXbM6B0QK8XpMLmTWz7Uvoa0s4ZTgz5Jq9t4
-         v0U5o8trLtrjzW4IH2vQo4mpKEbOiin4b62jWutcLNlCqZmZsOvN5+FxgDlk21bHCJDq
-         AGy8mFU5AJj5nVJ+LxeMb8183iNYaxF1hzP/jM4wDcZfI50R1cg8CQ5wa0RSetIfcJDN
-         Epx6SgrPMDqtOePCk98hrz6ZZ1pRWPxrXpWGXqxYXtz71fRYbYppSVB44eXGFYlNXoj4
-         UTNw==
+        Mon, 11 Sep 2023 07:15:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C159CE5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694430878;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LZHlUfn/17CG9PV8K2nMC6g5yBMLaeUVhPgQcvBVUcM=;
+        b=fDYUI6//0hISIOqKiuDyXWjwviNVe7Y3HcossfAUCpVeFTCgNGNupRVBOktwc/jJKlUQCi
+        0uyp1er6X0fCkttZUCd9ivfFneJjmogRKINXdWGFLEID7zOUQe7WPrHLkep0lme4jF0+Nk
+        yTTLFVCk6wV/HZ9Q8nbYvfkr7jSzU+8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-aq6ZcuodPCO4ISXpKulFOg-1; Mon, 11 Sep 2023 07:14:36 -0400
+X-MC-Unique: aq6ZcuodPCO4ISXpKulFOg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9aa05c1934aso322608066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 04:14:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694430590; x=1695035390;
+        d=1e100.net; s=20230601; t=1694430875; x=1695035675;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ItV/PafZYbRtZG+3EH6sRu97i9Pet4QO+NBJ8/y2iuI=;
-        b=pO5GZnveNK3StdzatLa2d69yXfU/mfcoajv8q/kDPdwfwhlHxOiUpIUhoLIOQifhif
-         XX0EsNM66yqVLkxKZTNmwH7s3YTV+KVaFt6XWG+GZQlQL1V8+CZkg1WGDN9HXiveGkEa
-         OfuaT+7LjxJ9oPlRCD9TVN/J9NSDtRCjap166td0rMcVlg6wD7gS+BBQSfaJ4aCrqYjz
-         BZH1pQyuPNfmwcfcYEB2vaOBOixQhMThDMppqxCK3cfsyPwW0ibjo8aSb2HGzGl7LeFv
-         WnYzlKgpVBLxtuJ7wX0nAx/VArvHCH4PnQwVYx6PUo+a6B1gkmW//83njZT6ijycyIpY
-         GkzQ==
-X-Gm-Message-State: AOJu0YySjTJiG3405Cd1sJ7GCutqxAcQzcxN8LrtJblL899GXqNjI1zi
-        dvrqC0NjBQkZ3xeajXqIGHMcow==
-X-Google-Smtp-Source: AGHT+IEA9FyfM8rXa+3k+u+doQWaGigDrU1zuRRVi1v3E2XELPt5LPr2HsZJRl0XxMdT23XFarwUrQ==
-X-Received: by 2002:a2e:8543:0:b0:2bd:180d:67b7 with SMTP id u3-20020a2e8543000000b002bd180d67b7mr6601812ljj.40.1694430589764;
-        Mon, 11 Sep 2023 04:09:49 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id lw7-20020a170906bcc700b009a168ab6ee2sm5129780ejb.164.2023.09.11.04.09.46
+        bh=LZHlUfn/17CG9PV8K2nMC6g5yBMLaeUVhPgQcvBVUcM=;
+        b=nLHGGb41cg8d0czK/GkeAl49VId9s+WQD1FuCz1oEboEG1aJbkpTGnBR6sxP7l3v4x
+         S3vClbbHUjexD0YZ/aq9Ve/Bhl/jnqh+7AK+UV1e7bqNtT9i/hTTnRrqiImsRVVne9ea
+         oSbQ2KGdya2L+moIa/UcCJxBveniuvaf/xPAXF255T0K3Xc2s8TuMwPb7E5mw7xiOe4u
+         cDiuIyPRIecrWm76HUbF2QSCPPRjLF85lYv/qmHQOA+luL+87eQJx8ImL5/Lr82zim85
+         j6M/TMWP6o/RM1nUOUJ0dDZHtaOvE4Hh6Im2bKcCW7hj/YrBoab6ftcKP5Bb6gHJR4gH
+         u8KA==
+X-Gm-Message-State: AOJu0Yw3YRIrPNUF+X6ysSrI7DZFFH5MtqQNCghR/7T+tY0uyCZRKtlH
+        jc8OyD5Fvs5c//1cXRXTdxgAwnUnfd9NxYVf5UOf3eouDFQiso8XDlo8BVKB/1ywEUPuv1WwU3+
+        EOEHPx9MYJfgSOinbwnJZjvJwTg2NMPfv
+X-Received: by 2002:a17:906:58cd:b0:9a1:c35b:9e09 with SMTP id e13-20020a17090658cd00b009a1c35b9e09mr18980888ejs.8.1694430875053;
+        Mon, 11 Sep 2023 04:14:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHc1yQRo/edO3xM+hTUpURKygC1fRP+bgKUURdgH3b7p2xbJeY1EngsA/BV5BKgyZZEYBdGdg==
+X-Received: by 2002:a17:906:58cd:b0:9a1:c35b:9e09 with SMTP id e13-20020a17090658cd00b009a1c35b9e09mr18980867ejs.8.1694430874770;
+        Mon, 11 Sep 2023 04:14:34 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id a7-20020a1709062b0700b009a1dbf55665sm5199607ejg.161.2023.09.11.04.14.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 04:09:48 -0700 (PDT)
-Message-ID: <0041a391-12ba-2e1b-0954-fbc0e00be631@linaro.org>
-Date:   Mon, 11 Sep 2023 13:09:46 +0200
+        Mon, 11 Sep 2023 04:14:34 -0700 (PDT)
+Message-ID: <97f90ed6-e857-8b66-a4b8-8ed580bb18c7@redhat.com>
+Date:   Mon, 11 Sep 2023 13:14:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 11/17] qcom_minidump: Register ramoops region with
- minidump
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 1/3] platform/mellanox: mlxbf-pmc: Fix potential buffer
+ overflows
 Content-Language: en-US
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, keescook@chromium.org, tony.luck@intel.com,
-        gpiccoli@igalia.com, mathieu.poirier@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, linus.walleij@linaro.org,
-        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
-        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
-        bmasney@redhat.com, quic_tsoni@quicinc.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1694290578-17733-12-git-send-email-quic_mojha@quicinc.com>
+To:     Shravan Kumar Ramani <shravankr@nvidia.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1693917738.git.shravankr@nvidia.com>
+ <bef39ef32319a31b32f999065911f61b0d3b17c3.1693917738.git.shravankr@nvidia.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <bef39ef32319a31b32f999065911f61b0d3b17c3.1693917738.git.shravankr@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/09/2023 22:16, Mukesh Ojha wrote:
-> Register all the pstore frontend with minidump, so that they can
-> be dumped as default Linux minidump region to be collected on
-> SoC where minidump is enabled.
+Hi,
+
+On 9/5/23 14:49, Shravan Kumar Ramani wrote:
+> Replace sprintf with sysfs_emit where possible.
+> Size check in mlxbf_pmc_event_list_show should account for "\0".
 > 
+> Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
+> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
+> Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
 
-...
+Thank you for your patch, I've applied this patch to my fixes
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
 
-> +
-> +	record.type = type;
-> +	record.id = 0;
-> +	max_dump_cnt = 0;
-> +	name = pstore_type_to_name(record.type);
-> +	do {
-> +		ret = pstore_region_defined(&record, &virt, &phys, &size, &max_dump_cnt);
-> +		if (ret < 0)
-> +			break;
-> +
-> +		mdr_list = devm_kzalloc(dev, sizeof(struct md_region_list), GFP_KERNEL);
+Note it will show up in my fixes branch once I've pushed my
+local branch there, which might take a while.
 
-sizeof(*)
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
 
-Please fix it everywhere in your code.
+Regards,
 
-> +		if (!mdr_list)
-> +			return -ENOMEM;
-> +
-> +		md_region = &mdr_list->md_region;
-> +		scnprintf(md_region->name, sizeof(md_region->name) - 1, "K%s%llu", name, record.id);
-> +		md_region->virt_addr = virt;
-> +		md_region->phys_addr = phys;
-> +		md_region->size = size;
-> +		ret = qcom_minidump_region_register(md_region);
-> +		if (ret) {
-> +			pr_err("failed to register minidump region\n");
-> +			break;
-> +		}
-> +
-> +		list_add(&mdr_list->list, &ramoops_region_list);
-> +	} while (record.id < max_dump_cnt && ++record.id);
-> +
-> +	return ret;
-> +}
+Hans
 
-
-Best regards,
-Krzysztof
+> ---
+>  drivers/platform/mellanox/mlxbf-pmc.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
+> index be967d797c28..95afcae7b9fa 100644
+> --- a/drivers/platform/mellanox/mlxbf-pmc.c
+> +++ b/drivers/platform/mellanox/mlxbf-pmc.c
+> @@ -1008,7 +1008,7 @@ static ssize_t mlxbf_pmc_counter_show(struct device *dev,
+>  	} else
+>  		return -EINVAL;
+>  
+> -	return sprintf(buf, "0x%llx\n", value);
+> +	return sysfs_emit(buf, "0x%llx\n", value);
+>  }
+>  
+>  /* Store function for "counter" sysfs files */
+> @@ -1078,13 +1078,13 @@ static ssize_t mlxbf_pmc_event_show(struct device *dev,
+>  
+>  	err = mlxbf_pmc_read_event(blk_num, cnt_num, is_l3, &evt_num);
+>  	if (err)
+> -		return sprintf(buf, "No event being monitored\n");
+> +		return sysfs_emit(buf, "No event being monitored\n");
+>  
+>  	evt_name = mlxbf_pmc_get_event_name(pmc->block_name[blk_num], evt_num);
+>  	if (!evt_name)
+>  		return -EINVAL;
+>  
+> -	return sprintf(buf, "0x%llx: %s\n", evt_num, evt_name);
+> +	return sysfs_emit(buf, "0x%llx: %s\n", evt_num, evt_name);
+>  }
+>  
+>  /* Store function for "event" sysfs files */
+> @@ -1139,9 +1139,9 @@ static ssize_t mlxbf_pmc_event_list_show(struct device *dev,
+>  		return -EINVAL;
+>  
+>  	for (i = 0, buf[0] = '\0'; i < size; ++i) {
+> -		len += sprintf(e_info, "0x%x: %s\n", events[i].evt_num,
+> -			       events[i].evt_name);
+> -		if (len > PAGE_SIZE)
+> +		len += snprintf(e_info, sizeof(e_info), "0x%x: %s\n",
+> +				events[i].evt_num, events[i].evt_name);
+> +		if (len >= PAGE_SIZE)
+>  			break;
+>  		strcat(buf, e_info);
+>  		ret = len;
+> @@ -1168,7 +1168,7 @@ static ssize_t mlxbf_pmc_enable_show(struct device *dev,
+>  
+>  	value = FIELD_GET(MLXBF_PMC_L3C_PERF_CNT_CFG_EN, perfcnt_cfg);
+>  
+> -	return sprintf(buf, "%d\n", value);
+> +	return sysfs_emit(buf, "%d\n", value);
+>  }
+>  
+>  /* Store function for "enable" sysfs files - only for l3cache */
 
