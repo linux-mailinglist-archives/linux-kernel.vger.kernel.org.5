@@ -2,146 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF6979B20B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53F379B199
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239506AbjIKWGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        id S245222AbjIKVJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240751AbjIKOwx (ORCPT
+        with ESMTP id S240928AbjIKO51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:52:53 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A01118
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:52:48 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-79536bc669dso154171639f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694443968; x=1695048768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=90PlK9+vusP71rfnLS7AlLwtgErcjzc4R1LcqrGfUdo=;
-        b=AFODHrv1HCW5R4ByGM/+dwcW3rksrChIUOU5BcaxuXhwj5XIsKoiJsU5i1Ff9N+fMv
-         t7NcrPYPGE8NzsEIpp5KuPq48tpxuhCu/uJisj0W4vlpjlwOFJwcLTj6fEl3uAk3J2oh
-         6U89yyR8W05BtzqjvHXEH5aPaS50Tc7sSeHUfLjeE5FlZfpp4KLF7Ude053JigG9ihwH
-         CW/mHfGBiUQk0FJ1mvk65SVV1K9RV8gFLhyg0NhsCM4NeS8N2tLuNP2wgG0eP/qw8eyB
-         qLPx50sPuDk44p7m+ceCmRtuWZKM7yf7wqiYtx098oue3xVAF1rmVjkpSjUydlYwqKAK
-         +sMw==
+        Mon, 11 Sep 2023 10:57:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 56F3CE40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694444194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HjLlk28N+IES7lbOqPkjnpN8fiIPP2Upbjgts+irvBQ=;
+        b=UghAjogK9HvgF8itGugJesYErwQX30+Eqh2j4j94cZZX7u0x/YkaUWUV5E9aqKFsgwMIyg
+        /+Fj2WeoVtvN7Papopzis7E01J9CbGHaZTUXLgh/XK+gVEHCMiA/lr1zhdkwh2dNeUJN3y
+        1rRTQ6T9fPE19wSX0Q2AD3iOteKfcdw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-176-N9SY_F9XPaKQm2d3ad74_w-1; Mon, 11 Sep 2023 10:56:32 -0400
+X-MC-Unique: N9SY_F9XPaKQm2d3ad74_w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-401b91039b4so15517435e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:56:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694443968; x=1695048768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=90PlK9+vusP71rfnLS7AlLwtgErcjzc4R1LcqrGfUdo=;
-        b=NuhfQB0Tilz0/ZqKW3tFJzsYxhXIcENXXR0DJJrQ0C6OmZDNm+3RNtvq1pRh72fcb2
-         Oqb+a8q5Okj36zdsXNpICbpIVTLFo2/bsrvrdIrQbjRe1DjYbjLKuSzHmQcWdClStsyV
-         /5oyByhi3Y32XMco3OMZFZRaD2aIUZZQt24i0DC/aJGRYYJVK5U8WtGt6A+b4lerYAdA
-         r0kqMBD1xk8cJsg3vR7mYxaKCJ7jSRAQ7HDpU+R8CPpRNMRkWf1/zRuvrznNkozHjZhQ
-         qMNXzszjv8C7nlw9vW1ml0qx/pmoctaMM6BRdmynN3Q9o0lrJKoSTRNzuLVHtaQJlHMT
-         sLhg==
-X-Gm-Message-State: AOJu0Ywi4ElA/QI/PEFEf2LGhj1HFWbrvC36W059JS+2m7i87qv+YmGW
-        WL92hKh4AAmZXzGzK94fs9l8zJs5I1d8bSO3LqD2cQ==
-X-Google-Smtp-Source: AGHT+IGvTbxUjFNWLezCEgG/vtDzsVCoY9+Ws6OsnQP37i0VgZfEUBdu7CtB1oUinFIFB7S3R+7jceTBpPeixY6igig=
-X-Received: by 2002:a05:6602:185:b0:790:aa71:b367 with SMTP id
- m5-20020a056602018500b00790aa71b367mr12539404ioo.4.1694443968284; Mon, 11 Sep
- 2023 07:52:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230907130642.245222-1-glider@google.com> <CANpmjNOO+LUgCWHPg4OXLzm9c7N3SNfLm1MsgME_ms07Ad5L=A@mail.gmail.com>
-In-Reply-To: <CANpmjNOO+LUgCWHPg4OXLzm9c7N3SNfLm1MsgME_ms07Ad5L=A@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 11 Sep 2023 16:52:07 +0200
-Message-ID: <CAG_fn=X9bHcqnFawrKQv=cEVQ0cj4tQL-Cr+iJpAxUGn3ssMxg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kmsan: simplify kmsan_internal_memmove_metadata()
-To:     Marco Elver <elver@google.com>
-Cc:     dvyukov@google.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+        d=1e100.net; s=20230601; t=1694444191; x=1695048991;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HjLlk28N+IES7lbOqPkjnpN8fiIPP2Upbjgts+irvBQ=;
+        b=Hy3puW4ppNnfxcxiZmUjlPHSYlQ7YhsaPl9UFxAbH2J4Dc7cTbySV63a09y7KwFYk8
+         5bQem7iVEcp49huO7vUPMNUn9NoKEd/vJ9T/cCARqUaVTlD/i7QCFVdMgQnJM077wlJb
+         DwTG1GtBO6fLcqQlfbE/eSXl6vUMciab/a0+O43VXhJMAoZvda6VWXVF3VO/JfdaVMIm
+         iM8+Wt9pXKWt5qYAMkt0Ui9z+4iXV2Hw3dYt3qyI5MYlMQZokOf0Hbsw3OPFkJRRKZG7
+         mu8iXksdejHtrPi70kRmUpG5+XmSY392chvYxSsz2F+pT1/enAW8BhZLnAl7peWGww2U
+         G+6A==
+X-Gm-Message-State: AOJu0YzK2gVw8W8vOJRq/Xs85zE+zBCBObBCq5q1nVAUlUhMmL0Zbs33
+        kPSksEKnTMpJ+6FyUdkPQqfZcXVnvdnsKII6xZnTm6Mg8GcLvdQMbY9mtLKsYttDgn5vmu1qdmZ
+        sW4zjTYvg4zW7eY079Mm4Sb2TVoBs+V8t
+X-Received: by 2002:a05:600c:3b03:b0:401:7d3b:cc84 with SMTP id m3-20020a05600c3b0300b004017d3bcc84mr9201121wms.0.1694444191202;
+        Mon, 11 Sep 2023 07:56:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHaTgIxufT0B9URByqaq4dCwny2mOEmdqr573NpnWdMHJnL3oRf2uiW9GgG/9l/4bSxs5Py6Q==
+X-Received: by 2002:a05:600c:3b03:b0:401:7d3b:cc84 with SMTP id m3-20020a05600c3b0300b004017d3bcc84mr9201102wms.0.1694444190779;
+        Mon, 11 Sep 2023 07:56:30 -0700 (PDT)
+Received: from [10.32.64.154] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id c9-20020a05600c0ac900b003fef60005b5sm10317032wmr.9.2023.09.11.07.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 07:56:30 -0700 (PDT)
+Message-ID: <4a09c32167528e0082559bc170699765f0c49c58.camel@redhat.com>
+Subject: Re: [PATCH v3] xarray: Document necessary flag in alloc-functions
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 11 Sep 2023 16:56:29 +0200
+In-Reply-To: <ZP8pbgeBQMKyLjcI@casper.infradead.org>
+References: <20230911144837.13540-1-pstanner@redhat.com>
+         <ZP8pbgeBQMKyLjcI@casper.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 1:44=E2=80=AFPM Marco Elver <elver@google.com> wrot=
-e:
->
-> On Thu, 7 Sept 2023 at 15:06, Alexander Potapenko <glider@google.com> wro=
-te:
-> >
-> > kmsan_internal_memmove_metadata() is the function that implements
-> > copying metadata every time memcpy()/memmove() is called.
-> > Because shadow memory stores 1 byte per each byte of kernel memory,
-> > copying the shadow is trivial and can be done by a single memmove()
-> > call.
-> > Origins, on the other hand, are stored as 4-byte values corresponding
-> > to every aligned 4 bytes of kernel memory. Therefore, if either the
-> > source or the destination of kmsan_internal_memmove_metadata() is
-> > unaligned, the number of origin slots corresponding to the source or
-> > destination may differ:
-> >
-> >   1) memcpy(0xffff888080a00000, 0xffff888080900000, 4)
-> >      copies 1 origin slot into 1 origin slot:
-> >
-> >      src (0xffff888080900000): xxxx
-> >      src origins:              o111
-> >      dst (0xffff888080a00000): xxxx
-> >      dst origins:              o111
-> >
-> >   2) memcpy(0xffff888080a00001, 0xffff888080900000, 4)
-> >      copies 1 origin slot into 2 origin slots:
-> >
-> >      src (0xffff888080900000): xxxx
-> >      src origins:              o111
-> >      dst (0xffff888080a00000): .xxx x...
-> >      dst origins:              o111 o111
-> >
-> >   3) memcpy(0xffff888080a00000, 0xffff888080900001, 4)
-> >      copies 2 origin slots into 1 origin slot:
-> >
-> >      src (0xffff888080900000): .xxx x...
-> >      src origins:              o111 o222
-> >      dst (0xffff888080a00000): xxxx
-> >      dst origins:              o111
-> >                            (or o222)
-> >
-> > Previously, kmsan_internal_memmove_metadata() tried to solve this
-> > problem by copying min(src_slots, dst_slots) as is and cloning the
-> > missing slot on one of the ends, if needed.
-> > This was error-prone even in the simple cases where 4 bytes were copied=
-,
-> > and did not account for situations where the total number of nonzero
-> > origin slots could have increased by more than one after copying:
-> >
-> >   memcpy(0xffff888080a00000, 0xffff888080900002, 8)
-> >
-> >   src (0xffff888080900002): ..xx .... xx..
-> >   src origins:              o111 0000 o222
-> >   dst (0xffff888080a00000): xx.. ..xx
-> >                             o111 0000
-> >                         (or 0000 o222)
-> >
-> > The new implementation simply copies the shadow byte by byte, and
-> > updates the corresponding origin slot, if the shadow byte is nonzero.
-> > This approach can handle complex cases with mixed initialized and
-> > uninitialized bytes. Similarly to KMSAN inline instrumentation, latter
-> > writes to bytes sharing the same origin slots take precedence.
-> >
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
->
-> I think this needs a Fixes tag.
-Thanks, will add in v2!
+Oh =E2=80=93 well, nope, that's fine.
+I just 'abused' v3 as a RESEND as I didn't receive a "merged" message
+;)
 
-> Also, is this corner case exercised by one of the KMSAN KUnit test cases?
-Ditto
+Let's leave it as it is, thx for merging :)
 
-> Otherwise,
->
-> Acked-by: Marco Elver <elver@google.com>
+P.
+
+On Mon, 2023-09-11 at 15:51 +0100, Matthew Wilcox wrote:
+> On Mon, Sep 11, 2023 at 04:48:37PM +0200, Philipp Stanner wrote:
+> > Calling functions that wrap __xa_alloc() or __xa_alloc_cyclic()
+> > without
+> > the xarray previously having been initialized with the flag
+> > XA_FLAGS_ALLOC being set in xa_init_flags() results in undefined
+> > behavior.
+> >=20
+> > Document the necessity of setting this flag in all docstrings of
+> > functions that wrap said two functions.
+> >=20
+> > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> > ---
+> > I used the time available until we can get this merged to create a
+> > version-3, improving a few things.
+>=20
+> Umm, too late, v2 went upstream last week during the merge window.
+>=20
+> Do you still want to change the wording?
+>=20
+> > Changes since v2:
+> > - Phrase the comment differently: say "requires [...] an xarray
+> > [...]"
+> > =C2=A0 instead of "must be operated on".
+> > - Improve the commit message and use the canonical format: a)
+> > describe
+> > =C2=A0 the problem, b) name the solution in imperative form.
+> >=20
+> > Regards,
+> > P.
+> > ---
+> > =C2=A0include/linux/xarray.h | 18 ++++++++++++++++++
+> > =C2=A0lib/xarray.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 |=C2=A0 6 ++++++
+> > =C2=A02 files changed, 24 insertions(+)
+> >=20
+> > diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+> > index 741703b45f61..746a17b64aa6 100644
+> > --- a/include/linux/xarray.h
+> > +++ b/include/linux/xarray.h
+> > @@ -856,6 +856,9 @@ static inline int __must_check
+> > xa_insert_irq(struct xarray *xa,
+> > =C2=A0 * stores the index into the @id pointer, then stores the entry a=
+t
+> > =C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitia=
+lised
+> > @id.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=
+=A0 May
+> > sleep if
+> > =C2=A0 * the @gfp flags permit.
+> > =C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated
+> > or
+> > @@ -886,6 +889,9 @@ static inline __must_check int xa_alloc(struct
+> > xarray *xa, u32 *id,
+> > =C2=A0 * stores the index into the @id pointer, then stores the entry a=
+t
+> > =C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitia=
+lised
+> > @id.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock whi=
+le
+> > =C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
+> > =C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated
+> > or
+> > @@ -916,6 +922,9 @@ static inline int __must_check
+> > xa_alloc_bh(struct xarray *xa, u32 *id,
+> > =C2=A0 * stores the index into the @id pointer, then stores the entry a=
+t
+> > =C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitia=
+lised
+> > @id.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock=
+ while
+> > =C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit=
+.
+> > =C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated
+> > or
+> > @@ -949,6 +958,9 @@ static inline int __must_check
+> > xa_alloc_irq(struct xarray *xa, u32 *id,
+> > =C2=A0 * The search for an empty entry will start at @next and will wra=
+p
+> > =C2=A0 * around if necessary.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock.=C2=
+=A0 May
+> > sleep if
+> > =C2=A0 * the @gfp flags permit.
+> > =C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 =
+1 if
+> > the
+> > @@ -983,6 +995,9 @@ static inline int xa_alloc_cyclic(struct xarray
+> > *xa, u32 *id, void *entry,
+> > =C2=A0 * The search for an empty entry will start at @next and will wra=
+p
+> > =C2=A0 * around if necessary.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Takes and releases the xa_lock whi=
+le
+> > =C2=A0 * disabling softirqs.=C2=A0 May sleep if the @gfp flags permit.
+> > =C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 =
+1 if
+> > the
+> > @@ -1017,6 +1032,9 @@ static inline int xa_alloc_cyclic_bh(struct
+> > xarray *xa, u32 *id, void *entry,
+> > =C2=A0 * The search for an empty entry will start at @next and will wra=
+p
+> > =C2=A0 * around if necessary.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Process context.=C2=A0 Takes and releases the xa_lock=
+ while
+> > =C2=A0 * disabling interrupts.=C2=A0 May sleep if the @gfp flags permit=
+.
+> > =C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 =
+1 if
+> > the
+> > diff --git a/lib/xarray.c b/lib/xarray.c
+> > index 2071a3718f4e..2b07c332d26b 100644
+> > --- a/lib/xarray.c
+> > +++ b/lib/xarray.c
+> > @@ -1802,6 +1802,9 @@ EXPORT_SYMBOL(xa_get_order);
+> > =C2=A0 * stores the index into the @id pointer, then stores the entry a=
+t
+> > =C2=A0 * that index.=C2=A0 A concurrent lookup will not see an uninitia=
+lised
+> > @id.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entr=
+y.=C2=A0
+> > May
+> > =C2=A0 * release and reacquire xa_lock if @gfp flags permit.
+> > =C2=A0 * Return: 0 on success, -ENOMEM if memory could not be allocated
+> > or
+> > @@ -1850,6 +1853,9 @@ EXPORT_SYMBOL(__xa_alloc);
+> > =C2=A0 * The search for an empty entry will start at @next and will wra=
+p
+> > =C2=A0 * around if necessary.
+> > =C2=A0 *
+> > + * Requires the xarray to be initialized with flag XA_FLAGS_ALLOC
+> > set
+> > + * in xa_init_flags().
+> > + *
+> > =C2=A0 * Context: Any context.=C2=A0 Expects xa_lock to be held on entr=
+y.=C2=A0
+> > May
+> > =C2=A0 * release and reacquire xa_lock if @gfp flags permit.
+> > =C2=A0 * Return: 0 if the allocation succeeded without wrapping.=C2=A0 =
+1 if
+> > the
+> > --=20
+> > 2.41.0
+> >=20
+>=20
+
