@@ -2,59 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D35279C0FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB379B74F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237676AbjIKVrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
+        id S1357257AbjIKWFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237255AbjIKMYJ (ORCPT
+        with ESMTP id S237277AbjIKM0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:24:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74996CDC;
-        Mon, 11 Sep 2023 05:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694435044; x=1725971044;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hhntH08KwDzWZFhlYntAoxLtfPyiIglkNSydQprvVBY=;
-  b=B8NAQrEcq1rjv1f2R9/u1JXboOL+RFAu4x4rdFIEVMG2OqbbETP7qs/P
-   CyxYU8q0osPzBgChRVEbIdkUZmeiuUAMVe81t/Pyk02j4Dl1A1Psdzre/
-   hLd4w60CdF+/jc+4LTk0Qh2uWQwCgUAErmkynvck22JI8AvQMWNkWi+vC
-   SttRAjlgz3EnmGIL6JwyXygVcfgY/OdHyiWKnIeYGm7Z/Tsc0qfN+YL9e
-   ldadl5LfKlmEfH4Xz0/ybD+6Mh5qpYnsrjRBMLjF/WzBm5XZI8Ut3irY+
-   iTfOTT4hhVtrJgaOvzIjyyVrF4FSc06tJ116vfcEs9C1wLmXh42dTutB0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="376979009"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="376979009"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:24:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736753877"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="736753877"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 05:23:59 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
-Subject: [PATCH v3 0/2] PCI: altera: add support to agilex family
-Date:   Mon, 11 Sep 2023 17:54:33 +0530
-Message-Id: <20230911122435.1774301-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 08:26:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD01A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:26:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2352C433C8;
+        Mon, 11 Sep 2023 12:26:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694435175;
+        bh=e0zrDg0KO3B5/KtujlA1/eFIJ9q/fV/U0oZsXyESjdQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=al/AQL/ZcLq5uzoUOQnsfyIWd+og8Z5xF0+Rqp3t1NfcVoXzOsaUQy0drR5+LPbMl
+         VGfeqmXorvkClAFKKtvRmfcofgS8JZDa/UySlLdA1oGjIeDknp5Jr79xmblDrzGZMe
+         ZJHiPe4fPKcHe0u08camxy42KsF4OXzHvNpDWQjhixdDQdk9eTpfaldHO6cmhmrKW/
+         rDitt4wEIBxLi860Km4ZZIze7OKynbtWQqUUp10KyZxPbFg2ZHOkgJXG6bQS3Trycj
+         V3Z6AsKCS0oX8bJHXfZ+PSXOA1pabg209ZYZ1LVXTcC1JODa8yx8LTx9x5A2jGws2m
+         Pcld3Fvstf44g==
+From:   Christian Brauner <brauner@kernel.org>
+To:     axboe@kernel.dk, akpm@linux-foundation.org,
+        Jianyong Wu <jianyong.wu@arm.com>
+Cc:     Christian Brauner <brauner@kernel.org>, loic.poulain@linaro.org,
+        wsa+renesas@sang-engineering.com, linux-kernel@vger.kernel.org,
+        justin.he@arm.com
+Subject: Re: [PATCH] init/mount: print pretty name of root device when panics
+Date:   Mon, 11 Sep 2023 14:26:08 +0200
+Message-Id: <20230911-unentbehrlich-ungunsten-1909304b2f91@brauner>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230908195242.GA304243@bhelgaas>
-References: <20230908195242.GA304243@bhelgaas>
+In-Reply-To: <20230907091025.3436878-1-jianyong.wu@arm.com>
+References: <20230907091025.3436878-1-jianyong.wu@arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1167; i=brauner@kernel.org; h=from:subject:message-id; bh=e0zrDg0KO3B5/KtujlA1/eFIJ9q/fV/U0oZsXyESjdQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT8Z/f9pe9w6N+jLV7dIfe2txau+xS/7lPboxzG1zaO+/RE vefmd5SyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAExEey3D/5oJuhn9l6vqTsX7HGsJuH z8S1pdHrdqZQqfjNi3F188VBj+aewoOh/LxTXXbb9lnuprtpdnXq6cuSVzq8wcu4885+7xMwEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,40 +54,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+On Thu, 07 Sep 2023 09:10:25 +0000, Jianyong Wu wrote:
+> Given a wrong root device, current log may not give the pretty name
+> which is useful to locate root cause.
+> 
+> For example, there are 2 blk devs in a VM, /dev/vda which has 2 partitials
+> /dev/vda1 and /dev/vda2 and /dev/vdb which is blank. /dev/vda2 is the
+> right root dev. When set "root=/dev/vdb", we get error log:
+> 
+> [...]
 
-added new callback for
-1) read,write to root port configuration registers
-2) read,write to endpoint configuration registers
-3) root port interrupt handler
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-agilex and newer platforms need to implemant the callback and generic root 
-port driver should work ( without much changes ) , legacy platforms (arria
- and startix) implement configuration read,write directly in wrapper 
-api _altera_pcie_cfg_read/_altera_pcie_cfg_write
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-changelog v2:
-saperated into two patches
-1.refactored the driver for easily portability to future Altera FPGA
-platforms
-2.added support for "Agilex" FPGA
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-this driver supports PCI RP IP on Agilex FPGA, as these are FPGA its up
-to the user to add PCI RP or not ( as per his needs). we are not adding
-the device tree as part of this commit. we are expecting the add device
-tree changes only if he is adding PCI RP IP in his design
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-changelog v3:
-incorporate review comments from Bjorn Helgaas
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
-
-D M Sharath Kumar (2):
-  PCI: altera: refactor driver for supporting new platforms
-  PCI: altera: add support for agilex family fpga
-
- drivers/pci/controller/pcie-altera.c | 305 ++++++++++++++++++++++++---
- 1 file changed, 275 insertions(+), 30 deletions(-)
-
--- 
-2.34.1
-
+[1/1] init/mount: print pretty name of root device when panics
+      https://git.kernel.org/vfs/vfs/c/fae8adf5208d
