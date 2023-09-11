@@ -2,133 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730E779A0F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 03:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA16179A0F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 03:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbjIKBSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 21:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S232222AbjIKBY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 21:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbjIKBSu (ORCPT
+        with ESMTP id S231544AbjIKBYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 21:18:50 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2E4E65
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 18:18:34 -0700 (PDT)
-X-UUID: 1d60a61e504111ee8051498923ad61e6-20230911
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=im0q8ClCjXD2mvVerYz5I3/8z9Q0AW/ovNXXUp9V+iY=;
-        b=XFrx3yOU2YRryg3Ovz2IveZUrsgtW9oD+cXJwS6OjpghnNgPq0mXVtAFodFEzQwUomZSxav53upWZWxJqm5RkVQ2e3VA/Mqgd/JA2Ne+VHKRJUZ9I1JpFEvqDhqY8gWoME4lOI63ds2LOeZ0Kx9yckB/4JU3lk4LiwYfPYgvWJ8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:fbcc377f-84bc-4949-929a-dbe87507d299,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:a311ddc2-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 1d60a61e504111ee8051498923ad61e6-20230911
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 80653923; Mon, 11 Sep 2023 09:18:29 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.186) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 11 Sep 2023 09:18:27 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 11 Sep 2023 09:18:26 +0800
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <iommu@lists.linux.dev>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <anan.sun@mediatek.com>,
-        <yf.wang@mediatek.com>, <mingyuan.ma@mediatek.com>,
-        "T . J . Mercier" <tjmercier@google.com>
-Subject: [PATCH 4/4] iommu/mediatek: mt8188: Enable secure bank for MM IOMMU
-Date:   Mon, 11 Sep 2023 09:17:51 +0800
-Message-ID: <20230911011751.29906-5-yong.wu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230911011751.29906-1-yong.wu@mediatek.com>
-References: <20230911011751.29906-1-yong.wu@mediatek.com>
+        Sun, 10 Sep 2023 21:24:25 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B9A120;
+        Sun, 10 Sep 2023 18:24:18 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B0wMWN011370;
+        Mon, 11 Sep 2023 01:23:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=jjUp8svKQlfJPyCMt/gckYHXgUZ34QmZOAlOxqoLL7o=;
+ b=c1suQyKqujR++c91fk6vTBEsXAhn5SFW9K0bCDcXKpngUv7UVvrcRkyhirKf3dbCFM35
+ AvVJbxaag0heehYA3eJkwgjou18TIRUvvpx9e18qA8ZhyMdPEUsjzghfbFAbfhaHsfix
+ nvOx7IBQxgBCDq2JcGB4gUI4kfynwV1VKU4Ski+ZkkefVJnvc5mCSqWYU+E1asttaq/o
+ mQHTeINsbNN6BbvppBVlrpov0b2Gnr7TWfEinvZdzVNuHjVN1dyjfpCN1kRdC3xru0vS
+ vyA++LnCXTQdPbdVvBsIbE/ncyPA/sQkQ6KCX92vxUDctW5I2LwPeQz6INgl7oZRTbKH Ww== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0g1rjaa1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 01:23:42 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38B1NfKx002105
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Sep 2023 01:23:41 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 10 Sep
+ 2023 18:23:32 -0700
+Message-ID: <3b27680b-f34f-49c6-bb74-0146c3ca2484@quicinc.com>
+Date:   Mon, 11 Sep 2023 09:23:30 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] pinctrl: qcom: Add SM4450 pinctrl driver
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <linus.walleij@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <arnd@arndb.de>, <geert+renesas@glider.be>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_tdas@quicinc.com>, <quic_tingweiz@quicinc.com>,
+        <quic_aiquny@quicinc.com>, <kernel@quicinc.com>
+References: <20230908063843.26835-1-quic_tengfan@quicinc.com>
+ <20230908063843.26835-3-quic_tengfan@quicinc.com>
+ <d0d6825a-97f7-405b-910e-772100c325a9@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <d0d6825a-97f7-405b-910e-772100c325a9@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--4.598800-8.000000
-X-TMASE-MatchedRID: B3Nm01t+RNhCFB88XbRv2bEKX02srTXIecN1rDssvvDfUZT83lbkEN6M
-        yUV+2+DZGlJMOm/5VnDPKWCeeNrZI1xxDx5qbkR9FEUknJ/kEl4YSQiB0ZTudfoLR4+zsDTt+GY
-        UedkXNWqL/HZHDiyt++LzVTV0D0HpQEFsbYa5mcq99t6fBcMggP3DHWJiJx+xOZ4YLhUX84hl1c
-        /Yz0rsldD5p8F+rstIdazI6Mv0D0LyNp7g4PXe0BXsxz6ujBxUq1f8XSkHBUmNJXmEMVvLtmcjF
-        nImzvyS
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--4.598800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: A88BD7686A6A1EF7415F10E6A74A8CDC5FA3F3BCB510FDC2C554BB6F39BEFA0D2000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MQPRpea4FhPqSGx_7no7CEpX0ubg0tew
+X-Proofpoint-ORIG-GUID: MQPRpea4FhPqSGx_7no7CEpX0ubg0tew
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-10_18,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015
+ phishscore=0 spamscore=0 mlxlogscore=880 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309110010
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable secure bank for MT8188 VDO IOMMU and VPP IOMMU to support
-secure video path (SVP) feature. The last bank is the secure bank.
 
-Signed-off-by: Yong Wu <yong.wu@mediatek.com>
----
- drivers/iommu/mtk_iommu.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 24d7f5138f7b..f17046157c79 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -1667,11 +1667,11 @@ static const struct mtk_iommu_plat_data mt8188_data_vdo = {
- 	.m4u_plat       = M4U_MT8188,
- 	.flags          = HAS_BCLK | HAS_SUB_COMM_3BITS | OUT_ORDER_WR_EN |
- 			  WR_THROT_EN | IOVA_34_EN | SHARE_PGTABLE |
--			  PGTABLE_PA_35_EN | MTK_IOMMU_TYPE_MM,
-+			  PGTABLE_PA_35_EN | MTK_IOMMU_TYPE_MM | SECURE_BANK_ENABLE,
- 	.hw_list        = &m4ulist,
- 	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
--	.banks_num      = 1,
--	.banks_enable   = {true},
-+	.banks_num      = 5,
-+	.banks_enable   = {true, false, false, false, true},
- 	.iova_region    = mt8192_multi_dom,
- 	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom),
- 	.iova_region_larb_msk = mt8188_larb_region_msk,
-@@ -1684,11 +1684,11 @@ static const struct mtk_iommu_plat_data mt8188_data_vpp = {
- 	.m4u_plat       = M4U_MT8188,
- 	.flags          = HAS_BCLK | HAS_SUB_COMM_3BITS | OUT_ORDER_WR_EN |
- 			  WR_THROT_EN | IOVA_34_EN | SHARE_PGTABLE |
--			  PGTABLE_PA_35_EN | MTK_IOMMU_TYPE_MM,
-+			  PGTABLE_PA_35_EN | MTK_IOMMU_TYPE_MM | SECURE_BANK_ENABLE,
- 	.hw_list        = &m4ulist,
- 	.inv_sel_reg    = REG_MMU_INV_SEL_GEN2,
--	.banks_num      = 1,
--	.banks_enable   = {true},
-+	.banks_num      = 5,
-+	.banks_enable   = {true, false, false, false, true},
- 	.iova_region    = mt8192_multi_dom,
- 	.iova_region_nr = ARRAY_SIZE(mt8192_multi_dom),
- 	.iova_region_larb_msk = mt8188_larb_region_msk,
+在 9/8/2023 4:45 PM, Konrad Dybcio 写道:
+> On 8.09.2023 08:38, Tengfei Fan wrote:
+>> Add pinctrl driver for TLMM block found in SM4450 SoC.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+> [...]
+> 
+>> +/* Every pin is maintained as a single group, and missing or non-existing pin
+> /*
+>   * Every pin
+> 
+>> + * would be maintained as dummy group to synchronize pin group index with
+>> + * pin descriptor registered with pinctrl core.
+>> + * Clients would not be able to request these dummy pin groups.
+>> + */
+> [...]
+> 
+>> +static const int sm4450_acpi_reserved_gpios[] = {
+>> +	0, 1, 2, 3, 136, -1
+>> +};
+> Are you ever going to boot with ACPI on this platform?
+> 
+> Why reserve UFS_RESET?
+> 
+> Why are 0-3 reserved? FP reader? Please leave a comment. Or
+> delete this.
+> 
+> Konrad
+Thanks Konrad reviewed this patch, will do more test and disscuss about 
+this reserve gpio setting, and will remove this in next patch if possible.
+
 -- 
-2.25.1
-
+Thx and BRs,
+Tengfei Fan
