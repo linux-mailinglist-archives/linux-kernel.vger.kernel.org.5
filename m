@@ -2,171 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676C579C3E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9EF79C369
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242422AbjILDR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
+        id S240944AbjILC5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242374AbjILDRL (ORCPT
+        with ESMTP id S240885AbjILC5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:17:11 -0400
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E6813EDEB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:08:46 -0700 (PDT)
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-41501ffb771so24494701cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694477198; x=1695081998; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e9FHti0UeaT45a62FC88dUwVtXoyU66QnGu8MY083Gc=;
-        b=n7LVDPTy8UPzGF4v+yA5z2PZL/BvqnAYfaj/hP6QJ0KF4rLTfXqknIBBWlPQxJKuNM
-         c3fQAY32AwKuGfEEmE5HMrMpgBv2efw4ksbWe+PUyINlrgdMF8fiXApmLOdt0wQ1Y1Lo
-         8sJH6DwujBd6u7P7c7H/4bYAEvy+3w1hWDzbeNkFP7jUCc6CHl5rSjsr1ZSwrsZKnKNS
-         he6Yvcp5AoyPySfLBJ/yDXuKgwL5emNpa+thD7hK/0splE++6oUhnTUJ7mfNm0IE1FrY
-         oUwtylv82Ffe8S1Nm0fYpr9KD3Dv+xAopNwBq6M1B4/6bLRrhYwSIr9tOghmCX477i6S
-         O53Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694477198; x=1695081998;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e9FHti0UeaT45a62FC88dUwVtXoyU66QnGu8MY083Gc=;
-        b=Y6GK9Ie4YTUMUaRJga0yAQB9gd4qgdem4nvI6IBNwJ/uMVBhbkpLr855khOrEw0Lx1
-         25m7UlCNS1dRpLQXFZniraaJuf/qMb+vRBY31ib8yTAidGTdk1MvmvuMTsyCce17Og2L
-         TTF1OII2M2Qe/imLmJ6vkYxunQUVMz8038V0OCSgSj6Uhp19MGIroc1P82Ng2fOwyQxr
-         PysADDhOdLKqLUcxMWUq1kBVSV5E4RzjYq5A8fb5Q86qzbDMJW+RRXjyGn0ppzUKaCR+
-         +Uu41bfDDEp1WxB/BCnH3DB/Bm4AChGLmzC/9UxySCTddtzJXaec9jbpQyiYUlR3yUBR
-         WIAw==
-X-Gm-Message-State: AOJu0YxQLa/j1qBKqKTCaovFSFILlOfXolpgzT6H0vs3mGQgwETLfuZE
-        A7P8qwbqhCwzkfJTtv7vCDsYugd2swbCprQU0B6jQG1G7Fb5jXUL8SnncQ==
-X-Google-Smtp-Source: AGHT+IGFOM/4w9EDJt7MB2VEaaVKgVLAWXiT0CbJ/s1mQvZfpoxvSUlNkizqXQqtn0mkteVDRyeHoSWnwX1ZfV5oYr4=
-X-Received: by 2002:a25:ce03:0:b0:d09:f934:f2fe with SMTP id
- x3-20020a25ce03000000b00d09f934f2femr9212180ybe.18.1694476292641; Mon, 11 Sep
- 2023 16:51:32 -0700 (PDT)
+        Mon, 11 Sep 2023 22:57:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7CD8687;
+        Mon, 11 Sep 2023 19:27:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85B6DC116D3;
+        Mon, 11 Sep 2023 23:51:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694476309;
+        bh=O51TPHPv0vx9Va2ahIAKgXHju3NJ2XLpNP3C/snr7LI=;
+        h=From:Date:Subject:To:Cc:From;
+        b=X4DmisIv6DcHzbP3vH5WlTFYs1wN8/p5DZnPcRWp/5s5FRFNUNTAyHNzT8mwNgzdd
+         p2C8M+GIzcqnbNBrI/GCohmuPkkvEBSxtFQqjj+sPkAs66hTzu3saLBZgay7HqheNn
+         7oQRuiHaMxJgSRJW/cwLylCnQDTu5/5Zcr+wBp+zG6Vorv+tjEk5xzcea6x7mUDhsb
+         pp3whpY1kemWx0icdosrGg9RmxMKFmGK1CQVHzupxuDmfUGZTM6zRI8yR2Z1bPdDvw
+         LxKe16n8GvCQ/M6/ydCmoZiM1O6gt+9ok9wiYk1/gsEUq59OBo9y/SFZf1qCBrKbnQ
+         GtRMKLqAV5DZQ==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Tue, 12 Sep 2023 00:51:31 +0100
+Subject: [PATCH v2] thermal/drivers/sun8i: Don't fail probe due to zone
+ registration failure
 MIME-Version: 1.0
-References: <20230911023038.30649-1-yong.wu@mediatek.com> <20230911023038.30649-2-yong.wu@mediatek.com>
- <46532644-a38b-98d5-13a1-8b51b9276a1d@amd.com>
-In-Reply-To: <46532644-a38b-98d5-13a1-8b51b9276a1d@amd.com>
-From:   "T.J. Mercier" <tjmercier@google.com>
-Date:   Mon, 11 Sep 2023 16:51:20 -0700
-Message-ID: <CABdmKX0-x53hjkKeSw1oDu2yFTKEXc1z_TFg0EMyWF2aBNbk2w@mail.gmail.com>
-Subject: Re: [PATCH 1/9] dma-buf: heaps: Deduplicate docs and adopt common format
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
-        kuohong.wang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230912-thermal-sun8i-registration-v2-1-077230107768@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAAKo/2QC/42NQQ6CMBBFr0Jm7ZiWqqAr72FYlDLARGzNFImG9
+ O5WTuDy/fz//gqRhCnCpVhBaOHIwWcodwW40fqBkLvMUKrSqErXOI8kDzthfPmaUWjgOIud8wy
+ 73lhtTs7Z3kIWPIV6fm/yW5N5zNUgn+1r0b/0L+2iUaM7H1vdqkqZg7reSTxN+yADNCmlL+0zn
+ lDFAAAA
+To:     Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     Hugh Dickins <hughd@google.com>, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2897; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=O51TPHPv0vx9Va2ahIAKgXHju3NJ2XLpNP3C/snr7LI=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBk/6gQEtpSKlDmTGduA8wY6QsbTwt1arXoB0wF0
+ 79/7Zyn05uJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZP+oEAAKCRAk1otyXVSH
+ 0BaVB/9WtYVIg1ZP3KyPiDQfBXZ3V7+rCO9TPW4BwQY/t5SItapzsT/Bex46sy1RyRGkRGjgIX9
+ rPl9HJ39X+fPoSnQgejUs87LZ9UdvNrop3BedW5GWdZ/HS5Apu2mc7P8T07j6Gc6zEJhdCR8SeE
+ kzC01H5zRq3swmUNuXm8fsm3pnaCjzob36wCl2l6DkPdJ/OrfqGUkT0gBNZdYnqbAq3WuOHteLE
+ uaA4gMphJbUCGZuIvn4uZtDMXBjc7FWLsxQJMP7z7DNMJGrXpKu5kce46Vxe/PITSvHo4dBvr2X
+ LEvJ/rRe0cDZiLipBNQ9YypCoJx9G1bII625iu3ut+zL8llZ
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 2:36=E2=80=AFAM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> m 11.09.23 um 04:30 schrieb Yong Wu:
-> > From: "T.J. Mercier" <tjmercier@google.com>
-> >
-> > The docs for dma_heap_get_name were incorrect, and since they were
-> > duplicated in the implementation file they were wrong there too.
-> >
-> > The docs formatting was inconsistent so I tried to make it more
-> > consistent across functions since I'm already in here doing cleanup.
-> >
-> > Remove multiple unused includes.
-> >
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > [Yong: Just add a comment for "priv" to mute build warning]
-> > ---
-> >   drivers/dma-buf/dma-heap.c | 29 +++++++----------------------
-> >   include/linux/dma-heap.h   | 11 +++++------
-> >   2 files changed, 12 insertions(+), 28 deletions(-)
-> >
-> > diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
-> > index 84ae708fafe7..51030f6c9d6e 100644
-> > --- a/drivers/dma-buf/dma-heap.c
-> > +++ b/drivers/dma-buf/dma-heap.c
-> > @@ -7,17 +7,15 @@
-> >    */
-> >
-> >   #include <linux/cdev.h>
-> > -#include <linux/debugfs.h>
-> >   #include <linux/device.h>
-> >   #include <linux/dma-buf.h>
-> > +#include <linux/dma-heap.h>
-> >   #include <linux/err.h>
-> > -#include <linux/xarray.h>
-> >   #include <linux/list.h>
-> > -#include <linux/slab.h>
-> >   #include <linux/nospec.h>
-> > -#include <linux/uaccess.h>
-> >   #include <linux/syscalls.h>
-> > -#include <linux/dma-heap.h>
-> > +#include <linux/uaccess.h>
-> > +#include <linux/xarray.h>
-> >   #include <uapi/linux/dma-heap.h>
-> >
-> >   #define DEVNAME "dma_heap"
-> > @@ -28,9 +26,10 @@
-> >    * struct dma_heap - represents a dmabuf heap in the system
-> >    * @name:           used for debugging/device-node name
-> >    * @ops:            ops struct for this heap
-> > - * @heap_devt                heap device node
-> > - * @list             list head connecting to list of heaps
-> > - * @heap_cdev                heap char device
-> > + * @priv:            private data for this heap
-> > + * @heap_devt:               heap device node
-> > + * @list:            list head connecting to list of heaps
-> > + * @heap_cdev:               heap char device
-> >    *
-> >    * Represents a heap of memory from which buffers can be made.
-> >    */
-> > @@ -192,25 +191,11 @@ static const struct file_operations dma_heap_fops=
- =3D {
-> >   #endif
-> >   };
-> >
-> > -/**
-> > - * dma_heap_get_drvdata() - get per-subdriver data for the heap
-> > - * @heap: DMA-Heap to retrieve private data for
-> > - *
-> > - * Returns:
-> > - * The per-subdriver data for the heap.
-> > - */
->
-> Kernel documentation is usually kept on the implementation and not the
-> definition.
->
-> So I strongly suggest to remove the documentation from the header
-> instead and if there is any additional information in there add it here.
->
-> Regards,
-> Christian.
->
-Ok thanks for looking. I'll move all the function docs over to the
-implementation.
+Currently the sun8i thermal driver will fail to probe if any of the
+thermal zones it is registering fails to register with the thermal core.
+Since we currently do not define any trip points for the GPU thermal
+zones on at least A64 or H5 this means that we have no thermal support
+on these platforms:
+
+[    1.698703] thermal_sys: Failed to find 'trips' node
+[    1.698707] thermal_sys: Failed to find trip points for thermal-sensor id=1
+
+even though the main CPU thermal zone on both SoCs is fully configured.
+This does not seem ideal, while we may not be able to use all the zones
+it seems better to have those zones which are usable be operational.
+Instead just carry on registering zones if we get any non-deferral
+error, allowing use of those zones which are usable.
+
+This means that we also need to update the interrupt handler to not
+attempt to notify the core for events on zones which we have not
+registered, I didn't see an ability to mask individual interrupts and
+I would expect that interrupts would still be indicated in the ISR even
+if they were masked.
+
+Reviewed-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v2:
+- Rebase onto v6.6-rc1.
+- Link to v1: https://lore.kernel.org/r/20230718-thermal-sun8i-registration-v1-1-c95b1b070340@kernel.org
+---
+ drivers/thermal/sun8i_thermal.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
+index f989b55a8aa8..14ff0346584b 100644
+--- a/drivers/thermal/sun8i_thermal.c
++++ b/drivers/thermal/sun8i_thermal.c
+@@ -188,6 +188,9 @@ static irqreturn_t sun8i_irq_thread(int irq, void *data)
+ 	int i;
+ 
+ 	for_each_set_bit(i, &irq_bitmap, tmdev->chip->sensor_num) {
++		/* We allow some zones to not register. */
++		if (IS_ERR(tmdev->sensor[i].tzd))
++			continue;
+ 		thermal_zone_device_update(tmdev->sensor[i].tzd,
+ 					   THERMAL_EVENT_UNSPECIFIED);
+ 	}
+@@ -465,8 +468,17 @@ static int sun8i_ths_register(struct ths_device *tmdev)
+ 						      i,
+ 						      &tmdev->sensor[i],
+ 						      &ths_ops);
+-		if (IS_ERR(tmdev->sensor[i].tzd))
+-			return PTR_ERR(tmdev->sensor[i].tzd);
++
++		/*
++		 * If an individual zone fails to register for reasons
++		 * other than probe deferral (eg, a bad DT) then carry
++		 * on, other zones might register successfully.
++		 */
++		if (IS_ERR(tmdev->sensor[i].tzd)) {
++			if (PTR_ERR(tmdev->sensor[i].tzd) == -EPROBE_DEFER)
++				return PTR_ERR(tmdev->sensor[i].tzd);
++			continue;
++		}
+ 
+ 		devm_thermal_add_hwmon_sysfs(tmdev->dev, tmdev->sensor[i].tzd);
+ 	}
+
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230718-thermal-sun8i-registration-df3a136ccafa
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
