@@ -2,142 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D127379B14C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1D579AFA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355284AbjIKV5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
+        id S1346089AbjIKVWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237519AbjIKMy7 (ORCPT
+        with ESMTP id S237530AbjIKM4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:54:59 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACD7E40
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:54:54 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2A53F66072FF;
-        Mon, 11 Sep 2023 13:54:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694436893;
-        bh=QWkSHpR8K721vmmxMD9TK8wJGU+63NpvmGFeXTTOPwE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mv5OMi5bt25CT2ddPuDj0Qjzqz28kZwewSvh+7nGmlt12nSCSC7M+0IwbVIo7O/ko
-         pUeBYcT2DPya/yx8Wkd2vJ7nRrNU/0DViz192vl5WaMTRa7VQZQ/x5juR+MnBQTGCR
-         AkEFjvIE1eVjPaYYfZh2363kX8LaHYV72vZffDFXomG0poH4dw8n5TxevwH3TMPQ48
-         7nOrULO3EBtXg0dCjYHpolp7bPZze8/oc2D5wKwYI9kazQXVMyCUXyTkQR6Fj5Ka5c
-         uRTZAD6y4Vs8M1SQmEheoaflwHgJ9UHBpfK29UMsHmwm1PdFljpkLtDWt2WXqp6xhy
-         TRs9t0c3GYk9w==
-Date:   Mon, 11 Sep 2023 14:54:50 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Message-ID: <20230911145450.54ad833c@collabora.com>
-In-Reply-To: <20230909153125.30032-7-dakr@redhat.com>
-References: <20230909153125.30032-1-dakr@redhat.com>
-        <20230909153125.30032-7-dakr@redhat.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 08:56:39 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48971CF0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:56:35 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-490e78ae83bso1607137e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:56:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694436994; x=1695041794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xkfaITpjzvoowVVfws6abpFf+2OELZsAD/wJz25EPkk=;
+        b=BqT1CXdK08i+zxeQsmuWeUwDX1+zvvX3SigN0N26Qqcouinq+d/W2ukdCylg9DRYwj
+         GVXL3tq7lGoDgTJuhv48CUEXskpwa24dWxiDrjpmXrABltM5PeKATRjKFtz8gW81PtLu
+         eTlBaML8h/yceBVSxZ3M7aehNoqlOXI6/V2WJ8A6GxMLeJQ/sSPCBcLK78pRR+SrzJ2O
+         Q2/XI4rkrl4N6W2FpBb8SEkyafQbr/zaMgOZT/OFwKZLarXU/5k77l5SPyGM3QF9HIeH
+         TmeTzo2Kz1jUmBxPmqlhfQ7PO/pqxsgf62TPHZdhz5iBJApt0YR43Ah3nKaX1gl4AQH7
+         bM4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694436994; x=1695041794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xkfaITpjzvoowVVfws6abpFf+2OELZsAD/wJz25EPkk=;
+        b=SNNik2RhKkQuDXuJOw4BCCsM1qwaSBxnLb8ql4nmH7c063J7QMQ0ZuGi9waJ0C7XW8
+         BVgwTaD+13u6uKPpvdQWM043wSPhqmF8EgujZiv+7JvowwiRCuwSXXfuwIc1aquyG+m9
+         5hjXqtlsfvCXz/EoNgIPCSFmEqWO9UAsIfRmmjac0HeIVScbMaYY/oYh9GVQSCx6RZ/A
+         R5HSGQp5zQgYb4gvFMCE4ANv3EjHVr5RyUOAaU2R0rNVLkZTOfC79u9p0YxX7wlp79ve
+         E7bwwwtCc8w2L3Ewcwvybh5YZ2beMT46mvJaW61rQRE1ezk+yGaz1fLSA6A6MK6qY6Qk
+         LRxQ==
+X-Gm-Message-State: AOJu0YxUro+a0ZZiUxeZv2cDCV2zK4tbuw8juv143ptJghjXYeLmQMEv
+        5aiZvtT+RKOaszHtEdej8KYK2OXghMK9I5ZHvviUbA==
+X-Google-Smtp-Source: AGHT+IHewLB3FfSioBycs718X0V3D3Aiy2lRD0SXx55qRkB6Sbz0u8Ef0VHW6xOiSEMCmY4pWDMF6vFkJSzeT/+Fe+k=
+X-Received: by 2002:a05:6122:2ab:b0:48f:c07e:433a with SMTP id
+ 11-20020a05612202ab00b0048fc07e433amr8172421vkq.11.1694436994319; Mon, 11 Sep
+ 2023 05:56:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230911110740.16284-1-brgl@bgdev.pl> <ZP8N4M6cqyP9rS3W@smile.fi.intel.com>
+In-Reply-To: <ZP8N4M6cqyP9rS3W@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 11 Sep 2023 14:56:23 +0200
+Message-ID: <CAMRc=Mf8zhmMaMSoO_cceG9meCHr1AbZMMRJE7Qms8qEt047Cg@mail.gmail.com>
+Subject: Re: [PATCH v5] gpio: sim: don't fiddle with GPIOLIB private members
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 Sep 2023 17:31:13 +0200
-Danilo Krummrich <dakr@redhat.com> wrote:
+On Mon, Sep 11, 2023 at 2:54=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Sep 11, 2023 at 01:07:40PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We access internals of struct gpio_device and struct gpio_desc because
+> > it's easier but it can actually be avoided and we're working towards a
+> > better encapsulation of GPIO data structures across the kernel so let's
+> > start at home.
+> >
+> > Instead of checking gpio_desc flags, let's just track the requests of
+> > GPIOs in the driver. We also already store the information about
+> > direction of simulated lines.
+> >
+> > For kobjects needed by sysfs callbacks: we can iterate over the childre=
+n
+> > devices of the top-level platform device and compare their fwnodes
+> > against the one passed to the init function from probe.
+> >
+> > While at it: fix one line break and remove the untrue part about
+> > configfs callbacks using dev_get_drvdata() from a comment.
+>
+> (Just wondering if you used --patience)
+>
 
-> +/**
-> + * get_next_vm_bo_from_list() - get the next vm_bo element
-> + * @__gpuvm: The GPU VM
-> + * @__list_name: The name of the list we're iterating on
-> + * @__local_list: A pointer to the local list used to store already iterated items
-> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
-> + *
-> + * This helper is here to provide lockless list iteration. Lockless as in, the
-> + * iterator releases the lock immediately after picking the first element from
-> + * the list, so list insertion deletion can happen concurrently.
-> + *
-> + * Elements popped from the original list are kept in a local list, so removal
-> + * and is_empty checks can still happen while we're iterating the list.
-> + */
-> +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, __prev_vm_bo)	\
-> +	({										\
-> +		struct drm_gpuvm_bo *__vm_bo;						\
+I may have forgotten this one time. I need to add an alias.
 
-Missing NULL assignment here.
+Bart
 
-> +											\
-> +		drm_gpuvm_bo_put(__prev_vm_bo);						\
-> +											\
-> +		spin_lock(&(__gpuvm)->__list_name.lock);				\
-> +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
-> +			__vm_bo = list_first_entry(&(__gpuvm)->__list_name.list,	\
-> +						   struct drm_gpuvm_bo,			\
-> +						   list.entry.__list_name);		\
-> +			if (drm_gpuvm_bo_get_unless_zero(__vm_bo)) {			\
-> +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
-> +					       __local_list);				\
-> +				break;							\
-> +			} else {							\
-> +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> +				__vm_bo = NULL;						\
-> +			}								\
-> +		}									\
-> +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> +											\
-> +		__vm_bo;								\
-> +	})
-> +
-> +/**
-> + * for_each_vm_bo_in_list() - internal vm_bo list iterator
-> + *
-> + * This helper is here to provide lockless list iteration. Lockless as in, the
-> + * iterator releases the lock immediately after picking the first element from the
-> + * list, so list insertion and deletion can happen concurrently.
-> + *
-> + * Typical use:
-> + *
-> + *	struct drm_gpuvm_bo *vm_bo;
-> + *	LIST_HEAD(my_local_list);
-> + *
-> + *	ret = 0;
-> + *	drm_gpuvm_for_each_vm_bo(gpuvm, <list_name>, &my_local_list, vm_bo) {
-> + *		ret = do_something_with_vm_bo(..., vm_bo);
-> + *		if (ret)
-> + *			break;
-> + *	}
-> + *	drm_gpuvm_bo_put(vm_bo);
-> + *	drm_gpuvm_restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
-
-Might be worth mentioning that the vm_bo pointer shouldn't be
-re-assigned from inside for loop, otherwise
-the next get_next_vm_bo_from_list() will be passed a wrong prev_vm_bo.
-
-> + *
-> + *
-> + * Only used for internal list iterations, not meant to be exposed to the outside
-> + * world.
-> + */
-> +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, __vm_bo)	\
-> +	for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> +						__local_list, NULL);		\
-> +	     __vm_bo;								\
-> +	     __vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> +						__local_list, __vm_bo))		\
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
