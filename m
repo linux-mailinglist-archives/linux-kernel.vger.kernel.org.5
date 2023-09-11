@@ -2,133 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB06B79ACD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A5B79AD33
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346117AbjIKVXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48816 "EHLO
+        id S1348141AbjIKVZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242983AbjIKQjS (ORCPT
+        with ESMTP id S242989AbjIKQkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:39:18 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C3504D3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:39:11 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-93-0C-wAUcbNBCmRkvM2PftBQ-1; Mon, 11 Sep 2023 17:38:59 +0100
-X-MC-Unique: 0C-wAUcbNBCmRkvM2PftBQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 11 Sep
- 2023 17:38:46 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 11 Sep 2023 17:38:46 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Vlastimil Babka' <vbabka@suse.cz>,
-        'Kees Cook' <keescook@chromium.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux-mm@kvack.org'" <linux-mm@kvack.org>,
-        'Christoph Lameter' <cl@linux.com>,
-        'Pekka Enberg' <penberg@kernel.org>,
-        'David Rientjes' <rientjes@google.com>,
-        'Joonsoo Kim' <iamjoonsoo.kim@lge.com>,
-        "'Andrew Morton'" <akpm@linux-foundation.org>,
-        'Eric Dumazet' <edumazet@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: RE: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Topic: Subject: [PATCH v2] slab: kmalloc_size_roundup() must not return
- 0 for non-zero size
-Thread-Index: Adnhh8rbtLpHk7QBQE+HpPR0NWDZ5gAMq8SAABymU5AApLGGAAACRmZQ///11gD//+uuIA==
-Date:   Mon, 11 Sep 2023 16:38:46 +0000
-Message-ID: <e12d3085c8b8414b837bfc737af0c9de@AcuMS.aculab.com>
-References: <4d31a2bf7eb544749023cf491c0eccc8@AcuMS.aculab.com>
- <202309071235.CB4F6B2@keescook>
- <20ca0a567a874052a1161e9be0870463@AcuMS.aculab.com>
- <e17c58a4-2dd8-4a1b-9feb-ab307e3877c2@suse.cz>
- <1bf41b7c8d7c428c8bfb5504ec9f680e@AcuMS.aculab.com>
- <1d634412-c0e5-4c16-92a4-447bde684ad6@suse.cz>
-In-Reply-To: <1d634412-c0e5-4c16-92a4-447bde684ad6@suse.cz>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Sep 2023 12:40:31 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCE5FD3;
+        Mon, 11 Sep 2023 09:40:25 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5657add1073so3098543a12.0;
+        Mon, 11 Sep 2023 09:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694450425; x=1695055225; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7dUHQDB4Hx3nVk2JA0BFztp/V0stKrR8xG6ZBM2hfeU=;
+        b=HIsBfoT5AAzUOsamF3QtCn7eQcOVUxpYT8pHhzwO0dFI5q2ib5/NxTlZtokp+6eVNq
+         +trZbvBHFvVBcDZS37J5bCL/m8rSFoOseCsVUQYlAxWHgd7KJMcJbAXh/RoNf4sziHsG
+         n0TV7jCTgXsJO01VjQXF5l2d53TmBieQYj5QgDm9kDUx5NkY2EG+03VY46ZewKrGESx7
+         9HOGpDu3b6ZpSYZyfqp53JXS0DmVvawByeZWwvFbcPWrnQGHhELxCL2TYddS8q6JIhTB
+         rt522JFTpf0H8U/uwx8A4aUFDDy3Us0QaCwsnBvsH6sSe5vd5WP39tBshCBnpG3LjPrg
+         OfoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694450425; x=1695055225;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7dUHQDB4Hx3nVk2JA0BFztp/V0stKrR8xG6ZBM2hfeU=;
+        b=E3OzgI9ssHhChRqpb4Bla71BSxcVnMDjUvhpVVkXM/+aMKE25emP6EEQ92nXbdOe2b
+         8OkRowEgH4Wc0++Pw8gjbbuohmrlLAe5TmmjqQLGKNglyVmCtuUkhYFZTvtiIH3lNd2F
+         vRtAjRLPFjLGGHx3hlz9koW0k7vwHtbJDPkezTrzSkMiMEXBCJjk7tJaA8wpDbYoj0iz
+         gQwwhnfgWG9zfK+8U7waPxqWZGJql3xwcKlqjB2s/hHSlmcQO0HslgG1wFfhwW3Is2BY
+         XxH+JTsN8mA1C6edgm4EpxgASjN0yJjD2TIFwIPYfx0mltU8ikJhAsF7AFuSc1BSOIC2
+         m8FA==
+X-Gm-Message-State: AOJu0YwG36sTAtWba5rT6/gUAxTmhQ2xEajYaB2Q2zaQ7s1FggH0HzRi
+        FV0+z6hG8G3vJi066mvj/vg=
+X-Google-Smtp-Source: AGHT+IH/zKG57DJyRWj53arZp0pE9/Mo0fA5xhe/Yh+pYSzhEr861yCpA92LlXhBwSEJ6QO9cu4qsA==
+X-Received: by 2002:a17:90b:118d:b0:268:2af6:e48c with SMTP id gk13-20020a17090b118d00b002682af6e48cmr173907pjb.4.1694450425086;
+        Mon, 11 Sep 2023 09:40:25 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-008.fbsv.net. [2a03:2880:ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 12-20020a17090a194c00b0026f90d7947csm6396955pjh.34.2023.09.11.09.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:40:24 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH 0/2] workload-specific and memory pressure-driven zswap writeback
+Date:   Mon, 11 Sep 2023 09:40:22 -0700
+Message-Id: <20230911164024.2541401-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogVmxhc3RpbWlsIEJhYmthDQo+IFNlbnQ6IDExIFNlcHRlbWJlciAyMDIzIDE3OjIzDQo+
-IA0KPiBPbiA5LzExLzIzIDE4OjEyLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogVmxh
-c3RpbWlsIEJhYmthDQo+ID4+IFNlbnQ6IDExIFNlcHRlbWJlciAyMDIzIDE2OjU0DQo+ID4+DQo+
-ID4+IE9uIDkvOC8yMyAxMDoyNiwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0KPiA+PiA+IEZyb206IEtl
-ZXMgQ29vaw0KPiA+PiA+PiBTZW50OiAwNyBTZXB0ZW1iZXIgMjAyMyAyMDozOA0KPiA+PiA+Pg0K
-PiA+PiA+PiBPbiBUaHUsIFNlcCAwNywgMjAyMyBhdCAxMjo0MjoyMFBNICswMDAwLCBEYXZpZCBM
-YWlnaHQgd3JvdGU6DQo+ID4+ID4+ID4gVGhlIHR5cGljYWwgdXNlIG9mIGttYWxsb2Nfc2l6ZV9y
-b3VuZHVwKCkgaXM6DQo+ID4+ID4+ID4gCXB0ciA9IGttYWxsb2Moc3ogPSBrbWFsbG9jX3NpemVf
-cm91bmR1cChzaXplKSwgLi4uKTsNCj4gPj4gPj4gPiAJaWYgKCFwdHIpIHJldHVybiAtRU5PTUVN
-Lg0KLi4uDQo+ID4+ID4+ID4gKwkJYyA9IGttYWxsb2Nfc2xhYihzaXplLCBHRlBfS0VSTkVMLCAw
-KTsNCj4gPj4gPj4gPiArCQlyZXR1cm4gbGlrZWx5KGMpID8gYy0+b2JqZWN0X3NpemUgOiBzaXpl
-Ow0KPiA+PiA+Pg0KPiA+PiA+PiBJIHdvdWxkIGxpa2UgdG8gaGF2ZSB0aGlzIGZhaWwgInNhZmUi
-LiBjIHNob3VsZCBuZXZlciBiZSBOVUxMIGhlcmUsIHNvDQo+ID4+ID4+IGxldCdzIHJldHVybiAi
-S01BTExPQ19NQVhfU0laRSArIDEiIHRvIGZvcmNlIGZhaWx1cmVzLg0KPiA+PiA+DQo+ID4+ID4g
-V2h5IGV2ZW4gdHJ5IHRvIGZvcmNlIGZhaWx1cmUgaGVyZT8NCj4gPj4gPiBUaGUgd2hvbGUgZnVu
-Y3Rpb24gaXMganVzdCBhbiBvcHRpbWlzYXRpb24gc28gdGhhdCB0aGUgY2FsbGVyDQo+ID4+ID4g
-Y2FuIHVzZSB0aGUgc3BhcmUgc3BhY2UuDQo+ID4+ID4NCj4gPj4gPiBUaGUgb25seSB0aGluZyBp
-dCBtdXN0bid0IGRvIGlzIHJldHVybiBhIHNtYWxsZXIgdmFsdWUuDQo+ID4+DQo+ID4+IElmICJj
-IiBpcyBOVUxMIGl0IG1lYW5zIGVpdGhlciB0aGUga2VybmVsIGJ1aWxkIG11c3QgYmUgYnJva2Vu
-IGUuZy4gYnkNCj4gPj4gc29tZWJvZHkgYnJlYWtpbmcgdGhlIEtNQUxMT0NfTUFYX0NBQ0hFX1NJ
-WkUgdmFsdWUsIGFuZCB3ZSBjb3VsZCBqdXN0IGlnbm9yZQ0KPiA+PiBjIGJlaW5nIE5VTEwgYW5k
-IGxldCBpdCBjcmFzaCBiZWNhdXNlIG9mIHRoYXQuDQo+ID4+IEJ1dCBJIHRoaW5rIGl0IGNhbiBh
-bHNvIGJlIE5VTEwgZHVlIHRvIHRyeWluZyB0byBjYWxsIGttYWxsb2Nfc2l6ZV9yb3VuZHVwKCkN
-Cj4gPj4gdG9vIGVhcmx5LCB3aGVuIGttYWxsb2NfY2FjaGVzIGFycmF5IGlzIG5vdCB5ZXQgcG9w
-dWxhdGVkLiBOb3RlIGlmIHdlIGNhbGwNCj4gPj4ga21hbGxvYygpIGl0c2VsZiB0b28gZWFybHks
-IHdlIGdldCBhIE5VTEwgYXMgYSByZXN1bHQsIEFGQUlDUy4gSSBjYW4gaW1hZ2luZQ0KPiA+PiB0
-d28gc2NlbmFyaW9zOg0KPiA+Pg0KPiA+PiAtIGttYWxsb2Nfc2l6ZV9yb3VuZHVwKCkgaXMgY2Fs
-bGVkIHdpdGggcmVzdWx0IGltbWVkaWF0ZWx5IGZlZCB0byBrbWFsbG9jKCkNCj4gPj4gdGhhdCBo
-YXBwZW5zIHRvbyBlYXJseSwgaW4gdGhhdCBjYXNlIHdlIGJlc3Qgc2hvdWxkIG5vdCBjcmFzaCBv
-biBjIGJlaW5nDQo+ID4+IE5VTEwgYW5kIG1ha2Ugc3VyZSB0aGUga21hbGxvYygpIHJldHVybnMg
-TlVMTC4NCj4gPj4gLSBrbWFsbG9jX3NpemVfcm91bmR1cCgpIGlzIGNhbGxlZCBpbiBzb21lIGlu
-aXQgY29kZSB0byBnZXQgYSB2YWx1ZSB0aGF0DQo+ID4+IHNvbWUgbGF0ZXIga21hbGxvYygpIGNh
-bGwgdXNlcy4gV2UgbWlnaHQgd2FudCBhbHNvIG5vdCBjcmFzaCBpbiB0aGF0IGNhc2UsDQo+ID4+
-IGJ1dCBpbmZvcm1pbmcgdGhlIGRldmVsb3BlciB0aGF0IHRoZXkgZGlkIHNvbWV0aGluZyB3cm9u
-ZyB3b3VsZCBiZSBhbHNvIHVzZWZ1bD8NCj4gPj4NCj4gPj4gQ2xlYXJseSByZXR1cm5pbmcgMCBp
-ZiBjID09IE5VTEwsIGFzIGRvbmUgY3VycmVudGx5LCBpcyB3cm9uZyBmb3IgYm90aA0KPiA+PiBz
-Y2VuYXJpb3MuIFJldHVuaW5nICJzaXplIiBpcyBPSyBmb3IgdGhlIGZpcnN0IHNjZW5hcmlvLCBh
-bHNvIHZhbGlkIGZvciB0aGUNCj4gPj4gc2Vjb25kIG9uZSwgYnV0IHRoZSBjYWxsZXIgd2lsbCBz
-aWxlbnRseSBsb3NlIHRoZSBiZW5lZml0IG9mDQo+ID4+IGttYWxsb2Nfc2l6ZV9yb3VuZHVwKCkg
-YW5kIHRoZSBkZXZlbG9wZXIgaW50cm9kdWNpbmcgdGhhdCB3b24ndCByZWFsaXplIGl0J3MNCj4g
-Pj4gZG9uZSB0b28gZWFybHkgYW5kIGNvdWxkIGJlIGZpeGVkLg0KPiA+DQo+ID4gSSdtIHN1cmUg
-dGhhdCB3b24ndCBtYXR0ZXIuDQo+IA0KPiBGb3IgdGhlIHBlcmZvcm1hbmNlLCBzdXJlLiBJdCBq
-dXN0IGZlZWxzIHNpbGx5IHRvIG1lIHRvIGhhdmUgYSBjb2RlIHRoYXQNCj4gbG9va3MgbGlrZSBp
-dCBkb2VzIHNvbWV0aGluZywgYnV0IHNpbGVudGx5IGRvZXNuJ3QuIExlYWRzIHRvIGNhcmdvIGN1
-bHQNCj4gY29weWluZyBpdCB0byBvdGhlciBwbGFjZXMgZXRjLg0KPiANCj4gPj4gU28gcGVyaGFw
-cyB0aGUgYmVzdCB3b3VsZCBiZSB0byByZXR1cm4gc2l6ZSBmb3IgYyA9PSBOVUxMLCBidXQgYWxz
-byBkbyBhDQo+ID4+IFdBUk5fT05DRT8NCj4gPg0KPiA+IFRoYXQgd291bGQgYWRkIGEgcmVhbCBm
-dW5jdGlvbiBjYWxsIHRvIGFuIG90aGVyd2lzZSBsZWFmIGZ1bmN0aW9uDQo+ID4gYW5kIGFsbW9z
-dCBjZXJ0YWlubHkgcmVxdWlyZSB0aGUgY29tcGlsZXIgY3JlYXRlIGEgc3RhY2sgZnJhbWUuDQo+
-IA0KPiBIbSBJIHRob3VnaHQgV0FSTiBpcyBkb25lIGJ5IHRyaXBwaW5nIG9uIHVuZGVmaW5lZCBp
-bnN0cnVjdGlvbiBsaWtlIEJVRw0KPiB0aGVzZSBkYXlzLiBBbHNvIGFueSBjb2RlIHRoYXQgYWNj
-ZXB0cyB0aGUgY2FsbCB0byBrbWFsbG9jX3NpemVfcm91bmR1cA0KPiBwcm9iYWJseSBjb3VsZCBh
-Y2NlcHQgdGhhdCB0b28uDQoNCkl0J3MgcHJvYmFibHkganVzdCB3b3J0aCByZW1vdmluZyB0aGUg
-YyA9PSBOVUxMIGNoZWNrIGFuZA0KYXNzdW1pbmcgdGhlcmUgd29uJ3QgYmUgYW55IGZhbGxvdXQu
-DQpUaGUgTlVMTCBwb2ludGVyIGRlcmVmIGlzIGFuIGVhc3kgdG8gZGVidWcgYXMgYW55dGhpbmcg
-ZWxzZS4NCg0KSWYgaXQgZ2V0cyBjYWxsZWQgaW4gYW55IGVhcmx5IGluaXQgY29kZSBpdCdsbCBz
-b29uIHNob3cgdXAuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUs
-IEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJl
-Z2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+There are currently several issues with zswap writeback:
 
+1. There is only a single global LRU for zswap. This makes it impossible
+   to perform worload-specific shrinking - an memcg under memory
+   pressure cannot determine which pages in the pool it owns, and often
+   ends up writing pages from other memcgs. This issue has been
+   previously observed in practice and mitigated by simply disabling
+   memcg-initiated shrinking:
+
+   https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+
+  But this solution leaves a lot to be desired, as we still do not have an
+  avenue for an memcg to free up its own memory locked up in zswap.
+
+2. We only shrink the zswap pool when the user-defined limit is hit.
+   This means that if we set the limit too high, cold data that are
+   unlikely to be used again will reside in the pool, wasting precious
+   memory. It is hard to predict how much zswap space will be needed
+   ahead of time, as this depends on the workload (specifically, on
+   factors such as memory access patterns and compressibility of the
+   memory pages).
+
+This patch series solves these issues by separating the global zswap
+LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+(i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+new shrinker does not have any parameter that must be tuned by the
+user, and can be opted in or out on a per-memcg basis.
+
+On a benchmark that we have run:
+
+(without the shrinker)
+real -- mean: 153.27s, median: 153.199s
+sys -- mean: 541.652s, median: 541.903s
+user -- mean: 4384.9673999999995s, median: 4385.471s
+
+(with the shrinker)
+real -- mean: 151.4956s, median: 151.456s
+sys -- mean: 461.14639999999997s, median: 465.656s
+user -- mean: 4384.7118s, median: 4384.675s
+
+We observed a 14-15% reduction in kernel CPU time, which translated to
+over 1% reduction in real time.
+
+On another benchmark, where there was a lot more cold memory residing in
+zswap, we observed even more pronounced gains:
+
+(without the shrinker)
+real -- mean: 157.52519999999998s, median: 157.281s
+sys -- mean: 769.3082s, median: 780.545s
+user -- mean: 4378.1622s, median: 4378.286s
+
+(with the shrinker)
+real -- mean: 152.9608s, median: 152.845s
+sys -- mean: 517.4446s, median: 506.749s
+user -- mean: 4387.694s, median: 4387.935s
+
+Here, we saw around 32-35% reduction in kernel CPU time, which
+translated to 2.8% reduction in real time. These results confirm our
+hypothesis that the shrinker is more helpful the more cold memory we
+have.
+
+Domenico Cerasuolo (1):
+  zswap: make shrinking memcg-aware
+
+Nhat Pham (1):
+  zswap: shrinks zswap pool based on memory pressure
+
+ Documentation/admin-guide/mm/zswap.rst |  12 +
+ include/linux/list_lru.h               |  39 +++
+ include/linux/memcontrol.h             |   1 +
+ include/linux/mmzone.h                 |  14 +
+ include/linux/zswap.h                  |   9 +
+ mm/list_lru.c                          |  46 ++-
+ mm/memcontrol.c                        |  33 +++
+ mm/swap_state.c                        |  50 +++-
+ mm/zswap.c                             | 369 ++++++++++++++++++++++---
+ 9 files changed, 518 insertions(+), 55 deletions(-)
+
+-- 
+2.34.1
