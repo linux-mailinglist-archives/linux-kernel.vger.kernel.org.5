@@ -2,286 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2236779AF1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA71F79B254
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235033AbjIKVFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
+        id S1348678AbjIKV3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238002AbjIKNbV (ORCPT
+        with ESMTP id S238022AbjIKNeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:31:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75206123;
-        Mon, 11 Sep 2023 06:31:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694439076; x=1725975076;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=DL7Ri55HLuRjCUT0ndnxqa8JuuFWN4G4UFHGVAeI0Zv5mEYq4lDAI30p
-   Cjx+9wrOVWy7j+mch9bIOzHWuEb01YeWBBTQ4E55XEoXRKlZwtd1TiTz3
-   IETzmdc0aW3S4zlIZbtEdrrVxbOFU8RwVSY1zLFKIg/21D1nsT6myPYhh
-   1YKSapsmhyAiHPd6TlX7MwX6oLKE6h4zlvVrR8H8ECWPf+Z6co4rciJMF
-   CuMQ6rW9ZeQ6rYjZUwVFuXy4sDD5JroJgJZpTG0Kcv7NlMR6lqauBEVOT
-   d7BYCP20Wras0yqm35T9infDp2Ie5Umxhme8yASesrHaYwW/1mYMddcyA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="409050038"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="409050038"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:31:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736771649"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="736771649"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 06:31:07 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, dinguyen@kernel.org,
-        D M Sharath Kumar <sharath.kumar.d.m@intel.com>
-Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 19:01:39 +0530
-Message-Id: <20230911133140.1776551-2-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911133140.1776551-1-sharath.kumar.d.m@intel.com>
-References: <20230906110918.1501376-1-sharath.kumar.d.m@intel.com>
- <20230911133140.1776551-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 09:34:23 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2CBCD7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:34:17 -0700 (PDT)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230911133415euoutp01773752e847dd4193442e3d654e45131d~D24Zi8EC02174021740euoutp01m
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:34:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230911133415euoutp01773752e847dd4193442e3d654e45131d~D24Zi8EC02174021740euoutp01m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694439255;
+        bh=2Tnd5geW05sUAKwPwLdNlu3ET1dwYUIDETcddL3bGaM=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=GGPmtVcb0lnzWV0Y7gExxFVr3iW7ipyKWFfvU2fs854p/pJUl4+jk96k6xqE+lJG5
+         QhlUzpRnVYvINhm9Z5Va+v2GwxWNKo2wmQoGfsB/bxuyTmvOuBomkJKUpVviCnUpf2
+         dze2n+GS0/Zd9vxTObbY7643pa/lZTLP3rPvk7UE=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230911133414eucas1p21199a978db8ab96180bab694b137c150~D24ZOarSc1713017130eucas1p2W;
+        Mon, 11 Sep 2023 13:34:14 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id F7.8E.11320.6571FF46; Mon, 11
+        Sep 2023 14:34:14 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230911133414eucas1p116d395f8219ea34c284aa21d46033fa6~D24Y49S6s1288212882eucas1p1o;
+        Mon, 11 Sep 2023 13:34:14 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230911133414eusmtrp1bf509f49c228e86ba4e998dd58583b61~D24Y4UOSX2520025200eusmtrp1J;
+        Mon, 11 Sep 2023 13:34:14 +0000 (GMT)
+X-AuditID: cbfec7f4-97dff70000022c38-6b-64ff1756f245
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id E5.5B.10549.6571FF46; Mon, 11
+        Sep 2023 14:34:14 +0100 (BST)
+Received: from AMDC4515.eu.corp.samsungelectronics.net (unknown
+        [106.120.51.28]) by eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20230911133413eusmtip1f098d0b8e9796317242ab2b0e35c32d0~D24YSgE5R1486914869eusmtip1X;
+        Mon, 11 Sep 2023 13:34:13 +0000 (GMT)
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Majewski <m.majewski2@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] arm64: dts: exynos: remove unused TMU alias
+Date:   Mon, 11 Sep 2023 15:33:39 +0200
+Message-ID: <20230911133342.14028-1-m.majewski2@samsung.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLKsWRmVeSWpSXmKPExsWy7djPc7ph4v9TDI51aVg8mLeNzWLN3nNM
+        FvOPnGO16HvxkNli0+NrrBaXd81hs5hxfh+TxcRjk5kt1h65y27RuvcIuwOXx6ZVnWwed67t
+        YfPYvKTeo2/LKkaPz5vkAlijuGxSUnMyy1KL9O0SuDIOvDvPWvCJtWLrvocsDYwfWboYOTkk
+        BEwktn27w9bFyMUhJLCCUeLP7vlMEM4XRonF+48xQjifGSW6Ds1gh2lZt/ohK0RiOaPEjIXP
+        2SGcViaJVYefgQ1mEzCQePBmGVhCRKCdUWLB3WfMIA6zQCeTxPuv01lBqoQFbCQWHd7HDGKz
+        CKhKLLj0nhHE5gWKH1zSzwixT17i+a077BBxQYmTM5+AbWAGijdvnQ02VEJgC4fEs+5FQA4H
+        kOMicXWZK0SvsMSr41ug7paROD25B+rtfIkZm9+zQJRXSNw96AVhWkt8PAM2hFlAU2L9Ln2I
+        YkeJU40NULP5JG68FYTYzycxadt0qDCvREebEES1qsTxPZOYIWxpiSctt5kgSjwkOj+6gYSF
+        BGIlGq73s0xgVJiF5KlZSJ6ahXDCAkbmVYziqaXFuempxUZ5qeV6xYm5xaV56XrJ+bmbGIEp
+        6PS/4192MC5/9VHvECMTB+MhRgkOZiUR3pJDf1OEeFMSK6tSi/Lji0pzUosPMUpzsCiJ82rb
+        nkwWEkhPLEnNTk0tSC2CyTJxcEo1MM084Hi4/9e8EG+D2L1efRPyop7VzWSpz3KaKywe/qRz
+        X3OD8vvVW9Y9m/n+RX6fePJNxV/KP46ZLz68M81y++ZdM2c/+rnYs2VT4pVb6y5fXcQWXWlY
+        yH7k97+SLRbue34tfynkodJ/1HLNmit9Ex/cFbqkcNT1g7XI+o0RB2dHqNVKTJdpNnwTO892
+        wiap2hyxb7xVidWXSh2idla56530unRiVmrOJiOW5r9uc511Ql+2sjwJsC+s5vx34I7rs0Z7
+        qyM9gcaPPxhVf0nw5X+9df3lraF/C9sO7f90Xc7j56yOPp3qo5018RUJWfWTSuq3/gktNGWQ
+        K4627uQtSq+9+/SdqiejGmPSHN6UfCWW4oxEQy3mouJEADmrYSWwAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsVy+t/xu7ph4v9TDB5cELR4MG8bm8WaveeY
+        LOYfOcdq0ffiIbPFpsfXWC0u75rDZjHj/D4mi4nHJjNbrD1yl92ide8Rdgcuj02rOtk87lzb
+        w+axeUm9R9+WVYwenzfJBbBG6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp
+        29mkpOZklqUW6dsl6GUceHeeteATa8XWfQ9ZGhg/snQxcnJICJhIrFv9kLWLkYtDSGApo8SM
+        RRcZIRLSEoe/TGGHsIUl/lzrYoMoamaS6JgzFaybTcBA4sGbZewgCRGBbkaJQzNvsYA4zALd
+        TBLdix+BjRIWsJFYdHgfM4jNIqAqseDSe7A4L1D84JJ+qHXyEs9v3WGHiAtKnJz5BGwDM1C8
+        eets5gmMfLOQpGYhSS1gZFrFKJJaWpybnltsqFecmFtcmpeul5yfu4kRGAXbjv3cvINx3quP
+        eocYmTgYDzFKcDArifCWHPqbIsSbklhZlVqUH19UmpNafIjRFOi+icxSosn5wDjMK4k3NDMw
+        NTQxszQwtTQzVhLn9SzoSBQSSE8sSc1OTS1ILYLpY+LglGpg0nYV/VRj3qrZnfFF5Pxel7nH
+        toSWpQtUbWmc/+gB49zlVZtUDtz89LEj2/6r+NEtr04tExS51253fdLaINUG0+9qM7KY+Jzl
+        t/WHLbqnrBY/f3q2f2Suh9vL+8cyL3j9iumTPjPhhICX2crbbiG3pvE15ckdcrv6zEvAbs4T
+        4/P1G8xWigq4SajO6il8fCZmm+6HTvO7IouPKXQoyn/ZfKRraX9xburM4O3bloSwKmX+1636
+        or6FrSm0Piju8sXIrRp2rWnTLXk8dqQ6W3J8bA8T0M3bXDUzlFH6Qt93i1lzpdcttD/2uVh4
+        t5R3Veu7A0cPdTh8DFvS+Ofyp2lz/eVMD6cGOi6/ulVaZtI5JZbijERDLeai4kQA17nomQsD
+        AAA=
+X-CMS-MailID: 20230911133414eucas1p116d395f8219ea34c284aa21d46033fa6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20230911133414eucas1p116d395f8219ea34c284aa21d46033fa6
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230911133414eucas1p116d395f8219ea34c284aa21d46033fa6
+References: <CGME20230911133414eucas1p116d395f8219ea34c284aa21d46033fa6@eucas1p1.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+The ID of this alias is checked by the exynos-tmu driver, but isn't used
+anywhere and omitting it does not cause an error. Indeed, this is the
+only Exynos device that defines this alias.
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
-
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
 ---
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 54ed5167d0f6..6ed80ddf3369 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -25,7 +25,6 @@ aliases {
+ 		pinctrl6 = &pinctrl_fsys0;
+ 		pinctrl7 = &pinctrl_fsys1;
+ 		pinctrl8 = &pinctrl_bus1;
+-		tmuctrl0 = &tmuctrl_0;
+ 	};
  
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
+ 	arm-pmu {
 -- 
-2.34.1
+2.41.0
 
