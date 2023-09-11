@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419BA79B73B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B09179C07B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357384AbjIKWF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        id S1355109AbjIKV4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235995AbjIKJsW (ORCPT
+        with ESMTP id S236022AbjIKJtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:48:22 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F9DE4E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:59 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1befe39630bso9366185ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:47:59 -0700 (PDT)
+        Mon, 11 Sep 2023 05:49:10 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127A7ED
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:48:48 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1befe39630bso9367075ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 02:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694425679; x=1695030479; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694425727; x=1695030527; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hBwbAk8n+4/KwMrK4IB+eTsyBHwRgi9e5IimtDnToKs=;
-        b=grxfq7WvsSoVHQNxPULxBS6QQSQl2lb0Y7fX+PN3c7TaFHTQ7mmNI5OlV5WQQKs7zs
-         ewKmM8JecqhYTs69yf9EfS0QavN/btWrM7c6uMSfLht7f1GeoeiN5BhjlfOUnY1tr4tJ
-         YZgrLGadJELJNp2umYJ56oJP9uJSW4Mx4Lb2lT0Q9fRny9nNJn7VYbbKrlj3ZcePTLXM
-         44lsfWsdHejTMlbDd/FLeT5yAtAfd+fO+0bbY0JMCL00pRtaZj+WwLn5xKx9WAaz21r0
-         3DOHnddKesPhvnUfdPkiCKoozx/cyfTvYprlzYaxrXCnfREmFj6sfCwJ7ugVajt1M6xP
-         RPuw==
+        bh=ruGIazUIgd5W3iD+fpVWztgrL7hXLBFpKRJYJNwmlEs=;
+        b=YiW+8KILgSoWru6b25H9K+NTkpIyom43BmVp1MF5DsETvby961PhVRWP42xPPIXl5r
+         vvVgcEwxC3PkTxeddhoZWEhUvCy6N9JKQQHHxetu8bDpt9CWI2te5uilZV/J9FHypaE9
+         b+tOaeVKF3qB6lrc/8/+9sOLvO7TQ6sdE/l4+qjvFWTBBcx3o30g4g/UzN5WiTMu3L+8
+         jelz3Qi8ox0ryVmV66FKymbPhge1GLTuvWrsOig4FeZOk5ZtuDBuU1VmHR2IKUkg7ImT
+         M2LHUoKBfTDm6rJwcb3+bbGY6ReXulGoc2K0f3Jzc96XQ4tKA4OSqSjh+WsvbsYLM12U
+         WmZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694425679; x=1695030479;
+        d=1e100.net; s=20230601; t=1694425727; x=1695030527;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hBwbAk8n+4/KwMrK4IB+eTsyBHwRgi9e5IimtDnToKs=;
-        b=RWHevDOILGKTQvaOijkcplQZ72YyjhiawkoHTzl2sUS/aVzKcft86Yn2AuvpGei5Gz
-         C48pAT4JaE+DAv8ddx34uHzpJQRjAr6hxK5FApMgP1qkvZ7tzm6kNGoSlPi3fwIuYdFI
-         0gL5RR3ts9PuKSQfXMJWXI4mx59V6I14q8znpE1LkURK9R5TZx75s8wIhimjsXoX0MD4
-         58uT1NObjMlU5DciwThoms4bsBr1xm0RZhBIngUIZ61L0/HkLOBzHkHeSuBnFhJfwzGJ
-         zfzreokvk5YiIyNImpCnnnteWkTcvzpWlq7u2jOyWT6a0ErfNKevVEKQ5ETWrlcAUDoi
-         NWsg==
-X-Gm-Message-State: AOJu0YyqjZwV5Dkw+mQHJGgHX/I8nYyzXznXnl0X+pkFfYsFiAYFq56l
-        rrfd0COmQym2rbHMrYV00DbJIg==
-X-Google-Smtp-Source: AGHT+IGdro6LiLO9vRH4IIg6fznBAneFLTeHoPfwnGVLVhVa7r8b9KXvi4A+Mo8zyY74vr4cIKuVLg==
-X-Received: by 2002:a17:902:e546:b0:1bb:9e6e:a9f3 with SMTP id n6-20020a170902e54600b001bb9e6ea9f3mr10988406plf.4.1694425678844;
-        Mon, 11 Sep 2023 02:47:58 -0700 (PDT)
+        bh=ruGIazUIgd5W3iD+fpVWztgrL7hXLBFpKRJYJNwmlEs=;
+        b=RecxRgjKsOXmuthbTF4dvk/uNQqsRVlxw+cH/8X8NBlg35GTh7dy2kdVaBXyni3NOq
+         h3AULHPUITDpZxWOmNYfqn7UqaWR+ZOnAPKQo4QGBwH3+kLNFWo8+sW03+JRINjxByaL
+         e0GdRXt0Z8pkbal2UQJuyY/CQK9/IG+AJFvJ80d7cWUbPg1nUAbGemj8Hpz6xiGH+tJJ
+         AkaWW8J4SHeycNf7f1U/KeOsHXpem6Mp4B2GP3Zp6eLIpWhbmfVzjtiZv4S4U3w4TTxu
+         zO+kEOwzNFGmWeIQVEa7erAgGatAlPrul68IQhWA4HZ6ss4ZEw/nvDZfSx8pBUKCzYaI
+         vQsQ==
+X-Gm-Message-State: AOJu0Yw+NpHCV3VUt+/YYGPAlQKPfGb33Aa9z4xkJ+YPk5S96jJAXwCT
+        Jp4+rqiB0br5v5DX4QDhWj3zAw==
+X-Google-Smtp-Source: AGHT+IGGBhJFk/SRU3E2zGlQ2j/g+CUjwQeV+kN/9j9QP3+HgtWpTi+Be+pjzGQyb1HeKYNZhEoDDA==
+X-Received: by 2002:a17:902:e849:b0:1b8:aded:524c with SMTP id t9-20020a170902e84900b001b8aded524cmr10985885plg.1.1694425727595;
+        Mon, 11 Sep 2023 02:48:47 -0700 (PDT)
 Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.47.51
+        by smtp.gmail.com with ESMTPSA id az7-20020a170902a58700b001bdc2fdcf7esm5988188plb.129.2023.09.11.02.48.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 02:47:58 -0700 (PDT)
+        Mon, 11 Sep 2023 02:48:47 -0700 (PDT)
 From:   Qi Zheng <zhengqi.arch@bytedance.com>
 To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
@@ -59,10 +59,13 @@ To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
         muchun.song@linux.dev
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v6 19/45] mm: workingset: dynamically allocate the mm-shadow shrinker
-Date:   Mon, 11 Sep 2023 17:44:18 +0800
-Message-Id: <20230911094444.68966-20-zhengqi.arch@bytedance.com>
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com
+Subject: [PATCH v6 24/45] dm zoned: dynamically allocate the dm-zoned-meta shrinker
+Date:   Mon, 11 Sep 2023 17:44:23 +0800
+Message-Id: <20230911094444.68966-25-zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 In-Reply-To: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
 References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
@@ -77,74 +80,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use new APIs to dynamically allocate the mm-shadow shrinker.
+In preparation for implementing lockless slab shrink, use new APIs to
+dynamically allocate the dm-zoned-meta shrinker, so that it can be freed
+asynchronously via RCU. Then it doesn't need to wait for RCU read-side
+critical section when releasing the struct dmz_metadata.
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+CC: Alasdair Kergon <agk@redhat.com>
+CC: Mike Snitzer <snitzer@kernel.org>
+CC: dm-devel@redhat.com
 ---
- mm/workingset.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ drivers/md/dm-zoned-metadata.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/mm/workingset.c b/mm/workingset.c
-index da58a26d0d4d..b192e44a0e7c 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -763,13 +763,6 @@ static unsigned long scan_shadow_nodes(struct shrinker *shrinker,
- 					NULL);
- }
+diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
+index 9d3cca8e3dc9..60a4dc01ea18 100644
+--- a/drivers/md/dm-zoned-metadata.c
++++ b/drivers/md/dm-zoned-metadata.c
+@@ -187,7 +187,7 @@ struct dmz_metadata {
+ 	struct rb_root		mblk_rbtree;
+ 	struct list_head	mblk_lru_list;
+ 	struct list_head	mblk_dirty_list;
+-	struct shrinker		mblk_shrinker;
++	struct shrinker		*mblk_shrinker;
  
--static struct shrinker workingset_shadow_shrinker = {
--	.count_objects = count_shadow_nodes,
--	.scan_objects = scan_shadow_nodes,
--	.seeks = 0, /* ->count reports only fully expendable nodes */
--	.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE,
--};
--
- /*
-  * Our list_lru->lock is IRQ-safe as it nests inside the IRQ-safe
-  * i_pages lock.
-@@ -778,9 +771,10 @@ static struct lock_class_key shadow_nodes_key;
- 
- static int __init workingset_init(void)
+ 	/* Zone allocation management */
+ 	struct mutex		map_lock;
+@@ -615,7 +615,7 @@ static unsigned long dmz_shrink_mblock_cache(struct dmz_metadata *zmd,
+ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+ 					       struct shrink_control *sc)
  {
-+	struct shrinker *workingset_shadow_shrinker;
- 	unsigned int timestamp_bits;
- 	unsigned int max_order;
--	int ret;
-+	int ret = -ENOMEM;
+-	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
++	struct dmz_metadata *zmd = shrink->private_data;
  
- 	BUILD_BUG_ON(BITS_PER_LONG < EVICTION_SHIFT);
- 	/*
-@@ -797,17 +791,26 @@ static int __init workingset_init(void)
- 	pr_info("workingset: timestamp_bits=%d max_order=%d bucket_order=%u\n",
- 	       timestamp_bits, max_order, bucket_order);
+ 	return atomic_read(&zmd->nr_mblks);
+ }
+@@ -626,7 +626,7 @@ static unsigned long dmz_mblock_shrinker_count(struct shrinker *shrink,
+ static unsigned long dmz_mblock_shrinker_scan(struct shrinker *shrink,
+ 					      struct shrink_control *sc)
+ {
+-	struct dmz_metadata *zmd = container_of(shrink, struct dmz_metadata, mblk_shrinker);
++	struct dmz_metadata *zmd = shrink->private_data;
+ 	unsigned long count;
  
--	ret = prealloc_shrinker(&workingset_shadow_shrinker, "mm-shadow");
--	if (ret)
-+	workingset_shadow_shrinker = shrinker_alloc(SHRINKER_NUMA_AWARE |
-+						    SHRINKER_MEMCG_AWARE,
-+						    "mm-shadow");
-+	if (!workingset_shadow_shrinker)
+ 	spin_lock(&zmd->mblk_lock);
+@@ -2936,19 +2936,23 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+ 	 */
+ 	zmd->min_nr_mblks = 2 + zmd->nr_map_blocks + zmd->zone_nr_bitmap_blocks * 16;
+ 	zmd->max_nr_mblks = zmd->min_nr_mblks + 512;
+-	zmd->mblk_shrinker.count_objects = dmz_mblock_shrinker_count;
+-	zmd->mblk_shrinker.scan_objects = dmz_mblock_shrinker_scan;
+-	zmd->mblk_shrinker.seeks = DEFAULT_SEEKS;
+ 
+ 	/* Metadata cache shrinker */
+-	ret = register_shrinker(&zmd->mblk_shrinker, "dm-zoned-meta:(%u:%u)",
+-				MAJOR(dev->bdev->bd_dev),
+-				MINOR(dev->bdev->bd_dev));
+-	if (ret) {
+-		dmz_zmd_err(zmd, "Register metadata cache shrinker failed");
++	zmd->mblk_shrinker = shrinker_alloc(0,  "dm-zoned-meta:(%u:%u)",
++					    MAJOR(dev->bdev->bd_dev),
++					    MINOR(dev->bdev->bd_dev));
++	if (!zmd->mblk_shrinker) {
++		ret = -ENOMEM;
++		dmz_zmd_err(zmd, "Allocate metadata cache shrinker failed");
  		goto err;
+ 	}
+ 
++	zmd->mblk_shrinker->count_objects = dmz_mblock_shrinker_count;
++	zmd->mblk_shrinker->scan_objects = dmz_mblock_shrinker_scan;
++	zmd->mblk_shrinker->private_data = zmd;
 +
- 	ret = __list_lru_init(&shadow_nodes, true, &shadow_nodes_key,
--			      &workingset_shadow_shrinker);
-+			      workingset_shadow_shrinker);
- 	if (ret)
- 		goto err_list_lru;
--	register_shrinker_prepared(&workingset_shadow_shrinker);
++	shrinker_register(zmd->mblk_shrinker);
 +
-+	workingset_shadow_shrinker->count_objects = count_shadow_nodes;
-+	workingset_shadow_shrinker->scan_objects = scan_shadow_nodes;
-+	/* ->count reports only fully expendable nodes */
-+	workingset_shadow_shrinker->seeks = 0;
-+
-+	shrinker_register(workingset_shadow_shrinker);
- 	return 0;
- err_list_lru:
--	free_prealloced_shrinker(&workingset_shadow_shrinker);
-+	shrinker_free(workingset_shadow_shrinker);
- err:
- 	return ret;
+ 	dmz_zmd_info(zmd, "DM-Zoned metadata version %d", zmd->sb_version);
+ 	for (i = 0; i < zmd->nr_devs; i++)
+ 		dmz_print_dev(zmd, i);
+@@ -2995,7 +2999,7 @@ int dmz_ctr_metadata(struct dmz_dev *dev, int num_dev,
+  */
+ void dmz_dtr_metadata(struct dmz_metadata *zmd)
+ {
+-	unregister_shrinker(&zmd->mblk_shrinker);
++	shrinker_free(zmd->mblk_shrinker);
+ 	dmz_cleanup_metadata(zmd);
+ 	kfree(zmd);
  }
 -- 
 2.30.2
