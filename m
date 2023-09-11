@@ -2,255 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06EA79BDA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACE679BBBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358056AbjIKWHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
+        id S1354384AbjIKVxi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 17:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242796AbjIKQUu (ORCPT
+        with ESMTP id S242824AbjIKQXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:20:50 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32841CC3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:20:45 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-760dff4b701so54214539f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:20:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1694449244; x=1695054044; darn=vger.kernel.org;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=LtrVyYntxriS8KdbRv4Ma1v0noE5M/v7Ijy9zhl0344=;
-        b=PEBA8+lnN0lFG7DE9+yN1aW9pCaeLr4vKJzxgBwyNN5tzq1ttqANZ1FUUNjhL9mXR+
-         PcJXk1tIRNeU30K96KFGOThz3aq6JFBcamHzGSxEWMMHQfs4f8XeTCEsnCHos0/Nx3WN
-         8h8BrFeBrTr+4gExwf7RIEnzi2fUMEzXhaSXI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694449244; x=1695054044;
-        h=subject:from:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LtrVyYntxriS8KdbRv4Ma1v0noE5M/v7Ijy9zhl0344=;
-        b=GrTIwDKZa7bAB05lhIRP2tgxFEyzIh77s9yu/lzoTRxUKPVKl+Urf2kYCFOh3vD/GO
-         O6hxXH9Skg6FYks7KAUkotJHIL2TtnKnwnUzpKnf1yLLsHE5Z6jR83QF3k7+3gb6C5o8
-         fFqw77ei/E4yrG0dRycj3QLhWpGdH8dEzu15gfMV9etpAkW5GsioP/XDkVZ1Tpl5u/03
-         afGowHTRT7JizVFzqAgWy5rRvWTuPDqec1eK/CYBC1MNQVAVN+UgEPuy9RmQk50Bo/yS
-         GRmdSVK9sc+4k83Jku+rKMPnhJY1M8AGHdBd+aLrHU9oAYER8QoH4TFVF/z/8F14q4E1
-         K3tA==
-X-Gm-Message-State: AOJu0YxgPVxUxjayd70WtGkpggZR9z82CORN+29zB0QJG+7kJaYP1b1q
-        6TmASrL1GeflRHDyIfE7f4XK2g==
-X-Google-Smtp-Source: AGHT+IFjqvSaWwr5wGb5V0K4enbHDaR40eM6CqvPeWlPuXYRrXMo2fMWqb3JHCxMzs6tvXM8Nxxe9Q==
-X-Received: by 2002:a05:6602:499b:b0:792:6dd8:a65f with SMTP id eg27-20020a056602499b00b007926dd8a65fmr11809954iob.0.1694449244519;
-        Mon, 11 Sep 2023 09:20:44 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id i3-20020a02c603000000b004302760aa6bsm2227996jan.4.2023.09.11.09.20.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 09:20:44 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------C4KDad23lRefsYFyjwqtZ0O8"
-Message-ID: <4928e6cd-f45e-20e9-08f6-acdb1281a2e6@linuxfoundation.org>
-Date:   Mon, 11 Sep 2023 10:20:43 -0600
+        Mon, 11 Sep 2023 12:23:07 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F3CCC3;
+        Mon, 11 Sep 2023 09:23:00 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RksMd0jFQz6J7xn;
+        Tue, 12 Sep 2023 00:18:21 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 11 Sep
+ 2023 17:22:57 +0100
+Date:   Mon, 11 Sep 2023 17:22:56 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Herve Codina <herve.codina@bootlin.com>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <robh@kernel.org>, <max.zhen@amd.com>, <sonal.santan@amd.com>,
+        <stefano.stabellini@xilinx.com>,
+        =?ISO-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
+Message-ID: <20230911172256.00002ee3@Huawei.com>
+In-Reply-To: <20230911164741.00003904@Huawei.com>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+        <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
+        <20230911154856.000076c3@Huawei.com>
+        <20230911173503.0db85e4b@bootlin.com>
+        <20230911164741.00003904@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] KUnit fixes update for Linux 6.6-rc2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------C4KDad23lRefsYFyjwqtZ0O8
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Mon, 11 Sep 2023 16:47:41 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
 
-Hi Linus,
+> On Mon, 11 Sep 2023 17:35:03 +0200
+> Herve Codina <herve.codina@bootlin.com> wrote:
+> 
+> > Hi Jonathan,
+> > 
+> > On Mon, 11 Sep 2023 15:48:56 +0100
+> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> >   
+> > > On Tue, 15 Aug 2023 10:19:57 -0700
+> > > Lizhi Hou <lizhi.hou@amd.com> wrote:
+> > >     
+> > > > The PCI endpoint device such as Xilinx Alveo PCI card maps the register
+> > > > spaces from multiple hardware peripherals to its PCI BAR. Normally,
+> > > > the PCI core discovers devices and BARs using the PCI enumeration process.
+> > > > There is no infrastructure to discover the hardware peripherals that are
+> > > > present in a PCI device, and which can be accessed through the PCI BARs.
+> > > > 
+> > > > Apparently, the device tree framework requires a device tree node for the
+> > > > PCI device. Thus, it can generate the device tree nodes for hardware
+> > > > peripherals underneath. Because PCI is self discoverable bus, there might
+> > > > not be a device tree node created for PCI devices. Furthermore, if the PCI
+> > > > device is hot pluggable, when it is plugged in, the device tree nodes for
+> > > > its parent bridges are required. Add support to generate device tree node
+> > > > for PCI bridges.
+> > > > 
+> > > > Add an of_pci_make_dev_node() interface that can be used to create device
+> > > > tree node for PCI devices.
+> > > > 
+> > > > Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
+> > > > the kernel will generate device tree nodes for PCI bridges unconditionally.
+> > > > 
+> > > > Initially, add the basic properties for the dynamically generated device
+> > > > tree nodes which include #address-cells, #size-cells, device_type,
+> > > > compatible, ranges, reg.
+> > > > 
+> > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>      
+> > > 
+> > > I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
+> > > machine.
+> > > 
+> > > There are some missing parts that were present in Clements series, but not this
+> > > one, particularly creation of the root pci object.
+> > > 
+> > > Anyhow, hit an intermittent crash...    
+> > 
+> > I am facing the same issues.
+> > 
+> > I use a custom PCIe board too but on x86 ACPI machine.
+> > 
+> > In order to have a working system, I need also to build a DT node for the PCI
+> > Host bridge (previously done by Clement's patch) and I am a bit stuck with
+> > interrupts.
+> > 
+> > On your side (ACPI machine) how do you handle this ?  
+> 
+> That was next on my list to look at now I've gotten the device tree stuff
+> to show up.
+> 
+> > I mean is your PCI host bridge provided by ACPI ? And if so, you probably need
+> > to build a DT node for this PCI host bridge and add some interrupt-map,
+> > interrupt-map-mask properties in the DT node.  
+> 
+> Agreed. Potentially some other stuff, but interrupts are the thing that
+> showed up first as an issue.
+> 
+> Given the only reason I'm looking at this is to potentially solve
+> a long term CXL / MCTP over I2C upstreaming problem on QEMU side, I've only
+> limited time to throw at this (thought it was a short activity
+> for a Friday afternoon :)  Will see if it turns out not too be
+> too hard to build the rest.
+> 
+> I can at least boot same system with device tree and check I'm matching
+> what is being generated by QEMU.
 
-Please pull the following KUnit fixes update for Linux 6.6-rc2.
+So, I'm not really sure how to approach this.  It seems 'unwise'/'unworkable' to
+instantiate the device tree blob for the interrupt controller we already have
+ACPI for and without that I have nothing to route to.
 
-This kunit update for Linux 6.6-rc2 consists of important fixes to
-possible memory leak, null-ptr-deref, wild-memory-access, and error
-path bugs.
+Or can we just ignore the interrupt map stuff completely and instead
+rely on instantiating an interrupt controller on the card (that under
+the hood uses non DT paths to make interrupts actually happen?)
 
-diff is attached.
+That path to me seems workable and keeps the boundary of ACPI vs DT
+actually getting used within the card specific driver.
 
-thanks,
--- Shuah
+Suggestions welcome!
 
-----------------------------------------------------------------
-The following changes since commit 25e324bc9cf2ee956eec1db384c39c1a17b7c44a:
+Jonathan
 
-   kunit: fix struct kunit_attr header (2023-08-21 08:07:56 -0600)
+> 
+> Jonathan
+> 
+> 
+> > 
+> > Best regards,
+> > Hervé
+> >   
+> 
 
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-6.6-rc2
-
-for you to fetch changes up to 9076bc476d7ebf0565903c4b048442131825c1c3:
-
-   kunit: Fix possible memory leak in kunit_filter_suites() (2023-09-05 12:30:06 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-kunit-6.6-rc2
-
-This kunit update for Linux 6.6-rc2 consists of important fixes to
-possible memory leak, null-ptr-deref, wild-memory-access, and error
-path bugs.
-
-----------------------------------------------------------------
-David Gow (1):
-       kunit: test: Make filter strings in executor_test writable
-
-Jinjie Ruan (4):
-       kunit: Fix wild-memory-access bug in kunit_free_suite_set()
-       kunit: Fix the wrong err path and add goto labels in kunit_filter_suites()
-       kunit: Fix possible null-ptr-deref in kunit_parse_glob_filter()
-       kunit: Fix possible memory leak in kunit_filter_suites()
-
-  lib/kunit/executor.c      | 48 ++++++++++++++++++++++++++++++++---------------
-  lib/kunit/executor_test.c | 13 ++++++++-----
-  lib/kunit/test.c          |  3 ++-
-  3 files changed, 43 insertions(+), 21 deletions(-)
-
-----------------------------------------------------------------
---------------C4KDad23lRefsYFyjwqtZ0O8
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-kunit-6.6-rc2.diff"
-Content-Disposition: attachment; filename="linux-kselftest-kunit-6.6-rc2.diff"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2xpYi9rdW5pdC9leGVjdXRvci5jIGIvbGliL2t1bml0L2V4ZWN1dG9y
-LmMKaW5kZXggNTE4MWFhMmU3NjBiLi5hNjM0ODQ4OWQ0NWYgMTAwNjQ0Ci0tLSBhL2xpYi9r
-dW5pdC9leGVjdXRvci5jCisrKyBiL2xpYi9rdW5pdC9leGVjdXRvci5jCkBAIC02NSw3ICs2
-NSw3IEBAIHN0cnVjdCBrdW5pdF9nbG9iX2ZpbHRlciB7CiB9OwogCiAvKiBTcGxpdCAic3Vp
-dGVfZ2xvYi50ZXN0X2dsb2IiIGludG8gdHdvLiBBc3N1bWVzIGZpbHRlcl9nbG9iIGlzIG5v
-dCBlbXB0eS4gKi8KLXN0YXRpYyB2b2lkIGt1bml0X3BhcnNlX2dsb2JfZmlsdGVyKHN0cnVj
-dCBrdW5pdF9nbG9iX2ZpbHRlciAqcGFyc2VkLAorc3RhdGljIGludCBrdW5pdF9wYXJzZV9n
-bG9iX2ZpbHRlcihzdHJ1Y3Qga3VuaXRfZ2xvYl9maWx0ZXIgKnBhcnNlZCwKIAkJCQkgICAg
-Y29uc3QgY2hhciAqZmlsdGVyX2dsb2IpCiB7CiAJY29uc3QgaW50IGxlbiA9IHN0cmxlbihm
-aWx0ZXJfZ2xvYik7CkBAIC03MywxNiArNzMsMjggQEAgc3RhdGljIHZvaWQga3VuaXRfcGFy
-c2VfZ2xvYl9maWx0ZXIoc3RydWN0IGt1bml0X2dsb2JfZmlsdGVyICpwYXJzZWQsCiAKIAlp
-ZiAoIXBlcmlvZCkgewogCQlwYXJzZWQtPnN1aXRlX2dsb2IgPSBremFsbG9jKGxlbiArIDEs
-IEdGUF9LRVJORUwpOworCQlpZiAoIXBhcnNlZC0+c3VpdGVfZ2xvYikKKwkJCXJldHVybiAt
-RU5PTUVNOworCiAJCXBhcnNlZC0+dGVzdF9nbG9iID0gTlVMTDsKIAkJc3RyY3B5KHBhcnNl
-ZC0+c3VpdGVfZ2xvYiwgZmlsdGVyX2dsb2IpOwotCQlyZXR1cm47CisJCXJldHVybiAwOwog
-CX0KIAogCXBhcnNlZC0+c3VpdGVfZ2xvYiA9IGt6YWxsb2MocGVyaW9kIC0gZmlsdGVyX2ds
-b2IgKyAxLCBHRlBfS0VSTkVMKTsKKwlpZiAoIXBhcnNlZC0+c3VpdGVfZ2xvYikKKwkJcmV0
-dXJuIC1FTk9NRU07CisKIAlwYXJzZWQtPnRlc3RfZ2xvYiA9IGt6YWxsb2MobGVuIC0gKHBl
-cmlvZCAtIGZpbHRlcl9nbG9iKSArIDEsIEdGUF9LRVJORUwpOworCWlmICghcGFyc2VkLT50
-ZXN0X2dsb2IpIHsKKwkJa2ZyZWUocGFyc2VkLT5zdWl0ZV9nbG9iKTsKKwkJcmV0dXJuIC1F
-Tk9NRU07CisJfQogCiAJc3RybmNweShwYXJzZWQtPnN1aXRlX2dsb2IsIGZpbHRlcl9nbG9i
-LCBwZXJpb2QgLSBmaWx0ZXJfZ2xvYik7CiAJc3RybmNweShwYXJzZWQtPnRlc3RfZ2xvYiwg
-cGVyaW9kICsgMSwgbGVuIC0gKHBlcmlvZCAtIGZpbHRlcl9nbG9iKSk7CisKKwlyZXR1cm4g
-MDsKIH0KIAogLyogQ3JlYXRlIGEgY29weSBvZiBzdWl0ZSB3aXRoIG9ubHkgdGVzdHMgdGhh
-dCBtYXRjaCB0ZXN0X2dsb2IuICovCkBAIC0xNTIsMjEgKzE2NCwyNCBAQCBrdW5pdF9maWx0
-ZXJfc3VpdGVzKGNvbnN0IHN0cnVjdCBrdW5pdF9zdWl0ZV9zZXQgKnN1aXRlX3NldCwKIAl9
-CiAJY29weV9zdGFydCA9IGNvcHk7CiAKLQlpZiAoZmlsdGVyX2dsb2IpCi0JCWt1bml0X3Bh
-cnNlX2dsb2JfZmlsdGVyKCZwYXJzZWRfZ2xvYiwgZmlsdGVyX2dsb2IpOworCWlmIChmaWx0
-ZXJfZ2xvYikgeworCQkqZXJyID0ga3VuaXRfcGFyc2VfZ2xvYl9maWx0ZXIoJnBhcnNlZF9n
-bG9iLCBmaWx0ZXJfZ2xvYik7CisJCWlmICgqZXJyKQorCQkJZ290byBmcmVlX2NvcHk7CisJ
-fQogCiAJLyogUGFyc2UgYXR0cmlidXRlIGZpbHRlcnMgKi8KIAlpZiAoZmlsdGVycykgewog
-CQlmaWx0ZXJfY291bnQgPSBrdW5pdF9nZXRfZmlsdGVyX2NvdW50KGZpbHRlcnMpOwogCQlw
-YXJzZWRfZmlsdGVycyA9IGtjYWxsb2MoZmlsdGVyX2NvdW50LCBzaXplb2YoKnBhcnNlZF9m
-aWx0ZXJzKSwgR0ZQX0tFUk5FTCk7CiAJCWlmICghcGFyc2VkX2ZpbHRlcnMpIHsKLQkJCWtm
-cmVlKGNvcHkpOwotCQkJcmV0dXJuIGZpbHRlcmVkOworCQkJKmVyciA9IC1FTk9NRU07CisJ
-CQlnb3RvIGZyZWVfcGFyc2VkX2dsb2I7CiAJCX0KIAkJZm9yIChqID0gMDsgaiA8IGZpbHRl
-cl9jb3VudDsgaisrKQogCQkJcGFyc2VkX2ZpbHRlcnNbal0gPSBrdW5pdF9uZXh0X2F0dHJf
-ZmlsdGVyKCZmaWx0ZXJzLCBlcnIpOwogCQlpZiAoKmVycikKLQkJCWdvdG8gZXJyOworCQkJ
-Z290byBmcmVlX3BhcnNlZF9maWx0ZXJzOwogCX0KIAogCWZvciAoaSA9IDA7ICZzdWl0ZV9z
-ZXQtPnN0YXJ0W2ldICE9IHN1aXRlX3NldC0+ZW5kOyBpKyspIHsKQEAgLTE3OCw3ICsxOTMs
-NyBAQCBrdW5pdF9maWx0ZXJfc3VpdGVzKGNvbnN0IHN0cnVjdCBrdW5pdF9zdWl0ZV9zZXQg
-KnN1aXRlX3NldCwKIAkJCQkJcGFyc2VkX2dsb2IudGVzdF9nbG9iKTsKIAkJCWlmIChJU19F
-UlIoZmlsdGVyZWRfc3VpdGUpKSB7CiAJCQkJKmVyciA9IFBUUl9FUlIoZmlsdGVyZWRfc3Vp
-dGUpOwotCQkJCWdvdG8gZXJyOworCQkJCWdvdG8gZnJlZV9wYXJzZWRfZmlsdGVyczsKIAkJ
-CX0KIAkJfQogCQlpZiAoZmlsdGVyX2NvdW50ID4gMCAmJiBwYXJzZWRfZmlsdGVycyAhPSBO
-VUxMKSB7CkBAIC0xOTUsMTAgKzIxMCwxMSBAQCBrdW5pdF9maWx0ZXJfc3VpdGVzKGNvbnN0
-IHN0cnVjdCBrdW5pdF9zdWl0ZV9zZXQgKnN1aXRlX3NldCwKIAkJCQlmaWx0ZXJlZF9zdWl0
-ZSA9IG5ld19maWx0ZXJlZF9zdWl0ZTsKIAogCQkJCWlmICgqZXJyKQotCQkJCQlnb3RvIGVy
-cjsKKwkJCQkJZ290byBmcmVlX3BhcnNlZF9maWx0ZXJzOworCiAJCQkJaWYgKElTX0VSUihm
-aWx0ZXJlZF9zdWl0ZSkpIHsKIAkJCQkJKmVyciA9IFBUUl9FUlIoZmlsdGVyZWRfc3VpdGUp
-OwotCQkJCQlnb3RvIGVycjsKKwkJCQkJZ290byBmcmVlX3BhcnNlZF9maWx0ZXJzOwogCQkJ
-CX0KIAkJCQlpZiAoIWZpbHRlcmVkX3N1aXRlKQogCQkJCQlicmVhazsKQEAgLTIxMywxNyAr
-MjI5LDE5IEBAIGt1bml0X2ZpbHRlcl9zdWl0ZXMoY29uc3Qgc3RydWN0IGt1bml0X3N1aXRl
-X3NldCAqc3VpdGVfc2V0LAogCWZpbHRlcmVkLnN0YXJ0ID0gY29weV9zdGFydDsKIAlmaWx0
-ZXJlZC5lbmQgPSBjb3B5OwogCi1lcnI6Ci0JaWYgKCplcnIpCi0JCWtmcmVlKGNvcHkpOwor
-ZnJlZV9wYXJzZWRfZmlsdGVyczoKKwlpZiAoZmlsdGVyX2NvdW50KQorCQlrZnJlZShwYXJz
-ZWRfZmlsdGVycyk7CiAKK2ZyZWVfcGFyc2VkX2dsb2I6CiAJaWYgKGZpbHRlcl9nbG9iKSB7
-CiAJCWtmcmVlKHBhcnNlZF9nbG9iLnN1aXRlX2dsb2IpOwogCQlrZnJlZShwYXJzZWRfZ2xv
-Yi50ZXN0X2dsb2IpOwogCX0KIAotCWlmIChmaWx0ZXJfY291bnQpCi0JCWtmcmVlKHBhcnNl
-ZF9maWx0ZXJzKTsKK2ZyZWVfY29weToKKwlpZiAoKmVycikKKwkJa2ZyZWUoY29weSk7CiAK
-IAlyZXR1cm4gZmlsdGVyZWQ7CiB9CmRpZmYgLS1naXQgYS9saWIva3VuaXQvZXhlY3V0b3Jf
-dGVzdC5jIGIvbGliL2t1bml0L2V4ZWN1dG9yX3Rlc3QuYwppbmRleCA0MDg0MDcxZDBlYjUu
-LmI0ZjZmOTZiMjg0NCAxMDA2NDQKLS0tIGEvbGliL2t1bml0L2V4ZWN1dG9yX3Rlc3QuYwor
-KysgYi9saWIva3VuaXQvZXhlY3V0b3JfdGVzdC5jCkBAIC0xMTksNyArMTE5LDcgQEAgc3Rh
-dGljIHZvaWQgcGFyc2VfZmlsdGVyX2F0dHJfdGVzdChzdHJ1Y3Qga3VuaXQgKnRlc3QpCiB7
-CiAJaW50IGosIGZpbHRlcl9jb3VudDsKIAlzdHJ1Y3Qga3VuaXRfYXR0cl9maWx0ZXIgKnBh
-cnNlZF9maWx0ZXJzOwotCWNoYXIgKmZpbHRlcnMgPSAic3BlZWQ+c2xvdywgbW9kdWxlIT1l
-eGFtcGxlIjsKKwljaGFyIGZpbHRlcnNbXSA9ICJzcGVlZD5zbG93LCBtb2R1bGUhPWV4YW1w
-bGUiLCAqZmlsdGVyID0gZmlsdGVyczsKIAlpbnQgZXJyID0gMDsKIAogCWZpbHRlcl9jb3Vu
-dCA9IGt1bml0X2dldF9maWx0ZXJfY291bnQoZmlsdGVycyk7CkBAIC0xMjgsNyArMTI4LDcg
-QEAgc3RhdGljIHZvaWQgcGFyc2VfZmlsdGVyX2F0dHJfdGVzdChzdHJ1Y3Qga3VuaXQgKnRl
-c3QpCiAJcGFyc2VkX2ZpbHRlcnMgPSBrdW5pdF9rY2FsbG9jKHRlc3QsIGZpbHRlcl9jb3Vu
-dCwgc2l6ZW9mKCpwYXJzZWRfZmlsdGVycyksCiAJCQlHRlBfS0VSTkVMKTsKIAlmb3IgKGog
-PSAwOyBqIDwgZmlsdGVyX2NvdW50OyBqKyspIHsKLQkJcGFyc2VkX2ZpbHRlcnNbal0gPSBr
-dW5pdF9uZXh0X2F0dHJfZmlsdGVyKCZmaWx0ZXJzLCAmZXJyKTsKKwkJcGFyc2VkX2ZpbHRl
-cnNbal0gPSBrdW5pdF9uZXh0X2F0dHJfZmlsdGVyKCZmaWx0ZXIsICZlcnIpOwogCQlLVU5J
-VF9BU1NFUlRfRVFfTVNHKHRlc3QsIGVyciwgMCwgImZhaWxlZCB0byBwYXJzZSBmaWx0ZXIg
-JyVzJyIsIGZpbHRlcnNbal0pOwogCX0KIApAQCAtMTU0LDYgKzE1NCw3IEBAIHN0YXRpYyB2
-b2lkIGZpbHRlcl9hdHRyX3Rlc3Qoc3RydWN0IGt1bml0ICp0ZXN0KQogCQkuc3RhcnQgPSBz
-dWJzdWl0ZSwgLmVuZCA9ICZzdWJzdWl0ZVsyXSwKIAl9OwogCXN0cnVjdCBrdW5pdF9zdWl0
-ZV9zZXQgZ290OworCWNoYXIgZmlsdGVyW10gPSAic3BlZWQ+c2xvdyI7CiAJaW50IGVyciA9
-IDA7CiAKIAlzdWJzdWl0ZVswXSA9IGFsbG9jX2Zha2Vfc3VpdGUodGVzdCwgIm5vcm1hbF9z
-dWl0ZSIsIGR1bW15X2F0dHJfdGVzdF9jYXNlcyk7CkBAIC0xNjgsNyArMTY5LDcgQEAgc3Rh
-dGljIHZvaWQgZmlsdGVyX2F0dHJfdGVzdChzdHJ1Y3Qga3VuaXQgKnRlc3QpCiAJICogYXR0
-cmlidXRlIGlzIHVuc2V0IGFuZCB0aHVzLCB0aGUgZmlsdGVyaW5nIGlzIGJhc2VkIG9uIHRo
-ZSBwYXJlbnQgYXR0cmlidXRlCiAJICogb2Ygc2xvdy4KIAkgKi8KLQlnb3QgPSBrdW5pdF9m
-aWx0ZXJfc3VpdGVzKCZzdWl0ZV9zZXQsIE5VTEwsICJzcGVlZD5zbG93IiwgTlVMTCwgJmVy
-cik7CisJZ290ID0ga3VuaXRfZmlsdGVyX3N1aXRlcygmc3VpdGVfc2V0LCBOVUxMLCBmaWx0
-ZXIsIE5VTEwsICZlcnIpOwogCUtVTklUX0FTU0VSVF9OT1RfRVJSX09SX05VTEwodGVzdCwg
-Z290LnN0YXJ0KTsKIAlLVU5JVF9BU1NFUlRfRVEodGVzdCwgZXJyLCAwKTsKIAlrZnJlZV9h
-dF9lbmQodGVzdCwgZ290LnN0YXJ0KTsKQEAgLTE5MSwxMiArMTkyLDEzIEBAIHN0YXRpYyB2
-b2lkIGZpbHRlcl9hdHRyX2VtcHR5X3Rlc3Qoc3RydWN0IGt1bml0ICp0ZXN0KQogCQkuc3Rh
-cnQgPSBzdWJzdWl0ZSwgLmVuZCA9ICZzdWJzdWl0ZVsyXSwKIAl9OwogCXN0cnVjdCBrdW5p
-dF9zdWl0ZV9zZXQgZ290OworCWNoYXIgZmlsdGVyW10gPSAibW9kdWxlIT1kdW1teSI7CiAJ
-aW50IGVyciA9IDA7CiAKIAlzdWJzdWl0ZVswXSA9IGFsbG9jX2Zha2Vfc3VpdGUodGVzdCwg
-InN1aXRlMSIsIGR1bW15X2F0dHJfdGVzdF9jYXNlcyk7CiAJc3Vic3VpdGVbMV0gPSBhbGxv
-Y19mYWtlX3N1aXRlKHRlc3QsICJzdWl0ZTIiLCBkdW1teV9hdHRyX3Rlc3RfY2FzZXMpOwog
-Ci0JZ290ID0ga3VuaXRfZmlsdGVyX3N1aXRlcygmc3VpdGVfc2V0LCBOVUxMLCAibW9kdWxl
-IT1kdW1teSIsIE5VTEwsICZlcnIpOworCWdvdCA9IGt1bml0X2ZpbHRlcl9zdWl0ZXMoJnN1
-aXRlX3NldCwgTlVMTCwgZmlsdGVyLCBOVUxMLCAmZXJyKTsKIAlLVU5JVF9BU1NFUlRfRVEo
-dGVzdCwgZXJyLCAwKTsKIAlrZnJlZV9hdF9lbmQodGVzdCwgZ290LnN0YXJ0KTsgLyoganVz
-dCBpbiBjYXNlICovCiAKQEAgLTIxMSwxMiArMjEzLDEzIEBAIHN0YXRpYyB2b2lkIGZpbHRl
-cl9hdHRyX3NraXBfdGVzdChzdHJ1Y3Qga3VuaXQgKnRlc3QpCiAJCS5zdGFydCA9IHN1YnN1
-aXRlLCAuZW5kID0gJnN1YnN1aXRlWzFdLAogCX07CiAJc3RydWN0IGt1bml0X3N1aXRlX3Nl
-dCBnb3Q7CisJY2hhciBmaWx0ZXJbXSA9ICJzcGVlZD5zbG93IjsKIAlpbnQgZXJyID0gMDsK
-IAogCXN1YnN1aXRlWzBdID0gYWxsb2NfZmFrZV9zdWl0ZSh0ZXN0LCAic3VpdGUiLCBkdW1t
-eV9hdHRyX3Rlc3RfY2FzZXMpOwogCiAJLyogV2FudDogc3VpdGUoc2xvdywgbm9ybWFsKSwg
-TlVMTCAtPiBzdWl0ZShzbG93IHdpdGggU0tJUCwgbm9ybWFsKSwgTlVMTCAqLwotCWdvdCA9
-IGt1bml0X2ZpbHRlcl9zdWl0ZXMoJnN1aXRlX3NldCwgTlVMTCwgInNwZWVkPnNsb3ciLCAi
-c2tpcCIsICZlcnIpOworCWdvdCA9IGt1bml0X2ZpbHRlcl9zdWl0ZXMoJnN1aXRlX3NldCwg
-TlVMTCwgZmlsdGVyLCAic2tpcCIsICZlcnIpOwogCUtVTklUX0FTU0VSVF9OT1RfRVJSX09S
-X05VTEwodGVzdCwgZ290LnN0YXJ0KTsKIAlLVU5JVF9BU1NFUlRfRVEodGVzdCwgZXJyLCAw
-KTsKIAlrZnJlZV9hdF9lbmQodGVzdCwgZ290LnN0YXJ0KTsKZGlmZiAtLWdpdCBhL2xpYi9r
-dW5pdC90ZXN0LmMgYi9saWIva3VuaXQvdGVzdC5jCmluZGV4IDQ5Njk4YTE2ODQzNy4uNDIx
-ZjEzOTgxNDEyIDEwMDY0NAotLS0gYS9saWIva3VuaXQvdGVzdC5jCisrKyBiL2xpYi9rdW5p
-dC90ZXN0LmMKQEAgLTc4NCwxMiArNzg0LDEzIEBAIHN0YXRpYyBpbnQga3VuaXRfbW9kdWxl
-X25vdGlmeShzdHJ1Y3Qgbm90aWZpZXJfYmxvY2sgKm5iLCB1bnNpZ25lZCBsb25nIHZhbCwK
-IAogCXN3aXRjaCAodmFsKSB7CiAJY2FzZSBNT0RVTEVfU1RBVEVfTElWRToKLQkJa3VuaXRf
-bW9kdWxlX2luaXQobW9kKTsKIAkJYnJlYWs7CiAJY2FzZSBNT0RVTEVfU1RBVEVfR09JTkc6
-CiAJCWt1bml0X21vZHVsZV9leGl0KG1vZCk7CiAJCWJyZWFrOwogCWNhc2UgTU9EVUxFX1NU
-QVRFX0NPTUlORzoKKwkJa3VuaXRfbW9kdWxlX2luaXQobW9kKTsKKwkJYnJlYWs7CiAJY2Fz
-ZSBNT0RVTEVfU1RBVEVfVU5GT1JNRUQ6CiAJCWJyZWFrOwogCX0K
-
---------------C4KDad23lRefsYFyjwqtZ0O8--
