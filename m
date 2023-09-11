@@ -2,103 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613AA79C115
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB14E79BAE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbjILA0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 20:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
+        id S231678AbjIKXS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 19:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230157AbjILA0p (ORCPT
+        with ESMTP id S1350767AbjIKXMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 20:26:45 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05281377B9;
+        Mon, 11 Sep 2023 19:12:39 -0400
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47436E8E
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 16:00:08 -0700 (PDT)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-564af0ac494so3558852a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 16:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694473064; x=1695077864; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFHImHKcNiQeeK+5BliTUXW2QVp3vXADiZhQpYrJUp8=;
+        b=yM3vsk7dnr85Gk4iS/4AmRtIRbWNWONpAG//SACFZ4dwKlMpZxQ1KhUjHcOtHlaQ4W
+         JPpv/T2X+n8fJRQ2Gif9ZC5CIVr591pw+pjoOD8sL63K8i4rTB052KnJp8cOuGFBa0KW
+         7cZF4F42B10vd9au8wMspM1HOY4f+By9zJnx+SiuKxJBpxvUo4G7wKZCqupTEJEFJ30E
+         Mdi7HKWreFsNLV4ZLu68V3LVF7XhzETVaW5RajpRTTkoD9ICA9TPHRm3pRjxQJbcDb6u
+         agq2kf5RdI2xzIZuvbjHAyGsHHla3dZ3OPRLyTTTbWI/Akn+H+6eDpJFibtheUAq8ytJ
+         XCsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694473064; x=1695077864;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TFHImHKcNiQeeK+5BliTUXW2QVp3vXADiZhQpYrJUp8=;
+        b=sqdnqo+Li5h08ILaGvFfgt5z5ySy8hXB2RgGkm/hjZ5nzua36UsgD7bwoBqkLNDJPR
+         txoPvJ1C8jBI1jFEtnAsEYS5k0xiymldZxwmZqxBBkyD8N299MFJhNm/dbexXXesRv4R
+         EQqyaEmxOoifH5rAx0k7fiAFcrYuwm3NkysPKcmt0zxzYhkjDJX0SLwrSMM8HFCHmSsS
+         jvVMkcxTL+/1VqjEHcLoeWeGjSaCWmn59HqgB0igufAMen81gm8HqbbkJSCWv6E7yR1u
+         1VYGdR5WLA7nVvaBKiz4JvkKtH6gycZEg2AfEkRmByRgvt892vZOMSNRnxV2jb87TsFC
+         nJEQ==
+X-Gm-Message-State: AOJu0YxF0Sk1DsHo+ywj98cLKblj70Hcz6gQdeRRnv86T68rk7/AhbDC
+        u3EugPai7DG0OZz23Rs758mCNKECOlku62pt/8E=
+X-Google-Smtp-Source: AGHT+IHA1R0qiVnW7n9r+m0MpAsKnCumiTMnjCic5EWNH4bsKLOSQXuZbxIlhVKjEjmIJ/bIc33XPw==
+X-Received: by 2002:a05:6a20:1593:b0:13f:b028:789c with SMTP id h19-20020a056a20159300b0013fb028789cmr10806478pzj.5.1694473063940;
         Mon, 11 Sep 2023 15:57:43 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id F06373200918;
-        Mon, 11 Sep 2023 18:56:11 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Mon, 11 Sep 2023 18:56:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1694472971; x=1694559371; bh=Ea
-        pXY/dHk/L+KfdsJnZIXaxdmbC/YxZh0fcsusxzVFI=; b=Z1qW4isTxdg0I62aD1
-        I6xzs2VtaTEAsQ3HsKYDilLUwxksu1tbRY7mkgyromFZzzxkqw2HD1OytTiahXb+
-        Nx++gyTMlYhEOXbv5M15Sv3+PtNQihmUsv3dOXcMUtH4uwaQKDG+Ke/WcFaO7JJD
-        aWeyNoWEb0IIa0nI/WAbnscDv5AfH0utP2SU6SMXqufpPeS5IhkHAWdMizSCIZK8
-        Rz7/9L4qibgjCRoAvPnTFe0cpuOXJ48NBHwsFq99KJKgcmlKi/Uov1iytDlEUxzq
-        8+Tp6wiTCdkbuTSw+voRiO9HvyeHG+JWSKYabZ+xsSS3dUAIumWHMwWBCFWYF9mh
-        ClIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694472971; x=1694559371; bh=EapXY/dHk/L+K
-        fdsJnZIXaxdmbC/YxZh0fcsusxzVFI=; b=yJVLsQbOVAvTKRVKS6v75wpQgMsoT
-        9ywUmKRPfsf1BBXCY1CutXWcP7i+S+utGssDMp7J1Two2sJEdzhkuWaz1mMBECld
-        BBjrrwYVyp/rU/5zE0a/OfxQFuTohRzT8ONhSZ1v5Obka3Ca+TOmBJq3oMmTjQq1
-        8ofvp3OmG0Otplz7RMq7oH75+X95yAahcq9rqtZnPK5yJQ3eowitbf9xw+l+B719
-        bVH1NVp76WU/he8clQ/fxPKSUVuyza4XyVwFIszRYV+bcvZIjpynjaYSYnjCipRP
-        ukY7Gq9Ls7qeZvo5Xan5Kaf9L3BwiPL1ovkg+VNiCwo5p0iNvkJbR2ciw==
-X-ME-Sender: <xms:C5v_ZEpwyEBB74Zm39jhT64htpAlb6MdMT-bXMXlW4cKqlytXz5fXg>
-    <xme:C5v_ZKpnaKI4JTufIEfztGy9tX4JHGg_xeZiadJLZl8SM8R6xxeO96G7pu7293XXi
-    GKiEJCQuFZAYiD7jWs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeihedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdluddtmdenucfjughrpefofgggkfgjfhffhffvvefutgesthdtredt
-    reertdenucfhrhhomhepfdflrghnucfjvghnughrihhkucfhrghrrhdfuceokhgvrhhnvg
-    hlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepteeluefhfeehtdejvdduvdel
-    hfffueevteefgeeuhedtiefgtedtheekhfefiedunecuffhomhgrihhnpehurghpihdqgh
-    hrohhuphdrohhrghdprghrtghhlhhinhhugidrohhrghdpfhgvughorhgrphhrohhjvggt
-    thdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehkvghrnhgvlhesjhhfrghrrhdrtggt
-X-ME-Proxy: <xmx:C5v_ZJM3r-dc6IffYP6H__wC090VsMK6o19bPReC26my5OUjiXLX6w>
-    <xmx:C5v_ZL4n8AvAAM-g_ClsLtVIwL1EW8AyhNcUWsrH0sj9qsY7PP3V4w>
-    <xmx:C5v_ZD5kYXz49K8Fj_OGtrvGT6f35vMs4ZRrwW4uTHAdtcKGdgvLDQ>
-    <xmx:C5v_ZAyCAZRXV9ddr4oruuG9fD_5ZU-TmNH4hCtm0tQwHvP3F5eNPw>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E597B15A0091; Mon, 11 Sep 2023 18:56:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
-In-Reply-To: <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
- <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
-Date:   Tue, 12 Sep 2023 00:54:32 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, bhe@redhat.com, bhelgaas@google.com,
-        lennart@poettering.net, "Luca Boccassi" <bluca@debian.org>
-Subject: Re: [PATCH 0/1] x86/kexec: UKI support
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id y18-20020aa78052000000b0066a2e8431a0sm6021038pfm.183.2023.09.11.15.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 15:57:43 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v4 0/5] riscv: Add fine-tuned checksum functions
+Date:   Mon, 11 Sep 2023 15:57:10 -0700
+Message-Id: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEab/2QC/23N3wrCIBTH8VcJrzP0qPvTVe8REZtaO8Tm0CXV2
+ LvnRlDELr8/OJ8zkmA92kD2m5F4GzGg61LI7YbopuqulqJJTYCBYAWT1PUDtviyZ91YfQv3lpq
+ aSwVFUWngJN313l7wsZjHU+oGw+D8c3kR+bx+NMhWtMgpo6XIFeN1YqE6eIwuYKd32rVkBiN8k
+ ZKpNQQSorXJVGHqXIp6BRG/SL6GiBlRDIyQpjS5+EOmaXoDxv4t7D8BAAA=
+To:     Charlie Jenkins <charlie@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Conor Dooley <conor@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,T_SPF_HELO_TEMPERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> What the heck is UKI?
+Each architecture generally implements fine-tuned checksum functions to
+leverage the instruction set. This patch adds the main checksum
+functions that are used in networking.
 
-UKI (Unified Kernel Image) is the kernel image + initrd + cmdline (+ some other optional stuff) all packaged up together as one EFI application.
+Vector support is included in this patch to start a discussion on that,
+it can probably be optimized more. The vector patches still need some
+work as they rely on GCC vector intrinsics types which cannot work in
+the kernel since it requires C vector support rather than just assembler
+support. I have tested the vector patches as standalone algorithms in QEMU.
 
-This EFI application can then be launched directly by the UEFI without the need for any additional stuff (or by systemd-boot). It's all self contained. One benefit is that this is a convenient way to distribute kernels all in one file. Another benefit is that the whole combination of kernel image, initrd, and cmdline can all be signed together so only that particular combination can be executed if you are using secure boot.
+This patch takes heavy use of the Zbb extension using alternatives
+patching.
 
-The format itself is rather simple. It's just a PE file (as required by the UEFI spec) that contains a small stub application in the .text, .data, etc sections that is responsible for invoking the contained kernel and initrd with the contained cmdline. The kernel image is placed into a .kernel section, the initrd into a .initrd section, and the cmdline into a .cmdline section in the PE executable.
+To test this patch, enable the configs for KUNIT, then CHECKSUM_KUNIT
+and RISCV_CHECKSUM_KUNIT.
 
-If we want to kexec a UKI we could obviously just have userspace pick it apart and kexec it like normal. However in lockdown mode this will only work if you sign the kernel image that is contained inside the UKI. The problem with that is that anybody can then grab that signed kernel and launch it with any initrd or cmdline. So instead this patch makes the kernel do the work instead. The kernel verifies the signature on the entire UKI and then passes its components on to the normal kexec bzimage loader.
+I have attempted to make these functions as optimal as possible, but I
+have not ran anything on actual riscv hardware. My performance testing
+has been limited to inspecting the assembly, running the algorithms on
+x86 hardware, and running in QEMU.
 
-Useful Links:
-UKI format documentation: https://uapi-group.org/specifications/specs/unified_kernel_image/
-Arch wiki: https://wiki.archlinux.org/title/Unified_kernel_image
-Fedora UKI support: https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_1
+ip_fast_csum is a relatively small function so even though it is
+possible to read 64 bits at a time on compatible hardware, the
+bottleneck becomes the clean up and setup code so loading 32 bits at a
+time is actually faster.
+
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Changes in v4:
+- Suggestion by David Laight to use an improved checksum used in
+  arch/arc.
+- Eliminates zero-extension on rv32, but not on rv64.
+- Reduces data dependency which should improve execution speed on
+  rv32 and rv64
+- Still passes CHECKSUM_KUNIT and RISCV_CHECKSUM_KUNIT on rv32 and
+  rv64 with and without zbb.
+- Link to v3: https://lore.kernel.org/r/20230907-optimize_checksum-v3-0-c502d34d9d73@rivosinc.com
+
+Changes in v3:
+- Use riscv_has_extension_likely and has_vector where possible (Conor)
+- Reduce ifdefs by using IS_ENABLED where possible (Conor)
+- Use kernel_vector_begin in the vector code (Samuel)
+- Link to v2: https://lore.kernel.org/r/20230905-optimize_checksum-v2-0-ccd658db743b@rivosinc.com
+
+Changes in v2:
+- After more benchmarking, rework functions to improve performance.
+- Remove tests that overlapped with the already existing checksum
+  tests and make tests more extensive.
+- Use alternatives to activate code with Zbb and vector extensions
+- Link to v1: https://lore.kernel.org/r/20230826-optimize_checksum-v1-0-937501b4522a@rivosinc.com
+
+---
+Charlie Jenkins (5):
+      riscv: Checksum header
+      riscv: Add checksum library
+      riscv: Vector checksum header
+      riscv: Vector checksum library
+      riscv: Test checksum functions
+
+ arch/riscv/Kconfig.debug              |   1 +
+ arch/riscv/include/asm/checksum.h     | 181 +++++++++++++++++++
+ arch/riscv/lib/Kconfig.debug          |  31 ++++
+ arch/riscv/lib/Makefile               |   3 +
+ arch/riscv/lib/csum.c                 | 302 +++++++++++++++++++++++++++++++
+ arch/riscv/lib/riscv_checksum_kunit.c | 330 ++++++++++++++++++++++++++++++++++
+ 6 files changed, 848 insertions(+)
+---
+base-commit: af3c30d33476bc2694b0d699173544b07f7ae7de
+change-id: 20230804-optimize_checksum-db145288ac21
+-- 
+- Charlie
+
