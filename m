@@ -2,82 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466D979AE46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1299C79B106
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344706AbjIKVOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:14:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S1354105AbjIKVwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239893AbjIKObB (ORCPT
+        with ESMTP id S240226AbjIKOj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:31:01 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AEDE4D;
-        Mon, 11 Sep 2023 07:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1694442654; x=1695047454; i=rwarsow@gmx.de;
- bh=kqEiy54vHn9A4hNDsY9RHpQci3bLlNR1YiGevJHTVVY=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=uf3gdlve24u9lyCpemVAxC1VET+HgN1VCnUvOop78pCXTjVEfxRya6vSsC3J4PRLFHQq5iJ
- K8XJNOmT/Rg87EzqFfh5pPkV9ggPm5JQSzZ70r6X/JDw1pYQ7tUtDEJT+tU4E8brQgWjC155e
- DaW37iqVL989WA95O+Bjkyqts0IwVd0hJDE0d0bTL1QjtVFTRAfy9FxYipbv+9ceCJ5T4IHMs
- qnJKnJp7K7EEzkxWbpksX7hf2/EYWCwVYm4X5fr8vCQBUSxkLgQKxjSC08hjliJm15gW3Ak2W
- mLNMSr9+Ba6rFcFcWCSg4GGgWyuW6Od4rtgghVW2tyX7zMD1mG2w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.34.50]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmDEg-1pxoTu1HpA-00iEBd; Mon, 11
- Sep 2023 16:30:54 +0200
-Message-ID: <800b38d5-c66a-bb9b-1d86-385dd796b34f@gmx.de>
-Date:   Mon, 11 Sep 2023 16:30:53 +0200
+        Mon, 11 Sep 2023 10:39:27 -0400
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D08F2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 07:39:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1694443156;
+        bh=coVrW6z+muUJnLu9pKLdcX7o9brQ4PBU1PRO9046yTs=;
+        h=From:To:Cc:Subject:Date;
+        b=A3p0ZRvKRus694P35NN21sRJuVQvxFNoifb89JhkU+uEDSCzbtebKL6XDQvPpUWca
+         GJgW3R04bAUfDwQUVpqnl5MOR0eA15VdW+pHQSqCGUVRTqUa/i9elZyCPKJ5qNtJNE
+         VtgmP6nsp1voT0+bHHw29EDCLhcMp2viO28z8VvM=
+Received: from rtoax.lan ([120.245.114.155])
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id 83B9C8B0; Mon, 11 Sep 2023 22:32:59 +0800
+X-QQ-mid: xmsmtpt1694442779t2yq1rmqj
+Message-ID: <tencent_6F19BC082167F15DF2A8D8BEFE8EF220F60A@qq.com>
+X-QQ-XMAILINFO: NafziRg7Bx69AedwavA3u8otDWALLItPCt/iDqyXUyy3aYGQDjM5CeLfnl7JMO
+         +YnwejpeqISpxpiZ1LdrpRv3Oc097nZc0VgmXPvlmswxgN/kv7TQoxbJ6sDiLZ+ccilaaOywYUyr
+         +HyfKEl3Kf7/atW/VUXqRXZFmje82mWt+w6JFWYL1lz8+JHyVfiREIxvcij5Qb0H3Z/sFU50rd8k
+         PNu9S76lvkCT18VZygiSdUtppbBeC2/boPkqcyv/gYgDk4qoayNm8xH4Wvl6Xw/tVvHfivUOjkRB
+         0UByJ6qH5EWNxrJbtNXyLdcMqP8TorQE5B5xJuEnPVtS8oLNfA/RLuiIprxswTmcyKi+leMn4YPf
+         jFO9Vn11GqpG3fVyj6YviE55WoIBq0IAdYB1Z5HDArW6lzQP8ZThyFbO0DJtYxpwy91yTY2vQ/VN
+         tkfYXZeUlSzbdrbv/Blg+DDxFmSWSMepDSH8smAlpFAEOfsfbS0PdHET3JjofSqcjUOMvMyhrfqh
+         MO8b/rTksKV80hU3gUQjQZz/br/GHDi03fP8vsQZkdCy/BtBxHcpd9P6OKIK+TqEv3U1ICejaym4
+         JjC2AlaOKqDQld/R+VCeedv6CzPXXGCitUUC9sTZZdBWH6mrbQURyS6yQuZ5Ajq/WuEcfVA0+YKf
+         pi0eLrdm6zRDhFa2kITRu2AKRn3xjGgLsHbz04Mfv4xGwY6athce8Gks+yWdo0Qsh6T25fJ3C0mU
+         4+JP73EpbqwgpKp3E6py4I/rNM1WlGTVGw/2wXTwk5vfR3d8Up2h7Z8fNOOMl8jPuOknKXBPN2f+
+         d5aq3Q52TTtBKi/WT6IwWpnJjy3atLoVSJmCcUE5fz/lGu0H2EMTVhWEHqAWHSz9oNQM1PKSBjX9
+         nUMc5BevkgYJp43u4poNTUkXaxOv+UBvb4PBSGktYMonZAWnNbKgIl/Fa4X6L+srWdPXh904e8nG
+         xIfDnWIy4ae9uhT1E1apP6gwzQpNssquY1XWLkl/nNjOMFUfKngsZWc1d3WIeiN9sRKB/AxPqjQC
+         1n577wrZTRd2ccXnBA
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     rppt@kernel.org, rongtao@cestc.cn
+Cc:     rtoax@foxmail.com, linux-kernel@vger.kernel.org (open list),
+        linux-mm@kvack.org (open list:MEMBLOCK AND MEMORY MANAGEMENT
+        INITIALIZATION)
+Subject: [PATCH] memblock tests: Fix compilation errors.
+Date:   Mon, 11 Sep 2023 22:32:56 +0800
+X-OQ-MSGID: <20230911143257.26949-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.5 000/739] 6.5.3-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:jx3m3w0du9Nmk20OGQaMPYAk/aAHTmJHb4zV8o6DROZNTjxQrjJ
- Wfe8l4igtZuWpAEEJTmEv7y1gdFevXYo9ag/TrkFd1Y7bBZZSKzqJvT5g4t9e201EQSsKuc
- ITuJH/4eQ0mixlQcyM+oYcDXvwPHjMBtGqXoGO31I2VGPikhKFRKo32Z7xoTAddShINKZze
- yOsKN1w11iNr9mTMeD0TA==
-UI-OutboundReport: notjunk:1;M01:P0:jEE64T2UVY4=;AtX7Q+Q2xBzwRKEYY7RcT5D86ij
- CLYS+rqMA+rGjsSYfr2f6iup3wbGgV19hGRmjIp18GTe6hF7GpUNzy6uUeQXCjsj6PcclCd/u
- me7rmgIoIp3XYRtI/zGk+ska1STBYRpbVk8qYODHpCJvncfVLinuPNbsrIuuk2x1vvKHTZdfV
- dL2CLz5gu3oHztVqXzhr2lePPk2navUY3li9Fg977w3LN8DCEuvtCFrRg3EgMmuu3yvM4aPdt
- jS9mudFwOzx4fgEbKrA4DZV0Hnvp6DrV17F39MJC5Go4TYMiPwfTq2p2cqEa5a+ZNN1fXca6i
- a5XCBu36Q4VSWa6R5OZuEPpGZdP4XvoYLtzQj+/1uT6hfezOBOF2cS+1vwuM82tBrpPhQkye6
- YYETZbJchNddXvlRJ7kClP/b30amA4HAoqduZVZtQpLt0B6MAG6kw9lFxxGaIdJNH8VXOuFJW
- HluJ9BmBymysCwMipqQUCT2sgZ61YZ5EUY8WndimBEJQQDqCEwL0kFrdKQ/ACACEOjhWmU9TW
- PGfRUeZKHc0UyVvIsWCR4GzVcGJ919GYa/iRVfR2zJQgGPDx2ePY9aLFQXAPzvt6XO4a2p0vL
- /KsWGE4FIN2mzhE40YGTTaIWa10T82pVamRBbdClYZM/XzJaUZskKI1y0b1MEbiTvdRd7mjO9
- hlakBfuQQQUAlCPwMHv/sgZjTMSIdazlzJgy7K2ZfcDcL4/g5Bf/ZYZ4X1DHVs5fTPlXvyaZ3
- Ffrbvmbcb+NR2mbBMrn7xV712vbrC/YwpiJiPuz0oFxSRleetDR2wxTPjRrSRAFWJb9GePbZe
- GEPnrSJku4nS7hOvSBxjPBfOp2y535rONADjZs5rQn3eWyir4o68r/pYoWUA1dN4JTlimULMt
- sd/xIhn4Br8S6yuQOQF/lG6RIPv83ZwYwl7d/uSgd3iwm8aouRftgay7rGwn/2X4AeHHMggbL
- oPWRdw==
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+From: Rong Tao <rongtao@cestc.cn>
 
-6.5.3-rc1
+This patch fix the follow errors.
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
+commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()") pass nid
+parameter to reserve_bootmem_region(),
 
-Thanks
+    $ make -C tools/testing/memblock/
+    ...
+    memblock.c: In function ‘memmap_init_reserved_pages’:
+    memblock.c:2111:25: error: too many arguments to function ‘reserve_bootmem_region’
+    2111 |                         reserve_bootmem_region(start, end, nid);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~
+    ../../include/linux/mm.h:32:6: note: declared here
+    32 | void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+       |      ^~~~~~~~~~~~~~~~~~~~~~
+    memblock.c:2122:17: error: too many arguments to function ‘reserve_bootmem_region’
+    2122 |                 reserve_bootmem_region(start, end, nid);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+commit dcdfdd40fa82("mm: Add support for unaccepted memory") call
+accept_memory() in memblock.c
+
+    $ make -C tools/testing/memblock/
+    ...
+    cc -fsanitize=address -fsanitize=undefined  main.o memblock.o \
+     lib/slab.o mmzone.o slab.o tests/alloc_nid_api.o \
+     tests/alloc_helpers_api.o tests/alloc_api.o tests/basic_api.o \
+     tests/common.o tests/alloc_exact_nid_api.o   -o main
+    /usr/bin/ld: memblock.o: in function `memblock_alloc_range_nid':
+    memblock.c:(.text+0x7ae4): undefined reference to `accept_memory'
+
+Signed-off-by: Rong Tao <rongtao@cestc.cn>
+---
+ tools/include/linux/mm.h          | 2 +-
+ tools/testing/memblock/internal.h | 4 ++++
+ tools/testing/memblock/mmzone.c   | 2 +-
+ 3 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/include/linux/mm.h b/tools/include/linux/mm.h
+index a03d9bba5151..2bc94079d616 100644
+--- a/tools/include/linux/mm.h
++++ b/tools/include/linux/mm.h
+@@ -29,7 +29,7 @@ static inline void *phys_to_virt(unsigned long address)
+ 	return __va(address);
+ }
+ 
+-void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
++void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid);
+ 
+ static inline void totalram_pages_inc(void)
+ {
+diff --git a/tools/testing/memblock/internal.h b/tools/testing/memblock/internal.h
+index fdb7f5db7308..f6c6e5474c3a 100644
+--- a/tools/testing/memblock/internal.h
++++ b/tools/testing/memblock/internal.h
+@@ -20,4 +20,8 @@ void memblock_free_pages(struct page *page, unsigned long pfn,
+ {
+ }
+ 
++static inline void accept_memory(phys_addr_t start, phys_addr_t end)
++{
++}
++
+ #endif
+diff --git a/tools/testing/memblock/mmzone.c b/tools/testing/memblock/mmzone.c
+index 7b0909e8b759..d3d58851864e 100644
+--- a/tools/testing/memblock/mmzone.c
++++ b/tools/testing/memblock/mmzone.c
+@@ -11,7 +11,7 @@ struct pglist_data *next_online_pgdat(struct pglist_data *pgdat)
+ 	return NULL;
+ }
+ 
+-void reserve_bootmem_region(phys_addr_t start, phys_addr_t end)
++void reserve_bootmem_region(phys_addr_t start, phys_addr_t end, int nid)
+ {
+ }
+ 
+-- 
+2.41.0
 
