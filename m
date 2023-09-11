@@ -2,68 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3261279C0DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E138979B60E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377363AbjIKWV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:21:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
+        id S1378129AbjIKWab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242639AbjIKQAe (ORCPT
+        with ESMTP id S242652AbjIKQCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:00:34 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82961AE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:00:28 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 09541C0008;
-        Mon, 11 Sep 2023 15:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694448027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qS38ocazPpEpppEYVtNerL69O277vxu46/4AvalaBdQ=;
-        b=a98mjC4nYPsHIUq+qRsYP+aUNFyqgcpwE/HTQ+jIK/d5P7TWa4ezwnCnvVBaj3QNtn90TQ
-        7u6WVLs7esTJzRMAEH3vckgGno98cLfnd0YI49Z9aXotLZ7bMgewFibIvwcToPPA2AcaIR
-        f9pCXLUNV4f403zFnb+x7hlDWgrBHKOh8LfMN8zezpzXhPC7AlOekZyVtGq8A2PsdLWDtv
-        2QoZ5fMpyWAHuYTkURjyzdJpc0No/pCyN+N9ehtaAFKRQmQIwgzvLinPn1wOD/Kh6dh9MS
-        bF3JeztQ4OW4bIIZIdBFOa/FPY/OAxckmhZCPxBm5hfKy900tje9D3pMXI4ukw==
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     oxffffaa@gmail.com, kernel@sberdevices.ru,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: rawnand: remove 'nand_exit_status_op()' prototype
-Date:   Mon, 11 Sep 2023 17:59:24 +0200
-Message-Id: <20230911155924.764572-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230823105235.609069-1-AVKrasnov@sberdevices.ru>
-References: 
+        Mon, 11 Sep 2023 12:02:01 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9C81AE;
+        Mon, 11 Sep 2023 09:01:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694448116; x=1725984116;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=lKHyicF0p9BaS5ys6PVn7lp6R/aWgLwg26A6LMOSZlE=;
+  b=z7WIJKdGfvou2O0P9SAvdWfqMAdFxe4E4Avq/aFNSQMRt/c37zWfrEc5
+   JbCaUAskMJgBZirlLPO24IH3QIzg2xAEsrUSl4LZqaZD0aCjiRvAyuz2M
+   TuWShe1ebQyYQEd1q/jwoLwweSyLVHgH0I2I2HB6R1m9W/eGQCwFI9BLA
+   jjmOrkoB883hLE8oMEC2jRVp+1/Fuw/5NxNgAx6rPUX6ae6Q3IF7xLSnS
+   mCLfuaiO537+QKmWmnlfVYpw2jiymm5cCGOEc9wiAxJn/Q5JJAwMgpJ/H
+   l61bNH0reyqaju82Nxcjr5Ejo7ZrD8/8t5A1Rw0IfXP+ofZVISPnTylaF
+   Q==;
+X-CSE-ConnectionGUID: +foy2RZLSUOIYXipKZdYxg==
+X-CSE-MsgGUID: ZKrN9PlRR+q/ZjuwzBu+Kw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="4164260"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 09:01:56 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 11 Sep 2023 09:01:55 -0700
+Received: from [10.159.245.205] (10.10.85.11) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Mon, 11 Sep 2023 09:01:53 -0700
+Message-ID: <18943157-a1fb-0fda-e3d4-e0478d18a849@microchip.com>
+Date:   Mon, 11 Sep 2023 18:01:39 +0200
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'48919c6c48380aa1aec4243c7e6ad39e89d78539'
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] ARM: dts: at91: sama5d29_curiosity: Add device tree
+ for sama5d29_curiosity board
+Content-Language: en-US, fr-FR
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>,
+        <Mihai.Sain@microchip.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <alexandre.belloni@bootlin.com>, <andre.przywara@arm.com>,
+        <Andrei.Simion@microchip.com>, <Jerry.Ray@microchip.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <Cristian.Birsan@microchip.com>
+References: <20230801111151.6546-1-mihai.sain@microchip.com>
+ <20230801111151.6546-2-mihai.sain@microchip.com>
+ <14d628cf-a40c-11e6-7743-e3ba3bd8aa2d@tuxon.dev>
+ <PH8PR11MB68049899CFD7947B0B3A03EF820BA@PH8PR11MB6804.namprd11.prod.outlook.com>
+ <9ce18601-02d8-686e-ebe0-04c5dc29f6c9@tuxon.dev>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+In-Reply-To: <9ce18601-02d8-686e-ebe0-04c5dc29f6c9@tuxon.dev>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-23 at 10:52:31 UTC, Arseniy Krasnov wrote:
-> This function is exported and its prototype is already placed in
-> include/linux/mtd/rawnand.h.
+Hi Mihai, Claudiu,
+
+First of all, thanks a lot for your help on this board DT, that's great!
+
+On 03/08/2023 at 11:09, claudiu beznea wrote:
+> Hi, Mihai,
 > 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> On 02.08.2023 15:19,Mihai.Sain@microchip.com  wrote:
+>>> +&macb0 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&pinctrl_macb0_default &pinctrl_macb0_phy_irq>;
+>>> +     #address-cells = <1>;
+>>> +     #size-cells = <0>;
+>>> +     phy-mode = "rmii";
+>>> +     status = "disabled";
+>> Should any phy/mdio container be placed here? Also, any reason this node is disabled?
+>> The board has no phy.
+>> We will add external phy boards to macb interface and they will be present in dt-overlay.
+>>
+> Then remove the macb0 node from here and keep it in overlay.
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+What about choosing a phy and making it enabled by default. Because I 
+doubt people will use this board without a phy under Linux, honestly.
+Overlays would remove this "by default" node and add the replacing phy 
+if hardware plugged-in is different.
 
-Miquel
+By doing this we avoid having difficult situations where the most used 
+phy with this board is disabled or non existant and that we absolutely 
+need an overlay for such a basic thing as having Ethernet working 
+out-of-the-box...
+
+Just my $0.02, but it might simplify our life in the long run...
+
+Best regards,
+   Nicolas
