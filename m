@@ -2,53 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E65E179BE89
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CCF79BA95
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344125AbjIKVNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S1358123AbjIKWHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239889AbjIKOa6 (ORCPT
+        with ESMTP id S238118AbjIKNkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:30:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F908E4B;
-        Mon, 11 Sep 2023 07:30:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1001C433C8;
-        Mon, 11 Sep 2023 14:30:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694442653;
-        bh=snYNGcr82QoUeAqSC3YazeHaX6MLgfAk52uGDJwlVZ8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKn3VB35J76aOA9HHG/AVwwPD32ldQweziRlnzKe+8p6aWdPyCuIwF5Cut/r1KMLP
-         PHKjSyfL5Ba6oR+dhpo5e0Yqwtibxz5KGCSmWPgxNNpFRmcpJpzfj73EaDa1pF3UjI
-         p4rAwzt6cksTXqs+p+VX7ZbdL5ckTx6k76Decwoo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Wen Yang <wenyang.linux@foxmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Dylan Yudaken <dylany@fb.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.4 101/737] eventfd: prevent underflow for eventfd semaphores
-Date:   Mon, 11 Sep 2023 15:39:20 +0200
-Message-ID: <20230911134653.335839649@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
-References: <20230911134650.286315610@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+        Mon, 11 Sep 2023 09:40:11 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3085CC3;
+        Mon, 11 Sep 2023 06:40:06 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fbb10dec7so927653b3a.3;
+        Mon, 11 Sep 2023 06:40:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694439606; x=1695044406; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K9VDr84hSVbwi5hvH4wIjokLGVKj3hqHaN8d1hkVJY4=;
+        b=UwWHz2pUq8cdrgJIgHQaqu9ZAAOYpFvbuKLJbVAONbBkS3mqY6qGloQedqrfU0TYf9
+         HAxV9hdgskY6s6yQUggj3XTcjgWBKlxLMBVOQRFvF8mZB40VQSWFIbWkFklGdASMXZzE
+         /ZnZBv2mNGpRb8z5aEmY7nRtpGHZNWguBcKBRJnKXxJJII4JpL/nHrDojQUziLHMFHvm
+         o9o67VD45/t4UfA24FZROFHWwiZGqY7nDsDw83EEXiiIZShPZi7Nlr3g4rc1OB8ojkUs
+         eWQXSqEU+P+eYiE/oOsQeQd9ezkPHuWb0b5qDeCmS1noTvr2stDaiGRNsTwQB2YfHO3i
+         uY7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694439606; x=1695044406;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=K9VDr84hSVbwi5hvH4wIjokLGVKj3hqHaN8d1hkVJY4=;
+        b=jNxbsz9zISa4SBCnGJTjpOkptvRV/KrDrEUYmeIzK2LQmg9zG/5epUuy+3X2JtaVG+
+         FR1T+qf5m1Vr0gnNPCZESumIHDXkQGLYCCKM5tVHvAsVwv/59Npmks5NhFb99/Eyzhuw
+         4A8OD6mnIzHSFzWGyRDWvHApbUlLRuzII8INLx6pUKDHmSmxt829nLofu3bPqwFir+Rz
+         KPrdO6p5mGTTyUxrh1x0k6VJ9FI3ndOH7nJgSBLonpBBPa07YFp6ME00MCC2MAhT4ndc
+         ErJiVENsKNGEMJ/bN4Sz6SiCGn7hXZ4TNKu8DG2iEmrlBonN1Nla4UKYx6Ysbudga/vJ
+         9aew==
+X-Gm-Message-State: AOJu0YxROwbScqP11WlKOZSNsLmGqfIMsa2GN5uBvW36EYlus3TappU3
+        icUfdR3POfztyzLXtT06Qh0=
+X-Google-Smtp-Source: AGHT+IHl+4gbjB8OtkXTZb4JoAUuLBWU7WwHxuNnS5Pl8rXN09CaFnfnRlaNdAWTO0udNuAZHj3BVg==
+X-Received: by 2002:a05:6a21:33a8:b0:153:39d9:56fe with SMTP id yy40-20020a056a2133a800b0015339d956femr9510871pzb.47.1694439606062;
+        Mon, 11 Sep 2023 06:40:06 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id w14-20020a63934e000000b0056c52d25771sm5473916pgm.69.2023.09.11.06.40.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 06:40:05 -0700 (PDT)
+Message-ID: <514e7d3d-93ed-f2e3-0278-2bbf71e87693@gmail.com>
+Date:   Mon, 11 Sep 2023 20:40:00 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Basavaraj Natikar <Basavaraj.Natikar@amd.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Mehmet <mehmetmutinturk@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Input Devices <linux-input@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: amd-sfh module causes reboot and shutdown hangs randomly on hp
+ aero 13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,80 +78,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-6.4-stable review patch.  If anyone has any objections, please let me know.
+Hi,
 
-------------------
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-From: Wen Yang <wenyang.linux@foxmail.com>
+> My laptop (hp aero 13-be0024t) hangs at reboot and poweroff requiring physical poweroffs (long pressing the power button) when attached dmesg output is generated. But this seems to be random as sometimes I have a dmesg with no errors related to amd_sfh and I can cleanly reboot/poweroff. Blacklisting amd_sfh module fixes the problem. This problem started with kernel 6.2.x and still present in 6.5.2.
+> 
+> During shutdown/reboot console outputs:
+> 
+> "Failed to umount /oldroot..."
+> "kvm exiting virtualization..."
+> 
+> but cannot complete the process (waited for more than 1 hour).
 
-[ Upstream commit 758b492047816a3158d027e9fca660bc5bcf20bf ]
+See Bugzilla for the full thread and attached dmesg output for both hanging
+and no hanging conditions.
 
-For eventfd with flag EFD_SEMAPHORE, when its ctx->count is 0, calling
-eventfd_ctx_do_read will cause ctx->count to overflow to ULLONG_MAX.
+Anyway, I'm adding this regression to be tracked by regzbot:
 
-An underflow can happen with EFD_SEMAPHORE eventfds in at least the
-following three subsystems:
+#regzbot introduced: v6.1..v6.2 https://bugzilla.kernel.org/show_bug.cgi?id=217900
 
-(1) virt/kvm/eventfd.c
-(2) drivers/vfio/virqfd.c
-(3) drivers/virt/acrn/irqfd.c
+Thanks.
 
-where (2) and (3) are just modeled after (1). An eventfd must be
-specified for use with the KVM_IRQFD ioctl(). This can also be an
-EFD_SEMAPHORE eventfd. When the eventfd count is zero or has been
-decremented to zero an underflow can be triggered when the irqfd is shut
-down by raising the KVM_IRQFD_FLAG_DEASSIGN flag in the KVM_IRQFD
-ioctl():
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217900
 
-        // ctx->count == 0
-        kvm_vm_ioctl()
-        -> kvm_irqfd()
-           -> kvm_irqfd_deassign()
-              -> irqfd_deactivate()
-                 -> irqfd_shutdown()
-                    -> eventfd_ctx_remove_wait_queue(&cnt)
-                       -> eventfd_ctx_do_read(&cnt)
-
-Userspace polling on the eventfd wouldn't notice the underflow because 1
-is always returned as the value from eventfd_read() while ctx->count
-would've underflowed. It's not a huge deal because this should only be
-happening when the irqfd is shutdown but we should still fix it and
-avoid the spurious wakeup.
-
-Fixes: cb289d6244a3 ("eventfd - allow atomic read and waitqueue remove")
-Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Dylan Yudaken <dylany@fb.com>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Message-Id: <tencent_7588DFD1F365950A757310D764517A14B306@qq.com>
-[brauner: rewrite commit message and add explanation how this underflow can happen]
-Signed-off-by: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/eventfd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index 95850a13ce8d0..1ffbf7c1cd16d 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -189,7 +189,7 @@ void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
- {
- 	lockdep_assert_held(&ctx->wqh.lock);
- 
--	*cnt = (ctx->flags & EFD_SEMAPHORE) ? 1 : ctx->count;
-+	*cnt = ((ctx->flags & EFD_SEMAPHORE) && ctx->count) ? 1 : ctx->count;
- 	ctx->count -= *cnt;
- }
- EXPORT_SYMBOL_GPL(eventfd_ctx_do_read);
 -- 
-2.40.1
-
-
-
+An old man doll... just what I always wanted! - Clara
