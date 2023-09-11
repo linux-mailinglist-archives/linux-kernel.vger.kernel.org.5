@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F4979BC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43A779B76D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242721AbjIKU6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S1351974AbjIKVsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237346AbjIKMl3 (ORCPT
+        with ESMTP id S237365AbjIKMnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:41:29 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA28CEB;
-        Mon, 11 Sep 2023 05:41:25 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401b5516104so46739385e9.2;
-        Mon, 11 Sep 2023 05:41:25 -0700 (PDT)
+        Mon, 11 Sep 2023 08:43:32 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD64CEB;
+        Mon, 11 Sep 2023 05:43:28 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34e202a9cc9so14180055ab.2;
+        Mon, 11 Sep 2023 05:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694436083; x=1695040883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ac6H1Uz2Vd0TNGk9X+Ey+nGUJRUHGmDNDKA1cgLsa3Y=;
-        b=fgB8h4GxDhKJrsMU95fzNmTmYSiaWI2+JvK4PRWEoKpK9QwVwTo8gvlWj0MZzoixLh
-         cLa7iCKvajueMfCvpxlO/bkPBXXyXLEYiXblQUDKhbshjDCFr8FhqKGALvmXSCvBSMb/
-         yY2kpLVtmlGDFh5nC40C5KEs1mKNtLAbWwksHl3BZ/At71nwOnoh8Z1hFnF5WrYjzOpL
-         WPQsUep/roX1DroM0iazDTV3Thpml6N9f+0LIvtAuQQe8PlolwVaCi8ehquxVb0Axnj6
-         s98wasXaNBN+1fv6bywvaFk0eCrSNSSeIymOAIqoI3KvoByUsa90tfLboQ9JSnLqigTU
-         FT6A==
+        d=gmail.com; s=20221208; t=1694436207; x=1695041007; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Zm43wCuo+RFtKsT+lmSugiZ0vyZ8wM+jKL/z+ZJJj4=;
+        b=refEIejvVY7aa6Mqb4yHhx9WpZXkY7AIJf+Op+ivzTcuppWvz+zdSEH5BkAdDaoEJY
+         mCX+lpPhuId997leem46z6PtGh5O614qE2gU5K21iWCQwmtHe12GuYC6dy/J4Nj2EhJZ
+         ezzpAHsa2Xj8x6ljt2F856TKzU5Cq9EFkLydNi82KsEwipo6j6kDO/W+oiItWFx6RVCc
+         and4hiMCFj5qBEOwKr5oQsskpMYvEifsZbi4F7V1/+6lPL10KwEZswy4rpRW9TwnaoUr
+         Ft6t4VTzgQyEMzAfobIiKIlw1+tN976HlPnTkWHkfedKq3J2bPM+cSByeGT9PWPq/FSp
+         1aJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694436083; x=1695040883;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ac6H1Uz2Vd0TNGk9X+Ey+nGUJRUHGmDNDKA1cgLsa3Y=;
-        b=lGyLCqNDN0NUW59+eBGr8I3MoYSdNkyJGhD3OKSR8od5ENAx01NM00HyeXv8MgSHMj
-         DvNvcC6lGRZfK3vGL/KnoDnSzS5+H576IjvhKbb0BXXiFdJseTgebbl7vpidDjkITXal
-         gRkACzsMM99RHs+5VpQGNr8uLQ+CT3PwnoVyiPiyf1HGCcvSttzi/qI2sszADNCtWGpp
-         f/H5zk+hxWLQiYhDzpESzbqr8fgAkK6fA9gy0QFTMz8hcqBA0s31WlQ6RKNQueyj4bx7
-         AKVsukTRRdaRkM85Z5srB8TPs5iZ86YQFG4ace7UGM08w4VZfGQOd4/zK2L9TywXI41z
-         q8rQ==
-X-Gm-Message-State: AOJu0YygyJIXIu7vas4zpp9geiD/2zHNCRTvrvHTc573rQ8u7tc81mb8
-        8VWLJiJF1vPqanciM+fVyLkIMxV46ss=
-X-Google-Smtp-Source: AGHT+IHesgaYH5Wp7Jtmc0soZ1/OuIXyuMQEnobV7N+fv26TvJPsrXUuihJylYXx2+lv7LyISv3MSA==
-X-Received: by 2002:a05:600c:2482:b0:3fe:d6bf:f314 with SMTP id 2-20020a05600c248200b003fed6bff314mr8003301wms.39.1694436083361;
-        Mon, 11 Sep 2023 05:41:23 -0700 (PDT)
-Received: from [192.168.1.50] ([79.119.240.161])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05600c204d00b00402d7105035sm13040202wmg.26.2023.09.11.05.41.22
+        d=1e100.net; s=20230601; t=1694436207; x=1695041007;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Zm43wCuo+RFtKsT+lmSugiZ0vyZ8wM+jKL/z+ZJJj4=;
+        b=tuTQsU1mh7tizIJH4l4KFDfJWXM9kBlppkTRKnRw0nn6C68c99kMD+6EddDtDM0KvJ
+         oOVdWraWA6umhF7hUaUJ3HcLT16qVtkExIXNGn4YSceYDy95X2/1BLbSZT0XnyDjR/KW
+         hZA38MUQX0MAgAhFw5fZlqHIWRtQNHIOwZsSlOpftbeeBgptUYDV4Jqc+d+C/6OLPOVu
+         b2EI6X9xZ9/TawFVrJz4w4ziAbeRSbGiFsoiapph/63v3ZfTiu1nxeIqlkRON0JtgUe1
+         v9AdIdmvxUx9Jr2iocomNfNDuzwO/aK2YuQbDLXxp5+gJlBs4HHI3qz+fQgaP3BxtU3t
+         pK0A==
+X-Gm-Message-State: AOJu0Yy/Zw3NXG7eyGD01xEh3dFzzrJSZETKekjLAdx3BjKTOWgImw/Y
+        Pc2x5bNH2owh3U7c4xVKl/0=
+X-Google-Smtp-Source: AGHT+IGGiXR/R5Gx5xuyQHW47RZqNCQ7YKCZillVNtTmqOTuOGstwZT6wgqj4Gz67ukJ2KGC0U1NjQ==
+X-Received: by 2002:a92:c56b:0:b0:34f:7779:df7f with SMTP id b11-20020a92c56b000000b0034f7779df7fmr3849534ilj.0.1694436207164;
+        Mon, 11 Sep 2023 05:43:27 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l3-20020a056e0205c300b003459023deaasm2373384ils.30.2023.09.11.05.43.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 05:41:22 -0700 (PDT)
-Message-ID: <2984eff5-528e-4a27-bfa0-502210d84b79@gmail.com>
-Date:   Mon, 11 Sep 2023 15:41:21 +0300
+        Mon, 11 Sep 2023 05:43:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <2bc45165-2a2a-77b7-00bb-3fce567d8468@roeck-us.net>
+Date:   Mon, 11 Sep 2023 05:43:24 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Bitterblue Smith <rtl8821cerfe2@gmail.com>
-Subject: Re: [PATCH] wifi: rtl8xxxu: fix LED control code of RTL8192FU
-To:     Zenm Chen <zenmchen@gmail.com>, Jes.Sorensen@gmail.com
-Cc:     kvalo@kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pkshih@realtek.com
-References: <20230910002038.56362-1-zenmchen@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3] regulator (max5970): Add hwmon support
 Content-Language: en-US
-In-Reply-To: <20230910002038.56362-1-zenmchen@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
+        zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+References: <20230911113647.1259204-1-naresh.solanki@9elements.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <20230911113647.1259204-1-naresh.solanki@9elements.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,65 +79,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/09/2023 03:20, Zenm Chen wrote:
-> ASUS USB-N13 C1 is a wifi adapter based on a RTL8192FU chip and its LED
-> doesn't blink with the rtl8xxxu driver. This patch fix this via writing
-> the correct value to the register "REG_LEDCFG0".
+On 9/11/23 04:36, Naresh Solanki wrote:
+> Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
+> and current monitoring. This feature is seamlessly integrated through
+> the hwmon subsystem.
 > 
-> This was tested with these two wifi adapters:
-> ASUS USB-N13 C1	(vid=0x0b05, pid=0x18f1, rfe_type=0x1)
-> MERCURY MW310UH	(vid=0x0bda, pid=0xf192, rfe_type=0x5)
-> 
-> Signed-off-by: Zenm Chen <zenmchen@gmail.com>
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 > ---
->  .../realtek/rtl8xxxu/rtl8xxxu_8192f.c         | 24 ++++++++-----------
->  1 file changed, 10 insertions(+), 14 deletions(-)
+> Changes in V3:
+> - Update signed-off
+> - Add break
+> - Update hwmon dev register name to max5970
+> - Remove changes in Kconfig.
+> Changes in V2:
+> - default case added for switch statement
+> - Add dependency on HWMON
+> ---
+>   drivers/regulator/max5970-regulator.c | 126 ++++++++++++++++++++++++++
+>   1 file changed, 126 insertions(+)
 > 
-> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> index 28e93835e05a..ab6d4e4e228e 100644
-> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> @@ -2014,26 +2014,22 @@ static int rtl8192fu_led_brightness_set(struct led_classdev *led_cdev,
->  	struct rtl8xxxu_priv *priv = container_of(led_cdev,
->  						  struct rtl8xxxu_priv,
->  						  led_cdev);
-> -	u16 ledcfg;
-> +	u32 ledcfg;
->  
->  	/* Values obtained by observing the USB traffic from the Windows driver. */
->  	rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_0, 0x20080);
->  	rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_1, 0x1b0000);
->  
-> -	ledcfg = rtl8xxxu_read16(priv, REG_LEDCFG0);
-> -
-> -	if (brightness == LED_OFF) {
-> -		/* Value obtained like above. */
-> -		ledcfg = BIT(1) | BIT(7);
-> -	} else if (brightness == LED_ON) {
-> -		/* Value obtained like above. */
-> -		ledcfg = BIT(1) | BIT(7) | BIT(11);
-> -	} else if (brightness == RTL8XXXU_HW_LED_CONTROL) {
-> -		/* Value obtained by brute force. */
-> -		ledcfg = BIT(8) | BIT(9);
-> -	}
-> +	/* Enable LED0 GPIO and turn LED0/LED1 off. */
-> +	ledcfg = (rtl8xxxu_read32(priv, REG_LEDCFG0) | BIT(21)) & ~0xffff;
+> diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
+> index b56a174cde3d..208de66c0928 100644
+> --- a/drivers/regulator/max5970-regulator.c
+> +++ b/drivers/regulator/max5970-regulator.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/bitops.h>
+>   #include <linux/device.h>
+>   #include <linux/err.h>
+> +#include <linux/hwmon.h>
+>   #include <linux/module.h>
+>   #include <linux/io.h>
+>   #include <linux/of.h>
+> @@ -32,6 +33,121 @@ enum max597x_regulator_id {
+>   	MAX597X_SW1,
+>   };
+>   
+> +static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
+> +{
+> +	u8 reg_data[2];
+> +	int ret;
 > +
-> +	/* Values obtained by brute force. */
-> +	if (brightness == LED_ON)
-> +		ledcfg |= BIT(3) | BIT(11);
+> +	ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*val = (reg_data[0] << 2) | (reg_data[1] & 3);
+> +
+> +	return 0;
+> +}
+> +
+> +static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
+> +			u32 attr, int channel, long *val)
+> +{
+> +	struct max5970_data *ddata = dev_get_drvdata(dev);
+> +	struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
+> +	int ret;
+> +
+> +	switch (type) {
+> +	case hwmon_curr:
+> +		switch (attr) {
+> +		case hwmon_curr_input:
+> +			ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
+> +			/*
+> +			 * Calculate current from ADC value, IRNG range & shunt resistor value.
+> +			 * ddata->irng holds the voltage corresponding to the maximum value the
+> +			 * 10-bit ADC can measure.
+> +			 * To obtain the output, multiply the ADC value by the IRNG range (in
+> +			 * millivolts) and then divide it by the maximum value of the 10-bit ADC.
+> +			 */
+> +			*val = (*val * ddata->irng[channel]) >> 10;
+> +			/* Convert the voltage meansurement across shunt resistor to current */
+> +			*val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
+> +			return ret;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +
+> +	case hwmon_in:
+> +		switch (attr) {
+> +		case hwmon_in_input:
+> +			ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
+> +			/*
+> +			 * Calculate voltage from ADC value and MON range.
+> +			 * ddata->mon_rng holds the voltage corresponding to the maximum value the
+> +			 * 10-bit ADC can measure.
+> +			 * To obtain the output, multiply the ADC value by the MON range (in
+> +			 * microvolts) and then divide it by the maximum value of the 10-bit ADC.
+> +			 */
+> +			*val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
+> +			/* uV to mV */
+> +			*val = *val / 1000;
+> +			return ret;
+> +		default:
+> +			return -EOPNOTSUPP;
+> +		}
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static umode_t max5970_is_visible(const void *data,
+> +				  enum hwmon_sensor_types type,
+> +				  u32 attr, int channel)
+> +{
+> +	struct max5970_data *ddata = (struct max5970_data *)data;
+> +
+> +	if (channel >= ddata->num_switches)
+> +		return 0;
+> +
+> +	switch (type) {
+> +	case hwmon_in:
+> +		switch (attr) {
+> +		case hwmon_in_input:
+> +			return 0444;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	case hwmon_curr:
+> +		switch (attr) {
+> +		case hwmon_curr_input:
+> +			/* Current measurement requires knowledge of the shunt resistor value. */
+> +			if (ddata->shunt_micro_ohms[channel])
+> +				return 0444;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static const struct hwmon_ops max5970_hwmon_ops = {
+> +	.is_visible = max5970_is_visible,
+> +	.read = max5970_read,
+> +};
+> +
+> +static const struct hwmon_channel_info *max5970_info[] = {
+> +	HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
+> +	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
+> +	NULL
+> +};
+> +
+> +static const struct hwmon_chip_info max5970_chip_info = {
+> +	.ops = &max5970_hwmon_ops,
+> +	.info = max5970_info,
+> +};
+> +
+>   static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
+>   {
+>   	int ret, reg;
+> @@ -432,6 +548,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+>   	struct regulator_config config = { };
+>   	struct regulator_dev *rdev;
+>   	struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+> +	struct device *hwmon_dev;
+>   	int num_switches;
+>   	int ret, i;
+>   
+> @@ -485,6 +602,15 @@ static int max597x_regulator_probe(struct platform_device *pdev)
+>   		max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+>   	}
+>   
+> +	if (IS_ENABLED(CONFIG_HWMON)) {
 
-Can you explain in the commit message why you changed the
-LED_ON and LED_OFF branches? It's not obvious to me and they
-don't have anything to do with the hardware-controlled blinking.
+This either needs to be IS_REACHABLE, or you need to add "depends on HWMON || HWMON=n"
+to Kconfig. Otherwise there will be a build failure if CONFIG_HWMON=m and
+CONFIG_REGULATOR_MAX5970=y.
 
-> +	else if (brightness == RTL8XXXU_HW_LED_CONTROL)
-> +		ledcfg |= BIT(0) | BIT(1) | BIT(8) | BIT(9);
->  
-> -	rtl8xxxu_write16(priv, REG_LEDCFG0, ledcfg);
-> +	rtl8xxxu_write32(priv, REG_LEDCFG0, ledcfg);
->  
->  	return 0;
->  }
+Sorry, I thought I mentioned that before.
 
-My Comfast CF-826F still works fine with this patch.
+Guenter
+
+> +		hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970", max597x,
+> +								 &max5970_chip_info, NULL);
+> +		if (IS_ERR(hwmon_dev)) {
+> +			return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev),
+> +					     "Unable to register hwmon device\n");
+> +		}
+> +	}
+> +
+>   	if (i2c->irq) {
+>   		ret =
+>   		    max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+> 
+> base-commit: 41f02a383ac652f1a0b5538c5901b7ec93e37290
+
