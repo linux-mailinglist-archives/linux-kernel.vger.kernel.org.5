@@ -2,123 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E8F79AE65
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4733B79ADEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350924AbjIKVmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
+        id S1348575AbjIKV2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237364AbjIKMnT (ORCPT
+        with ESMTP id S237405AbjIKMsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:43:19 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2842CEB;
-        Mon, 11 Sep 2023 05:43:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1694436194;
-  x=1725972194;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=SBL7YdeBxdBTOUww15FA3CVSUVZQP5Z5Vgj3rVYX48k=;
-  b=bMLs648jnmLrycFxAd/NR5BsxC8iUY2JHzCklwdBxaRT/eE3CK4aJP2F
-   YCqYBj1BAqkRRCWOKam2opDiUxldqjSivifeEjTwB4LhMNDEoMBWdiEuc
-   SgQlGOgtNR5C8axpj/qOR723B/62QTLz8D/ayiKZmv2R20ujH+9e36iaC
-   WRojoIkZS5pt+9JsTjBJOujNznn8lpy9Gt1xRqzQxEmUgfyQxdlRP2F/i
-   XOHHDJhpq8SmO4cs7D2OfEfsHpihBiaNsoI+V+lL/eW+TyFWxbC/1pH6H
-   uW/qTjqTR4w2F2d1OJy64LDBgrVYDhsTHvA7aXTMBbgvkAgugbn20PErA
-   g==;
-From:   =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
-Date:   Mon, 11 Sep 2023 14:43:01 +0200
-Subject: [PATCH v2] iio: light: vcnl4000: Don't power on/off chip in config
+        Mon, 11 Sep 2023 08:48:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCA1E40
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694436498; x=1725972498;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pJOcQxihoUuaGhCbnnIn4KeEB6lgwTgNgU1tBY0rtcI=;
+  b=Wq8LNVNg+6Xty65+F9VPjcpaHK2B6KSfydjTSl4R4DFit8DoBLi5V4yH
+   yjiu6TViFh7SZYSyc3zaKEOfLt2sA88yAfvr8Apix7CicwpcKwhsJfKS3
+   mCQWqyOKo5WYCNUdDjiZuUrAI3t3zq8pcii/y1BRXIYhAk3WgjZKgmGDx
+   2eChD3KjVtsl1t5mlHJRqrcJnWD9m2LcBV+m7Q854piE8MEu7qaE/3mw1
+   qfAZ80h9N2BnmkI7Y0n1pFABLYeP9nBdiSOj5zdnSbbTLkx1JRwyTiaWk
+   Z3POjaXmGVhFHg2t/f3fHMOX+74RiWe3bV3GBBWNAhf9UdX/TbWCgyAKx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375424368"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="375424368"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:48:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813356209"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="813356209"
+Received: from lbinmo2x-mobl1.gar.corp.intel.com (HELO fedora..) ([10.249.254.187])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:48:06 -0700
+From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     intel-xe@lists.freedesktop.org
+Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Paulo R Zanoni <paulo.r.zanoni@intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7] Documentation/gpu: Add a VM_BIND async document
+Date:   Mon, 11 Sep 2023 14:47:46 +0200
+Message-ID: <20230911124746.39149-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Message-ID: <20230907-vcnl4000-pm-fix-v2-1-298e01f54db4@axis.com>
-X-B4-Tracking: v=1; b=H4sIAFQL/2QC/3WNTQ6CMBBGr2Jm7ZgpWkVX3sOwaKeDNJFCWtJgC
- He3sHf5vp+8BZJELwkehwWiZJ/8EApUxwNwZ8Jb0LvCUFF1pjvdMHP4XIgIxx5bP6PVtWNybWs
- 1Q3lZkwRtNIG77debNEncijFK2e+qV1O482ka4nc3Z7Wl/yVZoUJdG6VYOW2u/DSzTyceemjWd
- f0B7PKxRsYAAAA=
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>,
-        =?utf-8?q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436191; l=2532;
- i=marten.lindahl@axis.com; s=20230329; h=from:subject:message-id;
- bh=ML9qCkSy62+/e/ZwttKxao8jlCaohmo4AkMCQFSHeqY=;
- b=pWYIlAiRK7o6BthzsDkxg5tOxYpJfrT2uvzFep5zMW5S7HTXS8tHZDfPhD+jSm+f/JNKMWjfN
- hVGQJ0pTK4zCTNU7REUNq8VXKB6OmyWSvsLycvKFFpIdELRJUiUPv4K
-X-Developer-Key: i=marten.lindahl@axis.com; a=ed25519;
- pk=JfbjqFPJnIDIQOkJBeatC8+S3Ax3N0RIdmN+fL3wXgw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After enabling/disabling interrupts on the vcnl4040 chip the als and/or
-ps sensor is powered on or off depending on the interrupt enable bits.
-This is made as a last step in write_event_config.
+Add a motivation for and description of asynchronous VM_BIND operation
 
-But there is no reason to do this as the runtime PM handles the power
-state of the sensors. Interfering with this may impact sensor readings.
+v2:
+- Fix typos (Nirmoy Das)
+- Improve the description of a memory fence (Oak Zeng)
+- Add a reference to the document in the Xe RFC.
+- Add pointers to sample uAPI suggestions
+v3:
+- Address review comments (Danilo Krummrich)
+- Formatting fixes
+v4:
+- Address typos (Francois Dugast)
+- Explain why in-fences are not allowed for VM_BIND operations for long-
+  running workloads (Matthew Brost)
+v5:
+- More typo- and style fixing
+- Further clarify the implications of disallowing in-fences for VM_BIND
+  operations for long-running workloads (Matthew Brost)
+v6:
+- Point out that a gpu_vm is a virtual GPU Address space.
+  (Danilo Krummrich)
+- For an explanation of dma-fences point to the dma-fence documentation.
+  (Paolo Zanoni)
+- Clarify that VM_BIND errors are reported synchronously. (Paulo Zanoni)
+- Use an rst doc reference when pointing to the async vm_bind document
+  from the xe merge plan.
+- Add the VM_BIND documentation to the drm documentation table-of-content,
+  using an intermediate "Misc DRM driver uAPI- and feature implementation
+  guidelines"
+v7:
+- Update the error handling documentation to remove the VM error state.
 
-Consider the following:
- 1. Userspace makes sensor data reading which triggers RPM resume
-    (sensor powered on) and a RPM suspend timeout. The timeout is 2000ms
-    before RPM suspend powers the sensor off if no new reading is made
-    within the timeout period.
- 2. Userspace disables interrupts => powers sensor off
- 3. Userspace reads sensor data = 0 because sensor is off and the
-    suspend timeout has not passed. For each new reading made within the
-    timeout period the timeout is renewed with 2000ms and RPM will not
-    make a new resume (device was not suspended). So the sensor will
-    not be powered on.
- 4. No further userspace reading for 2000ms ends RPM suspend timeout and
-    triggers suspend (powers off already powered off sensor).
-
-Powering sensor off in (2) makes all consecutive readings made within
-2000ms to the previous reading (3) return invalid data.
-
-Skip setting power state when writing new event config.
-
-Fixes: 546676121cb9 ("iio: light: vcnl4000: Add interrupt support for vcnl4040")
-Fixes: bc292aaf9cb4 ("iio: light: vcnl4000: add illuminance irq vcnl4040/4200")
-Signed-off-by: Mårten Lindahl <marten.lindahl@axis.com>
+Cc: Paulo R Zanoni <paulo.r.zanoni@intel.com>
+Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Acked-by: Nirmoy Das <nirmoy.das@intel.com>
+Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+Reviewed-by: Matthew Brost <matthew.brost@intel.com>
+Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 ---
-Changes in v2:
-- Rephrasing of commit msg.
-- Added 2 Fixes tags:
-  1. First tag refers to the original patch introducing the bug.
-  2. Second tag is for a later patch extending the faulty condition introduced in original patch.
-- Link to v1: https://lore.kernel.org/r/20230907-vcnl4000-pm-fix-v1-1-58a11c1d5a6c@axis.com
----
- drivers/iio/light/vcnl4000.c | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/gpu/drm-vm-bind-async.rst       | 155 ++++++++++++++++++
+ .../gpu/implementation_guidelines.rst         |   9 +
+ Documentation/gpu/index.rst                   |   1 +
+ Documentation/gpu/rfc/xe.rst                  |   4 +-
+ 4 files changed, 167 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
+ create mode 100644 Documentation/gpu/implementation_guidelines.rst
 
-diff --git a/drivers/iio/light/vcnl4000.c b/drivers/iio/light/vcnl4000.c
-index 3a52b09c2823..fdf763a04b0b 100644
---- a/drivers/iio/light/vcnl4000.c
-+++ b/drivers/iio/light/vcnl4000.c
-@@ -1513,7 +1513,6 @@ static int vcnl4040_write_event_config(struct iio_dev *indio_dev,
+diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
+new file mode 100644
+index 000000000000..f12f794408b9
+--- /dev/null
++++ b/Documentation/gpu/drm-vm-bind-async.rst
+@@ -0,0 +1,155 @@
++.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++====================
++Asynchronous VM_BIND
++====================
++
++Nomenclature:
++=============
++
++* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
++
++* ``gpu_vm``: A virtual GPU address space. Typically per process, but
++  can be shared by multiple processes.
++
++* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
++  an IOCTL. The operations include mapping and unmapping system- or
++  VRAM memory.
++
++* ``syncobj``: A container that abstracts synchronization objects. The
++  synchronization objects can be either generic, like dma-fences or
++  driver specific. A syncobj typically indicates the type of the
++  underlying synchronization object.
++
++* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
++  for these before starting.
++
++* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
++  signals these when the bind operation is complete.
++
++* ``dma-fence``: A cross-driver synchronization object. A basic
++  understanding of dma-fences is required to digest this
++  document. Please refer to the ``DMA Fences`` section of the
++  :doc:`dma-buf doc </driver-api/dma-buf>`.
++
++* ``memory fence``: A synchronization object, different from a dma-fence.
++  A memory fence uses the value of a specified memory location to determine
++  signaled status. A memory fence can be awaited and signaled by both
++  the GPU and CPU. Memory fences are sometimes referred to as
++  user-fences, userspace-fences or gpu futexes and do not necessarily obey
++  the dma-fence rule of signaling within a "reasonable amount of time".
++  The kernel should thus avoid waiting for memory fences with locks held.
++
++* ``long-running workload``: A workload that may take more than the
++  current stipulated dma-fence maximum signal delay to complete and
++  which therefore needs to set the gpu_vm or the GPU execution context in
++  a certain mode that disallows completion dma-fences.
++
++* ``exec function``: An exec function is a function that revalidates all
++  affected gpu_vmas, submits a GPU command batch and registers the
++  dma_fence representing the GPU command's activity with all affected
++  dma_resvs. For completeness, although not covered by this document,
++  it's worth mentioning that an exec function may also be the
++  revalidation worker that is used by some drivers in compute /
++  long-running mode.
++
++* ``bind context``: A context identifier used for the VM_BIND
++  operation. VM_BIND operations that use the same bind context can be
++  assumed, where it matters, to complete in order of submission. No such
++  assumptions can be made for VM_BIND operations using separate bind contexts.
++
++* ``UMD``: User-mode driver.
++
++* ``KMD``: Kernel-mode driver.
++
++
++Synchronous / Asynchronous VM_BIND operation
++============================================
++
++Synchronous VM_BIND
++___________________
++With Synchronous VM_BIND, the VM_BIND operations all complete before the
++IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
++out-fences. Synchronous VM_BIND may block and wait for GPU operations;
++for example swap-in or clearing, or even previous binds.
++
++Asynchronous VM_BIND
++____________________
++Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
++IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
++before modifying the GPU page-tables, and signal the out-syncobjs when
++the modification is done in the sense that the next exec function that
++awaits for the out-syncobjs will see the change. Errors are reported
++synchronously.
++In low-memory situations the implementation may block, performing the
++VM_BIND synchronously, because there might not be enough memory
++immediately available for preparing the asynchronous operation.
++
++If the VM_BIND IOCTL takes a list or an array of operations as an argument,
++the in-syncobjs needs to signal before the first operation starts to
++execute, and the out-syncobjs signal after the last operation
++completes. Operations in the operation list can be assumed, where it
++matters, to complete in order.
++
++Since asynchronous VM_BIND operations may use dma-fences embedded in
++out-syncobjs and internally in KMD to signal bind completion,  any
++memory fences given as VM_BIND in-fences need to be awaited
++synchronously before the VM_BIND ioctl returns, since dma-fences,
++required to signal in a reasonable amount of time, can never be made
++to depend on memory fences that don't have such a restriction.
++
++To aid in supporting user-space queues, the VM_BIND may take a bind context.
++
++The purpose of an Asynchronous VM_BIND operation is for user-mode
++drivers to be able to pipeline interleaved gpu_vm modifications and
++exec functions. For long-running workloads, such pipelining of a bind
++operation is not allowed and any in-fences need to be awaited
++synchronously. The reason for this is twofold. First, any memory
++fences gated by a long-running workload and used as in-syncobjs for the
++VM_BIND operation will need to be awaited synchronously anyway (see
++above). Second, any dma-fences used as in-syncobjs for VM_BIND
++operations for long-running workloads will not allow for pipelining
++anyway since long-running workloads don't allow for dma-fences as
++out-syncobjs, so while theoretically possible the use of them is
++questionable and should be rejected until there is a valuable use-case.
++Note that this is not a limitation imposed by dma-fence rules, but
++rather a limitation imposed to keep KMD implementation simple. It does
++not affect using dma-fences as dependencies for the long-running
++workload itself, which is allowed by dma-fence rules, but rather for
++the VM_BIND operation only.
++
++Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
++select memory fences as out-fences since that gives greater flexibility for
++the kernel mode driver to inject other operations into the bind /
++unbind operations. Like for example inserting breakpoints into batch
++buffers. The workload execution can then easily be pipelined behind
++the bind completion using the memory out-fence as the signal condition
++for a GPU semaphore embedded by UMD in the workload.
++
++Multi-operation VM_BIND IOCTL error handling and interrupts
++===========================================================
++
++The VM_BIND operations of the IOCTL may error due to lack of resources
++to complete and also due to interrupted waits. In both situations UMD
++should preferably restart the IOCTL after taking suitable action. If
++UMD has over-committed a memory resource, an -ENOSPC error will be
++returned, and UMD may then unbind resources that are not used at the
++moment and restart the IOCTL. On -EINTR, UMD should simply restart the
++IOCTL and on -ENOMEM user-space may either attempt to free known
++system memory resources or abort the operation. If aborting as a
++result of a failed operation or signal delivery in a list of operations,
++KMD may choose to unwind all operations in the list or return to
++UMD in a driver-defined manner the number of operations actually
++completed. In the latter-case UMD should be given the option to restart
++the IOCTL from the operation immediately succeeding the last completed
++operation.
++Unbind operations are guaranteed not to cause any errors due to
++resource constraints.
++
++Sample uAPI implementations
++===========================
++Suggested uAPI implementations at the moment of writing can be found for
++the `Nouveau driver
++<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_.
++and for the `Xe driver
++<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_.
+diff --git a/Documentation/gpu/implementation_guidelines.rst b/Documentation/gpu/implementation_guidelines.rst
+new file mode 100644
+index 000000000000..138e637dcc6b
+--- /dev/null
++++ b/Documentation/gpu/implementation_guidelines.rst
+@@ -0,0 +1,9 @@
++.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++===========================================================
++Misc DRM driver uAPI- and feature implementation guidelines
++===========================================================
++
++.. toctree::
++
++   drm-vm-bind-async
+diff --git a/Documentation/gpu/index.rst b/Documentation/gpu/index.rst
+index e45ff0915246..37e383ccf73f 100644
+--- a/Documentation/gpu/index.rst
++++ b/Documentation/gpu/index.rst
+@@ -18,6 +18,7 @@ GPU Driver Developer's Guide
+    vga-switcheroo
+    vgaarbiter
+    automated_testing
++   implementation_guidelines
+    todo
+    rfc/index
  
- out:
- 	mutex_unlock(&data->vcnl4000_lock);
--	data->chip_spec->set_power_state(data, data->ps_int || data->als_int);
+diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
+index 2516fe141db6..e095b23e3dfd 100644
+--- a/Documentation/gpu/rfc/xe.rst
++++ b/Documentation/gpu/rfc/xe.rst
+@@ -138,8 +138,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
+ possible ways.
  
- 	return ret;
- }
-
----
-base-commit: 7ba2090ca64ea1aa435744884124387db1fac70f
-change-id: 20230907-vcnl4000-pm-fix-b58dc0dffb5c
-
-Best regards,
+ As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
+-various flavors, error handling and a sample API should be documented here or in
+-a separate document pointed to by this document.
++various flavors, error handling and sample API suggestions are documented in
++:doc:`The ASYNC VM_BIND document </gpu/drm-vm-bind-async>`.
+ 
+ Userptr integration and vm_bind
+ -------------------------------
 -- 
-Mårten Lindahl <marten.lindahl@axis.com>
+2.41.0
 
