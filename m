@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C1279B79D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183E79BCAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245626AbjIKVJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
+        id S239011AbjIKVVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243481AbjIKROS (ORCPT
+        with ESMTP id S243539AbjIKRS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:14:18 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68662121;
-        Mon, 11 Sep 2023 10:14:14 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50078e52537so7920412e87.1;
-        Mon, 11 Sep 2023 10:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694452452; x=1695057252; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zHC159t7V9+jR5+JKKYFZcnb7vWoVrDrxr51MoqDMR0=;
-        b=olPYC3vy2/YTJC7CHs4Z2Bor3PzrsSedq7M5W/eLa0pPrHIwR+tY/ABq0bO+rsGBtU
-         ighBp9ZrihlWZnS6qTSKiC+Qhc3ws+yHtK4hwRF3biBdI1wpi9N03+/8cfjEmVzSYszF
-         C4N1eYC+3Oq5GF01U6BS5LJroBlNMb8xifkepQWwJDqLxP71n3eEZzKQ+Dy2iXrkxyzc
-         8ILGXloISaJL80e4bRRJa6JZJp/VRt5BxcM+N8paYO9rOo/gbVQnBhKffznQp0m4yLhz
-         BONRXXaqV37+O2ZBt/l/tyhFb8Bg8cfph+yMX15roursfGebnOV9OL5zuv8NNp8raYKA
-         M1Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694452452; x=1695057252;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zHC159t7V9+jR5+JKKYFZcnb7vWoVrDrxr51MoqDMR0=;
-        b=oUfWoqn8CplyDbL5XcHhozD5l7TVpTMl8wczVpOBaFCv1jnAKEmRZcJ2dJ3nUoJwS+
-         QArLJfPSJSU9mVgnJk9WlB29I0ElFTjJG7jV7Bl191gLP7fMJh/U4v1b62DQAA0TcOkF
-         Wad666qN6gyO872EoWdPpnaa7bO+Y4A4c1eXQtfq2l1Wq5e5EWLoyJ3Nu06Y0Sns7PXB
-         oXhoraMN4/REu9QLfwFuKadcyFyWwKqUitT1yP5IfcWCPLglZDzz9Stq9rv6H2mvtWtC
-         y8N7Dm+8vCvkX2zqYOkzSUCKtDCtQulcA4Uyvgnzjx4aXoSJeMiQFXwj4yA/q7jS7xXD
-         QhkA==
-X-Gm-Message-State: AOJu0YxglDJbS31kwbpDevtnO36V1JjOnNy90kREmekodFagixVAXRHc
-        KIyTNgxNTkXekBLwCXx2Yys=
-X-Google-Smtp-Source: AGHT+IEwQdzEpm/rkWP0lYNwKEDMgXRO32q/LHTllN9ths+CuNHroYFDnlnZss50NYMaaERchNT6MA==
-X-Received: by 2002:a05:6512:3e0f:b0:4f8:4245:ed57 with SMTP id i15-20020a0565123e0f00b004f84245ed57mr10590985lfv.35.1694452451839;
-        Mon, 11 Sep 2023 10:14:11 -0700 (PDT)
-Received: from localhost.localdomain (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id b9-20020a170906490900b00992f2befcbcsm5631012ejq.180.2023.09.11.10.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 10:14:11 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     wens@csie.org, samuel@sholland.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] ARM: dts: sun8i-r40: Add interconnect to video-codec
-Date:   Mon, 11 Sep 2023 19:14:07 +0200
-Message-ID: <20230911171407.1572030-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 11 Sep 2023 13:18:27 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9B31AD;
+        Mon, 11 Sep 2023 10:18:22 -0700 (PDT)
+Date:   Mon, 11 Sep 2023 17:18:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694452700;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=867yLIomPbzGLMNy6s8oxhGFE6oZmpPevaskEwqcT3I=;
+        b=foWTQah0jByvHUUGQGZrfp6+CKSLZo9Nsyahb/IWgTRUxLhjSQ0jANuish83dCbTNoAdLA
+        XqzXoF6OsNJAwNQ3nwx3PJvaQwGcDSquGh6MKQtGuPxq9xWvSqI5McO4mBhl/gjDUqyqFt
+        Tz0n5VeF1xGqwNWiVzXUgD4mbfMzUF/uywFGQOjscrTH82+DKJTC/M2j/b16nAfX2xAlkJ
+        LLSOV6/G7QQedPsd6X+67Lfdxp5luz9LJEGu3CVPQOxDkDj9JoNEEdagP56q6fO+2Zw9hf
+        MGmHnDTxX7RsGvXClW5ZdTOtGkPYh5Fdgx/wu3nkYo12fP9GmimIW254TPtIyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694452700;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=867yLIomPbzGLMNy6s8oxhGFE6oZmpPevaskEwqcT3I=;
+        b=6NINBcfWk9RgsXZ4HiQ6NmlGotbL9nxcUy9vK+O72v9gc7Mcp+dd6YZUQi9EFh7c9rUi9e
+        yLD4/mE9DEpcPkBA==
+From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/platform/uv: Use alternate source for socket to
+ node data
+Cc:     Steve Wahl <steve.wahl@hpe.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169445269945.27769.14010917111299045082.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Video codec needs interconnect, so driver knows that it needs to adjust
-DMA addresses.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Commit-ID:     5290e88ba2c742ca77c5f5b690e5af549cfd8591
+Gitweb:        https://git.kernel.org/tip/5290e88ba2c742ca77c5f5b690e5af549cfd8591
+Author:        Steve Wahl <steve.wahl@hpe.com>
+AuthorDate:    Mon, 07 Aug 2023 09:17:30 -05:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Mon, 11 Sep 2023 10:06:22 -07:00
+
+x86/platform/uv: Use alternate source for socket to node data
+
+The UV code attempts to build a set of tables to allow it to do
+bidirectional socket<=>node lookups.
+
+But when nr_cpus is set to a smaller number than actually present, the
+cpu_to_node() mapping information for unused CPUs is not available to
+build_socket_tables(). This results in skipping some nodes or sockets
+when creating the tables and leaving some -1's for later code to trip.
+over, causing oopses.
+
+The problem is that the socket<=>node lookups are created by doing a
+loop over all CPUs, then looking up the CPU's APICID and socket. But
+if a CPU is not present, there is no way to start this lookup.
+
+Instead of looping over all CPUs, take CPUs out of the equation
+entirely. Loop over all APICIDs which are mapped to a valid NUMA node.
+Then just extract the socket-id from the APICID.
+
+This avoid tripping over disabled CPUs.
+
+Fixes: 8a50c5851927 ("x86/platform/uv: UV support for sub-NUMA clustering")
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/all/20230807141730.1117278-1-steve.wahl%40hpe.com
 ---
- arch/arm/boot/dts/allwinner/sun8i-r40.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/apic/x2apic_uv_x.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/allwinner/sun8i-r40.dtsi b/arch/arm/boot/dts/allwinner/sun8i-r40.dtsi
-index 4ef26d8f5340..a5b1f1e3900d 100644
---- a/arch/arm/boot/dts/allwinner/sun8i-r40.dtsi
-+++ b/arch/arm/boot/dts/allwinner/sun8i-r40.dtsi
-@@ -338,6 +338,8 @@ video-codec@1c0e000 {
- 			resets = <&ccu RST_BUS_VE>;
- 			interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
- 			allwinner,sram = <&ve_sram 1>;
-+			interconnects = <&mbus 4>;
-+			interconnect-names = "dma-mem";
- 		};
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index d9f5d74..205cee5 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -1533,7 +1533,7 @@ static void __init build_socket_tables(void)
+ {
+ 	struct uv_gam_range_entry *gre = uv_gre_table;
+ 	int nums, numn, nump;
+-	int cpu, i, lnid;
++	int i, lnid, apicid;
+ 	int minsock = _min_socket;
+ 	int maxsock = _max_socket;
+ 	int minpnode = _min_pnode;
+@@ -1584,15 +1584,14 @@ static void __init build_socket_tables(void)
  
- 		mmc0: mmc@1c0f000 {
--- 
-2.42.0
-
+ 	/* Set socket -> node values: */
+ 	lnid = NUMA_NO_NODE;
+-	for_each_possible_cpu(cpu) {
+-		int nid = cpu_to_node(cpu);
+-		int apicid, sockid;
++	for (apicid = 0; apicid < ARRAY_SIZE(__apicid_to_node); apicid++) {
++		int nid = __apicid_to_node[apicid];
++		int sockid;
+ 
+-		if (lnid == nid)
++		if ((nid == NUMA_NO_NODE) || (lnid == nid))
+ 			continue;
+ 		lnid = nid;
+ 
+-		apicid = per_cpu(x86_cpu_to_apicid, cpu);
+ 		sockid = apicid >> uv_cpuid.socketid_shift;
+ 
+ 		if (_socket_to_node[sockid - minsock] == SOCK_EMPTY)
