@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0868E79BC50
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE1679B690
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355650AbjIKWBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S1353876AbjIKVvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237656AbjIKNF5 (ORCPT
+        with ESMTP id S237673AbjIKNIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:05:57 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A393DF;
-        Mon, 11 Sep 2023 06:05:48 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 38CEF60004;
-        Mon, 11 Sep 2023 13:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694437547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VwIYsqLUnY+qjK/+Si2acqNJrj9pOQtmxP0WNxCQT64=;
-        b=Ju0jNKa1DfjDdVEOGca+OtlrWcjg+2BqJgRZfn753HkWcFLYPaMRZ9UrsphyjWn7y9ilq/
-        0cYvAlkrdvSgMcTL/nzM3sf2bTQYX7eDhiG1C5SzJwgbG7aSiQcaWh7DbrCqFJRpnlBioF
-        7p4LtAslZ7f+HFKBmo/1PxXQ9hzszvl1JrS2xCAwYYl5dEahVISzosQ2OUKCX0zxaFbWEO
-        8RoSx6QHHC/INgrZ30TgPi3NfpqktifbI3l+l26VZcbF4lzNtLVLvbpnIPo0lRv5rkgw+V
-        w4sFFmiebQIBk04mvmWtVqtav85esJQn1nwNxDH8MefDomRLV1fHk0i2YEeCLQ==
-Date:   Mon, 11 Sep 2023 15:05:44 +0200
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>,
-        thomas.petazzoni@bootlin.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [RFC PATCH net-next 1/7] net: phy: introduce phy numbering and
- phy namespaces
-Message-ID: <20230911150544.5304e763@fedora>
-In-Reply-To: <20230908083608.4f01bf2c@kernel.org>
-References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
-        <20230907092407.647139-2-maxime.chevallier@bootlin.com>
-        <ZPmicItKuANpu93w@shell.armlinux.org.uk>
-        <20230907141904.1be84216@pc-7.home>
-        <20230908083608.4f01bf2c@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 11 Sep 2023 09:08:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63102E5;
+        Mon, 11 Sep 2023 06:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694437680; x=1725973680;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hhntH08KwDzWZFhlYntAoxLtfPyiIglkNSydQprvVBY=;
+  b=et+QbcxD/gVNwp6hJ9hLvxBVpnX9AkX+GsWJbZvMmLffCFd9FnhX9QpJ
+   Moy/KM1qcGLivqvXu/RvfDD3owJgoY/M+FKgumRfAN7wX382+SjNcTzDX
+   B9Y5uibMKXCbVb1rMb96orDyWDOwrpVkDsQgRa/7Y3T7bcPviDkucGZo5
+   zZeVltUpxEM4PbuRseVjafP2BrsNviVVisYDOKWI//zhk9h40QWoUYjUW
+   7R7Xyt6F8PJ1Cdo+apLSInY5ZFuIIYFyfQg+YVSAPxPfLspFdPio0HH6L
+   YSoS/TJQUhiLnRg8zSWBp67uzSM4Lk7jaaJlgjUa1rt28YWVyylI78c04
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357514643"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="357514643"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:07:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858309826"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="858309826"
+Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
+  by fmsmga002.fm.intel.com with ESMTP; 11 Sep 2023 06:07:56 -0700
+From:   sharath.kumar.d.m@intel.com
+To:     helgaas@kernel.org
+Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
+Subject: [PATCH v3 0/2] PCI: altera: add support to agilex family
+Date:   Mon, 11 Sep 2023 18:38:31 +0530
+Message-Id: <20230911130833.1775668-1-sharath.kumar.d.m@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230908194842.GA304176@bhelgaas>
+References: <20230908194842.GA304176@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jakub,
+From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-On Fri, 8 Sep 2023 08:36:08 -0700
-Jakub Kicinski <kuba@kernel.org> wrote:
+added new callback for
+1) read,write to root port configuration registers
+2) read,write to endpoint configuration registers
+3) root port interrupt handler
 
-> On Thu, 7 Sep 2023 14:19:04 +0200 Maxime Chevallier wrote:
-> > > I think you can simplify this code quite a bit by using idr.
-> > > idr_alloc_cyclic() looks like it will do the allocation you want,
-> > > plus the IDR subsystem will store the pointer to the object (in
-> > > this case the phy device) and allow you to look that up. That
-> > > probably gets rid of quite a bit of code.
-> > > 
-> > > You will need to handle the locking around IDR however.    
-> > 
-> > Oh thanks for pointing this out. I had considered idr but I didn't spot
-> > the _cyclic() helper, and I had ruled that out thinking it would re-use
-> > ids directly after freeing them. I'll be more than happy to use that.  
-> 
-> Perhaps use xarray directly, I don't think we need the @base offset or
-> quick access to @next which AFAICT is the only reason one would prefer
-> IDR?
+agilex and newer platforms need to implemant the callback and generic root 
+port driver should work ( without much changes ) , legacy platforms (arria
+ and startix) implement configuration read,write directly in wrapper 
+api _altera_pcie_cfg_read/_altera_pcie_cfg_write
 
-Oh indeed xa_alloc_cyclic looks to fit perfectly, thanks !
+changelog v2:
+saperated into two patches
+1.refactored the driver for easily portability to future Altera FPGA
+platforms
+2.added support for "Agilex" FPGA
 
-Maxime
+this driver supports PCI RP IP on Agilex FPGA, as these are FPGA its up
+to the user to add PCI RP or not ( as per his needs). we are not adding
+the device tree as part of this commit. we are expecting the add device
+tree changes only if he is adding PCI RP IP in his design
+
+changelog v3:
+incorporate review comments from Bjorn Helgaas
+
+
+D M Sharath Kumar (2):
+  PCI: altera: refactor driver for supporting new platforms
+  PCI: altera: add support for agilex family fpga
+
+ drivers/pci/controller/pcie-altera.c | 305 ++++++++++++++++++++++++---
+ 1 file changed, 275 insertions(+), 30 deletions(-)
+
+-- 
+2.34.1
+
