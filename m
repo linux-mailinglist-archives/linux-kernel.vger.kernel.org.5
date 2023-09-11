@@ -2,108 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B06D79A260
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCEB79A25F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbjIKEXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 00:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S232830AbjIKEXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 00:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjIKEXj (ORCPT
+        with ESMTP id S229593AbjIKEXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 00:23:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A27114
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 21:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694406215; x=1725942215;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5YeNdzj3Jf/II7HRjwPf+GVNy6Sw8XS40n02pDqCnMI=;
-  b=A9umH4ymK2QZxsHQr2QTXCD0q0Z43pkBziS3pIxH8tLxe4qyvvykNmAp
-   y/ExOqzCm1PX1vEurkQIsk4x/JBcMp1bXGezB8hBFHU3oSiPyiST8a7zg
-   b7tFwxrriSvn+yQK2MB1iu0Tme+EipOs4g2mT1qOrEbm/Km2Dz+/Q3uV2
-   SqOvXAYeIJJ0ccS5if18CIy3ak3bD88oUmxJJnpkZhfN/38W3DIEOXQta
-   PNAQ7/pKfTDsL2/pDs+d942xgy+tjFv/IVVIMbzpXtd0AA2oc5JcGpnMy
-   xAjXa9zUUk5I4vg5VphMDTOB2ygj32ECEdmysxpPzGsO/RHG8LTP1qau+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="381793752"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="381793752"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 21:23:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="808685406"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="808685406"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Sep 2023 21:23:33 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfYSQ-0005mu-2V;
-        Mon, 11 Sep 2023 04:23:30 +0000
-Date:   Mon, 11 Sep 2023 12:23:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: drivers/thermal/qcom/tsens-v0_1.c:296:31: warning: 'ops_v0_1'
- defined but not used
-Message-ID: <202309111222.B4qyTl1x-lkp@intel.com>
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678BA106;
+        Sun, 10 Sep 2023 21:23:34 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7950fac19f2so154553639f.3;
+        Sun, 10 Sep 2023 21:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694406213; x=1695011013; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwezSlz+P0+Z2mHsdJjGRZIZ23KKBUbArptodkuCCLA=;
+        b=DSh+3ypCeDiXkYqFcSQbHWFVV+zM+aKANtHGzr8K+egYS0pTFagFZUeQFA5Hx+NB92
+         X9Z2w31JldD5SFq81vPkJzMaTk79xbcsAYEM7JSSlUWKoiD/xSQ1ux1C/mY+MBUHHp9V
+         vuh4rirfn4MQ9gt0aZfy1gkCudQyI887wo37do/N1hlxH8yEK5+j7W767eLF30Bcpqjc
+         +N/FUY8lciBD75NO9jilM8sxrURHPfJB/fj/ceGo9vKGEjIa9QlPQt900uwN90gIcA4h
+         mTdislaY1zZbZdpRGJw32LXlxDbwA0xfe4ZRdZvK47iMi34vq5hqgub2D1YHLDwEG9sa
+         5jUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694406213; x=1695011013;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZwezSlz+P0+Z2mHsdJjGRZIZ23KKBUbArptodkuCCLA=;
+        b=X+Mlx29aSyHD2054czN45w2aQTVpk3DGQCiP288/oNnVGPp0Bi4vP5b4Rl16CR3MYs
+         AyJ6vKdXMiI3GO3vzxjjaK6aRY7heXMKK5eQBfmaFZKBvpRgL0iM4Wr5BoEymfj44oeZ
+         G+ET5ZXceHiss3uqZ48rGlSQDvFVV5Y4paY/MTQfU+yYkbnMqIuzEgXLyKQ1a8nd+4BY
+         Vy4xBSRvfyQNII/lytCWTYvwMtgCeGMs1Wlx37gsNWrP2UEi9aTGLD29TEBR4CsLH1PL
+         2BZQjkbQuclfxSgWeNlmTTbwDe2HSM+UN7xXqRz5ipVarliY+3epaO0vNPKzIGeBYY++
+         Jdgw==
+X-Gm-Message-State: AOJu0YyYsEjSLCDw0hB50RXCHHnqF/lHdfGCz8vm4RbcbPpr8dmzuw2k
+        mjdaKFa/CJMjiQBvf0K0NiQ=
+X-Google-Smtp-Source: AGHT+IFPotVSX268QJNoA1xH2Nf34ADPSLxJtflUJsCH7TRnOtT7edLvJ2am/yD7hGinw2WC2yPt8A==
+X-Received: by 2002:a92:c568:0:b0:34f:784f:f214 with SMTP id b8-20020a92c568000000b0034f784ff214mr2238827ilj.9.1694406213616;
+        Sun, 10 Sep 2023 21:23:33 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r6-20020a92c506000000b0034ab4a2e0d5sm2136172ilg.70.2023.09.10.21.23.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Sep 2023 21:23:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <5acb9307-2be1-dcd2-fdb7-b2842c7ff24d@roeck-us.net>
+Date:   Sun, 10 Sep 2023 21:23:30 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jdelvare@suse.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230911034150.181880-1-saravanan@linumiz.com>
+ <20230911034150.181880-4-saravanan@linumiz.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 3/3] hwmon: (pmbus/mpq2286) Add a support for mpq2286
+ Power Management IC
+In-Reply-To: <20230911034150.181880-4-saravanan@linumiz.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
+On 9/10/23 20:41, Saravanan Sekar wrote:
+> The MPQ2286 is a programmable, high frequency synchronous buck regulator
+> designed to power a variety of Automotive system peripherals. Single buck
+> converters with hardware monitoring capability is configurable over PMBus
+> interface.
+> 
+> Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
+> ---
+>   drivers/hwmon/pmbus/mpq7932.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/hwmon/pmbus/mpq7932.c b/drivers/hwmon/pmbus/mpq7932.c
+> index af3e5e9590c8..3ffeece28e2d 100644
+> --- a/drivers/hwmon/pmbus/mpq7932.c
+> +++ b/drivers/hwmon/pmbus/mpq7932.c
+> @@ -21,6 +21,7 @@
+>   #define MPQ7932_N_VOLTAGES		256
+>   #define MPQ7932_VOUT_MAX		0xFF
+>   #define MPQ7932_NUM_PAGES		6
+> +#define MPQ2286_NUM_PAGES		1
+>   
+>   #define MPQ7932_TON_DELAY		0x60
+>   #define MPQ7932_VOUT_STARTUP_SLEW	0xA3
+> @@ -130,12 +131,14 @@ static int mpq7932_probe(struct i2c_client *client)
+>   
+>   static const struct of_device_id mpq7932_of_match[] = {
+>   	{ .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
+> +	{ .compatible = "mps,mpq2286", .data = (void *)MPQ2286_NUM_PAGES },
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, mpq7932_of_match);
+>   
+>   static const struct i2c_device_id mpq7932_id[] = {
+>   	{ "mpq7932", },
+> +	{ "mpq2286", },
 
-FYI, the error/warning still remains.
+Please keep alphabetic order.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 6812d1dfbca99cd5032683354bf50e0002b2aa02 thermal/drivers/qcom/tsens-v0_1: Fix mdm9607 slope values
-date:   3 months ago
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230911/202309111222.B4qyTl1x-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309111222.B4qyTl1x-lkp@intel.com/reproduce)
+>   	{ },
+>   };
+>   MODULE_DEVICE_TABLE(i2c, mpq7932_id);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309111222.B4qyTl1x-lkp@intel.com/
+This is one of those super-secret automotive chips where almost no information
+is available to the public. I'll need authoritative confirmation that all the
+various parameters (b. m, output voltage format, minimum and maximum output
+voltage, step size) match mpq7932 exactly. That is rarely the case, so consider
+me skeptic.
 
-All warnings (new ones prefixed by >>):
+Guenter
 
->> drivers/thermal/qcom/tsens-v0_1.c:296:31: warning: 'ops_v0_1' defined but not used [-Wunused-const-variable=]
-     296 | static const struct tsens_ops ops_v0_1 = {
-         |                               ^~~~~~~~
-
-
-vim +/ops_v0_1 +296 drivers/thermal/qcom/tsens-v0_1.c
-
-c19970548edc35 Amit Kucheria    2019-03-20  295  
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01 @296  static const struct tsens_ops ops_v0_1 = {
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01  297  	.init		= init_common,
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01  298  	.calibrate	= tsens_calibrate_common,
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01  299  	.get_temp	= get_temp_common,
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01  300  };
-51d78b8b1beba2 Dmitry Baryshkov 2023-01-01  301  
-
-:::::: The code at line 296 was first introduced by commit
-:::::: 51d78b8b1beba247e1e4314420d98acb0732c4b7 thermal/drivers/tsens: Drop single-cell code for mdm9607
-
-:::::: TO: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-:::::: CC: Daniel Lezcano <daniel.lezcano@linaro.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
