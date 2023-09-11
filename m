@@ -2,127 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AFA79A3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D48479A3F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbjIKGwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S232562AbjIKGyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjIKGwa (ORCPT
+        with ESMTP id S229648AbjIKGyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:52:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC80C106
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694415145; x=1725951145;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4vB32nanE+MDEqTy1CJdYDHQ1Wfx+YCcuQAd0vYkfI0=;
-  b=WKua4m95IaMDYpXoH7yZroqz2WnLcZYw+gfRZZmKsg9Fvgbh4+XKY+AX
-   UTMBQEQQQJLu4I8VRCxl6CvJxKbNVrWBdxxXNbAtBmMAGzljMx81F5Y3Y
-   /XaT3D/SNjv+0DmPJU3kbvJQpWy81llZHfhgjpTfqVS00jr83j+fPoehX
-   WNoSTPSia3DH2m8GtKdoyRsEjNDBga/8WzXlPBtRdPme8CPHz08bnJoGi
-   7ejVDMoFfBTtmJMJrXACoRhpa2hUWDXEladGB5nnGvH0RDckWgh6Dca02
-   6OxGL9QYabVCFF1AQ7PZkIUph5N4AQ/BUCW22AgR9My/6xsVP+JgT7wkv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="380707657"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="380707657"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 23:51:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="746303083"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="746303083"
-Received: from vcouthon-mobl1.ger.corp.intel.com (HELO [10.251.216.222]) ([10.251.216.222])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Sep 2023 23:51:52 -0700
-Message-ID: <e8880daf-8f74-4350-96c4-d625272aed35@linux.intel.com>
-Date:   Mon, 11 Sep 2023 09:51:41 +0300
+        Mon, 11 Sep 2023 02:54:54 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F275612E
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:54:49 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-49441300156so2195595e0c.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 23:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694415289; x=1695020089; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WXyOh/69L+jj7btllxiqwEkB6oTOH+/vnWCCjG27dFA=;
+        b=EfUZRQoXMnqf5+GCzhjWkcbmYPD7oYTMpyMhfwHWiIOMg1RuQqTS8pvIgxj8kfE6bg
+         3Kn+FNx2Tk2vYjitAwQR0qJ/enRvTj0MFZI94tR1RV2iJtkEQxtDEHW6+QUejmBL6xfR
+         SG+gLKdsHZtjTJmTuWwHmlEK/H+nIrl5+gJ/uWs40gq986cvaeuVMwgp0SDnwGGbVERw
+         jbcsoV/djpVS+qeSQJ28ITnRozoq1MbZ0eRr0Brx7Be/4LkV2XPwhxLQDv14p263CaKd
+         91C2jKDTM3eXV+ggumhfnrSqLncdALkGcOLDZa3BUT82G8vjjTFQwyAW68j5ww260Qpi
+         QuHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694415289; x=1695020089;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WXyOh/69L+jj7btllxiqwEkB6oTOH+/vnWCCjG27dFA=;
+        b=Q8oX1O65uOI4HUrzGcrPl64bjxX8LMfsiCR9XZ7sNmX879gxVfqabpk0eZodLQf06O
+         OSb7hkn8yc041FZ3IX0sn/oC40l7f5goWtyL8gv9C4NuRVSbx606xgR88OQ6O2KGptgH
+         IusBPDKf/Ho3th25XLRvC3J8byf6HLYrplhKjm9jstQZrIwdI+uhClTVWzF++fBkdF6Y
+         p8QxaklMwUrBk8IyBhmv+iExRGkPmH2MRpaBBkztEAPN6TkesWdeQ+B/7h/xO53Zn2s8
+         0bQpU46uWKRDZqik0ulStbdrwdSDTNcQY9WTxG9et4klAN81WTeaedifYDB3v62pMLLr
+         06Nw==
+X-Gm-Message-State: AOJu0YxchEmej7aFWf/SjR+cr+T2Zgvr7V0Jlm9+fG9+Tz+Toj/Um4wp
+        af/sIrACpqNlTOc9fGtz8JQ5fgrz9pD661LwjxY/DA==
+X-Google-Smtp-Source: AGHT+IHMaBeRWzx5kAez/oDd4wxSARcUvFTxaLdrWRenoyGrKpOx/Yvan6s1lQB6Ld6Y9huwGl7YpPxR8EaYgMz5dSs=
+X-Received: by 2002:a05:6122:12eb:b0:493:fbe7:e71d with SMTP id
+ k11-20020a05612212eb00b00493fbe7e71dmr4048706vkp.6.1694415288993; Sun, 10 Sep
+ 2023 23:54:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
- callbacks
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
- <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
- <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
- <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
- <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
- <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
-From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <6d39eac7-06c7-45f0-0318-72be1753641f@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230902174547.71316-1-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20230902174547.71316-1-biju.das.jz@bp.renesas.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 11 Sep 2023 08:54:37 +0200
+Message-ID: <CAMRc=MctvBdH91mfSr-1ODy3sEKtPtvcWR03NiHr6rFbrA82Lw@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: Drop at24_get_chip_data()
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/09/2023 20:29, Pierre-Louis Bossart wrote:
->> I think find all this very confusing, because there is no workqueue used
->> in the remove steps. The workqueue is only used ONCE during the probe.
-> 
-> Maybe we should just remove any references to workqueues, and have
-> 
-> probe_start (cannot run in a wq)
-> probe (may run in a wq)
-> remove (cannot run in a wq, needs to call cancel_work_sync() if the
-> probe runs in a wq)
-> remove_last (cannot run in a wq, releases all resources acquired in
-> probe_start)
-> 
-> Or something similar that shows the symmetry between steps and when the
-> wq is allowed.
+On Sat, Sep 2, 2023 at 7:45=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.com=
+> wrote:
+>
+> Replace at24_get_chip_data()->i2c_get_match_data() as it is
+> redundant.
+>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
+>  drivers/misc/eeprom/at24.c | 32 +++-----------------------------
+>  1 file changed, 3 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index dbbf7db4ff2f..af83aca452b7 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -509,32 +509,6 @@ static int at24_write(void *priv, unsigned int off, =
+void *val, size_t count)
+>         return 0;
+>  }
+>
+> -static const struct at24_chip_data *at24_get_chip_data(struct device *de=
+v)
+> -{
+> -       struct device_node *of_node =3D dev->of_node;
+> -       const struct at24_chip_data *cdata;
+> -       const struct i2c_device_id *id;
+> -
+> -       id =3D i2c_match_id(at24_ids, to_i2c_client(dev));
+> -
+> -       /*
+> -        * The I2C core allows OF nodes compatibles to match against the
+> -        * I2C device ID table as a fallback, so check not only if an OF
+> -        * node is present but also if it matches an OF device ID entry.
+> -        */
+> -       if (of_node && of_match_device(at24_of_match, dev))
+> -               cdata =3D of_device_get_match_data(dev);
+> -       else if (id)
+> -               cdata =3D (void *)id->driver_data;
+> -       else
+> -               cdata =3D acpi_device_get_match_data(dev);
+> -
+> -       if (!cdata)
+> -               return ERR_PTR(-ENODEV);
+> -
+> -       return cdata;
+> -}
+> -
+>  static int at24_make_dummy_client(struct at24_data *at24, unsigned int i=
+ndex,
+>                                   struct i2c_client *base_client,
+>                                   struct regmap_config *regmap_config)
+> @@ -601,9 +575,9 @@ static int at24_probe(struct i2c_client *client)
+>         i2c_fn_block =3D i2c_check_functionality(client->adapter,
+>                                                I2C_FUNC_SMBUS_WRITE_I2C_B=
+LOCK);
+>
+> -       cdata =3D at24_get_chip_data(dev);
+> -       if (IS_ERR(cdata))
+> -               return PTR_ERR(cdata);
+> +       cdata =3D i2c_get_match_data(client);
+> +       if (!cdata)
+> +               return -ENODEV;
+>
+>         err =3D device_property_read_u32(dev, "pagesize", &page_size);
+>         if (err)
+> --
+> 2.25.1
+>
 
-What we have atm:
-snd_sof_probe - might be called from wq
-snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
-		 step)
+Applied, thanks!
 
-We want a callbacks for hardware/device probing, right, split the
-snd_sof_probe (and remove) to be able to support a sane level of
-deferred probing support.
-
-With that in mind:
-snd_sof_device_probe - Not called from wq (to handle deferred probing)
-snd_sof_probe - might be called from wq
-
-snd_sof_remove - might be called from wq (cleans up the snd_sof_probe
-		 step)
-snd_sof_device_remove - Not called from wq (to up the
-			snd_sof_device_probe step)
-
-Naming option: s/device/hardware
-
-However, I think the snd_sof_device_remove itself is redundant and we
-might not need it at all as in case we have wq and there is a failure in
-there we do want to release resources as much as possible. The module
-will be kept loaded (no deferred handling in wq) and that might block
-PM, other devices to behave correctly. Iow, if the wq has failure we
-should do a cleanup to the best effort to reach a level like the driver
-is not even loaded.
-
-Doable? I thin it is.
-
--- 
-Péter
+Bart
