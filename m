@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97ACF79C25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E35379C235
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237395AbjILCJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        id S236592AbjILCH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243650AbjILCGR (ORCPT
+        with ESMTP id S243658AbjILCGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Sep 2023 22:06:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAD6FDCBB
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:37:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 722E2C193E8;
-        Mon, 11 Sep 2023 23:57:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5E4101101
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:37:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10A8C16ABD;
+        Mon, 11 Sep 2023 23:57:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694476650;
-        bh=poTnKEe6IplQsM0sZiVOzS9IQ55fPQI6l6cswfygPgg=;
+        s=k20201202; t=1694476652;
+        bh=ZLQwBDO9oB7DwHjbeEilVGbTlMbMwI68sm9U3hUF8Q0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=oTBDoyVlmbPiUNJ5ie97Fq3Gib2HBmv+d0kujDh4uPlOPe692KleQ9SwBDkaHgj5z
-         OmWIxkph0P1waxpMohJwZvPPmz+IcUhjVyV7jcVNbOqMBhz7iV8Ia8i3aSMFSKwlIa
-         NaaqySAI52ke7326cToF0GGbo72iRkGp8mEDfeeGUpokzcu1sScO2/tBYrCNvuzcMw
-         t2GHgJx6uf3LWU0UwznApIAWRPRQv8p4a04Z/fN2okpQn+oBVzGn6JXisAlEYLcOat
-         mgx0wcUhEpfLHUvMbJkQ7aM28L5avt7HmgZKkXDZLbPZ/nLbIPgz2CGj5VhcQsVG1C
-         82ReO3EcZdpVA==
+        b=pleTmCeOGpMp8OgSpvq2ZspmRywpezPrXCk/saOp8oLbJxHb1URIfoC2U+sXj6YQb
+         go7PMdiP3hem3qYezceAvWhuvcSVY5sHbCC4P3QuK/BjcBrG/53ifTGiH4LopCDjjb
+         9QtNWoKdiQoGZdy8AK89kia1vNZ5gciwl8DXLCMirJ+cEk0314moYlCPlZcf4ZJT2s
+         2bDllpNOWhsLOfbGSVC3AHO0AK2rX1Czs1VDy+CiD7Vda6nSQkH1324dK0dsJWBZR6
+         FMe6FnQj7cZWguglf1y8uLxO3OpQprUklkYJQRnrckKbKmcMzT+JmdDT4dXVqlUncW
+         i7rl6oIKaoT+w==
 From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230828180003.127896-1-biju.das.jz@bp.renesas.com>
-References: <20230828180003.127896-1-biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v2] ASoC: ak4642: Simplify probe()
-Message-Id: <169447664816.2387538.7019264836970248142.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 00:57:28 +0100
+To:     Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Marian Postevca <posteuca@mutex.one>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20230829220116.1159-1-posteuca@mutex.one>
+References: <20230829220116.1159-1-posteuca@mutex.one>
+Subject: Re: [PATCH v3 0/5] ASoC: amd: acp: Add sound support for a line of
+ HUAWEI laptops
+Message-Id: <169447665042.2387538.16679409837029670258.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 00:57:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -47,13 +46,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Aug 2023 19:00:03 +0100, Biju Das wrote:
-> Simpilfy probe() by replacing of_device_get_match_data() and id lookup for
-> retrieving match data by i2c_get_match_data() and replace
-> dev_err()->dev_err_probe().
+On Wed, 30 Aug 2023 01:01:11 +0300, Marian Postevca wrote:
+> This series adds support for a line of HUAWEI laptops with
+> AMD CPUs that connect using the ACP3x module to a ES8336 CODEC.
 > 
-> While at it, drop local variable np and use dev_fwnode() instead and
-> remove comma in the terminator entry.
+> The CODEC driver must be extended to support the S32 LE format
+> and the MCLK div by 2 option. MCLK div by 2 is needed for one specific
+> SKU, which uses a 48Mhz MCLK, which seems to be too high of a frequency
+> for the CODEC and must be divided by 2.
 > 
 > [...]
 
@@ -63,8 +63,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ak4642: Simplify probe()
-      commit: d9e6a80a2c7bea4cc2edc87fa43b876a64b13074
+[1/5] ASoC: es8316: Enable support for S32 LE format
+      commit: 2f06f231f0bfe74711fee14e28a8789a3de9bc36
+[2/5] ASoC: es8316: Replace NR_SUPPORTED_MCLK_LRCK_RATIOS with ARRAY_SIZE()
+      commit: a43c0dc1004cbe2edbae9b6e6793db71f6896449
+[3/5] ASoC: es8316: Enable support for MCLK div by 2
+      commit: 869f30782cdad0a86598a700a864e4a2bf44f8cc
+[4/5] ASoC: amd: acp: Add support for splitting the codec specific code from the ACP driver
+      commit: c680f57095411559e7605af689c7ce01f2281005
+[5/5] ASoC: amd: acp: Add machine driver that enables sound for systems with a ES8336 codec
+      commit: 54fcd9dd44b2c82a0262e29b288c2d0b36c6bba5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
