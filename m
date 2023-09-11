@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A240079B514
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A5E79AFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237910AbjIKVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S1350221AbjIKVgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244173AbjIKTaD (ORCPT
+        with ESMTP id S244183AbjIKTdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 15:30:03 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E42212A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:29:59 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c3c4eafe95so1538035ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:29:59 -0700 (PDT)
+        Mon, 11 Sep 2023 15:33:03 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F0C18D
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:58 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bbbda48904so81048211fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 12:32:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694460598; x=1695065398; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BGQStCvoWj3/Xp0jbKniFWE15sG3u2sI0fTxWSIsDmg=;
-        b=prit8A2FLQgr0zLq8PU7OKMy6APt/Ea5q5Z9Lg/+Ogff9XggPHwMpaMyrI400eQlxM
-         TAyRPWBB89WiSwrwLZ5YA4iWYvlDXyDIfs1KYnq4ViCBvueAe2wPAnrBZqVQNk+Dqb5b
-         krsks3p6QzsrnlTDJBEPYljI2tENee9FREhhLLW+x+YqpLpsVEqxFgQQq0nYsBIxyZHf
-         sRgoNEb4fx+85lP7soJnVvdX+NI/y2OY14rjDbbZ3HGMr4fs6uzrnhSNhoyYr++AgOc8
-         vd7D0K3Nk7ml6oSthT1f5+OQ4Okm+Cgissn2fsAumkVbeokP5wcYLJ9/bCxiIJ8CaAeU
-         2Fmw==
+        d=linaro.org; s=google; t=1694460776; x=1695065576; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SmoYn1hZC3xQGtyelzNab1Xu6ODmKiyQRbBS/HxAMC4=;
+        b=UotyASXNe8JaMvNQqj492rQLsq2hxrshnwenGUpD3NUMHSn+HT6x10/hFdJeDse7g5
+         kEGHkcu+vsDxGPD9e5/Sl3bzciD25WZ4YWva1ZlXtiqwaChGSrTK/phZpekApygfaWKt
+         Er4mssrD8c4a5Q1YbGjHoX9w8/v4HcSmzf538k33Zq15b2UDWwyNPt1x67XDjr4Q9/3G
+         zlWOWePvaJplD7SX9b+aSOVf8JN8rjz5Fb8RpoQ1AFWmbP6/O+yRIKzq8vLbqZCOHxPv
+         ooM6NNwzZ2T32RkamjRoqL2/abGutacfvcNqRAsKxrRpq4cOXNqpHZuF5G11Ke99KYKN
+         F+qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694460598; x=1695065398;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BGQStCvoWj3/Xp0jbKniFWE15sG3u2sI0fTxWSIsDmg=;
-        b=VYWCUIOuZgmd1Z7LLx6ZqBru7XjAd9Z8ecCBU+kb4nHwQS8wlHG2bW57/n+tt8HVAK
-         MTuqVLWeyYK5HKps0StvtrADKjMefcmgW4Ewlb4UZE3gPYaf5B52bkQPIUffY2VY9tqo
-         nsykVSB0easfJxsbDnqa5XO/yp83pWOUPXMKCEhorDslp9qRQTgBAFtdodEXvPzhn3Jr
-         JH2Cw/EvKKfqvS/r1vVyxL8IZGvR7cr3/LujeFkEvK9oZh+XUtgln8Z+0+k6OuSDppGu
-         ajZluGNwmCkJiuby84Nik2SkqS/RlHotyDB1NQN5K+wnpd0ajpULBUy4wWr+JlyPRLVJ
-         kBfw==
-X-Gm-Message-State: AOJu0YzPG+u2vQulkL2TWoRFG6SvH3vXyFmrjJK0Ye6yqGNrjiCklKc+
-        l4tGSEyLnf5F0LWz8MX8JEMObg==
-X-Google-Smtp-Source: AGHT+IEaqmgNPlrgJsJYHYB0ZENpQMy8GU6BQOpJO6AC4O+btal68J7EbL9UcfulTF4O8CmZsO2gQg==
-X-Received: by 2002:a17:902:e546:b0:1bb:9e6e:a9f3 with SMTP id n6-20020a170902e54600b001bb9e6ea9f3mr12355983plf.4.1694460598344;
-        Mon, 11 Sep 2023 12:29:58 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170902d48d00b001bdc66478c1sm6809944plg.309.2023.09.11.12.29.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 12:29:57 -0700 (PDT)
-Message-ID: <bf5831cf-74b8-438f-8892-8b41cc222c2b@kernel.dk>
-Date:   Mon, 11 Sep 2023 13:29:56 -0600
+        d=1e100.net; s=20230601; t=1694460776; x=1695065576;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SmoYn1hZC3xQGtyelzNab1Xu6ODmKiyQRbBS/HxAMC4=;
+        b=LTInSWBOeZ7w4naG/HUVjzjSs3UhJzu9mBEylOGM1LPRzeGhcWF4gOLzjo0lfbHQ1k
+         2PCVfdGUAqpFEVVPZpMCmQrZzBchcGsf/gPVc9LRKm+ANsZW1+0PezGYmiwanzVhDICP
+         ECBW1tCM9cTxO8K4VlPth3sqNiHDi6r7TzDtUOSDIjtbVm11F7SCYA3wfmfPhSo8SFWy
+         Yh69NmhlYeDZCwLfqyQd26OQZ105nJ+DVPlFMXSp/DUftAp3cmXMpbpTB/yClEfbrUJw
+         16HYyqoFrFRrR/oQXdFc+EQrbYVOvcmOkHgT52Oo8x1UX9BpxFSN9BaOKlBMgv/eNvPn
+         rN8Q==
+X-Gm-Message-State: AOJu0Yxwh1HbersWBdJiaW8qJhPNMbc7gDBafn/XGJ/lJ8tDPHB0JJ/e
+        OT4j23jcT9NFEyL7u2f99l6Qqg==
+X-Google-Smtp-Source: AGHT+IGVpfF1mPPSu5kGATO/g/0PYmS6AMm2ETruxKwXin501vgUXJVjft33cKKtyBHE1FmZOylGaA==
+X-Received: by 2002:a2e:3a10:0:b0:2bc:b6ce:eab with SMTP id h16-20020a2e3a10000000b002bcb6ce0eabmr8601981lja.51.1694460776479;
+        Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
+Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170906410400b0099cc402d3ddsm5698607ejk.202.2023.09.11.12.32.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 12:32:56 -0700 (PDT)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Mon, 11 Sep 2023 21:32:49 +0200
+Subject: [PATCH v2 2/2] phy: qcom-qmp-combo: initialize PCS_USB registers
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: kernel/task_work.c:73: warning: Function parameter or member
- 'data' not described in 'task_work_cancel_match'
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>
-References: <202309120307.zis3yQGe-lkp@intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <202309120307.zis3yQGe-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <20230829-topic-8550_usbphy-v2-2-a72f43311d19@linaro.org>
+References: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
+In-Reply-To: <20230829-topic-8550_usbphy-v2-0-a72f43311d19@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Adrien Thierry <athierry@redhat.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694460770; l=1296;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=DV4nuVtUL74YZJK1G0aNcuFg9vdKLsrw5ToJmi5Mtx8=;
+ b=7QsJOM+zXh00ZIJeXd4vj/+bQ02B5nc7LfNYHDIXk8dqEvIVOII2KvHp/HmaBQI2RgI0gJtJs
+ 7lKj3zZExUtByiiJ7vkNGAsC5j2WzscJL6a9Omhf20n3LffmXcbnglQ
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 1:12 PM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> commit: c7aab1a7c52b82d9afd7e03c398eb03dc2aa0507 task_work: add helper for more targeted task_work canceling
-> date:   2 years, 5 months ago
-> config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20230912/202309120307.zis3yQGe-lkp@intel.com/config)
-> compiler: or1k-linux-gcc (GCC) 12.3.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120307.zis3yQGe-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309120307.zis3yQGe-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> kernel/task_work.c:73: warning: Function parameter or member 'data' not described in 'task_work_cancel_match'
+Currently, PCS_USB registers that have their initialization data in a
+pcs_usb_tbl table are never initialized. Fix that.
 
-Wow, that got introduced with:
+Fixes: fc64623637da ("phy: qcom-qmp-combo,usb: add support for separate PCS_USB region")
+Reported-by: Adrien Thierry <athierry@redhat.com>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp-combo.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-commit c7aab1a7c52b82d9afd7e03c398eb03dc2aa0507
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Thu Apr 1 19:53:29 2021 -0600
-
-    task_work: add helper for more targeted task_work canceling
-
-which is a while ago. In any case, this should fix it. I'll send out a
-proper patch.
-
-
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 065e1ef8fc8d..2a628b4a6124 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -78,6 +78,7 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
-  * task_work_cancel_match - cancel a pending work added by task_work_add()
-  * @task: the task which should execute the work
-  * @match: match function to call
-+ * @data: data to pass into match function
-  *
-  * RETURNS:
-  * The found work or NULL if not found.
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+index 843099d314bf..1922b05403ac 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp-combo.c
+@@ -2555,6 +2555,7 @@ static int qmp_combo_usb_power_on(struct phy *phy)
+ 	void __iomem *tx2 = qmp->tx2;
+ 	void __iomem *rx2 = qmp->rx2;
+ 	void __iomem *pcs = qmp->pcs;
++	void __iomem *pcs_usb = qmp->pcs_usb;
+ 	void __iomem *status;
+ 	unsigned int val;
+ 	int ret;
+@@ -2576,6 +2577,9 @@ static int qmp_combo_usb_power_on(struct phy *phy)
+ 
+ 	qmp_combo_configure(pcs, cfg->pcs_tbl, cfg->pcs_tbl_num);
+ 
++	if (pcs_usb)
++		qmp_combo_configure(pcs_usb, cfg->pcs_usb_tbl, cfg->pcs_usb_tbl_num);
++
+ 	if (cfg->has_pwrdn_delay)
+ 		usleep_range(10, 20);
+ 
 
 -- 
-Jens Axboe
+2.42.0
 
