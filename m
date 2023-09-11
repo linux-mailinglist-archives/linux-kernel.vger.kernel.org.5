@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B428679B4F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F7479ACD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241039AbjIKWKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56900 "EHLO
+        id S242325AbjIKVSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237865AbjIKNQZ (ORCPT
+        with ESMTP id S237876AbjIKNRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:16:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12F4EB;
-        Mon, 11 Sep 2023 06:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694438180; x=1725974180;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DmVsQV3zOT9DX7Yw/gra0oxWL2x43W4fLVBXzfwaRcc=;
-  b=NvjEyQC/csS8o51b0UCqrtsRPyZnVoD+YvzH9/dGwYQsbgWEhfQfi1Eo
-   T18G1BWT12eFQfSesvM7fIPDJsHzWSw/0SziijGRNqYnAvtVoZD4Sac8N
-   JCKd6sDXafvRrOxarSAX8IPU3xeMVkQcBPTFMZ9dm1TEmspi+40ODR9S6
-   cVTPWvbfbHraVCY1Os9ZsYtf1aBB96sQ+18bFpQ0fJmi0R5J6EorMy0B9
-   D5/muVsG7wGFqBERTL0iqrTH0KMtGLlAUd9dXmZy7xSYeIwv/8BFufFgg
-   SdbnGetlq3E4lY2Fle1GIQlkhgDY8wYa4rzoqAYY0iNXgZi9JWSfJQkxT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="377990543"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="377990543"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 06:16:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="719982429"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="719982429"
-Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
-  by orsmga006.jf.intel.com with ESMTP; 11 Sep 2023 06:16:16 -0700
-From:   sharath.kumar.d.m@intel.com
-To:     helgaas@kernel.org
-Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
-Subject: [PATCH v3 1/2] PCI: altera: refactor driver for supporting new platforms
-Date:   Mon, 11 Sep 2023 18:46:48 +0530
-Message-Id: <20230911131649.1775971-2-sharath.kumar.d.m@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911131649.1775971-1-sharath.kumar.d.m@intel.com>
-References: <20230906110918.1501376-3-sharath.kumar.d.m@intel.com>
- <20230911131649.1775971-1-sharath.kumar.d.m@intel.com>
+        Mon, 11 Sep 2023 09:17:15 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01D9EB;
+        Mon, 11 Sep 2023 06:17:08 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RknJH54hbz1N7rY;
+        Mon, 11 Sep 2023 21:15:11 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 11 Sep 2023 21:17:04 +0800
+Subject: Re: [RFC PATCH net-next 5/6] microchip: lan865x: add driver support
+ for Microchip's LAN865X MACPHY
+To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <corbet@lwn.net>, <steen.hegelund@microchip.com>,
+        <rdunlap@infradead.org>, <horms@kernel.org>,
+        <casper.casan@gmail.com>, <andrew@lunn.ch>
+CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <horatiu.vultur@microchip.com>, <Woojung.Huh@microchip.com>,
+        <Nicolas.Ferre@microchip.com>, <UNGLinuxDriver@microchip.com>,
+        <Thorsten.Kummermehr@microchip.com>
+References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+ <20230908142919.14849-6-Parthiban.Veerasooran@microchip.com>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <f9ae1701-cc9e-e2c4-3678-8881e4f33615@huawei.com>
+Date:   Mon, 11 Sep 2023 21:17:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20230908142919.14849-6-Parthiban.Veerasooran@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,224 +61,692 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
+> The LAN8650/1 is designed to conform to the OPEN Alliance 10BASE‑T1x
+> MAC‑PHY Serial Interface specification, Version 1.1. The IEEE Clause 4
+> MAC integration provides the low pin count standard SPI interface to any
+> microcontroller therefore providing Ethernet functionality without
+> requiring MAC integration within the microcontroller. The LAN8650/1
+> operates as an SPI client supporting SCLK clock rates up to a maximum of
+> 25 MHz. This SPI interface supports the transfer of both data (Ethernet
+> frames) and control (register access).
+> 
+> By default, the chunk data payload is 64 bytes in size. A smaller payload
+> data size of 32 bytes is also supported and may be configured in the
+> Chunk Payload Size (CPS) field of the Configuration 0 (OA_CONFIG0)
+> register. Changing the chunk payload size requires the LAN8650/1 be reset
+> and shall not be done during normal operation.
+> 
+> The Ethernet Media Access Controller (MAC) module implements a 10 Mbps
+> half duplex Ethernet MAC, compatible with the IEEE 802.3 standard.
+> 10BASE-T1S physical layer transceiver integrated into the LAN8650/1. The
+> PHY and MAC are connected via an internal Media Independent Interface
+> (MII).
+> 
+> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+> ---
+>  MAINTAINERS                              |   6 +
+>  drivers/net/ethernet/microchip/Kconfig   |  10 +
+>  drivers/net/ethernet/microchip/Makefile  |   3 +
+>  drivers/net/ethernet/microchip/lan865x.c | 589 +++++++++++++++++++++++
+>  4 files changed, 608 insertions(+)
+>  create mode 100644 drivers/net/ethernet/microchip/lan865x.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c54454c7e7a1..666c042a15b2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13879,6 +13879,12 @@ L:	netdev@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/net/ethernet/microchip/lan743x_*
+>  
+> +MICROCHIP LAN8650/1 10BASE-T1S MACPHY ETHERNET DRIVER
+> +M:	Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+> +L:	netdev@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/net/ethernet/microchip/lan865x.c
+> +
+>  MICROCHIP LAN87xx/LAN937x T1 PHY DRIVER
+>  M:	Arun Ramadoss <arun.ramadoss@microchip.com>
+>  R:	UNGLinuxDriver@microchip.com
+> diff --git a/drivers/net/ethernet/microchip/Kconfig b/drivers/net/ethernet/microchip/Kconfig
+> index 329e374b9539..d99be51b99f1 100644
+> --- a/drivers/net/ethernet/microchip/Kconfig
+> +++ b/drivers/net/ethernet/microchip/Kconfig
+> @@ -59,4 +59,14 @@ source "drivers/net/ethernet/microchip/lan966x/Kconfig"
+>  source "drivers/net/ethernet/microchip/sparx5/Kconfig"
+>  source "drivers/net/ethernet/microchip/vcap/Kconfig"
+>  
+> +config LAN865X
+> +	tristate "LAN865x support"
+> +	depends on SPI
+> +	help
+> +      	  Support for the Microchip LAN8650/1 Rev.B0 Ethernet chip. It uses OPEN
+> +	  Alliance 10BASE-T1x Serial Interface specification.
+> +
+> +      	  To compile this driver as a module, choose M here. The module will be
+> +          called lan865x.
+> +
+>  endif # NET_VENDOR_MICROCHIP
+> diff --git a/drivers/net/ethernet/microchip/Makefile b/drivers/net/ethernet/microchip/Makefile
+> index bbd349264e6f..315e850b2b26 100644
+> --- a/drivers/net/ethernet/microchip/Makefile
+> +++ b/drivers/net/ethernet/microchip/Makefile
+> @@ -12,3 +12,6 @@ lan743x-objs := lan743x_main.o lan743x_ethtool.o lan743x_ptp.o
+>  obj-$(CONFIG_LAN966X_SWITCH) += lan966x/
+>  obj-$(CONFIG_SPARX5_SWITCH) += sparx5/
+>  obj-$(CONFIG_VCAP) += vcap/
+> +
+> +obj-$(CONFIG_LAN865X) += lan865x_t1s.o
+> +lan865x_t1s-objs := lan865x.o ../oa_tc6.o
+> diff --git a/drivers/net/ethernet/microchip/lan865x.c b/drivers/net/ethernet/microchip/lan865x.c
+> new file mode 100644
+> index 000000000000..3c8ebf4c258f
+> --- /dev/null
+> +++ b/drivers/net/ethernet/microchip/lan865x.c
+> @@ -0,0 +1,589 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Microchip's LAN865x 10BASE-T1S MAC-PHY driver
+> + *
+> + * Author: Parthiban Veerasooran <parthiban.veerasooran@microchip.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/kernel.h>
+> +#include <linux/etherdevice.h>
+> +#include <linux/mdio.h>
+> +#include <linux/phy.h>
+> +#include <linux/of.h>
+> +#include <linux/oa_tc6.h>
+> +
+> +#define DRV_NAME		"lan865x"
+> +#define DRV_VERSION		"0.1"
+> +
+> +#define REG_STDR_RESET		0x00000003
+> +#define REG_MAC_ADDR_BO		0x00010022
+> +#define REG_MAC_ADDR_L		0x00010024
+> +#define REG_MAC_ADDR_H		0x00010025
+> +#define REG_MAC_NW_CTRL         0x00010000
+> +#define REG_MAC_NW_CONFIG	0x00010001
+> +#define REG_MAC_HASHL		0x00010020
+> +#define REG_MAC_HASHH		0x00010021
+> +#define REG_MAC_ADDR_BO		0x00010022
+> +#define REG_MAC_ADDR_L		0x00010024
+> +#define REG_MAC_ADDR_H		0x00010025
+> +
+> +#define CCS_Q0_TX_CFG		0x000A0081
+> +#define CCS_Q0_RX_CFG		0x000A0082
+> +
+> +/* Buffer configuration for 32-bytes chunk payload */
+> +#define CCS_Q0_TX_CFG_32	0x70000000
+> +#define CCS_Q0_RX_CFG_32	0x30000C00
+> +
+> +#define NW_RX_STATUS		BIT(2)
+> +#define NW_TX_STATUS		BIT(3)
+> +#define NW_DISABLE		0x0
+> +
+> +#define MAC_PROMISCUOUS_MODE	BIT(4)
+> +#define MAC_MULTICAST_MODE	BIT(6)
+> +#define MAC_UNICAST_MODE	BIT(7)
+> +
+> +#define TX_TIMEOUT		(4 * HZ)
+> +#define LAN865X_MSG_DEFAULT	\
+> +	(NETIF_MSG_PROBE | NETIF_MSG_IFUP | NETIF_MSG_IFDOWN | NETIF_MSG_LINK)
+> +
+> +struct lan865x_priv {
+> +	struct net_device *netdev;
+> +	struct spi_device *spi;
+> +	struct oa_tc6 *tc6;
+> +	struct mii_bus *mdiobus;
+> +	struct phy_device *phydev;
+> +	struct device *dev;
+> +	u32 msg_enable;
+> +	bool txcte;
+> +	bool rxcte;
+> +	u32 cps;
+> +	bool protected;
+> +};
+> +
+> +static void lan865x_handle_link_change(struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +
+> +	phy_print_status(priv->phydev);
+> +}
+> +
+> +static int lan865x_mdiobus_read(struct mii_bus *bus, int phy_id, int idx)
+> +{
+> +	struct lan865x_priv *priv = bus->priv;
+> +	u32 regval;
+> +	bool ret;
+> +
+> +	ret = oa_tc6_read_register(priv->tc6, 0xFF00 | (idx & 0xFF), &regval, 1);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	return regval;
+> +}
+> +
+> +static int lan865x_mdiobus_write(struct mii_bus *bus, int phy_id, int idx,
+> +				 u16 regval)
+> +{
+> +	struct lan865x_priv *priv = bus->priv;
+> +	u32 value = regval;
+> +	bool ret;
+> +
+> +	ret = oa_tc6_write_register(priv->tc6, 0xFF00 | (idx & 0xFF), &value, 1);
+> +	if (ret)
+> +		return -ENODEV;
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan865x_phy_init(struct lan865x_priv *priv)
+> +{
+> +	int ret;
+> +
+> +	priv->mdiobus = mdiobus_alloc();
+> +	if (!priv->mdiobus) {
+> +		netdev_err(priv->netdev, "MDIO bus alloc failed\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	priv->mdiobus->phy_mask = ~(u32)BIT(1);
+> +	priv->mdiobus->priv = priv;
+> +	priv->mdiobus->read = lan865x_mdiobus_read;
+> +	priv->mdiobus->write = lan865x_mdiobus_write;
+> +	priv->mdiobus->name = "lan865x-mdiobus";
+> +	priv->mdiobus->parent = priv->dev;
+> +
+> +	snprintf(priv->mdiobus->id, ARRAY_SIZE(priv->mdiobus->id),
+> +		 "%s", dev_name(&priv->spi->dev));
+> +
+> +	ret = mdiobus_register(priv->mdiobus);
+> +	if (ret) {
+> +		netdev_err(priv->netdev, "Could not register MDIO bus\n");
+> +		mdiobus_free(priv->mdiobus);
+> +		return ret;
+> +	}
+> +	priv->phydev = phy_find_first(priv->mdiobus);
+> +	if (!priv->phydev) {
+> +		netdev_err(priv->netdev, "No PHY found\n");
+> +		mdiobus_unregister(priv->mdiobus);
+> +		mdiobus_free(priv->mdiobus);
+> +		return -ENODEV;
+> +	}
+> +	priv->phydev->is_internal = true;
+> +	ret = phy_connect_direct(priv->netdev, priv->phydev,
+> +				 &lan865x_handle_link_change,
+> +				 PHY_INTERFACE_MODE_INTERNAL);
+> +	if (ret) {
+> +		netdev_err(priv->netdev, "Can't attach PHY to %s\n", priv->mdiobus->id);
+> +		return ret;
+Here return directly without above resources recycle. Please check if it is correct.
+If it is needed, it is recommended to use error labels to avoid duplicate code.
 
-added the below callbacks that eases is supporting newer platforms
-for read/write to root port configuration space registers
-for read/write to non root port (endpoint, switch) cfg space regs
-root port interrupt handler
+> +	}
+> +	phy_attached_info(priv->phydev);
+> +	return ret;
+> +}
+> +
+> +static int lan865x_set_hw_macaddr(struct net_device *netdev)
+> +{
+> +	u32 regval;
+> +	bool ret;
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +	const u8 *mac = netdev->dev_addr;
+> +
+> +	ret = oa_tc6_read_register(priv->tc6, REG_MAC_NW_CTRL, &regval, 1);
+> +	if (ret)
+> +		goto error_mac;
+> +	if ((regval & NW_TX_STATUS) | (regval & NW_RX_STATUS)) {
+> +		if (netif_msg_drv(priv))
+> +			netdev_warn(netdev, "Hardware must be disabled for MAC setting\n");
+> +		return -EBUSY;
+> +	}
+> +	/* MAC address setting */
+> +	regval = (mac[3] << 24) | (mac[2] << 16) | (mac[1] << 8) |
+> +		mac[0];
+> +	ret = oa_tc6_write_register(priv->tc6, REG_MAC_ADDR_L, &regval, 1);
+> +	if (ret)
+> +		goto error_mac;
+> +
+> +	regval = (mac[5] << 8) | mac[4];
+> +	ret = oa_tc6_write_register(priv->tc6, REG_MAC_ADDR_H, &regval, 1);
+> +	if (ret)
+> +		goto error_mac;
+> +
+> +	regval = (mac[5] << 24) | (mac[4] << 16) |
+> +		(mac[3] << 8) | mac[2];
+> +	ret = oa_tc6_write_register(priv->tc6, REG_MAC_ADDR_BO, &regval, 1);
+> +	if (ret)
+> +		goto error_mac;
+> +
+> +	return 0;
+> +
+> +error_mac:
+> +	return -ENODEV;
 
-Signed-off-by: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
----
- drivers/pci/controller/pcie-altera.c | 100 +++++++++++++++++++--------
- 1 file changed, 70 insertions(+), 30 deletions(-)
+No resource recycle, goto and error label are not needed. What's more,
+the same label corresponds to different errors.
 
-diff --git a/drivers/pci/controller/pcie-altera.c b/drivers/pci/controller/pcie-altera.c
-index a9536dc4bf96..878f86b1cc6b 100644
---- a/drivers/pci/controller/pcie-altera.c
-+++ b/drivers/pci/controller/pcie-altera.c
-@@ -3,6 +3,7 @@
-  * Copyright Altera Corporation (C) 2013-2015. All rights reserved
-  *
-  * Author: Ley Foon Tan <lftan@altera.com>
-+ * Author: sharath <sharath.kumar.d.m@intel.com>
-  * Description: Altera PCIe host controller driver
-  */
- 
-@@ -99,10 +100,15 @@ struct altera_pcie_ops {
- 	void (*tlp_write_pkt)(struct altera_pcie *pcie, u32 *headers,
- 			      u32 data, bool align);
- 	bool (*get_link_status)(struct altera_pcie *pcie);
--	int (*rp_read_cfg)(struct altera_pcie *pcie, int where,
--			   int size, u32 *value);
-+	int (*rp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
- 	int (*rp_write_cfg)(struct altera_pcie *pcie, u8 busno,
--			    int where, int size, u32 value);
-+			unsigned int devfn, int where, int size, u32 value);
-+	int (*nonrp_read_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 *value);
-+	int (*nonrp_write_cfg)(struct altera_pcie *pcie, u8 busno,
-+			unsigned int devfn, int where, int size, u32 value);
-+	void (*rp_isr)(struct irq_desc *desc);
- };
- 
- struct altera_pcie_data {
-@@ -379,8 +385,8 @@ static int tlp_cfg_dword_write(struct altera_pcie *pcie, u8 bus, u32 devfn,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
--			   int size, u32 *value)
-+static int s10_rp_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
- 
-@@ -399,7 +405,7 @@ static int s10_rp_read_cfg(struct altera_pcie *pcie, int where,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
-+static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
- 			    int where, int size, u32 value)
- {
- 	void __iomem *addr = S10_RP_CFG_ADDR(pcie, where);
-@@ -426,18 +432,13 @@ static int s10_rp_write_cfg(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
--				 unsigned int devfn, int where, int size,
--				 u32 *value)
-+static int arr_read_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+		int where, int size, u32 *value)
- {
- 	int ret;
- 	u32 data;
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
--		return pcie->pcie_data->ops->rp_read_cfg(pcie, where,
--							 size, value);
--
- 	switch (size) {
- 	case 1:
- 		byte_en = 1 << (where & 3);
-@@ -470,18 +471,13 @@ static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
--static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
--				  unsigned int devfn, int where, int size,
--				  u32 value)
-+static int arr_write_cfg(struct altera_pcie *pcie, u8 busno, u32 devfn,
-+			    int where, int size, u32 value)
- {
- 	u32 data32;
- 	u32 shift = 8 * (where & 3);
- 	u8 byte_en;
- 
--	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
--		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno,
--						     where, size, value);
--
- 	switch (size) {
- 	case 1:
- 		data32 = (value & 0xff) << shift;
-@@ -499,6 +495,35 @@ static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
- 
- 	return tlp_cfg_dword_write(pcie, busno, devfn, (where & ~DWORD_MASK),
- 				   byte_en, data32);
-+
-+}
-+
-+static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-+				 unsigned int devfn, int where, int size,
-+				 u32 *value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_read_cfg)
-+		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_read_cfg)
-+		return pcie->pcie_data->ops->nonrp_read_cfg(pcie, busno, devfn,
-+							where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
-+}
-+
-+static int _altera_pcie_cfg_write(struct altera_pcie *pcie, u8 busno,
-+				  unsigned int devfn, int where, int size,
-+				  u32 value)
-+{
-+	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops->rp_write_cfg)
-+		return pcie->pcie_data->ops->rp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+
-+	if (pcie->pcie_data->ops->nonrp_write_cfg)
-+		return pcie->pcie_data->ops->nonrp_write_cfg(pcie, busno, devfn,
-+						     where, size, value);
-+	return PCIBIOS_FUNC_NOT_SUPPORTED;
- }
- 
- static int altera_pcie_cfg_read(struct pci_bus *bus, unsigned int devfn,
-@@ -660,7 +685,6 @@ static void altera_pcie_isr(struct irq_desc *desc)
- 				dev_err_ratelimited(dev, "unexpected IRQ, INT%d\n", bit);
- 		}
- 	}
--
- 	chained_irq_exit(chip, desc);
- }
- 
-@@ -691,9 +715,13 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- {
- 	struct platform_device *pdev = pcie->pdev;
- 
--	pcie->cra_base = devm_platform_ioremap_resource_byname(pdev, "Cra");
--	if (IS_ERR(pcie->cra_base))
--		return PTR_ERR(pcie->cra_base);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		pcie->cra_base =
-+			devm_platform_ioremap_resource_byname(pdev, "Cra");
-+		if (IS_ERR(pcie->cra_base))
-+			return PTR_ERR(pcie->cra_base);
-+	}
- 
- 	if (pcie->pcie_data->version == ALTERA_PCIE_V2) {
- 		pcie->hip_base =
-@@ -707,7 +735,8 @@ static int altera_pcie_parse_dt(struct altera_pcie *pcie)
- 	if (pcie->irq < 0)
- 		return pcie->irq;
- 
--	irq_set_chained_handler_and_data(pcie->irq, altera_pcie_isr, pcie);
-+	irq_set_chained_handler_and_data(pcie->irq,
-+		pcie->pcie_data->ops->rp_isr, pcie);
- 	return 0;
- }
- 
-@@ -720,6 +749,11 @@ static const struct altera_pcie_ops altera_pcie_ops_1_0 = {
- 	.tlp_read_pkt = tlp_read_packet,
- 	.tlp_write_pkt = tlp_write_packet,
- 	.get_link_status = altera_pcie_link_up,
-+	.rp_read_cfg = arr_read_cfg,
-+	.rp_write_cfg = arr_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
-@@ -728,6 +762,9 @@ static const struct altera_pcie_ops altera_pcie_ops_2_0 = {
- 	.get_link_status = s10_altera_pcie_link_up,
- 	.rp_read_cfg = s10_rp_read_cfg,
- 	.rp_write_cfg = s10_rp_write_cfg,
-+	.nonrp_read_cfg = arr_read_cfg,
-+	.nonrp_write_cfg = arr_write_cfg,
-+	.rp_isr = altera_pcie_isr,
- };
- 
- static const struct altera_pcie_data altera_pcie_1_0_data = {
-@@ -792,11 +829,14 @@ static int altera_pcie_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	/* clear all interrupts */
--	cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
--	/* enable all interrupts */
--	cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
--	altera_pcie_host_init(pcie);
-+	if ((pcie->pcie_data->version == ALTERA_PCIE_V1) ||
-+		(pcie->pcie_data->version == ALTERA_PCIE_V2)) {
-+		/* clear all interrupts */
-+		cra_writel(pcie, P2A_INT_STS_ALL, P2A_INT_STATUS);
-+		/* enable all interrupts */
-+		cra_writel(pcie, P2A_INT_ENA_ALL, P2A_INT_ENABLE);
-+		altera_pcie_host_init(pcie);
-+	}
- 
- 	bridge->sysdata = pcie;
- 	bridge->busnr = pcie->root_bus_nr;
--- 
-2.34.1
+> +}
+> +
+> +static int
+> +lan865x_set_link_ksettings(struct net_device *netdev,
+> +			   const struct ethtool_link_ksettings *cmd)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +	int ret = 0;
+> +
+> +	if (cmd->base.autoneg != AUTONEG_DISABLE ||
+> +	    cmd->base.speed != SPEED_10 || cmd->base.duplex != DUPLEX_HALF) {
+> +		if (netif_msg_link(priv))
+> +			netdev_warn(netdev, "Unsupported link setting");
+> +		ret = -EOPNOTSUPP;
+> +	} else {
+> +		if (netif_msg_link(priv))
+> +			netdev_warn(netdev, "Hardware must be disabled to set link mode");
+> +		ret = -EBUSY;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int
+> +lan865x_get_link_ksettings(struct net_device *netdev,
+> +			   struct ethtool_link_ksettings *cmd)
+> +{
+> +	ethtool_link_ksettings_zero_link_mode(cmd, supported);
+> +	ethtool_link_ksettings_add_link_mode(cmd, supported, 10baseT_Half);
+> +	ethtool_link_ksettings_add_link_mode(cmd, supported, TP);
+> +
+> +	cmd->base.speed = SPEED_10;
+> +	cmd->base.duplex = DUPLEX_HALF;
+> +	cmd->base.port	= PORT_TP;
+> +	cmd->base.autoneg = AUTONEG_DISABLE;
+> +
+> +	return 0;
+> +}
+> +
+> +static void lan865x_set_msglevel(struct net_device *netdev, u32 val)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +
+> +	priv->msg_enable = val;
+> +}
+> +
+> +static u32 lan865x_get_msglevel(struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +
+> +	return priv->msg_enable;
+> +}
+> +
+> +static void
+> +lan865x_get_drvinfo(struct net_device *netdev, struct ethtool_drvinfo *info)
+> +{
+> +	strscpy(info->driver, DRV_NAME, sizeof(info->driver));
+> +	strscpy(info->version, DRV_VERSION, sizeof(info->version));
+> +	strscpy(info->bus_info,
+> +		dev_name(netdev->dev.parent), sizeof(info->bus_info));
+> +}
+> +
+> +static const struct ethtool_ops lan865x_ethtool_ops = {
+> +	.get_drvinfo	= lan865x_get_drvinfo,
+> +	.get_msglevel	= lan865x_get_msglevel,
+> +	.set_msglevel	= lan865x_set_msglevel,
+> +	.get_link_ksettings = lan865x_get_link_ksettings,
+> +	.set_link_ksettings = lan865x_set_link_ksettings,
+> +};
+> +
+> +static void lan865x_tx_timeout(struct net_device *netdev, unsigned int txqueue)
+> +{
+> +	netdev->stats.tx_errors++;
+> +}
+> +
+> +static int lan865x_set_mac_address(struct net_device *netdev, void *addr)
+> +{
+> +	struct sockaddr *address = addr;
+> +
+> +	if (netif_running(netdev))
+> +		return -EBUSY;
+> +	if (!is_valid_ether_addr(address->sa_data))
+> +		return -EADDRNOTAVAIL;
+> +
+> +	eth_hw_addr_set(netdev, address->sa_data);
+> +	return lan865x_set_hw_macaddr(netdev);
+> +}
+> +
+> +static u32 lan865x_hash(u8 addr[ETH_ALEN])
+> +{
+> +	return (ether_crc(ETH_ALEN, addr) >> 26) & 0x3f;
+> +}
+> +
+> +static void lan865x_set_multicast_list(struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +	u32 regval = 0;
+> +
+> +	if (netdev->flags & IFF_PROMISC) {
+> +		/* Enabling promiscuous mode */
+> +		regval |= MAC_PROMISCUOUS_MODE;
+> +		regval &= (~MAC_MULTICAST_MODE);
+> +		regval &= (~MAC_UNICAST_MODE);
+> +	} else if (netdev->flags & IFF_ALLMULTI) {
+> +		/* Enabling all multicast mode */
+> +		regval &= (~MAC_PROMISCUOUS_MODE);
+> +		regval |= MAC_MULTICAST_MODE;
+> +		regval &= (~MAC_UNICAST_MODE);
+> +	} else if (!netdev_mc_empty(netdev)) {
+> +		/* Enabling specific multicast addresses */
+> +		struct netdev_hw_addr *ha;
+> +		u32 hash_lo = 0;
+> +		u32 hash_hi = 0;
+> +
+> +		netdev_for_each_mc_addr(ha, netdev) {
+> +			u32 bit_num = lan865x_hash(ha->addr);
+> +			u32 mask = 1 << (bit_num & 0x1f);
+> +
+> +			if (bit_num & 0x20)
+> +				hash_hi |= mask;
+> +			else
+> +				hash_lo |= mask;
+> +		}
+> +		if (oa_tc6_write_register(priv->tc6, REG_MAC_HASHH, &hash_hi, 1)) {
+> +			if (netif_msg_timer(priv))
+> +				netdev_err(netdev, "Failed to write reg_hashh");
+> +			return;
+> +		}
+> +		if (oa_tc6_write_register(priv->tc6, REG_MAC_HASHL, &hash_lo, 1)) {
+> +			if (netif_msg_timer(priv))
+> +				netdev_err(netdev, "Failed to write reg_hashl");
+> +			return;
+> +		}
+> +		regval &= (~MAC_PROMISCUOUS_MODE);
+> +		regval &= (~MAC_MULTICAST_MODE);
+> +		regval |= MAC_UNICAST_MODE;
+> +	} else {
+> +		/* enabling local mac address only */
+> +		if (oa_tc6_write_register(priv->tc6, REG_MAC_HASHH, &regval, 1)) {
+> +			if (netif_msg_timer(priv))
+> +				netdev_err(netdev, "Failed to write reg_hashh");
+> +			return;
+> +		}
+> +		if (oa_tc6_write_register(priv->tc6, REG_MAC_HASHL, &regval, 1)) {
+> +			if (netif_msg_timer(priv))
+> +				netdev_err(netdev, "Failed to write reg_hashl");
+> +			return;
+> +		}
+> +	}
+> +	if (oa_tc6_write_register(priv->tc6, REG_MAC_NW_CONFIG, &regval, 1)) {
+> +		if (netif_msg_timer(priv))
+> +			netdev_err(netdev, "Failed to enable promiscuous mode");
+> +	}
+> +}
+> +
+> +static netdev_tx_t lan865x_send_packet(struct sk_buff *skb,
+> +				       struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +
+> +	return oa_tc6_send_eth_pkt(priv->tc6, skb);
+> +}
+> +
+> +static int lan865x_hw_disable(struct lan865x_priv *priv)
+> +{
+> +	u32 regval = NW_DISABLE;
+> +
+> +	if (oa_tc6_write_register(priv->tc6, REG_MAC_NW_CTRL, &regval, 1))
+> +		return -ENODEV;
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan865x_net_close(struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +	int ret;
+> +
+> +	netif_stop_queue(netdev);
+> +	ret = lan865x_hw_disable(priv);
+> +	if (ret) {
+> +		if (netif_msg_ifup(priv))
+> +			netdev_err(netdev, "Failed to disable the hardware\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan865x_hw_enable(struct lan865x_priv *priv)
+> +{
+> +	u32 regval = NW_TX_STATUS | NW_RX_STATUS;
+> +
+> +	if (oa_tc6_write_register(priv->tc6, REG_MAC_NW_CTRL, &regval, 1))
+> +		return -ENODEV;
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan865x_net_open(struct net_device *netdev)
+> +{
+> +	struct lan865x_priv *priv = netdev_priv(netdev);
+> +	int ret;
+> +
+> +	if (!is_valid_ether_addr(netdev->dev_addr)) {
+> +		if (netif_msg_ifup(priv))
+> +			netdev_err(netdev, "Invalid MAC address %pm", netdev->dev_addr);
+> +		return -EADDRNOTAVAIL;
+> +	}
+> +	if (lan865x_hw_disable(priv)) {
+> +		if (netif_msg_ifup(priv))
+> +			netdev_err(netdev, "Failed to disable the hardware\n");
+> +		return -ENODEV;
+> +	}
+> +	ret = lan865x_set_hw_macaddr(netdev);
+> +	if (ret != 0)
+> +		return ret;
+> +
+> +	if (lan865x_hw_enable(priv) != 0) {
+> +		if (netif_msg_ifup(priv))
+> +			netdev_err(netdev, "Failed to enable hardware\n");
+> +		return -ENODEV;
+> +	}
+> +	netif_start_queue(netdev);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct net_device_ops lan865x_netdev_ops = {
+> +	.ndo_open		= lan865x_net_open,
+> +	.ndo_stop		= lan865x_net_close,
+> +	.ndo_start_xmit		= lan865x_send_packet,
+> +	.ndo_set_rx_mode	= lan865x_set_multicast_list,
+> +	.ndo_set_mac_address	= lan865x_set_mac_address,
+> +	.ndo_tx_timeout		= lan865x_tx_timeout,
+> +	.ndo_validate_addr	= eth_validate_addr,
+> +};
+> +
+> +static int lan865x_get_dt_data(struct lan865x_priv *priv)
+> +{
+> +	struct spi_device *spi = priv->spi;
+> +	int ret;
+> +
+> +	if (of_property_present(spi->dev.of_node, "oa-chunk-size")) {
+> +		ret = of_property_read_u32(spi->dev.of_node, "oa-chunk-size",
+> +					   &priv->cps);
+> +		if (ret < 0)
+> +			return ret;
+> +	} else {
+> +		priv->cps = 64;
+> +		dev_info(&spi->dev, "Property oa-chunk-size is not found in dt and proceeding with the size 64\n");
+> +	}
+> +
+> +	if (of_property_present(spi->dev.of_node, "oa-tx-cut-through"))
+> +		priv->txcte = true;
+> +	else
+> +		dev_info(&spi->dev, "Property oa-tx-cut-through is not found in dt and proceeding with tx store and forward mode\n");
+> +
+> +	if (of_property_present(spi->dev.of_node, "oa-rx-cut-through"))
+> +		priv->rxcte = true;
+> +	else
+> +		dev_info(&spi->dev, "Property oa-rx-cut-through is not found in dt and proceeding with rx store and forward mode\n");
+> +
+> +	if (of_property_present(spi->dev.of_node, "oa-protected"))
+> +		priv->protected = true;
+> +	else
+> +		dev_info(&spi->dev, "Property oa-protected is not found in dt and proceeding with protection enabled\n");
+> +
+> +	return 0;
+> +}
+> +
+> +static int lan865x_probe(struct spi_device *spi)
+> +{
+> +	struct net_device *netdev;
+> +	struct lan865x_priv *priv;
+> +	u32 regval;
+> +	int ret;
+> +
+> +	netdev = alloc_etherdev(sizeof(struct lan865x_priv));
+> +	if (!netdev)
+> +		return -ENOMEM;
+> +
+> +	priv = netdev_priv(netdev);
+> +	priv->netdev = netdev;
+> +	priv->spi = spi;
+> +	priv->msg_enable = 0;
+> +	spi_set_drvdata(spi, priv);
+> +	SET_NETDEV_DEV(netdev, &spi->dev);
+> +
+> +	ret = lan865x_get_dt_data(priv);
+> +	if (ret)
+> +		return ret;
 
+Has not free allocated netdev.
+
+> +
+> +	spi->rt = true;
+> +	spi_setup(spi);
+> +
+> +	priv->tc6 = oa_tc6_init(spi, netdev);
+> +	if (!priv->tc6) {
+> +		ret = -ENOMEM;
+> +		goto error_oa_tc6_init;
+> +	}
+> +
+> +	if (priv->cps == 32) {
+> +		regval = CCS_Q0_TX_CFG_32;
+> +		ret = oa_tc6_write_register(priv->tc6, CCS_Q0_TX_CFG, &regval, 1);
+> +		if (ret)
+> +			return ret;
+
+No resources recycle. Please check.
+
+> +
+> +		regval = CCS_Q0_RX_CFG_32;
+> +		ret = oa_tc6_write_register(priv->tc6, CCS_Q0_RX_CFG, &regval, 1);
+> +		if (ret)
+> +			return ret;
+
+No resources recycle. Please check.
+
+> +	}
+> +
+> +	if (oa_tc6_configure(priv->tc6, priv->cps, priv->protected, priv->txcte,
+> +			     priv->rxcte))
+> +		goto err_macphy_config;
+> +
+> +	ret = lan865x_phy_init(priv);
+> +	if (ret)
+> +		goto error_phy;
+> +
+> +	if (device_get_ethdev_address(&spi->dev, netdev))
+> +		eth_hw_addr_random(netdev);
+> +
+> +	ret = lan865x_set_hw_macaddr(netdev);
+> +	if (ret) {
+> +		if (netif_msg_probe(priv))
+> +			dev_err(&spi->dev, "Failed to configure MAC");
+> +		goto error_set_mac;
+> +	}
+> +
+> +	netdev->if_port = IF_PORT_10BASET;
+> +	netdev->irq = spi->irq;
+> +	netdev->netdev_ops = &lan865x_netdev_ops;
+> +	netdev->watchdog_timeo = TX_TIMEOUT;
+> +	netdev->ethtool_ops = &lan865x_ethtool_ops;
+> +	ret = register_netdev(netdev);
+> +	if (ret) {
+> +		if (netif_msg_probe(priv))
+> +			dev_err(&spi->dev, "Register netdev failed (ret = %d)",
+> +				ret);
+> +		goto error_netdev_register;
+> +	}
+> +
+> +	phy_start(priv->phydev);
+> +	return 0;
+> +
+> +error_netdev_register:
+> +error_set_mac:
+> +	phy_disconnect(priv->phydev);
+> +	mdiobus_unregister(priv->mdiobus);
+> +	mdiobus_free(priv->mdiobus);
+> +error_phy:
+> +err_macphy_config:
+> +	oa_tc6_deinit(priv->tc6);
+> +error_oa_tc6_init:
+> +	free_netdev(priv->netdev);
+> +	return ret;
+> +}
+> +
+> +static void lan865x_remove(struct spi_device *spi)
+> +{
+> +	struct lan865x_priv *priv = spi_get_drvdata(spi);
+> +
+> +	phy_stop(priv->phydev);
+> +	phy_disconnect(priv->phydev);
+> +	mdiobus_unregister(priv->mdiobus);
+> +	mdiobus_free(priv->mdiobus);
+> +	unregister_netdev(priv->netdev);
+> +	if (oa_tc6_deinit(priv->tc6))
+> +		dev_err(&spi->dev, "Failed to deinitialize oa tc6\n");
+> +	free_netdev(priv->netdev);
+> +}
+> +
+> +#ifdef CONFIG_OF
+> +static const struct of_device_id lan865x_dt_ids[] = {
+> +	{ .compatible = "microchip,lan865x" },
+> +	{ /* Sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, lan865x_dt_ids);
+> +#endif
+> +
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id lan865x_acpi_ids[] = {
+> +	{ .id = "LAN865X",
+> +	},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, lan865x_acpi_ids);
+> +#endif
+> +
+> +static struct spi_driver lan865x_driver = {
+> +	.driver = {
+> +		.name = DRV_NAME,
+> +#ifdef CONFIG_OF
+> +		.of_match_table = lan865x_dt_ids,
+> +#endif
+> +#ifdef CONFIG_ACPI
+> +		   .acpi_match_table = ACPI_PTR(lan865x_acpi_ids),
+> +#endif
+> +	 },
+> +	.probe = lan865x_probe,
+> +	.remove = lan865x_remove,
+> +};
+> +module_spi_driver(lan865x_driver);
+> +
+> +MODULE_DESCRIPTION(DRV_NAME " 10Base-T1S MACPHY Ethernet Driver");
+> +MODULE_AUTHOR("Parthiban Veerasooran <parthiban.veerasooran@microchip.com>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("spi:" DRV_NAME);
+> 
