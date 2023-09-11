@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0112879ADC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6647679B56C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345097AbjIKVPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
+        id S1354604AbjIKVyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243152AbjIKQyB (ORCPT
+        with ESMTP id S243150AbjIKQx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:54:01 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07261110
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:56 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so12410678a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:55 -0700 (PDT)
+        Mon, 11 Sep 2023 12:53:56 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E0D110
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:51 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so76814251fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:53:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694451234; x=1695056034; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Dil3AF3ivz/ToEVTlg8BOkOK0mtIGthLdRVu/NjOrE=;
-        b=0uyxQRPUp5LSOnxrxCrdFg2T+QXNOArb0HjIfPbSDnIYpiIBtKEgO2DxFd7k9hSQcA
-         EIyVOH0MawWk/QoOUucxOvCCiQXYY5AgziczsHmYrWLC9GE8tBqprl59ZnHKoZlLK1wP
-         J+I9m4ea2KW1lvfLSq0wNsULgzWvvcrKiXKObjk8Y3zZwx/7fyvgTdVQ7KxRE9BpG41f
-         K1qLMaqFtQHEBO04ZZJiZQfSGawER8l8TsNjo6l+CaJZzkAQFfPtXOrMAGHbTrYek7PY
-         b83pyAdQ/Vvu44mQ895Sa/NOykSjQ3bghd0G0PpZptp1aZv42iI/ZHX6EVVkW0YmT0qW
-         5Zew==
+        d=gmail.com; s=20221208; t=1694451229; x=1695056029; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5srutzo1BddM/TCc6OOu/CdzmFcQ83QZi+pAlNeBHaY=;
+        b=RyCZQKlseZ+jfmV4hvZpUIC5oKfSNMrkJz7AGdWF/K5cKn2cymyoQbcKjN4+dqEnuH
+         WTzlav9zNTfnTT565GMHy9E2AfPxwTsr24cqXVOei3wqj2u8ZdBbL/wtmtJkZvcq63r2
+         zy0gaXjDbyLuZZebJlUZsnV5tBZNuJc4tfJQ7FMgnIyHMdvCxNK8xazGE8juTiqdUW66
+         v35J4ThPQgWB59NacpRZe5KEucjFI3n2ifmIuA4kMImikGaOWosE0bqu0u2rJjqwidyg
+         TclYsGZw8W99toObrlHa3I07Pw3xvGVBBt/+lDx1ZK53HdwArXxvlc0hNmiZIuBe9ztD
+         zvvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694451234; x=1695056034;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Dil3AF3ivz/ToEVTlg8BOkOK0mtIGthLdRVu/NjOrE=;
-        b=ATqLXjp6dO5d2XzPaPWzhVi/mfVi38UUgLHF1RLUxHK770dJMq9qq6oBiRBj6uRQMf
-         It4gMm4l+lHMUCRZD3H13oqUxOd6MUa2c/6iPM+TF3Dezq2HF6EDgMQ8kQMRaaaIowFk
-         JOCTOmq84Q7ikQ0DTzKbBfKphaIjxI5poMpfEe9EbhfNg6oVo7M3XNVD8OCPz1irPfbO
-         LwIi31EQK5G+AwBeMWXVqLoxWgtTyuXbebkLUrFsj7fqp30xnMllicZxKr2Nfy5Vcgm2
-         z/gQjORQ80hu6K6X9LCduOBr9IG8IED1qa/DNJfExPxxMpPhNUGIDbnUtEwwWCvPkwft
-         poWA==
-X-Gm-Message-State: AOJu0YxIhsg4t0fGvby/6tITYZg+2VcE/V4V+270aR4Aj4EJcEUO6GlY
-        trhndabWhbbOA7pc9qsKf8BVsNKU2LNFC5e0+QK9HQ==
-X-Google-Smtp-Source: AGHT+IHpnsplbhCWyXsLea9xYfcD8KhYxmy/z4GHnoz3De2gJtqqVq+4rH/NcrjQl6AWw6VQpu+zBtispfqR1F8E6MQ=
-X-Received: by 2002:a50:ee89:0:b0:523:37f0:2d12 with SMTP id
- f9-20020a50ee89000000b0052337f02d12mr304272edr.17.1694451234408; Mon, 11 Sep
- 2023 09:53:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694451229; x=1695056029;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5srutzo1BddM/TCc6OOu/CdzmFcQ83QZi+pAlNeBHaY=;
+        b=Vo6VfCri1YfhzHzHsfcqX4Bo1MxZz1199jvulO/svxAFtmhTey/dJxZI7I8mRNRSj4
+         7eFVKrXI5wgvucq2vbYwbqwzHpvD/af93ToTAJ8Jm1Zqtuw00Dskfp7IbRoCZc8CYPQd
+         Z0hr9Q3hLG4h8CVh4jhJD/kOU7MqwIQFoERRn//v9A7R0ZsNzm6vV2zp00EZ8KRr1Z3V
+         VYoquPTdz2Zy0C+7fjPkCJtwVCOQLK8omXMJBLAsSGkvF+a8ZSl9f+hJ73oxH1ulvNKQ
+         nK9L+iOnU3nqP80YNozcGjN7q37cj3+VOeF6+V9k6XlOM3c6BS4w9AZOhKpcAZ8QN9e7
+         5tDw==
+X-Gm-Message-State: AOJu0Yxcp+yv8xwA0OdXES88RDBZkDLqQg2P7nfdYmrrApBe24PFNBvX
+        D+XSVsBRRaSHak3d1HrZmIg=
+X-Google-Smtp-Source: AGHT+IF5ie5+fR/y92Nbopcxkp0rBX3RA2X3/kgUn5aHdofrkbMm3oT0ubb25cM1f5j45OotNAJO3Q==
+X-Received: by 2002:a2e:8850:0:b0:2bc:c51d:daa1 with SMTP id z16-20020a2e8850000000b002bcc51ddaa1mr9532788ljj.39.1694451229108;
+        Mon, 11 Sep 2023 09:53:49 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id p15-20020a2e9a8f000000b002b9f4f3e16dsm1604798lji.85.2023.09.11.09.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 09:53:48 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 11 Sep 2023 18:53:45 +0200
+To:     Baoquan He <bhe@redhat.com>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
+Message-ID: <ZP9GGW/q0nCFelLf@pc636>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-5-urezki@gmail.com>
+ <ZP59pbh9SKROtjlr@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-References: <20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com> <1fae4a2f-eaf1-c54c-9ec5-040b2714709e@efficios.com>
-In-Reply-To: <1fae4a2f-eaf1-c54c-9ec5-040b2714709e@efficios.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Mon, 11 Sep 2023 09:53:42 -0700
-Message-ID: <CAFhGd8rHmQrThrCVHmVAp7fDFRidOAPR9Z6JFBpqAswX8dLGgw@mail.gmail.com>
-Subject: Re: [PATCH RFC] selftests/rseq: fix kselftest Clang build warnings
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP59pbh9SKROtjlr@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,112 +83,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 9, 2023 at 5:37=E2=80=AFAM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> On 9/8/23 19:03, Justin Stitt wrote:
-> > Hi,
-> >
-> > I am experiencing many warnings when trying to build tools/testing/self=
-tests.
-> >
-> > Here's one such example from rseq tree:
-> > |  param_test.c:1234:10: error: address argument to atomic operation mu=
-st be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
-> > |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
-> > |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
-> > |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/l=
-ib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_l=
-oad'
-> > |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOM=
-IC_SEQ_CST)
-> > |        |                             ^                 ~~~~~~
-> >
-> > I added the _Atomic type in various locations to silence _all_ (10) of =
-these
-> > warnings. I'm wondering, though, perhaps the absence of these _Atomic
-> > types in the first place is on purpose? Am I on the right track to fix
-> > these warnings without damaging the legitimacy of the tests at hand?
-> >
-> > I'd like some feedback about where to go from here and if others are
-> > experiencing the same issues. Thanks!
-> >
-> > FWIW here's my specific build incantation on Clang-18 (49d41de57896e935=
-cd5726719c5208bce22694ae):
-> > $ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers defconfig kselftes=
-t-merge
-> > $ make LLVM=3D1 ARCH=3Dx86_64 -C tools/testing/selftests
->
-> I should have used the __atomic_load_n() compiler builtin rather than
-> atomic_load(), mainly because it does not require the _Atomic annotation
-> to each type it touches.
-
-Would you like me to send a patch in with this change?
-
->
-> Thanks,
->
-> Mathieu
->
->
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues=
-/61
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Mon, Sep 11, 2023 at 10:38:29AM +0800, Baoquan He wrote:
+> On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> > Store allocated objects in a separate nodes. A va->va_start
+> > address is converted into a correct node where it should
+> > be placed and resided. An addr_to_node() function is used
+> > to do a proper address conversion to determine a node that
+> > contains a VA.
+> > 
+> > Such approach balances VAs across nodes as a result an access
+> > becomes scalable. Number of nodes in a system depends on number
+> > of CPUs divided by two. The density factor in this case is 1/2.
+> > 
+> > Please note:
+> > 
+> > 1. As of now allocated VAs are bound to a node-0. It means the
+> >    patch does not give any difference comparing with a current
+> >    behavior;
+> > 
+> > 2. The global vmap_area_lock, vmap_area_root are removed as there
+> >    is no need in it anymore. The vmap_area_list is still kept and
+> >    is _empty_. It is exported for a kexec only;
+> > 
+> > 3. The vmallocinfo and vread() have to be reworked to be able to
+> >    handle multiple nodes.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > > ---
-> >   tools/testing/selftests/rseq/param_test.c | 8 ++++----
-> >   1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/=
-selftests/rseq/param_test.c
-> > index bf951a490bb4..94802aeed2c6 100644
-> > --- a/tools/testing/selftests/rseq/param_test.c
-> > +++ b/tools/testing/selftests/rseq/param_test.c
-> > @@ -356,7 +356,7 @@ struct inc_thread_test_data {
-> >   };
-> >
-> >   struct percpu_list_node {
-> > -     intptr_t data;
-> > +     _Atomic intptr_t data;
-> >       struct percpu_list_node *next;
-> >   };
-> >
-> > @@ -1212,8 +1212,8 @@ static int set_signal_handler(void)
-> >   /* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command=
-. */
-> >   #ifdef TEST_MEMBARRIER
-> >   struct test_membarrier_thread_args {
-> > -     int stop;
-> > -     intptr_t percpu_list_ptr;
-> > +     _Atomic int stop;
-> > +     _Atomic intptr_t percpu_list_ptr;
-> >   };
-> >
-> >   /* Worker threads modify data in their "active" percpu lists. */
-> > @@ -1240,7 +1240,7 @@ void *test_membarrier_worker_thread(void *arg)
-> >                       int cpu =3D get_current_cpu_id();
-> >
-> >                       ret =3D rseq_offset_deref_addv(RSEQ_MO_RELAXED, R=
-SEQ_PERCPU,
-> > -                             &args->percpu_list_ptr,
-> > +                             (intptr_t*)&args->percpu_list_ptr,
-> >                               sizeof(struct percpu_list_entry) * cpu, 1=
-, cpu);
-> >               } while (rseq_unlikely(ret));
-> >       }
-> >
-> > ---
-> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > change-id: 20230908-kselftest-param_test-c-1763b62e762f
-> >
-> > Best regards,
-> > --
-> > Justin Stitt <justinstitt@google.com>
-> >
->
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
->
+> >  mm/vmalloc.c | 209 +++++++++++++++++++++++++++++++++++++++------------
+> >  1 file changed, 161 insertions(+), 48 deletions(-)
+> > 
+> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > index b7deacca1483..ae0368c314ff 100644
+> > --- a/mm/vmalloc.c
+> > +++ b/mm/vmalloc.c
+> > @@ -728,11 +728,9 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
+> >  #define DEBUG_AUGMENT_LOWEST_MATCH_CHECK 0
+> >  
+> >  
+> > -static DEFINE_SPINLOCK(vmap_area_lock);
+> >  static DEFINE_SPINLOCK(free_vmap_area_lock);
+> >  /* Export for kexec only */
+> >  LIST_HEAD(vmap_area_list);
+> > -static struct rb_root vmap_area_root = RB_ROOT;
+> >  static bool vmap_initialized __read_mostly;
+> >  
+> >  static struct rb_root purge_vmap_area_root = RB_ROOT;
+> > @@ -772,6 +770,38 @@ static struct rb_root free_vmap_area_root = RB_ROOT;
+> >   */
+> >  static DEFINE_PER_CPU(struct vmap_area *, ne_fit_preload_node);
+> >  
+> > +/*
+> > + * An effective vmap-node logic. Users make use of nodes instead
+> > + * of a global heap. It allows to balance an access and mitigate
+> > + * contention.
+> > + */
+> > +struct rb_list {
+> > +	struct rb_root root;
+> > +	struct list_head head;
+> > +	spinlock_t lock;
+> > +};
+> > +
+> > +struct vmap_node {
+> > +	/* Bookkeeping data of this node. */
+> > +	struct rb_list busy;
+> > +};
+> > +
+> > +static struct vmap_node *nodes, snode;
+> > +static __read_mostly unsigned int nr_nodes = 1;
+> > +static __read_mostly unsigned int node_size = 1;
+> 
+> It could be better if calling these global variables a meaningful name,
+> e.g vmap_nodes, static_vmap_nodes, nr_vmap_nodes. When I use vim+cscope
+> to reference them, it gives me a super long list. Aside from that, a
+> simple name often makes me mistake it as a local virable. A weak
+> opinion.
+> 
+I am OK to add "vmap_" prefix:
+
+vmap_nodes;
+vmap_nr_nodes;
+vmap_node_size;
+..
+
+If you are not OK with that, feel free to propose other variants.
+
+Thank you!
+
+--
+Uladzislau Rezki
