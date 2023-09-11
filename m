@@ -2,253 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0857079BF1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB9A79B91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbjIKXUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 19:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46774 "EHLO
+        id S1379291AbjIKWmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347114AbjIKVYY (ORCPT
+        with ESMTP id S1352370AbjIKVpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 17:24:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3DF33F1A;
-        Mon, 11 Sep 2023 14:11:26 -0700 (PDT)
+        Mon, 11 Sep 2023 17:45:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C4F5252;
+        Mon, 11 Sep 2023 14:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694466687; x=1726002687;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=cz+v3li1JoGPwRcSsa49A9A/hlg8ps60ng4auSdFE3o=;
-  b=AOPcC92UVfDxM4I/O+IRKl/tvDilc4sqaM2BnmWjPyVRO3+gIDlOMtph
-   mxE51xZBg7CC1xJrra1J/fHqA++Fg0ywn97RUl0IKKSBDW9KMlU8U2irQ
-   M7S1YP3A7uyur28gDKCcH+Q+VD3CGcYHFPsMSfvXKTS+NDvHVrWM3JYqO
-   6Q+3ANmj/qHNYVtkIv/HSQac83WILuaLX+5kp3H/BrxrwHWJyj/x6KO7z
-   3ELPc1zFZLls2zBlJ4b9We9/+Ub7KdZtu/X5lzMLcG4UFOtddGxFXR7Zc
-   d5vIxplR1p5w0Q12QFkgdDlY1Dqhrb2dsLJDsyKI4v4SeX5X+AW/tqDS6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="442211526"
+  t=1694466969; x=1726002969;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wdu/qy8147uIVVSTXdWZn2iHz/+9TqVoz5bgFNXyio4=;
+  b=d6DhgI3elWCUDyG9EI14WLd+3/UzzR1WqFxMD6DmKA+iNVTK9QH+m47S
+   eeHy0G+EkP9ZnXHkRhcbjcTgV43wKZ39qQu/BLWzwiZ5PC8BC5GC8aFVf
+   Q9j/jmQXxlsXZj3Gu7BgYc0Iecf/SW+T1nvw4f1Obd8jNJzsFW75C8YNW
+   WgRMnnLIdRygpD52cQUrR9zVkN8n7KxNHfHH9Vhi4kvapfkQtOkiFOsxd
+   vYVqbmKG+uEATN4MSUCsCBYcnOIyfbv1sG0JGDK69Q7h5xV5rcBPDikn1
+   9wsqjFvj37S+SAKcF3bTM9bLPFgi9B4ByS83hCgCO3xPF6Q0rqAdl+lzA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378115893"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="442211526"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:10:36 -0700
+   d="scan'208";a="378115893"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:13:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="990249656"
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858492595"
 X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="990249656"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 14:10:35 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 14:10:34 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Mon, 11 Sep 2023 14:10:34 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 14:10:34 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.45) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Mon, 11 Sep 2023 14:10:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IwOINgTVrqg6AjV3tQUGEFF0oYkXq17zca5dEBEiB1OTWc8bx6wjXgy4Z6HgSiv8Sw6rdrFCiz6YDFYnzmjhfilLOntQFa8hMnwA1xBQZPcLk1W2X3ozVo/LxI06mqX8lu3fS3dFZmBYt3mYg9isiycJsdU2o+lDuCMwroUbGBceQomA0uYxGbL6df4acMTNFQBZgV08gByVD0s5FW8/AbtItmHPITSXB/zRPWBCY9ggxEedFWBi+AKzjo+cSYjXTYmUcXgr0eOdJm6w5GOrjQXoZbMO3vHk1pCN71dvPyo8+bIUR3qycbOGubDuHcEyIy3RiELze77NWxl/t4ESkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cz+v3li1JoGPwRcSsa49A9A/hlg8ps60ng4auSdFE3o=;
- b=MTaShp7v0ELm0nMWutwE1GzcfXqkHAOyGwHGPt4hQXZMQ8jUqFLzvJf/NuIw5ZKM2441oI6UPlBC2E7zhsIYi/Z0y6NQtrgdlAiEnTkWaTqd9QozFWBDLEZeVZoIAt8rX1oZGn3uutC4mRPUdgYpyXdup0Tq3k2hNF2t+V0DmkeBqwjilknq4euLgNLfa2dyGWbbz+g0MeWFg4JZO7MlEQc2kIjHylmGDuBMQVQzfMcuXa4tdB+I5S+ibU9ChU35n1xBhwDw5j7l9fxKcM/Avj/QCsrwGlG1Wu53YdWRbi1LhLLn/PCVI0UEhAAfoNkpHZlZhrAdNfzC1LZ8/9E/MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CH3PR11MB7202.namprd11.prod.outlook.com (2603:10b6:610:142::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Mon, 11 Sep
- 2023 21:10:26 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::56f1:507b:133e:57cf]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::56f1:507b:133e:57cf%4]) with mapi id 15.20.6768.029; Mon, 11 Sep 2023
- 21:10:26 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>
-CC:     "svens@linux.ibm.com" <svens@linux.ibm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "schwab@linux-m68k.org" <schwab@linux-m68k.org>,
-        "brgerst@gmail.com" <brgerst@gmail.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "monstr@monstr.eu" <monstr@monstr.eu>,
-        "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "glaubitz@physik.fu-berlin.de" <glaubitz@physik.fu-berlin.de>,
-        "dalias@libc.org" <dalias@libc.org>,
-        "lukas.bulwahn@gmail.com" <lukas.bulwahn@gmail.com>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "James.Bottomley@HansenPartnership.com" 
-        <James.Bottomley@HansenPartnership.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "Hunter, Adrian" <adrian.hunter@intel.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "rmclure@linux.ibm.com" <rmclure@linux.ibm.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "slyich@gmail.com" <slyich@gmail.com>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>,
-        "chris@zankel.net" <chris@zankel.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "mattst88@gmail.com" <mattst88@gmail.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "richard.henderson@linaro.org" <richard.henderson@linaro.org>,
-        "irogers@google.com" <irogers@google.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH 2/2] arch: Reserve map_shadow_stack() syscall number for
- all architectures
-Thread-Topic: [PATCH 2/2] arch: Reserve map_shadow_stack() syscall number for
- all architectures
-Thread-Index: AQHZ5NpRkTepLBjCJE2MYA1Hq+GzELAWHwiA
-Date:   Mon, 11 Sep 2023 21:10:26 +0000
-Message-ID: <8b7106881fa227a64b4e951c6b9240a7126ac4a2.camel@intel.com>
-References: <20230911180210.1060504-1-sohil.mehta@intel.com>
-         <20230911180210.1060504-3-sohil.mehta@intel.com>
-In-Reply-To: <20230911180210.1060504-3-sohil.mehta@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CH3PR11MB7202:EE_
-x-ms-office365-filtering-correlation-id: 23acd5b9-46fa-400f-3bb1-08dbb30b852c
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OK8B7vokoD78jQYDjMuVPzAbbtFM6XAEjY9hKSs3AZuq1kG1CuguVaD+9tWZoX/lt2LI3AJ9gb12yjEXWlA06xZjNX5z6bqDqvDfndlJG7u6PmFpGRVs1fqith4R2Pm4xxE1622OtHqSYgDAzgT1b0wsfwjgN/MWY13ZmdQ/bxfeaUfvgSpo7JrHAQbRyZrLoRYEwkc4WWJ15S/sKqsdasGTjjL6FV2p6Vv1oBV4/aZXJ93fqWHY9xMuNAihCLbHiME/YWu1TWs71jvaV7lLLUD4qU454C25GLfTS7mj46pkXR8O1KKUNM9jIbs+LgWaS8TT/rreJrbXlLgjvFooh1C3v9ch/ObDxvMF3eE0qmYW3Z/P6rwgDZriUZHnN6kBM8HgeQXdkKTrTUd/8E+1XJwomLgYrjqj/TwKyD5gCu3WG58j8h9wdRBKIjZ55a0mzUXrrd+4xpVrosm4LiBBE80lnTqC4ooDP21tP42JYtqJOYtLJBXO0ZL8bmYI3TXNVDzaCUM050i8r1Z5J2gGcDTJjINfxvQzSXxA6nG+RU5STlH09rBhemp4JxGPvqLD2wBrVfureooBNTB5Gz5MEa8vujk4TLJ32bEVOZI6Nq4fgro9dN3RaKb439NQmM1H
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(136003)(39860400002)(1800799009)(186009)(451199024)(122000001)(71200400001)(6486002)(6506007)(110136005)(8676002)(86362001)(82960400001)(38070700005)(36756003)(38100700002)(4744005)(6512007)(83380400001)(2906002)(8936002)(66476007)(4326008)(2616005)(66446008)(316002)(41300700001)(7406005)(478600001)(7416002)(5660300002)(64756008)(54906003)(7366002)(26005)(66556008)(76116006)(66946007)(91956017);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UDJYWVdKOCtMSVNGRkRPTWpuTGJJNkkxU044b1lpUnhta25TUFZrUXZDSWts?=
- =?utf-8?B?TEttRWp1V2owMW5kUDJiVTBCUnI1QUYvOFdDNy8rUUlHREpMSG1Xd2lsUTRZ?=
- =?utf-8?B?SjZyVUdOT1AyRUhMMzZUZlFtcEMwQmcxUTZzQitYQ3k0R1dGcG40YXNsN0pC?=
- =?utf-8?B?dGlDNWJZODNHcXdHY2VzOU92M21GeE05MlhyZVhpazJ0dnQ5T0NnZnd3WDZt?=
- =?utf-8?B?Nk16bjZzd2FMWkRVNVhQTjl3RkVicVBWZUdOT05tL1FLR2I0S1lXUThTY210?=
- =?utf-8?B?eGhaTzRzUmJCTEd3TUtFQllPdDd0ajNnTHJXL3o5SzZVdlRPZk0xUVEvb00y?=
- =?utf-8?B?a0xkMTFDZmhaR2plODgrdDFTaC9aN0R4aHJQNjJoRjVlZ0xjUWVGV2lxK0pE?=
- =?utf-8?B?aEpCdTY3Q2VpZWlPR1UxZGM1N0ltSU1NWGU1YW9mdzY5d29RaTNJbDd4UUhk?=
- =?utf-8?B?ZjVsWHlwcjRSenM5aFcvaUFJM0VzYXBuMUdmNE1Ud1E0alh2Sng5dTVDYWUy?=
- =?utf-8?B?c2dIMHV5b2xtbVAvRmZzOG85VkJhK09qeGh1Q1l2VStrOVdva05NKzFWV0hj?=
- =?utf-8?B?S01DeStXRmx4KzA4MENIM01ZQUo3TmhVTWEzRnU4Q2xXV04vTW00bjZUWjdt?=
- =?utf-8?B?WUxTTUY2MnlrSnE4Yi8yZkoxd1NIK2Q0S1lkTWNsdUhCbUZMbmt4ZlVtNWJq?=
- =?utf-8?B?bTZnd2RiR2NRbHhkbmwyNlZoMHo4ODl1U3FsZnMwNWdlcUVvdmdqWmNFRzAz?=
- =?utf-8?B?Y0NaajFNNjFQanUvem8wUEhaTDFFOWhFRDNBUmVFbVFGNlRpS3FCU2Z6UWtG?=
- =?utf-8?B?ZHdzTE00S0lKVEJyQVJGYkRmSFZoZjFlazZWMzBSRnFtYzVrTFNBV0NNNExl?=
- =?utf-8?B?bDNhZFplTWdjODI2ME5QVGpwdVVTejVRbkE4T0VvbUJrd3k0RjJHamxoMjlI?=
- =?utf-8?B?TC8wTlM4c2dPWmE5bDNQT1BEV01PVlRJZGl3U200RndtcG1kUllqd2I4UVhu?=
- =?utf-8?B?cEhPNXNFTzF3K04xYlpJdTh1WHZzWTJZcE1KdHYrN05Cc1ZrUDFsRTdYd0Y5?=
- =?utf-8?B?bml1ZkdVdzNqNmdOdUhUU2F3cHQvQ1I3eXBxbXYra2E1K1RYWDJha2M0WUJ2?=
- =?utf-8?B?VDM2VXhKaG9WQlpzanFmdGRxOGU1Q0EzOXBzS3NMeFB6OStJQWlmR1dpV1hm?=
- =?utf-8?B?M1R3eVlMWXJCR3BGUWZLQ2FKeWJGTzkrbElKdWtWUkNPK3ZYazRIcXd4Z2d4?=
- =?utf-8?B?RkdZSjdBM0ZLdzFXS3I4b3VwNmJ0N0svLzVUV05iS3lRSkRSMHd2VXhQeHBv?=
- =?utf-8?B?Vm83a3dZd2MrUkppUVJoQkZSZ1JESzQvODJLWFhiTGJLMEE5dEZxOTNidjk3?=
- =?utf-8?B?QVh2eE1DYTRDTHV6MVJ2eWR6dkt6V0tvckk1d1IzQk5tS3lma29ZdjNNc0xk?=
- =?utf-8?B?UWtPWXdURHQydngxclM4b0FNSlV0V0hMRHRBS21rTVFJeC9xckZJWFBnd252?=
- =?utf-8?B?Y2w3UVN3bHg0NFpOMlgveUhHUmJmREsxeWdrcW9mUkpxYXRwTG93d0NQSDRi?=
- =?utf-8?B?LytCYzduQjRUUmc3eGU2V0FMSVJxSnlsL0dKQUlOV0F2bVAyRHFKQXQ4aEFq?=
- =?utf-8?B?QkpXK2h5TGxtVGptTm56cy8ySkNCanRxUjRzOUc0VnVLZ2hHU3UzUVVTZVZY?=
- =?utf-8?B?ZEs5cGZhaHpPVENSQ2dyRHJaTzhuL0FRcXhZVy94VkQrTFBaQVFGd3gyRUE2?=
- =?utf-8?B?dHF5azIyN1k5dkxHOG50U3BZR2QvUVRZeHFvYStMMFVPeENSVDJvNlIrSktv?=
- =?utf-8?B?VFNZeVRvQzZDYjZSckV5Zm1qbDE0RCtsWWtJSk9HM0xZa3hDd1V2YkkvVGpp?=
- =?utf-8?B?Mzg0ZmZ1ejdWZStzRDhQY0RSVExxMnErMzd4Vk1BU2YyZ2dQU2pWY1p0dHRk?=
- =?utf-8?B?dkRTTUpNc1F3TEtHRTMvdGt2RFo3QTBCa3ppT08vbDBRNWpnZHI4RU1vbWJj?=
- =?utf-8?B?S0RIR3p1N3EzWTlKKzVKa05zWnRSVW1CSXJqdDZEVFZjZGg2ZUxlcmRXc1Uy?=
- =?utf-8?B?U2JDS0FVajlaZTRqTkZiOHdTZ1QwbUswWFZib041U2ErV090S0NObFVCM1VY?=
- =?utf-8?B?Rkx3VXJZQnhWNXhDaDQ5L00vOEltZVJJVGx1V2V1NVdzQWlaL3FKTzJpenY3?=
- =?utf-8?B?d1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1955378CE723A64F8B91F3A248378666@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+   d="scan'208";a="858492595"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 14:13:47 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qfoE4-008QR8-1H;
+        Tue, 12 Sep 2023 00:13:44 +0300
+Date:   Tue, 12 Sep 2023 00:13:44 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh@kernel.org, max.zhen@amd.com, sonal.santan@amd.com,
+        stefano.stabellini@xilinx.com,
+        =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
+Message-ID: <ZP+DCFqQIKth5eAL@smile.fi.intel.com>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+ <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
+ <20230911154856.000076c3@Huawei.com>
+ <20230911173503.0db85e4b@bootlin.com>
+ <20230911164741.00003904@Huawei.com>
+ <20230911172256.00002ee3@Huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23acd5b9-46fa-400f-3bb1-08dbb30b852c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2023 21:10:26.3311
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HLaoGmYZB49/k7gO5MHzCV3kWlkKIzYkFOA/yfaxaK6+Pz0NRaJ3iQ/UgYr90m463Lzfq/eY7NDmV2nbTKXOHYz+4COL3FjVF3YqWAst0BM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7202
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911172256.00002ee3@Huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTA5LTExIGF0IDE4OjAyICswMDAwLCBTb2hpbCBNZWh0YSB3cm90ZToKPiBk
-aWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsLnRibAo+IGIv
-YXJjaC9wb3dlcnBjL2tlcm5lbC9zeXNjYWxscy9zeXNjYWxsLnRibAo+IGluZGV4IDIwZTUwNTg2
-ZThhMi4uMjc2N2I4YTQyNjM2IDEwMDY0NAo+IC0tLSBhL2FyY2gvcG93ZXJwYy9rZXJuZWwvc3lz
-Y2FsbHMvc3lzY2FsbC50YmwKPiArKysgYi9hcmNoL3Bvd2VycGMva2VybmVsL3N5c2NhbGxzL3N5
-c2NhbGwudGJsCj4gQEAgLTUzOSwzICs1MzksNCBAQAo+IMKgNDUwwqDCoMKgwqBub3NwdcKgwqDC
-oHNldF9tZW1wb2xpY3lfaG9tZV9ub2RlwqDCoMKgwqDCoMKgwqDCoMKgc3lzX3NldF9tZW1wb2xp
-Y3lfaG9tCj4gZV9ub2RlCj4gwqA0NTHCoMKgwqDCoGNvbW1vbsKgwqBjYWNoZXN0YXTCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3lzX2NhY2hlc3RhdAo+IMKg
-NDUywqDCoMKgwqBjb21tb27CoMKgZmNobW9kYXQywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHN5c19mY2htb2RhdDIKPiArNDUzwqDCoMKgwqBjb21tb27CoMKg
-bWFwX3NoYWRvd19zdGFja8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3lzX21hcF9z
-aGFkb3dfc3RhY2sKCkkgbm90aWNlZCBpbiBwb3dlcnBjLCB0aGUgbm90IGltcGxlbWVudGVkIHN5
-c2NhbGxzIGFyZSBtYW51YWxseSBtYXBwZWQKdG8gc3lzX25pX3N5c2NhbGwuIEl0IGFsc28gaGFz
-IHNvbWUgc3BlY2lhbCBleHRyYSBzeXNfbmlfc3lzY2FsbCgpCmltcGxlbWVudGF0aW9uIGJpdHMg
-dG8gaGFuZGxlIGJvdGggQVJDSF9IQVNfU1lTQ0FMTF9XUkFQUEVSIGFuZAohQVJDSF9IQVNfU1lT
-Q0FMTF9XUkFQUEVSLiBTbyB3b25kZXJpbmcgaWYgaXQgbWlnaHQgbmVlZCBzcGVjaWFsCnRyZWF0
-bWVudC4gRGlkIHlvdSBzZWUgdGhvc2UgcGFydHM/Cgo=
+On Mon, Sep 11, 2023 at 05:22:56PM +0100, Jonathan Cameron wrote:
+> On Mon, 11 Sep 2023 16:47:41 +0100
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > On Mon, 11 Sep 2023 17:35:03 +0200
+> > Herve Codina <herve.codina@bootlin.com> wrote:
+> > > On Mon, 11 Sep 2023 15:48:56 +0100
+> > > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > > > On Tue, 15 Aug 2023 10:19:57 -0700
+> > > > Lizhi Hou <lizhi.hou@amd.com> wrote:
+
+> > > > > The PCI endpoint device such as Xilinx Alveo PCI card maps the register
+> > > > > spaces from multiple hardware peripherals to its PCI BAR. Normally,
+> > > > > the PCI core discovers devices and BARs using the PCI enumeration process.
+> > > > > There is no infrastructure to discover the hardware peripherals that are
+> > > > > present in a PCI device, and which can be accessed through the PCI BARs.
+> > > > > 
+> > > > > Apparently, the device tree framework requires a device tree node for the
+> > > > > PCI device. Thus, it can generate the device tree nodes for hardware
+> > > > > peripherals underneath. Because PCI is self discoverable bus, there might
+> > > > > not be a device tree node created for PCI devices. Furthermore, if the PCI
+> > > > > device is hot pluggable, when it is plugged in, the device tree nodes for
+> > > > > its parent bridges are required. Add support to generate device tree node
+> > > > > for PCI bridges.
+> > > > > 
+> > > > > Add an of_pci_make_dev_node() interface that can be used to create device
+> > > > > tree node for PCI devices.
+> > > > > 
+> > > > > Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
+> > > > > the kernel will generate device tree nodes for PCI bridges unconditionally.
+> > > > > 
+> > > > > Initially, add the basic properties for the dynamically generated device
+> > > > > tree nodes which include #address-cells, #size-cells, device_type,
+> > > > > compatible, ranges, reg.
+> > > > > 
+> > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>      
+> > > > 
+> > > > I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
+> > > > machine.
+> > > > 
+> > > > There are some missing parts that were present in Clements series, but not this
+> > > > one, particularly creation of the root pci object.
+> > > > 
+> > > > Anyhow, hit an intermittent crash...    
+> > > 
+> > > I am facing the same issues.
+> > > 
+> > > I use a custom PCIe board too but on x86 ACPI machine.
+> > > 
+> > > In order to have a working system, I need also to build a DT node for the PCI
+> > > Host bridge (previously done by Clement's patch) and I am a bit stuck with
+> > > interrupts.
+> > > 
+> > > On your side (ACPI machine) how do you handle this ?  
+> > 
+> > That was next on my list to look at now I've gotten the device tree stuff
+> > to show up.
+> > 
+> > > I mean is your PCI host bridge provided by ACPI ? And if so, you probably need
+> > > to build a DT node for this PCI host bridge and add some interrupt-map,
+> > > interrupt-map-mask properties in the DT node.  
+> > 
+> > Agreed. Potentially some other stuff, but interrupts are the thing that
+> > showed up first as an issue.
+> > 
+> > Given the only reason I'm looking at this is to potentially solve
+> > a long term CXL / MCTP over I2C upstreaming problem on QEMU side, I've only
+> > limited time to throw at this (thought it was a short activity
+> > for a Friday afternoon :)  Will see if it turns out not too be
+> > too hard to build the rest.
+> > 
+> > I can at least boot same system with device tree and check I'm matching
+> > what is being generated by QEMU.
+> 
+> So, I'm not really sure how to approach this.  It seems 'unwise'/'unworkable' to
+> instantiate the device tree blob for the interrupt controller we already have
+> ACPI for and without that I have nothing to route to.
+> 
+> Or can we just ignore the interrupt map stuff completely and instead
+> rely on instantiating an interrupt controller on the card (that under
+> the hood uses non DT paths to make interrupts actually happen?)
+> 
+> That path to me seems workable and keeps the boundary of ACPI vs DT
+> actually getting used within the card specific driver.
+> 
+> Suggestions welcome!
+
+Interestingly I haven't got your message in the thread via `b4`.
+Anyways, I think that was has been discussed at some point and
+DT appears just to be handy blob format to be supplied along with
+the device as "description of its configuration". Whatever format
+is chosen it should be available for ACPI/DT/etc platforms and
+be uniform. ACPI also supports overlays (as a debug feature, though)
+but would it make sense to have AML (compiled ASL) for ACPI and DTB
+for DT platforms and etc for etc platforms with duplicative data
+inside with all limitations of the each of those formats and their
+respective parsers/interpreters?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
