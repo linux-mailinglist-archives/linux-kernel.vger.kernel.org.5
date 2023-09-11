@@ -2,100 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FAB79BA2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8474579BF06
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356080AbjIKWCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        id S239158AbjIKVKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239682AbjIKO0R (ORCPT
+        with ESMTP id S239704AbjIKO0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:26:17 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A017CF0;
-        Mon, 11 Sep 2023 07:26:09 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38BEPwem047792;
-        Mon, 11 Sep 2023 09:25:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694442358;
-        bh=yDtT3PsasM/rGBJ7YF8JGikiMJ1rMWM+wgdq98Drk3A=;
-        h=From:To:CC:Subject:Date;
-        b=PQnrciqmk8VQ8X2D9i30L6f98bQxz+rdZQATFAiT6gZ57U/9PEASTuXlsKEfP5xsc
-         jTcmSIWZt4GGXmVHXCDQf7olmRWT5SNUWUUw85Gb7r28dTPo2GlkgAc877VTygu+d8
-         XSBHyPqc/O51WU9g8sfFzzguShKzKri4KrEbuFcU=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38BEPwUB026218
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 09:25:58 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 09:25:58 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 09:25:57 -0500
-Received: from lelv0326.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38BEPvQL030783;
-        Mon, 11 Sep 2023 09:25:57 -0500
-From:   Andrew Davis <afd@ti.com>
-To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2 1/2] dt-bindings: mfd: syscon: Add ti,am654-dss-oldi-io-ctrl compatible
-Date:   Mon, 11 Sep 2023 09:25:55 -0500
-Message-ID: <20230911142556.64108-1-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 11 Sep 2023 10:26:49 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DE5F0;
+        Mon, 11 Sep 2023 07:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694442402;
+        bh=9rPJIR7/VgE+oucqSz8LYVPUYWIRRxuJj69m2jQ5Bvc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VJ1T6FelW+WTp3Jopa4eVc0iMD5D01qDNlZRt0+NLASd/ha+T13HxPEw0aMN7IVK3
+         +L5ncUei0oQahGrWfywu1gYUXurwcuQKT73gn3QGCund/1GURYDDzN5oTjktHd53Wx
+         1Tll16QTsAC90HCo+UJIaRBNKD2mCj2bmQLmgExM=
+Date:   Mon, 11 Sep 2023 16:26:41 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: libc-test: avoid -Wstringop-overflow
+ warnings
+Message-ID: <cf5a2308-e241-4146-85c6-67ad924fb67c@t-8ch.de>
+References: <20230910-nolibc-poll-fault-v1-1-2b7a16f48259@weissschuh.net>
+ <ZP6uAT0jmseRHkzG@1wt.eu>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZP6uAT0jmseRHkzG@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add TI DSS OLDI-IO control registers compatible. This is a region of 5
-32bit registers found in the TI AM65 CTRL_MMR0 register space[0]. They
-are used to control the characteristics of the OLDI DATA/CLK IO as needed
-by the DSS display controller node.
+Hi Willy!
 
-[0] https://www.ti.com/lit/pdf/spruid7
+On 2023-09-11 08:04:49+0200, Willy Tarreau wrote:
+> On Sun, Sep 10, 2023 at 09:29:01PM +0200, Thomas Weißschuh wrote:
+> > Newer versions of glibc annotate the poll() function with
+> > __attribute__(access) which triggers a compiler warning inside the
+> > testcase poll_fault.
+> > Avoid this by using a plain NULL which is enough for the testcase.
+> > To avoid potential future warnings also adapt the other EFAULT
+> > testcases, except select_fault as NULL is a valid value for its
+> > argument.
+> (...)
+> 
+> Looks good to me. I wouldn't be surprised if we're soon forced to do
+> the same with select() on some archs where it might be emulated.
+> 
+> Feel free to push it to the shared repo.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
+Thanks, I pushed it to the "next" branch.
 
-Changes for v2:
- - Use device specific compatible string
+I'd also like to rebase the next branch onto v6.6-rc1, any objections?
 
- Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 8103154bbb529..ab7e26c3469af 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -69,6 +69,7 @@ properties:
-               - rockchip,rk3588-qos
-               - rockchip,rv1126-qos
-               - starfive,jh7100-sysmain
-+              - ti,am654-dss-oldi-io-ctrl
- 
-           - const: syscon
- 
--- 
-2.39.2
-
+Thomas
