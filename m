@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B1079B64A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D35279C0FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343821AbjIKVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S237676AbjIKVrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237262AbjIKMYO (ORCPT
+        with ESMTP id S237255AbjIKMYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:24:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235AFCDC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 05:24:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D4AF0211C3;
-        Mon, 11 Sep 2023 12:24:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694435047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YjRjylMkvo2iz067JP+nGaOoVALTdbSG3qs/RtYsLlo=;
-        b=pPnVO/lZhHyOgr3kkrCIfsS59Zl+YuAiqFA6RiZseEljHgZPc/7bEwjgPlOGSNAyCtrlAf
-        1duEIVHzp28tt3DRE71iBxNhzyl9z+v8kAz+9917rSIPN4OalXtsIhxSxkTYG0ULjnIIRp
-        afd5mO3oP0+QWRmsyBeC4dz2DLPAv7E=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B530C139CC;
-        Mon, 11 Sep 2023 12:24:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id N4tFKecG/2QuCQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 11 Sep 2023 12:24:07 +0000
-Date:   Mon, 11 Sep 2023 14:24:06 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, ke.wang@unisoc.com
-Subject: Re: [PATCH] mm: remove redundant clear page when
- CONFIG_INIT_ON_ALLOC_DEFAULT_ON configured
-Message-ID: <ZP8G5nIwc6b0LrHC@dhcp22.suse.cz>
-References: <20230911104906.2058503-1-zhaoyang.huang@unisoc.com>
- <ZP8EKWev8H9kMka3@dhcp22.suse.cz>
+        Mon, 11 Sep 2023 08:24:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74996CDC;
+        Mon, 11 Sep 2023 05:24:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694435044; x=1725971044;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hhntH08KwDzWZFhlYntAoxLtfPyiIglkNSydQprvVBY=;
+  b=B8NAQrEcq1rjv1f2R9/u1JXboOL+RFAu4x4rdFIEVMG2OqbbETP7qs/P
+   CyxYU8q0osPzBgChRVEbIdkUZmeiuUAMVe81t/Pyk02j4Dl1A1Psdzre/
+   hLd4w60CdF+/jc+4LTk0Qh2uWQwCgUAErmkynvck22JI8AvQMWNkWi+vC
+   SttRAjlgz3EnmGIL6JwyXygVcfgY/OdHyiWKnIeYGm7Z/Tsc0qfN+YL9e
+   ldadl5LfKlmEfH4Xz0/ybD+6Mh5qpYnsrjRBMLjF/WzBm5XZI8Ut3irY+
+   iTfOTT4hhVtrJgaOvzIjyyVrF4FSc06tJ116vfcEs9C1wLmXh42dTutB0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="376979009"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="376979009"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 05:24:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736753877"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="736753877"
+Received: from unknown (HELO bapvecise024..) ([10.190.254.46])
+  by orsmga007.jf.intel.com with ESMTP; 11 Sep 2023 05:23:59 -0700
+From:   sharath.kumar.d.m@intel.com
+To:     helgaas@kernel.org
+Cc:     bhelgaas@google.com, dinguyen@kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, robh@kernel.org, sharath.kumar.d.m@intel.com
+Subject: [PATCH v3 0/2] PCI: altera: add support to agilex family
+Date:   Mon, 11 Sep 2023 17:54:33 +0530
+Message-Id: <20230911122435.1774301-1-sharath.kumar.d.m@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230908195242.GA304243@bhelgaas>
+References: <20230908195242.GA304243@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZP8EKWev8H9kMka3@dhcp22.suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-09-23 14:12:26, Michal Hocko wrote:
-> On Mon 11-09-23 18:49:06, zhaoyang.huang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > 
-> > There will be redundant clear page within vma_alloc_zeroed_movable_folio
-> > when CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on. Remove it by judging related
-> > configs.
-> 
-> Thanks for spotting this. I suspect this is a fix based on a code review
-> rather than a real performance issue, right? It is always good to
-> mention that. From a very quick look it seems that many architectures
-> just definte vma_alloc_zeroed_movable_folio to use __GFP_ZERO so they
-> are not affected by this. This means that only a subset of architectures
-> are really affected. This is an important information as well.
-> Finally I think it would be more appropriate to mention that the double
-> initialization is done when init_on_alloc is enabled rather than
-> referring to the above config option which only controls whether the
-> functionality is enabled by default.
-> 
-> I would rephrase as follows:
-> Many architectures (alpha, arm64, ia64, m68k s390, x86) define their own
-> vma_alloc_zeroed_movable_folio implementations which use __GFP_ZERO for
-> the page allocation.
-> 
-> Those which rely on the default implementation, however, would currently
-> go through the initialization twice (oce in the page allocator and
-> second in vma_alloc_zeroed_movable_folio) if init_on_alloc is enabled
-> though. Fix this by checking want_init_on_alloc before calling
-> clear_user_highpage.
+From: D M Sharath Kumar <sharath.kumar.d.m@intel.com>
 
-Btw. have you checked other places which could have a similar problem?
-From a very quick look __do_huge_pmd_anonymous_page, hugetlb_no_page,
-hugetlbfs_fallocate and shmem_mfill_atomic_pte all follow the same
-pattern. They do allocate memory so they go through the initialization
-in the allocator and then reinitialized.
+added new callback for
+1) read,write to root port configuration registers
+2) read,write to endpoint configuration registers
+3) root port interrupt handler
+
+agilex and newer platforms need to implemant the callback and generic root 
+port driver should work ( without much changes ) , legacy platforms (arria
+ and startix) implement configuration read,write directly in wrapper 
+api _altera_pcie_cfg_read/_altera_pcie_cfg_write
+
+changelog v2:
+saperated into two patches
+1.refactored the driver for easily portability to future Altera FPGA
+platforms
+2.added support for "Agilex" FPGA
+
+this driver supports PCI RP IP on Agilex FPGA, as these are FPGA its up
+to the user to add PCI RP or not ( as per his needs). we are not adding
+the device tree as part of this commit. we are expecting the add device
+tree changes only if he is adding PCI RP IP in his design
+
+changelog v3:
+incorporate review comments from Bjorn Helgaas
+
+
+D M Sharath Kumar (2):
+  PCI: altera: refactor driver for supporting new platforms
+  PCI: altera: add support for agilex family fpga
+
+ drivers/pci/controller/pcie-altera.c | 305 ++++++++++++++++++++++++---
+ 1 file changed, 275 insertions(+), 30 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.34.1
+
