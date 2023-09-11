@@ -2,179 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFB779B6F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9C879BF3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354798AbjIKVzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
+        id S1347527AbjIKVYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242739AbjIKQOG (ORCPT
+        with ESMTP id S242741AbjIKQOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 12:14:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5511B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 09:14:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4C59621842;
-        Mon, 11 Sep 2023 16:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694448840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=xIAPPZSGR1irVlnoEVDmksfeQUhXgr0/wuH56ipIsSo=;
-        b=hGUePpX6IGz+S3javqQr6Ra6HdZJfauKeZW2oI0F35uGA0jBxLGlYwyqcX98GFDpNX479q
-        7NV/Vn2w79NCE/qZkq87qlHePjn+z9xHHtlIITWjqMdQOtkN+G8VirHTdBR3mObVbuZd5Y
-        JCkYejhji9YOhcVKFuk3EMjPuIer92w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694448840;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=xIAPPZSGR1irVlnoEVDmksfeQUhXgr0/wuH56ipIsSo=;
-        b=m5H4tCaBxmu4H3QExqGFNozeiWGQ2s/i6g0VXg9u3TfLc3f1Bqk3e3Jxdm3uxYtj8qrRcj
-        BKlBjqK6wtI3cfBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1FF0913780;
-        Mon, 11 Sep 2023 16:14:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id a9sZB8g8/2SGAwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 11 Sep 2023 16:14:00 +0000
-Message-ID: <e8d5cb3d-2588-4e72-b42d-c10fd47fcbdf@suse.cz>
-Date:   Mon, 11 Sep 2023 18:13:59 +0200
+        Mon, 11 Sep 2023 12:14:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5C3CC3;
+        Mon, 11 Sep 2023 09:14:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 939CCC433C7;
+        Mon, 11 Sep 2023 16:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694448868;
+        bh=lE4TUKpHsfE3kl2liyLgZhjxv/jCQAFAHS5mAxa9Jio=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gRRONGH1gay49bPcuwG9oModMIeyhqPitP5tKtepnu+JNihIfre6G4mq3muSRgAT5
+         ztXNlEp6cTei0aSI4yyAANEbo5UDSEhxjtAUXYsskp86tJNViykzrlNlnkJhNs9Tvb
+         FBIr/xw68CKFK/7o/XJt5LS0V9FRx9oS1FQJZPzENlJCONJrCv/suxFzJtfdF3ET2B
+         wIt10bC626FlyUqagfq9y8bvo3A7RJ2v5CofcN2UfnD33gd09vF+C9V8kGxSGCCucu
+         AcI8vumcVeNXNZzynqBNRyStwUGhuLs7OM1EJYu+QrqiIExSI1Vz/R1TWlEl51P5rR
+         evZ1N4yKQ3hJA==
+Date:   Mon, 11 Sep 2023 17:14:22 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        Jessica Clarke <jrtc27@jrtc27.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-mmc@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
+Message-ID: <20230911-implosive-shrill-506d18d9bde2@spud>
+References: <20230830031846.127957-2-william.qiu@starfivetech.com>
+ <20230830-commence-trickery-40eaa193cb15@wendy>
+ <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
+ <20230830-procedure-frostbite-56c751f7c276@wendy>
+ <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
+ <20230901-remold-sublease-a1ddb1fc6348@spud>
+ <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
+ <20230901-affected-wanting-ab517791a870@spud>
+ <dd63bb4f-a59b-0323-08fb-03f8cc048b6e@starfivetech.com>
+ <CAJM55Z8XowmB-Hfzr+hBtWu+SGL2v7jya6Nx5_rATf8=5qA4Fg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: page_alloc: fix cma pageblock was stolen in rmqueue
- fallback
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, nsaenzju@redhat.com, yj.chiang@mediatek.com,
-        Mark-pk Tsai <mark-pk.tsai@mediatek.com>,
-        Joe Liu <joe.liu@mediatek.com>
-References: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
- <20230905090922.zy7srh33rg5c3zao@techsingularity.net>
- <20230911155727.GA102237@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- tR6d+JzM8nFUZA==
-In-Reply-To: <20230911155727.GA102237@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="oTmTZUPS0C6vLYk7"
+Content-Disposition: inline
+In-Reply-To: <CAJM55Z8XowmB-Hfzr+hBtWu+SGL2v7jya6Nx5_rATf8=5qA4Fg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 17:57, Johannes Weiner wrote:
-> On Tue, Sep 05, 2023 at 10:09:22AM +0100, Mel Gorman wrote:
->> mm: page_alloc: Free pages to correct buddy list after PCP lock contention
->> 
->> Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
->> returns pages to the buddy list on PCP lock contention. However, for
->> migratetypes that are not MIGRATE_PCPTYPES, the migratetype may have
->> been clobbered already for pages that are not being isolated. In
->> practice, this means that CMA pages may be returned to the wrong
->> buddy list. While this might be harmless in some cases as it is
->> MIGRATE_MOVABLE, the pageblock could be reassigned in rmqueue_fallback
->> and prevent a future CMA allocation. Lookup the PCP migratetype
->> against unconditionally if the PCP lock is contended.
->> 
->> [lecopzer.chen@mediatek.com: CMA-specific fix]
->> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
->> Reported-by: Joe Liu <joe.liu@mediatek.com>
->> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
->> ---
->>  mm/page_alloc.c | 8 +++++++-
->>  1 file changed, 7 insertions(+), 1 deletion(-)
->> 
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 452459836b71..4053c377fee8 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -2428,7 +2428,13 @@ void free_unref_page(struct page *page, unsigned int order)
->>  		free_unref_page_commit(zone, pcp, page, migratetype, order);
->>  		pcp_spin_unlock(pcp);
->>  	} else {
->> -		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
->> +		/*
->> +		 * The page migratetype may have been clobbered for types
->> +		 * (type >= MIGRATE_PCPTYPES && !is_migrate_isolate) so
->> +		 * must be rechecked.
->> +		 */
->> +		free_one_page(zone, page, pfn, order,
->> +			      get_pcppage_migratetype(page), FPI_NONE);
->>  	}
->>  	pcp_trylock_finish(UP_flags);
->>  }
->> 
-> 
-> I had sent a (similar) fix for this here:
-> 
-> https://lore.kernel.org/lkml/20230821183733.106619-4-hannes@cmpxchg.org/
-> 
-> The context wasn't CMA, but HIGHATOMIC pages going to the movable
-> freelist. But the class of bug is the same: the migratetype tweaking
-> really only applies to the pcplist, not the buddy slowpath; I added a
-> local pcpmigratetype to make it more clear, and hopefully prevent bugs
-> of this nature down the line.
 
-Seems to be the cleanest solution to me, indeed.
+--oTmTZUPS0C6vLYk7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I'm just preparing v2 of the above series. Do you want me to break
-> this change out and send it separately?
+On Fri, Sep 08, 2023 at 03:32:36PM +0200, Emil Renner Berthing wrote:
+> On Fri, 8 Sept 2023 at 12:03, William Qiu <william.qiu@starfivetech.com> =
+wrote:
+> > On 2023/9/2 1:43, Conor Dooley wrote:
+> > > On Fri, Sep 01, 2023 at 06:20:38PM +0100, Jessica Clarke wrote:
+> > >> On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
+> > >> >
+> > >> > On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
+> > >> >>
+> > >> >>
+> > >> >> On 2023/8/30 16:34, Conor Dooley wrote:
+> > >> >>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wr=
+ote:
+> > >> >>>> On 30/08/2023 08:50, Conor Dooley wrote:
+> > >> >>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
+> > >> >>>>>> Due to the change of tuning implementation, it's no longer ne=
+cessary to
+> > >> >>>>>> use the "starfive,sysreg" property in dts, so drop the releva=
+nt
+> > >> >>>>>> description in dt-bindings here.
+> > >> >>>>>
+> > >> >>>>> How does changing your software implantation invalidate a desc=
+ription of
+> > >> >>>>> the hardware?
+> > >> >>>>>
+> > >> >>>>
+> > >> >>>> Which is kind of proof that this syscon was just to substitute
+> > >> >>>> incomplete hardware description (e.g. missing clocks and phys).=
+ We
+> > >> >>>> should have rejected it. Just like we should reject them in the=
+ future.
+> > >> >>>
+> > >> >>> :s I dunno what to do with this... I'm inclined to say not to re=
+move it
+> > >> >>> from the binding or dts at all & only change the software.
+> > >> >>>
+> > >> >>>> There are just few cases where syscon is reasonable. All others=
+ is just
+> > >> >>>> laziness. It's not only starfivetech, of course. Several other
+> > >> >>>> contributors do the same.
+> > >> >>>
+> > >> >>> I'm not sure if laziness is fair, lack of understanding is usual=
+ly more
+> > >> >>> likely.
+> > >> >>
+> > >> >> For this, I tend to keep it in binding, but remove it from requir=
+ed. Because
+> > >> >> we only modify the tuning implementation, it doesn't mean that th=
+is property
+> > >> >> need to be removed, it's just no longer be the required one.
+> > >> >
+> > >> > Please only remove it from required if the current driver doesn't =
+break
+> > >> > if the regmap is removed.
+> > >>
+> > >> Either way please make sure the documentation clearly states =E2=80=
+=9Cnever use
+> > >> this, if you=E2=80=99re using it you=E2=80=99re doing it wrong, this=
+ only exists
+> > >> because it was wrongly used in the past=E2=80=9D. Otherwise people w=
+riting
+> > >> drivers for other OSes will probably use it too thinking they need t=
+o.
+> > >
+> > > Maybe we should just delete it if the impact is going to be negligibl=
+e,
+> > > sounds like you're not using it in FreeBSD, which was part of what I =
+was
+> > > worried about. Guess it depends on what Emil & the distro heads think.
+> > Hi Conor,
+> >
+> > After discussing it with our colleagues, we decided that deleting it wa=
+s the best
+> > course of action. Since there will no longer be a related implementatio=
+n of
+> > "starfive,sysreg" in future drivers, even if the dt-binding is describe=
+d, it will
+> > be "never use", so I think it should be deleted.
+> >
+> > What do you think?
+>=20
+> The device tree should be a description of the hardware and there
+> really is a 'u0_sdio_data_strobe_phase_ctrl' field in the sysreg
+> registers[1] on the JH7110 that seems to do _something_ related to the
+> sdio interface. So I don't think the fact that the Linux driver no
+> longer uses it is a good reason to remove it, but if there are some
+> other pragmatic reasons to do so then I'm fine with it. Removing it
+> from the list of required properties should be fine though.
 
-Works for me, if you combine the it with the information about what commit
-that fixes, the CMA implications reported, and Cc stable.
+SGTM. Can you update the patch to do that please William?
+
+Thanks,
+Conor.
+
+--oTmTZUPS0C6vLYk7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZP883gAKCRB4tDGHoIJi
+0iUbAQCcScPVjZ1Kbsf7RH2A+sX+vGqYaNxM2OgYs4g0lowZegEA8ZTFom4Gt2p3
+Ov4GOL7DPFANOjsSHPDE7w4pEWoR2Aw=
+=xCY5
+-----END PGP SIGNATURE-----
+
+--oTmTZUPS0C6vLYk7--
