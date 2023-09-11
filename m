@@ -2,218 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7579A169
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0068879A175
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 04:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbjIKCfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Sep 2023 22:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
+        id S232479AbjIKCjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Sep 2023 22:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjIKCfo (ORCPT
+        with ESMTP id S230096AbjIKCjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Sep 2023 22:35:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D18C1728
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:35:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1BC2C433C8;
-        Mon, 11 Sep 2023 02:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694399663;
-        bh=k/G7cODyLQl2Sxk/QoPyb4F689V1kXiXFE6EkBvZ2yY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X2yNn9sqM4AXQModc75Aqk5wahhVKcu+LDjW4w8bYfKiOzAMG+6Jc8OrvJ+Y8QATy
-         3LVdBg3Ns//aNEEdY/I8JmOklu+YLS15g0zIE5D/gojIV/Lz5A9lL/1v1ToWRZ4xp2
-         8bhKn0jatOSavwyAC65UTEI9gVJRScYV5cQBsoFX6kkLIwQdMPyVa8kqTcsTJQqVAu
-         YRWHqmYFjX+mTFc/xNFjbLIEb0TQmKLzwmPap0aNwdMxGrExx/ScXyWv0jjSFsD1kz
-         jML8JHHWKpaE3+jPZunzjQkH8ND58vlhdV7fxGEIakDgx6TZiJj5heZv/pldEyut5T
-         9wJPCZpJMncqw==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj@kernel.org>
-Cc:     damon@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2] mm/damon/core: use number of passed access sampling as a timer
-Date:   Mon, 11 Sep 2023 02:34:21 +0000
-Message-Id: <20230911023421.2040-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230905035210.127868-1-sj@kernel.org>
-References: 
+        Sun, 10 Sep 2023 22:39:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21EBFFD
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Sep 2023 19:38:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694399917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OA5FPhJGtcfrrgJQr2PSRC3PhbMxdwfUXAA3Q6/Xk48=;
+        b=I+/6r19NCtj0NfxtxdciIAdhSRimE09KaZFRIx0O1sYJ4mkeFhle8R405VbHVx/J+0rT6j
+        HqxbwP9m5468G9a0cKgbcWrWA5WgEjqNvwAZ0d54gjuD/KSgglBDUA7emrpTMJM92nqFyp
+        siGwC6mkqrUuoBR/z9xdAuATdwxSWWg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-350-dKsYZfzTM7mxtbvPQVYjCw-1; Sun, 10 Sep 2023 22:38:33 -0400
+X-MC-Unique: dKsYZfzTM7mxtbvPQVYjCw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 26C801C0514C;
+        Mon, 11 Sep 2023 02:38:33 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5EC35200B401;
+        Mon, 11 Sep 2023 02:38:32 +0000 (UTC)
+Date:   Mon, 11 Sep 2023 10:38:29 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 4/9] mm: vmalloc: Remove global vmap_area_root rb-tree
+Message-ID: <ZP59pbh9SKROtjlr@MiWiFi-R3L-srv>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-5-urezki@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829081142.3619-5-urezki@gmail.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sep 2023 03:52:10 +0000 SeongJae Park <sj@kernel.org> wrote:
-
-> Changes from v1
-> (https://lore.kernel.org/damon/20230827003727.49369-1-sj@kernel.org/)
-> - Initalize next_*_sis at the beginning of kdamond_fn()
-> - Remove unnecessary remaining intervals compensations in
->   damon_set_attrs()
+On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> Store allocated objects in a separate nodes. A va->va_start
+> address is converted into a correct node where it should
+> be placed and resided. An addr_to_node() function is used
+> to do a proper address conversion to determine a node that
+> contains a VA.
 > 
-> DAMON sleeps for sampling interval after each sampling, and check if the
-> aggregation interval and the ops update interval have passed using
-> ktime_get_coarse_ts64() and baseline timestamps for the intervals.  That
-> design is for making the operations occur at deterministic timing
-> regardless of the time that spend for each work.  However, it turned out
-> it is not that useful, and incur not-that-intuitive results.
+> Such approach balances VAs across nodes as a result an access
+> becomes scalable. Number of nodes in a system depends on number
+> of CPUs divided by two. The density factor in this case is 1/2.
 > 
-> After all, timer functions, and especially sleep functions that DAMON
-> uses to wait for specific timing, are not necessarily strictly accurate.
-> It is legal design, so no problem.  However, depending on such
-> inaccuracies, the nr_accesses can be larger than aggregation interval
-> divided by sampling interval.  For example, with the default setting (5
-> ms sampling interval and 100 ms aggregation interval) we frequently show
-> regions having nr_accesses larger than 20.  Also, if the execution of a
-> DAMOS scheme takes a long time, next aggregation could happen before
-> enough number of samples are collected.  This is not what usual users
-> would intuitively expect.
+> Please note:
 > 
-> Since access check sampling is the smallest unit work of DAMON, using
-> the number of passed sampling intervals as the DAMON-internal timer can
-> easily avoid these problems.  That is, convert aggregation and ops
-> update intervals to numbers of sampling intervals that need to be passed
-> before those operations be executed, count the number of passed sampling
-> intervals, and invoke the operations as soon as the specific amount of
-> sampling intervals passed.  Make the change.
+> 1. As of now allocated VAs are bound to a node-0. It means the
+>    patch does not give any difference comparing with a current
+>    behavior;
 > 
-> Note that this could make a behavioral change to settings that using
-> intervals that not aligned by the sampling interval.  For example, if
-> the sampling interval is 5 ms and the aggregation interval is 12 ms,
-> DAMON effectively used 15 ms as its aggregation interval with the old
-> design, hence it checks whether the aggregation interval after sleeping
-> the sampling interval.  This change will make DAMON to effectively use
-> 10 ms as aggregation interval, since it uses 'aggregation interval /
-> sampling interval * sampling interval' as the effective aggregation
-> interval, and we don't use floating point types.  Usual users would have
-> used aligned intervals, so this behavioral change is not expected to
-> make any meaningful impact, so just make this change.
+> 2. The global vmap_area_lock, vmap_area_root are removed as there
+>    is no need in it anymore. The vmap_area_list is still kept and
+>    is _empty_. It is exported for a kexec only;
 > 
-> Signed-off-by: SeongJae Park <sj@kernel.org>
+> 3. The vmallocinfo and vread() have to be reworked to be able to
+>    handle multiple nodes.
+> 
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > ---
->  include/linux/damon.h | 14 ++++++-
->  mm/damon/core.c       | 87 +++++++++++++++++++------------------------
->  2 files changed, 51 insertions(+), 50 deletions(-)
+>  mm/vmalloc.c | 209 +++++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 161 insertions(+), 48 deletions(-)
 > 
-[...]
-> diff --git a/mm/damon/core.c b/mm/damon/core.c
-> index b895f70acb2d..d64ddaa472ca 100644
-> --- a/mm/damon/core.c
-> +++ b/mm/damon/core.c
-[...]
-> @@ -581,6 +583,8 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index b7deacca1483..ae0368c314ff 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -728,11 +728,9 @@ EXPORT_SYMBOL(vmalloc_to_pfn);
+>  #define DEBUG_AUGMENT_LOWEST_MATCH_CHECK 0
+>  
+>  
+> -static DEFINE_SPINLOCK(vmap_area_lock);
+>  static DEFINE_SPINLOCK(free_vmap_area_lock);
+>  /* Export for kexec only */
+>  LIST_HEAD(vmap_area_list);
+> -static struct rb_root vmap_area_root = RB_ROOT;
+>  static bool vmap_initialized __read_mostly;
+>  
+>  static struct rb_root purge_vmap_area_root = RB_ROOT;
+> @@ -772,6 +770,38 @@ static struct rb_root free_vmap_area_root = RB_ROOT;
 >   */
->  int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+>  static DEFINE_PER_CPU(struct vmap_area *, ne_fit_preload_node);
+>  
+> +/*
+> + * An effective vmap-node logic. Users make use of nodes instead
+> + * of a global heap. It allows to balance an access and mitigate
+> + * contention.
+> + */
+> +struct rb_list {
+> +	struct rb_root root;
+> +	struct list_head head;
+> +	spinlock_t lock;
+> +};
+> +
+> +struct vmap_node {
+> +	/* Bookkeeping data of this node. */
+> +	struct rb_list busy;
+> +};
+> +
+> +static struct vmap_node *nodes, snode;
+> +static __read_mostly unsigned int nr_nodes = 1;
+> +static __read_mostly unsigned int node_size = 1;
+
+It could be better if calling these global variables a meaningful name,
+e.g vmap_nodes, static_vmap_nodes, nr_vmap_nodes. When I use vim+cscope
+to reference them, it gives me a super long list. Aside from that, a
+simple name often makes me mistake it as a local virable. A weak
+opinion.
+
+
+> +
+> +static inline unsigned int
+> +addr_to_node_id(unsigned long addr)
+> +{
+> +	return (addr / node_size) % nr_nodes;
+> +}
+> +
+> +static inline struct vmap_node *
+> +addr_to_node(unsigned long addr)
+> +{
+> +	return &nodes[addr_to_node_id(addr)];
+> +}
+> +
+>  static __always_inline unsigned long
+>  va_size(struct vmap_area *va)
 >  {
-> +	unsigned long sample_interval;
-> +
->  	if (attrs->min_nr_regions < 3)
->  		return -EINVAL;
->  	if (attrs->min_nr_regions > attrs->max_nr_regions)
-> @@ -588,6 +592,12 @@ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
->  	if (attrs->sample_interval > attrs->aggr_interval)
->  		return -EINVAL;
->  
-> +	sample_interval = attrs->sample_interval ? attrs->sample_interval : 1;
-> +	ctx->next_aggregation_sis = ctx->passed_sample_intervals +
-> +		attrs->aggr_interval / sample_interval;
-> +	ctx->next_ops_update_sis = ctx->passed_sample_intervals +
-> +		attrs->ops_update_interval / sample_interval;
-> +
 
-So, damon_set_attrs() can be called from after_wamrks_check() or
-after_aggregation() callbacks while kdamond is running.  And, it updates the
-next_{aggregation,ops_update}_sis.
-
->  	damon_update_monitoring_results(ctx, attrs);
->  	ctx->attrs = *attrs;
->  	return 0;
-> @@ -761,38 +771,6 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs)
->  	return err;
->  }
->  
-[...]
-> @@ -1432,6 +1409,8 @@ static int kdamond_fn(void *data)
->  
->  	pr_debug("kdamond (%d) starts\n", current->pid);
->  
-> +	kdamond_init_intervals_sis(ctx);
-> +
->  	if (ctx->ops.init)
->  		ctx->ops.init(ctx);
->  	if (ctx->callback.before_start && ctx->callback.before_start(ctx))
-> @@ -1440,6 +1419,8 @@ static int kdamond_fn(void *data)
->  	sz_limit = damon_region_sz_limit(ctx);
->  
->  	while (!kdamond_need_stop(ctx)) {
-> +		unsigned long sample_interval;
-> +
->  		if (kdamond_wait_activation(ctx))
-
-The after_wmarks_check() callback is called from kdamond_wait_activation().
-Hence, the user might call damon_set_attrs() there, and
-next_{aggr_interval,ops_update}_sis can be changed here.
-
->  			break;
->  
-> @@ -1450,11 +1431,17 @@ static int kdamond_fn(void *data)
->  			break;
->  
->  		kdamond_usleep(ctx->attrs.sample_interval);
-> +		ctx->passed_sample_intervals++;
->  
->  		if (ctx->ops.check_accesses)
->  			max_nr_accesses = ctx->ops.check_accesses(ctx);
->  
-> -		if (kdamond_aggregate_interval_passed(ctx)) {
-> +		sample_interval = ctx->attrs.sample_interval ?
-> +			ctx->attrs.sample_interval : 1;
-> +		if (ctx->passed_sample_intervals ==
-> +				ctx->next_aggregation_sis) {
-
-This branch reads next_aggregation_sis, which could be changed from above
-after_wmarks_check() call.
-
-This branch also executes after_aggregation() callback, which again can call
-damon_set_attrs() and therefore update next_ops_update_sis.
-
-> +			ctx->next_aggregation_sis +=
-> +				ctx->attrs.aggr_interval / sample_interval;
->  			kdamond_merge_regions(ctx,
->  					max_nr_accesses / 10,
->  					sz_limit);
-> @@ -1469,7 +1456,11 @@ static int kdamond_fn(void *data)
->  				ctx->ops.reset_aggregated(ctx);
->  		}
->  
-> -		if (kdamond_need_update_operations(ctx)) {
-> +		if (ctx->passed_sample_intervals ==
-> +				ctx->next_ops_update_sis) {
-
-This branch reads next_ops_update_sis, which could be changed from above
-after_aggregation() or after_wmarks_check() callbacks.
-
-As a result, we can unexpectedly skip aggregation or ops update executions.
-This could be problem for later changes including pseudo-moving sum based
-nr_accesses[1] and DAMOS apply intervals[2].  Let's read
-next_{aggregation,ops_update}_sis at the beginning of the loop and use those.
-
-[1] https://lore.kernel.org/damon/20230909033711.55794-9-sj@kernel.org/
-[2] https://lore.kernel.org/damon/20230910034048.59191-1-sj@kernel.org/
-
-> +			ctx->next_ops_update_sis +=
-> +				ctx->attrs.ops_update_interval /
-> +				sample_interval;
->  			if (ctx->ops.update)
->  				ctx->ops.update(ctx);
->  			sz_limit = damon_region_sz_limit(ctx);
-> -- 
-> 2.25.1
-> 
-> 
