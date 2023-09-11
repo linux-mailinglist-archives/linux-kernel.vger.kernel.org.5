@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCEB79A25F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3499879A263
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 06:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbjIKEXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 00:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
+        id S233417AbjIKEYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 00:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjIKEXj (ORCPT
+        with ESMTP id S230124AbjIKEYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 00:23:39 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678BA106;
-        Sun, 10 Sep 2023 21:23:34 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-7950fac19f2so154553639f.3;
-        Sun, 10 Sep 2023 21:23:34 -0700 (PDT)
+        Mon, 11 Sep 2023 00:24:44 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A932D10D;
+        Sun, 10 Sep 2023 21:24:39 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76ef80a503fso247056885a.1;
+        Sun, 10 Sep 2023 21:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694406213; x=1695011013; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZwezSlz+P0+Z2mHsdJjGRZIZ23KKBUbArptodkuCCLA=;
-        b=DSh+3ypCeDiXkYqFcSQbHWFVV+zM+aKANtHGzr8K+egYS0pTFagFZUeQFA5Hx+NB92
-         X9Z2w31JldD5SFq81vPkJzMaTk79xbcsAYEM7JSSlUWKoiD/xSQ1ux1C/mY+MBUHHp9V
-         vuh4rirfn4MQ9gt0aZfy1gkCudQyI887wo37do/N1hlxH8yEK5+j7W767eLF30Bcpqjc
-         +N/FUY8lciBD75NO9jilM8sxrURHPfJB/fj/ceGo9vKGEjIa9QlPQt900uwN90gIcA4h
-         mTdislaY1zZbZdpRGJw32LXlxDbwA0xfe4ZRdZvK47iMi34vq5hqgub2D1YHLDwEG9sa
-         5jUQ==
+        d=gmail.com; s=20221208; t=1694406279; x=1695011079; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=kgyKAOzGQAorCpKqtt6VuyYkMPJvHbgZanCQraUC9To=;
+        b=TtLmdwimmzNreyl9LBuQS0Ut69ublRSloGtvyy3rq5DHHwEAavCP02hads5E1NXJ8T
+         t2dRZGD1E+B5Z6B58WZ60x7EhgJhyiGRXgf0VSDAg1tNVhA+W2LXJG9EHKT1UZLlv4Z6
+         E3rumtPJrOzhVvNjTsiMQLIlrazetvkpjbJG5GFPYkASM420UORHUKbptXmNuQIOQpwA
+         4d5B4etn0S2kfne++aFqaehJ9W0P7dTOtgmr0zqIKr7ti73lXCV40nODGLgi9YqzZNB8
+         HVMY2dwnntpSlNjXa9IxbyopgNfz3LNVVrp3dMJtZd2baiVeYscC+1cZwIv0/QBsINka
+         /g+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694406213; x=1695011013;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZwezSlz+P0+Z2mHsdJjGRZIZ23KKBUbArptodkuCCLA=;
-        b=X+Mlx29aSyHD2054czN45w2aQTVpk3DGQCiP288/oNnVGPp0Bi4vP5b4Rl16CR3MYs
-         AyJ6vKdXMiI3GO3vzxjjaK6aRY7heXMKK5eQBfmaFZKBvpRgL0iM4Wr5BoEymfj44oeZ
-         G+ET5ZXceHiss3uqZ48rGlSQDvFVV5Y4paY/MTQfU+yYkbnMqIuzEgXLyKQ1a8nd+4BY
-         Vy4xBSRvfyQNII/lytCWTYvwMtgCeGMs1Wlx37gsNWrP2UEi9aTGLD29TEBR4CsLH1PL
-         2BZQjkbQuclfxSgWeNlmTTbwDe2HSM+UN7xXqRz5ipVarliY+3epaO0vNPKzIGeBYY++
-         Jdgw==
-X-Gm-Message-State: AOJu0YyYsEjSLCDw0hB50RXCHHnqF/lHdfGCz8vm4RbcbPpr8dmzuw2k
-        mjdaKFa/CJMjiQBvf0K0NiQ=
-X-Google-Smtp-Source: AGHT+IFPotVSX268QJNoA1xH2Nf34ADPSLxJtflUJsCH7TRnOtT7edLvJ2am/yD7hGinw2WC2yPt8A==
-X-Received: by 2002:a92:c568:0:b0:34f:784f:f214 with SMTP id b8-20020a92c568000000b0034f784ff214mr2238827ilj.9.1694406213616;
-        Sun, 10 Sep 2023 21:23:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694406279; x=1695011079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kgyKAOzGQAorCpKqtt6VuyYkMPJvHbgZanCQraUC9To=;
+        b=YvbktxYeZfE8hdNIe2nKu4RFo59GU9mzedTGSkrJzzyVnA9wAQiNYSwe9diPz/DUZV
+         kQnSRAM09PX/aE2SgFoNFp6dprD9BU9Pk3nDcMwhuj6f3tHMCRLfyKrv4wE+/IEB199E
+         Sw7y2kCRxDMyjSCCU4GTS/2V56Tue1g2dzQYdcJULiSZ86nSLb+s8EoOXCSWu9yq2HSP
+         pQfwrjEBy46XM6+pCLRgIa8JFqwEBRx3I+8P5WYqJlwxdAePuCJJNBApTxi1f2fqACcx
+         THZmS/4UFlO4I6j2+RIPCwso1eIW3SoTCUhWIr4ik6zjjI5a69v7nmZCUiPJkcMh0ed+
+         oi7A==
+X-Gm-Message-State: AOJu0YyJNla/pEuXsLzPoCjcYLknsxK9ntjTST/STzbVLuqZ4bR97bw/
+        WDa1Yu6CifyWYsg78rgndwg=
+X-Google-Smtp-Source: AGHT+IG9qNQECCcNwSO9WsEyWgyRxZuSJJPrVCKXdoBvIIa+AiDYUpnzsRMO3eRSTHj55dWZXHBpgg==
+X-Received: by 2002:a05:620a:1003:b0:76f:1742:2f6c with SMTP id z3-20020a05620a100300b0076f17422f6cmr8891254qkj.66.1694406278713;
+        Sun, 10 Sep 2023 21:24:38 -0700 (PDT)
 Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r6-20020a92c506000000b0034ab4a2e0d5sm2136172ilg.70.2023.09.10.21.23.31
+        by smtp.gmail.com with ESMTPSA id dp41-20020a0566381ca900b0042bb2448847sm1907602jab.53.2023.09.10.21.24.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Sep 2023 21:23:32 -0700 (PDT)
+        Sun, 10 Sep 2023 21:24:38 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <5acb9307-2be1-dcd2-fdb7-b2842c7ff24d@roeck-us.net>
-Date:   Sun, 10 Sep 2023 21:23:30 -0700
+Message-ID: <b6054cbd-ca4e-43d1-83a8-ad6bdf89c0cf@roeck-us.net>
+Date:   Sun, 10 Sep 2023 21:24:36 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
+Subject: Re: [PATCH 1/3] hwmon: (pmbus/mpq7932) Get page count based on chip
+ info
 Content-Language: en-US
 To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
         lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
@@ -64,11 +67,9 @@ To:     Saravanan Sekar <saravanan@linumiz.com>, sravanhome@gmail.com,
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-hwmon@vger.kernel.org
 References: <20230911034150.181880-1-saravanan@linumiz.com>
- <20230911034150.181880-4-saravanan@linumiz.com>
+ <20230911034150.181880-2-saravanan@linumiz.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 3/3] hwmon: (pmbus/mpq2286) Add a support for mpq2286
- Power Management IC
-In-Reply-To: <20230911034150.181880-4-saravanan@linumiz.com>
+In-Reply-To: <20230911034150.181880-2-saravanan@linumiz.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,52 +84,50 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 9/10/23 20:41, Saravanan Sekar wrote:
-> The MPQ2286 is a programmable, high frequency synchronous buck regulator
-> designed to power a variety of Automotive system peripherals. Single buck
-> converters with hardware monitoring capability is configurable over PMBus
-> interface.
+> Get page count using compatible match to support the series of chipsets
+> which differs in number of regualator/page.
 > 
 > Signed-off-by: Saravanan Sekar <saravanan@linumiz.com>
 > ---
->   drivers/hwmon/pmbus/mpq7932.c | 3 +++
->   1 file changed, 3 insertions(+)
+>   drivers/hwmon/pmbus/mpq7932.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/hwmon/pmbus/mpq7932.c b/drivers/hwmon/pmbus/mpq7932.c
-> index af3e5e9590c8..3ffeece28e2d 100644
+> index 865d42edda1a..af3e5e9590c8 100644
 > --- a/drivers/hwmon/pmbus/mpq7932.c
 > +++ b/drivers/hwmon/pmbus/mpq7932.c
-> @@ -21,6 +21,7 @@
->   #define MPQ7932_N_VOLTAGES		256
->   #define MPQ7932_VOUT_MAX		0xFF
->   #define MPQ7932_NUM_PAGES		6
-> +#define MPQ2286_NUM_PAGES		1
+> @@ -105,7 +105,7 @@ static int mpq7932_probe(struct i2c_client *client)
+>   		return -ENOMEM;
 >   
->   #define MPQ7932_TON_DELAY		0x60
->   #define MPQ7932_VOUT_STARTUP_SLEW	0xA3
-> @@ -130,12 +131,14 @@ static int mpq7932_probe(struct i2c_client *client)
+>   	info = &data->info;
+> -	info->pages = MPQ7932_NUM_PAGES;
+> +	info->pages = (int)device_get_match_data(&client->dev);
+
+I kind of doubt that this works without generating a compiler warning.
+
+Also, does this work with CONFIG_OF=n ?
+
+Guenter
+
+>   	info->format[PSC_VOLTAGE_OUT] = direct;
+>   	info->m[PSC_VOLTAGE_OUT] = 160;
+>   	info->b[PSC_VOLTAGE_OUT] = -33;
+> @@ -115,7 +115,7 @@ static int mpq7932_probe(struct i2c_client *client)
+>   	}
+>   
+>   #if IS_ENABLED(CONFIG_SENSORS_MPQ7932_REGULATOR)
+> -	info->num_regulators = ARRAY_SIZE(mpq7932_regulators_desc);
+> +	info->num_regulators = info->pages;
+>   	info->reg_desc = mpq7932_regulators_desc;
+>   #endif
+>   
+> @@ -129,7 +129,7 @@ static int mpq7932_probe(struct i2c_client *client)
+>   }
 >   
 >   static const struct of_device_id mpq7932_of_match[] = {
->   	{ .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
-> +	{ .compatible = "mps,mpq2286", .data = (void *)MPQ2286_NUM_PAGES },
+> -	{ .compatible = "mps,mpq7932"},
+> +	{ .compatible = "mps,mpq7932", .data = (void *)MPQ7932_NUM_PAGES },
 >   	{},
 >   };
 >   MODULE_DEVICE_TABLE(of, mpq7932_of_match);
->   
->   static const struct i2c_device_id mpq7932_id[] = {
->   	{ "mpq7932", },
-> +	{ "mpq2286", },
-
-Please keep alphabetic order.
-
->   	{ },
->   };
->   MODULE_DEVICE_TABLE(i2c, mpq7932_id);
-
-This is one of those super-secret automotive chips where almost no information
-is available to the public. I'll need authoritative confirmation that all the
-various parameters (b. m, output voltage format, minimum and maximum output
-voltage, step size) match mpq7932 exactly. That is rarely the case, so consider
-me skeptic.
-
-Guenter
 
