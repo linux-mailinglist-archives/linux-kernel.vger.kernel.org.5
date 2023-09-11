@@ -2,77 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1647579B571
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE4B79B1EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354805AbjIKVzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S1377198AbjIKWVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbjIKJ7h (ORCPT
+        with ESMTP id S236225AbjIKKAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 05:59:37 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC2EE67;
-        Mon, 11 Sep 2023 02:59:32 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68fbd5cd0ceso782915b3a.1;
-        Mon, 11 Sep 2023 02:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694426372; x=1695031172; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2TUtc0pSp329hvP10KKMH6JHebPrZxEBsgiEKJrLWh8=;
-        b=Par9M4bAT71wLoP3LOxI7TzYC+oMYkf8YihsNCeS9hJINIdUkEBUrgkQqOwEvpaSB8
-         PfGeyvn8+P11y2nSIyvOtQhBEMppe8Wj/rIkLJ9s2uKCX6LqWZDK3i0Hnqi460pgYm8s
-         Xbk4OFnSoc4qpu0x53Aw9ma9KojDGer2G+40UoqAg1vcD4U9VHlxblWt1ChTW/bKrTTJ
-         BrktUoEY3Rftiq/kGPfpiEBDdWv/O/0I5Zn2D9Uf9QMypc3zi8cc2gCgKsNV0erxqpHB
-         pKr1HX05LAq9Ac8Cf592BfAYsBLJEnKVbv1kTQfgu89jRwCAP2WcwgzeuH1R8uUEmSiD
-         hREA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694426372; x=1695031172;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2TUtc0pSp329hvP10KKMH6JHebPrZxEBsgiEKJrLWh8=;
-        b=ve0AXAeruaIHcR2z0PcZj9yse+8Mu4RqP7syT4VBR6WNsX7vmREmbQVaUt4MBL2Ag6
-         QGI1j7EXF6+lJ15mg1ZjAyaXUUIUCxoxRY6q60J52aZVpFNVlrVP3ecL53RakIflUyzv
-         VKbfpSIalAxJkBHIUE/htxaxwnN8Su9oUCxJUMw1FkxMb8QNG+VlXEnwp8FQF/IFcZPh
-         lsJ0Csnf84CMvR1ICXWVf5r13AP/jdOsUptBCYfQ5/XBcVxk6GBi9puQBzHpIQUaFqUS
-         UHwHR1bnxlXSN98QA2XwCxnJ93aBIhZgHEMjm6pAol1t79Qdcs6xzOKtSrWfvoRRpoRI
-         T2LA==
-X-Gm-Message-State: AOJu0YyXRjkyt4ADvZKvkzZan5+SzSthODUhgY4FuukzU8JPvxcQy6/y
-        HSrJUaNlB5DYvMX9+qqsPnk=
-X-Google-Smtp-Source: AGHT+IGkzN+hUtDsUPe18WTuHFjC/nSGgLEYgTG+Bkgu03Q3BrHKBDYoPaTD2zr9BUI0Xc0Y4p9o1g==
-X-Received: by 2002:a05:6a20:1390:b0:14c:512c:60d9 with SMTP id hn16-20020a056a20139000b0014c512c60d9mr8341377pzc.27.1694426372083;
-        Mon, 11 Sep 2023 02:59:32 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id j13-20020aa78d0d000000b0068bff979c33sm5224230pfe.188.2023.09.11.02.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 02:59:31 -0700 (PDT)
-Message-ID: <6c15cbd9-1086-373c-d906-fc1cd0016890@gmail.com>
-Date:   Mon, 11 Sep 2023 17:59:23 +0800
+        Mon, 11 Sep 2023 06:00:08 -0400
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465E4E67;
+        Mon, 11 Sep 2023 03:00:02 -0700 (PDT)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 161041C0004; Mon, 11 Sep 2023 12:00:01 +0200 (CEST)
+Date:   Mon, 11 Sep 2023 12:00:00 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Xiaolei Wang <xiaolei.wang@windriver.com>,
+        Peter Chen <peter.chen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        pawell@cadence.com, linux-usb@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.15 10/19] usb: cdns3: Put the cdns set active
+ part outside the spin lock
+Message-ID: <ZP7lIKUzD68XA91j@duo.ucw.cz>
+References: <20230909003903.3580394-1-sashal@kernel.org>
+ <20230909003903.3580394-10-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH] KVM: x86: Allow exposure of VMware backdoor Pseudo-PMCs
- when !enable_pmu
-Content-Language: en-US
-To:     arbel.moshe@oracle.com, liran.alon@oracle.com,
-        nikita.leshchenko@oracle.com,
-        Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-References: <20230822080312.63514-1-likexu@tencent.com>
- <ZOZteOxJvq9v609G@google.com>
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZOZteOxJvq9v609G@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wqD7Cph2pbmvmiU2"
+Content-Disposition: inline
+In-Reply-To: <20230909003903.3580394-10-sashal@kernel.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,78 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
 
-Please help confirm if VMware backdoor Pseudo-PMCs [*] are still available
-when the KVM module parameter eneble_pmu=0.
+--wqD7Cph2pbmvmiU2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	- VMWARE_BACKDOOR_PMC_HOST_TSC;
-	- VMWARE_BACKDOOR_PMC_REAL_TIME;
-	- VMWARE_BACKDOOR_PMC_APPARENT_TIME;
+Hi!
 
-I'd like to say yes, but safely you have the official right to define it. Thanks.
+> From: Xiaolei Wang <xiaolei.wang@windriver.com>
+>=20
+> [ Upstream commit 2319b9c87fe243327285f2fefd7374ffd75a65fc ]
+>=20
+> The device may be scheduled during the resume process,
+> so this cannot appear in atomic operations. Since
+> pm_runtime_set_active will resume suppliers, put set
+> active outside the spin lock, which is only used to
+> protect the struct cdns data structure, otherwise the
+> kernel will report the following warning:
 
-[*] https://www.vmware.com/files/pdf/techpaper/Timekeeping-In-VirtualMachines.pdf
+There's something wrong with this patch: cdns_set_active returns
+either void or int depending on config. That can't be intentional.
 
-On 24/8/2023 4:35 am, Sean Christopherson wrote:
-> On Tue, Aug 22, 2023, Like Xu wrote:
->> From: Like Xu <likexu@tencent.com>
->>
->> Fix kvm_pmu_rdpmc() logic to allow exposure of VMware backdoor Pseudo-PMCs
->> if pmu is globally disabled.
->>
->> In this usage scenario, once vmware_backdoor is enabled, the VMs can fully
->> utilize all of the vmware_backdoor-related resources, not just part of it,
->> i.e., vcpu should always be able to access the VMware backdoor Pseudo-PMCs
->> via RDPMC. Since the enable_pmu is more concerned with the visibility of
->> hardware pmu resources on the host, fix it to decouple the two knobs.
->>
->> The test case vmware_backdoors from KUT is used for validation.
-> 
-> Is there a real world need for this?  Per commit 672ff6cff80c ("KVM: x86: Raise
-> #GP when guest vCPU do not support PMU"), KVM's behavior is intentional.  If there
-> is a real world need, then (a) that justification needs to be provided, (b) this
-> needs a Fixes:, and (c) this probably needs to be tagged for stable.
-> 
->> Cc: Arbel Moshe <arbel.moshe@oracle.com>
->> Cc: Liran Alon <liran.alon@oracle.com>
->> Cc: Nikita Leshenko <nikita.leshchenko@oracle.com>
-> 
-> The expectation is that a Cc: in the changelog means the patch email is Cc'd to
-> that person, i.e. one of the purposes of Cc: here is to record that people who
-> might care about the patch have been made aware of its existence.  stable@ is
-> pretty much the only exception to that rule, as "Cc: stable@vger.kernel.org" is
-> really just a metadata tag for scripts.
-> 
-> FWIW, I believe Liran no longer works for Oracle, no idea about the others.
-> 
->> Signed-off-by: Like Xu <likexu@tencent.com>
->> ---
->>   arch/x86/kvm/pmu.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->> index edb89b51b383..c896328b2b5a 100644
->> --- a/arch/x86/kvm/pmu.c
->> +++ b/arch/x86/kvm/pmu.c
->> @@ -526,12 +526,12 @@ int kvm_pmu_rdpmc(struct kvm_vcpu *vcpu, unsigned idx, u64 *data)
->>   	struct kvm_pmc *pmc;
->>   	u64 mask = fast_mode ? ~0u : ~0ull;
->>   
->> -	if (!pmu->version)
->> -		return 1;
->> -
->>   	if (is_vmware_backdoor_pmc(idx))
->>   		return kvm_pmu_rdpmc_vmware(vcpu, idx, data);
->>   
->> +	if (!pmu->version)
->> +		return 1;
->> +
->>   	pmc = static_call(kvm_x86_pmu_rdpmc_ecx_to_pmc)(vcpu, idx, &mask);
->>   	if (!pmc)
->>   		return 1;
->>
->> base-commit: fff2e47e6c3b8050ca26656693caa857e3a8b740
->> -- 
->> 2.41.0
->>
+Best regards,
+								Pavel
+
+> +++ b/drivers/usb/cdns3/core.c
+> @@ -556,15 +555,23 @@ int cdns_resume(struct cdns *cdns, u8 set_active)
+=2E..
+> +
+> +void cdns_set_active(struct cdns *cdns, u8 set_active)
+> +{
+> +	struct device *dev =3D cdns->dev;
+> +
+>  	if (set_active) {
+>  		pm_runtime_disable(dev);
+>  		pm_runtime_set_active(dev);
+>  		pm_runtime_enable(dev);
+>  	}
+> =20
+> -	return 0;
+> +	return;
+>  }
+
+> +++ b/drivers/usb/cdns3/core.h
+> @@ -125,10 +125,13 @@ int cdns_init(struct cdns *cdns);
+>  int cdns_remove(struct cdns *cdns);
+> =20
+>  #ifdef CONFIG_PM_SLEEP
+=2E..
+>  int cdns_suspend(struct cdns *cdns);
+> +void cdns_set_active(struct cdns *cdns, u8 set_active);
+>  #else /* CONFIG_PM_SLEEP */
+=2E..
+> +static inline int cdns_set_active(struct cdns *cdns, u8 set_active)
+>  { return 0; }
+>  static inline int cdns_suspend(struct cdns *cdns)
+>  { return 0; }
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--wqD7Cph2pbmvmiU2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZP7lIAAKCRAw5/Bqldv6
+8uyWAJ40lI1lM3v257gQVvAQHRibAqeWkQCfQU6EJSPUflkZaJ2qX4r5mj5pKx0=
+=R7Gr
+-----END PGP SIGNATURE-----
+
+--wqD7Cph2pbmvmiU2--
