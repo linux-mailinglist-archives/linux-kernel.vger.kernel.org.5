@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2E79B138
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AC279B53E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376488AbjIKWTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S1351623AbjIKVn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242484AbjIKPmB (ORCPT
+        with ESMTP id S242487AbjIKPmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:42:01 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B554FB;
-        Mon, 11 Sep 2023 08:41:56 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BF6F6E0018;
-        Mon, 11 Sep 2023 15:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694446915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Mon, 11 Sep 2023 11:42:31 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBC8127;
+        Mon, 11 Sep 2023 08:42:26 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 952BA1F38D;
+        Mon, 11 Sep 2023 15:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694446944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=8eGFlRAiKwz7g/fasY8Jk6HfMvuOa7JI1wixiyPB1o0=;
-        b=kr2EVhvMPtWMwb5y+Kvze/QsqQazMWGPWzFvc5PrkpprxXZfVN3kthJ9G9iHjOAx3BuS6Z
-        wA4IUI8fg/NmFxbGJ1cmQoXP4ReVJp+NKp3ii5ILXwKto5dFoCjC5KiQ18HfSwcTltQ7oN
-        1B+sZIAQHqL9yxkPnTL2xU3gH7nFjDWNsKjNWs1q6sA1NSlKtXXTvNYxy0z1eLM5TIhZdP
-        E3k8wrl6yxNiNr6zgiXmLRj7WMkm+r+00R6w0hVYKCsdat0maMi0xBkkRSIjib5oP8T8Y5
-        bPQHCa/IGCq2UNjzUN3qTju1uxSdXewX/xr/KFLR3+NvRrN2WTBBg2IrA42QYg==
-Date:   Mon, 11 Sep 2023 17:40:39 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc:     <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_charnte@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_pkondeti@quicinc.com>
-Subject: Re: [PATCH v2] mtd: nand: qcom: Fix the node for nand unmap
- resource
-Message-ID: <20230911174039.63f6e835@xps-13>
-In-Reply-To: <20230911133026.29868-1-quic_bibekkum@quicinc.com>
-References: <20230911133026.29868-1-quic_bibekkum@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=3xXDQka3gqHzTmbM91PUqKCNwVv5hIrQkTXz5vFWWz8=;
+        b=orN+6SbhdVggei5E57EsUfJsiLKTfW08RYjOOVA2l8f5lm4UfC3hRJ+PgTzyTzumbZxOVf
+        hw2/anP2YoMQmfbw/oEoIkjQAjkKyUlv1CCqvhF94l0asZBV7znF7pojvRbfmPrbNwvkMB
+        yCzM3NajV41At+jdrDQo6tcy1auUN6Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694446944;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3xXDQka3gqHzTmbM91PUqKCNwVv5hIrQkTXz5vFWWz8=;
+        b=I5E+uNod2iDLygEjzr91eL5+LUNmI9G2s0LFeHtadKJI35gQJJK8PtD4iudTJn+PMwDkrg
+        VR7P/MbAY4Au9YBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5DF3E13780;
+        Mon, 11 Sep 2023 15:42:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dO12EWA1/2Q9cQAAMHmgww
+        (envelope-from <krisman@suse.de>); Mon, 11 Sep 2023 15:42:24 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
+        martin.lau@linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        io-uring@vger.kernel.org, pabeni@redhat.com
+Subject: Re: [PATCH v5 3/8] io_uring/cmd: Pass compat mode in issue_flags
+In-Reply-To: <20230911103407.1393149-4-leitao@debian.org> (Breno Leitao's
+        message of "Mon, 11 Sep 2023 03:34:02 -0700")
+Organization: SUSE
+References: <20230911103407.1393149-1-leitao@debian.org>
+        <20230911103407.1393149-4-leitao@debian.org>
+Date:   Mon, 11 Sep 2023 11:42:23 -0400
+Message-ID: <87v8cg90o0.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bibek,
+Breno Leitao <leitao@debian.org> writes:
 
-quic_bibekkum@quicinc.com wrote on Mon, 11 Sep 2023 19:00:26 +0530:
+> Create a new flag to track if the operation is running compat mode.
+> This basically check the context->compat and pass it to the issue_flags,
+> so, it could be queried later in the callbacks.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-The title prefix should be s/nand/rawnand.
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
 
-The title itself is unclear "fix the node" does not mean anything to me.
 
-> Fix addr argument to dma_unmap_resource() in the error path of probe.
-
-      ^
-No abbreviation unless you are quoting the code directly.
-
-                    of?                            probe error path
-
-> The addr argument should be dma address instead of physical address.
-      ^                      ^                      ^
-      ditto                  the?                   the?
-
->=20
-> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 > ---
-> v2: Incorporated comments from Pavan/Mani.
->=20
-> v1: https://lore.kernel.org/all/20230907092854.11408-1-quic_bibekkum@quic=
-inc.com/
->=20
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
-m_nandc.c
-> index 64499c1b3603..b079605c84d3 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -3444,7 +3444,7 @@ static int qcom_nandc_probe(struct platform_device =
-*pdev)
->  err_aon_clk:
->  	clk_disable_unprepare(nandc->core_clk);
->  err_core_clk:
-> -	dma_unmap_resource(dev, res->start, resource_size(res),
-> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
->  			   DMA_BIDIRECTIONAL, 0);
->  	return ret;
->  }
-> --
-> 2.17.1
->=20
+>  include/linux/io_uring.h | 1 +
+>  io_uring/uring_cmd.c     | 2 ++
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/include/linux/io_uring.h b/include/linux/io_uring.h
+> index 106cdc55ff3b..bc53b35966ed 100644
+> --- a/include/linux/io_uring.h
+> +++ b/include/linux/io_uring.h
+> @@ -20,6 +20,7 @@ enum io_uring_cmd_flags {
+>  	IO_URING_F_SQE128		= (1 << 8),
+>  	IO_URING_F_CQE32		= (1 << 9),
+>  	IO_URING_F_IOPOLL		= (1 << 10),
+> +	IO_URING_F_COMPAT		= (1 << 11),
+>  };
+>  
+>  struct io_uring_cmd {
+> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
+> index 537795fddc87..60f843a357e0 100644
+> --- a/io_uring/uring_cmd.c
+> +++ b/io_uring/uring_cmd.c
+> @@ -128,6 +128,8 @@ int io_uring_cmd(struct io_kiocb *req, unsigned int issue_flags)
+>  		issue_flags |= IO_URING_F_SQE128;
+>  	if (ctx->flags & IORING_SETUP_CQE32)
+>  		issue_flags |= IO_URING_F_CQE32;
+> +	if (ctx->compat)
+> +		issue_flags |= IO_URING_F_COMPAT;
+>  	if (ctx->flags & IORING_SETUP_IOPOLL) {
+>  		if (!file->f_op->uring_cmd_iopoll)
+>  			return -EOPNOTSUPP;
 
-
-Thanks,
-Miqu=C3=A8l
+-- 
+Gabriel Krisman Bertazi
