@@ -2,62 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795D79A331
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5BD79A328
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 08:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjIKGCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 02:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51978 "EHLO
+        id S234295AbjIKGBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 02:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbjIKGCH (ORCPT
+        with ESMTP id S234288AbjIKGBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 02:02:07 -0400
+        Mon, 11 Sep 2023 02:01:05 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FB11B9;
-        Sun, 10 Sep 2023 23:01:29 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5rWiL009039;
-        Mon, 11 Sep 2023 06:00:48 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D8DCD2;
+        Sun, 10 Sep 2023 23:00:58 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38B5iYfV026956;
+        Mon, 11 Sep 2023 06:00:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=mffWOqAhx7Dx4280AURFM1berny9POS9TD45FqGA8Sk=;
- b=OwC9qjMhw0cBVtqfHqU1bHwVvxA3No2YQMvgSOQjPgpCrI/w4cVubcm5cHVdIU9n0dvy
- 1VkCIbOmuUZ4o0/HJGUC4RVYgW61tOpL9OzJPOBDG+UmX8NH2glthmZ3KrJglFDijq2P
- fBYe7/BU4Zc7zuJ8BdWY/LjsBNDrsmvl51LwezPPlCzMlRYsqDr8OGzGkgMljOXToA4u
- ZqWOTtX4srQLpjt7Vn5gQz5+dRepZed7iJe9PAY4fHxlCTFDoWOW8VXwAQaHiMSh/i0X
- Z/PBloE8V2G7GqeR1Dv9MYUGQxmCxMOlP7+bMTTKywlSpJOsRZO0IVQqLWcqM6ftYGIc vw== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0hvyjr9x-1
+ bh=G6KhS/41CnEp4pd00YTwr0gP5hZO7WDTthOGelST+0w=;
+ b=kj2I0Rj5rqMoYJSg7qiVJpZGerZkIfdMge9m27A2V2arGlvK+r8vru83JOcZ1yd+2z6t
+ Lx/57mjb+2g4nGfcNOCgjQyXGdadWBxdqk2MjjXM5m8E3i3nnvB96o67gQpDnBdP658S
+ Id8zr9j7TlK8snpVyRCr0yCGpp5k1DW748DvQykLko+uLss6yckFh/TGIdrCF9DpCDep
+ vW/37wi+imebiQ5wHiDz5oyy21i+qtBWtwwkTKmCGJIfsbNlSvOgmiXDljpXEn1Ef/S6
+ 0msJUIohyWmiIKqbUaXoR2xvBK1xHr+mCNm9OfvyuabsLGdjpyG3hJLKuTAbSEdCET4B WA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t0edmk1ap-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Sep 2023 06:00:48 +0000
-Received: from pps.filterd (NASANPPMTA04.qualcomm.com [127.0.0.1])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38B5PkUq017311;
-        Mon, 11 Sep 2023 06:00:47 GMT
+        Mon, 11 Sep 2023 06:00:52 +0000
+Received: from pps.filterd (NASANPPMTA01.qualcomm.com [127.0.0.1])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38B60Ncv021160;
+        Mon, 11 Sep 2023 06:00:51 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by NASANPPMTA04.qualcomm.com (PPS) with ESMTP id 3t0hskq2hj-1;
-        Mon, 11 Sep 2023 06:00:47 +0000
-Received: from NASANPPMTA04.qualcomm.com (NASANPPMTA04.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38B60l4B008075;
-        Mon, 11 Sep 2023 06:00:47 GMT
+        by NASANPPMTA01.qualcomm.com (PPS) with ESMTP id 3t0ht30048-1;
+        Mon, 11 Sep 2023 06:00:51 +0000
+Received: from NASANPPMTA01.qualcomm.com (NASANPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38B60pes021538;
+        Mon, 11 Sep 2023 06:00:51 GMT
 Received: from stor-dylan.qualcomm.com (stor-dylan.qualcomm.com [192.168.140.207])
-        by NASANPPMTA04.qualcomm.com (PPS) with ESMTP id 38B60l49008074;
-        Mon, 11 Sep 2023 06:00:47 +0000
+        by NASANPPMTA01.qualcomm.com (PPS) with ESMTP id 38B60p2w021537;
+        Mon, 11 Sep 2023 06:00:51 +0000
 Received: by stor-dylan.qualcomm.com (Postfix, from userid 359480)
-        id 4524C20DEF; Sun, 10 Sep 2023 23:00:47 -0700 (PDT)
+        id D7FDC20DEF; Sun, 10 Sep 2023 23:00:50 -0700 (PDT)
 From:   Can Guo <quic_cang@quicinc.com>
 To:     quic_cang@quicinc.com, mani@kernel.org, quic_nguyenb@quicinc.com,
         quic_nitirawa@quicinc.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Arthur Simchaev <arthur.simchaev@wdc.com>,
-        Lu Hongfei <luhongfei@vivo.com>,
+Cc:     linux-scsi@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Bean Huo <beanhuo@micron.com>, Lu Hongfei <luhongfei@vivo.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 5/6] scsi: ufs: ufs-sysfs: Expose UFS power info
-Date:   Sun, 10 Sep 2023 22:59:26 -0700
-Message-Id: <1694411968-14413-6-git-send-email-quic_cang@quicinc.com>
+Subject: [PATCH 6/6] scsi: ufs: ufs-sysfs: Introduce UFS power info sysfs nodes
+Date:   Sun, 10 Sep 2023 22:59:27 -0700
+Message-Id: <1694411968-14413-7-git-send-email-quic_cang@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
 References: <1694411968-14413-1-git-send-email-quic_cang@quicinc.com>
@@ -65,15 +60,15 @@ X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Jm4GTeQg0VXce-vO5QrhyFrZauU8Eshw
-X-Proofpoint-GUID: Jm4GTeQg0VXce-vO5QrhyFrZauU8Eshw
+X-Proofpoint-ORIG-GUID: dI6VzXJHbKw-myoyrGk76uyywg1jL1a2
+X-Proofpoint-GUID: dI6VzXJHbKw-myoyrGk76uyywg1jL1a2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-11_03,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=836 spamscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=486 malwarescore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2308100000 definitions=main-2309110054
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -91,98 +86,69 @@ features and various combinations for backward compatiblity.
 
 Signed-off-by: Can Guo <quic_cang@quicinc.com>
 ---
- drivers/ufs/core/ufs-sysfs.c | 71 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+ Documentation/ABI/testing/sysfs-driver-ufs | 48 ++++++++++++++++++++++++++----
+ 1 file changed, 43 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/ufs/core/ufs-sysfs.c b/drivers/ufs/core/ufs-sysfs.c
-index c959064..53af490 100644
---- a/drivers/ufs/core/ufs-sysfs.c
-+++ b/drivers/ufs/core/ufs-sysfs.c
-@@ -628,6 +628,76 @@ static const struct attribute_group ufs_sysfs_monitor_group = {
- 	.attrs = ufs_sysfs_monitor_attrs,
- };
+diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
+index 0c7efaf..25169f2 100644
+--- a/Documentation/ABI/testing/sysfs-driver-ufs
++++ b/Documentation/ABI/testing/sysfs-driver-ufs
+@@ -1214,12 +1214,50 @@ Description:	This file shows the average latency (in micro seconds) of write
  
-+static ssize_t gear_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 		The file is read only.
+ 
+-What:		/sys/bus/platform/drivers/ufshcd/*/monitor/write_req_latency_sum
+-What:		/sys/bus/platform/devices/*.ufs/monitor/write_req_latency_sum
+-Date:		January 2021
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/gear
++What:		/sys/bus/platform/devices/*.ufs/power_info/gear
++Date:		September 2023
+ Contact:	Can Guo <quic_cang@quicinc.com>
+-Description:	This file shows the total latency (in micro seconds) of write
+-		requests after monitor gets started.
++Description:	This file shows the gear of UFS link.
 +
-+	return sysfs_emit(buf, "%u\n", hba->pwr_info.gear_rx);
-+}
++		The file is read only.
 +
-+static ssize_t lane_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/lane
++What:		/sys/bus/platform/devices/*.ufs/power_info/lane
++Date:		September 2023
++Contact:	Can Guo <quic_cang@quicinc.com>
++Description:	This file shows how many lanes are enabled on the UFS link.
 +
-+	return sysfs_emit(buf, "%u\n", hba->pwr_info.lane_rx);
-+}
++		The file is read only.
 +
-+static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/mode
++What:		/sys/bus/platform/devices/*.ufs/power_info/mode
++Date:		September 2023
++Contact:	Can Guo <quic_cang@quicinc.com>
++Description:	This file shows the power mode of UFS link.
 +
-+	return sysfs_emit(buf, "%u\n", hba->pwr_info.pwr_rx);
-+}
++		The file is read only.
 +
-+static ssize_t rate_show(struct device *dev, struct device_attribute *attr,
-+			 char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/rate
++What:		/sys/bus/platform/devices/*.ufs/power_info/rate
++Date:		September 2023
++Contact:	Can Guo <quic_cang@quicinc.com>
++Description:	This file shows the high speed rate of UFS link.
 +
-+	return sysfs_emit(buf, "%u\n", hba->pwr_info.hs_rate);
-+}
++		The file is read only.
 +
-+static ssize_t dev_pm_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/dev_pm
++What:		/sys/bus/platform/devices/*.ufs/power_info/dev_pm
++Date:		September 2023
++Contact:	Can Guo <quic_cang@quicinc.com>
++Description:	This file shows the UFS device power mode, i.e., the power mode
++		set to UFS device via the Start Stop Unit command.
 +
-+	return sysfs_emit(buf, "%d\n", hba->curr_dev_pwr_mode);
-+}
-+
-+static ssize_t link_state_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", hba->uic_link_state);
-+}
-+
-+static DEVICE_ATTR_RO(gear);
-+static DEVICE_ATTR_RO(lane);
-+static DEVICE_ATTR_RO(mode);
-+static DEVICE_ATTR_RO(rate);
-+static DEVICE_ATTR_RO(dev_pm);
-+static DEVICE_ATTR_RO(link_state);
-+
-+static struct attribute *ufs_power_info_attrs[] = {
-+	&dev_attr_gear.attr,
-+	&dev_attr_lane.attr,
-+	&dev_attr_mode.attr,
-+	&dev_attr_rate.attr,
-+	&dev_attr_dev_pm.attr,
-+	&dev_attr_link_state.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group ufs_sysfs_power_info_group = {
-+	.name = "power_info",
-+	.attrs = ufs_power_info_attrs,
-+};
-+
- static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 				  enum desc_idn desc_id,
- 				  u8 desc_index,
-@@ -1233,6 +1303,7 @@ static const struct attribute_group *ufs_sysfs_groups[] = {
- 	&ufs_sysfs_default_group,
- 	&ufs_sysfs_capabilities_group,
- 	&ufs_sysfs_monitor_group,
-+	&ufs_sysfs_power_info_group,
- 	&ufs_sysfs_device_descriptor_group,
- 	&ufs_sysfs_interconnect_descriptor_group,
- 	&ufs_sysfs_geometry_descriptor_group,
++What:		/sys/bus/platform/drivers/ufshcd/*/power_info/link_state
++What:		/sys/bus/platform/devices/*.ufs/power_info/link_state
++Date:		September 2023
++Contact:	Can Guo <quic_cang@quicinc.com>
++Description:	This file shows the the state of the UFS link.
+ 
+ 		The file is read only.
+ 
 -- 
 2.7.4
 
