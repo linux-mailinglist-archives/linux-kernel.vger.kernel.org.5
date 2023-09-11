@@ -2,257 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D78D79AE02
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A93779AF39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343913AbjIKVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        id S1348409AbjIKV0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242240AbjIKPZk (ORCPT
+        with ESMTP id S242390AbjIKPaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:25:40 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14762D8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1694445929;
-        bh=ZJ44zxSZpnXPSFwmecpGOPhNlMiRsPmv7560/Eoa5RM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=R+M/XeBOlMsy/UDo+t99aTgvdKcsEOAxJRmz//kysYPypWEU2oGTa/zfdWyK27xrH
-         PPgpxgs/iEwga/PK3qoMg6VauqYmYdGSWvoZ8m2BR88NMfYCKuaKKSiXV1Hw/jQjNu
-         ESC28VLaGsq0PavMJeREAGS20fJCC80PT1Nm7VSN7Ok5mGW7OMLX1bRZWcQ1CTYVBf
-         t5asBEvN5tScXwiGwJPSVLMDxrVSnN3rMkYiCrFyb4y0G5D7h6EsHALhUaFrOgUjs9
-         EeaZpYN3WKNx2E59jd54U0PZH9NQGNoD+fKyrYut6dz2JnV+fmxw7GN1ah/XI2YOCg
-         tu9JKKOfQx+Yg==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RkrBd5JX4z1PHL;
-        Mon, 11 Sep 2023 11:25:29 -0400 (EDT)
-Message-ID: <30a7ff14-3f48-e8cf-333f-cbb7499656e3@efficios.com>
-Date:   Mon, 11 Sep 2023 11:26:50 -0400
+        Mon, 11 Sep 2023 11:30:17 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B631AB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:30:12 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so7593477e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694446210; x=1695051010; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IewnJfJyIc3JF1ZmFRQB+j/PW2AOwYNqv6ATRNcWgHA=;
+        b=MSsPrJDKE5xoSmNh46Kaa2J0koTBNgoYVM3y3IGS8j/GqYohrp2r34J0cCGJFCoYyb
+         bua0xQOqRN/faoadazGZcAiC6QzRRrg4MMnk+di9x3met538a1jFaNgcHVjkSgLhfvDR
+         JyKxEhWqGjCLD7EGiefBBrT+7fQLd+OrCFqqlh1FuxbwecesoaEyQt1qBS6b93HCDxWD
+         qxupakS10sE8YCdeXS4esjlMNHOf1S0SE3GSOttS9nrryvyei38Zb8ZFYqRaRBX3QDNZ
+         wj7bFjpMn6I0Vgq6PkIGnsHoDRAYokoeBiqka5BowLuuulnO6Y/qgjkIWio6z0QHCS8r
+         pUwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694446210; x=1695051010;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IewnJfJyIc3JF1ZmFRQB+j/PW2AOwYNqv6ATRNcWgHA=;
+        b=rngwWyXogkoYk/cJo06rMuOdIuvDVSILFvRkOtavSxx1ImkVJzH6flxEgHDE0KizBr
+         5vA2BtdQyDwhjHyZQVPj8scD93U5CbnlHLKUU8QWKET9f0Dot6YZDZutb6FmbIepu8cF
+         8za9cvQj7+HONGk/d1keTWFveXFuxg6gGsoOrJORdq8wWdjtWiX5TcgKIz5gdSJUuIQ5
+         QUMmW5C5+dzfv807D/XE21iSTt0ogNhIKnVzFHjzjAhp9E1m31wDXJB6ksnbyuIhHzBx
+         JRm8RloVCvB3ByLpGKwWeGoSg7Tu19i0MGgJ9+R3GmC4BJop3w2XnQtEgCN5vxwvx8FA
+         epWQ==
+X-Gm-Message-State: AOJu0YyGvrlkuzJmKsGq6wOUwPF1A1PYI1ntvfaoeUkGNVBdyZnhlOeC
+        etsQJm5Rpeki+4cMmim/R3GsSQ==
+X-Google-Smtp-Source: AGHT+IGk3bVe3SE1qLDOb/MT3TwaHl4EvuUcgJ1iHxbI55reTaiI7wcaDe1/Z2ro+fK9iZ8cENhnaw==
+X-Received: by 2002:a05:6512:1592:b0:4fb:fe97:5e35 with SMTP id bp18-20020a056512159200b004fbfe975e35mr11258000lfb.47.1694446210474;
+        Mon, 11 Sep 2023 08:30:10 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id w5-20020ac25985000000b00500a4679148sm1383886lfn.20.2023.09.11.08.30.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 08:30:09 -0700 (PDT)
+Message-ID: <e95c5633-8a36-4500-8414-70b7b201a85e@linaro.org>
+Date:   Mon, 11 Sep 2023 18:30:09 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH 2/2] sched/fair: skip the cache hot CPU in
- select_idle_cpu()
-Content-Language: en-US
-To:     Chen Yu <yu.c.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1694397335.git.yu.c.chen@intel.com>
- <d49cf5748aa7c6d69580315d2373a9eafa21c21f.1694397335.git.yu.c.chen@intel.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <d49cf5748aa7c6d69580315d2373a9eafa21c21f.1694397335.git.yu.c.chen@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/10] drm/msm/a6xx: Add skeleton A7xx support
+Content-Language: en-GB
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+References: <20230628-topic-a7xx_drmmsm-v3-0-4ee67ccbaf9d@linaro.org>
+ <20230628-topic-a7xx_drmmsm-v3-5-4ee67ccbaf9d@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230628-topic-a7xx_drmmsm-v3-5-4ee67ccbaf9d@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/10/23 22:50, Chen Yu wrote:
-> When task p is woken up, the scheduler leverages select_idle_sibling()
-> to find an idle CPU for it. p's previous CPU is usually a preference
-> because it can improve cache locality. However in many cases the
-> previous CPU has already been taken by other wakees, thus p has to
-> find another idle CPU.
+On 23/08/2023 15:55, Konrad Dybcio wrote:
+> A7xx GPUs are - from kernel's POV anyway - basically another generation
+> of A6xx. They build upon the A650/A660_family advancements, skipping some
+> writes (presumably more values are preset correctly on reset), adding
+> some new ones and changing others.
 > 
-> Inspired by Mathieu's idea[1], consider the sleep time of the task.
-> If that task is a short sleeping one, keep p's previous CPU idle
-> for a short while. Later when p is woken up, it can choose its
-> previous CPU in select_idle_sibling(). When p's previous CPU is reserved,
-> other wakee is not allowed to choose this CPU in select_idle_idle().
-> The reservation period is set to the task's average sleep time. That
-> is to say, if p is a short sleeping task, there is no need to migrate
-> p to another idle CPU.
+> One notable difference is the introduction of a second shadow, called BV.
+> To handle this with the current code, allocate it right after the current
+> RPTR shadow.
 > 
-> This does not break the work conservation of the scheduler,
-> because wakee will still try its best to find an idle CPU.
-> The difference is that, different idle CPUs might have different
-> priorities. On the other hand, in theory this extra check could
-> increase the failure ratio of select_idle_cpu(), but per the
-> initial test result, no regression is detected.
+> BV handling and .submit are mostly based on Jonathan Marek's work.
 > 
-> Baseline: tip/sched/core, on top of:
-> Commit 3f4feb58037a ("sched: Misc cleanups")
+> All A7xx GPUs are assumed to have a GMU.
+> A702 is not an A7xx-class GPU, it's a weird forked A610.
 > 
-> Benchmark results on Intel Sapphire Rapids, 112 CPUs/socket, 2 sockets.
-> cpufreq governor is performance, turbo boost is disabled, C-states deeper
-> than C1 are disabled, Numa balancing is disabled.
-> 
-> netperf
-> =======
-> case                    load            baseline(std%)  compare%( std%)
-> UDP_RR                  56-threads       1.00 (  1.34)   +1.05 (  1.04)
-> UDP_RR                  112-threads      1.00 (  7.94)   -0.68 ( 14.42)
-> UDP_RR                  168-threads      1.00 ( 33.17)  +49.63 (  5.96)
-> UDP_RR                  224-threads      1.00 ( 13.52)  +122.53 ( 18.50)
-> 
-> Noticeable improvements of netperf is observed in 168 and 224 threads
-> cases.
-> 
-> hackbench
-> =========
-> case                    load            baseline(std%)  compare%( std%)
-> process-pipe            1-groups         1.00 (  5.61)   -4.69 (  1.48)
-> process-pipe            2-groups         1.00 (  8.74)   -0.24 (  3.10)
-> process-pipe            4-groups         1.00 (  3.52)   +1.61 (  4.41)
-> process-sockets         1-groups         1.00 (  4.73)   +2.32 (  0.95)
-> process-sockets         2-groups         1.00 (  1.27)   -3.29 (  0.97)
-> process-sockets         4-groups         1.00 (  0.09)   +0.24 (  0.09)
-> threads-pipe            1-groups         1.00 ( 10.44)   -5.88 (  1.49)
-> threads-pipe            2-groups         1.00 ( 19.15)   +5.31 ( 12.90)
-> threads-pipe            4-groups         1.00 (  1.74)   -5.01 (  6.44)
-> threads-sockets         1-groups         1.00 (  1.58)   -1.79 (  0.43)
-> threads-sockets         2-groups         1.00 (  1.19)   -8.43 (  6.91)
-> threads-sockets         4-groups         1.00 (  0.10)   -0.09 (  0.07)
-> 
-> schbench(old)
-> ========
-> case                    load            baseline(std%)  compare%( std%)
-> normal                  1-mthreads       1.00 (  0.63)   +1.28 (  0.37)
-> normal                  2-mthreads       1.00 (  8.33)   +1.58 (  2.83)
-> normal                  4-mthreads       1.00 (  2.48)   -2.98 (  3.28)
-> normal                  8-mthreads       1.00 (  3.97)   +5.01 (  1.28)
-> 
-> No much difference is observed in hackbench/schbench, due to the
-> run-to-run variance.
-> 
-> Link: https://lore.kernel.org/lkml/20230905171105.1005672-2-mathieu.desnoyers@efficios.com/ #1
-> Suggested-by: Tim Chen <tim.c.chen@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
+> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> # sm8450
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->   kernel/sched/fair.c     | 30 +++++++++++++++++++++++++++---
->   kernel/sched/features.h |  1 +
->   kernel/sched/sched.h    |  1 +
->   3 files changed, 29 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c   |  95 +++++--
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 451 ++++++++++++++++++++++++++++----
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.c |   1 +
+>   drivers/gpu/drm/msm/adreno/adreno_gpu.h |  10 +-
+>   drivers/gpu/drm/msm/msm_ringbuffer.h    |   2 +
+>   5 files changed, 478 insertions(+), 81 deletions(-)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index e20f50726ab8..fe3b760c9654 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6629,6 +6629,21 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
->   	hrtick_update(rq);
->   	now = sched_clock_cpu(cpu_of(rq));
->   	p->se.prev_sleep_time = task_sleep ? now : 0;
-> +#ifdef CONFIG_SMP
-> +	/*
-> +	 * If this rq will become idle, and dequeued task is
-> +	 * a short sleeping one, check if we can reserve
-> +	 * this idle CPU for that task for a short while.
-> +	 * During this reservation period, other wakees will
-> +	 * skip this 'idle' CPU in select_idle_cpu(), and this
-> +	 * short sleeping task can pick its previous CPU in
-> +	 * select_idle_sibling(), which brings better cache
-> +	 * locality.
-> +	 */
-> +	if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running &&
-> +	    p->se.sleep_avg && p->se.sleep_avg < sysctl_sched_migration_cost)
-> +		rq->cache_hot_timeout = now + p->se.sleep_avg;
-
-This is really cool!
-
-There is one scenario that worries me with this approach: workloads
-that sleep for a long time and then have short blocked periods.
-Those bursts will likely bring the average to values too high
-to stay below sysctl_sched_migration_cost.
-
-I wonder if changing the code above for the following would help ?
-
-if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running && p->se.sleep_avg)
-	rq->cache_hot_timeout = now + min(sysctl_sched_migration_cost, p->se.sleep_avg);
-
-For tasks that have a large sleep_avg, it would activate this rq
-"appear as not idle for rq selection" scheme for a window of
-sysctl_sched_migration_cost. If the sleep ends up being a long one,
-preventing other tasks from being migrated to this rq for a tiny
-window should not matter performance-wise. I would expect that it
-could help workloads that come in bursts.
-
-Thanks,
-
-Mathieu
-
-
-> +#endif
->   }
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> index 03fa89bf3e4b..75984260898e 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+> @@ -200,9 +200,10 @@ int a6xx_gmu_wait_for_idle(struct a6xx_gmu *gmu)
 >   
->   #ifdef CONFIG_SMP
-> @@ -6982,8 +6997,13 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
->   static inline int __select_idle_cpu(int cpu, struct task_struct *p)
+>   static int a6xx_gmu_start(struct a6xx_gmu *gmu)
 >   {
->   	if ((available_idle_cpu(cpu) || sched_idle_cpu(cpu)) &&
-> -	    sched_cpu_cookie_match(cpu_rq(cpu), p))
-> +	    sched_cpu_cookie_match(cpu_rq(cpu), p)) {
-> +		if (sched_feat(SIS_CACHE) &&
-> +		    sched_clock_cpu(cpu) < cpu_rq(cpu)->cache_hot_timeout)
-> +			return -1;
+> +	struct a6xx_gpu *a6xx_gpu = container_of(gmu, struct a6xx_gpu, gmu);
+> +	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+> +	u32 mask, reset_val, val;
+>   	int ret;
+> -	u32 val;
+> -	u32 mask, reset_val;
+>   
+>   	val = gmu_read(gmu, REG_A6XX_GMU_CM3_DTCM_START + 0xff8);
+>   	if (val <= 0x20010004) {
+> @@ -218,7 +219,11 @@ static int a6xx_gmu_start(struct a6xx_gmu *gmu)
+>   	/* Set the log wptr index
+>   	 * note: downstream saves the value in poweroff and restores it here
+>   	 */
+> -	gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_RESP, 0);
+> +	if (adreno_is_a7xx(adreno_gpu))
+> +		gmu_write(gmu, REG_A6XX_GMU_GENERAL_9, 0);
+> +	else
+> +		gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_PWR_COL_CP_RESP, 0);
 > +
->   		return cpu;
+>   
+>   	gmu_write(gmu, REG_A6XX_GMU_CM3_SYSRESET, 0);
+>   
+> @@ -518,7 +523,9 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>   	if (IS_ERR(pdcptr))
+>   		goto err;
+>   
+> -	if (adreno_is_a650(adreno_gpu) || adreno_is_a660_family(adreno_gpu))
+> +	if (adreno_is_a650(adreno_gpu) ||
+> +	    adreno_is_a660_family(adreno_gpu) ||
+> +	    adreno_is_a7xx(adreno_gpu))
+>   		pdc_in_aop = true;
+>   	else if (adreno_is_a618(adreno_gpu) || adreno_is_a640_family(adreno_gpu))
+>   		pdc_address_offset = 0x30090;
+> @@ -550,7 +557,8 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>   	gmu_write_rscc(gmu, REG_A6XX_RSCC_PDC_MATCH_VALUE_HI, 0x4514);
+>   
+>   	/* Load RSC sequencer uCode for sleep and wakeup */
+> -	if (adreno_is_a650_family(adreno_gpu)) {
+> +	if (adreno_is_a650_family(adreno_gpu) ||
+> +	    adreno_is_a7xx(adreno_gpu)) {
+>   		gmu_write_rscc(gmu, REG_A6XX_RSCC_SEQ_MEM_0_DRV0, 0xeaaae5a0);
+>   		gmu_write_rscc(gmu, REG_A6XX_RSCC_SEQ_MEM_0_DRV0 + 1, 0xe1a1ebab);
+>   		gmu_write_rscc(gmu, REG_A6XX_RSCC_SEQ_MEM_0_DRV0 + 2, 0xa2e0a581);
+> @@ -635,11 +643,18 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+>   /* Set up the idle state for the GMU */
+>   static void a6xx_gmu_power_config(struct a6xx_gmu *gmu)
+>   {
+> +	struct a6xx_gpu *a6xx_gpu = container_of(gmu, struct a6xx_gpu, gmu);
+> +	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+> +
+>   	/* Disable GMU WB/RB buffer */
+>   	gmu_write(gmu, REG_A6XX_GMU_SYS_BUS_CONFIG, 0x1);
+>   	gmu_write(gmu, REG_A6XX_GMU_ICACHE_CONFIG, 0x1);
+>   	gmu_write(gmu, REG_A6XX_GMU_DCACHE_CONFIG, 0x1);
+>   
+> +	/* A7xx knows better by default! */
+> +	if (adreno_is_a7xx(adreno_gpu))
+> +		return;
+> +
+>   	gmu_write(gmu, REG_A6XX_GMU_PWR_COL_INTER_FRAME_CTRL, 0x9c40400);
+>   
+>   	switch (gmu->idle_level) {
+> @@ -702,7 +717,7 @@ static int a6xx_gmu_fw_load(struct a6xx_gmu *gmu)
+>   	u32 itcm_base = 0x00000000;
+>   	u32 dtcm_base = 0x00040000;
+>   
+> -	if (adreno_is_a650_family(adreno_gpu))
+> +	if (adreno_is_a650_family(adreno_gpu) || adreno_is_a7xx(adreno_gpu))
+>   		dtcm_base = 0x10004000;
+>   
+>   	if (gmu->legacy) {
+> @@ -751,14 +766,22 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+>   {
+>   	struct a6xx_gpu *a6xx_gpu = container_of(gmu, struct a6xx_gpu, gmu);
+>   	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
+> +	u32 fence_range_lower, fence_range_upper;
+>   	int ret;
+>   	u32 chipid;
+>   
+> -	if (adreno_is_a650_family(adreno_gpu)) {
+> +	/* Vote veto for FAL10 */
+> +	if (adreno_is_a650_family(adreno_gpu) || adreno_is_a7xx(adreno_gpu)) {
+>   		gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_CX_FALNEXT_INTF, 1);
+>   		gmu_write(gmu, REG_A6XX_GPU_GMU_CX_GMU_CX_FAL_INTF, 1);
+>   	}
+>   
+> +	/* Turn on TCM (Tightly Coupled Memory) retention */
+> +	if (adreno_is_a7xx(adreno_gpu))
+> +		a6xx_llc_write(a6xx_gpu, REG_A7XX_CX_MISC_TCM_RET_CNTL, 1);
+> +	else
+> +		gmu_write(gmu, REG_A6XX_GMU_GENERAL_7, 1);
+> +
+>   	if (state == GMU_WARM_BOOT) {
+>   		ret = a6xx_rpmh_start(gmu);
+>   		if (ret)
+> @@ -768,9 +791,6 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+>   			"GMU firmware is not loaded\n"))
+>   			return -ENOENT;
+>   
+> -		/* Turn on register retention */
+> -		gmu_write(gmu, REG_A6XX_GMU_GENERAL_7, 1);
+> -
+>   		ret = a6xx_rpmh_start(gmu);
+>   		if (ret)
+>   			return ret;
+> @@ -780,6 +800,7 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+>   			return ret;
+>   	}
+>   
+> +	/* Clear init result to make sure we are getting a fresh value */
+>   	gmu_write(gmu, REG_A6XX_GMU_CM3_FW_INIT_RESULT, 0);
+>   	gmu_write(gmu, REG_A6XX_GMU_CM3_BOOT_CONFIG, 0x02);
+>   
+> @@ -787,8 +808,18 @@ static int a6xx_gmu_fw_start(struct a6xx_gmu *gmu, unsigned int state)
+>   	gmu_write(gmu, REG_A6XX_GMU_HFI_QTBL_ADDR, gmu->hfi.iova);
+>   	gmu_write(gmu, REG_A6XX_GMU_HFI_QTBL_INFO, 1);
+>   
+> +	if (adreno_is_a7xx(adreno_gpu)) {
+> +		fence_range_upper = 0x32;
+> +		fence_range_lower = 0x8a0;
+> +	} else {
+> +		fence_range_upper = 0xa;
+> +		fence_range_lower = 0xa0;
 > +	}
->   
->   	return -1;
->   }
-> @@ -7052,10 +7072,14 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
->   	int cpu;
->   
->   	for_each_cpu(cpu, cpu_smt_mask(core)) {
-> -		if (!available_idle_cpu(cpu)) {
-> +		bool cache_hot = sched_feat(SIS_CACHE) ?
-> +			sched_clock_cpu(cpu) < cpu_rq(cpu)->cache_hot_timeout : false;
 > +
-> +		if (!available_idle_cpu(cpu) || cache_hot) {
->   			idle = false;
->   			if (*idle_cpu == -1) {
-> -				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-> +				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr) &&
-> +				    !cache_hot) {
->   					*idle_cpu = cpu;
->   					break;
->   				}
-> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-> index f770168230ae..04ed9fcf67f8 100644
-> --- a/kernel/sched/features.h
-> +++ b/kernel/sched/features.h
-> @@ -51,6 +51,7 @@ SCHED_FEAT(TTWU_QUEUE, true)
->    */
->   SCHED_FEAT(SIS_PROP, false)
->   SCHED_FEAT(SIS_UTIL, true)
-> +SCHED_FEAT(SIS_CACHE, true)
+>   	gmu_write(gmu, REG_A6XX_GMU_AHB_FENCE_RANGE_0,
+> -		(1 << 31) | (0xa << 18) | (0xa0));
+> +		  BIT(31) |
+> +		  FIELD_PREP(GENMASK(30, 18), fence_range_upper) |
+> +		  FIELD_PREP(GENMASK(17, 0), fence_range_lower));
+
+This fails on arm32 because of the missing #include <linux/bitfields.h>
+
 >   
->   /*
->    * Issue a WARN when we do multiple update_rq_clock() calls
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 62013c49c451..7a2c12c3b6d0 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1078,6 +1078,7 @@ struct rq {
->   #endif
->   	u64			idle_stamp;
->   	u64			avg_idle;
-> +	u64			cache_hot_timeout;
->   
->   	unsigned long		wake_stamp;
->   	u64			wake_avg_idle;
+>   	/*
+>   	 * Snapshots toggle the NMI bit which will result in a jump to the NMI
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+With best wishes
+Dmitry
 
