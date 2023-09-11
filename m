@@ -2,74 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED22379A584
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EC879A56F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Sep 2023 10:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjIKIHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 04:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        id S233465AbjIKIGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 04:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjIKIHq (ORCPT
+        with ESMTP id S229664AbjIKIGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:07:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9858BE43;
-        Mon, 11 Sep 2023 01:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694419635; x=1725955635;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EKc2l8u/kKBul3gNAYJEk/Ck38NKo2uvJewBdyW546M=;
-  b=VgDOe5X5X5zZjI9/qFeeXgVsoidcjZD/MBWaxKlQHE6ljCh++krYezTL
-   IOg/qeNJt9GEBxLWssqnQjenHJ3MBXKjKheoOBuA/LEHx9lgn/yw4/mBK
-   aCIXL4ujaRbeT9vIw5YMJ4SCPNzn8xf18kfV2syze/2dCjhOKmP9wR9x/
-   x5exyaS2510A3iyEJXagvG4sqe6Y04AXcD50cyrhdSZnWnpiMpK0vSMkr
-   n5KEg5UTTAUew2uKACS/kujGRQrReEz0VdtDeLX1fOeC3kqCJ7DQrHe2y
-   47Pdhu7NUxiqwL76anCsbHr4oqqEixlejlBif/3yOulK0Tj6+2eNVWgQC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="444438887"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="444438887"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 01:06:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="693005175"
-X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
-   d="scan'208";a="693005175"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 01:06:47 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfbwS-0005yc-30;
-        Mon, 11 Sep 2023 08:06:44 +0000
-Date:   Mon, 11 Sep 2023 16:05:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>, jianjiao.zeng@mediatek.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        kuohong.wang@mediatek.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, tjmercier@google.com,
-        linaro-mm-sig@lists.linaro.org, John Stultz <jstultz@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-        Yong Wu <yong.wu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH 4/9] dma-buf: heaps: Initialise MediaTek secure heap
-Message-ID: <202309111534.u4wfJ4vk-lkp@intel.com>
-References: <20230911023038.30649-5-yong.wu@mediatek.com>
+        Mon, 11 Sep 2023 04:06:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5AB10EC;
+        Mon, 11 Sep 2023 01:06:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E96FAC433D9;
+        Mon, 11 Sep 2023 08:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694419566;
+        bh=C3HANPEA0oPlsXbkxdOqCrVjOsxTYDiwfaNTmrGAXE8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P2HnkPOyj8b8g9Em2d3SW7/lKJPXEY/QxVg/MwG+Pk0SbaNTroVO7ahKzGPoV4YPS
+         wO1mM/t8fq8/4Zg4DuRX7cNp1akf1lYM+zH9OU0cyuECM9qHynMQJl52GMpGs3gnCJ
+         Re9nuUNIxPVWRmwYlcC5CSneqKXxP0jEbdRp3Ma8d6G39Rlpu8HkUhW5ja78xB5v8l
+         MmaGKXsPmJvXEKqX4ATjaTY7BEcfCm+XKB8U8J+1N98LepGOMSiFkzx3KvXzbDZKuN
+         6OBTsvhCA8m6YGbslGXTiSDRHOl0Vol4OV+AJ/IbJGxV7rOWJkHISTleOVucrbAPsA
+         +r/6VgKZBZXUQ==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-501bef6e0d3so6806829e87.1;
+        Mon, 11 Sep 2023 01:06:06 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxPpXz6LGXk1lN7xD3ZvZEWLPbFoD7oCIrv/mdzVYBfZn85dGVP
+        ej9wbbFbt1ydTNFOPZhWR85p2KQLWS/epyOZK8s=
+X-Google-Smtp-Source: AGHT+IF8RWksOlAMrqAb/QcG5zRMLzpuca2AHOYVUsaHES5VQgJe4ZCIAJF32HcwJaAIQ9knrKRjl12bBBdLGA3DIqE=
+X-Received: by 2002:a2e:9e87:0:b0:2bc:ffe5:54a1 with SMTP id
+ f7-20020a2e9e87000000b002bcffe554a1mr6615361ljk.32.1694419565076; Mon, 11 Sep
+ 2023 01:06:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911023038.30649-5-yong.wu@mediatek.com>
+References: <20230910045445.41632-1-heinrich.schuchardt@canonical.com>
+ <ZP4QEvhzO5cOt6lT@gpdmax> <1bc137b6-6006-42cd-9f6d-c523fc753d63@canonical.com>
+ <CAMj1kXGChp5TOk5h1EC9R7TBn=QDVo_FU5VhHjp8nSz2GJ6wtA@mail.gmail.com> <CAC_iWjLdA=gFkdB2LhOe9J-d_G=estenCWgYyCenqOYfZSFd+A@mail.gmail.com>
+In-Reply-To: <CAC_iWjLdA=gFkdB2LhOe9J-d_G=estenCWgYyCenqOYfZSFd+A@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 11 Sep 2023 10:05:53 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEdb-76+ywfHK2zvchQqwMFi8HvG0O33A73d6-9AH=wDA@mail.gmail.com>
+Message-ID: <CAMj1kXEdb-76+ywfHK2zvchQqwMFi8HvG0O33A73d6-9AH=wDA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] efivarfs: fix statfs() on efivarfs
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Anisse Astier <anisse@astier.eu>, Jeremy Kerr <jk@ozlabs.org>,
+        Anisse Astier <an.astier@criteo.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,46 +62,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yong,
+On Mon, 11 Sept 2023 at 10:04, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi Ard,
+>
+> On Mon, 11 Sept 2023 at 09:45, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Sun, 10 Sept 2023 at 22:42, Heinrich Schuchardt
+> > <heinrich.schuchardt@canonical.com> wrote:
+> > >
+> > > On 9/10/23 20:53, Anisse Astier wrote:
+> > > > Hi Heinrich,
+> > > >
+> > > > On Sun, Sep 10, 2023 at 06:54:45AM +0200, Heinrich Schuchardt wrote:
+> > > >> Some firmware (notably U-Boot) provides GetVariable() and
+> > > >> GetNextVariableName() but not QueryVariableInfo().
+> > > >
+> > > >  From a quick search, it seems u-boot, does support QueryVariableInfo, is
+> > > > it on a given version ?
+> > > >
+> > > > https://elixir.bootlin.com/u-boot/v2023.07.02/source/lib/efi_loader/efi_variable.c#L391
+> > >
+> > > QueryVariableInfo() and SetVariable() are available before
+> > > ExitBootServices(), i.e. in Linux' EFI stub.
+> > >
+> > > ExitBootServices() results in calling efi_variables_boot_exit_notify()
+> > > which disables these services during the UEFI runtime.
+> > >
+> > > >
+> > > >>
+> > > >> With commit d86ff3333cb1 ("efivarfs: expose used and total size") the
+> > > >> statfs syscall was broken for such firmware.
+> > > >
+> > > > Could you be more specific ? What breaks, and what regressed ? I imagine
+> > > > it could be some scripts running df, but maybe you had something else in
+> > > > mind ?
+> > >
+> > > Some more details can be found in
+> > > https://bugs.launchpad.net/ubuntu/+source/linux-meta-riscv/+bug/2034705.
+> > >
+> > > Though EFI variables are exposed via GetVariable() and
+> > > GetNextVariableName() the efivar command refuses to display variables
+> > > when statfs() reports an error.
+> > >
+> > > >
+> > > >>
+> > > >> If QueryVariableInfo() does not exist or returns an error, just report the
+> > > >> file-system size as 0 as statfs_simple() previously did.
+> > > >
+> > > > I considered doing this [2] , but we settled on returning an error
+> > > > instead for clarity:
+> > > > https://lore.kernel.org/linux-efi/20230515-vorgaben-portrait-bb1b4255d31a@brauner/
+> > > >
+> > > > I still think it would be a good idea if necessary.
+> > >
+> > > We should never break user APIs.
+> > >
+> >
+> > Indeed.
+> >
+> > > >
+> > > > On the approach, I prefer what Ard proposed, to fall back to the old
+> > > > approach. I think the difference in block size could also be a good
+> > > > marker that something wrong is happening:
+> > > > https://lore.kernel.org/linux-efi/CAMj1kXEkNSoqG4zWfCZ8Ytte5b2SzwXggZp21Xt17Pszd-q0dg@mail.gmail.com/
+> > >
+> > > This will allow user code making assumptions based on block size:
+> > > If block size > 1, assume setting variables is possible.
+> > >
+> > > We should really avoid this.
+> > >
+> >
+> > I agree that having different block sizes depending on which code path
+> > is taken is not great. But that is the situation we are already in,
+> > given that older kernels will always report PAGE_SIZE. And actually,
+> > PAGE_SIZE does not make sense either - PAGE_SIZE could be larger than
+> > 4k on ARM for instance, so the efivarfs block size will be dependent
+> > on the page size of the kernel you happened to boot.
+> >
+> > So I think we should go with the below:
+> >
+> > --- a/fs/efivarfs/super.c
+> > +++ b/fs/efivarfs/super.c
+> > @@ -32,10 +32,16 @@ static int efivarfs_statfs(struct dentry *dentry,
+> > struct kstatfs *buf)
+> >         u64 storage_space, remaining_space, max_variable_size;
+> >         efi_status_t status;
+> >
+> > -       status = efivar_query_variable_info(attr, &storage_space,
+> > &remaining_space,
+> > -                                           &max_variable_size);
+> > -       if (status != EFI_SUCCESS)
+> > -               return efi_status_to_err(status);
+> > +       /* Some UEFI firmware does not implement QueryVariableInfo() */
+> > +       storage_space = remaining_space = 0;
+> > +       if (efi_rt_services_supported(EFI_RT_SUPPORTED_QUERY_VARIABLE_INFO)) {
+> > +               status = efivar_query_variable_info(attr, &storage_space,
+> > +                                                   &remaining_space,
+> > +                                                   &max_variable_size);
+> > +               if (status != EFI_SUCCESS && status != EFI_UNSUPPORTED)
+> > +                       pr_warn_ratelimited("query_variable_info()
+> > failed: 0x%lx\n",
+> > +                                           status);
+> > +       }
+>
+> I think this is better, but shouldn't we initialize the status
+> variable now? Or is there more code following that I am missing?
+>
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on robh/for-next linus/master v6.6-rc1 next-20230911]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yong-Wu/dma-buf-heaps-Deduplicate-docs-and-adopt-common-format/20230911-103308
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230911023038.30649-5-yong.wu%40mediatek.com
-patch subject: [PATCH 4/9] dma-buf: heaps: Initialise MediaTek secure heap
-config: openrisc-allmodconfig (https://download.01.org/0day-ci/archive/20230911/202309111534.u4wfJ4vk-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230911/202309111534.u4wfJ4vk-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309111534.u4wfJ4vk-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/dma-buf/heaps/mtk_secure_heap.c:68:27: error: initialization of 'struct dma_buf * (*)(struct dma_heap *, long unsigned int,  long unsigned int,  long unsigned int)' from incompatible pointer type 'struct dma_buf * (*)(struct dma_heap *, size_t,  long unsigned int,  long unsigned int)' {aka 'struct dma_buf * (*)(struct dma_heap *, unsigned int,  long unsigned int,  long unsigned int)'} [-Werror=incompatible-pointer-types]
-      68 |         .allocate       = mtk_sec_heap_allocate,
-         |                           ^~~~~~~~~~~~~~~~~~~~~
-   drivers/dma-buf/heaps/mtk_secure_heap.c:68:27: note: (near initialization for 'mtk_sec_heap_ops.allocate')
-   cc1: some warnings being treated as errors
-
-
-vim +68 drivers/dma-buf/heaps/mtk_secure_heap.c
-
-    66	
-    67	static const struct dma_heap_ops mtk_sec_heap_ops = {
-  > 68		.allocate	= mtk_sec_heap_allocate,
-    69	};
-    70	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+status is not referenced again after this.
