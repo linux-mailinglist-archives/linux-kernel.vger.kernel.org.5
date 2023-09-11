@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04B479B3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA9979B1D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354453AbjIKVyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S1377601AbjIKW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237856AbjIKNPZ (ORCPT
+        with ESMTP id S237877AbjIKNRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:15:25 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE41EE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:15:21 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fd6dcb6c8so57321b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 06:15:21 -0700 (PDT)
+        Mon, 11 Sep 2023 09:17:32 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E7BEB;
+        Mon, 11 Sep 2023 06:17:28 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso49214365e9.3;
+        Mon, 11 Sep 2023 06:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694438120; x=1695042920; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IEzbOAJ4Fb01DDQnzPGrL2255sHl8eJXRyf8OznVFus=;
-        b=n+/dPdaFGlslxalFG5dQshZzQ1NB+zrUnqTKRXOBt0CWrJ1DGux/GVpOSWH26sx/og
-         InuJVd7502PA3wQLeS5ceHT3aGubpxRykJB0l3wyCG5TLImP15QNSA2eHyNdTUkHrdLo
-         GTBnHegJ/5dm5xOCXZMXWtlI/9FS1zRHdlOF5WYVYKdy8DbwILg/ybUGnUsfIzyaMN+X
-         NC9gQM5dJVhCG6cjlra4X44FI/M4aB2yDj5X9TsxNVPQOQ3FhEhygrSVo53bBF0eQVyQ
-         MdsW0Gh32ePJIznsvwt7DcEmAy2nAgd8lBzcUT8IFhlKb1jtSiURoFsxjK/lYWlZtS5r
-         XnQA==
+        d=gmail.com; s=20221208; t=1694438247; x=1695043047; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VlerAEPk5ZbRg5PAlIL60EpQx7Cq2EyqtsP8OX4iUb0=;
+        b=luLfubuqD9dno+nlaYd5BmXcLyl4KlzfBQHqFIb1DkzAAUuZAeEj8b7Q+GlGt48LB/
+         X8L9xqWoaRdvGYuzqs+yMy+UtfOkVjV2vUohOteiMc7KXSIbSDxOwZqhg9eQJhl5O/vM
+         w8hSVdlIm/47Qr3ZrhGqox/fHkSFdbuCXcg++yd0jLm7ZCtikGDlCWuU4c6Tiux3ETiE
+         rz458p+ld32wjf3hriUjil5GnebNmzzVVlky8gjlqJI+uuShf5k/zwE9vsXZxP/C9FAn
+         bRaeWhq8e33AHEumkZRrnX8YCY7IyrK2kVzdFN82QUNNt9JqxfCXRc7qc4lAUgZzRzgT
+         94Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694438120; x=1695042920;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IEzbOAJ4Fb01DDQnzPGrL2255sHl8eJXRyf8OznVFus=;
-        b=YTgZ9OjVszTe0FkiKU9VZjWvfB1ArEk9BGnM3tJHF39PvpXC1WRSfUG3q4I1SIJ8Ew
-         4KY0kjaJvG+H550ZpoAfvFbuN6Lm1eZr/YmpC/KEFl7hLX8XyfVUGGZ3WdSHlTQWsO7v
-         /q+tTvZdsFWknd4caaauxVKFhTJJOCpkN+yoL8ls4EFcniFv21SO2XV9MqALYHqLGMYG
-         FoaE2nwyUDmx4zaYBmLAqPQ4ncDdwJ23GJgoxuUVg75vZxz/e/ao1cx/g2BhUHYTeLzM
-         A2+pCQTaNkhOoQLoQvjXceyFpuCJUBruxihHnBuPLt80KSzYApaXCU+VsNL+ZSBtEDrc
-         ui6Q==
-X-Gm-Message-State: AOJu0Yx5QSh1AOQfl2I1i7f3JOJAG7z9+rIrhpr57DJLipsw3+GY6Hvn
-        mV/f9hDe9yEv8i6RXlomknNO1EYZwmnuxaYWy6ZlMA==
-X-Google-Smtp-Source: AGHT+IHudscUtHs0qFn619Ul6rWCuvw3olGAaxVp3mtAfQmBX9Hjci04z7QmU6EfAYODz1sIkdz2/w==
-X-Received: by 2002:a05:6a20:a10c:b0:145:3bd9:1389 with SMTP id q12-20020a056a20a10c00b001453bd91389mr11943803pzk.6.1694438120533;
-        Mon, 11 Sep 2023 06:15:20 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id f12-20020a17090274cc00b001bbb22652a4sm6365069plt.226.2023.09.11.06.15.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 06:15:19 -0700 (PDT)
-Message-ID: <d6da7de6-e603-4fb3-b68e-8d919f26fefe@kernel.dk>
-Date:   Mon, 11 Sep 2023 07:15:18 -0600
+        d=1e100.net; s=20230601; t=1694438247; x=1695043047;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VlerAEPk5ZbRg5PAlIL60EpQx7Cq2EyqtsP8OX4iUb0=;
+        b=gNSD59TosZgqxJcrJtyDLLKbgsSn4JMEJ/Mmlv197LcGWrLgWqL8xxJHV71tqjYaBh
+         ZCMLgVxrHJYMUotMV7ups33SZZB+yHhSJWDm4tnHgqZNI51eC28noS1vy/jQf8IMU9rg
+         yxaEdkcn7lRYqetv7qPUE8sZMFtvJXzZxlKCrJ9Ekpc6hjOas3ruJVae9fh4tMzqvrLV
+         23EvRO/6cMZ9L5cbr/aSeJm/R67rmdK9gb93Q/HhSDEXVuMBM7bAgTiNS3pQllEam5W2
+         JzBWVnpePeDwPbYNRH/wdLD/8cOXVXBwp8SY4ZY4ijJZqWAMd9qstlEev2zTyz06NKs3
+         lzCQ==
+X-Gm-Message-State: AOJu0YxKLKlvgXkGh7VE+uURVdWnVBr68t/8xGLEsnR4jm7J68W2rPqP
+        DWVHZnJIC0+1QqDSfMiDL5scyk8+z41tWA==
+X-Google-Smtp-Source: AGHT+IEPI6QFXgxg449sbeQSA4HtBFOyu5itUrch2mlFiWIh68Lx1OCYtTJqQqRdsjLm00GVmiQudQ==
+X-Received: by 2002:a1c:7912:0:b0:401:bf56:8baf with SMTP id l18-20020a1c7912000000b00401bf568bafmr7934172wme.8.1694438246711;
+        Mon, 11 Sep 2023 06:17:26 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:6716:11bf:1bf:eca1])
+        by smtp.gmail.com with ESMTPSA id l10-20020a1c790a000000b003fed70fb09dsm10057913wme.26.2023.09.11.06.17.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 06:17:26 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-renesas-soc@vger.kernel.org
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2] pinctrl: renesas: pinctrl-rzg2l: Add validation of GPIO pin in rzg2l_gpio_request()
+Date:   Mon, 11 Sep 2023 14:16:38 +0100
+Message-Id: <20230911131638.443055-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH AUTOSEL 6.1 20/22] block: Allow bio_iov_iter_get_pages()
- with bio->bi_bdev unset
-Content-Language: en-US
-To:     Pavel Machek <pavel@denx.de>, Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        linux-block@vger.kernel.org
-References: <20230908193407.3463368-1-sashal@kernel.org>
- <20230908193407.3463368-20-sashal@kernel.org> <ZP7j2MA5Qk6RBtAd@duo.ucw.cz>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZP7j2MA5Qk6RBtAd@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 3:54 AM, Pavel Machek wrote:
-> Hi!
-> 
->> From: Kent Overstreet <kent.overstreet@linux.dev>
->>
->> [ Upstream commit 168145f617d57bf4e474901b7ffa869337a802e6 ]
->>
->> bio_iov_iter_get_pages() trims the IO based on the block size of the
->> block device the IO will be issued to.
->>
->> However, bcachefs is a multi device filesystem; when we're creating the
->> bio we don't yet know which block device the bio will be submitted to -
->> we have to handle the alignment checks elsewhere.
->>
->> Thus this is needed to avoid a null ptr deref.
-> 
-> We are certainly not going to backport bcachefs to -stable. Please
-> drop.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-I already said as much 3 days ago:
+Validate the GPIO pin request in rzg2l_gpio_request() callback using
+rzg2l_validate_gpio_pin() function. This stops any accidental usage
+of GPIO pins which are not supported by the SoCs.
 
-https://lore.kernel.org/all/cd341326-cfaf-4796-8894-2241e7b630d9@kernel.dk/
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
+v1->v2
+* Maintained reverse christmas tree order.
+* Included RB/TB tags from Claudiu.
+---
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-but didn't hear back yet.
-
+diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+index 37cdfe4b04f9..cc52a154d201 100644
+--- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+@@ -795,12 +795,18 @@ static const struct pinconf_ops rzg2l_pinctrl_confops = {
+ static int rzg2l_gpio_request(struct gpio_chip *chip, unsigned int offset)
+ {
+ 	struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
++	const struct pinctrl_pin_desc *pin = &pctrl->desc.pins[offset];
+ 	u32 port = RZG2L_PIN_ID_TO_PORT(offset);
+ 	u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
++	u64 *pin_data = pin->drv_data;
+ 	unsigned long flags;
+ 	u8 reg8;
+ 	int ret;
+ 
++	ret = rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit);
++	if (ret)
++		return ret;
++
+ 	ret = pinctrl_gpio_request(chip->base + offset);
+ 	if (ret)
+ 		return ret;
 -- 
-Jens Axboe
-
+2.34.1
 
