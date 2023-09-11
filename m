@@ -2,248 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A314979B354
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C357479B372
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238372AbjIKV4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S1378092AbjIKWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 18:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243703AbjIKRcn (ORCPT
+        with ESMTP id S243770AbjIKRmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 13:32:43 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5291B8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:32:38 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-414c54b2551so20761cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 10:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1694453557; x=1695058357; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vS06nh80KVOxCFrHKBzqbQxcQAoLQCJ5U5egzLZgpvg=;
-        b=hSh0fiY+s1CC1IB4r862zcw/5DKCCf85AF480c8QKu0+YQtUfbDhL9wtVNaGdsLrZ0
-         Dowx21XZhq7KtUJhltvrCrkMqh8ks2bdvnrnNeXY+xKSMB90Eqxl8xsqYTxYgfd/W4A2
-         JGKqLsTlaAqzAXIWlK9C2flf6D7sMqEwt4iYivr6eRoDV5DmykkPAuIE92svGUjd9l1b
-         /4wg4V8J/zytPe3CXrowh5nmtVELwtnFQIrPKzkOFF/C2ruemP2xofL4EXDxLSuaHsNG
-         1PJoGrF3t0M/3Q509sPpClbFwoIMVNJwnhCDNuX5Zu4f/1gJfq8xshpYMpcxUTn7UBKd
-         xP/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694453557; x=1695058357;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vS06nh80KVOxCFrHKBzqbQxcQAoLQCJ5U5egzLZgpvg=;
-        b=rxXFX6gFdqfnuCKIdMETHvUBIECVAOeluzD5JSYp67ZgF8qhconvOKfpyoN8zZW0uf
-         qUVUQD/wlirmVp2TY4hOg12xtNx6KBmdYTj3BtGl+ssrQgIMXrw/ra6gsIB93PKK7G0r
-         WPjoiLaYeHlYF0rveHDh57xYQyA/YruQn2GBlv1uR3lmQVxxuG4K5ciAdPzs/TrB99JN
-         tfEegYh++/3WkjUWYMbzDj2N84jPO27RKdeIE4OCjuEC086tlBdARhhkoHcPVONpky5w
-         1xaBK8vrU+qBBSESRcsdmfDqh6J6Hlo6wWRHOwfgycqEKKcSWAvgyk1WsqysCh4OcBdZ
-         4lag==
-X-Gm-Message-State: AOJu0YyfTT2JGuvBLCIXJ9oMshtRqUznmWL6ORJXLBuYGzXF3hLeInjK
-        R9r/RBP4l7+cWt9rkdRz8uwTAjYa3DUhMAQZaTd2Tg==
-X-Google-Smtp-Source: AGHT+IFB8vpoAIVESpU9czT1w5x6NETkoKez+IqbAgOCvDM9Mj42QoUPaJWihBoHkb7DhpDrqULeeeUau23CM5Xzwdo=
-X-Received: by 2002:a05:622a:13ce:b0:412:16f:c44f with SMTP id
- p14-20020a05622a13ce00b00412016fc44fmr26090qtk.6.1694453557215; Mon, 11 Sep
- 2023 10:32:37 -0700 (PDT)
+        Mon, 11 Sep 2023 13:42:18 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00955CF;
+        Mon, 11 Sep 2023 10:42:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694454122; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=l5I2ENrYi6G07PG5/vyOfElCYpYYv4JP6NQpStcDR0AhkXYy0iXLbEQYVWFtj/dmlk
+    LVuyQ0qenwY4GezmAxy8psGQy0/aaVkH40iYcoF5ZWo+niS9Ylw+JqDX6mcnpCYqYMlE
+    sR2hmrC2DnncY+8hahU8wt5+JLbpKqa18pVAQ0KtGC9aYKHHkLw5XB33XEXK/ZllPAgn
+    yPw6pLzvwYw6g9zdZZ5rff5gVFJIBYTuIh70/jsU7AK2pHjr/GuWdk5Z8ew+cj5CpdzZ
+    VIUBqZ97hmmBf9ReSoSp25OR1/gIiqLJzZro71YKDeETN7Pe3p1coVzLRXeYLQxwHRL9
+    pXoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454122;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
+    b=kLnbAx2yY+5POTDRNdSBUcIoVFfmH6x6qyVjA2Q76M44gBOQculOObU+5Eq6OVfT8u
+    3aK84s82bUg1hOZAYzCu01RFBF2N/VczAVj74uYuT9i6gwYjGJrccRvnGorDH69P97bW
+    ZVWppxf+1ooxObi95XeO4fL+26bxn7LYyavZoLYhmqGVHcyaiz39fSg0wgwYe5EJCh/C
+    ch3vpmynbtc+hnKffmdH/DB4dGs1tfyTeLRKNCsbnK5OknxKHXa6vivPArkRDEHmSf/p
+    gTPNiJsO90s5pyk8cx7dENHFJ+S1a0jexuYQC+cfiCVYNOhrzHJzt/tiHnkA5jGfHbWk
+    C4jA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694454122;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
+    b=C7q7Z7FmmkzY9pZPeCQsiOasQpz9pYn7gtFZUDmb997x+JFXCkp2IAw7BZDHUCfxVk
+    /Gd3x5qs6Jqz/0DY+DrKTDjbnu8QVgO5OMzqcfw51GU3GVlqDRlOvWyhg7dEcIt9xODO
+    zUiUWWXKZYEU25+5+gpVFbPN7+p93ZD564duhH0s5W6gllOmLazKMvMGL9dZ4xJHitm9
+    JBr7DAqz6Zww4g2g8mg3LIEBo41BEn2AhirDdrr2mcOSA82gFSHGYuAj15DIoU+NCTex
+    Ne/lga1rSE8MUKYAhXpFCitOOTROyNbMV1aWYut08zqVXNK0a38b4GtI2FyXsjFL49OV
+    zbfA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694454122;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dW9YirrLJkurT02lSzzl3uY0O9p2Eb+8xKry61dJ4Wk=;
+    b=yYR7J5HQRuzYW5zy/wEoUz92ghM0g/paZpimiv8tsH+GYmY9ftm3k1xyV8fQcn22uL
+    iNwbZRkuvKSODBTcscDg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l38TY="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id 60372az8BHg2awM
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 11 Sep 2023 19:42:02 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+Date:   Mon, 11 Sep 2023 19:41:44 +0200
+Subject: [PATCH 2/9] arm64: dts: qcom: msm8916/39: Disable GPU by default
 MIME-Version: 1.0
-References: <1694087913-46144-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1694087913-46144-2-git-send-email-renyu.zj@linux.alibaba.com>
- <CAP-5=fVWcQrqLeuc-k4HRNrNdb_=9CbqTSOAX=HDR7f=j8b0Hg@mail.gmail.com> <8bab7404-8e24-8606-558c-db3495429f2f@linux.alibaba.com>
-In-Reply-To: <8bab7404-8e24-8606-558c-db3495429f2f@linux.alibaba.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 11 Sep 2023 10:32:25 -0700
-Message-ID: <CAP-5=fU4jWHnbt8BirMZHa7cuLhkAAMAfD28AdRc23zx-e3EyQ@mail.gmail.com>
-Subject: Re: [PATCH v8 1/8] perf pmu: "Compat" supports matching multiple identifiers
-To:     Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230911-msm8916-rmem-v1-2-b7089ec3e3a1@gerhold.net>
+References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
+In-Reply-To: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 10, 2023 at 7:32=E2=80=AFPM Jing Zhang <renyu.zj@linux.alibaba.=
-com> wrote:
->
->
->
-> =E5=9C=A8 2023/9/9 =E4=B8=8A=E5=8D=885:33, Ian Rogers =E5=86=99=E9=81=93:
-> > On Thu, Sep 7, 2023 at 4:58=E2=80=AFAM Jing Zhang <renyu.zj@linux.aliba=
-ba.com> wrote:
-> >>
-> >> The jevent "Compat" is used for uncore PMU alias or metric definitions=
-.
-> >>
-> >> The same PMU driver has different PMU identifiers due to different
-> >> hardware versions and types, but they may have some common PMU event.
-> >> Since a Compat value can only match one identifier, when adding the
-> >> same event alias to PMUs with different identifiers, each identifier
-> >> needs to be defined once, which is not streamlined enough.
-> >>
-> >> So let "Compat" supports matching multiple identifiers for uncore PMU
-> >> alias. For example, the Compat value {43401;436*} can match the PMU
-> >> identifier "43401", that is, CMN600_r0p0, and the PMU identifier with
-> >> the prefix "436", that is, all CMN650, where "*" is a wildcard.
-> >> Tokens in Unit field are delimited by ';' with no spaces.
-> >>
-> >> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
-> >> Reviewed-by: John Garry <john.g.garry@oracle.com>
-> >> ---
-> >>  tools/perf/util/pmu.c | 28 ++++++++++++++++++++++++++--
-> >>  tools/perf/util/pmu.h |  1 +
-> >>  2 files changed, 27 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> >> index e215985..c3c3818 100644
-> >> --- a/tools/perf/util/pmu.c
-> >> +++ b/tools/perf/util/pmu.c
-> >> @@ -875,6 +875,30 @@ static bool pmu_uncore_alias_match(const char *pm=
-u_name, const char *name)
-> >>         return res;
-> >>  }
-> >>
-> >> +bool pmu_uncore_identifier_match(const char *id, const char *compat)
-> >> +{
-> >> +       char *tmp =3D NULL, *tok, *str;
-> >> +       bool res =3D false;
-> >> +
-> >> +       /*
-> >> +        * The strdup() call is necessary here because "compat" is a c=
-onst str*
-> >> +        * type and cannot be used as an argument to strtok_r().
-> >> +        */
-> >> +       str =3D strdup(compat);
-> >> +       if (!str)
-> >> +               return false;
-> >> +
-> >> +       tok =3D strtok_r(str, ";", &tmp);
-> >
-> > Did the comma vs semicolon difference get explained? It seems to add
-> > inconsistency to use a semicolon.
-> >
->
-> Hi Ian,
->
-> Yes, I explained the reason for using semicolons instead of commas in v7.
->
-> I use a semicolon instead of a comma because I want to distinguish it fro=
-m the function
-> of the comma in "Unit" and avoid confusion between the use of commas in "=
-Unit" and "Compat".
-> Because in Unit, commas act as wildcards, and in =E2=80=9CCompat=E2=80=9D=
-, the semicolon means =E2=80=9Cor=E2=80=9D. So
-> I think semicolons are more appropriate.
->
-> John also raised this issue earlier, and we finally agreed to use semicol=
-ons.
-> What do you think?
+MSM8916/39 do not need signed GPU firmware so it is generally okay to
+have it enabled by default. However, currently the GPU does not work
+without also enabling MDSS and it's questionable if someone would
+really need it without a display in practice.
 
-I'm okay with it, but thanks for capturing the why of this. I'd like
-at some point to make the wildcarding of things less ad hoc. For
-example, on x86 we use regular expressions to match cpuid:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/pmu-events/arch/x86/mapfile.csv?h=3Dperf-tools-next
-but file name style matching for pmus:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/pmu.c?h=3Dperf-tools-next#n1974
-Given that we're okay with regular expressions then I don't see why
-everything shouldn't be a regular expression. This could, for example,
-make matching PMUs more specific than just adding a star and doing a
-file name match. For an example of why this is weird, on my laptop:
-```
-$ perf stat -e i/actual-frequency/ true
+For consistency let's follow newer SoCs and disable the GPU by default.
+Enable it for all existing devices that already have &mdss enabled.
 
-Performance counter stats for 'system wide':
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ arch/arm64/boot/dts/qcom/apq8016-sbc.dts                      | 4 ++++
+ arch/arm64/boot/dts/qcom/apq8039-t2.dts                       | 4 ++++
+ arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi    | 4 ++++
+ arch/arm64/boot/dts/qcom/msm8916.dtsi                         | 3 ++-
+ arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts | 4 ++++
+ arch/arm64/boot/dts/qcom/msm8939.dtsi                         | 3 ++-
+ 6 files changed, 20 insertions(+), 2 deletions(-)
 
-                0      i/actual-frequency/
+diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+index c13230217c3c..bd68f4793acd 100644
+--- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
++++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dts
+@@ -230,6 +230,10 @@ &camss {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	status = "okay";
++};
++
+ &lpass {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/apq8039-t2.dts b/arch/arm64/boot/dts/qcom/apq8039-t2.dts
+index 027d1da7e81d..f591d6e78d6e 100644
+--- a/arch/arm64/boot/dts/qcom/apq8039-t2.dts
++++ b/arch/arm64/boot/dts/qcom/apq8039-t2.dts
+@@ -131,6 +131,10 @@ &blsp_uart2 {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	status = "okay";
++};
++
+ &lpass {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+index 5f78004a24bd..15d2486cdb45 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+@@ -239,6 +239,10 @@ &blsp_uart2 {
+ 	status = "okay";
+ };
+ 
++&gpu {
++	status = "okay";
++};
++
+ &mdss {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index f093ab83938d..0257cbbb4971 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -1750,7 +1750,7 @@ cci_i2c0: i2c-bus@0 {
+ 			};
+ 		};
+ 
+-		gpu@1c00000 {
++		gpu: gpu@1c00000 {
+ 			compatible = "qcom,adreno-306.0", "qcom,adreno";
+ 			reg = <0x01c00000 0x20000>;
+ 			reg-names = "kgsl_3d0_reg_memory";
+@@ -1773,6 +1773,7 @@ gpu@1c00000 {
+ 			power-domains = <&gcc OXILI_GDSC>;
+ 			operating-points-v2 = <&gpu_opp_table>;
+ 			iommus = <&gpu_iommu 1>, <&gpu_iommu 2>;
++			status = "disabled";
+ 
+ 			gpu_opp_table: opp-table {
+ 				compatible = "operating-points-v2";
+diff --git a/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts b/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
+index 89b6aebba404..cb893345c44b 100644
+--- a/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
++++ b/arch/arm64/boot/dts/qcom/msm8939-sony-xperia-kanuti-tulip.dts
+@@ -39,6 +39,10 @@ usb_id: usb-id {
+ 	};
+ };
+ 
++&gpu {
++	status = "okay";
++};
++
+ &mdss {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+index 6e24f0f2374f..b0a64e468629 100644
+--- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+@@ -1395,7 +1395,7 @@ mdss_dsi1_phy: phy@1aa0300 {
+ 			};
+ 		};
+ 
+-		gpu@1c00000 {
++		gpu: gpu@1c00000 {
+ 			compatible = "qcom,adreno-405.0", "qcom,adreno";
+ 			reg = <0x01c00000 0x10000>;
+ 			reg-names = "kgsl_3d0_reg_memory";
+@@ -1418,6 +1418,7 @@ gpu@1c00000 {
+ 			power-domains = <&gcc OXILI_GDSC>;
+ 			operating-points-v2 = <&opp_table>;
+ 			iommus = <&gpu_iommu 1>, <&gpu_iommu 2>;
++			status = "disabled";
+ 
+ 			opp_table: opp-table {
+ 				compatible = "operating-points-v2";
 
-      0.001168195 seconds time elapsed
-```
-The PMU I used here as 'i' is /sys/devices/i915 as we allow arbitrary
-numbers after a PMU name for cases of multiple uncore PMUs.
+-- 
+2.42.0
 
-My feeling longer term is that the matching distinction of Unit and
-Compat, comma and semi-colon, would be better captured with regular
-expressions as I think they show the intent in the matching more
-clearly.
-
-Thanks,
-Ian
-
-
-> Thanks,
-> Jing
->
-> > Thanks,
-> > Ian
-> >
-> >> +       for (; tok; tok =3D strtok_r(NULL, ";", &tmp)) {
-> >> +               if (!fnmatch(tok, id, FNM_CASEFOLD)) {
-> >> +                       res =3D true;
-> >> +                       break;
-> >> +               }
-> >> +       }
-> >> +       free(str);
-> >> +       return res;
-> >> +}
-> >> +
-> >>  static int pmu_add_cpu_aliases_map_callback(const struct pmu_event *p=
-e,
-> >>                                         const struct pmu_events_table =
-*table __maybe_unused,
-> >>                                         void *vdata)
-> >> @@ -915,8 +939,8 @@ static int pmu_add_sys_aliases_iter_fn(const struc=
-t pmu_event *pe,
-> >>         if (!pe->compat || !pe->pmu)
-> >>                 return 0;
-> >>
-> >> -       if (!strcmp(pmu->id, pe->compat) &&
-> >> -           pmu_uncore_alias_match(pe->pmu, pmu->name)) {
-> >> +       if (pmu_uncore_alias_match(pe->pmu, pmu->name) &&
-> >> +                       pmu_uncore_identifier_match(pmu->id, pe->compa=
-t)) {
-> >>                 perf_pmu__new_alias(pmu,
-> >>                                 pe->name,
-> >>                                 pe->desc,
-> >> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> >> index bd5d804..1bf5cf1 100644
-> >> --- a/tools/perf/util/pmu.h
-> >> +++ b/tools/perf/util/pmu.h
-> >> @@ -240,6 +240,7 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pm=
-u,
-> >>  char *perf_pmu__getcpuid(struct perf_pmu *pmu);
-> >>  const struct pmu_events_table *pmu_events_table__find(void);
-> >>  const struct pmu_metrics_table *pmu_metrics_table__find(void);
-> >> +bool pmu_uncore_identifier_match(const char *id, const char *compat);
-> >>
-> >>  int perf_pmu__convert_scale(const char *scale, char **end, double *sv=
-al);
-> >>
-> >> --
-> >> 1.8.3.1
-> >>
