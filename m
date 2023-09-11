@@ -2,244 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 038C479B797
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F56579BF65
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354304AbjIKVxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
+        id S241729AbjIKVRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242540AbjIKPqN (ORCPT
+        with ESMTP id S242524AbjIKPqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 11:46:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371C9FB;
-        Mon, 11 Sep 2023 08:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694447168; x=1725983168;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EGZf1+DVn+gyziuqfigDtm3H2lqewI5JtUnRehH1Sco=;
-  b=AkFbVm+J18qg7N9laCG+ojqAJcic/iItPCXhCoq+5Qi0+sGGUrx9Uc/G
-   iytz3AzMU+yjO/Qla/AFmv7sfilboc8AiCM5hZ28/S8pKOnjhIcwIrUzt
-   QeGwCwbUF4BWe9h9AhoCyKDTcC9IPGxyFIg32T/cXR9urm6ITQL+zOMsG
-   qY91Rq1TjAGF6fy9qar+w9Lo94pzswV12P4JJkPoj1MfAtp5/QkPPydBT
-   C58JlHN2xGIPT/Pg+YN3KFxDxYQsdNB+Zyupva6NBxs5ANL1z2nppwojI
-   OnKfqK5rSLtxWqQCALqoVQP7Q5ncwNER0wE/bAEMJXSXPCxISdv1pq517
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="444539598"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="444539598"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 08:45:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917061944"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="917061944"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 11 Sep 2023 08:45:36 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id DB1B145B; Mon, 11 Sep 2023 18:45:35 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
-Date:   Mon, 11 Sep 2023 18:45:34 +0300
-Message-Id: <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
-References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+        Mon, 11 Sep 2023 11:46:00 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E40127
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:45:54 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-403004a96eeso25256465e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 08:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694447153; x=1695051953; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wtIhAxbGVK+7yj4SNMHYOQFab9XtJv/AFRYvoUE3Ztg=;
+        b=fPs3jz9CNOYH604bpS2KaaS3ABUXJqD1nd4/6yGz19t0g647vHHgsoZnOOMyxm0Qgy
+         PAhbxEDQTpiegYlylCmFUuLBAf4G5IJmcNrRuqSBIwQ9pndFt6yBZkS1A3xYIBJvy3i6
+         IA5zIJNN7uWg2SIZ9aONjmnkJ3g5lnzBm2DyiZBF7VXVINsDNB+mKwv6UnDvsLxAbqmb
+         vVtb075jFGL63+yj2PqihMsA2tX3/r4UwUtK1qz4O6t5TSM1MFoQtsupCCAZZKF68Ilq
+         00YWkKthAkz1KnXNyy+aGtCZH4juJgcpzfDHI4PH15FLEjBuSEvH3MduYTnkZqkQmRPM
+         kT4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694447153; x=1695051953;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wtIhAxbGVK+7yj4SNMHYOQFab9XtJv/AFRYvoUE3Ztg=;
+        b=FJlIor7bO9PjB8nIabHWFxEQnM9k6yneianqOVqHSxjST4l6w+vsOqGFpHVHiFDt0B
+         7B/iqTLhFmoJazuJdvRWDmRE6lYxLXKvazCNW2dDzpQzaXPXCaOgDAyz8e2bs1bEraks
+         hzm5FvUIsVg12wQdUr04rQd2IQ03T5vwC0S7CH4RYx3jWqe/gDRmEheIJxAFUbCVK5Lh
+         bRh1l4RWYyYAN+d3uXD/b+yvPrv+NifKyBEyDpxxwx8SpDNm0bzrY62lvyoOaFuMdz1j
+         irdcEGzxW2YjhTqplyhWyRzkHdTAf7l0XsbVcLa95giBEDP8cbjcPPVTvXxsztYDZelj
+         UFlQ==
+X-Gm-Message-State: AOJu0YwrLvIdfkHJb0ZmuRcz+y5gzV8YY/xmfmHArcIY6UHn8ijmvL1n
+        Sb6xIBPUi/KlYsQnws0ws+mi0g==
+X-Google-Smtp-Source: AGHT+IFlHuDGD4y/pkzGSIaXA5xLAwU8gajS0add0DHyT1XivNj62MdgH/kpwUyCyIHaYB4pZmxRlw==
+X-Received: by 2002:a05:600c:b4e:b0:3f8:fac0:ad40 with SMTP id k14-20020a05600c0b4e00b003f8fac0ad40mr9105096wmr.29.1694447153244;
+        Mon, 11 Sep 2023 08:45:53 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:55be:8f7e:5f59:7ed1])
+        by smtp.googlemail.com with ESMTPSA id q12-20020a05600c040c00b003fe539b83f2sm13616255wmb.42.2023.09.11.08.45.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 08:45:52 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH 1/5] arm64: dts: meson: u200: fix spdif output pin
+Date:   Mon, 11 Sep 2023 17:45:37 +0200
+Message-Id: <20230911154541.471484-2-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230911154541.471484-1-jbrunet@baylibre.com>
+References: <20230911154541.471484-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
+X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's rather a gigantic list of heards that is very hard to follow.
-Sorting helps to see what's already included and what's not.
-It improves a maintainability in a long term.
+u200 outputs spdif on GPIOAO_10, not GPIOH_4 which is used for the LCD
+panel.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: cfae4eadb7cd ("arm64: dts: meson: add audio playback to u200")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- net/core/dev.c | 135 +++++++++++++++++++++++++------------------------
- 1 file changed, 69 insertions(+), 66 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 85df22f05c38..d795a6c5a591 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -68,91 +68,94 @@
-  *				        - netif_rx() feedback
-  */
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+index 2878e3ad7de2..8fa17a62534c 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+@@ -396,7 +396,7 @@ &sd_emmc_c {
+ };
  
--#include <linux/uaccess.h>
-+#include <linux/audit.h>
- #include <linux/bitmap.h>
-+#include <linux/bpf.h>
-+#include <linux/bpf_trace.h>
- #include <linux/capability.h>
- #include <linux/cpu.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/hash.h>
--#include <linux/slab.h>
--#include <linux/sched.h>
--#include <linux/sched/mm.h>
--#include <linux/mutex.h>
--#include <linux/rwsem.h>
--#include <linux/string.h>
--#include <linux/mm.h>
--#include <linux/socket.h>
--#include <linux/sockios.h>
-+#include <linux/cpu_rmap.h>
-+#include <linux/crash_dump.h>
-+#include <linux/ctype.h>
-+#include <linux/delay.h>
-+#include <linux/dmaengine.h>
-+#include <linux/err.h>
- #include <linux/errno.h>
--#include <linux/interrupt.h>
--#include <linux/if_ether.h>
--#include <linux/netdevice.h>
-+#include <linux/errqueue.h>
- #include <linux/etherdevice.h>
- #include <linux/ethtool.h>
--#include <linux/skbuff.h>
-+#include <linux/hash.h>
-+#include <linux/hashtable.h>
-+#include <linux/highmem.h>
-+#include <linux/hrtimer.h>
-+#include <linux/if_arp.h>
-+#include <linux/if_ether.h>
-+#include <linux/if_macvlan.h>
-+#include <linux/if_vlan.h>
-+#include <linux/indirect_call_wrapper.h>
-+#include <linux/inetdevice.h>
-+#include <linux/in.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/ip.h>
-+#include <linux/ipv6.h>
-+#include <linux/jhash.h>
-+#include <linux/kernel.h>
- #include <linux/kthread.h>
--#include <linux/bpf.h>
--#include <linux/bpf_trace.h>
--#include <net/net_namespace.h>
--#include <net/sock.h>
--#include <net/busy_poll.h>
-+#include <linux/mm.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/netdevice.h>
-+#include <linux/netfilter_netdev.h>
-+#include <linux/net_namespace.h>
-+#include <linux/netpoll.h>
-+#include <linux/once_lite.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/prandom.h>
-+#include <linux/random.h>
-+#include <linux/rcupdate.h>
- #include <linux/rtnetlink.h>
-+#include <linux/rwsem.h>
-+#include <linux/sched.h>
-+#include <linux/sched/mm.h>
-+#include <linux/sctp.h>
-+#include <linux/skbuff.h>
-+#include <linux/slab.h>
-+#include <linux/socket.h>
-+#include <linux/sockios.h>
- #include <linux/stat.h>
-+#include <linux/static_key.h>
-+#include <linux/string.h>
-+#include <linux/types.h>
-+#include <linux/uaccess.h>
-+#include <linux/vmalloc.h>
-+
-+#include <asm/current.h>
-+
-+#include <net/busy_poll.h>
-+#include <net/checksum.h>
-+#include <net/devlink.h>
- #include <net/dsa.h>
- #include <net/dst.h>
- #include <net/dst_metadata.h>
- #include <net/gro.h>
--#include <net/pkt_sched.h>
--#include <net/pkt_cls.h>
--#include <net/checksum.h>
--#include <net/xfrm.h>
--#include <net/tcx.h>
--#include <linux/highmem.h>
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/netpoll.h>
--#include <linux/rcupdate.h>
--#include <linux/delay.h>
--#include <net/iw_handler.h>
--#include <asm/current.h>
--#include <linux/audit.h>
--#include <linux/dmaengine.h>
--#include <linux/err.h>
--#include <linux/ctype.h>
--#include <linux/if_arp.h>
--#include <linux/if_vlan.h>
--#include <linux/ip.h>
- #include <net/ip.h>
-+#include <net/iw_handler.h>
- #include <net/mpls.h>
--#include <linux/ipv6.h>
--#include <linux/in.h>
--#include <linux/jhash.h>
--#include <linux/random.h>
-+#include <net/netdev_rx_queue.h>
-+#include <net/net_namespace.h>
-+#include <net/pkt_cls.h>
-+#include <net/pkt_sched.h>
-+#include <net/sock.h>
-+#include <net/tcx.h>
-+#include <net/udp_tunnel.h>
-+#include <net/xfrm.h>
-+
- #include <trace/events/napi.h>
- #include <trace/events/net.h>
--#include <trace/events/skb.h>
- #include <trace/events/qdisc.h>
-+#include <trace/events/skb.h>
- #include <trace/events/xdp.h>
--#include <linux/inetdevice.h>
--#include <linux/cpu_rmap.h>
--#include <linux/static_key.h>
--#include <linux/hashtable.h>
--#include <linux/vmalloc.h>
--#include <linux/if_macvlan.h>
--#include <linux/errqueue.h>
--#include <linux/hrtimer.h>
--#include <linux/netfilter_netdev.h>
--#include <linux/crash_dump.h>
--#include <linux/sctp.h>
--#include <net/udp_tunnel.h>
--#include <linux/net_namespace.h>
--#include <linux/indirect_call_wrapper.h>
--#include <net/devlink.h>
--#include <linux/pm_runtime.h>
--#include <linux/prandom.h>
--#include <linux/once_lite.h>
--#include <net/netdev_rx_queue.h>
- 
- #include "dev.h"
- #include "net-sysfs.h"
+ &spdifout {
+-	pinctrl-0 = <&spdif_out_h_pins>;
++	pinctrl-0 = <&spdif_ao_out_pins>;
+ 	pinctrl-names = "default";
+ 	status = "okay";
+ };
 -- 
-2.40.0.1.gaa8946217a0b
+2.40.1
 
