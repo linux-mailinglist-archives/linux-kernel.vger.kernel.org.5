@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FDA79B142
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466D979AE46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236749AbjIKVTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S1344706AbjIKVOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239885AbjIKOax (ORCPT
+        with ESMTP id S239893AbjIKObB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:30:53 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FB78E54;
-        Mon, 11 Sep 2023 07:30:44 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 38BEUPHr017048;
-        Mon, 11 Sep 2023 16:30:25 +0200
-Date:   Mon, 11 Sep 2023 16:30:25 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: libc-test: avoid -Wstringop-overflow
- warnings
-Message-ID: <ZP8kgXhP/UjsMoD4@1wt.eu>
-References: <20230910-nolibc-poll-fault-v1-1-2b7a16f48259@weissschuh.net>
- <ZP6uAT0jmseRHkzG@1wt.eu>
- <cf5a2308-e241-4146-85c6-67ad924fb67c@t-8ch.de>
+        Mon, 11 Sep 2023 10:31:01 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AEDE4D;
+        Mon, 11 Sep 2023 07:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1694442654; x=1695047454; i=rwarsow@gmx.de;
+ bh=kqEiy54vHn9A4hNDsY9RHpQci3bLlNR1YiGevJHTVVY=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=uf3gdlve24u9lyCpemVAxC1VET+HgN1VCnUvOop78pCXTjVEfxRya6vSsC3J4PRLFHQq5iJ
+ K8XJNOmT/Rg87EzqFfh5pPkV9ggPm5JQSzZ70r6X/JDw1pYQ7tUtDEJT+tU4E8brQgWjC155e
+ DaW37iqVL989WA95O+Bjkyqts0IwVd0hJDE0d0bTL1QjtVFTRAfy9FxYipbv+9ceCJ5T4IHMs
+ qnJKnJp7K7EEzkxWbpksX7hf2/EYWCwVYm4X5fr8vCQBUSxkLgQKxjSC08hjliJm15gW3Ak2W
+ mLNMSr9+Ba6rFcFcWCSg4GGgWyuW6Od4rtgghVW2tyX7zMD1mG2w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.34.50]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MmDEg-1pxoTu1HpA-00iEBd; Mon, 11
+ Sep 2023 16:30:54 +0200
+Message-ID: <800b38d5-c66a-bb9b-1d86-385dd796b34f@gmx.de>
+Date:   Mon, 11 Sep 2023 16:30:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cf5a2308-e241-4146-85c6-67ad924fb67c@t-8ch.de>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.5 000/739] 6.5.3-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:jx3m3w0du9Nmk20OGQaMPYAk/aAHTmJHb4zV8o6DROZNTjxQrjJ
+ Wfe8l4igtZuWpAEEJTmEv7y1gdFevXYo9ag/TrkFd1Y7bBZZSKzqJvT5g4t9e201EQSsKuc
+ ITuJH/4eQ0mixlQcyM+oYcDXvwPHjMBtGqXoGO31I2VGPikhKFRKo32Z7xoTAddShINKZze
+ yOsKN1w11iNr9mTMeD0TA==
+UI-OutboundReport: notjunk:1;M01:P0:jEE64T2UVY4=;AtX7Q+Q2xBzwRKEYY7RcT5D86ij
+ CLYS+rqMA+rGjsSYfr2f6iup3wbGgV19hGRmjIp18GTe6hF7GpUNzy6uUeQXCjsj6PcclCd/u
+ me7rmgIoIp3XYRtI/zGk+ska1STBYRpbVk8qYODHpCJvncfVLinuPNbsrIuuk2x1vvKHTZdfV
+ dL2CLz5gu3oHztVqXzhr2lePPk2navUY3li9Fg977w3LN8DCEuvtCFrRg3EgMmuu3yvM4aPdt
+ jS9mudFwOzx4fgEbKrA4DZV0Hnvp6DrV17F39MJC5Go4TYMiPwfTq2p2cqEa5a+ZNN1fXca6i
+ a5XCBu36Q4VSWa6R5OZuEPpGZdP4XvoYLtzQj+/1uT6hfezOBOF2cS+1vwuM82tBrpPhQkye6
+ YYETZbJchNddXvlRJ7kClP/b30amA4HAoqduZVZtQpLt0B6MAG6kw9lFxxGaIdJNH8VXOuFJW
+ HluJ9BmBymysCwMipqQUCT2sgZ61YZ5EUY8WndimBEJQQDqCEwL0kFrdKQ/ACACEOjhWmU9TW
+ PGfRUeZKHc0UyVvIsWCR4GzVcGJ919GYa/iRVfR2zJQgGPDx2ePY9aLFQXAPzvt6XO4a2p0vL
+ /KsWGE4FIN2mzhE40YGTTaIWa10T82pVamRBbdClYZM/XzJaUZskKI1y0b1MEbiTvdRd7mjO9
+ hlakBfuQQQUAlCPwMHv/sgZjTMSIdazlzJgy7K2ZfcDcL4/g5Bf/ZYZ4X1DHVs5fTPlXvyaZ3
+ Ffrbvmbcb+NR2mbBMrn7xV712vbrC/YwpiJiPuz0oFxSRleetDR2wxTPjRrSRAFWJb9GePbZe
+ GEPnrSJku4nS7hOvSBxjPBfOp2y535rONADjZs5rQn3eWyir4o68r/pYoWUA1dN4JTlimULMt
+ sd/xIhn4Br8S6yuQOQF/lG6RIPv83ZwYwl7d/uSgd3iwm8aouRftgay7rGwn/2X4AeHHMggbL
+ oPWRdw==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 04:26:41PM +0200, Thomas Weißschuh wrote:
-> Hi Willy!
-> 
-> On 2023-09-11 08:04:49+0200, Willy Tarreau wrote:
-> > On Sun, Sep 10, 2023 at 09:29:01PM +0200, Thomas Weißschuh wrote:
-> > > Newer versions of glibc annotate the poll() function with
-> > > __attribute__(access) which triggers a compiler warning inside the
-> > > testcase poll_fault.
-> > > Avoid this by using a plain NULL which is enough for the testcase.
-> > > To avoid potential future warnings also adapt the other EFAULT
-> > > testcases, except select_fault as NULL is a valid value for its
-> > > argument.
-> > (...)
-> > 
-> > Looks good to me. I wouldn't be surprised if we're soon forced to do
-> > the same with select() on some archs where it might be emulated.
-> > 
-> > Feel free to push it to the shared repo.
-> 
-> Thanks, I pushed it to the "next" branch.
-> 
-> I'd also like to rebase the next branch onto v6.6-rc1, any objections?
+Hi Greg
 
-Yes, please go on!
+6.5.3-rc1
 
-Thanks,
-Willy
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake, i5-11400)
+
+Thanks
+
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
+
