@@ -2,243 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D322379BF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3897E79B6E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344507AbjIKVOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S240050AbjIKVsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244002AbjIKSir (ORCPT
+        with ESMTP id S244015AbjIKSlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 14:38:47 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DAA1B6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:38:42 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id C6D22801255
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:38:41 +0000 (UTC)
-Received: from pdx1-sub0-mail-a294.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 69CB0801274
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:38:41 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1694457521; a=rsa-sha256;
-        cv=none;
-        b=UygDGRSqtGgwT4rulVXMbhydRPB2G0JV3K6o/eDTbQ2IGfqQAufZAUgvA2dozCs5yjzhyE
-        4SWXBaxUW9o/DTPdHQASA6f5RHDIA+wMgLW9kp+xvbTvUtt0AY4SmL+bFrXMtnEM+QLZXa
-        VlEHpM0KQrWlaHaXvMTKFxo429FcpeCRwE5H75AQIQh0rwHvj1cTXTUBQbUSzOiysb8F/l
-        jphnIGGgmqwWUWdXG8DtEK9fB2QBXirR+rFfnqmpjtd830aDkpFiMWUS+SXwXK3Mc2b1SR
-        zUQjOnDlpF3pg/wZMEcMqtjpXVtR+EiZRBYeYkeSEH/SLF1Php/cbBNA1JjS/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1694457521;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=FSUK8pOwpvuxQ+JLt0jdCQPxsw4/FtxlxfMUCOvi2Vo=;
-        b=pKZNnGGhdxQEPbNjq2v1M6fXpEW0nv0STxj5uhPzgJaYN+VZ6Gs86cEeJnGTR6pH6BmFqk
-        QNTCAe0q3vJm0Le41xAlxG2f2oiezfLY8dlF8HOJ1a0Hlf52FlztEh4C6u2Wln5xWog9Oi
-        CjAfU2SIYqjNuO2COGSuw0Iq1LzBIRNVmySuES/wF3VUA1gCqob7WHMOzJlD1+zsuBBvuU
-        561yMRq42IvwzKdeV/50XTorWt+Mfv421rgcGk0saIDZmweZaNJSmbiiwNl+zSu8vobUSK
-        9bU5qjKroAevdrcvB2fL406lNd3M74EBUpPkWKayxetFainbk+NWqKO1sNBK2g==
-ARC-Authentication-Results: i=1;
-        rspamd-7c449d4847-xt9p6;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Drop-Slimy: 02cb74bf125744cc_1694457521667_815134810
-X-MC-Loop-Signature: 1694457521667:2706943314
-X-MC-Ingress-Time: 1694457521667
-Received: from pdx1-sub0-mail-a294.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.117.103.156 (trex/6.9.1);
-        Mon, 11 Sep 2023 18:38:41 +0000
-Received: from kmjvbox (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a294.dreamhost.com (Postfix) with ESMTPSA id 4RkwTY1P16zJp
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1694457521;
-        bh=FSUK8pOwpvuxQ+JLt0jdCQPxsw4/FtxlxfMUCOvi2Vo=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=eLwToKe9t9/l6uyz4YUCl6xOhB4/7ZyDAweU7Jz4u/ulkpHnakUSCJU4WryiTG92u
-         vzjJO7ofzGfXcxHina7YbbZ1vXedBZ5COGZ8mNe1jzMTN0DGxZOr6+NT7O8kJalfV+
-         9b6a56/e+TNXhUhITfG6LXW2/1dGsFNdXPNUZQAjXZHB3vDrHbCNhMDCi1mQLuyzy+
-         ot0uaQIFb+MZj5fW6WefrRCWjm6dtVSPDFwCnPWHXYXKd7BQ/MWtaotbDFKFl+TX8k
-         YnjOo+1zCx8aSBPPnL+R+sXspSanqwvq5sGOEb7mI3y7x/c9t96qOZliZhe0yt/bdY
-         qBWu9iBCjufnw==
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e00c8
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Mon, 11 Sep 2023 11:38:38 -0700
-Date:   Mon, 11 Sep 2023 11:38:38 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
-Subject: [PATCH 1/2] fuse: revalidate: move lookup into a separate function
-Message-ID: <9a2b0c5b625cd88c561289bf7d4d7dfe305c10ed.1693440240.git.kjlx@templeofstupid.com>
-References: <cover.1693440240.git.kjlx@templeofstupid.com>
+        Mon, 11 Sep 2023 14:41:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8484E1AB
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 11:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694457695; x=1725993695;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1yEf2wozl9yHu1LBOd/9typRrbCFXojz/uFswv5c43c=;
+  b=N7G6TL516v37nFxc/k+fHUheucSJ/kt5VfZUXRfWwCB72zRM88iwaIYd
+   5l0ssm3i269KPpc1EQMSAXJMBgzetTR/ZVA7uJ7NCuQQwaQazI0YGjgQg
+   FY23RBKobg0GcVUtI9J2TR3orc5OU5I5U1Q2T5dCaR5tYIKQ0h7JkhMUV
+   WOM/5CKsm1Hvp4Qwwr306Z3C3Dsg9MD4sXOsb2BBZKkaR9azrUSjiUNab
+   aYpZ595aPVsGmrkptd2arFru82x0/hLP9Al15EFxNnzHdbMUlwOsANFl8
+   6X/9eLWd/CWXT9BakzvjKqKGBFHAKySdyxJX6iNm1DcZDD0Q5HxPjNwgb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357604736"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="357604736"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 11:41:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746533465"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="746533465"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Sep 2023 11:41:32 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qflqk-0006bQ-15;
+        Mon, 11 Sep 2023 18:41:30 +0000
+Date:   Tue, 12 Sep 2023 02:40:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Gow <davidgow@google.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Benjamin Berg <benjamin.berg@intel.com>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: lib/kunit/test.c:764:38: warning: cast from 'void (*)(const void *)'
+ to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible
+ function type
+Message-ID: <202309120232.7wrRuydH-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1693440240.git.kjlx@templeofstupid.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this refactoring seems cumbersome, it's because the goal is to move
-the lookup parts of fuse_dentry_revalidate into a common function.  This
-function will be used in a subsequent commit.  In the meantime, the new
-function fuse_dentry_revalidate_lookup is responsible for just the
-lookup and validation portions of the revalidate dance.  The
-fuse_dentry_revalidate function retains the responsibility for
-invalidating and mutating any state associated with the origial
-fuse_inode and dentry.
+Hi David,
 
-Cc: stable@vger.kernel.org
-Fixes: 1866d779d5d2 ("fuse: Allow fuse_fill_super_common() for submounts")
-Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
----
- fs/fuse/dir.c | 87 +++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 60 insertions(+), 27 deletions(-)
+FYI, the error/warning still remains.
 
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index e190d09f220d..afbdd223b0f3 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -183,6 +183,59 @@ static void fuse_lookup_init(struct fuse_conn *fc, struct fuse_args *args,
- 	args->out_args[0].value = outarg;
- }
- 
-+static int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
-+					 struct dentry *entry,
-+					 struct inode *inode,
-+					 struct fuse_entry_out *outarg,
-+					 bool *lookedup)
-+{
-+	struct dentry *parent;
-+	struct fuse_forget_link *forget;
-+	struct fuse_inode *fi;
-+	FUSE_ARGS(args);
-+	int ret;
-+
-+	forget = fuse_alloc_forget();
-+	ret = -ENOMEM;
-+	if (!forget)
-+		goto out;
-+
-+	parent = dget_parent(entry);
-+	fuse_lookup_init(fm->fc, &args, get_node_id(d_inode(parent)),
-+			 &entry->d_name, outarg);
-+	ret = fuse_simple_request(fm, &args);
-+	dput(parent);
-+
-+	/* Zero nodeid is same as -ENOENT */
-+	if (!ret && !outarg->nodeid)
-+		ret = -ENOENT;
-+	if (!ret) {
-+		fi = get_fuse_inode(inode);
-+		if (outarg->nodeid != get_node_id(inode) ||
-+		    (bool) IS_AUTOMOUNT(inode) != (bool) (outarg->attr.flags & FUSE_ATTR_SUBMOUNT)) {
-+			fuse_queue_forget(fm->fc, forget,
-+					  outarg->nodeid, 1);
-+			goto invalid;
-+		}
-+		*lookedup = true;
-+	}
-+	kfree(forget);
-+	if (ret == -ENOMEM || ret == -EINTR)
-+		goto out;
-+	if (ret || fuse_invalid_attr(&outarg->attr) ||
-+	    fuse_stale_inode(inode, outarg->generation, &outarg->attr)) {
-+		goto invalid;
-+	}
-+
-+	ret = 1;
-+out:
-+	return ret;
-+
-+invalid:
-+	ret = 0;
-+	goto out;
-+}
-+
- /*
-  * Check whether the dentry is still valid
-  *
-@@ -206,9 +259,8 @@ static int fuse_dentry_revalidate(struct dentry *entry, unsigned int flags)
- 	else if (time_before64(fuse_dentry_time(entry), get_jiffies_64()) ||
- 		 (flags & (LOOKUP_EXCL | LOOKUP_REVAL | LOOKUP_RENAME_TARGET))) {
- 		struct fuse_entry_out outarg;
--		FUSE_ARGS(args);
--		struct fuse_forget_link *forget;
- 		u64 attr_version;
-+		bool lookedup = false;
- 
- 		/* For negative dentries, always do a fresh lookup */
- 		if (!inode)
-@@ -220,38 +272,19 @@ static int fuse_dentry_revalidate(struct dentry *entry, unsigned int flags)
- 
- 		fm = get_fuse_mount(inode);
- 
--		forget = fuse_alloc_forget();
--		ret = -ENOMEM;
--		if (!forget)
--			goto out;
--
- 		attr_version = fuse_get_attr_version(fm->fc);
- 
--		parent = dget_parent(entry);
--		fuse_lookup_init(fm->fc, &args, get_node_id(d_inode(parent)),
--				 &entry->d_name, &outarg);
--		ret = fuse_simple_request(fm, &args);
--		dput(parent);
--		/* Zero nodeid is same as -ENOENT */
--		if (!ret && !outarg.nodeid)
--			ret = -ENOENT;
--		if (!ret) {
-+		ret = fuse_dentry_revalidate_lookup(fm, entry, inode, &outarg,
-+						    &lookedup);
-+		if (ret == -ENOMEM || ret == -EINTR)
-+			goto out;
-+		if (lookedup) {
- 			fi = get_fuse_inode(inode);
--			if (outarg.nodeid != get_node_id(inode) ||
--			    (bool) IS_AUTOMOUNT(inode) != (bool) (outarg.attr.flags & FUSE_ATTR_SUBMOUNT)) {
--				fuse_queue_forget(fm->fc, forget,
--						  outarg.nodeid, 1);
--				goto invalid;
--			}
- 			spin_lock(&fi->lock);
- 			fi->nlookup++;
- 			spin_unlock(&fi->lock);
- 		}
--		kfree(forget);
--		if (ret == -ENOMEM || ret == -EINTR)
--			goto out;
--		if (ret || fuse_invalid_attr(&outarg.attr) ||
--		    fuse_stale_inode(inode, outarg.generation, &outarg.attr))
-+		if (ret <= 0)
- 			goto invalid;
- 
- 		forget_all_cached_acls(inode);
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+commit: 57e3cded99e9c840bc5310878d0a7f4e7768a296 kunit: kmalloc_array: Use kunit_add_action()
+date:   4 months ago
+config: x86_64-randconfig-013-20230909 (https://download.01.org/0day-ci/archive/20230912/202309120232.7wrRuydH-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120232.7wrRuydH-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120232.7wrRuydH-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> lib/kunit/test.c:764:38: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+           if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
+                                               ^~~~~~~~~~~~~~~~~~~~~~~
+   lib/kunit/test.c:776:29: warning: cast from 'void (*)(const void *)' to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+           kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
+                                      ^~~~~~~~~~~~~~~~~~~~~~~
+   2 warnings generated.
+
+
+vim +764 lib/kunit/test.c
+
+   754	
+   755	void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
+   756	{
+   757		void *data;
+   758	
+   759		data = kmalloc_array(n, size, gfp);
+   760	
+   761		if (!data)
+   762			return NULL;
+   763	
+ > 764		if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
+   765			return NULL;
+   766	
+   767		return data;
+   768	}
+   769	EXPORT_SYMBOL_GPL(kunit_kmalloc_array);
+   770	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
