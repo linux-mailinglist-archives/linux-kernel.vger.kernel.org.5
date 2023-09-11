@@ -2,230 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A575979B7FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BD479BD8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349101AbjIKVcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        id S1349862AbjIKVfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236421AbjIKKev (ORCPT
+        with ESMTP id S236422AbjIKKfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 06:34:51 -0400
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8FE120;
-        Mon, 11 Sep 2023 03:34:47 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-9a64619d8fbso538062766b.0;
-        Mon, 11 Sep 2023 03:34:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694428485; x=1695033285;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f1vGDg0uCtdiqjKqDiwFtuGhRJ18xP0o/QuRB7i2CeI=;
-        b=RRs/t1JazOZS4/jgQq2jQjDx4LDbMPqL1zI0BTFaJrcDkRUzIWjG1x6ZdZOEogKVRd
-         jz/pAJuHMynH8MaGc2HKOUf8yP4oGvsSWiqqtmkSHp2zPDYGqqu0cHCwCMtOsHiB/Wyk
-         tTmMNavKDvlvs2QuFUBOfz0Bq9oMmErIXpNZpLM/DP0Dr9EPG8T8JTPU1RRkqcyT6r/n
-         jHk+gaIsQQKUxr5HdIw3a471GbByqqPdwkFBpof0ni0qQ+XsqxEbypx24OalDWySdHuP
-         K3looho0TZRJalPHYkdOgL23cnRwaUlAO7x4bwdya2jsXY6poa7+MfaUQHgFA1o+reau
-         3u9w==
-X-Gm-Message-State: AOJu0YxS8OLJQusa3UXHwbDSByLHE7l6FHYcbQ78Hh3SZXDdL/tJy4HV
-        A2D6Cqg8tok1ejrPnbCLzH4=
-X-Google-Smtp-Source: AGHT+IHmWj5YVmmZsKaZvOCXIKXs0u+o/kNMeqe3Amwqnpk8GDcWPj4dCCdlfGnRy9cLjYIk7DkVTg==
-X-Received: by 2002:a17:907:b18:b0:99c:e38d:e484 with SMTP id h24-20020a1709070b1800b0099ce38de484mr6984550ejl.6.1694428485510;
-        Mon, 11 Sep 2023 03:34:45 -0700 (PDT)
-Received: from localhost (fwdproxy-cln-013.fbsv.net. [2a03:2880:31ff:d::face:b00c])
-        by smtp.gmail.com with ESMTPSA id v14-20020a17090690ce00b0099c53c44083sm5131989ejw.79.2023.09.11.03.34.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 03:34:45 -0700 (PDT)
-From:   Breno Leitao <leitao@debian.org>
-To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
-        martin.lau@linux.dev, krisman@suse.de,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org,
-        pabeni@redhat.com, Wang Yufen <wangyufen@huawei.com>,
-        =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>,
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH v5 8/8] selftests/bpf/sockopt: Add io_uring support
-Date:   Mon, 11 Sep 2023 03:34:07 -0700
-Message-Id: <20230911103407.1393149-9-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911103407.1393149-1-leitao@debian.org>
-References: <20230911103407.1393149-1-leitao@debian.org>
+        Mon, 11 Sep 2023 06:35:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB30E5F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 03:35:31 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2525E66072F9;
+        Mon, 11 Sep 2023 11:35:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694428529;
+        bh=6r3vx57qtWVMn0QKt1NqNPP3mFc3ALPRcicl0VS/gvI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h31UFadycnV6ySm4bv5Hvh70nlQgnoHlrJP4f8/JQDi/B4DN7yF7WWkzYc1ajvA4G
+         jXU/AFJBx4KYha6LIy9AXN9i7RbMHYfLsEJceRymKCePFdOXvkhFa027hn0RY+9qR7
+         +WO5ghNiH+s2FVgTzfhHnc7WFu7J4rakRN8I70URy5Q3x0trm+r/QfTSXjT2/EpwXd
+         Oh+VXfVH39bzdYPP9XRylweA++CLGfZW5DGtmIaivHMJQsb97UiOTe87UXVUstKCfl
+         Glm/jAiCd+kzmvdAeKobGRLdkeI+D1C6oooa1CPI5uDrG7TmZj55DEn++fadHkoNsv
+         SkwcutlaCSCpg==
+Date:   Mon, 11 Sep 2023 12:35:26 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <20230911123526.6c67feb0@collabora.com>
+In-Reply-To: <20230909153125.30032-7-dakr@redhat.com>
+References: <20230909153125.30032-1-dakr@redhat.com>
+        <20230909153125.30032-7-dakr@redhat.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand the BPF sockopt test to use also check for io_uring
-{g,s}etsockopt commands operations.
+Hello Danilo,
 
-Create infrastructure to run io_uring tests using the mini_liburing
-helpers, so, the {g,s}etsockopt operation could either be called from
-system calls, or, via io_uring.
+On Sat,  9 Sep 2023 17:31:13 +0200
+Danilo Krummrich <dakr@redhat.com> wrote:
 
-Add a 'use_io_uring' parameter to run_test(), to specify if the test
-should be run using io_uring if the parameter is set, or via the regular
-system calls if false.
 
-Call *all* tests twice, using the regular io_uring path, and the new
-io_uring path.
+> @@ -632,6 +661,131 @@
+>   *	}
+>   */
+>  
+> +/**
+> + * get_next_vm_bo_from_list() - get the next vm_bo element
+> + * @__gpuvm: The GPU VM
+> + * @__list_name: The name of the list we're iterating on
+> + * @__local_list: A pointer to the local list used to store already iterated items
+> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
+> + *
+> + * This helper is here to provide lockless list iteration. Lockless as in, the
+> + * iterator releases the lock immediately after picking the first element from
+> + * the list, so list insertion deletion can happen concurrently.
+> + *
+> + * Elements popped from the original list are kept in a local list, so removal
+> + * and is_empty checks can still happen while we're iterating the list.
+> + */
+> +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, __prev_vm_bo)	\
+> +	({										\
+> +		struct drm_gpuvm_bo *__vm_bo;						\
+> +											\
+> +		drm_gpuvm_bo_put(__prev_vm_bo);						\
+> +											\
+> +		spin_lock(&(__gpuvm)->__list_name.lock);				\
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- .../selftests/bpf/prog_tests/sockopt.c        | 95 +++++++++++++++++--
- 1 file changed, 89 insertions(+), 6 deletions(-)
+I'm tempted to add a drm_gpuvm::<list_name>::local_list field, so we
+can catch concurrent iterations with something like:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-index 9e6a5e3ed4de..40fb4c315ad9 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include <io_uring/mini_liburing.h>
- #include "cgroup_helpers.h"
- 
- static char bpf_log_buf[4096];
-@@ -940,7 +941,85 @@ static int load_prog(const struct bpf_insn *insns,
- 	return fd;
- }
- 
--static int run_test(int cgroup_fd, struct sockopt_test *test)
-+/* Core function that handles io_uring ring initialization,
-+ * sending SQE with sockopt command and waiting for the CQE.
-+ */
-+static int uring_sockopt(int op, int fd, int level, int optname,
-+			 const void *optval, socklen_t *optlen)
-+{
-+	struct io_uring_cqe *cqe;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring ring;
-+	int err;
-+
-+	err = io_uring_queue_init(1, &ring, 0);
-+	if (!ASSERT_OK(err, "Initialize io_uring ring"))
-+		return err;
-+
-+	sqe = io_uring_get_sqe(&ring);
-+	if (!ASSERT_NEQ(sqe, NULL, "Get an SQE")) {
-+		err = -1;
-+		goto fail;
-+	}
-+
-+	if (op == SOCKET_URING_OP_GETSOCKOPT)
-+		io_uring_prep_cmd_get(sqe, op, fd, level, optname, optval,
-+				      optlen);
-+	else
-+		io_uring_prep_cmd(sqe, op, fd, level, optname, optval,
-+				  *optlen);
-+
-+	err = io_uring_submit(&ring);
-+	if (!ASSERT_EQ(err, 1, "Submit SQE"))
-+		goto fail;
-+
-+	err = io_uring_wait_cqe(&ring, &cqe);
-+	if (!ASSERT_OK(err, "Wait for CQE"))
-+		goto fail;
-+
-+	err = cqe->res;
-+
-+fail:
-+	io_uring_queue_exit(&ring);
-+
-+	return err;
-+}
-+
-+static int uring_setsockopt(int fd, int level, int optname, const void *optval,
-+			    socklen_t *optlen)
-+{
-+	return uring_sockopt(SOCKET_URING_OP_SETSOCKOPT, fd, level, optname,
-+			     optval, optlen);
-+}
-+
-+static int uring_getsockopt(int fd, int level, int optname, void *optval,
-+			    socklen_t *optlen)
-+{
-+	return uring_sockopt(SOCKET_URING_OP_GETSOCKOPT, fd, level, optname,
-+			     optval, optlen);
-+}
-+
-+/* Execute the setsocktopt operation */
-+static int call_setsockopt(bool use_io_uring, int fd, int level, int optname,
-+			   const void *optval, socklen_t optlen)
-+{
-+	if (use_io_uring)
-+		return uring_setsockopt(fd, level, optname, optval, &optlen);
-+
-+	return setsockopt(fd, level, optname, optval, optlen);
-+}
-+
-+/* Execute the getsocktopt operation */
-+static int call_getsockopt(bool use_io_uring, int fd, int level, int optname,
-+			   void *optval, socklen_t *optlen)
-+{
-+	if (use_io_uring)
-+		return uring_getsockopt(fd, level, optname, optval, optlen);
-+
-+	return getsockopt(fd, level, optname, optval, optlen);
-+}
-+
-+static int run_test(int cgroup_fd, struct sockopt_test *test, bool use_io_uring)
- {
- 	int sock_fd, err, prog_fd;
- 	void *optval = NULL;
-@@ -980,8 +1059,9 @@ static int run_test(int cgroup_fd, struct sockopt_test *test)
- 			test->set_optlen = num_pages * sysconf(_SC_PAGESIZE) + remainder;
- 		}
- 
--		err = setsockopt(sock_fd, test->set_level, test->set_optname,
--				 test->set_optval, test->set_optlen);
-+		err = call_setsockopt(use_io_uring, sock_fd, test->set_level,
-+				      test->set_optname, test->set_optval,
-+				      test->set_optlen);
- 		if (err) {
- 			if (errno == EPERM && test->error == EPERM_SETSOCKOPT)
- 				goto close_sock_fd;
-@@ -1008,8 +1088,8 @@ static int run_test(int cgroup_fd, struct sockopt_test *test)
- 		socklen_t expected_get_optlen = test->get_optlen_ret ?:
- 			test->get_optlen;
- 
--		err = getsockopt(sock_fd, test->get_level, test->get_optname,
--				 optval, &optlen);
-+		err = call_getsockopt(use_io_uring, sock_fd, test->get_level,
-+				      test->get_optname, optval, &optlen);
- 		if (err) {
- 			if (errno == EOPNOTSUPP && test->error == EOPNOTSUPP_GETSOCKOPT)
- 				goto free_optval;
-@@ -1063,7 +1143,10 @@ void test_sockopt(void)
- 		if (!test__start_subtest(tests[i].descr))
- 			continue;
- 
--		ASSERT_OK(run_test(cgroup_fd, &tests[i]), tests[i].descr);
-+		ASSERT_OK(run_test(cgroup_fd, &tests[i], false),
-+			  tests[i].descr);
-+		ASSERT_OK(run_test(cgroup_fd, &tests[i], true),
-+			  tests[i].descr);
- 	}
- 
- 	close(cgroup_fd);
--- 
-2.34.1
+		if (!(__gpuvm)->__list_name.local_list)
+			(__gpuvm)->__list_name.local_list = __local_list;
+		else
+			WARN_ON((__gpuvm)->__list_name.local_list != __local_list);
 
+with (__gpuvm)->__list_name.local_list being restored to NULL
+in restore_vm_bo_list().
+
+> +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
+> +			__vm_bo = list_first_entry(&(__gpuvm)->__list_name.list,	\
+> +						   struct drm_gpuvm_bo,			\
+> +						   list.entry.__list_name);		\
+> +			if (drm_gpuvm_bo_get_unless_zero(__vm_bo)) {			\
+> +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
+> +					       __local_list);				\
+> +				break;							\
+> +			} else {							\
+> +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
+> +				__vm_bo = NULL;						\
+> +			}								\
+> +		}									\
+> +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
+> +											\
+> +		__vm_bo;								\
+> +	})
+> +
+> +/**
+> + * for_each_vm_bo_in_list() - internal vm_bo list iterator
+> + *
+> + * This helper is here to provide lockless list iteration. Lockless as in, the
+> + * iterator releases the lock immediately after picking the first element from the
+> + * list, so list insertion and deletion can happen concurrently.
+> + *
+> + * Typical use:
+> + *
+> + *	struct drm_gpuvm_bo *vm_bo;
+> + *	LIST_HEAD(my_local_list);
+> + *
+> + *	ret = 0;
+> + *	drm_gpuvm_for_each_vm_bo(gpuvm, <list_name>, &my_local_list, vm_bo) {
+> + *		ret = do_something_with_vm_bo(..., vm_bo);
+> + *		if (ret)
+> + *			break;
+> + *	}
+> + *	drm_gpuvm_bo_put(vm_bo);
+> + *	drm_gpuvm_restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
+
+The names in this example and the helper names don't match.
+
+> + *
+> + *
+> + * Only used for internal list iterations, not meant to be exposed to the outside
+> + * world.
+> + */
+> +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, __vm_bo)	\
+> +	for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
+> +						__local_list, NULL);		\
+> +	     __vm_bo;								\
+> +	     __vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
+> +						__local_list, __vm_bo))		\
+> +
+> +/**
+> + * restore_vm_bo_list() - move vm_bo elements back to their original list
+> + * @__gpuvm: The GPU VM
+> + * @__list_name: The name of the list we're iterating on
+> + * @__local_list: A pointer to the local list used to store already iterated items
+> + *
+> + * When we're done iterating a vm_bo list, we should call restore_vm_bo_list()
+> + * to restore the original state and let new iterations take place.
+> + */
+> +#define restore_vm_bo_list(__gpuvm, __list_name, __local_list)				\
+> +	do {										\
+> +		/* Merge back the two lists, moving local list elements to the		\
+> +		 * head to preserve previous ordering, in case it matters.		\
+> +		 */									\
+> +		spin_lock(&(__gpuvm)->__list_name.lock);				\
+> +		list_splice(__local_list, &(__gpuvm)->__list_name.list);		\
+> +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
+> +	} while (0)
+> +/**
+> + * drm_gpuvm_bo_list_add() - insert a vm_bo into the given list
+> + * @__vm_bo: the &drm_gpuvm_bo
+> + * @__list_name: the name of the list to insert into
+> + *
+> + * Inserts the given @__vm_bo into the list specified by @__list_name and
+> + * increases the vm_bo's reference count.
+> + */
+> +#define drm_gpuvm_bo_list_add(__vm_bo, __list_name)				\
+> +	do {									\
+> +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
+> +		if (list_empty(&(__vm_bo)->list.entry.__list_name))		\
+> +			list_add_tail(&(__vm_bo)->list.entry.__list_name,	\
+> +				      &(__vm_bo)->vm->__list_name.list);	\
+> +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
+> +	} while (0)
+> +
+> +/**
+> + * drm_gpuvm_bo_list_del() - remove a vm_bo from the given list
+> + * @__vm_bo: the &drm_gpuvm_bo
+> + * @__list_name: the name of the list to insert into
+> + *
+> + * Removes the given @__vm_bo from the list specified by @__list_name and
+> + * decreases the vm_bo's reference count.
+> + */
+> +#define drm_gpuvm_bo_list_del(__vm_bo, __list_name)				\
+> +	do {									\
+> +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
+> +		if (!list_empty(&(__vm_bo)->list.entry.__list_name))		\
+> +			list_del_init(&(__vm_bo)->list.entry.__list_name);	\
+> +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
+> +	} while (0)
+> +
+> +static int __must_check
+> +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo);
+
+I see no obvious reason to have a forward declaration for this helper,
+if we decide to keep it, let's at least move the declaration here.
+
+
+> @@ -807,6 +1262,14 @@ drm_gpuvm_bo_destroy(struct kref *kref)
+>  
+>  	drm_gem_gpuva_assert_lock_held(vm_bo->obj);
+>  
+> +	spin_lock(&gpuvm->extobj.lock);
+> +	list_del(&vm_bo->list.entry.extobj);
+> +	spin_unlock(&gpuvm->extobj.lock);
+> +
+> +	spin_lock(&gpuvm->evict.lock);
+> +	list_del(&vm_bo->list.entry.evict);
+> +	spin_unlock(&gpuvm->evict.lock);
+> +
+>  	list_del(&vm_bo->list.entry.gem);
+>  
+>  	drm_gem_object_put(obj);
+> @@ -822,6 +1285,11 @@ drm_gpuvm_bo_destroy(struct kref *kref)
+>   * @vm_bo: the &drm_gpuvm_bo to release the reference of
+>   *
+>   * This releases a reference to @vm_bo.
+> + *
+> + * If the reference count drops to zero, the &gpuvm_bo is destroyed, which
+> + * includes removing it from the GEMs gpuva list. Hence, if a call to this
+> + * function can potentially let the reference count to zero the caller must
+> + * hold the dma-resv or driver specific GEM gpuva lock.
+
+Looks like this should have been part of the previous patch. I hate
+the fact we have to worry about GEM gpuva lock being held when we call
+_put() only if the ref drops to zero though. I think I'd feel more
+comfortable if the function was named differently. Maybe _return() or
+_release() to match the _obtain() function, where the object is inserted
+in the GEM vm_bo list. I would also do the lock_is_held() check
+unconditionally, move the list removal in this function with a del_init(),
+and have a WARN_ON(!list_empty) in vm_bo_destroy().
+
+>   */
+>  void
+>  drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
+> @@ -831,6 +1299,12 @@ drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gpuvm_bo_put);
+>  
+> +static int __must_check
+> +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo)
+> +{
+> +	return kref_get_unless_zero(&vm_bo->kref);
+
+Not convinced this helper is needed. It's only used once, and I
+don't think we'll need it elsewhere.
+
+> +}
+> +
+>  static struct drm_gpuvm_bo *
+>  __drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
+>  		    struct drm_gem_object *obj)
+
+
+Regards,
+
+Boris
