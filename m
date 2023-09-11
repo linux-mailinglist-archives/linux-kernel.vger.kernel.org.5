@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59D679B634
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5069F79C110
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379304AbjIKWmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S229928AbjILARa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 20:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351876AbjIKVoJ (ORCPT
+        with ESMTP id S230373AbjILARX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 17:44:09 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B8A32BFE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:31:52 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76f066e4fffso303482885a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 14:31:52 -0700 (PDT)
+        Mon, 11 Sep 2023 20:17:23 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2CF14AE30
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:09:24 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so6545935a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:09:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694467836; x=1695072636; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uk1XDmqFwXUmTLSDlfzOoXD9AdaNAh9AxlQYo7gmX+U=;
-        b=BqqIjrnM54Y6S6S1xVZljIPvpRm9I4BBiL4ta09OUgHmkeMIEdO7U6smT1gQS44Krq
-         e8oPrU7Og1dWQRk7D3JSl/drRH1rnHi/dFLNxij2d34Ha7R8YXMRRbulTCobQ4lh/Wua
-         9WXgrcPtXNNxH0y+yedxRiPey3Vix2W2U6IqB0sGOj2a1KTdh1uEYfpv0TA4Z8g2kPsc
-         n1ldjOyI5bPxSkCHWssxoOvRcsvSF0xKwi3njg4tw8mBQMy0X69DSUeGqNoECk24cxP0
-         +EElGbFs+wqRzsubgcu+v2SlgfvOFzYGsBgGBQgfaMszJZ0KXHR9ftT8dZqX9qz2smdL
-         7NCQ==
+        d=linux-foundation.org; s=google; t=1694477260; x=1695082060; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pIPOzP6LAN+yL7kKEyuXNnJg8Y+1WcCPbZvSjEDcprA=;
+        b=Ab6HfbdX/AnsW2bVDCwJZ3DMiTudk+4oLnxqNGB6sCDawVY+lXWx83F4G4V+r0akDT
+         ok/FOpyFOUVL0mH9c2kQPA4Fr3KePEzEHqQBqg2KFMjw6StXjDKIIlois5Iahd0xvEMT
+         7k/7qvziE2KNWMXoaXC/+BrNyFSzQuspBPWp8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694467836; x=1695072636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uk1XDmqFwXUmTLSDlfzOoXD9AdaNAh9AxlQYo7gmX+U=;
-        b=ROhQ8kB8i/xxN4Q2jytPTaDAr1bjbdaHlLSCsiBV4i1NfDfu1fchI41pyQVMv6KpwT
-         E4/VDkGaZtEmg8cSg8urS4AZ9mRQL62JuuNuadWP6lKLkDOGJogC4L/y8pObY8yggt/g
-         jEVTNlmqm8KWfxYaKmlwoVs7yxmNwDI4t/NmRvtSVyQc/YvmJ++D7pUEmU2DItELGFby
-         +PYa5Rd/BInnXX6kO4+fZFzpJpn0/VHHosR9vo+MjxeE0LtUBopdIPPsuVAu4XAoaMi7
-         46CoIZcEiBmGNvQTjjdc6Ais6J3jnJ9QdbyE1TP3MZctZ94QVF6o5K9W1N6ZyPEC/mzm
-         5n+g==
-X-Gm-Message-State: AOJu0YyH+37osMOm8pnBCZKTssnzr7Gzz0oZOVwKQkKXyB+mlH4YCORr
-        Hq257QfGx8+bL/HbvuEXZtv5finvOSW7+P9BWVdJANfivD9EXApygKzCfw==
-X-Google-Smtp-Source: AGHT+IHyaS9QKpap21B51umX64WFD1kwW1xpsmjerzMmTR5YKpb3rU4yHxt08JSEW/yD0p6ZFSUJGrDbdT7FWwaJzkc=
-X-Received: by 2002:a0c:efce:0:b0:63d:6138:1027 with SMTP id
- a14-20020a0cefce000000b0063d61381027mr10551959qvt.42.1694465372796; Mon, 11
- Sep 2023 13:49:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694477260; x=1695082060;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pIPOzP6LAN+yL7kKEyuXNnJg8Y+1WcCPbZvSjEDcprA=;
+        b=s06F2+UPHzcRhGMZB7pfDU63216rKwwRWEn4P5R7nVQ9p6p2DWbyp3bFKMImdMITfX
+         ZwbCWt+HzE/tGqLjJZPK8q846pee4vtcvabU5wYR1Y5oV/wXc4vUPoasVeQUyid47JS7
+         xLLrUIfRlDOWWhRLL9FvoxLFAPUCr7wCCPMy7+Xxidbux6VBYdErUJ4aZphrNd+wSXUo
+         om1dsXYkMdnUBeV2r1/Afvfeb4Detw/JupCK7B/emuiDfm6UrZhpS3KivFmiT5w4fePW
+         V/NGJRKJDwf6e3xVrvHFGKg3etIC2yePlagNgESYq4fgWqpKtpPSthq4yqcwfTGWsbia
+         q0kw==
+X-Gm-Message-State: AOJu0Ywo3gVIJRr3j4kKQRMN5Bu4+OuKRWO6AqMrYqLCZJzsekRqoW5n
+        HWa20FTuHqutxsGOfn/lgKeTc2GBq1G6ND/PG+7d6aFm
+X-Google-Smtp-Source: AGHT+IFzuVvhlN3MsL7AzkJ0YMPpsLmQc5mtScgpLnQWhvXdtSx2JvctpS/bj9PwhPVHdaIjSB3BHQ==
+X-Received: by 2002:a2e:9254:0:b0:2b6:c886:681 with SMTP id v20-20020a2e9254000000b002b6c8860681mr8720608ljg.6.1694465918381;
+        Mon, 11 Sep 2023 13:58:38 -0700 (PDT)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id o15-20020a2e90cf000000b002bce0e9385asm1670078ljg.9.2023.09.11.13.58.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 13:58:38 -0700 (PDT)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5008d16cc36so8318662e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 13:58:38 -0700 (PDT)
+X-Received: by 2002:a2e:b2d4:0:b0:2b6:fa3f:9230 with SMTP id
+ 20-20020a2eb2d4000000b002b6fa3f9230mr8463202ljz.46.1694465470349; Mon, 11 Sep
+ 2023 13:51:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230905-missingvardecl2-init-main-c-v2-1-08498a9cf740@google.com>
- <CAKwvOd=uqAf3bX=5FTQ2JdvLmN7m4rS55cXuT01xbRqBN21NaQ@mail.gmail.com>
-In-Reply-To: <CAKwvOd=uqAf3bX=5FTQ2JdvLmN7m4rS55cXuT01xbRqBN21NaQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 Sep 2023 13:49:22 -0700
-Message-ID: <CAKwvOd=er2cLyzz2B-dAeR1mFi8YkN5ouuK4-qxhsCmEdJyqBA@mail.gmail.com>
-Subject: Re: [PATCH v2] init: fix -Wmissing-variable-declarations clang warning
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+ <20230830184958.2333078-8-ankur.a.arora@oracle.com> <20230908070258.GA19320@noisy.programming.kicks-ass.net>
+ <87zg1v3xxh.fsf@oracle.com> <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
+ <87edj64rj1.fsf@oracle.com> <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <20230911124856.453fba22@gandalf.local.home>
+In-Reply-To: <20230911124856.453fba22@gandalf.local.home>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 11 Sep 2023 13:50:53 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
+Message-ID: <CAHk-=whpYjm_AizQij6XEfTd7xvGjrVCx5gzHcHm=2Xijt+Kyg@mail.gmail.com>
+Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Bill Wendling <morbo@google.com>,
-        Kees Cook <keescook@chromium.org>
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, tglx@linutronix.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,139 +85,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 1:46=E2=80=AFPM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Mon, 11 Sept 2023 at 09:48, Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Tue, Sep 5, 2023 at 3:43=E2=80=AFPM Justin Stitt <justinstitt@google.c=
-om> wrote:
-> >
-> > When building x86/defconfig with Clang-18 I encounter the following war=
-ning:
-> > | init/main.c:189:13: warning: no previous extern declaration for non-s=
-tatic variable 'envp_init' [-Wmissing-variable-declarations]
-> > |   189 | const char *envp_init[MAX_INIT_ENVS+2] =3D { "HOME=3D/", "TER=
-M=3Dlinux", NULL, };
-> > | init/main.c:189:7: note: declare 'static' if the variable is not inte=
-nded to be used outside of this translation unit
-> > |   189 | const char *envp_init[MAX_INIT_ENVS+2] =3D { "HOME=3D/", "TER=
-M=3Dlinux", NULL, };
-> >
-> > Make `envp_init` static and provide `handle_initrd` its own copy.
-> >
-> > This silences the warning and makes the code more readable as you no
-> > longer have to track down extern definitions inside of `handle_initrd`.
-> > It is now more self-contained.
->
-> But this is now creating duplicate string arrays in the kernel image.
->
-> Why can't this be:
-> 1. declared in include/linux/initrd.h
-> 2. defined in init/main.c
-> 3. referenced in init/do_mounts.c
->
-> The extern declaration in init/do_mounts_initrd.c isn't even correct!
-> It's missing a `const`! That's the kind of monkey business this
-> warning is trying to help avoid. C has headers for this reason, let's
-> use them.
->
-> Perhaps users of call_usermodehelper_setup need an update, or
-> envp_init actually should not be const.
+> I wonder if we should make it a rule to not allow page faults when
+> RESCHED_ALLOW is set?
 
-I prefer v1 as the basis; though as kbuild test robot noted to you,
-there are other references to envp_init that now need to be cleaned up
-in addition.
+I really think that user copies might actually be one of the prime targets.
 
-When you say you build tested v1, I assume you only built init/main.o
-and not vmlinux. Make sure to build test ALL files which refer to
-variables you've modified.
+Right now we special-case big user copes - see for example
+copy_chunked_from_user().
 
-call_usermodehelper_setup and its callers either need to be cleaned
-up, or we should consider dropping const.
+But that's an example of exactly the problem this code has - we
+literally make more complex - and objectively *WORSE* code just to
+deal with "I want this to be interruptible".
 
->
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1920
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> > The kernel test robot didn't like v1 of this patch and I prefer Kees'
-> > approach to simplifying this code anyways so I'm sending this v2.
-> > Hopefully the CI builds clean (as I am locally using their repro).
-> >
-> > Changes in v2:
-> > - Make envp_init static and provide handle_initrd() with a copy (thanks=
- Kees)
-> > - Rebase onto mainline (2dde18cd1d8fa)
-> > - Link to v1: https://lore.kernel.org/r/20230830-missingvardecl2-init-m=
-ain-c-v1-1-59007a637259@google.com
-> > ---
-> > Note: build-tested only.
-> >
-> > It should be noted that `handle_initrd` has been marked as deprecated
-> > and perhaps the entire thing can be removed as per it's own message:
-> > | using deprecated initrd support, will be removed in 2021.
-> > ---
-> >  init/do_mounts_initrd.c | 4 ++--
-> >  init/main.c             | 2 +-
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
-> > index 425f4bcf4b77..154bd0de85a6 100644
-> > --- a/init/do_mounts_initrd.c
-> > +++ b/init/do_mounts_initrd.c
-> > @@ -87,7 +87,7 @@ static void __init handle_initrd(char *root_device_na=
-me)
-> >  {
-> >         struct subprocess_info *info;
-> >         static char *argv[] =3D { "linuxrc", NULL, };
-> > -       extern char *envp_init[];
-> > +       static char *envp[] =3D { "HOME=3D/", "TERM=3Dlinux", NULL, };
-> >         int error;
-> >
-> >         pr_warn("using deprecated initrd support, will be removed in 20=
-21.\n");
-> > @@ -100,7 +100,7 @@ static void __init handle_initrd(char *root_device_=
-name)
-> >         init_mkdir("/old", 0700);
-> >         init_chdir("/old");
-> >
-> > -       info =3D call_usermodehelper_setup("/linuxrc", argv, envp_init,
-> > +       info =3D call_usermodehelper_setup("/linuxrc", argv, envp,
-> >                                          GFP_KERNEL, init_linuxrc, NULL=
-, NULL);
-> >         if (!info)
-> >                 return;
-> > diff --git a/init/main.c b/init/main.c
-> > index ad920fac325c..9a473107bb8f 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -186,7 +186,7 @@ static int __init set_reset_devices(char *str)
-> >  __setup("reset_devices", set_reset_devices);
-> >
-> >  static const char *argv_init[MAX_INIT_ARGS+2] =3D { "init", NULL, };
-> > -const char *envp_init[MAX_INIT_ENVS+2] =3D { "HOME=3D/", "TERM=3Dlinux=
-", NULL, };
-> > +static const char *envp_init[MAX_INIT_ENVS+2] =3D { "HOME=3D/", "TERM=
-=3Dlinux", NULL, };
-> >  static const char *panic_later, *panic_param;
-> >
-> >  static bool __init obsolete_checksetup(char *line)
-> >
-> > ---
-> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > change-id: 20230830-missingvardecl2-init-main-c-93dc1013ff8a
-> >
-> > Best regards,
-> > --
-> > Justin Stitt <justinstitt@google.com>
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+So yes, we could limit RESCHED_ALLOW to not allow page faults, but big
+user copies literally are one of the worst problems.
 
+Another example of this this is just plain read/write. It's not a
+problem in practice right now, because large pages are effectively
+never used.
 
+But just imagine what happens once filemap_read() actually does big folios?
 
---=20
-Thanks,
-~Nick Desaulniers
+Do you really want this code:
+
+        copied = copy_folio_to_iter(folio, offset, bytes, iter);
+
+to forever use the artificial chunking it does now?
+
+And yes, right now it will still do things in one-page chunks in
+copy_page_to_iter(). It doesn't even have cond_resched() - it's
+currently in the caller, in filemap_read().
+
+But just think about possible futures.
+
+Now, one option really is to do what I think PeterZ kind of alluded to
+- start deprecating PREEMPT_VOLUNTARY and PREEMPT_NONE entirely.
+
+Except we've actually been *adding* to this whole mess, rather than
+removing it. So we have actively *expanded* on that preemption choice
+with PREEMPT_DYNAMIC.
+
+That's actually reasonably recent, implying that distros really want
+to still have the option.
+
+And it seems like it's actually server people who want the "no
+preemption" (and presumably avoid all the preempt count stuff entirely
+- it's not necessarily the *preemption* that is the cost, it's the
+incessant preempt count updates)
+
+                            Linus
