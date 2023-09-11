@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40A779B97B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9122479BC57
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245298AbjIKVJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 17:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38326 "EHLO
+        id S232249AbjIKUwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238030AbjIKNeo (ORCPT
+        with ESMTP id S238032AbjIKNeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 09:34:44 -0400
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80B5125;
-        Mon, 11 Sep 2023 06:34:39 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+        Mon, 11 Sep 2023 09:34:50 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E798106;
+        Mon, 11 Sep 2023 06:34:45 -0700 (PDT)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4Rknkk1MxMz9slY;
-        Mon, 11 Sep 2023 15:34:38 +0200 (CEST)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4Rknkm0ZMnz9ssn;
+        Mon, 11 Sep 2023 15:34:40 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-        s=MBO0001; t=1694439278;
+        s=MBO0001; t=1694439280;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BXAvZHy82SoCVQaKv/cbU0xLnaVu+pzPidj59xLN5A8=;
-        b=cu7s4m08t6I65Ck7rZOpE28zXVayV5lInSJ72/6vzTSz8wjACsQpffctcc75NXzi7655Yq
-        zQpVCUGLw9hB8sY1icjF1R0cGQqaHwQj+2/dRw2528KW+prXimhzVmfA7udgodWOLxfJ2m
-        mSzEAcDZK1V4+LS7wCFt+CDLoCjqQDiarfEZksvFz0fxmyz4d7CcbrflquuE2LOmjeIRzI
-        Fg3Al6gxwuBWYgoIWyp9KdFq7NY2uAmQBKMLCrMPRhaf1A2R+QJQDBFU8DOU6lmuNQefta
-        NR5kiGRq5pW3kD8VM6CDFY2WyAs9EYA9Nxwv9EjeowvpUAwYGc4dMbd2NXPo6A==
+        bh=tX5Q/p2imNV6Vfwxh+ihQ2ZUaBdn0HxqAB6O7wq75t4=;
+        b=A4rvocrwut8w3kDn9hrNosZg/hjRDt10YVYAjjnDvElcx/bLavMp1sppemaUFwSJ0n+p8U
+        k0nB1Jk8AVaZSBBl3Lr22PZ7z5XhG4ZZ61JDBptPyPcTCpKQxrM0UFmiDipFo7kMXKdWGy
+        +OAfZ3NQyUEm9NPzd9GAhi08xM3HnQJ0K56MVNvPvmJZqOwfUkP6Yyhnan0nx6osZabei9
+        CicvRQ9Ai5edtrYhe6x9HU8lNfX9DPYYqJI79ozUcrmI6vGNywf3qe07gXCOJShsyLoeFa
+        rJ7TPfBejw7Fu0b9dRrpNVj/nRARjzzYylP5TP+dXHMYCvQUUkGih51d74Rn9A==
 From:   Pankaj Raghav <kernel@pankajraghav.com>
 To:     minchan@kernel.org, senozhatsky@chromium.org
 Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk,
         p.raghav@samsung.com, linux-block@vger.kernel.org,
         kernel@pankajraghav.com, gost.dev@samsung.com
-Subject: [PATCH 2/5] zram: encapsulate writeback to the backing bdev in a function
-Date:   Mon, 11 Sep 2023 15:34:27 +0200
-Message-Id: <20230911133430.1824564-3-kernel@pankajraghav.com>
+Subject: [PATCH 3/5] zram: add alloc_block_bdev_range() and free_block_bdev_range()
+Date:   Mon, 11 Sep 2023 15:34:28 +0200
+Message-Id: <20230911133430.1824564-4-kernel@pankajraghav.com>
 In-Reply-To: <20230911133430.1824564-1-kernel@pankajraghav.com>
 References: <20230911133430.1824564-1-kernel@pankajraghav.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4Rknkk1MxMz9slY
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,168 +56,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pankaj Raghav <p.raghav@samsung.com>
 
-Encapsulate the flushing data to the backing bdev in writeback in a
-separate function writeback_flush_to_bdev(). This is in preparation for
-adding batching IO support to writeback_store().
+Add [alloc|free]_block_bdev_range() which accepts number of blocks to
+allocate or free from the block bitmap.
 
-No functional changes.
+alloc_block_bdev_range() tries to allocate a range of bitmap based in
+the input nr_of_blocks whenever possible, or else it will retry with a
+smaller value. This is done so that we don't unnecessarily return EIO
+when the underlying device is fragmented.
+
+alloc_block_bdev_range() is not an atomic operation as this function can
+be called only from writeback_store() and init_lock is anyway taken
+making sure there cannot be two processes allocating from bdev bitmap.
+
+free_block_bdev_range() is just a simple loop that calls the atomic
+free_block_bdev() function. As bdev bitmap free can be called from
+two different process simulataneously without a lock, atomicity needs
+to be maintained.
+
+This is useful when we want to send larger IOs to the backing dev.
 
 Signed-off-by: Pankaj Raghav <p.raghav@samsung.com>
 ---
- drivers/block/zram/zram_drv.c | 125 ++++++++++++++++++----------------
- 1 file changed, 68 insertions(+), 57 deletions(-)
+ drivers/block/zram/zram_drv.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
 diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index eaf9e227778e..bd93ed653b99 100644
+index bd93ed653b99..0b8f814e11dd 100644
 --- a/drivers/block/zram/zram_drv.c
 +++ b/drivers/block/zram/zram_drv.c
-@@ -635,14 +635,78 @@ static bool writeback_prep_or_skip_index(struct zram *zram, int mode,
- 	return ret;
+@@ -576,6 +576,39 @@ static void free_block_bdev(struct zram *zram, unsigned long blk_idx)
+ 	atomic64_dec(&zram->stats.bd_count);
  }
  
-+static int writeback_flush_to_bdev(struct zram *zram, unsigned long index,
-+				   struct page *page, unsigned long *blk_idx)
++static unsigned long alloc_block_bdev_range(struct zram *zram,
++					    unsigned int *nr_of_blocksp)
 +{
-+	struct bio bio;
-+	struct bio_vec bio_vec;
-+	int ret;
++	unsigned long blk_idx;
++	unsigned int nr_of_blocks = *nr_of_blocksp;
++retry:
++	/* skip 0 bit to confuse zram.handle = 0 */
++	blk_idx = 1;
++	blk_idx = bitmap_find_next_zero_area(zram->bitmap, zram->nr_pages,
++					     blk_idx, nr_of_blocks, 0);
 +
-+	bio_init(&bio, zram->bdev, &bio_vec, 1, REQ_OP_WRITE | REQ_SYNC);
-+	bio.bi_iter.bi_sector = *blk_idx * (PAGE_SIZE >> 9);
-+	__bio_add_page(&bio, page, PAGE_SIZE, 0);
++	if ((blk_idx + nr_of_blocks) > zram->nr_pages) {
++		if (nr_of_blocks == 1)
++			return 0;
 +
-+	/*
-+	 * XXX: A single page IO would be inefficient for write
-+	 * but it would be not bad as starter.
-+	 */
-+	ret = submit_bio_wait(&bio);
-+	if (ret) {
-+		zram_slot_lock(zram, index);
-+		zram_clear_flag(zram, index, ZRAM_UNDER_WB);
-+		zram_clear_flag(zram, index, ZRAM_IDLE);
-+		zram_slot_unlock(zram, index);
-+		/*
-+		 * BIO errors are not fatal, we continue and simply
-+		 * attempt to writeback the remaining objects (pages).
-+		 * At the same time we need to signal user-space that
-+		 * some writes (at least one, but also could be all of
-+		 * them) were not successful and we do so by returning
-+		 * the most recent BIO error.
-+		 */
-+		return ret;
++		nr_of_blocks = nr_of_blocks / 2;
++		goto retry;
 +	}
 +
-+	atomic64_inc(&zram->stats.bd_writes);
-+	/*
-+	 * We released zram_slot_lock so need to check if the slot was
-+	 * changed. If there is freeing for the slot, we can catch it
-+	 * easily by zram_allocated.
-+	 * A subtle case is the slot is freed/reallocated/marked as
-+	 * ZRAM_IDLE again. To close the race, idle_store doesn't
-+	 * mark ZRAM_IDLE once it found the slot was ZRAM_UNDER_WB.
-+	 * Thus, we could close the race by checking ZRAM_IDLE bit.
-+	 */
-+	zram_slot_lock(zram, index);
-+	if (!zram_allocated(zram, index) ||
-+	    !zram_test_flag(zram, index, ZRAM_IDLE)) {
-+		zram_clear_flag(zram, index, ZRAM_UNDER_WB);
-+		zram_clear_flag(zram, index, ZRAM_IDLE);
-+		goto skip;
-+	}
++	bitmap_set(zram->bitmap, blk_idx, nr_of_blocks);
++	atomic64_add(nr_of_blocks, &zram->stats.bd_count);
++	*nr_of_blocksp = nr_of_blocks;
 +
-+	zram_free_page(zram, index);
-+	zram_clear_flag(zram, index, ZRAM_UNDER_WB);
-+	zram_set_flag(zram, index, ZRAM_WB);
-+	zram_set_element(zram, index, *blk_idx);
-+	atomic64_inc(&zram->stats.pages_stored);
-+	*blk_idx = 0;
-+
-+	spin_lock(&zram->wb_limit_lock);
-+	if (zram->wb_limit_enable && zram->bd_wb_limit > 0)
-+		zram->bd_wb_limit -= 1UL << (PAGE_SHIFT - 12);
-+	spin_unlock(&zram->wb_limit_lock);
-+skip:
-+	zram_slot_unlock(zram, index);
-+	return 0;
++	return blk_idx;
 +}
 +
- static ssize_t writeback_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t len)
++static void free_block_bdev_range(struct zram *zram, unsigned long blk_idx,
++				  unsigned int nr_of_blocks)
++{
++	for (unsigned int i = 0; i < nr_of_blocks; i++)
++		free_block_bdev(zram, blk_idx + i);
++}
++
+ static void read_from_bdev_async(struct zram *zram, struct page *page,
+ 			unsigned long entry, struct bio *parent)
  {
- 	struct zram *zram = dev_to_zram(dev);
- 	unsigned long nr_pages = zram->disksize >> PAGE_SHIFT;
- 	unsigned long index = 0;
--	struct bio bio;
--	struct bio_vec bio_vec;
- 	struct page *page;
- 	ssize_t ret = len;
- 	int mode, err;
-@@ -713,63 +777,10 @@ static ssize_t writeback_store(struct device *dev,
- 			continue;
- 		}
- 
--		bio_init(&bio, zram->bdev, &bio_vec, 1,
--			 REQ_OP_WRITE | REQ_SYNC);
--		bio.bi_iter.bi_sector = blk_idx * (PAGE_SIZE >> 9);
--		__bio_add_page(&bio, page, PAGE_SIZE, 0);
-+		err = writeback_flush_to_bdev(zram, index, page, &blk_idx);
- 
--		/*
--		 * XXX: A single page IO would be inefficient for write
--		 * but it would be not bad as starter.
--		 */
--		err = submit_bio_wait(&bio);
--		if (err) {
--			zram_slot_lock(zram, index);
--			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--			zram_clear_flag(zram, index, ZRAM_IDLE);
--			zram_slot_unlock(zram, index);
--			/*
--			 * BIO errors are not fatal, we continue and simply
--			 * attempt to writeback the remaining objects (pages).
--			 * At the same time we need to signal user-space that
--			 * some writes (at least one, but also could be all of
--			 * them) were not successful and we do so by returning
--			 * the most recent BIO error.
--			 */
-+		if (err)
- 			ret = err;
--			continue;
--		}
--
--		atomic64_inc(&zram->stats.bd_writes);
--		/*
--		 * We released zram_slot_lock so need to check if the slot was
--		 * changed. If there is freeing for the slot, we can catch it
--		 * easily by zram_allocated.
--		 * A subtle case is the slot is freed/reallocated/marked as
--		 * ZRAM_IDLE again. To close the race, idle_store doesn't
--		 * mark ZRAM_IDLE once it found the slot was ZRAM_UNDER_WB.
--		 * Thus, we could close the race by checking ZRAM_IDLE bit.
--		 */
--		zram_slot_lock(zram, index);
--		if (!zram_allocated(zram, index) ||
--			  !zram_test_flag(zram, index, ZRAM_IDLE)) {
--			zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--			zram_clear_flag(zram, index, ZRAM_IDLE);
--			goto next;
--		}
--
--		zram_free_page(zram, index);
--		zram_clear_flag(zram, index, ZRAM_UNDER_WB);
--		zram_set_flag(zram, index, ZRAM_WB);
--		zram_set_element(zram, index, blk_idx);
--		blk_idx = 0;
--		atomic64_inc(&zram->stats.pages_stored);
--		spin_lock(&zram->wb_limit_lock);
--		if (zram->wb_limit_enable && zram->bd_wb_limit > 0)
--			zram->bd_wb_limit -=  1UL << (PAGE_SHIFT - 12);
--		spin_unlock(&zram->wb_limit_lock);
--next:
--		zram_slot_unlock(zram, index);
- 	}
- 
- 	if (blk_idx)
 -- 
 2.40.1
 
