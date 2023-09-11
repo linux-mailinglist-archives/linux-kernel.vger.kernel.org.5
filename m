@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47079B407
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA1A79AEB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357590AbjIKWFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
+        id S1353796AbjIKVuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240183AbjIKOik (ORCPT
+        with ESMTP id S240244AbjIKOju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 10:38:40 -0400
+        Mon, 11 Sep 2023 10:39:50 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B673F2;
-        Mon, 11 Sep 2023 07:38:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04120C433C8;
-        Mon, 11 Sep 2023 14:38:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585D1CF0;
+        Mon, 11 Sep 2023 07:39:45 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51429C433CA;
+        Mon, 11 Sep 2023 14:39:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694443113;
-        bh=fx3d3McoLqJY93gfGI0mWuifrtOol2dbdQhxb2Lf8lo=;
-        h=Subject:From:To:Cc:Date:From;
-        b=AT458EAoGGf6HrVJ/qBUVIWquz3tCDAoAyBd9pI9m6wfU+2cgeQtsUujWT44AEQT4
-         7af9+dvalEsFL6u4XA5tlL4B5IGdC1nevvhq0aHvN/Gag48YVWkh93XqZAaSJtDDw4
-         NAhwAvGs26nQwsk35jZbDQ/zVCoWBpHTKe8EWlE0iNE248DBTVqAqKpppI7fH5qI/H
-         mwZwZFTH76lPRm7I0fInGQ1oPC2is2rYCVNvBnB21inhGYoMFsqmbX7FxezSeqJJ2Y
-         CdhTzDIkLik9qEyNyM1YCdm+HDa7sDiB8ff7uKseNMbdWsJDCpAPeVwvOEYK9rPyGq
-         xy0uzz6+sdrQQ==
-Subject: [PATCH v1 00/17] RPC service thread improvements
+        s=k20201202; t=1694443185;
+        bh=WMdHXTlK/F0alepEMWR0Tsn0KrNf5+HlS3u9OgTC6Ek=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hAz0KziwdfpN4FcKQKXqH6M4J//hyNrlyd84XO9W6PhD2igr2qtJrbIBjTiB15MVV
+         i6T+QMQZl5+4IljzbFHvWJPjTTK6kUrui9qkZP0z3n8i/ebIm/TGr+3tPlur1VIdh5
+         2nUKG+FpEvbZQVCQIVO3mOxEKoywJY2wP+NtKR/SF0CMtba8T73y9w+zav1DhnIIfn
+         Rgu4Mv40CCXGgz+ZQsrTbYQGvSUAqma1FYAjq+aZWGPyXNGl8oDIfMzE9wNsHB+kwc
+         2kRivVCxk2drPt6KDtXlpqtKelFPmYiBZBOms8Y8K7YEJnJon2O0RwE1CFBcSH5YKe
+         4uaJbUuQtNKsA==
+Subject: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
 From:   Chuck Lever <cel@kernel.org>
 To:     linux-nfs@vger.kernel.org
-Cc:     Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.de>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+Cc:     NeilBrown <neilb@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Date:   Mon, 11 Sep 2023 10:38:32 -0400
-Message-ID: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
+        Chuck Lever <chuck.lever@oracle.com>
+Date:   Mon, 11 Sep 2023 10:39:43 -0400
+Message-ID: <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>
+In-Reply-To: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
+References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>
 User-Agent: StGit/1.5
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -55,142 +55,343 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's the remaining set of RPC service thread improvements. This
-series has been tested on v6.5.0 plus nfsd-next. The goal of this
-work is to replace the current RPC service thread scheduler, which
-walks a linked list to find an idle thread to wake, with a constant
-time thread scheduler.
+From: NeilBrown <neilb@suse.de>
 
-I've done some latency studies to measure the improvement. The
-workload is fio on an NFSv3-over-TCP mount on 100GbE. The server
-is running a v6.5.0 kernel with the v6.6 nfsd-next patches
-applied. Server hardware is 4-core with 32GB of RAM and a tmpfs
-export.
+lwq is a FIFO single-linked queue that only requires a spinlock
+for dequeueing, which happens in process context.  Enqueueing is atomic
+with no spinlock and can happen in any context.
 
-Latency measurements were generated with ktime_get() and recorded
-via bespoke tracepoints added to svc_xprt_enqueue().
+Include a unit test for basic functionality - runs at boot time.  Does
+not use kunit framework.
 
-No patches applied (Linux 6.5.0-00057-g4c4f6d1271f1):
-* 8 nfsd threads
-    * 6682115 total RPCs
-    * 32675206 svc_xprt_enqueue calls
-    * 6683512 wake_idle calls (from svc_xprt_enqueue)
-    * min/mean/max ns: 189/1601.83/6128677
-* 32 nfsd threads
-    * 6565439 total RPCs
-    * 32136015 svc_xprt_enqueue calls
-    * 6566486 wake_idle calls
-    * min/mean/max ns: 373/1963.43/14027191
-* 128 nfsd threads
-    * 6434503 total RPCs
-    * 31545411 svc_xprt_enqueue calls
-    * 6435211 wake_idle calls
-    * min/mean/max ns: 364/2289.3/24668201
-* 512 nfsd threads
-    * 6500600 total RPCs
-    * 31798278 svc_xprt_enqueue calls
-    * 6501659 wake_idle calls
-    * min/mean/max ns: 371/2505.7/24983624
-
-change-the-back-channel-to-use-lwq (Linux 6.5.0-00074-g5b9d1e90911d):
-* 8 nfsd threads
-    * 6643835 total RPCs
-    * 32508906 svc_xprt_enqueue calls
-    * 6644845 wake_idle calls (from svc_xprt_enqueue)
-    * min/mean/max ns: 80/914.305/9785192
-* 32 nfsd threads
-    * 6679458 total RPCs
-    * 32661542 svc_xprt_enqueue calls
-    * 6680747 wake_idle calls
-    * min/mean/max ns: 95/1194.38/10877985
-* 128 nfsd threads
-    * 6681268 total RPCs
-    * 32674437 svc_xprt_enqueue calls
-    * 6682497 wake_idle calls
-    * min/mean/max ns: 95/1247.38/17284050
-* 512 nfsd threads
-    * 6700810 total RPCs
-    * 32766457 svc_xprt_enqueue calls
-    * 6702022 wake_idle calls
-    * min/mean/max ns: 94/1265.88/14418874
-
-And for dessert, a couple of latency histograms with Neil's patches
-applied:
-
-8 nfsd threads:
-bin(centre) = freq
-bin(150)    = 917305   14.3191%
-bin(450)    = 643715   10.0483%
-bin(750)    = 3285903  51.2927%
-bin(1050)   = 537586    8.39168%
-bin(1350)   = 359511    5.61194%
-bin(1650)   = 330793    5.16366%
-bin(1950)   = 125331    1.95641%
-bin(2250)   = 55994     0.874062%
-bin(2550)   = 33710     0.526211%
-bin(2850)   = 24544     0.38313%
-
-512 nfsd threads:
-bin(centre) = freq
-bin(150)    = 935030   14.5736%
-bin(450)    = 636380    9.91876%
-bin(750)    = 3268418  50.9423%
-bin(1050)   = 542533    8.45604%
-bin(1350)   = 367382    5.7261%
-bin(1650)   = 334638    5.21574%
-bin(1950)   = 125546    1.95679%
-bin(2250)   = 55832     0.87021%
-bin(2550)   = 33992     0.529807%
-bin(2850)   = 25091     0.391074%
-
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: David Gow <davidgow@google.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
-
-Chuck Lever (1):
-      SUNRPC: Clean up bc_svc_process()
-
-NeilBrown (16):
-      SUNRPC: move all of xprt handling into svc_xprt_handle()
-      SUNRPC: rename and refactor svc_get_next_xprt()
-      SUNRPC: integrate back-channel processing with svc_recv()
-      SUNRPC: change how svc threads are asked to exit.
-      SUNRPC: add list of idle threads
-      SUNRPC: discard SP_CONGESTED
-      llist: add interface to check if a node is on a list.
-      SUNRPC: change service idle list to be an llist
-      llist: add llist_del_first_this()
-      lib: add light-weight queuing mechanism.
-      SUNRPC: rename some functions from rqst_ to svc_thread_
-      SUNRPC: only have one thread waking up at a time
-      SUNRPC: use lwq for sp_sockets - renamed to sp_xprts
-      SUNRPC: change sp_nrthreads to atomic_t
-      SUNRPC: discard sp_lock
-      SUNRPC: change the back-channel queue to lwq
-
-
- fs/lockd/svc.c                    |   5 +-
- fs/lockd/svclock.c                |   5 +-
- fs/nfs/callback.c                 |  46 +-----
- fs/nfsd/nfs4proc.c                |   8 +-
- fs/nfsd/nfssvc.c                  |  13 +-
- include/linux/llist.h             |  46 ++++++
- include/linux/lockd/lockd.h       |   2 +-
- include/linux/lwq.h               | 120 +++++++++++++++
- include/linux/sunrpc/svc.h        |  44 ++++--
- include/linux/sunrpc/svc_xprt.h   |   2 +-
- include/linux/sunrpc/xprt.h       |   3 +-
- include/trace/events/sunrpc.h     |   1 -
- lib/Kconfig                       |   5 +
- lib/Makefile                      |   2 +-
- lib/llist.c                       |  28 ++++
- lib/lwq.c                         | 151 +++++++++++++++++++
- net/sunrpc/backchannel_rqst.c     |  13 +-
- net/sunrpc/svc.c                  | 146 +++++++++---------
- net/sunrpc/svc_xprt.c             | 236 ++++++++++++++----------------
- net/sunrpc/xprtrdma/backchannel.c |   6 +-
- 20 files changed, 590 insertions(+), 292 deletions(-)
+ include/linux/lwq.h |  120 +++++++++++++++++++++++++++++++++++++++++
+ lib/Kconfig         |    5 ++
+ lib/Makefile        |    2 -
+ lib/lwq.c           |  151 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 277 insertions(+), 1 deletion(-)
  create mode 100644 include/linux/lwq.h
  create mode 100644 lib/lwq.c
 
---
-Chuck Lever
+diff --git a/include/linux/lwq.h b/include/linux/lwq.h
+new file mode 100644
+index 000000000000..52b9c81b493a
+--- /dev/null
++++ b/include/linux/lwq.h
+@@ -0,0 +1,120 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef LWQ_H
++#define LWQ_H
++/*
++ * light-weight single-linked queue built from llist
++ *
++ * Entries can be enqueued from any context with no locking.
++ * Entries can be dequeued from process context with integrated locking.
++ */
++#include <linux/container_of.h>
++#include <linux/spinlock.h>
++#include <linux/llist.h>
++
++struct lwq_node {
++	struct llist_node node;
++};
++
++struct lwq {
++	spinlock_t		lock;
++	struct llist_node	*ready;		/* entries to be dequeued */
++	struct llist_head	new;		/* entries being enqueued */
++};
++
++/**
++ * lwq_init - initialise a lwq
++ * @q:	the lwq object
++ */
++static inline void lwq_init(struct lwq *q)
++{
++	spin_lock_init(&q->lock);
++	q->ready = NULL;
++	init_llist_head(&q->new);
++}
++
++/**
++ * lwq_empty - test if lwq contains any entry
++ * @q:	the lwq object
++ *
++ * This empty test contains an acquire barrier so that if a wakeup
++ * is sent when lwq_dequeue returns true, it is safe to go to sleep after
++ * a test on lwq_empty().
++ */
++static inline bool lwq_empty(struct lwq *q)
++{
++	/* acquire ensures ordering wrt lwq_enqueue() */
++	return smp_load_acquire(&q->ready) == NULL && llist_empty(&q->new);
++}
++
++struct llist_node *__lwq_dequeue(struct lwq *q);
++/**
++ * lwq_dequeue - dequeue first (oldest) entry from lwq
++ * @q:		the queue to dequeue from
++ * @type:	the type of object to return
++ * @member:	them member in returned object which is an lwq_node.
++ *
++ * Remove a single object from the lwq and return it.  This will take
++ * a spinlock and so must always be called in the same context, typcially
++ * process contet.
++ */
++#define lwq_dequeue(q, type, member)					\
++	({ struct llist_node *_n = __lwq_dequeue(q);			\
++	  _n ? container_of(_n, type, member.node) : NULL; })
++
++struct llist_node *lwq_dequeue_all(struct lwq *q);
++
++/**
++ * lwq_for_each_safe - iterate over detached queue allowing deletion
++ * @_n:		iterator variable
++ * @_t1:	temporary struct llist_node **
++ * @_t2:	temporary struct llist_node *
++ * @_l:		address of llist_node pointer from lwq_dequeue_all()
++ * @_member:	member in _n where lwq_node is found.
++ *
++ * Iterate over members in a dequeued list.  If the iterator variable
++ * is set to NULL, the iterator removes that entry from the queue.
++ */
++#define lwq_for_each_safe(_n, _t1, _t2, _l, _member)			\
++	for (_t1 = (_l);						\
++	     *(_t1) ? (_n = container_of(*(_t1), typeof(*(_n)), _member.node),\
++		       _t2 = ((*_t1)->next),				\
++		       true)						\
++	     : false;							\
++	     (_n) ? (_t1 = &(_n)->_member.node.next, 0)			\
++	     : ((*(_t1) = (_t2)),  0))
++
++/**
++ * lwq_enqueue - add a new item to the end of the queue
++ * @n	- the lwq_node embedded in the item to be added
++ * @q	- the lwq to append to.
++ *
++ * No locking is needed to append to the queue so this can
++ * be called from any context.
++ * Return %true is the list may have previously been empty.
++ */
++static inline bool lwq_enqueue(struct lwq_node *n, struct lwq *q)
++{
++	/* acquire enqures ordering wrt lwq_dequeue */
++	return llist_add(&n->node, &q->new) &&
++		smp_load_acquire(&q->ready) == NULL;
++}
++
++/**
++ * lwq_enqueue_batch - add a list of new items to the end of the queue
++ * @n	- the lwq_node embedded in the first item to be added
++ * @q	- the lwq to append to.
++ *
++ * No locking is needed to append to the queue so this can
++ * be called from any context.
++ * Return %true is the list may have previously been empty.
++ */
++static inline bool lwq_enqueue_batch(struct llist_node *n, struct lwq *q)
++{
++	struct llist_node *e = n;
++
++	/* acquire enqures ordering wrt lwq_dequeue */
++	return llist_add_batch(llist_reverse_order(n), e, &q->new) &&
++		smp_load_acquire(&q->ready) == NULL;
++}
++#endif /* LWQ_H */
+diff --git a/lib/Kconfig b/lib/Kconfig
+index c686f4adc124..76fe64f933fc 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -729,6 +729,11 @@ config PARMAN
+ config OBJAGG
+ 	tristate "objagg" if COMPILE_TEST
+ 
++config LWQ_TEST
++	bool "Boot-time test for lwq queuing"
++	help
++          Run boot-time test of light-weight queuing.
++
+ endmenu
+ 
+ config GENERIC_IOREMAP
+diff --git a/lib/Makefile b/lib/Makefile
+index 740109b6e2c8..d0c116b706e6 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -45,7 +45,7 @@ obj-y	+= lockref.o
+ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+ 	 bust_spinlocks.o kasprintf.o bitmap.o scatterlist.o \
+ 	 list_sort.o uuid.o iov_iter.o clz_ctz.o \
+-	 bsearch.o find_bit.o llist.o memweight.o kfifo.o \
++	 bsearch.o find_bit.o llist.o lwq.o memweight.o kfifo.o \
+ 	 percpu-refcount.o rhashtable.o base64.o \
+ 	 once.o refcount.o rcuref.o usercopy.o errseq.o bucket_locks.o \
+ 	 generic-radix-tree.o
+diff --git a/lib/lwq.c b/lib/lwq.c
+new file mode 100644
+index 000000000000..7fe6c7125357
+--- /dev/null
++++ b/lib/lwq.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Light weight single-linked queue.
++ *
++ * Entries are enqueued to the head of an llist, with no blocking.
++ * This can happen in any context.
++ *
++ * Entries are dequeued using a spinlock to protect against
++ * multiple access.  The llist is staged in reverse order, and refreshed
++ * from the llist when it exhausts.
++ */
++#include <linux/rcupdate.h>
++#include <linux/lwq.h>
++
++struct llist_node *__lwq_dequeue(struct lwq *q)
++{
++	struct llist_node *this;
++
++	if (lwq_empty(q))
++		return NULL;
++	spin_lock(&q->lock);
++	this = q->ready;
++	if (!this && !llist_empty(&q->new)) {
++		/* ensure queue doesn't appear transiently lwq_empty */
++		smp_store_release(&q->ready, (void *)1);
++		this = llist_reverse_order(llist_del_all(&q->new));
++		if (!this)
++			q->ready = NULL;
++	}
++	if (this)
++		q->ready = llist_next(this);
++	spin_unlock(&q->lock);
++	return this;
++}
++EXPORT_SYMBOL_GPL(__lwq_dequeue);
++
++/**
++ * lwq_dequeue_all - dequeue all currently enqueued objects
++ * @q:	the queue to dequeue from
++ *
++ * Remove and return a linked list of llist_nodes of all the objects that were
++ * in the queue. The first on the list will be the object that was least
++ * recently enqueued.
++ */
++struct llist_node *lwq_dequeue_all(struct lwq *q)
++{
++	struct llist_node *r, *t, **ep;
++
++	if (lwq_empty(q))
++		return NULL;
++
++	spin_lock(&q->lock);
++	r = q->ready;
++	q->ready = NULL;
++	t = llist_del_all(&q->new);
++	spin_unlock(&q->lock);
++	ep = &r;
++	while (*ep)
++		ep = &(*ep)->next;
++	*ep = llist_reverse_order(t);
++	return r;
++}
++EXPORT_SYMBOL_GPL(lwq_dequeue_all);
++
++#if IS_ENABLED(CONFIG_LWQ_TEST)
++
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/wait_bit.h>
++#include <linux/kthread.h>
++#include <linux/delay.h>
++struct tnode {
++	struct lwq_node n;
++	int i;
++	int c;
++};
++
++static int lwq_exercise(void *qv)
++{
++	struct lwq *q = qv;
++	int cnt;
++	struct tnode *t;
++
++	for (cnt = 0; cnt < 10000; cnt++) {
++		wait_var_event(q, (t = lwq_dequeue(q, struct tnode, n)) != NULL);
++		t->c++;
++		if (lwq_enqueue(&t->n, q))
++			wake_up_var(q);
++	}
++	while (!kthread_should_stop())
++		schedule_timeout_idle(1);
++	return 0;
++}
++
++static int lwq_test(void)
++{
++	int i;
++	struct lwq q;
++	struct llist_node *l, **t1, *t2;
++	struct tnode *t;
++	struct task_struct *threads[8];
++
++	printk(KERN_INFO "testing lwq....\n");
++	lwq_init(&q);
++	printk(KERN_INFO " lwq: run some threads\n");
++	for (i = 0; i < ARRAY_SIZE(threads); i++)
++		threads[i] = kthread_run(lwq_exercise, &q, "lwq-test-%d", i);
++	for (i = 0; i < 100; i++) {
++		t = kmalloc(sizeof(*t), GFP_KERNEL);
++		t->i = i;
++		t->c = 0;
++		if (lwq_enqueue(&t->n, &q))
++			wake_up_var(&q);
++	};
++	/* wait for threads to exit */
++	for (i = 0; i < ARRAY_SIZE(threads); i++)
++		if (!IS_ERR_OR_NULL(threads[i]))
++			kthread_stop(threads[i]);
++	printk(KERN_INFO " lwq: dequeue first 50:");
++	for (i = 0; i < 50 ; i++) {
++		if (i && (i % 10) == 0) {
++			printk(KERN_CONT "\n");
++			printk(KERN_INFO " lwq: ... ");
++		}
++		t = lwq_dequeue(&q, struct tnode, n);
++		printk(KERN_CONT " %d(%d)", t->i, t->c);
++		kfree(t);
++	}
++	printk(KERN_CONT "\n");
++	l = lwq_dequeue_all(&q);
++	printk(KERN_INFO " lwq: delete the multiples of 3 (test lwq_for_each_safe())\n");
++	lwq_for_each_safe(t, t1, t2, &l, n) {
++		if ((t->i % 3) == 0) {
++			t->i = -1;
++			kfree(t);
++			t = NULL;
++		}
++	}
++	if (l)
++		lwq_enqueue_batch(l, &q);
++	printk(KERN_INFO " lwq: dequeue remaining:");
++	while ((t = lwq_dequeue(&q, struct tnode, n)) != NULL) {
++		printk(KERN_CONT " %d", t->i);
++		kfree(t);
++	}
++	printk(KERN_CONT "\n");
++	return 0;
++}
++
++module_init(lwq_test);
++#endif /* CONFIG_LWQ_TEST*/
+
 
