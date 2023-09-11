@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B8579C0F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BCE79BA08
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238142AbjIKUxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 16:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
+        id S1345549AbjIKVVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 17:21:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237465AbjIKMwe (ORCPT
+        with ESMTP id S237470AbjIKMwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 08:52:34 -0400
+        Mon, 11 Sep 2023 08:52:39 -0400
 Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34A1CEB;
-        Mon, 11 Sep 2023 05:52:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDE1E40;
+        Mon, 11 Sep 2023 05:52:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1694436750; x=1725972750;
+  t=1694436755; x=1725972755;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nUgxgGRyHtLD7v2F+tQEZvxKac7ZdTy4WQRaUi31oTI=;
-  b=YR2IqBssApWi4WMF/rhEUuFEhuTVMcdadaNMkaI+iA28MMkxinJBl679
-   k7t0y/nd4hT5lHJUsL6JId4V3iACwa/E9oLpTk8sd+O9RhSoQCZv7aAUv
-   MH1RO8+Cu905PCo3kcMvb0PvkA2cOLUD91/A3YbMjk/354azB4j3Lc647
-   1cn0hxN2p5OAPz3p9gLV9At+nxlVLVvF7vy8EYrmBvoJJu0p3BPtFziV6
-   IDKXreYJ+PMAf2FFOV+YzPqUYoUMPKe5ONXjMaptdiQIrjUygx1hePfdR
-   nytTQCHUu6yfBuK3eL804bGbAQfc02IoemyAOlkUi1jRpRrQ7AYxi060b
+  bh=aRvvWdjtbEYuAkkq1cMd1cz7TCumuqP5svgnqRV+38s=;
+  b=Sh0DWtz5l23SfbrsD6HhkR9TBe7w5scn1fQgDg8TtW1PtqGhBvjRk8sc
+   0Z/h05SSUwFqCwWNipDmARXFgbxA9kC/yA43L6rOkdHAxDrEz+tl3djoS
+   dWOg0Z/MMHVH18ih/ILxSG9SMz7kLRDqLYYhqCPUDhE7CQctRYs85Am9V
+   HuF/cNh6yUjslUGs0KKGw+xXA4GDKOQmokoEUVLjbSec8vjiSCP0BIalT
+   SYpANv8PsovTWtukNAIiyLFGsI6fqOEOH80IPn7pRXecKNOLbwxwRgPaz
+   hq51YcJD+ghMNN2DMOhEx8OzAFNP5P6D1tcyTTzqGzq+OfbLifS1qYcLV
    A==;
-X-CSE-ConnectionGUID: Fy4YrIOSRYueOsUWA5Z3Kg==
-X-CSE-MsgGUID: VrJ4IHhhQUCTsVySNHIFJw==
+X-CSE-ConnectionGUID: Z3Qz3oS6Q9OdOqaKk+MeMA==
+X-CSE-MsgGUID: XgUAcItHSIqEe7z66pEuaQ==
 X-IronPort-AV: E=Sophos;i="6.02,244,1688400000"; 
-   d="scan'208";a="243594383"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 20:52:30 +0800
-IronPort-SDR: 3VItKIvdd7j/7SLCiwjI2uFweAlkRUGJ3vypPzrMs/2uBw6tlHi6OrgBxRQhngLhIdjJGOFWJ0
- waxCkn7icMgEk6W3h2Qy+jqDfWcRhmul9uNLNbhRWnV0rTG1Cbfl1qmDFMKax70YZ3rpdT3xNA
- WT0J4MeN53ZTpZ5YvJfa+8Yso1Em9Ucxl9ILNM7UXFhoKDq9zbtPAKKWWElUlqXLvXOvl0U3SS
- neIdafb9cLj1nblmMNXQ3BOhwm4o4/ZYds0gBTNNT8xXgw0e+Y3PusyPA3mIPAKGXJsf3Q4ztO
- v28=
+   d="scan'208";a="243594396"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Sep 2023 20:52:35 +0800
+IronPort-SDR: GrBQCx/Jp6BJOeyol65iZ+lhJuyECy1PkNptiuTv5yBk5wAtOdfv6sREDl9nmIMrlXzV4zJOmm
+ Y0al2fUdko7T96lgMOKAT50Fabc+AUW5GnsZ0lgh9Ge3oWCsQJLPHTtmHMRkchl9vSRlGmgBCY
+ xr+cWeWvw97xHczElWuawtJKOt5hfRRydj3SkRuTtwVX/npckgjfa1k2rXsjnvWXifJe0Hq2kR
+ KpU9biygObfp+WNJPNY+ZvSP1pKQK8STnS1GX+NAPA/N8W27hcGl5BID0FHPmafSLU8rwZhHyx
+ Jv8=
 Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 04:59:35 -0700
-IronPort-SDR: Hlreot0zQ3cyxTdeIICQie1O3w2zak1sobGHL0x/1HLSifI7dbkVJxyuhXFgd7x7sKcwefsk+D
- qtIv8oqde/WkBJeC1xnX1SE8yxMDctQrahRkTz03UgjvziLZagOKqNoA+Ds3cjcAEZIhip+N4X
- kc7knOdegY00wir1t8D1r2th/bVgBfAi0loSm9oCErWWX8NS+bFSw0Y2Wm1qeZnQRbwaFMkYX0
- WzZLz9+gHHr6+ZhiPJxAHQ9e/ptGbi4qeU5RZb59g0kjIXDbkTCkf0XAgsdvbfGbl68VWDCwP6
- 0Q8=
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Sep 2023 05:05:19 -0700
+IronPort-SDR: NiTBUCr4z4SFaBV5dhYJ7XEQXGJyI+GoN2Z9Dxs+OLwGxNu6mA1H3OulWg3/0Dlpti20JpKLYM
+ VhUpS7NIvTy8yI3hbaZWVnoAn6p5iPIcBcrFXdiTDZ6dceZRMBX9cEQ9/G0Fh93III9Ooqe1oX
+ vbFI4I4tUr+PB72Scn22H5Hcs2iQtzysNyNjCk9/9YfHGhc7JuGptiGVBjFuyOACjotGf3LK3N
+ ubnH0man6OyPH5F+8f/0KY+I4Dv8tZVQz6953vG/88CtK9Y1qDkRzRCV6Mf54zjiV4vl7JrkFV
+ oR8=
 WDCIronportException: Internal
 Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
-  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2023 05:52:28 -0700
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Sep 2023 05:52:31 -0700
 From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
@@ -57,16 +57,16 @@ Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
         Damien Le Moal <dlemoal@kernel.org>,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 03/11] btrfs: add support for inserting raid stripe extents
-Date:   Mon, 11 Sep 2023 05:52:04 -0700
-Message-ID: <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
+Subject: [PATCH v8 05/11] btrfs: lookup physical address from stripe extent
+Date:   Mon, 11 Sep 2023 05:52:06 -0700
+Message-ID: <20230911-raid-stripe-tree-v8-5-647676fa852c@wdc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
 References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436627; l=16978; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=nUgxgGRyHtLD7v2F+tQEZvxKac7ZdTy4WQRaUi31oTI=; b=5etT14Y4azYf+0+JcMH4epr3hgjMJCWWUgP6pTTKKMWD/K7ZVY9DZYSF79w4f1XOj5xGEB+OI UfCO+/nLH/LBfo93Qp8VQuyTQprZC/ulNNXQsZMZ1oylbdDNZPenbBH
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694436627; l=8982; i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id; bh=aRvvWdjtbEYuAkkq1cMd1cz7TCumuqP5svgnqRV+38s=; b=OmZOx7p6p8oaDM6P9eM436W7XiJ8t7EFfYjke1U2ftBx4v/hl9xBnN/d0Iu4MuZSiJwoAfR3V rhrgeadB5dyDT35rUEj7AN8UchEhngIaXrIbRzdHPYa+F3UL1GFQI6T
 X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519; pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,554 +78,300 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for inserting stripe extents into the raid stripe tree on
-completion of every write that needs an extra logical-to-physical
-translation when using RAID.
+Lookup the physical address from the raid stripe tree when a read on an
+RAID volume formatted with the raid stripe tree was attempted.
 
-Inserting the stripe extents happens after the data I/O has completed,
-this is done to a) support zone-append and b) rule out the possibility of
-a RAID-write-hole.
+If the requested logical address was not found in the stripe tree, it may
+still be in the in-memory ordered stripe tree, so fallback to searching
+the ordered stripe tree in this case.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/Makefile           |   2 +-
- fs/btrfs/bio.c              |  23 ++++
- fs/btrfs/extent-tree.c      |   1 +
- fs/btrfs/inode.c            |   8 +-
- fs/btrfs/ordered-data.c     |   1 +
- fs/btrfs/ordered-data.h     |   2 +
- fs/btrfs/raid-stripe-tree.c | 266 ++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/raid-stripe-tree.h |  34 ++++++
- fs/btrfs/volumes.c          |   4 +-
- fs/btrfs/volumes.h          |  15 ++-
- 10 files changed, 347 insertions(+), 9 deletions(-)
+ fs/btrfs/raid-stripe-tree.c | 159 ++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/raid-stripe-tree.h |  11 +++
+ fs/btrfs/volumes.c          |  37 ++++++++---
+ 3 files changed, 198 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index c57d80729d4f..525af975f61c 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -33,7 +33,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
- 	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
- 	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
- 	   subpage.o tree-mod-log.o extent-io-tree.o fs.o messages.o bio.o \
--	   lru_cache.o
-+	   lru_cache.o raid-stripe-tree.o
- 
- btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
- btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 31ff36990404..ddbe6f8d4ea2 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -14,6 +14,7 @@
- #include "rcu-string.h"
- #include "zoned.h"
- #include "file-item.h"
-+#include "raid-stripe-tree.h"
- 
- static struct bio_set btrfs_bioset;
- static struct bio_set btrfs_clone_bioset;
-@@ -415,6 +416,9 @@ static void btrfs_orig_write_end_io(struct bio *bio)
- 	else
- 		bio->bi_status = BLK_STS_OK;
- 
-+	if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
-+		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-+
- 	btrfs_orig_bbio_end_io(bbio);
- 	btrfs_put_bioc(bioc);
- }
-@@ -426,6 +430,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
- 	if (bio->bi_status) {
- 		atomic_inc(&stripe->bioc->error);
- 		btrfs_log_dev_io_error(bio, stripe->dev);
-+	} else if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-+		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
- 	}
- 
- 	/* Pass on control to the original bio this one was cloned from */
-@@ -487,6 +493,7 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
- 	bio->bi_private = &bioc->stripes[dev_nr];
- 	bio->bi_iter.bi_sector = bioc->stripes[dev_nr].physical >> SECTOR_SHIFT;
- 	bioc->stripes[dev_nr].bioc = bioc;
-+	bioc->size = bio->bi_iter.bi_size;
- 	btrfs_submit_dev_bio(bioc->stripes[dev_nr].dev, bio);
- }
- 
-@@ -496,6 +503,8 @@ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
- 	if (!bioc) {
- 		/* Single mirror read/write fast path. */
- 		btrfs_bio(bio)->mirror_num = mirror_num;
-+		if (bio_op(bio) != REQ_OP_READ)
-+			btrfs_bio(bio)->orig_physical = smap->physical;
- 		bio->bi_iter.bi_sector = smap->physical >> SECTOR_SHIFT;
- 		if (bio_op(bio) != REQ_OP_READ)
- 			btrfs_bio(bio)->orig_physical = smap->physical;
-@@ -688,6 +697,20 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 			bio->bi_opf |= REQ_OP_ZONE_APPEND;
- 		}
- 
-+		if (is_data_bbio(bbio) && bioc &&
-+		    btrfs_need_stripe_tree_update(bioc->fs_info,
-+						  bioc->map_type)) {
-+			/*
-+			 * No locking for the list update, as we only add to
-+			 * the list in the I/O submission path, and list
-+			 * iteration only happens in the completion path,
-+			 * which can't happen until after the last submission.
-+			 */
-+			btrfs_get_bioc(bioc);
-+			list_add_tail(&bioc->ordered_entry,
-+				      &bbio->ordered->bioc_list);
-+		}
-+
- 		/*
- 		 * Csum items for reloc roots have already been cloned at this
- 		 * point, so they are handled as part of the no-checksum case.
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 6f6838226fe7..2e11a699ab77 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -42,6 +42,7 @@
- #include "file-item.h"
- #include "orphan.h"
- #include "tree-checker.h"
-+#include "raid-stripe-tree.h"
- 
- #undef SCRAMBLE_DELAYED_REFS
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index bafca05940d7..6f71630248da 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -71,6 +71,7 @@
- #include "super.h"
- #include "orphan.h"
- #include "backref.h"
-+#include "raid-stripe-tree.h"
- 
- struct btrfs_iget_args {
- 	u64 ino;
-@@ -3091,6 +3092,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 
- 	trans->block_rsv = &inode->block_rsv;
- 
-+	ret = btrfs_insert_raid_extent(trans, ordered_extent);
-+	if (ret)
-+		goto out;
-+
- 	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
- 		compress_type = ordered_extent->compress_type;
- 	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
-@@ -3224,7 +3229,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
- {
- 	if (btrfs_is_zoned(btrfs_sb(ordered->inode->i_sb)) &&
--	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags))
-+	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags) &&
-+	    list_empty(&ordered->bioc_list))
- 		btrfs_finish_ordered_zoned(ordered);
- 	return btrfs_finish_one_ordered(ordered);
- }
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index 345c449d588c..55c7d5543265 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -191,6 +191,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
- 	INIT_LIST_HEAD(&entry->log_list);
- 	INIT_LIST_HEAD(&entry->root_extent_list);
- 	INIT_LIST_HEAD(&entry->work_list);
-+	INIT_LIST_HEAD(&entry->bioc_list);
- 	init_completion(&entry->completion);
- 
- 	/*
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 173bd5c5df26..1c51ac57e5df 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -151,6 +151,8 @@ struct btrfs_ordered_extent {
- 	struct completion completion;
- 	struct btrfs_work flush_work;
- 	struct list_head work_list;
-+
-+	struct list_head bioc_list;
- };
- 
- static inline void
 diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-new file mode 100644
-index 000000000000..2415698a8fef
---- /dev/null
+index 5b12f40877b5..7ed02e4b79ec 100644
+--- a/fs/btrfs/raid-stripe-tree.c
 +++ b/fs/btrfs/raid-stripe-tree.c
-@@ -0,0 +1,266 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Western Digital Corporation or its affiliates.
-+ */
+@@ -324,3 +324,162 @@ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+ 
+ 	return ret;
+ }
 +
-+#include <linux/btrfs_tree.h>
-+
-+#include "ctree.h"
-+#include "fs.h"
-+#include "accessors.h"
-+#include "transaction.h"
-+#include "disk-io.h"
-+#include "raid-stripe-tree.h"
-+#include "volumes.h"
-+#include "misc.h"
-+#include "print-tree.h"
-+
-+static u8 btrfs_bg_type_to_raid_encoding(u64 map_type)
++static bool btrfs_check_for_extent(struct btrfs_fs_info *fs_info, u64 logical,
++				   u64 length, struct btrfs_path *path)
 +{
-+	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-+	case BTRFS_BLOCK_GROUP_DUP:
-+		return BTRFS_STRIPE_DUP;
-+	case BTRFS_BLOCK_GROUP_RAID0:
-+		return BTRFS_STRIPE_RAID0;
-+	case BTRFS_BLOCK_GROUP_RAID1:
-+		return BTRFS_STRIPE_RAID1;
-+	case BTRFS_BLOCK_GROUP_RAID1C3:
-+		return BTRFS_STRIPE_RAID1C3;
-+	case BTRFS_BLOCK_GROUP_RAID1C4:
-+		return BTRFS_STRIPE_RAID1C4;
-+	case BTRFS_BLOCK_GROUP_RAID5:
-+		return BTRFS_STRIPE_RAID5;
-+	case BTRFS_BLOCK_GROUP_RAID6:
-+		return BTRFS_STRIPE_RAID6;
-+	case BTRFS_BLOCK_GROUP_RAID10:
-+		return BTRFS_STRIPE_RAID10;
-+	default:
-+		ASSERT(0);
-+	}
++	struct btrfs_root *extent_root = btrfs_extent_root(fs_info, logical);
++	struct btrfs_key key;
++	int ret;
++
++	btrfs_release_path(path);
++
++	key.objectid = logical;
++	key.type = BTRFS_EXTENT_ITEM_KEY;
++	key.offset = length;
++
++	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
++
++	return ret;
 +}
 +
-+static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
-+				 int num_stripes,
-+				 struct btrfs_io_context *bioc)
++int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
++				 u64 logical, u64 *length, u64 map_type,
++				 u32 stripe_index,
++				 struct btrfs_io_stripe *stripe)
 +{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_key stripe_key;
 +	struct btrfs_root *stripe_root = btrfs_stripe_tree_root(fs_info);
-+	u8 encoding = btrfs_bg_type_to_raid_encoding(bioc->map_type);
 +	struct btrfs_stripe_extent *stripe_extent;
-+	size_t item_size;
++	struct btrfs_key stripe_key;
++	struct btrfs_key found_key;
++	struct btrfs_path *path;
++	struct extent_buffer *leaf;
++	int num_stripes;
++	u8 encoding;
++	u64 offset;
++	u64 found_logical;
++	u64 found_length;
++	u64 end;
++	u64 found_end;
++	int slot;
 +	int ret;
++	int i;
 +
-+	item_size = struct_size(stripe_extent, strides, num_stripes);
-+
-+	stripe_extent = kzalloc(item_size, GFP_NOFS);
-+	if (!stripe_extent) {
-+		btrfs_abort_transaction(trans, -ENOMEM);
-+		btrfs_end_transaction(trans);
-+		return -ENOMEM;
-+	}
-+
-+	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
-+	for (int i = 0; i < num_stripes; i++) {
-+		u64 devid = bioc->stripes[i].dev->devid;
-+		u64 physical = bioc->stripes[i].physical;
-+		u64 length = bioc->stripes[i].length;
-+		struct btrfs_raid_stride *raid_stride =
-+						&stripe_extent->strides[i];
-+
-+		if (length == 0)
-+			length = bioc->size;
-+
-+		btrfs_set_stack_raid_stride_devid(raid_stride, devid);
-+		btrfs_set_stack_raid_stride_physical(raid_stride, physical);
-+		btrfs_set_stack_raid_stride_length(raid_stride, length);
-+	}
-+
-+	stripe_key.objectid = bioc->logical;
++	stripe_key.objectid = logical;
 +	stripe_key.type = BTRFS_RAID_STRIPE_KEY;
-+	stripe_key.offset = bioc->size;
++	stripe_key.offset = 0;
 +
-+	ret = btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_extent,
-+				item_size);
-+	if (ret)
-+		btrfs_abort_transaction(trans, ret);
++	path = btrfs_alloc_path();
++	if (!path)
++		return -ENOMEM;
 +
-+	kfree(stripe_extent);
++	ret = btrfs_search_slot(NULL, stripe_root, &stripe_key, path, 0, 0);
++	if (ret < 0)
++		goto free_path;
++	if (ret) {
++		if (path->slots[0] != 0)
++			path->slots[0]--;
++	}
 +
-+	return ret;
-+}
++	end = logical + *length;
 +
-+static int btrfs_insert_mirrored_raid_extents(struct btrfs_trans_handle *trans,
-+				      struct btrfs_ordered_extent *ordered,
-+				      u64 map_type)
-+{
-+	int num_stripes = btrfs_bg_type_to_factor(map_type);
-+	struct btrfs_io_context *bioc;
-+	int ret;
++	while (1) {
++		leaf = path->nodes[0];
++		slot = path->slots[0];
 +
-+	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-+		ret = btrfs_insert_one_raid_extent(trans, num_stripes, bioc);
++		btrfs_item_key_to_cpu(leaf, &found_key, slot);
++		found_logical = found_key.objectid;
++		found_length = found_key.offset;
++		found_end = found_logical + found_length;
++
++		if (found_logical > end) {
++			ret = -ENOENT;
++			goto out;
++		}
++
++		if (in_range(logical, found_logical, found_length))
++			break;
++
++		ret = btrfs_next_item(stripe_root, path);
 +		if (ret)
-+			return ret;
++			goto out;
 +	}
 +
-+	return 0;
-+}
++	offset = logical - found_logical;
 +
-+static int btrfs_insert_striped_mirrored_raid_extents(
-+				      struct btrfs_trans_handle *trans,
-+				      struct btrfs_ordered_extent *ordered,
-+				      u64 map_type)
-+{
-+	struct btrfs_io_context *bioc;
-+	struct btrfs_io_context *rbioc;
-+	const int nstripes = list_count_nodes(&ordered->bioc_list);
-+	const int index = btrfs_bg_flags_to_raid_index(map_type);
-+	const int substripes = btrfs_raid_array[index].sub_stripes;
-+	const int max_stripes = trans->fs_info->fs_devices->rw_devices / 2;
-+	int left = nstripes;
-+	int stripe = 0, j = 0;
-+	int i = 0;
-+	int ret = 0;
-+	u64 stripe_end;
-+	u64 prev_end;
++	/*
++	 * If we have a logically contiguous, but physically noncontinuous
++	 * range, we need to split the bio. Record the length after which we
++	 * must split the bio.
++	 */
++	if (end > found_end)
++		*length -= end - found_end;
 +
-+	if (nstripes == 1)
-+		return btrfs_insert_mirrored_raid_extents(trans, ordered, map_type);
++	num_stripes = btrfs_num_raid_stripes(btrfs_item_size(leaf, slot));
++	stripe_extent = btrfs_item_ptr(leaf, slot, struct btrfs_stripe_extent);
++	encoding = btrfs_stripe_extent_encoding(leaf, stripe_extent);
 +
-+	rbioc = kzalloc(struct_size(rbioc, stripes, nstripes * substripes),
-+			GFP_KERNEL);
-+	if (!rbioc)
-+		return -ENOMEM;
++	if (encoding != btrfs_bg_type_to_raid_encoding(map_type)) {
++		ret = -ENOENT;
++		goto out;
++	}
 +
-+	rbioc->map_type = map_type;
-+	rbioc->logical = list_first_entry(&ordered->bioc_list, typeof(*rbioc),
-+					   ordered_entry)->logical;
++	for (i = 0; i < num_stripes; i++) {
++		struct btrfs_raid_stride *stride = &stripe_extent->strides[i];
++		u64 devid = btrfs_raid_stride_devid(leaf, stride);
++		u64 len = btrfs_raid_stride_length(leaf, stride);
++		u64 physical = btrfs_raid_stride_physical(leaf, stride);
 +
-+	stripe_end = rbioc->logical;
-+	prev_end = stripe_end;
-+	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
++		if (offset >= len) {
++			offset -= len;
 +
-+		rbioc->size += bioc->size;
-+		for (j = 0; j < substripes; j++) {
-+			stripe = i + j;
-+			rbioc->stripes[stripe].dev = bioc->stripes[j].dev;
-+			rbioc->stripes[stripe].physical = bioc->stripes[j].physical;
-+			rbioc->stripes[stripe].length = bioc->size;
++			if (offset >= BTRFS_STRIPE_LEN)
++				continue;
 +		}
 +
-+		stripe_end += rbioc->size;
-+		if (i >= nstripes ||
-+		    (stripe_end - prev_end >= max_stripes * BTRFS_STRIPE_LEN)) {
-+			ret = btrfs_insert_one_raid_extent(trans,
-+							   nstripes * substripes,
-+							   rbioc);
-+			if (ret)
-+				goto out;
++		if (devid != stripe->dev->devid)
++			continue;
 +
-+			left -= nstripes;
-+			i = 0;
-+			rbioc->logical += rbioc->size;
-+			rbioc->size = 0;
-+		} else {
-+			i += substripes;
-+			prev_end = stripe_end;
-+		}
++		if ((map_type & BTRFS_BLOCK_GROUP_DUP) && stripe_index != i)
++			continue;
++
++		stripe->physical = physical + offset;
++
++		ret = 0;
++		goto free_path;
 +	}
 +
-+	if (left) {
-+		bioc = list_prev_entry(bioc, ordered_entry);
-+		ret = btrfs_insert_one_raid_extent(trans, substripes, bioc);
-+	}
-+
++	/*
++	 * If we're here, we haven't found the requested devid in the stripe.
++	 */
++	ret = -ENOENT;
 +out:
-+	kfree(rbioc);
-+	return ret;
-+}
-+
-+static int btrfs_insert_striped_raid_extents(struct btrfs_trans_handle *trans,
-+				     struct btrfs_ordered_extent *ordered,
-+				     u64 map_type)
-+{
-+	struct btrfs_io_context *bioc;
-+	struct btrfs_io_context *rbioc;
-+	const int nstripes = list_count_nodes(&ordered->bioc_list);
-+	int i = 0;
-+	int ret = 0;
-+
-+	rbioc = kzalloc(struct_size(rbioc, stripes, nstripes), GFP_KERNEL);
-+	if (!rbioc)
-+		return -ENOMEM;
-+	rbioc->map_type = map_type;
-+	rbioc->logical = list_first_entry(&ordered->bioc_list, typeof(*rbioc),
-+					   ordered_entry)->logical;
-+
-+	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-+		rbioc->size += bioc->size;
-+		rbioc->stripes[i].dev = bioc->stripes[0].dev;
-+		rbioc->stripes[i].physical = bioc->stripes[0].physical;
-+		rbioc->stripes[i].length = bioc->size;
-+
-+		if (i == nstripes - 1) {
-+			ret = btrfs_insert_one_raid_extent(trans, nstripes, rbioc);
-+			if (ret)
-+				goto out;
-+
-+			i = 0;
-+			rbioc->logical += rbioc->size;
-+			rbioc->size = 0;
-+		} else {
-+			i++;
++	if (ret > 0)
++		ret = -ENOENT;
++	if (ret && ret != -EIO) {
++		/*
++		 * Check if the range we're looking for is actually backed by
++		 * an extent. This can happen, e.g. when scrub is running on a
++		 * block-group and the extent it is trying to scrub get's
++		 * deleted in the meantime. Although scrub is setting the
++		 * block-group to read-only, deletion of extents are still
++		 * allowed. If the extent is gone, simply return ENOENT and be
++		 * good.
++		 */
++		if (btrfs_check_for_extent(fs_info, logical, *length, path)) {
++			ret = -ENOENT;
++			goto free_path;
 +		}
++
++		if (IS_ENABLED(CONFIG_BTRFS_DEBUG))
++			btrfs_print_tree(leaf, 1);
++		btrfs_err(fs_info,
++			  "cannot find raid-stripe for logical [%llu, %llu] devid %llu, profile %s",
++			  logical, logical + *length, stripe->dev->devid,
++			  btrfs_bg_type_to_raid_name(map_type));
 +	}
-+
-+	if (i && i < nstripes - 1)
-+		ret = btrfs_insert_one_raid_extent(trans, i, rbioc);
-+
-+out:
-+	kfree(rbioc);
-+	return ret;
-+}
-+
-+int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-+			     struct btrfs_ordered_extent *ordered_extent)
-+{
-+	struct btrfs_io_context *bioc;
-+	u64 map_type;
-+	int ret;
-+
-+	if (!trans->fs_info->stripe_root)
-+		return 0;
-+
-+	map_type = list_first_entry(&ordered_extent->bioc_list, typeof(*bioc),
-+				    ordered_entry)->map_type;
-+
-+	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-+	case BTRFS_BLOCK_GROUP_DUP:
-+	case BTRFS_BLOCK_GROUP_RAID1:
-+	case BTRFS_BLOCK_GROUP_RAID1C3:
-+	case BTRFS_BLOCK_GROUP_RAID1C4:
-+		ret = btrfs_insert_mirrored_raid_extents(trans, ordered_extent,
-+							 map_type);
-+		break;
-+	case BTRFS_BLOCK_GROUP_RAID0:
-+		ret = btrfs_insert_striped_raid_extents(trans, ordered_extent,
-+							map_type);
-+		break;
-+	case BTRFS_BLOCK_GROUP_RAID10:
-+		ret = btrfs_insert_striped_mirrored_raid_extents(trans, ordered_extent, map_type);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	while (!list_empty(&ordered_extent->bioc_list)) {
-+		bioc = list_first_entry(&ordered_extent->bioc_list,
-+					typeof(*bioc), ordered_entry);
-+		list_del(&bioc->ordered_entry);
-+		btrfs_put_bioc(bioc);
-+	}
++free_path:
++	btrfs_free_path(path);
 +
 +	return ret;
 +}
 diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-new file mode 100644
-index 000000000000..f36e4c2d46b0
---- /dev/null
+index 7560dc501a65..40aa553ae8aa 100644
+--- a/fs/btrfs/raid-stripe-tree.h
 +++ b/fs/btrfs/raid-stripe-tree.h
-@@ -0,0 +1,34 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2023 Western Digital Corporation or its affiliates.
-+ */
+@@ -13,6 +13,10 @@ struct btrfs_io_stripe;
+ 
+ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start,
+ 			     u64 length);
++int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
++				 u64 logical, u64 *length, u64 map_type,
++				 u32 stripe_index,
++				 struct btrfs_io_stripe *stripe);
+ int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
+ 			     struct btrfs_ordered_extent *ordered_extent);
+ 
+@@ -33,4 +37,11 @@ static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
+ 
+ 	return false;
+ }
 +
-+#ifndef BTRFS_RAID_STRIPE_TREE_H
-+#define BTRFS_RAID_STRIPE_TREE_H
-+
-+#include "disk-io.h"
-+
-+struct btrfs_io_context;
-+struct btrfs_io_stripe;
-+
-+int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-+			     struct btrfs_ordered_extent *ordered_extent);
-+
-+static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
-+						 u64 map_type)
++static inline int btrfs_num_raid_stripes(u32 item_size)
 +{
-+	u64 type = map_type & BTRFS_BLOCK_GROUP_TYPE_MASK;
-+	u64 profile = map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-+
-+	if (!btrfs_stripe_tree_root(fs_info))
-+		return false;
-+
-+	if (type != BTRFS_BLOCK_GROUP_DATA)
-+		return false;
-+
-+	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
-+		return true;
-+
-+	return false;
++	return (item_size - offsetof(struct btrfs_stripe_extent, strides)) /
++		sizeof(struct btrfs_raid_stride);
 +}
-+#endif
++
+ #endif
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 871a55d36e32..0c0fd4eb4848 100644
+index 0c0fd4eb4848..7c25f5c77788 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -5881,6 +5881,7 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
+@@ -35,6 +35,7 @@
+ #include "relocation.h"
+ #include "scrub.h"
+ #include "super.h"
++#include "raid-stripe-tree.h"
+ 
+ #define BTRFS_BLOCK_GROUP_STRIPE_MASK	(BTRFS_BLOCK_GROUP_RAID0 | \
+ 					 BTRFS_BLOCK_GROUP_RAID10 | \
+@@ -6206,12 +6207,22 @@ static u64 btrfs_max_io_len(struct map_lookup *map, enum btrfs_map_op op,
+ 	return U64_MAX;
  }
  
- static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
-+						       u64 logical,
- 						       u16 total_stripes)
+-static void set_io_stripe(struct btrfs_io_stripe *dst, const struct map_lookup *map,
+-			  u32 stripe_index, u64 stripe_offset, u32 stripe_nr)
++static int set_io_stripe(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
++		      u64 logical, u64 *length, struct btrfs_io_stripe *dst,
++		      struct map_lookup *map, u32 stripe_index,
++		      u64 stripe_offset, u64 stripe_nr)
  {
- 	struct btrfs_io_context *bioc;
-@@ -5900,6 +5901,7 @@ static struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_
- 	bioc->fs_info = fs_info;
- 	bioc->replace_stripe_src = -1;
- 	bioc->full_stripe_logical = (u64)-1;
-+	bioc->logical = logical;
- 
- 	return bioc;
+ 	dst->dev = map->stripes[stripe_index].dev;
++
++	if (op == BTRFS_MAP_READ &&
++	    btrfs_need_stripe_tree_update(fs_info, map->type))
++		return btrfs_get_raid_extent_offset(fs_info, logical, length,
++						    map->type, stripe_index,
++						    dst);
++
+ 	dst->physical = map->stripes[stripe_index].physical +
+ 			stripe_offset + btrfs_stripe_nr_to_offset(stripe_nr);
++	return 0;
  }
-@@ -6434,7 +6436,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 
+ /*
+@@ -6428,11 +6439,11 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 	 */
+ 	if (smap && num_alloc_stripes == 1 &&
+ 	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1)) {
+-		set_io_stripe(smap, map, stripe_index, stripe_offset, stripe_nr);
++		ret = set_io_stripe(fs_info, op, logical, length, smap, map,
++				    stripe_index, stripe_offset, stripe_nr);
+ 		if (mirror_num_ret)
+ 			*mirror_num_ret = mirror_num;
+ 		*bioc_ret = NULL;
+-		ret = 0;
  		goto out;
  	}
  
--	bioc = alloc_btrfs_io_context(fs_info, num_alloc_stripes);
-+	bioc = alloc_btrfs_io_context(fs_info, logical, num_alloc_stripes);
- 	if (!bioc) {
- 		ret = -ENOMEM;
- 		goto out;
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 576bfcb5b764..8604bfbbf510 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -390,12 +390,11 @@ struct btrfs_fs_devices {
+@@ -6463,21 +6474,29 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		bioc->full_stripe_logical = em->start +
+ 			btrfs_stripe_nr_to_offset(stripe_nr * data_stripes);
+ 		for (i = 0; i < num_stripes; i++)
+-			set_io_stripe(&bioc->stripes[i], map,
+-				      (i + stripe_nr) % num_stripes,
+-				      stripe_offset, stripe_nr);
++			ret = set_io_stripe(fs_info, op, logical, length,
++					    &bioc->stripes[i], map,
++					    (i + stripe_nr) % num_stripes,
++					    stripe_offset, stripe_nr);
+ 	} else {
+ 		/*
+ 		 * For all other non-RAID56 profiles, just copy the target
+ 		 * stripe into the bioc.
+ 		 */
+ 		for (i = 0; i < num_stripes; i++) {
+-			set_io_stripe(&bioc->stripes[i], map, stripe_index,
+-				      stripe_offset, stripe_nr);
++			ret = set_io_stripe(fs_info, op, logical, length,
++					    &bioc->stripes[i], map, stripe_index,
++					    stripe_offset, stripe_nr);
+ 			stripe_index++;
+ 		}
+ 	}
  
- struct btrfs_io_stripe {
- 	struct btrfs_device *dev;
--	union {
--		/* Block mapping */
--		u64 physical;
--		/* For the endio handler */
--		struct btrfs_io_context *bioc;
--	};
-+	/* Block mapping */
-+	u64 physical;
-+	u64 length;
-+	/* For the endio handler */
-+	struct btrfs_io_context *bioc;
- };
- 
- struct btrfs_discard_stripe {
-@@ -428,6 +427,10 @@ struct btrfs_io_context {
- 	atomic_t error;
- 	u16 max_errors;
- 
-+	u64 logical;
-+	u64 size;
-+	struct list_head ordered_entry;
++	if (ret) {
++		*bioc_ret = NULL;
++		btrfs_put_bioc(bioc);
++		goto out;
++	}
 +
- 	/*
- 	 * The total number of stripes, including the extra duplicated
- 	 * stripe for replace.
+ 	if (op != BTRFS_MAP_READ)
+ 		max_errors = btrfs_chunk_max_errors(map);
+ 
 
 -- 
 2.41.0
