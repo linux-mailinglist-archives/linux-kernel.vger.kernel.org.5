@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215AB79ACCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D1479B228
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 01:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376303AbjIKWTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 18:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
+        id S234048AbjIKUsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 16:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235445AbjIKIjF (ORCPT
+        with ESMTP id S235478AbjIKIl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 04:39:05 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA6B1A2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:39:01 -0700 (PDT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-27405baf9fdso1193985a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 01:39:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694421540; x=1695026340;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HxyTrS612uNKWLRlaUPNGhJmV5igMh7sLf46Do9wjCw=;
-        b=ltTPfkDFAGJNOZzeM0zDnat8Bxkp9DDKGU6k4ENw1rF3iEqaB5WPWdcynZTjoO8QUO
-         ioVycWkNn1DECG2f/ftosvpbKytSqTve4CL0ZvK2LkEg+WNgCCLTZOos9mdGBL2ur+3Q
-         lSedc4zN59WAf9JtrmOQbI7C6690b+eL/4ZmOTtyefss5CPqQJMX1v2ME2W9O2L3ZQ91
-         1aUWk6MhUmClUjSBtNXwwTOn1JEUsWV1OqyA7B5D7KOxbMI2AyiWTRtlMSRCXkJHDgaR
-         nI7y28ryqJb9BVzvSrlJPYERGFlDOPIinIJEWEQxfAPDfuroeJhcg8cvnUMh1Hy435OD
-         fBgw==
-X-Gm-Message-State: AOJu0YxAr1hSHAQXJCxN6AY7to7dGcccP2rVsWuEuxmpm0NgaPOd+Ena
-        JVv666Hx7ELwfazmK/6MZP7695XZneIhMrwLcr3RnavavCgR
-X-Google-Smtp-Source: AGHT+IHKHEgB1RR9mmJEKW34kFroUCHNZp5Vp9br5ZbLneb8mLVH4M/WR/IvGtAsOTq1oOqZc5l0j76YqKyoZ6G2LvFEqBGW1k0p
+        Mon, 11 Sep 2023 04:41:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C965125;
+        Mon, 11 Sep 2023 01:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694421715; x=1725957715;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uhPe1H2Fp1YDVYHUdP69YCF2k7+nQbNT9DvyyBH2lmY=;
+  b=kI09s6e/ZM3koHQI3MdzBIHixUNhvXWXRUC7IicLTa4fT9L24sPAbQN1
+   Mz9UMheeobLrGzIl0gS7OmXVy8+vl8e4Mzwewz33KjL3DN3HMUWEPCsVn
+   qq4OcF0HtlKDz5HIC3wmQqtvywfmLg1KSg0D5ZqC53VKoBSdK3n1+pHw7
+   aQImioOATVhNbwcCTxuQpg62kZT+O4idojkeI7Dj+/Xsks5NnakUYzof2
+   id3FFgVOQLRkQBDLOhiakbuBCThWA6svuRFzlulMTl97IX5pPINgbCnHH
+   Cwzdhxc85+mP2f5OdPFBwIzk6tkGx8IJ/h5FxXr4e6caYPoDbvncRByvH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="442024370"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="442024370"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 01:41:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10829"; a="858242359"
+X-IronPort-AV: E=Sophos;i="6.02,243,1688454000"; 
+   d="scan'208";a="858242359"
+Received: from aabuleil-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.251.216.192])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 01:41:50 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 1DF6310940E; Mon, 11 Sep 2023 11:41:48 +0300 (+03)
+Date:   Mon, 11 Sep 2023 11:41:48 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH 1/3] proc/vmcore: Do not map unaccepted memory
+Message-ID: <20230911084148.l6han7jxob42rdvm@box.shutemov.name>
+References: <20230906073902.4229-1-adrian.hunter@intel.com>
+ <20230906073902.4229-2-adrian.hunter@intel.com>
+ <ef97f466-b27a-a883-7131-c2051480dd87@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:8ca:b0:26b:159a:3a9e with SMTP id
- ds10-20020a17090b08ca00b0026b159a3a9emr2306611pjb.7.1694421540810; Mon, 11
- Sep 2023 01:39:00 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 01:39:00 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a353f06051142fb@google.com>
-Subject: [syzbot] Monthly v9fs report (Sep 2023)
-From:   syzbot <syzbot+list71a44b7d71b8fc9417b4@syzkaller.appspotmail.com>
-To:     asmadeus@codewreck.org, ericvh@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lucho@ionkov.net, syzkaller-bugs@googlegroups.com,
-        v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef97f466-b27a-a883-7131-c2051480dd87@redhat.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello v9fs maintainers/developers,
+On Mon, Sep 11, 2023 at 10:03:36AM +0200, David Hildenbrand wrote:
+> On 06.09.23 09:39, Adrian Hunter wrote:
+> > Support for unaccepted memory was added recently, refer commit
+> > dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby
+> > a virtual machine may need to accept memory before it can be used.
+> > 
+> > Do not map unaccepted memory because it can cause the guest to fail.
+> > 
+> > For /proc/vmcore, which is read-only, this means a read or mmap of
+> > unaccepted memory will return zeros.
+> 
+> Does a second (kdump) kernel that exposes /proc/vmcore reliably get access
+> to the information whether memory of the first kernel is unaccepted (IOW,
+> not its memory, but the memory of the first kernel it is supposed to expose
+> via /proc/vmcore)?
 
-This is a 31-day syzbot report for the v9fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/v9fs
+There are few patches in my queue to few related issue, but generally,
+yes, the information is available to the target kernel via EFI
+configuration table.
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 7 issues are still open and 27 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 793     Yes   WARNING in v9fs_fid_get_acl
-                  https://syzkaller.appspot.com/bug?extid=a83dc51a78f0f4cf20da
-<2> 561     Yes   WARNING in inc_nlink (3)
-                  https://syzkaller.appspot.com/bug?extid=2b3af42c0644df1e4da9
-<3> 205     Yes   BUG: corrupted list in p9_fd_cancelled (2)
-                  https://syzkaller.appspot.com/bug?extid=1d26c4ed77bc6c5ed5e6
-<4> 9       No    WARNING: refcount bug in p9_req_put (2)
-                  https://syzkaller.appspot.com/bug?extid=3ba8f2097df93bc26d2f
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
