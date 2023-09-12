@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BFC79D973
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E64879D976
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236494AbjILTS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S231971AbjILTWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjILTS6 (ORCPT
+        with ESMTP id S229781AbjILTWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:18:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E7FC1;
-        Tue, 12 Sep 2023 12:18:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38188C433C8;
-        Tue, 12 Sep 2023 19:18:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694546334;
-        bh=OITpLtQ4al9uXlZ9wlLgOEDSs4UNoAkK/SHtaEiAm68=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tW1/u2Nrd3m0/SyPTnCSvag/nRVYHtR2K1WTX6TBVry7siEFCFb0+whyVyESatu8L
-         G949bVT5+6Q+966HsR23oIX2yGnWxG5CjRAiM1TIGG+zjz2XygrxO+TTXSY4q0PvV4
-         VrGOTDRJURpNPN9LMx89f11av3CRWAm/4Z4ZBvuE/L4XzKFiBY2fmRN0Gg+cTas91d
-         gcKQJGpstDMJjX8YDmL0kE3yUl2e89maTFyCI0uSvXTxnC3LlPqoApeMUif0dR7aSQ
-         jxqf3LFYAI6Qg1JoSkaUAm5x+6NeC29iuUOVEjeYbGbc9Q8x4gpiIDRI7a7Jt/QuAy
-         75nCj3IxZaN4A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C6C3C403F4; Tue, 12 Sep 2023 16:18:50 -0300 (-03)
-Date:   Tue, 12 Sep 2023 16:18:50 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
-        Kang Minchul <tegongkang@gmail.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf list: Avoid a hardcoded cpu PMU name
-Message-ID: <ZQC5mmDtasr5/vDH@kernel.org>
-References: <20230906234416.3472339-1-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230906234416.3472339-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+        Tue, 12 Sep 2023 15:22:45 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7792C1;
+        Tue, 12 Sep 2023 12:22:41 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CJKReI027902;
+        Tue, 12 Sep 2023 19:22:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=wWnLfUaBsk8/9XZq7ZQH7mewYkodHLrDkdq6gKH9nHs=;
+ b=b+rGIeotYwJ5mm+tN5Cg3Mvkl+ATz7Iwb3w7/mN+KOnolFN67Z3rNdqMH6TebkCJms/D
+ juB77jj9kdSVl8cQORe+9OacFjlBnRTWD/W2vwnlwsQ2jmOXEo+vhEaDv+h4fbgae2FL
+ KojfLqUQ4L6uc78RWLDMdwTDnmjZJSofYqK41V3DS+rMq2Bm15ImsVLVCoacAp8+A0Uc
+ 4QFyDgMtGExEkiHg0vmVAiPdCBJuQk8v1WecfWt3k4hj1nYk1eO5jDmkWbl1JR2CIZqM
+ 0Q42ej1ks0lqYnOQsSs5FOM3UC/UIbaXAlzmSviuQPTU1R+SmRkd19m5tgPn/rX9twco hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2x24r0xe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 19:22:24 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38CJLjsN032516;
+        Tue, 12 Sep 2023 19:22:24 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2x24r0xa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 19:22:24 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38CIOmoM002779;
+        Tue, 12 Sep 2023 19:22:23 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hkweur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 19:22:23 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38CJMMEN41353628
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 19:22:22 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42AC758059;
+        Tue, 12 Sep 2023 19:22:22 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E074058058;
+        Tue, 12 Sep 2023 19:22:20 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.213])
+        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Sep 2023 19:22:20 +0000 (GMT)
+Message-ID: <afba92bc2961c758d34ab340de207beb0a3b84b0.camel@linux.ibm.com>
+Subject: Re: [PATCH] integrity: powerpc: Do not select CA_MACHINE_KEYRING
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Michal =?ISO-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        Nayna <nayna@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joeyli <jlee@suse.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Date:   Tue, 12 Sep 2023 15:22:20 -0400
+In-Reply-To: <CVGUFUEQVCHS.37OA20PNG9EVB@suppilovahvero>
+References: <20230907165224.32256-1-msuchanek@suse.de>
+         <20230907173232.GD8826@kitsune.suse.cz>
+         <92e23f29-1a16-54da-48d1-59186158e923@linux.vnet.ibm.com>
+         <20230912074116.GL8826@kitsune.suse.cz>
+         <CVGUFUEQVCHS.37OA20PNG9EVB@suppilovahvero>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3IPyqn1Wmos6pu4cDwBz0Ld8z88iSZJL
+X-Proofpoint-ORIG-GUID: Hba6BnrVByWDG4ASRxD3uNw2IT8kyZ52
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_18,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 mlxlogscore=997
+ phishscore=0 bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309120160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 06, 2023 at 04:44:15PM -0700, Ian Rogers escreveu:
-> Use the first core PMU instead.
+On Tue, 2023-09-12 at 12:49 +0300, Jarkko Sakkinen wrote:
+> On Tue Sep 12, 2023 at 10:41 AM EEST, Michal Suchánek wrote:
+> > On Mon, Sep 11, 2023 at 11:39:38PM -0400, Nayna wrote:
+> > > 
+> > > On 9/7/23 13:32, Michal Suchánek wrote:
+> > > > Adding more CC's from the original patch, looks like get_maintainers is
+> > > > not that great for this file.
+> > > > 
+> > > > On Thu, Sep 07, 2023 at 06:52:19PM +0200, Michal Suchanek wrote:
+> > > > > No other platform needs CA_MACHINE_KEYRING, either.
+> > > > > 
+> > > > > This is policy that should be decided by the administrator, not Kconfig
+> > > > > dependencies.
+> > > 
+> > > We certainly agree that flexibility is important. However, in this case,
+> > > this also implies that we are expecting system admins to be security
+> > > experts. As per our understanding, CA based infrastructure(PKI) is the
+> > > standard to be followed and not the policy decision. And we can only speak
+> > > for Power.
+> > > 
+> > > INTEGRITY_CA_MACHINE_KEYRING ensures that we always have CA signed leaf
+> > > certs.
+> >
+> > And that's the problem.
+> >
+> > From a distribution point of view there are two types of leaf certs:
+> >
+> >  - leaf certs signed by the distribution CA which need not be imported
+> >    because the distribution CA cert is enrolled one way or another
+> >  - user generated ad-hoc certificates that are not signed in any way,
+> >    and enrolled by the user
+> >
+> > The latter are vouched for by the user by enrolling the certificate, and
+> > confirming that they really want to trust this certificate. Enrolling
+> > user certificates is vital for usability or secure boot. Adding extra
+> > step of creating a CA certificate stored on the same system only
+> > complicates things with no added benefit.
 > 
-> On a Raspberry Pi, before:
-> ```
-> $ perf list
-> ...
->   cpu/t1=v1[,t2=v2,t3 ...]/modifier                  [Raw hardware event descriptor]
->        [(see 'man perf-list' on how to encode it)]
-> ...
-> ```
-> After:
-> ```
+> This all comes down to the generic fact that kernel should not
+> proactively define what it *expects* sysadmins.
 > 
-> $ perf list
-> ...
->   armv8_cortex_a72/t1=v1[,t2=v2,t3 ...]/modifier     [Raw hardware event descriptor]
->        [(see 'man perf-list' on how to encode it)]
-> ...
-> ```
+> CA based infrastructure like anything is a policy decision not
+> a decision to be enforced by kernel.
 
-Thanks, applied the two patches.
+Secure boot requires a signature chain of trust.  IMA extends the
+secure and trusted boot concepts to the kernel. Missing from that
+signature chain of trust is the ability of allowing the end
+machine/system owner to load other certificates without recompiling the
+kernel. The introduction of the machine keyring was to address this.
 
-- Arnaldo
+I'm not questioning the end user's intent on loading local or third
+party keys via the normal mechanisms. If the existing mechanism(s) for
+loading local or third party keys were full-proof, then loading a
+single certificate, self-signed or not, would be fine. However, that
+isn't the reality.  The security of the two-stage approach is simply
+not equivalent to loading a single certificate.  Documentation could
+help the end user/system owner to safely create (and manage) separate
+certificate signing and code signing certs.
 
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/print-events.c | 28 +++++++++++++++++-----------
->  1 file changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-> index a7566edc86a3..b0fc48be623f 100644
-> --- a/tools/perf/util/print-events.c
-> +++ b/tools/perf/util/print-events.c
-> @@ -395,6 +395,8 @@ void print_symbol_events(const struct print_callbacks *print_cb, void *print_sta
->   */
->  void print_events(const struct print_callbacks *print_cb, void *print_state)
->  {
-> +	char *tmp;
-> +
->  	print_symbol_events(print_cb, print_state, PERF_TYPE_HARDWARE,
->  			event_symbols_hw, PERF_COUNT_HW_MAX);
->  	print_symbol_events(print_cb, print_state, PERF_TYPE_SOFTWARE,
-> @@ -418,17 +420,21 @@ void print_events(const struct print_callbacks *print_cb, void *print_state)
->  			/*long_desc=*/NULL,
->  			/*encoding_desc=*/NULL);
->  
-> -	print_cb->print_event(print_state,
-> -			/*topic=*/NULL,
-> -			/*pmu_name=*/NULL,
-> -			"cpu/t1=v1[,t2=v2,t3 ...]/modifier",
-> -			/*event_alias=*/NULL,
-> -			/*scale_unit=*/NULL,
-> -			/*deprecated=*/false,
-> -			event_type_descriptors[PERF_TYPE_RAW],
-> -			"(see 'man perf-list' on how to encode it)",
-> -			/*long_desc=*/NULL,
-> -			/*encoding_desc=*/NULL);
-> +	if (asprintf(&tmp, "%s/t1=v1[,t2=v2,t3 ...]/modifier",
-> +		     perf_pmus__scan_core(/*pmu=*/NULL)->name) > 0) {
-> +		print_cb->print_event(print_state,
-> +				/*topic=*/NULL,
-> +				/*pmu_name=*/NULL,
-> +				tmp,
-> +				/*event_alias=*/NULL,
-> +				/*scale_unit=*/NULL,
-> +				/*deprecated=*/false,
-> +				event_type_descriptors[PERF_TYPE_RAW],
-> +				"(see 'man perf-list' on how to encode it)",
-> +				/*long_desc=*/NULL,
-> +				/*encoding_desc=*/NULL);
-> +		free(tmp);
-> +	}
->  
->  	print_cb->print_event(print_state,
->  			/*topic=*/NULL,
-> -- 
-> 2.42.0.283.g2d96d420d3-goog
-> 
+Unlike UEFI based systems, PowerVM defines two variables trustedcadb
+and moduledb, for storing certificate signing and code signing
+certificates respectively.  First the certs on the trustedcadb are
+loaded and then the ones on moduledb are loaded.
 
 -- 
+thanks,
 
-- Arnaldo
+Mimi
+
