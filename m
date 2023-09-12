@@ -2,181 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FC779D070
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F093979D074
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbjILL4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        id S234860AbjILL5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbjILL4o (ORCPT
+        with ESMTP id S234930AbjILL5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:56:44 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFF110D7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:56:40 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id a1e0cc1a2514c-7a512434bc9so4039002241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694519799; x=1695124599; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hM+GZDrqeSJbN3AByx2ZfKWwBecQmUtkdjQEAlP2iy0=;
-        b=MDHZsNvSeLS/OCwtRwoa/16HNGkASThsry1ARnMrmiVUlYMCS/sBIRgSW7Nty47b1l
-         scwSdIocwZVW31HblVIPK5/QqSTQ5Beo9mmiZBtB46MQXkRzvsTis/RanMpgClHOEonw
-         3DOXhSuSbrqoOJEvhWI1Y9JCCpOYB5bZ4LQj1w+YObArarFd7YELLNPFLzz9rGCEGhUi
-         XBs+rLbDj210qIUjC31Yd34qn1VANEowaSzNdS6W+d/1jKWaBPQqMKRwI7CAswXympvL
-         jFWGrmT/IfG2DW2YNiR1r7+zknMFZOFc1R68auILk0SW3eLLDNK53/lJoe8y+AGVcOo7
-         TYIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694519799; x=1695124599;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hM+GZDrqeSJbN3AByx2ZfKWwBecQmUtkdjQEAlP2iy0=;
-        b=DlFR2L8/EnXRrNneb8EAAXXE3eOVyL6qcQHP1JTdHgeSmba2UCkAdrKEBE+NWQ5imO
-         pBqDjtlUoTBw9UU61wfHc7c2S2VftnIuX30D9h6P+d8zE6KyNKd7/r+Sf4QL3EVgaapT
-         8sERl5TYJNmaIKRqbjlQIQf1yoxY/0/ZB/JgkD89OOkW4ay06matF5d1hInDmXLcmQP/
-         w0oa4OIjeoWSiRstwQ5EKIRoH+wtfs6qPmHZ5KgfznnbuIpnvMmMgV2OPCh3aCVb1llz
-         N3D8nbEiaUPVk3KKG3HddTQ4pd0QGo8IiPSBynfnBOxniAl51d2EHdxYqLFF6yGnYvRa
-         frGA==
-X-Gm-Message-State: AOJu0YwV2pjOCMfXkbBtum7HJMTiNnqy0SSc8Lyxv9/sb7TxUyhaZUaz
-        HTvjQuWZGIgYiFsdARt14yy2gLp1zzbLyMEZ14Ac4A==
-X-Google-Smtp-Source: AGHT+IGgWWHDG3U3xZjhxJlUgNBntR20hjZb21XDRq5dpijLuAigU2VJD5bsWfFlFRPo7V/LoyZy0iqN5FJ9h/3IbKI=
-X-Received: by 2002:a05:6102:3564:b0:44d:6320:f0c5 with SMTP id
- bh4-20020a056102356400b0044d6320f0c5mr1070772vsb.12.1694519799125; Tue, 12
- Sep 2023 04:56:39 -0700 (PDT)
+        Tue, 12 Sep 2023 07:57:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 052531703
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:57:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5521C15;
+        Tue, 12 Sep 2023 04:57:54 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FE083F67D;
+        Tue, 12 Sep 2023 04:57:16 -0700 (PDT)
+Message-ID: <2b4a7aee-1997-cf2f-e8e8-19ab4adc09b5@arm.com>
+Date:   Tue, 12 Sep 2023 12:57:12 +0100
 MIME-Version: 1.0
-References: <20230911134633.619970489@linuxfoundation.org> <1ffe4f64-f238-859a-ab14-7559d03c4671@linaro.org>
- <CAEUSe7_XA16yZAHA+YTbJygwaUYkU5gs=FnV9BAmQRYzwgVjvQ@mail.gmail.com>
- <CA+G9fYsiWEKSV0EeU0cXsJZ3U75fbdGyCmDx07ksFMUW5jouyw@mail.gmail.com> <2023091233-boots-line-a3d4@gregkh>
-In-Reply-To: <2023091233-boots-line-a3d4@gregkh>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Sep 2023 17:26:27 +0530
-Message-ID: <CA+G9fYt2Jnxwvpzcd66HCqkPi6CNistHfmxQYAzX22OWHUoUSA@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/600] 6.1.53-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     jack@suse.cz, stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Tom Rix <trix@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dma-mapping: fix dma_addressing_limited if dma_range_map
+ is scanned
+Content-Language: en-GB
+To:     Jia He <justin.he@arm.com>, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        iommu@lists.linux.dev
+Cc:     linux-kernel@vger.kernel.org
+References: <20230912084002.2168-1-justin.he@arm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230912084002.2168-1-justin.he@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sept 2023 at 16:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Sep 12, 2023 at 02:19:34PM +0530, Naresh Kamboju wrote:
-> > On Tue, 12 Sept 2023 at 07:55, Daniel D=C3=ADaz <daniel.diaz@linaro.org=
-> wrote:
-> > >
-> > > Hello!
-> > >
-> > > On Mon, 11 Sept 2023 at 14:58, Daniel D=C3=ADaz <daniel.diaz@linaro.o=
-rg> wrote:
-> > > > On 11/09/23 7:40 a. m., Greg Kroah-Hartman wrote:
-> > > > > This is the start of the stable review cycle for the 6.1.53 relea=
-se.
-> > > > > There are 600 patches in this series, all will be posted as a res=
-ponse
-> > > > > to this one.  If anyone has any issues with these being applied, =
-please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> > > > > Anything received after that time might be too late.
-> > > > >
-> > > > > The whole patch series can be found in one patch at:
-> > > > >       https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/=
-patch-6.1.53-rc1.gz
-> > > > > or in the git tree and branch at:
-> > > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-=
-stable-rc.git linux-6.1.y
-> > > > > and the diffstat can be found below.
-> > > > >
-> > > > > thanks,
-> > > > >
-> > > > > greg k-h
-> > > >
-> > > > We're seeing this new warning:
-> > > > -----8<-----
-> > > >    /builds/linux/fs/udf/inode.c:892:6: warning: variable 'newblock'=
- is used uninitialized whenever 'if' condition is true [-Wsometimes-uniniti=
-alized]
-> > > >      892 |         if (*err < 0)
-> > > >          |             ^~~~~~~~
-> > > >    /builds/linux/fs/udf/inode.c:914:9: note: uninitialized use occu=
-rs here
-> > > >      914 |         return newblock;
-> > > >          |                ^~~~~~~~
-> > > >    /builds/linux/fs/udf/inode.c:892:2: note: remove the 'if' if its=
- condition is always false
-> > > >      892 |         if (*err < 0)
-> > > >          |         ^~~~~~~~~~~~~
-> > > >      893 |                 goto out_free;
-> > > >          |                 ~~~~~~~~~~~~~
-> > > >    /builds/linux/fs/udf/inode.c:699:34: note: initialize the variab=
-le 'newblock' to silence this warning
-> > > >      699 |         udf_pblk_t newblocknum, newblock;
-> > > >          |                                         ^
-> > > >          |                                          =3D 0
-> > > >    1 warning generated.
-> > > > ----->8-----
-> > > >
-> > > > That's with Clang 17 (and nightly) on:
-> > > > * arm
-> > > > * powerpc
-> > > > * s390
-> > >
-> > > For what it's worth, bisection points to 903b487b5ba6 ("udf: Handle
-> > > error when adding extent to a file").
-> >
-> > I see the following commit is fixing the reported problem.
-> >
-> > commit 6d5ab7c2f7cf90877dab8f2bb06eb5ca8edc73ef
-> > Author: Tom Rix <trix@redhat.com>
-> > Date:   Fri Dec 30 12:53:41 2022 -0500
-> >
-> >     udf: initialize newblock to 0
-> >
-> >     The clang build reports this error
-> >     fs/udf/inode.c:805:6: error: variable 'newblock' is used
-> > uninitialized whenever 'if' condition is true
-> > [-Werror,-Wsometimes-uninitialized]
-> >             if (*err < 0)
-> >                 ^~~~~~~~
-> >     newblock is never set before error handling jump.
-> >     Initialize newblock to 0 and remove redundant settings.
-> >
-> >     Fixes: d8b39db5fab8 ("udf: Handle error when adding extent to a fil=
-e")
-> >     Reported-by: Nathan Chancellor <nathan@kernel.org>
-> >     Signed-off-by: Tom Rix <trix@redhat.com>
-> >     Signed-off-by: Jan Kara <jack@suse.cz>
-> >     Message-Id: <20221230175341.1629734-1-trix@redhat.com>
->
-> Wait, where is this commit?  I don't see it in Linus's tree either, nor
-> in linux-next.  Where did you find it?
+On 12/09/2023 9:40 am, Jia He wrote:
+> After scanning the dma_range_map, if it is found that not all of the
+> system RAM ranges are encompassed within it, an incorrect calculation
+> occurs for dma_addressing_limited(), which prevents the nvme device
+> dma mapping in the checking path of phys_to_dma().
 
-Can you find this commit id ?
+Nit: the subject and this description aren't very clear - the key point 
+here is the unusual case that the range map covers right up to the top 
+of system RAM, but leaves a hole somewhere lower down. There's no issue 
+with the more typical case where some RAM exists above the top of the 
+range map, since bus_dma_limit will capture that and work as expected.
 
-Commit id: 23970a1c9475b305770fd37bebfec7a10f263787
-subject: ("udf: initialize newblock to 0")
+> E.g. On an Armv8 Ampere server, the dsdt ACPI table is:
+>   Method (_DMA, 0, Serialized)  // _DMA: Direct Memory Access
+>              {
+>                  Name (RBUF, ResourceTemplate ()
+>                  {
+>                      QWordMemory (ResourceConsumer, PosDecode, MinFixed,
+> MaxFixed, Cacheable, ReadWrite,
+>                          0x0000000000000000, // Granularity
+>                          0x0000000000000000, // Range Minimum
+>                          0x00000000FFFFFFFF, // Range Maximum
+>                          0x0000000000000000, // Translation Offset
+>                          0x0000000100000000, // Length
+>                          ,, , AddressRangeMemory, TypeStatic)
+>                      QWordMemory (ResourceConsumer, PosDecode, MinFixed,
+> MaxFixed, Cacheable, ReadWrite,
+>                          0x0000000000000000, // Granularity
+>                          0x0000006010200000, // Range Minimum
+>                          0x000000602FFFFFFF, // Range Maximum
+>                          0x0000000000000000, // Translation Offset
+>                          0x000000001FE00000, // Length
+>                          ,, , AddressRangeMemory, TypeStatic)
+>                      QWordMemory (ResourceConsumer, PosDecode, MinFixed,
+> MaxFixed, Cacheable, ReadWrite,
+>                          0x0000000000000000, // Granularity
+>                          0x00000060F0000000, // Range Minimum
+>                          0x00000060FFFFFFFF, // Range Maximum
+>                          0x0000000000000000, // Translation Offset
+>                          0x0000000010000000, // Length
+>                          ,, , AddressRangeMemory, TypeStatic)
+>                      QWordMemory (ResourceConsumer, PosDecode, MinFixed,
+> MaxFixed, Cacheable, ReadWrite,
+>                          0x0000000000000000, // Granularity
+>                          0x0000007000000000, // Range Minimum
+>                          0x000003FFFFFFFFFF, // Range Maximum
+>                          0x0000000000000000, // Translation Offset
+>                          0x0000039000000000, // Length
+>                          ,, , AddressRangeMemory, TypeStatic)
+>                  })
+> 
+> But the System RAM ranges are:
+> cat /proc/iomem |grep -i ram
+> 90000000-91ffffff : System RAM
+> 92900000-fffbffff : System RAM
+> 880000000-fffffffff : System RAM
+> 8800000000-bff5990fff : System RAM
+> bff59d0000-bff5a4ffff : System RAM
+> bff8000000-bfffffffff : System RAM
+> So some RAM ranges are out of dma_range_map.
+> 
+> Fixes it by checking whether each of the system RAM resources can be
+> properly encompassed within the dma_range_map.
+> 
+> Signed-off-by: Jia He <justin.he@arm.com>
+> ---
+>   include/linux/dma-mapping.h |  8 +++++--
+>   kernel/dma/mapping.c        | 45 +++++++++++++++++++++++++++++++++++++
+>   2 files changed, 51 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index f0ccca16a0ac..d9d1c67c8579 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -144,6 +144,7 @@ bool dma_pci_p2pdma_supported(struct device *dev);
+>   int dma_set_mask(struct device *dev, u64 mask);
+>   int dma_set_coherent_mask(struct device *dev, u64 mask);
+>   u64 dma_get_required_mask(struct device *dev);
+> +bool all_ram_in_dma_range_map(struct device *dev);
+>   size_t dma_max_mapping_size(struct device *dev);
+>   size_t dma_opt_mapping_size(struct device *dev);
+>   bool dma_need_sync(struct device *dev, dma_addr_t dma_addr);
+> @@ -475,8 +476,11 @@ static inline int dma_coerce_mask_and_coherent(struct device *dev, u64 mask)
+>    */
+>   static inline bool dma_addressing_limited(struct device *dev)
+>   {
+> -	return min_not_zero(dma_get_mask(dev), dev->bus_dma_limit) <
+> -			    dma_get_required_mask(dev);
+> +	if (min_not_zero(dma_get_mask(dev), dev->bus_dma_limit) <
+> +						dma_get_required_mask(dev))
 
-- Naresh
+Nit: indentation
 
+> +		return true;
+> +
+> +	return !all_ram_in_dma_range_map(dev);
+>   }
+>   
+>   static inline unsigned int dma_get_max_seg_size(struct device *dev)
+> diff --git a/kernel/dma/mapping.c b/kernel/dma/mapping.c
+> index e323ca48f7f2..ab407deb81b8 100644
+> --- a/kernel/dma/mapping.c
+> +++ b/kernel/dma/mapping.c
+> @@ -14,6 +14,7 @@
+>   #include <linux/of_device.h>
+>   #include <linux/slab.h>
+>   #include <linux/vmalloc.h>
+> +#include <linux/dma-direct.h>
 
->
-> confused,
->
-> greg k-h
+Nit: please keep the includes sorted alphabetically, however I do wonder 
+whether this whole thing shouldn't belong in dma-direct anyway.
+
+>   #include "debug.h"
+>   #include "direct.h"
+>   
+> @@ -819,6 +820,50 @@ size_t dma_opt_mapping_size(struct device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(dma_opt_mapping_size);
+>   
+> +/*
+> + * To check whether all ram resource ranges are mapped in dma range map
+> + * Returns 0 when continuous check is needed
+> + * Returns 1 if there is some ram range can't be mapped to dma_range_map
+> + */
+> +static int check_ram_in_range_map(unsigned long start_pfn,
+> +				  unsigned long nr_pages, void *data)
+> +{
+> +	phys_addr_t end_paddr = (start_pfn + nr_pages) << PAGE_SHIFT;
+
+This could still wrap to 0 on 32-bit. I think the robust thing to do is 
+either spray some extra -1s and +1s around to make all the "end" values 
+inclusive limits, or maybe just do everything in units of pages rather 
+than bytes (i.e. use PFN_DOWN() on the bus_dma_region entry values).
+
+> +	phys_addr_t start_paddr = start_pfn << PAGE_SHIFT;
+> +	struct device *dev = (struct device *)data;
+> +	struct bus_dma_region *region = NULL;
+> +	const struct bus_dma_region *m;
+> +
+> +	while (start_paddr < end_paddr) {
+> +		// find region containing start_paddr
+
+Nit: inconsistent comment style (although it's not a particularly 
+valuable comment anyway, IMO the loop itself is clear enough).
+
+Thanks,
+Robin.
+
+> +		for (m = dev->dma_range_map; m->size; m++) {
+> +			if (start_paddr >= m->cpu_start
+> +			    && start_paddr - m->cpu_start < m->size) {
+> +				region = (struct bus_dma_region *)m;
+> +				break;
+> +			}
+> +		}
+> +		if (!region)
+> +			return 1;
+> +
+> +		start_paddr = region->cpu_start + region->size;
+> +		/* handle overflow of phys_addr_t */
+> +		if (start_paddr == 0)
+> +			break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +bool all_ram_in_dma_range_map(struct device *dev)
+> +{
+> +	if (!dev->dma_range_map)
+> +		return 1;
+> +
+> +	return !walk_system_ram_range(0, ULONG_MAX, dev, check_ram_in_range_map);
+> +}
+> +EXPORT_SYMBOL_GPL(all_ram_in_dma_range_map);
+> +
+>   bool dma_need_sync(struct device *dev, dma_addr_t dma_addr)
+>   {
+>   	const struct dma_map_ops *ops = get_dma_ops(dev);
