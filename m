@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F9779CE64
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9F379CE67
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjILKeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33844 "EHLO
+        id S234194AbjILKee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234385AbjILKah (ORCPT
+        with ESMTP id S234387AbjILKah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 06:30:37 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45041723;
-        Tue, 12 Sep 2023 03:29:00 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 10:28:58 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4A31724;
+        Tue, 12 Sep 2023 03:29:01 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 10:28:59 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1694514539;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9/c5WAScPORoGVq2FSiwIsh38H/zaJClHn7ZgyVDpdw=;
-        b=Aa7aIz7+RULKnXj50xg3WkDkp4ZsuQg7lmRDuXit0NZpFiJywvJJnenfztW9ymrPzIKEfV
-        mxBFjYrHtzVOwkFwxh0DTgs4t7rFkMtpvXfmF7kdHneHkuovulTP7zkL+IWJVay5FS7pt5
-        /PjdJiuvptsbaUq1plWIpo9g7rx7ifCHJ1COohEr61m8JwBNX81r833dSNKT/zlZqtaoxY
-        tbAQgV+oiaUHvPhgVjxsLca3gXHAaQsU7f9HherGA+OH+QOFKBplp6xlSMDWVDySsEpUUA
-        lPwuZfETo5Gnj8bgme/bizlaYQYC1/1QOI1Y7czcDfQzSqrqD3QhDf2Pq2wAhA==
+        bh=rC7fJ3unKfH5ys7/EHhA1f5zHs+G6x74lKhYIE8XIZg=;
+        b=ph2MQdU/nZ53WVCV6Gw2CLJ/0ppDu3jr6Rdn3a6FL+4WkmfvVcIeQeowSPWJ8MU87LOdm+
+        SrhF4EMfKyQXsxPVWoA5KyYZy8jGkL6SjvlbscGJGYZpd5a/C0pCYnhNFcQ344T8IyerDj
+        G7U6EqMEgH80Wu+k0MDICa9pM+59u+TeLNfaLZGAviqTKOWks9JGF2syAAMWHeKfN2G4Tv
+        Eeu97Qt2eIa+oYiqqZsa16udmdzyE0N2y2+TVPAIYIacX8OtH7lb8l2bEzyYHVmbh/DCl8
+        zSTv/j+Bu0idPONo4bIqWRaIC8C8EHWIM8kZbb+umyyKp3E2jMhdtGjYcKO1jg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1694514539;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9/c5WAScPORoGVq2FSiwIsh38H/zaJClHn7ZgyVDpdw=;
-        b=gIslnSMuU/6KDZEZVzo/l0EAU/CG2LL6gktjhWZWNIjw1JDwgCkt1bVoWNUynQzJmAvkOu
-        OPyk6PxJHNWTtRBw==
+        bh=rC7fJ3unKfH5ys7/EHhA1f5zHs+G6x74lKhYIE8XIZg=;
+        b=BwOZw6w/gmfTtyAdLKh29jVgroF6pFmP8XUHGA4+BO7pVHi9w1Qp4c2k9vt+s6srrTZJvq
+        d+91SW7tukwAV+CQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Simplify yield_to()
+Subject: [tip: sched/core] sched: Simplify sched_{set,get}affinity()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169451453874.27769.1812735099642835156.tip-bot2@tip-bot2>
+Message-ID: <169451453926.27769.12507870986222267887.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -54,108 +54,124 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     a5a9d756c80f46cda38952d9ccd4e810b8bdb9d7
-Gitweb:        https://git.kernel.org/tip/a5a9d756c80f46cda38952d9ccd4e810b8bdb9d7
+Commit-ID:     d2064a0466d38e7e312aecf815cef01b5f342ad9
+Gitweb:        https://git.kernel.org/tip/d2064a0466d38e7e312aecf815cef01b5f342ad9
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 09 Jun 2023 16:58:23 +02:00
+AuthorDate:    Fri, 09 Jun 2023 16:57:35 +02:00
 Committer:     root <root@noisy.programming.kicks-ass.net>
-CommitterDate: Sat, 09 Sep 2023 15:10:16 +02:00
+CommitterDate: Sat, 09 Sep 2023 15:10:15 +02:00
 
-sched: Simplify yield_to()
+sched: Simplify sched_{set,get}affinity()
 
 Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c | 67 +++++++++++++++++++-------------------------
- 1 file changed, 29 insertions(+), 38 deletions(-)
+ kernel/sched/core.c | 53 +++++++++++---------------------------------
+ 1 file changed, 14 insertions(+), 39 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a9b9fa9..e825839 100644
+index db5cf31..a9b9fa9 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -8889,55 +8889,46 @@ int __sched yield_to(struct task_struct *p, bool preempt)
+@@ -8348,39 +8348,24 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
  {
- 	struct task_struct *curr = current;
- 	struct rq *rq, *p_rq;
--	unsigned long flags;
- 	int yielded = 0;
+ 	struct affinity_context ac;
+ 	struct cpumask *user_mask;
+-	struct task_struct *p;
+ 	int retval;
  
--	local_irq_save(flags);
--	rq = this_rq();
-+	scoped_guard (irqsave) {
-+		rq = this_rq();
- 
- again:
--	p_rq = task_rq(p);
--	/*
--	 * If we're the only runnable task on the rq and target rq also
--	 * has only one task, there's absolutely no point in yielding.
--	 */
--	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
--		yielded = -ESRCH;
--		goto out_irq;
+-	rcu_read_lock();
+-
+-	p = find_process_by_pid(pid);
+-	if (!p) {
+-		rcu_read_unlock();
++	CLASS(find_get_task, p)(pid);
++	if (!p)
+ 		return -ESRCH;
 -	}
-+		p_rq = task_rq(p);
-+		/*
-+		 * If we're the only runnable task on the rq and target rq also
-+		 * has only one task, there's absolutely no point in yielding.
-+		 */
-+		if (rq->nr_running == 1 && p_rq->nr_running == 1)
-+			return -ESRCH;
+-
+-	/* Prevent p going away */
+-	get_task_struct(p);
+-	rcu_read_unlock();
  
--	double_rq_lock(rq, p_rq);
--	if (task_rq(p) != p_rq) {
--		double_rq_unlock(rq, p_rq);
--		goto again;
+-	if (p->flags & PF_NO_SETAFFINITY) {
+-		retval = -EINVAL;
+-		goto out_put_task;
 -	}
-+		guard(double_rq_lock)(rq, p_rq);
-+		if (task_rq(p) != p_rq)
-+			goto again;
++	if (p->flags & PF_NO_SETAFFINITY)
++		return -EINVAL;
  
--	if (!curr->sched_class->yield_to_task)
--		goto out_unlock;
-+		if (!curr->sched_class->yield_to_task)
-+			return 0;
- 
--	if (curr->sched_class != p->sched_class)
--		goto out_unlock;
-+		if (curr->sched_class != p->sched_class)
-+			return 0;
- 
--	if (task_on_cpu(p_rq, p) || !task_is_running(p))
--		goto out_unlock;
-+		if (task_on_cpu(p_rq, p) || !task_is_running(p))
-+			return 0;
- 
--	yielded = curr->sched_class->yield_to_task(rq, p);
--	if (yielded) {
--		schedstat_inc(rq->yld_count);
--		/*
--		 * Make p's CPU reschedule; pick_next_entity takes care of
--		 * fairness.
--		 */
--		if (preempt && rq != p_rq)
--			resched_curr(p_rq);
-+		yielded = curr->sched_class->yield_to_task(rq, p);
-+		if (yielded) {
-+			schedstat_inc(rq->yld_count);
-+			/*
-+			 * Make p's CPU reschedule; pick_next_entity
-+			 * takes care of fairness.
-+			 */
-+			if (preempt && rq != p_rq)
-+				resched_curr(p_rq);
-+		}
+ 	if (!check_same_owner(p)) {
+-		rcu_read_lock();
+-		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
+-			rcu_read_unlock();
+-			retval = -EPERM;
+-			goto out_put_task;
+-		}
+-		rcu_read_unlock();
++		guard(rcu)();
++		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE))
++			return -EPERM;
  	}
  
--out_unlock:
--	double_rq_unlock(rq, p_rq);
--out_irq:
--	local_irq_restore(flags);
--
--	if (yielded > 0)
-+	if (yielded)
- 		schedule();
+ 	retval = security_task_setscheduler(p);
+ 	if (retval)
+-		goto out_put_task;
++		return retval;
  
- 	return yielded;
+ 	/*
+ 	 * With non-SMP configs, user_cpus_ptr/user_mask isn't used and
+@@ -8390,8 +8375,7 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
+ 	if (user_mask) {
+ 		cpumask_copy(user_mask, in_mask);
+ 	} else if (IS_ENABLED(CONFIG_SMP)) {
+-		retval = -ENOMEM;
+-		goto out_put_task;
++		return -ENOMEM;
+ 	}
+ 
+ 	ac = (struct affinity_context){
+@@ -8403,8 +8387,6 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
+ 	retval = __sched_setaffinity(p, &ac);
+ 	kfree(ac.user_mask);
+ 
+-out_put_task:
+-	put_task_struct(p);
+ 	return retval;
+ }
+ 
+@@ -8446,28 +8428,21 @@ SYSCALL_DEFINE3(sched_setaffinity, pid_t, pid, unsigned int, len,
+ long sched_getaffinity(pid_t pid, struct cpumask *mask)
+ {
+ 	struct task_struct *p;
+-	unsigned long flags;
+ 	int retval;
+ 
+-	rcu_read_lock();
+-
+-	retval = -ESRCH;
++	guard(rcu)();
+ 	p = find_process_by_pid(pid);
+ 	if (!p)
+-		goto out_unlock;
++		return -ESRCH;
+ 
+ 	retval = security_task_getscheduler(p);
+ 	if (retval)
+-		goto out_unlock;
++		return retval;
+ 
+-	raw_spin_lock_irqsave(&p->pi_lock, flags);
++	guard(raw_spinlock_irqsave)(&p->pi_lock);
+ 	cpumask_and(mask, &p->cpus_mask, cpu_active_mask);
+-	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+ 
+-out_unlock:
+-	rcu_read_unlock();
+-
+-	return retval;
++	return 0;
+ }
+ 
+ /**
