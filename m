@@ -2,154 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AFE79C4AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2C279C4C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbjILEWF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 00:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
+        id S233274AbjILE2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjILEVz (ORCPT
+        with ESMTP id S232798AbjILE2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:21:55 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645F645A83;
-        Mon, 11 Sep 2023 19:00:31 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 0D38324E267;
-        Tue, 12 Sep 2023 10:00:23 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Sep
- 2023 10:00:23 +0800
-Received: from [192.168.120.76] (171.223.208.138) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Sep
- 2023 10:00:22 +0800
-Message-ID: <5e7b00c2-7579-04b5-2d37-249ed30ca668@starfivetech.com>
-Date:   Tue, 12 Sep 2023 10:00:20 +0800
+        Tue, 12 Sep 2023 00:28:10 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A913E9A01A
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:22:34 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-64c5f5d6f04so28554696d6.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:22:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694485353; x=1695090153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YNz9pmUyvYE+1X1z1ltOs+pUz4Ht8e0o4P0Hq1idOMQ=;
+        b=X/MqBaTwfAEO2sld8HqSJdI1jOYkR0ApltkH57SigUiuTTTmHK78ZLIUR244jD3W/H
+         x+r9XTHNGJZhUHMcHpZsJxLy7TQJom3s4pcGbw0RM85SRd/oiTC3Plza73FGi/aW7hu9
+         Zl6drywzUJsqQ0YLspXmCX7tOqcK3cVLHjugQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694485353; x=1695090153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YNz9pmUyvYE+1X1z1ltOs+pUz4Ht8e0o4P0Hq1idOMQ=;
+        b=cAnlqOQTygyGL6y2JbasRiw13ot5tXEEvAOcuiBTVHhVIRJgiJEKBdpyUrNYqAQpVT
+         8aFn9QHwR+p3A8h3D9khd8haM6cuPqIUR1OQgxorpoExnT2+8xGfD11YMeYesu/OpntS
+         QAonF1BTYm5g34gJ07vjTLsL7e46DGczCCzT9Wjb+l1VN1gdqQZw2pILvICeQn3r18Xl
+         hDZtpgL9DeLCKZFsRiBqn/W2oR4gUGmxFei2aiIXyspdrq7nvwTfMiqjq1yxhyRFAhr8
+         3O0JJhNRQGs2Fb+G4AkmaI3SsA37Pr+sGlqDxhQ8qAok+Q1hnFbNeW7Uo2hcmQGzjquD
+         62VA==
+X-Gm-Message-State: AOJu0Yx1Y1gyyj8hA27o2PuZoA2noJmqVQ5ePzFhC3ANUPjgJKnjbcA5
+        gj1FOC1qqIro0tjZ9u0O47ljvUZXIuP+fbyb1c5+dQ==
+X-Google-Smtp-Source: AGHT+IHuzu2zbN2Q2ArJbPyoWcANlHqVN3aMwDHI8VD8CHkerlIX0cYi9RWBdewr/s6MeaYobfunUw==
+X-Received: by 2002:a0c:9789:0:b0:64f:36c0:4331 with SMTP id l9-20020a0c9789000000b0064f36c04331mr10571096qvd.39.1694485353332;
+        Mon, 11 Sep 2023 19:22:33 -0700 (PDT)
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com. [209.85.219.47])
+        by smtp.gmail.com with ESMTPSA id q3-20020a0cf5c3000000b0063cfe9adb2csm3346799qvm.108.2023.09.11.19.22.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 19:22:32 -0700 (PDT)
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-655cee6f752so18875696d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:22:32 -0700 (PDT)
+X-Received: by 2002:a05:6214:3281:b0:64f:9421:6c7 with SMTP id
+ mu1-20020a056214328100b0064f942106c7mr10033506qvb.21.1694485351756; Mon, 11
+ Sep 2023 19:22:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
-To:     Conor Dooley <conor@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     Jessica Clarke <jrtc27@jrtc27.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        <linux-mmc@vger.kernel.org>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20230830031846.127957-2-william.qiu@starfivetech.com>
- <20230830-commence-trickery-40eaa193cb15@wendy>
- <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
- <20230830-procedure-frostbite-56c751f7c276@wendy>
- <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
- <20230901-remold-sublease-a1ddb1fc6348@spud>
- <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
- <20230901-affected-wanting-ab517791a870@spud>
- <dd63bb4f-a59b-0323-08fb-03f8cc048b6e@starfivetech.com>
- <CAJM55Z8XowmB-Hfzr+hBtWu+SGL2v7jya6Nx5_rATf8=5qA4Fg@mail.gmail.com>
- <20230911-implosive-shrill-506d18d9bde2@spud>
-Content-Language: en-US
-From:   William Qiu <william.qiu@starfivetech.com>
-In-Reply-To: <20230911-implosive-shrill-506d18d9bde2@spud>
+References: <20230828075420.2009568-1-anle.pan@nxp.com> <DB9PR04MB9284AA58AA71655C9C0C7C9A87E6A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5DYxwX+JdXQ_-ba5B9y+gyWPjvUpCBnKM1zz1W2EkO_vA@mail.gmail.com>
+ <DB9PR04MB928460023FB3CCCBC3EACE1487E9A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5BGJX7=Z1ukFRq_ktaQ0d7FbvV-ob5gs8hfGaNHUXPTww@mail.gmail.com>
+ <DB9PR04MB9284A0CDB1FC7CAADE0A394F87EFA@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5AugUGh7Z=9Qh7SS4=-0ddGBmRAOOyCGDfPdT-=eurtUg@mail.gmail.com> <DB9PR04MB9284A45033B3E24F44C5AA3987F2A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+In-Reply-To: <DB9PR04MB9284A45033B3E24F44C5AA3987F2A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 12 Sep 2023 11:22:12 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5Bk0DUq5jgFDHV2wGYEcfQzNVQ2KYJ2ZYLubwFLgqW4kQ@mail.gmail.com>
+Message-ID: <CAAFQd5Bk0DUq5jgFDHV2wGYEcfQzNVQ2KYJ2ZYLubwFLgqW4kQ@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
+To:     Hui Fang <hui.fang@nxp.com>
+Cc:     Anle Pan <anle.pan@nxp.com>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jindong Yue <jindong.yue@nxp.com>,
+        Xuegang Liu <xuegang.liu@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 3:13=E2=80=AFPM Hui Fang <hui.fang@nxp.com> wrote:
+>
+> On Wed, Sep 6, 2023 at 18:28=E2=80=AFPM Tomasz Figa <tfiga@chromium.org> =
+wrote:
+> > That all makes sense, but it still doesn't answer the real question on =
+why
+> > swiotlb ends up being used. I think you may want to trace what happens =
+in
+> > the DMA mapping ops implementation on your system causing it to use
+> > swiotlb.
+>
+> Add log and feed invalid data to low buffer on purpose,
+> it's confirmed that swiotlb is actually used.
+>
 
+Yes, that we already know. But why?
 
-On 2023/9/12 0:14, Conor Dooley wrote:
-> On Fri, Sep 08, 2023 at 03:32:36PM +0200, Emil Renner Berthing wrote:
->> On Fri, 8 Sept 2023 at 12:03, William Qiu <william.qiu@starfivetech.com> wrote:
->> > On 2023/9/2 1:43, Conor Dooley wrote:
->> > > On Fri, Sep 01, 2023 at 06:20:38PM +0100, Jessica Clarke wrote:
->> > >> On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
->> > >> >
->> > >> > On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
->> > >> >>
->> > >> >>
->> > >> >> On 2023/8/30 16:34, Conor Dooley wrote:
->> > >> >>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wrote:
->> > >> >>>> On 30/08/2023 08:50, Conor Dooley wrote:
->> > >> >>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
->> > >> >>>>>> Due to the change of tuning implementation, it's no longer necessary to
->> > >> >>>>>> use the "starfive,sysreg" property in dts, so drop the relevant
->> > >> >>>>>> description in dt-bindings here.
->> > >> >>>>>
->> > >> >>>>> How does changing your software implantation invalidate a description of
->> > >> >>>>> the hardware?
->> > >> >>>>>
->> > >> >>>>
->> > >> >>>> Which is kind of proof that this syscon was just to substitute
->> > >> >>>> incomplete hardware description (e.g. missing clocks and phys). We
->> > >> >>>> should have rejected it. Just like we should reject them in the future.
->> > >> >>>
->> > >> >>> :s I dunno what to do with this... I'm inclined to say not to remove it
->> > >> >>> from the binding or dts at all & only change the software.
->> > >> >>>
->> > >> >>>> There are just few cases where syscon is reasonable. All others is just
->> > >> >>>> laziness. It's not only starfivetech, of course. Several other
->> > >> >>>> contributors do the same.
->> > >> >>>
->> > >> >>> I'm not sure if laziness is fair, lack of understanding is usually more
->> > >> >>> likely.
->> > >> >>
->> > >> >> For this, I tend to keep it in binding, but remove it from required. Because
->> > >> >> we only modify the tuning implementation, it doesn't mean that this property
->> > >> >> need to be removed, it's just no longer be the required one.
->> > >> >
->> > >> > Please only remove it from required if the current driver doesn't break
->> > >> > if the regmap is removed.
->> > >>
->> > >> Either way please make sure the documentation clearly states “never use
->> > >> this, if you’re using it you’re doing it wrong, this only exists
->> > >> because it was wrongly used in the past”. Otherwise people writing
->> > >> drivers for other OSes will probably use it too thinking they need to.
->> > >
->> > > Maybe we should just delete it if the impact is going to be negligible,
->> > > sounds like you're not using it in FreeBSD, which was part of what I was
->> > > worried about. Guess it depends on what Emil & the distro heads think.
->> > Hi Conor,
->> >
->> > After discussing it with our colleagues, we decided that deleting it was the best
->> > course of action. Since there will no longer be a related implementation of
->> > "starfive,sysreg" in future drivers, even if the dt-binding is described, it will
->> > be "never use", so I think it should be deleted.
->> >
->> > What do you think?
->> 
->> The device tree should be a description of the hardware and there
->> really is a 'u0_sdio_data_strobe_phase_ctrl' field in the sysreg
->> registers[1] on the JH7110 that seems to do _something_ related to the
->> sdio interface. So I don't think the fact that the Linux driver no
->> longer uses it is a good reason to remove it, but if there are some
->> other pragmatic reasons to do so then I'm fine with it. Removing it
->> from the list of required properties should be fine though.
-> 
-> SGTM. Can you update the patch to do that please William?
-> 
-> Thanks,
-> Conor.
-
-OK, I will update the patch as suggested by Emil.
-
-Best Regards,
-William
+> Got log as
+> "[  846.570271][  T138] software IO TLB: =3D=3D=3D=3D swiotlb_bounce: DMA=
+_TO_DEVICE,
+>  dst 000000004589fa38, src 00000000c6d7e8d8, srcPhy 5504139264, size 4096=
+".
+>
+> " srcPhy 5504139264" is larger than 4G (8mp has DRAM over 5G).
+> And "CONFIG_ZONE_DMA32=3Dy" in kernel config, so swiotlb static is used.
+> Also, the host (win10) side can't get valid image.
+>
+> Code as below.
+> diff --git a/drivers/media/common/videobuf2/videobuf2-dma-sg.c b/drivers/=
+media/common/videobuf2/videobuf2-dma-sg.c
+> index 7f83a86e6810..de03704ce695 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-dma-sg.c
+> @@ -98,6 +98,7 @@ static int vb2_dma_sg_alloc_compacted(struct vb2_dma_sg=
+_buf *buf,
+>         return 0;
+>  }
+>
+> +bool g_v4l2 =3D false;
+>  static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, struct device *dev,
+>                               unsigned long size)
+>  {
+> @@ -144,6 +145,7 @@ static void *vb2_dma_sg_alloc(struct vb2_buffer *vb, =
+struct device *dev,
+>         if (ret)
+>                 goto fail_table_alloc;
+>
+> +       g_v4l2 =3D true;
+>         pr_info("=3D=3D=3D=3D vb2_dma_sg_alloc, call sg_alloc_table_from_=
+pages_segment,
+>                         size %d, max_segment %d\n", (int)size, (int)max_s=
+egment);
+> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> index dac01ace03a0..a2cda646a02f 100644
+> --- a/kernel/dma/swiotlb.c
+> +++ b/kernel/dma/swiotlb.c
+> @@ -523,6 +523,7 @@ static unsigned int swiotlb_align_offset(struct devic=
+e *dev, u64 addr)
+>         return addr & dma_get_min_align_mask(dev) & (IO_TLB_SIZE - 1);
+>  }
+>
+> +extern bool g_v4l2;
+>  /*
+>   * Bounce: copy the swiotlb buffer from or back to the original dma loca=
+tion
+>   */
+> @@ -591,8 +592,19 @@ static void swiotlb_bounce(struct device *dev, phys_=
+addr_t tlb_addr, size_t size
+>                 }
+>         } else if (dir =3D=3D DMA_TO_DEVICE) {
+>                 memcpy(vaddr, phys_to_virt(orig_addr), size);
+> +               if (g_v4l2) {
+> +                       static unsigned char val;
+> +                       val++;
+> +                       memset(vaddr, val, size);
+> +
+> +                       pr_info("=3D=3D=3D=3Dxx %s: DMA_TO_DEVICE, dst %p=
+, src %p, srcPhy %llu, size %zu\n",
+> +                               __func__, vaddr, phys_to_virt(orig_addr),=
+ orig_addr, size);
+> +               }
+>         } else {
+>                 memcpy(phys_to_virt(orig_addr), vaddr, size);
+>         }
+>  }
+>
+>
+> BRs,
+> Fang Hui
+>
