@@ -2,153 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4423E79C7BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9CE79C7C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjILHJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        id S231329AbjILHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjILHJR (ORCPT
+        with ESMTP id S231185AbjILHLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:09:17 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66BFC4;
-        Tue, 12 Sep 2023 00:09:13 -0700 (PDT)
-Received: from kwepemd500002.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RlF5H1z05zrSjt;
-        Tue, 12 Sep 2023 15:07:15 +0800 (CST)
-Received: from [10.40.193.166] (10.40.193.166) by
- kwepemd500002.china.huawei.com (7.221.188.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Tue, 12 Sep 2023 15:09:10 +0800
-Subject: Re: [PATCH 11/19] kbuild: rpm-pkg: use a dummy string for _arch when
- undefined
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        <linux-kbuild@vger.kernel.org>
-References: <20230722044806.3867434-1-masahiroy@kernel.org>
- <20230722044806.3867434-11-masahiroy@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
-Message-ID: <4780dc94-653b-7ae4-0f50-45af625726e7@hisilicon.com>
-Date:   Tue, 12 Sep 2023 15:09:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        Tue, 12 Sep 2023 03:11:25 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4952AB9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:11:21 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-76dc77fd01fso327583385a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694502679; x=1695107479; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=quq3SIopv7Gr1An8E941K4sULqr3zgkgx+h2bKR2keQ=;
+        b=SnUrbJ9vCs306/d1YZZqwVHg3lffHRAhiPKbJvGbpDu927rbFUeJVeHHdp1Aj9IxN4
+         vBnRr4JSRqReZj9c3mYpEXhbgNGCOfbGPxlmgFy55S5pRnHQCLQOJ7vPdsRl3Pp30VW/
+         c6iew/xkfmmXfYTxXig4TboSeIgSP3gkZGVJg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694502679; x=1695107479;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=quq3SIopv7Gr1An8E941K4sULqr3zgkgx+h2bKR2keQ=;
+        b=F9gKkITYnDh/3MIg70CdLW9HFLK1gMSeNG3tSx6xgimuQ0QIZN9G7h0VaG4gvtawrQ
+         ptashEK0STQX1GZbmpWoGVTW140F+Yx0mA9vzPTjrYaIgdRU0IegUKR0yFpd4FCnBOvv
+         19mvo96js0k2JpbP4vFnTOe08fE3y+ZUXjajteDIwnEjmBMnpLbKAja4ATW2unjWZWcE
+         eK1eVyqHrbIz0zH+9y9E9dMnw9fhKJAJ80I64bYacLkJIfJU7lHqqoaR5/q/TBcTtdWI
+         4MZlv94MXb8QZ8mISFW4eA6gofPPJHZ544eaPrsR153MqGelCxXC1409r3SBLck0YqQA
+         70hg==
+X-Gm-Message-State: AOJu0YyCagA1mDIP45e5IV58cakhFQ/c2TUTk/+gA4zh9ER5RoQGJGOg
+        ZFDUwrArUYx2q0q7MYNojlsgN+jY/iDC8fsUnyOpWQ==
+X-Google-Smtp-Source: AGHT+IGcJfEbgS7gdjTRi15VqOBnofLAVKYDYp+BiSBTY6FDq2imfNat78x7SAxEnsZnDsmfoJVPpQ==
+X-Received: by 2002:a0c:a9c2:0:b0:64b:594b:7a60 with SMTP id c2-20020a0ca9c2000000b0064b594b7a60mr11015594qvb.35.1694502679411;
+        Tue, 12 Sep 2023 00:11:19 -0700 (PDT)
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
+        by smtp.gmail.com with ESMTPSA id r9-20020a0c8b89000000b0064f75162d49sm3508855qva.90.2023.09.12.00.11.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 00:11:19 -0700 (PDT)
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-64bd231c95cso30686926d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:11:18 -0700 (PDT)
+X-Received: by 2002:a0c:f312:0:b0:64f:518d:ac8d with SMTP id
+ j18-20020a0cf312000000b0064f518dac8dmr11624045qvl.25.1694502677977; Tue, 12
+ Sep 2023 00:11:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20230722044806.3867434-11-masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.193.166]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd500002.china.huawei.com (7.221.188.104)
-X-CFilter-Loop: Reflected
+References: <20230828075420.2009568-1-anle.pan@nxp.com> <DB9PR04MB9284AA58AA71655C9C0C7C9A87E6A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5DYxwX+JdXQ_-ba5B9y+gyWPjvUpCBnKM1zz1W2EkO_vA@mail.gmail.com>
+ <DB9PR04MB928460023FB3CCCBC3EACE1487E9A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5BGJX7=Z1ukFRq_ktaQ0d7FbvV-ob5gs8hfGaNHUXPTww@mail.gmail.com>
+ <DB9PR04MB9284A0CDB1FC7CAADE0A394F87EFA@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5AugUGh7Z=9Qh7SS4=-0ddGBmRAOOyCGDfPdT-=eurtUg@mail.gmail.com>
+ <DB9PR04MB9284A45033B3E24F44C5AA3987F2A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+ <CAAFQd5Bk0DUq5jgFDHV2wGYEcfQzNVQ2KYJ2ZYLubwFLgqW4kQ@mail.gmail.com> <DB9PR04MB92846D75C93A9B2B8C8A998D87F1A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+In-Reply-To: <DB9PR04MB92846D75C93A9B2B8C8A998D87F1A@DB9PR04MB9284.eurprd04.prod.outlook.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Tue, 12 Sep 2023 16:10:59 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5Ar18TvFE3jXBuphpCiwWAb8O99wqkiwEVDSs3+MXvW0w@mail.gmail.com>
+Message-ID: <CAAFQd5Ar18TvFE3jXBuphpCiwWAb8O99wqkiwEVDSs3+MXvW0w@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
+To:     Hui Fang <hui.fang@nxp.com>
+Cc:     Anle Pan <anle.pan@nxp.com>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jindong Yue <jindong.yue@nxp.com>,
+        Xuegang Liu <xuegang.liu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I build the latest kernel (6.6-rc1) for arm64 platform on x86 server 
-(with cross complile), and the complile command is as following:
-
-export 
-PATH=$PATH:/opt/gcc-linaro-7.4.1-2019.02-x86_64_aarch64-linux-gnu/bin/
-export ARCH=arm64
-export CROSS_COMPILE=aarch64-linux-gnu-
-
-make -j64 Image (ok)
-
-make binrpm-pkg -j64 (failed)
-
-But when complile binrpm-pkg, it is failed and the error info is as 
-following:
-
-rpmbuild -bb kernel.spec --define='_topdir 
-/home/chenxiang/kernel/mainline/linux-next/rpmbuild' --target 
-aarch64-linux --build-in-place --noprep --define='_smp_mflags %{nil}' 
-$(rpm -q rpm >/dev/null 2>&1 || echo --nodeps) --without devel
-rpmbuild: --build-in-place: unknown option
-make[2]: *** [scripts/Makefile.package:92: binrpm-pkg] Error 1
-make[1]: *** [/home/chenxiang/kernel/mainline/linux-next/Makefile:1538: 
-binrpm-pkg] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-But it is ok with v6.5-rc7, so i bisect the kernel code and find the 
-patch (kbuild: rpm-pkg: use a dummy string for _arch when undefined):
-
-706a741595047797872e (v6.6-rc1) good
-0bb80ecc33a8fb5a6（v6.5-rc7） bad
-[461f35f014466c4e26dca6be0f431f57297df3f2] Merge tag 
-'drm-next-2023-08-30' of git://anongit.freedesktop.org/drm/drm good
-[e925992671907314b7db6793a28eb39b36bc21a4] Merge tag 'staging-6.6-rc1' 
-of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging good
-[3c31041e37324e143bee98604bb31481e905b4b3] Merge tag 'printk-for-6.6' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux    good
-[4a0fc73da97efd23a383ca839e6fe86410268f6b] Merge tag 's390-6.6-2' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux bad
-[61401a8724c2ce912b243ef95427a9b2e5a1ed50] Merge tag 'kbuild-v6.6' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild bad
-[2be6bc48df59c99d35aab16a51d4a814e9bb8c35] Merge tag 'leds-next-6.6' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/lee/leds        good
-[3f86ed6ec0b390c033eae7f9c487a3fea268e027] Merge tag 'arc-6.6-rc1' of 
-git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc good
-[4cdb71b6ba3283fb2b7eaccc333f8f2c5b81797b] sparc: replace #include 
-<asm/export.h> with #include <linux/export.h> bad
-[975667d02d134f7b48d15ee7ff0d49e69a6774cf] kbuild: rpm-pkg: rename 
-binkernel.spec to kernel.spec        bad
-[a06d9ef897d59f719102e2890abd8a2b91e29a60] kbuild: rpm-pkg: record ARCH 
-option in spec file    good
-[d5d2d4cc60888f02dd4a6b2bfb03ff2fd7be4fc2] kbuild: rpm-pkg: derive the 
-Version from %{KERNELRELEASE}    good
-[b537925fdd689ca33b6d9eed4569bc625550b3ef] kbuild: rpm-pkg: run 
-modules_install for non-modular kernel    bad
-[1789fc9125414bd9ca4d50a8966752ee6103d547] kbuild: rpm-pkg: invoke the 
-kernel build from rpmbuild for binrpm-pkg bad
-[d4f651277e9208b580b55da212e17ddd309c91e7] kbuild: rpm-pkg: use a dummy 
-string for _arch when undefined
-
-
-Do you have any idea about this issue?
-
-
-Thanks
-
-Xiang Chen
-
-在 2023/7/22 星期六 12:47, Masahiro Yamada 写道:
-> If this affects only %{buildroot}, it should be enough to use a fixed
-> string for _arch when it is undefined.
+On Tue, Sep 12, 2023 at 4:01=E2=80=AFPM Hui Fang <hui.fang@nxp.com> wrote:
 >
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+> On Tue, Sep 12 2023 at 11:22=E2=80=AFAM Tomasz Figa <tfiga@chromium.org>
+> > On Mon, Sep 11, 2023 at 3:13=E2=80=AFPM Hui Fang <hui.fang@nxp.com> wro=
+te:
+> > >
+> > > On Wed, Sep 6, 2023 at 18:28=E2=80=AFPM Tomasz Figa <tfiga@chromium.o=
+rg>
+> > wrote:
+> > > > That all makes sense, but it still doesn't answer the real question
+> > > > on why swiotlb ends up being used. I think you may want to trace
+> > > > what happens in the DMA mapping ops implementation on your system
+> > > > causing it to use swiotlb.
+> > >
+> > > Add log and feed invalid data to low buffer on purpose, it's confirme=
+d
+> > > that swiotlb is actually used.
+> > >
+> >
+> > Yes, that we already know. But why?
 >
->   scripts/package/mkspec | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
 >
-> diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-> index 783e1997d94a..22b980cf3d00 100755
-> --- a/scripts/package/mkspec
-> +++ b/scripts/package/mkspec
-> @@ -36,6 +36,8 @@ sed -e '/^DEL/d' -e 's/^\t*//' <<EOF
->   %define ARCH ${ARCH}
->   %define KERNELRELEASE ${KERNELRELEASE}
->   
-> +# _arch is undefined if /usr/lib/rpm/platform/*/macros was not included.
-> +%{!?_arch: %define _arch dummy}
->   %{!?make: %define make make}
->   %define makeflags %{?_smp_mflags} ARCH=%{ARCH}
->   
-> @@ -55,9 +57,6 @@ $S	BuildRequires: bc binutils bison dwarves
->   $S	BuildRequires: (elfutils-libelf-devel or libelf-devel) flex
->   $S	BuildRequires: gcc make openssl openssl-devel perl python3 rsync
->   
-> -	# $UTS_MACHINE as a fallback of _arch in case
-> -	# /usr/lib/rpm/platform/*/macros was not included.
-> -	%{!?_arch: %define _arch $UTS_MACHINE}
->   	%define __spec_install_post /usr/lib/rpm/brp-compress || :
->   	%define debug_package %{nil}
->   
+> The physical address of v4l2 buffer is large than 4G (5504139264), so the=
+ swiotlb is used.
+> "[  846.570271][  T138] software IO TLB: =3D=3D=3D=3D swiotlb_bounce: DMA=
+_TO_DEVICE,
+>  dst 000000004589fa38, src 00000000c6d7e8d8, srcPhy 5504139264, size 4096=
+".
 
+Is your DMA device restricted only to the bottom-most 4 GB (32-bit DMA
+address)? If yes, would it make sense to also allocate from that area
+rather than bouncing the memory?
+
+Best regards,
+Tomasz
