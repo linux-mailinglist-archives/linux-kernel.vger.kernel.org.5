@@ -2,156 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BACC79D0CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BF379D0C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbjILMLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        id S234950AbjILMLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbjILMLm (ORCPT
+        with ESMTP id S235002AbjILMLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:11:42 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8107610D7;
-        Tue, 12 Sep 2023 05:11:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BB3CC433C8;
-        Tue, 12 Sep 2023 12:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694520698;
-        bh=UnP676PHVFmD+xd/rrOcUM5eKwT8h7XsEaGKrA6BnPM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UPbOrAEYk47sY4lofsMhaoB2INy9+JzCY4RFhlRNtN1j3ifspkYV7HUY/WyqamW1K
-         gHTC8N0P1/qUYxjnme9h3ajz6+wuLlDAI9R40WQNFHzXp9lJhKKNcciCj/pBFv4KE5
-         I6i9GSFRoFHOLwVMW89I0TyRiGQad3+QCvpBgemNfjNYWHgTuiI5Cqssm9Ysq+UfBZ
-         qbDh+vDK68ivhnmFBH+WkZI+WCIxtxpqrRQiellM4HK5lV0EweGGA8zpjEQgHArtxw
-         85+/Dvh5RKY48wLJh+hpaCyYlBL5oXidSBk0uC85Y5MS3Ia8GLwzf/E8D3xJ19AQoA
-         pScfClbopmdrA==
-Received: (nullmailer pid 381617 invoked by uid 1000);
-        Tue, 12 Sep 2023 12:11:36 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH 2/2] arm64: errata: Add Cortex-A520 speculative unprivileged load workaround
-Date:   Tue, 12 Sep 2023 07:11:15 -0500
-Message-Id: <20230912121120.380420-2-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230912121120.380420-1-robh@kernel.org>
-References: <20230912121120.380420-1-robh@kernel.org>
+        Tue, 12 Sep 2023 08:11:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AFE10DC;
+        Tue, 12 Sep 2023 05:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694520696; x=1726056696;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=s4B/T6itIbA12r0ps1vdM+hwzQ3jFlRsKTz0S71M4xM=;
+  b=hwtoEnJR5EfzmX98bQxlv1bznBa8ylqnlE+eQ0dFBRt/1m/H60eHp/Gu
+   knxeqThyXGaRp+efZySOA/y4Oy9ASg1zcQMmswxM/TWcsU+PQaewCWZ0k
+   36ZBxzLxjr2As124+JFHqj9yDDb9wFtVlClheZfABmi1HaACwoq4+9XDS
+   tzbnt7fOTvnl2AOyDLhL9gt9Gz5gAeCO6f3ONrFX4ZvJmCQoYlsjWK/7+
+   5MeINApRn/jXljyZKuTFphN51V+Eb/QvrDQgXKkIawCNNHDMVzrMlNgyP
+   ldOnescqcqDLhfsBsViyLAVtLwV0Z1oX1fFPGVykI0dWlJPayWGqqyXS8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378267951"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="378267951"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 05:11:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833886306"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="833886306"
+Received: from npejicx-mobl.ger.corp.intel.com ([10.251.217.90])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 05:11:30 -0700
+Date:   Tue, 12 Sep 2023 15:11:28 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] igb: Use FIELD_GET() to extract Link Width
+In-Reply-To: <20230912113403.00006c39@Huawei.com>
+Message-ID: <942077c8-a44a-5831-55b-afceb4412c2@linux.intel.com>
+References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com> <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com> <20230912113403.00006c39@Huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; BOUNDARY="8323329-525986759-1694519782=:2125"
+Content-ID: <70baab3-03e-d377-677-c25fa8176a57@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the workaround for ARM Cortex-A520 erratum 2966298. On an
-affected Cortex-A520 core, a speculatively executed unprivileged load
-might leak data from a privileged level via a cache side channel.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The workaround is to execute a TLBI before returning to EL0. A
-non-shareable TLBI to any address is sufficient.
+--8323329-525986759-1694519782=:2125
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <e51e5bf7-e092-ac4f-59c9-117fbfcad42f@linux.intel.com>
 
-The workaround isn't necessary if page table isolation (KPTI) is
-enabled, but for simplicity it will be. Page table isolation should
-normally be disabled for Cortex-A520 as it supports the CSV3 feature
-and the E0PD feature (used when KASLR is enabled).
+On Tue, 12 Sep 2023, Jonathan Cameron wrote:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/arch/arm64/silicon-errata.rst |  2 ++
- arch/arm64/Kconfig                          | 13 +++++++++++++
- arch/arm64/kernel/cpu_errata.c              |  8 ++++++++
- arch/arm64/kernel/entry.S                   |  4 ++++
- arch/arm64/tools/cpucaps                    |  1 +
- 5 files changed, 28 insertions(+)
+> On Mon, 11 Sep 2023 15:14:56 +0300
+> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
+> 
+> > Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+> > custom masking and shifting.
+> > 
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  drivers/net/ethernet/intel/igb/e1000_mac.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/intel/igb/e1000_mac.c b/drivers/net/ethernet/intel/igb/e1000_mac.c
+> > index caf91c6f52b4..5a23b9cfec6c 100644
+> > --- a/drivers/net/ethernet/intel/igb/e1000_mac.c
+> > +++ b/drivers/net/ethernet/intel/igb/e1000_mac.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  /* Copyright(c) 2007 - 2018 Intel Corporation. */
+> >  
+> > +#include <linux/bitfield.h>
+> >  #include <linux/if_ether.h>
+> >  #include <linux/delay.h>
+> >  #include <linux/pci.h>
+> > @@ -50,9 +51,8 @@ s32 igb_get_bus_info_pcie(struct e1000_hw *hw)
+> >  			break;
+> >  		}
+> >  
+> > -		bus->width = (enum e1000_bus_width)((pcie_link_status &
+> > -						     PCI_EXP_LNKSTA_NLW) >>
+> > -						     PCI_EXP_LNKSTA_NLW_SHIFT);
+> > +		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
+> > +							     pcie_link_status);
+> 
+> This cast is a bit ugly given it takes the values 0, 1, 2, 3 and
+> we extra a field that the spec says contains 1, 2, 4, 8 etc
+> Hence it only works because only 1 and 2 are used I think...  Not nice.
 
-diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-index e96f057ea2a0..f47f63bcf67c 100644
---- a/Documentation/arch/arm64/silicon-errata.rst
-+++ b/Documentation/arch/arm64/silicon-errata.rst
-@@ -71,6 +71,8 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A510     | #2658417        | ARM64_ERRATUM_2658417       |
- +----------------+-----------------+-----------------+-----------------------------+
-+| ARM            | Cortex-A520     | #2966298        | ARM64_ERRATUM_2966298       |
-++----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A53      | #826319         | ARM64_ERRATUM_826319        |
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | Cortex-A53      | #827319         | ARM64_ERRATUM_827319        |
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b10515c0200b..78f20e632712 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1037,6 +1037,19 @@ config ARM64_ERRATUM_2645198
- 
- 	  If unsure, say Y.
- 
-+config ARM64_ERRATUM_2966298
-+	bool "Cortex-A520: 2966298: workaround for speculatively executed unprivileged load"
-+	default y
-+	help
-+	  This option adds the workaround for ARM Cortex-A520 erratum 2966298.
-+
-+	  On an affected Cortex-A520 core, a speculatively executed unprivileged
-+	  load might leak data from a privileged level via a cache side channel.
-+
-+	  Work around this problem by executing a TLBI before returning to EL0.
-+
-+	  If unsure, say Y.
-+
- config CAVIUM_ERRATUM_22375
- 	bool "Cavium erratum 22375, 24313"
- 	default y
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index be66e94a21bd..5706e74c5578 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -730,6 +730,14 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
- 		.cpu_enable = cpu_clear_bf16_from_user_emulation,
- 	},
- #endif
-+#ifdef CONFIG_ARM64_ERRATUM_2966298
-+	{
-+		.desc = "ARM erratum 2966298",
-+		.capability = ARM64_WORKAROUND_2966298,
-+		/* Cortex-A520 r0p0 - r0p1 */
-+		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A520, 0, 0, 1),
-+	},
-+#endif
- #ifdef CONFIG_AMPERE_ERRATUM_AC03_CPU_38
- 	{
- 		.desc = "AmpereOne erratum AC03_CPU_38",
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index 6ad61de03d0a..a6030913cd58 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -428,6 +428,10 @@ alternative_else_nop_endif
- 	ldp	x28, x29, [sp, #16 * 14]
- 
- 	.if	\el == 0
-+alternative_if ARM64_WORKAROUND_2966298
-+	tlbi	vale1, xzr
-+	dsb	nsh
-+alternative_else_nop_endif
- alternative_if_not ARM64_UNMAP_KERNEL_AT_EL0
- 	ldr	lr, [sp, #S_LR]
- 	add	sp, sp, #PT_REGS_SIZE		// restore sp
-diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-index c3f06fdef609..dea3dc89234b 100644
---- a/arch/arm64/tools/cpucaps
-+++ b/arch/arm64/tools/cpucaps
-@@ -84,6 +84,7 @@ WORKAROUND_2077057
- WORKAROUND_2457168
- WORKAROUND_2645198
- WORKAROUND_2658417
-+WORKAROUND_2966298
- WORKAROUND_AMPERE_AC03_CPU_38
- WORKAROUND_TRBE_OVERWRITE_FILL_MODE
- WORKAROUND_TSB_FLUSH_FAILURE
+Not perfect but I guess the enum definition could use 
+PCI_EXP_LNKSTA_NLW_X* to ensure at least the PCIe ones match.
+
+> Also, whilst looking at this I note that e1000e has it's own defines
+> for PCIE_LINK_WIDTH_MASK and PCIE_LINK_WIDTH_SHIFT 
+> 
+> Looks like those should be changed to use the standard defines.
+
+Yes, thanks. I added a patch to address those duplicated defines and 
+I also noticed it had a duplicated copy for PCI_EXP_LNKSTA which I also 
+converted.
+
+I'll send v2 which has most of your suggestions taken into account once 
+the build bot has done its thing.
+
+> For extra giggles there are two e1000_bus_width enum definitions in different
+> headers.
+
+No, there are actually 3 if one looks carefully, and many more if the 
+ones named according to the driver are also counted all following this 
+same "not nice" pattern. ;-)
+
+That's 3 different drivers though which just happen to be similarly named 
+so it's not entirely fair as it would be same as saying drivers x, y, and 
+z have something with the same name. It's pretty obviously those come from 
+copy paste though which usually means some common code might have been 
+handy.
+
+> Actual patch is good - just 'interesting' stuff noticed whilst looking 
+> at it :) 
+
+Yeah, I've plenty of 'interesting' stuff I've noticed while looking around 
+on my todo list. I even thought I had that general PCI_EXP_* FIELD_GET() 
+cleanup on it as I recall eyeing what it would take to find all of them 
+but it seems I never added that there (now it is).
+
+But then I was taking a look at these Link Width ones and there was just 
+so much low-hanging fruit (some of which are like you put it, an 
+excellent example of good cleanup) so I went to do that right away 
+without considering all the other fields.
+
+Thanks a lot for taking a look.
+
+
 -- 
-2.40.1
-
+ i.
+--8323329-525986759-1694519782=:2125--
