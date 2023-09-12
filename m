@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C0779CBF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2E079CBF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbjILJgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44298 "EHLO
+        id S232592AbjILJgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:36:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjILJgi (ORCPT
+        with ESMTP id S232487AbjILJgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:36:38 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BD512E;
-        Tue, 12 Sep 2023 02:36:33 -0700 (PDT)
-X-UUID: d864aa1e514f11ee8051498923ad61e6-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=gFgOTY+WyM3Sel5YzAdYiKNG5JFSyMH2ZYWa9kVlC/Y=;
-        b=lH1/7POOlR828hKTVT3UB5PK5odJwmefLVO9zbS4/e6Lk1GRtMx34CxK1E24gmFyfxoKV3Z6hE4qRnweXU5iZZbORf2WUX50fTMlaLgmqVpsXfZPj+aSQL75xKnPdoNd4+sVekwi+3cPtI4jL8/blqvSCzg5ykqX0+5TJ5STDDs=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:d2681e8f-0078-4cd6-aa16-90464760e671,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:1e2dbebe-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
-X-UUID: d864aa1e514f11ee8051498923ad61e6-20230912
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1511495150; Tue, 12 Sep 2023 17:36:26 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 17:36:26 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Tue, 12 Sep 2023 17:36:24 +0800
-Message-ID: <6f67c0f6-7a4d-46a9-4090-b4966ad9eb9e@mediatek.com>
-Date:   Tue, 12 Sep 2023 17:36:23 +0800
+        Tue, 12 Sep 2023 05:36:42 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4C612A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:36:38 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4018af103bcso34224655e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694511397; x=1695116197; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I2E1gO44gErvLCsLkrEiV4IXvDnQB78+GoWRxTmFEOc=;
+        b=CCwAPZ9j+KS8qsxwr3/KiFhre/dOcV9GbRErTdYdrP5HxazJnO2+WXaSbi6gqfQNfZ
+         XAJS/BndpMZIJYXTyAjOAqdzXL9NMeDVQ9z13o4GpS/h64vpL4+S6hWwINCVcWOHZEQA
+         u17lmS6ADplFa6S8/SEaecZ5LRgnDrXuHpe6xbjQyJh94kC5q2KMuSz8jWGgDGCQlLuC
+         EQyVyNcdmqjZDuvz2oRnx5xY08gFSQFf/2/plnpZ5Eevn5v0v9YM8lk2jjBbjQzNl/dc
+         nrusjDM3fwiS5ZkM1X+CYfUtv2i4eGgQLP83a2XLO8CuFr3xkrNtDAPvA1/tK2t2yc4l
+         yxYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694511397; x=1695116197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2E1gO44gErvLCsLkrEiV4IXvDnQB78+GoWRxTmFEOc=;
+        b=EaW7nzinRO/uuBSjMZG6/e5JMKHhPHRQNYcmq35duz8N6f/wY7u7+yITcdbdZ64CSN
+         FQNqo1AIjbRuT5oaXfOpSGuk9JGKc11l9QoB0xd05Ccw/ipJzhYjMKYioNnjMvIygnqt
+         hOAi/uGOpzbyiEF4xupZxg7N3o9OuBJ4nnMKlhZ0362nnAU4czJaF8pfhG2y01/5qwXv
+         PuI++Vi7TNlGBqGseGK+g8Wqcn6JaMzeFdmsPwLj4x+O+udLwF1dpAenwOnAFbcrNEFZ
+         JxAzqTFXINHGb8EaXqKPBW/nmtpTzIbYjKrz1++luwAAa5NFnypbQy22rs4bydiFSFqC
+         p5VA==
+X-Gm-Message-State: AOJu0Yzx2dX8P3+LjtSRjzW6RceRqmjwhpWVO+K/INpGHoRPV3xcskn3
+        wY8+qTAyFYOwkRVcaaKpshyHs08XFX4bF9MTubY=
+X-Google-Smtp-Source: AGHT+IGjBJQH7mzQfXAu5lgRUFXAuZoXiTMnNJmrtnG9tLxPqOp7DMt1gBEzDZ1OIOn09IbXJS1ing==
+X-Received: by 2002:a05:600c:4e50:b0:401:b393:da18 with SMTP id e16-20020a05600c4e5000b00401b393da18mr1425536wmq.6.1694511397094;
+        Tue, 12 Sep 2023 02:36:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id o8-20020a1c7508000000b003fed7fa6c00sm15780383wmc.7.2023.09.12.02.36.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 02:36:36 -0700 (PDT)
+Message-ID: <af1959ce-d817-2a9e-9c28-fed8c608a3df@linaro.org>
+Date:   Tue, 12 Sep 2023 11:36:33 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm64: dts: mediatek: mt8365-evk:
- update compatible
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mp: add reserve-memory nodes for DSP
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230912072340.22862-1-macpaul.lin@mediatek.com>
- <22805138-e42a-cdd0-bc96-5281f0e2c586@linaro.org>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <22805138-e42a-cdd0-bc96-5281f0e2c586@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "S.J. Wang" <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mpuaudiosw <Mpuaudiosw@nxp.com>
+Cc:     linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        LnxRevLi <LnxRevLi@nxp.com>
+References: <20230911224452.15739-1-iuliana.prodan@oss.nxp.com>
+ <20230911224452.15739-3-iuliana.prodan@oss.nxp.com>
+ <67de5706-d966-dd71-85c3-c95bc1b72733@linaro.org>
+ <c0b32f41-46b4-81ad-9718-5f0856e42cb1@nxp.com>
+ <32287c0a-e3c1-e474-3c90-913fe2c79879@linaro.org>
+ <fe47a94e-6788-a5ee-e8ee-ca58e4fa62d6@nxp.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <fe47a94e-6788-a5ee-e8ee-ca58e4fa62d6@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--16.987500-8.000000
-X-TMASE-MatchedRID: HXSqh3WYKfsOwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
-        qIY+/skQkABPgKBt/0r+hz2wcuk4da+E45fdyyZXA9lly13c/gEW40XiUkbrG5gEXULQnZA+UpN
-        5b4Xd/F0F3HJtKgmToNt9i45mMISqupptyy2mu+6L+98BLtDce4B84MMvKleanQqircTOm4dvlt
-        Sm4q5U290mpA1Khc2MPbozLN3Sos0iXL+V+zm5ieYAh37ZsBDCfS0Ip2eEHny+qryzYw2E8LLn+
-        0Vm71Lcq7rFUcuGp/EgBwKKRHe+r0k4tYvooJZyctm6a6Al36gvAINoF1zxWn7Jax9xsZ7RfNpH
-        DESlTro=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--16.987500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 2EC6181C9494BFFA8AEFEE02C3C52A803EFDBBD3FD0115827944A2EC921DBBEE2000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 16:08, Krzysztof Kozlowski wrote:
-> 	
+On 12/09/2023 10:49, Iuliana Prodan wrote:
+>>> Should I test this on other tree(s)?
+>> You test the patch on the tree you send it. What is the point to test it
+>> on some old code, cherry-pick with bugs and then send?
+>>
+>> If you have cross-tree dependencies between subsystem, isn't linux-next
+>> for this?
 > 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
+> TBH, I don't know, that's why I asked.
 > 
-> On 12/09/2023 09:23, Macpaul Lin wrote:
->> Fix compatible of 'mediatek,mt8365-evk' from 'enum' to 'const'.
-> 
-> What is there to fix? There is no bug... please describe why you are
-> doing changes.
-> 
->> 
->> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
->> ---
->>  Documentation/devicetree/bindings/arm/mediatek.yaml | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> change for v2:
->>  - rebase this patch to follow the v5 patch set of mt8395.
->>   - depends on https://lore.kernel.org/lkml/20230909132819.21626-2-macpaul.lin@mediatek.com/T/
->>  - Fix description as a single board.
->> 
->> changes for v3:
->>  - rebase this patch to follow the v6 patch set of mt8395.
->>   - depends on https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
->>  - drop "Fixes:" tag in commit message.
->>  - drop platform description update for mt8365-evk (Genio 350-EVK).
->> 
->> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
->> index 2e8ad49c3479..bab4fa0e8199 100644
->> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
->> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
->> @@ -245,7 +245,7 @@ properties:
->>                - mediatek,mt8183-pumpkin
->>            - const: mediatek,mt8183
->>        - items:
->> -          - enum:
->> +          - const:
-> 
-> Obviously this was not tested... Please test before sending.
-> 
-> Best regards,
-> Krzysztof
-> 
+> For sure one patch is for remoteproc.
+> For the other, I don't know who will pick it, but I'll tested on 
+> linux-next, as you suggested.
 
-I'm sorry, will be fixed in v4 with dtbs_check test.
+MAINTAINERS file (and get_maintainers.pl) will tell you. Specifically,
+this does not look really related to remoteproc patch, so it should not
+be together in one patchset.
 
-Thanks
-Macpaul Lin
+Best regards,
+Krzysztof
+
