@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE8579D072
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9E779D08B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbjILL5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S234937AbjILMAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbjILL5E (ORCPT
+        with ESMTP id S235069AbjILL7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:57:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9ED9170B;
-        Tue, 12 Sep 2023 04:56:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC342C15;
-        Tue, 12 Sep 2023 04:57:33 -0700 (PDT)
-Received: from [10.57.93.149] (unknown [10.57.93.149])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 957213F67D;
-        Tue, 12 Sep 2023 04:56:54 -0700 (PDT)
-Message-ID: <83b8c8d7-d53f-bea7-4ca3-5730d5c80b30@arm.com>
-Date:   Tue, 12 Sep 2023 12:57:32 +0100
+        Tue, 12 Sep 2023 07:59:14 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D655E1717;
+        Tue, 12 Sep 2023 04:58:27 -0700 (PDT)
+Received: from [46.6.227.206] (port=6296 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qg224-00CtNF-Px; Tue, 12 Sep 2023 13:58:23 +0200
+Date:   Tue, 12 Sep 2023 13:58:13 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Timo Sigurdsson <public_timo.s@silentcreek.de>
+Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, regressions@lists.linux.dev,
+        sashal@kernel.org, carnil@debian.org, 1051592@bugs.debian.org
+Subject: Re: Regression: Commit "netfilter: nf_tables: disallow rule addition
+ to bound chain via NFTA_RULE_CHAIN_ID" breaks ruleset loading in
+ linux-stable
+Message-ID: <ZQBSVTCxyi+zH9qG@calendula>
+References: <20230911213750.5B4B663206F5@dd20004.kasserver.com>
+ <ZP+bUpxJiFcmTWhy@calendula>
+ <20230912113959.8F8B26321005@dd20004.kasserver.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
-Content-Language: en-US
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Qais Yousef <qyousef@layalina.io>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, juri.lelli@redhat.com
-References: <20230827233203.1315953-1-qyousef@layalina.io>
- <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
- <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
- <6011d8bb-9a3b-1435-30b0-d75b39bf5efa@arm.com>
- <20230907115307.GD10955@noisy.programming.kicks-ass.net>
- <89067f71-9b83-e647-053e-07f7d55b6529@arm.com>
- <20230907132906.GG10955@noisy.programming.kicks-ass.net>
- <5616e50d-b827-4547-5b16-9131ace98419@arm.com>
- <20230907133840.GH10955@noisy.programming.kicks-ass.net>
- <8657cc7c-169b-3479-5919-72bd39335b15@arm.com>
- <7c1cedb5-6342-1bf9-d1a6-3a87f63801fc@redhat.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <7c1cedb5-6342-1bf9-d1a6-3a87f63801fc@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230912113959.8F8B26321005@dd20004.kasserver.com>
+X-Spam-Score: -1.9 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Tue, Sep 12, 2023 at 01:39:59PM +0200, Timo Sigurdsson wrote:
+> Hi Pablo,
+> 
+> Pablo Neira Ayuso schrieb am 12.09.2023 00:57 (GMT +02:00):
+> 
+> > Hi Timo,
+> > 
+> > On Mon, Sep 11, 2023 at 11:37:50PM +0200, Timo Sigurdsson wrote:
+> >> Hi,
+> >> 
+> >> recently, Debian updated their stable kernel from 6.1.38 to 6.1.52
+> >> which broke nftables ruleset loading on one of my machines with lots
+> >> of "Operation not supported" errors. I've reported this to the
+> >> Debian project (see link below) and Salvatore Bonaccorso and I
+> >> identified "netfilter: nf_tables: disallow rule addition to bound
+> >> chain via NFTA_RULE_CHAIN_ID" (0ebc1064e487) as the offending commit
+> >> that introduced the regression. Salvatore also found that this issue
+> >> affects the 5.10 stable tree as well (observed in 5.10.191), but he
+> >> cannot reproduce it on 6.4.13 and 6.5.2.
+> >> 
+> >> The issue only occurs with some rulesets. While I can't trigger it
+> >> with simple/minimal rulesets that I use on some machines, it does
+> >> occur with a more complex ruleset that has been in use for months
+> >> (if not years, for large parts of it). I'm attaching a somewhat
+> >> stripped down version of the ruleset from the machine I originally
+> >> observed this issue on. It's still not a small or simple ruleset,
+> >> but I'll try to reduce it further when I have more time.
+> >> 
+> >> The error messages shown when trying to load the ruleset don't seem
+> >> to be helpful. Just two simple examples: Just to give two simple
+> >> examples from the log when nftables fails to start:
+> >> /etc/nftables.conf:99:4-44: Error: Could not process rule: Operation not
+> >> supported
+> >>                         tcp option maxseg size 1-500 counter drop
+> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >> /etc/nftables.conf:308:4-27: Error: Could not process rule: Operation not
+> >> supported
+> >>                         tcp dport sip-tls accept
+> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^
+> > 
+> > I can reproduce this issue with 5.10.191 and 6.1.52 and nftables v1.0.6,
+> > this is not reproducible with v1.0.7 and v1.0.8.
+> > 
+> >> Since the issue only affects some stable trees, Salvatore thought it
+> >> might be an incomplete backport that causes this.
+> >> 
+> >> If you need further information, please let me know.
+> > 
+> > Userspace nftables v1.0.6 generates incorrect bytecode that hits a new
+> > kernel check that rejects adding rules to bound chains. The incorrect
+> > bytecode adds the chain binding, attach it to the rule and it adds the
+> > rules to the chain binding. I have cherry-picked these three patches
+> > for nftables v1.0.6 userspace and your ruleset restores fine.
+> 
+> hmm, that doesn't explain why Salvatore didn't observe this with
+> more recent kernels.
+>
+> Salvatore, did you use newer userspace components when you tested
+> your 6.4.13 and 6.5.2 builds?
+> 
+> As for the regression and how it be dealt with: Personally, I don't
+> really care whether the regression is solved in the kernel or
+> userspace. If everybody agrees that this is the best or only viable
+> option and Debian decides to push a nftables update to fix this,
+> that works for me. But I do feel the burden to justify this should
+> be high. A kernel change that leaves users without a working packet
+> filter after upgrading their machines is serious, if you ask me. And
+> since it affects several stable/longterm trees, I would assume this
+> will hit other stable (non-rolling) distributions as well, since
+> they will also use older userspace components (unless this is
+> behavior specific to nftables 1.0.6 but not older versions). They
+> probably should get a heads up then.
 
-On 9/8/23 13:51, Daniel Bristot de Oliveira wrote:
-> On 9/7/23 15:45, Lukasz Luba wrote:
->>>>> RT literatur mostly methinks. Replacing WCET with a statistical model of
->>>>> sorts is not uncommon, the argument goes that not everybody will have
->>>>> their worst case at the same time and lows and highs can commonly cancel
->>>>> out and this way we can cram a little more on the system.
->>>>>
->>>>> Typically this is proposed in the context of soft-realtime systems.
->>>>
->>>> Thanks Peter, I will dive into some books...
->>>
->>> I would look at academic papers, not sure any of that ever made it to
->>> books, Daniel would know I suppose.
->>
->> Good hint, thanks!
-> 
-> The key-words that came to my mind are:
-> 
-> 	- mk-firm, where you accept m tasks will make their deadline
-> 	           every k execution - like, because you run too long.
-> 	- mixed criticality with pWCET (probabilistic execution time) or
-> 		  average execution time + an sporadic tail execution time for
-> 		  the low criticality part.
-> 
-> mk-firm smells like 2005's.. mixed criticality as 2015's..present.
-> 
-> You will probably find more papers than books. Read the papers
-> as a source for inspiration... not necessarily as a definitive
-> solution. They generally proposed too restrictive task models.
-> 
-> -- Daniel
-> 
-
-Thanks for describing this context! That would save my time and avoid
-maybe sinking in this unknown water. As you said I might tread that
-as inspiration, since I don't fight with life-critical system,
-but a phone which needs 'nice user experience' (hopefully there are
-no people who disagree) ;)
-
-Regards,
-Lukasz
+There is coverage for the chain binding feature in our tests
+infrastructure, but unfortunately the bug did not trigger with newer
+nftables versions. In the future, I will keep an eye with running our
+tests on older userspace nftables versions when working on stable
+trees.
