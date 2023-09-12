@@ -2,96 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EB079CE3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B383179CE44
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbjILK1V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S234156AbjILK2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjILK0u (ORCPT
+        with ESMTP id S234111AbjILK1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:26:50 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C3C10DD;
-        Tue, 12 Sep 2023 03:26:44 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlKQ43cy9z6J7t4;
-        Tue, 12 Sep 2023 18:22:04 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
- 2023 11:26:41 +0100
-Date:   Tue, 12 Sep 2023 11:26:40 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/8] IB/hfi1: Use FIELD_GET() to extract Link Width
-Message-ID: <20230912112640.00007427@Huawei.com>
-In-Reply-To: <20230911121501.21910-2-ilpo.jarvinen@linux.intel.com>
-References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
-        <20230911121501.21910-2-ilpo.jarvinen@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 12 Sep 2023 06:27:45 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFEE1705;
+        Tue, 12 Sep 2023 03:27:13 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qg0bl-000440-S5; Tue, 12 Sep 2023 12:27:01 +0200
+Date:   Tue, 12 Sep 2023 12:27:01 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Timo Sigurdsson <public_timo.s@silentcreek.de>,
+        kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, sashal@kernel.org, carnil@debian.org,
+        1051592@bugs.debian.org
+Subject: Re: Regression: Commit "netfilter: nf_tables: disallow rule addition
+ to bound chain via NFTA_RULE_CHAIN_ID" breaks ruleset loading in
+ linux-stable
+Message-ID: <20230912102701.GA13516@breakpoint.cc>
+References: <20230911213750.5B4B663206F5@dd20004.kasserver.com>
+ <ZP+bUpxJiFcmTWhy@calendula>
+ <b30a81fa-6b59-4bac-b109-99a4dca689de@leemhuis.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b30a81fa-6b59-4bac-b109-99a4dca689de@leemhuis.info>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 15:14:54 +0300
-Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
-
-> Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
-> custom masking and shifting.
+Linux regression tracking (Thorsten Leemhuis) <regressions@leemhuis.info> wrote:
+> On 12.09.23 00:57, Pablo Neira Ayuso wrote:
+> > Userspace nftables v1.0.6 generates incorrect bytecode that hits a new
+> > kernel check that rejects adding rules to bound chains. The incorrect
+> > bytecode adds the chain binding, attach it to the rule and it adds the
+> > rules to the chain binding. I have cherry-picked these three patches
+> > for nftables v1.0.6 userspace and your ruleset restores fine.
+> > [...]
 > 
-> While at it, also fix function's comment.
-> 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/infiniband/hw/hfi1/pcie.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-> index 08732e1ac966..d497e4c623c1 100644
-> --- a/drivers/infiniband/hw/hfi1/pcie.c
-> +++ b/drivers/infiniband/hw/hfi1/pcie.c
-> @@ -3,6 +3,7 @@
->   * Copyright(c) 2015 - 2019 Intel Corporation.
->   */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/pci.h>
->  #include <linux/io.h>
->  #include <linux/delay.h>
-> @@ -210,10 +211,10 @@ static u32 extract_speed(u16 linkstat)
->  	return speed;
->  }
->  
-> -/* return the PCIe link speed from the given link status */
-> +/* return the PCIe Link Width from the given link status */
->  static u32 extract_width(u16 linkstat)
->  {
-> -	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
-> +	return FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
+> Hmmmm. Well, this sounds like a kernel regression to me that normally
+> should be dealt with on the kernel level, as users after updating the
+> kernel should never have to update any userspace stuff to continue what
+> they have been doing before the kernel update.
 
-The helper seems like overkill now.  Maybe just push this code inline
-and drop the wrapper.  I don't think the comment is necessary after
-that as we are putting it in a bus_width field and the register is
-obviously link status from the naming.
+This is a combo of a userspace bug and this new sanity check that
+rejects the incorrect ordering (adding rules to the already-bound
+anonymous chain).
 
-	dd->lbus_width = FIELD_GET(PCI_EXP_LINKSTA_NLW, linkstat);
+nf_tables uses a transaction allor-nothing model, this means that any
+error that occurs during a transaction has to be reverse/undo all the
+pending changes.  This has caused a myriad of bugs already.
 
->  }
->  
->  /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
+So while this can be theoretically fixed in the kernel I don't see
+a sane way to do it.  Error unwinding / recovery from deeply nested
+errors is already too complex for my taste.
+
+> Can't the kernel somehow detect the incorrect bytecode and do the right
+> thing(tm) somehow?
+
+Theoretically yes, but I don't feel competent enough to do it, just look
+at all the UaF bugs of the past month.
 
