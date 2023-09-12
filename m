@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D32979D53D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D77DD79D51D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjILPqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
+        id S232601AbjILPkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjILPqC (ORCPT
+        with ESMTP id S229661AbjILPkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:46:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BA910DE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694533558; x=1726069558;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=kUe+U5qKIETKaSIt+mF0u9eBRsOQSXVG3S3n9gypS3g=;
-  b=GmAlxwLMyjI34yaGYo5E9k8bSapo0oXKFFfV4wIXMAexkwFqCH6JODb+
-   Ta5ndKkMlrER+lBbIlOk/+qq96LlArqEM3WOGJ3gVtuLjY4pg0XfhTBAR
-   9kdCzFt8jpe23oJM0ups14VrR1GVzqbHsZEDpCarDAVTeDcD+tPgE4yD4
-   uXUxcznkhaffB/6b87xbCQIhViTYIk14WQPKc2iJ0xdTAcucTEGo73eKC
-   OlEaA+2jkka/l3qcA4dnY+uJu3EYBaz6iywZWNBdQu0hNpdVha/+C5pIR
-   Tq3aHhVcbnCU0kaqYBvKdnfcTH96zAld5fOLRq6XQS0xGj4yDlFRfFZZ+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464786538"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="464786538"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:45:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="773082269"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="773082269"
-Received: from lkp-server02.sh.intel.com (HELO 0a6943a0b3e1) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 12 Sep 2023 08:45:55 -0700
-Received: from kbuild by 0a6943a0b3e1 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qg5aG-000083-2I;
-        Tue, 12 Sep 2023 15:45:50 +0000
-Date:   Tue, 12 Sep 2023 23:38:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: arch/microblaze/kernel/unwind.c:168: warning: Function parameter or
- member 'loglvl' not described in 'unwind_trap'
-Message-ID: <202309122318.VLgfp802-lkp@intel.com>
+        Tue, 12 Sep 2023 11:40:45 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DADA10DE;
+        Tue, 12 Sep 2023 08:40:41 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2BEE35C023B;
+        Tue, 12 Sep 2023 11:40:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 12 Sep 2023 11:40:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694533241; x=1694619641; bh=vd
+        xprn+VLunJ+Ba1KePDdQ8b/yp76261BQa2lBK+CxE=; b=AJ7hJV1s7pfeQAa3Qh
+        vNTywaHGJhoVph3GxX4hX98F3+HoybDiAqHP33z67xzU3bXSLghtYkJXxcmhO79J
+        91PITxUkDNeaNUiUayE1aGKxl8nO55oBuZxFEr6fhu3VKUug9JNVI1BLotMMk0AC
+        Vj9F1YJYHBD19nd4gY8d8gTB2LRBhO409+1rXQGz2ghqyzReb03tDE4Bh6hcI4J2
+        t8EszkIKbgSdwk5MPku6nfVI0eKeeAalqRYpAAD46L/M6dvNZJxefhIRsL9NUQ/H
+        5+pyCsPSSlzxKO9cKoPdIID8KaN8Rh6R74u25eoyeC9BI3ro/Z4ZtQX+puXD5a/p
+        Duug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694533241; x=1694619641; bh=vdxprn+VLunJ+
+        Ba1KePDdQ8b/yp76261BQa2lBK+CxE=; b=Xq4W7g5RYo6XiSHOwOxqSGJOX1kyE
+        yg/PbEVL+mDRmeC18+aKI3ogxnU2gaFFXHUUfN1YIuz/ZeQ32l6vnRx7aCNPnyz6
+        xIoxI2IYK4vjWd0lEDUbomD2PphyLbQ3GyFWDynUJYk42kjKZCcTX/8G8sMEmRr3
+        mW/jJyPRJqUWG3aZpLLN6opktBorzgvmN0Gx6HtXQ9K7eDcz1ZgYhckP1GjcvbK3
+        4gwooD2uhcTVr9aFN2tj1ty0OSiu1QprXCI3AtwpGRHsbCKkHeROL1ZIgIxkjtBd
+        WfoLo+u5/h1v831jfESqrD2/oZ4xYZUIgrsaVJNyt6VJ8IqcbzOUFRqCw==
+X-ME-Sender: <xms:eIYAZbjayQTooKedmvgwajwMg8UhShVmg-wX7AhYYzHGzsjIaS-IVg>
+    <xme:eIYAZYCMCd500kAWs8DOMOBjWAtxoXhYxDzXOo7rjRSYxv2Yw-KzVyH3qDC8SfKGf
+    pKuIvnrgnM5Tkrpz6E>
+X-ME-Received: <xmr:eIYAZbEqrJvcZ-wf1RTdeVbuVvnxgT9xvzSnlgSIPjGQpOHvZ_SOffez48sq4nFdojQmoRiXvudI6VIbraHscw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgledvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheplfgvrhgv
+    mhihucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrth
+    htvghrnhephfefjeejueelueevveelvdehffeufeffvdejkeevteekieduudeludevgeeu
+    vdeinecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrhgvmhih
+    sehjtghlihhnvgdrohhrgh
+X-ME-Proxy: <xmx:eIYAZYSfuBT8Pt3oyzsIGYa2sJwFnlXBzbsYdgOW776etF6SP1DvvQ>
+    <xmx:eIYAZYxH4HNGutPscgpy_knzwtir7jLWD3R9mqVG20OsZ7eJdJelAw>
+    <xmx:eIYAZe7avLR1qCDRkutJf4t_n9MuY67mLyjyjJbGiY_zcsnqmBDMqQ>
+    <xmx:eYYAZbw27w-pcDSWWxOkCBmq5aw_Eq3BnvsOamsuhQl0dq3WYVUcXQ>
+Feedback-ID: i7a7146c5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Sep 2023 11:40:40 -0400 (EDT)
+Date:   Tue, 12 Sep 2023 11:40:38 -0400
+From:   Jeremy Cline <jeremy@jcline.org>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+Subject: Re: [PATCH net] net: nfc: llcp: Add lock when modifying device list
+Message-ID: <ZQCGduvxodv4QQD7@dev>
+References: <20230908235853.1319596-1-jeremy@jcline.org>
+ <20230910152812.GJ775887@kernel.org>
+ <ZP5L6/zF6fE+ogbz@dev>
+ <20230911055904.GN775887@kernel.org>
+ <20230911125251.GA23672@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230911125251.GA23672@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 77530a5277bcab0433d0f68af11e04a5c4d79039 microblaze: add loglvl to microblaze_unwind_inner()
-date:   3 years, 3 months ago
-config: microblaze-alldefconfig (https://download.01.org/0day-ci/archive/20230912/202309122318.VLgfp802-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309122318.VLgfp802-lkp@intel.com/reproduce)
+On Mon, Sep 11, 2023 at 02:52:51PM +0200, Simon Horman wrote:
+> On Mon, Sep 11, 2023 at 07:59:04AM +0200, Simon Horman wrote:
+> > On Sun, Sep 10, 2023 at 07:06:19PM -0400, Jeremy Cline wrote:
+> > > On Sun, Sep 10, 2023 at 05:28:12PM +0200, Simon Horman wrote:
+> > > > On Fri, Sep 08, 2023 at 07:58:53PM -0400, Jeremy Cline wrote:
+> > > > > The device list needs its associated lock held when modifying it, or the
+> > > > > list could become corrupted, as syzbot discovered.
+> > > > > 
+> > > > > Reported-and-tested-by: syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+> > > > > Closes: https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
+> > > > > Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+> > > > 
+> > > > Hi Jeremy,
+> > > > 
+> > > > thanks for your patch.
+> > > > 
+> > > > I don't think you need to resubmit for this,
+> > > > I think this patch warrants a fixes tag:
+> > > > 
+> > > > Fixes: d646960f7986 ("NFC: Initial LLCP support")
+> > > > 
+> > > 
+> > > My bad, indeed. The lock in question looks to have been added in
+> > > 6709d4b7bc2e ("net: nfc: Fix use-after-free caused by
+> > > nfc_llcp_find_local") which itself includes a couple fix tags, should
+> > > this reference that commit instead as it won't backport without that
+> > > one?
+> > 
+> > Yes, I think that is likely.
+> > Sorry for not noticing that.
+> 
+> And further, sorry for being vague in my previous email.
+> Having now looked over 6709d4b7bc2e I agree it is
+> the correct commit for a fixes tag for this patch.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309122318.VLgfp802-lkp@intel.com/
+Super, thanks. If it's helpful I can re-roll the patch, otherwise I'll
+just leave it as-is.
 
-All warnings (new ones prefixed by >>):
-
-   arch/microblaze/kernel/unwind.c:168: warning: Function parameter or member 'task' not described in 'unwind_trap'
-   arch/microblaze/kernel/unwind.c:168: warning: Function parameter or member 'pc' not described in 'unwind_trap'
-   arch/microblaze/kernel/unwind.c:168: warning: Function parameter or member 'fp' not described in 'unwind_trap'
-   arch/microblaze/kernel/unwind.c:168: warning: Function parameter or member 'trace' not described in 'unwind_trap'
->> arch/microblaze/kernel/unwind.c:168: warning: Function parameter or member 'loglvl' not described in 'unwind_trap'
-
-
-vim +168 arch/microblaze/kernel/unwind.c
-
-ce3266c0473894 Steven J. Magnani 2010-04-27  153  
-ce3266c0473894 Steven J. Magnani 2010-04-27  154  static void microblaze_unwind_inner(struct task_struct *task,
-ce3266c0473894 Steven J. Magnani 2010-04-27  155  				    unsigned long pc, unsigned long fp,
-ce3266c0473894 Steven J. Magnani 2010-04-27  156  				    unsigned long leaf_return,
-77530a5277bcab Dmitry Safonov    2020-06-08  157  				    struct stack_trace *trace,
-77530a5277bcab Dmitry Safonov    2020-06-08  158  				    const char *loglvl);
-ce3266c0473894 Steven J. Magnani 2010-04-27  159  
-ce3266c0473894 Steven J. Magnani 2010-04-27  160  /**
-ce3266c0473894 Steven J. Magnani 2010-04-27  161   * unwind_trap - Unwind through a system trap, that stored previous state
-ce3266c0473894 Steven J. Magnani 2010-04-27  162   *		 on the stack.
-ce3266c0473894 Steven J. Magnani 2010-04-27  163   */
-ce3266c0473894 Steven J. Magnani 2010-04-27  164  #ifdef CONFIG_MMU
-ce3266c0473894 Steven J. Magnani 2010-04-27  165  static inline void unwind_trap(struct task_struct *task, unsigned long pc,
-77530a5277bcab Dmitry Safonov    2020-06-08  166  				unsigned long fp, struct stack_trace *trace,
-77530a5277bcab Dmitry Safonov    2020-06-08  167  				const char *loglvl)
-ce3266c0473894 Steven J. Magnani 2010-04-27 @168  {
-ce3266c0473894 Steven J. Magnani 2010-04-27  169  	/* To be implemented */
-ce3266c0473894 Steven J. Magnani 2010-04-27  170  }
-ce3266c0473894 Steven J. Magnani 2010-04-27  171  #else
-ce3266c0473894 Steven J. Magnani 2010-04-27  172  static inline void unwind_trap(struct task_struct *task, unsigned long pc,
-77530a5277bcab Dmitry Safonov    2020-06-08  173  				unsigned long fp, struct stack_trace *trace,
-77530a5277bcab Dmitry Safonov    2020-06-08  174  				const char *loglvl)
-ce3266c0473894 Steven J. Magnani 2010-04-27  175  {
-ce3266c0473894 Steven J. Magnani 2010-04-27  176  	const struct pt_regs *regs = (const struct pt_regs *) fp;
-77530a5277bcab Dmitry Safonov    2020-06-08  177  	microblaze_unwind_inner(task, regs->pc, regs->r1, regs->r15, trace, loglvl);
-ce3266c0473894 Steven J. Magnani 2010-04-27  178  }
-ce3266c0473894 Steven J. Magnani 2010-04-27  179  #endif
-ce3266c0473894 Steven J. Magnani 2010-04-27  180  
-
-:::::: The code at line 168 was first introduced by commit
-:::::: ce3266c047389443d5f433d605c769e878cbe46e microblaze: Add stack unwinder
-
-:::::: TO: Steven J. Magnani <steve@digidescorp.com>
-:::::: CC: Michal Simek <monstr@monstr.eu>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Jeremy
