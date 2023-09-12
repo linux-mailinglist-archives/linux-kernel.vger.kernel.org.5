@@ -2,150 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA0079C913
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A768879C91A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbjILIAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54370 "EHLO
+        id S232090AbjILIA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232124AbjILH6x (ORCPT
+        with ESMTP id S232211AbjILH6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:53 -0400
+        Tue, 12 Sep 2023 03:58:54 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B7710E2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:17 -0700 (PDT)
-Message-ID: <20230912065502.022650614@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E3610F3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:18 -0700 (PDT)
+Message-ID: <20230912065502.082789879@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694505495;
+        s=2020; t=1694505497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=/mf0toaJNTepRqxmdRBH+YrhPsSto1ib/DfMaTt6vf0=;
-        b=g45VjkWr4SZn3yjEAj2eWLFNcRhU+UHPjUtzawCFgwj/Glp/er+bg3ogM+X258L6hsbPhd
-        8uOzYpmvZJRf5MXhO8pMKfhGcFtfLds6u8ni7NeMIGI6giAtelJvB6oW5/VPgpaszxG82j
-        h+O684VQFMepqlCLQxUPWe2WB2U6G0u90vB9vvVITwx7anvS+JQIMtMQxB82rCbHXH5tPy
-        M432JypKh6p+rafj1Gyz6gRn2mwi8/MZszvSku1nZuIfMXpYgWlbxbxewAJZFdE46sdJ2+
-        RJid0AjY9zasC7LhtRNAFFMuSVdWdAOumkNDXCA/mXDZoNYwjjF9qmIn2xFgtg==
+         references:references; bh=2kqLUw1a4gV9FrIDWZ/O+PSOOuBOB0W9vRdpe8yDcXg=;
+        b=QqaPuXD8otO8MOEIXvyvoMFbgqrpc8ZVKklazBuJHJC9cWBbTtTw1x3eGLytyNxgdmimyp
+        WBzksNyIlnKhE12fHgbaM8Z7xBsWve9SDi2jxGaJmk38DpyRNkAVnQw4QV02fS183isYgS
+        s74li/BXboVIoqEr9LtkbE0rLqY8+Aqec3jyTu+eaJ6gs65O5US7LuWGV98RfmTz/K6N+l
+        6gorRnyMPBhtqD6COqK2L6x8iHs14w28TNmytckJckq9A5p0idz43iIZweDXN8DnAGJbos
+        CA4rvHzMHsJV8U3RfJAGjOpyk5ofnU5eQDYoMDuHlqRZqCWiyRWr5tbHAQt9nQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694505495;
+        s=2020e; t=1694505497;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=/mf0toaJNTepRqxmdRBH+YrhPsSto1ib/DfMaTt6vf0=;
-        b=/tqFuXrIH08IG44vB+PEpoTe/F4Eob70a3awXZKlp3feakto4GsvX4axyQ/YfZtYZlDYvg
-        OyvKE/06FGM4XuDQ==
+         references:references; bh=2kqLUw1a4gV9FrIDWZ/O+PSOOuBOB0W9vRdpe8yDcXg=;
+        b=PqPSfxGDhKa1TXBJ4lTbeEw9jb3ASVQZbMMAeaWiCeX7/ccIi0d6SHszRnlHLIpKrgPJVG
+        fTrFWjT0+pB6r5BQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         "Chang S. Bae" <chang.seok.bae@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V3 20/30] x86/microcode: Sanitize __wait_for_cpus()
+Subject: [patch V3 21/30] x86/microcode: Add per CPU result state
 References: <20230912065249.695681286@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 09:58:15 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 09:58:16 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The code is too complicated for no reason:
+The microcode rendevouz is purely acting on global state, which does not
+allow to analyze fails in a coherent way.
 
- - The return value is pointless as this is a strict boolean.
+Introduce per CPU state where the results are written into, which allows to
+analyze the return codes of the individual CPUs.
 
- - It's way simpler to count down from num_online_cpus() and check for
-   zero.
+Initialize the state when walking the cpu_present_mask in the online check
+to avoid another for_each_cpu() loop.
 
-  - The timeout argument is pointless as this is always one second.
+Enhance the result print out with that.
 
-  - Touching the NMI watchdog every 100ns does not make any sense, neither
-    does checking every 100ns. This is really not a hotpath operation.
-
-Preload the atomic counter with the number of online CPUs and simplify the
-whole timeout logic. Delay for one microsecond and touch the NMI watchdog
-once per millisecond.
+The structure is intentionally named ucode_ctrl as it will gain control
+fields in subsequent changes.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/kernel/cpu/microcode/core.c |   41 ++++++++++++++---------------------
- 1 file changed, 17 insertions(+), 24 deletions(-)
+ arch/x86/kernel/cpu/microcode/core.c     |  108 ++++++++++++++++++-------------
+ arch/x86/kernel/cpu/microcode/internal.h |    1 
+ 2 files changed, 65 insertions(+), 44 deletions(-)
 ---
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -324,31 +324,24 @@ static struct platform_device	*microcode
+@@ -324,6 +324,11 @@ static struct platform_device	*microcode
   *   requirement can be relaxed in the future. Right now, this is conservative
   *   and good.
   */
--#define SPINUNIT 100 /* 100 nsec */
-+static atomic_t late_cpus_in, late_cpus_out;
++struct ucode_ctrl {
++	enum ucode_state	result;
++};
++
++static DEFINE_PER_CPU(struct ucode_ctrl, ucode_ctrl);
+ static atomic_t late_cpus_in, late_cpus_out;
  
--
--static atomic_t late_cpus_in;
--static atomic_t late_cpus_out;
--
--static int __wait_for_cpus(atomic_t *t, long long timeout)
-+static bool wait_for_cpus(atomic_t *cnt)
- {
--	int all_cpus = num_online_cpus();
--
--	atomic_inc(t);
--
--	while (atomic_read(t) < all_cpus) {
--		if (timeout < SPINUNIT) {
--			pr_err("Timeout while waiting for CPUs rendezvous, remaining: %d\n",
--				all_cpus - atomic_read(t));
--			return 1;
--		}
-+	unsigned int timeout;
- 
--		ndelay(SPINUNIT);
--		timeout -= SPINUNIT;
-+	WARN_ON_ONCE(atomic_dec_return(cnt) < 0);
- 
--		touch_nmi_watchdog();
-+	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
-+		if (!atomic_read(cnt))
-+			return true;
-+		udelay(1);
-+		if (!(timeout % 1000))
-+			touch_nmi_watchdog();
- 	}
--	return 0;
-+	/* Prevent the late comers to make progress and let them time out */
-+	atomic_inc(cnt);
-+	return false;
+ static bool wait_for_cpus(atomic_t *cnt)
+@@ -344,23 +349,19 @@ static bool wait_for_cpus(atomic_t *cnt)
+ 	return false;
  }
  
- /*
-@@ -366,7 +359,7 @@ static int __reload_late(void *info)
+-/*
+- * Returns:
+- * < 0 - on error
+- *   0 - success (no update done or microcode was updated)
+- */
+-static int __reload_late(void *info)
++static int ucode_load_cpus_stopped(void *unused)
+ {
+ 	int cpu = smp_processor_id();
+-	enum ucode_state err;
+-	int ret = 0;
++	enum ucode_state ret;
+ 
+ 	/*
  	 * Wait for all CPUs to arrive. A load will not be attempted unless all
  	 * CPUs show up.
  	 * */
--	if (__wait_for_cpus(&late_cpus_in, NSEC_PER_SEC))
-+	if (!wait_for_cpus(&late_cpus_in))
- 		return -1;
+-	if (!wait_for_cpus(&late_cpus_in))
+-		return -1;
++	if (!wait_for_cpus(&late_cpus_in)) {
++		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
++		return 0;
++	}
  
  	/*
-@@ -389,7 +382,7 @@ static int __reload_late(void *info)
- 	}
+ 	 * On an SMT system, it suffices to load the microcode on one sibling of
+@@ -369,17 +370,11 @@ static int __reload_late(void *info)
+ 	 * loading attempts happen on multiple threads of an SMT core. See
+ 	 * below.
+ 	 */
+-	if (cpumask_first(topology_sibling_cpumask(cpu)) == cpu)
+-		err = microcode_ops->apply_microcode(cpu);
+-	else
++	if (cpumask_first(topology_sibling_cpumask(cpu)) != cpu)
+ 		goto wait_for_siblings;
+ 
+-	if (err >= UCODE_NFOUND) {
+-		if (err == UCODE_ERROR) {
+-			pr_warn("Error reloading microcode on CPU %d\n", cpu);
+-			ret = -1;
+-		}
+-	}
++	ret = microcode_ops->apply_microcode(cpu);
++	this_cpu_write(ucode_ctrl.result, ret);
  
  wait_for_siblings:
--	if (__wait_for_cpus(&late_cpus_out, NSEC_PER_SEC))
-+	if (!wait_for_cpus(&late_cpus_out))
- 		panic("Timeout during microcode update!\n");
+ 	if (!wait_for_cpus(&late_cpus_out))
+@@ -391,19 +386,18 @@ static int __reload_late(void *info)
+ 	 * per-cpu cpuinfo can be updated with right microcode
+ 	 * revision.
+ 	 */
+-	if (cpumask_first(topology_sibling_cpumask(cpu)) != cpu)
+-		err = microcode_ops->apply_microcode(cpu);
++	if (cpumask_first(topology_sibling_cpumask(cpu)) == cpu)
++		return 0;
  
- 	/*
-@@ -416,8 +409,8 @@ static int microcode_reload_late(void)
+-	return ret;
++	ret = microcode_ops->apply_microcode(cpu);
++	this_cpu_write(ucode_ctrl.result, ret);
++	return 0;
+ }
+ 
+-/*
+- * Reload microcode late on all CPUs. Wait for a sec until they
+- * all gather together.
+- */
+-static int microcode_reload_late(void)
++static int ucode_load_late_stop_cpus(void)
+ {
+-	int old = boot_cpu_data.microcode, ret;
++	unsigned int cpu, updated = 0, failed = 0, timedout = 0, siblings = 0;
++	int old_rev = boot_cpu_data.microcode;
+ 	struct cpuinfo_x86 prev_info;
+ 
  	pr_err("Attempting late microcode loading - it is dangerous and taints the kernel.\n");
- 	pr_err("You should switch to early loading, if possible.\n");
+@@ -418,26 +412,47 @@ static int microcode_reload_late(void)
+ 	 */
+ 	store_cpu_caps(&prev_info);
  
--	atomic_set(&late_cpus_in,  0);
--	atomic_set(&late_cpus_out, 0);
-+	atomic_set(&late_cpus_in, num_online_cpus());
-+	atomic_set(&late_cpus_out, num_online_cpus());
+-	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
++	stop_machine_cpuslocked(ucode_load_cpus_stopped, NULL, cpu_online_mask);
++
++	/* Analyze the results */
++	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
++		switch (per_cpu(ucode_ctrl.result, cpu)) {
++		case UCODE_UPDATED:	updated++; break;
++		case UCODE_TIMEOUT:	timedout++; break;
++		case UCODE_OK:		siblings++; break;
++		default:		failed++; break;
++		}
++	}
  
- 	/*
- 	 * Take a snapshot before the microcode update in order to compare and
+ 	if (microcode_ops->finalize_late_load)
+-		microcode_ops->finalize_late_load(ret);
++		microcode_ops->finalize_late_load(!updated);
+ 
+-	if (!ret) {
+-		pr_info("Reload succeeded, microcode revision: 0x%x -> 0x%x\n",
+-			old, boot_cpu_data.microcode);
+-		microcode_check(&prev_info);
+-		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+-	} else {
+-		pr_info("Reload failed, current microcode revision: 0x%x\n",
+-			boot_cpu_data.microcode);
++	if (!updated) {
++		/* Nothing changed. */
++		if (!failed && !timedout)
++			return 0;
++		pr_err("Microcode update failed: %u CPUs failed %u CPUs timed out\n",
++		       failed, timedout);
++		return -EIO;
+ 	}
+-	return ret;
++
++	add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
++	pr_info("Microcode load: updated on %u primary CPUs with %u siblings\n", updated, siblings);
++	if (failed || timedout) {
++		pr_err("Microcode load incomplete. %u CPUs timed out or failed\n",
++		       num_online_cpus() - (updated + siblings));
++	}
++	pr_info("Microcode revision: 0x%x -> 0x%x\n", old_rev, boot_cpu_data.microcode);
++	microcode_check(&prev_info);
++
++	return updated + siblings == num_online_cpus() ? 0 : -EIO;
+ }
+ 
+ /*
+- *  Ensure that all required CPUs which are present and have been booted
+- *  once are online.
++ * This function does two things:
++ *
++ * 1) Ensure that all required CPUs which are present and have been booted
++ *    once are online.
+  *
+  *    To pass this check, all primary threads must be online.
+  *
+@@ -448,9 +463,12 @@ static int microcode_reload_late(void)
+  *    behaviour is undefined. The default play_dead() implementation on
+  *    modern CPUs is using MWAIT, which is also not guaranteed to be safe
+  *    against a microcode update which affects MWAIT.
++ *
++ * 2) Initialize the per CPU control structure
+  */
+-static bool ensure_cpus_are_online(void)
++static bool ucode_setup_cpus(void)
+ {
++	struct ucode_ctrl ctrl = { .result = -1, };
+ 	unsigned int cpu;
+ 
+ 	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
+@@ -460,6 +478,8 @@ static bool ensure_cpus_are_online(void)
+ 				return false;
+ 			}
+ 		}
++		/* Initialize the per CPU state */
++		per_cpu(ucode_ctrl, cpu) = ctrl;
+ 	}
+ 	return true;
+ }
+@@ -468,13 +488,13 @@ static int ucode_load_late_locked(void)
+ {
+ 	int ret;
+ 
+-	if (!ensure_cpus_are_online())
++	if (!ucode_setup_cpus())
+ 		return -EBUSY;
+ 
+ 	ret = microcode_ops->request_microcode_fw(0, &microcode_pdev->dev);
+ 	if (ret != UCODE_NEW)
+ 		return ret == UCODE_NFOUND ? -ENOENT : -EBADFD;
+-	return microcode_reload_late();
++	return ucode_load_late_stop_cpus();
+ }
+ 
+ static ssize_t reload_store(struct device *dev,
+--- a/arch/x86/kernel/cpu/microcode/internal.h
++++ b/arch/x86/kernel/cpu/microcode/internal.h
+@@ -16,6 +16,7 @@ enum ucode_state {
+ 	UCODE_UPDATED,
+ 	UCODE_NFOUND,
+ 	UCODE_ERROR,
++	UCODE_TIMEOUT,
+ };
+ 
+ struct microcode_ops {
 
