@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AD979CE9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B632B79CE77
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbjILKoJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S234251AbjILKhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234297AbjILKoG (ORCPT
+        with ESMTP id S234177AbjILKgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:44:06 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B5E1FF6;
-        Tue, 12 Sep 2023 03:34:06 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlKZZ4gLPz6J7jc;
-        Tue, 12 Sep 2023 18:29:26 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
- 2023 11:34:04 +0100
-Date:   Tue, 12 Sep 2023 11:34:03 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/8] igb: Use FIELD_GET() to extract Link Width
-Message-ID: <20230912113403.00006c39@Huawei.com>
-In-Reply-To: <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com>
-References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
-        <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 12 Sep 2023 06:36:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C446144B9;
+        Tue, 12 Sep 2023 03:35:33 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378246800"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="378246800"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:35:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="917389147"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="917389147"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:35:30 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qg0jv-008YvE-39;
+        Tue, 12 Sep 2023 13:35:27 +0300
+Date:   Tue, 12 Sep 2023 13:35:27 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFT PATCH 2/3] gpio: eic-sprd: use a helper variable for
+ &pdev->dev
+Message-ID: <ZQA+716X8EVmIRAt@smile.fi.intel.com>
+References: <20230912094519.22769-1-brgl@bgdev.pl>
+ <20230912094519.22769-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912094519.22769-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 15:14:56 +0300
-Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
-
-> Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
-> custom masking and shifting.
+On Tue, Sep 12, 2023 at 11:45:18AM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/net/ethernet/intel/igb/e1000_mac.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igb/e1000_mac.c b/drivers/net/ethernet/intel/igb/e1000_mac.c
-> index caf91c6f52b4..5a23b9cfec6c 100644
-> --- a/drivers/net/ethernet/intel/igb/e1000_mac.c
-> +++ b/drivers/net/ethernet/intel/igb/e1000_mac.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /* Copyright(c) 2007 - 2018 Intel Corporation. */
->  
-> +#include <linux/bitfield.h>
->  #include <linux/if_ether.h>
->  #include <linux/delay.h>
->  #include <linux/pci.h>
-> @@ -50,9 +51,8 @@ s32 igb_get_bus_info_pcie(struct e1000_hw *hw)
->  			break;
->  		}
->  
-> -		bus->width = (enum e1000_bus_width)((pcie_link_status &
-> -						     PCI_EXP_LNKSTA_NLW) >>
-> -						     PCI_EXP_LNKSTA_NLW_SHIFT);
-> +		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
-> +							     pcie_link_status);
+> Instead of dereferencing pdev everywhere, just store the address of the
+> underlying struct device in a local variable.
 
-This cast is a bit ugly given it takes the values 0, 1, 2, 3 and
-we extra a field that the spec says contains 1, 2, 4, 8 etc
-Hence it only works because only 1 and 2 are used I think...  Not nice.
+...
 
+> -	return devm_add_action_or_reset(&pdev->dev,
+> -					sprd_eic_unregister_notifier,
+> +	return devm_add_action_or_reset(dev, sprd_eic_unregister_notifier,
+>  					&sprd_eic->irq_nb);
 
-Also, whilst looking at this I note that e1000e has it's own defines
-for PCIE_LINK_WIDTH_MASK and PCIE_LINK_WIDTH_SHIFT 
+Ping-pong style detected: Lines added / modified by previous patch in the same
+series got modified again.
 
-Looks like those should be changed to use the standard defines.
+If you look at how I do that, I introduce the temporary variable with my new
+code and then reuse it later on.
 
-For extra giggles there are two e1000_bus_width enum definitions in different
-headers.
+OTOH, I see that the first one is supposed to be backported (?) in such case
+perhaps it's fine.
 
-Actual patch is good - just 'interesting' stuff noticed whilst looking at it :)
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Jonathan
-
-
->  	}
->  
->  	reg = rd32(E1000_STATUS);
 
