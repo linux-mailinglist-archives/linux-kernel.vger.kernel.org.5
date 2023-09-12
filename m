@@ -2,129 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8F479CC17
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B224779CC16
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbjILJkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
+        id S232627AbjILJkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232671AbjILJk3 (ORCPT
+        with ESMTP id S230335AbjILJkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:40:29 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88B2CC3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1694511597; x=1695116397; i=efault@gmx.de;
- bh=3LlqbtKm2Ooiid+7bcksAZg5xhp4yhAr1w3kwdcvgcY=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=e+Ys/n/Zq5wQDKJpJfDKASYrqSyo1wS+Sry6QIAAOK4QfvuVmA+4Py4QkcZo9Du6QRzGSvz
- t0Q1nHYkVn5CUvtKe/b5R/8Tu5SMTSuSXiZhrt+1cHARlRyuclnjzv/4b+CJueBI4svV8lPUn
- XdYBCxyJ6KEENTVXMxl3tN4v3g52kynV7PqNHhJLKsctudJH/WLt0bzfZEoe5uLcHXH3o9dX5
- xCvCdWuqRaHO8rFdvPRZFaV8UxJaaLvHqLwWD7Ln4IAASE2Yr9OZYKDA7ZxskmZI9zz6DpDtf
- X+GBeYbyGcaATOEY/Zravj2H/5ATs3nKKLB+/gTse/e6CaAF7wmQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.221.151.115]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSKu0-1r8db31K4e-00SfWp; Tue, 12
- Sep 2023 11:39:57 +0200
-Message-ID: <a8c1b296a4ed444b9cab166a5a39aa11836903a8.camel@gmx.de>
-Subject: Re: [RFC PATCH 2/2] sched/fair: skip the cache hot CPU in
- select_idle_cpu()
-From:   Mike Galbraith <efault@gmx.de>
-To:     Chen Yu <yu.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Date:   Tue, 12 Sep 2023 11:39:55 +0200
-In-Reply-To: <ZP7ptt70uF10wxlg@chenyu5-mobl2>
-References: <cover.1694397335.git.yu.c.chen@intel.com>
-         <d49cf5748aa7c6d69580315d2373a9eafa21c21f.1694397335.git.yu.c.chen@intel.com>
-         <31c910c2-717d-b86c-4e08-5c94383682e8@amd.com>
-         <ZP7ptt70uF10wxlg@chenyu5-mobl2>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Tue, 12 Sep 2023 05:40:17 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E825E1BE;
+        Tue, 12 Sep 2023 02:40:13 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C8qIhB013884;
+        Tue, 12 Sep 2023 09:40:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=mbYMShoWCiaRG+o2fbNTkFP0ve4JMZfaXl0kYEEnQuQ=;
+ b=STXs84Q6TFWkL3/3peY974DoId1U++RclZsVXhk1Z0PlNsRtl8UfZOorK5Jq2JzEwkI5
+ EKqFospdvLLpOIC6aTkUoS6JqalG998AfnLRNvZCegRZrXBYmPv2+TYBvC05BwQV6TEG
+ Sbht3soc/157IZhQrSnqCwUO3fxKke841sbxS0pWJIUqCWPURY7ZVUi9s1FK1awT70TM
+ TV6/mknE0lTQXg8ApJU99Qvv++QrRwL9FYYcX4zwXvRDZGIAuQUKgmRflgWWHLR4ya4M
+ 2+XZy5F2ZGfsvc1BYEGySixVHmToD60h/SbXuHhhTo9VXqF52/McxaGmsMIVImMV7wYQ HQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2c4c11m3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 09:40:10 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C9e9UX005766
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 09:40:09 GMT
+Received: from tjiang-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Tue, 12 Sep 2023 02:40:07 -0700
+From:   Tim Jiang <quic_tjiang@quicinc.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+        "Tim Jiang" <quic_tjiang@quicinc.com>
+Subject: [PATCH v2] Bluetooth: qca: add support for QCA2066
+Date:   Tue, 12 Sep 2023 17:39:57 +0800
+Message-ID: <20230912093957.3334273-1-quic_tjiang@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KB1l91isQSB6Oam/O2/3Gf+VfVbZFgUXoaA8edEuA6rL/tlWKU+
- 1gH1I/WXUoogzwpnu6S780ZzH1IvtG7E7vG+Avr8K3YmeIj0V1+nkDNG7oY7eR7kCvAc3lo
- G09QQ1CywCTUeRfRyrMlDZCL7BynJCN6wD78l7k2TZswkx8BzwIwpLW0NC6z4I/AQS952K0
- Dr9vs4jM/oXCNk0ZKlXjw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:pLOnFt3aonE=;1ZU57Y3w45Umng2I6FVB/x6AK8e
- HXmRcO3Z6v6kkXYCe3AzKqcBM29qeQ/J53utUYOp486rYjUqboAWZ8zJH7z+pF5lPvME9cqX4
- CtTMhSKw+7Fu8jlNTDWsHb+IUB8QGch2P7fmcQa5tTsrg6/dSTaFOZASiXI0MXG+H8FFYzgr/
- 0alPpO1TMwvjRDu6JM+UR2TYtlHcGLHNOFGOsCfoAjjMaEDW/YGVcFJ/F2cn0kQdro0e4qWPb
- DqcYD1uDfc2mEkBLTWP7PXZpHsffgzvNli7bRw+tagJ5L/eC293NMSRpWGp/JB7S/v3xYV5zc
- 4NTZvZi7RsTqFQ12Qw559s6VgPS7WT11u1OimnT1/TxI5+1afbp/sTk1beWJ24Ed+chmtYb+w
- 58c5sZBlIDPgnOJ5PC+Qx9V0K2ReAmoTUG7Lza+sTrOtXE3RwGiNY7azysmg6ZZafrgFVBzPY
- ZLEpnHEDGg8busQhCJ8i49+nxfCnIVEg8YXjUCR1rtuNz7DGuqq3x4hjJCLspfVNUBZIPq+V/
- kvgvNr7YvJM8X9ff6QBKjwj9hv+IA58gTxv7El3dHZd77AxaH27rYz4R60XguPWCHEFK6c+28
- 2u86yilawEHlPP0NZTOM35ofUlEohJCmcTzlqPiwMSzbP062CliYXUVZoa4wrLdRAruQ74H5I
- 1q8ybKjhfNFEiHuWEKL+5f5WZadYK91PdVsaYr0aLdp4GVKgJlBLzi1uhEdqRL0TqMw+0Xc+6
- MJaGcb3BxiusoNXmoW1G/+r2+hZjMoHcvXAzRpRAw6mqDx6SzGCV44uKVWHviOygxXijr95gX
- ypdQ5NS0S3zvkaXKac+ahjd6F2WhxED2QT+t+0szdT0h13fIUfLJn/17zc0h9GgHVeXgLHtc9
- 5Ad3qJTmR9y077A+6mIowmalKwOX4hYbPmClyPCZUIyvH89C6ZWX5Z4ZtsMKdTg/QEB4aUxA4
- ljRJ6WGSIhajnwDEKXrEkrzyiyo=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: up5CbU_wrKXUIE78dJrOC0ataItF-eb9
+X-Proofpoint-ORIG-GUID: up5CbU_wrKXUIE78dJrOC0ataItF-eb9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-11 at 18:19 +0800, Chen Yu wrote:
->
-> > Speaking of cache-hot idle CPU, is netperf actually more happy with
-> > piling on current CPU?
->
-> Yes. Per my previous test, netperf of TCP_RR/UDP_RR really likes to
-> put the waker and wakee together.
+This patch adds support for QCA2066 firmware patch and NVM downloading.
+as the RF performance of QCA2066 SOC chip from different foundries may
+vary. Therefore we use different NVM to configure them based on board ID.
 
-Hm, seems there's at least one shared L2 case where that's untrue by
-more than a tiny margin, which surprised me rather a lot.
+Changes in v2
+ - optimize the function qca_generate_hsp_nvm_name
+ - remove redundant debug code for function qca_read_fw_board_id
 
-For grins, I tested netperf on my dinky rpi4b, and while its RR numbers
-seem kinda odd, they're also seemingly repeatable (ergo showing them).
-I measured a very modest cross-core win on a shared L2 Intel CPU some
-years ago (when Q6600 was shiny/new) but nothing close to these deltas.
+Signed-off-by: Tim Jiang <quic_tjiang@quicinc.com>
+---
+ drivers/bluetooth/btqca.c   | 68 +++++++++++++++++++++++++++++++++++++
+ drivers/bluetooth/btqca.h   |  5 ++-
+ drivers/bluetooth/hci_qca.c | 11 ++++++
+ 3 files changed, 83 insertions(+), 1 deletion(-)
 
-Makes me wonder what (a tad beefier) Bulldog RR numbers look like.
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index 5a35ac4138c6..fdb0fae88d1c 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -205,6 +205,44 @@ static int qca_send_reset(struct hci_dev *hdev)
+ 	return 0;
+ }
+ 
++static int qca_read_fw_board_id(struct hci_dev *hdev, u16 *bid)
++{
++	u8 cmd;
++	struct sk_buff *skb;
++	struct edl_event_hdr *edl;
++	int err = 0;
++
++	cmd = EDL_GET_BID_REQ_CMD;
++	skb = __hci_cmd_sync_ev(hdev, EDL_PATCH_CMD_OPCODE, EDL_PATCH_CMD_LEN,
++				&cmd, 0, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		err = PTR_ERR(skb);
++		bt_dev_err(hdev, "Reading QCA board ID failed (%d)", err);
++		return err;
++	}
++
++	edl = skb_pull_data(skb, sizeof(*edl));
++	if (!edl) {
++		bt_dev_err(hdev, "QCA read board ID with no header");
++		err = -EILSEQ;
++		goto out;
++	}
++
++	if (edl->cresp != EDL_CMD_REQ_RES_EVT ||
++	    edl->rtype != EDL_GET_BID_REQ_CMD) {
++		bt_dev_err(hdev, "QCA Wrong packet: %d %d", edl->cresp, edl->rtype);
++		err = -EIO;
++		goto out;
++	}
++
++	*bid = (edl->data[1] << 8) + edl->data[2];
++	bt_dev_dbg(hdev, "%s: bid = %x", __func__, *bid);
++
++out:
++	kfree_skb(skb);
++	return err;
++}
++
+ int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
+ {
+ 	struct sk_buff *skb;
+@@ -574,6 +612,23 @@ int qca_set_bdaddr_rome(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+ }
+ EXPORT_SYMBOL_GPL(qca_set_bdaddr_rome);
+ 
++static void qca_generate_hsp_nvm_name(char *fwname, size_t max_size,
++		struct qca_btsoc_version ver, u8 rom_ver, u16 bid)
++{
++	const char *variant;
++
++	/* hsp gf chip */
++	if ((le32_to_cpu(ver.soc_id) & QCA_HSP_GF_SOC_MASK) == QCA_HSP_GF_SOC_ID)
++		variant = "g";
++	else
++		variant = "";
++
++	if (bid == 0x0)
++		snprintf(fwname, max_size, "qca/hpnv%02x%s.bin", rom_ver, variant);
++	else
++		snprintf(fwname, max_size, "qca/hpnv%02x%s.%x", rom_ver, variant, bid);
++}
++
+ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 		   enum qca_btsoc_type soc_type, struct qca_btsoc_version ver,
+ 		   const char *firmware_name)
+@@ -582,6 +637,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 	int err;
+ 	u8 rom_ver = 0;
+ 	u32 soc_ver;
++	u16 boardid = 0;
+ 
+ 	bt_dev_dbg(hdev, "QCA setup on UART");
+ 
+@@ -615,6 +671,10 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 		snprintf(config.fwname, sizeof(config.fwname),
+ 			 "qca/apbtfw%02x.tlv", rom_ver);
+ 		break;
++	case QCA_QCA2066:
++		snprintf(config.fwname, sizeof(config.fwname),
++			 "qca/hpbtfw%02x.tlv", rom_ver);
++		break;
+ 	case QCA_QCA6390:
+ 		snprintf(config.fwname, sizeof(config.fwname),
+ 			 "qca/htbtfw%02x.tlv", rom_ver);
+@@ -649,6 +709,9 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 	/* Give the controller some time to get ready to receive the NVM */
+ 	msleep(10);
+ 
++	if (soc_type == QCA_QCA2066)
++		qca_read_fw_board_id(hdev, &boardid);
++
+ 	/* Download NVM configuration */
+ 	config.type = TLV_TYPE_NVM;
+ 	if (firmware_name) {
+@@ -671,6 +734,10 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 			snprintf(config.fwname, sizeof(config.fwname),
+ 				 "qca/apnv%02x.bin", rom_ver);
+ 			break;
++		case QCA_QCA2066:
++			qca_generate_hsp_nvm_name(config.fwname,
++				sizeof(config.fwname), ver, rom_ver, boardid);
++			break;
+ 		case QCA_QCA6390:
+ 			snprintf(config.fwname, sizeof(config.fwname),
+ 				 "qca/htnv%02x.bin", rom_ver);
+@@ -702,6 +769,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+ 
+ 	switch (soc_type) {
+ 	case QCA_WCN3991:
++	case QCA_QCA2066:
+ 	case QCA_QCA6390:
+ 	case QCA_WCN6750:
+ 	case QCA_WCN6855:
+diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
+index 03bff5c0059d..dc31984f71dc 100644
+--- a/drivers/bluetooth/btqca.h
++++ b/drivers/bluetooth/btqca.h
+@@ -12,6 +12,7 @@
+ #define EDL_PATCH_VER_REQ_CMD		(0x19)
+ #define EDL_PATCH_TLV_REQ_CMD		(0x1E)
+ #define EDL_GET_BUILD_INFO_CMD		(0x20)
++#define EDL_GET_BID_REQ_CMD			(0x23)
+ #define EDL_NVM_ACCESS_SET_REQ_CMD	(0x01)
+ #define EDL_PATCH_CONFIG_CMD		(0x28)
+ #define MAX_SIZE_PER_TLV_SEGMENT	(243)
+@@ -47,7 +48,8 @@
+ 	((le32_to_cpu(soc_id) << 16) | (le16_to_cpu(rom_ver)))
+ 
+ #define QCA_FW_BUILD_VER_LEN		255
+-
++#define QCA_HSP_GF_SOC_ID			0x1200
++#define QCA_HSP_GF_SOC_MASK			0x0000ff00
+ 
+ enum qca_baudrate {
+ 	QCA_BAUDRATE_115200 	= 0,
+@@ -146,6 +148,7 @@ enum qca_btsoc_type {
+ 	QCA_WCN3990,
+ 	QCA_WCN3998,
+ 	QCA_WCN3991,
++	QCA_QCA2066,
+ 	QCA_QCA6390,
+ 	QCA_WCN6750,
+ 	QCA_WCN6855,
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 4b57e15f9c7a..067e248e3599 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1841,6 +1841,10 @@ static int qca_setup(struct hci_uart *hu)
+ 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+ 
+ 	switch (soc_type) {
++	case QCA_QCA2066:
++		soc_name = "qca2066";
++		break;
++
+ 	case QCA_WCN3988:
+ 	case QCA_WCN3990:
+ 	case QCA_WCN3991:
+@@ -2032,6 +2036,11 @@ static const struct qca_device_data qca_soc_data_wcn3998 __maybe_unused = {
+ 	.num_vregs = 4,
+ };
+ 
++static const struct qca_device_data qca_soc_data_qca2066 __maybe_unused = {
++	.soc_type = QCA_QCA2066,
++	.num_vregs = 0,
++};
++
+ static const struct qca_device_data qca_soc_data_qca6390 __maybe_unused = {
+ 	.soc_type = QCA_QCA6390,
+ 	.num_vregs = 0,
+@@ -2559,6 +2568,7 @@ static SIMPLE_DEV_PM_OPS(qca_pm_ops, qca_suspend, qca_resume);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id qca_bluetooth_of_match[] = {
++	{ .compatible = "qcom,qca2066-bt", .data = &qca_soc_data_qca2066},
+ 	{ .compatible = "qcom,qca6174-bt" },
+ 	{ .compatible = "qcom,qca6390-bt", .data = &qca_soc_data_qca6390},
+ 	{ .compatible = "qcom,qca9377-bt" },
+@@ -2576,6 +2586,7 @@ MODULE_DEVICE_TABLE(of, qca_bluetooth_of_match);
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id qca_bluetooth_acpi_match[] = {
++	{ "QCOM2066", (kernel_ulong_t)&qca_soc_data_qca2066 },
+ 	{ "QCOM6390", (kernel_ulong_t)&qca_soc_data_qca6390 },
+ 	{ "DLA16390", (kernel_ulong_t)&qca_soc_data_qca6390 },
+ 	{ "DLB16390", (kernel_ulong_t)&qca_soc_data_qca6390 },
+-- 
+2.41.0
 
-root@rpi4:~# ONLY=3DTCP_RR netperf.sh
-TCP_RR-1        unbound    Avg:  29611  Sum:    29611
-TCP_RR-1        stacked    Avg:  22540  Sum:    22540
-TCP_RR-1        cross-core Avg:  30181  Sum:    30181
-
-root@rpi4:~# netperf.sh
-TCP_SENDFILE-1  unbound    Avg:  15572  Sum:    15572
-TCP_SENDFILE-1  stacked    Avg:  11533  Sum:    11533
-TCP_SENDFILE-1  cross-core Avg:  15751  Sum:    15751
-
-TCP_STREAM-1    unbound    Avg:   6331  Sum:     6331
-TCP_STREAM-1    stacked    Avg:   6031  Sum:     6031
-TCP_STREAM-1    cross-core Avg:   6211  Sum:     6211
-
-TCP_MAERTS-1    unbound    Avg:   6306  Sum:     6306
-TCP_MAERTS-1    stacked    Avg:   6094  Sum:     6094
-TCP_MAERTS-1    cross-core Avg:   9393  Sum:     9393
-
-UDP_STREAM-1    unbound    Avg:  22277  Sum:    22277
-UDP_STREAM-1    stacked    Avg:  18844  Sum:    18844
-UDP_STREAM-1    cross-core Avg:  24749  Sum:    24749
-
-TCP_RR-1        unbound    Avg:  29674  Sum:    29674
-TCP_RR-1        stacked    Avg:  22267  Sum:    22267
-TCP_RR-1        cross-core Avg:  30237  Sum:    30237
-
-UDP_RR-1        unbound    Avg:  36189  Sum:    36189
-UDP_RR-1        stacked    Avg:  27129  Sum:    27129
-UDP_RR-1        cross-core Avg:  37033  Sum:    37033
