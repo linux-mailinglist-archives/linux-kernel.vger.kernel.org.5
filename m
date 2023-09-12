@@ -2,107 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A581F79D3B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E89E79D3BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235978AbjILOcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
+        id S235949AbjILOcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235949AbjILOb6 (ORCPT
+        with ESMTP id S230444AbjILOck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:31:58 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAA0118;
-        Tue, 12 Sep 2023 07:31:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C545DC433C7;
-        Tue, 12 Sep 2023 14:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694529113;
-        bh=nCDXCDraqsGo2IZGYAIOuK+jrylfUNs1NltItNEvSsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IzfFF5eS0jKjFYDvO5isyKITSFx9Gnoou/xv7WTkxJg7qowQ87WM6A8bDeU4fZUs1
-         v+AU3kBJHoO/qvhkLBzY1LHIpY+mFTnKXIPiUxYl/w3RS3wkGKbFB69UBKlSVcpHoO
-         R9UMiesRBocyKoVCX9r61gVBb0m6a5HpXfKUD+oA6NSEynLpVPIsfvefLOWbcbq1lx
-         JGxEqnf0JXnj8shzNl1oXaeaaONd/2cX0VDR3d3YkhmkxsgAFwQcbMbGIsdIR/eV5I
-         SgC7qCUyKhiuK2IY0LWMINLlX//w2erE1Q9rltkmWhDbYoOgH/htDJbxJx4vH1fshy
-         XtHNCvawzd3Vg==
-Date:   Tue, 12 Sep 2023 15:31:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 28/31] pinctrl: Add support for the Lantic PEF2256
- pinmux
-Message-ID: <71761f94-14ea-4e2a-a079-c74dfa32387a@sirena.org.uk>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
- <20230912101505.225899-1-herve.codina@bootlin.com>
- <CACRpkdbxdMZt4E1SF1v9as-jw=TpvS1mk2TQqAgywMBLbKaNoA@mail.gmail.com>
+        Tue, 12 Sep 2023 10:32:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4F0115;
+        Tue, 12 Sep 2023 07:32:36 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CDo0Kr006822;
+        Tue, 12 Sep 2023 14:32:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=0MXVxIMxcRyFzQm0Xx9I9lFxvozA1Kor5DCnR3zK4y4=;
+ b=dnIejVxKqnp5xXncE0ZUNMrPRJv22cT/c11yDNbXVdyszxMCppyB8N5RirZ6tC8iPHUD
+ LHSLfapwGWs2HALaDDWDCjObRbv/E1tGuqq6q/Xt57XkjMyAPpGJ2G4VSjDChyzFSpfK
+ 2Va2Q+BRSJUpMNnoguOtMqQOgKeP+jB/vHNJ8wyiRckhQWlztB7ILUIym+6MXrD9npJy
+ lCQ47sH67DrNqhqZ3cTNsApcyarKadFzl2pCg5Q+CL2SOyZACG6gxi6Wp7c071QnQu47
+ 75jEFl+0bzN6YXYc1pGOK5LeN3eAtyEviZA/dBt6nRrt8/GEiZ/uWNqqBzYh+GoH0BiB Vg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2qefggng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 14:32:18 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CEWHCd014452
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 14:32:17 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 12 Sep
+ 2023 07:32:11 -0700
+Message-ID: <5e80e600-b523-476a-81bd-93d2c517b7b6@quicinc.com>
+Date:   Tue, 12 Sep 2023 20:02:07 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rHoxlvq7D/pkDAXf"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdbxdMZt4E1SF1v9as-jw=TpvS1mk2TQqAgywMBLbKaNoA@mail.gmail.com>
-X-Cookie: Mickey Mouse wears a Spiro Agnew watch.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] mtd: rawnand: qcom: Unmap the right resource upon
+ probe failure
+Content-Language: en-US
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_pkondeti@quicinc.com>
+References: <20230912115903.1007-1-quic_bibekkum@quicinc.com>
+ <20230912142847.4610c0a0@xps-13>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <20230912142847.4610c0a0@xps-13>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UUqJCj4RTDMBGTqI3ChIGIYPOVlEBR2D
+X-Proofpoint-ORIG-GUID: UUqJCj4RTDMBGTqI3ChIGIYPOVlEBR2D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=473 impostorscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120121
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rHoxlvq7D/pkDAXf
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 12, 2023 at 01:04:56PM +0200, Linus Walleij wrote:
-> On Tue, Sep 12, 2023 at 12:15=E2=80=AFPM Herve Codina <herve.codina@bootl=
-in.com> wrote:
-
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-
-> I think SPDX mandates that you start the tag with C99 comments
-
-> // SPDX-License-Identifier: GPL-2.0-only
-
-Not for headers, they should use C style since they might be included in
-contexts where C++ isn't supported.
-
---rHoxlvq7D/pkDAXf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUAdlAACgkQJNaLcl1U
-h9AGMQf/fLsnOOVZlCeXkVRLWX87qtu4s7nr7P5jfwyYxnA4Bhl8MwftHW5rxDOf
-TJcMOnHaQLx46ThWnYrWFopJsLO9g5x+NTP78wZTRCXJaJp4usJtpbNzUm4JAgfr
-wJ7T2LLNlVFW5eJfODg+A+sL23DKqJ0B6MwZDixKhNM0tRYibE5ULV+DGzqxyvgz
-yBkeRf5GWl9c4qVLP9Qg2VGx/9jbeOjiYGTd3LWeqJ6HxR8EItWZvKS72fGhOw+t
-dp3VMrMnK9/HtTllRrE+m9GWdtkjG+FjaBGfp8LhzJ1IvYZb+Hyic+EVrTIQ+aC3
-xmRd5GYPdrIG1w50Eci2Fa5Zqd4N4A==
-=vkfj
------END PGP SIGNATURE-----
-
---rHoxlvq7D/pkDAXf--
+On 9/12/2023 5:58 PM, Miquel Raynal wrote:
+>> We currently provide the physical address of the DMA region
+>> rather than the output of dma_map_resource() which is obviously wrong.
+>>
+>> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+> Cc: stable?
+Cc: stable@vger.kernel.org
