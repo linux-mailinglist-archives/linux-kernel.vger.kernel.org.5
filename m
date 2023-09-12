@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1541879CCFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA3F79CCF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbjILKFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
+        id S232990AbjILKFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233725AbjILKE4 (ORCPT
+        with ESMTP id S233561AbjILKE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:04:56 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887F910D1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:04:51 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so690248766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:04:51 -0700 (PDT)
+        Tue, 12 Sep 2023 06:04:57 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0806E64
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:04:52 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad8d0be93aso66950066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694513090; x=1695117890; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694513091; x=1695117891; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=oBaJ5OsgfXs2kkcWusba2RO2Avkk4yo/xOTdTxq4iI8=;
-        b=vWJJpDxy/4NEynNIdaJOXGXNcmrmjTFVV/dPa2Ebcv2jvU1bEBf9Zqk1g6P1csmUhP
-         pEcDtPvOWBFZ9k/6wDf+1O2BWspCZuf5/zP+UPvCPeyyGPCiRMhTW19LBBXJt/ZtPfEA
-         viFn1lBHEV/xnBBIsdBPHfK5w9ltyjkBJ0eAvE+IVKDijyauf3y0vptiVMlrbMrtIXoe
-         NNLLySEYRsX9/o4ryEndUaIsBgD4bNOQNSKf6RfmQjzCkXxK46KR/jkQBU7O+FEOzFBQ
-         wSyjk+6jqHhCOsRJFWniC98wyPuNWEuBjJRZRT5Sozz4IvB5ZNoiAaRQVyieuQEm2PRI
-         +ZEQ==
+        bh=76F0+BldbGsR8SBANuEdRlfBFJURUSsOZA3YGl1lILM=;
+        b=kzbwkr3Z4Cecmq3sCp5OTxC/OuWF89fG/jgPYZatb8oFqiRmxMtX8muRme8DRFlAE3
+         2KpvAxu58uBhaviD0aGzCw+m0KbN+DYLHHbK4ygrhfyuFUe3ilBIW61mDOJqs+ouQPBa
+         Rh9loEgrWS2KWNVFWFUtDn8sZXFs/MmMJTz1PB1p7n1m5Nqb1HNbSp1DLbjX46YAKEKK
+         XMSAOeUBi+8AguPz/Q0fTPbC/8/3evtIyWad8rRm0WjwiW34odJJA7E5vr7s8MUdc+pn
+         XIBM1wSJLKY2ap6coD/ZxrhvAQIf+HBP4Hp9x2G3IpF7bKzvZrplhKacIpcVh0F5wjOC
+         UsVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694513090; x=1695117890;
+        d=1e100.net; s=20230601; t=1694513091; x=1695117891;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oBaJ5OsgfXs2kkcWusba2RO2Avkk4yo/xOTdTxq4iI8=;
-        b=IY4O2Hh3sifYNy62Osdo/coL+PDxUcE+eg1nRvaxmZHak7YVmpz9nFdJwHGFuxFm1d
-         Emu1n84ugCcCpLKe8t3qrZHuLlYu2lqRYbXUqItsPRAcx2VYPg2SsFkk8pUaNTD8P3PF
-         Pe3e/Cz1IItcLC904h0OJdnvPQnKs1e9cKdj81YniEyXebJCzW5hSL0ykEISIitBsuzP
-         vY71GKsZo2HjDDjCZ7vQCIHNdiYYxchepfs10zaGLPLGmVepIKhCguly6URREreQhv3m
-         RoXVDKbuNZEp1Pq5NsCjy+k2O1i6xK86nqihz5dalvW4xUZqz470Lh8rzXfAx1FB4gHi
-         cNDA==
-X-Gm-Message-State: AOJu0YwqRWC5n0aUg9ZCct7mlNc47iiItrU9AuddgCKSvXZa1A8e6rFl
-        zjp8W+22rxBYJ6QiT5lStYhxHA==
-X-Google-Smtp-Source: AGHT+IE4LAvEmNCCVoXvt3XAFXhM5Mpn2quo2m/5P3cfpKZcxGQvFaRprrP23r/6yaZ7ma3Exgo1Vg==
-X-Received: by 2002:a17:907:77c1:b0:99c:75f7:19c1 with SMTP id kz1-20020a17090777c100b0099c75f719c1mr10281192ejc.39.1694513089988;
-        Tue, 12 Sep 2023 03:04:49 -0700 (PDT)
+        bh=76F0+BldbGsR8SBANuEdRlfBFJURUSsOZA3YGl1lILM=;
+        b=H4Gu3Bn8MbTkvE5mvM6YOU3DK9IG8TTRgtBlcfzg+nAahbQTNkTAby/+yF2hvk7epW
+         vgIcvF+DwwmDx7+65/nhoIsBkTOIifnm/dgh0//0qTDX3lWpGA87RPJYIOYd9JAHPxbr
+         4d0GcWo3uaQzN5W66OVB4lmf59R6bL7tmrMtgV1HHYzlWLm7v19jh3s+lw8VMnWK9GSA
+         3RhPGu2vB8+BQnXeNEbuSnUav9hZEK0pGbPcji5hh83IOOjoveg5PAKIehUD1uwm+JSM
+         V/ga0zrhA0F2K858agk9haXO4910O4XqUbFkyFY4NFlgQqeN9MNLMuOGGAf8+x+sgosm
+         jqyA==
+X-Gm-Message-State: AOJu0Yxb78X5iu6URCdGd9GVpzv69jXCRvAremtepkbjBQKskd6lKMKZ
+        Viok2kufH6JOrw0bqNqu38v/Pw==
+X-Google-Smtp-Source: AGHT+IFFTR7Me9GkF8TwPhcPBB1Y5s/bvb5Njy18q0t6j3M2sBcRZTcWLShIUmaBK5Yj95BzYsqQxA==
+X-Received: by 2002:a17:906:5a54:b0:9a2:26e4:a5e2 with SMTP id my20-20020a1709065a5400b009a226e4a5e2mr2847448ejc.25.1694513091507;
+        Tue, 12 Sep 2023 03:04:51 -0700 (PDT)
 Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
-        by smtp.gmail.com with ESMTPSA id s3-20020a170906060300b0099ce188be7fsm6592053ejb.3.2023.09.12.03.04.47
+        by smtp.gmail.com with ESMTPSA id s3-20020a170906060300b0099ce188be7fsm6592053ejb.3.2023.09.12.03.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 03:04:49 -0700 (PDT)
+        Tue, 12 Sep 2023 03:04:51 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 12 Sep 2023 12:04:43 +0200
-Subject: [PATCH v4 01/10] dt-bindings: display/msm/gmu: Add Adreno 7[34]0
- GMU
+Date:   Tue, 12 Sep 2023 12:04:44 +0200
+Subject: [PATCH v4 02/10] dt-bindings: display/msm/gmu: Allow passing QMP
+ handle
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230628-topic-a7xx_drmmsm-v4-1-8b3e402795c1@linaro.org>
+Message-Id: <20230628-topic-a7xx_drmmsm-v4-2-8b3e402795c1@linaro.org>
 References: <20230628-topic-a7xx_drmmsm-v4-0-8b3e402795c1@linaro.org>
 In-Reply-To: <20230628-topic-a7xx_drmmsm-v4-0-8b3e402795c1@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>,
@@ -74,94 +74,53 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694513085; l=2826;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694513085; l=1312;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=HNK2SS799OXNh7iy5vESf+h2uwh6BGHa1r43G7UvIKE=;
- b=+aNhNRKwvuwrMdhWRTbxNVQkwFcWZURLyBD2mwRyP/wVP/eXlh+1jqsekzIPBXb7Jrz+oB2AW
- 9yvuwejWMdsBoppcj4wodblH7P/o/r0eUQ6Pxz7OycwtF0+lEdiYMWk
+ bh=f8Ks5qBU/xHwVpGLbBaIcN6/JSh0hSEZ3lbJ3m6GXGI=;
+ b=9i+f9omsQyT4L6anbqN+1N8xukVQtyzR1G/5cFpfCRAcXhunuhaQaBlVP9C3SF6hKNycjZwNi
+ tSIY9XL7KOcASIQvJHIYdBcJDX5frjvV03WkZdMxQnt8Xz6ujKo2wvN
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GMU on the A7xx series is pretty much the same as on the A6xx parts.
-It's now "smarter", needs a bit less register writes and controls more
-things (like inter-frame power collapse) mostly internally (instead of
-us having to write to G[PM]U_[CG]X registers from APPS)
+When booting the GMU, the QMP mailbox should be pinged about some tunables
+(e.g. adaptive clock distribution state). To achieve that, a reference to
+it is necessary. Allow it and require it with A730.
 
-The only difference worth mentioning is the now-required DEMET clock,
-which is strictly required for things like asserting reset lines, not
-turning it on results in GMU not being fully functional (all OOB requests
-would fail and HFI would hang after the first submitted OOB).
-
-Describe the A730 and A740 GMU.
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
 Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> # sm8450
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../devicetree/bindings/display/msm/gmu.yaml       | 40 +++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/display/msm/gmu.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/display/msm/gmu.yaml b/Documentation/devicetree/bindings/display/msm/gmu.yaml
-index 5fc4106110ad..20ddb89a4500 100644
+index 20ddb89a4500..e132dbff3c4a 100644
 --- a/Documentation/devicetree/bindings/display/msm/gmu.yaml
 +++ b/Documentation/devicetree/bindings/display/msm/gmu.yaml
-@@ -21,7 +21,7 @@ properties:
-   compatible:
-     oneOf:
-       - items:
--          - pattern: '^qcom,adreno-gmu-6[0-9][0-9]\.[0-9]$'
-+          - pattern: '^qcom,adreno-gmu-[67][0-9][0-9]\.[0-9]$'
-           - const: qcom,adreno-gmu
-       - const: qcom,adreno-gmu-wrapper
+@@ -64,6 +64,10 @@ properties:
+   iommus:
+     maxItems: 1
  
-@@ -213,6 +213,44 @@ allOf:
-             - const: axi
-             - const: memnoc
++  qcom,qmp:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: Reference to the AOSS side-channel message RAM
++
+   operating-points-v2: true
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,adreno-gmu-730.1
-+              - qcom,adreno-gmu-740.1
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - description: Core GMU registers
-+            - description: Resource controller registers
-+            - description: GMU PDC registers
-+        reg-names:
-+          items:
-+            - const: gmu
-+            - const: rscc
-+            - const: gmu_pdc
-+        clocks:
-+          items:
-+            - description: GPU AHB clock
-+            - description: GMU clock
-+            - description: GPU CX clock
-+            - description: GPU AXI clock
-+            - description: GPU MEMNOC clock
-+            - description: GMU HUB clock
-+            - description: GPUSS DEMET clock
-+        clock-names:
-+          items:
-+            - const: ahb
-+            - const: gmu
-+            - const: cxo
-+            - const: axi
-+            - const: memnoc
-+            - const: hub
-+            - const: demet
+   opp-table:
+@@ -251,6 +255,9 @@ allOf:
+             - const: hub
+             - const: demet
+ 
++      required:
++        - qcom,qmp
 +
    - if:
        properties:
