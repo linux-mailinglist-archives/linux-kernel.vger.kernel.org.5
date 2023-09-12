@@ -2,191 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384E179D915
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5A679D8CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237519AbjILSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
+        id S237479AbjILSiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237590AbjILSry (ORCPT
+        with ESMTP id S232470AbjILSiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:47:54 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9C21716;
-        Tue, 12 Sep 2023 11:47:43 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 1f78031281b7904c; Tue, 12 Sep 2023 20:47:42 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id E0F5A663BE5;
-        Tue, 12 Sep 2023 20:47:41 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH v1 3/9] ACPI: thermal: Determine the number of trip points earlier
-Date:   Tue, 12 Sep 2023 20:37:59 +0200
-Message-ID: <1863318.tdWV9SEqCh@kreacher>
-In-Reply-To: <5708760.DvuYhMxLoT@kreacher>
-References: <5708760.DvuYhMxLoT@kreacher>
+        Tue, 12 Sep 2023 14:38:18 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85D710EF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:38:14 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id g8GzqaTAidUSag8GzqmwHQ; Tue, 12 Sep 2023 20:38:13 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694543893;
+        bh=gJjWjCvzjTWsQueLFBTaq3Sqnmya67aAWoGNbP8Czo4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=fXyzuGJL535OOgG/gUoUYvhGpJSjMxj5+Ed+yyVpThO6lTRpKH7k1KKANGGSHVZA/
+         imnCaeFq7So19OjQawTGRRm8vjh6/mf4sqM6TqCHj5V/RrBIw1QxaTYHycwXsY5Akz
+         sbsmOPjfAMI54vFSppT7Y0lSuG1z4VazGb/t2VKy6XZF7DsFW2qiguOeZgbz/9r6kc
+         Z2OpymZVceBmy1ZHBtqUbR6m32LOnMggNcY97/ClnvD67ABlYqMlO7Nzjyv96DyWDt
+         Xrz0FPgG+7GKlNqUxo9AzNvxujyD0DZusSH8r815NVZ4X/UCbHl5tMNFoR/w/ChjM2
+         wcRrvSqhCkDPw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 12 Sep 2023 20:38:13 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <35c1c9ee-357f-4ba5-dd47-95d4c064e69b@wanadoo.fr>
+Date:   Tue, 12 Sep 2023 20:38:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehs
- rhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH net-next v4 2/2] net: dsa: microchip: Add drive strength
+ configuration
+Content-Language: fr
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+References: <20230912045459.1864085-1-o.rempel@pengutronix.de>
+ <20230912045459.1864085-1-o.rempel@pengutronix.de>
+ <20230912045459.1864085-3-o.rempel@pengutronix.de>
+ <20230912045459.1864085-3-o.rempel@pengutronix.de>
+ <20230912113553.fselyj2v5ynddme2@skbuf>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230912113553.fselyj2v5ynddme2@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Le 12/09/2023 à 13:35, Vladimir Oltean a écrit :
+> On Tue, Sep 12, 2023 at 06:54:59AM +0200, Oleksij Rempel wrote:
+>> Add device tree based drive strength configuration support. It is needed to
+>> pass EMI validation on our hardware.
+>>
+>> Configuration values are based on the vendor's reference driver.
+>>
+>> Tested on KSZ9563R.
+>>
+>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+>> ---
 
-Compute the number of trip points in acpi_thermal_add() so as to allow the
-driver's data structures to be simplified going forward.
 
-No intentional functional impact.
+>> +	if (!found)
+>> +		return 0;
+> 
+> Maybe "have_any_prop" would be a better name to avoid Christophe's confusion?
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |   60 +++++++++++++++++++++++--------------------------
- 1 file changed, 29 insertions(+), 31 deletions(-)
+Not sure it worth it.
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -452,7 +452,7 @@ static void acpi_thermal_get_hot_trip(st
- 
- static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
- {
--	bool valid;
-+	unsigned int count = 0;
- 	int i;
- 
- 	acpi_thermal_get_critical_trip(tz);
-@@ -460,18 +460,24 @@ static int acpi_thermal_get_trip_points(
- 	/* Passive and active trip points (optional). */
- 	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
- 
--	valid = tz->trips.critical.valid |
--		tz->trips.hot.valid |
--		tz->trips.passive.trip.valid;
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
--		valid = valid || tz->trips.active[i].trip.valid;
--
--	if (!valid) {
--		pr_warn(FW_BUG "No valid trip found\n");
--		return -ENODEV;
-+	if (tz->trips.critical.valid)
-+		count++;
-+
-+	if (tz->trips.hot.valid)
-+		count++;
-+
-+	if (tz->trips.passive.trip.valid)
-+		count++;
-+
-+	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
-+		if (tz->trips.active[i].trip.valid)
-+			count++;
-+		else
-+			break;
-+
- 	}
--	return 0;
-+
-+	return count;
- }
- 
- /* sys I/F for generic thermal sysfs support */
-@@ -681,29 +687,15 @@ static void acpi_thermal_zone_sysfs_remo
- 	sysfs_remove_link(&tzdev->kobj, "device");
- }
- 
--static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
-+static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz,
-+					      unsigned int trip_count)
- {
- 	struct acpi_thermal_trip *acpi_trip;
- 	struct thermal_trip *trip;
- 	int passive_delay = 0;
--	int trip_count = 0;
- 	int result;
- 	int i;
- 
--	if (tz->trips.critical.valid)
--		trip_count++;
--
--	if (tz->trips.hot.valid)
--		trip_count++;
--
--	if (tz->trips.passive.trip.valid) {
--		trip_count++;
--		passive_delay = tz->trips.passive.tsp * 100;
--	}
--
--	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].trip.valid; i++)
--		trip_count++;
--
- 	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
- 	if (!trip)
- 		return -ENOMEM;
-@@ -724,6 +716,8 @@ static int acpi_thermal_register_thermal
- 
- 	acpi_trip = &tz->trips.passive.trip;
- 	if (acpi_trip->valid) {
-+		passive_delay = tz->trips.passive.tsp * 100;
-+
- 		trip->type = THERMAL_TRIP_PASSIVE;
- 		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
- 		trip->priv = acpi_trip;
-@@ -893,6 +887,7 @@ static void acpi_thermal_check_fn(struct
- static int acpi_thermal_add(struct acpi_device *device)
- {
- 	struct acpi_thermal *tz;
-+	unsigned int trip_count;
- 	int result;
- 
- 	if (!device)
-@@ -911,9 +906,12 @@ static int acpi_thermal_add(struct acpi_
- 	acpi_thermal_aml_dependency_fix(tz);
- 
- 	/* Get trip points [_CRT, _PSV, etc.] (required). */
--	result = acpi_thermal_get_trip_points(tz);
--	if (result)
-+	trip_count = acpi_thermal_get_trip_points(tz);
-+	if (!trip_count) {
-+		pr_warn(FW_BUG "No valid trip points!\n");
-+		result = -ENODEV;
- 		goto free_memory;
-+	}
- 
- 	/* Get temperature [_TMP] (required). */
- 	result = acpi_thermal_get_temperature(tz);
-@@ -932,7 +930,7 @@ static int acpi_thermal_add(struct acpi_
- 
- 	acpi_thermal_guess_offset(tz);
- 
--	result = acpi_thermal_register_thermal_zone(tz);
-+	result = acpi_thermal_register_thermal_zone(tz, trip_count);
- 	if (result)
- 		goto free_memory;
- 
+Christophe should learn to read code or avoid some quick feed-back 
+before morning coffee :)
 
+'found' looks good enough.
+
+CJ
 
 
