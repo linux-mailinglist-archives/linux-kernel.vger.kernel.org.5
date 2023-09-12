@@ -2,163 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C8D79C918
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B878E79C8D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjILIAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48252 "EHLO
+        id S231623AbjILH6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjILH6l (ORCPT
+        with ESMTP id S231915AbjILH6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:41 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602A62105;
-        Tue, 12 Sep 2023 00:58:12 -0700 (PDT)
-X-UUID: 1bd7ee40514211eea33bb35ae8d461a2-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=gZL7iqex1BPiM40l8UbNLUZwiQSnwgB+HQLPiQ5jV+M=;
-        b=bcxWN8/scLaZewZDbFomX/jP/je0hghwI+mJXKwTOVFVrDOBiL8j/f9wGaC2bULZFti09F5DokcooQxBpIYJcZ/x8YScaB9kuccyfNIaA8NUgDnMntvxLXnR2wrVa2yMt+Z3GY/PoeSN4WZ/LmRuTPjU2DDfa5g/pZQOr9WZtjk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:b16dfe80-9671-457c-9695-67f62e35350f,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:0ad78a4,CLOUDID:bb5199ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 1bd7ee40514211eea33bb35ae8d461a2-20230912
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 417944465; Tue, 12 Sep 2023 15:58:07 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 15:58:06 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 15:58:06 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Moudy Ho <moudy.ho@mediatek.com>
-Subject: [PATCH v5 00/14] add support MDP3 on MT8195 platform
-Date:   Tue, 12 Sep 2023 15:57:51 +0800
-Message-ID: <20230912075805.11432-1-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 12 Sep 2023 03:58:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6D410D0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:57:54 -0700 (PDT)
+Message-ID: <20230912065501.146684094@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694505473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=YKmioiJQ3sncgsUZ7rGcHgZzunvCDH7pLQJNxPbmmRI=;
+        b=BvrcFWMm5+PGIOA+l7zcsZ8u92SGB9pNjwRotmPgz3UO0W9GsTkLL++b4aFOqlh04ejYxI
+        WEK7vS2tO17UdVD5XnD9Dn1X0gpzCfpmIEvUoTjcFeWZBlJN5s60Bzw2LbhWnJq0vVZ5xo
+        Bf5sT9xc8rtdmlKGy377+XgeeX9NJSR+NRm17s5AuuNfZMQBdcuQLovqHHu+o9YaBexi2L
+        uvoad+YiFRPcaX1A8uBPSbvnSSACD8kbZitA7P1a3RYdUPeMk9QnI4CEjew1dZ5lBgP1F2
+        4NjMHfPuMdAMWn/Qz3TTeosCagiWT0ZsqF69yJc21aGr2v4XGAkE4YAHn4JkDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694505473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=YKmioiJQ3sncgsUZ7rGcHgZzunvCDH7pLQJNxPbmmRI=;
+        b=MGztH/02DST6gJzZFp8kE/G0J7VMtm1f1e3VIuhiayJal5UzsXtHK5Vh02fATrdZwe/PBf
+        bjTK8w1P/RvqnUCg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [patch V3 06/30] x86/microcode/intel: Cleanup code further
+References: <20230912065249.695681286@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 09:57:52 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v4:
-- Rebase on v6.6-rc1
-- Remove any unnecessary DTS settings.
-- Adjust the usage of MOD and clock in blending components.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Changes since v3:
-- Depend on :
-  [1] https://patchwork.kernel.org/project/linux-media/list/?series=719841
-- Suggested by Krzysztof, integrating all newly added bindings for
-  the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
-- Revise MDP3 nodes with generic names.
+Sanitize the microcode scan loop, fixup printks and move the initrd loading
+function next to the place where it is used and mark it __init.
 
-Changes since v2:
-- Depend on :
-  [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711592
-  [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711618
-- Suggested by Rob to revise MDP3 bindings to pass dtbs check
-- Add parallel paths feature.
-- Add blended components settings.
-
-Changes since v1:
-- Depend on :
-  [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/?series=698872
-  [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=684959
-- Fix compilation failure due to use of undeclared identifier in file "mtk-mdp3-cmdq.c"
-
-Hello,
-
-This patch is used to add support for MDP3 on the MT8195 platform that
-contains more picture quality components, and can arrange more pipelines
-through two sets of MMSYS and MUTEX respectively.
-
-Moudy Ho (14):
-  arm64: dts: mediatek: mt8183: correct MDP3 DMA-related nodes
-  arm64: dts: mediatek: mt8195: add MDP3 nodes
-  media: platform: mtk-mdp3: add support second sets of MMSYS
-  media: platform: mtk-mdp3: add support second sets of MUTEX
-  media: platform: mtk-mdp3: introduce more pipelines from MT8195
-  media: platform: mtk-mdp3: introduce more MDP3 components
-  media: platform: mtk-mdp3: add checks for dummy components
-  media: platform: mtk-mdp3: avoid multiple driver registrations
-  media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
-  media: platform: mtk-mdp3: add support for blending multiple
-    components
-  media: platform: mtk-mdp3: add mt8195 platform configuration
-  media: platform: mtk-mdp3: add mt8195 shared memory configurations
-  media: platform: mtk-mdp3: add mt8195 MDP3 component settings
-  media: platform: mtk-mdp3: add support for parallel pipe to improve
-    FPS
-
- arch/arm64/boot/dts/mediatek/mt8183.dtsi      |   6 +-
- arch/arm64/boot/dts/mediatek/mt8195.dtsi      | 378 ++++++++
- .../platform/mediatek/mdp3/mdp_cfg_data.c     | 729 ++++++++++++++-
- .../platform/mediatek/mdp3/mdp_reg_aal.h      |  25 +
- .../platform/mediatek/mdp3/mdp_reg_color.h    |  31 +
- .../media/platform/mediatek/mdp3/mdp_reg_fg.h |  23 +
- .../platform/mediatek/mdp3/mdp_reg_hdr.h      |  31 +
- .../platform/mediatek/mdp3/mdp_reg_merge.h    |  25 +
- .../platform/mediatek/mdp3/mdp_reg_ovl.h      |  25 +
- .../platform/mediatek/mdp3/mdp_reg_pad.h      |  21 +
- .../platform/mediatek/mdp3/mdp_reg_rdma.h     |  24 +
- .../platform/mediatek/mdp3/mdp_reg_rsz.h      |   2 +
- .../platform/mediatek/mdp3/mdp_reg_tdshp.h    |  34 +
- .../platform/mediatek/mdp3/mdp_reg_wrot.h     |   8 +
- .../platform/mediatek/mdp3/mdp_sm_mt8195.h    | 283 ++++++
- .../platform/mediatek/mdp3/mtk-img-ipi.h      |   4 +
- .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |   2 +
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 447 +++++++--
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
- .../platform/mediatek/mdp3/mtk-mdp3-comp.c    | 860 +++++++++++++++++-
- .../platform/mediatek/mdp3/mtk-mdp3-comp.h    |  93 +-
- .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 103 ++-
- .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  33 +-
- .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 +
- .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 +
- .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
- .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
- 27 files changed, 3051 insertions(+), 174 deletions(-)
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_aal.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_color.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_fg.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_hdr.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_merge.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_ovl.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_pad.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_tdshp.h
- create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_sm_mt8195.h
-
--- 
-2.18.0
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V2: Fix changelog - Nikolay
+---
+ arch/x86/kernel/cpu/microcode/intel.c |   76 ++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 44 deletions(-)
+---
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -36,7 +36,7 @@ static const char ucode_path[] = "kernel
+ static struct microcode_intel *intel_ucode_patch __read_mostly;
+ 
+ /* last level cache size per core */
+-static int llc_size_per_core __ro_after_init;
++static unsigned int llc_size_per_core __ro_after_init;
+ 
+ /* microcode format is extended from prescott processors */
+ struct extended_signature {
+@@ -296,29 +296,6 @@ static struct microcode_intel *scan_micr
+ 	return patch;
+ }
+ 
+-static bool load_builtin_intel_microcode(struct cpio_data *cp)
+-{
+-	unsigned int eax = 1, ebx, ecx = 0, edx;
+-	struct firmware fw;
+-	char name[30];
+-
+-	if (IS_ENABLED(CONFIG_X86_32))
+-		return false;
+-
+-	native_cpuid(&eax, &ebx, &ecx, &edx);
+-
+-	sprintf(name, "intel-ucode/%02x-%02x-%02x",
+-		      x86_family(eax), x86_model(eax), x86_stepping(eax));
+-
+-	if (firmware_request_builtin(&fw, name)) {
+-		cp->size = fw.size;
+-		cp->data = (void *)fw.data;
+-		return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int apply_microcode_early(struct ucode_cpu_info *uci, bool early)
+ {
+ 	struct microcode_intel *mc;
+@@ -362,6 +339,28 @@ static int apply_microcode_early(struct
+ 	return 0;
+ }
+ 
++static bool load_builtin_intel_microcode(struct cpio_data *cp)
++{
++	unsigned int eax = 1, ebx, ecx = 0, edx;
++	struct firmware fw;
++	char name[30];
++
++	if (IS_ENABLED(CONFIG_X86_32))
++		return false;
++
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++
++	sprintf(name, "intel-ucode/%02x-%02x-%02x",
++		x86_family(eax), x86_model(eax), x86_stepping(eax));
++
++	if (firmware_request_builtin(&fw, name)) {
++		cp->size = fw.size;
++		cp->data = (void *)fw.data;
++		return true;
++	}
++	return false;
++}
++
+ int __init save_microcode_in_initrd_intel(void)
+ {
+ 	struct ucode_cpu_info uci;
+@@ -434,25 +433,16 @@ void load_ucode_intel_ap(void)
+ 	apply_microcode_early(&uci, true);
+ }
+ 
+-/* Accessor for microcode pointer */
+-static struct microcode_intel *ucode_get_patch(void)
+-{
+-	return intel_ucode_patch;
+-}
+-
+ void reload_ucode_intel(void)
+ {
+-	struct microcode_intel *p;
+ 	struct ucode_cpu_info uci;
+ 
+ 	intel_cpu_collect_info(&uci);
+ 
+-	p = ucode_get_patch();
+-	if (!p)
++	uci.mc = intel_ucode_patch;
++	if (!uci.mc)
+ 		return;
+ 
+-	uci.mc = p;
+-
+ 	apply_microcode_early(&uci, false);
+ }
+ 
+@@ -490,8 +480,7 @@ static enum ucode_state apply_microcode_
+ 	if (WARN_ON(raw_smp_processor_id() != cpu))
+ 		return UCODE_ERROR;
+ 
+-	/* Look for a newer patch in our cache: */
+-	mc = ucode_get_patch();
++	mc = intel_ucode_patch;
+ 	if (!mc) {
+ 		mc = uci->mc;
+ 		if (!mc)
+@@ -682,18 +671,17 @@ static enum ucode_state request_microcod
+ }
+ 
+ static struct microcode_ops microcode_intel_ops = {
+-	.request_microcode_fw             = request_microcode_fw,
+-	.collect_cpu_info                 = collect_cpu_info,
+-	.apply_microcode                  = apply_microcode_intel,
++	.request_microcode_fw	= request_microcode_fw,
++	.collect_cpu_info	= collect_cpu_info,
++	.apply_microcode	= apply_microcode_intel,
+ };
+ 
+-static int __init calc_llc_size_per_core(struct cpuinfo_x86 *c)
++static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
+ {
+ 	u64 llc_size = c->x86_cache_size * 1024ULL;
+ 
+ 	do_div(llc_size, c->x86_max_cores);
+-
+-	return (int)llc_size;
++	llc_size_per_core = (unsigned int)llc_size;
+ }
+ 
+ struct microcode_ops * __init init_intel_microcode(void)
+@@ -706,7 +694,7 @@ struct microcode_ops * __init init_intel
+ 		return NULL;
+ 	}
+ 
+-	llc_size_per_core = calc_llc_size_per_core(c);
++	calc_llc_size_per_core(c);
+ 
+ 	return &microcode_intel_ops;
+ }
 
