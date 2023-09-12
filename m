@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1649E79D38A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551ED79D391
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbjILO0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
+        id S235909AbjILO2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235796AbjILO0x (ORCPT
+        with ESMTP id S231629AbjILO2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:26:53 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B9010D;
-        Tue, 12 Sep 2023 07:26:49 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52e828ad46bso7421731a12.1;
-        Tue, 12 Sep 2023 07:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694528808; x=1695133608; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OJt7Pz2jvPJwNkb0nu9cCOHLFYNPsGlJOODgla0ZsRs=;
-        b=GlJmwkigczfG5MzhWv1z8qkDY6l2txN3q7D+NmIoI7mOA+nzWYscYnVwzQ6kkEimmm
-         OW7zIK8wOUG8Q/NvCqdyjIK85LGgQCnjtgzIpMbRgrZmCPTutgurjRNkSSXoC4+yruwH
-         c2GJmrilba1ZEgcqmqvHOiQK3EglsmabYB5Br2r5KFVs58+SO5/1wHAR3wfRvnYNbuBb
-         VSlztwZ/WtTbKBx0gwCm9u8v8obdIVgIZcGMPirloDozv4sMm7mgkaHkgZSXp36MIGyx
-         7F6m+1gFCFVneAFU/KL2qdYzH9ZIfJIIZom7gymoFKGyg+VkQeFNDBRUrZeBMMspxpbr
-         AXhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694528808; x=1695133608;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OJt7Pz2jvPJwNkb0nu9cCOHLFYNPsGlJOODgla0ZsRs=;
-        b=kG4LTFWWBLRAXjeU1HNI8eqafWnzLOy9lkayHkr+nvcGoXB14ZDSAqeS/XE6Rn+T1n
-         whLjpM4Vbol/uZLf0w5eLNJR7WzHRsu1cXi85R1Kw3oXPY7c4y8IJztwwo/hqMgnJLor
-         askaj8R/wyleKR68yQAAMpXoYsGrwjb3PnIRwnFOmUegyuqpCLt2+OhSrncGed52elQe
-         XrRvjSz+OQiuvG0QmSI9Bh+WgA+50aDtUNwo02sGNd8E78SXK93LzKAMtmm+tk6W5ptJ
-         2/9GDKS0Qaln0Rf7jnOYLh89tDPxqD5kVeKxtwmsGbRAmJ6wYILsUfA4y+jGahNuX8rX
-         ZbGQ==
-X-Gm-Message-State: AOJu0Yxna1L+URQwYSmn/beiOKwDGxH/XEXCt2Rw8LeJnHl/sl+S1iOr
-        GIhCz8GHViIoHAC99pkDNS8rzEOM8EuseQ==
-X-Google-Smtp-Source: AGHT+IHXyRKf3KsQLEP2VBXb4dtzBc4dBytaEvS01woUgkTy3L4yCQjgIh+URLDSqkj5y29kH1cXpw==
-X-Received: by 2002:aa7:c308:0:b0:525:442b:6068 with SMTP id l8-20020aa7c308000000b00525442b6068mr10973126edq.13.1694528807651;
-        Tue, 12 Sep 2023 07:26:47 -0700 (PDT)
-Received: from skbuf ([188.25.254.186])
-        by smtp.gmail.com with ESMTPSA id z26-20020aa7cf9a000000b005232c051605sm5986761edx.19.2023.09.12.07.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 07:26:47 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 17:26:44 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230912142644.u4sdkveei3e5hwaf@skbuf>
-References: <20230911160501.5vc4nttz6fnww56h@skbuf>
- <20230912101748.0ca4eec8@wsk>
- <20230912092909.4yj4b2b4xrhzdztu@skbuf>
- <20230906152801.921664-1-lukma@denx.de>
- <20230911165848.0741c03c@wsk>
- <20230911160501.5vc4nttz6fnww56h@skbuf>
- <20230912101748.0ca4eec8@wsk>
- <20230912092909.4yj4b2b4xrhzdztu@skbuf>
- <20230912160326.188e1d13@wsk>
- <20230912160326.188e1d13@wsk>
+        Tue, 12 Sep 2023 10:28:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CE7110;
+        Tue, 12 Sep 2023 07:28:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gk/9rYB7/an+iLUFV0aLbLxXVYBQ+i5HvJgnM5j31Ck=; b=Fyh3eDhp+bMke+9/vqft1ssk0u
+        K26AKRckbeIkVO6fwlvCUaguX+jW9DTHl9KN5PvnMoIW9yRNl/+OK2496aleokV1T5ZtsU5fmOD0B
+        Zr2J0fVLnb+oRoid8vba39T9Xl8js/gtSTQeRLLb0gP8wJD1PaLIem9aVMy6WsjczwtvzH1XOwkBh
+        HaiXrQeJU9uJ23G1TlqWDBj7Oby5rpqQa88e6Xky/nossK7i99FUhKhypBj6Y6rHinDvXThtPGEDM
+        Z6I0/uG8zv54kLWPtxSnWM90o2+NxHtkqvkwY4mXAy99Jp+6c3T3Z95JkirS6H8FidEmfn7y8LLpr
+        mLiMrZuQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qg4NJ-00843H-Ki; Tue, 12 Sep 2023 14:28:21 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 47E57300348; Tue, 12 Sep 2023 16:28:21 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 16:28:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Qais Yousef <qyousef@layalina.io>,
+        Chris Redpath <Chris.Redpath@arm.com>
+Subject: Re: [RFC PATCH 0/7] sched: cpufreq: Remove magic margins
+Message-ID: <20230912142821.GA22166@noisy.programming.kicks-ass.net>
+References: <20230827233203.1315953-1-qyousef@layalina.io>
+ <a6365f63-4669-15e5-b843-f4bfb1bd5e68@arm.com>
+ <20230906211850.zyvk6qtt6fvpxaf3@airbuntu>
+ <20230907132631.GF10955@noisy.programming.kicks-ass.net>
+ <8919ed14-8d19-d964-2278-3303a5bda8ee@arm.com>
+ <20230907142923.GJ10955@noisy.programming.kicks-ass.net>
+ <cf5c628a-e047-b5e0-b2a0-f2b280015d02@arm.com>
+ <20230907201609.GC14243@noisy.programming.kicks-ass.net>
+ <f1b1b663-3a12-9e5d-932b-b3ffb5f02e14@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912160326.188e1d13@wsk>
- <20230912160326.188e1d13@wsk>
+In-Reply-To: <f1b1b663-3a12-9e5d-932b-b3ffb5f02e14@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 04:03:26PM +0200, Lukasz Majewski wrote:
-> > In any case, as long as it's the DSA master's address that we program
-> > to hardware, then I see it as inevitable to add a new struct
-> > dsa_switch_ops :: master_addr_change() function
+On Tue, Sep 12, 2023 at 12:51:52PM +0100, Lukasz Luba wrote:
+
+> You can see the util signal of that 'CrRendererMain' task and those
+> utilization drops in time, which I was referring to. When the util
+> drops below some threshold, the task might 'fit' into smaller CPU,
+> which could be prevented automatically byt maintaining the util est
+> for longer (but not for all).
+
+Right, so right at those util_est dips it has some small activations.
+It's like a poll loop or something instead of a full block waiting for
+things to happen.
+
+And yeah, that'll destroy util_est in a hurry :/
+
+> I do like your idea that Util EST might be per-task. I'm going to
+> check this, because that might help to get rid of the overutilized state
+> which is probably because small tasks are also 'bigger' for longer.
 > 
-> Please correct my understanding. The above change would affect the
-> whole DSA subsystem. It would require to have the core DSA modified and
-> would affect its operation?
+> If this util est have chance to fly upstream, I could send an RFC if
+> you don't mind.
 
-Uhm, yes, that would be the idea. If we were going to track changes to
-the DSA master's MAC address, we should do it from the DSA framework
-which has the existing netdev notifier listener infrastructure in place.
+The biggest stumbling block I see is the user interface; some generic
+QoS hints based thing that allows us to do random things -- like tune
+the above might do, dunno.
 
-> > Or you can argue that dragging the DSA master into the discussion
-> > about how we should program REG_SW_MAC_ADDR_0 is a complication.
-> 
-> Yes, it is IMHO the complication.
-
-Ok, it's a point of view.
-
-> git grep -n "REG_SW_MAC_ADDR_0"
-> drivers/net/dsa/microchip/ksz8795_reg.h:326:#define REG_SW_MAC_ADDR_0
->         0x68 
-> drivers/net/dsa/microchip/ksz9477.c:1194:
->      ksz_write8(dev, REG_SW_MAC_ADDR_0 + i,
-> 
-> drivers/net/dsa/microchip/ksz9477_reg.h:169:#define REG_SW_MAC_ADDR_0
-> 0x0302
-> 
-> In the current net-next the REG_SW_MAC_ADDR_0 is altered used (the only
-> usage are now with mine patches on ksz9477).
-> 
-> To sum up:
-> 
-> 1. Up till now in (net-next) REG_SW_MAC_ADDR_0 is ONLY declared for
-> Microchip switches. No risk for access - other than HSR patches.
-
-I know (except for Oleksij's WoL patches, which will eventually be
-resubmitted).
-
-> 2. The MAC address alteration of DSA master and propagation to slaves
-> is a generic DSA bug.
-
-Which can be/will be fixed. The diff I've included in the question to
-Jakub closes it, in fact.
-
-> Considering the above - the HSR implementation is safe (to the extend
-> to the whole DSA subsystem current operation). Am I correct?
-
-If we exclude the aforementioned bug (which won't be a bug forever),
-there still exists the case where the MAC address of a DSA user port can
-be changed. The HSR driver has a NETDEV_CHANGEADDR handler for this as
-well, and updates its own MAC address to follow the port. If that is
-allowed to happen after the offload, currently it will break the offload.
