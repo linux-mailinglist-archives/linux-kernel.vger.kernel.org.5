@@ -2,169 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C621879C307
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA34479C310
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239367AbjILCex convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 22:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S239002AbjILCgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239122AbjILCef (ORCPT
+        with ESMTP id S238920AbjILCgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:34:35 -0400
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5083196B79
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:59:09 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:45470)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qfsgD-00AwoU-6t; Mon, 11 Sep 2023 19:59:05 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:45656 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qfsgC-0066tX-6C; Mon, 11 Sep 2023 19:59:04 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <CAAhV-H5pwHQTQ6wGXC2NELHmC4JM8rQUViR3RJj8hQLBygb00w@mail.gmail.com>
-        (Huacai Chen's message of "Mon, 11 Sep 2023 20:07:55 +0800")
-References: <20230615121016.3731983-1-chenhuacai@loongson.cn>
-        <CAAhV-H49AyrG-sH2SXLNg_cX-Wv8vS4Qno_2N4v6ccGGciv-+A@mail.gmail.com>
-        <ZJ9kWqhRCWkLcYyv@bombadil.infradead.org>
-        <CAAhV-H7qk8wSFt=ZMUSUt4cAmH+-5AsGqszXNW9w+u6Y8vDN+A@mail.gmail.com>
-        <CAAhV-H7RgkZJ2hfmNmJXKqcYeE1q11V4-2Ni0j-FLJ0b5fc=Sg@mail.gmail.com>
-        <CAAhV-H5pwHQTQ6wGXC2NELHmC4JM8rQUViR3RJj8hQLBygb00w@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Mon, 11 Sep 2023 20:58:52 -0500
-Message-ID: <87cyyo9moz.fsf@email.froward.int.ebiederm.org>
+        Mon, 11 Sep 2023 22:36:09 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3C54C09C;
+        Mon, 11 Sep 2023 19:00:56 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ad749473baso120914066b.1;
+        Mon, 11 Sep 2023 19:00:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694484055; x=1695088855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vgo1zR5ba8zxnSxQKk3+QRf81DN07ltnGADrPc7d11k=;
+        b=gMogo4AhY+IghgAKv/dqSO6NzcmTrniqh9royi/TSzoiZJo28irlySLutp612E9tuK
+         BBMwoLLnAS0zJvPtmy+c5WtUIIqgpTng079oW2K2+Bq524K4weTw2Oy2WKFOBtUIfbg4
+         72GzayrUwnEJwfuqfDVodee9CDmbopyV8cLkOL8/ea8q8UfPnontCMgU3mzHRx6du0ja
+         n5W63rz6OVjkCnxM3ywxTfiB3snu24pH5UbcJYv5CFbWukHm8HDKEv76QopydePgaLAd
+         /eFaboKksX76TH9V0bN07wY8mVrmuDxyurBIKyddyRtDLgfTKp7v6hJtwoMk2HHCf7hj
+         EWXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694484055; x=1695088855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vgo1zR5ba8zxnSxQKk3+QRf81DN07ltnGADrPc7d11k=;
+        b=qi8Nb8Pf8nWo+6BskQ0pGGo1TmxZsGNktOlZSjEL4EjqQFJxLTpT/lDudhJnaVU2p1
+         vJkb1mctUd90YNNbWpkppHl/fYddCPX3RH06hr4NosPPj/+zdFz9OVcLAMHr99ChMN2L
+         vuFCE9WODvvKrNtnvfm5j+mKzlRmwEhHExT5xkPJrGvprmKtr0mew54lgWzNYwOAvk6L
+         uHVGxr6aQ0/jlarH+zhzBYc5qUiWFfUmLp59YLEZ1d4oHNtPF4unsQHgo29ReqG2DO8a
+         ZrrVXbjH2a6VFNm3HGEf1EBGWkYrXBUGwa0rMH9FyY1pKZg1cIJP9Omm6VIfMlu3Dtr9
+         kKrQ==
+X-Gm-Message-State: AOJu0Yw3M4o8YIer2IcgPLiNxDvxc8xOehGhNHbyULE3amljpu3QMwRN
+        3+s+Q14KYsz+R5L22YjAogJP53D6ABGHFc/Yg5pfHiQTw6q8pQ==
+X-Google-Smtp-Source: AGHT+IGTFIR7+g6knPDfTeSAsGcvMkyK3tt/QZfxXD9gUYL7oSAg/sMWRQ3DYkmBemN57BvxqE1TJYvz0w+zW730aB4=
+X-Received: by 2002:a17:906:769a:b0:9a5:d095:a8e3 with SMTP id
+ o26-20020a170906769a00b009a5d095a8e3mr8810319ejm.13.1694484055049; Mon, 11
+ Sep 2023 19:00:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-XM-SPF: eid=1qfsgC-0066tX-6C;;;mid=<87cyyo9moz.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX18R8sSyEGlfF3oWF7q/1vOdi1i/njMy0UY=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,XMSubLong,XM_B_Unicode shortcircuit=no
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3988]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Huacai Chen <chenhuacai@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 419 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.8%), b_tie_ro: 10 (2.4%), parse: 0.96
-        (0.2%), extract_message_metadata: 4.2 (1.0%), get_uri_detail_list: 2.1
-        (0.5%), tests_pri_-2000: 3.4 (0.8%), tests_pri_-1000: 2.5 (0.6%),
-        tests_pri_-950: 1.29 (0.3%), tests_pri_-900: 1.01 (0.2%),
-        tests_pri_-200: 0.84 (0.2%), tests_pri_-100: 3.8 (0.9%),
-        tests_pri_-90: 63 (15.0%), check_bayes: 61 (14.5%), b_tokenize: 9
-        (2.1%), b_tok_get_all: 9 (2.2%), b_comp_prob: 3.0 (0.7%),
-        b_tok_touch_all: 35 (8.4%), b_finish: 1.06 (0.3%), tests_pri_0: 306
-        (73.0%), check_dkim_signature: 0.56 (0.1%), check_dkim_adsp: 2.7
-        (0.6%), poll_dns_idle: 0.77 (0.2%), tests_pri_10: 3.0 (0.7%),
-        tests_pri_500: 9 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] kthread: Rename user_mode_thread() to kmuser_thread()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <20230830134241.506464-1-keguang.zhang@gmail.com>
+ <20230830134241.506464-3-keguang.zhang@gmail.com> <5afdb9b9-e335-a774-fccb-d64382e02d07@linaro.org>
+In-Reply-To: <5afdb9b9-e335-a774-fccb-d64382e02d07@linaro.org>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Tue, 12 Sep 2023 10:00:18 +0800
+Message-ID: <CAJhJPsU9THio5efse2f+WB6oGPCvHcb8U4DvSdZ2fQ0SvvXAig@mail.gmail.com>
+Subject: Re: [PATCH v4 2/4] dt-bindings: net: Add Loongson-1 Ethernet Controller
+To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huacai Chen <chenhuacai@kernel.org> writes:
-
-> Hi, all,
+On Mon, Sep 11, 2023 at 6:47=E2=80=AFPM Philippe Mathieu-Daud=C3=A9
+<philmd@linaro.org> wrote:
 >
-> Friendly ping again?
+> On 30/8/23 15:42, Keguang Zhang wrote:
+> > Add devicetree binding document for Loongson-1 Ethernet controller.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> > V3 -> V4: Add "|" to description part
+> >            Amend "phy-mode" property
+> > V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
+> >            and loongson,ls1c-emac.yaml (suggested by Serge Semin)
+> >            Change the compatibles to loongson,ls1b-gmac and loongson,ls=
+1c-emac
+> >            Rename loongson,dwmac-syscon to loongson,ls1-syscon
+> >            Amend the title
+> >            Add description
+> >            Add Reviewed-by tag from Krzysztof Kozlowski(Sorry! I'm not =
+sure)
+> > V1 -> V2: Fix "clock-names" and "interrupt-names" property
+> >            Rename the syscon property to "loongson,dwmac-syscon"
+> >            Drop "phy-handle" and "phy-mode" requirement
+> >            Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
+> >            to snps,dwmac.yaml
+> >
+> >   .../bindings/net/loongson,ls1b-gmac.yaml      | 114 +++++++++++++++++=
++
+> >   .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++++++++++
+> >   2 files changed, 227 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1=
+b-gmac.yaml
+> >   create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1=
+c-emac.yaml
 >
+> Squash:
 >
-> Huacai
->
-> On Sun, Jul 23, 2023 at 10:13 PM Huacai Chen <chenhuacai@kernel.org> wrote:
->>
->> Hi, Eric,
->>
->> On Tue, Jul 18, 2023 at 8:43 PM Huacai Chen <chenhuacai@kernel.org> wrote:
->> >
->> > Hi, Luis,
->> >
->> > On Sat, Jul 1, 2023 at 7:25 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
->> > >
->> > > On Sun, Jun 25, 2023 at 04:55:33PM +0800, Huacai Chen wrote:
->> > > > Friendly ping?
->> > >
->> > > You want to cc the folks who Nacked your patch. Until then, this
->> > > probably can't go further.
->> > Thank you very much. Eric and Andrew are already in the CC list, so
->> > add Thomas now.
->> >
->> > My brain is a little old-fashioned so I insisted that "a thread
->> > without mm_struct should be a kernel thread" in the previous patch.
->> > Unfortunately this makes Eric and Thomas unhappy, I'm very sorry for
->> > that.
->> >
->> > During the discussion of the previous patch I know I made some
->> > mistakes about some basic concepts, but I also found the name
->> > "user_mode_thread()" is somewhat confusing. I think rename it to
->> > kmuser_thread() is better, because:
->> > 1, it identify init and umh as user threads;
->> > 2, it points out that init and umh are special user threads that run
->> > in kernel mode before loading a user program.
->> >
->> > Sorry for my rudeness again.
->> Excuse me, but could you please tell me what your opinion is. In my
->> opinion a typical user thread is created by
->> pthread_create()/sys_clone(), it is better to distinguish typical user
->> threads from init and umh.
+> -- >8 --
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ff1f273b4f36..2519d06b5aab 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14344,9 +14344,12 @@ MIPS/LOONGSON1 ARCHITECTURE
+>   M:    Keguang Zhang <keguang.zhang@gmail.com>
+>   L:    linux-mips@vger.kernel.org
+>   S:    Maintained
+> +F:     Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
+> +F:     Documentation/devicetree/bindings/net/loongson,ls1*.yaml
+>   F:    arch/mips/include/asm/mach-loongson32/
+>   F:    arch/mips/loongson32/
+>   F:    drivers/*/*loongson1*
+> ---
 
-If we want to emphasize that it is a kernel concept I am happy with
-renaming user_mode_thread to user_mode_task.  That is more accurate.
+Will do.
+Thanks!
 
-But all threads from the kernel perspective are tasks.  Further
-all threads have times when they run code in the kernel (aka system
-calls) and times when they run code in userspace.
+--=20
+Best regards,
 
-Linux kernel tasks created with user_mode_thread() are exactly like
-other user mode tasks, and have all treated exactly the same was by the
-system as any the tasks created by pthread_create() and sys_clone().
-
-The only oddity is that there is no user mode code to execute until
-after execve is called.
-
-When running code in the kernel, user space threads never logically
-do not use the user space page tables.
-
-They are different in some significant ways from tasks created with
-kernel_thread().  Tasks created with kernel_thread do not support
-calling execve, among other things.
-
-But deeply and fundamentally I think you are trying to make a
-distinction that is not there.  All user space threads run code
-in the kernel before they run code in userspace.  Most often
-it is from the system calls fork/clone/exec.  For init and umh it
-is effectively a special dedicated system call that includes
-an execve.
-
-Let me ask what difference are you trying to high light that callers
-of user_mode_thread need to be aware of?  What problem in thinking
-do you think that the name user_mode_thread creates?  I am asking
-because I might just be missing your point.
-
-Eric
+Keguang Zhang
