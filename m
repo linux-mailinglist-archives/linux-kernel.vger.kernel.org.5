@@ -2,203 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B878E79C8D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D768D79C90E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbjILH6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S232142AbjILH7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjILH6G (ORCPT
+        with ESMTP id S232029AbjILH6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6D410D0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:57:54 -0700 (PDT)
-Message-ID: <20230912065501.146684094@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694505473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=YKmioiJQ3sncgsUZ7rGcHgZzunvCDH7pLQJNxPbmmRI=;
-        b=BvrcFWMm5+PGIOA+l7zcsZ8u92SGB9pNjwRotmPgz3UO0W9GsTkLL++b4aFOqlh04ejYxI
-        WEK7vS2tO17UdVD5XnD9Dn1X0gpzCfpmIEvUoTjcFeWZBlJN5s60Bzw2LbhWnJq0vVZ5xo
-        Bf5sT9xc8rtdmlKGy377+XgeeX9NJSR+NRm17s5AuuNfZMQBdcuQLovqHHu+o9YaBexi2L
-        uvoad+YiFRPcaX1A8uBPSbvnSSACD8kbZitA7P1a3RYdUPeMk9QnI4CEjew1dZ5lBgP1F2
-        4NjMHfPuMdAMWn/Qz3TTeosCagiWT0ZsqF69yJc21aGr2v4XGAkE4YAHn4JkDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694505473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=YKmioiJQ3sncgsUZ7rGcHgZzunvCDH7pLQJNxPbmmRI=;
-        b=MGztH/02DST6gJzZFp8kE/G0J7VMtm1f1e3VIuhiayJal5UzsXtHK5Vh02fATrdZwe/PBf
-        bjTK8w1P/RvqnUCg==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V3 06/30] x86/microcode/intel: Cleanup code further
-References: <20230912065249.695681286@linutronix.de>
+        Tue, 12 Sep 2023 03:58:49 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36F7212B;
+        Tue, 12 Sep 2023 00:58:14 -0700 (PDT)
+X-UUID: 1c572f66514211ee8051498923ad61e6-20230912
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Hd86NQfy2/lhvIbniSQO9dAVZPI8a5X3Ca7Vv9yeC14=;
+        b=XMln9Jm45RDlVIvEgzMf8JWLyUqzthP4wpyyX0dN/NLZqQbCa2LKk8u/KQks7dEvqtlAdIDh8ccOokwLlIEq1qfBfGPetaa+GqOPxTbhG9HWdhnlV9jo7LG6gTy15rKsAkciG5AUsZsI9uJObR0YTxt1IxKiGUTfiNf8bGMu9Qs=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:7e12c21f-65a8-4013-8441-cea9ed231686,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:bc5199ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 1c572f66514211ee8051498923ad61e6-20230912
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1899123964; Tue, 12 Sep 2023 15:58:08 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 12 Sep 2023 15:58:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 15:58:06 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Moudy Ho" <moudy.ho@mediatek.com>
+Subject: [PATCH v5 01/14] arm64: dts: mediatek: mt8183: correct MDP3 DMA-related nodes
+Date:   Tue, 12 Sep 2023 15:57:52 +0800
+Message-ID: <20230912075805.11432-2-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230912075805.11432-1-moudy.ho@mediatek.com>
+References: <20230912075805.11432-1-moudy.ho@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 09:57:52 +0200 (CEST)
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--1.350500-8.000000
+X-TMASE-MatchedRID: 0VUFvhcn2zGtGUuyWCB/Kov2/i8VNqeOTJDl9FKHbrmcq6An+rYU0aPF
+        jJEFr+olwXCBO/GKkVr3FLeZXNZS4CiM3WUt6LtFq75+vYUEA6c1eDdHSu1zer3ImkgySmfNZD2
+        GrhvHTdNT/H8FxK09S4RGm6Pfc7I/U5SBgP48jsZUtJVflqbs7O3+vHT2M5IReZUpm6wun3ba/0
+        6NhYDa4wyzCDjlUx89djekYOaiKTo=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--1.350500-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 4A4A701C13C3B14EFF21FAE6838F6E2B81B29EBD16EA211067CC0034D71129622000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+In order to generalize the node names, the DMA-related nodes
+corresponding to MT8183 MDP3 need to be corrected.
 
-Sanitize the microcode scan loop, fixup printks and move the initrd loading
-function next to the place where it is used and mark it __init.
+Fixes: 60a2fb8d202a ("arm64: dts: mt8183: add MediaTek MDP3 nodes")
+Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V2: Fix changelog - Nikolay
----
- arch/x86/kernel/cpu/microcode/intel.c |   76 ++++++++++++++--------------------
- 1 file changed, 32 insertions(+), 44 deletions(-)
----
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -36,7 +36,7 @@ static const char ucode_path[] = "kernel
- static struct microcode_intel *intel_ucode_patch __read_mostly;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 5169779d01df..bab68c233792 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1781,7 +1781,7 @@
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+ 		};
  
- /* last level cache size per core */
--static int llc_size_per_core __ro_after_init;
-+static unsigned int llc_size_per_core __ro_after_init;
+-		mdp3-rdma0@14001000 {
++		dma-controller0@14001000 {
+ 			compatible = "mediatek,mt8183-mdp3-rdma";
+ 			reg = <0 0x14001000 0 0x1000>;
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x1000 0x1000>;
+@@ -1793,6 +1793,7 @@
+ 			iommus = <&iommu M4U_PORT_MDP_RDMA0>;
+ 			mboxes = <&gce 20 CMDQ_THR_PRIO_LOWEST 0>,
+ 				 <&gce 21 CMDQ_THR_PRIO_LOWEST 0>;
++			#dma-cells = <1>;
+ 		};
  
- /* microcode format is extended from prescott processors */
- struct extended_signature {
-@@ -296,29 +296,6 @@ static struct microcode_intel *scan_micr
- 	return patch;
- }
+ 		mdp3-rsz0@14003000 {
+@@ -1813,7 +1814,7 @@
+ 			clocks = <&mmsys CLK_MM_MDP_RSZ1>;
+ 		};
  
--static bool load_builtin_intel_microcode(struct cpio_data *cp)
--{
--	unsigned int eax = 1, ebx, ecx = 0, edx;
--	struct firmware fw;
--	char name[30];
--
--	if (IS_ENABLED(CONFIG_X86_32))
--		return false;
--
--	native_cpuid(&eax, &ebx, &ecx, &edx);
--
--	sprintf(name, "intel-ucode/%02x-%02x-%02x",
--		      x86_family(eax), x86_model(eax), x86_stepping(eax));
--
--	if (firmware_request_builtin(&fw, name)) {
--		cp->size = fw.size;
--		cp->data = (void *)fw.data;
--		return true;
--	}
--
--	return false;
--}
--
- static int apply_microcode_early(struct ucode_cpu_info *uci, bool early)
- {
- 	struct microcode_intel *mc;
-@@ -362,6 +339,28 @@ static int apply_microcode_early(struct
- 	return 0;
- }
+-		mdp3-wrot0@14005000 {
++		dma-controller@14005000 {
+ 			compatible = "mediatek,mt8183-mdp3-wrot";
+ 			reg = <0 0x14005000 0 0x1000>;
+ 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0x5000 0x1000>;
+@@ -1822,6 +1823,7 @@
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			clocks = <&mmsys CLK_MM_MDP_WROT0>;
+ 			iommus = <&iommu M4U_PORT_MDP_WROT0>;
++			#dma-cells = <1>;
+ 		};
  
-+static bool load_builtin_intel_microcode(struct cpio_data *cp)
-+{
-+	unsigned int eax = 1, ebx, ecx = 0, edx;
-+	struct firmware fw;
-+	char name[30];
-+
-+	if (IS_ENABLED(CONFIG_X86_32))
-+		return false;
-+
-+	native_cpuid(&eax, &ebx, &ecx, &edx);
-+
-+	sprintf(name, "intel-ucode/%02x-%02x-%02x",
-+		x86_family(eax), x86_model(eax), x86_stepping(eax));
-+
-+	if (firmware_request_builtin(&fw, name)) {
-+		cp->size = fw.size;
-+		cp->data = (void *)fw.data;
-+		return true;
-+	}
-+	return false;
-+}
-+
- int __init save_microcode_in_initrd_intel(void)
- {
- 	struct ucode_cpu_info uci;
-@@ -434,25 +433,16 @@ void load_ucode_intel_ap(void)
- 	apply_microcode_early(&uci, true);
- }
- 
--/* Accessor for microcode pointer */
--static struct microcode_intel *ucode_get_patch(void)
--{
--	return intel_ucode_patch;
--}
--
- void reload_ucode_intel(void)
- {
--	struct microcode_intel *p;
- 	struct ucode_cpu_info uci;
- 
- 	intel_cpu_collect_info(&uci);
- 
--	p = ucode_get_patch();
--	if (!p)
-+	uci.mc = intel_ucode_patch;
-+	if (!uci.mc)
- 		return;
- 
--	uci.mc = p;
--
- 	apply_microcode_early(&uci, false);
- }
- 
-@@ -490,8 +480,7 @@ static enum ucode_state apply_microcode_
- 	if (WARN_ON(raw_smp_processor_id() != cpu))
- 		return UCODE_ERROR;
- 
--	/* Look for a newer patch in our cache: */
--	mc = ucode_get_patch();
-+	mc = intel_ucode_patch;
- 	if (!mc) {
- 		mc = uci->mc;
- 		if (!mc)
-@@ -682,18 +671,17 @@ static enum ucode_state request_microcod
- }
- 
- static struct microcode_ops microcode_intel_ops = {
--	.request_microcode_fw             = request_microcode_fw,
--	.collect_cpu_info                 = collect_cpu_info,
--	.apply_microcode                  = apply_microcode_intel,
-+	.request_microcode_fw	= request_microcode_fw,
-+	.collect_cpu_info	= collect_cpu_info,
-+	.apply_microcode	= apply_microcode_intel,
- };
- 
--static int __init calc_llc_size_per_core(struct cpuinfo_x86 *c)
-+static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
- {
- 	u64 llc_size = c->x86_cache_size * 1024ULL;
- 
- 	do_div(llc_size, c->x86_max_cores);
--
--	return (int)llc_size;
-+	llc_size_per_core = (unsigned int)llc_size;
- }
- 
- struct microcode_ops * __init init_intel_microcode(void)
-@@ -706,7 +694,7 @@ struct microcode_ops * __init init_intel
- 		return NULL;
- 	}
- 
--	llc_size_per_core = calc_llc_size_per_core(c);
-+	calc_llc_size_per_core(c);
- 
- 	return &microcode_intel_ops;
- }
+ 		mdp3-wdma@14006000 {
+-- 
+2.18.0
 
