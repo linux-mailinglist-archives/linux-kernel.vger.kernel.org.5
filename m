@@ -2,1071 +2,917 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F1B79DCC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4F579DCBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbjILXhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
+        id S234080AbjILXhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjILXhm (ORCPT
+        with ESMTP id S229607AbjILXhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:37:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DD6210FE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 16:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694561819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kvVvHN0ORBex4iZGpUDjyTK/09/TKihY+Re+a+sfR9k=;
-        b=OSaVM1t7lYc1OLLIPZHgaTMutqkU8IuLl7ae8hM3XAQXzA2eel1NJ6om8xMLtwyMG7ADYp
-        778UssUSXvGEwWnM4UZq0xs3F8pMUP3QrQ3CLH0zk//Pn3IJDAIZ+gRKEH4WDaybFX1IyT
-        O+N2Qm0NCJjW+7YaaxYnKHXxTNIj6Tc=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-414-VRBzMOxnPuasbqZ_OBt50Q-1; Tue, 12 Sep 2023 19:36:57 -0400
-X-MC-Unique: VRBzMOxnPuasbqZ_OBt50Q-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-500777449e5so6973172e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 16:36:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694561816; x=1695166616;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kvVvHN0ORBex4iZGpUDjyTK/09/TKihY+Re+a+sfR9k=;
-        b=p5rXfDeiIrHFnRpryl5/HKW8fu5qic5vYXRKWGa8ImBb1QNDgfotjZV1h+smr/anPn
-         bvr+ve3HCQDbbLCSLAQdxfERhWpIGnuDuXWJrZl0n/FX3lUy7Hokx4dB0CQ1kxjr+Pq5
-         +buwNPucdv27K4wYHqMK62jVC99Mzzw2SKvypEoGT2uQxhYN+VWjAVIlE1IQIOx8nn/O
-         EAGI7RlA9JH08MqOOR9Cw1WSP4W3uZdCl/QF7QrGuav35mrmiaI69Gl312qA51qf1Usn
-         V5EInBJtI9vkZyAJ+GbvIG3PjTNag8xkLefaHQPOhgvHnCD0s98GeF/KEI38o7GP4utq
-         a8RQ==
-X-Gm-Message-State: AOJu0YxTzuP9K7ZZxknKcprq/Yl2ii08D067Ilc+zqVWpD6pNp/YxkXe
-        ySA2wfw3iaGx7st66BmEHQmfemg2KZNz0LMca5cYoV12IGL+WqeTfZUBr0889dlE3S6j2aMPSKI
-        StCcAxsFatZmRcM8gaNgNhT8U
-X-Received: by 2002:ac2:51bc:0:b0:4ff:a8c6:d1aa with SMTP id f28-20020ac251bc000000b004ffa8c6d1aamr627944lfk.48.1694561815892;
-        Tue, 12 Sep 2023 16:36:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFFFrkoR7MH3HTFhKpyUXpDpcM9MG1pSSPWhfCFz38vdrJmLhIJb0fhkfGwB0X1uh3I4KS6lQ==
-X-Received: by 2002:ac2:51bc:0:b0:4ff:a8c6:d1aa with SMTP id f28-20020ac251bc000000b004ffa8c6d1aamr627929lfk.48.1694561815247;
-        Tue, 12 Sep 2023 16:36:55 -0700 (PDT)
-Received: from pollux ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id l15-20020a1709066b8f00b0099bca8b9a31sm7350918ejr.100.2023.09.12.16.36.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 16:36:54 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 01:36:52 +0200
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        boris.brezillon@collabora.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Message-ID: <ZQD2FFLP28bFgHXT@pollux>
-References: <20230909153125.30032-1-dakr@redhat.com>
- <20230909153125.30032-7-dakr@redhat.com>
- <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
- <ZQCW6wzHYVdxl/IV@pollux>
- <701dfead-e240-b3fb-422c-d49fc7e04595@linux.intel.com>
+        Tue, 12 Sep 2023 19:37:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199CF10FE;
+        Tue, 12 Sep 2023 16:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:From:References:Cc:To:
+        Subject:MIME-Version:Date:Message-ID:Content-Type:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f8UeSGQ6iuGYuWFeLCKve1i2ReLPZq9CWUkPsUwZvRI=; b=0ZNqCRkW8v7v1TImSz5OXXJuUs
+        wY0DX75eLfVtHsdbLqpeOXD2MkP+BFb50bXY49pI1WXJsmRJkCI6CAZW4D64QMOGIAwNHzTGQ34Wq
+        UjJ1bCPaHXDZNlbo9oWsCGsKdwxfWqJoeEb7douFTBcCxWMqQKM4r1S/Q1SivigY0J7tVGFbdeqAn
+        3m2HF7QlKXiseSaa8EJaaY20wxEdaABE1gjU8dAI6P/PUDEzOT3I00A+VU64EomdwUQD93WB3KZJo
+        M30OQ3hh3npyF5NVjxYyIje5w+wFb88En6O7bGJGBZB+XrmMehenKqYeHl8kakkGeKl0+sgumLw7L
+        DbtTZuLA==;
+Received: from [2601:1c2:980:9ec0::9fed]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgCwC-004I6Q-13;
+        Tue, 12 Sep 2023 23:36:56 +0000
+Content-Type: multipart/mixed; boundary="------------w8FW2QGgBE5nh7f1DAuL0ILJ"
+Message-ID: <d60dac60-1e38-4a8c-98ad-a769ab1dfccd@infradead.org>
+Date:   Tue, 12 Sep 2023 16:36:55 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <701dfead-e240-b3fb-422c-d49fc7e04595@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Sep 12 (bcachefs, objtool)
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20230912152645.0868a96a@canb.auug.org.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230912152645.0868a96a@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:23:08PM +0200, Thomas Hellström wrote:
-> 
-> On 9/12/23 18:50, Danilo Krummrich wrote:
-> > On Tue, Sep 12, 2023 at 06:20:32PM +0200, Thomas Hellström wrote:
-> > > Hi, Danilo,
-> > > 
-> > > On 9/9/23 17:31, Danilo Krummrich wrote:
-> > > > So far the DRM GPUVA manager offers common infrastructure to track GPU VA
-> > > > allocations and mappings, generically connect GPU VA mappings to their
-> > > > backing buffers and perform more complex mapping operations on the GPU VA
-> > > > space.
-> > > > 
-> > > > However, there are more design patterns commonly used by drivers, which
-> > > > can potentially be generalized in order to make the DRM GPUVA manager
-> > > > represent a basic GPU-VM implementation. In this context, this patch aims
-> > > > at generalizing the following elements.
-> > > > 
-> > > > 1) Provide a common dma-resv for GEM objects not being used outside of
-> > > >      this GPU-VM.
-> > > > 
-> > > > 2) Provide tracking of external GEM objects (GEM objects which are
-> > > >      shared with other GPU-VMs).
-> > > > 
-> > > > 3) Provide functions to efficiently lock all GEM objects dma-resv the
-> > > >      GPU-VM contains mappings of.
-> > > > 
-> > > > 4) Provide tracking of evicted GEM objects the GPU-VM contains mappings
-> > > >      of, such that validation of evicted GEM objects is accelerated.
-> > > > 
-> > > > 5) Provide some convinience functions for common patterns.
-> > > > 
-> > > > Rather than being designed as a "framework", the target is to make all
-> > > > features appear as a collection of optional helper functions, such that
-> > > > drivers are free to make use of the DRM GPUVA managers basic
-> > > > functionality and opt-in for other features without setting any feature
-> > > > flags, just by making use of the corresponding functions.
-> > > > 
-> > > > Big kudos to Boris Brezillon for his help to figure out locking for drivers
-> > > > updating the GPU VA space within the fence signalling path.
-> > > > 
-> > > > Suggested-by: Matthew Brost <matthew.brost@intel.com>
-> > > > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> > > > ---
-> > > >    drivers/gpu/drm/drm_gpuvm.c | 516 ++++++++++++++++++++++++++++++++++++
-> > > >    include/drm/drm_gpuvm.h     | 197 ++++++++++++++
-> > > >    2 files changed, 713 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
-> > > > index f4411047dbb3..8e62a043f719 100644
-> > > > --- a/drivers/gpu/drm/drm_gpuvm.c
-> > > > +++ b/drivers/gpu/drm/drm_gpuvm.c
-> > > > @@ -73,6 +73,21 @@
-> > > >     * &drm_gem_object list of &drm_gpuvm_bos for an existing instance of this
-> > > >     * particular combination. If not existent a new instance is created and linked
-> > > >     * to the &drm_gem_object.
-> > > > + *
-> > > > + * &drm_gpuvm_bo structures, since unique for a given &drm_gpuvm, are also used
-> > > > + * as entry for the &drm_gpuvm's lists of external and evicted objects. Those
-> > > > + * list are maintained in order to accelerate locking of dma-resv locks and
-> > > > + * validation of evicted objects bound in a &drm_gpuvm. For instance the all
-> > > > + * &drm_gem_object's &dma_resv of a given &drm_gpuvm can be locked by calling
-> > > > + * drm_gpuvm_exec_lock(). Once locked drivers can call drm_gpuvm_validate() in
-> > > > + * order to validate all evicted &drm_gem_objects. It is also possible to lock
-> > > > + * additional &drm_gem_objects by providing the corresponding parameters to
-> > > > + * drm_gpuvm_exec_lock() as well as open code the &drm_exec loop while making
-> > > > + * use of helper functions such as drm_gpuvm_prepare_range() or
-> > > > + * drm_gpuvm_prepare_objects().
-> > > > + *
-> > > > + * Every bound &drm_gem_object is treated as external object when its &dma_resv
-> > > > + * structure is different than the &drm_gpuvm's common &dma_resv structure.
-> > > >     */
-> > > >    /**
-> > > > @@ -420,6 +435,20 @@
-> > > >     * Subsequent calls to drm_gpuvm_bo_obtain() for the same &drm_gpuvm and
-> > > >     * &drm_gem_object must be able to observe previous creations and destructions
-> > > >     * of &drm_gpuvm_bos in order to keep instances unique.
-> > > > + *
-> > > > + * The &drm_gpuvm's lists for keeping track of external and evicted objects are
-> > > > + * protected against concurrent insertion / removal and iteration internally.
-> > > > + *
-> > > > + * However, drivers still need ensure to protect concurrent calls to functions
-> > > > + * iterating those lists, such as drm_gpuvm_validate() and
-> > > > + * drm_gpuvm_prepare_objects(). Every such function contains a particular
-> > > > + * comment and lockdep checks if possible.
-> > > > + *
-> > > > + * Functions adding or removing entries from those lists, such as
-> > > > + * drm_gpuvm_bo_evict() or drm_gpuvm_bo_extobj_add() may be called with external
-> > > > + * locks being held, e.g. in order to avoid the corresponding list to be
-> > > > + * (safely) modified while potentially being iternated by other API functions.
-> > > > + * However, this is entirely optional.
-> > > >     */
-> > > >    /**
-> > > > @@ -632,6 +661,131 @@
-> > > >     *	}
-> > > >     */
-> > > > +/**
-> > > > + * get_next_vm_bo_from_list() - get the next vm_bo element
-> > > > + * @__gpuvm: The GPU VM
-> > > > + * @__list_name: The name of the list we're iterating on
-> > > > + * @__local_list: A pointer to the local list used to store already iterated items
-> > > > + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_cached_vm_bo()
-> > > > + *
-> > > > + * This helper is here to provide lockless list iteration. Lockless as in, the
-> > > > + * iterator releases the lock immediately after picking the first element from
-> > > > + * the list, so list insertion deletion can happen concurrently.
-> > > Are the list spinlocks needed for that async state update from within the
-> > > dma-fence critical section we've discussed previously?
-> > Yes, but also for other reasons, see below.
-> > 
-> > > Otherwise it should be sufficient to protect the lists with the gpuvm's resv
-> > > (or for the extobj list with an outer lock).
-> > > 
-> > > If those spinlocks are still needed in some situations, perhaps could we
-> > > have an option to set them to NULL (Like IIRC the maple tree allows for)?
-> > The evict spinlock is needed in any case, since in drm_gpuvm_bo_evict() we're
-> > holding only the dma-resv lock from the BO this function gets called for. Hence,
-> > the spinlock protects concurrent drm_gpuvm_bo_evict() calls with different BOs.
-> No. Only if you try to add external objects to the vm's evict list from
-> within the evict code. That's not necessary since you loop through all
-> external objects anyway when locking them so an "evicted" bool in the vm_bo,
-> protected by the bo resv would be sufficient. The extobj locking loop can
-> then add the bo to the evicted list.
+This is a multi-part message in MIME format.
+--------------w8FW2QGgBE5nh7f1DAuL0ILJ
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-And validate() can remove it while still holding all dma-resv locks, neat!
-However, what if two tasks are trying to lock the VA space concurrently? What
-do we do when the drm_gpuvm_bo's refcount drops to zero in drm_gpuva_unlink()?
-Are we guaranteed that at this point of time the drm_gpuvm_bo is not on the
-evicted list? Because otherwise we would call drm_gpuvm_bo_destroy() with the
-dma-resv lock held, which wouldn't be allowed, since drm_gpuvm_bo_destroy()
-might drop the last reference to the drm_gem_object and hence we'd potentially
-free the dma-resv lock while holding it, at least if it's an external object.
 
-> > 
-> > For extobjs an outer lock would be enough in case of Xe, but I really would not
-> > like to add even more complexity just to get the spinlock out of the way in case
-> > the driver already has an outer lock protecting this path.
-> 
-> I must disagree here. These spinlocks and atomic operations are pretty
-> costly and as discussed earlier this type of locking was the reason (at
-> least according to the commit message) that made Christian drop the XArray
-> use in drm_exec for the same set of objects: "The locking overhead is
-> unecessary and measurable". IMHO the spinlock is the added complexity and a
-> single wide lock following the drm locking guidelines set out by Daniel and
-> David should really be the default choice with an opt-in for a spinlock if
-> needed for async and pushing out to a wq is not an option.
 
-For the external object list an outer lock would work as long as it's not the
-dma-resv lock of the corresponding GEM object, since here we actually need to
-remove the list entry from the external object list on drm_gpuvm_bo_destroy().
-It's just a bit weird design wise that drivers would need to take this outer
-lock on:
+On 9/11/23 22:26, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20230911:
+> 
+> New tree: bcachefs
+> 
+> The bcachefs tree gained a semantic conflict against Linus' tree for
+> which I applied a patch.
+> 
+> The wireless-next tree gaind a conflict against the wireless tree.
+> 
+> Non-merge commits (relative to Linus' tree): 4095
+>  1552 files changed, 346893 insertions(+), 22945 deletions(-)
+> 
+> ----------------------------------------------------------------------------
 
-- drm_gpuvm_bo_extobj_add()
-- drm_gpuvm_bo_destroy()	(and hence also drm_gpuvm_bo_put())
-- drm_gpuva_unlink() 		(because it needs to call drm_gpuvm_bo_put())
-- drm_gpuvm_exec_lock()
-- drm_gpuvm_exec_lock_array()
-- drm_gpuvm_prepare_range()
+on x86_64:
 
-Given that it seems reasonable to do all the required locking internally.
+vmlinux.o: warning: objtool: bch2_dev_buckets_reserved.part.0() is missing an ELF size annotation
 
-In order to at least place lockdep checks, the driver would need to supply the
-corresponding lock's lockdep_map, because the GPUVM otherwise doesn't know about
-the lock.
 
-Out of curiosity, what is the overhead of a spin_lock() that doesn't need to
-spin? 
+Full randconfig file is attached.
 
-> 
-> A pretty simple way that would not add much code would be
-> 
-> static void gpuvm_cond_spin_lock(const struct drm_gpuvm *gpuvm, spinlock_t
-> *lock)
-> 
-> {
-> 
->     if (!gpuvm->resv_protected_lists)
->         spin_lock(lock);
-> 
-> }
-> 
-> > > For such drivers, that would require anybody calling unlink to hold the vm's
-> > > resv, though.
-> > In V4 I want to go back to having a dedicated lock for the GEMs gpuva list (or
-> > VM_BO list to be more precise). We can't just use the dma-resv lock for that
-> > with VM_BO abstractions, because on destruction of a VM_BO we otherwise wouldn't
-> > be allowed to already hold the dma-resv lock. That's the fix I was referring to
-> > earlier.
-> 
-> Yeah, I can see the need for a dedicated lock for the GEM's gpuva list, but
-> holding the vm's dma-resv lock across the unlink shouldn't be a problem. We
-> may free the object and a pointer to the vm's resv during unlink but we
-> don't free the vm's resv.  It'd be a matter of ensuring that any calls to
-> unlink from *within* drm_gpuvm allows it to be held.
+-- 
+~Randy
+--------------w8FW2QGgBE5nh7f1DAuL0ILJ
+Content-Type: application/gzip; name="config-r6878.gz"
+Content-Disposition: attachment; filename="config-r6878.gz"
+Content-Transfer-Encoding: base64
 
-Drivers calling unlink() from the fence signaling path can't use the VM's
-dma-resv lock.
+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
 
-Also, what if the object is an external object? We can't use the VM's dma-resv
-lock here. And we can't have the GEM objs dma-resv lock held when calling
-unlink(), since unlink() calls drm_gpuvm_bo_put(), which if the refcount drops
-to zero calls drm_gpuvm_bo_destroy() and drm_gpuvm_bo_destroy() might drop the
-last reference of the GEM object. All those problems go away with a dedicated
-GEM gpuva list lock.
-
-> 
-> /Thomas
-> 
-> 
-> > > It seems that with that also the refcount could be make non-atomic.
-> > > 
-> > > All in the spirit of the drm locking guidelines "use big locks when
-> > > possible".
-> > > Lower level locks only when necessary for performance or locking inversion?
-> > > 
-> > > /Thomas
-> > > 
-> > > 
-> > > > + *
-> > > > + * Elements popped from the original list are kept in a local list, so removal
-> > > > + * and is_empty checks can still happen while we're iterating the list.
-> > > > + */
-> > > > +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, __prev_vm_bo)	\
-> > > > +	({										\
-> > > > +		struct drm_gpuvm_bo *__vm_bo;						\
-> > > > +											\
-> > > > +		drm_gpuvm_bo_put(__prev_vm_bo);						\
-> > > > +											\
-> > > > +		spin_lock(&(__gpuvm)->__list_name.lock);				\
-> > > > +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
-> > > > +			__vm_bo = list_first_entry(&(__gpuvm)->__list_name.list,	\
-> > > > +						   struct drm_gpuvm_bo,			\
-> > > > +						   list.entry.__list_name);		\
-> > > > +			if (drm_gpuvm_bo_get_unless_zero(__vm_bo)) {			\
-> > > > +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
-> > > > +					       __local_list);				\
-> > > > +				break;							\
-> > > > +			} else {							\
-> > > > +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> > > > +				__vm_bo = NULL;						\
-> > > > +			}								\
-> > > > +		}									\
-> > > > +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> > > > +											\
-> > > > +		__vm_bo;								\
-> > > > +	})
-> > > > +
-> > > > +/**
-> > > > + * for_each_vm_bo_in_list() - internal vm_bo list iterator
-> > > > + *
-> > > > + * This helper is here to provide lockless list iteration. Lockless as in, the
-> > > > + * iterator releases the lock immediately after picking the first element from the
-> > > > + * list, so list insertion and deletion can happen concurrently.
-> > > > + *
-> > > > + * Typical use:
-> > > > + *
-> > > > + *	struct drm_gpuvm_bo *vm_bo;
-> > > > + *	LIST_HEAD(my_local_list);
-> > > > + *
-> > > > + *	ret = 0;
-> > > > + *	drm_gpuvm_for_each_vm_bo(gpuvm, <list_name>, &my_local_list, vm_bo) {
-> > > > + *		ret = do_something_with_vm_bo(..., vm_bo);
-> > > > + *		if (ret)
-> > > > + *			break;
-> > > > + *	}
-> > > > + *	drm_gpuvm_bo_put(vm_bo);
-> > > > + *	drm_gpuvm_restore_vm_bo_list(gpuvm, <list_name>, &my_local_list);
-> > > > + *
-> > > > + *
-> > > > + * Only used for internal list iterations, not meant to be exposed to the outside
-> > > > + * world.
-> > > > + */
-> > > > +#define for_each_vm_bo_in_list(__gpuvm, __list_name, __local_list, __vm_bo)	\
-> > > > +	for (__vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> > > > +						__local_list, NULL);		\
-> > > > +	     __vm_bo;								\
-> > > > +	     __vm_bo = get_next_vm_bo_from_list(__gpuvm, __list_name,		\
-> > > > +						__local_list, __vm_bo))		\
-> > > > +
-> > > > +/**
-> > > > + * restore_vm_bo_list() - move vm_bo elements back to their original list
-> > > > + * @__gpuvm: The GPU VM
-> > > > + * @__list_name: The name of the list we're iterating on
-> > > > + * @__local_list: A pointer to the local list used to store already iterated items
-> > > > + *
-> > > > + * When we're done iterating a vm_bo list, we should call restore_vm_bo_list()
-> > > > + * to restore the original state and let new iterations take place.
-> > > > + */
-> > > > +#define restore_vm_bo_list(__gpuvm, __list_name, __local_list)				\
-> > > > +	do {										\
-> > > > +		/* Merge back the two lists, moving local list elements to the		\
-> > > > +		 * head to preserve previous ordering, in case it matters.		\
-> > > > +		 */									\
-> > > > +		spin_lock(&(__gpuvm)->__list_name.lock);				\
-> > > > +		list_splice(__local_list, &(__gpuvm)->__list_name.list);		\
-> > > > +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> > > > +	} while (0)
-> > > > +/**
-> > > > + * drm_gpuvm_bo_list_add() - insert a vm_bo into the given list
-> > > > + * @__vm_bo: the &drm_gpuvm_bo
-> > > > + * @__list_name: the name of the list to insert into
-> > > > + *
-> > > > + * Inserts the given @__vm_bo into the list specified by @__list_name and
-> > > > + * increases the vm_bo's reference count.
-> > > > + */
-> > > > +#define drm_gpuvm_bo_list_add(__vm_bo, __list_name)				\
-> > > > +	do {									\
-> > > > +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
-> > > > +		if (list_empty(&(__vm_bo)->list.entry.__list_name))		\
-> > > > +			list_add_tail(&(__vm_bo)->list.entry.__list_name,	\
-> > > > +				      &(__vm_bo)->vm->__list_name.list);	\
-> > > > +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
-> > > > +	} while (0)
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_bo_list_del() - remove a vm_bo from the given list
-> > > > + * @__vm_bo: the &drm_gpuvm_bo
-> > > > + * @__list_name: the name of the list to insert into
-> > > > + *
-> > > > + * Removes the given @__vm_bo from the list specified by @__list_name and
-> > > > + * decreases the vm_bo's reference count.
-> > > > + */
-> > > > +#define drm_gpuvm_bo_list_del(__vm_bo, __list_name)				\
-> > > > +	do {									\
-> > > > +		spin_lock(&(__vm_bo)->vm->__list_name.lock);			\
-> > > > +		if (!list_empty(&(__vm_bo)->list.entry.__list_name))		\
-> > > > +			list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> > > > +		spin_unlock(&(__vm_bo)->vm->__list_name.lock);			\
-> > > > +	} while (0)
-> > > > +
-> > > > +static int __must_check
-> > > > +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo);
-> > > > +
-> > > >    #define to_drm_gpuva(__node)	container_of((__node), struct drm_gpuva, rb.node)
-> > > >    #define GPUVA_START(node) ((node)->va.addr)
-> > > > @@ -713,6 +867,12 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
-> > > >    	gpuvm->rb.tree = RB_ROOT_CACHED;
-> > > >    	INIT_LIST_HEAD(&gpuvm->rb.list);
-> > > > +	INIT_LIST_HEAD(&gpuvm->extobj.list);
-> > > > +	spin_lock_init(&gpuvm->extobj.lock);
-> > > > +
-> > > > +	INIT_LIST_HEAD(&gpuvm->evict.list);
-> > > > +	spin_lock_init(&gpuvm->evict.lock);
-> > > > +
-> > > >    	drm_gpuva_check_overflow(start_offset, range);
-> > > >    	gpuvm->mm_start = start_offset;
-> > > >    	gpuvm->mm_range = range;
-> > > > @@ -754,10 +914,302 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
-> > > >    	WARN(!RB_EMPTY_ROOT(&gpuvm->rb.tree.rb_root),
-> > > >    	     "GPUVA tree is not empty, potentially leaking memory.\n");
-> > > > +	WARN(!list_empty(&gpuvm->extobj.list), "Extobj list should be empty.\n");
-> > > > +	WARN(!list_empty(&gpuvm->evict.list), "Evict list should be empty.\n");
-> > > > +
-> > > >    	drm_gem_private_object_fini(&gpuvm->d_obj);
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
-> > > > +/**
-> > > > + * drm_gpuvm_prepare_objects() - prepare all assoiciated BOs
-> > > > + * @gpuvm: the &drm_gpuvm
-> > > > + * @exec: the &drm_exec locking context
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + *
-> > > > + * Calls drm_exec_prepare_obj() for all &drm_gem_objects the given
-> > > > + * &drm_gpuvm contains mappings of.
-> > > > + *
-> > > > + * Using this function directly, it is the drivers responsibility to call
-> > > > + * drm_exec_init() and drm_exec_fini() accordingly.
-> > > > + *
-> > > > + * Note: This function is safe against concurrent insertion and removal of
-> > > > + * external objects, however it is not safe against concurrent usage itself.
-> > > > + *
-> > > > + * Drivers need to make sure to protect this case with either an outer VM lock
-> > > > + * or by calling drm_gpuvm_prepare_vm() before this function within the
-> > > > + * drm_exec_until_all_locked() loop, such that the GPUVM's dma-resv lock ensures
-> > > > + * mutual exclusion.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
-> > > > +			  struct drm_exec *exec,
-> > > > +			  unsigned int num_fences)
-> > > > +{
-> > > > +	struct drm_gpuvm_bo *vm_bo;
-> > > > +	LIST_HEAD(extobjs);
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	for_each_vm_bo_in_list(gpuvm, extobj, &extobjs, vm_bo) {
-> > > > +		ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
-> > > > +		if (ret)
-> > > > +			break;
-> > > > +	}
-> > > > +	/* Drop ref in case we break out of the loop. */
-> > > > +	drm_gpuvm_bo_put(vm_bo);
-> > > > +	restore_vm_bo_list(gpuvm, extobj, &extobjs);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_objects);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_prepare_range() - prepare all BOs mapped within a given range
-> > > > + * @gpuvm: the &drm_gpuvm
-> > > > + * @exec: the &drm_exec locking context
-> > > > + * @addr: the start address within the VA space
-> > > > + * @range: the range to iterate within the VA space
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + *
-> > > > + * Calls drm_exec_prepare_obj() for all &drm_gem_objects mapped between @addr
-> > > > + * and @addr + @range.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm, struct drm_exec *exec,
-> > > > +			u64 addr, u64 range, unsigned int num_fences)
-> > > > +{
-> > > > +	struct drm_gpuva *va;
-> > > > +	u64 end = addr + range;
-> > > > +	int ret;
-> > > > +
-> > > > +	drm_gpuvm_for_each_va_range(va, gpuvm, addr, end) {
-> > > > +		struct drm_gem_object *obj = va->gem.obj;
-> > > > +
-> > > > +		ret = drm_exec_prepare_obj(exec, obj, num_fences);
-> > > > +		if (ret)
-> > > > +			return ret;
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_range);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_exec_lock() - lock all dma-resv of all assoiciated BOs
-> > > > + * @vm_exec: the &drm_gpuvm_exec abstraction
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + * @interruptible: sleep interruptible if waiting
-> > > > + *
-> > > > + * Acquires all dma-resv locks of all &drm_gem_objects the given
-> > > > + * &drm_gpuvm contains mappings of.
-> > > > + *
-> > > > + * Addionally, when calling this function with struct drm_gpuvm_exec::extra
-> > > > + * being set the driver receives the given @fn callback to lock additional
-> > > > + * dma-resv in the context of the &drm_gpuvm_exec instance. Typically, drivers
-> > > > + * would call drm_exec_prepare_obj() from within this callback.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
-> > > > +		    unsigned int num_fences,
-> > > > +		    bool interruptible)
-> > > > +{
-> > > > +	struct drm_gpuvm *gpuvm = vm_exec->vm;
-> > > > +	struct drm_exec *exec = &vm_exec->exec;
-> > > > +	uint32_t flags;
-> > > > +	int ret;
-> > > > +
-> > > > +	flags = interruptible ? DRM_EXEC_INTERRUPTIBLE_WAIT : 0 |
-> > > > +		DRM_EXEC_IGNORE_DUPLICATES;
-> > > > +
-> > > > +	drm_exec_init(exec, flags);
-> > > > +
-> > > > +	drm_exec_until_all_locked(exec) {
-> > > > +		ret = drm_gpuvm_prepare_vm(gpuvm, exec, num_fences);
-> > > > +		drm_exec_retry_on_contention(exec);
-> > > > +		if (ret)
-> > > > +			goto err;
-> > > > +
-> > > > +		ret = drm_gpuvm_prepare_objects(gpuvm, exec, num_fences);
-> > > > +		drm_exec_retry_on_contention(exec);
-> > > > +		if (ret)
-> > > > +			goto err;
-> > > > +
-> > > > +		if (vm_exec->extra.fn) {
-> > > > +			ret = vm_exec->extra.fn(vm_exec, num_fences);
-> > > > +			drm_exec_retry_on_contention(exec);
-> > > > +			if (ret)
-> > > > +				goto err;
-> > > > +		}
-> > > > +	}
-> > > > +
-> > > > +	return 0;
-> > > > +
-> > > > +err:
-> > > > +	drm_exec_fini(exec);
-> > > > +	return ret;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock);
-> > > > +
-> > > > +static int
-> > > > +fn_lock_array(struct drm_gpuvm_exec *vm_exec, unsigned int num_fences)
-> > > > +{
-> > > > +	struct {
-> > > > +		struct drm_gem_object **objs;
-> > > > +		unsigned int num_objs;
-> > > > +	} *args = vm_exec->extra.priv;
-> > > > +
-> > > > +	return drm_exec_prepare_array(&vm_exec->exec, args->objs,
-> > > > +				      args->num_objs, num_fences);
-> > > > +}
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_exec_lock_array() - lock all dma-resv of all assoiciated BOs
-> > > > + * @vm_exec: the &drm_gpuvm_exec abstraction
-> > > > + * @objs: additional &drm_gem_objects to lock
-> > > > + * @num_objs: the number of additional &drm_gem_objects to lock
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + * @interruptible: sleep interruptible if waiting
-> > > > + *
-> > > > + * Acquires all dma-resv locks of all &drm_gem_objects the given &drm_gpuvm
-> > > > + * contains mappings of, plus the ones given through @objs.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
-> > > > +			  struct drm_gem_object **objs,
-> > > > +			  unsigned int num_objs,
-> > > > +			  unsigned int num_fences,
-> > > > +			  bool interruptible)
-> > > > +{
-> > > > +	struct {
-> > > > +		struct drm_gem_object **objs;
-> > > > +		unsigned int num_objs;
-> > > > +	} args;
-> > > > +
-> > > > +	args.objs = objs;
-> > > > +	args.num_objs = num_objs;
-> > > > +
-> > > > +	vm_exec->extra.fn = fn_lock_array;
-> > > > +	vm_exec->extra.priv = &args;
-> > > > +
-> > > > +	return drm_gpuvm_exec_lock(vm_exec, num_fences, interruptible);
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock_array);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_exec_lock_range() - prepare all BOs mapped within a given range
-> > > > + * @vm_exec: the &drm_gpuvm_exec abstraction
-> > > > + * @addr: the start address within the VA space
-> > > > + * @range: the range to iterate within the VA space
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + * @interruptible: sleep interruptible if waiting
-> > > > + *
-> > > > + * Acquires all dma-resv locks of all &drm_gem_objects mapped between @addr and
-> > > > + * @addr + @range.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
-> > > > +			  u64 addr, u64 range,
-> > > > +			  unsigned int num_fences,
-> > > > +			  bool interruptible)
-> > > > +{
-> > > > +	struct drm_gpuvm *gpuvm = vm_exec->vm;
-> > > > +	struct drm_exec *exec = &vm_exec->exec;
-> > > > +	uint32_t flags;
-> > > > +	int ret;
-> > > > +
-> > > > +	flags = interruptible ? DRM_EXEC_INTERRUPTIBLE_WAIT : 0 |
-> > > > +		DRM_EXEC_IGNORE_DUPLICATES;
-> > > > +
-> > > > +	drm_exec_init(exec, flags);
-> > > > +
-> > > > +	drm_exec_until_all_locked(exec) {
-> > > > +		ret = drm_gpuvm_prepare_range(gpuvm, exec, addr, range,
-> > > > +					      num_fences);
-> > > > +		drm_exec_retry_on_contention(exec);
-> > > > +		if (ret)
-> > > > +			goto err;
-> > > > +	}
-> > > > +
-> > > > +	return ret;
-> > > > +
-> > > > +err:
-> > > > +	drm_exec_fini(exec);
-> > > > +	return ret;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_exec_lock_range);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_validate() - validate all BOs marked as evicted
-> > > > + * @gpuvm: the &drm_gpuvm to validate evicted BOs
-> > > > + *
-> > > > + * Calls the &drm_gpuvm_ops.bo_validate callback for all evicted buffer
-> > > > + * objects being mapped in the given &drm_gpuvm.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +int
-> > > > +drm_gpuvm_validate(struct drm_gpuvm *gpuvm)
-> > > > +{
-> > > > +	const struct drm_gpuvm_ops *ops = gpuvm->ops;
-> > > > +	struct drm_gpuvm_bo *vm_bo;
-> > > > +	LIST_HEAD(evict);
-> > > > +	int ret = 0;
-> > > > +
-> > > > +	if (unlikely(!ops || !ops->bo_validate))
-> > > > +		return -ENOTSUPP;
-> > > > +
-> > > > +	for_each_vm_bo_in_list(gpuvm, evict, &evict, vm_bo) {
-> > > > +		dma_resv_assert_held(vm_bo->obj->resv);
-> > > > +		ret = ops->bo_validate(vm_bo->obj);
-> > > > +		if (ret)
-> > > > +			break;
-> > > > +	}
-> > > > +	/* Drop ref in case we break out of the loop. */
-> > > > +	drm_gpuvm_bo_put(vm_bo);
-> > > > +	restore_vm_bo_list(gpuvm, evict, &evict);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_validate);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_resv_add_fence - add fence to private and all extobj
-> > > > + * dma-resv
-> > > > + * @gpuvm: the &drm_gpuvm to add a fence to
-> > > > + * @exec: the &drm_exec locking context
-> > > > + * @fence: fence to add
-> > > > + * @private_usage: private dma-resv usage
-> > > > + * @extobj_usage: extobj dma-resv usage
-> > > > + */
-> > > > +void
-> > > > +drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
-> > > > +			 struct drm_exec *exec,
-> > > > +			 struct dma_fence *fence,
-> > > > +			 enum dma_resv_usage private_usage,
-> > > > +			 enum dma_resv_usage extobj_usage)
-> > > > +{
-> > > > +	struct drm_gem_object *obj;
-> > > > +	unsigned long index;
-> > > > +
-> > > > +	drm_exec_for_each_locked_object(exec, index, obj) {
-> > > > +		dma_resv_assert_held(obj->resv);
-> > > > +		dma_resv_add_fence(obj->resv, fence,
-> > > > +				   drm_gpuvm_is_extobj(gpuvm, obj) ?
-> > > > +				   private_usage : extobj_usage);
-> > > > +	}
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_resv_add_fence);
-> > > > +
-> > > >    /**
-> > > >     * drm_gpuvm_bo_create() - create a new instance of struct drm_gpuvm_bo
-> > > >     * @gpuvm: The &drm_gpuvm the @obj is mapped in.
-> > > > @@ -790,6 +1242,9 @@ drm_gpuvm_bo_create(struct drm_gpuvm *gpuvm,
-> > > >    	INIT_LIST_HEAD(&vm_bo->list.gpuva);
-> > > >    	INIT_LIST_HEAD(&vm_bo->list.entry.gem);
-> > > > +	INIT_LIST_HEAD(&vm_bo->list.entry.extobj);
-> > > > +	INIT_LIST_HEAD(&vm_bo->list.entry.evict);
-> > > > +
-> > > >    	drm_gem_object_get(obj);
-> > > >    	return vm_bo;
-> > > > @@ -807,6 +1262,14 @@ drm_gpuvm_bo_destroy(struct kref *kref)
-> > > >    	drm_gem_gpuva_assert_lock_held(vm_bo->obj);
-> > > > +	spin_lock(&gpuvm->extobj.lock);
-> > > > +	list_del(&vm_bo->list.entry.extobj);
-> > > > +	spin_unlock(&gpuvm->extobj.lock);
-> > > > +
-> > > > +	spin_lock(&gpuvm->evict.lock);
-> > > > +	list_del(&vm_bo->list.entry.evict);
-> > > > +	spin_unlock(&gpuvm->evict.lock);
-> > > > +
-> > > >    	list_del(&vm_bo->list.entry.gem);
-> > > >    	drm_gem_object_put(obj);
-> > > > @@ -822,6 +1285,11 @@ drm_gpuvm_bo_destroy(struct kref *kref)
-> > > >     * @vm_bo: the &drm_gpuvm_bo to release the reference of
-> > > >     *
-> > > >     * This releases a reference to @vm_bo.
-> > > > + *
-> > > > + * If the reference count drops to zero, the &gpuvm_bo is destroyed, which
-> > > > + * includes removing it from the GEMs gpuva list. Hence, if a call to this
-> > > > + * function can potentially let the reference count to zero the caller must
-> > > > + * hold the dma-resv or driver specific GEM gpuva lock.
-> > > >     */
-> > > >    void
-> > > >    drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
-> > > > @@ -831,6 +1299,12 @@ drm_gpuvm_bo_put(struct drm_gpuvm_bo *vm_bo)
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(drm_gpuvm_bo_put);
-> > > > +static int __must_check
-> > > > +drm_gpuvm_bo_get_unless_zero(struct drm_gpuvm_bo *vm_bo)
-> > > > +{
-> > > > +	return kref_get_unless_zero(&vm_bo->kref);
-> > > > +}
-> > > > +
-> > > >    static struct drm_gpuvm_bo *
-> > > >    __drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
-> > > >    		    struct drm_gem_object *obj)
-> > > > @@ -938,6 +1412,48 @@ drm_gpuvm_bo_obtain_prealloc(struct drm_gpuvm_bo *__vm_bo)
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(drm_gpuvm_bo_obtain_prealloc);
-> > > > +/**
-> > > > + * drm_gpuvm_bo_extobj_add() - adds the &drm_gpuvm_bo to its &drm_gpuvm's
-> > > > + * extobj list
-> > > > + * @vm_bo: The &drm_gpuvm_bo to add to its &drm_gpuvm's the extobj list.
-> > > > + *
-> > > > + * Adds the given @vm_bo to its &drm_gpuvm's extobj list if not on the list
-> > > > + * already and if the corresponding &drm_gem_object is an external object,
-> > > > + * actually.
-> > > > + */
-> > > > +void
-> > > > +drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo)
-> > > > +{
-> > > > +	struct drm_gpuvm *gpuvm = vm_bo->vm;
-> > > > +
-> > > > +	if (drm_gpuvm_is_extobj(gpuvm, vm_bo->obj))
-> > > > +		drm_gpuvm_bo_list_add(vm_bo, extobj);
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_extobj_add);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_bo_evict() - add / remove a &drm_gem_object to / from a
-> > > > + * &drm_gpuvms evicted list
-> > > > + * @obj: the &drm_gem_object to add or remove
-> > > > + * @evict: indicates whether the object is evicted
-> > > > + *
-> > > > + * Adds a &drm_gem_object to or removes it from all &drm_gpuvms evicted
-> > > > + * list containing a mapping of this &drm_gem_object.
-> > > > + */
-> > > > +void
-> > > > +drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict)
-> > > > +{
-> > > > +	struct drm_gpuvm_bo *vm_bo;
-> > > > +
-> > > > +	drm_gem_for_each_gpuvm_bo(vm_bo, obj) {
-> > > > +		if (evict)
-> > > > +			drm_gpuvm_bo_list_add(vm_bo, evict);
-> > > > +		else
-> > > > +			drm_gpuvm_bo_list_del(vm_bo, evict);
-> > > > +	}
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(drm_gpuvm_bo_evict);
-> > > > +
-> > > >    static int
-> > > >    __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
-> > > >    		   struct drm_gpuva *va)
-> > > > diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
-> > > > index afa50b9059a2..834bb6d6617e 100644
-> > > > --- a/include/drm/drm_gpuvm.h
-> > > > +++ b/include/drm/drm_gpuvm.h
-> > > > @@ -26,10 +26,12 @@
-> > > >     */
-> > > >    #include <linux/list.h>
-> > > > +#include <linux/dma-resv.h>
-> > > >    #include <linux/rbtree.h>
-> > > >    #include <linux/types.h>
-> > > >    #include <drm/drm_gem.h>
-> > > > +#include <drm/drm_exec.h>
-> > > >    struct drm_gpuvm;
-> > > >    struct drm_gpuvm_bo;
-> > > > @@ -259,6 +261,38 @@ struct drm_gpuvm {
-> > > >    	 * space
-> > > >    	 */
-> > > >    	struct dma_resv *resv;
-> > > > +
-> > > > +	/**
-> > > > +	 * @extobj: structure holding the extobj list
-> > > > +	 */
-> > > > +	struct {
-> > > > +		/**
-> > > > +		 * @list: &list_head storing &drm_gpuvm_bos serving as
-> > > > +		 * external object
-> > > > +		 */
-> > > > +		struct list_head list;
-> > > > +
-> > > > +		/**
-> > > > +		 * @lock: spinlock to protect the extobj list
-> > > > +		 */
-> > > > +		spinlock_t lock;
-> > > > +	} extobj;
-> > > > +
-> > > > +	/**
-> > > > +	 * @evict: structure holding the evict list and evict list lock
-> > > > +	 */
-> > > > +	struct {
-> > > > +		/**
-> > > > +		 * @list: &list_head storing &drm_gpuvm_bos currently being
-> > > > +		 * evicted
-> > > > +		 */
-> > > > +		struct list_head list;
-> > > > +
-> > > > +		/**
-> > > > +		 * @lock: spinlock to protect the evict list
-> > > > +		 */
-> > > > +		spinlock_t lock;
-> > > > +	} evict;
-> > > >    };
-> > > >    void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
-> > > > @@ -268,6 +302,21 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, struct drm_device *drm,
-> > > >    		    const struct drm_gpuvm_ops *ops);
-> > > >    void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
-> > > > +/**
-> > > > + * drm_gpuvm_is_extobj() - indicates whether the given &drm_gem_object is an
-> > > > + * external object
-> > > > + * @gpuvm: the &drm_gpuvm to check
-> > > > + * @obj: the &drm_gem_object to check
-> > > > + *
-> > > > + * Returns: true if the &drm_gem_object &dma_resv differs from the
-> > > > + * &drm_gpuvms &dma_resv, false otherwise
-> > > > + */
-> > > > +static inline bool drm_gpuvm_is_extobj(struct drm_gpuvm *gpuvm,
-> > > > +				       struct drm_gem_object *obj)
-> > > > +{
-> > > > +	return obj && obj->resv != gpuvm->resv;
-> > > > +}
-> > > > +
-> > > >    static inline struct drm_gpuva *
-> > > >    __drm_gpuva_next(struct drm_gpuva *va)
-> > > >    {
-> > > > @@ -346,6 +395,128 @@ __drm_gpuva_next(struct drm_gpuva *va)
-> > > >    #define drm_gpuvm_for_each_va_safe(va__, next__, gpuvm__) \
-> > > >    	list_for_each_entry_safe(va__, next__, &(gpuvm__)->rb.list, rb.entry)
-> > > > +/**
-> > > > + * struct drm_gpuvm_exec - &drm_gpuvm abstraction of &drm_exec
-> > > > + *
-> > > > + * This structure should be created on the stack as &drm_exec should be.
-> > > > + *
-> > > > + * Optionally, @extra can be set in order to lock additional &drm_gem_objects.
-> > > > + */
-> > > > +struct drm_gpuvm_exec {
-> > > > +	/**
-> > > > +	 * @exec: the &drm_exec structure
-> > > > +	 */
-> > > > +	struct drm_exec exec;
-> > > > +
-> > > > +	/**
-> > > > +	 * @vm: the &drm_gpuvm to lock its DMA reservations
-> > > > +	 */
-> > > > +	struct drm_gpuvm *vm;
-> > > > +
-> > > > +	/**
-> > > > +	 * @extra: Callback and corresponding private data for the driver to
-> > > > +	 * lock arbitrary additional &drm_gem_objects.
-> > > > +	 */
-> > > > +	struct {
-> > > > +		/**
-> > > > +		 * @fn: The driver callback to lock additional &drm_gem_objects.
-> > > > +		 */
-> > > > +		int (*fn)(struct drm_gpuvm_exec *vm_exec,
-> > > > +			  unsigned int num_fences);
-> > > > +
-> > > > +		/**
-> > > > +		 * @priv: driver private data for the @fn callback
-> > > > +		 */
-> > > > +		void *priv;
-> > > > +	} extra;
-> > > > +};
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
-> > > > + * @gpuvm: the &drm_gpuvm
-> > > > + * @exec: the &drm_exec context
-> > > > + * @num_fences: the amount of &dma_fences to reserve
-> > > > + *
-> > > > + * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
-> > > > + *
-> > > > + * Using this function directly, it is the drivers responsibility to call
-> > > > + * drm_exec_init() and drm_exec_fini() accordingly.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +static inline int
-> > > > +drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
-> > > > +		     struct drm_exec *exec,
-> > > > +		     unsigned int num_fences)
-> > > > +{
-> > > > +	return drm_exec_prepare_obj(exec, &gpuvm->d_obj, num_fences);
-> > > > +}
-> > > > +
-> > > > +int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
-> > > > +			      struct drm_exec *exec,
-> > > > +			      unsigned int num_fences);
-> > > > +
-> > > > +int drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm,
-> > > > +			    struct drm_exec *exec,
-> > > > +			    u64 addr, u64 range,
-> > > > +			    unsigned int num_fences);
-> > > > +
-> > > > +int drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
-> > > > +			unsigned int num_fences,
-> > > > +			bool interruptible);
-> > > > +
-> > > > +int drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
-> > > > +			      struct drm_gem_object **objs,
-> > > > +			      unsigned int num_objs,
-> > > > +			      unsigned int num_fences,
-> > > > +			      bool interruptible);
-> > > > +
-> > > > +int drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
-> > > > +			      u64 addr, u64 range,
-> > > > +			      unsigned int num_fences,
-> > > > +			      bool interruptible);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_lock() - lock all dma-resv of all assoiciated BOs
-> > > > + * @gpuvm: the &drm_gpuvm
-> > > > + *
-> > > > + * Releases all dma-resv locks of all &drm_gem_objects previously acquired
-> > > > + * through drm_gpuvm_lock() or its variants.
-> > > > + *
-> > > > + * Returns: 0 on success, negative error code on failure.
-> > > > + */
-> > > > +static inline void
-> > > > +drm_gpuvm_exec_unlock(struct drm_gpuvm_exec *vm_exec)
-> > > > +{
-> > > > +	drm_exec_fini(&vm_exec->exec);
-> > > > +}
-> > > > +
-> > > > +int drm_gpuvm_validate(struct drm_gpuvm *gpuvm);
-> > > > +void drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
-> > > > +			      struct drm_exec *exec,
-> > > > +			      struct dma_fence *fence,
-> > > > +			      enum dma_resv_usage private_usage,
-> > > > +			      enum dma_resv_usage extobj_usage);
-> > > > +
-> > > > +/**
-> > > > + * drm_gpuvm_exec_resv_add_fence()
-> > > > + * @vm_exec: the &drm_gpuvm_exec abstraction
-> > > > + * @fence: fence to add
-> > > > + * @private_usage: private dma-resv usage
-> > > > + * @extobj_usage: extobj dma-resv usage
-> > > > + *
-> > > > + * See drm_gpuvm_resv_add_fence().
-> > > > + */
-> > > > +static inline void
-> > > > +drm_gpuvm_exec_resv_add_fence(struct drm_gpuvm_exec *vm_exec,
-> > > > +			      struct dma_fence *fence,
-> > > > +			      enum dma_resv_usage private_usage,
-> > > > +			      enum dma_resv_usage extobj_usage)
-> > > > +{
-> > > > +	drm_gpuvm_resv_add_fence(vm_exec->vm, &vm_exec->exec, fence,
-> > > > +				 private_usage, extobj_usage);
-> > > > +}
-> > > > +
-> > > >    /**
-> > > >     * struct drm_gpuvm_bo - structure representing a &drm_gpuvm and
-> > > >     * &drm_gem_object combination
-> > > > @@ -398,6 +569,18 @@ struct drm_gpuvm_bo {
-> > > >    			 * gpuva list.
-> > > >    			 */
-> > > >    			struct list_head gem;
-> > > > +
-> > > > +			/**
-> > > > +			 * @evict: List entry to attach to the &drm_gpuvms
-> > > > +			 * extobj list.
-> > > > +			 */
-> > > > +			struct list_head extobj;
-> > > > +
-> > > > +			/**
-> > > > +			 * @evict: List entry to attach to the &drm_gpuvms evict
-> > > > +			 * list.
-> > > > +			 */
-> > > > +			struct list_head evict;
-> > > >    		} entry;
-> > > >    	} list;
-> > > >    };
-> > > > @@ -432,6 +615,9 @@ struct drm_gpuvm_bo *
-> > > >    drm_gpuvm_bo_find(struct drm_gpuvm *gpuvm,
-> > > >    		  struct drm_gem_object *obj);
-> > > > +void drm_gpuvm_bo_evict(struct drm_gem_object *obj, bool evict);
-> > > > +void drm_gpuvm_bo_extobj_add(struct drm_gpuvm_bo *vm_bo);
-> > > > +
-> > > >    /**
-> > > >     * drm_gpuvm_bo_for_each_va() - iterator to walk over a list of &drm_gpuva
-> > > >     * @va__: &drm_gpuva structure to assign to in each iteration step
-> > > > @@ -837,6 +1023,17 @@ struct drm_gpuvm_ops {
-> > > >    	 * used.
-> > > >    	 */
-> > > >    	int (*sm_step_unmap)(struct drm_gpuva_op *op, void *priv);
-> > > > +
-> > > > +	/**
-> > > > +	 * @bo_validate: called from drm_gpuvm_validate()
-> > > > +	 *
-> > > > +	 * Drivers receive this callback for every evicted &drm_gem_object being
-> > > > +	 * mapped in the corresponding &drm_gpuvm.
-> > > > +	 *
-> > > > +	 * Typically, drivers would call their driver specific variant of
-> > > > +	 * ttm_bo_validate() from within this callback.
-> > > > +	 */
-> > > > +	int (*bo_validate)(struct drm_gem_object *obj);
-> > > >    };
-> > > >    int drm_gpuvm_sm_map(struct drm_gpuvm *gpuvm, void *priv,
-> 
-
+--------------w8FW2QGgBE5nh7f1DAuL0ILJ--
