@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D13379D1C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0F079D1DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235550AbjILNFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S235422AbjILNOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235492AbjILNF0 (ORCPT
+        with ESMTP id S235522AbjILNOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:05:26 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1DF1735
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:03:54 -0700 (PDT)
-Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
-        by cmsmtp with ESMTP
-        id fnYQqe02FDKaKg33ZqjMfb; Tue, 12 Sep 2023 13:03:53 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id g33Yq0AWt7Hing33YqFMo9; Tue, 12 Sep 2023 13:03:52 +0000
-X-Authority-Analysis: v=2.4 cv=Lq+Bd1Rc c=1 sm=1 tr=0 ts=650061b8
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=k6frhbBqBDcGtiXH-40A:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UqBx1R2wMm2RoGj/B6RNErCyrGurYSfQwxpjM8HqpfI=; b=kY0ZgdeRKJlbmY61MapYx7sK5V
-        3VC5OrYIzoG8p3qIAXsJUvd5dRdffDB3Pcr57Fu4UU4aDjT0fELm0ZP05ELWoGbXsUvJiw1Un3fYd
-        1MGiuvZQJn1ivKPgK/euJjg0VJU1MQRu+CMWuH/CHTnShYqyYEVcrYkqdWR74rfdQwI+Ipqw5wdl4
-        1XZHbiBLfuMmhnixbL4a5NW+hgJo5hm6TJinfYFSraZdDE4krOkyopbzBHf/CzlLVrwKT3nBg4fkr
-        xykmZ1iYBkQQiYqfGNNhOp3ona7nOkT8Wfa4CC7QcfYsfbl02LZ3cp7AFGzdmxb2lwx/ycK0NLbAq
-        6aixQlmg==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:55088 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qg33W-0042LH-1C;
-        Tue, 12 Sep 2023 07:03:50 -0600
-Subject: Re: [PATCH 6.5 000/739] 6.5.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230911134650.921299741@linuxfoundation.org>
-In-Reply-To: <20230911134650.921299741@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <0ed9f952-3d7b-929d-5347-c185c64fa495@w6rz.net>
-Date:   Tue, 12 Sep 2023 06:03:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qg33W-0042LH-1C
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:55088
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfN9HfWsduQZGSp0NeBKDgUUljQrix8MBBJ7gd2G5CVTvRnaatle6ipM4oihj2fNWahrICSLWi0CcEXsluIEs265sqHUnllB0DJ1uBIRaJZRp+HwmeskF
- QjRQWcbsy+wta0yVE6yBoLwAhbf1bjGz5ioJD0z1tQ3QeWnOmdbrLp7Q0ffkgHajzMQHdTAchbYOoQsXWYwDXmINM+ENtg5b2Ls=
+        Tue, 12 Sep 2023 09:14:05 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D361996;
+        Tue, 12 Sep 2023 06:06:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 196E1C433C8;
+        Tue, 12 Sep 2023 13:06:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694523972;
+        bh=PBatigLooCafkXd5Xk10QKKr4lnQGUF685h7vHWrU54=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tJ5sy9g9yhlRyrigQHP7XUtlSnxcLPWilG+U71PTzBFN0NBmLLM6SW0liYkLAjPuV
+         z+jBkOGydGu9kAP+RG9SUXkQ4wW7Zcf+zuF+3yA4ZCAzlpRqf1lTE6zVqL1vpyFqJL
+         YbeJhD9wM5bR5K5zVV1iGozYmeCVA9N/XqkFlH4A84DxoYrxXdss/qjmGW/TnUv0/B
+         yLP9dtdQRGDZjpRqzgdtZiW8NP2xDbxMdDO0YtgDrwfyBCARsEisHFZFDrbPHsW1A5
+         dYUZzbXlKkOy37mrztMblKeGw1fjDYJpyK1x5QT6Jm+WmCQu5PxirujdZWUv9+0Bx1
+         HgOkJJQ9dUZGQ==
+Received: from [104.132.96.100] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qg35l-00CGuA-5R;
+        Tue, 12 Sep 2023 14:06:09 +0100
+Date:   Tue, 12 Sep 2023 14:06:03 +0100
+Message-ID: <87h6nz4k3o.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     zhaoxu <zhaoxu.35@bytedance.com>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        zhouyibo@bytedance.com, zhouliang.001@bytedance.com
+Subject: Re: [RFC v2] KVM: arm/arm64: optimize vSGI injection performance
+In-Reply-To: <28610076-6ac7-4004-8479-e0005ff96c63@bytedance.com>
+References: <20230825015811.5292-1-zhaoxu.35@bytedance.com>
+        <86o7iidzwb.wl-maz@kernel.org>
+        <28610076-6ac7-4004-8479-e0005ff96c63@bytedance.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 104.132.96.100
+X-SA-Exim-Rcpt-To: zhaoxu.35@bytedance.com, oliver.upton@linux.dev, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, zhouyibo@bytedance.com, zhouliang.001@bytedance.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 6:36 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.3 release.
-> There are 739 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, 12 Sep 2023 05:13:19 +0100,
+zhaoxu <zhaoxu.35@bytedance.com> wrote:
+> 
+> 
+> 
+> On 2023/9/4 17:57, Marc Zyngier wrote:
+> > On Fri, 25 Aug 2023 02:58:11 +0100,
+> > Xu Zhao <zhaoxu.35@bytedance.com> wrote:
+> [...]
+> >> -	unsigned long affinity;
+> >> -	int level0;
+> >> +	u64 aff;
+> >>   -	/*
+> >> -	 * Split the current VCPU's MPIDR into affinity level 0 and the
+> >> -	 * rest as this is what we have to compare against.
+> >> -	 */
+> >> -	affinity = kvm_vcpu_get_mpidr_aff(vcpu);
+> >> -	level0 = MPIDR_AFFINITY_LEVEL(affinity, 0);
+> >> -	affinity &= ~MPIDR_LEVEL_MASK;
+> >> +	/* aff3 - aff1 */
+> >> +	aff = (((reg) & ICC_SGI1R_AFFINITY_3_MASK) >> ICC_SGI1R_AFFINITY_3_SHIFT) << 16 |
+> >> +		(((reg) & ICC_SGI1R_AFFINITY_2_MASK) >> ICC_SGI1R_AFFINITY_2_SHIFT) << 8 |
+> >> +		(((reg) & ICC_SGI1R_AFFINITY_1_MASK) >> ICC_SGI1R_AFFINITY_1_SHIFT);
+> > 
+> > Here, you assume that you can directly map a vcpu index to an
+> > affinity. It would be awesome if that was the case. However, this is
+> > only valid at reset time, and userspace is perfectly allowed to change
+> > this mapping by writing to the vcpu's MPIDR_EL1.
+> > 
+> > So this won't work at all if userspace wants to set its own specific
+> > CPU numbering.
+> > 
+> > 	M.
+> > 
+> Hi Marc,
+> 
+> Yes, i don't think too much about userspace can change MPIDR value, I
+> checked the source code of qemu, qemu create vcpu sequentially, so in
+> this case, vcpu_id is equivalent to vcpu_idx which means vcpu_id
+> represents the position in vcpu array.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+The problem is that this is only a convention, and userspace is
+totally free to use vcpu_id in a different way. Note that we have
+other bugs in the KVM code that treat them interchangeably, but I'm
+trying to fix that.
 
-Tested-by: Ron Economos <re@w6rz.net>
+> These days, I'm still thinking about whether it is because of the
+> content related to future vcpu hot-plug feature that vcpu_id can be
+> modified, but now it seems that's not entirely the case.
 
+There are 3 levels of identification:
+
+- vcpu_idx, which is an internal KVM index that userspace is not
+  suppose to rely on (or know)
+
+- vcpu_id, which is provided by userspace as a CPU number, and from
+  which we derive the default MPIDR_EL1 value. This is used all over
+  the code to identify a CPU from userspace.
+
+- MPIDR_EL1, which is how the architecture identifies a CPU.
+
+For CPU hotplug, I expect usespace to set vcpu_id and MPIDR_EL1 as it
+sees fit, knowing that the vpcu must have been allocated upfront (and
+vcpu_idx set).
+
+> I have read your latest patch and have been deeply inspired, and
+> Thanks for agreeing with this issue.
+
+No worries. I'd appreciate you testing it and reporting whether this
+matches the results you are observing with your own patch.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
