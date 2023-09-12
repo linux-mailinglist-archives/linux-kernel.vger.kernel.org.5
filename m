@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC7D79D96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796AF79D972
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237690AbjILTQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S231854AbjILTSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjILTQJ (ORCPT
+        with ESMTP id S229946AbjILTSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:16:09 -0400
+        Tue, 12 Sep 2023 15:18:47 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DE71B2;
-        Tue, 12 Sep 2023 12:16:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACFB3C433CD;
-        Tue, 12 Sep 2023 19:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694546165;
-        bh=mr+NsehKtc1BM6Zeb//Yv+u2js+H8NOBbn0lM+STLiQ=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=AH/84kA77EldxqpYgZUOTgWE/L6f+l0bWErarIiliOr5C9rkQ/l4NAu9RJUy4djrF
-         /8qxmyozJjvcZan2n1MtDOF0w/5F6dW5iDf2slA3LbFK4y7ZDYe97+I54ynPK3tks4
-         EU1Ksvzv0GBR+sYTwq3LhgcI2DsCtdDBsJo1LDfRsjopqcs8up1trLemS3kcwYhnNr
-         KHaYos6HAw0aR5qhYOqiY1LiKUpLvlXNf/3Y/dZPUI8K0EXBuFG4iZampU/LzfP/Bi
-         Hj/aR8J/WDAX+PaN1o7eZ6MUKlLtdxMmwVARuiRIfKdlBMf/dFeR+feVpSMfGm+82I
-         N8wdIvCvKNaHw==
-From:   Nathan Chancellor <nathan@kernel.org>
-Date:   Tue, 12 Sep 2023 12:15:44 -0700
-Subject: [PATCH 7/7] bcachefs: Fix -Wcompare-distinct-pointer-types in
- bch2_copygc_get_buckets()
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45841C1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:18:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F4046C433C7;
+        Tue, 12 Sep 2023 19:18:40 +0000 (UTC)
+Date:   Tue, 12 Sep 2023 21:18:37 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Fix lockdep static memory detection
+Message-ID: <ZQC5jS/Kc/JiBEOa@p100>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-bcachefs-warning-fixes-v1-7-a1cc83a38836@kernel.org>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
-To:     kent.overstreet@linux.dev
-Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2289; i=nathan@kernel.org;
- h=from:subject:message-id; bh=mr+NsehKtc1BM6Zeb//Yv+u2js+H8NOBbn0lM+STLiQ=;
- b=owGbwMvMwCEmm602sfCA1DTG02pJDKkMOz4s5HJeOSmEcY/TU4mXthwf5hqbWnN/dO6+vUjMa
- Wae1tF3HaUsDGIcDLJiiizVj1WPGxrOOct449QkmDmsTCBDGLg4BWAiqzYw/E+Jeldxm7dK02Kq
- +tId+4pkGN+x+6StDN31tcMjUp3jph4jw+45IsYvDMJmb9qafOn8k36LexPVS/8sm9ZX+P5Q4hr
- zVdwA
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building bcachefs for 32-bit ARM, there is a warning when using
-max() to compare an expression involving 'size_t' with an 'unsigned
-long' literal:
+Since commit 0a6b58c5cd0d ("lockdep: fix static memory detection even
+more") the lockdep code uses is_kernel_core_data(), is_kernel_rodata()
+and init_section_contains() to verify if a lock is located inside a
+kernel static data section.
 
-  fs/bcachefs/movinggc.c:159:21: error: comparison of distinct pointer types ('typeof (16UL) *' (aka 'unsigned long *') and 'typeof (buckets_in_flight->nr / 4) *' (aka 'unsigned int *')) [-Werror,-Wcompare-distinct-pointer-types]
-    159 |         size_t nr_to_get = max(16UL, buckets_in_flight->nr / 4);
-        |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:76:19: note: expanded from macro 'max'
-     76 | #define max(x, y)       __careful_cmp(x, y, >)
-        |                         ^~~~~~~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:38:24: note: expanded from macro '__careful_cmp'
-     38 |         __builtin_choose_expr(__safe_cmp(x, y), \
-        |                               ^~~~~~~~~~~~~~~~
-  include/linux/minmax.h:28:4: note: expanded from macro '__safe_cmp'
-     28 |                 (__typecheck(x, y) && __no_side_effects(x, y))
-        |                  ^~~~~~~~~~~~~~~~~
-  include/linux/minmax.h:22:28: note: expanded from macro '__typecheck'
-     22 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-        |                    ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-  1 error generated.
+This change triggers a failure on LoongArch, for which the vmlinux.lds.S
+script misses to put the locks (as part of in the .data.rel symbols)
+into the Linux data section.
+This patch fixes the lockdep problem by moving *(.data.rel*) symbols
+into the kernel data section (from _sdata to _edata).
 
-On 64-bit architectures, size_t is 'unsigned long', so there is no
-warning when comparing these two expressions. Use max_t(size_t, ...) for
-this situation, eliminating the warning.
+Additionally, move other wrongly assigned symbols too:
+- altinstructions into the _initdata section,
+- PLT symbols behind the read-only section, and
+- *(.la_abs) into the data section.
 
-Fixes: dd49018737d4 ("bcachefs: Rhashtable based buckets_in_flight for copygc")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- fs/bcachefs/movinggc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Helge Deller <deller@gmx.de>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 0a6b58c5cd0d ("lockdep: fix static memory detection even more")
+Cc: stable <stable@kernel.org> # v6.4+
 
-diff --git a/fs/bcachefs/movinggc.c b/fs/bcachefs/movinggc.c
-index 256431a6dc0c..1cb441d90b34 100644
---- a/fs/bcachefs/movinggc.c
-+++ b/fs/bcachefs/movinggc.c
-@@ -156,7 +156,7 @@ static int bch2_copygc_get_buckets(struct btree_trans *trans,
- 	struct bch_fs *c = trans->c;
- 	struct btree_iter iter;
- 	struct bkey_s_c k;
--	size_t nr_to_get = max(16UL, buckets_in_flight->nr / 4);
-+	size_t nr_to_get = max_t(size_t, 16U, buckets_in_flight->nr / 4);
- 	size_t saw = 0, in_flight = 0, not_movable = 0, sectors = 0;
- 	int ret;
+diff --git a/arch/loongarch/kernel/vmlinux.lds.S b/arch/loongarch/kernel/vmlinux.lds.S
+index b1686afcf876..bb2ec86f37a8 100644
+--- a/arch/loongarch/kernel/vmlinux.lds.S
++++ b/arch/loongarch/kernel/vmlinux.lds.S
+@@ -53,33 +53,6 @@ SECTIONS
+ 	. = ALIGN(PECOFF_SEGMENT_ALIGN);
+ 	_etext = .;
  
-
--- 
-2.42.0
-
+-	/*
+-	 * struct alt_inst entries. From the header (alternative.h):
+-	 * "Alternative instructions for different CPU types or capabilities"
+-	 * Think locking instructions on spinlocks.
+-	 */
+-	. = ALIGN(4);
+-	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
+-		__alt_instructions = .;
+-		*(.altinstructions)
+-		__alt_instructions_end = .;
+-	}
+-
+-#ifdef CONFIG_RELOCATABLE
+-	. = ALIGN(8);
+-	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
+-		__la_abs_begin = .;
+-		*(.la_abs)
+-		__la_abs_end = .;
+-	}
+-#endif
+-
+-	.got : ALIGN(16) { *(.got) }
+-	.plt : ALIGN(16) { *(.plt) }
+-	.got.plt : ALIGN(16) { *(.got.plt) }
+-
+-	.data.rel : { *(.data.rel*) }
+-
+ 	. = ALIGN(PECOFF_SEGMENT_ALIGN);
+ 	__init_begin = .;
+ 	__inittext_begin = .;
+@@ -94,6 +67,18 @@ SECTIONS
+ 
+ 	__initdata_begin = .;
+ 
++	/*
++	 * struct alt_inst entries. From the header (alternative.h):
++	 * "Alternative instructions for different CPU types or capabilities"
++	 * Think locking instructions on spinlocks.
++	 */
++	. = ALIGN(4);
++	.altinstructions : AT(ADDR(.altinstructions) - LOAD_OFFSET) {
++		__alt_instructions = .;
++		*(.altinstructions)
++		__alt_instructions_end = .;
++	}
++
+ 	INIT_DATA_SECTION(16)
+ 	.exit.data : {
+ 		EXIT_DATA
+@@ -113,6 +98,11 @@ SECTIONS
+ 
+ 	_sdata = .;
+ 	RO_DATA(4096)
++
++	.got : ALIGN(16) { *(.got) }
++	.plt : ALIGN(16) { *(.plt) }
++	.got.plt : ALIGN(16) { *(.got.plt) }
++
+ 	RW_DATA(1 << CONFIG_L1_CACHE_SHIFT, PAGE_SIZE, THREAD_SIZE)
+ 
+ 	.rela.dyn : ALIGN(8) {
+@@ -121,6 +111,17 @@ SECTIONS
+ 		__rela_dyn_end = .;
+ 	}
+ 
++	.data.rel : { *(.data.rel*) }
++
++#ifdef CONFIG_RELOCATABLE
++	. = ALIGN(8);
++	.la_abs : AT(ADDR(.la_abs) - LOAD_OFFSET) {
++		__la_abs_begin = .;
++		*(.la_abs)
++		__la_abs_end = .;
++	}
++#endif
++
+ 	.sdata : {
+ 		*(.sdata)
+ 	}
