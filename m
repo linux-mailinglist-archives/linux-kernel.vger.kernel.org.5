@@ -2,268 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0673279D35D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D5379D36A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235724AbjILOP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S235817AbjILOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjILOP0 (ORCPT
+        with ESMTP id S230151AbjILOSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:15:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA28CF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:15:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694528122; x=1726064122;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=+ORwNwf/i9QJDP/2C8O35aeRzBA42yRQtHuk7zgGn0k=;
-  b=Ump20ZuNzx24m0Shl7LAA1ZMa7BzwwBm+Z0XP1pr7lObW1fntgUFxPs6
-   ZetLxh5o8XDH7f+xjfEDPsUKIXw1bb1mSbsktf9uNiHLEUSj2DpmdTY8w
-   5hzvK44MUVgnNyo4EoxmOTBr+qHcDZk0juZZ5W/bCT4owbCQmhL/w2M6J
-   PCzc6dzG/vCJG+e1tQMXD3YHb8cpwrLXf8kwdw6Aqct6hoQMfy7DoTqQQ
-   3BFBQDzDDszhvNAX1aPQ+kTsyMn/boNqlEOkDwEx6ndvGZnIgV5a5REgy
-   m1q7SxXaKu0ZOH9eGGLO3OcocnftvTOxf/Gbp0j0yK0gvjefcngL0xkLZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358660538"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="358660538"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 07:15:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="867403026"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="867403026"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Sep 2023 07:15:20 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 12 Sep 2023 07:15:20 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 12 Sep 2023 07:15:19 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 12 Sep 2023 07:15:19 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 12 Sep 2023 07:15:19 -0700
+        Tue, 12 Sep 2023 10:18:05 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D65210D;
+        Tue, 12 Sep 2023 07:18:01 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C9nRwJ025827;
+        Tue, 12 Sep 2023 14:17:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=oLzFSNVsuBalZ1RhYYhnc0OTq1qnaLbEjTRLxk8IuSo=;
+ b=CAcsFebX/dl0DmjucRHQy75TmioPAWCHjJhNoBvzAnShItax+8C87WThTiNmhC8gxA1v
+ eZ1fDtQbLxgaX4079SNng2c2dGa9rRmxB1YsLp0dWcagDV89BmJUDu829GZU8aBI3Wtx
+ 2wBfudAsXFNDYRvWvQbRBOANSoJcua1YMJxZHyKPwFsu9opsy0CBkkUlUsL5oe1gF7AI
+ cRGWf0UrIGiDLysTp+PSTGi7vZHNbuDnEotWa3Lj4n4qDGPDbkmoEH/3ZOtw1TO+gYCI
+ ILsIA6HOPvFDnnuiTXVCXH4Fxz1vo0Nm3h+2z2gfnWucHtxJsGeK7KQBSsaLvAGJBHpy 7w== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t1jhqc42f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 14:17:38 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38CEBYW4033027;
+        Tue, 12 Sep 2023 14:17:36 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t0wkf2ufm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 14:17:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BD2jIDJ1zudX3iGNGuvghEdHGwJJCuW1/Tf1IUw6rvAYC076epDcsfTN/d/6sx5o/rh2dYKsL9boi3TdOD/uhAu0IGGnNE6bLgewnEva3Hb0bFv8iWN4NPM+RcO+oHTSCPTwCddrVXEVVYxWSSy1AH8PAO8NHXcp4XmandwYadILajDXtXksQTiKDlggpdb8cfPeTWCQmNke3dHabuIjc94oY95SmIqrGyUSojAVfWkj9cHFkDGTOiZASUwHkaEJD8lsxHlm1AuFXzmZMxufZWDHJ+tI7mBAg7tVqe+zJHcizvI5LqCsuwDD/9mli6TJ5NjrjsK21Tpiu8iv5AC4gQ==
+ b=HRzbZEcyoCxcNqEuGiGI3BeFvN2pKZNK4RfZLwJvuuYpnXyafa1J8E7o5WI6I4Rwmec854xNlhzIUI4V4QJIaAN/SBmJ1Y5LemrjPMJGElas2cavpEYJME7QnPjwedPWlfLFAiDApLfGjCtBJiN+2wPpkWT+HfL4thlPNTn8ngycNQ1fLMguV0uXdVgJTtZ8Z083RlAslcfMTigDAYqPP9NtTuswIsEU5piwEAUEAVLjlj9Dguuuq7OxL5CnNZsZjet/BCYifPeNXXsltt0QM5iwslSUNTPSOajy1oEXmEKaJ4cn0cKIOKa+g6CrlDcwcEQJS31/L22CxX0uXGmyYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nMpIIuXnSMe5W4nGIersiCYUiMIrbWzfY6w9kYOnq3k=;
- b=JeaOm74jll8V4qJtWZ8pSetRqqF+lxDNMo4vVtw8eg8guP4ORQcfIrUO/NwlCXDOfZHD6uwIBbjJxNarGLK9bQuNrvSmOkdQP2QNxnVSbLxlWFhder8+nva9d++6jbHoLhw/naSUtfyVpiK5s43rQbJhpIsnDQnHy8bfPuPZul3kPNgkq6pOmdUEfSxwueYqrTrAA6+NyDWonJXe96CSn75Lxn0HT3jp9ao1/3dXGRlvzh4KmQNKB5oDKXxuQp4+QNwlUsxDlh13eQOmFaURSszuOd7KzS8EL3+LzOIC/R/TY2AxLay0INdkUsK7EY7Gr720M8sdU2zyROK3QS1+lA==
+ bh=oLzFSNVsuBalZ1RhYYhnc0OTq1qnaLbEjTRLxk8IuSo=;
+ b=aWvyb/qIdNzE4URVnMU8PD3JPv6fYvBpk4Ot10jYyBGH7eqtMeDdJuq22BxGPdLAU8yWsIkWsxrQmyYfllbrJzM6ziMHsh+eOho++505vjSll7wsREmaucYn/AMJ3utkZIXBA3IfdrtGdl9N6zuEeLqnL1yEJeKyLeS1Psebnft1EmFlr26yr8BR+xIYEikq+PLMeVBNLdYPSv8OOqUbTMdw98iP0MMY5JErNTgP4346vlFxPm4c7jvvYK+5VY8v2auJzJrUZRnopZsjm+Fs3RsI+RDRXrLHefikRJMK+7uf3SI9hkK0goZo8OMJk1oh6hloOf2DHh104tZZ4Yomhg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
- by DS0PR11MB7506.namprd11.prod.outlook.com (2603:10b6:8:151::8) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oLzFSNVsuBalZ1RhYYhnc0OTq1qnaLbEjTRLxk8IuSo=;
+ b=noD69mBHdCirWKI016CvbdZnDtH+S95OZsdjLfYUzCqSO/DL1uGYKnGa6CvW1/JC5LXHq9OCYtH4UjUbqURrLEG/gieotzr4FJotjD3u5U4lMEaT/2yBkw09VJiVDeNnY4DJwfiw3UIS/qtsk3cr4wiGef3v7F8zu+QeCB9dMQE=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by BLAPR10MB5154.namprd10.prod.outlook.com (2603:10b6:208:328::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.34; Tue, 12 Sep
- 2023 14:15:17 +0000
-Received: from MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::d9d9:1535:1180:603a]) by MN0PR11MB6206.namprd11.prod.outlook.com
- ([fe80::d9d9:1535:1180:603a%2]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 14:15:17 +0000
-Date:   Tue, 12 Sep 2023 22:14:59 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Valentin Schneider" <vschneid@redhat.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 2/2] sched/fair: skip the cache hot CPU in
- select_idle_cpu()
-Message-ID: <ZQByY4rDvjejRRs5@chenyu5-mobl2.ccr.corp.intel.com>
-References: <cover.1694397335.git.yu.c.chen@intel.com>
- <d49cf5748aa7c6d69580315d2373a9eafa21c21f.1694397335.git.yu.c.chen@intel.com>
- <30a7ff14-3f48-e8cf-333f-cbb7499656e3@efficios.com>
- <db8fa2ae-317b-1c5a-e23f-9d3396165c45@efficios.com>
- <ZQBRIUYT8PE/UbZe@chenyu5-mobl2.ccr.corp.intel.com>
- <244ff1b9-c51e-be9b-0755-757f969b36e1@efficios.com>
-Content-Type: text/plain; charset="iso-8859-1"
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Tue, 12 Sep
+ 2023 14:17:35 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6768.036; Tue, 12 Sep 2023
+ 14:17:35 +0000
+Date:   Tue, 12 Sep 2023 10:17:32 -0400
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+Message-ID: <20230912141732.k5l37d4xeiwssaln@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+ <20230819004356.1454718-2-Liam.Howlett@oracle.com>
+ <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
+ <20230906152325.dblzauybyoq5kd35@revolver>
+ <ad298077-fca8-437e-b9e3-66e31424afb1@paulmck-laptop>
+ <20230906172954.oq4vogeuco25zam7@revolver>
+ <495849d6-1dc6-4f38-bce7-23c50df3a99f@paulmck-laptop>
+ <20230911235452.xhtnt7ply7ayr53x@revolver>
+ <ZQBxPmVmBJ7J+b4B@casper.infradead.org>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <244ff1b9-c51e-be9b-0755-757f969b36e1@efficios.com>
-X-ClientProxiedBy: SGAP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::25)
- To MN0PR11MB6206.namprd11.prod.outlook.com (2603:10b6:208:3c6::8)
+In-Reply-To: <ZQBxPmVmBJ7J+b4B@casper.infradead.org>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YT1PR01CA0114.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2c::23) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6206:EE_|DS0PR11MB7506:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35548bbc-37a9-4ad0-eae9-08dbb39ab072
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|BLAPR10MB5154:EE_
+X-MS-Office365-Filtering-Correlation-Id: 27e62cc5-8be0-4d0e-d249-08dbb39b02b8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BhXyvU3wNJ0nBDPhHThq/ec9ey4IDyneRdoBuFlidp/qIsV5z9W2INuNMleckOD+UmwB5Lal07gKp5rRHzMJiAn7U225S3CED+/UXy5wJYUtglq2V/zliPcntt5FPRygxbA/76xEr7IS9vr+aioB7/C+Fjpl4o0LejKBZZI1wBTO/h+BaP4/Ean4TuQMxCkGxlOkMBJzwJPZVPUPCWC6rkK+5+hZiJiHONtNhVzAyo8kbnaVgk89CXM5KUF2eeh4BqKuwE8LlMFFOxXEP2NOYEcTZoB+tKg/iZT/Wr57MRDl+55kY8WEXA/smsJG/EMPyQQ8UA1qM/YuL0hgKX6PP6OOm5Cw7XHJbeeZP6225JMy/WWjl3j4biMuNCIpY8u2jQvN+0L+2foIL6wzIs4Hg5Qd/22uckZhF6zGuETi+2oiTgXgtPjk7upVrMS4/MWQwqbIlzDycYb4BSkqTajJDm3RZJyfmUGANoEaMDnqhgH9r0rgusSMQN5BDYozjVWo5B+8Fd2g0a/SJzLPsBOzUVUaVXwtL3wXpPCG1U64tc0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6206.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(39860400002)(376002)(1800799009)(451199024)(186009)(38100700002)(53546011)(6486002)(6666004)(6506007)(86362001)(82960400001)(26005)(2906002)(6512007)(83380400001)(478600001)(966005)(316002)(4326008)(41300700001)(8936002)(5660300002)(8676002)(7416002)(54906003)(66946007)(66556008)(66476007)(6916009);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: FRoiX2nxYMWAJaNQnnKduh7tTHWh9uPIz05t4gxrFdk5Qdf/7bM0lxXUoX3h7XD37M9gJIiH6LnZzKHpHUJAcmNIOp6Gaudl1LeuEgtCP5rrbnujOsTN1sAyL5YUmRpUilRtoMCT1SX4k0HaFSZqb42TlKUKn0I/HahK8sF1qLB41pPyN8xYKscmAv1Dfr0cSAO4nXDrIRIc/xhkue1mxxBbZDDGlXFD/hEMEhG9Zr+UZrh6eZaj9/Df2vbggRiSlmxnbfWUOtMrVY1LuJvBUSMo6vf0ZKKArx9SySVtIEB0s1JqkSBf5Sxv+PqcC1jgywUlwMzFr3zjRGsx2/1vQYFh3/Emm5T02ahRhxqo+qBt3HRySdt5UToCYot6eujPy8uxmpfcNLAMjEU4wLCLml39uqhQdO1awa/ZuvLyydrIFV33+ATnIHDdPGcESLiu7xowdXoPw0kWuYnC80bOTpHfLlqRdetd01z2Q0W7N4BlIZ9N5hDIBO3laTxQkrEn6sh1H0A5Ci4la9QIUO+gBEQ+ITUm8XIp5mxn+o4OhUquB3/oPcKcnzVtt/L1GnXS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(39860400002)(366004)(346002)(136003)(186009)(1800799009)(451199024)(9686003)(6512007)(6506007)(6486002)(33716001)(38100700002)(83380400001)(6666004)(41300700001)(1076003)(478600001)(26005)(6916009)(54906003)(66556008)(66476007)(66946007)(316002)(7416002)(5660300002)(4326008)(4744005)(8676002)(86362001)(8936002)(2906002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?mbbQ0Hk26xCWSeoiXldgFDcaXIT2GbhkKvsPBqkxZeiUGkh00PDdtJP89t?=
- =?iso-8859-1?Q?0+kuzHAUpidSB2B2XTIJ2Bp3oCVt5xJ/NEAQ73jB0tqN49L0GHHYwfQKsh?=
- =?iso-8859-1?Q?7jNr5txpsMipz87uQw1tbUZRndoAPYa0g5Fq7PANz+IGOgE339DYKbfJKF?=
- =?iso-8859-1?Q?2YFMd5Ja7onx9Nl41TBk2ZrunsigsCnvIHfdVsGzRNF7sLGMaMwkwPOJ5M?=
- =?iso-8859-1?Q?CImfQnRV4XhoEw6TKtwH2LprclGzESy+tg33g8viWAhc054qr1wr72BZln?=
- =?iso-8859-1?Q?D0mpil3+lsa0JEKT7myEwoAo5GlvBy9oHre7X5NT0XEKR+YDd4idyNFu1n?=
- =?iso-8859-1?Q?WOHc03WnPRF+RH0MoU0WY0XqgQ30D4LCqYwLL2Hv1YCrrpbvvapCpmdfvh?=
- =?iso-8859-1?Q?iGAEpmWYviexcA1DWCOB0XqJLLJv4+3LIfoJ/mQJinKf90azR54dE1iY/c?=
- =?iso-8859-1?Q?GRs6ldIZHWtsoqqqs+pW9h52otmlwo2/IgrhxCLTIgLU2jBOaMahrlPo3o?=
- =?iso-8859-1?Q?UdYV8AVmifhLingP6/VZK6loB7//d6VkD0v4O45j0Pia6c39csTvracvGg?=
- =?iso-8859-1?Q?cl/apQxHLfiwxP3UN5eLaO4CG4KjXbwJVdyUylh1S5ZBOmHmVDbroBZS6m?=
- =?iso-8859-1?Q?5mhTk65zrFkE3NAHINA/d2g8YAC1D6G/+EXLgijcid6uqmubPsuJat3VXR?=
- =?iso-8859-1?Q?rOQ/R5pnMzrq4gRFlO5wlU/BQa32Di5JUkbZQ3YjAEtjX7q98q6y1YGxr6?=
- =?iso-8859-1?Q?vRwE0RCyrS4HH27xN1io/iFOzs58VEztgh0lopAibvxuWoEoZ4IdG7IaOX?=
- =?iso-8859-1?Q?rt12B0TA46WjI4V1R5mEue2tiMTreXRR15ouj6cIGsWS67AJioMkVdzGBI?=
- =?iso-8859-1?Q?6/IJc0LVNQtEE+DRfgaWjEYSo6aVzA2W1XifYvZElbnSRK6N02rGgfOLs1?=
- =?iso-8859-1?Q?UhI0B++1L0l4FZI+HAcJck1+n/gL2jdDAcNqh6O4mjUermn3Pj2irOMwB5?=
- =?iso-8859-1?Q?oQ5X9dYCEaEvtcUq92W2J9QPGMokd6yhwiyYyp3IBPD1NfF04KKvxCUvtY?=
- =?iso-8859-1?Q?4GEjqYPhlWeyfonZzfaoYYXDQfGXU12N+55cH7dyAnJC3AUeOJe1Y+hHMr?=
- =?iso-8859-1?Q?+9LEXjUmoc2AwK4l18LHanHOMBQ47gKYC2K1305WGz8c/pySN6mzCZddmq?=
- =?iso-8859-1?Q?dX68JEGZlcSxVZqO9OPwUkoAaQugG//ui3X5abmwEYTFC43N4OqwJMqj9l?=
- =?iso-8859-1?Q?1+xfODF7zHmoLVn5vCDapfcqKQjKaopGLnNh4MJ39wkiOY4cwA+/uYSLeW?=
- =?iso-8859-1?Q?VTH1koWqz2wyr8+sDoxZK8QoDYxdy6oIM9uMRtxa1xtHbh1+C8JQDmJvna?=
- =?iso-8859-1?Q?9i8r8ihTclDwZhsPsRAnN/Gt0ML/OBsXKWlKFYi/5bmY8JsehXaa9+WS8e?=
- =?iso-8859-1?Q?Qfi6QedyTYkedeY44s/jg758Jiu+/3eRhBbzQSBoyFMVApHVDhhsjR3X08?=
- =?iso-8859-1?Q?CtWLTegdHP56aTkke+bXNpOx7+rtjjTvViBbyB/enKyqlOjKrZJgdTQAuo?=
- =?iso-8859-1?Q?t50SciEFQQWUQEt0MvgC2l4K4ZX2iDjiJuv81t1DyD1bwFV0B+fhBKtfE+?=
- =?iso-8859-1?Q?C7NA/4gHhnDVLv0LdTjk+jqXocQYXa/Skf?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35548bbc-37a9-4ad0-eae9-08dbb39ab072
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6206.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/q1yN1Rdw4Tc8HTF2/hoNByaAHT+3n6FLmHiOcrNzBHuO6GMbq2k2hgrjwNc?=
+ =?us-ascii?Q?uPupbldYQ03vFVvwIuBNAopCQYp9P2pQqaxrVjmQFg1usojOia87eb7qlxBG?=
+ =?us-ascii?Q?hcZeTXI+SzMkycNv9POQ2vgSwuGMfbnWWW9BuTfvhlMDQ8oPRDX3SfL+Lr88?=
+ =?us-ascii?Q?y42m2PMWD7KBrGibKfg0lUgmZ9eQMOC1ojhAT5XqGxkMG3FmgH42AyeE3WXh?=
+ =?us-ascii?Q?C4F10lo00V9hakd7ei5V1S3k8pQ3f7hxMAhumfm9grUerPFQQck+d2KCcyln?=
+ =?us-ascii?Q?u23zoBvYcNSG9zeMhZllGaVE5UrvKsOKr1436VFNicJxnbYqrLytuqm6ilq0?=
+ =?us-ascii?Q?EdDflCX9GNmfIzWZaSId0f3GTVwkompuLaXcN3zNuRA2sJA6T+bvyWWCV3Ub?=
+ =?us-ascii?Q?1JDLj3DR37ubwIlTszX4OsoEZbuDum8wflnKUt4aVyrhTC+P2AEjPBKPCLim?=
+ =?us-ascii?Q?AXQirzboAlEOproQBF7bJ0CTFf87Fg8XXRnf9L59XaTRUwpp0Qn8q1fS9Gvq?=
+ =?us-ascii?Q?BJNSXMvBGy4KwDaMs6ip+WuhOCC966YXqDzDLpwUj/ymbOUMVX2wDzeH7Rge?=
+ =?us-ascii?Q?4xeYIpuXReBZjXI7YceHljma30HI4Zjn9wodDBa8kJzzpcHQcQRYtcYVtzaW?=
+ =?us-ascii?Q?WlDyZfry9gmiOq+dslsE409a1+JC/3389ScK6M9TbK56jK9/6UurxdEYr93m?=
+ =?us-ascii?Q?QCZ252OT/K2LKtEQbVNzdL/uhZF9Bulx+fbyAyK9DhwBr/HFii+950HEXK8e?=
+ =?us-ascii?Q?9SS8csECvt+Qz8XZoipJQiyh7rkPm5DYISJRXTGcKqtpS9fb1DIV1zXaebSP?=
+ =?us-ascii?Q?DCg+eVdaWBSIr1KE7grPTp9ssEQGpyyCbj7EDZl4H2lTh3j7bBYo6hEOo5qb?=
+ =?us-ascii?Q?zhsw2UqGWqhLKPufUqTmDi7H8gW+mvSdwI9q367De3/L5jDIxCpkyngWM0BA?=
+ =?us-ascii?Q?sZ0gvXeWIKgYs9G+ycvTPFO0fWGSewSXbZyiBkxobJtICzsDObNC0QzEmAu5?=
+ =?us-ascii?Q?8Z1lB6Eh7/tqEXjfvygK+K+FwbXm0vNt9/rxTsbGoBzipguj32H64kXRFxuC?=
+ =?us-ascii?Q?pNbgt2MP8RpSbO9N8TospCKLmGOa7TTfPrK0GaA59SgsaxE7umPH7CzSlZlK?=
+ =?us-ascii?Q?L5kzdktHYdRMzbpPbmC0kRJzwV0ui2yz6C7TTmVAvyA3SScHp+wDitPRP+Bs?=
+ =?us-ascii?Q?90YeLgekz8THl9QFtHfLGgGcDG5EypYobaHoQTBUCVtaeh1PxO7myRmo1A2I?=
+ =?us-ascii?Q?Hg0PKmOXM5ygkGAR7PSmzr8/NDzBTbKLsYCyleX9XscQMCbjMFWGtrJ6ku3G?=
+ =?us-ascii?Q?EWEuwm9zib7L7SwWPFDp4fqUoUNmAsHgTnuIyZp/Yg6BuDoSiqOQ6T3KaUeG?=
+ =?us-ascii?Q?iIxK4KE6KPkNLx4gGM5m+jLtdR8Slcc737pN05vPNUPhBLgsYAC/5FqIBunz?=
+ =?us-ascii?Q?Z+NpcMliz+1O+du26CPpHZQKQlw/OcuZt4qEmr60YIvvKMNrqRzsTsc7cMQo?=
+ =?us-ascii?Q?jEk/SGHWihltPreuLGOuIl2vqChaO8cH8S1MYQmCBKrcu82+un4H/XVxYhBL?=
+ =?us-ascii?Q?XVmmg1nmZkXqonBCQborc2htuhRlxwU1RL0Q9/v41mAGe+63xpMUuZv3aV7z?=
+ =?us-ascii?Q?lQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?UFx7ZvA7U5BgJt+d4+mIsUDNvzI2/sELcLGA8j1YV9PNgyY6QEZ496A//Fcq?=
+ =?us-ascii?Q?pPb1ljwWGhEER3wSYnrnF1tmh54inHPXAVxc6MwsXZiQkoPF317HpI3BNgnV?=
+ =?us-ascii?Q?wYXMupwU0rZsphcmcwo8NdPHIdGG43hNndgJ3sLQhdK4WTC0mDlHfkpM+Jff?=
+ =?us-ascii?Q?RYDBGaBffnCJYy2k1rUMjWCPUx80qLpPV8Rul/MsB5O0QchCQSzJlMoWDtDc?=
+ =?us-ascii?Q?/pU9MdI+aPXbpCDnkw5dMqdjt7Joh5p2tC7F0CZpRBptq+1G2+zfjPW58kue?=
+ =?us-ascii?Q?Pc5wgrtPcIv8NW2Pm4lTFhrKPuH3XaY9hTkfDxiiXdqsGSaj3BYj2m7R+caz?=
+ =?us-ascii?Q?JA/ATWpS883Y04d3QnoBaqZ0OT6oya89CWIvgZ+2SZsbsnGVjl82woUrwcCH?=
+ =?us-ascii?Q?tvpvMRfQyjHLdtibBfk+hcRST4sF4jOzM35x3YreOiObNBXcIkhioADxGIOi?=
+ =?us-ascii?Q?5hOh87bxPIdwSBAPXr8B3kldm4YU4vUy6x8sP+b3BFYAg6mDmfEkE6uXTcp/?=
+ =?us-ascii?Q?4cX2Qdqhk3Xh18ur2NKZ2Q85wNP7YNm3DrNgKRlflSZt6Xyi3Ss1CI6XSdJc?=
+ =?us-ascii?Q?+Xr/TL+0DJRFC9XiDy+5inf6Ra1PXvQ5EJUQEBIpj68QEvbDNWXjxj2QaEHU?=
+ =?us-ascii?Q?eRltI3N8C4QBtfq/qPzo5NEB0HoQUhEvlI8hgH/lM3//tN52L7OBZfVTy1xa?=
+ =?us-ascii?Q?92rw2ndZxOh0PU7xe8hzJMNXZdw7/erke4aptV7ps6Ovfva7Ebm7XsOmFYUs?=
+ =?us-ascii?Q?4bi7YjLN4TCn5dPhWpMZuOWd7hJh/K76QOIiUjycCDt94o74vS3wYRGeDZwM?=
+ =?us-ascii?Q?GmQn7WE9FyAb6MqwXeI6BIULKJ67Mu2DvMzW28kY57mN8H7edvgZWG4AI0sg?=
+ =?us-ascii?Q?LGwwA5Fn3+77KtJ5HmagZp+YsNkIJZ0PQpbMF/YQUaWivItagKLY3GSp1HE9?=
+ =?us-ascii?Q?mx0O8tL1k1HdU1rPhjEo0MHII8iqcIAHMMWm0mONqSDsICkJx680/f4ZYpoN?=
+ =?us-ascii?Q?V+M+wV+C/bmJUOUacmNmupZwuA=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27e62cc5-8be0-4d0e-d249-08dbb39b02b8
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 14:15:17.0946
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 14:17:35.0809
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: URT1rzRwvGtVZH/UK44hOZOrwb2MZWPqf7LpmCobxkWtRb54ys21wM4PK8TUZGxry5uLJOhC2ysiMs49VTrJrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7506
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: MO6ml/6dSLOtQOOukxBLYI4nnNwMmrZLv8nQZNI/1GS9BAwPW8AMczO6FTO/0keUBh26B8Nv03BfAHyTPC+2Aw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5154
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 mlxlogscore=669 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120119
+X-Proofpoint-ORIG-GUID: zokvGzj_7ESlSOEbobv2uXD6i3zEZAGn
+X-Proofpoint-GUID: zokvGzj_7ESlSOEbobv2uXD6i3zEZAGn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-12 at 10:06:27 -0400, Mathieu Desnoyers wrote:
-> On 9/12/23 07:53, Chen Yu wrote:
-> > Hi Mathieu,
+* Matthew Wilcox <willy@infradead.org> [230912 10:10]:
+> On Mon, Sep 11, 2023 at 07:54:52PM -0400, Liam R. Howlett wrote:
+> > Taking the mutex lock in kernel/irq/manage.c __setup_irq() is calling a
+> > cond_resched().
 > > 
-> > thanks for the review,
+> > >From what Michael said [1] in this thread, since something has already
+> > set TIF_NEED_RESCHED, it will eventually enable interrupts on us.
 > > 
-> > On 2023-09-11 at 11:43:27 -0400, Mathieu Desnoyers wrote:
-> > > On 9/11/23 11:26, Mathieu Desnoyers wrote:
-> > > > On 9/10/23 22:50, Chen Yu wrote:
-> > > [...]
-> > > > > ---
-> > > > >    kernel/sched/fair.c     | 30 +++++++++++++++++++++++++++---
-> > > > >    kernel/sched/features.h |  1 +
-> > > > >    kernel/sched/sched.h    |  1 +
-> > > > >    3 files changed, 29 insertions(+), 3 deletions(-)
-> > > > > 
-> > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > index e20f50726ab8..fe3b760c9654 100644
-> > > > > --- a/kernel/sched/fair.c
-> > > > > +++ b/kernel/sched/fair.c
-> > > > > @@ -6629,6 +6629,21 @@ static void dequeue_task_fair(struct rq *rq,
-> > > > > struct task_struct *p, int flags)
-> > > > >        hrtick_update(rq);
-> > > > >        now = sched_clock_cpu(cpu_of(rq));
-> > > > >        p->se.prev_sleep_time = task_sleep ? now : 0;
-> > > > > +#ifdef CONFIG_SMP
-> > > > > +    /*
-> > > > > +     * If this rq will become idle, and dequeued task is
-> > > > > +     * a short sleeping one, check if we can reserve
-> > > > > +     * this idle CPU for that task for a short while.
-> > > > > +     * During this reservation period, other wakees will
-> > > > > +     * skip this 'idle' CPU in select_idle_cpu(), and this
-> > > > > +     * short sleeping task can pick its previous CPU in
-> > > > > +     * select_idle_sibling(), which brings better cache
-> > > > > +     * locality.
-> > > > > +     */
-> > > > > +    if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running &&
-> > > > > +        p->se.sleep_avg && p->se.sleep_avg <
-> > > > > sysctl_sched_migration_cost)
-> > > > > +        rq->cache_hot_timeout = now + p->se.sleep_avg;
-> > > > 
-> > > > This is really cool!
-> > > > 
-> > > > There is one scenario that worries me with this approach: workloads
-> > > > that sleep for a long time and then have short blocked periods.
-> > > > Those bursts will likely bring the average to values too high
-> > > > to stay below sysctl_sched_migration_cost.
-> > > > 
-> > > > I wonder if changing the code above for the following would help ?
-> > > > 
-> > > > if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running &&
-> > > > p->se.sleep_avg)
-> > > >       rq->cache_hot_timeout = now + min(sysctl_sched_migration_cost,
-> > > > p->se.sleep_avg);
-> > > > 
-> > > > For tasks that have a large sleep_avg, it would activate this rq
-> > > > "appear as not idle for rq selection" scheme for a window of
-> > > > sysctl_sched_migration_cost. If the sleep ends up being a long one,
-> > > > preventing other tasks from being migrated to this rq for a tiny
-> > > > window should not matter performance-wise. I would expect that it
-> > > > could help workloads that come in bursts.
-> > > 
-> > > There is perhaps a better way to handle bursts:
-> > > 
-> > > When calculating the sleep_avg, we actually only really care about
-> > > the sleep time for short bursts, so we could use the sysctl_sched_migration_cost
-> > > to select which of the sleeps should be taken into account in the avg.
-> > > 
-> > > We could rename the field "sleep_avg" to "burst_sleep_avg", and have:
-> > > 
-> > > u64 now = sched_clock_cpu(task_cpu(p));
-> > > 
-> > > if ((flags & ENQUEUE_WAKEUP) && last_sleep && cpu_online(task_cpu(p)) &&
-> > >      now > last_sleep && now - last_sleep < sysctl_sched_migration_cost)
-> > > 	update_avg(&p->se.burst_sleep_avg, now - last_sleep);
-> > > 
-> > > Then we can have this code is dequeue_task_fair:
-> > > 
-> > > if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running && p->se.busrt_sleep_avg)
-> > > 	rq->cache_hot_timeout = now + p->se.burst_sleep_avg;
-> > > 
-> > > Thoughts ?
-> > > 
+> > I've traced this to running call_rcu() in kernel/rcu/tiny.c and
+> > is_idle_task(current) is true, which means rcu runs:
+> > 		/* force scheduling for rcu_qs() */                                                                     
+> >                 resched_cpu(0);
 > > 
-> > This looks reasonable, it would be fine grained to only monitor the short sleep duration
-> > of that task. Let me try this approach to see if there is any difference.
-> > 
+> > the task is set idle in sched_init() -> init_idle() and never changed,
+> > afaict.
 > 
-> One more tweak: given that more than one task can update the cache_hot_timeout forward
-> one after another, and given that some tasks have larger burst_sleep_avg values than
-> others, I suspect we want to keep the forward movement monotonic with something like:
-> 
-> if (sched_feat(SIS_CACHE) && task_sleep && !rq->nr_running && p->se.burst_sleep_avg &&
->     rq->cache_hot_timeout < now + p->se.burst_sleep_avg)
-> 	rq->cache_hot_timeout = now + p->se.burst_sleep_avg;
->
+> Should calling init_idle() be deferred until after interrupts are
+> all set up?
 
-Yeah, Aaron has mentioned this too:
-https://lore.kernel.org/lkml/ZP7SYu+gxlc%2FYjHu@chenyu5-mobl2/
-May I know the benefit of keeping forward movement monotonic?
-I thought that, should we only honor the latest dequeued task's burst_sleep_avg?
-Because we don't know whether the old deuqued task's cache has been scribbled by the latest
-dequeued task or not, does it still make sense to wake up the old dequeued task on its
-previous CPU?
+At this point it is not platform specific code so I don't know what kind
+of fallout I'll produce with a change like that, but I was wondering if
+the thread running the boot process is really 'idle'?
 
-thanks,
-Chenyu
+
