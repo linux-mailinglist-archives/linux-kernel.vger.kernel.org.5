@@ -2,121 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF16D79C953
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB30C79C956
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbjILIIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39104 "EHLO
+        id S232354AbjILIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232441AbjILIIX (ORCPT
+        with ESMTP id S232011AbjILIJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:08:23 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7971712
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:08:19 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a3ff5f0abso6797761a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:08:19 -0700 (PDT)
+        Tue, 12 Sep 2023 04:09:05 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C8710C3;
+        Tue, 12 Sep 2023 01:09:00 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-501ce655fcbso8547805e87.2;
+        Tue, 12 Sep 2023 01:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694506098; x=1695110898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4qZAQL11LZbXLvA1F+aakZmt21/i5A/PMcXmHMfBllE=;
-        b=batt84eE6GM1IZEG8vEO2bnhQKRz+94B25oP27lyEs/zgqG5sEQXVsRPc8gllNTHuv
-         z8vPJXeB2t5pEBTTF9K+LBaO9QmYbbPG3MXrvFDTkKn5bAiBTntsYrRx9UW6xazDabOJ
-         uqjQ8ype7EybHdOZqcBOyVvuIvOWoE1O9DRZxfDm2UXFFIZ1g/HsguZsAtnMfMd8SD1g
-         YAWo5Lem3id+C3Rqp6uMGnfikSRuSKuVoZB8X6AgjiAyBbwEze8Cy5/aaGicfe/jZ9Jx
-         /+pQZTXl5/iCeIuPhUGq5QZwuJ2fW2THopd1ZmmQQZRqTbVyKYJdDgN/+PdF/HNH5a8c
-         UvTw==
+        d=gmail.com; s=20221208; t=1694506139; x=1695110939; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BRy58mtOMfLsnyOd5KeG4RjAf/fDpf2NPVmv4pRKN3U=;
+        b=synp5sDsxiYJB6hXt2QIko5GmsZf7l3rEGA+uRtQiO/o+ouNMhfwUemlSqs6OuRLGi
+         LZSlyXtWBYVBl8hiPYpWoMgAsvqa3V0NSrUjjSa7Y+fZRdgci4u5crAybgFT3baoNKS3
+         BpXrjiOz/KwMHwozQg1bLEqsjzEcuuR8C9hs+9WyAx84rzXBXe1u4mYfhvbW2sgRtWa+
+         Z2iDJdHzG7govOxV0Wu/ISkOqUSaXhsT6KSCz5wN0/LzzLD0bVXDiJyyjJv23T5cwpTy
+         QO2+qjoZoxVBB2rHq+gAH51r0trrf5bGtav5/LPeF2L+29LlyVkjzi6ktE3ORXNFtXC+
+         25sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694506098; x=1695110898;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4qZAQL11LZbXLvA1F+aakZmt21/i5A/PMcXmHMfBllE=;
-        b=WB4aSUODNOEl2fEBgipIwdM0T57W2EG6W+SdeQIpURCnpDqczGn2/6UwX6S3VvCHS9
-         PUjjwt6OkqFiVLZEkNLGTBrOwLelsnuMFDMYw7nRTUZEqh5CaTZgnbdNWUsM6387ejog
-         bQrhnGTovO/TS4xaDoCd7sr9CkXwOnjB4p2yF+JDi0tJXHS+b74+79Qkkb/CwvpVFROP
-         gH3s1tGAsOgYAH0P6GBzAjvQrFNe2S3VfJm+wC2xqVMkIF4Fh/8LWUXer5RLWSbk6KIr
-         Wtpm0GKTFp/lZvgQqZOsB/R3Rrel+OEGQDIuELkDsDT1e/O9Aq2/sGFAGqayyzazm0Da
-         wlDw==
-X-Gm-Message-State: AOJu0YxDNFHluT4BezQRX0C/voa8eC4XlUZlCTYG8A0cvPznYZyw27CB
-        76l+sbrrsfXjwJxBU8lZRhDJWA==
-X-Google-Smtp-Source: AGHT+IERPYwxvwxrtf7aXRvsNUYm+bKG63mo/Pw4/zuNJCPNP2RmbDeOAL+MxTrWlizGiTHGdWSVUg==
-X-Received: by 2002:a17:906:328b:b0:9a9:ff11:9c60 with SMTP id 11-20020a170906328b00b009a9ff119c60mr8680971ejw.48.1694506097766;
-        Tue, 12 Sep 2023 01:08:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id e7-20020a170906248700b0099364d9f0e6sm6416648ejb.117.2023.09.12.01.08.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 01:08:17 -0700 (PDT)
-Message-ID: <22805138-e42a-cdd0-bc96-5281f0e2c586@linaro.org>
-Date:   Tue, 12 Sep 2023 10:08:14 +0200
+        d=1e100.net; s=20230601; t=1694506139; x=1695110939;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BRy58mtOMfLsnyOd5KeG4RjAf/fDpf2NPVmv4pRKN3U=;
+        b=AVf+hYvCKSNNuVZQNgtjiapaXJyQwniBwk9VHpos/SRYz0hE2OqxVTRVtPM8Tlu3KU
+         l7vJC5dzKAkGNnFlTjO2SrGQp5NR/R9POYvNN4RdjZEq/2fzVeMhMJ02DHLsFEykLr39
+         NByvDvhGaU3mrb/y/ES/ysXMWaYhPpgxvfI0TiC4bSQcT6InXN47a/GYwFN8+Zviiuqr
+         T2Yc2xc2U0ucJrtexWJhmeGILsIgOQQGQbMJvvP7eqDCONfvxZRwW4PMGNrQ/Jo3HUms
+         mMeqALy0mMfVG8n+m+MyGRLui04kKi4KKCkvbIsOeHKWAEgsWigU52xlXAOYRvh1fmGV
+         Lc1g==
+X-Gm-Message-State: AOJu0YyIaOTht1UIywO+ysGC91p2HMdURbMwtDfCd3j8FEjKClfmUHSJ
+        RbM6UFAsI/gI0pf4Xpjn9QQZ0PjdwOfFQt7HOeM=
+X-Google-Smtp-Source: AGHT+IFwDwJhrpy8HowhIBYcBi/whf/X/T3w9uKWfcXrLILoGcUMzinlah9wOUe1t9L08eJ9Z5UmcgaMaRFE2N9j4uo=
+X-Received: by 2002:a05:6512:33c8:b0:502:a56b:65f7 with SMTP id
+ d8-20020a05651233c800b00502a56b65f7mr8526287lfg.16.1694506138521; Tue, 12 Sep
+ 2023 01:08:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm64: dts: mediatek: mt8365-evk:
- update compatible
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-References: <20230912072340.22862-1-macpaul.lin@mediatek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230912072340.22862-1-macpaul.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <8af186ba-5f64-2102-8f9c-3969b0906893@gmail.com>
+ <faa245bf-e925-45b0-9827-b0c9c117e06c@leemhuis.info> <ZPc8v9-lHF4jAcxL@kbusch-mbp>
+In-Reply-To: <ZPc8v9-lHF4jAcxL@kbusch-mbp>
+From:   =?UTF-8?Q?Cl=C3=A1udio_Sampaio?= <patola@gmail.com>
+Date:   Tue, 12 Sep 2023 10:08:48 +0200
+Message-ID: <CA+4wXKCAYM19H7n4TpbnrtRy_Yv1JOjT3CHVuxh_18Mb7NB4+A@mail.gmail.com>
+Subject: Re: Fwd: Lexar NM790 SSDs are not recognized anymore after 6.1.50 LTS
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 09:23, Macpaul Lin wrote:
-> Fix compatible of 'mediatek,mt8365-evk' from 'enum' to 'const'.
+Hi, Keith... Just to give you guys a response concerning this, I'm
+sorry for the late reply -- too much work. But yes, you are correct,
+due to having tried patching the kernel in different days and too much
+stuff going on at the same time, I applied this two-line patch to the
+same source where I have applied the other patch that multiplies the
+timeout by 2 and occurs at an earlier time on activation. I thought I
+had an unpatched kernel at the time and ended up compiling it this
+way. Sorry for the mistake, but I also saw that now there's a better
+patch for the issue.
 
-What is there to fix? There is no bug... please describe why you are
-doing changes.
+On Tue, Sep 5, 2023 at 4:35=E2=80=AFPM Keith Busch <kbusch@kernel.org> wrot=
+e:
+>
+> On Tue, Sep 05, 2023 at 01:37:36PM +0200, Linux regression tracking (Thor=
+sten Leemhuis) wrote:
+> > On 04.09.23 13:07, Bagas Sanjaya wrote:
+> > >
+> > > I notice a regression report on Bugzilla [1]. Quoting from it:
+> > >
+> > >> I bought a new 4 TB Lexar NM790 and I was using kernel 6.3.13 at the=
+ time. It wasn't recognized, with these messages in dmesg:
+> > >>
+> > >> [ 358.950147] nvme nvme0: pci function 0000:06:00.0
+> > >> [ 358.958327] nvme nvme0: Device not ready; aborting initialisation,=
+ CSTS=3D0x0
+> > >>
+> > >> My other NVMe appears correctly in the nvme list though.
+> > >>
+> > >>
+> > >> So I tried using other kernels I had installed at the time: 6.3.7, 6=
+.4.10, 6.5.0rc6, 6.5.0, 6.5.1 and none of these recognized the disk.
+> > >> I installed the 6.1.50 lts kernel from arch repositories (I can comp=
+ile my own too if this would be an issue) and then the device was correctly=
+ recognized:
+> > >>
+> > >> [    4.654613] nvme 0000:06:00.0: platform quirk: setting simple sus=
+pend
+> > >> [    4.654632] nvme nvme0: pci function 0000:06:00.0
+> > >> [    4.667290] nvme nvme0: allocated 40 MiB host memory buffer.
+> > >> [    4.709473] nvme nvme0: 16/0/0 default/read/poll queues
+> >
+> > FWIW, the quoted mail missed one crucial detail:
+> > """
+> >  Claudio Sampaio 2023-09-02 19:04:29 UTC
+> >
+> > Adding the two lines
+> >
+> > =E2=94=82 3457   { PCI_DEVICE(0x1d97, 0x1602), /* Lexar NM790 */
+> > =E2=94=82 3458   =E2=94=82 .driver_data =3D NVME_QUIRK_BOGUS_NID, },
+> >
+> > in file drivers/nvme/host/pci.c made my NVMe work correctly. Compiled a
+> > new 6.5.1 kernel and everything works.
+> > """
+> >
+> > @NVME maintainers: is there anything more you need from Claudio at this
+> > point?
+>
+> Yes: it doesn't really make any sense. The report says the device
+> stopped showing up with message:
+>
+>   nvme nvme0: Device not ready; aborting initialisation, CSTS=3D0x0
+>
+> That (a) happens long before the mentioned quirk is considered by the
+> driver, and (b) the "quirk" behavior is now the default in 6.5 and
+> several of the listed stable kernels anyway.
+>
+> It more likely sounds like the device is flaky and either never becomes
+> ready due to some unspecified internal firmware condition, or
+> inaccurately reports how long it actually needs to become ready in
+> worst-case-scenario.
 
-> 
-> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> change for v2:
->  - rebase this patch to follow the v5 patch set of mt8395.
->   - depends on https://lore.kernel.org/lkml/20230909132819.21626-2-macpaul.lin@mediatek.com/T/
->  - Fix description as a single board.
-> 
-> changes for v3:
->  - rebase this patch to follow the v6 patch set of mt8395.
->   - depends on https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
->  - drop "Fixes:" tag in commit message.
->  - drop platform description update for mt8365-evk (Genio 350-EVK).
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> index 2e8ad49c3479..bab4fa0e8199 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -245,7 +245,7 @@ properties:
->                - mediatek,mt8183-pumpkin
->            - const: mediatek,mt8183
->        - items:
-> -          - enum:
-> +          - const:
 
-Obviously this was not tested... Please test before sending.
 
-Best regards,
-Krzysztof
-
+--=20
+Cl=C3=A1udio "Patola" Sampaio
+MakerLinux Labs - Campinas, SP
+Resume Gmail - YOUTUBE!
+Facebook - Facebook da MakerLinux - Lattes
