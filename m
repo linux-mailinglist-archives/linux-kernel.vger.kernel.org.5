@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E41E279CF52
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5482679CF47
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234406AbjILLHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S231196AbjILLHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234373AbjILLHF (ORCPT
+        with ESMTP id S234704AbjILLGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:07:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF75BE;
-        Tue, 12 Sep 2023 04:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694516820; x=1726052820;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=queqzhRbeR3Nj+YUk9K91rnEmvO6n/oprFrSvOLZ3vs=;
-  b=GSb2VgMC1l5Jt4yiVQXZyGsc0knJ7O0cIDgXoZ3n5o0OvLCcsqSFcOIj
-   YlPZFn/8EuC0z7UhQk9scMjwWxuuqIy3GZYewx5IxhBQPxGRXJUboKs75
-   nKl+kOKLx2paBAAjV5dSvoZBci62Q/DAct6gMiEYFz7s66+SHne7dFGym
-   x8Q4gEFCfte25V0X5/94X6LUX/etJW9zM3jLInsbO+WhmRgK26JAcdISh
-   hkxqfLWWL81tlE94uZJ5adHtyKQvem6Ast5TH5giWCYiwH3fs6E4gsutQ
-   A0gYqpzAVQUw17pMDBCd4FF7xqXfagujqOmFG5gKgH+eq61tTAjTjoHS6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="378252705"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="378252705"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:05:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="1074512474"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="1074512474"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga005.fm.intel.com with SMTP; 12 Sep 2023 04:05:52 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Sep 2023 14:05:51 +0300
-Date:   Tue, 12 Sep 2023 14:05:51 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-Message-ID: <ZQBGD8CY5OVKYX63@kuha.fi.intel.com>
-References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
- <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
- <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
- <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
- <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
- <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
- <ZPiAwOf00RREiYPr@kuha.fi.intel.com>
- <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
+        Tue, 12 Sep 2023 07:06:25 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0061719
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:06:09 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-58fc4d319d2so54689897b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694516768; x=1695121568; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nxeKap40n9N0Jct85TnQoxJYlNgRlyoVOdviavwIIv8=;
+        b=hxq6TJF8HMyjqFW1Zxj5wQy1nlsOBDVUSQnjCPAO0BVV49/32UolcLMMwgtEfQWxyv
+         h4KosWWVPrmcXDdlZOUVS+2dCFfDhBd6Em++i+z2reqCPZrd0ImmfnuMmnfKN6zIvugq
+         2KTPCzv5M24UwOzFIOZx4yi1NQlTPeMw62b7O8oTRekmb/y+bYtpInRDkDnaMlfayAyI
+         neLIU1iQKoa9CjJzkM0Yn0yqAc8Zo2ZeT1aCIRbGTx70HMWniIL08xkUs74lAjyCEAYU
+         z2CnZW5bBcTDJjce7yw4JLl7STtIHtp5lb5ZOvZe6pCnSJwlymassacuIIjo37MwyAJ0
+         rvbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694516768; x=1695121568;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nxeKap40n9N0Jct85TnQoxJYlNgRlyoVOdviavwIIv8=;
+        b=NqX8BWG+bGDjVkiEszrlL4261uAtPkpoL3P2MdfK5DMrGvEeFPMG0FAZjM/GMWyzcy
+         F+7Ei71WCdzh34rWdpGdHyNO8cyAaWcNNQu3bctxXwGipQTJZ9baJlsLcfr6fxB6SvjN
+         +CLU0DQTheXPwWRFvS/qLOoqxDibdz4wdDgr6reNLcKBO1b/Og7f/tJMxKOeD9v8+a/r
+         vbzAtGQEbQ2tDGDg6bp4Da/RK/P0Qg5AZPwes6LlMMg5E5o7Qe/J3133pePgZSOOrGFX
+         FUEB9c66j/WFPD4mCZox9OuYPGV5mVeViztSMJm5gkVEgXvm28ft8G5S+PwNnKP34i7Q
+         xjnw==
+X-Gm-Message-State: AOJu0YyfHHaKxJKzcGJ9/Lij1b53nAIlvZ/5v81z7Hmdxl4Rbd13ID+R
+        9JFb68kG0xhAHHn6nI9ojRluQm8J0rMfgvGFb0S8lw==
+X-Google-Smtp-Source: AGHT+IGyZPp4TVH1sBukbcNRmYX2EySx2o/za6wxn39EVFdbUk9RivbE+m6qOSfkNS/rkWMpLDTgnTAoDhF0TgN1JVo=
+X-Received: by 2002:a5b:743:0:b0:d79:d23f:b49c with SMTP id
+ s3-20020a5b0743000000b00d79d23fb49cmr10905306ybq.35.1694516768133; Tue, 12
+ Sep 2023 04:06:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
+References: <20230912081527.208499-1-herve.codina@bootlin.com> <20230912101510.225920-1-herve.codina@bootlin.com>
+In-Reply-To: <20230912101510.225920-1-herve.codina@bootlin.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 13:05:57 +0200
+Message-ID: <CACRpkdZ2svQJVG4wiJu90X6HhKudMuAerz12zw2nd84ekLaEJA@mail.gmail.com>
+Subject: Re: [PATCH v5 29/31] MAINTAINERS: Add the Lantiq PEF2256 driver entry
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
-> On 06/09/2023 16:38, Heikki Krogerus wrote:
-> > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
-> > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
-> > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > 
-> > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> > > > > Hi Heikki,
-> > > > > 
-> > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > 
-> > > > > > Hi Dmitry,
-> > > > > > 
-> > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> > > > > > 
-> > > > > > That's not true. The dev->fwnode is assigned when the device is
-> > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
-> > > > > > member is assigned before the device is registered, then that fwnode
-> > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
-> > > > > > 
-> > > > > > But please note that even if drm_connector does not have anything in
-> > > > > > its fwnode member, the device may still be assigned fwnode, just based
-> > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> > > > > > 
-> > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > > > > > breaks drivers already using components (as it was pointed at [1]),
-> > > > > > > resulting in a deadlock. Lockdep trace is provided below.
-> > > > > > > 
-> > > > > > > Granted these two issues, it seems impractical to fix this commit in any
-> > > > > > > sane way. Revert it instead.
-> > > > > > 
-> > > > > > I think there is already user space stuff that relies on these links,
-> > > > > > so I'm not sure you can just remove them like that. If the component
-> > > > > > framework is not the correct tool here, then I think you need to
-> > > > > > suggest some other way of creating them.
-> > > > > 
-> > > > > The issue (that was pointed out during review) is that having a
-> > > > > component code in the framework code can lead to lockups. With the
-> > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
-> > > > > for non-ACPI systems) probing of drivers which use components and set
-> > > > > drm_connector::fwnode breaks immediately.
-> > > > > 
-> > > > > Can we move the component part to the respective drivers? With the
-> > > > > patch 2 in place, connector->fwnode will be copied to the created
-> > > > > kdev's fwnode pointer.
-> > > > > 
-> > > > > Another option might be to make this drm_sysfs component registration optional.
-> > > > 
-> > > > You don't need to use the component framework at all if there is
-> > > > a better way of determining the connection between the DP and its
-> > > > Type-C connector (I'm assuming that that's what this series is about).
-> > > > You just need the symlinks, not the component.
-> > > 
-> > > The problem is that right now this component registration has become
-> > > mandatory. And if I set the kdev->fwnode manually (like in the patch
-> > > 2), the kernel hangs inside the component code.
-> > > That's why I proposed to move the components to the place where they
-> > > are really necessary, e.g. i915 and amd drivers.
-> > 
-> > So why can't we replace the component with the method you are
-> > proposing in this series of finding out the Type-C port also with
-> > i915, AMD, or whatever driver and platform (that's the only thing that
-> > component is used for)?
-> 
-> The drm/msm driver uses drm_bridge for the pipeline (including the last DP
-> entry) and the drm_bridge_connector to create the connector. I think that
-> enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
-> series.
-> 
-> 
-> > Determining the connection between a DP and its Type-C connector is
-> > starting to get really important, so ideally we have a common solution
-> > for that.
-> 
-> Yes. This is what we have been discussing with Simon for quite some time on
-> #dri-devel.
-> 
-> Unfortunately I think the solution that got merged was pretty much hastened
-> in instead of being well-thought. For example, it is also not always
-> possible to provide the drm_connector / typec_connector links (as you can
-> see from the patch7. Sometimes we can only express that this is a Type-C DP
-> connector, but we can not easily point it to the particular USB-C port.
-> 
-> So, I'm not sure, how can we proceed here. Currently merged patch breaks
-> drm/msm if we even try to use it by setting kdef->fwnode to
-> drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
-> an ACPI-only thing, which is not expected to work in a non-ACPI cases.
+On Tue, Sep 12, 2023 at 12:15=E2=80=AFPM Herve Codina <herve.codina@bootlin=
+.com> wrote:
 
-You really have to always supply not only the Type-C ports and partners,
-but also the alt modes. You need them, firstly to keep things sane
-inside kernel, but more importantly, so they are always exposed to the
-user space, AND, always the same way. We have ABIs for all this stuff,
-including the DP alt mode. Use them. No shortcuts.
+> After contributing the driver, add myself as the maintainer for the
+> Lantiq PEF2256 driver.
+>
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  MAINTAINERS | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8b987f2c8633..dbc5867016bc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11876,6 +11876,15 @@ S:     Maintained
+>  F:     arch/mips/lantiq
+>  F:     drivers/soc/lantiq
+>
+> +LANTIQ PEF2256 DRIVER
+> +M:     Herve Codina <herve.codina@bootlin.com>
+> +S:     Maintained
+> +F:     Documentation/devicetree/bindings/net/lantiq,pef2256.yaml
+> +F:     drivers/net/wan/framer/pef2256/
+> +F:     drivers/pinctrl/pinctrl-pef2256-regs.h
+> +F:     drivers/pinctrl/pinctrl-pef2256.c
 
-So here's what you need to do. UCSI does not seem to bring you
-anything useful, so just disable it for now. You don't need it. Your
-port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
-that's where you need to register all these components - the ports,
-partners and alt modes. You have all the needed information there.
+Just use a glob expression:
+F:     drivers/pinctrl/pinctrl-pef2256-*
 
-Only after you've done that we can start to look at how should the
-connection between the DPs and their USB Type-C connectors be handled.
-
-thanks,
-
--- 
-heikki
+Yours,
+Linus Walleij
