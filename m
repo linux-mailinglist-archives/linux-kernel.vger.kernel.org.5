@@ -2,122 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B03F79CBA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BFA79CBA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbjILJZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
+        id S233213AbjILJ0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbjILJY7 (ORCPT
+        with ESMTP id S230369AbjILJ0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:24:59 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE2FAA;
-        Tue, 12 Sep 2023 02:24:54 -0700 (PDT)
-X-UUID: 388ee9e2514e11eea33bb35ae8d461a2-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=fkseBfphNa4WkzVMYPDfaMKCcq8JsLkWDHhizmg0UQU=;
-        b=Gvi+vaEd8lxpOKIOpqYIdcW6eXCid8nH7FBToCZLyK9RDwcajnruK5b/KAn7XFKkF3zQ5dBl8vHsaVsLjD7MGFcQ7EeZObT9AZn/9ZMVUL4JBsnOSMOdws14yELNN0Q65LBoWvW/i2IuiGJX32ap6022pYPgN1NfxpBhU9fVpG0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:8fededc3-69de-4a4e-8082-8d0d7548f8ee,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:8cbdeec2-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 388ee9e2514e11eea33bb35ae8d461a2-20230912
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1558729409; Tue, 12 Sep 2023 17:24:49 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 17:24:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 17:24:47 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>
-Subject: [PATCH v4 2/2] arm64: dts: mediatek: rename mt8365-evk to mt8365-genio-350-evk
-Date:   Tue, 12 Sep 2023 17:24:44 +0800
-Message-ID: <20230912092444.31635-2-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230912092444.31635-1-macpaul.lin@mediatek.com>
-References: <20230912092444.31635-1-macpaul.lin@mediatek.com>
+        Tue, 12 Sep 2023 05:26:50 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F64AA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:26:46 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qfzfQ-0005gd-Gb; Tue, 12 Sep 2023 11:26:44 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qfzfO-005kKp-Vz; Tue, 12 Sep 2023 11:26:43 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qfzfO-001261-CY; Tue, 12 Sep 2023 11:26:42 +0200
+Date:   Tue, 12 Sep 2023 11:26:42 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-sunxi@lists.linux.dev,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [REGRESSION] [PATCH net-next v5 2/2] net: stmmac: use per-queue
+ 64 bit statistics where necessary
+Message-ID: <20230912092642.wivb4zn7kocp2kfn@pengutronix.de>
+References: <20230717160630.1892-1-jszhang@kernel.org>
+ <20230717160630.1892-3-jszhang@kernel.org>
+ <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
+ <ZQAf9ArWfRkY/yPR@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--1.458800-8.000000
-X-TMASE-MatchedRID: 7KGNpgCqvMiTBdr4nKyKPYv2/i8VNqeOTJDl9FKHbrk1LB46LFAAkhTN
-        p00+u6eHNPoCkSGhfY8/0YJS2+Uc1h9J5bZqJbIJwCZxkTHxccl9LQinZ4QefPcjNeVeWlqY+gt
-        Hj7OwNO1YDuIRWpqxhheIjHYYxV+FRgo2jhGSEUO2rFf9R0TxVGkXgj6L1eq+qw/qoHoLsYq8NT
-        GKtRUkEuTAGB78h105NtdXyUGwvGsUKA0bsgzeG6MnTJRI0XInfXwUEm1ouDzLDYxFC1/7rjCBQ
-        Dy1BJScwL6SxPpr1/I=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--1.458800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 54436137ED49A886F6003118A46C973E921841F61101F171B3F9F544397967C52000:8
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mojihote6ig6i45p"
+Content-Disposition: inline
+In-Reply-To: <ZQAf9ArWfRkY/yPR@xhacker>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename mt8365-evk to mt8365-genio-350-evk for following the
-naming rules for MediaTek boards.
 
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/Makefile                           | 2 +-
- .../dts/mediatek/{mt8365-evk.dts => mt8365-genio-350-evk.dts}   | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename arch/arm64/boot/dts/mediatek/{mt8365-evk.dts => mt8365-genio-350-evk.dts} (100%)
+--mojihote6ig6i45p
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes for v1:
-Changes for v2:
- - None.
-Changes for v3:
- - New patch added into this patch set v3.
- - depends on https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
-Changes for v4:
- - No change.
+On Tue, Sep 12, 2023 at 04:23:16PM +0800, Jisheng Zhang wrote:
+> On Mon, Sep 11, 2023 at 07:11:02PM +0200, Uwe Kleine-K=F6nig wrote:
+> > Hello,
+> >=20
+> > this patch became commit 133466c3bbe171f826294161db203f7670bb30c8 and is
+> > part of v6.6-rc1.
+> >=20
+> > On my arm/stm32mp157 based machine using NFS root this commit makes the
+> > following appear in the kernel log:
+> >=20
+> > 	INFO: trying to register non-static key.
+> > 	The code is fine but needs lockdep annotation, or maybe
+> > 	you didn't initialize this object before use?
+> > 	turning off the locking correctness validator.
+> > 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3bbe=
+1-dirty #21
+>=20
+> Hi,
+>=20
+> Which kernel version are you using? The latest linus tree? But why here
+> say 6.5.0-rc1?
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 10e640c6ae08..b5d529d66393 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -52,6 +52,6 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r3.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-demo.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-evb.dtb
--dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-genio-350-evk.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8395-genio-1200-evk.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-genio-350-evk.dts
-similarity index 100%
-rename from arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-rename to arch/arm64/boot/dts/mediatek/mt8365-genio-350-evk.dts
--- 
-2.18.0
+This is the kernel from the last bisection test. I.e.
+133466c3bbe171f826294161db203f7670bb30c8 (plus some minor unrelated
+changes to work around another problem). This commit is based on
+6.5-rc1.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--mojihote6ig6i45p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUALtEACgkQj4D7WH0S
+/k5hnQf+OVXfgdZKMt4Ieq7lC/IAS3kt0AetAEO8DcU4KGCpivmEgY1+FazKg8bX
+/9EVIMroVVS5m0isOSqo/mzGWIRTz3lB6zPm6UwwuLrphYd9TCZ9r7m5mi4CW1Oz
+TAxEsmqiz8WG3Uj0Sjm1wX0UyCNLbwMX9s7g8LiZja5A6SEntlxhDS8u0+u+yB4P
+fqriIaLSr4eM/9LaoKWbj0XglYi0K0tssYaN7qI7IwtoyDjVAjsKXBPN4U3ttzs3
+OCVhg63Szx6LRdCdnYtcLUmZ8b4vS+5BnmrXH5xGeWF+46GS5yUk5ipJ9KTGQ+iL
+lrui1dmkt2IprCaqSYCdABOo073omQ==
+=mzlm
+-----END PGP SIGNATURE-----
+
+--mojihote6ig6i45p--
