@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6796079C74C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD12479C750
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjILG7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S231132AbjILG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbjILG7P (ORCPT
+        with ESMTP id S230515AbjILG7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:59:15 -0400
-Received: from out28-169.mail.aliyun.com (out28-169.mail.aliyun.com [115.124.28.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E557E9B;
-        Mon, 11 Sep 2023 23:59:10 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1304974|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0360657-0.000255713-0.963679;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.Ud9doWb_1694501939;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.Ud9doWb_1694501939)
+        Tue, 12 Sep 2023 02:59:23 -0400
+Received: from out28-194.mail.aliyun.com (out28-194.mail.aliyun.com [115.124.28.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFDE10C3;
+        Mon, 11 Sep 2023 23:59:18 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2346824|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.149757-0.00059099-0.849652;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=27;RT=27;SR=0;TI=SMTPD_---.Ud9dogt_1694501947;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.Ud9dogt_1694501947)
           by smtp.aliyun-inc.com;
-          Tue, 12 Sep 2023 14:59:07 +0800
+          Tue, 12 Sep 2023 14:59:15 +0800
 From:   wangweidong.a@awinic.com
 To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -32,10 +32,12 @@ To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
         yijiangtao@awinic.com, colin.i.king@gmail.com, trix@redhat.com,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 0/5] ASoC: codecs: Add aw87390 amplifier driver
-Date:   Tue, 12 Sep 2023 14:58:47 +0800
-Message-ID: <20230912065852.347000-1-wangweidong.a@awinic.com>
+Subject: [PATCH V2 1/5] ASoC: dt-bindings: Adds properties to "awinic,aw88395"
+Date:   Tue, 12 Sep 2023 14:58:48 +0800
+Message-ID: <20230912065852.347000-2-wangweidong.a@awinic.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912065852.347000-1-wangweidong.a@awinic.com>
+References: <20230912065852.347000-1-wangweidong.a@awinic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -44,48 +46,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Weidong Wang <wangweidong.a@awinic.com>
 
-The awinic aw87390 is a new high efficiency, low noise,
-constant large volume, 6th Smart K audio amplifier.
+Adds properties to "awinic,aw88395" to make files more complete
 
-Add a DT schema for describing awinic aw87390 audio amplifiers.
-They are controlled using I2C.
+Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+---
+ .../bindings/sound/awinic,aw88395.yaml        | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-v1 -> v2 : Added properties in awinic,aw88395 file
-           Remove fade-enable because the functionality is
-            duplicated in the aw88395 driver
-           Modify dev_err_probe usage
-           Delete unused header files
-           Change the i2c driver name
-           Modify the way a function returns a value
-
-Weidong Wang (5):
-  ASoC: dt-bindings: Adds properties to "awinic,aw88395"
-  ASoC: dt-bindings: Add schema for "awinic,aw87390"
-  ASoC: codecs: Add code for bin parsing compatible with aw87390
-  ASoC: codecs: Change the aw88261 variable name and i2c driver name
-  ASoC: codecs: Add aw87390 amplifier driver
-
- .../bindings/sound/awinic,aw87390.yaml        |  58 +++
- .../bindings/sound/awinic,aw88395.yaml        |  19 +
- sound/soc/codecs/Kconfig                      |  15 +-
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/aw87390.c                    | 462 ++++++++++++++++++
- sound/soc/codecs/aw87390.h                    |  85 ++++
- sound/soc/codecs/aw88261.c                    |  23 +-
- sound/soc/codecs/aw88261.h                    |   2 +-
- sound/soc/codecs/aw88395/aw88395.c            |   9 +-
- sound/soc/codecs/aw88395/aw88395.h            |   2 +-
- sound/soc/codecs/aw88395/aw88395_device.c     |  47 +-
- sound/soc/codecs/aw88395/aw88395_device.h     |   6 +-
- sound/soc/codecs/aw88395/aw88395_lib.c        |  23 +-
- sound/soc/codecs/aw88395/aw88395_reg.h        |   1 +
- 14 files changed, 685 insertions(+), 69 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/awinic,aw87390.yaml
- create mode 100644 sound/soc/codecs/aw87390.c
- create mode 100644 sound/soc/codecs/aw87390.h
-
-
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+diff --git a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+index 4051c2538caf..4965aa4a5370 100644
+--- a/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
++++ b/Documentation/devicetree/bindings/sound/awinic,aw88395.yaml
+@@ -32,11 +32,28 @@ properties:
+   reset-gpios:
+     maxItems: 1
+ 
++  awinic,audio-channel:
++    description:
++      It is used to distinguish multiple PA devices, so that different
++      configurations can be loaded to different PA devices
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 7
++
++  awinic,sync-flag:
++    description:
++      Flag bit used to keep the phase synchronized in the case of multiple PA
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 1
++
+ required:
+   - compatible
+   - reg
+   - '#sound-dai-cells'
+   - reset-gpios
++  - awinic,audio-channel
++  - awinic,sync-flag
+ 
+ unevaluatedProperties: false
+ 
+@@ -51,5 +68,7 @@ examples:
+             reg = <0x34>;
+             #sound-dai-cells = <0>;
+             reset-gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
++            awinic,audio-channel = <0>;
++            awinic,sync-flag = <0>;
+         };
+     };
 -- 
 2.41.0
 
