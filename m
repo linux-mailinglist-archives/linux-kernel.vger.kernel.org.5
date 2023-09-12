@@ -2,235 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC01A79CA2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A7179CA32
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbjILIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        id S232829AbjILIjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232650AbjILIiQ (ORCPT
+        with ESMTP id S232812AbjILIjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:38:16 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BA9B9;
-        Tue, 12 Sep 2023 01:38:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 10FBD218E6;
-        Tue, 12 Sep 2023 08:38:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694507891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1DRhswA9Oc577HWoSVr73gljwdQoTk0suajRh1T64sQ=;
-        b=aNekBEb/222FZJQkKnOGpTZNF/m4/yTJuIMYLqlMMFkq/UE8+ZJu9llLhdwvTWKupBAKwS
-        2qiCbqv4fhgEmB3rpSieRpNRfGEvZiAQ17v+/1olRNwNk+iRZTR3dm4dUM11QJHaBQd0J3
-        zT6DlR5DZTd69McdAUTadnmxWHTNt/w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694507891;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1DRhswA9Oc577HWoSVr73gljwdQoTk0suajRh1T64sQ=;
-        b=4Zft+j6P4ljOBpqwRK5WXxCIgui0LqP9CHs/INnVTzA2NafThC2fOFJezdob+g02ztU2jP
-        h1YJLqd8n8ThhNBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFF1C13A39;
-        Tue, 12 Sep 2023 08:38:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id SMIlKnIjAGUkIQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 12 Sep 2023 08:38:10 +0000
-Message-ID: <bf4a1cbd-c24e-4def-a523-1a707a1ca5a1@suse.de>
-Date:   Tue, 12 Sep 2023 10:38:09 +0200
+        Tue, 12 Sep 2023 04:39:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01002AA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694507950; x=1726043950;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4ejql24HEMpBoTtiKSAXpLvVWBPjkQdUnHC8bPFBtto=;
+  b=JmOg+9KDitB72NMXe9IMI7A30BP/mx/8jZXQs8BXlu9+wdCOTES5NYQI
+   h4ZQzTiiY64gpEcXjw2Vdaj6WNc/wjbjn13Y1kmoE2lCXNxsBklPqpzLd
+   /XZSwZluw5j3+xB1jhcgMJPdWNWqFVXFERoua3787e7Vo36LMOq5Jm5Ob
+   N4LOEU/oCMwrKMc603UkVWxal2ft1vtEN3WcV/N21NwquQNWOM5/lqYJP
+   PBSM4asWmXxT9tBUrvIJZjMFrQ9bTR5mqyL0xEbSn1AUwYxmX9v31gKoD
+   JswkfG3ER4ALtbJFbsMQUb7zbBMLCWtvjgLFr/wON6k3cqJhiSE9DyZ+S
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381015223"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="381015223"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 01:39:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833826778"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="833826778"
+Received: from mkidd-mobl.ger.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.251.217.72])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 01:39:06 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     tiwai@suse.com, perex@perex.cz, arnd@arndb.de
+Cc:     masahiroy@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: core: Increase the name array size for debugfs directory name
+Date:   Tue, 12 Sep 2023 11:39:10 +0300
+Message-ID: <20230912083910.15994-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
- <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
- <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------RarGNkMvgomjmopc3ithYrAM"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------RarGNkMvgomjmopc3ithYrAM
-Content-Type: multipart/mixed; boundary="------------Jg001PUZ7GquGyoR0gf0QAih";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Arnd Bergmann <arnd@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller
- <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Dave Airlie <airlied@redhat.com>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Jim Cromie <jim.cromie@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- Arthur Grillo <arthurgrillo@riseup.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
-Message-ID: <bf4a1cbd-c24e-4def-a523-1a707a1ca5a1@suse.de>
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
- <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
- <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
-In-Reply-To: <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
+The idx is guarantied to be less than SNDRV_CARDS (max 256 or 8) by the
+code in snd_card_init(), however the compiler does not see that.
+Compiling with W=1 results:
 
---------------Jg001PUZ7GquGyoR0gf0QAih
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+sound/core/init.c: In function ‘snd_card_init’:
+sound/core/init.c:367:28: error: ‘%d’ directive writing between 1 and 10 bytes into a region of size 4 [-Werror=format-overflow=]
+  367 |         sprintf(name, "card%d", idx);
+      |                            ^~
+sound/core/init.c:367:23: note: directive argument in the range [0, 2147483646]
+  367 |         sprintf(name, "card%d", idx);
+      |                       ^~~~~~~~
+sound/core/init.c:367:9: note: ‘sprintf’ output between 6 and 15 bytes into a destination of size 8
+  367 |         sprintf(name, "card%d", idx);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-SGkgR2VlcnQNCg0KQW0gMTIuMDkuMjMgdW0gMTA6MTggc2NocmllYiBHZWVydCBVeXR0ZXJo
-b2V2ZW46DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIFR1ZSwgU2VwIDEyLCAyMDIzIGF0IDEw
-OjEx4oCvQU0gVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3Rl
-Og0KPj4gQW0gMTIuMDkuMjMgdW0gMDk6MTQgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+PiBbLi4uXQ0KPj4+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KPj4+PiAr
-KysgYi9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KPj4+PiBAQCAtMTM1LDcgKzEzNSw3IEBA
-IGNvbmZpZyBEUk1fRkJERVZfRU1VTEFUSU9ODQo+Pj4+ICAgICAgICAgICBib29sICJFbmFi
-bGUgbGVnYWN5IGZiZGV2IHN1cHBvcnQgZm9yIHlvdXIgbW9kZXNldHRpbmcgZHJpdmVyIg0K
-Pj4+PiAgICAgICAgICAgZGVwZW5kcyBvbiBEUk0NCj4+Pj4gICAgICAgICAgIHNlbGVjdCBG
-UkFNRUJVRkZFUl9DT05TT0xFX0RFVEVDVF9QUklNQVJZIGlmIEZSQU1FQlVGRkVSX0NPTlNP
-TEUNCj4+Pj4gLSAgICAgICBkZWZhdWx0IHkNCj4+Pj4gKyAgICAgICBkZWZhdWx0IEZCDQo+
-Pj4NCj4+PiBXaGlsZSB0aGlzIGlzIHRydWUgZm9yIGV4aXN0aW5nIGNvbmZpZ3MsIGl0IGlz
-IG5vIGxvbmdlciB0cnVlIGluIGdlbmVyYWwsDQo+Pj4gYXMgRFJNX0ZCREVWX0VNVUxBVElP
-TiBpcyBubyBsb25nZXIgcmVsYXRlZCB0byBGQi4NCj4+DQo+PiBXb3VsZCBpdCBtYWtlIHNl
-bnNlIHRvIG1ha2UgRlJBTUVCVUZGRVJfQ09OU09MRSBhbiBpbmRlcGVuZGVudCBvcHRpb24N
-Cj4+IGFuZCBoYXZlIEZCREVWX0VNVUxBVElPTiBkZXBlbmQgb24gaXQ/IFNvbWV0aGluZyBs
-aWtlIHRoaXM6DQo+Pg0KPj4gRlJBTUVCVUZGRVJfQ09OU09MRQ0KPj4gICAgICAgICAgZGVw
-ZW5kcyBvbiBEUk0gfHwgRkINCj4+ICAgICAgICAgIHNlbGVjdCBGQl9DT1JFDQo+Pg0KPj4g
-RkJERVZfRU1VTEFUSU9ODQo+PiAgICAgICAgICBkZXBlbmRzIG9uIERSTQ0KPj4gICAgICAg
-ICAgZGVwZW5kcyBvbiBGUkFNRUJVRkZFUl9DT05TT0xFDQo+PiAgICAgICAgICBkZWZhdWx0
-IHkNCj4gDQo+IE9vcHMsIG5vdyB5b3UgY2FuIG5vIGxvbmdlciBoYXZlIEZCREVWX0VNVUxB
-VElPTiB3aXRob3V0DQo+IEZSQU1FQlVGRkVSX0NPTlNPTEUsIHdoaWNoIGlzIHVzZWZ1bCB0
-byBiZSBhYmxlIHRvIGVuYWJsZQ0KPiBGQl9ERVZJQ0UuLi4NCg0KQW5kIGlmIGl0IGRlcGVu
-ZHMgb24gRkJfQ09SRSBpbnN0ZWFkIG9mIEZSQU1FQlVGRkVSX0NPTlNPTEU/IEknbSBhd2Fy
-ZSANCnRoYXQgdGhpcyB3b3VsZCByZXF1aXJlIG1vcmUgS2NvbmZpZyBjaGFuZ2VzIHRoYW4g
-b3V0bGluZWQgaGVyZS4NCg0KDQo+IA0KPiBBbmQgd2hhdCdzIHRoZSBwb2ludCAoaWYgRFJN
-IGlzIGVuYWJsZWQpIG9mIGhhdmluZyBGQl9DT1JFIHdpdGgNCj4gRkJERVZfRU1VTEFUSU9O
-IGRpc2FibGVkPw0KPiANCj4+IFNvIGlmIGFueSBncmFwaGljcyBzdWJzeXN0ZW1zIGFyZSBl
-bmFibGVkLCBGUkFNRUJVRkZFUl9DT05TT0xFIGlzDQo+PiBzZWxlY3QtYWJsZS4gQnV0IGZv
-ciBEUk0sIEZCREVWX0VNVUxBVElPTiBkaXNhYmxlcyB0aGUgY29uc29sZS4gVGhhdA0KPiAN
-Cj4gSHVoPw0KPiANCj4gL21lIGxvb2tzIGF0IGhpcyBtb3JuaW5nIGNvZmZlZSwgYW5kIGNv
-bmZpcm1zIHRoZSBjdXAgaXMgZW1wdHkuLi4NCg0KRGVjYWYgbWF5YmU/DQoNCkJ1dCB0aGVy
-ZSdzIHJlYWxseSBubyBuZWVkIHRvIGdldCBzbmFya3kuIE15IHRob3VnaCBpcyB0aGF0IA0K
-RlJBTUVCVUZGRVJfQ09OU09MRSBjb25maWd1cmVzIGFuIGVuZC11c2VyIGZlYXR1cmUuIFRo
-ZSB1c2VyIHNpdHMgdGhlcmUgDQphbiB0aGlua3MgIkkgd2FudCBhIGNvbnNvbGUiLiBGQkRF
-Vl9FTVVMQVRJT04gY29udHJvbHMgYSBkcml2ZXIgDQpmdW5jdGlvbmFsaXR5LiBJdCdzIG5v
-dCB1c2VmdWwgYnkgaXRzZWxmLCBidXQgZW5hYmxlcyB0aGUgZW5kdXNlciANCmZlYXR1cmUu
-IFRoZSBmZWF0dXJlcyB3b3VsZCBiZSBGUkFNRUJVRkZFUl9DT05TT0xFIGFuZCBGUkFNRUJV
-RkZFUl9ERVZJQ0UuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+PiBvcHRpb24g
-cmVtYWlucyBtb3JlIGZvciBoaXN0b3JpY2FsIHJlYXNvbnMgdGhhbiBhY3R1YWwgdXNlZnVs
-bmVzcy4NCj4gDQo+Pj4+IC0tLSBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmlnDQo+
-Pj4+ICsrKyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmlnDQo+Pj4+IEBAIC03NCw2
-ICs3NCw3IEBAIGNvbmZpZyBEVU1NWV9DT05TT0xFX1JPV1MNCj4+Pj4gICAgY29uZmlnIEZS
-QU1FQlVGRkVSX0NPTlNPTEUNCj4+Pj4gICAgICAgICAgIGJvb2wgIkZyYW1lYnVmZmVyIENv
-bnNvbGUgc3VwcG9ydCINCj4+Pj4gICAgICAgICAgIGRlcGVuZHMgb24gRkJfQ09SRSAmJiAh
-VU1MDQo+Pj4+ICsgICAgICAgZGVmYXVsdCBEUk1fRkJERVZfRU1VTEFUSU9ODQo+Pj4NCj4+
-PiBTb3VuZHMgZ29vZCB0byBtZSwgYWx0aG91Z2ggaXQgbG9va3MgYSBiaXQgc3RyYW5nZSBh
-dCBmaXJzdCBzaWdodA0KPj4+IChGUkFNRUJVRkZFUl9DT05TT0xFIGRlZmF1bHRzIHRvIG4g
-b24gYSBzeXN0ZW0gd2l0aCByZWFsIGZiZGV2LCBidXQNCj4+PiB5IG9uIGVtdWxhdGVkIGZi
-ZGV2PykuDQo+Pj4gU28gdGhpcyBpcyB0aGUgZml4IGZvciBjb21taXQgYTVhZTMzMWVkYjAy
-YiAoImRybTogRHJvcCBzZWxlY3QNCj4+PiBGUkFNRUJVRkZFUl9DT05TT0xFIGZvciBEUk1f
-RkJERVZfRU1VTEFUSU9OIikuDQo+Pj4NCj4+Pj4gICAgICAgICAgIHNlbGVjdCBWVF9IV19D
-T05TT0xFX0JJTkRJTkcNCj4+Pj4gICAgICAgICAgIHNlbGVjdCBDUkMzMg0KPj4+PiAgICAg
-ICAgICAgc2VsZWN0IEZPTlRfU1VQUE9SVA0KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92
-aWRlby9mYmRldi9jb3JlL0tjb25maWcgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2Nv
-bmZpZw0KPj4+PiBpbmRleCAxMTRjYjhhYTZjOGZkLi44MDRjMmJlYzliNDNjIDEwMDY0NA0K
-Pj4+PiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0KPj4+PiArKysg
-Yi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0KPj4+PiBAQCAtMjgsNyArMjgs
-NyBAQCBjb25maWcgRklSTVdBUkVfRURJRA0KPj4+PiAgICBjb25maWcgRkJfREVWSUNFDQo+
-Pj4+ICAgICAgICAgICBib29sICJQcm92aWRlIGxlZ2FjeSAvZGV2L2ZiKiBkZXZpY2UiDQo+
-Pj4+ICAgICAgICAgICBkZXBlbmRzIG9uIEZCX0NPUkUNCj4+Pj4gLSAgICAgICBkZWZhdWx0
-IHkNCj4+Pj4gKyAgICAgICBkZWZhdWx0IEZCDQo+Pj4NCj4+PiBDaGFuZ2luZyB0aGlzIG1l
-YW5zIHBvc3NpYmx5IGNhdXNpbmcgcmVncmVzc2lvbnMgb24gc3lzdGVtcyBydW5uaW5nDQo+
-Pj4gYW4gZmJkZXYgdXNlcnNwYWNlLg0KPj4+DQo+Pj4+ICAgICAgICAgICBoZWxwDQo+Pj4+
-ICAgICAgICAgICAgIFNheSBZIGhlcmUgaWYgeW91IHdhbnQgdGhlIGxlZ2FjeSAvZGV2L2Zi
-KiBkZXZpY2UgZmlsZSBhbmQNCj4+Pj4gICAgICAgICAgICAgaW50ZXJmYWNlcyB3aXRoaW4g
-c3lzZnMgYW5jIHByb2Nmcy4gSXQgaXMgb25seSByZXF1aXJlZCBpZiB5b3UNCj4gDQo+IEdy
-e29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0
-DQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxv
-cGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJh
-c3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRy
-ZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkg
-KEFHIE51ZXJuYmVyZykNCg==
+While the code is correct, we need to silence the compiler somehow.
+It could be done by limiting the range in sprintf like
+sprintf(name, "card%d", idx % SNDRV_CARDS);
+sprintf(name, "card%hhd", idx);
+etc
 
---------------Jg001PUZ7GquGyoR0gf0QAih--
+These are too workaroundish. Increase the name array to 15 instead which
+looks better and only adds 7 bytes on stack.
 
---------------RarGNkMvgomjmopc3ithYrAM
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+The warnings got brought to light by a recent patch upstream:
+commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi,
 
-wsF4BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUAI3IFAwAAAAAACgkQlh/E3EQov+AB
-Gw/4+zuzOcmZhLjYn+1nx9xxI6Uy6Tr5+G1nIXxelgLgaAe7b5zwAt6aPLPnUJnP2vFEaPIsLKF8
-8FkQmtRdsnb4gfkDrW9XHOjDmZ/MDujHQW4wUk30NZWbXpFPg4nLoy0Q+K7v1FppgJaLtfLnAIoW
-49eHC7jIrtox1cXFWB8FE8QIzvfnwHZZyFmamWKd8wP4zDVd9UKlDjst/v5AUB3bF+7yPE/aSHUC
-4C1WjP7kinaoGYWLLEvR3r2ddqAtQ8/RVcHYho1OHWO3gHxXRUlzEYaUbT1S2dvjQBPHK5bhtmii
-zGq4L1iBKFc0UPbr0lGovM9mpB6G4jwcD1rh2HwBz13n4Wttv96Cq/tMTvV2DiHcfhMpsC3GGe/F
-eX6U22p/MjiD2RFlQOLYy60I5xSV6xB8sb8syLOMRAJspdYh4uxMIUDMvLxiE9ZuwCEukeGBMoAH
-P2mwCDT7Vq/0f0ErUC1Qx2cnDfunOOBqpQ+PuXi6oXkduGUCLTIRvsB9p+TSiI6Qw7fDEY33NV73
-Zcxox0/EB7DqAN1RvRzkaZS4hKTWog0IUHTpHRm/8fjEHbeg0/b+82blsz5/7KcuEqBU0um5uhyE
-GGclt+Y9ojCgnr8LNeaufbXcC71bTXwCN0bM4SVRi+hLwmB8fASxHAOKC6l98qPLkBPhZMXX0c6k
-EA==
-=7UAm
------END PGP SIGNATURE-----
+The mentioned commit causes other build failures with W=1 at least in
+sound/usb/mixer_scarlett_gen2.c
+sound/usb/mixer.c
+sound/soc/codecs/hdac_hdmi.c
+sound/hda/intel-sdw-acpi.c
 
---------------RarGNkMvgomjmopc3ithYrAM--
+Some of them are also false and we need to find a workaround, but
+I think the scarlett case might be valid.
+
+Regards,
+Peter
+
+ sound/core/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/core/init.c b/sound/core/init.c
+index d61bde1225f2..d8a13a76d241 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -279,7 +279,7 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
+ {
+ 	int err;
+ #ifdef CONFIG_SND_DEBUG
+-	char name[8];
++	char name[15];
+ #endif
+ 
+ 	if (extra_size > 0)
+-- 
+2.42.0
+
