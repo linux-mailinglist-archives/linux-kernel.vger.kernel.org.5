@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 576CF79CC58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E4E79CC5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbjILJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S233265AbjILJuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbjILJt7 (ORCPT
+        with ESMTP id S232931AbjILJuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:49:59 -0400
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2155.outbound.protection.outlook.com [40.92.62.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC24BE6C;
-        Tue, 12 Sep 2023 02:49:50 -0700 (PDT)
+        Tue, 12 Sep 2023 05:50:01 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2188.outbound.protection.outlook.com [40.92.62.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA99B10F9;
+        Tue, 12 Sep 2023 02:49:54 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VDcs6u6lSIaVML//v+8iCk5/lzfJd5FNbIay3uwWRHjt+MS5YTbgJdKlgmr+cDlLINbzMPjNuMKOxlzlADG3MO8c8e/iy0w2o7IlWXWhHG2SMCxBWB0vH8h0qGbRD7tlMdhFpJGboUKL1burGSOUAVWm8TcsLzer5gM3BFZsVWC3mn8s8IE8I+02qiJyGNFCVCuqHD4EZK7O8nPFOg0Yy9sHaUKwVU+VtHwnvtjrXLJ9flWBRpu0pP6z8Y9l15yb07VDrMKzLpc/+nx9wkhikVL3C6DT41Z9XtDD3WmooN+E+pAmu0b5cADazqlA9PkG/SsJZ0NbIDwFkNvc/f7obQ==
+ b=QFhT9AegLLtiEQDThGhQFkoo2n/5MHazMK7aMf85dSVMLAI1Ut8NxiDuDZbu3Q+eWfnXLNW6ghFyfJQUzdFCERZc/L1pwvY7+XFknHr4miiJf0iTHri8iCxHUb9KnGMf3Nv2Fg/INYKPN5uv58pAjSzoe0Wv3JxUj9YVJD6gq2CWOwqjVty3Y1le8m860XXE9PuaQ9SdhwH7vFSytg4tz7/CghjCaGwJ2YQxZUJHsA/OpAVnFNpu4Qxy6tpjm/I74GvmXrQEsQFouaGjH+9KpHzFWaknGF1AwslYxD+kBIMJHzr8g5KkofX8CIddJ9+/nuMZwpWOMwjqcxxEfECNUg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x1ON2lIXDXmijZaqWzsXZFy1gNW7vJ4qARHbNm90A0U=;
- b=Ep8XkdXrS0tFvsRX/hPMBwGe1zSFa3mpclREQsjtTLMgsZPSQo+DtAqB7Ns14z0d+//x3P+urFMD0qGSNBF+Thv5XlmBQ+8gUN+S0VLZ9RDt4yBaLyJ52e35zADVq+q49Net9T5JJwY0a4AloLyLoV6T3JR4aGAbmAcNXpl7k85UBKYpsB/lOy9LWg+ATrpQYcR+w7T6nT8WbR66dgECvv6Nw+ik4HroWZZ0E4T19i+wZafyxeoEKe4YBPXbukyIqi0NzL0pmFy+CKorVC1VsH0Dk39rlMfu86SCYYcq/B/WV3vIBoWoHPTTRsn1bnhg2dJIbmAJjeJkxjWR94wIjg==
+ bh=p6GM24XSiJWLbY2WDpV0DErZ2kE+zYwpeBDXyZpl4HQ=;
+ b=d0vuSPJNXKWhkG8ObNv3cLkiJvsGCL1LCd8BX+TTci/WOwx9o3xdihbVw1PJ2RTTVQ/aM191YX6D19kEesajIBgpENQatTbytcp5EU5OsepMGkAwl9RNB/NDlbI9F4UiuzF/C/+/Yew/YEPguS4TsV0EB4fuq6+SmRIxZAsXcL1Ufqbt0fLECBeHxAfDtQyrqR94li/MS8G+DFyTOLRaSLYIy8dsRug2hiJThpIkDG62De7pWDnp7uxAlyOel+zqxt7UxJdfjzwAgoWLR0UQzNwvA8CaUE6cFRXPGqJFNlw0QysNkQe7aGT2CZyu2u7H2ueGC77WiABt72Uvufbjaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x1ON2lIXDXmijZaqWzsXZFy1gNW7vJ4qARHbNm90A0U=;
- b=eWUqNr9bzw/Rg87hB3y72SzIKTxs9XOhc6B220Xc4qszvhZ40tIWTHY8uW1dt+jxMVf6hjWz6Pqm78IiQQDmC7dQOnhiNHCTxTgiG6Hv5FAwB9SjkTeTjsKc6GifTqCGwg0prTAkcdS4JowPJxAjcQSjs+5tUEdkESWsoy8Q00MhtVf7Whr1XImxOeUWH1JrFJlEjYwMsNGzWYLts8Km0WLaVZLw3EFptJdTwY3rfIpaXoj5KDlDdi6UaqMu0Cnur3iUAacdGyOt6BQQReYwrrrWo8Ap0w7+iYJDNKDCjZZ8Z1hfaFZcASftuVJqPRegGtl4SauxAQ+3YEb3py1Jxg==
+ bh=p6GM24XSiJWLbY2WDpV0DErZ2kE+zYwpeBDXyZpl4HQ=;
+ b=d0KskQjW4GDgGzxme/FF3orN5Ia9Sx3bC2CT6BV5uAEnCESNgUaHEGK5/lIfuVmtKUdmZsdSe07gjbQpP95p7f4cnm/K7HvAqFKiqM+yL4Fg334xZrvUMCkq8+I4CJafJxbF0Sj2c2wzOP8bXzKpA4ab97bf0/TbNEev/7A76dci0IncN2MBFSQZa+J6f2vbs3SJRMeIZvUkMzajDJnbI/tKTl6+CI/iGTEjWPRvd+ohfnTQI1byxAphUvGc9dUYlfPd8WVws/1rsdK42zAJ75T8Y6VO/AFo/k6rc19NP2s2N6Gsl70hTLtEeS1mf2dnWgAJ5G8B50dV2cESSx4P3g==
 Received: from ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:16b::5)
  by SY4P282MB2981.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:15c::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
- 2023 09:49:43 +0000
+ 2023 09:49:48 +0000
 Received: from ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  ([fe80::68b4:6263:97f:9a45]) by ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  ([fe80::68b4:6263:97f:9a45%3]) with mapi id 15.20.6768.036; Tue, 12 Sep 2023
- 09:49:43 +0000
+ 09:49:48 +0000
 From:   Jinjian Song <songjinjian@hotmail.com>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
@@ -50,54 +50,54 @@ Cc:     jiri@resnulli.us, johannes@sipsolutions.net,
         linux-kernel@vger.kernel.org, nmarupaka@google.com,
         vsankar@lenovo.com, danielwinkler@google.com,
         Jinjian Song <jinjian.song@fibocom.com>
-Subject: [net-next v4 3/5] net: wwan: t7xx: Creates region & snapshot for coredump log collection
-Date:   Tue, 12 Sep 2023 17:48:43 +0800
-Message-ID: <ME3P282MB2703D49F0B73BE8D50918582BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+Subject: [net-next v4 4/5] net: wwan: t7xx: Adds sysfs attribute of modem event
+Date:   Tue, 12 Sep 2023 17:48:44 +0800
+Message-ID: <ME3P282MB27032EB049D5135D68ADE09FBBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230912094845.11233-1-songjinjian@hotmail.com>
 References: <20230912094845.11233-1-songjinjian@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [yEC8JhMDWlnSUI3jy8vqNQhlIeTwNTdI]
+X-TMN:  [ggug/LKLf5lizIaW4an3zaN0VwkXRSr+]
 X-ClientProxiedBy: SI2PR01CA0048.apcprd01.prod.exchangelabs.com
  (2603:1096:4:193::17) To ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  (2603:10c6:220:16b::5)
-X-Microsoft-Original-Message-ID: <20230912094845.11233-4-songjinjian@hotmail.com>
+X-Microsoft-Original-Message-ID: <20230912094845.11233-5-songjinjian@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: ME3P282MB2703:EE_|SY4P282MB2981:EE_
-X-MS-Office365-Filtering-Correlation-Id: 30945674-e3ef-45ba-3089-08dbb3759724
+X-MS-Office365-Filtering-Correlation-Id: 3e3ea742-ac44-4d32-ee90-08dbb37599ec
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9mgSHWf1YMWwvudydukzo5+o4v3MeNimdRCG1yKRJ9UAkraedRp6q9vb4D6doXFC6uuzeVQJzDEjpF36ZH8vvABT0KcVC4m7tUXo/3VbewawZMwgRzeVU5oEJsLv24yRUssR/5aPiXrdaaKhL3Ts1I/GIEDMKHtHaxHNk+QjzHNoW3SL2Rc6KzYR0cKsZ5eDG+m8dcO8n8kzdj7JS4sMQY9rbb36OGvGwgKgLPc4sZjqOa1u9Rpkmm/GQJ6BZy84l2AomiFVf+i39LoPstwtd+QfEaOmhIFaJjJKfcPqmmbkKA2jRBP37ORuFGcMLrzFgDiYz6tjDgbsknc+nMxakfgUMD0Zz15oW99nQiA7MAaXHQTvySJjN9VxuEbqDr0vyOxSH/dZM6jN1UgMZM6Jy4HMHxe1nE1uUxe9S5XlVfHVcrO17ZcvXfdL2qyWWZghsXsEcRBviBknlennaK5KvqzXHHcL1lzYiijzCO0omFM+7o602MadrHNFT3mkNw9riUr4K9yE63J93QCoZeWlNDND09gTxyd0YYc7NnOpAZiCJ8+L1os8GWSx3E9AMoWm1QFImO+Ja0Od7mKG+ePCiajYlwYSF1qH2Jv5qzNABbo=
+X-Microsoft-Antispam-Message-Info: ThJ3mY8kXEP6IGT92Qzk3IaCaz10oy8kEWCDWkZnPqxyAdxbeDp+Blpdp88D6LPDg01wmlxDkx7o+8yeHeqNvKTANoEkFxCCiKYeQH9Vl2M0QRY8hTyB7ij/wmFvmF7jKCbq3FJmraA1iL++gKSdPBPO/oXJi0tvaiHVbaZ5USI4JvHohUvk8JUtjcCfRhnLBTjxWRByvUuE9u5qmNDRrsXb6dp2Xc2ylqwqLiwKDOASDjg46HxgVMCkISp3TBzcTq++Fp661ZgSjQx6EUtpfavQJylUmPfTZKFbuAczjbtbTYhFLamkQa098qn/Q6Hu6pmmwCzVUvlvo46YLMmjvqcBzo1Ag29nt2jDaeKpt4Ebcx34eRQyht9WCPS21UkGac5R95ihVGgOFaPhsklQYZSf2EA+A/EuZdmTTRMhT6jNC7V6lcUM+2C88m8Thnt7v0Rp4yZFszTPL/MSAXWFfFsZaHyrGfwOxnSmwo3BT3VfURmY5NWyhYzmoDYsh2T3G3qEtapej/skE1NavcdpjNySL5Ju9Wp1DaS5P8BPMH0EIrQTU5Nhq1ButLD26Ba0HZxFYX13ZR2y3I+rvCnrJUQUpmno5JpSGDuaxU2TcfA=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2REIklQRakn2uxyqHnG1XVzvMHNK1ZCVYZ6ugAFY+5gln4532l1TpJTzQ+V6?=
- =?us-ascii?Q?zUk267ZHQGQgJ+BWdb+oxjhcDUKRWTljwqHuPY0n6Swk+cQgvLdwE24KRqsC?=
- =?us-ascii?Q?kGI7ZLx89mRZ6XvS7lIlNwxcmfcKyxerKbV8z9erzh5trP6oJMoGwRN4n08b?=
- =?us-ascii?Q?q4OG0mlS1I1Qp8WWAZ8p2LqANYEnuFiRyfKuE1aSR+5InoxVC1kLhPWMxVMR?=
- =?us-ascii?Q?mW3PRBYcNeHpLNIW755d+G7dWYRkAySBiIMDqL/1XUr+LvNpuRRhNrdIE4Bc?=
- =?us-ascii?Q?5A+6IIWK74aszs3IXB9H25VxSFL0RTh/toOt6X4mRhXOra/SVM8zSyRQtIll?=
- =?us-ascii?Q?x8O0uctuHpXGqDiH0lV+TvemiM5qo1o7bmxBI6QPexGUzT2BixFVicZi+Dd1?=
- =?us-ascii?Q?Et9N8vRFDRhDIVyEl2uIhsv0Xj+gfUtLYBsBFUKkmO6g/T75mM862GP25c/M?=
- =?us-ascii?Q?2ECG08BthYQRHrq1ABOmGr8OYBpihw2d9crav+WeRmGko0YeOvNKA5ZBrI5x?=
- =?us-ascii?Q?YbmOOAgpF99m4mfxZP59cGqD1MYneVFRbu+GG5Mo9jn3NrUW94TzpfPL6XsX?=
- =?us-ascii?Q?3XHjiZJZHoxDNbFBNNQ5Eufm40tU2LZ0n74QbFG8Vxyn6cDXafpxPF3wRHm5?=
- =?us-ascii?Q?4yba65gO9Zna5OhhI0yFFh7BTyqK92wpZLCQbdB8WX0CQHkDtiYQ88VGTGCo?=
- =?us-ascii?Q?DnVc5cANv7DsuF196R5uxswHbybVYzOEZhwV3FBvQAq7puJcLUV/Oemfb/rV?=
- =?us-ascii?Q?hr0HQ4SMBvSBjGa5XnahcOM6HHhWTToTjmI0gokR7lAwiYJNIGztE1nZKFOE?=
- =?us-ascii?Q?j24OLvp9HDb/r/nAiLZwVXZhhUd8HiKZVKgNMovKNGx7/oXRcVyU4qdyEYs/?=
- =?us-ascii?Q?g+YWBHJzAp42jis3AR+a9Nx7CB619gy7IBO9C5rZ2rIoZa7zUYrB7gt5gI8J?=
- =?us-ascii?Q?bSzD1i6gJW1SZzOdirc45/p5Wa6hg0IKlL5SOmMexESiPb/721PqcyMvnfZS?=
- =?us-ascii?Q?DLkICSf7/0A6UE66EtWOto0cdAWcLu+UOWfaPYcAwga9PVotXDx8y41lGFcr?=
- =?us-ascii?Q?MQGF98jHRLOUP6kFpeNS7N5QRJ8Bok27e+Iie6OgaHLWjGxM37PONejK5WAW?=
- =?us-ascii?Q?wzNhiQR1pcFiyWj+/7jp5IIMQhojhoNeqpDzai9brQEmwBPz8dkxTwSzv8xr?=
- =?us-ascii?Q?zTZNqGJXxwlpEvijJ9YdheALAQwbJoX8dh5hEEl+/IRCNG7LrE3eqTdYBm4?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+DOOj+rych/Vi1pjTDMTBiQ7fooBhclk7viiCBWPmos9AHcre1avlHY1QkMd?=
+ =?us-ascii?Q?TghIcbHKk62orIcl5DmbVILok8ylV1M63+MZXkjuxKO/ry+1lffYeBCnfVYk?=
+ =?us-ascii?Q?ZXIgTK1nAhSZicC4QoVIgz2EL1SsmusVQFs59IE2OoAgJL9Zgy7BTbhalncF?=
+ =?us-ascii?Q?aSpJKyHRoCMtWkFSlhxb5Z8eauarvSKtYl6rlW9t75+C2T7gS4bAC6pV1C9U?=
+ =?us-ascii?Q?t0UYX7fKgjox5GgS2EgqlUhqqRatktF9optxmxpdNXn3QxuMtX+t163RwxmM?=
+ =?us-ascii?Q?Qpl1E+u3BBJ7U+VHiGhBfSBCiGEgGqeUdOHy/0ukxiwSxVIAdxXPKP3N/b8D?=
+ =?us-ascii?Q?lxL9BgfkymRVrYoeeOB2ajXa7cwOrRSg5pSRKmJJUDYTnhJMD8KB6DHB6DKv?=
+ =?us-ascii?Q?2twpDytJpXO9zWnfSYFzNQLoJ7S28vlaa/eapxQuuoILc1ienKc/SyqA1+Hw?=
+ =?us-ascii?Q?dQPWpk3oKYQn4ArfY42qp6qbzddgLByKCAW/2TyaL+JU9I6CMkLSjCj6GGue?=
+ =?us-ascii?Q?G9sBr6+gZgw7oZYS+eCYhGDLlRIXiO4Fq5C962cvk7x2K9tqOsBVHFzrdUEm?=
+ =?us-ascii?Q?RwLiAmZQmsUBLRvyt1Txqy5lqqMwEmlwBxk2rXMrpisrry09ovAZCaoXECM7?=
+ =?us-ascii?Q?HTgZycnCTPeLWX8jNQBgjRaY9vTd6TEjvtKv0ilJkL78FJ4DHHJq+DOuDA8R?=
+ =?us-ascii?Q?F2pLu3+YTYTr6opAB3Wuu7UnZ0oyGogTZVdHyH8smoJ18OVPzijAY8NdrlUY?=
+ =?us-ascii?Q?TNgOpDaaCw/ZHAe0fEfzuZxng+ncMCVIJy5WgW5Cc8TvwT0q3KvyW65V+3/M?=
+ =?us-ascii?Q?EKQJXf1zmaFL6o5oaTG1I6F/bS/A337wXur1SBn4Ud9vktNg95fvmZPHjtp3?=
+ =?us-ascii?Q?ySK/7bdRd138PIXvdanIQhP/gNFmHklPhyf9lLxI9/pRWGphjyndXhmqM8Aj?=
+ =?us-ascii?Q?hGKldyhi+CJ/oUdpGruXqRtIvflp8e//xQnyF+aqXjWY77kINCbixRxuJUe9?=
+ =?us-ascii?Q?Xvh5weO3tllRmrXuRsQchhMwH4nNgEGt3jCzEVN/WWtKbKT3sx6rvt08XMm+?=
+ =?us-ascii?Q?uBLB8bWuN3erSPdkrMRlDYBvNWk6Z8D5hTYNTD4P471OpgpFYI07DWIMzY0a?=
+ =?us-ascii?Q?onJi7cIba2tTYCodD0PL9bvSEhluDtWxbW4huh5xRZvgDgR+JsoHBTPj2itE?=
+ =?us-ascii?Q?m9Uv0Ar6OKdwe+NwTkrI+wYunTEFr/PStRKbNRv4K03+hx54ue6fpbVhlIU?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30945674-e3ef-45ba-3089-08dbb3759724
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e3ea742-ac44-4d32-ee90-08dbb37599ec
 X-MS-Exchange-CrossTenant-AuthSource: ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 09:49:43.3935
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 09:49:48.1364
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -109,22 +109,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jinjian Song <jinjian.song@fibocom.com>
 
-Adds support for t7xx wwan device coredump collection using devlink.
+Adds support for t7xx wwan device firmware flashing & coredump collection
+using devlink.
 
-In case of coredump collection when wwan device encounters an exception
-it reboots & stays in fastboot mode for coredump collection by host driver.
-On detecting exception state driver collects the core dump, creates the
-devlink region & reports an event to user space application for dump
-collection. The user space application invokes devlink region read command
-for dump collection.
+Provides sysfs attribute on user space to query the event from modem
+about flashing/coredump/reset.
 
-Below are the devlink commands used for coredump collection.
-
-devlink region new pci/$BDF/mr_dump
-devlink region read pci/$BDF/mr_dump snapshot $ID address $ADD length $LEN
-devlink region del pci/$BDF/mr_dump snapshot $ID
-
-Base on the v5 patch version of follown series:
+Base on the v5 patch version of follow series:
 'net: wwan: t7xx: fw flashing & coredump support'
 (https://patchwork.kernel.org/project/netdevbpf/patch/fc8bbb0b66a5ff3a489ea9857d79b374508090ef.1674307425.git.m.chetan.kumar@linux.intel.com/)
 
@@ -135,415 +126,271 @@ v4:
 v3:
  * no change
 v2:
- * rename function name from devlink to flash_dump
+ * rename struct name from devlink to flash_dump
 ---
- drivers/net/wwan/t7xx/t7xx_port_flash_dump.c | 256 ++++++++++++++++++-
- drivers/net/wwan/t7xx/t7xx_port_flash_dump.h |  39 +++
- drivers/net/wwan/t7xx/t7xx_state_monitor.c   |   2 +
- 3 files changed, 296 insertions(+), 1 deletion(-)
+ drivers/net/wwan/t7xx/t7xx_modem_ops.c       |  1 +
+ drivers/net/wwan/t7xx/t7xx_pci.c             | 62 ++++++++++++++++++++
+ drivers/net/wwan/t7xx/t7xx_pci.h             | 17 ++++++
+ drivers/net/wwan/t7xx/t7xx_port_flash_dump.c | 14 +++++
+ drivers/net/wwan/t7xx/t7xx_port_flash_dump.h |  1 +
+ drivers/net/wwan/t7xx/t7xx_state_monitor.c   |  7 +++
+ 6 files changed, 102 insertions(+)
 
-diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-index 1129ef793798..b8ef3b7d7430 100644
---- a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-+++ b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-@@ -9,6 +9,11 @@
- #include "t7xx_port_ap_msg.h"
- #include "t7xx_port_flash_dump.h"
+diff --git a/drivers/net/wwan/t7xx/t7xx_modem_ops.c b/drivers/net/wwan/t7xx/t7xx_modem_ops.c
+index cbd65aa48721..4de75874f1b5 100644
+--- a/drivers/net/wwan/t7xx/t7xx_modem_ops.c
++++ b/drivers/net/wwan/t7xx/t7xx_modem_ops.c
+@@ -192,6 +192,7 @@ static irqreturn_t t7xx_rgu_isr_thread(int irq, void *data)
+ {
+ 	struct t7xx_pci_dev *t7xx_dev = data;
  
-+static struct t7xx_dump_region_info t7xx_dump_region_infos[] = {
-+	[T7XX_MRDUMP_INDEX] = {"mr_dump", T7XX_MRDUMP_SIZE},
-+	[T7XX_LKDUMP_INDEX] = {"lk_dump", T7XX_LKDUMP_SIZE},
++	atomic_set(&t7xx_dev->event, T7XX_RESET);
+ 	msleep(RGU_RESET_DELAY_MS);
+ 	t7xx_reset_device_via_pmic(t7xx_dev);
+ 	return IRQ_HANDLED;
+diff --git a/drivers/net/wwan/t7xx/t7xx_pci.c b/drivers/net/wwan/t7xx/t7xx_pci.c
+index 845d1555f134..e5579e04f82d 100644
+--- a/drivers/net/wwan/t7xx/t7xx_pci.c
++++ b/drivers/net/wwan/t7xx/t7xx_pci.c
+@@ -2,6 +2,7 @@
+ /*
+  * Copyright (c) 2021, MediaTek Inc.
+  * Copyright (c) 2021-2022, Intel Corporation.
++ * Copyright (c) 2023, Fibocom Wireless Inc.
+  *
+  * Authors:
+  *  Haijun Liu <haijun.liu@mediatek.com>
+@@ -14,6 +15,7 @@
+  *  Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
+  *  Eliot Lee <eliot.lee@intel.com>
+  *  Moises Veleta <moises.veleta@intel.com>
++ *  Jinjian Song <jinjian.song@fibocom.com>
+  */
+ 
+ #include <linux/atomic.h>
+@@ -60,6 +62,57 @@ enum t7xx_pm_state {
+ 	MTK_PM_RESUMED,
+ };
+ 
++static ssize_t t7xx_event_show(struct device *dev, struct device_attribute *attr,
++			       char *buf)
++{
++	enum t7xx_event event = T7XX_UNKNOWN;
++	struct pci_dev *pdev;
++	struct t7xx_pci_dev *t7xx_dev;
++
++	pdev = to_pci_dev(dev);
++	t7xx_dev = pci_get_drvdata(pdev);
++	if (!t7xx_dev)
++		return -ENODEV;
++
++	event = atomic_read(&t7xx_dev->event);
++	if (event == T7XX_READY) {
++		return sprintf(buf, "T7XX_MODEM_READY\n");
++	} else if (event == T7XX_RESET) {
++		return sprintf(buf, "T7XX_RESET\n");
++	} else if (event == T7XX_FASTBOOT_DL_MODE) {
++		return sprintf(buf, "T7XX_MODEM_FASTBOOT_DL_MODE\n");
++	} else if (event == T7XX_FLASH_SUCCESS) {
++		return sprintf(buf, "T7XX_FLASHING_SUCCESS\n");
++	} else if (event == T7XX_FLASH_FAILURE) {
++		return sprintf(buf, "T7XX_FLASHING_FAILURE\n");
++	} else if (event == T7XX_FASTBOOT_DUMP_MODE) {
++		return sprintf(buf, "T7XX_MODEM_FASTBOOT_DUMP_MODE\n");
++	} else if (event == T7XX_MRDUMP_READY) {
++		return sprintf(buf, "T7XX_MRDUMP_READY size:%zu\n",
++			       t7xx_dev->flash_dump->regions[T7XX_MRDUMP_INDEX].info->dump_size);
++	} else if (event == T7XX_LKDUMP_READY) {
++		return sprintf(buf, "T7XX_LKDUMP_READY size:%zu\n",
++			       t7xx_dev->flash_dump->regions[T7XX_LKDUMP_INDEX].info->dump_size);
++	} else if (event == T7XX_MRDUMP_DISCARD) {
++		return sprintf(buf, "T7XX_MRDUMP_DISCARDED\n");
++	} else if (event == T7XX_LKDUMP_DISCARD) {
++		return sprintf(buf, "T7XX_LKDUMP_DISCARDED\n");
++	}
++
++	return sprintf(buf, "T7XX_UNKNOWN\n");
++}
++
++static DEVICE_ATTR_RO(t7xx_event);
++
++static struct attribute *t7xx_event_attr[] = {
++	&dev_attr_t7xx_event.attr,
++	NULL
 +};
 +
- static int t7xx_flash_dump_port_read(struct t7xx_port *port, char *buf, size_t count)
++static const struct attribute_group t7xx_event_attribute_group = {
++	.attrs = t7xx_event_attr,
++};
++
+ static void t7xx_dev_set_sleep_capability(struct t7xx_pci_dev *t7xx_dev, bool enable)
  {
- 	struct sk_buff *skb;
-@@ -130,6 +135,151 @@ static int t7xx_flash_dump_fb_raw_command(char *cmd, struct t7xx_port *port, cha
+ 	void __iomem *ctrl_reg = IREG_BASE(t7xx_dev) + T7XX_PCIE_MISC_CTRL;
+@@ -734,8 +787,17 @@ static int t7xx_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	t7xx_pcie_mac_interrupts_dis(t7xx_dev);
+ 
++	ret = sysfs_create_group(&t7xx_dev->pdev->dev.kobj,
++				 &t7xx_event_attribute_group);
++	if (ret) {
++		t7xx_md_exit(t7xx_dev);
++		goto err_devlink_unregister;
++	}
++
+ 	ret = t7xx_interrupt_init(t7xx_dev);
+ 	if (ret) {
++		sysfs_remove_group(&t7xx_dev->pdev->dev.kobj,
++				   &t7xx_event_attribute_group);
+ 		t7xx_md_exit(t7xx_dev);
+ 		goto err_devlink_unregister;
+ 	}
+diff --git a/drivers/net/wwan/t7xx/t7xx_pci.h b/drivers/net/wwan/t7xx/t7xx_pci.h
+index 28f22a2dc493..b7c78a9530f3 100644
+--- a/drivers/net/wwan/t7xx/t7xx_pci.h
++++ b/drivers/net/wwan/t7xx/t7xx_pci.h
+@@ -2,6 +2,7 @@
+  *
+  * Copyright (c) 2021, MediaTek Inc.
+  * Copyright (c) 2021-2022, Intel Corporation.
++ * Copyright (c) 2023, Fibocom Wireless Inc.
+  *
+  * Authors:
+  *  Haijun Liu <haijun.liu@mediatek.com>
+@@ -12,6 +13,7 @@
+  *  Amir Hanania <amir.hanania@intel.com>
+  *  Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
+  *  Moises Veleta <moises.veleta@intel.com>
++ *  Jinjian Song <jinjian.song@fibocom.com>
+  */
+ 
+ #ifndef __T7XX_PCI_H__
+@@ -84,6 +86,7 @@ struct t7xx_pci_dev {
+ 	struct dentry		*debugfs_dir;
+ #endif
+ 	struct t7xx_flash_dump	*flash_dump;
++	atomic_t		event;
+ };
+ 
+ enum t7xx_pm_id {
+@@ -115,6 +118,20 @@ struct md_pm_entity {
+ 	void			*entity_param;
+ };
+ 
++enum t7xx_event {
++	T7XX_UNKNOWN,
++	T7XX_READY,
++	T7XX_RESET,
++	T7XX_FASTBOOT_DL_MODE,
++	T7XX_FLASH_SUCCESS,
++	T7XX_FLASH_FAILURE,
++	T7XX_FASTBOOT_DUMP_MODE,
++	T7XX_MRDUMP_READY,
++	T7XX_LKDUMP_READY,
++	T7XX_MRDUMP_DISCARD,
++	T7XX_LKDUMP_DISCARD,
++};
++
+ void t7xx_pci_disable_sleep(struct t7xx_pci_dev *t7xx_dev);
+ void t7xx_pci_enable_sleep(struct t7xx_pci_dev *t7xx_dev);
+ int t7xx_pci_sleep_disable_complete(struct t7xx_pci_dev *t7xx_dev);
+diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
+index b8ef3b7d7430..0a0f2847aa3f 100644
+--- a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
++++ b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
+@@ -201,11 +201,14 @@ static int t7xx_flash_dump_fb_get_core(struct t7xx_port *port)
+ 			continue;
+ 		} else if (!strcmp(mcmd, T7XX_FB_RESP_MRDUMP_DONE)) {
+ 			dev_dbg(port->dev, "%s! size:%zd\n", T7XX_FB_RESP_MRDUMP_DONE, offset_dlen);
++			flash_dump->regions[T7XX_MRDUMP_INDEX].info->dump_size = offset_dlen;
++			atomic_set(&port->t7xx_dev->event, T7XX_MRDUMP_READY);
+ 			clear_bit(T7XX_MRDUMP_STATUS, &flash_dump->status);
+ 			return 0;
+ 		}
+ 		dev_err(port->dev, "getcore protocol error (read len %05d, response %s)\n",
+ 			clen, mcmd);
++		atomic_set(&port->t7xx_dev->event, T7XX_MRDUMP_DISCARD);
+ 		ret = -EPROTO;
+ 		goto free_mem;
+ 	}
+@@ -248,6 +251,7 @@ static int t7xx_flash_dump_fb_dump_log(struct t7xx_port *port)
+ 	if (datasize > lkdump_region->info->size) {
+ 		dev_err(port->dev, "lkdump size is more than %dKB. Discarded!\n",
+ 			T7XX_LKDUMP_SIZE / 1024);
++		atomic_set(&port->t7xx_dev->event, T7XX_LKDUMP_DISCARD);
+ 		ret = -EFBIG;
+ 		goto err_clear_bit;
+ 	}
+@@ -272,6 +276,8 @@ static int t7xx_flash_dump_fb_dump_log(struct t7xx_port *port)
+ 	}
+ 
+ 	dev_dbg(port->dev, "LKDUMP DONE! size:%zd\n", offset);
++	lkdump_region->info->dump_size = offset;
++	atomic_set(&port->t7xx_dev->event, T7XX_LKDUMP_READY);
+ 	clear_bit(T7XX_LKDUMP_STATUS, &flash_dump->status);
+ 	return t7xx_flash_dump_fb_handle_response(port, NULL);
+ 
+@@ -361,6 +367,10 @@ static int t7xx_devlink_flash_update(struct devlink *devlink,
+ 	clear_bit(T7XX_FLASH_STATUS, &flash_dump->status);
+ 
+ err_out:
++	if (ret)
++		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_FAILURE);
++	else
++		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_SUCCESS);
  	return ret;
  }
  
-+static int t7xx_flash_dump_fb_cmd_send(struct t7xx_port *port, char *cmd)
-+{
-+	int len = strlen(cmd);
-+	int ret;
+@@ -411,9 +421,13 @@ static int t7xx_devlink_reload_up(struct devlink *devlink,
+ 				  u32 *actions_performed,
+ 				  struct netlink_ext_ack *extack)
+ {
++	struct t7xx_flash_dump *flash_dump = devlink_priv(devlink);
 +
-+	ret = t7xx_flash_dump_port_write(port, cmd, len);
-+	if (ret == len)
+ 	*actions_performed = BIT(action);
+ 	switch (action) {
+ 	case DEVLINK_RELOAD_ACTION_DRIVER_REINIT:
++		atomic_set(&flash_dump->t7xx_dev->event, T7XX_RESET);
 +		return 0;
-+
-+	return ret;
-+}
-+
-+static int t7xx_flash_dump_fb_get_core(struct t7xx_port *port)
-+{
-+	u32 mrd_mb = T7XX_MRDUMP_SIZE / (1024 * 1024);
-+	struct t7xx_flash_dump *flash_dump = port->t7xx_dev->flash_dump;
-+	char mcmd[T7XX_FB_MCMD_SIZE + 1];
-+	size_t offset_dlen = 0;
-+	int clen, dlen, ret;
-+
-+	flash_dump->regions[T7XX_MRDUMP_INDEX].buf =
-+		vmalloc(flash_dump->regions[T7XX_MRDUMP_INDEX].info->size);
-+	if (!flash_dump->regions[T7XX_MRDUMP_INDEX].buf)
-+		return -ENOMEM;
-+
-+	set_bit(T7XX_MRDUMP_STATUS, &flash_dump->status);
-+	ret = t7xx_flash_dump_fb_raw_command(T7XX_FB_CMD_OEM_MRDUMP, port, NULL);
-+	if (ret) {
-+		dev_err(port->dev, "%s command failed\n", T7XX_FB_CMD_OEM_MRDUMP);
-+		goto free_mem;
-+	}
-+
-+	while (flash_dump->regions[T7XX_MRDUMP_INDEX].info->size > offset_dlen) {
-+		clen = t7xx_flash_dump_port_read(port, mcmd, sizeof(mcmd) - 1);
-+		if (clen <= 0)
-+			goto free_mem;
-+
-+		mcmd[clen] = '\0';
-+		if (!strcmp(mcmd, T7XX_FB_CMD_RTS)) {
-+			memset(mcmd, 0, sizeof(mcmd));
-+			ret = t7xx_flash_dump_fb_cmd_send(port, T7XX_FB_CMD_CTS);
-+			if (ret < 0) {
-+				dev_err(port->dev, "write for _CTS failed:%zu\n",
-+					strlen(T7XX_FB_CMD_CTS));
-+				goto free_mem;
-+			}
-+
-+			dlen = t7xx_flash_dump_port_read(port,
-+							 flash_dump->regions[T7XX_MRDUMP_INDEX].buf
-+							 + offset_dlen, T7XX_FB_MDATA_SIZE);
-+			if (dlen <= 0) {
-+				dev_err(port->dev, "read data error(%d)\n", dlen);
-+				ret = dlen;
-+				goto free_mem;
-+			}
-+			offset_dlen += dlen;
-+
-+			ret = t7xx_flash_dump_fb_cmd_send(port, T7XX_FB_CMD_FIN);
-+			if (ret < 0) {
-+				dev_err(port->dev, "_FIN failed, (Read %05zu:%05zu)\n",
-+					strlen(T7XX_FB_CMD_FIN), offset_dlen);
-+				goto free_mem;
-+			}
-+			continue;
-+		} else if (!strcmp(mcmd, T7XX_FB_RESP_MRDUMP_DONE)) {
-+			dev_dbg(port->dev, "%s! size:%zd\n", T7XX_FB_RESP_MRDUMP_DONE, offset_dlen);
-+			clear_bit(T7XX_MRDUMP_STATUS, &flash_dump->status);
-+			return 0;
-+		}
-+		dev_err(port->dev, "getcore protocol error (read len %05d, response %s)\n",
-+			clen, mcmd);
-+		ret = -EPROTO;
-+		goto free_mem;
-+	}
-+
-+	dev_err(port->dev, "mrdump exceeds %uMB size. Discarded!\n", mrd_mb);
-+
-+free_mem:
-+	vfree(flash_dump->regions[T7XX_MRDUMP_INDEX].buf);
-+	clear_bit(T7XX_MRDUMP_STATUS, &flash_dump->status);
-+	return ret;
-+}
-+
-+static int t7xx_flash_dump_fb_dump_log(struct t7xx_port *port)
-+{
-+	struct t7xx_flash_dump *flash_dump = port->t7xx_dev->flash_dump;
-+	struct t7xx_dump_region *lkdump_region;
-+	char rsp[T7XX_FB_RESPONSE_SIZE];
-+	int datasize = 0, ret;
-+	size_t offset = 0;
-+
-+	if (flash_dump->status != T7XX_DEVLINK_IDLE) {
-+		dev_err(&flash_dump->t7xx_dev->pdev->dev, "Modem is busy!\n");
-+		return -EBUSY;
-+	}
-+
-+	set_bit(T7XX_LKDUMP_STATUS, &flash_dump->status);
-+	ret = t7xx_flash_dump_fb_raw_command(T7XX_FB_CMD_OEM_LKDUMP, port, rsp);
-+	if (ret) {
-+		dev_err(port->dev, "%s command returns failure\n", T7XX_FB_CMD_OEM_LKDUMP);
-+		goto err_clear_bit;
-+	}
-+
-+	ret = kstrtoint(rsp, 16, &datasize);
-+	if (ret) {
-+		dev_err(port->dev, "bad value\n");
-+		goto err_clear_bit;
-+	}
-+
-+	lkdump_region = &flash_dump->regions[T7XX_LKDUMP_INDEX];
-+	if (datasize > lkdump_region->info->size) {
-+		dev_err(port->dev, "lkdump size is more than %dKB. Discarded!\n",
-+			T7XX_LKDUMP_SIZE / 1024);
-+		ret = -EFBIG;
-+		goto err_clear_bit;
-+	}
-+
-+	lkdump_region->buf = vmalloc(lkdump_region->info->size);
-+	if (!lkdump_region->buf) {
-+		ret = -ENOMEM;
-+		goto err_clear_bit;
-+	}
-+
-+	while (datasize > 0) {
-+		int dlen = t7xx_flash_dump_port_read(port, lkdump_region->buf + offset, datasize);
-+
-+		if (dlen <= 0) {
-+			dev_err(port->dev, "lkdump read error ret = %d\n", dlen);
-+			ret = dlen;
-+			goto err_clear_bit;
-+		}
-+
-+		datasize -= dlen;
-+		offset += dlen;
-+	}
-+
-+	dev_dbg(port->dev, "LKDUMP DONE! size:%zd\n", offset);
-+	clear_bit(T7XX_LKDUMP_STATUS, &flash_dump->status);
-+	return t7xx_flash_dump_fb_handle_response(port, NULL);
-+
-+err_clear_bit:
-+	clear_bit(T7XX_LKDUMP_STATUS, &flash_dump->status);
-+	return ret;
-+}
-+
- static int t7xx_flash_dump_fb_download_command(struct t7xx_port *port, size_t size)
- {
- 	char download_command[T7XX_FB_COMMAND_SIZE];
-@@ -355,6 +505,67 @@ static const struct devlink_ops devlink_flash_ops = {
- 	.reload_up = t7xx_devlink_reload_up,
- };
- 
-+static int t7xx_flash_dump_region_snapshot(struct devlink *dl, const struct devlink_region_ops *ops,
-+					   struct netlink_ext_ack *extack, u8 **data)
-+{
-+	struct t7xx_flash_dump *flash_dump = devlink_priv(dl);
-+	struct t7xx_dump_region *region = ops->priv;
-+	struct t7xx_port *port = flash_dump->port;
-+	u8 *snapshot_mem;
-+
-+	if (flash_dump->status != T7XX_DEVLINK_IDLE)
-+		return -EBUSY;
-+
-+	if (!strncmp(ops->name, "mr_dump", strlen("mr_dump"))) {
-+		snapshot_mem = vmalloc(region->info->size);
-+		memcpy(snapshot_mem, region->buf, region->info->size);
-+		*data = snapshot_mem;
-+	} else if (!strncmp(ops->name, "lk_dump", strlen("lk_dump"))) {
-+		int ret;
-+
-+		ret = t7xx_flash_dump_fb_dump_log(port);
-+		if (ret)
-+			return ret;
-+
-+		*data = region->buf;
-+	}
-+
-+	return 0;
-+}
-+
-+static_assert(ARRAY_SIZE(t7xx_dump_region_infos) ==
-+	      ARRAY_SIZE(((struct t7xx_flash_dump *)NULL)->regions));
-+
-+/* To create regions for dump files */
-+static int t7xx_flash_dump_create_regions(struct t7xx_flash_dump *flash_dump)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(t7xx_dump_region_infos); i++) {
-+		flash_dump->regions[i].info = &t7xx_dump_region_infos[i];
-+		flash_dump->regions[i].ops.name = flash_dump->regions[i].info->name;
-+		flash_dump->regions[i].ops.snapshot = t7xx_flash_dump_region_snapshot;
-+		flash_dump->regions[i].ops.destructor = vfree;
-+		flash_dump->regions[i].dlreg = devlink_region_create(flash_dump->ctx,
-+								     &flash_dump->regions[i].ops,
-+								     T7XX_MAX_SNAPSHOTS,
-+								     t7xx_dump_region_infos[i].size
-+								     );
-+		if (IS_ERR(flash_dump->regions[i].dlreg)) {
-+			ret = PTR_ERR(flash_dump->regions[i].dlreg);
-+			dev_err(flash_dump->port->dev, "create region failed, err %d\n", ret);
-+			while (i >= 0)
-+				devlink_region_destroy(flash_dump->regions[i--].dlreg);
-+
-+			return ret;
-+		}
-+
-+		flash_dump->regions[i].ops.priv = &flash_dump->regions[i];
-+	}
-+
-+	return 0;
-+}
-+
- int t7xx_devlink_register(struct t7xx_pci_dev *t7xx_dev)
- {
- 	union devlink_param_value value;
-@@ -379,6 +590,14 @@ int t7xx_devlink_register(struct t7xx_pci_dev *t7xx_dev)
- 	return 0;
- }
- 
-+static void t7xx_flash_dump_work(struct work_struct *work)
-+{
-+	struct t7xx_flash_dump *flash_dump;
-+
-+	flash_dump = container_of(work, struct t7xx_flash_dump, ws);
-+	t7xx_flash_dump_fb_get_core(flash_dump->port);
-+}
-+
- void t7xx_devlink_unregister(struct t7xx_pci_dev *t7xx_dev)
- {
- 	struct devlink *dl_ctx = t7xx_dev->flash_dump->ctx;
-@@ -399,29 +618,64 @@ void t7xx_devlink_unregister(struct t7xx_pci_dev *t7xx_dev)
- static int t7xx_port_flash_dump_init(struct t7xx_port *port)
- {
- 	struct t7xx_flash_dump *flash_dump = port->t7xx_dev->flash_dump;
-+	struct workqueue_struct *flash_dump_wq;
-+	int rc;
-+
-+	flash_dump_wq = create_workqueue("t7xx_flash_dump");
-+	if (!flash_dump_wq) {
-+		dev_err(port->dev, "create_workqueue failed\n");
-+		return -ENODATA;
-+	}
- 
-+	INIT_WORK(&flash_dump->ws, t7xx_flash_dump_work);
- 	port->rx_length_th = T7XX_MAX_QUEUE_LENGTH;
- 
- 	flash_dump->mode = T7XX_NORMAL_MODE;
- 	flash_dump->status = T7XX_DEVLINK_IDLE;
-+	flash_dump->wq = flash_dump_wq;
- 	flash_dump->port = port;
- 
-+	rc = t7xx_flash_dump_create_regions(flash_dump);
-+	if (rc) {
-+		destroy_workqueue(flash_dump->wq);
-+		dev_err(port->dev, "devlink region creation failed, rc %d\n", rc);
-+		return -ENOMEM;
-+	}
-+
- 	return 0;
- }
- 
- static void t7xx_port_flash_dump_uninit(struct t7xx_port *port)
- {
- 	struct t7xx_flash_dump *flash_dump = port->t7xx_dev->flash_dump;
-+	int i;
-+
-+	vfree(flash_dump->regions[T7XX_MRDUMP_INDEX].buf);
- 
- 	flash_dump->mode = T7XX_NORMAL_MODE;
-+	destroy_workqueue(flash_dump->wq);
-+
-+	for (i = 0; i < ARRAY_SIZE(t7xx_dump_region_infos); ++i)
-+		devlink_region_destroy(flash_dump->regions[i].dlreg);
- 
- 	skb_queue_purge(&port->rx_skb_list);
- }
- 
-+static int t7xx_flash_dump_enable_chl(struct t7xx_port *port)
-+{
-+	struct t7xx_flash_dump *flash_dump = port->t7xx_dev->flash_dump;
-+
-+	t7xx_port_enable_chl(port);
-+	if (flash_dump->mode == T7XX_FB_DUMP_MODE)
-+		queue_work(flash_dump->wq, &flash_dump->ws);
-+
-+	return 0;
-+}
-+
- struct port_ops flash_dump_port_ops = {
- 	.init = &t7xx_port_flash_dump_init,
- 	.recv_skb = &t7xx_port_enqueue_skb,
- 	.uninit = &t7xx_port_flash_dump_uninit,
--	.enable_chl = &t7xx_port_enable_chl,
-+	.enable_chl = &t7xx_flash_dump_enable_chl,
- 	.disable_chl = &t7xx_port_disable_chl,
- };
+ 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
+ 		return 0;
+ 	default:
 diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
-index 7614c01dcb2c..90758baa7854 100644
+index 90758baa7854..057bb36216ca 100644
 --- a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
 +++ b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
-@@ -12,28 +12,67 @@
- #define T7XX_MAX_QUEUE_LENGTH 32
- #define T7XX_FB_COMMAND_SIZE  64
- #define T7XX_FB_RESPONSE_SIZE 512
-+#define T7XX_FB_MCMD_SIZE     64
-+#define T7XX_FB_MDATA_SIZE    1024
- #define T7XX_FB_RESP_COUNT    30
- 
-+#define T7XX_FB_EVENT_SIZE      50
-+
-+#define T7XX_MAX_SNAPSHOTS  1
-+#define T7XX_MRDUMP_SIZE    (160 * 1024 * 1024)
-+#define T7XX_LKDUMP_SIZE    (256 * 1024)
-+#define T7XX_TOTAL_REGIONS  2
-+
- #define T7XX_FLASH_STATUS   0
-+#define T7XX_MRDUMP_STATUS  1
-+#define T7XX_LKDUMP_STATUS  2
- #define T7XX_GET_INFO       3
- 
- #define T7XX_DEVLINK_IDLE   0
- #define T7XX_NORMAL_MODE    0
- #define T7XX_FB_DL_MODE     1
-+#define T7XX_FB_DUMP_MODE   2
- 
-+#define T7XX_FB_CMD_RTS          "_RTS"
-+#define T7XX_FB_CMD_CTS          "_CTS"
-+#define T7XX_FB_CMD_FIN          "_FIN"
-+#define T7XX_FB_CMD_OEM_MRDUMP   "oem mrdump"
-+#define T7XX_FB_CMD_OEM_LKDUMP   "oem dump_pllk_log"
- #define T7XX_FB_CMD_DOWNLOAD     "download"
- #define T7XX_FB_CMD_FLASH        "flash"
- #define T7XX_FB_CMD_REBOOT       "reboot"
-+#define T7XX_FB_RESP_MRDUMP_DONE "MRDUMP08_DONE"
- #define T7XX_FB_RESP_OKAY        "OKAY"
- #define T7XX_FB_RESP_FAIL        "FAIL"
- #define T7XX_FB_RESP_DATA        "DATA"
- #define T7XX_FB_RESP_INFO        "INFO"
- #define T7XX_FB_CMD_GET_VER      "get_version"
- 
-+/* Internal region indexes */
-+enum t7xx_regions {
-+	T7XX_MRDUMP_INDEX,
-+	T7XX_LKDUMP_INDEX,
-+};
-+
-+struct t7xx_dump_region_info {
-+	const char *name;
-+	size_t size;
-+};
-+
-+struct t7xx_dump_region {
-+	struct t7xx_dump_region_info *info;
-+	struct devlink_region_ops ops;
-+	struct devlink_region *dlreg;
-+	void *buf;
-+};
-+
- struct t7xx_flash_dump {
- 	struct t7xx_pci_dev *t7xx_dev;
- 	struct t7xx_port *port;
- 	struct devlink *ctx;
-+	struct t7xx_dump_region regions[T7XX_TOTAL_REGIONS];
-+	struct workqueue_struct *wq;
-+	struct work_struct ws;
- 	unsigned long status;
- 	u8 mode;
+@@ -57,6 +57,7 @@ enum t7xx_regions {
+ struct t7xx_dump_region_info {
+ 	const char *name;
+ 	size_t size;
++	size_t dump_size;
  };
+ 
+ struct t7xx_dump_region {
 diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.c b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-index 24f79e981fd9..86cdb0d572d4 100644
+index 86cdb0d572d4..ab35342a2d16 100644
 --- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
 +++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-@@ -244,6 +244,8 @@ static void t7xx_lk_stage_event_handling(struct t7xx_fsm_ctl *ctl, unsigned int
- 
- 		if (lk_event == LK_EVENT_CREATE_POST_DL_PORT)
- 			md->t7xx_dev->flash_dump->mode = T7XX_FB_DL_MODE;
-+		else
-+			md->t7xx_dev->flash_dump->mode = T7XX_FB_DUMP_MODE;
+@@ -249,6 +249,12 @@ static void t7xx_lk_stage_event_handling(struct t7xx_fsm_ctl *ctl, unsigned int
  
  		port->port_conf->ops->enable_chl(port);
  		t7xx_cldma_start(md_ctrl);
++
++		if (lk_event == LK_EVENT_CREATE_POST_DL_PORT)
++			atomic_set(&md->t7xx_dev->event, T7XX_FASTBOOT_DL_MODE);
++		else
++			atomic_set(&md->t7xx_dev->event, T7XX_FASTBOOT_DUMP_MODE);
++
+ 		break;
+ 
+ 	default:
+@@ -332,6 +338,7 @@ static void fsm_routine_ready(struct t7xx_fsm_ctl *ctl)
+ 
+ 	ctl->curr_state = FSM_STATE_READY;
+ 	t7xx_fsm_broadcast_ready_state(ctl);
++	atomic_set(&md->t7xx_dev->event, T7XX_READY);
+ 	t7xx_md_event_notify(md, FSM_READY);
+ }
+ 
 -- 
 2.34.1
 
