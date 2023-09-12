@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B307D79D627
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756B579D631
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236631AbjILQWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
+        id S231518AbjILQYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233717AbjILQWc (ORCPT
+        with ESMTP id S236705AbjILQX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:22:32 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C8F10D;
-        Tue, 12 Sep 2023 09:22:28 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcf2de59cso742652166b.0;
-        Tue, 12 Sep 2023 09:22:28 -0700 (PDT)
+        Tue, 12 Sep 2023 12:23:58 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4454F10EB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:23:54 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-414f0b707d5so121cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694535747; x=1695140547; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XfZpeOfcmkjD2RwkOI7LjaIvRtoKYYK0xNqzXUjc4kk=;
-        b=abw1/11LkpA+ahNq+QaCbGTyb+ulw1ZRMK8JIyKxofIhSF5S2nR3zltBMQPwW2Cu1t
-         Ano/Ay2vIt6FrvNP1Uv06Jmi+V7BoJJpD6BBTR7cXYW5nEos1UPMR3RrgJp9jIPKbjag
-         L9scuWC0xflqmCPAmWxXNVpEyOFnjA/7Yi1ahDC6gUYn3NcD6gcJ/daMjiyWK9rwwfL6
-         0ERnZrcBuhPH+kcfqqUqu1pm4bHfNkxGDXa0oFa8NueBqEXzpfH/8Gdc5Kw3Bjg9M7oB
-         3dkeXP7PcAfcJU8/2bt+V3GDBimh7uY00pwJdDESr3oAMDLkPtcFnh9SEnOgJ12m0zGQ
-         OsQg==
+        d=google.com; s=20230601; t=1694535833; x=1695140633; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N+ugFgOb5iS2vOO7DahZWqOi4I/gSUmJb5jnpjTlaDk=;
+        b=p2OD/8DBtrf9InTP8QjeMInf6vuOGmkKpLtTGUER3ChxofUDqqUJe3xbwNk8ObjEv3
+         nY36eO4sG2lp63UAuofwJO4dAfI2qqdCoAyA5FwV9tOgMdMowe52Qg7yHVSvSCM3V2WA
+         +q8yTrHWN9w66TDiQG9k7njHqPPZnmS9o5zoe1RsYQgvmcvp92moZ3qsNANmb9616fpG
+         Q9NlDrO0JxLRHcAgRKFfPwrpput908fl+UFh0ctheRPWMRfjgi54Oa5YvNMoR7zlpBSi
+         3g9CIJMo8ZafBlxL9dyXu8HfWvR+2Q0dEqFudw1MJNc8GbseFxTzOtkHcubHXrEeCIhI
+         6OLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694535747; x=1695140547;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XfZpeOfcmkjD2RwkOI7LjaIvRtoKYYK0xNqzXUjc4kk=;
-        b=ieIbETahCHZfsaNRK/dzYv0N2LngNu57OlXLvwjuhQ1mZOJSk+QDWyWyYQaw0GcUML
-         HhIQ2VNXEFyU/WSzIzxV3boBq1m5IlchKEqzzu+SdLMLOPQGCDbpKM0bib29TJAHyag3
-         1xaIWMj/UNSdRUhmKt4998pEu1vKHPpN1ZDoWJ6wQKjPLeVxgfA0gBQHAKObb9CMcZev
-         ZfB+OT3PHXIpz+1bmcAAGxBv1sbZeJOuzyJAOnD0Kivy8WorFQQQ+2WISbHUtA1J3ZUu
-         RvVCRG8XycGzzf7a8jSXRiRkvPfr5iQLUHPzGMziXY0OD/goCCi5XssbQoHvZ6Z8vBmN
-         fBFw==
-X-Gm-Message-State: AOJu0Yy1qB0i7xtiqFfWPANjXGzyLBFhvsHfPWwtCNl5Q3UICFdhs80K
-        ztC8MFWOq2RsjIS/37psg+dsKUj1ww==
-X-Google-Smtp-Source: AGHT+IG9TvD3z/xvZuFAqoVvxB1j1Q7YEwy8ygKiK8gg4f/Ylc0e34g1E+Ze0NmabQio29q2da8QFA==
-X-Received: by 2002:a17:907:7791:b0:9a9:e41c:bcb6 with SMTP id ky17-20020a170907779100b009a9e41cbcb6mr11465182ejc.28.1694535746774;
-        Tue, 12 Sep 2023 09:22:26 -0700 (PDT)
-Received: from p183 ([46.53.254.179])
-        by smtp.gmail.com with ESMTPSA id d11-20020a1709064c4b00b00993004239a4sm6998179ejw.215.2023.09.12.09.22.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 09:22:26 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 19:22:24 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org, keescook@chromium.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-hardening@vger.kernel.org, David.Laight@aculab.com
-Subject: [PATCH v3 1/2] uapi: fix __DECLARE_FLEX_ARRAY for C++
-Message-ID: <97242381-f1ec-4a4a-9472-1a464f575657@p183>
-References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
- <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183>
- <202309080848.60319AF@keescook>
- <f1819874-2b91-4983-9ebe-6cd83d5d3bc3@p183>
- <202309080910.44BB7CEF@keescook>
- <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
+        d=1e100.net; s=20230601; t=1694535833; x=1695140633;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N+ugFgOb5iS2vOO7DahZWqOi4I/gSUmJb5jnpjTlaDk=;
+        b=HkpHunE+ockOjF2AgnD13W4snDlZLtJ8D2A8B+EA24Rz0T2Z0TExzzEtEo5fwXfe4T
+         AumyHNxSWztMyyyqT50jUJdUfP7LQlbySs6xpigWb0OqKqYndyWtafXm8C7c59wNGkKY
+         XMcrBiqTr0UXtb6A8k+2jNYZPlvYyJoezCaBGA9r7yFbbVHQkQM4YYsGakc11QhL/zaM
+         8VyZoRyfpsJYtLAr7iz/oATs2km+mO44iCP260r0kif8mfsa0cejBEXtbrj6NLmJ1ADy
+         CzEXClByUCh5Y+nZ17caWc26rjXpGlgI/XDiG8zPvbhTSc5Itq1RxmpI17/ieTjJST7G
+         Ts6w==
+X-Gm-Message-State: AOJu0YzWD+dWS5J8tPOgu+lm3dKLxML5LyIilH0vbyRy/OMB66B4tWRV
+        fHMNDI40q9dHp+cZ9ml2eSBxDOXCC6bS/GGoMBjK
+X-Google-Smtp-Source: AGHT+IGZKq1neVdPa5doNGKg4ZeW48OcCeQNtBQcguqv/oZA7QzGQDO5RyH2blcv1AqWSyJKVDQlyqsbKQeiYJ53mNw=
+X-Received: by 2002:ac8:6b04:0:b0:405:4662:d1b6 with SMTP id
+ w4-20020ac86b04000000b004054662d1b6mr729qts.0.1694535832436; Tue, 12 Sep 2023
+ 09:23:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
+From:   Joshua Pius <joshuapius@google.com>
+Date:   Tue, 12 Sep 2023 12:23:14 -0400
+Message-ID: <CAFs7P=hZVfUnTKYgOUwfwT6S9TO72iuJMBPbBG0i+U-4Au=O=Q@mail.gmail.com>
+Subject: Re: [v3] drm/i915/display/lspcon: Increase LSPCON mode settle timeout
+To:     Ankit K Nautiyal <ankit.k.nautiyal@intel.com>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Pablo Ceballos <pceballos@google.com>,
+        Niko Tsirakis <ntsirakis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__DECLARE_FLEX_ARRAY(T, member) macro expands to
+Yes, we've proposed this change before. The reasoning is still the
+same. Added below to include in this thread as well. Is there a reason
+the below explanation and test is not sufficient?
 
-	struct {
-		struct {} __empty_member;
-		T member[];
-	};
+This issue affected several different CometLake-based Chrome OS device
+designs. The details of the original report are in the Google partner
+issue tracker (issue # 178169843), but I believe this requires a
+Google partner account to access:
+https://partnerissuetracker.corp.google.com/issues/178169843
 
-which is subtly wrong in C++ because sizeof(struct{}) is 1 not 0,
-changing UAPI structures layouts.
+The summary is that we were seeing these "*ERROR* LSPCON mode hasn't
+settled" messages in the kernel logs followed by the display not
+working at all. We increased the timeout to 500ms while investigation
+continued and this reduced the number of occurrences of this issue:
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/7b2899fc1a6f9409e8075b3153baaf02c4d1fc75
 
-This can be fixed by expanding to
+The problem continued to occur on about 2% of devices even after
+increasing the timeout to 500ms. The investigation continued in issue
+# 188035814, with engineers from Parade and Intel involved.
+Ultimately, the recommendation from Intel engineers was to increase
+the timeout further:
+https://partnerissuetracker.corp.google.com/issues/188035814
 
-	T member[];
+The timeout was then increased to 1000ms:
+https://chromium.googlesource.com/chromiumos/third_party/kernel/+/a16cfc2062e768c8e5ad8fa09b8ca127aa1ead9a
 
-Now g++ doesn't like "T member[]" either, throwing errors on
-the following code:
+I recently ran 100 reboot trials on one device and found that the
+median time for the LSPCON mode to settle was 440ms and the max was
+444ms. But we know from the original reports that even after we set
+the timeout to 500ms the issue continued to happen on some small
+percentage of devices. So this is why I picked the larger value of
+800ms.
 
-	struct S {
-		union {
-			T1 member1[];
-			T2 member2[];
-		};
-	};
-
-or
-
-	struct S {
-		T member[];
-	};
-
-Use "T member[0];" which seems to work and does the right thing wrt
-structure layout.
-
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-Fixes: 3080ea5553cc ("stddef: Introduce DECLARE_FLEX_ARRAY() helper")
----
-
- include/uapi/linux/stddef.h |    6 ++++++
- 1 file changed, 6 insertions(+)
-
---- a/include/uapi/linux/stddef.h
-+++ b/include/uapi/linux/stddef.h
-@@ -29,6 +29,11 @@
- 		struct TAG { MEMBERS } ATTRS NAME; \
- 	}
- 
-+#ifdef __cplusplus
-+/* sizeof(struct{}) is 1 in C++, not 0, can't use C version of the macro. */
-+#define __DECLARE_FLEX_ARRAY(T, member)	\
-+	T member[0]
-+#else
- /**
-  * __DECLARE_FLEX_ARRAY() - Declare a flexible array usable in a union
-  *
-@@ -45,6 +50,7 @@
- 		TYPE NAME[]; \
- 	}
- #endif
-+#endif
- 
- #ifndef __counted_by
- #define __counted_by(m)
+>> This is to eliminate all cases of "*ERROR* LSPCON mode hasn't settled",
+>> followed by link training errors. Intel engineers recommended increasing
+>> this timeout and that does resolve the issue.
+>>
+>> On some CometLake-based device designs the Parade PS175 takes more than
+>> 400ms to settle in PCON mode. 100 reboot trials on one device resulted
+>> in a median settle time of 440ms and a maximum of 444ms. Even after
+>> increasing the timeout to 500ms, 2% of devices still had this error. So
+>> this increases the timeout to 800ms.
+>>
+>> Signed-off-by: Pablo Ceballos <pceballos@google.com>
+>
+>I think we've been here before. Do you have a publicly available gitlab
+>issue with the proper logs? If not, please file one at [1].
+>
+>BR,
+>Jani.
+>
+>[1] https://gitlab.freedesktop.org/drm/intel/issues/new
+>
+>
+>> ---
+>>
+>> V2: Added more details in the commit message
+>> V3: Only apply the increased timeout if the vendor is Parade
+>>
+>> drivers/gpu/drm/i915/display/intel_lspcon.c | 21 ++++++++++++++++++++-
+>>  1 file changed, 20 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> index bb3b5355a0d9..b07eab84cc63 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
+>> @@ -153,6 +153,24 @@ static enum drm_lspcon_mode lspcon_get_current_mode(struct intel_lspcon *lspcon)
+>>   return current_mode;
+>>  }
+>>
+>> +static u32 lspcon_get_mode_settle_timeout(struct intel_lspcon *lspcon)
+>> +{
+>> + u32 timeout_ms = 400;
+>> +
+>> + /*
+>> + * On some CometLake-based device designs the Parade PS175 takes more
+>> + * than 400ms to settle in PCON mode. 100 reboot trials on one device
+>> + * resulted in a median settle time of 440ms and a maximum of 444ms.
+>> + * Even after increasing the timeout to 500ms, 2% of devices still had
+>> + * this error. So this sets the timeout to 800ms.
+>> + */
+>> + if (lspcon->vendor == LSPCON_VENDOR_PARADE)
+>> + timeout_ms = 800;
+>> +
+>> + return timeout_ms;
+>> +}
+>> +
+>> +
+>>  static enum drm_lspcon_mode lspcon_wait_mode(struct intel_lspcon *lspcon,
+>>       enum drm_lspcon_mode mode)
+>>  {
+>> @@ -167,7 +185,8 @@ static enum drm_lspcon_mode lspcon_wait_mode(struct intel_lspcon *lspcon,
+>>   drm_dbg_kms(&i915->drm, "Waiting for LSPCON mode %s to settle\n",
+>>      lspcon_mode_name(mode));
+>>
+>> - wait_for((current_mode = lspcon_get_current_mode(lspcon)) == mode, 400);
+>> + wait_for((current_mode = lspcon_get_current_mode(lspcon)) == mode,
+>> + lspcon_get_mode_settle_timeout(lspcon));
+>>   if (current_mode != mode)
+>>   drm_err(&i915->drm, "LSPCON mode hasn't settled\n");
