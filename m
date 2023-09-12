@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D27E79D24B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00AF079D250
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbjILNcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        id S235777AbjILNcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235742AbjILNcO (ORCPT
+        with ESMTP id S235780AbjILNcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:32:14 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8DC173F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:02 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so7351555a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:02 -0700 (PDT)
+        Tue, 12 Sep 2023 09:32:21 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F11319B2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:05 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-403012f27e3so37063555e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694525521; x=1695130321; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694525523; x=1695130323; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Y15C8Fv8QHJExv9aOHGDEKpdbaBfEIqNr0Cf6pow0Ag=;
-        b=nI91iwqJIH1SjoS5i8r+kXQCiccUkhQ7ewjeK6z07T9NvenxGlsVu273mQGCAQp3av
-         2JW2LiR+yk0KEb4KXGLmQQmVFeVUjSkOA6IsROSSExxspjyeXRc+t22k+W2jHm9qGohI
-         +zJHg4zGlSKsVe2LTHBPJtLcPWRWdJgmZoUT6QLeoyrUTXQ1ZVCyW9qSrrWhLqgPbNBl
-         AmhBfuewRF9H5O+RrexSceiBlvddffaZOBN9Eqvgi/yebc/wNYabeatgkqHFmuKrOt54
-         Z5c4n37r4k9AdIrTTCMTjvvjnK0sB9cmm8XJefOiL3Kv2P6JXNeXSgRnk0u63Rxpzkyr
-         niPA==
+        bh=7fIbXPUxOgaRdqz8db2Ih/LEJAu25y/8yx2Z1zWWYkc=;
+        b=h+VXIbylKDiTqHIReWFnyM2iADHgbBv+i1XpXVekNobbAPZ2W2XIzZK+Tjz4y6YA2W
+         GS3SM9ZFUdfJgVO5dokLOT706d7X8t4xwU1Yq6Ca/LyQq4rHhXWAncDTjtPoojQuldGP
+         PPuL6tuZQ14m0iLV1uVigooMGCYR0VCTS55glBrUlCG/KKFYydi3u+qMKeOE7OM3dicC
+         3GQHgoMcWQSPjVqINUdyGG2BdBXsw9WPtM95mCISqTPE8iAszz/btUT4vKKymkrkiwdx
+         PwU2b6no1yivQ/RAV391143ufIg3PkzB6kBoe3s03ZDdifGDcNBqpLgoVXjWWiEUBc3b
+         4NTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694525521; x=1695130321;
+        d=1e100.net; s=20230601; t=1694525523; x=1695130323;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y15C8Fv8QHJExv9aOHGDEKpdbaBfEIqNr0Cf6pow0Ag=;
-        b=xFwQtHoYZ2czMYMINFfbhFdNOHNURQp2sK3xWLLlFCEZ67BMfL8ptRFOWPLbJqhbhO
-         yE1rHaQvJcN1CQXb/VwrDWkcqWEiYz2vYB6VxSHdAUqUBVDXN07fuiRhv5cumTA3EzaM
-         vMRKvadobAVLMIKZE5F1RRGf9V6FFNdB97ZYvhuragDS7FGFqsjH+pW8ANMwOoQRdNkw
-         pbDpdrJmGCTi7AQLn+AJaUZbM80QrqJc8W+pdtPyyF9547EbjTi/AmnzxRXPdt1NSLX7
-         jtUZ6Zz9NHkEMvAcBcjplRABQTS9851w4e3LqZjKYoQfqwBF5mBQm1NMwV+w9u+kWrW3
-         w6dw==
-X-Gm-Message-State: AOJu0YwRCk6zNtVRZxiHonsU29ntpnoCphIuEQ6HZFgmh0EO4z3+9vkU
-        pjqDorGHnYXhqFwTLShfa4ReZw==
-X-Google-Smtp-Source: AGHT+IE3doayARluv4buJCGo1gFXhllVuL8rkaKATeR59HGZ3l/xPGTkeTXBDZpVZHKXxV2qHfkVYw==
-X-Received: by 2002:a05:6402:7c7:b0:523:3f45:5678 with SMTP id u7-20020a05640207c700b005233f455678mr10703279edy.31.1694525521218;
-        Tue, 12 Sep 2023 06:32:01 -0700 (PDT)
+        bh=7fIbXPUxOgaRdqz8db2Ih/LEJAu25y/8yx2Z1zWWYkc=;
+        b=sKuv2BQ7Xu9+5SYAHf08u4u91yg9lAWR+KXU0kbavJKO55Y0K9uGLEBf2sjSn+OggH
+         H+e2cgo7xzP2+Mk37kwHUEQfIiklGGyoAlf5HJNNWtyuycioLE6ANIkFmbk2eyVoOyDH
+         CigXdqOvw0C2Fxv8iEfz7g84QHlKoPbRbUiV0LFwUlnmZbY7N6FzHd48jaqGlp90XCwe
+         OQ9G4qJ7NMW/MeyM/GAJkfAAw79hMMa1feEa72Ti2OIBLuC4oNCe8QZIQy/IF5d+DwNV
+         AVGdoFd9kfkl3zW0CWyINEho9TDyI1tTCvMkvVuyIR8PbgkJ8ZZhhu/inkuTdZBHTulp
+         2lug==
+X-Gm-Message-State: AOJu0YxX+ZVy6WolvL0vOPtwkrOKUzuHgCKpusbtG8PaFLuyHFbo9SRk
+        94TBDCn0WG7fpmEFZ7vWxntV3g==
+X-Google-Smtp-Source: AGHT+IHzJIPQHME1Q7uvTkr6fW7CEioQdhde5+dmoERPBsutUw7GSxKetx2FMzynENM3rKV8xd5oDw==
+X-Received: by 2002:a5d:448c:0:b0:31c:7ada:5e05 with SMTP id j12-20020a5d448c000000b0031c7ada5e05mr10020874wrq.51.1694525523578;
+        Tue, 12 Sep 2023 06:32:03 -0700 (PDT)
 Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
-        by smtp.gmail.com with ESMTPSA id j2-20020aa7ca42000000b0052a401d8ef6sm5983830edt.71.2023.09.12.06.31.59
+        by smtp.gmail.com with ESMTPSA id j2-20020aa7ca42000000b0052a401d8ef6sm5983830edt.71.2023.09.12.06.32.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 06:32:00 -0700 (PDT)
+        Tue, 12 Sep 2023 06:32:03 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 12 Sep 2023 15:31:45 +0200
-Subject: [PATCH v2 07/14] arm64: dts: qcom: msm8939: Drop RPM bus clocks
+Date:   Tue, 12 Sep 2023 15:31:46 +0200
+Subject: [PATCH v2 08/14] dt-bindings: remoteproc: qcom,adsp: Remove AGGRE2
+ clock
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230721-topic-rpm_clk_cleanup-v2-7-1e506593b1bd@linaro.org>
+Message-Id: <20230721-topic-rpm_clk_cleanup-v2-8-1e506593b1bd@linaro.org>
 References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
 In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -79,65 +80,65 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
         linux-usb@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694525501; l=1626;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694525501; l=1615;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=hTGKHTrH0J17CafSs4xXiO5hAXDwGff4qsoi0JWwbnA=;
- b=l+QgN/I9sJ1LySbRwaJMmRSPxHrlPgUlyioN0ie8QDsjFp8u6rYg+lKqT3jjZ7Apm7mhB2dgS
- PSf1efuodKDA5yu/qkP/pv2fKUCJuDLwADDK3n+SXTx671DVTtqp0Da
+ bh=nFM/c4yhEW/1Dlnb7a6ypwnImP1sGtGxirXiBz1eak0=;
+ b=JDyPUD41UqorWQJn/tchpJ3anwshIH4V9EmIuE8LBebXP25/DZMh3KXg4CQrOMQ4VZ/xrZfs3
+ iIhGTWcO1/6Aymi8D5hrH5z4wKppS/IuNsDm4BZdJkVbXR+2a1OMcBI
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These clocks are now handled from within the icc framework and are
-no longer registered from within the CCF. Remove them.
+The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
+within the interconnect driver. Attaching it to SLPI was a total hack.
+Get rid of it.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/msm8939.dtsi | 12 ------------
- 1 file changed, 12 deletions(-)
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml    | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-index 6e24f0f2374f..e3d1eb7dd289 100644
---- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
-@@ -581,9 +581,6 @@ rpm_msg_ram: sram@60000 {
- 		bimc: interconnect@400000 {
- 			compatible = "qcom,msm8939-bimc";
- 			reg = <0x00400000 0x62000>;
--			clock-names = "bus", "bus_a";
--			clocks = <&rpmcc RPM_SMD_BIMC_CLK>,
--				 <&rpmcc RPM_SMD_BIMC_A_CLK>;
- 			#interconnect-cells = <1>;
- 		};
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+index a2b0079de039..661c2b425da3 100644
+--- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+@@ -66,7 +66,9 @@ allOf:
+               - qcom,msm8953-adsp-pil
+               - qcom,msm8974-adsp-pil
+               - qcom,msm8996-adsp-pil
++              - qcom,msm8996-slpi-pil
+               - qcom,msm8998-adsp-pas
++              - qcom,msm8998-slpi-pas
+               - qcom,sdm845-adsp-pas
+               - qcom,sdm845-cdsp-pas
+               - qcom,sdm845-slpi-pas
+@@ -79,24 +81,6 @@ allOf:
+           items:
+             - const: xo
  
-@@ -627,25 +624,16 @@ restart@4ab000 {
- 		pcnoc: interconnect@500000 {
- 			compatible = "qcom,msm8939-pcnoc";
- 			reg = <0x00500000 0x11000>;
--			clock-names = "bus", "bus_a";
--			clocks = <&rpmcc RPM_SMD_PCNOC_CLK>,
--				 <&rpmcc RPM_SMD_PCNOC_A_CLK>;
- 			#interconnect-cells = <1>;
- 		};
- 
- 		snoc: interconnect@580000 {
- 			compatible = "qcom,msm8939-snoc";
- 			reg = <0x00580000 0x14080>;
--			clock-names = "bus", "bus_a";
--			clocks = <&rpmcc RPM_SMD_SNOC_CLK>,
--				 <&rpmcc RPM_SMD_SNOC_A_CLK>;
- 			#interconnect-cells = <1>;
- 
- 			snoc_mm: interconnect-snoc {
- 				compatible = "qcom,msm8939-snoc-mm";
--				clock-names = "bus", "bus_a";
--				clocks = <&rpmcc RPM_SMD_SYSMMNOC_CLK>,
--					 <&rpmcc RPM_SMD_SYSMMNOC_A_CLK>;
- 				#interconnect-cells = <1>;
- 			};
- 		};
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            enum:
+-              - qcom,msm8996-slpi-pil
+-              - qcom,msm8998-slpi-pas
+-    then:
+-      properties:
+-        clocks:
+-          items:
+-            - description: XO clock
+-            - description: AGGRE2 clock
+-        clock-names:
+-          items:
+-            - const: xo
+-            - const: aggre2
+-
+   - if:
+       properties:
+         compatible:
 
 -- 
 2.42.0
