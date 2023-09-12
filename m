@@ -2,196 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C29379CB9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF67E79CBA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbjILJY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32846 "EHLO
+        id S233511AbjILJZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbjILJY1 (ORCPT
+        with ESMTP id S232137AbjILJY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:24:27 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25B710D1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:24:22 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfzd1-00051C-8F; Tue, 12 Sep 2023 11:24:15 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfzcy-005kKY-Ir; Tue, 12 Sep 2023 11:24:12 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qfzcx-00123X-Sb; Tue, 12 Sep 2023 11:24:11 +0200
-Date:   Tue, 12 Sep 2023 11:24:11 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Jisheng Zhang <jszhang@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Jose Abreu <joabreu@synopsys.com>, kernel@pengutronix.de,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-sunxi@lists.linux.dev,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [REGRESSION] [PATCH net-next v5 2/2] net: stmmac: use per-queue
- 64 bit statistics where necessary
-Message-ID: <20230912092411.pprnpvrbxwz77x6a@pengutronix.de>
-References: <20230717160630.1892-1-jszhang@kernel.org>
- <20230717160630.1892-3-jszhang@kernel.org>
- <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
- <ZQAa3277GC4c9W1D@xhacker>
- <99695befef06b025de2c457ea5f861aa81a0883c.camel@pengutronix.de>
+        Tue, 12 Sep 2023 05:24:58 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A99E79;
+        Tue, 12 Sep 2023 02:24:53 -0700 (PDT)
+X-UUID: 3891fb14514e11eea33bb35ae8d461a2-20230912
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=LiDUTfzrawFh1EWKsCkz9kjpZ7OgtmwnDfS5wYzBFpI=;
+        b=cQs1XLG8jLaW8Xjc2YhhfbAxieBQHf7LfyiXt6nPjnV7+xDmb76/5QbasGuUW0l5dIxix1xD+byCaQy36PA7snqRJB3jiAV10ppv9zo/36orYlod4uxqUCMMx250f8jgcqJi3ieD6fTdumlcvmREiyzsAhb54YgwnUK9uRNq5J8=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:e7501742-c96a-4eb6-aad6-25781a534428,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:0ad78a4,CLOUDID:be639aef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 3891fb14514e11eea33bb35ae8d461a2-20230912
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1402903918; Tue, 12 Sep 2023 17:24:49 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 12 Sep 2023 17:24:47 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 17:24:47 +0800
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+Subject: [PATCH v4 1/2] dt-bindings: arm64: dts: mediatek: mt8365-evk: update compatible
+Date:   Tue, 12 Sep 2023 17:24:43 +0800
+Message-ID: <20230912092444.31635-1-macpaul.lin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="izhmnabaedjwyx73"
-Content-Disposition: inline
-In-Reply-To: <99695befef06b025de2c457ea5f861aa81a0883c.camel@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--3.873600-8.000000
+X-TMASE-MatchedRID: i01+YSiNUzMcqJwtUHLtOe0yyL51qL/R+KgiyLtJrSBh2fnHe1cilw2K
+        u+gP3kxise0eJxE/UVXuev+YFA//bWsV28ESZOe8A9lly13c/gFVbRdL8GjdzZsoi2XrUn/Jn6K
+        dMrRsL14qtq5d3cxkNZivyg6Bk2T/JSOWtCLDmch82R3XsjC3oQuz+bKasm9tJFbIY5p5bKPvVa
+        y2kO94Fmb4YhaEgKYKAz08CGQC6VFhCo0f/eBiT6Wn1XP+V4+Y82Gj2QC3yG0smXVK/H8eHzG7s
+        r7xobSAsPEFD+rZA81DDKa3G4nrLQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--3.873600-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 1275F8D9617010498F2A59E9806A8072146B814A40781A02B725653987DFD2632000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Update compatible of 'mediatek,mt8365-evk' from 'enum' to 'const'.
 
---izhmnabaedjwyx73
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+---
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Hello,
+changes for v2:
+ - rebase this patch to follow the v5 patch set of mt8395.
+  - depends on https://lore.kernel.org/lkml/20230909132819.21626-2-macpaul.lin@mediatek.com/T/
+ - Fix description as a single board.
 
-On Tue, Sep 12, 2023 at 11:04:16AM +0200, Lucas Stach wrote:
-> Am Dienstag, dem 12.09.2023 um 16:01 +0800 schrieb Jisheng Zhang:
-> > On Mon, Sep 11, 2023 at 07:11:02PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > Hello,
-> > >=20
-> > > this patch became commit 133466c3bbe171f826294161db203f7670bb30c8 and=
- is
-> > > part of v6.6-rc1.
-> > >=20
-> > > On my arm/stm32mp157 based machine using NFS root this commit makes t=
-he
-> > > following appear in the kernel log:
-> > >=20
-> > > 	INFO: trying to register non-static key.
-> > > 	The code is fine but needs lockdep annotation, or maybe
-> > > 	you didn't initialize this object before use?
-> > > 	turning off the locking correctness validator.
-> > > 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3b=
-be1-dirty #21
-> > > 	Hardware name: STM32 (Device Tree Support)
-> > > 	 unwind_backtrace from show_stack+0x18/0x1c
-> > > 	 show_stack from dump_stack_lvl+0x60/0x90
-> > > 	 dump_stack_lvl from register_lock_class+0x98c/0x99c
-> > > 	 register_lock_class from __lock_acquire+0x74/0x293c
-> > > 	 __lock_acquire from lock_acquire+0x134/0x398
-> > > 	 lock_acquire from stmmac_get_stats64+0x2ac/0x2fc
-> > > 	 stmmac_get_stats64 from dev_get_stats+0x44/0x130
-> > > 	 dev_get_stats from rtnl_fill_stats+0x38/0x120
-> > > 	 rtnl_fill_stats from rtnl_fill_ifinfo+0x834/0x17f4
-> > > 	 rtnl_fill_ifinfo from rtmsg_ifinfo_build_skb+0xc0/0x144
-> > > 	 rtmsg_ifinfo_build_skb from rtmsg_ifinfo+0x50/0x88
-> > > 	 rtmsg_ifinfo from __dev_notify_flags+0xc0/0xec
-> > > 	 __dev_notify_flags from dev_change_flags+0x50/0x5c
-> > > 	 dev_change_flags from ip_auto_config+0x2f4/0x1260
-> > > 	 ip_auto_config from do_one_initcall+0x70/0x35c
-> > > 	 do_one_initcall from kernel_init_freeable+0x2ac/0x308
-> > > 	 kernel_init_freeable from kernel_init+0x1c/0x138
-> > > 	 kernel_init from ret_from_fork+0x14/0x2c
-> > > 	Exception stack(0xe0815fb0 to 0xe0815ff8)
-> > > 	5fa0:                                     00000000 00000000 00000000=
- 00000000
-> > > 	5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000=
- 00000000
-> > > 	5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> > > 	dwc2 49000000.usb-otg: new device is high-speed
-> > >=20
-> > > I didn't try understand this problem, it's too close to quitting time
-> > > :-)
-> >=20
-> > Thanks for the bug report, I'm checking the code.
->=20
-> The newly added "struct u64_stats_sync syncp" uses a seqlock
-> internally, which is broken into multiple words on 32bit machines, and
-> needs to be initialized properly. You need to call u64_stats_init on
-> syncp before first usage.
+changes for v3:
+ - rebase this patch to follow the v6 patch set of mt8395.
+  - depends on https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
+ - drop "Fixes:" tag in commit message.
+ - drop platform description update for mt8365-evk (Genio 350-EVK).
 
-This is done. The problematic thing is that in stmmac_open() ->
-__stmmac_open() the syncp initialized before is overwritten by
+changes for v4:
+ - Replace "Fix" in commit message with "Update".
+ - Fix 'make dtbs_check W=1' error for 'const: mediatek,mt8365-evk'
 
-	memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index 2e8ad49c3479..9031160ef41b 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -245,8 +245,7 @@ properties:
+               - mediatek,mt8183-pumpkin
+           - const: mediatek,mt8183
+       - items:
+-          - enum:
+-              - mediatek,mt8365-evk
++          - const: mediatek,mt8365-evk
+           - const: mediatek,mt8365
+       - description: MediaTek Genio 1200 Boards (Genio 1200 EVK)
+         items:
+-- 
+2.18.0
 
-Do I need to point out that this is ugly?
-
-Together with Johannes Berg I debugged that in #netdev and we came up
-with:
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/ne=
-t/ethernet/stmicro/stmmac/stmmac_main.c
-index 9a3182b9e767..a3481b48c77f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3893,7 +3893,7 @@ static int stmmac_open(struct net_device *dev)
- {
- 	struct stmmac_priv *priv =3D netdev_priv(dev);
- 	struct stmmac_dma_conf *dma_conf;
--	int ret;
-+	int ret, i;
-=20
- 	dma_conf =3D stmmac_setup_dma_desc(priv, dev->mtu);
- 	if (IS_ERR(dma_conf))
-@@ -3904,6 +3904,13 @@ static int stmmac_open(struct net_device *dev)
- 		free_dma_desc_resources(priv, dma_conf);
-=20
- 	kfree(dma_conf);
-+
-+	dma_conf =3D &priv->dma_conf;
-+	for (i =3D 0; i < MTL_MAX_RX_QUEUES; i++)
-+		u64_stats_init(&dma_conf->rx_queue[i].rxq_stats.syncp);
-+	for (i =3D 0; i < MTL_MAX_TX_QUEUES; i++)
-+		u64_stats_init(&dma_conf->tx_queue[i].txq_stats.syncp);
-+
- 	return ret;
- }
-=20
-which works around the problem. Note however that the u64_stats_init()
-calls must not be deleted from stmmac_dvr_probe() because it's used
-there once before __stmmac_open() overwrites it.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---izhmnabaedjwyx73
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUALjsACgkQj4D7WH0S
-/k72JAf+LYM1CkJhOhJS/1kV0hkKafHhVe1lKd95/Zz/LUAsKlW0e9mBrZt3me/f
-4yWOpzSpDcQ5+foH8JSQQPkVcxn0pz54Gd1nZFxbAJ4zeK/n/TrTmT4p7NZLPsvS
-0OFmRm1w8GX0NH66fB+NcL+bH9JFJr6TTP/bPjJSZRmtUHMsFAh3nRp0/6NmsAnz
-6CsQ0mFfqeXwu9aPaZLADQxkR2sjEyJLLSs0nC/8Y2Uc1CwhQvbkx8p7uHq6JofB
-AtH1Kv9A8c4IdGuOOPe59LwZgKLFg566o0GV2VLgpLHubvIXwhmuE/RBIAiMewNb
-oiQEaXy5c8ei526q5NisU4+4ttrYwA==
-=5UuB
------END PGP SIGNATURE-----
-
---izhmnabaedjwyx73--
