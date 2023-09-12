@@ -2,252 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DA779C1D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8963B79C1B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjILBpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
+        id S232895AbjILBfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbjILBpO (ORCPT
+        with ESMTP id S235594AbjILBfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:45:14 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B9AA0A60;
-        Mon, 11 Sep 2023 18:21:17 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rl50914Cbz4f3jYQ;
-        Tue, 12 Sep 2023 09:02:17 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgCHHt6buP9kMlr7AA--.14108S3;
-        Tue, 12 Sep 2023 09:02:21 +0800 (CST)
-Subject: Re: [PATCH -next] md: simplify md_seq_ops
-To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     song@kernel.org, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230911065010.3530461-1-yukuai1@huaweicloud.com>
- <20230911160540.0000060e@linux.intel.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <b2754d8e-dfe7-ffff-66ac-052f366530e4@huaweicloud.com>
-Date:   Tue, 12 Sep 2023 09:02:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 11 Sep 2023 21:35:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7324C21F86
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694481375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LndbGk9Tq34zPmQVev5k5AT8KIrme9LRtl6RtbBDZn0=;
+        b=eHmYRMisfHWslgfjLptnvX940aFlMWa3Ip6XB1Ch1UohuH49VaXWp6bHn4gVugumc4hA1K
+        D4JdKLJN+uQxfDSvq1a2G4f4n/+DoRUtk8uJcPdIW8QVioyXkGy+OnamasFggPG+wj6roO
+        83apI/VhGkR15G3FDrQuS44mYds59rg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-270-GpelxvecNu62UxAy92gbag-1; Mon, 11 Sep 2023 21:03:21 -0400
+X-MC-Unique: GpelxvecNu62UxAy92gbag-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 66B788A437D;
+        Tue, 12 Sep 2023 01:03:20 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6D2E44407D;
+        Tue, 12 Sep 2023 01:03:19 +0000 (UTC)
+Date:   Tue, 12 Sep 2023 09:03:16 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Jan Hendrik Farr <kernel@jfarr.cc>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
+        vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, bhelgaas@google.com, bluca@debian.org,
+        lennart@poettering.net, prudo@redhat.com
+Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
+Message-ID: <ZP+41JvEFjsnEG19@MiWiFi-R3L-srv>
+References: <20230911052535.335770-1-kernel@jfarr.cc>
 MIME-Version: 1.0
-In-Reply-To: <20230911160540.0000060e@linux.intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCHHt6buP9kMlr7AA--.14108S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF1UKF4DWr43XF1rZr18Krg_yoW7Gw1xpF
-        ZIqFW5Ar4rXFWrXr1DXa1kuFyFqwn7Grn2gr9xGa95Cr1qqrn3AF1Sgw4fu3sI9ayxGrnY
-        vw4DKa47Wr18G37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
-        UUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911052535.335770-1-kernel@jfarr.cc>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add Philipp to CC as he is also investigating UKI
 
-ÔÚ 2023/09/11 22:05, Mariusz Tkaczyk Ð´µÀ:
-> On Mon, 11 Sep 2023 14:50:10 +0800
-> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+On 09/11/23 at 07:25am, Jan Hendrik Farr wrote:
+> Hello,
 > 
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Use seq_list_start/next/stop() directly. Move printing "Personalities"
->> to md_sep_start() and "unsed devices" to md_seq_stop().
->>
->> Cc: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 124 ++++++++++++------------------------------------
->>   1 file changed, 31 insertions(+), 93 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 0fe7ab6e8ab9..9c1155042335 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -8192,105 +8192,14 @@ static int status_resync(struct seq_file *seq,
->> struct mddev *mddev) return 1;
->>   }
->>   
->> -static void *md_seq_start(struct seq_file *seq, loff_t *pos)
->> -{
->> -	struct list_head *tmp;
->> -	loff_t l = *pos;
->> -	struct mddev *mddev;
->> -
->> -	if (l == 0x10000) {
->> -		++*pos;
->> -		return (void *)2;
->> -	}
->> -	if (l > 0x10000)
->> -		return NULL;
->> -	if (!l--)
->> -		/* header */
->> -		return (void*)1;
->> -
->> -	spin_lock(&all_mddevs_lock);
->> -	list_for_each(tmp,&all_mddevs)
->> -		if (!l--) {
->> -			mddev = list_entry(tmp, struct mddev, all_mddevs);
->> -			if (!mddev_get(mddev))
->> -				continue;
->> -			spin_unlock(&all_mddevs_lock);
->> -			return mddev;
->> -		}
->> -	spin_unlock(&all_mddevs_lock);
->> -	if (!l--)
->> -		return (void*)2;/* tail */
->> -	return NULL;
->> -}
->> -
->> -static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
->> -{
->> -	struct list_head *tmp;
->> -	struct mddev *next_mddev, *mddev = v;
->> -	struct mddev *to_put = NULL;
->> -
->> -	++*pos;
->> -	if (v == (void*)2)
->> -		return NULL;
->> -
->> -	spin_lock(&all_mddevs_lock);
->> -	if (v == (void*)1) {
->> -		tmp = all_mddevs.next;
->> -	} else {
->> -		to_put = mddev;
->> -		tmp = mddev->all_mddevs.next;
->> -	}
->> -
->> -	for (;;) {
->> -		if (tmp == &all_mddevs) {
->> -			next_mddev = (void*)2;
->> -			*pos = 0x10000;
->> -			break;
->> -		}
->> -		next_mddev = list_entry(tmp, struct mddev, all_mddevs);
->> -		if (mddev_get(next_mddev))
->> -			break;
->> -		mddev = next_mddev;
->> -		tmp = mddev->all_mddevs.next;
->> -	}
->> -	spin_unlock(&all_mddevs_lock);
->> -
->> -	if (to_put)
->> -		mddev_put(mddev);
->> -	return next_mddev;
->> -
->> -}
->> -
->> -static void md_seq_stop(struct seq_file *seq, void *v)
->> -{
->> -	struct mddev *mddev = v;
->> -
->> -	if (mddev && v != (void*)1 && v != (void*)2)
->> -		mddev_put(mddev);
->> -}
->> -
->>   static int md_seq_show(struct seq_file *seq, void *v)
->>   {
->> -	struct mddev *mddev = v;
->> +	struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
->>   	sector_t sectors;
->>   	struct md_rdev *rdev;
->>   
->> -	if (v == (void*)1) {
->> -		struct md_personality *pers;
->> -		seq_printf(seq, "Personalities : ");
->> -		spin_lock(&pers_lock);
->> -		list_for_each_entry(pers, &pers_list, list)
->> -			seq_printf(seq, "[%s] ", pers->name);
->> -
->> -		spin_unlock(&pers_lock);
->> -		seq_printf(seq, "\n");
->> -		seq->poll_event = atomic_read(&md_event_count);
->> -		return 0;
->> -	}
->> -	if (v == (void*)2) {
->> -		status_unused(seq);
->> +	if (test_bit(MD_DELETED, &mddev->flags))
->>   		return 0;
->> -	}
->>   
->>   	spin_lock(&mddev->lock);
->>   	if (mddev->pers || mddev->raid_disks || !list_empty(&mddev->disks)) {
->> @@ -8366,6 +8275,35 @@ static int md_seq_show(struct seq_file *seq, void *v)
->>   	return 0;
->>   }
->>   
->> +static void *md_seq_start(struct seq_file *seq, loff_t *pos)
->> +{
->> +	struct md_personality *pers;
->> +
->> +	seq_puts(seq, "Personalities : ");
->> +	spin_lock(&pers_lock);
->> +	list_for_each_entry(pers, &pers_list, list)
->> +		seq_printf(seq, "[%s] ", pers->name);
->> +
->> +	spin_unlock(&pers_lock);
->> +	seq_puts(seq, "\n");
->> +	seq->poll_event = atomic_read(&md_event_count);
->> +
->> +	spin_lock(&all_mddevs_lock);
+> this patch (v2) implements UKI support for kexec_file_load. It will require
+> support in the kexec-tools userspace utility. For testing purposes the
+> following can be used: https://github.com/Cydox/kexec-test/
 > 
-> I would prefer to increase "active" instead holding lock when enumerating over
-> the devices. the main reason is that parsing mdstat is implemented in mdadm, so
-> it could kind of blocker action- for example mdmon follows mdstat so it is read
-> frequently. The time of getting other actions done can highly increase because
-> every open or sysfs_read/write requires this lock.
-> 
->> +
->> +	return seq_list_start(&all_mddevs, *pos);
->> +}
->> +
->> +static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
->> +{
->> +	return seq_list_next(v, &all_mddevs, pos);
->> +}
-> Can it be so simple? Why previous versions takes care of holding "(void)*1" and
-> "(void)*2" then? Could you elaborate?
+> Creating UKIs for testing can be done with ukify (included in systemd),
+> sbctl, and mkinitcpio, etc.
 
-"1" means printing "Personalities", which is now moved to md_seq_start,
-and "2" means printing "unsed devices" which is now moved to
-md_seq_stop. And now md_seq_next is only used to iterate the mddev list.
+This is awesome work, Jan, thanks.
 
-Thanks,
-Kuai
+By the way, could you provide detailed steps about how to test this
+patchset so that people interested can give it a shot?
 
 > 
->> +
->> +static void md_seq_stop(struct seq_file *seq, void *v)
->> +{
->> +	status_unused(seq);
->> +	spin_unlock(&all_mddevs_lock);
->> +}
->> +
->>   static const struct seq_operations md_seq_ops = {
->>   	.start  = md_seq_start,
->>   	.next   = md_seq_next,
+> There has been discussion on this topic in an issue on GitHub that is linked
+> below for reference.
 > 
-> Thanks,
-> Mariusz
+> Changes for v2:
+> - .cmdline section is now optional
+> - moving pefile_parse_binary is now in a separate commit for clarity
+> - parse_pefile.c is now in /lib instead of arch/x86/kernel (not sure if
+>   this is the best location, but it definetly shouldn't have been in an
+>   architecture specific location)
+> - parse_pefile.h is now in include/kernel instead of architecture
+>   specific location
+> - if initrd or cmdline is manually supplied EPERM is returned instead of
+>   being silently ignored
+> - formatting tweaks
 > 
-> .
+> 
+> Some links:
+> - Related discussion: https://github.com/systemd/systemd/issues/28538
+> - Documentation of UKIs: https://uapi-group.org/specifications/specs/unified_kernel_image/
+> 
+> Jan Hendrik Farr (2):
+>   move pefile_parse_binary to its own file
+>   x86/kexec: UKI support
+> 
+>  arch/x86/include/asm/kexec-uki.h       |   7 ++
+>  arch/x86/kernel/Makefile               |   1 +
+>  arch/x86/kernel/kexec-uki.c            | 126 +++++++++++++++++++++++++
+>  arch/x86/kernel/machine_kexec_64.c     |   2 +
+>  crypto/asymmetric_keys/mscode_parser.c |   2 +-
+>  crypto/asymmetric_keys/verify_pefile.c | 110 +++------------------
+>  crypto/asymmetric_keys/verify_pefile.h |  16 ----
+>  include/linux/parse_pefile.h           |  32 +++++++
+>  lib/Makefile                           |   3 +
+>  lib/parse_pefile.c                     | 109 +++++++++++++++++++++
+>  10 files changed, 292 insertions(+), 116 deletions(-)
+>  create mode 100644 arch/x86/include/asm/kexec-uki.h
+>  create mode 100644 arch/x86/kernel/kexec-uki.c
+>  create mode 100644 include/linux/parse_pefile.h
+>  create mode 100644 lib/parse_pefile.c
+> 
+> -- 
+> 2.40.1
 > 
 
