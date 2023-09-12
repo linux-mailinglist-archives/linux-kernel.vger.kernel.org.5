@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF0B79CAFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C521979CB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbjILJDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        id S233495AbjILJDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233310AbjILJCC (ORCPT
+        with ESMTP id S233330AbjILJCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:02:02 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D1410D1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:58 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fc448ee4fso58828227b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:58 -0700 (PDT)
+        Tue, 12 Sep 2023 05:02:05 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610261733
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:01 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-31ad607d383so3333920f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694509317; x=1695114117; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694509320; x=1695114120; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+YGLs65HuKDkoyCmUsNA1LK7hzYTmA6aBZzUDWZlAQ=;
-        b=1ew42M7Y55Jzlomdu2tuD/2ewqPkwxAMNOoQpsOdPHJ1IAfI2IizCZ4MwNs65U0G0a
-         euHdTFQVuZoknWTunmQTNqjNm1FyFzXfvq0gcCULp/KGbo5JXSTZzGLp8kimbLcPn3PO
-         SdDas49TIxERE1IE+DSTBLUgJwcHvzWE9pu6XIPEGUv3CrejSVm4+/9ES+YL4YTTHynS
-         oovGXadHuxb/6lEC6BRRGz9gNzWDGywPFwunNeNu1Q8r0eyCKgAB/YBpH4WZNwr+hFV4
-         rF400fXCZuRF+k3cfK6kMIXuJmrvpJnwBemjrGpsLD/VeyW+lZerYcONrhaZCi+PmSOg
-         F0HA==
+        bh=Ssg+nLt0gRy/t2ju4EBj2ZAdGZIhbt4S+yOnwiWtmPM=;
+        b=qxOYee4Gx0SmeMusekrIKEUMss0kBWI+188tJ4zEWbq1mWPRepTA32PkWPYXjTw4Lx
+         NSj4K7rMa96Tl18XVJTufrtzAV/TwApOj1E8XuzB1Knabm4hDR/IbjHw3B+bpVJGOcN9
+         tDxpe+Ar8hb6/GEk73TYLx0GUvtyNPelaPkz2ROC2GSPsmjssNQIfsCas8pql5Gt84AH
+         QrFKAuMCgu1Thw2VdVOHYw3Mxl3MSr0I3WPgur90TK85C9FbsziAk19OS7S7FyB8eLEF
+         pF5eNBWynrKLySYiB5OxjjEm9ND8ZZH4N5qcM7/IPVbWuhGz243xnJ8DtziiqArr2s3Y
+         EJSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694509317; x=1695114117;
+        d=1e100.net; s=20230601; t=1694509320; x=1695114120;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0+YGLs65HuKDkoyCmUsNA1LK7hzYTmA6aBZzUDWZlAQ=;
-        b=iZxX3aVGbm4MQ/oyllKCd1zKryezhvy1zQfVmn4zRay9SOuWXq/s//vrtqe/mbXhjM
-         XFShY/cSmRsYCTPgBRevap9xIQfABON7dO7LAFINdqiL+CQDFVtQNt5bcP2aZb5FA9ty
-         dboz6GjMd9eSSsdl3LX2dxLtZgbDiS8iAqJ++zj3AkEBeOMxfaVYBOQQH2fnNO27a4+p
-         M0Jgw9tUDguQr8fqjE5bKOiti09h4MWGEGO0joUDjpl9l2EYksxbf+A9JEYkRH+v7hlh
-         dXs43avfdikJWLmKkRTQy6FkI+DegavW7rT4uGvaOmIhuIbdXVZpiimykOa4Oz2rCiU9
-         kQrg==
-X-Gm-Message-State: AOJu0YwMrRW7OkXWIDeI7gmFOvmOMjChu7AFB13jKnGDfFR+2evlq04I
-        478rksUqOatw68dACy25dO4k56pB
-X-Google-Smtp-Source: AGHT+IF4bojh0hjbNVDzV3nRBLrqzHwOlTccZruY0QAAQsm7RjDQhtfFTvdP590phB7L2bYQboFOgW+U
+        bh=Ssg+nLt0gRy/t2ju4EBj2ZAdGZIhbt4S+yOnwiWtmPM=;
+        b=IoFJ4TPrIRbr/BiR9dxjVFug5hK0FMnAxZyLUxPD3gjklZlIIHinHqomAQxjfG3rDB
+         Z3Xc+9h1uGO6A0qQJcujxnfrj4eosJJmWvdzLUeSCgGNOroDqNbLz42n0d/u8LqV7Wms
+         sPyOdesg9YZ9oQ9ytKX+LqaEvj+GyrCoZtRL93zrx0LyGIOZwS1UHUVAE4uKbLBf2oc0
+         sqrJofdRrm3DhQdkzmo8HcJS/e4yLDnplPaTPEfcokdlwTFZplHA2ornHh3UKbzKEaGv
+         vAMndCZ2xwQAu7yruoSm7PcsJWZTsVV+4mpOd+8LPi0jlXYVzgq+3tQUegRCeH1NjEXy
+         aaTQ==
+X-Gm-Message-State: AOJu0YyddO+tKI05ktQ+R2xi5Bbr8+9zU3zZC+ILVYvQgxjJ6Recsnqt
+        NOmYrh/0YrPoHEr2QqbQepBtqhIo
+X-Google-Smtp-Source: AGHT+IH4GZ3sSU0TTwD2SSNb1pwQsRhx+ZhfKWjpwhKk+jzbMoWP3PcT0MvX7stFZW/N5LvBBB4D9aKQ
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a05:6902:161a:b0:d74:93a1:70a2 with SMTP id
- bw26-20020a056902161a00b00d7493a170a2mr284754ybb.5.1694509317520; Tue, 12 Sep
- 2023 02:01:57 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:01:04 +0000
+ (user=ardb job=sendgmr) by 2002:a05:6000:180b:b0:31d:3669:1c57 with SMTP id
+ m11-20020a056000180b00b0031d36691c57mr136860wrh.7.1694509319934; Tue, 12 Sep
+ 2023 02:01:59 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 09:01:05 +0000
 In-Reply-To: <20230912090051.4014114-17-ardb@google.com>
 Mime-Version: 1.0
 References: <20230912090051.4014114-17-ardb@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4623; i=ardb@kernel.org;
- h=from:subject; bh=F2Ts1gQ01OlqtgoyrXYKml6Q50qRYLzdjfB2PktVYD4=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVB4/JMvnNrVq0+eXDr4ZcGP7fv32BjycH+2Y4jrsq0s
- D5y35SLHaUsDGIcDLJiiiwCs/++23l6olSt8yxZmDmsTCBDGLg4BWAiYgyMDO+2tJknaVnHucjE
- 53/Se+hczvePt1UmeUJegf8j7V4ZdYb/mVJvjgR+cpcIf9e7bu6147U+miKnXl05YLHp4rP5O2d mMgAA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2782; i=ardb@kernel.org;
+ h=from:subject; bh=EUYFfbmK6RQsww/qm0tkKUKTK2BZhCpRAZNS6SgMkh0=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVB48qXp5uPKKccNfsqwR8gz7hrUlrvGdHnKy/Hblfn5
+ 1p9dMvEjlIWBjEOBlkxRRaB2X/f7Tw9UarWeZYszBxWJpAhDFycAjARvlqG/+Xlc5m5rmhJy3it
+ kbG6sNqyZMUzj5NF70yeNS6OvrPz7FJGhlXdXuVf/FzPLLFTZwjVc/ZUfWb6+azjvLmNT/18dzo z8wIA
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912090051.4014114-30-ardb@google.com>
-Subject: [PATCH v2 13/15] x86/boot: Drop PE/COFF .reloc section
+Message-ID: <20230912090051.4014114-31-ardb@google.com>
+Subject: [PATCH v2 14/15] x86/boot: Split off PE/COFF .data section
 From:   Ard Biesheuvel <ardb@google.com>
 To:     linux-efi@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
@@ -79,143 +79,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-Ancient buggy EFI loaders may have required a .reloc section to be
-present at some point in time, but this has not been true for a long
-time so the .reloc section can just be dropped.
+Describe the code and data of the decompressor binary using separate
+.text and .data PE/COFF sections, so that we will be able to map them
+using restricted permissions once we increase the section and file
+alignment sufficiently. This avoids the need for memory mappings that
+are writable and executable at the same time, which is something that
+is best avoided for security reasons.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- arch/x86/boot/header.S      | 20 ------------
- arch/x86/boot/setup.ld      |  4 +--
- arch/x86/boot/tools/build.c | 34 +++-----------------
- 3 files changed, 7 insertions(+), 51 deletions(-)
+ arch/x86/boot/Makefile |  2 +-
+ arch/x86/boot/header.S | 19 +++++++++++++++----
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+index cc04917b1ac6..3cece19b7473 100644
+--- a/arch/x86/boot/Makefile
++++ b/arch/x86/boot/Makefile
+@@ -89,7 +89,7 @@ $(obj)/vmlinux.bin: $(obj)/compressed/vmlinux FORCE
+ 
+ SETUP_OBJS = $(addprefix $(obj)/,$(setup-y))
+ 
+-sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._stub_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\|_edata\|z_.*\)$$/\#define ZO_\2 0x\1/p'
++sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._stub_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\|_e\?data\|z_.*\)$$/\#define ZO_\2 0x\1/p'
+ 
+ quiet_cmd_zoffset = ZOFFSET $@
+       cmd_zoffset = $(NM) $< | sed -n $(sed-zoffset) > $@
 diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index 2b07bc596c39..9e9641e220a7 100644
+index 9e9641e220a7..a1f986105f00 100644
 --- a/arch/x86/boot/header.S
 +++ b/arch/x86/boot/header.S
-@@ -155,26 +155,6 @@ section_table:
+@@ -75,9 +75,9 @@ optional_header:
+ 	.byte	0x02				# MajorLinkerVersion
+ 	.byte	0x14				# MinorLinkerVersion
+ 
+-	.long	setup_size + ZO__end - 0x200	# SizeOfCode
++	.long	ZO__data			# SizeOfCode
+ 
+-	.long	0				# SizeOfInitializedData
++	.long	ZO__end - ZO__data		# SizeOfInitializedData
+ 	.long	0				# SizeOfUninitializedData
+ 
+ 	.long	setup_size + ZO_efi_pe_entry	# AddressOfEntryPoint
+@@ -178,9 +178,9 @@ section_table:
+ 	.byte	0
+ 	.byte	0
+ 	.byte	0
+-	.long	ZO__end
++	.long	ZO__data
+ 	.long	setup_size
+-	.long	ZO__edata			# Size of initialized data
++	.long	ZO__data			# Size of initialized data
+ 						# on disk
+ 	.long	setup_size
+ 	.long	0				# PointerToRelocations
+@@ -191,6 +191,17 @@ section_table:
  		IMAGE_SCN_MEM_READ		| \
  		IMAGE_SCN_MEM_EXECUTE		# Characteristics
  
--	#
--	# The EFI application loader requires a relocation section
--	# because EFI applications must be relocatable. The .reloc
--	# offset & size fields are filled in by build.c.
--	#
--	.ascii	".reloc"
--	.byte	0
--	.byte	0
--	.long	0
--	.long	0
--	.long	0				# SizeOfRawData
--	.long	0				# PointerToRawData
--	.long	0				# PointerToRelocations
--	.long	0				# PointerToLineNumbers
--	.word	0				# NumberOfRelocations
--	.word	0				# NumberOfLineNumbers
--	.long	IMAGE_SCN_CNT_INITIALIZED_DATA	| \
--		IMAGE_SCN_MEM_READ		| \
--		IMAGE_SCN_MEM_DISCARDABLE	# Characteristics
--
- #ifdef CONFIG_EFI_MIXED
- 	#
- 	# The offset & size fields are filled in by build.c.
-diff --git a/arch/x86/boot/setup.ld b/arch/x86/boot/setup.ld
-index ae2b5046a0db..9b551eacffa8 100644
---- a/arch/x86/boot/setup.ld
-+++ b/arch/x86/boot/setup.ld
-@@ -40,8 +40,8 @@ SECTIONS
- 		setup_sig = .;
- 		LONG(0x5a5aaa55)
- 
--		/* reserve some extra space for the reloc and compat sections */
--		setup_size = ABSOLUTE(ALIGN(. + 64, 512));
-+		/* reserve some extra space for the compat section */
-+		setup_size = ABSOLUTE(ALIGN(. + 32, 512));
- 		setup_sects = ABSOLUTE(setup_size / 512);
- 	}
- 
-diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index 9712f27e32c1..faccff9743a3 100644
---- a/arch/x86/boot/tools/build.c
-+++ b/arch/x86/boot/tools/build.c
-@@ -47,7 +47,6 @@ typedef unsigned int   u32;
- /* This must be large enough to hold the entire setup */
- u8 buf[SETUP_SECT_MAX*512];
- 
--#define PECOFF_RELOC_RESERVE 0x20
- #define PECOFF_COMPAT_RESERVE 0x20
- 
- static unsigned long efi32_pe_entry;
-@@ -180,24 +179,13 @@ static void update_pecoff_section_header(char *section_name, u32 offset, u32 siz
- 	update_pecoff_section_header_fields(section_name, offset, size, size, offset);
- }
- 
--static void update_pecoff_setup_and_reloc(unsigned int size)
-+static void update_pecoff_setup(unsigned int size)
- {
- 	u32 setup_offset = 0x200;
--	u32 reloc_offset = size - PECOFF_RELOC_RESERVE - PECOFF_COMPAT_RESERVE;
--#ifdef CONFIG_EFI_MIXED
--	u32 compat_offset = reloc_offset + PECOFF_RELOC_RESERVE;
--#endif
--	u32 setup_size = reloc_offset - setup_offset;
-+	u32 compat_offset = size - PECOFF_COMPAT_RESERVE;
-+	u32 setup_size = compat_offset - setup_offset;
- 
- 	update_pecoff_section_header(".setup", setup_offset, setup_size);
--	update_pecoff_section_header(".reloc", reloc_offset, PECOFF_RELOC_RESERVE);
--
--	/*
--	 * Modify .reloc section contents with a single entry. The
--	 * relocation is applied to offset 10 of the relocation section.
--	 */
--	put_unaligned_le32(reloc_offset + 10, &buf[reloc_offset]);
--	put_unaligned_le32(10, &buf[reloc_offset + 4]);
- 
- #ifdef CONFIG_EFI_MIXED
- 	update_pecoff_section_header(".compat", compat_offset, PECOFF_COMPAT_RESERVE);
-@@ -214,21 +202,10 @@ static void update_pecoff_setup_and_reloc(unsigned int size)
- #endif
- }
- 
--static int reserve_pecoff_reloc_section(int c)
--{
--	/* Reserve 0x20 bytes for .reloc section */
--	memset(buf+c, 0, PECOFF_RELOC_RESERVE);
--	return PECOFF_RELOC_RESERVE;
--}
--
- #else
- 
--static inline void update_pecoff_setup_and_reloc(unsigned int size) {}
-+static inline void update_pecoff_setup(unsigned int size) {}
- 
--static inline int reserve_pecoff_reloc_section(int c)
--{
--	return 0;
--}
++	.ascii	".data\0\0\0"
++	.long	ZO__end - ZO__data		# VirtualSize
++	.long	setup_size + ZO__data		# VirtualAddress
++	.long	ZO__edata - ZO__data		# SizeOfRawData
++	.long	setup_size + ZO__data		# PointerToRawData
++
++	.long	0, 0, 0
++	.long	IMAGE_SCN_CNT_INITIALIZED_DATA	| \
++		IMAGE_SCN_MEM_READ		| \
++		IMAGE_SCN_MEM_WRITE		# Characteristics
++
+ 	.set	section_count, (. - section_table) / 40
  #endif /* CONFIG_EFI_STUB */
  
- static int reserve_pecoff_compat_section(int c)
-@@ -307,7 +284,6 @@ int main(int argc, char ** argv)
- 	fclose(file);
- 
- 	c += reserve_pecoff_compat_section(c);
--	c += reserve_pecoff_reloc_section(c);
- 
- 	/* Pad unused space with zeros */
- 	setup_sectors = (c + 511) / 512;
-@@ -316,7 +292,7 @@ int main(int argc, char ** argv)
- 	i = setup_sectors*512;
- 	memset(buf+c, 0, i-c);
- 
--	update_pecoff_setup_and_reloc(i);
-+	update_pecoff_setup(i);
- 
- 	/* Open and stat the kernel file */
- 	fd = open(argv[2], O_RDONLY);
 -- 
 2.42.0.283.g2d96d420d3-goog
 
