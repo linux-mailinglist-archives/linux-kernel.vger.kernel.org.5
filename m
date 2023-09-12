@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D9679D953
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB4879D94F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbjILTI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49936 "EHLO
+        id S233383AbjILTIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjILTIY (ORCPT
+        with ESMTP id S230204AbjILTIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:08:24 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2842AE6;
-        Tue, 12 Sep 2023 12:08:20 -0700 (PDT)
+        Tue, 12 Sep 2023 15:08:21 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A06E6;
+        Tue, 12 Sep 2023 12:08:17 -0700 (PDT)
 Received: from mercury (unknown [185.254.75.45])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CE37C6607314;
-        Tue, 12 Sep 2023 20:08:18 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5DE6A66072FA;
+        Tue, 12 Sep 2023 20:08:16 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694545698;
-        bh=/VzjWlv3CMIeZ23/9Hp8VPg17hQMxbujmnekoWivzMw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=g5BaF/qhbYhFMSnik3Th7pf7rovQBEJbNopX1Ik+9Ae2+9ZjxjaENhqCP0qxS2EzK
-         tlRdN4w+gxqt96riK8oMqZssVBY6wr6ZJb7shUzwPa1DE3X60JFZzBpHrL1voHTuxH
-         ts+DHQ/VIz/fSCrGJ6dlvZFEiIoaLdkH/kr0knp3IDQLwXH4xdymom8jkgmKhhZ1vb
-         VuJvqHACM9HAcp8RZJafU76Xqd+MBrNsmRl5gDM5jxXyZnpDI/fDt1qiZC8pZeFqEm
-         pfxxvN29zf0e7d5YXNoOXLrOEYXJw2Mv/2J04rsWnpgdkEGZwh/7XJ/eUgTkHJ9vy4
-         kzXeHhbUJvPsA==
+        s=mail; t=1694545696;
+        bh=pA8KJDFOnD+DhYU8UQ5GUmUPJFV61o5LBqc3PMJvmlg=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=SvIO6AKPM2sN3Dor/LCJQ/uVBi2MEdl6p1zssSt4HkqiOblKRNlYv0I1L17ugY9/0
+         KVcwLrAGCWS/WhS0asObuxNlq89+0kLKId17xk4xfsAU/6akMOnSb0dPaUf4JkaQmI
+         DgiuyNQvU2r2Y3RqjXTbfuGw2vscaliIetotWvEvugMbeTzC9K0RGotjWRddRCGxY8
+         Yms/YxwEnzMMLim+cLB7adhpBPnhUcepUyf0bZDmdaAKj9b/QqpHQlHn85wMtcKDZO
+         mihR09+Ckgq/AX/cIQYOpKISmYzhSeEmr5IDldzpFWQlNb/pTAU75OXhHAI0kq8sS0
+         XzPqCgSsWNt/Q==
 Received: by mercury (Postfix, from userid 1000)
-        id 5D507106098B; Tue, 12 Sep 2023 21:08:13 +0200 (CEST)
+        id 62E04106098C; Tue, 12 Sep 2023 21:08:13 +0200 (CEST)
 From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     hdegoede@redhat.com, krzysztof.kozlowski@linaro.org,
-        m.szyprowski@samsung.com, sebastian.krzyszkowiak@puri.sm,
-        kernel@puri.sm, sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Przemyslaw <przemekchwiala@gmail.com>
-Cc:     lukas.bulwahn@gmail.com
-In-Reply-To: <20230720123102.154699-1-przemekchwiala@gmail.com>
-References: <20230720123102.154699-1-przemekchwiala@gmail.com>
-Subject: Re: [PATCH] power: supply: max17042_battery: Do not use CONFIG_
- prefix in regular C code
-Message-Id: <169454569337.510054.9386354023657535077.b4-ty@collabora.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
+References: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] dt-bindings: power: syscon-poweroff: get regmap
+ from parent node
+Message-Id: <169454569339.510054.7177949356094614103.b4-ty@collabora.com>
 Date:   Tue, 12 Sep 2023 21:08:13 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -55,16 +56,22 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 20 Jul 2023 14:31:02 +0200, Przemyslaw wrote:
-> Using CONFIG_ prefix for macros is not a good practice.
-> Use CONFIG_ prefix in Kconfig only.
+On Fri, 01 Sep 2023 14:00:55 +0200, Krzysztof Kozlowski wrote:
+> Just like syscon-reboot device, the syscon-poweroff is supposed to be a
+> child of syscon node, thus we can take the same approach as
+> syscon-poweroff: deprecate the 'regmap' field in favor of taking it from
+> the parent's node.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] power: supply: max17042_battery: Do not use CONFIG_ prefix in regular C code
-      commit: c06a65ac4e4945478f46654920f5af1be1cf384e
+[1/3] dt-bindings: power: syscon-poweroff: get regmap from parent node
+      commit: 716293381a0f9a400d0010628a9ba4354c2bea40
+[2/3] power: reset: syscon-poweroff: simplify pdev->dev usage
+      commit: 6f9c8a1338d90d150767331d4fab051fb8abdba5
+[3/3] power: reset: syscon-poweroff: get regmap from parent node
+      commit: 92bbb93aaaefe14c01eac18df46f8260ee4c2825
 
 Best regards,
 -- 
