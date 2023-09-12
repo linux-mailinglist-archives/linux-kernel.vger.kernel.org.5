@@ -2,254 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F0E79C8BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001B379C8C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231828AbjILHxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37564 "EHLO
+        id S231834AbjILH40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbjILHxx (ORCPT
+        with ESMTP id S231826AbjILH4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:53:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95739E78;
-        Tue, 12 Sep 2023 00:53:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5E2C433CA;
-        Tue, 12 Sep 2023 07:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694505229;
-        bh=vzB3LIA1z0/wCi7ZCm6mXrxoTMuvofC+wO3dSIHccsE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Yb4nyA3w6L2SD5tDqPRSE1ZjRvoycS+xtXqC9g4eaOZ1mIkaNpX3+EjgDOISNCIY8
-         zgIyhHLSwotiKtgRSkQxBvO1UejGTZtX+61C62kLa9QvfX/ofOfLMGI1+T/XcKD8/M
-         szfWHOCaLdlHGjERQ6KVhPd7m4yZc4wEFO/az6f7p26LhJzCjSJhuRv7K2TxbBa29p
-         h2CE9QcEOuH9B2ztIYZ2Om1+G55eo3xDb/hUP0pe2C2GfBmS87c/42kScxPjqlXz3O
-         uuDEzz2xqxJ3s/JU/uPNm2PL7ug0RY/7MC0NnbQ8DFWN8/vPvOHcmMoGmU39jEXCqL
-         qRXyCCXS6lMNg==
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3aa1446066aso3690877b6e.1;
-        Tue, 12 Sep 2023 00:53:49 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwejhdR7YSId9kinMg93W8uKobdAydS1e5UcHF4Cd9LFq+qBCCD
-        KxWml2t4n6kOijkO84YGKnjoTBLKCNR1RoAod4k=
-X-Google-Smtp-Source: AGHT+IE6EiAkzrS51ztkq9S+4sGhkm7OjLRVelglK7j4MmP6A4JqcM3HPvNuTjHMSpQFeUi95/Hw0Iy5OEq47LgMaJ8=
-X-Received: by 2002:a05:6870:d114:b0:1bf:61d1:a4d4 with SMTP id
- e20-20020a056870d11400b001bf61d1a4d4mr15117181oac.6.1694505228587; Tue, 12
- Sep 2023 00:53:48 -0700 (PDT)
+        Tue, 12 Sep 2023 03:56:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 433D5E78
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694505325;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6EtKeJ8Fl2CPlsqoDZCiTeQu7RXnApXQXlT1M5EOII=;
+        b=J5nmL6V/hmGD0bKhyRfqDeMcmPRAIheD9EPRrWXCz7V95RXjmzszmecTuYaNW+qXAG7Tk2
+        qgfC6aT1vmXCFmXGZVYB3HjYj1v/is3AT03VPatbslCmISl5Evbexz/hxJ74rTVNxZko88
+        Nj6gvmed23frS8jgNhIDlpW+dqIZhA8=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-613-YiahR5arM3uPX45f55VVsQ-1; Tue, 12 Sep 2023 03:55:24 -0400
+X-MC-Unique: YiahR5arM3uPX45f55VVsQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-402493d2997so38335475e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:55:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694505323; x=1695110123;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x6EtKeJ8Fl2CPlsqoDZCiTeQu7RXnApXQXlT1M5EOII=;
+        b=VyyfeIblZ9b5/4ABvKlyaPDclSNg6UNDpVxJSeJgR5gVFGxZy5g0jfZNM5p5/Gxh9c
+         VJTeHUEXs5cMttijMP3Tok+6fa0b4TO2QkpoSslwGdqVpDBbxZTUNn61qvonVu3Ubss7
+         bSg6m55UHiWr8cMzPcXwNYApVNGyAbuk3TQrN8nAoL1H8y8fcXDQV7nRK8s+bLlIFr5b
+         zAqlHf3HYgdhZGDFyjHstd6XhKz/+ZYFeM5VLdDQ1Zrob1vaeJl6H/L8y2wOQUHY/ibv
+         EO9kOX4a3rYs2YhmNVwlVlbxRDlOYe7tzz1vlK2D1FKBsb95eHvtVc5wPvAh8d6ZuCJO
+         fRYQ==
+X-Gm-Message-State: AOJu0YxXFCXmY75uHRghpm1i5WVkaPfyM84nBb/M08DRYyH3GG/Xv3mb
+        TwjMIelWVdAUlvhLB5lwbxEbl7v8e4odlVhAYVFDRdz1wsoD+U/cyYUl94u51EXbDix5jLdx7zg
+        5J1f0SWeYQwNv4TSTT54a7GOG
+X-Received: by 2002:a05:600c:2946:b0:3f9:c82e:9d87 with SMTP id n6-20020a05600c294600b003f9c82e9d87mr10082569wmd.13.1694505322760;
+        Tue, 12 Sep 2023 00:55:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHOUg/kbhGPkutoeBzAtzcpRlHWaTol5oRJ7Xvs/ofz8ZLVGBogom5lBgebkgCOX/YfVw74sw==
+X-Received: by 2002:a05:600c:2946:b0:3f9:c82e:9d87 with SMTP id n6-20020a05600c294600b003f9c82e9d87mr10082545wmd.13.1694505322409;
+        Tue, 12 Sep 2023 00:55:22 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id p11-20020a1c740b000000b003ff013a4fd9sm12173082wmc.7.2023.09.12.00.55.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 00:55:22 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helge Deller <deller@gmx.de>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+In-Reply-To: <aa935abe-2ccf-4889-a717-4efecc13d48b@app.fastmail.com>
+References: <20230911205338.2385278-1-arnd@kernel.org>
+ <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+ <aa935abe-2ccf-4889-a717-4efecc13d48b@app.fastmail.com>
+Date:   Tue, 12 Sep 2023 09:55:21 +0200
+Message-ID: <877cov3jx2.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20230911234418.38154-2-leobras@redhat.com>
-In-Reply-To: <20230911234418.38154-2-leobras@redhat.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Sep 2023 16:53:11 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASKRoxLwz1jvsbbxv0=JQtySG4O7eN2+_PT6q20G7YT9g@mail.gmail.com>
-Message-ID: <CAK7LNASKRoxLwz1jvsbbxv0=JQtySG4O7eN2+_PT6q20G7YT9g@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/1] scripts: Introduce a default git.orderFile
-To:     Leonardo Bras <leobras@redhat.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 8:45=E2=80=AFAM Leonardo Bras <leobras@redhat.com> =
-wrote:
+"Arnd Bergmann" <arnd@arndb.de> writes:
+
+> On Tue, Sep 12, 2023, at 09:14, Geert Uytterhoeven wrote:
+>> On Mon, Sep 11, 2023 at 10:53=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+
+[...]
+
 >
-> When reviewing patches, it looks much nicer to have some changes shown
-> before others, which allow better understanding of the patch before the
-> the .c files reviewing.
->
-> Introduce a default git.orderFile, in order to help developers getting th=
-e
-> best ordering easier.
->
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> ---
->
-> Please provide feedback on what else to add / remove / reorder here!
->
-> Changes since RFCv1:
-> - Added Kconfig* (thanks Randy Dunlap!)
-> - Changed Kbuild to Kbuild* (improve matching)
->
->  scripts/git.orderFile | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->  create mode 100644 scripts/git.orderFile
->
-> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> new file mode 100644
-> index 000000000000..819f0a957fe3
-> --- /dev/null
-> +++ b/scripts/git.orderFile
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-
-
-Please use "# SPDX-License-Identifier: GPL-2.0".
-
-/* ... */ is not a valid comment style for the orderfile.
-
-
-
-
-> +# order file for git, to produce patches which are easier to review
-> +# by diffing the important stuff like header changes first.
-> +#
-> +# one-off usage:
-> +#   git diff -O scripts/git.orderfile ...
-> +#
-> +# add to git config:
-> +#   git config diff.orderFile scripts/git.orderfile
-
-
-These comments are bogus.
-
-
-I guess this comment header was copied from QEMU,
-but you changed the file path
-from scripts/git.orderfile to scripts/git.orderFile.
-
-
-You need to adjust the comment lines to
-
-
-    git diff -O scripts/git.orderFile ...
-
-    git config diff.orderFile scripts/git.orderFile
-
-
-
-Or, you need to get the file path back to scripts/git.orderfile
-
-
-
-
-
-
-
-
-> +#
-> +
-> +MAINTAINERS
-> +
-> +# Documentation
-> +Documentation/*
-> +*.rst
-> +
-> +# build system
-> +Kbuild*
-> +Kconfig*
-> +Makefile*
-
-
-Kbuild* and Makefile* are interchangeable.
-(both are for GNU Make)
-
-Kconfig* are different types.
-
-
-Better to arrange the order to
-
-Kconfig*
-Kbuild*
-Makefile*
-
-
-
-
-
-> +*.mak
-
-QEMU consistently uses only *.mak.
-
-I just realized the kernel tree uses both *.mak and *.mk
-
-masahiro@zoe:~/ref/linux(master)$ find .  -name '*.mak'
-./tools/scripts/utilities.mak
-masahiro@zoe:~/ref/linux(master)$ find .  -name '*.mk'
-./tools/testing/selftests/lib.mk
-./tools/testing/selftests/ptp/testptp.mk
-
-
-
-
-
-BTW, I quickly tested this, but
-it did not work as I expected.
-
-
-
-
-
-masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only d34599b^..d34599b
-MAINTAINERS
-drivers/Kconfig
-drivers/Makefile
-drivers/cache/Kconfig
-drivers/cache/Makefile
-drivers/cache/ax45mp_cache.c
-
-masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only -O
-scripts/git.orderFile d34599b^..d34599b
-MAINTAINERS
-drivers/cache/ax45mp_cache.c
-drivers/Kconfig
-drivers/Makefile
-drivers/cache/Kconfig
-drivers/cache/Makefile
-
-masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only -O
-scripts/git.orderFile d34599b..d34599b^
-MAINTAINERS
-drivers/cache/ax45mp_cache.c
-drivers/Kconfig
-drivers/Makefile
-drivers/cache/Kconfig
-drivers/cache/Makefile
-
-
-
-
-
-My expectation was the following:
-
-MAINTAINERS
-drivers/Kconfig
-drivers/cache/Kconfig
-drivers/Makefile
-drivers/cache/Makefile
-drivers/cache/ax45mp_cache.c
-
-
-It did not work like that.
-Am I missing something?
-
-
-
-
-
-> +
-> +# semantic patches
-> +*.cocci
-> +
-> +# headers
-> +*.h
-> +
-> +# code
-> +*.c
-> --
-> 2.42.0
+> The only alternative I can think of would be to default-enable
+> or force-enable FRAMEBUFFER_CONSOLE for any config that includes
+> both VT_CONSOLE and FB_CORE. This would increase defconfig
+> builds for systems that currently only want CONFIG_FB for
+> either FB_DEVICE or LOGO but don't care about
+> FRAMEBUFFER_CONSOLE. I have no idea who uses such a config,
+> but I think Javier previously said this was an important
+> use case.
 >
 
+Yes, IMO that should be a possible combination.
 
+>>> diff --git a/drivers/video/fbdev/core/Kconfig b/drivers/video/fbdev/cor=
+e/Kconfig
+>>> index 114cb8aa6c8fd..804c2bec9b43c 100644
+>>> --- a/drivers/video/fbdev/core/Kconfig
+>>> +++ b/drivers/video/fbdev/core/Kconfig
+>>> @@ -28,7 +28,7 @@ config FIRMWARE_EDID
+>>>  config FB_DEVICE
+>>>         bool "Provide legacy /dev/fb* device"
+>>>         depends on FB_CORE
+>>> -       default y
+>>> +       default FB
+>>
+>> Changing this means possibly causing regressions on systems running
+>> an fbdev userspace.
+>
+> How? FB_DEVICE is a new config that was just split out from
+> CONFIG_FB in 6.6-rc1, so nobody should have any defconfig
+> that disables CONFIG_FB but relies on the FB_DEVICE default yet.
+>
 
+Ah, scratch my previous comment about making this default 'y' then. For
+some reasons I thought that FB_DEVICE was added in v6.5 but see now that
+commit 701d2054fa31 ("fbdev: Make support for userspace interfaces
+configurable") landed in v6.6-rc1:
 
+$ git tag --contains 701d2054fa31 | tail -1
+v6.6-rc1
 
 --=20
-Best Regards
-Masahiro Yamada
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
