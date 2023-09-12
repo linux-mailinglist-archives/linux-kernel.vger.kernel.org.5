@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B190779D850
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CCA79D856
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbjILSGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        id S237186AbjILSGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjILSGC (ORCPT
+        with ESMTP id S229815AbjILSGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:06:02 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E561E59
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:05:58 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so2271a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:05:58 -0700 (PDT)
+        Tue, 12 Sep 2023 14:06:48 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB701E59;
+        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26d1e5f2c35so4878342a91.2;
+        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694541956; x=1695146756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dYqDUs3nkzy+99JdbqiBWkMenPxzjtYzz/eA+mvCidk=;
-        b=pEdgLNOfVB/fRhmxx8BGsFlFx3MoU7VDnEDB/S+Y3W9CJW04mevLIHVX3HsorF5U6R
-         2V5jgW8g9AiD6yru9aaaLFh8fXC35dz0nR0GS/dQz5bdy0itnBt91HVlMjglk2tJS2Nc
-         v671pgDG5oL9ootYL1U3L756IKxPQ6z4ViZ7iwq2QcG9trkO3AC/JdBwxl88Nrh+etWH
-         GkNfzhv/NJwvPAw4q6GSD6Oi8188Yn9t4xT9GYDhAlmKd5muJcWuadcDPLuOd+UodnYr
-         YrfSySnqyA3Id4tNKisgfBvY9QcB2DQYdU+sRBgEff+3e82ItGT6espRlAIFytmFGTUh
-         l3fg==
+        d=gmail.com; s=20221208; t=1694542004; x=1695146804; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=b/FcdXt508wzlUPKZM2U2Z4krLmys9jD7gjAAQB1Fak=;
+        b=qL9JMWzi2S/ofD95Uwc0vOLPsLrNmeskpB+yqAGzecfIR4ydFqOy58ztzD9YzAnn7h
+         ZJ3McVbtYm+inL6V3ihq5anrudywpjf92J1lLDsrKL0zmO7OlBF4XrDbxqMxxNUnUVqA
+         ErImQqbkhOZi2doKNEdNWrMP1EXV+nIk87liOmaekqKDJ330XYh3D6xiHE0TCywqNYFt
+         70ENycCY2JkFyRne4oHRA6A4KyE2vk/n4J4tpVmsYuRDic17WcFJPvssGDC/PubN6otF
+         R5kmT7fTHrz8wgFssm3m/TWeDyPvdfCwhiE7oDItxsIm8YwscOF9YtV09IAxr32+QwD2
+         45vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694541956; x=1695146756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dYqDUs3nkzy+99JdbqiBWkMenPxzjtYzz/eA+mvCidk=;
-        b=C7/izoMEZBDCbL9ieestClhJMNcMkxE+T1AyTe869i5Tdjlf3GxqiHeB1jzZbgi68o
-         PsRYrefgcu2C0+Ohl+Yz3dtN2P/7lOrA938UNhIPwZBviIzxOwJtgi6n3BDIdGqLhvsj
-         7ameD8lSCzi/IGowbWMcmO9eqVs2GcIk/sNmDCOhDQ+rKkO4wIKaNGqfcEC/I2r0AX3+
-         hlvzflSp3qdFJSmGpn6iNNmZu1O9l44KIpY5U1wJY93sv2zBlHQFhqiUGsbgU/eRvyN4
-         FIOSjfF0YBMezFk8ui51VwGLx0QD5AwxQD6/Ol9XzCuAIgU3krw+gs8BOdg7ep9lphP0
-         RVpw==
-X-Gm-Message-State: AOJu0YyjyIFpXcIcY45kcVUq99DuhX/OrGtPqDhiiGr1vaU1unYP/okC
-        QNKDpT5R5hi5zlagb7fCUVTy0CSz/4G03eb/1GD7CWk7f48ii4pqJnJlnA==
-X-Google-Smtp-Source: AGHT+IEYr0P1WStyJpUE0/XWzPhwSlxaxamU9zj8epty3cb1jYzzDn81j9YUAjkSKqC+XdwL4wOnkp4W/jFg8vp3Jx4=
-X-Received: by 2002:a50:cd59:0:b0:522:4741:d992 with SMTP id
- d25-20020a50cd59000000b005224741d992mr12316edj.4.1694541956322; Tue, 12 Sep
- 2023 11:05:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694542004; x=1695146804;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b/FcdXt508wzlUPKZM2U2Z4krLmys9jD7gjAAQB1Fak=;
+        b=HpcXAPoaeY9yfiRkjYBsJsWleeuJ3b3Np3fHCpD6wzjHAnJ8vHWC0wrnWoXHjlggSs
+         OA+9aNtkNM/ISMCpFmwZikAXXosfNCBplAkutUHzqjGn0nJPKUHOCXsddkRVav1Pt/Qm
+         cPPkWA6ztZ10m+8SULzlIJygJYxoJ6QLI+Wi3UNrX2QwQBGQ6s2qY0pVozdWci6zzpXi
+         668xPfvnfFXu1VrhLImW5EIahVTV/EJeWzy6k155utJeA6WykiVW8UiYn4rHXJj7Bt9S
+         HQiFCJX/80QDUPpRHJfCJV9Fy8IjbjuRlT4E7uJ8ErEeieeFVRqB5eyiK/oHYcGmizJB
+         PCsg==
+X-Gm-Message-State: AOJu0YwxMefWSm+xgWuNaOMfMXxT9EX7+ar+U0Ju0pvxw1x7dXjgLl2I
+        +HSzaoRfgIcpNByCPG8VDV4=
+X-Google-Smtp-Source: AGHT+IF1qy2cfIn54//x9+QFzFdq2dCQpP+A7JwFxYGlzyHdW63t3FsaKm0KYnTcxA7a0T1vP4p3GQ==
+X-Received: by 2002:a17:90a:520c:b0:271:8d4d:d046 with SMTP id v12-20020a17090a520c00b002718d4dd046mr58739pjh.4.1694542004044;
+        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id l3-20020a17090a72c300b0025bdc3454c6sm9449911pjk.8.2023.09.12.11.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 11:06:43 -0700 (PDT)
+Message-ID: <0903ba48-643b-7091-0ca3-e76b95c7e822@gmail.com>
+Date:   Tue, 12 Sep 2023 11:06:36 -0700
 MIME-Version: 1.0
-References: <20230911082016.3694700-1-yajun.deng@linux.dev>
- <CANn89i+W1iAQmOhunLbqpvHu8EUO6uawv6Uvx7qimyBa_PBNCg@mail.gmail.com>
- <f3e84a37-3218-0d52-e7ed-2d215fed58e3@intel.com> <CANn89i+AwmpjM-bNuYRS26v-GRrVoucewxgmkvv25PNM4VWPGA@mail.gmail.com>
- <39c906f6-910d-01c7-404a-8fe6a161ef2e@intel.com> <CANn89i+QSPoXphaLzfKCqCHxjsD20ifr8YPJM_fZ_H5kFZ7dwQ@mail.gmail.com>
- <8bc6c1cd-50bb-44ef-5979-3bb50a70afcb@intel.com> <CANn89iL6HVvRegORfP49prJV4EJU2-AbD4YXB-eo_vwU1JG1ew@mail.gmail.com>
-In-Reply-To: <CANn89iL6HVvRegORfP49prJV4EJU2-AbD4YXB-eo_vwU1JG1ew@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 12 Sep 2023 20:05:42 +0200
-Message-ID: <CANn89iKbn97Rbjc+3uZMpUi0tqCuhj88UdFZhhnqpC6nJRLC=A@mail.gmail.com>
-Subject: Re: [PATCH] net/core: Export dev_core_stats_rx_dropped_inc sets
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 6.4 000/737] 6.4.16-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230911134650.286315610@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 8:03=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
-wrote:
 
-> Sure, this was what was suggested (perhaps not _very_ precisely, but
-> the general idea was pretty clear).
-> v2 seems ok, right ?
->
-> It seems we are all on the same page.
->
-> +static __cold struct net_device_core_stats __percpu
-> *dev_core_stats(struct net_device *dev)
-> +{
-> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_all=
-oc() */
-> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_=
-stats);
-> +
-> +       if (likely(p))
-> +               return p;
-> +
-> +       return netdev_core_stats_alloc(dev);
-> +}
-> +
-> +#define DEV_CORE_STATS_INC(FIELD)                              \
-> +void dev_core_stats_##FIELD##_inc(struct net_device *dev)      \
-> +{                                                              \
-> +       struct net_device_core_stats __percpu *p;               \
-> +                                                               \
-> +       p =3D dev_core_stats(dev);                                \
-> +       if (p)                                                  \
-> +               this_cpu_inc(p->FIELD);                         \
-> +}                                                              \
-> +EXPORT_SYMBOL(dev_core_stats_##FIELD##_inc)
 
-Oh well, I just read the patch, and it seems wrong indeed.
+On 9/11/2023 6:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.16 release.
+> There are 737 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.16-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-netdev_core_stats_alloc() is the one that can be cold.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
