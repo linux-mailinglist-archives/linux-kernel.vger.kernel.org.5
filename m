@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6C879CD24
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD4579CD37
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbjILKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S233940AbjILKHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234123AbjILKGT (ORCPT
+        with ESMTP id S233743AbjILKHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:06:19 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4E82D59;
-        Tue, 12 Sep 2023 03:05:44 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VrwXrmS_1694513141;
-Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VrwXrmS_1694513141)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Sep 2023 18:05:42 +0800
-Message-ID: <80d7b0ad-026d-6ba9-7c1f-7f0c3b5af588@linux.alibaba.com>
-Date:   Tue, 12 Sep 2023 18:05:48 +0800
+        Tue, 12 Sep 2023 06:07:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEC710E3;
+        Tue, 12 Sep 2023 03:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694513232; x=1726049232;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eK2t15mGnsXgSy49KZauX10qwOfSdZIw/vwbiA8F8s0=;
+  b=KW51nUaYHCu/eAG/xGfC/KpKhLHciWHZNt9/mP+5Yxl8Hjbqme3h3OqM
+   zGOmyy5QDulRkM0IqA8rMu71/c5mSovdyOtomE5ECmmZUUfQzpRoV2HvN
+   6+E6qpttqbeSXRUwsIaVwJ4oYCYHThFkMjaR9BxnYaOgONR76/SQw5b8m
+   1Uzf17ga0up3LxhUa66oeQc9fqyWa0N6OMHQgpPpfOanmcYRLQBfKjuD5
+   lAZUvTGhOxEOfm2FtlpL2lownHokMB040aiDmyN80gouqRiGKwsqGsO2p
+   QxI8wXlLbzLzNfKbVex7cusC+CBU+UfB1R4OY81cA7RjG29k3Kt4KKFR1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368589851"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="368589851"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:07:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="778738399"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="778738399"
+Received: from lkp-server02.sh.intel.com (HELO 1e56c5165d33) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 12 Sep 2023 03:07:06 -0700
+Received: from kbuild by 1e56c5165d33 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qg0IP-0000Ej-0o;
+        Tue, 12 Sep 2023 10:07:01 +0000
+Date:   Tue, 12 Sep 2023 18:06:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550
+ POWER_STATE_CONFIG1
+Message-ID: <202309121747.8Ln8K1XY-lkp@intel.com>
+References: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFT PATCH 3/3] gpio: eic-sprd: use
- devm_platform_ioremap_resource()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20230912094519.22769-1-brgl@bgdev.pl>
- <20230912094519.22769-3-brgl@bgdev.pl>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230912094519.22769-3-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Konrad,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc1 next-20230912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/phy-qcom-qmp-combo-initialize-PCS_USB-registers/20230912-072106
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230829-topic-8550_usbphy-v2-1-a72f43311d19%40linaro.org
+patch subject: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550 POWER_STATE_CONFIG1
+config: arm-randconfig-r016-20230912 (https://download.01.org/0day-ci/archive/20230912/202309121747.8Ln8K1XY-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309121747.8Ln8K1XY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309121747.8Ln8K1XY-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/phy/qualcomm/phy-qcom-qmp-combo.c:865:19: error: use of undeclared identifier 'QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1'
+     865 |         QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
+         |                          ^
+>> drivers/phy/qualcomm/phy-qcom-qmp-combo.c:1837:21: error: invalid application of 'sizeof' to an incomplete type 'const struct qmp_phy_init_tbl[]'
+    1837 |         .pcs_usb_tbl_num        = ARRAY_SIZE(sm8550_usb3_pcs_usb_tbl),
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:57:32: note: expanded from macro 'ARRAY_SIZE'
+      57 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+         |                                ^~~~~
+   2 errors generated.
 
 
-On 9/12/2023 5:45 PM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Make two calls into one by using devm_platform_ioremap_resource().
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+vim +/QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1 +865 drivers/phy/qualcomm/phy-qcom-qmp-combo.c
 
-Please don't do this. See the previous commit: 
-4ed7d7dd4890bb8120a3e77c16191a695fdfcc5a ("Revert "gpio: eic-sprd: Use 
-devm_platform_ioremap_resource()"")
+   863	
+   864	static const struct qmp_phy_init_tbl sm8550_usb3_pcs_usb_tbl[] = {
+ > 865		QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
+   866		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
+   867		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
+   868		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
+   869		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
+   870	};
+   871	
 
-> ---
->   drivers/gpio/gpio-eic-sprd.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
-> index be7f2fa5aa7b..1e548e4e4cb8 100644
-> --- a/drivers/gpio/gpio-eic-sprd.c
-> +++ b/drivers/gpio/gpio-eic-sprd.c
-> @@ -594,7 +594,6 @@ static int sprd_eic_probe(struct platform_device *pdev)
->   	struct device *dev = &pdev->dev;
->   	struct gpio_irq_chip *irq;
->   	struct sprd_eic *sprd_eic;
-> -	struct resource *res;
->   	int ret, i;
->   
->   	pdata = of_device_get_match_data(dev);
-> @@ -621,11 +620,7 @@ static int sprd_eic_probe(struct platform_device *pdev)
->   		 * have one bank EIC, thus base[1] and base[2] can be
->   		 * optional.
->   		 */
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
-> -		if (!res)
-> -			break;
-> -
-> -		sprd_eic->base[i] = devm_ioremap_resource(dev, res);
-> +		sprd_eic->base[i] = devm_platform_ioremap_resource(pdev, i);
->   		if (IS_ERR(sprd_eic->base[i]))
->   			return PTR_ERR(sprd_eic->base[i]);
->   	}
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
