@@ -2,135 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD7B79C66F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9376579C697
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjILGGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        id S230205AbjILGJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjILGGt (ORCPT
+        with ESMTP id S229633AbjILGJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:06:49 -0400
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECBEE77
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:06:44 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230912060642epoutp013d25b75cc3e06cbf5722284b8a74f403~EEa7aVu_L0163201632epoutp01a
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:06:42 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230912060642epoutp013d25b75cc3e06cbf5722284b8a74f403~EEa7aVu_L0163201632epoutp01a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694498802;
-        bh=4bcw94gLGxDMnnKRk6uK6p6mnuHhueBZymKra7u5+yg=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=hrc/iM8wEYKYUlvwoNsPNKt8zqCfohCznkIgCr6O4zqdqDjeOZryOalEt0WPAx+ck
-         8PTVQIjD/11nsJYJ/+HzV2e1cm7tW6cAzHANeuX2oFz1XTltjVF565dG6aT8R1iOYD
-         ObgQZphvbg5Ksz3n0+2ane2NfgeNwTdnYCa+3iO8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20230912060641epcas2p162ecc6fb9bdabab137197d87fca8eea3~EEa6xBR-12481624816epcas2p1G;
-        Tue, 12 Sep 2023 06:06:41 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.99]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4RlClP1lXLz4x9Q1; Tue, 12 Sep
-        2023 06:06:41 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F1.77.09660.1FFFFF46; Tue, 12 Sep 2023 15:06:41 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20230912060640epcas2p43a9e6e11906d03641e76fb3df97462b8~EEa547k9Z1824418244epcas2p4X;
-        Tue, 12 Sep 2023 06:06:40 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230912060640epsmtrp1999c83b72087890b491927e653b55e18~EEa529Cgb1194111941epsmtrp1X;
-        Tue, 12 Sep 2023 06:06:40 +0000 (GMT)
-X-AuditID: b6c32a47-d5dfa700000025bc-46-64fffff13a12
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F7.39.18916.0FFFFF46; Tue, 12 Sep 2023 15:06:40 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.55]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230912060640epsmtip1c23c5896519d7126e5219fb516eb67f6~EEa5NfEXc2007820078epsmtip1G;
-        Tue, 12 Sep 2023 06:06:40 +0000 (GMT)
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaewon Kim <jaewon02.kim@samsung.com>
-Subject: [PATCH] arm64: dts: exynos: Use pinctrl macros for exynos5433-tm2
-Date:   Tue, 12 Sep 2023 14:56:35 +0900
-Message-ID: <20230912055635.49092-1-jaewon02.kim@samsung.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
+        Tue, 12 Sep 2023 02:09:04 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB4010DC;
+        Mon, 11 Sep 2023 23:08:51 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C68DGi017538;
+        Tue, 12 Sep 2023 06:08:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=CzujmUXtCj26g4ccKogjBVuA4bEZ845o6ihWJ4IcBPc=;
+ b=QU7oGPIfX46o//dLm9dHlXulfCWVGR1IBhmwNgUJZJg/Dyn1Iy6zn5qibZd9ueNtjrRv
+ fDLU5JNexYK3912FGmrC5StPmFdKW8uBSjjn9lLE1VyS9hgZ+A4fYKMEVzQPY8pMzSca
+ wlc1drVGFJL+dUlHQmHiEqDLMucG9HXBTPmoP/ckYXoLMVvfhw7bjR47orpEv7hI/ov5
+ 6m3sxQOr7NNa4CC8F3dgLkyfXzu8AZJ3YfApxxmb0U3TY/nj9TvC5v2Blvs45CIY1hhu
+ /MiZs9Czb+wBWyZ7lNqtuiBefcTLP2nYQjCwqpDTmHpdBlEn3FGpULzrDm5m7LE/YDym 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2hv50rt0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 06:08:21 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38C68KGD018137;
+        Tue, 12 Sep 2023 06:08:20 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2hv50rre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 06:08:20 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38C5CmFC011971;
+        Tue, 12 Sep 2023 06:08:18 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1r6av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 06:08:18 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38C68Hx95046824
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 06:08:17 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 080F720043;
+        Tue, 12 Sep 2023 06:08:17 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 84E952004B;
+        Tue, 12 Sep 2023 06:08:15 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Sep 2023 06:08:15 +0000 (GMT)
+Received: from bgray-lenovo-p15.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 2EF67600E5;
+        Tue, 12 Sep 2023 16:08:13 +1000 (AEST)
+From:   Benjamin Gray <bgray@linux.ibm.com>
+To:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, llvm@lists.linux.dev,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Benjamin Gray <bgray@linux.ibm.com>
+Subject: [PATCH v2 0/7] Fix Python string escapes
+Date:   Tue, 12 Sep 2023 16:07:54 +1000
+Message-ID: <20230912060801.95533-1-bgray@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fpl9VuF9ODMnOnIbO4VQkiRY7Mc9u2vR
+X-Proofpoint-GUID: 5bhN3wBgYbXJPAlC9J3b3vfBJ8N42c9A
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdljTVPfj//8pBnsus1g8mLeNzWLN3nNM
-        FvOPnGO12NFwhNWi78VDZotNj6+xWlzeNYfNYsb5fUwWrXuPsDtwemxa1cnmcefaHjaPzUvq
-        Pfq2rGL0+LxJLoA1KtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
-        xSdA1y0zB+geJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWleul5e
-        aomVoYGBkSlQYUJ2Rs/uC2wFzWwVLft2sjQwTmPtYuTkkBAwkXh++j07iC0ksINR4nNvTBcj
-        F5D9iVFi9qrZjHDOzndXGWE6Zq/bA5XYySixctsOdgjnI6PE34NPwGaxCWhLfF+/mBUkISKw
-        hlFi9afNLCAOs8AGRolj+1+AbRcW8JKY8GQjM4jNIqAq8e/bGbAdvAK2Eo3TVzND7JOX2LPo
-        OxNEXFDi5MwnLCA2M1C8eetsqJpr7BLT2rghbBeJ7a8msEHYwhKvjm9hh7ClJF72t0HZ2RLt
-        0/9AQ6BC4uKG2VD1xhKznrUD3cABNF9TYv0ufRBTQkBZ4sgtqK18Eh2H/7JDhHklOtqEIBrV
-        JO5PPQc1REZi0pGVTBC2h8SvX8uYQcqFBGIlulutJzDKz0Lyyiwkr8xCWLuAkXkVo1hqQXFu
-        emqxUYExPE6T83M3MYJTpJb7DsYZbz/oHWJk4mA8xCjBwawkwlty6G+KEG9KYmVValF+fFFp
-        TmrxIUZTYOBOZJYSTc4HJum8knhDE0sDEzMzQ3MjUwNzJXHee61zU4QE0hNLUrNTUwtSi2D6
-        mDg4pRqY9O2KPNtNw4J3y6rI1U6ULI3T6W8q2XZ/zcvzLApX4swULy+79m1LYYPnTOf+i39/
-        zmrlf8n9+FbG2zMsIn/P7+sseOfcW3ZAgvGkxAM739cHF+TJ991+Xd6W1+Oc9ungmyneXGsO
-        NWgKSNj8WLpbPi71ds6+Iz/5JNOSLL7Y5D2/3uD/b1H9kifrfkefem9YV2PR9ujFFTvjyOQs
-        A9ETVvFLWsrXPunb7pp8wu3YzoysTXLLWM7efVDF8UKCu+C/7okzARwTz0t7zX60vbV3/cbF
-        KZNVHD3cfQJl006pqQW7OJ+703Nhp2JBiVj+AtfT0161MLunlPe4nOWrMj5w7Mb5HeoM63Y9
-        D9yWE26lxFKckWioxVxUnAgAF9yX4RoEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrGLMWRmVeSWpSXmKPExsWy7bCSnO6H//9TDD590rF4MG8bm8WaveeY
-        LOYfOcdqsaPhCKtF34uHzBabHl9jtbi8aw6bxYzz+5gsWvceYXfg9Ni0qpPN4861PWwem5fU
-        e/RtWcXo8XmTXABrFJdNSmpOZllqkb5dAldGz+4LbAXNbBUt+3ayNDBOY+1i5OSQEDCRmL1u
-        D2MXIxeHkMB2Ron1q+4yQyRkJJY/62ODsIUl7rccYYUoes8ocWznE0aQBJuAtsT39YvBEiIC
-        6xglWr69BBvFLLCFUeLi8Wdg7cICXhITnmwEG8sioCrx79sZsG5eAVuJxumrodbJS+xZ9J0J
-        Ii4ocXLmExYQmxko3rx1NvMERr5ZSFKzkKQWMDKtYhRNLSjOTc9NLjDUK07MLS7NS9dLzs/d
-        xAgOWq2gHYzL1v/VO8TIxMF4iFGCg1lJhLfk0N8UId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzK
-        OZ0pQgLpiSWp2ampBalFMFkmDk6pBqZNIQ86Q0qEsoskF7xjnef09LBm2pF/puvKLzapeLtK
-        HZx5P/Vz+OO3KwJnPl83iVEq+KhpV0jSjau+yV82S88QPMImFFCRcztHjbF9GUe+8eV117vz
-        NvfWB20+2N3a+GYm557O7viM3ZOVRB7t8uBZmDxn0cmKH+YPmg/kXPrYVCckrHr/a8dy94rg
-        tp0cV3xz/Bkcn7lkl2u3Wn3e2LfqdsafSh8OHp/Y9c2TbBcEuYV/3hU0I333kjVP1hmcY+tS
-        X6i9uuq58Ywt3FKz5ZXUihe65sQnP+fc8WFG8In5Ry5dWvVfoPF43jz33ewvp6c8PNDdWxJR
-        /Ko74vgRq7J9K3gOTfUIFZKvK+T82KjEUpyRaKjFXFScCADM86RbyQIAAA==
-X-CMS-MailID: 20230912060640epcas2p43a9e6e11906d03641e76fb3df97462b8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230912060640epcas2p43a9e6e11906d03641e76fb3df97462b8
-References: <CGME20230912060640epcas2p43a9e6e11906d03641e76fb3df97462b8@epcas2p4.samsung.com>
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_03,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 bulkscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309120050
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pinctrl macro instead of hard-coded number.
-This makes the code more readable.
+Changes from v1:
+* Dropped some changes that were independently fixed[1]
+* No longer separate the f strings to their own patch
+* Use r strings when the value is a regular expression
+* Updated verification script
 
-Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+In retrospect a script to find the instances and apply fixes isn't that
+useful for review, so the attached script this time just looks for
+differences in the AST. Apply the series and run the script, with
+the two references to compare as arguments.
+
+There are some intentional changes to the AST now though, as the r strings
+turn '\t' from a single character tab into a backslash and 't' character
+pair (similar for '\n'). This does not affect the correctness of the
+regular expression though.
+
+v1: https://lore.kernel.org/all/20230814060704.79655-1-bgray@linux.ibm.com/
+
+[1]: https://lore.kernel.org/all/20230816122133.1231599-1-vishalc@linux.ibm.com/
+
 ---
- arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+#!/usr/bin/env python3
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-index d163891cd399..c2a9e59d36a0 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-@@ -1103,7 +1103,7 @@ initial_alive: initial-state {
- 
- 	te_irq: te-irq-pins {
- 		samsung,pins = "gpf1-3";
--		samsung,pin-function = <0xf>;
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_EINT>;
- 	};
- };
- 
--- 
-2.42.0
+"""
+Verify Python syntax trees are equivalent between two references
+"""
 
+import argparse
+import ast
+from pathlib import Path
+import subprocess as sp
+
+
+def read_file(path: Path, ref: str) -> str:
+    return sp.run(f"git show {ref}:{path}", stdout=sp.PIPE, shell=True, encoding="utf-8", check=True).stdout
+
+
+parser = argparse.ArgumentParser("Compare Python ASTs between revisions")
+parser.add_argument("ref1", type=str, help="First revision to use")
+parser.add_argument("ref2", type=str, help="Second revision to use")
+args = parser.parse_args()
+
+
+for pyfile in Path(".").glob("**/*.py"):
+    try:
+        ref1_content = read_file(pyfile, args.ref1)
+        ref2_content = read_file(pyfile, args.ref2)
+    except Exception as e:
+        print(f"ERROR:{pyfile}: Failed to read ({e})")
+        continue
+
+    try:
+        ref1_syntax = ast.parse(ref1_content, filename=pyfile)
+        ref2_syntax = ast.parse(ref2_content, filename=pyfile)
+    except SyntaxError as e:
+        print(f"ERROR:{pyfile}: Failed to parse, is it Python3? ({e})")
+        continue
+
+    if ast.dump(ref1_syntax) != ast.dump(ref2_syntax):
+        print(f"ERROR:{pyfile}: Revisions have different AST")
+        cmd = f"diff <(git show {args.ref1}:{pyfile} | python -m ast) <(git show {args.ref2}:{pyfile} | python -m ast)"
+        print(cmd)
+        sp.run(cmd, shell=True)
+        continue
+
+Benjamin Gray (7):
+  ia64: fix Python string escapes
+  Documentation/sphinx: fix Python string escapes
+  drivers/comedi: fix Python string escapes
+  scripts: fix Python string escapes
+  tools/perf: fix Python string escapes
+  tools/power: fix Python string escapes
+  selftests/bpf: fix Python string escapes
+
+ Documentation/sphinx/cdomain.py               |  2 +-
+ Documentation/sphinx/kernel_abi.py            |  2 +-
+ Documentation/sphinx/kernel_feat.py           |  2 +-
+ Documentation/sphinx/kerneldoc.py             |  2 +-
+ Documentation/sphinx/maintainers_include.py   |  8 +++---
+ arch/ia64/scripts/unwcheck.py                 |  2 +-
+ .../ni_routing/tools/convert_csv_to_c.py      |  2 +-
+ scripts/clang-tools/gen_compile_commands.py   |  2 +-
+ scripts/gdb/linux/symbols.py                  |  2 +-
+ tools/perf/pmu-events/jevents.py              |  2 +-
+ .../scripts/python/arm-cs-trace-disasm.py     |  4 +--
+ tools/perf/scripts/python/compaction-times.py |  2 +-
+ .../scripts/python/exported-sql-viewer.py     |  4 +--
+ tools/power/pm-graph/bootgraph.py             | 12 ++++-----
+ .../selftests/bpf/test_bpftool_synctypes.py   | 26 +++++++++----------
+ tools/testing/selftests/bpf/test_offload.py   |  2 +-
+ 16 files changed, 38 insertions(+), 38 deletions(-)
+
+--
+2.41.0
