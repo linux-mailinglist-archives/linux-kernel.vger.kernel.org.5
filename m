@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAED79C6E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967C979C6E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbjILG3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S229933AbjILGaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjILG3P (ORCPT
+        with ESMTP id S229479AbjILGaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:29:15 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F859AF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:29:11 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79277cfc73bso165142439f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694500151; x=1695104951; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hzZ0g5ZlS6sJREICVBNJdNjzNdZ31/yPMuU7RoyizV0=;
-        b=NvpZI33dysrZjhXxacf0vhiOtd97teOYu+sBX/T9hmJbhggDY6hxshaRCQo8sRFo9F
-         To4Zd7cqtjmsFzkF5JcepUZrqzO6wWuGQ79GB+4N+LTPBunbnzUqUP1ILmnAZI6J5Z5K
-         xzdQsLlA+m85ydJ6FGzYz+LKuV3wuO3B8+sSU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694500151; x=1695104951;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hzZ0g5ZlS6sJREICVBNJdNjzNdZ31/yPMuU7RoyizV0=;
-        b=aOJRNDjk6Y3jl7LBcm5h+ztbDx61N2LOigHTsZIh94neVmRQXRwBsL4PV7URSJtUuF
-         C9QlOwy3xI8+n1cw1XAyafxOYbiR5CP8OVkzlqDJVspt6z1N80G3pc0f9ZL6Azih/igq
-         2VIS9J57TfjdrGKARPaKiTGRCpf+Ts4D+rteNdmrUVkMGvRJ+Df/3QviOhX0gpH8X11i
-         aN4/VKdrSa1iOEbBn3CrpGTd5UbFMILYF3KxmEL2AdBxydT27ntTNwoe6/p6jbEG7hZC
-         JrrVIk+58nJ5Tiu9OYs199bOtZF/P9/vtiDEXzIxIxInRzda46W67/fR43foNe4heryx
-         1iBw==
-X-Gm-Message-State: AOJu0YxLPFF4PFEz+EFbnLe8AEaOPd5VDz8QguvcidZP0OoSfjSYbOGh
-        vaPPg8WirQqbHXnYAYWYqeL9aKMPeQjuE7DPZ08=
-X-Google-Smtp-Source: AGHT+IHYQU6qkAh5w9h3T+vA7IttMY0pqMGkB8YHTRnrdb0utIM7pX/1fN2XPrU5p69INU74Uv904A==
-X-Received: by 2002:a6b:e014:0:b0:792:70f2:a8ed with SMTP id z20-20020a6be014000000b0079270f2a8edmr12407819iog.4.1694500150778;
-        Mon, 11 Sep 2023 23:29:10 -0700 (PDT)
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com. [209.85.166.51])
-        by smtp.gmail.com with ESMTPSA id b2-20020a5d8042000000b00786fd8e764bsm2736176ior.0.2023.09.11.23.29.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Sep 2023 23:29:10 -0700 (PDT)
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-794cd987ea6so164882239f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:29:10 -0700 (PDT)
-X-Received: by 2002:a6b:610a:0:b0:786:25a3:ef30 with SMTP id
- v10-20020a6b610a000000b0078625a3ef30mr13376283iob.7.1694500149823; Mon, 11
- Sep 2023 23:29:09 -0700 (PDT)
+        Tue, 12 Sep 2023 02:30:06 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BD9AF;
+        Mon, 11 Sep 2023 23:30:01 -0700 (PDT)
+X-UUID: c92cfc32513511eea33bb35ae8d461a2-20230912
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=Ps11xcFJ0x4uz6iyg7AMvaIUrjPAirlB6aY9czV4xDE=;
+        b=vCkFOL1vcaSohcJahl1Chi2ISjiaykoWU5d84NbbOnqzB9hG7rrF+73ra5roR4RSE5d/y1J2lptWWa/RoFqv0TxagT0/cNrUBhh0IwAQkslnvmjwA4wQsueoG+5hvYh2olWuIqDXmoD/BamXsAMPa/vDR28dASL9YTP9paI+59U=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:b201575f-c15e-4463-b57a-2f8980cd7f95,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:af8cecc2-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: c92cfc32513511eea33bb35ae8d461a2-20230912
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1460391974; Tue, 12 Sep 2023 14:29:54 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.194) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 12 Sep 2023 14:29:53 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Tue, 12 Sep 2023 14:29:52 +0800
+Message-ID: <4010955c-9df7-da30-aef9-477ae8483e89@mediatek.com>
+Date:   Tue, 12 Sep 2023 14:29:51 +0800
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.5.I2b014f90afc4729b6ecc7b5ddd1f6dedcea4625b@changeid>
- <CAC=S1niYAC3PFQoAmwVc=1FcK29uu5sC9c1pGo-mku__y7eHcA@mail.gmail.com> <CAD=FV=VT8ZQkcLn4nsxCygC5SG16qYW5igFfwM762jEK42p12g@mail.gmail.com>
-In-Reply-To: <CAD=FV=VT8ZQkcLn4nsxCygC5SG16qYW5igFfwM762jEK42p12g@mail.gmail.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Tue, 12 Sep 2023 14:28:32 +0800
-X-Gmail-Original-Message-ID: <CAC=S1njNfjOaSidUHSGPKC+-625Ysx66wx9Sk02ZXGvpUKYBbA@mail.gmail.com>
-Message-ID: <CAC=S1njNfjOaSidUHSGPKC+-625Ysx66wx9Sk02ZXGvpUKYBbA@mail.gmail.com>
-Subject: Re: [RFT PATCH 05/15] drm/mediatek: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        angelogioacchino.delregno@collabora.com, chunkuang.hu@kernel.org,
-        daniel@ffwll.ch, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, p.zabel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2] dt-bindings: arm64: dts: mediatek: add description for
+ mt8365-evk board
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+References: <20230911081126.18463-1-macpaul.lin@mediatek.com>
+ <53cd72f7-5a8d-ee9e-4d8a-f5159cafb3e7@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <53cd72f7-5a8d-ee9e-4d8a-f5159cafb3e7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:11=E2=80=AFAM Doug Anderson <dianders@chromium.o=
-rg> wrote:
->
-[...]
->
-> That makes sense. I had based this series on drm-misc-next which
-> didn't have those, but now that a new -rc1 is out it then
-> drm-misc-next should rebase shortly. I'll make sure that the next
-> version includes Uwe's changes as much as possible.
->
-> That being said, I also wouldn't object if the maintainer of this DRM
-> driver wanted to resolve conflicts themselves and land the patch
-> without me needing to resend. The conflict is trivial, there are no
-> dependencies and no reason to land the series all at once, so landing
-> this patch early would mean less spam for the maintainer since they
-> would no longer get CCed on future versions. :-P Just sayin...
+On 9/11/23 17:49, Krzysztof Kozlowski wrote:
+> 	
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On 11/09/2023 10:11, Macpaul Lin wrote:
+>> Fix the missing description for MediaTek mt8365-evk board.
+>> 
+>> Fixes: 4f5fc078ac6f ("dt-bindings: arm64: dts: mediatek: Add mt8365-evk board")
+> 
+> This is a friendly reminder during the review process.
+> 
+> It seems my previous comments were not fully addressed. Maybe my
+> feedback got lost between the quotes, maybe you just forgot to apply it.
+> Please go back to the previous discussion and either implement all
+> requested changes or keep discussing them.
+> 
+> Thank you.
 
-Oh then feel free to ignore that if the changes weren't in the tree at
-that time... It was just a gentle reminder. Thanks for clarifying.  :)
+In the previous modifications, I overlooked this suggestion. It will be 
+corrected in the next version.
 
-Regards,
-Fei
+>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>> ---
+>>  Documentation/devicetree/bindings/arm/mediatek.yaml | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>> 
+>> change for v2:
+>>  - rebase this patch to follow the v5 patch set of mt8395.
+>>   - depends on https://lore.kernel.org/lkml/20230909132819.21626-2-macpaul.lin@mediatek.com/T/
+>>  - Fix description as a single board.
+>> 
+>> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> index 2e8ad49c3479..b163995e32d5 100644
+>> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> @@ -244,7 +244,8 @@ properties:
+>>            - enum:
+>>                - mediatek,mt8183-pumpkin
+>>            - const: mediatek,mt8183
+>> -      - items:
+>> +      - description: MediaTek Genio 350 Board (Genio 350 EVK)
+> 
+> Drop, no need, redundant (copies the compatible) and your other entries
+> do not have it.
 
->
-> -Doug
+The primary objective of this patch is to incorporate a description that 
+will prevent users from confusing this platform with others. 
+Additionally, it aids in identifying this as a "Genio EVK" for marketing 
+purposes.
+
+> 
+>> +        items:
+>>            - enum:
+> 
+> This is still confusing. Why do you have enum here with such description.
+> 
+
+In order to accommodate the current market situation for a single 
+reference board, will replace this with a 'const'.
+
+> Best regards,
+> Krzysztof
+> 
+
+Thanks
+Macpaul Lin
