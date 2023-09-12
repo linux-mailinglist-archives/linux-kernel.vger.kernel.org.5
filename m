@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94FB79D4FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4405779D503
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbjILPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S236435AbjILPeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:34:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236368AbjILPdu (ORCPT
+        with ESMTP id S236248AbjILPeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:33:50 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B0010E5;
-        Tue, 12 Sep 2023 08:33:46 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 7A89D3200980;
-        Tue, 12 Sep 2023 11:33:43 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 11:33:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1694532822; x=1694619222; bh=KO
-        z5h3i0laQ2JDFHsBvYcLYWW5n6o1vdglgxXAJAFV4=; b=TtPPo6ZoKzSk7P4qDt
-        jDuj0AN0PfaC9W+XHhwpWgwYMNPxzijHDCn0Vl+WsV8QoHZ79H08dC9uB0a82I2U
-        1pywhW7Po5LVgnWlbvnFGqbScLWKgwBXi1qRGRU6MlZkoqGof1AreiEqqaUdErV3
-        p534KN+KOrn73q4t1S4YxPCM0AbL/qMxYA7nA1IXJniCwHBUFEioNPvmrCrC6HXx
-        +IXQXKnCmoS9tyLjAaGz41x8PB2V2q0VqEhGYP2eibg3C1GWOiQrQJQeSP9TwV7p
-        G4Y1W3I7fugPC131JQw1aenqaR4HxMxtxrPPzWQ//xjnpOolS17/Zfzb/avjWBY5
-        gM7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694532822; x=1694619222; bh=KOz5h3i0laQ2J
-        DFHsBvYcLYWW5n6o1vdglgxXAJAFV4=; b=N3byRdtHn3WQe+Q8zV36ZVWcMVjMI
-        WCNxG+CuN/Bso3xbNBwrnsvMbSLphtivO+/EgviLdXiQoj5yKbANla4CM1eJZBmt
-        3fQeMDSFFFJRdw2ez29AELn678XkKihqqi9hS3ClLGSYMr40xTyHWiKPRgG6/Hch
-        9kd5MglSh2BQnpglt5lbsN/KBsYYPqWAxwo+uCQl852vSBieDVJoqIQ+ZWjiSRtH
-        6Ws/NP0z/YXc83SgnIV5gptrB5Yz2C0sFlh6ywYj+JtnF6X6NypcFPs0Wmg6c2D5
-        9jRk7LgPzWuNqkwu/5ZywhoNObmxAep22z5AbDW7DP2VRNoWKEMTHjlVA==
-X-ME-Sender: <xms:1YQAZYZQP2ZmnRsr8L8nreYVL7hX3E2d3RqDf_UovKMdYVSawJaWaA>
-    <xme:1YQAZTbJyyIqy40Em5gTwRtKov7phG91xYKr4dr9NtgUMG9bap77jUvc4EExw8IlN
-    QelHpo69h4Ozok3GJs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdluddtmdenucfjughrpefofgggkfgjfhffhffvvefutgesthdtredt
-    reertdenucfhrhhomhepfdflrghnucfjvghnughrihhkucfhrghrrhdfuceokhgvrhhnvg
-    hlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepjedtjeetteeftdejgeejjeef
-    hfdvhfehtefghfdtlefhheekueejtdeggeetffegnecuffhomhgrihhnpehfvgguohhrrg
-    hprhhojhgvtghtrdhorhhgpdgrrhgthhhlihhnuhigrdhorhhgpdhfrhgvvgguvghskhht
-    ohhprdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
-X-ME-Proxy: <xmx:1YQAZS-IszAfcFzfxXtn4xL3cGVfkA8iauFXj3JaL2bLm43mcyoO9A>
-    <xmx:1YQAZSqiApuUwaIDjxXg2lGDtfV1WDNTtyuJ6OCc_ovwKf-tOxmDNw>
-    <xmx:1YQAZTqMzIQJfnfXK-VXae-Tz7tcIT8KP8fq78g0mc6Pcz7Pdozhtw>
-    <xmx:1oQAZQihtitFtbSDtzF-WnXgxZOoXE618GHH5mfoQAUwXtokHRB1SQ>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 85E3215A008E; Tue, 12 Sep 2023 11:33:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
-In-Reply-To: <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
- <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
- <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
- <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
-Date:   Tue, 12 Sep 2023 17:32:41 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
-        bhelgaas@google.com, lennart@poettering.net,
-        "Luca Boccassi" <bluca@debian.org>
-Subject: Re: [PATCH 0/1] x86/kexec: UKI support
-Content-Type: text/plain
+        Tue, 12 Sep 2023 11:34:01 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E3E10EB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:33:57 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-64ccdf8820dso25830616d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694532836; x=1695137636; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jn3gYV6z0mHJzWuz6G6eyUwdrkRbzHbTqw/XH7fEH4s=;
+        b=jXSW4sr0/V0TjTygldTr884ibK6jtHHyYxRV6nM1uAsrYMhRGlPYT5IV8wxSASiQt3
+         etjGNSVMhu9OE3YJ6Taca3oX5YOEBO8AH1muDseBgwvJBZPgGW7wvFhhovPvA2VVvYvi
+         7cIYUxtFUbsyGMxzcfNUGm8QCKQfdVFW8dIzAKgcEcy3bStwurtLo3txAKaYJWHG2/Ds
+         jDpI9FyiEYuT9LF5bnbNrhBt4GdREQlewD7YDtkaJEYJ0Fmaw3Owsb0Y09JGEnu1fZqU
+         mkx7I0agpaYsSJFNrXWo8vL7ZONfceEepwrEp7sAQ5mlMZZf6vJC1p+akXVskBatrkUx
+         IFZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694532836; x=1695137636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jn3gYV6z0mHJzWuz6G6eyUwdrkRbzHbTqw/XH7fEH4s=;
+        b=u54P8skMOJbSGAVJrtMTzV5GkE7R3dKeczgmnegnXeyRgluvF5TgmRAkwi0vd/bBgF
+         LWIzmuJYd5a4yBTjN9miHh2coZHXT1gi5hk9iUocjHEfwiPSWm7GtrJBnIxceWt3lxYU
+         gSEMJBoucFnPzbtCc1jXvqjgufQbWVSeCHosgpyeAZNwjcL/g4Rmc2vag/VDPrIhGdgG
+         35mvUtZqT6CEKb0sOwI9SIXsvVQzVSnBbs0eT+ZaRJSTNuAC4Mcai+XBdZa9PdWiKLSA
+         Iy+4m4z3oxrzASBQvZJyiY4LxbJVsaiFnXsPufpUSPimQUqMzWCkQ7YijeNIYLa8fVIx
+         +ZQQ==
+X-Gm-Message-State: AOJu0Yw0VUC/S9S/UfcxpsTu2HqsW2qoH3X9cQWxqxGyD5f5YGGANoMM
+        sbw3K+1C/AzZWzjVhBR6Ht0M5iFK1eXD8a92NOkg8A==
+X-Google-Smtp-Source: AGHT+IE0Ca2qfQkE6enrGukSoNDCb1OXtuL9IDZszmjiWUcu3f+9cYN/mXNgIzl2i4wDmR90/hv9yYRTETUzcz21Ipg=
+X-Received: by 2002:ad4:5d4b:0:b0:635:da80:e53a with SMTP id
+ jk11-20020ad45d4b000000b00635da80e53amr4483115qvb.12.1694532836379; Tue, 12
+ Sep 2023 08:33:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912060801.95533-1-bgray@linux.ibm.com> <20230912060801.95533-2-bgray@linux.ibm.com>
+In-Reply-To: <20230912060801.95533-2-bgray@linux.ibm.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 12 Sep 2023 08:33:42 -0700
+Message-ID: <CAKwvOdkP1uwU0Cq9541zf309tudfFdbu-10Xo3h+g07-k=Fg4A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] ia64: fix Python string escapes
+To:     Benjamin Gray <bgray@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, llvm@lists.linux.dev,
+        linux-pm@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Tue, Sep 12, 2023, at 12:33 PM, Jarkko Sakkinen wrote:
-> On Tue Sep 12, 2023 at 1:54 AM EEST, Jan Hendrik Farr wrote:
->> > What the heck is UKI?
->>
->> UKI (Unified Kernel Image) is the kernel image + initrd + cmdline (+
->> some other optional stuff) all packaged up together as one EFI
->> application.
->>
->> This EFI application can then be launched directly by the UEFI without
->> the need for any additional stuff (or by systemd-boot). It's all self
->> contained. One benefit is that this is a convenient way to distribute
->> kernels all in one file. Another benefit is that the whole combination
->> of kernel image, initrd, and cmdline can all be signed together so
->> only that particular combination can be executed if you are using
->> secure boot.
+On Mon, Sep 11, 2023 at 11:08=E2=80=AFPM Benjamin Gray <bgray@linux.ibm.com=
+> wrote:
 >
-> Is this also for generic purpose distributions? I mean it is not
-> uncommon having to tweak the command-line in a workstation.
-
-This is for generic purpose distributions. See fedora's planned rollout: https://fedoraproject.org/wiki/Changes/Unified_Kernel_Support_Phase_1
-Or Arch: https://wiki.archlinux.org/title/Unified_kernel_image
-
-There are UKI addons that help you achieve this. These are additional PE files that contain for example additional cmdline parameters. On a generic Linux distro doing secure boot you'd generally use shim, could enroll MOK and use that to sign an addon for your machine.
-
-This patch currently does not support addons. The plan would be to support them in the future though.
-
-I personally always run my own compiled kernel and build a UKI from that so I can obviously tweak the cmdline that way and sign the UKI with my own secure boot key.
-
->> The format itself is rather simple. It's just a PE file (as required
->> by the UEFI spec) that contains a small stub application in the .text,
->> .data, etc sections that is responsible for invoking the contained
->> kernel and initrd with the contained cmdline. The kernel image is
->> placed into a .kernel section, the initrd into a .initrd section, and
->> the cmdline into a .cmdline section in the PE executable.
+> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
+> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
+> be a syntax error.
 >
-> How does this interact with the existing EFI stub support in linux?
+> Fix these now to get ahead of it before it's an error.
+>
+> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
+> ---
+>  arch/ia64/scripts/unwcheck.py | 2 +-
 
-It doesn't. During normal boot of a UKI the stub in it is used (systemd-stub, see: https://www.freedesktop.org/software/systemd/man/systemd-stub.html). The kernel's own EFI stub will still be in the binary inside the .linux section but not used.
+Ard is proposing removing this script, along with the rest of the architect=
+ure:
+https://lore.kernel.org/linux-arch/20230911163129.3777603-2-ardb@google.com=
+/
 
-Now in this patch (also see v2 I already posted) obviously non of the stubs are used.
+So this change can be dropped.
+
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/ia64/scripts/unwcheck.py b/arch/ia64/scripts/unwcheck.p=
+y
+> index 9581742f0db2..adc24152d3b9 100644
+> --- a/arch/ia64/scripts/unwcheck.py
+> +++ b/arch/ia64/scripts/unwcheck.py
+> @@ -21,7 +21,7 @@ if len(sys.argv) !=3D 2:
+>
+>  readelf =3D os.getenv("READELF", "readelf")
+>
+> -start_pattern =3D re.compile("<([^>]*)>: \[0x([0-9a-f]+)-0x([0-9a-f]+)\]=
+")
+> +start_pattern =3D re.compile(r"<([^>]*)>: \[0x([0-9a-f]+)-0x([0-9a-f]+)\=
+]")
+>  rlen_pattern  =3D re.compile(".*rlen=3D([0-9]+)")
+>
+>  def check_func (func, slots, rlen_sum):
+> --
+> 2.41.0
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
