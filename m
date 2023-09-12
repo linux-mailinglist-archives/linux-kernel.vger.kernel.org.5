@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF33579D62C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EB579D62E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236649AbjILQXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
+        id S236646AbjILQXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbjILQX3 (ORCPT
+        with ESMTP id S231518AbjILQXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:23:29 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0792310D;
-        Tue, 12 Sep 2023 09:23:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c1d03e124so722697366b.2;
-        Tue, 12 Sep 2023 09:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694535803; x=1695140603; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XWvMWZ3PfPL63wEwHZjDGh9ALUEehxR7vNe39ic1Lp4=;
-        b=mTAJYC2EkCktF4zTiAVFwbXlMCK8Wqmvh33J2hK1eblyM3eKt9u36SKJxOK42lpXjS
-         XJ6qbkTTpgS/CMKlrjGQE02jy5ClVGKeEnZQACv62r4bPh5y+NB26fWbwAmYpL+exyq+
-         vDlKyFIzqmj78H1tLoVYo/0jQUBVLMHStJmgnQNAXr2Rr/tCvcSi9+yOmH7cjvYx4N21
-         LMYGTanzkj08LRe7fP7x4ZN2OCmYEjO7frtMl4CXTNxHBLjpnzx61ulGLvXgDrinSBr4
-         1BD3Ge/lcIAWVHzlsBJB0k/hzgDM3c5lU/Rk3Dg2R2BEzuqTx6iTbY2KCJJ8YkOIKg8k
-         6z/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694535803; x=1695140603;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XWvMWZ3PfPL63wEwHZjDGh9ALUEehxR7vNe39ic1Lp4=;
-        b=G+T94wI4sI7cABR8T9V5W/GtRPpITQPQNEZaFsSZ4Ihiv9c0sdW+HNIYUb9z8Cm1eQ
-         U95zn8N5erBKiMBPUcG4poLRHYD1FQOejgp9d4fic/lcoYOgV+YZVH8J13z8aDqUe26d
-         d7w7fq+o1qPeYEwxB2CYORLTT6eJ4OuhRqh1kfewmHbBwqbJ3T9bMm14docak3wKgg3i
-         g0zoGBn8kwyww77jwd2ZZ1QgMSdteAq5eYKCrHhtH7/wY0sOTGAJpu5SVw/Ep1ahvbqI
-         4tbZik/CBG2oPhq54NDyCqqN2ESctmY3PT1ZYIFDRnPS8dzmgZomkItflu5tvm2XMMUY
-         58iw==
-X-Gm-Message-State: AOJu0YzXOS9NT8KXICjFHsbJSHO3EjtWOAGO31PdjnlEhuzppnaHfKOb
-        EHnDIltPwe0MAV8zAC24S/cEmlHy+w==
-X-Google-Smtp-Source: AGHT+IGak6rYUKE4vzjvzo3nJZ/TMMEDCk8Vge6/xb70yEOlEamgl0yAG9yioVpJYJW0c9XWwDNIUQ==
-X-Received: by 2002:a17:906:7687:b0:9a5:e441:4cf2 with SMTP id o7-20020a170906768700b009a5e4414cf2mr9904342ejm.58.1694535803184;
-        Tue, 12 Sep 2023 09:23:23 -0700 (PDT)
-Received: from p183 ([46.53.254.179])
-        by smtp.gmail.com with ESMTPSA id g21-20020a170906349500b00997e00e78e6sm7119522ejb.112.2023.09.12.09.23.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 09:23:22 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 19:23:21 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org, keescook@chromium.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-hardening@vger.kernel.org, David.Laight@aculab.com
-Subject: [PATCH v3 2/2] uapi: fix header guard in include/uapi/linux/stddef.h
-Message-ID: <b1f5081e-339d-421d-81b2-cbb94e1f6f5f@p183>
-References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
- <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183>
- <202309080848.60319AF@keescook>
- <f1819874-2b91-4983-9ebe-6cd83d5d3bc3@p183>
- <202309080910.44BB7CEF@keescook>
- <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
- <97242381-f1ec-4a4a-9472-1a464f575657@p183>
+        Tue, 12 Sep 2023 12:23:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFA010E7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:23:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B0E8C433C8;
+        Tue, 12 Sep 2023 16:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694535825;
+        bh=biFFduZ1C4O3DX/VQihj7MaVYd4W5bX5wM/9wVdt810=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eR0fW+KyZ9Eq2rtV2L9yQcFxmU2NXDiOo79n6SCdi990t7zSmCIuZG918ca0p7ABi
+         HNNtw2azE5jJFXaLQaX22cYrcDsAyq+PAys56QZSxuMgDCNUc9UB0PYSJkWwTwpM85
+         VkOij5Kmo8l/L4TZP2XDxPEf/EWijK9XazVq7Zl83wawhRvW8GZ4zByo3/vY/nycSe
+         TMPznE7kLaojYC4zRmND6QhDly+vTyOKMu/pUzMCey8iwzfRWT3JyYPU7dstmUSFul
+         c/929Q+Ghwm2xBQUsYb1z+bhz+S3RyEU7ezTkcAFrHMJuaS/KW0BJP6RuQ+wsesqRu
+         0iEJuyxKDEJTA==
+Date:   Tue, 12 Sep 2023 17:23:41 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jinyu Tang <tangjinyu@tinylab.org>
+Cc:     william.qiu@starfivetech.com, hal.feng@starfivetech.com,
+        conor.dooley@microchip.com, palmer@dabbelt.com,
+        apatel@ventanamicro.com, ttjjyystupid@163.com, falcon@tinylab.org,
+        wangjiexun@tinylab.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] riscv: defconfig : add CONFIG_MMC_DW for starfive
+Message-ID: <20230912-breeching-zealous-84c859e90eb7@spud>
+References: <20230912133128.5247-1-tangjinyu@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tOfKvfF/NMI329BY"
 Content-Disposition: inline
-In-Reply-To: <97242381-f1ec-4a4a-9472-1a464f575657@p183>
+In-Reply-To: <20230912133128.5247-1-tangjinyu@tinylab.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
 
- include/uapi/linux/stddef.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--tOfKvfF/NMI329BY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---- a/include/uapi/linux/stddef.h
-+++ b/include/uapi/linux/stddef.h
-@@ -50,8 +50,9 @@
- 		TYPE NAME[]; \
- 	}
- #endif
--#endif
- 
- #ifndef __counted_by
- #define __counted_by(m)
- #endif
-+
-+#endif
+On Tue, Sep 12, 2023 at 09:31:28PM +0800, Jinyu Tang wrote:
+> If these config not set, mmc can't run for jh7110, rootfs can't
+> be found when using SD card. So set CONFIG_MMC_DW=3Dy like arm64
+> defconfig, and set CONFIG_MMC_DW_STARFIVE=3Dy for starfive. Then
+> starfive vf2 board can start SD card rootfs with mainline defconfig
+> and dtb.
+>=20
+> Signed-off-by: Jinyu Tang <tangjinyu@tinylab.org>
+
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+> v1 -> v2:
+> Change the order of these by using savedefconfig, thanks to
+> Conor Dooley.
+>=20
+>  arch/riscv/configs/defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index ab86ec3b9..76c43a532 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -169,6 +169,8 @@ CONFIG_MMC_SDHCI=3Dy
+>  CONFIG_MMC_SDHCI_PLTFM=3Dy
+>  CONFIG_MMC_SDHCI_CADENCE=3Dy
+>  CONFIG_MMC_SPI=3Dy
+> +CONFIG_MMC_DW=3Dy
+> +CONFIG_MMC_DW_STARFIVE=3Dy
+>  CONFIG_MMC_SUNXI=3Dy
+>  CONFIG_RTC_CLASS=3Dy
+>  CONFIG_RTC_DRV_SUN6I=3Dy
+> --=20
+> 2.39.2
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--tOfKvfF/NMI329BY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQCQjQAKCRB4tDGHoIJi
+0unBAQDNHlf3rnnuIDjF1ENKvc6GsCR/WCMXJ+6S2YLmJ5M8QQD9HQzsZqQnlVZc
+fOvWx1ylOXG7jDJHiIh+c39+luEFBAY=
+=6mo+
+-----END PGP SIGNATURE-----
+
+--tOfKvfF/NMI329BY--
