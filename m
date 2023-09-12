@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D166879DC08
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED8979DC0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbjILWnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
+        id S237798AbjILWor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjILWnI (ORCPT
+        with ESMTP id S235041AbjILWop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:43:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D88B10EB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694558585; x=1726094585;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=PlHSU90+0N8rhEWREl04BGkk7Jzf3/BgZ0qW3gb/PFo=;
-  b=NKLeCPPbpOvO6eeEZZ9v6bS2WE2qIi7RWf/kRJzAyguH/AvIgKd6PLIs
-   gvRUDyfwt4oPLR0EShxjhw6OBAgjJC7XMvu9nk1NHvR3c9n8/IbSynCEa
-   wTCVtuF/7UQ0WcNEZDkMG4EXEZlNWvGTaMSr2uNNE5oQuTVhKsNlDRSbm
-   l1v5udWOGyqDoDP0b1CndNY1WOzhDlBoYNT1eCKUBSgmgTkl59iaVVgxU
-   YeYm/J4jFoL5ybA1T6mQF77ZhKBvneJE1mQ3K7G+zg9xGFkozmLsxu3sJ
-   xXFymmx1r2fzLvVC1ZB6sADgoMYuwjDfIe1qGSLX/8rdxlUZp8TuUyq34
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358784390"
-X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
-   d="scan'208";a="358784390"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 15:43:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="814007332"
-X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
-   d="scan'208";a="814007332"
-Received: from lkp-server02.sh.intel.com (HELO 47e905db7d2b) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Sep 2023 15:43:03 -0700
-Received: from kbuild by 47e905db7d2b with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgC61-0000NO-1X;
-        Tue, 12 Sep 2023 22:43:01 +0000
-Date:   Wed, 13 Sep 2023 06:42:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:undefined reference to
- `fb_io_read'
-Message-ID: <202309130632.LS04CPWu-lkp@intel.com>
+        Tue, 12 Sep 2023 18:44:45 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBBE10EB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:44:42 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so9079645ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1694558681; x=1695163481; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ah5Op9UHzow67q6STiy57YfblgAJa0Z+MzvCC70G7KA=;
+        b=jNrYjBG/wjffg70U1TBRnyQx74GjrLWbL9+B4S24Xlc190bNhNUX11uVMIoo2WoMGn
+         RbXYIME3rJfjszbE4zOAPsPoIS0mhSqjDBepBhGyBRj7bzmJ0IV1dR2VNvLAHOlrqly+
+         TTTegmVLNml1EVQInH+mJ4reT33aG/vthATMp8eDuDCCarE2N3tz+/eSAfDXowu+gYi5
+         cnB6hdnuz+6Vk2nrbXv/9KsinxVxCZle2d2+ScpPe+8UtovNpmt+3znnhGFr36rizLWQ
+         hXOUw6YVaPUYvHeSoyoBJuuJs1KSXjQBjWMxxAAtNBfNIvYIqewLwmna/y0l2jUi/JPu
+         QtjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694558681; x=1695163481;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ah5Op9UHzow67q6STiy57YfblgAJa0Z+MzvCC70G7KA=;
+        b=TC408P3xdAdBUg45AkGaXVNlRmkphD/3+j3p1VrGVMIspIhrz7p6+pjiE6PtKasZBf
+         F/Swiwm10cLUBNJkF6SMrKvsyq3oftHsEzo1ThAUqR2NPJ6EmJ1vj6LRWRlcjIJqT/5B
+         sSIiRX/4NVDBjuOuYcOYs0EodPhi2UybKVsauCRo5Dy0s/fsqOcDbLeKDO0YLvY4VvKX
+         P3xCZ/55htM3KxiEDtmC586jl5RzDqno6MLajdm9HCynJtctRltizXIQ3E3Hu8bZOjfy
+         JA9HStdfj5QMEbNZLYlwjzCgCAOFyBRtAYtM7RpEl60+sIgjleCvfTZC5blGYRgDCxW2
+         A/Vw==
+X-Gm-Message-State: AOJu0YzEukSbUFDQECIkcaZEyxEFqfFFGd+LH7j8YIPTKHBUXwgzlxrz
+        lTBDosS680xGYVsfT3Yp48bw+g==
+X-Google-Smtp-Source: AGHT+IHBXmbSUte83WfShO2qynzMF12my3Babt8JezgZzeHlmJ5Kp5tUIevLyDLaZgj1jaa/IH5ZVg==
+X-Received: by 2002:a17:903:120d:b0:1bb:994c:bc43 with SMTP id l13-20020a170903120d00b001bb994cbc43mr1283734plh.18.1694558681467;
+        Tue, 12 Sep 2023 15:44:41 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902c18400b001bba3a4888bsm8957634pld.102.2023.09.12.15.44.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 15:44:40 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qgC7Z-00EPVj-2t;
+        Wed, 13 Sep 2023 08:44:37 +1000
+Date:   Wed, 13 Sep 2023 08:44:37 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Wang Jianchao <jianchwa@outlook.com>
+Cc:     djwong@kernel.org, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] xfs: use roundup_pow_of_two instead of ffs during
+ xlog_find_tail
+Message-ID: <ZQDp1fNUgmJevXLr@dread.disaster.area>
+References: <63b3742c-0efe-c096-c737-a0e0419480bd@outlook.com>
+ <CY8PR05MB9378060FDF6C7E15589EB668CDF1A@CY8PR05MB9378.namprd05.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CY8PR05MB9378060FDF6C7E15589EB668CDF1A@CY8PR05MB9378.namprd05.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Tue, Sep 12, 2023 at 03:20:56PM +0800, Wang Jianchao wrote:
+> 
+> In our production environment, we find that mounting a 500M /boot
+> which is umount cleanly needs ~6s. One cause is that ffs() is
+> used by xlog_write_log_records() to decide the buffer size. It
+> can cause a lot of small IO easily when xlog_clear_stale_blocks()
+> needs to wrap around the end of log area and log head block is
+> not power of two. Things are similar in xlog_find_verify_cycle().
+> 
+> The code is able to handed bigger buffer very well, we can use
+> roundup_pow_of_two() to replace ffs() directly to avoid small
+> and sychronous IOs.
+> 
+> Changes in V1:
+>  - Also replace the ffs in xlog_find_verify_cycle()
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+Change logs go either below the --- line or in the cover letter,
+not the commit itself.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3669558bdf354cd352be955ef2764cde6a9bf5ec
-commit: 5f86367006c6a0662faaf36f753f437afe42fb63 fbdev/sh7760fb: Use fbdev I/O helpers
-date:   6 weeks ago
-config: sh-randconfig-r012-20230913 (https://download.01.org/0day-ci/archive/20230913/202309130632.LS04CPWu-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309130632.LS04CPWu-lkp@intel.com/reproduce)
+Other than that, the change looks ok. The use of ffs() was added in
+2002 simply to make buffers a power-of-2 size. I don't think it had
+anything to do with trying to maximise the actual buffer size at
+all, otherwise it would have made to use fls() like
+roundup_pow_of_two() does...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309130632.LS04CPWu-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_probe':
-   sh7760fb.c:(.text+0x374): undefined reference to `framebuffer_alloc'
-   sh4-linux-ld: sh7760fb.c:(.text+0x394): undefined reference to `fb_videomode_to_var'
-   sh4-linux-ld: sh7760fb.c:(.text+0x39c): undefined reference to `fb_alloc_cmap'
-   sh4-linux-ld: sh7760fb.c:(.text+0x3a4): undefined reference to `register_framebuffer'
-   sh4-linux-ld: sh7760fb.c:(.text+0x3ac): undefined reference to `fb_dealloc_cmap'
-   sh4-linux-ld: sh7760fb.c:(.text+0x434): undefined reference to `framebuffer_release'
-   sh4-linux-ld: drivers/video/fbdev/sh7760fb.o: in function `sh7760fb_remove':
-   sh7760fb.c:(.text+0x800): undefined reference to `unregister_framebuffer'
-   sh4-linux-ld: sh7760fb.c:(.text+0x804): undefined reference to `fb_dealloc_cmap'
-   sh4-linux-ld: sh7760fb.c:(.text+0x814): undefined reference to `framebuffer_release'
->> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0xc): undefined reference to `fb_io_read'
->> sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x10): undefined reference to `fb_io_write'
-   sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x2c): undefined reference to `cfb_fillrect'
-   sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x30): undefined reference to `cfb_copyarea'
-   sh4-linux-ld: drivers/video/fbdev/sh7760fb.o:(.rodata+0x34): undefined reference to `cfb_imageblit'
+Reviewed-by: Dave Chinner <dchinner@redhat.com>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dave Chinner
+david@fromorbit.com
