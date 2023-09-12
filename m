@@ -2,161 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3C079D806
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AE479D81A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbjILRv5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 13:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S237329AbjILRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237234AbjILRva (ORCPT
+        with ESMTP id S236933AbjILRxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:51:30 -0400
-Received: from relay.hostedemail.com (smtprelay0010.hostedemail.com [216.40.44.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7297E172A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:51:26 -0700 (PDT)
-Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay10.hostedemail.com (Postfix) with ESMTP id 1356BC0C80;
-        Tue, 12 Sep 2023 17:51:25 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id F3C3820;
-        Tue, 12 Sep 2023 17:51:22 +0000 (UTC)
-Message-ID: <5d72679f634080c8df3c2269495267171cf72f66.camel@perches.com>
-Subject: Re: [PATCH][next] checkpatch: add a couple new alloc functions to
- alloc with multiplies check
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date:   Tue, 12 Sep 2023 10:51:22 -0700
-In-Reply-To: <ZQCaO+tYycDxVLy7@work>
-References: <ZQCaO+tYycDxVLy7@work>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 12 Sep 2023 13:53:23 -0400
+Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EF01FF0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:52:54 -0700 (PDT)
+Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
+        id D9E9DBCD1627; Tue, 12 Sep 2023 10:52:38 -0700 (PDT)
+From:   Stefan Roesch <shr@devkernel.io>
+To:     kernel-team@fb.com
+Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v1 0/4] Smart scanning mode for KSM
+Date:   Tue, 12 Sep 2023 10:52:24 -0700
+Message-Id: <20230912175228.952039-1-shr@devkernel.io>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: F3C3820
-X-Stat-Signature: 86ozqfui8k7wrzihz1m85s33xhgpwb4w
-X-Spam-Status: No, score=-3.60
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/j0GjjU0r9vPLT6NVNCwg85GfWKfClFE8=
-X-HE-Tag: 1694541082-375569
-X-HE-Meta: U2FsdGVkX1+MdnxPkBdOQ1O7sKJvTpMNOWdK9dspbgFgUFqDB9yz8nq2cBP2f/ngzL1bgDEJRR5eqEk4nddE6HB6yF/ZWSO7EdWqkxx261iyaOa/ox21SSPNCi9jWsfmmDmpKpogDxa++IwOQQ4JirLCa/FEyZgxWX5httIDYBntzC6CrhCdGy8QRJjbU/ecYmOyDDovaVWnwRpfwZGKbBGtGC45JRn0pmqwA0HCopWFjWeOOPgAfQxZ9zc2h8WWU2nEqTxuZ0fNpTgvVId53GaE7rGDp2lZQWo4r1MPvJ2MSI7jWAzyR3aeq5c7gtrJCGbzidtTm3B4a3mgcsKh21wA+pb/XcW2HHykQpRnzWRENTcCexVZBQG5LGbDM8BFWSU18kGe1dFwWDYSqvtKyA==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-12 at 11:04 -0600, Gustavo A. R. Silva wrote:
-> vmalloc() and vzalloc() functions have now 2-factor multiplication
-> argument forms vmalloc_array() and vcalloc(), correspondingly.
+This patch series adds "smart scanning" for KSM.
 
-> Add alloc-with-multiplies checks for these new functions.
-> 
-> Link: https://github.com/KSPP/linux/issues/342
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  scripts/checkpatch.pl | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 7d16f863edf1..45265d0eee1b 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -7207,17 +7207,19 @@ sub process {
->  			    "Prefer $3(sizeof(*$1)...) over $3($4...)\n" . $herecurr);
->  		}
->  
-> -# check for (kv|k)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/kvcalloc/kcalloc
-> +# check for (kv|k|v)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/vmalloc_array/kvcalloc/kcalloc/vcalloc
->  		if ($perl_version_ok &&
->  		    defined $stat &&
-> -		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
-> +		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k|v)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,?/) {
->  			my $oldfunc = $3;
->  			my $a1 = $4;
->  			my $a2 = $10;
->  			my $newfunc = "kmalloc_array";
->  			$newfunc = "kvmalloc_array" if ($oldfunc eq "kvmalloc");
-> +			$newfunc = "vmalloc_array" if ($oldfunc eq "vmalloc");
->  			$newfunc = "kvcalloc" if ($oldfunc eq "kvzalloc");
->  			$newfunc = "kcalloc" if ($oldfunc eq "kzalloc");
-> +			$newfunc = "vcalloc" if ($oldfunc eq "vzalloc");
->  			my $r1 = $a1;
->  			my $r2 = $a2;
->  			if ($a1 =~ /^sizeof\s*\S/) {
-> @@ -7233,7 +7235,7 @@ sub process {
->  					 "Prefer $newfunc over $oldfunc with multiply\n" . $herectx) &&
->  				    $cnt == 1 &&
->  				    $fix) {
-> -					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
-> +					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k|v)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
->  				}
->  			}
->  		}
+What is smart scanning?
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+KSM evaluates all the candidate pages for each scan. It does not use hist=
+oric
+information from previous scans. This has the effect that candidate pages=
+ that
+couldn't be used for KSM de-duplication continue to be evaluated for each=
+ scan.
 
-Seems ok.  Dunno how many more of these there might be like
-devm_ variants, but maybe it'd be better style to use a hash
-with replacement instead of the repeated if block
+The idea of "smart scanning" is to keep historic information. With the hi=
+storic
+information we can temporarily skip the candidate page for one or several=
+ scans.
 
-Something like:
----
- scripts/checkpatch.pl | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+Details:
+=3D=3D=3D=3D=3D=3D=3D=3D
+"Smart scanning" is to keep two small counters to store if the page has b=
+een
+used for KSM. One counter stores how often we already tried to use the pa=
+ge for
+KSM and the other counter stores when a page will be used as a candidate =
+page
+again.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7d16f863edf1c..bacb63518be14 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -854,6 +854,23 @@ foreach my $entry (keys %deprecated_apis) {
- }
- $deprecated_apis_search = "(?:${deprecated_apis_search})";
- 
-+our %alloc_with_multiply_apis = (
-+	"kmalloc"		=> "kmalloc_array",
-+	"kvmalloc"		=> "kvmalloc_array",
-+	"vmalloc"		=> "vmalloc_array",
-+	"kvzalloc"		=> "kvcalloc",
-+	"kzalloc"		=> "kcalloc",
-+	"vzalloc"		=> "vcalloc",
-+);
-+
-+#Create a search pattern for all these strings to speed up a loop below
-+our $alloc_with_multiply_search = "";
-+foreach my $entry (keys %alloc_with_multiply_apis) {
-+	$alloc_with_multiply_search .= '|' if ($alloc_with_multiply_search ne "");
-+	$alloc_with_multiply_search .= $entry;
-+}
-+$alloc_with_multiply_search = "(?:${alloc_with_multiply_search})";
-+
- our $mode_perms_world_writable = qr{
- 	S_IWUGO		|
- 	S_IWOTH		|
-@@ -7210,14 +7227,11 @@ sub process {
- # check for (kv|k)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/kvcalloc/kcalloc
- 		if ($perl_version_ok &&
- 		    defined $stat &&
--		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
-+		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*($alloc_with_multiply_search)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
- 			my $oldfunc = $3;
-+			my $newfunc = $alloc_with_multiply_apis{$oldfunc};
- 			my $a1 = $4;
- 			my $a2 = $10;
--			my $newfunc = "kmalloc_array";
--			$newfunc = "kvmalloc_array" if ($oldfunc eq "kvmalloc");
--			$newfunc = "kvcalloc" if ($oldfunc eq "kvzalloc");
--			$newfunc = "kcalloc" if ($oldfunc eq "kzalloc");
- 			my $r1 = $a1;
- 			my $r2 = $a2;
- 			if ($a1 =~ /^sizeof\s*\S/) {
-@@ -7233,7 +7247,7 @@ sub process {
- 					 "Prefer $newfunc over $oldfunc with multiply\n" . $herectx) &&
- 				    $cnt == 1 &&
- 				    $fix) {
--					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
-+					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*($alloc_with_multiply_search)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
- 				}
- 			}
- 		}
+How often we skip the candidate page depends how often a page failed KSM
+de-duplication. The code skips a maximum of 8 times. During testing this =
+has
+shown to be a good compromise for different workloads.
+
+New sysfs knob:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Smart scanning is not enabled by default. With /sys/kernel/mm/ksm/smart_s=
+can
+smart scanning can be enabled.
+
+Monitoring:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+To monitor how effective smart scanning is a new sysfs knob has been intr=
+oduced.
+/sys/kernel/mm/pages_skipped report how many pages have been skipped by s=
+mart
+scanning.
+
+Results:
+=3D=3D=3D=3D=3D=3D=3D=3D
+- Various workloads have shown a 20% - 25% reduction in page scans
+  For the instagram workload for instance, the number of pages scanned ha=
+s been
+  reduced from over 20M pages per scan to less than 15M pages.
+- Less pages scans also resulted in an overall higher de-duplication rate=
+ as
+  some shorter lived pages could be de-duplicated additionally
+- Less pages scanned allows to reduce the pages_to_scan parameter
+  and this resulted in  a 25% reduction in terms of CPU.
+- The improvements have been observed for workloads that enable KSM with
+  madvise as well as prctl
+
+
+
+Stefan Roesch (4):
+  mm/ksm: add "smart" page scanning mode
+  mm/ksm: add pages_skipped metric
+  mm/ksm: document smart scan mode
+  mm/ksm: document pages_skipped sysfs knob
+
+ Documentation/admin-guide/mm/ksm.rst | 11 ++++
+ mm/ksm.c                             | 87 ++++++++++++++++++++++++++++
+ 2 files changed, 98 insertions(+)
+
+
+base-commit: 15bcc9730fcd7526a3b92eff105d6701767a53bb
+--=20
+2.39.3
 
