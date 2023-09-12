@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEEC79CE89
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4028979CE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbjILKiZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
+        id S234160AbjILKjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234124AbjILKiX (ORCPT
+        with ESMTP id S230223AbjILKji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:38:23 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20496CC3;
-        Tue, 12 Sep 2023 03:38:20 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlKmD4RY8z6K5wg;
-        Tue, 12 Sep 2023 18:37:48 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
- 2023 11:38:17 +0100
-Date:   Tue, 12 Sep 2023 11:38:17 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Bradley Grove" <linuxdrivers@attotech.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/8] scsi: esas2r: Use FIELD_GET() to extract Link Width
-Message-ID: <20230912113817.000064db@Huawei.com>
-In-Reply-To: <20230911121501.21910-8-ilpo.jarvinen@linux.intel.com>
-References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
-        <20230911121501.21910-8-ilpo.jarvinen@linux.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 12 Sep 2023 06:39:38 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96A7DF2;
+        Tue, 12 Sep 2023 03:39:34 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qg0nq-00042X-9f; Tue, 12 Sep 2023 12:39:30 +0200
+Message-ID: <516005ff-636e-4aa9-9bcb-76902c09f855@leemhuis.info>
+Date:   Tue, 12 Sep 2023 12:39:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "comedi: add HAS_IOPORT dependencies"
+Content-Language: en-US, de-DE
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>, stable@vger.kernel.org,
+        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
+References: <20230905090922.3314-1-abbotti@mev.co.uk>
+ <76acff7e-3959-4193-9531-22a5e5a68221@leemhuis.info>
+ <2023091226-foe-reanalyze-b859@gregkh>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <2023091226-foe-reanalyze-b859@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694515174;6d73b4fc;
+X-HE-SMSGID: 1qg0nq-00042X-9f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 15:15:00 +0300
-Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
-
-> Use FIELD_GET() to extract PCIe Negotiated and Maximum Link Width fields
-> instead of custom masking and shifting.
+On 12.09.23 12:13, Greg Kroah-Hartman wrote:
+> On Tue, Sep 12, 2023 at 11:44:39AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> On 05.09.23 11:09, Ian Abbott wrote:
+>>> This reverts commit b5c75b68b7ded84d4c82118974ce3975a4dcaa74.
+>>>
+>>> The commit makes it impossible to select configuration options that
+>>> depend on COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
+>>> COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
+>>> 'depends on' directives and there being no other way to select those
+>>> codependent configuration options.
+>>>
+>>> Fixes: b5c75b68b7de ("comedi: add HAS_IOPORT dependencies")
+>>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+>>> Cc: Arnd Bergmann <arnd@kernel.org>
+>>> Cc: <stable@vger.kernel.org> # v6.5+
+>>> Acked-by: Arnd Bergmann <arnd@kernel.org>
+>>> Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+>>
+>> Hmmm, that fix for a regression from the 6.5 cycle was posted a week ago
+>> but didn't get a single reply afaics and hasn't hit next.
+>>
+>> Greg, is this still in your to-review queue and just delayed due to the
+>> merge window? Or are you waiting for something? A ACK fromn Niklas
+>> maybe? Or a newer patch to address the kernel test robot report in case
+>> its relevant?
 > 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
->  drivers/scsi/esas2r/esas2r_ioctl.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> The merge window "freeze" ended on Monday, give me a chance to catch up
+> with patches please, this is part of my very large todo mbox:
 > 
-> diff --git a/drivers/scsi/esas2r/esas2r_ioctl.c b/drivers/scsi/esas2r/esas2r_ioctl.c
-> index 055d2e87a2c8..3252780fd099 100644
-> --- a/drivers/scsi/esas2r/esas2r_ioctl.c
-> +++ b/drivers/scsi/esas2r/esas2r_ioctl.c
-> @@ -41,6 +41,8 @@
->   * USA.
->   */
->  
-> +#include <linux/bitfield.h>
-> +
->  #include "esas2r.h"
->  
->  /*
-> @@ -797,11 +799,9 @@ static int hba_ioctl_callback(struct esas2r_adapter *a,
->  			gai->pci.link_speed_max =
->  				(u8)(caps & PCI_EXP_LNKCAP_SLS);
-Better to convert the other field gets as well.
+> 	$ mdfrm -c ~/mail/todo/
+> 	1637 messages in /home/gregkh/mail/todo/
 
-I'm curious as to why the u8 casts are here. The masking should have
-kept the compiler happy that it is fine to assign these without
-the casts and no chance of overflow.
+Well, I know that you deal with a lot of patches and often wonder how
+you manage to do all that great work, but nevertheless please allow me
+to ask:
 
->  			gai->pci.link_width_curr =
-> -				(u8)((stat & PCI_EXP_LNKSTA_NLW)
-> -				     >> PCI_EXP_LNKSTA_NLW_SHIFT);  
-> +				(u8)FIELD_GET(PCI_EXP_LNKSTA_NLW, stat);
->  			gai->pci.link_width_max =
-> -				(u8)((caps & PCI_EXP_LNKCAP_MLW)
-> -				     >> 4);  
-> +				(u8)FIELD_GET(PCI_EXP_LNKCAP_MLW, caps);
->  		}
->  
->  		gai->pci.msi_vector_cnt = 1;
+I assume that that not all of those 1600+ patches are fixes for
+regressions, so should a revert for a very recent regression be in a
+different mbox with a slightly higher priority[1] to get handled before
+the others?
 
+Ciao, Thorsten
+
+[1] for most other developers I would have said "highest priory", but I
+assume in your case there are still more important things
