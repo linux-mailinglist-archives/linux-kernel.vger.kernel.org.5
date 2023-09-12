@@ -2,95 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F57E79D5E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF1979D5E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbjILQM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
+        id S236598AbjILQNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236582AbjILQMT (ORCPT
+        with ESMTP id S229698AbjILQNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:12:19 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4BC10F9;
-        Tue, 12 Sep 2023 09:12:08 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CBxXip029920;
-        Tue, 12 Sep 2023 16:12:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=HGPwTekFVgsaiRSddNdn3KG0LdKXpPRp2h7EJXZIuyA=;
- b=nhEhRwYSoFkRrQekx8y9ZrsRZRAXkSFL8Q6/G7/OrjgyCUGNBOnOgd3C5ck/3codj6Zr
- JVR/c1U0qatbon07fyibL22aSAFknRGkTkXwdljMMH1BXFhMNZuvTSH433AaD01FGtrj
- woJMWO18LYZn/e7WP0ultrKSeGHszl9mCZBxggbk/v1vM+CH2etUkTE5Rbh2uFXw39Ir
- hvcDNmXHfNsPcdypEFgwBB045iPFQIMn4NdhIJGUFkNO2KHGoIp3myD3CcctTA7MeUCD
- BEt8Hgy865qSHMBZjBo36XAY0PzoVQ5xgrTieyOOuLy9UV8W2I4c6HTQ/sN5jX7/GopN 9w== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2qkj8w0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 16:12:02 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CGC2pK025177
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 16:12:02 GMT
-Received: from [10.110.7.215] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 09:11:58 -0700
-Message-ID: <bd3ccb8f-0341-879b-113b-50b341e00d4d@quicinc.com>
-Date:   Tue, 12 Sep 2023 09:11:57 -0700
+        Tue, 12 Sep 2023 12:13:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC0C10E5;
+        Tue, 12 Sep 2023 09:13:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 291C0C433C7;
+        Tue, 12 Sep 2023 16:13:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694535218;
+        bh=tw7bZjPuERTtpnVWWfpcJwoid3z5iuiOaPViE4RtTF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WNepentB0mkvKzqJsiNeBPY4kYIJY231j6uaWCBerhUB7wBpn/9X78+sdrcAwcV4O
+         l0yKnXQ1zXFSiw7lXNSzTxQTzQXfNlnj+9gs9vJZBw24zOpbc5oH5dXBE7f0oGorVY
+         DYNKQ1cx71OC1cO15fjH0QOAKUgPaOpWnmJ3caSG3XDzAOP7ayi42MuXtSwyAXxedP
+         J2yO4M1NwFHnP75JvWVKfh3j6ZT97CWrH3lvHQLKoq3IWYsxBf+YWDrpNADxh0fFFT
+         Q8W50hVj59uA6PesHilofMSr+2764nbn4niaQ1nIpkSzwcITvHJOP26jSN0wx3rgHY
+         EECFSLWAHpxAg==
+Received: (nullmailer pid 876590 invoked by uid 1000);
+        Tue, 12 Sep 2023 16:13:35 -0000
+Date:   Tue, 12 Sep 2023 11:13:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH 29/37] dt-bindings: pinctrl: renesas: document RZ/G3S SoC
+Message-ID: <20230912161335.GA866121-robh@kernel.org>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-30-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [RFC PATCH 0/1] Add driver to read secondary bootloader (XBL) log
-Content-Language: en-US
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>, <kernel@quicinc.com>,
-        <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <psodagud@quicinc.com>,
-        <quic_aneelaka@quicinc.com>, <quic_kprasan@quicinc.com>,
-        <quic_ninanaik@quicinc.com>, <quic_ppareek@quicinc.com>
-References: <0abc0e3b-077c-d7b9-e561-2c2e01d46540@quicinc.com>
- <20230912160800.39412-1-quic_nkela@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230912160800.39412-1-quic_nkela@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DfOBYB9lD8-bZZvOwpHsWVIVNJHKNxNi
-X-Proofpoint-GUID: DfOBYB9lD8-bZZvOwpHsWVIVNJHKNxNi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_15,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 impostorscore=0 suspectscore=0 spamscore=0 phishscore=0
- malwarescore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=577
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120135
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912045157.177966-30-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/2023 9:08 AM, Nikunj Kela wrote:
-> From: Nikunj Kela <quic_nkela@quicinc.com
+On Tue, Sep 12, 2023 at 07:51:49AM +0300, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> I was planning something similar for dumping firmware VM's logs. These are in
-> ascii format too hence doesn't require any parsing/post processing. Can this
-> be little generic so I can use this driver?
+> Add documentation for pin controller found on RZ/G3S (R9A08G045) SoC.
+> Compared with RZ/G2{L,UL} RZ/G3S has 82 general-purpose IOs, no slew
+> rate and output impedance support and more values for drive strength
+> which needs to be expressed in microamp.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  .../pinctrl/renesas,rzg2l-pinctrl.yaml        | 26 +++++++++++++++----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> index 145c5442f268..079e5be69330 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> @@ -25,6 +25,7 @@ properties:
+>            - enum:
+>                - renesas,r9a07g043-pinctrl # RZ/G2UL{Type-1,Type-2} and RZ/Five
+>                - renesas,r9a07g044-pinctrl # RZ/G2{L,LC}
+> +              - renesas,r9a08g045-pinctrl # RZ/G3S
+>  
+>        - items:
+>            - enum:
+> @@ -77,6 +78,26 @@ additionalProperties:
+>          - $ref: pincfg-node.yaml#
+>          - $ref: pinmux-node.yaml#
+>  
+> +        - if:
+> +            properties:
+> +              compatible:
+> +                contains:
+> +                  enum:
+> +                    - renesas,r9a08g045-pinctrl
+> +          then:
+> +            properties:
+> +              drive-strength-microamp:
+> +                enum: [ 1900, 2200, 4000, 4400, 4500, 4700, 5200, 5300, 5700,
+> +                        5800, 6000, 6050, 6100, 6550, 6800, 7000, 8000, 9000,
+> +                        10000 ]
+> +          else:
+> +            properties:
+> +              drive-strength:
+> +                enum: [ 2, 4, 8, 12 ]
+> +              output-impedance-ohms:
+> +                enum: [ 33, 50, 66, 100 ]
+> +              slew-rate: true
+> +
+>        description:
+>          Pin controller client devices use pin configuration subnodes (children
+>          and grandchildren) for desired pin configuration.
+> @@ -89,14 +110,9 @@ additionalProperties:
+>              alternate function configuration number using the RZG2L_PORT_PINMUX()
+>              helper macro in <dt-bindings/pinctrl/rzg2l-pinctrl.h>.
+>          pins: true
+> -        drive-strength:
+> -          enum: [ 2, 4, 8, 12 ]
+> -        output-impedance-ohms:
+> -          enum: [ 33, 50, 66, 100 ]
 
-This is exactly I want to avoid too. The discussion internally lead us to look at the UEFI/EDK2 work done by Alexander Graf [1] and TPM EFI log driver. For EDK2 we should have generic approach coming from the EDK2 and not just SOC vendor specific approaches. 
+Removing these entries will break things. Except that this binding is 
+missing 'additionalProperties: false' at this level. That should be 
+fixed first.
 
+I would suggest you keep these here and make the if/then schema just not 
+allow properties (e.g. "drive-strength-microamp: false").
 
-[1]
-https://edk2.groups.io/g/devel/message/90067
-https://github.com/agraf/linux/commit/b1fe0c296ec923e9b1f544862b0eb9365a8da7cb
-
---
----Trilok Soni
-
+>          power-source:
+>            description: I/O voltage in millivolt.
+>            enum: [ 1800, 2500, 3300 ]
+> -        slew-rate: true
+>          gpio-hog: true
+>          gpios: true
+>          input-enable: true
+> -- 
+> 2.39.2
+> 
