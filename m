@@ -2,101 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B59D79D8FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D114179D906
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237650AbjILSq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S237529AbjILSro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237640AbjILSqP (ORCPT
+        with ESMTP id S237337AbjILSrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:46:15 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D5E198E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:46:08 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5924b2aac52so64416217b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694544368; x=1695149168; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=8NSnv/WTj9TePiwJ3e7yhez5Y5Fg6PSmoubFG+0am4I=;
-        b=lpm26PFNLDdB5U8I7PH2zsOgtkh+8n0wJP0UoVJtwGT+9Xu+VjkiJVDdx4zHQPubY/
-         S8cijbfRWnpZ4dxhQtu7bZEsr5tPu7vz4wKAaEXNU25dTmwMf4i4Bfk/5WUapQXcjymE
-         gWlyxfXlsgTZ0rLMBweEaxkezHhe54GKjk+xJX10cnAbRo/DzGoYz9DKYc7FdecAAy4F
-         +NZanwJDCYaHoSGcPIUZ3Tq3awy+/KTrOPQr2Dm6JuMqOuq4EqopP0epCmdTT/gwL/3S
-         U1bICPIiYBRO3KwhC+2Nv0/+tVVWPyjhegLFMhUiFDZBtn1ilkZSfk/7jbSW7wrlWfPt
-         2yHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694544368; x=1695149168;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8NSnv/WTj9TePiwJ3e7yhez5Y5Fg6PSmoubFG+0am4I=;
-        b=o+OUC9lFaltKTR3E2ibX9R3nUL/WE9nMtdHWLOm665WRDiKSjsJ4JWvnBoYte9FNIm
-         12aatbfAU1C1XNOnAJEe9dGZU75CKWau/rRgOe3wli7L+B0z6P55e//QSoYt6Uhx1944
-         KQTa14/BuEjA5+mx1ukxx6oYCnZ02bNuN5TEme/4fOKbjTVWwx/sOUo1iNXlXRWMI3Kb
-         i34I5BqKnTxa44VFKvrVP9iWCmLHPcCeI2HnR/p1mk4bn9T2g7gU8FzwLteujwmbpAfA
-         b1MBU9+W09zzskYn5q1D32erkSeQLuiOurXSdEnkdBMVWYSjC+f77+iDdwguF8OKKDjP
-         x9dA==
-X-Gm-Message-State: AOJu0YzL/9rZX3+RRhA3w4L8jK60pvp13HfE/9BjFGl4Nn9ozPl0AgBo
-        Vt+BaNcc3WnWUsk6dtVr16a9BcJWXY/8
-X-Google-Smtp-Source: AGHT+IFADHJrwy/aa2LM6dPwu4H3fm1xiVyTj+CcoUMEvy5vi37pxe5Yg8FlnTokO/LcSVDIT1ldwzVEBl20
-X-Received: from mizhang-super.c.googlers.com ([34.105.13.176]) (user=mizhang
- job=sendgmr) by 2002:a81:400c:0:b0:589:a855:7af with SMTP id
- l12-20020a81400c000000b00589a85507afmr8853ywn.7.1694544367876; Tue, 12 Sep
- 2023 11:46:07 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 12 Sep 2023 18:45:53 +0000
-In-Reply-To: <20230912184553.1887764-1-mizhang@google.com>
-Mime-Version: 1.0
-References: <20230912184553.1887764-1-mizhang@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912184553.1887764-7-mizhang@google.com>
-Subject: [PATCH v4 6/6] KVM: Documentation: Add the missing description for
- tdp_mmu_page into kvm_mmu_page
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
+        Tue, 12 Sep 2023 14:47:41 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642CB10D3;
+        Tue, 12 Sep 2023 11:47:37 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id e4066c49c5a5a305; Tue, 12 Sep 2023 20:47:35 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id D70DE663BE5;
+        Tue, 12 Sep 2023 20:47:34 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v1 8/9] ACPI: thermal: Drop redundant trip point flags
+Date:   Tue, 12 Sep 2023 20:46:02 +0200
+Message-ID: <3760530.kQq0lBPeGt@kreacher>
+In-Reply-To: <5708760.DvuYhMxLoT@kreacher>
+References: <5708760.DvuYhMxLoT@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehs
+ rhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the description for tdp_mmu_page into kvm_mmu_page description.
-tdp_mmu_page is a field to differentiate shadow pages from TDP MMU and
-non-TDP MMU.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
+Trip point flags previously used by the driver need not be used any more
+after the preceding changes, so drop them and adjust the code accordingly.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- Documentation/virt/kvm/x86/mmu.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/acpi/thermal.c |   29 ++++++++++-------------------
+ 1 file changed, 10 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-index 16d5d6a1c174..82c5c6a6da2c 100644
---- a/Documentation/virt/kvm/x86/mmu.rst
-+++ b/Documentation/virt/kvm/x86/mmu.rst
-@@ -282,6 +282,10 @@ Shadow pages contain the following information:
-     since the last time the page table was actually used; if emulation
-     is triggered too frequently on this page, KVM will unmap the page
-     to avoid emulation in the future.
-+  tdp_mmu_page:
-+    Is 1 if the shadow page is a TDP MMU page. This variable is used to
-+    bifurcate the control flows for KVM when walking any data structure that may
-+    contain pages from both TDP MMU and shadow MMU.
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -43,14 +43,6 @@
+ #define ACPI_THERMAL_MAX_ACTIVE		10
+ #define ACPI_THERMAL_MAX_LIMIT_STR_LEN	65
  
- Reverse map
- ===========
--- 
-2.42.0.283.g2d96d420d3-goog
+-#define ACPI_TRIPS_PASSIVE	BIT(0)
+-#define ACPI_TRIPS_ACTIVE	BIT(1)
+-#define ACPI_TRIPS_DEVICES	BIT(2)
+-
+-#define ACPI_TRIPS_THRESHOLDS	(ACPI_TRIPS_PASSIVE | ACPI_TRIPS_ACTIVE)
+-
+-#define ACPI_TRIPS_INIT		(ACPI_TRIPS_THRESHOLDS | ACPI_TRIPS_DEVICES)
+-
+ /*
+  * This exception is thrown out in two cases:
+  * 1.An invalid trip point becomes invalid or a valid trip point becomes invalid
+@@ -58,12 +50,11 @@
+  * 2.TODO: Devices listed in _PSL, _ALx, _TZD may change.
+  *   We need to re-bind the cooling devices of a thermal zone when this occurs.
+  */
+-#define ACPI_THERMAL_TRIPS_EXCEPTION(flags, tz, str) \
++#define ACPI_THERMAL_TRIPS_EXCEPTION(tz, str) \
+ do { \
+-	if (flags != ACPI_TRIPS_INIT) \
+-		acpi_handle_info(tz->device->handle, \
+-			"ACPI thermal trip point %s changed\n" \
+-			"Please report to linux-acpi@vger.kernel.org\n", str); \
++	acpi_handle_info(tz->device->handle, \
++			 "ACPI thermal trip point %s changed\n" \
++			 "Please report to linux-acpi@vger.kernel.org\n", str); \
+ } while (0)
+ 
+ static int act;
+@@ -212,7 +203,7 @@ static void acpi_thermal_update_passive_
+ 
+ 	update_acpi_thermal_trip_temp(acpi_trip, get_passive_temp(tz));
+ 	if (!acpi_trip->valid)
+-		ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_PASSIVE, tz, "state");
++		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
+ static bool update_passive_devices(struct acpi_thermal *tz, bool compare)
+@@ -230,7 +221,7 @@ static bool update_passive_devices(struc
+ 	}
+ 
+ 	if (compare && memcmp(&tz->trips.passive.devices, &devices, sizeof(devices)))
+-		ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_PASSIVE, tz, "device");
++		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "device");
+ 
+ 	memcpy(&tz->trips.passive.devices, &devices, sizeof(devices));
+ 	return true;
+@@ -247,7 +238,7 @@ static void acpi_thermal_update_passive_
+ 		return;
+ 
+ 	update_acpi_thermal_trip_temp(acpi_trip, THERMAL_TEMP_INVALID);
+-	ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_PASSIVE, tz, "state");
++	ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
+ static long get_active_temp(struct acpi_thermal *tz, int index)
+@@ -282,7 +273,7 @@ static void acpi_thermal_update_active_t
+ 
+ 	update_acpi_thermal_trip_temp(acpi_trip, get_active_temp(tz, index));
+ 	if (!acpi_trip->valid)
+-		ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_ACTIVE, tz, "state");
++		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
+ static bool update_active_devices(struct acpi_thermal *tz, int index, bool compare)
+@@ -302,7 +293,7 @@ static bool update_active_devices(struct
+ 	}
+ 
+ 	if (compare && memcmp(&tz->trips.active[index].devices, &devices, sizeof(devices)))
+-		ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_ACTIVE, tz, "device");
++		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "device");
+ 
+ 	memcpy(&tz->trips.active[index].devices, &devices, sizeof(devices));
+ 	return true;
+@@ -319,7 +310,7 @@ static void acpi_thermal_update_active_d
+ 		return;
+ 
+ 	update_acpi_thermal_trip_temp(acpi_trip, THERMAL_TEMP_INVALID);
+-	ACPI_THERMAL_TRIPS_EXCEPTION(ACPI_TRIPS_ACTIVE, tz, "state");
++	ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
+ static int acpi_thermal_adjust_trip(struct thermal_trip *trip, void *data)
+
+
 
