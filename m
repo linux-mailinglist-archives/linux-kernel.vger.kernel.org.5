@@ -2,134 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF1F79C91B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40A279C91D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbjILIAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        id S232240AbjILIAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbjILH7I (ORCPT
+        with ESMTP id S232169AbjILH7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:59:08 -0400
+        Tue, 12 Sep 2023 03:59:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7655269E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:20 -0700 (PDT)
-Message-ID: <20230912065502.143157215@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F259926AC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:21 -0700 (PDT)
+Message-ID: <20230912065502.202675936@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694505499;
+        s=2020; t=1694505500;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=gvgWHgk38J3qGADoq/3qmkZUlBXc3nLuAkYAzeigZSY=;
-        b=SWeVI0WK8cMrRFB6TR1C+N3NwUVDWm5AVEvmrYmAlTtkOxeZsnexP4ezkMSAciU+eNl3ar
-        v5bKyHND27TzTXabykHUbt2rFrl1Zo6AT9zJHn08MumRY6bP37ei3vUtrp9g9sALQdTEUI
-        JzUDN+lx6PWoDxGZQTym/+yI8uMx++rnqoV5oxW8zmJ1CWTij03I+2fMjFvCKUHbykNKH3
-        GGF9aE6AvMPqajGwRpdjcEMXECHz2wuZRpoRrlPpBmqBlf2B/pePmS/N/G82Eakr6AWwGW
-        N1XxvNwGWLowdh/b2Lwh6RFhYEr5wbzpxVG5frq1dsD1kzaXv6CvBSYzMT1lRA==
+         references:references; bh=tcStbJBYGm1S6mX3lupmzFXgqW4kHxxe4AHt7jQaeKc=;
+        b=TxPEeNSADqF/1espoa4joMFPyaHU6sd/ZlOPhCdIrC7wCV7KkIwcL/CpJ3otO5/BeCCDCo
+        eQM3VPvorqp+UHwR7xfGfR7oqCQMrU6H2AcGCDyFDt8NSD/2zPH3lA7Gbjqn4jFKln0mKf
+        SvzyPyAAw/gjlJuf9mzIRFtSt5z/x0/+/YbOY7SGuSJDaiOaIpxabQPr/ONgil6EmnyV3y
+        sMju8Gu3jM0lADivxRf8YWsQG72GcHPQNwgKPfHr4QMWpvfHJL/RVnxECXZ7eadRM0V1JL
+        YnXR2WMROfkL7M/aK2fvIj7V2oMjuGhCn0C3CVYbwmp0C8NGIvdJYreJzxl/0A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694505499;
+        s=2020e; t=1694505500;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=gvgWHgk38J3qGADoq/3qmkZUlBXc3nLuAkYAzeigZSY=;
-        b=4O+bGAnHVHvrD+IwSwWv138yd9cTQPjIWL+EY3XqskIPxyDIl4ucC4C57Zb4vI4Jeij/u4
-        j4YCHTvq+ybbyqDA==
+         references:references; bh=tcStbJBYGm1S6mX3lupmzFXgqW4kHxxe4AHt7jQaeKc=;
+        b=cAq/Q/RnWWyE8qyo5fCPHQbCSaX+Da2dUskr+Di+xg/82NEnYLBZSh4+X9yo3WN+YSDnT7
+        fO+si2bL29tUcAAw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
         "Chang S. Bae" <chang.seok.bae@intel.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V3 22/30] x86/microcode: Add per CPU control field
+Subject: [patch V3 23/30] x86/microcode: Provide new control functions
 References: <20230912065249.695681286@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 09:58:18 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 09:58:20 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Add a per CPU control field to ucode_ctrl and define constants for it:
+The current all in one code is unreadable and really not suited for adding
+future features like uniform loading with package or system scope.
 
-SCTRL_WAIT    indicates that the CPU needs to spinwait with timeout
-SCTRL_APPLY   indicates that the CPU needs to invoke the microcode_apply()
-	      callback
-SCTRL_DONE    indicates that the CPU can proceed without invoking the
-	      microcode_apply() callback.
+Provide a set of new control functions which split the handling of the
+primary and secondary CPUs. These will replace the current rendevouz all in
+one function in the next step. This is intentionally a separate change
+because diff makes an complete unreadable mess otherwise.
 
-In theory this could be a global control field, but a global control does
-not cover the following case:
+So the flow separates the primary and the secondary CPUs into their own
+functions, which use the control field in the per CPU ucode_ctrl struct.
 
- 15 primary CPUs load microcode successfully
-  1 primary CPU fails and returns with an error code
-
-With global control the sibling of the failed CPU would either try again or
-the whole operation would be aborted with the consequence that the 15
-siblings do not invoke the apply path and end up with inconsistent software
-state. The result in dmesg would be inconsistent too.
-
-There are two additional fields added and initialized:
-
-ctrl_cpu and secondaries. ctrl_cpu is the CPU number of the primary thread
-for now, but with the upcoming uniform loading at package or system scope
-this will be one CPU per package or just one CPU. Secondaries hands the
-control CPU a CPU mask which will be required to release the secondary CPUs
-out of the wait loop.
-
-Preparatory change for implementing a properly split control flow for
-primary and secondary CPUs.
+   primary()			secondary()
+    wait_for_all()		 wait_for_all()
+    apply_ucode()		 wait_for_release()
+    release()			 apply_ucode()
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-
 ---
- arch/x86/kernel/cpu/microcode/core.c |   20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ arch/x86/kernel/cpu/microcode/core.c |   86 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 86 insertions(+)
 ---
 --- a/arch/x86/kernel/cpu/microcode/core.c
 +++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -324,8 +324,16 @@ static struct platform_device	*microcode
-  *   requirement can be relaxed in the future. Right now, this is conservative
-  *   and good.
-  */
-+enum sibling_ctrl {
-+	SCTRL_WAIT,
-+	SCTRL_APPLY,
-+	SCTRL_DONE,
-+};
-+
- struct ucode_ctrl {
-+	enum sibling_ctrl	ctrl;
- 	enum ucode_state	result;
-+	unsigned int		ctrl_cpu;
- };
+@@ -357,6 +357,92 @@ static bool wait_for_cpus(atomic_t *cnt)
+ 	return false;
+ }
  
- static DEFINE_PER_CPU(struct ucode_ctrl, ucode_ctrl);
-@@ -468,7 +476,7 @@ static int ucode_load_late_stop_cpus(voi
-  */
- static bool ucode_setup_cpus(void)
++static bool wait_for_ctrl(void)
++{
++	unsigned int timeout;
++
++	for (timeout = 0; timeout < USEC_PER_SEC; timeout++) {
++		if (this_cpu_read(ucode_ctrl.ctrl) != SCTRL_WAIT)
++			return true;
++		udelay(1);
++		if (!(timeout % 1000))
++			touch_nmi_watchdog();
++	}
++	return false;
++}
++
++static __maybe_unused void ucode_load_secondary(unsigned int cpu)
++{
++	unsigned int ctrl_cpu = this_cpu_read(ucode_ctrl.ctrl_cpu);
++	enum ucode_state ret;
++
++	/* Initial rendevouz to ensure that all CPUs have arrived */
++	if (!wait_for_cpus(&late_cpus_in)) {
++		pr_err_once("Microcode load: %d CPUs timed out\n",
++			    atomic_read(&late_cpus_in) - 1);
++		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
++		return;
++	}
++
++	/*
++	 * Wait for primary threads to complete. If one of them hangs due
++	 * to the update, there is no way out. This is non-recoverable
++	 * because the CPU might hold locks or resources and confuse the
++	 * scheduler, watchdogs etc. There is no way to safely evacuate the
++	 * machine.
++	 */
++	if (!wait_for_ctrl())
++		panic("Microcode load: Primary CPU %d timed out\n", ctrl_cpu);
++
++	/*
++	 * If the primary succeeded then invoke the apply() callback,
++	 * otherwise copy the state from the primary thread.
++	 */
++	if (this_cpu_read(ucode_ctrl.ctrl) == SCTRL_APPLY)
++		ret = microcode_ops->apply_microcode(cpu);
++	else
++		ret = per_cpu(ucode_ctrl.result, ctrl_cpu);
++
++	this_cpu_write(ucode_ctrl.result, ret);
++	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
++}
++
++static __maybe_unused void ucode_load_primary(unsigned int cpu)
++{
++	struct cpumask *secondaries = topology_sibling_cpumask(cpu);
++	enum sibling_ctrl ctrl;
++	enum ucode_state ret;
++	unsigned int sibling;
++
++	/* Initial rendevouz to ensure that all CPUs have arrived */
++	if (!wait_for_cpus(&late_cpus_in)) {
++		this_cpu_write(ucode_ctrl.result, UCODE_TIMEOUT);
++		pr_err_once("Microcode load: %d CPUs timed out\n",
++			    atomic_read(&late_cpus_in) - 1);
++		return;
++	}
++
++	ret = microcode_ops->apply_microcode(cpu);
++	this_cpu_write(ucode_ctrl.result, ret);
++	this_cpu_write(ucode_ctrl.ctrl, SCTRL_DONE);
++
++	/*
++	 * If the update was successful, let the siblings run the apply()
++	 * callback. If not, tell them it's done. This also covers the
++	 * case where the CPU has uniform loading at package or system
++	 * scope implemented but does not advertise it.
++	 */
++	if (ret == UCODE_UPDATED || ret == UCODE_OK)
++		ctrl = SCTRL_APPLY;
++	else
++		ctrl = SCTRL_DONE;
++
++	for_each_cpu(sibling, secondaries) {
++		if (sibling != cpu)
++			per_cpu(ucode_ctrl.ctrl, sibling) = ctrl;
++	}
++}
++
+ static int ucode_load_cpus_stopped(void *unused)
  {
--	struct ucode_ctrl ctrl = { .result = -1, };
-+	struct ucode_ctrl ctrl = { .ctrl = SCTRL_WAIT, .result = -1, };
- 	unsigned int cpu;
- 
- 	for_each_cpu_and(cpu, cpu_present_mask, &cpus_booted_once_mask) {
-@@ -478,7 +486,15 @@ static bool ucode_setup_cpus(void)
- 				return false;
- 			}
- 		}
--		/* Initialize the per CPU state */
-+
-+		/*
-+		 * Initialize the per CPU state. This is core scope for now,
-+		 * but prepared to take package or system scope into account.
-+		 */
-+		if (topology_is_primary_thread(cpu))
-+			ctrl.ctrl_cpu = cpu;
-+		else
-+			ctrl.ctrl_cpu = cpumask_first(topology_sibling_cpumask(cpu));
- 		per_cpu(ucode_ctrl, cpu) = ctrl;
- 	}
- 	return true;
+ 	int cpu = smp_processor_id();
 
