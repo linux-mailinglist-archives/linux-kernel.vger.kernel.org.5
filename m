@@ -2,85 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5839679D0E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B81579D0EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjILMS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        id S235106AbjILMUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235046AbjILMSw (ORCPT
+        with ESMTP id S235046AbjILMUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:18:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D886710D5;
-        Tue, 12 Sep 2023 05:18:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82AA0C433C7;
-        Tue, 12 Sep 2023 12:18:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694521128;
-        bh=7t1ARw1hegx1IfSBe7ZkfXYSFLWxUp1FwIP8Gl7Edkw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tC9tbTMj/pok+xbC6048Ft+CVJH7y7MvD7SYbCh6dopu/8Ow0U2ihcjwyMdHXSaYT
-         LpMHCo2KO2OuM0YWwHSndS4fxjc6TezmykV69+naYx07ZfjmSZ0cuNCGgyNmJoV+3i
-         zmTRGqc+54YRBGkXTn/bQSOYaTCtKixF9gv44xr/xNaXZP9ib9v2DRCqytVBfMNb3y
-         qQYDxKXM5ILSiuVJSn0bOn+VBsXVvnWGl0dSUH8rwhjwpo1fBTBfxSmkMznxWOohOM
-         Nd8ma513s5/x/yt4u3q1i8RwFLF9EhTNyHKmsvP9ITQ6tSuLTAyY5XC8tXjmKs7smt
-         fdEIlv/37mg6w==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Ondrej Valousek <ondrej.valousek.xm@renesas.com>
-Subject: Re: [PATCH v3] fs: add a new SB_I_NOUMASK flag
-Date:   Tue, 12 Sep 2023 14:18:36 +0200
-Message-Id: <20230912-zahlreich-relikt-d31be8e489b8@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
-References: <20230911-acl-fix-v3-1-b25315333f6c@kernel.org>
+        Tue, 12 Sep 2023 08:20:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F53210D7;
+        Tue, 12 Sep 2023 05:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694521208;
+        bh=NoGm9c3v+U8wsl8P9h6xAQFKKJWLtJxj8xuOOdJ2Dtc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XUszmvfUB8C8kXg60197lrP2yNoT1Ln2kB1nmcM0a2sy9l8JZHJX1za41dWrOwpUw
+         sVl3CFwdls4z+3MnnATzDpmdl3X/8lJVxBfyGZVbrUXtkkVTiumezHbynxeumORv5C
+         Q0Dhi2EMZ0CHyzdOnQs+Sz3all4feSEVS1ax12CHT5ay/7ClNSbh94BJwxQEFIkHyX
+         Ql+VcWU2yo6B8dPxS3sWF9iW5AtvM+YmpfzbNoFyq6hEYdeaOsj+VWmF5sLh+6Hg7W
+         V0xjgWtAqY7R0hss3fJrGe6zfuO6M2xgeVv/ic+KTa+YBHFxzUA0gggAJvKbSDjydy
+         hFHSSUN8aIQWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlN2J4WMxz4wxn;
+        Tue, 12 Sep 2023 22:20:08 +1000 (AEST)
+Date:   Tue, 12 Sep 2023 22:20:06 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the btrfs tree
+Message-ID: <20230912222006.5a7cab3d@canb.auug.org.au>
+In-Reply-To: <20230912112011.GB20408@suse.cz>
+References: <20230912104646.3a9140f7@canb.auug.org.au>
+        <20230912112011.GB20408@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1364; i=brauner@kernel.org; h=from:subject:message-id; bh=7t1ARw1hegx1IfSBe7ZkfXYSFLWxUp1FwIP8Gl7Edkw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQyhIsXX5kl+yHsTZS5XN+CvzI1taZT5tyROPneSlP5atef 3GscHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABOR/8Dwz/qcrPUDozvXzjctOuT8bY eB/otVsVnnLI4xe0VLxpvfns7IMEfvDZM5c9tSlcsxr2zzZetnvoyaKnHuwz2PZNEz9u37uAE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/=g9AZZNSacE3e09z/GKJU_4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 20:25:50 -0400, Jeff Layton wrote:
-> SB_POSIXACL must be set when a filesystem supports POSIX ACLs, but NFSv4
-> also sets this flag to prevent the VFS from applying the umask on
-> newly-created files. NFSv4 doesn't support POSIX ACLs however, which
-> causes confusion when other subsystems try to test for them.
-> 
-> Add a new SB_I_NOUMASK flag that allows filesystems to opt-in to umask
-> stripping without advertising support for POSIX ACLs. Set the new flag
-> on NFSv4 instead of SB_POSIXACL.
-> 
-> [...]
+--Sig_/=g9AZZNSacE3e09z/GKJU_4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fine by me and removes hacking around this by abusing the POSIX ACL api.
+Hi David,
 
----
+On Tue, 12 Sep 2023 13:20:11 +0200 David Sterba <dsterba@suse.cz> wrote:
+>=20
+> I tried 12 and 13, no warnings on x86_64, however the report is on
+> powerpc. If this is on a big endian host it could be a valid warning, we
+> have an optmization where the on-disk format endianity matches CPU
+> (little endian) then the structures btrfs_disk_key and btrfs_key are
+> equivalent and no coversion is needed.
+>=20
+> There were some changes that might be related and newly added to
+> for-next so we don't have any other reference point, I'll take a look.
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+This is indeed a big endian build (big endian cross build on a little
+endian host).  I also did *not* get these warnings on my x86_64 build.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+--=20
+Cheers,
+Stephen Rothwell
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
+--Sig_/=g9AZZNSacE3e09z/GKJU_4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
+-----BEGIN PGP SIGNATURE-----
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUAV3YACgkQAVBC80lX
+0GxLkwf7BzxZyn431bY5mQGxunM4EMftPDuWAIHsSPBtelxG+Hb7tAzWJbleqDso
+VkErXNY1ACTbZVk457EyK5uVKkGBRAbLXp0X8x72iBEJOfASEzf9LDy+o+eYtAmM
+R86CNqkFyrUEMBz9UMcsSE7/LU668p1ny0tOtxo31qqWf7EcdemrLWrU/n4z+2TH
+tQGhA5ZjrVl5CG2ISdq36ZFlvhMxr5lE5HomZC/McCAgZ9vSU+sb3gNdXVRTPbAM
+W6Uat44TjWe+vbs48fDACI29tjg1E8YSeeBmHWrhAE6TOg1l8Bv5GN35ePPcFE4g
+bA9vK6/2YTll8cCXPnM50KtPR0WzWA==
+=ziop
+-----END PGP SIGNATURE-----
 
-[1/1] fs: add a new SB_I_NOUMASK flag
-      https://git.kernel.org/vfs/vfs/c/34618fcb9fae
+--Sig_/=g9AZZNSacE3e09z/GKJU_4--
