@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECC879D27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8E079D283
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbjILNjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S235580AbjILNkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbjILNi7 (ORCPT
+        with ESMTP id S232977AbjILNkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:38:59 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C268410D2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:38:55 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38CDUBmf032495;
-        Tue, 12 Sep 2023 08:38:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=i
-        qMo1WYDhsCRU6fDQRu1ohzwNK+mWlIu0GTmbZzTtUg=; b=NcMixOk5ZGVECb6yV
-        g1EWRRON131fgiJtEBiDLbLkhTwW1pcOOChkHg1p6pvsYhqGbW2AN6+yaq2IDcvL
-        8PUnoCnORCnWlo0tZpHJR0rs+YGquye3qvXXW8CCV4yhvjsprMxskRiUkMENgQBm
-        xbjWOkll4nhhLyBIsJ2GuID1WWJaYY/cQQOkpbJTdSfCvNa4340C8K3EWt0mg1gv
-        gg/kz+pOVc//FMFtPwBZ2hq5LSjek7psWXkkH9qudIWTRzMGZcqkcV/EkXciQjW9
-        KR10Qyio5x2xap98LIkvR3KhMJE9sJbguQCsaw7orPMvnlVd/e5oo0MGR+lifprW
-        CFPbQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3t0n4jb2wm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 08:38:42 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 12 Sep
- 2023 14:38:41 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Tue, 12 Sep 2023 14:38:41 +0100
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.125])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 213352A1;
-        Tue, 12 Sep 2023 13:38:41 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs35l56: Disable low-power hibernation mode
-Date:   Tue, 12 Sep 2023 14:38:41 +0100
-Message-ID: <20230912133841.3480466-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 12 Sep 2023 09:40:15 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E6E310CE;
+        Tue, 12 Sep 2023 06:40:11 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CD0F0C15;
+        Tue, 12 Sep 2023 06:40:47 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 42D103F5A1;
+        Tue, 12 Sep 2023 06:40:09 -0700 (PDT)
+Message-ID: <979a9e2f-06a8-1936-b5cd-2949eca99b21@arm.com>
+Date:   Tue, 12 Sep 2023 15:40:00 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: _FpdWHdHakP3SNHYzSaj8a5hrimfKbEI
-X-Proofpoint-GUID: _FpdWHdHakP3SNHYzSaj8a5hrimfKbEI
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
+ uclamp constraints
+Content-Language: en-US
+To:     Qais Yousef <qyousef@layalina.io>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <20230820210640.585311-1-qyousef@layalina.io>
+ <20230820210640.585311-3-qyousef@layalina.io>
+ <CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com>
+ <20230829163740.uadhv2jfjuumqk3w@airbuntu>
+ <CAKfTPtCP6uX79dOrzN4PxFTMBFrDAMOOrWyZrsVypUQ0RY7BAA@mail.gmail.com>
+ <20230907215555.exjxho34ntkjmn6r@airbuntu>
+ <CAKfTPtA8Ljy4NBqjw8Wj4pEFc-OCR55QPuwh+5GgrHN6u+ugsg@mail.gmail.com>
+ <20230910174638.qe7jqq6mq36brh6o@airbuntu>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230910174638.qe7jqq6mq36brh6o@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not allow the CS35L56 to be put into its lowest power
-"hibernation" mode. This only affects I2C because "hibernation"
-is already disabled on SPI and SoundWire.
+On 10/09/2023 19:46, Qais Yousef wrote:
+> On 09/08/23 16:30, Vincent Guittot wrote:
+> 
 
-Recent firmwares need a different wake-up sequence. Until
-that sequence has been specified, the chip "hibernation" mode
-must be disabled otherwise it can intermittently fail to wake.
+[...]
 
-THIS WILL NOT APPLY CLEANLY TO 6.5 AND EARLIER:
-We will send a separate backport patch to stable.
+>>>> above 512 whatever the current (720)  formula or your proposal (608).
+>>>> In the case of uclamp, it should be applied after having been scaled
+>>>> by irq time.
+>>>
+>>> I lost you a bit here. I'm not sure how you reached the 720 and 608 numbers.
+>>
+>> My bad, I finally decided to use an irq pressure of 128 in my
+>> calculation but forgot to change the value in my email
+>>
+>>>
+>>> So the way I'm proposing it here
+>>>
+>>>         util = cfs + rt + dvfs_headroom(cfs+rt) = 800 + 0.25 * 800 = 1000
+>>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
+>>>         util = scale_rq_capacity(512, 256, 1024) = 0.75 * 512 = 384
+>>>         util += dvfs_headroom(irq) = 384 + 256 + 0.25 * 256 = 704
+>>>         util += dvfs_headroom(dl_bw) = 704
+>>>
+>>>>
+>>>> So we should have reported utilization of 720 with a bandwidth
+>>>> requirement of 512 and then cpufreq can applies its headroom if needed
+>>>
+>>> The key part I'm changing is this
+>>>
+>>>         util = cfs + rt + dvfs_headroom(cfs+rt) = 800 + 0.25 * 800 = 1000
+>>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
+>>>
+>>> Before we had (assume irq, rt and dl are 0 for simplicity and a single task is
+>>> running)
+>>>
+>>>         util = cfs = 800
+>>>         util = uclamp_rq_util_with(rq, util, NULL) = 512
+>>>         util = dvfs_headroom(util) = 512 * 0.25 * 512 = 640
+>>>
+>>> So we are running higher than we are allowed to. So applying the headroom
+>>> after taking uclamp constraints into account is the problem.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l56-i2c.c | 1 -
- 1 file changed, 1 deletion(-)
+I'm not sure I understood all the example math in this thread correctly:
 
-diff --git a/sound/soc/codecs/cs35l56-i2c.c b/sound/soc/codecs/cs35l56-i2c.c
-index 9f4f2f4f23f5..d10e0e2380e8 100644
---- a/sound/soc/codecs/cs35l56-i2c.c
-+++ b/sound/soc/codecs/cs35l56-i2c.c
-@@ -27,7 +27,6 @@ static int cs35l56_i2c_probe(struct i2c_client *client)
- 		return -ENOMEM;
- 
- 	cs35l56->base.dev = dev;
--	cs35l56->base.can_hibernate = true;
- 
- 	i2c_set_clientdata(client, cs35l56);
- 	cs35l56->base.regmap = devm_regmap_init_i2c(client, regmap_config);
--- 
-2.30.2
+Examples:
 
+irq = 128 or 256
+
+util = 800 uclamp = 512
+
+
+--- current code:
+
+((util_cfs + util_rt) * ((max - irq) / max) + irq + dl_bw) * scale
+
+<- uclamped(cfs+rt) ->
+
+<--               scale_irq_capacity()                  -->|<-- map_util_perf() 
+                                                               / (headroom())  
+
+irq = 128: (512 * (1024 - 128) / 1024 + 128 + 0) * 1.25 = 576 * 1.25 = 720
+
+irq = 256: (512 * (1024 - 256) / 1024 + 256 + 0) * 1.25 = 640 * 1.25 = 800
+
+
+--- new approach:
+
+irq = 128: (512 * (1024 - 128) / 1024 + 128 + 0.25 * 128)            = 608
+
+irq = 256: (512 * (1024 - 256) / 1024 + 256 + 0.25 * 256)            = 704
+
+            <->
+            uclamped(cfs+rt+headroom(cfs+rt))
+
+            <- scale_irq_capacity() ->
+
+            <--               headroom(irq) ?        -->
+
+
+Is the correct?
+
+[...]
