@@ -2,114 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8DE79CA03
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEEA79CA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbjILIdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S232825AbjILIfX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 04:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbjILIdH (ORCPT
+        with ESMTP id S232894AbjILIfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:33:07 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95389B9;
-        Tue, 12 Sep 2023 01:33:03 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qfypO-0003Kf-NB; Tue, 12 Sep 2023 10:32:58 +0200
-Message-ID: <b30a81fa-6b59-4bac-b109-99a4dca689de@leemhuis.info>
-Date:   Tue, 12 Sep 2023 10:32:57 +0200
+        Tue, 12 Sep 2023 04:35:14 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375DD170E;
+        Tue, 12 Sep 2023 01:34:59 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5925e580f12so52350687b3.3;
+        Tue, 12 Sep 2023 01:34:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694507698; x=1695112498;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=va0K00GDqUxBnNiJnV24w11PAu0AJJ95xu4LbYWmM+8=;
+        b=ehGb+lwm1yGT5jJ+zEODgoVK78tvbDnkLQ8eL4Iq5QEeekzLalEmwBfDYRT9khwHS9
+         3tcQYMJtiQqG2aA4mjUrszEEOKZUg4jlXjWia1fqNrnU50WnY1rhmbEzaMXLWyHToobG
+         sZYra9WwS8fgmS9Se8S7Ve0oMmNGtGXPWZRth9Vd/ozPdplkihwUo9EekBsySCQGj7Pp
+         fTa/Yx5kiGR9Gi0+cHScF+0yT31Qz4ACOSf4I2URJwAwtjTaqng4eBhd7f1asIhBfHYA
+         gq047wpfBdZoxwFh9NCHAPymQ45fqbpuC9mQQCGRcqTsv3ofbgKyyZm31f8VsWbHfTzZ
+         fH6Q==
+X-Gm-Message-State: AOJu0Yxi86sQtXCP3MixBkcGScH869AjKxEnBRL7vLP2Rv0g6qjf90nj
+        bwKg09IZ1ejzDLBVwaOPPOPfe37L/uZfWw==
+X-Google-Smtp-Source: AGHT+IHhuZWnrgtlgRKuGuVTJ7r+DO90VMYiTmFmWxqSuE91YxpUSW8SNLvGr+XOsCYOsJsHctDe4Q==
+X-Received: by 2002:a0d:fc07:0:b0:592:9035:8356 with SMTP id m7-20020a0dfc07000000b0059290358356mr13618824ywf.26.1694507698269;
+        Tue, 12 Sep 2023 01:34:58 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id e184-20020a8169c1000000b0059a34cfa2a5sm2389774ywc.67.2023.09.12.01.34.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 01:34:56 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-58d31f142eeso52596597b3.0;
+        Tue, 12 Sep 2023 01:34:56 -0700 (PDT)
+X-Received: by 2002:a25:a3c5:0:b0:d77:91db:e5c6 with SMTP id
+ e63-20020a25a3c5000000b00d7791dbe5c6mr12060515ybi.17.1694507696692; Tue, 12
+ Sep 2023 01:34:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Regression: Commit "netfilter: nf_tables: disallow rule addition
- to bound chain via NFTA_RULE_CHAIN_ID" breaks ruleset loading in linux-stable
-Content-Language: en-US, de-DE
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Timo Sigurdsson <public_timo.s@silentcreek.de>
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, regressions@lists.linux.dev,
-        sashal@kernel.org, carnil@debian.org, 1051592@bugs.debian.org
-References: <20230911213750.5B4B663206F5@dd20004.kasserver.com>
- <ZP+bUpxJiFcmTWhy@calendula>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZP+bUpxJiFcmTWhy@calendula>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1694507583;1f6f9fff;
-X-HE-SMSGID: 1qfypO-0003Kf-NB
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+ <20230819004356.1454718-2-Liam.Howlett@oracle.com> <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
+ <20230906152325.dblzauybyoq5kd35@revolver> <ad298077-fca8-437e-b9e3-66e31424afb1@paulmck-laptop>
+ <20230906172954.oq4vogeuco25zam7@revolver> <495849d6-1dc6-4f38-bce7-23c50df3a99f@paulmck-laptop>
+ <20230911235452.xhtnt7ply7ayr53x@revolver> <33150b55-970c-4607-9015-af0e50e4112d@paulmck-laptop>
+ <CAMuHMdWKwdxjRf031aD=Ko7vRdvFW-OR48QAc=ZFy=FP_LNAoA@mail.gmail.com> <f9b0a88c-8a64-439f-a488-85d500c9f2aa@paulmck-laptop>
+In-Reply-To: <f9b0a88c-8a64-439f-a488-85d500c9f2aa@paulmck-laptop>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Sep 2023 10:34:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX89u6wL9W+8ZOn-OTT1FreYjEqYnvEip4Aq3k1gOP0EQ@mail.gmail.com>
+Message-ID: <CAMuHMdX89u6wL9W+8ZOn-OTT1FreYjEqYnvEip4Aq3k1gOP0EQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+To:     paulmck@kernel.org
+Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Shanker Donthineni <sdonthineni@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.09.23 00:57, Pablo Neira Ayuso wrote:
-> On Mon, Sep 11, 2023 at 11:37:50PM +0200, Timo Sigurdsson wrote:
->>
->> recently, Debian updated their stable kernel from 6.1.38 to 6.1.52
->> which broke nftables ruleset loading on one of my machines with lots
->> of "Operation not supported" errors. I've reported this to the
->> Debian project (see link below) and Salvatore Bonaccorso and I
->> identified "netfilter: nf_tables: disallow rule addition to bound
->> chain via NFTA_RULE_CHAIN_ID" (0ebc1064e487) as the offending commit
->> that introduced the regression. Salvatore also found that this issue
->> affects the 5.10 stable tree as well (observed in 5.10.191), but he
->> cannot reproduce it on 6.4.13 and 6.5.2.
->>
->> The issue only occurs with some rulesets. While I can't trigger it
->> with simple/minimal rulesets that I use on some machines, it does
->> occur with a more complex ruleset that has been in use for months
->> (if not years, for large parts of it). I'm attaching a somewhat
->> stripped down version of the ruleset from the machine I originally
->> observed this issue on. It's still not a small or simple ruleset,
->> but I'll try to reduce it further when I have more time.
->>
->> The error messages shown when trying to load the ruleset don't seem
->> to be helpful. Just two simple examples: Just to give two simple
->> examples from the log when nftables fails to start:
->> /etc/nftables.conf:99:4-44: Error: Could not process rule: Operation not supported
->>                         tcp option maxseg size 1-500 counter drop
->>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->> /etc/nftables.conf:308:4-27: Error: Could not process rule: Operation not supported
->>                         tcp dport sip-tls accept
->>                         ^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> I can reproduce this issue with 5.10.191 and 6.1.52 and nftables v1.0.6,
-> this is not reproducible with v1.0.7 and v1.0.8.
-> 
->> Since the issue only affects some stable trees, Salvatore thought it
->> might be an incomplete backport that causes this.
->>
->> If you need further information, please let me know.
-> 
-> Userspace nftables v1.0.6 generates incorrect bytecode that hits a new
-> kernel check that rejects adding rules to bound chains. The incorrect
-> bytecode adds the chain binding, attach it to the rule and it adds the
-> rules to the chain binding. I have cherry-picked these three patches
-> for nftables v1.0.6 userspace and your ruleset restores fine.
-> [...]
+Hi Paul,
 
-Hmmmm. Well, this sounds like a kernel regression to me that normally
-should be dealt with on the kernel level, as users after updating the
-kernel should never have to update any userspace stuff to continue what
-they have been doing before the kernel update.
+On Tue, Sep 12, 2023 at 10:30 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> On Tue, Sep 12, 2023 at 10:23:37AM +0200, Geert Uytterhoeven wrote:
+> > On Tue, Sep 12, 2023 at 10:14 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > On Mon, Sep 11, 2023 at 07:54:52PM -0400, Liam R. Howlett wrote:
+> > > > * Paul E. McKenney <paulmck@kernel.org> [230906 14:03]:
+> > > > > On Wed, Sep 06, 2023 at 01:29:54PM -0400, Liam R. Howlett wrote:
+> > > > > > * Paul E. McKenney <paulmck@kernel.org> [230906 13:24]:
+> > > > > > > On Wed, Sep 06, 2023 at 11:23:25AM -0400, Liam R. Howlett wrote:
+> > > > > > > > (Adding Paul & Shanker to Cc list.. please see below for why)
+> > > > > > > >
+> > > > > > > > Apologies on the late response, I was away and have been struggling to
+> > > > > > > > get a working PPC32 test environment.
+> > > > > > > >
+> > > > > > > > * Geert Uytterhoeven <geert@linux-m68k.org> [230829 12:42]:
+> > > > > > > > >     Hi Liam,
+> > > > > > > > >
+> > > > > > > > > On Fri, 18 Aug 2023, Liam R. Howlett wrote:
+> > > > > > > > > > The current implementation of append may cause duplicate data and/or
+> > > > > > > > > > incorrect ranges to be returned to a reader during an update.  Although
+> > > > > > > > > > this has not been reported or seen, disable the append write operation
+> > > > > > > > > > while the tree is in rcu mode out of an abundance of caution.
+> > > > > > > >
+> > > > > > > > ...
+> > > > > > > > > >
+> > > >
+> > > > ...
+> > > >
+> > > > > > > > > RCU-related configs:
+> > > > > > > > >
+> > > > > > > > >     $ grep RCU .config
+> > > > > > > > >     # RCU Subsystem
+> > > > > > > > >     CONFIG_TINY_RCU=y
+> > >
+> > > I must have been asleep last time I looked at this.  I was looking at
+> > > Tree RCU.  Please accept my apologies for my lapse.  :-/
+> > >
+> > > However, Tiny RCU's call_rcu() also avoids enabling IRQs, so I would
+> > > have said the same thing, albeit after looking at a lot less RCU code.
+> > >
+> > > TL;DR:
+> > >
+> > > 1.      Try making the __setup_irq() function's call to mutex_lock()
+> > >         instead be as follows:
+> > >
+> > >         if (!mutex_trylock(&desc->request_mutex))
+> > >                 mutex_lock(&desc->request_mutex);
+> > >
+> > >         This might fail if __setup_irq() has other dependencies on a
+> > >         fully operational scheduler.
+> > >
+> > > 2.      Move that ppc32 call to __setup_irq() much later, most definitely
+> > >         after interrupts have been enabled and the scheduler is fully
+> > >         operational.  Invoking mutex_lock() before that time is not a
+> > >         good idea.  ;-)
+> >
+> > There is no call to __setup_irq() from arch/powerpc/?
+>
+> Glad it is not just me, given that I didn't see a direct call, either.  So
+> later in this email, I asked Liam to put a WARN_ON_ONCE(irqs_disabled())
+> just before that mutex_lock() in __setup_irq().
+>
+> Either way, invoking mutex_lock() early in boot before interrupts have
+> been enabled is a bad idea.  ;-)
 
-Can't the kernel somehow detect the incorrect bytecode and do the right
-thing(tm) somehow?
+I'll add that WARN_ON_ONCE() too, and will report back later today...
 
-But yes, don't worry, I know that reality is not black and white and
-that it's crucial that things like package filtering do exactly what the
-user expect it to do; that's why this might be one of those rare
-situations where "user has to update userspace components to support
-newer kernels" might be the better of two bad choices. But I had to ask
-to ensure it's something like that.
+> > Note that there are (possibly different) issues seen on ppc32 and on arm32
+> > (Renesas RZ/A in particular, but not on other Renesas ARM systems).
+> >
+> > I saw an issue on arm32 with cfeb6ae8bcb96ccf, but not with cfeb6ae8bcb96ccf^.
+> > Other people saw an issue on ppc32 with both cfeb6ae8bcb96ccf and
+> > cfeb6ae8bcb96ccf^.
+>
+> I look forward to hearing what is the issue in both cases.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+For RZ/A, my problem report is
+https://lore.kernel.org/all/3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org/
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
