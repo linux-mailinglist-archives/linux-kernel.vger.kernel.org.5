@@ -2,351 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08ADD79D948
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F4A79D94C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbjILTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
+        id S232431AbjILTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjILTAw (ORCPT
+        with ESMTP id S230204AbjILTHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:00:52 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579F1E6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:00:48 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so64475445e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:00:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user; t=1694545247; x=1695150047; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mZCDN+p5uNHVLV+K8PpuHk9WpO33FgaNWOUDTmgpTKg=;
-        b=nq00U3OCHucRB6hS02ClZk0EpUkouxyt1vSMNwGgLvc2T5fP0hbpYsDbEPobbehd8i
-         GkgeW4SQiBdjYlk6FYPAbUcDQJKwA4BJcjMvDaIJdUHjsRjtHE/p4oBGdP2WXciHiUtY
-         ppB89P7pdWYg5QlTmmL4WN0VrARCB9VYgZzi4RY7pt4IDyBJJZAnHnPkTvbuIWXrcvdo
-         Bx87HPAzGUlrdmLnzr6Ji4vUXL/Pu0i72ZXmQqeC6T3WJv1g8oOmCzOwuNey19jHSxmV
-         Z/4pQO/R7AlQqOxrFOufXYUYeRJ1I1Dlmn319QKSd6WNgPssy8837HR+Vuk2x3Qo4vCe
-         tJfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694545247; x=1695150047;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mZCDN+p5uNHVLV+K8PpuHk9WpO33FgaNWOUDTmgpTKg=;
-        b=XcQruMxJRr8DRhONSONDMdjBKFgWWWFkmxZCHfA+a3yVL2Yxcizl9vi4LS8/7hZkeJ
-         HIjgAmEkfHYkUXz3AvB5uzKo7IoSXl6hgxmYMshi+jq1K4hAj75SeeiF3O6iJcb2hVga
-         vKWtjoXmB1UoQr9CYJsSeZ1dWZbYpRU1nTCRDT3kf6EQMT4MEM4NsyLtcu84HMxeUGqu
-         zinuLctPkzKZgPY2LpVgbapngdklImH2AU1glift7eq3HZoBGR6Z6bfNZm0/SDzNJ/Ly
-         uNK75dbVTfFjmVPNGYAtnY9/zka3KkUXXBQGOhBP8C/v+D7INk7QZi/QIkrBE/3GTF32
-         I3+A==
-X-Gm-Message-State: AOJu0Ywqkgd2HuHKIjHT5hfJbrnsnpNEqEnH01LdW+7Lf/5a7SF2rkOy
-        csP9D6wiJXiXa2gBUzCewSQc+g==
-X-Google-Smtp-Source: AGHT+IE/E7hhg2o286wP8NTcBnZyuvKeAIz2ICPMoRjkUoOrsQwkXyIHpAGtsFMIABsORReyuA4aYg==
-X-Received: by 2002:a05:600c:2294:b0:403:149:150b with SMTP id 20-20020a05600c229400b004030149150bmr224847wmf.16.1694545246034;
-        Tue, 12 Sep 2023 12:00:46 -0700 (PDT)
-Received: from smtpclient.apple ([131.111.5.246])
-        by smtp.gmail.com with ESMTPSA id v11-20020a1cf70b000000b00401d8810c8bsm16788393wmh.15.2023.09.12.12.00.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Sep 2023 12:00:45 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH] riscv: errata: thead: use riscv_nonstd_cache_ops for CMO
-From:   Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <ZQBDFa0fGNiaqAgh@gmail.com>
-Date:   Tue, 12 Sep 2023 20:00:33 +0100
-Cc:     Jisheng Zhang <jszhang@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C1EDD7DE-A0A9-4F43-9EC1-1C5A212A7033@jrtc27.com>
-References: <20230912072740.2544-1-jszhang@kernel.org>
- <ZQBDFa0fGNiaqAgh@gmail.com>
-To:     Guo Ren <guoren@kernel.org>
-X-Mailer: Apple Mail (2.3731.600.7)
+        Tue, 12 Sep 2023 15:07:32 -0400
+Received: from mail.archlinux.org (mail.archlinux.org [95.216.189.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26733E6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:07:28 -0700 (PDT)
+Message-ID: <ca5729af-70db-4126-8973-f9036f41ede9@archlinux.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-rsa; t=1694545645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=mmzyd0jnqZsyn+LRfXAOTBvUoO1+JhMqw43RAR6oESY=;
+        b=htQLqDBSrSMyhahzLIwWIBh/L5bCmkxImj0vHycbviogHpns00Nae2foD5RAUZ07eqmFXk
+        oNC03vcB8zqU+3oDc7hhmUGUinHwpjwxnezBTTGHG/poQM3rUzUJTo9qlJjQEmf0Qog5fq
+        3MMaDib+6v2cChIKAbEWP+bFRWsN0SC5wNY5WqN1Y1lCHk8fU8x1bZs54w/Fl5qTbt4Bzl
+        pZIrif/kUeLoFCCAj+PoeF2w/LqkjSTcuUo7FxJ42i0LmU4SCZk5TT2vXtg/eMWSYWG597
+        rWk8CoEa0ijqAl8J/IJPnAKeEPwOrmf8QCiXVaQeoEdbSDTgnxTJRoSoK/Bzz8WMSTZ36M
+        re6n2pscNnh9gy4SFMmhcsbirUHwOhTF48+/fhf5RTOLFNzT2jrPYtjOWLsOM6M5QfO5UR
+        54YL6DIvkDO51Ys2TmFWUkPG5RTDXxWUyXUWb3x7TwIiIhzKXsq0dZAUR9/CM+SXjOs9nE
+        JMorNg24VgsuV+3ZU+LAd9g2twlYNvnKJgfPRE2iSDOJkySlnUuIfoNtTPDvrb0etoWcWI
+        EHtg2ZB3Hz9mTt/7Ygs5tQGtL7ZlWdutgjBWivODK+E59EnfAzu4QtSclBxhw/gxE8HQ2S
+        oGRFnut789Y+AXtOjl+nlJFv6U1QM/jpot8nE08GK0+oznSpQuO7Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-ed25519; t=1694545645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=mmzyd0jnqZsyn+LRfXAOTBvUoO1+JhMqw43RAR6oESY=;
+        b=u0N7GyXEhmOPCvMxO5flPcd9GKPfAegMrHBA0M9PWzBGDXYSFV54ripOcsQzBIi1KhaiqO
+        qKVxWsTaHexEriCw==
+Authentication-Results: mail.archlinux.org;
+        auth=pass smtp.auth=felixonmars smtp.mailfrom=felixonmars@archlinux.org
+Date:   Tue, 12 Sep 2023 22:07:21 +0300
+MIME-Version: 1.0
+Subject: Re: [PATCH] nvme-pci: ignore bogus CRTO according to NVME 2.0 spec
+Content-Language: en-US-large
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     highenthalpyh@gmail.com, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xuwd1@hotmail.com, hch@lst.de
+References: <20230908155442.31423-1-felixonmars@archlinux.org>
+ <ZP-cGgPzIX7WkNRb@kbusch-mbp.dhcp.thefacebook.com>
+ <0f6ce98c-8f03-4ce1-badd-ae1346456a3e@archlinux.org>
+ <ZQCHS2L59vRNmZbV@kbusch-mbp.dhcp.thefacebook.com>
+From:   Felix Yan <felixonmars@archlinux.org>
+Autocrypt: addr=felixonmars@archlinux.org; keydata=
+ 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
+In-Reply-To: <ZQCHS2L59vRNmZbV@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------H841eNckoKp4go5G01Qhb02U"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12 Sep 2023, at 11:53, Guo Ren <guoren@kernel.org> wrote:
->=20
-> On Tue, Sep 12, 2023 at 03:27:40PM +0800, Jisheng Zhang wrote:
->> Previously, we use alternative mechanism to dynamically patch
->> the CMO operations for THEAD C906/C910 during boot for performance
->> reason. But as pointed out by Arnd, "there is already a significant
->> cost in accessing the invalidated cache lines afterwards, which is
->> likely going to be much higher than the cost of an indirect branch".
->> And indeed, there's no performance difference with GMAC and EMMC per
->> my test on Sipeed Lichee Pi 4A board.
->>=20
->> Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
->> the alternative code, and to acchieve Arnd's goal -- "I think
->> moving the THEAD ops at the same level as all nonstandard operations
->> makes sense, but I'd still leave CMO as an explicit fast path that
->> avoids the indirect branch. This seems like the right thing to do =
-both
->> for readability and for platforms on which the indirect branch has a
->> noticeable overhead."
->>=20
->> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->> ---
->> arch/riscv/Kconfig.errata            |  1 +
->> arch/riscv/errata/thead/errata.c     | 76 =
-+++++++++++++++++++++++++++-
->> arch/riscv/include/asm/errata_list.h | 50 +++---------------
->> 3 files changed, 81 insertions(+), 46 deletions(-)
->>=20
->> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
->> index 566bcefeab50..d7972914f9de 100644
->> --- a/arch/riscv/Kconfig.errata
->> +++ b/arch/riscv/Kconfig.errata
->> @@ -78,6 +78,7 @@ config ERRATA_THEAD_CMO
->> bool "Apply T-Head cache management errata"
->> depends on ERRATA_THEAD && MMU
->> select RISCV_DMA_NONCOHERENT
->> + select RISCV_NONSTANDARD_CACHE_OPS
->> default y
->> help
->>   This will apply the cache management errata to handle the
->> diff --git a/arch/riscv/errata/thead/errata.c =
-b/arch/riscv/errata/thead/errata.c
->> index 0554ed4bf087..1c320abfe446 100644
->> --- a/arch/riscv/errata/thead/errata.c
->> +++ b/arch/riscv/errata/thead/errata.c
->> @@ -12,8 +12,10 @@
->> #include <asm/alternative.h>
->> #include <asm/cacheflush.h>
->> #include <asm/cpufeature.h>
->> +#include <asm/dma-noncoherent.h>
->> #include <asm/errata_list.h>
->> #include <asm/hwprobe.h>
->> +#include <asm/io.h>
->> #include <asm/patch.h>
->> #include <asm/vendorid_list.h>
->>=20
->> @@ -33,6 +35,75 @@ static bool errata_probe_pbmt(unsigned int stage,
->> return false;
->> }
->>=20
->> +/*
->> + * dcache.ipa rs1 (invalidate, physical address)
->> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> + *   0000001    01010      rs1       000      00000  0001011
->> + * dache.iva rs1 (invalida, virtual address)
->> + *   0000001    00110      rs1       000      00000  0001011
-> Remove dache.iva rs1 ...
->=20
->> + *
->> + * dcache.cpa rs1 (clean, physical address)
->> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> + *   0000001    01001      rs1       000      00000  0001011
-> Remove dcache.cpa rs1 ...
->=20
->> + * dcache.cva rs1 (clean, virtual address)
->> + *   0000001    00101      rs1       000      00000  0001011
-> Remove dcache.cva rs1 ...
->=20
->> + *
->> + * dcache.cipa rs1 (clean then invalidate, physical address)
->> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> + *   0000001    01011      rs1       000      00000  0001011
->> + * dcache.civa rs1 (... virtual address)
->> + *   0000001    00111      rs1       000      00000  0001011
-> Remove dcache.civa rs1 ...
->=20
->> + *
->> + * sync.s (make sure all cache operations finished)
->> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> + *   0000000    11001     00000      000      00000  0001011
->> + */
->> +#define THEAD_inval_A0 ".long 0x0265000b"
->> +#define THEAD_clean_A0 ".long 0x0255000b"
->> +#define THEAD_flush_A0 ".long 0x0275000b"
->> +#define THEAD_SYNC_S ".long 0x0190000b"
->> +
->> +#define THEAD_CMO_OP(_op, _start, _size, _cachesize) \
->> +asm volatile("mv a0, %1\n\t" \
->> +      "j 2f\n\t" \
->> +      "3:\n\t" \
->> +      THEAD_##_op##_A0 "\n\t" \
->> +      "add a0, a0, %0\n\t" \
->> +      "2:\n\t" \
->> +      "bltu a0, %2, 3b\n\t" \
->> +      THEAD_SYNC_S \
->> +      : : "r"(_cachesize), \
->> +  "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)), \
->> +  "r"((unsigned long)(_start) + (_size)) \
->> +      : "a0")
->> +
->> +static void thead_errata_cache_inv(phys_addr_t paddr, size_t size)
->> +{
->> + void *vaddr =3D phys_to_virt(paddr);
-> No need to phys_to_virt, and we could use paddr directly (dcache.ipa
-> rs1).
->=20
->> +
->> + THEAD_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
->> +}
->> +
->> +static void thead_errata_cache_wback(phys_addr_t paddr, size_t size)
->> +{
->> + void *vaddr =3D phys_to_virt(paddr);
->> +
->> + THEAD_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
->> +}
-> Please remove the thead_errata_cache_wback because T-HEAD processors
-> would prioritize using an invalid cacheline instead of evicting an
-> existing cacheline. When we do dcache clean, the following operations
-> are to let other interconnect masters read. So, keeping wback_inv for
-> T-HEAD processors is the best choice, and maybe some other processors'
-> vendor has a different idea, but please use the wback_inv instead of
-> wback_only for the T-HEAD processors.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------H841eNckoKp4go5G01Qhb02U
+Content-Type: multipart/mixed; boundary="------------oVpTfcvphLmb39J1F7QwljMG";
+ protected-headers="v1"
+From: Felix Yan <felixonmars@archlinux.org>
+To: Keith Busch <kbusch@kernel.org>
+Cc: highenthalpyh@gmail.com, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org, xuwd1@hotmail.com, hch@lst.de
+Message-ID: <ca5729af-70db-4126-8973-f9036f41ede9@archlinux.org>
+Subject: Re: [PATCH] nvme-pci: ignore bogus CRTO according to NVME 2.0 spec
+References: <20230908155442.31423-1-felixonmars@archlinux.org>
+ <ZP-cGgPzIX7WkNRb@kbusch-mbp.dhcp.thefacebook.com>
+ <0f6ce98c-8f03-4ce1-badd-ae1346456a3e@archlinux.org>
+ <ZQCHS2L59vRNmZbV@kbusch-mbp.dhcp.thefacebook.com>
+In-Reply-To: <ZQCHS2L59vRNmZbV@kbusch-mbp.dhcp.thefacebook.com>
 
-Unless you can demonstrate that your cores have significantly worse
-performance when using wback instead of wback_inv I do not think the
-non-standard implementation should deviate from the semantics of the
-standard one. There are efforts to unify the implemented semantics of
-the operations across architectures and this would obstruct those.
+--------------oVpTfcvphLmb39J1F7QwljMG
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Jess
+T24gOS8xMi8yMyAxODo0NCwgS2VpdGggQnVzY2ggd3JvdGU6DQo+IE9uIFR1ZSwgU2VwIDEy
+LCAyMDIzIGF0IDA5OjI2OjE5QU0gKzAzMDAsIEZlbGl4IFlhbiB3cm90ZToNCj4+DQo+PiBT
+aG91bGQgd2UgYWxzbyBhcHBseSB0aGUgc2FtZSBtYXgoKSBvbiB0aGUgTlZNRV9DUlRPX0NS
+SU1UIGJyYW5jaCB0aG91Z2g/DQo+PiBUaGUgc3BlYyBhY3R1YWxseSBzYXlzIHRoZSBzYW1l
+IHRoaW5nIChUaW1lb3V0IHNob3VsZCBiZSBGRmgpIGZvciB0aGF0IHRvby4NCj4gDQo+IFRo
+ZSBzcGVjIGlzIHdlaXJkIGhlcmU6IHRoZSBDQVAuVE8gdmFsdWUgZGVwZW5kcyBvbiB0aGUg
+Q0Mgc2V0dGluZywgYnV0DQo+IHdlIHJlYWQgYW5kIGNhY2hlIENBUC5UTyBiZWZvcmUgc2V0
+dGluZyBDQywgc28gVE8gaXMgYWx3YXlzIGFzc29jaWF0ZWQNCj4gdG8gQ1JXTVQuIFdlJ2xs
+IG5lZWQgdG8gcmVmcmVzaCB0aGUgQ0FQIHZhbHVlIGFmdGVyIHRoZSBpbml0aWFsIENDDQo+
+IHdyaXRlLCBidXQgYmVmb3JlIGZpbmFsIENDLkVOLg0KPiANCj4gLS0tDQo+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL252bWUvaG9zdC9jb3JlLmMgYi9kcml2ZXJzL252bWUvaG9zdC9jb3Jl
+LmMNCj4gaW5kZXggMzdiNmZhNzQ2NjYyMC4uNGFkYzBiMmYxMmYxZSAxMDA2NDQNCj4gLS0t
+IGEvZHJpdmVycy9udm1lL2hvc3QvY29yZS5jDQo+ICsrKyBiL2RyaXZlcnMvbnZtZS9ob3N0
+L2NvcmUuYw0KPiBAQCAtMjI0NSwyNSArMjI0NSw4IEBAIGludCBudm1lX2VuYWJsZV9jdHJs
+KHN0cnVjdCBudm1lX2N0cmwgKmN0cmwpDQo+ICAgCWVsc2UNCj4gICAJCWN0cmwtPmN0cmxf
+Y29uZmlnID0gTlZNRV9DQ19DU1NfTlZNOw0KPiAgIA0KPiAtCWlmIChjdHJsLT5jYXAgJiBO
+Vk1FX0NBUF9DUk1TX0NSV01TKSB7DQo+IC0JCXUzMiBjcnRvOw0KPiAtDQo+IC0JCXJldCA9
+IGN0cmwtPm9wcy0+cmVnX3JlYWQzMihjdHJsLCBOVk1FX1JFR19DUlRPLCAmY3J0byk7DQo+
+IC0JCWlmIChyZXQpIHsNCj4gLQkJCWRldl9lcnIoY3RybC0+ZGV2aWNlLCAiUmVhZGluZyBD
+UlRPIGZhaWxlZCAoJWQpXG4iLA0KPiAtCQkJCXJldCk7DQo+IC0JCQlyZXR1cm4gcmV0Ow0K
+PiAtCQl9DQo+IC0NCj4gLQkJaWYgKGN0cmwtPmNhcCAmIE5WTUVfQ0FQX0NSTVNfQ1JJTVMp
+IHsNCj4gLQkJCWN0cmwtPmN0cmxfY29uZmlnIHw9IE5WTUVfQ0NfQ1JJTUU7DQo+IC0JCQl0
+aW1lb3V0ID0gTlZNRV9DUlRPX0NSSU1UKGNydG8pOw0KPiAtCQl9IGVsc2Ugew0KPiAtCQkJ
+dGltZW91dCA9IE5WTUVfQ1JUT19DUldNVChjcnRvKTsNCj4gLQkJfQ0KPiAtCX0gZWxzZSB7
+DQo+IC0JCXRpbWVvdXQgPSBOVk1FX0NBUF9USU1FT1VUKGN0cmwtPmNhcCk7DQo+IC0JfQ0K
+PiArCWlmIChjdHJsLT5jYXAgJiBOVk1FX0NBUF9DUk1TX0NSV01TICYmIGN0cmwtPmNhcCAm
+IE5WTUVfQ0FQX0NSTVNfQ1JJTVMpDQo+ICsJCWN0cmwtPmN0cmxfY29uZmlnIHw9IE5WTUVf
+Q0NfQ1JJTUU7DQo+ICAgDQo+ICAgCWN0cmwtPmN0cmxfY29uZmlnIHw9IChOVk1FX0NUUkxf
+UEFHRV9TSElGVCAtIDEyKSA8PCBOVk1FX0NDX01QU19TSElGVDsNCj4gICAJY3RybC0+Y3Ry
+bF9jb25maWcgfD0gTlZNRV9DQ19BTVNfUlIgfCBOVk1FX0NDX1NITl9OT05FOw0KPiBAQCAt
+MjI3Nyw2ICsyMjYwLDMzIEBAIGludCBudm1lX2VuYWJsZV9jdHJsKHN0cnVjdCBudm1lX2N0
+cmwgKmN0cmwpDQo+ICAgCWlmIChyZXQpDQo+ICAgCQlyZXR1cm4gcmV0Ow0KPiAgIA0KPiAr
+CS8qIENBUCB2YWx1ZSBtYXkgY2hhbmdlIGFmdGVyIGluaXRpYWwgQ0Mgd3JpdGUgKi8NCj4g
+KwlyZXQgPSBjdHJsLT5vcHMtPnJlZ19yZWFkNjQoY3RybCwgTlZNRV9SRUdfQ0FQLCAmY3Ry
+bC0+Y2FwKTsNCj4gKwlpZiAocmV0KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiArDQo+ICsJdGlt
+ZW91dCA9IE5WTUVfQ0FQX1RJTUVPVVQoY3RybC0+Y2FwKTsNCj4gKwlpZiAoY3RybC0+Y2Fw
+ICYgTlZNRV9DQVBfQ1JNU19DUldNUykgew0KPiArCQl1MzIgY3J0bzsNCj4gKw0KPiArCQly
+ZXQgPSBjdHJsLT5vcHMtPnJlZ19yZWFkMzIoY3RybCwgTlZNRV9SRUdfQ1JUTywgJmNydG8p
+Ow0KPiArCQlpZiAocmV0KSB7DQo+ICsJCQlkZXZfZXJyKGN0cmwtPmRldmljZSwgIlJlYWRp
+bmcgQ1JUTyBmYWlsZWQgKCVkKVxuIiwNCj4gKwkJCQlyZXQpOw0KPiArCQkJcmV0dXJuIHJl
+dDsNCj4gKwkJfQ0KPiArDQo+ICsJCS8qDQo+ICsJCSAqIENSVE8gc2hvdWxkIGFsd2F5cyBi
+ZSBncmVhdGVyIG9yIGVxdWFsIHRvIENBUC5UTywgYnV0IHNvbWUNCj4gKwkJICogZGV2aWNl
+cyBhcmUga25vd24gdG8gZ2V0IHRoaXMgd3JvbmcuIFVzZSB0aGUgbGFyZ2VyIG9mIHRoZQ0K
+PiArCQkgKiB0d28gdmFsdWVzLg0KPiArCQkgKi8NCj4gKwkJaWYgKGN0cmwtPmN0cmxfY29u
+ZmlnICYgTlZNRV9DQ19DUklNRSkNCj4gKwkJCXRpbWVvdXQgPSBtYXgodGltZW91dCwgTlZN
+RV9DUlRPX0NSSU1UKGNydG8pKTsNCj4gKwkJZWxzZQ0KPiArCQkJdGltZW91dCA9IG1heCh0
+aW1lb3V0LCBOVk1FX0NSVE9fQ1JXTVQoY3J0bykpOw0KPiArCX0NCj4gKw0KPiAgIAljdHJs
+LT5jdHJsX2NvbmZpZyB8PSBOVk1FX0NDX0VOQUJMRTsNCj4gICAJcmV0ID0gY3RybC0+b3Bz
+LT5yZWdfd3JpdGUzMihjdHJsLCBOVk1FX1JFR19DQywgY3RybC0+Y3RybF9jb25maWcpOw0K
+PiAgIAlpZiAocmV0KQ0KDQpUaGFua3MgZm9yIGdldHRpbmcgaW50byB0aGUgZGV0YWlscy4g
+VGhpcyBsb29rcyBncmVhdCB0byBtZS4NCg0KSSBoYXZlIGFsc28gdHJpZWQgaXQgb24gdG9w
+IG9mIDYuNS4yIGtlcm5lbCBhbmQgdmVyaWZpZWQgdGhhdCBpdCB3b3JrcyANCmFzIGV4cGVj
+dGVkLg0KDQotLSANClJlZ2FyZHMsDQpGZWxpeCBZYW4NCg0K
 
->> +
->> +static void thead_errata_cache_wback_inv(phys_addr_t paddr, size_t =
-size)
->> +{
->> + void *vaddr =3D phys_to_virt(paddr);
-> Ditto.
->=20
->> +
->> + THEAD_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
->> +}
->> +
->> +static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops =3D =
-{
->> + .wback =3D &thead_errata_cache_wback,
-> Please  .wback =3D &thead_errata_cache_wback_inv,
->=20
->=20
->> + .inv =3D &thead_errata_cache_inv,
->> + .wback_inv =3D &thead_errata_cache_wback_inv,
->> +};
->> +
->> static bool errata_probe_cmo(unsigned int stage,
->>      unsigned long arch_id, unsigned long impid)
->> {
->> @@ -48,6 +119,8 @@ static bool errata_probe_cmo(unsigned int stage,
->> if (stage =3D=3D RISCV_ALTERNATIVES_BOOT) {
->> riscv_cbom_block_size =3D L1_CACHE_BYTES;
->> riscv_noncoherent_supported();
->> + if (IS_ENABLED(CONFIG_RISCV_NONSTANDARD_CACHE_OPS))
->> + riscv_noncoherent_register_cache_ops(&thead_errata_cmo_ops);
->> }
->>=20
->> return true;
->> @@ -77,8 +150,7 @@ static u32 thead_errata_probe(unsigned int stage,
->> if (errata_probe_pbmt(stage, archid, impid))
->> cpu_req_errata |=3D BIT(ERRATA_THEAD_PBMT);
->>=20
->> - if (errata_probe_cmo(stage, archid, impid))
->> - cpu_req_errata |=3D BIT(ERRATA_THEAD_CMO);
->> + errata_probe_cmo(stage, archid, impid);
->>=20
->> if (errata_probe_pmu(stage, archid, impid))
->> cpu_req_errata |=3D BIT(ERRATA_THEAD_PMU);
->> diff --git a/arch/riscv/include/asm/errata_list.h =
-b/arch/riscv/include/asm/errata_list.h
->> index b55b434f0059..ea33288f8a25 100644
->> --- a/arch/riscv/include/asm/errata_list.h
->> +++ b/arch/riscv/include/asm/errata_list.h
->> @@ -24,9 +24,8 @@
->>=20
->> #ifdef CONFIG_ERRATA_THEAD
->> #define ERRATA_THEAD_PBMT 0
->> -#define ERRATA_THEAD_CMO 1
->> -#define ERRATA_THEAD_PMU 2
->> -#define ERRATA_THEAD_NUMBER 3
->> +#define ERRATA_THEAD_PMU 1
->> +#define ERRATA_THEAD_NUMBER 2
->> #endif
->>=20
->> #ifdef __ASSEMBLY__
->> @@ -94,54 +93,17 @@ asm volatile(ALTERNATIVE( \
->> #define ALT_THEAD_PMA(_val)
->> #endif
->>=20
->> -/*
->> - * dcache.ipa rs1 (invalidate, physical address)
->> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> - *   0000001    01010      rs1       000      00000  0001011
->> - * dache.iva rs1 (invalida, virtual address)
->> - *   0000001    00110      rs1       000      00000  0001011
->> - *
->> - * dcache.cpa rs1 (clean, physical address)
->> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> - *   0000001    01001      rs1       000      00000  0001011
->> - * dcache.cva rs1 (clean, virtual address)
->> - *   0000001    00101      rs1       000      00000  0001011
->> - *
->> - * dcache.cipa rs1 (clean then invalidate, physical address)
->> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> - *   0000001    01011      rs1       000      00000  0001011
->> - * dcache.civa rs1 (... virtual address)
->> - *   0000001    00111      rs1       000      00000  0001011
->> - *
->> - * sync.s (make sure all cache operations finished)
->> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
->> - *   0000000    11001     00000      000      00000  0001011
->> - */
->> -#define THEAD_inval_A0 ".long 0x0265000b"
->> -#define THEAD_clean_A0 ".long 0x0255000b"
->> -#define THEAD_flush_A0 ".long 0x0275000b"
->> -#define THEAD_SYNC_S ".long 0x0190000b"
->> -
->> #define ALT_CMO_OP(_op, _start, _size, _cachesize) \
->> -asm volatile(ALTERNATIVE_2( \
->> - __nops(6), \
->> +asm volatile(ALTERNATIVE( \
->> + __nops(5), \
->> "mv a0, %1\n\t" \
->> "j 2f\n\t" \
->> "3:\n\t" \
->> CBO_##_op(a0) \
->> "add a0, a0, %0\n\t" \
->> "2:\n\t" \
->> - "bltu a0, %2, 3b\n\t" \
->> - "nop", 0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM, \
->> - "mv a0, %1\n\t" \
->> - "j 2f\n\t" \
->> - "3:\n\t" \
->> - THEAD_##_op##_A0 "\n\t" \
->> - "add a0, a0, %0\n\t" \
->> - "2:\n\t" \
->> - "bltu a0, %2, 3b\n\t" \
->> - THEAD_SYNC_S, THEAD_VENDOR_ID, \
->> - ERRATA_THEAD_CMO, CONFIG_ERRATA_THEAD_CMO) \
->> + "bltu a0, %2, 3b\n\t", \
->> + 0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM) \
->> : : "r"(_cachesize), \
->>     "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)), \
->>     "r"((unsigned long)(_start) + (_size)) \
->> --=20
->> 2.40.1
->>=20
->>=20
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+--------------oVpTfcvphLmb39J1F7QwljMG--
 
+--------------H841eNckoKp4go5G01Qhb02U
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEtZcfLFwQqaCMYAMPeGxj8zDXy5IFAmUAtukFAwAAAAAACgkQeGxj8zDXy5Ln
+hw//VkXgwFeUauQIO1ZMwcmUkeSAvP59qSJdp0kE5VVkM1XnTKKSaAqc+FfJLyo5F7CT7XmvIabG
+hGtWxhKdb1CLFOtwlX60T3qh9NqlCOp4El1jrJt0/n9gu6upgzCCklcKi88khopl07f5hQRV2P25
+17TEqVexYCoF7Ae5LZWQufp53mjDPW2BjCWbIAzuJaHAdv65EMCj1siebC1uCnYDIUwv1adXLc2z
+pwZVB5LaoXVE5gTc9HBcs/TMZCpUvasY4zgw2j96fa85NG6TYrb6ASEt2ZlSmomGLT2OofXlU9VE
+mKfyqWB42rn9D5eS+BS0ElNDFHzJCCQf/+seLfmtSyrhQQFoEkHdDyJF5TgA1TvWrnodxdC/vAde
+NW8kXm6eyO/o6CniRwQVPftHpLieiBB/RV9PayD68l98N8qx7xaxr0FBtr87N7xXgc7sZYDuquo+
+Rxgs6ETvPi2/28qKW9au6f701fjvk0nsSyyq4OyNQ1peswnzcXCWCrVKtgPPjfn1EwkvECfobXdc
+8BMMSX7ZJfVhllgyaQwff28nFALKVI3PNtAavZK95vD2dsnWXwGlwY3C3wXoykdwLF0TaYoJUXhu
+Q5gVmbZ3JKjmk1k6QY+GW+Csfvi8SqIwuzeuoQuDh0dgv2au2JNkvIE5B+wdRsSKOY4UNJSbD2Bq
+DkA=
+=H4hB
+-----END PGP SIGNATURE-----
+
+--------------H841eNckoKp4go5G01Qhb02U--
