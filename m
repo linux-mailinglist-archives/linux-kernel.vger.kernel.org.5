@@ -2,243 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 652D479DBFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6366F79DBFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbjILWkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:40:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        id S237777AbjILWkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237781AbjILWj6 (ORCPT
+        with ESMTP id S237811AbjILWkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:39:58 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2043.outbound.protection.outlook.com [40.107.92.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4C110F9;
-        Tue, 12 Sep 2023 15:39:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I15UIGsRfgWvKbonl6BeBRU/50qPO3VSbDPU2jAloEh7oGdAar3Y4xPOdBQvqrd3i/TB9npd3IWhV0U3x/arfZsGPbk8zgx5a+7SVsLEcb1G1cCI76CZfJtgxLPihE304bgKBLv2E8Ge7fQ00y/TR0KMOYnxV8e9GM0IwtPGtYF8MJUh9W6s0hOFjrx0HDs5RMt9Udv9xgB3tZaL4t4U4nyyzOz0e9dM62nSq/Sfd9nbF8eMSKzq/U2fs8pUnAGxGG9b6YIqXTQj+GT7VvGAnnK63hCxk3TV9AJBJmmEh3zFqfTvs62rKZNSsmqY1rpvIhS38Bc5ts/88LHQ5Rl7Ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N20BNW4QuY11F4+i6/0+3a6aUWNv2ONwUtZktNF0Ukc=;
- b=Gaxo61bkFpAAN7UtihTP/OWCHLsf28HWY7SStZePHY2bUF/kuKMumLQ63Wd7iGg6sXor8bAbFrN/qxCB1Bh/lUctaqh6cLJVOt7z4OZZTcqrKOmsmHlnjFpsxzQIZDtJu6TBxiswMnGoFspTyBYYfe7iuWTZa1V4KppZw8rTVOyTr+F2uIgoqQWryJ/5/q/QWWmeogsQcLUmqPLgflZ5+DOK5lwinl+oSpu5rsolWSSJ1h7AKRStfV3nx/QrL4u/cJ5YjzNKEM0dN/P+skUeVf3SCQgKtmRNrd+ircY0io1owRyvvFR5mapzU2B8cHAwFjcMnR70LvjC5p+uoLQYdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N20BNW4QuY11F4+i6/0+3a6aUWNv2ONwUtZktNF0Ukc=;
- b=lDTeyc97k56veXapmR8r4czk+T1Yb07g/vDuRUopssaOpIzM03l9I6VNV6v5VXXPey4yc7+pHKMgE4kEPjKoVT1UMyt2Nx38QXtHDNyK0HUGCTRkGDGpHuYt8tIkz1GKbAVJ06w3sJ3afmwGkQeJM9zo/NzUhk30s4AwI8UHBxY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by BL3PR12MB6545.namprd12.prod.outlook.com (2603:10b6:208:38c::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.36; Tue, 12 Sep
- 2023 22:39:36 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::2709:2c34:f842:ce33]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::2709:2c34:f842:ce33%5]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 22:39:36 +0000
-Message-ID: <57b2b450-2fc9-ac68-d016-fb1d061ba992@amd.com>
-Date:   Tue, 12 Sep 2023 15:39:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v4 2/3] PCI: Enable support for 10-bit Tag during device
- enumeration
-Content-Language: en-US
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-References: <20230815212043.114913-1-Smita.KoralahalliChannabasappa@amd.com>
- <20230815212043.114913-3-Smita.KoralahalliChannabasappa@amd.com>
- <20230828095429.GA17864@wunner.de>
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-In-Reply-To: <20230828095429.GA17864@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0290.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::25) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+        Tue, 12 Sep 2023 18:40:37 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69B610E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:40:33 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bf5c314a57so44634675ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694558433; x=1695163233; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n1O93Em0dGb2w1gcbLaR3b+qaKxj8ErGxsZztgFUmxE=;
+        b=eBvbVQw9ClHZaEZA8mJtng0OkccL5LKYyjZ/4zLu3ZhgedPk50rXGQL83nEndraIoe
+         ZzaBZrfLuaK8b0WfwFksHntz0lIUQ5x8XXIZG1fkNXgZSXw4qYmie2NPGQMtS9Zw79b3
+         Oc/4dX2oVhgTj4kUPCXVSZgjAgx2ofX+vFTZsLLbgskHq41zMq0RVA0lpq9Dyepob2BS
+         lHKjXR9hMaIqLvhztskGrf0TFMe2ZPoLGcMrwLQRHLO8ZQqRtVuqw+UHXivNy/JD3anj
+         z4U94DEULyCsIHHunJkJqPc90R/pCP1SK4kES4VgZJrvkaw6o5zmvFRPaZu8ZoYKK0Wg
+         tYBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694558433; x=1695163233;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n1O93Em0dGb2w1gcbLaR3b+qaKxj8ErGxsZztgFUmxE=;
+        b=ioemlH3/xRA89Ulh9lvXVofA9YSuCZ396/jCo95WcbyxWL2tw1Un9bidDsLtr0HIAO
+         Yj6BOYxK7dFvYx/auA0ymdiBykOCRLZ6SlLpzYb/t7OPnduT7Bg+dU2EM01bOVD3CE8D
+         zbLgRbVxkvdQdbRZVwbTMsbAL+soQ1LhzFdFw8BGB5h/nvHb8tJXooiDhepxI3XEDlSy
+         Qb7FMRppC/uWyFfFGzB42HQo58xxK10T2jM0kvLk8ZW/idBET0+bD/yZvd6ysLioNwit
+         xeD1b/xUbc8DsDtPWhx/HdrFyWyScgW7ZkpNyB4X2TjBC88hYr2io7WADyfjwGAkwqt6
+         wynQ==
+X-Gm-Message-State: AOJu0YwitH1FGMA108MdTeFxUh4e2+BYvMo/Eo4jbVpHp7DmC5laqV6S
+        5wUA1o1mDvJMrtGNMuMtW1z9Mw==
+X-Google-Smtp-Source: AGHT+IEJmsLAsW5l+VB/hOPMJJgw4AHIPmDee2zCHtRkWTNC/a9XAmGaVZj83Hcxw7dHfLY1DzqAdQ==
+X-Received: by 2002:a17:903:22c3:b0:1bb:59a0:3d34 with SMTP id y3-20020a17090322c300b001bb59a03d34mr1264418plg.30.1694558433268;
+        Tue, 12 Sep 2023 15:40:33 -0700 (PDT)
+Received: from localhost (71-212-56-62.tukw.qwest.net. [71.212.56.62])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902eb0c00b001bf574dd1fesm8943675plb.141.2023.09.12.15.40.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 15:40:32 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Dhruva Gole <d-gole@ti.com>, Tony Lindgren <tony@atomide.com>
+Cc:     linux-omap@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        vibhore@ti.com
+Subject: Re: [PATCH] bus: ti-sysc: Fix SYSC_QUIRK_SWSUP_SIDLE_ACT handling
+ for uart wake-up
+In-Reply-To: <20230907062231.muwzvje726wlqnqw@dhruva.dhcp.ti.com>
+References: <20230907055441.19476-1-tony@atomide.com>
+ <20230907062231.muwzvje726wlqnqw@dhruva.dhcp.ti.com>
+Date:   Tue, 12 Sep 2023 15:40:31 -0700
+Message-ID: <7hsf7j582o.fsf@baylibre.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2869:EE_|BL3PR12MB6545:EE_
-X-MS-Office365-Filtering-Correlation-Id: 541c3f33-d72d-4c88-a009-08dbb3e1243e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FIebDpPBrC2Ej+vukPgS34uc/kzS9zvQ2+y9Kj/H55ObLTXP6ZbyO9fwq6iIAONT9wVB49OXLCc5cqaWlLW+oimFZm7y1V48MqS6oPL35aB8tUrDj4QVXmMN/YXHDxGsrI218Vj8KcPbU5L6R1QUBSJ+NjPVRKCcHwFUbqeJ4nKHk8cgEa5G+iAKzn0R19ulXgA2uYqPr8EMsIQPX0lvL0bW20dTO35fJvInaaGoHRvZVynr2SwQvN4TxjO1tdbXzgk20eqS48H2TsTx5i3mgWLwKOHX8prfSBtVLIxYCXIv4LrNOWDNEG2aPKrx3XhDpnWKPxABo63PbkFf4bFx9jVoOVjmrEQvOluIJhC0n06wagh0dHh/CYnJBmnLPRKb+s8YxehyLqBI6kjjoIuGIP+ubVFvGguWN5Vt5XspUXcZ8iiwrE2iKfd+JgQjezgs3gtE0A16+BVKrTUUYBzKKaC7y2z1Y0ICTlNNpAeH9L+ifJhtOdqI58jToclB6rUg11w9E3yk9X+/T2v3Cm+63YyLclxDUFYXAmqkhpvnhnevKxnG/8gFQiAQdAjZGUaUMkb+xoNwoQR7uS2z5m1vqyKdf2AIqhtorJjsO+UrKOy2bgDJKuRRkxgJXsZXikm/pyOj4FS4QVWU/fuustiOyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(366004)(346002)(136003)(396003)(186009)(1800799009)(451199024)(6512007)(53546011)(2616005)(6506007)(6486002)(6666004)(26005)(54906003)(8936002)(41300700001)(316002)(66476007)(6916009)(66556008)(5660300002)(8676002)(4326008)(38100700002)(66946007)(478600001)(31686004)(83380400001)(36756003)(2906002)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bzFLMzVoaVNvU0dqT2hsRnZNclpPeERMbm1INk9XTnF5TGQxc0ZWRUdGbitF?=
- =?utf-8?B?R0tDOGNhOGZVMUVWcGhCM2FRVWo4c1NlbitMZHEweGNQeEFBd0s2UGZFMWlV?=
- =?utf-8?B?c3ZKUTF1Q0l3cndlWFRmV0FzRWtQNUFpMVU1ZTJRY3YvUEp1bEk0V2Q2RGVS?=
- =?utf-8?B?aEQ1SjdNbU85N1lPM3NmM0VVS3JGRzN5dHdTNVVHcGFtMDNwVnhjc0hTeFYw?=
- =?utf-8?B?K3l0THhFcGJNaG5VNExqWW9jUkx3RkZmeDJ1ZXpzbGpkdUZjaHJJZm4zM21q?=
- =?utf-8?B?K3Evcm9sdkVVZHR4dlpSRUx4SjBkU1BCZHRuMG5BQmVSMDBOWkJjdUJsYlYy?=
- =?utf-8?B?UVFzMEczNE5lRFVkazhnZVY0a2xyVkQrOE1OOGdDUkNtUUQvczNsZ1hScFFN?=
- =?utf-8?B?bnJhUzJwTlhRbnM1KzlsRFh5VnRsTWVLYm1JY0xvZHdUSjBvcHBnU3FiOGFR?=
- =?utf-8?B?OGRnVWRJdUdSRjdwMVlyMjdtY00yS0l0a1N0MDVxYjc3RUpGb0hKZ3RsSE9F?=
- =?utf-8?B?d3lxM0g3R2paaDNiM3gyS0tnV3Zyamg4Z0dmcFBWVTRpaStVSFhLRDc3eFBO?=
- =?utf-8?B?dEJhdnBBZlNaOUtUYVRNYlcrMytPcDAweE1TRWl4OHNkems2cHZ1OEpqVEwv?=
- =?utf-8?B?eVJhMlErK3oxbUhQTHgyNEorMzVOeDgxRFVoRzg2YUhPRzFEU1U0VVJaM2dW?=
- =?utf-8?B?U3pDMVFrWmFHaFRNTnB0TFBOOUJRZS84Q3gxSzV2Y0hoOXZRUWJhTkE0MGpB?=
- =?utf-8?B?ZlE4QXM5ZXIzZWd4YnowdmZVQTdCZGRCK0JZT0Q0eTZMNnFOOGlXYWR4TXJ6?=
- =?utf-8?B?Y3N5bTQ1ZUxPaWl4WnlLamltSHpiTXB4UTFpQjlnUHFjcTQ5ZG5OTDd0bGMx?=
- =?utf-8?B?Nlo2ZU1lOHgvTk9iblpNVEVOeC9zQWs2cy8ybEtyZTYycmh0SU9qU1BBa0Q3?=
- =?utf-8?B?aExCMjV0UHNjRHhDczRRWUpOaExINTZQWTVCMU5lV0FCNTZCekx0emh0ZkZi?=
- =?utf-8?B?RStocHpmT1pRK3hFL2xUa0MxczczbWE0c1Q5WG1TVnpkZGgwTGczMDdEbmdp?=
- =?utf-8?B?ZlVxVTNRcUg0RHdlU1pQWlU3SHBaVERybk5iM3lOSG13QXB5U2tzaU5LTk5B?=
- =?utf-8?B?Qy9sK1FVd09KYlR2MkUvbFNsOUZudExnWjExb3h5ZU15VnlGdXlHbUsyN09y?=
- =?utf-8?B?UkptbnNmWHV3NmsyWmNVcnhRZ0ZmYWRGd2dIUDJqTlBJWndCUWJaTnpsNWdi?=
- =?utf-8?B?VmdvOFFIcEtUNkZCSmpkdkcwa05vV3o1dEpEUHBtRUJCNXJQcWRVR2U1aWRQ?=
- =?utf-8?B?cjJCRlpVRmh3MDRTblBBM1l1NFRJZ1dXcUJpa2cxM2hCUWhuUXlpNEEvYVZQ?=
- =?utf-8?B?NnhmVFlQTE1qNW51dGdhVmJ3YS9yUDk4SndZdU5ERitTcGhUbzV1R3FTUFI3?=
- =?utf-8?B?N0hUWm9HcHFib2dHUEpBU2E4OGJRcnBGcW1aWWpoY3AvRW9SZjRXdXdwQko3?=
- =?utf-8?B?c2FWZmZybUVRRUltVXl6TjcrY0dONm9kdlcvZ2o5UHkyL2NiMEUxZmx3RWh3?=
- =?utf-8?B?N285UFhRc3U3TXFteE5jN1F6MDA1MnBXbU9pb25tUjMwK0pvU3dPTEJPdlF2?=
- =?utf-8?B?aVFvM1hNNTFiQ2xOa2t2aDJ4cVI4eGJaOXBQK28zYVE2dzNncWloc1gzUlEx?=
- =?utf-8?B?M2hjNktXdG5xZlMzeUVCSW04aWx6TzlRMDNSWmdNS1VqTWxoc0U5RzlEMFd5?=
- =?utf-8?B?cEN3RDhRUlRXSVp4YW9XKzROcTRhdS9DYk1PSGdHTzVXaEdXaGdIUmVBTkNS?=
- =?utf-8?B?NEI2enZLVkR0aXcxZ2F0alJiRzBiNnpiTi91bEp6ZndLdE82UllOMm1JaU9H?=
- =?utf-8?B?eFNuNU1OTGpSR1R2L1NvMGNISU55QXJJY2xSVEUzb0M3MTVzVXdsdHhybFp4?=
- =?utf-8?B?Yi9Td0wraXlmemhaVThFY0hDM0RzTWNuSW45VkxCdldodXRKYzVZdEpvVi9P?=
- =?utf-8?B?M3FRS3l6eXBTUWhFcTZiYVh0M21ZVjZDNDh4a2MrcFdhSlNDWm96OURBbDJN?=
- =?utf-8?B?aE1NRi9mM1lzRWNLYTdqRGlvT0VBaGdQN2xBYmNMeWRIUDltZ2ppakR3a3dW?=
- =?utf-8?Q?CNo/DZHog4HGbySxrvlErVSni?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 541c3f33-d72d-4c88-a009-08dbb3e1243e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 22:39:36.1926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JV0yvIIA0RWfPZq/FnLiZ+jKsAOPKGBlntCLGrzLeUV+ARUkYQW1NNdxFbl6xkXQwkh530yEA/VuhOFAOVb/pg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR12MB6545
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/2023 2:54 AM, Lukas Wunner wrote:
-> On Tue, Aug 15, 2023 at 09:20:42PM +0000, Smita Koralahalli wrote:
->> +void pci_configure_ten_bit_tag(struct pci_dev *dev)
->> +{
->> +	struct pci_dev *bridge;
->> +	u32 cap;
->> +
->> +	if (!pci_is_pcie(dev))
->> +		return;
->> +
->> +	bridge = dev->bus->self;
->> +	if (!bridge)
->> +		return;
-> 
-> I think you need to use bridge = pcie_find_root_port(dev) because
-> "dev" may be further down in the hierarchy with several switches
-> in-between it and the Root Port.
-> 
-> Note that pcie_find_root_port(dev) returns NULL if !pci_is_pcie(dev),
-> so the check above may become unnecessary.
-> 
-> If pcie_find_root_port(dev) == dev, then dev itself is a Root Port,
-> in which case you need to bail out.
+Dhruva Gole <d-gole@ti.com> writes:
 
-Will fix thanks!
+> On Sep 07, 2023 at 08:54:41 +0300, Tony Lindgren wrote:
+>> The uarts should be tagged with SYSC_QUIRK_SWSUP_SIDLE instead of
+>> SYSC_QUIRK_SWSUP_SIDLE_ACT. The difference is that SYSC_QUIRK_SWSUP_SIDLE
+>> is used to force idle target modules rather than block idle during usage.
+>> 
+>> The SYSC_QUIRK_SWSUP_SIDLE_ACT should disable autoidle and wake-up when
+>> a target module is active, and configure autoidle and wake-up when a
+>> target module is inactive. We are missing configuring the target module
+>> on sysc_disable_module(), and missing toggling of the wake-up bit.
+>> 
+>> Let's fix the issue to allow uart wake-up to work.
+>> 
+>> Fixes: fb685f1c190e ("bus: ti-sysc: Handle swsup idle mode quirks")
+>> Signed-off-by: Tony Lindgren <tony@atomide.com>
+>> ---
+>>  drivers/bus/ti-sysc.c | 22 +++++++++++++++++-----
+>>  1 file changed, 17 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+>> --- a/drivers/bus/ti-sysc.c
+>> +++ b/drivers/bus/ti-sysc.c
+>
+> Thanks for the fix Tony,
+> I have tested this on a TI SK-AM62x with deepsleep and am able to wakeup
+> with keypress on the wake_uart.
+>
+> For anyone else who wants to give this a shot, the required patches for
+> deepsleep and DT related changes have been pushed to my branch on github
+> [0].
+>
+> Hence,
+> Tested-by: Dhruva Gole <d-gole@ti.com>
+>
+> [0] https://github.com/DhruvaG2000/v-linux/commits/v6.5-rc7_wkuart
 
-> 
-> 
->> +	/*
->> +	 * According to PCIe r6.0 sec 7.5.3.15, Requester Supported can only be
->> +	 * set if 10-Bit Tag Completer Supported bit is set.
->> +	 */
->> +	pcie_capability_read_dword(bridge, PCI_EXP_DEVCAP2, &cap);
->> +	if (!(cap & PCI_EXP_DEVCAP2_10BIT_TAG_COMP))
->> +		goto out;
->> +
->> +	if (cap & PCI_EXP_DEVCAP2_10BIT_TAG_REQ) {
-> 
-> Hm, if Requester Supported cannot be set unless Completer Supported is
-> also set, why check for Completer Supported at all?
+Also tested on k3-am625-sk using Dhruval's branch.
 
-Makes sense to me. Will change.
-> 
-> 
->> --- a/drivers/pci/probe.c
->> +++ b/drivers/pci/probe.c
->> @@ -2476,6 +2476,7 @@ static void pci_init_capabilities(struct pci_dev *dev)
->>   	pci_pm_init(dev);		/* Power Management */
->>   	pci_vpd_init(dev);		/* Vital Product Data */
->>   	pci_configure_ari(dev);		/* Alternative Routing-ID Forwarding */
->> +	pci_configure_ten_bit_tag(dev); /* 10-bit Tag Requester */
->>   	pci_iov_init(dev);		/* Single Root I/O Virtualization */
->>   	pci_ats_init(dev);		/* Address Translation Services */
->>   	pci_pri_init(dev);		/* Page Request Interface */
-> 
-> Hm, isn't this too late to disable 10-bit tags if a hot-plugged device
-> doesn't support it?  There are plenty of config space reads/writes
-> happening before pci_configure_ten_bit_tag() and if the Root Port
-> has 10-bit tags enabled by BIOS because a previously unplugged
-> device supported it, I assume the Root Port may use 10-bit tags for
-> those config space accesses, despite the newly hotplugged device not
-> supporting them?
-> 
-> If so, you may indeed have to unconditionally disable 10-bit tags
-> upon device removal and re-enable them once a 10-bit capable device
-> is hotplugged.
-> 
-> I'm wondering what happens if there are switches between the hotplugged
-> device and the Root Port.  In that case, there may be further devices
-> in the hierarchy below the Root Port.  I assume 10-bit tags can only be
-> enabled if *all* devices below the Root Port support them, is that correct?
+Tested-by: Kevin Hilman <khilman@baylibre.com>
 
-You are right! I understand I missed the consideration of involving 
-switches and hierarchical PCIe structures.
-
-> 
-> The corollary would be that if there's an unoccupied hotplug port somewhere
-> in the hierarchy below a Root Port, 10-bit tags cannot be enabled at all
-> on the Root Port.
-
-Yes, but the BIOS might have already enabled 10-bit tags on root port 
-before this hotplug port becomes unoccupied on hot-remove.
-
-   Maybe we can leave 10-bit tags enabled on hot-removal
-> and only disable them on hot-add?
-
-Considering all the challenges, would you think we should 
-unconditionally clear 10-bit tags on remove and enable them on add? 
-Because the TLPs issue will exist even if we leave the tags enabled on 
-removal. Disabling unconditionally would atleast resolve config space 
-read/writes and p2pdma issues. What do you think?
-
-  That wouldn't work however if TLPs
-> are sent to the hot-added device without operating system involvement
-> prior to enumeration by the operating system.  Don't CXL devices
-> autonomously send PM messages upstream on hot-add?
-> 
-> There's another quagmire:  Endpoint devices may talk to each other via
-> p2pdma (see drivers/pci/p2pdma.c) and if either of them doesn't support
-> 10-bit tags, we need to disable 10-bit tags on them upon commencing
-> p2pdma.  We may re-enable 10-bit tags once either of the devices is
-> hot-removed or p2pdma between them is stopped.
-> 
-> Finally, PCIe r6.0 added 14-bit tag support.  It may be worth adding
-> 10-bit tag support in a way that 14-bit tag support can easily be added
-> later on (or is added together with 10-bit tag support).
-
-I agree.
-
-Thanks,
-Smita
-
-> 
-> Thanks,
-> 
-> Lukas
-
+Kevin
