@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C9E79CBB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8938779CC14
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233659AbjILJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:28:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
+        id S232601AbjILJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233694AbjILJ2A (ORCPT
+        with ESMTP id S230335AbjILJkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:28:00 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A4710E4;
-        Tue, 12 Sep 2023 02:27:55 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 59A0D24003C;
-        Tue, 12 Sep 2023 09:15:50 +0000 (UTC)
+        Tue, 12 Sep 2023 05:40:04 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F760116;
+        Tue, 12 Sep 2023 02:39:58 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id C1FAE240082;
+        Tue, 12 Sep 2023 09:27:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694510873;
+        t=1694511597;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cUE18U4/Xtk+Bz69IO+G24gbXSJeiWM3VkIeXZKQwc8=;
-        b=AmkY2XaxgcY6QOmK4Vu3ND2+M5lBx/VGcwNfkWl6KiVxTlWOsAiZrqpXDr6tqxp9GQkO6v
-        GB9DXcADiDaj7U4rfYbxgEyshWOf1IEJO4dAvEbk6WwZ3wmzxHmzSJzLSrE1u0NftPyh/T
-        RaP500KDZR6tztzj6dwr6ezn+4+j41zAXDU7MlcFa7NM63ty123vq/MOeK38g+8O8tdb6z
-        EWknV7fCCcBohSs6tT+ym3EfF9t1TC7SVe5b9U+afF1St3fT1Z7ZzL13E3EwTukNm1vFHa
-        2UFNLhcSqlzBbvYIXmUn5iBGSbrfhhWE+mTgU2kHwVkye03XPflZeMc21FTm5A==
+        bh=YiX9aOtaC+6K2XdrRqRYZkRlaV8Okxw4XwCIYaNdukw=;
+        b=bI7lpfAfWtU7Q8ViyDs1nq0+U9EuyVWula6gYSA2xoQBxxiPKuUfPHwf0kFXX4/rKOiDjy
+        7YHWUW2sqrIHCt4LcolKyHfopgkS/HC2eAlX5zl6S55NTVbWr880OpKkWoujJ5an3pOb5b
+        +oUAJAV47RPTT624Dlxkebtw+4W2NJQfjYRBSZqpokaCEm5dflZEn/dksvX42jlQN2m6hX
+        gD9FP8Z0CYaY0ZYoJUpfFkzYQ5vK10sVMOropkSPxdmx0Qj0RYqZjQxdk+2ochGuenl0Ex
+        WEct+LKOA6aV4VWVRH2k+p+rShJagQqsPaaKXfmXj2oYkVpjRMU/Wed8vOOdKg==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 05/31] soc: fsl: cpm1: qmc: Remove inline function specifiers
-Date:   Tue, 12 Sep 2023 10:14:56 +0200
-Message-ID: <20230912081527.208499-6-herve.codina@bootlin.com>
+Subject: [PATCH v5 06/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Fix example property name
+Date:   Tue, 12 Sep 2023 10:14:57 +0200
+Message-ID: <20230912081527.208499-7-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
 References: <20230912081527.208499-1-herve.codina@bootlin.com>
@@ -69,69 +69,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The inline function specifier is present on some functions but it is
-better to let the compiler decide inlining or not these functions.
+The given example mentions the 'fsl,mode' property whereas the
+correct property name, the one described, is 'fsl,operational-mode'.
 
-Remove inline specifiers.
+Fix the example to use the correct property name.
 
-Fixes: 3178d58e0b97 ("soc: fsl: cpm1: Add support for QMC")
+Fixes: a9b121327c93 ("dt-bindings: soc: fsl: cpm_qe: Add QMC controller")
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Suggested-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/soc/fsl/qe/qmc.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ .../bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml           | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 2d2a9d88ba6c..459e0bbd723d 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -218,37 +218,37 @@ struct qmc {
- 	struct qmc_chan *chans[64];
- };
- 
--static inline void qmc_write16(void __iomem *addr, u16 val)
-+static void qmc_write16(void __iomem *addr, u16 val)
- {
- 	iowrite16be(val, addr);
- }
- 
--static inline u16 qmc_read16(void __iomem *addr)
-+static u16 qmc_read16(void __iomem *addr)
- {
- 	return ioread16be(addr);
- }
- 
--static inline void qmc_setbits16(void __iomem *addr, u16 set)
-+static void qmc_setbits16(void __iomem *addr, u16 set)
- {
- 	qmc_write16(addr, qmc_read16(addr) | set);
- }
- 
--static inline void qmc_clrbits16(void __iomem *addr, u16 clr)
-+static void qmc_clrbits16(void __iomem *addr, u16 clr)
- {
- 	qmc_write16(addr, qmc_read16(addr) & ~clr);
- }
- 
--static inline void qmc_write32(void __iomem *addr, u32 val)
-+static void qmc_write32(void __iomem *addr, u32 val)
- {
- 	iowrite32be(val, addr);
- }
- 
--static inline u32 qmc_read32(void __iomem *addr)
-+static u32 qmc_read32(void __iomem *addr)
- {
- 	return ioread32be(addr);
- }
- 
--static inline void qmc_setbits32(void __iomem *addr, u32 set)
-+static void qmc_setbits32(void __iomem *addr, u32 set)
- {
- 	qmc_write32(addr, qmc_read32(addr) | set);
- }
+diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
+index ec888f48cac8..450a0354cb1d 100644
+--- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
++++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
+@@ -137,7 +137,7 @@ examples:
+         channel@16 {
+             /* Ch16 : First 4 even TS from all routed from TSA */
+             reg = <16>;
+-            fsl,mode = "transparent";
++            fsl,operational-mode = "transparent";
+             fsl,reverse-data;
+             fsl,tx-ts-mask = <0x00000000 0x000000aa>;
+             fsl,rx-ts-mask = <0x00000000 0x000000aa>;
+@@ -146,7 +146,7 @@ examples:
+         channel@17 {
+             /* Ch17 : First 4 odd TS from all routed from TSA */
+             reg = <17>;
+-            fsl,mode = "transparent";
++            fsl,operational-mode = "transparent";
+             fsl,reverse-data;
+             fsl,tx-ts-mask = <0x00000000 0x00000055>;
+             fsl,rx-ts-mask = <0x00000000 0x00000055>;
+@@ -155,7 +155,7 @@ examples:
+         channel@19 {
+             /* Ch19 : 8 TS (TS 8..15) from all routed from TSA */
+             reg = <19>;
+-            fsl,mode = "hdlc";
++            fsl,operational-mode = "hdlc";
+             fsl,tx-ts-mask = <0x00000000 0x0000ff00>;
+             fsl,rx-ts-mask = <0x00000000 0x0000ff00>;
+         };
 -- 
 2.41.0
 
