@@ -2,78 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501ED79C263
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153FC79C227
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235109AbjILCJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S236389AbjILCHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244864AbjILCH3 (ORCPT
+        with ESMTP id S244253AbjILCHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:07:29 -0400
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295CCEADD2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:39:44 -0700 (PDT)
-Received: from localhost.localdomain (unknown [124.16.141.245])
-        by APP-05 (Coremail) with SMTP id zQCowACHoQhdwf9khftEDA--.55821S2;
-        Tue, 12 Sep 2023 09:39:41 +0800 (CST)
-From:   sunying@nj.iscas.ac.cn
-To:     lgirdwood@gmail.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     pengpeng@iscas.ac.cn, renyanjie01@gmail.com,
-        Ying Sun <sunying@nj.iscas.ac.cn>
-Subject: [PATCH] regulator: mtk-dvfsrc: remove non-existent configuration dependency "MTK_DVFSRC"
-Date:   Tue, 12 Sep 2023 09:39:29 +0800
-Message-Id: <20230912013929.658-1-sunying@nj.iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowACHoQhdwf9khftEDA--.55821S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWfJw13tr1kZr4UJr1fJFb_yoWfJwb_Ca
-        y5A3WxJr4UurZ8KF10gFsYvayYvayUZayxJF1UKrWaqa47Z3W3GasxJF17Cr47Gw47GF1a
-        q3yxZr4UAr18XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCY
-        02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-        b4S5UUUUU==
-X-Originating-IP: [124.16.141.245]
-X-CM-SenderInfo: 5vxq5xdqj60y4olvutnvoduhdfq/
+        Mon, 11 Sep 2023 22:07:12 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73E8CC35C;
+        Mon, 11 Sep 2023 18:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1694482733;
+        bh=e/MtnjLVSuAmechzlzx02wdSV0OA7qKD1FjdUlt9PcI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ECBUe5vjPPUgZ50JQeZl3PSxn/F2jWFEcsxaq9mfjSu0rMiU1jOK+UViwsd/soWE3
+         +g9hRTwnA6nCpkawy2NiUaGv5JirKBU3ONshMvi/hU7umoWKI92+98RijMAUg7vQjl
+         S7nY6Klq2314F458vSisQKTHiYpcumy2N4tzU5WjQt0AxojLeCtK8ql0Nf2SKZnn4O
+         5NIz2NxzbfE+X/8FK+Px/Ew+I2LROeINhACxJV8QSNAoms+ScV4Luj8UeuuFBgR33e
+         yPQWhXA+up+ntvi/riW6Xd8V1uTwNwV7ot0cs5DNNZ7x3kfDiHMOnR0ViUtCuWrcif
+         rvroZw0ZVfwCw==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rl5pN6zdwz1PQV;
+        Mon, 11 Sep 2023 21:38:52 -0400 (EDT)
+Message-ID: <60a9eee6-1f9c-f9c1-33bb-007e22437087@efficios.com>
+Date:   Mon, 11 Sep 2023 21:40:14 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH RFC] selftests/rseq: fix kselftest Clang build warnings
+Content-Language: en-US
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+References: <20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com>
+ <1fae4a2f-eaf1-c54c-9ec5-040b2714709e@efficios.com>
+ <CAFhGd8rHmQrThrCVHmVAp7fDFRidOAPR9Z6JFBpqAswX8dLGgw@mail.gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAFhGd8rHmQrThrCVHmVAp7fDFRidOAPR9Z6JFBpqAswX8dLGgw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ying Sun <sunying@nj.iscas.ac.cn>
+On 9/11/23 12:53, Justin Stitt wrote:
+> On Sat, Sep 9, 2023 at 5:37 AM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> On 9/8/23 19:03, Justin Stitt wrote:
+>>> Hi,
+>>>
+>>> I am experiencing many warnings when trying to build tools/testing/selftests.
+>>>
+>>> Here's one such example from rseq tree:
+>>> |  param_test.c:1234:10: error: address argument to atomic operation must be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
+>>> |   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
+>>> |        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
+>>> |  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_load'
+>>> |    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC_SEQ_CST)
+>>> |        |                             ^                 ~~~~~~
+>>>
+>>> I added the _Atomic type in various locations to silence _all_ (10) of these
+>>> warnings. I'm wondering, though, perhaps the absence of these _Atomic
+>>> types in the first place is on purpose? Am I on the right track to fix
+>>> these warnings without damaging the legitimacy of the tests at hand?
+>>>
+>>> I'd like some feedback about where to go from here and if others are
+>>> experiencing the same issues. Thanks!
+>>>
+>>> FWIW here's my specific build incantation on Clang-18 (49d41de57896e935cd5726719c5208bce22694ae):
+>>> $ make LLVM=1 -j128 ARCH=x86_64 mrproper headers defconfig kselftest-merge
+>>> $ make LLVM=1 ARCH=x86_64 -C tools/testing/selftests
+>>
+>> I should have used the __atomic_load_n() compiler builtin rather than
+>> atomic_load(), mainly because it does not require the _Atomic annotation
+>> to each type it touches.
+> 
+> Would you like me to send a patch in with this change?
 
-The definition of the configuration option "MTK_DVFSRC" cannot be found,
- so that the configuration option "REGULATOR_MTK_DVFSRC"
- that depends on it cannot be enabled.
+Yes, please, although I suspect we'd want to turn atomic_store() into 
+builtins as well.
 
-Suggested-by: Yanjie Ren <renyanjie01@gmail.com>
-Signed-off-by: Ying Sun <sunying@nj.iscas.ac.cn>
----
- drivers/regulator/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+And use a release MO for stores, and acquire for loads. This should make 
+validators like TSAN happier.
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 965d4f0c18a6..80560e3a13f7 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -906,7 +906,6 @@ config REGULATOR_MT6397
- 
- config REGULATOR_MTK_DVFSRC
- 	tristate "MediaTek DVFSRC regulator driver"
--	depends on MTK_DVFSRC
- 	help
- 	  Say y here to control regulator by DVFSRC (dynamic voltage
- 	  and frequency scaling resource collector).
+Thanks,
+
+Mathieu
+
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>
+>>>
+>>> Link: https://github.com/ClangBuiltLinux/linux/issues/1698
+>>> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
+>>> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>>> ---
+>>>    tools/testing/selftests/rseq/param_test.c | 8 ++++----
+>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
+>>> index bf951a490bb4..94802aeed2c6 100644
+>>> --- a/tools/testing/selftests/rseq/param_test.c
+>>> +++ b/tools/testing/selftests/rseq/param_test.c
+>>> @@ -356,7 +356,7 @@ struct inc_thread_test_data {
+>>>    };
+>>>
+>>>    struct percpu_list_node {
+>>> -     intptr_t data;
+>>> +     _Atomic intptr_t data;
+>>>        struct percpu_list_node *next;
+>>>    };
+>>>
+>>> @@ -1212,8 +1212,8 @@ static int set_signal_handler(void)
+>>>    /* Test MEMBARRIER_CMD_PRIVATE_RESTART_RSEQ_ON_CPU membarrier command. */
+>>>    #ifdef TEST_MEMBARRIER
+>>>    struct test_membarrier_thread_args {
+>>> -     int stop;
+>>> -     intptr_t percpu_list_ptr;
+>>> +     _Atomic int stop;
+>>> +     _Atomic intptr_t percpu_list_ptr;
+>>>    };
+>>>
+>>>    /* Worker threads modify data in their "active" percpu lists. */
+>>> @@ -1240,7 +1240,7 @@ void *test_membarrier_worker_thread(void *arg)
+>>>                        int cpu = get_current_cpu_id();
+>>>
+>>>                        ret = rseq_offset_deref_addv(RSEQ_MO_RELAXED, RSEQ_PERCPU,
+>>> -                             &args->percpu_list_ptr,
+>>> +                             (intptr_t*)&args->percpu_list_ptr,
+>>>                                sizeof(struct percpu_list_entry) * cpu, 1, cpu);
+>>>                } while (rseq_unlikely(ret));
+>>>        }
+>>>
+>>> ---
+>>> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+>>> change-id: 20230908-kselftest-param_test-c-1763b62e762f
+>>>
+>>> Best regards,
+>>> --
+>>> Justin Stitt <justinstitt@google.com>
+>>>
+>>
+>> --
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
+
 -- 
-2.17.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
