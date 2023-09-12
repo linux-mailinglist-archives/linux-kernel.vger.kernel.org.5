@@ -2,146 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2F679D1CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE6479D1E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbjILNK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44288 "EHLO
+        id S235400AbjILNRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235001AbjILNKX (ORCPT
+        with ESMTP id S233517AbjILNRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:10:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40E110CB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:10:19 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so6777488a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:10:19 -0700 (PDT)
+        Tue, 12 Sep 2023 09:17:07 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515D510CA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:17:03 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-273ca7ab3f5so3840371a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694524218; x=1695129018; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bkg4dOxircu0CypR4iVJaC4UA5MgleI1a7GPOXfeFc0=;
-        b=e8xVoYnNoPWWEOhgclw8Xn+E5HMqVmPzPy+iT/2nOtMUw9RO+kHFoxe5FAejyWFyuJ
-         wZHcgUnu2/XqrvpfKhuRpMT+q/ZMtTdOCa8fBVkKvrTSLK/jEn1RhvHNRv5zuRPkRI+K
-         0lFbkihY37FtgN34IHa09l395N2w3mfmVc0J3P16nz2jnLqwvMNUMUdhrgL3rfwZJejy
-         M/qY8ywu0DzNHTMfnKvBs8G6eCIGyy6Mv7LRfC3CoYUZA098euFUs2cqwSddvtyQZ9be
-         l8aCK2vaf4ii1HUrEwHR4r97MBPQwVrwTOf4uo544pYHQ6P8J+H38lilCS8QbpxgVdqt
-         VnIA==
+        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1694524622; x=1695129422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=74/lXDjAicbAQVpv6HCI5jeqajIVNGavg/gPM8Y5/Jo=;
+        b=hRnJK+wFBqJIcfswqBqLspQkjytkccrhGA+4sABGreFmE+9URx+icD78lIE1g/8TsW
+         09efceDe0UcHxCSV96PRm+19shG08rXNwgoaPsj0GeOnJWrokumx8Fl7hATbgRvvNRlq
+         UIQNC4iaLpuulfDvyf9BRM/DvTsr9ANOJxGvNmp0J6jur9CkJXPCrReIgZUmnJl12vPM
+         GH6GdftVagDt3GhRObsgNxqLkA/VYTPix/lfsj5bttOg8b9Bv2WH/kNruFpQEP6rWzAm
+         Ts3hidBk0J8QXKLE3fQWwzQeT63AdmsT+FQMmd/m/v4ZB/GT3j1teR1PspcdVeSXuf4j
+         IMzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694524218; x=1695129018;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bkg4dOxircu0CypR4iVJaC4UA5MgleI1a7GPOXfeFc0=;
-        b=TFB92b92oG+XyXchR3E4ViRsrkjTIEbeG4Lh/F3oEtI7oBWjHlBE8AlIl5FXdLA14h
-         Sng6jS3GSrwhGxxtwIso/cuSbk+fmFTznuhpctXmitZK6EZl4do0mgrUNZX5RIE0BXLm
-         tlGtzwOfOqfVaUCUfWzzPmKzfruo+rNoNnRdxHalIJQfx9fxl1bVKJirpBn5B4wLaEzm
-         9L4B4Od0gT+uQhm8gZQdN6wIeZhmInysSJiSo0CAlghdh6sYUiVN6C9Fi5HntihQgioO
-         l4a8sDIxGCqwQGz68FAZiXd3Fvav5GkX66lmJ01Npb5C+0ZsSwV+pgWVuQEnzFLLnJ4U
-         1uBw==
-X-Gm-Message-State: AOJu0YzDXPMZOPlCQUtdfG0aFP+iJPzgvWT9JHc/37Rob5s0fLP+AQpp
-        SSgisPjFfbkTaAC643WjQnwJZw==
-X-Google-Smtp-Source: AGHT+IF9FtG/P/CA2bdUyaN9tNAyaXDTWKcSZgO8Knq6251cqFC3kMveGTT42yqBJk4qwEUbkIX6tg==
-X-Received: by 2002:a17:907:2cc9:b0:994:577:f9dd with SMTP id hg9-20020a1709072cc900b009940577f9ddmr9981438ejc.9.1694524218002;
-        Tue, 12 Sep 2023 06:10:18 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id v14-20020a170906338e00b00992b1c93279sm6758341eja.110.2023.09.12.06.10.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 06:10:17 -0700 (PDT)
-Message-ID: <4c99c180-3b79-6aef-6ff2-d430e575957d@baylibre.com>
-Date:   Tue, 12 Sep 2023 15:10:16 +0200
+        d=1e100.net; s=20230601; t=1694524622; x=1695129422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=74/lXDjAicbAQVpv6HCI5jeqajIVNGavg/gPM8Y5/Jo=;
+        b=fjoXxKG/bwUgKA9anVctm2zEd1w5oILWkvu+jN+A82LPLxyahF1TxtVzvzxcDtXkEe
+         l4QwvJFIuxj/oLTBikXm0H/84qempdcoZp7nPEHDOKpkd7nzW0yPzKRuqjeV/sS8sEDn
+         /29lhgroXtbSV43boMzFmc5ph+pcgP6yMzV4oCIBMYx8AW4AD2ObrHLlo+rxulbJM2cb
+         smXJqeaa2pdo2YMBK2+rLdN3NJWqtm6yeJYW8q/ZE8LDd6AoQAAqJIa/XCbl4Iu8Md9R
+         wv4jcbdfgwqnHGibXHPsZ+qjIj2ZKiYjaLdLWm0beAURopxkMeFjpH/jGzPl5i7K3beY
+         AmjA==
+X-Gm-Message-State: AOJu0Ywx2IDZMp8RJMzOrItz+4yAaHvkqrbhMiPT/dTh+Ce4jssfCxdI
+        RTYlk2odrA+AnFCRH+DP9PnA+OeJitAF4r9o+ySQuA==
+X-Google-Smtp-Source: AGHT+IERwDFvK750zia0Sae/chWY8QEXD4kOdOHvlRSTQo34xsLlidVO5fUIkgz4yvPkVtnGdXKIiS6fw+3sN/KQfUM=
+X-Received: by 2002:a17:90a:aa85:b0:268:1e95:4e25 with SMTP id
+ l5-20020a17090aaa8500b002681e954e25mr10043598pjq.17.1694524622460; Tue, 12
+ Sep 2023 06:17:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RESEND PATCH] arm64: dts: mediatek: Fix "status" values
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh@kernel.org>, soc@kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+References: <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
+ <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com> <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
+ <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com> <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
+ <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com> <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
+ <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org> <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
+ <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org> <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
+In-Reply-To: <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
+From:   Daniel Stone <daniel@fooishbar.org>
+Date:   Tue, 12 Sep 2023 14:16:41 +0100
+Message-ID: <CAPj87rP1sw49Z0HdPhUa-=kDp166RqiuhC9rL+Ef9hpwPD5+JA@mail.gmail.com>
+Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        emma@anholt.net, linux-doc@vger.kernel.org,
+        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
+        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
+        corbet@lwn.net, khilman@baylibre.com,
+        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
+        linux-rockchip@lists.infradead.org,
+        Daniel Stone <daniels@collabora.com>,
+        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
+        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>
-References: <20230804225813.12493-1-robh@kernel.org>
- <f8759d51-f808-8082-ceaf-6c6dcaebe2d9@collabora.com>
-Content-Language: en-US
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <f8759d51-f808-8082-ceaf-6c6dcaebe2d9@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
+        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime,
+Hopefully less mangled formatting this time: turns out Thunderbird +
+plain text is utterly unreadable, so that's one less MUA that is
+actually usable to send email to kernel lists without getting shouted
+at.
 
+On Mon, 11 Sept 2023 at 15:46, Maxime Ripard <mripard@kernel.org> wrote:
+> On Mon, Sep 11, 2023 at 03:30:55PM +0200, Michel D=C3=A4nzer wrote:
+> > > There's in 6.6-rc1 around 240 reported flaky tests. None of them have
+> > > any context. That new series hads a few dozens too, without any conte=
+xt
+> > > either. And there's no mention about that being a plan, or a patch
+> > > adding a new policy for all tests going forward.
+> >
+> > That does sound bad, would need to be raised in review.
+> >
+> > > Any concern I raised were met with a giant "it worked on Mesa" handwa=
+ve
+> >
+> > Lessons learned from years of experience with big real-world CI
+> > systems like this are hardly "handwaving".
+>
+> Your (and others) experience certainly isn't. It is valuable, welcome,
+> and very much appreciated.
+>
+> However, my questions and concerns being ignored time and time again
+> about things like what is the process is going to be like, what is going
+> to be tested, who is going to be maintaining that test list, how that
+> interacts with stable, how we can possibly audit the flaky tests list,
+> etc. have felt like they were being handwaived away.
 
-On 12/09/2023 14:54, AngeloGioacchino Del Regno wrote:
-> Il 05/08/23 00:58, Rob Herring ha scritto:
->> The defined value for "status" is "disabled", not "disable".
->>
->> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
->> Reviewed-by: AngeloGioacchino Del Regno 
->> <angelogioacchino.delregno@collabora.com>
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> ---
->> Arnd, Please take this directly I guess. I think Mediatek maintainership
->> needs some help. Maybe AngeloGioacchino should be co-maintainer as
->> that's the only response I seem to be getting.
-> 
-> Sorry but I've seen this message just now as I've been on holiday in 
-> August.
-> 
-> Thing is, the MediaTek scene is starting to see more and more code, 
-> bringing
-> an obvious increase in the amount of reviews to be done and in the required
-> efforts to maintain the MTK bits - and we will possibly (hopefully) see 
-> even
-> more of that.
-> 
-> If Matthias needs/wants a co-maintainer for MediaTek I'm here and I will be
-> proud to become one.
-> 
-> Cheers,
-> Angelo
-> 
+Sorry it ended up coming across like that. It wasn't the intent.
 
-I started reviewing MediaTek patches for some months now, so I'm still 
-new. From my PoV, I'm agree with Angelo when he say the amount of patch 
-is increasing. I support Angelo if he wants to become a co-maintainer 
-and continue to do my best to review patches. ;)
+> I'm not saying that because I disagree, I still do on some, but that's
+> fine to some extent. However, most of these issues are not so much an
+> infrastructure issue, but a community issue. And I don't even expect a
+> perfect solution right now, unlike what you seem to think. But I do
+> expect some kind of plan instead of just ignoring that problem.
+>
+> Like, I had to ask the MT8173 question 3 times in order to get an
+> answer, and I'm still not sure what is going to be done to address that
+> particular issue.
+>
+> So, I'm sorry, but I certainly feel like it here.
 
->>
->> I think for future .dts patches I will not bother splitting them up by
->> sub-arch because it's a pain to chase down the maintainers to apply
->> stuff in a timely manner. /rant
->>
->>   arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts 
->> b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
->> index e4605d23fdc8..86cedb0bf1a9 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
->> +++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
->> @@ -585,11 +585,11 @@ &pwrap {
->>   };
->>   &sata {
->> -    status = "disable";
->> +    status = "disabled";
->>   };
->>   &sata_phy {
->> -    status = "disable";
->> +    status = "disabled";
->>   };
->>   &spi0 {
-> 
-> 
+I don't quite see the same picture from your side though. For example,
+my reading of what you've said is that flaky tests are utterly
+unacceptable, as are partial runs, and we shouldn't pretend otherwise.
+With your concrete example (which is really helpful, so thanks), what
+happens to the MT8173 hdmi-inject test? Do we skip all MT8173 testing
+until it's perfect, or does MT8173 testing always fail because that
+test does?
 
--- 
-Regards,
-Alexandre
+Both have their downsides. Not doing any testing has the obvious
+downside, and means that the driver can get worse until it gets
+perfect. Always marking the test as failed means that the test results
+are useless: if failure is expected, then red is good. I mean, say
+you're contributing a patch to fix some documentation or add a helper
+to common code which only v3d uses. The test results come back, and
+your branch is failing tests on MT8173, specifically the
+hdmi-inject@4k test. What then? Either as a senior contributor you
+'know' that's the case, or as a casual contributor you get told 'oh
+yeah, don't worry about the test results, they always fail'. Both lead
+to the same outcome, which is that no-one pays any attention to the
+results, and they get worse.
+
+What we do agree on is that yes, those tests should absolutely be
+fixed, and not just swept under the rug. Part of this is having
+maintainers actually meaningfully own their test results. For example,
+I'm looking at the expectation lists for the Intel gen in my laptop,
+and I'm seeing a lot of breakage in blending tests, as well as
+dual-display fails which include the resolution of my external
+display. I'd expect the Intel driver maintainers to look at them, get
+them fixed, and gradually prune those xfails/flakes down towards zero.
+
+If the maintainers don't own it though, then it's not going to get
+fixed. And we are exactly where we are today: broken plane blending
+and 1440p on KBL, broken EDID injection on MT8173, and broken atomic
+commits on stoney. Without stronger action from the maintainers (e.g.
+throwing i915 out of the tree until it has 100% pass 100% of the
+time), adding testing isn't making the situation better or worse in
+and of itself. What it _is_ doing though, is giving really clear
+documentation of the status of each driver, and backing that up by
+verifying it.
+
+Only maintainers can actually fix the drivers (or the tests tbf). But
+doing the testing does let us be really clear to everyone what the
+actual state is, and that way people can make informed decisions too.
+And the only way we're going to drive the test rate down is by the
+subsystem maintainers enforcing it.
+
+Does that make sense on where I'm (and I think a lot of others are) coming =
+from?
+
+To answer the other question about 'where are the logs?': some of them
+have the failure data in them, others don't. They all should going
+forward at least though.
+
+Cheers,
+Daniel
