@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED8B79CDFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6156979CE15
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233454AbjILKS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S234071AbjILKTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:19:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbjILKSY (ORCPT
+        with ESMTP id S234093AbjILKTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:18:24 -0400
-Received: from smtp65.iad3b.emailsrvr.com (smtp65.iad3b.emailsrvr.com [146.20.161.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEAC10E6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694513899;
-        bh=FH3C6DGeGqxyT5D0x1WZDEUoGXKaA0SlVyvXD/E86uk=;
-        h=Date:Subject:To:From:From;
-        b=Tq6xJ2+piqPbhOIJE69N/bFxHEol/tmPY3c/hCTgDQpjfzcL1PHLR0dKjZfF714V7
-         Vl/6zaEzVFXQTpS59Oc3i3RhW8WqIwPdHyjcxiin/hSqOtSelQtRrdQ5MMJLWJtYqR
-         D98zi0KdjdUX1nH+1iIJQBq7/UhFQ72R5qHGEl7g=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp17.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id C837BA00C7;
-        Tue, 12 Sep 2023 06:18:15 -0400 (EDT)
-Message-ID: <44acdea6-271f-4e71-a0b3-d74a92034a9a@mev.co.uk>
-Date:   Tue, 12 Sep 2023 11:18:13 +0100
+        Tue, 12 Sep 2023 06:19:37 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA51910F5;
+        Tue, 12 Sep 2023 03:19:12 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C6Nr0J003422;
+        Tue, 12 Sep 2023 10:18:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=KwMsafzv2/ww22a5ZtZVea4KGSTzvTtFjtAmf8FNFHA=;
+ b=MGtoudqr2HnB7oYx1aHbaiURfOeUA+fyOy4OVpbRvAQuZG8g6oUWFH9W1r21Xy8TGWUR
+ sFOKW6Dp7jieOXy+dZmxrXdfmkOwG6dQQsUr2VdG6wgLgIpj1D0sGaKzrj7q5rADWMGu
+ REV4w4SlsnsLKHQh3PuU6VoY78DQjJJGbJsjKfNSa90vr6UlgLYTPi1PXZSXADz+vvvB
+ yXDcM0xWH/jNUVkTS7FslN58nENwN61eTygOlZ+tW9OxjVISLt47VqecapoHeTizmcN6
+ st5xB9SyFq5j3ikzsbcG27NwECVEjqiGO82kAfO1AbZsuvckkV6LrY5vMB1ua8MVYTYo qA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2c4c13s7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 10:18:58 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CAIvxp017838
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 10:18:57 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 12 Sep 2023 03:18:50 -0700
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To:     <mani@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>
+CC:     <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_pkondeti@quicinc.com>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Subject: [PATCH v3] mtd: rawnand: qcom: unmap dma address during probe failure
+Date:   Tue, 12 Sep 2023 15:48:14 +0530
+Message-ID: <20230912101814.7748-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/7] drivers/comedi: fix Python string escapes
-To:     Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-pm@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org,
-        Todd E Brandt <todd.e.brandt@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-4-bgray@linux.ibm.com>
-Content-Language: en-GB
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-In-Reply-To: <20230912060801.95533-4-bgray@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 263f4c94-c5b5-4040-bf22-1f7e4ea60010-1-1
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0AINW3rV-Pxeyj1GY22MGfOhVn2BTYd8
+X-Proofpoint-ORIG-GUID: 0AINW3rV-Pxeyj1GY22MGfOhVn2BTYd8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_07,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 07:07, Benjamin Gray wrote:
-> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> be a syntax error.
-> 
-> Fix these now to get ahead of it before it's an error.
-> 
-> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> ---
->   drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py b/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> index 90378fb50580..d19101fc2a94 100755
-> --- a/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> +++ b/drivers/comedi/drivers/ni_routing/tools/convert_csv_to_c.py
-> @@ -44,7 +44,7 @@ def routedict_to_structinit_single(name, D, return_name=False):
->   
->       lines.append('\t\t[B({})] = {{'.format(D0_sig))
->       for D1_sig, value in D1:
-> -      if not re.match('[VIU]\([^)]*\)', value):
-> +      if not re.match(r'[VIU]\([^)]*\)', value):
->           sys.stderr.write('Invalid register format: {}\n'.format(repr(value)))
->           sys.stderr.write(
->             'Register values should be formatted with V(),I(),or U()\n')
+Fix address argument of nand controller currently being
+passed to dma_unmap_resource() in probe error path.
+This address argument should be the dma address returned by
+dma_map_resource() instead of the physical address of nand controller.
 
-Looks good thanks!  I ran the modified script using 'make everything' in 
-the directory (after setting up a python venv to install ctypesgen) and 
-it didn't break anything. (There were some harmless errors output by 
-ctypesgen due to failing to parse some GCC extensions, but those are 
-nothing to do with this patch and the generated C files are OK.)
+Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+---
+v3: Incorporated comments from Miquel
+    - Modified the commit message and title as per suggestions.
 
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
+v2: Incorporated comments from Pavan/Mani.
+    https://lore.kernel.org/all/20230911133026.29868-1-quic_bibekkum@quicinc.com/
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+v1: https://lore.kernel.org/all/20230907092854.11408-1-quic_bibekkum@quicinc.com/
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index 64499c1b3603..b079605c84d3 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -3444,7 +3444,7 @@ static int qcom_nandc_probe(struct platform_device *pdev)
+ err_aon_clk:
+ 	clk_disable_unprepare(nandc->core_clk);
+ err_core_clk:
+-	dma_unmap_resource(dev, res->start, resource_size(res),
++	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
+ 			   DMA_BIDIRECTIONAL, 0);
+ 	return ret;
+ }
+--
+2.17.1
 
