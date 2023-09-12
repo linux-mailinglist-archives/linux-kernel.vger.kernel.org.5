@@ -2,88 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F24E79D97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E0979D97C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234081AbjILTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
+        id S235826AbjILTYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjILTXo (ORCPT
+        with ESMTP id S229781AbjILTYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:23:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA49C1;
-        Tue, 12 Sep 2023 12:23:40 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 16E3566072FA;
-        Tue, 12 Sep 2023 20:23:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694546619;
-        bh=L5LXCOa8/2p57HUzV4WLPFe2Xu5lNiNBgeYv6A6lup4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iGMNuICeZavLkjCjzs0HR+aITpCAoLOzcgQo2B7IjI/edLsI4fMJ/cJmE5kh5ztrv
-         759iOSvTYFhUZNT2o+Z2o9+ckESdkjk4VJ6aE/oQNX2y4mVJ6aYH0fEhRkRiwo4e5V
-         dQnJk6R42GtChT5a08UERktaP4mGRy7HkJlN2gcbFJPPxJP1p9NxgmYjCPYbRCOw7G
-         TF6FU0QlfRafRa7CKhJ/Y7KNh4lHgUyd+IVJMuRD5edD57JftZqR2vsjDFGYYtzIta
-         Fib19nE1fo5qmo99YuvD4SpUTIQ8uPcjik5UnooUaQVMNkvpLzeT9LYaJimDQrdWta
-         82TDu0ONiYN2Q==
-Date:   Tue, 12 Sep 2023 15:23:34 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
-        Jaroslav Kysela <perex@perex.cz>,
-        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards
- are available
-Message-ID: <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
-References: <20230908181242.95714-1-nfraprado@collabora.com>
- <0fa0901e-d271-438d-bc2b-11399ad3b07c@sirena.org.uk>
- <868a8f08-ba39-4550-8e7b-0572ea03c4e7@notapiano>
- <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
+        Tue, 12 Sep 2023 15:24:07 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8200F1B2;
+        Tue, 12 Sep 2023 12:24:02 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 44DD31BF207;
+        Tue, 12 Sep 2023 19:23:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1694546641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8NZeUieWGIH4FCtXbzG8+QrsUPwd3uZJU/4DYFsvIUU=;
+        b=YAaGe5kFs4iHlGtkZ9HLtYXMxer3HiGn6HNlojbyUaS3Q6tO/qbb2YRRwQehFtEy5NTULX
+        eP1cwwXCCwCZMs7QM35Kg8t+5F9h+fvyr9MWIjJGo975vd00GjFJMDYP7KQvrtEIMhPsjx
+        ucOgDpCEOxjal4ljm/UmJBTsC5HtCx4GldHKtkTl8+HiuRTv6g6ia93MFHYPKlZIieqmwd
+        J3y0qskw3BVw07/BCseSws6d9hS//h+pTTjyIs1s4YxsOdZgZDuR5N0qW8O9CKgXrrgtT0
+        Ls5pdNR17CeYFpalEj7RD0JpTMv4Z1pw14w9VTm6pkmLkdZsYE9WtAocE+qIAg==
+Message-ID: <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
+Date:   Tue, 12 Sep 2023 22:23:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Content-Language: en-US
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+ <20230911225126.rk23g3u3bzo3agby@skbuf>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20230911225126.rk23g3u3bzo3agby@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
+X-GND-Sasl: arinc.unal@arinc9.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 03:29:00PM +0100, Mark Brown wrote:
-> On Mon, Sep 11, 2023 at 08:35:37AM -0400, N�colas F. R. A. Prado wrote:
-> > On Sat, Sep 09, 2023 at 12:08:22AM +0100, Mark Brown wrote:
+On 12.09.2023 01:51, Vladimir Oltean wrote:
+> On Sat, Sep 09, 2023 at 11:53:50AM +0300, Arınç ÜNAL wrote:
+>> What to do:
+>> - For mscc,vsc7514-switch, enforce phylink bindings for ports.
+>> - For mscc,vsc7512-switch, enforce phylink bindings for user ports.
 > 
-> > > Why?
+> you can also look at dsa_switches_apply_workarounds[], and if the switch
+> isn't there, then you can replace "user ports" with "ports" here and
+> everywhere.
+
+The phylink bindings for user ports I ended up making by looking up the 
+existing devicetrees are different than the phylink bindings for the 
+shared (CPU and DSA) ports currently enforced on all switches.
+
+My phylink bindings for user ports:
+
+             allOf:
+               - anyOf:
+                   - required: [ fixed-link ]
+                   - required: [ phy-handle ]
+                   - required: [ managed ]
+
+               - if:
+                   required: [ fixed-link ]
+                 then:
+                   not:
+                     required: [ managed ]
+
+The phylink bindings for shared ports enforced on all switches on 
+dsa-port.yaml:
+
+   allOf:
+     - required:
+         - phy-mode
+     - oneOf:
+         - required:
+             - fixed-link
+         - required:
+             - phy-handle
+         - required:
+             - managed
+
+Here's what I understand:
+
+- For switches in dsa_switches_apply_workarounds[]
+   - Enforce the latter for shared ports.
+   - Enforce the former for user ports.
+
+- For switches not in dsa_switches_apply_workarounds[]
+   - Enforce the former for all ports.
+
 > 
-> > To better reflect the actual test plan status. If 0 tests were run, it doesn't
-> > really make sense to say that the test plan passed, rather it was skipped since
-> > nothing was run. So with this change, if there's a regression that prevents the
-> > soundcard driver from even probing, the result won't be "pass", but "skip", and
-> > the reason 'No soundcard available' will be in the logs.
+>> - renesas,rzn1-a5psw.yaml
+>>    - renesas,r9a06g032-a5psw, renesas,rzn1-a5psw
+>>
+>> What to do:
+>> - Document "mdio".
 > 
-> So, I would interpret the overall result for the suite as being "No
-> errors were found in any of the cards discovered" if there is no
-> configuration file specified which enumerates the set of cards that are
-> expected (if there is a config file that's a different matter, we know
-> what we're expecting).  I'm not sure that the different behaviour for 0
-> cards is super useful.
+> Not clear here and for all the schemas quoted below.. is "mdio" not documented already?
 
-Right... So what we want to be doing is adding a config file for every platform
-defining the card(s) and PCMs expected, so that when they're missing a test
-failure will be triggered which is even more helpful. Although I've noticed that
-only missing PCMs are detected currently, but I imagine it should be possible to
-to extend the code to detect missing cards as well.
+They are, or rather I didn't care while constructing this text. I will 
+mention "mdio" is already documented per schema on the patch log.
 
-I take it the intention is to expand the conf.d directory with configs for all
-platforms currently being tested then? There's only one example file there so I
-wasn't sure.
-
-Thanks,
-N�colas
+Arınç
