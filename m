@@ -2,167 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4666679D404
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6628379D407
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236083AbjILOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:49:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45602 "EHLO
+        id S236084AbjILOug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjILOtO (ORCPT
+        with ESMTP id S230347AbjILOue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:49:14 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E397C12E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:49:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XXomK1xZLDI2vvpHdRNocIdd+ljH7E1rbNrQDkGT8ho0KRw5NGNq+Gn41NTI/SFWlVSQR+7BTKOuyWFtllDqlTukWpvTvtGqkHvKZl5n9/J+SCqJchLyq+qu4XxZIIQZwQcSNOu7EngZ1+hX56130mA0vi1cXFt6WyjKNL6PrIbu2+X3NQyxIGwjmXde0AdoIyPhR/xRjVTfMA9m1mbjSkQhnjuz0Oov+2X3+gdV18uWs6OUu6w4CR8eODbjqlLztMseeKv59ABeBN3VMgHHJd4aMs19CxX+8z372nhAVUnP9SgBExicJdtvqZktjWwLbjIudqXPBc5f1gMT8RgztA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PskZWKUYPcCgAKOWFxpFNtsphMJ7095HeUCeurDD/vg=;
- b=e9/KxZqw7y78GcAkw/lmaytqNfgb5VzvOF7vAptgQOkiW3k3L81RLtU7hRSnhd6nl41n0KvGy1S2KmzybRgpo0lmSBs4ZphZJwsBn/PNNMchXVwsVRAdYMiE2NW54lYVyapFZvJHaD5QYKvEUnIqWAlLy3y8ZJ37VYG4GUbVnxqBe3HIgEsjlzKvONtJqyRAJRZDPaSogaiCNOfX6wzenQzpSQLUk37Atm73gi0AMq0Tb/v2MRweoEpBPybTR/bGFKLh1PqI/hTYadKESGiQDbgAxUjrYtgBBw7ckESv8FUNuEKb6D5QFy0LEgkqgLVrJd/jUlaB3ntIPSDaDnOkUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PskZWKUYPcCgAKOWFxpFNtsphMJ7095HeUCeurDD/vg=;
- b=lUkl9HWiofU83MZj0oUCkErTQC/Ct2EKmF+Ua9nsewJPHZBcfNu5n3ee7VUtJF72Mwa4VAYY6NVF2ql5Ab3IfokIp/KTQCay4huc18GfaMW306MLTmbeZXcQCtijzZct16xoKMrXOoxO2LuGectLdfw1F1oi7+rPIlS94OuVOuE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by IA0PR12MB7601.namprd12.prod.outlook.com (2603:10b6:208:43b::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.31; Tue, 12 Sep
- 2023 14:49:08 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 14:49:08 +0000
-Message-ID: <1c934f15-cc86-714f-e9d7-d7fbe29890dc@amd.com>
-Date:   Tue, 12 Sep 2023 09:49:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v9 5/6] x86/sev: Add SNP-specific unaccepted memory
- support
-Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Christopher Schramm <linux@cschramm.eu>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230606142637.5171-1-kirill.shutemov@linux.intel.com>
- <cover.1686063086.git.thomas.lendacky@amd.com>
- <a52fa69f460fd1876d70074b20ad68210dfc31dd.1686063086.git.thomas.lendacky@amd.com>
- <101c3910-a164-4b4c-9474-8743dc6d1199@cschramm.eu>
- <905c359a-19d6-6cba-4540-92d03b936525@amd.com>
- <20230912121719.6i6ojvbb6ptw2i2l@box.shutemov.name>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20230912121719.6i6ojvbb6ptw2i2l@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN7PR04CA0100.namprd04.prod.outlook.com
- (2603:10b6:806:122::15) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Tue, 12 Sep 2023 10:50:34 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D94115
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:30 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7708bfce474so335511385a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694530230; x=1695135030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6HSKteuboFmnivzLeuEg+npIPTGUVBOAqjU+EfUkVq4=;
+        b=EIozDuSMUxnJJwqU5TCFRoGbJb5TypCsomu37UXtl888exhHckj6t7lRApHKgDiO/b
+         VFnBTjN7rbolA0LVT3MDVAzSS99GDa7QAiBy2tyFb8NgbFA/NqJq45JgKKa/MgTVnVHv
+         Slb0wdINEc6AvBdc4ncA6nAN0I0RH6px0e34EM+EhBj3dUj+KdoLQt9Pcz3x/sHxk3ao
+         Vl0AMj1sD0f2TI3uSW9jQmbef2s78HgoYIRvn1YMQm5tL7gg0rnJcoIS8E/ydYEltteH
+         OABizDSDwr7BPIuZq50knSsaHpdiMN3M+N+jKqWIbPopPtRESWMNYkmUYM+msR+hiVpQ
+         MshQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694530230; x=1695135030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6HSKteuboFmnivzLeuEg+npIPTGUVBOAqjU+EfUkVq4=;
+        b=LtmT3h6Tdvk+Ou3a24+u/KMWzNPeqNv5eNG+lGhABgSoeyOnx+ZRuxaVLFk1PTCLH3
+         +2+O8YTfsQdDODc/3caz5yeHc+CfTTeVdwD7qnDWKxW6djnMN4KPFIB7t/R94mn8RF6W
+         c/qRwLR11VIqSYAVHPXB4hcdYX6VsdW3lj7FI+GpeTsmihDix6hs9Fek4Nw6/nhIHOwP
+         ZIHh4RhdmHAiqHlpIGpxvcovoNOmnG+E0sXj9BfC9XYcRwmJUqbtvbH8hpp523l6q/ZZ
+         qTmkuzPWBq8muhOds+QAnVWx04rLHLnXSiU8K9ielkRv8P98cA4N2nC85qg2GIJQJASo
+         wMhg==
+X-Gm-Message-State: AOJu0Yx87oni6a2Qit1naeet3oudm7KGEzji/kJMEZ+FNWbXHQqIs4km
+        1BinDKBtAOpB6hxAsa/aqzDeSg==
+X-Google-Smtp-Source: AGHT+IHNfDzGkVG1pcumuC7QfDwIG+2738HwDCe7yhp0B+IBbDO+rNaUBgTK5sgaYXfhvgEqrSNjrQ==
+X-Received: by 2002:a05:620a:f02:b0:76c:b16b:ad74 with SMTP id v2-20020a05620a0f0200b0076cb16bad74mr16689319qkl.19.1694530229831;
+        Tue, 12 Sep 2023 07:50:29 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id p11-20020ae9f30b000000b0076f0744ff50sm3206928qkg.136.2023.09.12.07.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 07:50:29 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 10:50:28 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
+Message-ID: <20230912145028.GA3228@cmpxchg.org>
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230911195023.247694-2-hannes@cmpxchg.org>
+ <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|IA0PR12MB7601:EE_
-X-MS-Office365-Filtering-Correlation-Id: a342ddea-413f-49e8-85cd-08dbb39f6b11
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UDqxgacWR0RaQeMkKdzkGznwwe30Q6lDwGjCymz5uwwIxx3//J6YeImw6+ne4l5j1OaHzC3ooBgTIspu3x+BQ+jsLb39pk/BNf3N/sQTDd9WDu5SzItDbPeJ3pp86tfmk4Tsy0SqJz7g78BSoB1YXLcldmn57qMsyeff2djNIAk1c1U+GnYoVImWSXrTdnq47ifo1iXTOEHa9qgAKjmFc4dE0E497qQy2/JmAWzUCXsjK/KS3GFQhq9Z+t0UhoOeLiO3I6oxJ1pHI4IB6rixAuUSqvSgBKdsNcdd9HEiGDmMOr8BclCbMq4EOl0xk9VwMWip4j3I9doNKmx/8GZ80hTQs/UCrfpFXL9A7svM5SCuhX9gCsODFx6fWbhIcbOQ3WBd9ByjnbOs3Kr28RF7cs8B6aPk7csPJIpAIZY3pd4XGGYQS1848QeF3hwmwXArzQWhMGgBL5kJd/p3pYxjQMhtT2l0e2v/wI64dft512+xfe7y9jAOOEGOidTq+LcZEhPE96WC4hDbVFU97TSydKXeUEpyypnBjYEzEr6NOTJM+HWMWduomd/SzQ28PdooDn7dP+2f/oBAYUHK211UY4QtX+ANx/QvEAmL4x/oIV9TFFv+xbLFpfzAwjWAUHLiGpVlAoh9y/kGlRtI8s2JTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(346002)(376002)(396003)(1800799009)(451199024)(186009)(66899024)(41300700001)(6486002)(4326008)(5660300002)(8676002)(8936002)(6506007)(6666004)(53546011)(6512007)(6916009)(26005)(478600001)(316002)(66946007)(66556008)(66476007)(2616005)(7416002)(2906002)(86362001)(31696002)(54906003)(38100700002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eExKV3dPTEFVUVZQSkJIRXExeDVYWTRlZXpxZXJPRjdHVm1CbVN0dDN2bjds?=
- =?utf-8?B?d2dqUjJQTTZQWmtyRTRpS1RDRk9YMnFSQ0R3VEhxbUVvU012UCs3cXJRSC9v?=
- =?utf-8?B?QTB4QVg2ZmlNbDB5amhOVlUycUlId2NSdlF6TWNTc1JEbDdRTnlJSm42cVdm?=
- =?utf-8?B?MU5WYkNLYXR0VE9KaUpaYVFyN3Frd2N3V01UWTZlWmpHNzBqbDBzRE5vQmV5?=
- =?utf-8?B?c1dyWVNPdUxJNmFoRUJHVWxNV0lOVzFONkUyOVdPS0RDd2hrYzZGRWtrMm4v?=
- =?utf-8?B?cVpXWGRrRUR6TVI1QnJON0piR21hVmRVd2lMa280Rm9IUnhZMTdhS3hXdVhX?=
- =?utf-8?B?Rm1OeWJLcTNoZGFPdEdwZCtvc0pROXBZOENGYjhRYVRkTHF6Y1ZiNzZDNE9h?=
- =?utf-8?B?ZnBIMEJXdEZ1WEcxQ3BhK2oxMG42NUI1VEh4cHZjZlpWYUErbnpuZ1BBNjc2?=
- =?utf-8?B?VTJtbUlPb094ajJkWkpNbHI5bGhVcVhzTUVybFV5Z3UxMlFacGV6UkhPVnlk?=
- =?utf-8?B?cVduMmd2REhmZ3RhL0t6ZGdVckd6Vmh5S0o2TXJIY3E3SG9DL1JXZ01xcUVQ?=
- =?utf-8?B?VnRrNFROZ2U2MDNtZVNRaC9sbXpTN3FBbjlXVWxsWklOeHBqY3E5QjMyS3Fq?=
- =?utf-8?B?bXJmdHZMM3pmczI3d1AyQ1VUMGkyc0RGdFFrbnJNZFcybm5LLzh0cDk1SzQ4?=
- =?utf-8?B?d2FtbnFBM3o3MTU1d1JRcUhDZ3orL3hYQnU5Vm1TeTJMWW93bldPZitMbnZs?=
- =?utf-8?B?V1hVRHlON2Jidjl5Q0hIMXdWZ2xUNzZ6UGUvTUYvM3ZtaHpHdmN2a1lUODhZ?=
- =?utf-8?B?NXU4VzVVS1hGdzYxMld2dWt2azNpbXZubXR1VEpwRUZqMld2NVNHeDNqMU9V?=
- =?utf-8?B?Zi9PQmlLdVFIVUVzY20xeXhNeHdIZlZrOGhxZTFueXRvWThha0RscWl5ME81?=
- =?utf-8?B?SHZ4d0JlbmVsY3RuYk1QRERuc2ZnS3MxQVl4RVJwdXNEMktHK2ZRZnVpS0VJ?=
- =?utf-8?B?SFFZcDFOUTJzWUVjR3lud2ROQisvZ2xuVVZRQnFGVVg5bWlkNEdkd1FUZExz?=
- =?utf-8?B?Vnp3T1gyRmVzakdJRHRTdGxyU1pPMlBNTUQwUVI2bCttbmtrcksvTHl6MnVL?=
- =?utf-8?B?aEJES1N5UUVQSC9nZmg3ZlkvcWVCSCt6N0NHY1FFVFBMVTNoR1EyM21QcUxt?=
- =?utf-8?B?d3QwR2Y4eW9KKzRCSFhoVU4zZGdJTGw4WWYwaDRHc3A4TEdiOU14T2FIbUJI?=
- =?utf-8?B?cldKMjU0N2RMeHNWWHdvdGhLV05yK0RVbDJxRjY1bjhHVUllNE9QemsyNHdG?=
- =?utf-8?B?cXU0ZVVBdDFkK2h0WlRqbDJybGdiK2NnTVA4VHZXY2FYMWdEQW50VXRkYk1V?=
- =?utf-8?B?RE9pYVdESHUvT1ZROWQ5bnNDZXNkK0xsTmZSUHV1QmNmZEFqams0SzJyaU9U?=
- =?utf-8?B?Z3UxWkQ3NUc0c295OUU5VnVtd29Xa1p6ZmNZb2Y1YTNQY2ZaOEJMdWsyaWVF?=
- =?utf-8?B?Q3hCMzIvMkRjc0lPM3M5MERsei9vUjBmYnhHbzJZNFE4RUN3T1lFS0tOMngx?=
- =?utf-8?B?bDJOYXRBcHNNWTRCdzFhYUhSTGVGTVhlOU5GWmxEV25kZm53eEdBdkxwa1lG?=
- =?utf-8?B?OTVaeVBPTHhKRHBWNGExTkEzZFMxbXhoZGliczJyQURMN1JZbGxxOU52SXE4?=
- =?utf-8?B?STlRU1IwV0daUm9EUWNuS2VQWDdvdy94NmRJcGlNWnpwOXphU2FJV0NJR2NM?=
- =?utf-8?B?RGRlYW9VNUpXOXYzU0hYZ1FYZ0t0MXZia1pmUHBXcVRKSXlML0hJMUgrODN0?=
- =?utf-8?B?VXpZeVkxSnR3a1M0UGdrcE5uNmdKMkdvRHpsMzA4bjI1TEpucVdzQnAvQzB0?=
- =?utf-8?B?Z3YwZVNIaXJqbmV1QytjVE5TYjYrV0tBQ0hIK3gvYlNTOEorS25vWDI4aURD?=
- =?utf-8?B?MnFkOS9wOWpuR3pnZWRiTjlWTmVzTis2dW1iSllEWU95ZlA5TTRWRkNFWWRx?=
- =?utf-8?B?bEsxTDMxWkpkd2xaTTRmZ1d5Vm5GOG9tTGtiNldMVWpoQkEyYkdVT3VkMldB?=
- =?utf-8?B?a2pQK3NRMGJsUm13ZUUzOXZmVUE0TDZZdmpXMnVYOHFMakZwUXVxMXBOWFpC?=
- =?utf-8?Q?z3hANu6wReqjyZVsMwK+YjPmG?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a342ddea-413f-49e8-85cd-08dbb39f6b11
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 14:49:08.2845
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fcSMwAF9ka/hGZnuJQTTFb8fFj9VXeZDaztLAV51QntWa9pDoHD1N0RQskGOoErUE8byQZMFRRXEQBLOpjBhwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7601
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 07:17, Kirill A. Shutemov wrote:
-> On Thu, Sep 07, 2023 at 11:50:15AM -0500, Tom Lendacky wrote:
->>>   From a quick look at
->>>
->>>     [PATCHv14 9/9] x86/tdx: Add unaccepted memory support
->>>
->>> it actually seems very similar for INTEL_TDX_GUEST.
->>>
->>> Ideally UNACCEPTED_MEMORY would not assume EFI either, but the
->>> implementation actually clearly does.
->>
->> @Kirill, is this something you are interested in having as well?
+On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
+> On 9/11/23 21:41, Johannes Weiner wrote:
+> > The idea behind the cache is to save get_pageblock_migratetype()
+> > lookups during bulk freeing. A microbenchmark suggests this isn't
+> > helping, though. The pcp migratetype can get stale, which means that
+> > bulk freeing has an extra branch to check if the pageblock was
+> > isolated while on the pcp.
+> > 
+> > While the variance overlaps, the cache write and the branch seem to
+> > make this a net negative. The following test allocates and frees
+> > batches of 10,000 pages (~3x the pcp high marks to trigger flushing):
+> > 
+> > Before:
+> >           8,668.48 msec task-clock                       #   99.735 CPUs utilized               ( +-  2.90% )
+> >                 19      context-switches                 #    4.341 /sec                        ( +-  3.24% )
+> >                  0      cpu-migrations                   #    0.000 /sec
+> >             17,440      page-faults                      #    3.984 K/sec                       ( +-  2.90% )
+> >     41,758,692,473      cycles                           #    9.541 GHz                         ( +-  2.90% )
+> >    126,201,294,231      instructions                     #    5.98  insn per cycle              ( +-  2.90% )
+> >     25,348,098,335      branches                         #    5.791 G/sec                       ( +-  2.90% )
+> >         33,436,921      branch-misses                    #    0.26% of all branches             ( +-  2.90% )
+> > 
+> >          0.0869148 +- 0.0000302 seconds time elapsed  ( +-  0.03% )
+> > 
+> > After:
+> >           8,444.81 msec task-clock                       #   99.726 CPUs utilized               ( +-  2.90% )
+> >                 22      context-switches                 #    5.160 /sec                        ( +-  3.23% )
+> >                  0      cpu-migrations                   #    0.000 /sec
+> >             17,443      page-faults                      #    4.091 K/sec                       ( +-  2.90% )
+> >     40,616,738,355      cycles                           #    9.527 GHz                         ( +-  2.90% )
+> >    126,383,351,792      instructions                     #    6.16  insn per cycle              ( +-  2.90% )
+> >     25,224,985,153      branches                         #    5.917 G/sec                       ( +-  2.90% )
+> >         32,236,793      branch-misses                    #    0.25% of all branches             ( +-  2.90% )
+> > 
+> >          0.0846799 +- 0.0000412 seconds time elapsed  ( +-  0.05% )
+> > 
+> > A side effect is that this also ensures that pages whose pageblock
+> > gets stolen while on the pcplist end up on the right freelist and we
+> > don't perform potentially type-incompatible buddy merges (or skip
+> > merges when we shouldn't), whis is likely beneficial to long-term
+> > fragmentation management, although the effects would be harder to
+> > measure. Settle for simpler and faster code as justification here.
 > 
-> Unaccepted memory is an EFI feature I don't see how UNACCEPTED_MEMORY can
-> be untied from EFI. If there's other (non-EFI) environment that has
-> similar concept, sure we can try to generalize it beyond EFI.
-
-Sorry, didn't mean to include the EFI related statement there. Agreed that 
-unaccepted memory is only an EFI feature right now.
-
+> Makes sense to me, so
 > 
-> TDX guest is only runs with EFI firmware so far, so depending onf EFI and
-> EFI_STUB is fine for TDX>
-
-Right, SEV initially only ran on EFI firmware, but others have managed to 
-get it working in other environments. So I was just wondering if you would 
-also want to split the UNACCEPTED_MEMORY out for TDX similar to what was 
-suggested for SEV.
-
-Thanks,
-Tom
-
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > 
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+Thanks!
+
+> > @@ -1577,7 +1556,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
+> >  			continue;
+> >  		del_page_from_free_list(page, zone, current_order);
+> >  		expand(zone, page, order, current_order, migratetype);
+> > -		set_pcppage_migratetype(page, migratetype);
+> 
+> Hm interesting, just noticed that __rmqueue_fallback() never did this
+> AFAICS, sounds like a bug.
+
+I don't quite follow. Which part?
+
+Keep in mind that at this point __rmqueue_fallback() doesn't return a
+page. It just moves pages to the desired freelist, and then
+__rmqueue_smallest() gets called again. This changes in 5/6, but until
+now at least all of the above would apply to fallback pages.
+
+> > @@ -2145,7 +2123,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+> >  		 * pages are ordered properly.
+> >  		 */
+> >  		list_add_tail(&page->pcp_list, list);
+> > -		if (is_migrate_cma(get_pcppage_migratetype(page)))
+> > +		if (is_migrate_cma(get_pageblock_migratetype(page)))
+> >  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
+> >  					      -(1 << order));
+> 
+> This is potentially a source of overhead, I assume patch 6/6 might
+> change that.
+
+Yes, 6/6 removes it altogether.
+
+But the test results in this patch's changelog are from this patch in
+isolation, so it doesn't appear to be a concern even on its own.
+
+> > @@ -2457,7 +2423,7 @@ void free_unref_page_list(struct list_head *list)
+> >  		 * Free isolated pages directly to the allocator, see
+> >  		 * comment in free_unref_page.
+> >  		 */
+> > -		migratetype = get_pcppage_migratetype(page);
+> > +		migratetype = get_pfnblock_migratetype(page, pfn);
+> >  		if (unlikely(is_migrate_isolate(migratetype))) {
+> >  			list_del(&page->lru);
+> >  			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
+> 
+> I think after this change we should move the isolated pages handling to
+> the second loop below, so that we wouldn't have to call
+> get_pfnblock_migratetype() twice per page. Dunno yet if some later patch
+> does that. It would need to unlock pcp when necessary.
+
+That sounds like a great idea. Something like the following?
+
+Lightly tested. If you're good with it, I'll beat some more on it and
+submit it as a follow-up.
+
+---
+
+From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Tue, 12 Sep 2023 10:16:10 -0400
+Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
+
+Move direct freeing of isolated pages to the lock-breaking block in
+the second loop. This saves an unnecessary migratetype reassessment.
+
+Minor comment and local variable scoping cleanups.
+
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/page_alloc.c | 49 +++++++++++++++++++++----------------------------
+ 1 file changed, 21 insertions(+), 28 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index e3f1c777feed..9cad31de1bf5 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2408,48 +2408,41 @@ void free_unref_page_list(struct list_head *list)
+ 	struct per_cpu_pages *pcp = NULL;
+ 	struct zone *locked_zone = NULL;
+ 	int batch_count = 0;
+-	int migratetype;
+-
+-	/* Prepare pages for freeing */
+-	list_for_each_entry_safe(page, next, list, lru) {
+-		unsigned long pfn = page_to_pfn(page);
+ 
+-		if (!free_pages_prepare(page, 0, FPI_NONE)) {
++	list_for_each_entry_safe(page, next, list, lru)
++		if (!free_pages_prepare(page, 0, FPI_NONE))
+ 			list_del(&page->lru);
+-			continue;
+-		}
+-
+-		/*
+-		 * Free isolated pages directly to the allocator, see
+-		 * comment in free_unref_page.
+-		 */
+-		migratetype = get_pfnblock_migratetype(page, pfn);
+-		if (unlikely(is_migrate_isolate(migratetype))) {
+-			list_del(&page->lru);
+-			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
+-			continue;
+-		}
+-	}
+ 
+ 	list_for_each_entry_safe(page, next, list, lru) {
+ 		unsigned long pfn = page_to_pfn(page);
+ 		struct zone *zone = page_zone(page);
++		int migratetype;
+ 
+ 		list_del(&page->lru);
+ 		migratetype = get_pfnblock_migratetype(page, pfn);
+ 
+ 		/*
+-		 * Either different zone requiring a different pcp lock or
+-		 * excessive lock hold times when freeing a large list of
+-		 * pages.
++		 * Zone switch, batch complete, or non-pcp freeing?
++		 * Drop the pcp lock and evaluate.
+ 		 */
+-		if (zone != locked_zone || batch_count == SWAP_CLUSTER_MAX) {
++		if (unlikely(zone != locked_zone ||
++			     batch_count == SWAP_CLUSTER_MAX ||
++			     is_migrate_isolate(migratetype))) {
+ 			if (pcp) {
+ 				pcp_spin_unlock(pcp);
+ 				pcp_trylock_finish(UP_flags);
++				locked_zone = NULL;
+ 			}
+ 
+-			batch_count = 0;
++			/*
++			 * Free isolated pages directly to the
++			 * allocator, see comment in free_unref_page.
++			 */
++			if (is_migrate_isolate(migratetype)) {
++				free_one_page(zone, page, pfn, 0,
++					      migratetype, FPI_NONE);
++				continue;
++			}
+ 
+ 			/*
+ 			 * trylock is necessary as pages may be getting freed
+@@ -2459,12 +2452,12 @@ void free_unref_page_list(struct list_head *list)
+ 			pcp = pcp_spin_trylock(zone->per_cpu_pageset);
+ 			if (unlikely(!pcp)) {
+ 				pcp_trylock_finish(UP_flags);
+-				free_one_page(zone, page, pfn,
+-					      0, migratetype, FPI_NONE);
+-				locked_zone = NULL;
++				free_one_page(zone, page, pfn, 0,
++					      migratetype, FPI_NONE);
+ 				continue;
+ 			}
+ 			locked_zone = zone;
++			batch_count = 0;
+ 		}
+ 
+ 		/*
+-- 
+2.42.0
+
