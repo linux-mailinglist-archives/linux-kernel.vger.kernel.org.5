@@ -2,141 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FB779C832
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B38C79C835
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbjILHa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S231608AbjILHbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjILHa4 (ORCPT
+        with ESMTP id S229766AbjILHbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:30:56 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAD8B9;
-        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so8985464e87.1;
-        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694503851; x=1695108651; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
-        b=hfrgKc2d/H+2ZgjCxefyl2sIKXbzgm82nTyZkli6YkCg4OgM6QxNfia8EQXQ63ds7s
-         RJTAyUCJ7VdaDV7ff6djKs7rhs7S5ruCz8hIjFW7gZHq9FLSC/D3oCWYXcre4HbFbXD2
-         ZhuQFKIWjVjHffh1Ne4359y9XmtB6OFBitFp8ihcDyncPueAci/4w72vkHF3SUi0fAtR
-         XtEdpmJIGKWDZuHSNewV1SZyIIMqFmqLCZUJ3WCC+XDwdVHfpQ10oYEkUm+8VgPE481l
-         GxAO8/O2/utRE+Q5zVwe8lauG15FDyeGrfCbNw9/aB7P30BeAFzRSlBnxKpyzjQ6iZQV
-         SpNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694503851; x=1695108651;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
-        b=wXrPmXOwUMGtpwdS7WEj95yQlPRtJC+jv9gINOIqe+HhInojcJQhX+dy80lG7B81tg
-         gX7aAoyLhg/nf1Vu2l4kxslrFA1iqgfo1R42wDcyeqeqJO6Ayfo5syaIxVvSHg9+ncns
-         q2a9acx8aIwV8MDMw3j3JOmNA4r8o9z5O9LhjnghnalyOQ6KKQAJpQmwk5zXKVHuAu9F
-         /OQNYQjvyeRZWofXDtcVvOV6NRcn+634B49n9T2aSKaVy4frdAAyNlqvY1VXIccmQ8V/
-         uUKu1LAwT3XvN45gQWVDp67sDRHGE9try4YQQX6aqKgxHAqXe8CIOprDBNYUVPwmc63C
-         oaNQ==
-X-Gm-Message-State: AOJu0YxDtR37cBofQ05yjSJ4Zl++RkYn5g5CjW6RJ6jXaKfYgTbs1csG
-        rFkgfwKnwULrChww6A6W5VI=
-X-Google-Smtp-Source: AGHT+IFRU1BCT1/fxyolNXviRB2kjmrF3gbcVkz2ZdPqlwGiM/W8fLNYBMB1va+dE1XIWrPYf8LuHQ==
-X-Received: by 2002:a05:6512:15a3:b0:4fb:7cea:882a with SMTP id bp35-20020a05651215a300b004fb7cea882amr11611840lfb.3.1694503850597;
-        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
-Received: from pc636 ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b004ff947bea2asm1653864lfm.54.2023.09.12.00.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Tue, 12 Sep 2023 09:30:47 +0200
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Muchun Song <songmuchun@bytedance.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH v6 16/45] rcu: dynamically allocate the rcu-kfree shrinker
-Message-ID: <ZQATp6yFd/GXY9hN@pc636>
-References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
- <20230911094444.68966-17-zhengqi.arch@bytedance.com>
+        Tue, 12 Sep 2023 03:31:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB3DB9;
+        Tue, 12 Sep 2023 00:31:40 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 07:31:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694503898;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/1XdMFAWkhhn5/7eom8PbEM0SQHenQhaogqbW4MERog=;
+        b=DbW/ayJcNHYkHPdqGQnCddZVED0bMQZe4Nb3Is1ZC7Gw6iAWgzdttKyTHc4IlW/rSAggOV
+        xJ40dWJ/5v1f1oSfAdwkIMwf0I4jTxdOpVQBJvkvDAdHHw8WeJGhLVwvCvlztTHP7CbVRH
+        gYe62HfiYAiEqA7EasTBy/xHPtSQCEfxPCmEBixwS4x1/emSwhq3HBRmp+Cn2pR9bJDFAb
+        U8JYnjkp9uNqeW5Wq1gCvT1+RI9KF/EM+R1Xt6EVCiSUbGD71mjXGO5FeBESJKpDqbUHSw
+        hpmC8/B1wEqIvMGWCEDAvsptK1nzbx2dh2SprJK9KuhaPcxNzHYgbhEpxm6d8A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694503898;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/1XdMFAWkhhn5/7eom8PbEM0SQHenQhaogqbW4MERog=;
+        b=OOoGIp8cHFEQuj3TV4A333ybaJKAjV+FZ3SWCH8HjD7iYaghOr/bQh386VJLl5/XHxYFjt
+        dSYeJ9/cO5vqcICQ==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel: Extend the ref-cycles event to GP counters
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230911144139.2354015-1-kan.liang@linux.intel.com>
+References: <20230911144139.2354015-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911094444.68966-17-zhengqi.arch@bytedance.com>
+Message-ID: <169450389765.27769.14626010672569075307.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:44:15PM +0800, Qi Zheng wrote:
-> Use new APIs to dynamically allocate the rcu-kfree shrinker.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-> CC: rcu@vger.kernel.org
-> ---
->  kernel/rcu/tree.c | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cb1caefa8bd0..06e2ed495c02 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
->  	return freed == 0 ? SHRINK_STOP : freed;
->  }
->  
-> -static struct shrinker kfree_rcu_shrinker = {
-> -	.count_objects = kfree_rcu_shrink_count,
-> -	.scan_objects = kfree_rcu_shrink_scan,
-> -	.batch = 0,
-> -	.seeks = DEFAULT_SEEKS,
-> -};
-> -
->  void __init kfree_rcu_scheduler_running(void)
->  {
->  	int cpu;
-> @@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
->  {
->  	int cpu;
->  	int i, j;
-> +	struct shrinker *kfree_rcu_shrinker;
->  
->  	/* Clamp it to [0:100] seconds interval. */
->  	if (rcu_delay_page_cache_fill_msec < 0 ||
-> @@ -4962,8 +4956,17 @@ static void __init kfree_rcu_batch_init(void)
->  		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
->  		krcp->initialized = true;
->  	}
-> -	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
-> -		pr_err("Failed to register kfree_rcu() shrinker!\n");
-> +
-> +	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
-> +	if (!kfree_rcu_shrinker) {
-> +		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
-> +		return;
-> +	}
-> +
-> +	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
-> +	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
-> +
-> +	shrinker_register(kfree_rcu_shrinker);
->  }
->  
->  void __init rcu_init(void)
-> -- 
-> 2.30.2
-> 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+The following commit has been merged into the perf/core branch of tip:
 
-Makes sense to me. Thank you for improving it.
+Commit-ID:     ffbe4ab0beda55b5c467aa3d95ca14db75a84717
+Gitweb:        https://git.kernel.org/tip/ffbe4ab0beda55b5c467aa3d95ca14db75a84717
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Mon, 11 Sep 2023 07:41:38 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 12 Sep 2023 08:22:24 +02:00
 
---
-Uladzislau Rezki
+perf/x86/intel: Extend the ref-cycles event to GP counters
+
+The current ref-cycles event is only available on the fixed counter 2.
+Starting from the GLC and GRT core, the architectural UnHalted Reference
+Cycles event (0x013c) which is available on general-purpose counters
+can collect the exact same events as the fixed counter 2.
+
+Update the mapping of ref-cycles to 0x013c. So the ref-cycles can be
+available on both fixed counter 2 and general-purpose counters.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230911144139.2354015-1-kan.liang@linux.intel.com
+---
+ arch/x86/events/intel/core.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index e1543d6..a08f794 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -211,6 +211,14 @@ static struct event_constraint intel_slm_event_constraints[] __read_mostly =
+ 	EVENT_CONSTRAINT_END
+ };
+ 
++static struct event_constraint intel_grt_event_constraints[] __read_mostly = {
++	FIXED_EVENT_CONSTRAINT(0x00c0, 0), /* INST_RETIRED.ANY */
++	FIXED_EVENT_CONSTRAINT(0x003c, 1), /* CPU_CLK_UNHALTED.CORE */
++	FIXED_EVENT_CONSTRAINT(0x0300, 2), /* pseudo CPU_CLK_UNHALTED.REF */
++	FIXED_EVENT_CONSTRAINT(0x013c, 2), /* CPU_CLK_UNHALTED.REF_TSC_P */
++	EVENT_CONSTRAINT_END
++};
++
+ static struct event_constraint intel_skl_event_constraints[] = {
+ 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
+ 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
+@@ -314,6 +322,7 @@ static struct event_constraint intel_glc_event_constraints[] = {
+ 	FIXED_EVENT_CONSTRAINT(0x0100, 0),	/* INST_RETIRED.PREC_DIST */
+ 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
+ 	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
++	FIXED_EVENT_CONSTRAINT(0x013c, 2),	/* CPU_CLK_UNHALTED.REF_TSC_P */
+ 	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
+ 	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_RETIRING, 0),
+ 	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BAD_SPEC, 1),
+@@ -5983,6 +5992,12 @@ static __always_inline int intel_pmu_init_hybrid(enum hybrid_pmu_type pmus)
+ 	return 0;
+ }
+ 
++static __always_inline void intel_pmu_ref_cycles_ext(void)
++{
++	if (!(x86_pmu.events_maskl & (INTEL_PMC_MSK_FIXED_REF_CYCLES >> INTEL_PMC_IDX_FIXED)))
++		intel_perfmon_event_map[PERF_COUNT_HW_REF_CPU_CYCLES] = 0x013c;
++}
++
+ static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
+ {
+ 	x86_pmu.late_ack = true;
+@@ -6005,6 +6020,8 @@ static __always_inline void intel_pmu_init_glc(struct pmu *pmu)
+ 	memcpy(hybrid_var(pmu, hw_cache_extra_regs), glc_hw_cache_extra_regs, sizeof(hw_cache_extra_regs));
+ 	hybrid(pmu, event_constraints) = intel_glc_event_constraints;
+ 	hybrid(pmu, pebs_constraints) = intel_glc_pebs_event_constraints;
++
++	intel_pmu_ref_cycles_ext();
+ }
+ 
+ static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
+@@ -6021,9 +6038,11 @@ static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
+ 	memcpy(hybrid_var(pmu, hw_cache_event_ids), glp_hw_cache_event_ids, sizeof(hw_cache_event_ids));
+ 	memcpy(hybrid_var(pmu, hw_cache_extra_regs), tnt_hw_cache_extra_regs, sizeof(hw_cache_extra_regs));
+ 	hybrid_var(pmu, hw_cache_event_ids)[C(ITLB)][C(OP_READ)][C(RESULT_ACCESS)] = -1;
+-	hybrid(pmu, event_constraints) = intel_slm_event_constraints;
++	hybrid(pmu, event_constraints) = intel_grt_event_constraints;
+ 	hybrid(pmu, pebs_constraints) = intel_grt_pebs_event_constraints;
+ 	hybrid(pmu, extra_regs) = intel_grt_extra_regs;
++
++	intel_pmu_ref_cycles_ext();
+ }
+ 
+ __init int intel_pmu_init(void)
