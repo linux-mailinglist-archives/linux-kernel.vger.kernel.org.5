@@ -2,100 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A8579D9AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE2979D9B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237671AbjILTjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S237708AbjILTlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjILTjj (ORCPT
+        with ESMTP id S236057AbjILTlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:39:39 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74180115;
-        Tue, 12 Sep 2023 12:39:35 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id DEFD1320094B;
-        Tue, 12 Sep 2023 15:39:33 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 15:39:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1694547573; x=1694633973; bh=WZ
-        CYP04/rhzJgnLDaE8CVzEzQ+KEpBf0K8M9Awn51FM=; b=gzusCR1YNNT7KRI9Vc
-        sF4bCGobnkVW0Acata+GcerwRPUYPPia8ymGuTtX/A7/uG7CQssVqM9sRGc02ulR
-        VMasWRSt9xyKGxJBa7A7zktZRP5Iiuzn0nvxjItkRJscqxMfiIpSvePW1qULzCOz
-        ZyAcXmcImHGsAbkLtMfIrHuQnoq2rAS85bLI2NP/2ZS3zvV6fJ8SVB/r0n8GTzrc
-        Go1mga9SQrsBW6tH1o9dk8X1wtzq3GxCfrwZU0POZkMfres7fvN4agAE/Bfy15aD
-        U4qvQeAL+m6/uryW9DPOlQJoWRsT06IpVnpOdMc8HLA2mQzv8dRcti1LcPHXXW00
-        hN1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694547573; x=1694633973; bh=WZCYP04/rhzJg
-        nLDaE8CVzEzQ+KEpBf0K8M9Awn51FM=; b=W8bVmm6YVwzExgShMlOZOEl48v/1M
-        6gnGKe0/ANZKa3+2VhqvMHvU/oarCM9YBzjBVmB3jl5vV/bK1yW7sonkKJl1jznp
-        IXS4qVFvzWwHUVaS1lvdTTpTIqmy/RBBPk7GMx3IT6306iFfNJgeOvU13SxC5yAw
-        UH+yMESmV6EW/vuUF7LkdK8ULnKWtLANeVFgn7qdF4YJFoTu2fAAZk3rrBalFjRT
-        leO1xWmiXAea3SlgPVemDD26oVzS5O3Tyq7Z/SM5ie7huSJyCJy3wh+VftwyT7oC
-        2/uLgj1A3nc2Oi/gXh8x/xujrAuAbgENs/WLZ7809UH6BSp8NwbxEXKOA==
-X-ME-Sender: <xms:dL4AZVher48N1bwWnh44_w4_3KpCy--tISESEqV6B1igZ_pIHyp8qw>
-    <xme:dL4AZaBXhE0Idd8WDRp85m7yHAtQ1WlKmZiJ3YG0f5w1kIbFW5vc-3252Vz2KDL-U
-    ThLoWDdPfb7kn-diEk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudegtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdduhedmnecujfgurhepofgfggfkjghffffhvfevufgtsehttder
-    tderredtnecuhfhrohhmpedflfgrnhcujfgvnhgurhhikhcuhfgrrhhrfdcuoehkvghrnh
-    gvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeffffeufefhiedvfeehgeev
-    ffffffduvdduhfefjeekgeeviefhuddvgeekvddvhfenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggt
-X-ME-Proxy: <xmx:dL4AZVFn82aDVZ3ec_r23wCGXtAec5wyd6MXdhNyEOVjNz-E2kB0mg>
-    <xmx:dL4AZaQvBUb3aEIKN55pUPxd2xpJZ1Xzc-L5n1aEhggcXvUT-8GDuA>
-    <xmx:dL4AZSxldthPWcFEYAAjSeSC1n9rp2hsvfKpkrHtGs68R0b-IkA5kA>
-    <xmx:db4AZXqaMMtlSs20nFdfLY2_No1tbW5xWYyyLUMeMHlCyt6QXqVNtQ>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8D09215A0091; Tue, 12 Sep 2023 15:39:32 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <3cb7629f-9dd9-430a-86a0-5acb32882018@app.fastmail.com>
-In-Reply-To: <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
-References: <20230909161851.223627-1-kernel@jfarr.cc>
- <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
- <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
- <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
- <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
- <CVH4GZXQFZ1F.2V5BIZNSKQ1FA@suppilovahvero>
- <5a67051d-eb21-4a96-acc4-40f829a59e23@app.fastmail.com>
- <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
-Date:   Tue, 12 Sep 2023 21:38:59 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
-        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
-        bhelgaas@google.com, lennart@poettering.net,
-        "Luca Boccassi" <bluca@debian.org>
-Subject: Re: [PATCH 0/1] x86/kexec: UKI support
-Content-Type: text/plain
+        Tue, 12 Sep 2023 15:41:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8735115
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:41:10 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-76-W-5t9hiWOWqAxCmj4PVSRw-1; Tue, 12 Sep 2023 20:41:07 +0100
+X-MC-Unique: W-5t9hiWOWqAxCmj4PVSRw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Sep
+ 2023 20:41:03 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 12 Sep 2023 20:41:03 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     Mateusz Guzik <mjguzik@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>
+Subject: RE: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Topic: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Index: AQHZ23Vdq8Esj5k0zUGYupOb09r6RrAF7nHAgAAb1ICAABQQEIANxBwAgAGZkGCAAg/ggIAAEt9w
+Date:   Tue, 12 Sep 2023 19:41:03 +0000
+Message-ID: <fa01f553d57e436c8a7f5b1c2aae23a9@AcuMS.aculab.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com>
+ <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
+ <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+ <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
+ <CAGudoHEuY1cMFStdRAjb8aWbHNqy8Pbeavk6tPB+u=rYzFDF+Q@mail.gmail.com>
+ <ed0ac0937cdf4bb99b273fc0396b46b9@AcuMS.aculab.com>
+ <CAHk-=wiXw+NSW6usWH31Y6n4CnF5LiOs_vJREb8_U290W9w3KQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiXw+NSW6usWH31Y6n4CnF5LiOs_vJREb8_U290W9w3KQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> These are sort of "tautological" arguments. There must be some
-> objective reasons why this architecture was chosen instead of
-> other (i.e. using what already pre-exists).
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTIgU2VwdGVtYmVyIDIwMjMgMTk6NDkNCj4g
+DQo+IE9uIE1vbiwgMTEgU2VwdCAyMDIzIGF0IDAzOjM4LCBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
+aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRoZSBvdmVyaGVhZCBvZiAncmVwIG1v
+dmJzJyBpcyBhYm91dCAzNiBjbG9ja3MsICdyZXAgbW92c3EnIG9ubHkgMTYuDQoNCkludGVyZXN0
+aW5nbHkgZXhhY3RseSB0aGUgc2FtZSB0ZXN0IGNoYW5nZWQgaXRzIG1pbmQgZm9yIG5vIHJlYXNv
+biENCldoaWxlIEkgZ290IHJlcGVhdGFibGUgY2xvY2sgY291bnRzICgrLy0xIGluIHRoZSBsb3cg
+aHVuZHJlZHMpIHdoZW4NCmxvb3BpbmcgdGhlIHRlc3QgKGllIHRoZSAnaG90IGNhY2hlJyBjYXNl
+cyksIEkgY291bGRuJ3QgZGVjaWRlIG9uDQp0aGUgZXhhY3Qgb3ZlcmhlYWQgdG8gZ2V0IGFuIGFj
+Y3VyYXRlIGJ5dGVzL2Nsb2NrLg0KT1RPSCBpdCB3YXMgYmV0d2VlbiAzMCBhbmQgMzUgLSBzbyBw
+cmV0dHkgbXVjaCBsaWtlbHkgdG8gYmUgMzIuDQoNCj4gTm90ZSB0aGF0IHRoZSBoYXJkIGNhc2Ug
+Zm9yICdyZXAgbW92c3EnIGlzIHdoZW4gdGhlIHN0b3JlcyBjcm9zcyBhDQo+IGNhY2hlbGluZSAo
+b3Igd29yc2UgeWV0LCBhIHBhZ2UpIGJvdW5kYXJ5Lg0KDQpQYWdlIGZhdWx0cyBvbiBtaXNhbGln
+bmVkIHRyYW5zZmVycyBhcmUgd2hhdCBtYWtlcyB0aGVtIGhhcmQgdG8gaW1wbGVtZW50Lg0KT1RP
+SCB0aGF0IGlzIGEgJ2hhcmR3YXJlIHByb2JsZW0nIG5vdCBzcGVjaWZpY2FsbHkgd29ydGggb3B0
+aW1pc2luZw0KZm9yIC0gc2luY2UgdW5saWtlbHkuDQoNCj4gVGhhdCBpcyB3aGF0IG1ha2VzICdy
+ZXAgbW92c2InIGZ1bmRhbWVudGFsbHkgc2ltcGxlciBpbiB0aGVvcnkuIFRoZQ0KPiBuYXR1cmFs
+IHJlYWN0aW9uIGlzICJidXQgbW92c3EgZG9lcyB0aGluZ3MgOCBieXRlcyBhdCBhIHRpbWUiLCBi
+dXQNCj4gb25jZSB5b3Ugc3RhcnQgZG9pbmcgYW55IGtpbmQgb2Ygb3B0aW1pemF0aW9ucyB0aGF0
+IGFyZSBhY3R1YWxseSBiYXNlZA0KPiBvbiBiaWdnZXIgYXJlYXMsIHRoZSBieXRlIGNvdW50cyBh
+cmUgYWN0dWFsbHkgc2ltcGxlci4gWW91IGNhbiBhbHdheXMNCj4gZG8gdGhlbSBhcyBtYXNrZWQg
+d3JpdGVzIHVwIHRvIHdoYXRldmVyIGJvdW5kYXJ5IHlvdSBsaWtlLCBhbmQganVzdA0KPiByZXN0
+YXJ0LiBUaGVyZSBhcmUgbmV2ZXIgYW55ICJ3aGF0IGFib3V0IHRoZSBzdHJhZGRsaW5nIGJ5dGVz
+IiBpc3N1ZXMuDQoNCldoYXQgSSBmb3VuZCBzZWVtZWQgdG8gaW1wbHkgdGhhdCAncmVwIG1vdnNx
+JyB1c2VkIHRoZSBzYW1lIGludGVybmFsDQpsb2dpYyBhcyAncmVwIG1vdnNiJyAocHJldHR5IGVh
+c3kgdG8gZG8gaW4gaGFyZHdhcmUpIGV2ZW4gdGhvdWdoIEkNCmRvbid0IHRoaW5rIHRoZSBFTVJT
+IGRvY3Mgc2F5IGFueXRoaW5nIGFib3V0IHRoYXQuDQppdCBtYXkgd2VsbCBiZSBjcHUgc3BlY2lm
+aWMgLSBidXQgSSdkIGV4cGVjdCBsYXRlciBvbmVzIHRvIGJlIHRoZSBzYW1lLg0KKEFNRCBjcHUg
+d2lsbCBiZSBkaWZmZXJlbnQsIGFuZCBJIGRvbid0IGhhdmUgYWNjZXNzIHRvIGFueXRoaW5nIG5l
+dy4pDQoNCj4gVGhhdCdzIG9uZSBvZiB0aGUgZGFuZ2VycyB3aXRoIGJlbmNobWFya2luZy4gRG8g
+eW91IGJlbmNobWFyayB0aGUNCj4gdW5hbGlnbmVkIGNhc2VzPyBIb3cgbXVjaCBkbyB0aGV5IG1h
+dHRlciBpbiByZWFsIGxpZmU/IERvIHRoZXkgZXZlbg0KPiBoYXBwZW4/DQoNCkEgbWljcm9iZW5j
+aG1hcmsgY2FuIHRlbGwgeW91IGhvdyBiYWQgdGhleSBhcmUuDQpSZWFsIGxpZmUgd2lsbCBhbG1v
+c3QgY2VydGFpbmx5IGJlIGRpZmZlcmVudC4NCg0KSSBkaWQgc29tZSBidWZmZXIgb2Zmc2V0IG1l
+YXN1cmVtZW50cyAodGhlIGJ1ZmZlcnMgc2hvdWxkIGhhdmUgYmVlbg0KOGsgYWxpZ25lZCkuDQpG
+b3IgcmVhc29uYWJsZSBsZW5ndGggY29waWVzICgxMDI0IGJ5dGVzKSB0aGUgc291cmNlIGFsaWdu
+bWVudCBtYWRlDQphbG1vc3Qgbm8gZGlmZmVyZW5jZS4NCldoYXQgZGlkIG1hdHRlciB3YXMgdGhl
+IGRlc3RpbmF0aW9uIGFsaWdubWVudCwgYW55dGhpbmcgb3RoZXIgdGhhbg0KYSBtdWx0aXBsZSBv
+ciAzMiBoYWx2ZWQgdGhlIHRyYW5zZmVyIHNwZWVkIChyZWdhcmRsZXNzIG9mIHRoZQ0Kc291cmNl
+IGFsaWdubWVudCkuDQpTbyAzMm4rMSwgMzJuKzggYW5kIDMybisxNiB3ZXJlIGFsbCBlcXVhbGx5
+IGJhZC4NClNvbWUgdmFsdWVzIHJlZHVjZWQgaXQgZnVydGhlciwgcG9zc2libHkgd3JpdGVzIGFm
+ZmVjdGluZyB0aGUNCnJlYWQgcHJlZmV0Y2hlcyAtIHdobyBrbm93cy4NCg0KQW55d2F5IGl0IHNl
+ZW1lZCBsaWtlIHRoZXJlIGlzIGEgcGlwZWxpbmVkIGJhcnJlbCBzaGlmdGVyIG9uDQp0aGUgcmVh
+ZCBzaWRlIChzbyBpdCBjb3VsZCByZWFkIDMyIGJ5dGVzL2Nsb2NrKSBidXQgdGhlIHdyaXRlDQpz
+aWRlIHdhcyBoYXZpbmcgdG8gZG8gdHdvIHdyaXRlcyBvZiBlYWNoIG1pc2FsaWduZWQgYmxvY2su
+DQoNCj4gQW5kIHRoYXQncyBlbnRpcmVseSBpZ25vcmluZyBhbnkgImNvbGQgdnMgaG90IGNhY2hl
+cyIgZXRjIGlzc3Vlcywgb3INCj4gdGhlICJ3aGF0IGlzIHRoZSBjb3N0IG9mIGFjY2VzcyBfYWZ0
+ZXJfIHRoZSBtZW1jcHkvbWVtc2V0Ii4NCg0KSSBjb3VudCB0aGUgY2xvY2tzIGZvciA1IGl0ZXJh
+dGlvbnMuDQpUaGUgZmlyc3QgJ2NvbGQgY2FjaGUnIGlzIG1hc3NpdmVseSBzbG93ZXIuDQpUaGUg
+cmVzdCBhcmUgcHJldHR5IG11Y2ggaWRlbnRpY2FsIC0gc28gNSBpcyBwbGVudHkuDQpGb3IgbWlj
+cm9iZW5jaG1hcmtzIHlvdSByZWFsbHkgd2FudCB0byBhc3N1bWUgJ2hvdCBjYWNoZScuDQpUaGUg
+Y2FjaGUgbG9hZHMvaW52YWxpZGF0ZXMgd2lsbCAodXN1YWxseSkgYmUgbmVlZGVkIHNvbWV0aW1l
+DQpzbyBubyBwb2ludCBkZXN0cm95aW5nIGEgYmVuY2htYXJrIGJ5IGluY2x1ZGluZyB0aGVtLg0K
+RXNwZWNpYWxseSB3aGVuIGxvb2tpbmcgYSBzaG9ydCBjb2RlIGxvb3BzLg0KDQpJJ20gZGVmaW5p
+dGVseSBhZ2FpbnN0IHJ1bm5pbmcgMTAwMDAgaXRlcmF0aW9ucyBhbmQgbWVhc3VyaW5nIHdhbGwg
+dGltZS4NCkl0IHJlYWxseSBkb2Vzbid0IHRlbGwgeW91IGFueXRoaW5nIHVzZWZ1bC4NCkkgY2Fu
+J3QgZXZlbiB1c2UgcmR0c2MgLSBJIGNhbid0IGxvY2sgdGhlIGNwdSBjbG9jayBmcmVxdWVuY3ku
+DQoNCj4gT3IsIGluIHRoZSBjYXNlIG9mIHRoZSBrZXJuZWwsIG91ciBpc3N1ZXMgd2l0aCAiZnVu
+Y3Rpb24gY2FsbHMgY2FuIG5vdw0KPiBiZSBzdXJwcmlzaW5nbHkgZXhwZW5zaXZlLCBhbmQgaWYg
+d2UgY2FuIGlubGluZSB0aGluZ3MgaXQgY2FuIHdpbiBiYWNrDQo+IDIwIGN5Y2xlcyBmcm9tIGEg
+Zm9yY2VkIG1pc3ByZWRpY3QiLg0KDQpBbmQgdGhlbiBnbGliYyBwcm9iYWJseSBhZGRzIGEgcGls
+ZSBvZiB3cmFwcGVycyB0byBjb252ZXJ0IG9wZW4oKQ0KaW50byBvcGVuYXQoT19FTVBUWV9QQVRI
+LC4uLi4pIGZvciBubyBnb29kIHJlYXNvbi4NClVuZG9pbmcgYWxsIHRoZSBnb29kIHdvcmsuDQoN
+CkFuZCB0aGVuIHRoZXJlIGlzIHRoZSBjb2RlIEkndmUgd3JpdHRlbiBmb3IgYW4gZnBnYSBzb2Z0
+LWNvcmUNCndoaWNoIGhhcyBhIGxpbWl0ZWQgbnVtYmVyIG9mIGNsb2NrIHRvIGRvIGl0cyB3b3Jr
+Lg0KUmVxdWlyZWQgY2FyZWZ1bCBhbmFseXNpcyBvZiBzdGF0aWMgYnJhbmNoIHByZWRpY3Rpb24g
+KGhhdmluZw0KZm91bmQgdGhlIGhpZGRlbiBtZW51IHRvIGRpc2FibGUgdGhlIGR5bmFtaWMgb25l
+KSB0byBlbnN1cmUNCnRoYXQgdGhlIHdvcnN0IGNhc2UgcGF0aHMgd2VyZSBmYXN0IGVub3VnaCAt
+IHJhdGhlciB0aGFuIG1ha2luZw0KdGhlIGNvbW1vbiBwYXRocyBmYXN0ZXN0LiANCg0KLi4uDQo+
+IFNvIGJld2FyZSBtaWNyb2JlbmNobWFya3MuIFRoYXQncyB0cnVlIGluIGdlbmVyYWwsIGJ1dCBp
+dCdzDQo+IF9wYXJ0aWN1bGFybHlfIHRydWUgb2YgbWVtc2V0L21lbWNweS4NCg0KSSBzZWUgdGhl
+IHByb2JsZW0gYmVuY2htYXJrcyB0aGUgb25lcyB0aGF0IGFyZSBtYXNzaXZlbHkgdW5yb2xsZWQN
+CmFuZCBydW4gZmFzdChpc2gpIGluIGEgYmVuY2htYXJrIGJ1dCBqdXN0IGRlc3Ryb3kgdGhlIGkt
+Y2FjaGUuDQoNCklmIEknbSBtaXJjb2JlbmNobWFya2luZyBJJ20gdHJ5aW5nIHRvIHNlZSBpZiBp
+IGNhbiBnZXQgdGhlDQpjcHUgdG8gZXhlY3V0ZSBhcyBtYW55IGluc3RydWN0aW9ucyBpbiBwYXJh
+bGxlbCBhcyBpdCBzaG91bGQNCnNvIHRoYXQgdGhlIGNvZGUgbG9vcCBpcyBsaW1pdGVkIGJ5IChl
+ZykgdGhlIG51bWJlciBvZiByZWFkcy4NCklmIHlvdSBjYW4gZ2V0IGEgc2hvcnQgbG9vcCB0byBy
+dW4gJ2FzIGZhc3QgYXMgcG9zc2libGUnIHRoZXJlDQppcyBubyBwb2ludCBkb2luZyBhIDE5ODAn
+cyB1bnJvbGwuDQoNCklmIGFueW9uZSBoYWQgZG9uZSBhIG1pY3JvYmVuY2htYXJrIG9mIHRoZSAn
+YWRjJyBsaXN0IGluIHRoZSBpcA0KY2hlY2tzdW0gY29kZSAoZWcgb24gSW50ZWwgY29yZS0yKSB0
+aGV5J2QgaGF2ZSBwYW5pY2tlZCBhYm91dA0KZWFjaCBvbmUgdGFraW5nIHR3byBjbG9ja3MuDQpF
+dmVuIHdpdGggbW9yZSByZWNlbnQgY3B1IHlvdSBuZWVkIHRvIGFkYyB0byBhbHRlcm5hdGUgcmVn
+aXN0ZXJzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
+bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
+YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-You mean like your argument that the same can already be achieved with the normal EFI stub and builin initrd/cmdline? ;)
-
-I think only reasons #4 and the last paragraph in me response relate to it being pre-existing. The other reasons are actual limitations with the normal EFI stub setup. Doesn't mean that they can't be overcome, but UKIs work.
-
-I'm not sure what the initial reasons where for coming up with this architecture were, I was not involved.
-
-What I can tell you is that right now it is a format that has practical advantages and that there are generic mainstream distros looking to adopt it. So having the capability to kexec them is gonna come in handy.
