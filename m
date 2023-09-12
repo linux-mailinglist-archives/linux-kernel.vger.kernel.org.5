@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0391679C944
+	by mail.lfdr.de (Postfix) with ESMTP id 57FB079C945
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbjILIHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S232164AbjILIH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbjILIGo (ORCPT
+        with ESMTP id S233046AbjILIGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 04:06:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBC02701;
-        Tue, 12 Sep 2023 01:04:56 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774E010C6;
+        Tue, 12 Sep 2023 01:04:57 -0700 (PDT)
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 79D33660731B;
-        Tue, 12 Sep 2023 09:04:54 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F4E0660731D;
+        Tue, 12 Sep 2023 09:04:55 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1694505895;
-        bh=Owrv6xswWLSiAz7bBSp0CezmLAzRNkQ/3BHLEIYLO8U=;
+        bh=691+u/eVfRRkkKiJaSzVcjnxIWbJX7ogA9Ey0F8h108=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IPshnzgNSSTMMq1TX9qNWz7w3ufsDiZcLZXnrXWz6ZyZTpyg2nPcEV+LyrgmMvpg2
-         vdhCycck6mHvwfXgfEZu16tN6lcczfE6yKu6v2a30U70Ep5QcTZ/oeLofGM0xu2WFp
-         Pa8cHM+BerQhiodQ/mLLec8gwmc7SnUbWiLTcMVGWd0WrIfGIdgdZiy9P3ks/N/apR
-         fCw46XTvEUW4TvJT07UcIonmxMylSRoBmgqDFpsr6QdDt6oEYNVMtkQqU6hu6YsAHC
-         BYy4JtHmgFeDFsTqc7yu3SkI6km8C/b1LgBHqRxYivgyXakL+hc05+782mc7h98oj9
-         lwWpF127rcTdA==
-Message-ID: <761d8d69-bfe9-299e-e845-5ba6a6c0e2fd@collabora.com>
-Date:   Tue, 12 Sep 2023 10:04:51 +0200
+        b=iyoimOBRkb0IP9gPISVEAtopEWFBHXimo8XBbW/1M5wnLdoZV0deT5xibD6z/rYQs
+         KybC7WWeIAsU+lZDA+V8hCIDvfzU8bdT24YHGHuH3B5b51DlNoxHffOEaO0IWb/sxS
+         p4i+DQm5QM5Q+eFvHsWHLAKbI2efmXpXwsT79qHpL7rt0PZGGBSc2YpewYtxypTx98
+         J3/FmVOBnBIkrB6NS1bMNQoxViurRydcWgr9//GkBpPBzbcNBeQis5MmqqXJzylZeg
+         xsx/QrCChyk9u/z4Kr+080Aeh/+evekEiljoduBRqJ9XtZFIe+2N7TyxTaev80lCbC
+         FB6rI+btIUpNw==
+Message-ID: <a8a32bb7-7993-10ed-ec09-cd2db49f2436@collabora.com>
+Date:   Tue, 12 Sep 2023 10:04:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 01/14] media: mediatek: vcodec: add tee client interface
- to communiate with optee-os
+Subject: Re: [PATCH 02/14] media: mediatek: vcodec: allocate tee share memory
+Content-Language: en-US
 To:     Yunfei Dong <yunfei.dong@mediatek.com>,
         =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
         <nfraprado@collabora.com>,
@@ -56,11 +56,10 @@ Cc:     Chen-Yu Tsai <wenst@chromium.org>,
         linux-mediatek@lists.infradead.org,
         Project_Global_Chrome_Upstream_Group@mediatek.com
 References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
- <20230911125936.10648-2-yunfei.dong@mediatek.com>
-Content-Language: en-US
+ <20230911125936.10648-3-yunfei.dong@mediatek.com>
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230911125936.10648-2-yunfei.dong@mediatek.com>
+In-Reply-To: <20230911125936.10648-3-yunfei.dong@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -68,248 +67,213 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Il 11/09/23 14:59, Yunfei Dong ha scritto:
-> Open tee context to initialize the environment in order to communiate
-> with optee-os, then open tee session as the communiation pipeline for
-> lat and core to send data for hardware decode.
+> Allocate two share memory for each lat and core hardware used to share
+> information with optee-os. Msg buffer used to send ipi command and get ack
+> command with optee-os, data buffer used to store vsi information which
+> used for hardware decode.
 > 
 > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->   .../platform/mediatek/vcodec/decoder/Makefile |   1 +
->   .../vcodec/decoder/mtk_vcodec_dec_drv.h       |   5 +
->   .../vcodec/decoder/mtk_vcodec_dec_optee.c     | 157 ++++++++++++++++++
->   .../vcodec/decoder/mtk_vcodec_dec_optee.h     |  73 ++++++++
->   4 files changed, 236 insertions(+)
->   create mode 100644 drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
->   create mode 100644 drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.h
+>   .../vcodec/decoder/mtk_vcodec_dec_optee.c     | 79 ++++++++++++++++++-
+>   .../vcodec/decoder/mtk_vcodec_dec_optee.h     | 32 ++++++++
+>   2 files changed, 110 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/Makefile b/drivers/media/platform/mediatek/vcodec/decoder/Makefile
-> index 904cd22def84..1624933dfd5e 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/Makefile
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/Makefile
-> @@ -21,5 +21,6 @@ mtk-vcodec-dec-y := vdec/vdec_h264_if.o \
->   		mtk_vcodec_dec_stateful.o \
->   		mtk_vcodec_dec_stateless.o \
->   		mtk_vcodec_dec_pm.o \
-> +		mtk_vcodec_dec_optee.o \
->   
->   mtk-vcodec-dec-hw-y := mtk_vcodec_dec_hw.o
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-> index 7e36b2c69b7d..061542c3852c 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.h
-> @@ -11,6 +11,7 @@
->   #include "../common/mtk_vcodec_dbgfs.h"
->   #include "../common/mtk_vcodec_fw_priv.h"
->   #include "../common/mtk_vcodec_util.h"
-> +#include "mtk_vcodec_dec_optee.h"
->   #include "vdec_msg_queue.h"
->   
->   #define MTK_VCODEC_DEC_NAME	"mtk-vcodec-dec"
-> @@ -249,6 +250,8 @@ struct mtk_vcodec_dec_ctx {
->    * @vdec_racing_info: record register value
->    * @dec_racing_info_mutex: mutex lock used for inner racing mode
->    * @dbgfs: debug log related information
-> + *
-> + * @tee_private: optee private data
-
-This should be @optee_private
-
->    */
->   struct mtk_vcodec_dec_dev {
->   	struct v4l2_device v4l2_dev;
-> @@ -289,6 +292,8 @@ struct mtk_vcodec_dec_dev {
->   	/* Protects access to vdec_racing_info data */
->   	struct mutex dec_racing_info_mutex;
->   	struct mtk_vcodec_dbgfs dbgfs;
-> +
-> +	struct mtk_vdec_optee_private *optee_private;
->   };
->   
->   static inline struct mtk_vcodec_dec_ctx *fh_to_dec_ctx(struct v4l2_fh *fh)
 > diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
-> new file mode 100644
-> index 000000000000..3ee9039d2a5b
-> --- /dev/null
+> index 3ee9039d2a5b..806ca87c8de7 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
 > +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
-> @@ -0,0 +1,157 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2023 MediaTek Inc.
-> + * Author: Yunfei Dong <yunfei.dong@mediatek.com>
-> + */
-> +
-> +#include "mtk_vcodec_dec_drv.h"
-> +#include "mtk_vcodec_dec_optee.h"
-> +
-> +/*
-> + * Randomly generated, and must correspond to the GUID on the TA side.
-> + */
-> +static const uuid_t mtk_vdec_lat_uuid =
-> +	UUID_INIT(0xBC50D971, 0xD4C9, 0x42C4,
-> +		  0x82, 0xCB, 0x34, 0x3F, 0xB7, 0xF3, 0x78, 0x90);
-> +
-> +static const uuid_t mtk_vdec_core_uuid =
-> +	UUID_INIT(0xBC50D971, 0xD4C9, 0x42C4,
-> +		  0x82, 0xCB, 0x34, 0x3F, 0xB7, 0xF3, 0x78, 0x91);
-> +
-> +/*
-> + * Check whether this driver supports decoder TA in the TEE instance,
-> + * represented by the params (ver/data) of this function.
-> + */
-> +static int mtk_vcodec_dec_optee_match(struct tee_ioctl_version_data *ver_data, const void *not_used)
+> @@ -47,12 +47,67 @@ int mtk_vcodec_dec_optee_private_init(struct mtk_vcodec_dec_dev *vcodec_dev)
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_private_init);
+>   
+> +static void mtk_vcodec_dec_optee_deinit_memref(struct mtk_vdec_optee_ca_info *ca_info,
+> +					       enum mtk_vdec_optee_data_index data_index)
 > +{
-> +	if (ver_data->impl_id == TEE_IMPL_ID_OPTEE)
-> +		return 1;
-> +	else
-> +		return 0;
+> +	tee_shm_free(ca_info->shm_memref[data_index].msg_shm);
 > +}
 > +
-> +int mtk_vcodec_dec_optee_private_init(struct mtk_vcodec_dec_dev *vcodec_dev)
+> +static int mtk_vcodec_dec_optee_init_memref(struct tee_context *tee_vdec_ctx,
+> +					    struct mtk_vdec_optee_ca_info *ca_info,
+> +					    enum mtk_vdec_optee_data_index data_index)
 > +{
-> +	vcodec_dev->optee_private = devm_kzalloc(&vcodec_dev->plat_dev->dev,
-> +						 sizeof(*vcodec_dev->optee_private),
-> +						 GFP_KERNEL);
-> +	if (!vcodec_dev->optee_private)
-> +		return -ENOMEM;
+> +	struct mtk_vdec_optee_shm_memref *shm_memref;
+> +	int alloc_size = 0, err = 0;
+> +	u64 shm_param_type = 0;
+> +	bool copy_buffer;
 > +
-> +	vcodec_dev->optee_private->vcodec_dev = vcodec_dev;
-> +
-> +	atomic_set(&vcodec_dev->optee_private->tee_active_cnt, 0);
-> +	mutex_init(&vcodec_dev->optee_private->tee_mutex);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_private_init);
-> +
-> +static int mtk_vcodec_dec_optee_init_hw_info(struct mtk_vdec_optee_private *optee_private,
-> +					     enum mtk_vdec_hw_id hardware_index)
-> +{
-> +	struct tee_ioctl_open_session_arg session_arg;
-> +	struct mtk_vdec_optee_ca_info *ca_info;
-> +	int err = 0, session_func;
-> +
-> +	/* Open lat and core session with vdec TA. */
+> +	if (data_index >= OPTEE_MAX_INDEX) {
+> +		pr_err(MTK_DBG_VCODEC_STR "tee invalid data_index: %d.\n", data_index);
+> +		return -EINVAL;
+> +	} else if (data_index == OPTEE_MSG_INDEX) {
+> +		shm_param_type = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
+> +		alloc_size = MTK_VDEC_OPTEE_MSG_SIZE;
+> +		copy_buffer = true;
+> +	} else {
+> +		shm_param_type = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
+> +		alloc_size = MTK_VDEC_OPTEE_HW_SIZE;
+> +		copy_buffer = false;
+> +	}
 
-I assume that anything else than CORE or LAT0 cannot use secure sessions, so...
+This is another good usecase for a switch.
 
-	switch (hardware_index) {
-	case MTK_VDEC_CORE:
-		export_uuid
-		.....
-		break;
-	case MTK_VDEC_LAT0:
-		export_uuid(...
+	switch (data_index) {
+	case OPTEE_MSG_INDEX:
 		......
-		break;
+	case OPTEE_DATA_INDEX:
+		......
 	default:
-		return -EINVAL;
+		invalid data_index; return....
 	}
 
-> +	if (hardware_index == MTK_VDEC_LAT0) {
-> +		export_uuid(session_arg.uuid, &mtk_vdec_lat_uuid);
-> +		session_func = MTK_VDEC_OPTEE_TA_LAT_SUBMIT_COMMAND;
-> +		ca_info = &optee_private->lat_ca;
-> +	} else {
-> +		export_uuid(session_arg.uuid, &mtk_vdec_core_uuid);
-> +		session_func = MTK_VDEC_OPTEE_TA_CORE_SUBMIT_COMMAND;
-> +		ca_info = &optee_private->core_ca;
+> +
+> +	shm_memref = &ca_info->shm_memref[data_index];
+> +
+> +	/* Allocate dynamic shared memory with decoder TA */
+> +	shm_memref->msg_shm_size = alloc_size;
+> +	shm_memref->param_type = shm_param_type;
+> +	shm_memref->copy_to_ta = copy_buffer;
+> +	shm_memref->msg_shm =
+> +		tee_shm_alloc_kernel_buf(tee_vdec_ctx, shm_memref->msg_shm_size);
+
+That'd be 96 columns, one line is ok.
+
+> +	if (IS_ERR(shm_memref->msg_shm)) {
+> +		pr_err(MTK_DBG_VCODEC_STR "tee alloc buf fail: data_index:%d.\n", data_index);
+> +		return -ENOMEM;
 > +	}
 > +
-> +	session_arg.clnt_login = TEE_IOCTL_LOGIN_PUBLIC;
-> +	session_arg.num_params = 0;
-> +
-> +	err = tee_client_open_session(optee_private->tee_vdec_ctx, &session_arg, NULL);
-> +	if (err < 0 || session_arg.ret != 0) {
-> +		pr_err(MTK_DBG_VCODEC_STR "open vdec tee session failed: hw_id(%d) err=%x.\n",
-> +		       hardware_index, session_arg.ret);
-
-Can we use dev_err() please?
-
-> +		return -EINVAL;
+> +	shm_memref->msg_shm_ca_buf = tee_shm_get_va(shm_memref->msg_shm, 0);
+> +	if (IS_ERR(shm_memref->msg_shm_ca_buf)) {
+> +		pr_err(MTK_DBG_VCODEC_STR "tee get shm va fail: data_index:%d.\n", data_index);
+> +		err = PTR_ERR(shm_memref->msg_shm_ca_buf);
+> +		goto err_get_msg_va;
 > +	}
-> +	ca_info->vdec_session_id = session_arg.session;
-> +	ca_info->hw_id = hardware_index;
-> +	ca_info->vdec_session_func = session_func;
 > +
-> +	pr_debug(MTK_DBG_VCODEC_STR "open vdec tee session: hw_id(%d) session_id=%x.\n",
-> +		 hardware_index, ca_info->vdec_session_id);
+> +	return err;
 > +
+> +err_get_msg_va:
+> +	tee_shm_free(shm_memref->msg_shm);
 > +	return err;
 > +}
 > +
-> +static void mtk_vcodec_dec_optee_deinit_hw_info(struct mtk_vdec_optee_private *optee_private,
-> +						enum mtk_vdec_hw_id hw_id)
-> +{
-> +	struct mtk_vdec_optee_ca_info *ca_info;
+>   static int mtk_vcodec_dec_optee_init_hw_info(struct mtk_vdec_optee_private *optee_private,
+>   					     enum mtk_vdec_hw_id hardware_index)
+>   {
+>   	struct tee_ioctl_open_session_arg session_arg;
+>   	struct mtk_vdec_optee_ca_info *ca_info;
+> -	int err = 0, session_func;
+> +	int err = 0, i = 0, j = 0, session_func;
+
+Please don't initialize `i` and `j` here, you can do that in the for loop as
+per common practice.
+
+>   
+>   	/* Open lat and core session with vdec TA. */
+>   	if (hardware_index == MTK_VDEC_LAT0) {
+> @@ -81,6 +136,24 @@ static int mtk_vcodec_dec_optee_init_hw_info(struct mtk_vdec_optee_private *opte
+>   	pr_debug(MTK_DBG_VCODEC_STR "open vdec tee session: hw_id(%d) session_id=%x.\n",
+>   		 hardware_index, ca_info->vdec_session_id);
+>   
+> +	/* Allocate dynamic shared memory with decoder TA */
+> +	for (; i < OPTEE_MAX_INDEX; i++) {
+> +		err = mtk_vcodec_dec_optee_init_memref(optee_private->tee_vdec_ctx, ca_info, i);
+> +		if (err) {
+> +			pr_err(MTK_DBG_VCODEC_STR "init vdec memref failed: %d.\n", i);
+> +			goto err_init_memref;
+> +		}
+> +	}
 > +
-> +	if (hw_id == MTK_VDEC_LAT0)
-> +		ca_info = &optee_private->lat_ca;
-> +	else
-> +		ca_info = &optee_private->core_ca;
+> +	return err;
+> +err_init_memref:
+> +	if (i != 0) {
+> +		for (; j < i; j++)
+> +			mtk_vcodec_dec_optee_deinit_memref(ca_info, j);
+> +	}
 > +
 > +	tee_client_close_session(optee_private->tee_vdec_ctx, ca_info->vdec_session_id);
-> +}
 > +
-> +int mtk_vcodec_dec_optee_open(struct mtk_vdec_optee_private *optee_private)
-> +{
-> +	int err = 0;
+>   	return err;
+>   }
+>   
+> @@ -88,12 +161,16 @@ static void mtk_vcodec_dec_optee_deinit_hw_info(struct mtk_vdec_optee_private *o
+>   						enum mtk_vdec_hw_id hw_id)
+>   {
+>   	struct mtk_vdec_optee_ca_info *ca_info;
+> +	int i = 0;
 
-int err; (but I'd prefer this to be called "ret" instead)
+int i;
 
+>   
+>   	if (hw_id == MTK_VDEC_LAT0)
+>   		ca_info = &optee_private->lat_ca;
+>   	else
+>   		ca_info = &optee_private->core_ca;
+>   
+> +	for (; i < OPTEE_MAX_INDEX; i++)
+
+for (i = 0; i < OPTEE_MAX_INDEX; i++)
+
+> +		mtk_vcodec_dec_optee_deinit_memref(ca_info, i);
 > +
-> +	mutex_lock(&optee_private->tee_mutex);
-> +	if (atomic_inc_return(&optee_private->tee_active_cnt) > 1) {
-> +		mutex_unlock(&optee_private->tee_mutex);
-> +		pr_debug(MTK_DBG_VCODEC_STR "already init vdec optee private data!\n");
-
-dev_dbg()?
-
-> +		return err;
-
-Did you really want to return 0? In that case, don't return err, but just 0.
-
-> +	}
+>   	tee_client_close_session(optee_private->tee_vdec_ctx, ca_info->vdec_session_id);
+>   }
+>   
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.h b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.h
+> index 8b1dca49331e..79b4ec890655 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.h
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.h
+> @@ -18,16 +18,48 @@
+>   
+>   #define MTK_OPTEE_MAX_TEE_PARAMS 4
+>   
+> +#define MTK_VDEC_OPTEE_MSG_SIZE     128
+> +#define MTK_VDEC_OPTEE_HW_SIZE      (8 * SZ_1K)
 > +
-> +	/* Open context with TEE driver */
-> +	optee_private->tee_vdec_ctx = tee_client_open_context(NULL, mtk_vcodec_dec_optee_match,
-> +							      NULL, NULL);
-> +	if (IS_ERR(optee_private->tee_vdec_ctx)) {
-> +		pr_err(MTK_DBG_VCODEC_STR "optee vdec tee context failed.\n");
+> +/**
+> + * struct mtk_vdec_optee_shm_memref - share memory reference params
+> + * @msg_shm:        message shared with TA in TEE.
+> + * @msg_shm_ca_buf: ca buffer.
+> + *
+> + * @msg_shm_size:   share message size.
+> + * @param_type:     each tee param types.
+> + * @copy_to_ta:     need to copy data from ca to share memory.
+> + */
+> +struct mtk_vdec_optee_shm_memref {
+> +	struct tee_shm *msg_shm;
+> +	u8 *msg_shm_ca_buf;
+> +
+> +	u32 msg_shm_size;
+> +	u64 param_type;
+> +	bool copy_to_ta;
+> +};
+> +
+>   /**
+>    * struct mtk_vdec_optee_ca_info - ca related param
+>    * @vdec_session_id:   optee TA session identifier.
+>    * @hw_id:             hardware index.
+>    * @vdec_session_func: trusted application function id used specific to the TA.
+> + * @shm_memref:        share memory reference params.
+>    */
+>   struct mtk_vdec_optee_ca_info {
+>   	u32 vdec_session_id;
+>   	enum mtk_vdec_hw_id hw_id;
+>   	u32 vdec_session_func;
+> +	struct mtk_vdec_optee_shm_memref shm_memref[MTK_OPTEE_MAX_TEE_PARAMS];
+> +};
+> +
+> +/*
+> + * enum mtk_vdec_optee_data_index - used to indentify each share memory informaiton
 
-dev_err()?
-		err = PTR_ERR(optee_private->tee_vdec_ctx);
-		goto err_ctx_open;
-	}
-> +		mutex_unlock(&optee_private->tee_mutex);
-> +		return -ENODEV;
-> +	}
-> +
-> +	err = mtk_vcodec_dec_optee_init_hw_info(optee_private, MTK_VDEC_LAT0);
-> +	if (err < 0)
-> +		goto err_lat_init;
-> +
-> +	if (IS_VDEC_LAT_ARCH(optee_private->vcodec_dev->vdec_pdata->hw_arch)) {
-> +		err = mtk_vcodec_dec_optee_init_hw_info(optee_private, MTK_VDEC_CORE);
-> +		if (err < 0)
-> +			goto err_core_init;
-> +	}
-> +
-> +	mutex_unlock(&optee_private->tee_mutex);
-> +	return 0;
-> +err_core_init:
-> +	mtk_vcodec_dec_optee_deinit_hw_info(optee_private, MTK_VDEC_LAT0);
-> +err_lat_init:
-> +	tee_client_close_context(optee_private->tee_vdec_ctx);
-> +
+Typo: informaiton -> information
 
-err_ctx_open:
-
-> +	mutex_unlock(&optee_private->tee_mutex);
-> +	return err;
-> +}
-> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_open);
-> +
+> + */
+> +enum mtk_vdec_optee_data_index {
+> +	OPTEE_MSG_INDEX = 0,
+> +	OPTEE_DATA_INDEX,
+> +	OPTEE_MAX_INDEX,
+>   };
+>   
+>   /**
 
 Regards,
 Angelo
-
