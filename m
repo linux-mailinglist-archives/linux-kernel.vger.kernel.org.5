@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E50779C7D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE2F79C7D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbjILHOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51002 "EHLO
+        id S231421AbjILHOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjILHOC (ORCPT
+        with ESMTP id S231218AbjILHN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:14:02 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383F0B9;
-        Tue, 12 Sep 2023 00:13:58 -0700 (PDT)
-Received: from localhost.localdomain (unknown [115.110.84.132])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 8FAF3160123;
-        Tue, 12 Sep 2023 09:13:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1694502836;
+        Tue, 12 Sep 2023 03:13:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F21C7C3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694502789;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wJiVd3e0z3dt6zMqGmxvqDx/3/cysR+nCDjl2biifA0=;
-        b=hx+evfRtb33AFfZeAWtF8UnmOMcU7u2JltcPjiZwjCScQ+UjHXfwEUhY6Tj+CcRqrETYao
-        XWq1CjN0PtYIBRMmcNXmo5YvbALJzlIpoYijCLqD/JywndxOx6cI7M+6L/q4nz2wa5B2RN
-        i2yalIpjkq/oiSvj5BtYLNcOzE3Wj6c=
-From:   David Heidelberg <david@ixit.cz>
-To:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     David Heidelberg <david@ixit.cz>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sdm845: cheza doesn't support LMh node
-Date:   Tue, 12 Sep 2023 12:42:04 +0530
-Message-Id: <20230912071205.11502-2-david@ixit.cz>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230912071205.11502-1-david@ixit.cz>
-References: <20230912071205.11502-1-david@ixit.cz>
+        bh=YTSpSyC5EzR4JqjtmXWa4jhow1lkJCD2XnaN08RB0m8=;
+        b=ZV82oyxX6lYliNZKE8gy0UHyXoCc/oB/F3Z0Dby9Xblcz+BRWNa4JhRSOefMlW6KhBVFa8
+        9Ll65ZGUyK1kcLa1u5o8bmYlybc8F20fT9XZJfxaa5cZkxC4yPaLhH1xrvA6Cy+WLzkS58
+        nR7R4XIXc9Be5uxhUxOlAXCj6dkpfK0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-ZBC7QAWDOf6rd5h5_EmeIA-1; Tue, 12 Sep 2023 03:13:07 -0400
+X-MC-Unique: ZBC7QAWDOf6rd5h5_EmeIA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31aef4011cfso3751378f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:13:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694502786; x=1695107586;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YTSpSyC5EzR4JqjtmXWa4jhow1lkJCD2XnaN08RB0m8=;
+        b=TIYgMITJd3EyD8qD1MrE0v+ix5cw2a+SAMwVbqRHuB+kmDAwmy9SJvi8FqhgOkASMy
+         WhDNhkqnfG/jG7QW1OpJwceH8PvclfEU2NtUGXXP5e015XfZ97Mm92qVOib6nkGDGAtQ
+         hQQcYtLc463eBITfCdaPeXCZlkNwAT+oEg4z/uPPO0IUG0FEgyvPOtrQXLOgQuWWWkgA
+         iWGmTTN4q9/FShUD5zSaeWmg+P0fRDCHrq35fFuITBQ+lgdu17Nc+ioGQgO7KCxXUmMJ
+         nvQOgrGjhy3ViNbDGgX+qWW8gav7KLW/qooS14f18S33M4zFus2tuSogTkeku3P9MXKA
+         JGHA==
+X-Gm-Message-State: AOJu0YwIkn7yR8NCZkN/bMK9y8RimV133zsWVjM5nTVZPR2Glpezizi3
+        bUoLOLPZqBX+3OYi7DMlYNlqxElbAtda3789hdV6fDhRzUGR+3e9iYAwWSEFEvK9kR1OLlnCRkK
+        mD+TBfPvuJlCKZoTnndOWS9N6
+X-Received: by 2002:adf:ec10:0:b0:31d:1833:4135 with SMTP id x16-20020adfec10000000b0031d18334135mr9258400wrn.28.1694502786646;
+        Tue, 12 Sep 2023 00:13:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHzD/JqAKRst1uRyrpQ1ec8A47CJ05RJvD9vhfbLXgEIWlOOIOrNSivNy+JkLaFrl4za69IRw==
+X-Received: by 2002:adf:ec10:0:b0:31d:1833:4135 with SMTP id x16-20020adfec10000000b0031d18334135mr9258385wrn.28.1694502786274;
+        Tue, 12 Sep 2023 00:13:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74f:d600:c705:bc25:17b2:71c9? (p200300cbc74fd600c705bc2517b271c9.dip0.t-ipconnect.de. [2003:cb:c74f:d600:c705:bc25:17b2:71c9])
+        by smtp.gmail.com with ESMTPSA id x18-20020adfdd92000000b0031aeca90e1fsm12117706wrl.70.2023.09.12.00.13.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 00:13:05 -0700 (PDT)
+Message-ID: <3a37361d-1f3b-c283-3fb0-ab3614e3d38c@redhat.com>
+Date:   Tue, 12 Sep 2023 09:13:04 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 2/2] proc/kcore: Do not try to access unaccepted memory
+Content-Language: en-US
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
+        kexec@lists.infradead.org
+References: <20230911112114.91323-1-adrian.hunter@intel.com>
+ <20230911112114.91323-3-adrian.hunter@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230911112114.91323-3-adrian.hunter@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cheza firmware doesn't allow controlling LMh from the operating system.
+On 11.09.23 13:21, Adrian Hunter wrote:
+> Support for unaccepted memory was added recently, refer commit
+> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby a virtual
+> machine may need to accept memory before it can be used.
+> 
+> Do not try to access unaccepted memory because it can cause the guest to
+> fail.
+> 
+> For /proc/kcore, which is read-only and does not support mmap, this means a
+> read of unaccepted memory will return zeros.
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>   fs/proc/kcore.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> 
+> Changes in V2:
+> 
+>            Change patch subject and commit message
+>            Do not open code pfn_is_unaccepted_memory()
+> 
+> 
+> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> index 23fc24d16b31..6422e569b080 100644
+> --- a/fs/proc/kcore.c
+> +++ b/fs/proc/kcore.c
+> @@ -546,7 +546,8 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   			 * and explicitly excluded physical ranges.
+>   			 */
+>   			if (!page || PageOffline(page) ||
+> -			    is_page_hwpoison(page) || !pfn_is_ram(pfn)) {
+> +			    is_page_hwpoison(page) || !pfn_is_ram(pfn) ||
+> +			    pfn_is_unaccepted_memory(pfn)) {
+>   				if (iov_iter_zero(tsz, iter) != tsz) {
+>   					ret = -EFAULT;
+>   					goto out;
 
-Fixes: 36c6581214c4 ("arm64: dts: qcom: sdm845: Add support for LMh node")
-Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2:
- - moved power-domains removal from this patch to previous one, since
-   it's not related to LMh support
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index e0ee91225eec..e51bf02fbfe3 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -143,6 +143,10 @@ panel_in_edp: endpoint {
- 	};
- };
- 
-+&cpufreq_hw {
-+	/delete-property/ interrupts-extended; /* reference to lmh_cluster[01] */
-+};
-+
- &psci {
- 	/delete-node/ power-domain-cpu0;
- 	/delete-node/ power-domain-cpu1;
-@@ -275,6 +279,14 @@ &BIG_CPU_SLEEP_1
- 			   &CLUSTER_SLEEP_0>;
- };
- 
-+&lmh_cluster0 {
-+	status = "disabled";
-+};
-+
-+&lmh_cluster1 {
-+	status = "disabled";
-+};
-+
- /*
-  * Reserved memory changes
-  *
 -- 
-2.40.1
+Cheers,
+
+David / dhildenb
 
