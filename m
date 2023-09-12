@@ -2,410 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8175279CF8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B943879CF9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:13:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234403AbjILLL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S234469AbjILLNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:13:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234723AbjILLL1 (ORCPT
+        with ESMTP id S234890AbjILLLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:11:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 34BF026BF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694516993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Iha8C+BE/TMBESY5/Z7PGsbyemw3j0mvo1FB1e9UQIU=;
-        b=Up2U0O7cUHu2AijuS+F/kopV+Y2kl+ADqjcYXziB/jO6bjtoTHiZu4hmetTwxYJiK3Pm3h
-        f3CHlAh2Z9dxRnFt8w79MqtyqePmIPlJ/4tf9QgjoMe/rjgAHQ4VFfb+fd4VA9pjoc7urV
-        7Ui/+wdMohUfBH6guWtXFbPAim0zGaU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-582-N15JSuQtPyKdY_zZ7nokJw-1; Tue, 12 Sep 2023 07:09:52 -0400
-X-MC-Unique: N15JSuQtPyKdY_zZ7nokJw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31aca0c0d63so3652086f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:09:51 -0700 (PDT)
+        Tue, 12 Sep 2023 07:11:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F6171D
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:11:42 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-986d8332f50so731631566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:11:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sigma-star.at; s=google; t=1694517101; x=1695121901; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WMxyxYMtu219LMB4VQwtAfAzEA7xWrv4p6+B3IeeMCg=;
+        b=RB9Md7NlopPy6qhyoTLIEklGGL7AteMsFTzJ2pObAafH1jAv3ApAAoF98dEr+Z8inr
+         ZGB7RqZB1AL9mlKGNDnB4Zivw/+qBj4ENDjiR5ZEo+P2t3SzOKv8uJrVruwcz6BIWz3p
+         +Li9EQB958qRO1g4km5Esobef25kpP13b1aemfcY2bqDbjGG4NIGK3kQuFqvcU/iUu0H
+         1FIf6sesuYNfMHKgn6pxFasSCPdeCR7/1TtVqOwgTfGcfAdku1QdjWNUBVLochlfwGlw
+         6ssTQRfLmCf1f1+nBJvXw2ZoFRQ3AhF3hbu3/tGGe87CM4dx3trmP9uEQC0pFxDpMUd6
+         TZuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694516991; x=1695121791;
+        d=1e100.net; s=20230601; t=1694517101; x=1695121901;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Iha8C+BE/TMBESY5/Z7PGsbyemw3j0mvo1FB1e9UQIU=;
-        b=ZOZ1kx532+lBwex7FQwvk2IYNeBYLj6QEwudh5gDHJa968MyN0/6tzuPYKf+TO5Uv9
-         yF9KwPkqt/SrLi1WVem/wVmJvLcrUIfHY1gNI/tqlmpTTZSVb6AAXNAzclmwM+xNZrTp
-         CkThRZjl/w9BAgW5zuYjKgbo7ndAYfJWpKG8qJ7Ntz1N+Af7AU6zGoEWDNwUtaCaqDnl
-         CqnxYtiQE26OTBAh68u9UVsdfGv+7AaZcmz5MG701QO2NQuUCKMuqe+aIvbY5QXsTGst
-         gmdvnTobmIwNn9mg8Qi8FKniezkGPC+btkTs/of6S4Jtz+/Yw4Sy81hD3+KSxXDg0hjU
-         GH4A==
-X-Gm-Message-State: AOJu0YywiD8pbGFxnU07ncNqokdjmHbO1CTqnWuDlBqNGCPtThedZ+mb
-        5OXB0F2UmK1L8KWI+Ii4TPcjydSgXdw5G8UfxoWF6lNASDfzo6TReeEDTj8LybRgrlZwEn607zb
-        9c2sgAaSOH3kge61xFVhgnaH2l0pCh+EeONsI+6vLetar5zd3woAi8v7v//j6isVNRo8jh0aBPE
-        xyRdBPJv0=
-X-Received: by 2002:a5d:4ac3:0:b0:31d:cf59:8de with SMTP id y3-20020a5d4ac3000000b0031dcf5908demr9559743wrs.19.1694516990787;
-        Tue, 12 Sep 2023 04:09:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEC7QeaDiNTeb3us7hhT2u66huBjQF8B1Y6H9shIubeqxWrRC1mYeXQpC2iP7+EdIPtUrGm8g==
-X-Received: by 2002:a5d:4ac3:0:b0:31d:cf59:8de with SMTP id y3-20020a5d4ac3000000b0031dcf5908demr9559722wrs.19.1694516990341;
-        Tue, 12 Sep 2023 04:09:50 -0700 (PDT)
-Received: from minerva.home (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id e11-20020adffc4b000000b0031f65cdd271sm12538549wrs.100.2023.09.12.04.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 04:09:50 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3] drm/ssd130x: Store the HW buffer in the driver-private CRTC state
-Date:   Tue, 12 Sep 2023 13:09:42 +0200
-Message-ID: <20230912110946.944791-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        bh=WMxyxYMtu219LMB4VQwtAfAzEA7xWrv4p6+B3IeeMCg=;
+        b=tlxGW2zjRJeLqX9ga6dm9rOZoDnMK/JiZ2nhiaLHZXi59MsYRm9YVRsWH71Poy/aBf
+         Xv50r1CpSp3M2D04USNt8x/ST4DdpDRcvj7M/Ri+kazbGCRvRe/HxqN/3xokV1T5/kfe
+         zKLe9kGqL7L8TlhXCMlhKBAbvyr1JJ9/dOezpwaD1QkzHZ18tTBcEUSzBi5Pou9eP7wb
+         ZBo3zu4c67Iw94Y2G9Jnb5v1isd6Rz13zj+2uAsSjfovuS6/wCoqWeYFaQh9npeTfcwl
+         8X6eiYZHay4dFg0GSFKCk152ahMV4dby9Ixa4z/bMv/ob/jjpWqnxIbwu1GQghMDxVEb
+         ngjg==
+X-Gm-Message-State: AOJu0Yz77h2kO42Idq5m8SOc0bSV5/AwCeXvHe7wAjaDFcGYXciFI89e
+        UNKP5Y30y3srQmrX4FGIeS10yQ==
+X-Google-Smtp-Source: AGHT+IGVIXpipGIV3RcKzH1lIoBGyC+f3uy72Hr8eeCBPxmUGKKb6/6xig/ZZuHGDB1u6QZuTruK9g==
+X-Received: by 2002:a17:906:2895:b0:9a1:b967:aca9 with SMTP id o21-20020a170906289500b009a1b967aca9mr9945956ejd.63.1694517100748;
+        Tue, 12 Sep 2023 04:11:40 -0700 (PDT)
+Received: from localhost ([82.150.214.1])
+        by smtp.gmail.com with UTF8SMTPSA id rp6-20020a170907888600b009a9fbeb15f2sm6393915ejc.62.2023.09.12.04.11.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 04:11:40 -0700 (PDT)
+From:   David Gstir <david@sigma-star.at>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     David Gstir <david@sigma-star.at>, Shawn Guo <shawnguo@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        sigma star Kernel Team <upstream+dcp@sigma-star.at>,
+        David Howells <dhowells@redhat.com>,
+        Li Yang <leoyang.li@nxp.com>, Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH v2 0/3] DCP as trusted keys backend
+Date:   Tue, 12 Sep 2023 13:11:11 +0200
+Message-ID: <20230912111115.24274-1-david@sigma-star.at>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
-.atomic_check() callback") moved the allocation of the intermediate and
-HW buffers from the encoder's .atomic_enable callback, to the plane's
-.atomic_check callback.
+This is a revival of the previous patch set submitted by Richard Weinberger:
+https://lore.kernel.org/linux-integrity/20210614201620.30451-1-richard@nod.at/
 
-This was suggested by Maxime Ripard, because drivers aren't allowed to
-fail after the drm_atomic_helper_swap_state() function has been called.
+v1 -> v2:
+- Revive and rebase to latest version
+- Include review comments from Ahmad Fatoum
 
-And the encoder's .atomic_enable happens after the new atomic state has
-been swapped, so allocations (that can fail) shouldn't be done there.
+The Data CoProcessor (DCP) is an IP core built into many NXP SoCs such
+as i.mx6ull.
 
-But the HW buffer isn't really tied to the plane's state. It has a fixed
-size that only depends on the (also fixed) display resolution defined in
-the Device Tree Blob.
+Similar to the CAAM engine used in more powerful SoCs, DCP can AES-
+encrypt/decrypt user data using a unique, never-disclosed,
+device-specific key. Unlike CAAM though, it cannot directly wrap and
+unwrap blobs in hardware. As DCP offers only the bare minimum feature
+set and a blob mechanism needs aid from software. A blob in this case
+is a piece of sensitive data (e.g. a key) that is encrypted and
+authenticated using the device-specific key so that unwrapping can only
+be done on the hardware where the blob was wrapped.
 
-That buffer can be considered part of the CRTC state, and for this reason
-makes more sense to do its allocation in the CRTC .atomic_check callback.
+This patch series adds a DCP based, trusted-key backend and is similar
+in spirit to the one by Ahmad Fatoum [0] that does the same for CAAM.
+It is of interest for similar use cases as the CAAM patch set, but for
+lower end devices, where CAAM is not available.
 
-The other allocated buffer (used to store a conversion from the emulated
-XR24 format to the native R1 format) is part of the plane's state, since
-it will be optional once the driver supports R1 and allows user-space to
-set that pixel format.
+Because constructing and parsing the blob has to happen in software,
+we needed to decide on a blob format and chose the following:
 
-So let's keep the allocation for it in the plane's .atomic_check callback,
-this can't be moved to the CRTC's .atomic_check because changing a format
-does not trigger a CRTC mode set.
+struct dcp_blob_fmt {
+	__u8 fmt_version;
+	__u8 blob_key[AES_KEYSIZE_128];
+	__u8 nonce[AES_KEYSIZE_128];
+	__le32 payload_len;
+	__u8 payload[];
+} __packed;
 
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/dri-devel/CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com/
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+The `fmt_version` is currently 1.
 
-Changes in v3:
-- Call drm_atomic_get_crtc_state() in the plane's .atomic_check (Maxime Ripard).
+The encrypted key is stored in the payload area. It is AES-128-GCM
+encrypted using `blob_key` and `nonce`, GCM auth tag is attached at
+the end of the payload (`payload_len` does not include the size of
+the auth tag).
 
-Changes in v2:
-- Drop RFC prefix.
-- Fix typo in commit message (Thomas Zimmermann).
-- Store the HW buffer in the driver's private CRTC state (Thomas Zimmermann).
-- Just use kmalloc() kcalloc() when allocating buffers (Thomas Zimmermann).
-- Keep the allocation of the intermediate buffer in the plane's .atomic_check
+The `blob_key` itself is encrypted in AES-128-ECB mode by DCP using
+the OTP or UNIQUE device key. A new `blob_key` and `nonce` are generated
+randomly, when sealing/exporting the DCP blob.
 
- drivers/gpu/drm/solomon/ssd130x.c | 152 +++++++++++++++++++++++-------
- 1 file changed, 117 insertions(+), 35 deletions(-)
+This patchset was tested with dm-crypt on an i.MX6ULL board.
 
-diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
-index 3b4dde09538a..4204a69f4c74 100644
---- a/drivers/gpu/drm/solomon/ssd130x.c
-+++ b/drivers/gpu/drm/solomon/ssd130x.c
-@@ -141,14 +141,23 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
- };
- EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
- 
-+struct ssd130x_crtc_state {
-+	struct drm_crtc_state base;
-+	/* Buffer to store pixels in HW format and written to the panel */
-+	u8 *data_array;
-+};
-+
- struct ssd130x_plane_state {
- 	struct drm_shadow_plane_state base;
- 	/* Intermediate buffer to convert pixels from XRGB8888 to HW format */
- 	u8 *buffer;
--	/* Buffer to store pixels in HW format and written to the panel */
--	u8 *data_array;
- };
- 
-+static inline struct ssd130x_crtc_state *to_ssd130x_crtc_state(struct drm_crtc_state *state)
-+{
-+	return container_of(state, struct ssd130x_crtc_state, base);
-+}
-+
- static inline struct ssd130x_plane_state *to_ssd130x_plane_state(struct drm_plane_state *state)
- {
- 	return container_of(state, struct ssd130x_plane_state, base.base);
-@@ -448,13 +457,11 @@ static int ssd130x_init(struct ssd130x_device *ssd130x)
- }
- 
- static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
--			       struct ssd130x_plane_state *ssd130x_state,
--			       struct drm_rect *rect)
-+			       struct drm_rect *rect, u8 *buf,
-+			       u8 *data_array)
- {
- 	unsigned int x = rect->x1;
- 	unsigned int y = rect->y1;
--	u8 *buf = ssd130x_state->buffer;
--	u8 *data_array = ssd130x_state->data_array;
- 	unsigned int width = drm_rect_width(rect);
- 	unsigned int height = drm_rect_height(rect);
- 	unsigned int line_length = DIV_ROUND_UP(width, 8);
-@@ -550,12 +557,10 @@ static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
- 	return ret;
- }
- 
--static void ssd130x_clear_screen(struct ssd130x_device *ssd130x,
--				 struct ssd130x_plane_state *ssd130x_state)
-+static void ssd130x_clear_screen(struct ssd130x_device *ssd130x, u8 *data_array)
- {
- 	unsigned int page_height = ssd130x->device_info->page_height;
- 	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
--	u8 *data_array = ssd130x_state->data_array;
- 	unsigned int width = ssd130x->width;
- 	int ret, i;
- 
-@@ -594,15 +599,13 @@ static void ssd130x_clear_screen(struct ssd130x_device *ssd130x,
- 	}
- }
- 
--static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
-+static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb,
- 				const struct iosys_map *vmap,
--				struct drm_rect *rect)
-+				struct drm_rect *rect,
-+				u8 *buf, u8 *data_array)
- {
--	struct drm_framebuffer *fb = state->fb;
- 	struct ssd130x_device *ssd130x = drm_to_ssd130x(fb->dev);
- 	unsigned int page_height = ssd130x->device_info->page_height;
--	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(state);
--	u8 *buf = ssd130x_state->buffer;
- 	struct iosys_map dst;
- 	unsigned int dst_pitch;
- 	int ret = 0;
-@@ -622,7 +625,7 @@ static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
- 
- 	drm_gem_fb_end_cpu_access(fb, DMA_FROM_DEVICE);
- 
--	ssd130x_update_rect(ssd130x, ssd130x_state, rect);
-+	ssd130x_update_rect(ssd130x, rect, buf, data_array);
- 
- 	return ret;
- }
-@@ -634,12 +637,19 @@ static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
- 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
- 	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
- 	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane_state);
--	unsigned int page_height = ssd130x->device_info->page_height;
--	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
-+	struct drm_crtc *crtc = plane_state->crtc;
-+	struct drm_crtc_state *crtc_state;
- 	const struct drm_format_info *fi;
- 	unsigned int pitch;
- 	int ret;
- 
-+	if (!crtc)
-+		return -EINVAL;
-+
-+	crtc_state = drm_atomic_get_crtc_state(state, crtc);
-+	if (IS_ERR(crtc_state))
-+		return PTR_ERR(crtc_state);
-+
- 	ret = drm_plane_helper_atomic_check(plane, state);
- 	if (ret)
- 		return ret;
-@@ -654,14 +664,6 @@ static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
- 	if (!ssd130x_state->buffer)
- 		return -ENOMEM;
- 
--	ssd130x_state->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
--	if (!ssd130x_state->data_array) {
--		kfree(ssd130x_state->buffer);
--		/* Set to prevent a double free in .atomic_destroy_state() */
--		ssd130x_state->buffer = NULL;
--		return -ENOMEM;
--	}
--
- 	return 0;
- }
- 
-@@ -671,6 +673,10 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
- 	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
- 	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
- 	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
-+	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, plane_state->crtc);
-+	struct ssd130x_crtc_state *ssd130x_crtc_state =  to_ssd130x_crtc_state(crtc_state);
-+	struct ssd130x_plane_state *ssd130x_plane_state = to_ssd130x_plane_state(plane_state);
-+	struct drm_framebuffer *fb = plane_state->fb;
- 	struct drm_atomic_helper_damage_iter iter;
- 	struct drm_device *drm = plane->dev;
- 	struct drm_rect dst_clip;
-@@ -687,7 +693,9 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
- 		if (!drm_rect_intersect(&dst_clip, &damage))
- 			continue;
- 
--		ssd130x_fb_blit_rect(plane_state, &shadow_plane_state->data[0], &dst_clip);
-+		ssd130x_fb_blit_rect(fb, &shadow_plane_state->data[0], &dst_clip,
-+				     ssd130x_plane_state->buffer,
-+				     ssd130x_crtc_state->data_array);
- 	}
- 
- 	drm_dev_exit(idx);
-@@ -698,13 +706,21 @@ static void ssd130x_primary_plane_helper_atomic_disable(struct drm_plane *plane,
- {
- 	struct drm_device *drm = plane->dev;
- 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
--	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane->state);
-+	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
-+	struct drm_crtc_state *crtc_state;
-+	struct ssd130x_crtc_state *ssd130x_crtc_state;
- 	int idx;
- 
-+	if (!plane_state->crtc)
-+		return;
-+
-+	crtc_state = drm_atomic_get_new_crtc_state(state, plane_state->crtc);
-+	ssd130x_crtc_state = to_ssd130x_crtc_state(crtc_state);
-+
- 	if (!drm_dev_enter(drm, &idx))
- 		return;
- 
--	ssd130x_clear_screen(ssd130x, ssd130x_state);
-+	ssd130x_clear_screen(ssd130x, ssd130x_crtc_state->data_array);
- 
- 	drm_dev_exit(idx);
- }
-@@ -737,9 +753,8 @@ static struct drm_plane_state *ssd130x_primary_plane_duplicate_state(struct drm_
- 	if (!ssd130x_state)
- 		return NULL;
- 
--	/* The buffers are not duplicated and are allocated in .atomic_check */
-+	/* The buffer is not duplicated and is allocated in .atomic_check */
- 	ssd130x_state->buffer = NULL;
--	ssd130x_state->data_array = NULL;
- 
- 	new_shadow_plane_state = &ssd130x_state->base;
- 
-@@ -753,7 +768,6 @@ static void ssd130x_primary_plane_destroy_state(struct drm_plane *plane,
- {
- 	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(state);
- 
--	kfree(ssd130x_state->data_array);
- 	kfree(ssd130x_state->buffer);
- 
- 	__drm_gem_destroy_shadow_plane_state(&ssd130x_state->base);
-@@ -793,6 +807,74 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
- 	return MODE_OK;
- }
- 
-+int ssd130x_crtc_helper_atomic_check(struct drm_crtc *crtc, struct drm_atomic_state *state)
-+{
-+	struct drm_device *drm = crtc->dev;
-+	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
-+	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
-+	struct ssd130x_crtc_state *ssd130x_state = to_ssd130x_crtc_state(crtc_state);
-+	unsigned int page_height = ssd130x->device_info->page_height;
-+	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
-+	int ret;
-+
-+	ret = drm_crtc_helper_atomic_check(crtc, state);
-+	if (ret)
-+		return ret;
-+
-+	ssd130x_state->data_array = kmalloc(ssd130x->width * pages, GFP_KERNEL);
-+	if (!ssd130x_state->data_array)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+/* Called during init to allocate the CRTC's atomic state. */
-+static void ssd130x_crtc_reset(struct drm_crtc *crtc)
-+{
-+	struct ssd130x_crtc_state *ssd130x_state;
-+
-+	WARN_ON(crtc->state);
-+
-+	ssd130x_state = kzalloc(sizeof(*ssd130x_state), GFP_KERNEL);
-+	if (!ssd130x_state)
-+		return;
-+
-+	__drm_atomic_helper_crtc_reset(crtc, &ssd130x_state->base);
-+}
-+
-+static struct drm_crtc_state *ssd130x_crtc_duplicate_state(struct drm_crtc *crtc)
-+{
-+	struct ssd130x_crtc_state *old_ssd130x_state;
-+	struct ssd130x_crtc_state *ssd130x_state;
-+
-+	if (WARN_ON(!crtc->state))
-+		return NULL;
-+
-+	old_ssd130x_state = to_ssd130x_crtc_state(crtc->state);
-+	ssd130x_state = kmemdup(old_ssd130x_state, sizeof(*ssd130x_state), GFP_KERNEL);
-+	if (!ssd130x_state)
-+		return NULL;
-+
-+	/* The buffer is not duplicated and is allocated in .atomic_check */
-+	ssd130x_state->data_array = NULL;
-+
-+	__drm_atomic_helper_crtc_duplicate_state(crtc, &ssd130x_state->base);
-+
-+	return &ssd130x_state->base;
-+}
-+
-+static void ssd130x_crtc_destroy_state(struct drm_crtc *crtc,
-+				       struct drm_crtc_state *state)
-+{
-+	struct ssd130x_crtc_state *ssd130x_state = to_ssd130x_crtc_state(state);
-+
-+	kfree(ssd130x_state->data_array);
-+
-+	__drm_atomic_helper_crtc_destroy_state(state);
-+
-+	kfree(ssd130x_state);
-+}
-+
- /*
-  * The CRTC is always enabled. Screen updates are performed by
-  * the primary plane's atomic_update function. Disabling clears
-@@ -800,16 +882,16 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
-  */
- static const struct drm_crtc_helper_funcs ssd130x_crtc_helper_funcs = {
- 	.mode_valid = ssd130x_crtc_helper_mode_valid,
--	.atomic_check = drm_crtc_helper_atomic_check,
-+	.atomic_check = ssd130x_crtc_helper_atomic_check,
- };
- 
- static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
--	.reset = drm_atomic_helper_crtc_reset,
-+	.reset = ssd130x_crtc_reset,
- 	.destroy = drm_crtc_cleanup,
- 	.set_config = drm_atomic_helper_set_config,
- 	.page_flip = drm_atomic_helper_page_flip,
--	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
--	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
-+	.atomic_duplicate_state = ssd130x_crtc_duplicate_state,
-+	.atomic_destroy_state = ssd130x_crtc_destroy_state,
- };
- 
- static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+[0] https://lore.kernel.org/keyrings/20220513145705.2080323-1-a.fatoum@pengutronix.de/
+
+David Gstir (3):
+  crypto: mxs-dcp: Add support for hardware provided keys
+  KEYS: trusted: Introduce support for NXP DCP-based trusted keys
+  doc: trusted-encrypted: add DCP as new trust source
+
+ .../admin-guide/kernel-parameters.txt         |  13 +
+ .../security/keys/trusted-encrypted.rst       |  85 +++++
+ MAINTAINERS                                   |   9 +
+ drivers/crypto/mxs-dcp.c                      | 107 +++++-
+ include/keys/trusted_dcp.h                    |  13 +
+ include/soc/fsl/dcp.h                         |  19 ++
+ security/keys/trusted-keys/Kconfig            |   9 +-
+ security/keys/trusted-keys/Makefile           |   2 +
+ security/keys/trusted-keys/trusted_core.c     |   6 +-
+ security/keys/trusted-keys/trusted_dcp.c      | 313 ++++++++++++++++++
+ 10 files changed, 563 insertions(+), 13 deletions(-)
+ create mode 100644 include/keys/trusted_dcp.h
+ create mode 100644 include/soc/fsl/dcp.h
+ create mode 100644 security/keys/trusted-keys/trusted_dcp.c
+
 -- 
-2.41.0
+2.35.3
 
