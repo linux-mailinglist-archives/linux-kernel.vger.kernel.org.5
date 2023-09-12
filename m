@@ -2,127 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8551679D9D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF37979D9CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237736AbjILT6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S232613AbjILTzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjILT6n (ORCPT
+        with ESMTP id S229500AbjILTzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:58:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE981AE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:58:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694548719; x=1726084719;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9aolbvVGXe/o5wJcSDgi7kIHANgfNpY59ibfl3KF8d8=;
-  b=kzQYqZAzgKsz5rQHoXzLBVxoLqPa+SBSI0PEQolxma4Fxyg1VMZS2RnJ
-   OtL6LBjL7rwwrOorfDk0Oq+ZsgkwQ9JVayUHGtBWmElkm+GSnyYitrsYp
-   C3zObizxfot7Lzg+arQBckS/CHwM7Nq2j4J8iBJCC+oJWhZh09RvrAgl5
-   RaiKD+oPF3wR62aOWNBlovZBFauuQg0Ag5OG6SbaHR6WAzQ2gXsBgn0Dm
-   OsOwGAgU/Mvi0F9sSxUb3IROEzs8gtS28kWnc6E10VtfhhjsoUZbLWbQG
-   tJMeiwnNTcFSJma5h17r1uj4FR+83kVTC+3GxDk+hC2SF/dbnKWXjRV/I
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="382287533"
-X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
-   d="scan'208";a="382287533"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 12:54:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="693604621"
-X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
-   d="scan'208";a="693604621"
-Received: from lkp-server02.sh.intel.com (HELO 47e905db7d2b) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 12 Sep 2023 12:54:22 -0700
-Received: from kbuild by 47e905db7d2b with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qg9Sj-0000D1-1x;
-        Tue, 12 Sep 2023 19:54:18 +0000
-Date:   Wed, 13 Sep 2023 03:53:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ma Ke <make_ruc2021@163.com>, perex@perex.cz, tiwai@suse.com,
-        cujomalainey@chromium.org, maciej.szmigiero@oracle.com,
-        clecigne@google.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: control: do not access controls without possession
- of r_w lock
-Message-ID: <202309130328.UdCL3yzt-lkp@intel.com>
-References: <20230912084530.3307329-1-make_ruc2021@163.com>
+        Tue, 12 Sep 2023 15:55:20 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346451AE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 12:55:16 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RlZ7P3vzrzB1;
+        Tue, 12 Sep 2023 21:55:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1694548513; bh=hQNQ4QCGqogXkkq7quiXHYiRdH8sQiU3p2y0WgbusoQ=;
+        h=Date:Subject:From:To:Cc:From;
+        b=lmOpXkrUV529cwb3qYNI2wBT30mIicDUa0eryPCudafDE5DcDSGg7Pl7LZJKkkg3P
+         bxtKM3jx+1RHManGMndEC38D4U2YC0ggtwHzyWNh7i0b0TfvixbA4A0dW/L3GF9jmb
+         +UFIayaa1D1wuv4rAOzZ47jS7UUulgyTRNeOP1twtPedLUKdVhVo4QHwsAhsh3dzrH
+         nI6kXLsy8Z9yZuGYGd4ITYm/i6F1JqGARRGax11k7x8nEDDgN1MwAT5W5GkSLYXpM3
+         ay78rKGbF5SPd9OPVF7T3rARuB6GeJXgF+RTtCpNaYhIwvniqBNNYIvmdSv5tT5u2x
+         5HxKrlP6gGoOQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Tue, 12 Sep 2023 21:55:13 +0200
+Message-Id: <13334f7016362b2031eb65b03cb1a49b6500957f.1694548262.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v3] locking/mutex: remove redundant argument from
+ __mutex_lock_common()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912084530.3307329-1-make_ruc2021@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ma,
+use_ww_ctx is equivalent to ww_ctx != NULL. The one case where
+use_ww_ctx was true but ww_ctx == NULL leads to the same
+__mutex_add_waiter() call via __ww_mutex_add_waiter().
 
-kernel test robot noticed the following build errors:
+Since now __ww_mutex_add_waiter() is called only with ww_mutex != NULL
+(from both regular and PREEMPT_RT implementations), remove the
+branch there.
 
-[auto build test ERROR on tiwai-sound/for-next]
-[also build test ERROR on tiwai-sound/for-linus linus/master v6.6-rc1 next-20230912]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Resulting object size diffs (by gcc-12) are minor:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ma-Ke/ALSA-control-do-not-access-controls-without-possession-of-r_w-lock/20230912-164832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230912084530.3307329-1-make_ruc2021%40163.com
-patch subject: [PATCH] ALSA: control: do not access controls without possession of r_w lock
-config: arm-randconfig-r032-20230913 (https://download.01.org/0day-ci/archive/20230913/202309130328.UdCL3yzt-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309130328.UdCL3yzt-lkp@intel.com/reproduce)
+   text    data     bss     dec     hex filename (x86-64)
+  22603    4696      16   27315    6ab3 /tmp/before.o
+  22593    4696      16   27305    6aa9 /tmp/after.o
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309130328.UdCL3yzt-lkp@intel.com/
+   text    data     bss     dec     hex filename (arm)
+  13488      56       8   13552    34f0 /tmp/before.o
+  13492      56       8   13556    34f4 /tmp/after.o
 
-All errors (new ones prefixed by >>):
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+v3: extended commit message with `size` diffs
+  + added back `if (ww_ctx)`-guarded store: compiler hoists it into the
+    following branch anyway and so it avoids the unnecessary store in
+    the `ww_ctx == NULL` case.
+v2: extended commit message to note that PREEMPT_RT does not call
+    __ww_mutex_add_waiter() with ww_ctx == NULL
+---
+ kernel/locking/mutex.c    | 15 ++++++---------
+ kernel/locking/ww_mutex.h |  5 -----
+ 2 files changed, 6 insertions(+), 14 deletions(-)
 
->> sound/core/control.c:593:2: error: use of undeclared identifier 'count'
-     593 |         count = kcontrol->count;
-         |         ^
-   sound/core/control.c:594:22: error: use of undeclared identifier 'count'
-     594 |         for (idx = 0; idx < count; idx++)
-         |                             ^
-   2 errors generated.
-
-
-vim +/count +593 sound/core/control.c
-
-   576	
-   577	static int __snd_ctl_remove(struct snd_card *card,
-   578				    struct snd_kcontrol *kcontrol,
-   579				    bool remove_hash)
-   580	{
-   581		unsigned int idx;
-   582	
-   583		lockdep_assert_held_write(&card->controls_rwsem);
-   584	
-   585		if (snd_BUG_ON(!card || !kcontrol))
-   586			return -EINVAL;
-   587		list_del(&kcontrol->list);
-   588	
-   589		if (remove_hash)
-   590			remove_hash_entries(card, kcontrol);
-   591	
-   592		card->controls_count -= kcontrol->count;
- > 593		count = kcontrol->count;
-   594		for (idx = 0; idx < count; idx++)
-   595			snd_ctl_notify_one(card, SNDRV_CTL_EVENT_MASK_REMOVE, kcontrol, idx);
-   596		snd_ctl_free_one(kcontrol);
-   597		return 0;
-   598	}
-   599	
-
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index 4a3c006c41fb..045f7da4e473 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -578,15 +578,12 @@ EXPORT_SYMBOL(ww_mutex_unlock);
+ static __always_inline int __sched
+ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 		    struct lockdep_map *nest_lock, unsigned long ip,
+-		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
++		    struct ww_acquire_ctx *ww_ctx)
+ {
+ 	struct mutex_waiter waiter;
+ 	struct ww_mutex *ww;
+ 	int ret;
+ 
+-	if (!use_ww_ctx)
+-		ww_ctx = NULL;
+-
+ 	might_sleep();
+ 
+ 	MUTEX_WARN_ON(lock->magic != lock);
+@@ -637,12 +634,12 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 
+ 	debug_mutex_lock_common(lock, &waiter);
+ 	waiter.task = current;
+-	if (use_ww_ctx)
++	if (ww_ctx)
+ 		waiter.ww_ctx = ww_ctx;
+ 
+ 	lock_contended(&lock->dep_map, ip);
+ 
+-	if (!use_ww_ctx) {
++	if (!ww_ctx) {
+ 		/* add waiting tasks to the end of the waitqueue (FIFO): */
+ 		__mutex_add_waiter(lock, &waiter, &lock->wait_list);
+ 	} else {
+@@ -754,14 +751,14 @@ static int __sched
+ __mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 	     struct lockdep_map *nest_lock, unsigned long ip)
+ {
+-	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, NULL, false);
++	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, NULL);
+ }
+ 
+ static int __sched
+ __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 		unsigned long ip, struct ww_acquire_ctx *ww_ctx)
+ {
+-	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
++	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx);
+ }
+ 
+ /**
+@@ -841,7 +838,7 @@ mutex_lock_io_nested(struct mutex *lock, unsigned int subclass)
+ 
+ 	token = io_schedule_prepare();
+ 	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE,
+-			    subclass, NULL, _RET_IP_, NULL, 0);
++			    subclass, NULL, _RET_IP_, NULL);
+ 	io_schedule_finish(token);
+ }
+ EXPORT_SYMBOL_GPL(mutex_lock_io_nested);
+diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
+index 3ad2cc4823e5..11acb2efe976 100644
+--- a/kernel/locking/ww_mutex.h
++++ b/kernel/locking/ww_mutex.h
+@@ -493,11 +493,6 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 	struct MUTEX_WAITER *cur, *pos = NULL;
+ 	bool is_wait_die;
+ 
+-	if (!ww_ctx) {
+-		__ww_waiter_add(lock, waiter, NULL);
+-		return 0;
+-	}
+-
+ 	is_wait_die = ww_ctx->is_wait_die;
+ 
+ 	/*
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
