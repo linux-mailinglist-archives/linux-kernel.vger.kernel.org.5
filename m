@@ -2,146 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CBA79DC8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF10579DC96
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbjILXRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        id S234535AbjILXU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjILXRB (ORCPT
+        with ESMTP id S230093AbjILXUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:17:01 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD5B10F7;
-        Tue, 12 Sep 2023 16:16:57 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-500c37d479aso10100301e87.2;
-        Tue, 12 Sep 2023 16:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694560616; x=1695165416; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XrbSVU4nZUFvuKXs1rDJFefP9fH0F3hyySGPvLoP9m8=;
-        b=YzzvrFNtj8Z6VMUMkRu3/32kLqhf2WWzBzG8H1YSIITP3OLuw4c+IyTIMTMHpKOjKt
-         25zhumNrSRpDab/8Vkxu6IZYA0W1oBeieNkhIZVWvk1Yxk2ZTRCf2Idgyxqkd5bqxDvF
-         kMVNyINz73ncXMJl5pG5D3qfZJggauWCB4Fcsb8PLiF2gh+/TpdcmjdXWeFxntc00L29
-         D70UyXFrXQ2s3lMHbJKho0Qv2yLC9B596TzXduupA5oWTfYBZZZwbVNP6fAJeLFUPjEe
-         v5ORKFPXlKIw/k2ZxWhIQtApU57xYdu0u7Hv5hNkLF4n1L9CyrgODlhnwOvW5klZdP+k
-         LLWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694560616; x=1695165416;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XrbSVU4nZUFvuKXs1rDJFefP9fH0F3hyySGPvLoP9m8=;
-        b=jPQ3bvX6lhsloXBm5W//dEIuzrQ8LpnuGCuMOvjPHA04th6r/MJxeMUXu0Euu1wfik
-         3a461pIoBpANs8KZbB/nePXEQ2gVmrqoeYvgXlKqIMs4knOHbCjoZVAqAXz7/djGcK4f
-         bPpctOMp+eV/UdaxVfnE3pg30LF0LsESHPdFmJgW95952oroFxAayREvV0vlRLXxwXyK
-         gN316kgSWc2Qq49penCg0FgIW0cDFeBK1cYUB4NSj9uuEPzW4QYtZNWyel+1fbgq9HSz
-         M93WG6WTH4Pnn+crGop28zx5i+5GSMeq0vEPDL4aJDhqBFcfWFMtRy5dOD0/1GnKj32q
-         V/bw==
-X-Gm-Message-State: AOJu0YzUv9ELVuOxcqStVXnbU/oeCS2XG+zEdUNu963w7xcg4IV00/YQ
-        Yx7JwyHVuApCmraJrOYUTLGGIKZd6LGA7Ol47ZI=
-X-Google-Smtp-Source: AGHT+IEBY3l3EINWayY7tuJfGoVDjPoP8cqckAfPldb0MCin3ecEklcSeeAUDt1vmekTIwLD2t/Y9JLbGHco4LHds+E=
-X-Received: by 2002:a05:6512:31c3:b0:500:a694:46f with SMTP id
- j3-20020a05651231c300b00500a694046fmr951572lfe.19.1694560615656; Tue, 12 Sep
- 2023 16:16:55 -0700 (PDT)
+        Tue, 12 Sep 2023 19:20:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB45410F7;
+        Tue, 12 Sep 2023 16:20:21 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 23:20:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694560819;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ihL4A5HiQP2/aKniH3tdyLo8HIv7di4qMOIz4xPrnAc=;
+        b=I6/7rzZX9aXBFIWPlHAjlPWPuZ0p//EJPDIDSESE0SI+Bwtm6Yh1jIykRXCI7pQWw6vMcp
+        QKQ6GmCQuzkYuUgGOSb3srV48ydmbnR2NTYzeCFx4Z/Uv6nSzug3kFah0rQQ4uHjMlgyby
+        m10JFh/idwXd3KS0EzQ0gZeYyPV989y09fIqUb/tLKXuzryFFuTpmdi9t7irAnre8X08nt
+        lgHgOTzAgLuMZLXFv+Dmu5i24bNYWngktASO3v/gCDAbmap1fZiTWakhznuBa+I5uSsnlH
+        l/cAv2BgCvFUYFbY6Klf2BRTZVb490W/6J50yzjj+kSTTvkL+pXebguIb95wiQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694560819;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=ihL4A5HiQP2/aKniH3tdyLo8HIv7di4qMOIz4xPrnAc=;
+        b=hLHgBA6ZrOY0qVfqBSuP4NkmGZaBGErtqRhtmpvNthp1gAQ5KdoZwePAGWsPZij7dvto4H
+        nNpw55mfR53kdWBA==
+From:   "tip-bot2 for Alison Schofield" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/mm] ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window
+Cc:     Derick Marks <derick.w.marks@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-References: <20230912224654.6556-1-puranjay12@gmail.com> <20230912224654.6556-6-puranjay12@gmail.com>
- <ZQDuVTSycDcjDkvi@shell.armlinux.org.uk>
-In-Reply-To: <ZQDuVTSycDcjDkvi@shell.armlinux.org.uk>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Wed, 13 Sep 2023 01:16:44 +0200
-Message-ID: <CANk7y0iFdgHgu+RXYJvP3swaRS+-Lr0CgOAdcQWtjs4VkrOzdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf, arm32: Always zero extend for LDX with B/H/W
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Wang YanQing <udknight@gmail.com>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <169456081810.27769.10707287336222746575.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 1:04=E2=80=AFAM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Tue, Sep 12, 2023 at 10:46:53PM +0000, Puranjay Mohan wrote:
-> > The JITs should not depend on the verifier for zero extending the upper
-> > 32 bits of the destination register when loading a byte, half-word, or
-> > word.
-> >
-> > A following patch will make the verifier stop patching zext instruction=
-s
-> > after LDX.
->
-> This was introduced by:
->
-> 163541e6ba34 ("arm: bpf: eliminate zero extension code-gen")
->
-> along with an additional function. So three points:
->
-> 1) the commit should probably explain why it has now become undesirable
-> to access this verifier state, whereas it appears it was explicitly
-> added to permit this optimisation.
+The following commit has been merged into the x86/mm branch of tip:
 
-I added some details in the cover letter.
+Commit-ID:     8f1004679987302b155f14b966ca6d4335814fcb
+Gitweb:        https://git.kernel.org/tip/8f1004679987302b155f14b966ca6d4335814fcb
+Author:        Alison Schofield <alison.schofield@intel.com>
+AuthorDate:    Mon, 10 Jul 2023 13:02:59 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Tue, 12 Sep 2023 16:13:34 -07:00
 
-For the complete discussion see: [1]
+ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window
 
-> 2) you state that jits should not depend on this state, but the above
-> commit adds more references than you're removing, so aren't there still
-> references to the verifier remaining after this patch? I count a total
-> of 10, and the patch below removes three.
+Commit fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each
+CFMWS not in SRAT") did not account for the case where the BIOS
+only partially describes a CFMWS Window in the SRAT. That means
+the omitted address ranges, of a partially described CFMWS Window,
+do not get assigned to a NUMA node.
 
-The JITs should not depend on this state for LDX (loading
-a B/H/W.
-This patch removes the usage only for LDX.
+Replace the call to phys_to_target_node() with numa_add_memblks().
+Numa_add_memblks() searches an HPA range for existing memblk(s)
+and extends those memblk(s) to fill the entire CFMWS Window.
 
-> 3) what about the bpf_jit_needs_zext() function that was added to
-> support the export of this zext state?
+Extending the existing memblks is a simple strategy that reuses
+SRAT defined proximity domains from part of a window to fill out
+the entire window, based on the knowledge* that all of a CFMWS
+window is of a similar performance class.
 
-That is still applicable, The verifier will still emit zext
-instructions for other
-instructions like BPF_ALU / BPF_ALU64
+*Note that this heuristic will evolve when CFMWS Windows present
+a wider range of characteristics. The extension of the proximity
+domain, implemented here, is likely a step in developing a more
+sophisticated performance profile in the future.
 
->
-> Essentially, the logic stated in the commit message doesn't seem to be
-> reflected by the proposed code change.
+There is no change in behavior when the SRAT does not describe
+the CFMWS Window at all. In that case, a new NUMA node with a
+single memblk covering the entire CFMWS Window is created.
 
-I will try to provide more information.
-Currently I have asked Alexei if we really need this in [2].
-I still think this optimization is useful and we should keep it.
+Fixes: fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
+Reported-by: Derick Marks <derick.w.marks@intel.com>
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Tested-by: Derick Marks <derick.w.marks@intel.com>
+Link: https://lore.kernel.org/all/eaa0b7cffb0951a126223eef3cbe7b55b8300ad9.1689018477.git.alison.schofield%40intel.com
+---
+ drivers/acpi/numa/srat.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-Thanks,
-Puranjay
-
-[1] https://lore.kernel.org/all/CANk7y0j2f-gPgZwd+YfTL71-6wfvky+f=3DkBC_ccq=
-sS0EHAysyA@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/CANk7y0hK9sQJ-kRx3nQpVJSxpP=3DNzzFaLitOYq8=
-=3DPb6Dvk9fpg@mail.gmail.com/
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index 1f4fc5f..12f330b 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -310,11 +310,16 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+ 	start = cfmws->base_hpa;
+ 	end = cfmws->base_hpa + cfmws->window_size;
+ 
+-	/* Skip if the SRAT already described the NUMA details for this HPA */
+-	node = phys_to_target_node(start);
+-	if (node != NUMA_NO_NODE)
++	/*
++	 * The SRAT may have already described NUMA details for all,
++	 * or a portion of, this CFMWS HPA range. Extend the memblks
++	 * found for any portion of the window to cover the entire
++	 * window.
++	 */
++	if (!numa_fill_memblks(start, end))
+ 		return 0;
+ 
++	/* No SRAT description. Create a new node. */
+ 	node = acpi_map_pxm_to_node(*fake_pxm);
+ 
+ 	if (node == NUMA_NO_NODE) {
