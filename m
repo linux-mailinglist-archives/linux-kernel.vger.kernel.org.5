@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A2E79DB97
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C669F79DB91
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbjILWGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        id S231176AbjILWGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbjILWGn (ORCPT
+        with ESMTP id S229651AbjILWGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:06:43 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEAE10D9;
-        Tue, 12 Sep 2023 15:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694556395;
-        bh=7yyEVzv5R5Mek0+GIIAVeF4dyc7smVUviY+uNMqkA7Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Itbevz5qKXhlgJMDxGHH+Sb0cH9osCWi6Ut+jUZb3IDirD6Iq6pn8tsqAPfD3gdAP
-         mzzOJ2LX8p9sF615hO/5EroTKNsLicZ8BS4td87yIEMTtfI8+v9S3B5fxDqfR9zINm
-         vgqllGL/k6KAJWzTVYeMPyykeV8dsDdD27oKJP6WURTSi913a0nxWxw1en3aH8FM2k
-         JoK+umcvgaUZMFfiu805ohDEMcmrttZPEKz4CneYOgOWBDDPdFI6vhhqgHIsUQpFUg
-         0f14xirrgK4ymPI4vyDz9NLrDn2JLsoXNHtntprUcbx6tK+arXHsmFyLfd64jZHK17
-         l43NoT036ODkw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rld2z0qq9z4xNt;
-        Wed, 13 Sep 2023 08:06:35 +1000 (AEST)
-Date:   Wed, 13 Sep 2023 08:05:58 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Anna Schumaker <anna@kernel.org>,
-        Trond Myklebust <trondmy@gmail.com>,
-        NFS Mailing List <linux-nfs@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the nfs-anna tree
-Message-ID: <20230913080558.2fefa873@canb.auug.org.au>
+        Tue, 12 Sep 2023 18:06:11 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D18010D9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:06:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0EBCC433C9;
+        Tue, 12 Sep 2023 22:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694556367;
+        bh=E2XTGRL/IkbTW32YCF8VS7zqFT4U8Ka0FnC5/INNJTc=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=lCNqeIvByiakywFUCNyfdE+DcGHmywQ1NaP4iUBTtfw1rRWFTvrjxbxN4LXuE1lF3
+         NihgDqoloyCBLJ/fm/XGU/7/hu7ugPD9logEwUU8kFCsfqFzKBFvDSMJW6pcfLVQCG
+         LtmYN3dqtwW6QbnDOdzopGP5F8d1PGRrV6xR1Z5tcuGahOadNnoZW+HC5uzHDfCTT/
+         7s2xHD9K2wJD9SotQfH49yld6kxN1Pob/VPQs7euUXS6Unb8/hceODu4Rz7FSA68KM
+         /+1/z7YDG/5blnaiLkag3mikuMpMJWFXrKy4ao18Ip0d/IIETfnxL2X7Idk8GbTWpo
+         CwptUU65PUzug==
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230912133841.3480466-1-rf@opensource.cirrus.com>
+References: <20230912133841.3480466-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l56: Disable low-power hibernation mode
+Message-Id: <169455636529.155240.12687921810988180049.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 23:06:05 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8684WgscBoc6bHhpm8W4g3l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8684WgscBoc6bHhpm8W4g3l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 12 Sep 2023 14:38:41 +0100, Richard Fitzgerald wrote:
+> Do not allow the CS35L56 to be put into its lowest power
+> "hibernation" mode. This only affects I2C because "hibernation"
+> is already disabled on SPI and SoundWire.
+> 
+> Recent firmwares need a different wake-up sequence. Until
+> that sequence has been specified, the chip "hibernation" mode
+> must be disabled otherwise it can intermittently fail to wake.
+> 
+> [...]
 
-Hi all,
+Applied to
 
-In commit
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-  4788db30d973 ("NFS: Fix O_DIRECT locking issues")
+Thanks!
 
-Fixes tag
+[1/1] ASoC: cs35l56: Disable low-power hibernation mode
+      commit: 18789be8e0d9fbb78b2290dcf93f500726ed19f0
 
-  Fixes: 0703dc52ef0b ("NFS: Fix error handling for O_DIRECT write scheduli=
-ng")
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-has these problem(s):
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-  - Target SHA1 does not exist
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-Maybe you meant
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Fixes: 954998b60caa ("NFS: Fix error handling for O_DIRECT write scheduling=
-")
+Thanks,
+Mark
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/8684WgscBoc6bHhpm8W4g3l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUA4MYACgkQAVBC80lX
-0GyYdggAj5O5WYzNe17kwWMEHdHAnZjz+rVvGiTIcXUcux8dAFFJUzXzwbG/4gHQ
-JhfUFKCCblQZeB7V9Z7t0SPE0NG6XFiAXU1Oc85e+596s//R3nOsag07oi2AJpGD
-ganIP9LPNtAo07JYFkHHZ5sCLl8Ov6i5JS82Ziharx4dnpQJub1kgTaG5g1DVoOB
-TlEXyGnc+j1VPzlH7T2PVHZz2XgZjbQWq4Ei6s0PkFkk6Vg4IlHHAe6JDto9Hj9C
-DBEy7oyDYozg++WXxC+tjzi+w5ByLMrYy6J5vRkXEH6S8+C3aqHp+JhnKdPxIYnz
-uHu/bqvkZLXQT0QnVTmumsvHbkEBVw==
-=Ez6H
------END PGP SIGNATURE-----
-
---Sig_/8684WgscBoc6bHhpm8W4g3l--
