@@ -2,169 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E839279D786
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F8D79D78A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjILR3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        id S233195AbjILR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjILR3G (ORCPT
+        with ESMTP id S229784AbjILR3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:29:06 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9B210D9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:29:02 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-415155b2796so22391cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:29:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694539741; x=1695144541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C68JmHetf6csZ7uaIOcZ347VMnT6195vMOibg6ebhPk=;
-        b=icRgmMOZ1JamHxs7ch4TprRDtsyQ6w3whnhRDbhHRWL4kDhOtCeVotQJn1AnTIpU8g
-         x/MePSsvDeWTTh7RdoI/X0LGiXEaAOlquEspn6oZnRswziZsminwZCqqKdtoNzyWpw+H
-         XC1Yip8GgcQ7bBg4A1IWb8TvvkNpDOqsyDb+622qXzgCbUUOlryj6zouWh9FSzusaG0q
-         P7fBOC2M0P/t+KlkJYfeHd7eJ5B7j3MSs2PvkjusxZDP+jw6w0cOgcm/AWhbGlki818G
-         cWGJTb2fowKJTry25/xkvHWXU1mjPrcdTXyiv8ASHXR4zv1c3xNuxFdSvwpqzV97lMYx
-         TPWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694539741; x=1695144541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C68JmHetf6csZ7uaIOcZ347VMnT6195vMOibg6ebhPk=;
-        b=XNspg6GoLyO9TOGUwYC+T3/UmhHIU7/oUy4LpmEVXdFdB4giJNtTj9fXOVgWlCVweP
-         9ikGV9YCmaingVsZp75UIsmDIRMnTX9Tt/PCcEIiOZUhnhtAcrzaIFoojXUFJN1bjlSM
-         6KafcxqPpJ+5CjZV4vsqVu96sKOLQ6V2ISfeDrWOEPlLZrJPQYMN8dy2JZWNoTNF7e3K
-         hF2gcBaeoTq0AXPm/eQjlpTwZTeZi4x/yVllrGpmeQUyWqXcGAKV30wBjGaEbKwlf4lF
-         fuLelAeU+mLAeAFUs6mBrK3yT8gcAGBdgRXiP7tOMa7XoXbUm2zw7HAbXOUPC6ozhrUP
-         udGg==
-X-Gm-Message-State: AOJu0YxKicQXm5znZ6uxe4ySJ4ZWrTIFa/Q8I3bhdkUkggedMZTDuhbk
-        cnkp2PaqIw2S29iuZG2riYdRItBhTEaFply+8lz3ow==
-X-Google-Smtp-Source: AGHT+IFQsLvdANwfSgZAFEuZYncS5OyKbw/svHb1e7cq5kBKaXzbwRraAgtp/jHHozBU2dyWJsJiSiICFMZrXJHEVLo=
-X-Received: by 2002:a05:622a:1914:b0:410:4845:8d37 with SMTP id
- w20-20020a05622a191400b0041048458d37mr253844qtc.29.1694539741427; Tue, 12 Sep
- 2023 10:29:01 -0700 (PDT)
+        Tue, 12 Sep 2023 13:29:54 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BA110D9;
+        Tue, 12 Sep 2023 10:29:50 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CDnUUm002778;
+        Tue, 12 Sep 2023 17:29:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=zd9e5Dj70FzmypSrLlmnrjpVFXyY6IVIDc43eaceI5M=;
+ b=ShL6Y7KdldL8hDa8ICU+KwY0rjNZJy+GBZZh5WMjqRj37nEhoMgsQmyjj7Lvd0xhPn0t
+ c/ItcFNpbbEXg0x1mcJ/DlF64xOcNhW9BewcKji97IW5kGPVtxLW4T+qInhtG6UBfTwy
+ ldHLPSzm3RVGRGIpQ0dyMS1JAVm0zerOHB8d4AQ9rUqvw/J6xDuA+BLqkEKSdmcMw/S7
+ AUd1UpJW0aE9wKNgfDOGkwYEHNPnuufxYV+g4gp4aDdwicLaKbujnCVuEqeaT84+Gi4x
+ hQm6C+BATq2JooN7ghBFsW+ppY7Zppw5vvq03taypIqrMD1QOtLNBO4FhCs/0CoqypMd 9Q== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2pu4141t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 17:29:38 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CHTbhj032119
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 17:29:37 GMT
+Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
+ 2023 10:29:37 -0700
+From:   Oza Pawandeep <quic_poza@quicinc.com>
+To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     Oza Pawandeep <quic_poza@quicinc.com>
+Subject: [PATCH v5] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+Date:   Tue, 12 Sep 2023 10:29:33 -0700
+Message-ID: <20230912172933.3561144-1-quic_poza@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230911082016.3694700-1-yajun.deng@linux.dev>
- <CANn89i+W1iAQmOhunLbqpvHu8EUO6uawv6Uvx7qimyBa_PBNCg@mail.gmail.com>
- <f3e84a37-3218-0d52-e7ed-2d215fed58e3@intel.com> <CANn89i+AwmpjM-bNuYRS26v-GRrVoucewxgmkvv25PNM4VWPGA@mail.gmail.com>
- <39c906f6-910d-01c7-404a-8fe6a161ef2e@intel.com>
-In-Reply-To: <39c906f6-910d-01c7-404a-8fe6a161ef2e@intel.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 12 Sep 2023 19:28:50 +0200
-Message-ID: <CANn89i+QSPoXphaLzfKCqCHxjsD20ifr8YPJM_fZ_H5kFZ7dwQ@mail.gmail.com>
-Subject: Re: [PATCH] net/core: Export dev_core_stats_rx_dropped_inc sets
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yajun Deng <yajun.deng@linux.dev>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GAMAY4Hrs4oy6eoiz21HVZMHI76JZFUS
+X-Proofpoint-ORIG-GUID: GAMAY4Hrs4oy6eoiz21HVZMHI76JZFUS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_16,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=35 impostorscore=0 adultscore=0
+ malwarescore=0 clxscore=1015 mlxlogscore=27 lowpriorityscore=0 mlxscore=35
+ phishscore=0 suspectscore=0 priorityscore=1501 spamscore=35 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 7:16=E2=80=AFPM Alexander Lobakin
-<aleksander.lobakin@intel.com> wrote:
->
-> From: Eric Dumazet <edumazet@google.com>
-> Date: Tue, 12 Sep 2023 18:04:44 +0200
->
-> > On Tue, Sep 12, 2023 at 5:58=E2=80=AFPM Alexander Lobakin
-> > <aleksander.lobakin@intel.com> wrote:
-> >>
-> >> From: Eric Dumazet <edumazet@google.com>
-> >> Date: Tue, 12 Sep 2023 06:23:24 +0200
-> >>
-> >>> On Mon, Sep 11, 2023 at 10:20=E2=80=AFAM Yajun Deng <yajun.deng@linux=
-.dev> wrote:
-> >>>>
-> >>>> Although there is a kfree_skb_reason() helper function that can be u=
-sed
-> >>>> to find the reason for dropped packets, but most callers didn't incr=
-ease
-> >>>> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped=
-.
-> >>
-> >> [...]
-> >>
-> >>>>  EXPORT_SYMBOL(netdev_stats_to_stats64);
-> >>>>
-> >>>> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(stru=
-ct net_device *dev)
-> >>>> +static struct net_device_core_stats __percpu *netdev_core_stats_all=
-oc(struct net_device *dev)
-> >>>>  {
-> >>>>         struct net_device_core_stats __percpu *p;
-> >>>>
-> >>>> @@ -10488,7 +10488,33 @@ struct net_device_core_stats __percpu *netd=
-ev_core_stats_alloc(struct net_device
-> >>>>         /* This READ_ONCE() pairs with the cmpxchg() above */
-> >>>>         return READ_ONCE(dev->core_stats);
-> >>>>  }
-> >>>> -EXPORT_SYMBOL(netdev_core_stats_alloc);
-> >>>> +
-> >>>> +static inline struct net_device_core_stats __percpu *dev_core_stats=
-(struct net_device *dev)
-> >>>
-> >>> Please remove this inline attritbute. Consider using __cold instead.
-> >>
-> >> __cold? O_o I thought the author's inlining it as it's a couple
-> >> locs/intstructions, while the compilers would most likely keep it
-> >> non-inlined as it's referenced 4 times. __cold will for sure keep it
-> >> standalone and place it in .text.cold, i.e. far away from the call sit=
-es.
-> >> I realize dev_core_stats_*() aren't called frequently, but why making
-> >> only one small helper cold rather than all of them then?
-> >>
-> >
-> > This helper is used at least one time per netdevice lifetime.
-> > This is definitely cold.
->
-> But then each dev_stats_*_inc() (not cold) has to call it from a
-> completely different piece of .text far from their. I either don't
-> understand the idea or dunno. Why not make them cold as well then?
->
+Arm® Functional Fixed Hardware Specification defines LPI states,
+which provide an architectural context loss flags field that can
+be used to describe the context that might be lost when an LPI
+state is entered.
 
-The __cold attribute is only applied to the helper _allocating_ the
-memory, once.
+- Core context Lost
+        - General purpose registers.
+        - Floating point and SIMD registers.
+        - System registers, include the System register based
+        - generic timer for the core.
+        - Debug register in the core power domain.
+        - PMU registers in the core power domain.
+        - Trace register in the core power domain.
+- Trace context loss
+- GICR
+- GICD
 
-Not on the functions actually incrementing the stats.
+Qualcomm's custom CPUs preserves the architectural state,
+including keeping the power domain for local timers active.
+when core is power gated, the local timers are sufficient to
+wake the core up without needing broadcast timer.
 
-There are situations where they can be called thousands/millions of
-times per second (incast flood).
-If this situation happens, the _allocation_ still happens once.
+The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+broadcast timer if core context lost is defined in ACPI LPI.
 
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
 
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index 4d537d56eb84..a30b6e16628d 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -9,6 +9,7 @@
+ #ifndef _ASM_ACPI_H
+ #define _ASM_ACPI_H
+ 
++#include <linux/cpuidle.h>
+ #include <linux/efi.h>
+ #include <linux/memblock.h>
+ #include <linux/psci.h>
+@@ -44,6 +45,25 @@
+ 
+ #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	trbe_interrupt) + sizeof(u16))
++/*
++ * Arm® Functional Fixed Hardware Specification Version 1.2.
++ * Table 2: Arm Architecture context loss flags
++ */
++#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
++
++#ifndef arch_update_idle_state_flags
++static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
++							unsigned int *sflags)
++{
++	if (arch_flags & CPUIDLE_CORE_CTXT)
++		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
++}
++#define arch_update_idle_state_flags _arch_update_idle_state_flags
++#endif
++
++#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
++#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
++#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+ 
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index dc615ef6550a..5c1d13eecdd1 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+ 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+ 		state->exit_latency = lpi->wake_latency;
+ 		state->target_residency = lpi->min_residency;
+-		if (lpi->arch_flags)
+-			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+ 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+ 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 		state->enter = acpi_idle_lpi_enter;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index a73246c3c35e..f8c561a4215e 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1480,6 +1480,10 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ }
+ #endif
+ 
++#ifndef arch_update_idle_state_flags
++#define arch_update_idle_state_flags(af, sf)	do {} while (0)
++#endif
++
+ #ifdef CONFIG_ACPI_PPTT
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
+-- 
+2.25.1
 
-> > Forcing an inline makes no sense, this would duplicate the code four ti=
-mes,
-> > for absolutely no gain.
->
-> I'd love to see bloat-o-meter numbers, I suspect we're talking about
-> 20-30 bytes.
->
-> >
-> >>>
-> >>>> +{
-> >>>> +       /* This READ_ONCE() pairs with the write in netdev_core_stat=
-s_alloc() */
-> >>>> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->=
-core_stats);
-> >>>> +
-> >>>> +       if (likely(p))
-> >>>> +               return p;
-> >>>> +
-> >>>> +       return netdev_core_stats_alloc(dev);
-> >>>> +}
-> >>
-> >> [...]
-> >>
-> >> Thanks,
-> >> Olek
->
-> Thanks,
-> Olek
