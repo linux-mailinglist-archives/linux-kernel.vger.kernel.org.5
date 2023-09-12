@@ -2,117 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2218E79D3EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6D079D3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbjILOlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
+        id S236014AbjILOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:46:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235901AbjILOlM (ORCPT
+        with ESMTP id S230347AbjILOqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:41:12 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFB310D
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:41:08 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-577a98f78b2so455662a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:41:08 -0700 (PDT)
+        Tue, 12 Sep 2023 10:46:38 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF87115;
+        Tue, 12 Sep 2023 07:46:34 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401da71b7c5so64904565e9.2;
+        Tue, 12 Sep 2023 07:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694529668; x=1695134468; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7IA9vO5OF4PfvbjWyLsSgk3yi/uHzp9q+67eqvoiYFs=;
-        b=ccSMZ1+gT7HzhJ83pd8JAaRBvIuyeNDQP3gNephwYBViaMutUkRqgRMNAmj/kQYzQk
-         3pqX4mBv9mwWAv45zfyS3u+KVn05SxE7tCqRKNJzEuz+A956jEzehUiAQfvjQhIh4UKJ
-         K9SHR7F7DmM5izZL2oNgPgzHbuXQtwCzUHrlLbHlP0a5nCwVKRZioZTTXbM3gehporUs
-         hMPv+JA9KskKPBJKDn+h3cHfWw5laaJ8m+HeDM8lxUrvQwQYT85LOMVJRuVajAKs+f0b
-         oEjWnkA//Y55uXGoATRNrtFK/AwGRvfryMr3y5vqwxbDs9a+ebgHinicC14q4WcGn9bl
-         VaAQ==
+        d=gmail.com; s=20221208; t=1694529993; x=1695134793; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K8sFu0+D3E77YJ4z9rbydrUcmzYi8cL1xr3GzlsZe4w=;
+        b=ETyPkG12J1anB4ZBgBf5EYsrYqG109YBS2map2UV8rkE6kplKy4hS+NPQuPEDYmPSL
+         AhSzZHqfytMV6h4BAkfl8LxzxU7QuditBKzokS/jy1wbdqeQ4i2fpXHS/wOx9Ttcwzi2
+         6F1Xh4FNaBEvfZkMYSyLpAyL9sn9RQNcE5Mcze0alGpi1sg5dZkYSVlwoQ0hs3/xWMoK
+         4rryuFiQGpFny/RDdNf+vFb4v2NvldNai9Z3grN/AI4Qq+EgpPXMnxO8Be+uS1QvJOhO
+         VOJkDNwnjOZPnfAtfj1kb0ncQ+afCP4PtA56v5H9fkZyoqc8i5TWG+EusDodprXqD9Q9
+         gG8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694529668; x=1695134468;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7IA9vO5OF4PfvbjWyLsSgk3yi/uHzp9q+67eqvoiYFs=;
-        b=q3W8KENZJ1OTX9SI8WYMI+aJeBPY8ppiScOAo7d26XmeOFnWDUT5imfL9lVZG9AWDg
-         npW9GG7rWBiVdq9k74UfBPDtVx2wm657VVOBE+IMTMa0oUoD713NDopelfoauqukoIT2
-         RlENx+qXtRqaZF9Ef+RNtzS+8+QGWcmL0IkWNNLSGkeuQj3xM3s9gIkPltEQ3rc/Og6o
-         IEWqDFLO49D0fAsX3qknWed55ugBGuJsPO0eby+FeiXUwGBz5hPj5p8JEi9XIysSf1w+
-         meuHwWPeV2imKyHvrLibI2W+RBqUoKeTdsqShHNHjSoYpBK5+s0GBWWVsLGqyhM+H13P
-         xg7w==
-X-Gm-Message-State: AOJu0YwSJ3TrzvttBiKmO805clHrEdGKV0sNMuOltJQ/BFj2mAskKrR+
-        pzcXRLJqJ3i+MXrgHsH/PMDhLw==
-X-Google-Smtp-Source: AGHT+IGI9zf7neD/ytF0XaIRN6SetT6z4G2tT486Bd7sTiE6fcv43FJe/iFhqQFbhtCjZimu2u4lgw==
-X-Received: by 2002:a17:90b:909:b0:271:a9b2:5162 with SMTP id bo9-20020a17090b090900b00271a9b25162mr9472055pjb.27.1694529667739;
-        Tue, 12 Sep 2023 07:41:07 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:ed04:a14b:64d6:aece])
-        by smtp.gmail.com with ESMTPSA id x3-20020a17090ab00300b00268b9862343sm5377469pjq.24.2023.09.12.07.41.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 07:41:07 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 08:41:04 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Iuliana Prodan <iuliana.prodan@nxp.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-imx <linux-imx@nxp.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mp: add reserve-memory nodes for DSP
-Message-ID: <ZQB4gMyfJK9sFXID@p14s>
-References: <20230911224452.15739-1-iuliana.prodan@oss.nxp.com>
- <20230911224452.15739-3-iuliana.prodan@oss.nxp.com>
- <67de5706-d966-dd71-85c3-c95bc1b72733@linaro.org>
- <c0b32f41-46b4-81ad-9718-5f0856e42cb1@nxp.com>
- <32287c0a-e3c1-e474-3c90-913fe2c79879@linaro.org>
- <fe47a94e-6788-a5ee-e8ee-ca58e4fa62d6@nxp.com>
- <af1959ce-d817-2a9e-9c28-fed8c608a3df@linaro.org>
- <dc402d33-88b1-e828-e6a5-2de060fbcdca@nxp.com>
+        d=1e100.net; s=20230601; t=1694529993; x=1695134793;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K8sFu0+D3E77YJ4z9rbydrUcmzYi8cL1xr3GzlsZe4w=;
+        b=l8+fRH1ChLV7nu2AouB3IzBWZk7VnVQu5USWoZRs8oFI1ILJMXI6MQQaas4tyqel15
+         2pcJEKRxxaP4Zq/XKKbBgG7rYnydjd1S3D5HqpW1FGvCdBgFKr85eaZ4y7Cg00JGWMMb
+         BbiIdGoRADNwjH/KDNyyuz3KBNYoRkjDhmFmIq/Ip73ZgcL80mwpY2lxt5fCJt7Xf2x2
+         NXajazz6S97VYR8rLlaHj5Da9uroztzkPH2OiWZbKOknWaiahtPThQ7zSfZRBj5VblhI
+         A+RMgCpdJvweK9v19JH8toyxT4JfwCaWyNm/Kh42E667qGGdcoZAbUDtDO9x5UJPQLyf
+         vQNA==
+X-Gm-Message-State: AOJu0Yxks9++aDSs1s0VJgkwa/9uukxeh9NNUBnYcgy7kvJgDLg0vJVi
+        +7uUQVko0o9sEgccs9kqLcI=
+X-Google-Smtp-Source: AGHT+IGHXQb8saBAd6H+9uYnotfhWfZV5PqBMgupUePv5+BNFjR2MQXXacKt9iDypQAL5TYLBL9epA==
+X-Received: by 2002:a05:600c:3b1e:b0:402:f536:41c5 with SMTP id m30-20020a05600c3b1e00b00402f53641c5mr10911758wms.3.1694529992631;
+        Tue, 12 Sep 2023 07:46:32 -0700 (PDT)
+Received: from [10.254.108.106] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id t15-20020a7bc3cf000000b00402be2666bcsm16448614wmj.6.2023.09.12.07.46.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 07:46:32 -0700 (PDT)
+Message-ID: <95797f3d-65bf-1bd9-9e19-6de42605cfe3@gmail.com>
+Date:   Tue, 12 Sep 2023 16:46:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc402d33-88b1-e828-e6a5-2de060fbcdca@nxp.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 3/9] dma-heap: Provide accessors so that in-kernel drivers
+ can allocate dmabufs from specific heaps
+Content-Language: en-US
+To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
+        "jstultz@google.com" <jstultz@google.com>
+Cc:     "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+ <20230911023038.30649-4-yong.wu@mediatek.com>
+ <803846bc-fd1d-d2ec-2855-456af22c82f8@amd.com>
+ <CANDhNCrQyiFZ+8DnG0iyKBXC0H1698K1a9d2AxOq4whDsZBn+Q@mail.gmail.com>
+ <23e71d1f-08c1-3834-5b1f-2b5714c7bfaa@gmail.com>
+ <255ae6b9ac1b6bea9262069747824b8461475e70.camel@mediatek.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <255ae6b9ac1b6bea9262069747824b8461475e70.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 01:51:42PM +0300, Iuliana Prodan wrote:
-> On 9/12/2023 12:36 PM, Krzysztof Kozlowski wrote:
-> > On 12/09/2023 10:49, Iuliana Prodan wrote:
-> > > > > Should I test this on other tree(s)?
-> > > > You test the patch on the tree you send it. What is the point to test it
-> > > > on some old code, cherry-pick with bugs and then send?
-> > > > 
-> > > > If you have cross-tree dependencies between subsystem, isn't linux-next
-> > > > for this?
-> > > TBH, I don't know, that's why I asked.
-> > > 
-> > > For sure one patch is for remoteproc.
-> > > For the other, I don't know who will pick it, but I'll tested on
-> > > linux-next, as you suggested.
-> > MAINTAINERS file (and get_maintainers.pl) will tell you. Specifically,
-> > this does not look really related to remoteproc patch, so it should not
-> > be together in one patchset.
-> 
-> Hi Mathieu,
-> 
-> I need to send a v2 - to fix the dtsi missing bracket on patch 2.
-> So, should I keep the 2 patches together or send them separately?
+Am 12.09.23 um 10:52 schrieb Yong Wu (吴勇):
+> [SNIP]
+>> But what we should try to avoid is that newly merged drivers provide
+>> both a driver specific UAPI and DMA-heaps. The justification that
+>> this
+>> makes it easier to transit userspace to the new UAPI doesn't really
+>> count.
+>>
+>> That would be adding UAPI already with a plan to deprecate it and
+>> that
+>> is most likely not helpful considering that UAPI must be supported
+>> forever as soon as it is upstream.
+> Sorry, I didn't understand this. I think we have not change the UAPI.
+> Which code are you referring to?
+
+Well, what do you need this for if not a new UAPI?
+
+My assumption here is that you need to export the DMA-heap allocation 
+function so that you can server an UAPI in your new driver. Or what else 
+is that good for?
+
+As far as I understand you try to upstream your new vcodec driver. So 
+while this change here seems to be a good idea to clean up existing 
+drivers it doesn't look like a good idea for a newly created driver.
+
+Regards,
+Christian.
+
+>>> So I think this patch is a little confusing in this series, as I
+>> don't
+>>> see much of it actually being used here (though forgive me if I'm
+>>> missing it).
+>>>
+>>> Instead, It seems it get used in a separate patch series here:
+>>>     
+>> https://lore.kernel.org/all/20230911125936.10648-1-yunfei.dong@mediatek.com/
+>>
+>> Please try to avoid stuff like that it is really confusing and eats
+>> reviewers time.
+> My fault, I thought dma-buf and media belonged to the different tree,
+> so I send them separately. The cover letter just said "The consumers of
+> the new heap and new interface are our codecs and DRM, which will be
+> sent upstream soon", and there was no vcodec link at that time.
+>
+> In the next version, we will put the first three patches into the
+> vcodec patchset.
+>
+> Thanks.
 >
 
-Marco is already aware of this patchset so I would keep them together.
-
-> Thanks,
-> Iulia
-> 
-> 
-> 
