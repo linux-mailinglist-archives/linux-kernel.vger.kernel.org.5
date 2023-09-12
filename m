@@ -2,427 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE8279C1C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F0B79C1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbjILBjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        id S236121AbjILBnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbjILBjE (ORCPT
+        with ESMTP id S235737AbjILBnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:39:04 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D812104424
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:16:39 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 32D912C04D4;
-        Tue, 12 Sep 2023 13:16:37 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1694481397;
-        bh=miyy+WxdO0pDzWHWzOdsK7PFP9sBc+3b7pKwZqVtXT8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LYxtHaFIEKvA8piUN8Oxupg5oIIfFtDNyDzsY03r64S0Z3R6d/i4P5xj0a6qs18Yv
-         oyrAp3/VveBWYyCnj8m9EAAlHElvNd6fwXlkINzWXy1XY08C4x2GNXSP2GVTu/Ck7c
-         n6ZOsjHcz9AmhHVaooIUSJmAZj6R2S92heNJVZHp6OT8F9JxOwTPvHfPM1Hy4vVma6
-         6z933SyAMsfLmpoeM3kAdY+TxUwTh/c/lAtWDfMTOGAMZKlXvBuraNcccUhzdxxVSN
-         8AfPUBC+pwooZqe90tXBK29+cKU8FZ9ciAycsq02M8l+ptVJKhhFRqN2OFs3QT7FaM
-         nXdOg0HW4o/zQ==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B64ffbbf50000>; Tue, 12 Sep 2023 13:16:37 +1200
-Received: from aryans-dl.ws.atlnz.lc (aryans-dl.ws.atlnz.lc [10.33.22.26])
-        by pat.atlnz.lc (Postfix) with ESMTP id F421613EE32;
-        Tue, 12 Sep 2023 13:16:36 +1200 (NZST)
-Received: by aryans-dl.ws.atlnz.lc (Postfix, from userid 1844)
-        id F36062038C3; Tue, 12 Sep 2023 13:16:36 +1200 (NZST)
-From:   Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-To:     aryan.srivastava@alliedtelesis.co.nz
-Cc:     andi.shyti@kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: octeon: Add block-mode r/w
-Date:   Tue, 12 Sep 2023 13:16:32 +1200
-Message-ID: <20230912011633.2401616-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <29186bdd021eae1ed6a0b92af7213db23b7b6f06.camel@alliedtelesis.co.nz>
-References: <29186bdd021eae1ed6a0b92af7213db23b7b6f06.camel@alliedtelesis.co.nz>
+        Mon, 11 Sep 2023 21:43:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C0611EBD0;
+        Mon, 11 Sep 2023 18:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694481583; x=1726017583;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=BExOGv6tQSpQyfviRa02jiawODdESxLM3oo1hwYhE7U=;
+  b=lDCGkOOCVE4jYUVfBAvLxy4XK5okUfWVtfQCuLiXd9WRXqPrvIjDdBmc
+   2PtH91aiAVUxa7yk8rJUoyoynl177hWZRnpwiMGkzw/jKqK+Hxwpe+2ZP
+   xfqhCiY71H+xDzKRNUct0oEVbLbs3yQmfjKlvg9F9p1I/i2YjqLUwcaZe
+   sUfanUmxBkBFreo92lHK4WxJh3ZSSAo6bwWxW6lK0oIBNHt9RXoCm+LOL
+   J3KbTcwPVbT8FSGEgZYNgLEvxtR+fpYaFXOlQbZBtYj5FVzwaao8o0pzE
+   0zmsL+Q/O+9AUViKc73y7RO4QnvWZCDjD0BR1KUahxtmHBk2R58AcMgXx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375581938"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="375581938"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 18:19:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="736951717"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="736951717"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Sep 2023 18:19:42 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 11 Sep 2023 18:19:41 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 11 Sep 2023 18:19:41 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 11 Sep 2023 18:19:41 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.170)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 11 Sep 2023 18:19:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CPlc/04hDWeXioeUDTrPoDMKlO3lZKz4qPACPASZkqnFTQdnpSy23ZS/graoH/a3QK4V7ln40PnWftKncQK0uPayAhoVJwV3Cw6yDkDABkCDFfMC4JgiDcA8nmZosFuOWMm7i/C+r5WGMUeKkFLOjY32v8PGQORXelETDZxEu7b/VxkIXMpLmFe14iReLoXA203hdRdbQMUWi3L1gD4BNppkesbyrZbYm71xGfR967uy2kelZViwmgAEhjEpzFr9O5Gg0qbtcnLmDCllmoy+q/N9Crj/lYenwRbKAQgYv/gDifAnfqSg8SFS0eGBh3Rz287OeD3zcY93AqE6Kpy2sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2bSe2jBZI3oq7pIvDuYH0vUYUID1i/Mr+iDojvDy3oY=;
+ b=XmklqWuJPdtgqjGu9QYxFHVQ2vImoN4AHUtFgQcAeW3mddDVa+vYd4+CHDrWRZxZonBal9AkoNScNgnh78/hsDah31fktcZ/mM01aufePJt31uhVnnWvuMq/x+p1ixAwp8z2Q6CchiKjVG07YOAIOkzYqDAJiz64rg2xXUZ356q9UJpEnmtcTjt93UDCBbpKRkgdOjezt14F4DcQ8PCYBahCck5ytLtmWLjGoUTTmzkW5br/gWEoirGDKFhrRs5niBzBMkDXbM0Jf/7T/4ioAiHh4ZPB/7xxl9ujCE5UDVR60Crz6As8n8x6yWjkmHzs7QcyTnFgs9/l0H1r5gOfPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by PH7PR11MB7478.namprd11.prod.outlook.com (2603:10b6:510:269::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Tue, 12 Sep
+ 2023 01:19:38 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
+ 01:19:38 +0000
+Date:   Mon, 11 Sep 2023 18:18:37 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Alison Schofield <alison.schofield@intel.com>,
+        <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
+ configuration from the device
+Message-ID: <64ffbc6d449db_2f5aa329489@iweiny-mobl.notmuch>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
+ <ZPnwPDZrKYT7hp6X@aschofie-mobl2>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZPnwPDZrKYT7hp6X@aschofie-mobl2>
+X-ClientProxiedBy: SJ0PR03CA0136.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::21) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=fYfTNHYF c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=zNV7Rl7Rt7sA:10 a=ypzmiDo2Z2DPeK6oHa8A:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH7PR11MB7478:EE_
+X-MS-Office365-Filtering-Correlation-Id: 437b3bc3-d44f-4732-1b78-08dbb32e5368
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5DoLcr2eC0ky9eYkS1bzoxI8uuWDIlBEQd/CtWBq33NV9rdw92yb2YPq809L3X5EAR/D/5JEL0qx7UCEtTxWPiE2FtLCX+4eIa5UOQ/GIMLMjkwEX91v4nnV4sQVWRug7b/xbpAegs6o2ZoKBGPg0UvRHRRwiyLXO3kF8bG085D27GFagW1/kDAimtUagKlHnWIT2sqbJP4Zt/rnVvisHas4lsfJjLY8NTB2aI0KL5b4M3WLKlRzLF8Le2vbklUxq05zpsAsGFv5UyrwQD6g+DVfFMlkuEYxjwEsb0XuuQ/3jmVFGhiC6qfYkuJYjB28VLOVz+FSPKivBJfv5YPTZOSZklkE8jsVX1iXiNgpgqu+02IlAGsNAOjAGTs/z2DjGh8XUQgngt0CzM/bpF/3jskMWbk6GYpSo0GzSzzlc9OrptqFx4mzfPenbuJ1JsLgLD+kbYGkwJ4Q9z6EXTitv6HBHOfM3sinnyxsTg56jc7d6Lpu8Fgloca+l5UtOed0ZQTiQ96x44EpEOhNKueSzegK9YdVaCvSGV7q9rQ2CAbzup8fbaQ1LZO5GfGrpVCI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(366004)(376002)(136003)(1800799009)(186009)(451199024)(6486002)(6506007)(41300700001)(316002)(478600001)(2906002)(86362001)(38100700002)(54906003)(66556008)(82960400001)(66946007)(66476007)(5660300002)(8936002)(8676002)(4326008)(44832011)(6512007)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4ksMjL2U7wH4uMXTelkWlLmHCqWugQzFcBBEK0zhHMwtWKR1HHjQLbQc9HyW?=
+ =?us-ascii?Q?nYTK8bXmaV8m/dVzQlmjykJ/uM9PMtczv61wCPDTbwEfJTZBhqOZPwhEduDY?=
+ =?us-ascii?Q?jLhANbQoditau2UlZi6sjl746xUY9YsBAOHK9wYa+Tt7unlt272SFlOZeQtK?=
+ =?us-ascii?Q?VsxuCXt3n3dw1V9flz9yr0KCUBmoIPnDmb6iGUDiv92WbnmJ9OjeBTWLfH6W?=
+ =?us-ascii?Q?4wwUJe491DyKX8cDiecxPYbvCsPWaaRcELD0TIGlqGca+4WajYLD2zYNcQfo?=
+ =?us-ascii?Q?hUDflWo6b2IfKStgQe4yJK1KnwkuXC/qe9+TA9Ida4GGjvsS9do7cQsC2Y7E?=
+ =?us-ascii?Q?UReC4PhP3YaM591M5NZ2aUCge76zKt4rGISr0tTPK+IIyKfR0QhA6aGjLzFg?=
+ =?us-ascii?Q?wepN56WK6o5J7QAzDc8ksOgo6aH7/nGL94AFBhJTjax+8RSSRAf9Zb2zMuaz?=
+ =?us-ascii?Q?O9rX1MF3Y5IVr4eQrSAC8swZBsYP9m8uIhUMjzYhW06zL84FEGie0EWjB1Ej?=
+ =?us-ascii?Q?TE/g0ktpXSezkPS7GwSzvG7Xmhk8FvrlmrIKhp9FsDm7kgNPxrPrjoYg/x9i?=
+ =?us-ascii?Q?CJZhMF0gp8C2YGsVI/XSILs2atzAPK2C6k2l1Rfa+slGMsEURGbXQTdiyE5a?=
+ =?us-ascii?Q?/y8tDTXBJM5YCdFMcR99+SrA6h6mIrcFhM1fi0Bj910jy405N0FKBGUABpJw?=
+ =?us-ascii?Q?cK+7rbQQi/SzgolLcPvgFv3qUfoDD2WV9L9hjtSKJ5oTSRmt+uutjRhZ2RSt?=
+ =?us-ascii?Q?W6zuMN7cTNbeZXNfiOufeQDeuICiZaPWx8cnxXCBCG6NQ7Xvp3syYYUetK+4?=
+ =?us-ascii?Q?4b1p6ik+l+p8ygzYSSH5aPum0JdOV9CSWd/oBU0NxYuk2EJvsqPUtzGEIrvx?=
+ =?us-ascii?Q?QijJiQGtld9KuyGYcgGzH2PPuHu5u4t+shioutjJ0FihbxZGWDK6h7A2nknO?=
+ =?us-ascii?Q?OirSaX5iT4wsOYjDJ46i1a9dY8vin451dyWiVz/DjwIhiy0kbk/KrVE+oFof?=
+ =?us-ascii?Q?3VQGcSZ4g8Nw7TBYFv7U2ifZKD41SU/t0yrcyEX//OLhMfm3xRSRU76C4rK/?=
+ =?us-ascii?Q?62kXCxhMQLJrJYz/YhqLrZNVUmRkAYLVHqyaBg4+Z834AfG2bA+op1JTDHwL?=
+ =?us-ascii?Q?XlswuPC2rbVrGvdAW1oZuvV5nJwj17tQ4zn3GYIayHlYJZopmbe3EUbWok+5?=
+ =?us-ascii?Q?83VTu13yTf9ySMzpNb2QMqV7msq6+dZrqz20HXUhOBKYgNL0+TQrATUP6aBr?=
+ =?us-ascii?Q?Vdp/WZHxgZkdzKLp1ywlfu4nTsdS7kIDKkV/U6oFJTDpbch7u1MeioG9KZwx?=
+ =?us-ascii?Q?09x/XO9qMsr6asBzruo/2+p/cCsRUPy2XATOGaEM9G5+6Jbc0J31EIIRD5Sh?=
+ =?us-ascii?Q?F4Dy+wg2BdNKSWVg/CDWJ+T7NdsatS97/X2Xs0hYPIF+ZpSR07ZzwJhmYcH4?=
+ =?us-ascii?Q?zZROAk0whV2XcuJfYOu+xu4ZU7kEyrTLCY5GKx9imC+dQ6pjRZPNrPFBFTxy?=
+ =?us-ascii?Q?2FcSpgaCw166oEUFk+gG9MBuk8dFEAGGR82Co/dvZa+ejO3M/eTln5HiFZJy?=
+ =?us-ascii?Q?HxC118W4xZZtb2V6SssVavBombd1tQCjtER8eLWtT6qybT5MKtdgwWqL6Vv+?=
+ =?us-ascii?Q?MalwNATvbYWEBbJoxl8yg40Xz35TfwV7S3EAlwK0kJZK?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 437b3bc3-d44f-4732-1b78-08dbb32e5368
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 01:19:38.5784
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oqPP0cu52mUH8io5nPuDFSUsQc72RpU8iYbf4jygwHtOVOaaV/Ck2CWL7P44ClSskW2IPad/qSmihFlIIZ1deg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7478
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for block mode read/write operations on
-Thunderx chips.
+Alison Schofield wrote:
+> On Mon, Aug 28, 2023 at 10:20:54PM -0700, Ira Weiny wrote:
+> > From: Navneet Singh <navneet.singh@intel.com>
+> > 
+> > Devices can optionally support Dynamic Capacity (DC).  These devices are
+> > known as Dynamic Capacity Devices (DCD).
+> 
+> snip
+> 
+> > 
+> > +static enum cxl_region_mode
+> > +cxl_decoder_to_region_mode(enum cxl_decoder_mode mode)
+> > +{
+> > +	switch (mode) {
+> > +	case CXL_DECODER_NONE:
+> > +		return CXL_REGION_NONE;
+> > +	case CXL_DECODER_RAM:
+> > +		return CXL_REGION_RAM;
+> > +	case CXL_DECODER_PMEM:
+> > +		return CXL_REGION_PMEM;
+> > +	case CXL_DECODER_DEAD:
+> > +		return CXL_REGION_DEAD;
+> > +	case CXL_DECODER_MIXED:
+> > +	default:
+> > +		return CXL_REGION_MIXED;
+> > +	}
+> > +
+> > +	return CXL_REGION_MIXED;
+> 
+> Can the paths to return _MIXED be simplified here?
 
-When attempting r/w operations of greater then 8 bytes
-block mode is used, instead of performing a series of
-8 byte reads.
+I suppose:
 
-Signed-off-by: Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
----
-Changes in v2:
-- comment style and formatting.
+...
+	case CXL_DECODER_MIXED:
+	default:
+		break;
+	}
+	
+	return CXL_REGION_MIXED;
+...
 
-Changes in v3:
-- comment style and formatting.
+I don't think that makes things any better.
 
-Changes in v4:
-- Refactoring common code.
-- Additional comments.
----
- drivers/i2c/busses/i2c-octeon-core.c     | 196 +++++++++++++++++++----
- drivers/i2c/busses/i2c-octeon-core.h     |  14 ++
- drivers/i2c/busses/i2c-thunderx-pcidrv.c |   4 +
- 3 files changed, 185 insertions(+), 29 deletions(-)
+> 
+> 
+> > +}
+> > +
+> snip
+> 
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > index cd4a9ffdacc7..ed282dcd5cf5 100644
+> > --- a/drivers/cxl/cxl.h
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -374,6 +374,28 @@ static inline const char *cxl_decoder_mode_name(enum cxl_decoder_mode mode)
+> >  	return "mixed";
+> >  }
+> >  
+> > +enum cxl_region_mode {
+> > +	CXL_REGION_NONE,
+> > +	CXL_REGION_RAM,
+> > +	CXL_REGION_PMEM,
+> > +	CXL_REGION_MIXED,
+> > +	CXL_REGION_DEAD,
+> > +};
+> 
+> I'm concerned about _DEAD.
+> At first I was going to say name these as CXL_REGION_MODE_*, but it's
+> pretty obvious that these are mode words...except for DEAD. Is that 
+> an actual mode or is it some type of status? I don't think I see it
+> used yet.
 
-diff --git a/drivers/i2c/busses/i2c-octeon-core.c b/drivers/i2c/busses/i2=
-c-octeon-core.c
-index 845eda70b8ca..1ba4ac24b02a 100644
---- a/drivers/i2c/busses/i2c-octeon-core.c
-+++ b/drivers/i2c/busses/i2c-octeon-core.c
-@@ -130,6 +130,25 @@ static void octeon_i2c_hlc_disable(struct octeon_i2c=
- *i2c)
- 	octeon_i2c_ctl_write(i2c, TWSI_CTL_ENAB);
- }
-=20
-+static void octeon_i2c_block_enable(struct octeon_i2c *i2c)
-+{
-+	if (i2c->block_enabled || !TWSI_BLOCK_CTL(i2c))
-+		return;
-+
-+	i2c->block_enabled =3D true;
-+	octeon_i2c_writeq_flush(TWSI_MODE_STRETCH
-+		| TWSI_MODE_BLOCK_MODE, i2c->twsi_base + TWSI_MODE(i2c));
-+}
-+
-+static void octeon_i2c_block_disable(struct octeon_i2c *i2c)
-+{
-+	if (!i2c->block_enabled || !TWSI_BLOCK_CTL(i2c))
-+		return;
-+
-+	i2c->block_enabled =3D false;
-+	octeon_i2c_writeq_flush(TWSI_MODE_STRETCH, i2c->twsi_base + TWSI_MODE(i=
-2c));
-+}
-+
- /**
-  * octeon_i2c_hlc_wait - wait for an HLC operation to complete
-  * @i2c: The struct octeon_i2c
-@@ -268,6 +287,7 @@ static int octeon_i2c_start(struct octeon_i2c *i2c)
- 	u8 stat;
-=20
- 	octeon_i2c_hlc_disable(i2c);
-+	octeon_i2c_block_disable(i2c);
-=20
- 	octeon_i2c_ctl_write(i2c, TWSI_CTL_ENAB | TWSI_CTL_STA);
- 	ret =3D octeon_i2c_wait(i2c);
-@@ -485,40 +505,53 @@ static int octeon_i2c_hlc_write(struct octeon_i2c *=
-i2c, struct i2c_msg *msgs)
- 	return ret;
- }
-=20
--/* high-level-controller composite write+read, msg0=3Daddr, msg1=3Ddata =
-*/
--static int octeon_i2c_hlc_comp_read(struct octeon_i2c *i2c, struct i2c_m=
-sg *msgs)
-+/* Process hlc transaction */
-+static int octeon_i2c_hlc_cmd_send(struct octeon_i2c *i2c, u64 cmd)
- {
--	int i, j, ret =3D 0;
--	u64 cmd;
--
--	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_hlc_int_clear(i2c);
-+	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-=20
--	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
--	/* SIZE */
--	cmd |=3D (u64)(msgs[1].len - 1) << SW_TWSI_SIZE_SHIFT;
--	/* A */
--	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+	return octeon_i2c_hlc_wait(i2c);
-+}
-=20
--	if (msgs[0].flags & I2C_M_TEN)
-+/* Construct and send i2c transaction core cmd */
-+static int octeon_i2c_hlc_cmd(struct octeon_i2c *i2c, struct i2c_msg msg=
-, u64 cmd)
-+{
-+	if (msg.flags & I2C_M_TEN)
- 		cmd |=3D SW_TWSI_OP_10_IA;
- 	else
- 		cmd |=3D SW_TWSI_OP_7_IA;
-=20
--	if (msgs[0].len =3D=3D 2) {
-+	if (msg.len =3D=3D 2) {
- 		u64 ext =3D 0;
-=20
- 		cmd |=3D SW_TWSI_EIA;
--		ext =3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
--		cmd |=3D (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-+		ext =3D (u64)msg.buf[0] << SW_TWSI_IA_SHIFT;
-+		cmd |=3D (u64)msg.buf[1] << SW_TWSI_IA_SHIFT;
- 		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
- 	} else {
--		cmd |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+		cmd |=3D (u64)msg.buf[0] << SW_TWSI_IA_SHIFT;
- 	}
-=20
--	octeon_i2c_hlc_int_clear(i2c);
--	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-+	return octeon_i2c_hlc_cmd_send(i2c, cmd);
-+}
-=20
--	ret =3D octeon_i2c_hlc_wait(i2c);
-+/* high-level-controller composite write+read, msg0=3Daddr, msg1=3Ddata =
-*/
-+static int octeon_i2c_hlc_comp_read(struct octeon_i2c *i2c, struct i2c_m=
-sg *msgs)
-+{
-+	int i, j, ret =3D 0;
-+	u64 cmd;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+
-+	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
-+	/* SIZE */
-+	cmd |=3D (u64)(msgs[1].len - 1) << SW_TWSI_SIZE_SHIFT;
-+	/* A */
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	/* Send core command */
-+	ret =3D octeon_i2c_hlc_cmd(i2c, msgs[0], cmd);
- 	if (ret)
- 		goto err;
-=20
-@@ -579,10 +612,7 @@ static int octeon_i2c_hlc_comp_write(struct octeon_i=
-2c *i2c, struct i2c_msg *msg
- 	if (set_ext)
- 		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-=20
--	octeon_i2c_hlc_int_clear(i2c);
--	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
--
--	ret =3D octeon_i2c_hlc_wait(i2c);
-+	ret =3D octeon_i2c_hlc_cmd_send(i2c, cmd);
- 	if (ret)
- 		goto err;
-=20
-@@ -594,6 +624,106 @@ static int octeon_i2c_hlc_comp_write(struct octeon_=
-i2c *i2c, struct i2c_msg *msg
- 	return ret;
- }
-=20
-+/**
-+ * high-level-controller composite block write+read, msg0=3Daddr, msg1=3D=
-data
-+ * Used in the case where the i2c xfer is for greater than 8 bytes of re=
-ad data.
-+ */
-+static int octeon_i2c_hlc_block_comp_read(struct octeon_i2c *i2c, struct=
- i2c_msg *msgs)
-+{
-+	int len, ret =3D 0;
-+	u64 cmd =3D 0;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_block_enable(i2c);
-+
-+	/* Write (size - 1) into block control register */
-+	len =3D msgs[1].len - 1;
-+	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c=
-));
-+
-+	/* Prepare core command */
-+	cmd =3D SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	/* Send core command */
-+	ret =3D octeon_i2c_hlc_cmd(i2c, msgs[0], cmd);
-+	if (ret)
-+		return ret;
-+
-+	cmd =3D __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-+	if ((cmd & SW_TWSI_R) =3D=3D 0)
-+		return octeon_i2c_check_status(i2c, false);
-+
-+	/* read data in FIFO */
-+	octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI=
-_BLOCK_STS(i2c));
-+	for (int i =3D 0; i < len; i +=3D 8) {
-+		u64 rd =3D __raw_readq(i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-+		for (int j =3D 7; j >=3D 0; j--)
-+			msgs[1].buf[i + (7 - j)] =3D (rd >> (8 * j)) & 0xff;
-+	}
-+
-+	octeon_i2c_block_disable(i2c);
-+	return ret;
-+}
-+
-+/**
-+ * high-level-controller composite block write+write, m[0]len<=3D2, m[1]=
-len<=3D1024
-+ * Used in the case where the i2c xfer is for greater than 8 bytes of wr=
-ite data.
-+ */
-+static int octeon_i2c_hlc_block_comp_write(struct octeon_i2c *i2c, struc=
-t i2c_msg *msgs)
-+{
-+	bool set_ext =3D false;
-+	int len, ret =3D 0;
-+	u64 cmd, ext =3D 0;
-+
-+	octeon_i2c_hlc_enable(i2c);
-+	octeon_i2c_block_enable(i2c);
-+
-+	/* Write (size - 1) into block control register */
-+	len =3D msgs[1].len - 1;
-+	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c=
-));
-+
-+	/* Prepare core command */
-+	cmd =3D SW_TWSI_V | SW_TWSI_SOVR;
-+	cmd |=3D (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-+
-+	if (msgs[0].flags & I2C_M_TEN)
-+		cmd |=3D SW_TWSI_OP_10_IA;
-+	else
-+		cmd |=3D SW_TWSI_OP_7_IA;
-+
-+	if (msgs[0].len =3D=3D 2) {
-+		cmd |=3D SW_TWSI_EIA;
-+		ext |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+		set_ext =3D true;
-+		cmd |=3D (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-+	} else {
-+		cmd |=3D (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-+	}
-+
-+	/* Write msg into FIFO buffer */
-+	octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI=
-_BLOCK_STS(i2c));
-+	for (int i =3D 0; i < len; i +=3D 8) {
-+		u64 buf =3D 0;
-+		for (int j =3D 7; j >=3D 0; j--)
-+			buf |=3D (msgs[1].buf[i + (7 - j)] << (8 * j));
-+		octeon_i2c_writeq_flush(buf, i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-+	}
-+	if (set_ext)
-+		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-+
-+	/* Send command to core (send data in FIFO) */
-+	ret =3D octeon_i2c_hlc_cmd_send(i2c, cmd);
-+	if (ret)
-+		return ret;
-+
-+	cmd =3D __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-+	if ((cmd & SW_TWSI_R) =3D=3D 0)
-+		return octeon_i2c_check_status(i2c, false);
-+
-+	octeon_i2c_block_disable(i2c);
-+	return ret;
-+}
-+
- /**
-  * octeon_i2c_xfer - The driver's master_xfer function
-  * @adap: Pointer to the i2c_adapter structure
-@@ -619,13 +749,21 @@ int octeon_i2c_xfer(struct i2c_adapter *adap, struc=
-t i2c_msg *msgs, int num)
- 		if ((msgs[0].flags & I2C_M_RD) =3D=3D 0 &&
- 		    (msgs[1].flags & I2C_M_RECV_LEN) =3D=3D 0 &&
- 		    msgs[0].len > 0 && msgs[0].len <=3D 2 &&
--		    msgs[1].len > 0 && msgs[1].len <=3D 8 &&
-+		    msgs[1].len > 0 &&
- 		    msgs[0].addr =3D=3D msgs[1].addr) {
--			if (msgs[1].flags & I2C_M_RD)
--				ret =3D octeon_i2c_hlc_comp_read(i2c, msgs);
--			else
--				ret =3D octeon_i2c_hlc_comp_write(i2c, msgs);
--			goto out;
-+			if (msgs[1].len <=3D 8) {
-+				if (msgs[1].flags & I2C_M_RD)
-+					ret =3D octeon_i2c_hlc_comp_read(i2c, msgs);
-+				else
-+					ret =3D octeon_i2c_hlc_comp_write(i2c, msgs);
-+				goto out;
-+			} else if (msgs[1].len <=3D 1024 && TWSI_BLOCK_CTL(i2c)) {
-+				if (msgs[1].flags & I2C_M_RD)
-+					ret =3D octeon_i2c_hlc_block_comp_read(i2c, msgs);
-+				else
-+					ret =3D octeon_i2c_hlc_block_comp_write(i2c, msgs);
-+				goto out;
-+			}
- 		}
- 	}
-=20
-diff --git a/drivers/i2c/busses/i2c-octeon-core.h b/drivers/i2c/busses/i2=
-c-octeon-core.h
-index 9bb9f64fdda0..81fcf413c890 100644
---- a/drivers/i2c/busses/i2c-octeon-core.h
-+++ b/drivers/i2c/busses/i2c-octeon-core.h
-@@ -85,6 +85,11 @@
- #define TWSI_INT_SDA		BIT_ULL(10)
- #define TWSI_INT_SCL		BIT_ULL(11)
-=20
-+#define TWSI_MODE_STRETCH		BIT_ULL(1)
-+#define TWSI_MODE_BLOCK_MODE		BIT_ULL(2)
-+
-+#define TWSI_BLOCK_STS_RESET_PTR	BIT_ULL(0)
-+#define TWSI_BLOCK_STS_BUSY		BIT_ULL(1)
- #define I2C_OCTEON_EVENT_WAIT 80 /* microseconds */
-=20
- /* Register offsets */
-@@ -92,11 +97,19 @@ struct octeon_i2c_reg_offset {
- 	unsigned int sw_twsi;
- 	unsigned int twsi_int;
- 	unsigned int sw_twsi_ext;
-+	unsigned int twsi_mode;
-+	unsigned int twsi_block_ctl;
-+	unsigned int twsi_block_sts;
-+	unsigned int twsi_block_fifo;
- };
-=20
- #define SW_TWSI(x)	(x->roff.sw_twsi)
- #define TWSI_INT(x)	(x->roff.twsi_int)
- #define SW_TWSI_EXT(x)	(x->roff.sw_twsi_ext)
-+#define TWSI_MODE(x)	(x->roff.twsi_mode)
-+#define TWSI_BLOCK_CTL(x)	(x->roff.twsi_block_ctl)
-+#define TWSI_BLOCK_STS(x)	(x->roff.twsi_block_sts)
-+#define TWSI_BLOCK_FIFO(x)	(x->roff.twsi_block_fifo)
-=20
- struct octeon_i2c {
- 	wait_queue_head_t queue;
-@@ -110,6 +123,7 @@ struct octeon_i2c {
- 	void __iomem *twsi_base;
- 	struct device *dev;
- 	bool hlc_enabled;
-+	bool block_enabled;
- 	bool broken_irq_mode;
- 	bool broken_irq_check;
- 	void (*int_enable)(struct octeon_i2c *);
-diff --git a/drivers/i2c/busses/i2c-thunderx-pcidrv.c b/drivers/i2c/busse=
-s/i2c-thunderx-pcidrv.c
-index a77cd86fe75e..abde98117d7e 100644
---- a/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-+++ b/drivers/i2c/busses/i2c-thunderx-pcidrv.c
-@@ -165,6 +165,10 @@ static int thunder_i2c_probe_pci(struct pci_dev *pde=
-v,
- 	i2c->roff.sw_twsi =3D 0x1000;
- 	i2c->roff.twsi_int =3D 0x1010;
- 	i2c->roff.sw_twsi_ext =3D 0x1018;
-+	i2c->roff.twsi_mode =3D 0x1038;
-+	i2c->roff.twsi_block_ctl =3D 0x1048;
-+	i2c->roff.twsi_block_sts =3D 0x1050;
-+	i2c->roff.twsi_block_fifo =3D 0x1058;
-=20
- 	i2c->dev =3D dev;
- 	pci_set_drvdata(pdev, i2c);
---=20
-2.42.0
+My first reaction was to remove this.  But I had to go back and look.  It
+took me a minute to trace this.
 
+'Dead' is not used directly.  If a decoder happens to be dead
+(CXL_DECODER_DEAD) then it will eventually fail the creation of a region
+with CXL_REGION_DEAD as the mode.  CXL_REGION_MIXED fails the same way but
+only because mixed mode is not yet supported.  Therefore, decoder mode
+DEAD indicates something different and CXL_REGION_DEAD was added to convey
+this when converting.
+
+The alternative is to be more explicit and check decoder mode to be !DEAD
+prior to trying to convert.  I think I like that but I'm going to sleep on
+it.
+
+> 
+> > +
+> > +static inline const char *cxl_region_mode_name(enum cxl_region_mode mode)
+> > +{
+> > +	static const char * const names[] = {
+> > +		[CXL_REGION_NONE] = "none",
+> > +		[CXL_REGION_RAM] = "ram",
+> > +		[CXL_REGION_PMEM] = "pmem",
+> > +		[CXL_REGION_MIXED] = "mixed",
+> > +	};
+> > +
+> > +	if (mode >= CXL_REGION_NONE && mode <= CXL_REGION_MIXED)
+> > +		return names[mode];
+> > +	return "mixed";
+> > +}
+> 
+> snip
+> 
+> > +
+> >  /**
+> >   * struct cxl_memdev_state - Generic Type-3 Memory Device Class driver data
+> >   *
+> > @@ -449,6 +464,8 @@ struct cxl_dev_state {
+> >   * @enabled_cmds: Hardware commands found enabled in CEL.
+> >   * @exclusive_cmds: Commands that are kernel-internal only
+> >   * @total_bytes: sum of all possible capacities
+> > + * @static_cap: Sum of RAM and PMEM capacities
+> > + * @dynamic_cap: Complete DPA range occupied by DC regions
+> 
+> Wondering about renaming RAM and PMEM caps as 'static'.
+> They are changeable via set partition commands.
+
+True but they are static compared to dynamic capacity.  I'm open to other
+names but !dynamic is normally referred to as static.  :-/
+
+Thanks for the review!
+Ira
