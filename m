@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C70879D6CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6100F79D6D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbjILQvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        id S237098AbjILQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbjILQvV (ORCPT
+        with ESMTP id S237084AbjILQwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:51:21 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138E9115;
-        Tue, 12 Sep 2023 09:51:16 -0700 (PDT)
+        Tue, 12 Sep 2023 12:52:36 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D161C10E9;
+        Tue, 12 Sep 2023 09:52:32 -0700 (PDT)
 Received: from [192.168.0.106] (unknown [186.235.7.101])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4F096660716C;
-        Tue, 12 Sep 2023 17:51:07 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id F1221660716C;
+        Tue, 12 Sep 2023 17:52:23 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694537474;
-        bh=bANnTvmU8LwckEh4pqHcX7oSHDmyK0WOCRmfn4AuPWk=;
+        s=mail; t=1694537551;
+        bh=igS9u76vL2oPeSqObcVgUtmTOkkby+Pw+fIrRSQSDjw=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lhzdj8NLbl2wa20LRvoYJ8oMHy7YBp3AyXB7cesPj9SMEQ4L78Xfs90FDTrtEDt60
-         RCuPKZ20oIj6VpbDjL6+kNR0XI+JK7txftGWi23A0eTD7Y2IYn4PkKe8zDTYmvMtVV
-         sigCGm9AgcPGDwU3ISYVyyn7ZjYFp2JzKdCOna16j7luKP90nyZ92NlS2Tycts+Ltu
-         EF1L/myRy1l8RAIRojBpdrFnvTBKKEArJpoQg2lWrQoOMS6QerI8opigxODJ4wUTVH
-         lw7f+EkO04mahk42+k2HxCar6QUbPRq8fRNEe9hE6JU9qZ8dP2g6toZmgR56B5VPri
-         ZlfCnjb2fNZdg==
-Message-ID: <782c7762-4f83-c942-034e-4da463d82412@collabora.com>
-Date:   Tue, 12 Sep 2023 13:51:03 -0300
+        b=UpeqNcvSWdUCXowwhN7YAh4SQxCJ4z3gCql/zXkdJ8kJu7G8lnp1IyPSKTWiPWjEE
+         eBkh0Xej143eLTLObrQqfDBjEwmCJF3LspuubwXbss9yuWoIkVyxZIBEtLAxzxwaol
+         83pHxtG8BjSUwQx6iKbkfAGuZibLCXcbyy+NSwwWtILVj81biyqQ8gPgYfu28h4hc0
+         nCk/nWv68wpF9ZqrdoirBO8J3IIBrFB2o210wI6jGKxgNVNvshsKGcW890+fJNg6hP
+         D1pxCSEyZQjRNokWQgLmT5+Bbg2j81pGo7LOsZhwRUh+YcOOqZ34qU92Y+Q8+G60DJ
+         kj6gWE5vKpgCA==
+Message-ID: <3f28b185-07bf-3bc8-05bb-0af2e65d1677@collabora.com>
+Date:   Tue, 12 Sep 2023 13:52:19 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v3 2/9] arm64: dts: qcom: apq8016-sbc: Add overlay for usb
- host mode
+Subject: Re: [PATCH v3 3/9] drm: ci: Force db410c to host mode
 Content-Language: en-US
 To:     Vignesh Raman <vignesh.raman@collabora.com>,
         dri-devel@lists.freedesktop.org
@@ -57,9 +56,9 @@ Cc:     guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
         virtualization@lists.linux-foundation.org,
         linux-arm-msm@vger.kernel.org
 References: <20230908152225.432139-1-vignesh.raman@collabora.com>
- <20230908152225.432139-3-vignesh.raman@collabora.com>
+ <20230908152225.432139-4-vignesh.raman@collabora.com>
 From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20230908152225.432139-3-vignesh.raman@collabora.com>
+In-Reply-To: <20230908152225.432139-4-vignesh.raman@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -69,46 +68,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 08/09/2023 12:22, Vignesh Raman wrote:
-> Due to the presence of the fastboot micro cable in the CI farm,
-> it causes the hardware to remain in gadget mode instead of host mode.
-> So it doesn't find the network, which results in failure to mount root
-> fs via NFS.
+> Force db410c to host mode to fix network issue which results in failure
+> to mount root fs via NFS.
+> See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
 > 
-> Add an overlay dtso file that sets the dr_mode to host, allowing
-> the USB controllers to work in host mode. This dtso file will be used
-> in drm-ci, mesa-ci.
+> Compile the base device tree with overlay support and use fdtoverlay
+> command to merge base device tree with an overlay which contains the
+> fix for USB controllers to work in host mode. [suggested by Maxime Ripard]
 > 
-> Overlay DT file uses the sugar syntax [suggested by Dmitry Baryshkov and Maxime Ripard]
-> 
-> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> Signed-off-by: David Heidelberg <david.heidelberg@collabora.com>
 > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 
 Acked-by: Helen Koike <helen.koike@collabora.com>
 
 > ---
 > 
+> v2:
+>    - Use fdtoverlay command to merge overlay dtbo with the base dtb instead of modifying the kernel sources
+> 
 > v3:
->    - New patch in the series to add device tree overlay in arch/arm64/boot/dts/qcom
+>    - drm-ci scripts to use device tree overlay from arch/arm64/boot/dts/qcom and compile base device tree with overlay support
 > 
 > ---
->   arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso | 8 ++++++++
->   1 file changed, 8 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
+>   drivers/gpu/drm/ci/build.sh | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso b/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
-> new file mode 100644
-> index 000000000000..a82c26b7eae8
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
-> @@ -0,0 +1,8 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +
-> +/dts-v1/;
-> +/plugin/;
-> +
-> +&usb {
-> +         dr_mode = "host";
-> +};
+> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+> index 7b014287a041..092c195af242 100644
+> --- a/drivers/gpu/drm/ci/build.sh
+> +++ b/drivers/gpu/drm/ci/build.sh
+> @@ -91,7 +91,12 @@ for image in ${KERNEL_IMAGE_NAME}; do
+>   done
+>   
+>   if [[ -n ${DEVICE_TREES} ]]; then
+> -    make dtbs
+> +    make DTC_FLAGS=-@ dtbs
+> +    if [[ -e arch/arm64/boot/dts/qcom/apq8016-sbc.dtb ]]; then
+> +        dtc -@ -I dts -O dtb -o arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtbo arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtso
+> +        fdtoverlay -i arch/arm64/boot/dts/qcom/apq8016-sbc.dtb -o arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtb arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtbo
+> +        mv arch/arm64/boot/dts/qcom/apq8016-sbc-usb-host.dtb arch/arm64/boot/dts/qcom/apq8016-sbc.dtb
+> +    fi
+>       cp ${DEVICE_TREES} /lava-files/.
+>   fi
+>   
