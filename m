@@ -2,141 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE4079CCAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDB879CC1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbjILKAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48958 "EHLO
+        id S232648AbjILJlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbjILKAN (ORCPT
+        with ESMTP id S232584AbjILJlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:00:13 -0400
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67A0E64;
-        Tue, 12 Sep 2023 03:00:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-        Reply-To:Content-ID:Content-Description;
-        bh=BxXw2lPBlPXmQ8F4w0fefRPMnE8WnMJ9NcWQp72L7OE=; b=WMMOE1JdxyWmMDacjV73+JJ8Ec
-        iBcnvhReNiQMfRVKMTDiS6FOo4trT2yvmbWboWzIDZHe7kevkONS8v3KLV2UTiDAF4Qw8B9ZGjeMa
-        0f1YN50EXx2kE+QYmTu5Jt+MVpTcuzPAjsYtIAuJU4u5SBa1HeHkwBEUQUB4iIPsc4IgbIEk64YeG
-        v6T10qZ9anMbbTKwgx6Pp0rgI8tPPRTCKC0ECJpr0PT5C/6vVfvG76aAC7LM39BOB1+rgnLGTtCd9
-        dAFeOawFHAXelKSqwD5VNkL73SjSiSp+amqdMfC39XckjhUmUYidZ2zyj8c1yeuyE/uw/ZZUOmhIK
-        HIMDzNkw==;
-Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qfzsr-0030Ws-0o;
-        Tue, 12 Sep 2023 11:40:37 +0200
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Tue, 12 Sep 2023 11:40:18 +0200
-Subject: [PATCH 4/4] cpufreq: qcom-nvmem: Add MSM8909
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-msm8909-cpufreq-v1-4-767ce66b544b@kernkonzept.com>
-References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
-In-Reply-To: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-X-Mailer: b4 0.12.3
+        Tue, 12 Sep 2023 05:41:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57E1116;
+        Tue, 12 Sep 2023 02:41:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EF2CC433C8;
+        Tue, 12 Sep 2023 09:41:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694511663;
+        bh=51PegvIu8zCzbCvU9YkHXrLIAzh1Rt71MmT7cj1xrT0=;
+        h=Date:Subject:From:To:References:In-Reply-To:From;
+        b=LBnItSnVBw3+u9b4WkQjmTctDkHYCzIN5ABzZxz3dr+Eq1Q27n/leGwH5TrqSdln8
+         Tf5zoMcMMQoAC+Ag5uMt8i4iqe0z75WuZqFjOvbALNcDrZ5vxbdwL8o4QHvyPxCYcx
+         KA7Njcr2xV7O+qNzaQ6hhLzhnKATZyZFQz1EYMsnGuiDoz7gLMmfM6dnFGZl6viPSZ
+         o+WyZgxIH2Um8ja3MqtzGHtpDa+DmVS07La8XDrdIFkarp5XPARXvRlvfWMfqUW8fe
+         YSrZDRI+WoOUmuq7yr78Y6vK4ssHyHe3p4DdwiAGt9imL5BZO5/nP4rYDJJvz1HNHb
+         5atIv3lq0eS4w==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 12:41:00 +0300
+Message-Id: <CVGU920P4LEH.4WNZCAJI4URK@suppilovahvero>
+Subject: Re: [PATCH] tpm: Fix typo in tpmrm class definition
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
+        "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Ivan Orlov" <ivan.orlov0322@gmail.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230911223238.3495955-1-jforbes@fedoraproject.org>
+In-Reply-To: <20230911223238.3495955-1-jforbes@fedoraproject.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the MSM8909 SoC is used together with the PM8909 PMIC the primary
-power supply for the CPU (VDD_APC) is shared with other components to
-the SoC, namely the VDD_CX power domain typically supplied by the PM8909
-S1 regulator. This means that all votes for necessary performance states
-go via the RPM firmware which collects the requirements from all the
-processors in the SoC. The RPM firmware then chooses the actual voltage
-based on the performance states ("corners"), depending on calibration
-values in the NVMEM and other factors.
+On Tue Sep 12, 2023 at 1:32 AM EEST, Justin M. Forbes wrote:
+> Commit d2e8071bed0be ("tpm: make all 'class' structures const")
+> unfortunately had a typo for the name on tpmrm.
+>
+> Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
+> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> ---
+>  drivers/char/tpm/tpm-chip.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index 23f6f2eda84c..42b1062e33cd 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -33,7 +33,7 @@ const struct class tpm_class =3D {
+>  	.shutdown_pre =3D tpm_class_shutdown,
+>  };
+>  const struct class tpmrm_class =3D {
+> -	.name =3D "tmprm",
+> +	.name =3D "tpmrm",
+>  };
+>  dev_t tpm_devt;
+>
+> --=20
+> 2.41.0
 
-The MSM8909 SoC is also sometimes used with the PM8916 or PM660 PMIC.
-In that case there is a dedicated regulator connected to VDD_APC and
-Linux is responsible to do adaptive voltage scaling using CPR (similar
-to the existing code for QCS404).
+Unfortunately your patch does not apply:
 
-This difference can be described in the device tree, by either assigning
-the CPU a power domain from RPMPD or from the CPR driver.
+$ git-tip
+0bb80ecc33a8 (HEAD -> next, tag: v6.6-rc1, upstream/master, origin/next) Li=
+nux 6.6-rc1
 
-To describe this in a more generic way, use "apc" as power domain name
-instead of "cpr". From the Linux point of view there is no CPR involved
-when MSM8909 is used together with PM8909.
-
-Also add a simple function that reads the speedbin from a NVMEM cell
-and sets it as-is for opp-supported-hw. The actual bit position can be
-described in the device tree without additional driver changes.
-
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+$ b4 am 20230911223238.3495955-1-jforbes@fedoraproject.org
+Analyzing 1 messages in the thread
+Checking attestation on all messages, may take a moment...
 ---
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+  =E2=9C=93 [PATCH] tpm: Fix typo in tpmrm class definition
+  ---
+  =E2=9C=93 Signed: DKIM/linuxtx.org (From: jforbes@fedoraproject.org)
+---
+Total patches: 1
+---
+ Link: https://lore.kernel.org/r/20230911223238.3495955-1-jforbes@fedorapro=
+ject.org
+ Base: applies clean to current tree
+       git checkout -b 20230911_jforbes_fedoraproject_org HEAD
+       git am ./20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index 17d6ab14c909..2ea5e5ee9f1c 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -49,6 +49,24 @@ struct qcom_cpufreq_drv {
- 
- static struct platform_device *cpufreq_dt_pdev, *cpufreq_pdev;
- 
-+static int qcom_cpufreq_simple_get_version(struct device *cpu_dev,
-+					   struct nvmem_cell *speedbin_nvmem,
-+					   char **pvs_name,
-+					   struct qcom_cpufreq_drv *drv)
-+{
-+	u8 *speedbin;
-+
-+	*pvs_name = NULL;
-+	speedbin = nvmem_cell_read(speedbin_nvmem, NULL);
-+	if (IS_ERR(speedbin))
-+		return PTR_ERR(speedbin);
-+
-+	dev_dbg(cpu_dev, "speedbin: %d\n", *speedbin);
-+	drv->versions = 1 << *speedbin;
-+	kfree(speedbin);
-+	return 0;
-+}
-+
- static void get_krait_bin_format_a(struct device *cpu_dev,
- 					  int *speed, int *pvs, int *pvs_ver,
- 					  u8 *buf)
-@@ -212,6 +230,13 @@ static const struct qcom_cpufreq_match_data match_data_krait = {
- 	.get_version = qcom_cpufreq_krait_name_version,
- };
- 
-+static const char *msm8909_genpd_names[] = { "apc", NULL };
-+
-+static const struct qcom_cpufreq_match_data match_data_msm8909 = {
-+	.get_version = qcom_cpufreq_simple_get_version,
-+	.genpd_names = msm8909_genpd_names,
-+};
-+
- static const char *qcs404_genpd_names[] = { "cpr", NULL };
- 
- static const struct qcom_cpufreq_match_data match_data_qcs404 = {
-@@ -375,6 +400,7 @@ static struct platform_driver qcom_cpufreq_driver = {
- };
- 
- static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
-+	{ .compatible = "qcom,msm8909", .data = &match_data_msm8909 },
- 	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
- 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
- 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
+$ git am -3 20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
+Applying: tpm: Fix typo in tpmrm class definition
+error: corrupt patch at line 18
+error: could not build fake ancestor
+Patch failed at 0001 tpm: Fix typo in tpmrm class definition
+hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
 
--- 
-2.39.2
-
+BR, Jarkko
