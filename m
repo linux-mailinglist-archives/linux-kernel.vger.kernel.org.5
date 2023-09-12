@@ -2,283 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC4E79D1F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0DC79D1F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235522AbjILNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
+        id S235512AbjILNUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235467AbjILNUZ (ORCPT
+        with ESMTP id S235501AbjILNUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:20:25 -0400
-Received: from cmx-mtlrgo001.bell.net (mta-mtl-002.bell.net [209.71.208.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E59E210D1;
-        Tue, 12 Sep 2023 06:20:20 -0700 (PDT)
-X-RG-CM-BuS: 0
-X-RG-CM-SC: 0
-X-RG-CM: Clean
-X-Originating-IP: [174.88.80.174]
-X-RG-Env-Sender: dave.anglin@bell.net
-X-RG-Rigid: 64C35282044AEC07
-X-CM-Envelope: MS4xfBCjMfPPTAhq8a8p3MF3MVj5INVD+kdDGmbbJuA7IZlRM5J+RLBDVJecnNFh/LmosAjACrHU6vrEbLNoQiOk0ritwU+j4oshzQGfvRUZLTxswADmoIzL
- cm7M59rjldtmNI9FTccIgNtWeQJXkbsAAi4NeZRgl0K1XJJdGhtZ16NEjQw49ytr90IrMMIwKT/LmFQ48pEVDWVRxQuB1ITsnaqwnJVXwgNFL1IwckfHQDNa
- /rdi3KBS8sRCdwFd1qzgTm18gKmd/xRCCVV0NvEXmpwPLGn21YZL7idKL+acQ84YDOdIVkwZ6vdkSDvUOnYua0nSJwqSFUGxO3TBG8MrXHQtK2Nmnkk9V/SQ
- xqk+bf64VITOU8K6ueisqriTe1dm+dx2Hgey6EDrm1edelnrq/K7GrQakWDSMotMSytN2mXdGZUC/J/GRQML1p43Xr0H6w==
-X-CM-Analysis: v=2.4 cv=W7Nb6Tak c=1 sm=1 tr=0 ts=65006585
- a=NkkRUIc9Fga6GQ4JCcDOLQ==:117 a=NkkRUIc9Fga6GQ4JCcDOLQ==:17
- a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=FBHGMhGWAAAA:8 a=bYoKuhMniw73sPSH_gUA:9
- a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22 a=9gvnlMMaQFpL9xblJ6ne:22
-Received: from [192.168.2.49] (174.88.80.174) by cmx-mtlrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
-        id 64C35282044AEC07; Tue, 12 Sep 2023 09:20:05 -0400
-Message-ID: <d04d6acf-ad2c-e93d-9927-f1e937c7f1e5@bell.net>
-Date:   Tue, 12 Sep 2023 09:20:05 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] linux/export: fix reference to exported functions for
- parisc64
-To:     Helge Deller <deller@gmx.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20230905190828.790400-1-masahiroy@kernel.org>
- <c8a92dc8-de78-7484-bcc8-d4a91bec77de@bell.net>
- <c6568683-86b4-c48d-ed37-f1f87677eb44@bell.net>
- <97859bf1-c8c3-7294-8322-b0c9c408ba5e@bell.net>
- <CAK7LNAR_4rVgAQToSoYmbgYnWoSpowcrKi2ciiH9HyhJUGdmWg@mail.gmail.com>
- <CAK7LNAQQ1Vp4YtvU8Bq9aE+NWxnnOTX2dcZ5Gc9fC+vjRmCe4w@mail.gmail.com>
- <CAK7LNATktSBFe=7cE8kHEGx2R90iVV6AJsCfgg5ZD2+ssMmzow@mail.gmail.com>
- <040a0941-936b-87ab-aedd-5a933383b500@bell.net>
- <2eb1f861-d66f-edb3-17cd-84c90d92083d@gmx.de>
-Content-Language: en-US
-From:   John David Anglin <dave.anglin@bell.net>
-In-Reply-To: <2eb1f861-d66f-edb3-17cd-84c90d92083d@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Tue, 12 Sep 2023 09:20:16 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB9210CE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:20:11 -0700 (PDT)
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E01443F196
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 13:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694524809;
+        bh=Sf56SkwawGpbC/RXPSnmT5Ux3keGTDqMFdPqD5kK9Z4=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=O0qtfvA/Dr9x7CWNrHDBntzk5TKybBarsUQKGf4ap/xA3xGF4OWpqxi5P7rV67YDt
+         B4belnNHzsoNrzuU/eogwYa5jcrVQVd9exFkbh/EKJ5ctE3VRQBiLD5uPPEEGXQ/Mo
+         cCe+5pcq2L9iveev0fk3WV+NISWCjA6J4Y8bUJOeqprLYi4aRa8GeODc7UPwhurP7Y
+         +CNYnJXIckHlD8ZaV8J1QntZfuNwrKyy+7h9y68ahDR8aIzN1PepIDxj7l9UlZkeEz
+         GWch2L1gRTi9anCKC1Jpg8W2obOqYS7FsfKRgzMutaq+fOJ3rzvMmdKMAmyfqhS/yx
+         9J3PJ2EcLpsBQ==
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3aa142796a5so7016246b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:20:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694524809; x=1695129609;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sf56SkwawGpbC/RXPSnmT5Ux3keGTDqMFdPqD5kK9Z4=;
+        b=Rv+mqNE1aRcyM0WgutYCqaSc/LsRpd9v68kQ9iOyNYdvc2PO8/b4ZqimQ8lyaoeOS0
+         K5Fz8en+Oe9NpY5Koua+4j/E7MqjC1Z6EH35pDfpSGOTh9JlvplIEL0nd2IFClN/QiMn
+         6P/u3Rd7IqaoLrpQrYijuNqS+yNStLDDGkWyN1FIeHtBQ7p5B5gPXAwTwuc5EXVRNCcK
+         vV9YsRTQRjME9T6sqBg+jJiL6r5DfSaPagsn2L5fOa6vfQmqV3zgM3uj+5lWt1SABjYS
+         Iv3n1e8pZGPhnU97lH8YjeTB50jeROfN9qtwGhoBLdaUw3P/snjWzkUvnQJunJJgTx57
+         VdfA==
+X-Gm-Message-State: AOJu0YziqQri8tudl8ljYD33+kJEbO/HeO0sFOQdo3JyaJ1k0YcCOsQR
+        HfEKhQtmkcYnUxwiEQ226fk/MUs2E1vw0JSF+hEpG0bepdL6po3aq3zDiVGJ2uI4GADiszEG3gQ
+        TuDr6dvXhoRusLSTf6/7KILrlM1NjOTtQCP6ri7Gugfgx2cpvmv5qBx4cDg==
+X-Received: by 2002:a54:4101:0:b0:3a4:1f0f:d108 with SMTP id l1-20020a544101000000b003a41f0fd108mr14393063oic.46.1694524808734;
+        Tue, 12 Sep 2023 06:20:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG4tqK3LNB3nC4RtCAQYbX1Quh3QzmjM4JzXHKI7S/+TjQFf7rCkw4++4RrSzzbyNfkzEgQDnrmo7gpHJADav4=
+X-Received: by 2002:a54:4101:0:b0:3a4:1f0f:d108 with SMTP id
+ l1-20020a544101000000b003a41f0fd108mr14393037oic.46.1694524808389; Tue, 12
+ Sep 2023 06:20:08 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 12 Sep 2023 06:20:07 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20230912081402.51477-6-william.qiu@starfivetech.com>
+References: <20230912081402.51477-1-william.qiu@starfivetech.com> <20230912081402.51477-6-william.qiu@starfivetech.com>
+Mime-Version: 1.0
+Date:   Tue, 12 Sep 2023 06:20:07 -0700
+Message-ID: <CAJM55Z9riu4vwfgri1a4UsAtCmTeatVhKCGA3LAtTXsHsddtXA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] mmc: starfive: Change tuning implementation
+To:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-mmc@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Helge,
-
-It occurs consistently on my c8000 but I'm having difficulty bisecting it.  Trying a bisect
-with --first-parent.
-
-Note I had to pull ATI graphics card from the machine as it started to malfunction causing crashes.
-However, v6.1.52 boots fine.
-
-Dave
-
-On 2023-09-12 9:01 a.m., Helge Deller wrote:
-> Hi Masahiro,
+William Qiu wrote:
+> Before, we used syscon to achieve tuning, but the actual measurement
+> showed little effect, so the tuning implementation was modified here,
+> and it was realized by reading and writing the UHS_REG_EXT register.
 >
-> I can confirm as well, that your patch
->  linux/export: fix reference to exported functions for parisc64
-> does indeed fix the boot issue on parisc64.
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> ---
+>  drivers/mmc/host/dw_mmc-starfive.c | 137 +++++++++--------------------
+>  1 file changed, 40 insertions(+), 97 deletions(-)
 >
-> I did tested it on a C3000 workstation on top of Linus' v6.6-rc1 git tree.
-> You may add:
-> Tested-by: Helge Deller <deller@gmx.de>
+> diff --git a/drivers/mmc/host/dw_mmc-starfive.c b/drivers/mmc/host/dw_mmc-starfive.c
+> index fd05a648a8bb..ad8f39c62fed 100644
+> --- a/drivers/mmc/host/dw_mmc-starfive.c
+> +++ b/drivers/mmc/host/dw_mmc-starfive.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (c) 2022 StarFive Technology Co., Ltd.
+>   */
 >
-> Dave, I don't see the issue you mention below...
+> +#include <linux/bitfield.h>
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/mfd/syscon.h>
+> @@ -20,13 +21,7 @@
+>  #define ALL_INT_CLR		0x1ffff
+>  #define MAX_DELAY_CHAIN		32
 >
-> Helge
+> -struct starfive_priv {
+> -	struct device *dev;
+> -	struct regmap *reg_syscon;
+> -	u32 syscon_offset;
+> -	u32 syscon_shift;
+> -	u32 syscon_mask;
+> -};
+> +#define STARFIVE_SMPL_PHASE     GENMASK(20, 16)
 >
-> On 9/10/23 23:30, John David Anglin wrote:
->> Hi Masahiro,
->>
->> The attached change fixed boot at ddb5cdbafaaa 😁
->>
->> However, v6.5.x boot is still broken:
->>
->> Run /init as init process
->> process '/usr/bin/sh' started with executable stack
->> Loading, please wait...
->> Starting systemd-udevd version 254.1-3
->> e1000 alternatives: applied 0 out of 569 patches
->> e1000: Intel(R) PRO/1000 Network Driver
->> e1000: Copyright (c) 1999-2006 Intel Corporation.
->> scsi_mod alternatives: applied 0 out of 7 patches
->> SCSI subsystem initialized
->> usbcore alternatives: applied 0 out of 18 patches
->> usbcore: registered new interface driver usbfs
->> libata alternatives: applied 0 out of 3 patches
->> usbcore: registered new interface driver hub
->> usbcore: registered new device driver usb
->> mptbase alternatives: applied 0 out of 73 patches
->> ehci_hcd alternatives: applied 0 out of 114 patches
->> sata_sil24 alternatives: applied 0 out of 56 patches
->> Fusion MPT base driver 3.04.20
->> Copyright (c) 1999-2008 LSI Corporation
->> sata_sil24 0000:00:01.0: Applying completion IRQ loss on PCI-X errata fix
->> scsi host0: sata_sil24
->> scsi host1: sata_sil24
->> pata_sil680 0000:60:02.0: sil680: 133MHz clock.
->> scsi host2: sata_sil24
->> ehci_pci alternatives: applied 0 out of 2 patches
->> ohci_hcd alternatives: applied 0 out of 144 patches
->> ehci-pci 0000:60:01.2: EHCI Host Controller
->> scsi host3: pata_sil680
->> ehci-pci 0000:60:01.2: new USB bus registered, assigned bus number 1
->> scsi host4: sata_sil24
->> ata1: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80080000 ir6
->> ata2: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80082000 ir6
->> ata3: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80084000 ir6
->> ata4: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80086000 ir6
->> e1000 0000:60:03.0 eth0: (PCI:33MHz:32-bit) 00:11:0a:31:8a:77
->> ehci-pci 0000:60:01.2: irq 71, io mem 0xffffffffb00a1000
->> scsi host5: pata_sil680
->> ata5: PATA max UDMA/133 cmd 0x26058 ctl 0x26064 bmdma 0x26040 irq 72
->> ata6: PATA max UDMA/133 cmd 0x26050 ctl 0x26060 bmdma 0x26048 irq 72
->> e1000 0000:60:03.0 eth0: Intel(R) PRO/1000 Network Connection
->> ehci-pci 0000:60:01.2: USB 2.0 started, EHCI 0.95
->> usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.05
->> usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
->> usb usb1: Product: EHCI Host Controller
->> usb usb1: Manufacturer: Linux 6.5.2-dirty ehci_hcd
->> usb usb1: SerialNumber: 0000:60:01.2
->> hub 1-0:1.0: USB hub found
->> hub 1-0:1.0: 5 ports detected
->> ata1: SATA link down (SStatus 0 SControl 0)
->> ata2: SATA link down (SStatus 0 SControl 0)
->> ata3: SATA link down (SStatus 0 SControl 0)
->> ata4: SATA link up 3.0 Gbps (SStatus 123 SControl 0)
->> ata4.00: ATA-10: ST4000VN008-2DR166, SC60, max UDMA/133
->> ata4.00: 7814037168 sectors, multi 0: LBA48 NCQ (depth 31/32)
->> ata4.00: configured for UDMA/100
->> scsi 4:0:0:0: Direct-Access     ATA      ST4000VN008-2DR1 SC60 PQ: 0 ANSI: 5
->> ata6.00: ATAPI: HL-DT-STDVD+-RW GSA-H21L, 1.04, max UDMA/44
->> scsi 5:0:0:0: CD-ROM            HL-DT-ST DVD+-RW GSA-H21L 1.04 PQ: 0 ANSI: 5
->> random: crng init done
->> Timed out for waiting the udev queue being empty.
->> Begin: Loading essential drivers ... done.
->> Begin: Running /scripts/init-premount ... done.
->> Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
->> Begin: Running /scripts/local-premount ... done.
->> Timed out for waiting the udev queue being empty.
->> Begin: Waiting for root file system ... Begin: Running /scripts/local-block ....
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> Begin: Running /scripts/local-block ... done.
->> done.
->> Gave up waiting for root file system device.  Common problems:
->>   - Boot args (cat /proc/cmdline)
->>     - Check rootdelay= (did the system wait long enough?)
->>   - Missing modules (cat /proc/modules; ls /dev)
->> ALERT!  LABEL=ROOT does not exist.  Dropping to a shell!
->> Rebooting automatically due to panic= boot argument
->>
->> I'll see if I can find the commit that breaks 6.5.
->>
->> Thanks,
->> Dave
->>
->> On 2023-09-10 3:47 a.m., Masahiro Yamada wrote:
->>> Hi John, Helge,
->>>
->>> Could you test the attached patch please?
->>>
->>>
->>> Again, I only tested compilation for this.
->>> I do not have parisc64 hardware.
->>> In my understanding, QEMU does not support hppa64.
->>> I do not find a way to test parisc64.
->>>
->>>
->>> Masahiro Yamada
->>>
->>>
->>>
->>>
->>>
->>> On Sun, Sep 10, 2023 at 4:20 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>>> With a little more investigation,
->>>> I found arch/parisc/kernel/parisc_ksyms.c
->>>> is causing the issue.
->>>>
->>>> That file is a collection of EXPORT_SYMBOL
->>>> of assembly code.
->>>>
->>>> I will take a closer look tomorrow.
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> On Sun, Sep 10, 2023 at 2:20 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>>>> On Fri, Sep 8, 2023 at 7:02 AM John David Anglin <dave.anglin@bell.net> wrote:
->>>>>> On 2023-09-05 7:59 p.m., John David Anglin wrote:
->>>>>>> On 2023-09-05 5:57 p.m., John David Anglin wrote:
->>>>>>>> I'll check ddb5cdbafaaa.
->>>>>>> Similar fault with ddb5cdbafaaa:
->>>>>> The alignment of the __kstrtab_ symbols in vmlinux seems wrong.
->>>>> __kstrtab_ symbols do not need alignment.
->>>>>
->>>>> They were not aligned at all
->>>>> before ddb5cdbafaaa^.
->>>>>
->>>>>
->>>>>
->>>>>>   I'm fairly certain that function
->>>>>> references prefixed with P% on hppa64 need 8 byte alignment.
->>>>> Yeah.
->>>>> In the following dump, all of __ksymtab_* are correctly 8-byte aligned.
->>>>>
->>>>>
->>>>>> 81662: 0000000040ea4358     0 NOTYPE  LOCAL  DEFAULT   16 __kstrtab_system[...]
->>>>>>    81663: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_syst[...]
->>>>>>    81664: 0000000040e8e830     0 NOTYPE  LOCAL DEFAULT   14 __ksymtab_system[...]
->>>>>>    81665: 0000000040ea4365     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_static[...]
->>>>>>    81666: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_stat[...]
->>>>>>    81667: 0000000040ea1640     0 NOTYPE  LOCAL DEFAULT   15 __ksymtab_static[...]
->>>>>>    81668: 0000000040ea437c     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_reset_[...]
->>>>>>    81669: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_rese[...]
->>>>>>    81670: 0000000040e8bbc0     0 NOTYPE  LOCAL DEFAULT   14 __ksymtab_reset_[...]
->>>>>>    81671: 0000000040ea438a     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_loops_[...]
->>>>>>    81672: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_loop[...]
->>>>>>    81673: 0000000040e86610     0 NOTYPE  LOCAL DEFAULT   14 __ksymtab_loops_[...]
->>>>>>    81674: 0000000040ea439a     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_init_uts_ns
->>>>>>    81675: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_init[...]
->>>>>>    81676: 0000000040e99180     0 NOTYPE  LOCAL DEFAULT   15 __ksymtab_init_uts_ns
->>>>>>    81677: 0000000040ea43a6     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_name_t[...]
->>>>>>    81678: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_name[...]
->>>>>>    81679: 0000000040e9b340     0 NOTYPE  LOCAL DEFAULT   15 __ksymtab_name_t[...]
->>>>>>    81680: 0000000040ea43b4     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_wait_f[...]
->>>>>>    81681: 0000000040ea4748     0 NOTYPE  LOCAL DEFAULT   16 __kstrtabns_wait[...]
->>>>>>    81682: 0000000040ea3638     0 NOTYPE  LOCAL DEFAULT   15 __ksymtab_wait_f[...]
->>>>>>    81683: 0000000040ea43c7     0 NOTYPE  LOCAL DEFAULT   16 __kstrtab_init_task
->>>>>> [...]
->>>>>>
->>>>>> I'm not sure how we get symbols that aren't 8 byte aligned.  The ".balign 4" directive
->>>>>> in __KSYMTAB doesn't seem correct but it's not the whole problem.
->>>>>>
->>>>>> Dave
+>  static void dw_mci_starfive_set_ios(struct dw_mci *host, struct mmc_ios *ios)
+>  {
+> @@ -44,117 +39,65 @@ static void dw_mci_starfive_set_ios(struct dw_mci *host, struct mmc_ios *ios)
+>  	}
+>  }
 >
+> +static void dw_mci_starfive_set_sample_phase(struct dw_mci *host, u32 smpl_phase)
+> +{
+> +	/* change driver phase and sample phase */
+> +	u32 reg_value = mci_readl(host, UHS_REG_EXT);
+> +
+> +	/* In UHS_REG_EXT, only 5 bits valid in DRV_PHASE and SMPL_PHASE */
+> +	reg_value &= ~STARFIVE_SMPL_PHASE;
+> +	reg_value |= FIELD_PREP(STARFIVE_SMPL_PHASE, smpl_phase);
+> +	mci_writel(host, UHS_REG_EXT, reg_value);
+> +
+> +	/* We should delay 1ms wait for timing setting finished. */
+> +	mdelay(1);
+> +}
+> +
+>  static int dw_mci_starfive_execute_tuning(struct dw_mci_slot *slot,
+>  					     u32 opcode)
+>  {
+>  	static const int grade  = MAX_DELAY_CHAIN;
+>  	struct dw_mci *host = slot->host;
+> -	struct starfive_priv *priv = host->priv;
+> -	int rise_point = -1, fall_point = -1;
+> -	int err, prev_err = 0;
+> -	int i;
+> -	bool found = 0;
+> -	u32 regval;
+> -
+> -	/*
+> -	 * Use grade as the max delay chain, and use the rise_point and
+> -	 * fall_point to ensure the best sampling point of a data input
+> -	 * signals.
+> -	 */
+> -	for (i = 0; i < grade; i++) {
+> -		regval = i << priv->syscon_shift;
+> -		err = regmap_update_bits(priv->reg_syscon, priv->syscon_offset,
+> -						priv->syscon_mask, regval);
+> -		if (err)
+> -			return err;
+> +	int smpl_phase, smpl_raise = -1, smpl_fall = -1;
+> +	int ret;
+> +
+> +	for (smpl_phase = 0; smpl_phase < grade; smpl_phase++) {
+> +		dw_mci_starfive_set_sample_phase(host, smpl_phase);
+>  		mci_writel(host, RINTSTS, ALL_INT_CLR);
+>
+> -		err = mmc_send_tuning(slot->mmc, opcode, NULL);
+> -		if (!err)
+> -			found = 1;
+> +		ret = mmc_send_tuning(slot->mmc, opcode, NULL);
+>
+> -		if (i > 0) {
+> -			if (err && !prev_err)
+> -				fall_point = i - 1;
+> -			if (!err && prev_err)
+> -				rise_point = i;
+> +		if (!ret && smpl_raise < 0) {
+> +			smpl_raise = smpl_phase;
+> +		} else if (ret && smpl_raise >= 0) {
+> +			smpl_fall = smpl_phase - 1;
+> +			break;
+>  		}
+> -
+> -		if (rise_point != -1 && fall_point != -1)
+> -			goto tuning_out;
+> -
+> -		prev_err = err;
+> -		err = 0;
+>  	}
+>
+> -tuning_out:
+> -	if (found) {
+> -		if (rise_point == -1)
+> -			rise_point = 0;
+> -		if (fall_point == -1)
+> -			fall_point = grade - 1;
+> -		if (fall_point < rise_point) {
+> -			if ((rise_point + fall_point) >
+> -			    (grade - 1))
+> -				i = fall_point / 2;
+> -			else
+> -				i = (rise_point + grade - 1) / 2;
+> -		} else {
+> -			i = (rise_point + fall_point) / 2;
+> -		}
+> -
+> -		regval = i << priv->syscon_shift;
+> -		err = regmap_update_bits(priv->reg_syscon, priv->syscon_offset,
+> -						priv->syscon_mask, regval);
+> -		if (err)
+> -			return err;
+> -		mci_writel(host, RINTSTS, ALL_INT_CLR);
+> +	if (smpl_phase >= grade && smpl_raise >= 0)
+> +		smpl_fall = grade - 1;
 
+If you switch the order of the two if's above and below you won't need the
+smpl_raise >= 0 clause here. With that cleaned up:
 
--- 
-John David Anglin  dave.anglin@bell.net
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
+>
+> -		dev_info(host->dev, "Found valid delay chain! use it [delay=%d]\n", i);
+> -	} else {
+> +	if (smpl_raise < 0) {
+> +		smpl_phase = 0;
+>  		dev_err(host->dev, "No valid delay chain! use default\n");
+> -		err = -EINVAL;
+> +		ret = -EINVAL;
+> +		goto out;
+>  	}
+>
+> -	mci_writel(host, RINTSTS, ALL_INT_CLR);
+> -	return err;
+> -}
+> -
+> -static int dw_mci_starfive_parse_dt(struct dw_mci *host)
+> -{
+> -	struct of_phandle_args args;
+> -	struct starfive_priv *priv;
+> -	int ret;
+> -
+> -	priv = devm_kzalloc(host->dev, sizeof(*priv), GFP_KERNEL);
+> -	if (!priv)
+> -		return -ENOMEM;
+> +	smpl_phase = (smpl_raise + smpl_fall) / 2;
+> +	dev_dbg(host->dev, "Found valid delay chain! use it [delay=%d]\n", smpl_phase);
+> +	ret = 0;
+>
+> -	ret = of_parse_phandle_with_fixed_args(host->dev->of_node,
+> -						"starfive,sysreg", 3, 0, &args);
+> -	if (ret) {
+> -		dev_err(host->dev, "Failed to parse starfive,sysreg\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	priv->reg_syscon = syscon_node_to_regmap(args.np);
+> -	of_node_put(args.np);
+> -	if (IS_ERR(priv->reg_syscon))
+> -		return PTR_ERR(priv->reg_syscon);
+> -
+> -	priv->syscon_offset = args.args[0];
+> -	priv->syscon_shift  = args.args[1];
+> -	priv->syscon_mask   = args.args[2];
+> -
+> -	host->priv = priv;
+> -
+> -	return 0;
+> +out:
+> +	dw_mci_starfive_set_sample_phase(host, smpl_phase);
+> +	mci_writel(host, RINTSTS, ALL_INT_CLR);
+> +	return ret;
+>  }
+>
+>  static const struct dw_mci_drv_data starfive_data = {
+>  	.common_caps		= MMC_CAP_CMD23,
+>  	.set_ios		= dw_mci_starfive_set_ios,
+> -	.parse_dt		= dw_mci_starfive_parse_dt,
+>  	.execute_tuning		= dw_mci_starfive_execute_tuning,
+>  };
+>
+> --
+> 2.34.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
