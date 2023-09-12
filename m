@@ -2,183 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D63EA79C175
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2C679C16D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjILBMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58832 "EHLO
+        id S233215AbjILBL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbjILBMa (ORCPT
+        with ESMTP id S232388AbjILBLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:12:30 -0400
-Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781AB1BBB84
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:07:58 -0700 (PDT)
-Received: by mail-oo1-xc4a.google.com with SMTP id 006d021491bc7-57386ed9591so4491573eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694480783; x=1695085583; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=970Kku1qrn40V4eSbXmIGisrwVrsufYlhNF3TpQZHgw=;
-        b=0e3TA+GKd09JBTGRan9gVhMoCscjxhAD5nqM5c+bTD16/i2Ebwysr/C4lrMflSb58A
-         dkeQrw3wCTm4qy+/OMjQbe2fSCZPOAKJfvHU2l2NyG8SPngz92HBIBcyTA+RmfQ8Gc5F
-         4+KgYYrwVO/C5MKqQ/GnuFehU/oAYDagZl7pcRZ6BwR2BjO8iU34IZqxBgitw25Rbv+O
-         O4D/Vp3GRGiHcyuqbn/PqdNjs5RHlUZd8rD5xssjC3N6jc4HWu3p40l8KRMXxYzFo1sA
-         LGmnAOUAQQltvYj7r40YE8RB2oMbJIOiB6KBZyE0ZZl3ltc3AS+/mzz+ETLyX7Xxu0bl
-         l9ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694480783; x=1695085583;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=970Kku1qrn40V4eSbXmIGisrwVrsufYlhNF3TpQZHgw=;
-        b=KZhcBtju+tCN3l4m/8FqlBvSZZoNWEqOx8tZX+JulpfZ9mkL1mSapJD03EAXQD20sX
-         Jx5tM9P/Q6AsRzUp2pXiqAqfm955jRGRfI4NaRowYwO1fNEoNWPjgzfXy36viuC+NVJy
-         EKvUm0XKOW4YhCX7HMVmLluIBPZV+PXlyZdoimdRp9weBjOIh8UEBz4kL8v7S5hwp+Mz
-         UAkqYApeUqVroXx5N+ovm5pOV9QRtQyZGGaCtbcEWJRkw4ICSkD016E52tt1c+xn0yGE
-         nvKqYnYbJ6iTXoZb46ZNlwWOWGmE0A+Kczlxlio5DYnGYlaPykve/dPWjXqjSwkK0Pen
-         T66Q==
-X-Gm-Message-State: AOJu0Yy2yWLurm1vPsY/yG8dE9HhpYvdGvB50wB4lB6kIY3aFzFtMrUj
-        Q8RAgF7QAiiSnfTeUUHf9aUkXoZkUXTIamqOvHvNEI8TrFUGc6zEhFXl6v4VO8T+6vKuW/gC7i8
-        9i+WIaBVUl3YQ7RT/brTlVXgaTul/A/bz/MCEHcYeAY9bEOFgKcR2jgYHeQc2etFbnp/idpQZnD
-        0=
-X-Google-Smtp-Source: AGHT+IEr0R08qR8kalzBxDgPPVM2noCXXmz7bdyUG4nmBOjnaN2Ch4elJYHwNYuQzDOaTQT/W4YsMzvQunWueg==
-X-Received: from anticipation.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4517])
- (user=acdunlap job=sendgmr) by 2002:a17:902:eb8e:b0:1bd:c6e9:e257 with SMTP
- id q14-20020a170902eb8e00b001bdc6e9e257mr265952plg.1.1694478434443; Mon, 11
- Sep 2023 17:27:14 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 17:27:03 -0700
-In-Reply-To: <20230912002703.3924521-1-acdunlap@google.com>
-Mime-Version: 1.0
-References: <20230912002703.3924521-1-acdunlap@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912002703.3924521-3-acdunlap@google.com>
-Subject: [PATCH v2 2/2] x86/sev-es: Only set x86_virt_bits to correct value
-From:   Adam Dunlap <acdunlap@google.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Adam Dunlap <acdunlap@google.com>,
-        Joerg Roedel <jroedel@suse.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Khalid ElMously <khalid.elmously@canonical.com>,
-        Jacob Xu <jacobhxu@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 11 Sep 2023 21:11:25 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA893C7B31
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:54:37 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 0C7AE2C053B;
+        Tue, 12 Sep 2023 12:28:04 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1694478484;
+        bh=4BnR2/Pe4zsWpCGRueYCt2ZABjHfH4H2LohJTDmVp5I=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=EmWKdC8+IVuejVGdtMgZG1CuLRnfXuZi+kOX/RpOxGi1JqwaUSWnTQzvIGtrtpNNL
+         aCWtUVNAX3WnpbYUKqNijFZi3Iwo8PJFK3NllGKathFTALtJtZYzblfM+6A1NE7Avd
+         M5qEutgujceigD3J75rcfaLaGtQ/wfVoFqXM8YAZ/jC+5HzNt0NmlAVPrKTF5Ac3+A
+         r+f54q4OLDBShD/1qd9odVJUPm8Uj06WMkn3APqASUFX2xicYrDkCw7YPdmqp8MLdQ
+         eMZLvPnPgQ/uZUbb4cQpHPkbwBc220CvDFyMwMLmMPLee5YPiTYstY6uonP3HMHptG
+         IDGgq9MBIUYKQ==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B64ffb0930000>; Tue, 12 Sep 2023 12:28:03 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.37; Tue, 12 Sep 2023 12:28:03 +1200
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Sep 2023 12:28:03 +1200
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.037; Tue, 12 Sep 2023 12:28:03 +1200
+From:   Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>
+To:     "andi.shyti@kernel.org" <andi.shyti@kernel.org>
+CC:     Aryan Srivastava <Aryan.Srivastava@alliedtelesis.co.nz>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
+Thread-Topic: [PATCH] i2c:octeon:Add block-mode r/w
+Thread-Index: AQHZr5q3r2c2MLptDkmOgF4YLLXmVq/KZ7iAgCKcq4CAG5lIAIACRR2AgAC6nQCAClo2gA==
+Date:   Tue, 12 Sep 2023 00:28:03 +0000
+Message-ID: <29186bdd021eae1ed6a0b92af7213db23b7b6f06.camel@alliedtelesis.co.nz>
+References: <20230903123446.vjgpplnogejbzneb@zenone.zhora.eu>
+         <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
+         <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
+In-Reply-To: <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
+Accept-Language: en-US, en-NZ
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.33.22.26]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <703BA02D23F4D84AB6E00CB5F2E20982@atlnz.lc>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=fYfTNHYF c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=JMFsQdWQCw4A:10 a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=ukSZkMMagyX6BzUICnMA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of setting x86_virt_bits to a possibly-correct value and then
-correcting it later, do all the necessary checks before setting it.
-
-At this point, the #VC handler references boot_cpu_data.x86_virt_bits,
-and in the previous version, it would be triggered by the cpuids between
-the point at which it is set to 48 and when it is set to the correct
-value.
-
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Adam Dunlap <acdunlap@google.com>
----
- arch/x86/kernel/cpu/common.c | 37 +++++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 52683fddafaf..23888d3da16f 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1099,17 +1099,32 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
- void get_cpu_address_sizes(struct cpuinfo_x86 *c)
- {
- 	u32 eax, ebx, ecx, edx;
-+	bool vp_bits_from_cpuid = true;
- 
--	if (c->extended_cpuid_level >= 0x80000008) {
-+	if (!cpu_has(c, X86_FEATURE_CPUID) ||
-+	    (c->extended_cpuid_level < 0x80000008))
-+		vp_bits_from_cpuid = false;
-+
-+	if (vp_bits_from_cpuid) {
- 		cpuid(0x80000008, &eax, &ebx, &ecx, &edx);
- 
- 		c->x86_virt_bits = (eax >> 8) & 0xff;
- 		c->x86_phys_bits = eax & 0xff;
-+	} else {
-+		if (IS_ENABLED(CONFIG_X86_64)) {
-+			c->x86_clflush_size = 64;
-+			c->x86_phys_bits = 36;
-+			c->x86_virt_bits = 48;
-+		} else {
-+			c->x86_clflush_size = 32;
-+			c->x86_virt_bits = 32;
-+			c->x86_phys_bits = 32;
-+
-+			if (cpu_has(c, X86_FEATURE_PAE) ||
-+			    cpu_has(c, X86_FEATURE_PSE36))
-+				c->x86_phys_bits = 36;
-+		}
- 	}
--#ifdef CONFIG_X86_32
--	else if (cpu_has(c, X86_FEATURE_PAE) || cpu_has(c, X86_FEATURE_PSE36))
--		c->x86_phys_bits = 36;
--#endif
- 	c->x86_cache_bits = c->x86_phys_bits;
- }
- 
-@@ -1539,15 +1554,6 @@ static void __init cpu_parse_early_param(void)
-  */
- static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- {
--#ifdef CONFIG_X86_64
--	c->x86_clflush_size = 64;
--	c->x86_phys_bits = 36;
--	c->x86_virt_bits = 48;
--#else
--	c->x86_clflush_size = 32;
--	c->x86_phys_bits = 32;
--	c->x86_virt_bits = 32;
--#endif
- 	c->x86_cache_alignment = c->x86_clflush_size;
- 
- 	memset(&c->x86_capability, 0, sizeof(c->x86_capability));
-@@ -1561,7 +1567,6 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- 		cpu_detect(c);
- 		get_cpu_vendor(c);
- 		get_cpu_cap(c);
--		get_cpu_address_sizes(c);
- 		setup_force_cpu_cap(X86_FEATURE_CPUID);
- 		cpu_parse_early_param();
- 
-@@ -1577,6 +1582,8 @@ static void __init early_identify_cpu(struct cpuinfo_x86 *c)
- 		setup_clear_cpu_cap(X86_FEATURE_CPUID);
- 	}
- 
-+	get_cpu_address_sizes(c);
-+
- 	setup_force_cpu_cap(X86_FEATURE_ALWAYS);
- 
- 	cpu_set_bug_bits(c);
--- 
-2.42.0.283.g2d96d420d3-goog
-
+SGksIEFuZGksDQoNCk9uIFR1ZSwgMjAyMy0wOS0wNSBhdCAxMjoyMiArMDIwMCwgQW5kaSBTaHl0
+aSB3cm90ZToNCj4gSGkgQXJ5YW4sDQo+IA0KPiBJbiB0aGUgdGl0bGUsIHBsZWFzZSBsZWF2ZSBh
+IHNwYWNlIGFmdGVyIHRoZSAnOicNCj4gDQo+ICAgIGkyYzogb2N0ZW9uOiBBZGQgYmxvY2stbW9k
+ZSByL3cNCj4gDQo+IFBsZWFzZSBjaGVjayB3aXRoICJnaXQgbG9nIGRyaXZlcnMuLi4iIHRvIHNl
+ZSB3aGF0J3MgdGhlIHJ1bGUgaW4NCj4gYSBwYXJ0aWN1bGFyIGNvbW11bml0eS4NCj4gDQo+IEkg
+Z3Vlc3MgV29sZnJhbSBjYW4gZml4IHRoaXMsIHRob3VnaCwgYmVmb3JlIHB1c2hpbmcuDQo+IA0K
+PiBbLi4uXQ0KPiANCkRvbmUNCg0KPiA+ICsvKiBoaWdoLWxldmVsLWNvbnRyb2xsZXIgY29tcG9z
+aXRlIGJsb2NrIHdyaXRlK3JlYWQsIG1zZzA9YWRkciwNCj4gPiBtc2cxPWRhdGEgKi8NCj4gDQo+
+IEkgdGhpbmsgdGhpcyBjb21tZW50IGlzIGZpbmUgYW5kIGdyZWF0IHRvIGhhdmUgaXQsIGJ1dCBp
+dCdzDQo+IG1pc3NpbmcgYSBiaXQgb2YgY2xhcml0eSwgY2FuIHlvdSBwbGVhc2UgZXhwYW5kIHRo
+ZSBjb25jZXB0Pw0KPiANCkRvbmUsIGxldCBtZSBrbm93IGlmIHlvdSB3YW50IG1lIHRvIGFkZCBt
+b3JlIGhlcmUuDQoNCj4gPiArc3RhdGljIGludCBvY3Rlb25faTJjX2hsY19ibG9ja19jb21wX3Jl
+YWQoc3RydWN0IG9jdGVvbl9pMmMgKmkyYywNCj4gPiBzdHJ1Y3QgaTJjX21zZyAqbXNncykNCj4g
+PiArew0KPiA+ICsJaW50IGksIGosIGxlbiwgcmV0ID0gMDsNCj4gPiArCXU2NCBjbWQgPSAwLCBy
+ZCA9IDA7DQo+IA0KPiBjYW4gcGxlYXNlIHlvdSBtb3ZlIHJkLCBqIGluc2lkZSB0aGUgZm9yIGxv
+b3A/IFRoZSBiYXNpYyBjb21tb24NCj4gc2Vuc2UgaXMgdG8gaGF2ZSBhbGwgdmFyaWFibGUgZGVj
+bGFyZWQgaW4gdGhlIGlubmVybW9zdCBzZWN0aW9uDQo+IGluIG9yZGVyIHRvIGF2b2lkIGNvbmZ1
+c2lvbi4NCj4gDQo+IEl0J3MgYSBuaXRwaWNrIHRob3VnaCwgbm90IGEgc3Ryb25nIGNvbW1lbnQg
+YW5kLCBhZmFpaywgbm90IGENCj4gcmVhbCBydWxlLg0KPiANCj4gU2FtZSBjb21tZW50IGZvciB0
+aGUgZnVuY3Rpb24gYmVsb3cuDQo+IA0KRG9uZSwgSSBhZ3JlZSB0aGV5IHNob3VsZCBiZSBkZWZp
+bmVkIHdpdGhpbiBsb29wLiBJIHdhcyBqdXN0IHRyeWluZyB0bw0KbWF0Y2ggdGhlIG90aGVyIGhs
+YyByL3cuDQoNCj4gPiArDQo+ID4gKwlvY3Rlb25faTJjX2hsY19lbmFibGUoaTJjKTsNCj4gPiAr
+CW9jdGVvbl9pMmNfYmxvY2tfZW5hYmxlKGkyYyk7DQo+ID4gKw0KPiA+ICsJLyogV3JpdGUgKHNp
+emUgLSAxKSBpbnRvIGJsb2NrIGNvbnRyb2wgcmVnaXN0ZXIgKi8NCj4gPiArCWxlbiA9IG1zZ3Nb
+MV0ubGVuIC0gMTsNCj4gPiArCW9jdGVvbl9pMmNfd3JpdGVxX2ZsdXNoKCh1NjQpKGxlbiksIGky
+Yy0+dHdzaV9iYXNlICsNCj4gPiBUV1NJX0JMT0NLX0NUTChpMmMpKTsNCj4gPiArDQo+ID4gKwkv
+KiBQcmVwYXJlIGNvcmUgY29tbWFuZCAqLw0KPiA+ICsJY21kID0gU1dfVFdTSV9WIHwgU1dfVFdT
+SV9SIHwgU1dfVFdTSV9TT1ZSOw0KPiA+ICsJY21kIHw9ICh1NjQpKG1zZ3NbMF0uYWRkciAmIDB4
+N2Z1bGwpIDw8IFNXX1RXU0lfQUREUl9TSElGVDsNCj4gPiArDQo+ID4gKwlpZiAobXNnc1swXS5m
+bGFncyAmIEkyQ19NX1RFTikNCj4gPiArCQljbWQgfD0gU1dfVFdTSV9PUF8xMF9JQTsNCj4gPiAr
+CWVsc2UNCj4gPiArCQljbWQgfD0gU1dfVFdTSV9PUF83X0lBOw0KPiA+ICtObywgYnV0IHRoaXMg
+ZG9lc250IHJlYWxseSBtYXR0ZXIgYXMgdGhlIGludGVybmFsIGogbG9vcCB3aWxsIHRha2UNCj4g
+PiBjYXJlIG9mIHRoZSByZW1haW5pbmcgYnl0ZXMuDQo+ID4gDQo+ID4gZS5nLiBpZiB0aGUgbGVu
+IGlzIDksIHRoZW4gd2Ugd2lsbCBkbw0KPiA+IDAtNyBpbiB0aGUgZmlyc3QsIHRoZW4gaSA9IDgs
+IHdoaWNoIGlzIDwgbGVuLCBhbmQgdGhlbiB0aGUgaW50ZXJuYWwNCj4gPiBsb29wIHdpbGwgZG8g
+OC0xNy4NCj4gPiArCWlmIChtc2dzWzBdLmxlbiA9PSAyKSB7DQo+ID4gKwkJdTY0IGV4dCA9IDA7
+DQo+ID4gKw0KPiA+ICsJCWNtZCB8PSBTV19UV1NJX0VJQTsNCj4gPiArCQlleHQgPSAodTY0KW1z
+Z3NbMF0uYnVmWzBdIDw8IFNXX1RXU0lfSUFfU0hJRlQ7DQo+ID4gKwkJY21kIHw9ICh1NjQpbXNn
+c1swXS5idWZbMV0gPDwgU1dfVFdTSV9JQV9TSElGVDsNCj4gPiArCQlvY3Rlb25faTJjX3dyaXRl
+cV9mbHVzaChleHQsIGkyYy0+dHdzaV9iYXNlICsNCj4gPiBTV19UV1NJX0VYVChpMmMpKTsNCj4g
+PiArCX0gZWxzZSB7DQo+ID4gKwkJY21kIHw9ICh1NjQpbXNnc1swXS5idWZbMF0gPDwgU1dfVFdT
+SV9JQV9TSElGVDsNCj4gPiArCX0NCj4gDQo+IFRoaXMgZmlyc3QgcGFydCBpcyBiYXNpY2FsbHkg
+YSBjb3B5L3Bhc3RlIHdpdGggdGhlIHdyaXRlKCkNCj4gZnVuY3Rpb24uLi4gY2FuIHdlIHB1dCB0
+aGVtIHRvZ2V0aGVyIGluIGEgY29tbW9uIGZ1bmN0aW9uPw0KPiANCj4gQ2FuIHdlIHB1dCBhcyBt
+dWNoIGFzIHdlIGNhbiBpbiBhIHNpbmdsZSBmdW5jdGlvbj8NCj4gDQpEb25lLiBDb3VsZCBub3Qg
+bWFrZSBhIGNvbW1vbiBmb3IgdGhlIHdyaXRlK3dyaXRlcywgYXMgdGhleSB3YXkgd2UNCmluc2Vy
+dCBkYXRhIGludG8gYnVmZmVycyBmb3Igd3JpdGluZyBhcmUgc2lnbmlmaWNhbnRseSBkaWZmZXJl
+bnQsDQphbmQgZG9uJ3Qgb2NjdXIgYWZ0ZXIgdGhlIGNvcmUgY29tbWFuZCBzZW5kIChpLmUuIHRo
+ZSBjb3JlIGNvbW1hbmQgaXMNCnNlbnQgd2l0aC9jb25jdXJyZW50bHkgd2l0aCB0aGUgd3JpdGUg
+ZGF0YSkuIFVubGlrZSB0aGUgcmVhZCwgd2hpY2gNCnNlbmRzIGFsbW9zdCBpZGVudGljYWwgY29y
+ZSBjb21tYW5kcyBhbmQgcmVhZHMgdGhlIGJ1ZmZlciBkaWZmZXJlbnRseQ0KYWZ0ZXJ3YXJkcy4g
+VGhvdWdoIGlmIHdvdWxkIGxpa2UgaXQgSSBjb3VsZCBtYW5nbGUgdG9nZXRoZXIgYSBmdW5jdGlv
+bg0KZm9yIHRoZXNlIGFzIHdlbGwuDQoNCj4gPiArCS8qIFNlbmQgY29tbWFuZCB0byBjb3JlIChz
+ZW5kIGRhdGEgdG8gRklGTykgKi8NCj4gPiArCW9jdGVvbl9pMmNfaGxjX2ludF9jbGVhcihpMmMp
+Ow0KPiA+ICsJb2N0ZW9uX2kyY193cml0ZXFfZmx1c2goY21kLCBpMmMtPnR3c2lfYmFzZSArIFNX
+X1RXU0koaTJjKSk7DQo+ID4gKw0KPiA+ICsJLyogV2FpdCBmb3IgdHJhbnNhY3Rpb24gdG8gY29t
+cGxldGUgKi8NCj4gPiArCXJldCA9IG9jdGVvbl9pMmNfaGxjX3dhaXQoaTJjKTsNCj4gPiArCWlm
+IChyZXQpDQo+ID4gKwkJcmV0dXJuIHJldDsNCj4gPiArDQo+ID4gKwljbWQgPSBfX3Jhd19yZWFk
+cShpMmMtPnR3c2lfYmFzZSArIFNXX1RXU0koaTJjKSk7DQo+ID4gKwlpZiAoKGNtZCAmIFNXX1RX
+U0lfUikgPT0gMCkNCj4gPiArCQlyZXR1cm4gb2N0ZW9uX2kyY19jaGVja19zdGF0dXMoaTJjLCBm
+YWxzZSk7DQo+ID4gKw0KPiA+ICsJLyogcmVhZCBkYXRhIGluIEZJRk8gKi8NCj4gPiArCW9jdGVv
+bl9pMmNfd3JpdGVxX2ZsdXNoKFRXU0lfQkxPQ0tfU1RTX1JFU0VUX1BUUiwgaTJjLQ0KPiA+ID50
+d3NpX2Jhc2UgKyBUV1NJX0JMT0NLX1NUUyhpMmMpKTsNCj4gPiArCWZvciAoaSA9IDA7IGkgPCBs
+ZW47IGkgKz0gOCkgew0KPiA+ICsJCXJkID0gX19yYXdfcmVhZHEoaTJjLT50d3NpX2Jhc2UgKw0K
+PiA+IFRXU0lfQkxPQ0tfRklGTyhpMmMpKTsNCj4gPiArCQlmb3IgKGogPSA3OyBqID49IDA7IGot
+LSkNCj4gDQo+IGlzIGxlbiBhbHdheXMgYSBtdWx0aXBsZSBvZiA4Pw0KPiANCj4gPiArCQkJbXNn
+c1sxXS5idWZbaSArICg3IC0gaildID0gKHJkID4+ICg4ICogaikpICYNCj4gPiAweGZmOw0KPiA+
+ICsJfQ0KPiA+ICsNCj4gPiArCW9jdGVvbl9pMmNfYmxvY2tfZGlzYWJsZShpMmMpOw0KPiA+ICsJ
+cmV0dXJuIHJldDsNCj4gPiArfQ0KPiANCj4gWy4uLl0NCg0KTm8sIGJ1dCB0aGlzIGRvZXNudCBy
+ZWFsbHkgbWF0dGVyIGFzIHRoZSBpbnRlcm5hbCBqIGxvb3Agd2lsbCB0YWtlIGNhcmUNCm9mIHRo
+ZSByZW1haW5pbmcgYnl0ZXMuDQoNCmUuZy4gaWYgdGhlIGxlbiBpcyA5LCB0aGVuIHdlIHdpbGwg
+ZG8NCjAtNyBpbiB0aGUgZmlyc3QsIHRoZW4gaSA9IDgsIHdoaWNoIGlzIDwgbGVuLCBhbmQgdGhl
+biB0aGUgaW50ZXJuYWwNCmxvb3Agd2lsbCBkbyA4LTE3Lg0KPiANCj4gPiAtCQkgICAgbXNnc1sx
+XS5sZW4gPiAwICYmIG1zZ3NbMV0ubGVuIDw9IDggJiYNCj4gPiArCQkgICAgbXNnc1sxXS5sZW4g
+PiAwICYmDQo+ID4gIAkJICAgIG1zZ3NbMF0uYWRkciA9PSBtc2dzWzFdLmFkZHIpIHsNCj4gPiAt
+CQkJaWYgKG1zZ3NbMV0uZmxhZ3MgJiBJMkNfTV9SRCkNCj4gPiAtCQkJCXJldCA9IG9jdGVvbl9p
+MmNfaGxjX2NvbXBfcmVhZChpMmMsDQo+ID4gbXNncyk7DQo+ID4gLQkJCWVsc2UNCj4gPiAtCQkJ
+CXJldCA9IG9jdGVvbl9pMmNfaGxjX2NvbXBfd3JpdGUoaTJjLA0KPiA+IG1zZ3MpOw0KPiA+IC0J
+CQlnb3RvIG91dDsNCj4gPiArCQkJaWYgKG1zZ3NbMV0ubGVuIDw9IDgpIHsNCj4gPiArCQkJCWlm
+IChtc2dzWzFdLmZsYWdzICYgSTJDX01fUkQpDQo+ID4gKwkJCQkJcmV0ID0NCj4gPiBvY3Rlb25f
+aTJjX2hsY19jb21wX3JlYWQoaTJjLCBtc2dzKTsNCj4gPiArCQkJCWVsc2UNCj4gPiArCQkJCQly
+ZXQgPQ0KPiA+IG9jdGVvbl9pMmNfaGxjX2NvbXBfd3JpdGUoaTJjLCBtc2dzKTsNCj4gPiArCQkJ
+CWdvdG8gb3V0Ow0KPiA+ICsJCQl9IGVsc2UgaWYgKG1zZ3NbMV0ubGVuIDw9IDEwMjQgJiYNCj4g
+PiBUV1NJX0JMT0NLX0NUTChpMmMpKSB7DQo+ID4gKwkJCQlpZiAobXNnc1sxXS5mbGFncyAmIEky
+Q19NX1JEKQ0KPiA+ICsJCQkJCXJldCA9DQo+ID4gb2N0ZW9uX2kyY19obGNfYmxvY2tfY29tcF9y
+ZWFkKGkyYywgbXNncyk7DQo+ID4gKwkJCQllbHNlDQo+ID4gKwkJCQkJcmV0ID0NCj4gPiBvY3Rl
+b25faTJjX2hsY19ibG9ja19jb21wX3dyaXRlKGkyYywgbXNncyk7DQo+ID4gKwkJCQlnb3RvIG91
+dDsNCj4gPiArCQkJfQ0KPiANCj4gdGhlIHJlc3QgbG9va3MgZ29vZC4uLg0KPiANCj4gVGhhbmtz
+LA0KPiBBbmRpDQoNClRoYW5rcywNCkFyeWFuDQo=
