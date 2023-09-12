@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D4579D027
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A3C79D031
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbjILLhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
+        id S234724AbjILLid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234996AbjILLgz (ORCPT
+        with ESMTP id S234845AbjILLiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:36:55 -0400
+        Tue, 12 Sep 2023 07:38:11 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C75E98
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:36:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FDA6C433C7;
-        Tue, 12 Sep 2023 11:36:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF3A170E;
+        Tue, 12 Sep 2023 04:37:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A73C433C8;
+        Tue, 12 Sep 2023 11:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694518611;
-        bh=hWdIAXbpcAzILmAOadWsIIoXYCILRlwaxE0WMmyIs4k=;
-        h=From:Date:Subject:To:Cc:From;
-        b=u6src8WbsPa1dN03XNXRc8ehUQ97ADMKfNWWgG8fpchbR7UW202af166xj5k3ujAG
-         ikNo8B0Ho79V/uHrSPRZcjabMcVa9kvuftDNPP96pZG++b7BC9b0pi0Z1RKuNKuOqi
-         iQFhTr2l4vB7/sHOkqm8CeNeP0Rb0pXeS/5sY8109mJpTPjG5yGBdgbett4XOJdoqN
-         vTEsW0xXZSYrZERADcBTrO8BqAdCe99ax4s+dYQNciNhZqTm8/oErrvy1nyGlUflML
-         1pjViS/utwWB53hKMgzDEfYgMFjlv8ZfD8pqMjFHy9RNlb16FtvgQHE8VvStu3ThGt
-         k1e0o+2rcX2ng==
+        s=k20201202; t=1694518675;
+        bh=qP2dOGtWGvlle8iQUWZgWiX7KRolx20OnvWXsEa+L70=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=EfJ/zOl4uXw7Xm2f4+OxNYwK4bEnGDq3SkJG4kYEuMapSJ547kQ97GjGPTeUvS2xK
+         niB7MiQ6NbPGS50H9ovPXJ9UaMDGzhAuzr9gb2At4noP0NO0w+7wQKgfCvAinlqeGr
+         4VH6JgTIeoRFwXD2DQ5nfO1R441U8bBGoTKC2s+1Egdtq2xO/rOFPZnJa38AQIb0gr
+         s8/V9u0aZ5Sy+X9J5B1QkDV1Ty8EJz7kyZ2ge40IjrLVA98tt7bJW1bOkkyoF7FScf
+         3GYrjTR1vG2JicjdcYI0HaFwzpsV+NTlJVHzIcTVRxHwtl8tecwO2eTPPXwnAWhw5v
+         2q9Oora1B6aFw==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 12 Sep 2023 12:36:46 +0100
-Subject: [PATCH v2] mfd: wcd934x: Update to use maple tree register cache
+To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Sverdlin <alexander.sverdlin@siemens.com>
+In-Reply-To: <20230824162209.2890440-1-andriy.shevchenko@linux.intel.com>
+References: <20230824162209.2890440-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 0/3] spidev: A few cleanups
+Message-Id: <169451867395.2398433.2006166923656658924.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 12:37:53 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-mfd-wcd934x-maple-v2-1-292a154113e3@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAE1NAGUC/22Nyw6CMBBFf4V07ZjSAlVX/odh0ccAjVLIlCCG8
- O8W3Lo89+bkrCwieYzslq2McPbRDyGBOGXMdjq0CN4lZoILySshoW8cvK27ymKBXo8vhEspSlm
- iNMJWLHlGRwRDOthuN3sdJ6T9GAkbvxyxR52483Ea6HO053xffxmViz+ZOYccuFPa6MJwrtT9i
- RTwdR6oZfW2bV9NLRuZzAAAAA==
-To:     Lee Jones <lee@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1406; i=broonie@kernel.org;
- h=from:subject:message-id; bh=hWdIAXbpcAzILmAOadWsIIoXYCILRlwaxE0WMmyIs4k=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlAE1QacasghZtHKjysimim3SOUAZ7QKui6Y0cG
- fM719ze4EKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZQBNUAAKCRAk1otyXVSH
- 0JshB/9AsfhQLIMWztpfzgPjJyS2QSJylJCkG7LOcPDE1tfuRPIdjq491DxqeiesUlrK+psSh9Y
- H7tBFNXZJB/R4O3INBcS6kCTGxRoGz08Tjpoui319GIUgVL/hQRBN55fr5JGtflSD6xenZ+4rpn
- +TEyfoXdpOxakFFt/+v1CGeoXKtJJXuoEnaT0jg8Uy9H57FBOMy1C1/1+kDqUjZxA8Z/aIBRhWY
- QEU3sNyWHwcLgPn1k++ld1nJYjrGW0bfewFn9jvH74gdU49mgBxS5yWaoe5tpugDdqE6ilUS6uD
- BDuJP3gfVYGLe29SjayoR8PcOuHufFrkVymBlU4HvtHDdb0s
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maple tree register cache is based on a much more modern data structure
-than the rbtree cache and makes optimisation choices which are probably
-more appropriate for modern systems than those made by the rbtree cache. In
-v6.5 it has also acquired the ability to generate multi-register writes in
-sync operations, bringing performance up to parity with the rbtree cache
-there.
+On Thu, 24 Aug 2023 19:22:06 +0300, Andy Shevchenko wrote:
+> A few cleanups to the spidev.c to utilize existing APIs and make it
+> use less amount of Lines of Code. No functional change intended.
+> 
+> Andy Shevchenko (3):
+>   spidev: Decrease indentation level in spidev_ioctl() SPI_IOC_RD_MODE*
+>   spidev: Switch to use spi_get_csgpiod()
+>   spidev: Simplify SPI_IOC_RD_MODE* cases in spidev_ioctl()
+> 
+> [...]
 
-Update the wcd934x to use the more modern data structure.
+Applied to
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
+Thanks!
 
-Signed-off-by: Mark
----
-Changes in v2:
-- Rebase onto v6.6-rc1.
-- Link to v1: https://lore.kernel.org/r/20230712-mfd-wcd934x-maple-v1-1-0d7aba4b0077@kernel.org
----
- drivers/mfd/wcd934x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1/3] spidev: Decrease indentation level in spidev_ioctl() SPI_IOC_RD_MODE*
+      commit: 12c8d7a76cd6100a2f35b9ef4b87d11128b9105b
+[2/3] spidev: Switch to use spi_get_csgpiod()
+      commit: 193a7f9e1a78f69c913bb26ca4500f6edad1e8ff
+[3/3] spidev: Simplify SPI_IOC_RD_MODE* cases in spidev_ioctl()
+      commit: 764246c7feda01f46b1a243cfa15ad5627874ef9
 
-diff --git a/drivers/mfd/wcd934x.c b/drivers/mfd/wcd934x.c
-index 6b942d5270c1..7b9873b72c37 100644
---- a/drivers/mfd/wcd934x.c
-+++ b/drivers/mfd/wcd934x.c
-@@ -112,7 +112,7 @@ static const struct regmap_range_cfg wcd934x_ranges[] = {
- static struct regmap_config wcd934x_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 8,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 	.max_register = 0xffff,
- 	.can_multi_write = true,
- 	.ranges = wcd934x_ranges,
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230623-mfd-wcd934x-maple-852535e3b2c6
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
