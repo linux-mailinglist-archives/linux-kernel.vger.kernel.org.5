@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331E579D64C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 455B079D64F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236899AbjILQ3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
+        id S236780AbjILQ3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236819AbjILQ2v (ORCPT
+        with ESMTP id S233790AbjILQ3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:28:51 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740801725;
-        Tue, 12 Sep 2023 09:28:41 -0700 (PDT)
-Received: from mercury (dyndsl-091-248-213-163.ewe-ip-backbone.de [91.248.213.163])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 81D9A6607321;
-        Tue, 12 Sep 2023 17:28:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694536120;
-        bh=22mYHr8LRfVBST7lgkFnWwa/P75qRW5aTFi3xiR3Fsg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=h0ilXMbEPz3ajHEd8pMsbqm+O8vgV9isC5xo+anuE9xHIs+rk85l2xSfUrOwJnBxX
-         0ft2qvGi8fYHFoBir26ODydgUH7l6tWYnXC5blMZoVHrnaJQi0ONnp5nbjRVFWY1LL
-         0EKQph+PbFn31LXHPtGT/jTU6WZ9tObN8HiUQAaDoTipZz+5Q2kuM0Z4bpg1SiuRiR
-         VOt57RyttHzKjr2Qs+9gAyo89cShNSebPF61x7lH/os4j7NDWYoAnZdYHXcnb7l2B8
-         9WcxZ+PWC86+nG2Jr5jYFRKDFBbVarU15rSIdrewYhjSWUdgORGnmk8QFG9X/DfCOJ
-         5WEh/UJF51YeA==
-Received: by mercury (Postfix, from userid 1000)
-        id 7E2FB106098A; Tue, 12 Sep 2023 18:28:37 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230831171235.58477-1-biju.das.jz@bp.renesas.com>
-References: <20230831171235.58477-1-biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v3] power: supply: sbs-battery: Make similar OF and ID
- table
-Message-Id: <169453611747.465135.10535963315035318047.b4-ty@collabora.com>
-Date:   Tue, 12 Sep 2023 18:28:37 +0200
+        Tue, 12 Sep 2023 12:29:50 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC33137;
+        Tue, 12 Sep 2023 09:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=mtkXtIv3OUtKqJKyazqR9g5lFZj/7Eeun1nxUSl1J7Y=; b=iCv/aWLXL5VPfYV2B2qrnGPIYU
+        zYLjJvgBWf+losG8UneSRGCfycDkV6omw+JbZCsxZMhnIWVl7euKI6oKyZQb0hhAOmnYxk4TDDpvV
+        QpFasjd1rhRueVvv/EOwSVJOuAdDFqsuPyiininZK9zKDMyd2DAB92KbmPadKRI1N1sU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qg6Gi-006FSj-N1; Tue, 12 Sep 2023 18:29:40 +0200
+Date:   Tue, 12 Sep 2023 18:29:40 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 4/7] net: ethtool: add a netlink command to
+ list PHYs
+Message-ID: <df90eb1f-fab1-408d-af8d-fc620f505522@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+ <20230907092407.647139-5-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907092407.647139-5-maxime.chevallier@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +static int phy_list_fill_reply(struct sk_buff *skb,
+> +			       const struct ethnl_req_info *req_base,
+> +			       const struct ethnl_reply_data *reply_base)
+> +{
+> +	const struct phy_list_reply_data *data = PHY_LIST_REPDATA(reply_base);
+> +
+> +	if (nla_put_u8(skb, ETHTOOL_A_PHY_LIST_COUNT, data->n_phys))
+> +		return -EMSGSIZE;
+> +
+> +	if (!data->n_phys)
+> +		return 0;
+> +
+> +	if (nla_put(skb, ETHTOOL_A_PHY_LIST_INDEX, sizeof(u32) * data->n_phys,
+> +		    data->phy_indices))
+> +		return -EMSGSIZE;
+> +
 
-On Thu, 31 Aug 2023 18:12:35 +0100, Biju Das wrote:
-> Make similar OF and ID table to extend support for ID match
-> using i2c_match_data(). Currently it works only for OF match
-> tables as the field is wrong for ID match.
-> 
-> 
+Can we add additional information here to allow mapping to what is
+under /sys ? A PHY has an struct device, so has a name. So maybe that
+can be included?
 
-Applied, thanks!
-
-[1/1] power: supply: sbs-battery: Make similar OF and ID table
-      commit: a7d79bcc8364483b0d39c944d72b425cf06eccc5
-
-Best regards,
--- 
-Sebastian Reichel <sebastian.reichel@collabora.com>
-
+	Andrew
