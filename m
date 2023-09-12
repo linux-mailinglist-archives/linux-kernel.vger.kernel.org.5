@@ -2,156 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EB479D730
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8133B79D731
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236656AbjILRHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S236958AbjILRH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235297AbjILRH1 (ORCPT
+        with ESMTP id S236966AbjILRHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:07:27 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DF410D9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:23 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68fb8e7115eso4237855b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:23 -0700 (PDT)
+        Tue, 12 Sep 2023 13:07:53 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A72D1710;
+        Tue, 12 Sep 2023 10:07:48 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502934c88b7so9483310e87.2;
+        Tue, 12 Sep 2023 10:07:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694538443; x=1695143243; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3BcICV5TcaAp/tV1Z+AiMSUHHNst5J2lkKv8Z8FT38=;
-        b=KKNi4s5FuRLHsFw73lytoakbGpwTRaZQtiXxRzNZ54teDXsAuemN2EWCJTqZHjtxnK
-         Q1+Qc62g6TzL1K6vkq1SHVRoqz65SntVWvk4neqH8P9e1X5YOeHlNInP2dAF0NpE6F5D
-         T+FLUbe7njwpjkdco4TgT49nsmATFNbzfSgxlKRp3rnbrvwYOxpZG9IfCU470ocYC2/T
-         sWgmw0A86OP1EHfDfY8Qq6Q6yugAlhafp2fRd2mWHJ2w/Jln10Soh23LDVHN29CyW37L
-         uE2ledLUb7VilpYG48fDhoqQ3IVg/csReiezmAeKDKzNvjMfNPthgqOTY/kstzS9CQUs
-         p/2Q==
+        d=gmail.com; s=20221208; t=1694538466; x=1695143266; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dL7MyqLp5Ltk2dlKSxArA64ehXB/n2DZ7FckeLMxSeU=;
+        b=Cahj0BLBNXk2POxVzaS2r7Hz3bTvEbEr8O0/eMIM7JdUuaeBTyvfjMgRhkoZJxnzxE
+         MfxdLsXnVUvN6YyfWkRAj6BBbzXO58fcDtaJeX47IWtfor5xeVOL1ixbCs/BgFEqAg00
+         zDw5bGctJh2cDJFXWCJAGPMVgh9IuYKzQguGsCQ5dVTHmPMwPz69NH2ZXbnm2vm/NkZL
+         KU+ued56aQJcaHZRmgfChmjB0hQPR2mKRQqGNlnJhFYbBBwQcu7wO3haGT0U4yQk+tqM
+         MVh0FCuAMKz1UmCHZgeDMVwqOeCh71tQ+A8g0BKC1WfQafh9tAdn1UcTmjcTUESnso6z
+         YMbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694538443; x=1695143243;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3BcICV5TcaAp/tV1Z+AiMSUHHNst5J2lkKv8Z8FT38=;
-        b=ZAskNc0qIybhv2+vogeCizUsYs4zeiuBKzRXfpzw6XAvSA7PC+wAzvG8o3czHUZD3k
-         QkL/1aDEaxW0SbQhZABpJzY6La7iz92c+AHZUV54Ieoy3u2J3ZfXV7T1W0CUxO18Zmqw
-         ubBXeVlqI5aRbQxZX+ILaouElfovEQ7qT9g8+VhCdIRVKAaCUu3oVFDW4ql9FgyYmNEP
-         1rbCiW3bfdVT326AnzomObqvgG0yTfcb7KoF7RSvxhPGFZWL5MeAe2q281cNjFjA5B/z
-         DlemnQegUAmO2hjY3nvMV8p+cceJawbZrSi9VlQBtmux81Eb4gBLL7q3hrEnH064OmXJ
-         RUJQ==
-X-Gm-Message-State: AOJu0Yz7/8zDMwiidxuEBctMiWOmyBMTHBNC+cOmSn1zrDAFT2ZmVp/t
-        yq3r8RmteaG28Gh54Dt+tBGWZ6iQQ1I=
-X-Google-Smtp-Source: AGHT+IGM3S4koFEdiAG0hKnMNdDHnWEexRx81djDvqAfRBC8MvDyYp+FSUsfdhGQL7QVMW4+/pnRlnKrycw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:188b:b0:68f:cb69:8e76 with SMTP id
- x11-20020a056a00188b00b0068fcb698e76mr95817pfh.2.1694538443136; Tue, 12 Sep
- 2023 10:07:23 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 10:07:20 -0700
-In-Reply-To: <20230912161518.199484-1-hshan@google.com>
-Mime-Version: 1.0
-References: <20230912161518.199484-1-hshan@google.com>
-Message-ID: <ZQCayNY+8PYvfc40@google.com>
-Subject: Re: [PATCH] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-From:   Sean Christopherson <seanjc@google.com>
-To:     Haitao Shan <hshan@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1694538466; x=1695143266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dL7MyqLp5Ltk2dlKSxArA64ehXB/n2DZ7FckeLMxSeU=;
+        b=IFmz6eTudzLIuiLCJSlziKL3uxLpC0v3hxhr9k67t5tvHaQRncIw9iYLTiJLpdMBL/
+         iolV6rmwHEhCyQz+/CYABfV54lLo3VK2z+mxbXjoshdxnIWRA8IggJIq75w2hsTUJgba
+         F+k0vn5zLuG8QxQXZRV7YOs+CEYTy4z627za2EcHObvjrejhPg8svV6D2AWS6a0iyM2W
+         yG1kvRnCG/xT/4aesYELMFhbxfxRNE8ZiR7EyZiObTwIpSsaI9LyHE3NFGwzVC5ejt9Z
+         LcH8BnnuVs+wEzMg04ZHMd11uG3wJCAkSfVqn26HvfR9GJrWUEIylUl734i6MRKh91Xc
+         2Vhg==
+X-Gm-Message-State: AOJu0YxsLixCPPrTzcryjzXDbkAPpBWkw90DxavrrdMBdWMxT1ZcLvzp
+        BF3BtN9jtchRDXa0iM+pkY6cp82rE0FbQlDCpKQ=
+X-Google-Smtp-Source: AGHT+IHqIVPppW66u0UK7ipERkpm3zGAIUc4T/5xRvEo1k9V9BXZ+5tMa6CrWbpOFNqLtgZ4SXIBTkNpyAojGAP5Hyc=
+X-Received: by 2002:ac2:58c8:0:b0:4fe:3724:fdae with SMTP id
+ u8-20020ac258c8000000b004fe3724fdaemr82576lfo.66.1694538466120; Tue, 12 Sep
+ 2023 10:07:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+ <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
+ <20230912152031.GI401982@kernel.org> <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+ <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com> <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
+In-Reply-To: <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Sep 2023 10:07:35 -0700
+Message-ID: <CAADnVQLk4JRKXoNA6h=hd25bmCuVP=DM0yRswM0a=wgKuYbdhA@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023, Haitao Shan wrote:
-> This issue exists in kernel version 6.3-rc1 or above. The issue is
-> introduced by the commit 8e6ed96cdd50 ("KVM: x86: fire timer when it is
-> migrated and expired, and in oneshot mode"). The issue occurs on Intel
-> platform which APIC virtualization and posted interrupt processing.
+On Tue, Sep 12, 2023 at 10:05=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Sep 12, 2023 at 06:53:23PM +0200, Paolo Abeni wrote:
+> > On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
+> > > On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
+> > > > On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
+> > > > > It's rather a gigantic list of heards that is very hard to follow=
+.
+> > > > > Sorting helps to see what's already included and what's not.
+> > > > > It improves a maintainability in a long term.
+> > > > >
+> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com=
+>
+> > > >
+> > > > Hi Andy,
+> > > >
+> > > > At the risk of bike shedding, the sort function of Vim, when operat=
+ing
+> > > > with the C locale, gives a slightly different order, as experssed b=
+y
+> > > > this incremental diff.
+> > > >
+> > > > I have no objections to your oder, but I'm slightly curious as
+> > > > to how it came about.
+> > >
+> > > !sort which is external command.
+> > >
+> > > $ locale -k LC_COLLATE
+> > > collate-nrules=3D4
+> > > collate-rulesets=3D""
+> > > collate-symb-hash-sizemb=3D1303
+> > > collate-codeset=3D"UTF-8"
+> >
+> > I'm unsure this change is worthy. It will make any later fix touching
+> > the header list more difficult to backport, and I don't see a great
+> > direct advantage.
+>
+> As Rasmus put it here
+> https://lore.kernel.org/lkml/5eca0ab5-84be-2d8f-e0b3-c9fdfa961826@rasmusv=
+illemoes.dk/
+> In short term you can argue that it's not beneficial, but in long term it=
+'s given
+> less conflicts.
 
-I think the bug was actually introduced by:
+I agree with Paolo.
 
-  967235d32032 ("KVM: vmx: clear pending interrupts on KVM_SET_LAPIC")
-
-Fixing the "deadline <= 0" handling just made it much easier to be hit.  E.g. if
-the deadline was '1' during restore, set_target_expiration() would set tscdeadline
-to T1+(1*N), where T1 is the current TSC and N is the multipler to get from nanoseconds
-to cycles.  start_sw_tscdeadline() (or vmx_set_hv_timer()) would then reread the
-TSC (call it T2), see T2 > T1+(1*N), and mark the timer as expired.
-
-> The issue is first discovered when running the Android Emulator which
-> is based on QEMU 2.12. I can reproduce the issue with QEMU 8.0.4 in
-> Debian 12.
-
-The above is helpful as extra context, but repeating "This issue" and "The issue"
-over and over without ever actually describing what the issue actualy is makes it
-quite difficult to understand what is actually being fixed.
-
-> With the above commit, the timer gets fired immediately inside the
-> KVM_SET_LAPIC call when loading the snapshot. On such Intel platforms,
-> this eventually leads to setting the corresponding PIR bit. However,
-> the whole PIR bits get cleared later in the same KVM_SET_LAPIC call.
-> Missing lapic timer interrupt freeze the guest kernel.
-
-Please phrase changelogs as commands and state what is actually being changed.
-Again, the context on what is broken is helpful, but the changelog really, really
-needs to state what is being changed.
-
-> Signed-off-by: Haitao Shan <hshan@google.com>
-> ---
->  arch/x86/kvm/lapic.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index a983a16163b1..6f73406b875a 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2977,14 +2977,14 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
->  	apic_update_lvtt(apic);
->  	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
->  	update_divide_count(apic);
-> -	__start_apic_timer(apic, APIC_TMCCT);
-> -	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
->  	kvm_apic_update_apicv(vcpu);
->  	if (apic->apicv_active) {
->  		static_call_cond(kvm_x86_apicv_post_state_restore)(vcpu);
->  		static_call_cond(kvm_x86_hwapic_irr_update)(vcpu, apic_find_highest_irr(apic));
->  		static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_highest_isr(apic));
->  	}
-> +	__start_apic_timer(apic, APIC_TMCCT);
-> +	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
-
-I don't think this is the ordering we want.  It currently works, but it subtly
-"relies" on a few things:
-
-  1. That vmx_deliver_posted_interrupt() never "fails" when APICv is enabled,
-     i.e. never puts the interrupt in the IRR instead of the PIR.
-
-  2. The SVM, a.k.a. AVIC, doesn't ever sync from the IRR to a separate "hardware"
-     virtual APIC, because unlike VMX, SVM does set the bit in the IRR.
-
-I doubt #2 will ever change simply because that's tied to how AVIC works, and #1
-shouldn't actually break anything since the fallback path in vmx_deliver_interrupt()
-needs to be self-sufficient, but I don't like that the code syncs from the IRR and
-_then_ potentially modifies the IRR.
-
-I also don't like doing additional APIC state restoration _after_ invoking the
-post_state_restore() hook.  Updating APICv in the middle of the restore flow is
-going to be brittle and difficult to maintain, e.g. it won't be obvious what
-needs to go before and what needs to go after.
-
-IMO, vmx_apicv_post_state_restore() is blatantly broken.  It is most definitely
-not doing "post state restore" stuff, it's simply purging state, i.e. belongs in
-a "pre state restore" hook.
-
-So rather than shuffle around the timer code, I think we should instead add yet
-another kvm_x86_ops hook, e.g. apicv_pre_state_restore(), and have initialize
-the PI descriptor there.
-
-Aha!  And I think the new apicv_pre_state_restore() needs to be invoked even if
-APICv is not active, because I don't see anything that purges the PIR when APICv
-is enabled.  VMX's APICv doesn't have many inhibits that can go away, and I
-highly doubt userspace will restore into a vCPU with pending posted interrupts,
-so in practice this is _extremely_ unlikely to be problematic.  But it's still
-wrong.
+This is just code churn.
+The includes will become unsorted eventually.
+Headers might get renamed, split, etc.
+Keeping things sorted is a headache.
