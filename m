@@ -2,213 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EECF79C961
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9C79C964
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbjILILw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S232230AbjILIL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbjILILu (ORCPT
+        with ESMTP id S232228AbjILIL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:11:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6754EE73;
-        Tue, 12 Sep 2023 01:11:46 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E197D1F85D;
-        Tue, 12 Sep 2023 08:11:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694506304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=WXdqCK7IJxe5rTLnJmNveWbh8pP8IIVl6oZz8TWuo30=;
-        b=Dnq0OX99SWDBkUkg4NqR285fXpw4UtUQlC6v6a33Ld3VUqbE+ogQNgvnc36ojM+/vAOfZl
-        vyLPpPnn2hmNSxGQIYeG/vaoMBLilloT1NUP1xWVzdHqV5QwEkzocdSeHw70rravqQPclW
-        n0IR3a0JOIQatXAf91xoKGe3m//O16c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694506304;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=WXdqCK7IJxe5rTLnJmNveWbh8pP8IIVl6oZz8TWuo30=;
-        b=p0yWx0VB92CYyXAsKozfKBHpAE6R93eb0u1c7uIHhEX1LSkA7doJgxsHUL6n1OqW0P/6S2
-        ZTFWluW+UjUrp1AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 818FA13A39;
-        Tue, 12 Sep 2023 08:11:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XQU5G0AdAGVIFAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 12 Sep 2023 08:11:44 +0000
-Message-ID: <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
-Date:   Tue, 12 Sep 2023 10:11:43 +0200
+        Tue, 12 Sep 2023 04:11:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49ED10CA;
+        Tue, 12 Sep 2023 01:11:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5EF5C433C8;
+        Tue, 12 Sep 2023 08:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694506312;
+        bh=86DRriTPA8s3y0wTZiZ9RpDhVjbzsr/+auYV4gwpeRQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oJUnZGpAxXe3T43MFIEaLN3gAgGj6Yec9hhpNSmAAhvgXEdShkfB8vpxW35TOXrxw
+         c+hD7iWXhl8eA550i6gFxITfSy96lby8AD4ImDTZwc5vsoysXC9v5nMVSqOryiIQH7
+         zFHHbJ0p/etx1Mxftp3SP/iLY9LIKuGar9zY12Xc=
+Date:   Tue, 12 Sep 2023 10:11:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "guojinhui.liam" <guojinhui.liam@bytedance.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, lizefan.x@bytedance.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver core: platform: set numa_node before
+ platform_add_device()
+Message-ID: <2023091258-matrix-imitation-cc70@gregkh>
+References: <20230912070900.1862-1-guojinhui.liam@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jim Cromie <jim.cromie@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------z16WFs9halpjk3MPJ08ovkgt"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912070900.1862-1-guojinhui.liam@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------z16WFs9halpjk3MPJ08ovkgt
-Content-Type: multipart/mixed; boundary="------------0NR9gq0a3l3oFllEsTkfW0tM";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller
- <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Dave Airlie <airlied@redhat.com>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Jim Cromie <jim.cromie@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- Arthur Grillo <arthurgrillo@riseup.net>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
-Message-ID: <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+On Tue, Sep 12, 2023 at 03:09:00PM +0800, guojinhui.liam wrote:
+> platform_add_device creates numa_node attribute of sysfs according to
+> whether dev_to_node(dev) is equal to NUMA_NO_NODE. So set the numa node
+> of the device before creating numa_node attribute of sysfs.
 
---------------0NR9gq0a3l3oFllEsTkfW0tM
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Why?  What will this allow to happen differently?  What is broken with
+the current code?
 
-SGkNCg0KQW0gMTIuMDkuMjMgdW0gMDk6MTQgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQpbLi4uXQ0KPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL0tjb25maWcNCj4+ICsrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS9LY29uZmlnDQo+PiBAQCAtMTM1LDcgKzEzNSw3IEBAIGNvbmZpZyBE
-Uk1fRkJERVZfRU1VTEFUSU9ODQo+PiAgICAgICAgICBib29sICJFbmFibGUgbGVnYWN5IGZi
-ZGV2IHN1cHBvcnQgZm9yIHlvdXIgbW9kZXNldHRpbmcgZHJpdmVyIg0KPj4gICAgICAgICAg
-ZGVwZW5kcyBvbiBEUk0NCj4+ICAgICAgICAgIHNlbGVjdCBGUkFNRUJVRkZFUl9DT05TT0xF
-X0RFVEVDVF9QUklNQVJZIGlmIEZSQU1FQlVGRkVSX0NPTlNPTEUNCj4+IC0gICAgICAgZGVm
-YXVsdCB5DQo+PiArICAgICAgIGRlZmF1bHQgRkINCj4gDQo+IFdoaWxlIHRoaXMgaXMgdHJ1
-ZSBmb3IgZXhpc3RpbmcgY29uZmlncywgaXQgaXMgbm8gbG9uZ2VyIHRydWUgaW4gZ2VuZXJh
-bCwNCj4gYXMgRFJNX0ZCREVWX0VNVUxBVElPTiBpcyBubyBsb25nZXIgcmVsYXRlZCB0byBG
-Qi4NCg0KV291bGQgaXQgbWFrZSBzZW5zZSB0byBtYWtlIEZSQU1FQlVGRkVSX0NPTlNPTEUg
-YW4gaW5kZXBlbmRlbnQgb3B0aW9uIA0KYW5kIGhhdmUgRkJERVZfRU1VTEFUSU9OIGRlcGVu
-ZCBvbiBpdD8gU29tZXRoaW5nIGxpa2UgdGhpczoNCg0KRlJBTUVCVUZGRVJfQ09OU09MRQ0K
-CWRlcGVuZHMgb24gRFJNIHx8IEZCDQoJc2VsZWN0IEZCX0NPUkUNCg0KRkJERVZfRU1VTEFU
-SU9ODQoJZGVwZW5kcyBvbiBEUk0NCglkZXBlbmRzIG9uIEZSQU1FQlVGRkVSX0NPTlNPTEUN
-CglkZWZhdWx0IHkNCg0KU28gaWYgYW55IGdyYXBoaWNzIHN1YnN5c3RlbXMgYXJlIGVuYWJs
-ZWQsIEZSQU1FQlVGRkVSX0NPTlNPTEUgaXMgDQpzZWxlY3QtYWJsZS4gQnV0IGZvciBEUk0s
-IEZCREVWX0VNVUxBVElPTiBkaXNhYmxlcyB0aGUgY29uc29sZS4gVGhhdCANCm9wdGlvbiBy
-ZW1haW5zIG1vcmUgZm9yIGhpc3RvcmljYWwgcmVhc29ucyB0aGFuIGFjdHVhbCB1c2VmdWxu
-ZXNzLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPj4gICAgICAgICAgaGVscA0K
-Pj4gICAgICAgICAgICBDaG9vc2UgdGhpcyBvcHRpb24gaWYgeW91IGhhdmUgYSBuZWVkIGZv
-ciB0aGUgbGVnYWN5IGZiZGV2DQo+PiAgICAgICAgICAgIHN1cHBvcnQuIE5vdGUgdGhhdCB0
-aGlzIHN1cHBvcnQgYWxzbyBwcm92aWRlcyB0aGUgbGludXggY29uc29sZQ0KPj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmlnIGIvZHJpdmVycy92aWRlby9j
-b25zb2xlL0tjb25maWcNCj4+IGluZGV4IGI1NzVjZjU0MTc0YWYuLjgzYzJkNzMyOWNhNTgg
-MTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2NvbnNvbGUvS2NvbmZpZw0KPj4gKysr
-IGIvZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcNCj4+IEBAIC03NCw2ICs3NCw3IEBA
-IGNvbmZpZyBEVU1NWV9DT05TT0xFX1JPV1MNCj4+ICAgY29uZmlnIEZSQU1FQlVGRkVSX0NP
-TlNPTEUNCj4+ICAgICAgICAgIGJvb2wgIkZyYW1lYnVmZmVyIENvbnNvbGUgc3VwcG9ydCIN
-Cj4+ICAgICAgICAgIGRlcGVuZHMgb24gRkJfQ09SRSAmJiAhVU1MDQo+PiArICAgICAgIGRl
-ZmF1bHQgRFJNX0ZCREVWX0VNVUxBVElPTg0KPiANCj4gU291bmRzIGdvb2QgdG8gbWUsIGFs
-dGhvdWdoIGl0IGxvb2tzIGEgYml0IHN0cmFuZ2UgYXQgZmlyc3Qgc2lnaHQNCj4gKEZSQU1F
-QlVGRkVSX0NPTlNPTEUgZGVmYXVsdHMgdG8gbiBvbiBhIHN5c3RlbSB3aXRoIHJlYWwgZmJk
-ZXYsIGJ1dA0KPiB5IG9uIGVtdWxhdGVkIGZiZGV2PykuDQo+IFNvIHRoaXMgaXMgdGhlIGZp
-eCBmb3IgY29tbWl0IGE1YWUzMzFlZGIwMmIgKCJkcm06IERyb3Agc2VsZWN0DQo+IEZSQU1F
-QlVGRkVSX0NPTlNPTEUgZm9yIERSTV9GQkRFVl9FTVVMQVRJT04iKS4NCj4gDQo+PiAgICAg
-ICAgICBzZWxlY3QgVlRfSFdfQ09OU09MRV9CSU5ESU5HDQo+PiAgICAgICAgICBzZWxlY3Qg
-Q1JDMzINCj4+ICAgICAgICAgIHNlbGVjdCBGT05UX1NVUFBPUlQNCj4+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZyBiL2RyaXZlcnMvdmlkZW8vZmJk
-ZXYvY29yZS9LY29uZmlnDQo+PiBpbmRleCAxMTRjYjhhYTZjOGZkLi44MDRjMmJlYzliNDNj
-IDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9jb3JlL0tjb25maWcNCj4+
-ICsrKyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvY29yZS9LY29uZmlnDQo+PiBAQCAtMjgsNyAr
-MjgsNyBAQCBjb25maWcgRklSTVdBUkVfRURJRA0KPj4gICBjb25maWcgRkJfREVWSUNFDQo+
-PiAgICAgICAgICBib29sICJQcm92aWRlIGxlZ2FjeSAvZGV2L2ZiKiBkZXZpY2UiDQo+PiAg
-ICAgICAgICBkZXBlbmRzIG9uIEZCX0NPUkUNCj4+IC0gICAgICAgZGVmYXVsdCB5DQo+PiAr
-ICAgICAgIGRlZmF1bHQgRkINCj4gDQo+IENoYW5naW5nIHRoaXMgbWVhbnMgcG9zc2libHkg
-Y2F1c2luZyByZWdyZXNzaW9ucyBvbiBzeXN0ZW1zIHJ1bm5pbmcNCj4gYW4gZmJkZXYgdXNl
-cnNwYWNlLg0KPiANCj4+ICAgICAgICAgIGhlbHANCj4+ICAgICAgICAgICAgU2F5IFkgaGVy
-ZSBpZiB5b3Ugd2FudCB0aGUgbGVnYWN5IC9kZXYvZmIqIGRldmljZSBmaWxlIGFuZA0KPj4g
-ICAgICAgICAgICBpbnRlcmZhY2VzIHdpdGhpbiBzeXNmcyBhbmMgcHJvY2ZzLiBJdCBpcyBv
-bmx5IHJlcXVpcmVkIGlmIHlvdQ0KPiANCj4gR3J7b2V0amUsZWV0aW5nfXMsDQo+IA0KPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQNCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1l
-cm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRp
-b25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcs
-IEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxk
-LCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
+> Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
+> Signed-off-by: guojinhui.liam <guojinhui.liam@bytedance.com>
 
---------------0NR9gq0a3l3oFllEsTkfW0tM--
+Please use your name here, and not your email alias, as the first part
+of the signed-off-by line.
 
---------------z16WFs9halpjk3MPJ08ovkgt
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+And also, please fix up your email client to have the correct name as
+well.
 
------BEGIN PGP SIGNATURE-----
+> ---
+>  drivers/acpi/acpi_platform.c | 4 +---
+>  drivers/base/platform.c      | 4 ++++
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
+> index 48d15dd785f6..adcbfbdc343f 100644
+> --- a/drivers/acpi/acpi_platform.c
+> +++ b/drivers/acpi/acpi_platform.c
+> @@ -178,11 +178,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
+>  	if (IS_ERR(pdev))
+>  		dev_err(&adev->dev, "platform device creation failed: %ld\n",
+>  			PTR_ERR(pdev));
+> -	else {
+> -		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
+> +	else
+>  		dev_dbg(&adev->dev, "created platform device %s\n",
+>  			dev_name(&pdev->dev));
+> -	}
+>  
+>  	kfree(resources);
+>  
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 76bfcba25003..355abf91930a 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -808,6 +808,7 @@ struct platform_device *platform_device_register_full(
+>  {
+>  	int ret;
+>  	struct platform_device *pdev;
+> +	struct acpi_device *adev = to_acpi_device_node(pdevinfo->fwnode);
+>  
+>  	pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
+>  	if (!pdev)
+> @@ -841,6 +842,9 @@ struct platform_device *platform_device_register_full(
+>  			goto err;
+>  	}
+>  
+> +	if (adev)
+> +		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUAHT8FAwAAAAAACgkQlh/E3EQov+DU
-Pw//bjtTKDkr6zUHhIzruyB3IaL13aLU4GbkVUM6gBsYTyrv99UrVpdnzbI1yip0ayia3l4IuuLi
-zheiwC/0NQAZa6E5l9AqXv5eGMyuBpD9jUy9BYGojo/TfcV/uRq1eBj1ZzJo7TIPEkCC+7zfQ1W4
-pX9oiLPsmkgSvZ2U7C647XcX1SzNRj8lG9ZpoDHJpslEe377rkUJcIY+E2GeUTt7sExDnJlf3q3u
-AHWUWmCyQesHKqiq0KjqOCtQOlm4Q3RrCuswJWKvJR7i76s9qx0RWQCoRbAIh3BWhHrXWQKKTOJ+
-73YcyJtmk8pBbyoUEawWWkaeKVhWFPxR8EEcXF+OOWynRxeP7yZIyxYPffkoFFVcR7uPoMoqhDUe
-J1olUE+hiHc5znxx3QKRNc1+JRkKMTEu2yfP63aKnHAoCsPoTkomSPytLQiCQwdsKCmOjdP1jHSS
-uvR8yNY5NpveaOz8yG7T1s9dxpy1WQbNSiCFQOy07oVB0et459pORhn1PrKVcMy+k+XAvNNLzhCe
-it8aCsF8dmxiqoqAYX/3niD3U7IG9IxZ9xilXi0KlI8RaLz+L+tqwPgjtxn9vXxiiziYzuG+C1A7
-vq36g6rKNNAopoGR7Vh4sUWmlzVt5FS4GK7PbiuuzGwGm6/9Ou8hLQ0lWKbzms5Xf1YYvvz7oEpG
-unM=
-=5E0s
------END PGP SIGNATURE-----
+Are you sure that this platform code can always call acpi functions?
 
---------------z16WFs9halpjk3MPJ08ovkgt--
+thanks,
+
+greg k-h
