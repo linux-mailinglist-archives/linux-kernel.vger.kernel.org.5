@@ -2,105 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9F679CB5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B646C79CB62
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbjILJQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:16:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        id S233394AbjILJRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbjILJQu (ORCPT
+        with ESMTP id S229509AbjILJRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:16:50 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA8B10D8;
-        Tue, 12 Sep 2023 02:16:47 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlHy70wYbz6FGbr;
-        Tue, 12 Sep 2023 17:16:15 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
- 2023 10:16:44 +0100
-Date:   Tue, 12 Sep 2023 10:16:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Conor Dooley <conor@kernel.org>,
-        "Cusco, Ana-Maria" <Ana-Maria.Cusco@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for HMC540S
-Message-ID: <20230912101643.00005cc8@Huawei.com>
-In-Reply-To: <06a007ad-ab6b-2ed0-8f70-6837680c8684@linaro.org>
-References: <20230816110906.144540-1-ana-maria.cusco@analog.com>
-        <20230816110906.144540-2-ana-maria.cusco@analog.com>
-        <20230816-stoop-exonerate-148c7bdc01c2@spud>
-        <SN7PR03MB7132732C9DB517378897DADA8EF1A@SN7PR03MB7132.namprd03.prod.outlook.com>
-        <06a007ad-ab6b-2ed0-8f70-6837680c8684@linaro.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 12 Sep 2023 05:17:22 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362DAA9;
+        Tue, 12 Sep 2023 02:17:18 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68fbb10dea4so1649315b3a.3;
+        Tue, 12 Sep 2023 02:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694510237; x=1695115037; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=owu+iw/2FkUrRYrZDkX+J602qOAcIdeb4iAQuIcFb/M=;
+        b=blxTRj4oK1E/xG/KC2l0mWgEeBMaxnpHIPMUbhoUzxGTekbyDM5NZ9N/Y/L9QoPT3C
+         Y7spyiTvr9AiHVVG0ZNOw0MO3s0ZLUemGwE3gQrgPuJ1RIpS90Swz5tBbVsfrW+PdL0a
+         kHPlka9J/GBc3tYfKPVlQdDCV1eJSq9RcoxiWRoAth1nWAxkndFQ66DysgGrrCfX/bDm
+         K1//tH1ZcWrpNUCcx3C3HxwtDxRSWwx33sN9JFjH858lrcsoUYnjsUXt8PBTl8O/Y20R
+         VUmOzxmH76yrGFAHrd+fNJaruwvb55WvkSuaRJw7LYKvir9UyjFvt7nnJ/TyLdycm+q1
+         YnWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694510237; x=1695115037;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=owu+iw/2FkUrRYrZDkX+J602qOAcIdeb4iAQuIcFb/M=;
+        b=pn0hU1zkD8oYy9nE0HFbLqe3rlMPEtH69gz1npBlfean3rC7hky+N6c6F8XJ4bLZUV
+         m+lxVXD0/5roHeoyb/mEZknHUKQQxVgS2y9FdVAgS4mWRYXTm1vLU+8kDo2fRT0PhIOC
+         oKGq6+aIWdtMASy0MATj4J7iD+w4wh5eDOMWKD5nASu2/E2q9/pRTEe3CvvMEp9UbXGZ
+         4BjNqWREDkhQmjds2dy61pL8munDlsVu4zcuOK2BOKwP2LKOOqbbRa9Jd6dV9+wIco3Q
+         8vovSSV2IYG2Oz2Ku7EYRpqQC5xv+BH5vDDvfVYsYyOfIEQkeGMirLJSe0hrel8ydgNP
+         hmDw==
+X-Gm-Message-State: AOJu0YycX/dcFTYziv8Xm57BBJIsbnUMmo4WATG3QoZiyke+7Q6xs5ZV
+        JdGEudmKf6o+EKdME+gK2BQ=
+X-Google-Smtp-Source: AGHT+IGqXNDHKApQE1bCCD8nNs98zTt/9xRUjd40elC0JNPe6ofIn7CyEUKrWqEeqzUgxUAAINQ11A==
+X-Received: by 2002:a05:6a20:3d82:b0:13d:bf07:7444 with SMTP id s2-20020a056a203d8200b0013dbf077444mr12497353pzi.0.1694510237473;
+        Tue, 12 Sep 2023 02:17:17 -0700 (PDT)
+Received: from localhost.localdomain (2001-b400-e3a1-00a4-e9b8-a113-90c8-ebfb.emome-ip6.hinet.net. [2001:b400:e3a1:a4:e9b8:a113:90c8:ebfb])
+        by smtp.gmail.com with ESMTPSA id fa5-20020a056a002d0500b0068fb5e44827sm4186555pfb.67.2023.09.12.02.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 02:17:17 -0700 (PDT)
+From:   Victor Shih <victorshihgli@gmail.com>
+To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
+        Greg.tu@genesyslogic.com.tw, liukun11@huaqin.com,
+        Victor Shih <victorshihgli@gmail.com>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Subject: [PATCH V1] mmc: sdhci-pci-gli: A workaround to allow GL9750 to enter ASPM L1.2
+Date:   Tue, 12 Sep 2023 17:17:10 +0800
+Message-Id: <20230912091710.7797-1-victorshihgli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023 08:56:56 +0200
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-> On 12/09/2023 08:36, Hennerich, Michael wrote:
-> > 
-> >   
-> >> -----Original Message-----
-> >> From: Conor Dooley <conor@kernel.org>
-> >> Sent: Mittwoch, 16. August 2023 16:37
-> >> To: Cusco, Ana-Maria <Ana-Maria.Cusco@analog.com>
-> >> Cc: Lars-Peter Clausen <lars@metafoo.de>; Hennerich, Michael
-> >> <Michael.Hennerich@analog.com>; Jonathan Cameron <jic23@kernel.org>;
-> >> Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> >> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> >> <conor+dt@kernel.org>; linux-iio@vger.kernel.org;
-> >> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> >> Subject: Re: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for HMC540S
-> >>
-> >> [External]
-> >>
-> >> On Wed, Aug 16, 2023 at 02:09:06PM +0300, Ana-Maria Cusco wrote:  
-> >>> Added support for HMC540SLP3E broadband 4-bit Silicon IC digital
-> >>> attenuator with a 15 dB control range and wide frequency coverage
-> >>> (0.1 to 8 GHz).
-> >>>
-> >>> Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>  
-> >>
-> >> Acked-by: Conor Dooley <conor.dooley@microchip.com>  
-> > 
-> > Adding missing Signed-off-by tag
-> > 
-> > Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>  
-> 
-> Why it is missing? What is the purpose of this adding?
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+When GL9750 enters ASPM L1 sub-states, it will stay at L1.1 and will not
+enter L1.2. The workaround is to toggle PM state to allow GL9750 to enter
+ASPM L1.2.
 
-Wrong patch.  This is supposed to be on patch 1 where
-Michael was the author (he confirmed intent in response to a
-linux-next missing sign-off mail). I've added it there, but
-if you can reply to that email Michael, it will make things nice
-and clear.
+Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+---
+ drivers/mmc/host/sdhci-pci-gli.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Jonathan
+diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+index ae8c307b7aa7..dd6f09024f08 100644
+--- a/drivers/mmc/host/sdhci-pci-gli.c
++++ b/drivers/mmc/host/sdhci-pci-gli.c
+@@ -25,6 +25,9 @@
+ #define   GLI_9750_WT_EN_ON	    0x1
+ #define   GLI_9750_WT_EN_OFF	    0x0
+ 
++#define PCI_GLI_9750_PM_CTRL	0xFC
++#define   PCI_GLI_9750_PM_STATE	  GENMASK(1, 0)
++
+ #define SDHCI_GLI_9750_CFG2          0x848
+ #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
+ #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
+@@ -536,8 +539,12 @@ static void sdhci_gl9750_set_clock(struct sdhci_host *host, unsigned int clock)
+ 
+ static void gl9750_hw_setting(struct sdhci_host *host)
+ {
++	struct sdhci_pci_slot *slot = sdhci_priv(host);
++	struct pci_dev *pdev;
+ 	u32 value;
+ 
++	pdev = slot->chip->pdev;
++
+ 	gl9750_wt_on(host);
+ 
+ 	value = sdhci_readl(host, SDHCI_GLI_9750_CFG2);
+@@ -547,6 +554,13 @@ static void gl9750_hw_setting(struct sdhci_host *host)
+ 			    GLI_9750_CFG2_L1DLY_VALUE);
+ 	sdhci_writel(host, value, SDHCI_GLI_9750_CFG2);
+ 
++	/* toggle PM state to allow GL9750 to enter ASPM L1.2 */
++	pci_read_config_dword(pdev, PCI_GLI_9750_PM_CTRL, &value);
++	value |= PCI_GLI_9750_PM_STATE;
++	pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
++	value &= ~PCI_GLI_9750_PM_STATE;
++	pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
++
+ 	gl9750_wt_off(host);
+ }
+ 
+-- 
+2.25.1
+
