@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381E679D0F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CBD79D11B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbjILMZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42202 "EHLO
+        id S235116AbjILMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234391AbjILMZX (ORCPT
+        with ESMTP id S235184AbjILMaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:25:23 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0055E10D7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:25:18 -0700 (PDT)
-Received: from [192.168.2.137] (bband-dyn191.178-41-225.t-com.sk [178.41.225.191])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id D33E13F5B9;
-        Tue, 12 Sep 2023 14:25:16 +0200 (CEST)
-From:   Martin Botka <martin.botka@somainline.org>
-Date:   Tue, 12 Sep 2023 14:25:13 +0200
-Subject: [PATCH v3 2/2] arm64: dts: allwinner: h616: Add SID controller
- node
+        Tue, 12 Sep 2023 08:30:21 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086161735
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:30:09 -0700 (PDT)
+Received: from dggpemm500011.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RlN9s0W98zMl9J;
+        Tue, 12 Sep 2023 20:26:41 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpemm500011.china.huawei.com
+ (7.185.36.110) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
+ 2023 20:30:07 +0800
+From:   Li Lingfeng <lilingfeng3@huawei.com>
+To:     <dm-devel@redhat.com>
+CC:     <agk@redhat.com>, <snitzer@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <houtao1@huawei.com>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, <lilingfeng3@huawei.com>
+Subject: [PATCH] dm: remove dm_set_md_type()
+Date:   Tue, 12 Sep 2023 20:26:05 +0800
+Message-ID: <20230912122605.3487911-1-lilingfeng3@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-sid-h616-v3-2-ee18e1c5bbb5@somainline.org>
-References: <20230912-sid-h616-v3-0-ee18e1c5bbb5@somainline.org>
-In-Reply-To: <20230912-sid-h616-v3-0-ee18e1c5bbb5@somainline.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alan Ma <tech@biqu3d.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694521515; l=864;
- i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=ZkRao+SoGyLWR0re//2OndxkkGjlXhC9ot4zAnROi5I=;
- b=XrAr5Dq648hOA4X5B5E+GpIsCY3dbSG7kKzZxn5+eFGBJ06i8BZkVYBTB7ZNxYw5a3l9/uoxg
- nhUy0hjKKoyBIYjT+a/XbiD8lw1Eg61oXHapvFvRFoQt4npqjPcDPA5
-X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
- pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500011.china.huawei.com (7.185.36.110)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add node for the H616 SID controller
+Commit ba30585936b0 ("dm: move setting md->type into dm_setup_md_queue")
+has removed the only reference to dm_set_md_type(), so remove
+dm_set_md_type() now.
 
-Signed-off-by: Martin Botka <martin.botka@somainline.org>
+Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/md/dm.c | 6 ------
+ drivers/md/dm.h | 1 -
+ 2 files changed, 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-index 74aed0d232a9..d549d277d972 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-@@ -133,6 +133,13 @@ ccu: clock@3001000 {
- 			#reset-cells = <1>;
- 		};
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index f0f118ab20fa..6b9d04ca09d0 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2316,12 +2316,6 @@ void dm_unlock_md_type(struct mapped_device *md)
+ 	mutex_unlock(&md->type_lock);
+ }
  
-+		sid: efuse@3006000 {
-+			compatible = "allwinner,sun50i-h616-sid", "allwinner,sun50i-a64-sid";
-+			reg = <0x03006000 0x1000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+		};
-+
- 		watchdog: watchdog@30090a0 {
- 			compatible = "allwinner,sun50i-h616-wdt",
- 				     "allwinner,sun6i-a31-wdt";
-
+-void dm_set_md_type(struct mapped_device *md, enum dm_queue_mode type)
+-{
+-	BUG_ON(!mutex_is_locked(&md->type_lock));
+-	md->type = type;
+-}
+-
+ enum dm_queue_mode dm_get_md_type(struct mapped_device *md)
+ {
+ 	return md->type;
+diff --git a/drivers/md/dm.h b/drivers/md/dm.h
+index f682295af91f..cc55ef3441be 100644
+--- a/drivers/md/dm.h
++++ b/drivers/md/dm.h
+@@ -76,7 +76,6 @@ bool dm_table_request_based(struct dm_table *t);
+ 
+ void dm_lock_md_type(struct mapped_device *md);
+ void dm_unlock_md_type(struct mapped_device *md);
+-void dm_set_md_type(struct mapped_device *md, enum dm_queue_mode type);
+ enum dm_queue_mode dm_get_md_type(struct mapped_device *md);
+ struct target_type *dm_get_immutable_target_type(struct mapped_device *md);
+ 
 -- 
-2.42.0
+2.31.1
 
