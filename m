@@ -2,123 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 234F279D99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B82079D9A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237640AbjILTeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
+        id S237680AbjILTfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbjILTeU (ORCPT
+        with ESMTP id S232810AbjILTe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:34:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0AC199;
-        Tue, 12 Sep 2023 12:34:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B3EAC433C7;
-        Tue, 12 Sep 2023 19:34:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694547256;
-        bh=HleCnHPsfjZykYXaJ8HvlvfvgC8Bo/85PJq2XL1IkKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mSzXhisWNHHc5X3OcKTem4wY9TkOdKKVFvfxajxJRXmjekb6hbUhAM+wqsq49DL+i
-         rsyl7wWexdGbMVxENT1fkIcGzBfPN57pXkQ7cbA/fitCSoaCvzx4j6CKEz4kP5oKuO
-         u4s6dT6V99Sn7mxrkFDQslehzIBGcbaD08c2ueJbkVbmglOkRhAFREuKS4MoICgiIB
-         cMaSYYyqIoK+XRHzWrEx4Zg5kyOzJ5u25Encrh8T+4rwOpsSEyYpjygmMkPZJkJdge
-         Q4dRaxvWYJs6DhecUY4uDlnGyFqZ4SeLBu+VFMIb5iH4Ciwwe2+tzBMPMApUyoOuqt
-         VSF/LY+oP8nYA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C0AE9403F4; Tue, 12 Sep 2023 16:34:13 -0300 (-03)
-Date:   Tue, 12 Sep 2023 16:34:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Forrington <nick.forrington@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] perf vendor events arm64: Update V1 events using Arm
- telemetry repo
-Message-ID: <ZQC9NXlqVxMcmw0G@kernel.org>
-References: <20230831161618.134738-1-james.clark@arm.com>
+        Tue, 12 Sep 2023 15:34:59 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B8199;
+        Tue, 12 Sep 2023 12:34:55 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bcc0adab4so762134266b.2;
+        Tue, 12 Sep 2023 12:34:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694547294; x=1695152094; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z8gdWrWuVeFlnSIKZ2NOJm7Y8BUbwd2ZNwalxRE+BW0=;
+        b=pIVTZev24UgmHyJqvdKLjXnZlirXrMgzcYKdE+ba8GHyxDJyocbHVfjhB1/Aehsqmc
+         t19iAbnupAbkjfV8hb8emBExePQN0eV7jsxAYLag3x6HZyn+/m1gTeQed0jhJhIwECC/
+         h9P1vz+T29vR/8RxlxysH1ev5xPDX9zEsDP4CwOklL5l45TZF+sLFU6T2DAzV45TjNJK
+         Cf8xz4AKh1tqYk5PXAqu7TUYS20M4cjc1SiqTJhK0SBgOKSjx0KbvxaWylxbSb9q5Y0d
+         fs75BKeN8FYNjUFwNdQ53R8bCJvYUMLzP91wEG9xKhMdr0HoWmAh4e2/2d2NRPSRUIYq
+         g9AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694547294; x=1695152094;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z8gdWrWuVeFlnSIKZ2NOJm7Y8BUbwd2ZNwalxRE+BW0=;
+        b=VKWlHjsz/UxJUZ/FM7GzHZNq/zjoOkGev8QJn1jagdNVQlQJrxy/+9B6awRU6WsBJl
+         5aKPtrBVWhxdp29LpzzIxynDRCzO/AjtuLdpYVbHD27XdIr7s/ATWh2s1PoP5cSLmKMO
+         GQ/60QqinWF4hBQEt8tb/he7OVAuXtBafk8MxcYMya+Eq7PjCXh7WikPP57H9Fmj9Rqf
+         vjo/4omvGc8FUz1xmVJUapxCrlaS5lC7IISMw/eYS++PxwzOjFEe4xlDeOBz+OO9IV3j
+         WaQyu24lhZDZOvdAn7iad3/9kbSDgycew0eiRBJrokueCaHJrGpCcWKDK5avU1uhXh0g
+         xNtw==
+X-Gm-Message-State: AOJu0Yx9H5Ce/v/9mIxkm2GbjD+M7thhghaKLrylnxcOn79eznSoZRoH
+        GtuyGUduw7KDRKlOlRWyTVQ=
+X-Google-Smtp-Source: AGHT+IF2x+0PJReOu0h7LIhK4z/2N8GnhuzGa4jCv35kEX4WT+YNV6CCZ1h1zkd9sRMux2n4P4GJMQ==
+X-Received: by 2002:a17:906:3149:b0:9a5:cade:8044 with SMTP id e9-20020a170906314900b009a5cade8044mr186839eje.21.1694547293556;
+        Tue, 12 Sep 2023 12:34:53 -0700 (PDT)
+Received: from skbuf ([188.25.254.186])
+        by smtp.gmail.com with ESMTPSA id i18-20020a17090671d200b0099cf840527csm7290131ejk.153.2023.09.12.12.34.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 12:34:53 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 22:34:50 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <20230912193450.h5s6miubag46z623@skbuf>
+References: <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+ <20230911225126.rk23g3u3bzo3agby@skbuf>
+ <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230831161618.134738-1-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Aug 31, 2023 at 05:15:30PM +0100, James Clark escreveu:
-> This is the last set of JSON updates using the Arm telemetry repo. Perf
-> now has an up to date copy of everything that is currently published
-> there. Future updates will be done as new data becomes available.
- 
-
-Thanks, applied.
-
-- Arnaldo
-
-> James Clark (2):
->   perf vendor events arm64: Update V1 events using Arm telemetry repo
->   perf vendor events arm64: Add V1 metrics using Arm telemetry repo
+On Tue, Sep 12, 2023 at 10:23:51PM +0300, Arınç ÜNAL wrote:
+> On 12.09.2023 01:51, Vladimir Oltean wrote:
+> > On Sat, Sep 09, 2023 at 11:53:50AM +0300, Arınç ÜNAL wrote:
+> > > What to do:
+> > > - For mscc,vsc7514-switch, enforce phylink bindings for ports.
+> > > - For mscc,vsc7512-switch, enforce phylink bindings for user ports.
+> > 
+> > you can also look at dsa_switches_apply_workarounds[], and if the switch
+> > isn't there, then you can replace "user ports" with "ports" here and
+> > everywhere.
 > 
->  .../arch/arm64/arm/neoverse-v1/branch.json    |   8 -
->  .../arch/arm64/arm/neoverse-v1/bus.json       |  18 +-
->  .../arch/arm64/arm/neoverse-v1/cache.json     | 155 ------------
->  .../arch/arm64/arm/neoverse-v1/exception.json |  45 ++--
->  .../arm64/arm/neoverse-v1/fp_operation.json   |  10 +
->  .../arch/arm64/arm/neoverse-v1/general.json   |  10 +
->  .../arm64/arm/neoverse-v1/instruction.json    | 119 ---------
->  .../arch/arm64/arm/neoverse-v1/l1d_cache.json |  54 ++++
->  .../arch/arm64/arm/neoverse-v1/l1i_cache.json |  14 ++
->  .../arch/arm64/arm/neoverse-v1/l2_cache.json  |  50 ++++
->  .../arch/arm64/arm/neoverse-v1/l3_cache.json  |  22 ++
->  .../arch/arm64/arm/neoverse-v1/ll_cache.json  |  10 +
->  .../arch/arm64/arm/neoverse-v1/memory.json    |  21 +-
->  .../arch/arm64/arm/neoverse-v1/metrics.json   | 233 ++++++++++++++++++
->  .../arch/arm64/arm/neoverse-v1/pipeline.json  |  23 --
->  .../arch/arm64/arm/neoverse-v1/retired.json   |  30 +++
->  .../arch/arm64/arm/neoverse-v1/spe.json       |  18 ++
->  .../arm64/arm/neoverse-v1/spec_operation.json | 110 +++++++++
->  .../arch/arm64/arm/neoverse-v1/stall.json     |  30 +++
->  .../arch/arm64/arm/neoverse-v1/sve.json       |  30 +++
->  .../arch/arm64/arm/neoverse-v1/tlb.json       |  66 +++++
->  21 files changed, 735 insertions(+), 341 deletions(-)
->  delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/branch.json
->  delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/fp_operation.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/general.json
->  delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/instruction.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/l1d_cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/l1i_cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/l2_cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/l3_cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/ll_cache.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/metrics.json
->  delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/pipeline.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/retired.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/spe.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/spec_operation.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/stall.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/sve.json
->  create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-v1/tlb.json
+> The phylink bindings for user ports I ended up making by looking up the
+> existing devicetrees are different than the phylink bindings for the shared
+> (CPU and DSA) ports currently enforced on all switches.
 > 
-> -- 
-> 2.34.1
+> My phylink bindings for user ports:
 > 
+>             allOf:
+>               - anyOf:
+>                   - required: [ fixed-link ]
+>                   - required: [ phy-handle ]
+>                   - required: [ managed ]
+> 
+>               - if:
+>                   required: [ fixed-link ]
+>                 then:
+>                   not:
+>                     required: [ managed ]
 
--- 
+Right, it should have been anyOf and not oneOf.. my mistake. It is a bug
+which should be fixed. It's the same phylink that gets used in both cases,
+user ports and shared ports :)
 
-- Arnaldo
+> 
+> The phylink bindings for shared ports enforced on all switches on
+> dsa-port.yaml:
+> 
+>   allOf:
+>     - required:
+>         - phy-mode
+>     - oneOf:
+>         - required:
+>             - fixed-link
+>         - required:
+>             - phy-handle
+>         - required:
+>             - managed
+> 
+> Here's what I understand:
+> 
+> - For switches in dsa_switches_apply_workarounds[]
+>   - Enforce the latter for shared ports.
+>   - Enforce the former for user ports.
+> 
+> - For switches not in dsa_switches_apply_workarounds[]
+>   - Enforce the former for all ports.
+
+No, no. We enforce the dt-schema regardless of switch presence in
+dsa_switches_apply_workarounds[], to encourage users to fix device trees
+(those who run schema validation). The kernel workaround consists in
+doing something (skipping phylink) for the device trees where the schema
+warns on shared ports. But there should be a single sub-schema for
+validating phylink bindings, whatever port kind it is.
