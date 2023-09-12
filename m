@@ -2,184 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B36579D458
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042A979D457
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236186AbjILPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
+        id S236195AbjILPHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236181AbjILPHE (ORCPT
+        with ESMTP id S236139AbjILPG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:07:04 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BA7CC3;
-        Tue, 12 Sep 2023 08:07:00 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 416AB86EF6;
-        Tue, 12 Sep 2023 17:06:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1694531208;
-        bh=kAO8rV3vrUUn8vnr/0rLlGCFof1rPKUtl5QB+NrrSuI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CBmPjljgvxQYrvCjsqWXm9BVcPi9OqZi04b4AdwshjFpI70YFmUABYJ6y77Ml10DI
-         j56B6u/G0WfGoOWOGvxBZI6UbeQTOI7Q7dhykf/BMSmRl1C4Tk/wl2iBWq9Ez22L2g
-         NBjUTijiAwxMX0pggZktBTf8A6D/9889Ko5M9XO67ZJ1P5KXw58eVwLNF8dJUGceVd
-         Xz/1dV4/JPeDfFng942dfvw6R6CHzL0JxniVQx6KiGF3s4cBRmB/jbE92iLtIg8dMn
-         vB/NtuNKkmvfrrWxGgRAJUCPZmjkxlmJ9X+Es/12ccfM+0tgfj14id156SPwtOJJe1
-         Q+Oy1VFD482lA==
-Date:   Tue, 12 Sep 2023 17:06:41 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230912170641.5bfc3cfe@wsk>
-In-Reply-To: <20230912142644.u4sdkveei3e5hwaf@skbuf>
-References: <20230911160501.5vc4nttz6fnww56h@skbuf>
-        <20230912101748.0ca4eec8@wsk>
-        <20230912092909.4yj4b2b4xrhzdztu@skbuf>
-        <20230906152801.921664-1-lukma@denx.de>
-        <20230911165848.0741c03c@wsk>
-        <20230911160501.5vc4nttz6fnww56h@skbuf>
-        <20230912101748.0ca4eec8@wsk>
-        <20230912092909.4yj4b2b4xrhzdztu@skbuf>
-        <20230912160326.188e1d13@wsk>
-        <20230912160326.188e1d13@wsk>
-        <20230912142644.u4sdkveei3e5hwaf@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 12 Sep 2023 11:06:58 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146EC12E;
+        Tue, 12 Sep 2023 08:06:54 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99de884ad25so751668466b.3;
+        Tue, 12 Sep 2023 08:06:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694531212; x=1695136012; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8SVEaXl6seBdw5lXAfYjpnfIky9vuZwXvZJhUk0v854=;
+        b=cVTwKjUP91g7peGOFwKHi7hqYgdn0xOnQha6lNRMgS5qk4JuN6PNXD7PcqYyIHq+0a
+         hCUk1uI70o+rRIDyBK+KEJft9/CmYG045LUEZ3jTCjvxLJWYiRRtEmMX+zYDedIJu4TZ
+         GzXiNUcLAXiPpCa4ZNd6mactY61PsOpZDCHBca6JdZ+k73XJV7fYilg/xxjLlnX0BlMp
+         f2EuveSPcN+hQiKRdnt5Ry54K23ECSFyPm86t9ESM4z/iCT31axMpyY1dzIj1TUfmsRA
+         3MCmwho7LtttmY2jCp8JaSJWw+iRp0zcZU1UoHXVLFzirrYT9AqT42kXbnPyk7rQ6giH
+         1wvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694531212; x=1695136012;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8SVEaXl6seBdw5lXAfYjpnfIky9vuZwXvZJhUk0v854=;
+        b=Mdk6X8Qf3hMZxS07E/SkbqrlkW115NlrxmpArwM6l5cUZDJYUPaYe/DOfowAAbI/4L
+         JeVhmGrqG/ye/A4Ry5hOHM8LTgr/aBfUJrAYGNkR5ezx7GtgSmwjcNkEvRQZtJGLpq6T
+         CAivPAkVgl3KUFKsGtQzoZWhdvQ+6RtB6w/ce9ZVdAOZ1Biv8K3C9JmpTHkmJqX9mOjG
+         G110YsllUsfLe1z8BhjAi5D47816T0sUKJledCeVU/p9ICAc3JXx7II39CY7GXvkwixU
+         pMkFy+w9tOjTukJqbhhrs8anuo0YHR5FKKSuR9DqK7qCd4/VdntMjhdvWh64Be8f22dd
+         jXZA==
+X-Gm-Message-State: AOJu0YxV6W1uyMgCnVtaMZTBz/nfBCxYu9jmi3bZl0dampSIwU4KRjzy
+        6owHkPzSuFloGHD6Wnty2A==
+X-Google-Smtp-Source: AGHT+IHLpX4KdagfPcshrLUeAqL4UuqhZ/o9aLBP5uIBEM0SWLAfZOUWaE/wLimyaP4MKgywB21+SQ==
+X-Received: by 2002:a17:906:9e:b0:9a1:ddb9:6547 with SMTP id 30-20020a170906009e00b009a1ddb96547mr11268179ejc.57.1694531212074;
+        Tue, 12 Sep 2023 08:06:52 -0700 (PDT)
+Received: from p183 ([46.53.254.179])
+        by smtp.gmail.com with ESMTPSA id s3-20020a170906060300b0099ce188be7fsm6962955ejb.3.2023.09.12.08.06.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 08:06:51 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 18:06:49 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Kees Cook' <keescook@chromium.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH v2] uapi: fix __DECLARE_FLEX_ARRAY for C++
+Message-ID: <683d7b5f-48b5-492d-8577-0be85bff8d89@p183>
+References: <930c3ee5-1282-40f4-93e0-8ff894aabf3a@p183>
+ <a0c3a352-89c6-4764-b377-f55a68a1b2cb@p183>
+ <202309080848.60319AF@keescook>
+ <f1819874-2b91-4983-9ebe-6cd83d5d3bc3@p183>
+ <202309080910.44BB7CEF@keescook>
+ <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XGZYAjXanzDzdalXDjH+rp9";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e364b36eefa049d8863c1c1001018636@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XGZYAjXanzDzdalXDjH+rp9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 11, 2023 at 08:19:20AM +0000, David Laight wrote:
+> ...
+> > Okay, can you please split the patch so they can be backported
+> > separately? Then I'll get them landed, etc.
+> 
+> Since the header with just the extra #endif is badly broken on C++
+> isn't it best to ensure they get back-ported together?
+> So one patch is probably better.
 
-Hi Vladimir,
+Header guard misplacement is not a bug, file ends with:
 
-> On Tue, Sep 12, 2023 at 04:03:26PM +0200, Lukasz Majewski wrote:
-> > > In any case, as long as it's the DSA master's address that we
-> > > program to hardware, then I see it as inevitable to add a new
-> > > struct dsa_switch_ops :: master_addr_change() function =20
-> >=20
-> > Please correct my understanding. The above change would affect the
-> > whole DSA subsystem. It would require to have the core DSA modified
-> > and would affect its operation? =20
->=20
-> Uhm, yes, that would be the idea. If we were going to track changes to
-> the DSA master's MAC address, we should do it from the DSA framework
-> which has the existing netdev notifier listener infrastructure in
-> place.
->=20
-> > > Or you can argue that dragging the DSA master into the discussion
-> > > about how we should program REG_SW_MAC_ADDR_0 is a complication. =20
-> >=20
-> > Yes, it is IMHO the complication. =20
->=20
-> Ok, it's a point of view.
->=20
-> > git grep -n "REG_SW_MAC_ADDR_0"
-> > drivers/net/dsa/microchip/ksz8795_reg.h:326:#define
-> > REG_SW_MAC_ADDR_0 0x68=20
-> > drivers/net/dsa/microchip/ksz9477.c:1194:
-> >      ksz_write8(dev, REG_SW_MAC_ADDR_0 + i,
-> >=20
-> > drivers/net/dsa/microchip/ksz9477_reg.h:169:#define
-> > REG_SW_MAC_ADDR_0 0x0302
-> >=20
-> > In the current net-next the REG_SW_MAC_ADDR_0 is altered used (the
-> > only usage are now with mine patches on ksz9477).
-> >=20
-> > To sum up:
-> >=20
-> > 1. Up till now in (net-next) REG_SW_MAC_ADDR_0 is ONLY declared for
-> > Microchip switches. No risk for access - other than HSR patches. =20
->=20
-> I know (except for Oleksij's WoL patches, which will eventually be
-> resubmitted).
+	#ifndef __counted_by
+	#define __counted_by(m)
+	#endif
 
-Are we debating about some possible impact on patches which were posted
-and (in a near future?) would be reposted?
-
->=20
-> > 2. The MAC address alteration of DSA master and propagation to
-> > slaves is a generic DSA bug. =20
->=20
-> Which can be/will be fixed. The diff I've included in the question to
-> Jakub closes it, in fact.
-
-Ok.
-
->=20
-> > Considering the above - the HSR implementation is safe (to the
-> > extend to the whole DSA subsystem current operation). Am I correct?
-> > =20
->=20
-> If we exclude the aforementioned bug (which won't be a bug forever),
-> there still exists the case where the MAC address of a DSA user port
-> can be changed. The HSR driver has a NETDEV_CHANGEADDR handler for
-> this as well, and updates its own MAC address to follow the port. If
-> that is allowed to happen after the offload, currently it will break
-> the offload.
-
-But then we can have struct ksz_device extended with bitmask -
-hw_mac_addr_ports, which could be set to ports (WoL or HSR) when
-REG_MAC_ADDR_0 is written.
-
-If WoL would like to alter it after it was written by HSR, then the
-error is presented (printed) to the user and we return.
-
-The same would be with HSR altering the WoL's MAC in-device setup.
-
-
-The HSR or WoL can be added without issues (the first one which is
-accepted).
-
-Then the second feature would need to implement this check.
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/XGZYAjXanzDzdalXDjH+rp9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUAfoIACgkQAR8vZIA0
-zr3OWQf+OU0d++AGcr9DO/5c9XDot4JfUCMuN2rGlna5MYir6nOvPMSXVLboFqEG
-BejwbfiWa7o1OVVXvnbvNN1K+v1Bf1Puz9x9VBNpvUCNulPVfuuAbgeK/8noNerh
-P1ugl4aZPu2paOFaCaXnhuGeM6Zv5RBkEybo75PXgSnZNUjAm12WUjqfdw7FqLOc
-+iqInlXdnTbQZX5FA7hryxmwGoJj/9seRrlK7DxYyxFJ29k0/OBJ6CygmE5NYzlb
-SlJrKpC1Oo6aAdDy8XEaYJPMu/QR+/p6czVXZQ3bSV1Q8r22bfIHpGd/NoLhy39C
-zhB04X3y5LykB70wuqakCbqmWyCz1A==
-=FKeJ
------END PGP SIGNATURE-----
-
---Sig_/XGZYAjXanzDzdalXDjH+rp9--
+it is just looks confusing in the diff.
