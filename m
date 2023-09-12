@@ -2,224 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0D679C9C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C0479C9B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbjILIXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S231461AbjILIVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbjILIXW (ORCPT
+        with ESMTP id S232641AbjILIV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:23:22 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F356BE6F;
-        Tue, 12 Sep 2023 01:23:17 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CD2B61C0044;
-        Tue, 12 Sep 2023 08:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694506996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z8fD/yAC4w2my4BDixnegMB4l7KS4KNOuWpV/OdZog8=;
-        b=AthQbrDo0M7SClZnqh8x8ZTyh3QWGY0awuM9ZQ7mmuhQJUXQl5jqtiy+aa2QIG8EslNRcS
-        aJ4ACkl0juraoEUnFrddMPt0AqNnciHvHqp9MCRcUjjstXHF5sstSksUaxiILuubBNJwJ7
-        g3wMbI3t7KnfpYczCrlVY1ZBNnyjCgmaM2x4+I/xrbwVFFnQPSF1Ky2iNH+ifgDC6j7+Qd
-        5EGWSOiqhAmA2IqRzUGfixNw7PAuNeiQL9KkgffkxCbsICf1ywL7ULqIohF2siWuptXbMY
-        ElMwrGVzM2zAFfxL/0FakZbscYUDeehJW2ajXTVyBsmwAw/zhKKSPxX3Hk5PmQ==
-Date:   Tue, 12 Sep 2023 10:20:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Ralph Siemsen <ralph.siemsen@linaro.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] clk: renesas: r9a06g032: fix kerneldoc warning
-Message-ID: <20230912101559.2d9f41d1@xps-13>
-In-Reply-To: <20230911175215.263009-1-ralph.siemsen@linaro.org>
-References: <20230911175215.263009-1-ralph.siemsen@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 12 Sep 2023 04:21:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D5FE6F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694506885; x=1726042885;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AmELVUeBBy4RL6SU7kfC0jZI+3ejOs0GDXlThj+fPLY=;
+  b=ZpKORljsA9gmACk6AWDx80BXNwP+DK9HPT4NRxTm3Jyno83OzNabSSRb
+   MnQoDOnOO6RqU/Su0gi5I4FY9uN5HaOfMYCF4xhDrGZJj1oYbjpx94VUN
+   mCCOBueLXcW/VrJ1quLcpgvzsyZCaKDoRNUtxD5bnpCquk4rKh7iuBNuj
+   /kufZO47vLkCqueQI2s+/hDWO072ZdTAZc70hR3VMDrhjdpGA7S6MuBM+
+   oFKgOUOKvhoDAzvipXKmkSfTvu8tglEDR3H7aqtgFlJ6rPmu+0TfsBYRR
+   T+P4Mam3kBK4iqxkX6ltb3MMMDM9K5uI9iAIASdFhyhlmRtXZ9qFsjzHQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="442322950"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="442322950"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 01:21:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746787588"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="746787588"
+Received: from shicha9x-mobl.ccr.corp.intel.com (HELO yhuang6-mobl2.ccr.corp.intel.com) ([10.255.28.213])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 01:21:18 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Wei Xu <weixugc@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Rafael J Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH -V3 0/4] memory tiering: calculate abstract distance based on ACPI HMAT
+Date:   Tue, 12 Sep 2023 16:20:57 +0800
+Message-Id: <20230912082101.342002-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ralph,
+We have the explicit memory tiers framework to manage systems with
+multiple types of memory, e.g., DRAM in DIMM slots and CXL memory
+devices.  Where, same kind of memory devices will be grouped into
+memory types, then put into memory tiers.  To describe the performance
+of a memory type, abstract distance is defined.  Which is in direct
+proportion to the memory latency and inversely proportional to the
+memory bandwidth.  To keep the code as simple as possible, fixed
+abstract distance is used in dax/kmem to describe slow memory such as
+Optane DCPMM.
 
-ralph.siemsen@linaro.org wrote on Mon, 11 Sep 2023 13:52:15 -0400:
+To support more memory types, in this series, we added the abstract
+distance calculation algorithm management mechanism, provided a
+algorithm implementation based on ACPI HMAT, and used the general
+abstract distance calculation interface in dax/kmem driver.  So,
+dax/kmem can support HBM (high bandwidth memory) in addition to the
+original Optane DCPMM.
 
-> This fixes the following W=3D1 warning during build:
-> > drivers/clk/renesas/r9a06g032-clocks.c:119: warning: Function parameter=
- or member 'dual' not described in 'r9a06g032_clkdesc' =20
->=20
-> Added documentation for member 'dual'. Also added names for the other
-> structures in the same union, with documentation. Adjusted names of
-> members within the 'div' structure to avoid duplication.
+Changelog:
 
-It would be better to use the imperative form: s/added/add/,
-s/adjusted/adjust/, etc.
+v3:
 
-I would also split this patch because you are doing two different
-actions here: adding "dual" to the kdoc *and* naming other anonymous
-structures.
+- Move algorithm to calculate abstract distance from read/write
+  latency/bandwidth from hmat.c to memory-ters.c per Alistair's
+  comments.
 
-I would use something like this for the first patch:
-"
-Mention the 'dual' structure in the kdoc. This fixes the following
-W=3D1...
-"
+- Fix memory types putting in kmem.c for error path.
 
-And rephrase the commit log for the second patch, something along:
-"
-Clarify the content of the r9a06g032_clkdesc structure by naming the
-remaining anonymous structures defined inside. Renaming each field and
-updating the doc then becomes necessary in order to avoid name
-duplications and kdoc warnings.
-"
+V2:
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309101314.kTRoxND5-lkp@i=
-ntel.com/
-> Signed-off-by: Ralph Siemsen <ralph.siemsen@linaro.org>
-> ---
-> Second post, as the Subject: line accidentally got messed up previously.
->=20
->  drivers/clk/renesas/r9a06g032-clocks.c | 64 ++++++++++++++------------
->  1 file changed, 34 insertions(+), 30 deletions(-)
->=20
-> diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas=
-/r9a06g032-clocks.c
-> index 55db63c7041a..61296c81f9b5 100644
-> --- a/drivers/clk/renesas/r9a06g032-clocks.c
-> +++ b/drivers/clk/renesas/r9a06g032-clocks.c
-> @@ -102,19 +102,22 @@ enum gate_type {
->   * @source:    the ID+1 of the parent clock element.
->   *             Root clock uses ID of ~0 (PARENT_ID);
->   * @gate:      clock enable/disable
-> - * @div_min:   smallest permitted clock divider
-> - * @div_max:   largest permitted clock divider
-> - * @reg:       clock divider register offset, in 32-bit words
-> - * @div_table: optional list of fixed clock divider values;
-> + * @div:       substructure for clock divider
-> + * @div.min:   smallest permitted clock divider
-> + * @div.max:   largest permitted clock divider
-> + * @div.reg:   clock divider register offset, in 32-bit words
-> + * @div.table: optional list of fixed clock divider values;
->   *             must be in ascending order, zero for unused
-> - * @div:       divisor for fixed-factor clock
-> - * @mul:       multiplier for fixed-factor clock
-> - * @group:     UART group, 0=3DUART0/1/2, 1=3DUART3/4/5/6/7
-> - * @sel:       select either g1/r1 or g2/r2 as clock source
-> - * @g1:        1st source gate (clock enable/disable)
-> - * @r1:        1st source reset (module reset)
-> - * @g2:        2nd source gate (clock enable/disable)
-> - * @r2:        2nd source reset (module reset)
-> + * @ffc:       substructure for fixed-factor clocks
-> + * @ffc.div:   divisor for fixed-factor clock
-> + * @ffc.mul:   multiplier for fixed-factor clock
-> + * @dual:      substructure for dual clock gates
-> + * @dual.group: UART group, 0=3DUART0/1/2, 1=3DUART3/4/5/6/7
-> + * @dual.sel:  select either g1/r1 or g2/r2 as clock source
-> + * @dual.g1:   1st source gate (clock enable/disable)
-> + * @dual.r1:   1st source reset (module reset)
-> + * @dual.g2:   2nd source gate (clock enable/disable)
-> + * @dual.r2:   2nd source reset (module reset)
->   *
->   * Describes a single element in the clock tree hierarchy.
->   * As there are quite a large number of clock elements, this
-> @@ -131,13 +134,13 @@ struct r9a06g032_clkdesc {
->  		struct r9a06g032_gate gate;
->  		/* type =3D K_DIV  */
->  		struct {
-> -			unsigned int div_min:10, div_max:10, reg:10;
-> -			u16 div_table[4];
-> -		};
-> +			unsigned int min:10, max:10, reg:10;
-> +			u16 table[4];
-> +		} div;
->  		/* type =3D K_FFC */
->  		struct {
->  			u16 div, mul;
-> -		};
-> +		} ffc;
->  		/* type =3D K_DUALGATE */
->  		struct {
->  			uint16_t group:1;
-> @@ -178,26 +181,26 @@ struct r9a06g032_clkdesc {
->  	.type =3D K_FFC, \
->  	.index =3D R9A06G032_##_idx, \
->  	.name =3D _n, \
-> -	.div =3D _div, \
-> -	.mul =3D _mul \
-> +	.ffc.div =3D _div, \
-> +	.ffc.mul =3D _mul \
->  }
->  #define D_FFC(_idx, _n, _src, _div) { \
->  	.type =3D K_FFC, \
->  	.index =3D R9A06G032_##_idx, \
->  	.source =3D 1 + R9A06G032_##_src, \
->  	.name =3D _n, \
-> -	.div =3D _div, \
-> -	.mul =3D 1 \
-> +	.ffc.div =3D _div, \
-> +	.ffc.mul =3D 1 \
->  }
->  #define D_DIV(_idx, _n, _src, _reg, _min, _max, ...) { \
->  	.type =3D K_DIV, \
->  	.index =3D R9A06G032_##_idx, \
->  	.source =3D 1 + R9A06G032_##_src, \
->  	.name =3D _n, \
-> -	.reg =3D _reg, \
-> -	.div_min =3D _min, \
-> -	.div_max =3D _max, \
-> -	.div_table =3D { __VA_ARGS__ } \
-> +	.div.reg =3D _reg, \
-> +	.div.min =3D _min, \
-> +	.div.max =3D _max, \
-> +	.div.table =3D { __VA_ARGS__ } \
->  }
->  #define D_UGATE(_idx, _n, _src, _g, _g1, _r1, _g2, _r2) { \
->  	.type =3D K_DUALGATE, \
-> @@ -1063,14 +1066,14 @@ r9a06g032_register_div(struct r9a06g032_priv *clo=
-cks,
-> =20
->  	div->clocks =3D clocks;
->  	div->index =3D desc->index;
-> -	div->reg =3D desc->reg;
-> +	div->reg =3D desc->div.reg;
->  	div->hw.init =3D &init;
-> -	div->min =3D desc->div_min;
-> -	div->max =3D desc->div_max;
-> +	div->min =3D desc->div.min;
-> +	div->max =3D desc->div.max;
->  	/* populate (optional) divider table fixed values */
->  	for (i =3D 0; i < ARRAY_SIZE(div->table) &&
-> -	     i < ARRAY_SIZE(desc->div_table) && desc->div_table[i]; i++) {
-> -		div->table[div->table_size++] =3D desc->div_table[i];
-> +	     i < ARRAY_SIZE(desc->div.table) && desc->div.table[i]; i++) {
-> +		div->table[div->table_size++] =3D desc->div.table[i];
->  	}
-> =20
->  	clk =3D clk_register(NULL, &div->hw);
-> @@ -1333,7 +1336,8 @@ static int __init r9a06g032_clocks_probe(struct pla=
-tform_device *pdev)
->  		case K_FFC:
->  			clk =3D clk_register_fixed_factor(NULL, d->name,
->  							parent_name, 0,
-> -							d->mul, d->div);
-> +							d->ffc.mul,
-> +							d->ffc.div);
->  			break;
->  		case K_GATE:
->  			clk =3D r9a06g032_register_gate(clocks, parent_name, d);
+- Fix a typo in 4/4.
 
+- Collected reviewed-by and tested-by.
 
-Thanks,
-Miqu=C3=A8l
+V1 (from RFC):
+
+- Added some comments per Aneesh's comments, Thanks!
+
+Best Regards,
+Huang, Ying
