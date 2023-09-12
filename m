@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DC579D0B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39FB79D0CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234960AbjILMHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S235075AbjILMMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234489AbjILMH3 (ORCPT
+        with ESMTP id S235017AbjILMLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:07:29 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D7A10D0;
-        Tue, 12 Sep 2023 05:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=sgzBNOAWFKoowxyC05sVul7gVRvqwao9EVd/Og49pRU=; b=yEDTjDA8sU308ewOW6gaFkgd3x
-        z2OoyevlGR5HvPphDokC2bAd7+BgOjgTEvEbiI8ppMW2JrVgsEZrfzpPLpMoG7X3DCL9pvdf0rYfx
-        bPxKLw1PSSktabPZS1LvNNMUUPNkEalgo4vcOJ+VyweygvRIDSnYG/+8fQEvvGkbrveE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qg2Ag-006Dqs-BU; Tue, 12 Sep 2023 14:07:10 +0200
-Date:   Tue, 12 Sep 2023 14:07:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Cc:     kuba@kernel.org, piergiorgio.beruto@gmail.com, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com,
-        Woojung.Huh@microchip.com, Nicolas.Ferre@microchip.com,
-        Thorsten.Kummermehr@microchip.com, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net v2] ethtool: plca: fix plca enable data type while
- parsing the value
-Message-ID: <f7d8ec5a-eb65-433e-aeb1-8fd16e5c8cd9@lunn.ch>
-References: <20230908044548.5878-1-Parthiban.Veerasooran@microchip.com>
+        Tue, 12 Sep 2023 08:11:48 -0400
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Sep 2023 05:11:43 PDT
+Received: from unicom146.biz-email.net (unicom146.biz-email.net [210.51.26.146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1138B10D0;
+        Tue, 12 Sep 2023 05:11:42 -0700 (PDT)
+Received: from unicom146.biz-email.net
+        by unicom146.biz-email.net ((D)) with ASMTP (SSL) id INX00031;
+        Tue, 12 Sep 2023 20:10:31 +0800
+Received: from localhost.localdomain.com (10.73.43.241) by
+ jtjnmail201604.home.langchao.com (10.100.2.4) with Microsoft SMTP Server id
+ 15.1.2507.32; Tue, 12 Sep 2023 20:10:33 +0800
+From:   Deming Wang <wangdeming@inspur.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Deming Wang <wangdeming@inspur.com>
+Subject: [PATCH] firmware: tegra: Fix a typo
+Date:   Tue, 12 Sep 2023 08:10:30 -0400
+Message-ID: <20230912121030.1759-1-wangdeming@inspur.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908044548.5878-1-Parthiban.Veerasooran@microchip.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.73.43.241]
+tUid:   202391220103105749af02e976c300ae83dcc6a8096df
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:15:48AM +0530, Parthiban Veerasooran wrote:
-> The ETHTOOL_A_PLCA_ENABLED data type is u8. But while parsing the
-> value from the attribute, nla_get_u32() is used in the plca_update_sint()
-> function instead of nla_get_u8(). So plca_cfg.enabled variable is updated
-> with some garbage value instead of 0 or 1 and always enables plca even
-> though plca is disabled through ethtool application. This bug has been
-> fixed by parsing the values based on the attributes type in the policy.
-> 
-> Fixes: 8580e16c28f3 ("net/ethtool: add netlink interface for the PLCA RS")
-> Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
+successfully, not 'succesfully'
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Deming Wang <wangdeming@inspur.com>
+---
+ include/soc/tegra/bpmp-abi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    Andrew
+diff --git a/include/soc/tegra/bpmp-abi.h b/include/soc/tegra/bpmp-abi.h
+index ecefcaec7e66..6b995a8f0f6d 100644
+--- a/include/soc/tegra/bpmp-abi.h
++++ b/include/soc/tegra/bpmp-abi.h
+@@ -1194,7 +1194,7 @@ struct cmd_clk_is_enabled_request {
+  */
+ struct cmd_clk_is_enabled_response {
+ 	/**
+-	 * @brief The state of the clock that has been succesfully
++	 * @brief The state of the clock that has been successfully
+ 	 * requested with CMD_CLK_ENABLE or CMD_CLK_DISABLE by the
+ 	 * master invoking the command earlier.
+ 	 *
+-- 
+2.27.0
+
