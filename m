@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B3479CCC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7365079CCC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjILKC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S233285AbjILKDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233331AbjILKCx (ORCPT
+        with ESMTP id S233427AbjILKC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:02:53 -0400
+        Tue, 12 Sep 2023 06:02:59 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D180FE6B;
-        Tue, 12 Sep 2023 03:02:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3946610D8;
+        Tue, 12 Sep 2023 03:02:55 -0700 (PDT)
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9404D6607320;
-        Tue, 12 Sep 2023 11:02:47 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 06D516607321;
+        Tue, 12 Sep 2023 11:02:52 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694512968;
-        bh=KFTpQC/A7VUsLib15J+EGZdvXTKuNhYXeMQivKrdSI4=;
+        s=mail; t=1694512974;
+        bh=9w8C1A352AuElc/pOzF1lPILdDSxHTkOpqu5jgnNssQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=f7lQ+rcyz1WTNWJSyX9xaVR2Svj4OKgMcYb3LA7VfhJ9aeVtWS/v2TdbfyqX2tqPl
-         LuuS5QZGx8DMh7e52XLiMDQedv1dGOBTLSa+5TEmTnlhH01gRt1fBMmkHvoXEGV2ll
-         W44qPWb1U7nE1tzd6w+Ni68URPxJOU+3oYcBDBYqC+MSy+0ZMF71HDT46mXuk8IKsi
-         kWunlPSBN7I5f/IElZBVIJBQ86q0I3e+9JdtGC378XbsMNaQngc1DyLdNoUxrMuYgg
-         k+KCk71MVIA5XEJ866e6+zlVZIuRlXIzlJXhBmhftm68h+K8K74Ttc/J74heAfk6Tg
-         45g98LuUy0Ipg==
-Message-ID: <caff237f-0f84-81df-e866-e49034261f9c@collabora.com>
-Date:   Tue, 12 Sep 2023 12:02:45 +0200
+        b=VwX0lnzJntgotJhhkzx+NR2cMwrzIYn72iWaYEmKcVpJOj+WDBA1RsE5TnyBErCKm
+         lgugCZixc2LenshfZeSw5rvALmGLDQ2s3wuE7jI6g0A+5wDViRMKWOf30ruWE0EqbF
+         Kfn3+8d8W+wzIgZcVY6biRV1G5XOMFAfLzecZP6xf/1tigGpSeJHrdoJUcPoaI2DGa
+         HqqBafzGbyl2K7PN3s5n1iThP5x08Zm3vS1r1htp8XIyHfT3UmqrYTTiH3yc8WTpB8
+         dgv0CC4NiZMM8N2tS7vInsJ8vV2yHZy0o5g9dmTp5XhDHgU7CublAvIQsiMs96wWHl
+         MrmSvBxjebbgQ==
+Message-ID: <1e049cee-a921-a6e4-f6a0-d39c6fbf2a24@collabora.com>
+Date:   Tue, 12 Sep 2023 12:02:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH 4/5] clk: mediatek: clk-mt7629-eth: Add check for
+Subject: Re: [PATCH 3/5] clk: mediatek: clk-mt6797: Add check for
  mtk_alloc_clk_data
 Content-Language: en-US
 To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, mturquette@baylibre.com,
@@ -52,10 +52,10 @@ Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 References: <20230912093407.21505-1-jiasheng@iscas.ac.cn>
- <20230912093407.21505-4-jiasheng@iscas.ac.cn>
+ <20230912093407.21505-3-jiasheng@iscas.ac.cn>
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230912093407.21505-4-jiasheng@iscas.ac.cn>
+In-Reply-To: <20230912093407.21505-3-jiasheng@iscas.ac.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -66,7 +66,7 @@ Il 12/09/23 11:34, Jiasheng Jiang ha scritto:
 > Add the check for the return value of mtk_alloc_clk_data() in order to
 > avoid NULL pointer dereference.
 > 
-> Fixes: 3b5e748615e7 ("clk: mediatek: add clock support for MT7629 SoC")
+> Fixes: 96596aa06628 ("clk: mediatek: add clk support for MT6797")
 > Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
