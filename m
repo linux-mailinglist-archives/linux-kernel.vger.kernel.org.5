@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51D579D983
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2E79D987
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbjILTZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S237330AbjILT0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:26:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjILTZy (ORCPT
+        with ESMTP id S229520AbjILT0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:25:54 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F59318D;
-        Tue, 12 Sep 2023 12:25:50 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id BA6703200956;
-        Tue, 12 Sep 2023 15:25:48 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 15:25:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1694546748; x=1694633148; bh=BE
-        7ZXCk/MgLEHu3BSEJ2Y4XEXWqdUk+ZioNphLesHsw=; b=UDK3s7zu7EHyZsX2vX
-        xqiLdTCWRefqAkBTHumQBvPbQkZjroWSZ0ngXVjXozeSH/zFdd380QoEWR4QnK7U
-        f7504j75XUfMBIB+U3M2MVC4ljvq9Hyad4R0cFMM6wgAZ57VX6NLaV9VduXu4EdQ
-        rgQDze29GljtyiQx0o+4AtGzhf0gXJ8L7Qm91fow0xVoXBjGFz57eKbM6412xclK
-        zzdpFeZyi4xquBvJrcLAmzEPSN8mR0x4/iIYt9OVWcbIFSwsekTVbvcY2nrnmEIv
-        GA1nlA/hCJqp1IAdg1r3xCJFJzlts7EFoWuW3un7BtfyZ7k7AcG+fuPB/E1EpHau
-        vS7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694546748; x=1694633148; bh=BE7ZXCk/MgLEH
-        u3BSEJ2Y4XEXWqdUk+ZioNphLesHsw=; b=WJqa+DcAYYxqkqAHnCPQL/MFgJImg
-        tM5pbmtr+rNbi77so+6ipb7ZwZCW9vAUKQaMYQXjcZvoI9tl2QVrRzu1YyG4wE9A
-        P5X3yPJ5i6SoaTw3oo9Qsgj5rPNlItBg20KLzS2JEZuwPEn2F7kL5p/qZIArA4Z5
-        8muY65Vr/pR5qkAo0ackeHoL47tbPanR7D/hML+6IRwy9BQAombG1QdPxH95HrCf
-        90Z0eJcAf3lPtTkf7SJPJp9XNVbZ8vnB8sI9DVgfSvnuRayn6htRMfZnjW87vNeb
-        a8+uXviIBRE8IrDQBOh7+Z8nECSt57frLfevEsVYOqgIj27y4KMxuXIDw==
-X-ME-Sender: <xms:O7sAZTWp7IhGHfdd6sg5zODCBTeRSVsM3Aj1b9BqNcyNtIjoI5d9Iw>
-    <xme:O7sAZbnFmydoMpUyUU2caSJ33qu_A7XCtXXFi5ti0hQCZjrB4QYlMEzOpe6uiEKke
-    Qh-1TTCIsYOn5jZp8c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudefjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdduhedmnecujfgurhepofgfggfkjghffffhvfevufgtsehttder
-    tderredtnecuhfhrohhmpedflfgrnhcujfgvnhgurhhikhcuhfgrrhhrfdcuoehkvghrnh
-    gvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpedujefhffdvffeikedvkeef
-    ieeutdffteelgeetfffhkeffheeiheehvedtheetieenucffohhmrghinhepghhithhhuh
-    gsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
-X-ME-Proxy: <xmx:O7sAZfa943x7N0B5bxibdM_v7XlESBQq6IIlrDja8WI83DZGzex_VA>
-    <xmx:O7sAZeVRToFt1MFB1LLYm_sFogZmf14F3YZHfcDqiew_YCIR4PESfA>
-    <xmx:O7sAZdlgTL2J9JTIyjSVmoM9XbSJZagPiqnUal1wmsq1-QgYH3IuHg>
-    <xmx:PLsAZWfb4Hv1plzRqnMrCQd0HGpyIRP-TwnINI7WWEIh1WywccHpiQ>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B96D815A0091; Tue, 12 Sep 2023 15:25:47 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <204f124d-c79d-4ad6-8f69-b7bb5f8d1ab6@app.fastmail.com>
-In-Reply-To: <ZP+41JvEFjsnEG19@MiWiFi-R3L-srv>
-References: <20230911052535.335770-1-kernel@jfarr.cc>
- <ZP+41JvEFjsnEG19@MiWiFi-R3L-srv>
-Date:   Tue, 12 Sep 2023 21:25:26 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Baoquan He" <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
-        vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, bhelgaas@google.com,
-        "Luca Boccassi" <bluca@debian.org>, lennart@poettering.net,
-        prudo@redhat.com
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-Content-Type: text/plain
+        Tue, 12 Sep 2023 15:26:52 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA5218D;
+        Tue, 12 Sep 2023 12:26:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DE84C433C7;
+        Tue, 12 Sep 2023 19:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694546808;
+        bh=VKmYlBUpT/bsf1QKh+D267MgH+5GNHBssL6sD/Ma3Zo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JHOBkBbSNmOqERjudtzSv/JeaolTlSARYp8FJBxijm+lV2WsBYmAVdLEAUeDdh9MW
+         L8B4BZ/k6gYBbs8lBKUpuMFlVZ+af5a4BpoYgz0SDdKJoO0LFhGveOEE9/PoLPZlsh
+         FRSwoQTg63vDWylJ1ifvXqi8njDsu+WcecfH30yNpP+B6BiwzlANAUZAVM4cFFd+2+
+         u2aSA9FyhjffhisEfbGuChfzor8dOrwv0QaOOiJpjmiyqtZx/yn3vVNPkSaW8noA5h
+         yhzSKqjsJZ7h5m2i+taMPdWXCt+bL/zaiHzJZPBLuTALgrZCC9Ufeod9mFp1TmMaI9
+         z6p3w6xfUJrzg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 38587403F4; Tue, 12 Sep 2023 16:26:45 -0300 (-03)
+Date:   Tue, 12 Sep 2023 16:26:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jing Zhang <renyu.zj@linux.alibaba.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Chen Zhongjin <chenzhongjin@huawei.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/7] perf pmu: Move pmu__find_core_pmu() to pmus.c
+Message-ID: <ZQC7da2AM9ih8RMz@kernel.org>
+References: <20230831151632.124985-1-james.clark@arm.com>
+ <20230831151632.124985-6-james.clark@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230831151632.124985-6-james.clark@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> By the way, could you provide detailed steps about how to test this
-> patchset so that people interested can give it a shot?
+Em Thu, Aug 31, 2023 at 04:16:16PM +0100, James Clark escreveu:
+> pmu__find_core_pmu() more logically belongs in pmus.c because it
+> iterates over all PMUs, so move it to pmus.c
+> 
+> At the same time rename it to perf_pmus__find_core_pmu() to match the
+> naming convention in this file.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Sure.
+So, this one is hitting this:
 
-0. Build and run your kernel with my patches.
-1. You're gonna need a UKI to kexec. I personally use sbctl or ukify to create them.
+  CC      /tmp/build/perf-tools-next/util/expr.o
+In file included from /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:7,
+                 from util/pmus.c:2:
+In function ‘perf_pmus__scan_core’,
+    inlined from ‘perf_pmus__find_core_pmu’ at util/pmus.c:601:16:
+/var/home/acme/git/perf-tools-next/tools/include/linux/kernel.h:36:45: error: array subscript 0 is outside array bounds of ‘struct list_head[1]’ [-Werror=array-bounds]
+   36 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
+      |                                             ^~~~~~
+/var/home/acme/git/perf-tools-next/tools/include/linux/list.h:352:9: note: in expansion of macro ‘container_of’
+  352 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+/var/home/acme/git/perf-tools-next/tools/include/linux/list.h:404:9: note: in expansion of macro ‘list_entry’
+  404 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+/var/home/acme/git/perf-tools-next/tools/include/linux/list.h:494:20: note: in expansion of macro ‘list_next_entry’
+  494 |         for (pos = list_next_entry(pos, member);                        \
+      |                    ^~~~~~~~~~~~~~~
+util/pmus.c:274:9: note: in expansion of macro ‘list_for_each_entry_continue’
+  274 |         list_for_each_entry_continue(pmu, &core_pmus, list)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+util/pmus.c: In function ‘perf_pmus__find_core_pmu’:
+util/pmus.c:35:18: note: at offset -128 into object ‘core_pmus’ of size 16
+   35 | static LIST_HEAD(core_pmus);
+      |                  ^~~~~~~~~
+/var/home/acme/git/perf-tools-next/tools/include/linux/list.h:23:26: note: in definition of macro ‘LIST_HEAD’
+   23 |         struct list_head name = LIST_HEAD_INIT(name)
+      |                          ^~~~
+cc1: all warnings being treated as errors
+make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/pmus.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+  LD      /tmp/build/perf-tools-next/ui/browsers/perf-in.o
 
-sbctl command example (assumes you have the cmdline you want saved in a file called cmdline):
-sudo sbctl bundle -k /boot/vmlinuz-6.5.2 -f /boot/initrd.img-6.5.2 -c ./cmdline -s ./uki.efi
 
-ukify command example:
-sudo python3 ukify.py build --linux=/boot/vmlinuz-6.5.2 --initrd=/boot/initrd.img-6.5.2 --cmdline <cmdline as string or a filename>
+So I applied up to 4/7
 
-2. If you are running in lockdown mode you'll have to sign the UKI. You can use sbctl, pesign, or sbsign for example.
-3. Compile kexec-test (see links below). Simple "gcc main.c -o kexec-test" should work
-4. Do the kexec load: ./kexec-text <path to uki>
-(this is equivalent to "kexec -a -l <path to UKI>", however that currently complains about not recognizing the format)
-5. At this point it's useful to check if the loading succeeded with: "cat /sys/kernel/kexec_loaded" (should return "1")
-6. Do a kexec reboot. If you are running systemd, the best way is with: "systemctl kexec". Otherwise you can try "kexec -e", however this will not shut all your services down
+Please continue from what will be in tmp.perf-tools-next in some
+jiffies.
 
-If anyone has problems please feel free to ask.
-
-Links:
-sbctl: https://github.com/Foxboron/sbctl
-ukify: https://github.com/systemd/systemd/tree/main/src/ukify
-kexec-test: https://github.com/Cydox/kexec-test/
+- Arnaldo
