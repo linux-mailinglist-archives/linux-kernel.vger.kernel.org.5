@@ -2,78 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6FD79CCB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC4179CCC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjILKAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        id S232917AbjILKCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:02:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbjILKAn (ORCPT
+        with ESMTP id S231313AbjILKCr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:00:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BDF1980
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:00:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 02E14C433CA;
-        Tue, 12 Sep 2023 10:00:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694512825;
-        bh=DGowEOYUWbmWAlu4sfavxnuNY8MphrKdfJFFwomgHbc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=G8p/fsq3Ie8NLsY5qc2I0IpfNSluzjQTGLKJEPRg1fuxmEdlEGvx1kfcWdDu//g0A
-         uiMj7oPaQ9+5b1qzb9AoAC5Jp6y3iR/I1VfGj9v5c2ZOUDC752QRuh1miZ1a5mq5yz
-         uBZKLGLgyOHdYEQTm0yY7Up09sk6BS+Pzoe2avynMy+mvefD1uO4zdSa6nxwXycmV0
-         06WeGuCh0zRGCJx6oEyteNBhTQo2rb8WilmGBPHTWcBChsuWxpza2NkXwnKLJK6bw7
-         NvIjDDl37yBTx6auDo9vkeSG9MVFXfOD0DRL/qnYWpXPsPI65WsjWOlbk6m85lzzrj
-         CKkpbBoLUgPew==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D7F0DE1C282;
-        Tue, 12 Sep 2023 10:00:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 12 Sep 2023 06:02:47 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B3AE64;
+        Tue, 12 Sep 2023 03:02:43 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id CD253660731E;
+        Tue, 12 Sep 2023 11:02:40 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694512961;
+        bh=KFTpQC/A7VUsLib15J+EGZdvXTKuNhYXeMQivKrdSI4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=MWjR5HVJefu2d4j7QZ0QOiJcsTAnJWDAsEhh96ZUoKmFmE85LCwH4TZiwnt328dGv
+         q3MAI7VoMfghswBvo4j8oz+XvpY1nRW1m5LQI3DKbo3iUSDyR2JR961AFoSWJE5sNs
+         +bQoFCHrGVvtNmcrwlfpPwZ40mT32rRu+yvNJWf+AoDK/0aOHrU2DklbjZIf19O42U
+         Tais/Ygi8W1NYC/qUPa/L/XGSzPSOUOfKIeOxSEy6mPA8uBq/6LptDEH9SY6tRhafY
+         It7g9YntFnTIAULfP29C9jywUuz0+LIvmayOhqjzxf96XWiKgixbI1xMJcOKFxCKWM
+         aDeo2JBarstdw==
+Message-ID: <250a4a3a-cc70-7541-aa49-ec15b8d3e122@collabora.com>
+Date:   Tue, 12 Sep 2023 12:02:38 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/1] wwan: core: Use the bitmap API to allocate bitmaps
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169451282488.7239.12895349010079709401.git-patchwork-notify@kernel.org>
-Date:   Tue, 12 Sep 2023 10:00:24 +0000
-References: <20230911131618.4159437-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230911131618.4159437-1-andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     haozhe.chang@mediatek.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 5/5] clk: mediatek: clk-mt7629: Add check for
+ mtk_alloc_clk_data
+Content-Language: en-US
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, mturquette@baylibre.com,
+        sboyd@kernel.org, matthias.bgg@gmail.com, wenst@chromium.org,
+        msp@baylibre.com, amergnat@baylibre.com, frank.li@vivo.com,
+        robh@kernel.org, owen.chen@mediatek.com, mars.cheng@mediatek.com,
+        macpaul.lin@mediatek.com, cw00.choi@samsung.com,
+        u.kleine-koenig@pengutronix.de, wendell.lin@mediatek.com,
+        luca.ceresoli@bootlin.com, kevin-cw.chen@mediatek.com,
+        ryder.lee@mediatek.com, wenzhen.yu@mediatek.com
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230912093407.21505-1-jiasheng@iscas.ac.cn>
+ <20230912093407.21505-5-jiasheng@iscas.ac.cn>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230912093407.21505-5-jiasheng@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Mon, 11 Sep 2023 16:16:18 +0300 you wrote:
-> Use bitmap_zalloc() and bitmap_free() instead of hand-writing them.
-> It is less verbose and it improves the type checking and semantic.
+Il 12/09/23 11:34, Jiasheng Jiang ha scritto:
+> Add the check for the return value of mtk_alloc_clk_data() in order to
+> avoid NULL pointer dereference.
 > 
-> While at it, add missing header inclusion (should be bitops.h,
-> but with the above change it becomes bitmap.h).
-> 
-> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
-> Reviewed-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> [...]
+> Fixes: 3b5e748615e7 ("clk: mediatek: add clock support for MT7629 SoC")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 
-Here is the summary with links:
-  - [v2,1/1] wwan: core: Use the bitmap API to allocate bitmaps
-    https://git.kernel.org/netdev/net-next/c/cd8bae858154
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
 
