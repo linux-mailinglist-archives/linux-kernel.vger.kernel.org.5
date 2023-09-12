@@ -2,207 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C52B379C1A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DA779C1D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbjILB20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 21:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S233102AbjILBpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbjILB2J (ORCPT
+        with ESMTP id S232880AbjILBpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 21:28:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBD3194F6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694481184; x=1726017184;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=fCMy3r4N1B3+e2GI85Z+5178rGlne1SNJMr8FD9iObA=;
-  b=SHQq6F1mCU28lEoxk8hZyHQzLhFRudiD0zu+my3KcaYyD6Esw6O4l2hG
-   mjZ05kpLwzwN21L+bfYFwYRTeNGOBfHQ2GGD5LS/8DC8G08aM/WSTM3/R
-   UZC9CSiFjioxtieChuFS2dUy6L/iwD143hiafnvwifu4lzRD48AhbqSeN
-   P/MwuGEeFHygS2K2E57TNKOb4vUIqKxreQbExJzNVash8AMOnZeIV6vEj
-   o7GAW/PuzNftxj8+VIxWfqipRD0rgpFw8SLRcWBQwcTWP0ZzPHRhA6qaP
-   tHFTGNXSjkCzJnZvVLH/tE7q8ObMNaAJw5u2Cf+u7PKPrv1Osg5qCdbN5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="377161453"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="377161453"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 17:59:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833703368"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="833703368"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Sep 2023 17:59:04 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfrk5-00070d-2v;
-        Tue, 12 Sep 2023 00:59:01 +0000
-Date:   Tue, 12 Sep 2023 08:58:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: kernel/bpf/helpers.c:1920:19: warning: no previous declaration for
- 'bpf_refcount_acquire_impl'
-Message-ID: <202309120843.Vt687y9F-lkp@intel.com>
+        Mon, 11 Sep 2023 21:45:14 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B9AA0A60;
+        Mon, 11 Sep 2023 18:21:17 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Rl50914Cbz4f3jYQ;
+        Tue, 12 Sep 2023 09:02:17 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgCHHt6buP9kMlr7AA--.14108S3;
+        Tue, 12 Sep 2023 09:02:21 +0800 (CST)
+Subject: Re: [PATCH -next] md: simplify md_seq_ops
+To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20230911065010.3530461-1-yukuai1@huaweicloud.com>
+ <20230911160540.0000060e@linux.intel.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <b2754d8e-dfe7-ffff-66ac-052f366530e4@huaweicloud.com>
+Date:   Tue, 12 Sep 2023 09:02:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20230911160540.0000060e@linux.intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCHHt6buP9kMlr7AA--.14108S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxKF1UKF4DWr43XF1rZr18Krg_yoW7Gw1xpF
+        ZIqFW5Ar4rXFWrXr1DXa1kuFyFqwn7Grn2gr9xGa95Cr1qqrn3AF1Sgw4fu3sI9ayxGrnY
+        vw4DKa47Wr18G37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 7c50b1cb76aca4540aa917db5f2a302acddcadff bpf: Add bpf_refcount_acquire kfunc
-date:   5 months ago
-config: x86_64-randconfig-002-20230910 (https://download.01.org/0day-ci/archive/20230912/202309120843.Vt687y9F-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120843.Vt687y9F-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309120843.Vt687y9F-lkp@intel.com/
+ÔÚ 2023/09/11 22:05, Mariusz Tkaczyk Ð´µÀ:
+> On Mon, 11 Sep 2023 14:50:10 +0800
+> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> 
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Use seq_list_start/next/stop() directly. Move printing "Personalities"
+>> to md_sep_start() and "unsed devices" to md_seq_stop().
+>>
+>> Cc: Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/md.c | 124 ++++++++++++------------------------------------
+>>   1 file changed, 31 insertions(+), 93 deletions(-)
+>>
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 0fe7ab6e8ab9..9c1155042335 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -8192,105 +8192,14 @@ static int status_resync(struct seq_file *seq,
+>> struct mddev *mddev) return 1;
+>>   }
+>>   
+>> -static void *md_seq_start(struct seq_file *seq, loff_t *pos)
+>> -{
+>> -	struct list_head *tmp;
+>> -	loff_t l = *pos;
+>> -	struct mddev *mddev;
+>> -
+>> -	if (l == 0x10000) {
+>> -		++*pos;
+>> -		return (void *)2;
+>> -	}
+>> -	if (l > 0x10000)
+>> -		return NULL;
+>> -	if (!l--)
+>> -		/* header */
+>> -		return (void*)1;
+>> -
+>> -	spin_lock(&all_mddevs_lock);
+>> -	list_for_each(tmp,&all_mddevs)
+>> -		if (!l--) {
+>> -			mddev = list_entry(tmp, struct mddev, all_mddevs);
+>> -			if (!mddev_get(mddev))
+>> -				continue;
+>> -			spin_unlock(&all_mddevs_lock);
+>> -			return mddev;
+>> -		}
+>> -	spin_unlock(&all_mddevs_lock);
+>> -	if (!l--)
+>> -		return (void*)2;/* tail */
+>> -	return NULL;
+>> -}
+>> -
+>> -static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+>> -{
+>> -	struct list_head *tmp;
+>> -	struct mddev *next_mddev, *mddev = v;
+>> -	struct mddev *to_put = NULL;
+>> -
+>> -	++*pos;
+>> -	if (v == (void*)2)
+>> -		return NULL;
+>> -
+>> -	spin_lock(&all_mddevs_lock);
+>> -	if (v == (void*)1) {
+>> -		tmp = all_mddevs.next;
+>> -	} else {
+>> -		to_put = mddev;
+>> -		tmp = mddev->all_mddevs.next;
+>> -	}
+>> -
+>> -	for (;;) {
+>> -		if (tmp == &all_mddevs) {
+>> -			next_mddev = (void*)2;
+>> -			*pos = 0x10000;
+>> -			break;
+>> -		}
+>> -		next_mddev = list_entry(tmp, struct mddev, all_mddevs);
+>> -		if (mddev_get(next_mddev))
+>> -			break;
+>> -		mddev = next_mddev;
+>> -		tmp = mddev->all_mddevs.next;
+>> -	}
+>> -	spin_unlock(&all_mddevs_lock);
+>> -
+>> -	if (to_put)
+>> -		mddev_put(mddev);
+>> -	return next_mddev;
+>> -
+>> -}
+>> -
+>> -static void md_seq_stop(struct seq_file *seq, void *v)
+>> -{
+>> -	struct mddev *mddev = v;
+>> -
+>> -	if (mddev && v != (void*)1 && v != (void*)2)
+>> -		mddev_put(mddev);
+>> -}
+>> -
+>>   static int md_seq_show(struct seq_file *seq, void *v)
+>>   {
+>> -	struct mddev *mddev = v;
+>> +	struct mddev *mddev = list_entry(v, struct mddev, all_mddevs);
+>>   	sector_t sectors;
+>>   	struct md_rdev *rdev;
+>>   
+>> -	if (v == (void*)1) {
+>> -		struct md_personality *pers;
+>> -		seq_printf(seq, "Personalities : ");
+>> -		spin_lock(&pers_lock);
+>> -		list_for_each_entry(pers, &pers_list, list)
+>> -			seq_printf(seq, "[%s] ", pers->name);
+>> -
+>> -		spin_unlock(&pers_lock);
+>> -		seq_printf(seq, "\n");
+>> -		seq->poll_event = atomic_read(&md_event_count);
+>> -		return 0;
+>> -	}
+>> -	if (v == (void*)2) {
+>> -		status_unused(seq);
+>> +	if (test_bit(MD_DELETED, &mddev->flags))
+>>   		return 0;
+>> -	}
+>>   
+>>   	spin_lock(&mddev->lock);
+>>   	if (mddev->pers || mddev->raid_disks || !list_empty(&mddev->disks)) {
+>> @@ -8366,6 +8275,35 @@ static int md_seq_show(struct seq_file *seq, void *v)
+>>   	return 0;
+>>   }
+>>   
+>> +static void *md_seq_start(struct seq_file *seq, loff_t *pos)
+>> +{
+>> +	struct md_personality *pers;
+>> +
+>> +	seq_puts(seq, "Personalities : ");
+>> +	spin_lock(&pers_lock);
+>> +	list_for_each_entry(pers, &pers_list, list)
+>> +		seq_printf(seq, "[%s] ", pers->name);
+>> +
+>> +	spin_unlock(&pers_lock);
+>> +	seq_puts(seq, "\n");
+>> +	seq->poll_event = atomic_read(&md_event_count);
+>> +
+>> +	spin_lock(&all_mddevs_lock);
+> 
+> I would prefer to increase "active" instead holding lock when enumerating over
+> the devices. the main reason is that parsing mdstat is implemented in mdadm, so
+> it could kind of blocker action- for example mdmon follows mdstat so it is read
+> frequently. The time of getting other actions done can highly increase because
+> every open or sysfs_read/write requires this lock.
+> 
+>> +
+>> +	return seq_list_start(&all_mddevs, *pos);
+>> +}
+>> +
+>> +static void *md_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+>> +{
+>> +	return seq_list_next(v, &all_mddevs, pos);
+>> +}
+> Can it be so simple? Why previous versions takes care of holding "(void)*1" and
+> "(void)*2" then? Could you elaborate?
 
-All warnings (new ones prefixed by >>):
+"1" means printing "Personalities", which is now moved to md_seq_start,
+and "2" means printing "unsed devices" which is now moved to
+md_seq_stop. And now md_seq_next is only used to iterate the mddev list.
 
-   kernel/bpf/helpers.c:1882:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1912:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1920:19: warning: no previous declaration for 'bpf_refcount_acquire_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1945:18: warning: no previous declaration for 'bpf_list_push_front' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_list_push_front(struct bpf_list_head *head, struct bpf_list_node *node)
-                     ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1950:18: warning: no previous declaration for 'bpf_list_push_back' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_list_push_back(struct bpf_list_head *head, struct bpf_list_node *node)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1968:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1973:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1978:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2015:18: warning: no previous declaration for 'bpf_rbtree_add' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                     ^~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2021:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2034:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2045:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2057:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2069:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2081:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2101:28: warning: no previous declaration for 'bpf_cgroup_from_id' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_from_id(u64 cgid)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2118:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2157:19: warning: no previous declaration for 'bpf_dynptr_slice' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2234:19: warning: no previous declaration for 'bpf_dynptr_slice_rdwr' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_dynptr_slice_rdwr(const struct bpf_dynptr_kern *ptr, u32 offset,
-                      ^~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2265:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2270:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2275:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2280:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
+Thanks,
+Kuai
 
+> 
+>> +
+>> +static void md_seq_stop(struct seq_file *seq, void *v)
+>> +{
+>> +	status_unused(seq);
+>> +	spin_unlock(&all_mddevs_lock);
+>> +}
+>> +
+>>   static const struct seq_operations md_seq_ops = {
+>>   	.start  = md_seq_start,
+>>   	.next   = md_seq_next,
+> 
+> Thanks,
+> Mariusz
+> 
+> .
+> 
 
-vim +/bpf_refcount_acquire_impl +1920 kernel/bpf/helpers.c
-
-  1877	
-  1878	__diag_push();
-  1879	__diag_ignore_all("-Wmissing-prototypes",
-  1880			  "Global functions as their definitions will be in vmlinux BTF");
-  1881	
-> 1882	__bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-  1883	{
-  1884		struct btf_struct_meta *meta = meta__ign;
-  1885		u64 size = local_type_id__k;
-  1886		void *p;
-  1887	
-  1888		p = bpf_mem_alloc(&bpf_global_ma, size);
-  1889		if (!p)
-  1890			return NULL;
-  1891		if (meta)
-  1892			bpf_obj_init(meta->record, p);
-  1893		return p;
-  1894	}
-  1895	
-  1896	/* Must be called under migrate_disable(), as required by bpf_mem_free */
-  1897	void __bpf_obj_drop_impl(void *p, const struct btf_record *rec)
-  1898	{
-  1899		if (rec && rec->refcount_off >= 0 &&
-  1900		    !refcount_dec_and_test((refcount_t *)(p + rec->refcount_off))) {
-  1901			/* Object is refcounted and refcount_dec didn't result in 0
-  1902			 * refcount. Return without freeing the object
-  1903			 */
-  1904			return;
-  1905		}
-  1906	
-  1907		if (rec)
-  1908			bpf_obj_free_fields(rec, p);
-  1909		bpf_mem_free(&bpf_global_ma, p);
-  1910	}
-  1911	
-  1912	__bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-  1913	{
-  1914		struct btf_struct_meta *meta = meta__ign;
-  1915		void *p = p__alloc;
-  1916	
-  1917		__bpf_obj_drop_impl(p, meta ? meta->record : NULL);
-  1918	}
-  1919	
-> 1920	__bpf_kfunc void *bpf_refcount_acquire_impl(void *p__refcounted_kptr, void *meta__ign)
-  1921	{
-  1922		struct btf_struct_meta *meta = meta__ign;
-  1923		struct bpf_refcount *ref;
-  1924	
-  1925		/* Could just cast directly to refcount_t *, but need some code using
-  1926		 * bpf_refcount type so that it is emitted in vmlinux BTF
-  1927		 */
-  1928		ref = (struct bpf_refcount *)p__refcounted_kptr + meta->record->refcount_off;
-  1929	
-  1930		refcount_inc((refcount_t *)ref);
-  1931		return (void *)p__refcounted_kptr;
-  1932	}
-  1933	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
