@@ -2,186 +2,550 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E6779D36E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAC779D370
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235827AbjILOSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
+        id S230151AbjILOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235824AbjILOSm (ORCPT
+        with ESMTP id S235845AbjILOTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:18:42 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F89C10D;
-        Tue, 12 Sep 2023 07:18:37 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a8614fe8c4so4245928b6e.1;
-        Tue, 12 Sep 2023 07:18:37 -0700 (PDT)
+        Tue, 12 Sep 2023 10:19:19 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0E6CD8;
+        Tue, 12 Sep 2023 07:19:06 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bf66a32f25so72147471fa.2;
+        Tue, 12 Sep 2023 07:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694528316; x=1695133116; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CN89uS22Fp8hqoBkQ7h2ESKNsmqtKbE4YnZMd1TJDLU=;
-        b=TPYhSXPHVSMEbhY3bGAt1K3FmKQWxmapOKswoQseqHSPw/68+nY4ZIu2utju85s5K7
-         4Dh58we7ib4sngjeSCERl78VGMHsjLOjjzyG3JFCiLnQJEX8+OHvgJVkJPnk1mD3EFvn
-         grJC6El8QXQNWD3z+CnGPgLrTlAbdwvJJaTefzKNkHYQOhJrJqaGAmvAYrtAvhy6Tp6x
-         Fgh7xPOyvAkcNdNJFjAgZ4ZcBu1sXY8viuh6zleK7T0nVdAqhwynwTrpMpfXfKO5L2Z1
-         /kJ+LZiKtP5+COnVZkQtG+qestVUuNIkkgdjxV/stILoIkb9OyEcDdcO3O8jj8GM+UYj
-         oi6g==
+        d=gmail.com; s=20221208; t=1694528345; x=1695133145; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DsLMJ6XnAbXQu1SjpExCVysgK4ox7mGMRFRAzL7PP28=;
+        b=m64nHHizYkDhRvRkTojZxWgCBm6fR2PIo6dlDoBBWuZAzIAGqJHb7uLvj1/xbfQu83
+         qvqFexhg0OCSO3exY2WeN7YCqyaCVs8IvKalKau1L7oIUszEqO5j1Q2B6LsJDY6hK6mU
+         ahvN6OhvTe7612mc/KxAXOlAeHiqjeJzfoiOIAN97BLg01FkxmfndGAyEuZvZKOKBdI/
+         wiHSTXjEzXiGEUOC/Nmyw4dyaXIa/2O+8i15/1Wa5fCV1OgFkiD66NjeXHPO/o1jnTcn
+         x55oE6WLpl7nL4KjR2UNwy+ZgAUPcJPHTbE/2gL+r4ycOjqmdMsnndZlG4p5UPmpH6nK
+         5bAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694528316; x=1695133116;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CN89uS22Fp8hqoBkQ7h2ESKNsmqtKbE4YnZMd1TJDLU=;
-        b=hJ636szhOk+tjV22c8FQDKv8sdjPYm7RTW9gzU1d7sFquq+dTG0aP2yZ8xpUpKNJAO
-         t1F5hF2HQ3k/6jEWV5H/CcETBSfeB+IxR6KACkLujWTE6a0UA+kYFju0twslcerg09If
-         4D3xj++OfWcMffjmefp1NTQ2A7fSEtlB/xrP7sQqJqHHK7iwwepEYOA9cWd0WhwMgDyt
-         VHFCVvJYkxOZRIH4JHdJ1nPTOkJ+Yi9yB4nnNFd6iNlFtuR6EJ2Bvnl6Hq93sVIyT8up
-         oj5AM7epiwIYjpgHfpGqWxD57hI5cfAzVdD5tfChVfx3ELvPeuU866NQRHN82vA7n1Ho
-         vOFQ==
-X-Gm-Message-State: AOJu0YzCEm/wpHMsrmCQK8HG0bfaI2t8rVc61tTjeA3IHHFXvkuCYbUs
-        f5ocOBXcnnpOztWk0QuKiqyyPVkxCJLQO2NFY84=
-X-Google-Smtp-Source: AGHT+IFD16cQyNN838F8zhND/vp0BxVYdY2PqoJfAW8hm75M/qZvWohSbWE7ZsUW32ImefUM/fWKp9fy9Rs5LFaRvug=
-X-Received: by 2002:a05:6870:1f0d:b0:1d5:e498:35de with SMTP id
- pd13-20020a0568701f0d00b001d5e49835demr3247004oab.26.1694528316223; Tue, 12
- Sep 2023 07:18:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230828080423.3539686-1-alessandro.carminati@gmail.com> <d385548e-9788-2814-05c9-bb0f275b233f@intel.com>
-In-Reply-To: <d385548e-9788-2814-05c9-bb0f275b233f@intel.com>
-From:   Alessandro Carminati <alessandro.carminati@gmail.com>
-Date:   Tue, 12 Sep 2023 16:18:00 +0200
-Message-ID: <CAPp5cGSHdU6z2J=bUYkXMOakFzSWzjeCznTsV=DrTSvWmaqStA@mail.gmail.com>
-Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate
- symbols for kallsyms
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
+        d=1e100.net; s=20230601; t=1694528345; x=1695133145;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DsLMJ6XnAbXQu1SjpExCVysgK4ox7mGMRFRAzL7PP28=;
+        b=KE4nPxRgtKEF0MayRFcAnGp1mrB1+gvKbGyMDNMo9rUegj8brj0drmnPLhQ1jCrAio
+         q5X5u8vAyBXNFFyA4S4AgdIH44/smq7kAu5X0s15nbGTDSx+FvUJzawourxaBBwN+n1v
+         /Z6EktypCYmjOfa/dVUzVbY4EzQIlh6xaOOsDiOy74Bab50S7RcNiC0Rl6fUHj3eANMZ
+         icd3GIPPMr1QWpDE5BfNHPMNXk5FUm6fGPWKOI01qOwBhoIfmN0REWa5nWTtB91fyMBE
+         m0pk1rfL+oIKneHLAmIotvnhFSQRgcbCvMyivbkILmLV8VwqN51KMFxwfFsQwznHXRqc
+         74Yg==
+X-Gm-Message-State: AOJu0YzanjuzkX9u8xcdLDVdX8tH4WnQwfdlLmynggRLOm4UjETrH7j3
+        8XKgQXh6VaLilETTkVXyhU8=
+X-Google-Smtp-Source: AGHT+IGyY6pnD6WcnHeqqEsnL1hNezX+XsryIReoOYboPthUkOleK7Ds2foZNa+etHflhhnU6TB4MA==
+X-Received: by 2002:a2e:861a:0:b0:2b9:f27f:e491 with SMTP id a26-20020a2e861a000000b002b9f27fe491mr10712450lji.42.1694528344503;
+        Tue, 12 Sep 2023 07:19:04 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i19-20020a170906851300b0099297782aa9sm6804245ejx.49.2023.09.12.07.19.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 07:19:04 -0700 (PDT)
+Message-ID: <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Donglin Peng <pengdonglin@sangfor.com.cn>, martin.lau@linux.dev,
+        ast@kernel.org
+Cc:     song@kernel.org, yhs@fb.com, rostedt@goodmis.org,
+        mhiramat@kernel.org, dinghui@sangfor.com.cn,
+        huangcun@sangfor.com.cn, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 12 Sep 2023 17:19:02 +0300
+In-Reply-To: <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+         <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander,
+On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
+> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
+> > Currently, we are only using the linear search method to find the type =
+id
+> > by the name, which has a time complexity of O(n). This change involves
+> > sorting the names of btf types in ascending order and using binary sear=
+ch,
+> > which has a time complexity of O(log(n)). This idea was inspired by the
+> > following patch:
+> >=20
+> > 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_nam=
+e()").
+> >=20
+> > At present, this improvement is only for searching in vmlinux's and
+> > module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_ST=
+RUCT.
+> >=20
+> > Another change is the search direction, where we search the BTF first a=
+nd
+> > then its base, the type id of the first matched btf_type will be return=
+ed.
+> >=20
+> > Here is a time-consuming result that finding all the type ids of 67,819=
+ kernel
+> > functions in vmlinux's BTF by their names:
+> >=20
+> > Before: 17000 ms
+> > After:     10 ms
+> >=20
+> > The average lookup performance has improved about 1700x at the above sc=
+enario.
+> >=20
+> > However, this change will consume more memory, for example, 67,819 kern=
+el
+> > functions will allocate about 530KB memory.
+>=20
+> Hi Donglin,
+>=20
+> I think this is a good improvement. However, I wonder, why did you
+> choose to have a separate name map for each BTF kind?
+>=20
+> I did some analysis for my local testing kernel config and got such numbe=
+rs:
+> - total number of BTF objects: 97350
+> - number of FUNC and STRUCT objects: 51597
+> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC objects: =
+56817
+>   (these are all kinds for which lookup by name might make sense)
+> - number of named objects: 54246
+> - number of name collisions:
+>   - unique names: 53985 counts
+>   - 2 objects with the same name: 129 counts
+>   - 3 objects with the same name: 3 counts
+>=20
+> So, it appears that having a single map for all named objects makes
+> sense and would also simplify the implementation, what do you think?
 
-Thank you for your mail.
+Some more numbers for my config:
+- 13241 types (struct, union, typedef, enum), log2 13241 =3D 13.7
+- 43575 funcs, log2 43575 =3D 15.4
+Thus, having separate map for types vs functions might save ~1.7
+search iterations. Is this a significant slowdown in practice?
 
-Il giorno lun 11 set 2023 alle ore 16:26 Alexander Lobakin
-<aleksander.lobakin@intel.com> ha scritto:
->
-> From: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
-> Date: Mon, 28 Aug 2023 08:04:23 +0000
->
-> > From: Alessandro Carminati <alessandro.carminati@gmail.com>
-> >
-> > It is not uncommon for drivers or modules related to similar peripherals
-> > to have symbols with the exact same name.
->
-> [...]
->
-> > Changes from v2:
-> > - Alias tags are created by querying DWARF information from the vmlinux.
-> > - The filename + line number is normalized and appended to the original name.
-> > - The tag begins with '@' to indicate the symbol source.
-> > - Not a change, but worth mentioning, since the alias is added to the existing
-> >   list, the old duplicated name is preserved, and the livepatch way of dealing
-> >   with duplicates is maintained.
-> > - Acknowledging the existence of scenarios where inlined functions declared in
-> >   header files may result in multiple copies due to compiler behavior, though
-> >    it is not actionable as it does not pose an operational issue.
-> > - Highlighting a single exception where the same name refers to different
-> >   functions: the case of "compat_binfmt_elf.c," which directly includes
-> >   "binfmt_elf.c" producing identical function copies in two separate
-> >   modules.
->
-> Oh, I thought you managed to handle this in v3 since you didn't reply in
-> the previous thread...
-I want to thank you for this observation because it gives me the chance to
-discuss this topic.
-
-It is evident that the corner case in question is inherently challenging
-to address using the addr2line approach. Attempting to conceal this
-limitation would be counterproductive.
-
-compat_binfmt_elf.c includes directly binfmt_elf.c, addr2line can't help
-but report all functions and data declared in that file, coming from that
-file. compat_binfmt_elf.c is just a bunch of macro definitions that
-rename a few symbols and define some items used in macro-defined
-compilation in binfmt_elf.c.
-
-Looking at the functions, only two of the functions defined by
-compat_binfmt_elf.c are binary different from their counterpart in
-binfmt_elf.c.
-These differences, while present, are indeed minimal, but this fact not
-relevant to this discussion.
-
-My position is that, rather than producing a more complicated pipeline
-to handle this corner case, it is better to fix it. Before reading your
-message, I was about to send the v4, but now I'd prefer to hear the
-others' opinions on this matter before taking any future action.
-
-
->
-> >
-> > sample from new v3
-> >
-> >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> >  ffffd0b03c04dae4 t gic_mask_irq
-> >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
-> >  ffffd0b03c050960 t gic_mask_irq
-> >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
->
-> BTW, why normalize them? Why not just
->
-> gic_mask_irq@drivers/irqchip/...
->
-> Aaaaand why line number? Line numbers break reproducible builds and also
-> would make it harder to refer to a particular symbol by its path and
-> name since we also have to pass its line number which may change once
-> you add a debug print there, for example.
-> OTOH there can't be 2 symbols with the same name within one file, so
-> just path + name would be enough. Or not?
-
-Regarding the use of full file paths and line numbers for symbol decoration,
-it indeed provides the highest level of uniqueness for each symbol.
-However, I understand your point that this level of detail might be more than
-necessary.
-
-This approach was implemented in response to a specific request expressed in
-the live-patching list, and I wanted to ensure we met those requirements.
-I am open to revisiting this aspect, and I am willing to accommodate changes
-based on feedback.
-
-If you believe that simplifying the format to just path + name would be more
-practical, or if you think that eliminating line numbers is a better choice
-to avoid potential issues while debugging builds, I'm open to considering
-these adjustments.
-Additionally, I've interpreted and implemented Francis's suggestion as making
-the separator a configurable option, but maybe a proper format string here,
-would be more appropriate.
-
-
->
-> (sorry if some of this was already discussed previously)
->
-> [...]
->
+>=20
 > Thanks,
-> Olek
+> Eduard
+>=20
+> >=20
+> > Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
+> > ---
+> > Changes in RFC v2:
+> >  - Fix the build issue reported by kernel test robot <lkp@intel.com>
+> > ---
+> >  include/linux/btf.h |   1 +
+> >  kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
+> >  2 files changed, 291 insertions(+), 10 deletions(-)
+> >=20
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index cac9f304e27a..6260a0668773 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
+> >  bool btf_is_module(const struct btf *btf);
+> >  struct module *btf_try_get_module(const struct btf *btf);
+> >  u32 btf_nr_types(const struct btf *btf);
+> > +u32 btf_type_cnt(const struct btf *btf);
+> >  bool btf_member_is_reg_int(const struct btf *btf, const struct btf_typ=
+e *s,
+> >  			   const struct btf_member *m,
+> >  			   u32 expected_offset, u32 expected_size);
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 817204d53372..51aa9f27853b 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
+> >  	struct btf_id_dtor_kfunc dtors[];
+> >  };
+> > =20
+> > +enum {
+> > +	BTF_ID_NAME_FUNC,	/* function */
+> > +	BTF_ID_NAME_STRUCT,	/* struct */
+> > +	BTF_ID_NAME_MAX
+> > +};
+> > +
+> > +struct btf_id_name {
+> > +	int id;
+> > +	u32 name_off;
+> > +};
+> > +
+> > +struct btf_id_name_map {
+> > +	struct btf_id_name *id_name;
+> > +	u32 count;
+> > +};
+> > +
+> > +struct btf_id_name_maps {
+> > +	struct btf_id_name_map map[BTF_ID_NAME_MAX];
+> > +};
+> > +
+> >  struct btf {
+> >  	void *data;
+> >  	struct btf_type **types;
+> > @@ -257,6 +277,7 @@ struct btf {
+> >  	struct btf_kfunc_set_tab *kfunc_set_tab;
+> >  	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+> >  	struct btf_struct_metas *struct_meta_tab;
+> > +	struct btf_id_name_maps *id_name_maps;
+> > =20
+> >  	/* split BTF support */
+> >  	struct btf *base_btf;
+> > @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
+> >  	return total;
+> >  }
+> > =20
+> > +u32 btf_type_cnt(const struct btf *btf)
+> > +{
+> > +	return btf->start_id + btf->nr_types;
+> > +}
+> > +
+> > +static inline u8 btf_id_name_idx_to_kind(int index)
+> > +{
+> > +	u8 kind;
+> > +
+> > +	switch (index) {
+> > +	case BTF_ID_NAME_FUNC:
+> > +		kind =3D BTF_KIND_FUNC;
+> > +		break;
+> > +	case BTF_ID_NAME_STRUCT:
+> > +		kind =3D BTF_KIND_STRUCT;
+> > +		break;
+> > +	default:
+> > +		kind =3D BTF_KIND_UNKN;
+> > +		break;
+> > +	}
+> > +
+> > +	return kind;
+> > +}
+> > +
+> > +static inline int btf_id_name_kind_to_idx(u8 kind)
+> > +{
+> > +	int index;
+> > +
+> > +	switch (kind) {
+> > +	case BTF_KIND_FUNC:
+> > +		index =3D BTF_ID_NAME_FUNC;
+> > +		break;
+> > +	case BTF_KIND_STRUCT:
+> > +		index =3D BTF_ID_NAME_STRUCT;
+> > +		break;
+> > +	default:
+> > +		index =3D -1;
+> > +		break;
+> > +	}
+> > +
+> > +	return index;
+> > +}
+> > +
+> > +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
+> > +				    u32 size, const char *name,
+> > +				    struct btf_id_name **start,
+> > +				    struct btf_id_name **end,
+> > +				    const struct btf *btf)
+> > +{
+> > +	int ret;
+> > +	int low, mid, high;
+> > +	const char *name_buf;
+> > +
+> > +	low =3D 0;
+> > +	high =3D size - 1;
+> > +
+> > +	while (low <=3D high) {
+> > +		mid =3D low + (high - low) / 2;
+> > +		name_buf =3D btf_name_by_offset(btf, id_name[mid].name_off);
+> > +		ret =3D strcmp(name, name_buf);
+> > +		if (ret > 0)
+> > +			low =3D mid + 1;
+> > +		else if (ret < 0)
+> > +			high =3D mid - 1;
+> > +		else
+> > +			break;
+> > +	}
+> > +
+> > +	if (low > high)
+> > +		return -ESRCH;
+> > +
+> > +	if (start) {
+> > +		low =3D mid;
+> > +		while (low) {
+> > +			name_buf =3D btf_name_by_offset(btf, id_name[low-1].name_off);
+> > +			if (strcmp(name, name_buf))
+> > +				break;
+> > +			low--;
+> > +		}
+> > +		*start =3D &id_name[low];
+> > +	}
+> > +
+> > +	if (end) {
+> > +		high =3D mid;
+> > +		while (high < size - 1) {
+> > +			name_buf =3D btf_name_by_offset(btf, id_name[high+1].name_off);
+> > +			if (strcmp(name, name_buf))
+> > +				break;
+> > +			high++;
+> > +		}
+> > +		*end =3D &id_name[high];
+> > +	}
+> > +
+> > +	return id_name[mid].id;
+> > +}
+> > +
+> >  s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
+kind)
+> >  {
+> > +	const struct btf_id_name_maps *maps;
+> > +	const struct btf_id_name_map *map;
+> > +	struct btf_id_name *start;
+> >  	const struct btf_type *t;
+> >  	const char *tname;
+> > -	u32 i, total;
+> > +	int index =3D btf_id_name_kind_to_idx(kind);
+> > +	s32 id, total;
+> > =20
+> > -	total =3D btf_nr_types(btf);
+> > -	for (i =3D 1; i < total; i++) {
+> > -		t =3D btf_type_by_id(btf, i);
+> > -		if (BTF_INFO_KIND(t->info) !=3D kind)
+> > -			continue;
+> > +	do {
+> > +		maps =3D btf->id_name_maps;
+> > +		if (index >=3D 0 && maps && maps->map[index].id_name) {
+> > +			/* binary search */
+> > +			map =3D &maps->map[index];
+> > +			id =3D btf_find_by_name_bsearch(map->id_name,
+> > +				map->count, name, &start, NULL, btf);
+> > +			if (id > 0) {
+> > +				/*
+> > +				 * Return the first one that
+> > +				 * matched
+> > +				 */
+> > +				return start->id;
+> > +			}
+> > +		} else {
+> > +			/* linear search */
+> > +			total =3D btf_type_cnt(btf);
+> > +			for (id =3D btf->start_id; id < total; id++) {
+> > +				t =3D btf_type_by_id(btf, id);
+> > +				if (BTF_INFO_KIND(t->info) !=3D kind)
+> > +					continue;
+> > +
+> > +				tname =3D btf_name_by_offset(btf, t->name_off);
+> > +				if (!strcmp(tname, name))
+> > +					return id;
+> > +			}
+> > +		}
+> > =20
+> > -		tname =3D btf_name_by_offset(btf, t->name_off);
+> > -		if (!strcmp(tname, name))
+> > -			return i;
+> > -	}
+> > +		btf =3D btf->base_btf;
+> > +	} while (btf);
+> > =20
+> >  	return -ENOENT;
+> >  }
+> > @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
+> >  	spin_unlock_irqrestore(&btf_idr_lock, flags);
+> >  }
+> > =20
+> > +static void btf_destroy_id_name(struct btf *btf, int index)
+> > +{
+> > +	struct btf_id_name_maps *maps =3D btf->id_name_maps;
+> > +	struct btf_id_name_map *map =3D &maps->map[index];
+> > +
+> > +	if (map->id_name) {
+> > +		kvfree(map->id_name);
+> > +		map->id_name =3D NULL;
+> > +		map->count =3D 0;
+> > +	}
+> > +}
+> > +
+> > +static void btf_destroy_id_name_map(struct btf *btf)
+> > +{
+> > +	int i;
+> > +
+> > +	if (!btf->id_name_maps)
+> > +		return;
+> > +
+> > +	for (i =3D 0; i < BTF_ID_NAME_MAX; i++)
+> > +		btf_destroy_id_name(btf, i);
+> > +
+> > +	kfree(btf->id_name_maps);
+> > +	btf->id_name_maps =3D NULL;
+> > +}
+> > +
+> >  static void btf_free_kfunc_set_tab(struct btf *btf)
+> >  {
+> >  	struct btf_kfunc_set_tab *tab =3D btf->kfunc_set_tab;
+> > @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf *=
+btf)
+> > =20
+> >  static void btf_free(struct btf *btf)
+> >  {
+> > +	btf_destroy_id_name_map(btf);
+> >  	btf_free_struct_meta_tab(btf);
+> >  	btf_free_dtor_kfunc_tab(btf);
+> >  	btf_free_kfunc_set_tab(btf);
+> > @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log=
+ *log, enum bpf_prog_type prog_ty
+> >  	return kctx_type_id;
+> >  }
+> > =20
+> > +static int btf_compare_id_name(const void *a, const void *b, const voi=
+d *priv)
+> > +{
+> > +	const struct btf_id_name *ia =3D (const struct btf_id_name *)a;
+> > +	const struct btf_id_name *ib =3D (const struct btf_id_name *)b;
+> > +	const struct btf *btf =3D priv;
+> > +	int ret;
+> > +
+> > +	/*
+> > +	 * Sort names in ascending order, if the name is same, sort ids in
+> > +	 * ascending order.
+> > +	 */
+> > +	ret =3D strcmp(btf_name_by_offset(btf, ia->name_off),
+> > +		     btf_name_by_offset(btf, ib->name_off));
+> > +	if (!ret)
+> > +		ret =3D ia->id - ib->id;
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int btf_create_id_name(struct btf *btf, int index)
+> > +{
+> > +	struct btf_id_name_maps *maps =3D btf->id_name_maps;
+> > +	struct btf_id_name_map *map =3D &maps->map[index];
+> > +	const struct btf_type *t;
+> > +	struct btf_id_name *id_name;
+> > +	const char *name;
+> > +	int i, j =3D 0;
+> > +	u32 total, count =3D 0;
+> > +	u8 kind;
+> > +
+> > +	kind =3D btf_id_name_idx_to_kind(index);
+> > +	if (kind =3D=3D BTF_KIND_UNKN)
+> > +		return -EINVAL;
+> > +
+> > +	if (map->id_name || map->count !=3D 0)
+> > +		return -EINVAL;
+> > +
+> > +	total =3D btf_type_cnt(btf);
+> > +	for (i =3D btf->start_id; i < total; i++) {
+> > +		t =3D btf_type_by_id(btf, i);
+> > +		if (BTF_INFO_KIND(t->info) !=3D kind)
+> > +			continue;
+> > +		name =3D btf_name_by_offset(btf, t->name_off);
+> > +		if (str_is_empty(name))
+> > +			continue;
+> > +		count++;
+> > +	}
+> > +
+> > +	if (count =3D=3D 0)
+> > +		return 0;
+> > +
+> > +	id_name =3D kvcalloc(count, sizeof(struct btf_id_name),
+> > +			   GFP_KERNEL);
+> > +	if (!id_name)
+> > +		return -ENOMEM;
+> > +
+> > +	for (i =3D btf->start_id; i < total; i++) {
+> > +		t =3D btf_type_by_id(btf, i);
+> > +		if (BTF_INFO_KIND(t->info) !=3D kind)
+> > +			continue;
+> > +		name =3D btf_name_by_offset(btf, t->name_off);
+> > +		if (str_is_empty(name))
+> > +			continue;
+> > +
+> > +		id_name[j].id =3D i;
+> > +		id_name[j].name_off =3D t->name_off;
+> > +		j++;
+> > +	}
+> > +
+> > +	sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
+> > +	       NULL, btf);
+> > +
+> > +	map->id_name =3D id_name;
+> > +	map->count =3D count;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int btf_create_id_name_map(struct btf *btf)
+> > +{
+> > +	int err, i;
+> > +	struct btf_id_name_maps *maps;
+> > +
+> > +	if (btf->id_name_maps)
+> > +		return -EBUSY;
+> > +
+> > +	maps =3D kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
+> > +	if (!maps)
+> > +		return -ENOMEM;
+> > +
+> > +	btf->id_name_maps =3D maps;
+> > +
+> > +	for (i =3D 0; i < BTF_ID_NAME_MAX; i++) {
+> > +		err =3D btf_create_id_name(btf, i);
+> > +		if (err < 0)
+> > +			break;
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> >  BTF_ID_LIST(bpf_ctx_convert_btf_id)
+> >  BTF_ID(struct, bpf_ctx_convert)
+> > =20
+> > @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
+> >  	if (err)
+> >  		goto errout;
+> > =20
+> > +	err =3D btf_create_id_name_map(btf);
+> > +	if (err)
+> > +		goto errout;
+> > +
+> >  	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
+> >  	bpf_ctx_convert.t =3D btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
+> > =20
+> > @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
+> >  errout:
+> >  	btf_verifier_env_free(env);
+> >  	if (btf) {
+> > +		btf_destroy_id_name_map(btf);
+> >  		kvfree(btf->types);
+> >  		kfree(btf);
+> >  	}
+> > @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const char =
+*module_name, const void *data, u
+> >  	if (err)
+> >  		goto errout;
+> > =20
+> > +	err =3D btf_create_id_name_map(btf);
+> > +	if (err)
+> > +		goto errout;
+> > +
+> >  	btf_verifier_env_free(env);
+> >  	refcount_set(&btf->refcnt, 1);
+> > +
+> >  	return btf;
+> > =20
+> >  errout:
+> >  	btf_verifier_env_free(env);
+> >  	if (btf) {
+> > +		btf_destroy_id_name_map(btf);
+> >  		kvfree(btf->data);
+> >  		kvfree(btf->types);
+> >  		kfree(btf);
+>=20
 
-Thank you,
-Alessandro
