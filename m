@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5339A79C7B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B746179C7B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbjILHIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        id S231326AbjILHIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:08:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjILHIL (ORCPT
+        with ESMTP id S230394AbjILHIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:08:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0225410CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694502441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ngjRwCUGtVn49b+a10bSdDhEKYC91j/r4ziY766Fz/Q=;
-        b=Nn9RSlhVkEALsKNCenPuDiXw3qsIg2bbqpoI9zgr/rBCURM+6HCc+q+EupkmN8zRTgskLw
-        FcAa4kJDrCLn/eLeKVwAq3qhU9r78I3GlVJftZlN3kcR2PUnuAP+PKFfoDwC8EhTmdZkXx
-        AffZtgeCvbg4dOBZT3i4OBzr6AqeAqU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-257-tSLVuLd6NRSlYUDuYvntEw-1; Tue, 12 Sep 2023 03:07:20 -0400
-X-MC-Unique: tSLVuLd6NRSlYUDuYvntEw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-402d1892cecso23101875e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:07:20 -0700 (PDT)
+        Tue, 12 Sep 2023 03:08:51 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058FE9B
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:08:48 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6befdb1f545so4014375a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694502527; x=1695107327; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hv2L+KIK91RPAfSw2HE5xZRSf6YXmZwJ93Tmif92bV4=;
+        b=ZPLxvIO7m/wpbMggXrZCA0MgDeDF4lhohgq659wDL8HTV4jMEHST12M+ddIJB4Akin
+         XdFHSlpma10tdAlAPD4Yl8r4UwpBtCze/I/oT24nRwoN1co/I6VNp/wcxfOfj4dPUnsN
+         qLOAbNRMegITboSvKTMh1w+HbUS03DHbg03ChNwehVfLs7xLhr0Zi8dgL2TdnBjvwsTW
+         zodTMXABYcuauGRPkMNT7Otvd+hX0ld5g2veuJZ6bK2aQO5bN1Co0xSr4xSwiKtwF8iF
+         j3oZNJqzkSTjHYAcfLUBSVS77Ji2PTWBOyzKpSzhEDIkvujstLwL6wQHuY5xwNX/O48E
+         Qy+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502439; x=1695107239;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ngjRwCUGtVn49b+a10bSdDhEKYC91j/r4ziY766Fz/Q=;
-        b=fx1Mt7D53iFtT1Z2MnBjmotAadYwT0H6ZnlyLEWuuWVFdzzlCLfYIUCSYBeEuYduo2
-         n2zKOxALKDxITn0IN7LypmBv9GhyS8lRpN/86IbebQ29HoNQ77/dxAAZbeIe1RS/nPJr
-         5ryiFaldDdrX0mZGT8dxrWw8D2VOSowmZ1nzbGsh21qq39GMhZLd1e1CzJoUl0RosdSq
-         e5iYxzHGyHLnzVICB23O+8u61t1Qx/EV7ZI9u58Cd2Peyv3SP4iS7+s6qXinbFjkL3If
-         i3uGvVC3fa4I9LOiVyhwnWbgN0Z/c/kv17VHMJwQcZZvevImdeWHvYywfAAXKu3TRbbz
-         Nl/A==
-X-Gm-Message-State: AOJu0YxgkYIMkqiCBkMCCOCdjheCnL9xWAGabijgK2OhqBu/O1axBKvf
-        abAT22ODQXmFUhYh1EJdSr8glIouwWEsLRtTHGlRGpl2QtjdbTX9zRaZQohGXzF6moKpk2ONeTl
-        udQhfS0A4HRgEmzVs7o4rNB66
-X-Received: by 2002:a05:600c:1f0f:b0:401:c717:ec6d with SMTP id bd15-20020a05600c1f0f00b00401c717ec6dmr1119945wmb.15.1694502439221;
-        Tue, 12 Sep 2023 00:07:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG5qayMUu6hFKKGXK/Y1sZoWl+xVPxZf7W2vplC+a6aJOLDOuM5ZiotTuLG/f2Sp2tx3YPNWQ==
-X-Received: by 2002:a05:600c:1f0f:b0:401:c717:ec6d with SMTP id bd15-20020a05600c1f0f00b00401c717ec6dmr1119929wmb.15.1694502438860;
-        Tue, 12 Sep 2023 00:07:18 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c74f:d600:c705:bc25:17b2:71c9? (p200300cbc74fd600c705bc2517b271c9.dip0.t-ipconnect.de. [2003:cb:c74f:d600:c705:bc25:17b2:71c9])
-        by smtp.gmail.com with ESMTPSA id o8-20020a05600c378800b00401d6c0505csm12028140wmr.47.2023.09.12.00.07.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 00:07:18 -0700 (PDT)
-Message-ID: <550ec927-2de4-39e4-2df6-423be22c2161@redhat.com>
-Date:   Tue, 12 Sep 2023 09:07:17 +0200
+        d=1e100.net; s=20230601; t=1694502527; x=1695107327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hv2L+KIK91RPAfSw2HE5xZRSf6YXmZwJ93Tmif92bV4=;
+        b=Zq53wpf90bHZsGk0YqKnj8Dt6CLcUkWk5OG/uXtvUSelZ6pQjiB55SWTF3iFWviiMC
+         +FhgRLjwOJTzWLpbWRshjrjkMY66fIF0TYvPCWzOyWUWUe8uFJrgs0k05EnXLX0GdCHz
+         cIMNoTwn6rlBJmAmZEEQ75DyZDxn/5i2oVTM6miLMzRMxo9hndfV1zWLYumr+7ijiS1a
+         MDKXpTnMlvKo1Z5XKGasaGDsIjYTix5HpX82VHJB0c/0FInYpTKJDz33QuHDL6abniTw
+         n6dKfXxF5MeDBWGA3/Nw1mm8u/SM1jK6U8CQRaqn5qHjshASd3iGKtTdKQBZNalImJx3
+         RtZw==
+X-Gm-Message-State: AOJu0YyoGa0vsNtiAoOioqcLhPWKBMjBSjUQzXdC+sL5O09ICkLfR7zq
+        fn/86q42RV7Q7s/2JZqLDylG1QVd3xPKQLn3oDgwIYcyWdysvLCr
+X-Google-Smtp-Source: AGHT+IHBe3WqmlJ9znIl9UDkcdScIM2fyekx+hlEsGTzORc2dGYHkEZ989cOo3htoGUENtuvxLjItVsneETXU9qweME=
+X-Received: by 2002:a9d:6e83:0:b0:6bf:1fed:95ce with SMTP id
+ a3-20020a9d6e83000000b006bf1fed95cemr11702047otr.22.1694502527347; Tue, 12
+ Sep 2023 00:08:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [linus:master] [proc/ksm] 8b47933544:
- kernel-selftests.proc.proc-empty-vm.fail
-Content-Language: en-US
-To:     kernel test robot <oliver.sang@intel.com>,
-        Stefan Roesch <shr@devkernel.io>,
-        Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rik van Riel <riel@surriel.com>,
-        linux-fsdevel@vger.kernel.org
-References: <202309121427.f3542933-oliver.sang@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <202309121427.f3542933-oliver.sang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230829165627.156542-1-mario.limonciello@amd.com>
+ <20230829165627.156542-4-mario.limonciello@amd.com> <1d891d34-053a-368d-cf47-bcaf35284c79@redhat.com>
+ <07353676-bad0-44f8-a15a-4877f1898b6b@amd.com> <811225f8-c505-7344-ac18-882472ee0348@redhat.com>
+ <d232c11d-901f-4ebc-b408-bed042ed8da9@amd.com> <6734c409-89f1-89a1-3096-4054be29faf1@redhat.com>
+ <f0ceff1c-ba5f-4c6b-ac0e-c4195f477500@amd.com>
+In-Reply-To: <f0ceff1c-ba5f-4c6b-ac0e-c4195f477500@amd.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 09:08:36 +0200
+Message-ID: <CACRpkdYGxreyD8NVuKs2G44htR8EixdvGr3+ma=HrxHUP3NDQg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] pinctrl: amd: Add a quirk for Lenovo Ideapad 5
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Shyam-sundar.S-k@amd.com,
+        Basavaraj.Natikar@amd.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        lucapgl2001@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.09.23 09:02, kernel test robot wrote:
-> 
-> 
-> Hello,
-> 
-> kernel test robot noticed "kernel-selftests.proc.proc-empty-vm.fail" on:
-> 
-> commit: 8b47933544a68a62a9c4e35f8d8a6d2a2c935823 ("proc/ksm: add ksm stats to /proc/pid/smaps")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+On Thu, Aug 31, 2023 at 7:53=E2=80=AFPM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 
-https://lkml.kernel.org/r/725e041f-e9df-4f3d-b267-d4cd2774a78d@p183
+> Linus - please disregard version 1.
 
--- 
-Cheers,
+OK!
 
-David / dhildenb
+> I provided Luca a new series that implements this approach that Hans and
+> I discussed and they confirmed it works.
+>
+> I have some minor modifications to it to narrow where it's applied so we
+> don't have needless notifications and will send it for review after the
+> new modifications are tested as well.
 
+OK standing by, I'll wait for Hans' ACK and then merge it for fixes.
+
+Yours,
+Linus Walleij
