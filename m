@@ -2,353 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DF279DCC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9DB79DCC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237157AbjILXj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
+        id S236786AbjILXjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjILXjZ (ORCPT
+        with ESMTP id S232087AbjILXjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:39:25 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A1210C7;
-        Tue, 12 Sep 2023 16:39:21 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CMOqxc018717;
-        Tue, 12 Sep 2023 23:39:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=id5fkwX1xUR05iSYtflHshuQq5taYP+NgXIA2zOPgFg=;
- b=jgohXBMz8OiS5vWEWOYGsXTTwv9eGDzDu/YH+TdSFP33UkabYAnI8p5aC29tFpP1raGK
- nmxbGLs58Yh29HY1ACwm45OSzXWjV3sEPuaKiZwikYPoc3NUXSYnNJBUVyHKvU4bAy1R
- s+KgnDjVqWusl006tKeajc041Ft436d1IFsr9BDlgtU4OX0eBLyH0vFpBRboCN3CbLOO
- K39cJlS8iJ7ubeVbesxWaEIg+FRB880dzXlOfoupl/Yi1WKntktucCgj9LZ77Pvw48ez
- CWFRrdn3nsdL9zuAlM38XHt0qI5n5hwvekyFPCj3k+PK0h695cPUyxFd2vhRO2U2jk6D +Q== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7u88sj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 23:39:08 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CNd7Tv005190
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 23:39:07 GMT
-Received: from [10.110.43.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 16:39:07 -0700
-Message-ID: <90e27f2b-4512-6121-c5f4-e7cb87b259ab@quicinc.com>
-Date:   Tue, 12 Sep 2023 16:39:07 -0700
+        Tue, 12 Sep 2023 19:39:49 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C9D10C7;
+        Tue, 12 Sep 2023 16:39:45 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so72674915e9.3;
+        Tue, 12 Sep 2023 16:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694561984; x=1695166784; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qXC78UUF3ibqz3zuiL6JsDX7Oj430gQiRowMpFwstOk=;
+        b=i7AsW7K3SR+tcxUHyvGF0JANrnwAEuWRJaOU9tQd4sZgZwv8+knMx4LkFXgGNcb7SC
+         c2GnDofodmIBLg0uq2d7RK5xw3zqyyu11qJobQqwdPUZ0PyA6sLWG6EvB7WEsY8dMCIu
+         8z1/Rwu6fUIebjB8f0dH45TEAEu8wenvugBLD8mneBAtzIyLkx3IluERZZapHJQmcNpV
+         WcX0YgxYFdepwdsSA2pecWM0ygJmkQiEH131msIu7aMu2hlkhdaOuk2vNmVOEdAQjfVW
+         0zDwz/n/HmY+ZSF6y79/HHK/Qwpskbq0VbiHOtYImB+CzFCREWd9MDS6VelDFZcVh3Je
+         F6fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694561984; x=1695166784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qXC78UUF3ibqz3zuiL6JsDX7Oj430gQiRowMpFwstOk=;
+        b=FUYVqUwaKHpUDQVmLQnS4vhI/zCezT+GmO6zvzKaur6UJ381Iqk8Hzm+SEN79l5gZm
+         3GSDBSn3ZZdwv073r09Hsm3Tph0ArAVm8SkoKiKWlLOZpExy26Uoxpxi9MKOUV0bLflE
+         DBTr/QnN0CaPsnkTroaox0+uljruGMOigGqJXD9AjUuU9aJlVrFiAJKxVEQfTHiK0bDO
+         /xXGg1H8uJ+dCjVvJ4AAQDtwfQsrbNoc+W1FF7t6yY21JMnd0hHqg5kbubcCTIUtIQom
+         0t8JgK7UHuAw9pzVN7a4/SAHJC8gsL6P4iZzriUnDlMaBSgg6vUQZn9mZL58hmP0eHcV
+         0lZg==
+X-Gm-Message-State: AOJu0YyI56ppB3mNIXS7sYYXL1UAamBhpQtbkne6GRwvzlTCDn9LJj4a
+        1JL4ANlCAM7PW6TTYxlNQB8=
+X-Google-Smtp-Source: AGHT+IGQXd3yi2Wo/dXj3cZJ+Hfo+j+Dp3F6HRHmHIEOfrMt1pgYFhWIbcWpwhGtcD5eGAaaXLMy1g==
+X-Received: by 2002:a05:600c:2318:b0:401:b1c6:97d8 with SMTP id 24-20020a05600c231800b00401b1c697d8mr643840wmo.35.1694561983527;
+        Tue, 12 Sep 2023 16:39:43 -0700 (PDT)
+Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-34-242-166-189.eu-west-1.compute.amazonaws.com. [34.242.166.189])
+        by smtp.gmail.com with ESMTPSA id k23-20020a05600c0b5700b00402fa98abe3sm296641wmr.46.2023.09.12.16.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 16:39:43 -0700 (PDT)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     puranjay12@gmail.com, memxor@gmail.com
+Subject: [PATCH bpf-next 0/1] bpf, arm64: support exceptions
+Date:   Tue, 12 Sep 2023 23:39:41 +0000
+Message-Id: <20230912233942.6734-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v3 1/2] usb: dwc3: core: configure TX/RX threshold for
- DWC3_IP
-Content-Language: en-US
-To:     Stanley Chang <stanley_chang@realtek.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230912041904.30721-1-stanley_chang@realtek.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <20230912041904.30721-1-stanley_chang@realtek.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Vw9KNQUwb_hAf9JvdlZgqZtEc11UHoIT
-X-Proofpoint-ORIG-GUID: Vw9KNQUwb_hAf9JvdlZgqZtEc11UHoIT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_22,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=999 impostorscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 bulkscore=0 clxscore=1011 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120201
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Kumar is working on adding exceptions to BPF and enabling it on x86 [1].
+I am working with him to enable it on ARM64 and will later do it for
+other architectures when the basic exceptions support is upstream.
 
-On 9/11/2023 9:19 PM, Stanley Chang wrote:
-> In Synopsys's dwc3 data book:
-> To avoid underrun and overrun during the burst, in a high-latency bus
-> system (like USB), threshold and burst size control is provided through
-> GTXTHRCFG and GRXTHRCFG registers.
-> 
-> In Realtek DHC SoC, DWC3 USB 3.0 uses AHB system bus. When dwc3 is
-> connected with USB 2.5G Ethernet, there will be overrun problem.
-> Therefore, setting TX/RX thresholds can avoid this issue.
-> 
-> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-> ---
-> v2 to v3 change:
->      Move the threshold setting to new function dwc3_config_threshold.
->      Add the threshold setting for usb31 and usb32
-> v1 to v2 change:
->      Add the properties for TX/RX threshold setting
-> ---
->   drivers/usb/dwc3/core.c | 160 +++++++++++++++++++++++++++++++---------
->   drivers/usb/dwc3/core.h |  13 ++++
->   2 files changed, 137 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> index 9c6bf054f15d..44ee8526dc28 100644
-> --- a/drivers/usb/dwc3/core.c
-> +++ b/drivers/usb/dwc3/core.c
-> @@ -1057,6 +1057,111 @@ static void dwc3_set_power_down_clk_scale(struct dwc3 *dwc)
->   	}
->   }
->   
-> +static void dwc3_config_threshold(struct dwc3 *dwc)
-> +{
-> +	u32 reg;
-> +	u8 rx_thr_num;
-> +	u8 rx_maxburst;
-> +	u8 tx_thr_num;
-> +	u8 tx_maxburst;
-> +
-> +	/*
-> +	 * Must config both number of packets and max burst settings to enable
-> +	 * RX and/or TX threshold.
-> +	 */
-> +	if (!DWC3_IP_IS(DWC3) && dwc->dr_mode == USB_DR_MODE_HOST) {
-> +		rx_thr_num = dwc->rx_thr_num_pkt_prd;
-> +		rx_maxburst = dwc->rx_max_burst_prd;
-> +		tx_thr_num = dwc->tx_thr_num_pkt_prd;
-> +		tx_maxburst = dwc->tx_max_burst_prd;
-> +
-> +		if (rx_thr_num && rx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-> +			reg |= DWC31_RXTHRNUMPKTSEL_PRD;
-> +
-> +			reg &= ~DWC31_RXTHRNUMPKT_PRD(~0);
-> +			reg |= DWC31_RXTHRNUMPKT_PRD(rx_thr_num);
-> +
-> +			reg &= ~DWC31_MAXRXBURSTSIZE_PRD(~0);
-> +			reg |= DWC31_MAXRXBURSTSIZE_PRD(rx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-> +		}
-> +
-> +		if (tx_thr_num && tx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-> +			reg |= DWC31_TXTHRNUMPKTSEL_PRD;
-> +
-> +			reg &= ~DWC31_TXTHRNUMPKT_PRD(~0);
-> +			reg |= DWC31_TXTHRNUMPKT_PRD(tx_thr_num);
-> +
-> +			reg &= ~DWC31_MAXTXBURSTSIZE_PRD(~0);
-> +			reg |= DWC31_MAXTXBURSTSIZE_PRD(tx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-> +		}
-> +	}
-> +
-> +	rx_thr_num = dwc->rx_thr_num_pkt;
-> +	rx_maxburst = dwc->rx_max_burst;
-> +	tx_thr_num = dwc->tx_thr_num_pkt;
-> +	tx_maxburst = dwc->tx_max_burst;
-> +
-> +	if (DWC3_IP_IS(DWC3)) {
-> +		if (rx_thr_num && rx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-> +			reg |= DWC3_GRXTHRCFG_PKTCNTSEL;
-> +
-> +			reg &= ~DWC3_GRXTHRCFG_RXPKTCNT(~0);
-> +			reg |= DWC3_GRXTHRCFG_RXPKTCNT(rx_thr_num);
-> +
-> +			reg &= ~DWC3_GRXTHRCFG_MAXRXBURSTSIZE(~0);
-> +			reg |= DWC3_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-> +		}
-> +
-> +		if (tx_thr_num && tx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-> +			reg |= DWC3_GTXTHRCFG_PKTCNTSEL;
-> +
-> +			reg &= ~DWC3_GTXTHRCFG_TXPKTCNT(~0);
-> +			reg |= DWC3_GTXTHRCFG_TXPKTCNT(tx_thr_num);
-> +
-> +			reg &= ~DWC3_GTXTHRCFG_MAXTXBURSTSIZE(~0);
-> +			reg |= DWC3_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-> +		}
-> +	} else {
-> +		if (rx_thr_num && rx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-> +			reg |= DWC31_GRXTHRCFG_PKTCNTSEL;
-> +
-> +			reg &= ~DWC31_GRXTHRCFG_RXPKTCNT(~0);
-> +			reg |= DWC31_GRXTHRCFG_RXPKTCNT(rx_thr_num);
-> +
-> +			reg &= ~DWC31_GRXTHRCFG_MAXRXBURSTSIZE(~0);
-> +			reg |= DWC31_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-> +		}
-> +
-> +		if (tx_thr_num && tx_maxburst) {
-> +			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-> +			reg |= DWC31_GTXTHRCFG_PKTCNTSEL;
-> +
-> +			reg &= ~DWC31_GTXTHRCFG_TXPKTCNT(~0);
-> +			reg |= DWC31_GTXTHRCFG_TXPKTCNT(tx_thr_num);
-> +
-> +			reg &= ~DWC31_GTXTHRCFG_MAXTXBURSTSIZE(~0);
-> +			reg |= DWC31_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
-> +
-> +			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-> +		}
-> +	}
-> +}
-> +
->   /**
->    * dwc3_core_init - Low-level initialization of DWC3 Core
->    * @dwc: Pointer to our controller context structure
-> @@ -1209,42 +1314,7 @@ static int dwc3_core_init(struct dwc3 *dwc)
->   		dwc3_writel(dwc->regs, DWC3_GUCTL1, reg);
->   	}
->   
-> -	/*
-> -	 * Must config both number of packets and max burst settings to enable
-> -	 * RX and/or TX threshold.
-> -	 */
-> -	if (!DWC3_IP_IS(DWC3) && dwc->dr_mode == USB_DR_MODE_HOST) {
-> -		u8 rx_thr_num = dwc->rx_thr_num_pkt_prd;
-> -		u8 rx_maxburst = dwc->rx_max_burst_prd;
-> -		u8 tx_thr_num = dwc->tx_thr_num_pkt_prd;
-> -		u8 tx_maxburst = dwc->tx_max_burst_prd;
-> -
-> -		if (rx_thr_num && rx_maxburst) {
-> -			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-> -			reg |= DWC31_RXTHRNUMPKTSEL_PRD;
-> -
-> -			reg &= ~DWC31_RXTHRNUMPKT_PRD(~0);
-> -			reg |= DWC31_RXTHRNUMPKT_PRD(rx_thr_num);
-> -
-> -			reg &= ~DWC31_MAXRXBURSTSIZE_PRD(~0);
-> -			reg |= DWC31_MAXRXBURSTSIZE_PRD(rx_maxburst);
-> -
-> -			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-> -		}
-> -
-> -		if (tx_thr_num && tx_maxburst) {
-> -			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-> -			reg |= DWC31_TXTHRNUMPKTSEL_PRD;
-> -
-> -			reg &= ~DWC31_TXTHRNUMPKT_PRD(~0);
-> -			reg |= DWC31_TXTHRNUMPKT_PRD(tx_thr_num);
-> -
-> -			reg &= ~DWC31_MAXTXBURSTSIZE_PRD(~0);
-> -			reg |= DWC31_MAXTXBURSTSIZE_PRD(tx_maxburst);
-> -
-> -			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-> -		}
-> -	}
-> +	dwc3_config_threshold(dwc);
->   
->   	return 0;
->   
-> @@ -1380,6 +1450,10 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->   	u8			lpm_nyet_threshold;
->   	u8			tx_de_emphasis;
->   	u8			hird_threshold;
-> +	u8			rx_thr_num_pkt = 0;
-> +	u8			rx_max_burst = 0;
-> +	u8			tx_thr_num_pkt = 0;
-> +	u8			tx_max_burst = 0;
->   	u8			rx_thr_num_pkt_prd = 0;
->   	u8			rx_max_burst_prd = 0;
->   	u8			tx_thr_num_pkt_prd = 0;
-> @@ -1442,6 +1516,14 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->   				"snps,usb2-lpm-disable");
->   	dwc->usb2_gadget_lpm_disable = device_property_read_bool(dev,
->   				"snps,usb2-gadget-lpm-disable");
-> +	device_property_read_u8(dev, "snps,rx-thr-num-pkt",
-> +				&rx_thr_num_pkt);
-> +	device_property_read_u8(dev, "snps,rx-max-burst",
-> +				&rx_max_burst);
-> +	device_property_read_u8(dev, "snps,tx-thr-num-pkt",
-> +				&tx_thr_num_pkt);
-> +	device_property_read_u8(dev, "snps,tx-max-burst",
-> +				&tx_max_burst);
+This patch enables the support on ARM64, all sefltests are passing:
 
-Aren't there value limitations for some of these (if not all) settings? 
-  For example, in the DWC3 programming guide, the max burst fields say 
-(for DWC31):
-	"Note: This field can only be set to 2, 4, 8 or 16."
+# ./test_progs -a exceptions
+#74/1    exceptions/exception_throw_always_1:OK
+#74/2    exceptions/exception_throw_always_2:OK
+#74/3    exceptions/exception_throw_unwind_1:OK
+#74/4    exceptions/exception_throw_unwind_2:OK
+#74/5    exceptions/exception_throw_default:OK
+#74/6    exceptions/exception_throw_default_value:OK
+#74/7    exceptions/exception_tail_call:OK
+#74/8    exceptions/exception_ext:OK
+#74/9    exceptions/exception_ext_mod_cb_runtime:OK
+#74/10   exceptions/exception_throw_subprog:OK
+#74/11   exceptions/exception_assert_nz_gfunc:OK
+#74/12   exceptions/exception_assert_zero_gfunc:OK
+#74/13   exceptions/exception_assert_neg_gfunc:OK
+#74/14   exceptions/exception_assert_pos_gfunc:OK
+#74/15   exceptions/exception_assert_negeq_gfunc:OK
+#74/16   exceptions/exception_assert_poseq_gfunc:OK
+#74/17   exceptions/exception_assert_nz_gfunc_with:OK
+#74/18   exceptions/exception_assert_zero_gfunc_with:OK
+#74/19   exceptions/exception_assert_neg_gfunc_with:OK
+#74/20   exceptions/exception_assert_pos_gfunc_with:OK
+#74/21   exceptions/exception_assert_negeq_gfunc_with:OK
+#74/22   exceptions/exception_assert_poseq_gfunc_with:OK
+#74/23   exceptions/exception_bad_assert_nz_gfunc:OK
+#74/24   exceptions/exception_bad_assert_zero_gfunc:OK
+#74/25   exceptions/exception_bad_assert_neg_gfunc:OK
+#74/26   exceptions/exception_bad_assert_pos_gfunc:OK
+#74/27   exceptions/exception_bad_assert_negeq_gfunc:OK
+#74/28   exceptions/exception_bad_assert_poseq_gfunc:OK
+#74/29   exceptions/exception_bad_assert_nz_gfunc_with:OK
+#74/30   exceptions/exception_bad_assert_zero_gfunc_with:OK
+#74/31   exceptions/exception_bad_assert_neg_gfunc_with:OK
+#74/32   exceptions/exception_bad_assert_pos_gfunc_with:OK
+#74/33   exceptions/exception_bad_assert_negeq_gfunc_with:OK
+#74/34   exceptions/exception_bad_assert_poseq_gfunc_with:OK
+#74/35   exceptions/exception_assert_range:OK
+#74/36   exceptions/exception_assert_range_with:OK
+#74/37   exceptions/exception_bad_assert_range:OK
+#74/38   exceptions/exception_bad_assert_range_with:OK
+#74/39   exceptions/non-throwing fentry -> exception_cb:OK
+#74/40   exceptions/throwing fentry -> exception_cb:OK
+#74/41   exceptions/non-throwing fexit -> exception_cb:OK
+#74/42   exceptions/throwing fexit -> exception_cb:OK
+#74/43   exceptions/throwing extension (with custom cb) -> exception_cb:OK
+#74/44   exceptions/throwing extension -> global func in exception_cb:OK
+#74/45   exceptions/exception_ext_mod_cb_runtime:OK
+#74/46   exceptions/throwing extension (with custom cb) -> global func in exception_cb:OK
+#74/47   exceptions/exception_ext:OK
+#74/48   exceptions/non-throwing fentry -> non-throwing subprog:OK
+#74/49   exceptions/throwing fentry -> non-throwing subprog:OK
+#74/50   exceptions/non-throwing fentry -> throwing subprog:OK
+#74/51   exceptions/throwing fentry -> throwing subprog:OK
+#74/52   exceptions/non-throwing fexit -> non-throwing subprog:OK
+#74/53   exceptions/throwing fexit -> non-throwing subprog:OK
+#74/54   exceptions/non-throwing fexit -> throwing subprog:OK
+#74/55   exceptions/throwing fexit -> throwing subprog:OK
+#74/56   exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
+#74/57   exceptions/non-throwing fmod_ret -> non-throwing global subprog:OK
+#74/58   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/59   exceptions/non-throwing extension -> throwing subprog:OK
+#74/60   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/61   exceptions/non-throwing extension -> throwing global subprog:OK
+#74/62   exceptions/throwing extension -> throwing global subprog:OK
+#74/63   exceptions/throwing extension -> non-throwing global subprog:OK
+#74/64   exceptions/non-throwing extension -> main subprog:OK
+#74/65   exceptions/throwing extension -> main subprog:OK
+#74/66   exceptions/reject_exception_cb_type_1:OK
+#74/67   exceptions/reject_exception_cb_type_2:OK
+#74/68   exceptions/reject_exception_cb_type_3:OK
+#74/69   exceptions/reject_exception_cb_type_4:OK
+#74/70   exceptions/reject_async_callback_throw:OK
+#74/71   exceptions/reject_with_lock:OK
+#74/72   exceptions/reject_subprog_with_lock:OK
+#74/73   exceptions/reject_with_rcu_read_lock:OK
+#74/74   exceptions/reject_subprog_with_rcu_read_lock:OK
+#74/75   exceptions/reject_with_rbtree_add_throw:OK
+#74/76   exceptions/reject_with_reference:OK
+#74/77   exceptions/reject_with_cb_reference:OK
+#74/78   exceptions/reject_with_cb:OK
+#74/79   exceptions/reject_with_subprog_reference:OK
+#74/80   exceptions/reject_throwing_exception_cb:OK
+#74/81   exceptions/reject_exception_cb_call_global_func:OK
+#74/82   exceptions/reject_exception_cb_call_static_func:OK
+#74/83   exceptions/reject_multiple_exception_cb:OK
+#74/84   exceptions/reject_exception_throw_cb:OK
+#74/85   exceptions/reject_exception_throw_cb_diff:OK
+#74/86   exceptions/reject_set_exception_cb_bad_ret1:OK
+#74/87   exceptions/reject_set_exception_cb_bad_ret2:OK
+#74/88   exceptions/check_assert_eq_int_min:OK
+#74/89   exceptions/check_assert_eq_int_max:OK
+#74/90   exceptions/check_assert_eq_zero:OK
+#74/91   exceptions/check_assert_eq_llong_min:OK
+#74/92   exceptions/check_assert_eq_llong_max:OK
+#74/93   exceptions/check_assert_lt_pos:OK
+#74/94   exceptions/check_assert_lt_zero:OK
+#74/95   exceptions/check_assert_lt_neg:OK
+#74/96   exceptions/check_assert_le_pos:OK
+#74/97   exceptions/check_assert_le_zero:OK
+#74/98   exceptions/check_assert_le_neg:OK
+#74/99   exceptions/check_assert_gt_pos:OK
+#74/100  exceptions/check_assert_gt_zero:OK
+#74/101  exceptions/check_assert_gt_neg:OK
+#74/102  exceptions/check_assert_ge_pos:OK
+#74/103  exceptions/check_assert_ge_zero:OK
+#74/104  exceptions/check_assert_ge_neg:OK
+#74/105  exceptions/check_assert_range_s64:OK
+#74/106  exceptions/check_assert_range_u64:OK
+#74/107  exceptions/check_assert_single_range_s64:OK
+#74/108  exceptions/check_assert_single_range_u64:OK
+#74/109  exceptions/check_assert_generic:OK
+#74/110  exceptions/check_assert_with_return:OK
+#74      exceptions:OK
+Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
 
-And for the packet threshold count:
-	"Valid values are from 1 to 16."
+[1] https://lore.kernel.org/bpf/20230912233214.1518551-1-memxor@gmail.com/
 
-Thanks
-Wesley Cheng
+Puranjay Mohan (1):
+  bpf, arm64: support exceptions
 
->   	device_property_read_u8(dev, "snps,rx-thr-num-pkt-prd",
->   				&rx_thr_num_pkt_prd);
->   	device_property_read_u8(dev, "snps,rx-max-burst-prd",
-> @@ -1523,6 +1605,12 @@ static void dwc3_get_properties(struct dwc3 *dwc)
->   
->   	dwc->hird_threshold = hird_threshold;
->   
-> +	dwc->rx_thr_num_pkt = rx_thr_num_pkt;
-> +	dwc->rx_max_burst = rx_max_burst;
-> +
-> +	dwc->tx_thr_num_pkt = tx_thr_num_pkt;
-> +	dwc->tx_max_burst = tx_max_burst;
-> +
->   	dwc->rx_thr_num_pkt_prd = rx_thr_num_pkt_prd;
->   	dwc->rx_max_burst_prd = rx_max_burst_prd;
->   
-> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> index a69ac67d89fe..6782ec8bfd64 100644
-> --- a/drivers/usb/dwc3/core.h
-> +++ b/drivers/usb/dwc3/core.h
-> @@ -211,6 +211,11 @@
->   #define DWC3_GRXTHRCFG_RXPKTCNT(n) (((n) & 0xf) << 24)
->   #define DWC3_GRXTHRCFG_PKTCNTSEL BIT(29)
->   
-> +/* Global TX Threshold Configuration Register */
-> +#define DWC3_GTXTHRCFG_MAXTXBURSTSIZE(n) (((n) & 0xff) << 16)
-> +#define DWC3_GTXTHRCFG_TXPKTCNT(n) (((n) & 0xf) << 24)
-> +#define DWC3_GTXTHRCFG_PKTCNTSEL BIT(29)
-> +
->   /* Global RX Threshold Configuration Register for DWC_usb31 only */
->   #define DWC31_GRXTHRCFG_MAXRXBURSTSIZE(n)	(((n) & 0x1f) << 16)
->   #define DWC31_GRXTHRCFG_RXPKTCNT(n)		(((n) & 0x1f) << 21)
-> @@ -1045,6 +1050,10 @@ struct dwc3_scratchpad_array {
->    * @test_mode_nr: test feature selector
->    * @lpm_nyet_threshold: LPM NYET response threshold
->    * @hird_threshold: HIRD threshold
-> + * @rx_thr_num_pkt: USB receive packet count
-> + * @rx_max_burst: max USB receive burst size
-> + * @tx_thr_num_pkt: USB transmit packet count
-> + * @tx_max_burst: max USB transmit burst size
->    * @rx_thr_num_pkt_prd: periodic ESS receive packet count
->    * @rx_max_burst_prd: max periodic ESS receive burst size
->    * @tx_thr_num_pkt_prd: periodic ESS transmit packet count
-> @@ -1273,6 +1282,10 @@ struct dwc3 {
->   	u8			test_mode_nr;
->   	u8			lpm_nyet_threshold;
->   	u8			hird_threshold;
-> +	u8			rx_thr_num_pkt;
-> +	u8			rx_max_burst;
-> +	u8			tx_thr_num_pkt;
-> +	u8			tx_max_burst;
->   	u8			rx_thr_num_pkt_prd;
->   	u8			rx_max_burst_prd;
->   	u8			tx_thr_num_pkt_prd;
+ arch/arm64/net/bpf_jit_comp.c | 98 ++++++++++++++++++++++++++++-------
+ 1 file changed, 79 insertions(+), 19 deletions(-)
+
+-- 
+2.40.1
+
