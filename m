@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F4479CBD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DF279CBDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233676AbjILJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
+        id S232246AbjILJcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjILJbk (ORCPT
+        with ESMTP id S231574AbjILJcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:31:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F11B123;
-        Tue, 12 Sep 2023 02:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694511096; x=1726047096;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=KAbjzoM9A507xCYTGkBxWAfT/6us+iLQDYfKZxIiLqM=;
-  b=SomspT2sQgJQF5t82fg7aeolHu7lleGHp/AXWKWv5bFQ5sCDu7ZRiTCO
-   XEuqUPDWH5ICfrxSA9LyEG3msbIyugrPkMueig11vSC0vBYEZn+TJtxni
-   HAmberY+68uor/NBkh+evBtRmnK4eORDYjrGw5NugkplsJHK1kInzoGDh
-   FTOpxiw0/EmntYILjT7b9Wzf3K1igFboYDGBEOff416Y6Xm14bqnyw5MT
-   fmX/wp3XWk+k2iCUtag+Jdpj12TBlnjDJSnSLjuauUDISUpwuygiDjHJz
-   nTfWLlz76Ub8d4I/8vIMvBb0Op5ju+3H9R21NfA/Ii78kNHlgzh4bNhK9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368581969"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="368581969"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 02:31:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="743658827"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="743658827"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 02:31:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qfzk3-008Y5a-3B;
-        Tue, 12 Sep 2023 12:31:31 +0300
-Date:   Tue, 12 Sep 2023 12:31:31 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v1 01/10] gpio: pca953x: Drop unused fields in struct
- pca953x_platform_data
-Message-ID: <ZQAv8wJuS7t0RV+m@smile.fi.intel.com>
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdboT46oadZJZTde=ze2vEvC9aUGjO5-MjDdVwCNijFqDw@mail.gmail.com>
+        Tue, 12 Sep 2023 05:32:18 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3AFAA;
+        Tue, 12 Sep 2023 02:32:14 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9A7DE66072F2;
+        Tue, 12 Sep 2023 10:32:12 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694511133;
+        bh=eeI0C4r6TV9rH54wW4ZS7WZ8fXen+SsJRbpmKuHbmrQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F3XA6ZMRhxEcRaaIG78QIW35HZz81I/2rWotiaTcVL5WU/TWALitPEZKC7YJbesGk
+         plFU7O+4PzdXq5QBTfMurrOPmctAlTA5LH+rb5OTsi0Z1deJhaiYZ0DAaEmu1eW62A
+         z9w/P/KGBNcqm5yDBF3tVk1YlwSzsklzR5bqw7gCTF4ApVuZM0nTvuMlmUYXVVKtxI
+         av5ef2inX/fYZrGIRiLI81XBtN7wTd2IJw0macH5QgZ5xyg3VQh6m7ETMkTP611rl8
+         /8ehZH38kro0WXptil0SQQsDozxYDcoI4/gmS/0BOtxVY5naMBvNMseKVbQt/EQTUH
+         dnVzdy6cU5X5g==
+Date:   Tue, 12 Sep 2023 11:32:10 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
+Subject: Re: [PATCH v4 6/6] drm/drm-file: Show finer-grained BO sizes in
+ drm_show_memory_stats
+Message-ID: <20230912113210.65897aab@collabora.com>
+In-Reply-To: <20230912084044.955864-7-adrian.larumbe@collabora.com>
+References: <20230912084044.955864-1-adrian.larumbe@collabora.com>
+        <20230912084044.955864-7-adrian.larumbe@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdboT46oadZJZTde=ze2vEvC9aUGjO5-MjDdVwCNijFqDw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:50:06AM +0200, Linus Walleij wrote:
-> On Fri, Sep 1, 2023 at 3:40 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > New code should solely use firmware nodes for the specifics and
-> > not any callbacks.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Patches look good to me:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> for all patches.
+On Tue, 12 Sep 2023 09:37:00 +0100
+Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
 
-Thank you!
+> The current implementation will try to pick the highest available size
+> display unit as soon as the BO size exceeds that of the previous
+> multiplier. That can lead to loss of precision in BO's whose size is
+> not a multiple of a MiB.
+>=20
+> Fix it by changing the unit selection criteria.
+>=20
+> For much bigger BO's, their size will naturally be aligned on something
+> bigger than a 4 KiB page, so in practice it is very unlikely their display
+> unit would default to KiB.
 
-> Patch 8 looks HTML on my gmail but I guess the problem
-> is on my side.
+Let's wait for Rob's opinion on this.
 
-The entire series has been sent in the same way, it's quite unlikely that
-the only patch got mangled while others are okay.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+>=20
+> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_file.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+> index 762965e3d503..bf7d2fe46bfa 100644
+> --- a/drivers/gpu/drm/drm_file.c
+> +++ b/drivers/gpu/drm/drm_file.c
+> @@ -879,7 +879,7 @@ static void print_size(struct drm_printer *p, const c=
+har *stat,
+>  	unsigned u;
+> =20
+>  	for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
+> -		if (sz < SZ_1K)
+> +		if (sz & (SZ_1K - 1))
+>  			break;
+>  		sz =3D div_u64(sz, SZ_1K);
+>  	}
 
