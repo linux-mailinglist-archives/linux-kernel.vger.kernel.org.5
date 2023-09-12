@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CCA79D856
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3823F79D85C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237186AbjILSGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        id S237422AbjILSHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjILSGs (ORCPT
+        with ESMTP id S237461AbjILSHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:06:48 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB701E59;
-        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26d1e5f2c35so4878342a91.2;
-        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
+        Tue, 12 Sep 2023 14:07:35 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C693F1715
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:07:29 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c337aeefbdso54314375ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694542004; x=1695146804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=b/FcdXt508wzlUPKZM2U2Z4krLmys9jD7gjAAQB1Fak=;
-        b=qL9JMWzi2S/ofD95Uwc0vOLPsLrNmeskpB+yqAGzecfIR4ydFqOy58ztzD9YzAnn7h
-         ZJ3McVbtYm+inL6V3ihq5anrudywpjf92J1lLDsrKL0zmO7OlBF4XrDbxqMxxNUnUVqA
-         ErImQqbkhOZi2doKNEdNWrMP1EXV+nIk87liOmaekqKDJ330XYh3D6xiHE0TCywqNYFt
-         70ENycCY2JkFyRne4oHRA6A4KyE2vk/n4J4tpVmsYuRDic17WcFJPvssGDC/PubN6otF
-         R5kmT7fTHrz8wgFssm3m/TWeDyPvdfCwhiE7oDItxsIm8YwscOF9YtV09IAxr32+QwD2
-         45vA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694542049; x=1695146849; darn=vger.kernel.org;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:to:cc:subject:date:message-id:reply-to;
+        bh=5P792u/W+uYHVAlK3Wk+WMLaaMRTUy9AL0RSgtpOHuA=;
+        b=EwzTTg7f2oghWMRLDP4+qz22dbsBxBYGp9NZ1unu55hG55ai+DdBrWAMJ3aWwqEBl7
+         k+25QN+xtunUtgsfIhYDfS0y8mOjAY2eePKEZSH65/r6uEpPs//gk+k2cxt48t+VjdDB
+         TADZ9qa25B7sVFdfKwPW62tDVN6Ajh2x0+ZnFJg1WAaL0WYrvof6MlpcqwYcouknSi9H
+         xAOHVFg1EWSYkdXl6K6fBSwyQex34A1SXBkoR0JSWXxZAxr9Oz2nRChis0b/3NxM5BLK
+         Ge78x7uf9qsSf4DfJ1BauBEbyUD92cuMcRsT8z0usuok1LfaC8r8WHLS5uR10yJU7NlY
+         6fdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694542004; x=1695146804;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b/FcdXt508wzlUPKZM2U2Z4krLmys9jD7gjAAQB1Fak=;
-        b=HpcXAPoaeY9yfiRkjYBsJsWleeuJ3b3Np3fHCpD6wzjHAnJ8vHWC0wrnWoXHjlggSs
-         OA+9aNtkNM/ISMCpFmwZikAXXosfNCBplAkutUHzqjGn0nJPKUHOCXsddkRVav1Pt/Qm
-         cPPkWA6ztZ10m+8SULzlIJygJYxoJ6QLI+Wi3UNrX2QwQBGQ6s2qY0pVozdWci6zzpXi
-         668xPfvnfFXu1VrhLImW5EIahVTV/EJeWzy6k155utJeA6WykiVW8UiYn4rHXJj7Bt9S
-         HQiFCJX/80QDUPpRHJfCJV9Fy8IjbjuRlT4E7uJ8ErEeieeFVRqB5eyiK/oHYcGmizJB
-         PCsg==
-X-Gm-Message-State: AOJu0YwxMefWSm+xgWuNaOMfMXxT9EX7+ar+U0Ju0pvxw1x7dXjgLl2I
-        +HSzaoRfgIcpNByCPG8VDV4=
-X-Google-Smtp-Source: AGHT+IF1qy2cfIn54//x9+QFzFdq2dCQpP+A7JwFxYGlzyHdW63t3FsaKm0KYnTcxA7a0T1vP4p3GQ==
-X-Received: by 2002:a17:90a:520c:b0:271:8d4d:d046 with SMTP id v12-20020a17090a520c00b002718d4dd046mr58739pjh.4.1694542004044;
-        Tue, 12 Sep 2023 11:06:44 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l3-20020a17090a72c300b0025bdc3454c6sm9449911pjk.8.2023.09.12.11.06.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 11:06:43 -0700 (PDT)
-Message-ID: <0903ba48-643b-7091-0ca3-e76b95c7e822@gmail.com>
-Date:   Tue, 12 Sep 2023 11:06:36 -0700
+        d=1e100.net; s=20230601; t=1694542049; x=1695146849;
+        h=to:from:cc:content-transfer-encoding:mime-version:message-id:date
+         :subject:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5P792u/W+uYHVAlK3Wk+WMLaaMRTUy9AL0RSgtpOHuA=;
+        b=BbyOTrck++ljjMtkMA/53igkX+EBAyn5sXT4h4Hd2rYyWnzO2hN/IV6IjH3ZKMalH6
+         65vHR/qVWo21dlwRU83vZEgA54MJw4VyoaIsWqk050huQP/tLb3lnMVNcN9c4tl1OMbK
+         egZg0cypyOqkSnQL8lPjS1Mwx8VcIpcXcqK5Kt89zkJgtKBxwkcb9FOWVPdXHhftQaqy
+         rtmT+etQ9jO47YJIAIbXYpCjGhvuOApb4MKdxvMullyHmLbYmXuTwxyZyDcr0skWb8+c
+         F+oINkXxOyZDGUlUHOQMYW1wu1RxAxEQ4A3Wmqh4UMij7YZj9HtwTiJnf0nCkonjk0tF
+         cknw==
+X-Gm-Message-State: AOJu0Yx4LPlmtUD8EqOLDKZOPCHSQtx3FEqw8OEbtC2ao7PLTCFyN/8E
+        Ju/ufO8VtvHyZNcPn1LFROX6lftRAGZ8ApJlEjE=
+X-Google-Smtp-Source: AGHT+IGpM+pJjvarAfRfpZy5vCZhx9yUE6GrHEVUou3LIHgewnXUK4D3CCgLD6GhHOB6XeZsyD9kRQ==
+X-Received: by 2002:a17:902:ab45:b0:1bb:1e69:28c0 with SMTP id ij5-20020a170902ab4500b001bb1e6928c0mr503326plb.30.1694542049261;
+        Tue, 12 Sep 2023 11:07:29 -0700 (PDT)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902c14d00b001bdd51748f8sm8676588plj.271.2023.09.12.11.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 11:07:28 -0700 (PDT)
+Subject: [PATCH] Documentation: embargoed-hardware-issues.rst: Add myself for RISC-V
+Date:   Tue, 12 Sep 2023 11:06:56 -0700
+Message-ID: <20230912180657.31841-1-palmer@rivosinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 6.4 000/737] 6.4.16-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230911134650.286315610@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@rivosinc.com>
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I'm not sure exactly how RISC-V fits into the story here, but I'm happy
+to voluteer a sort of catch-all for vendors who aren't otherwise
+represented.
 
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ Documentation/process/embargoed-hardware-issues.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 9/11/2023 6:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.16 release.
-> There are 737 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+diff --git a/Documentation/process/embargoed-hardware-issues.rst b/Documentation/process/embargoed-hardware-issues.rst
+index cb686238f21d..ac7c52f130c9 100644
+--- a/Documentation/process/embargoed-hardware-issues.rst
++++ b/Documentation/process/embargoed-hardware-issues.rst
+@@ -251,6 +251,7 @@ an involved disclosed party. The current ambassadors list:
+   IBM Z		Christian Borntraeger <borntraeger@de.ibm.com>
+   Intel		Tony Luck <tony.luck@intel.com>
+   Qualcomm	Trilok Soni <tsoni@codeaurora.org>
++  RISC-V	Palmer Dabbelt <palmer@dabbelt.com>
+   Samsung	Javier González <javier.gonz@samsung.com>
+ 
+   Microsoft	James Morris <jamorris@linux.microsoft.com>
 -- 
-Florian
+2.42.0
 
