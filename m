@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0965C79C84A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD4479C826
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbjILHhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S231560AbjILH0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbjILHhP (ORCPT
+        with ESMTP id S229906AbjILH0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:37:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF987E73
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:37:11 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED340C433C7;
-        Tue, 12 Sep 2023 07:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694504231;
-        bh=E+RlzXrhxC9sJ+1xCsa1js9BLmbDx0kmE855Vv+kmoU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rh64MUnCsOxItgPHmycfAF99QqwrG5YZvkmo5UIvlDpZ9PGj0V/H7jL3fToAoaDCF
-         N7vppkH/RE4oc6W6ik7pFu0LThkmq5gbtPIS1XtXF1Tb00S//F6qiTfjHqKsXOvZ4J
-         u7Cs1vy2JiPKY+PsX3mIa7wfDjl1f7eftvxUBzx+ginILHllH7cr9IrLlvmi2c/gM1
-         ihP+fSM7vkHF4QR33ViLUYNBR1YaB1EwXrxy+5vCguw24tkx2mD90HJyTKBv4LHlFT
-         Npx6x/9+qjTm/w8NnH2UizDFZLr+OBV6C1ZRqUsOIe6rwA5ZfhnwtGZwwkuET7aOVB
-         cV4LX0jvcsvdA==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>
-Subject: [PATCH v2] riscv: mm: update T-Head memory type definitions
-Date:   Tue, 12 Sep 2023 15:25:10 +0800
-Message-Id: <20230912072510.2510-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
+        Tue, 12 Sep 2023 03:26:23 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E647E73
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:26:19 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d7e741729a2so4913868276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:26:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694503579; x=1695108379; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QLdsOWkCbaUO2wihDuVV34jtr6h0+7J+jydeFj+9d3A=;
+        b=FHxf6FGLo/aAe0RKd3LC72Dqv5r/hojKYGnCpjKTy8FU06ma+pcWsnK8ZD9exQa54W
+         XKdbmTvom03wLo2p/fi0kzXH1cMx3dKnPrfXg7YEHKXKXzpVMnLwa5XZOqoJspYKpbGn
+         5vX9wNS4bCyhPQkhZbY7BcqBXS0kuh+qIi33t59+cuTCyDRHRcqJ9EgrEAXu+7Ap3Pbh
+         FlfanFlakLzBjIh04k+T4vgdcplz7Q39OjjKyUNaFOLbceM0J034d+omgHsqK8hXJmsX
+         vWjnJ/SaPAJHdNdQ4waDnBLZdmA/VyAhOWxJ9V1Y5WpKytay5JzJkkumJcEpCP4aCiJU
+         AhRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694503579; x=1695108379;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QLdsOWkCbaUO2wihDuVV34jtr6h0+7J+jydeFj+9d3A=;
+        b=kWODSHnIY7ceqYwdVrgMwxo860a4cl6xpFgiK1mbnumzSMq6p2YOIZZFu4zjprlafO
+         NWu8SiVXaegeo+ukqw4F/ASOIgNXlWY0j1NrHRzOoRGjOVu1vpiMyKzLzU6ipBshS35o
+         dZvgHBQQ7cRF1W89AOfTb0mQxupuMI0Q81hzMRrCunLRW4gDeLISFJNehEFZXJOsrBjM
+         dRxKj0ZVPTtJmfEkXh9DdqKWh8n2EphyNsyRE46TiGzUIXedPRhuP9nmk6t+XkSvmWYe
+         cAdwqPuBv+069KdvY+CXdSPRMTiXs0/8pTvVkrUKghHG8kt3XvSbareMaY1nrKZi6dlF
+         KzRg==
+X-Gm-Message-State: AOJu0YznX765e3S6347m5fcPod2c1joB2alsmJ+D0pYJaiywP4xjzcpk
+        VxfbgZkXfoC+hVX/z6D0TJVzI2lUSE1roUCr3eaaEw==
+X-Google-Smtp-Source: AGHT+IGeNWnbTJYHAEpu7ttxsHAQMqTYNLyDgS4Z0qnT0Qv02dPr86nF3zYh83i2sXkcAXGeeyTdc1GC/t+sQyizd3k=
+X-Received: by 2002:a25:4c2:0:b0:d13:5ab9:827e with SMTP id
+ 185-20020a2504c2000000b00d135ab9827emr11105762ybe.16.1694503578805; Tue, 12
+ Sep 2023 00:26:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230809-topic-mpm_mappings-v2-0-4c2b4495e654@linaro.org>
+In-Reply-To: <20230809-topic-mpm_mappings-v2-0-4c2b4495e654@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 09:26:07 +0200
+Message-ID: <CACRpkdZw=EfPUWqU3-o3aPQSYZWn5hnenbMqgU73Y8oTo3Ogtw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] MPM pin mappings
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update T-Head memory type definitions according to C910 doc [1]
-For NC and IO, SH property isn't configurable, hardcoded as SH,
-so set SH for NOCACHE and IO.
+On Thu, Aug 31, 2023 at 11:21=E2=80=AFPM Konrad Dybcio <konrad.dybcio@linar=
+o.org> wrote:
 
-And also set bit[61](Bufferable) for NOCACHE according to the
-table 6.1 in the doc [1].
+> This series adds the MPM wakeirq mappings for some SoCs and fixes my
+> "big oops" within the 8998 driver.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Link: https://github.com/T-head-Semi/openc910 [1]
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Tested-by: Drew Fustini <dfustini@baylibre.com>
----
+I simply applied this v2 version since there has been over a week and
+no comments. Any remaining issues can certainly be fixed in-tree.
 
-Since v1:
- - collect Reviewed-by and Tested-by tag
- - rebase on linux 6.6-rc1
-
- arch/riscv/include/asm/pgtable-64.h | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-index 7a5097202e15..9a2c780a11e9 100644
---- a/arch/riscv/include/asm/pgtable-64.h
-+++ b/arch/riscv/include/asm/pgtable-64.h
-@@ -126,14 +126,18 @@ enum napot_cont_order {
- 
- /*
-  * [63:59] T-Head Memory Type definitions:
-- *
-- * 00000 - NC   Weakly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
-+ * bit[63] SO - Strong Order
-+ * bit[62] C - Cacheable
-+ * bit[61] B - Bufferable
-+ * bit[60] SH - Shareable
-+ * bit[59] Sec - Trustable
-+ * 00110 - NC   Weakly-ordered, Non-cacheable, Bufferable, Shareable, Non-trustable
-  * 01110 - PMA  Weakly-ordered, Cacheable, Bufferable, Shareable, Non-trustable
-- * 10000 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
-+ * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
-  */
- #define _PAGE_PMA_THEAD		((1UL << 62) | (1UL << 61) | (1UL << 60))
--#define _PAGE_NOCACHE_THEAD	0UL
--#define _PAGE_IO_THEAD		(1UL << 63)
-+#define _PAGE_NOCACHE_THEAD	((1UL < 61) | (1UL << 60))
-+#define _PAGE_IO_THEAD		((1UL << 63) | (1UL << 60))
- #define _PAGE_MTMASK_THEAD	(_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
- 
- static inline u64 riscv_page_mtmask(void)
--- 
-2.40.1
-
+Yours,
+Linus Walleij
