@@ -2,97 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F2579D6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CC479D6E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237124AbjILQxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S237174AbjILQyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237096AbjILQxd (ORCPT
+        with ESMTP id S237190AbjILQyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:53:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB93410F4;
-        Tue, 12 Sep 2023 09:53:29 -0700 (PDT)
-Received: from [192.168.0.106] (unknown [186.235.7.101])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A4E6366071C9;
-        Tue, 12 Sep 2023 17:53:21 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694537608;
-        bh=6lCw98iaIKfYLWDPpsaLngfvT7UkpYXBkxsUlQltt4U=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HYfJFGquoDoVsDxe6BGBe0qelSuhXeWbnnGgmDdlnr0VEJcGlFU1NRGDlWWa1BHPk
-         3rvq9wH/ct+khzCMCSLfwGZAtFUyhxc44G3pfnwq7En5GmyzxiPqGuRe0bZa1KqZhR
-         udwBfkv5gJ4ZyVZMqmN4Dwo0t109kVqn69E0xSXAak5zH7ZiR6ujn8EgXSb3TxoaTx
-         WGxtHRMLrTdzpv8PEzvTKYGXhXJzsdJ7g0pT3jEduTOIzt+j2WCMIggAlv7ZSOsM8s
-         BKneObztNcl1r+TdzXbUMFdTSmNhOALKKbF8tOVPqV+niknSEws4uu56RIlenGRfpx
-         9pIcWiuVQhvwg==
-Message-ID: <b15fe4b9-9907-72e9-c1a0-35b065aa4732@collabora.com>
-Date:   Tue, 12 Sep 2023 13:53:17 -0300
+        Tue, 12 Sep 2023 12:54:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A8C6D10E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694537608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nc4+V5bh6p5NzLv7LF9hSohtp8QcmhcwlRvEw/hU9ug=;
+        b=C8RoaxPedyOJVIci3rxGr0NcxzYXfyJYr78k3R10kP4ld/AIVCeeu84Sai69Q6vTge1WEB
+        eMN4txJC0ZmEMC1zGJ25J5cRn0c/kYvQibn/Q/jqQhWx7TiSFPfMo6w2NVW78ZEnV4+fbq
+        5tY4jNIQN+lNmPJeFIuoMOrdZSUNjBM=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-118-nPFxylgbNPODCPeH_4FvAw-1; Tue, 12 Sep 2023 12:53:27 -0400
+X-MC-Unique: nPFxylgbNPODCPeH_4FvAw-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-501bef6b33aso966046e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:53:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694537606; x=1695142406;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Nc4+V5bh6p5NzLv7LF9hSohtp8QcmhcwlRvEw/hU9ug=;
+        b=U0AerdlfXq4FK8eu29pw4e8hI3lE7zrIx0j5bHTEILF7MUjcf+CBnJmapHudClY1VO
+         zQF1hCD2GQSkQdgbwHVszON+wISux0eIrlB067DpDMADeTtBjtZYnx2OzPUl+tmREV4O
+         OT4pw1X8jv7dgPbG13ssK9s2JUOtpbY6Cz1/4QsUzoUeVEqw4RAgPFAQ+ccDWDBbns4u
+         iYzEP7jhvJ08ghpCqy9mkwjo9nCbStr5qYwHrH1i+HGYA6++ipjM014u/r3ndLVrUhfM
+         rydvj06xROV6h9kJnR7e3QgYrfSzo/Nm51PCLHyR0CjVraEenQ+oai7h5GEqYKUovZxf
+         KgPA==
+X-Gm-Message-State: AOJu0YxfOPpYDI999DMMIglU0pB9tQTY47Z9ykbFVynFDDcD6Lzue8E1
+        Aeb7NESx21I0npj26la3ziiqJqvbf2bOP1vyg9V6f5Y3feoBnDQyJqsQXfmSc5ub91r9kj+QMfX
+        Ljb+hNhbuhQrfkhVZWwPWFCxQ
+X-Received: by 2002:a05:6512:14b:b0:502:9b86:7112 with SMTP id m11-20020a056512014b00b005029b867112mr51056lfo.2.1694537605920;
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFB9zqEAtYNJs425Tw5xYK7xk5fDmDx97idivW9+AuMvyrKi8iFS4UnFeFpx5tOwp92xSj67w==
+X-Received: by 2002:a05:6512:14b:b0:502:9b86:7112 with SMTP id m11-20020a056512014b00b005029b867112mr51049lfo.2.1694537605588;
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-249-231.dyn.eolo.it. [146.241.249.231])
+        by smtp.gmail.com with ESMTPSA id sb5-20020a170906edc500b009a1be9c29d7sm7177110ejb.179.2023.09.12.09.53.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 09:53:25 -0700 (PDT)
+Message-ID: <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com>
+Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Date:   Tue, 12 Sep 2023 18:53:23 +0200
+In-Reply-To: <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+         <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
+         <20230912152031.GI401982@kernel.org> <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v3 5/9] drm: ci: Enable regulator
-Content-Language: en-US
-To:     Vignesh Raman <vignesh.raman@collabora.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     emma@anholt.net, virtualization@lists.linux-foundation.org,
-        krzysztof.kozlowski+dt@linaro.org, robdclark@google.com,
-        david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
-        gustavo.padovan@collabora.com, agross@kernel.org,
-        devicetree@vger.kernel.org, conor+dt@kernel.org,
-        daniels@collabora.com, linux-arm-msm@vger.kernel.org,
-        mripard@kernel.org, anholt@google.com,
-        linux-mediatek@lists.infradead.org, robclark@freedesktop.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        andersson@kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        dmitry.baryshkov@linaro.org, guilherme.gallo@collabora.com
-References: <20230908152225.432139-1-vignesh.raman@collabora.com>
- <20230908152225.432139-6-vignesh.raman@collabora.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20230908152225.432139-6-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
+> On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
+> > On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
+> > > It's rather a gigantic list of heards that is very hard to follow.
+> > > Sorting helps to see what's already included and what's not.
+> > > It improves a maintainability in a long term.
+> > >=20
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >=20
+> > Hi Andy,
+> >=20
+> > At the risk of bike shedding, the sort function of Vim, when operating
+> > with the C locale, gives a slightly different order, as experssed by
+> > this incremental diff.
+> >=20
+> > I have no objections to your oder, but I'm slightly curious as
+> > to how it came about.
+>=20
+> !sort which is external command.
+>=20
+> $ locale -k LC_COLLATE
+> collate-nrules=3D4
+> collate-rulesets=3D""
+> collate-symb-hash-sizemb=3D1303
+> collate-codeset=3D"UTF-8"
 
+I'm unsure this change is worthy. It will make any later fix touching
+the header list more difficult to backport, and I don't see a great
+direct advantage.
 
-On 08/09/2023 12:22, Vignesh Raman wrote:
-> Enable CONFIG_REGULATOR_DA9211=y to fix mt8173 boot issue.
-> 
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+Please repost the first patch standalone.
 
-Acked-by: Helen Koike <helen.koike@collabora.com>
+Thanks,
 
-> ---
-> 
-> v2:
->    - No changes
-> 
-> v3:
->    - Remove CONFIG_RTC_DRV_MT6397=y as it is already enabled in defconfig
-> 
-> ---
->   drivers/gpu/drm/ci/arm64.config | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/ci/arm64.config b/drivers/gpu/drm/ci/arm64.config
-> index 817e18ddfd4f..ca95e141a7ae 100644
-> --- a/drivers/gpu/drm/ci/arm64.config
-> +++ b/drivers/gpu/drm/ci/arm64.config
-> @@ -184,6 +184,7 @@ CONFIG_HW_RANDOM_MTK=y
->   CONFIG_MTK_DEVAPC=y
->   CONFIG_PWM_MTK_DISP=y
->   CONFIG_MTK_CMDQ=y
-> +CONFIG_REGULATOR_DA9211=y
->   
->   # For nouveau.  Note that DRM must be a module so that it's loaded after NFS is up to provide the firmware.
->   CONFIG_ARCH_TEGRA=y
+Paolo
+
