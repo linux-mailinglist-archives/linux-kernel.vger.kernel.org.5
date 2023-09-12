@@ -2,222 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 328ED79DAFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C86A79DB0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236487AbjILVcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 17:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S232550AbjILVjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 17:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbjILVcs (ORCPT
+        with ESMTP id S229754AbjILVjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 17:32:48 -0400
-Received: from mailout2.w2.samsung.com (mailout2.w2.samsung.com [211.189.100.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0890F10D0;
-        Tue, 12 Sep 2023 14:32:45 -0700 (PDT)
-Received: from uscas1p1.samsung.com (unknown [182.198.245.206])
-        by mailout2.w2.samsung.com (KnoxPortal) with ESMTP id 20230912213244usoutp02abef0275c3abcc3cb5a187e4a5bc77af~ERDdOl2mR1550215502usoutp02t;
-        Tue, 12 Sep 2023 21:32:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w2.samsung.com 20230912213244usoutp02abef0275c3abcc3cb5a187e4a5bc77af~ERDdOl2mR1550215502usoutp02t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1694554364;
-        bh=QgJzk0LFw6AGu8v5Ju1ew6zxSY87McNCclcicOQTPz0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=iRVV4YwyIRtfKSq3XsWaO1+iXASqUexqg1MXXqDxfsa9jBhNnIfD4ta+gFOuP39+5
-         3zsn3NfnldKYXuTVCgVE8respffxDfq9bA5DmvwYV1G7JC4ovcx7vVwCTT1rWBLuLP
-         0wNQWXm8jrI+7QoEA61aSjPe/63SirVwQDg0NE1s=
-Received: from ussmges1new.samsung.com (u109.gpu85.samsung.co.kr
-        [203.254.195.109]) by uscas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230912213243uscas1p2082313b51d35971208ee5bedb3e44ff2~ERDc73jUX1320613206uscas1p2p;
-        Tue, 12 Sep 2023 21:32:43 +0000 (GMT)
-Received: from uscas1p1.samsung.com ( [182.198.245.206]) by
-        ussmges1new.samsung.com (USCPEMTA) with SMTP id D7.CC.50148.BF8D0056; Tue,
-        12 Sep 2023 17:32:43 -0400 (EDT)
-Received: from ussmgxs3new.samsung.com (u92.gpu85.samsung.co.kr
-        [203.254.195.92]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20230912213243uscas1p17fa844630bf6caf6af9119c651e4759b~ERDcintwd2491324913uscas1p1N;
-        Tue, 12 Sep 2023 21:32:43 +0000 (GMT)
-X-AuditID: cbfec36d-7bdff7000002c3e4-73-6500d8fba816
-Received: from SSI-EX2.ssi.samsung.com ( [105.128.2.145]) by
-        ussmgxs3new.samsung.com (USCPEXMTA) with SMTP id 33.22.31410.BF8D0056; Tue,
-        12 Sep 2023 17:32:43 -0400 (EDT)
-Received: from SSI-EX2.ssi.samsung.com (105.128.2.227) by
-        SSI-EX2.ssi.samsung.com (105.128.2.227) with Microsoft SMTP Server
-        (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
-        15.1.2375.24; Tue, 12 Sep 2023 14:32:42 -0700
-Received: from SSI-EX2.ssi.samsung.com ([105.128.2.227]) by
-        SSI-EX2.ssi.samsung.com ([105.128.2.227]) with mapi id 15.01.2375.024; Tue,
-        12 Sep 2023 14:32:42 -0700
-From:   Fan Ni <fan.ni@samsung.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Fan Ni <fan.ni@gmx.us>, Dan Williams <dan.j.williams@intel.com>,
-        "Navneet Singh" <navneet.singh@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
- configuration from the device
-Thread-Topic: [PATCH RFC v2 03/18] cxl/mem: Read Dynamic capacity
-        configuration from the device
-Thread-Index: AQHZ2jkK/pP/klWxW0KG5oR5AqJrLLAD1zsAgA435ICABjMaAA==
-Date:   Tue, 12 Sep 2023 21:32:42 +0000
-Message-ID: <20230912213242.GD2859961@sjcvldevvm72>
-In-Reply-To: <64fba59f73319_1e8e78294e2@iweiny-mobl.notmuch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [105.128.2.176]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E5E5A3975330C243BEF1F709F73946DF@ssi.samsung.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 12 Sep 2023 17:39:46 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F2E10CC;
+        Tue, 12 Sep 2023 14:39:42 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bf66a32f25so79364641fa.2;
+        Tue, 12 Sep 2023 14:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694554781; x=1695159581; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i2KwkPqAJQGEpAJQzIKOOCLdWJ7czGZpLD3jvsx8jZU=;
+        b=px2dtja7ArwE4Y8/JdAhFZX9CSz3IJlvhxcr8s4VWQlgUOoxbfPFht1BjJt7zFDYdK
+         n0AmfjUKpuUUqMIpIYAxpbzu1pKyTPDQfKuNy3tmfp8riHt6uwGgGY5ivfSwiiPPYQw4
+         Tice3GL/Or03I8TV/ohGBlJFWLfwkEBMXagtjFK+wKwkIqs3f9Ne/ye4GuWY7Xawlm3L
+         9t+hAV3bIz4+ZP8Bont4rf5wzK9LHfSvgKLbMq42cpzVwEfl1Z2WbZIBKJ3pVZt06a+R
+         Kr5HXif1KjZIDn2oBVh//8EX43G2My5ib9NWfCTvJPQPWajqf5ey/2WVoFYitHlaT9Cw
+         iVVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694554781; x=1695159581;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i2KwkPqAJQGEpAJQzIKOOCLdWJ7czGZpLD3jvsx8jZU=;
+        b=vbBoneONfu6XBu/1xZ+GS4bkUyXihI44i4bm7nJX4yoLRUcy0buSj1GT7AFtZ87NFP
+         Gjs+vWYwAl6udd/p7desfQwduqi/jM/yir2lhK/OyKsaGxfvfgpg1uOUL7JirDb1AG2s
+         Kp52YWB+1rXJXKeNTmei0CXN4PkxHzCOc61kGYTs7MgWuQB45Y1U9oLh+EkYz24GzUiY
+         YnlcF6K1Kpwx1lefPK4GVTzBL0bM7i/EkW7ZwMyQPouWnuPvl7dQPsiOvf02T9019BSq
+         Q+aCYpHIYks0zjhsi7rqHOivLziNfG4ifGCMprcENXkFDaKoDyGe2A6+tB6BI9cI2cAP
+         RLfQ==
+X-Gm-Message-State: AOJu0Yxc9dL4lrE2OBI0ySUZIrKDIDF5yoeCB5KI9V/wpTHN0H4as+nt
+        xlYtyaaMrHCmDY3TsAkvcs0=
+X-Google-Smtp-Source: AGHT+IHd/q2cvkuJB7PY12aHrsiNDv+TNywu46MmJm8CcJlM5rWEb/mlN3mLeMC1DQVmykOCeVcd2w==
+X-Received: by 2002:a2e:87c8:0:b0:2b9:daa4:f4b6 with SMTP id v8-20020a2e87c8000000b002b9daa4f4b6mr622599ljj.45.1694554780476;
+        Tue, 12 Sep 2023 14:39:40 -0700 (PDT)
+Received: from skbuf ([188.25.254.186])
+        by smtp.gmail.com with ESMTPSA id op5-20020a170906bce500b00992ea405a79sm7406451ejb.166.2023.09.12.14.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 14:39:40 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 00:39:37 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 6/8] net: dsa: vsc73xx: introduce tag 8021q
+ for vsc73xx
+Message-ID: <20230912213937.wqwiex32ojlojnue@skbuf>
+References: <20230912122201.3752918-1-paweldembicki@gmail.com>
+ <20230912122201.3752918-1-paweldembicki@gmail.com>
+ <20230912122201.3752918-7-paweldembicki@gmail.com>
+ <20230912122201.3752918-7-paweldembicki@gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPKsWRmVeSWpSXmKPExsWy7djXc7q/bzCkGtz5rmtx9/EFNovpUy8w
-        Wpy42chmsfrmGkaLW6cOM1rsf/qcxWLVwmtsFudnnWKxuLxrDpvF8TUTWC1uTTjG5MDt8Wz3
-        OmaPliNvWT0W73nJ5DF1dr3H501yAaxRXDYpqTmZZalF+nYJXBmLZt1hLDgtU7H46UvWBsb5
-        Yl2MnBwSAiYSB39uYu1i5OIQEljJKLHo3EZGCKeVSeL49wOsMFXb3vVDJdYySnx++hTK+cQo
-        0XL6PpSzjFHi9J+JjCAtbAKKEvu6trOB2CICyhKn/11lAyliFjjCLHH1yFYmkISwQILEl7ub
-        oYoSJdqm/GTpYuQAsp0k1kxPBQmzCKhKvH33iB3E5hUwlnjQ0wdmcwrYSPxtuAhmMwqISXw/
-        tQZsJLOAuMStJ/OZIM4WlFg0ew8zhC0m8W/XQzYIW1Hi/veX7BD1OhILdn9ig7DtJB5s2MEM
-        YWtLLFv4mhlir6DEyZlPWCB6JSUOrrjBAvKLhMAXDommk/OglrlInJu0HGqBtMT0NZfBfpEQ
-        SJZY9ZELIpwjMX/JFqg51hIL/6xnmsCoMgvJ2bOQnDQLyUmzkJw0C8lJCxhZVzGKlxYX56an
-        FhvmpZbrFSfmFpfmpesl5+duYgSmsdP/DufuYNxx66PeIUYmDsZDjBIczEoivCWH/qYI8aYk
-        VlalFuXHF5XmpBYfYpTmYFES5zW0PZksJJCeWJKanZpakFoEk2Xi4JRqYNoYf1s+WU45u7Bb
-        bmGDpKTijSIVTYPzRcJhaWn53hufSlqwbt16VrbR5VxfdQH3Dj6l6umtxccDWQ8+urNw0o6s
-        qESHC2d/Lc1dsd/e/F7k9v+qDVeD6pZfuPFts+uhWyGnXZynT/0RXJN6fuFztyMsdTVGq1fW
-        dL0x+JsWe1jkamd/TJDQsf36G9dPEbuddSDwlMqnnYIuExdeZmrP3/jE2lrJxXytzJICszk/
-        27xNjkZqX2tm3rBlJ3dF0NzpO/7EFombvXt1KiZxGYuo+LZvLQlvMl3VX3EX3P0hdCUl65hy
-        9rGkwLr3u7jiEr6414t0B57IFb+zwCGpv0r80KK5zLtqG6oPqHG13RbJV2Ipzkg01GIuKk4E
-        AL1Y3SrSAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsWS2cA0Uff3DYZUg2cThS3uPr7AZjF96gVG
-        ixM3G9ksVt9cw2hx69RhRov9T5+zWKxaeI3N4vysUywWl3fNYbM4vmYCq8WtCceYHLg9nu1e
-        x+zRcuQtq8fiPS+ZPKbOrvf4vEkugDWKyyYlNSezLLVI3y6BK2PRrDuMBadlKhY/fcnawDhf
-        rIuRk0NCwERi27t+RhBbSGA1o8Tj7ypdjFxA9idGiSXTnrJBOMsYJbat+Q1WxSagKLGvazsb
-        iC0ioCxx+t9VsCJmgSPMEse23WcFSQgLJEi83vuQEaIoUWLL6adANgeQ7SSxZnoqSJhFQFXi
-        7btH7CA2r4CxxIOePnaIZYuZJF7f/AGW4BSwkfjbcBHMZhQQk/h+ag0TiM0sIC5x68l8JogX
-        BCSW7DnPDGGLSrx8/I8VwlaUuP/9JTtEvY7Egt2f2CBsO4kHG3YwQ9jaEssWvmaGOEJQ4uTM
-        JywQvZISB1fcYJnAKDELybpZSEbNQjJqFpJRs5CMWsDIuopRvLS4ODe9otg4L7Vcrzgxt7g0
-        L10vOT93EyMwBZz+dzhmB+O9Wx/1DjEycTAeYpTgYFYS4S059DdFiDclsbIqtSg/vqg0J7X4
-        EKM0B4uSOO+OKRdThATSE0tSs1NTC1KLYLJMHJxSDUzpa+fKd3rGXclVvCome3FCB3fBBZO1
-        UwQFrLLy2fmOtv9nUfVIWqYnX35ga9iJBwIVlS0WinHe+Wf8L6z56Hh8753jhXnSWy66F6/Y
-        5LS8eJqZOsd8Vsmbucqhrmli1lfal6jwB2tEe3JPyP+7Tm+Xk475C/l7XkFHlghcOLxZpWwX
-        8yfn/xUqPL+06hZXzF6zOOu5bMhKy+0MlZqn7c7+bv/X9eJEQs7WjBmvlvHN/i087wXnROFr
-        G2NelvyLZUhfF1a13oxry98TrdUBSZx/N2S8Su6/GJ2f+zXXcB2nVkrU2XUdfqy7C1yl2Hew
-        bOftcn/527OzN/Ke3oyuxA+aXPPKPtyMr6jZP2eFuRJLcUaioRZzUXEiAKq+4olwAwAA
-X-CMS-MailID: 20230912213243uscas1p17fa844630bf6caf6af9119c651e4759b
-CMS-TYPE: 301P
-X-CMS-RootMailID: 20230908225229uscas1p2f1013a8dd9977718cbd19e6433adef57
-References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
-        <20230604-dcd-type2-upstream-v2-3-f740c47e7916@intel.com>
-        <ZO+4Qql0rOslp0bl@debian>
-        <CGME20230908225229uscas1p2f1013a8dd9977718cbd19e6433adef57@uscas1p2.samsung.com>
-        <64fba59f73319_1e8e78294e2@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912122201.3752918-7-paweldembicki@gmail.com>
+ <20230912122201.3752918-7-paweldembicki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 03:52:15PM -0700, Ira Weiny wrote:
+Hi Pawel,
 
-> Fan Ni wrote:
-> > On Mon, Aug 28, 2023 at 10:20:54PM -0700, ira.weiny@intel.com wrote:
-> > > From: Navneet Singh <navneet.singh@intel.com>
-> > >
->=20
-> [snip]
->=20
-> > >
-> > > +static int cxl_dc_save_region_info(struct cxl_memdev_state *mds, int=
- index,
-> > > +				   struct cxl_dc_region_config *region_config)
-> > > +{
-> > > +	struct cxl_dc_region_info *dcr =3D &mds->dc_region[index];
-> > > +	struct device *dev =3D mds->cxlds.dev;
-> > > +
-> > > +	dcr->base =3D le64_to_cpu(region_config->region_base);
-> > > +	dcr->decode_len =3D le64_to_cpu(region_config->region_decode_length=
-);
-> > > +	dcr->decode_len *=3D CXL_CAPACITY_MULTIPLIER;
-> > > +	dcr->len =3D le64_to_cpu(region_config->region_length);
-> > > +	dcr->blk_size =3D le64_to_cpu(region_config->region_block_size);
-> > > +	dcr->dsmad_handle =3D le32_to_cpu(region_config->region_dsmad_handl=
-e);
-> > > +	dcr->flags =3D region_config->flags;
-> > > +	snprintf(dcr->name, CXL_DC_REGION_STRLEN, "dc%d", index);
-> > > +
-> > > +	/* Check regions are in increasing DPA order */
-> > > +	if (index > 0) {
-> > > +		struct cxl_dc_region_info *prev_dcr =3D &mds->dc_region[index - 1]=
-;
-> > > +
-> > > +		if ((prev_dcr->base + prev_dcr->decode_len) > dcr->base) {
-> > > +			dev_err(dev,
-> > > +				"DPA ordering violation for DC region %d and %d\n",
-> > > +				index - 1, index);
-> > > +			return -EINVAL;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	/* Check the region is 256 MB aligned */
-> > > +	if (!IS_ALIGNED(dcr->base, SZ_256M)) {
-> > > +		dev_err(dev, "DC region %d not aligned to 256MB: %#llx\n",
-> > > +			index, dcr->base);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	/* Check Region base and length are aligned to block size */
-> > > +	if (!IS_ALIGNED(dcr->base, dcr->blk_size) ||
-> > > +	    !IS_ALIGNED(dcr->len, dcr->blk_size)) {
-> > > +		dev_err(dev, "DC region %d not aligned to %#llx\n", index,
-> > > +			dcr->blk_size);
-> > > +		return -EINVAL;
-> > > +	}
-> >=20
-> > Based on on cxl 3.0 spec: Table 8-126, we may need some extra checks
-> > here:
-> > 1. region len <=3D decode_len
-> > 2. region block size should be power of 2 and a multiple of 40H.
->=20
-> Thanks for pointing these additional checks out!  I've added these.
->=20
-> >=20
-> > Also, if region len or block size is 0, it mentions that DC will not be
-> > available, we may also need to handle that.
->=20
-> I've just added checks for 0 in region length, length and block size.
->=20
-> I don't think we need to handle this in any special way.  Any of these
-> checks will fail the device probe.  From my interpretation of the spec
-> reading these values as 0 would indicate an invalid device configuration.
->=20
-> That said I think the spec is a bit vague here.  On the one hand the
-> number of DC regions should reflect the number of valid regions.
->=20
-> Table 8-125 'Number of Available Regions':
-> 	"This is the number of valid region configurations returned in
-> 	this payload."
->=20
-> But it also says:
-> 	"Each region may be unconfigured or configured with a different
-> 	block size and capacity."
->=20
-> I don't believe that a 0 in the Region Decode Length, Region Length, or
-> Region Block Size is going to happen with the code structured the way it
-> is.  I believe these values are used if the host specifically requests th=
-e
-> configuration of a region not indicated by 'Number of Available Regions'
-> through the Starting Region Index in Table 8-163.  This code does not do
-> that.
->=20
-> Would you agree with this?
+On Tue, Sep 12, 2023 at 02:22:00PM +0200, Pawel Dembicki wrote:
+> This commit introduces a new tagger based on 802.1q tagging.
+> It's designed for the vsc73xx driver. The VSC73xx family doesn't have
+> any tag support for the RGMII port, but it could be based on VLANs.
+> 
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> ---
+> diff --git a/net/dsa/tag_vsc73xx_8021q.c b/net/dsa/tag_vsc73xx_8021q.c
+> new file mode 100644
+> index 000000000000..9093a71e6eb0
+> --- /dev/null
+> +++ b/net/dsa/tag_vsc73xx_8021q.c
+> @@ -0,0 +1,91 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR MIT
+> +/* Copyright (C) 2022 Pawel Dembicki <paweldembicki@gmail.com>
 
-Agreed.
+2022-2023 by now, maybe?
 
-Fan
->=20
-> Thanks again,
-> Ira=
+> + * Based on tag_sja1105.c:
+> + * Copyright (c) 2019, Vladimir Oltean <olteanv@gmail.com>
+> + */
+> +#include <linux/dsa/8021q.h>
+> +
+> +#include "tag.h"
+> +#include "tag_8021q.h"
+> +
+> +#define VSC73XX_8021Q_NAME "vsc73xx-8021q"
+> +
+> +static struct sk_buff *vsc73xx_xmit(struct sk_buff *skb, struct net_device *netdev)
+> +{
+> +	struct dsa_port *dp = dsa_slave_to_port(netdev);
+> +	u16 queue_mapping = skb_get_queue_mapping(skb);
+> +	u16 tx_vid = dsa_tag_8021q_standalone_vid(dp);
+> +	u8 pcp;
+> +
+> +	if (skb->offload_fwd_mark) {
+> +		unsigned int bridge_num = dsa_port_bridge_num_get(dp);
+> +		struct net_device *br = dsa_port_bridge_dev_get(dp);
+> +
+> +		if (br_vlan_enabled(br))
+> +			return skb;
+> +
+> +		tx_vid = dsa_tag_8021q_bridge_vid(bridge_num);
+> +	}
+> +
+> +	pcp = netdev_txq_to_tc(netdev, queue_mapping);
+> +
+> +	return dsa_8021q_xmit(skb, netdev, ETH_P_8021Q,
+> +			      ((pcp << VLAN_PRIO_SHIFT) | tx_vid));
+> +}
+> +
+> +static void vsc73xx_vlan_rcv(struct sk_buff *skb, int *source_port,
+> +			     int *switch_id, int *vbid, u16 *vid)
+> +{
+> +	if (vid_is_dsa_8021q(skb_vlan_tag_get(skb) & VLAN_VID_MASK))
+> +		return dsa_8021q_rcv(skb, source_port, switch_id, vbid);
+> +
+> +	/* Try our best with imprecise RX */
+> +	*vid = skb_vlan_tag_get(skb) & VLAN_VID_MASK;
+> +}
+> +
+> +static struct sk_buff *vsc73xx_rcv(struct sk_buff *skb, struct net_device *netdev)
+> +{
+> +	int src_port = -1, switch_id = -1, vbid = -1;
+> +	u16 vid;
+> +
+> +	if (skb_vlan_tag_present(skb)) {
+> +		/* Normal traffic path. */
+> +		vsc73xx_vlan_rcv(skb, &src_port, &switch_id, &vbid, &vid);
+> +	} else {
+> +		netdev_warn(netdev, "Couldn't decode source port\n");
+> +		return NULL;
+> +	}
+> +
+> +	if (vbid >= 1)
+> +		skb->dev = dsa_tag_8021q_find_port_by_vbid(netdev, vbid);
+> +	else if (src_port == -1 || switch_id == -1)
+> +		skb->dev = dsa_find_designated_bridge_port_by_vid(netdev, vid);
+> +	else
+> +		skb->dev = dsa_master_find_slave(netdev, switch_id, src_port);
+
+Hmm, this isn't looking too good.
+
+I think the fact that you had to add my copyright on what should be such
+a simple thing as a VLAN-based tagger is a bad sign :)
+
+It's time to consolidate some more stuff that currently lives in
+tag_sja1105 and move it into tag_8021q so that you can reuse it more
+easily.
+
+I've prepared some (only compile-tested) patches on this branch here:
+https://github.com/vladimiroltean/linux/commits/pawel-dembicki-vsc73xx-v3
+
+I need to double-check that they don't introduce regressions, and we
+should discuss the merging strategy. Probably you're going to submit
+them together with your patch set.
+
+With that, you can drop my part of the copyright :) The remainder should
+look like straightforward use of API which can be written in only a
+limited number of ways.
+
+> +	if (!skb->dev) {
+> +		netdev_warn(netdev, "Couldn't decode source port\n");
+> +		return NULL;
+> +	}
+> +
+> +	dsa_default_offload_fwd_mark(skb);
+> +
+> +	if (dsa_port_is_vlan_filtering(dsa_slave_to_port(skb->dev)) &&
+> +	    eth_hdr(skb)->h_proto == htons(ETH_P_8021Q))
+> +		__vlan_hwaccel_clear_tag(skb);
+
+Why do you need to do this? We send VLAN-tagged packets to the
+VLAN-aware bridge intentionally, so that it knows what VLAN they come
+from (in the dsa_find_designated_bridge_port_by_vid() case). So don't
+strip it if it's not causing a problem.
+
+> +
+> +	return skb;
+> +}
