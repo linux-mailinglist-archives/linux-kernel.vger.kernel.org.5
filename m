@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869BC79D86B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A3A79D86E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237314AbjILSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
+        id S237304AbjILSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237345AbjILSKC (ORCPT
+        with ESMTP id S229871AbjILSKx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:10:02 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554EE10DF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:09:58 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bf5bf33bcdso94594751fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694542196; x=1695146996; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dg8t1qNOygPjgVWOVmAOAVxTu9CV1SLXUDuzKulmlZ8=;
-        b=g04Zn725kKnx6ijHQ2pqJrNdhj24mcxkfkUSLwHufKyMk5LrYcaCvt4Njm8cmxjIqm
-         RMmOQ8k5cKld9QnE8ebU5yfEpcWbXuO/jK5cBdv+Q5U/D3KSt5wnGH/wJTrpUCNfre4T
-         S0nEk8WE1LV3obXJX9RQX1pT+F3t8q/cYBYPE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694542196; x=1695146996;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dg8t1qNOygPjgVWOVmAOAVxTu9CV1SLXUDuzKulmlZ8=;
-        b=veNqe9HucdU7vST019VYTIVfK/N2xk+wqjQjE6cp32v6AfUFONFstQ2nkOIR3py/26
-         tKoDmBz9h+UUDkq2u2efsEWbqyEfuRyv0/sE7zzGVhEx705tp02zZd8vncyDutDcwd63
-         cTJqcaW8gFd1PIh7P1uDaImw34UFnz9HA89LmnSUB876d4JEsg2Nyi1TDHlgCYHChIFw
-         A5K4w7js4jmgBuQI/OAwlWQgR8OJ9vtmXQfHfrE1zEVq3p6xspKGd98tZ1vH61QiChvc
-         TvjzdRYZunGQfFQGLnzFFm7WFvT/09Q6J8y+55/Qd5lW60FYv36yA3bEpVocGSut4B/S
-         JUPw==
-X-Gm-Message-State: AOJu0YzVadZWG1vgp+qlVIPD0OC/XHTNWnxBOq8S0XlX5P+4PcxxbLlT
-        IRssIsnUpr9BJSt0Fen0cHTNmBvr2oqAQ/qkLOTmmw==
-X-Google-Smtp-Source: AGHT+IF5s1Sk52Jj/p24BYqlhxt1dINxnjzQCcRFvRwclkBdJ2aJiEMXWL43KS2+2sGN6IVZfPDwHXcngx3Y+ApIX7o=
-X-Received: by 2002:a2e:9e8d:0:b0:2bc:d33e:ccc5 with SMTP id
- f13-20020a2e9e8d000000b002bcd33eccc5mr381772ljk.41.1694542196552; Tue, 12 Sep
- 2023 11:09:56 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 12 Sep 2023 11:09:56 -0700
+        Tue, 12 Sep 2023 14:10:53 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0581115;
+        Tue, 12 Sep 2023 11:10:49 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 762E26607314;
+        Tue, 12 Sep 2023 19:10:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694542248;
+        bh=FhDLFq9cvyIVyCheEG4JH6P47GD8kKDfClOTq6CXyj4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=HI/tPnbirevBuH6jxTBDGDREvGFxZ0mTHmv4/6lph91IrtQ/yOyo3DSFNpZATBdBE
+         qdeOVcKv8VDDls0VgFmoF46D0eUQ50XPWbz7Qav1pkKzwrIbjiPlTJyWnzpOT43Bgg
+         wFFG8w5xnisroI5O4vF/XNeI2/9G30NWSavwVP6S5j0XS+JrVUE8DUDM5MbzSrRg6Z
+         XWPFVD8spUyeffoczi6fPF5SGWfhlgPH510lcijaAP1SEaUiwQJrBkBwuJh+z26yig
+         vh8pS8/wYYqFDk0pOI9AOmqmdhyP0lALj+hcTrMs8oIh/4Dfdn7eoygi6MG0BSZimw
+         QTydmmJQFcX1Q==
+Received: by mercury (Postfix, from userid 1000)
+        id 3D0FF106098A; Tue, 12 Sep 2023 20:10:45 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     sre@kernel.org, David Thompson <davthompson@nvidia.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        asmaa@nvidia.com
+In-Reply-To: <20230823133743.31275-1-davthompson@nvidia.com>
+References: <20230823133743.31275-1-davthompson@nvidia.com>
+Subject: Re: [PATCH v1] pwr-mlxbf: extend Kconfig to include gpio-mlxbf3
+ dependency
+Message-Id: <169454224519.477931.4702289950559455440.b4-ty@collabora.com>
+Date:   Tue, 12 Sep 2023 20:10:45 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230912071205.11502-2-david@ixit.cz>
-References: <20230912071205.11502-1-david@ixit.cz> <20230912071205.11502-2-david@ixit.cz>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Tue, 12 Sep 2023 11:09:56 -0700
-Message-ID: <CAE-0n52myAYysd0iOH__pvU9Cfxy2bfzjmfybJyMyfEiWWR4ag@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: sdm845: cheza doesn't support
- LMh node
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Heidelberg <david@ixit.cz>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting David Heidelberg (2023-09-12 00:12:04)
-> Cheza firmware doesn't allow controlling LMh from the operating system.
->
-> Fixes: 36c6581214c4 ("arm64: dts: qcom: sdm845: Add support for LMh node")
-> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On Wed, 23 Aug 2023 09:37:43 -0400, David Thompson wrote:
+> The BlueField power handling driver (pwr-mlxbf.c) provides
+> functionality for both BlueField-2 and BlueField-3 based
+> platforms.  This driver also depends on the SoC-specific
+> BlueField GPIO driver, whether gpio-mlxbf2 or gpio-mlxbf3.
+> This patch extends the Kconfig definition to include the
+> dependency on the gpio-mlxbf3 driver, if applicable.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/1] pwr-mlxbf: extend Kconfig to include gpio-mlxbf3 dependency
+      commit: 82f07f1acf417b81e793145c167dd5e156024de4
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
+
