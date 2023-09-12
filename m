@@ -2,144 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A7479DCD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A4F79DCD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237872AbjILXnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S237879AbjILXo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237875AbjILXnK (ORCPT
+        with ESMTP id S232228AbjILXoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:43:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9D9170F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 16:43:06 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d71f505d21dso6020192276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 16:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694562186; x=1695166986; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yNUsumri2UZDwpZg4M25MzHoYyNv/o7N3O07+7K4l9w=;
-        b=kLDB3Uzz2R30PZxELJnpFMlA4qdjFAlhpkR8Im8RjF2iyya5kGY9b3UQai0tiLEe4I
-         nT8tIEkTdhCie842an4uofb+UZBuoPqA0S1UvX5RmwmseYR09jxdUo3SYC58xUfzSkE8
-         LvZD11Eirg3r+ksEX+oCUdRwu8wjN5b9W4Is+STsTgmSSa9W9xcC1cqiplIugxC7YQNT
-         KWBgtiZMsqnKL03ICMaSEWQ9qZZl4ZqOln9XT8hceRd09rRZ3mZtCGAIYazyQE7/UNVr
-         00lfROWGWhlcKSjZMslbRpXZDFRmc4vf5yLhG/ijFmCpAijL18uo9LhEBltAWVP2sT05
-         nlNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694562186; x=1695166986;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yNUsumri2UZDwpZg4M25MzHoYyNv/o7N3O07+7K4l9w=;
-        b=MkYYiyQ/Xqk/iTXPG+LLAohmaWWJjZFiOrw39b0kIhopKHtw/k+cj4BAdoX+qHqZhl
-         Tr0fMf6v/4b/HYq7s7x76D4JlXhF19n4A5wHhYROd/eO9grovjgwzDKhgqC4B/V1k/Dw
-         ikZ/R6kiJnGlHzQGq3R9gkNDvK/nUiX0ZKzKgI1+xqDAA/V/XC8Bmhoh/VDGWoLxFBFB
-         Vm/Jr9KGGja+t6ABuH6Iu1sFM+ZqkeKoW5k8LD474hyH3R5HaY3V6Gl3jN2cVLEf5AxA
-         XEUmwwYY92TxdQMUdbmxHkUHkKXTLH4g01fINROrwFygg8ysGNtoJ10mGEK/wgaV2e0w
-         nXkA==
-X-Gm-Message-State: AOJu0YzR2pmBYQyll4JCdiNAFwll5nLJGwkd+Vz/jp+lbtmUuPMaj7CT
-        XkEmBegxUbA4WjHjXUv7zH8M5NmZ3RcLCMHl1w==
-X-Google-Smtp-Source: AGHT+IH6SifBPntdJajOqDoIl0d+wzT81RxzJmUw5FruJ/HVH/OU8IAMaIS62QrQtsH5yMq0xGUrXRssB9QCNYiyng==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:dac4:0:b0:d11:6816:2d31 with SMTP
- id n187-20020a25dac4000000b00d1168162d31mr19901ybf.7.1694562186031; Tue, 12
- Sep 2023 16:43:06 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 23:43:05 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAIj3AGUC/yWNywqDQAxFf0WybmAehcH+irhQEzULp0NSRBH/v
- UO7OXDgcO8Fxips8GouUN7F5J2r+EcD0zrkhVGoOgQXomt9QPtonsqJpLKzGtZKUcomfxANzzT GlOJMUEeK8izH76Dr7/sL24jtpnAAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694562185; l=2602;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=OIAMVV96NW5a8b/nTfJAZD/DTUfCZOJLgk+SCG3GQBk=; b=ckzKCq3t3UA3eFuuHAx+JY/jr5F0GucpbypzVAzaul87I5QvwxTn5nJ9flbz2PKRvdeLmF0Ch
- QziNcx/Hv5MCYxScI73E/uFcjMuLcWfYcNnqi2LEzSVTrSSoydInSaC
-X-Mailer: b4 0.12.3
-Message-ID: <20230912-strncpy-drivers-char-ipmi-ipmi-v1-1-cc43e0d1cae6@google.com>
-Subject: [PATCH] ipmi: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
+        Tue, 12 Sep 2023 19:44:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4853E10C7;
+        Tue, 12 Sep 2023 16:44:21 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 23:44:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694562259;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=kXbqWErxXz6HynjOh5PrAyEXAn6+RL5mAVEAtPI9i8g=;
+        b=wv/3mRqjqLeS+MzIKKfceksXQSzZvCcohScfQoWXcEOIz6XKIZSZztC4d6yf+HNxk+8JOw
+        pmhn/Bnfq+L0lCvAcpxJlreq/eS+EMLVuZOtwwjfcqiJhKUy46FlImvSTiE7gL+oZeQtTP
+        ADJFCD+wV3BD8f7AZ4tB1w0xMgQsrBcflDEyI0fGp5igpBDAunVhR182tt0sYJUHRZuH8O
+        2dqP3yaeYZU3RKWvBoUpzZu4YQWZEmNmjOoNGGKpIa9J0wOwPkOpzsFbjGvNyVkKZmXsCr
+        T++BP7lqqH+GFtEYdOJfBw9r2TjpsxjaxM4G7Rd1gNUeXY6JlMk0b+XniTgfjQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694562259;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=kXbqWErxXz6HynjOh5PrAyEXAn6+RL5mAVEAtPI9i8g=;
+        b=j/01CRdR7wRBFYTTszPwZVj0Xvbh4Xp5nTN+8OTdYGxQMBK+kBxUI/jhC99JW8gvbWC7ls
+        JTKoGUiDdehaAzCw==
+From:   "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/tdx] x86/virt/tdx: Make TDX_MODULE_CALL handle SEAMCALL #UD and #GP
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Kai Huang <kai.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <169456225874.27769.17806373724246951694.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+The following commit has been merged into the x86/tdx branch of tip:
 
-In this case, strncpy is being used specifically for its NUL-padding
-behavior (and has been commented as such). We can use a more robust and
-less ambiguous interface in `strscpy_pad` which makes the code more
-readable and even eliminates the need for that comment.
+Commit-ID:     7b804135d4d1f0a2b9dda69c6303d3f2dcbe9d37
+Gitweb:        https://git.kernel.org/tip/7b804135d4d1f0a2b9dda69c6303d3f2dcbe9d37
+Author:        Kai Huang <kai.huang@intel.com>
+AuthorDate:    Tue, 15 Aug 2023 23:02:05 +12:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Tue, 12 Sep 2023 16:30:27 -07:00
 
-Let's also use `strnlen` instead of `strlen()` with an upper-bounds
-check as this is intrinsically a part of `strnlen`.
+x86/virt/tdx: Make TDX_MODULE_CALL handle SEAMCALL #UD and #GP
 
-Also included in this patch is a simple 1:1 change of `strncpy` to
-`strscpy` for ipmi_ssif.c. If NUL-padding is wanted here as well then we
-should opt again for `strscpy_pad`.
+SEAMCALL instruction causes #UD if the CPU isn't in VMX operation.
+Currently the TDX_MODULE_CALL assembly doesn't handle #UD, thus making
+SEAMCALL when VMX is disabled would cause Oops.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
+Unfortunately, there are legal cases that SEAMCALL can be made when VMX
+is disabled.  For instance, VMX can be disabled due to emergency reboot
+while there are still TDX guests running.
+
+Extend the TDX_MODULE_CALL assembly to return an error code for #UD to
+handle this case gracefully, e.g., KVM can then quietly eat all SEAMCALL
+errors caused by emergency reboot.
+
+SEAMCALL instruction also causes #GP when TDX isn't enabled by the BIOS.
+Use _ASM_EXTABLE_FAULT() to catch both exceptions with the trap number
+recorded, and define two new error codes by XORing the trap number to
+the TDX_SW_ERROR.  This opportunistically handles #GP too while using
+the same simple assembly code.
+
+A bonus is when kernel mistakenly calls SEAMCALL when CPU isn't in VMX
+operation, or when TDX isn't enabled by the BIOS, or when the BIOS is
+buggy, the kernel can get a nicer error code rather than a less
+understandable Oops.
+
+This is basically based on Peter's code.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/all/de975832a367f476aab2d0eb0d9de66019a16b54.1692096753.git.kai.huang%40intel.com
 ---
- drivers/char/ipmi/ipmi_msghandler.c | 11 +++--------
- drivers/char/ipmi/ipmi_ssif.c       |  2 +-
- 2 files changed, 4 insertions(+), 9 deletions(-)
+ arch/x86/include/asm/tdx.h      |  4 ++++
+ arch/x86/virt/vmx/tdx/tdxcall.S | 19 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 186f1fee7534..04f7622cb703 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -5377,20 +5377,15 @@ static void send_panic_events(struct ipmi_smi *intf, char *str)
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index a69bb7d..adcbe3f 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -8,6 +8,7 @@
  
- 	j = 0;
- 	while (*p) {
--		int size = strlen(p);
-+		int size = strnlen(p, 11);
+ #include <asm/errno.h>
+ #include <asm/ptrace.h>
++#include <asm/trapnr.h>
+ #include <asm/shared/tdx.h>
  
--		if (size > 11)
--			size = 11;
- 		data[0] = 0;
- 		data[1] = 0;
- 		data[2] = 0xf0; /* OEM event without timestamp. */
- 		data[3] = intf->addrinfo[0].address;
- 		data[4] = j++; /* sequence # */
--		/*
--		 * Always give 11 bytes, so strncpy will fill
--		 * it with zeroes for me.
--		 */
--		strncpy(data+5, p, 11);
+ /*
+@@ -20,6 +21,9 @@
+ #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
+ #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
+ 
++#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
++#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
 +
-+		strscpy_pad(data+5, p, 11);
- 		p += size;
+ #ifndef __ASSEMBLY__
  
- 		ipmi_panic_request_and_wait(intf, &addr, &msg);
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index 3b921c78ba08..edcb83765dce 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -1940,7 +1940,7 @@ static int new_ssif_client(int addr, char *adapter_name,
- 		}
- 	}
+ /*
+diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
+index 3f0b83a..016a2a1 100644
+--- a/arch/x86/virt/vmx/tdx/tdxcall.S
++++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #include <asm/asm-offsets.h>
+ #include <asm/frame.h>
++#include <asm/asm.h>
+ #include <asm/tdx.h>
  
--	strncpy(addr_info->binfo.type, DEVICE_NAME,
-+	strscpy(addr_info->binfo.type, DEVICE_NAME,
- 		sizeof(addr_info->binfo.type));
- 	addr_info->binfo.addr = addr;
- 	addr_info->binfo.platform_data = addr_info;
-
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230912-strncpy-drivers-char-ipmi-ipmi-dda47b3773fd
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+ /*
+@@ -85,6 +86,7 @@
+ .endif	/* \saved */
+ 
+ .if \host
++.Lseamcall\@:
+ 	seamcall
+ 	/*
+ 	 * SEAMCALL instruction is essentially a VMExit from VMX root
+@@ -191,11 +193,28 @@
+ .if \host
+ .Lseamcall_vmfailinvalid\@:
+ 	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
++	jmp .Lseamcall_fail\@
++
++.Lseamcall_trap\@:
++	/*
++	 * SEAMCALL caused #GP or #UD.  By reaching here RAX contains
++	 * the trap number.  Convert the trap number to the TDX error
++	 * code by setting TDX_SW_ERROR to the high 32-bits of RAX.
++	 *
++	 * Note cannot OR TDX_SW_ERROR directly to RAX as OR instruction
++	 * only accepts 32-bit immediate at most.
++	 */
++	movq $TDX_SW_ERROR, %rdi
++	orq  %rdi, %rax
++
++.Lseamcall_fail\@:
+ .if \ret && \saved
+ 	/* pop the unused structure pointer back to RSI */
+ 	popq %rsi
+ .endif
+ 	jmp .Lout\@
++
++	_ASM_EXTABLE_FAULT(.Lseamcall\@, .Lseamcall_trap\@)
+ .endif	/* \host */
+ 
+ .endm
