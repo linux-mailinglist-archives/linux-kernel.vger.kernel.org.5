@@ -2,191 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D2679DA84
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E9E79DA89
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237319AbjILVD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 17:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
+        id S237389AbjILVEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 17:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbjILVD4 (ORCPT
+        with ESMTP id S234513AbjILVEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 17:03:56 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C2110D8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 14:03:53 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5958487ca15so65940897b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 14:03:52 -0700 (PDT)
+        Tue, 12 Sep 2023 17:04:47 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D960C10D8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 14:04:43 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d7bae413275so386699276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 14:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694552632; x=1695157432; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Su3tcyVoOXGTvjYADlVUH9iHtW/BbNEgdwa7PWlndEM=;
-        b=vaVDmrEl26Pep/AtPLPwLv6imtcPN6P9V3il/4xD/fqc6mM62wtTMECYTimaPhIBVH
-         Kbw+IP24D+nqt7+bXwG7SXzes+HOQj0rLGD4uxLgYK99p+Ddvq9rLmaM8EMd4xQOnZJV
-         5dclwzP6No8swISOJPaRqOxa1gU2JCFUG67adUMcKsPaJF9ATua23b6B5zIZgBECDjpr
-         YnopTDBgC4ahM3ljf6HDxS4Q2tOnLBpxGWA232D+vrHGEJ9JUiIuzaZuSUaSnFxpK3lr
-         apCgYQ5OVUmmjAlx3b3pcwYw06XXp9Mb5s4N8UwZ2sdHJi+fmgX+sO9Xwd2M9/W6YlgE
-         UdEg==
+        d=linaro.org; s=google; t=1694552683; x=1695157483; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vn/+r9lrRj3XCF0f1OgbLrVWHe/dDEBlspgHejgs8pM=;
+        b=fMSSJ0qri0r5tAepnqQqd83GYy4wwjiPil6XH8Lcz5rDe7THJjuwVDmS3VSI9xwaQw
+         hKBdCjxsQjkQrpHhHykDYLJMs5aCE1i9kI896wS9gUWWV2Ys/W3OAAAhXOoowqWQsYJl
+         vs5kiLrExDpQR9Anh8X6v2M6vf0HyN6kbIyMN4EYjAQv0/2BD2KfIlSlOaDiFYvqzexa
+         Ur3BAb+BIyttYH5T9gDHSKAIVOro/ACb01bC1BmFMNrPucJiLSDeZWnxzMlgcO6malur
+         ObhVsB6oU2SBB/6KI3GNwj+Bw28kV6KJ2JsyWpm4Zwh517kUgj9//UfslK+7jQCFNrWl
+         CNUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694552632; x=1695157432;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Su3tcyVoOXGTvjYADlVUH9iHtW/BbNEgdwa7PWlndEM=;
-        b=wKycNVgxl2cHdgODAIFkgDRDvkmDSHqHcfM9dAWXSoA5gBjVtxAztx4uoXhWpm7yXs
-         GHaY+Qy8fzgXqMwZfHay28CxGl0tUTMj/R/XsXmBi9+PgjKk7d7s9dS0wPv72i23RCyh
-         0zpexZ6G0PMq2QycCrx30oKA3W4GeSqJ2q+bp3Zx5kL8cSbv0ou99sHFkaQOLbh+dY7K
-         WXjfmvqID92/jRxVM6RGBTa40LSBmbBG7Q7rY2oKHQyCVEGI+SFKvhAkQmiUzoHHD9S6
-         x6dCyoWwrpnUFIwSKsZ54+iryD0v1zlaDOS05D9f99prais5PrPs8elNiS9x53wzuUcT
-         Z7Ew==
-X-Gm-Message-State: AOJu0YxW3+T3EghwvI82+80Np8UW4i20MveSF3tE/MlRYxR4pn4H6Urc
-        3CWUgouGnGevy11NBeX2/G9zUKxfw7h93y/SHA==
-X-Google-Smtp-Source: AGHT+IF5YHlQSMrIw16r+uVSNv/451o25wdhmlzvVO3INNSaZxue3EcfGr3UbkP9vTp9NIAwIoM31DFP9zrJ7RrLFg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:400c:0:b0:589:a855:7af with SMTP
- id l12-20020a81400c000000b00589a85507afmr17848ywn.7.1694552632259; Tue, 12
- Sep 2023 14:03:52 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 21:03:50 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADbSAGUC/4WNWw6DIBREt2Lud2l4RKz9ch+NaRSvSKpigJA2h
- r2XsoH+zZlkzpzg0Rn0cK9OcBiNN3bPwC4VqGXYNRIzZQZOuaAtvZGXx3UO6AM5BjdszxIVYY0
- Uo+TYSD5DHh8OZ/Mu4kefeTE+WPcpP5H92r/KyAgjKOpxamnNJ8k6ba1e8arsBn1K6Qv4Q/Odv QAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694552631; l=4723;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=rBvEsviW5uVxRd+NSePgqHcF5aSjOLLvI+7rzhkkIw4=; b=YWVY/Weu/NSS3aIoj+Urk84igcHFCjWw8w12fSj3X9Av24E/Uzm8nDpKQdRL22iqOFzOi+bSg
- m9up5YJRe7YDO6RlPENJ2k/ZLpyQAWPEF7g/3lhb404Mrq/huWzpBnN
-X-Mailer: b4 0.12.3
-Message-ID: <20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com>
-Subject: [PATCH] selftests/rseq: fix kselftest Clang build warnings
-From:   Justin Stitt <justinstitt@google.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1694552683; x=1695157483;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vn/+r9lrRj3XCF0f1OgbLrVWHe/dDEBlspgHejgs8pM=;
+        b=wnL3yOsOa0wXjwJbh08lAIX91fMaIByO5tjUP/5q0dqF56Ye7vL9Hfqf7X9abGztdH
+         gNSTrTnlCv0J+Ayz8SLIimC+n8UdWMw82K+LwdQfXRblJuLmFCuFzdiJq5TP0lCkS0zv
+         T6Ppi8UJ+Zeykd4otm7iQk0nNrxTZuH+VgyJP0Ksn9aQ0Sc5cEwcwDF0N4lOD1Tv0BBk
+         A7kF5rWk1BimtXVOh1vf+7HCkToKIYbcI8IADMp1ibri4bRXS7Na5KaxTl7Z3Bf2leUX
+         RouGw2bjVRuvcYKf26QEPpbUNVMEKrmkPNmuA2d4QoBoe68tFYeS04kfpok6t9lNu9xs
+         MLig==
+X-Gm-Message-State: AOJu0YxK21P33+77Fmq/7RSuhHxCMlaW5/MQu1nkjkg60ATj2fGTT6i7
+        W0a9kXbNgytRcd8esxWjSMi5aRlzeQp3lhCoG7Jm5w==
+X-Google-Smtp-Source: AGHT+IGQDuLaoE4eOyZT+Z8hNNsgfwvWorKJwQ3GNnopbwgh3VM6Y+HWcMTMFBMaepKaqB0s4OiEEYQ95/LJVmcUlZY=
+X-Received: by 2002:a25:aa6f:0:b0:d78:414d:1910 with SMTP id
+ s102-20020a25aa6f000000b00d78414d1910mr4091514ybi.25.1694552683091; Tue, 12
+ Sep 2023 14:04:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+ <20230912101505.225899-1-herve.codina@bootlin.com> <CACRpkdbxdMZt4E1SF1v9as-jw=TpvS1mk2TQqAgywMBLbKaNoA@mail.gmail.com>
+ <71761f94-14ea-4e2a-a079-c74dfa32387a@sirena.org.uk>
+In-Reply-To: <71761f94-14ea-4e2a-a079-c74dfa32387a@sirena.org.uk>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 23:04:24 +0200
+Message-ID: <CACRpkdbZK8GUgOcLA2D=7nDejK9cT=bxwP+HcC0GOKr-0yCJ4w@mail.gmail.com>
+Subject: Re: [PATCH v5 28/31] pinctrl: Add support for the Lantic PEF2256 pinmux
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with Clang, I am getting many warnings from the selftests/rseq tree.
+On Tue, Sep 12, 2023 at 4:31=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+> On Tue, Sep 12, 2023 at 01:04:56PM +0200, Linus Walleij wrote:
+> > On Tue, Sep 12, 2023 at 12:15=E2=80=AFPM Herve Codina <herve.codina@boo=
+tlin.com> wrote:
+>
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +/*
+>
+> > I think SPDX mandates that you start the tag with C99 comments
+>
+> > // SPDX-License-Identifier: GPL-2.0-only
+>
+> Not for headers, they should use C style since they might be included in
+> contexts where C++ isn't supported.
 
-Here's one such example from rseq tree:
-|  param_test.c:1234:10: error: address argument to atomic operation must be a pointer to _Atomic type ('intptr_t *' (aka 'long *') invalid)
-|   1234 |         while (!atomic_load(&args->percpu_list_ptr)) {}
-|        |                 ^           ~~~~~~~~~~~~~~~~~~~~~~
-|  /usr/local/google/home/justinstitt/repos/tc-build/build/llvm/final/lib/clang/18/include/stdatomic.h:140:29: note: expanded from macro 'atomic_load'
-|    140 | #define atomic_load(object) __c11_atomic_load(object, __ATOMIC_SEQ_CST)
-|        |                             ^                 ~~~~~~
+Oh right. Thanks Mark!
 
-Use compiler builtins `__atomic_load_n()` and `__atomic_store_n()` with
-accompanying __ATOMIC_ACQUIRE and __ATOMIC_RELEASE, respectively. This
-will fix the warnings because the compiler builtins do not expect their
-arguments to have _Atomic type. This should also make TSAN happier.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
-Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: Previous RFC https://lore.kernel.org/r/20230908-kselftest-param_test-c-v1-1-e35bd9052d61@google.com
----
- tools/testing/selftests/rseq/param_test.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/rseq/param_test.c b/tools/testing/selftests/rseq/param_test.c
-index bf951a490bb4..20403d58345c 100644
---- a/tools/testing/selftests/rseq/param_test.c
-+++ b/tools/testing/selftests/rseq/param_test.c
-@@ -1231,7 +1231,7 @@ void *test_membarrier_worker_thread(void *arg)
- 	}
- 
- 	/* Wait for initialization. */
--	while (!atomic_load(&args->percpu_list_ptr)) {}
-+	while (!__atomic_load_n(&args->percpu_list_ptr, __ATOMIC_ACQUIRE)) {}
- 
- 	for (i = 0; i < iters; ++i) {
- 		int ret;
-@@ -1299,22 +1299,22 @@ void *test_membarrier_manager_thread(void *arg)
- 	test_membarrier_init_percpu_list(&list_a);
- 	test_membarrier_init_percpu_list(&list_b);
- 
--	atomic_store(&args->percpu_list_ptr, (intptr_t)&list_a);
-+	__atomic_store_n(&args->percpu_list_ptr, (intptr_t)&list_a, __ATOMIC_RELEASE);
- 
--	while (!atomic_load(&args->stop)) {
-+	while (!__atomic_load_n(&args->stop, __ATOMIC_ACQUIRE)) {
- 		/* list_a is "active". */
- 		cpu_a = rand() % CPU_SETSIZE;
- 		/*
- 		 * As list_b is "inactive", we should never see changes
- 		 * to list_b.
- 		 */
--		if (expect_b != atomic_load(&list_b.c[cpu_b].head->data)) {
-+		if (expect_b != __atomic_load_n(&list_b.c[cpu_b].head->data, __ATOMIC_ACQUIRE)) {
- 			fprintf(stderr, "Membarrier test failed\n");
- 			abort();
- 		}
- 
- 		/* Make list_b "active". */
--		atomic_store(&args->percpu_list_ptr, (intptr_t)&list_b);
-+		__atomic_store_n(&args->percpu_list_ptr, (intptr_t)&list_b, __ATOMIC_RELEASE);
- 		if (rseq_membarrier_expedited(cpu_a) &&
- 				errno != ENXIO /* missing CPU */) {
- 			perror("sys_membarrier");
-@@ -1324,27 +1324,27 @@ void *test_membarrier_manager_thread(void *arg)
- 		 * Cpu A should now only modify list_b, so the values
- 		 * in list_a should be stable.
- 		 */
--		expect_a = atomic_load(&list_a.c[cpu_a].head->data);
-+		expect_a = __atomic_load_n(&list_a.c[cpu_a].head->data, __ATOMIC_ACQUIRE);
- 
- 		cpu_b = rand() % CPU_SETSIZE;
- 		/*
- 		 * As list_a is "inactive", we should never see changes
- 		 * to list_a.
- 		 */
--		if (expect_a != atomic_load(&list_a.c[cpu_a].head->data)) {
-+		if (expect_a != __atomic_load_n(&list_a.c[cpu_a].head->data, __ATOMIC_ACQUIRE)) {
- 			fprintf(stderr, "Membarrier test failed\n");
- 			abort();
- 		}
- 
- 		/* Make list_a "active". */
--		atomic_store(&args->percpu_list_ptr, (intptr_t)&list_a);
-+		__atomic_store_n(&args->percpu_list_ptr, (intptr_t)&list_a, __ATOMIC_RELEASE);
- 		if (rseq_membarrier_expedited(cpu_b) &&
- 				errno != ENXIO /* missing CPU*/) {
- 			perror("sys_membarrier");
- 			abort();
- 		}
- 		/* Remember a value from list_b. */
--		expect_b = atomic_load(&list_b.c[cpu_b].head->data);
-+		expect_b = __atomic_load_n(&list_b.c[cpu_b].head->data, __ATOMIC_ACQUIRE);
- 	}
- 
- 	test_membarrier_free_percpu_list(&list_a);
-@@ -1401,7 +1401,7 @@ void test_membarrier(void)
- 		}
- 	}
- 
--	atomic_store(&thread_args.stop, 1);
-+	__atomic_store_n(&thread_args.stop, 1, __ATOMIC_RELEASE);
- 	ret = pthread_join(manager_thread, NULL);
- 	if (ret) {
- 		errno = ret;
-
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230908-kselftest-param_test-c-1763b62e762f
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Yours,
+Linus Walleij
