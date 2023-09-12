@@ -2,175 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B4E79C131
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D6E79C17D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 03:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbjILAnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 20:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
+        id S233343AbjILBOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 21:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjILAnV (ORCPT
+        with ESMTP id S232806AbjILBOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 20:43:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB7B2F8DB;
-        Mon, 11 Sep 2023 17:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694478650; x=1726014650;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=P6aSw8Is7RAGGaHzgqtzz8Glx5EKeJbVQPOjs9s6ppE=;
-  b=DO1//5mkqIfdn/Xal/kNSzjBvWjdpt3+ZLWVhne32+X5T3FeTgPCtA0y
-   VQU88c7oTNOitc3GQBEocqbisTGUWeN4Hy9xLw8lpxGahhkcUZk8o5S7b
-   Xi6i/z6mJ1EBxOB0lyEvAM2i+IE2vBcrzKi0mlaxQoeCDtwUukR/H9YN3
-   fCdtlyoKoDRVrMjcFMK6I0iuAryHaP3bDjKsCcKVNK2gCm1eXt9u5hkUV
-   oR5H4lQCqP20EuTQwxVcW+YAtmZYSb2bdklJH3M84Yw59VvwH2ze8TVau
-   WPwVTun0r1dZu1vZnqqZ+7lcbkqzJ3h5Q0jWTFLDGZYTk/tmSRx8/zNFh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="442255222"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="442255222"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 17:28:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="772789070"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="772789070"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 17:28:29 -0700
-Date:   Mon, 11 Sep 2023 17:30:47 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Radu Rendec <rrendec@redhat.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, x86@kernel.org,
-        Andreas Herrmann <aherrmann@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
-        Pierre Gondois <Pierre.Gondois@arm.com>,
-        Pu Wen <puwen@hygon.cn>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        stable@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] cacheinfo: Allocate memory for memory if not done
- from the primary CPU
-Message-ID: <20230912003047.GA16425@ranerica-svr.sc.intel.com>
-References: <20230805012421.7002-1-ricardo.neri-calderon@linux.intel.com>
- <20230805012421.7002-2-ricardo.neri-calderon@linux.intel.com>
- <20230830114918.be4mvwfogdqmsxk6@bogus>
- <23a1677c3df233c220df68ea429a2d0fec52e1d4.camel@redhat.com>
- <20230830154707.dyeihenolc5nwmi2@bogus>
- <03e51c6072d80931a6b532ce1d4d7388a6f84d32.camel@redhat.com>
+        Mon, 11 Sep 2023 21:14:24 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BDE6FDD1;
+        Mon, 11 Sep 2023 18:03:36 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C0KXkH031847;
+        Tue, 12 Sep 2023 00:39:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=b+ZDvkvQfKietDBjdlhgqxs9r2mzT6RnU3pGyGd2BkA=;
+ b=XSPS0PTtdcMZxd6ljmCdyxivBX0e0Llbz4hMM1uUnMpq90hn0OTRUTyBkH7/HydYrrMR
+ YTF2AgTo5PKj+DF6euX8I6G7AgrmyuaW8NKAGrMMwUxc74XFT4AbY2FuxNl2vxp9VN5c
+ msoAWjjKQXZlI3VkQa1SH2FEjUGweATifEvcE8WCBv8XicDrVmKdBNx5GyfBu2HYE1NW
+ U6/oISTtd8NH4lq5xcavPb/oA8VDWBlvoAoDFJ34Gp6ZF8uufpX/wv1K+4UKRvX8xEz/
+ nwSBYJebtY+chzhxl4AADpDlSnzat6fdpot3CKwZ8bMonFH8v69FJG0ExQwmaR7R9+6u Yg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t29b0gggd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 00:39:37 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C0daBH012692
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 00:39:36 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 11 Sep 2023 17:39:24 -0700
+Date:   Tue, 12 Sep 2023 06:09:21 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+CC:     Pavan Kondeti <quic_pkondeti@quicinc.com>, <corbet@lwn.net>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+Subject: Re: [PATCH v5 09/17] pstore/ram: Use dynamic ramoops reserve resource
+Message-ID: <d69a1822-0972-419a-ae8b-b6979733a18b@quicinc.com>
+References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
+ <1694290578-17733-10-git-send-email-quic_mojha@quicinc.com>
+ <20425ace-3ef5-4eaf-8319-999bafa34a07@quicinc.com>
+ <35c9d1b1-0f48-b873-d703-c880f3b91422@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <03e51c6072d80931a6b532ce1d4d7388a6f84d32.camel@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <35c9d1b1-0f48-b873-d703-c880f3b91422@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: tfU2_hR73glnule_LYZ8-x9Z18vDoumI
+X-Proofpoint-ORIG-GUID: tfU2_hR73glnule_LYZ8-x9Z18vDoumI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-11_19,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=719
+ lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120003
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 12:45:22PM -0400, Radu Rendec wrote:
-> On Wed, 2023-08-30 at 16:47 +0100, Sudeep Holla wrote:
-> > On Wed, Aug 30, 2023 at 08:13:09AM -0400, Radu Rendec wrote:
-> > > On Wed, 2023-08-30 at 12:49 +0100, Sudeep Holla wrote:
-> > > > On Fri, Aug 04, 2023 at 06:24:19PM -0700, Ricardo Neri wrote:
-> > > > > Commit 5944ce092b97 ("arch_topology: Build cacheinfo from primary CPU")
-> > > > > adds functionality that architectures can use to optionally allocate and
-> > > > > build cacheinfo early during boot. Commit 6539cffa9495 ("cacheinfo: Add
-> > > > > arch specific early level initializer") lets secondary CPUs correct (and
-> > > > > reallocate memory) cacheinfo data if needed.
-> > > > > 
-> > > > > If the early build functionality is not used and cacheinfo does not need
-> > > > > correction, memory for cacheinfo is never allocated. x86 does not use the
-> > > > > early build functionality. Consequently, during the cacheinfo CPU hotplug
-> > > > > callback, last_level_cache_is_valid() attempts to dereference a NULL
-> > > > > pointer:
-> > > > > 
-> > > > >      BUG: kernel NULL pointer dereference, address: 0000000000000100
-> > > > >      #PF: supervisor read access in kernel mode
-> > > > >      #PF: error_code(0x0000) - not present page
-> > > > >      PGD 0 P4D 0
-> > > > >      Oops: 0000 [#1] PREEPMT SMP NOPTI
-> > > > >      CPU: 0 PID 19 Comm: cpuhp/0 Not tainted 6.4.0-rc2 #1
-> > > > >      RIP: 0010: last_level_cache_is_valid+0x95/0xe0a
-> > > > > 
-> > > > > Allocate memory for cacheinfo during the cacheinfo CPU hotplug callback if
-> > > > > not done earlier.
-> > > > > 
-> > > > > Cc: Andreas Herrmann <aherrmann@suse.com>
-> > > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > > Cc: Chen Yu <yu.c.chen@intel.com>
-> > > > > Cc: Len Brown <len.brown@intel.com>
-> > > > > Cc: Radu Rendec <rrendec@redhat.com>
-> > > > > Cc: Pierre Gondois <Pierre.Gondois@arm.com>
-> > > > > Cc: Pu Wen <puwen@hygon.cn>
-> > > > > Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-> > > > > Cc: Sudeep Holla <sudeep.holla@arm.com>
-> > > > > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > > > > Cc: Will Deacon <will@kernel.org>
-> > > > > Cc: Zhang Rui <rui.zhang@intel.com>
-> > > > > Cc: linux-arm-kernel@lists.infradead.org
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Acked-by: Len Brown <len.brown@intel.com>
-> > > > > Fixes: 6539cffa9495 ("cacheinfo: Add arch specific early level initializer")
-> > > > 
-> > > > Not sure if we strictly need this(details below), but I am fine either way.
-> > > > 
-> > > > > Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-> > > > > ---
-> > > > > The motivation for commit 5944ce092b97 was to prevent a BUG splat in
-> > > > > PREEMPT_RT kernels during memory allocation. This splat is not observed on
-> > > > > x86 because the memory allocation for cacheinfo happens in
-> > > > > detect_cache_attributes() from the cacheinfo CPU hotplug callback.
-> > > > > 
-> > > > > The dereference of a NULL pointer is not observed today because
-> > > > > cache_leaves(cpu) is zero until after init_cache_level() is called (also
-> > > > > during the CPU hotplug callback). Patch2 will set it earlier and the NULL-
-> > > > > pointer dereference will be observed.
-> > > > 
-> > > > Right, this is the information I have been asking in the previous versions.
-> > > > This clarifies a lot. The trigger is in the patch 2/3 which is why it didn't
-> > > > make complete sense to me without it when you posted this patch independently.
-> > > > Thanks for posting it together and sorry for the delay(both reviewing this
-> > > > and in understanding the issue).
-> > > > 
-> > > > Given the trigger for NULL pointer dereference is in 2/3, I am not sure
-> > > > if it is really worth applying this to all the stable kernels with the
-> > > > commit 5944ce092b97 ("arch_topology: Build cacheinfo from primary CPU").
-> > > > That is the reason why I asked to drop fixes tag if you agree with me.
-> > > > It is simple fix, so I am OK if you prefer to see that in the stable kernels
-> > > > as well.
+On Mon, Sep 11, 2023 at 04:21:44PM +0530, Mukesh Ojha wrote:
+> 
+> 
+> On 9/11/2023 11:03 AM, Pavan Kondeti wrote:
+> > On Sun, Sep 10, 2023 at 01:46:10AM +0530, Mukesh Ojha wrote:
+> > > As dynamic ramoops command line parsing is now added, so
+> > > lets add the support in ramoops driver to get the resource
+> > > structure and add it during platform device registration.
 > > > 
-> > > Thanks for reviewing, Sudeep. Since my previous commit 6539cffa9495
-> > > ("cacheinfo: Add arch specific early level initializer") opens a door
-> > > for the NULL pointer dereference, I would sleep better at night if the
-> > > fix was included in the stable kernels :) But seriously, I am concerned
-> > > that with the fix applied in mainline and not in stable, something else
-> > > could be backported to the stable in the future, that could trigger the
-> > > NULL pointer dereference there. Ricardo's patch 2/3 is one way to
-> > > trigger it, but you never know what other patch lands in mainline in
-> > > the future that assumes it's safe to set the cache leaves earlier.
+> > > Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> > > ---
+> > >   fs/pstore/ram.c | 10 +++++++---
+> > >   1 file changed, 7 insertions(+), 3 deletions(-)
 > > > 
 > > 
-> > Fair enough. I agree with you, so please retain the fixes tag as is.
-> > Please work with x86 maintainers to get it merged along with other patches.
-> > Let me know if you have other plans.
+> > Documentation/admin-guide/ramoops.rst might need an update as well.
 > 
-> Thanks, Sudeep. Technically, these are Ricardo's patches, so I will let
-> him engage with the x86 maintainers and drive the integration work. But
-> the plan looks good to me, and I will stand by and offer any support
-> may be needed for the fix patch.
+> I have said in the cover-letter under changes in v5, it is open for
+> comment and not yet documented it yet.
+> 
+Sure.
 
-Thank you very much Sudeep and Radu for your feedback and review! The x86
-maintainers are in the To: field of this patchset.
+To easy on the reviewers, the under cut portion of a specific patch could be
+used to add footer notes like TODO/Testing etc. In this case, I was lazy to 
+read the loong cover letter posted in this series ;-)
 
-The patches apply cleanly on top of the latest tip/master, but not on the
-latest rework of the topology evaluation from Thomas. Then I am not sure
-when/if this patchset will be merged.
-
-Thanks and BR,
-Ricardo
+Thanks,
+Pavan
