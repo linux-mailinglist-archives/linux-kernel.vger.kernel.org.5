@@ -2,79 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F6F79D03A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F2A79D03E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbjILLjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
+        id S234779AbjILLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234734AbjILLiV (ORCPT
+        with ESMTP id S234948AbjILLkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:38:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1A31724;
-        Tue, 12 Sep 2023 04:38:17 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6307C433C8;
-        Tue, 12 Sep 2023 11:38:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694518697;
-        bh=HBSUSSCz7VtJdT97dhNbMYipOlAX0Lu2Batb61SCv2M=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ljdUldHdWOQMgBbT1m3SWNAGwblkqdCL/y9lXLvNaBH4795/maOFvMxKLdLzaHPb2
-         Q8JR434ASrr9WUWGSfrq4kfICrOUSNdz1hi+E3d5UCUsYGxJWBuIKTGqw4g2xDglQU
-         WtEabO7GV9beKabrqJ+TW0rLrKBo1d0EBLVVv0rzc7nZMryQPhXnK+MSTnj/HfWi+u
-         4zpErQYzW6qgcjEFT4TWHWh/oC8bN1mUbt+VANLnsA6I0czoySELJECiX0igdXl3tq
-         s3kE7rDnXG4jbBs5UBOg7rXsLS9/vedkhWpyU5gdONtcmM1+EPKaIV5ZbEJkfpQxRL
-         uMAiDIxS6OIdQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Haibo Chen <haibo.chen@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>, Han Xu <han.xu@nxp.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230906183254.235847-1-han.xu@nxp.com>
-References: <20230906183254.235847-1-han.xu@nxp.com>
-Subject: Re: [PATCH] spi: nxp-fspi: reset the FLSHxCR1 registers
-Message-Id: <169451869509.2398433.14593784454903945016.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 12:38:15 +0100
+        Tue, 12 Sep 2023 07:40:09 -0400
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A2A118
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:39:46 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5221bd8f62eso1098882a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:39:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694518785; x=1695123585;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=vA2HSelx8YKE/Mj0lvqWr/WE/7khz+4iMagyZZpskJNXE9+aotBFXOMaBnn0K/540e
+         aZpRdzLYOC7q+qn+EFsg+EWcZkpl8C6ZfOMIfoe4zWYI58eWRstlROuc9ZTrGFfKd/5l
+         NSjgL9q7aBIzkh2K3OpF1PJoq2peURjJj9FRXqikZUlBKwjkPzNfW08LddSR3QXQiHOj
+         fhX5wOrb2f9snQAriTRQm4U2VrgLEReaIUYF+1WIVVjUUOaGxBxmFWWhLUPBQa2Wr4uT
+         CrhSVdbR4WSRcJw4Prqj7Cn237P/2wZyqocTn7np7A6GRaOuIEqPCtrbmZBoKEP+MzSs
+         Rm/A==
+X-Gm-Message-State: AOJu0YySqac+j9DMF0RxiKVGa0Lo0fuEZmmzil/fvLrX1DnN5r+Vd1Lf
+        qOFSYr2Pr5bTIScxIAnHMoIEL88Cesk=
+X-Google-Smtp-Source: AGHT+IEt2gg+b0ELHrfLwF+UqY3w6g8ygIor5V06Lb7l0uqzIgKCfa/gXJ6u+YPzsZSKLSIj52eXrg==
+X-Received: by 2002:a05:6402:42c5:b0:51e:34d8:f4c7 with SMTP id i5-20020a05640242c500b0051e34d8f4c7mr10382428edc.2.1694518784813;
+        Tue, 12 Sep 2023 04:39:44 -0700 (PDT)
+Received: from [192.168.64.157] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id x14-20020aa7dace000000b005257da6be23sm5843018eds.75.2023.09.12.04.39.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 04:39:44 -0700 (PDT)
+Message-ID: <8a47c824-ac32-6fa5-4898-892cb6fe6f3d@grimberg.me>
+Date:   Tue, 12 Sep 2023 14:39:42 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 1/2] nvme-tcp: auth success1 msg always includes resp
+Content-Language: en-US
+To:     Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
+Cc:     linux-nvme@lists.infradead.org, hch@lst.de, axboe@kernel.dk,
+        kbusch@kernel.org, hare@suse.de
+References: <20230828212033.3244512-1-shiftee@posteo.net>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <20230828212033.3244512-1-shiftee@posteo.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Sep 2023 13:32:54 -0500, Han Xu wrote:
-> Reset the FLSHxCR1 registers to default value. ROM may set the register
-> value and it affects the SPI NAND normal functions.
-> 
-> 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: nxp-fspi: reset the FLSHxCR1 registers
-      commit: 18495676f7886e105133f1dc06c1d5e8d5436f32
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
