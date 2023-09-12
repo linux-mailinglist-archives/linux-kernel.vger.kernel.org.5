@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1E979D45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B390C79D45E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236181AbjILPHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
+        id S236228AbjILPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236228AbjILPHV (ORCPT
+        with ESMTP id S236229AbjILPHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 11:07:21 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916B2E7F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:07:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4053A10DD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694531233; x=1726067233;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=5td1gKWCF+rIeOJVYGub5eI8NZKRZhGg2PyDn0c3U94=;
-  b=I0YV/487jBgkDiNI55mMr/ujdroKXXLEuEinJIx61c1+GJHHnJ6VQ0aL
-   6BFDDwTE/mkEW2iVxvRyOmRyZuizcGHFDJ6Um216WGiWtUQYR/RhXb7tY
-   MgweGSdaZWj+/sSqCPHgGINMlXMs93YukOtNNh1Q+T/rpTEcjkPiiWTy0
-   dZt4tkaj6KEXr8jeW/m/yf5xmBgRgCqiGbXHkYXZ7LxUwDgV+R+UZwW+l
-   0g9U5IkXi74gOskh6Y/SPUHExS+Y+ofco43Pab89JS1Ge70RTZ7H5pZ+S
-   jbfjQDqA+eIJj+9vTGeiRHhIgNRaqmMYje66gYiSMn7AKtCu2hbwqcPkz
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409356428"
+  t=1694531234; x=1726067234;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=IiHm5qqjR8NdKDjufrZuWY5WFVXJIdbQ2oc8nS645Xw=;
+  b=DQoFv4sYqfZSTQ1FYxNoV5Qt9QUzcN3zAD9pJz1OkVoyCsJFgqy2c5Tw
+   1Org4vprZc0+MoO6+J+jmCm9EXWksb3khuFpjoqWh/OuZ+s/2Kgst97kh
+   v8lySsEsw9AqRnlGc1NdmqX3d2DJYXdMA0yIHWsgeh+fuRr/E9oXn0h8I
+   3TVtuZyQjHvctOL721+ltbaXNyLUgRNGMaIlH+wn205lyDDWBCZIAYr7J
+   Ff5r1c4nGOK4IU/WjcVIo6IMiddn/L7tXpMdOBO0tpB/UzzBbJMR+xxGY
+   7VYL/DAQeG4f+hmeZdNY5bx5e9pKNBmwD24k5ZzWC76UZiGJdaqmlddlg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409356431"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="409356428"
+   d="scan'208";a="409356431"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:05:56 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:05:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="858836454"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="858836455"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="858836454"
+   d="scan'208";a="858836455"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga002.fm.intel.com with ESMTP; 12 Sep 2023 08:05:55 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5DC42248; Tue, 12 Sep 2023 18:05:54 +0300 (EEST)
+        id 6CF9D1A7; Tue, 12 Sep 2023 18:05:54 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org
 Cc:     Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v1 1/6] params: Use sysfs_emit() to instead of scnprintf()
-Date:   Tue, 12 Sep 2023 18:05:46 +0300
-Message-Id: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/6] params: Introduce the param_unknown_fn type
+Date:   Tue, 12 Sep 2023 18:05:47 +0300
+Message-Id: <20230912150551.401537-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+In-Reply-To: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
+References: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the advice of the Documentation/filesystems/sysfs.rst and show()
-should only use sysfs_emit() or sysfs_emit_at() when formatting the
-value to be returned to user space.
+Introduce a new type for the callback to parse an unknown argument.
+This unifies function prototypes which takes that as a parameter.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- kernel/params.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/linux/moduleparam.h | 6 +++---
+ kernel/params.c             | 8 ++------
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 962cd41a2cb5..3800d1e2a3ab 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -381,6 +381,8 @@ extern bool parameq(const char *name1, const char *name2);
+  */
+ extern bool parameqn(const char *name1, const char *name2, size_t n);
+ 
++typedef int (*parse_unknown_fn)(char *param, char *val, const char *doing, void *arg);
++
+ /* Called on module insert or kernel boot */
+ extern char *parse_args(const char *name,
+ 		      char *args,
+@@ -388,9 +390,7 @@ extern char *parse_args(const char *name,
+ 		      unsigned num,
+ 		      s16 level_min,
+ 		      s16 level_max,
+-		      void *arg,
+-		      int (*unknown)(char *param, char *val,
+-				     const char *doing, void *arg));
++		      void *arg, parse_unknown_fn unknown);
+ 
+ /* Called by module remove. */
+ #ifdef CONFIG_SYSFS
 diff --git a/kernel/params.c b/kernel/params.c
-index 2d4a0564697e..3efe6b98a600 100644
+index 3efe6b98a600..fb594132ffc7 100644
 --- a/kernel/params.c
 +++ b/kernel/params.c
-@@ -222,8 +222,7 @@ char *parse_args(const char *doing,
- 	}								\
- 	int param_get_##name(char *buffer, const struct kernel_param *kp) \
- 	{								\
--		return scnprintf(buffer, PAGE_SIZE, format "\n",	\
--				*((type *)kp->arg));			\
-+		return sysfs_emit(buffer, format "\n", *((type *)kp->arg));	\
- 	}								\
- 	const struct kernel_param_ops param_ops_##name = {			\
- 		.set = param_set_##name,				\
-@@ -287,7 +286,7 @@ EXPORT_SYMBOL(param_set_charp);
- 
- int param_get_charp(char *buffer, const struct kernel_param *kp)
+@@ -120,9 +120,7 @@ static int parse_one(char *param,
+ 		     unsigned num_params,
+ 		     s16 min_level,
+ 		     s16 max_level,
+-		     void *arg,
+-		     int (*handle_unknown)(char *param, char *val,
+-				     const char *doing, void *arg))
++		     void *arg, parse_unknown_fn handle_unknown)
  {
--	return scnprintf(buffer, PAGE_SIZE, "%s\n", *((char **)kp->arg));
-+	return sysfs_emit(buffer, "%s\n", *((char **)kp->arg));
- }
- EXPORT_SYMBOL(param_get_charp);
- 
-@@ -318,7 +317,7 @@ EXPORT_SYMBOL(param_set_bool);
- int param_get_bool(char *buffer, const struct kernel_param *kp)
+ 	unsigned int i;
+ 	int err;
+@@ -165,9 +163,7 @@ char *parse_args(const char *doing,
+ 		 unsigned num,
+ 		 s16 min_level,
+ 		 s16 max_level,
+-		 void *arg,
+-		 int (*unknown)(char *param, char *val,
+-				const char *doing, void *arg))
++		 void *arg, parse_unknown_fn unknown)
  {
- 	/* Y and N chosen as being relatively non-coder friendly */
--	return sprintf(buffer, "%c\n", *(bool *)kp->arg ? 'Y' : 'N');
-+	return sysfs_emit(buffer, "%c\n", *(bool *)kp->arg ? 'Y' : 'N');
- }
- EXPORT_SYMBOL(param_get_bool);
+ 	char *param, *val, *err = NULL;
  
-@@ -377,7 +376,7 @@ EXPORT_SYMBOL(param_set_invbool);
- 
- int param_get_invbool(char *buffer, const struct kernel_param *kp)
- {
--	return sprintf(buffer, "%c\n", (*(bool *)kp->arg) ? 'N' : 'Y');
-+	return sysfs_emit(buffer, "%c\n", (*(bool *)kp->arg) ? 'N' : 'Y');
- }
- EXPORT_SYMBOL(param_get_invbool);
- 
-@@ -525,7 +524,8 @@ EXPORT_SYMBOL(param_set_copystring);
- int param_get_string(char *buffer, const struct kernel_param *kp)
- {
- 	const struct kparam_string *kps = kp->str;
--	return scnprintf(buffer, PAGE_SIZE, "%s\n", kps->string);
-+
-+	return sysfs_emit(buffer, "%s\n", kps->string);
- }
- EXPORT_SYMBOL(param_get_string);
- 
-@@ -859,7 +859,7 @@ ssize_t __modver_version_show(struct module_attribute *mattr,
- 	struct module_version_attribute *vattr =
- 		container_of(mattr, struct module_version_attribute, mattr);
- 
--	return scnprintf(buf, PAGE_SIZE, "%s\n", vattr->version);
-+	return sysfs_emit(buf, "%s\n", vattr->version);
- }
- 
- extern const struct module_version_attribute __start___modver[];
 -- 
 2.40.0.1.gaa8946217a0b
 
