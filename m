@@ -2,149 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6D079D3F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EEA79D3FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbjILOqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S236030AbjILOsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjILOqi (ORCPT
+        with ESMTP id S230347AbjILOsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:46:38 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF87115;
-        Tue, 12 Sep 2023 07:46:34 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401da71b7c5so64904565e9.2;
-        Tue, 12 Sep 2023 07:46:34 -0700 (PDT)
+        Tue, 12 Sep 2023 10:48:11 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007AB115;
+        Tue, 12 Sep 2023 07:48:06 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ad749473baso203154566b.1;
+        Tue, 12 Sep 2023 07:48:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694529993; x=1695134793; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K8sFu0+D3E77YJ4z9rbydrUcmzYi8cL1xr3GzlsZe4w=;
-        b=ETyPkG12J1anB4ZBgBf5EYsrYqG109YBS2map2UV8rkE6kplKy4hS+NPQuPEDYmPSL
-         AhSzZHqfytMV6h4BAkfl8LxzxU7QuditBKzokS/jy1wbdqeQ4i2fpXHS/wOx9Ttcwzi2
-         6F1Xh4FNaBEvfZkMYSyLpAyL9sn9RQNcE5Mcze0alGpi1sg5dZkYSVlwoQ0hs3/xWMoK
-         4rryuFiQGpFny/RDdNf+vFb4v2NvldNai9Z3grN/AI4Qq+EgpPXMnxO8Be+uS1QvJOhO
-         VOJkDNwnjOZPnfAtfj1kb0ncQ+afCP4PtA56v5H9fkZyoqc8i5TWG+EusDodprXqD9Q9
-         gG8A==
+        d=gmail.com; s=20221208; t=1694530085; x=1695134885; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Mh3N+atY6fKlEdWof649s8ajhIo+Yy5qpEAzk5J3lE=;
+        b=AFJgk5nH4gzHb22ZSyZeM5iZyqngU3wRN8WgdaCAJPGH0tpXbZFeozlr3xYCxjo2se
+         t+hV3qdMCWx8cYTojx2tvB8PSC/Mc5m2RT31QCBqtTBvjVWd4lDKSc6y8Jlvo3rJMS4H
+         kyTHD/6niDbOjLndjV5Uqi1gXUhTd/+jbuhwdvZhYOWICEyNxnaD+A++UwCOSIsi8zwT
+         V3jsOX2jFEhuH+xVMLTt4KJimcusDebe0+cLzoQEyNkgbGehLr/JPnXfXgaX+Jfk7J5w
+         k+HT6Ko6NJMvG8TGHfHwpKxlbCFsZU5PgD/p3oPTgsTJkmTuxnuFMW7QgRPh51p0n9Jj
+         hQpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694529993; x=1695134793;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K8sFu0+D3E77YJ4z9rbydrUcmzYi8cL1xr3GzlsZe4w=;
-        b=l8+fRH1ChLV7nu2AouB3IzBWZk7VnVQu5USWoZRs8oFI1ILJMXI6MQQaas4tyqel15
-         2pcJEKRxxaP4Zq/XKKbBgG7rYnydjd1S3D5HqpW1FGvCdBgFKr85eaZ4y7Cg00JGWMMb
-         BbiIdGoRADNwjH/KDNyyuz3KBNYoRkjDhmFmIq/Ip73ZgcL80mwpY2lxt5fCJt7Xf2x2
-         NXajazz6S97VYR8rLlaHj5Da9uroztzkPH2OiWZbKOknWaiahtPThQ7zSfZRBj5VblhI
-         A+RMgCpdJvweK9v19JH8toyxT4JfwCaWyNm/Kh42E667qGGdcoZAbUDtDO9x5UJPQLyf
-         vQNA==
-X-Gm-Message-State: AOJu0Yxks9++aDSs1s0VJgkwa/9uukxeh9NNUBnYcgy7kvJgDLg0vJVi
-        +7uUQVko0o9sEgccs9kqLcI=
-X-Google-Smtp-Source: AGHT+IGHXQb8saBAd6H+9uYnotfhWfZV5PqBMgupUePv5+BNFjR2MQXXacKt9iDypQAL5TYLBL9epA==
-X-Received: by 2002:a05:600c:3b1e:b0:402:f536:41c5 with SMTP id m30-20020a05600c3b1e00b00402f53641c5mr10911758wms.3.1694529992631;
-        Tue, 12 Sep 2023 07:46:32 -0700 (PDT)
-Received: from [10.254.108.106] (munvpn.amd.com. [165.204.72.6])
-        by smtp.gmail.com with ESMTPSA id t15-20020a7bc3cf000000b00402be2666bcsm16448614wmj.6.2023.09.12.07.46.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 07:46:32 -0700 (PDT)
-Message-ID: <95797f3d-65bf-1bd9-9e19-6de42605cfe3@gmail.com>
-Date:   Tue, 12 Sep 2023 16:46:30 +0200
+        d=1e100.net; s=20230601; t=1694530085; x=1695134885;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Mh3N+atY6fKlEdWof649s8ajhIo+Yy5qpEAzk5J3lE=;
+        b=vQz+vCdRtPUKRT6GanFtp9EbaPtVmsSOM6X9MzO607DCzqN8mhJjAiz11K9goAF4aH
+         nAFS8D3dgPdEkRm8nmmlmydZDkv5WH+JSHn4cIbPdxrvonF5R8rm8P80IUu42r1Ek9of
+         GD6ISF4UbfxJasjP3eNIEm+hodDGNTrFOShKsDAukPJkn410qeMs1ekqpoJGOJXYMGZv
+         OWlhysH0F/giD4cClZ7djdq4HqRAVZC3fxXgz1sDiN4HKAcp+UeZYPwG7mWOENlrE6Gp
+         T1aXZIbyZIFXjPZXDbd5Js6apzGJsXWnN2Zp2fhOt29Md4pBuq0jSSBklHzJGhr81aqe
+         npbA==
+X-Gm-Message-State: AOJu0YxZY8JMsHwyDc47g1Mx4Is/xo6r8yni38Rggem9uPxCCvXA1w0m
+        E2eEXFdpYCNP0dIcBXUnLnQ=
+X-Google-Smtp-Source: AGHT+IH9wOTaGkTJFDyjmU8WryOltmH2Q7LMedYMwsNNq2HMT5i2dYmwYWLHYrSxtaajZH2vkJj7Ug==
+X-Received: by 2002:a17:906:295:b0:9a5:da6c:6539 with SMTP id 21-20020a170906029500b009a5da6c6539mr10782887ejf.75.1694530085232;
+        Tue, 12 Sep 2023 07:48:05 -0700 (PDT)
+Received: from skbuf ([188.25.254.186])
+        by smtp.gmail.com with ESMTPSA id q7-20020a170906360700b0098ce63e36e9sm7064813ejb.16.2023.09.12.07.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 07:48:04 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 17:48:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 4/8] net: dsa: vsc73xx: add
+ port_stp_state_set function
+Message-ID: <20230912144802.czdpb6hpn2yiewvf@skbuf>
+References: <20230912122201.3752918-1-paweldembicki@gmail.com>
+ <20230912122201.3752918-5-paweldembicki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/9] dma-heap: Provide accessors so that in-kernel drivers
- can allocate dmabufs from specific heaps
-Content-Language: en-US
-To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
-        "jstultz@google.com" <jstultz@google.com>
-Cc:     "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
-        <kuohong.wang@mediatek.com>,
-        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-References: <20230911023038.30649-1-yong.wu@mediatek.com>
- <20230911023038.30649-4-yong.wu@mediatek.com>
- <803846bc-fd1d-d2ec-2855-456af22c82f8@amd.com>
- <CANDhNCrQyiFZ+8DnG0iyKBXC0H1698K1a9d2AxOq4whDsZBn+Q@mail.gmail.com>
- <23e71d1f-08c1-3834-5b1f-2b5714c7bfaa@gmail.com>
- <255ae6b9ac1b6bea9262069747824b8461475e70.camel@mediatek.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <255ae6b9ac1b6bea9262069747824b8461475e70.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912122201.3752918-5-paweldembicki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12.09.23 um 10:52 schrieb Yong Wu (吴勇):
-> [SNIP]
->> But what we should try to avoid is that newly merged drivers provide
->> both a driver specific UAPI and DMA-heaps. The justification that
->> this
->> makes it easier to transit userspace to the new UAPI doesn't really
->> count.
->>
->> That would be adding UAPI already with a plan to deprecate it and
->> that
->> is most likely not helpful considering that UAPI must be supported
->> forever as soon as it is upstream.
-> Sorry, I didn't understand this. I think we have not change the UAPI.
-> Which code are you referring to?
+Hi Pawel,
 
-Well, what do you need this for if not a new UAPI?
+On Tue, Sep 12, 2023 at 02:21:58PM +0200, Pawel Dembicki wrote:
+> This isn't a fully functional implementation of 802.1D, but
+> port_stp_state_set is required for a future tag8021q operations.
+> 
+> This implementation handles properly all states, but vsc73xx doesn't
+> forward STP packets.
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+> ---
+> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> index 8f2285a03e82..541fbc195df1 100644
+> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
+> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> @@ -1033,9 +1031,59 @@ static int vsc73xx_get_max_mtu(struct dsa_switch *ds, int port)
+>  	return 9600 - ETH_HLEN - ETH_FCS_LEN;
+>  }
+>  
+> +static int vsc73xx_port_setup(struct dsa_switch *ds, int port)
+> +{
 
-My assumption here is that you need to export the DMA-heap allocation 
-function so that you can server an UAPI in your new driver. Or what else 
-is that good for?
+For bisectability, the series must build patch by patch.
+Here, you are missing:
 
-As far as I understand you try to upstream your new vcodec driver. So 
-while this change here seems to be a good idea to clean up existing 
-drivers it doesn't look like a good idea for a newly created driver.
+	struct vsc73xx *vsc = ds->priv;
 
-Regards,
-Christian.
+../drivers/net/dsa/vitesse-vsc73xx-core.c:1038:3: error: use of undeclared identifier 'vsc'
+                vsc->forward_map[CPU_PORT] = VSC73XX_SRCMASKS_PORTS_MASK &
+                ^
+../drivers/net/dsa/vitesse-vsc73xx-core.c:1041:3: error: use of undeclared identifier 'vsc'
+                vsc->forward_map[port] = VSC73XX_SRCMASKS_PORTS_MASK &
+                ^
+2 errors generated.
 
->>> So I think this patch is a little confusing in this series, as I
->> don't
->>> see much of it actually being used here (though forgive me if I'm
->>> missing it).
->>>
->>> Instead, It seems it get used in a separate patch series here:
->>>     
->> https://lore.kernel.org/all/20230911125936.10648-1-yunfei.dong@mediatek.com/
->>
->> Please try to avoid stuff like that it is really confusing and eats
->> reviewers time.
-> My fault, I thought dma-buf and media belonged to the different tree,
-> so I send them separately. The cover letter just said "The consumers of
-> the new heap and new interface are our codecs and DRM, which will be
-> sent upstream soon", and there was no vcodec link at that time.
->
-> In the next version, we will put the first three patches into the
-> vcodec patchset.
->
-> Thanks.
->
+> +	/* Configure forward map to CPU <-> port only */
+> +	if (port == CPU_PORT)
+> +		vsc->forward_map[CPU_PORT] = VSC73XX_SRCMASKS_PORTS_MASK &
+> +					     ~BIT(CPU_PORT);
 
+		vsc->forward_map[CPU_PORT] = dsa_user_ports(ds);
+
+> +	else
+> +		vsc->forward_map[port] = VSC73XX_SRCMASKS_PORTS_MASK &
+> +					 BIT(CPU_PORT);
+
+		vsc->forward_map[port] = BIT(CPU_PORT);
+
+> +
+> +	return 0;
+> +}
+> +
+> +/* FIXME: STP frames aren't forwarded at this moment. BPDU frames are
+> + * forwarded only from and to PI/SI interface. For more info see chapter
+> + * 2.7.1 (CPU Forwarding) in datasheet.
+> + * This function is required for tag8021q operations.
+> + */
+> +
+> +static void vsc73xx_port_stp_state_set(struct dsa_switch *ds, int port,
+> +				       u8 state)
+> +{
+> +	struct vsc73xx *vsc = ds->priv;
+> +
+> +	if (state == BR_STATE_BLOCKING || state == BR_STATE_DISABLED)
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_RECVMASK, BIT(port), 0);
+> +	else
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_RECVMASK, BIT(port), BIT(port));
+> +
+> +	if (state == BR_STATE_LEARNING || state == BR_STATE_FORWARDING)
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_LEARNMASK, BIT(port), BIT(port));
+> +	else
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_LEARNMASK, BIT(port), 0);
+> +
+> +	if (state == BR_STATE_FORWARDING)
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_SRCMASKS + port,
+> +				    VSC73XX_SRCMASKS_PORTS_MASK,
+> +				    vsc->forward_map[port]);
+
+To forward a packet between port A and port B, both of them must be in
+BR_STATE_FORWARDING, not just A.
+
+> +	else
+> +		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +				    VSC73XX_SRCMASKS + port,
+> +				    VSC73XX_SRCMASKS_PORTS_MASK, 0);
+> +}
+> +
+>  static const struct dsa_switch_ops vsc73xx_ds_ops = {
+>  	.get_tag_protocol = vsc73xx_get_tag_protocol,
+>  	.setup = vsc73xx_setup,
+> +	.port_setup = vsc73xx_port_setup,
+>  	.phy_read = vsc73xx_phy_read,
+>  	.phy_write = vsc73xx_phy_write,
+>  	.phylink_get_caps = vsc73xx_phylink_get_caps,
+> @@ -1049,6 +1097,7 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+>  	.port_disable = vsc73xx_port_disable,
+>  	.port_change_mtu = vsc73xx_change_mtu,
+>  	.port_max_mtu = vsc73xx_get_max_mtu,
+> +	.port_stp_state_set = vsc73xx_port_stp_state_set,
+>  };
+>  
+>  static int vsc73xx_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> diff --git a/drivers/net/dsa/vitesse-vsc73xx.h b/drivers/net/dsa/vitesse-vsc73xx.h
+> index f79d81ef24fb..224e284a5573 100644
+> --- a/drivers/net/dsa/vitesse-vsc73xx.h
+> +++ b/drivers/net/dsa/vitesse-vsc73xx.h
+> @@ -18,6 +18,7 @@
+>  
+>  /**
+>   * struct vsc73xx - VSC73xx state container
+> + * @forward_map: Forward table cache
+
+If you start describing the member fields, shouldn't all be described?
+I think there will be kdoc warnings otherwise.
+
+>   */
+>  struct vsc73xx {
+>  	struct device			*dev;
+> @@ -28,6 +29,7 @@ struct vsc73xx {
+>  	u8				addr[ETH_ALEN];
+>  	const struct vsc73xx_ops	*ops;
+>  	void				*priv;
+> +	u8				forward_map[VSC73XX_MAX_NUM_PORTS];
+>  };
+>  
+>  struct vsc73xx_ops {
+> -- 
+> 2.34.1
+> 
