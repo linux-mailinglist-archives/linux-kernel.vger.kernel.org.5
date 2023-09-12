@@ -2,138 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 349A779CE7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B8D79CE80
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbjILKhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S234384AbjILKhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbjILKhD (ORCPT
+        with ESMTP id S233873AbjILKhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:37:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B472105;
-        Tue, 12 Sep 2023 03:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694514972; x=1726050972;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UE6R71ILf/9stRdcLZnggEzxfGKw+NVMfPOUWW0UkBo=;
-  b=QOvjXhHa437Fxn+R/o/F8c4guz+eSzgEq1SfkkCbkJSLhdrhR4GiRGru
-   Sikauelax2hBGWe+eMG6kyFoY1bKb7qYF7TZAJhnJdpPXgawwaTMdD12u
-   OqTrSyZgd8fBhlaDjqIDmc7FDmpgmRbRFF6WvEh45c+o80WW+gQy8YrrQ
-   CpLIVS5s3kbHsr4i3lbJ9/pm+IaoSGHmx+ySW6giyOuDxsBbTa7E0+Oso
-   I0PJfzO+iAA9BzFS4RFDwTo8ZyAw0H5Q5UGvfJmxLCbSELfuN6UD3Si89
-   JE6VYb1ybxCPAAo4MPmpEGgUMtXw1dfeIJZRr3h4l4W6/UwMaz8eGhR+W
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375665459"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="375665459"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:36:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="772948799"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="772948799"
-Received: from npejicx-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.251.217.90])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:36:09 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 2/2] tty/serial: 8250: Sort drivers in Makefile
-Date:   Tue, 12 Sep 2023 13:35:58 +0300
-Message-Id: <20230912103558.20123-2-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230912103558.20123-1-ilpo.jarvinen@linux.intel.com>
-References: <20230912103558.20123-1-ilpo.jarvinen@linux.intel.com>
+        Tue, 12 Sep 2023 06:37:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158FD26A9;
+        Tue, 12 Sep 2023 03:36:34 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 10:36:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694514992;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=am+Un2OqmW2Loepn8y4t8ZkGjNdfoKTvcEiRMqelg0M=;
+        b=fhTkufp6UE56eD+60KBBsTVgb9JUQNGf+SJe0nsedTCsm38j5UX2b4wc6AV3bLv51eyD7x
+        118fyEm3wAkR6pE9p9gIPpiC6xHvRNaQDwYP2LrKGfKUB1iR8RpbJGA8JM4PdGmdiMtNev
+        4SpwwsesGrLetor2GTvYYRPf1Uuk+PvKczoqRth/PrUKYzyZf002yiKh+RB8AewTM1cVj9
+        uNlhnulLE3j163cl2VwD8yfCx4+4r/JfNHw5DT0bEAe5NIqAwMIiYUhtUmXZJHwoaAzyLn
+        0CLDvXK1GGwfDxQhJysE/evaBGJ72G04IJ9Ghi23wNl6geVzyUU5NEUxXo6Ong==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694514992;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=am+Un2OqmW2Loepn8y4t8ZkGjNdfoKTvcEiRMqelg0M=;
+        b=j4gQluExe9atJWySglxGy9jOpSOZD0VHYZgc3rWi8ImNgRu6MZTE0ZjPrDhnGJKO4sf7vc
+        9zmKe8XilTn1XICg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] cleanup: Make no_free_ptr() __must_check
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230816103102.GF980931@hirez.programming.kicks-ass.net>
+References: <20230816103102.GF980931@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <169451499208.27769.5856056754166699857.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sort drivers in alphabetic order in Makefile to make it easier to find
-the correct line. In case the CONFIG and filenames disagree, sort using
-the filename (ignore 8250 prefix while sorting).
+The following commit has been merged into the locking/core branch of tip:
 
-In addition, place 8250_early separately above the drivers.
+Commit-ID:     68373ebb9d61985e05574313a356f751ef9911ab
+Gitweb:        https://git.kernel.org/tip/68373ebb9d61985e05574313a356f751ef9911ab
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 15 Aug 2023 12:52:04 +02:00
+Committer:     root <root@noisy.programming.kicks-ass.net>
+CommitterDate: Sat, 09 Sep 2023 15:10:27 +02:00
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+cleanup: Make no_free_ptr() __must_check
+
+recent discussion brought about the realization that it makes sense for
+no_free_ptr() to have __must_check semantics in order to avoid leaking
+the resource.
+
+Additionally, add a few comments to clarify why/how things work.
+
+All credit to Linus on how to combine __must_check and the
+stmt-expression.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20230816103102.GF980931@hirez.programming.kicks-ass.net
 ---
- drivers/tty/serial/8250/Makefile | 42 +++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 20 deletions(-)
+ include/linux/cleanup.h | 39 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
-index 628b75be312e..ea2e81f58eac 100644
---- a/drivers/tty/serial/8250/Makefile
-+++ b/drivers/tty/serial/8250/Makefile
-@@ -13,39 +13,41 @@ obj-$(CONFIG_SERIAL_8250)		+= 8250.o 8250_base.o
- 8250_base-$(CONFIG_SERIAL_8250_DWLIB)	+= 8250_dwlib.o
- 8250_base-$(CONFIG_SERIAL_8250_FINTEK)	+= 8250_fintek.o
- 8250_base-$(CONFIG_SERIAL_8250_PCILIB)	+= 8250_pcilib.o
--obj-$(CONFIG_SERIAL_8250_PARISC)	+= 8250_parisc.o
--obj-$(CONFIG_SERIAL_8250_PCI)		+= 8250_pci.o
--obj-$(CONFIG_SERIAL_8250_EXAR)		+= 8250_exar.o
--obj-$(CONFIG_SERIAL_8250_HP300)		+= 8250_hp300.o
--obj-$(CONFIG_SERIAL_8250_CS)		+= serial_cs.o
-+
-+obj-$(CONFIG_SERIAL_8250_CONSOLE)	+= 8250_early.o
-+
-+obj-$(CONFIG_SERIAL_8250_ACCENT)	+= 8250_accent.o
- obj-$(CONFIG_SERIAL_8250_ACORN)		+= 8250_acorn.o
- obj-$(CONFIG_SERIAL_8250_ASPEED_VUART)	+= 8250_aspeed_vuart.o
- obj-$(CONFIG_SERIAL_8250_BCM2835AUX)	+= 8250_bcm2835aux.o
--obj-$(CONFIG_SERIAL_8250_CONSOLE)	+= 8250_early.o
--obj-$(CONFIG_SERIAL_8250_FOURPORT)	+= 8250_fourport.o
--obj-$(CONFIG_SERIAL_8250_ACCENT)	+= 8250_accent.o
-+obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
- obj-$(CONFIG_SERIAL_8250_BOCA)		+= 8250_boca.o
--obj-$(CONFIG_SERIAL_8250_EXAR_ST16C554)	+= 8250_exar_st16c554.o
--obj-$(CONFIG_SERIAL_8250_HUB6)		+= 8250_hub6.o
--obj-$(CONFIG_SERIAL_8250_PCI1XXXX)	+= 8250_pci1xxxx.o
--obj-$(CONFIG_SERIAL_8250_FSL)		+= 8250_fsl.o
--obj-$(CONFIG_SERIAL_8250_MEN_MCB)	+= 8250_men_mcb.o
- obj-$(CONFIG_SERIAL_8250_DFL)		+= 8250_dfl.o
- obj-$(CONFIG_SERIAL_8250_DW)		+= 8250_dw.o
- obj-$(CONFIG_SERIAL_8250_EM)		+= 8250_em.o
-+obj-$(CONFIG_SERIAL_8250_EXAR)		+= 8250_exar.o
-+obj-$(CONFIG_SERIAL_8250_EXAR_ST16C554)	+= 8250_exar_st16c554.o
-+obj-$(CONFIG_SERIAL_8250_FOURPORT)	+= 8250_fourport.o
-+obj-$(CONFIG_SERIAL_8250_FSL)		+= 8250_fsl.o
-+obj-$(CONFIG_SERIAL_8250_HP300)		+= 8250_hp300.o
-+obj-$(CONFIG_SERIAL_8250_HUB6)		+= 8250_hub6.o
-+obj-$(CONFIG_SERIAL_8250_INGENIC)	+= 8250_ingenic.o
- obj-$(CONFIG_SERIAL_8250_IOC3)		+= 8250_ioc3.o
--obj-$(CONFIG_SERIAL_8250_OMAP)		+= 8250_omap.o
--obj-$(CONFIG_SERIAL_8250_RT288X)	+= 8250_rt288x.o
- obj-$(CONFIG_SERIAL_8250_LPC18XX)	+= 8250_lpc18xx.o
--obj-$(CONFIG_SERIAL_8250_MT6577)	+= 8250_mtk.o
--obj-$(CONFIG_SERIAL_8250_UNIPHIER)	+= 8250_uniphier.o
--obj-$(CONFIG_SERIAL_8250_INGENIC)	+= 8250_ingenic.o
- obj-$(CONFIG_SERIAL_8250_LPSS)		+= 8250_lpss.o
-+obj-$(CONFIG_SERIAL_8250_MEN_MCB)	+= 8250_men_mcb.o
- obj-$(CONFIG_SERIAL_8250_MID)		+= 8250_mid.o
-+obj-$(CONFIG_SERIAL_8250_MT6577)	+= 8250_mtk.o
-+obj-$(CONFIG_SERIAL_OF_PLATFORM)	+= 8250_of.o
-+obj-$(CONFIG_SERIAL_8250_OMAP)		+= 8250_omap.o
-+obj-$(CONFIG_SERIAL_8250_PARISC)	+= 8250_parisc.o
-+obj-$(CONFIG_SERIAL_8250_PCI)		+= 8250_pci.o
-+obj-$(CONFIG_SERIAL_8250_PCI1XXXX)	+= 8250_pci1xxxx.o
- obj-$(CONFIG_SERIAL_8250_PERICOM)	+= 8250_pericom.o
- obj-$(CONFIG_SERIAL_8250_PXA)		+= 8250_pxa.o
-+obj-$(CONFIG_SERIAL_8250_RT288X)	+= 8250_rt288x.o
-+obj-$(CONFIG_SERIAL_8250_CS)		+= serial_cs.o
-+obj-$(CONFIG_SERIAL_8250_UNIPHIER)	+= 8250_uniphier.o
- obj-$(CONFIG_SERIAL_8250_TEGRA)		+= 8250_tegra.o
--obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
--obj-$(CONFIG_SERIAL_OF_PLATFORM)	+= 8250_of.o
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 53f1a7a..9f1a9c4 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -7,8 +7,9 @@
+ /*
+  * DEFINE_FREE(name, type, free):
+  *	simple helper macro that defines the required wrapper for a __free()
+- *	based cleanup function. @free is an expression using '_T' to access
+- *	the variable.
++ *	based cleanup function. @free is an expression using '_T' to access the
++ *	variable. @free should typically include a NULL test before calling a
++ *	function, see the example below.
+  *
+  * __free(name):
+  *	variable attribute to add a scoped based cleanup to the variable.
+@@ -17,6 +18,9 @@
+  *	like a non-atomic xchg(var, NULL), such that the cleanup function will
+  *	be inhibited -- provided it sanely deals with a NULL value.
+  *
++ *	NOTE: this has __must_check semantics so that it is harder to accidentally
++ *	leak the resource.
++ *
+  * return_ptr(p):
+  *	returns p while inhibiting the __free().
+  *
+@@ -24,6 +28,8 @@
+  *
+  * DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+  *
++ * void *alloc_obj(...)
++ * {
+  *	struct obj *p __free(kfree) = kmalloc(...);
+  *	if (!p)
+  *		return NULL;
+@@ -32,6 +38,24 @@
+  *		return NULL;
+  *
+  *	return_ptr(p);
++ * }
++ *
++ * NOTE: the DEFINE_FREE()'s @free expression includes a NULL test even though
++ * kfree() is fine to be called with a NULL value. This is on purpose. This way
++ * the compiler sees the end of our alloc_obj() function as:
++ *
++ *	tmp = p;
++ *	p = NULL;
++ *	if (p)
++ *		kfree(p);
++ *	return tmp;
++ *
++ * And through the magic of value-propagation and dead-code-elimination, it
++ * eliminates the actual cleanup call and compiles into:
++ *
++ *	return p;
++ *
++ * Without the NULL test it turns into a mess and the compiler can't help us.
+  */
  
- CFLAGS_8250_ingenic.o += -I$(srctree)/scripts/dtc/libfdt
--- 
-2.30.2
-
+ #define DEFINE_FREE(_name, _type, _free) \
+@@ -39,8 +63,17 @@
+ 
+ #define __free(_name)	__cleanup(__free_##_name)
+ 
++#define __get_and_null_ptr(p) \
++	({ __auto_type __ptr = &(p); \
++	   __auto_type __val = *__ptr; \
++	   *__ptr = NULL;  __val; })
++
++static inline __must_check
++const volatile void * __must_check_fn(const volatile void *val)
++{ return val; }
++
+ #define no_free_ptr(p) \
+-	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
++	((typeof(p)) __must_check_fn(__get_and_null_ptr(p)))
+ 
+ #define return_ptr(p)	return no_free_ptr(p)
+ 
