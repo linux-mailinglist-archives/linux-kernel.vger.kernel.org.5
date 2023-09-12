@@ -2,106 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B9679CA31
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC01A79CA2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232822AbjILIim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
+        id S232793AbjILIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbjILIil (ORCPT
+        with ESMTP id S232650AbjILIiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:38:41 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A945E7A;
-        Tue, 12 Sep 2023 01:38:37 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-991c786369cso709125266b.1;
-        Tue, 12 Sep 2023 01:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694507915; x=1695112715; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d5WzW7udVB3HdwrirrUGrjvkqjfIkPOdv3DY3SpLmXk=;
-        b=kprj7FtczO5+01Xw1n/tLGqFrn4h+aI1W4RCgmCVk+sgHNEZc0gI6y5r8U/p2JwwW5
-         ijqy/USEumr+x1/XvTAv1GXBTosc4MM0GtlQafqXNg8c74CNffK7KHZatwRgFQhTDHwW
-         ScZv7b/m1d2fmkZWNakXFByd5l9XhcMF4uey2lA/6ojOa2AkvQ8zeMOiaSVfI4KDesLN
-         Hnh7K1zD1SrDjHh7CX5mk1LYnzRQrbTwRqB4PowqDm4CAhigzyH9SiC793x3A5UD2ODu
-         HPXUiBGU7VLYLtGEMtKlVYdJZdvHx/3YF9NPODYyrspCwmX0Ck8LuIxnK0IjItnegm+D
-         6JJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694507915; x=1695112715;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d5WzW7udVB3HdwrirrUGrjvkqjfIkPOdv3DY3SpLmXk=;
-        b=qZVBYYtIWwEVInH8hGiAszcRGWrrxYKTMKvIh9AfBZzwvUx2pqAXoi2vZekPPrKULZ
-         1rJmLgkn6Lv5O6PO9JMahv7ewml6u4zQ04w4F2rmB1XCnNYT+SWIqmRXxilKygvUfdKK
-         cru2aCXDZ6wYWVAAKrqmX3OLesRJZ9zsg8fmkn/hKNGYzuYIpR9hFVwws4FZbV9Ee0Of
-         3DpfXu/2f9KGASMg23A0dAAH0UPFjGXtmoNXL1JB6+1Ef/uMLwy1cSD6sfsB3NBQ7eXU
-         q259zZXsZ+D4Yx2hhrqJf/415NOcTNuwoVpNNKyODPZIvQuJ1KHoDWDEPOVwVZV5TsRd
-         JcsA==
-X-Gm-Message-State: AOJu0YyIX7ggiTBoYhauachN8gbtAAnpMFPW0CtSK20Rd1nexbuHD+rj
-        +K3BHh3g/imOtuxROr+GhL4=
-X-Google-Smtp-Source: AGHT+IEwPItuktnWOR0gh0mbE4XlHJQpgYLFMu1sfdxplQaopwaTpT2qalC3/qPX5N1G4uxUV65OHA==
-X-Received: by 2002:a17:906:5350:b0:9aa:1020:8c39 with SMTP id j16-20020a170906535000b009aa10208c39mr8166508ejo.18.1694507915324;
-        Tue, 12 Sep 2023 01:38:35 -0700 (PDT)
-Received: from lelloman-5950.. (host-87-10-35-251.retail.telecomitalia.it. [87.10.35.251])
-        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b0099b76c3041csm6511726eja.7.2023.09.12.01.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 01:38:34 -0700 (PDT)
-From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-To:     dan.carpenter@linaro.org, akpm@linux-foundation.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
-Subject: [PATCH] selftests: cgroup: fix test_zswap error path and meaningless check
-Date:   Tue, 12 Sep 2023 10:38:00 +0200
-Message-Id: <20230912083800.57435-1-cerasuolodomenico@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Sep 2023 04:38:16 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BA9B9;
+        Tue, 12 Sep 2023 01:38:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 10FBD218E6;
+        Tue, 12 Sep 2023 08:38:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694507891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1DRhswA9Oc577HWoSVr73gljwdQoTk0suajRh1T64sQ=;
+        b=aNekBEb/222FZJQkKnOGpTZNF/m4/yTJuIMYLqlMMFkq/UE8+ZJu9llLhdwvTWKupBAKwS
+        2qiCbqv4fhgEmB3rpSieRpNRfGEvZiAQ17v+/1olRNwNk+iRZTR3dm4dUM11QJHaBQd0J3
+        zT6DlR5DZTd69McdAUTadnmxWHTNt/w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694507891;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1DRhswA9Oc577HWoSVr73gljwdQoTk0suajRh1T64sQ=;
+        b=4Zft+j6P4ljOBpqwRK5WXxCIgui0LqP9CHs/INnVTzA2NafThC2fOFJezdob+g02ztU2jP
+        h1YJLqd8n8ThhNBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AFF1C13A39;
+        Tue, 12 Sep 2023 08:38:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SMIlKnIjAGUkIQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 12 Sep 2023 08:38:10 +0000
+Message-ID: <bf4a1cbd-c24e-4def-a523-1a707a1ca5a1@suse.de>
+Date:   Tue, 12 Sep 2023 10:38:09 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helge Deller <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Jim Cromie <jim.cromie@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+References: <20230911205338.2385278-1-arnd@kernel.org>
+ <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+ <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
+ <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------RarGNkMvgomjmopc3ithYrAM"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace destruction paths with simple returns before the test cgroup is
-created, there is nothing to free or destroy at that point.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------RarGNkMvgomjmopc3ithYrAM
+Content-Type: multipart/mixed; boundary="------------Jg001PUZ7GquGyoR0gf0QAih";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Arnd Bergmann <arnd@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller
+ <deller@gmx.de>, Arnd Bergmann <arnd@arndb.de>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Dave Airlie <airlied@redhat.com>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Jim Cromie <jim.cromie@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Arthur Grillo <arthurgrillo@riseup.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org
+Message-ID: <bf4a1cbd-c24e-4def-a523-1a707a1ca5a1@suse.de>
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+References: <20230911205338.2385278-1-arnd@kernel.org>
+ <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+ <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
+ <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
+In-Reply-To: <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
 
-Remove pointless check, stored_pages is a size_t and cannot be < 0.
+--------------Jg001PUZ7GquGyoR0gf0QAih
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Fixes: a549f9f31561 ("selftests: cgroup: add test_zswap with no kmem bypass test")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+SGkgR2VlcnQNCg0KQW0gMTIuMDkuMjMgdW0gMTA6MTggc2NocmllYiBHZWVydCBVeXR0ZXJo
+b2V2ZW46DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIFR1ZSwgU2VwIDEyLCAyMDIzIGF0IDEw
+OjEx4oCvQU0gVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3Rl
+Og0KPj4gQW0gMTIuMDkuMjMgdW0gMDk6MTQgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
+DQo+PiBbLi4uXQ0KPj4+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KPj4+PiAr
+KysgYi9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KPj4+PiBAQCAtMTM1LDcgKzEzNSw3IEBA
+IGNvbmZpZyBEUk1fRkJERVZfRU1VTEFUSU9ODQo+Pj4+ICAgICAgICAgICBib29sICJFbmFi
+bGUgbGVnYWN5IGZiZGV2IHN1cHBvcnQgZm9yIHlvdXIgbW9kZXNldHRpbmcgZHJpdmVyIg0K
+Pj4+PiAgICAgICAgICAgZGVwZW5kcyBvbiBEUk0NCj4+Pj4gICAgICAgICAgIHNlbGVjdCBG
+UkFNRUJVRkZFUl9DT05TT0xFX0RFVEVDVF9QUklNQVJZIGlmIEZSQU1FQlVGRkVSX0NPTlNP
+TEUNCj4+Pj4gLSAgICAgICBkZWZhdWx0IHkNCj4+Pj4gKyAgICAgICBkZWZhdWx0IEZCDQo+
+Pj4NCj4+PiBXaGlsZSB0aGlzIGlzIHRydWUgZm9yIGV4aXN0aW5nIGNvbmZpZ3MsIGl0IGlz
+IG5vIGxvbmdlciB0cnVlIGluIGdlbmVyYWwsDQo+Pj4gYXMgRFJNX0ZCREVWX0VNVUxBVElP
+TiBpcyBubyBsb25nZXIgcmVsYXRlZCB0byBGQi4NCj4+DQo+PiBXb3VsZCBpdCBtYWtlIHNl
+bnNlIHRvIG1ha2UgRlJBTUVCVUZGRVJfQ09OU09MRSBhbiBpbmRlcGVuZGVudCBvcHRpb24N
+Cj4+IGFuZCBoYXZlIEZCREVWX0VNVUxBVElPTiBkZXBlbmQgb24gaXQ/IFNvbWV0aGluZyBs
+aWtlIHRoaXM6DQo+Pg0KPj4gRlJBTUVCVUZGRVJfQ09OU09MRQ0KPj4gICAgICAgICAgZGVw
+ZW5kcyBvbiBEUk0gfHwgRkINCj4+ICAgICAgICAgIHNlbGVjdCBGQl9DT1JFDQo+Pg0KPj4g
+RkJERVZfRU1VTEFUSU9ODQo+PiAgICAgICAgICBkZXBlbmRzIG9uIERSTQ0KPj4gICAgICAg
+ICAgZGVwZW5kcyBvbiBGUkFNRUJVRkZFUl9DT05TT0xFDQo+PiAgICAgICAgICBkZWZhdWx0
+IHkNCj4gDQo+IE9vcHMsIG5vdyB5b3UgY2FuIG5vIGxvbmdlciBoYXZlIEZCREVWX0VNVUxB
+VElPTiB3aXRob3V0DQo+IEZSQU1FQlVGRkVSX0NPTlNPTEUsIHdoaWNoIGlzIHVzZWZ1bCB0
+byBiZSBhYmxlIHRvIGVuYWJsZQ0KPiBGQl9ERVZJQ0UuLi4NCg0KQW5kIGlmIGl0IGRlcGVu
+ZHMgb24gRkJfQ09SRSBpbnN0ZWFkIG9mIEZSQU1FQlVGRkVSX0NPTlNPTEU/IEknbSBhd2Fy
+ZSANCnRoYXQgdGhpcyB3b3VsZCByZXF1aXJlIG1vcmUgS2NvbmZpZyBjaGFuZ2VzIHRoYW4g
+b3V0bGluZWQgaGVyZS4NCg0KDQo+IA0KPiBBbmQgd2hhdCdzIHRoZSBwb2ludCAoaWYgRFJN
+IGlzIGVuYWJsZWQpIG9mIGhhdmluZyBGQl9DT1JFIHdpdGgNCj4gRkJERVZfRU1VTEFUSU9O
+IGRpc2FibGVkPw0KPiANCj4+IFNvIGlmIGFueSBncmFwaGljcyBzdWJzeXN0ZW1zIGFyZSBl
+bmFibGVkLCBGUkFNRUJVRkZFUl9DT05TT0xFIGlzDQo+PiBzZWxlY3QtYWJsZS4gQnV0IGZv
+ciBEUk0sIEZCREVWX0VNVUxBVElPTiBkaXNhYmxlcyB0aGUgY29uc29sZS4gVGhhdA0KPiAN
+Cj4gSHVoPw0KPiANCj4gL21lIGxvb2tzIGF0IGhpcyBtb3JuaW5nIGNvZmZlZSwgYW5kIGNv
+bmZpcm1zIHRoZSBjdXAgaXMgZW1wdHkuLi4NCg0KRGVjYWYgbWF5YmU/DQoNCkJ1dCB0aGVy
+ZSdzIHJlYWxseSBubyBuZWVkIHRvIGdldCBzbmFya3kuIE15IHRob3VnaCBpcyB0aGF0IA0K
+RlJBTUVCVUZGRVJfQ09OU09MRSBjb25maWd1cmVzIGFuIGVuZC11c2VyIGZlYXR1cmUuIFRo
+ZSB1c2VyIHNpdHMgdGhlcmUgDQphbiB0aGlua3MgIkkgd2FudCBhIGNvbnNvbGUiLiBGQkRF
+Vl9FTVVMQVRJT04gY29udHJvbHMgYSBkcml2ZXIgDQpmdW5jdGlvbmFsaXR5LiBJdCdzIG5v
+dCB1c2VmdWwgYnkgaXRzZWxmLCBidXQgZW5hYmxlcyB0aGUgZW5kdXNlciANCmZlYXR1cmUu
+IFRoZSBmZWF0dXJlcyB3b3VsZCBiZSBGUkFNRUJVRkZFUl9DT05TT0xFIGFuZCBGUkFNRUJV
+RkZFUl9ERVZJQ0UuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+PiBvcHRpb24g
+cmVtYWlucyBtb3JlIGZvciBoaXN0b3JpY2FsIHJlYXNvbnMgdGhhbiBhY3R1YWwgdXNlZnVs
+bmVzcy4NCj4gDQo+Pj4+IC0tLSBhL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmlnDQo+
+Pj4+ICsrKyBiL2RyaXZlcnMvdmlkZW8vY29uc29sZS9LY29uZmlnDQo+Pj4+IEBAIC03NCw2
+ICs3NCw3IEBAIGNvbmZpZyBEVU1NWV9DT05TT0xFX1JPV1MNCj4+Pj4gICAgY29uZmlnIEZS
+QU1FQlVGRkVSX0NPTlNPTEUNCj4+Pj4gICAgICAgICAgIGJvb2wgIkZyYW1lYnVmZmVyIENv
+bnNvbGUgc3VwcG9ydCINCj4+Pj4gICAgICAgICAgIGRlcGVuZHMgb24gRkJfQ09SRSAmJiAh
+VU1MDQo+Pj4+ICsgICAgICAgZGVmYXVsdCBEUk1fRkJERVZfRU1VTEFUSU9ODQo+Pj4NCj4+
+PiBTb3VuZHMgZ29vZCB0byBtZSwgYWx0aG91Z2ggaXQgbG9va3MgYSBiaXQgc3RyYW5nZSBh
+dCBmaXJzdCBzaWdodA0KPj4+IChGUkFNRUJVRkZFUl9DT05TT0xFIGRlZmF1bHRzIHRvIG4g
+b24gYSBzeXN0ZW0gd2l0aCByZWFsIGZiZGV2LCBidXQNCj4+PiB5IG9uIGVtdWxhdGVkIGZi
+ZGV2PykuDQo+Pj4gU28gdGhpcyBpcyB0aGUgZml4IGZvciBjb21taXQgYTVhZTMzMWVkYjAy
+YiAoImRybTogRHJvcCBzZWxlY3QNCj4+PiBGUkFNRUJVRkZFUl9DT05TT0xFIGZvciBEUk1f
+RkJERVZfRU1VTEFUSU9OIikuDQo+Pj4NCj4+Pj4gICAgICAgICAgIHNlbGVjdCBWVF9IV19D
+T05TT0xFX0JJTkRJTkcNCj4+Pj4gICAgICAgICAgIHNlbGVjdCBDUkMzMg0KPj4+PiAgICAg
+ICAgICAgc2VsZWN0IEZPTlRfU1VQUE9SVA0KPj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92
+aWRlby9mYmRldi9jb3JlL0tjb25maWcgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2Nv
+bmZpZw0KPj4+PiBpbmRleCAxMTRjYjhhYTZjOGZkLi44MDRjMmJlYzliNDNjIDEwMDY0NA0K
+Pj4+PiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0KPj4+PiArKysg
+Yi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvS2NvbmZpZw0KPj4+PiBAQCAtMjgsNyArMjgs
+NyBAQCBjb25maWcgRklSTVdBUkVfRURJRA0KPj4+PiAgICBjb25maWcgRkJfREVWSUNFDQo+
+Pj4+ICAgICAgICAgICBib29sICJQcm92aWRlIGxlZ2FjeSAvZGV2L2ZiKiBkZXZpY2UiDQo+
+Pj4+ICAgICAgICAgICBkZXBlbmRzIG9uIEZCX0NPUkUNCj4+Pj4gLSAgICAgICBkZWZhdWx0
+IHkNCj4+Pj4gKyAgICAgICBkZWZhdWx0IEZCDQo+Pj4NCj4+PiBDaGFuZ2luZyB0aGlzIG1l
+YW5zIHBvc3NpYmx5IGNhdXNpbmcgcmVncmVzc2lvbnMgb24gc3lzdGVtcyBydW5uaW5nDQo+
+Pj4gYW4gZmJkZXYgdXNlcnNwYWNlLg0KPj4+DQo+Pj4+ICAgICAgICAgICBoZWxwDQo+Pj4+
+ICAgICAgICAgICAgIFNheSBZIGhlcmUgaWYgeW91IHdhbnQgdGhlIGxlZ2FjeSAvZGV2L2Zi
+KiBkZXZpY2UgZmlsZSBhbmQNCj4+Pj4gICAgICAgICAgICAgaW50ZXJmYWNlcyB3aXRoaW4g
+c3lzZnMgYW5jIHByb2Nmcy4gSXQgaXMgb25seSByZXF1aXJlZCBpZiB5b3UNCj4gDQo+IEdy
+e29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0
+DQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxv
+cGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJh
+c3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRy
+ZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkg
+KEFHIE51ZXJuYmVyZykNCg==
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 49def87a909b..5257106776d5 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -178,10 +178,10 @@ static int test_no_kmem_bypass(const char *root)
- 
- 	/* Set up test memcg */
- 	if (cg_write(root, "cgroup.subtree_control", "+memory"))
--		goto out;
-+		return KSFT_FAIL;
- 	test_group = cg_name(root, "kmem_bypass_test");
- 	if (!test_group)
--		goto out;
-+		return KSFT_FAIL;
- 
- 	/* Spawn memcg child and wait for it to allocate */
- 	set_min_free_kb(min_free_kb_low);
-@@ -208,8 +208,6 @@ static int test_no_kmem_bypass(const char *root)
- 		free(trigger_allocation);
- 		if (get_zswap_stored_pages(&stored_pages))
- 			break;
--		if (stored_pages < 0)
--			break;
- 		/* If memory was pushed to zswap, verify it belongs to memcg */
- 		if (stored_pages > stored_pages_threshold) {
- 			int zswapped = cg_read_key_long(test_group, "memory.stat", "zswapped ");
--- 
-2.34.1
+--------------Jg001PUZ7GquGyoR0gf0QAih--
 
+--------------RarGNkMvgomjmopc3ithYrAM
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF4BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUAI3IFAwAAAAAACgkQlh/E3EQov+AB
+Gw/4+zuzOcmZhLjYn+1nx9xxI6Uy6Tr5+G1nIXxelgLgaAe7b5zwAt6aPLPnUJnP2vFEaPIsLKF8
+8FkQmtRdsnb4gfkDrW9XHOjDmZ/MDujHQW4wUk30NZWbXpFPg4nLoy0Q+K7v1FppgJaLtfLnAIoW
+49eHC7jIrtox1cXFWB8FE8QIzvfnwHZZyFmamWKd8wP4zDVd9UKlDjst/v5AUB3bF+7yPE/aSHUC
+4C1WjP7kinaoGYWLLEvR3r2ddqAtQ8/RVcHYho1OHWO3gHxXRUlzEYaUbT1S2dvjQBPHK5bhtmii
+zGq4L1iBKFc0UPbr0lGovM9mpB6G4jwcD1rh2HwBz13n4Wttv96Cq/tMTvV2DiHcfhMpsC3GGe/F
+eX6U22p/MjiD2RFlQOLYy60I5xSV6xB8sb8syLOMRAJspdYh4uxMIUDMvLxiE9ZuwCEukeGBMoAH
+P2mwCDT7Vq/0f0ErUC1Qx2cnDfunOOBqpQ+PuXi6oXkduGUCLTIRvsB9p+TSiI6Qw7fDEY33NV73
+Zcxox0/EB7DqAN1RvRzkaZS4hKTWog0IUHTpHRm/8fjEHbeg0/b+82blsz5/7KcuEqBU0um5uhyE
+GGclt+Y9ojCgnr8LNeaufbXcC71bTXwCN0bM4SVRi+hLwmB8fASxHAOKC6l98qPLkBPhZMXX0c6k
+EA==
+=7UAm
+-----END PGP SIGNATURE-----
+
+--------------RarGNkMvgomjmopc3ithYrAM--
