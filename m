@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5A479D07E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2017079D080
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbjILL6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
+        id S234996AbjILL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:58:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234939AbjILL6R (ORCPT
+        with ESMTP id S234910AbjILL6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:58:17 -0400
+        Tue, 12 Sep 2023 07:58:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE26170A;
-        Tue, 12 Sep 2023 04:57:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CADE2C433C7;
-        Tue, 12 Sep 2023 11:57:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116D31722;
+        Tue, 12 Sep 2023 04:57:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5D4C433C8;
+        Tue, 12 Sep 2023 11:57:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694519874;
-        bh=1ADMXMRwZkpdzFukU2GAMQEjbVj/Leav+1IcY00RlEw=;
+        s=k20201202; t=1694519877;
+        bh=4Xylyg4Vp6jVguzMuCezz1iiCS344DbnSDbckTx6MjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dVMV6Pccozr1DmAoiXckxsMasYBCGNzRqYFffPsr6ND06gImbEZbAjJBeqNujL1nP
-         HvzKuliJG53cdzoINehbgOT8cBE4SuQOydEN9H9vh9ARVG38rKPJ0Uv7yi71AeX3gz
-         bnqWoGQWURSrVno/EXIIsIeXQ5E872EUYCGCArYmr7WQo4fxG8cOdbCIlJC+LTSrty
-         F4AFyqW+CSincnMlFM/hA+bEGsPy5In6aoWvXlJYn2lHIPD4lUvx1J9fhXdWO8b8Bl
-         /1mJ8Ut4yH4iKYxJDI3eYCKHrgWohMwPlx8t2p/VsRy4v0/0Ba4JGZt3B+XKYNSG5S
-         huDDZuwK3IPKg==
+        b=iEbhIbaoqPi47AUJVl/lKVeL5CpiDVMTgRXXH7bT2lk4AdvIgqSUZfGesMXkkTcA6
+         ZLQRGQOZO/3Ksh9YoKQEzahqLPYG6aWiQVWaQoWl+aM4Wv6NWs9WR3HVCz0bDe6O5G
+         42DzL4K5JEM8E9Fq0ceeYA2YnzHsazVTwmoX3f3xZpDrevRZwIHSDA6fUa3Mko6mG5
+         g/aYl+eA6C6enOca9zJvdeqAUocV8tdD+gM9UR7J5a1IY0Bvqy6rQHomMIkYNCkjiT
+         RHAftuDsGNBOAU1eFaybqPUXwujUvM9GpMslSiVZvuyc2UaYQIUNEAhghspWSj+Fpq
+         BoP5jUfhPcN3g==
 From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -38,12 +38,10 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
 Cc:     Heiko Stuebner <heiko@sntech.de>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Han-Kuan Chen <hankuan.chen@sifive.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [RFC PATCH 3/6] riscv: Add vector extension XOR implementation
-Date:   Tue, 12 Sep 2023 13:57:25 +0200
-Message-Id: <20230912115728.172982-4-bjorn@kernel.org>
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 4/6] riscv: vector: do not pass task_struct into riscv_v_vstate_{save,restore}()
+Date:   Tue, 12 Sep 2023 13:57:26 +0200
+Message-Id: <20230912115728.172982-5-bjorn@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230912115728.172982-1-bjorn@kernel.org>
 References: <20230912115728.172982-1-bjorn@kernel.org>
@@ -53,208 +51,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greentime Hu <greentime.hu@sifive.com>
+From: Andy Chiu <andy.chiu@sifive.com>
 
-This patch adds support for vector optimized XOR and it is tested in
-qemu.
+riscv_v_vstate_{save,restore}() can operate only on the knowlege of
+struct __riscv_v_ext_state, and struct pt_regs. Let the caller decides
+which should be passed into the function. Meanwhile, the kernel-mode
+Vector is going to introduce another vstate, so this also makes functions
+potentially able to be reused.
 
-Co-developed-by: Han-Kuan Chen <hankuan.chen@sifive.com>
-Signed-off-by: Han-Kuan Chen <hankuan.chen@sifive.com>
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- arch/riscv/include/asm/xor.h | 82 ++++++++++++++++++++++++++++++++++++
- arch/riscv/lib/Makefile      |  1 +
- arch/riscv/lib/xor.S         | 81 +++++++++++++++++++++++++++++++++++
- 3 files changed, 164 insertions(+)
- create mode 100644 arch/riscv/include/asm/xor.h
- create mode 100644 arch/riscv/lib/xor.S
+ arch/riscv/include/asm/entry-common.h  |  2 +-
+ arch/riscv/include/asm/vector.h        | 14 +++++---------
+ arch/riscv/kernel/kernel_mode_vector.c |  2 +-
+ arch/riscv/kernel/ptrace.c             |  2 +-
+ arch/riscv/kernel/signal.c             |  2 +-
+ 5 files changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/arch/riscv/include/asm/xor.h b/arch/riscv/include/asm/xor.h
-new file mode 100644
-index 000000000000..903c3275f8d0
---- /dev/null
-+++ b/arch/riscv/include/asm/xor.h
-@@ -0,0 +1,82 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2021 SiFive
-+ */
-+
-+#include <linux/hardirq.h>
-+#include <asm-generic/xor.h>
-+#ifdef CONFIG_RISCV_ISA_V
-+#include <asm/vector.h>
-+#include <asm/switch_to.h>
-+
-+void xor_regs_2_(unsigned long bytes, unsigned long *__restrict p1,
-+		 const unsigned long *__restrict p2);
-+void xor_regs_3_(unsigned long bytes, unsigned long *__restrict p1,
-+		 const unsigned long *__restrict p2,
-+		 const unsigned long *__restrict p3);
-+void xor_regs_4_(unsigned long bytes, unsigned long *__restrict p1,
-+		 const unsigned long *__restrict p2,
-+		 const unsigned long *__restrict p3,
-+		 const unsigned long *__restrict p4);
-+void xor_regs_5_(unsigned long bytes, unsigned long *__restrict p1,
-+		 const unsigned long *__restrict p2,
-+		 const unsigned long *__restrict p3,
-+		 const unsigned long *__restrict p4,
-+		 const unsigned long *__restrict p5);
-+
-+static void xor_vector_2(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2)
-+{
-+	kernel_vector_begin();
-+	xor_regs_2_(bytes, p1, p2);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_3(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3)
-+{
-+	kernel_vector_begin();
-+	xor_regs_3_(bytes, p1, p2, p3);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_4(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3,
-+			 const unsigned long *__restrict p4)
-+{
-+	kernel_vector_begin();
-+	xor_regs_4_(bytes, p1, p2, p3, p4);
-+	kernel_vector_end();
-+}
-+
-+static void xor_vector_5(unsigned long bytes, unsigned long *__restrict p1,
-+			 const unsigned long *__restrict p2,
-+			 const unsigned long *__restrict p3,
-+			 const unsigned long *__restrict p4,
-+			 const unsigned long *__restrict p5)
-+{
-+	kernel_vector_begin();
-+	xor_regs_5_(bytes, p1, p2, p3, p4, p5);
-+	kernel_vector_end();
-+}
-+
-+static struct xor_block_template xor_block_rvv = {
-+	.name = "rvv",
-+	.do_2 = xor_vector_2,
-+	.do_3 = xor_vector_3,
-+	.do_4 = xor_vector_4,
-+	.do_5 = xor_vector_5
-+};
-+
-+#undef XOR_TRY_TEMPLATES
-+#define XOR_TRY_TEMPLATES           \
-+	do {        \
-+		xor_speed(&xor_block_8regs);    \
-+		xor_speed(&xor_block_32regs);    \
-+		if (has_vector()) { \
-+			xor_speed(&xor_block_rvv);\
-+		} \
-+	} while (0)
-+#endif
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 26cb2502ecf8..494f9cd1a00c 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -11,3 +11,4 @@ lib-$(CONFIG_64BIT)	+= tishift.o
- lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
+diff --git a/arch/riscv/include/asm/entry-common.h b/arch/riscv/include/asm/entry-common.h
+index 52926f4d8d7c..aa1b9e50d6c8 100644
+--- a/arch/riscv/include/asm/entry-common.h
++++ b/arch/riscv/include/asm/entry-common.h
+@@ -12,7 +12,7 @@ static inline void arch_exit_to_user_mode_prepare(struct pt_regs *regs,
+ {
+ 	if (ti_work & _TIF_RISCV_V_DEFER_RESTORE) {
+ 		clear_thread_flag(TIF_RISCV_V_DEFER_RESTORE);
+-		riscv_v_vstate_restore(current, regs);
++		riscv_v_vstate_restore(&current->thread.vstate, regs);
+ 	}
+ }
  
- obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
-+lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
-diff --git a/arch/riscv/lib/xor.S b/arch/riscv/lib/xor.S
-new file mode 100644
-index 000000000000..3bc059e18171
---- /dev/null
-+++ b/arch/riscv/lib/xor.S
-@@ -0,0 +1,81 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2021 SiFive
-+ */
-+#include <linux/linkage.h>
-+#include <asm-generic/export.h>
-+#include <asm/asm.h>
-+
-+ENTRY(xor_regs_2_)
-+	vsetvli a3, a0, e8, m8, ta, ma
-+	vle8.v v0, (a1)
-+	vle8.v v8, (a2)
-+	sub a0, a0, a3
-+	vxor.vv v16, v0, v8
-+	add a2, a2, a3
-+	vse8.v v16, (a1)
-+	add a1, a1, a3
-+	bnez a0, xor_regs_2_
-+	ret
-+END(xor_regs_2_)
-+EXPORT_SYMBOL(xor_regs_2_)
-+
-+ENTRY(xor_regs_3_)
-+	vsetvli a4, a0, e8, m8, ta, ma
-+	vle8.v v0, (a1)
-+	vle8.v v8, (a2)
-+	sub a0, a0, a4
-+	vxor.vv v0, v0, v8
-+	vle8.v v16, (a3)
-+	add a2, a2, a4
-+	vxor.vv v16, v0, v16
-+	add a3, a3, a4
-+	vse8.v v16, (a1)
-+	add a1, a1, a4
-+	bnez a0, xor_regs_3_
-+	ret
-+END(xor_regs_3_)
-+EXPORT_SYMBOL(xor_regs_3_)
-+
-+ENTRY(xor_regs_4_)
-+	vsetvli a5, a0, e8, m8, ta, ma
-+	vle8.v v0, (a1)
-+	vle8.v v8, (a2)
-+	sub a0, a0, a5
-+	vxor.vv v0, v0, v8
-+	vle8.v v16, (a3)
-+	add a2, a2, a5
-+	vxor.vv v0, v0, v16
-+	vle8.v v24, (a4)
-+	add a3, a3, a5
-+	vxor.vv v16, v0, v24
-+	add a4, a4, a5
-+	vse8.v v16, (a1)
-+	add a1, a1, a5
-+	bnez a0, xor_regs_4_
-+	ret
-+END(xor_regs_4_)
-+EXPORT_SYMBOL(xor_regs_4_)
-+
-+ENTRY(xor_regs_5_)
-+	vsetvli a6, a0, e8, m8, ta, ma
-+	vle8.v v0, (a1)
-+	vle8.v v8, (a2)
-+	sub a0, a0, a6
-+	vxor.vv v0, v0, v8
-+	vle8.v v16, (a3)
-+	add a2, a2, a6
-+	vxor.vv v0, v0, v16
-+	vle8.v v24, (a4)
-+	add a3, a3, a6
-+	vxor.vv v0, v0, v24
-+	vle8.v v8, (a5)
-+	add a4, a4, a6
-+	vxor.vv v16, v0, v8
-+	add a5, a5, a6
-+	vse8.v v16, (a1)
-+	add a1, a1, a6
-+	bnez a0, xor_regs_5_
-+	ret
-+END(xor_regs_5_)
-+EXPORT_SYMBOL(xor_regs_5_)
+diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
+index 768acd517414..9b818aac8a94 100644
+--- a/arch/riscv/include/asm/vector.h
++++ b/arch/riscv/include/asm/vector.h
+@@ -164,23 +164,19 @@ static inline void riscv_v_vstate_discard(struct pt_regs *regs)
+ 	__riscv_v_vstate_dirty(regs);
+ }
+ 
+-static inline void riscv_v_vstate_save(struct task_struct *task,
++static inline void riscv_v_vstate_save(struct __riscv_v_ext_state *vstate,
+ 				       struct pt_regs *regs)
+ {
+ 	if ((regs->status & SR_VS) == SR_VS_DIRTY) {
+-		struct __riscv_v_ext_state *vstate = &task->thread.vstate;
+-
+ 		__riscv_v_vstate_save(vstate, vstate->datap);
+ 		__riscv_v_vstate_clean(regs);
+ 	}
+ }
+ 
+-static inline void riscv_v_vstate_restore(struct task_struct *task,
++static inline void riscv_v_vstate_restore(struct __riscv_v_ext_state *vstate,
+ 					  struct pt_regs *regs)
+ {
+ 	if ((regs->status & SR_VS) != SR_VS_OFF) {
+-		struct __riscv_v_ext_state *vstate = &task->thread.vstate;
+-
+ 		__riscv_v_vstate_restore(vstate, vstate->datap);
+ 		__riscv_v_vstate_clean(regs);
+ 	}
+@@ -201,7 +197,7 @@ static inline void __switch_to_vector(struct task_struct *prev,
+ 	struct pt_regs *regs;
+ 
+ 	regs = task_pt_regs(prev);
+-	riscv_v_vstate_save(prev, regs);
++	riscv_v_vstate_save(&prev->thread.vstate, regs);
+ 	riscv_v_vstate_set_restore(next, task_pt_regs(next));
+ }
+ 
+@@ -219,8 +215,8 @@ static inline bool riscv_v_vstate_query(struct pt_regs *regs) { return false; }
+ static inline bool riscv_v_vstate_ctrl_user_allowed(void) { return false; }
+ #define riscv_v_vsize (0)
+ #define riscv_v_vstate_discard(regs)		do {} while (0)
+-#define riscv_v_vstate_save(task, regs)		do {} while (0)
+-#define riscv_v_vstate_restore(task, regs)	do {} while (0)
++#define riscv_v_vstate_save(vstate, regs)	do {} while (0)
++#define riscv_v_vstate_restore(vstate, regs)	do {} while (0)
+ #define __switch_to_vector(__prev, __next)	do {} while (0)
+ #define riscv_v_vstate_off(regs)		do {} while (0)
+ #define riscv_v_vstate_on(regs)			do {} while (0)
+diff --git a/arch/riscv/kernel/kernel_mode_vector.c b/arch/riscv/kernel/kernel_mode_vector.c
+index 1c3b32d2b340..d9e097e68937 100644
+--- a/arch/riscv/kernel/kernel_mode_vector.c
++++ b/arch/riscv/kernel/kernel_mode_vector.c
+@@ -68,7 +68,7 @@ void kernel_vector_begin(void)
+ 
+ 	BUG_ON(!may_use_simd());
+ 
+-	riscv_v_vstate_save(current, task_pt_regs(current));
++	riscv_v_vstate_save(&current->thread.vstate, task_pt_regs(current));
+ 
+ 	get_cpu_vector_context();
+ 
+diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
+index 2afe460de16a..2e7e00f4f8e1 100644
+--- a/arch/riscv/kernel/ptrace.c
++++ b/arch/riscv/kernel/ptrace.c
+@@ -100,7 +100,7 @@ static int riscv_vr_get(struct task_struct *target,
+ 	 * copying them to membuf.
+ 	 */
+ 	if (target == current)
+-		riscv_v_vstate_save(current, task_pt_regs(current));
++		riscv_v_vstate_save(&current->thread.vstate, task_pt_regs(current));
+ 
+ 	ptrace_vstate.vstart = vstate->vstart;
+ 	ptrace_vstate.vl = vstate->vl;
+diff --git a/arch/riscv/kernel/signal.c b/arch/riscv/kernel/signal.c
+index 0fca2c128b5f..75fd8cc05e10 100644
+--- a/arch/riscv/kernel/signal.c
++++ b/arch/riscv/kernel/signal.c
+@@ -86,7 +86,7 @@ static long save_v_state(struct pt_regs *regs, void __user **sc_vec)
+ 	/* datap is designed to be 16 byte aligned for better performance */
+ 	WARN_ON(unlikely(!IS_ALIGNED((unsigned long)datap, 16)));
+ 
+-	riscv_v_vstate_save(current, regs);
++	riscv_v_vstate_save(&current->thread.vstate, regs);
+ 	/* Copy everything of vstate but datap. */
+ 	err = __copy_to_user(&state->v_state, &current->thread.vstate,
+ 			     offsetof(struct __riscv_v_ext_state, datap));
 -- 
 2.39.2
 
