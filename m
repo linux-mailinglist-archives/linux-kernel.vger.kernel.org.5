@@ -2,189 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9513B79C4A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C3779C4B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbjILETx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 00:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        id S230045AbjILEYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbjILETp (ORCPT
+        with ESMTP id S231659AbjILEYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:19:45 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7C7E64
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:19:38 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bf60f85d78so73910595ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:19:38 -0700 (PDT)
+        Tue, 12 Sep 2023 00:24:04 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2403D10DD
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:23:37 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c3a2ea2816so72165ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694492377; x=1695097177; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FoTtHZn5McnPgtWNsfVZSyVXUY1RZpX9ounYkXsDLo=;
-        b=m01Afecuhy9AK3GxxTyUuPvu74pfp2YF5BpLxhxSTCguBgYu9/ZbTxh3cRWhTBfUbb
-         d481CrU/dV0gARnOvAYUDAN/h3YN6vfizBcQv194JXZdOP2H3gee98/hLKPom8RsHfE0
-         e9fCzHuAbchc62yUbTiOJ1mwklZMWsF9aEhl7qUQS55CQrKCs4w5MEOokhSWhKZFRVs8
-         RyssCBzXxrJd2Z2bw0Yr4JL9z8kxaFKDU/6XeiYH9LufPuwBwCm3WSMlIrWsObnhXSsN
-         byR79q4iSenoZHcQw3nZmgD313yu6HeZ49DV3zVdCBamw3jZw2um1w5nlsSi/cGPtZrY
-         ngPA==
+        d=google.com; s=20230601; t=1694492616; x=1695097416; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e86HSJwRGcmJDcBfAyZUWM/kB+djN8bXOhlNPzJ2TvY=;
+        b=rl0BeNTTjKy1alqEb8IaLKpDZAN+2wg+rg7rHpnpC6Kh4TFS+KldhfQQ+XUYXMmVJM
+         xRhH95K+ysgzAZQjhdD6No3tkmAbzrUG4E6P9D9/oYDMYDyCWy3OJDBv+9hXCZqJTVoV
+         5Vcge3ThzKT2C/15BT/htBnoUgUP62dWtDprvceScOx5ymZjropH9iYcDX3jvzYSQ0iX
+         f8JEE3AmiuEm91TZ8DQCyJ2snAlxpyDZpJBIEWXhjMBCClSzNJVT65I1DqFD6Bh2G0AT
+         dg4P9k8NZCt6wfsOgwt3miMt5sNWi/6ZIJ9GOh23Xt3+lDbTSSl2r2L84qR8AcUJJGYW
+         7fYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694492377; x=1695097177;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FoTtHZn5McnPgtWNsfVZSyVXUY1RZpX9ounYkXsDLo=;
-        b=Vw+bH/8+swmOP1As6lFVp0p+QFBd6dHGIMzMZuBxCYBWTQhX6b70otS2D+r5GZJ67H
-         ckaEBKDviBS47jxQcqp2vx14VcQBauXTfPjAKm47EEPG/mxh/FGrC7aZ573cZn4+mZqj
-         THkTBw9ejDUaaDtWazSw1CcWoasK4Q2O2lI+W2shcuprWe0Yl/YU+NfLBZ/9w5OqIxET
-         ui8LkYl1Lr8rvP3QsjC0zIRQ1OmeDIyTczavIw6ZvofHgRcfw8xyqiqx357wvN9qmPUV
-         hbj3LCQx1PpWHaB7vvB8RYi6YC/jI4BT6fSULaBef5UsF4K9d54P0lQ/XWF89tsSjUuR
-         PUgA==
-X-Gm-Message-State: AOJu0YwOjPODUy40bWqpTfYtBpyy10SLPcP4X9zMV9CdsySHJX9RCIaB
-        ilgPDFeHNUdWWF91i/KzpVKT40i5MybE
-X-Google-Smtp-Source: AGHT+IEjziNcHioUnH4onhylNieAYY2qPb4XrVhqHo+raURB6CW2pn7JG4PBrbjfERTU4xeq4CNwieAL4VEt
-X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
- (user=arakesh job=sendgmr) by 2002:a17:902:e808:b0:1bb:de7f:a4b7 with SMTP id
- u8-20020a170902e80800b001bbde7fa4b7mr4796225plg.10.1694492377612; Mon, 11 Sep
- 2023 21:19:37 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 21:19:10 -0700
-In-Reply-To: <20230912041910.726442-1-arakesh@google.com>
-Mime-Version: 1.0
-References: <20230912041910.726442-1-arakesh@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912041910.726442-3-arakesh@google.com>
-Subject: [PATCH v1 2/2] usb: gadget: uvc: prevent de-allocating inflight usb_requests
-From:   Avichal Rakesh <arakesh@google.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Avichal Rakesh <arakesh@google.com>
+        d=1e100.net; s=20230601; t=1694492616; x=1695097416;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e86HSJwRGcmJDcBfAyZUWM/kB+djN8bXOhlNPzJ2TvY=;
+        b=rKJ3kYfTrbm5UkZJm+WtfU3HQT/cQDskBB7uc7E0/n76YJ7DzPkOpDOKEC84bOFec/
+         f//XvionaK6D6xUnWLU8Q2JbXkTuOkB2ges0p+mLK6NxQ2c3Jpxp3N7Bcs38IWYquHm9
+         PjlHMUR5PYmhcmk1wZ6QgBplGoqQeu66ffBkGNCykHPjNKtDk9uZJGnSXQLbiCR6WnOs
+         qB9EWuFZ2i/V/zyyiiNPs3jtNEGktHKYujTIzJaLscnE6EIkeZUJy0FYPFczCspX7vTp
+         LB6j4s08zyHEc1fsLZgqxIpP9B1p9zrAUqx8id91+IjbFAq5+7Sx0jAaPBtrkUB0RexN
+         o+Dg==
+X-Gm-Message-State: AOJu0YxEelmXlc9PmGu1+jUthZh5WanU34BdJfqegiwNfzoDtM57Lc5o
+        Ax9aiFGCDOqZVPAftiY2qe0bnyhD7H+BPPXPthER3g==
+X-Google-Smtp-Source: AGHT+IFvIC6HsjLpFz4Q6lIOwbhumvid2z3YBaaTD9wl9JQPyj/Ib85J15uaWKUQoY/kymlDQXEfO6X4yMqqbou0XGQ=
+X-Received: by 2002:a17:902:c40b:b0:1c0:7dec:e5b2 with SMTP id
+ k11-20020a170902c40b00b001c07dece5b2mr171793plk.4.1694492616154; Mon, 11 Sep
+ 2023 21:23:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230911082016.3694700-1-yajun.deng@linux.dev>
+In-Reply-To: <20230911082016.3694700-1-yajun.deng@linux.dev>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 12 Sep 2023 06:23:24 +0200
+Message-ID: <CANn89i+W1iAQmOhunLbqpvHu8EUO6uawv6Uvx7qimyBa_PBNCg@mail.gmail.com>
+Subject: Re: [PATCH] net/core: Export dev_core_stats_rx_dropped_inc sets
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        horms@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when stopping the stream, uvcg_video_enable immediately
-deallocates the usb_requests after calling usb_ep_dequeue. However,
-usb_ep_dequeue is asynchronous and it is possible that it deallocates an
-inflight request. The gadget drivers should wait until the complete
-callbacks before assuming ownership of the request.
+On Mon, Sep 11, 2023 at 10:20=E2=80=AFAM Yajun Deng <yajun.deng@linux.dev> =
+wrote:
+>
+> Although there is a kfree_skb_reason() helper function that can be used
+> to find the reason for dropped packets, but most callers didn't increase
+> one of rx_dropped, tx_dropped, rx_nohandler and rx_otherhost_dropped.
+>
+> For the users, people are more concerned about why the dropped in ifconfi=
+g
+> is increasing. So we can export dev_core_stats_rx_dropped_inc sets,
+> which users would trace them know why rx_dropped is increasing.
+>
+> Export dev_core_stats_{rx_dropped, tx_dropped, rx_nohandler,
+> rx_otherhost_dropped}_inc for trace. Also, move dev_core_stats()
+> and netdev_core_stats_alloc() in dev.c, because they are not called
+> externally.
+>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
-This patch adds a simple request counting mechanism to track how many
-requests are currently owned by the driver. Now when stopping the stream,
-uvcg_video_enable waits for all the complete callbacks to come through
-before deallocating the usb_requests.
+Okay, but it seems you forgot to say which tree was targeted by this patch.
 
-Signed-off-by: Avichal Rakesh <arakesh@google.com>
----
- drivers/usb/gadget/function/uvc.h       |  3 +++
- drivers/usb/gadget/function/uvc_video.c | 31 ++++++++++++++++++++++++-
- 2 files changed, 33 insertions(+), 1 deletion(-)
+Documentation/process/maintainer-netdev.rst
 
-diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
-index 989bc6b4e93d..e40e702a7074 100644
---- a/drivers/usb/gadget/function/uvc.h
-+++ b/drivers/usb/gadget/function/uvc.h
-@@ -104,8 +104,11 @@ struct uvc_video {
- 	unsigned int req_size;
- 	struct uvc_request *ureq;
- 	struct list_head req_free;
-+	unsigned int req_free_count; /* number of requests in req_free */
- 	spinlock_t req_lock;
+I would guess net-next, but patch authors are supposed to be explicit.
 
-+	wait_queue_head_t req_free_queue;
-+
- 	unsigned int req_int_count;
+> ---
+>  include/linux/netdevice.h | 32 +++++---------------------------
+>  net/core/dev.c            | 30 ++++++++++++++++++++++++++++--
+>  2 files changed, 33 insertions(+), 29 deletions(-)
+>
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 0896aaa91dd7..879b01c85ba4 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3954,6 +3954,11 @@ int dev_forward_skb_nomtu(struct net_device *dev, =
+struct sk_buff *skb);
+>  bool is_skb_forwardable(const struct net_device *dev,
+>                         const struct sk_buff *skb);
+>
+> +void dev_core_stats_rx_dropped_inc(struct net_device *dev);
+> +void dev_core_stats_tx_dropped_inc(struct net_device *dev);
+> +void dev_core_stats_rx_nohandler_inc(struct net_device *dev);
+> +void dev_core_stats_rx_otherhost_dropped_inc(struct net_device *dev);
+> +
+>  static __always_inline bool __is_skb_forwardable(const struct net_device=
+ *dev,
+>                                                  const struct sk_buff *sk=
+b,
+>                                                  const bool check_mtu)
+> @@ -3980,33 +3985,6 @@ static __always_inline bool __is_skb_forwardable(c=
+onst struct net_device *dev,
+>         return false;
+>  }
+>
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct ne=
+t_device *dev);
+> -
+> -static inline struct net_device_core_stats __percpu *dev_core_stats(stru=
+ct net_device *dev)
+> -{
+> -       /* This READ_ONCE() pairs with the write in netdev_core_stats_all=
+oc() */
+> -       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_=
+stats);
+> -
+> -       if (likely(p))
+> -               return p;
+> -
+> -       return netdev_core_stats_alloc(dev);
+> -}
+> -
+> -#define DEV_CORE_STATS_INC(FIELD)                                       =
+       \
+> -static inline void dev_core_stats_##FIELD##_inc(struct net_device *dev) =
+               \
+> -{                                                                       =
+       \
+> -       struct net_device_core_stats __percpu *p;                        =
+       \
+> -                                                                        =
+       \
+> -       p =3D dev_core_stats(dev);                                       =
+         \
+> -       if (p)                                                           =
+       \
+> -               this_cpu_inc(p->FIELD);                                  =
+       \
+> -}
+> -DEV_CORE_STATS_INC(rx_dropped)
+> -DEV_CORE_STATS_INC(tx_dropped)
+> -DEV_CORE_STATS_INC(rx_nohandler)
+> -DEV_CORE_STATS_INC(rx_otherhost_dropped)
+> -
+>  static __always_inline int ____dev_forward_skb(struct net_device *dev,
+>                                                struct sk_buff *skb,
+>                                                const bool check_mtu)
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index ccff2b6ef958..32ba730405b4 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -10475,7 +10475,7 @@ void netdev_stats_to_stats64(struct rtnl_link_sta=
+ts64 *stats64,
+>  }
+>  EXPORT_SYMBOL(netdev_stats_to_stats64);
+>
+> -struct net_device_core_stats __percpu *netdev_core_stats_alloc(struct ne=
+t_device *dev)
+> +static struct net_device_core_stats __percpu *netdev_core_stats_alloc(st=
+ruct net_device *dev)
+>  {
+>         struct net_device_core_stats __percpu *p;
+>
+> @@ -10488,7 +10488,33 @@ struct net_device_core_stats __percpu *netdev_co=
+re_stats_alloc(struct net_device
+>         /* This READ_ONCE() pairs with the cmpxchg() above */
+>         return READ_ONCE(dev->core_stats);
+>  }
+> -EXPORT_SYMBOL(netdev_core_stats_alloc);
+> +
+> +static inline struct net_device_core_stats __percpu *dev_core_stats(stru=
+ct net_device *dev)
 
- 	void (*encode) (struct usb_request *req, struct uvc_video *video,
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index 70ff88854539..3ea7d52df80d 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -284,10 +284,18 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+Please remove this inline attritbute. Consider using __cold instead.
 
- 	spin_lock_irqsave(&video->req_lock, flags);
- 	list_add_tail(&req->list, &video->req_free);
-+	video->req_free_count++;
- 	spin_unlock_irqrestore(&video->req_lock, flags);
+> +{
+> +       /* This READ_ONCE() pairs with the write in netdev_core_stats_all=
+oc() */
+> +       struct net_device_core_stats __percpu *p =3D READ_ONCE(dev->core_=
+stats);
+> +
+> +       if (likely(p))
+> +               return p;
+> +
+> +       return netdev_core_stats_alloc(dev);
+> +}
+> +
+> +#define DEV_CORE_STATS_INC(FIELD)                              \
+> +void dev_core_stats_##FIELD##_inc(struct net_device *dev)      \
+> +{                                                              \
+> +       struct net_device_core_stats __percpu *p;               \
+> +                                                               \
+> +       p =3D dev_core_stats(dev);                                \
+> +       if (p)                                                  \
+> +               this_cpu_inc(p->FIELD);                         \
+> +}                                                              \
+> +EXPORT_SYMBOL(dev_core_stats_##FIELD##_inc)
+> +
+> +DEV_CORE_STATS_INC(rx_dropped);
+> +DEV_CORE_STATS_INC(tx_dropped);
+> +DEV_CORE_STATS_INC(rx_nohandler);
+> +DEV_CORE_STATS_INC(rx_otherhost_dropped);
 
--	if (uvc->state == UVC_STATE_STREAMING)
-+	if (uvc->state == UVC_STATE_STREAMING) {
- 		queue_work(video->async_wq, &video->pump);
-+	} else if (video->req_free_count == video->req_size) {
-+		/*
-+		 * Wake up thread waiting for all requests to be returned to
-+		 * the gadget driver.
-+		 */
-+		wake_up_interruptible(&video->req_free_queue);
-+	}
- }
+#undef DEV_CORE_STATS_INC
 
- static int
-@@ -316,6 +324,7 @@ uvc_video_free_requests(struct uvc_video *video)
-
- 	INIT_LIST_HEAD(&video->req_free);
- 	video->req_size = 0;
-+	video->req_free_count = 0;
- 	return 0;
- }
-
-@@ -360,6 +369,7 @@ uvc_video_alloc_requests(struct uvc_video *video)
- 	}
-
- 	video->req_size = req_size;
-+	video->req_free_count = req_size; /* all requests are currently free */
-
- 	return 0;
-
-@@ -404,6 +414,7 @@ static void uvcg_video_pump(struct work_struct *work)
- 		req = list_first_entry(&video->req_free, struct usb_request,
- 					list);
- 		list_del(&req->list);
-+		video->req_free_count--;
- 		spin_unlock_irqrestore(&video->req_lock, flags);
-
- 		/*
-@@ -480,6 +491,7 @@ static void uvcg_video_pump(struct work_struct *work)
-
- 	spin_lock_irqsave(&video->req_lock, flags);
- 	list_add_tail(&req->list, &video->req_free);
-+	video->req_free_count++;
- 	spin_unlock_irqrestore(&video->req_lock, flags);
- 	return;
- }
-@@ -506,6 +518,22 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
- 			if (video->ureq && video->ureq[i].req)
- 				usb_ep_dequeue(video->ep, video->ureq[i].req);
-
-+		/*
-+		 * Wait 500ms for the usb_requests to be given back to the
-+		 * gadget driver. This ensures that we don't accidentally
-+		 * reference de-allocated usb_requests in the complete callback.
-+		 */
-+		if (video->req_free_count != video->req_size) {
-+			uvcg_info(&video->uvc->func,
-+					"Waiting 500ms for usb_request complete callbacks.\n");
-+			ret = wait_event_interruptible_timeout(
-+					video->req_free_queue,
-+					video->req_free_count == video->req_size,
-+					msecs_to_jiffies(500));
-+			uvcg_info(&video->uvc->func,
-+					"Done waiting for complete callbacks: %d\n", ret);
-+		}
-+
- 		uvc_video_free_requests(video);
- 		uvcg_queue_enable(&video->queue, 0);
- 		return 0;
-@@ -538,6 +566,7 @@ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
- {
- 	INIT_LIST_HEAD(&video->req_free);
- 	spin_lock_init(&video->req_lock);
-+	init_waitqueue_head(&video->req_free_queue);
- 	INIT_WORK(&video->pump, uvcg_video_pump);
-
- 	/* Allocate a work queue for asynchronous video pump handler. */
---
-2.42.0.283.g2d96d420d3-goog
-
+>
+>  /**
+>   *     dev_get_stats   - get network device statistics
+> --
+> 2.25.1
+>
