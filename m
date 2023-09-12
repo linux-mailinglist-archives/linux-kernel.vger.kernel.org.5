@@ -2,90 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D59A079C991
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F05479C996
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232367AbjILIP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
+        id S232290AbjILIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232578AbjILIPr (ORCPT
+        with ESMTP id S232701AbjILIQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:15:47 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B2B10C3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:15:43 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d78328bc2abso5008355276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:15:43 -0700 (PDT)
+        Tue, 12 Sep 2023 04:16:23 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C90FE7F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:19 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9ad8a33fd0dso38761666b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694506542; x=1695111342; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tghVFyIVhGX7gYPr6Xj0nI/BEuj6kidnkTNQDfpOQPI=;
-        b=U9nCW5ZbT8ShIHJFZi93YCEvs2CdMeYP2+a1cL715L/re+nSH1CO43I6hK0h5Y5d/e
-         h9VO/B0dct4DrXiD6xvkg7MGCYQWNmHcfck9dqtnAWLctv3ACZfwdRo1vLxKm1voC+aJ
-         w/hFIMpp47OW4w6XNZ8ErKG/bUE8tGgy5J/I5C4pcjVeTdRwkuDP81lHvqwkatisOTfU
-         PzV2i4UI3q2W1J55oUABuhwraycdKejnPTIVmUMuy1TuTQEX4ZkaWphG+Xylcw+Oywik
-         4aj56Y02olVCRG0TolnLnlRBZ9MNPndwhqMTxW3MNzBplge/6QSvEuf15i1BI8kV2N/M
-         jS9A==
+        d=linaro.org; s=google; t=1694506577; x=1695111377; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IQQyuvgw2Ih8CCznL4czbdJi4u/aUR5st1Zl8jdFdis=;
+        b=dLGZqD3wDITomFvFKqxhKdyEZcHC4NxHzQ9QMqagju9HbFsECAeW6WfzitYLpV34Df
+         SCBnb2zv9TvJ7bALVwEi8z8AAcEMXl+keKp9sZHrq5PLz+WkSClAdgeCnVLMKjWVk7PY
+         B6CTx3OjsAGKKFRpeCs2WPx3hlppsjtFwFQhRx4WmhBqi9e06kboN4IfkXxAtisndtqA
+         gKrTJ+f9O4+Tmzq/ydPLuQyrF8HAw7LIyHwTO9evoZZyDmoTcN360bVy6lIxvs+/UJx8
+         oj34/BNz+iphiQc9b3M9tWt69nzQ2fgXMHUUOtJ+Oztx1Cc1LGU4CWwyDRw3NUhXMC1f
+         x8mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694506542; x=1695111342;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tghVFyIVhGX7gYPr6Xj0nI/BEuj6kidnkTNQDfpOQPI=;
-        b=J+Aja/B8LD2zhwcA5FOzAkDGlx+j7eL1Lb2VYaE3eITCNbJlrSbTV6G5JT+m16c9wD
-         YmbHMHrVguGeHwDS9eCAy1+cpBYpkmtE5xYI3w8CL88p2mDldatS6vMnybl0wKrOaCQy
-         FXEt6JLmCSDLHt4mJW7llRgSlden1yWJWd5EcKqHaty+qAdfRJn4GLEduWP6MPf+y9ic
-         yM+HidfIXoTOeMRlQ6Wf4BkihwBNSbw3iXg45tr1VdFxZAMdAJxjA+IcMC6chPYmlw6Z
-         V5zDBFqe62hgzxal3rgD5dzQkQiJ8Ne3PukzHaK2Bs0tE8S2zpkEqnL2WKubkzSKNORE
-         bDhA==
-X-Gm-Message-State: AOJu0Yy7LnfJxkMxhPW5l0saatSHTorhx1RzTq9/d1S379NV+1eDveQ7
-        XJCx8PMA+hwuEyzYBbNaJ2POGKRaS7BAA1uxEioX6Q==
-X-Google-Smtp-Source: AGHT+IF9JdFOEbM9cB2dJiRJKc//HeRrwq0WKN18VB7VbjHOfLCYipsBo+gHvg02bKHENmMSmNIRGBLQIXk/n6NrARc=
-X-Received: by 2002:a25:aa69:0:b0:d7a:e0f6:54cc with SMTP id
- s96-20020a25aa69000000b00d7ae0f654ccmr11152715ybi.26.1694506542714; Tue, 12
- Sep 2023 01:15:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694506577; x=1695111377;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IQQyuvgw2Ih8CCznL4czbdJi4u/aUR5st1Zl8jdFdis=;
+        b=GI1Ynjap8a4zn/2BXCLmkZoErGcxc/1xSa9TjUF9W1rKETn7aKzr9G3p2AHBwD7ZeJ
+         9jyUMudOpVfzNTkWBqHm6V5jNKCASiPWkxQ5jNimDx6Xy1CB4TIKzq+V27H4v5T0Jc20
+         Ou2WXMMfZvUSQpXdvI7NqnoYmhFtVFHNqzS5DMdQ/1mEB75ldLS0xy4wajSuQUHKh2pO
+         WljCyMeEBE/T20nKkCv7PiY82XWZh0IT5ldEK5P7eDCUFanY5xVSZdmflT2Y16bEBLAX
+         HHVcCRWq66jbw/UhUvc0G6deP/NgKPzg9CYno24mBxcftfnHLTV7COGRKx5/jMQ3iwzW
+         L+Iw==
+X-Gm-Message-State: AOJu0YxEsua5/hcPFDSChNzOxeI1T0rGFdSaXADPFeGZBCy/NCZdFG9o
+        DjgcsHLasEGp21973D3NqQz6OA==
+X-Google-Smtp-Source: AGHT+IGnDIjB1E0+PM78RIHPjXSnqOuV7g/f+t4r79vgK/6WUopYnar+OQmHMaOMcvof7mrFdmwNsQ==
+X-Received: by 2002:a17:906:8469:b0:9aa:165:aefc with SMTP id hx9-20020a170906846900b009aa0165aefcmr9205509ejc.33.1694506577602;
+        Tue, 12 Sep 2023 01:16:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id i19-20020a170906851300b0099297782aa9sm6357666ejx.49.2023.09.12.01.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 01:16:16 -0700 (PDT)
+Message-ID: <83b3f2eb-84e3-2daa-c63c-14b6792a1db5@linaro.org>
+Date:   Tue, 12 Sep 2023 10:16:14 +0200
 MIME-Version: 1.0
-References: <20230909063613.2867-1-jernej.skrabec@gmail.com> <20230909063613.2867-3-jernej.skrabec@gmail.com>
-In-Reply-To: <20230909063613.2867-3-jernej.skrabec@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 Sep 2023 10:15:31 +0200
-Message-ID: <CACRpkdbTZYnehWiWFgY3KJLFdS47RpxOp-Cct4BDqgYCYtd2vw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pinctrl: pinmux: Use dev_err_probe() in pin_request()
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v5 2/3] dt-binding: mediatek: integrate MDP RDMA to one
+ binding
+Content-Language: en-US
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230912075651.10693-1-moudy.ho@mediatek.com>
+ <20230912075651.10693-3-moudy.ho@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230912075651.10693-3-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jenej,
+On 12/09/2023 09:56, Moudy Ho wrote:
+> Due to the same hardware design, MDP RDMA needs to
+> be integrated into the same binding.
+> 
 
-thanks for your patch!
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-On Sat, Sep 9, 2023 at 8:36=E2=80=AFAM Jernej Skrabec <jernej.skrabec@gmail=
-.com> wrote:
+This applies to entire patchset. It is not dt-binding, but dt-bindings.
 
-> Use dev_err_probe() when printing error message in pin_request() since
-> it may fail with -EPROBE_DEFER.
->
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-(...)
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,mdp-rdma.yaml   | 88 -------------------
+>  .../bindings/media/mediatek,mdp3-rdma.yaml    |  5 +-
+>  2 files changed, 3 insertions(+), 90 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
+> deleted file mode 100644
+> index dd12e2ff685c..000000000000
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
+> +++ /dev/null
+> @@ -1,88 +0,0 @@
+> -# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> -%YAML 1.2
+> ----
+> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,mdp-rdma.yaml#
+> -$schema: http://devicetree.org/meta-schemas/core.yaml#
+> -
+> -title: MediaTek MDP RDMA
+> -
+> -maintainers:
+> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> -  - Philipp Zabel <p.zabel@pengutronix.de>
+> -
+> -description:
+> -  The MediaTek MDP RDMA stands for Read Direct Memory Access.
+> -  It provides real time data to the back-end panel driver, such as DSI,
+> -  DPI and DP_INTF.
+> -  It contains one line buffer to store the sufficient pixel data.
+> -  RDMA device node must be siblings to the central MMSYS_CONFIG node.
+> -  For a description of the MMSYS_CONFIG binding, see
+> -  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml for details.
+> -
+> -properties:
+> -  compatible:
+> -    const: mediatek,mt8195-vdo1-rdma
+> -
+> -  reg:
+> -    maxItems: 1
+> -
+> -  interrupts:
+> -    maxItems: 1
+> -
+> -  power-domains:
+> -    maxItems: 1
+> -
+> -  clocks:
+> -    items:
+> -      - description: RDMA Clock
 
->         if (status)
-> -               dev_err(pctldev->dev, "pin-%d (%s) status %d\n",
-> -                       pin, owner, status);
-> +               dev_err_probe(pctldev->dev, "pin-%d (%s) status %d\n",
-> +                             pin, owner, status);
->
->         return status;
+This is different and you did not explain it in commit msg.
 
-That's not how you use dev_err_probe()
+Another difference - mboxes. Looks like you did not test your DTS...
 
-Just replace all of the lines above with return dev_err_probe(...)
+Best regards,
+Krzysztof
 
-Yours,
-Linus Walleij
