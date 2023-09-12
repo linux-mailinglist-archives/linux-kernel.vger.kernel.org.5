@@ -2,191 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B7879C929
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD7C79C92D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232126AbjILIBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54274 "EHLO
+        id S232523AbjILICe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjILIAX (ORCPT
+        with ESMTP id S232409AbjILICO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:00:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873C62D5F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:33 -0700 (PDT)
-Message-ID: <20230912065502.631634574@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694505512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wqtyBr0f+DByo/zgMoM7oUe4I3Cn1ru+tCLK7XgMuJ0=;
-        b=SrGwwF6+u+lo69AJGhecm1RM+RQhIyd+dUpFL09tQZTcb/y+xqbDxUY8x4B4er/x4Dod7m
-        /0hKATF5R+fHLtvWNQGsLSeGqNR7Pi68sizjhOoTXrkhfElkJkG3PcBfAB2bk6DkNAGEse
-        K5qVdRw30oZ/RWAnA1BbUaDluS/m8soROZas5OlQW7kuh1iMAkaLYBIMjkjvjzRQtsm0es
-        VUUzv+7/eOat+CfzaWnDkm0t61b6oPW249WXZCoDjHjXV8TTkF074dxblefNHa9PIIRCRM
-        47/CzMWDsbiKg9DG8TPDLtNQMJd5A2djfBtk3UM5wO22MYEJx+MDNmb5IKKADA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694505512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wqtyBr0f+DByo/zgMoM7oUe4I3Cn1ru+tCLK7XgMuJ0=;
-        b=8GNJ3IE+gdmxufx9Yv2Bcb1HvLlevctl7bxX99Z7nB/YvjEK4c7sufulmHrUFG0AXI7nx4
-        9h3LwGAq0ezMTlAA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: [patch V3 30/30] x86/microcode/intel: Add a minimum required revision
- for late-loads
-References: <20230912065249.695681286@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 09:58:31 +0200 (CEST)
+        Tue, 12 Sep 2023 04:02:14 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BC91FF5;
+        Tue, 12 Sep 2023 00:59:04 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id D100332008C0;
+        Tue, 12 Sep 2023 03:59:02 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 12 Sep 2023 03:59:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694505542; x=1694591942; bh=qPHeyFedUwjFkIx8oudsmrh0QO5gAytcUsb
+        D3UuDNAk=; b=O5E3jEJ95BxAVgDYksiezRxNdQlu+sbdPJNS5iYygkXpB0Vpf7o
+        cPj8ILqNM0gwEnHUg6003hlfrW090XMDq1+wHvlSaPLOnORwY+hB81N2gnWQBO9C
+        d/WTQlSWY1muyh2uDL2b4Kgk+gMglLMyVu/BGpHUA/Bu6TNfR1xxOWpy6SBwYrAg
+        yZVScICNmyZycv2mgtafjAcfiONf0cuO7XIgWyn4t2zlfY6kMYGzIQPVvSy1nzEn
+        voNZS1lxeptfdEjtQqq67jsYWYqbDnoj0z1z2ylA0QQQf575dcV1sjRCXThJ4tg5
+        3rZLIYn5KWnQXDKjFKInUiF8lEec7zctxnw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1694505542; x=1694591942; bh=qPHeyFedUwjFkIx8oudsmrh0QO5gAytcUsb
+        D3UuDNAk=; b=lVIgwVxCdObYdxA4mI+pGHlj1jhMzOUN3PCEosrGW/9UuI5klzi
+        BVXDO8MY40VksaytO0gIQ1Qxzh7X+eTYgSgDHAOB+BB4qwC9RCqtzHNfx6vZCE9O
+        vbWdJA0QQ1MJYEldYK7vamxcYe6DonDy9ZRcy3+YT3/W+94zIG8ccVaQ95cQnoy9
+        aOGFFkjiQgYexXnIWQrc6wvLvBZ5vS943tzp/H8NAXyRbJjJvI8UW3JVD4GlQAWL
+        rpDWMmRV0P4KdKG++XNvYYCpk1fX0regMUH8oV4PsBRqOJ3nQFp2eCM+skcz7lXP
+        4s64rVbqaslUu2EjQJSIM/8BGqnk4Xesf/A==
+X-ME-Sender: <xms:RRoAZRQV9kKZ6fip7TIuLbUxtHtTw3YvuZqnr1_V63VCNLY3FXNVKg>
+    <xme:RRoAZawNHaiDaVHMoWR2sg8V-y3zzEF2UJVblqnoUCL-BoZsJa3cVJDU2Gbx8gQey
+    9r4VTGA5ZQStspv_Xk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeihedguddvfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:RRoAZW2yl2iwwalZEORLkowNMsqb84zZxrn4CZ_AiP93Z-84vUvw5Q>
+    <xmx:RRoAZZBSRBpEI4F4QXNaF3tDH18BGrM-hGc2BCmk7_2yJMTcH3Bqaw>
+    <xmx:RRoAZahLSMqk7dctZafY2jhmSmf5_6mG-gpLrhds92VQAH7jtm-p-g>
+    <xmx:RhoAZezbXA_pzfgeJujOGNBMwrWxhG8CgT3HXSGXRFTLeqEtHGftfQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9AB1DB60089; Tue, 12 Sep 2023 03:59:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <f4d77a67-3069-4e25-9b41-8bb06f6d51f9@app.fastmail.com>
+In-Reply-To: <87a5tr3k92.fsf@minerva.mail-host-address-is-not-set>
+References: <20230911205338.2385278-1-arnd@kernel.org>
+ <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+ <87a5tr3k92.fsf@minerva.mail-host-address-is-not-set>
+Date:   Tue, 12 Sep 2023 09:58:41 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Dave Airlie" <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Helge Deller" <deller@gmx.de>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Dave Airlie" <airlied@redhat.com>,
+        "Jim Cromie" <jim.cromie@gmail.com>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Arthur Grillo" <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashok Raj <ashok.raj@intel.com>
+On Tue, Sep 12, 2023, at 09:48, Javier Martinez Canillas wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>> On Mon, Sep 11, 2023 at 10:53=E2=80=AFPM Arnd Bergmann <arnd@kernel.o=
+rg> wrote:
+>>> --- a/drivers/gpu/drm/Kconfig
+>>> +++ b/drivers/gpu/drm/Kconfig
+>>> @@ -135,7 +135,7 @@ config DRM_FBDEV_EMULATION
+>>>         bool "Enable legacy fbdev support for your modesetting drive=
+r"
+>>>         depends on DRM
+>>>         select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CON=
+SOLE
+>>> -       default y
+>>> +       default FB
+>>
+>> While this is true for existing configs, it is no longer true in gene=
+ral,
+>> as DRM_FBDEV_EMULATION is no longer related to FB.
+>>
+>
+> Maybe default y if (FB_DEVICE || FRAMEBUFFER_CONSOLE) ?
 
-In general users don't have the necessary information to determine whether
-late loading of a new microcode version is safe and does not modify
-anything which the currently running kernel uses already, e.g. removal of
-CPUID bits or behavioural changes of MSRs.
+That wouldn't work unless we swap around the 'select DRM_CORE',
+which currently gets selected when DRM_FBDEV_EMULATION is
+turned on.
 
-To address this issue, Intel has added a "minimum required version" field
-to a previously reserved field in the microcode header.  Microcode updates
-should only be applied if the current microcode version is equal to, or
-greater than this minimum required version.
+>>>         help
+>>>           Choose this option if you have a need for the legacy fbdev
+>>>           support. Note that this support also provides the linux co=
+nsole
+>>> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/K=
+config
+>>> index b575cf54174af..83c2d7329ca58 100644
+>>> --- a/drivers/video/console/Kconfig
+>>> +++ b/drivers/video/console/Kconfig
+>>> @@ -74,6 +74,7 @@ config DUMMY_CONSOLE_ROWS
+>>>  config FRAMEBUFFER_CONSOLE
+>>>         bool "Framebuffer Console support"
+>>>         depends on FB_CORE && !UML
+>>> +       default DRM_FBDEV_EMULATION
+>>
+>> Sounds good to me, although it looks a bit strange at first sight
+>> (FRAMEBUFFER_CONSOLE defaults to n on a system with real fbdev, but
+>> y on emulated fbdev?).
+>
+> And there Maybe default y if (FB || DRM_FBDEV_EMULATION) ?
 
-Thomas made some suggestions on how meta-data in the microcode file could
-provide Linux with information to decide if the new microcode is suitable
-candidate for late loading. But even the "simpler" option requires a lot of
-metadata and corresponding kernel code to parse it, so the final suggestion
-was to add the 'minimum required version' field in the header.
+That would be the same as a plain 'default y' based on the
+dependencies. We can definitely do that, but it does change
+the behavior for FB-only users.
 
-When microcode changes visible features, microcode will set the minimum
-required version to its own revision which prevents late loading.
+At the moment, we have 21 defconfig files in the kernel
+that enable CONFIG_FB but not CONFIG_FRAMEBUFFER_CONSOLE:
 
-Old microcode blobs have the minimum revision field always set to 0, which
-indicates that there is no information and the kernel considers it as
-unsafe.
+$ git grep -l CONFIG_FB=3Dy  arch/*configs/ | xargs grep -L "FRAMEBUFFER=
+_CONSOLE=3D\|DRM=3D"
+arch/arm/configs/am200epdkit_defconfig
+arch/arm/configs/assabet_defconfig
+arch/arm/configs/clps711x_defconfig
+arch/arm/configs/ep93xx_defconfig
+arch/arm/configs/footbridge_defconfig
+arch/arm/configs/h3600_defconfig
+arch/arm/configs/multi_v4t_defconfig
+arch/arm/configs/mvebu_v5_defconfig
+arch/arm/configs/pxa910_defconfig
+arch/arm/configs/s3c6400_defconfig
+arch/arm/configs/wpcm450_defconfig
+arch/microblaze/configs/mmu_defconfig
+arch/mips/configs/cobalt_defconfig
+arch/mips/configs/generic/board-ranchu.config
+arch/mips/configs/malta_qemu_32r6_defconfig
+arch/mips/configs/maltaaprp_defconfig
+arch/mips/configs/maltasmvp_defconfig
+arch/mips/configs/maltasmvp_eva_defconfig
+arch/mips/configs/maltaup_defconfig
+arch/sh/configs/r7785rp_defconfig
+arch/sh/configs/se7343_defconfig
 
-This is a pure OS software mechanism. The hardware/firmware ignores this
-header field.
+>> So this is the fix for commit a5ae331edb02b ("drm: Drop select
+>> FRAMEBUFFER_CONSOLE for DRM_FBDEV_EMULATION").
+>>
+>>>         select VT_HW_CONSOLE_BINDING
+>>>         select CRC32
+>>>         select FONT_SUPPORT
+>>> diff --git a/drivers/video/fbdev/core/Kconfig b/drivers/video/fbdev/=
+core/Kconfig
+>>> index 114cb8aa6c8fd..804c2bec9b43c 100644
+>>> --- a/drivers/video/fbdev/core/Kconfig
+>>> +++ b/drivers/video/fbdev/core/Kconfig
+>>> @@ -28,7 +28,7 @@ config FIRMWARE_EDID
+>>>  config FB_DEVICE
+>>>         bool "Provide legacy /dev/fb* device"
+>>>         depends on FB_CORE
+>>> -       default y
+>>> +       default FB
+>>
+>> Changing this means possibly causing regressions on systems running
+>> an fbdev userspace.
+>>
+>
+> Right, specially if using DRM fbdev emulation since then the default w=
+ill
+> be different between v6.5 and v6.6 (that's what this patch tries to av=
+oid).
+>
+> So probably we could keept that default as 'y'.
 
-For early loading there is no restriction because OS visible features are
-enumerated after the early load and therefor a change has no effect.
+I really don't want to start enabling this for configs that
+didn't have it in the past.
 
-The check is always enabled, but by default not enforced. It can be
-enforced via Kconfig or kernel command line.
-
-If enforced, the kernel refuses to late load microcode with a minium
-required version field which is zero or when the currently loaded microcode
-revision is smaller than the minimum required revision.
-
-If not enforced the load happens independent of the revision check to stay
-compatible with the existing behaviour, but it influences the decision
-whether the kernel is tainted or not. If the check signals that the late
-load is safe, then the kernel is not tainted.
-
-Early loading is not affected by this.
-
-[ tglx: Massaged changelog and fixed up the implementation ]
-
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-
----
- arch/x86/include/asm/microcode.h      |    3 +-
- arch/x86/kernel/cpu/microcode/intel.c |   37 ++++++++++++++++++++++++++++++----
- 2 files changed, 35 insertions(+), 5 deletions(-)
----
---- a/arch/x86/include/asm/microcode.h
-+++ b/arch/x86/include/asm/microcode.h
-@@ -36,7 +36,8 @@ struct microcode_header_intel {
- 	unsigned int	datasize;
- 	unsigned int	totalsize;
- 	unsigned int	metasize;
--	unsigned int	reserved[2];
-+	unsigned int	min_req_ver;
-+	unsigned int	reserved;
- };
- 
- struct microcode_intel {
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -463,16 +463,40 @@ static enum ucode_state apply_microcode_
- 	return ret;
- }
- 
-+static bool ucode_validate_minrev(struct microcode_header_intel *mc_header)
-+{
-+	int cur_rev = boot_cpu_data.microcode;
-+
-+	/*
-+	 * When late-loading, ensure the header declares a minimum revision
-+	 * required to perform a late-load. The previously reserved field
-+	 * is 0 in older microcode blobs.
-+	 */
-+	if (!mc_header->min_req_ver) {
-+		pr_info("Unsafe microcode update: Microcode header does not specify a required min version\n");
-+		return false;
-+	}
-+
-+	/*
-+	 * Check whether the minimum revision specified in the header is either
-+	 * greater or equal to the current revision.
-+	 */
-+	if (cur_rev < mc_header->min_req_ver) {
-+		pr_info("Unsafe microcode update: Current revision 0x%x too old\n", cur_rev);
-+		pr_info("Current should be at 0x%x or higher. Use early loading instead\n", mc_header->min_req_ver);
-+		return false;
-+	}
-+	return true;
-+}
-+
- static enum ucode_state read_ucode_intel(int cpu, struct iov_iter *iter)
- {
- 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
-+	bool is_safe, new_is_safe = false;
- 	int cur_rev = uci->cpu_sig.rev;
- 	unsigned int curr_mc_size = 0;
- 	u8 *new_mc = NULL, *mc = NULL;
- 
--	if (force_minrev)
--		return UCODE_NFOUND;
--
- 	while (iov_iter_count(iter)) {
- 		struct microcode_header_intel mc_header;
- 		unsigned int mc_size, data_size;
-@@ -515,9 +539,14 @@ static enum ucode_state read_ucode_intel
- 		if (!intel_find_matching_signature(mc, &uci->cpu_sig))
- 			continue;
- 
-+		is_safe = ucode_validate_minrev(&mc_header);
-+		if (force_minrev && !is_safe)
-+			continue;
-+
- 		kvfree(new_mc);
- 		cur_rev = mc_header.rev;
- 		new_mc  = mc;
-+		new_is_safe = is_safe;
- 		mc = NULL;
- 	}
- 
-@@ -529,7 +558,7 @@ static enum ucode_state read_ucode_intel
- 		return UCODE_NFOUND;
- 
- 	ucode_patch_late = (struct microcode_intel *)new_mc;
--	return UCODE_NEW;
-+	return new_is_safe ? UCODE_NEW_SAFE : UCODE_NEW;
- 
- fail:
- 	kvfree(mc);
-
+    Arnd
