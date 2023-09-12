@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AFF79DCDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D22079DCDF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbjILXux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S232997AbjILXxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjILXuw (ORCPT
+        with ESMTP id S229597AbjILXxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:50:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4468C10FE;
-        Tue, 12 Sep 2023 16:50:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19F6C433C8;
-        Tue, 12 Sep 2023 23:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694562647;
-        bh=k9G6ap+gAojN8vHcoXUXnk1y3u37/KrMImRD4njbitA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EMI6XRnSLULEYMPl2XUw2mLkL61xLLN2+ZU6uu5jdT44JmvwtbciGn67BdFmg2qng
-         /T1TwuJx89Oh9WYHFD9HPvFXKDdf/RnAiDgXjQff11qLManmXs5Eyeby6QSIHLya3T
-         czl232v4CF8cXVf7JD8B2z8vbmcRgLhNchABk3ekYMx3BZ66JwBn3hOquTR/uszmoU
-         HDfoMCgWGjfl861Atk0TBVwUylhoowgTWALnT4TPhUYAgShXnnre1dDFIRZtrVGEol
-         m8DcWvJXetMrV3itRZdoEn+PYgtxkGBPxBLfbX/Q8Rom2fZnemxTS1BOfseuaukFaE
-         OB1wjqGVawyYQ==
-Date:   Tue, 12 Sep 2023 16:50:47 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>
-Subject: Re: general protection fault in ext4_update_overhead
-Message-ID: <20230912235047.GA11463@frogsfrogsfrogs>
-References: <BL0PR11MB31066DF3F30927A7F82F22FEE1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
- <20230912234112.GA1294595@mit.edu>
+        Tue, 12 Sep 2023 19:53:03 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFFE10FE;
+        Tue, 12 Sep 2023 16:52:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=nBpSgF2Su5u82JSYSi+zUUbgQUjeDg7ng27KeS8vFWw=; b=r68yS8JXls7i5jVEwoMfeYPOdm
+        5PlVpd+LGe41rtopjni7qVr0Tt+3ikErhITI0ZP6TmvqGvsDkuwVKh5y2OMP5evOrUhRPmsrL0/7q
+        OBk79IWqI6m4RPmLc9fob0fiV38lk8Zm1uL7SzaDK2ty7IYvWTigZWCdatgW8IevhaNw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qgDBS-006GfT-NY; Wed, 13 Sep 2023 01:52:42 +0200
+Date:   Wed, 13 Sep 2023 01:52:42 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
+Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "simon.horman@corigine.com" <simon.horman@corigine.com>,
+        "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <daabaedb-1943-425e-b5be-73c4f6566121@lunn.ch>
+References: <20230816215220.114118-1-nick.hawkins@hpe.com>
+ <20230816215220.114118-5-nick.hawkins@hpe.com>
+ <01e96219-4f0c-4259-9398-bc2e6bc1794f@lunn.ch>
+ <88B3833C-19FB-4E4C-A398-E7EF3143ED02@hpe.com>
+ <1b8058e1-6e7f-4a4a-a191-09a9b8010e0a@lunn.ch>
+ <CF9BD927-B788-4554-B246-D5CC6D06258F@hpe.com>
+ <befbee5a-7b11-4948-a837-6311dd4d7276@lunn.ch>
+ <DM4PR84MB1927E85827B5450F1952E58A88E3A@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+ <729dcda6-2d2c-4054-a570-17cdf6e4e57b@lunn.ch>
+ <3DB6DD63-C8AB-4009-8AF8-79290054AC5C@hpe.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912234112.GA1294595@mit.edu>
+In-Reply-To: <3DB6DD63-C8AB-4009-8AF8-79290054AC5C@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 07:41:12PM -0400, Theodore Ts'o wrote:
-> On Tue, Sep 12, 2023 at 11:02:35PM +0000, Sanan Hasanov wrote:
-> > Good day, dear maintainers,
-> > 
-> > We found a bug using a modified kernel configuration file used by syzbot.
-> > 
-> > We enhanced the coverage of the configuration file using our tool, klocalizer.
-> > 
-> > Kernel Branch: 6.3.0-next-20230426
-
-Also this was from            ^^^^^^^^ four months ago.
-
-Why are you wasting Ted and everyone else's time with this?
-
---D
-
-> > Kernel Config: https://drive.google.com/file/d/1xpe7qMUUYvHQFzqZGUzcco9jF97EwTqQ/view?usp=sharing
-> > Reproducer: https://drive.google.com/file/d/1Q8ix6EiWrzx0bWLyoGTHP721KE4Ei3qf/view?usp=sharing
+> Greetings Andrew,
 > 
-> The reproducer is a zero-length file.  So I can do nothing with this
-> report.
-> 
-> Note that the official syzbot instance will do automatic bisection,
-> and will allow us to test patches.  The official syzbot instance also
-> processes the console output so that the stack trace has line numbers
-> and clickable links to the kernel sources.
-> 
-> This report is **much** less useful than the syzbot report, so please
-> don't be surprised if people treat this at a significantly lower
-> priority.  (Even if the reproducer wasn't a zero length file.  :-P  )
-> 
-> 	   	    		   	  - Ted
+> In that case I will continue to attempt to try and adopt the page pool
+> API. In all the examples with page pool HW rings it appears they are
+> using alloc_etherdev_mqs. Are there any HW requirements to use this
+> library? If there are none what is the typical number for rx and tx
+> queues?
+
+There are no hardware requirements as far as i understand it. If your
+hardware only has one RX queue and one TX queue, define it as
+1. Having more allows you to spread the load over multiple CPUs, with
+each queue typically having its own interrupt, and interrupts are then
+mapped to a single CPU. But if you don't have any of that, it should
+not be a hindrance.
+
+    Andrew
