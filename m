@@ -2,277 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4026179C315
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D9279C319
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbjILChp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Sep 2023 22:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        id S239801AbjILCjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239809AbjILCh3 (ORCPT
+        with ESMTP id S239492AbjILCjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:37:29 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E83161116;
-        Mon, 11 Sep 2023 19:02:50 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1276724E2C7;
-        Tue, 12 Sep 2023 10:02:41 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Sep
- 2023 10:02:41 +0800
-Received: from [192.168.125.136] (113.72.145.181) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 12 Sep
- 2023 10:02:39 +0800
-Message-ID: <071513f5-941c-5152-f9c9-07406b6a0641@starfivetech.com>
-Date:   Tue, 12 Sep 2023 10:02:39 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v5 11/11] riscv: dts: starfive: add PCIe dts configuration
- for JH7110
-To:     Rob Herring <robh+dt@kernel.org>,
-        Minda Chen <minda.chen@starfivetech.com>
-CC:     Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Mon, 11 Sep 2023 22:39:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD171A1E9C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694484251; x=1726020251;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YQg+s2V6b7qoKhAYmVAQrA4PEOfHbzWWvRfnD0nfzeg=;
+  b=nanhNdh1YQHsnJzMXhIzpuR8qwU4FPPunYeykcfBe1IE4MBWL6FQt0LY
+   iptgKuG5vUM7lUDvQFusV3deTDU9hz/wwl9jfJ0SxcWkFeYnjaAEJYksG
+   +ETlBaSzx+i2X/dtkRBk2umHS7nIVM7A1/NSriTxfLLlG5MhBAwFpOwCD
+   hvrJwkQX6aW3L6SQCvg/Z4t+QuXEqoltkUjtixye1zM7N0fFbuHuFgguM
+   I0c4J6kx7VJbWZoMeDC+QesdvOnaWHinokiM2oefxT1dV7ugt6G1kvupV
+   BMa8u6KP8Wdgvr2jygrmWN52BDoZS1MEJdjyCbmTSSfpB/rLQqvdQIm99
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="363289094"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="363289094"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 19:04:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813616648"
+X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
+   d="scan'208";a="813616648"
+Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2023 19:04:08 -0700
+Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qfsl4-00077s-0j;
+        Tue, 12 Sep 2023 02:04:06 +0000
+Date:   Tue, 12 Sep 2023 10:03:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Samuel Holland <samuel@sholland.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-References: <20230907091058.125630-1-minda.chen@starfivetech.com>
- <20230907091058.125630-12-minda.chen@starfivetech.com>
- <CAL_Jsq+TeDK0Lh7Yf9CwLPDPfvuv9C8A6dKDEBVxMtncyuzQQg@mail.gmail.com>
-Content-Language: en-US
-From:   Kevin Xie <kevin.xie@starfivetech.com>
-In-Reply-To: <CAL_Jsq+TeDK0Lh7Yf9CwLPDPfvuv9C8A6dKDEBVxMtncyuzQQg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [113.72.145.181]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        linux-riscv@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing
+ code
+Message-ID: <202309120901.kQtGm3L4-lkp@intel.com>
+References: <20230909201727.10909-8-samuel@sholland.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230909201727.10909-8-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Samuel,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.6-rc1 next-20230911]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Samuel-Holland/riscv-Apply-SiFive-CIP-1200-workaround-to-single-ASID-sfence-vma/20230910-042028
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230909201727.10909-8-samuel%40sholland.org
+patch subject: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing code
+config: riscv-nommu_k210_sdcard_defconfig (https://download.01.org/0day-ci/archive/20230912/202309120901.kQtGm3L4-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120901.kQtGm3L4-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309120901.kQtGm3L4-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/riscv/include/asm/pgtable.h:117,
+                    from include/linux/pgtable.h:6,
+                    from include/linux/mm.h:29,
+                    from arch/riscv/kernel/asm-offsets.c:10:
+   arch/riscv/include/asm/tlbflush.h: In function 'flush_tlb_kernel_range':
+>> arch/riscv/include/asm/tlbflush.h:60:9: error: implicit declaration of function 'flush_tlb_all' [-Werror=implicit-function-declaration]
+      60 |         flush_tlb_all();
+         |         ^~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+   make[3]: *** [scripts/Makefile.build:116: arch/riscv/kernel/asm-offsets.s] Error 1
+   make[3]: Target 'prepare' not remade because of errors.
+   make[2]: *** [Makefile:1202: prepare0] Error 2
+   make[2]: Target 'prepare' not remade because of errors.
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'prepare' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'prepare' not remade because of errors.
 
 
-On 2023/9/8 1:19, Rob Herring wrote:
-> On Thu, Sep 7, 2023 at 4:11 AM Minda Chen <minda.chen@starfivetech.com> wrote:
->>
->> Add PCIe dts configuraion for JH7110 SoC platform.
->>
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
->> ---
->>  .../jh7110-starfive-visionfive-2.dtsi         | 64 ++++++++++++++
->>  arch/riscv/boot/dts/starfive/jh7110.dtsi      | 86 +++++++++++++++++++
->>  2 files changed, 150 insertions(+)
->>
->> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> index de0f40a8be93..4dd61e2fec7d 100644
->> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
->> @@ -15,6 +15,8 @@
->>                 i2c2 = &i2c2;
->>                 i2c5 = &i2c5;
->>                 i2c6 = &i2c6;
->> +               pcie0 = &pcie0;
->> +               pcie1 = &pcie1;
-> 
-> That's not a defined alias. We already have "linux,pci-domain" if you
-> need to number PCI host bridges.
-> 
+vim +/flush_tlb_all +60 arch/riscv/include/asm/tlbflush.h
 
-Okay, we will number PCI host bridges by "linux,pci-domain".
+fab957c11efe2f Palmer Dabbelt 2017-07-10  55  
+fab957c11efe2f Palmer Dabbelt 2017-07-10  56  /* Flush a range of kernel pages */
+fab957c11efe2f Palmer Dabbelt 2017-07-10  57  static inline void flush_tlb_kernel_range(unsigned long start,
+fab957c11efe2f Palmer Dabbelt 2017-07-10  58  	unsigned long end)
+fab957c11efe2f Palmer Dabbelt 2017-07-10  59  {
+fab957c11efe2f Palmer Dabbelt 2017-07-10 @60  	flush_tlb_all();
+fab957c11efe2f Palmer Dabbelt 2017-07-10  61  }
+fab957c11efe2f Palmer Dabbelt 2017-07-10  62  
 
->>                 serial0 = &uart0;
->>         };
->>
->> @@ -208,6 +210,54 @@
->>                 };
->>         };
->>
->> +       pcie0_pins: pcie0-0 {
->> +               wake-pins {
->> +                       pinmux = <GPIOMUX(32, GPOUT_LOW,
->> +                                             GPOEN_DISABLE,
->> +                                             GPI_NONE)>;
->> +                       bias-pull-up;
->> +                       drive-strength = <2>;
->> +                       input-enable;
->> +                       input-schmitt-disable;
->> +                       slew-rate = <0>;
->> +               };
->> +
->> +               clkreq-pins {
->> +                       pinmux = <GPIOMUX(27, GPOUT_LOW,
->> +                                             GPOEN_DISABLE,
->> +                                             GPI_NONE)>;
->> +                       bias-pull-down;
->> +                       drive-strength = <2>;
->> +                       input-enable;
->> +                       input-schmitt-disable;
->> +                       slew-rate = <0>;
->> +               };
->> +       };
->> +
->> +       pcie1_pins: pcie1-0 {
->> +               wake-pins {
->> +                       pinmux = <GPIOMUX(21, GPOUT_LOW,
->> +                                             GPOEN_DISABLE,
->> +                                             GPI_NONE)>;
->> +                       bias-pull-up;
->> +                       drive-strength = <2>;
->> +                       input-enable;
->> +                       input-schmitt-disable;
->> +                       slew-rate = <0>;
->> +               };
->> +
->> +               clkreq-pins {
->> +                       pinmux = <GPIOMUX(29, GPOUT_LOW,
->> +                                             GPOEN_DISABLE,
->> +                                             GPI_NONE)>;
->> +                       bias-pull-down;
->> +                       drive-strength = <2>;
->> +                       input-enable;
->> +                       input-schmitt-disable;
->> +                       slew-rate = <0>;
->> +               };
->> +       };
->> +
->>         uart0_pins: uart0-0 {
->>                 tx-pins {
->>                         pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
->> @@ -233,6 +283,20 @@
->>         };
->>  };
->>
->> +&pcie0 {
->> +       pinctrl-names = "default";
->> +       perst-gpios = <&sysgpio 26 GPIO_ACTIVE_LOW>;
->> +       pinctrl-0 = <&pcie0_pins>;
->> +       status = "okay";
->> +};
->> +
->> +&pcie1 {
->> +       pinctrl-names = "default";
->> +       perst-gpios = <&sysgpio 28 GPIO_ACTIVE_LOW>;
->> +       pinctrl-0 = <&pcie1_pins>;
->> +       status = "okay";
->> +};
->> +
->>  &uart0 {
->>         pinctrl-names = "default";
->>         pinctrl-0 = <&uart0_pins>;
->> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> index 02354e642c44..7a5dc43cf63c 100644
->> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
->> @@ -629,5 +629,91 @@
->>                         #reset-cells = <1>;
->>                         power-domains = <&pwrc JH7110_PD_VOUT>;
->>                 };
->> +
->> +               pcie0: pcie@940000000 {
->> +                       compatible = "starfive,jh7110-pcie";
->> +                       reg = <0x9 0x40000000 0x0 0x1000000>,
->> +                             <0x0 0x2b000000 0x0 0x100000>;
->> +                       reg-names = "cfg", "apb";
->> +                       #address-cells = <3>;
->> +                       #size-cells = <2>;
->> +                       #interrupt-cells = <1>;
->> +                       ranges = <0x82000000  0x0 0x30000000  0x0 0x30000000 0x0 0x08000000>,
->> +                                <0xc3000000  0x9 0x00000000  0x9 0x00000000 0x0 0x40000000>;
->> +                       interrupts = <56>;
->> +                       interrupt-parent = <&plic>;
->> +                       interrupt-map-mask = <0x0 0x0 0x0 0x7>;
->> +                       interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc0 0x1>,
->> +                                       <0x0 0x0 0x0 0x2 &pcie_intc0 0x2>,
->> +                                       <0x0 0x0 0x0 0x3 &pcie_intc0 0x3>,
->> +                                       <0x0 0x0 0x0 0x4 &pcie_intc0 0x4>;
->> +                       msi-controller;
->> +                       device_type = "pci";
->> +                       starfive,stg-syscon = <&stg_syscon>;
->> +                       bus-range = <0x0 0xff>;
->> +                       clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_STG_AXI>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE0_TL>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE0_AXI_MST0>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE0_APB>;
->> +                       clock-names = "noc", "tl", "axi_mst0", "apb";
->> +                       resets = <&stgcrg JH7110_STGRST_PCIE0_AXI_MST0>,
->> +                                <&stgcrg JH7110_STGRST_PCIE0_AXI_SLV0>,
->> +                                <&stgcrg JH7110_STGRST_PCIE0_AXI_SLV>,
->> +                                <&stgcrg JH7110_STGRST_PCIE0_BRG>,
->> +                                <&stgcrg JH7110_STGRST_PCIE0_CORE>,
->> +                                <&stgcrg JH7110_STGRST_PCIE0_APB>;
->> +                       reset-names = "mst0", "slv0", "slv", "brg",
->> +                                     "core", "apb";
->> +                       status = "disabled";
->> +
->> +                       pcie_intc0: interrupt-controller {
->> +                               #address-cells = <0>;
->> +                               #interrupt-cells = <1>;
->> +                               interrupt-controller;
->> +                       };
->> +               };
->> +
->> +               pcie1: pcie@9c0000000 {
->> +                       compatible = "starfive,jh7110-pcie";
->> +                       reg = <0x9 0xc0000000 0x0 0x1000000>,
->> +                             <0x0 0x2c000000 0x0 0x100000>;
->> +                       reg-names = "cfg", "apb";
->> +                       #address-cells = <3>;
->> +                       #size-cells = <2>;
->> +                       #interrupt-cells = <1>;
->> +                       ranges = <0x82000000  0x0 0x38000000  0x0 0x38000000 0x0 0x08000000>,
->> +                                <0xc3000000  0x9 0x80000000  0x9 0x80000000 0x0 0x40000000>;
->> +                       interrupts = <57>;
->> +                       interrupt-parent = <&plic>;
->> +                       interrupt-map-mask = <0x0 0x0 0x0 0x7>;
->> +                       interrupt-map = <0x0 0x0 0x0 0x1 &pcie_intc1 0x1>,
->> +                                       <0x0 0x0 0x0 0x2 &pcie_intc1 0x2>,
->> +                                       <0x0 0x0 0x0 0x3 &pcie_intc1 0x3>,
->> +                                       <0x0 0x0 0x0 0x4 &pcie_intc1 0x4>;
->> +                       msi-controller;
->> +                       device_type = "pci";
->> +                       starfive,stg-syscon = <&stg_syscon>;
->> +                       bus-range = <0x0 0xff>;
->> +                       clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_STG_AXI>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE1_TL>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE1_AXI_MST0>,
->> +                                <&stgcrg JH7110_STGCLK_PCIE1_APB>;
->> +                       clock-names = "noc", "tl", "axi_mst0", "apb";
->> +                       resets = <&stgcrg JH7110_STGRST_PCIE1_AXI_MST0>,
->> +                                <&stgcrg JH7110_STGRST_PCIE1_AXI_SLV0>,
->> +                                <&stgcrg JH7110_STGRST_PCIE1_AXI_SLV>,
->> +                                <&stgcrg JH7110_STGRST_PCIE1_BRG>,
->> +                                <&stgcrg JH7110_STGRST_PCIE1_CORE>,
->> +                                <&stgcrg JH7110_STGRST_PCIE1_APB>;
->> +                       reset-names = "mst0", "slv0", "slv", "brg",
->> +                                     "core", "apb";
->> +                       status = "disabled";
->> +
->> +                       pcie_intc1: interrupt-controller {
->> +                               #address-cells = <0>;
->> +                               #interrupt-cells = <1>;
->> +                               interrupt-controller;
->> +                       };
->> +               };
->>         };
->>  };
->> --
->> 2.17.1
->>
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
