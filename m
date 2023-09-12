@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C026279D649
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2552E79D64A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236767AbjILQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S236773AbjILQ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbjILQ2j (ORCPT
+        with ESMTP id S233213AbjILQ2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:28:39 -0400
+        Tue, 12 Sep 2023 12:28:40 -0400
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101931704
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:28:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0165910F2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:28:37 -0700 (PDT)
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7034B5C023E;
-        Tue, 12 Sep 2023 12:28:35 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 5FFBE5C0209;
+        Tue, 12 Sep 2023 12:28:36 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 12 Sep 2023 12:28:35 -0400
+  by compute1.internal (MEProxy); Tue, 12 Sep 2023 12:28:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
         :cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694536115; x=1694622515; bh=byTyyd05JmDbEdKIibYodeYHRw97CddSTrR
-        NeSPfl1g=; b=QqdKC9Fa63nIIylhuX3PCGQuwV9dmtWfR/mazLyGKQ2+4OZ9meo
-        6u0MbfmLELVh08tPW3VpY7eE0jUGpD0f0hBCcPsYbrayTPcKt/3g1vA79iRGirU0
-        0DDb98OuKZ+PT4Apw5Utx1zuXFyQY16Z0/Xa27jNbU38TSEDSAa5eVX1SRabMaK3
-        rU5n6S7L6TLL+OXTLhBTgYibdxYKKNvNlyE2JwryH+czxTQVES2TV7N744KECOgg
-        Q99ZR3+1ToHDH6Px8nmnpvYBezdgguG/oJPurUO7UvHR36q6uUvVvj2jSaeqOSNh
-        M2o69Dm4EJYBpPihti1BcLJfCecaK0eNMHg==
+        1694536116; x=1694622516; bh=TwEWLaTSuiPfXSyZQQREOyn/d6B8hR8gYLY
+        TWMqOU5E=; b=u5uNvQki5IChwpw7dqOdoH2RgOW6FYZOpuvWCwUsE8BibTdAFyC
+        L8upBPyueKVuNqlWXYbuyapJfDQO20M5AqGh1+0aVvuzhlNl1Krtf7epALgCiqVT
+        LtrFxAwSrToe6Er0K0x1TQOGJUoauWNEH1H9r5iPq0AQSuELfsQjRG9AbfXrPLfz
+        M6xMX2l1mAwZ9/iAbsgg/soIaEIHaX3K9ZC3DzbgNUM+4GsJ94yzCA90KcELtR75
+        KHS06immhfhB8LT+Ir2TYfZg1Ha9S0LWb4+HYB3Mv0LDhdbH1t91QBfV+b73TkEX
+        H47LcrEu6//1SXi+ITP1Xw21mEu44uXADXg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694536115; x=1694622515; bh=byTyyd05JmDbEdKIibYodeYHRw97CddSTrR
-        NeSPfl1g=; b=AN0P2K2RSLzgy6uNFWDc4/uLPjZXoOm9SaCVkKxTpK1h/+O5YvW
-        RH69TUb9/Pk7kdQYyfQeDpfaqTKnldImPdLpBLg9I0r1pC5C9YOe/zFQRLyjcjLE
-        6CLXwwzTneyVPkCjv0P3DNAcfh/58tJXgnOFP80Yru1KuPKDPNQdE3qR4Uvj3JqR
-        UVuLKi632KaIKJwUpl2haQIKZ6+sIBk9SHD1GUADGTtx8GlNig7dqgijjl9pMXs0
-        U0yMjxL/RaikpR8MC+LgeXuFHTAAgRRMhoivHoE4sfhDdPGdIZu8QjRvxXE8Lg5X
-        2B1jHKabqKGec0yBj+SglEIA9NrhPDanLKA==
-X-ME-Sender: <xms:s5EAZV02gbRI-7aIaCmHKQPrls2JcuSX6MH-PPH_k3yZywv4EmXueQ>
-    <xme:s5EAZcHPjf2RU9x5_ORH4Slx6QgoFUfgknQOHy3H03AEgKs5gt-xThlm3u2RFz9g9
-    B5tLvA9QG02MvS2vQ>
-X-ME-Received: <xmr:s5EAZV4zVTk8TAxwhd2VTULBjVH_9WkJiUsUpYWgzlF8uTh6-mK3Oaue2CIHOD2bf5EkZA423pZEOdSXeFn2F0TYiK2zuGFc6UasHHoSmKL_U8529xPMofbl>
+        1694536116; x=1694622516; bh=TwEWLaTSuiPfXSyZQQREOyn/d6B8hR8gYLY
+        TWMqOU5E=; b=VvFvl65/6cb6f0859IZG6gNDxwnMA826lLsINlmO37UMNzdvAeV
+        KvEUnoG/gbp7oYZQ73UiJJiXyyO3TpEqnLU+6Cj6YZlgDhnG825QlYnTlw4bLhp8
+        JVzF3PzjA0HovacaUJerZ9qdg24e6KF4dV/PPPOGyaRmAekJv4SkXA1xOQtOe6Hu
+        2PxnMutqZ0KnjG0/dlscS3wTI67voGp/+tzIf453kIeWIUhQ+Z7OdrY75DMFLz9A
+        zKTXBtzoxlfLqjVkSgz+FubWk32IaGcd5KJfDorOCzW3CrckRl9J49UllAbMkild
+        lq6+F8xObqmsMXpZTojwhRCOit/zuGfhW+g==
+X-ME-Sender: <xms:tJEAZeVIb57pUqdxIUmoJE_YgIYAJqsma0h03NFEYHAAdXZmaY7F4g>
+    <xme:tJEAZanj8YFRIdqLjkI4j2MOJ_5-ibYo7TYPfRP6n_85ILcJONbE1Lh01O1t6TBuN
+    Nyn_FYjGKS0QzM3kg>
+X-ME-Received: <xmr:tJEAZSYdtAu8pZxgcBGlCvWC9UYY9DCFzkn7cRM4R6wV9M4hojBARP4xTfhznOYf0R-yGqbXC1Z3e-a-Na-xT1YOtLGwpPoTzIK_7zql7vXFnZ72f4fSWT9P>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedguddtudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -56,13 +56,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedguddtudcutefuodetgg
     eghedugfduuddvleehheetgeeltdetieevuefhffevkefhveeufeeiieejgedvnecuvehl
     uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnse
     hsvghnthdrtghomh
-X-ME-Proxy: <xmx:s5EAZS2_-BhctqixTBYkpewLV_08BK2TN1qitYizK6p6jJuj1EQiYA>
-    <xmx:s5EAZYGYa53mkHSzg-AQYXhbuBnwSdlQwDoj8roClTs1Mfv-m5Xw6Q>
-    <xmx:s5EAZT9xpqfPkSsLyNnDw6u0dn7pQxrHnlsmdg5S7vmkhev_NS2aww>
-    <xmx:s5EAZWVgmnQVjnDMLeKZcN5yXKEUAAvBbm8ADgdGxAA-WYn_1P5dxA>
+X-ME-Proxy: <xmx:tJEAZVX5y-W8O65pSbwvxu_xTLUDLrcnktn3B8IhSb4njbkfGL2vpg>
+    <xmx:tJEAZYlLe-Z7VDa8mfcLw5r5XY38mJGBo6H2uCzFrUmk6bJGmO6R1A>
+    <xmx:tJEAZafbjtknj21ERGDAdujYNuO5HVXupaDHO93g2Bc64OVmJvo8RQ>
+    <xmx:tJEAZS39HS__OJmKfRH6E93Gk4uYxkoBHvcUBuE38zNFVpDVMU2ypQ>
 Feedback-ID: iccd040f4:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Sep 2023 12:28:34 -0400 (EDT)
+ 12 Sep 2023 12:28:35 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Zi Yan <ziy@nvidia.com>, Ryan Roberts <ryan.roberts@arm.com>,
@@ -79,9 +79,9 @@ Cc:     Zi Yan <ziy@nvidia.com>, Ryan Roberts <ryan.roberts@arm.com>,
         Mcgrof Chamberlain <mcgrof@kernel.org>,
         Adam Manzanares <a.manzanares@samsung.com>,
         John Hubbard <jhubbard@nvidia.com>
-Subject: [RFC PATCH 3/4] mm/compaction: optimize >0 order folio compaction by sorting source pages.
-Date:   Tue, 12 Sep 2023 12:28:14 -0400
-Message-Id: <20230912162815.440749-4-zi.yan@sent.com>
+Subject: [RFC PATCH 4/4] mm/compaction: enable compacting >0 order folios.
+Date:   Tue, 12 Sep 2023 12:28:15 -0400
+Message-Id: <20230912162815.440749-5-zi.yan@sent.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230912162815.440749-1-zi.yan@sent.com>
 References: <20230912162815.440749-1-zi.yan@sent.com>
@@ -94,68 +94,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-It should maximize high order free page use and minimize free page splits.
-It might be useful before free page merging is implemented.
+Since compaction code can compact >0 order folios, enable it during the
+process.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- mm/compaction.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ mm/compaction.c | 25 ++++++++++---------------
+ 1 file changed, 10 insertions(+), 15 deletions(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 45747ab5f380..4300d877b824 100644
+index 4300d877b824..f72af74094de 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -145,6 +145,38 @@ static void sort_free_pages(struct list_head *src, str=
-uct free_list *dst)
- 	}
- }
+@@ -1087,11 +1087,17 @@ isolate_migratepages_block(struct compact_control *=
+cc, unsigned long low_pfn,
+ 		if (PageCompound(page) && !cc->alloc_contig) {
+ 			const unsigned int order =3D compound_order(page);
 =20
-+static void sort_folios_by_order(struct list_head *pages)
-+{
-+	struct free_list page_list[MAX_ORDER + 1];
-+	int order;
-+	struct folio *folio, *next;
-+
-+	for (order =3D 0; order <=3D MAX_ORDER; order++) {
-+		INIT_LIST_HEAD(&page_list[order].pages);
-+		page_list[order].nr_free =3D 0;
-+	}
-+
-+	list_for_each_entry_safe(folio, next, pages, lru) {
-+		order =3D folio_order(folio);
-+
-+		if (order > MAX_ORDER)
-+			continue;
-+
-+		list_move(&folio->lru, &page_list[order].pages);
-+		page_list[order].nr_free++;
-+	}
-+
-+	for (order =3D MAX_ORDER; order >=3D 0; order--) {
-+		if (page_list[order].nr_free) {
-+
-+			list_for_each_entry_safe(folio, next,
-+						 &page_list[order].pages, lru) {
-+				list_move_tail(&folio->lru, pages);
-+			}
-+		}
-+	}
-+}
-+
- #ifdef CONFIG_COMPACTION
- bool PageMovable(struct page *page)
- {
-@@ -2636,6 +2668,8 @@ compact_zone(struct compact_control *cc, struct captu=
-re_control *capc)
- 				pageblock_start_pfn(cc->migrate_pfn - 1));
+-			if (likely(order <=3D MAX_ORDER)) {
+-				low_pfn +=3D (1UL << order) - 1;
+-				nr_scanned +=3D (1UL << order) - 1;
++			/*
++			 * Compacting > pageblock_order pages does not improve
++			 * memory fragmentation. Also skip hugetlbfs pages.
++			 */
++			if (likely(order >=3D pageblock_order) || PageHuge(page)) {
++				if (order <=3D MAX_ORDER) {
++					low_pfn +=3D (1UL << order) - 1;
++					nr_scanned +=3D (1UL << order) - 1;
++				}
++				goto isolate_fail;
+ 			}
+-			goto isolate_fail;
  		}
 =20
-+		sort_folios_by_order(&cc->migratepages);
-+
- 		err =3D migrate_pages(&cc->migratepages, compaction_alloc,
- 				compaction_free, (unsigned long)cc, cc->mode,
- 				MR_COMPACTION, &nr_succeeded);
+ 		/*
+@@ -1214,17 +1220,6 @@ isolate_migratepages_block(struct compact_control *c=
+c, unsigned long low_pfn,
+ 					goto isolate_abort;
+ 				}
+ 			}
+-
+-			/*
+-			 * folio become large since the non-locked check,
+-			 * and it's on LRU.
+-			 */
+-			if (unlikely(folio_test_large(folio) && !cc->alloc_contig)) {
+-				low_pfn +=3D folio_nr_pages(folio) - 1;
+-				nr_scanned +=3D folio_nr_pages(folio) - 1;
+-				folio_set_lru(folio);
+-				goto isolate_fail_put;
+-			}
+ 		}
+=20
+ 		/* The folio is taken off the LRU */
 --=20
 2.40.1
 
