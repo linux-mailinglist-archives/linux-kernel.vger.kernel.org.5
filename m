@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 883F979CA29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B9679CA31
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbjILIhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S232822AbjILIim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjILIhc (ORCPT
+        with ESMTP id S232812AbjILIil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:37:32 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2DCB9;
-        Tue, 12 Sep 2023 01:37:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VrwBLdc_1694507844;
-Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VrwBLdc_1694507844)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Sep 2023 16:37:25 +0800
-Message-ID: <c714149e-9a54-40c1-fd55-bf2297eebe17@linux.alibaba.com>
-Date:   Tue, 12 Sep 2023 16:37:31 +0800
+        Tue, 12 Sep 2023 04:38:41 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A945E7A;
+        Tue, 12 Sep 2023 01:38:37 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-991c786369cso709125266b.1;
+        Tue, 12 Sep 2023 01:38:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694507915; x=1695112715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d5WzW7udVB3HdwrirrUGrjvkqjfIkPOdv3DY3SpLmXk=;
+        b=kprj7FtczO5+01Xw1n/tLGqFrn4h+aI1W4RCgmCVk+sgHNEZc0gI6y5r8U/p2JwwW5
+         ijqy/USEumr+x1/XvTAv1GXBTosc4MM0GtlQafqXNg8c74CNffK7KHZatwRgFQhTDHwW
+         ScZv7b/m1d2fmkZWNakXFByd5l9XhcMF4uey2lA/6ojOa2AkvQ8zeMOiaSVfI4KDesLN
+         Hnh7K1zD1SrDjHh7CX5mk1LYnzRQrbTwRqB4PowqDm4CAhigzyH9SiC793x3A5UD2ODu
+         HPXUiBGU7VLYLtGEMtKlVYdJZdvHx/3YF9NPODYyrspCwmX0Ck8LuIxnK0IjItnegm+D
+         6JJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694507915; x=1695112715;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d5WzW7udVB3HdwrirrUGrjvkqjfIkPOdv3DY3SpLmXk=;
+        b=qZVBYYtIWwEVInH8hGiAszcRGWrrxYKTMKvIh9AfBZzwvUx2pqAXoi2vZekPPrKULZ
+         1rJmLgkn6Lv5O6PO9JMahv7ewml6u4zQ04w4F2rmB1XCnNYT+SWIqmRXxilKygvUfdKK
+         cru2aCXDZ6wYWVAAKrqmX3OLesRJZ9zsg8fmkn/hKNGYzuYIpR9hFVwws4FZbV9Ee0Of
+         3DpfXu/2f9KGASMg23A0dAAH0UPFjGXtmoNXL1JB6+1Ef/uMLwy1cSD6sfsB3NBQ7eXU
+         q259zZXsZ+D4Yx2hhrqJf/415NOcTNuwoVpNNKyODPZIvQuJ1KHoDWDEPOVwVZV5TsRd
+         JcsA==
+X-Gm-Message-State: AOJu0YyIX7ggiTBoYhauachN8gbtAAnpMFPW0CtSK20Rd1nexbuHD+rj
+        +K3BHh3g/imOtuxROr+GhL4=
+X-Google-Smtp-Source: AGHT+IEwPItuktnWOR0gh0mbE4XlHJQpgYLFMu1sfdxplQaopwaTpT2qalC3/qPX5N1G4uxUV65OHA==
+X-Received: by 2002:a17:906:5350:b0:9aa:1020:8c39 with SMTP id j16-20020a170906535000b009aa10208c39mr8166508ejo.18.1694507915324;
+        Tue, 12 Sep 2023 01:38:35 -0700 (PDT)
+Received: from lelloman-5950.. (host-87-10-35-251.retail.telecomitalia.it. [87.10.35.251])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170906038a00b0099b76c3041csm6511726eja.7.2023.09.12.01.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 01:38:34 -0700 (PDT)
+From:   Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+To:     dan.carpenter@linaro.org, akpm@linux-foundation.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+Subject: [PATCH] selftests: cgroup: fix test_zswap error path and meaningless check
+Date:   Tue, 12 Sep 2023 10:38:00 +0200
+Message-Id: <20230912083800.57435-1-cerasuolodomenico@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 5/6] pinctrl: sprd: Increase the range of register
- values
-To:     Linhua Xu <Linhua.xu@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
- <20230908055146.18347-6-Linhua.xu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230908055146.18347-6-Linhua.xu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace destruction paths with simple returns before the test cgroup is
+created, there is nothing to free or destroy at that point.
 
+Remove pointless check, stored_pages is a size_t and cannot be < 0.
 
-On 9/8/2023 1:51 PM, Linhua Xu wrote:
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
-> 
-> As the UNISOC pin controller version iterates, more registers are required
-> to meet new functional requirements. Thus modify them.
-> 
-> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
-> ---
->   drivers/pinctrl/sprd/pinctrl-sprd.h | 30 +++++++++++++++--------------
->   1 file changed, 16 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.h b/drivers/pinctrl/sprd/pinctrl-sprd.h
-> index a696f81ce663..5357874186fd 100644
-> --- a/drivers/pinctrl/sprd/pinctrl-sprd.h
-> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.h
-> @@ -7,30 +7,32 @@
->   #ifndef __PINCTRL_SPRD_H__
->   #define __PINCTRL_SPRD_H__
->   
-> +#include <linux/bits.h>
-> +
->   struct platform_device;
->   
-> -#define NUM_OFFSET	(20)
-> -#define TYPE_OFFSET	(16)
-> -#define BIT_OFFSET	(8)
-> -#define WIDTH_OFFSET	(4)
-> +#define NUM_OFFSET	22
-> +#define TYPE_OFFSET	18
-> +#define BIT_OFFSET	10
-> +#define WIDTH_OFFSET	6
->   
->   #define SPRD_PIN_INFO(num, type, offset, width, reg)	\
-> -		(((num) & 0xFFF) << NUM_OFFSET |	\
-> -		 ((type) & 0xF) << TYPE_OFFSET |	\
-> -		 ((offset) & 0xFF) << BIT_OFFSET |	\
-> -		 ((width) & 0xF) << WIDTH_OFFSET |	\
-> -		 ((reg) & 0xF))
-> +		(((num) & GENMASK(10, 0)) << NUM_OFFSET |	\
-> +		 ((type) & GENMASK(3, 0)) << TYPE_OFFSET |	\
-> +		 ((offset) & GENMASK(7, 0)) << BIT_OFFSET |	\
-> +		 ((width) & GENMASK(3, 0)) << WIDTH_OFFSET |	\
-> +		 ((reg) & GENMASK(5, 0)))
+Fixes: a549f9f31561 ("selftests: cgroup: add test_zswap with no kmem bypass test")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+---
+ tools/testing/selftests/cgroup/test_zswap.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Can you define some readable macro for the mask bits?
+diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+index 49def87a909b..5257106776d5 100644
+--- a/tools/testing/selftests/cgroup/test_zswap.c
++++ b/tools/testing/selftests/cgroup/test_zswap.c
+@@ -178,10 +178,10 @@ static int test_no_kmem_bypass(const char *root)
+ 
+ 	/* Set up test memcg */
+ 	if (cg_write(root, "cgroup.subtree_control", "+memory"))
+-		goto out;
++		return KSFT_FAIL;
+ 	test_group = cg_name(root, "kmem_bypass_test");
+ 	if (!test_group)
+-		goto out;
++		return KSFT_FAIL;
+ 
+ 	/* Spawn memcg child and wait for it to allocate */
+ 	set_min_free_kb(min_free_kb_low);
+@@ -208,8 +208,6 @@ static int test_no_kmem_bypass(const char *root)
+ 		free(trigger_allocation);
+ 		if (get_zswap_stored_pages(&stored_pages))
+ 			break;
+-		if (stored_pages < 0)
+-			break;
+ 		/* If memory was pushed to zswap, verify it belongs to memcg */
+ 		if (stored_pages > stored_pages_threshold) {
+ 			int zswapped = cg_read_key_long(test_group, "memory.stat", "zswapped ");
+-- 
+2.34.1
 
->   
->   #define SPRD_PINCTRL_PIN(pin)	SPRD_PINCTRL_PIN_DATA(pin, #pin)
->   
->   #define SPRD_PINCTRL_PIN_DATA(a, b)				\
->   	{							\
->   		.name = b,					\
-> -		.num = (((a) >> NUM_OFFSET) & 0xfff),		\
-> -		.type = (((a) >> TYPE_OFFSET) & 0xf),		\
-> -		.bit_offset = (((a) >> BIT_OFFSET) & 0xff),	\
-> -		.bit_width = ((a) >> WIDTH_OFFSET & 0xf),	\
-> -		.reg = ((a) & 0xf)				\
-> +		.num = (((a) & GENMASK(31, 22)) >> NUM_OFFSET),	\
-> +		.type = (((a) & GENMASK(21, 18)) >> TYPE_OFFSET),	\
-> +		.bit_offset = (((a) & GENMASK(17, 10)) >> BIT_OFFSET),	\
-> +		.bit_width = (((a) & GENMASK(9, 6)) >> WIDTH_OFFSET),	\
-> +		.reg = ((a) & GENMASK(5, 0))				\
-
-Please keep the same logic operation as before, and you can reuse the 
-readable macros if you defined.
-
->   	}
->   
->   enum pin_type {
