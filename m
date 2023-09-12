@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF1779D58E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAAA79D527
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbjILPwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S233996AbjILPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236405AbjILPws (ORCPT
+        with ESMTP id S229661AbjILPli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:52:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E17E10EA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:52:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55EECC433B7;
-        Tue, 12 Sep 2023 15:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694533964;
-        bh=fqPeDI8Tt7B0BD4Ll8OcOc/JgS0VBc5dnAfvkG4MkHA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aLrIal6ZBzeZEM9eVXol0jhbD+o/w6bFN9FN/ICV1ES4EnPJ7tD5Y9I/X5WIuaWfR
-         0lopRtj467/JrGLuvj+KBwqHmb8epOKqfprax0FE6uhUn9nOWcvi6jngib9p3Ucr/n
-         VVfZojXeLLwiRyD+5d7fjpLxmYfP/KAMjpMa/8xmrj4cR0b4tH05SMW4d+KUe0mpqL
-         lh10N/RyoNZuGnVGvIvyAVaLdSz/fec+agf5+7sADsdNnrKAmnL2RhsEpmLkcNlkTc
-         y+20tJdpBECCdaVHPzUVGCxOxn6SkrL1Lcf8kZLrG6dABf4wUyePl2ePQeSuv0Qwbt
-         /w52sn23BGfLg==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: don't probe unaligned access speed if already done
-Date:   Tue, 12 Sep 2023 23:40:40 +0800
-Message-Id: <20230912154040.3306-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
+        Tue, 12 Sep 2023 11:41:38 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E68110E5;
+        Tue, 12 Sep 2023 08:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jcNhuGiuvlufLMmmJWjXnQrVR4HUnrinAE2kQhhku7Q=; b=Qc9E8cHsgoi7R3CAggnd9UMSC5
+        JAGK+u0XXGAYP8PolDIUPfid98jIAo1WzneEywa6muZHt30lLpxRfr5jqw+ZIHJrd8owon8Sl82RH
+        Sez57piojvzb/yqbr2nKEnlHQ524XnBGn+2IZCJvxTskPkRfcAI1sndv1RBBv6bewVhQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qg5W7-006F8Y-NZ; Tue, 12 Sep 2023 17:41:31 +0200
+Date:   Tue, 12 Sep 2023 17:41:31 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 1/7] net: phy: introduce phy numbering and
+ phy namespaces
+Message-ID: <d0a4c2c5-2d2b-42b6-a15c-06f9dc3c1e04@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+ <20230907092407.647139-2-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907092407.647139-2-maxime.chevallier@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If misaligned_access_speed percpu var isn't so called "HWPROBE
-MISALIGNED UNKNOWN", it means the probe has happened(this is possible
-for example, hotplug off then hotplug on one cpu), and the percpu var
-has been set, don't probe again in this case.
+> Introduce a numbering scheme allowing to enumerate PHY devices that
+> belong to any netdev, which can in turn allow userspace to take more
+> precise decisions with regard to each PHY's configuration.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/kernel/cpufeature.c | 4 ++++
- 1 file changed, 4 insertions(+)
+A minor point, and i know naming is hard, but i keep reading _ns_ and
+think namespace, as in ip netns. Maybe we should think of something
+other than ns.
 
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 1cfbba65d11a..e12cd22755c7 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -568,6 +568,10 @@ void check_unaligned_access(int cpu)
- 	void *src;
- 	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
- 
-+	/* We are already set since the last check */
-+	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
-+		return;
-+
- 	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
- 	if (!page) {
- 		pr_warn("Can't alloc pages to measure memcpy performance");
--- 
-2.40.1
-
+      Andrew
