@@ -2,166 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5619379CB36
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78F979CB2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbjILJKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
+        id S232192AbjILJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjILJKo (ORCPT
+        with ESMTP id S229504AbjILJKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:10:44 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CAC170E;
-        Tue, 12 Sep 2023 02:10:40 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C91QlS005312;
-        Tue, 12 Sep 2023 09:09:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=M3ziXwQnsWu63lTCY+rxXmBhjn/j4cxz31lGji6ElRk=;
- b=bP+ahzVfaI9vM1U5xUIV+fFCDB6oZcY3d4WdvA3O7OJA1h9YLELG62NqiPud8w0HL9du
- tE2XEtqYYZOBBdwhygKBUOUv4O2q8O7uHg0G19jCeb9ZlJDMvVgFSNuQ47v54cS7SLjC
- w6508zArjv7dJNdPcTgVUfNyH8xSvJ73RD9CorsbCfo+9RP3eu3PAxCdI+YhXsqHJVyw
- vzLHw8sKqSoRpQItloULC2S6iFblGYh43Uus0BHxR074wBcLQaxSE1RJjjt5McvOsXoS
- 5bTM/uJ/YRVLglH3XAxu0AhGV/LievQmPQ3dVBPr2O5d7AjmQ2vHhErfqBYIli2FSfaU JQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t268fhwhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:09:50 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C99nkj006026
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:09:49 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 02:09:37 -0700
-Message-ID: <88a80eca-62c0-8398-323e-d1c1cd7adc8f@quicinc.com>
-Date:   Tue, 12 Sep 2023 14:39:34 +0530
+        Tue, 12 Sep 2023 05:10:21 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA25170D;
+        Tue, 12 Sep 2023 02:10:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 78C631F8BB;
+        Tue, 12 Sep 2023 09:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694509816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3oLDSU6uCjV2EGNSBLy3F9T0vfZ0SK9re4WrGsuLP6M=;
+        b=eRc4pkVX1Xuk+m9HY8aLPjdArqPBS48IVGMP8UDnzWt/fFR7/5lucUByh6yO6ZKyhSr48Q
+        g4EdMmJxkhzTVKPPB4YIPChhEUtYprvXMp7JbxDgoKzDUoOst+ULXJQWx8LZa0x+Bn9U55
+        HgjY3FXR69kyZcdbDl41aBSEzkMjdD4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694509816;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3oLDSU6uCjV2EGNSBLy3F9T0vfZ0SK9re4WrGsuLP6M=;
+        b=Q66xZuMue4b0tjWb5cdtDq7oNyACOCx0ezKhABsCHaCzgrIrZV/fJ3z+LvbjU0xs30Io+4
+        HL4YUkek/lNP35BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 66F6F139DB;
+        Tue, 12 Sep 2023 09:10:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xGD0GPgqAGWkMAAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 12 Sep 2023 09:10:16 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EF43AA077E; Tue, 12 Sep 2023 11:10:15 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 11:10:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Zdenek Kabelac <zkabelac@redhat.com>
+Cc:     Jan Kara <jack@suse.cz>, Mikulas Patocka <mpatocka@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [PATCH] fix writing to the filesystem after unmount
+Message-ID: <20230912091015.n37x6gx52jmuwmx7@quack3>
+References: <60f244be-803b-fa70-665e-b5cba15212e@redhat.com>
+ <20230906-aufkam-bareinlage-6e7d06d58e90@brauner>
+ <818a3cc0-c17b-22c0-4413-252dfb579cca@redhat.com>
+ <20230907094457.vcvmixi23dk3pzqe@quack3>
+ <20230907-abgrenzen-achtung-b17e9a1ad136@brauner>
+ <513f337e-d254-2454-6197-82df564ed5fc@redhat.com>
+ <20230908073244.wyriwwxahd3im2rw@quack3>
+ <86235d7a-a7ea-49da-968e-c5810cbf4a7b@redhat.com>
+ <20230908102014.xgtcf5wth2l2cwup@quack3>
+ <15c62097-d58f-4e66-bdf5-e0edb1306b2f@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [REBASE PATCH v5 15/17] firmware: scm: Modify only the download
- bits in TCSR register
-Content-Language: en-US
-To:     Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
-        <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>,
-        "Poovendhan Selvaraj" <quic_poovendh@quicinc.com>
-References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
- <1694429639-21484-16-git-send-email-quic_mojha@quicinc.com>
- <9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: TxONeWbezp3uJ16nJp3vXiiAcAvKJMpZ
-X-Proofpoint-ORIG-GUID: TxONeWbezp3uJ16nJp3vXiiAcAvKJMpZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 spamscore=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- clxscore=1015 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309120077
+In-Reply-To: <15c62097-d58f-4e66-bdf5-e0edb1306b2f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 08-09-23 12:51:03, Zdenek Kabelac wrote:
+> Dne 08. 09. 23 v 12:20 Jan Kara napsal(a):
+> > On Fri 08-09-23 11:29:40, Zdenek Kabelac wrote:
+> > > Dne 08. 09. 23 v 9:32 Jan Kara napsal(a):
+> > > > On Thu 07-09-23 14:04:51, Mikulas Patocka wrote:
+> > > > > On Thu, 7 Sep 2023, Christian Brauner wrote:
+> > > > > 
+> > > > > > > I think we've got too deep down into "how to fix things" but I'm not 100%
+> > > > > > We did.
+> > > > > > 
+> > > > > > > sure what the "bug" actually is. In the initial posting Mikulas writes "the
+> > > > > > > kernel writes to the filesystem after unmount successfully returned" - is
+> > > > > > > that really such a big issue?
+> > > > > I think it's an issue if the administrator writes a script that unmounts a
+> > > > > filesystem and then copies the underyling block device somewhere. Or a
+> > > > > script that unmounts a filesystem and runs fsck afterwards. Or a script
+> > > > > that unmounts a filesystem and runs mkfs on the same block device.
+> > > > Well, e.g. e2fsprogs use O_EXCL open so they will detect that the filesystem
+> > > > hasn't been unmounted properly and complain. Which is exactly what should
+> > > > IMHO happen.
+> > > I'd likely propose in this particular state of unmounting of a frozen
+> > > filesystem to just proceed - and drop the frozen state together with release
+> > > filesystem and never issue any ioctl from such filelsystem to the device
+> > > below - so it would not be a 100% valid unmount - but since the freeze
+> > > should be nearly equivalent of having a proper 'unmount' being done -� it
+> > > shoudn't be causing any harm either - and� all resources associated could
+> > > be 'released.� IMHO it's correct to 'drop' frozen state for filesystem
+> > > that is not going to exist anymore� (assuming it's the last� such user)
+> > This option was also discussed in the past and it has nasty consequences as
+> > well. Cleanly shutting down a filesystem usually needs to write to the
+> > underlying device so either you allow the filesystem to write to the device
+> > on umount breaking assumptions of the user who froze the fs or you'd have
+> > to implement a special handling for this case for every filesystem to avoid
+> > the writes (and put up with the fact that the filesystem will appear as
+> > uncleanly shutdown on the next mount). Not particularly nice either...
+> 
+> 
+> I'd say there are several options and we should aim towards the variant
+> which is most usable by normal users.
+> 
+> Making hyper complex� unmount rule logic that basically no user-space tools
+> around Gnome/KDE... are able to handle well and getting it to the position
+> where only the core kernel developer have all the 'wisdom' to detect and
+> decode system state and then 'know what's going on'� isn't the favourite
+> goal here.
 
+I don't think we are really making forward progress in the argument which
+behavior is more or less correct or useful. But maybe when we cannot agree
+on the general solution we could still improve the situation that
+practically matters? E.g. disputing Gnome apps telling you you can safely
+remove the USB stick when you actually cannot because the filesystem on it
+is frozen is actually kind of weak argument because users that freeze
+filesystem on their USB stick are practically non-existent. So is there a
+usecase where users are hitting these problems in practice? Maybe some user
+report that triggered original Mikulas' patch? Or was that mostly a
+theoretical concern?
 
-On 9/11/2023 8:37 PM, Kathiravan Thirumoorthy wrote:
-> 
-> On 9/11/2023 4:23 PM, Mukesh Ojha wrote:
->> Crashdump collection is based on the DLOAD bit of TCSR register.
->> To retain other bits, we read the register and modify only the
->> DLOAD bit as the other bits have their own significance.
->>
->> Co-developed-by: Poovendhan Selvaraj <quic_poovendh@quicinc.com>
->> Signed-off-by: Poovendhan Selvaraj <quic_poovendh@quicinc.com>
->> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # 
->> IPQ9574 and IPQ5332
->> ---
->>   drivers/firmware/qcom_scm.c | 16 ++++++++++++++--
->>   1 file changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index 321133f0950d..5cacae63ee2a 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -5,6 +5,8 @@
->>   #include <linux/platform_device.h>
->>   #include <linux/init.h>
->>   #include <linux/interrupt.h>
->> +#include <linux/bitfield.h>
->> +#include <linux/bits.h>
->>   #include <linux/completion.h>
->>   #include <linux/cpumask.h>
->>   #include <linux/export.h>
->> @@ -26,6 +28,14 @@
->>   static bool download_mode = 
->> IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MODE_DEFAULT);
->>   module_param(download_mode, bool, 0);
->> +#define SCM_HAS_CORE_CLK    BIT(0)
->> +#define SCM_HAS_IFACE_CLK    BIT(1)
->> +#define SCM_HAS_BUS_CLK        BIT(2)
-> 
-> 
-> Is this intentional to add these macros back again?
+> Freeze should be getting the filesystem into 'consistent' state - filesystem
+> should� be able to 'easily' recover and finish all the ongoing� 'unfinished'
+> process with the next mount without requiring full 'fsck' - otherwise it
+> would be useless for i.e. snapshot.
 
-This is a mistake, thanks for letting me know.
+More or less yes but e.g. grub2 isn't able to reliably read images of just
+frozen filesystem because it ignores journal contents. So if this was root
+filesystem this could result in unbootable system.
 
--Mukesh
-> 
-> 
->> +
->> +#define QCOM_DLOAD_MASK        GENMASK(5, 4)
->> +#define QCOM_DLOAD_FULLDUMP    0x1
->> +#define QCOM_DLOAD_NODUMP    0x0
->> +
->>   struct qcom_scm {
->>       struct device *dev;
->>       struct clk *core_clk;
->> @@ -440,6 +450,7 @@ static int __qcom_scm_set_dload_mode(struct device 
->> *dev, bool enable)
->>   static void qcom_scm_set_download_mode(bool enable)
->>   {
->> +    u32 val = enable ? QCOM_DLOAD_FULLDUMP : QCOM_DLOAD_NODUMP;
->>       bool avail;
->>       int ret = 0;
->> @@ -449,8 +460,9 @@ static void qcom_scm_set_download_mode(bool enable)
->>       if (avail) {
->>           ret = __qcom_scm_set_dload_mode(__scm->dev, enable);
->>       } else if (__scm->dload_mode_addr) {
->> -        ret = qcom_scm_io_writel(__scm->dload_mode_addr,
->> -                enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0);
->> +        ret = qcom_scm_io_update_field(__scm->dload_mode_addr,
->> +                           QCOM_DLOAD_MASK,
->> +                           FIELD_PREP(QCOM_DLOAD_MASK, val));
->>       } else {
->>           dev_err(__scm->dev,
->>               "No available mechanism for setting download mode\n");
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
