@@ -2,236 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E0B79DA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426C779DA17
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbjILUck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 16:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S236653AbjILUcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 16:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjILUci (ORCPT
+        with ESMTP id S235866AbjILUct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 16:32:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2884F10DF;
-        Tue, 12 Sep 2023 13:32:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1D16B21847;
-        Tue, 12 Sep 2023 20:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694550736;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uATxwmbmavawxaY2PoxZquzdLoK6eWGSXGJbX4efGD0=;
-        b=vZmYy1h6w25HCXoDLHG+MgCrRAgm4yU32dNk4DiCSFft0dsKzNX9m98QSKZ90FQ6OUGA0P
-        Y9X5jDORBaWavm6QttP+oN7v/rFiMkpud5n6/5OlqpOklKxtKc+93hr3xXmC9yStWZPi+q
-        2b13C/OiQ8Oy9UKpTuERyE2B3EZzJzc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694550736;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uATxwmbmavawxaY2PoxZquzdLoK6eWGSXGJbX4efGD0=;
-        b=oIcGsIKZhTjKKlOof8qvdCJBwMUPG/LiMtRbrMJfW0CnHZKn+HQUl8i/B8wvGkJgfJJdQs
-        JwpQA7Du4urHcFCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD65D139DB;
-        Tue, 12 Sep 2023 20:32:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Oic2Lc/KAGVzfgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 12 Sep 2023 20:32:15 +0000
-Date:   Tue, 12 Sep 2023 22:32:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 01/11] btrfs: add raid stripe tree definitions
-Message-ID: <20230912203214.GE20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
- <20230911-raid-stripe-tree-v8-1-647676fa852c@wdc.com>
+        Tue, 12 Sep 2023 16:32:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EBF189;
+        Tue, 12 Sep 2023 13:32:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C201C433C9;
+        Tue, 12 Sep 2023 20:32:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694550757;
+        bh=+ayGb/8rfO8sMl9eGtsq7VjyvF/TUJehfrAzBanbfd4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u/IcWo3sNlbJnyWNLoZPnR8JHYf5ZkFCoVkPRX/IMR5XDzEVlKC4PWvCS5pFai/17
+         WcY7QwF/WZGvngVEPshytqECTdIpRrh8uyDPiZsUjRH6VkH9y8Fx5zapUSoM3TbXcV
+         IhoD+roMDvhyd9a0qgdkqOmcmPGQ+RwIZr2VIh83x1J9luh55U57nL8iR8CBlyY023
+         IhXkmwoB7cPfvAllzy6yCQLDsmeOgoTDPdAJEAuHIvoflZxGAJEBLm9i79f4/RqnpZ
+         WUXNcdSM8dGi1pttoL86DSRlrV4tdrVilceKAiDULEADHeeFg8IsX06/sZJoLPg7NJ
+         jlW0Ew9fiW0IQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6A29A403F4; Tue, 12 Sep 2023 17:32:34 -0300 (-03)
+Date:   Tue, 12 Sep 2023 17:32:34 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        kan.liang@linux.intel.com, james.clark@arm.com,
+        tmricht@linux.ibm.com, ak@linux.intel.com,
+        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v8 0/6] perf record: Track sideband events for all CPUs
+ when tracing selected CPUs
+Message-ID: <ZQDK4kZhwyZL/8tx@kernel.org>
+References: <20230904023340.12707-1-yangjihong1@huawei.com>
+ <453bd95c-932d-c60a-bd7b-96f87bc7779a@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230911-raid-stripe-tree-v8-1-647676fa852c@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <453bd95c-932d-c60a-bd7b-96f87bc7779a@amd.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:52:02AM -0700, Johannes Thumshirn wrote:
-> Add definitions for the raid stripe tree. This tree will hold information
-> about the on-disk layout of the stripes in a RAID set.
+Em Tue, Sep 12, 2023 at 02:41:56PM +0530, Ravi Bangoria escreveu:
+> On 04-Sep-23 8:03 AM, Yang Jihong wrote:
+> > User space tasks can migrate between CPUs, track sideband events for all
+> > CPUs.
+> > 
+> > The specific scenarios are as follows:
+> > 
+> >          CPU0                                 CPU1
+> >   perf record -C 0 start
+> >                               taskA starts to be created and executed
+> >                                 -> PERF_RECORD_COMM and PERF_RECORD_MMAP
+> >                                    events only deliver to CPU1
+> >                               ......
+> >                                 |
+> >                           migrate to CPU0
+> >                                 |
+> >   Running on CPU0    <----------/
+> >   ...
+> > 
+> >   perf record -C 0 stop
+> > 
+> > Now perf samples the PC of taskA. However, perf does not record the
+> > PERF_RECORD_COMM and PERF_RECORD_COMM events of taskA.
+> > Therefore, the comm and symbols of taskA cannot be parsed.
+> > 
+> > The sys_perf_event_open invoked is as follows:
+> > 
+> >   # perf --debug verbose=3 record -e cpu-clock -C 1 true
+> >   <SNIP>
+> >   Opening: cpu-clock
+> >   ------------------------------------------------------------
+> >   perf_event_attr:
+> >     type                             1 (PERF_TYPE_SOFTWARE)
+> >     size                             136
+> >     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+> >     { sample_period, sample_freq }   4000
+> >     sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
+> >     read_format                      ID|LOST
+> >     disabled                         1
+> >     inherit                          1
+> >     freq                             1
+> >     sample_id_all                    1
+> >     exclude_guest                    1
+> >   ------------------------------------------------------------
+> >   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
+> >   Opening: dummy:u
+> >   ------------------------------------------------------------
+> >   perf_event_attr:
+> >     type                             1 (PERF_TYPE_SOFTWARE)
+> >     size                             136
+> >     config                           0x9 (PERF_COUNT_SW_DUMMY)
+> >     { sample_period, sample_freq }   1
+> >     sample_type                      IP|TID|TIME|CPU|IDENTIFIER
+> >     read_format                      ID|LOST
+> >     inherit                          1
+> >     exclude_kernel                   1
+> >     exclude_hv                       1
+> >     mmap                             1
+> >     comm                             1
+> >     task                             1
+> >     sample_id_all                    1
+> >     exclude_guest                    1
+> >     mmap2                            1
+> >     comm_exec                        1
+> >     ksymbol                          1
+> >     bpf_event                        1
+> >   ------------------------------------------------------------
+> >   sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
+> >   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
+> >   sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
+> >   sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
+> >   sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
+> >   sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
+> >   sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
+> >   sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
+> >   <SNIP>
+> > 
+> > Changes since_v7:
+> >  - The condition for requiring system_wide sideband is changed to
+> >    "as long as a non-dummy event exists" (patch4).
+> >  - Modify the corresponding test case to record only dummy event (patch6).
+> >  - Thanks to tested-by tag from Ravi, but because the solution is modified,
+> >    the tested-by tag of Ravi is not added to this version.
 > 
-> Each stripe extent has a 1:1 relationship with an on-disk extent item and
-> is doing the logical to per-drive physical address translation for the
-> extent item in question.
+> I've re-tested v8 with my simple test.
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/accessors.h            | 10 ++++++++++
->  fs/btrfs/locking.c              |  5 +++--
->  include/uapi/linux/btrfs_tree.h | 33 +++++++++++++++++++++++++++++++--
->  3 files changed, 44 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
-> index f958eccff477..977ff160a024 100644
-> --- a/fs/btrfs/accessors.h
-> +++ b/fs/btrfs/accessors.h
-> @@ -306,6 +306,16 @@ BTRFS_SETGET_FUNCS(timespec_nsec, struct btrfs_timespec, nsec, 32);
->  BTRFS_SETGET_STACK_FUNCS(stack_timespec_sec, struct btrfs_timespec, sec, 64);
->  BTRFS_SETGET_STACK_FUNCS(stack_timespec_nsec, struct btrfs_timespec, nsec, 32);
->  
-> +BTRFS_SETGET_FUNCS(stripe_extent_encoding, struct btrfs_stripe_extent, encoding, 8);
-
-What is encoding referring to?
-
-> +BTRFS_SETGET_FUNCS(raid_stride_devid, struct btrfs_raid_stride, devid, 64);
-> +BTRFS_SETGET_FUNCS(raid_stride_physical, struct btrfs_raid_stride, physical, 64);
-> +BTRFS_SETGET_FUNCS(raid_stride_length, struct btrfs_raid_stride, length, 64);
-> +BTRFS_SETGET_STACK_FUNCS(stack_stripe_extent_encoding,
-> +			 struct btrfs_stripe_extent, encoding, 8);
-> +BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_devid, struct btrfs_raid_stride, devid, 64);
-> +BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_physical, struct btrfs_raid_stride, physical, 64);
-> +BTRFS_SETGET_STACK_FUNCS(stack_raid_stride_length, struct btrfs_raid_stride, length, 64);
-> +
->  /* struct btrfs_dev_extent */
->  BTRFS_SETGET_FUNCS(dev_extent_chunk_tree, struct btrfs_dev_extent, chunk_tree, 64);
->  BTRFS_SETGET_FUNCS(dev_extent_chunk_objectid, struct btrfs_dev_extent,
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 6ac4fd8cc8dc..e7760d40feab 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -58,8 +58,8 @@
->  
->  static struct btrfs_lockdep_keyset {
->  	u64			id;		/* root objectid */
-> -	/* Longest entry: btrfs-block-group-00 */
-> -	char			names[BTRFS_MAX_LEVEL][24];
-> +	/* Longest entry: btrfs-raid-stripe-tree-00 */
-> +	char			names[BTRFS_MAX_LEVEL][25];
-
-Length of "btrfs-raid-stripe-tree-00" is 25, there should be +1 for the
-NUL, also length aligned to at least 4 is better.
-
->  	struct lock_class_key	keys[BTRFS_MAX_LEVEL];
->  } btrfs_lockdep_keysets[] = {
->  	{ .id = BTRFS_ROOT_TREE_OBJECTID,	DEFINE_NAME("root")	},
-> @@ -74,6 +74,7 @@ static struct btrfs_lockdep_keyset {
->  	{ .id = BTRFS_UUID_TREE_OBJECTID,	DEFINE_NAME("uuid")	},
->  	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
->  	{ .id = BTRFS_BLOCK_GROUP_TREE_OBJECTID, DEFINE_NAME("block-group") },
-> +	{ .id = BTRFS_RAID_STRIPE_TREE_OBJECTID,DEFINE_NAME("raid-stripe-tree") },
-
-The naming is without the "tree"
-
->  	{ .id = 0,				DEFINE_NAME("tree")	},
->  };
->  
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index fc3c32186d7e..3fb758ce3ac0 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -4,9 +4,8 @@
->  
->  #include <linux/btrfs.h>
->  #include <linux/types.h>
-> -#ifdef __KERNEL__
->  #include <linux/stddef.h>
-> -#else
-> +#ifndef __KERNEL__
->  #include <stddef.h>
->  #endif
->  
-> @@ -73,6 +72,9 @@
->  /* Holds the block group items for extent tree v2. */
->  #define BTRFS_BLOCK_GROUP_TREE_OBJECTID 11ULL
->  
-> +/* tracks RAID stripes in block groups. */
-
-	Tracks ...
-
-> +#define BTRFS_RAID_STRIPE_TREE_OBJECTID 12ULL
-> +
->  /* device stats in the device tree */
->  #define BTRFS_DEV_STATS_OBJECTID 0ULL
->  
-> @@ -285,6 +287,8 @@
->   */
->  #define BTRFS_QGROUP_RELATION_KEY       246
->  
-> +#define BTRFS_RAID_STRIPE_KEY		247
-
-Any particular reason you chose 247 for the key number? It does not
-leave any gap after BTRFS_QGROUP_RELATION_KEY and before
-BTRFS_BALANCE_ITEM_KEY. If this is related to extents then please find
-more suitable group of keys where to put it.
-
-> +
->  /*
->   * Obsolete name, see BTRFS_TEMPORARY_ITEM_KEY.
->   */
-> @@ -719,6 +723,31 @@ struct btrfs_free_space_header {
->  	__le64 num_bitmaps;
->  } __attribute__ ((__packed__));
->  
-> +struct btrfs_raid_stride {
-> +	/* btrfs device-id this raid extent lives on */
-
-Comments should be full sentences.
-
-> +	__le64 devid;
-> +	/* physical location on disk */
-> +	__le64 physical;
-> +	/* length of stride on this disk */
-> +	__le64 length;
-> +};
-
-__attribute__ ((__packed__));
-
-> +
-> +#define BTRFS_STRIPE_DUP	0
-> +#define BTRFS_STRIPE_RAID0	1
-> +#define BTRFS_STRIPE_RAID1	2
-> +#define BTRFS_STRIPE_RAID1C3	3
-> +#define BTRFS_STRIPE_RAID1C4	4
-> +#define BTRFS_STRIPE_RAID5	5
-> +#define BTRFS_STRIPE_RAID6	6
-> +#define BTRFS_STRIPE_RAID10	7
-
-This is probably defining the on-disk format so some consistency is
-desired, there are already the BTRFS_BLOCK_GROUP_* types, from which the
-BTRFS_RAID_* are derive, so the BTRFS_STRIPE_* values should match the
-order and ideally the values themselves if possible.
-
-> +
-> +struct btrfs_stripe_extent {
-> +	__u8 encoding;
-> +	__u8 reserved[7];
-> +	/* array of raid strides this stripe is composed of */
-> +	__DECLARE_FLEX_ARRAY(struct btrfs_raid_stride, strides);
-
-Do we really whant to declare that as __DECLARE_FLEX_ARRAY? It's not a
-standard macro and obscures the definition.
+> Tested-by: Ravi Bangoria <ravi.bangoria@amd.com>
 
 
-> +};
-> +
->  #define BTRFS_HEADER_FLAG_WRITTEN	(1ULL << 0)
->  #define BTRFS_HEADER_FLAG_RELOC		(1ULL << 1)
->  
-> 
-> -- 
-> 2.41.0
+Thanks, applied to the csets that were still sitting in an umpublished
+perf-tools-next local branch, soon public.
+
+- Arnaldo
+
