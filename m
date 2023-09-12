@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E984779C6F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F5279C6F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbjILGeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjILGeP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230031AbjILGeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Sep 2023 02:34:15 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2057.outbound.protection.outlook.com [40.107.105.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C939E75
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:34:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CYbsfeSX2J6FE8m/0527pJ9gaBqy+tUHRr8L/51rq3ckYORdobZRcWtnEZ4QpEEc7C+xyqOxqx+fto1Tr1sTziTiAgS746BpGZ+8RkROqLtowKcrHgzmgbr7f0ZfQyNbCpJhZ2nyA/b/DyW6+qUNq95GY2ZOv8PtSFxNtMYOIcfrymTeC0taS6KHborqaqEzk+t8bhAE8P9bwUH6pF0P275riAisS3Mvmj5WmY0rQbW4Vzo0zTygM0+HaMUsIl3RR8ZG/f98JjvJHyDFmDsjpWjl2eZjQaGSro19bwvxNgd30uXmPjmbvDWQjDZtgCg2ZI16ckjFERTgqq9ZedJP8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uTyqv2t1gJzlEaB+U7fgU0wD3aVZC7wms7saV5VFGb4=;
- b=jMcNwQWTyA/5cHbewGY4unD9/CD/SIq/R9pzpAU5m3jcOm0o4VeuRRCna15Kf6IvoU24VgoUJ//5d5xfL/4FM+mv7OUX4C1yDiKqz3MrjtUzVX5HZQyAEA4++yVPTfuNc/Jbai7IsTL/zlMBXpqVoMKGxXVmr+EFJ8lIi6MqfTRrV8p2utLe44pQjkX2p9Dptu8Ta6RxCkfDTW1GfpcczFSYt47jHVJsUHMjWgVvQZx5cv0wko/Bk87bUPrvaVyjHjV4p3Mbz4ssn6XY9jmmkUQq+ZjzyeIqnYvPbS7ibVQKXiJtiAr3HEPfdsZpdxYR5lqijNsk78TnjT0f/2cApA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uTyqv2t1gJzlEaB+U7fgU0wD3aVZC7wms7saV5VFGb4=;
- b=dqfyrh8Jn6VBBqiJFM/SicNG5lPbquqrcJHVuqu6GXwzF+mNQq6WBxOww7A/tBTpcbLXeBC3H3FpEFhWAOdRA81I2fx9fPaqZz+gYF+JiqsT03ZplK4dd644JBWNMt5H7h3jgBMZcVPtLeMNUWus9gx//bP8D6IVNFHeIfMW6+k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by AM9PR04MB8778.eurprd04.prod.outlook.com (2603:10a6:20b:409::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
- 2023 06:34:09 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::cda8:5cad:29b6:3c96]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::cda8:5cad:29b6:3c96%7]) with mapi id 15.20.6745.034; Tue, 12 Sep 2023
- 06:34:08 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Chancel Liu <chancel.liu@nxp.com>
-Subject: [PATCH] ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
-Date:   Tue, 12 Sep 2023 14:33:29 +0800
-Message-Id: <20230912063329.2260360-1-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI2PR01CA0046.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::18) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230008AbjILGeN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Sep 2023 02:34:13 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8A3E76
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:34:09 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401da71b85eso57287695e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694500448; x=1695105248; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hjjNMLOd7UD2xCsLMNKlm6XzuuMq2uaNNbQdYjNnedw=;
+        b=KY++gDitEvRhig3VVgM5aWqVN+leD0ch2dtGlBVnCyYZP4oxnuictP5Wq8pFnvcKD4
+         ml5q8SDaKti2oDv4W6QAHMOiI2Wlu4Ie0YyV13NA7aZzo5Ioauf0dudAJwoFGGPgTBNm
+         uzWzrE3XoyxNeZvDwB8UxVCOvK5JuTBGVtgjS25Z9AlZxO8UEAWGrxLlQ6yZqDsbEPpA
+         uAKcsLRKA/yHujhlrrpAzpQ1bC/l4IgXHmB3EyYy/O9PG1eF7Yxl6Wd+BFdCIhqAKLHJ
+         CFK+iSjZLDZGkfgH8tNCXF3jw7z4WEcJxW8WcnaLaZVu3NSXgZWzX0JlGbVk/EBX7x07
+         X0Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694500448; x=1695105248;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hjjNMLOd7UD2xCsLMNKlm6XzuuMq2uaNNbQdYjNnedw=;
+        b=myDfiRbN2IrHyFZiitSDSfUlLNBENACDKnXMLqRb+xkpKdsHHBmLkbjhio7xLeOSxV
+         Jfdxqb8EZpb68I0heMj9w1KvQzvaDhJ7mfXfLDe5DWBivKK2YtREWDnS1wsJ2wppaLCT
+         Y2UqPmhmKz1o7KqGAEmcto/q+iIPh/thfyAmqUaCn+M/hQ3RtTscJCTZWgrun54IbYKq
+         PDEZZ2xnlNK1VJ4IsPke3ZTW5HziTZgTikoewYeie1Pc4jfEm8nGUcF8LVNYwXsy3Yx/
+         Z16ruRrXNrw4FQEfzpUfJ19LiDbFhj3XKhbcV6znC1LRMXBkb5qGbhTh94CNw8ao6yrR
+         J/7g==
+X-Gm-Message-State: AOJu0Yw+fCcfkbrujxzYh3X9IL5z8JanAglVuuLNxu4Tgg5YPQbBIKn5
+        2XmpFoQcRfHvbV7r9mQY2wlqJA==
+X-Google-Smtp-Source: AGHT+IGSVPBJnLET6PEE9S7yg3QdrX6hcDdJ09TzEt7oGbCuNjTPGU9NEFZVrgl8WzSW/fH4Ly0w2A==
+X-Received: by 2002:a05:600c:2303:b0:3fe:785:abf9 with SMTP id 3-20020a05600c230300b003fe0785abf9mr10252285wmo.2.1694500447719;
+        Mon, 11 Sep 2023 23:34:07 -0700 (PDT)
+Received: from [192.168.0.163] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id a12-20020a5d456c000000b00317afc7949csm11972550wrc.50.2023.09.11.23.34.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 23:34:07 -0700 (PDT)
+Message-ID: <fae042e4-2ae6-44dc-b046-ec6be587768d@linaro.org>
+Date:   Tue, 12 Sep 2023 07:34:06 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|AM9PR04MB8778:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8c40ab1-9ed3-47d5-3669-08dbb35a44db
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A5EfoBMKi8tRqU5ZYuJ+AdRP0NIAp1pJ2jOFaIFVONl1swJ/qx1WQKV9fXdQjpr54IubtrpyjuLpEtGXCv8d4bxdw8hinl6sgqpv0dob5dgr3yqQivWkrg1dx44++Xf4vJn8vxwa8KJewsI+OPe0/zhow7kb0hBv6nPixIPOhOWjrke+NftrniPLMpMOwDflzWvFiNPCuG3qnAjFoOPEwAx6+/PP2+l8Zzb1VpD+Rnjfnh0GOiDfTgfJfosyMBQVGa79WbDa4daoJQ0rzLjnstLya9cgCQozIXkiRuRXDI0DIi6KM0tEeCNdG+GFgkMzKV1Rb90sgUL6LIix6iGLVBaWcDhgRi3Wxzllcb++uMz82YC9Wq5uZ+5jMuFr2cp6XV+VKPcSND3L3R1I9+OrgU43hnLQkAOv++ek8dvhc06Cb8++0Mqo7pQY+zKuoZ2b4/ulm6Q0XdoRu3z2Ba/XrKNbu2ADqTXUBtGS3mQHzcpwiIf0p6s0/YnM+DfBqawWa0i74iXRXqepmAPB6xlaRPZvvrgz2dmr5Dpfkz2TbVqtgxTmyWWu8jCtqGLopl9xETJvPyu89TiuZmfZj/TFBzdFSOH4Z53eXFmnVLtIdr0OD+au+s6BFdK6MrwiNrvUAPgCdYkdBJD2QufMCwG+jQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(346002)(366004)(186009)(1800799009)(451199024)(6506007)(6486002)(6512007)(52116002)(6666004)(83380400001)(921005)(38100700002)(86362001)(38350700002)(36756003)(2616005)(1076003)(26005)(66476007)(2906002)(66556008)(7416002)(66946007)(316002)(41300700001)(44832011)(5660300002)(8936002)(4326008)(8676002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0DbXtKfZk6VGdbsNt+wmPYmXMJ736ZjPVChC6F3a7aZjN5IkxOvubg+GgDZT?=
- =?us-ascii?Q?wwF7jm0ZMWqsgtAtHfWciNACiMxrBp+rPvahEK56uRXQagLx9KVyM1KvXVCN?=
- =?us-ascii?Q?ImjBcfBLyVabQirEjPn17I08ZpN7X1s9JhkYZw33Jng0egZtv/y2oCQtbYbu?=
- =?us-ascii?Q?gv17YuWPp3BnTFLzCsI3+prvIHmXOd0V5KgfGNxJaQHQ7vxXImvdoUprrjii?=
- =?us-ascii?Q?T3Zs6eWVn5iZBktdJe1guUvsZthsI9WX6s6LNB/aLdSLq/MYCTUSixBkU5tX?=
- =?us-ascii?Q?Kq3RUPpjbuXlS2f/J7+Okuxfu8O0BOhAltaxA5se5vT0qCgEQWNzbENAqgu5?=
- =?us-ascii?Q?f5FQnKZpUhRP5ywCvNAHabKBMVV1+GpG1VJoZxZ9LNcVeyV5NxDxLFX0a0gG?=
- =?us-ascii?Q?5v7MykDXarxKb0bgjHWY69+x/FBVsLnYdzpwdnDf+nBVHEk4RLtwi+e30ww4?=
- =?us-ascii?Q?Eg8pMwags/sYZA459Ug6sgJahY+pFa60krNtoIg4cnR+HO96m8fgRO7OIeMr?=
- =?us-ascii?Q?VKcyDOMIJ+DiLv1G1j3uQPHzm4VQfYCanmaChVc4eqsbQPXDISFPIcq1Ohku?=
- =?us-ascii?Q?YLxj/88FNwfYp/DLSPjvS+3+dESpfq/I+u+RPWk646c3S4ld0/8oWucfB5U0?=
- =?us-ascii?Q?YmUYfFyiujVxYQvZGB5YqGmiNpd0OkMUt/ZnanK0bDVP2xebo0yDMpSCmM/w?=
- =?us-ascii?Q?OzFRCfV7YTPOl6fiSmDP7naxukjE+lek9P8Q7AR1JQ06IDV6Gw48s8ufJN9V?=
- =?us-ascii?Q?xTUrD+iZc3AFN9XrYMpWsG+YtGjX861zjwJwU8GTT8Vt60QW67sv+E1+/xn/?=
- =?us-ascii?Q?r1f+aOkNN34PzafAddp0M/H2ZgVCJIYYXrPPcF4Yyql8gFQg6JuIkukGo396?=
- =?us-ascii?Q?qi28Zm8szcy6xEaut87KC0WL05uhfCYnFUy8zmquODqb47yGqFz8qYxNbQTE?=
- =?us-ascii?Q?0uWpAZLqu7N6URUlortN/4LueWUMAUmFH/0PnvgG8RkLvkUCWqDMNYy8k5vu?=
- =?us-ascii?Q?0PHp/RmIjomG86281CYh38uMz4Rk/KBXqnjeSlkHmwEpn4PLjO4tij3DKeQ9?=
- =?us-ascii?Q?nwmLL1dYYyLvzSoHxxL4eL9HCHF6lbTq0pf8xR2ikoefVOEfrIBNCKIu4PnG?=
- =?us-ascii?Q?0i5Q2UONwYyjVM+QEXNkBQUKT6w/AHxIvwJNZoevNiuaU1oDTA2kJe65u4qq?=
- =?us-ascii?Q?GPIJsMBqI3nUI5C2U2euHHBlydq89Er3t2GdhrtRUFVMlj8T9s/NQTNea7fU?=
- =?us-ascii?Q?Lur+ELxPp2MGufbcbelEk1n4IuXtGqykodb2eHHn/YH/jQjhmWp26U345eKf?=
- =?us-ascii?Q?BoodcWqYXek2QDsa+kPQFaABkULOGWotjUpJp+k4SQhF+MMgp6eBJvrnAmXu?=
- =?us-ascii?Q?6ybf6xp/D77k61wpMJtrkNvnuxH2V1JA3IzbQRE6+xTcBOQ+nnr5nZjPevBO?=
- =?us-ascii?Q?iNTfUm1MjCjMyzxZn+X76catizAP7F9AwCPk27JO34fzzDuJGGH/zvFhdUAs?=
- =?us-ascii?Q?s0bZJCTXzbN6rt4hew35gSV39eAywwq4MRsAET7VLmdGM/3rBz07RV7Kzd6o?=
- =?us-ascii?Q?3juin8X+Yl8GVPNCqWJ/9fx4e/YdQhmWT3dQQ+j2?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8c40ab1-9ed3-47d5-3669-08dbb35a44db
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 06:34:08.9611
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5SbLCHeco4WhcC69m2ateXDue7Bp8CBJULY5d+Ef9dne6Y7DQqJo54HXRrbNjatvS+OIM4HUTUXADQhe5d8eug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8778
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] arm64: dts: qcom: msm8916: Disable venus by default
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
+ <20230911-msm8916-rmem-v1-1-b7089ec3e3a1@gerhold.net>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230911-msm8916-rmem-v1-1-b7089ec3e3a1@gerhold.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX rpmsg sound cards work on codec slave mode. MCLK will be disabled
-by CPU DAI driver in hw_free(). Some codec requires MCLK present at
-power up/down sequence. So need to set ignore_pmdown_time to power down
-codec immediately before MCLK is turned off.
+On 11/09/2023 18:41, Stephan Gerhold wrote:
+> Venus needs firmware that is usually signed with a device-specific key.
+> There are also devices that might not need it (especially during
+> bring-up), so let's follow more recent SoCs and disable it by default.
+> 
+> Enable it explicitly for all current devices except msm8916-mtp. That
+> one has just UART enabled currently so it cannot really benefit from
+> Venus.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 
-Take WM8962 as an example, if MCLK is disabled before DAPM power down
-playback stream, FIFO error will arise in WM8962 which will have bad
-impact on playback next.
-
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
----
- sound/soc/fsl/imx-rpmsg.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index 3c7b95db2eac..d2ecd5e821b1 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -89,6 +89,13 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 			    SND_SOC_DAIFMT_NB_NF |
- 			    SND_SOC_DAIFMT_CBC_CFC;
- 
-+	/* i.MX rpmsg sound cards work on codec slave mode. MCLK will be
-+	 * disabled by CPU DAI driver in hw_free(). Some codec requires MCLK
-+	 * present at power up/down sequence. So need to set ignore_pmdown_time
-+	 * to power down codec immediately before MCLK is turned off.
-+	 */
-+	data->dai.ignore_pmdown_time = 1;
-+
- 	/* Optional codec node */
- 	ret = of_parse_phandle_with_fixed_args(np, "audio-codec", 0, 0, &args);
- 	if (ret) {
--- 
-2.25.1
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
