@@ -2,173 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7021D79C85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BB079C860
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjILHlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        id S231714AbjILHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjILHlA (ORCPT
+        with ESMTP id S230366AbjILHlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:41:00 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD8FB9;
-        Tue, 12 Sep 2023 00:40:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 81ED7320025E;
-        Tue, 12 Sep 2023 03:40:52 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 03:40:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694504452; x=1694590852; bh=gu4KD8m5ag8/RCIOGmGpJutCwSn5BzTEfiE
-        SziH75LY=; b=kpYKvB1xx9wnF8RGHpXtbizWcj1EnE5ANoWRr/mZ6fssEHR4pYG
-        AQA38NV7lTMlHM4701jxiBPr9dIhPtjIYEyvvYcK+6IX7wzWf1c6FlxBlfk5vCqj
-        375Lr2NJiJjZCnKlPUMXQ5nzVLez5KmrYPyVdAha3A8PRtAm3xB8hSrl5/9X9Xvc
-        ZPeUhO0IT4y+RhJq5id6TmIRY3tiAmNX5+obdeED7H5eg6v/r9fu/YPrvIDWdEXT
-        XMpFVx/JBVai/CvjUPGbSHo+h/RIzdsmCxcT0MdxRvpe9ydKszYIAJwcIquixDgA
-        RmyiyjSVaaSdHND7tghK7TMifFONIKWLHDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694504452; x=1694590852; bh=gu4KD8m5ag8/RCIOGmGpJutCwSn5BzTEfiE
-        SziH75LY=; b=1GMMROCZOGebXmmwZE3hvLCfOPtQKelh7C5eDmc++WTnzsHQeET
-        gDIg44v7H3O2rsrJJaseIrbvnlPUIBHgQ6qbPH0lQuDaABt/JmgpSZT5TQkC5nRe
-        dmTV+OAQhlHNy2z6zPPd3Y0QtiEQrltLKgnf9Ux2LUHm4YGF3Bria2QpLX//grvJ
-        PklLxeAplTFKTycv4P5y7PTv6AtpXJM/v7aqcrPMRopKwrwYr7TzC9JsFuDjhkK3
-        ri0I7yP5APUAdxv5s5Q17EWiBra3XF7SlUaXp1M6UNXp/J9PADBaiUnLx3aDEeiq
-        7WHL5J7e2xn/Jqa3tbuVksL8qJAdrXu0cPg==
-X-ME-Sender: <xms:AxYAZX8lw-EPZzR_s0-gxctsuCJ9K1ljQOY4BYnDdCUNTXsUqhurvA>
-    <xme:AxYAZTst0W6PkSUeUuSADygtQQ1vlozgqAu3PV4zyke9Nc-bmzyNmzewIVCWg5wR8
-    lii6wiEQfdKY2Gtq5E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeihedguddulecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
-    grthhtvghrnhepudefffehudefvefhjeduvedtkeeujeffudevkeejiedtkedtheeiuedt
-    vdekuddunecuffhomhgrihhnpehushgvrhhsphgrtggvrdhhohifnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdgu
-    vg
-X-ME-Proxy: <xmx:AxYAZVCcd_FJuFHxjCjPo2pdcDsEj8GcMzAU8kQ3qLHSFQbpnB9lKg>
-    <xmx:AxYAZTfaAAXZlbx6_jX1AuRiov2m-jFSPrDE6a_wKoAzrTOK65s-Tg>
-    <xmx:AxYAZcMXYv6BcbZ9d2kZszB6mQU31ZXmWeDMovEU_iG_pGoBlhYRxw>
-    <xmx:BBYAZRs4I4BjxLQ4oHEvQXTNLAdO2hiy_fs0e6TV3FW3r8xBoVl90g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 759E7B60089; Tue, 12 Sep 2023 03:40:51 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <aa935abe-2ccf-4889-a717-4efecc13d48b@app.fastmail.com>
-In-Reply-To: <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
-Date:   Tue, 12 Sep 2023 09:39:56 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        "Maxime Ripard" <mripard@kernel.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>,
-        "Dave Airlie" <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Helge Deller" <deller@gmx.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Dave Airlie" <airlied@redhat.com>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "Jim Cromie" <jim.cromie@gmail.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>,
-        "Arthur Grillo" <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Tue, 12 Sep 2023 03:41:24 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B5FB9;
+        Tue, 12 Sep 2023 00:41:20 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3842C215EE;
+        Tue, 12 Sep 2023 07:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694504479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dTICBUf7E+hE+S8045VvIlps+lXGngZTeEQFyd8jt4g=;
+        b=qfpMKXajaRD3rIzXEgIGHFvpTNknPjk3p1OXq8hRp7wJsIRjJLDaj53OAHIS5UWF+W4BT5
+        J2Wpk5acv0uq49e9ergvHEUjC03/hUMpQT/VueImfd5evSwEf7O45WI2NoKmaPSzLPwZQm
+        sSrtfETIYlq2qV6PSB11hDDhvwWMSU4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694504479;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dTICBUf7E+hE+S8045VvIlps+lXGngZTeEQFyd8jt4g=;
+        b=QkoiDsZlT/iyfgcS7nwVRil93cjCF/rjF8cIJyvj/thDtj8fOsw6TrzU+WwKN7S6IecVtx
+        LTxSAHn7h7gp6CBQ==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 23F502C142;
+        Tue, 12 Sep 2023 07:41:17 +0000 (UTC)
+Date:   Tue, 12 Sep 2023 09:41:16 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Nayna <nayna@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joeyli <jlee@suse.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] integrity: powerpc: Do not select CA_MACHINE_KEYRING
+Message-ID: <20230912074116.GL8826@kitsune.suse.cz>
+References: <20230907165224.32256-1-msuchanek@suse.de>
+ <20230907173232.GD8826@kitsune.suse.cz>
+ <92e23f29-1a16-54da-48d1-59186158e923@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <92e23f29-1a16-54da-48d1-59186158e923@linux.vnet.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023, at 09:14, Geert Uytterhoeven wrote:
-> On Mon, Sep 11, 2023 at 10:53=E2=80=AFPM Arnd Bergmann <arnd@kernel.or=
-g> wrote:
->> --- a/drivers/gpu/drm/Kconfig
->> +++ b/drivers/gpu/drm/Kconfig
->> @@ -135,7 +135,7 @@ config DRM_FBDEV_EMULATION
->>         bool "Enable legacy fbdev support for your modesetting driver"
->>         depends on DRM
->>         select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONS=
-OLE
->> -       default y
->> +       default FB
->
-> While this is true for existing configs, it is no longer true in gener=
-al,
-> as DRM_FBDEV_EMULATION is no longer related to FB.
+On Mon, Sep 11, 2023 at 11:39:38PM -0400, Nayna wrote:
+> 
+> On 9/7/23 13:32, Michal Suchánek wrote:
+> > Adding more CC's from the original patch, looks like get_maintainers is
+> > not that great for this file.
+> > 
+> > On Thu, Sep 07, 2023 at 06:52:19PM +0200, Michal Suchanek wrote:
+> > > No other platform needs CA_MACHINE_KEYRING, either.
+> > > 
+> > > This is policy that should be decided by the administrator, not Kconfig
+> > > dependencies.
+> 
+> We certainly agree that flexibility is important. However, in this case,
+> this also implies that we are expecting system admins to be security
+> experts. As per our understanding, CA based infrastructure(PKI) is the
+> standard to be followed and not the policy decision. And we can only speak
+> for Power.
+> 
+> INTEGRITY_CA_MACHINE_KEYRING ensures that we always have CA signed leaf
+> certs.
 
-I think it still makes some sense though, as configs that have
-both DRM and FB enabled almost certainly want this enabled.
+And that's the problem.
 
->> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kc=
-onfig
->> index b575cf54174af..83c2d7329ca58 100644
->> --- a/drivers/video/console/Kconfig
->> +++ b/drivers/video/console/Kconfig
->> @@ -74,6 +74,7 @@ config DUMMY_CONSOLE_ROWS
->>  config FRAMEBUFFER_CONSOLE
->>         bool "Framebuffer Console support"
->>         depends on FB_CORE && !UML
->> +       default DRM_FBDEV_EMULATION
->
-> Sounds good to me, although it looks a bit strange at first sight
-> (FRAMEBUFFER_CONSOLE defaults to n on a system with real fbdev, but
-> y on emulated fbdev?).
-> So this is the fix for commit a5ae331edb02b ("drm: Drop select
-> FRAMEBUFFER_CONSOLE for DRM_FBDEV_EMULATION").
+From a distribution point of view there are two types of leaf certs:
 
-Correct, this should restore the console on configs that
-accidentally lost it. The real problem here is much older,
-the assymetry between framebuffer-only configs (with console
-default off) and DRM configs (with console selected
-unconditionally) started back in 2009 with commit 6fcefd56f5060
-("drm/kms: fix kms helper license + Kconfig").
+ - leaf certs signed by the distribution CA which need not be imported
+   because the distribution CA cert is enrolled one way or another
+ - user generated ad-hoc certificates that are not signed in any way,
+   and enrolled by the user
 
-I think that was a mistake, but there is little we can do
-to fix that now without breaking users.
+The latter are vouched for by the user by enrolling the certificate, and
+confirming that they really want to trust this certificate. Enrolling
+user certificates is vital for usability or secure boot. Adding extra
+step of creating a CA certificate stored on the same system only
+complicates things with no added benefit.
 
-The only alternative I can think of would be to default-enable
-or force-enable FRAMEBUFFER_CONSOLE for any config that includes
-both VT_CONSOLE and FB_CORE. This would increase defconfig
-builds for systems that currently only want CONFIG_FB for
-either FB_DEVICE or LOGO but don't care about
-FRAMEBUFFER_CONSOLE. I have no idea who uses such a config,
-but I think Javier previously said this was an important
-use case.
+> INTEGRITY_CA_MACHINE_KEYRING_MAX ensures that CA is only allowed to do key
+> signing and not code signing.
+> 
+> Having CA signed certs also permits easy revocation of all leaf certs.
 
->> diff --git a/drivers/video/fbdev/core/Kconfig b/drivers/video/fbdev/c=
-ore/Kconfig
->> index 114cb8aa6c8fd..804c2bec9b43c 100644
->> --- a/drivers/video/fbdev/core/Kconfig
->> +++ b/drivers/video/fbdev/core/Kconfig
->> @@ -28,7 +28,7 @@ config FIRMWARE_EDID
->>  config FB_DEVICE
->>         bool "Provide legacy /dev/fb* device"
->>         depends on FB_CORE
->> -       default y
->> +       default FB
->
-> Changing this means possibly causing regressions on systems running
-> an fbdev userspace.
+Revocation can be also done be removing the certificate from the keyring.
 
-How? FB_DEVICE is a new config that was just split out from
-CONFIG_FB in 6.6-rc1, so nobody should have any defconfig
-that disables CONFIG_FB but relies on the FB_DEVICE default yet.
+If the user can add it they should also be able to remove it.
 
-    Arnd
+> Loading certificates is completely new for Power Systems. We would like to
+> make it as clean as possible from the start. We want to enforce CA signed
+> leaf certificates(INTEGRITY_CA_MACHINE_KEYRING). As per
+> keyUsage(INTEGRITY_CA_MACHINE_KEYRING_MAX), if we want more flexibility,
+> probably a boot time override can be considered.
+
+If boot time override can exist it can as well be made permanent with a
+Kconfig option.
+
+I think that a boot time override is even more problematic for security
+than a Kconfig option - the kernel arguments are rarely signed.
+
+Thanks
+
+Michal
+
+> 
+> Thanks & Regards,
+> 
+>     - Nayna
+> 
+> 
+> > > 
+> > > cc: joeyli <jlee@suse.com>
+> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > ---
+> > >   security/integrity/Kconfig | 2 --
+> > >   1 file changed, 2 deletions(-)
+> > > 
+> > > diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+> > > index 232191ee09e3..b6e074ac0227 100644
+> > > --- a/security/integrity/Kconfig
+> > > +++ b/security/integrity/Kconfig
+> > > @@ -68,8 +68,6 @@ config INTEGRITY_MACHINE_KEYRING
+> > >   	depends on INTEGRITY_ASYMMETRIC_KEYS
+> > >   	depends on SYSTEM_BLACKLIST_KEYRING
+> > >   	depends on LOAD_UEFI_KEYS || LOAD_PPC_KEYS
+> > > -	select INTEGRITY_CA_MACHINE_KEYRING if LOAD_PPC_KEYS
+> > > -	select INTEGRITY_CA_MACHINE_KEYRING_MAX if LOAD_PPC_KEYS
+> > >   	help
+> > >   	 If set, provide a keyring to which Machine Owner Keys (MOK) may
+> > >   	 be added. This keyring shall contain just MOK keys.  Unlike keys
+> > > -- 
+> > > 2.41.0
+> > > 
