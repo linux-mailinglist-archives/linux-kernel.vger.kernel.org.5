@@ -2,163 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A7779C7AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452C479C7AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjILHGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
+        id S231307AbjILHGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbjILHGV (ORCPT
+        with ESMTP id S231467AbjILHGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:06:21 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738B4E78;
-        Tue, 12 Sep 2023 00:06:17 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52e5900cf77so6718441a12.2;
-        Tue, 12 Sep 2023 00:06:17 -0700 (PDT)
+        Tue, 12 Sep 2023 03:06:41 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A80C10EC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:06:35 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d80211e8df8so3546017276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694502376; x=1695107176; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CMy6jSxlLVQzjvcfRtLq3NXvZdu60RtRCF9sxWo1nvI=;
-        b=qu8X3W77nsScShedTZusX8trRA3CnpfiKuCZuHnxxWufwiVeNClOfzqICjNzo0fPWB
-         lotDfW3w8GruAjlxTLIP04sCBlhPY4RrQ9bU84n5UMrlbMuPcz9vyDmEQtaXx2sVOCYF
-         cMuvWcC5Sfl24sUiGAC+aCEsHvaR6k4BFhvlaEwMnxobkxcKTK/4srD3KKGL0rjKoN1Q
-         521lWiLBytGGaAi7X21Cy/WKX01d7tBnBZyvVRA+8Sy4+F0CNksU5g5S7vaCrFBUiQSc
-         5rnzy+/nt+SOyqtxtUg8VHOBrrAqljKT46wvxo9+yJYU40XUV9tSataXNO8BdHTp4f5Q
-         TXsQ==
+        d=linaro.org; s=google; t=1694502394; x=1695107194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FzLy3CeHuyStEoML6KUoaK0mtulfqNSCOCfn1i2FJJI=;
+        b=yRHqtYzBLQjgJuWE9K4sQopizatvQBSN4fNM08BcmBRCXYMVDF6BY4gKKgEjbH+YRu
+         wsSLsdJigci7K5o5uqSflL1dXiBqXfajOy70GYnDh4LhVkSEbwoTMC31WkGUm8EzNs4Z
+         hazGAxXQ6UCiYR8tesQJ0Mo6ECDWqYSe7KBQKh13ZAs8ZgFP3XOjPqSMA4jxTg5BfF+S
+         DTfmKL76qHXR6U4t2zuiWyTzZpwohgh/21wGFnmGpCxrtOm3tSd/XaM4U+cSrqs8fb5F
+         vvhs8y7XcxRHDdlgemgUCNeZgKNW8CTBcm/qSgHTtmFNow6XGlipSHfmjmRe/tyNB2Hg
+         BwGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502376; x=1695107176;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CMy6jSxlLVQzjvcfRtLq3NXvZdu60RtRCF9sxWo1nvI=;
-        b=fO7AYh2AZgGhuVstmzAABNkYGOkFYhZ72vWw/pRYvVCuteT+jV5HjIjze3WGfwj2FR
-         fRn+4/Tc1MWJoRoaQXFd6lOVCwEWxql3bBibZz0UHTkZuOTt5ESKCYtEMkqxBMeYf6L8
-         jtlkG4LqrYHmlDV36uAWXNuKg3DJ8sXdW/WxNrMDLCwGJMbnf8jLdzqT/jb/lg8tQ0NL
-         Pgp64dc3pdh4NNMrk8eQzDbrYbZ9BdlAhmDXZIDGjyFd+OqnGtQXYHnzs5PjT67ixVhD
-         8Pa4glCEGgG+wCbJTDLiHB5QDnhZy92IF6kJKlj3JIJsheY5sLEWevNU3wvfRNJ4IelO
-         YG5Q==
-X-Gm-Message-State: AOJu0YwSV76pLyGmhkWJU57N8ESkA0GGiXxlwYF15yJuawDiWzKnS+Bn
-        2Ay1vx4RKjtgfSGvoGlwF1M=
-X-Google-Smtp-Source: AGHT+IEOrMxMs1WFBCbVhLR01bYFYeYSawxe090qODnBi4upxpLOi7jNd1Rrxbto/3+X6VvKL39rYA==
-X-Received: by 2002:a17:906:8b:b0:9a1:d7cd:6040 with SMTP id 11-20020a170906008b00b009a1d7cd6040mr9828714ejc.37.1694502375674;
-        Tue, 12 Sep 2023 00:06:15 -0700 (PDT)
-Received: from [192.168.178.25] ([185.254.126.42])
-        by smtp.gmail.com with ESMTPSA id p21-20020a170906b21500b0099b6becb107sm6415474ejz.95.2023.09.12.00.06.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 00:06:15 -0700 (PDT)
-Message-ID: <23e71d1f-08c1-3834-5b1f-2b5714c7bfaa@gmail.com>
-Date:   Tue, 12 Sep 2023 09:06:14 +0200
+        d=1e100.net; s=20230601; t=1694502394; x=1695107194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FzLy3CeHuyStEoML6KUoaK0mtulfqNSCOCfn1i2FJJI=;
+        b=RbOi51lZGzqhvWSO3Y/FlUH1KOBg5uXpKiOGnvrsYJ3fAwbfTNPIx3dSr+3x229oqs
+         50Gz4N63HPesMsyG37VHEWXUGY3CBamtsaoESFqycCha6p9Z3NzvYA7GDEeIMh8GMgk/
+         6kmhGFcL6RBPYlel6FzsC8OO3phi4g6LFukKiHzVUj9qFBRRU1s8QmPzXqnqdUL8gCNP
+         Bt4Xz+R7hTpK2TTFpwoVBx8Ol/SQnHm/LZQyE5XVSr5IcYhaUHNYe7u2PXwikVnoB1Qn
+         M4D65Vlc+8YPiMiUlWLipdOQOD/j3UpoQHM5kY7hr6uEhnSsmDKNpiN0jDUaySiZNc+5
+         Qd4g==
+X-Gm-Message-State: AOJu0Yyq97OCUCowz72ilgqf2Yg4IoBNHpb9myDn16vafsJCP0NYPZLq
+        B4IjcniHKxfNLdBGS6T9KhAD5IawCOYfqv1BroJDFJ6myA1NB4mU
+X-Google-Smtp-Source: AGHT+IFqwoCb2FlczC/jSfpRBfdCYvJDufpy2nX78o6xucJlsetiHtnY5ED7GaRC6DZThDKLINyW0KpFkVXeS7DJZzs=
+X-Received: by 2002:a5b:709:0:b0:d80:68d1:b826 with SMTP id
+ g9-20020a5b0709000000b00d8068d1b826mr7109521ybq.6.1694502394406; Tue, 12 Sep
+ 2023 00:06:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/9] dma-heap: Provide accessors so that in-kernel drivers
- can allocate dmabufs from specific heaps
-Content-Language: en-US
-To:     John Stultz <jstultz@google.com>
-Cc:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+References: <20230829123524.17291-1-zhuyinbo@loongson.cn> <20230829123524.17291-3-zhuyinbo@loongson.cn>
+In-Reply-To: <20230829123524.17291-3-zhuyinbo@loongson.cn>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 09:06:23 +0200
+Message-ID: <CACRpkdYrePd+m_ZoppG_XKVQEcgzom31pXhKHisCsFr=9O2NPg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] gpio: loongson: add more gpio chip support
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian Starkey <Brian.Starkey@arm.com>, tjmercier@google.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
-        kuohong.wang@mediatek.com
-References: <20230911023038.30649-1-yong.wu@mediatek.com>
- <20230911023038.30649-4-yong.wu@mediatek.com>
- <803846bc-fd1d-d2ec-2855-456af22c82f8@amd.com>
- <CANDhNCrQyiFZ+8DnG0iyKBXC0H1698K1a9d2AxOq4whDsZBn+Q@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <CANDhNCrQyiFZ+8DnG0iyKBXC0H1698K1a9d2AxOq4whDsZBn+Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 11.09.23 um 20:29 schrieb John Stultz:
-> On Mon, Sep 11, 2023 at 3:14 AM Christian König
-> <christian.koenig@amd.com> wrote:
->> Am 11.09.23 um 04:30 schrieb Yong Wu:
->>> From: John Stultz <jstultz@google.com>
->>>
->>> This allows drivers who don't want to create their own
->>> DMA-BUF exporter to be able to allocate DMA-BUFs directly
->>> from existing DMA-BUF Heaps.
->>>
->>> There is some concern that the premise of DMA-BUF heaps is
->>> that userland knows better about what type of heap memory
->>> is needed for a pipeline, so it would likely be best for
->>> drivers to import and fill DMA-BUFs allocated by userland
->>> instead of allocating one themselves, but this is still
->>> up for debate.
->> The main design goal of having DMA-heaps in the first place is to avoid
->> per driver allocation and this is not necessary because userland know
->> better what type of memory it wants.
->>
->> The background is rather that we generally want to decouple allocation
->> from having a device driver connection so that we have better chance
->> that multiple devices can work with the same memory.
-> Yep, very much agreed, and this is what the comment above is trying to describe.
+On Tue, Aug 29, 2023 at 2:35=E2=80=AFPM Yinbo Zhu <zhuyinbo@loongson.cn> wr=
+ote:
+
+> This patch was to add loongson 2k0500, 2k2000 and 3a5000 gpio chip
+> driver support.
 >
-> Ideally user-allocated buffers would be used to ensure driver's don't
-> create buffers with constraints that limit which devices the buffers
-> might later be shared with.
->
-> However, this patch was created as a hold-over from the old ION logic
-> to help vendors transition to dmabuf heaps, as vendors had situations
-> where they still wanted to export dmabufs that were not to be
-> generally shared and folks wanted to avoid duplication of logic
-> already in existing heaps.  At the time, I never pushed it upstream as
-> there were no upstream users.  But I think if there is now a potential
-> upstream user, it's worth having the discussion to better understand
-> the need.
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
 
-Yeah, that indeed makes much more sense.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-When existing drivers want to avoid their own handling and move their 
-memory management over to using DMA-heaps even for internal allocations 
-then no objections from my side. That is certainly something we should 
-aim for if possible.
-
-But what we should try to avoid is that newly merged drivers provide 
-both a driver specific UAPI and DMA-heaps. The justification that this 
-makes it easier to transit userspace to the new UAPI doesn't really count.
-
-That would be adding UAPI already with a plan to deprecate it and that 
-is most likely not helpful considering that UAPI must be supported 
-forever as soon as it is upstream.
-
-> So I think this patch is a little confusing in this series, as I don't
-> see much of it actually being used here (though forgive me if I'm
-> missing it).
->
-> Instead, It seems it get used in a separate patch series here:
->    https://lore.kernel.org/all/20230911125936.10648-1-yunfei.dong@mediatek.com/
-
-Please try to avoid stuff like that it is really confusing and eats 
-reviewers time.
-
-Regards,
-Christian.
-
->
-> Yong, I appreciate you sending this out! But maybe if the secure heap
-> submission doesn't depend on this functionality, I might suggest
-> moving this patch (or at least the majority of it) to be part of the
-> vcodec series instead?  That way reviewers will have more context for
-> how the code being added is used?
->
-> thanks
-> -john
-
+Yours,
+Linus Walleij
