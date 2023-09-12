@@ -2,160 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4FA79C35D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB70F79C3F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241070AbjILCzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        id S240962AbjILDBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234912AbjILCzB (ORCPT
+        with ESMTP id S241260AbjILDBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:55:01 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A407BE03
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:25:16 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76dcf1d8957so309183285a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694485515; x=1695090315; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BPH7BllVgYHUBzqVctyR+AwmpoGJ0bqUUfOFZqFnbbk=;
-        b=CwOJNW5egcufsQY6bVALpWKxjNH9+cgxl3OsmXirRb6qzxUZnune6tSdXd/ohRL+Yj
-         Ce9wOH7D4m8FiTPKwsAygKkIn3lAo6RltJNPnZztAKa3L7BKt+k/CGM7sJOAg1YEis9+
-         wbevegduuz0Kllq1ppfR+M0ZZgFsn7ABKWerzR6tYlwElxbJAq9ljaG8Nq0ybZxM8wYY
-         9eSrcddQURAD9LpNP9o3rHNEgX0op7u68XUEhiNghhUhIogY1XzxPFlfFUEyrrOK80NH
-         zyN5BSVqknHDH/Y0sVHeU37sW5gCNzBxAIupff1sXgEBXrPj5rvObiOXJsZOxpKc0z2z
-         0IeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694485515; x=1695090315;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BPH7BllVgYHUBzqVctyR+AwmpoGJ0bqUUfOFZqFnbbk=;
-        b=po4bnzmD9K10Cwy93u2fs1HJKYTLHRTMQ9kD/O54Awz7v6zAAN7loRJ4UQb1KCCYIf
-         IytqI7Qzl09s+lDpRQj+XDg+eRPdd3cQlkL8M97YRhMpSiSBoqVmv7q3fTNH1PJDLUtr
-         2s7snw4/3+rKbMMyByfs+rL6RLsQLAw6OjCmAhwZjJZQPCbDUu+4Ftei2OsrBzFoqpns
-         /Hdu5njpXhEVzyRCnCqyXoxujNLPLc6hqhBbooHntME+E/HuKXHQ2ZnnJ3Jnr4jx/oG9
-         z6I7prS8kHgHKXCvuS2TUOyA14RujjbwH+GfZ+d4IRvCs5nzngxiFsZI0t9ZwuSBuU36
-         h3GA==
-X-Gm-Message-State: AOJu0YzY7zvMiB2inP65mvGwDP7kCLJUzI0UgIUu1qDz+S1B0D5quQC+
-        8LZA/2micElQ74BjANkFFIuq7jaMiZFLvVg8wxSG1g==
-X-Google-Smtp-Source: AGHT+IGrE5jMhbjwcI0STJIohBq/DbBZL++GuIpzAw5avk5UWgn5reyR+CTkf/20lvaYDnuHaKBywL/Ttmtxg9hnn5w=
-X-Received: by 2002:a05:620a:c43:b0:76f:2c0f:9ddb with SMTP id
- u3-20020a05620a0c4300b0076f2c0f9ddbmr14110575qki.8.1694485515418; Mon, 11 Sep
- 2023 19:25:15 -0700 (PDT)
+        Mon, 11 Sep 2023 23:01:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9873D3D3E;
+        Mon, 11 Sep 2023 19:32:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2110DC433C9;
+        Tue, 12 Sep 2023 02:32:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694485956;
+        bh=f+UYYP/8zjflI4dU+udJaul1f6H1xPDyfB4LDPI/7MA=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=NbcHqrPQk2Edwh4cpbNMe1+ElS2UAqqUNCfRMnFZEtbq0q1g+wV/fktJCSB4Hw1Nf
+         4GIqfC3JMO4RGCaQPhOExOd9cp+HIjh+qGEmK6WR3j1x4favGbL+6142W5uXRp0uGj
+         Rs4TwxlLuMU2qTN318UTNbPoKeguHD2TIWS5EbroO/OLw51xoaSP6o7wP+tBEtzDF2
+         JtLp40b0rsghjXkzJtP0P2m+DumKzRh3duOLzrU8YEs73t515+cIcT/jNRpo6HqGm3
+         UmMaWBCIdQQH7RAUYhkCVksYqnOnZTXn1YKv/IBhfgPFulm1TKQ0iLSE2WyPuvog3N
+         vgpoUsTlL6+3w==
+Date:   Mon, 11 Sep 2023 19:32:34 -0700
+From:   Kees Cook <kees@kernel.org>
+To:     Dave Airlie <airlied@gmail.com>
+CC:     Philipp Stanner <pstanner@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Introduce new wrappers to copy user-arrays
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAPM=9txUQ64PMmN-KSXC6PG5ozhSB4eLQN8iAUMrv1R9F6Sm6Q@mail.gmail.com>
+References: <cover.1694202430.git.pstanner@redhat.com> <CA1AA415-FDF0-4A7A-9BB0-FFF055803F77@kernel.org> <CAPM=9txUQ64PMmN-KSXC6PG5ozhSB4eLQN8iAUMrv1R9F6Sm6Q@mail.gmail.com>
+Message-ID: <ACD75DAA-AF42-486C-B44B-9272EF302E3D@kernel.org>
 MIME-Version: 1.0
-References: <20230911134633.619970489@linuxfoundation.org> <1ffe4f64-f238-859a-ab14-7559d03c4671@linaro.org>
-In-Reply-To: <1ffe4f64-f238-859a-ab14-7559d03c4671@linaro.org>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Mon, 11 Sep 2023 20:25:03 -0600
-Message-ID: <CAEUSe7_XA16yZAHA+YTbJygwaUYkU5gs=FnV9BAmQRYzwgVjvQ@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/600] 6.1.53-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        jack@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On Mon, 11 Sept 2023 at 14:58, Daniel D=C3=ADaz <daniel.diaz@linaro.org> wr=
-ote:
-> On 11/09/23 7:40 a. m., Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.53 release.
-> > There are 600 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >       https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.53-rc1.gz
-> > or in the git tree and branch at:
-> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+On September 11, 2023 6:55:32 PM PDT, Dave Airlie <airlied@gmail=2Ecom> wro=
+te:
+>On Tue, 12 Sept 2023 at 11:27, Kees Cook <kees@kernel=2Eorg> wrote:
+>>
+>> On September 8, 2023 12:59:39 PM PDT, Philipp Stanner <pstanner@redhat=
+=2Ecom> wrote:
+>> >Hi!
+>> >
+>> >David Airlie suggested that we could implement new wrappers around
+>> >(v)memdup_user() for duplicating user arrays=2E
+>> >
+>> >This small patch series first implements the two new wrapper functions
+>> >memdup_array_user() and vmemdup_array_user()=2E They calculate the
+>> >array-sizes safely, i=2Ee=2E, they return an error in case of an overf=
+low=2E
+>> >
+>> >It then implements the new wrappers in two components in kernel/ and t=
+wo
+>> >in the drm-subsystem=2E
+>> >
+>> >In total, there are 18 files in the kernel that use (v)memdup_user() t=
+o
+>> >duplicate arrays=2E My plan is to provide patches for the other 14
+>> >successively once this series has been merged=2E
+>> >
+>> >
+>> >Changes since v1:
+>> >- Insert new headers alphabetically ordered
+>> >- Remove empty lines in functions' docstrings
+>> >- Return -EOVERFLOW instead of -EINVAL from wrapper functions
+>> >
+>> >
+>> >@Andy:
+>> >I test-build it for UM on my x86_64=2E Builds successfully=2E
+>> >A kernel build (localmodconfig) for my Fedora38 @ x86_64 does also boo=
+t
+>> >fine=2E
+>> >
+>> >If there is more I can do to verify the early boot stages are fine,
+>> >please let me know!
+>> >
+>> >P=2E
+>> >
+>> >Philipp Stanner (5):
+>> >  string=2Eh: add array-wrappers for (v)memdup_user()
+>> >  kernel: kexec: copy user-array safely
+>> >  kernel: watch_queue: copy user-array safely
+>> >  drm_lease=2Ec: copy user-array safely
+>> >  drm: vmgfx_surface=2Ec: copy user-array safely
+>> >
+>> > drivers/gpu/drm/drm_lease=2Ec             |  4 +--
+>> > drivers/gpu/drm/vmwgfx/vmwgfx_surface=2Ec |  4 +--
+>> > include/linux/string=2Eh                  | 40 ++++++++++++++++++++++=
++++
+>> > kernel/kexec=2Ec                          |  2 +-
+>> > kernel/watch_queue=2Ec                    |  2 +-
+>> > 5 files changed, 46 insertions(+), 6 deletions(-)
+>> >
+>>
+>> Nice=2E For the series:
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium=2Eorg>
 >
-> We're seeing this new warning:
-> -----8<-----
->    /builds/linux/fs/udf/inode.c:892:6: warning: variable 'newblock' is us=
-ed uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized=
-]
->      892 |         if (*err < 0)
->          |             ^~~~~~~~
->    /builds/linux/fs/udf/inode.c:914:9: note: uninitialized use occurs her=
-e
->      914 |         return newblock;
->          |                ^~~~~~~~
->    /builds/linux/fs/udf/inode.c:892:2: note: remove the 'if' if its condi=
-tion is always false
->      892 |         if (*err < 0)
->          |         ^~~~~~~~~~~~~
->      893 |                 goto out_free;
->          |                 ~~~~~~~~~~~~~
->    /builds/linux/fs/udf/inode.c:699:34: note: initialize the variable 'ne=
-wblock' to silence this warning
->      699 |         udf_pblk_t newblocknum, newblock;
->          |                                         ^
->          |                                          =3D 0
->    1 warning generated.
-> ----->8-----
+>Hey Kees,
 >
-> That's with Clang 17 (and nightly) on:
-> * arm
-> * powerpc
-> * s390
+>what tree do you think it would best to land this through? I'm happy
+>to send the initial set from a drm branch, but also happy to have it
+>land via someone with a better process=2E
 
-For what it's worth, bisection points to 903b487b5ba6 ("udf: Handle
-error when adding extent to a file").
+Feel free to take it via drm=2E Usually string=2Eh doesn't get a lot of ch=
+anges (and even then it's normally additive) so conflicts are rare/easy=2E =
+:)
 
-In order to reproduce:
-
-  #pip3 install -U tuxmake
-  tuxmake --runtime podman \
-    --target-arch arm \
-    --toolchain clang-17 \
-    --kconfig multi_v5_defconfig \
-    LLVM=3D1 LLVM_IAS=3D1
-
-or:
-
-  #pip3 install -U tuxmake
-  tuxmake --runtime podman \
-    --target-arch powerpc \
-    --toolchain clang-17 \
-    --kconfig defconfig \
-    LLVM=3D1 LLVM_IAS=3D0 LD=3Dpowerpc64le-linux-gnu-ld
-
-or:
-
-  #pip3 install -U tuxmake
-  tuxmake --runtime podman \
-    --target-arch s390 \
-    --toolchain clang-17 \
-    --kconfig defconfig \
-    LLVM_IAS=3D1
+-Kees
 
 
-Greetings!
-
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+--=20
+Kees Cook
