@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A2F79CF78
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A5E79CF8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbjILLJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        id S234605AbjILLMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234254AbjILLIn (ORCPT
+        with ESMTP id S234663AbjILLLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:08:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E371735;
-        Tue, 12 Sep 2023 04:08:34 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 11:08:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694516913;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LbBprMwnbPPLEsY2vhOkPL097RyL9EsvHkcx1RT2pw4=;
-        b=UXmXsl5f1f1WItwXW0rTTAr/bVbnDs93VWND9UG9ktZEPL6QxJ3fQeY6lC8LqVivesT6u6
-        uhQtub1Okm7/pmstWO4l5aB+V8WwqVHBFD0qraxFXGLxZdVB20nyKHTgzvS/oyhugNJgXT
-        8419RU19e+JKUGprt4MWP+i3MJ+6zoRRHewx067nR+gOd9uB+wSpZZyuCVAuLnA97vtL2R
-        YbFICEFmWimb8mKyJddRy6HfP8YoV7FTwTNM20mskxeGppoauHSdQFGxhCn3dp8L17aK8v
-        H56F9EEOevpUT4oIM+zsnOOc22HM0Odm1k4r4JlPYcFqWgRBJ/vo1Nq+pt2+Jg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694516913;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LbBprMwnbPPLEsY2vhOkPL097RyL9EsvHkcx1RT2pw4=;
-        b=d0zORbHSTTua6HBsA/I1aQNGUd7sr6j6/WUvmtW+Avjh6Q1QEJjngBR6dmDsduWldqjpOD
-        X0qNIJp9dRsVSfBQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/ibt: Suppress spurious ENDBR
-Cc:     David Kaplan <David.Kaplan@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230802110323.016197440@infradead.org>
-References: <20230802110323.016197440@infradead.org>
+        Tue, 12 Sep 2023 07:11:11 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA192172C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:10:09 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so7051926a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:10:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694517007; x=1695121807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Sq0fA/VatZ++ayfpGlQL3susC/RviepPCleB3baLTw=;
+        b=ibueTLkYyDcakKnfmNNANAP0ZaZtuoHKt8ZiLX4Me5YTXK4m40JAcqFjJH463s68gA
+         BCzfDROkDsS8eC4dlXWZ6nMWOJH12ce/HKdjFOmBD2wBBnHH11x9rNDPvb2ZfHfEqC+r
+         4xgJML+gnriCrUO2Lb05RoDLr7IISXXtjM2NCh02a1hMd8zO6Pff0hR3XwylXCh3VAZJ
+         F9+m07hsjzGA3YSAPQaTn4ZH/uXbhNGFO4fn0fDjlGqpRsMKCLwOmAeXvIThiBR94yJz
+         zPRx3x8EjVpr+Cxj9xWR50hXpdArrUp0Ur0Dq1tNUbzCtPYzck+m2C1fd1v62U+LInqW
+         cOoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694517007; x=1695121807;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Sq0fA/VatZ++ayfpGlQL3susC/RviepPCleB3baLTw=;
+        b=drz8EZWCJwKP0rF+gm4i4YcHRT9rG6UzUOcHIMZ3Mbx67dY/JjMmKqvcFNjbTBn+3i
+         3t7FspyqpxSaD2+S2KLxW9BJ71pcu7zsx2MNHfxQ4CyC0nNfNSrANt469S1+2W4IPj5m
+         bGpIu0qI4So02vZK9CbQrIPHvQelPQy7G8mC3EedQKGPoIVPTHnmIC/o0Gd+KG9l6gIB
+         9bEEg/f0Clb+kAWX5BzHd1OXUtrlQO20ldzxdQE3mEfilZZoLxDmFmNkudu5Acl1U0ov
+         3cALiIPalrde+u0NqnpI7acqrtShOGaBVlIasuJxYqDjHFYZ4aGtQidY48KAZAla0O01
+         wMzw==
+X-Gm-Message-State: AOJu0YzPUmMCtPD3o/D6+W2HnUamCgcYHWftiAFXSZZrZ66v32GFehwP
+        3pEgR+tdg+SkZ9KmL9oAN3kb+A9vALLZDSo2t6KRTQ==
+X-Google-Smtp-Source: AGHT+IEqf692PpcwWJ+KIdN9fRGhrkF5AMtPRxevzTGnCQ4lbfLrNNYioDArel+eLcA3y9SeK6u55VX/HEgsrXww4s0=
+X-Received: by 2002:a17:906:10dc:b0:99c:f47a:2354 with SMTP id
+ v28-20020a17090610dc00b0099cf47a2354mr12544637ejv.70.1694517007270; Tue, 12
+ Sep 2023 04:10:07 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169451691250.27769.12189082412488879527.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20230831165611.2610118-1-yosryahmed@google.com>
+ <20230831165611.2610118-5-yosryahmed@google.com> <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
+ <CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com>
+ <ZP8SDdjut9VEVpps@dhcp22.suse.cz> <CAAPL-u8NndkB2zHRtF8pVBSTsz854YmUbx62G7bpw6BMJiLaiQ@mail.gmail.com>
+ <ZP9rtiRwRv2bQvde@dhcp22.suse.cz> <CAAPL-u9XwMcrqVRu871tGNKa3LKmJSy9pZQ7A98uDbG6ACzMxQ@mail.gmail.com>
+ <ZP92xP5rdKdeps7Z@mtj.duckdns.org> <ZQBFZMRL8WmqRgrM@dhcp22.suse.cz>
+In-Reply-To: <ZQBFZMRL8WmqRgrM@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 12 Sep 2023 04:09:28 -0700
+Message-ID: <CAJD7tka4zEcu-jMycMo0=xB7PP1j7P0gu_weGJSLQvbhYMzv9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
+ userspace reads
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Wei Xu <weixugc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Tue, Sep 12, 2023 at 4:03=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 11-09-23 10:21:24, Tejun Heo wrote:
+> > Hello,
+> >
+> > On Mon, Sep 11, 2023 at 01:01:25PM -0700, Wei Xu wrote:
+> > > Yes, it is the same test (10K contending readers). The kernel change
+> > > is to remove stats_user_flush_mutex from mem_cgroup_user_flush_stats(=
+)
+> > > so that the concurrent mem_cgroup_user_flush_stats() requests directl=
+y
+> > > contend on cgroup_rstat_lock in cgroup_rstat_flush().
+> >
+> > I don't think it'd be a good idea to twist rstat and other kernel inter=
+nal
+> > code to accommodate 10k parallel readers.
+>
+> I didn't mean to suggest optimizing for this specific scenario. I was
+> mostly curious whether the pathological case of unbound high latency due
+> to lock dropping is easy to trigger by huge number of readers. It seems
+> it is not and the mutex might not be really needed as a prevention.
+>
+> > If we want to support that, let's
+> > explicitly support that by implementing better batching in the read pat=
+h.
+>
+> Well, we need to be able to handle those situations because stat files
+> are generally readable and we do not want unrelated workloads to
+> influence each other heavily through this path.
 
-Commit-ID:     70524a25365bab3dfe968691aa436fff765a8dde
-Gitweb:        https://git.kernel.org/tip/70524a25365bab3dfe968691aa436fff765a8dde
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 02 Aug 2023 12:55:46 +02:00
-Committer:     root <root@noisy.programming.kicks-ass.net>
-CommitterDate: Tue, 12 Sep 2023 12:40:28 +02:00
+I am working on a complete rework of this series based on the feedback
+I got from Wei and the discussions here. I think I have something
+simpler and more generic, and doesn't proliferate the number of
+flushing variants we have. I am running some tests right now and will
+share it as soon as I can.
 
-x86/ibt: Suppress spurious ENDBR
+It should address the high concurrency use case without adding a lot
+of complexity. It basically involves a fast path where we only flush
+the needed subtree if there's no contention, and a slow path where we
+coalesce all flushing requests, and everyone just waits for a single
+flush to complete (without spinning or contending on any locks). I am
+trying to use this generic mechanism for both userspace reads and
+in-kernel flushers. I am making sure in-kernel flushers do not
+regress.
 
-It was reported that under certain circumstances GCC emits ENDBR
-instructions for _THIS_IP_ usage. Specifically, when it appears at the
-start of a basic block -- but not elsewhere.
-
-Since _THIS_IP_ is never used for control flow, these ENDBR
-instructions are completely superfluous. Override the _THIS_IP_
-definition for x86_64 to avoid this.
-
-Less ENDBR instructions is better.
-
-Fixes: 156ff4a544ae ("x86/ibt: Base IBT bits")
-Reported-by: David Kaplan <David.Kaplan@amd.com>
-Signed-off-by: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Reviewed-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230802110323.016197440@infradead.org
----
- arch/x86/include/asm/linkage.h      | 8 ++++++++
- include/linux/instruction_pointer.h | 5 +++++
- 2 files changed, 13 insertions(+)
-
-diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
-index 97a3de7..5ff49fd 100644
---- a/arch/x86/include/asm/linkage.h
-+++ b/arch/x86/include/asm/linkage.h
-@@ -8,6 +8,14 @@
- #undef notrace
- #define notrace __attribute__((no_instrument_function))
- 
-+#ifdef CONFIG_64BIT
-+/*
-+ * The generic version tends to create spurious ENDBR instructions under
-+ * certain conditions.
-+ */
-+#define _THIS_IP_ ({ unsigned long __here; asm ("lea 0(%%rip), %0" : "=r" (__here)); __here; })
-+#endif
-+
- #ifdef CONFIG_X86_32
- #define asmlinkage CPP_ASMLINKAGE __attribute__((regparm(0)))
- #endif /* CONFIG_X86_32 */
-diff --git a/include/linux/instruction_pointer.h b/include/linux/instruction_pointer.h
-index cda1f70..aa0b3ff 100644
---- a/include/linux/instruction_pointer.h
-+++ b/include/linux/instruction_pointer.h
-@@ -2,7 +2,12 @@
- #ifndef _LINUX_INSTRUCTION_POINTER_H
- #define _LINUX_INSTRUCTION_POINTER_H
- 
-+#include <asm/linkage.h>
-+
- #define _RET_IP_		(unsigned long)__builtin_return_address(0)
-+
-+#ifndef _THIS_IP_
- #define _THIS_IP_  ({ __label__ __here; __here: (unsigned long)&&__here; })
-+#endif
- 
- #endif /* _LINUX_INSTRUCTION_POINTER_H */
+>
+> [...]
+>
+> > When you have that many concurrent readers, most of them won't need to
+> > actually flush.
+>
+> Agreed!
+> --
+> Michal Hocko
+> SUSE Labs
