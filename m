@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B556E79CB19
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD1579CB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjILJGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
+        id S233414AbjILJGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233197AbjILJGA (ORCPT
+        with ESMTP id S233121AbjILJF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:06:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B742681;
-        Tue, 12 Sep 2023 02:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OUN9qvOhvSclaajkaF7Yf2ZvZqXHPIr54l2XhmMy2iQ=; b=S5Uyc7toBN82oKnjq/FlDxHddn
-        Rjo96XKH3esWhun3HPvT/LPYurgyYDtqSovgloklKRrD4xV/A6OSsQOpEmRQv+/Dc7Uxd6R2MsVph
-        Tin0q0YT0h/IqrkCanL2ebgbXdndUBQ2vkkE0WDOIpl1K5K3z2CJpQGa9BXO12uItdSIpW9mHaNI6
-        a4MgvZCXPavoAIZvD4CaI3mYb9TLW8IWuySpqgUskFMexlLLkjPBFbzqAUiAHFuvvbvm3Wo3kJR/K
-        IDMyk/bIDSx8uJ6h+xTDqZacgvRG36C+IKFdR7hT3TTKQAb9n3e0xL7XeO55Dsv0pyvstVmyUxDYu
-        e7MV/V/A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qfzJ9-006grO-DR; Tue, 12 Sep 2023 09:03:43 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8110D300348; Tue, 12 Sep 2023 11:03:42 +0200 (CEST)
-Date:   Tue, 12 Sep 2023 11:03:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
-Message-ID: <20230912090342.GC35261@noisy.programming.kicks-ass.net>
-References: <20230907190810.GA14243@noisy.programming.kicks-ass.net>
- <ZPoift7B3UDQgmWB@casper.infradead.org>
- <20230907193838.GB14243@noisy.programming.kicks-ass.net>
- <ZPpV+MeFqX6RHIYw@dread.disaster.area>
- <20230908104434.GB24372@noisy.programming.kicks-ass.net>
- <ZP5JrYOge3tSAvj7@dread.disaster.area>
- <ZP5OfhXhPkntaEkc@casper.infradead.org>
- <ZP5llBaVrJteHQf3@dread.disaster.area>
- <70d89bf4-708b-f131-f90e-5250b6804d48@redhat.com>
- <ZP+U49yfkm0Fpfej@dread.disaster.area>
+        Tue, 12 Sep 2023 05:05:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5691310DE;
+        Tue, 12 Sep 2023 02:03:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7080DC433C7;
+        Tue, 12 Sep 2023 09:03:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694509434;
+        bh=mvXVHwykddISCxjGxd+zXeSEBkkTdccCqUNjt0wXkhk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M3aItyTpPCH0WRFAATLYobcHCumrLbWrZEHwtiVvodGHMsJpMzaSf8aEc+40cJA2L
+         OYWJtJL9QrDtBoYC5UVaeIVoFbIvtEG+a31XZuVLsY832sGU5fhJEtBpcMh0XoEtdm
+         oZksLI0Rm9veRFQqi218uTHCwq048bfiMRxuxoYA=
+Date:   Tue, 12 Sep 2023 11:03:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     jack@suse.cz, stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org,
+        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH 6.1 000/600] 6.1.53-rc1 review
+Message-ID: <2023091217-reflux-playroom-017a@gregkh>
+References: <20230911134633.619970489@linuxfoundation.org>
+ <1ffe4f64-f238-859a-ab14-7559d03c4671@linaro.org>
+ <CAEUSe7_XA16yZAHA+YTbJygwaUYkU5gs=FnV9BAmQRYzwgVjvQ@mail.gmail.com>
+ <CA+G9fYsiWEKSV0EeU0cXsJZ3U75fbdGyCmDx07ksFMUW5jouyw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ZP+U49yfkm0Fpfej@dread.disaster.area>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+G9fYsiWEKSV0EeU0cXsJZ3U75fbdGyCmDx07ksFMUW5jouyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 08:29:55AM +1000, Dave Chinner wrote:
+On Tue, Sep 12, 2023 at 02:19:34PM +0530, Naresh Kamboju wrote:
+> On Tue, 12 Sept 2023 at 07:55, Daniel Díaz <daniel.diaz@linaro.org> wrote:
+> >
+> > Hello!
+> >
+> > On Mon, 11 Sept 2023 at 14:58, Daniel Díaz <daniel.diaz@linaro.org> wrote:
+> > > On 11/09/23 7:40 a. m., Greg Kroah-Hartman wrote:
+> > > > This is the start of the stable review cycle for the 6.1.53 release.
+> > > > There are 600 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > > >
+> > > > Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
+> > > > Anything received after that time might be too late.
+> > > >
+> > > > The whole patch series can be found in one patch at:
+> > > >       https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.53-rc1.gz
+> > > > or in the git tree and branch at:
+> > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > > > and the diffstat can be found below.
+> > > >
+> > > > thanks,
+> > > >
+> > > > greg k-h
+> > >
+> > > We're seeing this new warning:
+> > > -----8<-----
+> > >    /builds/linux/fs/udf/inode.c:892:6: warning: variable 'newblock' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+> > >      892 |         if (*err < 0)
+> > >          |             ^~~~~~~~
+> > >    /builds/linux/fs/udf/inode.c:914:9: note: uninitialized use occurs here
+> > >      914 |         return newblock;
+> > >          |                ^~~~~~~~
+> > >    /builds/linux/fs/udf/inode.c:892:2: note: remove the 'if' if its condition is always false
+> > >      892 |         if (*err < 0)
+> > >          |         ^~~~~~~~~~~~~
+> > >      893 |                 goto out_free;
+> > >          |                 ~~~~~~~~~~~~~
+> > >    /builds/linux/fs/udf/inode.c:699:34: note: initialize the variable 'newblock' to silence this warning
+> > >      699 |         udf_pblk_t newblocknum, newblock;
+> > >          |                                         ^
+> > >          |                                          = 0
+> > >    1 warning generated.
+> > > ----->8-----
+> > >
+> > > That's with Clang 17 (and nightly) on:
+> > > * arm
+> > > * powerpc
+> > > * s390
+> >
+> > For what it's worth, bisection points to 903b487b5ba6 ("udf: Handle
+> > error when adding extent to a file").
+> 
+> I see the following commit is fixing the reported problem.
+> 
+> commit 6d5ab7c2f7cf90877dab8f2bb06eb5ca8edc73ef
+> Author: Tom Rix <trix@redhat.com>
+> Date:   Fri Dec 30 12:53:41 2022 -0500
+> 
+>     udf: initialize newblock to 0
+> 
+>     The clang build reports this error
+>     fs/udf/inode.c:805:6: error: variable 'newblock' is used
+> uninitialized whenever 'if' condition is true
+> [-Werror,-Wsometimes-uninitialized]
+>             if (*err < 0)
+>                 ^~~~~~~~
+>     newblock is never set before error handling jump.
+>     Initialize newblock to 0 and remove redundant settings.
+> 
+>     Fixes: d8b39db5fab8 ("udf: Handle error when adding extent to a file")
 
-> So, once again, we have mixed messages from the lock maintainers.
-> One says "no, it might get abused", another says "I'm fine with
-> that", and now we have a maintainer disagreement stalemate.
+Ah, the Fixes: tag lied!  There is no such git id in Linus's tree
+anywhere, so our scripts couldn't match this up at all.
 
-I didn't say no, I was trying to see if there's alternatives because the
-is_locked pattern has a history of abuse.
+I'll go queue this fix up, thanks for digging it out.
 
-If not, then sure we can do this; it's not like I managed to get rid of
-muteX_is_locked() -- and I actually tried at some point :/
-
-And just now I grepped for it, and look what I find:
-
-drivers/hid/hid-nintendo.c:     if (unlikely(mutex_is_locked(&ctlr->output_mutex))) {
-drivers/nvdimm/btt.c:           if (mutex_is_locked(&arena->err_lock)
-
-And there's more :-(
-
-Also, please just calm down already..
+greg k-h
