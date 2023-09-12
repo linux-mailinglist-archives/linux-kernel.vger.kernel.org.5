@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EBD79C787
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957C79C788
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbjILHCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:02:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S231394AbjILHCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:02:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjILHCj (ORCPT
+        with ESMTP id S231382AbjILHCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:02:39 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6625EE75
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:02:13 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c336f3f449so45836235ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:02:13 -0700 (PDT)
+        Tue, 12 Sep 2023 03:02:41 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4347AF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c35ee3b0d2so35295345ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694502133; x=1695106933; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1694502136; x=1695106936; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zbzquHAnwok7U8VH5ASiuRWtN2QtgmEjZHX4A6sEdQ0=;
-        b=EgE/SEvhM6y7H0wOdoJWkDzV29CKcPkS3iWL8GssBkcc0O9ymUk5IhMnFKhvYVz7M0
-         OhAQpdsl5k1naQB1oRrSa/OXFxDDPGjdfgZG/ECrAQa2+x71LlfB7pXbFUe4Ox/t9F77
-         cLIcHTy2RaBomVkoR/Kljy5ollN4wNcDVT6/jAE5Xi/aZtEhd7wzp8WKSN2XV4qi4hSs
-         7+fs9Ifk/Us6R8GOVpjdC57+grmarGBjpPdJIKcUIgqzTPIyM5tMTYV4ZqmplsSyMVsH
-         bQC6P6th9E06JuHAEDCV018vo8zzU5d4N6htKV8QC2a9LDXHUL8vF3u7yKRamWZKRcZT
-         S5GA==
+        bh=zZ7auXMwt2HG2eO79EZb79CGVaa+fy/IcLCkXgQTU2E=;
+        b=gJntY8cV6wapICpdZfEIKXOai/sUbNM/O2PEKnDVSxn2gbWVIXA5t6cb7ba/zTwtwZ
+         WPKEc9Sb6BUUld9t3MOlZYSn36CNY7tArLtbbMwnTUTx3Mf5iaTfiZltVlVMV5xD4xQY
+         X0FW9FZVCyndsjXUA8mh1czh/TU1HNC0/w83YQ7H09Et5h9x0ZmpeyHEFeji9O+0Vmxl
+         xlJ0cfto8eS7a4We7zUxCHvM91RjLFelbmxD1yMP5jZN/ZD7K0XFwIEDw+SW7VfCMNOT
+         Jep7/hQOIfpGe4m+m5bjhWqY0GvnE9Fwk1FcBmB1GqSj2HWUlw3/QSPGHW5JjFwi6oqI
+         xDyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502133; x=1695106933;
+        d=1e100.net; s=20230601; t=1694502136; x=1695106936;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zbzquHAnwok7U8VH5ASiuRWtN2QtgmEjZHX4A6sEdQ0=;
-        b=PU+0fSV6O57JJVoAyImX/GKH/zcZpQn3CUjyOIeKr9w47axpbg4mm623g5DG2M5ItI
-         d7DHvgVB6y6iixhkwQ6WI+Wnc8vLGly8poOjqetvq2/zdIEajtQoHLDJZ2wAc7K4+ME3
-         goN8WT8Cz0rVc79Xo/KjEWrFCaSW0ckm3LBYue2R4LPC1GqTLS3iOPA55dQnycmWjUjP
-         882tbZK1VxwCmfJbIyQB3QzooElJL2sRQGVjO4/2p8uxwduEy8MKsxekMz5ash1tQEBq
-         V9JySNdx/oxhdpFBdc+Ip5E3zX2l7yFeCPL3U+xImsqUphmRL4Q6MfdnucoQUnN1P0DJ
-         Dz7A==
-X-Gm-Message-State: AOJu0YwxNJ5bO26ZeQQtvqVIUJVD6gWyDnYOqWNaWiT6VfjIhSm8Eanu
-        5rMDsTzdyHkSIldgOfn8oK/YdD+JrzOAqfmacv8OBg==
-X-Google-Smtp-Source: AGHT+IH3nN6SdkGHHenKlH89H8T3xLnbtavEibYfCQL2fxVa7I7VNXrgt1h0+smga0DjUw8E5wv8fA==
-X-Received: by 2002:a17:902:8693:b0:1b8:66f6:87a3 with SMTP id g19-20020a170902869300b001b866f687a3mr10957357plo.52.1694502132925;
-        Tue, 12 Sep 2023 00:02:12 -0700 (PDT)
+        bh=zZ7auXMwt2HG2eO79EZb79CGVaa+fy/IcLCkXgQTU2E=;
+        b=Fv8wJ4ueJ6Hi+kcxAfo1obxMcUAFTShKxRFrUceNSO4yD8KEhlM5W2dE068gfoEDv+
+         +zy1oE6P8bx7uN2ea6/sDZFSK0/Jdt/ImmDpnIfxLMo/DBCjNp2KrS/htRbpgdck4M4q
+         WCpdGLwlaZcgBo9DsqZFfR0bqO87z4xPN+qzxAjNpqeuN3nSTO8ZWKRgNHPltRGLQTlc
+         L6L2s7tAaZBlieF2vyO0g/q+YGTUXzSb2Q9DXKQNT1DyVXC9uDVnXh/ugzqARLUMQtzB
+         6b/WRnsDsob326GQSf63scFzwoIdQ69Glbnfx1je65b1g9kTJh8PRcqLFSkg/+p7kw5h
+         jVwQ==
+X-Gm-Message-State: AOJu0YwP9kbOJH7IfwreSUNeeZKPu/UuRoOhp2xT6q8RIde1AQ5lxl/X
+        xKx/07lVmUGipamV+1JROkqJTw==
+X-Google-Smtp-Source: AGHT+IF1L3zszd0Qt7OImIjEsl7I2HCtreNc7f6XF9vPUvB7JGyRpTNFMRSxt9GUYpLv2X335et5TA==
+X-Received: by 2002:a17:902:e883:b0:1bc:506a:58f2 with SMTP id w3-20020a170902e88300b001bc506a58f2mr10371670plg.46.1694502136153;
+        Tue, 12 Sep 2023 00:02:16 -0700 (PDT)
 Received: from n37-019-243.byted.org ([180.184.84.173])
-        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001b8953365aesm7635401plg.22.2023.09.12.00.02.10
+        by smtp.gmail.com with ESMTPSA id b8-20020a170902d50800b001b8953365aesm7635401plg.22.2023.09.12.00.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 00:02:12 -0700 (PDT)
+        Tue, 12 Sep 2023 00:02:15 -0700 (PDT)
 From:   Chuyi Zhou <zhouchuyi@bytedance.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
         Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded iterator kfuncs
-Date:   Tue, 12 Sep 2023 15:01:47 +0800
-Message-Id: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf-next v2 5/6] bpf: teach the verifier to enforce css_iter and process_iter in RCU CS
+Date:   Tue, 12 Sep 2023 15:01:48 +0800
+Message-Id: <20230912070149.969939-6-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20230912070149.969939-1-zhouchuyi@bytedance.com>
 References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
@@ -67,159 +67,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This Patch adds kfuncs bpf_iter_css_{pre,post}_{new,next,destroy} which
-allow creation and manipulation of struct bpf_iter_css in open-coded
-iterator style. These kfuncs actually wrapps css_next_descendant_{pre,
-post}. BPF programs can use these kfuncs through bpf_for_each macro for
-iteration of all descendant css under a root css.
+css_iter and process_iter should be used in rcu section. Specifically, in
+sleepable progs explicit bpf_rcu_read_lock() is needed before use these
+iters. In normal bpf progs that have implicit rcu_read_lock(), it's OK to
+use them directly.
+
+This patch checks whether we are in rcu cs before we want to invoke
+bpf_iter_process_new and bpf_iter_css_{pre, post}_new in
+mark_stack_slots_iter(). If the rcu protection is guaranteed, we would
+let st->type = PTR_TO_STACK | MEM_RCU. is_iter_reg_valid_init() will
+reject if reg->type is UNTRUSTED.
 
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- include/uapi/linux/bpf.h       |  8 +++++
- kernel/bpf/helpers.c           |  6 ++++
- kernel/bpf/task_iter.c         | 53 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h |  8 +++++
- tools/lib/bpf/bpf_helpers.h    | 12 ++++++++
- 5 files changed, 87 insertions(+)
+ kernel/bpf/verifier.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index befa55b52e29..57760afc13d0 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -7326,4 +7326,12 @@ struct bpf_iter_process {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2367483bf4c2..6a6827ba7a18 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1172,7 +1172,13 @@ static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg
  
-+struct bpf_iter_css_pre {
-+	__u64 __opaque[2];
-+} __attribute__((aligned(8)));
+ static void __mark_reg_known_zero(struct bpf_reg_state *reg);
+ 
++static bool in_rcu_cs(struct bpf_verifier_env *env);
 +
-+struct bpf_iter_css_post {
-+	__u64 __opaque[2];
-+} __attribute__((aligned(8)));
++/* check whether we are using bpf_iter_process_*() or bpf_iter_css_*() */
++static bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta);
 +
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 9b7d2c6f99d1..ca1f6404af9e 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2510,6 +2510,12 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_iter_css_pre_new, KF_ITER_NEW)
-+BTF_ID_FLAGS(func, bpf_iter_css_pre_next, KF_ITER_NEXT | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_css_pre_destroy, KF_ITER_DESTROY)
-+BTF_ID_FLAGS(func, bpf_iter_css_post_new, KF_ITER_NEW)
-+BTF_ID_FLAGS(func, bpf_iter_css_post_next, KF_ITER_NEXT | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_css_post_destroy, KF_ITER_DESTROY)
- BTF_ID_FLAGS(func, bpf_dynptr_adjust)
- BTF_ID_FLAGS(func, bpf_dynptr_is_null)
- BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 9d1927dc3a06..8963fc779b87 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -880,6 +880,59 @@ __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
++				 struct bpf_kfunc_call_arg_meta *meta,
+ 				 struct bpf_reg_state *reg, int insn_idx,
+ 				 struct btf *btf, u32 btf_id, int nr_slots)
  {
- }
+@@ -1193,6 +1199,12 @@ static int mark_stack_slots_iter(struct bpf_verifier_env *env,
  
-+struct bpf_iter_css_kern {
-+	struct cgroup_subsys_state *root;
-+	struct cgroup_subsys_state *pos;
-+} __attribute__((aligned(8)));
-+
-+__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-+		struct cgroup_subsys_state *root)
-+{
-+	struct bpf_iter_css_kern *kit = (void *)it;
-+
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_pre));
-+	kit->root = root;
-+	kit->pos = NULL;
-+	return 0;
-+}
-+
-+__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-+{
-+	struct bpf_iter_css_kern *kit = (void *)it;
-+
-+	kit->pos = css_next_descendant_pre(kit->pos, kit->root);
-+	return kit->pos;
-+}
-+
-+__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-+{
-+}
-+
-+__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-+		struct cgroup_subsys_state *root)
-+{
-+	struct bpf_iter_css_kern *kit = (void *)it;
-+
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_post));
-+	kit->root = root;
-+	kit->pos = NULL;
-+	return 0;
-+}
-+
-+__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-+{
-+	struct bpf_iter_css_kern *kit = (void *)it;
-+
-+	kit->pos = css_next_descendant_post(kit->pos, kit->root);
-+	return kit->pos;
-+}
-+
-+__bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-+{
-+}
-+
- DEFINE_PER_CPU(struct mmap_unlock_irq_work, mmap_unlock_work);
+ 		__mark_reg_known_zero(st);
+ 		st->type = PTR_TO_STACK; /* we don't have dedicated reg type */
++		if (is_iter_need_rcu(meta)) {
++			if (in_rcu_cs(env))
++				st->type |= MEM_RCU;
++			else
++				st->type |= PTR_UNTRUSTED;
++		}
+ 		st->live |= REG_LIVE_WRITTEN;
+ 		st->ref_obj_id = i == 0 ? id : 0;
+ 		st->iter.btf = btf;
+@@ -1281,6 +1293,8 @@ static bool is_iter_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_
+ 		struct bpf_stack_state *slot = &state->stack[spi - i];
+ 		struct bpf_reg_state *st = &slot->spilled_ptr;
  
- static void do_mmap_read_unlock(struct irq_work *entry)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index befa55b52e29..57760afc13d0 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -7326,4 +7326,12 @@ struct bpf_iter_process {
- 	__u64 __opaque[1];
- } __attribute__((aligned(8)));
++		if (st->type & PTR_UNTRUSTED)
++			return false;
+ 		/* only main (first) slot has ref_obj_id set */
+ 		if (i == 0 && !st->ref_obj_id)
+ 			return false;
+@@ -7503,13 +7517,13 @@ static int process_iter_arg(struct bpf_verifier_env *env, int regno, int insn_id
+ 				return err;
+ 		}
  
-+struct bpf_iter_css_pre {
-+	__u64 __opaque[2];
-+} __attribute__((aligned(8)));
-+
-+struct bpf_iter_css_post {
-+	__u64 __opaque[2];
-+} __attribute__((aligned(8)));
-+
- #endif /* _UAPI__LINUX_BPF_H__ */
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 858252c2641c..6e5bd9ef14d6 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -315,6 +315,18 @@ extern int bpf_iter_process_new(struct bpf_iter_process *it) __weak __ksym;
- extern struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it) __weak __ksym;
- extern void bpf_iter_process_destroy(struct bpf_iter_process *it) __weak __ksym;
+-		err = mark_stack_slots_iter(env, reg, insn_idx, meta->btf, btf_id, nr_slots);
++		err = mark_stack_slots_iter(env, meta, reg, insn_idx, meta->btf, btf_id, nr_slots);
+ 		if (err)
+ 			return err;
+ 	} else {
+ 		/* iter_next() or iter_destroy() expect initialized iter state*/
+ 		if (!is_iter_reg_valid_init(env, reg, meta->btf, btf_id, nr_slots)) {
+-			verbose(env, "expected an initialized iter_%s as arg #%d\n",
++			verbose(env, "expected an initialized iter_%s as arg #%d or without bpf_rcu_read_lock()\n",
+ 				iter_type_str(meta->btf, btf_id), regno);
+ 			return -EINVAL;
+ 		}
+@@ -10382,6 +10396,18 @@ BTF_ID(func, bpf_percpu_obj_new_impl)
+ BTF_ID(func, bpf_percpu_obj_drop_impl)
+ BTF_ID(func, bpf_iter_css_task_new)
  
-+struct bpf_iter_css_pre;
-+extern int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-+		struct cgroup_subsys_state *root) __weak __ksym;
-+extern struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it) __weak __ksym;
-+extern void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it) __weak __ksym;
++BTF_SET_START(rcu_protect_kfuns_set)
++BTF_ID(func, bpf_iter_process_new)
++BTF_ID(func, bpf_iter_css_pre_new)
++BTF_ID(func, bpf_iter_css_post_new)
++BTF_SET_END(rcu_protect_kfuns_set)
 +
-+struct bpf_iter_css_post;
-+extern int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-+		struct cgroup_subsys_state *root) __weak __ksym;
-+extern struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it) __weak __ksym;
-+extern void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it) __weak __ksym;
++static inline bool is_iter_need_rcu(struct bpf_kfunc_call_arg_meta *meta)
++{
++	return btf_id_set_contains(&rcu_protect_kfuns_set, meta->func_id);
++}
 +
- #ifndef bpf_for_each
- /* bpf_for_each(iter_type, cur_elem, args...) provides generic construct for
-  * using BPF open-coded iterators without having to write mundane explicit
++
+ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+ {
+ 	if (meta->func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl] &&
 -- 
 2.20.1
 
