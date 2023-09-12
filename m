@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ADD79CEC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E1579CED3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbjILKsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S233475AbjILKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234523AbjILKsA (ORCPT
+        with ESMTP id S234500AbjILKs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:48:00 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B352C1715;
-        Tue, 12 Sep 2023 03:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=uScCM
-        nzPObsPh23HDdGqOfZrNm1aaqjHMJwvw1YWvH0=; b=IdqhUZUAomqxoLzepFnex
-        +46OUihKyFKisxT5jIh8nwwA5wQhufmQLr/5TpwD2jtwYI9B4CHDJ0DRW5+skR2X
-        1IgS8YUENB+9Ic48oBrQ49Q0OXrPQ+e3kwNTyIM5S7IpNYziGLAPspPyi2FnLYXH
-        0bC0C8jlYecifcGg4I2Tf4=
-Received: from f00160-VMware-Virtual-Platform.. (unknown [117.133.51.178])
-        by zwqz-smtp-mta-g5-4 (Coremail) with SMTP id _____wDX9CmcQQBlvAlxBw--.21712S4;
-        Tue, 12 Sep 2023 18:47:05 +0800 (CST)
-From:   Jingyu Wang <jingyuwang_vip@163.com>
-To:     vkoul@kernel.org, corbet@lwn.net
-Cc:     dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jingyu Wang <jingyuwang_vip@163.com>
-Subject: [PATCH] Documentation: driver-api: fix ls -1 spelling
-Date:   Tue, 12 Sep 2023 18:46:50 +0800
-Message-Id: <20230912104650.3999-1-jingyuwang_vip@163.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Sep 2023 06:48:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A70E19B9;
+        Tue, 12 Sep 2023 03:48:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69AD9C433C8;
+        Tue, 12 Sep 2023 10:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694515721;
+        bh=hyPH65s4f4/VZ9P/CAtBIH80ACdiyXIzT7HTVAtLpEo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fWaD/3jerbbhLKfg2mYq4A5FG9fTTj3v5Ocj2/fBVsoOjJiwl5lRUnQ+P4UdcByJQ
+         S/qMPUEFMmuDN2NeBspiJp/1/TUWIXKBCX0mkKwGgWfWL/syRbPRjSYP++vQ+FOgZ6
+         BnODvBFjgKRll5ZvbydxkdcLyPNKyo9UK4nfktMg=
+Date:   Tue, 12 Sep 2023 12:48:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>, stable@vger.kernel.org,
+        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "comedi: add HAS_IOPORT dependencies"
+Message-ID: <2023091244-sprung-polio-6a37@gregkh>
+References: <20230905090922.3314-1-abbotti@mev.co.uk>
+ <76acff7e-3959-4193-9531-22a5e5a68221@leemhuis.info>
+ <2023091226-foe-reanalyze-b859@gregkh>
+ <516005ff-636e-4aa9-9bcb-76902c09f855@leemhuis.info>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDX9CmcQQBlvAlxBw--.21712S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWruF13KFW3KrykCF4DZFWkJFb_yoWfWrc_CF
-        4qqFZagr4qyFyIyr48tFn8ZFnIvrWFkFn3u3WDtFs8Cry3X39xuFykK345Cr1xuF17ur9x
-        C3yDWrWft3ZrKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRZyCL3UUUUU==
-X-Originating-IP: [117.133.51.178]
-X-CM-SenderInfo: 5mlqw5xxzd0whbyl1qqrwthudrp/1tbiExHoF2E18j0TTgAAs7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <516005ff-636e-4aa9-9bcb-76902c09f855@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ls -1 to ls -l in dmatest documentation
+On Tue, Sep 12, 2023 at 12:39:28PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 12.09.23 12:13, Greg Kroah-Hartman wrote:
+> > On Tue, Sep 12, 2023 at 11:44:39AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> >> On 05.09.23 11:09, Ian Abbott wrote:
+> >>> This reverts commit b5c75b68b7ded84d4c82118974ce3975a4dcaa74.
+> >>>
+> >>> The commit makes it impossible to select configuration options that
+> >>> depend on COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
+> >>> COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
+> >>> 'depends on' directives and there being no other way to select those
+> >>> codependent configuration options.
+> >>>
+> >>> Fixes: b5c75b68b7de ("comedi: add HAS_IOPORT dependencies")
+> >>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> >>> Cc: Arnd Bergmann <arnd@kernel.org>
+> >>> Cc: <stable@vger.kernel.org> # v6.5+
+> >>> Acked-by: Arnd Bergmann <arnd@kernel.org>
+> >>> Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+> >>
+> >> Hmmm, that fix for a regression from the 6.5 cycle was posted a week ago
+> >> but didn't get a single reply afaics and hasn't hit next.
+> >>
+> >> Greg, is this still in your to-review queue and just delayed due to the
+> >> merge window? Or are you waiting for something? A ACK fromn Niklas
+> >> maybe? Or a newer patch to address the kernel test robot report in case
+> >> its relevant?
+> > 
+> > The merge window "freeze" ended on Monday, give me a chance to catch up
+> > with patches please, this is part of my very large todo mbox:
+> > 
+> > 	$ mdfrm -c ~/mail/todo/
+> > 	1637 messages in /home/gregkh/mail/todo/
+> 
+> Well, I know that you deal with a lot of patches and often wonder how
+> you manage to do all that great work, but nevertheless please allow me
+> to ask:
+> 
+> I assume that that not all of those 1600+ patches are fixes for
+> regressions, so should a revert for a very recent regression be in a
+> different mbox with a slightly higher priority[1] to get handled before
+> the others?
 
-Signed-off-by: Jingyu Wang <jingyuwang_vip@163.com>
----
- Documentation/driver-api/dmaengine/dmatest.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Nope, I lump them all together into one mbox and then sort them when
+processing.  Works faster overall for me.  I'll get to it by the end of
+this week, hopefully :)
 
-diff --git a/Documentation/driver-api/dmaengine/dmatest.rst b/Documentation/driver-api/dmaengine/dmatest.rst
-index e2a63cefd783..b1a0e3bc71e7 100644
---- a/Documentation/driver-api/dmaengine/dmatest.rst
-+++ b/Documentation/driver-api/dmaengine/dmatest.rst
-@@ -77,7 +77,7 @@ Example of multi-channel test usage (new in the 5.0 kernel)::
- .. hint::
-   A list of available channels can be found by running the following command::
- 
--    % ls -1 /sys/class/dma/
-+    % ls -l /sys/class/dma/
- 
- Once started a message like " dmatest: Added 1 threads using dma0chan0" is
- emitted. A thread for that specific channel is created and is now pending, the
--- 
-2.34.1
+thanks,
 
+greg k-h
