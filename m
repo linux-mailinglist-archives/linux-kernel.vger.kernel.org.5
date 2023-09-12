@@ -2,222 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1464079C454
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB84879C46C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237526AbjILDnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
+        id S238294AbjILDwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237368AbjILDnG (ORCPT
+        with ESMTP id S237771AbjILDwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:43:06 -0400
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAD5A4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 20:43:02 -0700 (PDT)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-26d3d868529so7503946a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 20:43:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694490182; x=1695094982;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C1Z8XaEzEErA4t9ccKvJI1SaXs5GeSYflnkUaHxK3fM=;
-        b=msbi0KZPhIn1X4RIQY0cn6waEeoqv/8LiQ1JywS+sI/acqQzWY2paDsYNzVCNV3scP
-         MUM77z7Cn8X3R2iS6gmJhtwXrhFJaEKHA9p1VCaSzezepVQvcZbXtmJ0BDPFqNSiQ7cw
-         mcLGuFx3lLg+b7lQ6sZ/WJQaoxP/1v2dAfGBVQPLZ+KZAf78Bs4SZYWn5ArGqnhjCBkO
-         SINC9hxARytgoRjghkbhDK85gmOh+AWu2CuIuAeRH7DIJZJcjzuF1EVF4db8pGWMmS1B
-         UfXoGpF6IYm4uojbasHuD9p3rtbIrR90peM257rs/sMQ/lRbA+LuhPEhVHIfxuD+NxAn
-         d//g==
-X-Gm-Message-State: AOJu0YzpcKY5qf72Ou0cAIkRF82q0bYF7p2C7Ih0NgWD7bDiaFJxHl/n
-        4HOomC566W76KgEgOLc4r9HcPO633jlBv4pTsH/qyga9MiCa
-X-Google-Smtp-Source: AGHT+IFV1MpjXWTFM6PQWGQpq6o04FfCM7qa0W3bYRNe+bZzisdqgsH5Bz3nltJOTPLCeZ9HTv1nLqMB7RpvYvkUxnDJf/3IV++e
+        Mon, 11 Sep 2023 23:52:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880B6AF;
+        Mon, 11 Sep 2023 20:52:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A10CC433C9;
+        Tue, 12 Sep 2023 03:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694490733;
+        bh=WqtyR6TyE2OiwN9Ksz+X7wHBgrKGw+Y7ijGlSzfZmqw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H+83pHrfPKWcgEp4xNyLlDqq2G+A7bJcjbqLZcTgEPHze/tRozW+wdUIzLWlQK+fl
+         9lGaj325gIxmAvSRrOIiGs8lCzsgqSW5zjvEu5a1HfbUoIXJAtJP+Yndo0/HM2RIFQ
+         9sLIfuhIMGRGsLEjxXVS+Hdh1JHFUKkR2wzpOlRSL2JwSRGv5A8QsvZJfdKCdUapXG
+         ALV8zCO1wmsV4JNHYm+2yqpcT4H5/fLzGy8LKX7RTo64hqsWdtXXQZB2xnneyOFZFN
+         qOHM2P4Gpn8Q9euuw+W37cPATd7d5eeli2lNbwyziLYL0mBAlblVGJtk6wSTfxAxo7
+         Gi7k3tEw+wksA==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2bceca8a41aso82494191fa.0;
+        Mon, 11 Sep 2023 20:52:13 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx4wHgcQQjbRoY4o1baAWl033QhGmDCksLf82DugLuFuFdTtaad
+        y9YuxJPd7hZW6hbxdceUt5XGZDrg0+ndEedxV/c=
+X-Google-Smtp-Source: AGHT+IFTeWfLmYlpWNn+ra8nqvwqS5UVyI2/EdimCPz3OodsUCMrXm5acnaN1t3VEu17oBXGrc+tsWOOlAASLGgO9bM=
+X-Received: by 2002:a2e:9bcf:0:b0:2bc:b6b0:1c4d with SMTP id
+ w15-20020a2e9bcf000000b002bcb6b01c4dmr9287945ljj.10.1694490731299; Mon, 11
+ Sep 2023 20:52:11 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:8f03:b0:271:de78:ad5f with SMTP id
- g3-20020a17090a8f0300b00271de78ad5fmr2913908pjo.7.1694490182071; Mon, 11 Sep
- 2023 20:43:02 -0700 (PDT)
-Date:   Mon, 11 Sep 2023 20:43:01 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000060be2d0605213d34@google.com>
-Subject: [syzbot] [ntfs3?] memory leak in wnd_init
-From:   syzbot <syzbot+9ccdd15480e9d9833822@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+References: <20230831083020.2187109-1-zhaotianrui@loongson.cn>
+ <20230831083020.2187109-17-zhaotianrui@loongson.cn> <CAAhV-H497R=B3KaO8Z5ig2Nwst10dm63eiPnDpfNbFCxG4uVKg@mail.gmail.com>
+ <7379be58-30a5-1f0f-2e13-ca51b7cff096@loongson.cn>
+In-Reply-To: <7379be58-30a5-1f0f-2e13-ca51b7cff096@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 12 Sep 2023 11:51:58 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H51vjwuUgS-GEkMbDs+JAdmT0i3vd13RwuvYju=GwELFw@mail.gmail.com>
+Message-ID: <CAAhV-H51vjwuUgS-GEkMbDs+JAdmT0i3vd13RwuvYju=GwELFw@mail.gmail.com>
+Subject: Re: [PATCH v20 16/30] LoongArch: KVM: Implement update VM id function
+To:     bibo mao <maobibo@loongson.cn>
+Cc:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Xi Ruoyao <xry111@xry111.site>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Sep 11, 2023 at 6:23=E2=80=AFPM bibo mao <maobibo@loongson.cn> wrot=
+e:
+>
+>
+>
+> =E5=9C=A8 2023/9/11 18:00, Huacai Chen =E5=86=99=E9=81=93:
+> > Hi, Tianrui,
+> >
+> > On Thu, Aug 31, 2023 at 4:30=E2=80=AFPM Tianrui Zhao <zhaotianrui@loong=
+son.cn> wrote:
+> >>
+> >> Implement kvm check vmid and update vmid, the vmid should be checked b=
+efore
+> >> vcpu enter guest.
+> >>
+> >> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> >> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> >> ---
+> >>  arch/loongarch/kvm/vmid.c | 66 ++++++++++++++++++++++++++++++++++++++=
++
+> >>  1 file changed, 66 insertions(+)
+> >>  create mode 100644 arch/loongarch/kvm/vmid.c
+> >>
+> >> diff --git a/arch/loongarch/kvm/vmid.c b/arch/loongarch/kvm/vmid.c
+> >> new file mode 100644
+> >> index 0000000000..fc25ddc3b7
+> >> --- /dev/null
+> >> +++ b/arch/loongarch/kvm/vmid.c
+> >> @@ -0,0 +1,66 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (C) 2020-2023 Loongson Technology Corporation Limited
+> >> + */
+> >> +
+> >> +#include <linux/kvm_host.h>
+> >> +#include "trace.h"
+> >> +
+> >> +static void _kvm_update_vpid(struct kvm_vcpu *vcpu, int cpu)
+> >> +{
+> >> +       struct kvm_context *context;
+> >> +       unsigned long vpid;
+> >> +
+> >> +       context =3D per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+> >> +       vpid =3D context->vpid_cache + 1;
+> >> +       if (!(vpid & vpid_mask)) {
+> >> +               /* finish round of 64 bit loop */
+> >> +               if (unlikely(!vpid))
+> >> +                       vpid =3D vpid_mask + 1;
+> >> +
+> >> +               /* vpid 0 reserved for root */
+> >> +               ++vpid;
+> >> +
+> >> +               /* start new vpid cycle */
+> >> +               kvm_flush_tlb_all();
+> >> +       }
+> >> +
+> >> +       context->vpid_cache =3D vpid;
+> >> +       vcpu->arch.vpid =3D vpid;
+> >> +}
+> >> +
+> >> +void _kvm_check_vmid(struct kvm_vcpu *vcpu)
+> >> +{
+> >> +       struct kvm_context *context;
+> >> +       bool migrated;
+> >> +       unsigned long ver, old, vpid;
+> >> +       int cpu;
+> >> +
+> >> +       cpu =3D smp_processor_id();
+> >> +       /*
+> >> +        * Are we entering guest context on a different CPU to last ti=
+me?
+> >> +        * If so, the vCPU's guest TLB state on this CPU may be stale.
+> >> +        */
+> >> +       context =3D per_cpu_ptr(vcpu->kvm->arch.vmcs, cpu);
+> >> +       migrated =3D (vcpu->cpu !=3D cpu);
+> >> +
+> >> +       /*
+> >> +        * Check if our vpid is of an older version
+> >> +        *
+> >> +        * We also discard the stored vpid if we've executed on
+> >> +        * another CPU, as the guest mappings may have changed without
+> >> +        * hypervisor knowledge.
+> >> +        */
+> >> +       ver =3D vcpu->arch.vpid & ~vpid_mask;
+> >> +       old =3D context->vpid_cache  & ~vpid_mask;
+> >> +       if (migrated || (ver !=3D old)) {
+> >> +               _kvm_update_vpid(vcpu, cpu);
+> >> +               trace_kvm_vpid_change(vcpu, vcpu->arch.vpid);
+> >> +               vcpu->cpu =3D cpu;
+> >> +       }
+> >> +
+> >> +       /* Restore GSTAT(0x50).vpid */
+> >> +       vpid =3D (vcpu->arch.vpid & vpid_mask)
+> >> +               << CSR_GSTAT_GID_SHIFT;
+> >> +       change_csr_gstat(vpid_mask << CSR_GSTAT_GID_SHIFT, vpid);
+> >> +}
+> > I believe that vpid and vmid are both GID in the gstat register, so
+> > please unify their names. And I think vpid is better than vmid.
+>
+> For processor 3A5000 vpid is the same with vmid, with next generation pro=
+cessor
+> like 3A6000, it is seperated. vpid is for vcpu specific and represents
+> translation from gva to gpa; vmid is the whole vm and represents translat=
+ion
+> from gpa to hpa, all vcpus shares the same vmid, so that tlb indexed with=
+ vpid
+> will be still in effective when flushing shadow tlbs indexed with vmid.
+>
+> Only that VM patch for 3A6000 is not submitted now, generation method for
+> vpid and vmid will be much different. It is prepared for future processor
+> update :)
+If so, then I think there should be a 'vmid' in kvm_arch and a 'vpid'
+in kvm_vcpu_arch?
+This patch only handles kvm_vcpu_arch so I think all should be vpid here.
 
-syzbot found the following issue on:
+And again, this code can be just put in main.c.
 
-HEAD commit:    4a0fc73da97e Merge tag 's390-6.6-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=159a5bafa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=52403a23b631cefc
-dashboard link: https://syzkaller.appspot.com/bug?extid=9ccdd15480e9d9833822
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1428f558680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159c2494680000
+Huacai
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7e7536435862/disk-4a0fc73d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f5b10d577113/vmlinux-4a0fc73d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/430b464e2d50/bzImage-4a0fc73d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/25cbc30b9bc2/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9ccdd15480e9d9833822@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff8881092d8120 (size 8):
-  comm "syz-executor271", pid 5017, jiffies 4294942948 (age 12.860s)
-  hex dump (first 8 bytes):
-    65 00 00 00 00 00 00 00                          e.......
-  backtrace:
-    [<ffffffff8157443b>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff8157443b>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff81bc99ac>] kmalloc_array include/linux/slab.h:636 [inline]
-    [<ffffffff81bc99ac>] kcalloc include/linux/slab.h:667 [inline]
-    [<ffffffff81bc99ac>] wnd_init+0xdc/0x140 fs/ntfs3/bitmap.c:662
-    [<ffffffff81c023dd>] ntfs_fill_super+0x116d/0x22f0 fs/ntfs3/super.c:1257
-    [<ffffffff81691a21>] get_tree_bdev+0x1b1/0x280 fs/super.c:1577
-    [<ffffffff8168ecda>] vfs_get_tree+0x2a/0x130 fs/super.c:1750
-    [<ffffffff816d44ef>] do_new_mount fs/namespace.c:3335 [inline]
-    [<ffffffff816d44ef>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
-    [<ffffffff816d50e1>] do_mount fs/namespace.c:3675 [inline]
-    [<ffffffff816d50e1>] __do_sys_mount fs/namespace.c:3884 [inline]
-    [<ffffffff816d50e1>] __se_sys_mount fs/namespace.c:3861 [inline]
-    [<ffffffff816d50e1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
-    [<ffffffff84b2dfa8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b2dfa8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810bf880c0 (size 64):
-  comm "syz-executor271", pid 5017, jiffies 4294942948 (age 12.860s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 81 f8 0b 81 88 ff ff  ................
-    00 00 00 00 00 00 00 00 10 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81bc7ddc>] wnd_add_free_ext+0x6c/0x860 fs/ntfs3/bitmap.c:337
-    [<ffffffff81bc9640>] wnd_rescan+0x370/0x600 fs/ntfs3/bitmap.c:597
-    [<ffffffff81bc99c2>] wnd_init+0xf2/0x140 fs/ntfs3/bitmap.c:666
-    [<ffffffff81c023dd>] ntfs_fill_super+0x116d/0x22f0 fs/ntfs3/super.c:1257
-    [<ffffffff81691a21>] get_tree_bdev+0x1b1/0x280 fs/super.c:1577
-    [<ffffffff8168ecda>] vfs_get_tree+0x2a/0x130 fs/super.c:1750
-    [<ffffffff816d44ef>] do_new_mount fs/namespace.c:3335 [inline]
-    [<ffffffff816d44ef>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
-    [<ffffffff816d50e1>] do_mount fs/namespace.c:3675 [inline]
-    [<ffffffff816d50e1>] __do_sys_mount fs/namespace.c:3884 [inline]
-    [<ffffffff816d50e1>] __se_sys_mount fs/namespace.c:3861 [inline]
-    [<ffffffff816d50e1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
-    [<ffffffff84b2dfa8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b2dfa8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810bf88100 (size 64):
-  comm "syz-executor271", pid 5017, jiffies 4294942948 (age 12.860s)
-  hex dump (first 32 bytes):
-    c0 80 f8 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 21 00 00 00 00 00 00 00  ........!.......
-  backtrace:
-    [<ffffffff81bc7ddc>] wnd_add_free_ext+0x6c/0x860 fs/ntfs3/bitmap.c:337
-    [<ffffffff81bc9775>] wnd_rescan+0x4a5/0x600 fs/ntfs3/bitmap.c:621
-    [<ffffffff81bc99c2>] wnd_init+0xf2/0x140 fs/ntfs3/bitmap.c:666
-    [<ffffffff81c023dd>] ntfs_fill_super+0x116d/0x22f0 fs/ntfs3/super.c:1257
-    [<ffffffff81691a21>] get_tree_bdev+0x1b1/0x280 fs/super.c:1577
-    [<ffffffff8168ecda>] vfs_get_tree+0x2a/0x130 fs/super.c:1750
-    [<ffffffff816d44ef>] do_new_mount fs/namespace.c:3335 [inline]
-    [<ffffffff816d44ef>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
-    [<ffffffff816d50e1>] do_mount fs/namespace.c:3675 [inline]
-    [<ffffffff816d50e1>] __do_sys_mount fs/namespace.c:3884 [inline]
-    [<ffffffff816d50e1>] __se_sys_mount fs/namespace.c:3861 [inline]
-    [<ffffffff816d50e1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
-    [<ffffffff84b2dfa8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b2dfa8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff88810a1d8b40 (size 64):
-  comm "syz-executor271", pid 5017, jiffies 4294942948 (age 12.860s)
-  hex dump (first 32 bytes):
-    00 00 00 00 01 00 00 00 47 00 00 00 00 00 00 00  ........G.......
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815742ee>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff815742ee>] __kmalloc_node+0x4e/0x150 mm/slab_common.c:1030
-    [<ffffffff81563919>] kmalloc_node include/linux/slab.h:619 [inline]
-    [<ffffffff81563919>] kvmalloc_node+0x99/0x170 mm/util.c:607
-    [<ffffffff81bfd949>] kvmalloc include/linux/slab.h:737 [inline]
-    [<ffffffff81bfd949>] run_add_entry+0x559/0x720 fs/ntfs3/run.c:389
-    [<ffffffff81bfee3c>] run_unpack+0x53c/0x620 fs/ntfs3/run.c:1021
-    [<ffffffff81bfef97>] run_unpack_ex+0x77/0x320 fs/ntfs3/run.c:1060
-    [<ffffffff81bee9d3>] ntfs_read_mft fs/ntfs3/inode.c:400 [inline]
-    [<ffffffff81bee9d3>] ntfs_iget5+0x633/0x1a90 fs/ntfs3/inode.c:532
-    [<ffffffff81c0245d>] ntfs_fill_super+0x11ed/0x22f0 fs/ntfs3/super.c:1272
-    [<ffffffff81691a21>] get_tree_bdev+0x1b1/0x280 fs/super.c:1577
-    [<ffffffff8168ecda>] vfs_get_tree+0x2a/0x130 fs/super.c:1750
-    [<ffffffff816d44ef>] do_new_mount fs/namespace.c:3335 [inline]
-    [<ffffffff816d44ef>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
-    [<ffffffff816d50e1>] do_mount fs/namespace.c:3675 [inline]
-    [<ffffffff816d50e1>] __do_sys_mount fs/namespace.c:3884 [inline]
-    [<ffffffff816d50e1>] __se_sys_mount fs/namespace.c:3861 [inline]
-    [<ffffffff816d50e1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
-    [<ffffffff84b2dfa8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b2dfa8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-BUG: memory leak
-unreferenced object 0xffff8881092d8468 (size 8):
-  comm "syz-executor271", pid 5017, jiffies 4294942948 (age 12.860s)
-  hex dump (first 8 bytes):
-    0f 01 00 00 00 00 00 00                          ........
-  backtrace:
-    [<ffffffff8157443b>] __do_kmalloc_node mm/slab_common.c:1022 [inline]
-    [<ffffffff8157443b>] __kmalloc+0x4b/0x150 mm/slab_common.c:1036
-    [<ffffffff81bc99ac>] kmalloc_array include/linux/slab.h:636 [inline]
-    [<ffffffff81bc99ac>] kcalloc include/linux/slab.h:667 [inline]
-    [<ffffffff81bc99ac>] wnd_init+0xdc/0x140 fs/ntfs3/bitmap.c:662
-    [<ffffffff81c02509>] ntfs_fill_super+0x1299/0x22f0 fs/ntfs3/super.c:1294
-    [<ffffffff81691a21>] get_tree_bdev+0x1b1/0x280 fs/super.c:1577
-    [<ffffffff8168ecda>] vfs_get_tree+0x2a/0x130 fs/super.c:1750
-    [<ffffffff816d44ef>] do_new_mount fs/namespace.c:3335 [inline]
-    [<ffffffff816d44ef>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
-    [<ffffffff816d50e1>] do_mount fs/namespace.c:3675 [inline]
-    [<ffffffff816d50e1>] __do_sys_mount fs/namespace.c:3884 [inline]
-    [<ffffffff816d50e1>] __se_sys_mount fs/namespace.c:3861 [inline]
-    [<ffffffff816d50e1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
-    [<ffffffff84b2dfa8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-    [<ffffffff84b2dfa8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> Regards
+> Bibo Mao
+>
+> >
+> > Moreover, no need to create a vmid.c file, just putting them in main.c =
+is OK.
+> >
+> > Huacai
+> >
+> >> --
+> >> 2.27.0
+> >>
+>
