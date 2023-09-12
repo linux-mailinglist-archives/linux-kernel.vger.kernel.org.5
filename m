@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597AB79C61F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 07:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E18279C621
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 07:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjILFDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 01:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
+        id S230517AbjILFDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 01:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbjILFDA (ORCPT
+        with ESMTP id S230499AbjILFDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 01:03:00 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1053198C;
-        Mon, 11 Sep 2023 22:02:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694494957;
-        bh=X042UORL7EMfCugIAB+lsMZTtZnLrw1UoZ0/PnMHchI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FvqJYbfUpW4uO4ldv2ukZ1x7Qy7g4ibuxqP0lKDtNBnhN1sGXQPqoewpWDW4SaC1P
-         XVt5K0b77VLuShQY5ZFXx26ROlqie4L3e2OHVO0Fk68cD7fqJxlfPAH2LgbXO7vV+3
-         Vym0xZg80XVVwlv0maRgapN1BatdXCw46ej66OPlopgkHwADDHwFdPG+NlczUUJ7Xi
-         qBFGQU7USdu1YBELmD+o6jLmzyfcDbH+JbUBJSY87oNlL4m874sTray1hgmBIBb8pY
-         b3LRBqATc3PAOGdUq5IlHTwy4V7TRZdK5WBExyqzxo+6AjGqltlvaYS6vrtwZS3zdx
-         AoGma1OSUZFDQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlBKT0T7yz4wZw;
-        Tue, 12 Sep 2023 15:02:36 +1000 (AEST)
-Date:   Tue, 12 Sep 2023 15:02:32 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the bcachefs tree
-Message-ID: <20230912150232.1ab82094@canb.auug.org.au>
+        Tue, 12 Sep 2023 01:03:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB08211D;
+        Mon, 11 Sep 2023 22:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694494976; x=1726030976;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=I60HdwBlPxOrrglt4IdST/dJqZyEc8Pl4UhQ06LR5y0=;
+  b=Tp+5ilNZBiZsSO5pnue/F1RUjdbSU6zV0Zzh/9SwdM4sH4MtirlFPxXo
+   1sFHe14GILKeE5eQS55GK2gPlwjM6H7YKDuxhi5sQVe/fayaI5xrOvewj
+   1vG7xxL+/wDj/5djgAvIfLd2YOZ3tg3oioZH5fboEPOUE2vUUD9PMMTSP
+   MGSL42Z5xltA9OEUnrYESzt4y2Sgu7fz8rvFTx0T431XurmAGPBOjIkqE
+   jiHD+kHqMZ4Lab/wDNn4ie1BQ9aH5LVbfxkauMCAGSA9ZfVgvrKmXSabU
+   /8t8Aof8SGMZwXM2i2T9+3OTfID7eCyvizEHBcFc7hpVPTwcNWrCpc1FX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357712280"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="357712280"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 22:02:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746723219"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="746723219"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Sep 2023 22:02:53 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 4E1C5248; Tue, 12 Sep 2023 08:02:52 +0300 (EEST)
+Date:   Tue, 12 Sep 2023 08:02:52 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH v3 1/4] platform/x86: intel_scu_ipc: Check status after
+ timeout in busy_loop()
+Message-ID: <20230912050252.GD1599918@black.fi.intel.com>
+References: <20230911193937.302552-1-swboyd@chromium.org>
+ <20230911193937.302552-2-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TONFZer5ekrW8Hy=KMdLPrK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230911193937.302552-2-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TONFZer5ekrW8Hy=KMdLPrK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Sep 11, 2023 at 12:39:33PM -0700, Stephen Boyd wrote:
+> It's possible for the polling loop in busy_loop() to get scheduled away
+> for a long time.
+> 
+>   status = ipc_read_status(scu); // status = IPC_STATUS_BUSY
+>   <long time scheduled away>
+>   if (!(status & IPC_STATUS_BUSY))
+> 
+> If this happens, then the status bit could change while the task is
+> scheduled away and this function would never read the status again after
+> timing out. Instead, the function will return -ETIMEDOUT when it's
+> possible that scheduling didn't work out and the status bit was cleared.
+> Bit polling code should always check the bit being polled one more time
+> after the timeout in case this happens.
+> 
+> Fix this by reading the status once more after the while loop breaks.
+> The read_poll_timeout() macro implements all of this, and it is
+> shorter, so use that macro here to consolidate code and fix this.
+> 
+> There were some concerns with using read_poll_timeout() because it uses
+> timekeeping, and timekeeping isn't running early on or during the late
+> stages of system suspend or early stages of system resume, but an audit
+> of the code concluded that this code isn't called during those times so
+> it is safe to use the macro.
+> 
+> Cc: Prashant Malani <pmalani@chromium.org>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Hi all,
-
-After merging the bcachefs tree, today's linux-next build (htmldocs)
-produced this warning:
-
-include/linux/generic-radix-tree.h:206: warning: expecting prototype for ge=
-nradix_iter_peek(). Prototype was for genradix_iter_peek_prev() instead
-
-Introduced by commit
-
-  f39d409a1584 ("lib/generic-radix-tree.c: Add peek_prev()")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/TONFZer5ekrW8Hy=KMdLPrK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/8OgACgkQAVBC80lX
-0GwaHgf/eK4bAbZM5b+xaxEKWQ39UFobEQe+YhN2li9NT+dDwY1036CrQBHcNp7T
-UeagrXhhsLz5rzE71Qcrb+G5ZcgOzD4XsiQbTrqFdUjez3n6yJGV1k4FUji1u18i
-K6khPL3VPSo8+ljpjrqQ06jQ5h9O3jz4hEeM5fzBMWBYIel8HV2//V3m9h/XYJcr
-BFxOq04Ith1N2gjThuSr5ClqgjuBfK0Ta7vAxvCg+9v4k4DGH5OAQyeQZj/ladaE
-Qh4vlZxn7bLsupdmD+mWvKMlNQvrt+mHR3+b1yiNnk0tQBbSWuCNwmo7QfP7p6lQ
-RNvKakR+v9MfVbvK6hDz+HrPlJNGPg==
-=By8d
------END PGP SIGNATURE-----
-
---Sig_/TONFZer5ekrW8Hy=KMdLPrK--
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
