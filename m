@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3C279C55F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F5F79C566
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjILEyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 00:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S229988AbjILEy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjILEyE (ORCPT
+        with ESMTP id S229984AbjILEyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 00:54:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC9919A6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:52:48 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so6199991a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:52:48 -0700 (PDT)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F167619B7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:52:50 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52a40cf952dso6793834a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:52:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1694494367; x=1695099167; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1694494369; x=1695099169; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NAKzNTbLzgfAHRXdnsKRKe+RoiapOo2jvnyugHXTYOc=;
-        b=A5zJQYN52UqoLxmSRjZAee6WWzlfF1olKju9k+NXO4cDdTUbJ0COqMbBxaZVv9gOCr
-         ARUPt/bB/czYWIe+BVgRNocGNq7iTWfpOWg64aMhhSZYUGlrZ9LqmdpU4spXkVNvf1bz
-         5k+pB+HcbmFJgahiPtKiqEMROGCDctaE8YZ7s0E9DDk15Zu7W7y0fxKNPcAg6gWF0EFz
-         YOOS9XvQce9X52zJw25o1yyz+57HsAsm+hAZwDKO5fwjwxH1bB3xeMNgdYNBw1Nri041
-         YG1q4NKPxeqm/2nmaR2j5FoMxTXXoJsZUFTYi3HK3AaZLgh+vtS49ZSY1SA2dTEUd7lx
-         espg==
+        bh=NO1m8klgdJ3la3lwA5G1PIBkW+KdOrEMqx0TRLTuKy4=;
+        b=q4QUpu00UTPi2SSD1eKD0v8/A3VpSSioZaomc9F/xbIydk1ltU9QVD+Jt/8ISEEizG
+         mYBmepDPujKgqN3IujODaWkcH2uQnk+DkaEG9n8m06jhFTQlJaz8Ia8O/5S8jnwJuw8s
+         u8frzRruc0SrIkeiKagM1yOZikOeNgoCy5FOeAVXVOjV6UH/60DyierzigvVnYq4hH+4
+         9Shn13rLUIvOCZN5CxkW+3FrDR/74ElzoJ8QOKnMpsWB/oAzeDmYRk3fWwcG9KxANER6
+         7QKP6MUiFDkxuVBWJR7/UW58Ul/GC3bcnP61JQbtVGff7EkcKpxH1+NJvsPCyvtIrhyF
+         cMjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694494367; x=1695099167;
+        d=1e100.net; s=20230601; t=1694494369; x=1695099169;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NAKzNTbLzgfAHRXdnsKRKe+RoiapOo2jvnyugHXTYOc=;
-        b=qno+MuR3CQxkmsHZqIGrL2S8KBVkzi0GaV4JLheIlOB/tu+oUoC04jdGiJzOi1k0xQ
-         1mAz0UTYVWRuqyuO1PXhJFXAByp0EbkMqs0s84ScKOAFtklftCeUt4UTGl6XwXuDEhuO
-         zyadRsXeP9xFDvoVHvfTzbOmOK5ksehDEceBtfd7WcW4EmTzSKIy9D2myxMAOcISuORi
-         jchks+bhPcbdh2q13V2mADOe0CXpkST/Jv+3X0mlIUEP6eHgV3HTDt3m4SVXzc0B1GEH
-         D9q5tLVeh3SPNsRoWKupM9KyLQWAvdKxbLJs6MGMneWT2NiSuHEAVEkXVJipJqddMJWU
-         sIrA==
-X-Gm-Message-State: AOJu0YyHb2349QRmhV47AzrS6+xoI7BiU60mqnQkvyZISf8CVT/3eYaW
-        MYXrQYLdYkW6BnBNRDQgIyD9Uw==
-X-Google-Smtp-Source: AGHT+IHbBiCW5+2oyUrY79stp2q5q5fLR4ZrMDANH3Hb0eBVLnJv5YMHustdDuw874VCDX2s8efWsA==
-X-Received: by 2002:a50:fa8e:0:b0:52e:585a:e94 with SMTP id w14-20020a50fa8e000000b0052e585a0e94mr8790647edr.2.1694494367488;
-        Mon, 11 Sep 2023 21:52:47 -0700 (PDT)
+        bh=NO1m8klgdJ3la3lwA5G1PIBkW+KdOrEMqx0TRLTuKy4=;
+        b=n2BL2fzSwDJSCT8qyxEsWZ4bz6iBesU/G3/ODfdyWAN4i7Xw/OBXt7lRWM65ZO76Us
+         6ymue2w9ySl2zpdjuWcMJQEc5wBkcZy8ZAUO/vgXCbeLybIPw23ZusK+kJG2upE3m4E6
+         a6vkmfqiRZaW8bTOZkJ/e9F+k0PxPsB8rIv9aHbrpGDFwnKUZkyrbdgQR9ev/IbxXx3f
+         8DWhZrexYPq44Aug5aU9qLR63Ae67npYCS4HW5pJt08Ewd6qyD0bIM0d+lfOuiIJR0GL
+         Pro4Jp05F920nOy+z/eamKECxQT78ruJMfpLRzUz9sQC5CikY5ZWSS/oTbhPp0qsU3Vq
+         F9IQ==
+X-Gm-Message-State: AOJu0YwzPlJDhXN+f+iu5AZV7u3XWptXBnebbedwSqqa7Lz3kwexxgqO
+        mOuajWqjOOMaJk/PWy4IrLdoAg==
+X-Google-Smtp-Source: AGHT+IECyDtEVHdzRuPaavxSRzCV7z3HcaRShxw/H814fY1bi7YeoyBypsCYMgK7dkybwGKvBN6iOw==
+X-Received: by 2002:aa7:d343:0:b0:522:2711:873 with SMTP id m3-20020aa7d343000000b0052227110873mr10392454edr.1.1694494369479;
+        Mon, 11 Sep 2023 21:52:49 -0700 (PDT)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id f21-20020a05640214d500b0051e22660835sm5422415edx.46.2023.09.11.21.52.45
+        by smtp.gmail.com with ESMTPSA id f21-20020a05640214d500b0051e22660835sm5422415edx.46.2023.09.11.21.52.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 21:52:47 -0700 (PDT)
+        Mon, 11 Sep 2023 21:52:49 -0700 (PDT)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
@@ -68,9 +68,9 @@ Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 15/37] clk: renesas: rzg2l: add support for RZ/G3S PLL
-Date:   Tue, 12 Sep 2023 07:51:35 +0300
-Message-Id: <20230912045157.177966-16-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 16/37] clk: renesas: rzg2l: add struct clk_hw_data
+Date:   Tue, 12 Sep 2023 07:51:36 +0300
+Message-Id: <20230912045157.177966-17-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
@@ -82,110 +82,126 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Add support for reading the frequency of PLL1/4/6 available on RZ/G3S.
-The computation formula for PLL frequency is as follows:
-Fout = (nir + nfr / 4096) * Fin / (mr * pr)
+Add clk_hw_data struct that keeps the core part of a clock data. The
+sd_hw_data embeds a member of type struct clk_hw_data along with other
+members (in the next commits). This commit prepares the field for
+refactoring the SD MUX clock driver.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- drivers/clk/renesas/rzg2l-cpg.c | 44 ++++++++++++++++++++++++++++++---
- drivers/clk/renesas/rzg2l-cpg.h |  3 +++
- 2 files changed, 43 insertions(+), 4 deletions(-)
+ drivers/clk/renesas/rzg2l-cpg.c | 52 +++++++++++++++++++++------------
+ 1 file changed, 34 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/clk/renesas/rzg2l-cpg.c b/drivers/clk/renesas/rzg2l-cpg.c
-index 50f69bbe1a6e..638501e493e2 100644
+index 638501e493e2..120bc8d51691 100644
 --- a/drivers/clk/renesas/rzg2l-cpg.c
 +++ b/drivers/clk/renesas/rzg2l-cpg.c
-@@ -718,11 +718,43 @@ static const struct clk_ops rzg2l_cpg_pll_ops = {
- 	.recalc_rate = rzg2l_cpg_pll_clk_recalc_rate,
+@@ -58,13 +58,29 @@
+ 
+ #define MAX_VCLK_FREQ		(148500000)
+ 
+-struct sd_hw_data {
++/**
++ * struct clk_hw_data - clock hardware data
++ * @hw: clock hw
++ * @conf: clock configuration (register offset, shift, width)
++ * @priv: CPG private data structure
++ */
++struct clk_hw_data {
+ 	struct clk_hw hw;
+ 	u32 conf;
+ 	struct rzg2l_cpg_priv *priv;
  };
  
-+static unsigned long rzg3s_cpg_pll_clk_recalc_rate(struct clk_hw *hw,
-+						   unsigned long parent_rate)
-+{
-+	struct pll_clk *pll_clk = to_pll(hw);
-+	struct rzg2l_cpg_priv *priv = pll_clk->priv;
-+	u32 nir, nfr, mr, pr, val;
-+	u64 rate;
+-#define to_sd_hw_data(_hw)	container_of(_hw, struct sd_hw_data, hw)
++#define to_clk_hw_data(_hw)	container_of(_hw, struct clk_hw_data, hw)
 +
-+	if (pll_clk->type != CLK_TYPE_G3S_SAM_PLL)
-+		return parent_rate;
-+
-+	val = readl(priv->base + GET_REG_SAMPLL_CLK1(pll_clk->conf));
-+
-+	pr = 1 << FIELD_GET(GENMASK(28, 26), val);
-+	/* Hardware interprets values higher than 8 as p = 16. */
-+	if (pr > 8)
-+		pr = 16;
-+
-+	mr  = FIELD_GET(GENMASK(25, 22), val) + 1;
-+	nir = FIELD_GET(GENMASK(21, 13), val) + 1;
-+	nfr = FIELD_GET(GENMASK(12, 1), val);
-+
-+	rate = DIV_ROUND_CLOSEST_ULL((u64)parent_rate * nfr, 4096);
-+	rate += (u64)parent_rate * nir;
-+	return DIV_ROUND_CLOSEST_ULL(rate, (mr + pr));
-+}
-+
-+static const struct clk_ops rzg3s_cpg_pll_ops = {
-+	.recalc_rate = rzg3s_cpg_pll_clk_recalc_rate,
++/**
++ * struct sd_hw_data - SD clock hardware data
++ * @hw_data: clock hw data
++ */
++struct sd_hw_data {
++	struct clk_hw_data hw_data;
 +};
 +
- static struct clk * __init
- rzg2l_cpg_pll_clk_register(const struct cpg_core_clk *core,
- 			   struct clk **clks,
- 			   void __iomem *base,
--			   struct rzg2l_cpg_priv *priv)
-+			   struct rzg2l_cpg_priv *priv,
-+			   const struct clk_ops *ops)
++#define to_sd_hw_data(_hw)	container_of(_hw, struct sd_hw_data, hw_data)
+ 
+ struct rzg2l_pll5_param {
+ 	u32 pl5_fracin;
+@@ -183,10 +199,10 @@ rzg2l_cpg_mux_clk_register(const struct cpg_core_clk *core,
+ 
+ static int rzg2l_cpg_sd_clk_mux_set_parent(struct clk_hw *hw, u8 index)
  {
- 	struct device *dev = priv->dev;
- 	const struct clk *parent;
-@@ -740,7 +772,7 @@ rzg2l_cpg_pll_clk_register(const struct cpg_core_clk *core,
+-	struct sd_hw_data *hwdata = to_sd_hw_data(hw);
+-	struct rzg2l_cpg_priv *priv = hwdata->priv;
+-	u32 off = GET_REG_OFFSET(hwdata->conf);
+-	u32 shift = GET_SHIFT(hwdata->conf);
++	struct clk_hw_data *clk_hw_data = to_clk_hw_data(hw);
++	struct rzg2l_cpg_priv *priv = clk_hw_data->priv;
++	u32 off = GET_REG_OFFSET(clk_hw_data->conf);
++	u32 shift = GET_SHIFT(clk_hw_data->conf);
+ 	const u32 clk_src_266 = 2;
+ 	u32 msk, val, bitmask;
+ 	unsigned long flags;
+@@ -203,7 +219,7 @@ static int rzg2l_cpg_sd_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+ 	 * The clock mux has 3 input clocks(533 MHz, 400 MHz, and 266 MHz), and
+ 	 * the index to value mapping is done by adding 1 to the index.
+ 	 */
+-	bitmask = (GENMASK(GET_WIDTH(hwdata->conf) - 1, 0) << shift) << 16;
++	bitmask = (GENMASK(GET_WIDTH(clk_hw_data->conf) - 1, 0) << shift) << 16;
+ 	spin_lock_irqsave(&priv->rmw_lock, flags);
+ 	if (index != clk_src_266) {
+ 		writel(bitmask | ((clk_src_266 + 1) << shift), priv->base + off);
+@@ -233,12 +249,12 @@ static int rzg2l_cpg_sd_clk_mux_set_parent(struct clk_hw *hw, u8 index)
  
- 	parent_name = __clk_get_name(parent);
+ static u8 rzg2l_cpg_sd_clk_mux_get_parent(struct clk_hw *hw)
+ {
+-	struct sd_hw_data *hwdata = to_sd_hw_data(hw);
+-	struct rzg2l_cpg_priv *priv = hwdata->priv;
+-	u32 val = readl(priv->base + GET_REG_OFFSET(hwdata->conf));
++	struct clk_hw_data *clk_hw_data = to_clk_hw_data(hw);
++	struct rzg2l_cpg_priv *priv = clk_hw_data->priv;
++	u32 val = readl(priv->base + GET_REG_OFFSET(clk_hw_data->conf));
+ 
+-	val >>= GET_SHIFT(hwdata->conf);
+-	val &= GENMASK(GET_WIDTH(hwdata->conf) - 1, 0);
++	val >>= GET_SHIFT(clk_hw_data->conf);
++	val &= GENMASK(GET_WIDTH(clk_hw_data->conf) - 1, 0);
+ 
+ 	return val ? --val : val;
+ }
+@@ -254,17 +270,17 @@ rzg2l_cpg_sd_mux_clk_register(const struct cpg_core_clk *core,
+ 			      void __iomem *base,
+ 			      struct rzg2l_cpg_priv *priv)
+ {
+-	struct sd_hw_data *clk_hw_data;
++	struct sd_hw_data *sd_hw_data;
+ 	struct clk_init_data init;
+ 	struct clk_hw *clk_hw;
+ 	int ret;
+ 
+-	clk_hw_data = devm_kzalloc(priv->dev, sizeof(*clk_hw_data), GFP_KERNEL);
+-	if (!clk_hw_data)
++	sd_hw_data = devm_kzalloc(priv->dev, sizeof(*sd_hw_data), GFP_KERNEL);
++	if (!sd_hw_data)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	clk_hw_data->priv = priv;
+-	clk_hw_data->conf = core->conf;
++	sd_hw_data->hw_data.priv = priv;
++	sd_hw_data->hw_data.conf = core->conf;
+ 
  	init.name = core->name;
--	init.ops = &rzg2l_cpg_pll_ops;
-+	init.ops = ops;
- 	init.flags = 0;
- 	init.parent_names = &parent_name;
- 	init.num_parents = 1;
-@@ -835,8 +867,12 @@ rzg2l_cpg_register_core_clk(const struct cpg_core_clk *core,
- 						core->mult, div);
- 		break;
- 	case CLK_TYPE_SAM_PLL:
--		clk = rzg2l_cpg_pll_clk_register(core, priv->clks,
--						 priv->base, priv);
-+		clk = rzg2l_cpg_pll_clk_register(core, priv->clks, priv->base, priv,
-+						 &rzg2l_cpg_pll_ops);
-+		break;
-+	case CLK_TYPE_G3S_SAM_PLL:
-+		clk = rzg2l_cpg_pll_clk_register(core, priv->clks, priv->base, priv,
-+						 &rzg3s_cpg_pll_ops);
- 		break;
- 	case CLK_TYPE_SIPLL5:
- 		clk = rzg2l_cpg_sipll5_register(core, priv->clks, priv);
-diff --git a/drivers/clk/renesas/rzg2l-cpg.h b/drivers/clk/renesas/rzg2l-cpg.h
-index 0b28870a6f9d..16f7a1872814 100644
---- a/drivers/clk/renesas/rzg2l-cpg.h
-+++ b/drivers/clk/renesas/rzg2l-cpg.h
-@@ -102,6 +102,7 @@ enum clk_types {
- 	CLK_TYPE_IN,		/* External Clock Input */
- 	CLK_TYPE_FF,		/* Fixed Factor Clock */
- 	CLK_TYPE_SAM_PLL,
-+	CLK_TYPE_G3S_SAM_PLL,
+ 	init.ops = &rzg2l_cpg_sd_clk_mux_ops;
+@@ -272,7 +288,7 @@ rzg2l_cpg_sd_mux_clk_register(const struct cpg_core_clk *core,
+ 	init.num_parents = core->num_parents;
+ 	init.parent_names = core->parent_names;
  
- 	/* Clock with divider */
- 	CLK_TYPE_DIV,
-@@ -129,6 +130,8 @@ enum clk_types {
- 	DEF_TYPE(_name, _id, _type, .parent = _parent)
- #define DEF_SAMPLL(_name, _id, _parent, _conf) \
- 	DEF_TYPE(_name, _id, CLK_TYPE_SAM_PLL, .parent = _parent, .conf = _conf)
-+#define DEF_G3S_SAMPLL(_name, _id, _parent, _conf) \
-+	DEF_TYPE(_name, _id, CLK_TYPE_G3S_SAM_PLL, .parent = _parent, .conf = _conf)
- #define DEF_INPUT(_name, _id) \
- 	DEF_TYPE(_name, _id, CLK_TYPE_IN)
- #define DEF_FIXED(_name, _id, _parent, _mult, _div) \
+-	clk_hw = &clk_hw_data->hw;
++	clk_hw = &sd_hw_data->hw_data.hw;
+ 	clk_hw->init = &init;
+ 
+ 	ret = devm_clk_hw_register(priv->dev, clk_hw);
 -- 
 2.39.2
 
