@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA4E79D5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD36879D5D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234679AbjILQIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
+        id S232199AbjILQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbjILQIF (ORCPT
+        with ESMTP id S236619AbjILQIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:08:05 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C2C10DE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1694534872; bh=TFmefhI42+iEoIzW3KV4n3E64ZgbD2Bt6Pu49+Cq3KI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=I1ZyuG9eQf11TP1UkUssDs+Gyc52kAf/WXj0GYJioqhOhOi10GTZG0fKgipKtifC6
-         NGwF8Vro2VKtCrinWCsfUqeeF6Jm5XJM4eB5kH37O6oY5rREm58V6oHdvF8hIoJmHE
-         YyW12f6HeBdda1bDQm+YMRl5P1uU1oBvyH2EQgWY=
-Received: from [192.168.9.172] (unknown [101.88.25.36])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id E9C9160112;
-        Wed, 13 Sep 2023 00:07:51 +0800 (CST)
-Message-ID: <b96c53eb-3c6f-d981-7573-10b95c3005a2@xen0n.name>
-Date:   Wed, 13 Sep 2023 00:07:51 +0800
+        Tue, 12 Sep 2023 12:08:39 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1486210EF;
+        Tue, 12 Sep 2023 09:08:25 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CBetvv018629;
+        Tue, 12 Sep 2023 16:08:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=Aqahmc+bVHOGCDFIrrRq/ENM69VGlp2R1Md1o2dov3I=;
+ b=ILAEis0/NXcbjSXKVAp06HbwxEj3iq4SYhV6V2fwJe/t3cX2UvH4HP4hSB8IFVzkbFHw
+ tl/CRHADjDp7VKACZCCBs1IZICoo7F03qg10dwwIgeOQahWzvbPDFlBrWxKWuHwCCEg8
+ OlvZVHNgVlLdzit5lK2ePBVxdRpn/T7o8Xw2rjpk9ajJHyHb75x3Fch5S6Ugbm/fKc5a
+ UhBmL8voQj9HR6LqpDT3MSiR5PxN+MQNhi+60/Wlu2XZBcqnj4KpPhxKu5/au+uDQijJ
+ C5m2oXPKi6eTUHjyejzAYS1PQBDXDDPZfzZ0LLaTN016QTEupmQSJrl3fzLGQQtCyaHl XA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t29b0jpu0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 16:08:19 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CG8ILA029750
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 16:08:18 GMT
+Received: from car-linux11.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 12 Sep 2023 09:08:16 -0700
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+To:     <quic_tsoni@quicinc.com>
+CC:     <agross@kernel.org>, <andersson@kernel.org>, <kernel@quicinc.com>,
+        <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <psodagud@quicinc.com>,
+        <quic_aneelaka@quicinc.com>, <quic_kprasan@quicinc.com>,
+        <quic_ninanaik@quicinc.com>, <quic_ppareek@quicinc.com>,
+        Nikunj Kela <quic_nkela@quicinc.com>
+Subject: Re: [RFC PATCH 0/1] Add driver to read secondary bootloader (XBL) log
+Date:   Tue, 12 Sep 2023 09:08:00 -0700
+Message-ID: <20230912160800.39412-1-quic_nkela@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <0abc0e3b-077c-d7b9-e561-2c2e01d46540@quicinc.com>
+References: <0abc0e3b-077c-d7b9-e561-2c2e01d46540@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] LoongArch: Set all reserved memblocks on Node#0 at
- initialization
-To:     Huacai Chen <chenhuacai@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        WANG Xuerui <git@xen0n.name>
-References: <20230911092810.3108092-1-chenhuacai@loongson.cn>
-Content-Language: en-US
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <20230911092810.3108092-1-chenhuacai@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kPYhFezR5uobgSaJqBFsct2vTTKS1VdV
+X-Proofpoint-ORIG-GUID: kPYhFezR5uobgSaJqBFsct2vTTKS1VdV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_15,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=430
+ lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120134
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 17:28, Huacai Chen wrote:
-> After commit 61167ad5fecdea ("mm: pass nid to reserve_bootmem_region()")
-> we get a panic if DEFERRED_STRUCT_PAGE_INIT is enabled:
->
-> [snip]
->
-> The reason is early memblock_reserve() in memblock_init() set node id
-Why is it that only "early" but not "late" memblock_reserve() matters? I 
-failed to see the reason because the arch-specific memblock_init() isn't 
-even in the backtrace, which means that *neither* is the culprit.
-> to MAX_NUMNODES, which causes NODE_DATA(nid) be a NULL dereference in
-"making NODE_DATA(nid) a NULL ..."
-> reserve_bootmem_region() -> init_reserved_page(). So set all reserved
-> memblocks on Node#0 at initialization to avoid this panic.
->
-> Reported-by: WANG Xuerui <git@xen0n.name>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->   arch/loongarch/kernel/mem.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/loongarch/kernel/mem.c b/arch/loongarch/kernel/mem.c
-> index 4a4107a6a965..aed901c57fb4 100644
-> --- a/arch/loongarch/kernel/mem.c
-> +++ b/arch/loongarch/kernel/mem.c
-> @@ -50,7 +50,6 @@ void __init memblock_init(void)
->   	}
->   
->   	memblock_set_current_limit(PFN_PHYS(max_low_pfn));
-> -	memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
->   
->   	/* Reserve the first 2MB */
->   	memblock_reserve(PHYS_OFFSET, 0x200000);
-> @@ -58,4 +57,7 @@ void __init memblock_init(void)
->   	/* Reserve the kernel text/data/bss */
->   	memblock_reserve(__pa_symbol(&_text),
->   			 __pa_symbol(&_end) - __pa_symbol(&_text));
-> +
-> +	memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
-> +	memblock_set_node(0, PHYS_ADDR_MAX, &memblock.reserved, 0);
-So the reordering is for being able to override the newly added 
-memblocks' nids to 0, and additionally doing the same for 
-memblock.reserved is the actual fix. Looks okay.
->   }
+From: Nikunj Kela <quic_nkela@quicinc.com
 
-And I've tested the patch on the 2-way 3C5000L server, and it now 
-correctly boots with deferred struct page init enabled. Thanks for 
-providing such a quick fix!
-
-Tested-by: WANG Xuerui <git@xen0n.name>
-Reviewed-by: WANG Xuerui <git@xen0n.name>  # with nits addressed
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+I was planning something similar for dumping firmware VM's logs. These are in
+ascii format too hence doesn't require any parsing/post processing. Can this
+be little generic so I can use this driver?
