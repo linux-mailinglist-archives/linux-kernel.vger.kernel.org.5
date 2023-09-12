@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B2179D127
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8C179D12E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbjILMeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        id S235189AbjILMhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235141AbjILMeH (ORCPT
+        with ESMTP id S235141AbjILMhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:34:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F9F9F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:34:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5TCd/VnMsUN2Xfg7sAjE+O/bMQ8NXxyvyk4g9OIV6gs=; b=jN91iTAqHkXMEwG5tjKOoJZgTs
-        h7vfBm5tgEKymnY709XBHN6mXRzvLY/RlK/iuwQAGWcRCencHAXvRSky1n6i1Uv50iT5FLCvg0Fh+
-        uXjVCE/AfhgtLUGLP3l0T093oMiiknWbssPvbdav0lBxkpRDzjTrfkNAkJUiVQxdScB0qcyFmbKWb
-        FsFaOhd/SNYgy6D8xM4TJ9wLrhfw8ef0uLRzXQzBiO8XuQAsQa/nHzgvYC69c3o5S3c8+M/tFrltU
-        kqD7tmmP9zddhY5e5QeeiMaKEr7AWnFJyzVuSAJ0xAgpMLFM3NRioZznpcsyjEQoE5uZU8eNk5QBn
-        HJFfpCTw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qg2aa-007aMi-Jz; Tue, 12 Sep 2023 12:33:56 +0000
-Date:   Tue, 12 Sep 2023 13:33:56 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-        rostedt@goodmis.org, tglx@linutronix.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com
-Subject: Re: [PATCH v2 7/9] sched: define TIF_ALLOW_RESCHED
-Message-ID: <ZQBatDtDrahkk+qO@casper.infradead.org>
-References: <20230908070258.GA19320@noisy.programming.kicks-ass.net>
- <87zg1v3xxh.fsf@oracle.com>
- <CAHk-=whagwHrDxhjUVrRPhq78YC195KrSGzuC722-4MvAz40pw@mail.gmail.com>
- <87edj64rj1.fsf@oracle.com>
- <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
- <87zg1u1h5t.fsf@oracle.com>
- <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+        Tue, 12 Sep 2023 08:37:06 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6CE7C4;
+        Tue, 12 Sep 2023 05:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1694522222; x=1726058222;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P01cDTSVf7ckurQxFxyjwgb5uJRiP/96u6vP0AxPKWE=;
+  b=Kj2bW/PqFmxRkfe2OWLJvr8dJcThJsOCgAx5/nHIvVmag5WCKs08C7aB
+   gIdzpwzWGZPvQyMeWPAPuUYnRvRvA8s/WaDxztyZXKmtc8Kqyuppv/DtX
+   8FhlhuET7Ymh33LYuNJl/0W/NzPDi+iXeMujOuOV8qAKQqh4dotJdliZ8
+   yqsiBbAo06TwHefJ7EpMtdK6Jt/xQ6ZBJjldwxMYJbZ+Ac0B12WZ8IQ9Z
+   LrzJsVaQg2IOH+WsYVNAsFy31NDEcqh+y7fO73uROYNLmyUyLFE44+BnS
+   E9NV6k31R4XSqDgRLoEzzrgToryIMkhp67rHLs1+sxtjBxhmKVCiNZ1Ty
+   Q==;
+X-CSE-ConnectionGUID: 0sNE4ZAsR22nJG2L44lBOA==
+X-CSE-MsgGUID: 5nIlT3dOTH2q3yTVJBRicw==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="asc'?scan'208";a="171179025"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Sep 2023 05:36:49 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 12 Sep 2023 05:36:41 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Tue, 12 Sep 2023 05:36:38 -0700
+Date:   Tue, 12 Sep 2023 13:36:22 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.4 000/737] 6.4.16-rc1 review
+Message-ID: <20230912-patchy-banknote-0982b6f505c2@wendy>
+References: <20230911134650.286315610@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="lqmFod006FlLWkrC"
 Content-Disposition: inline
-In-Reply-To: <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:26:06AM +0200, Peter Zijlstra wrote:
-> > How expensive would be always having PREEMPT_COUNT=y?
-> 
-> Effectively I think that is true today. At the very least Debian and
-> SuSE (I can't find a RHEL .config in a hurry but I would think they too)
-> ship with PREEMPT_DYNAMIC=y.
+--lqmFod006FlLWkrC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-$ grep PREEMPT uek-rpm/ol9/config-x86_64
-# CONFIG_PREEMPT_NONE is not set
-CONFIG_PREEMPT_VOLUNTARY=y
-# CONFIG_PREEMPT is not set
-CONFIG_HAVE_PREEMPT_DYNAMIC=y
-CONFIG_PREEMPT_NOTIFIERS=y
-CONFIG_DRM_I915_PREEMPT_TIMEOUT=640
-# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+On Mon, Sep 11, 2023 at 03:37:39PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.16 release.
+> There are 737 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-$ grep PREEMPT uek-rpm/ol9/config-aarch64
-# CONFIG_PREEMPT_NONE is not set
-CONFIG_PREEMPT_VOLUNTARY=y
-# CONFIG_PREEMPT is not set
-CONFIG_PREEMPT_NOTIFIERS=y
-# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
+Thanks.,
+Conor.
+
+--lqmFod006FlLWkrC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQBbRgAKCRB4tDGHoIJi
+0k7qAP9LyrhUha+vdg2Rj87nVD/4UPAd7+dYX8wHBH+qPyhUNwEAtkFzqq3VQr8y
+2pdlezoiRm3eVNsCXG/ViFe78qr92QU=
+=altQ
+-----END PGP SIGNATURE-----
+
+--lqmFod006FlLWkrC--
