@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7755579D490
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B9E79D491
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbjILPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S236279AbjILPPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235748AbjILPPl (ORCPT
+        with ESMTP id S236002AbjILPPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 11:15:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7E612E;
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A071BB;
         Tue, 12 Sep 2023 08:15:37 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 15:15:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694531735;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6BA9ZKtT0aHe5e3qMEBNzLmWzYUXRj7Y7VShceSJve8=;
-        b=HHQZMT8dNPjtgGXmkNo4IQU5gdwvp4W35HMijNmyAoHxp1ckfDFFWJjTEeGC016Qx5BtwQ
-        sVtFKnTaHvcSD72rZPyKTk6yq5906WXohUEeBvbnaxdRiAxK2Pseh2NFcqHDpXThEQ6sJK
-        YjCRJ/9kS+7sEzYavaWlrz98EKGWKpsGRsAdLPnM1ZA8jEos8Ilg+T3V5a6NUZ+aBg0SGh
-        9sAm3g7Lplx3g32bePhfJcGFFa0hNBUihauZGqNgaH6Z7aUmL3DqSqSszP268wGal6GE3U
-        sZPhvgvlB1zAaHn6BamSo/vGubnS544XUzPy9ZeXj4+IxPI4QAQu873tl9pxaQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694531735;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6BA9ZKtT0aHe5e3qMEBNzLmWzYUXRj7Y7VShceSJve8=;
-        b=JviQWbSrlIFhCbUAT8mYU5SuZI9jfFJ5i1JHGBOaLTpMD/qA8Ys5JEOueIdaQZfiYqlooz
-        Ypg5E4xPWpG5tgDg==
-From:   "tip-bot2 for Ricardo Neri" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] x86/sched: Restore the SD_ASYM_PACKING flag in
- the DIE domain
-Cc:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Caleb Callaway <caleb.callaway@intel.com>, x86@kernel.org,
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DA55C433C7;
+        Tue, 12 Sep 2023 15:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694531737;
+        bh=OG76LHlfGJHYkxKaHllr4SLoZMBHB960bsox/kYXmQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oo+6QA32tcA7Rmixlq1ZvNMqSHv0isoNpqQxy0GgmprY4fbhbLrRgt8ivlBvhAxAU
+         8IxOb8YTUm3dF83yoL4BRsbMd6Oo5o7cgCzx/z1+X9yiQeW4VEmC0LGXLp8WEhQIrd
+         xpEZrCq8cQ6AsyhmEHJreKu+jBAaTxCWPw+UNdr9bCjofTpyuD02HNgyCs941vrpHd
+         Fotvc546EVqSP6hZHZnOsr82LMl1s2a01zSj7xUS2bO8VCRqjf7gzzBn1l8oqQf5WL
+         LmfagrNExrgb5aBz4J5A19Xq1BewVm3hJ1+3woCMwkhmXyhBgJ2fR2fbio+bs44XHH
+         uqk3mQX+JlxAw==
+Received: (nullmailer pid 814342 invoked by uid 1000);
+        Tue, 12 Sep 2023 15:15:35 -0000
+Date:   Tue, 12 Sep 2023 10:15:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Joerg Schambacher <joerg.hifiberry@gmail.com>
+Cc:     a-krasser@ti.com, joerg@hifiberry.com,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230815035747.11529-1-ricardo.neri-calderon@linux.intel.com>
-References: <20230815035747.11529-1-ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
+Message-ID: <20230912151535.GA812148-robh@kernel.org>
+References: <20230907160851.14241-1-joerg.hifiberry@gmail.com>
 MIME-Version: 1.0
-Message-ID: <169453173405.27769.6423819752573472154.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907160851.14241-1-joerg.hifiberry@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On Thu, Sep 07, 2023 at 06:08:51PM +0200, Joerg Schambacher wrote:
+> The TAS5754/6 power amplifiers use the same pcm512x driver with
+> only minor restictions described in the bindings document.
+> 
+> Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
+> ---
+>  .../devicetree/bindings/sound/pcm512x.txt     | 22 +++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
+> index 3aae3b41bd8e..b16cd0463695 100644
+> --- a/Documentation/devicetree/bindings/sound/pcm512x.txt
+> +++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
+> @@ -1,12 +1,12 @@
+> -PCM512x audio CODECs
+> +PCM512x and TAS575x audio CODECs/amplifiers
+>  
+>  These devices support both I2C and SPI (configured with pin strapping
+> -on the board).
+> +on the board). The TAS575x devices only support I2C.
+>  
+>  Required properties:
+>  
+> -  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
+> -                 "ti,pcm5142"
+> +  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
+> +                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
+>  
+>    - reg : the I2C address of the device for I2C, the chip select
+>            number for SPI.
+> @@ -25,6 +25,7 @@ Optional properties:
+>      through <6>.  The device will be configured for clock input on the
+>      given pll-in pin and PLL output on the given pll-out pin.  An
+>      external connection from the pll-out pin to the SCLK pin is assumed.
+> +    Caution: the TAS-desvices only support gpios 1,2 and 3
+>  
+>  Examples:
+>  
+> @@ -50,3 +51,16 @@ Examples:
+>  		pll-in = <3>;
+>  		pll-out = <6>;
+>  	};
+> +
+> +	tas5756: tas5756@4f {
+> +		compatible = "ti,tas5756";
 
-Commit-ID:     c7d1d6e2b9e555d18d5e742fa67a16a0f36ef8d6
-Gitweb:        https://git.kernel.org/tip/c7d1d6e2b9e555d18d5e742fa67a16a0f36ef8d6
-Author:        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-AuthorDate:    Mon, 14 Aug 2023 20:57:47 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Tue, 12 Sep 2023 17:07:34 +02:00
+Is there anything new here? Just a different compatible doesn't justify 
+another example.
 
-x86/sched: Restore the SD_ASYM_PACKING flag in the DIE domain
+With that dropped,
 
-Commit 8f2d6c41e5a6 ("x86/sched: Rewrite topology setup") dropped the
-SD_ASYM_PACKING flag in the DIE domain added in commit 044f0e27dec6
-("x86/sched: Add the SD_ASYM_PACKING flag to the die domain of hybrid
-processors"). Restore it on hybrid processors.
-
-The die-level domain does not depend on any build configuration and now
-x86_sched_itmt_flags() is always needed. Remove the build dependency on
-CONFIG_SCHED_[SMT|CLUSTER|MC].
-
-Fixes: 8f2d6c41e5a6 ("x86/sched: Rewrite topology setup")
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Chen Yu <yu.c.chen@intel.com>
-Tested-by: Caleb Callaway <caleb.callaway@intel.com>
-Link: https://lkml.kernel.org/r/20230815035747.11529-1-ricardo.neri-calderon@linux.intel.com
----
- arch/x86/kernel/smpboot.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index d40ed3a..266d05e 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -579,7 +579,6 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
- }
- 
- 
--#if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_CLUSTER) || defined(CONFIG_SCHED_MC)
- static inline int x86_sched_itmt_flags(void)
- {
- 	return sysctl_sched_itmt_enabled ? SD_ASYM_PACKING : 0;
-@@ -603,7 +602,14 @@ static int x86_cluster_flags(void)
- 	return cpu_cluster_flags() | x86_sched_itmt_flags();
- }
- #endif
--#endif
-+
-+static int x86_die_flags(void)
-+{
-+	if (cpu_feature_enabled(X86_FEATURE_HYBRID_CPU))
-+	       return x86_sched_itmt_flags();
-+
-+	return 0;
-+}
- 
- /*
-  * Set if a package/die has multiple NUMA nodes inside.
-@@ -640,7 +646,7 @@ static void __init build_sched_topology(void)
- 	 */
- 	if (!x86_has_numa_in_package) {
- 		x86_topology[i++] = (struct sched_domain_topology_level){
--			cpu_cpu_mask, SD_INIT_NAME(DIE)
-+			cpu_cpu_mask, x86_die_flags, SD_INIT_NAME(DIE)
- 		};
- 	}
- 
+Reviewed-by: Rob Herring <robh@kernel.org>
