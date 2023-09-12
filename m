@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC40179D5FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5156C79D5FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjILQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        id S236487AbjILQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbjILQP2 (ORCPT
+        with ESMTP id S233918AbjILQP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:15:28 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2D510E5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:15:24 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b52554914so52020557b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694535323; x=1695140123; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=J4cYw5IPScCbBIBQLEMtcScQA2dnbp2DfUfUQiEYgc4=;
-        b=1MmDPyYv2dsBneuZehtOCGmYZDje36EbYCHw+OhxK8zOgJlfUEXpasVS5Kn6xUdeuq
-         FbgZh1qSomPbLnYyymBnxpSAd1/KsiYbWJfIqGeCGmnImWJ8DotgahEN+ci4tbAZmy/N
-         GaT2WOgb8PCYYxKq4UW97QoDtwFUiq/l0MiOyeenlBxVr4TIm+nTIQ3NfATdC2HShSK8
-         nphDHCnaaP32C/1LcNPQ1+1GwJqyOIYHCF5K3AggPLO0b8ve3gGjbRLxFlPLQb/o+TWx
-         H9fQk4kpHizRlZ1oLWuk2WFJSoNqm/+pJDnBTDyq0OJBmCPWi/SyVP8lo0yD09dzlo2D
-         dwVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694535323; x=1695140123;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J4cYw5IPScCbBIBQLEMtcScQA2dnbp2DfUfUQiEYgc4=;
-        b=cW2Y4pPvIPSD9XB86SXdt6xii233UXuvZeY57dCq4hDlVp5fUlFyP7ofL5ia6peq7g
-         LDwZJkwXd9co/udiaSDVYJ4LkZtnTQ4gJ7VhOViuZk8VB1bPqRQWo3swwoEb21ioGKtP
-         BYgUQqwFJWPxbl7I0UL9wqurp7IQZOOx04wefZC0UlN6SMJjdHlOAo8GAmoVvHlHHomI
-         dHqZc7yr2P54qvibK0Ar/woymYlqOqfuLXYMOi59M1T0Def17aXxo9QkucoDmZnwj+rY
-         QKmky75W9uA5UjiH9Mo5jNNKcyUiUbrKkkJs/4cYZb5r/qqrvVDbWu9sC95jLtRQ1tKJ
-         kClg==
-X-Gm-Message-State: AOJu0YxAdennKF0GgdTjOITWwaupGFVGzDMx+6zEuvcGtbTdXzVRFDMv
-        /iwirA6+0ylf4q+foYKdW7EqOZXmaA==
-X-Google-Smtp-Source: AGHT+IFhLsWmMTy9DdyhHCb/6TCeOCi858SESAMq3siI8kdI+HJGlgTMxtCITUHnFtdTorokH1eV78N3BA==
-X-Received: from hshan17.roam.corp.google.com ([2620:15c:211:201:2a7f:c6c4:6e3:ac5c])
- (user=hshan job=sendgmr) by 2002:a05:6902:168e:b0:d7f:2cb6:7d8c with SMTP id
- bx14-20020a056902168e00b00d7f2cb67d8cmr298656ybb.13.1694535323376; Tue, 12
- Sep 2023 09:15:23 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:15:18 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912161518.199484-1-hshan@google.com>
-Subject: [PATCH] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-From:   Haitao Shan <hshan@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Haitao Shan <hshan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 Sep 2023 12:15:59 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6297510EB;
+        Tue, 12 Sep 2023 09:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=MbmemHOiL4503k1+q5Q+aOQe0n7WNLQEFpWZxb7eX5U=; b=Mz/tA2oaV/HlU/K+25MTg9vPTv
+        a4MhTGzlxZ5alz7eH+NwcujVZQ9Kf67K1zS3sJA1MUSWJzHg2KnE2oLGVrMqQIFzSA1mP2q1w3Dp6
+        5Ef2WRXtWEy79knIQ2tzI9sul9ogJ/B4JIs7NwBxgFM66WveEptYgGwA/5+cdEUwPpOA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qg63M-006FNp-MK; Tue, 12 Sep 2023 18:15:52 +0200
+Date:   Tue, 12 Sep 2023 18:15:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 1/7] net: phy: introduce phy numbering and
+ phy namespaces
+Message-ID: <63bd3a9c-dacd-47e3-a34c-6e2e6a304d6c@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+ <20230907092407.647139-2-maxime.chevallier@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907092407.647139-2-maxime.chevallier@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This issue exists in kernel version 6.3-rc1 or above. The issue is
-introduced by the commit 8e6ed96cdd50 ("KVM: x86: fire timer when it is
-migrated and expired, and in oneshot mode"). The issue occurs on Intel
-platform which APIC virtualization and posted interrupt processing.
+On Thu, Sep 07, 2023 at 11:23:59AM +0200, Maxime Chevallier wrote:
+> Link topologies containing multiple network PHYs attached to the same
+> net_device can be found when using a PHY as a media converter for use
+> with an SFP connector, on which an SFP transceiver containing a PHY can
+> be used.
+> 
+> With the current model, the transceiver's PHY can't be used for
+> operations such as cable testing, timestamping, macsec offload, etc.
+> 
+> The reason being that most of the logic for these configuration, coming
+> from either ethtool netlink or ioctls tend to use netdev->phydev, which
+> in multi-phy systems will reference the PHY closest to the MAC.
+> 
+> Introduce a numbering scheme allowing to enumerate PHY devices that
+> belong to any netdev, which can in turn allow userspace to take more
+> precise decisions with regard to each PHY's configuration.
 
-The issue is first discovered when running the Android Emulator which
-is based on QEMU 2.12. I can reproduce the issue with QEMU 8.0.4 in
-Debian 12.
+I think we need more than a number. Topology needs to be a core
+concept here, otherwise how is the user supposed to know which PHY to
+use cable test on, etc.
 
-With the above commit, the timer gets fired immediately inside the
-KVM_SET_LAPIC call when loading the snapshot. On such Intel platforms,
-this eventually leads to setting the corresponding PIR bit. However,
-the whole PIR bits get cleared later in the same KVM_SET_LAPIC call.
-Missing lapic timer interrupt freeze the guest kernel.
+However, it is not a simple problem. An SFP PHY should be the last in
+a chain. So you can infer something from that. When we start adding
+MII muxes, they will need to be part of the modal.
 
-Signed-off-by: Haitao Shan <hshan@google.com>
----
- arch/x86/kvm/lapic.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index a983a16163b1..6f73406b875a 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2977,14 +2977,14 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
- 	apic_update_lvtt(apic);
- 	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
- 	update_divide_count(apic);
--	__start_apic_timer(apic, APIC_TMCCT);
--	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
- 	kvm_apic_update_apicv(vcpu);
- 	if (apic->apicv_active) {
- 		static_call_cond(kvm_x86_apicv_post_state_restore)(vcpu);
- 		static_call_cond(kvm_x86_hwapic_irr_update)(vcpu, apic_find_highest_irr(apic));
- 		static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_highest_isr(apic));
- 	}
-+	__start_apic_timer(apic, APIC_TMCCT);
-+	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
- 	kvm_make_request(KVM_REQ_EVENT, vcpu);
- 	if (ioapic_in_kernel(vcpu->kvm))
- 		kvm_rtc_eoi_tracking_restore_one(vcpu);
--- 
-2.42.0.283.g2d96d420d3-goog
-
+    Andrew
