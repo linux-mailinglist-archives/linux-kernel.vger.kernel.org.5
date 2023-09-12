@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34D679D036
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A8079D037
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbjILLii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        id S234768AbjILLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbjILLiO (ORCPT
+        with ESMTP id S234869AbjILLiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:38:14 -0400
+        Tue, 12 Sep 2023 07:38:17 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C9DB3;
-        Tue, 12 Sep 2023 04:38:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90C19C433C7;
-        Tue, 12 Sep 2023 11:38:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725461722;
+        Tue, 12 Sep 2023 04:38:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C8EC433C9;
+        Tue, 12 Sep 2023 11:38:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694518689;
-        bh=HqZxfW2iBbpiVRi2F/vTM/51WFKhuyoLd1l6HUqtiFE=;
+        s=k20201202; t=1694518693;
+        bh=h30b56RrRORKmlU4pC18wtn1e1EQ/8raoGBkCT361sM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WKvVApt27IXHRt8l3sIkdIyZIpsKkZI7nMRdsgYqDBGM/qwY+7PiblHq2ZBFfypjL
-         dS5ajI36JcbE1Bv3Qks5Cmvqz+VePhsYTJUbPu8RItaKOB3R3c8ihcxS6ga3hzlcxs
-         zutXNOfWiBd2YSukUJBHPLIoktajMgvQ62k+5WRe4NAzxCo8xsoI0HKMZ/TI8FFB73
-         X+RkrGdTYTydbCCMjCcDEHWFRwJzdCGtxAbTCUhkDNJUUt/bbuADUJLO5XBQ7oey/v
-         e0d9w0++6AepMTxHzx8IspNVALlwI715tXrdFAWKUGpN8bPM+3LUdV9q1jVkWHBXN8
-         M7vSBKJHP3hVA==
+        b=K4YOz5hNZrqjLdTbhxxFHvS2l4kzfDALcCAxmSU6AUaAhJs3afTFzWBtzbY+FWOxd
+         /LGrRgZYBnek1Y85XT26sSfS+eQZx6uc12ooEAvV0IOKlY80nX6tskwzTg9/c85ymE
+         fQR+hvjnHnkdHiKCPwux7J790Kwu8YmOkreruYmvpvOItqfLUd8BZ26bSLqzzyN3Zg
+         zCoyLw9u9CzQSwSzcKK9W/bxFVRJexG48oHeaNiGi0+xm+32KnoedCoKgMt+96CqjN
+         eAM/NEjdZ7OShOMnE8pBTH8fYY5cGDez5JMFmGUXsiLaRmr+iGRqetl+dVbMtbQu1S
+         AsIApVkwkhzxQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dhruva Gole <d-gole@ti.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, Apurva Nandan <a-nandan@ti.com>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        William Qiu <william.qiu@starfivetech.com>,
-        Brad Larson <blarson@amd.com>,
-        Pratyush Yadav <ptyadav@amazon.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Vibhore Vardhan <vibhore@ti.com>
-In-Reply-To: <20230829062706.786637-1-d-gole@ti.com>
-References: <20230829062706.786637-1-d-gole@ti.com>
-Subject: Re: [PATCH V2] spi: spi-cadence-quadspi: add runtime pm support
-Message-Id: <169451868590.2398433.6752989625702796477.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 12:38:05 +0100
+To:     ldewangan@nvidia.com, Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        p.zabel@pengutronix.de, sumit.semwal@linaro.org,
+        christian.koenig@amd.com, linux-spi@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+In-Reply-To: <tencent_73FCC06A3D1C14EE5175253C6FB46A07B709@qq.com>
+References: <tencent_73FCC06A3D1C14EE5175253C6FB46A07B709@qq.com>
+Subject: Re: [PATCH] spi: tegra: Fix missing IRQ check in
+ tegra_slink_probe()
+Message-Id: <169451868918.2398433.15693451802537494964.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 12:38:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -51,13 +49,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Aug 2023 11:57:08 +0530, Dhruva Gole wrote:
-> Add runtime pm support to cadence-qspi driver, this allows the driver to
-> suspend whenever it's is not actively being used thus reducing active
-> power consumed by the system.
+On Sat, 26 Aug 2023 18:02:54 +0800, Zhang Shurong wrote:
+> This func misses checking for platform_get_irq()'s call and may passes the
+> negative error codes to request_irq(), which takes unsigned IRQ #,
+> causing it to fail with -EINVAL, overriding an original error code.
 > 
-> Also, with the use of devm_pm_runtime_enable we no longer need the
-> fallback probe_pm_failed that used to pm_runtime_disable
+> Fix this by stop calling request_irq() with invalid IRQ #s.
+> 
 > 
 > [...]
 
@@ -67,8 +65,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: spi-cadence-quadspi: add runtime pm support
-      commit: 0578a6dbfe7514db7134501cf93acc21cf13e479
+[1/1] spi: tegra: Fix missing IRQ check in tegra_slink_probe()
+      commit: eb9913b511f10968a02cfa5329a896855dd152a3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
