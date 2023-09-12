@@ -2,271 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8B979DBC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A6A79DBCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236636AbjILWVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
+        id S237146AbjILWWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjILWVU (ORCPT
+        with ESMTP id S229609AbjILWWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:21:20 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C96E10C8;
-        Tue, 12 Sep 2023 15:21:16 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id 2adb3069b0e04-500c7796d8eso10251800e87.1;
-        Tue, 12 Sep 2023 15:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694557274; x=1695162074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=STtBbcPGoMcBx0hfO9mfqv7R56JxJw1TcuLXkgjU0q8=;
-        b=Nnm6lJC43hHDCI0phWASIH+2vErL855pQhEa+cRrUoLkacME+EE+zNEbUlQHzndxRL
-         i/WIUhe60fqLVQd3FR5/fdvxAWT8CdNzwyGFTopya+PN1Hy7Df6ec2LVyxFs6/06+5BS
-         0iAcYuxSVSkPw65PAKZWgsV47/QDjC6tDaiBour2uj/i1wXPVfFRWEKwtMr2s+lh1Osl
-         LCD5hY2fx/Gx6U7esreVgMQHAbTwtFMQ/g+c2gM1I7jNScbr75MVCQHamJZcrePFrPOH
-         C7WFy7za07d1+bAbU4UElazgFdSfxwUHZTIRhpKJZZ+21JvTZn/Nr+usunpHGYVcq4gz
-         4sDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694557274; x=1695162074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=STtBbcPGoMcBx0hfO9mfqv7R56JxJw1TcuLXkgjU0q8=;
-        b=isSj/kEWVSv9rQXuVrpHO8SQtAiX/2VyMNL79kuL09tYki8Guq3xBLtTmJODhBeMzh
-         vmMLDmUIx36l5BVlKnyVTxOjIrHTGU0Kv5tRd47SFKZB4q/ZLeZ9W0745PCfsJcxGkPl
-         xf85+1UheA2+OCfwZONqPLpTRzznKU8V0F6cyzAegBKJCrVCWmvc4D/Z/mOGh3peW3cA
-         fIEU43tc589biFSdfA9A2IHnG/kp55RIZm9g/c1EY40TClxy9wO+16CjR+uTgSxm7igs
-         1MYa2I+YzUqTVQT4uTpSDII39zMrqmuyWPzxuYp9bb7Y8duZ+E28prl9MipE5LuizYoN
-         0v6A==
-X-Gm-Message-State: AOJu0Yx2b2fRnLINC2iAsGOYVmQTcBYSxgeZaG5btUQOj+JrbGovQlGP
-        SgfC8TypkxWuO6+pznDaxptB3uZ8MsGbU2I9km0=
-X-Google-Smtp-Source: AGHT+IHqWt89jEOy0lUp+7S5Wz09Xbyhrbmv9phVK6VQ47mm14FgWKwDKo6HIZG+QY97QBItZ7Q2XqCq86/5BIiWrC8=
-X-Received: by 2002:a05:6512:108a:b0:500:a39a:1b99 with SMTP id
- j10-20020a056512108a00b00500a39a1b99mr604143lfg.38.1694557273959; Tue, 12 Sep
- 2023 15:21:13 -0700 (PDT)
+        Tue, 12 Sep 2023 18:22:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7778010C9;
+        Tue, 12 Sep 2023 15:22:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C761AC433C7;
+        Tue, 12 Sep 2023 22:22:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694557338;
+        bh=7KAGH2JgSasd3CprQgU/M614YHilY5u3Q+EE4tUlaqc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=QeXQFOPGQZjInp9aMBFSk8tzNJ1fMB88/ThfyhE3oU3qJrqghIu3WGhGZkznSzZyh
+         n+sBYVsVUa4vuFqanZikE0ZbN53sHL/zxY+rxbH+vjC5wBLKk212CU9AqPvRpB5lZ+
+         t5TcTup9tfEBE9uGG2Smy9ifPbUJic5B8IuIcT1YRTjqZNjwdWM1nNiPFrpnruQNCv
+         qPh71bcz2GAdl0BFvNLB0ICBftl9pp/HVm6AuFerfveliWv/LkNy8DRtj4NY9cT5jf
+         Y4XUIY/B6K9Nw9qN59iHIje+4qMczWgGjRVTXlwrEeAoiIc0rU5/BjFm8/FlEMFmnj
+         Gprdowurx8njg==
+Date:   Tue, 12 Sep 2023 17:22:15 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     bhelgaas@google.com, pali@kernel.org,
+        ilpo.jarvinen@linux.intel.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
+ which IDA
+Message-ID: <20230912222215.GA412293@bhelgaas>
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
- <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
- <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com> <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
- <CAEf4BzaEg5CieQKQxvRGnwnyeK_2MZqr8ROVjg-Tftg-0vpntg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaEg5CieQKQxvRGnwnyeK_2MZqr8ROVjg-Tftg-0vpntg@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 13 Sep 2023 00:20:38 +0200
-Message-ID: <CAP01T77cWxWNwq5HLr+Woiu7k4-P3QQfJWX1OeQJUkxW3=P4bA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
- iterator kfuncs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815013744.45652-1-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sept 2023 at 00:12, Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Sep 6, 2023 at 10:18=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.=
-com> wrote:
-> > >
-> > > Hello, Alexei.
-> > >
-> > > =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > > > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@byte=
-dance.com> wrote:
-> > > >>
-> > > >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which a=
-llow
-> > > >> creation and manipulation of struct bpf_iter_process in open-coded=
- iterator
-> > > >> style. BPF programs can use these kfuncs or through bpf_for_each m=
-acro to
-> > > >> iterate all processes in the system.
-> > > >>
-> > > >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> > > >> ---
-> > > >>   include/uapi/linux/bpf.h       |  4 ++++
-> > > >>   kernel/bpf/helpers.c           |  3 +++
-> > > >>   kernel/bpf/task_iter.c         | 31 ++++++++++++++++++++++++++++=
-+++
-> > > >>   tools/include/uapi/linux/bpf.h |  4 ++++
-> > > >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
-> > > >>   5 files changed, 47 insertions(+)
-> > > >>
-> > > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > >> index 2a6e9b99564b..cfbd527e3733 100644
-> > > >> --- a/include/uapi/linux/bpf.h
-> > > >> +++ b/include/uapi/linux/bpf.h
-> > > >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
-> > > >>          __u64 __opaque[1];
-> > > >>   } __attribute__((aligned(8)));
-> > > >>
-> > > >> +struct bpf_iter_process {
-> > > >> +       __u64 __opaque[1];
-> > > >> +} __attribute__((aligned(8)));
-> > > >> +
-> > > >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> > > >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > >> index cf113ad24837..81a2005edc26 100644
-> > > >> --- a/kernel/bpf/helpers.c
-> > > >> +++ b/kernel/bpf/helpers.c
-> > > >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_=
-ITER_DESTROY)
-> > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET=
-_NULL)
-> > > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
-> > > >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> > > >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_N=
-ULL)
-> > > >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> > > >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> > > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> > > >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> > > >> index b1bdba40b684..a6717a76c1e0 100644
-> > > >> --- a/kernel/bpf/task_iter.c
-> > > >> +++ b/kernel/bpf/task_iter.c
-> > > >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(st=
-ruct bpf_iter_css_task *it)
-> > > >>          kfree(kit->css_it);
-> > > >>   }
-> > > >>
-> > > >> +struct bpf_iter_process_kern {
-> > > >> +       struct task_struct *tsk;
-> > > >> +} __attribute__((aligned(8)));
-> > > >> +
-> > > >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-> > > >> +{
-> > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > > >> +
-> > > >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D siz=
-eof(struct bpf_iter_process));
-> > > >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=
-=3D
-> > > >> +                                       __alignof__(struct bpf_ite=
-r_process));
-> > > >> +
-> > > >> +       rcu_read_lock();
-> > > >> +       kit->tsk =3D &init_task;
-> > > >> +       return 0;
-> > > >> +}
-> > > >> +
-> > > >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_=
-iter_process *it)
-> > > >> +{
-> > > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > > >> +
-> > > >> +       kit->tsk =3D next_task(kit->tsk);
-> > > >> +
-> > > >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
-> > > >> +}
-> > > >> +
-> > > >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process=
- *it)
-> > > >> +{
-> > > >> +       rcu_read_unlock();
-> > > >> +}
-> > > >
-> > > > This iter can be used in all ctx-s which is nice, but let's
-> > > > make the verifier enforce rcu_read_lock/unlock done by bpf prog
-> > > > instead of doing in the ctor/dtor of iter, since
-> > > > in sleepable progs the verifier won't recognize that body is RCU CS=
-.
-> > > > We'd need to teach the verifier to allow bpf_iter_process_new()
-> > > > inside in_rcu_cs() and make sure there is no rcu_read_unlock
-> > > > while BPF_ITER_STATE_ACTIVE.
-> > > > bpf_iter_process_destroy() would become a nop.
-> > >
-> > > Thanks for your review!
-> > >
-> > > I think bpf_iter_process_{new, next, destroy} should be protected by
-> > > bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable or
-> > > not, right?
-> >
-> > Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
-> > or just by using them in normal bpf progs that have implicit rcu_read_l=
-ock()
-> > done before calling into them.
-> >
-> > > I'm not very familiar with the BPF verifier, but I believe
-> > > there is still a risk in directly calling these kfuns even if
-> > > in_rcu_cs() is true.
-> > >
-> > > Maby what we actually need here is to enforce BPF verifier to check
-> > > env->cur_state->active_rcu_lock is true when we want to call these kf=
-uncs.
-> >
-> > active_rcu_lock means explicit bpf_rcu_read_lock.
-> > Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's poin=
-tless.
-> >
-> > Technically we can extend the check:
-> >                 if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
-> > rcu_unlock)) {
-> >                         verbose(env, "Calling
-> > bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
-> >                         return -EACCES;
-> >                 }
-> > to discourage their use in all non-sleepable, but it will break some pr=
-ogs.
-> >
-> > I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
-> > If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
-> > the iter ops it won't do any harm.
-> > Just need to make sure that rcu unlock logic:
-> >                 } else if (rcu_unlock) {
-> >                         bpf_for_each_reg_in_vstate(env->cur_state,
-> > state, reg, ({
-> >                                 if (reg->type & MEM_RCU) {
-> >                                         reg->type &=3D ~(MEM_RCU |
-> > PTR_MAYBE_NULL);
-> >                                         reg->type |=3D PTR_UNTRUSTED;
-> >                                 }
-> >                         }));
-> > clears iter state that depends on rcu.
-> >
-> > I thought about changing mark_stack_slots_iter() to do
-> > st->type =3D PTR_TO_STACK | MEM_RCU;
-> > so that the above clearing logic kicks in,
-> > but it might be better to have something iter specific.
-> > is_iter_reg_valid_init() should probably be changed to
-> > make sure reg->type is not UNTRUSTED.
-> >
-> > Andrii,
-> > do you have better suggestions?
->
-> What if we just remember inside bpf_reg_state.iter state whether
-> iterator needs to be RCU protected (it's just one bit if we don't
-> allow nesting rcu_read_lock()/rcu_read_unlock(), or we'd need to
-> remember RCU nestedness level), and then when validating iter_next and
-> iter_destroy() kfuncs, check that we are still in RCU-protected region
-> (if we have nestedness, then iter->rcu_nest_level <=3D
-> cur_rcu_nest_level, if I understand correctly). And if not, provide a
-> clear and nice message.
->
-> That seems straightforward enough, but am I missing anything subtle?
->
+On Tue, Aug 15, 2023 at 09:37:44AM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> When PCI node was created using an overlay and the overlay is
+> reverted/destroyed, the "linux,pci-domain" property no longer
+> exists, so of_get_pci_domain_nr will return failure.
 
-We also need to ensure one does not do a bpf_rcu_read_unlock and
-bpf_rcu_read_lock again between the iter_new and
-iter_next/iter_destroy calls. Simply checking we are in an RCU
-protected region will pass the verifier in such a case.
+I'm not familiar with how overlays work.  What's the call path where
+the overlay is removed?  I see an of_overlay_remove(), but I don't see
+any callers except test cases.
 
-A simple solution might be associating an ID with the RCU CS, so make
-active_rcu_lock a 32-bit ID which is monotonically increasing for each
-new RCU region. Ofcourse, all of this only matters for sleepable
-programs. Then check if id recorded in iter state is same on next and
-destroy.
+I guess the problem happens in a PCI host bridge remove path, e.g.,
+
+  pci_host_common_remove
+    pci_remove_root_bus
+      pci_bus_release_domain_nr
+        of_pci_bus_release_domain_nr
+
+But I don't know how that's related to the overlay removal.
+
+Is this an ordering issue?  It seems possibly problematic that the OF
+overlay is destroyed before the device it describes (e.g., the host
+bridge) is removed.  I would expect the device to be removed before
+the description of the device is removed.
+
+> Then of_pci_bus_release_domain_nr will actually use the dynamic IDA,
+> even if the IDA was allocated in static IDA.
+>
+> Introduce a static_nr field in pci_bus to indicate whether the
+> IDA is a dynamic or static in order to free the correct one.
+> 
+> Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+> 
+> V2:
+>  Update commit message
+>  Move static_nr:1 to stay besides others :1 fields.
+> 
+>  drivers/pci/pci.c   | 22 ++++++++++++++--------
+>  include/linux/pci.h |  1 +
+>  2 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0..5c98502bcda6 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -6881,10 +6881,10 @@ static void of_pci_reserve_static_domain_nr(void)
+>  	}
+>  }
+>  
+> -static int of_pci_bus_find_domain_nr(struct device *parent)
+> +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
+>  {
+>  	static bool static_domains_reserved = false;
+> -	int domain_nr;
+> +	int domain_nr, ret;
+>  
+>  	/* On the first call scan device tree for static allocations. */
+>  	if (!static_domains_reserved) {
+> @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
+>  		static_domains_reserved = true;
+>  	}
+>  
+> +	bus->static_nr = 0;
+> +
+>  	if (parent) {
+>  		/*
+>  		 * If domain is in DT, allocate it in static IDA.  This
+> @@ -6899,10 +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
+>  		 * in DT.
+>  		 */
+>  		domain_nr = of_get_pci_domain_nr(parent->of_node);
+> -		if (domain_nr >= 0)
+> -			return ida_alloc_range(&pci_domain_nr_static_ida,
+> -					       domain_nr, domain_nr,
+> -					       GFP_KERNEL);
+> +		if (domain_nr >= 0) {
+> +			ret = ida_alloc_range(&pci_domain_nr_static_ida,
+> +					      domain_nr, domain_nr, GFP_KERNEL);
+> +			if (ret >= 0)
+> +				bus->static_nr = 1;
+> +
+> +			return ret;
+> +		}
+>  	}
+>  
+>  	/*
+> @@ -6920,7 +6926,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
+>  		return;
+>  
+>  	/* Release domain from IDA where it was allocated. */
+> -	if (of_get_pci_domain_nr(parent->of_node) == bus->domain_nr)
+> +	if (bus->static_nr)
+>  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
+>  	else
+>  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
+> @@ -6928,7 +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
+>  
+>  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
+>  {
+> -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
+> +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
+>  			       acpi_pci_bus_find_domain_nr(bus);
+>  }
+>  
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index eeb2e6f6130f..222a1729ea7e 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -677,6 +677,7 @@ struct pci_bus {
+>  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
+>  	unsigned int		is_added:1;
+>  	unsigned int		unsafe_warn:1;	/* warned about RW1C config write */
+> +	unsigned int		static_nr:1;
+>  };
+>  
+>  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
+> -- 
+> 2.37.1
+> 
