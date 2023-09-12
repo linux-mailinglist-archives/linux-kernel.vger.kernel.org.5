@@ -2,284 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6628379D407
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4BA79D40D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236084AbjILOug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S236121AbjILOuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjILOue (ORCPT
+        with ESMTP id S236088AbjILOuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:50:34 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D94115
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:30 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7708bfce474so335511385a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:30 -0700 (PDT)
+        Tue, 12 Sep 2023 10:50:40 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F2F1BB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:36 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-412091b9035so39097551cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694530230; x=1695135030; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6HSKteuboFmnivzLeuEg+npIPTGUVBOAqjU+EfUkVq4=;
-        b=EIozDuSMUxnJJwqU5TCFRoGbJb5TypCsomu37UXtl888exhHckj6t7lRApHKgDiO/b
-         VFnBTjN7rbolA0LVT3MDVAzSS99GDa7QAiBy2tyFb8NgbFA/NqJq45JgKKa/MgTVnVHv
-         Slb0wdINEc6AvBdc4ncA6nAN0I0RH6px0e34EM+EhBj3dUj+KdoLQt9Pcz3x/sHxk3ao
-         Vl0AMj1sD0f2TI3uSW9jQmbef2s78HgoYIRvn1YMQm5tL7gg0rnJcoIS8E/ydYEltteH
-         OABizDSDwr7BPIuZq50knSsaHpdiMN3M+N+jKqWIbPopPtRESWMNYkmUYM+msR+hiVpQ
-         MshQ==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1694530235; x=1695135035; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=24gu3xnStbF9tnpQJ0WbAGs3/nJ8XhTOFkMY3d7yv8A=;
+        b=uiqtxSGd41W6BSyB5AQR+nLN2s94YmMW3XjmGaHG7bKEPkSqtvif21dFmySilK/CUi
+         fP0twwxf2SZddAJ6l4DqTQ+M5EMS+PrBTCqxGwkUmRvR5BilmsrffW+BbzRusgw7S2C/
+         Eyf7+Ql5PoUrLfxLBm4qAcXm77mDtQh7cIQHuyPAUdXcOhxGOte3YJg90RraxhI+T8tr
+         /1W9df4HnjlIN1jYKFZJXwgPWMQ5gmeI+K+mqYpZAEhZUGkHgX3biJqIWjKprouV1HsQ
+         /KtXesz44mAxuabzcTrfVCwoa9JYpcqU+8QQSeJK8GIp+94APCp4uhK93oxMcmKNf+W+
+         t+Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694530230; x=1695135030;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6HSKteuboFmnivzLeuEg+npIPTGUVBOAqjU+EfUkVq4=;
-        b=LtmT3h6Tdvk+Ou3a24+u/KMWzNPeqNv5eNG+lGhABgSoeyOnx+ZRuxaVLFk1PTCLH3
-         +2+O8YTfsQdDODc/3caz5yeHc+CfTTeVdwD7qnDWKxW6djnMN4KPFIB7t/R94mn8RF6W
-         c/qRwLR11VIqSYAVHPXB4hcdYX6VsdW3lj7FI+GpeTsmihDix6hs9Fek4Nw6/nhIHOwP
-         ZIHh4RhdmHAiqHlpIGpxvcovoNOmnG+E0sXj9BfC9XYcRwmJUqbtvbH8hpp523l6q/ZZ
-         qTmkuzPWBq8muhOds+QAnVWx04rLHLnXSiU8K9ielkRv8P98cA4N2nC85qg2GIJQJASo
-         wMhg==
-X-Gm-Message-State: AOJu0Yx87oni6a2Qit1naeet3oudm7KGEzji/kJMEZ+FNWbXHQqIs4km
-        1BinDKBtAOpB6hxAsa/aqzDeSg==
-X-Google-Smtp-Source: AGHT+IHNfDzGkVG1pcumuC7QfDwIG+2738HwDCe7yhp0B+IBbDO+rNaUBgTK5sgaYXfhvgEqrSNjrQ==
-X-Received: by 2002:a05:620a:f02:b0:76c:b16b:ad74 with SMTP id v2-20020a05620a0f0200b0076cb16bad74mr16689319qkl.19.1694530229831;
-        Tue, 12 Sep 2023 07:50:29 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id p11-20020ae9f30b000000b0076f0744ff50sm3206928qkg.136.2023.09.12.07.50.29
+        d=1e100.net; s=20230601; t=1694530235; x=1695135035;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=24gu3xnStbF9tnpQJ0WbAGs3/nJ8XhTOFkMY3d7yv8A=;
+        b=mScvUy5NlU8yX+DLBug8yKSzPmt9wQwZGZKuww00LC+dZG7vJOwLe2/VGEnDrhIHby
+         cvWuX9S3Q1sF+rfOp8hqMfDXUXG0q3rMFdf3vUIVUiLELJMJMMcmj7Uw+BSjINQ0hHCm
+         gGpVTyba7BrSwYADE8paGoAkp/RBjNlzmJnuJAoIvHSdhSNwMazZtt8IfXMgqeOtG5ty
+         cnMsX5bqCIWWttdji73m7iVpV1CH5q9GMAEs2QaLRXo7gUiAhOa7HchJNeN7t1LYEfk/
+         LnyHoEzXhEJXhoAfZUptfLJdMZ2QjdKF8+1/1De4/ywhldLV6Ybe+aQBkQyVsMwEhDmb
+         MxGw==
+X-Gm-Message-State: AOJu0YzL0xiJs+BOgLTItBwn6UDOWutJv4g1ZJe3eOG9DFpuB1FD53gU
+        K+BLJT+e54IkKT0jM3e9EuRbwg==
+X-Google-Smtp-Source: AGHT+IHIjqtGsqNdxfUolw+Ala7g5YjJUkbLvkQof93NfZ486WisLxIwvrHg6NzE7241vOgooQYo5w==
+X-Received: by 2002:a05:622a:1811:b0:40d:1984:e231 with SMTP id t17-20020a05622a181100b0040d1984e231mr16719179qtc.43.1694530235641;
+        Tue, 12 Sep 2023 07:50:35 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
+        by smtp.gmail.com with ESMTPSA id v12-20020ac8578c000000b0040ff6194ef3sm3352524qta.70.2023.09.12.07.50.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 07:50:29 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 10:50:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-Message-ID: <20230912145028.GA3228@cmpxchg.org>
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-2-hannes@cmpxchg.org>
- <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
+        Tue, 12 Sep 2023 07:50:35 -0700 (PDT)
+Message-ID: <bbb5af208d08acfb9c7b45283840be8719c4c4e2.camel@ndufresne.ca>
+Subject: Re: [PATCH 3/9] dma-heap: Provide accessors so that in-kernel
+ drivers can allocate dmabufs from specific heaps
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, tjmercier@google.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
+        kuohong.wang@mediatek.com
+Date:   Tue, 12 Sep 2023 10:50:34 -0400
+In-Reply-To: <803846bc-fd1d-d2ec-2855-456af22c82f8@amd.com>
+References: <20230911023038.30649-1-yong.wu@mediatek.com>
+         <20230911023038.30649-4-yong.wu@mediatek.com>
+         <803846bc-fd1d-d2ec-2855-456af22c82f8@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
-> On 9/11/23 21:41, Johannes Weiner wrote:
-> > The idea behind the cache is to save get_pageblock_migratetype()
-> > lookups during bulk freeing. A microbenchmark suggests this isn't
-> > helping, though. The pcp migratetype can get stale, which means that
-> > bulk freeing has an extra branch to check if the pageblock was
-> > isolated while on the pcp.
-> > 
-> > While the variance overlaps, the cache write and the branch seem to
-> > make this a net negative. The following test allocates and frees
-> > batches of 10,000 pages (~3x the pcp high marks to trigger flushing):
-> > 
-> > Before:
-> >           8,668.48 msec task-clock                       #   99.735 CPUs utilized               ( +-  2.90% )
-> >                 19      context-switches                 #    4.341 /sec                        ( +-  3.24% )
-> >                  0      cpu-migrations                   #    0.000 /sec
-> >             17,440      page-faults                      #    3.984 K/sec                       ( +-  2.90% )
-> >     41,758,692,473      cycles                           #    9.541 GHz                         ( +-  2.90% )
-> >    126,201,294,231      instructions                     #    5.98  insn per cycle              ( +-  2.90% )
-> >     25,348,098,335      branches                         #    5.791 G/sec                       ( +-  2.90% )
-> >         33,436,921      branch-misses                    #    0.26% of all branches             ( +-  2.90% )
-> > 
-> >          0.0869148 +- 0.0000302 seconds time elapsed  ( +-  0.03% )
-> > 
-> > After:
-> >           8,444.81 msec task-clock                       #   99.726 CPUs utilized               ( +-  2.90% )
-> >                 22      context-switches                 #    5.160 /sec                        ( +-  3.23% )
-> >                  0      cpu-migrations                   #    0.000 /sec
-> >             17,443      page-faults                      #    4.091 K/sec                       ( +-  2.90% )
-> >     40,616,738,355      cycles                           #    9.527 GHz                         ( +-  2.90% )
-> >    126,383,351,792      instructions                     #    6.16  insn per cycle              ( +-  2.90% )
-> >     25,224,985,153      branches                         #    5.917 G/sec                       ( +-  2.90% )
-> >         32,236,793      branch-misses                    #    0.25% of all branches             ( +-  2.90% )
-> > 
-> >          0.0846799 +- 0.0000412 seconds time elapsed  ( +-  0.05% )
-> > 
-> > A side effect is that this also ensures that pages whose pageblock
-> > gets stolen while on the pcplist end up on the right freelist and we
-> > don't perform potentially type-incompatible buddy merges (or skip
-> > merges when we shouldn't), whis is likely beneficial to long-term
-> > fragmentation management, although the effects would be harder to
-> > measure. Settle for simpler and faster code as justification here.
-> 
-> Makes sense to me, so
-> 
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Le lundi 11 septembre 2023 =C3=A0 12:13 +0200, Christian K=C3=B6nig a =C3=
+=A9crit=C2=A0:
+> Am 11.09.23 um 04:30 schrieb Yong Wu:
+> > From: John Stultz <jstultz@google.com>
+> >=20
+> > This allows drivers who don't want to create their own
+> > DMA-BUF exporter to be able to allocate DMA-BUFs directly
+> > from existing DMA-BUF Heaps.
+> >=20
+> > There is some concern that the premise of DMA-BUF heaps is
+> > that userland knows better about what type of heap memory
+> > is needed for a pipeline, so it would likely be best for
+> > drivers to import and fill DMA-BUFs allocated by userland
+> > instead of allocating one themselves, but this is still
+> > up for debate.
+>=20
+> The main design goal of having DMA-heaps in the first place is to avoid=
+=20
+> per driver allocation and this is not necessary because userland know=20
+> better what type of memory it wants.
 
-Thanks!
+If the memory is user visible, yes. When I look at the MTK VCODEC changes, =
+this
+seems to be used for internal codec state and SHM buffers used to communica=
+te
+with firmware.
 
-> > @@ -1577,7 +1556,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
-> >  			continue;
-> >  		del_page_from_free_list(page, zone, current_order);
-> >  		expand(zone, page, order, current_order, migratetype);
-> > -		set_pcppage_migratetype(page, migratetype);
-> 
-> Hm interesting, just noticed that __rmqueue_fallback() never did this
-> AFAICS, sounds like a bug.
-
-I don't quite follow. Which part?
-
-Keep in mind that at this point __rmqueue_fallback() doesn't return a
-page. It just moves pages to the desired freelist, and then
-__rmqueue_smallest() gets called again. This changes in 5/6, but until
-now at least all of the above would apply to fallback pages.
-
-> > @@ -2145,7 +2123,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
-> >  		 * pages are ordered properly.
-> >  		 */
-> >  		list_add_tail(&page->pcp_list, list);
-> > -		if (is_migrate_cma(get_pcppage_migratetype(page)))
-> > +		if (is_migrate_cma(get_pageblock_migratetype(page)))
-> >  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
-> >  					      -(1 << order));
-> 
-> This is potentially a source of overhead, I assume patch 6/6 might
-> change that.
-
-Yes, 6/6 removes it altogether.
-
-But the test results in this patch's changelog are from this patch in
-isolation, so it doesn't appear to be a concern even on its own.
-
-> > @@ -2457,7 +2423,7 @@ void free_unref_page_list(struct list_head *list)
-> >  		 * Free isolated pages directly to the allocator, see
-> >  		 * comment in free_unref_page.
-> >  		 */
-> > -		migratetype = get_pcppage_migratetype(page);
-> > +		migratetype = get_pfnblock_migratetype(page, pfn);
-> >  		if (unlikely(is_migrate_isolate(migratetype))) {
-> >  			list_del(&page->lru);
-> >  			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
-> 
-> I think after this change we should move the isolated pages handling to
-> the second loop below, so that we wouldn't have to call
-> get_pfnblock_migratetype() twice per page. Dunno yet if some later patch
-> does that. It would need to unlock pcp when necessary.
-
-That sounds like a great idea. Something like the following?
-
-Lightly tested. If you're good with it, I'll beat some more on it and
-submit it as a follow-up.
-
----
-
-From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Tue, 12 Sep 2023 10:16:10 -0400
-Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
-
-Move direct freeing of isolated pages to the lock-breaking block in
-the second loop. This saves an unnecessary migratetype reassessment.
-
-Minor comment and local variable scoping cleanups.
-
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/page_alloc.c | 49 +++++++++++++++++++++----------------------------
- 1 file changed, 21 insertions(+), 28 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e3f1c777feed..9cad31de1bf5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2408,48 +2408,41 @@ void free_unref_page_list(struct list_head *list)
- 	struct per_cpu_pages *pcp = NULL;
- 	struct zone *locked_zone = NULL;
- 	int batch_count = 0;
--	int migratetype;
+>=20
+> The background is rather that we generally want to decouple allocation=
+=20
+> from having a device driver connection so that we have better chance=20
+> that multiple devices can work with the same memory.
+>=20
+> I once create a prototype which gives userspace a hint which DMA-heap to=
+=20
+> user for which device:=20
+> https://patchwork.kernel.org/project/linux-media/patch/20230123123756.401=
+692-2-christian.koenig@amd.com/
+>=20
+> Problem is that I don't really have time to look into it and maintain=20
+> that stuff, but I think from the high level design that is rather the=20
+> general direction we should push at.
+>=20
+> Regards,
+> Christian.
+>=20
+> >=20
+> > Signed-off-by: John Stultz <jstultz@google.com>
+> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> > [Yong: Fix the checkpatch alignment warning]
+> > ---
+> >   drivers/dma-buf/dma-heap.c | 60 ++++++++++++++++++++++++++++---------=
 -
--	/* Prepare pages for freeing */
--	list_for_each_entry_safe(page, next, list, lru) {
--		unsigned long pfn = page_to_pfn(page);
- 
--		if (!free_pages_prepare(page, 0, FPI_NONE)) {
-+	list_for_each_entry_safe(page, next, list, lru)
-+		if (!free_pages_prepare(page, 0, FPI_NONE))
- 			list_del(&page->lru);
--			continue;
--		}
--
--		/*
--		 * Free isolated pages directly to the allocator, see
--		 * comment in free_unref_page.
--		 */
--		migratetype = get_pfnblock_migratetype(page, pfn);
--		if (unlikely(is_migrate_isolate(migratetype))) {
--			list_del(&page->lru);
--			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
--			continue;
--		}
--	}
- 
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		unsigned long pfn = page_to_pfn(page);
- 		struct zone *zone = page_zone(page);
-+		int migratetype;
- 
- 		list_del(&page->lru);
- 		migratetype = get_pfnblock_migratetype(page, pfn);
- 
- 		/*
--		 * Either different zone requiring a different pcp lock or
--		 * excessive lock hold times when freeing a large list of
--		 * pages.
-+		 * Zone switch, batch complete, or non-pcp freeing?
-+		 * Drop the pcp lock and evaluate.
- 		 */
--		if (zone != locked_zone || batch_count == SWAP_CLUSTER_MAX) {
-+		if (unlikely(zone != locked_zone ||
-+			     batch_count == SWAP_CLUSTER_MAX ||
-+			     is_migrate_isolate(migratetype))) {
- 			if (pcp) {
- 				pcp_spin_unlock(pcp);
- 				pcp_trylock_finish(UP_flags);
-+				locked_zone = NULL;
- 			}
- 
--			batch_count = 0;
-+			/*
-+			 * Free isolated pages directly to the
-+			 * allocator, see comment in free_unref_page.
-+			 */
-+			if (is_migrate_isolate(migratetype)) {
-+				free_one_page(zone, page, pfn, 0,
-+					      migratetype, FPI_NONE);
-+				continue;
-+			}
- 
- 			/*
- 			 * trylock is necessary as pages may be getting freed
-@@ -2459,12 +2452,12 @@ void free_unref_page_list(struct list_head *list)
- 			pcp = pcp_spin_trylock(zone->per_cpu_pageset);
- 			if (unlikely(!pcp)) {
- 				pcp_trylock_finish(UP_flags);
--				free_one_page(zone, page, pfn,
--					      0, migratetype, FPI_NONE);
--				locked_zone = NULL;
-+				free_one_page(zone, page, pfn, 0,
-+					      migratetype, FPI_NONE);
- 				continue;
- 			}
- 			locked_zone = zone;
-+			batch_count = 0;
- 		}
- 
- 		/*
--- 
-2.42.0
+> >   include/linux/dma-heap.h   | 25 ++++++++++++++++
+> >   2 files changed, 69 insertions(+), 16 deletions(-)
+> >=20
+> > diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+> > index dcc0e38c61fa..908bb30dc864 100644
+> > --- a/drivers/dma-buf/dma-heap.c
+> > +++ b/drivers/dma-buf/dma-heap.c
+> > @@ -53,12 +53,15 @@ static dev_t dma_heap_devt;
+> >   static struct class *dma_heap_class;
+> >   static DEFINE_XARRAY_ALLOC(dma_heap_minors);
+> >  =20
+> > -static int dma_heap_buffer_alloc(struct dma_heap *heap, size_t len,
+> > -				 unsigned int fd_flags,
+> > -				 unsigned int heap_flags)
+> > +struct dma_buf *dma_heap_buffer_alloc(struct dma_heap *heap, size_t le=
+n,
+> > +				      unsigned int fd_flags,
+> > +				      unsigned int heap_flags)
+> >   {
+> > -	struct dma_buf *dmabuf;
+> > -	int fd;
+> > +	if (fd_flags & ~DMA_HEAP_VALID_FD_FLAGS)
+> > +		return ERR_PTR(-EINVAL);
+> > +
+> > +	if (heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
+> > +		return ERR_PTR(-EINVAL);
+> >  =20
+> >   	/*
+> >   	 * Allocations from all heaps have to begin
+> > @@ -66,9 +69,20 @@ static int dma_heap_buffer_alloc(struct dma_heap *he=
+ap, size_t len,
+> >   	 */
+> >   	len =3D PAGE_ALIGN(len);
+> >   	if (!len)
+> > -		return -EINVAL;
+> > +		return ERR_PTR(-EINVAL);
+> >  =20
+> > -	dmabuf =3D heap->ops->allocate(heap, len, fd_flags, heap_flags);
+> > +	return heap->ops->allocate(heap, len, fd_flags, heap_flags);
+> > +}
+> > +EXPORT_SYMBOL_GPL(dma_heap_buffer_alloc);
+> > +
+> > +static int dma_heap_bufferfd_alloc(struct dma_heap *heap, size_t len,
+> > +				   unsigned int fd_flags,
+> > +				   unsigned int heap_flags)
+> > +{
+> > +	struct dma_buf *dmabuf;
+> > +	int fd;
+> > +
+> > +	dmabuf =3D dma_heap_buffer_alloc(heap, len, fd_flags, heap_flags);
+> >   	if (IS_ERR(dmabuf))
+> >   		return PTR_ERR(dmabuf);
+> >  =20
+> > @@ -106,15 +120,9 @@ static long dma_heap_ioctl_allocate(struct file *f=
+ile, void *data)
+> >   	if (heap_allocation->fd)
+> >   		return -EINVAL;
+> >  =20
+> > -	if (heap_allocation->fd_flags & ~DMA_HEAP_VALID_FD_FLAGS)
+> > -		return -EINVAL;
+> > -
+> > -	if (heap_allocation->heap_flags & ~DMA_HEAP_VALID_HEAP_FLAGS)
+> > -		return -EINVAL;
+> > -
+> > -	fd =3D dma_heap_buffer_alloc(heap, heap_allocation->len,
+> > -				   heap_allocation->fd_flags,
+> > -				   heap_allocation->heap_flags);
+> > +	fd =3D dma_heap_bufferfd_alloc(heap, heap_allocation->len,
+> > +				     heap_allocation->fd_flags,
+> > +				     heap_allocation->heap_flags);
+> >   	if (fd < 0)
+> >   		return fd;
+> >  =20
+> > @@ -205,6 +213,7 @@ const char *dma_heap_get_name(struct dma_heap *heap=
+)
+> >   {
+> >   	return heap->name;
+> >   }
+> > +EXPORT_SYMBOL_GPL(dma_heap_get_name);
+> >  =20
+> >   struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_=
+info)
+> >   {
+> > @@ -290,6 +299,24 @@ struct dma_heap *dma_heap_add(const struct dma_hea=
+p_export_info *exp_info)
+> >   	kfree(heap);
+> >   	return err_ret;
+> >   }
+> > +EXPORT_SYMBOL_GPL(dma_heap_add);
+> > +
+> > +struct dma_heap *dma_heap_find(const char *name)
+> > +{
+> > +	struct dma_heap *h;
+> > +
+> > +	mutex_lock(&heap_list_lock);
+> > +	list_for_each_entry(h, &heap_list, list) {
+> > +		if (!strcmp(h->name, name)) {
+> > +			kref_get(&h->refcount);
+> > +			mutex_unlock(&heap_list_lock);
+> > +			return h;
+> > +		}
+> > +	}
+> > +	mutex_unlock(&heap_list_lock);
+> > +	return NULL;
+> > +}
+> > +EXPORT_SYMBOL_GPL(dma_heap_find);
+> >  =20
+> >   static void dma_heap_release(struct kref *ref)
+> >   {
+> > @@ -315,6 +342,7 @@ void dma_heap_put(struct dma_heap *h)
+> >   	kref_put(&h->refcount, dma_heap_release);
+> >   	mutex_unlock(&heap_list_lock);
+> >   }
+> > +EXPORT_SYMBOL_GPL(dma_heap_put);
+> >  =20
+> >   static char *dma_heap_devnode(const struct device *dev, umode_t *mode=
+)
+> >   {
+> > diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+> > index f3c678892c5c..59e70f6c7a60 100644
+> > --- a/include/linux/dma-heap.h
+> > +++ b/include/linux/dma-heap.h
+> > @@ -64,10 +64,35 @@ const char *dma_heap_get_name(struct dma_heap *heap=
+);
+> >    */
+> >   struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_=
+info);
+> >  =20
+> > +/**
+> > + * dma_heap_find - get the heap registered with the specified name
+> > + * @name: Name of the DMA-Heap to find
+> > + *
+> > + * Returns:
+> > + * The DMA-Heap with the provided name.
+> > + *
+> > + * NOTE: DMA-Heaps returned from this function MUST be released using
+> > + * dma_heap_put() when the user is done to enable the heap to be unloa=
+ded.
+> > + */
+> > +struct dma_heap *dma_heap_find(const char *name);
+> > +
+> >   /**
+> >    * dma_heap_put - drops a reference to a dmabuf heap, potentially fre=
+eing it
+> >    * @heap: the heap whose reference count to decrement
+> >    */
+> >   void dma_heap_put(struct dma_heap *heap);
+> >  =20
+> > +/**
+> > + * dma_heap_buffer_alloc - Allocate dma-buf from a dma_heap
+> > + * @heap:	DMA-Heap to allocate from
+> > + * @len:	size to allocate in bytes
+> > + * @fd_flags:	flags to set on returned dma-buf fd
+> > + * @heap_flags: flags to pass to the dma heap
+> > + *
+> > + * This is for internal dma-buf allocations only. Free returned buffer=
+s with dma_buf_put().
+> > + */
+> > +struct dma_buf *dma_heap_buffer_alloc(struct dma_heap *heap, size_t le=
+n,
+> > +				      unsigned int fd_flags,
+> > +				      unsigned int heap_flags);
+> > +
+> >   #endif /* _DMA_HEAPS_H */
+>=20
 
