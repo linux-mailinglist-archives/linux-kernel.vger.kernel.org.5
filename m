@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDB779D6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901E579D6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237203AbjILQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S237060AbjILQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237194AbjILQ4Q (ORCPT
+        with ESMTP id S231678AbjILQ5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:56:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6233110;
-        Tue, 12 Sep 2023 09:56:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694537772; x=1726073772;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pV99F/DxJsfDjodvyOfXHlYZI7zldMz95G0ynqOMMX4=;
-  b=PcjcwyiCusHpqFmZaruy9mCTfi4eVXAeqP5t3rS6vX6OPa/GNuiZBAYx
-   rRBCpxrK00bPeTjBXHczudTPDVv97NOB+5KiH1Hv1Gj93pB4vym0NlZcb
-   4KRTQapPp4Naovn2hTMmqO8iy96tRqD/ZZrb2ts8KlWA/BcnFHpDe8XdW
-   kH/DF9b5ppONmKk22Fvu1Bre2gpbnPWwip6XJ5HVREc1HvJoSqhoV/TSn
-   g2qFZG/094L/MuBWuS2SkL5jZA4TmuiK2pDtn85GXbFq4v3p4cZVN6QTj
-   X2VM/O96Ys9ea4NxWql5UjH9BoQrFkQgDG8fijgFvqHzSWPkOrxR27XxH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363469835"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="363469835"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:56:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="809349527"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="809349527"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Sep 2023 09:56:10 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id B7E2F248; Tue, 12 Sep 2023 19:56:08 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v1 1/1] serial: 8250_of: Use dev_err_probe() instead of dev_warn()
-Date:   Tue, 12 Sep 2023 19:56:07 +0300
-Message-Id: <20230912165607.402580-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Tue, 12 Sep 2023 12:57:06 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC68110;
+        Tue, 12 Sep 2023 09:57:02 -0700 (PDT)
+Received: from [192.168.0.106] (unknown [186.235.7.101])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AC1966071C9;
+        Tue, 12 Sep 2023 17:56:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694537820;
+        bh=HBRi9Hhlgh4EDnkDLig1ZLdAN0tTXejvnyzq+J8F68E=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GTWXXG06C++Uo5WfJQzOUXkpnQStgPoetnWMMASam4EhpbXuwDH6Ku9xtwu0mpw1t
+         f5J4/pqRt9bIrBL4y2H/6DsAw74oUyqYTUKEM3JCfXMpTDk1oF2J91qHXGBA5U7r0V
+         9G0gugYAliu2T+QNNMeW/0+9ElxNLsNiKrBSWoo6iT5Q2N3s/qYYf2BDvH0pYLRRrb
+         5v9pLr0FyIGScMIJjbei3sZ4YjVbuoKLmTJ8e1zjBZRuzG1yZrbdKK4l34lGEZuI90
+         RWI8IlsOk1xk8FgN0eo3e27d4VrjdZfEsVhNVWtuHj77T9k0UY53s4E34RUqn1ZI9a
+         3uVlsBT+spg8A==
+Message-ID: <3f1f1679-2d0a-d501-da9c-cb38088acef2@collabora.com>
+Date:   Tue, 12 Sep 2023 13:56:49 -0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 6/9] arm64: defconfig: Enable DA9211 regulator
+Content-Language: en-US
+To:     Vignesh Raman <vignesh.raman@collabora.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        david.heidelberg@collabora.com, daniels@collabora.com,
+        gustavo.padovan@collabora.com,
+        angelogioacchino.delregno@collabora.com, emma@anholt.net,
+        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
+        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, mripard@kernel.org,
+        dmitry.baryshkov@linaro.org, matthias.bgg@gmail.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230908152225.432139-1-vignesh.raman@collabora.com>
+ <20230908152225.432139-7-vignesh.raman@collabora.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20230908152225.432139-7-vignesh.raman@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The probe process may generate EPROBE_DEFER. In this case
-dev_err_probe() can still record err information. Otherwise
-it may pollute logs on that occasion.
 
-This also helps simplifing code and standardizing the error output.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_of.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+On 08/09/2023 12:22, Vignesh Raman wrote:
+> Mediatek mt8173 board fails to boot with DA9211 regulator disabled.
+> Enabling CONFIG_REGULATOR_DA9211=y in drm-ci fixes the issue.
+> 
+> So enable it in the defconfig since kernel-ci also requires it.
 
-diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
-index 51329625c48a..8c61ed25a8e4 100644
---- a/drivers/tty/serial/8250/8250_of.c
-+++ b/drivers/tty/serial/8250/8250_of.c
-@@ -33,7 +33,8 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 			struct of_serial_info *info)
- {
- 	struct resource resource;
--	struct device_node *np = ofdev->dev.of_node;
-+	struct device *dev = &ofdev->dev;
-+	struct device_node *np = dev->of_node;
- 	struct uart_port *port = &up->port;
- 	u32 clk, spd, prop;
- 	int ret, irq;
-@@ -48,10 +49,7 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 		/* Get clk rate through clk driver if present */
- 		info->clk = devm_clk_get(&ofdev->dev, NULL);
- 		if (IS_ERR(info->clk)) {
--			ret = PTR_ERR(info->clk);
--			if (ret != -EPROBE_DEFER)
--				dev_warn(&ofdev->dev,
--					 "failed to get clock: %d\n", ret);
-+			ret = dev_err_probe(dev, PTR_ERR(info->clk), "failed to get clock\n");
- 			goto err_pmruntime;
- 		}
- 
-@@ -67,7 +65,7 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 
- 	ret = of_address_to_resource(np, 0, &resource);
- 	if (ret) {
--		dev_warn(&ofdev->dev, "invalid address\n");
-+		dev_err_probe(dev, ret, "invalid address\n");
- 		goto err_unprepare;
- 	}
- 
-@@ -85,9 +83,8 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 		/* Check for shifted address mapping */
- 		if (of_property_read_u32(np, "reg-offset", &prop) == 0) {
- 			if (prop >= port->mapsize) {
--				dev_warn(&ofdev->dev, "reg-offset %u exceeds region size %pa\n",
--					 prop, &port->mapsize);
--				ret = -EINVAL;
-+				ret = dev_err_probe(dev, -EINVAL, "reg-offset %u exceeds region size %pa\n",
-+						    prop, &port->mapsize);
- 				goto err_unprepare;
- 			}
- 
-@@ -109,9 +106,8 @@ static int of_platform_serial_setup(struct platform_device *ofdev,
- 					       UPIO_MEM32BE : UPIO_MEM32;
- 				break;
- 			default:
--				dev_warn(&ofdev->dev, "unsupported reg-io-width (%d)\n",
--					 prop);
--				ret = -EINVAL;
-+				ret = dev_err_probe(dev, -EINVAL, "unsupported reg-io-width (%u)\n",
-+						    prop);
- 				goto err_unprepare;
- 			}
- 		}
--- 
-2.40.0.1.gaa8946217a0b
+tbh, =m doesn't solve for mesa-ci (since we don't use an initrd, not 
+sure if it solves for kernel-ci.
 
+> 
+> Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.co
+In any case:
+
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+> ---
+> 
+> v3:
+>    - New patch in the series to enable CONFIG_REGULATOR_DA9211 in defconfig
+> 
+> ---
+>   arch/arm64/configs/defconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index a25d783dfb95..ef22b532b63a 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -711,6 +711,7 @@ CONFIG_REGULATOR_AXP20X=y
+>   CONFIG_REGULATOR_BD718XX=y
+>   CONFIG_REGULATOR_BD9571MWV=y
+>   CONFIG_REGULATOR_CROS_EC=y
+> +CONFIG_REGULATOR_DA9211=m
+
+Question for the maintainers: would it be acceptable to make it a =y 
+instead of =m here ? Since this is something required for booting.
+
+Regards,
+Helen
+
+>   CONFIG_REGULATOR_FAN53555=y
+>   CONFIG_REGULATOR_GPIO=y
+>   CONFIG_REGULATOR_HI6421V530=y
