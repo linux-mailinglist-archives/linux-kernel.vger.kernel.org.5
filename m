@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C1479CD88
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B84179CD8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233654AbjILKNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
+        id S233748AbjILKNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbjILKNC (ORCPT
+        with ESMTP id S233728AbjILKNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:13:02 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618E210EC;
-        Tue, 12 Sep 2023 03:12:58 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id D64B8FF804;
-        Tue, 12 Sep 2023 10:12:51 +0000 (UTC)
+        Tue, 12 Sep 2023 06:13:18 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9945510EB;
+        Tue, 12 Sep 2023 03:13:13 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id E336C40011;
+        Tue, 12 Sep 2023 10:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694513576;
+        t=1694513592;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dWM2Z9T9jtugbYsZthTF7zlfGWppbApiPO5nR9Ir+Mc=;
-        b=R/tUxX3aRdo1r3qqCZ5dUqU1NQ0uluemUk8G0SsCCWFd0usrEDBcw5CiRVhMgMjI99yvj2
-        R6e6g+fKGNZHf9l4oMZBYtgi8Tu+WYz+WoLmcx0xNrYPABcdzulnrIlKZNpiSVR3TxlVRR
-        WptmuWNEkI91xIBBUGJMybMNKMRwXsgWVlKI+19m0BzkalSUAFlqwqhGhvDVfq6URxDIzO
-        vOsTQId6+fb5dKNXvQ2Gxh47nyMnlKeYHIMK48pZeNFENDYpjVCl8AtD1onCYTvMyDi5Jv
-        mwBA9RWKrxaVXFwebOkrdAuQF31ABuYFOxWElaTiu+/D9/eKo0p2grZGr2HM6A==
+        bh=bUO5lIYnbr+eDpfI26c5vkBg+9WRJsf3/+oOueasock=;
+        b=UsZDXKTmjsuAyXhimsLcGHYWSkApHpebNAuxAeBeoc6YbDoiDuLUt8y+iF1XFBvjUd4l05
+        ujGjrzFVJxFlA3H6p2NQFRooQqaxwZ8PW2ezuuLGCvasDgyEGk0cC/vS9Y24cfOvE54EZM
+        tiGVoyZiIPm9CPXBeF4ViMQZzmlJG7O7+AFpjcS8PqcriMkJNDYzZWSBez583DSwnZ9QSa
+        spXt6c8ddogS24swgswz0kPEvX+Vnm6hqs/CYL9hvqovBr1U8IZ0cwdhea6Unv7Zh29mtf
+        /MJxKhxYW+fhBNjlZey4Wtygme2ILnZzK+d/KuAsPEe3uSpnprkz12dvnM11FA==
 From:   Herve Codina <herve.codina@bootlin.com>
 To:     Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 11/31] MAINTAINERS: Add the Freescale QMC HDLC driver entry
-Date:   Tue, 12 Sep 2023 12:12:50 +0200
-Message-ID: <20230912101250.225429-1-herve.codina@bootlin.com>
+Subject: [PATCH v5 12/31] soc: fsl: cpm1: qmc: Introduce available timeslots masks
+Date:   Tue, 12 Sep 2023 12:13:06 +0200
+Message-ID: <20230912101306.225454-1-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
 References: <20230912081527.208499-1-herve.codina@bootlin.com>
@@ -69,33 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After contributing the driver, add myself as the maintainer for the
-Freescale QMC HDLC driver.
+Available timeslots masks define timeslots available for the related
+channel. These timeslots are defined by the QMC binding.
+
+Timeslots used are initialized to available timeslots but can be a
+subset of available timeslots.
+This prepares the dynamic timeslots management (ie. changing timeslots
+at runtime).
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/soc/fsl/qe/qmc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 90f13281d297..8b987f2c8633 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8364,6 +8364,13 @@ F:	Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
- F:	drivers/soc/fsl/qe/qmc.c
- F:	include/soc/fsl/qe/qmc.h
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index 5da15a25600e..653d458b84b6 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -177,7 +177,9 @@ struct qmc_chan {
+ 	struct qmc *qmc;
+ 	void __iomem *s_param;
+ 	enum qmc_mode mode;
++	u64	tx_ts_mask_avail;
+ 	u64	tx_ts_mask;
++	u64	rx_ts_mask_avail;
+ 	u64	rx_ts_mask;
+ 	bool is_reverse_data;
  
-+FREESCALE QUICC ENGINE QMC HDLC DRIVER
-+M:	Herve Codina <herve.codina@bootlin.com>
-+L:	netdev@vger.kernel.org
-+L:	linuxppc-dev@lists.ozlabs.org
-+S:	Maintained
-+F:	drivers/net/wan/fsl_qmc_hdlc.c
-+
- FREESCALE QUICC ENGINE TSA DRIVER
- M:	Herve Codina <herve.codina@bootlin.com>
- L:	linuxppc-dev@lists.ozlabs.org
+@@ -875,7 +877,8 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 			of_node_put(chan_np);
+ 			return ret;
+ 		}
+-		chan->tx_ts_mask = ts_mask;
++		chan->tx_ts_mask_avail = ts_mask;
++		chan->tx_ts_mask = chan->tx_ts_mask_avail;
+ 
+ 		ret = of_property_read_u64(chan_np, "fsl,rx-ts-mask", &ts_mask);
+ 		if (ret) {
+@@ -884,7 +887,8 @@ static int qmc_of_parse_chans(struct qmc *qmc, struct device_node *np)
+ 			of_node_put(chan_np);
+ 			return ret;
+ 		}
+-		chan->rx_ts_mask = ts_mask;
++		chan->rx_ts_mask_avail = ts_mask;
++		chan->rx_ts_mask = chan->rx_ts_mask_avail;
+ 
+ 		mode = "transparent";
+ 		ret = of_property_read_string(chan_np, "fsl,operational-mode", &mode);
 -- 
 2.41.0
 
