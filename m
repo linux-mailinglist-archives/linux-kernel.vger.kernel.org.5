@@ -2,79 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3779D7CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF54079D7D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbjILRnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
+        id S237103AbjILRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233821AbjILRnt (ORCPT
+        with ESMTP id S231989AbjILRp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:43:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FD310D3;
-        Tue, 12 Sep 2023 10:43:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6982AC433C8;
-        Tue, 12 Sep 2023 17:43:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694540624;
-        bh=ONBHIXmIJpuQpqY8iv+/EpWYcu9jmFnWikMk/+0bMrI=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=apqVne7LL2+W2DEta0JBgX7qiqCyEcKQqwauSDf/ABUKeQr+p/k/x+EKNWS63NsJR
-         UvDbvxt/aOymQPGMQQeWe1JJhQW5FFHWVzSCcush+/aahSeqpbKLwfnxLXfmXq9G3/
-         I07jRWQ3fzwfinnzj7yAvI0E+vNehdVo9yRbROU7creIn7z3yVgNBDR3zT+04PuorZ
-         3X+mMh1SiZrZm9Od9D+rO4pHsqzuCC4PO7yhQlfXsV0VF62KjCnadWP0ytsqwOUB6t
-         xHf8Zfxh0vXKu1l0wkCCEpXs9jq2+/YoHxEr0OmQDAkDn3bhHI2HKgeE/zdicM/bn2
-         UxTZN7+XZOcHA==
-Mime-Version: 1.0
+        Tue, 12 Sep 2023 13:45:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54FDC1;
+        Tue, 12 Sep 2023 10:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694540723; x=1726076723;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=cGvhfh8nW34L4sIwzd8TvewxSdym3DlOklkB4aof29M=;
+  b=RAP8c1WXMyvK4dIvyjFUIsMhMiDvcJsemoNMKZkqLvKwyC2u4LmRrQ+/
+   L3z4o8Jen/HweyVg1tzSzQ8Q2o2qxT4d9QSbIT5F4ZAf3GX14D/GPsAn/
+   NJAGLTJvWpazGVewurctsNpHA1mO3/avDEuxA/+VfZyWWceDiUHUanOwl
+   KzErlOs1FlPKXOuQ+POsHwODkG6Z9tRFEVH4dkes5x6dcD2DYAMkL0zt3
+   ZZJw2O7n75dYwSt4dEUojVjxZfjg+U8ft5SQ0CY4EeXAaQOVPMVm8HVlW
+   yK7kpI2l5saWX3b1ZXZ/RaxhWxkC2i7Uk7iDnBpUtSiFaZNtJ3pfh4msK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464824555"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="464824555"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 10:45:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="743798606"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="743798606"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.66.7])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 10:45:12 -0700
+Message-ID: <59c7b5dc2adddf574d0a920e5f7195c418292042.camel@linux.intel.com>
+Subject: Re: [PATCH 00/10] Add PCIe Bandwidth Controller
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Sep 2023 10:45:12 -0700
+In-Reply-To: <8c5b7c51-12c2-602c-b70-f819ae8610ee@linux.intel.com>
+References: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com>
+          <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
+          <21b95d9-86a5-dcb0-9dda-3f1cdd426b9e@linux.intel.com>
+          <647e2b5e-6064-dbfa-bb56-f74358efd1fe@quicinc.com>
+          <25bf206e-864b-644-9b4-a0f461b4285@linux.intel.com>
+         <f35db90cd67adf4b0f48cd6f2a6ad8fbd0c1a679.camel@linux.intel.com>
+         <8c5b7c51-12c2-602c-b70-f819ae8610ee@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 20:43:41 +0300
-Message-Id: <CVH4IMR7IMFX.1GWUHKK42MKOG@suppilovahvero>
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Ivan Orlov" <ivan.orlov0322@gmail.com>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tpm: Fix typo in tpmrm class definition
-X-Mailer: aerc 0.14.0
-References: <20230912170248.11007-1-jforbes@fedoraproject.org>
-In-Reply-To: <20230912170248.11007-1-jforbes@fedoraproject.org>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Sep 12, 2023 at 8:02 PM EEST, Justin M. Forbes wrote:
-> Commit d2e8071bed0be ("tpm: make all 'class' structures const")
-> unfortunately had a typo for the name on tpmrm.
->
-> Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
-> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> ---
->  drivers/char/tpm/tpm-chip.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 23f6f2eda84c..42b1062e33cd 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -33,7 +33,7 @@ const struct class tpm_class =3D {
->  	.shutdown_pre =3D tpm_class_shutdown,
->  };
->  const struct class tpmrm_class =3D {
-> -	.name =3D "tmprm",
-> +	.name =3D "tpmrm",
->  };
->  dev_t tpm_devt;
-> =20
-> --=20
-> 2.41.0
+On Tue, 2023-09-12 at 15:52 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Mon, 11 Sep 2023, srinivas pandruvada wrote:
+> > On Mon, 2023-09-11 at 18:47 +0300, Ilpo J=C3=A4rvinen wrote:
+> >=20
+> >=20
 
-Hi, I was able to apply v2 after all thank you.
+[...]
 
-I'll queue it for -rc2 pull request.
+> > But I don't suggest using such method. This causes confusion and
+> > difficult to change. For example if we increase range of P-state
+> > control, then there is no way to know what is the start point of T-
+> > states.
+>=20
+> Yes. I understand it would be confusing.
+>=20
+> > It is best to create to separate cooling devices for BW and link
+> > width.
+>=20
+> Okay. If that's the case, then I see no reason to add the Link Width=20
+> cooling device now as it could do nothing besides reporting the
+> current=20
+> link width.
+>=20
+> The only question that then remains is how to take this into account
+> in=20
+> the naming of the cooling devices, currently PCIe_Port_<pci_name()>
+> is=20
+> used but perhaps it would be better to change that to=20
+> PCIe_Port_Link_Speed_... to allow PCI_Port_Link_Width_... to be added
+> later beside it?
+It is better in that way to add BW controller later.
 
-BR, Jarkko
+Also adding separate cooling device will let thermal configuration,
+choose different method at different thermal thresholds or all
+together.
+
+Thanks,
+Srinivas
+
+>=20
+> > Also there is a requirement that anything you add to thermal sysfs,
+> > it
+> > should have some purpose for thermal control. I hope Link width
+> > control
+> > is targeted to similar use case BW control.
+>=20
+> Ability to control Link Width seems to be part of PCIe 6.0 L0p.
+> AFAICT,=20
+> the reasons are to lower/control power consumption so it seems to be=20
+> within scope.
+>=20
+>=20
+
