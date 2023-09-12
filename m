@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96FE79D54E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ED379D54F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236369AbjILPve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S236354AbjILPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235285AbjILPvc (ORCPT
+        with ESMTP id S230472AbjILPvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:51:32 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E219710DE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:51:28 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-402cc6b8bedso65972365e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:51:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1694533887; x=1695138687; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsNP+CUalvUAjJvta1otwWAcFQV71qxca94iMKEqF/A=;
-        b=CgSvOc8BAjFMAzPzese9A4RKTk1RU/gGmxNAZ+z/6nItCCvPxRtIfSEHR0NRfrh2+T
-         URYZUrhYbQoSbspD+NdKkRVgMcVP/2A/+JCtwwYZmp2DyGn/URz0kYO6hs6eC2V4riMJ
-         g1AgnPsuCwqbihOcd0aErcQBEVF562lKwTWChCe1aQabrZXNasNJQm7h4+3QjooO/Q1u
-         op6ZF0i0Lzuj22xOtsyqieur1ayk/6VE9H8oB0Cxsm7/bJJhiFEr59j7Uf9LAM3WIi46
-         7irnJbrslFJe61IDADS6EAdWagIBHybxe4Zuil5le00afrTnAPdsB7sy3LyY6e96CRsw
-         auPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694533887; x=1695138687;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wsNP+CUalvUAjJvta1otwWAcFQV71qxca94iMKEqF/A=;
-        b=HIAsWh5HXJy4bX0aJKtRJzHJ2bLymUmUe1HS6wXfMAAkkS15WswGb532FM3ZSeZLHf
-         5YnV97hA2EztnmNXQBcjQI898c5NAKnMFShpdj91RWl8NJye/T6TphZtTp2q8eGZYKI/
-         ra+c6eGZIOCEoHvx7I8PEGGiw90AxHda1GWCvEvK88n1/KwDPzksygH8OFzdr1pqxIdb
-         qCqLxA1WCxTbyikxPwWyBTD1Adh/Pr73dAWgKI6Q9IaXxYyh/LyL/muBFRvszDPZOZ0Q
-         FUNV3ZQwTbq+YDalVkRVbLk5UTtH9nbyhytjH+aZMN9seu5+ae8qJDHVIaITpfG6hiC7
-         STFQ==
-X-Gm-Message-State: AOJu0YwHHGnBr+XrVoKmxGCq5LddlQuVk+MgdTMbwnM2/pKiM8ZXhCMc
-        zUGWbygc86kNJ3HmUeAwOS0EIhDRGRsOqp2JDpg=
-X-Google-Smtp-Source: AGHT+IHZEv95kl3jDktmY1NkUQ24OYCapSA49iSxBijyUf7UeDeqokqnFPczb3o4+M+GuFcdA9m2qA==
-X-Received: by 2002:a05:600c:3b1e:b0:402:f536:41c5 with SMTP id m30-20020a05600c3b1e00b00402f53641c5mr11074708wms.3.1694533887008;
-        Tue, 12 Sep 2023 08:51:27 -0700 (PDT)
-Received: from [192.168.0.32] ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id y23-20020a7bcd97000000b003fee6f027c7sm16498569wmj.19.2023.09.12.08.51.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 08:51:26 -0700 (PDT)
-Message-ID: <6ee69f33-f8e3-e0ec-99a1-6be69aa37ea4@smile.fr>
-Date:   Tue, 12 Sep 2023 17:51:26 +0200
+        Tue, 12 Sep 2023 11:51:46 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DF10DE;
+        Tue, 12 Sep 2023 08:51:42 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5D2B51BF20A;
+        Tue, 12 Sep 2023 15:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694533900;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+VOjAOePJcDHCndNePvN61Fv7OvE6NmezJq/v8uWj44=;
+        b=jDlbsliqcYyLoi38muqLaHMIZVBfjXad48Y80sWmD5rJB3EOIy4nANTXOyrDJch05/Zy5T
+        c29Cu3EoTcNkAkPUhT3M0+xjhh0Rnljd7Pf6xW52OVYSHmFhayofrMed1xdICQJQ1MkCPS
+        XvjvNLns6S/2y7RJhcL2PVWa8/AZ0c0I7HlKG231LArVMuQv5qW1dIKg2HTTamEer9q9Oa
+        7WrymJafif/zGeWGfY5KJPd05IzM783IuH4iHVoOVEfhTgnHPaXw1hZrKP4YJr2ecE3/ae
+        ov4NGoxA95XaP8QFnRdKm6AdOudDi4BZou+FX4MjRGtPkPCp0V5qSax6ZhdonQ==
+Date:   Tue, 12 Sep 2023 17:51:38 +0200
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 0/7] net: phy: introduce phy numbering
+Message-ID: <20230912175138.729ce011@fedora>
+In-Reply-To: <e1de6afe-346f-42bf-8f7a-8621c2e26749@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+        <e1de6afe-346f-42bf-8f7a-8621c2e26749@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] kconfig: avoid an infinite loop in
- oldconfig/syncconfig
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230805095709.6717-1-yoann.congal@smile.fr>
- <CAK7LNAS8a=8n9r7kQrLTPpKwqXG1d1sd0WjJ8PQhOXHXxnSyNQ@mail.gmail.com>
- <a3990928-b239-9939-5b40-8937d9301674@infradead.org>
-From:   Yoann Congal <yoann.congal@smile.fr>
-Organization: Smile ECS
-In-Reply-To: <a3990928-b239-9939-5b40-8937d9301674@infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello Andrew,
 
-On 8/7/23 22:25, Randy Dunlap wrote:
-> On 8/7/23 12:25, Masahiro Yamada wrote:
->> It is strange (and consistent) to bail out
->> only for particular types.
+On Tue, 12 Sep 2023 17:36:56 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
+
+> > The PHY namespace is for now contained within struct net_device, meaning
+> > that PHYs that aren't related at all to any net_device wouldn't be
+> > numbered as of right now. The only case I identified is when a PHY sits
+> > between 2 DSA switches, but I don't know how relevant this is.  
 > 
-> It's still very helpful to know the symbol name that is causing
-> the issue.
-> 
->>
->> I would change the code simply as follows:
->> *snip*>>
->> yes "" | make config
->>
->> will succeed.
->>
->> make config < /dev/null
->>
->> will fail.
->>
->> People expecting the closed stdin to succeed
->> may start complaining, but I believe
->> they must fix their wrong scripts.
+> It might be relevant for the CPU port of the switch. The SoC ethernet
+> with a PHY has its PHY associated to a netdev, and so it can be
+> managed. However, the CPU port does not have a netdev, so the PHY is a
+> bit homeless. Phylink gained the ability to manage PHYs which are not
+> associated to a netdev, so i think it can manage such a PHY. If not,
+> we assume the PHY is strapped to perform link up and autoneg on power
+> on, and otherwise leave it alone.
 
-I've sent a v3 trying to fuse both of your suggestions.
+I agree and my plan, although still a bit hazy, is to share the phy_ns
+between the netdev associated to the Ethernet MAC and the CPU dsa_port
+of the switch, as they are on the same link. We could grab infos on the
+PHYs connected to the port that way. Although the PHY isn't connected
+to the same MAC, it's part of the same link, so I think it would be OK
+to share the phy_ns.
 
-Regards,
--- 
-Yoann Congal
-Smile ECS - Tech Expert
+We already do something in that direction, which is the stats gathering
+on the CPU dsa port, which are reported alongside stats from the
+ethernet MAC.
+
+Would that be OK ? I haven't started the DSA part, I was waiting for
+review on the overall idea, but I tried to keep this into consideration
+hence the phy_ns notion :)
+
+Thanks,
+
+Maxime
