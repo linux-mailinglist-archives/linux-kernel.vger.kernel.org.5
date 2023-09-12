@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAE779D257
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A687679D25B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235900AbjILNct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
+        id S235682AbjILNcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235797AbjILNcb (ORCPT
+        with ESMTP id S235827AbjILNce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:32:31 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E3210E6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:07 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50078e52537so9505511e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:07 -0700 (PDT)
+        Tue, 12 Sep 2023 09:32:34 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6082E1706
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:10 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502b0d23f28so4595159e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:32:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694525526; x=1695130326; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1694525528; x=1695130328; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=B5TUXFOv6yn9qpDAW3kO5jAn0DGFePw29Rv/Qa+Dofg=;
-        b=GUwYvW7TYXpM+51IA8ioyZdjor7F0OmR1JTfRAZQ/hSfoppZmd1R6meXI7tXnJMgJZ
-         EwUpoHUrVroJFg8diOJBHvOURrK2u/OUWCGxKPY57XFCPxCkWGdSLvrmsUa0h393VWj+
-         OjsayCgCOdzloxGL5BTE/Z7CVtmctum0NdPMd8XXwJ2HpllCqx14pOJBjdOjnKUxYCwt
-         fspcGpDByO7y4qdf0Vaz/ikP3H1w8BZzfIs9FamWD452gd5qgtAn78S7nsK/9Am2QA9n
-         OlFk3N/HqEvtbu52L11eABDp7CPoWoQ1z+8GSUnLRkMCjc/qetF7x/jM6BRGq1fX+aq4
-         am1A==
+        bh=PiGJwPcZWY5VFG9v0qbCB9581xCL0QMtTuQflRx2rlo=;
+        b=rwlspgKbTHeAoR8D5UGzJVuOKstVV9HkEf9GzwtQFU3ksup5wu4ZdwN3B6oDHDcojo
+         lXihjRpbymdTbRHaVPz9+KEQskfGmIpNGRd+L8qzvhWZ8PuuIpXCu+wumDPGL/OZCjVo
+         WwmFsCHbif5j1L3ItbbOf07t4LeBQ0iwnPyc5omlyYGXZ+4VTFjFfFP57eHXSDk0g/yG
+         iRwyqkarTuOMKwYChxOnfwK8ukAmRLweuhamoBLRROZIMvTWz7XnGCQJFQOYvHuI8Jf5
+         isKkOjwvLGmNE6oab3KJZTXOw2toU4H4Fits7yT30C1ceKK2BDbYQnkeZKKswodKMV0n
+         Cmsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694525526; x=1695130326;
+        d=1e100.net; s=20230601; t=1694525528; x=1695130328;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B5TUXFOv6yn9qpDAW3kO5jAn0DGFePw29Rv/Qa+Dofg=;
-        b=NUuZWbPGAETbUt7/2eLVjIhPNk/P/W5DdAfDefQ4Mv1TqYhTYU81VNiPUUCIcx1PPB
-         rLfeNbeVB6EuB+Pa7Wj9atvBSw/sLhNUqQv5Vdbp/MUxwWnUij9T3RWQzRLxj9Ghmmv4
-         B2HhhdoBIBjAp6pe/MEGgqbzw0jvqIFMh4e5k3v26maTbNbYRutIiB5CnfBT3yvTPlhI
-         T6gB1x0I5FPpCPT0MFpWaxgbohEn5TwKlqtOM8FPMD9JApOCEoRi4zEld1oPbI6dLptu
-         GkK23FY18CAf8qFVIqT3dbST2gbWj9a5wygCZA6QW/91MpvzjTWD6GSLtig80gVXU9eD
-         8JyQ==
-X-Gm-Message-State: AOJu0YydeGZ63rgVajmSwv1ZQIZ1+mmTC6eTNtz/MTVwhubi6ez1GYqS
-        tecnKzy7knaOIF3OxMDe4+EK/g==
-X-Google-Smtp-Source: AGHT+IHJT5ownOgbIaxSDc0bjTSHUboWqifcbF1bbRzUuxxzkufa54Qv6/pZdVwNX0+AypcHeAsw4Q==
-X-Received: by 2002:a05:6512:36c2:b0:500:a2d0:51ba with SMTP id e2-20020a05651236c200b00500a2d051bamr8884352lfs.44.1694525526211;
-        Tue, 12 Sep 2023 06:32:06 -0700 (PDT)
+        bh=PiGJwPcZWY5VFG9v0qbCB9581xCL0QMtTuQflRx2rlo=;
+        b=U2wT/7peMrPyn3x01kfI8ECWKfWptxTziYm4YYRBp4TV468RC/2tt+PRg5prkmV3LU
+         miPKAiakt0FOQW2auo59YPeXMtc7Gp+8h2VKqmu3Gd1QwtTHCcFY+Q7ZuH3B50lJ6sp9
+         YYfeNEqmhEBfNPhANcHmtVnO9FPF8NC/FOa4aipd6vckfEUHNm8cgPhNOOcd+Mg+v9MJ
+         z2BIw55KxsjUvJXqLLuuOIW+aMz1/iDj/Y4SDqNBtvGnhlMP/r+b/UHSnHw1vUxerfjU
+         ZSPa+Na5XNB+CU7S4veDPJGnkIyN3ZAIJ/vrJm8auYs7itdxs3HCOTLwA4L/gi89jeBX
+         0rvA==
+X-Gm-Message-State: AOJu0YwEZCjhGau9Y0TYnNp+yPmBNsn+YlTsswW6M7kT1QI5Tp2A4mP2
+        B+D+2ayzqO2AafY+qh9D7ZqOFA==
+X-Google-Smtp-Source: AGHT+IG7MGV+5yfrfIbUAxlq/0SmpPmXJT7+m3AUNMaYZswy9Ud9cLdNvH7ShAE6dHY1LLBW3r7AlQ==
+X-Received: by 2002:ac2:48b4:0:b0:500:ac0b:8d51 with SMTP id u20-20020ac248b4000000b00500ac0b8d51mr9236642lfg.37.1694525528735;
+        Tue, 12 Sep 2023 06:32:08 -0700 (PDT)
 Received: from [10.167.154.1] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
-        by smtp.gmail.com with ESMTPSA id j2-20020aa7ca42000000b0052a401d8ef6sm5983830edt.71.2023.09.12.06.32.03
+        by smtp.gmail.com with ESMTPSA id j2-20020aa7ca42000000b0052a401d8ef6sm5983830edt.71.2023.09.12.06.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 06:32:05 -0700 (PDT)
+        Tue, 12 Sep 2023 06:32:08 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Tue, 12 Sep 2023 15:31:47 +0200
-Subject: [PATCH v2 09/14] dt-bindings: remoteproc: qcom,msm8996-mss-pil:
- Remove PNoC clock
+Date:   Tue, 12 Sep 2023 15:31:48 +0200
+Subject: [PATCH v2 10/14] remoteproc: qcom: q6v5-mss: Remove PNoC clock
+ from 8996 MSS
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230721-topic-rpm_clk_cleanup-v2-9-1e506593b1bd@linaro.org>
+Message-Id: <20230721-topic-rpm_clk_cleanup-v2-10-1e506593b1bd@linaro.org>
 References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
 In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -78,15 +78,13 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+        linux-usb@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694525501; l=1303;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694525501; l=688;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=365nLiorSKhklpxOJKGzrpOJcjkDQ3JA1L7vx8xj8ao=;
- b=ySRL9bhp5qv2LV2atLTYfW8bK0jq1ULmiT06RNxNxp7RXo7yb3yJDGE30x8jvAVd8tI2P5hSh
- SmOedpd+V+SCvsris2NdjIHKDtQdhxNuBTsCKDJeGhS4i0WUKkpGulP
+ bh=aEImegp4VH04wiEIbWvbE829Mpli30o1nbaGMff5Zgc=;
+ b=AVtSFIWouOh61cF+kWzE/4pk4pk1JFUIbhy8p+mvaicS0P3Fv0cisTztSIqBouk5Z2VD03M5t
+ DbdGLDFX0efAVTM0Ehd1vRbWtAp8k8qq+I2pe2bSWW3P6lQurp2F3iQ
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 Precedence: bulk
@@ -97,32 +95,23 @@ The PNoC clock is a clock for the entire PNoC bus, managed from
 within the interconnect driver. Attaching it to MSS was a total hack.
 Get rid of it.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/remoteproc/qcom_q6v5_mss.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
-index 0643faae2c39..971734085d51 100644
---- a/Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,msm8996-mss-pil.yaml
-@@ -220,7 +220,6 @@ allOf:
-             - description: GCC MSS GPLL0 clock
-             - description: GCC MSS SNOC_AXI clock
-             - description: GCC MSS MNOC_AXI clock
--            - description: RPM PNOC clock
-             - description: RPM QDSS clock
-         clock-names:
-           items:
-@@ -231,7 +230,6 @@ allOf:
-             - const: gpll0_mss
-             - const: snoc_axi
-             - const: mnoc_axi
--            - const: pnoc
-             - const: qdss
-         glink-edge: false
-       required:
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index 22fe7b5f5236..394b2c1cb5e2 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -2322,7 +2322,6 @@ static const struct rproc_hexagon_res msm8996_mss = {
+ 	},
+ 	.proxy_clk_names = (char*[]){
+ 			"xo",
+-			"pnoc",
+ 			"qdss",
+ 			NULL
+ 	},
 
 -- 
 2.42.0
