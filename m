@@ -2,127 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0133779D89C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95E479D8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbjILSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
+        id S237411AbjILSYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbjILSYK (ORCPT
+        with ESMTP id S237394AbjILSYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:24:10 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA5E10DF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fb898ab3bso2188886b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694543046; x=1695147846; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y8/1D1hlKrwxGhPYu7s8FW0yjX/NvlYAKUyveN+rZHg=;
-        b=RoDfTMpdGYQOL3qxsM/UQYJdoVepEmmHsBXKTD8a12xDCSBeBz0M0t8fZlfFUm3Kdv
-         87RxsOHwjEmPO0JUqLr3/wfdXi73kVHbmoqDQ7ZCwg1WRfUqlitl63X3ZgCTwo9Xh9U8
-         MVRh3AdeOk7O4mqiwzXX3dDQHYsgVkGz+ExyA6aDNgy4X0a3yEW1lSamfCWt4vXbkq1g
-         m1tgZafo/dsa5rtlUjNjUAxHvd9T6Ivs9hLQLX6PLs+l7rCOsEegWhyEz8vyjL5397UE
-         eIcs6R9SbM5lmj4HjgFHhTscHIrsHOVvxv7j1BRvPr7YjldRj/ZYKpnXa4tXL9WhYQqv
-         yiuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694543046; x=1695147846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y8/1D1hlKrwxGhPYu7s8FW0yjX/NvlYAKUyveN+rZHg=;
-        b=jzAWI2/6RZx6CouGVh9GwgR9REioWNu0s22ORPRE+dowiE6YH4UqjsNI23xSmU8Iij
-         gzkGkgj1J4uQB6ozComgkNXexSsQ44CKttFMMsf4mBDw9d82P1TH0s/SjgTr6S8l7nDr
-         Md9019VjTdPQa/n0TN1+YqBqFOlvtOeesNeMnigWtDEjuLk2rVdJaj7x0KZKDHSD+lkP
-         JAOio+egz++kAOkmKSy44iQkZX9+54ZBeMUbgoQ0itJz+6GxsbPswyDryv6VlYaDVYQC
-         ADej2866AghIBs1fTAfCLCNWHr36mXZCzdt2Qa7p3QrzcvwmG5CCkPyCRK6+7Xb6pISY
-         Q0vQ==
-X-Gm-Message-State: AOJu0YzCBTr3LMq1J8tsjRBA7Bh02c6+KlFY5mFW4tu0ZsTGeB+vMhHv
-        aE9yXerxzba1KpYqQCC13+hlnw==
-X-Google-Smtp-Source: AGHT+IG9chD/RkZ8OOUzGsLf726oa5VFCPJ0BaZ+qbex436wuU+iD6QMGqbR6s+8Yxvxt+tedk1NWA==
-X-Received: by 2002:a05:6a21:47cb:b0:153:6e99:edbb with SMTP id as11-20020a056a2147cb00b001536e99edbbmr225106pzc.31.1694543046299;
-        Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id bt10-20020a056a00438a00b006875df4773fsm3989174pfb.163.2023.09.12.11.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 11:24:05 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 18:24:01 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 4/6] KVM: Documentation: Add the missing description
- for tdp_mmu_root_count into kvm_mmu_page
-Message-ID: <ZQCswf8EWAGy8QZI@google.com>
-References: <20230801002127.534020-1-mizhang@google.com>
- <20230801002127.534020-5-mizhang@google.com>
- <ZN1R31uo4FGQfKrQ@google.com>
+        Tue, 12 Sep 2023 14:24:13 -0400
+Received: from smtp.smtpout.orange.fr (smtp-29.smtpout.orange.fr [80.12.242.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA1110EF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:24:09 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id g83RqRmrEiBkug83RqO2gs; Tue, 12 Sep 2023 20:24:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1694543048;
+        bh=BwabbmNDfoIMMoHR0PGecCbV9RImTYt/EdYJHgvIvUQ=;
+        h=Date:Subject:From:To:References:In-Reply-To;
+        b=OX266sJkHDWwgsJE5jCRB/QTRp50ddmqYY9P8Ul1ifjJBVPIxR4PPvO2+5UeejbxO
+         mZmBNovtlnpkwro8LTEixZeQcqDYt3KlaH5rguQcmSnJSswX4B7vWyIjRdbI/FsxTE
+         PJz5/a4gpD7QYUInCrAGGHKPNgqxYfDaxy0dLXgPspYNIwVRQlbuv1TaNSsq+3IaNS
+         GGpr7heMMJ4G93QQ1SjuBDVCdzixU7vyr9WhecfI19T9kkmakyxeJzUEpv0ShVloC1
+         IEZWX9woPVmVwgs+T8/cT5WuPo+BBDvm6fYMENko4biUvv3oEHGSp3Vzne7/BAjbsu
+         TYSBRyEpgnGVg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 12 Sep 2023 20:24:07 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <dec51c56-9169-d0f0-bdcd-e99790a7d86a@wanadoo.fr>
+Date:   Tue, 12 Sep 2023 20:24:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN1R31uo4FGQfKrQ@google.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 4/5] clk: twl: add clock driver for TWL6032
+Content-Language: fr
+From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Andreas Kemnade <andreas@kemnade.info>, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lee@kernel.org, bcousson@baylibre.com,
+        tony@atomide.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20230911221346.1484543-1-andreas@kemnade.info>
+ <20230911221346.1484543-5-andreas@kemnade.info>
+ <a9b646c7-2c02-8a69-a4c8-7e981a630eef@wanadoo.fr>
+In-Reply-To: <a9b646c7-2c02-8a69-a4c8-7e981a630eef@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, Sean Christopherson wrote:
-> On Tue, Aug 01, 2023, Mingwei Zhang wrote:
-> > Add the description of tdp_mmu_root_count into kvm_mmu_page description and
-> > combine it with the description of root_count. tdp_mmu_root_count is an
-> > atomic counter used only in TDP MMU. Update the doc.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  Documentation/virt/kvm/x86/mmu.rst | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > index 17d90974204e..40daf8beb9b1 100644
-> > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > @@ -229,10 +229,14 @@ Shadow pages contain the following information:
-> >      can be calculated from the gfn field when used.  In addition, when
-> >      role.direct is set, KVM does not track access permission for each of the
-> >      gfn. See role.direct and gfn.
-> > -  root_count:
-> > -    A counter keeping track of how many hardware registers (guest cr3 or
-> > -    pdptrs) are now pointing at the page.  While this counter is nonzero, the
-> > -    page cannot be destroyed.  See role.invalid.
-> > +  root_count / tdp_mmu_root_count:
-> > +     root_count is a reference counter for root shadow pages in Shadow MMU.
-> > +     vCPUs elevate the refcount when getting a shadow page that will be used as
-> > +     a root page, i.e. page that will be loaded into hardware directly (CR3,
-> > +     PDPTRs, nCR3 EPTP). Root pages cannot be destroyed while their refcount is
-> > +     non-zero. See role.invalid. tdp_mmu_root_count is similar but exclusively
-> > +     used in TDP MMU as an atomic refcount. When the value is non-zero, it
-> > +     allows vCPUs acquire references while holding mmu_lock for read.
-> 
-> That last sentence is wrong.  *vCPUs* can't acquire references while holding
-> mmu_lock for read.  And actually, they don't ever put references while holding
-> for read either.  vCPUs *must* hold mmu_lock for write to obtain a new root,
-> Not putting references while holding mmu_lock for read is mostly an implementation
-> quirk.
-> 
-> Maybe replace it with this?
-> 
->     tdp_mmu_root_count is similar but exclusively used in the TDP MMU as an
->     atomic refcount (select TDP MMU flows walk all roots while holding mmu_lock
->     for read, e.g. when clearing dirty bits).
 
-hmm, I think all the content within the bracket is details and we should
-not mention them at all. In fact, when I see the implementation, the
-last refcount of tdp_mmu_root_count is treated differently. Those
-details should be instead mentioned in code or comments instead of
-documentation as they may evolve much faster.
 
-So, I will remove the last sentence.
+Le 12/09/2023 à 19:15, Christophe JAILLET a écrit :
+> Le 12/09/2023 à 00:13, Andreas Kemnade a écrit :
+>> The TWL6032 has some clock outputs which are controlled like
+>> fixed-voltage regulators, in some drivers for these chips
+>> found in the wild, just the regulator api is abused for controlling
+>> them, so simply use something similar to the regulator functions.
+>> Due to a lack of hardware available for testing, leave out the
+>> TWL6030-specific part of those functions.
+>>
+>> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+>> ---
+>>   drivers/clk/Kconfig   |   9 ++
+>>   drivers/clk/Makefile  |   1 +
+>>   drivers/clk/clk-twl.c | 197 ++++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 207 insertions(+)
+>>   create mode 100644 drivers/clk/clk-twl.c
+>>
+> 
+> ...
+> 
+>> +static int twl_clks_probe(struct platform_device *pdev)
+>> +{
+>> +    struct clk_hw_onecell_data *clk_data;
+>> +    const struct twl_clks_data *hw_data;
+>> +
+>> +    struct twl_clock_info *cinfo;
+>> +    int ret;
+>> +    int i;
+>> +    int count;
+>> +
+>> +    hw_data = twl6032_clks;
+>> +    for (count = 0; hw_data[count].init.name; count++)
+>> +        ;
+> 
+> Nit: does removing the /* sentinel */ and using 
+> ARRAY_SIZE(twl_clks_data) would make sense and be simpler?
+> 
+> CJ
+> 
+>> +
+>> +    clk_data = devm_kzalloc(&pdev->dev,
+>> +                struct_size(clk_data, hws, count),
+>> +                GFP_KERNEL);
+>> +    if (!clk_data)
+>> +        return -ENOMEM;
+>> +
+>> +    clk_data->num = count;
+>> +    cinfo = devm_kcalloc(&pdev->dev, count, sizeof(*cinfo), GFP_KERNEL);
+>> +    if (!cinfo)
+>> +        return -ENOMEM;
+>> +
+>> +    for (i = 0; i < count; i++) {
+>> +        cinfo[i].base = hw_data[i].base;
+>> +        cinfo[i].dev = &pdev->dev;
+>> +        cinfo[i].hw.init = &hw_data[i].init;
+>> +        ret = devm_clk_hw_register(&pdev->dev, &cinfo[i].hw);
+>> +        if (ret) {
+>> +            dev_err(&pdev->dev, "Fail to register clock %s, %d\n",
+>> +                hw_data[i].init.name, ret);
+>> +            return ret;
+>> +        }
+>> +        clk_data->hws[i] = &cinfo[i].hw;
+>> +    }
+>> +
+>> +    ret = devm_of_clk_add_hw_provider(&pdev->dev,
+>> +                      of_clk_hw_onecell_get, clk_data);
+>> +    if (ret < 0)
+>> +        dev_err(&pdev->dev, "Fail to add clock driver, %d\n", ret);
+>> +
+>> +    return ret;
+> 
+> Nit: should there be a V4, some prefer return 0 to be more explicit.
+
+Oops, no, or a "return ret;" should be added as well a few lines above
+(it would more future proof, so)
+
+> 
+>> +}
+> 
+> ...
+> 
+> 
