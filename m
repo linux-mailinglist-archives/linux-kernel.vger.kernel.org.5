@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B1979C8A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E18779C8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjILHun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:50:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S231872AbjILHuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbjILHu3 (ORCPT
+        with ESMTP id S231814AbjILHuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:50:29 -0400
+        Tue, 12 Sep 2023 03:50:24 -0400
 Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941D510CE;
-        Tue, 12 Sep 2023 00:50:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694505011; cv=none;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B582E79;
+        Tue, 12 Sep 2023 00:50:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694505012; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=rqX4gv/vLK1CAASXFWZYqQ4ZIAtCRTVdw9hTqJRoYwA7OsF5HAwUygBPozwSoyhHoj
-    gjqehxSH6c8G+KOkKIELDTE3+2ayGRIqbSEVYk+vcExsFSJoCPUDt5hSC4Btxzux4zoM
-    LJn4xOSiIJKf3U5OgJWLqgndSN0vxZu1i7mli8LvUx+uMAktkaGpJoTo63UvomDVDW1E
-    A3drZSkl5kTBK4N74sGEp033Dm5TMpm8H77RmffVqYJ9Qjeo60keArJR4sK1QE7icyJB
-    G83T1jkYLcCq1zy6DaEs8uTqD5J3C3stEnRxa0W9VoCvjpVlJfp2PRVrawosFfGayhcs
-    ud9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694505011;
+    b=IcJI1yDLNLTpb+keWEMbKlBBhK061oaWAfnIf5f6IxX2wxANw9BB41ZLYivC6CDroz
+    MP7idyUZzMtGEompC+imZMH2IPFWnRntgoHJL+j7I8S36BQyR0yY7484BkqjjTCnV1Y4
+    cvAoFofXUikMUpmt38fSg/GAm40lguUiiL/CrjrF930BRcoZfjxyKuGfC45d0IxwN2lh
+    gExUzxEbWMAWviGloDowXIgtk8ZiMjLPnEqvWJnrXwhaITvSX3zraFpDevWELnqZkTvY
+    vZCEAALfqQ30ExMaPfott5T0zgG8GojgXLlxqF1dgR+UIS1w7vjwV9suBcjkaz8tYBYH
+    jkIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694505012;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Iiu5Q8DuotQnaG8K35L+wCLQXHnhA6SyDFIEGecdGAc=;
-    b=QU10HOv7c1DeTwsx0OTVnzRyqGXKbvHrVQtUJeG0y4DjV5OhYSj/wNpUuGDRgMrqbk
-    H0LKm7SJuchYY4fzSKKMaM+mtdkbWxZdtBlaW4lUqv3/WwZjHguEokGLHsGF9MeMW5Tq
-    GCVjWDEbfXXRB3vYiFTJe8fBZK0doyPgTA4b7EszbAmeFZRBWCsFC60z2Eoexr1D/yWg
-    zdWKrVDHKCeO2S2qfFPeMd61QDduGve/5ZGlz67JlgJ6lDEalbbAg/PF15dceFwvnrRx
-    TaTu74at5iyrM9y9haKVuekcdVRbJqFIuOU7VXZNOHRCLMtHnGaOHycM2CE2CULaXwu8
-    DvIQ==
+    bh=3BlPOpYYuTl9VcTVtvme0f5FGpEQD50BRzvSon1zHE0=;
+    b=cjy2YeZ5vKnFDc1Z4/jdnD98TLvymu4XJ6HcT50HK3HehNG/ZQ7apYIlXs8P7+gRej
+    u8RgQEjzYth8OShkANb0UvG05ehMk4grQzaYOpZeA014Nv7PMrWRZB9RiVqs8c+iSj0j
+    pgzxs3ntiUXZS/EJ7wVJ2rGAVw71VyEEJbLihCAnf8lpcZ/4rcnuTVD6/hIxLmoQRaAc
+    JgrmRnZieCiP3lClDPkRf+729CCjCNwN5CsI6ERhYYpilfhNG9/PrluhXg/soJM+aR5G
+    CXHy/R2sqrN1L1oMbpHnsh2G8IhmGETikSxZAKa7i+mD+QHQk9CtOSrZ2ceQwFWhokRu
+    O0pA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694505011;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694505012;
     s=strato-dkim-0002; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Iiu5Q8DuotQnaG8K35L+wCLQXHnhA6SyDFIEGecdGAc=;
-    b=U/TIv4MFoYHefuHO6JutSbhlRYz02V+kMY2Chmzu0dBGPnqvpGqaTlvAXRst4ZW4Sh
-    fgqXXfm2hujwQX3l2u0I8Oe3MnSmjjE4nMuX6TE4EnChQWYJZoF0cH++QnL6JSK0iGTB
-    Qja3OrBtjKrg6MEtgrlGVDqCHzk80wgk0kCnma3eSvMbOyJbYy5xIX96QOrXtI1aHkd6
-    Y2k8r4DQWS2C3PzYgZ9HRA0z2JDl/SYZIX+dSFPqH627wbwea6YbGbphYULQNzvGzYpz
-    YgfH1GbUS4RFEKt9wMklk5Bojg35J7rDISflaT+cZOi7ETa0akokM+S0AoLBRBZ5eHGx
-    aRlw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694505011;
+    bh=3BlPOpYYuTl9VcTVtvme0f5FGpEQD50BRzvSon1zHE0=;
+    b=HzZWncz+lyNz2uxEJUgPvbzGt3ghPPYh/vxyCBNFpXRWtpMxARw+2hQDLoVnc7UpOX
+    8gDbLbA+kJ1gc/AO+HQ0qQpJtdOy1rWz9mkEBThfpnor7AzesLw6O/r/+nluU4YTDoqr
+    wejrdkkuRvszbD2dS+YqN15iGrdaQasU5UvjrsU8qOHHnjF4Brj8toFj67QLDq/gk3U7
+    hfQRxPZYkc4DVvceTuYQYfwVx+8ZiehWFBE6ds32gmQHTjwx+2lsfO+oRdsWmZwtExGF
+    xGNXS4p+kdFS/5lqzW/17LYj8qg08PGDiPxZaeeRgq+/4KfN/g4smgucze5Ng1eW+r0A
+    BYcQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694505012;
     s=strato-dkim-0003; d=gerhold.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Iiu5Q8DuotQnaG8K35L+wCLQXHnhA6SyDFIEGecdGAc=;
-    b=oxffIhsXSN7aOnbfLkDZxockkxvkyJvpLwon/WqqrK9OKc5VMTcFiLHuagTDvXjtnk
-    65hsEpz01gc6wCLDeBAg==
+    bh=3BlPOpYYuTl9VcTVtvme0f5FGpEQD50BRzvSon1zHE0=;
+    b=RBBdpI7PTRW0dz/J8gJid8JM4XL0NJoO2rWUJ0cumj3GGpU/pSvv4KM7KmdxHh02Up
+    JhaiMuGDdWnciqmPG0Cw==
 X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn9VOL7nT0="
 Received: from [192.168.244.3]
     by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id 60372az8C7oBcKo
+    with ESMTPSA id 60372az8C7oCcKp
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 12 Sep 2023 09:50:11 +0200 (CEST)
+    Tue, 12 Sep 2023 09:50:12 +0200 (CEST)
 From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 12 Sep 2023 09:49:51 +0200
-Subject: [PATCH 3/6] dt-bindings: regulator: qcom,spmi: Document PM8019
+Date:   Tue, 12 Sep 2023 09:49:52 +0200
+Subject: [PATCH 4/6] regulator: qcom_spmi: Add PM8019 regulators
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230912-spmi-pm8909-v1-3-ba4b3bfaf87d@gerhold.net>
+Message-Id: <20230912-spmi-pm8909-v1-4-ba4b3bfaf87d@gerhold.net>
 References: <20230912-spmi-pm8909-v1-0-ba4b3bfaf87d@gerhold.net>
 In-Reply-To: <20230912-spmi-pm8909-v1-0-ba4b3bfaf87d@gerhold.net>
 To:     Mark Brown <broonie@kernel.org>
@@ -88,55 +88,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the qcom,pm8019-regulators compatible together with the
-necessary supply properties to allow interfacing via the hardware
-regulator registers directly via SPMI. This is mainly intended for
-debugging since the regulators are typically controlled via the RPM
-firmware (qcom,rpm-pm8019-regulators compatible).
+Add the necessary definitions for the PM8019 PMIC to the
+qcom_spmi-regulator driver to allow reading the actual voltages applied
+to the hardware at runtime. This is mainly intended for debugging since
+the regulators are usually controlled through the RPM firmware (via
+qcom_smd-regulator).
 
 Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 ---
- .../bindings/regulator/qcom,spmi-regulator.yaml      | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/regulator/qcom_spmi-regulator.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.yaml
-index 765c31246cc7..fe6898a89ea1 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom,spmi-regulator.yaml
-@@ -17,6 +17,7 @@ properties:
-       - qcom,pm660l-regulators
-       - qcom,pm8004-regulators
-       - qcom,pm8005-regulators
-+      - qcom,pm8019-regulators
-       - qcom,pm8226-regulators
-       - qcom,pm8841-regulators
-       - qcom,pm8909-regulators
-@@ -177,6 +178,25 @@ allOf:
-       patternProperties:
-         "^vdd_s[1-4]-supply$": true
+diff --git a/drivers/regulator/qcom_spmi-regulator.c b/drivers/regulator/qcom_spmi-regulator.c
+index 3c7ab6416b61..13fe1c73a547 100644
+--- a/drivers/regulator/qcom_spmi-regulator.c
++++ b/drivers/regulator/qcom_spmi-regulator.c
+@@ -2118,6 +2118,28 @@ static const struct spmi_regulator_data pm8005_regulators[] = {
+ 	{ }
+ };
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,pm8019-regulators
-+    then:
-+      properties:
-+        vdd_l1-supply: true
-+        vdd_l2_l3-supply: true
-+        vdd_l4_l5_l6-supply: true
-+        vdd_l7_l8_l11-supply: true
-+        vdd_l9-supply: true
-+        vdd_l10-supply: true
-+        vdd_l12-supply: true
-+        vdd_l13_l14-supply: true
-+      patternProperties:
-+        "^vdd_s[1-4]-supply$": true
++static const struct spmi_regulator_data pm8019_regulators[] = {
++	{ "s1", 0x1400, "vdd_s1", },
++	{ "s2", 0x1700, "vdd_s2", },
++	{ "s3", 0x1a00, "vdd_s3", },
++	{ "s4", 0x1d00, "vdd_s4", },
++	{ "l1", 0x4000, "vdd_l1", },
++	{ "l2", 0x4100, "vdd_l2_l3", },
++	{ "l3", 0x4200, "vdd_l2_l3", },
++	{ "l4", 0x4300, "vdd_l4_l5_l6", },
++	{ "l5", 0x4400, "vdd_l4_l5_l6", },
++	{ "l6", 0x4500, "vdd_l4_l5_l6", },
++	{ "l7", 0x4600, "vdd_l7_l8_l11", },
++	{ "l8", 0x4700, "vdd_l7_l8_l11", },
++	{ "l9", 0x4800, "vdd_l9", },
++	{ "l10", 0x4900, "vdd_l10", },
++	{ "l11", 0x4a00, "vdd_l7_l8_l11", },
++	{ "l12", 0x4b00, "vdd_l12", },
++	{ "l13", 0x4c00, "vdd_l13_l14", },
++	{ "l14", 0x4d00, "vdd_l13_l14", },
++	{ }
++};
 +
-   - if:
-       properties:
-         compatible:
+ static const struct spmi_regulator_data pm8226_regulators[] = {
+ 	{ "s1", 0x1400, "vdd_s1", },
+ 	{ "s2", 0x1700, "vdd_s2", },
+@@ -2378,6 +2400,7 @@ static const struct of_device_id qcom_spmi_regulator_match[] = {
+ 	{ .compatible = "qcom,pm660l-regulators", .data = &pm660l_regulators },
+ 	{ .compatible = "qcom,pm8004-regulators", .data = &pm8004_regulators },
+ 	{ .compatible = "qcom,pm8005-regulators", .data = &pm8005_regulators },
++	{ .compatible = "qcom,pm8019-regulators", .data = &pm8019_regulators },
+ 	{ .compatible = "qcom,pm8226-regulators", .data = &pm8226_regulators },
+ 	{ .compatible = "qcom,pm8841-regulators", .data = &pm8841_regulators },
+ 	{ .compatible = "qcom,pm8909-regulators", .data = &pm8909_regulators },
 
 -- 
 2.42.0
