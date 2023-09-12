@@ -2,183 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE6479D1E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A317979D1CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbjILNRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S235001AbjILNM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjILNRH (ORCPT
+        with ESMTP id S229632AbjILNMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:17:07 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515D510CA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:17:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-273ca7ab3f5so3840371a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fooishbar-org.20230601.gappssmtp.com; s=20230601; t=1694524622; x=1695129422; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=74/lXDjAicbAQVpv6HCI5jeqajIVNGavg/gPM8Y5/Jo=;
-        b=hRnJK+wFBqJIcfswqBqLspQkjytkccrhGA+4sABGreFmE+9URx+icD78lIE1g/8TsW
-         09efceDe0UcHxCSV96PRm+19shG08rXNwgoaPsj0GeOnJWrokumx8Fl7hATbgRvvNRlq
-         UIQNC4iaLpuulfDvyf9BRM/DvTsr9ANOJxGvNmp0J6jur9CkJXPCrReIgZUmnJl12vPM
-         GH6GdftVagDt3GhRObsgNxqLkA/VYTPix/lfsj5bttOg8b9Bv2WH/kNruFpQEP6rWzAm
-         Ts3hidBk0J8QXKLE3fQWwzQeT63AdmsT+FQMmd/m/v4ZB/GT3j1teR1PspcdVeSXuf4j
-         IMzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694524622; x=1695129422;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=74/lXDjAicbAQVpv6HCI5jeqajIVNGavg/gPM8Y5/Jo=;
-        b=fjoXxKG/bwUgKA9anVctm2zEd1w5oILWkvu+jN+A82LPLxyahF1TxtVzvzxcDtXkEe
-         l4QwvJFIuxj/oLTBikXm0H/84qempdcoZp7nPEHDOKpkd7nzW0yPzKRuqjeV/sS8sEDn
-         /29lhgroXtbSV43boMzFmc5ph+pcgP6yMzV4oCIBMYx8AW4AD2ObrHLlo+rxulbJM2cb
-         smXJqeaa2pdo2YMBK2+rLdN3NJWqtm6yeJYW8q/ZE8LDd6AoQAAqJIa/XCbl4Iu8Md9R
-         wv4jcbdfgwqnHGibXHPsZ+qjIj2ZKiYjaLdLWm0beAURopxkMeFjpH/jGzPl5i7K3beY
-         AmjA==
-X-Gm-Message-State: AOJu0Ywx2IDZMp8RJMzOrItz+4yAaHvkqrbhMiPT/dTh+Ce4jssfCxdI
-        RTYlk2odrA+AnFCRH+DP9PnA+OeJitAF4r9o+ySQuA==
-X-Google-Smtp-Source: AGHT+IERwDFvK750zia0Sae/chWY8QEXD4kOdOHvlRSTQo34xsLlidVO5fUIkgz4yvPkVtnGdXKIiS6fw+3sN/KQfUM=
-X-Received: by 2002:a17:90a:aa85:b0:268:1e95:4e25 with SMTP id
- l5-20020a17090aaa8500b002681e954e25mr10043598pjq.17.1694524622460; Tue, 12
- Sep 2023 06:17:02 -0700 (PDT)
+        Tue, 12 Sep 2023 09:12:25 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2057.outbound.protection.outlook.com [40.107.6.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0B010CA;
+        Tue, 12 Sep 2023 06:12:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B0FYs/8PT845/vmsp9klKLDKob9U5/41hoN6mmzY+kN9ujUBRPutZMvGjli7PdHYJ/bw66eP1CWSl7I2dFV1TwLGITrrvfBws79ZF7Axzg2pOgnzQlT8v0ILHNgyhATHTvtUkrerdDu8eZ8B5e3bf4yoXbpfeVZvzqVJqgks21gC5DG7NEHosSlJd+FYohK5lMFYsfKz6L+cNxlQz0j3Hwdnlee38z6LNB27GuAyj04rZEBOXDOqPeTb3eQVoGwlZ/YGE4/PF2DZi0H84qGiXlFyrZRZpYDPWHoNOk5gfOdgoTRWcrcI8pOIj0Zi+CDPnnzNgtfCZUTMzSKBoqUduA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XgMLgWSwF3aXUq+tK1GvxdjjgKWz68rrcAG+9mh5DA8=;
+ b=odd6bMtTlUVtRVWCV5m9HWsRL99bAcYMNSpJWGI47bfkao0rhD/0sFcln6CF8JQDI4SUPhPEQQz6VEgF0/JmNeC2Xnp9bnPe5m8jEoGn2zlVmU9wKOP63oQpmd+i0Upy5BWq1orCgQVRt2EnMKRc8uMWpPQKlEUZBiN4Jz70+CBzKpgK+Ll9UWWWbEG9pe6ix+e2yyZy2bzCMdGbfazo7XdQbLXbO/FDjB8e/350uuzd75dgl0g5sBom9BS5VE8j0VAu30Kl6YDI25HPDrx68qj64Zczrq+c4Cb4GIbAO2nhj8a8QEsshJB39CaGmxGJjTscLVw7QK9Wc8MExXTSMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XgMLgWSwF3aXUq+tK1GvxdjjgKWz68rrcAG+9mh5DA8=;
+ b=SoYOuIEyA/NK5IV3O90w49mwhDaNTqnzD4PvqHdUNwE6EyHkbzyFbM2Ak0MVo/xQRFs4R1j5oQZqFlgex+GrDfDfJw3F8OeE/FSM+L2wXgU351Vkgu95jhYowl5X4AKE3qlK8Fh4PBdNIGmDlwB55cmMFlRdthscuBsryZ+WCJI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DU2PR04MB9132.eurprd04.prod.outlook.com (2603:10a6:10:2f7::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Tue, 12 Sep
+ 2023 13:12:18 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
+ 13:12:18 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     abelvesa@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     linux-imx@nxp.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 1/4] clk: imx: Add 1039.5MHz frequency support for imx9 pll
+Date:   Tue, 12 Sep 2023 21:16:46 +0800
+Message-Id: <20230912131649.1491378-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0046.apcprd02.prod.outlook.com
+ (2603:1096:4:196::15) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 MIME-Version: 1.0
-References: <4rpsqk4tgrdcxtxtfoum6o4oyglwkirmkh3jj4y5tays2ivb5p@uwqdf3snshkv>
- <25df6189-7b0a-b13d-e93d-c2a388fd45e3@collabora.com> <zmq7pz7rtz6h765azg5kl2qgjd264yafctx4q474t5tqai57og@cajbcub4yuwr>
- <5fdf9d29-3f8d-0ee0-027f-57ff3a5cecb8@collabora.com> <CAKMK7uGg6n322UugJwErqF_Dvsbqceqae6SVWV3ZWEOR7x36rQ@mail.gmail.com>
- <9a2b1ad8-4359-4f12-b4f9-c1de477bc440@collabora.com> <mnjcsiqjqdnvbbkaaz5r4n42e56qsax667r7radzyagnmmfkip@dfi64z5deqzj>
- <b7d96985-8489-efe2-db67-1f3108e26822@mailbox.org> <5ejq3hjpoy3gxft2jbmoa5m656usetuxcs7g3ezyyiitj67rav@r5jhdz27foat>
- <550454b8-2e2c-c947-92c5-37f0367661c2@mailbox.org> <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
-In-Reply-To: <os2wvkangif2nwewfbzkuyjm7njp4g3sqj5td3ogbhhjwsrbbd@3jpf6g5hd3z4>
-From:   Daniel Stone <daniel@fooishbar.org>
-Date:   Tue, 12 Sep 2023 14:16:41 +0100
-Message-ID: <CAPj87rP1sw49Z0HdPhUa-=kDp166RqiuhC9rL+Ef9hpwPD5+JA@mail.gmail.com>
-Subject: Re: [PATCH v11] drm: Add initial ci/ subdirectory
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        emma@anholt.net, linux-doc@vger.kernel.org,
-        vignesh.raman@collabora.com, dri-devel@lists.freedesktop.org,
-        alyssa@rosenzweig.io, jbrunet@baylibre.com, robdclark@google.com,
-        corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, david.heidelberg@collabora.com,
-        linux-rockchip@lists.infradead.org,
-        Daniel Stone <daniels@collabora.com>,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        Helen Koike <helen.koike@collabora.com>, anholt@google.com,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        linux-amlogic@lists.infradead.org, gustavo.padovan@collabora.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|DU2PR04MB9132:EE_
+X-MS-Office365-Filtering-Correlation-Id: cf55f7f7-8118-4373-f9a2-08dbb391e3ef
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OiEMziSCUYMDRjceD7Qhv3JMNmNw+PhxOtq89CPIfSiNraE5/eLRn5Go2wj2gpLFQeJUdoZVqpJwcIERW3s4va1mVlboRfW9S5m92YGdbdOsn1gBgaF8k4NjY7XN+ZcDKypp0qafuT3rwdSXXw/Oo7utbsn7WRg8yhmFO03JSvg0YqErs/uTPLhu2NrLxPyBmrJrS4N1ghHB2IELoUPZOezbZvUsPZsH3SBUdVA2FXs/400jaKqvVyYgMcQ/H7FShaMcSsZjhv6N1JMw4AbyW5ddbyFcw8q/61l6RucK49dLh9khGPGVQfwLkbPsfSA47dKP82mRef7/QHS3eMVfmFrYMvAQRlwIzTaUE8pBzOYj4C5U2TTnuhgY0fBn49GkbCurGiMLLQnDTitzMOf1lD0pLZa9hTdLY4wmmDN6xMoYVUE2axpcW1Hfz8kidtjuJgVN8qzWNr95ZJTg3BanZQVcvKNURRJ9SaQYsDek44wT1V19U4KOrcR2vCS90OtTj9Gm7Hx6kDIWMotTO+klvoebCW0WypNu+wtOVbfAFX5pC9IMVnIsNeDHYYHnWTtbgXt7WPu3DgbBqsua+FC7p7QJVq8Lkmoj386dVfrJLS99UavbA7gYsdLeEj+Hn4yN
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(366004)(39860400002)(346002)(186009)(451199024)(1800799009)(5660300002)(8676002)(8936002)(4326008)(83380400001)(6486002)(6666004)(6512007)(6506007)(26005)(1076003)(52116002)(2616005)(478600001)(66946007)(316002)(54906003)(66476007)(41300700001)(66556008)(86362001)(2906002)(4744005)(38350700002)(38100700002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+6lpO1zx+NzyxXi4DomsDidxSXLwlSbYLQfm3LymxT+U+W9QdpBjxuKqe82U?=
+ =?us-ascii?Q?ywwgyyh5jinZgGrcIxRO6p+vif9RRccE2U8unE36z4kJRYF8WQShEULp56QX?=
+ =?us-ascii?Q?VKFcmjUMJUhbY/Iz1IUOGVW8KNrU9qlyqH02MA7FrDszPjNdIXuhm1qprqIF?=
+ =?us-ascii?Q?T55Xx16R04Tu5GxIkvf6rJOPOVR7LD06bjY23KQQTdDNki8N2X1VggATIUPR?=
+ =?us-ascii?Q?CG/0C4KgJ30aNhT1qjC93oH4xqFsz+KBQxYA9rnNdzM2e39sb9i+tsYgXI7i?=
+ =?us-ascii?Q?66YHr0zw4oA7XFaVU39XOqCBF5+CfK1mY5tX1VplyF6echqFzWTWV4V8PulR?=
+ =?us-ascii?Q?DYmELQra3dlQxPm2+BziFfUFvuHZuBhDPwcs2lfB0DDlPlDLFLnSOJ2az0it?=
+ =?us-ascii?Q?P8wIjHOI0YQQx4+jUJx8HdKQ3gi7AHxXk1/d2TzRS84YrZnAr0BtbU+JGiVw?=
+ =?us-ascii?Q?7krlj26Fu3Flq9QvU7mZwyBI0wPUpLyiGgeGVL6iveHSq837YRY04WBOrDDk?=
+ =?us-ascii?Q?rTnjI94VPVkYWmKo4fgd0Ljl/dLHTljM9qej/eqHHk0MPyZ0kJigCA09m7Rq?=
+ =?us-ascii?Q?FiNWLw/HXsQaVR+Nh8t99ItLWDTbyHo+ndxQE6vTnZXXDDExP3jVSNpwU0al?=
+ =?us-ascii?Q?VwaWj1SPSqlVZLLW0X4YG7ACt32OodDNADo6XtgUyALgjH1w7XfHHrf3PZgj?=
+ =?us-ascii?Q?NbmCZz9Fxu42exgRu2eemV6HYXczePDZNMvI0hvgeNEBtBaX4bthcGdB2Qbj?=
+ =?us-ascii?Q?iIGwgA7C/Ii5bNlYF2Fs5Vt+wNqefp5DmtDZ+XeQym9gRWTItcjlO4f8A5sn?=
+ =?us-ascii?Q?d0xzMf9MFlj/IL4JaBlgek1Py9Fcb7w4D9am7esy8wTj9fyYIPZta5cpyctp?=
+ =?us-ascii?Q?OBbjYabhLtL2FvOOa59k1M8HHA0NT7dXvczB0FuvKwxlB6yN/QWp1npGFz7P?=
+ =?us-ascii?Q?jj25dvN62vyh6F3w2rwNCoSqH1CmNe9ncGxSlI5B4UG78KcbpCPyOfSWUOiU?=
+ =?us-ascii?Q?Ggr6GF6uoPbzK/pKdGF9zGtAJoqKGe2j9hZJHmObSQzSN94k1l6ZlumTGSgZ?=
+ =?us-ascii?Q?VcYitF/S/49kIEmIErLGos+6Okx58aVixucTKPO+MYJHJ+I+lww6nCe/e9Sk?=
+ =?us-ascii?Q?6KKN0eFd7lTPJwX3geMvwgoTV8zPVZ4hvCIrvdwDWCkl3WQrrdd/3pH6lvS5?=
+ =?us-ascii?Q?tkcd1CRPzaKKBkRwvnbiKgRPrjonSkDVDiE7vjfgELWP2/h7CPnyv5JXunji?=
+ =?us-ascii?Q?MPjB7UgdvThIWlv9FExYWJLVMKV3vZLSe+KZUoUt3ysdcEwSUF0egjFxaDTp?=
+ =?us-ascii?Q?uNEtkkelQ1RqCnWBXiqW4wLlQadpvswz2bTPIPRFhJLtLj/1EsPa4dvwxyEU?=
+ =?us-ascii?Q?JMSfn0BtzsKlSruGgBZn93oHCXqA6gcSheKna7skMg4ufAkTaxXMV0AuJLlj?=
+ =?us-ascii?Q?1ZtzZrhLXVHo9J4hAdZDmHXhWZH9ioVaAgHO86dSGIvdHWnrdP6L1+TagfRt?=
+ =?us-ascii?Q?6H5s0QZRCE061lugw1ZJGUdj2zV+hT/BdljBrhRiL8fP6XCqQgmjbOx3Rt9M?=
+ =?us-ascii?Q?78Zjg8w+Wz4+eINjaPPwYdFRvL5APuwEp38OCu+F?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf55f7f7-8118-4373-f9a2-08dbb391e3ef
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 13:12:18.2815
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O2KV9vQSmYf6eFO5P0zPTd1gBO32bii01yVQeLDBnZwMgsQnBfPM6BpaTja/XsYrTwvWvBCN5RlVrx1bOkDeWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB9132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-Hopefully less mangled formatting this time: turns out Thunderbird +
-plain text is utterly unreadable, so that's one less MUA that is
-actually usable to send email to kernel lists without getting shouted
-at.
+From: Jacky Bai <ping.bai@nxp.com>
 
-On Mon, 11 Sept 2023 at 15:46, Maxime Ripard <mripard@kernel.org> wrote:
-> On Mon, Sep 11, 2023 at 03:30:55PM +0200, Michel D=C3=A4nzer wrote:
-> > > There's in 6.6-rc1 around 240 reported flaky tests. None of them have
-> > > any context. That new series hads a few dozens too, without any conte=
-xt
-> > > either. And there's no mention about that being a plan, or a patch
-> > > adding a new policy for all tests going forward.
-> >
-> > That does sound bad, would need to be raised in review.
-> >
-> > > Any concern I raised were met with a giant "it worked on Mesa" handwa=
-ve
-> >
-> > Lessons learned from years of experience with big real-world CI
-> > systems like this are hardly "handwaving".
->
-> Your (and others) experience certainly isn't. It is valuable, welcome,
-> and very much appreciated.
->
-> However, my questions and concerns being ignored time and time again
-> about things like what is the process is going to be like, what is going
-> to be tested, who is going to be maintaining that test list, how that
-> interacts with stable, how we can possibly audit the flaky tests list,
-> etc. have felt like they were being handwaived away.
+For video pll, it may need to 1039.5MHz clock to fulfill
+the LVDS display 148.5MHz * 7 requirement. So add 1039.5MHz
+frequency config support for i.MX9 video PLL.
 
-Sorry it ended up coming across like that. It wasn't the intent.
+Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+Acked-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ drivers/clk/imx/clk-fracn-gppll.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> I'm not saying that because I disagree, I still do on some, but that's
-> fine to some extent. However, most of these issues are not so much an
-> infrastructure issue, but a community issue. And I don't even expect a
-> perfect solution right now, unlike what you seem to think. But I do
-> expect some kind of plan instead of just ignoring that problem.
->
-> Like, I had to ask the MT8173 question 3 times in order to get an
-> answer, and I'm still not sure what is going to be done to address that
-> particular issue.
->
-> So, I'm sorry, but I certainly feel like it here.
+diff --git a/drivers/clk/imx/clk-fracn-gppll.c b/drivers/clk/imx/clk-fracn-gppll.c
+index 44462ab50e51..96105ee4d9ef 100644
+--- a/drivers/clk/imx/clk-fracn-gppll.c
++++ b/drivers/clk/imx/clk-fracn-gppll.c
+@@ -78,6 +78,7 @@ struct clk_fracn_gppll {
+  * The Fvco should be in range 2.5Ghz to 5Ghz
+  */
+ static const struct imx_fracn_gppll_rate_table fracn_tbl[] = {
++	PLL_FRACN_GP(1039500000U, 173, 25, 100, 1, 4),
+ 	PLL_FRACN_GP(650000000U, 162, 50, 100, 0, 6),
+ 	PLL_FRACN_GP(594000000U, 198, 0, 1, 0, 8),
+ 	PLL_FRACN_GP(560000000U, 140, 0, 1, 0, 6),
+-- 
+2.37.1
 
-I don't quite see the same picture from your side though. For example,
-my reading of what you've said is that flaky tests are utterly
-unacceptable, as are partial runs, and we shouldn't pretend otherwise.
-With your concrete example (which is really helpful, so thanks), what
-happens to the MT8173 hdmi-inject test? Do we skip all MT8173 testing
-until it's perfect, or does MT8173 testing always fail because that
-test does?
-
-Both have their downsides. Not doing any testing has the obvious
-downside, and means that the driver can get worse until it gets
-perfect. Always marking the test as failed means that the test results
-are useless: if failure is expected, then red is good. I mean, say
-you're contributing a patch to fix some documentation or add a helper
-to common code which only v3d uses. The test results come back, and
-your branch is failing tests on MT8173, specifically the
-hdmi-inject@4k test. What then? Either as a senior contributor you
-'know' that's the case, or as a casual contributor you get told 'oh
-yeah, don't worry about the test results, they always fail'. Both lead
-to the same outcome, which is that no-one pays any attention to the
-results, and they get worse.
-
-What we do agree on is that yes, those tests should absolutely be
-fixed, and not just swept under the rug. Part of this is having
-maintainers actually meaningfully own their test results. For example,
-I'm looking at the expectation lists for the Intel gen in my laptop,
-and I'm seeing a lot of breakage in blending tests, as well as
-dual-display fails which include the resolution of my external
-display. I'd expect the Intel driver maintainers to look at them, get
-them fixed, and gradually prune those xfails/flakes down towards zero.
-
-If the maintainers don't own it though, then it's not going to get
-fixed. And we are exactly where we are today: broken plane blending
-and 1440p on KBL, broken EDID injection on MT8173, and broken atomic
-commits on stoney. Without stronger action from the maintainers (e.g.
-throwing i915 out of the tree until it has 100% pass 100% of the
-time), adding testing isn't making the situation better or worse in
-and of itself. What it _is_ doing though, is giving really clear
-documentation of the status of each driver, and backing that up by
-verifying it.
-
-Only maintainers can actually fix the drivers (or the tests tbf). But
-doing the testing does let us be really clear to everyone what the
-actual state is, and that way people can make informed decisions too.
-And the only way we're going to drive the test rate down is by the
-subsystem maintainers enforcing it.
-
-Does that make sense on where I'm (and I think a lot of others are) coming =
-from?
-
-To answer the other question about 'where are the logs?': some of them
-have the failure data in them, others don't. They all should going
-forward at least though.
-
-Cheers,
-Daniel
