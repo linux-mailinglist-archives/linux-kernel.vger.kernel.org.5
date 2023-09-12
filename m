@@ -2,246 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C66A679C3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269D679C3E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242473AbjILDPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
+        id S242509AbjILDRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242025AbjILDP0 (ORCPT
+        with ESMTP id S242589AbjILDRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:15:26 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250926CD7;
-        Mon, 11 Sep 2023 19:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694486786;
-        bh=9w8N1w65eM3j1HplfovIWdoaEqkHF1YpWPFz5tjpCFo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=naIlmKO7lUSHzKh3udlfvGQAyEBpEO6uHF4815s40RKckMzEJAizrivmQ/FhSlhOb
-         G8M6UGG9lYS9LFgrsuwa+zgk2k3X2OjKSWczolx31ctq1GKJebXMx2I2BTTzz/CCwW
-         ikOShORCXJgH5ZRZLx9cUL/NfgOvsf12vuw7q5ZN9kIO8FTptXQ359QQI0NCu6gkLF
-         dn3MzwOGVskGP5zFN6Jli0nqWgrT6EiKs8QOa5dc2GlCxTtd+LhZldZ152pXGSn7Cl
-         +/yy0eYtelhaE2jCRG1Lk0J0AIGIYsVdUz2XrhWe5Nj9pindOZ6Y5LIbq3kh+0BaHK
-         24pVpuzDswEPg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rl7JJ4Pfgz4x3C;
-        Tue, 12 Sep 2023 12:46:24 +1000 (AEST)
-Date:   Tue, 12 Sep 2023 12:46:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kalle Valo <kvalo@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Wireless <linux-wireless@vger.kernel.org>
-Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Mon, 11 Sep 2023 23:17:18 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F2258D1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:47:23 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bf7b5e1f06so9224005ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694486842; x=1695091642; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NfvEGWDbhOo/S364toZIJ0BhQdCJEFDoaQPD6f/HhMI=;
+        b=kvKTN3B555y7t53xkgQbToYdOb0aUDkUJiTrh3lgYWUoTyzqmI3I2ADRpk4lnXZndp
+         kTFx/UzLqclTBGNZqkoZodP/BSWixvHdShGQGnVGf1uQsY5rX1rRZmgL9nAqojOl8did
+         SfoC3fxkJC21tzm3ReOQv2i8iTkWWTvgxvx8B4JFxcr9xq/DuCz/0QYkznMlRk03HZSt
+         N9DA0tQMi14vbVAceB1R/PQzK9INrMv6FxXFePAt56zHWUY1mJRYeqAjfIjKaIpG9MSI
+         eHyhaWilBiAbRnwNIcCtVkH0PjrKgQIuMLEIFvGc6J9N97VQNurgQe98/vj93ZXrEZ+Q
+         Ivsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694486842; x=1695091642;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NfvEGWDbhOo/S364toZIJ0BhQdCJEFDoaQPD6f/HhMI=;
+        b=kn2j83GONr5sv/gPEQW4Ko4S8F03KSh4boceI3STrp9AuO1p0vnKP0KRSfMv7DVgx2
+         cwoi4S6BsoAqVTPRASzBczEpmlsvDjJ+J57gGHKlTCjQ/Mmpp/Q0p4ANAvlRHwt2NKtf
+         QbhmW6HMnPtSITAUrdI9g+5Qw34MIHiVLpX0+uYLy0ge9bdVT9xkahTzlWKBryI3Th6K
+         8of3i7pStfvGdLob9TnYR/O7J31048/UtremqejkYy2US6vEUPGpHlJs5HItIipRikZ6
+         J5bdn8g8vBx+vCqs0JuosQORW6kMPloKGKZI3sICAH9fz9wsY1/hivbREgh2R+8ukGhN
+         KDIw==
+X-Gm-Message-State: AOJu0Yz/+aXS2100UmvoUlUi1pNgwF6idkrnwfvJVHTMNUikr6c5eW75
+        gm7FphqY1LCdNE5/5bmq5H0rLg==
+X-Google-Smtp-Source: AGHT+IGtwigtlc+yswA+x812kGiyEPkeJYniOcEAzIAhOgNBsweHqaSLdkMnCfxVmwzCsPKMZ4Gnfw==
+X-Received: by 2002:a17:903:2448:b0:1c1:ee23:bb75 with SMTP id l8-20020a170903244800b001c1ee23bb75mr13145737pls.1.1694486842466;
+        Mon, 11 Sep 2023 19:47:22 -0700 (PDT)
+Received: from [10.84.155.178] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id t8-20020a170902bc4800b001bf846dd2ebsm7129710plz.303.2023.09.11.19.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 19:47:21 -0700 (PDT)
+Message-ID: <e639a428-0fb7-7329-ce52-e51f7951a146@bytedance.com>
+Date:   Tue, 12 Sep 2023 10:47:14 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: linux-next: build failure after merge of the bcachefs tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the wireless-next tree with the
- wireless tree
-Message-ID: <20230912124623.6591edd4@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EtIg2kmiN+NByGDtODittXt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20230912120429.7852428f@canb.auug.org.au>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20230912120429.7852428f@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EtIg2kmiN+NByGDtODittXt
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Stephen,
 
-Hi all,
+On 2023/9/12 10:04, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the bcachefs tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_exit':
+> fs/bcachefs/btree_cache.c:403:9: error: implicit declaration of function 'unregister_shrinker'; did you mean 'unregister_chrdev'? [-Werror=implicit-function-declaration]
+>    403 |         unregister_shrinker(&bc->shrink);
+>        |         ^~~~~~~~~~~~~~~~~~~
+>        |         unregister_chrdev
+> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_init':
+> fs/bcachefs/btree_cache.c:479:15: error: implicit declaration of function 'register_shrinker'; did you mean 'register_chrdev'? [-Werror=implicit-function-declaration]
+>    479 |         ret = register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+>        |               ^~~~~~~~~~~~~~~~~
+>        |               register_chrdev
+> cc1: all warnings being treated as errors
+> 
+> Caused by commits
+> 
+>    5ec30115c066 ("bcachefs: Initial commit")
+> 
+> interacting with commit
+> 
+>    eba045d9350d ("mm: shrinker: remove old APIs")
+> 
+> from v6.6-rc1.
+> 
+> I have applied the following merge resolution patch for today.  More may
+> be needed.
 
-Today's linux-next merge of the wireless-next tree got a conflict in:
+Thanks for doing this! Some needed fixes below.
 
-  net/wireless/nl80211.c
+> 
+>  From 801ad185700d9a7abcf156233b9db6cf6d831581 Mon Sep 17 00:00:00 2001
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 12 Sep 2023 11:27:22 +1000
+> Subject: [PATCH] bcachefs: convert to dynamically allocated shrinkers
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>   fs/bcachefs/btree_cache.c     | 19 +++++++++++--------
+>   fs/bcachefs/btree_key_cache.c | 18 +++++++++++-------
+>   fs/bcachefs/btree_types.h     |  4 ++--
+>   fs/bcachefs/fs.c              |  2 +-
+>   fs/bcachefs/sysfs.c           |  2 +-
+>   5 files changed, 26 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+> index 245ddd92b2d1..7f0eded6c296 100644
+> --- a/fs/bcachefs/btree_cache.c
+> +++ b/fs/bcachefs/btree_cache.c
+> @@ -285,7 +285,7 @@ static int btree_node_write_and_reclaim(struct bch_fs *c, struct btree *b)
+>   static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>   					   struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>   					btree_cache.shrink);
 
-between commit:
+The shrink passed in here will be a local variable, so its address can
+not be used directly. So need to be modified as follows:
 
-  37c20b2effe9 ("wifi: cfg80211: fix cqm_config access race")
+	struct bch_fs *c = shrink->private_data;
 
-from the wireless tree and commit:
+>   	struct btree_cache *bc = &c->btree_cache;
+>   	struct btree *b, *t;
+> @@ -384,7 +384,7 @@ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+>   static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
+>   					    struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>   					btree_cache.shrink);
 
-  076fc8775daf ("wifi: cfg80211: remove wdev mutex")
+Ditto.
 
-from the wireless-next tree.
+>   	struct btree_cache *bc = &c->btree_cache;
+>   
+> @@ -400,7 +400,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+>   	struct btree *b;
+>   	unsigned i, flags;
+>   
+> -	unregister_shrinker(&bc->shrink);
+> +	shrinker_free(bc->shrink);
+>   
+>   	/* vfree() can allocate memory: */
+>   	flags = memalloc_nofs_save();
+> @@ -454,6 +454,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+>   int bch2_fs_btree_cache_init(struct bch_fs *c)
+>   {
+>   	struct btree_cache *bc = &c->btree_cache;
+> +	struct shrinker *shrink;
+>   	unsigned i;
+>   	int ret = 0;
+>   
+> @@ -473,12 +474,14 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
+>   
+>   	mutex_init(&c->verify_lock);
+>   
+> -	bc->shrink.count_objects	= bch2_btree_cache_count;
+> -	bc->shrink.scan_objects		= bch2_btree_cache_scan;
+> -	bc->shrink.seeks		= 4;
+> -	ret = register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+> -	if (ret)
+> +	shrink = shrinker_alloc(0, "%s/btree_cache", c->name);
+> +	if (!shrink)
+>   		goto err;
 
-I fixed it up (I used a supplied resolution from Johannes - see below)
-and can carry the fix as necessary. This is now fixed as far as
-linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
+Here the 'ret' needs to be set to -ENOMEM.
 
---=20
-Cheers,
-Stephen Rothwell
+	if (!shrink) {
+		ret = -ENOMEM;
+		goto err;
+	}
 
-diff --cc net/wireless/nl80211.c
-index 7a88361b3414,ab0aea7dca7d..fe06c238d4ef
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@@ -6191,12 -6135,8 +6150,12 @@@ static int nl80211_start_ap(struct sk_b
- =20
-  	err =3D nl80211_calculate_ap_params(params);
-  	if (err)
-- 		goto out_unlock;
-+ 		goto out;
- =20
- +	err =3D nl80211_validate_ap_phy_operation(params);
- +	if (err)
-- 		goto out_unlock;
-++		goto out;
- +
-  	if (info->attrs[NL80211_ATTR_AP_SETTINGS_FLAGS])
-  		params->flags =3D nla_get_u32(
-  			info->attrs[NL80211_ATTR_AP_SETTINGS_FLAGS]);
-@@@ -12884,11 -12747,10 +12767,11 @@@ static int nl80211_set_cqm_rssi(struc=
-t=20
-  				u32 hysteresis)
-  {
-  	struct cfg80211_registered_device *rdev =3D info->user_ptr[0];
- +	struct cfg80211_cqm_config *cqm_config =3D NULL, *old;
-  	struct net_device *dev =3D info->user_ptr[1];
-  	struct wireless_dev *wdev =3D dev->ieee80211_ptr;
-- 	int i, err;
-  	s32 prev =3D S32_MIN;
- -	int i;
-++	int i, err;
- =20
-  	/* Check all values negative and sorted */
-  	for (i =3D 0; i < n_thresholds; i++) {
-@@@ -12917,11 -12781,9 +12800,9 @@@
-  	if (n_thresholds =3D=3D 1 && thresholds[0] =3D=3D 0) /* Disabling */
-  		n_thresholds =3D 0;
- =20
-- 	wdev_lock(wdev);
-- 	old =3D rcu_dereference_protected(wdev->cqm_config,
-- 					lockdep_is_held(&wdev->mtx));
- -	if (n_thresholds) {
- -		struct cfg80211_cqm_config *cqm_config;
-++	old =3D wiphy_dereference(wdev->wiphy, wdev->cqm_config);
- =20
- +	if (n_thresholds) {
-  		cqm_config =3D kzalloc(struct_size(cqm_config, rssi_thresholds,
-  						 n_thresholds),
-  				     GFP_KERNEL);
-@@@ -12936,22 -12796,10 +12815,20 @@@
-  		       flex_array_size(cqm_config, rssi_thresholds,
-  				       n_thresholds));
- =20
- -		wdev->cqm_config =3D cqm_config;
- +		rcu_assign_pointer(wdev->cqm_config, cqm_config);
- +	} else {
- +		RCU_INIT_POINTER(wdev->cqm_config, NULL);
-  	}
- =20
- -	return cfg80211_cqm_rssi_update(rdev, dev);
- +	err =3D cfg80211_cqm_rssi_update(rdev, dev, cqm_config);
- +	if (err) {
- +		rcu_assign_pointer(wdev->cqm_config, old);
- +		kfree_rcu(cqm_config, rcu_head);
- +	} else {
- +		kfree_rcu(old, rcu_head);
- +	}
-- unlock:
-- 	wdev_unlock(wdev);
- +
- +	return err;
-  }
- =20
-  static int nl80211_set_cqm(struct sk_buff *skb, struct genl_info *info)
-@@@ -19107,41 -18879,18 +18907,39 @@@ void cfg80211_cqm_rssi_notify(struct =
-ne
-  		    rssi_event !=3D NL80211_CQM_RSSI_THRESHOLD_EVENT_HIGH))
-  		return;
- =20
- -	if (wdev->cqm_config) {
- -		wdev->cqm_config->last_rssi_event_value =3D rssi_level;
- +	rcu_read_lock();
- +	cqm_config =3D rcu_dereference(wdev->cqm_config);
- +	if (cqm_config) {
- +		cqm_config->last_rssi_event_value =3D rssi_level;
- +		cqm_config->last_rssi_event_type =3D rssi_event;
- +		wiphy_work_queue(wdev->wiphy, &wdev->cqm_rssi_work);
- +	}
- +	rcu_read_unlock();
- +}
- +EXPORT_SYMBOL(cfg80211_cqm_rssi_notify);
- +
- +void cfg80211_cqm_rssi_notify_work(struct wiphy *wiphy, struct wiphy_work=
- *work)
- +{
- +	struct wireless_dev *wdev =3D container_of(work, struct wireless_dev,
- +						 cqm_rssi_work);
- +	struct cfg80211_registered_device *rdev =3D wiphy_to_rdev(wiphy);
- +	enum nl80211_cqm_rssi_threshold_event rssi_event;
- +	struct cfg80211_cqm_config *cqm_config;
- +	struct sk_buff *msg;
- +	s32 rssi_level;
- +
-- 	wdev_lock(wdev);
-- 	cqm_config =3D rcu_dereference_protected(wdev->cqm_config,
-- 					       lockdep_is_held(&wdev->mtx));
-++	cqm_config =3D wiphy_dereference(wdev->wiphy, wdev->cqm_config);
- +	if (!wdev->cqm_config)
-- 		goto unlock;
-++		return;
- =20
- -		cfg80211_cqm_rssi_update(rdev, dev);
- +	cfg80211_cqm_rssi_update(rdev, wdev->netdev, cqm_config);
- =20
- -		if (rssi_level =3D=3D 0)
- -			rssi_level =3D wdev->cqm_config->last_rssi_event_value;
- -	}
- +	rssi_level =3D cqm_config->last_rssi_event_value;
- +	rssi_event =3D cqm_config->last_rssi_event_type;
- =20
- -	msg =3D cfg80211_prepare_cqm(dev, NULL, gfp);
- +	msg =3D cfg80211_prepare_cqm(wdev->netdev, NULL, GFP_KERNEL);
-  	if (!msg)
-- 		goto unlock;
-+ 		return;
- =20
-  	if (nla_put_u32(msg, NL80211_ATTR_CQM_RSSI_THRESHOLD_EVENT,
-  			rssi_event))
-@@@ -19151,15 -18900,14 +18949,13 @@@
-  				      rssi_level))
-  		goto nla_put_failure;
- =20
- -	cfg80211_send_cqm(msg, gfp);
- +	cfg80211_send_cqm(msg, GFP_KERNEL);
- =20
-- 	goto unlock;
-+ 	return;
- =20
-   nla_put_failure:
-  	nlmsg_free(msg);
--  unlock:
-- 	wdev_unlock(wdev);
-  }
- -EXPORT_SYMBOL(cfg80211_cqm_rssi_notify);
- =20
-  void cfg80211_cqm_txe_notify(struct net_device *dev,
-  			     const u8 *peer, u32 num_packets,
 
---Sig_/EtIg2kmiN+NByGDtODittXt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +	bc->shrink = shrink;
+> +	shrink->count_objects	= bch2_btree_cache_count;
+> +	shrink->scan_objects	= bch2_btree_cache_scan;
+> +	shrink->seeks		= 4;
 
------BEGIN PGP SIGNATURE-----
+	shrink->private_data = c;
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/0P8ACgkQAVBC80lX
-0GxmKAgAhFwTkAlObU0Rl4d/XxvO2r6z01TP1U6Ga1NwuhFQfOYh0TPd5ybS30X6
-Cgz3tDgyj/KzL7j/FejSdE1cDaFv3HB6OUOcTy8jrEFpLGk8P9ERuI13fsZZeTDi
-uCI9SEhM7ZpPjvyysCPsf0lyAfAEDSh6DMWmgyOgwM6O9TV01mQxYF2jFeTA7xWB
-BWRdLo/0t6rgew+ygEjMEggmNt/QWjVU5Mn1TseurpFoyZXGuCjXJwPjubv1noKw
-n12OwGNQssLKRDKbFI9o7SCia/twSHEKvA/FmGeIn7/48aPsceUR0/u1VhKOjMAO
-naFqbuZmU/Nz2ozw2kdvzqlbzgqQPw==
-=ZBWJ
------END PGP SIGNATURE-----
+> +	shrinker_register(shrink);
+>   
+>   	return 0;
+>   err:
+> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+> index 505e7c365ab7..88d33690233b 100644
+> --- a/fs/bcachefs/btree_key_cache.c
+> +++ b/fs/bcachefs/btree_key_cache.c
+> @@ -838,7 +838,7 @@ void bch2_btree_key_cache_drop(struct btree_trans *trans,
+>   static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>   					   struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>   					btree_key_cache.shrink);
 
---Sig_/EtIg2kmiN+NByGDtODittXt--
+	struct bch_fs *c = shrink->private_data;
+
+>   	struct btree_key_cache *bc = &c->btree_key_cache;
+>   	struct bucket_table *tbl;
+> @@ -936,7 +936,7 @@ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+>   static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
+>   					    struct shrink_control *sc)
+>   {
+> -	struct bch_fs *c = container_of(shrink, struct bch_fs,
+> +	struct bch_fs *c = container_of(&shrink, struct bch_fs,
+>   					btree_key_cache.shrink);
+
+Ditto.
+
+>   	struct btree_key_cache *bc = &c->btree_key_cache;
+>   	long nr = atomic_long_read(&bc->nr_keys) -
+> @@ -957,7 +957,7 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cache *bc)
+>   	int cpu;
+>   #endif
+>   
+> -	unregister_shrinker(&bc->shrink);
+> +	shrinker_free(bc->shrink);
+>   
+>   	mutex_lock(&bc->lock);
+>   
+> @@ -1031,6 +1031,7 @@ void bch2_fs_btree_key_cache_init_early(struct btree_key_cache *c)
+>   int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>   {
+>   	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
+> +	struct shrinker *shrink;
+>   
+>   #ifdef __KERNEL__
+>   	bc->pcpu_freed = alloc_percpu(struct btree_key_cache_freelist);
+> @@ -1043,11 +1044,14 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+
+	struct bch_fs *c = container_of(bc, struct bch_fs, btree_key_cache);
+
+>   
+>   	bc->table_init_done = true;
+>   
+> -	bc->shrink.seeks		= 0;
+> -	bc->shrink.count_objects	= bch2_btree_key_cache_count;
+> -	bc->shrink.scan_objects		= bch2_btree_key_cache_scan;
+> -	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
+> +	shrink = shrinker_alloc(0, "%s/btree_key_cache", c->name);
+> +	if (!shrink)
+>   		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
+> +	bc->shrink = shrink;
+> +	shrink->seeks		= 0;
+> +	shrink->count_objects	= bch2_btree_key_cache_count;
+> +	shrink->scan_objects	= bch2_btree_key_cache_scan;
+
+	shrink->private_data = c;
+
+> +	shrinker_register(shrink);
+>   	return 0;
+>   }
+>   
+> diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+> index 70398aaa095e..fac0abdaf167 100644
+> --- a/fs/bcachefs/btree_types.h
+> +++ b/fs/bcachefs/btree_types.h
+> @@ -163,7 +163,7 @@ struct btree_cache {
+>   	unsigned		used;
+>   	unsigned		reserve;
+>   	atomic_t		dirty;
+> -	struct shrinker		shrink;
+> +	struct shrinker		*shrink;
+>   
+>   	/*
+>   	 * If we need to allocate memory for a new btree node and that
+> @@ -321,7 +321,7 @@ struct btree_key_cache {
+>   	bool			table_init_done;
+>   	struct list_head	freed_pcpu;
+>   	struct list_head	freed_nonpcpu;
+> -	struct shrinker		shrink;
+> +	struct shrinker		*shrink;
+>   	unsigned		shrink_iter;
+>   	struct btree_key_cache_freelist __percpu *pcpu_freed;
+>   
+> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+> index 48431700b83e..bdc8573631bd 100644
+> --- a/fs/bcachefs/fs.c
+> +++ b/fs/bcachefs/fs.c
+> @@ -1885,7 +1885,7 @@ static struct dentry *bch2_mount(struct file_system_type *fs_type,
+>   		sb->s_flags	|= SB_POSIXACL;
+>   #endif
+>   
+> -	sb->s_shrink.seeks = 0;
+> +	sb->s_shrink->seeks = 0;
+>   
+>   	vinode = bch2_vfs_inode_get(c, BCACHEFS_ROOT_SUBVOL_INUM);
+>   	ret = PTR_ERR_OR_ZERO(vinode);
+> diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+> index 41c6900c34c1..a9f480c26bb4 100644
+> --- a/fs/bcachefs/sysfs.c
+> +++ b/fs/bcachefs/sysfs.c
+> @@ -522,7 +522,7 @@ STORE(bch2_fs)
+>   
+>   		sc.gfp_mask = GFP_KERNEL;
+>   		sc.nr_to_scan = strtoul_or_return(buf);
+> -		c->btree_cache.shrink.scan_objects(&c->btree_cache.shrink, &sc);
+> +		c->btree_cache.shrink->scan_objects(c->btree_cache.shrink, &sc);
+>   	}
+>   
+>   	if (attr == &sysfs_btree_wakeup)
