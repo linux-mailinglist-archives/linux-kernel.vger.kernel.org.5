@@ -2,125 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7AA79D8CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384E179D915
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237381AbjILSiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        id S237519AbjILSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237399AbjILSiC (ORCPT
+        with ESMTP id S237590AbjILSry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:38:02 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8920510F4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:37:58 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb898ab3bso2200874b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694543878; x=1695148678; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy5n43SLh7KcjSaJVYVzVDg3MnFdzm1gNQS0TTXtUR4=;
-        b=h5puBHtKj0adr1b3YQzUHSxeHSLsQRuriquzsKliOWX1fQR/Bm2/QGldD0I2RxdpLd
-         KbSXhjwfQMdsR8nGYyWoebFBi2dIB5EMVvqwCqbxQ/kOAapAr9NHSm6lfIn8vbxn1fAR
-         m9PtWcR2Wp56WQlA11/jGkW2nmgP5jaT7jCDLIrwXs/aouxEoggernOIn/HemlEiaeK0
-         zzmsPSCMOnjcIkpCoVu2j+mLqNFApTyMaTVWEbnepI1vCxd5cYITayA0Bu5GzrDNi3az
-         76qAyrKA+2n1mDGvJgifoalFzNTc2TReWTUJjqIH5KcE3GWEPD/CS4M9inx2tgM0tbaN
-         X5hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694543878; x=1695148678;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wy5n43SLh7KcjSaJVYVzVDg3MnFdzm1gNQS0TTXtUR4=;
-        b=eFyu8bS6ZwnI3c6FxkbWEDbkhfG9lntbi3DCAxm3UPQBo5j8r+VvUJS51WDpJHMd5a
-         /DL8TgD6+TFWGRmD0h7uJ/qzGpQ6Uy9BQ715n77Oqe7zvGEaGtVtwb+KlTkIw+HdT3Kp
-         Y1cwzzPrM489lw9IkDK5BHxabwbFxIHkKkS1TOh2Dk+uFgTbQVwXfJ2IEQlqR9QWk7G7
-         4DTgY9gPFA+BXJJphBgvUDqMRXcGOz2eXe5LBN7C37Ga+o8NOjfdoExUYnZcr8uAon1b
-         I8ilTdpD3f8YYigoB1hldJNHIxs7qf4gshD5ZGvAyJEFeCoJIfrxyLIbT5Tvw8o6FoSY
-         QBvQ==
-X-Gm-Message-State: AOJu0YzuuOsUwgLu8heS/TJaRDa9Zpj/axs98j+nxYge8Ww/5YxK1+dQ
-        46AGhkiYffMv8JhOdsxeYBoYgMUffOpiIlEbA44eKc3A
-X-Google-Smtp-Source: AGHT+IErGHsRSrFJvKHefg2NAmQCNrlFHjl+ciy1JtJ0nTYwIV/1H9rX5PxkYX9lsT1GFBHM0HI/Bg==
-X-Received: by 2002:a05:6a00:847:b0:68f:cb69:8e78 with SMTP id q7-20020a056a00084700b0068fcb698e78mr664621pfk.5.1694543877695;
-        Tue, 12 Sep 2023 11:37:57 -0700 (PDT)
-Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
-        by smtp.gmail.com with ESMTPSA id y24-20020a056a001c9800b0068fb996503esm4624790pfw.100.2023.09.12.11.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 11:37:57 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 18:37:53 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 5/6] KVM: Documentation: Add the missing description
- for mmu_valid_gen into kvm_mmu_page
-Message-ID: <ZQCwASSh0ssWYH4I@google.com>
-References: <20230801002127.534020-1-mizhang@google.com>
- <20230801002127.534020-6-mizhang@google.com>
- <ZN1QYGfFuzlyjECm@google.com>
+        Tue, 12 Sep 2023 14:47:54 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9C21716;
+        Tue, 12 Sep 2023 11:47:43 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 1f78031281b7904c; Tue, 12 Sep 2023 20:47:42 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id E0F5A663BE5;
+        Tue, 12 Sep 2023 20:47:41 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH v1 3/9] ACPI: thermal: Determine the number of trip points earlier
+Date:   Tue, 12 Sep 2023 20:37:59 +0200
+Message-ID: <1863318.tdWV9SEqCh@kreacher>
+In-Reply-To: <5708760.DvuYhMxLoT@kreacher>
+References: <5708760.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN1QYGfFuzlyjECm@google.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudeftdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehs
+ rhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, Sean Christopherson wrote:
-> On Tue, Aug 01, 2023, Mingwei Zhang wrote:
-> > Add the description for mmu_valid_gen into kvm_mmu_page description.
-> > mmu_valid_gen is used in shadow MMU for fast zapping. Update the doc to
-> > reflect that.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  Documentation/virt/kvm/x86/mmu.rst | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> > 
-> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > index 40daf8beb9b1..581e53fa00a2 100644
-> > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > @@ -208,6 +208,16 @@ Shadow pages contain the following information:
-> >      The page is not backed by a guest page table, but its first entry
-> >      points to one.  This is set if NPT uses 5-level page tables (host
-> >      CR4.LA57=1) and is shadowing L1's 4-level NPT (L1 CR4.LA57=1).
-> > +  mmu_valid_gen:
-> > +    The MMU generation of this page, used to fast zap of all MMU pages within a
-> > +    VM without blocking vCPUs.
-> 
-> KVM still blocks vCPUs, just for far less time.  How about this?
-> 
->      The MMU generation of this page, used to determine whether or not a shadow
->      page is obsolete, i.e. belongs to a previous MMU generation.  KVM changes
->      the MMU generation when all shadow pages need to be invalidated, e.g. if a
->      memslot is deleted, and so effectively marks all shadow pages as obsolete
->      without having to touch each page.  Marking shadow pages obsolete allows
->      KVM to zap them in the background, i.e. so that vCPUs can run while the
->      zap is ongoing (using a root from the new generation).  The MMU generation
->      is only ever '0' or '1' (slots_lock must be held until all pages from the
->      previous generation are zapped).
-> 
->      Note, the TDP MMU...
-> 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Got you. I think instead of elaborating this, I would simply put this
-way: "... without blocking vCPUs for too long". The subsequent description
-basically tells how it works and naturally explains how it does not
-blocks vCPUs for too long.
+Compute the number of trip points in acpi_thermal_add() so as to allow the
+driver's data structures to be simplified going forward.
 
-> > Specifically, KVM updates the per-VM valid MMU
-> > +    generation which causes the mismatch of mmu_valid_gen for each mmu page.
-> > +    This makes all existing MMU pages obsolete. Obsolete pages can't be used.
-> > +    Therefore, vCPUs must load a new, valid root before re-entering the guest.
-> > +    The MMU generation is only ever '0' or '1'.  
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/thermal.c |   60 +++++++++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 31 deletions(-)
+
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -452,7 +452,7 @@ static void acpi_thermal_get_hot_trip(st
+ 
+ static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+ {
+-	bool valid;
++	unsigned int count = 0;
+ 	int i;
+ 
+ 	acpi_thermal_get_critical_trip(tz);
+@@ -460,18 +460,24 @@ static int acpi_thermal_get_trip_points(
+ 	/* Passive and active trip points (optional). */
+ 	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+ 
+-	valid = tz->trips.critical.valid |
+-		tz->trips.hot.valid |
+-		tz->trips.passive.trip.valid;
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
+-		valid = valid || tz->trips.active[i].trip.valid;
+-
+-	if (!valid) {
+-		pr_warn(FW_BUG "No valid trip found\n");
+-		return -ENODEV;
++	if (tz->trips.critical.valid)
++		count++;
++
++	if (tz->trips.hot.valid)
++		count++;
++
++	if (tz->trips.passive.trip.valid)
++		count++;
++
++	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
++		if (tz->trips.active[i].trip.valid)
++			count++;
++		else
++			break;
++
+ 	}
+-	return 0;
++
++	return count;
+ }
+ 
+ /* sys I/F for generic thermal sysfs support */
+@@ -681,29 +687,15 @@ static void acpi_thermal_zone_sysfs_remo
+ 	sysfs_remove_link(&tzdev->kobj, "device");
+ }
+ 
+-static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz)
++static int acpi_thermal_register_thermal_zone(struct acpi_thermal *tz,
++					      unsigned int trip_count)
+ {
+ 	struct acpi_thermal_trip *acpi_trip;
+ 	struct thermal_trip *trip;
+ 	int passive_delay = 0;
+-	int trip_count = 0;
+ 	int result;
+ 	int i;
+ 
+-	if (tz->trips.critical.valid)
+-		trip_count++;
+-
+-	if (tz->trips.hot.valid)
+-		trip_count++;
+-
+-	if (tz->trips.passive.trip.valid) {
+-		trip_count++;
+-		passive_delay = tz->trips.passive.tsp * 100;
+-	}
+-
+-	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE && tz->trips.active[i].trip.valid; i++)
+-		trip_count++;
+-
+ 	trip = kcalloc(trip_count, sizeof(*trip), GFP_KERNEL);
+ 	if (!trip)
+ 		return -ENOMEM;
+@@ -724,6 +716,8 @@ static int acpi_thermal_register_thermal
+ 
+ 	acpi_trip = &tz->trips.passive.trip;
+ 	if (acpi_trip->valid) {
++		passive_delay = tz->trips.passive.tsp * 100;
++
+ 		trip->type = THERMAL_TRIP_PASSIVE;
+ 		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temperature);
+ 		trip->priv = acpi_trip;
+@@ -893,6 +887,7 @@ static void acpi_thermal_check_fn(struct
+ static int acpi_thermal_add(struct acpi_device *device)
+ {
+ 	struct acpi_thermal *tz;
++	unsigned int trip_count;
+ 	int result;
+ 
+ 	if (!device)
+@@ -911,9 +906,12 @@ static int acpi_thermal_add(struct acpi_
+ 	acpi_thermal_aml_dependency_fix(tz);
+ 
+ 	/* Get trip points [_CRT, _PSV, etc.] (required). */
+-	result = acpi_thermal_get_trip_points(tz);
+-	if (result)
++	trip_count = acpi_thermal_get_trip_points(tz);
++	if (!trip_count) {
++		pr_warn(FW_BUG "No valid trip points!\n");
++		result = -ENODEV;
+ 		goto free_memory;
++	}
+ 
+ 	/* Get temperature [_TMP] (required). */
+ 	result = acpi_thermal_get_temperature(tz);
+@@ -932,7 +930,7 @@ static int acpi_thermal_add(struct acpi_
+ 
+ 	acpi_thermal_guess_offset(tz);
+ 
+-	result = acpi_thermal_register_thermal_zone(tz);
++	result = acpi_thermal_register_thermal_zone(tz, trip_count);
+ 	if (result)
+ 		goto free_memory;
+ 
+
+
 
