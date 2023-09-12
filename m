@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCAA79CB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2729A79CB22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbjILJG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S233319AbjILJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbjILJGY (ORCPT
+        with ESMTP id S232208AbjILJGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:06:24 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B387C172B;
-        Tue, 12 Sep 2023 02:05:21 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id EF997320092D;
-        Tue, 12 Sep 2023 05:05:17 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 05:05:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1694509517; x=1694595917; bh=TA8jtm4MgiuLceQSfCUtObGyhjBvJ9WYvez
-        Lxw5lbaw=; b=ZqeqHrOIO5iNCsuQT6fSm2DTBJAwajk3dmAJFcIZwKOL8J38ekR
-        g2vbDkuTkNHVYLB5vohqaLJVZ/e2eyE55CEWTsaqh8VvQrzVfVMuLgSSZ7m+iGJT
-        X8N4VzmAR/qc5Ess1YNUM0TdWHKVhQ4FQBWTvCI2SnG9C4KB5zQzTNPErycPBQZE
-        outhf0mrl/3qIi6G+wzsX42bmx1yh6FnLf+i1vzUnH9JfBevUkt0mD91ZYjGK94Y
-        NY/otR/xqGTDx/o0FIG5aasP2ihHIDCARrM6r7IXNr1lmemp893dC4D4ksdivxgQ
-        CaODyH9MrdsoRtGi2+hDAbCxLHLp23+7dEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1694509517; x=1694595917; bh=TA8jtm4MgiuLceQSfCUtObGyhjBvJ9WYvez
-        Lxw5lbaw=; b=2ooWtfOO2MK8Jq4z7Lmp9UKffCU7Pj1TS+TnT/DsV4kh9M2VxOT
-        rpJAnHBQu5STG1nvauq+g0LYRBuafcPKTRfZK7HtnyKV6pIQdUq7HsDfSfp6Y3Qm
-        AcL5CfHzLOpuoB40BXYMyv9z9UqE8aBoJn0wMltNymFaXYxYXd2zcS0+I/YLrxIm
-        kDCLutYXYjuRdJKHNrSDmeeYdru2qBrzdLbXbGnihbGnAYGpZbYmQxmDnTR6JipP
-        wgYdeYqbouYCqBDnZq+04JOKHc8ddSN66YVO+LqAAg+ztYNkGvLcbUNKKnFFyp+u
-        lCTy9/OLIk3i3O+oks1SwgGLj68ZJI/I6Tg==
-X-ME-Sender: <xms:zCkAZdnhrTONwjZFVsCxi6-fCbtVbU12Yo_1New2z5PgPmvmyhQIeQ>
-    <xme:zCkAZY079OMp_HeyLXL73cQjepCUfa9PU2f1BHZ13gppOFqvKm9djfS39y2Jwrn0A
-    k04119iCA5UFXE6B5k>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:zCkAZTph2p8yB6xZUTeKtSEoZcnITI9fAJC8CDmInTTZdxxLLgjTlQ>
-    <xmx:zCkAZdntsHWR2udclgoU3EZ5bwdQrDjvZSv8-Ex8pLX1nEBMSz0Fkg>
-    <xmx:zCkAZb3_VcDyA57qvBhBPc-ZTXfCZ_rEzAji1IcNGdi9S9OHGV3Ttw>
-    <xmx:zSkAZS3HDXKsXxxvVNSm8kcduW84Nf0bRMdmlX3lwoHVK8ysNrXnZg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B86E4B6008D; Tue, 12 Sep 2023 05:05:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <9a7c7cb2-fa9e-4bf9-891b-ccd754d1fc25@app.fastmail.com>
-In-Reply-To: <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
-References: <20230911205338.2385278-1-arnd@kernel.org>
- <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
- <637afb25-8ee2-4188-9385-27ee6a97ec59@suse.de>
- <CAMuHMdW63WjidvAovqRz70bMgbLt4cSkOP1xSh7sEcqdwR3tOw@mail.gmail.com>
-Date:   Tue, 12 Sep 2023 05:04:37 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>
-Cc:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        "Maxime Ripard" <mripard@kernel.org>,
-        "Dave Airlie" <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Helge Deller" <deller@gmx.de>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Dave Airlie" <airlied@redhat.com>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        "Jim Cromie" <jim.cromie@gmail.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>,
-        "Arthur Grillo" <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
-Content-Type: text/plain;charset=utf-8
+        Tue, 12 Sep 2023 05:06:38 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE22C1981
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:06:01 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d801c83325fso3619007276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694509561; x=1695114361; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y/RE43x8EDqZSOQNHhRIsDHTJXqVvnyoJP3udIAKpDM=;
+        b=ZnYoi0MmyioHP0+0VJZvzerrFl9t1+9ECdLK8+nzmm5AdjnTBNTR/mjZIUdNZegwiZ
+         csfOJXKF9GaGcbQfM1WL3I/OhlmLkqqlHPb4dJ140Rmf32Fp2Qyqhgc4zgot71SPDQcw
+         A3AObdxwHCIAI4/gkQvQBocYkIk73garAfp/F3TfM86EMc3otOHOUGWIoR95sEydQ7Aq
+         4f7bROqVZokQ2OMu5nfH9Y+6IxWqjSrpbcKK8+r51oYsXTO1kqlIhw//f6TQpH1RS4DS
+         qT1meFZTPuUx1N42aV4FVLRJCJNO5VRPz8phaTSsaor1xoqOPCbX+/KQ2eT8I1rL3hoA
+         VC4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694509561; x=1695114361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y/RE43x8EDqZSOQNHhRIsDHTJXqVvnyoJP3udIAKpDM=;
+        b=m3LWi1cuuz0B13yUoU7aI6rANcoApkkQxFsTWJhCjfKBrbgWUvmps/pgqHtzX/p9Ao
+         PoP7LnT2trrsKh7Wr+vjPrReiHtwzUIz3jrX07x67WmOkfcyMc/4QpPerloWHCb7kXx+
+         hCIf1oHkblJ1a4+VqvhY5t6hg8O+I/Gw0mB/Jp+AM3z7AaEZ936GFxlo2nN+LMW9ZV/O
+         7cPU4nq9Es5M1DcwLn30ZXS1HeC3ieq5Alnqw+3Z5x6cEc+0zEJUmnSTIb8oXH3SbGSd
+         3Udba2WGHUEkBKyzJEaeWDdfVlKKrmxuBRvc2cqCSZpKD3ziofhRXCOTtq+uAOjM+d+x
+         l16w==
+X-Gm-Message-State: AOJu0YwdA4MvkatD/BZMPHBMicmMLZVtp/U/K2bBgq9LBwkbGBivNT6k
+        yQ4yXJe6CIY8Mhi/BFgwKR6hezpCfHUwARcQvHUTqQ==
+X-Google-Smtp-Source: AGHT+IGyj7jaQxIgh9sNw+w5/RpN1cpBHRGqXrkDxOGkZbGhxpB/d00UnSBnb3Z8rrosW8TN+PXvwFbRuvBLrcIWGs0=
+X-Received: by 2002:a25:d20d:0:b0:d78:441d:4d62 with SMTP id
+ j13-20020a25d20d000000b00d78441d4d62mr11118777ybg.22.1694509561156; Tue, 12
+ Sep 2023 02:06:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <CACRpkdYL46wY_4dm2w45kdPqOJ8zU9X=SSAXv_K=9wfBZFqyDQ@mail.gmail.com> <CAMuHMdXi6PPFqgjvr6tBXQnXqNb3YL=87JeSiGN0+QqkAvziAA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXi6PPFqgjvr6tBXQnXqNb3YL=87JeSiGN0+QqkAvziAA@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 11:05:50 +0200
+Message-ID: <CACRpkdYFzJD+F4v0DTfppGv39guL6YbeA=5aByxuu3u8Jp7u6A@mail.gmail.com>
+Subject: Re: [PATCH 00/37] Add new Renesas RZ/G3S SoC and RZ/G3S SMARC EVK
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Claudiu <claudiu.beznea@tuxon.dev>, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Ulrich Hecht <uli@fpond.eu>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023, at 04:18, Geert Uytterhoeven wrote:
-> On Tue, Sep 12, 2023 at 10:11=E2=80=AFAM Thomas Zimmermann <tzimmerman=
-n@suse.de> wrote:
->> Am 12.09.23 um 09:14 schrieb Geert Uytterhoeven:
->> [...]
->> >> --- a/drivers/gpu/drm/Kconfig
->> >> +++ b/drivers/gpu/drm/Kconfig
->> >> @@ -135,7 +135,7 @@ config DRM_FBDEV_EMULATION
->> >>          bool "Enable legacy fbdev support for your modesetting dr=
-iver"
->> >>          depends on DRM
->> >>          select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_=
-CONSOLE
->> >> -       default y
->> >> +       default FB
->> >
->> > While this is true for existing configs, it is no longer true in ge=
-neral,
->> > as DRM_FBDEV_EMULATION is no longer related to FB.
->>
->> Would it make sense to make FRAMEBUFFER_CONSOLE an independent option
->> and have FBDEV_EMULATION depend on it? Something like this:
->>
->> FRAMEBUFFER_CONSOLE
->>         depends on DRM || FB
->>         select FB_CORE
->>
->> FBDEV_EMULATION
->>         depends on DRM
->>         depends on FRAMEBUFFER_CONSOLE
->>         default y
+On Tue, Sep 12, 2023 at 11:03=E2=80=AFAM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> On Tue, Sep 12, 2023 at 10:55=E2=80=AFAM Linus Walleij <linus.walleij@lin=
+aro.org> wrote:
+
+> > For new code try to use <linux/cleanup.h>.
+> > Or if you prefer take a sweep and introduce scoped guards
+> > everywhere (for spinlocks, mutexes..).
 >
-> Oops, now you can no longer have FBDEV_EMULATION without
-> FRAMEBUFFER_CONSOLE, which is useful to be able to enable
-> FB_DEVICE...
->
-> And what's the point (if DRM is enabled) of having FB_CORE with
-> FBDEV_EMULATION disabled?
+> Hmmm, <linux/cleanup.h> is only available in v6.5 and later.
+> I don't know whether the CiP machinery is planning to backport
+> <linux/cleanup.h> to e.g. v6.1 LTS...
 
-I think we technically have the choice between selecting FB_CORE from
-all the providers (FB and DRM_FBDEV_EMULATION) or from all the
-consumers (FRAMEBUFFER_CONSOLE, FB_DEVICE and LOGO). We chose
-to have it the former way at the moment, and I think what Thomas
-suggests here is to change it to the latter.
+Only for new code! (for-v6.7+)
 
-The downside of the current approach is that you can have
-pointless configuration with
-
-CONFIG_FB=3Dy
-CONFIG_DRM=3Dy
-CONFIG_DRM_FBDEV_EMULATION=3Dy
-CONFIG_FRAMEBUFFER_CONSOLE=3Dn
-CONFIG_FB_DEVICE=3Dn
-CONFIG_LOGO=3Dn
-
-where the fb_core module gets initialized but it is impossible
-for anything to draw on it.
-
-Another option we have would be to try to separate the Kconfig
-options for DRM and FB a little further, in anticipation of
-reducing the amount of shared code in the long run (a lot of
-FB code is built but never used when enabling console on
-DRM).
-
-So adding a new
-
-config DRM_CONSOLE
-     bool "enable console on DRM devices"
-     depends on DRM
-     depends on VT_CONSOLE
-     depends on !UML
-     select FB_CORE
-     select FRAMEBUFFER_CONSOLE_CORE # new helper sym
-     select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-     default y
-
-would give us a path to minimize the shared code
-further, allowing the console code to be reused as
-before, but without having to pull in the code that
-is now only needed for FB_DEVICE. In this scenario,
-we'd still have CONFIG_DRM_FBDEV_EMULATION like
-
-config DRM_FBDEV_EMULATION
-      bool "full emulation of fbdev layer for DRM"
-      select FB_CORE
-      select FB_DEVICE
-      default FB # if enabled already, use it
-
-but only use that if we actually want FB_DEVICE.
-
-      Arnd
+Yours,
+Linus Walleij
