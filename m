@@ -2,252 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF4579DBB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9174F79DBBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbjILWMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
+        id S234892AbjILWNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbjILWMu (ORCPT
+        with ESMTP id S231844AbjILWNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:12:50 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7266210DF;
-        Tue, 12 Sep 2023 15:12:46 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a648f9d8e3so784875566b.1;
-        Tue, 12 Sep 2023 15:12:46 -0700 (PDT)
+        Tue, 12 Sep 2023 18:13:40 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13C110D9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:13:36 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-64b3ae681d1so33516696d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694556765; x=1695161565; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694556816; x=1695161616; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6IJfarNrrigVZ6GT5z4GlrFnGstC/W9B80yBZkpCLS4=;
-        b=jG5zbqICHDkZbcu7osSx3Aywz7K2dqp2HwIw3Lo2/CTjkUOsKm28EK0IH9XRwOJz1O
-         VdNrJ8y7JKwO4NatztujZgobcEG7i8W4jzRy1SUnMIXDE4bv+SAj1qR9YKTtzLMyv8r9
-         vF5RbqVwtYuk14cSyMzVPOk9JRticIGJHS0ctKak1/+4xPpukiID6TBi8DZwkdDgqvSm
-         M7zf5RN4p0Nb98lImA1svMJlA37QLSeajf4t7WKf0cOOZMHqlsHjfqemH3ai1npsRC5z
-         CVi8l1keLeQPu7Q8vXvAI/jdwV8sHOmqLxG4wLho9o4VMdRUncsqt8ttoAhwLohu9dO1
-         nLNw==
+        bh=67MJC2d5J2erEiZgw/Tl5J0vIH9+tJ2KcoKs7uxuLf4=;
+        b=EpiYcrhg/PH37kXIdurkb0lPgiswsvyOR8lYCltxswcP7hT8SmNHGOWfr9Kwt7/0K2
+         j+yzdyfjHMfFQ5U0KROclEp4U4+1Mo30n7pGlFn4RNGvTdVN9jPTAZIL7IKCex7/f4qp
+         43PHJlkLW7vM2lvmMMpxvfmGXNpOlYgd/BRfuKj1o/dIn3jO5OnS+wr6Gkf6mt1jXGkx
+         S/WxhVKS0a8vmtP4M/7k3Njne69Px4JHLVYdMGtvVa4KeB1+I8jiiP7a/jTyL0GQmOne
+         xyAfVL7TAFRCyJByEAF0yaGRgK1gXfxe7eyndE/IExAQ1aKB72+GX48ul2EMD3gN9ewE
+         MG1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694556765; x=1695161565;
+        d=1e100.net; s=20230601; t=1694556816; x=1695161616;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6IJfarNrrigVZ6GT5z4GlrFnGstC/W9B80yBZkpCLS4=;
-        b=Uje/s1QbNbbBFUKHlIXa0ByGFEihlkEYLA6O71yq+KqhmShc/JabMnAU8e4dMZ2hNa
-         5S/IfMkpJCQIJ7e1uGvoa7GzLR2tpYpbj+PpfeP1l8snQwyJN3+Bcyx3QoZHEpT0oB0G
-         huQFzfoBUzYyRSboqCGzOsoI4rzvwvw1gKARJele7KP83Mfsfgh7TlNT/a8VDXgsjEax
-         OC7DIEDpgc9CLxGQKk07YmqEBxPtmKOBoLGf0aMuyVNDcIaRtPUDlQ2NT1fOFYJ62pFQ
-         7L+kDm48wOO34uc7B3QCujrOfLEWeQ31aEBbip01d1pUCvV7mks81m6oEgc33rkwXoqQ
-         /6ww==
-X-Gm-Message-State: AOJu0YxVx1nFH6uksK4l8hfFBbpSVr31BTSX3D2cgVsk8ddzfyowFqnS
-        Ef9O1Pu2oej0E/Qzka7crfPwxXtJ0oIiO0yLSuk=
-X-Google-Smtp-Source: AGHT+IHYQvrjubMQhINvNX+TvJ1lH22YqclR1lkWh05N3akJpE3xw5vL2h5KfzfpFXC3H+6MLb0g80B8fG48I1pHKJk=
-X-Received: by 2002:a17:907:2c4f:b0:9a1:fab3:ee43 with SMTP id
- hf15-20020a1709072c4f00b009a1fab3ee43mr436753ejc.0.1694556764468; Tue, 12 Sep
- 2023 15:12:44 -0700 (PDT)
+        bh=67MJC2d5J2erEiZgw/Tl5J0vIH9+tJ2KcoKs7uxuLf4=;
+        b=f7o/7CMH5x4m3gYScnltozS0TAI8jAn0TUZYmbrAiN7Fryadr2A8i/ZilAkkmQ1fq/
+         SJgYsFMkC3w4l45CQujatOfqDtOCcebYY5k7sCBslvalWGzPWGFytuekNtt2cKpbjrrB
+         voB3WRhd13MA+6yKZJr5/u+YMIw+zAgP+dPyD2078lx1idkxOGtJ2VDLQxCM0h2IHT9L
+         lyryESKU/6M6U1kaYNZF6bAOoBH0LOSW3r1u/SGjGpNNG9p7yHRvfd3xrgyl3cKTz/IE
+         /GHv3/MYWByZAq3dmRDoClUUgqz9c5eIxZ72SXrHo5mectplnYGuAMVNyVdYBU8gsw+l
+         kDYw==
+X-Gm-Message-State: AOJu0Ywz0ajeldzEnNmI1+zPpUbs+H9CXfVs0yyKhKRQ3WrFYLJlWnMd
+        Ae2gTgmE+875nhceZNoIm2KvM6Lt0nqpBj19DGOwlQ==
+X-Google-Smtp-Source: AGHT+IGxFejFbJL5qeAMHOudBDNhE+uZ2FQTukHHr3qTslMku3xjMd87HeKet4oNSbvL+qnG5NCfK0Pn1z059Pvn61E=
+X-Received: by 2002:a05:6214:29ee:b0:64f:8213:197d with SMTP id
+ jv14-20020a05621429ee00b0064f8213197dmr983778qvb.33.1694556815805; Tue, 12
+ Sep 2023 15:13:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com>
- <20230827072057.1591929-3-zhouchuyi@bytedance.com> <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
- <e5e986a0-0bb9-6611-77f0-f8472346965e@bytedance.com> <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
-In-Reply-To: <CAADnVQL-ZGV6C7VWdQpX64f0+gokE5MLBO3F2J3WyMoq-_NCPg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Sep 2023 15:12:33 -0700
-Message-ID: <CAEf4BzaEg5CieQKQxvRGnwnyeK_2MZqr8ROVjg-Tftg-0vpntg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
- iterator kfuncs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20230627033326.5236-1-nicolinc@nvidia.com>
+In-Reply-To: <20230627033326.5236-1-nicolinc@nvidia.com>
+From:   Aahil Awatramani <aahila@google.com>
+Date:   Tue, 12 Sep 2023 15:13:25 -0700
+Message-ID: <CAGfWUPziSWNMc_px4E-i+_V_Jxdb_WSwOLXHZ+PANz2Tv5pFPA@mail.gmail.com>
+Subject: Re: [PATCH v1] iommu/arm-smmu-v3: Allow default substream bypass with
+ a pasid support
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     robin.murphy@arm.com, will@kernel.org, jgg@nvidia.com,
+        joro@8bytes.org, shameerali.kolothum.thodi@huawei.com,
+        yangyicong@hisilicon.com, jean-philippe@linaro.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 10:18=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Sep 6, 2023 at 5:38=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
-m> wrote:
-> >
-> > Hello, Alexei.
-> >
-> > =E5=9C=A8 2023/9/6 04:09, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > > On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@byteda=
-nce.com> wrote:
-> > >>
-> > >> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which all=
-ow
-> > >> creation and manipulation of struct bpf_iter_process in open-coded i=
-terator
-> > >> style. BPF programs can use these kfuncs or through bpf_for_each mac=
-ro to
-> > >> iterate all processes in the system.
-> > >>
-> > >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> > >> ---
-> > >>   include/uapi/linux/bpf.h       |  4 ++++
-> > >>   kernel/bpf/helpers.c           |  3 +++
-> > >>   kernel/bpf/task_iter.c         | 31 ++++++++++++++++++++++++++++++=
-+
-> > >>   tools/include/uapi/linux/bpf.h |  4 ++++
-> > >>   tools/lib/bpf/bpf_helpers.h    |  5 +++++
-> > >>   5 files changed, 47 insertions(+)
-> > >>
-> > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > >> index 2a6e9b99564b..cfbd527e3733 100644
-> > >> --- a/include/uapi/linux/bpf.h
-> > >> +++ b/include/uapi/linux/bpf.h
-> > >> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
-> > >>          __u64 __opaque[1];
-> > >>   } __attribute__((aligned(8)));
-> > >>
-> > >> +struct bpf_iter_process {
-> > >> +       __u64 __opaque[1];
-> > >> +} __attribute__((aligned(8)));
-> > >> +
-> > >>   #endif /* _UAPI__LINUX_BPF_H__ */
-> > >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > >> index cf113ad24837..81a2005edc26 100644
-> > >> --- a/kernel/bpf/helpers.c
-> > >> +++ b/kernel/bpf/helpers.c
-> > >> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_IT=
-ER_DESTROY)
-> > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
-> > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_N=
-ULL)
-> > >>   BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
-> > >> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
-> > >> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NUL=
-L)
-> > >> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> > >>   BTF_ID_FLAGS(func, bpf_dynptr_adjust)
-> > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_null)
-> > >>   BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> > >> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> > >> index b1bdba40b684..a6717a76c1e0 100644
-> > >> --- a/kernel/bpf/task_iter.c
-> > >> +++ b/kernel/bpf/task_iter.c
-> > >> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(stru=
-ct bpf_iter_css_task *it)
-> > >>          kfree(kit->css_it);
-> > >>   }
-> > >>
-> > >> +struct bpf_iter_process_kern {
-> > >> +       struct task_struct *tsk;
-> > >> +} __attribute__((aligned(8)));
-> > >> +
-> > >> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-> > >> +{
-> > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > >> +
-> > >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D sizeo=
-f(struct bpf_iter_process));
-> > >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=3D
-> > >> +                                       __alignof__(struct bpf_iter_=
-process));
-> > >> +
-> > >> +       rcu_read_lock();
-> > >> +       kit->tsk =3D &init_task;
-> > >> +       return 0;
-> > >> +}
-> > >> +
-> > >> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_it=
-er_process *it)
-> > >> +{
-> > >> +       struct bpf_iter_process_kern *kit =3D (void *)it;
-> > >> +
-> > >> +       kit->tsk =3D next_task(kit->tsk);
-> > >> +
-> > >> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
-> > >> +}
-> > >> +
-> > >> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *=
-it)
-> > >> +{
-> > >> +       rcu_read_unlock();
-> > >> +}
-> > >
-> > > This iter can be used in all ctx-s which is nice, but let's
-> > > make the verifier enforce rcu_read_lock/unlock done by bpf prog
-> > > instead of doing in the ctor/dtor of iter, since
-> > > in sleepable progs the verifier won't recognize that body is RCU CS.
-> > > We'd need to teach the verifier to allow bpf_iter_process_new()
-> > > inside in_rcu_cs() and make sure there is no rcu_read_unlock
-> > > while BPF_ITER_STATE_ACTIVE.
-> > > bpf_iter_process_destroy() would become a nop.
-> >
-> > Thanks for your review!
-> >
-> > I think bpf_iter_process_{new, next, destroy} should be protected by
-> > bpf_rcu_read_lock/unlock explicitly whether the prog is sleepable or
-> > not, right?
->
-> Correct. By explicit bpf_rcu_read_lock() in case of sleepable progs
-> or just by using them in normal bpf progs that have implicit rcu_read_loc=
-k()
-> done before calling into them.
->
-> > I'm not very familiar with the BPF verifier, but I believe
-> > there is still a risk in directly calling these kfuns even if
-> > in_rcu_cs() is true.
-> >
-> > Maby what we actually need here is to enforce BPF verifier to check
-> > env->cur_state->active_rcu_lock is true when we want to call these kfun=
-cs.
->
-> active_rcu_lock means explicit bpf_rcu_read_lock.
-> Currently we do allow bpf_rcu_read_lock in non-sleepable, but it's pointl=
-ess.
->
-> Technically we can extend the check:
->                 if (in_rbtree_lock_required_cb(env) && (rcu_lock ||
-> rcu_unlock)) {
->                         verbose(env, "Calling
-> bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
->                         return -EACCES;
->                 }
-> to discourage their use in all non-sleepable, but it will break some prog=
-s.
->
-> I think it's ok to check in_rcu_cs() to allow bpf_iter_process_*().
-> If bpf prog adds explicit and unnecessary bpf_rcu_read_lock() around
-> the iter ops it won't do any harm.
-> Just need to make sure that rcu unlock logic:
->                 } else if (rcu_unlock) {
->                         bpf_for_each_reg_in_vstate(env->cur_state,
-> state, reg, ({
->                                 if (reg->type & MEM_RCU) {
->                                         reg->type &=3D ~(MEM_RCU |
-> PTR_MAYBE_NULL);
->                                         reg->type |=3D PTR_UNTRUSTED;
->                                 }
->                         }));
-> clears iter state that depends on rcu.
->
-> I thought about changing mark_stack_slots_iter() to do
-> st->type =3D PTR_TO_STACK | MEM_RCU;
-> so that the above clearing logic kicks in,
-> but it might be better to have something iter specific.
-> is_iter_reg_valid_init() should probably be changed to
-> make sure reg->type is not UNTRUSTED.
->
-> Andrii,
-> do you have better suggestions?
+We have a use-case for this patch to help in avoiding the map/unmap
+overhead in some cases but still maintaining support for PASIDs.
 
-What if we just remember inside bpf_reg_state.iter state whether
-iterator needs to be RCU protected (it's just one bit if we don't
-allow nesting rcu_read_lock()/rcu_read_unlock(), or we'd need to
-remember RCU nestedness level), and then when validating iter_next and
-iter_destroy() kfuncs, check that we are still in RCU-protected region
-(if we have nestedness, then iter->rcu_nest_level <=3D
-cur_rcu_nest_level, if I understand correctly). And if not, provide a
-clear and nice message.
+Thanks.
 
-That seems straightforward enough, but am I missing anything subtle?
+
+On Tue, Sep 12, 2023 at 1:30=E2=80=AFPM Nicolin Chen <nicolinc@nvidia.com> =
+wrote:
+>
+> When an iommu_domain is set to IOMMU_DOMAIN_IDENTITY, the driver would
+> skip the allocation of a CD table and set the CONFIG field of the STE
+> to STRTAB_STE_0_CFG_BYPASS. This works well for devices that only have
+> one substream, i.e. PASID disabled.
+>
+> However, there could be a use case, for a pasid capable device, that
+> allows bypassing the translation at the default substream while still
+> enabling the pasid feature, which means the driver should not skip the
+> allocation of a CD table nor simply bypass the CONFIG field. Instead,
+> the S1DSS field should be set to STRTAB_STE_1_S1DSS_BYPASS and the
+> SHCFG field should be set to STRTAB_STE_1_SHCFG_INCOMING.
+>
+> Add s1dss and shcfg in struct arm_smmu_s1_cfg, to allow configurations
+> in the finalise() to support that use case. Then, set them accordingly
+> depending on the iommu_domain->type and the master->ssid_bits.
+>
+> Also, add STRTAB_STE_1_SHCFG_NONSHAREABLE of the default configuration
+> to distinguish from STRTAB_STE_1_SHCFG_INCOMING of the bypass one.
+>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 18 +++++++++++++++---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 +++
+>  2 files changed, 18 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/=
+arm/arm-smmu-v3/arm-smmu-v3.c
+> index 9b0dc3505601..8dc7934a0175 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -1350,11 +1350,12 @@ static void arm_smmu_write_strtab_ent(struct arm_=
+smmu_master *master, u32 sid,
+>
+>                 BUG_ON(ste_live);
+>                 dst[1] =3D cpu_to_le64(
+> -                        FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DS=
+S_SSID0) |
+> +                        FIELD_PREP(STRTAB_STE_1_S1DSS, s1_cfg->s1dss) |
+>                          FIELD_PREP(STRTAB_STE_1_S1CIR, STRTAB_STE_1_S1C_=
+CACHE_WBRA) |
+>                          FIELD_PREP(STRTAB_STE_1_S1COR, STRTAB_STE_1_S1C_=
+CACHE_WBRA) |
+>                          FIELD_PREP(STRTAB_STE_1_S1CSH, ARM_SMMU_SH_ISH) =
+|
+> -                        FIELD_PREP(STRTAB_STE_1_STRW, strw));
+> +                        FIELD_PREP(STRTAB_STE_1_STRW, strw) |
+> +                        FIELD_PREP(STRTAB_STE_1_SHCFG, s1_cfg->shcfg));
+>
+>                 if (smmu->features & ARM_SMMU_FEAT_STALLS &&
+>                     !master->stall_enabled)
+> @@ -2119,6 +2120,13 @@ static int arm_smmu_domain_finalise_s1(struct arm_=
+smmu_domain *smmu_domain,
+>                 goto out_unlock;
+>
+>         cfg->s1cdmax =3D master->ssid_bits;
+> +       if (smmu_domain->domain.type =3D=3D IOMMU_DOMAIN_IDENTITY) {
+> +               cfg->s1dss =3D STRTAB_STE_1_S1DSS_BYPASS;
+> +               cfg->shcfg =3D STRTAB_STE_1_SHCFG_INCOMING;
+> +       } else {
+> +               cfg->s1dss =3D STRTAB_STE_1_S1DSS_SSID0;
+> +               cfg->shcfg =3D STRTAB_STE_1_SHCFG_NONSHAREABLE;
+> +       }
+>
+>         smmu_domain->stall_enabled =3D master->stall_enabled;
+>
+> @@ -2198,7 +2206,11 @@ static int arm_smmu_domain_finalise(struct iommu_d=
+omain *domain,
+>         struct arm_smmu_domain *smmu_domain =3D to_smmu_domain(domain);
+>         struct arm_smmu_device *smmu =3D smmu_domain->smmu;
+>
+> -       if (domain->type =3D=3D IOMMU_DOMAIN_IDENTITY) {
+> +       /*
+> +        * A master with a pasid capability might need a CD table, so onl=
+y set
+> +        * ARM_SMMU_DOMAIN_BYPASS if IOMMU_DOMAIN_IDENTITY and non-pasid =
+master
+> +        */
+> +       if (domain->type =3D=3D IOMMU_DOMAIN_IDENTITY && !master->ssid_bi=
+ts) {
+>                 smmu_domain->stage =3D ARM_SMMU_DOMAIN_BYPASS;
+>                 return 0;
+>         }
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/=
+arm/arm-smmu-v3/arm-smmu-v3.h
+> index dcab85698a4e..8052d02770d0 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -244,6 +244,7 @@
+>  #define STRTAB_STE_1_STRW_EL2          2UL
+>
+>  #define STRTAB_STE_1_SHCFG             GENMASK_ULL(45, 44)
+> +#define STRTAB_STE_1_SHCFG_NONSHAREABLE        0UL
+>  #define STRTAB_STE_1_SHCFG_INCOMING    1UL
+>
+>  #define STRTAB_STE_2_S2VMID            GENMASK_ULL(15, 0)
+> @@ -601,6 +602,8 @@ struct arm_smmu_s1_cfg {
+>         struct arm_smmu_ctx_desc_cfg    cdcfg;
+>         struct arm_smmu_ctx_desc        cd;
+>         u8                              s1fmt;
+> +       u8                              s1dss;
+> +       u8                              shcfg;
+>         u8                              s1cdmax;
+>  };
+>
+> --
+> 2.41.0
+>
