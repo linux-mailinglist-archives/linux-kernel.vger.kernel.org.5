@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA5079C6D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFAC79C6DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbjILGWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S229898AbjILGWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjILGWJ (ORCPT
+        with ESMTP id S229538AbjILGWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:22:09 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935A4AF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:22:05 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-402cc6b8bedso59380205e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694499724; x=1695104524; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WHZmX0HdVaeA7e+GTMUWOnquBG2VN2h00kw4Wwdycoc=;
-        b=qFKjCYCJLdwpzb60Mwf+GQTNqioIHWgJEeDCZa8IYH97nj0hCP+bKp/5Z3ny0FI2/e
-         SFHrajJYnmLy7TW52YiwW8K6VXeGz7s/F5Gief1FiK7QEJlTuvx0WXfTFrvSHp8Za4/H
-         nh3GtNA1jHOZq9w2stgD3wiPfOWuyarFf2EoJY5l3EjYvW5pxqkOu9AwQVUsUsl4WzNV
-         dAR7S5wo6tkXPUq8ulXBH4gv6xn7Zy89nRi+pncix+rhJaCOE31hZpQZ9PypTjkqRFkv
-         uyQRODU3mfS6fRaTJtOIub5Xx8AuGRm9fs4fJdAsS9NEd5Rqs9OEjEWVwTY6yZmSxKAc
-         8oYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694499724; x=1695104524;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WHZmX0HdVaeA7e+GTMUWOnquBG2VN2h00kw4Wwdycoc=;
-        b=qR8ENCuO9WhDxUUqvE+ySBFgLLdzskJpb+GlQkkQwh6KXOh8XdUmcngf3zAVmP/yGA
-         GAG7gViHpx6nsrVVTL66I7/qZeVY9Bhh5pl0YE3fbpAoGltCOOrisTX99pY3A6Ticlqq
-         1Zj+Z4TKUmRtx3rf6bbTUc4eSeB/oyF69IFyI/c6rSxC19VMgPNa42pkpwg+dLHmG+bN
-         hfnsbvinpfYOZRam6/JOoba6I32jVhPhNyH85YtCGVcqrCFH71/0Jse6W9UU39il57z2
-         6bAIuXJhrDq/kRFGD2iefmK33yGKbOpZZVWBC07N1YfRI/LMsYWNgcJJhzjoUNq53kEi
-         puqA==
-X-Gm-Message-State: AOJu0YzUDI8B38EhwU8gDiHulKh0Tpg6rzNUjTQBvJqmmownCbWHN5TK
-        WInUe903s/S1YgtfZEZvJG/dYg==
-X-Google-Smtp-Source: AGHT+IG+I5BM37b86sq3KhHg2M4gwi+dJ5j0QXzcWb/eRJJdZtbiMZShPPawrSYbiYVy5fd/1WoMtA==
-X-Received: by 2002:a7b:c7d5:0:b0:3fe:d1b9:7ea8 with SMTP id z21-20020a7bc7d5000000b003fed1b97ea8mr9409877wmk.28.1694499724016;
-        Mon, 11 Sep 2023 23:22:04 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id 3-20020a05600c22c300b003fe2b6d64c8sm15036691wmg.21.2023.09.11.23.22.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 23:22:03 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:22:01 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Cai Huoqing <cai.huoqing@linux.dev>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Tue, 12 Sep 2023 02:22:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA60AF;
+        Mon, 11 Sep 2023 23:22:32 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 06:22:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694499750;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIKe3BGZAvYyd6OF2U38OylY1u4o8nivsPg6ghqA7go=;
+        b=wwZTh3Kd7DOhT+nfic9ynlU3jnAuNf7c0W0mEDrN4uKEcWbKRrkKQj/PDAUdV5/JAcehSb
+        CcstLCoh5lj93q6FjyckVnqeSTeJsYSaHLEUxofQnTM3DdUZjmBrr9QD6dx39xoRTJsTat
+        7A6YBHeXekcq+K4vzPpgECeAlBEVvnIsejh24xuOZ/5lvZphw89cl8ZBNeqTw8fGx0YT6a
+        u+9fXADOc9zMqT1X4VghGN/cKQEkAGvEiz8/AwODfX/Ly3SZb7jPMpaSFM5lo/VYGY4we3
+        kdFYpZvK4WGomkdR0h8hNzFbO4/hJhx2/CBFXWRX6Vtmbicv3XiCR6d0mGZhmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694499750;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIKe3BGZAvYyd6OF2U38OylY1u4o8nivsPg6ghqA7go=;
+        b=3539uvpMEJOIkXB25Vmqmz78+g6XjsGzHwJrdWOtHu0fDN70yBXWJkDyB4oEIc7xefxE8n
+        hndvcTXNlFQbhaAQ==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/urgent] objtool: Fix _THIS_IP_ detection for cold functions
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/huawei/hinic/hinic_port.c:459
- hinic_set_vlan_fliter() warn: variable dereferenced before check 'hwdev'
- (see line 453)
-Message-ID: <dce439ac-bf77-408a-b017-1ffe5ccdd755@kadam.mountain>
+In-Reply-To: <d8f1ab6a23a6105bc023c132b105f245c7976be6.1694476559.git.jpoimboe@kernel.org>
+References: <d8f1ab6a23a6105bc023c132b105f245c7976be6.1694476559.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <169449974941.27769.5966361475129342374.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 2acf960e3be6177f437baade6d1883ebe4c641b2 net: hinic: Add support for configuration of rx-vlan-filter by ethtool
-config: x86_64-randconfig-161-20230911 (https://download.01.org/0day-ci/archive/20230911/202309112354.pikZCmyk-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230911/202309112354.pikZCmyk-lkp@intel.com/reproduce)
+The following commit has been merged into the objtool/urgent branch of tip:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202309112354.pikZCmyk-lkp@intel.com/
+Commit-ID:     72178d5d1a38dd185d1db15f177f2d122ef10d9b
+Gitweb:        https://git.kernel.org/tip/72178d5d1a38dd185d1db15f177f2d122ef10d9b
+Author:        Josh Poimboeuf <jpoimboe@kernel.org>
+AuthorDate:    Mon, 11 Sep 2023 16:56:13 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 12 Sep 2023 08:16:54 +02:00
 
-smatch warnings:
-drivers/net/ethernet/huawei/hinic/hinic_port.c:459 hinic_set_vlan_fliter() warn: variable dereferenced before check 'hwdev' (see line 453)
+objtool: Fix _THIS_IP_ detection for cold functions
 
-vim +/hwdev +459 drivers/net/ethernet/huawei/hinic/hinic_port.c
+Cold functions and their non-cold counterparts can use _THIS_IP_ to
+reference each other.  Don't warn about !ENDBR in that case.
 
-2acf960e3be617 Cai Huoqing  2022-11-03  450  int hinic_set_vlan_fliter(struct hinic_dev *nic_dev, u32 en)
-2acf960e3be617 Cai Huoqing  2022-11-03  451  {
-2acf960e3be617 Cai Huoqing  2022-11-03  452  	struct hinic_hwdev *hwdev = nic_dev->hwdev;
-2acf960e3be617 Cai Huoqing  2022-11-03 @453  	struct hinic_hwif *hwif = hwdev->hwif;
-                                                                          ^^^^^^^
-Dereference
+Note that for GCC this is currently irrelevant in light of the following
+commit
 
-2acf960e3be617 Cai Huoqing  2022-11-03  454  	struct pci_dev *pdev = hwif->pdev;
-2acf960e3be617 Cai Huoqing  2022-11-03  455  	struct hinic_vlan_filter vlan_filter;
-2acf960e3be617 Cai Huoqing  2022-11-03  456  	u16 out_size = sizeof(vlan_filter);
-2acf960e3be617 Cai Huoqing  2022-11-03  457  	int err;
-2acf960e3be617 Cai Huoqing  2022-11-03  458  
-2acf960e3be617 Cai Huoqing  2022-11-03 @459  	if (!hwdev)
-                                                    ^^^^^^
-Checked too late.
+  c27cd083cfb9 ("Compiler attributes: GCC cold function alignment workarounds")
 
-2acf960e3be617 Cai Huoqing  2022-11-03  460  		return -EINVAL;
-2acf960e3be617 Cai Huoqing  2022-11-03  461  
-2acf960e3be617 Cai Huoqing  2022-11-03  462  	vlan_filter.func_idx = HINIC_HWIF_FUNC_IDX(hwif);
-2acf960e3be617 Cai Huoqing  2022-11-03  463  	vlan_filter.enable = en;
-2acf960e3be617 Cai Huoqing  2022-11-03  464  
-2acf960e3be617 Cai Huoqing  2022-11-03  465  	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_VLAN_FILTER,
+which disabled cold functions in the kernel.  However this may still be
+possible with Clang.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Fixes several warnings like the following:
 
+  drivers/scsi/bnx2i/bnx2i.prelink.o: warning: objtool: bnx2i_hw_ep_disconnect+0x19d: relocation to !ENDBR: bnx2i_hw_ep_disconnect.cold+0x0
+  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr4_event.cold+0x28: relocation to !ENDBR: ipvlan_addr4_event+0xda
+  drivers/net/ipvlan/ipvlan.prelink.o: warning: objtool: ipvlan_addr6_event.cold+0x26: relocation to !ENDBR: ipvlan_addr6_event+0xb7
+  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_set_ringparam.cold+0x17: relocation to !ENDBR: tg3_set_ringparam+0x115
+  drivers/net/ethernet/broadcom/tg3.prelink.o: warning: objtool: tg3_self_test.cold+0x17: relocation to !ENDBR: tg3_self_test+0x2e1
+  drivers/target/iscsi/cxgbit/cxgbit.prelink.o: warning: objtool: __cxgbit_free_conn.cold+0x24: relocation to !ENDBR: __cxgbit_free_conn+0xfb
+  net/can/can.prelink.o: warning: objtool: can_rx_unregister.cold+0x2c: relocation to !ENDBR: can_rx_unregister+0x11b
+  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_spq_post+0xc0: relocation to !ENDBR: qed_spq_post.cold+0x9a
+  drivers/net/ethernet/qlogic/qed/qed.prelink.o: warning: objtool: qed_iwarp_ll2_comp_syn_pkt.cold+0x12f: relocation to !ENDBR: qed_iwarp_ll2_comp_syn_pkt+0x34b
+  net/tipc/tipc.prelink.o: warning: objtool: tipc_nametbl_publish.cold+0x21: relocation to !ENDBR: tipc_nametbl_publish+0xa6
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/d8f1ab6a23a6105bc023c132b105f245c7976be6.1694476559.git.jpoimboe@kernel.org
+---
+ tools/objtool/check.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 1384090..e308d1b 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -4333,7 +4333,8 @@ static int validate_ibt_insn(struct objtool_file *file, struct instruction *insn
+ 			continue;
+ 		}
+ 
+-		if (insn_func(dest) && insn_func(dest) == insn_func(insn)) {
++		if (insn_func(dest) && insn_func(insn) &&
++		    insn_func(dest)->pfunc == insn_func(insn)->pfunc) {
+ 			/*
+ 			 * Anything from->to self is either _THIS_IP_ or
+ 			 * IRET-to-self.
