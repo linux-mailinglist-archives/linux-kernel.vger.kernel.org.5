@@ -2,116 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B11B79CF80
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04ED79CF7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbjILLJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        id S234373AbjILLJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbjILLI0 (ORCPT
+        with ESMTP id S234715AbjILLI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:08:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64419BE;
-        Tue, 12 Sep 2023 04:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694516891; x=1726052891;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XfmEYJdif4poI0+XqqQuKlUGSGajQG71iNFDtsotJaA=;
-  b=hbzU1xt2R/cm0CjZAqqGbQhi3tVJG7EhcbOBn2FFB/Yqw/hzMQEEEFlb
-   mIIzEHfjscSYdatgza0/UZinGOBJWVIG+EPAMZkGnPUZ7BgJsu6kr1s+u
-   8hcNWhsOhmPne85cQhg33E0R4pIVT+UwOeUwRAuSCFsEkkd07hs+qlSep
-   eA3c4jFJo10n35I46xP8UteQa+Ror5bnBHMoacoCli8jzLMJlRuESkBNQ
-   7nFxtpDYan4NLZJl/hJk8y7XDsIUDFdOdlgb5Pkd2l29tP0BdATrdY1rI
-   XzFHOjbtAL1Q6ryZvy6s8RSe60M9epZYxXJeFMhUXsiEmIj8Gnvq4XsCT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="442358522"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="442358522"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:08:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813778526"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="813778526"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:08:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qg1FV-008ZI7-2K;
-        Tue, 12 Sep 2023 14:08:05 +0300
-Date:   Tue, 12 Sep 2023 14:08:05 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 07/11] gpiolib: replace find_chip_by_name() with
- gpio_device_find_by_label()
-Message-ID: <ZQBGlSnx3McF8m2r@smile.fi.intel.com>
-References: <20230912100727.23197-1-brgl@bgdev.pl>
- <20230912100727.23197-8-brgl@bgdev.pl>
+        Tue, 12 Sep 2023 07:08:28 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FCB170E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:08:23 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C0831BF213;
+        Tue, 12 Sep 2023 11:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694516902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EF3h98Mdqj31ieacBiceRbGocGI1mqvvI0enRLJAJ9U=;
+        b=kDP44VJdI1tNdv9kVJvfwvKf+lFYfaKh5p2qJw1LiqypQuX0QJeZ2hEfctV4NiN7f2F/jn
+        qLW9QUtcyeOypXKAU909WmoO2WXaqgWPS63eav3gY0d7NP9+QuAItO+TOwaoCV7heqcHzf
+        LjlwoXP92KhpahnlNF6JGNNA24jyTbUAv8dAoyI68Sssix6LeClfCDwrXP7UaZ6t4uOIFr
+        B06GbiMWaJKSGuRg4zz+i02aggTcNklhy23xAnX5ta/hV6ptRERpI2SLL5SniqKzqP6UxI
+        TbmqW0WLpFVt690hNce9WzxaqNvmR44Gzwop7xD0KhFwaALKdSiJUWhwLRAqGQ==
+Date:   Tue, 12 Sep 2023 13:08:21 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Joshua Yeong <joshua.yeong@starfivetech.com>
+Cc:     <alexandre.belloni@bootlin.com>, <linux-i3c@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] i3c: Add fallback method for GETMXDS CCC
+Message-ID: <20230912130821.21edfafc@xps-13>
+In-Reply-To: <20230911082456.23239-2-joshua.yeong@starfivetech.com>
+References: <20230911082456.23239-1-joshua.yeong@starfivetech.com>
+        <20230911082456.23239-2-joshua.yeong@starfivetech.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912100727.23197-8-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:07:23PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Remove all remaining uses of find_chip_by_name() (and subsequently:
-> gpiochip_find()) from gpiolib.c and use the new
-> gpio_device_find_by_label() instead.
+Hi Joshua,
 
-...
+joshua.yeong@starfivetech.com wrote on Mon, 11 Sep 2023 16:24:56 +0800:
 
->  	for (hog = &hogs[0]; hog->chip_label; hog++) {
-> +		struct gpio_device *gdev __free(gpio_device_put) = NULL;
+> Some I3C hardware will report error when incorrect length is received from
+> device. GETMXDS CCC are availble in 2 formats; without turnaround time (f=
+ormat
+> 1) and with turnaround time (format 2). There is no mechanics to determin=
+e which
+> format is supported by device. In case sending GETMXDS CCC format 2 resul=
+ted
+> failure, try sending GETMXDS CCC format 1 instead.
+>=20
+> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
+> ---
+>  drivers/i3c/master.c    | 33 ++++++++++++++++++++++++++++-----
+>  include/linux/i3c/ccc.h | 17 +++++++++++++++--
+>  2 files changed, 43 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+> index 87283e4a4607..084f64bef155 100644
+> --- a/drivers/i3c/master.c
+> +++ b/drivers/i3c/master.c
+> @@ -1088,10 +1088,37 @@ static int i3c_master_getmxds_locked(struct i3c_m=
+aster_controller *master,
+>  				     struct i3c_device_info *info)
+>  {
+>  	struct i3c_ccc_getmxds *getmaxds;
+> +	struct i3c_ccc_getmxds_turnaround *getmaxds_ta;
+>  	struct i3c_ccc_cmd_dest dest;
+>  	struct i3c_ccc_cmd cmd;
+>  	int ret;
+> =20
+> +	getmaxds_ta =3D i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
+> +					 sizeof(*getmaxds_ta));
+> +	if (!getmaxds_ta)
+> +		return -ENOMEM;
+> +
+> +	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETMXDS, &dest, 1);
+> +	ret =3D i3c_master_send_ccc_cmd_locked(master, &cmd);
+> +	if (ret) {
+> +		goto alternative;
+> +	}
+> +
+> +	if (dest.payload.len !=3D 2 && dest.payload.len !=3D 5) {
 
-In the loop?! How does it work when loop goes second iteration and so on?
+Can len be 2 here?
 
->  		list_add_tail(&hog->list, &gpio_machine_hogs);
->  
->  		/*
->  		 * The chip may have been registered earlier, so check if it
->  		 * exists and, if so, try to hog the line now.
->  		 */
-> -		gc = find_chip_by_name(hog->chip_label);
-> -		if (gc)
-> -			gpiochip_machine_hog(gc, hog);
-> +		gdev = gpio_device_find_by_label(hog->chip_label);
-> +		if (gdev)
-> +			gpiochip_machine_hog(gpio_device_get_chip(gdev), hog);
+> +		ret =3D -EIO;
+> +		goto out;
+> +	}
+> +
+> +	info->max_read_ds =3D getmaxds_ta->maxrd;
+> +	info->max_write_ds =3D getmaxds_ta->maxwr;
+> +	if (dest.payload.len =3D=3D 5)
+> +		info->max_read_turnaround =3D getmaxds_ta->maxrdturn[0] |
+> +					    ((u32)getmaxds_ta->maxrdturn[1] << 8) |
+> +					    ((u32)getmaxds_ta->maxrdturn[2] << 16);
 
-So, do we expect the chip_label be different between hogs? Ah, seems so
-as it covers _all_ hogs in the system.
+Don't you want to avoid the "alternative" if it worked?
 
+> +
+> +alternative:
+
+I would expect a comment somewhere to explain the subtlety.
+
+> +	i3c_ccc_cmd_dest_cleanup(&dest);
+> +
+>  	getmaxds =3D i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
+>  					 sizeof(*getmaxds));
+>  	if (!getmaxds)
+> @@ -1102,17 +1129,13 @@ static int i3c_master_getmxds_locked(struct i3c_m=
+aster_controller *master,
+>  	if (ret)
+>  		goto out;
+> =20
+> -	if (dest.payload.len !=3D 2 && dest.payload.len !=3D 5) {
+> +	if (dest.payload.len !=3D 2) {
+>  		ret =3D -EIO;
+>  		goto out;
 >  	}
+> =20
+>  	info->max_read_ds =3D getmaxds->maxrd;
+>  	info->max_write_ds =3D getmaxds->maxwr;
+> -	if (dest.payload.len =3D=3D 5)
+> -		info->max_read_turnaround =3D getmaxds->maxrdturn[0] |
+> -					    ((u32)getmaxds->maxrdturn[1] << 8) |
+> -					    ((u32)getmaxds->maxrdturn[2] << 16);
+> =20
+>  out:
+>  	i3c_ccc_cmd_dest_cleanup(&dest);
+> diff --git a/include/linux/i3c/ccc.h b/include/linux/i3c/ccc.h
+> index ad59a4ae60d1..50ed41d4d5a1 100644
+> --- a/include/linux/i3c/ccc.h
+> +++ b/include/linux/i3c/ccc.h
+> @@ -269,14 +269,27 @@ enum i3c_tsco {
+>  #define I3C_CCC_MAX_SDR_FSCL(x)		((x) & I3C_CCC_MAX_SDR_FSCL_MASK)
+> =20
+>  /**
+> - * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC
+> + * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC without turnar=
+ound
+> + * (format 1)
+> + *
+> + * @maxwr: write limitations
+> + * @maxrd: read limitations
+> + */
+> +struct i3c_ccc_getmxds {
+> +	u8 maxwr;
+> +	u8 maxrd;
+> +} __packed;
+> +
+> +/**
+> + * struct i3c_ccc_getmxds_ta - payload passed to GETMXDS CCC with turnar=
+ound
+> + * (format 2)
+>   *
+>   * @maxwr: write limitations
+>   * @maxrd: read limitations
+>   * @maxrdturn: maximum read turn-around expressed micro-seconds and
+>   *	       little-endian formatted
+>   */
+> -struct i3c_ccc_getmxds {
+> +struct i3c_ccc_getmxds_turnaround {
+>  	u8 maxwr;
+>  	u8 maxrd;
+>  	u8 maxrdturn[3];
 
-Even if the __free() scope works fine, I think this algorithm should be
-revisited to make sure we have iterating only on hogs of the same chip.
-Hence, the hogs should be placed into tree structure with a label being
-the key in it.
 
-...
-
-> +		struct gpio_device *gdev __free(gpio_device_put) = NULL;
-
-> +		gc = gpio_device_get_chip(gdev);
-
-Similar wish here, perhaps maple tree can be utilized in the future for both of them.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Miqu=C3=A8l
