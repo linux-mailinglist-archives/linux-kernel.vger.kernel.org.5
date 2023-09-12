@@ -2,248 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E06A79DC29
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1544979DC25
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237904AbjILWsI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 18:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S237896AbjILWrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237944AbjILWrv (ORCPT
+        with ESMTP id S237949AbjILWrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:47:51 -0400
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F359A1BC2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:47:36 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-9aa0495f9cfso69642166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:47:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694558855; x=1695163655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JPQmiOiJEVpUypTzrtCNWvG84b8X0egdVXAFfU36T2Y=;
-        b=Agx+xtZpsIR0T3A/SBqLvQ9lyZLc3RE7jjTPnaVu1vs4g1h5VKSDZyJ8q4X6yrf/BM
-         7eWhg/rdx51/mVIVlCKXu28GJ90EelvgNubesUTsqi1PpekHu9vl23ZIIfwUWqp+CF04
-         kV7N9jpMrC2uE7PlOfsPit0cwEdIi8IfQ7WxhMj3ToaPstKcZ1u9lXir9LDX591N7Dj8
-         ZFQ7flxk26TboalBokeo4DqQFNeklxnPt5di96pqYuwtzllxYyduBRnzVYrZZE8ofBZ8
-         NHN6kzKiQ+F3Mj7eBdrcQIkkVFgmrPboECjubRJymadk4V8+fviF96YAWJAfmdib7WKB
-         3AyQ==
-X-Gm-Message-State: AOJu0YzF+EEaV0ZYS1bulks4KYCL/YTU/HThfgeFmwpWNcaFOgOBd0Nr
-        gzhEqOkyXkXcHG9UI5dMgYrNPA6amj2C5uJr
-X-Google-Smtp-Source: AGHT+IF1eegdCHmzznp9G+kVOu2KnYyUL6E/a94S13odlIpg9KV3rsZf5A8/nF4b5buXXX/EPQM83Q==
-X-Received: by 2002:a17:906:5399:b0:9ad:7d5c:6b5c with SMTP id g25-20020a170906539900b009ad7d5c6b5cmr1528234ejo.3.1694558854287;
-        Tue, 12 Sep 2023 15:47:34 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id i18-20020a17090671d200b0099cf840527csm7462066ejk.153.2023.09.12.15.47.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 15:47:33 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-99c93638322so71830266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:47:33 -0700 (PDT)
-X-Received: by 2002:a17:907:96a4:b0:9a5:c38d:6b75 with SMTP id
- hd36-20020a17090796a400b009a5c38d6b75mr5511540ejc.15.1694558853578; Tue, 12
- Sep 2023 15:47:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
-In-Reply-To: <20230912-simpledrm-multiple-power-domains-v2-1-01b66bfb1980@jannau.net>
-From:   Neal Gompa <neal@gompa.dev>
-Date:   Tue, 12 Sep 2023 18:46:56 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je8i4P8r-5EUikS=6wy5_3OvufeLzfLWkB+SgMq-nkpArA@mail.gmail.com>
-Message-ID: <CAEg-Je8i4P8r-5EUikS=6wy5_3OvufeLzfLWkB+SgMq-nkpArA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/simpledrm: Add support for multiple "power-domains"
-To:     j@jannau.net
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev
+        Tue, 12 Sep 2023 18:47:40 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958861730;
+        Tue, 12 Sep 2023 15:47:24 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CMeopp009198;
+        Tue, 12 Sep 2023 22:47:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=y2qPjWMY36LKjb6S8CXggaomEk1wfL/rdztTlIBO6yA=;
+ b=oDI7yrxwUZyHtWWa3dNV/thjisdzXhj5BBzPJJ8tJitHDJV2HH3ULpYmLJN7ZNURgyrP
+ /ZWlfK0XHjWrJ0PubSzab6Do0od2QslxyO11m7awuDYi3s0hBgL5chDg+0cvDTVvHSIM
+ nixxZ+WLWNY9CfyGLkBo+ooBayB48n8bwsjI7BOGqQeKux4SY/GgMSsuuqSukyXsbbiZ
+ ueBjWJsOGZ70yP3aS93hNiE2UZRTXJIepivhIBvJftKHxt3yz4DkqSD70lfPOHToEIri
+ bKGLrIVZrAAaN8ZicIiAiE8LbQwB5wsrZHtwQLgQ2DapVk05WuwvMVRMulEnH5yqT9y5 Mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t30nr8hc1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 22:47:04 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38CMi5WB019652;
+        Tue, 12 Sep 2023 22:47:04 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t30nr8hbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 22:47:03 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38CLde28002401;
+        Tue, 12 Sep 2023 22:47:03 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t158k69xt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 22:47:02 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38CMl14v7799450
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 22:47:02 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D67575805E;
+        Tue, 12 Sep 2023 22:47:01 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3024158062;
+        Tue, 12 Sep 2023 22:47:01 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.31.41])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Sep 2023 22:47:01 +0000 (GMT)
+Message-ID: <1149b6dbfdaabef3e48dc2852cc76aa11a6dd6b0.camel@linux.ibm.com>
+Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
+ trusted keyring
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "mic@linux.microsoft.com" <mic@linux.microsoft.com>,
+        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
+        Konrad Wilk <konrad.wilk@oracle.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Date:   Tue, 12 Sep 2023 18:47:00 -0400
+In-Reply-To: <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com>
+References: <20230908213428.731513-1-eric.snowberg@oracle.com>
+         <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
+         <20230911.chaeghaeJ4ei@digikod.net>
+         <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
+         <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
+         <932231F5-8050-4436-84B8-D7708DC43845@oracle.com>
+         <7335a4587233626a39ce9bc8a969957d7f43a34c.camel@linux.ibm.com>
+         <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MZRiFXrKlieEwYsiJ89wVG2QXq-5ABiv
+X-Proofpoint-GUID: YMf5EbE4yz09to3OdXlyR0mTPhtoqtAa
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_22,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309120192
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 4:22 PM Janne Grunau via B4 Relay
-<devnull+j.jannau.net@kernel.org> wrote:
->
-> From: Janne Grunau <j@jannau.net>
->
-> Multiple power domains need to be handled explicitly in each driver. The
-> driver core can not handle it automatically since it is not aware of
-> power sequencing requirements the hardware might have. This is not a
-> problem for simpledrm since everything is expected to be powered on by
-> the bootloader. simpledrm has just ensure it remains powered on during
-> its lifetime.
-> This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
-> systems. The HDMI output initialized by the bootloader requires keeping
-> the display controller and a DP phy power domain on.
->
-> Signed-off-by: Janne Grunau <j@jannau.net>
-> ---
-> Changes in v2:
-> - removed broken drm_err() log statement only ment for debugging
-> - removed commented cast
-> - use correct format spcifier for 'int' in log statement
-> - add 'continue;' after failure to get device for power_domain
-> - use drm_warn() in non fatal error cases
-> - removed duplicate PTR_ERR conversion
-> - Link to v1: https://lore.kernel.org/r/20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net
-> ---
->  drivers/gpu/drm/tiny/simpledrm.c | 105 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 105 insertions(+)
->
-> diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
-> index ff86ba1ae1b8..9c597461d1e2 100644
-> --- a/drivers/gpu/drm/tiny/simpledrm.c
-> +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> @@ -6,6 +6,7 @@
->  #include <linux/of_address.h>
->  #include <linux/platform_data/simplefb.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_domain.h>
->  #include <linux/regulator/consumer.h>
->
->  #include <drm/drm_aperture.h>
-> @@ -227,6 +228,12 @@ struct simpledrm_device {
->         unsigned int regulator_count;
->         struct regulator **regulators;
->  #endif
-> +       /* power-domains */
-> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> +       int pwr_dom_count;
-> +       struct device **pwr_dom_devs;
-> +       struct device_link **pwr_dom_links;
-> +#endif
->
->         /* simplefb settings */
->         struct drm_display_mode mode;
-> @@ -468,6 +475,101 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
->  }
->  #endif
->
-> +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> +/*
-> + * Generic power domain handling code.
-> + *
-> + * Here we handle the power-domains properties of our "simple-framebuffer"
-> + * dt node. This is only necessary if there is more than one power-domain.
-> + * A single power-domains is handled automatically by the driver core. Multiple
-> + * power-domains have to be handled by drivers since the driver core can't know
-> + * the correct power sequencing. Power sequencing is not an issue for simpledrm
-> + * since the bootloader has put the power domains already in the correct state.
-> + * simpledrm has only to ensure they remain active for its lifetime.
-> + *
-> + * When the driver unloads, we detach from the power-domains.
-> + *
-> + * We only complain about errors here, no action is taken as the most likely
-> + * error can only happen due to a mismatch between the bootloader which set
-> + * up the "simple-framebuffer" dt node, and the PM domain providers in the
-> + * device tree. Chances are that there are no adverse effects, and if there are,
-> + * a clean teardown of the fb probe will not help us much either. So just
-> + * complain and carry on, and hope that the user actually gets a working fb at
-> + * the end of things.
-> + */
-> +static void simpledrm_device_detach_genpd(void *res)
-> +{
-> +       int i;
-> +       struct simpledrm_device *sdev = res;
-> +
-> +       if (sdev->pwr_dom_count <= 1)
-> +               return;
-> +
-> +       for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
-> +               if (!sdev->pwr_dom_links[i])
-> +                       device_link_del(sdev->pwr_dom_links[i]);
-> +               if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
-> +                       dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
-> +       }
-> +}
-> +
-> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
-> +{
-> +       struct device *dev = sdev->dev.dev;
-> +       int i;
-> +
-> +       sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
-> +                                                        "#power-domain-cells");
-> +       /*
-> +        * Single power-domain devices are handled by driver core nothing to do
-> +        * here. The same for device nodes without "power-domains" property.
-> +        */
-> +       if (sdev->pwr_dom_count <= 1)
-> +               return 0;
-> +
-> +       sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
-> +                                              sizeof(*sdev->pwr_dom_devs),
-> +                                              GFP_KERNEL);
-> +       if (!sdev->pwr_dom_devs)
-> +               return -ENOMEM;
-> +
-> +       sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
-> +                                               sizeof(*sdev->pwr_dom_links),
-> +                                               GFP_KERNEL);
-> +       if (!sdev->pwr_dom_links)
-> +               return -ENOMEM;
-> +
-> +       for (i = 0; i < sdev->pwr_dom_count; i++) {
-> +               sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
-> +               if (IS_ERR(sdev->pwr_dom_devs[i])) {
-> +                       int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
-> +                       if (ret == -EPROBE_DEFER) {
-> +                               simpledrm_device_detach_genpd(sdev);
-> +                               return ret;
-> +                       }
-> +                       drm_warn(&sdev->dev,
-> +                                "pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
-> +                       continue;
-> +               }
-> +
-> +               sdev->pwr_dom_links[i] = device_link_add(dev,
-> +                                                        sdev->pwr_dom_devs[i],
-> +                                                        DL_FLAG_STATELESS |
-> +                                                        DL_FLAG_PM_RUNTIME |
-> +                                                        DL_FLAG_RPM_ACTIVE);
-> +               if (!sdev->pwr_dom_links[i])
-> +                       drm_warn(&sdev->dev, "failed to link power-domain %d\n", i);
-> +       }
-> +
-> +       return devm_add_action_or_reset(dev, simpledrm_device_detach_genpd, sdev);
-> +}
-> +#else
-> +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
-> +{
-> +       return 0;
-> +}
-> +#endif
-> +
->  /*
->   * Modesetting
->   */
-> @@ -651,6 +753,9 @@ static struct simpledrm_device *simpledrm_device_create(struct drm_driver *drv,
->         if (ret)
->                 return ERR_PTR(ret);
->         ret = simpledrm_device_init_regulators(sdev);
-> +       if (ret)
-> +               return ERR_PTR(ret);
-> +       ret = simpledrm_device_attach_genpd(sdev);
->         if (ret)
->                 return ERR_PTR(ret);
->
->
-> ---
-> base-commit: 15d30b46573d75f5cb58cfacded8ebab9c76a2b0
-> change-id: 20230910-simpledrm-multiple-power-domains-f41efa6ad9bc
->
-> Best regards,
-> --
-> Janne Grunau <j@jannau.net>
->
->
+On Tue, 2023-09-12 at 17:11 +0000, Eric Snowberg wrote:
+> 
+> > On Sep 12, 2023, at 5:54 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > 
+> > On Tue, 2023-09-12 at 02:00 +0000, Eric Snowberg wrote:
+> >> 
+> >>> On Sep 11, 2023, at 5:08 PM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> >>> 
+> >>> On Mon, 2023-09-11 at 22:17 +0000, Eric Snowberg wrote:
+> >>>> 
+> >>>>> On Sep 11, 2023, at 10:51 AM, Mickaël Salaün <mic@digikod.net> wrote:
+> >>>>> 
+> >>>>> On Mon, Sep 11, 2023 at 09:29:07AM -0400, Mimi Zohar wrote:
+> >>>>>> Hi Eric,
+> >>>>>> 
+> >>>>>> On Fri, 2023-09-08 at 17:34 -0400, Eric Snowberg wrote:
+> >>>>>>> Currently root can dynamically update the blacklist keyring if the hash
+> >>>>>>> being added is signed and vouched for by the builtin trusted keyring.
+> >>>>>>> Currently keys in the secondary trusted keyring can not be used.
+> >>>>>>> 
+> >>>>>>> Keys within the secondary trusted keyring carry the same capabilities as
+> >>>>>>> the builtin trusted keyring.  Relax the current restriction for updating
+> >>>>>>> the .blacklist keyring and allow the secondary to also be referenced as
+> >>>>>>> a trust source.  Since the machine keyring is linked to the secondary
+> >>>>>>> trusted keyring, any key within it may also be used.
+> >>>>>>> 
+> >>>>>>> An example use case for this is IMA appraisal.  Now that IMA both
+> >>>>>>> references the blacklist keyring and allows the machine owner to add
+> >>>>>>> custom IMA CA certs via the machine keyring, this adds the additional
+> >>>>>>> capability for the machine owner to also do revocations on a running
+> >>>>>>> system.
+> >>>>>>> 
+> >>>>>>> IMA appraisal usage example to add a revocation for /usr/foo:
+> >>>>>>> 
+> >>>>>>> sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
+> >>>>>>> 
+> >>>>>>> openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
+> >>>>>>>     -signer machine-certificate.pem -noattr -binary -outform DER \
+> >>>>>>>     -out hash.p7s
+> >>>>>>> 
+> >>>>>>> keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
+> >>>>>>> 
+> >>>>>>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> >>>>>> 
+> >>>>>> The secondary keyring may include both CA and code signing keys.  With
+> >>>>>> this change any key loaded onto the secondary keyring may blacklist a
+> >>>>>> hash.  Wouldn't it make more sense to limit blacklisting
+> >>>>>> certificates/hashes to at least CA keys? 
+> >>>>> 
+> >>>>> Some operational constraints may limit what a CA can sign.
+> >>>> 
+> >>>> Agreed.  
+> >>>> 
+> >>>> Is there precedents for requiring this S/MIME to be signed by a CA? 
+> >>>> 
+> >>>>> This change is critical and should be tied to a dedicated kernel config
+> >>>>> (disabled by default), otherwise existing systems using this feature
+> >>>>> will have their threat model automatically changed without notice.
+> >>>> 
+> >>>> Today we have INTEGRITY_CA_MACHINE_KEYRING_MAX.  This can 
+> >>>> be enabled to enforce CA restrictions on the machine keyring.  Mimi, would 
+> >>>> this be a suitable solution for what you are after?
+> >>> 
+> >>> There needs to be some correlation between the file hashes being added
+> >>> to the blacklist and the certificate that signed them.  Without that
+> >>> correlation, any key on the secondary trusted keyring could add any
+> >>> file hashes it wants to the blacklist.
+> >> 
+> >> Today any key in the secondary trusted keyring can be used to validate a 
+> >> signed kernel module.  At a later time, if a new hash is added to the blacklist 
+> >> keyring to revoke loading a signed kernel module,  the ability to do the 
+> >> revocation with this additional change would be more restrictive than loading 
+> >> the original module.
+> > 
+> > A public key on the secondary keyring is used to verify code that it
+> > signed, but does not impact any other code. Allowing any public key on
+> > the secondary keyring to blacklist any file hash is giving it more
+> > privileges than it originally had.
+> > 
+> > This requirement isn't different than how Certificate Revocation List
+> > (CRL) work.  Not any CA can revoke a certificate.
+> 
+> In UEFI Secure Boot we have the Forbidden Signature Database (DBX).  
+> Root can update the DBX on a host.  The requirement placed on updating 
+> it is the new DBX entry must be signed by any key contained within the 
+> KEK.  Following a reboot, all DBX entries load into the .blacklist keyring.  
+> There is not a requirement similar to how CRL’s work here, any KEK key 
+> can be used.
+> 
+> With architectures booted through a shim there is the MOKX.  Similar to 
+> DBX, MOKX have the same capabilities, however they do not need to be 
+> signed by any key, the machine owner must show they have physical 
+> presence (and potentially a MOK password) for inclusion.  Again there 
+> is not a requirement similar to how CRL’s work here either.  The machine 
+> owner can decide what is included.
+> 
+> Today when a kernel is built, any number of keys may be included within 
+> the builtin trusted keyring.  The keys included in the kernel may not have 
+> a single usage field set or the CA bit set.  There are no requirements on 
+> how these keys get used later on.  Any key in the builtin trusted keyring 
+> can be used to sign a revocation that can be added to the blacklist keyring.  
+> Additionally, any key in the MOK can be used to sign this kernel and it will 
+> boot.  Before booting the kernel, MOK keys have more privileges than 
+> after the kernel is booted in some instances.
+> 
+> Today MOK keys can be loaded into the machine keyring.  These keys get 
+> linked to the secondary trusted keyring.  Currently key usage enforcement
+> is being applied to these keys behind some Kconfig options.  By default 
+> anything in the secondary has the same capabilities as the builtin trusted 
+> keyring.  What is challenging here with this request is the inconsistency 
+> between how everything else currently works. 
+> 
+> Root can not arbitrarily add things to the secondary trusted keyring.  These 
+> keys must be signed by something in either the machine or the builtin.  In 
+> this thread [1], Jarkko is saying CA based infrastructure should be a policy 
+> decision not to be enforced by the kernel. Wouldn’t this apply here as well?
+> 
+> 1. https://lore.kernel.org/lkml/CVGUFUEQVCHS.37OA20PNG9EVB@suppilovahvero/
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+Mickaël said, "This change is critical and should be tied to a
+dedicated kernel config
+(disabled by default), otherwise existing systems using this feature
+will have their threat model automatically changed without notice."
 
-
+As a possible alternative I suggested limiting which file hashes the
+certs on the secondary (or machine) keyring could blacklist.
 -- 
-真実はいつも一つ！/ Always, there's only one truth!
+thanks,
+
+Mimi
+
