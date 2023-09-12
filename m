@@ -2,181 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AB879DA38
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665C379DA39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjILUqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 16:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
+        id S233820AbjILUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 16:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjILUqs (ORCPT
+        with ESMTP id S229683AbjILUri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 16:46:48 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AC7E64;
-        Tue, 12 Sep 2023 13:46:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4A55721846;
-        Tue, 12 Sep 2023 20:46:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694551603;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJPt1Ma6uz/tVf5cIdZMMrc9e/GB1GVwEHWdMe4+sgo=;
-        b=TkcgUmX0U9L1ipNnvdCxJMjNDSJ39ZjrfPRFu0633zMYFXfbpxcjoRA5fxdY70BcEjrqSY
-        AsFDvT3bzOqnNKxSZ2f/A02OX0MnodtvS/UmhijRyBAOgKB7JYG88MK/MYEOqrVeedZwdK
-        0225mbo6Jzyb/ExTYMFPKOMvMvIvOJ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694551603;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJPt1Ma6uz/tVf5cIdZMMrc9e/GB1GVwEHWdMe4+sgo=;
-        b=DuE3zRidJeBOm3PX8pzQo6hokbLUM7B33wmYgvP3LJhQnYu9oxPx2C5nf9lmDfGoo0sN8Y
-        YMt1IiJ+g8EUnKBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0ADF7139DB;
-        Tue, 12 Sep 2023 20:46:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Wr/VATPOAGXVBQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 12 Sep 2023 20:46:43 +0000
-Date:   Tue, 12 Sep 2023 22:46:41 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 10/11] btrfs: add trace events for RST
-Message-ID: <20230912204641.GG20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
- <20230911-raid-stripe-tree-v8-10-647676fa852c@wdc.com>
+        Tue, 12 Sep 2023 16:47:38 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45BEE64;
+        Tue, 12 Sep 2023 13:47:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42FB2C433C8;
+        Tue, 12 Sep 2023 20:47:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694551654;
+        bh=VVtwekb5c6SImWXWuWHyxmTmEMM/b8uhPzUHF1OjzCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UXIi5uB6dxKea+sfVj3+f4RSYhz+XDKjyaolBDqisWYnrhdI6gscakENj8CqP0ctz
+         dVqb4WMM9VNUw1dTSdlUkgiGHfi7P+ULq+d0FwJR26/6tBzoWEYvl0D+LBIxp3G7f4
+         3na3pQPfOdbhy2OzuJxmbPImk4/Hk2cgkKA884wBLkvBak2xddo/qu1I6IPuiqmnjM
+         Htih/LU9503YfJB81p2fi9xtWsB3n1fjk/dKxmQilO7bhhU4rZ4jEYnYEF59BnF5Xb
+         z+pKjaCYQKJXo83UczMwh9cfWLWydcWgHmxsqucARU6xKDJyWk5QVD+YOGzlu+cml9
+         sH66xoj/BpGrw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AC4D2403F4; Tue, 12 Sep 2023 17:47:31 -0300 (-03)
+Date:   Tue, 12 Sep 2023 17:47:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v1 1/5] perf parse-events: Remove unused header files
+Message-ID: <ZQDOY1z5dEGhpFDM@kernel.org>
+References: <20230911170559.4037734-1-irogers@google.com>
+ <CAM9d7cg4nc5rpW9jL-RPJP7w4Rg8h7t4A-EkHTE9rWF=Nm6bBQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230911-raid-stripe-tree-v8-10-647676fa852c@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cg4nc5rpW9jL-RPJP7w4Rg8h7t4A-EkHTE9rWF=Nm6bBQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:52:11AM -0700, Johannes Thumshirn wrote:
-> Add trace events for raid-stripe-tree operations.
+Em Mon, Sep 11, 2023 at 10:58:18PM -0700, Namhyung Kim escreveu:
+> On Mon, Sep 11, 2023 at 10:06 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > The fnmatch header is now used in the PMU matching logic in pmu.c.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/raid-stripe-tree.c  |  8 +++++
->  include/trace/events/btrfs.h | 75 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+)
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+
+
+Thanks, applied the series.
+
+- Arnaldo
+
+ 
+> Thanks,
+> Namhyung
 > 
-> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
-> index 7ed02e4b79ec..5a9952cf557c 100644
-> --- a/fs/btrfs/raid-stripe-tree.c
-> +++ b/fs/btrfs/raid-stripe-tree.c
-> @@ -62,6 +62,9 @@ int btrfs_delete_raid_extent(struct btrfs_trans_handle *trans, u64 start,
->  		if (found_end <= start)
->  			break;
->  
-> +		trace_btrfs_raid_extent_delete(fs_info, start, end,
-> +					       found_start, found_end);
-> +
->  		ASSERT(found_start >= start && found_end <= end);
->  		ret = btrfs_del_item(trans, stripe_root, path);
->  		if (ret)
-> @@ -120,6 +123,8 @@ static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
->  		return -ENOMEM;
->  	}
->  
-> +	trace_btrfs_insert_one_raid_extent(fs_info, bioc->logical, bioc->size,
-> +					   num_stripes);
->  	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
->  	for (int i = 0; i < num_stripes; i++) {
->  		u64 devid = bioc->stripes[i].dev->devid;
-> @@ -445,6 +450,9 @@ int btrfs_get_raid_extent_offset(struct btrfs_fs_info *fs_info,
->  
->  		stripe->physical = physical + offset;
->  
-> +		trace_btrfs_get_raid_extent_offset(fs_info, logical, *length,
-> +						   stripe->physical, devid);
-> +
->  		ret = 0;
->  		goto free_path;
->  	}
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index b2db2c2f1c57..e2c6f1199212 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -2497,6 +2497,81 @@ DEFINE_EVENT(btrfs_raid56_bio, raid56_write,
->  	TP_ARGS(rbio, bio, trace_info)
->  );
->  
-> +TRACE_EVENT(btrfs_insert_one_raid_extent,
-> +
-> +	TP_PROTO(struct btrfs_fs_info *fs_info, u64 logical, u64 length,
+> > ---
+> >  tools/perf/util/parse-events.y | 3 ---
+> >  1 file changed, 3 deletions(-)
+> >
+> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> > index 21bfe7e0d944..ef03728b7ea3 100644
+> > --- a/tools/perf/util/parse-events.y
+> > +++ b/tools/perf/util/parse-events.y
+> > @@ -9,11 +9,8 @@
+> >  #define YYDEBUG 1
+> >
+> >  #include <errno.h>
+> > -#include <fnmatch.h>
+> > -#include <stdio.h>
+> >  #include <linux/compiler.h>
+> >  #include <linux/types.h>
+> > -#include <linux/zalloc.h>
+> >  #include "pmu.h"
+> >  #include "pmus.h"
+> >  #include "evsel.h"
+> > --
+> > 2.42.0.283.g2d96d420d3-goog
+> >
 
-const struct fs_info
+-- 
 
-> +		 int num_stripes),
-> +
-> +	TP_ARGS(fs_info, logical, length, num_stripes),
-> +
-> +	TP_STRUCT__entry_btrfs(
-> +		__field(	u64,	logical		)
-> +		__field(	u64,	length		)
-> +		__field(	int,	num_stripes	)
-> +	),
-> +
-> +	TP_fast_assign_btrfs(fs_info,
-> +		__entry->logical	= logical;
-> +		__entry->length		= length;
-> +		__entry->num_stripes	= num_stripes;
-> +	),
-> +
-> +	TP_printk_btrfs("logical=%llu, length=%llu, num_stripes=%d",
-> +			__entry->logical, __entry->length,
-> +			__entry->num_stripes)
-
-Tracepoint messages should follow the formatting guidelines
-https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html#tracepoints
-
-> +);
-> +
-> +TRACE_EVENT(btrfs_raid_extent_delete,
-> +
-> +	TP_PROTO(struct btrfs_fs_info *fs_info, u64 start, u64 end,
-> +		 u64 found_start, u64 found_end),
-> +
-> +	TP_ARGS(fs_info, start, end, found_start, found_end),
-> +
-> +	TP_STRUCT__entry_btrfs(
-> +		__field(	u64,	start		)
-> +		__field(	u64,	end		)
-> +		__field(	u64,	found_start	)
-> +		__field(	u64,	found_end	)
-> +	),
-> +
-> +	TP_fast_assign_btrfs(fs_info,
-> +		__entry->start	=	start;
-> +		__entry->end	=	end;
-> +		__entry->found_start =	found_start;
-> +		__entry->found_end =	found_end;
-
-Tracepoints follow the fancy spacing and alignment in the assign blocks.
-
-> +	),
-> +
-> +	TP_printk_btrfs("start=%llu, end=%llu, found_start=%llu, found_end=%llu",
-> +			__entry->start, __entry->end, __entry->found_start,
-> +			__entry->found_end)
-> +);
+- Arnaldo
