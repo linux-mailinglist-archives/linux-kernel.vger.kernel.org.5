@@ -2,60 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA37279DC44
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AD479DC47
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237818AbjILWwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
+        id S237830AbjILWya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjILWww (ORCPT
+        with ESMTP id S230162AbjILWy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:52:52 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF7F10EF;
-        Tue, 12 Sep 2023 15:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=4wV3+Ar5zGASt+xy1OWKP3yLmI4kNWQG0D12Wz808+o=; b=0hfhlp43bauXFbOgtra0mOctIE
-        agRwLL58JRi/IvGki5VcucySiZFvRhYNOwqHhMPBGPLIndP7VJYdZXFEPPN3oNiYRmA+oehZBdTig
-        KAb8jjIOkeDTTaEEB1utuPp6XyNES6gBK7zgpq2Amly54UKlzUW9p8MwQ3aZvXEDIZyQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qgCFC-006GXN-R4; Wed, 13 Sep 2023 00:52:30 +0200
-Date:   Wed, 13 Sep 2023 00:52:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, kostap@marvell.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM64: dts: marvell: cn9310: Use appropriate label for
- spi1 pins
-Message-ID: <0fd181d3-de5e-4e56-8176-faeb59a75fdb@lunn.ch>
-References: <20230820225126.561304-1-chris.packham@alliedtelesis.co.nz>
+        Tue, 12 Sep 2023 18:54:29 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB88C1;
+        Tue, 12 Sep 2023 15:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1694559263;
+        bh=9qFhBwApOtxbCRkss+cXTdVSRxiqaNw6Cm3OsXpblk0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NNkhvJJSuTAjyxdHn9KL8t+JxECMLmlaD2DyhL7HZu/5W/LGNlBPB8kYup011jINm
+         x0z1ik7md75tNC7W51XDMILuvot3hiewacJvknMqa4Kb3ws4ihsRiy5FWi/6TpnaeO
+         IKW/iy47r3GWyUzBomcanUO0KDpA14BHCvGCNEVnwAgZMcumbJmTyztECe9ufcV6gd
+         mvD/UzUNzMjSvoZ5nUyRT5T0JqGLIClE/OOzb5pEgOgglWMK1FWT5ZdavqwkXiLJrv
+         RwrQJAKcsmpfibrAOaxB7EPC4oavOVn9CVfCu3xiFxgz4hCwgjRMdR5zpWiWxm5pRT
+         go2se/utZvTYw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rlf672wVTz4xQj;
+        Wed, 13 Sep 2023 08:54:23 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>,
+        aboorvad@linux.vnet.ibm.com, npiggin@gmail.com,
+        rmclure@linux.ibm.com, arnd@arndb.de, joel@jms.id.au,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        pratik.r.sampat@gmail.com
+Cc:     sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com
+Subject: Re: [RFC v3 1/2] powerpc/cpuidle: cpuidle wakeup latency based on
+ IPI and timer events
+In-Reply-To: <20230911053620.87973-2-aboorvad@linux.vnet.ibm.com>
+References: <20230911053620.87973-1-aboorvad@linux.vnet.ibm.com>
+ <20230911053620.87973-2-aboorvad@linux.vnet.ibm.com>
+Date:   Wed, 13 Sep 2023 08:54:15 +1000
+Message-ID: <87a5trvw88.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230820225126.561304-1-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 10:51:25AM +1200, Chris Packham wrote:
-> Both the CN9130-CRB and CN9130-DB use the SPI1 interface but had the
-> pinctrl node labelled as "cp0_spi0_pins". Use the label "cp0_spi1_pins"
-> and update the node name to "cp0-spi-pins-1" to avoid confusion with the
-> pinctrl options for SPI0.
-> 
-> Fixes: 4c43a41e5b8c ("arm64: dts: cn913x: add device trees for topology B boards")
-> Fixes: 5c0ee54723f3 ("arm64: dts: add support for Marvell cn9130-crb platform")
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Aboorva Devarajan <aboorvad@linux.vnet.ibm.com> writes:
+> From: Pratik R. Sampat <psampat@linux.ibm.com>
+>
+> Introduce a mechanism to fire directed IPIs from a source CPU to a
+> specified target CPU and measure the time incurred on waking up the
+> target CPU in response.
+>
+> Also, introduce a mechanism to queue a hrtimer on a specified CPU and
+> subsequently measure the time taken to wakeup the CPU.
+>
+> Define a simple debugfs interface that allows for adjusting the
+> settings to trigger IPI and timer events on a designated CPU, and to
+> observe the resulting cpuidle wakeup latencies.
+>
+> Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
+> Signed-off-by: Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+> ---
+>  arch/powerpc/Kconfig.debug                 |  10 ++
+>  arch/powerpc/kernel/Makefile               |   1 +
+>  arch/powerpc/kernel/test_cpuidle_latency.c | 154 +++++++++++++++++++++
+  
+I don't see anything here that's powerpc specific?
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Which makes me wonder 1) could this be done with some existing generic
+mechanism?, and 2) if not can this test code be made generic.
 
-    Andrew
+At the very least this should be Cc'ed to the cpuidle lists &
+maintainers given it's a test for cpuidle latency :)
+
+cheers
