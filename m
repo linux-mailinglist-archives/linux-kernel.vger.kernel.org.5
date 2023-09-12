@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A3F79DB20
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4227C79DB23
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbjILVte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 17:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        id S235135AbjILVtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 17:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjILVtd (ORCPT
+        with ESMTP id S232328AbjILVtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 17:49:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E74410CC;
-        Tue, 12 Sep 2023 14:49:29 -0700 (PDT)
-Received: from mercury (unknown [185.254.75.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 20291660731A;
-        Tue, 12 Sep 2023 22:49:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694555368;
-        bh=KzHUhPgIk9l5Uaueu48b3+uaUVOCUBluWUvrQPBJO5M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/FhKTWNlzQtct5IgtDQhMjOFgcsXU7oFvaJdLnEbVO1aQtUmI7FUtophTh29Hpqa
-         7SIaJSKPRVf2mC+Q69heL4YdEpZgAPyGKqvOqZYHeTgHEl+fmqJPU1h8fwhf4c3kQX
-         E/m/KgVPBiR1jwdzv3ol4ZF99eBRasMG2GB5FfZccJ3K3HN7TNKmdLK/qPq19yYI8e
-         ubI+LMmy2PNcy3FaQLnI7qXOTwsr11cFFTJA8tyuBqae7PZv/Fz5/WZQUvBuamgpq4
-         IbqKbLKZDnyOzAKOyMTmnzTgr5v9E9uRgpkG6V2nBdqSk2QvUT/W/7OpSJMEoKBXG4
-         GUO8ONFqmOFjg==
-Received: by mercury (Postfix, from userid 1000)
-        id BED16106098A; Tue, 12 Sep 2023 23:49:25 +0200 (CEST)
-Date:   Tue, 12 Sep 2023 23:49:25 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>
-Subject: Re: [PATCH 1/2] power: supply: bq24257_charger: Make chip type and
- name in sync
-Message-ID: <20230912214925.uukw4lxnopzswqz2@mercury.elektranox.org>
-References: <20230902193331.83672-1-biju.das.jz@bp.renesas.com>
- <20230902193331.83672-2-biju.das.jz@bp.renesas.com>
- <ZPWsdjlFvUzeFy45@smile.fi.intel.com>
- <OS0PR01MB592285B86C29C3C1A992C09986F3A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <ZP7ored2UfXcFUvz@smile.fi.intel.com>
+        Tue, 12 Sep 2023 17:49:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C0D10D0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 14:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694555388; x=1726091388;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8c3AlO8PBtO5Q8LR1lCzc5UiCpzDk6phi7ZBAGbhAfA=;
+  b=MA+c034N0MR+ORp//Biam6T0zB0HiRNDzCaEaT5aoLZlTrOBFhS38vFH
+   mSoG9ZXfyX2LIqRWpTeOnXgWtXhoyf2gFrSCaURPWtrjYeVER5bryKkb7
+   yake1Wz67Vl4IfOPC5Sm+ezhN8c6reER27oAsj1XEPWrBnSWml0BPbCjb
+   kcE+h97t9gg/fpiEfvHD/Z0zM171kN2pMGa1f36KW1Rvsi4lAbj0eAU8l
+   6dsj2tV88hhUOP3wPWuHbBHV1vaVVmaIr30H3Yk297FfaDYB7IJT8k4Yx
+   LJINOJUAQdWQKOSQX84gGBSsYK36AD6jtK8pzL22+R1FqBLwN73U9D4Se
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="444939179"
+X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
+   d="scan'208";a="444939179"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 14:49:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="809421557"
+X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
+   d="scan'208";a="809421557"
+Received: from lkp-server02.sh.intel.com (HELO 47e905db7d2b) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 12 Sep 2023 14:49:45 -0700
+Received: from kbuild by 47e905db7d2b with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgBGR-0000JF-0o;
+        Tue, 12 Sep 2023 21:49:43 +0000
+Date:   Wed, 13 Sep 2023 05:49:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     sunying@nj.iscas.ac.cn, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, pengpeng@iscas.ac.cn,
+        renyanjie01@gmail.com, Ying Sun <sunying@nj.iscas.ac.cn>
+Subject: Re: [PATCH] regulator: mtk-dvfsrc: remove non-existent configuration
+ dependency "MTK_DVFSRC"
+Message-ID: <202309130559.z9VcY7Ak-lkp@intel.com>
+References: <20230912013929.658-1-sunying@nj.iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zewfeowjhf25xdtg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZP7ored2UfXcFUvz@smile.fi.intel.com>
+In-Reply-To: <20230912013929.658-1-sunying@nj.iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---zewfeowjhf25xdtg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
 Hi,
 
-On Mon, Sep 11, 2023 at 01:15:09PM +0300, Andy Shevchenko wrote:
-> On Sun, Sep 10, 2023 at 07:10:06AM +0000, Biju Das wrote:
-> > Hi Andy Shevchenko,
-> > > On Sat, Sep 02, 2023 at 08:33:30PM +0100, Biju Das wrote:
->=20
-> ...
->=20
-> > > > -	if (ACPI_HANDLE(dev)) {
-> > > > -		acpi_id =3D acpi_match_device(dev->driver->acpi_match_table,
-> > > > -					    &client->dev);
-> > > > -		if (!acpi_id) {
-> > > > -			dev_err(dev, "Failed to match ACPI device\n");
-> > > > -			return -ENODEV;
-> > > > -		}
-> > > > -		bq->chip =3D (enum bq2425x_chip)acpi_id->driver_data;
-> > > > -	} else {
-> > > > -		bq->chip =3D (enum bq2425x_chip)id->driver_data;
-> > > > -	}
-> > >=20
-> > > Do we still need acpi.h after this change?
-> >=20
-> > Yes, it is still needed as it is using=20
-> > ACPI_PTR.
->=20
-> Can we, please, drop ACPI_PTR() as it's more harmful than useful (same wa=
-y as
-> you dropped the ifdeffery for OF cases in other patches)?
+kernel test robot noticed the following build errors:
 
-I will go ahead and merge this series, ACPI_PTR() and
-of_match_ptr() should be removed in a separate cleanup patch.
+[auto build test ERROR on broonie-regulator/for-next]
+[also build test ERROR on linus/master v6.6-rc1 next-20230912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
--- Sebastian
+url:    https://github.com/intel-lab-lkp/linux/commits/sunying-nj-iscas-ac-cn/regulator-mtk-dvfsrc-remove-non-existent-configuration-dependency-MTK_DVFSRC/20230912-101109
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+patch link:    https://lore.kernel.org/r/20230912013929.658-1-sunying%40nj.iscas.ac.cn
+patch subject: [PATCH] regulator: mtk-dvfsrc: remove non-existent configuration dependency "MTK_DVFSRC"
+config: sparc64-allyesconfig (https://download.01.org/0day-ci/archive/20230913/202309130559.z9VcY7Ak-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309130559.z9VcY7Ak-lkp@intel.com/reproduce)
 
---zewfeowjhf25xdtg
-Content-Type: application/pgp-signature; name="signature.asc"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309130559.z9VcY7Ak-lkp@intel.com/
 
------BEGIN PGP SIGNATURE-----
+All errors (new ones prefixed by >>):
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUA3OIACgkQ2O7X88g7
-+pr71w/+IgYWrC5fD6PTKqgYLZgjLziNKJmHrPKWUaJ8O7JmK/lffOU0ZsFJCW48
-EvhmhZDm5Ta447qDYHrNIattg1pGYixLxkExXsFYoy1bb4CDzrDuXtEyBL/DvGK4
-U3GQmnHyeSbFWJaEGkDaDaBiJuuJYpTfpLUvTbW45dhlzGNXRoNTaWfm8cvWuc04
-W2AYdeUSNrirEXqP/R5XiRXEICmQ3oyRS7YUt+wqi0dnXu2JWQplMiGQgOP23veQ
-Om+LykWszUbgJ2CQ181mSshp8dxJqgE3IlSeDqfyTYLQsXuzOb7uiv1mK6tW20Ja
-6CuY01qC7CobNWkqMRZfjtt949bQlXKW7clYUm6V4yXwASh9N/WRMS1Oa8qGlqn3
-6EvhmOM4yGH8VkOd5P1DpLgjQ2P9QFLbWUyIqswt1do3az/b87LdDm8EAg4JpFTJ
-yXo2PJ0DDNXzkCTDQeO/Bw8gdQK9NYiyZpf+2EaVeHLla160TvI+SVB08QMdeoM4
-aLYhXlO6dqb2CeriYEoWXAXf4oo/HEKMINiNQqjTv6IzXf92vruKeI7/un2r9s7L
-uxCWMNMu7spmsWtLarzxb18Ly8HGVNc0uFrGMcQ5p2onG1NjBfk8LTzzsFTR87dN
-aMdvbOYSgncrG1MHzuxyuSRf69nSYhEMFKv2wqNWci01ls3AFZ8=
-=djlU
------END PGP SIGNATURE-----
+>> drivers/regulator/mtk-dvfsrc-regulator.c:9:10: fatal error: linux/of_.h: No such file or directory
+       9 | #include <linux/of_.h>
+         |          ^~~~~~~~~~~~~
+   compilation terminated.
 
---zewfeowjhf25xdtg--
+
+vim +9 drivers/regulator/mtk-dvfsrc-regulator.c
+
+a0db6b0aa670ba henryc.chen 2020-12-24   4  
+a0db6b0aa670ba henryc.chen 2020-12-24   5  #include <linux/err.h>
+a0db6b0aa670ba henryc.chen 2020-12-24   6  #include <linux/init.h>
+a0db6b0aa670ba henryc.chen 2020-12-24   7  #include <linux/module.h>
+a0db6b0aa670ba henryc.chen 2020-12-24   8  #include <linux/platform_device.h>
+045a44d4c9b325 Rob Herring 2023-07-14  @9  #include <linux/of_.h>
+a0db6b0aa670ba henryc.chen 2020-12-24  10  #include <linux/regulator/driver.h>
+a0db6b0aa670ba henryc.chen 2020-12-24  11  #include <linux/regulator/of_regulator.h>
+a0db6b0aa670ba henryc.chen 2020-12-24  12  #include <linux/soc/mediatek/mtk_dvfsrc.h>
+a0db6b0aa670ba henryc.chen 2020-12-24  13  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
