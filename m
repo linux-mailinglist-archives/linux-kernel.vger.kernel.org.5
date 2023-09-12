@@ -2,171 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 655F479DC3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D6F79DC41
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237772AbjILWup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
+        id S237827AbjILWwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237599AbjILWuo (ORCPT
+        with ESMTP id S233749AbjILWwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:50:44 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5948A10EB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:50:40 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d814a1f7378so367234276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:50:40 -0700 (PDT)
+        Tue, 12 Sep 2023 18:52:10 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB7010F2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:52:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58e4d2b7d16so72923227b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694559039; x=1695163839; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694559125; x=1695163925; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=UFwAsyB3AEoWNcNCyROJx1gfpXFYnfRUbI5E2mejJ9c=;
-        b=tgrh3iOYCRAv8oWggW5po6A5iSxB6GZXb9v8Tetv/QtSYlN1O+SLlgaC2RWJ4zj2kA
-         d1TyaqXh8KzRcYn1qzHj0nbMyeoKo0+cBJ3lEdzSZjEyPiAoG8tjc8fahP26aDEVJ+9l
-         P4rJGs53uJDsupE8+hhOScqElFmN//JaKW5Ng85fWgvAOPokxDJKNSsRyDvX12xhFvRf
-         EAcI5jcRZGr7Gaq/MCXVp4h/csYwbNgdcMR/HzhegNMexJmesxWyAz8IxoEGJJBTg6e1
-         rojIY60Zf6jZCS+1Og4lUVS0IHA5m3dy5mqBuDAshRHk+vfqDUcIAH0i+zXlD/pFsY/i
-         Mbzg==
+        bh=TF/ZOoMeRdt3mIBCTUA9c4c1ylLEIjuiWAktYofcXzg=;
+        b=g5FTolfZpjiRsEo6cV5ccyXIO8eTwXPUBoSIDV6/KanqUrlENDfAmsnJhDG9rxjjlW
+         m3aqElm1ZHpJ4ghcNHzeVdoJCbzreRuCCL3DLhWiycJovZasyOkD7KBFT8VJYVIubi7D
+         t3MyoH4YnoMckrZH8eHifzsI9jDCjbigqGPBaoSnBKGH907GBbLWkh1jDj/FXu2leKNW
+         J3jdi2oofarN+oLJNuOc2ZEcGRgtxUTKE9eBTAVMIjZuAylJUy7Vk3bgfXn73W+079N/
+         cbBnR7Bx2fKKHknn+ogEeZc0IvV9xD7w4/FJKVcDao8xovN6cw9FNBBRnb+1NwazaLP3
+         mcIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694559039; x=1695163839;
+        d=1e100.net; s=20230601; t=1694559125; x=1695163925;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UFwAsyB3AEoWNcNCyROJx1gfpXFYnfRUbI5E2mejJ9c=;
-        b=eHOKnhSXbnHqoCcF+5aqjjIEIH7EnJ1C4SuQQ8kyg1qFqfsVwQRsBUZlIzENNUtgm5
-         Nu1uMD2NEyJb+WSi7GTb1UV5tpYXtrP+MHtTin0t4ppzWecz4wMkEoMkEPS/HvzJJzky
-         uzeYE1/2/PcPy96XF2ACqDK1KJ1t7XZV0cgd0+ZSDl5NCRIbsRJKHgO4721xZ24UIr+U
-         GkIx8G1dC0uhu6sggWF35IqMc9cD7fRvNVGZ6nqJpEmcHQJLSdlhyOSF1OGuqHznluK+
-         0yA3honSQq6/dsfKhJnqVdJpABAFnJOZSskbtu+DbHin7UdtyXlxhrhText1cbS2sLq+
-         mkvQ==
-X-Gm-Message-State: AOJu0Ywz04AL0KQHyRHQCdnrw13yChVkSvfDQiI26vNoIsnxPc916Bzo
-        IwcXHQLgPkAi2XppVzCTy6CZZdpCwg==
-X-Google-Smtp-Source: AGHT+IHvjBdLHIwE5Swmqgzl9dAn8br5M2lbvP0uMTZ4rZ3PqpfmPuZdzjlbHhrZjM+QGwmows6QbjDglQ==
-X-Received: from hshan17.roam.corp.google.com ([2620:15c:211:201:2a7f:c6c4:6e3:ac5c])
- (user=hshan job=sendgmr) by 2002:a05:6902:548:b0:d7e:78db:d264 with SMTP id
- z8-20020a056902054800b00d7e78dbd264mr119127ybs.5.1694559039575; Tue, 12 Sep
- 2023 15:50:39 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 15:50:35 -0700
+        bh=TF/ZOoMeRdt3mIBCTUA9c4c1ylLEIjuiWAktYofcXzg=;
+        b=feW5/nQk2/5wcNbJDM8ZGNy3BVXuJACfiLUZt7gJnZKJOK783nXQtDtpJAB3J8u+U9
+         wMLbn8QjFjmtBkFIX/7+/oojUqve3NjDbqpEhjl7RYCW9NRxOcgC2Xn+BZTkYmR8AebY
+         UiCrdQaVyjYwIqaQAIxA5hpXwz7qBkRYBrsOtoQHAB27AjQxqEAU9hcXRxruDwNPvRov
+         KfyHYIz9tYOyI+MWG9rN+N+iM6qHovHbeMwHKVOWByA80vNFNV0SAkrs9w+nMcUwaPQQ
+         nSy1wRQS/RPoC1kZXm+COBlUqLUJXRFleJZBbczahOngn2hITbSAgAVJ7M8K0L+F55ih
+         OWxg==
+X-Gm-Message-State: AOJu0Yzh/6ot5f2gqMMwQzuQCZBlcuJEMjbMLrWjclHLh+s1vPH475hY
+        jn8houHPB2X2haWlgIgEnDljUR5ijNK086jC/A==
+X-Google-Smtp-Source: AGHT+IFxptkOduun5HvMxIpAGwDFry0giLXElOB0rBRO5TAsdKAt+kfSy1Xr3O778RlmDzs77ghhbc4Msg+ndglFYg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:26c4:0:b0:d47:5cc3:9917 with SMTP
+ id m187-20020a2526c4000000b00d475cc39917mr16986ybm.9.1694559125382; Tue, 12
+ Sep 2023 15:52:05 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 22:52:04 +0000
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912225035.448012-1-hshan@google.com>
-Subject: [PATCH v2] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-From:   Haitao Shan <hshan@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Haitao Shan <hshan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-B4-Tracking: v=1; b=H4sIAJPrAGUC/x3NQQrCMBBG4auUWftDk4JGryIu7GSqAxrDTC1K6
+ d0NLr/Neyu5mIrTqVvJZFHXV2kIu474fi03geZmin0c+mOI8NkK1y+y6SLmGN+OyR94MnI1BmP kQ04hDWkvTK1TTSb9/B/ny7b9AIbKy5JzAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694559124; l=2952;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=kEANMmK+bqZl13+G6AqIwN3Hu49jxSBc0yPr/PwkKEQ=; b=jSu183lSNeuj5MYdOyW/+gQyJOHAxs/+AcQuooSNWAo1F4W0rMFvV1rIX91/bUegAMCJBQqWB
+ m3DPFzgjlSwBYpwnjgJXFtyLIDDOsNPp2gYCmCPHJzDJvSrhOd/k2Sg
+X-Mailer: b4 0.12.3
+Message-ID: <20230912-strncpy-drivers-bus-fsl-mc-dprc-c-v1-1-cdb56aa3f4f4@google.com>
+Subject: [PATCH] bus: fsl-mc: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running android emulator (which is based on QEMU 2.12) on
-certain Intel hosts with kernel version 6.3-rc1 or above, guest
-will freeze after loading a snapshot. This is almost 100%
-reproducible. By default, the android emulator will use snapshot
-to speed up the next launching of the same android guest. So
-this breaks the android emulator badly.
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-I tested QEMU 8.0.4 from Debian 12 with an Ubuntu 22.04 guest by
-running command "loadvm" after "savevm". The same issue is
-observed. At the same time, none of our AMD platforms is impacted.
-More experiments show that loading the KVM module with
-"enable_apicv=false" can workaround it.
+We need to prefer more robust and less ambiguous string interfaces.
 
-The issue started to show up after commit 8e6ed96cdd50 ("KVM: x86:
-fire timer when it is migrated and expired, and in oneshot mode").
-However, as is pointed out by Sean Christopherson, it is introduced
-by commit 967235d32032 ("KVM: vmx: clear pending interrupts on
-KVM_SET_LAPIC"). commit 8e6ed96cdd50 ("KVM: x86: fire timer when
-it is migrated and expired, and in oneshot mode") just makes it
-easier to hit the issue.
+`obj_desc->(type|label)` are expected to be NUL-terminated strings as
+per "include/linux/fsl/mc.h +143"
+| ...
+|  * struct fsl_mc_obj_desc - Object descriptor
+|  * @type: Type of object: NULL terminated string
+| ...
 
-Having both commits, the oneshot lapic timer gets fired immediately
-inside the KVM_SET_LAPIC call when loading the snapshot. On Intel
-platforms with APIC virtualization and posted interrupt processing,
-this eventually leads to setting the corresponding PIR bit. However,
-the whole PIR bits get cleared later in the same KVM_SET_LAPIC call
-by apicv_post_state_restore. This leads to timer interrupt lost.
+It seems `cmd_params->obj_type` is also expected to be a NUL-terminated string.
 
-The fix is to move vmx_apicv_post_state_restore to the beginning of
-the KVM_SET_LAPIC call and rename to vmx_apicv_pre_state_restore.
-What vmx_apicv_post_state_restore does is actually clearing any
-former apicv state and this behavior is more suitable to carry out
-in the beginning.
+A suitable replacement is `strscpy_pad` due to the fact that it
+guarantees NUL-termination on the destination buffer whilst keeping the
+NUL-padding behavior that `strncpy` provides.
 
-Fixes: 967235d32032 ("KVM: vmx: clear pending interrupts on KVM_SET_LAPIC")
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Haitao Shan <hshan@google.com>
+Padding may not strictly be necessary but let's opt to keep it as this
+ensures no functional change.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- arch/x86/include/asm/kvm-x86-ops.h | 1 +
- arch/x86/include/asm/kvm_host.h    | 1 +
- arch/x86/kvm/lapic.c               | 2 ++
- arch/x86/kvm/vmx/vmx.c             | 4 ++--
- 4 files changed, 6 insertions(+), 2 deletions(-)
+Note: build-tested
+---
+ drivers/bus/fsl-mc/dprc.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index e3054e3e46d5..9b419f0de713 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -108,6 +108,7 @@ KVM_X86_OP_OPTIONAL(vcpu_blocking)
- KVM_X86_OP_OPTIONAL(vcpu_unblocking)
- KVM_X86_OP_OPTIONAL(pi_update_irte)
- KVM_X86_OP_OPTIONAL(pi_start_assignment)
-+KVM_X86_OP_OPTIONAL(apicv_pre_state_restore)
- KVM_X86_OP_OPTIONAL(apicv_post_state_restore)
- KVM_X86_OP_OPTIONAL_RET0(dy_apicv_has_pending_interrupt)
- KVM_X86_OP_OPTIONAL(set_hv_timer)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 3bc146dfd38d..af33fdc7377f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1691,6 +1691,7 @@ struct kvm_x86_ops {
- 	int (*pi_update_irte)(struct kvm *kvm, unsigned int host_irq,
- 			      uint32_t guest_irq, bool set);
- 	void (*pi_start_assignment)(struct kvm *kvm);
-+	void (*apicv_pre_state_restore)(struct kvm_vcpu *vcpu);
- 	void (*apicv_post_state_restore)(struct kvm_vcpu *vcpu);
- 	bool (*dy_apicv_has_pending_interrupt)(struct kvm_vcpu *vcpu);
- 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index a983a16163b1..a074f211e0c9 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2956,6 +2956,8 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 	int r;
- 
-+	static_call_cond(kvm_x86_apicv_pre_state_restore)(vcpu);
-+
- 	kvm_lapic_set_base(vcpu, vcpu->arch.apic_base);
- 	/* set SPIV separately to get count of SW disabled APICs right */
- 	apic_set_spiv(apic, *((u32 *)(s->regs + APIC_SPIV)));
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index df461f387e20..4fcf2448762c 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6911,7 +6911,7 @@ static void vmx_load_eoi_exitmap(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap)
- 	vmcs_write64(EOI_EXIT_BITMAP3, eoi_exit_bitmap[3]);
+diff --git a/drivers/bus/fsl-mc/dprc.c b/drivers/bus/fsl-mc/dprc.c
+index d129338b8bc0..dd1b5c0fb7e2 100644
+--- a/drivers/bus/fsl-mc/dprc.c
++++ b/drivers/bus/fsl-mc/dprc.c
+@@ -450,10 +450,8 @@ int dprc_get_obj(struct fsl_mc_io *mc_io,
+ 	obj_desc->ver_major = le16_to_cpu(rsp_params->version_major);
+ 	obj_desc->ver_minor = le16_to_cpu(rsp_params->version_minor);
+ 	obj_desc->flags = le16_to_cpu(rsp_params->flags);
+-	strncpy(obj_desc->type, rsp_params->type, 16);
+-	obj_desc->type[15] = '\0';
+-	strncpy(obj_desc->label, rsp_params->label, 16);
+-	obj_desc->label[15] = '\0';
++	strscpy_pad(obj_desc->type, rsp_params->type, 16);
++	strscpy_pad(obj_desc->label, rsp_params->label, 16);
+ 	return 0;
  }
+ EXPORT_SYMBOL_GPL(dprc_get_obj);
+@@ -491,8 +489,7 @@ int dprc_set_obj_irq(struct fsl_mc_io *mc_io,
+ 	cmd_params->irq_addr = cpu_to_le64(irq_cfg->paddr);
+ 	cmd_params->irq_num = cpu_to_le32(irq_cfg->irq_num);
+ 	cmd_params->obj_id = cpu_to_le32(obj_id);
+-	strncpy(cmd_params->obj_type, obj_type, 16);
+-	cmd_params->obj_type[15] = '\0';
++	strscpy_pad(cmd_params->obj_type, obj_type, 16);
  
--static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
-+static void vmx_apicv_pre_state_restore(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	/* send command to mc*/
+ 	return mc_send_command(mc_io, &cmd);
+@@ -564,8 +561,7 @@ int dprc_get_obj_region(struct fsl_mc_io *mc_io,
+ 	cmd_params = (struct dprc_cmd_get_obj_region *)cmd.params;
+ 	cmd_params->obj_id = cpu_to_le32(obj_id);
+ 	cmd_params->region_index = region_index;
+-	strncpy(cmd_params->obj_type, obj_type, 16);
+-	cmd_params->obj_type[15] = '\0';
++	strscpy_pad(cmd_params->obj_type, obj_type, 16);
  
-@@ -8276,7 +8276,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.set_apic_access_page_addr = vmx_set_apic_access_page_addr,
- 	.refresh_apicv_exec_ctrl = vmx_refresh_apicv_exec_ctrl,
- 	.load_eoi_exitmap = vmx_load_eoi_exitmap,
--	.apicv_post_state_restore = vmx_apicv_post_state_restore,
-+	.apicv_pre_state_restore = vmx_apicv_pre_state_restore,
- 	.required_apicv_inhibits = VMX_REQUIRED_APICV_INHIBITS,
- 	.hwapic_irr_update = vmx_hwapic_irr_update,
- 	.hwapic_isr_update = vmx_hwapic_isr_update,
--- 
-2.42.0.283.g2d96d420d3-goog
+ 	/* send command to mc*/
+ 	err = mc_send_command(mc_io, &cmd);
+
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230912-strncpy-drivers-bus-fsl-mc-dprc-c-bc7d818386ec
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
