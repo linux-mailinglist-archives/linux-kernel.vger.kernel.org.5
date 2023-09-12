@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D1D79D304
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FD479D307
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbjILN6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        id S235749AbjILN6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234939AbjILN6R (ORCPT
+        with ESMTP id S234939AbjILN6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:58:17 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2FC10CE;
-        Tue, 12 Sep 2023 06:58:13 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id E6A0D32009C5;
-        Tue, 12 Sep 2023 09:58:11 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 12 Sep 2023 09:58:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694527091; x=1694613491; bh=u0
-        LOjV4/r68tFCzvM24Co/ozHIjAyz4zQfSkl0FLEBg=; b=d+mGQw1Ly9T9uLz2Vk
-        hZEOBfxMOs77+4b2CmBmbQu9P7hkvg7dNcuSTWa7THLIQwmzuUDiG5T2xIJk15Cv
-        +ohb3UfGpf2HPMTIMx+/WhxsQwln4CRft+Ggwu9LpcKVmJzzTJj9mQfjMGRrfF2X
-        k7YIXe5IOBuyfhNa7wH/Vko3QPPgXlhfJZlDW49mSEtfJHLyjXGIR9QeD/sxqvqB
-        GzQc9mfTGEIv4nvO+j8tsT1K4kWWHQfQEyxEAs2jx4Q82M4LBJcgDqR57FwrhaAX
-        BXv+GQMCxcNRcs0+x5aw5BnpRvtZqRX6abppA8w7ms5Ax9ww+LyH3IRxA8tnpPxF
-        NX9A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1694527091; x=1694613491; bh=u0LOjV4/r68tF
-        CzvM24Co/ozHIjAyz4zQfSkl0FLEBg=; b=lbstYHqx8k/ON7HV0MEVFi6KSOd4/
-        FAELQBdu55FiiEfsWpJJNUXE4Sp1CjQZnO9lH6c+pPH7DR4dz9vPhfULva2p7QEM
-        F/KPwPrdCbyGvVFrKg46rcSIPt2m3T+wWCZT2bJkZUw0PLX0g664EuWtLAJgnFAE
-        b0VxvpnjwNAIrEKf7Cj24cqFFOvN4la6HfZVQI9MDhDK2qTKdtiFXNTog7i/mDjs
-        Bbj4ZnF/kaQykI5NDn0jpjyfC7aW0j60OkftrIu7KvHm+j8WscezB9EIPpa3chAZ
-        ZD+emIkUnGG9f8LcjXYdY9knmw9gbQkdr6t8tNj5akmhKeQFarZxM77xw==
-X-ME-Sender: <xms:cm4AZXNcNZxGdLemgdGCkpdXaAH55WiFlYiGwhTXPDVGOjqTHcN4PQ>
-    <xme:cm4AZR_Lwa8tcLAPUUOp-zb6sabtqN4985a6igUKRu0AnRPGPTSiGxoWRSXm2h01-
-    FCnT81pnevg-b3pNbU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgjedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:cm4AZWSu9QuNfjfEalDzd50gXloFGHZ6ZWgmRK_HbxqUhG0NdlfR_w>
-    <xmx:cm4AZbuEXJM_plfWeLiZ5CzCzj8uUqero9SyOfcVflHJ2oGLHXjMHQ>
-    <xmx:cm4AZfdJTKAfkIEuCLk3BawiFSLtRpc-rhMIcJEDVd9Km_PhDuZoyA>
-    <xmx:c24AZRtbQMCxqZAR51QznL-ueGVQmCgn9ihaA-r8Bzn9S9g893o26g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 55F2EB60089; Tue, 12 Sep 2023 09:58:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <d1d6b2a2-8be1-4269-a504-5762b94df77a@app.fastmail.com>
-In-Reply-To: <CAPDyKFpUUJeGD77GTYCk59cvW=SdGTkOEXH4dap1JQWekAa0Eg@mail.gmail.com>
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
- <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com>
- <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
- <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
- <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com>
- <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
- <CAMuHMdVxLkxN0bmSRXW74R_dGNDSRDB4Z=zE0DoiXDOuweSM0A@mail.gmail.com>
- <CAPDyKFpUUJeGD77GTYCk59cvW=SdGTkOEXH4dap1JQWekAa0Eg@mail.gmail.com>
-Date:   Tue, 12 Sep 2023 15:57:49 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Linus Torvalds" <torvalds@linux-foundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Olof Johansson" <olof@lixom.net>, soc@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Sebastian Reichel" <sebastian.reichel@collabora.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-Content-Type: text/plain
+        Tue, 12 Sep 2023 09:58:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488E10DE;
+        Tue, 12 Sep 2023 06:58:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HLmUvHYjOx5CSGh1JuF73s0prezlWCqoq7fl6e++tvY=; b=C4dp3zc/srLNk1O5LCPz7WiVIl
+        WeS9N0E29pdEYfHkVCt7Btc1NSXni+wJoEFBjTeLUj/+wDBk2ullMwbj5vydn10EntGUrQAn/8sfk
+        KisApbEl4A19ddb+g1RkaOUeezkH83SpxC/HpEgwfWgXQEzKq+Lm23GXf8QrQtjaM+fh6/M3zZYJh
+        CEAODiUyuUO091KirHgiB4kCXbYBN52SbPjMJ9DTedD6MTqWaGf7VRtsGU3yyFJ+If1OWfhy7vjZ8
+        hpsdRTVjjPw1TbqE7kec1kMZgqwNDfi6FnYjrEnxLl4dHzXHVAWwTFUkqMpyjumYYdsLZIGumUaG6
+        EYx5yTtg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qg3uS-007vmd-JF; Tue, 12 Sep 2023 13:58:32 +0000
+Date:   Tue, 12 Sep 2023 14:58:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <ZQBuiJ2n0uBOdjnr@casper.infradead.org>
+References: <ZPpV+MeFqX6RHIYw@dread.disaster.area>
+ <20230908104434.GB24372@noisy.programming.kicks-ass.net>
+ <ZP5JrYOge3tSAvj7@dread.disaster.area>
+ <ZP5OfhXhPkntaEkc@casper.infradead.org>
+ <ZP5llBaVrJteHQf3@dread.disaster.area>
+ <70d89bf4-708b-f131-f90e-5250b6804d48@redhat.com>
+ <ZP+U49yfkm0Fpfej@dread.disaster.area>
+ <20230912090342.GC35261@noisy.programming.kicks-ass.net>
+ <ZQBZXSCyG+u2+i8E@casper.infradead.org>
+ <20230912135213.GA22127@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912135213.GA22127@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023, at 13:28, Ulf Hansson wrote:
-> On Mon, 11 Sept 2023 at 09:52, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>
->> And I just realized you moved the code and Makefiles to drivers/genpd/,
->> but not the Kconfig symbols and logic, which still lives under
->> drivers/soc/.  So resolving that (and the name) is something that
->> should be resolved sooner rather than later...
->
-> In regards to the name, I am relying on input from Linus to make a
-> final decision before I send a patch. In regards to this, I have also
-> started working on a documentation patch for genpd. It needs some more
-> polishing before I can send it though.
+On Tue, Sep 12, 2023 at 03:52:13PM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 12, 2023 at 01:28:13PM +0100, Matthew Wilcox wrote:
+> > On Tue, Sep 12, 2023 at 11:03:42AM +0200, Peter Zijlstra wrote:
+> > > If not, then sure we can do this; it's not like I managed to get rid of
+> > > muteX_is_locked() -- and I actually tried at some point :/
+> > > 
+> > > And just now I grepped for it, and look what I find:
+> > > 
+> > > drivers/hid/hid-nintendo.c:     if (unlikely(mutex_is_locked(&ctlr->output_mutex))) {
+> > > drivers/nvdimm/btt.c:           if (mutex_is_locked(&arena->err_lock)
+> > > 
+> > > And there's more :-(
+> > 
+> > Are these actually abuse?  I looked at these two, and they both seem to
+> > be asking "Does somebody else currently have this mutex?" rather than
+> > "Do I have this mutex?".
+> 
+> It's effectively a random number generator in that capacity. Someone
+> might have it or might have had it when you looked and no longer have
+> it, or might have it now but not when you asked.
 
-I'm fairly sure that Linus was instead waiting for you to send
-a patch or pull request for the rename. Please just pick a name
-that you like and that Linus hasn't already objected to and send
-it so the rename makes it into -rc2 for others to base on.
+Well, no.
 
-If anyone has objections to the new name, you'll find out about
-it then, but I think we trust your judgement here.
+                if (mutex_is_locked(&arena->err_lock)
+                                || arena->freelist[lane].has_err) {
+                        nd_region_release_lane(btt->nd_region, lane);
 
-     Arnd
+                        ret = arena_clear_freelist_error(arena, lane);
+
+So that's "Is somebody currently processing an error, or have they
+already finished setting an error".  Sure, it's somewhat racy, but
+it looks like a performance optimisation, not something that needs
+100% accuracy.
+
+The other one's in a similar boat; an optimisation if anyone else is
+currently holding this mutex:
+
+        /*
+         * Immediately after receiving a report is the most reliable time to
+         * send a subcommand to the controller. Wake any subcommand senders
+         * waiting for a report.
+         */
+        if (unlikely(mutex_is_locked(&ctlr->output_mutex))) {
+                spin_lock_irqsave(&ctlr->lock, flags);
+                ctlr->received_input_report = true;
+                spin_unlock_irqrestore(&ctlr->lock, flags);
+                wake_up(&ctlr->wait);
+        }
+
+Sure, they might not still be holding it, or it may have been grabbed
+one clock tick later; that just means they miss out on this optimisation.
