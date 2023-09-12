@@ -2,176 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F8D79D2DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EAC79D0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235068AbjILNwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S234933AbjILMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234834AbjILNwg (ORCPT
+        with ESMTP id S233436AbjILMH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:52:36 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3725810D9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:52:32 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7a84609acc6so258706241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:52:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694526751; x=1695131551; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xzhOpAWh1roWufQ3LpAtbJqxibdBhs/iHC4UgrfWeT4=;
-        b=VccrmyI1xf34qkfvxBK0LfyYMZYJdIOrb4bubu4NV4y1WmAL3UH2Rdix7Z6PKjcpcG
-         riRx7cez6GiPk+KHXGsh/6EQRuThL9Wq4g0igT/RdDiDUhj6KRLmL45iu/YA0Beh/y/I
-         HQawdOps/1/RY7ls0LsalOvRo9XPKp/2+woMKCplaVUNlE1J91ZTt5W2qNVzNV095djL
-         AKInKbpU+2bMl6wjb1waK+AWuear0z2W8rAAS9lfqnq4v8d2fLmNkAX6I8JSA8UyTXgG
-         D6d3KLqdcRSky1rYtk8KxAs0LLXq5WGK/nLPjl+TT7cDSxXXt8U7rsTN7gLtMwbB0eAv
-         pEwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694526751; x=1695131551;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xzhOpAWh1roWufQ3LpAtbJqxibdBhs/iHC4UgrfWeT4=;
-        b=FYw3yZSpdenLSQ5Q6qEu2DJodufi18XRLgbujGt0iugpjoBar2YL2fehpMpcS9TmsH
-         WMNkTY4JPJ3C5UTHtpKnclk9HT6owH2ArOwrBKtJA8DWxhAq+xMEm/hC8FG8PvCyqK5u
-         CMjkZmujNqeV6vHuCwis3Zn4zbtb2Mvj+s9Ys6yX4rKORHpMAekNf0Vm1rOUlcbH3PWc
-         0HkS0HI9zAbDdpue6sAYQjUioYqDWbcRiRM/FF1QL20Ou9x/RzkqtBdHSF9lcb92NUuT
-         +dAWGBO4PTwhBUd29v1hq/t02qvH35I5dLbWrWAjNo0+Gv8pC34Pmn2nBHTlh36Yc89y
-         7b8A==
-X-Gm-Message-State: AOJu0YyInFJ9Z0ScVLf29Ymgsxq1KPBGRb4Pdwz2rgxaD762eAjh+scO
-        oFMYLjJTGqK4KX6FpzJEKaI/9nv3lAxRolZK9sg=
-X-Google-Smtp-Source: AGHT+IHxd3rp8UROjoeMiC42smp2+6ErUpiQMfAvfKvtLedzaIU2SlbFQE9r/OH0JyAhv6hTEcAOymkLAHmS7ib5jjQ=
-X-Received: by 2002:a67:fd19:0:b0:44d:5a92:ec40 with SMTP id
- f25-20020a67fd19000000b0044d5a92ec40mr10615940vsr.24.1694526750968; Tue, 12
- Sep 2023 06:52:30 -0700 (PDT)
+        Tue, 12 Sep 2023 08:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4209F10D3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:06:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694520398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=tX6yWckEp0zjVKcWR1lfoEzSymqYQ6Dx9WYErV4NIQ4=;
+        b=day7dsfJO+7i8dK9Q7byY+2g70qqW4yjnzf3reiSvBqJDMLlFiKBnVmHhgybAIkonvadEg
+        U5xIYdUkxtUfa542FZi/86M+Yta017IlX2dZbT+ZK1bq0D6XihkJa6e7sAmiHs4CjtL2q2
+        cicC8GbZXULE+gc4yJjwKKZ/aAu0Hvg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-606-SxgM-UXoMPmCmZdOPiUJOQ-1; Tue, 12 Sep 2023 08:06:35 -0400
+X-MC-Unique: SxgM-UXoMPmCmZdOPiUJOQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 952668D3BC3;
+        Tue, 12 Sep 2023 12:06:34 +0000 (UTC)
+Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 55D5710F1BE7;
+        Tue, 12 Sep 2023 12:06:33 +0000 (UTC)
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Eduard Zingerman <eddyz87@gmail.com>, linux-kernel@vger.kernel.org,
+        Artem Savkov <asavkov@redhat.com>
+Subject: [PATCH bpf] selftests/bpf: fix unpriv_disabled check in test_verifier
+Date:   Tue, 12 Sep 2023 14:06:31 +0200
+Message-ID: <20230912120631.213139-1-asavkov@redhat.com>
 MIME-Version: 1.0
-References: <20230905141348.32946-1-feng.tang@intel.com> <20230905141348.32946-2-feng.tang@intel.com>
-In-Reply-To: <20230905141348.32946-2-feng.tang@intel.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 12 Sep 2023 13:52:19 +0900
-Message-ID: <CAB=+i9SP2j=VEDi52ga0WgPWSeDzdmTYisA4PAnR26Natp3swA@mail.gmail.com>
-Subject: Re: [RFC Patch 1/3] mm/slub: increase the maximum slab order to 4 for
- big systems
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 11:07=E2=80=AFPM Feng Tang <feng.tang@intel.com> wro=
-te:
->
-> There are reports about severe lock contention for slub's per-node
-> 'list_lock' in 'hackbench' test, [1][2], on server systems. And
-> similar contention is also seen when running 'mmap1' case of
-> will-it-scale on big systems. As the trend is one processor (socket)
-> will have more and more CPUs (100+, 200+), the contention could be
-> much more severe and becomes a scalability issue.
->
-> One way to help reducing the contention is to increase the maximum
-> slab order from 3 to 4, for big systems.
+Commit 1d56ade032a49 changed the function get_unpriv_disabled() to
+return its results as a bool instead of updating a global variable, but
+test_verifier was not updated to keep in line with these changes. Thus
+unpriv_disabled is always false in test_verifier and unprivileged tests
+are not properly skipped on systems with unprivileged bpf disabled.
 
-Hello Feng,
+Fixes: 1d56ade032a49 ("selftests/bpf: Unprivileged tests for test_loader.c")
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
+---
+ tools/testing/selftests/bpf/test_verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Increasing order with a higher number of CPUs (and so with more
-memory) makes sense to me.
-IIUC the contention here becomes worse when the number of slabs
-increases, so it makes sense to
-decrease the number of slabs by increasing order.
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 31f1c935cd07d..98107e0452d33 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -1880,7 +1880,7 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
+-	get_unpriv_disabled();
++	unpriv_disabled = get_unpriv_disabled();
+ 	if (unpriv && unpriv_disabled) {
+ 		printf("Cannot run as unprivileged user with sysctl %s.\n",
+ 		       UNPRIV_SYSCTL);
+-- 
+2.41.0
 
-By the way, my silly question here is:
-In the first place, is it worth taking 1/2 of s->cpu_partial_slabs in
-the slowpath when slab is frequently used?
-wouldn't the cpu partial slab list be re-filled again by free if free
-operations are frequently performed?
-
-> Unconditionally increasing the order could  bring trouble to client
-> devices with very limited size of memory, which may care more about
-> memory footprint, also allocating order 4 page could be harder under
-> memory pressure. So the increase will only be done for big systems
-> like servers, which usually are equipped with plenty of memory and
-> easier to hit lock contention issues.
-
-Also, does it make sense not to increase the order when PAGE_SIZE > 4096?
-
-> Following is some performance data:
->
-> will-it-scale/mmap1
-> -------------------
-> Run will-it-scale benchmark's 'mmap1' test case on a 2 socket Sapphire
-> Rapids server (112 cores / 224 threads) with 256 GB DRAM, run 3
-> configurations with parallel test threads of 25%, 50% and 100% of
-> number of CPUs, and the data is (base is vanilla v6.5 kernel):
->
->                      base                      base+patch
-> wis-mmap1-25%       223670           +33.3%     298205        per_process=
-_ops
-> wis-mmap1-50%       186020           +51.8%     282383        per_process=
-_ops
-> wis-mmap1-100%       89200           +65.0%     147139        per_process=
-_ops
->
-> Take the perf-profile comparasion of 50% test case, the lock contention
-> is greatly reduced:
->
->       43.80           -30.8       13.04       pp.self.native_queued_spin_=
-lock_slowpath
->       0.85            -0.2        0.65        pp.self.___slab_alloc
->       0.41            -0.1        0.27        pp.self.__unfreeze_partials
->       0.20 =C2=B1  2%      -0.1        0.12 =C2=B1  4%  pp.self.get_any_p=
-artial
->
-> hackbench
-> ---------
->
-> Run same hackbench testcase  mentioned in [1], use same HW/SW as will-it-=
-scale:
->
->                      base                      base+patch
-> hackbench           759951           +10.5%     839601        hackbench.t=
-hroughput
->
-> perf-profile diff:
->      22.20 =C2=B1  3%     -15.2        7.05        pp.self.native_queued_=
-spin_lock_slowpath
->       0.82            -0.2        0.59        pp.self.___slab_alloc
->       0.33            -0.2        0.13        pp.self.__unfreeze_partials
->
-> [1]. https://lore.kernel.org/all/202307172140.3b34825a-oliver.sang@intel.=
-com/
-> [2]. ttps://lore.kernel.org/lkml/ZORaUsd+So+tnyMV@chenyu5-mobl2/
-> Signed-off-by: Feng Tang <feng.tang@intel.com>
-
-> ---
->  mm/slub.c | 51 ++++++++++++++++++++++++++++++++++++++-------------
->  1 file changed, 38 insertions(+), 13 deletions(-)
->
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f7940048138c..09ae1ed642b7 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4081,7 +4081,7 @@ EXPORT_SYMBOL(kmem_cache_alloc_bulk);
->   */
->  static unsigned int slub_min_order;
->  static unsigned int slub_max_order =3D
-> -       IS_ENABLED(CONFIG_SLUB_TINY) ? 1 : PAGE_ALLOC_COSTLY_ORDER;
-> +       IS_ENABLED(CONFIG_SLUB_TINY) ? 1 : 4;
->  static unsigned int slub_min_objects;
->
->  /*
-> @@ -4134,6 +4134,26 @@ static inline unsigned int calc_slab_order(unsigne=
-d int size,
->         return order;
->  }
