@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DED79D676
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AD179D67F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236988AbjILQhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S236987AbjILQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236874AbjILQhQ (ORCPT
+        with ESMTP id S236801AbjILQif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:37:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90162115;
-        Tue, 12 Sep 2023 09:37:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35ED1C433C7;
-        Tue, 12 Sep 2023 16:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694536632;
-        bh=OJuoXIE82hjK2NBMYhWXwpJGkmlI7rC+5Tx9u3yV2tM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ps2S5DYSbulUYf7oy7lT6QUeIC8SEE8uDrovxyzlP1aFanperwJfPxgxOSDoMicdj
-         QPhK/QjxkpPvjv2poRuKEjUgTqjp60TdQnRQmmahJid4JusPVASg0K1uVbLr45UAB9
-         O+q5IVvxkSBtPB4uIoSzebjqIZKeWLsg1NRa9ESumUogVOWqga9FHZ4uTwbMwFliV4
-         inf0fEeH4WTZISjvzOruneKr+bXI0QcpZaEpr0gdpaoAWUmP+DefmPc84zsLhd9NP2
-         YObhh1gBw/Dws7ynhREpR3QXWW0o3PhgfgfBYRLDlXE9yJVBmWttawahid5gfYz9Cd
-         Kjln+OFCXKa7w==
-Date:   Tue, 12 Sep 2023 17:37:03 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v5 07/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add 'additionalProperties: false' in child nodes
-Message-ID: <20230912-pancreas-hacked-ddcaa726fa8e@spud>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
- <20230912081527.208499-8-herve.codina@bootlin.com>
+        Tue, 12 Sep 2023 12:38:35 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96742CF;
+        Tue, 12 Sep 2023 09:38:31 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-273ca7ab3f5so4054008a91.2;
+        Tue, 12 Sep 2023 09:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694536711; x=1695141511; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VIjorw0mAfYvUocMlUp9ngShL4M6Rm9ZrInYkBC19Q8=;
+        b=AN6wRCNd23+54RwxRijPHkuIbmA0cyfSH4AhgvoflxVMW2y3HOGHwkMbv4J6spbXjV
+         l42+DwQxxrjbLep8g4HZ8V47fli4IGzwca4KqrRUptTpJN1T+eclVBzxQMcLqxDkQnnY
+         e6Ioff40Ri3zDy2qyH9WyJUWwiray13Il6zQqPWCTGwFTMj2LZZjbw+wypjMV5mB1Nx9
+         tj2NX+MGI/GB+yIOkdVP5DD3Vq/fozN69eh3Z5qfSlBs+eq1LLu5qi3jONnaRcxtt+bj
+         5vov8Jnfs4mKs2WtMt2jMivCmGXsNJHMTFrmweoRtkexJiHQXKhFE+FHtjVpkO7lJBx/
+         WVug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694536711; x=1695141511;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VIjorw0mAfYvUocMlUp9ngShL4M6Rm9ZrInYkBC19Q8=;
+        b=dMcI7LrgZGp8dq1EPOd35MzwnQ9bYoQRd7PlzXcAK07k+LLDPq2OKkYyYu7Px9XdDG
+         Rux/k4Fqc/sroxepxOhhugYOmb7tpMkPH9s4l07YMdP9dq/rstcpCOIXhGL0nCKl9HSQ
+         68FvGNDVOtcKK65bVMuKOIdDmu/c2NkvOOhcNEnAFkqUr3TVjg4n0SgQPczGQKhoNGOL
+         hgOU/7V5LWzediwPOXKQP8uekAfDRLnoYnkORZIXpzFPKvd/dYkcT7OeO9dGwYnMWgEZ
+         aMPcahG5HZtosKioevPjn3xwJZMOU/xs0EHCftmpFOPd4RDNMXSrJgFBNFEUNyIBZ9N5
+         jykg==
+X-Gm-Message-State: AOJu0Yy3vUdqKDBeE/6LW2iD1gFBzWuEKt/x0yuAqwu/4cPFYRPbiPXq
+        UCqJofHka6+8xYb6g/M1rCkx2bMiegLkbTo4Ml8=
+X-Google-Smtp-Source: AGHT+IGwZ8zVFarCqHn4qA49faOc/j0LC1UjXq/jaeq3LCN2xvhegJ2XX1lBFRsE+81ZHUaVYgCKUczj9YlvXjYCcgI=
+X-Received: by 2002:a17:90a:fb52:b0:26d:3d3a:a198 with SMTP id
+ iq18-20020a17090afb5200b0026d3d3aa198mr9804553pjb.42.1694536711006; Tue, 12
+ Sep 2023 09:38:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="H5/71ZKZWMUncSI5"
-Content-Disposition: inline
-In-Reply-To: <20230912081527.208499-8-herve.codina@bootlin.com>
+References: <20230911134650.921299741@linuxfoundation.org> <CA+G9fYv7PymkiagSGFU-BXG43gHm2NYDd2CNJw26C52EGhjpig@mail.gmail.com>
+In-Reply-To: <CA+G9fYv7PymkiagSGFU-BXG43gHm2NYDd2CNJw26C52EGhjpig@mail.gmail.com>
+From:   Allen Pais <stable.kernel.dev@gmail.com>
+Date:   Tue, 12 Sep 2023 09:38:19 -0700
+Message-ID: <CAJq+SaA8qPLxod62+an6ygwXE0Np-LM66WxG7oPg+4ZEpsyTQw@mail.gmail.com>
+Subject: Re: [PATCH 6.5 000/739] 6.5.3-rc1 review
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> >
+> > This is the start of the stable review cycle for the 6.5.3 release.
+> > There are 739 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.3-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 
---H5/71ZKZWMUncSI5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 12, 2023 at 10:14:58AM +0200, Herve Codina wrote:
-> Additional properties in child node should not be allowed.
->=20
-> Prevent them adding 'additionalProperties: false'
->=20
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
-Thanks,
-Conor.
-
-> ---
->  .../devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml     | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-sc=
-c-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-=
-qmc.yaml
-> index 450a0354cb1d..82d9beb48e00 100644
-> --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.y=
-aml
-> +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.y=
-aml
-> @@ -64,6 +64,7 @@ patternProperties:
->      description:
->        A channel managed by this controller
->      type: object
-> +    additionalProperties: false
-> =20
->      properties:
->        reg:
-> --=20
-> 2.41.0
->=20
-
---H5/71ZKZWMUncSI5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQCTrwAKCRB4tDGHoIJi
-0n+XAQCw6AgUOq0NyPZHrHWu5ogYxBjVGRRZ4L314GuJF/TwRAEA3G14ilDkYP5o
-3fMneddHCQlNQIVPUgNd/ldquYguZwQ=
-=eFLQ
------END PGP SIGNATURE-----
-
---H5/71ZKZWMUncSI5--
+Thanks.
