@@ -2,296 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760DC79C90F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1833C79C8DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbjILH7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S232147AbjILH6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:58:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbjILH6x (ORCPT
+        with ESMTP id S232046AbjILH6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:53 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BBD2133;
-        Tue, 12 Sep 2023 00:58:16 -0700 (PDT)
-X-UUID: 1c5ad13e514211ee8051498923ad61e6-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=SNDLqLvoHMqiBSUEotpzc3MpBoxBww3NqzYfgHr9KjQ=;
-        b=DlZVbUdQ3f82hMj8nvqYe7TBrYeJYUrb3/HqFvaWTAEpm6t5C32exXdLRqRUvJXUTgXLweuWZmWNEHe+6a2bt0nB1MYfodGh8Hjr7KsvUvHtWA1BW6qTeZ1bNPCifkUghHlLkhq8lTSDim1/GHyK2CaA4npb3lrdERS9Bpl3yxE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:23840f56-4ec3-44b3-afac-4054dbd31db6,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:29fbbcbe-14cc-44ca-b657-2d2783296e72,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 1c5ad13e514211ee8051498923ad61e6-20230912
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 750919285; Tue, 12 Sep 2023 15:58:08 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 15:58:07 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 15:58:07 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Moudy Ho" <moudy.ho@mediatek.com>
-Subject: [PATCH v5 07/14] media: platform: mtk-mdp3: add checks for dummy components
-Date:   Tue, 12 Sep 2023 15:57:58 +0800
-Message-ID: <20230912075805.11432-8-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230912075805.11432-1-moudy.ho@mediatek.com>
-References: <20230912075805.11432-1-moudy.ho@mediatek.com>
+        Tue, 12 Sep 2023 03:58:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656951715
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:01 -0700 (PDT)
+Message-ID: <20230912065501.405080839@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694505480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=xw07BwAqDpIg1aejZ2/Mpq9I8tO564XE8NU6U0bYGnA=;
+        b=f49RL7CZ5JlbcLqs+Vgehqe/Ge2l61PlQY9TjXJLKs5K/AhPszMFATAe9FSENJv/x5lmy9
+        fdQTp6FR6zAidxZGW2R/TjnY/hdUThr47hWOkkU+zOyw2ScTOv5b9mDsP4Hc9zUpDIBFQM
+        thfBP5zMxlobHVbsmHAwDcM0hczQvmpISja0R3v7mMeME3N41nTXdHv0P2HACiEqioBDs/
+        Iyvpm6V9LrwlaKD8hi7IXqwK82VsuqwJiB5I4A0fDWu1KmiXRkOmfMYsgCn/1dLSs83va6
+        4NV1RCj/M8CetjeSE/V7QlfsU2uweZTmCTjq/TxR7/nbKytC/NEy1b0POD9AEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694505480;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=xw07BwAqDpIg1aejZ2/Mpq9I8tO564XE8NU6U0bYGnA=;
+        b=StO5y/k6iq/fxKNq058YXPtrinnmV3mX3xUqO57L5MV6rmbNoOuJp/6JO2AGPc2/5XIioQ
+        INYQke4DMRvnS/AQ==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [patch V3 10/30] x86/microcode/intel: Unify microcode apply()
+ functions
+References: <20230912065249.695681286@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--3.209500-8.000000
-X-TMASE-MatchedRID: JEvwSAY096IBiF1BcicujnV895e/Bd2JO8xCfog1G6TfUZT83lbkEEUW
-        SNUeoUM2OlVEIoD9pteRYJdMgDxPlhgEuFFWa742kDpLRKO9xhSd2Wz0X3OaLd9zZd3pUn7Kymk
-        1r1I+qaIcmoARCcnOMqW6eUV6OTJzMeirnCrtHLqPYUYzX2Xjl3rMPEZwURsKwZASdDCGO/Mi5u
-        P1s5rsyywPVrR9OvwGsSK/BlKVGc3pRzKqh62z7GBLcedPqO9/gASAeD5aYgOTkqHUueNhpKPFj
-        JEFr+ol+3r/YeB8iANXKaQsz6vtVMprJP8FBOIaOogeZzniEGH++auRp1JPW7jbrPDDIZXDi6+l
-        /UEKS+V1PULpK1q9eBTqOm6EH3qjkQ5DKSpGRCRjURG97ep3af/EUAt3nzFXhrzWpOQ1oLJ0BNB
-        20+SxH7f8mJY57oZddJaBDYald1mHO0tVYDV4T0MMprcbiest
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.209500-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 2A314663E769805967AD3ECFC4E4A454C7D4301D79E6D0A92E38DF3C5F52720A2000:8
-X-MTK:  N
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 09:57:59 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some components act as bridges only and do not require full configuration.
+Deduplicate the early and late apply() functions.
 
-Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- .../platform/mediatek/mdp3/mdp_cfg_data.c     |  8 +++
- .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |  1 +
- .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 58 ++++++++++++++++++-
- 3 files changed, 66 insertions(+), 1 deletion(-)
+ arch/x86/kernel/cpu/microcode/intel.c |  105 +++++++++++-----------------------
+ 1 file changed, 36 insertions(+), 69 deletions(-)
 
-diff --git a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-index 58792902abb5..b7efdafb1620 100644
---- a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-+++ b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-@@ -451,3 +451,11 @@ enum mtk_mdp_comp_id mdp_cfg_get_id_public(struct mdp_dev *mdp_dev, s32 inner_id
- err_public_id:
- 	return public_id;
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -294,12 +294,11 @@ static __init struct microcode_intel *sc
+ 	return size ? NULL : patch;
  }
-+
-+bool mdp_cfg_comp_is_dummy(struct mdp_dev *mdp_dev, s32 inner_id)
+ 
+-static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
++static enum ucode_state apply_microcode(struct ucode_cpu_info *uci, struct microcode_intel *mc,
++					u32 *cur_rev)
+ {
+-	struct microcode_intel *mc;
+-	u32 rev, old_rev, date;
++	u32 rev;
+ 
+-	mc = uci->mc;
+ 	if (!mc)
+ 		return UCODE_NFOUND;
+ 
+@@ -308,14 +307,12 @@ static enum ucode_state apply_microcode_
+ 	 * operation - when the other hyperthread has updated the microcode
+ 	 * already.
+ 	 */
+-	rev = intel_get_microcode_revision();
+-	if (rev >= mc->hdr.rev) {
+-		uci->cpu_sig.rev = rev;
++	*cur_rev = intel_get_microcode_revision();
++	if (*cur_rev >= mc->hdr.rev) {
++		uci->cpu_sig.rev = *cur_rev;
+ 		return UCODE_OK;
+ 	}
+ 
+-	old_rev = rev;
+-
+ 	/*
+ 	 * Writeback and invalidate caches before updating microcode to avoid
+ 	 * internal issues depending on what the microcode is updating.
+@@ -330,13 +327,24 @@ static enum ucode_state apply_microcode_
+ 		return UCODE_ERROR;
+ 
+ 	uci->cpu_sig.rev = rev;
+-
+-	date = mc->hdr.date;
+-	pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
+-		     old_rev, rev, date & 0xffff, date >> 24, (date >> 16) & 0xff);
+ 	return UCODE_UPDATED;
+ }
+ 
++static enum ucode_state apply_microcode_early(struct ucode_cpu_info *uci, bool early)
 +{
-+	enum mtk_mdp_comp_id id = mdp_cfg_get_id_public(mdp_dev, inner_id);
-+	enum mdp_comp_type type = mdp_dev->mdp_data->comp_data[id].match.type;
++	struct microcode_intel *mc = uci->mc;
++	enum ucode_state ret;
++	u32 cur_rev, date;
 +
-+	return (type == MDP_COMP_TYPE_DUMMY);
-+}
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cfg.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cfg.h
-index dee57cc4a954..dfffc72868e4 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cfg.h
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cfg.h
-@@ -16,5 +16,6 @@ enum mtk_mdp_comp_id;
- 
- s32 mdp_cfg_get_id_inner(struct mdp_dev *mdp_dev, enum mtk_mdp_comp_id id);
- enum mtk_mdp_comp_id mdp_cfg_get_id_public(struct mdp_dev *mdp_dev, s32 id);
-+bool mdp_cfg_comp_is_dummy(struct mdp_dev *mdp_dev, s32 inner_id);
- 
- #endif  /* __MTK_MDP3_CFG_H__ */
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-index 6d04f72cf86f..6204173ecc5d 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/mailbox_controller.h>
- #include <linux/platform_device.h>
-+#include "mtk-mdp3-cfg.h"
- #include "mtk-mdp3-cmdq.h"
- #include "mtk-mdp3-comp.h"
- #include "mtk-mdp3-core.h"
-@@ -115,6 +116,12 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
- 
- 	/* Set mutex mod */
- 	for (index = 0; index < num_comp; index++) {
-+		s32 inner_id = MDP_COMP_NONE;
-+
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
-@@ -139,6 +146,7 @@ static int mdp_path_subfrm_run(const struct mdp_path *path,
- 	int index;
- 	u32 num_comp = 0;
- 	s32 event;
-+	s32 inner_id = MDP_COMP_NONE;
- 
- 	if (-1 == p->mutex_id) {
- 		dev_err(dev, "Incorrect mutex id");
-@@ -151,6 +159,10 @@ static int mdp_path_subfrm_run(const struct mdp_path *path,
- 	/* Wait WROT SRAM shared to DISP RDMA */
- 	/* Clear SOF event for each engine */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
-@@ -165,6 +177,10 @@ static int mdp_path_subfrm_run(const struct mdp_path *path,
- 
- 	/* Wait SOF events and clear mutex modules (optional) */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
-@@ -190,6 +206,12 @@ static int mdp_path_ctx_init(struct mdp_dev *mdp, struct mdp_path *path)
- 		return -EINVAL;
- 
- 	for (index = 0; index < num_comp; index++) {
-+		s32 inner_id = MDP_COMP_NONE;
-+
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		if (CFG_CHECK(MT8183, p_id))
- 			param = (void *)CFG_ADDR(MT8183, path->config, components[index]);
- 		ret = mdp_comp_ctx_config(mdp, &path->comps[index],
-@@ -211,6 +233,7 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 	struct mdp_pipe_info pipe;
- 	int index, ret;
- 	u32 num_comp = 0;
-+	s32 inner_id = MDP_COMP_NONE;
- 
- 	if (CFG_CHECK(MT8183, p_id))
- 		num_comp = CFG_GET(MT8183, path->config, num_components);
-@@ -230,6 +253,10 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 	}
- 	/* Config sub-frame information */
- 	for (index = (num_comp - 1); index >= 0; index--) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
-@@ -243,6 +270,10 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 		return ret;
- 	/* Wait components done */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		if (is_output_disabled(p_id, ctx->param, count))
- 			continue;
-@@ -252,6 +283,10 @@ static int mdp_path_config_subfrm(struct mdp_cmdq_cmd *cmd,
- 	}
- 	/* Advance to the next sub-frame */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		ret = call_op(ctx, advance_subfrm, cmd, count);
- 		if (ret)
-@@ -275,6 +310,7 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
- 	int index, count, ret;
- 	u32 num_comp = 0;
- 	u32 num_sub = 0;
-+	s32 inner_id = MDP_COMP_NONE;
- 
- 	if (CFG_CHECK(MT8183, p_id))
- 		num_comp = CFG_GET(MT8183, path->config, num_components);
-@@ -285,6 +321,10 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
- 	/* Config path frame */
- 	/* Reset components */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		ret = call_op(ctx, init_comp, cmd);
- 		if (ret)
-@@ -295,6 +335,11 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
- 		const struct v4l2_rect *compose;
- 		u32 out = 0;
- 
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
-+
- 		if (CFG_CHECK(MT8183, p_id))
- 			out = CFG_COMP(MT8183, ctx->param, outputs[0]);
- 
-@@ -313,6 +358,10 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
- 	}
- 	/* Post processing information */
- 	for (index = 0; index < num_comp; index++) {
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[index].type);
-+		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
-+			continue;
- 		ctx = &path->comps[index];
- 		ret = call_op(ctx, post_process, cmd);
- 		if (ret)
-@@ -515,9 +564,16 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
- 	}
- 	cmdq_pkt_finalize(&cmd->pkt);
- 
--	for (i = 0; i < num_comp; i++)
-+	for (i = 0; i < num_comp; i++) {
-+		s32 inner_id = MDP_COMP_NONE;
-+
-+		if (CFG_CHECK(MT8183, p_id))
-+			inner_id = CFG_GET(MT8183, path->config, components[i].type);
-+		if (mdp_cfg_comp_is_dummy(mdp, inner_id))
-+			continue;
- 		memcpy(&comps[i], path->comps[i].comp,
- 		       sizeof(struct mdp_comp));
++	ret = apply_microcode(uci, mc, &cur_rev);
++	if (ret == UCODE_UPDATED) {
++		date = mc->hdr.date;
++		pr_info_once("updated early: 0x%x -> 0x%x, date = %04x-%02x-%02x\n",
++			     cur_rev, mc->hdr.rev, date & 0xffff, date >> 24, (date >> 16) & 0xff);
 +	}
++	return ret;
++}
++
+ static __init bool load_builtin_intel_microcode(struct cpio_data *cp)
+ {
+ 	unsigned int eax = 1, ebx, ecx = 0, edx;
+@@ -450,70 +458,29 @@ static int collect_cpu_info(int cpu_num,
+ 	return 0;
+ }
  
- 	mdp->cmdq_clt->client.rx_callback = mdp_handle_cmdq_callback;
- 	cmd->mdp = mdp;
--- 
-2.18.0
+-static enum ucode_state apply_microcode_intel(int cpu)
++static enum ucode_state apply_microcode_late(int cpu)
+ {
+ 	struct ucode_cpu_info *uci = ucode_cpu_info + cpu;
+-	struct cpuinfo_x86 *c = &cpu_data(cpu);
+-	bool bsp = c->cpu_index == boot_cpu_data.cpu_index;
+-	struct microcode_intel *mc;
++	struct microcode_intel *mc = ucode_patch_late;
+ 	enum ucode_state ret;
+-	static int prev_rev;
+-	u32 rev;
+-
+-	/* We should bind the task to the CPU */
+-	if (WARN_ON(raw_smp_processor_id() != cpu))
+-		return UCODE_ERROR;
+-
+-	mc = ucode_patch_late;
+-	if (!mc)
+-		return UCODE_NFOUND;
++	u32 cur_rev;
+ 
+-	/*
+-	 * Save us the MSR write below - which is a particular expensive
+-	 * operation - when the other hyperthread has updated the microcode
+-	 * already.
+-	 */
+-	rev = intel_get_microcode_revision();
+-	if (rev >= mc->hdr.rev) {
+-		ret = UCODE_OK;
+-		goto out;
+-	}
+-
+-	/*
+-	 * Writeback and invalidate caches before updating microcode to avoid
+-	 * internal issues depending on what the microcode is updating.
+-	 */
+-	native_wbinvd();
+-
+-	/* write microcode via MSR 0x79 */
+-	wrmsrl(MSR_IA32_UCODE_WRITE, (unsigned long)mc->bits);
+-
+-	rev = intel_get_microcode_revision();
+-
+-	if (rev != mc->hdr.rev) {
+-		pr_err("CPU%d update to revision 0x%x failed\n",
+-		       cpu, mc->hdr.rev);
++	if (WARN_ON_ONCE(smp_processor_id() != cpu))
+ 		return UCODE_ERROR;
+-	}
+ 
+-	if (bsp && rev != prev_rev) {
+-		pr_info("updated to revision 0x%x, date = %04x-%02x-%02x\n",
+-			rev,
+-			mc->hdr.date & 0xffff,
+-			mc->hdr.date >> 24,
++	ret = apply_microcode(uci, mc, &cur_rev);
++	if (ret != UCODE_UPDATED && ret != UCODE_OK)
++		return ret;
++
++	if (!cpu && uci->cpu_sig.rev != cur_rev) {
++		pr_info("Updated to revision 0x%x, date = %04x-%02x-%02x\n",
++			uci->cpu_sig.rev, mc->hdr.date & 0xffff, mc->hdr.date >> 24,
+ 			(mc->hdr.date >> 16) & 0xff);
+-		prev_rev = rev;
+ 	}
+ 
+-	ret = UCODE_UPDATED;
+-
+-out:
+-	uci->cpu_sig.rev = rev;
+-	c->microcode	 = rev;
+-
+-	/* Update boot_cpu_data's revision too, if we're on the BSP: */
+-	if (bsp)
+-		boot_cpu_data.microcode = rev;
++	cpu_data(cpu).microcode	 = uci->cpu_sig.rev;
++	if (!cpu)
++		boot_cpu_data.microcode = uci->cpu_sig.rev;
+ 
+ 	return ret;
+ }
+@@ -654,7 +621,7 @@ static void finalize_late_load(int resul
+ static struct microcode_ops microcode_intel_ops = {
+ 	.request_microcode_fw	= request_microcode_fw,
+ 	.collect_cpu_info	= collect_cpu_info,
+-	.apply_microcode	= apply_microcode_intel,
++	.apply_microcode	= apply_microcode_late,
+ 	.finalize_late_load	= finalize_late_load,
+ };
+ 
 
