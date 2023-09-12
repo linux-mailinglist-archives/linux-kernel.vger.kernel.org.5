@@ -2,397 +2,549 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DD379CD7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892FC79CD84
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233499AbjILKMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S233633AbjILKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbjILKMJ (ORCPT
+        with ESMTP id S231560AbjILKMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:12:09 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906B210E6;
-        Tue, 12 Sep 2023 03:12:04 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502b1bbe5c3so4054399e87.1;
-        Tue, 12 Sep 2023 03:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694513523; x=1695118323; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwR4S+bOEUasIfylPWTpEe9JF1kQkAvfhzdUk7480GQ=;
-        b=F5OIB4B4hL8Yq+WwIHqDB4xxPLnXN20rJGwu+3ac8JvdV/2roDzNLxRMQWRGbiyfeB
-         /KSa2PsSh6+GgpIeH6yp4RlR+fZy+Amu6LWomBjJZnjGtUxJNOSIr4acgHhnrpczNm5C
-         xKgkA9XVFJonjmyY1OVz56F5lDG/C3mQR4Uw8M4tATkKTjH1aIzzsbAkRNH543KskYFb
-         uiXBd7V1z03V7pjzu58ZxL4G3oZGxqsWmi262O+wN3ndqiP6/TiK7rH4RMzlZ9RqMdrl
-         JhY6/Q2mqiT3N5AwGmcTp8DWArkGEbqjdNwZf6JZfHL5Fo+2B4TIQwGo0QmvU1Vgjo28
-         ntBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694513523; x=1695118323;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iwR4S+bOEUasIfylPWTpEe9JF1kQkAvfhzdUk7480GQ=;
-        b=K+YaY/PMe/h2cMabtEs9TFCgkGM+6NNdu78ZH0WTFPsjqPtEtQ0fHTOIRiGOU8Lx2I
-         dMd46E7i4MNeL61Hg86gSSvDEkOfxn+rRi4CIaiOUtYEbn/8d/Fh8scRUgzMdrfFRoQH
-         5gjJyBpN2YjLI3YpRyAgGH78PoPeBtbWP/ALLAteJkCKtJoi+LIM1YTYNjxItFRjfgz6
-         xmVepDAv7MaTU/hucWJsBvwoIOBDOroajLE/y1Ls8yL5lwn6NSZ1ZGphwXb81+achPwS
-         3H2FW94wKQlddVNfQTjxEQ6hahEjPgn+BwuUjcNr7Oo1Q4N+fz+JBrvDG5IdEzDX9uCt
-         cKGg==
-X-Gm-Message-State: AOJu0YyjcJk76DYK0P71r8MKj09aV/zdr3yBA6M5ySVNhh9JYGFZc5VU
-        QJSiGfxcv5nW19ms+R7+OBQ=
-X-Google-Smtp-Source: AGHT+IH9ApmnuWjCpcJLgY472BPiImQX5oeai557Qb27uwiP6zkR7/VE+NGYg3d2jfDzlft5ZP7SMw==
-X-Received: by 2002:a05:6512:3a87:b0:4fb:9712:a717 with SMTP id q7-20020a0565123a8700b004fb9712a717mr12327668lfu.13.1694513522368;
-        Tue, 12 Sep 2023 03:12:02 -0700 (PDT)
-Received: from mobilestation ([85.249.16.222])
-        by smtp.gmail.com with ESMTPSA id y10-20020ac2446a000000b004fe951827easm1668672lfl.196.2023.09.12.03.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 03:12:01 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 13:11:58 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
+        Tue, 12 Sep 2023 06:12:51 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77F6CC3;
+        Tue, 12 Sep 2023 03:12:46 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 9938D6000A;
+        Tue, 12 Sep 2023 10:12:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694513565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/QMiitosqYs6E2rit/sKplsVIJuWT2DIDIlBwmBS+xM=;
+        b=VxBI/9SOVTULrpOr4muZBst37nfPrkS3AeuieTNuhHFSuqCzWgXgF/TuztRKAH/AhWYMnq
+        3elrZYeaKSgUGzqfAcJw/qe1e8RTySyifO+YZrllkvtl3VGUEZ7AkbgjlpemJTJIaFTCnk
+        3+Eh/8wK5Z7UAwWNlswVdPXFrZFNjxXtf8AsN4C4jN1ByLudvUmyaEtgh26zSw57nCizJ5
+        WSJvtytUOH1IgIzDVRgoz7S5e9Czvv01woPwcEI7UVM3witlUIecL5BsORE69s0vwPdCdW
+        ZJQEElyWqEYfL4YY95VKld9CIZMXz8e5dzI2eER9iUcAwtMivEh8gouuSvYt8Q==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v4 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
-Message-ID: <g3gm6ibq6skrxjp2dkf4xkz4urjnu43oqyqrtpe7r4e4vy6jfw@rppdi3dmumlj>
-References: <20230830134241.506464-1-keguang.zhang@gmail.com>
- <20230830134241.506464-4-keguang.zhang@gmail.com>
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 10/31] net: wan: Add support for QMC HDLC
+Date:   Tue, 12 Sep 2023 12:12:36 +0200
+Message-ID: <20230912101236.225402-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830134241.506464-4-keguang.zhang@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 09:42:40PM +0800, Keguang Zhang wrote:
-> This glue driver is created based on the arch-code
-> implemented earlier with the platform-specific settings.
-> 
-> Use syscon for SYSCON register access.
-> 
-> Partially based on the previous work by Serge Semin.
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> V3 -> V4: Drop ls1x_dwmac_syscon definition and its instances
->           Drop three redundant fields from the ls1x_dwmac structure
->           Drop the ls1x_dwmac_init() method.
->           Some minor improvements
-> V2 -> V3: Determine the device ID by physical
->           base address(suggested by Serge Semin)
->           Use regmap instead of regmap fields
->           Use syscon_regmap_lookup_by_phandle()
->           Some minor fixes
-> V1 -> V2: Fix the build errors due to CONFIG_OF being unset
->           Change struct reg_field definitions to const
->           Rename the syscon property to "loongson,dwmac-syscon"
->           Add MII PHY mode for LS1C
-> 
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
->  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 219 ++++++++++++++++++
->  3 files changed, 231 insertions(+)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index 06c6871f8788..a2b9e289aa36 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
->  	  the stmmac device driver. This driver is used for the Intel Keem Bay
->  	  SoC.
->  
-> +config DWMAC_LOONGSON1
-> +	tristate "Loongson1 GMAC support"
-> +	default MACH_LOONGSON32
-> +	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
-> +	help
-> +	  Support for ethernet controller on Loongson1 SoC.
-> +
-> +	  This selects Loongson1 SoC glue layer support for the stmmac
-> +	  device driver. This driver is used for Loongson1-based boards
-> +	  like Loongson LS1B/LS1C.
-> +
->  config DWMAC_TEGRA
->  	tristate "NVIDIA Tegra MGBE support"
->  	depends on ARCH_TEGRA || COMPILE_TEST
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> index 5b57aee19267..80e598bd4255 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> @@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
->  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
->  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
->  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
-> +obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
->  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
->  obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
->  obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> new file mode 100644
-> index 000000000000..f1732f15ff87
-> --- /dev/null
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> @@ -0,0 +1,219 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Loongson-1 DWMAC glue layer
-> + *
-> + * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "stmmac.h"
-> +#include "stmmac_platform.h"
-> +
+The QMC HDLC driver provides support for HDLC using the QMC (QUICC
+Multichannel Controller) to transfer the HDLC data.
 
-> +#define LS1B_GMAC0_BASE		(0x1fe10000)
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/net/wan/Kconfig        |  12 +
+ drivers/net/wan/Makefile       |   1 +
+ drivers/net/wan/fsl_qmc_hdlc.c | 422 +++++++++++++++++++++++++++++++++
+ 3 files changed, 435 insertions(+)
+ create mode 100644 drivers/net/wan/fsl_qmc_hdlc.c
 
-I was talking about the LS1B_GMAC1_BASE macro only. Since both LS1B
-and LS1C have GMAC0 at the same base address I would preserve
-LS1X_GMAC0_BASE name here. But seeing it's unused for the LS1C anyway
-it's not that a big deal.
+diff --git a/drivers/net/wan/Kconfig b/drivers/net/wan/Kconfig
+index dcb069dde66b..8de99f4b647b 100644
+--- a/drivers/net/wan/Kconfig
++++ b/drivers/net/wan/Kconfig
+@@ -195,6 +195,18 @@ config FARSYNC
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called farsync.
+ 
++config FSL_QMC_HDLC
++	tristate "Freescale QMC HDLC support"
++	depends on HDLC
++	depends on CPM_QMC
++	help
++	  HDLC support using the Freescale QUICC Multichannel Controller (QMC).
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called fsl_qmc_hdlc.
++
++	  If unsure, say N.
++
+ config FSL_UCC_HDLC
+ 	tristate "Freescale QUICC Engine HDLC support"
+ 	depends on HDLC
+diff --git a/drivers/net/wan/Makefile b/drivers/net/wan/Makefile
+index 5bec8fae47f8..f338f4830626 100644
+--- a/drivers/net/wan/Makefile
++++ b/drivers/net/wan/Makefile
+@@ -23,6 +23,7 @@ obj-$(CONFIG_WANXL)		+= wanxl.o
+ obj-$(CONFIG_PCI200SYN)		+= pci200syn.o
+ obj-$(CONFIG_PC300TOO)		+= pc300too.o
+ obj-$(CONFIG_IXP4XX_HSS)	+= ixp4xx_hss.o
++obj-$(CONFIG_FSL_QMC_HDLC)	+= fsl_qmc_hdlc.o
+ obj-$(CONFIG_FSL_UCC_HDLC)	+= fsl_ucc_hdlc.o
+ obj-$(CONFIG_SLIC_DS26522)	+= slic_ds26522.o
+ 
+diff --git a/drivers/net/wan/fsl_qmc_hdlc.c b/drivers/net/wan/fsl_qmc_hdlc.c
+new file mode 100644
+index 000000000000..15e102547ff2
+--- /dev/null
++++ b/drivers/net/wan/fsl_qmc_hdlc.c
+@@ -0,0 +1,422 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Freescale QMC HDLC Device Driver
++ *
++ * Copyright 2023 CS GROUP France
++ *
++ * Author: Herve Codina <herve.codina@bootlin.com>
++ */
++
++#include <linux/dma-mapping.h>
++#include <linux/hdlc.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <soc/fsl/qe/qmc.h>
++
++struct qmc_hdlc_desc {
++	struct net_device *netdev;
++	struct sk_buff *skb; /* NULL if the descriptor is not in use */
++	dma_addr_t dma_addr;
++	size_t dma_size;
++};
++
++struct qmc_hdlc {
++	struct device *dev;
++	struct qmc_chan *qmc_chan;
++	struct net_device *netdev;
++	bool is_crc32;
++	spinlock_t tx_lock; /* Protect tx descriptors */
++	struct qmc_hdlc_desc tx_descs[8];
++	unsigned int tx_out;
++	struct qmc_hdlc_desc rx_descs[4];
++};
++
++static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
++{
++	return dev_to_hdlc(netdev)->priv;
++}
++
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size);
++
++#define QMC_HDLC_RX_ERROR_FLAGS (QMC_RX_FLAG_HDLC_OVF | \
++				 QMC_RX_FLAG_HDLC_UNA | \
++				 QMC_RX_FLAG_HDLC_ABORT | \
++				 QMC_RX_FLAG_HDLC_CRC)
++
++static void qmc_hcld_recv_complete(void *context, size_t length, unsigned int flags)
++{
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(desc->netdev);
++	int ret;
++
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
++
++	if (flags & QMC_HDLC_RX_ERROR_FLAGS) {
++		netdev->stats.rx_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_OVF) /* Data overflow */
++			netdev->stats.rx_over_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_UNA) /* bits received not multiple of 8 */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_ABORT) /* Received an abort sequence */
++			netdev->stats.rx_frame_errors++;
++		if (flags & QMC_RX_FLAG_HDLC_CRC) /* CRC error */
++			netdev->stats.rx_crc_errors++;
++		kfree_skb(desc->skb);
++	} else {
++		netdev->stats.rx_packets++;
++		netdev->stats.rx_bytes += length;
++
++		skb_put(desc->skb, length);
++		desc->skb->protocol = hdlc_type_trans(desc->skb, netdev);
++		netif_rx(desc->skb);
++	}
++
++	/* Re-queue a transfer using the same descriptor */
++	ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, desc->dma_size);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "queue recv desc failed (%d)\n", ret);
++		netdev->stats.rx_errors++;
++	}
++}
++
++static int qmc_hdlc_recv_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc, size_t size)
++{
++	int ret;
++
++	desc->skb = dev_alloc_skb(size);
++	if (!desc->skb)
++		return -ENOMEM;
++
++	desc->dma_size = size;
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_FROM_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
++	if (ret)
++		goto free_skb;
++
++	ret = qmc_chan_read_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				   qmc_hcld_recv_complete, desc);
++	if (ret)
++		goto dma_unmap;
++
++	return 0;
++
++dma_unmap:
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_FROM_DEVICE);
++free_skb:
++	kfree_skb(desc->skb);
++	desc->skb = NULL;
++	return ret;
++}
++
++static void qmc_hdlc_xmit_complete(void *context)
++{
++	struct qmc_hdlc_desc *desc = context;
++	struct net_device *netdev = desc->netdev;
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct sk_buff *skb;
++	unsigned long flags;
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++	skb = desc->skb;
++	desc->skb = NULL; /* Release the descriptor */
++	if (netif_queue_stopped(netdev))
++		netif_wake_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	netdev->stats.tx_packets++;
++	netdev->stats.tx_bytes += skb->len;
++
++	dev_consume_skb_any(skb);
++}
++
++static int qmc_hdlc_xmit_queue(struct qmc_hdlc *qmc_hdlc, struct qmc_hdlc_desc *desc)
++{
++	int ret;
++
++	desc->dma_addr = dma_map_single(qmc_hdlc->dev, desc->skb->data,
++					desc->dma_size, DMA_TO_DEVICE);
++	ret = dma_mapping_error(qmc_hdlc->dev, desc->dma_addr);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to map skb\n");
++		return ret;
++	}
++
++	ret = qmc_chan_write_submit(qmc_hdlc->qmc_chan, desc->dma_addr, desc->dma_size,
++				    qmc_hdlc_xmit_complete, desc);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan write returns %d\n", ret);
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size, DMA_TO_DEVICE);
++		return ret;
++	}
++
++	return 0;
++}
++
++static netdev_tx_t qmc_hdlc_xmit(struct sk_buff *skb, struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	unsigned long flags;
++	int ret;
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	desc = &qmc_hdlc->tx_descs[qmc_hdlc->tx_out];
++	if (desc->skb) {
++		/* Should never happen.
++		 * Previous xmit should have already stopped the queue.
++		 */
++		netif_stop_queue(netdev);
++		spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++		return NETDEV_TX_BUSY;
++	}
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	desc->netdev = netdev;
++	desc->dma_size = skb->len;
++	desc->skb = skb;
++	ret = qmc_hdlc_xmit_queue(qmc_hdlc, desc);
++	if (ret) {
++		desc->skb = NULL; /* Release the descriptor */
++		if (ret == -EBUSY) {
++			netif_stop_queue(netdev);
++			return NETDEV_TX_BUSY;
++		}
++		dev_kfree_skb(skb);
++		netdev->stats.tx_dropped++;
++		return NETDEV_TX_OK;
++	}
++
++	qmc_hdlc->tx_out = (qmc_hdlc->tx_out + 1) % ARRAY_SIZE(qmc_hdlc->tx_descs);
++
++	spin_lock_irqsave(&qmc_hdlc->tx_lock, flags);
++	if (qmc_hdlc->tx_descs[qmc_hdlc->tx_out].skb)
++		netif_stop_queue(netdev);
++	spin_unlock_irqrestore(&qmc_hdlc->tx_lock, flags);
++
++	return NETDEV_TX_OK;
++}
++
++static int qmc_hdlc_open(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_chan_param chan_param;
++	struct qmc_hdlc_desc *desc;
++	int ret;
++	int i;
++
++	ret = hdlc_open(netdev);
++	if (ret)
++		return ret;
++
++	chan_param.mode = QMC_HDLC;
++	/* HDLC_MAX_MRU + 4 for the CRC
++	 * HDLC_MAX_MRU + 4 + 8 for the CRC and some extraspace needed by the QMC
++	 */
++	chan_param.hdlc.max_rx_buf_size = HDLC_MAX_MRU + 4 + 8;
++	chan_param.hdlc.max_rx_frame_size = HDLC_MAX_MRU + 4;
++	chan_param.hdlc.is_crc32 = qmc_hdlc->is_crc32;
++	ret = qmc_chan_set_param(qmc_hdlc->qmc_chan, &chan_param);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to set param (%d)\n", ret);
++		goto hdlc_close;
++	}
++
++	/* Queue as many recv descriptors as possible */
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++
++		desc->netdev = netdev;
++		ret = qmc_hdlc_recv_queue(qmc_hdlc, desc, chan_param.hdlc.max_rx_buf_size);
++		if (ret) {
++			if (ret == -EBUSY && i != 0)
++				break; /* We use all the QMC chan capability */
++			goto free_desc;
++		}
++	}
++
++	ret = qmc_chan_start(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "qmc chan start failed (%d)\n", ret);
++		goto free_desc;
++	}
++
++	netif_start_queue(netdev);
++
++	return 0;
++
++free_desc:
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++hdlc_close:
++	hdlc_close(netdev);
++	return ret;
++}
++
++static int qmc_hdlc_close(struct net_device *netdev)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++	struct qmc_hdlc_desc *desc;
++	int i;
++
++	netif_stop_queue(netdev);
++
++	qmc_chan_stop(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++	qmc_chan_reset(qmc_hdlc->qmc_chan, QMC_CHAN_ALL);
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->tx_descs); i++) {
++		desc = &qmc_hdlc->tx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_TO_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(qmc_hdlc->rx_descs); i++) {
++		desc = &qmc_hdlc->rx_descs[i];
++		if (!desc->skb)
++			continue;
++		dma_unmap_single(qmc_hdlc->dev, desc->dma_addr, desc->dma_size,
++				 DMA_FROM_DEVICE);
++		kfree_skb(desc->skb);
++		desc->skb = NULL;
++	}
++
++	hdlc_close(netdev);
++	return 0;
++}
++
++static int qmc_hdlc_attach(struct net_device *netdev, unsigned short encoding,
++			   unsigned short parity)
++{
++	struct qmc_hdlc *qmc_hdlc = netdev_to_qmc_hdlc(netdev);
++
++	if (encoding != ENCODING_NRZ)
++		return -EINVAL;
++
++	switch (parity) {
++	case PARITY_CRC16_PR1_CCITT:
++		qmc_hdlc->is_crc32 = false;
++		break;
++	case PARITY_CRC32_PR1_CCITT:
++		qmc_hdlc->is_crc32 = true;
++		break;
++	default:
++		dev_err(qmc_hdlc->dev, "unsupported parity %u\n", parity);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static const struct net_device_ops qmc_hdlc_netdev_ops = {
++	.ndo_open       = qmc_hdlc_open,
++	.ndo_stop       = qmc_hdlc_close,
++	.ndo_start_xmit = hdlc_start_xmit,
++	.ndo_siocwandev	= hdlc_ioctl,
++};
++
++static int qmc_hdlc_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct qmc_hdlc *qmc_hdlc;
++	struct qmc_chan_info info;
++	hdlc_device *hdlc;
++	int ret;
++
++	qmc_hdlc = devm_kzalloc(&pdev->dev, sizeof(*qmc_hdlc), GFP_KERNEL);
++	if (!qmc_hdlc)
++		return -ENOMEM;
++
++	qmc_hdlc->dev = &pdev->dev;
++	spin_lock_init(&qmc_hdlc->tx_lock);
++
++	qmc_hdlc->qmc_chan = devm_qmc_chan_get_bychild(qmc_hdlc->dev, np);
++	if (IS_ERR(qmc_hdlc->qmc_chan)) {
++		ret = PTR_ERR(qmc_hdlc->qmc_chan);
++		return dev_err_probe(qmc_hdlc->dev, ret, "get QMC channel failed\n");
++	}
++
++	ret = qmc_chan_get_info(qmc_hdlc->qmc_chan, &info);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "get QMC channel info failed %d\n", ret);
++		return ret;
++	}
++
++	if (info.mode != QMC_HDLC) {
++		dev_err(qmc_hdlc->dev, "QMC chan mode %d is not QMC_HDLC\n",
++			info.mode);
++		return -EINVAL;
++	}
++
++	qmc_hdlc->netdev = alloc_hdlcdev(qmc_hdlc);
++	if (!qmc_hdlc->netdev) {
++		dev_err(qmc_hdlc->dev, "failed to alloc hdlc dev\n");
++		return -ENOMEM;
++	}
++
++	hdlc = dev_to_hdlc(qmc_hdlc->netdev);
++	hdlc->attach = qmc_hdlc_attach;
++	hdlc->xmit = qmc_hdlc_xmit;
++	SET_NETDEV_DEV(qmc_hdlc->netdev, qmc_hdlc->dev);
++	qmc_hdlc->netdev->tx_queue_len = ARRAY_SIZE(qmc_hdlc->tx_descs);
++	qmc_hdlc->netdev->netdev_ops = &qmc_hdlc_netdev_ops;
++	ret = register_hdlc_device(qmc_hdlc->netdev);
++	if (ret) {
++		dev_err(qmc_hdlc->dev, "failed to register hdlc device (%d)\n", ret);
++		goto free_netdev;
++	}
++
++	platform_set_drvdata(pdev, qmc_hdlc);
++
++	return 0;
++
++free_netdev:
++	free_netdev(qmc_hdlc->netdev);
++	return ret;
++}
++
++static int qmc_hdlc_remove(struct platform_device *pdev)
++{
++	struct qmc_hdlc *qmc_hdlc = platform_get_drvdata(pdev);
++
++	unregister_hdlc_device(qmc_hdlc->netdev);
++	free_netdev(qmc_hdlc->netdev);
++
++	return 0;
++}
++
++static const struct of_device_id qmc_hdlc_id_table[] = {
++	{ .compatible = "fsl,qmc-hdlc" },
++	{} /* sentinel */
++};
++MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
++
++static struct platform_driver qmc_hdlc_driver = {
++	.driver = {
++		.name = "fsl-qmc-hdlc",
++		.of_match_table = qmc_hdlc_id_table,
++	},
++	.probe = qmc_hdlc_probe,
++	.remove = qmc_hdlc_remove,
++};
++module_platform_driver(qmc_hdlc_driver);
++
++MODULE_AUTHOR("Herve Codina <herve.codina@bootlin.com>");
++MODULE_DESCRIPTION("QMC HDLC driver");
++MODULE_LICENSE("GPL");
+-- 
+2.41.0
 
-> +#define LS1B_GMAC1_BASE		(0x1fe20000)
-> +
-> +/* Loongson-1 SYSCON Registers */
-> +#define LS1X_SYSCON0		(0x0)
-> +#define LS1X_SYSCON1		(0x4)
-> +
-> +/* Loongson-1B SYSCON Register Bits */
-> +#define GMAC1_USE_UART1		BIT(4)
-> +#define GMAC1_USE_UART0		BIT(3)
-> +
-> +#define GMAC1_SHUT		BIT(13)
-> +#define GMAC0_SHUT		BIT(12)
-> +
-> +#define GMAC1_USE_TXCLK		BIT(3)
-> +#define GMAC0_USE_TXCLK		BIT(2)
-> +#define GMAC1_USE_PWM23		BIT(1)
-> +#define GMAC0_USE_PWM01		BIT(0)
-> +
-> +/* Loongson-1C SYSCON Register Bits */
-> +#define GMAC_SHUT		BIT(6)
-> +
-> +#define PHY_INTF_SELI		GENMASK(30, 28)
-> +#define PHY_INTF_MII		FIELD_PREP(PHY_INTF_SELI, 0)
-> +#define PHY_INTF_RMII		FIELD_PREP(PHY_INTF_SELI, 4)
-> +
-> +struct ls1x_dwmac {
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	struct regmap *regmap;
-> +};
-> +
-> +static int ls1b_dwmac_syscon_init(struct platform_device *pdev, void *priv)
-> +{
-> +	struct ls1x_dwmac *dwmac = priv;
-> +	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
-> +	struct regmap *regmap = dwmac->regmap;
-> +	struct resource *res;
-> +	unsigned long reg_base;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
-> +		return -EINVAL;
-> +	}
-> +	reg_base = (unsigned long)res->start;
-> +
-> +	if (reg_base == LS1B_GMAC0_BASE) {
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII_ID:
-> +			regmap_update_bits(regmap, LS1X_SYSCON0,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-> +					   0);
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_update_bits(regmap, LS1X_SYSCON0,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-> +					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> +			break;
-> +		default:
-> +			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-> +	} else if (reg_base == LS1B_GMAC1_BASE) {
-> +		regmap_update_bits(regmap, LS1X_SYSCON0,
-> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0,
-> +				   GMAC1_USE_UART1 | GMAC1_USE_UART0);
-> +
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII_ID:
-> +			regmap_update_bits(regmap, LS1X_SYSCON1,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-> +					   0);
-> +
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_update_bits(regmap, LS1X_SYSCON1,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-> +					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> +			break;
-> +		default:
-> +			dev_err(&pdev->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
-> +	} else {
-> +		dev_err(&pdev->dev, "Invalid Ethernet MAC base address %lx",
-> +			reg_base);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1c_dwmac_syscon_init(struct platform_device *pdev, void *priv)
-> +{
-> +	struct ls1x_dwmac *dwmac = priv;
-> +	struct plat_stmmacenet_data *plat = dwmac->plat_dat;
-> +	struct regmap *regmap = dwmac->regmap;
-> +
-> +	switch (plat->phy_interface) {
-> +	case PHY_INTERFACE_MODE_MII:
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-> +				   PHY_INTF_MII);
-> +		break;
-> +	case PHY_INTERFACE_MODE_RMII:
-> +		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-> +				   PHY_INTF_RMII);
-> +		break;
-> +	default:
-> +		dev_err(&pdev->dev, "Unsupported PHY-mode %u\n",
-> +			plat->phy_interface);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1x_dwmac_probe(struct platform_device *pdev)
-> +{
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	struct stmmac_resources stmmac_res;
-> +	struct regmap *regmap;
-> +	struct ls1x_dwmac *dwmac;
-> +	int (*init)(struct platform_device *pdev, void *priv);
-> +	int ret;
-> +
-> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Probe syscon */
-> +	regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
-> +						 "loongson,ls1-syscon");
-> +	if (IS_ERR(regmap))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(regmap),
-> +				     "Unable to find syscon\n");
-> +
-> +	init = of_device_get_match_data(&pdev->dev);
-> +	if (!init) {
-> +		dev_err(&pdev->dev, "No of match data provided\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
-> +	if (!dwmac)
-> +		return -ENOMEM;
-> +
-
-> +	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-
-This can be replaced with devm_stmmac_probe_config_dt() and ...
-
-> +	if (IS_ERR(plat_dat))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(plat_dat),
-> +				     "dt configuration failed\n");
-> +
-> +	plat_dat->bsp_priv = dwmac;
-> +	plat_dat->init = init;
-> +	dwmac->plat_dat = plat_dat;
-> +	dwmac->regmap = regmap;
-> +
-
-> +	ret = stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-
-... this can be replaced with devm_stmmac_pltfr_probe() thus ...
-
-> +	if (ret)
-> +		goto err_remove_config_dt;
-> +
-> +	return 0;
-> +
-
-> +err_remove_config_dt:
-> +	stmmac_remove_config_dt(pdev, plat_dat);
-> +
-> +	return ret;
-
-... this could have been omitted and ...
-
-> +}
-> +
-> +static const struct of_device_id ls1x_dwmac_match[] = {
-> +	{
-> +		.compatible = "loongson,ls1b-gmac",
-> +		.data = &ls1b_dwmac_syscon_init,
-> +	},
-> +	{
-> +		.compatible = "loongson,ls1c-emac",
-> +		.data = &ls1c_dwmac_syscon_init,
-> +	},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
-> +
-> +static struct platform_driver ls1x_dwmac_driver = {
-> +	.probe = ls1x_dwmac_probe,
-
-> +	.remove_new = stmmac_pltfr_remove,
-
-... this could have been dropped.
-
--Serge(y)
-
-> +	.driver = {
-> +		.name = "loongson1-dwmac",
-> +		.of_match_table = ls1x_dwmac_match,
-> +	},
-> +};
-> +module_platform_driver(ls1x_dwmac_driver);
-> +
-> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-> +MODULE_DESCRIPTION("Loongson-1 DWMAC glue layer");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.39.2
-> 
-> 
