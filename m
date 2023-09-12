@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E4E79CC5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E894679CC60
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233265AbjILJuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
+        id S233304AbjILJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbjILJuB (ORCPT
+        with ESMTP id S233074AbjILJuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:50:01 -0400
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2188.outbound.protection.outlook.com [40.92.62.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA99B10F9;
-        Tue, 12 Sep 2023 02:49:54 -0700 (PDT)
+        Tue, 12 Sep 2023 05:50:04 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2178.outbound.protection.outlook.com [40.92.62.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19E0E6B;
+        Tue, 12 Sep 2023 02:50:00 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QFhT9AegLLtiEQDThGhQFkoo2n/5MHazMK7aMf85dSVMLAI1Ut8NxiDuDZbu3Q+eWfnXLNW6ghFyfJQUzdFCERZc/L1pwvY7+XFknHr4miiJf0iTHri8iCxHUb9KnGMf3Nv2Fg/INYKPN5uv58pAjSzoe0Wv3JxUj9YVJD6gq2CWOwqjVty3Y1le8m860XXE9PuaQ9SdhwH7vFSytg4tz7/CghjCaGwJ2YQxZUJHsA/OpAVnFNpu4Qxy6tpjm/I74GvmXrQEsQFouaGjH+9KpHzFWaknGF1AwslYxD+kBIMJHzr8g5KkofX8CIddJ9+/nuMZwpWOMwjqcxxEfECNUg==
+ b=lTd2H2FilmVbvA2rd1f2/KmvmGu7inD6/KHQEtCAhERPATS/WxL5UEPbM7dKPddY7GcmAkwAiPFCg2+OI1KRJT40cMK1+cGhhys0d5mYu0YFj45U1CsuPGfdZH3cSul1PGSJp5d7Z2NlgPrHw7QILrP1nVEtsaiQ9TxvtPI2Kl3Vnb8tqCdVXt5BIpGCWoNBWflSbttLmRnt5sJcTuULZ1OTY1gzkm7j0sTTipQr1WFKG4YnWz3n2jiPEhtYYR8x+dQUeu11PTyNco4D5WxeYnuOQnbQ1emhnXxdew6NkgUNk3Kkz3lLWxP2aMcy+mbWX3hG7B3CXNCQqg8uPHs3zQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p6GM24XSiJWLbY2WDpV0DErZ2kE+zYwpeBDXyZpl4HQ=;
- b=d0vuSPJNXKWhkG8ObNv3cLkiJvsGCL1LCd8BX+TTci/WOwx9o3xdihbVw1PJ2RTTVQ/aM191YX6D19kEesajIBgpENQatTbytcp5EU5OsepMGkAwl9RNB/NDlbI9F4UiuzF/C/+/Yew/YEPguS4TsV0EB4fuq6+SmRIxZAsXcL1Ufqbt0fLECBeHxAfDtQyrqR94li/MS8G+DFyTOLRaSLYIy8dsRug2hiJThpIkDG62De7pWDnp7uxAlyOel+zqxt7UxJdfjzwAgoWLR0UQzNwvA8CaUE6cFRXPGqJFNlw0QysNkQe7aGT2CZyu2u7H2ueGC77WiABt72Uvufbjaw==
+ bh=11PJmNmcYjmj5VVgJ7K0q+adbrpE0xocLu9jecU+ClE=;
+ b=UssN1aGIpprEQH3IlKZguXJ7Gzlr9ok2Mqx7qyuC57P0at1RyvNLrFno7fmVUJ0yASL2vCgu/2a57qgo31RYfOIrZHNOBx2JgoVeyDB99kNeD92aHs+Og9xHKrC4ZZPr76RsJkMSriNEmZewDQ7f8Ytr0VeVj2YRTo2L8RIUJPqO9TMMmG77jg+5HMsKW/F41bhBkDY0+a8jtk2KVpJ3laqysUr7ek4KUDoWZF9XCaMzk0xH0T4e1AOGwamLtc5tKZYL2pmB2oW9jqun7c+36T9//KiqjgQt19YPSY4W3Gvc9WyuNhdzi5zHggk/3qECcl7wfcmKK99WsVkQ5SZiDg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p6GM24XSiJWLbY2WDpV0DErZ2kE+zYwpeBDXyZpl4HQ=;
- b=d0KskQjW4GDgGzxme/FF3orN5Ia9Sx3bC2CT6BV5uAEnCESNgUaHEGK5/lIfuVmtKUdmZsdSe07gjbQpP95p7f4cnm/K7HvAqFKiqM+yL4Fg334xZrvUMCkq8+I4CJafJxbF0Sj2c2wzOP8bXzKpA4ab97bf0/TbNEev/7A76dci0IncN2MBFSQZa+J6f2vbs3SJRMeIZvUkMzajDJnbI/tKTl6+CI/iGTEjWPRvd+ohfnTQI1byxAphUvGc9dUYlfPd8WVws/1rsdK42zAJ75T8Y6VO/AFo/k6rc19NP2s2N6Gsl70hTLtEeS1mf2dnWgAJ5G8B50dV2cESSx4P3g==
+ bh=11PJmNmcYjmj5VVgJ7K0q+adbrpE0xocLu9jecU+ClE=;
+ b=DmhjbxhDwFmxEcSRRetIMfuePjRjiADfp+V3ohRu7Lu6z4+CKorrJtHeOn5WZsefPpXmEyQu07PHheCRd3yU6D/UE5T6dHX6LcUPYGFTVdPcaXd1jWEI+BbfobCOZGs8RptlsjNbPZVZeMqiD+0khij0lQWeeEU+8fa+tamFFvGO+CoqaHmWC/D5lczBVhDQz7KStvh2t7nsE5olhLKeZmywD+yeief+VaMEJHL5r6U7lAGWn1XHcltrKPPUgo+6gvCkE+h1jyIhAsjBDCr1Susvb998YLUAd8k/Gv+zuLwIjtA7XZuq6YWEvouG24ba9Jd0DfZev7PKB5+ab+NCkg==
 Received: from ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:16b::5)
  by SY4P282MB2981.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:15c::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
- 2023 09:49:48 +0000
+ 2023 09:49:53 +0000
 Received: from ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  ([fe80::68b4:6263:97f:9a45]) by ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  ([fe80::68b4:6263:97f:9a45%3]) with mapi id 15.20.6768.036; Tue, 12 Sep 2023
- 09:49:48 +0000
+ 09:49:53 +0000
 From:   Jinjian Song <songjinjian@hotmail.com>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
@@ -50,54 +50,54 @@ Cc:     jiri@resnulli.us, johannes@sipsolutions.net,
         linux-kernel@vger.kernel.org, nmarupaka@google.com,
         vsankar@lenovo.com, danielwinkler@google.com,
         Jinjian Song <jinjian.song@fibocom.com>
-Subject: [net-next v4 4/5] net: wwan: t7xx: Adds sysfs attribute of modem event
-Date:   Tue, 12 Sep 2023 17:48:44 +0800
-Message-ID: <ME3P282MB27032EB049D5135D68ADE09FBBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+Subject: [net-next v4 5/5] net: wwan: t7xx: Devlink documentation
+Date:   Tue, 12 Sep 2023 17:48:45 +0800
+Message-ID: <ME3P282MB27037E574DB3685216A0DF56BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230912094845.11233-1-songjinjian@hotmail.com>
 References: <20230912094845.11233-1-songjinjian@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [ggug/LKLf5lizIaW4an3zaN0VwkXRSr+]
+X-TMN:  [0tyZKwlvml3QWeml2v5sWNFNmeExt5Z6]
 X-ClientProxiedBy: SI2PR01CA0048.apcprd01.prod.exchangelabs.com
  (2603:1096:4:193::17) To ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
  (2603:10c6:220:16b::5)
-X-Microsoft-Original-Message-ID: <20230912094845.11233-5-songjinjian@hotmail.com>
+X-Microsoft-Original-Message-ID: <20230912094845.11233-6-songjinjian@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: ME3P282MB2703:EE_|SY4P282MB2981:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e3ea742-ac44-4d32-ee90-08dbb37599ec
+X-MS-Office365-Filtering-Correlation-Id: 45576c39-06a7-4af6-2ce8-08dbb3759d1c
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ThJ3mY8kXEP6IGT92Qzk3IaCaz10oy8kEWCDWkZnPqxyAdxbeDp+Blpdp88D6LPDg01wmlxDkx7o+8yeHeqNvKTANoEkFxCCiKYeQH9Vl2M0QRY8hTyB7ij/wmFvmF7jKCbq3FJmraA1iL++gKSdPBPO/oXJi0tvaiHVbaZ5USI4JvHohUvk8JUtjcCfRhnLBTjxWRByvUuE9u5qmNDRrsXb6dp2Xc2ylqwqLiwKDOASDjg46HxgVMCkISp3TBzcTq++Fp661ZgSjQx6EUtpfavQJylUmPfTZKFbuAczjbtbTYhFLamkQa098qn/Q6Hu6pmmwCzVUvlvo46YLMmjvqcBzo1Ag29nt2jDaeKpt4Ebcx34eRQyht9WCPS21UkGac5R95ihVGgOFaPhsklQYZSf2EA+A/EuZdmTTRMhT6jNC7V6lcUM+2C88m8Thnt7v0Rp4yZFszTPL/MSAXWFfFsZaHyrGfwOxnSmwo3BT3VfURmY5NWyhYzmoDYsh2T3G3qEtapej/skE1NavcdpjNySL5Ju9Wp1DaS5P8BPMH0EIrQTU5Nhq1ButLD26Ba0HZxFYX13ZR2y3I+rvCnrJUQUpmno5JpSGDuaxU2TcfA=
+X-Microsoft-Antispam-Message-Info: Zs7oW/5CfsiKFabRl24+0Mi/CGOJ4ksvAjNX09hdzBF2txwEZ7zH3Zkp0HJeSOMRGvds8VXGKvE5J9K6mw3zYOEWVsMa2Rw6wSfBKyL7S7YyKXeO2/DpEUKQfT9ho/HsODpnyWoeTknJmUmY59+oHG9gqMTqJ0Bgy84K9rN6t39ZEDCtFubdb3QlkekCnkcEVtaUc/V7Qte/ZjPa23OXRrCPzzDPmuZqcZ+3p0RbjMxeme4jTwNFxNXHNIagfr3T3aVEfvUYCGSiCGLPDJbh9TjKQpdVuuVbKECdGXHbc1Qc+MjIqwHVPw/oUb90IzEXgHiNaAOolYacSN31fxUxEblVEm4kaptsniwR2+ypbTk5p3V7MPGqWCIuQVEThlY+vxkkEwJL3jffeXtBLWwaHIlTn3EYaEdi4OUr6jHWgUaosB9mT3cRSXlX+IaWLl9UEdnZG+i+vzVLoZN930GNHLsuh5XZqBw4FwQSt5ZwxBTKPSL+HaycjBkl4Xiup/QBuNOrnEDEETz3MhrIFj2kQolqUZgBjQGNBoJ/FL+pROhFUSeSwmGLfjtCajPgJ8zbCTNy/rKPjxZupyDesxMVPi8wTGzckm924sGn4ll+VyQ=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+DOOj+rych/Vi1pjTDMTBiQ7fooBhclk7viiCBWPmos9AHcre1avlHY1QkMd?=
- =?us-ascii?Q?TghIcbHKk62orIcl5DmbVILok8ylV1M63+MZXkjuxKO/ry+1lffYeBCnfVYk?=
- =?us-ascii?Q?ZXIgTK1nAhSZicC4QoVIgz2EL1SsmusVQFs59IE2OoAgJL9Zgy7BTbhalncF?=
- =?us-ascii?Q?aSpJKyHRoCMtWkFSlhxb5Z8eauarvSKtYl6rlW9t75+C2T7gS4bAC6pV1C9U?=
- =?us-ascii?Q?t0UYX7fKgjox5GgS2EgqlUhqqRatktF9optxmxpdNXn3QxuMtX+t163RwxmM?=
- =?us-ascii?Q?Qpl1E+u3BBJ7U+VHiGhBfSBCiGEgGqeUdOHy/0ukxiwSxVIAdxXPKP3N/b8D?=
- =?us-ascii?Q?lxL9BgfkymRVrYoeeOB2ajXa7cwOrRSg5pSRKmJJUDYTnhJMD8KB6DHB6DKv?=
- =?us-ascii?Q?2twpDytJpXO9zWnfSYFzNQLoJ7S28vlaa/eapxQuuoILc1ienKc/SyqA1+Hw?=
- =?us-ascii?Q?dQPWpk3oKYQn4ArfY42qp6qbzddgLByKCAW/2TyaL+JU9I6CMkLSjCj6GGue?=
- =?us-ascii?Q?G9sBr6+gZgw7oZYS+eCYhGDLlRIXiO4Fq5C962cvk7x2K9tqOsBVHFzrdUEm?=
- =?us-ascii?Q?RwLiAmZQmsUBLRvyt1Txqy5lqqMwEmlwBxk2rXMrpisrry09ovAZCaoXECM7?=
- =?us-ascii?Q?HTgZycnCTPeLWX8jNQBgjRaY9vTd6TEjvtKv0ilJkL78FJ4DHHJq+DOuDA8R?=
- =?us-ascii?Q?F2pLu3+YTYTr6opAB3Wuu7UnZ0oyGogTZVdHyH8smoJ18OVPzijAY8NdrlUY?=
- =?us-ascii?Q?TNgOpDaaCw/ZHAe0fEfzuZxng+ncMCVIJy5WgW5Cc8TvwT0q3KvyW65V+3/M?=
- =?us-ascii?Q?EKQJXf1zmaFL6o5oaTG1I6F/bS/A337wXur1SBn4Ud9vktNg95fvmZPHjtp3?=
- =?us-ascii?Q?ySK/7bdRd138PIXvdanIQhP/gNFmHklPhyf9lLxI9/pRWGphjyndXhmqM8Aj?=
- =?us-ascii?Q?hGKldyhi+CJ/oUdpGruXqRtIvflp8e//xQnyF+aqXjWY77kINCbixRxuJUe9?=
- =?us-ascii?Q?Xvh5weO3tllRmrXuRsQchhMwH4nNgEGt3jCzEVN/WWtKbKT3sx6rvt08XMm+?=
- =?us-ascii?Q?uBLB8bWuN3erSPdkrMRlDYBvNWk6Z8D5hTYNTD4P471OpgpFYI07DWIMzY0a?=
- =?us-ascii?Q?onJi7cIba2tTYCodD0PL9bvSEhluDtWxbW4huh5xRZvgDgR+JsoHBTPj2itE?=
- =?us-ascii?Q?m9Uv0Ar6OKdwe+NwTkrI+wYunTEFr/PStRKbNRv4K03+hx54ue6fpbVhlIU?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/e/BXWVkX3l6xpYIsxjYLimsrssC+hmIVJMqmMrzhsmlVTbA5EApM50eM8Pq?=
+ =?us-ascii?Q?ikby6HoDRrjcFXCCTEiniGVMDL1LUWUUoiQr/Kr05C8rHufIFHNL4Rh+IA8U?=
+ =?us-ascii?Q?CtCgh64Utk0fNYaUDMusfl4H72vD9Cr3T4VISDpoZz5XfPdbc14MphNUvoyb?=
+ =?us-ascii?Q?C8g3iBSW//hMjnnThZ3AKNe+X3aUq2tNFpZzC+cjeS749Y50XrZ7lG+P5IQP?=
+ =?us-ascii?Q?wBDPNMXjt9EGTrtK07jGc4f69REEDBVozXq4om5dp3HfthNv5IhB7Zl0dSZd?=
+ =?us-ascii?Q?6+wKOX3IxmGHUNJuYTcX8cBzPfBFpaKPuz6VLPHGQrX9gZmtVxORfPph/8z8?=
+ =?us-ascii?Q?viQtrLE6ytAVNDMsqCpdaXOzwAMd7C8PZMDMst3R77RqyxejWeCkwjKxATQ5?=
+ =?us-ascii?Q?BJZoTxScPreiw1vbkwc1YmKOwnuHRTLliu29vq4M9oO6tlXTqAdgIpnuqioO?=
+ =?us-ascii?Q?jrNLTksVwyYr2BjrWHPDjQlSh8nwWC/KSfulL32uI+ebtt+tFak3fW865e80?=
+ =?us-ascii?Q?UYgbWJKHACQQ76QTEGNoLLiqon0li4lXTquMHy9KJd3DvwzQVO8KnmwxEj8i?=
+ =?us-ascii?Q?BfM3lHUarsGXt5bbaKCjmHjpxJkwjhUmY4+NO1mVXL/Le6KkjKeCtMRtNPwv?=
+ =?us-ascii?Q?u9oIP/BsFi9sK+OJNHdRtKEqgeT4c0xDWeGt/0GpDhH//SaewEMFRfVHcEVI?=
+ =?us-ascii?Q?BU2qjcRNfAIIwS0XEdbn52Oq3PFURA5wEFxq5SKJDUJIiGuLQ7rnMG4oJ89k?=
+ =?us-ascii?Q?O3lCeN9YnrcP0AwZdyK3omwcSLUbtwaqEQrbR0MTh13cJe2f3D7z4jsPADHU?=
+ =?us-ascii?Q?WW2HK+VV6fwoUByIUZMKOG3EtbLON8XAE32p3CTPgXkAshmxJL/ktOEeUrSJ?=
+ =?us-ascii?Q?+VgII3TNF78J9vJMFdcG4CUKachmn9UmWJI6oZINQ7ehvEoDMQzPFqpRdrss?=
+ =?us-ascii?Q?Ir1iVkUC4yPnNbpWYo/J1XDM7m4xIUdFXDshrmI8OghPwbRHAQJnMf+qwXph?=
+ =?us-ascii?Q?2GuQhEQ3OsPJlTCrTocAnwWJU8ffvqu3PlOxx5n72/Nfc11mFWtHu6El2bGn?=
+ =?us-ascii?Q?+a3xu4RhS1FfG9BPDrTq2aC+R3Zl9vqXkZ+cToE0QN4wEi6cN7ly33rZc9wo?=
+ =?us-ascii?Q?87FxuVyQR+6ZWSBBNe9xqbjx/Bd/LLf4Q0tVioJqieGl2sgFEbkK4PfGf+pS?=
+ =?us-ascii?Q?y9OVnSSYP+5qQrSuvvRc/tcGYsGorPSuzym+REud1iNhv34H2Ul1YITxrD8?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e3ea742-ac44-4d32-ee90-08dbb37599ec
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45576c39-06a7-4af6-2ce8-08dbb3759d1c
 X-MS-Exchange-CrossTenant-AuthSource: ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 09:49:48.1364
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Sep 2023 09:49:53.4538
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -109,288 +109,274 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jinjian Song <jinjian.song@fibocom.com>
 
-Adds support for t7xx wwan device firmware flashing & coredump collection
-using devlink.
-
-Provides sysfs attribute on user space to query the event from modem
-about flashing/coredump/reset.
+Document the t7xx devlink commands usage for firmware flashing &
+coredump collection.
 
 Base on the v5 patch version of follow series:
 'net: wwan: t7xx: fw flashing & coredump support'
-(https://patchwork.kernel.org/project/netdevbpf/patch/fc8bbb0b66a5ff3a489ea9857d79b374508090ef.1674307425.git.m.chetan.kumar@linux.intel.com/)
+(https://patchwork.kernel.org/project/netdevbpf/patch/f902d4a0cb807a205687f7e693079fba72ca7341.1674307425.git.m.chetan.kumar@linux.intel.com/)
 
 Signed-off-by: Jinjian Song <jinjian.song@fibocom.com>
 ---
 v4:
  * no change
 v3:
- * no change
+ * supplementary separator '~'
 v2:
- * rename struct name from devlink to flash_dump
+ * no change
 ---
- drivers/net/wwan/t7xx/t7xx_modem_ops.c       |  1 +
- drivers/net/wwan/t7xx/t7xx_pci.c             | 62 ++++++++++++++++++++
- drivers/net/wwan/t7xx/t7xx_pci.h             | 17 ++++++
- drivers/net/wwan/t7xx/t7xx_port_flash_dump.c | 14 +++++
- drivers/net/wwan/t7xx/t7xx_port_flash_dump.h |  1 +
- drivers/net/wwan/t7xx/t7xx_state_monitor.c   |  7 +++
- 6 files changed, 102 insertions(+)
+ Documentation/networking/devlink/index.rst |   1 +
+ Documentation/networking/devlink/t7xx.rst  | 232 +++++++++++++++++++++
+ 2 files changed, 233 insertions(+)
+ create mode 100644 Documentation/networking/devlink/t7xx.rst
 
-diff --git a/drivers/net/wwan/t7xx/t7xx_modem_ops.c b/drivers/net/wwan/t7xx/t7xx_modem_ops.c
-index cbd65aa48721..4de75874f1b5 100644
---- a/drivers/net/wwan/t7xx/t7xx_modem_ops.c
-+++ b/drivers/net/wwan/t7xx/t7xx_modem_ops.c
-@@ -192,6 +192,7 @@ static irqreturn_t t7xx_rgu_isr_thread(int irq, void *data)
- {
- 	struct t7xx_pci_dev *t7xx_dev = data;
- 
-+	atomic_set(&t7xx_dev->event, T7XX_RESET);
- 	msleep(RGU_RESET_DELAY_MS);
- 	t7xx_reset_device_via_pmic(t7xx_dev);
- 	return IRQ_HANDLED;
-diff --git a/drivers/net/wwan/t7xx/t7xx_pci.c b/drivers/net/wwan/t7xx/t7xx_pci.c
-index 845d1555f134..e5579e04f82d 100644
---- a/drivers/net/wwan/t7xx/t7xx_pci.c
-+++ b/drivers/net/wwan/t7xx/t7xx_pci.c
-@@ -2,6 +2,7 @@
- /*
-  * Copyright (c) 2021, MediaTek Inc.
-  * Copyright (c) 2021-2022, Intel Corporation.
-+ * Copyright (c) 2023, Fibocom Wireless Inc.
-  *
-  * Authors:
-  *  Haijun Liu <haijun.liu@mediatek.com>
-@@ -14,6 +15,7 @@
-  *  Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
-  *  Eliot Lee <eliot.lee@intel.com>
-  *  Moises Veleta <moises.veleta@intel.com>
-+ *  Jinjian Song <jinjian.song@fibocom.com>
-  */
- 
- #include <linux/atomic.h>
-@@ -60,6 +62,57 @@ enum t7xx_pm_state {
- 	MTK_PM_RESUMED,
- };
- 
-+static ssize_t t7xx_event_show(struct device *dev, struct device_attribute *attr,
-+			       char *buf)
-+{
-+	enum t7xx_event event = T7XX_UNKNOWN;
-+	struct pci_dev *pdev;
-+	struct t7xx_pci_dev *t7xx_dev;
+diff --git a/Documentation/networking/devlink/index.rst b/Documentation/networking/devlink/index.rst
+index b49749e2b9a6..f101781105ca 100644
+--- a/Documentation/networking/devlink/index.rst
++++ b/Documentation/networking/devlink/index.rst
+@@ -67,3 +67,4 @@ parameters, info versions, and other features it supports.
+    iosm
+    octeontx2
+    sfc
++   mtk_t7xx
+diff --git a/Documentation/networking/devlink/t7xx.rst b/Documentation/networking/devlink/t7xx.rst
+new file mode 100644
+index 000000000000..20057bda3923
+--- /dev/null
++++ b/Documentation/networking/devlink/t7xx.rst
+@@ -0,0 +1,232 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+	pdev = to_pci_dev(dev);
-+	t7xx_dev = pci_get_drvdata(pdev);
-+	if (!t7xx_dev)
-+		return -ENODEV;
++====================
++t7xx devlink support
++====================
 +
-+	event = atomic_read(&t7xx_dev->event);
-+	if (event == T7XX_READY) {
-+		return sprintf(buf, "T7XX_MODEM_READY\n");
-+	} else if (event == T7XX_RESET) {
-+		return sprintf(buf, "T7XX_RESET\n");
-+	} else if (event == T7XX_FASTBOOT_DL_MODE) {
-+		return sprintf(buf, "T7XX_MODEM_FASTBOOT_DL_MODE\n");
-+	} else if (event == T7XX_FLASH_SUCCESS) {
-+		return sprintf(buf, "T7XX_FLASHING_SUCCESS\n");
-+	} else if (event == T7XX_FLASH_FAILURE) {
-+		return sprintf(buf, "T7XX_FLASHING_FAILURE\n");
-+	} else if (event == T7XX_FASTBOOT_DUMP_MODE) {
-+		return sprintf(buf, "T7XX_MODEM_FASTBOOT_DUMP_MODE\n");
-+	} else if (event == T7XX_MRDUMP_READY) {
-+		return sprintf(buf, "T7XX_MRDUMP_READY size:%zu\n",
-+			       t7xx_dev->flash_dump->regions[T7XX_MRDUMP_INDEX].info->dump_size);
-+	} else if (event == T7XX_LKDUMP_READY) {
-+		return sprintf(buf, "T7XX_LKDUMP_READY size:%zu\n",
-+			       t7xx_dev->flash_dump->regions[T7XX_LKDUMP_INDEX].info->dump_size);
-+	} else if (event == T7XX_MRDUMP_DISCARD) {
-+		return sprintf(buf, "T7XX_MRDUMP_DISCARDED\n");
-+	} else if (event == T7XX_LKDUMP_DISCARD) {
-+		return sprintf(buf, "T7XX_LKDUMP_DISCARDED\n");
-+	}
++This document describes the devlink features implemented by the ``t7xx``
++device driver.
 +
-+	return sprintf(buf, "T7XX_UNKNOWN\n");
-+}
++Parameters
++==========
++The ``t7xx`` driver implements the following driver-specific parameters.
 +
-+static DEVICE_ATTR_RO(t7xx_event);
++.. list-table:: Driver-specific parameters
++   :widths: 5 5 5 85
 +
-+static struct attribute *t7xx_event_attr[] = {
-+	&dev_attr_t7xx_event.attr,
-+	NULL
-+};
++   * - Name
++     - Type
++     - Mode
++     - Description
++   * - ``fastboot``
++     - boolean
++     - driverinit
++     - Set this param to enter fastboot mode.
 +
-+static const struct attribute_group t7xx_event_attribute_group = {
-+	.attrs = t7xx_event_attr,
-+};
++Flash Update
++============
 +
- static void t7xx_dev_set_sleep_capability(struct t7xx_pci_dev *t7xx_dev, bool enable)
- {
- 	void __iomem *ctrl_reg = IREG_BASE(t7xx_dev) + T7XX_PCIE_MISC_CTRL;
-@@ -734,8 +787,17 @@ static int t7xx_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	t7xx_pcie_mac_interrupts_dis(t7xx_dev);
- 
-+	ret = sysfs_create_group(&t7xx_dev->pdev->dev.kobj,
-+				 &t7xx_event_attribute_group);
-+	if (ret) {
-+		t7xx_md_exit(t7xx_dev);
-+		goto err_devlink_unregister;
-+	}
++The ``t7xx`` driver implements the flash update using the ``devlink-flash``
++interface.
 +
- 	ret = t7xx_interrupt_init(t7xx_dev);
- 	if (ret) {
-+		sysfs_remove_group(&t7xx_dev->pdev->dev.kobj,
-+				   &t7xx_event_attribute_group);
- 		t7xx_md_exit(t7xx_dev);
- 		goto err_devlink_unregister;
- 	}
-diff --git a/drivers/net/wwan/t7xx/t7xx_pci.h b/drivers/net/wwan/t7xx/t7xx_pci.h
-index 28f22a2dc493..b7c78a9530f3 100644
---- a/drivers/net/wwan/t7xx/t7xx_pci.h
-+++ b/drivers/net/wwan/t7xx/t7xx_pci.h
-@@ -2,6 +2,7 @@
-  *
-  * Copyright (c) 2021, MediaTek Inc.
-  * Copyright (c) 2021-2022, Intel Corporation.
-+ * Copyright (c) 2023, Fibocom Wireless Inc.
-  *
-  * Authors:
-  *  Haijun Liu <haijun.liu@mediatek.com>
-@@ -12,6 +13,7 @@
-  *  Amir Hanania <amir.hanania@intel.com>
-  *  Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>
-  *  Moises Veleta <moises.veleta@intel.com>
-+ *  Jinjian Song <jinjian.song@fibocom.com>
-  */
- 
- #ifndef __T7XX_PCI_H__
-@@ -84,6 +86,7 @@ struct t7xx_pci_dev {
- 	struct dentry		*debugfs_dir;
- #endif
- 	struct t7xx_flash_dump	*flash_dump;
-+	atomic_t		event;
- };
- 
- enum t7xx_pm_id {
-@@ -115,6 +118,20 @@ struct md_pm_entity {
- 	void			*entity_param;
- };
- 
-+enum t7xx_event {
-+	T7XX_UNKNOWN,
-+	T7XX_READY,
-+	T7XX_RESET,
-+	T7XX_FASTBOOT_DL_MODE,
-+	T7XX_FLASH_SUCCESS,
-+	T7XX_FLASH_FAILURE,
-+	T7XX_FASTBOOT_DUMP_MODE,
-+	T7XX_MRDUMP_READY,
-+	T7XX_LKDUMP_READY,
-+	T7XX_MRDUMP_DISCARD,
-+	T7XX_LKDUMP_DISCARD,
-+};
++The driver uses ``DEVLINK_SUPPORT_FLASH_UPDATE_OVERWRITE_MASK`` to identify the type of
++firmware image that need to be programmed upon the request by user space application.
 +
- void t7xx_pci_disable_sleep(struct t7xx_pci_dev *t7xx_dev);
- void t7xx_pci_enable_sleep(struct t7xx_pci_dev *t7xx_dev);
- int t7xx_pci_sleep_disable_complete(struct t7xx_pci_dev *t7xx_dev);
-diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-index b8ef3b7d7430..0a0f2847aa3f 100644
---- a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-+++ b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-@@ -201,11 +201,14 @@ static int t7xx_flash_dump_fb_get_core(struct t7xx_port *port)
- 			continue;
- 		} else if (!strcmp(mcmd, T7XX_FB_RESP_MRDUMP_DONE)) {
- 			dev_dbg(port->dev, "%s! size:%zd\n", T7XX_FB_RESP_MRDUMP_DONE, offset_dlen);
-+			flash_dump->regions[T7XX_MRDUMP_INDEX].info->dump_size = offset_dlen;
-+			atomic_set(&port->t7xx_dev->event, T7XX_MRDUMP_READY);
- 			clear_bit(T7XX_MRDUMP_STATUS, &flash_dump->status);
- 			return 0;
- 		}
- 		dev_err(port->dev, "getcore protocol error (read len %05d, response %s)\n",
- 			clen, mcmd);
-+		atomic_set(&port->t7xx_dev->event, T7XX_MRDUMP_DISCARD);
- 		ret = -EPROTO;
- 		goto free_mem;
- 	}
-@@ -248,6 +251,7 @@ static int t7xx_flash_dump_fb_dump_log(struct t7xx_port *port)
- 	if (datasize > lkdump_region->info->size) {
- 		dev_err(port->dev, "lkdump size is more than %dKB. Discarded!\n",
- 			T7XX_LKDUMP_SIZE / 1024);
-+		atomic_set(&port->t7xx_dev->event, T7XX_LKDUMP_DISCARD);
- 		ret = -EFBIG;
- 		goto err_clear_bit;
- 	}
-@@ -272,6 +276,8 @@ static int t7xx_flash_dump_fb_dump_log(struct t7xx_port *port)
- 	}
- 
- 	dev_dbg(port->dev, "LKDUMP DONE! size:%zd\n", offset);
-+	lkdump_region->info->dump_size = offset;
-+	atomic_set(&port->t7xx_dev->event, T7XX_LKDUMP_READY);
- 	clear_bit(T7XX_LKDUMP_STATUS, &flash_dump->status);
- 	return t7xx_flash_dump_fb_handle_response(port, NULL);
- 
-@@ -361,6 +367,10 @@ static int t7xx_devlink_flash_update(struct devlink *devlink,
- 	clear_bit(T7XX_FLASH_STATUS, &flash_dump->status);
- 
- err_out:
-+	if (ret)
-+		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_FAILURE);
-+	else
-+		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_SUCCESS);
- 	return ret;
- }
- 
-@@ -411,9 +421,13 @@ static int t7xx_devlink_reload_up(struct devlink *devlink,
- 				  u32 *actions_performed,
- 				  struct netlink_ext_ack *extack)
- {
-+	struct t7xx_flash_dump *flash_dump = devlink_priv(devlink);
++``t7xx`` driver uses fastboot protocol for firmware flashing. In the firmware
++flashing procedure, fastboot command & response are exchanged between driver
++and wwan device.
 +
- 	*actions_performed = BIT(action);
- 	switch (action) {
- 	case DEVLINK_RELOAD_ACTION_DRIVER_REINIT:
-+		atomic_set(&flash_dump->t7xx_dev->event, T7XX_RESET);
-+		return 0;
- 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
- 		return 0;
- 	default:
-diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
-index 90758baa7854..057bb36216ca 100644
---- a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
-+++ b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
-@@ -57,6 +57,7 @@ enum t7xx_regions {
- struct t7xx_dump_region_info {
- 	const char *name;
- 	size_t size;
-+	size_t dump_size;
- };
- 
- struct t7xx_dump_region {
-diff --git a/drivers/net/wwan/t7xx/t7xx_state_monitor.c b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-index 86cdb0d572d4..ab35342a2d16 100644
---- a/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-+++ b/drivers/net/wwan/t7xx/t7xx_state_monitor.c
-@@ -249,6 +249,12 @@ static void t7xx_lk_stage_event_handling(struct t7xx_fsm_ctl *ctl, unsigned int
- 
- 		port->port_conf->ops->enable_chl(port);
- 		t7xx_cldma_start(md_ctrl);
++::
 +
-+		if (lk_event == LK_EVENT_CREATE_POST_DL_PORT)
-+			atomic_set(&md->t7xx_dev->event, T7XX_FASTBOOT_DL_MODE);
-+		else
-+			atomic_set(&md->t7xx_dev->event, T7XX_FASTBOOT_DUMP_MODE);
++  $ devlink dev param set pci/0000:bdf name fastboot value 1 cmode driverinit
 +
- 		break;
- 
- 	default:
-@@ -332,6 +338,7 @@ static void fsm_routine_ready(struct t7xx_fsm_ctl *ctl)
- 
- 	ctl->curr_state = FSM_STATE_READY;
- 	t7xx_fsm_broadcast_ready_state(ctl);
-+	atomic_set(&md->t7xx_dev->event, T7XX_READY);
- 	t7xx_md_event_notify(md, FSM_READY);
- }
- 
++The devlink param fastboot is set to true via devlink param command, by
++passing name ``fastboot``, value ``1`` and cmode ``driverinit``.
++
++::
++
++  $ devlink dev reload pci/0000:$bdf action driver_reinit
++
++The wwan device is put into fastboot mode via devlink reload command, by
++passing ``driver_reinit`` action.
++
++::
++
++  $ devlink dev reload pci/0000:$bdf action fw_activate
++
++Upon completion of firmware flashing or coredump collection the wwan device is
++reset to normal mode using devlink reload command, by passing ``fw_activate``
++action.
++
++Flash Commands
++--------------
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file preloader_k6880v1_mdot2_datacard.bin component "preloader"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file loader_ext-verified.img component "loader_ext1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file tee-verified.img component "tee1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file lk-verified.img component "lk"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file spmfw-verified.img component "spmfw"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file sspm-verified.img component "sspm_1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file mcupm-verified.img component "mcupm_1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file dpm-verified.img component "dpm_1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file boot-verified.img component "boot"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file root.squashfs component "rootfs"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file modem-verified.img component "md1img"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file dsp-verified.bin component "md1dsp"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file OP_OTA.img component "mcf1"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file OEM_OTA.img component "mcf2"
++
++::
++
++  $ devlink dev flash pci/0000:$bdf file DEV_OTA.img component "mcf3"
++
++Note: Component selects the partition type to be programmed.
++
++
++The supported list of firmware image types is described below.
++
++.. list-table:: Firmware Image types
++    :widths: 15 85
++
++    * - Name
++      - Description
++    * - ``preloader``
++      - The first-stage bootloader image
++    * - ``loader_ext1``
++      - Preloader extension image
++    * - ``tee1``
++      - ARM trusted firmware and TEE (Trusted Execution Environment) image
++    * - ``lk``
++      - The second-stage bootloader image
++    * - ``spmfw``
++      - MediaTek in-house ASIC for power management image
++    * - ``sspm_1``
++      - MediaTek in-house ASIC for power management under secure world image
++    * - ``mcupm_1``
++      - MediaTek in-house ASIC for cpu power management image
++    * - ``dpm_1``
++      - MediaTek in-house ASIC for dram power management image
++    * - ``boot``
++      - The kernel and dtb image
++    * - ``rootfs``
++      - Root filesystem image
++    * - ``md1img``
++      - Modem image
++    * - ``md1dsp``
++      - Modem DSP image
++    * - ``mcf1``
++      - Modem OTA image (Modem Configuration Framework) for operators
++    * - ``mcf2``
++      - Modem OTA image (Modem Configuration Framework) for OEM vendors
++    * - ``mcf3``
++      - Modem OTA image (other usage) for OEM configurations
++
++
++Regions
++=======
++
++The ``t7xx`` driver supports core dump collection in exception state and second
++stage bootloader log collection in fastboot mode. The log snapshot is taken by
++the driver using fastboot commands.
++
++Region commands
++---------------
++
++::
++
++  $ devlink region show
++
++This command list the regions implemented by driver. These regions are accessed
++for device internal data. Below table describes the regions.
++
++.. list-table:: Regions
++    :widths: 15 85
++
++    * - Name
++      - Description
++    * - ``mr_dump``
++      - The detailed modem component logs are captured in this region
++    * - ``lk_dump``
++      - This region dumps the current snapshot of lk
++
++Coredump Collection
++~~~~~~~~~~~~~~~~~~~
++
++::
++
++  $ devlink region new mr_dump
++
++::
++
++  $ devlink region read mr_dump snapshot 0 address 0 length $len
++
++::
++
++  $ devlink region del mr_dump snapshot 0
++
++Note: $len is actual len to be dumped.
++
++The userspace application uses these commands for obtaining the modem component
++logs when device encounters an exception.
++
++Second Stage Bootloader dump
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++::
++
++  $ devlink region new lk_dump
++
++::
++
++  $ devlink region read lk_dump snapshot 0 address 0 length $len
++
++::
++
++  $ devlink region del lk_dump snapshot 0
++
++Note: $len is actual len to be dumped.
++
++In fastboot mode the userspace application uses these commands for obtaining the
++current snapshot of second stage bootloader.
++
 -- 
 2.34.1
 
