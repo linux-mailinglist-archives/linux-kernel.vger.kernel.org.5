@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B777879C61B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 07:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597AB79C61F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 07:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjILFCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 01:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S230295AbjILFDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 01:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbjILFBy (ORCPT
+        with ESMTP id S229888AbjILFDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 01:01:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CA8E6C;
-        Mon, 11 Sep 2023 22:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694494910; x=1726030910;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CvDsWCO+be1IG+Rmf778MqHKB3/nXOhC4fYb3fHGuY4=;
-  b=XgtUWf9JuJYSLHOcvoMyUo+yg8/gr2Q4+JzFdZNyMQyCntPz4HVIV8OO
-   2826yQId916whkzBaU2CiM7XqoGGMf4Br1nzblrvgufwWa4sfWDtCoqqv
-   aCBvJHZVf2usGF6ax/ovWd16l64cf3/+fLzlkfMSTwrPY3VarPsyk5BbW
-   sF7BlQpyWAKVy6PcEkVcAMIoMcm1fwascu6Vh+3FJrkPQyuqMeF27k0AN
-   Ij01Egmuk3zeJySki79yKnROk0Z+e/ljbjHouOtI9sDpyIsNlCv3mgaHi
-   NNK69Y83QsF566ZaI4I5IM5e9NlU1CbiezW4Csov2ze4a7UCcnsnilQfV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="375605517"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="375605517"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 22:01:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693356452"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="693356452"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 11 Sep 2023 22:01:46 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 5AEF4248; Tue, 12 Sep 2023 08:01:45 +0300 (EEST)
-Date:   Tue, 12 Sep 2023 08:01:45 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH v3 4/4] platform/x86: intel_scu_ipc: Fail IPC send if
- still busy
-Message-ID: <20230912050145.GC1599918@black.fi.intel.com>
-References: <20230911193937.302552-1-swboyd@chromium.org>
- <20230911193937.302552-5-swboyd@chromium.org>
+        Tue, 12 Sep 2023 01:03:00 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1053198C;
+        Mon, 11 Sep 2023 22:02:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694494957;
+        bh=X042UORL7EMfCugIAB+lsMZTtZnLrw1UoZ0/PnMHchI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FvqJYbfUpW4uO4ldv2ukZ1x7Qy7g4ibuxqP0lKDtNBnhN1sGXQPqoewpWDW4SaC1P
+         XVt5K0b77VLuShQY5ZFXx26ROlqie4L3e2OHVO0Fk68cD7fqJxlfPAH2LgbXO7vV+3
+         Vym0xZg80XVVwlv0maRgapN1BatdXCw46ej66OPlopgkHwADDHwFdPG+NlczUUJ7Xi
+         qBFGQU7USdu1YBELmD+o6jLmzyfcDbH+JbUBJSY87oNlL4m874sTray1hgmBIBb8pY
+         b3LRBqATc3PAOGdUq5IlHTwy4V7TRZdK5WBExyqzxo+6AjGqltlvaYS6vrtwZS3zdx
+         AoGma1OSUZFDQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlBKT0T7yz4wZw;
+        Tue, 12 Sep 2023 15:02:36 +1000 (AEST)
+Date:   Tue, 12 Sep 2023 15:02:32 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the bcachefs tree
+Message-ID: <20230912150232.1ab82094@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230911193937.302552-5-swboyd@chromium.org>
+Content-Type: multipart/signed; boundary="Sig_/TONFZer5ekrW8Hy=KMdLPrK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:39:36PM -0700, Stephen Boyd wrote:
-> It's possible for interrupts to get significantly delayed to the point
-> that callers of intel_scu_ipc_dev_command() and friends can call the
-> function once, hit a timeout, and call it again while the interrupt
-> still hasn't been processed. This driver will get seriously confused if
-> the interrupt is finally processed after the second IPC has been sent
-> with ipc_command(). It won't know which IPC has been completed. This
-> could be quite disastrous if calling code assumes something has happened
-> upon return from intel_scu_ipc_dev_simple_command() when it actually
-> hasn't.
-> 
-> Let's avoid this scenario by simply returning -EBUSY in this case.
-> Hopefully higher layers will know to back off or fail gracefully when
-> this happens. It's all highly unlikely anyway, but it's better to be
-> correct here as we have no way to know which IPC the status register is
-> telling us about if we send a second IPC while the previous IPC is still
-> processing.
-> 
-> Cc: Prashant Malani <pmalani@chromium.org>
-> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+--Sig_/TONFZer5ekrW8Hy=KMdLPrK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Hi all,
+
+After merging the bcachefs tree, today's linux-next build (htmldocs)
+produced this warning:
+
+include/linux/generic-radix-tree.h:206: warning: expecting prototype for ge=
+nradix_iter_peek(). Prototype was for genradix_iter_peek_prev() instead
+
+Introduced by commit
+
+  f39d409a1584 ("lib/generic-radix-tree.c: Add peek_prev()")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TONFZer5ekrW8Hy=KMdLPrK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/8OgACgkQAVBC80lX
+0GwaHgf/eK4bAbZM5b+xaxEKWQ39UFobEQe+YhN2li9NT+dDwY1036CrQBHcNp7T
+UeagrXhhsLz5rzE71Qcrb+G5ZcgOzD4XsiQbTrqFdUjez3n6yJGV1k4FUji1u18i
+K6khPL3VPSo8+ljpjrqQ06jQ5h9O3jz4hEeM5fzBMWBYIel8HV2//V3m9h/XYJcr
+BFxOq04Ith1N2gjThuSr5ClqgjuBfK0Ta7vAxvCg+9v4k4DGH5OAQyeQZj/ladaE
+Qh4vlZxn7bLsupdmD+mWvKMlNQvrt+mHR3+b1yiNnk0tQBbSWuCNwmo7QfP7p6lQ
+RNvKakR+v9MfVbvK6hDz+HrPlJNGPg==
+=By8d
+-----END PGP SIGNATURE-----
+
+--Sig_/TONFZer5ekrW8Hy=KMdLPrK--
