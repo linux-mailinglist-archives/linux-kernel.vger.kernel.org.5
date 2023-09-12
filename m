@@ -2,122 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D9279C319
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB5979C31C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239801AbjILCjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
+        id S238747AbjILCjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239492AbjILCjP (ORCPT
+        with ESMTP id S239552AbjILCjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:39:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD171A1E9C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 19:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694484251; x=1726020251;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YQg+s2V6b7qoKhAYmVAQrA4PEOfHbzWWvRfnD0nfzeg=;
-  b=nanhNdh1YQHsnJzMXhIzpuR8qwU4FPPunYeykcfBe1IE4MBWL6FQt0LY
-   iptgKuG5vUM7lUDvQFusV3deTDU9hz/wwl9jfJ0SxcWkFeYnjaAEJYksG
-   +ETlBaSzx+i2X/dtkRBk2umHS7nIVM7A1/NSriTxfLLlG5MhBAwFpOwCD
-   hvrJwkQX6aW3L6SQCvg/Z4t+QuXEqoltkUjtixye1zM7N0fFbuHuFgguM
-   I0c4J6kx7VJbWZoMeDC+QesdvOnaWHinokiM2oefxT1dV7ugt6G1kvupV
-   BMa8u6KP8Wdgvr2jygrmWN52BDoZS1MEJdjyCbmTSSfpB/rLQqvdQIm99
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="363289094"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="363289094"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 19:04:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813616648"
-X-IronPort-AV: E=Sophos;i="6.02,244,1688454000"; 
-   d="scan'208";a="813616648"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Sep 2023 19:04:08 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qfsl4-00077s-0j;
-        Tue, 12 Sep 2023 02:04:06 +0000
-Date:   Tue, 12 Sep 2023 10:03:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Samuel Holland <samuel@sholland.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        linux-riscv@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing
- code
-Message-ID: <202309120901.kQtGm3L4-lkp@intel.com>
-References: <20230909201727.10909-8-samuel@sholland.org>
+        Mon, 11 Sep 2023 22:39:43 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3DD3D71D;
+        Mon, 11 Sep 2023 19:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694484272;
+        bh=7MnTQAA6NXTt2KERJ1/UbZs3JZvQmiYmgAFEHSqSre4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cla3qUtbuTnx4S3xdRjH9jRl6xDdMgnSviigtKEx78SSdjkickLnQHv4xOzFiAOy0
+         TB/UMCn/63NQ5cwxFJtCGBwQ6o03ro5d78F93WRBlYNbGW58lixIcu+ym5ElGogKHI
+         TblIZ5mGLNkhig4BJn8nS0MnIktuVMus3FGi2nz3dLGT2Pj21Ro9uQgbLrbETnhR62
+         zbJ8OW98CmypI786fwkoGYP+mVgQx+zdgkuMJEO6W8trtoILDomdU2QpXWU1PkDbNH
+         O37LazzSVpWQu9IxaLZNZ8zSZ8UXYcZLPEioQ1d4h28u9hUS7VjlKrPFht0gInEEi3
+         cLBZ3eEflXPZQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rl6Mz6w2Dz4xQ1;
+        Tue, 12 Sep 2023 12:04:31 +1000 (AEST)
+Date:   Tue, 12 Sep 2023 12:04:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the bcachefs tree
+Message-ID: <20230912120429.7852428f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230909201727.10909-8-samuel@sholland.org>
+Content-Type: multipart/signed; boundary="Sig_/HyO/wwY.250W_1EDD7kIjHg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Samuel,
+--Sig_/HyO/wwY.250W_1EDD7kIjHg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi all,
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.6-rc1 next-20230911]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+After merging the bcachefs tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Samuel-Holland/riscv-Apply-SiFive-CIP-1200-workaround-to-single-ASID-sfence-vma/20230910-042028
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230909201727.10909-8-samuel%40sholland.org
-patch subject: [PATCH 7/7] riscv: mm: Combine the SMP and non-SMP TLB flushing code
-config: riscv-nommu_k210_sdcard_defconfig (https://download.01.org/0day-ci/archive/20230912/202309120901.kQtGm3L4-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309120901.kQtGm3L4-lkp@intel.com/reproduce)
+fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_exit':
+fs/bcachefs/btree_cache.c:403:9: error: implicit declaration of function 'u=
+nregister_shrinker'; did you mean 'unregister_chrdev'? [-Werror=3Dimplicit-=
+function-declaration]
+  403 |         unregister_shrinker(&bc->shrink);
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         unregister_chrdev
+fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_init':
+fs/bcachefs/btree_cache.c:479:15: error: implicit declaration of function '=
+register_shrinker'; did you mean 'register_chrdev'? [-Werror=3Dimplicit-fun=
+ction-declaration]
+  479 |         ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", c-=
+>name);
+      |               ^~~~~~~~~~~~~~~~~
+      |               register_chrdev
+cc1: all warnings being treated as errors
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309120901.kQtGm3L4-lkp@intel.com/
+Caused by commits
 
-All errors (new ones prefixed by >>):
+  5ec30115c066 ("bcachefs: Initial commit")
 
-   In file included from arch/riscv/include/asm/pgtable.h:117,
-                    from include/linux/pgtable.h:6,
-                    from include/linux/mm.h:29,
-                    from arch/riscv/kernel/asm-offsets.c:10:
-   arch/riscv/include/asm/tlbflush.h: In function 'flush_tlb_kernel_range':
->> arch/riscv/include/asm/tlbflush.h:60:9: error: implicit declaration of function 'flush_tlb_all' [-Werror=implicit-function-declaration]
-      60 |         flush_tlb_all();
-         |         ^~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-   make[3]: *** [scripts/Makefile.build:116: arch/riscv/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1202: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:234: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+interacting with commit
 
+  eba045d9350d ("mm: shrinker: remove old APIs")
 
-vim +/flush_tlb_all +60 arch/riscv/include/asm/tlbflush.h
+from v6.6-rc1.
 
-fab957c11efe2f Palmer Dabbelt 2017-07-10  55  
-fab957c11efe2f Palmer Dabbelt 2017-07-10  56  /* Flush a range of kernel pages */
-fab957c11efe2f Palmer Dabbelt 2017-07-10  57  static inline void flush_tlb_kernel_range(unsigned long start,
-fab957c11efe2f Palmer Dabbelt 2017-07-10  58  	unsigned long end)
-fab957c11efe2f Palmer Dabbelt 2017-07-10  59  {
-fab957c11efe2f Palmer Dabbelt 2017-07-10 @60  	flush_tlb_all();
-fab957c11efe2f Palmer Dabbelt 2017-07-10  61  }
-fab957c11efe2f Palmer Dabbelt 2017-07-10  62  
+I have applied the following merge resolution patch for today.  More may
+be needed.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+=46rom 801ad185700d9a7abcf156233b9db6cf6d831581 Mon Sep 17 00:00:00 2001
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 12 Sep 2023 11:27:22 +1000
+Subject: [PATCH] bcachefs: convert to dynamically allocated shrinkers
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/bcachefs/btree_cache.c     | 19 +++++++++++--------
+ fs/bcachefs/btree_key_cache.c | 18 +++++++++++-------
+ fs/bcachefs/btree_types.h     |  4 ++--
+ fs/bcachefs/fs.c              |  2 +-
+ fs/bcachefs/sysfs.c           |  2 +-
+ 5 files changed, 26 insertions(+), 19 deletions(-)
+
+diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
+index 245ddd92b2d1..7f0eded6c296 100644
+--- a/fs/bcachefs/btree_cache.c
++++ b/fs/bcachefs/btree_cache.c
+@@ -285,7 +285,7 @@ static int btree_node_write_and_reclaim(struct bch_fs *=
+c, struct btree *b)
+ static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
+ 					   struct shrink_control *sc)
+ {
+-	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
++	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
+ 					btree_cache.shrink);
+ 	struct btree_cache *bc =3D &c->btree_cache;
+ 	struct btree *b, *t;
+@@ -384,7 +384,7 @@ static unsigned long bch2_btree_cache_scan(struct shrin=
+ker *shrink,
+ static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
+ 					    struct shrink_control *sc)
+ {
+-	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
++	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
+ 					btree_cache.shrink);
+ 	struct btree_cache *bc =3D &c->btree_cache;
+=20
+@@ -400,7 +400,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+ 	struct btree *b;
+ 	unsigned i, flags;
+=20
+-	unregister_shrinker(&bc->shrink);
++	shrinker_free(bc->shrink);
+=20
+ 	/* vfree() can allocate memory: */
+ 	flags =3D memalloc_nofs_save();
+@@ -454,6 +454,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
+ int bch2_fs_btree_cache_init(struct bch_fs *c)
+ {
+ 	struct btree_cache *bc =3D &c->btree_cache;
++	struct shrinker *shrink;
+ 	unsigned i;
+ 	int ret =3D 0;
+=20
+@@ -473,12 +474,14 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
+=20
+ 	mutex_init(&c->verify_lock);
+=20
+-	bc->shrink.count_objects	=3D bch2_btree_cache_count;
+-	bc->shrink.scan_objects		=3D bch2_btree_cache_scan;
+-	bc->shrink.seeks		=3D 4;
+-	ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
+-	if (ret)
++	shrink =3D shrinker_alloc(0, "%s/btree_cache", c->name);
++	if (!shrink)
+ 		goto err;
++	bc->shrink =3D shrink;
++	shrink->count_objects	=3D bch2_btree_cache_count;
++	shrink->scan_objects	=3D bch2_btree_cache_scan;
++	shrink->seeks		=3D 4;
++	shrinker_register(shrink);
+=20
+ 	return 0;
+ err:
+diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+index 505e7c365ab7..88d33690233b 100644
+--- a/fs/bcachefs/btree_key_cache.c
++++ b/fs/bcachefs/btree_key_cache.c
+@@ -838,7 +838,7 @@ void bch2_btree_key_cache_drop(struct btree_trans *tran=
+s,
+ static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
+ 					   struct shrink_control *sc)
+ {
+-	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
++	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
+ 					btree_key_cache.shrink);
+ 	struct btree_key_cache *bc =3D &c->btree_key_cache;
+ 	struct bucket_table *tbl;
+@@ -936,7 +936,7 @@ static unsigned long bch2_btree_key_cache_scan(struct s=
+hrinker *shrink,
+ static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
+ 					    struct shrink_control *sc)
+ {
+-	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
++	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
+ 					btree_key_cache.shrink);
+ 	struct btree_key_cache *bc =3D &c->btree_key_cache;
+ 	long nr =3D atomic_long_read(&bc->nr_keys) -
+@@ -957,7 +957,7 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cach=
+e *bc)
+ 	int cpu;
+ #endif
+=20
+-	unregister_shrinker(&bc->shrink);
++	shrinker_free(bc->shrink);
+=20
+ 	mutex_lock(&bc->lock);
+=20
+@@ -1031,6 +1031,7 @@ void bch2_fs_btree_key_cache_init_early(struct btree_=
+key_cache *c)
+ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+ {
+ 	struct bch_fs *c =3D container_of(bc, struct bch_fs, btree_key_cache);
++	struct shrinker *shrink;
+=20
+ #ifdef __KERNEL__
+ 	bc->pcpu_freed =3D alloc_percpu(struct btree_key_cache_freelist);
+@@ -1043,11 +1044,14 @@ int bch2_fs_btree_key_cache_init(struct btree_key_c=
+ache *bc)
+=20
+ 	bc->table_init_done =3D true;
+=20
+-	bc->shrink.seeks		=3D 0;
+-	bc->shrink.count_objects	=3D bch2_btree_key_cache_count;
+-	bc->shrink.scan_objects		=3D bch2_btree_key_cache_scan;
+-	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
++	shrink =3D shrinker_alloc(0, "%s/btree_key_cache", c->name);
++	if (!shrink)
+ 		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
++	bc->shrink =3D shrink;
++	shrink->seeks		=3D 0;
++	shrink->count_objects	=3D bch2_btree_key_cache_count;
++	shrink->scan_objects	=3D bch2_btree_key_cache_scan;
++	shrinker_register(shrink);
+ 	return 0;
+ }
+=20
+diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
+index 70398aaa095e..fac0abdaf167 100644
+--- a/fs/bcachefs/btree_types.h
++++ b/fs/bcachefs/btree_types.h
+@@ -163,7 +163,7 @@ struct btree_cache {
+ 	unsigned		used;
+ 	unsigned		reserve;
+ 	atomic_t		dirty;
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
+=20
+ 	/*
+ 	 * If we need to allocate memory for a new btree node and that
+@@ -321,7 +321,7 @@ struct btree_key_cache {
+ 	bool			table_init_done;
+ 	struct list_head	freed_pcpu;
+ 	struct list_head	freed_nonpcpu;
+-	struct shrinker		shrink;
++	struct shrinker		*shrink;
+ 	unsigned		shrink_iter;
+ 	struct btree_key_cache_freelist __percpu *pcpu_freed;
+=20
+diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+index 48431700b83e..bdc8573631bd 100644
+--- a/fs/bcachefs/fs.c
++++ b/fs/bcachefs/fs.c
+@@ -1885,7 +1885,7 @@ static struct dentry *bch2_mount(struct file_system_t=
+ype *fs_type,
+ 		sb->s_flags	|=3D SB_POSIXACL;
+ #endif
+=20
+-	sb->s_shrink.seeks =3D 0;
++	sb->s_shrink->seeks =3D 0;
+=20
+ 	vinode =3D bch2_vfs_inode_get(c, BCACHEFS_ROOT_SUBVOL_INUM);
+ 	ret =3D PTR_ERR_OR_ZERO(vinode);
+diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
+index 41c6900c34c1..a9f480c26bb4 100644
+--- a/fs/bcachefs/sysfs.c
++++ b/fs/bcachefs/sysfs.c
+@@ -522,7 +522,7 @@ STORE(bch2_fs)
+=20
+ 		sc.gfp_mask =3D GFP_KERNEL;
+ 		sc.nr_to_scan =3D strtoul_or_return(buf);
+-		c->btree_cache.shrink.scan_objects(&c->btree_cache.shrink, &sc);
++		c->btree_cache.shrink->scan_objects(c->btree_cache.shrink, &sc);
+ 	}
+=20
+ 	if (attr =3D=3D &sysfs_btree_wakeup)
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HyO/wwY.250W_1EDD7kIjHg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/xy0ACgkQAVBC80lX
+0GyS5QgAo/VyB0n0K9oHwrW66ClrcZlog5az4zDvUTBaHMU6su2FMwVXjuvE016r
+XiOlZ9TMaS/UyEXHcXZZ0oMhEuaV2yeiaunOusNtqW4a3KshjabbGuSUrFBp3H0N
+lgJvRmYdoreNWfqz+UcXYi1YvEFQTC3ZdErRgRGmUN3pFporI678+nvM/t5hJiRP
+H9rE/guN69WwSWqArzFcVl2/t5ZNnWuECBJa9dfXgZBbh03c2UezOS2Go+KWyHeC
+g/4ahCfOtfNCDoHNfe/b9MzI43p3RS3t1beRNRc5Kuwb8a0hvgihYpHlCb2vSB8G
+X2UJboYKfi2p35W51HV4YpywS7mEoA==
+=hMdR
+-----END PGP SIGNATURE-----
+
+--Sig_/HyO/wwY.250W_1EDD7kIjHg--
