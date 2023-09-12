@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A45B79CEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB3A79CF04
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbjILK5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S234377AbjILK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbjILK5L (ORCPT
+        with ESMTP id S234368AbjILK55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:57:11 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD2B9F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:57:07 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 72726E0006;
-        Tue, 12 Sep 2023 10:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694516226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J61rx//PPkUlb2Sgp0SYcJ40b+/rbdWLC/XlBtvN7xM=;
-        b=ceinYO6zdv69WaKDudQCC+YKCOL1pbZ+SEvMhXRIMP+brevSJd5G0Oym2crb4KNKmslDO4
-        prNgoqb6XpruzCwM08cgaJsj5SfC+pqmFIikAQj/95ey6J77w+A5WbPMYrETwTCDneAfM3
-        gIbjk3A75SGab0xAcvetrPvV6wyBZ3VxRKsHLH4dQ2pLoMHNquEAcp7hEr/Rd3ORav98Pl
-        5RePwvnK03ODoZTgg3jnN1X2ACe0U/ms+pgQyr9uWS1NvZFt8E7IEcQ40OHQ0oCLFarUv3
-        20MgV3vpdS3bZ5K5nXysgSW9JTtnhEHiSva+lLVCqBD9nWHgv3N39TjgEQFwqA==
-Date:   Tue, 12 Sep 2023 12:57:04 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc:     <pgaj@cadence.com>, <alexandre.belloni@bootlin.com>,
-        <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] i3c: master: cdns: Fix reading status register
-Message-ID: <20230912125704.5fb1a102@xps-13>
-In-Reply-To: <20230911081623.21963-2-joshua.yeong@starfivetech.com>
-References: <20230911081623.21963-1-joshua.yeong@starfivetech.com>
-        <20230911081623.21963-2-joshua.yeong@starfivetech.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 12 Sep 2023 06:57:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D81173D;
+        Tue, 12 Sep 2023 03:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694516247; x=1726052247;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/TcDrQ6ZA804X+FGceYvm4xySIxcsUNJZtVj4ZCuNFE=;
+  b=LxTyGSplO1f1/VJWFnXVzvEvw0pEItV+65RLRRHyjBKZ9+SVzSg/AHkB
+   dfrVv0RrlcMaalDpVQgCx4uGqoOdMbwfASISDbXYa3VO5wiyDwV94wcjB
+   jvqetmqNxIqHfIUpA3Rtyfa2kQkDD0LtKVw8hl17mtQcFfFSOBudMTZQg
+   FcR4uqkYki0VLrT6IUldYQbttZu5kcDOJu5SgWHoIBYylJbiswhERNCI+
+   Es/AONQ3sXBoJhXOwH/JNZB/g8XAj8EvoQl+MFE71zk1mKKhThe6ozaMI
+   ujqCVoraj2v6OPqMPqntA+kc1/5bZfXYBk8j3rzDcmkr17VqujuhFGDtH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="358615708"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="358615708"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:57:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="693455911"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="693455911"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:57:17 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qg150-008ZAi-1Z;
+        Tue, 12 Sep 2023 13:57:14 +0300
+Date:   Tue, 12 Sep 2023 13:57:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 04/11] gpiolib: provide gpio_device_find_by_label()
+Message-ID: <ZQBECsLHhuNRYr20@smile.fi.intel.com>
+References: <20230912100727.23197-1-brgl@bgdev.pl>
+ <20230912100727.23197-5-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912100727.23197-5-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joshua,
+On Tue, Sep 12, 2023 at 12:07:20PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> By far the most common way of looking up GPIO devices is using their
+> label. Provide a helpers for that to avoid every user implementing their
+> own matching function.
 
-joshua.yeong@starfivetech.com wrote on Mon, 11 Sep 2023 16:16:24 +0800:
+...
 
-> IBIR_DEPTH and CMDR_DEPTH should read from status0 instead of status1
+> +static int gpio_chip_match_by_label(struct gpio_chip *gc, void *label)
+> +{
+> +	return gc->label && !strcmp(gc->label, label);
 
-				  be
+When gc->label can be NULL?
 
-Missing '.' at the end.
+> +}
 
-Missing Fixes: tag as well as Cc: stable.
-
->=20
-> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
-> ---
->  drivers/i3c/master/i3c-master-cdns.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3=
-c-master-cdns.c
-> index 49551db71bc9..8f1fda3c7ac5 100644
-> --- a/drivers/i3c/master/i3c-master-cdns.c
-> +++ b/drivers/i3c/master/i3c-master-cdns.c
-> @@ -191,7 +191,7 @@
->  #define SLV_STATUS1_HJ_DIS		BIT(18)
->  #define SLV_STATUS1_MR_DIS		BIT(17)
->  #define SLV_STATUS1_PROT_ERR		BIT(16)
-> -#define SLV_STATUS1_DA(x)		(((s) & GENMASK(15, 9)) >> 9)
-> +#define SLV_STATUS1_DA(s)		(((s) & GENMASK(15, 9)) >> 9)
->  #define SLV_STATUS1_HAS_DA		BIT(8)
->  #define SLV_STATUS1_DDR_RX_FULL		BIT(7)
->  #define SLV_STATUS1_DDR_TX_FULL		BIT(6)
-> @@ -1623,13 +1623,13 @@ static int cdns_i3c_master_probe(struct platform_=
-device *pdev)
->  	/* Device ID0 is reserved to describe this master. */
->  	master->maxdevs =3D CONF_STATUS0_DEVS_NUM(val);
->  	master->free_rr_slots =3D GENMASK(master->maxdevs, 1);
-> +	master->caps.ibirfifodepth =3D CONF_STATUS0_IBIR_DEPTH(val);
-> +	master->caps.cmdrfifodepth =3D CONF_STATUS0_CMDR_DEPTH(val);
-> =20
->  	val =3D readl(master->regs + CONF_STATUS1);
->  	master->caps.cmdfifodepth =3D CONF_STATUS1_CMD_DEPTH(val);
->  	master->caps.rxfifodepth =3D CONF_STATUS1_RX_DEPTH(val);
->  	master->caps.txfifodepth =3D CONF_STATUS1_TX_DEPTH(val);
-> -	master->caps.ibirfifodepth =3D CONF_STATUS0_IBIR_DEPTH(val);
-> -	master->caps.cmdrfifodepth =3D CONF_STATUS0_CMDR_DEPTH(val);
-> =20
->  	spin_lock_init(&master->ibi.lock);
->  	master->ibi.num_slots =3D CONF_STATUS1_IBI_HW_RES(val);
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Thanks,
-Miqu=C3=A8l
