@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F09C79C458
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2881379C450
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238453AbjILDqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 23:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
+        id S237913AbjILDmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237983AbjILDq2 (ORCPT
+        with ESMTP id S238349AbjILDlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 23:46:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471A9B399
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 20:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694487973; x=1726023973;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=RQt/Xq0uUaq9HjioPhTOJdOIq/LtL0LF6d0y9ZcdtKE=;
-  b=kITsfHjz+55VkImXarDfTUPgl36dtqJDywHtZwUa9TL8kJPwLDDl9Ag1
-   fOZD096xuadMHF90j2gJWA10F1AB+AYRM7GgSniksnGtUFyuclmK4F6KF
-   wtXZ+4gosRhS6NtYhNzR2mrHMUiVwytBQSVfNFUEehtI+hJuyo9zq56GD
-   jm9IipP6/Rsh2qu+lfnVxLQYIUww+xfHEg/FJVZuXgSqx1CMad/MCJ02m
-   WmkInPm5K9M6cQzVbx+yLTBRYsc+ZgL/sK/9x06ZViFv3GFoAMNwAj5yB
-   sox7LaCdTUWRVvTxpAkWdOaydPiF++375a/APrz1CrPyZqDFaLHX/4m+k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357698309"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="357698309"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2023 20:06:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746699813"
-X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
-   d="scan'208";a="746699813"
-Received: from lkp-server01.sh.intel.com (HELO 59b3c6e06877) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Sep 2023 20:06:11 -0700
-Received: from kbuild by 59b3c6e06877 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qftj7-0007Bp-1e;
-        Tue, 12 Sep 2023 03:06:09 +0000
-Date:   Tue, 12 Sep 2023 11:06:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <frank.li@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: drivers/pci/endpoint/functions/pci-epf-vntb.c:559:21: sparse:
- sparse: incorrect type in assignment (different address spaces)
-Message-ID: <202309121102.XRIDbaLp-lkp@intel.com>
+        Mon, 11 Sep 2023 23:41:46 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7221C619F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 20:16:26 -0700 (PDT)
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230912031624epoutp03f151056b12c6f73eee69c3911e1a9f20~ECGO32fma0418904189epoutp03j
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:16:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230912031624epoutp03f151056b12c6f73eee69c3911e1a9f20~ECGO32fma0418904189epoutp03j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1694488584;
+        bh=9b0yhQrPPQVw5SprxIcEQjOCPQMMOk7ZjyyovN9CkDg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=ua2iik7FHfnrti/BJaA/4MLf707HNCgXbZrN+W3Ea+5U5lofUiH1Nu+BDZ3bH+HRQ
+         aAgSIZwEf5rLYaW+8+GQwynmrJOKP2ma/pqSGh1/I2WcfM5isXXo2wHd9e47qA4smj
+         8yNxXpQcaTdn5xT3M0JZ0wPzZVemRw/mog/FgWjg=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230912031623epcas1p11d9a8bd5d6d295ace398b240033b9838~ECGOUplos1017710177epcas1p16;
+        Tue, 12 Sep 2023 03:16:23 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.38.233]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4Rl7yt4N3bz4x9Px; Tue, 12 Sep
+        2023 03:16:22 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        76.1D.09646.608DFF46; Tue, 12 Sep 2023 12:16:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230912031622epcas1p2a63f76c73d1aa7ead6aaab9c0b639ba5~ECGM6bpeb1704717047epcas1p26;
+        Tue, 12 Sep 2023 03:16:22 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230912031622epsmtrp27a64abc0bda6542474a785b540d6a4ba~ECGM5mbEA0271202712epsmtrp2L;
+        Tue, 12 Sep 2023 03:16:22 +0000 (GMT)
+X-AuditID: b6c32a37-d85fa700000025ae-39-64ffd806b869
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        07.3E.18916.508DFF46; Tue, 12 Sep 2023 12:16:21 +0900 (KST)
+Received: from kson001 (unknown [10.102.7.58]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230912031621epsmtip26d172f24e74ac9813cc894d291c21724~ECGMoQQM_0868108681epsmtip2E;
+        Tue, 12 Sep 2023 03:16:21 +0000 (GMT)
+From:   "Kwanghoon Son" <k.son@samsung.com>
+To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <jszhang@kernel.org>, <guoren@kernel.org>, <wefu@redhat.com>,
+        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        <aou@eecs.berkeley.edu>, <inki.dae@samsung.com>
+Cc:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>
+In-Reply-To: <20230912024914.3769440-1-k.son@samsung.com>
+Subject: RE: [PATCH 0/3] Introduce reset driver for T-HEAD th1520 SoC
+Date:   Tue, 12 Sep 2023 12:16:21 +0900
+Message-ID: <00b201d9e527$813b9070$83b2b150$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQJRGlJLVam+TPMVK9gUOhne1mZ+8QFARGg6rx4WsDA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHJsWRmVeSWpSXmKPExsWy7bCmvi7bjf8pBnffyFls/T2L3WLN3nNM
+        FvOPnGO1eLG3kcVi0v0JLBbNx9azWfS9eMhscXnXHDaLbZ9b2Czu3jvBYvHycg+zRdssfovW
+        vUfYLVr2T2Fx4PN48/Ili8fhji/sHptWdbJ53Lm2h81j85J6j/6/Bh7v911l8+jbsorR41Lz
+        dXaPz5vkAriism0yUhNTUosUUvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ0
+        3TJzgO5XUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BSYFugVJ+YWl+al6+WlllgZ
+        GhgYmQIVJmRnrHq4krVgJmPFlD2P2BoYy7sYOTkkBEwk1nSvZO9i5OIQEtjBKPHscAuU84lR
+        Yv7Gl2wgVWDOy7O5MB3fj3awQhTtZJRYMO84I4TzmFHi/eLvjCBVbAKaEgvP/QZLiAhMZ5KY
+        PPc52ChmgVSJo5fngdmcApYSc6d0gzUIC7hKTPg5mxnEZhFQlbg65RsriM0LVDP97212CFtQ
+        4uTMJywQc+Qltr+dwwxxkoLEz6fLWCHiIhKzO9vA4iICVhK3Dl9hhKh5wCHRM9MGwnaRmHXi
+        BguELSzx6vgWdghbSuLzu71sEHa2xNGPMHaJxPVZi1ghbGOJ/UsnM3UxcgDt0pRYv0sfIqwo
+        sfP3XEaIE/gk3n3tYQUpkRDglehoE4Iw5SVudUJDXVTizNOPbBMYlWYh+WsWkr9mIfllFsKu
+        BYwsqxjFUguKc9NTiw0LjOFRnZyfu4kRnLC1zHcwTnv7Qe8QIxMH4yFGCQ5mJRHekkN/U4R4
+        UxIrq1KL8uOLSnNSiw8xmgJDeiKzlGhyPjBn5JXEG5pYGpiYGRmbWBiaGSqJ89561psiJJCe
+        WJKanZpakFoE08fEwSnVwMSfX2v8u8iGUZLdiuW4qdXt8KN+y4K/dhZyJ6xoerPBa2Lur7n+
+        6gfbF5fMCzRYKl0R37lG49ILt9bG0wLBa1tXH1TPceQUuvrk9OMbcqpnGe9nHT+uJZwqX/Jt
+        79rfp59nHtJqfvzD/tMsqye/edPmqHEK+XZcX9b9xsxujomD6FNOITZ1mYWG1353Wd95E9nR
+        Y7m3P3rf1J8+U8tepsnKPOw4Vq/KNXPSMekrwUWXrzIe5u7b53MiTGh9j/ILr7R7qsWygSeu
+        xJ39fK9j8+a1md/UdwsfS4ua2qO2Zy+HfPIjD9PZDT5TJtptNpg7a0PTlx3zVl/b/HCOq+kU
+        eQ+1njvvXi7RfVjztivZwEuJpTgj0VCLuag4EQD1aQ1jYQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsWy7bCSvC7bjf8pBlvkLbb+nsVusWbvOSaL
+        +UfOsVq82NvIYjHp/gQWi+Zj69ks+l48ZLa4vGsOm8W2zy1sFnfvnWCxeHm5h9mibRa/Reve
+        I+wWLfunsDjwebx5+ZLF43DHF3aPTas62TzuXNvD5rF5Sb1H/18Dj/f7rrJ59G1Zxehxqfk6
+        u8fnTXIBXFFcNimpOZllqUX6dglcGasermQtmMlYMWXPI7YGxvIuRk4OCQETie9HO1i7GLk4
+        hAS2M0rMXPyBDSIhKtFxuZGxi5EDyBaWOHy4GKLmIaPE2jVfwGrYBDQlFp77zQiSEBFYzCRx
+        pncDK0iCWSBd4tbrM1BTuxglrh6bwgiS4BSwlJg7pRvMFhZwlZjwczYziM0ioCpxdco3sGZe
+        oJrpf2+zQ9iCEidnPmEBuYJZQE+ibSMjxHx5ie1v5zBDHKog8fPpMqi9IhKzO9vA4iICVhK3
+        Dl9hnMAoPAvJpFkIk2YhmTQLSfcCRpZVjKKpBcW56bnJBYZ6xYm5xaV56XrJ+bmbGMExqxW0
+        g3HZ+r96hxiZOBgPMUpwMCuJ8JYc+psixJuSWFmVWpQfX1Sak1p8iFGag0VJnFc5pzNFSCA9
+        sSQ1OzW1ILUIJsvEwSnVwOSglrNdprvSZEfhkZymNqa4xD7/wPlWqgZlnL/mBO7UUJnX8OLj
+        kUtu+tVWf602ZP7KDhB+pXVqnRhPiI1ieDj/xKf/hWJ+L10k9Cr0lu37XUuuZSduCDcJK7Jz
+        NuSQ6G3P2naMc+PJ4zGqglrJPLlb5S/NDDywUe+y6+PDEx47S97uWrrUZknHY5OFwi1GicoT
+        bi932mX5WbiRab9g7xKlw5ah0RcT2g/yHLksIhAQEurwdP22HokTLoJawrWR0T9MpCMVD3Ol
+        33ilp95aEO9xsGChkfy0LZ8VqvI1dldvZPN5VB72PVn4RTNze8hm5Rrjfr0Arsttn+d51/+R
+        yJl14HzazSVrvDUvXmlXYinOSDTUYi4qTgQAlIa1I0gDAAA=
+X-CMS-MailID: 20230912031622epcas1p2a63f76c73d1aa7ead6aaab9c0b639ba5
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230912024917epcas1p29a513dcf6019fb7c63275aa0e39b1c71
+References: <CGME20230912024917epcas1p29a513dcf6019fb7c63275aa0e39b1c71@epcas1p2.samsung.com>
+        <20230912024914.3769440-1-k.son@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-commit: 01dcec6d57ce62d535b2016fc4a617627fff506d PCI: endpoint: pci-epf-vntb: Fix sparse build warning for epf_db
-date:   10 months ago
-config: i386-randconfig-063-20230912 (https://download.01.org/0day-ci/archive/20230912/202309121102.XRIDbaLp-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309121102.XRIDbaLp-lkp@intel.com/reproduce)
+> From: Kwanghoon Son <k.son@samsung.com>
+> 
+Oops, my mail config has from option.
+Sorry, I will fix in next version after get feedback.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309121102.XRIDbaLp-lkp@intel.com/
+Kwang.
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:553:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *mw_addr @@     got void * @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:553:17: sparse:     expected void [noderef] __iomem *mw_addr
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:553:17: sparse:     got void *
->> drivers/pci/endpoint/functions/pci-epf-vntb.c:559:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned int [usertype] *epf_db @@     got void [noderef] __iomem *mw_addr @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:559:21: sparse:     expected unsigned int [usertype] *epf_db
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:559:21: sparse:     got void [noderef] __iomem *mw_addr
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:571:38: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void *addr @@     got void [noderef] __iomem *mw_addr @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:571:38: sparse:     expected void *addr
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:571:38: sparse:     got void [noderef] __iomem *mw_addr
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1124:33: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *base @@     got struct epf_ntb_ctrl *reg @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1124:33: sparse:     expected void [noderef] __iomem *base
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1124:33: sparse:     got struct epf_ntb_ctrl *reg
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1135:33: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *base @@     got struct epf_ntb_ctrl *reg @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1135:33: sparse:     expected void [noderef] __iomem *base
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1135:33: sparse:     got struct epf_ntb_ctrl *reg
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1146:33: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *base @@     got struct epf_ntb_ctrl *reg @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1146:33: sparse:     expected void [noderef] __iomem *base
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1146:33: sparse:     got struct epf_ntb_ctrl *reg
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1158:33: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *base @@     got struct epf_ntb_ctrl *reg @@
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1158:33: sparse:     expected void [noderef] __iomem *base
-   drivers/pci/endpoint/functions/pci-epf-vntb.c:1158:33: sparse:     got struct epf_ntb_ctrl *reg
-
-vim +559 drivers/pci/endpoint/functions/pci-epf-vntb.c
-
-e35f56bb03304a Frank Li 2022-02-22  520  
-e35f56bb03304a Frank Li 2022-02-22  521  /**
-e35f56bb03304a Frank Li 2022-02-22  522   * epf_ntb_db_bar_init() - Configure Doorbell window BARs
-9298804840457c Frank Li 2022-11-02  523   * @ntb: NTB device that facilitates communication between HOST and VHOST
-9298804840457c Frank Li 2022-11-02  524   *
-9298804840457c Frank Li 2022-11-02  525   * Returns: Zero for success, or an error code in case of failure
-e35f56bb03304a Frank Li 2022-02-22  526   */
-e35f56bb03304a Frank Li 2022-02-22  527  static int epf_ntb_db_bar_init(struct epf_ntb *ntb)
-e35f56bb03304a Frank Li 2022-02-22  528  {
-e35f56bb03304a Frank Li 2022-02-22  529  	const struct pci_epc_features *epc_features;
-e35f56bb03304a Frank Li 2022-02-22  530  	u32 align;
-e35f56bb03304a Frank Li 2022-02-22  531  	struct device *dev = &ntb->epf->dev;
-e35f56bb03304a Frank Li 2022-02-22  532  	int ret;
-e35f56bb03304a Frank Li 2022-02-22  533  	struct pci_epf_bar *epf_bar;
-e35f56bb03304a Frank Li 2022-02-22  534  	void __iomem *mw_addr;
-e35f56bb03304a Frank Li 2022-02-22  535  	enum pci_barno barno;
-2b35c886556a24 Frank Li 2022-11-02  536  	size_t size = sizeof(u32) * ntb->db_count;
-e35f56bb03304a Frank Li 2022-02-22  537  
-e35f56bb03304a Frank Li 2022-02-22  538  	epc_features = pci_epc_get_features(ntb->epf->epc,
-e35f56bb03304a Frank Li 2022-02-22  539  					    ntb->epf->func_no,
-e35f56bb03304a Frank Li 2022-02-22  540  					    ntb->epf->vfunc_no);
-e35f56bb03304a Frank Li 2022-02-22  541  	align = epc_features->align;
-e35f56bb03304a Frank Li 2022-02-22  542  
-e35f56bb03304a Frank Li 2022-02-22  543  	if (size < 128)
-e35f56bb03304a Frank Li 2022-02-22  544  		size = 128;
-e35f56bb03304a Frank Li 2022-02-22  545  
-e35f56bb03304a Frank Li 2022-02-22  546  	if (align)
-e35f56bb03304a Frank Li 2022-02-22  547  		size = ALIGN(size, align);
-e35f56bb03304a Frank Li 2022-02-22  548  	else
-e35f56bb03304a Frank Li 2022-02-22  549  		size = roundup_pow_of_two(size);
-e35f56bb03304a Frank Li 2022-02-22  550  
-e35f56bb03304a Frank Li 2022-02-22  551  	barno = ntb->epf_ntb_bar[BAR_DB];
-e35f56bb03304a Frank Li 2022-02-22  552  
-e35f56bb03304a Frank Li 2022-02-22  553  	mw_addr = pci_epf_alloc_space(ntb->epf, size, barno, align, 0);
-e35f56bb03304a Frank Li 2022-02-22  554  	if (!mw_addr) {
-e35f56bb03304a Frank Li 2022-02-22  555  		dev_err(dev, "Failed to allocate OB address\n");
-e35f56bb03304a Frank Li 2022-02-22  556  		return -ENOMEM;
-e35f56bb03304a Frank Li 2022-02-22  557  	}
-e35f56bb03304a Frank Li 2022-02-22  558  
-e35f56bb03304a Frank Li 2022-02-22 @559  	ntb->epf_db = mw_addr;
-e35f56bb03304a Frank Li 2022-02-22  560  
-e35f56bb03304a Frank Li 2022-02-22  561  	epf_bar = &ntb->epf->bar[barno];
-e35f56bb03304a Frank Li 2022-02-22  562  
-e35f56bb03304a Frank Li 2022-02-22  563  	ret = pci_epc_set_bar(ntb->epf->epc, ntb->epf->func_no, ntb->epf->vfunc_no, epf_bar);
-e35f56bb03304a Frank Li 2022-02-22  564  	if (ret) {
-e35f56bb03304a Frank Li 2022-02-22  565  		dev_err(dev, "Doorbell BAR set failed\n");
-e35f56bb03304a Frank Li 2022-02-22  566  			goto err_alloc_peer_mem;
-e35f56bb03304a Frank Li 2022-02-22  567  	}
-e35f56bb03304a Frank Li 2022-02-22  568  	return ret;
-e35f56bb03304a Frank Li 2022-02-22  569  
-e35f56bb03304a Frank Li 2022-02-22  570  err_alloc_peer_mem:
-0c031262d2ddfb Frank Li 2022-11-02  571  	pci_epf_free_space(ntb->epf, mw_addr, barno, 0);
-e35f56bb03304a Frank Li 2022-02-22  572  	return -1;
-e35f56bb03304a Frank Li 2022-02-22  573  }
-e35f56bb03304a Frank Li 2022-02-22  574  
-
-:::::: The code at line 559 was first introduced by commit
-:::::: e35f56bb03304abc92c928b641af41ca372966bb PCI: endpoint: Support NTB transfer between RC and EP
-
-:::::: TO: Frank Li <Frank.Li@nxp.com>
-:::::: CC: Jon Mason <jdmason@kudzu.us>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
