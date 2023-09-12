@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AE379CFE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A33B79CFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234736AbjILL25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S234722AbjILL3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234646AbjILL2R (ORCPT
+        with ESMTP id S234745AbjILL2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:28:17 -0400
-Received: from mx0b-00128a01.pphosted.com (mx0b-00128a01.pphosted.com [148.163.139.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3BD98;
-        Tue, 12 Sep 2023 04:28:06 -0700 (PDT)
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38C88tMP001960;
-        Tue, 12 Sep 2023 07:27:58 -0400
+        Tue, 12 Sep 2023 07:28:39 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DB81711;
+        Tue, 12 Sep 2023 04:28:34 -0700 (PDT)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38CBOcYp032093;
+        Tue, 12 Sep 2023 07:28:16 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3t164t5573-1
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3t15ueps2h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 07:27:58 -0400 (EDT)
-Received: from m0167091.ppops.net (m0167091.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.22/8.17.1.22) with ESMTP id 38CBRw6M029989;
-        Tue, 12 Sep 2023 07:27:58 -0400
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3t164t556y-1
+        Tue, 12 Sep 2023 07:28:16 -0400 (EDT)
+Received: from m0167088.ppops.net (m0167088.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.22/8.17.1.22) with ESMTP id 38CBG5Js011010;
+        Tue, 12 Sep 2023 07:28:15 -0400
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2171.outbound.protection.outlook.com [104.47.73.171])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3t15ueps2g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 07:27:58 -0400 (EDT)
+        Tue, 12 Sep 2023 07:28:15 -0400 (EDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YPKrs+X3ewr3XU4x1IAls+SoZ7oZH02o8666PeSdq0pQJw5f/48D25SIaNE8Ln5ftc1v7ikItp5h57zfNMQhQG7hIQ8xz3/BRh2C9NDUllOifQEbVTnCOTrK2pT/JKCgNO00532g6hx1eHtGvhcwe+g6mePj3XzoUTNkxDh6oLA2GLmHyq4T+9rTrD2QdwzcoLxIscOa5aycob/PuAHsy9SCJW0U11LjlG4rXYeG3Uz2yB/OMxUKeSHZRuuutSlWTtZY6tGT/egiH5eAttrz+HDJQzwZy/ryVpwBQwy2TxUK/9t1/Dc/gASgwiNR7lb6030jmiB4PHYtpgjcXvYXGw==
+ b=C6cu6X936pWW4Qpbv4JYqIUctVzoMp79JRzHvxiFsaq05oDOdxCUk+LyIbM403e1MkUdnsoAboznZ0qgt4kYP8WnjwuGMgAyBPA9jm4h09III5r9eEcyfVikh54jfoOUGyS7pvAdOEzyoolzW36TZbV58Nku3WRir+U7fHIPV2pQl60HNEytm0mHgm4RzoY8861ZeH450nxKDdix7S6K2XyFp4MpmgrKj2EQGFNe64IZo9RDqTNdPAkY9WxTqWLzO/L5gbb49ZgkSubU83VDk6zL1Lv1PNvltI3fzF87C+IdavVzQQtj3u8l1eQdQ2IYS229hSqG+l1lYVK6jFaCAw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/y9aREe4N/dbqMmEWmULxZchmqGlZU0TA/aPHVv4Fis=;
- b=DL6S1eKYMRTSx8uiClN4ktebwt0IG/+8DiRPKHq6XdOM57Zow4Wgtigq+7j/ntQHTizafw8nzETCREB6Vsc/HUm69EVo1lIGuhN99AH++l7/psVzcJ4uJVwyMYgfJVcRMIHbwzVXTwxITMVsB3GMRCYcMvMtC1jyXwETx35VPoHee63HhNDTmG1pdwFR12wiVbnSW1zipA2gBiytKk5lxd/NVaIWHcimtjGbsfcAEUpU8FzCetH2WVoQR6PMQqfurvYcg9OeOzouVn33/4t3Fs9ptp6I4J4vQ6/VkQT+qQ7JA4UYpVjgICwce1L7k69PUgaaJAXTS+HaXsD3KQGuVw==
+ bh=B2MIUQ8SC6BT2F8Es+2ga+riaPlDSwjuhl9FZyFhwMk=;
+ b=ELiOU6M/FRWrKGQhNAo5o3J+bFt1otwO4V8M09qcEk7jXuKd0UEDn2WyeruBIEea4S064mN4L2yMDSy/rFqIsqKuSsQZ30sVqbK6ejbOKxVCTm9mLiSEwYa8kOKC3oy3nhSTnsr6ElE/FM6+OYKyTlrx4Pvn0M02mp66T85zLx4iZYwolbqmEKF3UlwLXrqSNLVTEm4zQLkB0yc7gbe19Sztz+P1OZjoGGb9FnUZ+LhgbMLhu81iyNmS7Jfmkl5dDawdPA6kRBCMz2p5I18wFBGslUma0XY8M7G/vrDkqU1Y/94X5FsfVZWco+CqWnD9ZwMQvkH3B1sAbZ106riVVQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
  dkim=pass header.d=analog.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/y9aREe4N/dbqMmEWmULxZchmqGlZU0TA/aPHVv4Fis=;
- b=8Caagwe67ycxkf6MPr+I1I7wKDNTMPfELhqI+Na/ns1OI9gw/oIdkk7j0rqkz5vLwTGwjhpEYyQvVML1WUd/3LL7jJ+jfK36U14PjYKwJpd/i78Nk86DauDR+tx9jPOP+Gft/vCladdsSxXKZ+EXekGjPbmsJZTva/LODH8uqZw=
+ bh=B2MIUQ8SC6BT2F8Es+2ga+riaPlDSwjuhl9FZyFhwMk=;
+ b=iCyIZVWU4HvApt+TZsTqctoh/nFIhp4j2KVV56Ni43bkAaymJRTFpX6veef8GSOdZnsc2yjkVChuYI2JvfdDrWkDFcffUvmlRT7zZTAwa6+vH5wUPuOnicreh0sMXfVT0Sm+joFL0FtTF3rXEbCaw+tp9tL0fNfoob/U1P0juRc=
 Received: from SN7PR03MB7132.namprd03.prod.outlook.com (2603:10b6:806:352::6)
  by BY5PR03MB5233.namprd03.prod.outlook.com (2603:10b6:a03:22c::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Tue, 12 Sep
- 2023 11:27:55 +0000
+ 2023 11:28:13 +0000
 Received: from SN7PR03MB7132.namprd03.prod.outlook.com
  ([fe80::4a36:f52e:cc42:6fa4]) by SN7PR03MB7132.namprd03.prod.outlook.com
  ([fe80::4a36:f52e:cc42:6fa4%7]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 11:27:55 +0000
+ 11:28:13 +0000
 From:   "Hennerich, Michael" <Michael.Hennerich@analog.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Cusco, Ana-Maria" <Ana-Maria.Cusco@analog.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: RE: linux-next: Signed-off-by missing for commit in the iio tree
-Thread-Topic: linux-next: Signed-off-by missing for commit in the iio tree
-Thread-Index: AQHZ5QSJWvVFyqf+vEWjEGwmBdh9ILAWvOGggAAt0YCAACKoMA==
-Date:   Tue, 12 Sep 2023 11:27:55 +0000
-Message-ID: <SN7PR03MB713236E2643B5AD8356810338EF1A@SN7PR03MB7132.namprd03.prod.outlook.com>
-References: <20230912090544.50add67a@canb.auug.org.au>
-        <SN7PR03MB7132F1FD70D47658EC2AD7238EF1A@SN7PR03MB7132.namprd03.prod.outlook.com>
- <20230912102027.000047a9@Huawei.com>
-In-Reply-To: <20230912102027.000047a9@Huawei.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        "Cusco, Ana-Maria" <Ana-Maria.Cusco@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for HMC540S
+Thread-Topic: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for HMC540S
+Thread-Index: AQHZ5UZWmtTs1TbX6Ua+FRSaw83kbrAW6SSAgAAkqlA=
+Date:   Tue, 12 Sep 2023 11:28:13 +0000
+Message-ID: <SN7PR03MB7132BD9C59A640EE4A5B0EA68EF1A@SN7PR03MB7132.namprd03.prod.outlook.com>
+References: <20230816110906.144540-1-ana-maria.cusco@analog.com>
+        <20230816110906.144540-2-ana-maria.cusco@analog.com>
+        <20230816-stoop-exonerate-148c7bdc01c2@spud>
+        <SN7PR03MB7132732C9DB517378897DADA8EF1A@SN7PR03MB7132.namprd03.prod.outlook.com>
+        <06a007ad-ab6b-2ed0-8f70-6837680c8684@linaro.org>
+ <20230912101643.00005cc8@Huawei.com>
+In-Reply-To: <20230912101643.00005cc8@Huawei.com>
 Accept-Language: de-DE, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbWhlbm5lcmlc?=
  =?us-ascii?Q?YXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRi?=
- =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy02OTY5MTg3Zi01MTVmLTExZWUtYjgwYy1iY2Yx?=
- =?us-ascii?Q?NzFjNDc2MTlcYW1lLXRlc3RcNjk2OTE4ODEtNTE1Zi0xMWVlLWI4MGMtYmNm?=
- =?us-ascii?Q?MTcxYzQ3NjE5Ym9keS50eHQiIHN6PSI0NjQ0IiB0PSIxMzMzODk5MTY3Mzc1?=
- =?us-ascii?Q?MTY1NjEiIGg9InBBS3piVjE2ek5MNkFLSi9CUUh2VzhLekVITT0iIGlkPSIi?=
+ =?us-ascii?Q?YTI5ZTM1Ylxtc2dzXG1zZy03NDc0MDllNy01MTVmLTExZWUtYjgwYy1iY2Yx?=
+ =?us-ascii?Q?NzFjNDc2MTlcYW1lLXRlc3RcNzQ3NDA5ZTktNTE1Zi0xMWVlLWI4MGMtYmNm?=
+ =?us-ascii?Q?MTcxYzQ3NjE5Ym9keS50eHQiIHN6PSI1NTUyIiB0PSIxMzMzODk5MTY5MjI2?=
+ =?us-ascii?Q?NDkwMjYiIGg9IjZ4NjBMQ2ExT3BXaTlUZkJMb3hMMkJLcUhWcz0iIGlkPSIi?=
  =?us-ascii?Q?IGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQUVvQ0FB?=
- =?us-ascii?Q?QVJOTUlyYk9YWkFjcGVyWThNNmRGRXlsNnRqd3pwMFVRREFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?RENHY3MyYk9YWkFaSVdwWUhQQ0w4b2toYWxnYzhJdnlnREFBQUFBQUFBQUFB?=
  =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFIQUFBQURhQVFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
  =?us-ascii?Q?QUFFQUFRQUJBQUFBbEdUR1ZnQUFBQUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFh?=
  =?us-ascii?Q?UUJmQUhNQVpRQmpBSFVBY2dCbEFGOEFjQUJ5QUc4QWFnQmxBR01BZEFCekFG?=
@@ -102,65 +110,65 @@ x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbWhlbm5lc
 x-dg-rorf: true
 x-ms-publictraffictype: Email
 x-ms-traffictypediagnostic: SN7PR03MB7132:EE_|BY5PR03MB5233:EE_
-x-ms-office365-filtering-correlation-id: e346adaf-93a2-4765-5fed-08dbb3834f28
+x-ms-office365-filtering-correlation-id: 217353f2-0c75-4483-09c2-08dbb3835a1e
 x-ld-processed: eaa689b4-8f87-40e0-9c6f-7228de4d754a,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OtgSTxM/juAltAs4NTEaInNQUPHzdGBNRwfx1YVh18wR9ajXT8sqG+NJ3uE9FYmXoGyQoBw/uHgITHjUs0iAHOPbLGr5BvjElQopbwAjBc8NjxyLPBy/qnKNz2QmD4MTvf+uCl3+Il3FFezQF0EsZeG7+8jaDAPF83xn7bFcDXaVx7X2jKV0Hqr4if0RpIpkVIXvq6CLLAGZH9sZoB0giON2G7pbpbccUmKnsmjbdMghFPloe66hI9WchR5/gBJ4dOfkPKKnmV0xZCPBfsxjQfkhQNiDwtTQ5Exw47pe0mHoZLCNwoSqnnsFprvE9BxeJQsIAMBZE67aSlH+fL6FH6YPExmmZGZvma+MtrqSM/gaJwYYsbKEv9HUDb3DuMbi2CbwX4glq2u+8iTagY3YITiypcHiYjIqxThYmi0W0gGCeaRlEq1YnCDqgXwgQ3uZSgXGDI/Vnz3QPnx6AEPFgaMVDeKzdq9O9qYQinx1F1meuOyp59dmKSsepVfNWHweUOtSTpVMp/5MYXXdokDMW5bZj5xgLm7DoqFJdPrABLe6aAWR+fA8j69cEp+b9RQmsfWy49BLhSM5ozaU6gPleg3GDyMiRs3C0DTBRuWd8RTRf0XsS8yYUG6Wlx8SyPHu
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR03MB7132.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(376002)(366004)(39860400002)(186009)(451199024)(1800799009)(52536014)(5660300002)(8676002)(8936002)(4326008)(83380400001)(71200400001)(9686003)(6506007)(7696005)(26005)(53546011)(55016003)(478600001)(122000001)(6916009)(76116006)(66946007)(316002)(54906003)(66476007)(41300700001)(66556008)(66446008)(64756008)(86362001)(2906002)(33656002)(38100700002)(38070700005);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: 6sR8C+VSEze7Ifz9RrEvNGeoxnGFRJpCfLvqd1ofspSYOpPMo7U0H9scPeDD+YJES0Gh6sPOISPfIWGxArnWQ3p4lSp6X8hQEJZh+FFhN++8JiI6eIEFTuCVW60wb3yWehkg5sTkKs/MyMsri5w48YBLQsx9V2Vo9UO+eI/JVLbuyY4aViyX3Zh+3RK7PnuILUwxB/wdrZNPzM8DTH2LhoA7LJOlqbO4MpGnBEWUFYsgobkoiEzmtQ6hHMqNGG6t3+blrLbs0T3o3psKqzXsQoWXj03mqP2C+u8TnNGQdzfuOxeO7ICNBcg2avB+bBXZnq5v8defnDoZD+8Kho2MJjAbFFMQH+8mTAsPuXAl/2zFsk0guCWmuYF6flMWrVZ+YtWEjgP8YqcjxjkGgcLqQ3veR8vhCV0t+zLCHzW/WSXvCgiQ9kEemqYe0HDmgiYYUkZEZq8cPtk/0V58S4IE3VMUquMmOQXp/XeNPLXTs+SNMK1Ib2oelR3++R58maX/l/2np5gq6M3jdXLRFhwkpJTm4DJCXT0Uh9oC5MTJAtSiwFqRBxPXXy+/pmVMXfR7bKXUHAbXZSqoa/UUB1qbe1F6c7cw/HHHn17+A1mjhJY4L88F55zp8WyHqygt8oDJ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR03MB7132.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(376002)(366004)(39860400002)(186009)(451199024)(1800799009)(52536014)(5660300002)(8676002)(8936002)(4326008)(83380400001)(71200400001)(9686003)(6506007)(7696005)(26005)(53546011)(55016003)(478600001)(122000001)(76116006)(66946007)(316002)(54906003)(110136005)(66476007)(41300700001)(66556008)(66446008)(64756008)(86362001)(2906002)(33656002)(38100700002)(38070700005)(7416002);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?x11xrzr88jbH46Gqm+awLtZgLyylyh6mVFnZteqmsMHbVzZIIGK0QxJH0h1m?=
- =?us-ascii?Q?5imrKpCdNdZ0pqaPha4NCVGzT0g96Q0xKdS/2t0d/pUrvewnF3XIOs1kinM2?=
- =?us-ascii?Q?sLtmixbnU9Hr9cK0WiXYoj4TzDl7DC4YsMYDSnWqAqpT3+Gku8qehCCsIeP6?=
- =?us-ascii?Q?q8RhPWvSuSz0RarkgfZebwn/3xI+PViwcSxMShY/budPFKDWCg56Qxb1ofwS?=
- =?us-ascii?Q?mfvPMySWh9F99ihYbDUAqy50VYBklgc4YOUpiFH5k+vQPHuZw0tMlrnPmHGZ?=
- =?us-ascii?Q?jX4RHNk/ts9wlB0jYrqbJwNtJ9Osg7n4Pbqs0xP8MwdDgtsMv+lMbsxfHXxE?=
- =?us-ascii?Q?Z0+hKXXpcGaHfHVzYJU4PqhWCErEBq6WLj4OspVkJB90+5VeM3SB6efc09Nf?=
- =?us-ascii?Q?W38rVJ9NeOTGIAZ/N1QmrbYL1Pi41PmxxvZUGhFP8oCVjom9F2rvk2j+xfaS?=
- =?us-ascii?Q?/3xqR/1hXigWCfN5ec+zevocmkteK4khiweN6hAdZzp0RWR/H8Rdfj8Kk28/?=
- =?us-ascii?Q?V3EO6aNXZc8P7pMc2Qn46tKwZjTctLYymxfpkDFLKb22tjFt1diCVUj4FmiN?=
- =?us-ascii?Q?I9lz61ARBJ0DFDNiwOGgUuQ7eioPBWElBnqJ6bpGeZ287iiQVtjn4d4AEcZy?=
- =?us-ascii?Q?FQjm/KLeHqM0hxh8b5ZO57epE+e8/ODrkAxZpweQQdmjK7Aj7s0hEdbKsEJH?=
- =?us-ascii?Q?3sNZ6BXLmbu4vRsEIx07pWtjYKGGZW7VV/gy8dp6L27FnQO/iDJPxGhhqW+o?=
- =?us-ascii?Q?UKti8++Cm8DhYbTcj9L75KrGchjwyQDcarvicAS9JeuJ+LioNAxI90sEFd0Z?=
- =?us-ascii?Q?fkZ4KI4BcUKuRCIaCr6OVRu4qrukTt+/C6/Jtta5Yy9CeqXbZimJ8mNQg061?=
- =?us-ascii?Q?sGNTSqGkgTAUnnidIpWkSSci3RczM+8bolaEUgR3w71DopFZ9AzOHrcHj/ju?=
- =?us-ascii?Q?mD7JuwJlA87v8bNusOVg09i6WbDagSiZTsBpy05OGzNMHbe6V2A9CvVQRUL4?=
- =?us-ascii?Q?qWzQGmmB12lda1f510MgfVhjReSZMO4hk8m+WoYeS/k793oqeAW93Itd1eqh?=
- =?us-ascii?Q?I++hTxU8yjT+Yj9J1RJWIvyHdk8tpeM3yb0/fQ+sC7MONiV2j3GjndtHSXeD?=
- =?us-ascii?Q?DkMrwZLYjwFQiis//TUMdkegGxSdjE9ehcpTznPsI/X3RYcdFL1CtXvLGZhS?=
- =?us-ascii?Q?gSngq3/0Q/8dHtt0Lpr4pzkwl4A7V4nBDQFcqBo+fx+c8AwjEPGYfwtdFqsF?=
- =?us-ascii?Q?3jZ4oqFxkgoiyaAA7ncQOGBY76n8SaGelFKLGTOFaPy8xq9UXNGMJEL93BeU?=
- =?us-ascii?Q?SdxlB4BaL39ay93MuJ8S4QQWjLKJNtK+hWpDlmvGfnkXp4J1SVV0pXHhjfVX?=
- =?us-ascii?Q?vSW3h+ayXynHgaW6ohwiSfLyljFBnhBLyloKVDaaAtj44JJBNYDU2cZwGl7k?=
- =?us-ascii?Q?bX0LsNeNaDby6U5Q8SzPVg1F0yfpVgjzOUGUU/UuiFD8sO2TxqN+b1ZEdM9l?=
- =?us-ascii?Q?vLEGiv1BId0s3MV6xh4+wLUoJwc5uRN/WWuW/J7kCVByRrJJ+I53fX5YNuHC?=
- =?us-ascii?Q?lSa6GnQMgwN0qraunPB+DKIc3zr6Y4wEO5q/KnzYccUTRDJT9FjtS4FPbziY?=
- =?us-ascii?Q?kw=3D=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?szIngYPxOkLZR4gr04txxRzbRsNog34DlMU91PSAVr6yOc62QGZrs9nnW0i0?=
+ =?us-ascii?Q?frEKYEuh8riOnJ58ZgASYEC+gxtT9O8zmscEJkHl4uYzfcRVl4f0Wz87oJxG?=
+ =?us-ascii?Q?AfzQYmZp05e+7HNoX3lLjVe3J0/3bYwmbUPl/gnScfwaKA2taDYyWtLIZfIn?=
+ =?us-ascii?Q?ROr16ckr/Wuvabe2dCIEQbfFpqldhh3S0vqfuSR881u5DmTa3y5RnFzkMWkN?=
+ =?us-ascii?Q?pdr3CD9GuZjua8ScsTFaG/BwpwELlu+H71JhFLzShVI6vVmB5vHOVeAZIPS+?=
+ =?us-ascii?Q?b3hCUtQr+KADTqhFpjzf6Rwf9CxZXUFi2G4lPvajBeZ78zRDi2uKAbFfdngX?=
+ =?us-ascii?Q?F8XJgwxmJl60tPD1yAWDAOjo4zLfpnMJdG3JALNvjuC0vE7KkuqHUnZPVm1i?=
+ =?us-ascii?Q?SiPKZg03jfTt/vsMuPdJmNgOvFWbTDYj8eBqTgWc8em41fR7dqAqKAfimQUL?=
+ =?us-ascii?Q?iT+NcDnQ+m4CWHhXlYYSo3FTxDVjXZ2M8vLtYKdFr+PNyhbs+rE98prX3ejx?=
+ =?us-ascii?Q?i5oW1doxEmlqVN/7+CVDXF8ipfaLeRv6kbHBT4Xdiw9q5ohItft0AqEkivaF?=
+ =?us-ascii?Q?u9gMO80XlOcfGay9j2aWjQhGRl6les/54Ntxp/xlCIjAOwo1Vi8plaag6npg?=
+ =?us-ascii?Q?EwFOCLteTm+AfBgK1X5W+ljtVMfSqLKCX4KSnqqz7Xq5XJtplNFKO2jwxBZY?=
+ =?us-ascii?Q?v/F1lmQ0qjXTQ+jXBdTJoGLD7VJQ9/tP9/57CDTm8VuhaJ8Hy3CPiOnI8H/y?=
+ =?us-ascii?Q?ZypHWTcIVJBNCwNyZJnqfmX14O+Ecwl//XERA85HcKpyV3cA+hU2lqLNZDMN?=
+ =?us-ascii?Q?9NWUESp3v/u1j7HRiAmtCZo7aam/4cRrWPjoSHZqJ++ukgnm/cbbMjE3HdQy?=
+ =?us-ascii?Q?ppEtELA0k3AHkms1cp1GmxRQUsgZZNMMjp5GTcvV+7k+x6x39wJHjDJ3ZNaH?=
+ =?us-ascii?Q?NR2datf6jvL8d8NXJ+yuR/TvU7+ulGFZwPggNTTD5zJZlerUM+TnFEnW/0Te?=
+ =?us-ascii?Q?jFx0B9PAnsTJjxMO178WVJktFV8TTaHCpUIGr52AxP0jf03vXtC3Gju3Xjyh?=
+ =?us-ascii?Q?+KG6nMHu8w9df5ggzzqBWit9PX3DvaTWfQ/LoRYk0KktfQXBhAzAqACE9hj/?=
+ =?us-ascii?Q?FvKXD940d1McbYTWKWvQWvbSJUWKqusX0PhF0aNmfyS2yGNTFgfTfII+UrjG?=
+ =?us-ascii?Q?rnKixslubgjhpu0XqhOpOqzvIusIHD+uoRw1UGUYO1WdTzX7GOzYWpDdneZm?=
+ =?us-ascii?Q?kWefRtsgFhspuhF/epAogtY43+eaVfB3/NCJ8XZx2d/PawkKiacloeMMwwTM?=
+ =?us-ascii?Q?jmVIfmMeE00d7Hpgy06LL3nPB9/IsUrZH7+anXXNxeHSh3t9PsVcUgGTyRmM?=
+ =?us-ascii?Q?0mAZdxdlMKkmENPW6Ngyazmdu08raHK0DC5GKwE+f5eKrklrV0u3xE0+Gr/G?=
+ =?us-ascii?Q?k3e1+0TeMIwz3HgnYcESCLo3eY0VQdDJ8mPXQ2agJsWiYbdVZBPb3/KCkj+U?=
+ =?us-ascii?Q?0xbU0F9Pf/eMlD9KOdmPL9jn23JCnh5oh0vqQx03EsLERICnogvuBttjSuzs?=
+ =?us-ascii?Q?I6FOESAxYS0omYQsvGvwZ8vm9WSJzDQUj3Pt/JZVKvthC4cEtABcwFuerhgk?=
+ =?us-ascii?Q?mw=3D=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: analog.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR03MB7132.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e346adaf-93a2-4765-5fed-08dbb3834f28
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 11:27:55.3082
+X-MS-Exchange-CrossTenant-Network-Message-Id: 217353f2-0c75-4483-09c2-08dbb3835a1e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 11:28:13.7058
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IucJjNmj9mUt5baLPTtJxegZiDE7w+akYP1YCKBUWwG54uLjSnLuAo4aHY5YW52T1Er7lGdRRZj0xAK6ts9nkeOanMAFU1c7b5EVmx+10DI=
+X-MS-Exchange-CrossTenant-userprincipalname: 1uVjKIireiExSvbG0qpaR1k14RYUZMpR45LX0ohjxg6pbzHOn8kfKXv2hH96ObmfPrSjVvLJ7uKbImsLgDdfEOEtkXkHj5QmcOzHUhSSGUs=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5233
-X-Proofpoint-GUID: XqG_F7R02rONRwgdZdEepwGgmCbGJ9p3
-X-Proofpoint-ORIG-GUID: 4SWZCK5ceX5_kn150ou63sxb8rNSECXG
+X-Proofpoint-ORIG-GUID: QPncvh0mXg-xAm9fnsYuzF3FbwipgJl_
+X-Proofpoint-GUID: 058BQQ5Y1HY0ClthtY-X0uovVlj-NB4I
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-12_09,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- clxscore=1011 mlxlogscore=999 priorityscore=1501 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 phishscore=0 adultscore=0 malwarescore=0 mlxlogscore=827
+ mlxscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2308100000 definitions=main-2309120094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -170,52 +178,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 > -----Original Message-----
 > From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> Sent: Dienstag, 12. September 2023 11:20
-> To: Hennerich, Michael <Michael.Hennerich@analog.com>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>; Cusco, Ana-Maria <Ana-
-> Maria.Cusco@analog.com>; Linux Kernel Mailing List <linux-
-> kernel@vger.kernel.org>; Linux Next Mailing List <linux-
-> next@vger.kernel.org>; linux-iio@vger.kernel.org; Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org>
-> Subject: Re: linux-next: Signed-off-by missing for commit in the iio tree
+> Sent: Dienstag, 12. September 2023 11:17
+> To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Cc: Hennerich, Michael <Michael.Hennerich@analog.com>; Conor Dooley
+> <conor@kernel.org>; Cusco, Ana-Maria <Ana-Maria.Cusco@analog.com>;
+> Lars-Peter Clausen <lars@metafoo.de>; Jonathan Cameron
+> <jic23@kernel.org>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> <conor+dt@kernel.org>; linux-iio@vger.kernel.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for HMC540S
 >=20
 > [External]
 >=20
-> On Tue, 12 Sep 2023 06:37:17 +0000
-> "Hennerich, Michael" <Michael.Hennerich@analog.com> wrote:
+> On Tue, 12 Sep 2023 08:56:56 +0200
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 >=20
-> > > -----Original Message-----
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Sent: Dienstag, 12. September 2023 01:06
-> > > To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> > > Cc: Hennerich, Michael <Michael.Hennerich@analog.com>; Cusco, Ana-
-> > > Maria <Ana-Maria.Cusco@analog.com>; Linux Kernel Mailing List
-> > > <linux- kernel@vger.kernel.org>; Linux Next Mailing List <linux-
-> > > next@vger.kernel.org>
-> > > Subject: linux-next: Signed-off-by missing for commit in the iio
-> > > tree
+> > On 12/09/2023 08:36, Hennerich, Michael wrote:
 > > >
 > > >
-> > > Hi all,
+> > >> -----Original Message-----
+> > >> From: Conor Dooley <conor@kernel.org>
+> > >> Sent: Mittwoch, 16. August 2023 16:37
+> > >> To: Cusco, Ana-Maria <Ana-Maria.Cusco@analog.com>
+> > >> Cc: Lars-Peter Clausen <lars@metafoo.de>; Hennerich, Michael
+> > >> <Michael.Hennerich@analog.com>; Jonathan Cameron
+> > >> <jic23@kernel.org>; Rob Herring <robh+dt@kernel.org>; Krzysztof
+> > >> Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > >> <conor+dt@kernel.org>; linux-iio@vger.kernel.org;
+> > >> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
+> > >> Subject: Re: [PATCH 2/2] dt-bindings: iio: hmc425a: add entry for
+> > >> HMC540S
+> > >>
+> > >> [External]
+> > >>
+> > >> On Wed, Aug 16, 2023 at 02:09:06PM +0300, Ana-Maria Cusco wrote:
+> > >>> Added support for HMC540SLP3E broadband 4-bit Silicon IC digital
+> > >>> attenuator with a 15 dB control range and wide frequency coverage
+> > >>> (0.1 to 8 GHz).
+> > >>>
+> > >>> Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
+> > >>
+> > >> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 > > >
-> > > Commit
+> > > Adding missing Signed-off-by tag
 > > >
-> > >   6ed193ca529e ("iio: amplifiers: hmc425a: Add Support HMC540S 4-bit
-> > > Attenuator")
-> > >
-> > > is missing a Signed-off-by from its author.
+> > > Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
 > >
-> > Replied and added my Signed-off-by to the original patch.
+> > Why it is missing? What is the purpose of this adding?
 > >
-> > Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
+> > Best regards,
+> > Krzysztof
+> >
+> >
 >=20
-> Hi Michael,
+> Wrong patch.  This is supposed to be on patch 1 where Michael was the
+> author (he confirmed intent in response to a linux-next missing sign-off =
+mail).
+> I've added it there, but if you can reply to that email Michael, it will =
+make
+> things nice and clear.
 >=20
-> You missed and replied to the DT binding patch that followed this one.
-> I've taken above combined with that to be good enough confirmation that
-> you meant this one and added the sign off.  Great if you could confirm th=
-at
-> for the record though!
+> Jonathan
 
 Sorry - my fault.
 
@@ -224,18 +248,3 @@ The Signed-off-by tag should have been for patch "iio: amplifiers: hmc425a:=
 
 Regards,
 Michael
-
-=20
-
->=20
-> +CC linux-iio to keep the two discussions together.
-> +CC Krzysztof who asked about that rather odd looking SoB as well.
->=20
-> Jonathan
->=20
-> >
-> > >
-> > > --
-> > > Cheers,
-> > > Stephen Rothwell
-
