@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B8479D663
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9FE79D667
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236832AbjILQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S236867AbjILQfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjILQez (ORCPT
+        with ESMTP id S229833AbjILQfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:34:55 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682D4CF;
-        Tue, 12 Sep 2023 09:34:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF17EC433C7;
-        Tue, 12 Sep 2023 16:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694536491;
-        bh=26N9zTXAjfGotx0QgWazoqXDmTlLaPZTDqZavI3PM4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZTPQWqAofqu9Mil3JbsonMznnQYYD4HFI202NYNDtEks8fhwHWrYfxl+18ExdXRRg
-         Imy4YBqYjsmuFmuM6SMm81lrUVl9MIND+jX32oiSXaNnU6F6GL67X/Wk+AqCEoX0eb
-         3hZXkOzVsE3BQAa1/Qsy2QSOx3JbdKH5SyFVmsfhPNObcjJE4dO6zsT2AdFib7Irrq
-         amTBcFxnkGOwxPa6qQJhLYl8paqLzKxrKFzzmuhqlM2w2hIbcoVTdKK5voIa2tNByP
-         MFXglduYImTkOq5FuXpHccIwOM98rOEN8EnoSgM9x8JIQIv7xa9noMRo4gdJG+Rj52
-         Dvx8A6qubUWGQ==
-Date:   Tue, 12 Sep 2023 17:34:45 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alan Ma <tech@biqu3d.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: nvmem: SID: Add binding for H616 SID
- controller
-Message-ID: <20230912-frantic-ungreased-f9289c6dfdfc@spud>
-References: <20230912-sid-h616-v3-0-ee18e1c5bbb5@somainline.org>
- <20230912-sid-h616-v3-1-ee18e1c5bbb5@somainline.org>
+        Tue, 12 Sep 2023 12:35:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2ECF;
+        Tue, 12 Sep 2023 09:35:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694536548; x=1726072548;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=59Kay4eKd19BWWzORZ2XFuirPpkJIuD3bk1Rj8gXqp4=;
+  b=iqhAZDajut2U876U1gjkJfaTGVggzgwyq2N1jesK9KkZ/RCVsYFcXztD
+   xkuyzp/FKAb3pU8LGuhSYxQsOvpMyXD0xsQFwYd9rqREslO0tC8jRbojs
+   gxCJ7/F0+Hhm+gWGsPd4Uy8h+SzcxjfUfhOBgW8slwNzAcbiW/+SjEbHU
+   KIxtdVxq4/WPLHt37kJdR4tNeR3CpDdw1Dt5ldsePGKSj0CaEAHUqC846
+   9HRUBG1/djlhO9kwksWQ2BSWqBcxwwVaNYcjDSzzLIMBKxLLoXZmYZSiA
+   g9fbo0KtW3S6V88GMEcelxccmsDZ9UQ4iS+/LDA3TazsthgfEJsUfYaQQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409381349"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="409381349"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:35:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="737175502"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="737175502"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:35:45 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qg6MY-008dN3-32;
+        Tue, 12 Sep 2023 19:35:42 +0300
+Date:   Tue, 12 Sep 2023 19:35:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
+Message-ID: <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
+References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
+ <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
+ <20230912152031.GI401982@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xeIZSk19Y+Pqw195"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912-sid-h616-v3-1-ee18e1c5bbb5@somainline.org>
+In-Reply-To: <20230912152031.GI401982@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
+> On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
+> > It's rather a gigantic list of heards that is very hard to follow.
+> > Sorting helps to see what's already included and what's not.
+> > It improves a maintainability in a long term.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Hi Andy,
+> 
+> At the risk of bike shedding, the sort function of Vim, when operating
+> with the C locale, gives a slightly different order, as experssed by
+> this incremental diff.
+> 
+> I have no objections to your oder, but I'm slightly curious as
+> to how it came about.
 
---xeIZSk19Y+Pqw195
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+!sort which is external command.
 
-On Tue, Sep 12, 2023 at 02:25:12PM +0200, Martin Botka wrote:
-> Add binding for the SID controller found in H616 SoC
->=20
-> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+$ locale -k LC_COLLATE
+collate-nrules=4
+collate-rulesets=""
+collate-symb-hash-sizemb=1303
+collate-codeset="UTF-8"
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Conor.
 
-> ---
->  Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml | 4=
- +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-=
-sid.yaml b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.=
-yaml
-> index 296001e7f498..0928ec408170 100644
-> --- a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-> @@ -23,7 +23,9 @@ properties:
->        - const: allwinner,sun20i-d1-sid
->        - const: allwinner,sun50i-a64-sid
->        - items:
-> -          - const: allwinner,sun50i-a100-sid
-> +          - enum:
-> +              - allwinner,sun50i-a100-sid
-> +              - allwinner,sun50i-h616-sid
->            - const: allwinner,sun50i-a64-sid
->        - const: allwinner,sun50i-h5-sid
->        - const: allwinner,sun50i-h6-sid
->=20
-> --=20
-> 2.42.0
->=20
-
---xeIZSk19Y+Pqw195
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQCTJQAKCRB4tDGHoIJi
-0sSSAP46cISCC7/BgeOOlYd2Oh6RXSeJiPS/f7AsPFx9fvjIxQEAtAB/B4tYLm7P
-u3NizZKXiIj6k9M+uuku43T5+cIOsgM=
-=4685
------END PGP SIGNATURE-----
-
---xeIZSk19Y+Pqw195--
