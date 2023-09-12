@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F5C79D5DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110F379D5DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236142AbjILQKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        id S236583AbjILQK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236582AbjILQJo (ORCPT
+        with ESMTP id S229888AbjILQKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:09:44 -0400
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A481722
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:09:40 -0700 (PDT)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-577af71a2a8so741824a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:09:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694534980; x=1695139780;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AARlkl615ZUGGLFRfA9oVBXF7htkT9kJFgokf8340Ec=;
-        b=A7zZM9X7OXIcJqvFq6oedpTSTU/ky0b5sNwKi05VQYJLzZg+zTgZXlmQ3BDzwkIZel
-         VV2ONJoqFzLC2nurVt6HmaKcv1nPcKc4NYU9Nc0WYrcjj7WhBziOqvyXudnnByF7t3uS
-         70y2jdAeo0U3SjyEju7va8R3vIGGDP9GdCPwCiJTjOJw1ME1SsSlMtXBAPLTHCCCFxzc
-         v6b66e2eGLb1YbiK0LubRSmgyAm15ZoQm5N8BSulL76n+oXtQ2GqIMP3al4P0vvEzpA1
-         g81s/JdhfJugABMhc00qFSq8g6N1PldybUmngCu90Cl18vR7R4PKuNVjmcXffb1iHbDj
-         yqDQ==
-X-Gm-Message-State: AOJu0YyWOgBX+tRo1/5enHvkUV/f4C8ana6pom5aS6BHhUrxc0CHWDib
-        ky2a+GQYUBGJUCXlEyNZFCQou26XdeQC/PJrN26/Ztq2HqP0
-X-Google-Smtp-Source: AGHT+IGmbnURw9iUYORzpx4zYzKhO+uYCyE7mL3DVcRhUXuaET8MI50eU927MgZ+N8oEvTnRJI6eHK1KQne2J49J5nuKknxf1Mkr
+        Tue, 12 Sep 2023 12:10:19 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7BA10F2;
+        Tue, 12 Sep 2023 09:10:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 714D1240003;
+        Tue, 12 Sep 2023 16:10:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694535013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DT8iGeDItdtWzaedjFGa4m53NfWAlQ4+8otdLECzuho=;
+        b=PnoY2ckTZmkESHjnuiBZzsNYU8+9I/M7/DFM3hDegKEZIkY66s7GOATe2qgCi4iJT3CDJc
+        YJ3NCGAKB7C3ZHrFCfsrvDS6WNbkrZHvIfojkIjbCqTK3bQbAEJFE0+OhwkW9KD1J32vn4
+        V73Nvjem4WcchpXoCRTCHJlmvucUOEJdtABoVcOK2Ty5gcYZwUQsV4otx3s+dbAifJF83J
+        djDIm2CwkB1WA/lYQRshJ8Fbq28OxB0C/UMJlYAlryHzScmaoNzLhFgtsq7u9kiwSEzl/1
+        /utBFWgQyBN/YZZ7AzJ8jEQdXx0L3DCRyK5ZLhex2XN3EEm5bVGYQaBRtQ7Y7w==
+Date:   Tue, 12 Sep 2023 18:10:10 +0200
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 1/7] net: phy: introduce phy numbering and
+ phy namespaces
+Message-ID: <20230912181010.615d6b79@fedora>
+In-Reply-To: <d0a4c2c5-2d2b-42b6-a15c-06f9dc3c1e04@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+        <20230907092407.647139-2-maxime.chevallier@bootlin.com>
+        <d0a4c2c5-2d2b-42b6-a15c-06f9dc3c1e04@lunn.ch>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a63:3409:0:b0:563:e937:5e87 with SMTP id
- b9-20020a633409000000b00563e9375e87mr2908645pga.5.1694534979875; Tue, 12 Sep
- 2023 09:09:39 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:09:39 -0700
-In-Reply-To: <00000000000019e05005ef9c1481@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000088fbf106052bab18@google.com>
-Subject: Re: [syzbot] [xfs?] KASAN: stack-out-of-bounds Read in xfs_buf_delwri_submit_buffers
-From:   syzbot <syzbot+d2cdeba65d32ed1d2c4d@syzkaller.appspotmail.com>
-To:     chandan.babu@oracle.com, davem@davemloft.net, djwong@kernel.org,
-        hdanton@sina.com, jiri@nvidia.com, kuba@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hello,
 
-commit d772781964415c63759572b917e21c4f7ec08d9f
-Author: Jakub Kicinski <kuba@kernel.org>
-Date:   Fri Jan 6 06:33:54 2023 +0000
+On Tue, 12 Sep 2023 17:41:31 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-    devlink: bump the instance index directly when iterating
+> > Introduce a numbering scheme allowing to enumerate PHY devices that
+> > belong to any netdev, which can in turn allow userspace to take more
+> > precise decisions with regard to each PHY's configuration.  
+> 
+> A minor point, and i know naming is hard, but i keep reading _ns_ and
+> think namespace, as in ip netns. Maybe we should think of something
+> other than ns.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15554ba4680000
-start commit:   3ecc37918c80 Merge tag 'media/v6.1-4' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d58e7fe7f9cf5e24
-dashboard link: https://syzkaller.appspot.com/bug?extid=d2cdeba65d32ed1d2c4d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170a950b880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1625948f880000
+Yeah that was the initial idea, to imply that the numering is
+independent between netdevices... I thought about "phy_list", "phys",
+"phy_devices" but none of that felt correct :(
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Any idea here would be welcome :D
 
-#syz fix: devlink: bump the instance index directly when iterating
+Maxime
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>       Andrew
+
