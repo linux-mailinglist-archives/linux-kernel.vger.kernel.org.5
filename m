@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C395879CF75
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B11B79CF80
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbjILLJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39172 "EHLO
+        id S234508AbjILLJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbjILLIX (ORCPT
+        with ESMTP id S234690AbjILLI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:08:23 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5110211F;
-        Tue, 12 Sep 2023 04:07:58 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C7hWVi022226;
-        Tue, 12 Sep 2023 11:07:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=lImsvjSI/7UiZSfw38oBDU1ONszfOqlUayBGLOImhpQ=;
- b=F+uzK4i0fCp6YjGxybBgaLacf96jxXYobMaoMcFab2kTFWFt8N58IhOwe+4dL9i1BrbF
- LrAGvFbdH0gwCTzWYCzAqEOv4YICHbGDVkrtLY3eGvPH846IGdij1gfdRFlnqldoPyRo
- wEa9wvhkjPKj6S7jeTVsWw1szuIxguSRe+t+s8ywCZODCd0t27Rq10Mr8NDNsWpdadq3
- rHbtQgvIvuaKsjLkWVL1NSjgpRkm1r1Rp+G9v03anUbQZ9qxMep+7EnYqZoXIiW15QIy
- UGdzyUXr60aOPZsphGeialF6h0TlFqrQCJfgWpdt0J447MtYWGyf+xsAuSxnZeYt5iJL kA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t29b0hnp6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 11:07:53 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CB7qu9019449
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 11:07:52 GMT
-Received: from [10.217.219.52] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 04:07:50 -0700
-Message-ID: <21d247d3-83be-ba53-c982-2ab0e2e4ffb3@quicinc.com>
-Date:   Tue, 12 Sep 2023 16:37:47 +0530
+        Tue, 12 Sep 2023 07:08:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64419BE;
+        Tue, 12 Sep 2023 04:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694516891; x=1726052891;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XfmEYJdif4poI0+XqqQuKlUGSGajQG71iNFDtsotJaA=;
+  b=hbzU1xt2R/cm0CjZAqqGbQhi3tVJG7EhcbOBn2FFB/Yqw/hzMQEEEFlb
+   mIIzEHfjscSYdatgza0/UZinGOBJWVIG+EPAMZkGnPUZ7BgJsu6kr1s+u
+   8hcNWhsOhmPne85cQhg33E0R4pIVT+UwOeUwRAuSCFsEkkd07hs+qlSep
+   eA3c4jFJo10n35I46xP8UteQa+Ror5bnBHMoacoCli8jzLMJlRuESkBNQ
+   7nFxtpDYan4NLZJl/hJk8y7XDsIUDFdOdlgb5Pkd2l29tP0BdATrdY1rI
+   XzFHOjbtAL1Q6ryZvy6s8RSe60M9epZYxXJeFMhUXsiEmIj8Gnvq4XsCT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="442358522"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="442358522"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:08:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="813778526"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="813778526"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:08:08 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qg1FV-008ZI7-2K;
+        Tue, 12 Sep 2023 14:08:05 +0300
+Date:   Tue, 12 Sep 2023 14:08:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 07/11] gpiolib: replace find_chip_by_name() with
+ gpio_device_find_by_label()
+Message-ID: <ZQBGlSnx3McF8m2r@smile.fi.intel.com>
+References: <20230912100727.23197-1-brgl@bgdev.pl>
+ <20230912100727.23197-8-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: usb: typec: ucsi: Clear EVENT_PENDING bit if ucsi_send_command
- fails
-Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "# 5 . 16" <stable@vger.kernel.org>
-References: <1694423055-8440-1-git-send-email-quic_prashk@quicinc.com>
- <ZP8M6zqgsLTK25PI@kuha.fi.intel.com>
-From:   Prashanth K <quic_prashk@quicinc.com>
-In-Reply-To: <ZP8M6zqgsLTK25PI@kuha.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nbCVu8xN1FrfUm2npsFAiewR58xiYWSO
-X-Proofpoint-ORIG-GUID: nbCVu8xN1FrfUm2npsFAiewR58xiYWSO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_09,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309120092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912100727.23197-8-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 12:07:23PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Remove all remaining uses of find_chip_by_name() (and subsequently:
+> gpiochip_find()) from gpiolib.c and use the new
+> gpio_device_find_by_label() instead.
+
+...
+
+>  	for (hog = &hogs[0]; hog->chip_label; hog++) {
+> +		struct gpio_device *gdev __free(gpio_device_put) = NULL;
+
+In the loop?! How does it work when loop goes second iteration and so on?
+
+>  		list_add_tail(&hog->list, &gpio_machine_hogs);
+>  
+>  		/*
+>  		 * The chip may have been registered earlier, so check if it
+>  		 * exists and, if so, try to hog the line now.
+>  		 */
+> -		gc = find_chip_by_name(hog->chip_label);
+> -		if (gc)
+> -			gpiochip_machine_hog(gc, hog);
+> +		gdev = gpio_device_find_by_label(hog->chip_label);
+> +		if (gdev)
+> +			gpiochip_machine_hog(gpio_device_get_chip(gdev), hog);
+
+So, do we expect the chip_label be different between hogs? Ah, seems so
+as it covers _all_ hogs in the system.
+
+>  	}
+
+Even if the __free() scope works fine, I think this algorithm should be
+revisited to make sure we have iterating only on hogs of the same chip.
+Hence, the hogs should be placed into tree structure with a label being
+the key in it.
+
+...
+
+> +		struct gpio_device *gdev __free(gpio_device_put) = NULL;
+
+> +		gc = gpio_device_get_chip(gdev);
+
+Similar wish here, perhaps maple tree can be utilized in the future for both of them.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On 11-09-23 06:19 pm, Heikki Krogerus wrote:
-> On Mon, Sep 11, 2023 at 02:34:15PM +0530, Prashanth K wrote:
->> Currently if ucsi_send_command() fails, then we bail out without
->> clearing EVENT_PENDING flag. So when the next connector change
->> event comes, ucsi_connector_change() won't queue the con->work,
->> because of which none of the new events will be processed.
->>
->> Fix this by clearing EVENT_PENDING flag if ucsi_send_command()
->> fails.
->>
->> Cc: <stable@vger.kernel.org> # 5.16
->> Fixes: 512df95b9432 ("usb: typec: ucsi: Better fix for missing unplug events issue")
->> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
->> ---
->>   drivers/usb/typec/ucsi/ucsi.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
->> index c6dfe3d..509c67c 100644
->> --- a/drivers/usb/typec/ucsi/ucsi.c
->> +++ b/drivers/usb/typec/ucsi/ucsi.c
->> @@ -884,6 +884,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
->>   	if (ret < 0) {
->>   		dev_err(ucsi->dev, "%s: GET_CONNECTOR_STATUS failed (%d)\n",
->>   			__func__, ret);
->> +		clear_bit(EVENT_PENDING, &con->ucsi->flags);
->>   		goto out_unlock;
->>   	}
-> 
-> I think it would be better to just move that label (out_unlock) above
-> the point where clear_bit() is already called instead of separately
-> calling it like that. That way the Connector Change Event will
-> also get acknowledged.
-Do we really need to ACK in this case since we didn't process the 
-current connector change event
-> 
-> If this really can happen, then I think it would be good to also
-> schedule a task for ucsi_check_connection():
-> 
->          if (ret < 0) {
->                  dev_err(ucsi->dev, "%s: GET_CONNECTOR_STATUS failed (%d)\n",
->                          __func__, ret);
-> +               ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
->                  goto out_unlock;
->          }
-> 
-> thanks,
-> 
-Retrying is a good idea, but ucsi_check_connection() doesn't have the 
-full functionality compared to handle_connector_change. I guess 
-ucsi_check_connection() will send a set_role, but won't handle the 
-connector_change scenarios happening due to PR/DR swap, which will lead 
-to deadlocks (due to wait_for_completion). This is just an example. So 
-its better to bail out and process the next events, because the failure 
-here is from the glink layer.
-
-Thanks
-Prashanth K
