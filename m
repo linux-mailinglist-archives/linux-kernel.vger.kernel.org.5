@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D0179C479
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA5E79C47B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbjILECd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 00:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S236187AbjILEDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238443AbjILECS (ORCPT
+        with ESMTP id S235326AbjILEDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:02:18 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FD210E9;
-        Mon, 11 Sep 2023 21:01:31 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38C41LFb037423;
-        Mon, 11 Sep 2023 23:01:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1694491281;
-        bh=TZvjOuTthCUnn+wnX6VIpTXluyUFKyEBjC9L+CVAYto=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=CNErcRlHP0ocrkhy9c71VaQDHu5BwwNLk9brnhAN8haFrqcUIvs57wCuGjgzXokBd
-         ByZaO/t5khNc9+COMlp0+HXDPfH/Pi+zNys2vhkB4euw/JibVpDIPPV2je6X733Agt
-         aY2wuYqa5oNfXAQJUv8qlWhmrVICmUQxzdRSFjbA=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38C41Lar117082
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Sep 2023 23:01:21 -0500
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 11
- Sep 2023 23:01:21 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 11 Sep 2023 23:01:21 -0500
-Received: from [172.24.227.9] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38C41HUN121677;
-        Mon, 11 Sep 2023 23:01:18 -0500
-Message-ID: <340bb897-d735-fabc-a031-8e4ebcfe79fa@ti.com>
-Date:   Tue, 12 Sep 2023 09:31:17 +0530
+        Tue, 12 Sep 2023 00:03:52 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FC6C1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:03:26 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5774750a6efso1709308a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694491406; x=1695096206; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dO4+cEGxPiCeV2CVbiM9wjlADcga89b0P0sDkFy2dTQ=;
+        b=TQbn0rx7Rp4DAhMqtEM4qk6Qkp4asj84T8+DPmNyabG0BvryPQNqVDhxZsuto1z64x
+         d4LUHS+mhZuYApBP/9Rbyua6HTLyzcS62LeGd5pOto+3kTuXdQj5Oo2zfM8VlGIaR2nd
+         3WmLctPvWutJFIHdCBTGOEDq/4SSDTZuvMMqzY/qK1FFu50zpQ2CCqh4RiEO+TMY2D+7
+         U5W84SnbhqcO8H2x0y/LeK/ZnEPXjwEWKie3dNMa62CPFS9DmZlm2+y83ZUv1Tgb/3Wa
+         B3EFoXf1ct03KxQTe9XEGumXaOlBhC7SMrPGufK3ROQ+7lfSlS8qVFLiQ6k0TDPAW6cp
+         rUVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694491406; x=1695096206;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dO4+cEGxPiCeV2CVbiM9wjlADcga89b0P0sDkFy2dTQ=;
+        b=s0okIfLYHvQlPGbUf+4attm6MQ+8zOBywFiYpNDZ2+Da4jmfk8/MVs5SRSSLSF7t/9
+         o6Yuh4lCCmJ608I465sXDwkzvwt5HIp4YGcGu+lmvIR+hMwkhSu+F/a6+VCjwS2D71S1
+         cAlDvLKSPF5ikPW4ZqIFY/Hg6ts682S60UkcqyOG28WXZvc64I2WVWAMoJCyoMWG3Kdi
+         XZjMojRxKGrHzktddM5o8J2jdizl9yutPPkHnz0TX+5N85qHDia3DNAntjfwte+hdA8u
+         zjTNgB44mVcrdegod7b19cHXkqp4Q3I53GgGXeo9n5DZ6bXar6mOmGQNV+GbMNfew2dD
+         2hGg==
+X-Gm-Message-State: AOJu0YwovJKOm+z6stVagXhYdxVcfsRuKu1JIWPYbhKaKRKJmD39VReR
+        bMJNhMnvSGDFzgk9msitYGZIVg==
+X-Google-Smtp-Source: AGHT+IEFDkF6RPRQQ7zVm28Lzgk5f6Cw4eASyqgaEr2khKODHnvIU9NlvDHMwwCWZZgQB4i0g2YtsQ==
+X-Received: by 2002:a17:90a:630b:b0:26d:41ac:33f2 with SMTP id e11-20020a17090a630b00b0026d41ac33f2mr9397853pjj.32.1694491406077;
+        Mon, 11 Sep 2023 21:03:26 -0700 (PDT)
+Received: from PF2LML5M-SMJ.bytedance.net ([203.208.189.6])
+        by smtp.gmail.com with ESMTPSA id i5-20020a17090a974500b00256799877ffsm6384232pjw.47.2023.09.11.21.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Sep 2023 21:03:25 -0700 (PDT)
+From:   "guojinhui.liam" <guojinhui.liam@bytedance.com>
+To:     will@kernel.org, mark.rutland@arm.com
+Cc:     lizefan.x@bytedance.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "guojinhui.liam" <guojinhui.liam@bytedance.com>
+Subject: [PATCH] perf/arm-cmn: Fix CMN_DTM_UNIT_INFO offset in CMN700
+Date:   Tue, 12 Sep 2023 12:03:09 +0800
+Message-Id: <20230912040309.1789-1-guojinhui.liam@bytedance.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-CC:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721s2-evm-gesi: Specify base dtb for
- overlay file
-To:     Rob Herring <robh@kernel.org>
-References: <20230911052158.89185-1-s-vadapalli@ti.com>
- <20230911165610.GA1362932-robh@kernel.org>
-Content-Language: en-US
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20230911165610.GA1362932-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rob,
+The por_dtm_unit_info's offest is 0x0960 in CMN700 according to
+the CMN700 spec.
 
-Thank you for reviewing the patch.
+CMN700 spec link:
+https://developer.arm.com/documentation/102308/0302/?lang=en
+por_dtm_unit_info can be found in section [4.3.13.10 por_dtm_unit_info].
 
-On 11/09/23 22:26, Rob Herring wrote:
-> On Mon, Sep 11, 2023 at 10:51:58AM +0530, Siddharth Vadapalli wrote:
->> Specify the base dtb file k3-j721s2-common-proc-board.dtb on which the
->> k3-j721s2-evm-gesi-exp-board.dtbo overlay has to be applied. Name the
->> resulting dtb as k3-j721s2-evm.dtb.
->>
->> Fixes: cac04e27f093 ("arm64: dts: ti: k3-j721s2: Add overlay to enable main CPSW2G with GESI")
->> Reported-by: Rob Herring <robh+dt@kernel.org>
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> ---
->>
->> Note: This patch is based on linux-next tagged next-20230911.
->>
->>  arch/arm64/boot/dts/ti/Makefile | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
->> index e7b8e2e7f083..ef8ca50fbb36 100644
->> --- a/arch/arm64/boot/dts/ti/Makefile
->> +++ b/arch/arm64/boot/dts/ti/Makefile
->> @@ -63,9 +63,9 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721e-evm-gesi-exp-board.dtbo
->>  dtb-$(CONFIG_ARCH_K3) += k3-j721e-sk.dtb
->>  
->>  # Boards with J721s2 SoC
->> +k3-j721s2-evm-dtbs := k3-j721s2-common-proc-board.dtb k3-j721s2-evm-gesi-exp-board.dtbo
-> 
-> Move this next to the "dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb" line.
+Signed-off-by: guojinhui.liam <guojinhui.liam@bytedance.com>
+---
+ drivers/perf/arm-cmn.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Sure, I will place it above the k3-j721s2-evm.dtb line.
-
-> 
->>  dtb-$(CONFIG_ARCH_K3) += k3-am68-sk-base-board.dtb
->> -dtb-$(CONFIG_ARCH_K3) += k3-j721s2-common-proc-board.dtb
->> -dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
-> 
-> I think dropping these will cause them to not get installed (by 
-> dtbs_install). Presumably you want them.
-
-I will undo the above deletions in the v2 patch.
-
-> 
->> +dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb
->>  
->>  # Boards with J784s4 SoC
->>  dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
->> -- 
->> 2.34.1
->>
-
+diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+index 913dc04b3a40..6f3fafee0ac9 100644
+--- a/drivers/perf/arm-cmn.c
++++ b/drivers/perf/arm-cmn.c
+@@ -113,6 +113,7 @@
+ #define CMN_DTM_PMEVCNTSR		0x240
+ 
+ #define CMN_DTM_UNIT_INFO		0x0910
++#define CMN700_DTM_UNIT_INFO		0x0960
+ 
+ #define CMN_DTM_NUM_COUNTERS		4
+ /* Want more local counters? Why not replicate the whole DTM! Ugh... */
+@@ -2247,6 +2248,8 @@ static int arm_cmn_discover(struct arm_cmn *cmn, unsigned int rgn_offset)
+ 
+ 		if (cmn->part == PART_CMN600)
+ 			xp->dtc = 0xf;
++		else if (cmn->part == PART_CMN700)
++			xp->dtc = 1 << readl_relaxed(xp_region + CMN700_DTM_UNIT_INFO);
+ 		else
+ 			xp->dtc = 1 << readl_relaxed(xp_region + CMN_DTM_UNIT_INFO);
+ 
 -- 
-Regards,
-Siddharth.
+2.20.1
+
