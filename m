@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F249179C9E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943C279C9F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbjILI2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S232674AbjILIaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjILI2g (ORCPT
+        with ESMTP id S232704AbjILIaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:28:36 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FF4B9;
-        Tue, 12 Sep 2023 01:28:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vrw91XB_1694507309;
-Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vrw91XB_1694507309)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Sep 2023 16:28:29 +0800
-Message-ID: <50b7293c-8c4d-0162-2810-a74d59e7d03e@linux.alibaba.com>
-Date:   Tue, 12 Sep 2023 16:28:35 +0800
+        Tue, 12 Sep 2023 04:30:15 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47012E6F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:30:11 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C88xgt024983;
+        Tue, 12 Sep 2023 08:29:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=to9w5yrqCHLi29TMkR3+kZKXKZXXIvDAGsAhn9dw/yI=;
+ b=bTwtvG0YmubKG4vqG8tZKYHLnYxe+ArOSp4HTFeQqaoN/Bs1FRyIuVuoVBmKnDdFVkgk
+ dcMuQ0Ib2m73Rkuvi83f2SYcTjjRiF58VX4qZP4BsWvJbQL2rseZbiNoVCVFcB2yB4Xz
+ h8YVw2qGLQqHiPIhaUYxUj3GO+SS29cdYKfIN0X7WW3Y3IRvu2k/oiMuApLgZ7XdaRe/
+ vzqHoVnIM6bc8VUfr2Nj0/LRv7dpFIHjEpKDVEimewfkgnBXGAWyXzgM3L0ZQHKBnCkv
+ hg8Xk+kTAzVOyVEIHulor7ukWmOFcxYQsp/naLkJiCTYHwq2v5FLKxWPJJSKTIPLELTG GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2j5jcbv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 08:29:59 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38C89doZ029507;
+        Tue, 12 Sep 2023 08:29:59 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2j5jcbuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 08:29:58 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38C6wIJe002401;
+        Tue, 12 Sep 2023 08:29:58 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t158k18md-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 08:29:55 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38C8Tqbk54526208
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Sep 2023 08:29:52 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A093C2004B;
+        Tue, 12 Sep 2023 08:29:52 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E740320040;
+        Tue, 12 Sep 2023 08:29:50 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.in.ibm.com (unknown [9.203.106.137])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Sep 2023 08:29:50 +0000 (GMT)
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Kexec-ml <kexec@lists.infradead.org>
+Cc:     Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH v3 1/2] vmcore: remove dependency with is_kdump_kernel() for exporting vmcore
+Date:   Tue, 12 Sep 2023 13:59:49 +0530
+Message-ID: <20230912082950.856977-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EIk-mFTGMjHmkefYEWiZ-GstYmU1pwQ_
+X-Proofpoint-ORIG-GUID: 7srt9IEhyvE3vzJikvVf5Z4KGm7-Pkiy
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 2/6] pinctrl: sprd: Fix the incorrect mask and shift
- definition
-To:     Linhua Xu <Linhua.xu@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
- <20230908055146.18347-3-Linhua.xu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230908055146.18347-3-Linhua.xu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_06,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=957 lowpriorityscore=0 suspectscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309120068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, is_kdump_kernel() returns true when elfcorehdr_addr is set.
+While elfcorehdr_addr is set for kexec based kernel dump mechanism,
+alternate dump capturing methods like fadump [1] also set it to export
+the vmcore. Since, is_kdump_kernel() is used to restrict resources in
+crash dump capture kernel and such restrictions may not be desirable
+for fadump, allow is_kdump_kernel() to be defined differently for such
+scenarios. With this, is_kdump_kernel() could be false while vmcore is
+usable. So, remove unnecessary dependency with is_kdump_kernel(), for
+exporting vmcore.
+
+[1] https://docs.kernel.org/powerpc/firmware-assisted-dump.html
+
+Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+---
+
+Changes in v3:
+* Decoupled is_vmcore_usable() & vmcore_unusable() from is_kdump_kernel()
+  as suggested here: 
+    https://lore.kernel.org/linuxppc-dev/ZP7si3UMVpPfYV+w@MiWiFi-R3L-srv/T/#m13ae5a7e4ba6f4d8397f0f66581832292eee3a85
 
 
-On 9/8/2023 1:51 PM, Linhua Xu wrote:
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
-> 
-> Pull-up and pull-down are mutually exclusive. When setting one of them,
-> the bit of the other needs to be clear. Now, there are cases where pull-up
-> and pull-down are set at the same time in the code, thus fix them.
-> 
-> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
-> ---
->   drivers/pinctrl/sprd/pinctrl-sprd.c | 12 ++++++------
->   1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> index 25fb9ce9ad78..5b9126b2cde2 100644
-> --- a/drivers/pinctrl/sprd/pinctrl-sprd.c
-> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> @@ -58,21 +58,21 @@
->   #define DRIVE_STRENGTH_SHIFT		19
->   
->   #define SLEEP_PULL_DOWN			BIT(2)
-> -#define SLEEP_PULL_DOWN_MASK		0x1
-> +#define SLEEP_PULL_DOWN_MASK		GENMASK(1, 0)
->   #define SLEEP_PULL_DOWN_SHIFT		2
->   
->   #define PULL_DOWN			BIT(6)
-> -#define PULL_DOWN_MASK			0x1
-> +#define PULL_DOWN_MASK			(GENMASK(1, 0) | BIT(6))
->   #define PULL_DOWN_SHIFT			6
->   
->   #define SLEEP_PULL_UP			BIT(3)
-> -#define SLEEP_PULL_UP_MASK		0x1
-> -#define SLEEP_PULL_UP_SHIFT		3
-> +#define SLEEP_PULL_UP_MASK		GENMASK(1, 0)
-> +#define SLEEP_PULL_UP_SHIFT		2
->   
->   #define PULL_UP_4_7K			(BIT(12) | BIT(7))
->   #define PULL_UP_20K			BIT(7)
-> -#define PULL_UP_MASK			0x21
-> -#define PULL_UP_SHIFT			7
-> +#define PULL_UP_MASK			(GENMASK(1, 0) | BIT(6))
-> +#define PULL_UP_SHIFT			6
+ include/linux/crash_dump.h | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-This change looks weird, BIT(6) is for PULL_DOWN. So I am curious these 
-changes are backward compatibility?
+diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+index 0f3a656293b0..acc55626afdc 100644
+--- a/include/linux/crash_dump.h
++++ b/include/linux/crash_dump.h
+@@ -50,6 +50,7 @@ void vmcore_cleanup(void);
+ #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
+ #endif
+ 
++#ifndef is_kdump_kernel
+ /*
+  * is_kdump_kernel() checks whether this kernel is booting after a panic of
+  * previous kernel or not. This is determined by checking if previous kernel
+@@ -64,6 +65,7 @@ static inline bool is_kdump_kernel(void)
+ {
+ 	return elfcorehdr_addr != ELFCORE_ADDR_MAX;
+ }
++#endif
+ 
+ /* is_vmcore_usable() checks if the kernel is booting after a panic and
+  * the vmcore region is usable.
+@@ -75,7 +77,8 @@ static inline bool is_kdump_kernel(void)
+ 
+ static inline int is_vmcore_usable(void)
+ {
+-	return is_kdump_kernel() && elfcorehdr_addr != ELFCORE_ADDR_ERR ? 1 : 0;
++	return elfcorehdr_addr != ELFCORE_ADDR_ERR &&
++		elfcorehdr_addr != ELFCORE_ADDR_MAX ? 1 : 0;
+ }
+ 
+ /* vmcore_unusable() marks the vmcore as unusable,
+@@ -84,8 +87,7 @@ static inline int is_vmcore_usable(void)
+ 
+ static inline void vmcore_unusable(void)
+ {
+-	if (is_kdump_kernel())
+-		elfcorehdr_addr = ELFCORE_ADDR_ERR;
++	elfcorehdr_addr = ELFCORE_ADDR_ERR;
+ }
+ 
+ /**
+-- 
+2.41.0
 
-Now I can not access the SPRD Spec, Chunyan, can you help to confirm 
-these changes? Thanks.
-
->   
->   #define INPUT_SCHMITT			BIT(11)
->   #define INPUT_SCHMITT_MASK		0x1
