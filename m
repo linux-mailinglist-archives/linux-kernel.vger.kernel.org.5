@@ -2,202 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3C479D5C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3E379D60C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbjILQGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
+        id S236582AbjILQR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbjILQGm (ORCPT
+        with ESMTP id S236545AbjILQR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:06:42 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D0B6B10DE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:06:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D056DC15;
-        Tue, 12 Sep 2023 09:07:15 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A142C3F738;
-        Tue, 12 Sep 2023 09:06:37 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 17:06:34 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lucian Paul-Trifu <lucian.paul-trifu@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>
-Subject: Re: [PATCH RFT 08/12] firmware: arm_ffa: Initial support for
- scheduler receiver interrupt
-Message-ID: <20230912160634.lvaq5s5frx6ju2hs@bogus>
-References: <20230803-ffa_v1-1_notif-v1-0-6613ff2b1f81@arm.com>
- <20230803-ffa_v1-1_notif-v1-8-6613ff2b1f81@arm.com>
- <20230912134104.GC4160483@rayden>
+        Tue, 12 Sep 2023 12:17:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA7610F1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694535442; x=1726071442;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=hWSb593QbyDwwL91GaPneBk/XUoXrERt+BQqoLDjF5U=;
+  b=CtJfZmFM4N7K5eFmiwu9ec6yzzmqeQwR5VREHtT/mowTqqMYfw119KUH
+   vVw1HnzQrgZSsQGeZ3Nr2xVZzKzY4pN1vTproBx7IW/zWJS0EC46LlzuY
+   YrPUAqe+nJH9oQgT7DIVO0bt/Dn5Gi2T9L5gjp0XZ8c2RnXrzoI7REBAC
+   fqDNj9jF9NPnMrHe8wY5fO6hcr5i0sAXt5OBiuJahzzwe5UanG3B/lTpF
+   CK0dj7yay26QZjoeOZnPiubem8HrcxeTVR7I26X3lta2qWiInFXmgBp5k
+   3Zz/tpTagjECFJi2Spsi31fyOUqCY1DqvQOpFoPEsFXAimX4nFlhqnglM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="382230702"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="382230702"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:07:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="743766573"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="743766573"
+Received: from smithc9x-mobl.amr.corp.intel.com (HELO [10.209.111.247]) ([10.209.111.247])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:07:40 -0700
+Message-ID: <580e6672-c637-353f-a918-239ba6134c3c@intel.com>
+Date:   Tue, 12 Sep 2023 09:07:39 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230912134104.GC4160483@rayden>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [syzbot] [mm?] BUG: Bad page map (7)
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Yin Fengwei <fengwei.yin@intel.com>,
+        syzbot <syzbot+55cc72f8cc3a549119df@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <000000000000d099fa0604f03351@google.com>
+ <0465d13d-83b6-163d-438d-065d03e9ba76@intel.com>
+ <ZP8VcUIXTjvR3z54@casper.infradead.org>
+ <f3379aeb-f394-8c99-5143-f93e82400320@intel.com>
+ <ZP9D0q5MSVFobNbZ@casper.infradead.org>
+ <fb936bdb-6473-a956-8431-fe95f5940acc@intel.com>
+ <ZP9mla26MWqKKUZ7@casper.infradead.org>
+ <092a9bb2-727e-5849-fa4f-18535b998efc@intel.com>
+ <ZP/wLVg1JCvhaEKm@casper.infradead.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <ZP/wLVg1JCvhaEKm@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:41:04PM +0200, Jens Wiklander wrote:
-> Hi Sudeep,
-> 
-> On Thu, Aug 03, 2023 at 08:02:12PM +0100, Sudeep Holla wrote:
-> > The Framework uses the schedule receiver interrupt to inform the
-> > receiver’s scheduler that the receiver must be run to handle a pending
-> > notification. A receiver’s scheduler can obtain the description of the
-> > schedule receiver interrupt by invoking the FFA_FEATURES interface.
-> > 
-> > The delivery of the physical schedule receiver interrupt from the secure
-> > state to the non-secure state depends upon the state of the interrupt
-> > controller as configured by the hypervisor.
-> > 
-> > The schedule seceiver interrupt is assumed to be a PPI. The Arm GIC
-> > specification defines 16 SGIs. It recommends that they are equally
-> > divided between the non-secure and secure states. OS like Linux kernel
-> > in the non-secure state typically do not have SGIs to spare. The usage
-> > of SGIs in the secure state is however limited. It is more likely that
-> > software in the Secure world does not use all the SGIs allocated to it.
-> > 
-> > It is recommended that the secure world software donates an unused SGI
-> > to the normal world for use as the schedule receiver interrupt. This
-> > implies that secure world software must configure the SGI in the GIC
-> > as a non-secure interrupt before presenting it to the normal world.
-> > 
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/firmware/arm_ffa/driver.c | 183 ++++++++++++++++++++++++++++++++++++--
-> >  1 file changed, 175 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-> > index 77ca9753e3f0..84c934a0ec14 100644
-> > --- a/drivers/firmware/arm_ffa/driver.c
-> > +++ b/drivers/firmware/arm_ffa/driver.c
-> > @@ -22,15 +22,20 @@
-> >  #define DRIVER_NAME "ARM FF-A"
-> >  #define pr_fmt(fmt) DRIVER_NAME ": " fmt
-> >  
-> > +#include <linux/acpi.h>
-> >  #include <linux/arm_ffa.h>
-> >  #include <linux/bitfield.h>
-> > +#include <linux/cpuhotplug.h>
-> >  #include <linux/device.h>
-> > +#include <linux/interrupt.h>
-> >  #include <linux/io.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/module.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/of_irq.h>
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/smp.h>
-> >  #include <linux/uuid.h>
-> >  
-> >  #include "common.h"
-> > @@ -76,6 +81,10 @@ static inline int ffa_to_linux_errno(int errno)
-> >  	return -EINVAL;
-> >  }
-> >  
-> > +struct ffa_pcpu_irq {
-> > +	struct ffa_drv_info *info;
-> > +};
-> > +
-> >  struct ffa_drv_info {
-> >  	u32 version;
-> >  	u16 vm_id;
-> > @@ -85,6 +94,12 @@ struct ffa_drv_info {
-> >  	void *tx_buffer;
-> >  	bool mem_ops_native;
-> >  	bool bitmap_created;
-> > +	unsigned int sched_recv_irq;
-> > +	unsigned int cpuhp_state;
-> > +	struct ffa_pcpu_irq __percpu *irq_pcpu;
-> > +	struct workqueue_struct *notif_pcpu_wq;
-> > +	struct work_struct irq_work;
-> > +	bool info_get_64b;
-> >  };
-> >  
-> >  static struct ffa_drv_info *drv_info;
-> > @@ -910,9 +925,147 @@ static void ffa_setup_partitions(void)
-> >  	kfree(pbuf);
-> >  }
-> >  
-> > +/* FFA FEATURE IDs */
-> > +#define FFA_FEAT_NOTIFICATION_PENDING_INT	(1)
-> > +#define FFA_FEAT_SCHEDULE_RECEIVER_INT		(2)
-> > +#define FFA_FEAT_MANAGED_EXIT_INT		(3)
-> > +
-> > +static irqreturn_t irq_handler(int irq, void *irq_data)
-> > +{
-> > +	struct ffa_pcpu_irq *pcpu = irq_data;
-> > +	struct ffa_drv_info *info = pcpu->info;
-> > +
-> > +	queue_work(info->notif_pcpu_wq, &info->irq_work);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static void ffa_sched_recv_irq_work_fn(struct work_struct *work)
-> > +{
-> > +	struct ffa_drv_info *info = container_of(work, struct ffa_drv_info,
-> > +						 irq_work);
-> > +
-> > +	ffa_notification_info_get(info->info_get_64b);
-> > +}
-> > +
-> > +static int ffa_sched_recv_irq_map(void)
-> > +{
-> > +	int ret, irq, sr_intid;
-> > +
-> > +	ret = ffa_features(FFA_FEAT_SCHEDULE_RECEIVER_INT, 0, &sr_intid, NULL);
-> > +	if (ret < 0) {
-> > +		if (ret != -EOPNOTSUPP)
-> > +			pr_err("Failed to retrieve scheduler Rx interrupt\n");
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (acpi_disabled) {
-> > +		struct of_phandle_args oirq = {};
-> > +		struct device_node *gic;
-> > +
-> > +		gic = of_find_compatible_node(NULL, NULL, "arm,gic-v3");
-> 
-> "arm,gic-v3" might be good enough for now, but eventually we may need more scalable probing.
-> 
-> > +		if (!gic)
-> > +			return -ENXIO;
-> > +
-> > +		oirq.np = gic;
-> > +		oirq.args_count = 1;
-> > +		oirq.args[0] = sr_intid;
-> > +		irq = irq_create_of_mapping(&oirq);
-> 
-> You mention (or try to ;-)) in the commit message that SGIs only are
-> assumed for now. A comment here stating that fact wouldn't hurt.
->
+On 9/11/23 21:59, Matthew Wilcox wrote:
+> I don't think there's anything particularly strange about my .config
 
-Fair enough, I will add.
-
-> I'm trying to test this on QEMU, but I can't seem to recieve the SGI in
-> the kernel. I've donated the previously secure SGI-8 at boot (simple
-> patch in TF-A) before the kernel starts. I've verified with GDB that
-> QEMU has accepted the write to ICC_ASGI1R_EL1 while in secure world, but
-> it seems it never triggers when switching back to normal world. I'm
-> starting to suspect that irq_create_of_mapping() might not update SGI-8
-> properly. Perhaps something more is needed when donating SGI-8 on the
-> kernel side.
-> 
-> Did you have this working in your tests?
-
-Nope, I haven't been able to get a working end-to-end stack and hence RFT.
-However I had tried to test just the SGI part but did have some hacks which
-I have lost. I wanted to check if those changes were just for my testing or
-is indeed needed in the kernel. I will try to dig more details.
-
--- 
-Regards,
-Sudeep
+I just saw some DEBUG_VM #ifdefs around the area and wondered if any of
+them were to blame for the bloat.
