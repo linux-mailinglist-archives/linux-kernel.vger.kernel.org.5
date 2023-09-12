@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A8079D037
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6267979D039
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbjILLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        id S234817AbjILLjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbjILLiR (ORCPT
+        with ESMTP id S234462AbjILLiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:38:17 -0400
+        Tue, 12 Sep 2023 07:38:19 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725461722;
-        Tue, 12 Sep 2023 04:38:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C8EC433C9;
-        Tue, 12 Sep 2023 11:38:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E421723;
+        Tue, 12 Sep 2023 04:38:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0D6EC433C7;
+        Tue, 12 Sep 2023 11:38:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694518693;
-        bh=h30b56RrRORKmlU4pC18wtn1e1EQ/8raoGBkCT361sM=;
+        s=k20201202; t=1694518695;
+        bh=PJj+NB24qGj8OVTKKzav3otPXDkniuIk97R5xoR//QY=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=K4YOz5hNZrqjLdTbhxxFHvS2l4kzfDALcCAxmSU6AUaAhJs3afTFzWBtzbY+FWOxd
-         /LGrRgZYBnek1Y85XT26sSfS+eQZx6uc12ooEAvV0IOKlY80nX6tskwzTg9/c85ymE
-         fQR+hvjnHnkdHiKCPwux7J790Kwu8YmOkreruYmvpvOItqfLUd8BZ26bSLqzzyN3Zg
-         zCoyLw9u9CzQSwSzcKK9W/bxFVRJexG48oHeaNiGi0+xm+32KnoedCoKgMt+96CqjN
-         eAM/NEjdZ7OShOMnE8pBTH8fYY5cGDez5JMFmGUXsiLaRmr+iGRqetl+dVbMtbQu1S
-         AsIApVkwkhzxQ==
+        b=nUTGLWVbPda4UyLtV2EZbX9+g8D2tnomB2NpVhWSeEjwBWiOnAPTgqauYgKgrvDUz
+         C/aKFhz6YYhCDUnT1zq251Qa0YKdlxNS2N62OMj5q9zI7V+Mx+mWLhQvP1O1Ck/3Uh
+         YAM5IByK6aRL3XAVTSlC0bJGaQWAVfoHm9LbJpz4EQO97TYhTDURJthkR4oRJ85Hsv
+         IPvqplteBNPhjUfpOOf95fx84JZyzEjhEyduKSZEMw4BO1zQu8pcXoXNJQt9ZLeiQ3
+         oukPGb97sZSHNj5No73sSkGpZXJ/83a7ITe6ZT21tOc6GfdatZtzBe75ZsBGz1SPvj
+         qDznyDuGj1pBg==
 From:   Mark Brown <broonie@kernel.org>
-To:     ldewangan@nvidia.com, Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        p.zabel@pengutronix.de, sumit.semwal@linaro.org,
-        christian.koenig@amd.com, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org
-In-Reply-To: <tencent_73FCC06A3D1C14EE5175253C6FB46A07B709@qq.com>
-References: <tencent_73FCC06A3D1C14EE5175253C6FB46A07B709@qq.com>
-Subject: Re: [PATCH] spi: tegra: Fix missing IRQ check in
- tegra_slink_probe()
-Message-Id: <169451868918.2398433.15693451802537494964.b4-ty@kernel.org>
-Date:   Tue, 12 Sep 2023 12:38:09 +0100
+To:     Valentin Caron <valentin.caron@foss.st.com>
+Cc:     Alain Volmat <alain.volmat@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230906132735.748174-1-valentin.caron@foss.st.com>
+References: <20230906132735.748174-1-valentin.caron@foss.st.com>
+Subject: Re: [PATCH] spi: stm32: add a delay before SPI disable
+Message-Id: <169451869294.2398433.12354327819600702705.b4-ty@kernel.org>
+Date:   Tue, 12 Sep 2023 12:38:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -49,13 +47,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Aug 2023 18:02:54 +0800, Zhang Shurong wrote:
-> This func misses checking for platform_get_irq()'s call and may passes the
-> negative error codes to request_irq(), which takes unsigned IRQ #,
-> causing it to fail with -EINVAL, overriding an original error code.
+On Wed, 06 Sep 2023 15:27:35 +0200, Valentin Caron wrote:
+> As explained in errata sheet, in section "2.14.5 Truncation of SPI output
+> signals after EOT event":
+> On STM32MP1x, EOT interrupt can be thrown before the true end of
+> communication.
 > 
-> Fix this by stop calling request_irq() with invalid IRQ #s.
-> 
+> So we add a delay of a half period to wait the real end of the
+> transmission.
 > 
 > [...]
 
@@ -65,8 +64,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: tegra: Fix missing IRQ check in tegra_slink_probe()
-      commit: eb9913b511f10968a02cfa5329a896855dd152a3
+[1/1] spi: stm32: add a delay before SPI disable
+      commit: 6de8a70c84ee0586fdde4e671626b9caca6aed74
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
