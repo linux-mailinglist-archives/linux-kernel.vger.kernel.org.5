@@ -2,56 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3247D79D4BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B4379D4BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236311AbjILPYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
+        id S234297AbjILPYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235843AbjILPYh (ORCPT
+        with ESMTP id S235947AbjILPYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:24:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1D910E2;
-        Tue, 12 Sep 2023 08:24:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844C8C433B6;
-        Tue, 12 Sep 2023 15:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694532273;
-        bh=bnpZMEb8ISRduLgq8852O5UPYlyL34vHsYHSSG0B1Cc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kY6a9kDv7XOhCebA5SqE9LUpt84RjGB+3DMB8ILXVxc90Ts/z/h3EqOB4M1CvMVmI
-         AKo0N4nbvfxG5yYSEFEFyPtJzO7pcplr+nC86lAqm+xxqy5cGDId9iRdaJvbjAHKP9
-         2dzGKThpMelG5p5yrDSIb34vn4e2zNtngGc4Tlqlb+kd+nMZESrDzlQSoXE8kpMDMS
-         dos4Vqzg81YWg2hMAhxN+DBtNiYvFX5y3bWMvmOMni6CBo0LY7tMV0inxwfboMkrw6
-         s0QiWHHEEQb1vx980o4mRJG8rlkOzuKMM7pb2zEQYgMxXtT0jq4HZqXHH+LmZyU5k+
-         dGjtO3tUpr0FQ==
-Date:   Tue, 12 Sep 2023 17:24:28 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] net: hinic: Use devm_kasprintf()
-Message-ID: <20230912152428.GK401982@kernel.org>
-References: <198375f3b77b4a6bae4fdaefff7630414c0c89fe.1694461804.git.christophe.jaillet@wanadoo.fr>
+        Tue, 12 Sep 2023 11:24:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6685D10E5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694532274; x=1726068274;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aQXO+WHNU3fDYIfBW1/ZzRknvF+MfkC+6+fBxSU80Ts=;
+  b=QeecDR6OIWaKnp8h5eiXdRZFNd22XwkIAZsIuRR5Pp6+HNywVpqnb+us
+   u1pP/DDcQTv9rvo76TiGFhTR2rXQvgKfya3YmLz6zV6yOdY2oqU2u1Qcc
+   HnA8okGIu03KlcF27NzqrpjWBpI3gX0uHIVzezFUWFYnRNUNH4+lheZq8
+   TmHAL2tUQsBOyUVLFs3ZLF7YXbqM4LlmPeaaOVpagElnNHY69kyWpG++Z
+   p+g7cdjiA26zpoaDxqTBgexYV7WMb23f1Ke0KQu2H6FD4IXys4zkVShwj
+   oYI8OrhdGja2mYNQQhkJtMngJBU0L5dFYrUnGkjbyFPGpTkVxPgYTGa8L
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363440891"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="363440891"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:24:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="746928694"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="746928694"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:24:32 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qg5Fd-008cLC-2Z;
+        Tue, 12 Sep 2023 18:24:29 +0300
+Date:   Tue, 12 Sep 2023 18:24:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v1 3/6] params: Do not go over the limit when getting the
+ string length
+Message-ID: <ZQCCrfbtH16KjzCE@smile.fi.intel.com>
+References: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
+ <20230912150551.401537-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <198375f3b77b4a6bae4fdaefff7630414c0c89fe.1694461804.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230912150551.401537-3-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 09:50:52PM +0200, Christophe JAILLET wrote:
-> Use devm_kasprintf() instead of hand writing it.
-> This is less verbose and less error prone.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Tue, Sep 12, 2023 at 06:05:48PM +0300, Andy Shevchenko wrote:
+> We can use strnlen() even on early stages and it prevents from
+> going over the string boundaries in case it's already too long.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Should have Cc'ed this and next patch to Kees...
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
