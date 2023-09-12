@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FA079D026
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D4579D027
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234741AbjILLhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S234807AbjILLhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234745AbjILLgU (ORCPT
+        with ESMTP id S234996AbjILLgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:36:20 -0400
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBE310C9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:36:15 -0700 (PDT)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7a50574dc0dso1622200241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694518574; x=1695123374; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KkyklPGDuv9m5eJqTo8UfIe+p8AQ+CPh9TqWA+xsEsY=;
-        b=wQTszuIMQLqrfdVybcFJLEEqKjTf+mFLz9rmPB4pt5UJBu7W4odbVJ9UlHzpK621nz
-         QzBRKcEVWLy1FMoM0CBNF63zsuLG1Giepxg+qYJaHp/KFErvCDMrcxFmVzIfWt8wbaXC
-         04jxxfILo8JhAD6bSFAkD9GKFln5QVNgcrD7048ehzzQuPUp4Nq/T/uu786s3dBTOKSM
-         o5IIJjKhLpJJncEXO95GM+U1AfO7Qoe5lsJSv61oc0BJEnIj6t3DtMpTkNIq31wbLYRu
-         BAcrgKCE2Wx67KAue+ISWAMSjKBf2Uh4QR/XbjTLFuDerWmGbrwlgjaPnoqMfPh/kdpV
-         JTZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694518574; x=1695123374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KkyklPGDuv9m5eJqTo8UfIe+p8AQ+CPh9TqWA+xsEsY=;
-        b=gMe5bYOKi/iIiMLil/TekVkBx0zXuhMr5Lt8iNRuDuNwfJKOQoYjDkUr0oVc8KS8DA
-         /nvW9hq+oW6+W1vAnVVNyLx2UU/wCGTw4D4WqoCsycw1ecCsDXFPGWc9tm7C+edFO1vN
-         wEQYz3neCNzMxSMxQvBSrM0QTmBtgQkZED9wVxs8TL22PfQajElGbvvknsjBgkzEcSP1
-         fdr/zT4iPcuCPjtKPo13fxttsnzaqDr2+oecLnogaR8YGGCeQKLXR+U8qLDd6QJzBT1b
-         5S9RhjUTU2QyDI8kgcVkk+JTPo+kQmfZ+rKh2Su+ddu02Fq6hdMDZW3o5AYrSZ1HsfJj
-         g7xg==
-X-Gm-Message-State: AOJu0YzgUX05UVLwI0wc3fVeA5n9GDKPVRdrXJiigYuKXHHQ5RQUAjUV
-        khGF1H2229PJzGqgK1B/DPxBSXndxncqtUfC8okjK1msbM3r6E8w
-X-Google-Smtp-Source: AGHT+IGjfDBklMzue4PESJ9TiuKC7nGDQU+XSLUDl1gzCHaxB4VVGDKYWL2qRjaBXpLHqpNzIl9sXX+QT4/jkbxyKeU=
-X-Received: by 2002:a67:e957:0:b0:44e:9219:136c with SMTP id
- p23-20020a67e957000000b0044e9219136cmr7663297vso.15.1694518574363; Tue, 12
- Sep 2023 04:36:14 -0700 (PDT)
+        Tue, 12 Sep 2023 07:36:55 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C75E98
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:36:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FDA6C433C7;
+        Tue, 12 Sep 2023 11:36:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694518611;
+        bh=hWdIAXbpcAzILmAOadWsIIoXYCILRlwaxE0WMmyIs4k=;
+        h=From:Date:Subject:To:Cc:From;
+        b=u6src8WbsPa1dN03XNXRc8ehUQ97ADMKfNWWgG8fpchbR7UW202af166xj5k3ujAG
+         ikNo8B0Ho79V/uHrSPRZcjabMcVa9kvuftDNPP96pZG++b7BC9b0pi0Z1RKuNKuOqi
+         iQFhTr2l4vB7/sHOkqm8CeNeP0Rb0pXeS/5sY8109mJpTPjG5yGBdgbett4XOJdoqN
+         vTEsW0xXZSYrZERADcBTrO8BqAdCe99ax4s+dYQNciNhZqTm8/oErrvy1nyGlUflML
+         1pjViS/utwWB53hKMgzDEfYgMFjlv8ZfD8pqMjFHy9RNlb16FtvgQHE8VvStu3ThGt
+         k1e0o+2rcX2ng==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Tue, 12 Sep 2023 12:36:46 +0100
+Subject: [PATCH v2] mfd: wcd934x: Update to use maple tree register cache
 MIME-Version: 1.0
-References: <20230912100727.23197-1-brgl@bgdev.pl> <20230912100727.23197-3-brgl@bgdev.pl>
- <ZQBMhAAgXw0LYa0Y@smile.fi.intel.com>
-In-Reply-To: <ZQBMhAAgXw0LYa0Y@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 12 Sep 2023 13:36:03 +0200
-Message-ID: <CAMRc=MdRVJyh-4qS3OVXEFNoMJ6YSAcz7Qs876PWQfiho8hvaQ@mail.gmail.com>
-Subject: Re: [PATCH v2 02/11] gpiolib: add support for scope-based management
- to gpio_device
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230912-mfd-wcd934x-maple-v2-1-292a154113e3@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAE1NAGUC/22Nyw6CMBBFf4V07ZjSAlVX/odh0ccAjVLIlCCG8
+ O8W3Lo89+bkrCwieYzslq2McPbRDyGBOGXMdjq0CN4lZoILySshoW8cvK27ymKBXo8vhEspSlm
+ iNMJWLHlGRwRDOthuN3sdJ6T9GAkbvxyxR52483Ea6HO053xffxmViz+ZOYccuFPa6MJwrtT9i
+ RTwdR6oZfW2bV9NLRuZzAAAAA==
+To:     Lee Jones <lee@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1406; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=hWdIAXbpcAzILmAOadWsIIoXYCILRlwaxE0WMmyIs4k=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlAE1QacasghZtHKjysimim3SOUAZ7QKui6Y0cG
+ fM719ze4EKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZQBNUAAKCRAk1otyXVSH
+ 0JshB/9AsfhQLIMWztpfzgPjJyS2QSJylJCkG7LOcPDE1tfuRPIdjq491DxqeiesUlrK+psSh9Y
+ H7tBFNXZJB/R4O3INBcS6kCTGxRoGz08Tjpoui319GIUgVL/hQRBN55fr5JGtflSD6xenZ+4rpn
+ +TEyfoXdpOxakFFt/+v1CGeoXKtJJXuoEnaT0jg8Uy9H57FBOMy1C1/1+kDqUjZxA8Z/aIBRhWY
+ QEU3sNyWHwcLgPn1k++ld1nJYjrGW0bfewFn9jvH74gdU49mgBxS5yWaoe5tpugDdqE6ilUS6uD
+ BDuJP3gfVYGLe29SjayoR8PcOuHufFrkVymBlU4HvtHDdb0s
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 1:33=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Sep 12, 2023 at 12:07:18PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > As the few users that need to get the reference to the GPIO device ofte=
-n
-> > release it right after inspecting its properties, let's add support for
-> > the automatic reference release to struct gpio_device.
->
-> ...
->
-> > +DEFINE_FREE(gpio_device_put, struct gpio_device *, if (_T) gpio_device=
-_put(_T));
->
-> Looks like this should be
->
->         if (!IS_ERR_OR_NULL(_T))
->
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache. In
+v6.5 it has also acquired the ability to generate multi-register writes in
+sync operations, bringing performance up to parity with the rbtree cache
+there.
 
-Good catch, thanks!
+Update the wcd934x to use the more modern data structure.
 
-Bart
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+
+
+Signed-off-by: Mark
+---
+Changes in v2:
+- Rebase onto v6.6-rc1.
+- Link to v1: https://lore.kernel.org/r/20230712-mfd-wcd934x-maple-v1-1-0d7aba4b0077@kernel.org
+---
+ drivers/mfd/wcd934x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/wcd934x.c b/drivers/mfd/wcd934x.c
+index 6b942d5270c1..7b9873b72c37 100644
+--- a/drivers/mfd/wcd934x.c
++++ b/drivers/mfd/wcd934x.c
+@@ -112,7 +112,7 @@ static const struct regmap_range_cfg wcd934x_ranges[] = {
+ static struct regmap_config wcd934x_regmap_config = {
+ 	.reg_bits = 16,
+ 	.val_bits = 8,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.max_register = 0xffff,
+ 	.can_multi_write = true,
+ 	.ranges = wcd934x_ranges,
+
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230623-mfd-wcd934x-maple-852535e3b2c6
+
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
