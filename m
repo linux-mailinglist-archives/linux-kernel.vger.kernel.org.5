@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DFD79C487
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF2579C494
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbjILEIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 00:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        id S230151AbjILEPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjILEIX (ORCPT
+        with ESMTP id S229488AbjILEPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:08:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19300D7;
-        Mon, 11 Sep 2023 21:08:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C4D7B1F8D7;
-        Tue, 12 Sep 2023 04:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694491698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rh7F3S61PjrxqXKWwokxFxj2WiyskgmEmJI3rKq9O/A=;
-        b=ogDJxf/HcVXEd6KH4AAO73Z/IGRdsCTGfQJBycEhJCwfTM490QNMuN0MvseKJsxnsydan+
-        EksUr3Rt6ZrKnjlBlVbaKlZRQlSDLNiOWvM+ZDSikNu9lYeWnkFEpqPqHMmNPJUCc/Ags8
-        w7JLVgCRgvBBTz22Pi/vGusaE9D4L9E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694491698;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rh7F3S61PjrxqXKWwokxFxj2WiyskgmEmJI3rKq9O/A=;
-        b=KM/KTuQQ/RGpqVzCaLGlPqWvAGJ716DHv2tU5kO0pqn02AWFWjlQEfVHoPsIKjIuY76bi2
-        ZvpijTabfJ8LeLDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E8B413A2E;
-        Tue, 12 Sep 2023 04:08:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id V8qvBC/k/2QgJgAAMHmgww
-        (envelope-from <neilb@suse.de>); Tue, 12 Sep 2023 04:08:15 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Sep 2023 00:15:13 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9A1A3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:14:47 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68fdd6011f2so740241b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:14:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1694492086; x=1695096886; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=drM0H8ao22RI12hMMB2VfXYxqiSVys99eLtTMdg41bs=;
+        b=hMaLayQwMUApTj1jeESz0wO6Xz+TrhdZgpcwCADtTpaPHuMQzhDpTiN8O++zjRmO61
+         aSefxpIIbGpOWfncFc7hYsTQaAI4oD2Ba+pbMOIs40YTYdxEJrE2ka7v+Hv4vH1juU0p
+         Ri33MH6F5OfiM9lYMp14aAeF6zUMjEoAxYISSLNVKtDJQDmnxha7Tduv7JGq37BMnGJk
+         nD1NC8NIIpLk2EV1WlAq+h/QQg36W0e2rsMyeJ8kzo0yje8CMBkqTQDNVuj/612iX8RZ
+         LEOzYe2xP9KN2D4+In7VWxcGAHbBgfOrrGDC2qL1JxnNs6SYWD901oQZD5dJI/60IxW6
+         K18w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694492086; x=1695096886;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=drM0H8ao22RI12hMMB2VfXYxqiSVys99eLtTMdg41bs=;
+        b=GZPhleR0XE95v3K+kpMGGumNGLETX7XFguDjvFzlIgnHEy3xiRljZFsmrxWwEmJzST
+         F8alaQS7Md6xhe36QVX06HxwC6L2W9tiW3TYdryIK8VWIkmU1m/l79a4KrWBgtoTr9yr
+         5ktb6x6wAoEhuZuJ2mt0CCtnb0wZtAxjRYY3VtyfsiXcGWBr+PLov9guVjIV0oocY+jV
+         Po5X6OrCiA75AvzWw9rtYjhADzNsAp7EWRLe/Tb8P688aJWftZSMGoz6vWt0kjSvsScf
+         pD81cEnArJMyZpjEJBLNkOauAn2kx+EuJ3iA1eLblneLsDQQXsXHSR1ej9NXWzw/nbW4
+         guAA==
+X-Gm-Message-State: AOJu0YwrRbGyQP6Sv2++wbzpoPeIadRypDbrptSvpElpuvjKnRaX8aHe
+        cQxOMgfoHORgWupDFqHHta96gJhgujypQXGMVynCT5JhaOI=
+X-Google-Smtp-Source: AGHT+IGstt/vwuSpm6rFlRDM4PATk6FF/oRYMNvZG9bcxVP4oaJfy6XkFEJSUJYu9JC4by/XrcLx3A==
+X-Received: by 2002:a05:6a00:15ca:b0:68a:4dfa:ea63 with SMTP id o10-20020a056a0015ca00b0068a4dfaea63mr11064158pfu.19.1694492085788;
+        Mon, 11 Sep 2023 21:14:45 -0700 (PDT)
+Received: from [10.3.221.67] ([61.213.176.11])
+        by smtp.gmail.com with ESMTPSA id bk15-20020aa7830f000000b00689f5940061sm3510656pfb.17.2023.09.11.21.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Sep 2023 21:14:45 -0700 (PDT)
+Message-ID: <28610076-6ac7-4004-8479-e0005ff96c63@bytedance.com>
+Date:   Tue, 12 Sep 2023 12:13:19 +0800
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Kees Cook" <kees@kernel.org>
-Cc:     "Chuck Lever" <cel@kernel.org>, linux-nfs@vger.kernel.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "David Gow" <davidgow@google.com>, linux-kernel@vger.kernel.org,
-        "Chuck Lever" <chuck.lever@oracle.com>
-Subject: Re: [PATCH v1 11/17] lib: add light-weight queuing mechanism.
-In-reply-to: <0D0F3EEB-B837-4C65-95BF-99ACF3169206@kernel.org>
-References: <169444233785.4327.4365499966926096681.stgit@bazille.1015granger.net>,
- <169444318342.4327.18355944158180782708.stgit@bazille.1015granger.net>,
- <0D0F3EEB-B837-4C65-95BF-99ACF3169206@kernel.org>
-Date:   Tue, 12 Sep 2023 14:08:11 +1000
-Message-id: <169449169186.22106.13281613238195902818@noble.neil.brown.name>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v2] KVM: arm/arm64: optimize vSGI injection performance
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        zhouyibo@bytedance.com, zhouliang.001@bytedance.com
+References: <20230825015811.5292-1-zhaoxu.35@bytedance.com>
+ <86o7iidzwb.wl-maz@kernel.org>
+From:   zhaoxu <zhaoxu.35@bytedance.com>
+In-Reply-To: <86o7iidzwb.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023, Kees Cook wrote:
-> On September 11, 2023 7:39:43 AM PDT, Chuck Lever <cel@kernel.org> wrote:
-> >From: NeilBrown <neilb@suse.de>
-> > [...]
-> > Does not use kunit framework.
+
+
+On 2023/9/4 17:57, Marc Zyngier wrote:
+> On Fri, 25 Aug 2023 02:58:11 +0100,
+> Xu Zhao <zhaoxu.35@bytedance.com> wrote:
+[...]
+>> -	unsigned long affinity;
+>> -	int level0;
+>> +	u64 aff;
+>>   
+>> -	/*
+>> -	 * Split the current VCPU's MPIDR into affinity level 0 and the
+>> -	 * rest as this is what we have to compare against.
+>> -	 */
+>> -	affinity = kvm_vcpu_get_mpidr_aff(vcpu);
+>> -	level0 = MPIDR_AFFINITY_LEVEL(affinity, 0);
+>> -	affinity &= ~MPIDR_LEVEL_MASK;
+>> +	/* aff3 - aff1 */
+>> +	aff = (((reg) & ICC_SGI1R_AFFINITY_3_MASK) >> ICC_SGI1R_AFFINITY_3_SHIFT) << 16 |
+>> +		(((reg) & ICC_SGI1R_AFFINITY_2_MASK) >> ICC_SGI1R_AFFINITY_2_SHIFT) << 8 |
+>> +		(((reg) & ICC_SGI1R_AFFINITY_1_MASK) >> ICC_SGI1R_AFFINITY_1_SHIFT);
 > 
-> Any reason why not? It seems like it'd be well suited to it...
+> Here, you assume that you can directly map a vcpu index to an
+> affinity. It would be awesome if that was the case. However, this is
+> only valid at reset time, and userspace is perfectly allowed to change
+> this mapping by writing to the vcpu's MPIDR_EL1.
+> 
+> So this won't work at all if userspace wants to set its own specific
+> CPU numbering.
+> 
+> 	M.
+> 
+Hi Marc,
 
-A quick look didn't suggest that using Kunit would make my task any
-easier.  It seemed to require a lot of boiler plate for little gain.
-Maybe that was unfair - I didn't spend long looking.
-Partly, I put that comment in the commit message so that if one wanted
-to try to change my mind - there was a prompt for them to do it.
+Yes, i don't think too much about userspace can change MPIDR value, I 
+checked the source code of qemu, qemu create vcpu sequentially, so in 
+this case, vcpu_id is equivalent to vcpu_idx which means vcpu_id 
+represents the position in vcpu array.
 
-Also I had a quick look at other test code in lib/ and it all seemed to
-use the "run some code at boot time" approach.
+These days, I'm still thinking about whether it is because of the 
+content related to future vcpu hot-plug feature that vcpu_id can be 
+modified, but now it seems that's not entirely the case.
 
-So if anyone can make a clear argument why using Kunit will help me, or
-will help someone else, I'll consider it.  But I cannot see the
-motivation without help.
+I have read your latest patch and have been deeply inspired, and Thanks 
+for agreeing with this issue.
 
-Thanks,
-NeilBrown
+With Regards
+	Xu.
