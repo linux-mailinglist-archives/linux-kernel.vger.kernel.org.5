@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E1879D722
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3342979D71E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234747AbjILRE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S236417AbjILREK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232153AbjILRE6 (ORCPT
+        with ESMTP id S234031AbjILREI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:04:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5631E10D9;
-        Tue, 12 Sep 2023 10:04:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694538294; x=1726074294;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EIqefRvU8NKd2SxAZ0En1TxLIImgpYvWreFE+T0fKaQ=;
-  b=ei8HamJAvr/mN5qpjW6y5rUxUKWDgJJSesZpJDUB0FBEG8GjOURAnfJx
-   DjWzkQrPEJI0FtWc7Bf4hIwAIGfdclP+WlAlsTNc54xjq2A0NeMcMqH7Q
-   nsh+TwGs9kdqCzbiu0f3xfauBs+09Q0TuQGFzurRo9P21nIwfLRgSFYgJ
-   ApAyx7j2Gbh9uiP4GNm1rR3EMyN3ofaBHVxSqTOfkCpIK6s83I6DbQ5pc
-   68xNwCNmk3E06XcOKJgE9juATXz4ud2HkCZd/AMyVtJxVyqQzV3rfuMlJ
-   sxfTNXX2+B3Z+PBe0RZmyV4c5tBmOGrzkuopyscbo9H/m3OK8hCmDyuN5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="381138467"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="381138467"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 10:04:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="693565253"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="693565253"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 10:04:51 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qg6oi-008dnj-32;
-        Tue, 12 Sep 2023 20:04:48 +0300
-Date:   Tue, 12 Sep 2023 20:04:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
-Message-ID: <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
-References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
- <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
- <20230912152031.GI401982@kernel.org>
- <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
- <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com>
+        Tue, 12 Sep 2023 13:04:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84060110;
+        Tue, 12 Sep 2023 10:04:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72235C433C7;
+        Tue, 12 Sep 2023 17:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694538244;
+        bh=TlF+LlVr0+p7G1whWSyXl90KqhYFGDWhgyj2gIcU/UA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mhyHO6vYRr7rhv+o8basUZBhSTzBB4vdH6hmy+KBgxrmwlYgAjUCSw35UYWqItxqp
+         6SlXtJLx0HLyia+1rx/xqSRi8StgbgCULhVSCctmqlPsgho4RWgFJLr9bmDgEd2jwi
+         aZn7VbUvKMA6FuO8/8Tpg2xWOT6wSlvFoq1CR2kPROwfzZJ1mtqVoMxlYUPJXrWC8M
+         f6+ThE0PycZMlMFCxqRBspH1cyR4CGAmzfEJPQlH9Fr+DEReN4rIf7Q/XVPImt3QdC
+         me4bRCbcwp3g3/R/99U2OK7Srf/f1+hhSMTJZBo3RsyVNJcm4/G2gmLia5eMXx6bdt
+         +a/1AVA+kiCBQ==
+Date:   Tue, 12 Sep 2023 11:04:59 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] checkpatch: add a couple new alloc functions to alloc
+ with multiplies check
+Message-ID: <ZQCaO+tYycDxVLy7@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 06:53:23PM +0200, Paolo Abeni wrote:
-> On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
-> > On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
-> > > On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
-> > > > It's rather a gigantic list of heards that is very hard to follow.
-> > > > Sorting helps to see what's already included and what's not.
-> > > > It improves a maintainability in a long term.
-> > > > 
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > > 
-> > > Hi Andy,
-> > > 
-> > > At the risk of bike shedding, the sort function of Vim, when operating
-> > > with the C locale, gives a slightly different order, as experssed by
-> > > this incremental diff.
-> > > 
-> > > I have no objections to your oder, but I'm slightly curious as
-> > > to how it came about.
-> > 
-> > !sort which is external command.
-> > 
-> > $ locale -k LC_COLLATE
-> > collate-nrules=4
-> > collate-rulesets=""
-> > collate-symb-hash-sizemb=1303
-> > collate-codeset="UTF-8"
-> 
-> I'm unsure this change is worthy. It will make any later fix touching
-> the header list more difficult to backport, and I don't see a great
-> direct advantage.
+vmalloc() and vzalloc() functions have now 2-factor multiplication
+argument forms vmalloc_array() and vcalloc(), correspondingly.
 
-As Rasmus put it here
-https://lore.kernel.org/lkml/5eca0ab5-84be-2d8f-e0b3-c9fdfa961826@rasmusvillemoes.dk/
-In short term you can argue that it's not beneficial, but in long term it's given
-less conflicts.
+Add alloc-with-multiplies checks for these new functions.
 
-> Please repost the first patch standalone.
+Link: https://github.com/KSPP/linux/issues/342
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ scripts/checkpatch.pl | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Why to repost, what did I miss? It's available via lore, just run
-
-  b4 am -slt -P _ 20230911154534.4174265-1-andriy.shevchenko@linux.intel.com
-
-to get it :-)
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7d16f863edf1..45265d0eee1b 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7207,17 +7207,19 @@ sub process {
+ 			    "Prefer $3(sizeof(*$1)...) over $3($4...)\n" . $herecurr);
+ 		}
+ 
+-# check for (kv|k)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/kvcalloc/kcalloc
++# check for (kv|k|v)[mz]alloc with multiplies that could be kmalloc_array/kvmalloc_array/vmalloc_array/kvcalloc/kcalloc/vcalloc
+ 		if ($perl_version_ok &&
+ 		    defined $stat &&
+-		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,/) {
++		    $stat =~ /^\+\s*($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k|v)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)\s*,?/) {
+ 			my $oldfunc = $3;
+ 			my $a1 = $4;
+ 			my $a2 = $10;
+ 			my $newfunc = "kmalloc_array";
+ 			$newfunc = "kvmalloc_array" if ($oldfunc eq "kvmalloc");
++			$newfunc = "vmalloc_array" if ($oldfunc eq "vmalloc");
+ 			$newfunc = "kvcalloc" if ($oldfunc eq "kvzalloc");
+ 			$newfunc = "kcalloc" if ($oldfunc eq "kzalloc");
++			$newfunc = "vcalloc" if ($oldfunc eq "vzalloc");
+ 			my $r1 = $a1;
+ 			my $r2 = $a2;
+ 			if ($a1 =~ /^sizeof\s*\S/) {
+@@ -7233,7 +7235,7 @@ sub process {
+ 					 "Prefer $newfunc over $oldfunc with multiply\n" . $herectx) &&
+ 				    $cnt == 1 &&
+ 				    $fix) {
+-					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
++					$fixed[$fixlinenr] =~ s/\b($Lval)\s*\=\s*(?:$balanced_parens)?\s*((?:kv|k|v)[mz]alloc)\s*\(\s*($FuncArg)\s*\*\s*($FuncArg)/$1 . ' = ' . "$newfunc(" . trim($r1) . ', ' . trim($r2)/e;
+ 				}
+ 			}
+ 		}
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
