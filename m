@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC74D79CA5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883F979CA29
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbjILImj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S232806AbjILIhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbjILImN (ORCPT
+        with ESMTP id S232667AbjILIhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:42:13 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BFE1704;
-        Tue, 12 Sep 2023 01:40:58 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: alarumbe)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6C45E660732A;
-        Tue, 12 Sep 2023 09:40:56 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694508056;
-        bh=0Ue2Nq3K4F+Ieb9zAp+RPvwDsQ7N3mlVuWGujSt9n9U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lvSJjzxc1ZmhnYwleAuh164cV0uUwzzl6vV5TH3j16K8fXZpmA7rEv0BWiGX7xWVb
-         78AEuLxGmmnxyLpKEBdwqUp9MUgJsj+6ZvnZK1qiAasHj8lL6Ps6SkBGfmFA1dnLOe
-         aIYganw77fJYimILn74XWzlmk6vNaSvF9NzcsNko7k8c1XDvBw5Lcgw5cKkXung5qV
-         Cq3t35tTf4aKLQ7uAy9V2nwRyROn5Nf2Ciw43ikqbu3sgbLOeAzlKOlxUTvgFBz5Sv
-         rlfZEgYpfPP1eHqrG7ZUqtSPx8xMNSMOomNEzy5DpMmAyYAp8/qjuPcrAr3QXnLPYq
-         Vyi/X5yFjwHyw==
-From:   =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com
-Cc:     adrian.larumbe@collabora.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com
-Subject: [PATCH v4 6/6] drm/drm-file: Show finer-grained BO sizes in drm_show_memory_stats
-Date:   Tue, 12 Sep 2023 09:37:00 +0100
-Message-ID: <20230912084044.955864-7-adrian.larumbe@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230912084044.955864-1-adrian.larumbe@collabora.com>
-References: <20230912084044.955864-1-adrian.larumbe@collabora.com>
+        Tue, 12 Sep 2023 04:37:32 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2DCB9;
+        Tue, 12 Sep 2023 01:37:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VrwBLdc_1694507844;
+Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VrwBLdc_1694507844)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Sep 2023 16:37:25 +0800
+Message-ID: <c714149e-9a54-40c1-fd55-bf2297eebe17@linux.alibaba.com>
+Date:   Tue, 12 Sep 2023 16:37:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH V2 5/6] pinctrl: sprd: Increase the range of register
+ values
+To:     Linhua Xu <Linhua.xu@unisoc.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        lh xu <xulh0829@gmail.com>,
+        Zhirong Qiu <zhirong.qiu@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
+ <20230908055146.18347-6-Linhua.xu@unisoc.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230908055146.18347-6-Linhua.xu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation will try to pick the highest available size
-display unit as soon as the BO size exceeds that of the previous
-multiplier. That can lead to loss of precision in BO's whose size is
-not a multiple of a MiB.
 
-Fix it by changing the unit selection criteria.
 
-For much bigger BO's, their size will naturally be aligned on something
-bigger than a 4 KiB page, so in practice it is very unlikely their display
-unit would default to KiB.
+On 9/8/2023 1:51 PM, Linhua Xu wrote:
+> From: Linhua Xu <Linhua.Xu@unisoc.com>
+> 
+> As the UNISOC pin controller version iterates, more registers are required
+> to meet new functional requirements. Thus modify them.
+> 
+> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
+> ---
+>   drivers/pinctrl/sprd/pinctrl-sprd.h | 30 +++++++++++++++--------------
+>   1 file changed, 16 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.h b/drivers/pinctrl/sprd/pinctrl-sprd.h
+> index a696f81ce663..5357874186fd 100644
+> --- a/drivers/pinctrl/sprd/pinctrl-sprd.h
+> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.h
+> @@ -7,30 +7,32 @@
+>   #ifndef __PINCTRL_SPRD_H__
+>   #define __PINCTRL_SPRD_H__
+>   
+> +#include <linux/bits.h>
+> +
+>   struct platform_device;
+>   
+> -#define NUM_OFFSET	(20)
+> -#define TYPE_OFFSET	(16)
+> -#define BIT_OFFSET	(8)
+> -#define WIDTH_OFFSET	(4)
+> +#define NUM_OFFSET	22
+> +#define TYPE_OFFSET	18
+> +#define BIT_OFFSET	10
+> +#define WIDTH_OFFSET	6
+>   
+>   #define SPRD_PIN_INFO(num, type, offset, width, reg)	\
+> -		(((num) & 0xFFF) << NUM_OFFSET |	\
+> -		 ((type) & 0xF) << TYPE_OFFSET |	\
+> -		 ((offset) & 0xFF) << BIT_OFFSET |	\
+> -		 ((width) & 0xF) << WIDTH_OFFSET |	\
+> -		 ((reg) & 0xF))
+> +		(((num) & GENMASK(10, 0)) << NUM_OFFSET |	\
+> +		 ((type) & GENMASK(3, 0)) << TYPE_OFFSET |	\
+> +		 ((offset) & GENMASK(7, 0)) << BIT_OFFSET |	\
+> +		 ((width) & GENMASK(3, 0)) << WIDTH_OFFSET |	\
+> +		 ((reg) & GENMASK(5, 0)))
 
-Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
----
- drivers/gpu/drm/drm_file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Can you define some readable macro for the mask bits?
 
-diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-index 762965e3d503..bf7d2fe46bfa 100644
---- a/drivers/gpu/drm/drm_file.c
-+++ b/drivers/gpu/drm/drm_file.c
-@@ -879,7 +879,7 @@ static void print_size(struct drm_printer *p, const char *stat,
- 	unsigned u;
- 
- 	for (u = 0; u < ARRAY_SIZE(units) - 1; u++) {
--		if (sz < SZ_1K)
-+		if (sz & (SZ_1K - 1))
- 			break;
- 		sz = div_u64(sz, SZ_1K);
- 	}
--- 
-2.42.0
+>   
+>   #define SPRD_PINCTRL_PIN(pin)	SPRD_PINCTRL_PIN_DATA(pin, #pin)
+>   
+>   #define SPRD_PINCTRL_PIN_DATA(a, b)				\
+>   	{							\
+>   		.name = b,					\
+> -		.num = (((a) >> NUM_OFFSET) & 0xfff),		\
+> -		.type = (((a) >> TYPE_OFFSET) & 0xf),		\
+> -		.bit_offset = (((a) >> BIT_OFFSET) & 0xff),	\
+> -		.bit_width = ((a) >> WIDTH_OFFSET & 0xf),	\
+> -		.reg = ((a) & 0xf)				\
+> +		.num = (((a) & GENMASK(31, 22)) >> NUM_OFFSET),	\
+> +		.type = (((a) & GENMASK(21, 18)) >> TYPE_OFFSET),	\
+> +		.bit_offset = (((a) & GENMASK(17, 10)) >> BIT_OFFSET),	\
+> +		.bit_width = (((a) & GENMASK(9, 6)) >> WIDTH_OFFSET),	\
+> +		.reg = ((a) & GENMASK(5, 0))				\
 
+Please keep the same logic operation as before, and you can reuse the 
+readable macros if you defined.
+
+>   	}
+>   
+>   enum pin_type {
