@@ -2,185 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391A579CACF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7361179CAD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbjILJAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47626 "EHLO
+        id S233317AbjILJAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233162AbjILJAW (ORCPT
+        with ESMTP id S233182AbjILJA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:00:22 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A60310CA;
-        Tue, 12 Sep 2023 02:00:16 -0700 (PDT)
-X-UUID: c66df716514a11ee8051498923ad61e6-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=hs+2uZhjL4ujdojJd+AahTE0J+hKdFkYxtRB41qY/o4=;
-        b=lIzj2EbV1l6YtqfSh9Hp88Z070q4Y+Nm9UY5F61CSntZKvAlUezY+TGuJVLleDMPUIKNoBRUI4BrkNCKD2B8StV6qcVwp02o4IAhUWDAR9LVAHUN18cx8bmRR1cemz4B7LU5ysQmHP9J8IkHTUPJr1VZKr1/QCroLMXxXQGHSmA=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:b346232c-baa5-4437-b676-c81e15959782,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:ed159aef-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: c66df716514a11ee8051498923ad61e6-20230912
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1879385404; Tue, 12 Sep 2023 17:00:09 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 17:00:08 +0800
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 17:00:08 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d3yPxN1Ie8f9ZWZVRxDKiqO7USNh7j0AAWbcyVaNt4Yb5PweALe5kpbBGmuLUEhQFMV0yFqiF1xiTXRa7Sw05qZUeO+B7HIxuqOvGgeQxNb9wQ46JAD05OSU17O6zvittyGnazuK26/zu1d1i2jL2s4sfTCR3V2TeJ20FOkxK8eIVhUP+spb0aOM0zVYjb+ezOwRbEcQggo9gxQngInIqk+dxLbUfPYZ+sI9sMLDwEeaSw7Y1Drntp3KHVXcdNI2+l8mEX9/409gFe1R+FCp2r6lKuNWvZr9bApfYvjD0TzdxxaypKOA/lQierMFCy/AUlI+jwACbClgatLK2/QBxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hs+2uZhjL4ujdojJd+AahTE0J+hKdFkYxtRB41qY/o4=;
- b=dniWvzn3QyrFNXUNVvWhrew4Ql4fWogwHLaLl2IlVOEInXzc7pY8mK6idGpNYs5XPuESADO06+TQMDEfFI9Qm4McagE2ls/OoOGEpHbRGPtd9RkeH6DnL6bqqyhLHAapBReVskYz4o77pX8fUjRRDTeQ5adjGS5impJj8vPBbebEwlGNbsH+XoLcVfkXgRwDRJ/dPkG0xijHQmCj68mcOktn6YbZag06c0Bpt8y8g4oCQ4/NdK6TC9V+N4v7nQuwQyjQuQO33hDPMhL6ZjtXKVCDsV+otHMAJREmYMgZqphEjBjGTYz/7nLVHBuPiP64GBqVHElv9ouu1lS6weulLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+        Tue, 12 Sep 2023 05:00:26 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406C910C3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:00:21 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso40478965e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hs+2uZhjL4ujdojJd+AahTE0J+hKdFkYxtRB41qY/o4=;
- b=hm0KQIzhY8nuuFuGn/CYTJOef2YCtQftfwSQS7VAmaNsaqOhfMvN06Onnfdw0frOSL/oA11E1TmZqCtr9pkB26F1Ug8BOPLmRGOagYo5hMl/Sn19ePb9d9aiEw8Yb9lIb4l9EMLLJLK1F30Iejr96bLZhm/4qgD9HtnD5KD15sA=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by KL1PR03MB5523.apcprd03.prod.outlook.com (2603:1096:820:5d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.37; Tue, 12 Sep
- 2023 09:00:05 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95%4]) with mapi id 15.20.6768.029; Tue, 12 Sep 2023
- 09:00:05 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     =?utf-8?B?U2h1aWppbmcgTGkgKOadjuawtOmdmSk=?= 
-        <Shuijing.Li@mediatek.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        =?utf-8?B?Sml0YW8gU2hpICjnn7PorrDmtpsp?= <jitao.shi@mediatek.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: Re: [PATCH v4,0/3] Add mt8188 compatiable for DSI cmd packet control
-Thread-Topic: [PATCH v4,0/3] Add mt8188 compatiable for DSI cmd packet control
-Thread-Index: AQHZ5KihRJlC2TBct02KIAio/N46b7AW5bmA
-Date:   Tue, 12 Sep 2023 09:00:05 +0000
-Message-ID: <8e10b04be022aa83b36bbfb9cdcae9d14c6594cb.camel@mediatek.com>
-References: <20230911120800.17369-1-shuijing.li@mediatek.com>
-In-Reply-To: <20230911120800.17369-1-shuijing.li@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|KL1PR03MB5523:EE_
-x-ms-office365-filtering-correlation-id: a4cd516b-acb2-4ee6-fa3b-08dbb36ea867
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SpM0ad2hGTOL9PtZKwiqZPZJN+vtCZtqUNAB7EiVPywJjvpMl2IJU1KVMMoxAd3Sp7RQD21SQRuGpeh9PYUTCLhI8G2l7JMg2yQektCA3K+hMXIcr4u5QnnEzxNkXoFGuU8xnG4Ho+bmAyUzTl6YfDiqX5BvngTWvJGGvZSdLEXP0mBK+3t/IHmbwGWaASV9XdD8HqtBKQ4Bq74/19WVpq05lIWNxW0xtc0QxeYZsG7SALkQ81R3eO1R+pyGAoU4VIut6BQH9Mqk5tfjUBr2rKYZHVNXiRJ0FS1L0PiF5uZ8XhzrHXZZsrQm6nCIYEARGoRFCcwjTxG/AuuLkQf6XKfvvhI+XEPWZeGwu5+AzxPDnzcAjl5UKgciNZH8k3BP6Jma8r5EL3d1wQkIA/i/djNjy7vAO4GsgvS1x0HBt60wVboDI2z4cXwfYgha7BQxHmotnaLwfDHEid3eIAApJZpSZJbTc52Z+w5nNyBL09VUBKnRSKkEToAlLXauwWUif9bGZYLzOTTZ1IPDn1zJWLG5VCKC/yrKZz455lf6tnX6cfUqvTBBOHdsDaHCPv3B+3q6YZuw16qFuyPd+TtshBi63IfK9/8UQcDGyW5S4PxE8vzHBItK6U+RYGT/irUNHxq5Y50+BTRHcPoONz+s/HHf86XTFFXGDsdKP8TWyGbkvwipKcLDx/GMG4VM6N1Y
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(376002)(396003)(39860400002)(346002)(1800799009)(451199024)(186009)(26005)(2616005)(107886003)(5660300002)(8936002)(8676002)(4326008)(6512007)(6486002)(6506007)(66946007)(66476007)(110136005)(66556008)(66446008)(64756008)(76116006)(54906003)(38070700005)(38100700002)(122000001)(478600001)(921005)(71200400001)(316002)(41300700001)(36756003)(86362001)(85182001)(4744005)(2906002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V0hmR1EwM1gzbWR0T1FFbWx5eG83QTcwRUt5UFI2S3RQODdvTWNTMXMyRGto?=
- =?utf-8?B?ekRDRGVORFpoSFI3L1NzWHJiQXYrZWJBMFUxSXo1VEZrK2J4c1RzZXk5eDE3?=
- =?utf-8?B?Tzdybld4OHZGY1ZiUlA1a1hFZ1ovdDg3K21WWmcyaTRnYzlvNlp2STFjdENj?=
- =?utf-8?B?L0RzeGZCYjE5SThqb0ViUnRGYVJyczN1cHQvNCtzRGhnZFJKT3Z4OEI1aUg2?=
- =?utf-8?B?TjFJYnQ3Y1Z2cXFuK2oyZTQ5N1RxZTNvdmdaeEZTdTdCRUM3ekltK25ibWhi?=
- =?utf-8?B?TjlQNnV0SnJVSDY3T0psZXJDbjM5SndJdTNpRDVnOHg5K1c2eVdCcGM2dXNK?=
- =?utf-8?B?WG9OQml0anJJeXl6VlVoTGp0TnpvT0ZYS0RBVk15Qk5KVlBlclZ5MS9EdG91?=
- =?utf-8?B?MW1jTVdHeWJtdHdhdjJmOGpNS0dkMktIbm9GRGRTS29UclByMys1WXc2K1Jo?=
- =?utf-8?B?VHdDa2owMWZ5ZUdxMTl4akJvK01WeVUvbGVVRnQycXVsQm9qb0lCZUV4bFUx?=
- =?utf-8?B?eXl6ejZuTTZwSklJU1VBcENxN3FRcjdpZVNMQ29NM2NJNytjOTQrdFZWZHRZ?=
- =?utf-8?B?NFh3MCtsNW1xMXdqVi9rVEpLVVVMSWxySHFPOVU1SnRwS2dPUGg5a2VhaWxr?=
- =?utf-8?B?MnBTUVJ1YWFpV25PUGU1OEFUeHZKVDQ5dHRNTEp0c1VicHUwZ3E3cG1VS3py?=
- =?utf-8?B?Uk9uR3MyaWl2U2FOVGtUUUtaTWJibzBubDRvYU5hSHNRR1hlMkRndnB5R0xZ?=
- =?utf-8?B?eVpZbWJYR0tGTG8zWTBubXc2K2pwcFNkYU1HRDVuQjlPeGtLZ2ZEdWo1bVZQ?=
- =?utf-8?B?dVdPV0JTcmN5V01DbSt2bWs5azJHdGZnMXd1Sm03c1UvZFFTN1VjMmI5Ujkv?=
- =?utf-8?B?QVc0Y3R1V3ppUW9jMmhrZGd2YW5aUkpEVGVWZFdQaFdSNjZiMFJ3dERwNEpS?=
- =?utf-8?B?T1hJeVZFbXozR05GT2cyZGt5b2QzeURkY3lwZ1lCVXFqMjFSdC82RitlRVBj?=
- =?utf-8?B?UkVQSnJROGd0M1hob2VYY3FheDNndU5RY0tPV0hRVWVCMjVWOXBYN3NXZVEz?=
- =?utf-8?B?bVdSVk8weUpxVnE2ejZ2RWZ0SzMwc2ZyVEtQeSt1VHRDRGtNWUdQY0NtdUpB?=
- =?utf-8?B?eTV2UmdnNDZabCtIOVlKQkhYeEc1OTFFV1pPdFlhSFBQN2NPY2dEb0RVemFn?=
- =?utf-8?B?TzJySy8wN0k0cyswc1MxclViK1VzeW9yUWV4UVQ1ZmtyQVBSZTBrYzkvVk9C?=
- =?utf-8?B?STdIVUxhcGJiYzJJbHg0L2YzaVVKU2lZazBqdkI3V0ZnWjBJUjJ5V1REMkVs?=
- =?utf-8?B?QVVLaVViT1VHZE5oNGRNamxvbCt3c294UHlHOS9RTTlrTlBuek1DTWRnUjc5?=
- =?utf-8?B?VTYxOVMzUEVjdXFkclE5aWdXVVd0emV4eFRURmc3dVJnaDJpOVpYeHl6ZXZ2?=
- =?utf-8?B?a2trR0M5SjRrZGlWZ044TW94eHRNTE5HZWhNNmVRQzZFYUxQWnFJWkdFaDdy?=
- =?utf-8?B?bVkzMDdKTjBVdFFLdzhwSm1NZ3JnbE5ISW1uTkRuNFQxK1lrQncydWJpWnha?=
- =?utf-8?B?Z1VPL2hoaDd5RStLN0M2QUpnZXQwTHZ5S2QxaDJUVHVUWlNGOGVDR0ErNm8x?=
- =?utf-8?B?dGw0dlZaTHN6aGUyRWc4Tm5JVGZ3ZitZQ05JaVU3bDNJTFkyYU5adWM2ckdT?=
- =?utf-8?B?cGNNWnN5TDMzaEh2eFlTVmRVU01tM3N5TmMrSnNBaXBxZDdaR01rZUh4ZXF4?=
- =?utf-8?B?WVpLWDZtcTUrUHJYekpUZFcrcmt1aytuNWRSVGl6bllFbWg5UGlJNDdQMGdF?=
- =?utf-8?B?YmEyYTU5eWR6QStRa296WmhJOFZ6MkFKNHVPSEtsQTgzZWh2Z2xIS3ZCTDBV?=
- =?utf-8?B?WnI0elllRlVRSHlpd1VSeTArZkJMZVpYQkhNZHpQODVIVzAyWmFqM2tRczY2?=
- =?utf-8?B?b2pXdGxuK3pnQUhhdmRWWFdyTkNIQlJCbDhLekdkWVlWUlRlQjQ5YXhWTm5y?=
- =?utf-8?B?YUcrajIvN2JXczY0RzVpNGw5T1N3SmJOc3lRL3pXblhiaENSRDlaUlBkRnkw?=
- =?utf-8?B?UHBIY1Bhb1llaWVsRklTS2dPZ25neVBWdXk4eFNOM3FCRGYxOGJ3aHlNbThu?=
- =?utf-8?Q?5bu8EhQEt417JS9ahn2wLk3SF?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <71EAE66FC08CAC479139AE8A0863FA3F@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=google.com; s=20230601; t=1694509220; x=1695114020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPuhXIrsoDRwKm2c4doZfBy6UJlqWZcuCP4pbW2cMJU=;
+        b=0eBJ92P6BYnTkFW0+cPbzrWvT42U+FZO2ZI5HfpmEOnYc6XlGdpqGiChXcjooLDxyQ
+         3OwHffrWQUUyvACncs+0v0HOoxrUUFC27rFzupl8j62NlinAHFO4C0yN2Us0U6IpsUBd
+         7TBnjsyHF2xdn/7mv0uLqOAuEEqRr1WdHGG1Mqao9y9JFRoKcozoIHAjBVObZc6FRUZs
+         lF9JUj+zrq+y7StxK+nBlzxvz6bp4qDrFsOLbXYGuAhs3mPneCzRCi028ZUZ7TMHGbk7
+         bCjhdef7Z8roSo5pjKlsBA522t3CM2konVhuFqhXAccjYehxWgSuPllKbaqp2s4AdiaL
+         svJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694509220; x=1695114020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DPuhXIrsoDRwKm2c4doZfBy6UJlqWZcuCP4pbW2cMJU=;
+        b=CP55MDtCrtWZECeSLXuUWuuXJnXfXRyAOfymTTDYzpjJkII96kMFPR9EEgoKGFKe18
+         4qMjvvln784SH70uZJ+ixUDIhfJ6QtlkESLEQI5wcJGJMwacF4pyJgG/LNUHVB//rGTf
+         rkWyywPqUjDBk3O6/i3x6gPiGZPzpsaFh1pNq66v0TY+8ZgdNrSCIuaewgf/vWKmiQhz
+         rbMxB7YbJ6sOYB7JCFhIwclIIcFdfLJx9Kh9xHzmCmJwF2owZDPoJj1956+l/AnTu4dg
+         +9otwNmim7lChCqcfg+RhcDEmJyYhknoEiWV9MN7zWqLZS8FP+GqAERzr5WyHcCJLqIR
+         lt/w==
+X-Gm-Message-State: AOJu0Yz6X1g9Svzp6Pf4goRYV9zzAzg4NYywx5TFuOtZR2MOUgsWTRA+
+        YUzpGUYSk6GrdyqJzukobbGX6Uf6jf9oj7iDHPBJqQ==
+X-Google-Smtp-Source: AGHT+IEruaY/XJBjah+iWq3HcBLI4GKyhigsTj6VWb1ntfR010vgfqEBZKHcesQHRAHWD6nSXOXZYQmhyGeyUOCjYig=
+X-Received: by 2002:a05:6000:1245:b0:319:6b14:555c with SMTP id
+ j5-20020a056000124500b003196b14555cmr1373860wrx.3.1694509220233; Tue, 12 Sep
+ 2023 02:00:20 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4cd516b-acb2-4ee6-fa3b-08dbb36ea867
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 09:00:05.6098
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: m+0wD3JIbV2EHy6cTZLvFQWgKLsmfUNDKfQ1JU9Pr5KlM/B+MPpvW7eC3leJzE3jyhxLh3qZxDOsutnREESLJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB5523
+References: <20230906115928.3749928-1-alpic@google.com> <202309090600.NSyo7d2q-lkp@intel.com>
+ <CAEjxPJ4GOq3E4zqXbEMKUxqewopyeU5nmUg89rL+P5YsuEBi7A@mail.gmail.com> <CAEjxPJ4uoqkwmbeOOmUHJwoKiK3cnfJP5P2w+hOXr4BZNtQ+JQ@mail.gmail.com>
+In-Reply-To: <CAEjxPJ4uoqkwmbeOOmUHJwoKiK3cnfJP5P2w+hOXr4BZNtQ+JQ@mail.gmail.com>
+From:   Alfred Piccioni <alpic@google.com>
+Date:   Tue, 12 Sep 2023 11:00:07 +0200
+Message-ID: <CALcwBGBPaYh98d+3_3k8o+8WCbYU8cNPoOHaqhUduKZYz7Ntow@mail.gmail.com>
+Subject: Re: [PATCH V2] SELinux: Check correct permissions for FS_IOC32_*
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        oe-kbuild-all@lists.linux.dev, stable@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFNodWlqaW5nOg0KDQpPbiBNb24sIDIwMjMtMDktMTEgYXQgMjA6MDcgKzA4MDAsIFNodWlq
-aW5nIExpIHdyb3RlOg0KPiBBZGQgZHQtYmluZGluZyBkb2N1bWVudGF0aW9uIG9mIERTSSBmb3Ig
-TWVkaWFUZWsgTVQ4MTg4IFNvQy4NCj4gQmVjYXVzZSBvZiB0aGUgZGlmZmVyZW5jZSBiZXR3ZWVu
-IFNPQyBhbmQgRFNJIGNtZCBwYWNrZXQgY29udHJvbCwgZm9yDQo+IE1UODE4OCwgaXQgaXMgbmVj
-ZXNzYXJ5IHRvIGluY3JlYXNlIHRoZSBEU0lfQ01EUV9TSVpFIGNvbnRyb2wgd2hlbg0KPiBzZW5k
-aW5nIGxvbmcgcGFja2V0cyB0byBpbml0aWFsaXplIHRoZSBwYW5lbC4gT2YgY291cnNlLCB0aGlz
-IHdpbGwNCj4gbm90DQo+IGFmZmVjdCB0aGUgc2VuZGluZyBvZiBzaG9ydCBwYWNrZXRzLg0KPiAN
-Cj4gQmFzZSBvbiB0aGUgYnJhbmNoIG9mIGxpbnVzL21hc3RlciB2Ni41Lg0KDQpGb3IgdGhpcyBz
-ZXJpZXMsIGFwcGxpZWQuIFRoYW5rcy4NCg0KUmVnYXJkcywNCkNLDQoNCj4gDQo+IFNodWlqaW5n
-IExpICgzKToNCj4gICBkdC1iaW5kaW5nczogZGlzcGxheTogbWVkaWF0ZWs6IGRzaTogQWRkIGNv
-bXBhdGlibGUgZm9yIE1lZGlhVGVrDQo+ICAgICBNVDgxODgNCj4gICBkcm0vbWVkaWF0ZWs6IGRz
-aTogQWRkIGRzaSBjbWRxX2N0bCB0byBzZW5kIHBhbmVsIGluaXRpYWwgY29kZQ0KPiAgIGRybS9t
-ZWRpYXRlazogQWRkIG10ODE4OCBkc2kgY29tcGF0aWJsZSB0byBtdGtfZHNpLmMNCj4gDQo+ICAu
-Li4vYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkc2kueWFtbCAgIHwgIDEgKw0K
-PiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMgICAgICAgICAgICB8ICAy
-ICsrDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jICAgICAgICAgICAgICAg
-IHwgMTUNCj4gKysrKysrKysrKysrKysrDQo+ICAzIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlv
-bnMoKykNCj4gDQo=
+On Mon, Sep 11, 2023 at 3:49=E2=80=AFPM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On Mon, Sep 11, 2023 at 9:19=E2=80=AFAM Stephen Smalley
+> <stephen.smalley.work@gmail.com> wrote:
+> >
+> > On Fri, Sep 8, 2023 at 6:54=E2=80=AFPM kernel test robot <lkp@intel.com=
+> wrote:
+> > >
+> > > Hi Alfred,
+> > >
+> > > kernel test robot noticed the following build errors:
+> > >
+> > > [auto build test ERROR on 50a510a78287c15cee644f345ef8bac8977986a7]
+> > >
+> > > url:    https://github.com/intel-lab-lkp/linux/commits/Alfred-Piccion=
+i/SELinux-Check-correct-permissions-for-FS_IOC32_/20230906-200131
+> > > base:   50a510a78287c15cee644f345ef8bac8977986a7
+> > > patch link:    https://lore.kernel.org/r/20230906115928.3749928-1-alp=
+ic%40google.com
+> > > patch subject: [PATCH V2] SELinux: Check correct permissions for FS_I=
+OC32_*
+> > > config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/202=
+30909/202309090600.NSyo7d2q-lkp@intel.com/config)
+> > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > > reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/a=
+rchive/20230909/202309090600.NSyo7d2q-lkp@intel.com/reproduce)
+> > >
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new =
+version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202309090600.NSyo7d2q=
+-lkp@intel.com/
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > >    security/selinux/hooks.c: In function 'selinux_file_ioctl':
+> > > >> security/selinux/hooks.c:3647:9: error: duplicate case value
+> > >     3647 |         case FS_IOC32_GETFLAGS:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3645:9: note: previously used here
+> > >     3645 |         case FS_IOC_GETFLAGS:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3648:9: error: duplicate case value
+> > >     3648 |         case FS_IOC32_GETVERSION:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3646:9: note: previously used here
+> > >     3646 |         case FS_IOC_GETVERSION:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3654:9: error: duplicate case value
+> > >     3654 |         case FS_IOC32_SETFLAGS:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3652:9: note: previously used here
+> > >     3652 |         case FS_IOC_SETFLAGS:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3655:9: error: duplicate case value
+> > >     3655 |         case FS_IOC32_SETVERSION:
+> > >          |         ^~~~
+> > >    security/selinux/hooks.c:3653:9: note: previously used here
+> > >     3653 |         case FS_IOC_SETVERSION:
+> > >          |         ^~~~
+> >
+> > Not sure of the right way to fix this while addressing the original
+> > issue that this patch was intended to fix. Looking in fs/ioctl.c, I
+> > see that the some FS_IOC32 values are remapped to the corresponding
+> > FS_IOC values by the compat ioctl syscall entrypoint. Also notice this
+> > comment there:
+> >
+> >         /* RED-PEN how should LSM module know it's handling 32bit? */
+> >         error =3D security_file_ioctl(f.file, cmd, arg);
+> >         if (error)
+> >                 goto out;
+> >
+> > So perhaps this is a defect in LSM that needs to be addressed?
+>
+> Note btw that some of the 32-bit ioctl commands are only handled in
+> the fs-specific compat_ioctl routines, e.g. ext4_compat_ioctl()
+> handles EXT4_IOC32_GETVERSION =3D=3D FS_IOC32_GETVERSION and ditto for
+> _SETVERSION.
+>
+> >
+> >
+> > >
+> > >
+> > > vim +3647 security/selinux/hooks.c
+> > >
+> > >   3634
+> > >   3635  static int selinux_file_ioctl(struct file *file, unsigned int=
+ cmd,
+> > >   3636                                unsigned long arg)
+> > >   3637  {
+> > >   3638          const struct cred *cred =3D current_cred();
+> > >   3639          int error =3D 0;
+> > >   3640
+> > >   3641          switch (cmd) {
+> > >   3642          case FIONREAD:
+> > >   3643          case FIBMAP:
+> > >   3644          case FIGETBSZ:
+> > >   3645          case FS_IOC_GETFLAGS:
+> > >   3646          case FS_IOC_GETVERSION:
+> > > > 3647          case FS_IOC32_GETFLAGS:
+> > >   3648          case FS_IOC32_GETVERSION:
+> > >   3649                  error =3D file_has_perm(cred, file, FILE__GET=
+ATTR);
+> > >   3650                  break;
+> > >   3651
+> > >   3652          case FS_IOC_SETFLAGS:
+> > >   3653          case FS_IOC_SETVERSION:
+> > >   3654          case FS_IOC32_SETFLAGS:
+> > >   3655          case FS_IOC32_SETVERSION:
+> > >   3656                  error =3D file_has_perm(cred, file, FILE__SET=
+ATTR);
+> > >   3657                  break;
+> > >   3658
+> > >   3659          /* sys_ioctl() checks */
+> > >   3660          case FIONBIO:
+> > >   3661          case FIOASYNC:
+> > >   3662                  error =3D file_has_perm(cred, file, 0);
+> > >   3663                  break;
+> > >   3664
+> > >   3665          case KDSKBENT:
+> > >   3666          case KDSKBSENT:
+> > >   3667                  error =3D cred_has_capability(cred, CAP_SYS_T=
+TY_CONFIG,
+> > >   3668                                              CAP_OPT_NONE, tru=
+e);
+> > >   3669                  break;
+> > >   3670
+> > >   3671          case FIOCLEX:
+> > >   3672          case FIONCLEX:
+> > >   3673                  if (!selinux_policycap_ioctl_skip_cloexec())
+> > >   3674                          error =3D ioctl_has_perm(cred, file, =
+FILE__IOCTL, (u16) cmd);
+> > >   3675                  break;
+> > >   3676
+> > >   3677          /* default case assumes that the command will go
+> > >   3678           * to the file's ioctl() function.
+> > >   3679           */
+> > >   3680          default:
+> > >   3681                  error =3D ioctl_has_perm(cred, file, FILE__IO=
+CTL, (u16) cmd);
+> > >   3682          }
+> > >   3683          return error;
+> > >   3684  }
+> > >   3685
+
+Hey Stephen,
+
+Thanks for looking into it a bit deeper! This seems a bit of a pickle.
+I can think of a few somewhat hacky ways to fix this.
+
+I can just set the flags to check `if FS_IOC32_*; set FS_IOC_*;`,
+which is the quickest but kinda hacky.
+
+I can go with the other plan of dropping the irrelevant bytes from the
+cmd code, so all codes will be read as u16. This effectively does the
+same thing, but may be unclear.
+
+I can also look into whether this can be solved at the LSM or a higher
+level. Perhaps the filesystems setting `if FS_IOC32_*; set FS_IOC_*;`
+is a hint that something else interesting is going wrong.
+
+I'll spend a little time thinking and investigating and get back with
+a more concrete solution. I'll also need to do a bit more robust
+testing; it built on my machine!
+
+Thanks!
