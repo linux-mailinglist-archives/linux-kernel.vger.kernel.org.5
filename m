@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A292A79D322
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2849479D324
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbjILOD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
+        id S235792AbjILOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbjILOD5 (ORCPT
+        with ESMTP id S231161AbjILOFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:03:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B9810D1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:03:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12F64C433CA;
-        Tue, 12 Sep 2023 14:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694527432;
-        bh=iv1RRfqUrKL45Fuy4iJuRqIdC+oN6KFnfVcwYKj76AA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sHMuZ7SZZj9b+JuBYgSlTHJ7vYmV920/jlQWuLbyf8ihWpE9Y1EQFiBVOM/FGDO9q
-         CDgTuYdLW9/fvlRQN05siCMCX7gyAYWwsjTa+q/8mOZ9yso2jZzSdmxWGfEzCPTIBW
-         1eyYWZWITLqbyzu2Tz15NbnqxYdgFU78KyQbbcdvr6Yxd1kTsEYQ4SOXk6fy1J+anJ
-         xI2GnBZCh+wGt8UudKlBORVxOlY5Us3QqSEdgGFsqw5zBIN4y0BZu/3VielsgmkILO
-         R6MPx9/K2ag0u70sLjHoYbqFq3KJuoWrS4/81q2PRAMrskDYMVXt2n1OYqrt95hVLc
-         2jLx4BqCQXBlw==
-Date:   Tue, 12 Sep 2023 15:03:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] Documentation: ABI: sysfs-driver-regulator-output
-Message-ID: <5282acd1-3c7a-4948-83f2-2829910ab841@sirena.org.uk>
-References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
- <20230831121412.2359239-3-Naresh.Solanki@9elements.com>
- <90b1af83-cb03-476f-9147-eb06247bf09c@hatter.bewilderbeest.net>
- <2023090330-bling-mammary-3177@gregkh>
- <6eb78818-7838-4616-bf44-05c215bfa8b3@hatter.bewilderbeest.net>
- <763bd845-d8d6-489c-bd31-305ed14bc40f@sirena.org.uk>
- <1518370c-e0cd-4d78-af54-3e2cf4dd6e3c@hatter.bewilderbeest.net>
+        Tue, 12 Sep 2023 10:05:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C4710D1;
+        Tue, 12 Sep 2023 07:04:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Bz5HUQeC5qHCT1bKpsnwfOlGI85lpMISdJds+v8aDT8=; b=Damh5GcP5UQgBGLJL49ZARVjh4
+        Z5fuwgyu4P/ZOEGVQPZp4T/DCUmZ/cXd2KhO8ez9yKIpeVbrvuKoyupZXYzYjan7Bxd6te2vdpQ/7
+        kehcq7twAAbHV77GQZ23Q1J+EMLj3lN7+E3jtkCBHYyH4RfcnEwl6sKAT+n0sQ67yyB51NHm5fyUj
+        /3luTygdq3HWld4x18I4mLcRDvljdGcxfMZFygCyhgM/aC2O1hTw4S2O9d5qUlUQjZ+ychzkBPP2Y
+        DT+YRizWLT9SWkgaNfc58PeK+BK7xiluf5p7FVfVXV0d8bm/9r/c59OSWqSAlwqKkNDaV496+Cmt0
+        F0x2rzNA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qg40H-0069ly-1U;
+        Tue, 12 Sep 2023 14:04:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8EE82300348; Tue, 12 Sep 2023 16:04:34 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 16:04:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tero Kristo <tero.kristo@linux.intel.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        dave.hansen@linux.intel.com, irogers@google.com,
+        mark.rutland@arm.com, linux-perf-users@vger.kernel.org,
+        hpa@zytor.com, mingo@redhat.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        namhyung@kernel.org, jolsa@kernel.org
+Subject: Re: [RESEND PATCH 2/2] perf/core: Allow reading package events from
+ perf_event_read_local
+Message-ID: <20230912140434.GB22127@noisy.programming.kicks-ass.net>
+References: <20230912124432.3616761-1-tero.kristo@linux.intel.com>
+ <20230912124432.3616761-3-tero.kristo@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Ck50yuDXkmXpnCQ4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1518370c-e0cd-4d78-af54-3e2cf4dd6e3c@hatter.bewilderbeest.net>
-X-Cookie: Mickey Mouse wears a Spiro Agnew watch.
+In-Reply-To: <20230912124432.3616761-3-tero.kristo@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 03:44:32PM +0300, Tero Kristo wrote:
+> Per-package perf events are typically registered with a single CPU only,
+> however they can be read across all the CPUs within the package.
+> Currently perf_event_read maps the event CPU according to the topology
+> information to avoid an unnecessary SMP call, however
+> perf_event_read_local deals with hard values and rejects a read with a
+> failure if the CPU is not the one exactly registered. Allow similar
+> mapping within the perf_event_read_local if the perf event in question
+> can support this.
+> 
+> This allows users like BPF code to read the package perf events properly
+> across different CPUs within a package.
+> 
+> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+> ---
+>  kernel/events/core.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 4c72a41f11af..780dde646e8a 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -4528,6 +4528,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+>  {
+>  	unsigned long flags;
+>  	int ret = 0;
+> +	int event_cpu;
+>  
+>  	/*
+>  	 * Disabling interrupts avoids all counter scheduling (context
+> @@ -4551,15 +4552,18 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+>  		goto out;
+>  	}
+>  
+> +	event_cpu = READ_ONCE(event->oncpu);
+> +	event_cpu = __perf_event_read_cpu(event, event_cpu);
 
---Ck50yuDXkmXpnCQ4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+What happens with __perf_event_read_cpu() when event_cpu == -1 ?
 
-On Sun, Sep 10, 2023 at 01:50:37PM -0700, Zev Weiss wrote:
-> On Mon, Sep 04, 2023 at 05:24:31AM PDT, Mark Brown wrote:
-
-> > It's a clear on read interrupt.
-
-> Sure, analogous behavior in hardware is reasonably common, but that doesn't
-> strike me as a very compelling reason to design the kernel<->userspace
-> interface to mimic it -- providing nicer interfaces than the raw hardware is
-> one of the main reasons for having an OS in the first place, after all.
-
-If it were something other than the userspace consumer I'd be a bit more
-concerned but that's all sharp edges and direct access in a very
-controlled system.  In any case clear on write is the obvious
-alternative approach.
-
---Ck50yuDXkmXpnCQ4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUAb8IACgkQJNaLcl1U
-h9A0MQf/WnLw6v7Inm+c/fZmfvSqAkdYFJ4sSwP7K7EObGHYIfYnMR0STz/UPcRO
-0U0QTitBjAueSyBtrJvizhk01AsB2NlQ1TtXpP8vWK9vJ8CYhf27KcQReU1WA+kZ
-xd+1i3n9MI868Yj5kuReomPK+GKVOejNl/xGZISwtKdhza3Lf3EowllKGyJHDTkC
-OC2Yce92VSBTXDgYdT1m6QHoKFc3pvZdwvRzIeRJ55SVYufmh85qENHoeTu//PHf
-jtB7e3WBI3KiVN/HFPLL/bQ81CG9QNq6HnXpSqBHZ/eowuK6W2gG85GMAzzbNt6C
-DQgRu5AVZK3I6vgc6aGwDuEzeXUrfw==
-=pf5T
------END PGP SIGNATURE-----
-
---Ck50yuDXkmXpnCQ4--
+> +
+>  	/* If this is a per-CPU event, it must be for this CPU */
+>  	if (!(event->attach_state & PERF_ATTACH_TASK) &&
+> -	    event->cpu != smp_processor_id()) {
+> +	    event_cpu != smp_processor_id()) {
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
+>  
+>  	/* If this is a pinned event it must be running on this CPU */
+> -	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
+> +	if (event->attr.pinned && event_cpu != smp_processor_id()) {
+>  		ret = -EBUSY;
+>  		goto out;
+>  	}
+> @@ -4569,7 +4573,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+>  	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
+>  	 * oncpu == -1).
+>  	 */
+> -	if (event->oncpu == smp_processor_id())
+> +	if (event_cpu == smp_processor_id())
+>  		event->pmu->read(event);
+>  
+>  	*value = local64_read(&event->count);
+> -- 
+> 2.40.1
+> 
