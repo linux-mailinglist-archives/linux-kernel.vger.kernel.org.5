@@ -2,275 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F064079D13F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1020F79D144
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbjILMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S235200AbjILMmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:42:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235141AbjILMkE (ORCPT
+        with ESMTP id S231248AbjILMmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:40:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93860C4;
-        Tue, 12 Sep 2023 05:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694522400; x=1726058400;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dZP1LM+xVZ/yUwnBaICXHVkRiLUwNhOEawORbPO48ZY=;
-  b=VEGgBlT8GC62eCUcr8Xylhm/HexevnJOpNWlGUwRvZ7gSwlCqeZ5t23e
-   U2Pg2AkfSIUp2llowlOQ4iS5k2u/mcc6xO6T+QQq13CzAlalu+XN14hSo
-   xBmLOgT3sjodLR+T0EL1v6082GQYkLRSObLajb/ZoPhem2pv4v/hlPaeN
-   qoqaLCTwxHTiVVl74uOWyXRMaEZruqoJGF/nr2ienPwaYs2WxyxCY7EIE
-   lWimEFyN10qRyjipW6WSmRQs8HbDcWEzbISWmYHchIpufg55eOb9FjlwK
-   adplTkR5uqRHMuecwjrm5dy5uMGU392+rSbpkzPNxTShNgg25l4nkeebD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464731306"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="464731306"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 05:40:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="693475259"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="693475259"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.45.152])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 05:39:56 -0700
-Message-ID: <ef6648b4-94da-20a8-c1e2-b7d6d0090918@intel.com>
-Date:   Tue, 12 Sep 2023 15:39:52 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.0
-Subject: Re: [PATCH V10 18/23] mmc: sdhci-uhs2: add request() and others
-Content-Language: en-US
-To:     Victor Shih <victorshihgli@gmail.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
-        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
-        takahiro.akashi@linaro.org, dlunev@chromium.org,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-References: <20230818100217.12725-1-victorshihgli@gmail.com>
- <20230818100217.12725-19-victorshihgli@gmail.com>
- <2b3f8b30-1ee1-31dd-53d7-cb2a0deea511@intel.com>
- <CAK00qKAR_4EaRtLRi_CKPDOy+CTFDw_CzkbmL=GOY2QWTU2yOQ@mail.gmail.com>
- <18716e05-6138-d326-ab29-f90e03650490@intel.com>
- <CAK00qKAEW8qkvXUsnb4UVHBSGAtjT-F1bJiKRMOTWR+Pirg3oA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAK00qKAEW8qkvXUsnb4UVHBSGAtjT-F1bJiKRMOTWR+Pirg3oA@mail.gmail.com>
+        Tue, 12 Sep 2023 08:42:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B299F;
+        Tue, 12 Sep 2023 05:41:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808A3C433C8;
+        Tue, 12 Sep 2023 12:41:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694522518;
+        bh=h3OJqaREq1rQ96Kkn6wCU6LIKOZUXBEtwJ0dIladPvw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sVuQJ7dHhztQen5pysGvSzw0rwM+JroJTBHrdBw3NVSAmovSlGp2mJHZDPfZRni7m
+         L047vntKITLuxQ/Y6uIaF/2aPKqzh5+0bwLzf9bQ1HP71c1onfFnzRnVy3aHkpXpUh
+         haYNLNuAbgVVl4ndvy57N1V1P4B4A0Lwb5+XcFau4684KDaJPSqIu8siTmhiGaUTuv
+         frJL+aalFKyRWqBdNmA0k9S3dVuR3wjwsTFOAv0PgxsIWbTjdJJHEEGC4EyMN1jeLd
+         fY05MvzdWAc5T4Kn08h6g3h0pBLxzYwigNKA2OYs0TB+OEvYkPOk+W/WJx4iYpKdca
+         D0mnF5+eBzEzg==
+Received: from [104.132.96.100] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qg2iJ-00CGRW-Pl;
+        Tue, 12 Sep 2023 13:41:56 +0100
+Date:   Tue, 12 Sep 2023 13:41:50 +0100
+Message-ID: <87jzsv4l81.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Update description for '#interrupt-cells' property
+In-Reply-To: <CAMuHMdW_d5isU5Y2p6ne6_9j1-uqWnRY=Qw34SqR5EC0CndG+Q@mail.gmail.com>
+References: <20220722151155.21100-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <20220722151155.21100-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        <8735eqdbav.wl-maz@kernel.org>
+        <CAMuHMdVj7J442iMr0PN5jxMhLv1U22+G9jNXLWFzLYkS0JTf5A@mail.gmail.com>
+        <CAMuHMdW_d5isU5Y2p6ne6_9j1-uqWnRY=Qw34SqR5EC0CndG+Q@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 104.132.96.100
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, prabhakar.mahadev-lad.rj@bp.renesas.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, prabhakar.csengg@gmail.com, biju.das.jz@bp.renesas.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/09/23 19:14, Victor Shih wrote:
-> On Thu, Aug 31, 2023 at 7:20 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 31/08/23 13:33, Victor Shih wrote:
->>> On Thu, Aug 31, 2023 at 4:33 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>
->>>> On 18/08/23 13:02, Victor Shih wrote:
->>>>> From: Victor Shih <victor.shih@genesyslogic.com.tw>
->>>>>
->>>>> This is a sdhci version of mmc's request operation.
->>>>> It covers both UHS-I and UHS-II.
->>>>>
->>>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
->>>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
->>>>> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
->>>>> ---
->>>>>
->>>>> Updates in V10:
->>>>>  - Use tmode_half_duplex to instead of uhs2_tmode0_flag
->>>>>    in sdhci_uhs2_set_transfer_mode().
->>>>>
->>>>> Updates in V9:
->>>>>  - Modify the annotations in __sdhci_uhs2_send_command().
->>>>>
->>>>> Updates in V8:
->>>>>  - Adjust the position of matching brackets in
->>>>>    sdhci_uhs2_send_command_retry().
->>>>>  - Modify CameCase definition in __sdhci_uhs2_finish_command().
->>>>>  - Modify error message in __sdhci_uhs2_finish_command().
->>>>>  - sdhci_uhs2_send_command_retry() to instead of sdhci_uhs2_send_command()
->>>>>    in sdhci_uhs2_request().
->>>>>  - Use sdhci_uhs2_mode() to simplify code in sdhci_uhs2_request_atomic().
->>>>>  - Add forward declaration for sdhci_send_command().
->>>>>
->>>>> Updates in V7:
->>>>>  - Cancel export state of some functions.
->>>>>  - Remove unnecessary whitespace changes.
->>>>>
->>>>> Updates in V6:
->>>>>  - Add uhs2_dev_cmd() to simplify code.
->>>>>  - Remove unnecessary functions.
->>>>>  - Cancel export state of some functions.
->>>>>  - Drop use CONFIG_MMC_DEBUG().
->>>>>  - Wrap at 100 columns in some functions.
->>>>>
->>>>> ---
->>>>>
->>>>>  drivers/mmc/host/sdhci-uhs2.c | 412 ++++++++++++++++++++++++++++++++++
->>>>>  drivers/mmc/host/sdhci.c      |  49 ++--
->>>>>  drivers/mmc/host/sdhci.h      |   8 +
->>>>>  3 files changed, 454 insertions(+), 15 deletions(-)
->>>>>
->>>>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
->>>>> index 09b86fec9f7b..08fef7174239 100644
->>>>> --- a/drivers/mmc/host/sdhci-uhs2.c
->>>>> +++ b/drivers/mmc/host/sdhci-uhs2.c
->>>>> @@ -14,6 +14,8 @@
->>>>>  #include <linux/module.h>
->>>>>  #include <linux/iopoll.h>
->>>>>  #include <linux/bitfield.h>
->>>>> +#include <linux/mmc/mmc.h>
->>>>> +#include <linux/mmc/host.h>
->>>>>
->>>>>  #include "sdhci.h"
->>>>>  #include "sdhci-uhs2.h"
->>>>> @@ -24,6 +26,8 @@
->>>>>  #define SDHCI_UHS2_DUMP(f, x...) \
->>>>>       pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
->>>>>
->>>>> +#define UHS2_ARG_IOADR_MASK 0xfff
->>>>> +
->>>>>  void sdhci_uhs2_dump_regs(struct sdhci_host *host)
->>>>>  {
->>>>>       if (!(sdhci_uhs2_mode(host)))
->>>>> @@ -58,6 +62,11 @@ EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
->>>>>   *                                                                           *
->>>>>  \*****************************************************************************/
->>>>>
->>>>> +static inline u16 uhs2_dev_cmd(struct mmc_command *cmd)
->>>>> +{
->>>>> +     return be16_to_cpu((__be16)cmd->uhs2_cmd->arg) & UHS2_ARG_IOADR_MASK;
->>>>> +}
->>>>> +
->>>>>  static inline int mmc_opt_regulator_set_ocr(struct mmc_host *mmc,
->>>>>                                           struct regulator *supply,
->>>>>                                           unsigned short vdd_bit)
->>>>> @@ -446,6 +455,408 @@ static int sdhci_uhs2_control(struct mmc_host *mmc, enum sd_uhs2_operation op)
->>>>>       return err;
->>>>>  }
->>>>>
->>>>> +/*****************************************************************************\
->>>>> + *                                                                           *
->>>>> + * Core functions                                                            *
->>>>> + *                                                                           *
->>>>> +\*****************************************************************************/
->>>>> +
->>>>> +static void sdhci_uhs2_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
->>>>> +{
->>>>> +     struct mmc_data *data = cmd->data;
->>>>> +
->>>>> +     sdhci_initialize_data(host, data);
->>>>> +
->>>>> +     sdhci_prepare_dma(host, data);
->>>>> +
->>>>> +     sdhci_writew(host, data->blksz, SDHCI_UHS2_BLOCK_SIZE);
->>>>> +     sdhci_writew(host, data->blocks, SDHCI_UHS2_BLOCK_COUNT);
->>>>> +}
->>>>> +
->>>>> +static void sdhci_uhs2_finish_data(struct sdhci_host *host)
->>>>> +{
->>>>> +     struct mmc_data *data = host->data;
->>>>> +
->>>>> +     __sdhci_finish_data_common(host);
->>>>> +
->>>>> +     __sdhci_finish_mrq(host, data->mrq);
->>>>> +}
->>>>> +
->>>>> +static void sdhci_uhs2_set_transfer_mode(struct sdhci_host *host, struct mmc_command *cmd)
->>>>> +{
->>>>> +     u16 mode;
->>>>> +     struct mmc_data *data = cmd->data;
->>>>> +
->>>>> +     if (!data) {
->>>>> +             /* clear Auto CMD settings for no data CMDs */
->>>>> +             if (uhs2_dev_cmd(cmd) == UHS2_DEV_CMD_TRANS_ABORT) {
->>>>> +                     mode =  0;
->>>>> +             } else {
->>>>> +                     mode = sdhci_readw(host, SDHCI_UHS2_TRANS_MODE);
->>>>> +                     if (cmd->opcode == MMC_STOP_TRANSMISSION || cmd->opcode == MMC_ERASE)
->>>>> +                             mode |= SDHCI_UHS2_TRNS_WAIT_EBSY;
->>>>> +                     else
->>>>> +                             /* send status mode */
->>>>> +                             if (cmd->opcode == MMC_SEND_STATUS)
->>>>> +                                     mode = 0;
->>>>> +             }
->>>>> +
->>>>> +             DBG("UHS2 no data trans mode is 0x%x.\n", mode);
->>>>> +
->>>>> +             sdhci_writew(host, mode, SDHCI_UHS2_TRANS_MODE);
->>>>> +             return;
->>>>> +     }
->>>>> +
->>>>> +     WARN_ON(!host->data);
->>>>> +
->>>>> +     mode = SDHCI_UHS2_TRNS_BLK_CNT_EN | SDHCI_UHS2_TRNS_WAIT_EBSY;
->>>>> +     if (data->flags & MMC_DATA_WRITE)
->>>>> +             mode |= SDHCI_UHS2_TRNS_DATA_TRNS_WRT;
->>>>> +
->>>>> +     if (data->blocks == 1 &&
->>>>> +         data->blksz != 512 &&
->>>>> +         cmd->opcode != MMC_READ_SINGLE_BLOCK &&
->>>>> +         cmd->opcode != MMC_WRITE_BLOCK) {
->>>>> +             mode &= ~SDHCI_UHS2_TRNS_BLK_CNT_EN;
->>>>> +             mode |= SDHCI_UHS2_TRNS_BLK_BYTE_MODE;
->>>>> +     }
->>>>> +
->>>>> +     if (host->flags & SDHCI_REQ_USE_DMA)
->>>>> +             mode |= SDHCI_UHS2_TRNS_DMA;
->>>>> +
->>>>> +     if ((mmc_card_uhs2_hd_mode(host->mmc)) && cmd->uhs2_cmd->tmode_half_duplex)
->>>>
->>>> Should not check mmc_card_uhs2_hd_mode(host->mmc).  The mmc core
->>>> must get it right.
->>>>
->>>> Also why is the setting different for different commands?
->>>>
->>>
->>> Hi, Adrian
->>>
->>> I will drop the check  mmc_card_uhs2_hd_mode(host->mmc) in the next version.
->>> But I'm not quite sure what the "why is the setting different for
->>> different commands" means.
->>> Could you help explain it a little bit more clearly?
->>
->> In mmc_uhs2_prepare_cmd() there is this code:
->>
->>         if (cmd->opcode == SD_APP_SEND_SCR || cmd->opcode == SD_APP_SD_STATUS ||
->>             cmd->opcode == MMC_SEND_EXT_CSD || cmd->opcode == SD_SWITCH ||
->>             cmd->opcode == SD_READ_EXTR_SINGLE || cmd->opcode == MMC_SEND_CSD ||
->>             cmd->opcode == MMC_SEND_CID)
->>                 cmd->uhs2_cmd->tmode_half_duplex = 0;
->>         else
->>                 cmd->uhs2_cmd->tmode_half_duplex = mmc_card_uhs2_hd_mode(host);
->>
->> So different commands can have different duplex?  Why is that?
->>
-> 
-> Hi, Adrian
-> 
-> Please correct me if I understand wrong.
-> We use tmode_half_duplex instead of uhs2_tmode0_flag.
-> As I know, the above commands need to be sent in tmode0.
-> That's why I set different duplex for different commands.
+On Fri, 08 Sep 2023 10:31:35 +0100,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>=20
+> Hi Marc,
+>=20
+> On Thu, Aug 11, 2022 at 4:50=E2=80=AFPM Geert Uytterhoeven <geert@linux-m=
+68k.org> wrote:
+> > On Sun, Jul 24, 2022 at 1:01 PM Marc Zyngier <maz@kernel.org> wrote:
+> > > On Fri, 22 Jul 2022 16:11:54 +0100,
+> > > Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > >
+> > > > Update description for '#interrupt-cells' property to utilize the
+> > > > RZG2L_{NMI,IRQX} for the first cell defined in the
+> > > > include/dt-bindings/interrupt-controller/irqc-rzg2l.h file.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.c=
+om>
+> > > > ---
+> > > > v3:
+> > > > * New patch
+> >
+> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/renesa=
+s,rzg2l-irqc.yaml
+> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesa=
+s,rzg2l-irqc.yaml
+> > > > @@ -31,8 +31,9 @@ properties:
+> > > >        - const: renesas,rzg2l-irqc
+> > > >
+> > > >    '#interrupt-cells':
+> > > > -    description: The first cell should contain external interrupt =
+number (IRQ0-7) and the
+> > > > -                 second cell is used to specify the flag.
+> > > > +    description: The first cell should contain a macro RZG2L_{NMI,=
+IRQX} included in the
+> > > > +                 include/dt-bindings/interrupt-controller/irqc-rzg=
+2l.h and the second
+> > > > +                 cell is used to specify the flag.
+> > >
+> > > I think a binding should be self describing, and not rely on an opaque
+> > > macro. Mentioning that there is a macro that encodes it is fine, but
+> > > the values are what matter, specially when considering that other OSs
+> > > could (and should be able to) write their own DTs from scratch without
+> > > depending on something that is very much Linux-specific.
+> >
+> > The macros are not Linux-specific, and are part of the bindings.
+> > But the only hard dependency on <dt-bindings/interrupt-controller/irqc-=
+rzg2l.h>
+> > is the DT source file describing the board.
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>=20
+> Looks like this fell through the cracks?
+> The two other patches from this series were applied in v6.1.
+>=20
+> Note that the current DT bindings are incorrect, as they do not take into
+> account that the value of zero is used to represent the NMI.
+>=20
+> Fixes: 96fed779d3d4cb3c ("dt-bindings: interrupt-controller: Add
+> Renesas RZ/G2L Interrupt Controller")
+>=20
+> Should we resend instead?
 
-UHS-II Addendum 7.2.1.2 DCMD says:
+It applied cleanly to v6.6-rc1, so there should be no need.
 
- "Host may set DM to 1 for DCMD which supports multi-block read / write regardless of
- data transfer length (e.g., CMD18, CMD25). Otherwise, it shall not set DM to 1.
- (e.g. CMD6, CMD17, CMD24). These rules are also applied to other multi-block read / write
- commands defined in other Part of SD specifications (for example, Host may set DM to 1
- for ACMD18 or ACMD25)."
+Thanks,
 
-Which sounds like we should check for CMD18 and CMD25 rather than the other way around?
-Perhaps use mmc_op_multi() and add a comment.
+	M.
 
+--=20
+Without deviation from the norm, progress is not possible.
