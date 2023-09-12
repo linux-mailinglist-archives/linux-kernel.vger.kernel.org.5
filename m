@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690E479CFDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4075079CFB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbjILL1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S234429AbjILLUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbjILL1J (ORCPT
+        with ESMTP id S230223AbjILLUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:27:09 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06431721;
-        Tue, 12 Sep 2023 04:26:47 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A6ECE212AE;
-        Tue, 12 Sep 2023 11:26:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694518006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q9JhXdCy9bma9ysFoTsLUThteBCBnpRHj2yaGJinfGk=;
-        b=VYkHhBcM0IvTv46yVWaKjXaD0//taNU/FDwmuNbPONoAMsS1AqA9lDzgfku18SExnPfnyD
-        7nIp6THXuwChb6/Y/0lnjdw9BvtkeOIIGzuWwSDvHJRX317ymYSuC2xJcMeTvmZZ50skRy
-        1hcQ5NbqPEGWsEt4HUsrKynR51YIBws=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694518006;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q9JhXdCy9bma9ysFoTsLUThteBCBnpRHj2yaGJinfGk=;
-        b=04wWBhxQxVCu/twy5dtDl1Hy4zvhyNcCZcdG/T3pkefrQSZ4g8phMBMl3+H0ft4BwBeHBX
-        4soc1wm1Gwu+hpCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7CF37139DB;
-        Tue, 12 Sep 2023 11:26:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wRCeHfZKAGWIdAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 12 Sep 2023 11:26:46 +0000
-Date:   Tue, 12 Sep 2023 13:20:11 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the btrfs tree
-Message-ID: <20230912112011.GB20408@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230912104646.3a9140f7@canb.auug.org.au>
+        Tue, 12 Sep 2023 07:20:36 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F6698
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=foRD+PUHK/sFHRd5hqwTBLZP7RJECaKCYr11zKYh2CQ=; b=PNYvg/sIhnpbgW0xo2RFfIV9ky
+        xdEeRvuyOgufQpYAfl2NAnBZgEJhDgSzsHqlb8jRHy1vXjaf5avs6xGCe92AIu8cmDbMG39cByjk8
+        4RiRD/jUn0vVMqMh0BUQg+OHlO92/K9SfzpEh8F7uu6n1z2fcXzuDqcXtPrQfcp+oEKz7EpHKb69K
+        Iam0AWSIxTsgHPv+UZSPtYBm07Ih0vVImzflQ7gNEZy47Vxmb3JhNLoGqAJFj+DU699WT2k3GljIK
+        iK+PbgwTy4Ynoc25d0Y7nYj+LBQTg6tkAr01xjKK3d2eX9KwDuBizlNjOg+Tsief/tk0rGnQoYwt7
+        3Aiic1EA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qg1RG-0063it-0n;
+        Tue, 12 Sep 2023 11:20:15 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 599B1300348; Tue, 12 Sep 2023 13:20:15 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 13:20:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        David Vernet <void@manifault.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] sched/fair: ratelimit update to tg->load_avg
+Message-ID: <20230912112015.GB12405@noisy.programming.kicks-ass.net>
+References: <20230912065808.2530-1-aaron.lu@intel.com>
+ <20230912065808.2530-2-aaron.lu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912104646.3a9140f7@canb.auug.org.au>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20230912065808.2530-2-aaron.lu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:46:46AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Sep 12, 2023 at 02:58:08PM +0800, Aaron Lu wrote:
+> When using sysbench to benchmark Postgres in a single docker instance
+> with sysbench's nr_threads set to nr_cpu, it is observed there are times
+> update_cfs_group() and update_load_avg() shows noticeable overhead on
+> a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
 > 
-> After merging the btrfs tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced these warnings:
+>     13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
+>     10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
 > 
-> In file included from include/linux/swab.h:5,
->                  from include/uapi/linux/byteorder/big_endian.h:14,
->                  from include/linux/byteorder/big_endian.h:5,
->                  from arch/powerpc/include/uapi/asm/byteorder.h:14,
->                  from include/asm-generic/bitops/le.h:6,
->                  from arch/powerpc/include/asm/bitops.h:336,
->                  from include/linux/bitops.h:68,
->                  from fs/btrfs/extent_io.c:3:
-> In function 'btrfs_disk_key_to_cpu',
->     inlined from 'btrfs_item_key_to_cpu' at fs/btrfs/accessors.h:648:2,
->     inlined from 'fiemap_find_last_extent_offset' at fs/btrfs/extent_io.c:2804:2,
->     inlined from 'extent_fiemap' at fs/btrfs/extent_io.c:2879:8:
-> include/uapi/linux/swab.h:128:28: warning: 'disk_key.objectid' may be used uninitialized [-Wmaybe-uninitialized]
->   128 | #define __swab64(x) (__u64)__builtin_bswap64((__u64)(x))
->       |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/uapi/linux/byteorder/big_endian.h:33:26: note: in expansion of macro '__swab64'
->    33 | #define __le64_to_cpu(x) __swab64((__force __u64)(__le64)(x))
->       |                          ^~~~~~~~
-> include/linux/byteorder/generic.h:87:21: note: in expansion of macro '__le64_to_cpu'
->    87 | #define le64_to_cpu __le64_to_cpu
->       |                     ^~~~~~~~~~~~~
-> fs/btrfs/accessors.h:622:25: note: in expansion of macro 'le64_to_cpu'
->   622 |         cpu->objectid = le64_to_cpu(disk->objectid);
->       |                         ^~~~~~~~~~~
-> In file included from fs/btrfs/extent_io.c:34:
-> fs/btrfs/accessors.h: In function 'extent_fiemap':
-> fs/btrfs/accessors.h:645:31: note: 'disk_key.objectid' was declared here
->   645 |         struct btrfs_disk_key disk_key;
->       |                               ^~~~~~~~
-> In function 'fiemap_find_last_extent_offset',
->     inlined from 'extent_fiemap' at fs/btrfs/extent_io.c:2879:8:
-> fs/btrfs/extent_io.c:2805:33: warning: 'disk_key.type' may be used uninitialized [-Wmaybe-uninitialized]
->  2805 |         if (key.objectid != ino || key.type != BTRFS_EXTENT_DATA_KEY) {
-> fs/btrfs/accessors.h: In function 'extent_fiemap':
-> fs/btrfs/accessors.h:645:31: note: 'disk_key.type' was declared here
->   645 |         struct btrfs_disk_key disk_key;
->       |                               ^~~~~~~~
+> Annotate shows the cycles are mostly spent on accessing tg->load_avg
+> with update_load_avg() being the write side and update_cfs_group() being
+> the read side. tg->load_avg is per task group and when different tasks
+> of the same taskgroup running on different CPUs frequently access
+> tg->load_avg, it can be heavily contended.
 > 
-> I don't really have any idea what caused this (it *may* have been my
-> change from gcc v12 to v13?).
+> E.g. when running postgres_sysbench on a 2sockets/112cores/224cpus Intel
+> Sappire Rapids, during a 5s window, the wakeup number is 14millions and
+> migration number is 11millions and with each migration, the task's load
+> will transfer from src cfs_rq to target cfs_rq and each change involves
+> an update to tg->load_avg. Since the workload can trigger as many wakeups
+> and migrations, the access(both read and write) to tg->load_avg can be
+> unbound. As a result, the two mentioned functions showed noticeable
+> overhead. With netperf/nr_client=nr_cpu/UDP_RR, the problem is worse:
+> during a 5s window, wakeup number is 21millions and migration number is
+> 14millions; update_cfs_group() costs ~25% and update_load_avg() costs ~16%.
+> 
+> Reduce the overhead by limiting updates to tg->load_avg to at most once
+> per ms. The update frequency is a tradeoff between tracking accuracy and
+> overhead. 1ms is chosen because PELT window is roughly 1ms and it
+> delivered good results for the tests that I've done. After this change,
+> the cost of accessing tg->load_avg is greatly reduced and performance
+> improved. Detailed test results below.
+> 
 
-I tried 12 and 13, no warnings on x86_64, however the report is on
-powerpc. If this is on a big endian host it could be a valid warning, we
-have an optmization where the on-disk format endianity matches CPU
-(little endian) then the structures btrfs_disk_key and btrfs_key are
-equivalent and no coversion is needed.
+> 
+> Reported-by: Nitin Tekchandani <nitin.tekchandani@intel.com>
+> Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Tested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Reviewed-by: David Vernet <void@manifault.com>
+> Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
 
-There were some changes that might be related and newly added to
-for-next so we don't have any other reference point, I'll take a look.
+Thanks!
