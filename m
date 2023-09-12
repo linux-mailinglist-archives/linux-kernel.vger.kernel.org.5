@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BB879DA3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F287F79DA43
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbjILUsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 16:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S236954AbjILUuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 16:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbjILUs2 (ORCPT
+        with ESMTP id S233149AbjILUt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 16:48:28 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677F2E64
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 13:48:24 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so8063617a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 13:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1694551702; x=1695156502; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hv80f3uDeX+bprELwtiGX3ZT6QuXvl6UBldMet1HOC8=;
-        b=Qgm7UD/m6C3eI16BxwSQ21HHIUDMy1phexISrSCIjdT7AW1TO6idtmOmUKqtwwmWVR
-         pwtMGaAc3KjyiySboshUUIkZ/51A/tSfMZbImGr3sIoqHq/lDJo8pDIl8GuozP14j0a6
-         uKVwK8pDNqoZHavCzTK2AHhLfDaAgWTt/2DdM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694551702; x=1695156502;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hv80f3uDeX+bprELwtiGX3ZT6QuXvl6UBldMet1HOC8=;
-        b=SIY5kb7VLJE79Q8MFz2eYSw1B+K1bjV8V7m37znbI3MN+4HrOK6Op/ezp4qx4Ngd+O
-         G+9wE901WCSDD7c8sYHA5kfBieCuVX/PJ2HkN6Zpu80WGieBd4TeI8VuPN+ZYlkePoZO
-         hGq2mSY4hzDGuuyWogHs+FWXgPnDXTgyIl9PO1+QofcXXLrZlS0U+BN5f3aEhWJs3dJm
-         sOgJl9SqLSdHuXE7swW7hVJSMYaXk1BTAv9el7jl8nXHny541MbhhzrhNeT1B1Kqygss
-         tHtuWZcYTjh4SGXVEvTLMj3QhiqQyJIYjIRSLT79UI1bqY15QdlV0dhk/oWg+FhTVRfC
-         /vBw==
-X-Gm-Message-State: AOJu0YxfIIzZnppLG5bKEOJjbGxYJI3cAR08XzgdCF83j65XKOXt09zB
-        UXQnDhsnClTdZwnCZ1nuXrUK5PyG4sVVh5rHvMosqeBj
-X-Google-Smtp-Source: AGHT+IGE6TlSW2Wtrai1DrCwuwduWsampCGHO56gdYDawXfrAMBAQzxfK+s7v03vzHHHZTVBaaQHsg==
-X-Received: by 2002:a17:906:2212:b0:99c:441:ffa with SMTP id s18-20020a170906221200b0099c04410ffamr356719ejs.29.1694551702661;
-        Tue, 12 Sep 2023 13:48:22 -0700 (PDT)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id op5-20020a170906bce500b009a1fef32ce6sm7423643ejb.177.2023.09.12.13.48.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 13:48:22 -0700 (PDT)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-401d24f1f27so69211865e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 13:48:21 -0700 (PDT)
-X-Received: by 2002:a05:600c:2288:b0:401:d803:6246 with SMTP id
- 8-20020a05600c228800b00401d8036246mr553079wmf.2.1694551701487; Tue, 12 Sep
- 2023 13:48:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
- <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
- <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com> <CAGudoHEuY1cMFStdRAjb8aWbHNqy8Pbeavk6tPB+u=rYzFDF+Q@mail.gmail.com>
- <ed0ac0937cdf4bb99b273fc0396b46b9@AcuMS.aculab.com> <CAHk-=wiXw+NSW6usWH31Y6n4CnF5LiOs_vJREb8_U290W9w3KQ@mail.gmail.com>
- <fa01f553d57e436c8a7f5b1c2aae23a9@AcuMS.aculab.com>
-In-Reply-To: <fa01f553d57e436c8a7f5b1c2aae23a9@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Sep 2023 13:48:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whC8TaarEhz2ie_w01r34hQHNCTiZLAs6e42ewP7+cvoA@mail.gmail.com>
-Message-ID: <CAHk-=whC8TaarEhz2ie_w01r34hQHNCTiZLAs6e42ewP7+cvoA@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Mateusz Guzik <mjguzik@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 Sep 2023 16:49:59 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1D4199;
+        Tue, 12 Sep 2023 13:49:55 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 382963200954;
+        Tue, 12 Sep 2023 16:49:52 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute6.internal (MEProxy); Tue, 12 Sep 2023 16:49:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1694551791; x=1694638191; bh=Dv
+        Cb/EIqO1JW+sf1gb8MGaN948NTLFayPCF4KFvH4ug=; b=Zpx+QAadIrfUHY6wVf
+        Vbrmm+MyjRvASW54gJcsA4hetbwWutRn6RWvOYtQRSUNwQ43lX7KZmZAqH37v2Ec
+        s9cTHkc9DXu8CBHnwdP396U9JG+pttZBPKdInHKslhwJnr8tMfMTKmCwJnSJY7Bq
+        6LpzGVeui1dwYFi1JOhlK8d9dRo0ck//FXc+Z6hePBH5+bN8gwOYE50vc4vrGhJi
+        TpBxq1kGFNl+YGqr1CiNtQggBUoTtwtbhFm+z7Agq+lM0kdkYY6RPm+J6I3N6Y9D
+        2WzVnlY1MA/rtnsrmy+2Bd7/gym1Wedx7PMbovMb2+HEJ253s1OnOhZbx930niVC
+        /IeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1694551791; x=1694638191; bh=DvCb/EIqO1JW+
+        sf1gb8MGaN948NTLFayPCF4KFvH4ug=; b=af0d3cR5qR8XnTHMukkyjpBqXXsT6
+        B4OevtfhK74VrrdbQ+hVH0NoHRr6btQDyyHYeiejpjGmlIsVSG04GJhedLAEjjB/
+        1wGuDYJ7Jnd3rCYIdloAfKMrveOVZOwbcKKYLfj16ULAXvNdMOLv66RsyjWSVWYL
+        uphPRk3H3eBgog+jAT8CPs712Tm8s9SnxUsjjNxamggWQB262Hwh0YAh0a3cmwO+
+        YGckqd1tPnOj7GNDY/VH/MWnfsRRkok501kKVYLu3KwVMtlI/vsNUYvlk+chzxJa
+        mWutR1tSkb/x+6yAX68wP4KeGpCKbk39bvgCZPwbjbrtwlw5lE/0pW1fQ==
+X-ME-Sender: <xms:7s4AZUIIgzxTfkP56niPL64dW72pnyqCkFl3_LeeAoz89hzAzUnm3Q>
+    <xme:7s4AZULsA54M3zA-gh3GPX1ubmtfYzfRhlDSSNqa_V8-oAR1koUybcnnMW8OF-rPX
+    4EXMK8KsAso3E2Jpyw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeiiedgudehgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdduhedmnecujfgurhepofgfggfkjghffffhvfevufgtsehttder
+    tderredtnecuhfhrohhmpedflfgrnhcujfgvnhgurhhikhcuhfgrrhhrfdcuoehkvghrnh
+    gvlhesjhhfrghrrhdrtggtqeenucggtffrrghtthgvrhhnpeffffeufefhiedvfeehgeev
+    ffffffduvdduhfefjeekgeeviefhuddvgeekvddvhfenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkvghrnhgvlhesjhhfrghrrhdrtggt
+X-ME-Proxy: <xmx:784AZUs8J84shFswdgIaQytbAaAMsI1MsHcSnJYEZBOwS7rkv-N7xw>
+    <xmx:784AZRZ65-owIok0-iFbhw14Ca6bXCaevSyXoxC6QfukkSzWpbIz7A>
+    <xmx:784AZbaDyti8-a4W676AmJSQSGG1-Tr7uAkq0CZrIdZeY54_hRQs5g>
+    <xmx:784AZYRvUR9LOJCU7v--icna8kQXS0CyPwWJuLIu8Mv8RKXkNm77dg>
+Feedback-ID: i0fc947c4:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id DFC7A15A0091; Tue, 12 Sep 2023 16:49:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <1c342231-7672-450e-b945-e57cd17b4ae7@app.fastmail.com>
+In-Reply-To: <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+ <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+ <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
+ <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
+ <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
+ <CVH4GZXQFZ1F.2V5BIZNSKQ1FA@suppilovahvero>
+ <5a67051d-eb21-4a96-acc4-40f829a59e23@app.fastmail.com>
+ <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
+Date:   Tue, 12 Sep 2023 22:49:00 +0200
+From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
+        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
+        bhelgaas@google.com, lennart@poettering.net,
+        "Luca Boccassi" <bluca@debian.org>
+Subject: Re: [PATCH 0/1] x86/kexec: UKI support
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sept 2023 at 12:41, David Laight <David.Laight@aculab.com> wrote:
->
-> What I found seemed to imply that 'rep movsq' used the same internal
-> logic as 'rep movsb' (pretty easy to do in hardware)
 
-Christ.
+> These are sort of "tautological" arguments. There must be some
+> objective reasons why this architecture was chosen instead of
+> other (i.e. using what already pre-exists).
 
-I told you. It's pretty easy in hardware  AS LONG AS IT'S ALIGNED.
-
-And if it's unaligned, "rep movsq" is FUNDAMENTALLY HARDER.
-
-Really.
-
-                    Linus
+I think I misunderstood you in my earlier reply. I do not understand in what way you think my arguments are tautological. Can you elaborate?
