@@ -2,283 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B6279C946
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E17B79C949
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbjILIHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S232279AbjILIIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjILIHE (ORCPT
+        with ESMTP id S232464AbjILIIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:07:04 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F91E10DF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:06:46 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59b53488f7cso42239727b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694506005; x=1695110805; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FtWP+e9BEXC7w+RUyN/G8YnHnlnT3vcX+sG9NK3ox/I=;
-        b=DEysX5LeZ/jYfjHDe2Zq6Uqme5ZHaJLzJe8GsYbgSLZbibMrlTmxNzRfFyBaj/0P1c
-         cz9czjQDVLaKktuMv0NIneO+Q0tse058LJ2G4Cbt3lYz1mmRS5syYjBs3So/91pNuEdE
-         EnLb2tayuxYxJ1fQn830xtXp8iQSfLlw2zpjvoVlucCVZ6x48nuEE+Dg4hKKZIzukjTG
-         9pyA7Grj6URtH18ua+i4dWXVf9Gqup9/x7gB7quj0EoXrP+wpQy2H0gr/s7hnr+5Dc9X
-         zh3QV30whKIpjsHIJ+dChCSNO7t3WYfPeYRZxmzBlktOq0gyFmTbx4aTAMXlTa8Xxk5Q
-         wIPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694506005; x=1695110805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FtWP+e9BEXC7w+RUyN/G8YnHnlnT3vcX+sG9NK3ox/I=;
-        b=CG3Rruevl/RRWU3nG0RRnjlGZ2qWoA3wFfAPhrHnFCkoPGKdAG8JWldQbcgpfq9N7L
-         oC7HpQbYVQ7OzpgJtwakaOKSX7L12S6keEQNZ+dUg+R3A6Yr/W1t43UmgH3SNBWVN+Bs
-         fs3pkQi6o/IvKTZP8RzatxpqHnGKOZvsc9hdQFaRujut7ONolZmi7A+6FfO3sRLeoNyK
-         U62hOeWiL4mMbYhid0Rlox0DAUHuot+vViuqLPqpAqJYOVOXrxuGSjlWD62tc4N2W1JE
-         A8HhjRyNAVDxOVFSwBkv2nRD1c0ahx8Cbn6dFxUoeHCj6gOGOc8eQc28jWreexIgYYDP
-         pGqA==
-X-Gm-Message-State: AOJu0YymiDSkwJSIQVH9o1U2H7woHDTmgQmhRZtOjOB7iZCy1mS9Et5A
-        xLim4D70csiTpE3Vj93BjksK9BNEUqMxUX83rhAXig==
-X-Google-Smtp-Source: AGHT+IEHrf6SFndkCb20FJCAo20fAKD8jp+yhf85lxl1eNtTsw7mK+na3Y1LgXrzLJhEEtRUNOqoM1uj91TQOZkad/w=
-X-Received: by 2002:a25:844c:0:b0:d09:377a:7bf7 with SMTP id
- r12-20020a25844c000000b00d09377a7bf7mr11592083ybm.16.1694506005187; Tue, 12
- Sep 2023 01:06:45 -0700 (PDT)
+        Tue, 12 Sep 2023 04:08:01 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644741722;
+        Tue, 12 Sep 2023 01:07:53 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 62150660731E;
+        Tue, 12 Sep 2023 09:07:51 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694506072;
+        bh=6YZCuSZf4unv0v4wQASvumX+Wwk5m7wJ4MlGmVXivrY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AxtZEjEE5P9IojT5NpLqTlq/NUf/VsDUdrSqoxKhG2KqP/v8rczwBy0O3p20bm9V2
+         pHSTu+nqCjGg5Gc4ostbAVEkaiUS4ltxFzm+ZKH/BnhbHqs5J7Uv5sLavbdXdGfkMB
+         qRYwYK9vxCVvZ24zx/siKXbfAyS2P1uSjnXx91+eyP6vWnmweHV03JARFgCiArsrLY
+         8bMYOD2bKtY46A27s0mlmQUiABZ+eJfWPxr9lAZ3ZqVqB/qU1AFK0sIfL1h3Y+EYL/
+         pqlDH3b2X+vlbWKiKfj5P3yjHhCgsOat0BfRwd++Yifl3HsB9kdgopScJy2bNfMSjs
+         MqE/B8J/ydJLg==
+Message-ID: <9fe6f075-c5c0-3f59-d6ea-dc6766d74c96@collabora.com>
+Date:   Tue, 12 Sep 2023 10:07:48 +0200
 MIME-Version: 1.0
-References: <20230904115816.1237684-1-s.hauer@pengutronix.de> <20230904115816.1237684-2-s.hauer@pengutronix.de>
-In-Reply-To: <20230904115816.1237684-2-s.hauer@pengutronix.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 Sep 2023 10:06:34 +0200
-Message-ID: <CACRpkdYxRdToUM3JcEeNK_K87D5WDzzSLvVEbtqqdQEhz3k_Ow@mail.gmail.com>
-Subject: Re: [PATCH 1/3] pinctrl: rockchip: add support for io-domain dependency
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     linux-rockchip@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        kernel@pengutronix.de,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 03/14] media: mediatek: vcodec: send share memory data to
+ optee
+Content-Language: en-US
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230911125936.10648-1-yunfei.dong@mediatek.com>
+ <20230911125936.10648-4-yunfei.dong@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230911125936.10648-4-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Top posting to bring Saravana Kannan into this discussion.
-
-This looks like a big hack to me, Saravana has been working
-tirelessly to make the device tree probe order "sort itself out"
-and I am pretty sure this issue needs to be fixed at the DT
-core level and not in a driver.
-
-Saravana, can you advice how we should handle this properly?
-
-Yours,
-Linus Walleij
-
-On Mon, Sep 4, 2023 at 1:58=E2=80=AFPM Sascha Hauer <s.hauer@pengutronix.de=
-> wrote:
->
-> On some Rockchip SoCs, some SoC pins are split in what are called IO
-> domains.
->
-> An IO domain is supplied power externally, by regulators from a PMIC for
-> example. This external power supply is then used by the IO domain as
-> "supply" for the IO pins if they are outputs.
->
-> Each IO domain can configure which voltage the IO pins will be operating
-> on (1.8V or 3.3V).
->
-> There already exists an IO domain driver for Rockchip SoCs[1]. This
-> driver allows to explicit the relationship between the external power
-> supplies and IO domains[2]. This makes sure the regulators are enabled
-> by the Linux kernel so the IO domains are supplied with power and
-> correctly configured as per the supplied voltage.
-> This driver is a regulator consumer and does not offer any other
-> interface for device dependency.
->
-> However, IO pins belonging to an IO domain need to have this IO domain
-> configured correctly before they are being used otherwise they do not
-> operate correctly.
->
-> We currently do not have any knowledge about which pin is on which IO
-> domain, so we assume that all pins are on some IO domain and defer
-> probing of the pin consumers until the IO domain driver has been probed.
-> Some pins however are needed to access the regulators driving an IO
-> domain. Deferring probe for them as well would introduce a cyclic
-> dependency. To break out of this dependency a pin group can be supplied
-> a rockchip,io-domain-boot-on property. Probe won't be deferred for pin
-> groups with this property. rockchip,io-domain-boot-on should be added
-> to all pin groups needed to access the PMIC driving the IO domains.
->
-> [1] drivers/soc/rockchip/io-domain.c
-> [2] Documentation/devicetree/bindings/power/rockchip-io-domain.yaml
->
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Il 11/09/23 14:59, Yunfei Dong ha scritto:
+> Setting msg and vsi information to shared buffer, then call tee invoke
+> function to send it to optee-os.
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->  drivers/pinctrl/pinctrl-rockchip.c | 64 ++++++++++++++++++++++++++++++
->  drivers/pinctrl/pinctrl-rockchip.h |  3 ++
->  2 files changed, 67 insertions(+)
->
-> diff --git a/drivers/pinctrl/pinctrl-rockchip.c b/drivers/pinctrl/pinctrl=
--rockchip.c
-> index 0276b52f37168..663bd9d6840a5 100644
-> --- a/drivers/pinctrl/pinctrl-rockchip.c
-> +++ b/drivers/pinctrl/pinctrl-rockchip.c
-> @@ -24,6 +24,8 @@
->  #include <linux/of_address.h>
->  #include <linux/of_device.h>
->  #include <linux/of_irq.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pinctrl/machine.h>
->  #include <linux/pinctrl/pinconf.h>
->  #include <linux/pinctrl/pinctrl.h>
-> @@ -2678,6 +2680,43 @@ static int rockchip_pmx_get_groups(struct pinctrl_=
-dev *pctldev,
->         return 0;
->  }
->
-> +static int rockchip_pmx_check_io_domain(struct rockchip_pinctrl *info, u=
-nsigned group)
+>   .../vcodec/decoder/mtk_vcodec_dec_optee.c     | 139 ++++++++++++++++++
+>   .../vcodec/decoder/mtk_vcodec_dec_optee.h     |  51 +++++++
+>   2 files changed, 190 insertions(+)
+> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
+> index 806ca87c8de7..d16496003a39 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_optee.c
+> @@ -232,3 +232,142 @@ void mtk_vcodec_dec_optee_release(struct mtk_vdec_optee_private *optee_private)
+>   	mutex_unlock(&optee_private->tee_mutex);
+>   }
+>   EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_release);
+> +
+> +static int mtk_vcodec_dec_optee_fill_shm(struct tee_param *command_params,
+> +					 struct mtk_vdec_optee_shm_memref *shm_memref,
+> +					 struct mtk_vdec_optee_data_to_shm *data,
+> +					 int index)
 > +{
-> +       struct platform_device *pdev;
-> +       int i;
+> +	if (!data->msg_buf_size[index] || !data->msg_buf[index]) {
+> +		pr_err(MTK_DBG_VCODEC_STR "tee invalid buf param: %d.\n", index);
+> +		return -EINVAL;
+> +	}
 > +
-> +       if (!info->io_domains)
-> +               return 0;
+> +	*command_params = (struct tee_param) {
+> +		.attr = shm_memref->param_type,
+> +		.u.memref = {
+> +			.shm = shm_memref->msg_shm,
+> +			.size = data->msg_buf_size[index],
+> +			.shm_offs = 0,
+> +		},
+> +	};
 > +
-> +       if (info->groups[group].io_domain_skip)
-> +               return 0;
+> +	if (!shm_memref->copy_to_ta) {
+> +		pr_debug(MTK_DBG_VCODEC_STR "share memref data: 0x%x param_type:%llu.\n",
+> +			 *((unsigned int *)shm_memref->msg_shm_ca_buf), shm_memref->param_type);
+> +		return 0;
+> +	}
 > +
-> +       for (i =3D 0; i < info->num_io_domains; i++) {
-> +               if (!info->io_domains[i])
-> +                       continue;
+> +	memset(shm_memref->msg_shm_ca_buf, 0, shm_memref->msg_shm_size);
+> +	memcpy(shm_memref->msg_shm_ca_buf, data->msg_buf[index], data->msg_buf_size[index]);
 > +
-> +               pdev =3D of_find_device_by_node(info->io_domains[i]);
-> +               if (!pdev) {
-> +                       dev_err(info->dev, "couldn't find IO domain devic=
-e\n");
-> +                       return -ENODEV;
-> +               }
+> +	pr_debug(MTK_DBG_VCODEC_STR "share memref data => msg id:0x%x 0x%x param_type:%llu.\n",
+> +		 *((unsigned int *)data->msg_buf[index]),
+> +		 *((unsigned int *)shm_memref->msg_shm_ca_buf),
+> +		 shm_memref->param_type);
+
+dev_dbg()?
+
 > +
-> +               if (!platform_get_drvdata(pdev)) {
-> +                       dev_err(info->dev, "IO domain device is not probe=
-d yet, deferring...(%s)",
-> +                               info->groups[group].name);
-> +                       return -EPROBE_DEFER;
-> +               }
-> +
-> +               of_node_put(info->io_domains[i]);
-> +               info->io_domains[i] =3D NULL;
-> +       }
-> +
-> +       devm_kfree(info->dev, info->io_domains);
-> +       info->io_domains =3D NULL;
-> +
-> +       return 0;
+> +	return 0;
 > +}
 > +
->  static int rockchip_pmx_set(struct pinctrl_dev *pctldev, unsigned select=
-or,
->                             unsigned group)
->  {
-> @@ -2691,6 +2730,10 @@ static int rockchip_pmx_set(struct pinctrl_dev *pc=
-tldev, unsigned selector,
->         dev_dbg(dev, "enable function %s group %s\n",
->                 info->functions[selector].name, info->groups[group].name)=
-;
->
-> +       ret =3D rockchip_pmx_check_io_domain(info, group);
-> +       if (ret)
-> +               return ret;
+> +void mtk_vcodec_dec_optee_set_data(struct mtk_vdec_optee_data_to_shm *data,
+> +				   void *buf, int buf_size,
+> +				   enum mtk_vdec_optee_data_index index)
+> +{
+> +	data->msg_buf[index] = buf;
+> +	data->msg_buf_size[index] = buf_size;
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_set_data);
 > +
->         /*
->          * for each pin in the pin group selected, program the correspond=
-ing
->          * pin function number in the config register.
-> @@ -3019,6 +3062,8 @@ static int rockchip_pinctrl_parse_groups(struct dev=
-ice_node *np,
->         if (!size || size % 4)
->                 return dev_err_probe(dev, -EINVAL, "wrong pins number or =
-pins and configs should be by 4\n");
->
-> +       grp->io_domain_skip =3D of_property_read_bool(np, "rockchip,io-do=
-main-boot-on");
+> +int mtk_vcodec_dec_optee_invokd_cmd(struct mtk_vdec_optee_private *optee_private,
+> +				    enum mtk_vdec_hw_id hw_id,
+> +				    struct mtk_vdec_optee_data_to_shm *data)
+> +{
+> +	struct tee_ioctl_invoke_arg trans_args;
+> +	struct tee_param command_params[MTK_OPTEE_MAX_TEE_PARAMS];
+> +	struct mtk_vdec_optee_ca_info *ca_info;
+> +	struct mtk_vdec_optee_shm_memref *shm_memref;
+> +	int ret = 0, index;
+
+int i, ret;
+
 > +
->         grp->npins =3D size / 4;
->
->         grp->pins =3D devm_kcalloc(dev, grp->npins, sizeof(*grp->pins), G=
-FP_KERNEL);
-> @@ -3417,6 +3462,22 @@ static int rockchip_pinctrl_probe(struct platform_=
-device *pdev)
->                         return PTR_ERR(info->regmap_pmu);
->         }
->
-> +       info->num_io_domains =3D of_property_count_u32_elems(np, "rockchi=
-p,io-domains");
-> +       if (info->num_io_domains) {
-> +               int i;
+> +	if (hw_id == MTK_VDEC_LAT0)
+> +		ca_info = &optee_private->lat_ca;
+> +	else
+> +		ca_info = &optee_private->core_ca;
 > +
-> +               info->io_domains =3D devm_kmalloc_array(dev, info->num_io=
-_domains,
-> +                                                     sizeof(*info->io_do=
-mains), GFP_KERNEL);
-> +               if (!info->io_domains)
-> +                       return -ENOMEM;
+> +	memset(&trans_args, 0, sizeof(trans_args));
+> +	memset(command_params, 0, sizeof(command_params));
 > +
-> +               for (i =3D 0; i < info->num_io_domains; i++) {
-> +                       info->io_domains[i] =3D of_parse_phandle(np, "roc=
-kchip,io-domains", 0);
-> +                       if (!info->io_domains[i])
-> +                               return -EINVAL;
-> +               }
-> +       }
+> +	trans_args = (struct tee_ioctl_invoke_arg) {
+> +		.func = ca_info->vdec_session_func,
+> +		.session = ca_info->vdec_session_id,
+> +		.num_params = MTK_OPTEE_MAX_TEE_PARAMS,
+> +	};
 > +
->         ret =3D rockchip_pinctrl_register(pdev, info);
->         if (ret)
->                 return ret;
-> @@ -3439,6 +3500,9 @@ static int rockchip_pinctrl_remove(struct platform_=
-device *pdev)
->
->         of_platform_depopulate(&pdev->dev);
->
-> +       for (i =3D 0; i < info->num_io_domains; i++)
-> +               of_node_put(info->io_domains[i]);
+> +	/* Fill msg command parameters */
+> +	for (index = 0; index < MTK_OPTEE_MAX_TEE_PARAMS; index++) {
+> +		shm_memref = &ca_info->shm_memref[index];
 > +
->         for (i =3D 0; i < info->ctrl->nr_banks; i++) {
->                 bank =3D &info->ctrl->pin_banks[i];
->
-> diff --git a/drivers/pinctrl/pinctrl-rockchip.h b/drivers/pinctrl/pinctrl=
--rockchip.h
-> index 4759f336941ef..d2ac79b0a7bc4 100644
-> --- a/drivers/pinctrl/pinctrl-rockchip.h
-> +++ b/drivers/pinctrl/pinctrl-rockchip.h
-> @@ -435,6 +435,7 @@ struct rockchip_pin_group {
->         unsigned int                    npins;
->         unsigned int                    *pins;
->         struct rockchip_pin_config      *data;
-> +       bool                            io_domain_skip;
->  };
->
->  /**
-> @@ -462,6 +463,8 @@ struct rockchip_pinctrl {
->         unsigned int                    ngroups;
->         struct rockchip_pmx_func        *functions;
->         unsigned int                    nfunctions;
-> +       struct device_node              **io_domains;
-> +       int                             num_io_domains;
->  };
->
->  #endif
-> --
-> 2.39.2
->
+> +		if (shm_memref->param_type == TEE_IOCTL_PARAM_ATTR_TYPE_NONE ||
+> +		    data->msg_buf_size[index] == 0)
+> +			continue;
+> +
+> +		pr_debug(MTK_DBG_VCODEC_STR "tee share memory data size: %d -> %d.\n",
+> +			 data->msg_buf_size[index], shm_memref->msg_shm_size);
+> +
+
+dev_dbg()
+
+> +		if (data->msg_buf_size[index] > shm_memref->msg_shm_size) {
+> +			pr_err(MTK_DBG_VCODEC_STR "tee buf size big then shm size(%d -> %d).\n",
+> +			       data->msg_buf_size[index], shm_memref->msg_shm_size);
+
+dev_err()
+
+> +			return -EINVAL;
+> +		}
+> +
+> +		ret = mtk_vcodec_dec_optee_fill_shm(&command_params[index], shm_memref,
+> +						    data, index);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	ret = tee_client_invoke_func(optee_private->tee_vdec_ctx, &trans_args, command_params);
+> +	if (ret < 0 || trans_args.ret != 0) {
+> +		pr_err(MTK_DBG_VCODEC_STR "tee submit command fail: 0x%x 0x%x.\n",
+> +		       trans_args.ret, ret);
+
+dev_err()
+
+> +		return (ret < 0) ? ret : trans_args.ret;
+> +	}
+> +
+> +	/* clear all attrs, set all command param to unused */
+> +	for (index = 0; index < MTK_OPTEE_MAX_TEE_PARAMS; index++) {
+> +		data->msg_buf[index] = NULL;
+> +		data->msg_buf_size[index] = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(mtk_vcodec_dec_optee_invokd_cmd);
+> +
+
+Regards,
+Angelo
+
