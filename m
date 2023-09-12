@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDACB79D95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B0D79D963
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 21:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237493AbjILTM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 15:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S232768AbjILTN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 15:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjILTMX (ORCPT
+        with ESMTP id S229904AbjILTN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 15:12:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645EFE50;
-        Tue, 12 Sep 2023 12:12:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E37C6C433C9;
-        Tue, 12 Sep 2023 19:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694545938;
-        bh=ZUqNcVFP2YsCnPCuq9+9HC+Xhdgu+7zaDoHoj+ZEStY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CGPXL/wuRrbNORoLjjtLuyfvL1e0D3sJM7eshi+1nEeMV0u95vFCzs8sST2sXqasc
-         oicR5jLTrZpyh1r5icM9C+jEuFjtqNI0mFbRyKFtXERbj2jERBmj6lFZrLDmC2gU0y
-         bCoCkXNxQ0us9hpj+ehMa4ioZZzKrR8OlqhQS4TO2fGGTt99RrQcgyxzqLYu03ckLg
-         Fidx239sVgBiSJ4NelDrlRsdTymzS+0ppeyq2eoNEqp1uaxNZ4+ezpPTzZKzbpUcv+
-         hiRJ8/d56mmKhD0fBgrnZns5wmHtBS59P/cxFreT8nvGJk+TsCe9xOBsuixdy109Or
-         8+ujWy7g5RYvQ==
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-501cef42bc9so9860160e87.0;
-        Tue, 12 Sep 2023 12:12:18 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyH9VRQ5i0KPXqR1favNAazwAIRCKSm4L9I3BXmooXVvwJMSTCG
-        SZB3aVeYZkiepa0ZUyM6y6Ft718Yujz7F+4/zQ==
-X-Google-Smtp-Source: AGHT+IGYLguwjOafV6zaD9hG6eJnYMUjeQqWWTEiBeuLOANCZ7akM40kZq41oikseMMfO4WgWofzezXn4ytW1TvEZfI=
-X-Received: by 2002:ac2:599c:0:b0:4ff:8f45:ab86 with SMTP id
- w28-20020ac2599c000000b004ff8f45ab86mr333033lfn.25.1694545937160; Tue, 12 Sep
- 2023 12:12:17 -0700 (PDT)
+        Tue, 12 Sep 2023 15:13:56 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A234EE6;
+        Tue, 12 Sep 2023 12:13:52 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-401b393df02so70420975e9.1;
+        Tue, 12 Sep 2023 12:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694546031; x=1695150831; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TeoZs7xQmKdzpDag8SbCgUnRAmmiY/rfJsyiwqIz2wg=;
+        b=amX+k6hxuuWY/0W0kWLMTgiY1rofP/kdN25Gl8u7G+buAgZwSHJo/T+rzzYGsdrUKn
+         tZlrppuQzOjosdZ5zpyMyt02bhNSkIRnhvfukQ7hoBPbrMvGpcvhbLX18yJo/TSyukFj
+         so3EOwkrqwNvegdMy/2Gch4iP4iQ+zwdLkBG0jkKATV0HW71uzH43r9apH1nEXtNi7ig
+         VciGEGTo/XEM2pnxH75sqpVoloxKxjTyLwD11mDfFbINOVgKPkfarhgWv2hh9+oeF7eS
+         DZMPAw50jGySl9/2Ajl2wUuu4qNU814sJBC3LfPRC8BV9ybsAHluiLN6UHnCrg2qbQRd
+         osYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694546031; x=1695150831;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TeoZs7xQmKdzpDag8SbCgUnRAmmiY/rfJsyiwqIz2wg=;
+        b=N55bdneS94k7rNewsV2eyTrgJgOWVHiE+UfzSodO87EHUmDaVgGqcJgzYxtP6EuAV4
+         y1C8JtEW2JXEIkjJPjl6YX17D0A76sRFuSxEICeG/eg2CZEbfH4hGIzT+CuiZPV2NwEx
+         w19FX1Fu/et+iF01XIrwO58IukWTMfcgfqq4T2lu/fSEjDR/v5XFSogNWtlL+5ZDDINO
+         YVE3hF+y7pVz4LWNML36falksH5ztnU/NzwZHIcBpjrYeau5y+vebYO5mOO3k71cBgZ7
+         /IVIwI4IUjpBET0pXeGU8kPhVCZAn2n7FyVu9RFlEY0oPbLpXtMIUHR5Ys2CLsQtxz8B
+         Q+xQ==
+X-Gm-Message-State: AOJu0Yx+Jg3TXf/p32P2h8WgM6+DrjMx1HpkymWWibhmyXosjrr3riOx
+        RYvaELeOhb8Nd0neC0z3BFg=
+X-Google-Smtp-Source: AGHT+IEKiL11zfBDl8yaQlLJxvTC9Xw7ZSCVeIdBcoIFgGvnKVa07dBGn4wXuvlP08eImu0izECGPQ==
+X-Received: by 2002:a05:600c:20c4:b0:3fe:e85b:425d with SMTP id y4-20020a05600c20c400b003fee85b425dmr300453wmm.9.1694546030978;
+        Tue, 12 Sep 2023 12:13:50 -0700 (PDT)
+Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
+        by smtp.gmail.com with ESMTPSA id y12-20020a1c4b0c000000b003fee9cdf55esm13409501wma.14.2023.09.12.12.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 12:13:50 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Received: by eldamar.lan (Postfix, from userid 1000)
+        id B695BBE2DE0; Tue, 12 Sep 2023 21:13:49 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 21:13:49 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Timo Sigurdsson <public_timo.s@silentcreek.de>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        regressions@lists.linux.dev, sashal@kernel.org,
+        1051592@bugs.debian.org,
+        Arturo Borrero Gonzalez <arturo@debian.org>
+Subject: Re: Regression: Commit "netfilter: nf_tables: disallow rule addition
+ to bound chain via NFTA_RULE_CHAIN_ID" breaks ruleset loading in
+ linux-stable
+Message-ID: <ZQC4bcVVK99Q8WrO@eldamar.lan>
+References: <20230911213750.5B4B663206F5@dd20004.kasserver.com>
+ <ZP+bUpxJiFcmTWhy@calendula>
+ <20230912113959.8F8B26321005@dd20004.kasserver.com>
 MIME-Version: 1.0
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com> <ZP96feVs2ev7098Y@smile.fi.intel.com>
-In-Reply-To: <ZP96feVs2ev7098Y@smile.fi.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 12 Sep 2023 14:12:04 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
-Message-ID: <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
-Subject: Re: [PATCH V13 0/5] Generate device tree node for pci devices
-To:     Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc:     Lizhi Hou <lizhi.hou@amd.com>, Andrew Lunn <andrew@lunn.ch>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912113959.8F8B26321005@dd20004.kasserver.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 3:37=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
->
-> On Tue, Aug 15, 2023 at 10:19:55AM -0700, Lizhi Hou wrote:
-> > This patch series introduces OF overlay support for PCI devices which
-> > primarily addresses two use cases. First, it provides a data driven met=
-hod
-> > to describe hardware peripherals that are present in a PCI endpoint and
-> > hence can be accessed by the PCI host. Second, it allows reuse of a OF
-> > compatible driver -- often used in SoC platforms -- in a PCI host based
-> > system.
-> >
-> > There are 2 series devices rely on this patch:
-> >
-> >   1) Xilinx Alveo Accelerator cards (FPGA based device)
->
-> >   2) Microchip LAN9662 Ethernet Controller
->
-> I believe you should Cc this to Andrew Lunn for the comments.
-> IIRC something similar was tried to being solved for DSA (?)
-> devices where SFP hotpluggable hardware can be attached or
-> detached at run-time (sorry if I messes / mixing up things,
-> I wrote this from my memory, might be completely wrong).
+Hi Timo,
 
-Could be similar in the sense that this problem exists on any
-discoverable bus with non-discoverable devices downstream.
+On Tue, Sep 12, 2023 at 01:39:59PM +0200, Timo Sigurdsson wrote:
+> Hi Pablo,
+> 
+> Pablo Neira Ayuso schrieb am 12.09.2023 00:57 (GMT +02:00):
+> 
+> > Hi Timo,
+> > 
+> > On Mon, Sep 11, 2023 at 11:37:50PM +0200, Timo Sigurdsson wrote:
+> >> Hi,
+> >> 
+> >> recently, Debian updated their stable kernel from 6.1.38 to 6.1.52
+> >> which broke nftables ruleset loading on one of my machines with lots
+> >> of "Operation not supported" errors. I've reported this to the
+> >> Debian project (see link below) and Salvatore Bonaccorso and I
+> >> identified "netfilter: nf_tables: disallow rule addition to bound
+> >> chain via NFTA_RULE_CHAIN_ID" (0ebc1064e487) as the offending commit
+> >> that introduced the regression. Salvatore also found that this issue
+> >> affects the 5.10 stable tree as well (observed in 5.10.191), but he
+> >> cannot reproduce it on 6.4.13 and 6.5.2.
+> >> 
+> >> The issue only occurs with some rulesets. While I can't trigger it
+> >> with simple/minimal rulesets that I use on some machines, it does
+> >> occur with a more complex ruleset that has been in use for months
+> >> (if not years, for large parts of it). I'm attaching a somewhat
+> >> stripped down version of the ruleset from the machine I originally
+> >> observed this issue on. It's still not a small or simple ruleset,
+> >> but I'll try to reduce it further when I have more time.
+> >> 
+> >> The error messages shown when trying to load the ruleset don't seem
+> >> to be helpful. Just two simple examples: Just to give two simple
+> >> examples from the log when nftables fails to start:
+> >> /etc/nftables.conf:99:4-44: Error: Could not process rule: Operation not
+> >> supported
+> >>                         tcp option maxseg size 1-500 counter drop
+> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >> /etc/nftables.conf:308:4-27: Error: Could not process rule: Operation not
+> >> supported
+> >>                         tcp dport sip-tls accept
+> >>                         ^^^^^^^^^^^^^^^^^^^^^^^^
+> > 
+> > I can reproduce this issue with 5.10.191 and 6.1.52 and nftables v1.0.6,
+> > this is not reproducible with v1.0.7 and v1.0.8.
+> > 
+> >> Since the issue only affects some stable trees, Salvatore thought it
+> >> might be an incomplete backport that causes this.
+> >> 
+> >> If you need further information, please let me know.
+> > 
+> > Userspace nftables v1.0.6 generates incorrect bytecode that hits a new
+> > kernel check that rejects adding rules to bound chains. The incorrect
+> > bytecode adds the chain binding, attach it to the rule and it adds the
+> > rules to the chain binding. I have cherry-picked these three patches
+> > for nftables v1.0.6 userspace and your ruleset restores fine.
+> 
+> hmm, that doesn't explain why Salvatore didn't observe this with
+> more recent kernels.
+> 
+> Salvatore, did you use newer userspace components when you tested
+> your 6.4.13 and 6.5.2 builds?
 
-The LAN9662 case is that it's an SoC that can run Linux. Standard
-stuff there. You have a DT and a bunch of drivers and SoC support in
-the kernel. Now take that same SoC with the CPU cores disabled and
-expose the whole (or part of) SoC via PCIe to Linux running on another
-host. How to reuse all the drivers? Yes, you could define swnode
-stuff, but then the PCI driver becomes a board file (or multiple). In
-fact that's what they started doing at one point. It doesn't scale.
+It does explain now because understanding the issue better. While one
+while experinting should only change each one constraint for the
+6.4.13 and 6.5.2 testing I indeed switched to a Debian unstable
+system, which has newer userpace nftables and so not triggering the
+issue. This was missleading for the report.
 
-> >      Please see: https://lore.kernel.org/lkml/20220427094502.456111-1-c=
-lement.leger@bootlin.com/
-> >
-> > Normally, the PCI core discovers PCI devices and their BARs using the
-> > PCI enumeration process. However, the process does not provide a way to
-> > discover the hardware peripherals that are present in a PCI device, and
-> > which can be accessed through the PCI BARs. Also, the enumeration proce=
-ss
-> > does not provide a way to associate MSI-X vectors of a PCI device with =
-the
-> > hardware peripherals that are present in the device. PCI device drivers
-> > often use header files to describe the hardware peripherals and their
-> > resources as there is no standard data driven way to do so. This patch
-> > series proposes to use flattened device tree blob to describe the
-> > peripherals in a data driven way. Based on previous discussion, using
-> > device tree overlay is the best way to unflatten the blob and populate
-> > platform devices. To use device tree overlay, there are three obvious
-> > problems that need to be resolved.
-> >
-> > First, we need to create a base tree for non-DT system such as x86_64. =
-A
-> > patch series has been submitted for this:
-> > https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list@gmai=
-l.com/
-> > https://lore.kernel.org/lkml/20220216050056.311496-1-lizhi.hou@xilinx.c=
-om/
->
-> Can you point out to the ACPI excerpt(s) of the description of anything r=
-elated
-> to the device(s) in question?
+> As for the regression and how it be dealt with: Personally, I don't
+> really care whether the regression is solved in the kernel or
+> userspace. If everybody agrees that this is the best or only viable
+> option and Debian decides to push a nftables update to fix this,
+> that works for me. But I do feel the burden to justify this should
+> be high. A kernel change that leaves users without a working packet
+> filter after upgrading their machines is serious, if you ask me. And
+> since it affects several stable/longterm trees, I would assume this
+> will hit other stable (non-rolling) distributions as well, since
+> they will also use older userspace components (unless this is
+> behavior specific to nftables 1.0.6 but not older versions). They
+> probably should get a heads up then.
 
-I don't understand what you are asking for.
+So if it is generally believed on kernel side there should not happen
+any further changes to work with older userland, I guess in Debian we
+will need to patch nftables. I'm CC'ing Arturo Borrero Gonzalez
+<arturo@debian.org>, maintainer for the package. The update should go
+ideally in the next point releases from October (and maybe released
+earlier as well trough the stable-updates mechanism).
 
-Rob
+FWIW: In Debian bullseye we have 0.9.8 based nftables, in bookworm
+1.0.6, so both will need those fixes.
+
+As 0ebc1064e487 is to address CVE-2023-4147 other distros picking the
+fix will likely encounter the problem at some point. It looks Red Hat
+has taken it (some RHSA's were released), I assume Ubuntu will shortly
+as well release USN's containing a fix.
+
+Regards,
+Salvatore
