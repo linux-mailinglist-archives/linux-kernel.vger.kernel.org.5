@@ -2,132 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD60679C118
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E73A79C153
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 02:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbjILA1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 20:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
+        id S231684AbjILAsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 20:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjILA1E (ORCPT
+        with ESMTP id S229753AbjILAsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 20:27:04 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB618B8B4;
-        Mon, 11 Sep 2023 17:21:35 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B6F732185A;
-        Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694478004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 11 Sep 2023 20:48:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B35618F38C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694478172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
-        b=y+XJ5licnv6p4VsbMaYCCmjo88xpeuPolvb06IFTBaohmZvi/sfa6ct/tsx/rT903MwHja
-        feieLTBbRrr7hs0PQAhssAyrPqBBQWX4zmAHc8gS4JuL7um1lHz3M+ZofnVQg4X0c7oJa6
-        zntywi97zFwmCzO4Bh5EOVScVd7Yopo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694478004;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=miCkGFoxKxVBRFGfrRVmp7107zCZ87ZsGupuJ8/qi4I=;
-        b=gWiZ8WawDBD37dgffca3X5PwhwfGLc4J5xDCDY4r5blSjYZHqemjX9l8+4vwn4kc0fSi9z
-        aQgqVsD/spaBrZAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7F699139DB;
-        Tue, 12 Sep 2023 00:20:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3zaDGbSu/2StUQAAMHmgww
-        (envelope-from <krisman@suse.de>); Tue, 12 Sep 2023 00:20:04 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
-        martin.lau@linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, pabeni@redhat.com
-Subject: Re: [PATCH v5 5/8] io_uring/cmd: return -EOPNOTSUPP if net is disabled
-In-Reply-To: <ZP9EeunfcbWos80w@gmail.com> (Breno Leitao's message of "Mon, 11
-        Sep 2023 09:46:50 -0700")
-Organization: SUSE
-References: <20230911103407.1393149-1-leitao@debian.org>
-        <20230911103407.1393149-6-leitao@debian.org> <87ledc904p.fsf@suse.de>
-        <ZP9EeunfcbWos80w@gmail.com>
-Date:   Mon, 11 Sep 2023 20:20:03 -0400
-Message-ID: <87jzsw5jkc.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        bh=0ESV40xUlx4Zvo6LdHszoOUWYzAUZO18uva7dc5H6tc=;
+        b=NxIoSqnlw8RWGm1UVOoKaF1Qq4pW23aSRMjgu0MwLrlZeL0lNB70AAEy/TG0+Bxv7+8gBc
+        48fxKUSRfA5S95k1UYfV+P+ImfpkJSjCvjEhmsO55vgeuu8J5DnDK2PVomDwLfScLW43Um
+        G4GZ4o8rIssfc+tEMPD2sxA4YMdJnp4=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-RaSEs2UtMDOI8tJN75Wnbg-1; Mon, 11 Sep 2023 20:22:50 -0400
+X-MC-Unique: RaSEs2UtMDOI8tJN75Wnbg-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76f2d10edcbso556179885a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 17:22:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694478170; x=1695082970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0ESV40xUlx4Zvo6LdHszoOUWYzAUZO18uva7dc5H6tc=;
+        b=lhFqt3+BI7HqKD+ipQ5XsKYM1+8PaRbiM0Ow/izHKMX/S1HEce6WmvAmn36xf4FsZb
+         7TRuQqJ4rg8RXVR5wngkGcc9YhNuBs28zfgYJsSmYwKTGzfrmsoGK/H8pFXsAizYBxcA
+         Q6+ztKwKpumxWrpHny2UvTYb0cfvi8IEV3ghfK3xNhY72MUlq2/iyyJW++3LcJCq7bbZ
+         bYH71tgoyoAFEVWnb6MMrmR2VL+0AOeXu3KFFrKUHVax4dt0dJPZ5cUScN/jCSQTORa5
+         UiqoqKtGZBoSE+9QIql0XiIMaDUXgdc+weFsmXIDMoq1WTzTtvf8YG11WkIQKMUw3PhN
+         b7Ow==
+X-Gm-Message-State: AOJu0YxaITp+HSaipsgf2QNg40NYJvo0OjfIGfVTNftQ4ISV9moqOanf
+        WStKtPG4GMsj659sk9ouXFASi2NvgH+A1Jt2CPvlOitmtrCbFC9NFg9jl8tEmePqX9TTc5ZzhkW
+        xo/UZfDElLHYZTJseHTHKnjN9Tit/AAvo4jZmRnRD
+X-Received: by 2002:a05:620a:4d4:b0:76f:e1f:c0c7 with SMTP id 20-20020a05620a04d400b0076f0e1fc0c7mr10583973qks.27.1694478170396;
+        Mon, 11 Sep 2023 17:22:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEIjneWL4eV17pupEmKZzT1JMBUjL92fultN54QbYD24lyaScOqRPbkaMjuPELM3lKhP/W4wfHneM05ql+GDfQ=
+X-Received: by 2002:a05:620a:4d4:b0:76f:e1f:c0c7 with SMTP id
+ 20-20020a05620a04d400b0076f0e1fc0c7mr10583950qks.27.1694478170068; Mon, 11
+ Sep 2023 17:22:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20230810040349.92279-2-leobras@redhat.com> <ZP2DVap64lJZj9g4@gmail.com>
+In-Reply-To: <ZP2DVap64lJZj9g4@gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Mon, 11 Sep 2023 21:22:38 -0300
+Message-ID: <CAJ6HWG6yED5eUVgaygHqVb7NUbHBzb8dz73dq9cyKAGj5_Sh5g@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 0/5] Rework & improve riscv cmpxchg.h and atomic.h
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao <leitao@debian.org> writes:
-
-> On Mon, Sep 11, 2023 at 11:53:58AM -0400, Gabriel Krisman Bertazi wrote:
->> Breno Leitao <leitao@debian.org> writes:
->> 
->> > Protect io_uring_cmd_sock() to be called if CONFIG_NET is not set. If
->> > network is not enabled, but io_uring is, then we want to return
->> > -EOPNOTSUPP for any possible socket operation.
->> >
->> > This is helpful because io_uring_cmd_sock() can now call functions that
->> > only exits if CONFIG_NET is enabled without having #ifdef CONFIG_NET
->> > inside the function itself.
->> >
->> > Signed-off-by: Breno Leitao <leitao@debian.org>
->> > ---
->> >  io_uring/uring_cmd.c | 8 ++++++++
->> >  1 file changed, 8 insertions(+)
->> >
->> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
->> > index 60f843a357e0..a7d6a7d112b7 100644
->> > --- a/io_uring/uring_cmd.c
->> > +++ b/io_uring/uring_cmd.c
->> > @@ -167,6 +167,7 @@ int io_uring_cmd_import_fixed(u64 ubuf, unsigned long len, int rw,
->> >  }
->> >  EXPORT_SYMBOL_GPL(io_uring_cmd_import_fixed);
->> >  
->> > +#if defined(CONFIG_NET)
->> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> >  {
->> >  	struct socket *sock = cmd->file->private_data;
->> > @@ -193,3 +194,10 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> >  	}
->> >  }
->> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
->> > +#else
->> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
->> > +{
->> > +	return -EOPNOTSUPP;
->> > +}
->> > +#endif
->> > +
->> 
->> Is net/socket.c even built without CONFIG_NET? if not, you don't even need
->> the alternative EOPNOTSUPP implementation.
+On Sun, Sep 10, 2023 at 5:50=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
 >
-> It seems so. net/socket.o is part of obj-y:
+> On Thu, Aug 10, 2023 at 01:03:42AM -0300, Leonardo Bras wrote:
+> > While studying riscv's cmpxchg.h file, I got really interested in
+> > understanding how RISCV asm implemented the different versions of
+> > {cmp,}xchg.
+> >
+> > When I understood the pattern, it made sense for me to remove the
+> > duplications and create macros to make it easier to understand what exa=
+ctly
+> > changes between the versions: Instruction sufixes & barriers.
+> >
+> > Also, did the same kind of work on atomic.c.
+> >
+> > After that, I noted both cmpxchg and xchg only accept variables of
+> > size 4 and 8, compared to x86 and arm64 which do 1,2,4,8.
+> >
+> > Now that deduplication is done, it is quite direct to implement them
+> > for variable sizes 1 and 2, so I did it. Then Guo Ren already presented
+> > me some possible users :)
+> >
+> > I did compare the generated asm on a test.c that contained usage for ev=
+ery
+> > changed function, and could not detect any change on patches 1 + 2 + 3
+> > compared with upstream.
+> >
+> > Pathes 4 & 5 were compiled-tested, merged with guoren/qspinlock_v11 and
+> > booted just fine with qemu -machine virt -append "qspinlock".
+> >
+> > (tree: https://gitlab.com/LeoBras/linux/-/commits/guo_qspinlock_v11)
+> Tested-by: Guo Ren <guoren@kernel.org>
 >
-> https://github.com/torvalds/linux/blob/master/net/Makefile#L9
+> Sorry for late reply, because we are stress testing CNA qspinlock on
+> sg2042 128 cores hardware platform. This series has passed our test for
+> several weeks. For more detail, ref:
+> https://lore.kernel.org/linux-riscv/20230910082911.3378782-1-guoren@kerne=
+l.org/
+>
 
-Yes. But also:
+That's awesome!
+Thanks for testing!
 
-[0:cartola linux]$ grep 'net/' Kbuild
-obj-$(CONFIG_NET)       += net/
+Leo
 
-I doubled checked and it should build fine without it.  Technically, you
-also want to also guard the declaration in the header file, IMO, even if
-it compiles fine.  Also, there is an extra blank line warning when applying
-the patch but, surprisingly, checkpatch.pl seems to miss it.
+> >
+> > Thanks!
+> > Leo
+> >
+> > Changes since squashed cmpxchg RFCv4:
+> > - Added (__typeof__(*(p))) before returning from {cmp,}xchg, as done
+> >   in current upstream, (possibly) fixing the bug from kernel test robot
+> > https://lore.kernel.org/all/20230809021311.1390578-2-leobras@redhat.com=
+/
+> >
+> > Changes since squashed cmpxchg RFCv3:
+> > - Fixed bug on cmpxchg macro for var size 1 & 2: now working
+> > - Macros for var size 1 & 2's lr.w and sc.w now are guaranteed to recei=
+ve
+> >   input of a 32-bit aligned address
+> > - Renamed internal macros from _mask to _masked for patches 4 & 5
+> > - __rc variable on macros for var size 1 & 2 changed from register to u=
+long
+> > https://lore.kernel.org/all/20230804084900.1135660-2-leobras@redhat.com=
+/
+> >
+> > Changes since squashed cmpxchg RFCv2:
+> > - Removed rc parameter from the new macro: it can be internal to the ma=
+cro
+> > - 2 new patches: cmpxchg size 1 and 2, xchg size 1 and 2
+> > https://lore.kernel.org/all/20230803051401.710236-2-leobras@redhat.com/
+> >
+> > Changes since squashed cmpxchg RFCv1:
+> > - Unified with atomic.c patchset
+> > - Rebased on top of torvalds/master (thanks Andrea Parri!)
+> > - Removed helper macros that were not being used elsewhere in the kerne=
+l.
+> > https://lore.kernel.org/all/20230419062505.257231-1-leobras@redhat.com/
+> > https://lore.kernel.org/all/20230406082018.70367-1-leobras@redhat.com/
+> >
+> > Changes since (cmpxchg) RFCv3:
+> > - Squashed the 6 original patches in 2: one for cmpxchg and one for xch=
+g
+> > https://lore.kernel.org/all/20230404163741.2762165-1-leobras@redhat.com=
+/
+> >
+> > Changes since (cmpxchg) RFCv2:
+> > - Fixed  macros that depend on having a local variable with a magic nam=
+e
+> > - Previous cast to (long) is now only applied on 4-bytes cmpxchg
+> > https://lore.kernel.org/all/20230321074249.2221674-1-leobras@redhat.com=
+/
+> >
+> > Changes since (cmpxchg) RFCv1:
+> > - Fixed patch 4/6 suffix from 'w.aqrl' to '.w.aqrl', to avoid build err=
+or
+> > https://lore.kernel.org/all/20230318080059.1109286-1-leobras@redhat.com=
+/
+> >
+> > Leonardo Bras (5):
+> >   riscv/cmpxchg: Deduplicate xchg() asm functions
+> >   riscv/cmpxchg: Deduplicate cmpxchg() asm and macros
+> >   riscv/atomic.h : Deduplicate arch_atomic.*
+> >   riscv/cmpxchg: Implement cmpxchg for variables of size 1 and 2
+> >   riscv/cmpxchg: Implement xchg for variables of size 1 and 2
+> >
+> >  arch/riscv/include/asm/atomic.h  | 164 ++++++-------
+> >  arch/riscv/include/asm/cmpxchg.h | 404 ++++++++++---------------------
+> >  2 files changed, 200 insertions(+), 368 deletions(-)
+> >
+> >
+> > base-commit: cacc6e22932f373a91d7be55a9b992dc77f4c59b
+> > --
+> > 2.41.0
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+>
 
--- 
-Gabriel Krisman Bertazi
