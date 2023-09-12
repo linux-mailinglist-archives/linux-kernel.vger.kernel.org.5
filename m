@@ -2,200 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0A379D562
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D7B79D564
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236504AbjILPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S236462AbjILPyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236479AbjILPyh (ORCPT
+        with ESMTP id S236475AbjILPyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:54:37 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A696E1706;
-        Tue, 12 Sep 2023 08:54:33 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so770352166b.3;
-        Tue, 12 Sep 2023 08:54:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694534072; x=1695138872; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z8oHJ2ujiJlxAUemtJ2j3LYJnlvFVhGLWaN0VZa8yeI=;
-        b=RlB6X2zirA0oI8U3HcXWIj3UnBMl48p957j/OSDDMUoXXIAAD3ZByT4WtN3hXD6YUj
-         OiB+YjrmWuSKbGXZ2UJSUVUMdHufQYBhWDMI2FZNRYLPnDba1W8+I9kj2Wx84FFPMDOF
-         xEo5Yc8UVaf6UaRDCWNMt4fVcOfQg0DlVfgn2niUsL43G8ZXCQu6P4ezXLXQPVANo7RH
-         ugXEa7GhPsfDdSNjbJF25Z/2njh/gOGg9dEUyxuEBrZ8efQPtoos2E14P4z96qGZnZr/
-         /uvIBublO7xRAM8B7BZWkmPyXTGSgzO82p5E40xSkWlWs3GTVOmSSX0GHimJNLB7A4Xc
-         9REg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694534072; x=1695138872;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z8oHJ2ujiJlxAUemtJ2j3LYJnlvFVhGLWaN0VZa8yeI=;
-        b=NMcWYGgVviqRwiVLtESx62VNG6DeE/ZeQn0SwdWyI5/BblpfHK/3IxHylMuMrsyBII
-         vnp+T71CupjF0a1j/vqj2Yi6ksCxJ+GK+9//E+nsSgxa+KSt9ceGIU+mJgILCL0cIGMy
-         nEdxvZtKSTq5eCC0BALMdWsg+0dOwUNP3Fh5+XJ+kMyLd/eBvbAoky9iWhTAsKC8NPAO
-         W50p+JVnh6xCNsVMivVgsrYcDz8xatGYmeyp1Q+TLcDvfn7WRu7wY9m1dHEy0koP+I10
-         OmLQWvVR0wFxpPZ7iC5MJy/73uRvkb7/Ry4FvtPlYPRO4zixz8KzUdPbwnMCZM23VvD4
-         yKMg==
-X-Gm-Message-State: AOJu0YyAQ27PyE+ZWhJfY7WA1e4DoW6FvUCM+PXG/g0JBeuRKH7nXNo0
-        pAfFF/p0XJCoU6vzPSsb6jI=
-X-Google-Smtp-Source: AGHT+IEEM/bk4nQRqipf1BKh7nG712N1GnvGVrUcH4eqH2pGf0pFfIu2q7I8cr4PaxHXmrgjqYI4VA==
-X-Received: by 2002:a17:906:2101:b0:9a1:6318:4d39 with SMTP id 1-20020a170906210100b009a163184d39mr11291101ejt.29.1694534072102;
-        Tue, 12 Sep 2023 08:54:32 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id lf28-20020a170907175c00b0099bcf1c07c6sm7032766ejc.138.2023.09.12.08.54.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 08:54:31 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alan Ma <tech@biqu3d.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Martin Botka <martin@biqu3d.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rogerio Goncalves <rogerlz@gmail.com>,
-        Martin Botka <martin.botka@somainline.org>
-Subject: Re: [PATCH v6 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi support
-Date:   Tue, 12 Sep 2023 17:54:30 +0200
-Message-ID: <1769061.VLH7GnMWUR@jernej-laptop>
-In-Reply-To: <20230912-b4-cb1-v6-4-bb11238f3a9c@somainline.org>
-References: <20230912-b4-cb1-v6-0-bb11238f3a9c@somainline.org>
- <20230912-b4-cb1-v6-4-bb11238f3a9c@somainline.org>
+        Tue, 12 Sep 2023 11:54:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1E010EA;
+        Tue, 12 Sep 2023 08:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694534087; x=1726070087;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3jTuqh4N0hikfcv6YdLFg6ihQkSrNyUM0fJiVYX+uhs=;
+  b=I9JyLd2VYHkcBemXPD5vFPU07oqSoUYS1h5EkiMyFykpkMswK1Mr79qt
+   ek5MXUUJtFkrDZNzopEol5rCRErHTeFPYtST8fW2KI3Sr5z2tcv0l6aNg
+   RyxVEwA6/rs8cLm4NgykAmkQcF72LfR9Xg+107bS3GTUGieoyjYXk5yCn
+   +FevaxiO5OJX9eZv7w7TcJO/FSAvaCDk6D+CNP7X9IKl348n6f8RtgY0L
+   U6jFCN553Vvr0Lc+z8KIABdV5VOq7cVF1sdKK3cwAplkR3/5o5WPvMNH1
+   Suk7EnQ/xFoKvDe2bxX5V6yrhL+rb6iu5fJNm574vHQkVQscH1SGqCqIZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409369514"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="409369514"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:54:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="833951803"
+X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
+   d="scan'208";a="833951803"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Sep 2023 08:54:44 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 2881F248; Tue, 12 Sep 2023 18:54:43 +0300 (EEST)
+Date:   Tue, 12 Sep 2023 18:54:43 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     linus.walleij@linaro.org, andriy.shevchenko@linux.intel.com,
+        dan.carpenter@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
+Subject: Re: [PATCH v1] pinctrl: baytrail: fix debounce disable case
+Message-ID: <20230912155443.GF1599918@black.fi.intel.com>
+References: <20230912154815.28975-1-raag.jadav@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230912154815.28975-1-raag.jadav@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne torek, 12. september 2023 ob 13:20:50 CEST je Martin Botka napisal(a):
-> From: Martin Botka <martin@biqu3d.com>
+On Tue, Sep 12, 2023 at 09:18:15PM +0530, Raag Jadav wrote:
+> We don't need to update debounce pulse value in case debounce is to be
+> disabled. Break such a case where arg value is zero.
 > 
-> The BigTreeTech Pi is an H616 based board based on CB1.
-> Just in Rpi format board.
-> 
-> It features the same internals as BTT CB1 but adds:
->     - Fan port
->     - IR receiver
->     - ADXL345 Accelerometer connector via SPI
->     - 24V DC power supply via terminal plugs
->     - USB to CAN module connector (External Module)
-> 
-> List of currently working things is same as BTT CB1 but also:
->     - IR receiver
->     - ADXL345 connector
-> 
-> Signed-off-by: Martin Botka <martin@biqu3d.com>
-> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> Fixes: 4cfff5b7af8b ("pinctrl: baytrail: consolidate common mask operation")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/d164d471-5432-4c3c-afdb-33dc8f53d043@moroto.mountain/
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
-> ---
->  arch/arm64/boot/dts/allwinner/Makefile             |  1 +
->  .../dts/allwinner/sun50i-h616-bigtreetech-pi.dts   | 63
-> ++++++++++++++++++++++ 2 files changed, 64 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile
-> b/arch/arm64/boot/dts/allwinner/Makefile index 42e525b9d4b9..3aca6787a167
-> 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -39,6 +39,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-pine-h64-model-b.dtb
-> dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero3.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts new file
-> mode 100644
-> index 000000000000..832f08b2b260
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
-> @@ -0,0 +1,63 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
-> +/*
-> + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-bigtreetech-cb1.dtsi"
-> +
-> +/ {
-> +	model = "BigTreeTech Pi";
-> +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
-> +
-> +	aliases {
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci1 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci3 {
-> +	status = "okay";
-> +};
-> +
-> +&ir {
-> +	status = "okay";
-> +};
-> +
-> +&ohci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci1 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci3 {
-> +	status = "okay";
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_ph_pins>;
-> +	status = "okay";
-> +};
-
-
-
-
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
