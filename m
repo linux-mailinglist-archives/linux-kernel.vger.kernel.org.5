@@ -2,168 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEEC79C79C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8895579C79E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjILHFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
+        id S231334AbjILHFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjILHE4 (ORCPT
+        with ESMTP id S231308AbjILHFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:04:56 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C511E10D0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:04:51 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso56312595e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694502290; x=1695107090; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6LYSAyqOGAquE7WJUWpSo20AQyTJGIFtgc4llB7UU2A=;
-        b=d0sHYZ0uefz3BiUfy0UEGE7mGilu/K5MqsrIsUXUNLrLkGDvpmZuLywuDUFfTd5qBF
-         jR4/MD8fh8J2TigwWDv5+GSY56bcDHd++kbWKAdRyAsHscH9mAwl4juMBLshDf0Ro0on
-         i9RXPjNnoydioAoxKOUNNHcgYNM/Z28wqy5iwaPMkBdbTnAtv5XymnsPnG59QcsihztA
-         Dmk7gQEH9PbXBhEStFNVjLqkrelMtp86XR0Tq4AwQPXp4k8nOJ8kWDhlt8z7eKJvLdTX
-         rtlXNDZ4lhomWr+HeFj/Q3HrC4DlbL4dj0BAm34+rSIF4i8LRdzXsDipQ3HL6yx6TGUz
-         Fmew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502290; x=1695107090;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6LYSAyqOGAquE7WJUWpSo20AQyTJGIFtgc4llB7UU2A=;
-        b=AyDCo4TOMonrqK205zD4LzX8Ak0IT9Il1v/DpU5LkijAuwdtcsp8RjX3vNZtzvHHMI
-         mlJacW8WdyeuT5hx7D0fd/1ktU8uYpa/klj7x9ctvnVlw8tKnO/ywErONMDnxiITHNEP
-         dffvTLu2gcpRofeG7MqnII0fQsORPQHbZmYjmR4Nw0oXZYcq93MdPqlXLNjNwV266cbk
-         U39cQ7rTyMH4YjktOPrvlc6yrmVQocvYvJRilu5OsGtM4fviFJOwvYz1BA0x4/KGrPo/
-         NHDrhRVkmy0csSeMlPIgHnPyx5gUchw1Vhcu9y73uo4sgsxtVUFBmCcRp658MIY4Dzb0
-         96fQ==
-X-Gm-Message-State: AOJu0Yw9VXgS1cMHEINGcqgsVU1iFBMXU3L5I4PHkdq36weenOh10xBi
-        IbXkw3LsVG+m3VnapxBhtJgIKA==
-X-Google-Smtp-Source: AGHT+IGDPgmBAH+Gv4gPep6zQB5ZcHI+8juP8EnWdQ5W/MaG4tXyzUAhDYJSgVfdo5qrPdjOy7lXrA==
-X-Received: by 2002:a7b:cc8e:0:b0:3fe:687a:abb8 with SMTP id p14-20020a7bcc8e000000b003fe687aabb8mr10368161wma.7.1694502290167;
-        Tue, 12 Sep 2023 00:04:50 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id a16-20020a5d4570000000b00317f70240afsm12024520wrc.27.2023.09.12.00.04.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 00:04:49 -0700 (PDT)
-Message-ID: <9da4efe6-bbff-62af-8d05-b05cf12a4c31@linaro.org>
-Date:   Tue, 12 Sep 2023 09:04:47 +0200
+        Tue, 12 Sep 2023 03:05:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1404E7F;
+        Tue, 12 Sep 2023 00:05:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CBFBC433CD;
+        Tue, 12 Sep 2023 07:05:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694502305;
+        bh=rdbAnWDmqOY+gzQ808fleTCy7T0WdyZbioJ9M88erQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P6prl/wEd//9SPT1qY531EGJqgOTlVEuToz0Mba3enuHKZdwa0Zn14U1WyxDlbewb
+         xRYsvNK0wwYNtjbh+TENHqzl00MaFXcMnYnUhyYsasFuiRnB20xh4Xg7sAojnRMEdR
+         dkAaN6ajP1N0jqDy1cxDvM7GCR2d44tvjbu1RfucNguC7f+YjEAyx/uHlL+WWW+sf0
+         ayHULCrsxopO5VAf/LbmDLfgtLWAtMpjNH8nnrLaxMFhxUCNiDYCUQXhs0e6k5sTkw
+         ZQ0TVGUXd9Ogp02cOsb0N9K8XQP093EMEOGwAeL0O+t+teE1s4D3PedDnXbT5WBExy
+         0it5naf4/Go8w==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so89617691fa.2;
+        Tue, 12 Sep 2023 00:05:05 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyUHms7jwNIzzwMsC0HglZ2WT98APCK2kL3SgmqTcUtnYoVtk1I
+        AOpJJhamt8NX6ULDbxfpVHERvX4pmi/+GfvYCas=
+X-Google-Smtp-Source: AGHT+IHM2Q2GsUNR0wFWv4DEN2NdeYOxUGS5UgSXcN6uPWiGfeXVUbGdMGi/1xpRAr+xFot6bo4EPLs1rpqpexJAWUI=
+X-Received: by 2002:a2e:9197:0:b0:2bc:c11c:4471 with SMTP id
+ f23-20020a2e9197000000b002bcc11c4471mr10402795ljg.21.1694502303650; Tue, 12
+ Sep 2023 00:05:03 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/3] dt-bindings: reset: Document th1520 reset control
-Content-Language: en-US
-To:     k.son@samsung.com, p.zabel@pengutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jszhang@kernel.org, guoren@kernel.org, wefu@redhat.com,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, inki.dae@samsung.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20230912024914.3769440-1-k.son@samsung.com>
- <CGME20230912024917epcas1p4bb4d649f97b592c3245b10b6450d32cf@epcas1p4.samsung.com>
- <20230912024914.3769440-2-k.son@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230912024914.3769440-2-k.son@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230711153743.1970625-1-heiko@sntech.de> <20230711153743.1970625-11-heiko@sntech.de>
+ <20230721054036.GD847@sol.localdomain> <CCA32056-CCE2-4FB5-8CFC-62444CDDA89F@sifive.com>
+In-Reply-To: <CCA32056-CCE2-4FB5-8CFC-62444CDDA89F@sifive.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 12 Sep 2023 09:04:52 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com>
+Message-ID: <CAMj1kXEGnZC6nge42WeBML9Vx6K6Lezt8Cc1faP+3gN=TzFgvA@mail.gmail.com>
+Subject: Re: [PATCH v4 10/12] RISC-V: crypto: add Zvkned accelerated AES
+ encryption implementation
+To:     Jerry Shih <jerry.shih@sifive.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        christoph.muellner@vrull.eu,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 04:49, k.son@samsung.com wrote:
-> From: Kwanghoon Son <k.son@samsung.com>
-> 
-> Add documentation to describe th1520 reset device
+On Tue, 12 Sept 2023 at 00:50, Jerry Shih <jerry.shih@sifive.com> wrote:
+>
+> On Jul 21, 2023, at 13:40, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> > I'm looking forward to having direct support for these AES modes, especially the
+> > modes needed for storage encryption: XTS, and CBC or CTS!  None of these AES
+> > modes is actually implemented in this patch yet, though, so they can't be
+> > claimed in the kconfig help text yet.  This patch is just a starting point, as
+> > it just adds support for the bare AES block cipher ("aes" in the crypto API).
+> >
+> > (BTW, I'm much more interested in, say, AES-XTS support than SM4 support, which
+> > this patchset does include.  SM4 is a "national pride cipher" which is somewhat
+> > of a niche thing.  I suppose there are already people pushing it for RISC-V
+> > though, as they are everywhere else, so that's to be expected...)
+> >
+>
+> We have further optimization for RISC-V platform in OpenSSL PR[1]. It will include
+> AES with CBC, CTR, and XTS mode. Comparing to the generic AES implementation,
+> the specialized AES-XTS one have about 3X performance improvement using
+> OpenSSL benchmark tool. If OpenSSL accepts that PR, we will create the
+> corresponding patch for Linux kernel.
+>
+> [1]
+> https://github.com/openssl/openssl/pull/21923
+>
 
-Full stop.
-
-> 
-> Signed-off-by: Kwanghoon Son <k.son@samsung.com>
-
-This is v2, not v1. Please provide changelog after ---.
-
-
-> ---
->  .../bindings/reset/thead,th1520-reset.yaml    | 47 +++++++++++++++++++
->  include/dt-bindings/reset/th1520-reset.h      |  9 ++++
->  2 files changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/reset/thead,th1520-reset.yaml
->  create mode 100644 include/dt-bindings/reset/th1520-reset.h
-> 
-> diff --git a/Documentation/devicetree/bindings/reset/thead,th1520-reset.yaml b/Documentation/devicetree/bindings/reset/thead,th1520-reset.yaml
-> new file mode 100644
-> index 000000000000..6724a9ccdd55
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/reset/thead,th1520-reset.yaml
-> @@ -0,0 +1,47 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/reset/thead,th1520-reset.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: T-HEAD th1520 SoC Reset Controller
-> +
-> +maintainers:
-> +  - Kwanghoon Son <k.son@samsung.com>
-> +
-> +allOf:
-> +  - $ref: /schemas/mfd/syscon.yaml#
-
-Why do you need it? Which existing file suggested such code?
-
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: thead,th1520-reset
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#reset-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/reset/th1520-reset.h>
-> +
-> +    soc {
-> +      #address-cells = <2>;
-
-Your indentation is messed up. Here two spaces, further four. Just keep
-one indentation for the example - 4 spaces.
-
-> +      #size-cells = <2>;
-> +
-> +      reset-controller@ffef014000 {
-> +          compatible = "thead,th1520-reset", "syscon";
-> +          reg = <0xff 0xef014000 0x0 0x1000>;
-> +          #reset-cells = <1>;
-> +      };
-> +    };
-> diff --git a/include/dt-bindings/reset/th1520-reset.h b/include/dt-bindings/reset/th1520-reset.h
-> new file mode 100644
-> index 000000000000..ec10751814e5
-> --- /dev/null
-> +++ b/include/dt-bindings/reset/th1520-reset.h
-
-Filename matching bindings/compatible - missing vendor prefix.
-
-
-Best regards,
-Krzysztof
-
+This pull request doesn't appear to contain any XTS code at all, only CBC.
