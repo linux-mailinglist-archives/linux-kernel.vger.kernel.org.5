@@ -2,134 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0922279CBFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F68A79CC01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbjILJhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
+        id S232593AbjILJiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbjILJhe (ORCPT
+        with ESMTP id S232361AbjILJiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:37:34 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA5912E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:37:30 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502984f5018so7493658e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694511449; x=1695116249; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rzOy9+i/I3/0IAop11I8QZ9KuzjqNEblUBdj8hE/TNs=;
-        b=Nm7qZQfVf5AWdNieynLmPeauzFxFDRSwv8fpI16YYB1ro732yfRwT4lx45H+6hzTZB
-         4cddXMmRi99xqbfZKL//EEEeZeC8GrW48UkECqSz5PKTN6zWCCAE6RQ4CX6HD68v9LQQ
-         HyMvSBq9liGWlszeTX/oHB9zsxPa5P6dW6IY8=
+        Tue, 12 Sep 2023 05:38:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F7E2E64
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694511454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lFvEVHqhU+e2PFkmxQBvXlSSPTjXEKHDQREd4bomtkc=;
+        b=g8EZfN47Q1cMGJdReujitw894+iz2FdLBdo1H6QGZ1siLJynjSNuKMx9olUUERUe22rGnx
+        76nTySlQlxDMJE6vVzQHgRLuIt4RzfhyS0WcPcc/9AvouIjb7FqG/+JMG54r+l4/GhdmWW
+        UuBImYgmp539m2ya9bG7kpWFdWpqFTQ=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-HzW1wTDDOsSi-9IRsxx8cg-1; Tue, 12 Sep 2023 05:37:33 -0400
+X-MC-Unique: HzW1wTDDOsSi-9IRsxx8cg-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-502c8388d97so296842e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:37:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694511449; x=1695116249;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rzOy9+i/I3/0IAop11I8QZ9KuzjqNEblUBdj8hE/TNs=;
-        b=edwxfQfYsED6pIDHvckEucH3YFTE5ocDUJdO1JvJSvv0JDqqN8do19zb4F5Mb7xh0Z
-         FfJUwfYy5oBxYxnbvXJK2IcD+5nOhcYhi+twarCT3YVbwskUfoVyjLk+tmUhYmdH+gTA
-         mYTgvm69AEwYZqM7pmSBy7CZAQXFO4jKD3GfbDLEheSswOzQ+o6SquenHKpnA1Oa1Ttq
-         o5TS8IfuitXtS90EOMzyi3x2hNx6KDvmosBI2GDQi+Y1uXXNgTULwS0BH39+QJDL9wxz
-         4ph6ieSsWJ3sBrql8nvShwQ/cl+HOUdfeXZIWrozOJKal6F9pkg5sTo6jZeW6NBKMtiY
-         /71g==
-X-Gm-Message-State: AOJu0Yz7IzuPuNofujygvsSbONqYteVT3aEl4DueatNQsAGhbqMaHjpJ
-        QoKmb5kzVJxptlqwaQCWTanEYUHLYKPAcWrSpp0SSA==
-X-Google-Smtp-Source: AGHT+IE5nYxQfZ/p5JEjeqA28AdkacyPuXzw3SozYcbXSTHvYQRz83ev3q6BCV7+1dnYJ4QqMVA8anjAE8x57wQR11Q=
-X-Received: by 2002:a05:6512:2829:b0:4fd:fecf:5d57 with SMTP id
- cf41-20020a056512282900b004fdfecf5d57mr10819604lfb.39.1694511448719; Tue, 12
- Sep 2023 02:37:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230912075805.11432-1-moudy.ho@mediatek.com> <c0bd7428-1330-58c5-64d2-78af479dfcf4@collabora.com>
-In-Reply-To: <c0bd7428-1330-58c5-64d2-78af479dfcf4@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Tue, 12 Sep 2023 17:37:17 +0800
-Message-ID: <CAGXv+5FhsKVGwoJxLP=-gV+rSHbQ8DUX0YACy0mPxYw+MC85=g@mail.gmail.com>
-Subject: Re: [PATCH v5 00/14] add support MDP3 on MT8195 platform
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+        d=1e100.net; s=20230601; t=1694511451; x=1695116251;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lFvEVHqhU+e2PFkmxQBvXlSSPTjXEKHDQREd4bomtkc=;
+        b=vH0XS9zx5Hj4YAU56xFXvSTtmdWl0LzjVDyYEVu3P+4aeyh1prDiOtsNbqO81ji8RI
+         cU0RMmtLk2ML5oNtXPAWF+v3VTOfO68PP81o71gHiMNoO7BiSgHww4sw/zeJMqVvqGMW
+         Qazkcv41O8wGYxHiksalDg3cdYizpmXvF1lz5ACuK5ei3ko90VSN1/nL9r+EN3c2d0mY
+         rf/DmcR7Kpl6EBfchpJr8S3MOTN3phG64mjV4WhzUVDEwBMBp1uehrd5vW+2BwDSLveQ
+         nNEzUMqqvRbiW54PgHPpzr52igKH+RBcvm5nSdeYZszMg31IaacCj+7e8rX7hHnY3yuK
+         fBcg==
+X-Gm-Message-State: AOJu0YwmZKbBxAjss815YYjFL4yZ7COOcyBoR4+ifod/QDHXAGDmRS+A
+        NjogPfo57lw25Uc+7yWcMOBNJn4N6fi/icUniqQpzWq9GbQ+hdRK6S2tnrnfaFKeIkOvpwNar/x
+        3fYZHxpnawlQ0zBL0+8FlLm1k
+X-Received: by 2002:a19:7402:0:b0:501:c223:fa22 with SMTP id v2-20020a197402000000b00501c223fa22mr7676645lfe.6.1694511451697;
+        Tue, 12 Sep 2023 02:37:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHd1bL9Eqlc/wzr89p1BVJNrnI+WoJPE61CRSC3Rf2uCQyoF3lLczz77hzK19iwY/RrIkkchg==
+X-Received: by 2002:a19:7402:0:b0:501:c223:fa22 with SMTP id v2-20020a197402000000b00501c223fa22mr7676633lfe.6.1694511451290;
+        Tue, 12 Sep 2023 02:37:31 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-249-231.dyn.eolo.it. [146.241.249.231])
+        by smtp.gmail.com with ESMTPSA id w20-20020a1709064a1400b00991faf3810esm6640960eju.146.2023.09.12.02.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 02:37:30 -0700 (PDT)
+Message-ID: <e90e954cf5f75ca301c19f9b16add93d3811547c.camel@redhat.com>
+Subject: Re: [PATCH v5 2/8] net/socket: Break down __sys_getsockopt
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Breno Leitao <leitao@debian.org>, sdf@google.com, axboe@kernel.dk,
+        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
+        kuba@kernel.org, martin.lau@linux.dev, krisman@suse.de,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org
+Date:   Tue, 12 Sep 2023 11:37:29 +0200
+In-Reply-To: <20230911103407.1393149-3-leitao@debian.org>
+References: <20230911103407.1393149-1-leitao@debian.org>
+         <20230911103407.1393149-3-leitao@debian.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 5:00=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Il 12/09/23 09:57, Moudy Ho ha scritto:
-> > Changes since v4:
-> > - Rebase on v6.6-rc1
-> > - Remove any unnecessary DTS settings.
-> > - Adjust the usage of MOD and clock in blending components.
-> >
-> > Changes since v3:
-> > - Depend on :
-> >    [1] https://patchwork.kernel.org/project/linux-media/list/?series=3D=
-719841
-> > - Suggested by Krzysztof, integrating all newly added bindings for
-> >    the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
-> > - Revise MDP3 nodes with generic names.
-> >
-> > Changes since v2:
-> > - Depend on :
-> >    [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek=
-/list/?series=3D711592
-> >    [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?=
-series=3D711618
-> > - Suggested by Rob to revise MDP3 bindings to pass dtbs check
-> > - Add parallel paths feature.
-> > - Add blended components settings.
-> >
-> > Changes since v1:
-> > - Depend on :
-> >    [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/=
-?series=3D698872
-> >    [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek=
-/list/?series=3D684959
-> > - Fix compilation failure due to use of undeclared identifier in file "=
-mtk-mdp3-cmdq.c"
-> >
-> > Hello,
-> >
-> > This patch is used to add support for MDP3 on the MT8195 platform that
-> > contains more picture quality components, and can arrange more pipeline=
-s
-> > through two sets of MMSYS and MUTEX respectively.
-> >
-> > Moudy Ho (14):
-> >    arm64: dts: mediatek: mt8183: correct MDP3 DMA-related nodes
-> >    arm64: dts: mediatek: mt8195: add MDP3 nodes
->
-> Please send the DTS patches separately, those go through a different main=
-tainer.
+On Mon, 2023-09-11 at 03:34 -0700, Breno Leitao wrote:
+> Split __sys_getsockopt() into two functions by removing the core
+> logic into a sub-function (do_sock_getsockopt()). This will avoid
+> code duplication when executing the same operation in other callers, for
+> instance.
+>=20
+> do_sock_getsockopt() will be called by io_uring getsockopt() command
+> operation in the following patch.
+>=20
+> Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
+> ---
+>  include/net/sock.h |  3 +++
+>  net/socket.c       | 51 ++++++++++++++++++++++++++++------------------
+>  2 files changed, 34 insertions(+), 20 deletions(-)
+>=20
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index aa8fb54ad0af..fbd568a43d28 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1863,6 +1863,9 @@ int sock_setsockopt(struct socket *sock, int level,=
+ int op,
+>  		    sockptr_t optval, unsigned int optlen);
+>  int do_sock_setsockopt(struct socket *sock, bool compat, int level,
+>  		       int optname, char __user *user_optval, int optlen);
+> +int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+> +		       int optname, char __user *user_optval,
+> +		       int __user *user_optlen);
+> =20
+>  int sk_getsockopt(struct sock *sk, int level, int optname,
+>  		  sockptr_t optval, sockptr_t optlen);
+> diff --git a/net/socket.c b/net/socket.c
+> index 360332e098d4..3ec779a56f79 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -2333,28 +2333,17 @@ SYSCALL_DEFINE5(setsockopt, int, fd, int, level, =
+int, optname,
+>  INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
+>  							 int optname));
+> =20
+> -/*
+> - *	Get a socket option. Because we don't know the option lengths we have
+> - *	to pass a user mode parameter for the protocols to sort out.
+> - */
+> -int __sys_getsockopt(int fd, int level, int optname, char __user *optval=
+,
+> -		int __user *optlen)
+> +int do_sock_getsockopt(struct socket *sock, bool compat, int level,
+> +		       int optname, char __user *optval,
+> +		       int __user *optlen)
+>  {
+>  	int max_optlen __maybe_unused;
+>  	const struct proto_ops *ops;
+> -	int err, fput_needed;
+> -	struct socket *sock;
+> -
+> -	sock =3D sockfd_lookup_light(fd, &err, &fput_needed);
+> -	if (!sock)
+> -		return err;
+> +	int err;
+> =20
+>  	err =3D security_socket_getsockopt(sock, level, optname);
+>  	if (err)
+> -		goto out_put;
+> -
+> -	if (!in_compat_syscall())
+> -		max_optlen =3D BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+> +		return err;
+> =20
+>  	ops =3D READ_ONCE(sock->ops);
+>  	if (level =3D=3D SOL_SOCKET)
+> @@ -2362,14 +2351,36 @@ int __sys_getsockopt(int fd, int level, int optna=
+me, char __user *optval,
+>  	else if (unlikely(!ops->getsockopt))
+>  		err =3D -EOPNOTSUPP;
+>  	else
+> -		err =3D ops->getsockopt(sock, level, optname, optval,
+> -					    optlen);
+> +		err =3D ops->getsockopt(sock, level, optname, optval, optlen);
+> =20
+> -	if (!in_compat_syscall())
+> +	if (!compat) {
+> +		max_optlen =3D BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen);
+>  		err =3D BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level, optname,
+>  						     optval, optlen, max_optlen,
+>  						     err);
+> -out_put:
+> +	}
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL(do_sock_getsockopt);
+> +
+> +/*	Get a socket option. Because we don't know the option lengths we have
+> + *	to pass a user mode parameter for the protocols to sort out.
+> + */
+> +int __sys_getsockopt(int fd, int level, int optname, char __user *optval=
+,
+> +		     int __user *optlen)
+> +{
+> +	int err, fput_needed;
+> +	bool compat =3D in_compat_syscall();
+> +	struct socket *sock;
 
-I thought most people prefer the _full_ view in a patchset?
+Please respect the reverse x-mas tree order, thanks!
 
-> P.S.: The dt-bindings patch can be sent inside of this series, please do =
-that.
->
-> Thanks!
-> Angelo
->
->
+Paolo
+
