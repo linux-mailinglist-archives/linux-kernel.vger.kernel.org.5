@@ -2,96 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9FE79D667
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6519A79D66C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236867AbjILQfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S236879AbjILQgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbjILQfw (ORCPT
+        with ESMTP id S236855AbjILQgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:35:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E2ECF;
-        Tue, 12 Sep 2023 09:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694536548; x=1726072548;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=59Kay4eKd19BWWzORZ2XFuirPpkJIuD3bk1Rj8gXqp4=;
-  b=iqhAZDajut2U876U1gjkJfaTGVggzgwyq2N1jesK9KkZ/RCVsYFcXztD
-   xkuyzp/FKAb3pU8LGuhSYxQsOvpMyXD0xsQFwYd9rqREslO0tC8jRbojs
-   gxCJ7/F0+Hhm+gWGsPd4Uy8h+SzcxjfUfhOBgW8slwNzAcbiW/+SjEbHU
-   KIxtdVxq4/WPLHt37kJdR4tNeR3CpDdw1Dt5ldsePGKSj0CaEAHUqC846
-   9HRUBG1/djlhO9kwksWQ2BSWqBcxwwVaNYcjDSzzLIMBKxLLoXZmYZSiA
-   g9fbo0KtW3S6V88GMEcelxccmsDZ9UQ4iS+/LDA3TazsthgfEJsUfYaQQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409381349"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="409381349"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:35:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="737175502"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="737175502"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 09:35:45 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qg6MY-008dN3-32;
-        Tue, 12 Sep 2023 19:35:42 +0300
-Date:   Tue, 12 Sep 2023 19:35:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Simon Horman <horms@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
-Message-ID: <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
-References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
- <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
- <20230912152031.GI401982@kernel.org>
+        Tue, 12 Sep 2023 12:36:09 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2F410E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:36:05 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c382f23189so785ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:36:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694536565; x=1695141365; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rBrBJw2gZiMOtwReeER2gBrgb6ZIuVFflAABYnAKhrk=;
+        b=RGNjMKh8qtLWWtNHR1wJBKmmO6Da0yuynqUzZvvRMA0Rciin3ZAmTpJwfj5BufiMfY
+         Mkl3XrVasZdL5kGXDHOZxx8poW27Tgsn91AarlLnmHElWThM+0+H7grnZ9YfcxzIUw2f
+         mBTZ11LB2nVsBGP7XGMlH8m5D5H9aw2cxrloTRR5Tz0RL+eghmTwyAVeNc9qWSVgoRB2
+         aYDjky+XJi/yVfBB3IC1Z7Zu+xXN0d9OV1+DRBRzZSOtABUnWvSVZz25Ij4j2Nj+aud8
+         szKbYP/fs9BDtV6ZyY52pWK2InJYDl9GevrU3ubJTRPoYaKdUK3q8xNJOTKFHCNSRqB8
+         Ou2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694536565; x=1695141365;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rBrBJw2gZiMOtwReeER2gBrgb6ZIuVFflAABYnAKhrk=;
+        b=bXyYCSnCxveWy/Sv0l7pO2gUOjcOAv+bQHL5w34rxpDfGhzmj5Iq/tx93TMp9+kfQ3
+         7JIHmGPRV9oT5Ww2f4ODqm0/M3MRCUwD+Wb2Jaqztx41U4d83BMJcoVKhVrVSpeeF5fw
+         8VpQtFFCqwpbBqq3wEc9S2JEOIFuXen8hezfIducRx5sn5KpQnAbxqFtD5grIwlCQN7U
+         0F0NUsdQLscKxJaHxZUV52sP/BuuSP7JqG86xm3NqMke63wGX1TphhJd41dE3s9rA1b7
+         WVe9oWh9McUTBfmESPDBEV1iZMlvVuA8M4n5l46lWuQHjDkev++oI2qAVvPuNiscX4HZ
+         YHTA==
+X-Gm-Message-State: AOJu0YynHLIFAIz6x3Oyf2MlQVDXABjsKnDghSvV/wjx8Rp4ipo0kd0P
+        m2meaEKPxcR2bqdmubJxorRpCJxUkoMPiiwxqErn1A==
+X-Google-Smtp-Source: AGHT+IH3yw1KQNicyRwhKFqkEhYAfiCu9BnkuuCHiTL6C29NVJIiyzWoabvHTqX9X9C7G33wNG3lJ/jg+qgo0YhIAeM=
+X-Received: by 2002:a17:902:fb05:b0:1bf:208a:22ff with SMTP id
+ le5-20020a170902fb0500b001bf208a22ffmr341670plb.6.1694536565042; Tue, 12 Sep
+ 2023 09:36:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912152031.GI401982@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <00000000000019e05005ef9c1481@google.com> <00000000000088fbf106052bab18@google.com>
+In-Reply-To: <00000000000088fbf106052bab18@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 12 Sep 2023 18:35:53 +0200
+Message-ID: <CANp29Y54FeFU3Wtw9qXM81dha9zLyj_nvqHqDpRE6T9AiL8DWA@mail.gmail.com>
+Subject: Re: [syzbot] [xfs?] KASAN: stack-out-of-bounds Read in xfs_buf_delwri_submit_buffers
+To:     syzbot <syzbot+d2cdeba65d32ed1d2c4d@syzkaller.appspotmail.com>
+Cc:     chandan.babu@oracle.com, davem@davemloft.net, djwong@kernel.org,
+        hdanton@sina.com, jiri@nvidia.com, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
-> On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
-> > It's rather a gigantic list of heards that is very hard to follow.
-> > Sorting helps to see what's already included and what's not.
-> > It improves a maintainability in a long term.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> Hi Andy,
-> 
-> At the risk of bike shedding, the sort function of Vim, when operating
-> with the C locale, gives a slightly different order, as experssed by
-> this incremental diff.
-> 
-> I have no objections to your oder, but I'm slightly curious as
-> to how it came about.
+Hmm, no, this might have caused the reproducer to stop working, but it
+has nothing to do with the actual issue.
 
-!sort which is external command.
+Please ignore the bisection result.
 
-$ locale -k LC_COLLATE
-collate-nrules=4
-collate-rulesets=""
-collate-symb-hash-sizemb=1303
-collate-codeset="UTF-8"
+This commit has been popping up quite a number of times already. I'll
+add it to the syzbot's ignore list.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On Tue, Sep 12, 2023 at 6:09=E2=80=AFPM syzbot
+<syzbot+d2cdeba65d32ed1d2c4d@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit d772781964415c63759572b917e21c4f7ec08d9f
+> Author: Jakub Kicinski <kuba@kernel.org>
+> Date:   Fri Jan 6 06:33:54 2023 +0000
+>
+>     devlink: bump the instance index directly when iterating
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D15554ba468=
+0000
+> start commit:   3ecc37918c80 Merge tag 'media/v6.1-4' of git://git.kernel=
+...
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd58e7fe7f9cf5=
+e24
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd2cdeba65d32ed1=
+d2c4d
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D170a950b880=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1625948f88000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: devlink: bump the instance index directly when iterating
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/00000000000088fbf106052bab18%40google.com.
