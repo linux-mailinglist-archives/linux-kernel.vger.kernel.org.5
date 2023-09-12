@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4039B79CAF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6273F79CAF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233512AbjILJCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S232117AbjILJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233625AbjILJBp (ORCPT
+        with ESMTP id S233098AbjILJBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:01:45 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F5BA9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:41 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-2f2981b8364so3555178f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:41 -0700 (PDT)
+        Tue, 12 Sep 2023 05:01:47 -0400
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD3AE7F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:43 -0700 (PDT)
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-401d9abf21cso44366275e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:01:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694509299; x=1695114099; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694509302; x=1695114102; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AlDjqAuNn+SPHq8xKGkJiI8M+/8xOHIEwhHGCoqKsJ8=;
-        b=kMlJmNURDQo7xhbIwQc0RneC9X1i4R3TrAWMz2IXJLGphXOIKDmLIpTVo0AVFlDMbO
-         5KqG+ZW8HDUSdzG4I2Yc0hmBEJLDF2fOSLgnKrBpdMEiA6AAZTqqCmcitcC4lO7I+sRX
-         ACwedzFZ3fqHq98/RURoYsTKIUhnmWxc0XO/N0WyxH7kbor3Ni3eO5GOthkvEfcgXlvZ
-         bZipmYiCFtXUCTyATwUnnTgAQIisAeCyNOFBZZ2GgIZYH8O5MGb7A5to91bwHNA7yU9/
-         Z1h9H7E+ZbgZ89cdszj6tiHoZVMnk8ELvMmdDi36hwiYmT1EX/MmCOWNR87qQPxgV5Hy
-         BoFQ==
+        bh=I6oBjQenOtE/4uDKT9nylN/cFdaoc/Utptd3H3Y+KEA=;
+        b=LuM5LjaU6eIQHDa1cz8hH91+pOQiwJcNTdXFONM91sWOZd8YDHDhO8gow6vv4e/8fY
+         iVSap6//WmEXfVfwZUYppK6FJdS8f1a3vlr7uo2Os47zYwoGR2pVH3HPzUkG8yT7fLri
+         pEWKA+aTJsJarAR47nR/gvkRorJ/262AyeIkXXvCszH5MG88e23yAHes0oebhN6vKoS/
+         INsYdSFuoBMA3uNeaddg2G5p9iKxmW7kSqA3TL15zy1antC6j4H95r7FQSTiPmVXvrHv
+         UNqiQl1F7VY/exFIUFYUkPfDCItjU6PZc2HIFfI0hTet3tQ4SyN1yzVJ6DshbHKU9162
+         BA6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694509299; x=1695114099;
+        d=1e100.net; s=20230601; t=1694509302; x=1695114102;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AlDjqAuNn+SPHq8xKGkJiI8M+/8xOHIEwhHGCoqKsJ8=;
-        b=lCbWHPilbO6H7eJexppzR2lzTC9EQcy/MhD8tUCZ0toLmTmFPKzUTvfo34o+MnPHlr
-         gVlMSufKd+Img4Lfr4xinimWQ38BjzfOGb3XNrTRKpWLEcrBmWfzfc888a8YEV69XBy0
-         wije+NUdvByXPP5ICrW0IWXIW9aiGN+fk9k20apHuIVKd3On6ulV2pY4L9jV4Euuj8de
-         iJp3+tVfLxa9DnpWdfCVe51md8fe0bvPPXZKh1umKsOHZ+5RMfvQbXEPpNZhfY2Hjxih
-         0cMB3QIaTFOPDjonuYw/srgyJSFUjYnbGW8V2B8KfinXiAIk8v5edVUJ0N8BJ4uQfnaD
-         nrwQ==
-X-Gm-Message-State: AOJu0YzJEg4Yml91VHRTEoJluapAp5dYrthAijxlZISgpxpX/4BVE60M
-        sqI9wXsDhIWvBSyJZMjSLBe7f3MU
-X-Google-Smtp-Source: AGHT+IEFlFIMLNCJvhtnVvKAf+9hxBg4ZXdihbvjUd2emNqt13lwsGioEe+khkAhcvYcB47WAdv3/g67
+        bh=I6oBjQenOtE/4uDKT9nylN/cFdaoc/Utptd3H3Y+KEA=;
+        b=qubZR4X0OjbFv/Jq8SZWbK/BETpa70QrAtU2OhQ5slEPrKnFHn9ONdPaszSjbizMyQ
+         iTUSxji4PYkxSVmldZkOiotiJ/AYIyXKzsgVRZ7+147KSGgMVYxQ8JFbhHNmj1HbHUol
+         jUhR57xA6swPBX4L2E6jArKcykXMoQ8BnJ5v/VDwpG5rUApIR+Ygp+CllaXohF/bjDkA
+         RWyjU9NAlJ8BB+2rjzRrxNAyDc9Y91y4HjKlTkrbYr6YsFHNBX2vVxPiOnhFIMoL7QK0
+         svlHnkgKVPC9kvgLa6i1ihKU1j+GbN2yOofa+F8o0VOZ/wBgDxWVbyi6rSdh52KtM1Uj
+         tBhg==
+X-Gm-Message-State: AOJu0YxRt5rmSP0cd11FcxrEp2/UL57ASG78v5u6B8YaxrnyNztw0KiJ
+        oYY+mm4WUP3fQwPovMc4TTPEOGU2
+X-Google-Smtp-Source: AGHT+IG+dLTcwfi7cfkR1FI3dbH2GjxEs3TcnKT3XpAU3wp8qNxSrJTQ4+LlN7wV8wiWbizXHQnt5bcz
 X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a5d:6ace:0:b0:313:eb28:602 with SMTP id
- u14-20020a5d6ace000000b00313eb280602mr133683wrw.13.1694509299606; Tue, 12 Sep
- 2023 02:01:39 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:00:57 +0000
+ (user=ardb job=sendgmr) by 2002:a05:6000:156b:b0:31f:a664:f871 with SMTP id
+ 11-20020a056000156b00b0031fa664f871mr73268wrz.9.1694509301896; Tue, 12 Sep
+ 2023 02:01:41 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 09:00:58 +0000
 In-Reply-To: <20230912090051.4014114-17-ardb@google.com>
 Mime-Version: 1.0
 References: <20230912090051.4014114-17-ardb@google.com>
 X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1808; i=ardb@kernel.org;
- h=from:subject; bh=AfG+aUI7K/0L+mw64Lzpmg/Sf5R/K8tGxwHtjeLluJ0=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVB4/QE0Se3uP0dg7Nfrdy/Q4lfxrhW8IHbVubuDr/VW
- vFXEl90lLIwiHEwyIopsgjM/vtu5+mJUrXOs2Rh5rAygQxh4OIUgIlsvcvwz/LLsTYr7cDyzLIg
- 0cN80ifDzpWsE96YJv9m9YRTL7Xy2xj+KSzWt4rY92el6NI5v49OUtwQsn/JjyM279tyjhjpmG+ pZwQA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2034; i=ardb@kernel.org;
+ h=from:subject; bh=XzK2EkTmirgV6LOzzdRtqGuZ3TfS3i76hj8AhmTf3qw=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVB48yb5+LpSi9Li6KfcjB/ubvumVnGBcEflzrr11cH6
+ 2zZbL2so5SFQYyDQVZMkUVg9t93O09PlKp1niULM4eVCWQIAxenAEwkL4bhn3LIqQgWaf4nPNma
+ 8tdPhvHs3nD9YHxf8pT3G1u4bom/+cLwv/SrcZ1YhcSlM2FtU6RWq/SmVErxG8461jW5Nud7qDY bCwA=
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912090051.4014114-23-ardb@google.com>
-Subject: [PATCH v2 06/15] x86/boot: Drop redundant code setting the root device
+Message-ID: <20230912090051.4014114-24-ardb@google.com>
+Subject: [PATCH v2 07/15] x86/boot: Grab kernel_info offset from zoffset
+ header directly
 From:   Ard Biesheuvel <ardb@google.com>
 To:     linux-efi@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
@@ -79,58 +80,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ard Biesheuvel <ardb@kernel.org>
 
-The root device defaults to 0,0 and is no longer configurable at build
-time [0], so there is no need for the build tool to ever write to this
-field.
-
-[0] 079f85e624189292 ("x86, build: Do not set the root_dev field in bzImage")
+Instead of parsing zoffset.h and poking the kernel_info offset value
+into the header from the build tool, just grab the value directly in the
+asm file that describes this header.
 
 This change has no impact on the resulting bzImage binary.
 
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
  arch/x86/boot/header.S      | 2 +-
- arch/x86/boot/tools/build.c | 7 -------
- 2 files changed, 1 insertion(+), 8 deletions(-)
+ arch/x86/boot/tools/build.c | 4 ----
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index a87d9133384b..6059f87b159d 100644
+index 6059f87b159d..5575d0f06bab 100644
 --- a/arch/x86/boot/header.S
 +++ b/arch/x86/boot/header.S
-@@ -236,7 +236,7 @@ root_flags:	.word ROOT_RDONLY
- syssize:	.long 0			/* Filled in by build.c */
- ram_size:	.word 0			/* Obsolete */
- vid_mode:	.word SVGA_MODE
--root_dev:	.word 0			/* Filled in by build.c */
-+root_dev:	.word 0			/* Default to major/minor 0/0 */
- boot_flag:	.word 0xAA55
+@@ -526,7 +526,7 @@ pref_address:		.quad LOAD_PHYSICAL_ADDR	# preferred load addr
  
- 	# offset 512, entry point
+ init_size:		.long INIT_SIZE		# kernel initialization size
+ handover_offset:	.long 0			# Filled in by build.c
+-kernel_info_offset:	.long 0			# Filled in by build.c
++kernel_info_offset:	.long ZO_kernel_info
+ 
+ # End of setup header #####################################################
+ 
 diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index 0354c223e354..efa4e9c7d713 100644
+index efa4e9c7d713..660627ea6cbb 100644
 --- a/arch/x86/boot/tools/build.c
 +++ b/arch/x86/boot/tools/build.c
-@@ -40,10 +40,6 @@ typedef unsigned char  u8;
- typedef unsigned short u16;
- typedef unsigned int   u32;
+@@ -59,7 +59,6 @@ static unsigned long efi32_stub_entry;
+ static unsigned long efi64_stub_entry;
+ static unsigned long efi_pe_entry;
+ static unsigned long efi32_pe_entry;
+-static unsigned long kernel_info;
+ static unsigned long startup_64;
+ static unsigned long _end;
  
--#define DEFAULT_MAJOR_ROOT 0
--#define DEFAULT_MINOR_ROOT 0
--#define DEFAULT_ROOT_DEV (DEFAULT_MAJOR_ROOT << 8 | DEFAULT_MINOR_ROOT)
--
- /* Minimal number of setup sectors */
- #define SETUP_SECT_MIN 5
- #define SETUP_SECT_MAX 64
-@@ -399,9 +395,6 @@ int main(int argc, char ** argv)
+@@ -339,7 +338,6 @@ static void parse_zoffset(char *fname)
+ 		PARSE_ZOFS(p, efi64_stub_entry);
+ 		PARSE_ZOFS(p, efi_pe_entry);
+ 		PARSE_ZOFS(p, efi32_pe_entry);
+-		PARSE_ZOFS(p, kernel_info);
+ 		PARSE_ZOFS(p, startup_64);
+ 		PARSE_ZOFS(p, _end);
  
- 	update_pecoff_setup_and_reloc(i);
+@@ -422,8 +420,6 @@ int main(int argc, char ** argv)
+ 	update_pecoff_text(setup_sectors * 512, i + (sys_size * 16));
  
--	/* Set the default root device */
--	put_unaligned_le16(DEFAULT_ROOT_DEV, &buf[508]);
--
- 	/* Open and stat the kernel file */
- 	fd = open(argv[2], O_RDONLY);
- 	if (fd < 0)
+ 	efi_stub_entry_update();
+-	/* Update kernel_info offset. */
+-	put_unaligned_le32(kernel_info, &buf[0x268]);
+ 
+ 	crc = partial_crc32(buf, i, crc);
+ 	if (fwrite(buf, 1, i, dest) != i)
 -- 
 2.42.0.283.g2d96d420d3-goog
 
