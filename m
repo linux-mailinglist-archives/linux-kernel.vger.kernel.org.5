@@ -2,166 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A6A79DBCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B5C79DBD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237146AbjILWWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41452 "EHLO
+        id S236471AbjILWXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjILWWW (ORCPT
+        with ESMTP id S234813AbjILWXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:22:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7778010C9;
-        Tue, 12 Sep 2023 15:22:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C761AC433C7;
-        Tue, 12 Sep 2023 22:22:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694557338;
-        bh=7KAGH2JgSasd3CprQgU/M614YHilY5u3Q+EE4tUlaqc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=QeXQFOPGQZjInp9aMBFSk8tzNJ1fMB88/ThfyhE3oU3qJrqghIu3WGhGZkznSzZyh
-         n+sBYVsVUa4vuFqanZikE0ZbN53sHL/zxY+rxbH+vjC5wBLKk212CU9AqPvRpB5lZ+
-         t5TcTup9tfEBE9uGG2Smy9ifPbUJic5B8IuIcT1YRTjqZNjwdWM1nNiPFrpnruQNCv
-         qPh71bcz2GAdl0BFvNLB0ICBftl9pp/HVm6AuFerfveliWv/LkNy8DRtj4NY9cT5jf
-         Y4XUIY/B6K9Nw9qN59iHIje+4qMczWgGjRVTXlwrEeAoiIc0rU5/BjFm8/FlEMFmnj
-         Gprdowurx8njg==
-Date:   Tue, 12 Sep 2023 17:22:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     bhelgaas@google.com, pali@kernel.org,
-        ilpo.jarvinen@linux.intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
- which IDA
-Message-ID: <20230912222215.GA412293@bhelgaas>
+        Tue, 12 Sep 2023 18:23:11 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C963810E6;
+        Tue, 12 Sep 2023 15:23:06 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52bcb8b199aso7937159a12.3;
+        Tue, 12 Sep 2023 15:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694557385; x=1695162185; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FL9z8xf3gSxSE5MtV355yS3vcK6eRahCEwpG0o67ud8=;
+        b=X0ZWXS7YcjVlT7ItlCiPs0iCdAtWo04dxE7SRtfdf2RDvz5vpOzNd6QbFd8ZLvMx26
+         gFd+aXtGxx2Aipa0qdDGRhL9ahiOpoLYU/gf7N1+Tr7UjKE4IHytkQk3n0MafVE56T1R
+         CADuLoIbCDXgZLq5g1hZFfkjFKFA92uCY6FNuuqULWwxiIfNKJtL+O93OfMgP/kymBKb
+         FLXEytZgwIdaQfC+bpt94v3564T2PzygnZ6WIhQUVbXHRnECi9aDtOjOwySia7KchcEi
+         Wh4FhtdnnrGD7vhd8VEBDoZRLpysPaIC+mgGE4YDQEajcyV0zj5NgQxLThOHaysVux+g
+         Yy2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694557385; x=1695162185;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FL9z8xf3gSxSE5MtV355yS3vcK6eRahCEwpG0o67ud8=;
+        b=nJtXF5q6ERFC/NCHy1b+S6wkROUpeN2/jrsYEZBBlyYPYqFHFCS5WkS8QUBa0Y2dCO
+         9TmiiUzeSJC075PFSbL8zrtm00Zgk//HoMgdIUF4Qboyhyc8uxGk+fmbXHmtR4N5s96X
+         GgJq5tryCmNZ3Y68wU8ktnQa/VZYGIKfJjADG/BBkWaH1c4XXAYqr93oot7IiyItjsH1
+         MLfrhz8L7GeoAp/QMk3NdMODt7phZaEx3snANehC/kuL5FtSZ3cIovlCDfq6Ntm/X49o
+         +CzqNZTHOyEcI9XPLj1IyIHcJBX4uTrTZm4T4KZFd2DqU58ra+WVf25QZXyGuo4Lk+cJ
+         QCHw==
+X-Gm-Message-State: AOJu0YyY9ncRDmmN7Wgo+lurvZsMR+r5mC8Qc0o8fsPJrwjfdV2AUVuB
+        YKpP7rb2REZkS4bqyOO/Xo0=
+X-Google-Smtp-Source: AGHT+IH/WQiedIfPOq2mCL7puezc84DhJ8gmimrWY8YF84EfM/IffUf2ZWll8QkF9UF2tAlIWR5EZQ==
+X-Received: by 2002:a17:906:5398:b0:9a1:be50:ae61 with SMTP id g24-20020a170906539800b009a1be50ae61mr431077ejo.69.1694557385098;
+        Tue, 12 Sep 2023 15:23:05 -0700 (PDT)
+Received: from skbuf ([188.25.254.186])
+        by smtp.gmail.com with ESMTPSA id o24-20020a1709062e9800b009a19701e7b5sm7367014eji.96.2023.09.12.15.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 15:23:04 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 01:23:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Pawel Dembicki <paweldembicki@gmail.com>
+Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 8/8] net: dsa: vsc73xx: Add bridge support
+Message-ID: <20230912222302.jxolk3t74vbgr35s@skbuf>
+References: <20230912122201.3752918-1-paweldembicki@gmail.com>
+ <20230912122201.3752918-1-paweldembicki@gmail.com>
+ <20230912122201.3752918-9-paweldembicki@gmail.com>
+ <20230912122201.3752918-9-paweldembicki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230815013744.45652-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230912122201.3752918-9-paweldembicki@gmail.com>
+ <20230912122201.3752918-9-paweldembicki@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 09:37:44AM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Tue, Sep 12, 2023 at 02:22:02PM +0200, Pawel Dembicki wrote:
+> This patch adds bridge support for vsc73xx driver.
+> It introduce two functions for port_bridge_join and
+> vsc73xx_port_bridge_leave handling.
 > 
-> When PCI node was created using an overlay and the overlay is
-> reverted/destroyed, the "linux,pci-domain" property no longer
-> exists, so of_get_pci_domain_nr will return failure.
-
-I'm not familiar with how overlays work.  What's the call path where
-the overlay is removed?  I see an of_overlay_remove(), but I don't see
-any callers except test cases.
-
-I guess the problem happens in a PCI host bridge remove path, e.g.,
-
-  pci_host_common_remove
-    pci_remove_root_bus
-      pci_bus_release_domain_nr
-        of_pci_bus_release_domain_nr
-
-But I don't know how that's related to the overlay removal.
-
-Is this an ordering issue?  It seems possibly problematic that the OF
-overlay is destroyed before the device it describes (e.g., the host
-bridge) is removed.  I would expect the device to be removed before
-the description of the device is removed.
-
-> Then of_pci_bus_release_domain_nr will actually use the dynamic IDA,
-> even if the IDA was allocated in static IDA.
->
-> Introduce a static_nr field in pci_bus to indicate whether the
-> IDA is a dynamic or static in order to free the correct one.
+> Those functions implement forwarding adjust and use
+> dsa_tag_8021q_bridge_* api for adjust VLAN configuration.
 > 
-> Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 > ---
+> v3:
+>   - All vlan commits was reworked
+>   - move VLAN_AWR and VLAN_DBLAWR to port setup in other commit
+>   - drop vlan table upgrade
+> v2:
+>   - no changes done
 > 
-> V2:
->  Update commit message
->  Move static_nr:1 to stay besides others :1 fields.
+>  drivers/net/dsa/vitesse-vsc73xx-core.c | 72 ++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
 > 
->  drivers/pci/pci.c   | 22 ++++++++++++++--------
->  include/linux/pci.h |  1 +
->  2 files changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0..5c98502bcda6 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -6881,10 +6881,10 @@ static void of_pci_reserve_static_domain_nr(void)
->  	}
+> diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> index bf903502bac1..9d0367c2c52c 100644
+> --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
+> +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+> @@ -600,6 +600,9 @@ static int vsc73xx_setup(struct dsa_switch *ds)
+>  
+>  	dev_info(vsc->dev, "set up the switch\n");
+>  
+> +	ds->untag_bridge_pvid = true;
+> +	ds->max_num_bridges = 7;
+
+Can you please refactor this into DSA_TAG_8021Q_MAX_NUM_BRIDGES and use
+it in sja1105 too?
+
+> +
+>  	/* Issue RESET */
+>  	vsc73xx_write(vsc, VSC73XX_BLOCK_SYSTEM, 0, VSC73XX_GLORESET,
+>  		      VSC73XX_GLORESET_MASTER_RESET);
+> @@ -1456,6 +1459,73 @@ static int vsc73xx_tag_8021q_vlan_del(struct dsa_switch *ds, int port, u16 vid)
+>  	return vsc73xx_update_vlan_table(vsc, port, vid, 0);
 >  }
 >  
-> -static int of_pci_bus_find_domain_nr(struct device *parent)
-> +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
->  {
->  	static bool static_domains_reserved = false;
-> -	int domain_nr;
-> +	int domain_nr, ret;
->  
->  	/* On the first call scan device tree for static allocations. */
->  	if (!static_domains_reserved) {
-> @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		static_domains_reserved = true;
->  	}
->  
-> +	bus->static_nr = 0;
+> +static void vsc73xx_update_forwarding_map(struct vsc73xx *vsc)
+> +{
+> +	int i;
 > +
->  	if (parent) {
->  		/*
->  		 * If domain is in DT, allocate it in static IDA.  This
-> @@ -6899,10 +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device *parent)
->  		 * in DT.
->  		 */
->  		domain_nr = of_get_pci_domain_nr(parent->of_node);
-> -		if (domain_nr >= 0)
-> -			return ida_alloc_range(&pci_domain_nr_static_ida,
-> -					       domain_nr, domain_nr,
-> -					       GFP_KERNEL);
-> +		if (domain_nr >= 0) {
-> +			ret = ida_alloc_range(&pci_domain_nr_static_ida,
-> +					      domain_nr, domain_nr, GFP_KERNEL);
-> +			if (ret >= 0)
-> +				bus->static_nr = 1;
+> +	for (i = 0; i < vsc->ds->num_ports; i++) {
+> +		u32 val;
 > +
-> +			return ret;
-> +		}
->  	}
->  
->  	/*
-> @@ -6920,7 +6926,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  		return;
->  
->  	/* Release domain from IDA where it was allocated. */
-> -	if (of_get_pci_domain_nr(parent->of_node) == bus->domain_nr)
-> +	if (bus->static_nr)
->  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
->  	else
->  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
-> @@ -6928,7 +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus *bus, struct device *par
->  
->  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device *parent)
+> +		vsc73xx_read(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +			     VSC73XX_SRCMASKS + i, &val);
+> +		/* update only if port is in forwarding state */
+> +		if (val & VSC73XX_SRCMASKS_PORTS_MASK)
+> +			vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+> +					    VSC73XX_SRCMASKS + i,
+> +					    VSC73XX_SRCMASKS_PORTS_MASK,
+> +					    vsc->forward_map[i]);
+> +	}
+> +}
+
+I suspect you'll have to rethink this. If you look at del_nbp() and dsa_port_bridge_leave(),
+you'll see it goes through a few phases. First the bridge calls br_stp_disable_port(p),
+then netdev_upper_dev_unlink(dev, br->dev) which invokes dsa_port_bridge_leave().
+So at this stage, the port is in BR_STATE_DISABLED and ds->ops->port_stp_state_set()
+duly notifies the driver of that.
+
+Then, ds->ops->port_bridge_leave() gets called, and then, ds->ops->port_stp_state_set()
+again, for the standalone port, in BR_STATE_FORWARDING.
+
+So actually, the last to take effect upon the forwarding map is port_stp_state_set(),
+not port_bridge_leave().
+
+I suspect you can remove the vsc73xx_update_forwarding_map() and just
+rely on the STP implementation, and fix that while you're at it.
+
+On the other switch ports except the one on which the STP state is changing,
+you can look at dp->stp_state. There needs to be an "administrative" forwarding
+mask (determined by port_bridge_join and port_bridge_leave), and an "operational"
+one (determined by STP states).
+
+> +
+> +static int vsc73xx_port_bridge_join(struct dsa_switch *ds, int port,
+> +				    struct dsa_bridge bridge,
+> +				    bool *tx_fwd_offload,
+> +				    struct netlink_ext_ack *extack)
+> +{
+> +	struct vsc73xx *vsc = ds->priv;
+> +	int i;
+> +
+> +	*tx_fwd_offload = true;
+> +
+> +	for (i = 0; i < ds->num_ports; i++) {
+> +		/* Add this port to the forwarding matrix of the
+> +		 * other ports in the same bridge, and viceversa.
+> +		 */
+> +		if (!dsa_is_user_port(ds, i))
+> +			continue;
+
+	dsa_switch_for_each_user_port(other_dp, ds) please
+
+it is a lower-complexity iteration over the port list, which should be
+preferred over a for loop + any dsa_to_port() wrapper like dsa_is_user_port().
+
+> +
+> +		if (i == port)
+> +			continue;
+> +
+> +		if (!dsa_port_offloads_bridge(dsa_to_port(ds, i), &bridge))
+
+and "other_dp" here
+
+> +			continue;
+> +
+> +		vsc->forward_map[port] |= VSC73XX_SRCMASKS_PORTS_MASK & BIT(i);
+> +		vsc->forward_map[i] |= VSC73XX_SRCMASKS_PORTS_MASK & BIT(port);
+> +	}
+> +	vsc73xx_update_forwarding_map(vsc);
+> +
+> +	return dsa_tag_8021q_bridge_join(ds, port, bridge);
+> +}
+> +
+> +static void vsc73xx_port_bridge_leave(struct dsa_switch *ds, int port,
+> +				      struct dsa_bridge bridge)
+> +{
+> +	struct vsc73xx *vsc = ds->priv;
+> +	int i;
+> +
+> +	/* configure forward map to CPU <-> port only */
+> +	for (i = 0; i < vsc->ds->num_ports; i++) {
+> +		if (i == CPU_PORT)
+> +			continue;
+> +		vsc->forward_map[i] &= VSC73XX_SRCMASKS_PORTS_MASK & ~BIT(port);
+> +	}
+> +	vsc->forward_map[port] = VSC73XX_SRCMASKS_PORTS_MASK & BIT(CPU_PORT);
+> +
+> +	vsc73xx_update_forwarding_map(vsc);
+> +	dsa_tag_8021q_bridge_leave(ds, port, bridge);
+> +}
+> +
+>  static int vsc73xx_port_setup(struct dsa_switch *ds, int port)
 >  {
-> -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
-> +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
->  			       acpi_pci_bus_find_domain_nr(bus);
->  }
->  
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index eeb2e6f6130f..222a1729ea7e 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -677,6 +677,7 @@ struct pci_bus {
->  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
->  	unsigned int		is_added:1;
->  	unsigned int		unsafe_warn:1;	/* warned about RW1C config write */
-> +	unsigned int		static_nr:1;
->  };
->  
->  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
+>  	struct vsc73xx *vsc = ds->priv;
+> @@ -1557,6 +1627,8 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+>  	.get_sset_count = vsc73xx_get_sset_count,
+>  	.port_enable = vsc73xx_port_enable,
+>  	.port_disable = vsc73xx_port_disable,
+> +	.port_bridge_join = vsc73xx_port_bridge_join,
+> +	.port_bridge_leave = vsc73xx_port_bridge_leave,
+>  	.port_change_mtu = vsc73xx_change_mtu,
+>  	.port_max_mtu = vsc73xx_get_max_mtu,
+>  	.port_stp_state_set = vsc73xx_port_stp_state_set,
 > -- 
-> 2.37.1
+> 2.34.1
 > 
+
