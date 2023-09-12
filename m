@@ -2,181 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A9679D4C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154A679D4C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbjILP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
+        id S236341AbjILP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjILP1O (ORCPT
+        with ESMTP id S236350AbjILP1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:27:14 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E9D10D9;
-        Tue, 12 Sep 2023 08:27:10 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 24B3E660731E;
-        Tue, 12 Sep 2023 16:27:07 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694532428;
-        bh=Kiv47ua9LlleunOuYTbsf64o2QsgVZ5hZeZL4I6VnQc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Vwd9Tg2kSYQbKfvPRPM9RG5wiNTxJyarMuQzLP5VL7rPQaMMkIWdy2FLMGYQUGOfa
-         7aw5itKMoR7lsAbGqjUzMuXmn1601+9TRD/sR9m6/3odZ1K4HHdFBAENNyxdwmyBHu
-         X98PfciRE2Zqpptw4kflXwOUaposKu1epf0F2RMcD/KzijCfPCo4eQxYrmaAZAG2gu
-         0KcWtfRKi5LoesmP46KbaErH5dafd0ii8TLf3P+ddlSwghBWUF4GeHa5SZ0UDF2iso
-         3CwvcQWZCFNPPILSuksZVAe77C/e/mpn5NFOC+a/EW/fu5qVzMhfquCDeK4utHlgrx
-         nIbOE41i1kM2g==
-Message-ID: <ea5c4cb3e2dab449a2b13e0e3582dbdb2a6561ee.camel@collabora.com>
-Subject: Re: [PATCH v6 14/18] media: verisilicon: vp9: Use destination
- buffer height to compute chroma offset
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Jernej =?UTF-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-Date:   Tue, 12 Sep 2023 11:26:57 -0400
-In-Reply-To: <40329795-a57d-d0f3-adb4-0720dd20f6e2@collabora.com>
-References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
-         <4856958.31r3eYUQgx@jernej-laptop>
-         <7da0a2ab-032a-9de9-e136-58f973238c5b@collabora.com>
-         <3248154.aeNJFYEL58@jernej-laptop>
-         <40329795-a57d-d0f3-adb4-0720dd20f6e2@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 12 Sep 2023 11:27:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72F210EB;
+        Tue, 12 Sep 2023 08:27:16 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E0A0C433C8;
+        Tue, 12 Sep 2023 15:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694532436;
+        bh=zT75Ab5rlByJQL3D5lDMEHE8CDUMBia7LGb43n9vDS4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JxLTLAoCSRdKjo6pL+3MS5DEaBWsenCUs0N8SkssjHARH/CqFQEPOYzXQGjoXdE/c
+         gld3jHG2xwr+gXWQdKrakUrMSSmclIDeErK6gBLn/ajuOfYbLShdEdOkL+lJ50pJ5l
+         T3/os9dNfX1VZ0c+6oebRd5nuwD06sfPSMDaHa/m6q3Vc+hiPyOMI2pH2I5DaLWeUu
+         ntiamSBnRmk5cgXF0A/Ofm8uQcoXZFXAliTPTlBt/jXBC8tp7MHOcWX9R3Ydig3gN2
+         yAHJy+xkZTJtNq8X+quCVIqw7lR9lvQqHjAMpg/6wpwrzRK2JzYqp8ng5PQpLAefi/
+         Oh8uXPlpH21CQ==
+Date:   Tue, 12 Sep 2023 08:27:15 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <20230912152715.GS28202@frogsfrogsfrogs>
+References: <ZP5JrYOge3tSAvj7@dread.disaster.area>
+ <ZP5OfhXhPkntaEkc@casper.infradead.org>
+ <ZP5llBaVrJteHQf3@dread.disaster.area>
+ <70d89bf4-708b-f131-f90e-5250b6804d48@redhat.com>
+ <ZP+U49yfkm0Fpfej@dread.disaster.area>
+ <20230912090342.GC35261@noisy.programming.kicks-ass.net>
+ <ZQBZXSCyG+u2+i8E@casper.infradead.org>
+ <20230912135213.GA22127@noisy.programming.kicks-ass.net>
+ <ZQBuiJ2n0uBOdjnr@casper.infradead.org>
+ <20230912142300.GC22127@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912142300.GC22127@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mardi 12 septembre 2023 =C3=A0 10:41 +0200, Benjamin Gaignard a =C3=A9cr=
-it=C2=A0:
-> Le 11/09/2023 =C3=A0 18:36, Jernej =C5=A0krabec a =C3=A9crit=C2=A0:
-> > Dne ponedeljek, 11. september 2023 ob 10:55:02 CEST je Benjamin Gaignar=
-d
-> > napisal(a):
-> > > Le 10/09/2023 =C3=A0 15:21, Jernej =C5=A0krabec a =C3=A9crit :
-> > > > Hi Benjamin!
-> > > >=20
-> > > > Dne petek, 01. september 2023 ob 14:44:10 CEST je Benjamin Gaignard
-> > > >=20
-> > > > napisal(a):
-> > > > > Source and destination buffer height may not be the same because
-> > > > > alignment constraint are different.
-> > > > > Use destination height to compute chroma offset because we target
-> > > > > this buffer as hardware output.
-> > > > >=20
-> > > > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com=
->
-> > > > > Fixes: e2da465455ce ("media: hantro: Support VP9 on the G2 core")
-> > > > > ---
-> > > > >=20
-> > > > >    drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c | 4 +--=
--
-> > > > >    1 file changed, 1 insertion(+), 3 deletions(-)
-> > > > >=20
-> > > > > diff --git a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec=
-.c
-> > > > > b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c index
-> > > > > 6db1c32fce4d..1f3f5e7ce978 100644
-> > > > > --- a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
-> > > > > +++ b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
-> > > > > @@ -93,9 +93,7 @@ static int start_prepare_run(struct hantro_ctx =
-*ctx,
-> > > > > const struct v4l2_ctrl_vp9_ static size_t chroma_offset(const str=
-uct
-> > > > > hantro_ctx *ctx,
-> > > > >=20
-> > > > >    			    const struct v4l2_ctrl_vp9_frame
-> > > > *dec_params)
-> > > >=20
-> > > > >    {
-> > > > >=20
-> > > > > -	int bytes_per_pixel =3D dec_params->bit_depth =3D=3D 8 ? 1 : 2;
-> > > > > -
-> > > > > -	return ctx->src_fmt.width * ctx->src_fmt.height * bytes_per_pix=
-el;
-> > > > > +	return ctx->dst_fmt.width * ctx->dst_fmt.height * ctx->bit_dept=
-h /
-> > > > 8;
-> > > >=20
-> > > > Commit message doesn't mention bit_depth change at all. While I thi=
-nk
-> > > > there is no difference between dec_params->bit_depth and ctx->bit_d=
-epth,
-> > > > you shouldn't just use ordinary division. If bit_depth is 10, it wi=
-ll be
-> > > > rounded down. And if you decide to use bit_depth from context, plea=
-se
-> > > > remove dec_params argument.
-> > > I will change this patch and create a helpers function for chroma and=
- motion
-> > > vectors offsets that VP9 and HEVC code will use since they are identi=
-cal.
-> > > I don't see issue with the division. If you have in mind a solution p=
-lease
-> > > write it so I could test it.
-> > Solution is same as the code that you removed:
-> > int bytes_per_pixel =3D dec_params->bit_depth =3D=3D 8 ? 1 : 2;
-> >=20
-> > Or alternatively:
-> > int bytes_per_pixel =3D DIV_ROUND_UP(dec_params->bit_depth, 8);
-> >=20
-> > Consider bit_depth being 10. With old code you get 2, with yours you ge=
-t 1.
->=20
-> The old code is wrong ;-)
-> If the format depth is 10 bits per pixel then chroma offset (in bytes) fo=
-rmula is
-> width * height * 10 / 8 not width * height * 16 / 8.
->=20
-> I have already confirm that with HEVC on the same hardware.
+On Tue, Sep 12, 2023 at 04:23:00PM +0200, Peter Zijlstra wrote:
+> On Tue, Sep 12, 2023 at 02:58:32PM +0100, Matthew Wilcox wrote:
+> > On Tue, Sep 12, 2023 at 03:52:13PM +0200, Peter Zijlstra wrote:
+> > > On Tue, Sep 12, 2023 at 01:28:13PM +0100, Matthew Wilcox wrote:
+> > > > On Tue, Sep 12, 2023 at 11:03:42AM +0200, Peter Zijlstra wrote:
+> > > > > If not, then sure we can do this; it's not like I managed to get rid of
+> > > > > muteX_is_locked() -- and I actually tried at some point :/
+> > > > > 
+> > > > > And just now I grepped for it, and look what I find:
+> > > > > 
+> > > > > drivers/hid/hid-nintendo.c:     if (unlikely(mutex_is_locked(&ctlr->output_mutex))) {
+> > > > > drivers/nvdimm/btt.c:           if (mutex_is_locked(&arena->err_lock)
+> > > > > 
+> > > > > And there's more :-(
+> > > > 
+> > > > Are these actually abuse?  I looked at these two, and they both seem to
+> > > > be asking "Does somebody else currently have this mutex?" rather than
+> > > > "Do I have this mutex?".
+> > > 
+> > > It's effectively a random number generator in that capacity. Someone
+> > > might have it or might have had it when you looked and no longer have
+> > > it, or might have it now but not when you asked.
+> > 
+> > Well, no.
+> > 
+> >                 if (mutex_is_locked(&arena->err_lock)
+> >                                 || arena->freelist[lane].has_err) {
+> >                         nd_region_release_lane(btt->nd_region, lane);
+> > 
+> >                         ret = arena_clear_freelist_error(arena, lane);
+> > 
+> > So that's "Is somebody currently processing an error, or have they
+> > already finished setting an error".  Sure, it's somewhat racy, but
+> > it looks like a performance optimisation, not something that needs
+> > 100% accuracy.
+> 
+> We're arguing past one another I think. Yes mutex_is_locked() is a
+> random number generator when asked for something you don't own. But it
+> might not be a bug because the code is ok with races.
+> 
+> It is still fully dodgy IMO, such usage is pretty close to UB.
 
-Just for general interest, this is related to the fact that the reference f=
-rame
-are not P010 tiled (upstreamed but untested code), but NV15 (packed) tiled.=
- I'm
-effectively missing a log of context around this patch though to comment, b=
-ut
-I'd like to underline that v4l2-common have all the information now to deal=
- with
-fractional pixel sizes, which gives me the impression this code is duplicat=
-ing.
+My 2 cents here:
 
-Nicolas
+I could live with Longman's suggestion of an rwsem_assert_is_locked that
+only exists if DEBUG_RWSEMS is enabled.  Something like:
 
->=20
-> Regards,
-> Benjamin
->=20
-> >=20
-> > Best regards,
-> > Jernej
-> >=20
-> > > Regards,
-> > > Benjamin
-> > >=20
-> > > > Best regards,
-> > > > Jernej
-> > > >=20
-> > > > >    }
-> > > > >   =20
-> > > > >    static size_t mv_offset(const struct hantro_ctx *ctx,
-> >=20
-> >=20
-> >=20
-> >=20
+#ifdef CONFIG_DEBUG_RWSEMS
+static inline bool __rwsem_assert_is_locked(struct rw_semaphore *rwsem,
+		const char *file, int line)
+{
+	bool ret = rwsem_is_locked(rwsem);
+	if (!ret)
+		WARN(1, "!rwsem_is_locked(rwsem) at %s line %d", file, line);
+	return ret;
+}
+#define rwsem_assert_is_locked(r) \
+	__rwsem_assert_is_locked((r), __FILE__, __LINE__)
+#endif
 
+and then XFS could do:
+
+	ASSERT(rwsem_assert_is_locked(&VFS_I(ip)->i_rwsem));
+
+Wherein ASSERT is only #defined if CONFIG_XFS_DEBUG, and XFS_DEBUG
+selects DEBUG_RWSEMS, per Longman's suggestion.  That's work for what we
+want it for (simple cheap lock checking) without becoming a general
+lockabuse predicate.
+
+--D
