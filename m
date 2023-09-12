@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC5C79CF21
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F71C79CF2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbjILLDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S234339AbjILLEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233867AbjILLD1 (ORCPT
+        with ESMTP id S234554AbjILLEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:03:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F2F9F;
-        Tue, 12 Sep 2023 04:03:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4CB7F212AE;
-        Tue, 12 Sep 2023 11:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1694516601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PlNpuPSqWIqOE0DwsvfoNnsmeYOzW02ShwOmRdVvGGY=;
-        b=MhPUvXVFP4OmyPGqhryRQRDMUAdVx6IyQ77oN9SuE0NTFREpi/Hr63l8a46k1tz1U6gLxS
-        spIv8n4MmEY/r1mNnpLOYB6XQ9CYXFhXwTf5u7t1Eg6gr5jSeOSbdW+0fZMDkMZuCfz0OC
-        TIHai/JH/h+g3ExVXULDJaSjK/ypAhI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B49A13A39;
-        Tue, 12 Sep 2023 11:03:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Ks1SDXlFAGUfaAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 12 Sep 2023 11:03:21 +0000
-Date:   Tue, 12 Sep 2023 13:03:20 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] mm: memcg: let non-unified root stats flushes
- help unified flushes
-Message-ID: <ZQBFeHxzO49gv987@dhcp22.suse.cz>
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-4-yosryahmed@google.com>
- <ZPXupwjewuLgksAI@dhcp22.suse.cz>
- <6tne52ip62ucev7nmnim3m7fhcydnwcytyxynrlxxgaf4cbqea@r4hec425izap>
- <ZPX6luPGqypp68+L@dhcp22.suse.cz>
- <hrpw2bjsrs3pzxympb7cz4nohyeztnxkmdtzbzlfdba6ugkken@dhcdbbbrv4fn>
- <CAJD7tkaHVtMiMYFocNiABuyhPcqt77gei0UeaDq4J7V-=tMFYA@mail.gmail.com>
+        Tue, 12 Sep 2023 07:04:22 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 027C810DE;
+        Tue, 12 Sep 2023 04:04:09 -0700 (PDT)
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 5F15F80FC;
+        Tue, 12 Sep 2023 11:04:07 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH v2 0/3] Add support for DEVNAME:0.0 style hardware based addressing
+Date:   Tue, 12 Sep 2023 14:03:42 +0300
+Message-ID: <20230912110350.14482-1-tony@atomide.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkaHVtMiMYFocNiABuyhPcqt77gei0UeaDq4J7V-=tMFYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-09-23 08:54:46, Yosry Ahmed wrote:
-> On Tue, Sep 5, 2023 at 7:10 AM Michal Koutný <mkoutny@suse.com> wrote:
-> >
-> > On Mon, Sep 04, 2023 at 05:41:10PM +0200, Michal Hocko <mhocko@suse.com> wrote:
-> > > So it also creates an undocumented but userspace visible behavior.
-> > > Something that userspace might start depending on, right?
-> >
-> > Yes but -
-> > - depending on undocumented behavior is a mistake,
-> > - breaking the dependency would manifest (in the case I imagine) as a
-> >   performance regression (and if there are some users, the future can
-> >   allow them configuring periodic kernel flush to compensate for that).
-> 
-> I think I am missing something. This change basically makes userspace
-> readers (for the root memcg) help out unified flushers, which are
-> in-kernel readers (e.g. reclaim) -- not the other way around.
-> 
-> How would that create a userspace visible behavior that a dependency
-> can be formed on? Users expecting reclaim to be faster right after
-> reading root stats? I would guess that would be too flaky to cause a
-> behavior that people can depend on tbh.
+Hi all,
 
-Flaky or not, it might cause behavior difference and a subtle one. I can
-imagine nohz and similar workloads wanting to (ab)use this to reduce
-kernel footprint. If we really need this then make it obvious in the
-changelog at least.
+With the recent serial core changes in v6.5, we can now add DEVNAME:0.0
+style addressing for the serial ports. When using DEVNAME:0.0 naming, we
+don't need to care which ttyS instance number is allocated depending on
+HSUART settings or if the devicetree has added aliases for all the ports.
 
+With these changes the port mapping is visible for usespace in sysfs with:
+
+$ grep DEVNAME /sys/bus/serial-base/devices/*/tty/uevent
+
+Regards,
+
+Tony
+
+Changes since v1:
+
+- Constify printk add_preferred_console() as suggested by Jiri
+
+- Use proper kernel command line helpers for parsing console as
+  suggested by Jiri
+
+- Update description for HSUART based on Andy's comments
+
+- Standardize on DEVNAME:0.0 style naming as suggested by Andy
+
+- Added missing put_device() calls paired with device_find_child()
+
+Tony Lindgren (3):
+  printk: Constify name for add_preferred_console()
+  serial: core: Add support for DEVNAME:0.0 style naming for kernel
+    console
+  serial: core: Add sysfs links for serial core port instances for ttys
+
+ drivers/tty/serial/Makefile          |   3 +
+ drivers/tty/serial/serial_base.h     |  11 +++
+ drivers/tty/serial/serial_base_con.c | 133 +++++++++++++++++++++++++++
+ drivers/tty/serial/serial_core.c     |  26 ++++++
+ include/linux/console.h              |   2 +-
+ kernel/printk/printk.c               |   4 +-
+ 6 files changed, 176 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/tty/serial/serial_base_con.c
+
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
 -- 
-Michal Hocko
-SUSE Labs
+2.42.0
