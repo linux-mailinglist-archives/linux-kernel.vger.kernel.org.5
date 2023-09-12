@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E984079D10E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0536D79D111
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbjILM24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S235169AbjILM3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235286AbjILM22 (ORCPT
+        with ESMTP id S235236AbjILM2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:28:28 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85476198B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:27:53 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c09f1f9df2so4162905a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 05:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1694521673; x=1695126473; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LW6egm8EfUZADa4f85G/hF9JcQWbHdUo0uisWQrhFUM=;
-        b=YIzduL8BWfo7AgR38AQeWFOQe35chQxU71S/DSaUErn8Oii6Rb8FsrZL3hOXFn5G98
-         +3BLShwXHmWd1SraYl111kvAlTnNkt0Ug2QKHJfHQhZTe+q+bExFi+ny0TEfYYbpDZ9n
-         St3ugm+DCawskuiriapxPJsIy8su2rDule+0U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694521673; x=1695126473;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LW6egm8EfUZADa4f85G/hF9JcQWbHdUo0uisWQrhFUM=;
-        b=rfmVCwccb5LC9vGWU7OgZLLed5CzCYrAj/6raFSxZ4h9wbD59WL8QGttwhI78tlOpa
-         mRTad+IB0hjGWrb0wQ/SHEmThDvTiyx/xl3yS4edfL58FQmU6PpxmZKKhRaZ66csYh/4
-         UnOe9Ib1KpqqVQGGOb0MTO/3uUQNDQsdub9B4v8b10W/WUmbdnWX9/0qpFbtjY5EpYYd
-         DPD2c6hz2xUcVUEe1kGrZEoRjw6oV/YLXv0rT1vIXUJtM5hHHd0Jh9Tyj+ZoE6sOmkut
-         ltRNTaEgJQtl2E99veYGkvJPGE2IS6DqkpVRsauZfL/jKpgl6XR02SRLibX1FWNGRpr6
-         WvGA==
-X-Gm-Message-State: AOJu0YwOZw5LFICUDTktf2ZVmEWnztRR3LFwHXGJvcCvJ7YtiTHVFiCT
-        IRZxHxwPnTrHwPbmsxkE6tHHzA==
-X-Google-Smtp-Source: AGHT+IHYhWSb/77EH45rfz5++hlmG6uS2RjCpx31TFlOZp/3hO4QCJww5a7Duz2eTIkBC4CZcJrFgA==
-X-Received: by 2002:a9d:69d8:0:b0:6b9:a192:aaf3 with SMTP id v24-20020a9d69d8000000b006b9a192aaf3mr11865415oto.17.1694521672873;
-        Tue, 12 Sep 2023 05:27:52 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id a23-20020a056830101700b006c09291cde6sm3979906otp.0.2023.09.12.05.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 05:27:52 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 12 Sep 2023 07:27:50 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 000/737] 6.4.16-rc1 review
-Message-ID: <ZQBZRh24I128Tftp@fedora64.linuxtx.org>
-References: <20230911134650.286315610@linuxfoundation.org>
+        Tue, 12 Sep 2023 08:28:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B63F199B;
+        Tue, 12 Sep 2023 05:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z8ryHLZvoZYaYVMPT2DZpm/JtTShBG1m5lfT41YyXTQ=; b=erCwDK5dpDueftgDg08gml1I+V
+        arhJrULil/JMQj5sB6V10l8iCXZXlF9ROkiDC1IHUDqRQb9g6npPOA3odnUB63pKKOx8f/Nqg8l5B
+        D8Q1uV4eaZZ6/ezbZli7/EAoFBJD3Ym4nEG6GeajOmsXjPq8Qy8voPKW8Xn5zGeX1iOH6JV2crvEW
+        B5k5hZIYgGfbAn+N/U1rqxv3FZDaf5SmnRNet1nSakFLg6pO4OIS8xa+n/w3kd9TPYfxcfUkMVOCm
+        E518FlHYGY2p91T32c1IK/eu51UlMjjKTA0j8QZZGCu8gr+eWNJR6VCSFtby7tyViqiF5nFGw8y0z
+        qGweLZBw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qg2V3-007XrA-8B; Tue, 12 Sep 2023 12:28:13 +0000
+Date:   Tue, 12 Sep 2023 13:28:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] locking: Add rwsem_is_write_locked()
+Message-ID: <ZQBZXSCyG+u2+i8E@casper.infradead.org>
+References: <ZPoift7B3UDQgmWB@casper.infradead.org>
+ <20230907193838.GB14243@noisy.programming.kicks-ass.net>
+ <ZPpV+MeFqX6RHIYw@dread.disaster.area>
+ <20230908104434.GB24372@noisy.programming.kicks-ass.net>
+ <ZP5JrYOge3tSAvj7@dread.disaster.area>
+ <ZP5OfhXhPkntaEkc@casper.infradead.org>
+ <ZP5llBaVrJteHQf3@dread.disaster.area>
+ <70d89bf4-708b-f131-f90e-5250b6804d48@redhat.com>
+ <ZP+U49yfkm0Fpfej@dread.disaster.area>
+ <20230912090342.GC35261@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
+In-Reply-To: <20230912090342.GC35261@noisy.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 03:37:39PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.16 release.
-> There are 737 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Sep 12, 2023 at 11:03:42AM +0200, Peter Zijlstra wrote:
+> If not, then sure we can do this; it's not like I managed to get rid of
+> muteX_is_locked() -- and I actually tried at some point :/
 > 
-> Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> Anything received after that time might be too late.
+> And just now I grepped for it, and look what I find:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
+> drivers/hid/hid-nintendo.c:     if (unlikely(mutex_is_locked(&ctlr->output_mutex))) {
+> drivers/nvdimm/btt.c:           if (mutex_is_locked(&arena->err_lock)
 > 
-> thanks,
-> 
-> greg k-h
+> And there's more :-(
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
-
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Are these actually abuse?  I looked at these two, and they both seem to
+be asking "Does somebody else currently have this mutex?" rather than
+"Do I have this mutex?".
