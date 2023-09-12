@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1073C79C9BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D908D79CA1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbjILIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        id S232725AbjILIfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbjILIWD (ORCPT
+        with ESMTP id S232812AbjILIfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:22:03 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE491705;
-        Tue, 12 Sep 2023 01:21:58 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vrw2he2_1694506914;
-Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vrw2he2_1694506914)
-          by smtp.aliyun-inc.com;
-          Tue, 12 Sep 2023 16:21:55 +0800
-Message-ID: <06791ae0-a4fb-d230-da0c-ced84d8ebe93@linux.alibaba.com>
-Date:   Tue, 12 Sep 2023 16:22:01 +0800
+        Tue, 12 Sep 2023 04:35:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1192E10D1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:35:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61821C433C9;
+        Tue, 12 Sep 2023 08:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694507713;
+        bh=kNlewa3yEJmphIOpPB7B1g/AA9EWzeGvAITRxrDFzeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nmKX93rdLncAS3a8Dk1FhPWhoocfn4ar1ps2ikGOwfciw1WvSW7sad6fCbg7Udkj6
+         mDh/BkMpWlM/MJoNccj56NmfW5U/fgYCZUEcTENrTBgBtit4VzGzGUuIZ5v0z8ObHy
+         Ghl5o7iMB3VZYL+ZLUryR4pWDYStnRfnD1TdHpNar+6RVcvwNE6otgpB8IRrX2ZZdU
+         lkKXKg/KPrvq+URXpujmKkgsyF+TdMFBPWa2nmfOAbQhMmnIl7j8y7zzI8JGuc/Bys
+         In2DcClRuRJWvu5AwhmjHWUWRgj063x1ORkXZ/4r5QI9idygD6anZdz4V8VW7OLSQa
+         //7qtQWczNnQg==
+Date:   Tue, 12 Sep 2023 16:23:16 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, kernel@pengutronix.de
+Subject: Re: [REGRESSION] [PATCH net-next v5 2/2] net: stmmac: use per-queue
+ 64 bit statistics where necessary
+Message-ID: <ZQAf9ArWfRkY/yPR@xhacker>
+References: <20230717160630.1892-1-jszhang@kernel.org>
+ <20230717160630.1892-3-jszhang@kernel.org>
+ <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V2 3/6] pinctrl: sprd: Modify pull-up parameters
-To:     Linhua Xu <Linhua.xu@unisoc.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
- <20230908055146.18347-4-Linhua.xu@unisoc.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230908055146.18347-4-Linhua.xu@unisoc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/8/2023 1:51 PM, Linhua Xu wrote:
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
+On Mon, Sep 11, 2023 at 07:11:02PM +0200, Uwe Kleine-König wrote:
+> Hello,
 > 
-> For UNISOC pin controller, there are three different configurations of
-> pull-up drive current. Modify the 20K pull-up resistor configuration and
-> add the 1.8K pull-up resistor configuration.
+> this patch became commit 133466c3bbe171f826294161db203f7670bb30c8 and is
+> part of v6.6-rc1.
 > 
-> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
-
-Please add a Fixes tag.
-
-> ---
->   drivers/pinctrl/sprd/pinctrl-sprd.c | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
+> On my arm/stm32mp157 based machine using NFS root this commit makes the
+> following appear in the kernel log:
 > 
-> diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> index 5b9126b2cde2..6c75e6b8d2ca 100644
-> --- a/drivers/pinctrl/sprd/pinctrl-sprd.c
-> +++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
-> @@ -69,7 +69,8 @@
->   #define SLEEP_PULL_UP_MASK		GENMASK(1, 0)
->   #define SLEEP_PULL_UP_SHIFT		2
->   
-> -#define PULL_UP_4_7K			(BIT(12) | BIT(7))
-> +#define PULL_UP_1_8K			(BIT(12) | BIT(7))
-> +#define PULL_UP_4_7K			BIT(12)
->   #define PULL_UP_20K			BIT(7)
->   #define PULL_UP_MASK			(GENMASK(1, 0) | BIT(6))
->   #define PULL_UP_SHIFT			6
-> @@ -499,7 +500,7 @@ static int sprd_pinconf_get(struct pinctrl_dev *pctldev, unsigned int pin_id,
->   			break;
->   		case PIN_CONFIG_BIAS_DISABLE:
->   			if ((reg & (SLEEP_PULL_DOWN | SLEEP_PULL_UP)) ||
-> -			    (reg & (PULL_DOWN | PULL_UP_4_7K | PULL_UP_20K)))
-> +			    (reg & (PULL_DOWN | PULL_UP_1_8K)))
+> 	INFO: trying to register non-static key.
+> 	The code is fine but needs lockdep annotation, or maybe
+> 	you didn't initialize this object before use?
+> 	turning off the locking correctness validator.
+> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc1-00449-g133466c3bbe1-dirty #21
 
-The math logic is correct, but the code is not readable now. Since we 
-should mask all PULL UP configration, but the code only mask 'PULL_UP_1_8K'.
+Hi,
 
-So changing to below will be more clear:
-(reg & (PULL_DOWN | PULL_UP_4_7K | PULL_UP_20K | PULL_UP_1_8K)
+Which kernel version are you using? The latest linus tree? But why here
+say 6.5.0-rc1?
 
->   				return -EINVAL;
->   
->   			arg = 1;
-> @@ -701,6 +702,8 @@ static int sprd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin_id,
->   						val |= PULL_UP_20K;
->   					else if (arg == 4700)
->   						val |= PULL_UP_4_7K;
-> +					else if (arg == 1800)
-> +						val |= PULL_UP_1_8K;
->   
->   					mask = PULL_UP_MASK;
->   					shift = PULL_UP_SHIFT;
-> @@ -712,8 +715,7 @@ static int sprd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin_id,
->   					mask = SLEEP_PULL_DOWN | SLEEP_PULL_UP;
->   				} else {
->   					val = shift = 0;
-> -					mask = PULL_DOWN | PULL_UP_20K |
-> -						PULL_UP_4_7K;
-> +					mask = PULL_DOWN | PULL_UP_1_8K;
+Thanks
+> 	Hardware name: STM32 (Device Tree Support)
+> 	 unwind_backtrace from show_stack+0x18/0x1c
+> 	 show_stack from dump_stack_lvl+0x60/0x90
+> 	 dump_stack_lvl from register_lock_class+0x98c/0x99c
+> 	 register_lock_class from __lock_acquire+0x74/0x293c
+> 	 __lock_acquire from lock_acquire+0x134/0x398
+> 	 lock_acquire from stmmac_get_stats64+0x2ac/0x2fc
+> 	 stmmac_get_stats64 from dev_get_stats+0x44/0x130
+> 	 dev_get_stats from rtnl_fill_stats+0x38/0x120
+> 	 rtnl_fill_stats from rtnl_fill_ifinfo+0x834/0x17f4
+> 	 rtnl_fill_ifinfo from rtmsg_ifinfo_build_skb+0xc0/0x144
+> 	 rtmsg_ifinfo_build_skb from rtmsg_ifinfo+0x50/0x88
+> 	 rtmsg_ifinfo from __dev_notify_flags+0xc0/0xec
+> 	 __dev_notify_flags from dev_change_flags+0x50/0x5c
+> 	 dev_change_flags from ip_auto_config+0x2f4/0x1260
+> 	 ip_auto_config from do_one_initcall+0x70/0x35c
+> 	 do_one_initcall from kernel_init_freeable+0x2ac/0x308
+> 	 kernel_init_freeable from kernel_init+0x1c/0x138
+> 	 kernel_init from ret_from_fork+0x14/0x2c
+> 	Exception stack(0xe0815fb0 to 0xe0815ff8)
+> 	5fa0:                                     00000000 00000000 00000000 00000000
+> 	5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> 	5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> 	dwc2 49000000.usb-otg: new device is high-speed
+> 
+> I didn't try understand this problem, it's too close to quitting time
+> :-)
+> 
+> Best regards
+> Uwe
+> 
+> -- 
+> Pengutronix e.K.                           | Uwe Kleine-König            |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-ditto.
 
->   				}
->   				break;
->   			case PIN_CONFIG_SLEEP_HARDWARE_STATE:
