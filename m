@@ -2,165 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD4879C8DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F9C79C8EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjILH63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42582 "EHLO
+        id S232270AbjILH7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbjILH6S (ORCPT
+        with ESMTP id S231580AbjILH6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02B510E7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:57:57 -0700 (PDT)
-Message-ID: <20230912065501.269244004@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694505476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=HiC6v2fxtRjR8xApH6q4tcaG7wy0kTM5+263Xe7tZgo=;
-        b=rH0ZxaSyiHJj2ThngUo0cJMEKrtEBxu2se0MHjUZ4H5phU6SL3DXCWUTGFmQzMXTCr9523
-        +UqAOV2MeOgLYj3MdWkaNCADt5W8kViihKF7sQUJi25bSFo4/ADfS78mohgHsiJA9/TpxP
-        3yiGP5uQO3zOIAs46zf38p6N1D1mNkqVw66/Mpp9FdDMwu+sD/v1mWPwBJXMyD25VnzLpT
-        h4BxG0Dwm9p458LffjoOUCNS5l+0iWIKGF1VaWALzfKTCBwAnmRKMSh97dObcrKyi2OExR
-        i4opU8tPoiEjKjD2xINIw67/e10YBAGRks6cZW688mrDdIb6WME378DG04lpPg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694505476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=HiC6v2fxtRjR8xApH6q4tcaG7wy0kTM5+263Xe7tZgo=;
-        b=elZFAiMqugkD+SD+beAqWnUHSs9h0g52qd3XQmBLlC5T5m7rei6lMNjOY76AC7wh6ACEFA
-        yIcR9Xqz/xfjK0Aw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: [patch V3 08/30] x86/microcode/intel: Save the microcode only after a
- successful late-load
-References: <20230912065249.695681286@linutronix.de>
+        Tue, 12 Sep 2023 03:58:47 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB212114;
+        Tue, 12 Sep 2023 00:58:13 -0700 (PDT)
+X-UUID: 1bd99ef2514211eea33bb35ae8d461a2-20230912
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=2R9wOQrt2hYCSpKJhLmyUTxma34SGY5+qu2t41w5Qi0=;
+        b=PUoSJUYM7rf8QghkgdM1pYGjbpxt6dA8UdCdx034gC8xXUbNm1CZaJ/wNWwnglMvRPKEG+jaxplUFRPDA45/YFQuxWsEXnfzv29zH0+CV/Dtm2IX01ljCH/CUJNy0j3kuFiplocLLvDktvPdtpvm+lXPab4xhf9cI5SoPjZlea4=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:d90ad237-4040-4402-ad03-c2a26132f11d,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:bd5199ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 1bd99ef2514211eea33bb35ae8d461a2-20230912
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+        (envelope-from <moudy.ho@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 46534301; Tue, 12 Sep 2023 15:58:07 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 12 Sep 2023 15:58:07 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 15:58:06 +0800
+From:   Moudy Ho <moudy.ho@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+CC:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Moudy Ho <moudy.ho@mediatek.com>
+Subject: [PATCH v5 05/14] media: platform: mtk-mdp3: introduce more pipelines from MT8195
+Date:   Tue, 12 Sep 2023 15:57:56 +0800
+Message-ID: <20230912075805.11432-6-moudy.ho@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20230912075805.11432-1-moudy.ho@mediatek.com>
+References: <20230912075805.11432-1-moudy.ho@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 09:57:56 +0200 (CEST)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+Increasing the number of sets built by MMSYS and MUTEX in MT8195
+will enable the creation of more pipelines in MDP3.
 
-There are situations where the late microcode is loaded into memory, but is
-not applied:
-
-  1) The rendevouz fails
-  2) The microcode is rejected by the CPUs
-
-If any of this happens then the pointer which was updated at firmware load
-time is stale and subsequent CPU hotplug operations either fail to update
-or create inconsistent microcode state.
-
-Save the loaded microcode in a separate pointer from with the late load is
-attempted and when successful, update the hotplug pointer accordingly via a
-new micrcode_ops callback.
-
-Remove the pointless fallback in the loader to a microcode pointer which is
-never populated.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
+Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
 ---
- arch/x86/kernel/cpu/microcode/core.c     |    4 ++++
- arch/x86/kernel/cpu/microcode/intel.c    |   30 +++++++++++++++---------------
- arch/x86/kernel/cpu/microcode/internal.h |    1 +
- 3 files changed, 20 insertions(+), 15 deletions(-)
----
---- a/arch/x86/kernel/cpu/microcode/core.c
-+++ b/arch/x86/kernel/cpu/microcode/core.c
-@@ -400,6 +400,10 @@ static int microcode_reload_late(void)
- 	store_cpu_caps(&prev_info);
- 
- 	ret = stop_machine_cpuslocked(__reload_late, NULL, cpu_online_mask);
-+
-+	if (microcode_ops->finalize_late_load)
-+		microcode_ops->finalize_late_load(ret);
-+
- 	if (!ret) {
- 		pr_info("Reload succeeded, microcode revision: 0x%x -> 0x%x\n",
- 			old, boot_cpu_data.microcode);
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -34,6 +34,7 @@ static const char ucode_path[] = "kernel
- 
- /* Current microcode patch used in early patching on the APs. */
- static struct microcode_intel *ucode_patch_va __read_mostly;
-+static struct microcode_intel *ucode_patch_late __read_mostly;
- 
- /* last level cache size per core */
- static unsigned int llc_size_per_core __ro_after_init;
-@@ -461,12 +462,9 @@ static enum ucode_state apply_microcode_
- 	if (WARN_ON(raw_smp_processor_id() != cpu))
- 		return UCODE_ERROR;
- 
--	mc = ucode_patch_va;
--	if (!mc) {
--		mc = uci->mc;
--		if (!mc)
--			return UCODE_NFOUND;
--	}
-+	mc = ucode_patch_late;
-+	if (!mc)
-+		return UCODE_NFOUND;
- 
- 	/*
- 	 * Save us the MSR write below - which is a particular expensive
-@@ -585,15 +583,7 @@ static enum ucode_state parse_microcode_
- 	if (!new_mc)
- 		return UCODE_NFOUND;
- 
--	/* Save for CPU hotplug */
--	save_microcode_patch((struct microcode_intel *)new_mc);
--	uci->mc = ucode_patch_va;
--
--	vfree(new_mc);
--
--	pr_debug("CPU%d found a matching microcode update with version 0x%x (current=0x%x)\n",
--		 cpu, cur_rev, uci->cpu_sig.rev);
--
-+	ucode_patch_late = (struct microcode_intel *)new_mc;
- 	return UCODE_NEW;
+ .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 80 ++++++++++++-------
+ .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  7 ++
+ 2 files changed, 60 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+index 606651687465..6d04f72cf86f 100644
+--- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
++++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+@@ -57,6 +57,43 @@ static struct mtk_mutex *__get_mutex(const struct mdp_dev *mdp_dev,
+ 	return m;
  }
  
-@@ -650,10 +640,20 @@ static enum ucode_state request_microcod
- 	return ret;
- }
- 
-+static void finalize_late_load(int result)
++static enum mdp_pipe_id __get_pipe(const struct mdp_dev *mdp_dev,
++				   enum mtk_mdp_comp_id id)
 +{
-+	if (!result)
-+		save_microcode_patch(ucode_patch_late);
++	enum mdp_pipe_id pipe_id;
 +
-+	vfree(ucode_patch_late);
-+	ucode_patch_late = NULL;
++	switch (id) {
++	case MDP_COMP_RDMA0:
++		pipe_id = MDP_PIPE_RDMA0;
++		break;
++	case MDP_COMP_ISP_IMGI:
++		pipe_id = MDP_PIPE_IMGI;
++		break;
++	case MDP_COMP_WPEI:
++		pipe_id = MDP_PIPE_WPEI;
++		break;
++	case MDP_COMP_WPEI2:
++		pipe_id = MDP_PIPE_WPEI2;
++		break;
++	case MDP_COMP_RDMA1:
++		pipe_id = MDP_PIPE_RDMA1;
++		break;
++	case MDP_COMP_RDMA2:
++		pipe_id = MDP_PIPE_RDMA2;
++		break;
++	case MDP_COMP_RDMA3:
++		pipe_id = MDP_PIPE_RDMA3;
++		break;
++	default:
++		/* Avoid exceptions when operating MUTEX */
++		pipe_id = MDP_PIPE_RDMA0;
++		dev_err(&mdp_dev->pdev->dev, "Unknown pipeline id %d", id);
++		break;
++	}
++
++	return pipe_id;
 +}
 +
- static struct microcode_ops microcode_intel_ops = {
- 	.request_microcode_fw	= request_microcode_fw,
- 	.collect_cpu_info	= collect_cpu_info,
- 	.apply_microcode	= apply_microcode_intel,
-+	.finalize_late_load	= finalize_late_load,
+ static int mdp_path_subfrm_require(const struct mdp_path *path,
+ 				   struct mdp_cmdq_cmd *cmd,
+ 				   struct mdp_pipe_info *p, u32 count)
+@@ -64,7 +101,6 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
+ 	const int p_id = path->mdp_dev->mdp_data->mdp_plat_id;
+ 	const struct mdp_comp_ctx *ctx;
+ 	const struct mtk_mdp_driver_data *data = path->mdp_dev->mdp_data;
+-	struct device *dev = &path->mdp_dev->pdev->dev;
+ 	struct mtk_mutex *mutex;
+ 	int id, index;
+ 	u32 num_comp = 0;
+@@ -73,23 +109,7 @@ static int mdp_path_subfrm_require(const struct mdp_path *path,
+ 		num_comp = CFG_GET(MT8183, path->config, num_components);
+ 
+ 	/* Decide which mutex to use based on the current pipeline */
+-	switch (path->comps[0].comp->public_id) {
+-	case MDP_COMP_RDMA0:
+-		index = MDP_PIPE_RDMA0;
+-		break;
+-	case MDP_COMP_ISP_IMGI:
+-		index = MDP_PIPE_IMGI;
+-		break;
+-	case MDP_COMP_WPEI:
+-		index = MDP_PIPE_WPEI;
+-		break;
+-	case MDP_COMP_WPEI2:
+-		index = MDP_PIPE_WPEI2;
+-		break;
+-	default:
+-		dev_err(dev, "Unknown pipeline and no mutex is assigned");
+-		return -EINVAL;
+-	}
++	index = __get_pipe(path->mdp_dev, path->comps[0].comp->public_id);
+ 	memcpy(p, &data->pipe_info[index], sizeof(struct mdp_pipe_info));
+ 	mutex = __get_mutex(path->mdp_dev, p);
+ 
+@@ -343,11 +363,13 @@ static void mdp_auto_release_work(struct work_struct *work)
+ 	struct mdp_cmdq_cmd *cmd;
+ 	struct mdp_dev *mdp;
+ 	struct mtk_mutex *mutex;
++	enum mdp_pipe_id pipe_id;
+ 
+ 	cmd = container_of(work, struct mdp_cmdq_cmd, auto_release_work);
+ 	mdp = cmd->mdp;
+ 
+-	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
++	pipe_id = __get_pipe(mdp, cmd->comps[0].public_id);
++	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
+ 	mtk_mutex_unprepare(mutex);
+ 	mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
+ 			    cmd->num_comps);
+@@ -368,6 +390,7 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
+ 	struct cmdq_cb_data *data;
+ 	struct mdp_dev *mdp;
+ 	struct device *dev;
++	enum mdp_pipe_id pipe_id;
+ 
+ 	if (!mssg) {
+ 		pr_info("%s:no callback data\n", __func__);
+@@ -395,7 +418,8 @@ static void mdp_handle_cmdq_callback(struct mbox_client *cl, void *mssg)
+ 		struct mtk_mutex *mutex;
+ 
+ 		dev_err(dev, "%s:queue_work fail!\n", __func__);
+-		mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
++		pipe_id = __get_pipe(mdp, cmd->comps[0].public_id);
++		mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
+ 		mtk_mutex_unprepare(mutex);
+ 		mdp_comp_clocks_off(&mdp->pdev->dev, cmd->comps,
+ 				    cmd->num_comps);
+@@ -419,6 +443,7 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 	struct device *dev = &mdp->pdev->dev;
+ 	const int p_id = mdp->mdp_data->mdp_plat_id;
+ 	struct mtk_mutex *mutex = NULL;
++	enum mdp_pipe_id pipe_id;
+ 	int i, ret;
+ 	u32 num_comp = 0;
+ 
+@@ -456,13 +481,6 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 		goto err_free_comps;
+ 	}
+ 
+-	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[MDP_PIPE_RDMA0]);
+-	ret = mtk_mutex_prepare(mutex);
+-	if (ret) {
+-		dev_err(dev, "Fail to enable mutex clk\n");
+-		goto err_free_path;
+-	}
+-
+ 	path->mdp_dev = mdp;
+ 	path->config = param->config;
+ 	path->param = param->param;
+@@ -482,6 +500,14 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct mdp_cmdq_param *param)
+ 		goto err_free_path;
+ 	}
+ 
++	pipe_id = __get_pipe(mdp, path->comps[0].comp->public_id);
++	mutex = __get_mutex(mdp, &mdp->mdp_data->pipe_info[pipe_id]);
++	ret = mtk_mutex_prepare(mutex);
++	if (ret) {
++		dev_err(dev, "Fail to enable mutex clk\n");
++		goto err_free_path;
++	}
++
+ 	ret = mdp_path_config(mdp, cmd, path);
+ 	if (ret) {
+ 		dev_err(dev, "mdp_path_config error\n");
+diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+index 725f5a803406..e4ffa25b9271 100644
+--- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
++++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+@@ -49,6 +49,13 @@ enum mdp_pipe_id {
+ 	MDP_PIPE_WPEI2,
+ 	MDP_PIPE_IMGI,
+ 	MDP_PIPE_RDMA0,
++	MDP_PIPE_RDMA1,
++	MDP_PIPE_RDMA2,
++	MDP_PIPE_RDMA3,
++	MDP_PIPE_SPLIT,
++	MDP_PIPE_SPLIT2,
++	MDP_PIPE_VPP0_SOUT,
++	MDP_PIPE_VPP1_SOUT,
+ 	MDP_PIPE_MAX
  };
  
- static __init void calc_llc_size_per_core(struct cpuinfo_x86 *c)
---- a/arch/x86/kernel/cpu/microcode/internal.h
-+++ b/arch/x86/kernel/cpu/microcode/internal.h
-@@ -31,6 +31,7 @@ struct microcode_ops {
- 	 */
- 	enum ucode_state (*apply_microcode)(int cpu);
- 	int (*collect_cpu_info)(int cpu, struct cpu_signature *csig);
-+	void (*finalize_late_load)(int result);
- };
- 
- extern struct ucode_cpu_info ucode_cpu_info[];
+-- 
+2.18.0
 
