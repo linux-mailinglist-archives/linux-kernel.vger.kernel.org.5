@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D1079CE37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EB079CE3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233923AbjILK1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S233981AbjILK1V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbjILK0u (ORCPT
+        with ESMTP id S234317AbjILK0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 06:26:50 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638F710DC;
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C3C10DD;
         Tue, 12 Sep 2023 03:26:44 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C19660007;
-        Tue, 12 Sep 2023 10:26:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694514403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/O8MVT56+zUGcQzRzvIk5l2qYL/0RI/d40KXm58VTfc=;
-        b=YV8nZp2bkWgjApjHU/fxeam8UdOwPYtwPQrOHDC/CjeTqVk80qjBb2xjc+vZ9ZTxZHo2PP
-        WEB5g8JZo7LAl81+K5cKMhRLArv5hTzIhVsW/qQDmqNLK1Qvm3WTJyqjZgQfPMw/9ngVQh
-        MJj2EXbIGnEoZzrQ6d83OMQXpYB/C3YmjOKtrBtKFTEHg6X93KlZoV3L1qW15PhAp7kuW5
-        eQNYSdEzM/oHXuZlKf2gTYvP9eNF8CDYsPZi1DsUSnCGMe9NC3xS+S2x6COewIhm7tf1iW
-        iX9pya5BNojLoteQuPfZyF6YS9dsfbboT5xUmtIFERNKkgYyB3+qRnQbw91Weg==
-Date:   Tue, 12 Sep 2023 12:26:40 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Cc:     <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        <quic_charante@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_pkondeti@quicinc.com>
-Subject: Re: [PATCH v3] mtd: rawnand: qcom: unmap dma address during probe
- failure
-Message-ID: <20230912122640.1ed25673@xps-13>
-In-Reply-To: <20230912101814.7748-1-quic_bibekkum@quicinc.com>
-References: <20230912101814.7748-1-quic_bibekkum@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlKQ43cy9z6J7t4;
+        Tue, 12 Sep 2023 18:22:04 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
+ 2023 11:26:41 +0100
+Date:   Tue, 12 Sep 2023 11:26:40 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/8] IB/hfi1: Use FIELD_GET() to extract Link Width
+Message-ID: <20230912112640.00007427@Huawei.com>
+In-Reply-To: <20230911121501.21910-2-ilpo.jarvinen@linux.intel.com>
+References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
+        <20230911121501.21910-2-ilpo.jarvinen@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bibek,
+On Mon, 11 Sep 2023 15:14:54 +0300
+Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
 
-quic_bibekkum@quicinc.com wrote on Tue, 12 Sep 2023 15:48:14 +0530:
-
-Title: s/during/upon/?
-
-> Fix address argument of nand controller currently being
-> passed to dma_unmap_resource() in probe error path.
-
-What about:
-
-	Unmap the right resource upon probe failure: we currently
-	provide the physical address of the DMA region rather than the
-	output of dma_map_resource() which is obviously wrong.
-
-> This address argument should be the dma address returned by
-> dma_map_resource() instead of the physical address of nand controller.
->
->=20
-> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
-> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+> custom masking and shifting.
+> 
+> While at it, also fix function's comment.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 > ---
-> v3: Incorporated comments from Miquel
->     - Modified the commit message and title as per suggestions.
->=20
-> v2: Incorporated comments from Pavan/Mani.
->     https://lore.kernel.org/all/20230911133026.29868-1-quic_bibekkum@quic=
-inc.com/
->=20
-> v1: https://lore.kernel.org/all/20230907092854.11408-1-quic_bibekkum@quic=
-inc.com/
->=20
->  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
-m_nandc.c
-> index 64499c1b3603..b079605c84d3 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -3444,7 +3444,7 @@ static int qcom_nandc_probe(struct platform_device =
-*pdev)
->  err_aon_clk:
->  	clk_disable_unprepare(nandc->core_clk);
->  err_core_clk:
-> -	dma_unmap_resource(dev, res->start, resource_size(res),
-> +	dma_unmap_resource(dev, nandc->base_dma, resource_size(res),
->  			   DMA_BIDIRECTIONAL, 0);
->  	return ret;
+>  drivers/infiniband/hw/hfi1/pcie.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+> index 08732e1ac966..d497e4c623c1 100644
+> --- a/drivers/infiniband/hw/hfi1/pcie.c
+> +++ b/drivers/infiniband/hw/hfi1/pcie.c
+> @@ -3,6 +3,7 @@
+>   * Copyright(c) 2015 - 2019 Intel Corporation.
+>   */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/pci.h>
+>  #include <linux/io.h>
+>  #include <linux/delay.h>
+> @@ -210,10 +211,10 @@ static u32 extract_speed(u16 linkstat)
+>  	return speed;
 >  }
-> --
-> 2.17.1
->=20
+>  
+> -/* return the PCIe link speed from the given link status */
+> +/* return the PCIe Link Width from the given link status */
+>  static u32 extract_width(u16 linkstat)
+>  {
+> -	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
+> +	return FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
 
+The helper seems like overkill now.  Maybe just push this code inline
+and drop the wrapper.  I don't think the comment is necessary after
+that as we are putting it in a bus_width field and the register is
+obviously link status from the naming.
 
-Thanks,
-Miqu=C3=A8l
+	dd->lbus_width = FIELD_GET(PCI_EXP_LINKSTA_NLW, linkstat);
+
+>  }
+>  
+>  /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
+
