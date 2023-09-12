@@ -2,299 +2,555 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB5979C31C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3171D79C3F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238747AbjILCjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        id S242372AbjILDSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239552AbjILCjn (ORCPT
+        with ESMTP id S242340AbjILDSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:39:43 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3DD3D71D;
-        Mon, 11 Sep 2023 19:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694484272;
-        bh=7MnTQAA6NXTt2KERJ1/UbZs3JZvQmiYmgAFEHSqSre4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cla3qUtbuTnx4S3xdRjH9jRl6xDdMgnSviigtKEx78SSdjkickLnQHv4xOzFiAOy0
-         TB/UMCn/63NQ5cwxFJtCGBwQ6o03ro5d78F93WRBlYNbGW58lixIcu+ym5ElGogKHI
-         TblIZ5mGLNkhig4BJn8nS0MnIktuVMus3FGi2nz3dLGT2Pj21Ro9uQgbLrbETnhR62
-         zbJ8OW98CmypI786fwkoGYP+mVgQx+zdgkuMJEO6W8trtoILDomdU2QpXWU1PkDbNH
-         O37LazzSVpWQu9IxaLZNZ8zSZ8UXYcZLPEioQ1d4h28u9hUS7VjlKrPFht0gInEEi3
-         cLBZ3eEflXPZQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rl6Mz6w2Dz4xQ1;
-        Tue, 12 Sep 2023 12:04:31 +1000 (AEST)
-Date:   Tue, 12 Sep 2023 12:04:29 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the bcachefs tree
-Message-ID: <20230912120429.7852428f@canb.auug.org.au>
+        Mon, 11 Sep 2023 23:18:36 -0400
+Received: from mail-m12741.qiye.163.com (mail-m12741.qiye.163.com [115.236.127.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB89F3B9EA;
+        Mon, 11 Sep 2023 19:06:59 -0700 (PDT)
+Received: from [10.128.10.193] (unknown [123.120.52.233])
+        by mail-m15579.qiye.163.com (Hmail) with ESMTPA id DA506A80263;
+        Tue, 12 Sep 2023 10:06:45 +0800 (CST)
+Message-ID: <33d64375-d672-49a8-bbc8-c31a67595403@sangfor.com.cn>
+Date:   Tue, 12 Sep 2023 10:06:44 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HyO/wwY.250W_1EDD7kIjHg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     martin.lau@linux.dev, ast@kernel.org, song@kernel.org, yhs@fb.com,
+        rostedt@goodmis.org, dinghui@sangfor.com.cn,
+        huangcun@sangfor.com.cn, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+ <20230909212933.1552f2842b06e50525a4daef@kernel.org>
+From:   pengdonglin <pengdonglin@sangfor.com.cn>
+In-Reply-To: <20230909212933.1552f2842b06e50525a4daef@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDSUhKVkxDHh5DHR5DGk9LGFUTARMWGhIXJBQOD1
+        lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVSktLVUtZBg++
+X-HM-Tid: 0a8a87241ffe2e9ckusnda506a80263
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OU06Eww*HD1KFQscPw4cFD0S
+        IlEwChxVSlVKTUJPT0NPT0tNQk1CVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
+        WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBSk5CQkk3Bg++
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HyO/wwY.250W_1EDD7kIjHg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+在 2023/9/9 20:29, Masami Hiramatsu (Google) 写道:
+> On Sat,  9 Sep 2023 02:16:46 -0700
+> Donglin Peng <pengdonglin@sangfor.com.cn> wrote:
+> 
+>> Currently, we are only using the linear search method to find the type id
+>> by the name, which has a time complexity of O(n). This change involves
+>> sorting the names of btf types in ascending order and using binary search,
+>> which has a time complexity of O(log(n)). This idea was inspired by the
+>> following patch:
+>>
+>> 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
+>>
+>> At present, this improvement is only for searching in vmlinux's and
+>> module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_STRUCT.
+>>
+>> Another change is the search direction, where we search the BTF first and
+>> then its base, the type id of the first matched btf_type will be returned.
+>>
+>> Here is a time-consuming result that finding all the type ids of 67,819 kernel
+>> functions in vmlinux's BTF by their names:
+>>
+>> Before: 17000 ms
+>> After:     10 ms
+> 
+> Nice work!
 
-Hi all,
+Thank you
 
-After merging the bcachefs tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> 
+>>
+>> The average lookup performance has improved about 1700x at the above scenario.
+>>
+>> However, this change will consume more memory, for example, 67,819 kernel
+>> functions will allocate about 530KB memory.
+> 
+> I'm not so familier with how the BTF is generated, what about making this
+> list offline? Since BTF is static data, it is better to make the map when
 
-fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_exit':
-fs/bcachefs/btree_cache.c:403:9: error: implicit declaration of function 'u=
-nregister_shrinker'; did you mean 'unregister_chrdev'? [-Werror=3Dimplicit-=
-function-declaration]
-  403 |         unregister_shrinker(&bc->shrink);
-      |         ^~~~~~~~~~~~~~~~~~~
-      |         unregister_chrdev
-fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_init':
-fs/bcachefs/btree_cache.c:479:15: error: implicit declaration of function '=
-register_shrinker'; did you mean 'register_chrdev'? [-Werror=3Dimplicit-fun=
-ction-declaration]
-  479 |         ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", c-=
->name);
-      |               ^~~~~~~~~~~~~~~~~
-      |               register_chrdev
-cc1: all warnings being treated as errors
+The BTF is generated by pahole during the building of the kernel or modules.
+Pahole is maintained in the project https://github.com/acmel/dwarves. 
+The log
+printed by scripts/link-vmlinux.sh when generating BTF for vmlinux is as
+follows:
 
-Caused by commits
+LLVM_OBJCOPY=objcopy pahole -J --skip_encoding_btf_vars --btf_gen_floats 
+.tmp_vmlinux.btf
 
-  5ec30115c066 ("bcachefs: Initial commit")
+If making the list offline, the pahole needs to be modified or a new tool
+needs to be written and maintained in the kernel tree. Therefore, it may
+be simpler to make the list at runtime.
 
-interacting with commit
+> it is built. And I also would like to suggest to make a new map to make
+> another new map which maps the BTF ID and the address of the function, so
+> that we can do binary search the BTF object from the function address.
+> (The latter map should be built when CONFIG_BTF_ADDR_MAP=y)
 
-  eba045d9350d ("mm: shrinker: remove old APIs")
+It has been observed that two or more functions may have the same address
+but different IDs. For example:
 
-from v6.6-rc1.
+         ffffffff81218370 t __do_sys_getuid16
+         ffffffff81218370 T __ia32_sys_getuid16
+         ffffffff81218370 T __x64_sys_getuid16
 
-I have applied the following merge resolution patch for today.  More may
-be needed.
+         {
+             "id": 27911,
+             "kind": "FUNC",
+             "name": "__do_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },{
+             "id": 20303,
+             "kind": "FUNC",
+             "name": "__ia32_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },{
+             "id": 20304,
+             "kind": "FUNC",
+             "name": "__x64_sys_getuid16",
+             "type_id": 4455,
+             "linkage": "static"
+         },
 
-=46rom 801ad185700d9a7abcf156233b9db6cf6d831581 Mon Sep 17 00:00:00 2001
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 12 Sep 2023 11:27:22 +1000
-Subject: [PATCH] bcachefs: convert to dynamically allocated shrinkers
+It may be a issue to return which id. However, if only the FUNC_PROTO is
+of concern, any one of them can be returned.
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/bcachefs/btree_cache.c     | 19 +++++++++++--------
- fs/bcachefs/btree_key_cache.c | 18 +++++++++++-------
- fs/bcachefs/btree_types.h     |  4 ++--
- fs/bcachefs/fs.c              |  2 +-
- fs/bcachefs/sysfs.c           |  2 +-
- 5 files changed, 26 insertions(+), 19 deletions(-)
+It may not be necessary to create a new list for function addresses because
+  the id_name map can be reused for this purpose. Here is an idea:
 
-diff --git a/fs/bcachefs/btree_cache.c b/fs/bcachefs/btree_cache.c
-index 245ddd92b2d1..7f0eded6c296 100644
---- a/fs/bcachefs/btree_cache.c
-+++ b/fs/bcachefs/btree_cache.c
-@@ -285,7 +285,7 @@ static int btree_node_write_and_reclaim(struct bch_fs *=
-c, struct btree *b)
- static unsigned long bch2_btree_cache_scan(struct shrinker *shrink,
- 					   struct shrink_control *sc)
- {
--	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
-+	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
- 					btree_cache.shrink);
- 	struct btree_cache *bc =3D &c->btree_cache;
- 	struct btree *b, *t;
-@@ -384,7 +384,7 @@ static unsigned long bch2_btree_cache_scan(struct shrin=
-ker *shrink,
- static unsigned long bch2_btree_cache_count(struct shrinker *shrink,
- 					    struct shrink_control *sc)
- {
--	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
-+	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
- 					btree_cache.shrink);
- 	struct btree_cache *bc =3D &c->btree_cache;
-=20
-@@ -400,7 +400,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
- 	struct btree *b;
- 	unsigned i, flags;
-=20
--	unregister_shrinker(&bc->shrink);
-+	shrinker_free(bc->shrink);
-=20
- 	/* vfree() can allocate memory: */
- 	flags =3D memalloc_nofs_save();
-@@ -454,6 +454,7 @@ void bch2_fs_btree_cache_exit(struct bch_fs *c)
- int bch2_fs_btree_cache_init(struct bch_fs *c)
- {
- 	struct btree_cache *bc =3D &c->btree_cache;
-+	struct shrinker *shrink;
- 	unsigned i;
- 	int ret =3D 0;
-=20
-@@ -473,12 +474,14 @@ int bch2_fs_btree_cache_init(struct bch_fs *c)
-=20
- 	mutex_init(&c->verify_lock);
-=20
--	bc->shrink.count_objects	=3D bch2_btree_cache_count;
--	bc->shrink.scan_objects		=3D bch2_btree_cache_scan;
--	bc->shrink.seeks		=3D 4;
--	ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", c->name);
--	if (ret)
-+	shrink =3D shrinker_alloc(0, "%s/btree_cache", c->name);
-+	if (!shrink)
- 		goto err;
-+	bc->shrink =3D shrink;
-+	shrink->count_objects	=3D bch2_btree_cache_count;
-+	shrink->scan_objects	=3D bch2_btree_cache_scan;
-+	shrink->seeks		=3D 4;
-+	shrinker_register(shrink);
-=20
- 	return 0;
- err:
-diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-index 505e7c365ab7..88d33690233b 100644
---- a/fs/bcachefs/btree_key_cache.c
-+++ b/fs/bcachefs/btree_key_cache.c
-@@ -838,7 +838,7 @@ void bch2_btree_key_cache_drop(struct btree_trans *tran=
-s,
- static unsigned long bch2_btree_key_cache_scan(struct shrinker *shrink,
- 					   struct shrink_control *sc)
- {
--	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
-+	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
- 					btree_key_cache.shrink);
- 	struct btree_key_cache *bc =3D &c->btree_key_cache;
- 	struct bucket_table *tbl;
-@@ -936,7 +936,7 @@ static unsigned long bch2_btree_key_cache_scan(struct s=
-hrinker *shrink,
- static unsigned long bch2_btree_key_cache_count(struct shrinker *shrink,
- 					    struct shrink_control *sc)
- {
--	struct bch_fs *c =3D container_of(shrink, struct bch_fs,
-+	struct bch_fs *c =3D container_of(&shrink, struct bch_fs,
- 					btree_key_cache.shrink);
- 	struct btree_key_cache *bc =3D &c->btree_key_cache;
- 	long nr =3D atomic_long_read(&bc->nr_keys) -
-@@ -957,7 +957,7 @@ void bch2_fs_btree_key_cache_exit(struct btree_key_cach=
-e *bc)
- 	int cpu;
- #endif
-=20
--	unregister_shrinker(&bc->shrink);
-+	shrinker_free(bc->shrink);
-=20
- 	mutex_lock(&bc->lock);
-=20
-@@ -1031,6 +1031,7 @@ void bch2_fs_btree_key_cache_init_early(struct btree_=
-key_cache *c)
- int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
- {
- 	struct bch_fs *c =3D container_of(bc, struct bch_fs, btree_key_cache);
-+	struct shrinker *shrink;
-=20
- #ifdef __KERNEL__
- 	bc->pcpu_freed =3D alloc_percpu(struct btree_key_cache_freelist);
-@@ -1043,11 +1044,14 @@ int bch2_fs_btree_key_cache_init(struct btree_key_c=
-ache *bc)
-=20
- 	bc->table_init_done =3D true;
-=20
--	bc->shrink.seeks		=3D 0;
--	bc->shrink.count_objects	=3D bch2_btree_key_cache_count;
--	bc->shrink.scan_objects		=3D bch2_btree_key_cache_scan;
--	if (register_shrinker(&bc->shrink, "%s/btree_key_cache", c->name))
-+	shrink =3D shrinker_alloc(0, "%s/btree_key_cache", c->name);
-+	if (!shrink)
- 		return -BCH_ERR_ENOMEM_fs_btree_cache_init;
-+	bc->shrink =3D shrink;
-+	shrink->seeks		=3D 0;
-+	shrink->count_objects	=3D bch2_btree_key_cache_count;
-+	shrink->scan_objects	=3D bch2_btree_key_cache_scan;
-+	shrinker_register(shrink);
- 	return 0;
- }
-=20
-diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
-index 70398aaa095e..fac0abdaf167 100644
---- a/fs/bcachefs/btree_types.h
-+++ b/fs/bcachefs/btree_types.h
-@@ -163,7 +163,7 @@ struct btree_cache {
- 	unsigned		used;
- 	unsigned		reserve;
- 	atomic_t		dirty;
--	struct shrinker		shrink;
-+	struct shrinker		*shrink;
-=20
- 	/*
- 	 * If we need to allocate memory for a new btree node and that
-@@ -321,7 +321,7 @@ struct btree_key_cache {
- 	bool			table_init_done;
- 	struct list_head	freed_pcpu;
- 	struct list_head	freed_nonpcpu;
--	struct shrinker		shrink;
-+	struct shrinker		*shrink;
- 	unsigned		shrink_iter;
- 	struct btree_key_cache_freelist __percpu *pcpu_freed;
-=20
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 48431700b83e..bdc8573631bd 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -1885,7 +1885,7 @@ static struct dentry *bch2_mount(struct file_system_t=
-ype *fs_type,
- 		sb->s_flags	|=3D SB_POSIXACL;
- #endif
-=20
--	sb->s_shrink.seeks =3D 0;
-+	sb->s_shrink->seeks =3D 0;
-=20
- 	vinode =3D bch2_vfs_inode_get(c, BCACHEFS_ROOT_SUBVOL_INUM);
- 	ret =3D PTR_ERR_OR_ZERO(vinode);
-diff --git a/fs/bcachefs/sysfs.c b/fs/bcachefs/sysfs.c
-index 41c6900c34c1..a9f480c26bb4 100644
---- a/fs/bcachefs/sysfs.c
-+++ b/fs/bcachefs/sysfs.c
-@@ -522,7 +522,7 @@ STORE(bch2_fs)
-=20
- 		sc.gfp_mask =3D GFP_KERNEL;
- 		sc.nr_to_scan =3D strtoul_or_return(buf);
--		c->btree_cache.shrink.scan_objects(&c->btree_cache.shrink, &sc);
-+		c->btree_cache.shrink->scan_objects(c->btree_cache.shrink, &sc);
- 	}
-=20
- 	if (attr =3D=3D &sysfs_btree_wakeup)
---=20
-2.40.1
+1. Use the function address to get the name by calling the function
+  sprint_symbol_no_offset.
 
---=20
-Cheers,
-Stephen Rothwell
+2. Then call the function btf_find_by_name_kind to get the BTF ID.
 
---Sig_/HyO/wwY.250W_1EDD7kIjHg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Both sprint_symbol_no_offset and btf_find_by_name_kind use binary search.
 
------BEGIN PGP SIGNATURE-----
+> 
+> Thank you,
+> 
+>>
+>> Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
+>> ---
+>> Changes in RFC v2:
+>>   - Fix the build issue reported by kernel test robot <lkp@intel.com>
+>> ---
+>>   include/linux/btf.h |   1 +
+>>   kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
+>>   2 files changed, 291 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/include/linux/btf.h b/include/linux/btf.h
+>> index cac9f304e27a..6260a0668773 100644
+>> --- a/include/linux/btf.h
+>> +++ b/include/linux/btf.h
+>> @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
+>>   bool btf_is_module(const struct btf *btf);
+>>   struct module *btf_try_get_module(const struct btf *btf);
+>>   u32 btf_nr_types(const struct btf *btf);
+>> +u32 btf_type_cnt(const struct btf *btf);
+>>   bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+>>   			   const struct btf_member *m,
+>>   			   u32 expected_offset, u32 expected_size);
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index 817204d53372..51aa9f27853b 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
+>>   	struct btf_id_dtor_kfunc dtors[];
+>>   };
+>>   
+>> +enum {
+>> +	BTF_ID_NAME_FUNC,	/* function */
+>> +	BTF_ID_NAME_STRUCT,	/* struct */
+>> +	BTF_ID_NAME_MAX
+>> +};
+>> +
+>> +struct btf_id_name {
+>> +	int id;
+>> +	u32 name_off;
+>> +};
+>> +
+>> +struct btf_id_name_map {
+>> +	struct btf_id_name *id_name;
+>> +	u32 count;
+>> +};
+>> +
+>> +struct btf_id_name_maps {
+>> +	struct btf_id_name_map map[BTF_ID_NAME_MAX];
+>> +};
+>> +
+>>   struct btf {
+>>   	void *data;
+>>   	struct btf_type **types;
+>> @@ -257,6 +277,7 @@ struct btf {
+>>   	struct btf_kfunc_set_tab *kfunc_set_tab;
+>>   	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+>>   	struct btf_struct_metas *struct_meta_tab;
+>> +	struct btf_id_name_maps *id_name_maps;
+>>   
+>>   	/* split BTF support */
+>>   	struct btf *base_btf;
+>> @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
+>>   	return total;
+>>   }
+>>   
+>> +u32 btf_type_cnt(const struct btf *btf)
+>> +{
+>> +	return btf->start_id + btf->nr_types;
+>> +}
+>> +
+>> +static inline u8 btf_id_name_idx_to_kind(int index)
+>> +{
+>> +	u8 kind;
+>> +
+>> +	switch (index) {
+>> +	case BTF_ID_NAME_FUNC:
+>> +		kind = BTF_KIND_FUNC;
+>> +		break;
+>> +	case BTF_ID_NAME_STRUCT:
+>> +		kind = BTF_KIND_STRUCT;
+>> +		break;
+>> +	default:
+>> +		kind = BTF_KIND_UNKN;
+>> +		break;
+>> +	}
+>> +
+>> +	return kind;
+>> +}
+>> +
+>> +static inline int btf_id_name_kind_to_idx(u8 kind)
+>> +{
+>> +	int index;
+>> +
+>> +	switch (kind) {
+>> +	case BTF_KIND_FUNC:
+>> +		index = BTF_ID_NAME_FUNC;
+>> +		break;
+>> +	case BTF_KIND_STRUCT:
+>> +		index = BTF_ID_NAME_STRUCT;
+>> +		break;
+>> +	default:
+>> +		index = -1;
+>> +		break;
+>> +	}
+>> +
+>> +	return index;
+>> +}
+>> +
+>> +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
+>> +				    u32 size, const char *name,
+>> +				    struct btf_id_name **start,
+>> +				    struct btf_id_name **end,
+>> +				    const struct btf *btf)
+>> +{
+>> +	int ret;
+>> +	int low, mid, high;
+>> +	const char *name_buf;
+>> +
+>> +	low = 0;
+>> +	high = size - 1;
+>> +
+>> +	while (low <= high) {
+>> +		mid = low + (high - low) / 2;
+>> +		name_buf = btf_name_by_offset(btf, id_name[mid].name_off);
+>> +		ret = strcmp(name, name_buf);
+>> +		if (ret > 0)
+>> +			low = mid + 1;
+>> +		else if (ret < 0)
+>> +			high = mid - 1;
+>> +		else
+>> +			break;
+>> +	}
+>> +
+>> +	if (low > high)
+>> +		return -ESRCH;
+>> +
+>> +	if (start) {
+>> +		low = mid;
+>> +		while (low) {
+>> +			name_buf = btf_name_by_offset(btf, id_name[low-1].name_off);
+>> +			if (strcmp(name, name_buf))
+>> +				break;
+>> +			low--;
+>> +		}
+>> +		*start = &id_name[low];
+>> +	}
+>> +
+>> +	if (end) {
+>> +		high = mid;
+>> +		while (high < size - 1) {
+>> +			name_buf = btf_name_by_offset(btf, id_name[high+1].name_off);
+>> +			if (strcmp(name, name_buf))
+>> +				break;
+>> +			high++;
+>> +		}
+>> +		*end = &id_name[high];
+>> +	}
+>> +
+>> +	return id_name[mid].id;
+>> +}
+>> +
+>>   s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
+>>   {
+>> +	const struct btf_id_name_maps *maps;
+>> +	const struct btf_id_name_map *map;
+>> +	struct btf_id_name *start;
+>>   	const struct btf_type *t;
+>>   	const char *tname;
+>> -	u32 i, total;
+>> +	int index = btf_id_name_kind_to_idx(kind);
+>> +	s32 id, total;
+>>   
+>> -	total = btf_nr_types(btf);
+>> -	for (i = 1; i < total; i++) {
+>> -		t = btf_type_by_id(btf, i);
+>> -		if (BTF_INFO_KIND(t->info) != kind)
+>> -			continue;
+>> +	do {
+>> +		maps = btf->id_name_maps;
+>> +		if (index >= 0 && maps && maps->map[index].id_name) {
+>> +			/* binary search */
+>> +			map = &maps->map[index];
+>> +			id = btf_find_by_name_bsearch(map->id_name,
+>> +				map->count, name, &start, NULL, btf);
+>> +			if (id > 0) {
+>> +				/*
+>> +				 * Return the first one that
+>> +				 * matched
+>> +				 */
+>> +				return start->id;
+>> +			}
+>> +		} else {
+>> +			/* linear search */
+>> +			total = btf_type_cnt(btf);
+>> +			for (id = btf->start_id; id < total; id++) {
+>> +				t = btf_type_by_id(btf, id);
+>> +				if (BTF_INFO_KIND(t->info) != kind)
+>> +					continue;
+>> +
+>> +				tname = btf_name_by_offset(btf, t->name_off);
+>> +				if (!strcmp(tname, name))
+>> +					return id;
+>> +			}
+>> +		}
+>>   
+>> -		tname = btf_name_by_offset(btf, t->name_off);
+>> -		if (!strcmp(tname, name))
+>> -			return i;
+>> -	}
+>> +		btf = btf->base_btf;
+>> +	} while (btf);
+>>   
+>>   	return -ENOENT;
+>>   }
+>> @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
+>>   	spin_unlock_irqrestore(&btf_idr_lock, flags);
+>>   }
+>>   
+>> +static void btf_destroy_id_name(struct btf *btf, int index)
+>> +{
+>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
+>> +	struct btf_id_name_map *map = &maps->map[index];
+>> +
+>> +	if (map->id_name) {
+>> +		kvfree(map->id_name);
+>> +		map->id_name = NULL;
+>> +		map->count = 0;
+>> +	}
+>> +}
+>> +
+>> +static void btf_destroy_id_name_map(struct btf *btf)
+>> +{
+>> +	int i;
+>> +
+>> +	if (!btf->id_name_maps)
+>> +		return;
+>> +
+>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++)
+>> +		btf_destroy_id_name(btf, i);
+>> +
+>> +	kfree(btf->id_name_maps);
+>> +	btf->id_name_maps = NULL;
+>> +}
+>> +
+>>   static void btf_free_kfunc_set_tab(struct btf *btf)
+>>   {
+>>   	struct btf_kfunc_set_tab *tab = btf->kfunc_set_tab;
+>> @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf *btf)
+>>   
+>>   static void btf_free(struct btf *btf)
+>>   {
+>> +	btf_destroy_id_name_map(btf);
+>>   	btf_free_struct_meta_tab(btf);
+>>   	btf_free_dtor_kfunc_tab(btf);
+>>   	btf_free_kfunc_set_tab(btf);
+>> @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
+>>   	return kctx_type_id;
+>>   }
+>>   
+>> +static int btf_compare_id_name(const void *a, const void *b, const void *priv)
+>> +{
+>> +	const struct btf_id_name *ia = (const struct btf_id_name *)a;
+>> +	const struct btf_id_name *ib = (const struct btf_id_name *)b;
+>> +	const struct btf *btf = priv;
+>> +	int ret;
+>> +
+>> +	/*
+>> +	 * Sort names in ascending order, if the name is same, sort ids in
+>> +	 * ascending order.
+>> +	 */
+>> +	ret = strcmp(btf_name_by_offset(btf, ia->name_off),
+>> +		     btf_name_by_offset(btf, ib->name_off));
+>> +	if (!ret)
+>> +		ret = ia->id - ib->id;
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int btf_create_id_name(struct btf *btf, int index)
+>> +{
+>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
+>> +	struct btf_id_name_map *map = &maps->map[index];
+>> +	const struct btf_type *t;
+>> +	struct btf_id_name *id_name;
+>> +	const char *name;
+>> +	int i, j = 0;
+>> +	u32 total, count = 0;
+>> +	u8 kind;
+>> +
+>> +	kind = btf_id_name_idx_to_kind(index);
+>> +	if (kind == BTF_KIND_UNKN)
+>> +		return -EINVAL;
+>> +
+>> +	if (map->id_name || map->count != 0)
+>> +		return -EINVAL;
+>> +
+>> +	total = btf_type_cnt(btf);
+>> +	for (i = btf->start_id; i < total; i++) {
+>> +		t = btf_type_by_id(btf, i);
+>> +		if (BTF_INFO_KIND(t->info) != kind)
+>> +			continue;
+>> +		name = btf_name_by_offset(btf, t->name_off);
+>> +		if (str_is_empty(name))
+>> +			continue;
+>> +		count++;
+>> +	}
+>> +
+>> +	if (count == 0)
+>> +		return 0;
+>> +
+>> +	id_name = kvcalloc(count, sizeof(struct btf_id_name),
+>> +			   GFP_KERNEL);
+>> +	if (!id_name)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = btf->start_id; i < total; i++) {
+>> +		t = btf_type_by_id(btf, i);
+>> +		if (BTF_INFO_KIND(t->info) != kind)
+>> +			continue;
+>> +		name = btf_name_by_offset(btf, t->name_off);
+>> +		if (str_is_empty(name))
+>> +			continue;
+>> +
+>> +		id_name[j].id = i;
+>> +		id_name[j].name_off = t->name_off;
+>> +		j++;
+>> +	}
+>> +
+>> +	sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
+>> +	       NULL, btf);
+>> +
+>> +	map->id_name = id_name;
+>> +	map->count = count;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int btf_create_id_name_map(struct btf *btf)
+>> +{
+>> +	int err, i;
+>> +	struct btf_id_name_maps *maps;
+>> +
+>> +	if (btf->id_name_maps)
+>> +		return -EBUSY;
+>> +
+>> +	maps = kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
+>> +	if (!maps)
+>> +		return -ENOMEM;
+>> +
+>> +	btf->id_name_maps = maps;
+>> +
+>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++) {
+>> +		err = btf_create_id_name(btf, i);
+>> +		if (err < 0)
+>> +			break;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +
+>>   BTF_ID_LIST(bpf_ctx_convert_btf_id)
+>>   BTF_ID(struct, bpf_ctx_convert)
+>>   
+>> @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
+>>   	if (err)
+>>   		goto errout;
+>>   
+>> +	err = btf_create_id_name_map(btf);
+>> +	if (err)
+>> +		goto errout;
+>> +
+>>   	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
+>>   	bpf_ctx_convert.t = btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
+>>   
+>> @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
+>>   errout:
+>>   	btf_verifier_env_free(env);
+>>   	if (btf) {
+>> +		btf_destroy_id_name_map(btf);
+>>   		kvfree(btf->types);
+>>   		kfree(btf);
+>>   	}
+>> @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
+>>   	if (err)
+>>   		goto errout;
+>>   
+>> +	err = btf_create_id_name_map(btf);
+>> +	if (err)
+>> +		goto errout;
+>> +
+>>   	btf_verifier_env_free(env);
+>>   	refcount_set(&btf->refcnt, 1);
+>> +
+>>   	return btf;
+>>   
+>>   errout:
+>>   	btf_verifier_env_free(env);
+>>   	if (btf) {
+>> +		btf_destroy_id_name_map(btf);
+>>   		kvfree(btf->data);
+>>   		kvfree(btf->types);
+>>   		kfree(btf);
+>> -- 
+>> 2.25.1
+>>
+> 
+> 
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT/xy0ACgkQAVBC80lX
-0GyS5QgAo/VyB0n0K9oHwrW66ClrcZlog5az4zDvUTBaHMU6su2FMwVXjuvE016r
-XiOlZ9TMaS/UyEXHcXZZ0oMhEuaV2yeiaunOusNtqW4a3KshjabbGuSUrFBp3H0N
-lgJvRmYdoreNWfqz+UcXYi1YvEFQTC3ZdErRgRGmUN3pFporI678+nvM/t5hJiRP
-H9rE/guN69WwSWqArzFcVl2/t5ZNnWuECBJa9dfXgZBbh03c2UezOS2Go+KWyHeC
-g/4ahCfOtfNCDoHNfe/b9MzI43p3RS3t1beRNRc5Kuwb8a0hvgihYpHlCb2vSB8G
-X2UJboYKfi2p35W51HV4YpywS7mEoA==
-=hMdR
------END PGP SIGNATURE-----
-
---Sig_/HyO/wwY.250W_1EDD7kIjHg--
