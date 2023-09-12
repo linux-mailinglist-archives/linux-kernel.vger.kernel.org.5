@@ -2,78 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310A179CD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793D879CD99
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjILKNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
+        id S233995AbjILKNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbjILKNf (ORCPT
+        with ESMTP id S233879AbjILKNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:13:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773D210E4;
-        Tue, 12 Sep 2023 03:13:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 911D1C433CA;
-        Tue, 12 Sep 2023 10:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694513611;
-        bh=tGhelaPFNZuEx0uPoA53JqxqfGlMwrEXqhnIkceP5Qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=STypyJxFv+PolVK7AM9K42rOjuvdetg84wPOqeGVM0/rI+oH63XkwmDZwJe+rakQr
-         2wiId0RyfwrtR2BExQpEHpc5QFw3Uk5ePJDNw56Y1aQnKb3BeyNs24jdYH7gV0/KPS
-         C7QEVXzFIFb5nSS+IPpFaEJH39dpDWt1wC/jagus=
-Date:   Tue, 12 Sep 2023 12:13:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>, stable@vger.kernel.org,
-        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "comedi: add HAS_IOPORT dependencies"
-Message-ID: <2023091226-foe-reanalyze-b859@gregkh>
-References: <20230905090922.3314-1-abbotti@mev.co.uk>
- <76acff7e-3959-4193-9531-22a5e5a68221@leemhuis.info>
+        Tue, 12 Sep 2023 06:13:46 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7DD1FCA;
+        Tue, 12 Sep 2023 03:13:39 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id B37E440006;
+        Tue, 12 Sep 2023 10:13:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1694513618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQ9n/iAss2NyES0g9xehIz4CIRU5Od9sT5Iie5RFnB8=;
+        b=SHp6C3RcCyPP8ldsMWVWJUDAN/1FHJeu6XNVn0qPDDAs88S0/ZybfVIy7K6PMiKoVo+YWy
+        D1xdIPsIFWSOBbz33UwVCOSuFhp3FyHSw6w5whPTSk6ZyzlbkXg5kSmzbTf9uLqvfYiclf
+        BBykBwWCMbqtnNDAwELWydd5hsFTHJdJMiFuse3pT/LBojXrkZU075N1cLnqS4b/HBIMe7
+        N/lm7qcm+rtCSDxx5dH8+f6oAe6g6WJfg5jrOops+SIZP2/RBqD/CFicu9cyguAt51s0Tp
+        +N4+TksHepqD7h3U3MTWZwd3dN61gL6SWinUeTdXxlRqfxSybItrQiFC0/Olsw==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 15/31] soc: fsl: cpm1: qmc: Remove no more needed checks from qmc_check_chans()
+Date:   Tue, 12 Sep 2023 12:13:34 +0200
+Message-ID: <20230912101334.225551-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76acff7e-3959-4193-9531-22a5e5a68221@leemhuis.info>
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:44:39AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 05.09.23 11:09, Ian Abbott wrote:
-> > This reverts commit b5c75b68b7ded84d4c82118974ce3975a4dcaa74.
-> > 
-> > The commit makes it impossible to select configuration options that
-> > depend on COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
-> > COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
-> > 'depends on' directives and there being no other way to select those
-> > codependent configuration options.
-> > 
-> > Fixes: b5c75b68b7de ("comedi: add HAS_IOPORT dependencies")
-> > Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> > Cc: Arnd Bergmann <arnd@kernel.org>
-> > Cc: <stable@vger.kernel.org> # v6.5+
-> > Acked-by: Arnd Bergmann <arnd@kernel.org>
-> > Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-> 
-> Hmmm, that fix for a regression from the 6.5 cycle was posted a week ago
-> but didn't get a single reply afaics and hasn't hit next.
-> 
-> Greg, is this still in your to-review queue and just delayed due to the
-> merge window? Or are you waiting for something? A ACK fromn Niklas
-> maybe? Or a newer patch to address the kernel test robot report in case
-> its relevant?
+The newly introduced qmc_chan_setup_tsa* functions check that the
+channel entries are not already used.
+These checks are also performed by qmc_check_chans() and are no more
+needed.
 
-The merge window "freeze" ended on Monday, give me a chance to catch up
-with patches please, this is part of my very large todo mbox:
+Remove them from qmc_check_chans().
 
-	$ mdfrm -c ~/mail/todo/
-	1637 messages in /home/gregkh/mail/todo/
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/soc/fsl/qe/qmc.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-thanks,
+diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
+index 8e8bd1942c08..1189e6076e37 100644
+--- a/drivers/soc/fsl/qe/qmc.c
++++ b/drivers/soc/fsl/qe/qmc.c
+@@ -884,10 +884,7 @@ EXPORT_SYMBOL(qmc_chan_reset);
+ static int qmc_check_chans(struct qmc *qmc)
+ {
+ 	struct tsa_serial_info info;
+-	bool is_one_table = false;
+ 	struct qmc_chan *chan;
+-	u64 tx_ts_mask = 0;
+-	u64 rx_ts_mask = 0;
+ 	u64 tx_ts_assigned_mask;
+ 	u64 rx_ts_assigned_mask;
+ 	int ret;
+@@ -911,7 +908,6 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "Number of TSA Tx/Rx TS assigned are not equal\n");
+ 			return -EINVAL;
+ 		}
+-		is_one_table = true;
+ 	}
+ 
+ 	tx_ts_assigned_mask = info.nb_tx_ts == 64 ? U64_MAX : (((u64)1) << info.nb_tx_ts) - 1;
+@@ -922,27 +918,11 @@ static int qmc_check_chans(struct qmc *qmc)
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Tx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (tx_ts_mask & chan->tx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+ 
+ 		if (chan->rx_ts_mask > rx_ts_assigned_mask) {
+ 			dev_err(qmc->dev, "chan %u uses TSA unassigned Rx TS\n", chan->id);
+ 			return -EINVAL;
+ 		}
+-		if (rx_ts_mask & chan->rx_ts_mask) {
+-			dev_err(qmc->dev, "chan %u uses an already used Rx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+-
+-		if (is_one_table && (chan->tx_ts_mask != chan->rx_ts_mask)) {
+-			dev_err(qmc->dev, "chan %u uses different Rx and Tx TS\n", chan->id);
+-			return -EINVAL;
+-		}
+-
+-		tx_ts_mask |= chan->tx_ts_mask;
+-		rx_ts_mask |= chan->rx_ts_mask;
+ 	}
+ 
+ 	return 0;
+-- 
+2.41.0
 
-greg k-h
