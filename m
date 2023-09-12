@@ -2,414 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AD379CB01
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D71479CB04
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbjILJDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S233212AbjILJD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:03:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbjILJCG (ORCPT
+        with ESMTP id S232245AbjILJCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:02:06 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06560173D
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:03 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d71f505d21dso5161853276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:02 -0700 (PDT)
+        Tue, 12 Sep 2023 05:02:53 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D70199C
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:15 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44d5c49af07so2187213137.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:02:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694509322; x=1695114122; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xEW+R9vLIfOy8Qs86KH5LMpYh7OoDGKz314Er6GdaNc=;
-        b=sAYRQ+incHFE494QSEPMH8FE4aAtacx9nm9CRmCx5NMYFgsn9fl720RukJvbtbfuWE
-         dBnnZo9hSK5DX/X6zUy8E16jsKLILDCDIhSw+c9nOYyQ+hk44FyUXuWnx0XqJzHQuwNQ
-         ApiPwkOks3YUTLaxYs0bLpvicf9eVGRRKOJJgtgome3urxb+ltIanOBz3UHxonrZrNIj
-         ZAY6JH//VReylvFlFXzIuYmJ7ga/1fBjisc2N8WHSRzi7BC6VV24LXV5OVdZkH1v7192
-         CN6xvxy6x0/6IUBVp66UyLY23SOQzki1Epzx+2rUDFic0T/3/3bSW/pBp7iNlqy8uO/R
-         +9Ow==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694509334; x=1695114134; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j7KVxkN+wFW5ag2l+y+JF3MWG+d5IfgJLJxlIyvtbLs=;
+        b=w5beJWF94HjM5NHDCEl3hhtH5SKr+bzU4M4nvtCvLE2+HdyHwoDHJ5FxyTJg7A3+Jz
+         TInaM3nISzMRsTdaiiaPYvA8ROr03Qr6/yfjlY64ueJh8n5U1g2zVhtJOsU0PgU5UZed
+         fNBuGY0ZBBCIkCYNv1I/UtQ1q0UFQJ9EvxKwelCossBKIoXDI6vfiiYw7M5BeIgSLJ0g
+         N+5OyiDv14cvri8gT7zKdw2FALCD9S8gMXiN7wlj3twseEq4IKjQsHAm0B7jXRv3U59P
+         fxyUP6KGbUy/oVpF/bW52QIGxJ2zPPOYq+w6TghThHD08790OwiSYVwc+s+T/6E6aAEx
+         fmAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694509322; x=1695114122;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xEW+R9vLIfOy8Qs86KH5LMpYh7OoDGKz314Er6GdaNc=;
-        b=uU/p/4E3OQuvajtTgrs3+L1WvyiQMcDXqhnFtH6uIW3vyUWTtWXPwNzN/0xtD1Xrl8
-         XgM9N6Gbn48EBFISUc5GhWZ/VTPYNDKRl0YX2+WvixWQ4SMd4HMlVCRB75LVCg7zy0bg
-         h4kFfSmb716M6qN2/5J366exOGt5epeCqwZ6V7BwL1zkHtWTuxw8Xjazb4c7w+vfZRLE
-         ocuJJY9aVETOvk6JrSQE7I+7ar6aoUOrp0ha00AuJCcVr3bPR7g8feN4v5cbawZ2uGNy
-         17RLCE7pN5zJk2R2w+CxNDGQV1WAy/G93uMiTw6kpLqF2dYWa0hMeG0Yvj9yNGwxyWYg
-         JRvg==
-X-Gm-Message-State: AOJu0YxfmUSGFBOs6skpiRkuYd+t3ACvqd8KjRLrPM7SDMZGdISQT74A
-        Xo0V7xPjlnBVN2LY+WJzkFH9forO
-X-Google-Smtp-Source: AGHT+IH4JAMFWsCdp8WhgYmzWiILJamp8aExgNyqYBvnqN/zq+c6Bg7lNb+Uf2V1cTgbYjOgf5l5ppU1
-X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
- (user=ardb job=sendgmr) by 2002:a25:ea41:0:b0:d05:98ef:c16b with SMTP id
- o1-20020a25ea41000000b00d0598efc16bmr240888ybe.5.1694509322283; Tue, 12 Sep
- 2023 02:02:02 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:01:06 +0000
-In-Reply-To: <20230912090051.4014114-17-ardb@google.com>
-Mime-Version: 1.0
-References: <20230912090051.4014114-17-ardb@google.com>
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10096; i=ardb@kernel.org;
- h=from:subject; bh=eEUB5kAXRmeNSiFEyi73U861U2SHinpGxVQGzWYqgYY=;
- b=owGbwMvMwCFmkMcZplerG8N4Wi2JIZVB4xrzQ4cKo/CIZX3fOH5UpeXNfTm99ew7i2mM/3Ysa
- iiLmqPdUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACZSUM3I8G7tlw9NTlW9zV5l
- iTvufz1plhtz9NCz9OyERZxTH4U2H2X4w3fw+P86k0eHNV82sfx8MX/RV46omti1ZcfEWZ4Y551 k5QMA
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230912090051.4014114-32-ardb@google.com>
-Subject: [PATCH v2 15/15] x86/boot: Increase section and file alignment to 4k/512
-From:   Ard Biesheuvel <ardb@google.com>
-To:     linux-efi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
+        d=1e100.net; s=20230601; t=1694509334; x=1695114134;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j7KVxkN+wFW5ag2l+y+JF3MWG+d5IfgJLJxlIyvtbLs=;
+        b=RCihqUMpF18DUjLamzSkYgeyyQGa5QBfg+0eAhX//DTI5Qt1rFAVv2kEX03/d7AeAX
+         N2SOTw3gvtd6pjjj1oCdDD6+TbYn2KRgI4eyK7yHsi7zfjq5uqHnvW40dFkgw/ufy0Pe
+         mj6m3BWa7Vb/P7CmfIc/PAfZT/nyDg/sNV8/0N18QHAkb9w5Oc2Tj2KUl9Z/abI1VL4M
+         quuzK6uGzAip7xyE1ABvmwgbErV90srVZ1UB538IYHJMp3vouXzftCXY/tD4Fp/NKPNR
+         /Xp18cC8oe8ADMPOosVreP0g282mDTWMYKQkoCWAdNkMkmUQrDhxctkH32rvYh4qPk8W
+         S93g==
+X-Gm-Message-State: AOJu0Yzb0HuSi4TuF14jMSSfwy8UbWuI+drPfyCUAax4GAJkYVNEr7Ja
+        UHD7HwuzaIk0oNI5Ys7m8IKm9IDiN254YqwRSGnYvw==
+X-Google-Smtp-Source: AGHT+IHkpFkb0Yj6bALXgKHWxrwXR38GD7tyi+XhyBH5dw/3Ap6StZroSfHVUOLeHDyS0bJSnQssrvvCtBY5Eo+qI8k=
+X-Received: by 2002:a05:6102:24d:b0:44d:547d:4607 with SMTP id
+ a13-20020a056102024d00b0044d547d4607mr9039765vsq.35.1694509334207; Tue, 12
+ Sep 2023 02:02:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230829123524.17291-1-zhuyinbo@loongson.cn> <20230829123524.17291-3-zhuyinbo@loongson.cn>
+In-Reply-To: <20230829123524.17291-3-zhuyinbo@loongson.cn>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 12 Sep 2023 11:02:03 +0200
+Message-ID: <CAMRc=Md6c+z09PuHT+DsXPBwrmDDF8gmLNUAbikgA8fbJHGWFg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] gpio: loongson: add more gpio chip support
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        loongson-kernel@lists.loongnix.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Tue, Aug 29, 2023 at 2:35=E2=80=AFPM Yinbo Zhu <zhuyinbo@loongson.cn> wr=
+ote:
+>
+> This patch was to add loongson 2k0500, 2k2000 and 3a5000 gpio chip
+> driver support.
+>
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+>  drivers/gpio/gpio-loongson-64bit.c | 125 ++++++++++++++++++++++++++---
+>  1 file changed, 113 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-loongson-64bit.c b/drivers/gpio/gpio-loong=
+son-64bit.c
+> index 06213bbfabdd..2608f7eeba3b 100644
+> --- a/drivers/gpio/gpio-loongson-64bit.c
+> +++ b/drivers/gpio/gpio-loongson-64bit.c
+> @@ -23,9 +23,10 @@ enum loongson_gpio_mode {
+>  struct loongson_gpio_chip_data {
+>         const char              *label;
+>         enum loongson_gpio_mode mode;
+> -       unsigned int            conf_offset;
+> -       unsigned int            out_offset;
+> -       unsigned int            in_offset;
+> +       u32                     conf_offset;
+> +       u32                     out_offset;
+> +       u32                     in_offset;
+> +       u32                     inten_offset;
 
-Align x86 with other EFI architectures, and increase the section
-alignment to the EFI page size (4k), so that firmware is able to honour
-the section permission attributes and map code read-only and data
-non-executable.
+Why are you doing this? If this change is needed, it warrants at least
+a mention in the commit message.
 
-There are a number of requirements that have to be taken into account:
-- the sign tools get cranky when there are gaps between sections in the
-  file view of the image
-- the virtual offset of each section must be aligned to the image's
-  section alignment
-- the file offset *and size* of each section must be aligned to the
-  image's file alignment
-- the image size must be aligned to the section alignment
-- each section's virtual offset must be greater than or equal to the
-  size of the headers.
+Bart
 
-In order to meet all these requirements, while avoiding the need for
-lots of padding to accommodate the .compat section, the latter is placed
-at an arbitrary offset towards the end of the image, but aligned to the
-minimum file alignment (512 bytes). The space before the .text section
-is therefore distributed between the PE header, the .setup section and
-the .compat section, leaving no gaps in the file coverage, making the
-signing tools happy.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/boot/compressed/vmlinux.lds.S |  4 +-
- arch/x86/boot/header.S                 | 75 +++++++++-------
- arch/x86/boot/setup.ld                 |  7 +-
- arch/x86/boot/tools/build.c            | 90 +-------------------
- 4 files changed, 51 insertions(+), 125 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 5326f3b44194..3df57cdf5003 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -43,13 +43,13 @@ SECTIONS
- 		*(.rodata.*)
- 		_erodata = . ;
- 	}
--	.data :	{
-+	.data :	ALIGN(0x1000) {
- 		_data = . ;
- 		*(.data)
- 		*(.data.*)
- 
- 		/* add 4 bytes of extra space for a CRC-32 checksum */
--		. = ALIGN(. + 4, 0x20);
-+		. = ALIGN(. + 4, 0x200);
- 		_edata = . ;
- 	}
- 	. = ALIGN(L1_CACHE_BYTES);
-diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
-index a1f986105f00..597b1ef745db 100644
---- a/arch/x86/boot/header.S
-+++ b/arch/x86/boot/header.S
-@@ -36,6 +36,9 @@ SYSSEG		= 0x1000		/* historical load address >> 4 */
- #define ROOT_RDONLY 1
- #endif
- 
-+	.set	salign, 0x1000
-+	.set	falign, 0x200
-+
- 	.code16
- 	.section ".bstext", "ax"
- #ifdef CONFIG_EFI_STUB
-@@ -82,7 +85,7 @@ optional_header:
- 
- 	.long	setup_size + ZO_efi_pe_entry	# AddressOfEntryPoint
- 
--	.long	0x0200				# BaseOfCode
-+	.long	setup_size			# BaseOfCode
- #ifdef CONFIG_X86_32
- 	.long	0				# data
- #endif
-@@ -93,8 +96,8 @@ extra_header_fields:
- #else
- 	.quad	0				# ImageBase
- #endif
--	.long	0x20				# SectionAlignment
--	.long	0x20				# FileAlignment
-+	.long	salign				# SectionAlignment
-+	.long	falign				# FileAlignment
- 	.word	0				# MajorOperatingSystemVersion
- 	.word	0				# MinorOperatingSystemVersion
- 	.word	LINUX_EFISTUB_MAJOR_VERSION	# MajorImageVersion
-@@ -103,9 +106,10 @@ extra_header_fields:
- 	.word	0				# MinorSubsystemVersion
- 	.long	0				# Win32VersionValue
- 
--	.long	setup_size + ZO__end 		# SizeOfImage
-+	.long	setup_size + ZO__end + pecompat_vsize
-+						# SizeOfImage
- 
--	.long	0x200				# SizeOfHeaders
-+	.long	salign				# SizeOfHeaders
- 	.long	0				# CheckSum
- 	.word	IMAGE_SUBSYSTEM_EFI_APPLICATION	# Subsystem (EFI application)
- #ifdef CONFIG_EFI_DXE_MEM_ATTRIBUTES
-@@ -136,44 +140,51 @@ extra_header_fields:
- 
- 	# Section table
- section_table:
--	#
--	# The offset & size fields are filled in by build.c.
--	#
- 	.ascii	".setup"
- 	.byte	0
- 	.byte	0
--	.long	0
--	.long	0x0				# startup_{32,64}
--	.long	0				# Size of initialized data
--						# on disk
--	.long	0x0				# startup_{32,64}
--	.long	0				# PointerToRelocations
--	.long	0				# PointerToLineNumbers
--	.word	0				# NumberOfRelocations
--	.word	0				# NumberOfLineNumbers
--	.long	IMAGE_SCN_CNT_CODE		| \
-+	.long	setup_size - salign 		# VirtualSize
-+	.long	salign				# VirtualAddress
-+	.long	pecompat_fstart - salign	# SizeOfRawData
-+	.long	salign				# PointerToRawData
-+
-+	.long	0, 0, 0
-+	.long	IMAGE_SCN_CNT_INITIALIZED_DATA	| \
- 		IMAGE_SCN_MEM_READ		| \
--		IMAGE_SCN_MEM_EXECUTE		# Characteristics
-+		IMAGE_SCN_MEM_DISCARDABLE	# Characteristics
- 
- #ifdef CONFIG_EFI_MIXED
--	#
--	# The offset & size fields are filled in by build.c.
--	#
- 	.asciz	".compat"
--	.long	0
--	.long	0x0
--	.long	0				# Size of initialized data
--						# on disk
--	.long	0x0
--	.long	0				# PointerToRelocations
--	.long	0				# PointerToLineNumbers
--	.word	0				# NumberOfRelocations
--	.word	0				# NumberOfLineNumbers
-+
-+	.long	8				# VirtualSize
-+	.long	setup_size + ZO__end		# VirtualAddress
-+	.long	pecompat_fsize			# SizeOfRawData
-+	.long	pecompat_fstart			# PointerToRawData
-+
-+	.long	0, 0, 0
- 	.long	IMAGE_SCN_CNT_INITIALIZED_DATA	| \
- 		IMAGE_SCN_MEM_READ		| \
- 		IMAGE_SCN_MEM_DISCARDABLE	# Characteristics
--#endif
- 
-+	/*
-+	 * Put the IA-32 machine type and the associated entry point address in
-+	 * the .compat section, so loaders can figure out which other execution
-+	 * modes this image supports.
-+	 */
-+	.pushsection ".pecompat", "a", @progbits
-+	.balign	falign
-+	.set	pecompat_vsize, salign
-+	.globl	pecompat_fstart
-+pecompat_fstart:
-+	.byte	0x1				# version
-+	.byte	8				# size
-+	.word	IMAGE_FILE_MACHINE_I386		# PE machine type
-+	.long	setup_size + ZO_efi32_pe_entry	# entrypoint
-+	.popsection
-+#else
-+	.set	pecompat_vsize, 0
-+	.set	pecompat_fstart, setup_size
-+#endif
- 	.ascii	".text"
- 	.byte	0
- 	.byte	0
-diff --git a/arch/x86/boot/setup.ld b/arch/x86/boot/setup.ld
-index 9b551eacffa8..02e2c0b8c094 100644
---- a/arch/x86/boot/setup.ld
-+++ b/arch/x86/boot/setup.ld
-@@ -36,16 +36,17 @@ SECTIONS
- 	. = ALIGN(16);
- 	.data		: { *(.data*) }
- 
-+	.pecompat	: { *(.pecompat) }
-+	PROVIDE(pecompat_fsize = setup_size - pecompat_fstart);
-+
- 	.signature	: {
- 		setup_sig = .;
- 		LONG(0x5a5aaa55)
- 
--		/* reserve some extra space for the compat section */
--		setup_size = ABSOLUTE(ALIGN(. + 32, 512));
-+		setup_size = ABSOLUTE(ALIGN(4096));
- 		setup_sects = ABSOLUTE(setup_size / 512);
- 	}
- 
--
- 	. = ALIGN(16);
- 	.bss		:
- 	{
-diff --git a/arch/x86/boot/tools/build.c b/arch/x86/boot/tools/build.c
-index faccff9743a3..10311d77c67f 100644
---- a/arch/x86/boot/tools/build.c
-+++ b/arch/x86/boot/tools/build.c
-@@ -47,9 +47,6 @@ typedef unsigned int   u32;
- /* This must be large enough to hold the entire setup */
- u8 buf[SETUP_SECT_MAX*512];
- 
--#define PECOFF_COMPAT_RESERVE 0x20
--
--static unsigned long efi32_pe_entry;
- static unsigned long _edata;
- 
- /*----------------------------------------------------------------------*/
-@@ -136,85 +133,6 @@ static void usage(void)
- 	die("Usage: build setup system zoffset.h image");
- }
- 
--#ifdef CONFIG_EFI_STUB
--
--static void update_pecoff_section_header_fields(char *section_name, u32 vma, u32 size, u32 datasz, u32 offset)
--{
--	unsigned int pe_header;
--	unsigned short num_sections;
--	u8 *section;
--
--	pe_header = get_unaligned_le32(&buf[0x3c]);
--	num_sections = get_unaligned_le16(&buf[pe_header + 6]);
--
--#ifdef CONFIG_X86_32
--	section = &buf[pe_header + 0xa8];
--#else
--	section = &buf[pe_header + 0xb8];
--#endif
--
--	while (num_sections > 0) {
--		if (strncmp((char*)section, section_name, 8) == 0) {
--			/* section header size field */
--			put_unaligned_le32(size, section + 0x8);
--
--			/* section header vma field */
--			put_unaligned_le32(vma, section + 0xc);
--
--			/* section header 'size of initialised data' field */
--			put_unaligned_le32(datasz, section + 0x10);
--
--			/* section header 'file offset' field */
--			put_unaligned_le32(offset, section + 0x14);
--
--			break;
--		}
--		section += 0x28;
--		num_sections--;
--	}
--}
--
--static void update_pecoff_section_header(char *section_name, u32 offset, u32 size)
--{
--	update_pecoff_section_header_fields(section_name, offset, size, size, offset);
--}
--
--static void update_pecoff_setup(unsigned int size)
--{
--	u32 setup_offset = 0x200;
--	u32 compat_offset = size - PECOFF_COMPAT_RESERVE;
--	u32 setup_size = compat_offset - setup_offset;
--
--	update_pecoff_section_header(".setup", setup_offset, setup_size);
--
--#ifdef CONFIG_EFI_MIXED
--	update_pecoff_section_header(".compat", compat_offset, PECOFF_COMPAT_RESERVE);
--
--	/*
--	 * Put the IA-32 machine type (0x14c) and the associated entry point
--	 * address in the .compat section, so loaders can figure out which other
--	 * execution modes this image supports.
--	 */
--	buf[compat_offset] = 0x1;
--	buf[compat_offset + 1] = 0x8;
--	put_unaligned_le16(0x14c, &buf[compat_offset + 2]);
--	put_unaligned_le32(efi32_pe_entry + size, &buf[compat_offset + 4]);
--#endif
--}
--
--#else
--
--static inline void update_pecoff_setup(unsigned int size) {}
--
--#endif /* CONFIG_EFI_STUB */
--
--static int reserve_pecoff_compat_section(int c)
--{
--	/* Reserve 0x20 bytes for .compat section */
--	memset(buf+c, 0, PECOFF_COMPAT_RESERVE);
--	return PECOFF_COMPAT_RESERVE;
--}
--
- /*
-  * Parse zoffset.h and find the entry points. We could just #include zoffset.h
-  * but that would mean tools/build would have to be rebuilt every time. It's
-@@ -243,7 +161,6 @@ static void parse_zoffset(char *fname)
- 	p = (char *)buf;
- 
- 	while (p && *p) {
--		PARSE_ZOFS(p, efi32_pe_entry);
- 		PARSE_ZOFS(p, _edata);
- 
- 		p = strchr(p, '\n');
-@@ -283,17 +200,14 @@ int main(int argc, char ** argv)
- 		die("Boot block hasn't got boot flag (0xAA55)");
- 	fclose(file);
- 
--	c += reserve_pecoff_compat_section(c);
--
- 	/* Pad unused space with zeros */
--	setup_sectors = (c + 511) / 512;
-+	setup_sectors = (c + 4095) / 4096;
-+	setup_sectors *= 8;
- 	if (setup_sectors < SETUP_SECT_MIN)
- 		setup_sectors = SETUP_SECT_MIN;
- 	i = setup_sectors*512;
- 	memset(buf+c, 0, i-c);
- 
--	update_pecoff_setup(i);
--
- 	/* Open and stat the kernel file */
- 	fd = open(argv[2], O_RDONLY);
- 	if (fd < 0)
--- 
-2.42.0.283.g2d96d420d3-goog
-
+>  };
+>
+>  struct loongson_gpio_chip {
+> @@ -117,19 +118,29 @@ static void loongson_gpio_set(struct gpio_chip *chi=
+p, unsigned int pin, int valu
+>
+>  static int loongson_gpio_to_irq(struct gpio_chip *chip, unsigned int off=
+set)
+>  {
+> +       unsigned int u;
+>         struct platform_device *pdev =3D to_platform_device(chip->parent)=
+;
+> +       struct loongson_gpio_chip *lgpio =3D to_loongson_gpio_chip(chip);
+> +
+> +       if (lgpio->chip_data->mode =3D=3D BIT_CTRL_MODE) {
+> +               /* Get the register index from offset then multiply by by=
+tes per register */
+> +               u =3D readl(lgpio->reg_base + lgpio->chip_data->inten_off=
+set + (offset / 32) * 4);
+> +               u |=3D BIT(offset % 32);
+> +               writel(u, lgpio->reg_base + lgpio->chip_data->inten_offse=
+t + (offset / 32) * 4);
+> +       } else {
+> +               writeb(1, lgpio->reg_base + lgpio->chip_data->inten_offse=
+t + offset);
+> +       }
+>
+>         return platform_get_irq(pdev, offset);
+>  }
+>
+>  static int loongson_gpio_init(struct device *dev, struct loongson_gpio_c=
+hip *lgpio,
+> -                             struct device_node *np, void __iomem *reg_b=
+ase)
+> +                             void __iomem *reg_base)
+>  {
+>         int ret;
+>         u32 ngpios;
+>
+>         lgpio->reg_base =3D reg_base;
+> -
+>         if (lgpio->chip_data->mode =3D=3D BIT_CTRL_MODE) {
+>                 ret =3D bgpio_init(&lgpio->chip, dev, 8,
+>                                 lgpio->reg_base + lgpio->chip_data->in_of=
+fset,
+> @@ -148,15 +159,15 @@ static int loongson_gpio_init(struct device *dev, s=
+truct loongson_gpio_chip *lgp
+>                 lgpio->chip.direction_output =3D loongson_gpio_direction_=
+output;
+>                 lgpio->chip.set =3D loongson_gpio_set;
+>                 lgpio->chip.parent =3D dev;
+> +               device_property_read_u32(dev, "ngpios", &ngpios);
+> +               lgpio->chip.ngpio =3D ngpios;
+>                 spin_lock_init(&lgpio->lock);
+>         }
+>
+> -       device_property_read_u32(dev, "ngpios", &ngpios);
+> -
+> -       lgpio->chip.can_sleep =3D 0;
+> -       lgpio->chip.ngpio =3D ngpios;
+>         lgpio->chip.label =3D lgpio->chip_data->label;
+> -       lgpio->chip.to_irq =3D loongson_gpio_to_irq;
+> +       lgpio->chip.can_sleep =3D false;
+> +       if (lgpio->chip_data->inten_offset)
+> +               lgpio->chip.to_irq =3D loongson_gpio_to_irq;
+>
+>         return devm_gpiochip_add_data(dev, &lgpio->chip, lgpio);
+>  }
+> @@ -165,7 +176,6 @@ static int loongson_gpio_probe(struct platform_device=
+ *pdev)
+>  {
+>         void __iomem *reg_base;
+>         struct loongson_gpio_chip *lgpio;
+> -       struct device_node *np =3D pdev->dev.of_node;
+>         struct device *dev =3D &pdev->dev;
+>
+>         lgpio =3D devm_kzalloc(dev, sizeof(*lgpio), GFP_KERNEL);
+> @@ -178,7 +188,7 @@ static int loongson_gpio_probe(struct platform_device=
+ *pdev)
+>         if (IS_ERR(reg_base))
+>                 return PTR_ERR(reg_base);
+>
+> -       return loongson_gpio_init(dev, lgpio, np, reg_base);
+> +       return loongson_gpio_init(dev, lgpio, reg_base);
+>  }
+>
+>  static const struct loongson_gpio_chip_data loongson_gpio_ls2k_data =3D =
+{
+> @@ -187,6 +197,57 @@ static const struct loongson_gpio_chip_data loongson=
+_gpio_ls2k_data =3D {
+>         .conf_offset =3D 0x0,
+>         .in_offset =3D 0x20,
+>         .out_offset =3D 0x10,
+> +       .inten_offset =3D 0x30,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls2k0500_data0=
+ =3D {
+> +       .label =3D "ls2k0500_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x0,
+> +       .in_offset =3D 0x8,
+> +       .out_offset =3D 0x10,
+> +       .inten_offset =3D 0xb0,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls2k0500_data1=
+ =3D {
+> +       .label =3D "ls2k0500_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x0,
+> +       .in_offset =3D 0x8,
+> +       .out_offset =3D 0x10,
+> +       .inten_offset =3D 0x98,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls2k2000_data0=
+ =3D {
+> +       .label =3D "ls2k2000_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x0,
+> +       .in_offset =3D 0xc,
+> +       .out_offset =3D 0x8,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls2k2000_data1=
+ =3D {
+> +       .label =3D "ls2k2000_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x0,
+> +       .in_offset =3D 0x20,
+> +       .out_offset =3D 0x10,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls2k2000_data2=
+ =3D {
+> +       .label =3D "ls2k2000_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x84,
+> +       .in_offset =3D 0x88,
+> +       .out_offset =3D 0x80,
+> +};
+> +
+> +static const struct loongson_gpio_chip_data loongson_gpio_ls3a5000_data =
+=3D {
+> +       .label =3D "ls3a5000_gpio",
+> +       .mode =3D BIT_CTRL_MODE,
+> +       .conf_offset =3D 0x0,
+> +       .in_offset =3D 0xc,
+> +       .out_offset =3D 0x8,
+>  };
+>
+>  static const struct loongson_gpio_chip_data loongson_gpio_ls7a_data =3D =
+{
+> @@ -202,6 +263,30 @@ static const struct of_device_id loongson_gpio_of_ma=
+tch[] =3D {
+>                 .compatible =3D "loongson,ls2k-gpio",
+>                 .data =3D &loongson_gpio_ls2k_data,
+>         },
+> +       {
+> +               .compatible =3D "loongson,ls2k0500-gpio0",
+> +               .data =3D &loongson_gpio_ls2k0500_data0,
+> +       },
+> +       {
+> +               .compatible =3D "loongson,ls2k0500-gpio1",
+> +               .data =3D &loongson_gpio_ls2k0500_data1,
+> +       },
+> +       {
+> +               .compatible =3D "loongson,ls2k2000-gpio0",
+> +               .data =3D &loongson_gpio_ls2k2000_data0,
+> +       },
+> +       {
+> +               .compatible =3D "loongson,ls2k2000-gpio1",
+> +               .data =3D &loongson_gpio_ls2k2000_data1,
+> +       },
+> +       {
+> +               .compatible =3D "loongson,ls2k2000-gpio2",
+> +               .data =3D &loongson_gpio_ls2k2000_data2,
+> +       },
+> +       {
+> +               .compatible =3D "loongson,ls3a5000-gpio",
+> +               .data =3D &loongson_gpio_ls3a5000_data,
+> +       },
+>         {
+>                 .compatible =3D "loongson,ls7a-gpio",
+>                 .data =3D &loongson_gpio_ls7a_data,
+> @@ -215,6 +300,22 @@ static const struct acpi_device_id loongson_gpio_acp=
+i_match[] =3D {
+>                 .id =3D "LOON0002",
+>                 .driver_data =3D (kernel_ulong_t)&loongson_gpio_ls7a_data=
+,
+>         },
+> +       {
+> +               .id =3D "LOON0007",
+> +               .driver_data =3D (kernel_ulong_t)&loongson_gpio_ls3a5000_=
+data,
+> +       },
+> +       {
+> +               .id =3D "LOON000A",
+> +               .driver_data =3D (kernel_ulong_t)&loongson_gpio_ls2k2000_=
+data0,
+> +       },
+> +       {
+> +               .id =3D "LOON000B",
+> +               .driver_data =3D (kernel_ulong_t)&loongson_gpio_ls2k2000_=
+data1,
+> +       },
+> +       {
+> +               .id =3D "LOON000C",
+> +               .driver_data =3D (kernel_ulong_t)&loongson_gpio_ls2k2000_=
+data2,
+> +       },
+>         {}
+>  };
+>  MODULE_DEVICE_TABLE(acpi, loongson_gpio_acpi_match);
+> --
+> 2.20.1
+>
