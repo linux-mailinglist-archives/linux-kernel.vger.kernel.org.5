@@ -2,168 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9211F79C904
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0AE79C8DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjILH7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        id S231953AbjILH6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231843AbjILH6u (ORCPT
+        with ESMTP id S232057AbjILH6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:58:50 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9E910D0;
-        Tue, 12 Sep 2023 00:58:15 -0700 (PDT)
-X-UUID: 1c4906b6514211eea33bb35ae8d461a2-20230912
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=fUWnanIaV2FqUi1Q3/OGK9oB0/EvDHBwvcsVqVbtqzU=;
-        b=vCj9px5+EuEZhMUmJ+12+i4U24YUI2tjuE/1FZuaQlfMtq9sweQs1CLL1Jj0RgKFA+vb/WRPSrnVSH+HaVXh8cq0//LtpgU9gvWHGe7U/P5inNxFv2akwMTYDsUaDsWAEqE6l6bM2j9MBwZMuQ9H0B/e1AgMBxlE3PflBLRB3SY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:ea9b0274-61e4-4453-87f8-86328ea63693,IP:0,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-25
-X-CID-META: VersionHash:0ad78a4,CLOUDID:e35199ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 1c4906b6514211eea33bb35ae8d461a2-20230912
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 121330445; Tue, 12 Sep 2023 15:58:07 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 12 Sep 2023 15:58:07 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 12 Sep 2023 15:58:07 +0800
-From:   Moudy Ho <moudy.ho@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "Moudy Ho" <moudy.ho@mediatek.com>
-Subject: [PATCH v5 09/14] media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
-Date:   Tue, 12 Sep 2023 15:58:00 +0800
-Message-ID: <20230912075805.11432-10-moudy.ho@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20230912075805.11432-1-moudy.ho@mediatek.com>
-References: <20230912075805.11432-1-moudy.ho@mediatek.com>
+        Tue, 12 Sep 2023 03:58:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A56B1722
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:58:02 -0700 (PDT)
+Message-ID: <20230912065501.467154157@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694505481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=mwSPC6sBO3Mtax7VG/Ayowc5WMyDJfVT9RHyC3osMGE=;
+        b=oA2gkW5v4GuBzi/G26ehen714YPvWpaKoetk19ENGTJzeoY/VYc//e6lekJylSeeDH3FH1
+        pr2dURiPAk2SjSeG/00Tc2BKsjpOZv+TAvAA14CCTl2pYQqzocyNfcY0b9mBrwXLaJlBzp
+        UFW0HbY4xd86eu7IO6mHhq05GSupWYOtaeKYgNzkvtvFutoEqEilCIkZTKag7mXcmqNnnS
+        RKk85lkmYNFzUqECEoCdHXwp229FhdDUN0jXCmd/jhZOiGSo0LHKKc5LWHcLszOetzcf9g
+        Xi6uHFOGlm3bI66asn1201rPioAbb+ZPTzg7H9yKS1XSHN9T055lJzQ0kfTayw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694505481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=mwSPC6sBO3Mtax7VG/Ayowc5WMyDJfVT9RHyC3osMGE=;
+        b=bM5+0jXDtcvIORAXYZkEd+WvG4sNwRIP71gTU+S6h950zXuQ3l4L8m6asxopwEAmugncTD
+        x1yLfgAc1yxRnoCg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [patch V3 11/30] x86/microcode/intel: Rework intel_cpu_collect_info()
+References: <20230912065249.695681286@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--9.856400-8.000000
-X-TMASE-MatchedRID: DMsOoTK7WFAmNHlC7DQV5eKXavbHY/C1dG7bDJL8qEe0rcU5V/oSe/dQ
-        3ETtBTk8CTzLWkg2tvC1JEhwlIePJTA9KOtcb1F9t1AhvyEKdj67nrAU9KQxUWJkJOQVCIpw8Fh
-        GjTp5WPdMtAAmLKD7vIAy6p60ZV62fJ5/bZ6npdjKayT/BQTiGohS5vGKvvanaBPBOobB3vg8XG
-        hjTOWSBh8yxqhXzeGESjlR+zOVjW7AvpLE+mvX8g==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--9.856400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 0D034B29F556A55893767E51807D5009250057978E92ED49296CFC242AD4FB442000:8
-X-MTK:  N
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 09:58:00 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for multiple RDMA/WROT waits for GCE events.
+Nothing needs struct ucode_cpu_info. Make it take struct cpu_signature, let
+it return a boolean and simplify the implementation. Rename it now that the
+silly name clash with collect_cpu_info() is gone.
 
-Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- .../media/platform/mediatek/mdp3/mdp_cfg_data.c |  2 ++
- .../platform/mediatek/mdp3/mtk-mdp3-comp.c      | 17 +++++++++++------
- .../platform/mediatek/mdp3/mtk-mdp3-core.h      |  2 ++
- 3 files changed, 15 insertions(+), 6 deletions(-)
+V2: New patch
+---
+ arch/x86/include/asm/cpu.h            |    4 ++--
+ arch/x86/kernel/cpu/microcode/intel.c |   33 +++++++++------------------------
+ drivers/platform/x86/intel/ifs/load.c |    8 +++-----
+ 3 files changed, 14 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-index 8eac09f9d3dd..b69fa0452612 100644
---- a/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-+++ b/drivers/media/platform/mediatek/mdp3/mdp_cfg_data.c
-@@ -56,8 +56,10 @@ static const struct mdp_platform_config mt8183_plat_cfg = {
- 	.rdma_support_10bit		= true,
- 	.rdma_rsz1_sram_sharing		= true,
- 	.rdma_upsample_repeat_only	= true,
-+	.rdma_event_num			= 1,
- 	.rsz_disable_dcm_small_sample	= false,
- 	.wrot_filter_constraint		= false,
-+	.wrot_event_num			= 1,
- };
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -73,9 +73,9 @@ static inline void init_ia32_feat_ctl(st
  
- static const u32 mt8183_mutex_idx[MDP_MAX_COMP_COUNT] = {
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-index 667933ea15f4..ec296d4fd0c5 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-comp.c
-@@ -251,14 +251,17 @@ static int config_rdma_subfrm(struct mdp_comp_ctx *ctx,
+ extern __noendbr void cet_disable(void);
  
- static int wait_rdma_event(struct mdp_comp_ctx *ctx, struct mdp_cmdq_cmd *cmd)
+-struct ucode_cpu_info;
++struct cpu_signature;
+ 
+-int intel_cpu_collect_info(struct ucode_cpu_info *uci);
++void intel_collect_cpu_info(struct cpu_signature *sig);
+ 
+ static inline bool intel_cpu_signatures_match(unsigned int s1, unsigned int p1,
+ 					      unsigned int s2, unsigned int p2)
+--- a/arch/x86/kernel/cpu/microcode/intel.c
++++ b/arch/x86/kernel/cpu/microcode/intel.c
+@@ -66,36 +66,21 @@ static inline unsigned int exttable_size
+ 	return et->count * EXT_SIGNATURE_SIZE + EXT_HEADER_SIZE;
+ }
+ 
+-int intel_cpu_collect_info(struct ucode_cpu_info *uci)
++void intel_collect_cpu_info(struct cpu_signature *sig)
  {
-+	const struct mdp_platform_config *mdp_cfg = __get_plat_cfg(ctx);
- 	struct device *dev = &ctx->comp->mdp_dev->pdev->dev;
- 	phys_addr_t base = ctx->comp->reg_base;
- 	u8 subsys_id = ctx->comp->subsys_id;
+-	unsigned int val[2];
+-	unsigned int family, model;
+-	struct cpu_signature csig = { 0 };
+-	unsigned int eax, ebx, ecx, edx;
++	sig->sig = cpuid_eax(1);
++	sig->pf = 0;
++	sig->rev = intel_get_microcode_revision();
  
--	if (ctx->comp->alias_id == 0)
-+	if (ctx->comp->alias_id < mdp_cfg->rdma_event_num) {
- 		MM_REG_WAIT(cmd, ctx->comp->gce_event[MDP_GCE_EVENT_EOF]);
--	else
--		dev_err(dev, "Do not support RDMA1_DONE event\n");
-+	} else {
-+		dev_err(dev, "Invalid RDMA event %d\n", ctx->comp->alias_id);
-+		return -EINVAL;
-+	}
+-	memset(uci, 0, sizeof(*uci));
++	if (x86_model(sig->sig) >= 5 || x86_family(sig->sig) > 6) {
++		unsigned int val[2];
  
- 	/* Disable RDMA */
- 	MM_REG_WRITE(cmd, subsys_id, base, MDP_RDMA_EN, 0x0, BIT(0));
-@@ -553,10 +556,12 @@ static int wait_wrot_event(struct mdp_comp_ctx *ctx, struct mdp_cmdq_cmd *cmd)
- 	phys_addr_t base = ctx->comp->reg_base;
- 	u8 subsys_id = ctx->comp->subsys_id;
+-	eax = 0x00000001;
+-	ecx = 0;
+-	native_cpuid(&eax, &ebx, &ecx, &edx);
+-	csig.sig = eax;
+-
+-	family = x86_family(eax);
+-	model  = x86_model(eax);
+-
+-	if (model >= 5 || family > 6) {
+ 		/* get processor flags from MSR 0x17 */
+ 		native_rdmsr(MSR_IA32_PLATFORM_ID, val[0], val[1]);
+-		csig.pf = 1 << ((val[1] >> 18) & 7);
++		sig->pf = 1 << ((val[1] >> 18) & 7);
+ 	}
+-
+-	csig.rev = intel_get_microcode_revision();
+-
+-	uci->cpu_sig = csig;
+-
+-	return 0;
+ }
+-EXPORT_SYMBOL_GPL(intel_cpu_collect_info);
++EXPORT_SYMBOL_GPL(intel_collect_cpu_info);
  
--	if (ctx->comp->alias_id == 0)
-+	if (ctx->comp->alias_id < mdp_cfg->wrot_event_num) {
- 		MM_REG_WAIT(cmd, ctx->comp->gce_event[MDP_GCE_EVENT_EOF]);
--	else
--		dev_err(dev, "Do not support WROT1_DONE event\n");
-+	} else {
-+		dev_err(dev, "Invalid WROT event %d!\n", ctx->comp->alias_id);
-+		return -EINVAL;
-+	}
+ /*
+  * Returns 1 if update has been found, 0 otherwise.
+@@ -381,7 +366,7 @@ static __init struct microcode_intel *ge
+ 	if (!(cp.data && cp.size))
+ 		return NULL;
  
- 	if (mdp_cfg && mdp_cfg->wrot_filter_constraint)
- 		MM_REG_WRITE(cmd, subsys_id, base, VIDO_MAIN_BUF_SIZE, 0x0,
-diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-index a063a655248c..b2a3e4b2ee1a 100644
---- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-+++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
-@@ -39,8 +39,10 @@ struct mdp_platform_config {
- 	bool	rdma_support_10bit;
- 	bool	rdma_rsz1_sram_sharing;
- 	bool	rdma_upsample_repeat_only;
-+	u32	rdma_event_num;
- 	bool	rsz_disable_dcm_small_sample;
- 	bool	wrot_filter_constraint;
-+	u32	wrot_event_num;
- };
+-	intel_cpu_collect_info(uci);
++	intel_collect_cpu_info(&uci->cpu_sig);
  
- /* indicate which mutex is used by each pipepline */
--- 
-2.18.0
+ 	return scan_microcode(cp.data, cp.size, uci);
+ }
+--- a/drivers/platform/x86/intel/ifs/load.c
++++ b/drivers/platform/x86/intel/ifs/load.c
+@@ -227,7 +227,7 @@ static int scan_chunks_sanity_check(stru
+ 
+ static int image_sanity_check(struct device *dev, const struct microcode_header_intel *data)
+ {
+-	struct ucode_cpu_info uci;
++	struct cpu_signature sig;
+ 
+ 	/* Provide a specific error message when loading an older/unsupported image */
+ 	if (data->hdrver != MC_HEADER_TYPE_IFS) {
+@@ -240,11 +240,9 @@ static int image_sanity_check(struct dev
+ 		return -EINVAL;
+ 	}
+ 
+-	intel_cpu_collect_info(&uci);
++	intel_collect_cpu_info(&sig);
+ 
+-	if (!intel_find_matching_signature((void *)data,
+-					   uci.cpu_sig.sig,
+-					   uci.cpu_sig.pf)) {
++	if (!intel_find_matching_signature((void *)data, sig.sig, sig.pf)) {
+ 		dev_err(dev, "cpu signature, processor flags not matching\n");
+ 		return -EINVAL;
+ 	}
 
