@@ -2,107 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDB879CC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83AA79CC1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbjILJlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56864 "EHLO
+        id S232646AbjILJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjILJlH (ORCPT
+        with ESMTP id S229876AbjILJls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:41:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57E1116;
-        Tue, 12 Sep 2023 02:41:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EF2CC433C8;
-        Tue, 12 Sep 2023 09:41:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694511663;
-        bh=51PegvIu8zCzbCvU9YkHXrLIAzh1Rt71MmT7cj1xrT0=;
-        h=Date:Subject:From:To:References:In-Reply-To:From;
-        b=LBnItSnVBw3+u9b4WkQjmTctDkHYCzIN5ABzZxz3dr+Eq1Q27n/leGwH5TrqSdln8
-         Tf5zoMcMMQoAC+Ag5uMt8i4iqe0z75WuZqFjOvbALNcDrZ5vxbdwL8o4QHvyPxCYcx
-         KA7Njcr2xV7O+qNzaQ6hhLzhnKATZyZFQz1EYMsnGuiDoz7gLMmfM6dnFGZl6viPSZ
-         o+WyZgxIH2Um8ja3MqtzGHtpDa+DmVS07La8XDrdIFkarp5XPARXvRlvfWMfqUW8fe
-         YSrZDRI+WoOUmuq7yr78Y6vK4ssHyHe3p4DdwiAGt9imL5BZO5/nP4rYDJJvz1HNHb
-         5atIv3lq0eS4w==
-Mime-Version: 1.0
+        Tue, 12 Sep 2023 05:41:48 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C31116;
+        Tue, 12 Sep 2023 02:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=5mkwbqFuSv2hlymMhsu3M4LU2jbDB6uW9iOmS/v2SLU=;
+        t=1694511704; x=1695721304; b=dw9LonpqydlrvLX+NQBVuZTGcNDQ6vZ5DNMUT076QD6jZ2b
+        WHDL74jp/vgEv1St7hXgm47ASW2NIce4DlwWD3UHOD7TfGghpaHiZ3OSuO0WxD3uKFSMx6Q25hcsx
+        2v7GzsJ+q/MrBTDsQczSnvRFhSHwjh7/vtzwl+OHTfXpyKgoHY8owthuVBiSEBpla3tGvfT5ewEbb
+        j7Xd9g6yIHaiZ2kAnkDxr7ismPLPC6e2LrTmvzxGaEiKK3unfuZLHHW2vfY/D9u4jZxS0I0XhAFT/
+        CKwUPouyNubRHrfaPNUc0iOEmC3oGlKD93COlLrOP1uJj9KpMRCejENY/DOJWGJg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qfztl-00CXmL-1Z;
+        Tue, 12 Sep 2023 11:41:33 +0200
+Message-ID: <c44b748307a074d0c250002cdcfe209b8cce93c9.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 1/8] scripts/gdb/symbols: add specific ko module load
+ command
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     chinwen.chang@mediatek.com, qun-wei.lin@mediatek.com,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        casper.li@mediatek.com, akpm@linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Date:   Tue, 12 Sep 2023 11:41:29 +0200
+In-Reply-To: <20230808083020.22254-2-Kuan-Ying.Lee@mediatek.com>
+References: <20230808083020.22254-1-Kuan-Ying.Lee@mediatek.com>
+         <20230808083020.22254-2-Kuan-Ying.Lee@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 12 Sep 2023 12:41:00 +0300
-Message-Id: <CVGU920P4LEH.4WNZCAJI4URK@suppilovahvero>
-Subject: Re: [PATCH] tpm: Fix typo in tpmrm class definition
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Justin M. Forbes" <jforbes@fedoraproject.org>,
-        "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Ivan Orlov" <ivan.orlov0322@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230911223238.3495955-1-jforbes@fedoraproject.org>
-In-Reply-To: <20230911223238.3495955-1-jforbes@fedoraproject.org>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Sep 12, 2023 at 1:32 AM EEST, Justin M. Forbes wrote:
-> Commit d2e8071bed0be ("tpm: make all 'class' structures const")
-> unfortunately had a typo for the name on tpmrm.
->
-> Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
-> Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
-> ---
->  drivers/char/tpm/tpm-chip.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 23f6f2eda84c..42b1062e33cd 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -33,7 +33,7 @@ const struct class tpm_class =3D {
->  	.shutdown_pre =3D tpm_class_shutdown,
->  };
->  const struct class tpmrm_class =3D {
-> -	.name =3D "tmprm",
-> +	.name =3D "tpmrm",
->  };
->  dev_t tpm_devt;
->
-> --=20
-> 2.41.0
+On Tue, 2023-08-08 at 16:30 +0800, Kuan-Ying Lee wrote:
+> Add lx-symbols <ko_path> command to support add specific
+> ko module.
 
-Unfortunately your patch does not apply:
+I'm not sure how this was supposed to work? It should have updated the
+documentation, but more importantly, it shouldn't have broken the
+documented usage of this command:
 
-$ git-tip
-0bb80ecc33a8 (HEAD -> next, tag: v6.6-rc1, upstream/master, origin/next) Li=
-nux 6.6-rc1
+      The kernel (vmlinux) is taken from the current working directly. Modu=
+les (.ko)
+      are scanned recursively, starting in the same directory. Optionally, =
+the module
+      search path can be extended by a space separated list of paths passed=
+ to the
+      lx-symbols command.
 
-$ b4 am 20230911223238.3495955-1-jforbes@fedoraproject.org
-Analyzing 1 messages in the thread
-Checking attestation on all messages, may take a moment...
----
-  =E2=9C=93 [PATCH] tpm: Fix typo in tpmrm class definition
-  ---
-  =E2=9C=93 Signed: DKIM/linuxtx.org (From: jforbes@fedoraproject.org)
----
-Total patches: 1
----
- Link: https://lore.kernel.org/r/20230911223238.3495955-1-jforbes@fedorapro=
-ject.org
- Base: applies clean to current tree
-       git checkout -b 20230911_jforbes_fedoraproject_org HEAD
-       git am ./20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
+Note how that talks about a "space separated list of paths" for which
+clearly a single path seems like it should be accepted?
 
-$ git am -3 20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
-Applying: tpm: Fix typo in tpmrm class definition
-error: corrupt patch at line 18
-error: could not build fake ancestor
-Patch failed at 0001 tpm: Fix typo in tpmrm class definition
-hint: Use 'git am --show-current-patch=3Ddiff' to see the failed patch
-When you have resolved this problem, run "git am --continue".
-If you prefer to skip this patch, run "git am --skip" instead.
-To restore the original branch and stop patching, run "git am --abort".
+> @@ -138,6 +139,19 @@ lx-symbols command."""
+>          else:
+>              gdb.write("no module object found for '{0}'\n".format(module=
+_name))
+> =20
+> +    def load_ko_symbols(self, mod_path):
+> +        self.loaded_modules =3D []
+> +        module_list =3D modules.module_list()
+> +
+> +        for module in module_list:
+> +            module_name =3D module['name'].string()
+> +            module_pattern =3D ".*/{0}\.ko(?:.debug)?$".format(
+> +                module_name.replace("_", r"[_\-]"))
+> +            if re.match(module_pattern, mod_path) and os.path.exists(mod=
+_path):
+> +                self.load_module_symbols(module, mod_path)
+> +                return
+> +        raise gdb.GdbError("%s is not a valid .ko\n" % mod_path)
+> +
+>      def load_all_symbols(self):
+>          gdb.write("loading vmlinux\n")
+> =20
+> @@ -176,6 +190,11 @@ lx-symbols command."""
+>          self.module_files =3D []
+>          self.module_files_updated =3D False
+> =20
+> +        argv =3D gdb.string_to_argv(arg)
+> +        if len(argv) =3D=3D 1:
+> +            self.load_ko_symbols(argv[0])
+> +            return
 
-BR, Jarkko
+But this obviously breaks it, since passing a single path will go into
+the if, then complain "some/folder/ is not a valid .ko" and exit.
+
+
+But I'm not even sure how you intended this to work _at all_, because in
+the context before this if, we have:
+
+         self.module_paths =3D [os.path.abspath(os.path.expanduser(p))
+                              for p in arg.split()]
+         self.module_paths.append(os.getcwd())
+
+so you first add the (file!) to the list of paths, and then try to load
+the file by finding modules in the paths, and filtering by the specified
+file? That seems ... very roundabout, and can even only work if the file
+can be found via os.getcwd(), so you could never specify an absolute
+filename?
+
+All that seems counter to what the patch was meant to do.
+
+I suspect that really you need to individually check "is it a file or a
+directory" before handling any of this, and if it's actually a file,
+don't use it as a _filter_ as you do in load_ko_symbols() now but
+directly use it as is with load_module_symbols()?
+
+
+@Jan, can we revert this? I came up with the following trivial fix that
+makes it at least not break the original use case of passing a single-
+entry directory list, but it really doesn't seem right one way or the
+other.
+
+
+--- a/scripts/gdb/linux/symbols.py
++++ b/scripts/gdb/linux/symbols.py
+@@ -191,7 +191,7 @@ lx-symbols command."""
+         self.module_files_updated =3D False
+=20
+         argv =3D gdb.string_to_argv(arg)
+-        if len(argv) =3D=3D 1:
++        if len(argv) =3D=3D 1 and os.path.isfile(argv[0]):
+             self.load_ko_symbols(argv[0])
+             return
+=20
+
+
+johannes
