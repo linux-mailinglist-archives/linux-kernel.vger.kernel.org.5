@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC6F79D3A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B9D79D3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235941AbjILOa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        id S235958AbjILOa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbjILOay (ORCPT
+        with ESMTP id S235741AbjILOaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:30:54 -0400
+        Tue, 12 Sep 2023 10:30:55 -0400
 Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E08F115;
-        Tue, 12 Sep 2023 07:30:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B952118;
+        Tue, 12 Sep 2023 07:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:From:References:In-Reply-To:Reply-To:
-        Content-ID:Content-Description;
-        bh=X5d4RzC/AYaU+6u1i64mjtb2PzI89u77tGMpUXMkujQ=; b=Fc/S8eph0RXiXyaMyyWngueNO2
-        FBq953keUXIJtiNeVow6xIDJOYi/87GDmPZUrZ4wr/MrV18JI7yLq2wsrVkbaGq+IDUTaQGJ/w+0i
-        6+aqh1OELOGoC0JTU/7rguCzTRMS3DaTq/zCOkjGPtzhNTE//RaGV3xGy5SQMrlt1gh2QguLnzb0D
-        nOH49cJCOLKRCUevDTcF7n/GDeh/C+JcXaDU/YnoO0bCj1d9YUkl3jjqNHfalm6TX9qNUL4nXBltR
-        JXPHnaynY3hLPRWvN1LDiP0GMQkb9LfAYz44vEs5fueY8n0VDWdHOZUtTkDxFwI0CVgrXrUWTbn52
-        MmNX6H6g==;
+        d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
+        Reply-To:Content-ID:Content-Description;
+        bh=e0RspZwtHY4b6xeF+Vsx+c1salPGf7KUDftS+3xrVTM=; b=D8tMDnO24+Gcj2XS/qcJZVEek4
+        1iIPIOQy+bYEclNUMc81yKtm0lqpToj0AD/LQp37m33Mk2CtW29mvHO2dd8qrc7/t7qxosfnRZ8R5
+        GVmBwHjPVyH4xicTvOmSPU2uO2ZEBjOUmAQvrPpds4HP5LJNPpIOdGUS8NsFKGF/T4CW490t2yrVM
+        MLaF2vMCJ9+ZG8V0aaYh4KNLPk8FqKoU2O+H2KbdFse9fpVrb2DBqVjF/lTyQV1PNYFC0gjiOjg9A
+        Ge3ArM4LitLiFZzS8o9V5NY80vIodpUW51EW6QlasO0gcjbK4wjMqE/JkqO9yT/mxuNzF44v9rpQA
+        e/JUTaJg==;
 Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
         by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1qg4Pe-0034i9-0X;
-        Tue, 12 Sep 2023 16:30:46 +0200
+        id 1qg4Pf-0034i9-2Z;
+        Tue, 12 Sep 2023 16:30:47 +0200
 From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Subject: [PATCH 0/4] spi: qup: Allow scaling power domains and interconnect
-Date:   Tue, 12 Sep 2023 16:30:35 +0200
-Message-Id: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
+Date:   Tue, 12 Sep 2023 16:30:36 +0200
+Subject: [PATCH 1/4] spi: dt-bindings: qup: Document power-domains and OPP
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAt2AGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDS0Mj3eKCTN3C0gLdlLK0Yl1zw7Rki0TTVIPkJEMloJaCotS0zAqwcdG
- xtbUAQeNq3V4AAAA=
+Message-Id: <20230912-spi-qup-dvfs-v1-1-3e38aa09c2bd@kernkonzept.com>
+References: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
+In-Reply-To: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -55,31 +54,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make it possible to scale performance states of the power domain and
-interconnect of the SPI QUP controller in relation to the selected SPI
-speed / core clock. This is done separately by:
-
-  - Parsing the OPP table from the device tree for performance state
-    votes of the power domain
-  - Voting for the necessary bandwidth on the interconnect path to DRAM
+Document power-domains and operating-points-v2 to allow making
+performance state votes for certain clock frequencies of the SPI QUP
+controller.
 
 Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 ---
-Stephan Gerhold (4):
-      spi: dt-bindings: qup: Document power-domains and OPP
-      spi: qup: Parse OPP table for DVFS support
-      spi: dt-bindings: qup: Document interconnects
-      spi: qup: Vote for interconnect bandwidth to DRAM
+ Documentation/devicetree/bindings/spi/qcom,spi-qup.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- .../devicetree/bindings/spi/qcom,spi-qup.yaml      | 13 ++++++
- drivers/spi/spi-qup.c                              | 50 +++++++++++++++++++++-
- 2 files changed, 62 insertions(+), 1 deletion(-)
----
-base-commit: 678466ba68915d452c200b78d0385931e6f8e907
-change-id: 20230912-spi-qup-dvfs-71fc8a5e0cb1
+diff --git a/Documentation/devicetree/bindings/spi/qcom,spi-qup.yaml b/Documentation/devicetree/bindings/spi/qcom,spi-qup.yaml
+index 93f14dd01afc..1e498a791406 100644
+--- a/Documentation/devicetree/bindings/spi/qcom,spi-qup.yaml
++++ b/Documentation/devicetree/bindings/spi/qcom,spi-qup.yaml
+@@ -47,6 +47,11 @@ properties:
+   interrupts:
+     maxItems: 1
+ 
++  operating-points-v2: true
++
++  power-domains:
++    maxItems: 1
++
+   reg:
+     maxItems: 1
+ 
+@@ -63,6 +68,7 @@ examples:
+   - |
+     #include <dt-bindings/clock/qcom,gcc-msm8996.h>
+     #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/power/qcom-rpmpd.h>
+ 
+     spi@7575000 {
+         compatible = "qcom,spi-qup-v2.2.1";
+@@ -76,6 +82,8 @@ examples:
+         pinctrl-1 = <&blsp1_spi1_sleep>;
+         dmas = <&blsp1_dma 12>, <&blsp1_dma 13>;
+         dma-names = "tx", "rx";
++        power-domains = <&rpmpd MSM8996_VDDCX>;
++        operating-points-v2 = <&spi_opp_table>;
+         #address-cells = <1>;
+         #size-cells = <0>;
+     };
 
-Best regards,
 -- 
-Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
+2.39.2
 
