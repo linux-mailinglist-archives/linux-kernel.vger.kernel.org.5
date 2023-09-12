@@ -2,181 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E04ED79CF7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384AE79CF82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234373AbjILLJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
+        id S234583AbjILLKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjILLI2 (ORCPT
+        with ESMTP id S234493AbjILLIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:08:28 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FCB170E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:08:23 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2C0831BF213;
-        Tue, 12 Sep 2023 11:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694516902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EF3h98Mdqj31ieacBiceRbGocGI1mqvvI0enRLJAJ9U=;
-        b=kDP44VJdI1tNdv9kVJvfwvKf+lFYfaKh5p2qJw1LiqypQuX0QJeZ2hEfctV4NiN7f2F/jn
-        qLW9QUtcyeOypXKAU909WmoO2WXaqgWPS63eav3gY0d7NP9+QuAItO+TOwaoCV7heqcHzf
-        LjlwoXP92KhpahnlNF6JGNNA24jyTbUAv8dAoyI68Sssix6LeClfCDwrXP7UaZ6t4uOIFr
-        B06GbiMWaJKSGuRg4zz+i02aggTcNklhy23xAnX5ta/hV6ptRERpI2SLL5SniqKzqP6UxI
-        TbmqW0WLpFVt690hNce9WzxaqNvmR44Gzwop7xD0KhFwaALKdSiJUWhwLRAqGQ==
-Date:   Tue, 12 Sep 2023 13:08:21 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc:     <alexandre.belloni@bootlin.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] i3c: Add fallback method for GETMXDS CCC
-Message-ID: <20230912130821.21edfafc@xps-13>
-In-Reply-To: <20230911082456.23239-2-joshua.yeong@starfivetech.com>
-References: <20230911082456.23239-1-joshua.yeong@starfivetech.com>
-        <20230911082456.23239-2-joshua.yeong@starfivetech.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 12 Sep 2023 07:08:48 -0400
+Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C386173C;
+        Tue, 12 Sep 2023 04:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kernkonzept.com; s=mx1; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Reply-To:
+        Content-ID:Content-Description;
+        bh=ldrgnEH7Sx0aTIOcIuD/sp3SmK2aaFJCluGyd6JiYSU=; b=kJPnynMAZu2R1JSqRZhaGZdz3j
+        Vv0VyHVTpJSM5F2zadHn9/KKuECG7EPmPDEvjwNoclnp/vdI9F6l5DYHg0oNGipGk7/5pxIfTOJhj
+        rhf/dgVar2VhPSZ4xmAelyPxZJxEszqphCUE8WC4jvNhwgpFAuGXHrOv85ofWpvpn+HEE1u6LnKoS
+        M4MPGhoBo/FvDqNm+91KDFN1pRFff7V+3lckmTla0uetkOy7E8TqLrLDleIw+8/lgKO7t0xfDwuLo
+        2UYVmUI16XbLWsC+7+dvh5NdihdmxbTv5WLXR5dbuwEJAVlJCbsbyYFLySNWqm1wyqs+L3V6TwAOD
+        mBa8OaAQ==;
+Received: from [10.22.3.24] (helo=kernkonzept.com)
+        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
+        id 1qg1Fv-0031jw-23;
+        Tue, 12 Sep 2023 13:08:31 +0200
+Date:   Tue, 12 Sep 2023 13:08:25 +0200
+From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH 4/4] cpufreq: qcom-nvmem: Add MSM8909
+Message-ID: <ZQBGqYWEm4eq9dNX@kernkonzept.com>
+References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
+ <20230912-msm8909-cpufreq-v1-4-767ce66b544b@kernkonzept.com>
+ <5336dac4-af3f-46f7-bcf9-40314f744c8c@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5336dac4-af3f-46f7-bcf9-40314f744c8c@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joshua,
+On Tue, Sep 12, 2023 at 11:59:47AM +0200, Konrad Dybcio wrote:
+> On 12.09.2023 11:40, Stephan Gerhold wrote:
+> > When the MSM8909 SoC is used together with the PM8909 PMIC the primary
+> > power supply for the CPU (VDD_APC) is shared with other components to
+> > the SoC, namely the VDD_CX power domain typically supplied by the PM8909
+> > S1 regulator. This means that all votes for necessary performance states
+> > go via the RPM firmware which collects the requirements from all the
+> > processors in the SoC. The RPM firmware then chooses the actual voltage
+> > based on the performance states ("corners"), depending on calibration
+> > values in the NVMEM and other factors.
+> > 
+> > The MSM8909 SoC is also sometimes used with the PM8916 or PM660 PMIC.
+> > In that case there is a dedicated regulator connected to VDD_APC and
+> > Linux is responsible to do adaptive voltage scaling using CPR (similar
+> > to the existing code for QCS404).
+> > 
+> > This difference can be described in the device tree, by either assigning
+> > the CPU a power domain from RPMPD or from the CPR driver.
+> > 
+> > To describe this in a more generic way, use "apc" as power domain name
+> > instead of "cpr". From the Linux point of view there is no CPR involved
+> > when MSM8909 is used together with PM8909.
+> Without checking, I have a vague recollection of CPR output also
+> being called VDD_APCx, so it's a-ok
+> 
 
-joshua.yeong@starfivetech.com wrote on Mon, 11 Sep 2023 16:24:56 +0800:
+FWIW: I would say there isn't really something like a "CPR output" in
+the hardware. The power supply pin on the SoC for the cores is called
+"VDD_APC" and you just have some regulator hooked up there. CPR then
+monitors the environment and gives suggestions to adjust the voltage of
+the regulator to optimize power and stability. But it doesn't provide
+any power itself. You can use it or not. It's just an "add-in" basically.
 
-> Some I3C hardware will report error when incorrect length is received from
-> device. GETMXDS CCC are availble in 2 formats; without turnaround time (f=
-ormat
-> 1) and with turnaround time (format 2). There is no mechanics to determin=
-e which
-> format is supported by device. In case sending GETMXDS CCC format 2 resul=
-ted
-> failure, try sending GETMXDS CCC format 1 instead.
->=20
-> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
-> ---
->  drivers/i3c/master.c    | 33 ++++++++++++++++++++++++++++-----
->  include/linux/i3c/ccc.h | 17 +++++++++++++++--
->  2 files changed, 43 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-> index 87283e4a4607..084f64bef155 100644
-> --- a/drivers/i3c/master.c
-> +++ b/drivers/i3c/master.c
-> @@ -1088,10 +1088,37 @@ static int i3c_master_getmxds_locked(struct i3c_m=
-aster_controller *master,
->  				     struct i3c_device_info *info)
->  {
->  	struct i3c_ccc_getmxds *getmaxds;
-> +	struct i3c_ccc_getmxds_turnaround *getmaxds_ta;
->  	struct i3c_ccc_cmd_dest dest;
->  	struct i3c_ccc_cmd cmd;
->  	int ret;
-> =20
-> +	getmaxds_ta =3D i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
-> +					 sizeof(*getmaxds_ta));
-> +	if (!getmaxds_ta)
-> +		return -ENOMEM;
-> +
-> +	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETMXDS, &dest, 1);
-> +	ret =3D i3c_master_send_ccc_cmd_locked(master, &cmd);
-> +	if (ret) {
-> +		goto alternative;
-> +	}
-> +
-> +	if (dest.payload.len !=3D 2 && dest.payload.len !=3D 5) {
+> > 
+> > Also add a simple function that reads the speedbin from a NVMEM cell
+> > and sets it as-is for opp-supported-hw. The actual bit position can be
+> > described in the device tree without additional driver changes.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> > ---
+> Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> 
+> One nit below:
+> 
+> [...]
+> 
+> >  static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+> > +	{ .compatible = "qcom,msm8909", .data = &match_data_msm8909 },
+> >  	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
+> msm8909 should come after apq8096 (even if adding apq and not msm was
+> a mistake)
+> 
 
-Can len be 2 here?
+Right, the list is currently totally out of order. I can prepend a patch
+in v2 to sort it first. Will wait some more for more comments though.
 
-> +		ret =3D -EIO;
-> +		goto out;
-> +	}
-> +
-> +	info->max_read_ds =3D getmaxds_ta->maxrd;
-> +	info->max_write_ds =3D getmaxds_ta->maxwr;
-> +	if (dest.payload.len =3D=3D 5)
-> +		info->max_read_turnaround =3D getmaxds_ta->maxrdturn[0] |
-> +					    ((u32)getmaxds_ta->maxrdturn[1] << 8) |
-> +					    ((u32)getmaxds_ta->maxrdturn[2] << 16);
+Thanks!
 
-Don't you want to avoid the "alternative" if it worked?
-
-> +
-> +alternative:
-
-I would expect a comment somewhere to explain the subtlety.
-
-> +	i3c_ccc_cmd_dest_cleanup(&dest);
-> +
->  	getmaxds =3D i3c_ccc_cmd_dest_init(&dest, info->dyn_addr,
->  					 sizeof(*getmaxds));
->  	if (!getmaxds)
-> @@ -1102,17 +1129,13 @@ static int i3c_master_getmxds_locked(struct i3c_m=
-aster_controller *master,
->  	if (ret)
->  		goto out;
-> =20
-> -	if (dest.payload.len !=3D 2 && dest.payload.len !=3D 5) {
-> +	if (dest.payload.len !=3D 2) {
->  		ret =3D -EIO;
->  		goto out;
->  	}
-> =20
->  	info->max_read_ds =3D getmaxds->maxrd;
->  	info->max_write_ds =3D getmaxds->maxwr;
-> -	if (dest.payload.len =3D=3D 5)
-> -		info->max_read_turnaround =3D getmaxds->maxrdturn[0] |
-> -					    ((u32)getmaxds->maxrdturn[1] << 8) |
-> -					    ((u32)getmaxds->maxrdturn[2] << 16);
-> =20
->  out:
->  	i3c_ccc_cmd_dest_cleanup(&dest);
-> diff --git a/include/linux/i3c/ccc.h b/include/linux/i3c/ccc.h
-> index ad59a4ae60d1..50ed41d4d5a1 100644
-> --- a/include/linux/i3c/ccc.h
-> +++ b/include/linux/i3c/ccc.h
-> @@ -269,14 +269,27 @@ enum i3c_tsco {
->  #define I3C_CCC_MAX_SDR_FSCL(x)		((x) & I3C_CCC_MAX_SDR_FSCL_MASK)
-> =20
->  /**
-> - * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC
-> + * struct i3c_ccc_getmxds - payload passed to GETMXDS CCC without turnar=
-ound
-> + * (format 1)
-> + *
-> + * @maxwr: write limitations
-> + * @maxrd: read limitations
-> + */
-> +struct i3c_ccc_getmxds {
-> +	u8 maxwr;
-> +	u8 maxrd;
-> +} __packed;
-> +
-> +/**
-> + * struct i3c_ccc_getmxds_ta - payload passed to GETMXDS CCC with turnar=
-ound
-> + * (format 2)
->   *
->   * @maxwr: write limitations
->   * @maxrd: read limitations
->   * @maxrdturn: maximum read turn-around expressed micro-seconds and
->   *	       little-endian formatted
->   */
-> -struct i3c_ccc_getmxds {
-> +struct i3c_ccc_getmxds_turnaround {
->  	u8 maxwr;
->  	u8 maxrd;
->  	u8 maxrdturn[3];
-
-
-Thanks,
-Miqu=C3=A8l
+-- 
+Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
