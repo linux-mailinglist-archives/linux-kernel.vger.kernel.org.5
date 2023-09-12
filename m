@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8133B79D731
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4F679D734
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236958AbjILRH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        id S236951AbjILRH7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 13:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236966AbjILRHx (ORCPT
+        with ESMTP id S236950AbjILRHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:07:53 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A72D1710;
-        Tue, 12 Sep 2023 10:07:48 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502934c88b7so9483310e87.2;
-        Tue, 12 Sep 2023 10:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694538466; x=1695143266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dL7MyqLp5Ltk2dlKSxArA64ehXB/n2DZ7FckeLMxSeU=;
-        b=Cahj0BLBNXk2POxVzaS2r7Hz3bTvEbEr8O0/eMIM7JdUuaeBTyvfjMgRhkoZJxnzxE
-         MfxdLsXnVUvN6YyfWkRAj6BBbzXO58fcDtaJeX47IWtfor5xeVOL1ixbCs/BgFEqAg00
-         zDw5bGctJh2cDJFXWCJAGPMVgh9IuYKzQguGsCQ5dVTHmPMwPz69NH2ZXbnm2vm/NkZL
-         KU+ued56aQJcaHZRmgfChmjB0hQPR2mKRQqGNlnJhFYbBBwQcu7wO3haGT0U4yQk+tqM
-         MVh0FCuAMKz1UmCHZgeDMVwqOeCh71tQ+A8g0BKC1WfQafh9tAdn1UcTmjcTUESnso6z
-         YMbg==
+        Tue, 12 Sep 2023 13:07:54 -0400
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FCA1702
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:50 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-68faf930054so2666601b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694538466; x=1695143266;
+        d=1e100.net; s=20230601; t=1694538470; x=1695143270;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dL7MyqLp5Ltk2dlKSxArA64ehXB/n2DZ7FckeLMxSeU=;
-        b=IFmz6eTudzLIuiLCJSlziKL3uxLpC0v3hxhr9k67t5tvHaQRncIw9iYLTiJLpdMBL/
-         iolV6rmwHEhCyQz+/CYABfV54lLo3VK2z+mxbXjoshdxnIWRA8IggJIq75w2hsTUJgba
-         F+k0vn5zLuG8QxQXZRV7YOs+CEYTy4z627za2EcHObvjrejhPg8svV6D2AWS6a0iyM2W
-         yG1kvRnCG/xT/4aesYELMFhbxfxRNE8ZiR7EyZiObTwIpSsaI9LyHE3NFGwzVC5ejt9Z
-         LcH8BnnuVs+wEzMg04ZHMd11uG3wJCAkSfVqn26HvfR9GJrWUEIylUl734i6MRKh91Xc
-         2Vhg==
-X-Gm-Message-State: AOJu0YxsLixCPPrTzcryjzXDbkAPpBWkw90DxavrrdMBdWMxT1ZcLvzp
-        BF3BtN9jtchRDXa0iM+pkY6cp82rE0FbQlDCpKQ=
-X-Google-Smtp-Source: AGHT+IHqIVPppW66u0UK7ipERkpm3zGAIUc4T/5xRvEo1k9V9BXZ+5tMa6CrWbpOFNqLtgZ4SXIBTkNpyAojGAP5Hyc=
-X-Received: by 2002:ac2:58c8:0:b0:4fe:3724:fdae with SMTP id
- u8-20020ac258c8000000b004fe3724fdaemr82576lfo.66.1694538466120; Tue, 12 Sep
- 2023 10:07:46 -0700 (PDT)
+        bh=P9tCnWlA9XrE1nFim4ctCI9ELCfqKkedS78A2cZgsAs=;
+        b=nf8MYhd+lI6WrLkVM5GxEETVXjivN8q8uy+/JcVygY1JmA6J9eQgMDImn2zjzBuMcn
+         wZ5FvAiJK1iB1KtYr4Wgd/Dc3OTcXFGv8f7U6XAytyRRCKSl7JIso0ikH16ApRgsp9Lk
+         DxsI72boAWP8fOuavvEDMEZ4wCyyG6x8R2tkVjxBC+y328gE09d3CCd6s6gpT1xLBN1d
+         tRTG990MCTm8ukcbTECmEcCNB08vJ8ZOMTeUDNfYP1OoFwj+sPzSR847fkyCgUdGsxE5
+         tLHwjh4sxsWMjfwd13V+0E9ZoDATwUBlVI4JJAfSY5BRqwCqEmf4iu6840MJPI9Z5Wk7
+         1sCQ==
+X-Gm-Message-State: AOJu0YzQV8d+IMKz+v7HVv6efgPOEuOjDZrvoDkls2qpIP17DZyux0kd
+        BobGjHzXNVqUE0lnKPPo3xcr49Li1gFmcS6/nbpvNA==
+X-Google-Smtp-Source: AGHT+IEX304k/En1unElz+dinA3pOm9BIfW/BeJRpXk+dmhwOWv24esWXOeFgonERRywb9hmuicVqc7Me333ZHXCx3Q=
+X-Received: by 2002:a05:6a20:54a1:b0:155:2c91:f8e5 with SMTP id
+ i33-20020a056a2054a100b001552c91f8e5mr25646pzk.14.1694538470311; Tue, 12 Sep
+ 2023 10:07:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
- <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
- <20230912152031.GI401982@kernel.org> <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
- <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com> <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
-In-Reply-To: <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Sep 2023 10:07:35 -0700
-Message-ID: <CAADnVQLk4JRKXoNA6h=hd25bmCuVP=DM0yRswM0a=wgKuYbdhA@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
+References: <20230911223238.3495955-1-jforbes@fedoraproject.org> <CVGU920P4LEH.4WNZCAJI4URK@suppilovahvero>
+In-Reply-To: <CVGU920P4LEH.4WNZCAJI4URK@suppilovahvero>
+From:   Justin Forbes <jforbes@fedoraproject.org>
+Date:   Tue, 12 Sep 2023 12:07:38 -0500
+Message-ID: <CAFxkdAoSswhixvD6u0VLD=D9aaX-JFAdDewTF_WJmMwSbZDxeg@mail.gmail.com>
+Subject: Re: [PATCH] tpm: Fix typo in tpmrm class definition
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:05=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Tue, Sep 12, 2023 at 4:41 AM Jarkko Sakkinen <jarkko@kernel.org> wrote:
 >
-> On Tue, Sep 12, 2023 at 06:53:23PM +0200, Paolo Abeni wrote:
-> > On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
-> > > On Tue, Sep 12, 2023 at 05:20:31PM +0200, Simon Horman wrote:
-> > > > On Mon, Sep 11, 2023 at 06:45:34PM +0300, Andy Shevchenko wrote:
-> > > > > It's rather a gigantic list of heards that is very hard to follow=
-.
-> > > > > Sorting helps to see what's already included and what's not.
-> > > > > It improves a maintainability in a long term.
-> > > > >
-> > > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com=
->
-> > > >
-> > > > Hi Andy,
-> > > >
-> > > > At the risk of bike shedding, the sort function of Vim, when operat=
-ing
-> > > > with the C locale, gives a slightly different order, as experssed b=
-y
-> > > > this incremental diff.
-> > > >
-> > > > I have no objections to your oder, but I'm slightly curious as
-> > > > to how it came about.
-> > >
-> > > !sort which is external command.
-> > >
-> > > $ locale -k LC_COLLATE
-> > > collate-nrules=3D4
-> > > collate-rulesets=3D""
-> > > collate-symb-hash-sizemb=3D1303
-> > > collate-codeset=3D"UTF-8"
+> On Tue Sep 12, 2023 at 1:32 AM EEST, Justin M. Forbes wrote:
+> > Commit d2e8071bed0be ("tpm: make all 'class' structures const")
+> > unfortunately had a typo for the name on tpmrm.
 > >
-> > I'm unsure this change is worthy. It will make any later fix touching
-> > the header list more difficult to backport, and I don't see a great
-> > direct advantage.
+> > Fixes: d2e8071bed0b ("tpm: make all 'class' structures const")
+> > Signed-off-by: Justin M. Forbes <jforbes@fedoraproject.org>
+> > ---
+> >  drivers/char/tpm/tpm-chip.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> > index 23f6f2eda84c..42b1062e33cd 100644
+> > --- a/drivers/char/tpm/tpm-chip.c
+> > +++ b/drivers/char/tpm/tpm-chip.c
+> > @@ -33,7 +33,7 @@ const struct class tpm_class = {
+> >       .shutdown_pre = tpm_class_shutdown,
+> >  };
+> >  const struct class tpmrm_class = {
+> > -     .name = "tmprm",
+> > +     .name = "tpmrm",
+> >  };
+> >  dev_t tpm_devt;
+> >
+> > --
+> > 2.41.0
 >
-> As Rasmus put it here
-> https://lore.kernel.org/lkml/5eca0ab5-84be-2d8f-e0b3-c9fdfa961826@rasmusv=
-illemoes.dk/
-> In short term you can argue that it's not beneficial, but in long term it=
-'s given
-> less conflicts.
+> Unfortunately your patch does not apply:
 
-I agree with Paolo.
+Fixed with the V2 I just sent out. Seems I had suppress-blank-empty =
+true in a config file somewhere. Apologies for wasting your time.
 
-This is just code churn.
-The includes will become unsorted eventually.
-Headers might get renamed, split, etc.
-Keeping things sorted is a headache.
+Justin
+
+> $ git-tip
+> 0bb80ecc33a8 (HEAD -> next, tag: v6.6-rc1, upstream/master, origin/next) Linux 6.6-rc1
+>
+> $ b4 am 20230911223238.3495955-1-jforbes@fedoraproject.org
+> Analyzing 1 messages in the thread
+> Checking attestation on all messages, may take a moment...
+> ---
+>   ✓ [PATCH] tpm: Fix typo in tpmrm class definition
+>   ---
+>   ✓ Signed: DKIM/linuxtx.org (From: jforbes@fedoraproject.org)
+> ---
+> Total patches: 1
+> ---
+>  Link: https://lore.kernel.org/r/20230911223238.3495955-1-jforbes@fedoraproject.org
+>  Base: applies clean to current tree
+>        git checkout -b 20230911_jforbes_fedoraproject_org HEAD
+>        git am ./20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
+>
+> $ git am -3 20230911_jforbes_tpm_fix_typo_in_tpmrm_class_definition.mbx
+> Applying: tpm: Fix typo in tpmrm class definition
+> error: corrupt patch at line 18
+> error: could not build fake ancestor
+> Patch failed at 0001 tpm: Fix typo in tpmrm class definition
+> hint: Use 'git am --show-current-patch=diff' to see the failed patch
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+>
+> BR, Jarkko
