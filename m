@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D5379D820
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C679D823
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237464AbjILRyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        id S236860AbjILRzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237342AbjILRyD (ORCPT
+        with ESMTP id S231665AbjILRzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:54:03 -0400
+        Tue, 12 Sep 2023 13:55:39 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A1B1FC0;
-        Tue, 12 Sep 2023 10:53:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C540EC433CA;
-        Tue, 12 Sep 2023 17:53:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA3110D3;
+        Tue, 12 Sep 2023 10:55:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22A31C433C8;
+        Tue, 12 Sep 2023 17:55:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694541236;
-        bh=8Yjaumo8M/BOnRThpF0rGp6gTorTSUirAKyRPAduSJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nzPUMMcy/mBrungOX+UZrdAUgaO/nyB6DQVxn8Sc6BONUh8BbkqRtbMHgYeXhj1QV
-         3yKi6FyydiO0bxlpIEJQDFpWQX42KaSfS4sWet6HQ0GWSls7OQzqY9RhnAw0Rqf++b
-         I8qeENcitawz9G1y0M/O+VkBaniCjNZ/N4TXxEACaIZ41w/G/H/1V3BMWPFSxQ1kpa
-         dqG+9AsbM0A/X+39T/A0Irtv5hCNpYDzZgXUPcuUzms1FrkdxgTIr9LOdaRh9mTBmE
-         gN2k/ZW9G8CJGMpHTaO4Sn+NKyHcJltlrVjC50W2BTPB4UWR0X8BwBzoKPVwUI1k2d
-         5L4Yeq7jOdTLA==
-Received: (nullmailer pid 992943 invoked by uid 1000);
-        Tue, 12 Sep 2023 17:53:54 -0000
-Date:   Tue, 12 Sep 2023 12:53:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 5/6] dt-bindings: regulator: qcom,spmi: Document PMA8084
-Message-ID: <169454123436.992887.15253313371626687800.robh@kernel.org>
-References: <20230912-spmi-pm8909-v1-0-ba4b3bfaf87d@gerhold.net>
- <20230912-spmi-pm8909-v1-5-ba4b3bfaf87d@gerhold.net>
+        s=k20201202; t=1694541335;
+        bh=rrwYR3/rqDwXPIcEZV4/pnPLM7oE/aWqYDmNh+JXXaA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mboLiXQHP0KBMCCt14sMYW/+pIam/h/U7/xcobZ6lEqrEw993BhQD+cDrERdJRs4R
+         Cz+Opgs5wXVQEPUMxCKIRZYuZ+EzImcwDVA9bhEsz9u9atUquoxR2HEhAmit5Do77P
+         24YFu98YvPZJBvw1q+1LhYX/Le/pLGO/TOmqEBVQe904avvh1nKq17kOi9F2TAYOv6
+         0AM10A9qEStnIGYJldEHDyhR1zqeesqNsYeMRisrJ5gSJX6bYjdkvz/8uaD0si/SF+
+         QKOvPCgr+SbkEq41pqpgohXL1FsDCuQeH54aitsYYStDkOVVxbz0RlpSediS2EB5c2
+         EatiPcArOHtLA==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        patches@lists.linux.dev, Guenter Roeck <linux@roeck-us.net>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH 0/2] clk: Fix lockdep warnings in clk_test
+Date:   Tue, 12 Sep 2023 10:55:29 -0700
+Message-ID: <20230912175534.2427862-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912-spmi-pm8909-v1-5-ba4b3bfaf87d@gerhold.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a replacement for the series from Maxime[1]. I didn't want to
+introduce more wrappers, so this series takes the approach of driving
+the test from a clk_op instead. The second patch extends the test to
+look at more determine_rate variants. We can probably extend the test
+further to set or not set the CLK_SET_RATE_PARENT flag as well but I
+didn't do that.
 
-On Tue, 12 Sep 2023 09:49:53 +0200, Stephan Gerhold wrote:
-> Document the qcom,pma8084-regulators compatible together with the
-> necessary supply properties to allow interfacing via the hardware
-> regulator registers directly via SPMI. This is mainly intended for
-> debugging since the regulators are typically controlled via the RPM
-> firmware (qcom,rpm-pma8084-regulators compatible).
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
->  .../bindings/regulator/qcom,spmi-regulator.yaml    | 29 +++++++++++++++++++++-
->  1 file changed, 28 insertions(+), 1 deletion(-)
-> 
+Stephen Boyd (2):
+  clk: Drive clk_leaf_mux_set_rate_parent test from clk_ops
+  clk: Parameterize clk_leaf_mux_set_rate_parent
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+ drivers/clk/clk_test.c | 130 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 113 insertions(+), 17 deletions(-)
+
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Maxime Ripard <mripard@kernel.org>
+
+[1] https://lore.kernel.org/r/20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
