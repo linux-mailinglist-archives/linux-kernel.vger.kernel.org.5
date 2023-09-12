@@ -2,139 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAB979C857
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7021D79C85B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbjILHjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
+        id S231715AbjILHlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjILHjj (ORCPT
+        with ESMTP id S230366AbjILHlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:39:39 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2F2E7C;
-        Tue, 12 Sep 2023 00:39:35 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38C3N8bC006265;
-        Tue, 12 Sep 2023 09:39:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=W6ZFSny7x5hTX7VHE3RAqqRXrh5zcFFP1oA9ZYe1TR0=; b=O6
-        sEC3DWDxvkpK0fP1ZfbdNaRLyz8DljJOJRxQLP6ZnPjlk1F3sauZHJU4q5Nau8Oh
-        pyPoKMerndpDvj4If+UI6pm5XzLqujorcuntOJvNCgQ7TgWxDFa4rmfDrBRNhvgY
-        DHc1ad/Wgev9ePRbu/lF/7CNHM0pXZreVgsft2F8eicATDeTNEfuuu1bjWdxDvuo
-        MhYyoNLjI0gDrO/5M0d0a2aKg4NPuePM0TjSKkMnUsl5AZSJF5AsOXwtYBTca5Ak
-        8CcDovAp5Dok02K27+Cg3Qak3+5NlHjZ0eACKoX9h0v52B6PpIc0bcn57Cdsr7Vh
-        sb637vw6RgiuHv0MT3xw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t2g1hryc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:39:15 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6D0C0100058;
-        Tue, 12 Sep 2023 09:39:14 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 548FF21ED3A;
-        Tue, 12 Sep 2023 09:39:14 +0200 (CEST)
-Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 12 Sep
- 2023 09:39:13 +0200
-Message-ID: <3c138ce6-7766-87a7-1447-22f597863ab3@foss.st.com>
-Date:   Tue, 12 Sep 2023 09:39:13 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 07/10] dt-bindings: rng: add st,rng-lock-conf
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230908165120.730867-1-gatien.chevallier@foss.st.com>
- <20230908165120.730867-8-gatien.chevallier@foss.st.com>
- <20230911150958.GA1255978-robh@kernel.org>
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <20230911150958.GA1255978-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_04,2023-09-05_01,2023-05-22_02
+        Tue, 12 Sep 2023 03:41:00 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD8FB9;
+        Tue, 12 Sep 2023 00:40:56 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 81ED7320025E;
+        Tue, 12 Sep 2023 03:40:52 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 12 Sep 2023 03:40:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694504452; x=1694590852; bh=gu4KD8m5ag8/RCIOGmGpJutCwSn5BzTEfiE
+        SziH75LY=; b=kpYKvB1xx9wnF8RGHpXtbizWcj1EnE5ANoWRr/mZ6fssEHR4pYG
+        AQA38NV7lTMlHM4701jxiBPr9dIhPtjIYEyvvYcK+6IX7wzWf1c6FlxBlfk5vCqj
+        375Lr2NJiJjZCnKlPUMXQ5nzVLez5KmrYPyVdAha3A8PRtAm3xB8hSrl5/9X9Xvc
+        ZPeUhO0IT4y+RhJq5id6TmIRY3tiAmNX5+obdeED7H5eg6v/r9fu/YPrvIDWdEXT
+        XMpFVx/JBVai/CvjUPGbSHo+h/RIzdsmCxcT0MdxRvpe9ydKszYIAJwcIquixDgA
+        RmyiyjSVaaSdHND7tghK7TMifFONIKWLHDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1694504452; x=1694590852; bh=gu4KD8m5ag8/RCIOGmGpJutCwSn5BzTEfiE
+        SziH75LY=; b=1GMMROCZOGebXmmwZE3hvLCfOPtQKelh7C5eDmc++WTnzsHQeET
+        gDIg44v7H3O2rsrJJaseIrbvnlPUIBHgQ6qbPH0lQuDaABt/JmgpSZT5TQkC5nRe
+        dmTV+OAQhlHNy2z6zPPd3Y0QtiEQrltLKgnf9Ux2LUHm4YGF3Bria2QpLX//grvJ
+        PklLxeAplTFKTycv4P5y7PTv6AtpXJM/v7aqcrPMRopKwrwYr7TzC9JsFuDjhkK3
+        ri0I7yP5APUAdxv5s5Q17EWiBra3XF7SlUaXp1M6UNXp/J9PADBaiUnLx3aDEeiq
+        7WHL5J7e2xn/Jqa3tbuVksL8qJAdrXu0cPg==
+X-ME-Sender: <xms:AxYAZX8lw-EPZzR_s0-gxctsuCJ9K1ljQOY4BYnDdCUNTXsUqhurvA>
+    <xme:AxYAZTst0W6PkSUeUuSADygtQQ1vlozgqAu3PV4zyke9Nc-bmzyNmzewIVCWg5wR8
+    lii6wiEQfdKY2Gtq5E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeihedguddulecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepudefffehudefvefhjeduvedtkeeujeffudevkeejiedtkedtheeiuedt
+    vdekuddunecuffhomhgrihhnpehushgvrhhsphgrtggvrdhhohifnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdgu
+    vg
+X-ME-Proxy: <xmx:AxYAZVCcd_FJuFHxjCjPo2pdcDsEj8GcMzAU8kQ3qLHSFQbpnB9lKg>
+    <xmx:AxYAZTfaAAXZlbx6_jX1AuRiov2m-jFSPrDE6a_wKoAzrTOK65s-Tg>
+    <xmx:AxYAZcMXYv6BcbZ9d2kZszB6mQU31ZXmWeDMovEU_iG_pGoBlhYRxw>
+    <xmx:BBYAZRs4I4BjxLQ4oHEvQXTNLAdO2hiy_fs0e6TV3FW3r8xBoVl90g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 759E7B60089; Tue, 12 Sep 2023 03:40:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <aa935abe-2ccf-4889-a717-4efecc13d48b@app.fastmail.com>
+In-Reply-To: <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+References: <20230911205338.2385278-1-arnd@kernel.org>
+ <CAMuHMdWizKkuLEcv8sFFOWPib-0e1onCRuQEZm6OhV592VWUKQ@mail.gmail.com>
+Date:   Tue, 12 Sep 2023 09:39:56 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Dave Airlie" <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Helge Deller" <deller@gmx.de>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Dave Airlie" <airlied@redhat.com>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Jim Cromie" <jim.cromie@gmail.com>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Arthur Grillo" <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH] drm: fix up fbdev Kconfig defaults
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+On Tue, Sep 12, 2023, at 09:14, Geert Uytterhoeven wrote:
+> On Mon, Sep 11, 2023 at 10:53=E2=80=AFPM Arnd Bergmann <arnd@kernel.or=
+g> wrote:
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -135,7 +135,7 @@ config DRM_FBDEV_EMULATION
+>>         bool "Enable legacy fbdev support for your modesetting driver"
+>>         depends on DRM
+>>         select FRAMEBUFFER_CONSOLE_DETECT_PRIMARY if FRAMEBUFFER_CONS=
+OLE
+>> -       default y
+>> +       default FB
+>
+> While this is true for existing configs, it is no longer true in gener=
+al,
+> as DRM_FBDEV_EMULATION is no longer related to FB.
 
-On 9/11/23 17:09, Rob Herring wrote:
-> On Fri, Sep 08, 2023 at 06:51:17PM +0200, Gatien Chevallier wrote:
->> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
->> and RNG_NSCR will be locked. It is supported starting from the RNG
->> version present in the STM32MP13
-> 
-> This should be squashed into the prior binding patch.
-> 
+I think it still makes some sense though, as configs that have
+both DRM and FB enabled almost certainly want this enabled.
 
-Ok, I will squash both for V3.
+>> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kc=
+onfig
+>> index b575cf54174af..83c2d7329ca58 100644
+>> --- a/drivers/video/console/Kconfig
+>> +++ b/drivers/video/console/Kconfig
+>> @@ -74,6 +74,7 @@ config DUMMY_CONSOLE_ROWS
+>>  config FRAMEBUFFER_CONSOLE
+>>         bool "Framebuffer Console support"
+>>         depends on FB_CORE && !UML
+>> +       default DRM_FBDEV_EMULATION
+>
+> Sounds good to me, although it looks a bit strange at first sight
+> (FRAMEBUFFER_CONSOLE defaults to n on a system with real fbdev, but
+> y on emulated fbdev?).
+> So this is the fix for commit a5ae331edb02b ("drm: Drop select
+> FRAMEBUFFER_CONSOLE for DRM_FBDEV_EMULATION").
 
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->> ---
->>   .../devicetree/bindings/rng/st,stm32-rng.yaml      | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> index 59abdc85a9fb..0055f14a8e3f 100644
->> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
->> @@ -37,6 +37,20 @@ required:
->>     - reg
->>     - clocks
->>   
->> +allOf:
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - st,stm32mp13-rng
->> +    then:
->> +      properties:
->> +        st,rng-lock-conf:
->> +          type: boolean
->> +          description: If set, the RNG configuration in RNG_CR, RNG_HTCR and
->> +                       RNG_NSCR will be locked.
-> 
-> Define the property at the top-level and then restrict its presence in
-> a if/then schema.
-> 
+Correct, this should restore the console on configs that
+accidentally lost it. The real problem here is much older,
+the assymetry between framebuffer-only configs (with console
+default off) and DRM configs (with console selected
+unconditionally) started back in 2009 with commit 6fcefd56f5060
+("drm/kms: fix kms helper license + Kconfig").
 
-Ok, will change in V3. Thanks for your input
+I think that was a mistake, but there is little we can do
+to fix that now without breaking users.
 
->> +
->>   additionalProperties: false
-> 
-> Did you test this property is allowed? No, because additionalProperties
-> won't work with properties defined in if/then schemas.
-> 
->>   
->>   examples:
->> -- 
->> 2.25.1
->>
+The only alternative I can think of would be to default-enable
+or force-enable FRAMEBUFFER_CONSOLE for any config that includes
+both VT_CONSOLE and FB_CORE. This would increase defconfig
+builds for systems that currently only want CONFIG_FB for
+either FB_DEVICE or LOGO but don't care about
+FRAMEBUFFER_CONSOLE. I have no idea who uses such a config,
+but I think Javier previously said this was an important
+use case.
 
-Best regards,
-Gatien
+>> diff --git a/drivers/video/fbdev/core/Kconfig b/drivers/video/fbdev/c=
+ore/Kconfig
+>> index 114cb8aa6c8fd..804c2bec9b43c 100644
+>> --- a/drivers/video/fbdev/core/Kconfig
+>> +++ b/drivers/video/fbdev/core/Kconfig
+>> @@ -28,7 +28,7 @@ config FIRMWARE_EDID
+>>  config FB_DEVICE
+>>         bool "Provide legacy /dev/fb* device"
+>>         depends on FB_CORE
+>> -       default y
+>> +       default FB
+>
+> Changing this means possibly causing regressions on systems running
+> an fbdev userspace.
+
+How? FB_DEVICE is a new config that was just split out from
+CONFIG_FB in 6.6-rc1, so nobody should have any defconfig
+that disables CONFIG_FB but relies on the FB_DEVICE default yet.
+
+    Arnd
