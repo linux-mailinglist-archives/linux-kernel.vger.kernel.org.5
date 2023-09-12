@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD4579CD37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A76179CD2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbjILKHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        id S234066AbjILKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbjILKHV (ORCPT
+        with ESMTP id S234007AbjILKG7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:07:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEC710E3;
-        Tue, 12 Sep 2023 03:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694513232; x=1726049232;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eK2t15mGnsXgSy49KZauX10qwOfSdZIw/vwbiA8F8s0=;
-  b=KW51nUaYHCu/eAG/xGfC/KpKhLHciWHZNt9/mP+5Yxl8Hjbqme3h3OqM
-   zGOmyy5QDulRkM0IqA8rMu71/c5mSovdyOtomE5ECmmZUUfQzpRoV2HvN
-   6+E6qpttqbeSXRUwsIaVwJ4oYCYHThFkMjaR9BxnYaOgONR76/SQw5b8m
-   1Uzf17ga0up3LxhUa66oeQc9fqyWa0N6OMHQgpPpfOanmcYRLQBfKjuD5
-   lAZUvTGhOxEOfm2FtlpL2lownHokMB040aiDmyN80gouqRiGKwsqGsO2p
-   QxI8wXlLbzLzNfKbVex7cusC+CBU+UfB1R4OY81cA7RjG29k3Kt4KKFR1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="368589851"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="368589851"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:07:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="778738399"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="778738399"
-Received: from lkp-server02.sh.intel.com (HELO 1e56c5165d33) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 12 Sep 2023 03:07:06 -0700
-Received: from kbuild by 1e56c5165d33 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qg0IP-0000Ej-0o;
-        Tue, 12 Sep 2023 10:07:01 +0000
-Date:   Tue, 12 Sep 2023 18:06:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550
- POWER_STATE_CONFIG1
-Message-ID: <202309121747.8Ln8K1XY-lkp@intel.com>
-References: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
+        Tue, 12 Sep 2023 06:06:59 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A861738
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:06:38 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-502a4f33440so5768868e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694513197; x=1695117997; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B/cidZMzbR/pkG1JbPBqCELwIDk3zAzE05nHJDn/4Dc=;
+        b=amOtGY5d69yajfgJQ1iZ8A+cQRLpIl6XOJqfLJMqJHSU08FUQ5RPGZEl6hVxak2G64
+         A0sE6IZ0tVYvEGjFMfFArOzS16UBZWAPE+nbeglaBJiNwDP2UW/42DFSVNZCmCQ7xlpG
+         5PlCgreq5M/q57D5E2n54P9teOpq86T3+r5JxDOFZeWNyrw3oY6wDjs/NPxlglDaR9VK
+         NBsbBbzy7eYcGibbaEfSzg2vAcBfxLoMtF3XW8iiAF/RY4qhWf12oIxidqRE9r75kRyT
+         LkEdwkaBGANFSTdLI6pp0Do7iW57n0K3i03Q5dXBl7hJt8lOJsH/HnklsRR31wAqyahC
+         Idzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694513197; x=1695117997;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B/cidZMzbR/pkG1JbPBqCELwIDk3zAzE05nHJDn/4Dc=;
+        b=CeCMOc7LTzY3nmAwEcygiQmC6LVy+d75LWuxtJrHh/Fn/XZEIwqBXyr5W21deOP2Bc
+         6GpjRwe3i1ho3RDCxg8p87cmCcMkxsWdyBK6GJao8E4RmtBgdUMqNl5hOpF1UmkMfYfg
+         XRF4s7fky8X3zAVJU3Pco7gt+vrH8hYMalPE5K80kKsAHQW9VTqWuUtln1e5QMQIYsa8
+         eHWH39Iu/q5mXMC02N4n4SBbOQxV06s+QnxVYil9pKWZLJbYw/RlMsU8EOAOTeAMOWP1
+         o3pIrQwrkWlzwyOhu8qiL+EQB63rGcEuRbtQYtDuoRklHPFrdV3FFGS3FHf0YJ0rfXFc
+         rhyA==
+X-Gm-Message-State: AOJu0YzcU1SM4mxmECCN8WGxJlziHr8LLFKWoq5tXx9LOS5nIwvmznzv
+        UqySeFsHe1GesWiktmPBSqX9og==
+X-Google-Smtp-Source: AGHT+IE1KkINg82xgXtgfFsAN+elTSLLEuf3n41go6FZvb5dTn5/GUITT7qn3k10AZmV41ZP5ezK6w==
+X-Received: by 2002:a05:6512:20ca:b0:500:9619:d9c9 with SMTP id u10-20020a05651220ca00b005009619d9c9mr8100102lfr.61.1694513196688;
+        Tue, 12 Sep 2023 03:06:36 -0700 (PDT)
+Received: from [192.168.37.85] (178235177248.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.248])
+        by smtp.gmail.com with ESMTPSA id x16-20020a056402415000b0052f3051f7d2sm4056670eda.80.2023.09.12.03.06.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 03:06:36 -0700 (PDT)
+Message-ID: <b49fe557-a601-4219-a365-afb50dddd64e@linaro.org>
+Date:   Tue, 12 Sep 2023 12:06:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829-topic-8550_usbphy-v2-1-a72f43311d19@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] interconnect: qcom: Add SDX75 interconnect
+ provider driver
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, djakov@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com
+References: <1694513046-24064-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1694513046-24064-3-git-send-email-quic_rohiagar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <1694513046-24064-3-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On 12.09.2023 12:04, Rohit Agarwal wrote:
+> Add driver for the Qualcomm interconnect buses found in SDX75.
+> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> ---
+[...]
 
-kernel test robot noticed the following build errors:
+> +
+> +static struct qcom_icc_bcm * const dc_noc_bcms[] = {
+> +};
+Surely this shouldn't be necessary?
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.6-rc1 next-20230912]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/phy-qcom-qmp-combo-initialize-PCS_USB-registers/20230912-072106
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230829-topic-8550_usbphy-v2-1-a72f43311d19%40linaro.org
-patch subject: [PATCH v2 1/2] phy: qcom-qmp-combo: Square out 8550 POWER_STATE_CONFIG1
-config: arm-randconfig-r016-20230912 (https://download.01.org/0day-ci/archive/20230912/202309121747.8Ln8K1XY-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230912/202309121747.8Ln8K1XY-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309121747.8Ln8K1XY-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/phy/qualcomm/phy-qcom-qmp-combo.c:865:19: error: use of undeclared identifier 'QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1'
-     865 |         QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
-         |                          ^
->> drivers/phy/qualcomm/phy-qcom-qmp-combo.c:1837:21: error: invalid application of 'sizeof' to an incomplete type 'const struct qmp_phy_init_tbl[]'
-    1837 |         .pcs_usb_tbl_num        = ARRAY_SIZE(sm8550_usb3_pcs_usb_tbl),
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:57:32: note: expanded from macro 'ARRAY_SIZE'
-      57 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-         |                                ^~~~~
-   2 errors generated.
-
-
-vim +/QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1 +865 drivers/phy/qualcomm/phy-qcom-qmp-combo.c
-
-   863	
-   864	static const struct qmp_phy_init_tbl sm8550_usb3_pcs_usb_tbl[] = {
- > 865		QMP_PHY_INIT_CFG(QPHY_USB_Q6_PCS_USB3_POWER_STATE_CONFIG1, 0x68),
-   866		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-   867		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-   868		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-   869		QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
-   870	};
-   871	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
