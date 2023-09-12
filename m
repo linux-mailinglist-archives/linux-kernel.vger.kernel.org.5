@@ -2,77 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17F579CE86
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6436D79CE82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbjILKiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S233257AbjILKiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 06:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbjILKiV (ORCPT
+        with ESMTP id S234297AbjILKh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:38:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2C5E6B;
-        Tue, 12 Sep 2023 03:38:17 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="363368080"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="363368080"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:37:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="858749845"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="858749845"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 03:37:50 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy@kernel.org>)
-        id 1qg0mC-008YxB-08;
-        Tue, 12 Sep 2023 13:37:48 +0300
+        Tue, 12 Sep 2023 06:37:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E385171B;
+        Tue, 12 Sep 2023 03:37:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEDECC433C8;
+        Tue, 12 Sep 2023 10:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694515072;
+        bh=dxP4B+yMelLzCrvZ7SL2av9sUsV6Kpduc789X1rtOVc=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=EPXRQ9TdnHqdeF5sFt3tTrzUsBlm6Q/olAvgVQ2rMTpPetLVuUzhQPUKSQ1so1hLG
+         v9Vc1UxTq77QYGhGTxQsi9yfa9vTh+zty9gpG9qa1da0L0j1EEWZmMFnkEUpOBxt4U
+         p2YHCVwvVxaufhJs5g/rYd/KgunZc9g8F6kXGnMnEPiL3zYvaneh/+kIk5g9krGA0+
+         lI2jHl6f1lvPHzMkR5hOIIeHfiuIg88fzcQoTCngedWKSoHfTCf/cEUCfojyASNPFt
+         /bn9KlFLocBmIK9pmIJis366CIhYuRIoEmk1qvF+DS5Q2U8AQn06PeGmnGB6kUbSXT
+         eGtLs4oOfee+w==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 Date:   Tue, 12 Sep 2023 13:37:47 +0300
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFT PATCH 3/3] gpio: eic-sprd: use
- devm_platform_ioremap_resource()
-Message-ID: <ZQA/ewBG7uyKR1IF@smile.fi.intel.com>
-References: <20230912094519.22769-1-brgl@bgdev.pl>
- <20230912094519.22769-3-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912094519.22769-3-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-Id: <CVGVGJIQPIZ2.WN97L6BV5S97@suppilovahvero>
+Cc:     "Jan Hendrik Farr" <kernel@jfarr.cc>,
+        <linux-kernel@vger.kernel.org>,
+        <systemd-devel@lists.freedesktop.org>, <x86@kernel.org>,
+        <kexec@lists.infradead.org>, <dhowells@redhat.com>,
+        <keyrings@vger.kernel.org>, <bluca@debian.org>,
+        <bhelgaas@google.com>, <tglx@linutronix.de>,
+        <akpm@linux-foundation.org>
+Subject: Re: [systemd-devel] [PATCH 0/1] x86/kexec: UKI support
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Neal Gompa" <ngompa13@gmail.com>
+X-Mailer: aerc 0.14.0
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+ <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+ <CAEg-Je9GF5S+QcsspM_CzDSxzCN8h2eRp7BbctC1x7-rH8j68g@mail.gmail.com>
+In-Reply-To: <CAEg-Je9GF5S+QcsspM_CzDSxzCN8h2eRp7BbctC1x7-rH8j68g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:45:19AM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Make two calls into one by using devm_platform_ioremap_resource().
+On Tue Sep 12, 2023 at 2:20 AM EEST, Neal Gompa wrote: > On Mon, Sep 11, 20=
+23 at 7:15=E2=80=AFPM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > On Sat Sep 9, 2023 at 7:18 PM EEST, Jan Hendrik Farr wrote:
+> > > Hello,
+> > >
+> > > this patch implements UKI support for kexec_file_load. It will requir=
+e support
+> > > in the kexec-tools userspace utility. For testing purposes the follow=
+ing can be used:
+> > > https://github.com/Cydox/kexec-test/
+> > >
+> > > There has been discussion on this topic in an issue on GitHub that is=
+ linked below
+> > > for reference.
+> > >
+> > >
+> > > Some links:
+> > > - Related discussion: https://github.com/systemd/systemd/issues/28538
+> > > - Documentation of UKIs: https://uapi-group.org/specifications/specs/=
+unified_kernel_image/
+> > >
+> > > Jan Hendrik Farr (1):
+> > >   x86/kexec: UKI support
+> > >
+> > >  arch/x86/include/asm/kexec-uki.h       |   7 ++
+> > >  arch/x86/include/asm/parse_pefile.h    |  32 +++++++
+> > >  arch/x86/kernel/Makefile               |   2 +
+> > >  arch/x86/kernel/kexec-uki.c            | 113 +++++++++++++++++++++++=
+++
+> > >  arch/x86/kernel/machine_kexec_64.c     |   2 +
+> > >  arch/x86/kernel/parse_pefile.c         | 110 +++++++++++++++++++++++=
++
+> > >  crypto/asymmetric_keys/mscode_parser.c |   2 +-
+> > >  crypto/asymmetric_keys/verify_pefile.c | 110 +++--------------------=
+-
+> > >  crypto/asymmetric_keys/verify_pefile.h |  16 ----
+> > >  9 files changed, 278 insertions(+), 116 deletions(-)
+> > >  create mode 100644 arch/x86/include/asm/kexec-uki.h
+> > >  create mode 100644 arch/x86/include/asm/parse_pefile.h
+> > >  create mode 100644 arch/x86/kernel/kexec-uki.c
+> > >  create mode 100644 arch/x86/kernel/parse_pefile.c
+> > >
+> > > --
+> > > 2.40.1
+> >
+> > What the heck is UKI?
+>
+> Unified Kernel Images. More details available here:
+> https://uapi-group.org/specifications/specs/unified_kernel_image/
+>
+> It's a way of creating initramfs-style images as fully generic,
+> reproducible images that can be built server-side.
 
-...
+You can build today a kernel with these compiled in:
 
-> -		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
-> -		if (!res)
-> -			break;
-> -
-> -		sprd_eic->base[i] = devm_ioremap_resource(dev, res);
-> +		sprd_eic->base[i] = devm_platform_ioremap_resource(pdev, i);
->  		if (IS_ERR(sprd_eic->base[i]))
->  			return PTR_ERR(sprd_eic->base[i]);
+1. EFI stub
+2. initeramfs
+3. cmdline
 
-break != return
+Why another way (and label 'UKI') for a pre-existing feature?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+BR, Jarkko
