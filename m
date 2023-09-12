@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A001F79D0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4293579D0FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbjILM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47824 "EHLO
+        id S235191AbjILM1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbjILM0s (ORCPT
+        with ESMTP id S235229AbjILM0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:26:48 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99FDF1716;
-        Tue, 12 Sep 2023 05:26:33 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-501b9f27eb2so8119181e87.0;
-        Tue, 12 Sep 2023 05:26:33 -0700 (PDT)
+        Tue, 12 Sep 2023 08:26:51 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F6410E3;
+        Tue, 12 Sep 2023 05:26:42 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50078eba7afso9634875e87.0;
+        Tue, 12 Sep 2023 05:26:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694521591; x=1695126391; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694521600; x=1695126400; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aIINcjg1K0iB3NZ3Vu0aeFoG3sVyQIACaQcxlgJYgGA=;
-        b=FEqJ0Rd0p3IE8r9kIAhHmm90tcUFGC+VJH5550HnSSBczPUaGdNFf8Nu23xYes9Ukm
-         lwIgMqJnIW3KbMUsW9dEi6dfiVXDMLZny7teBcylMXkRttEMvm/vTI/XMlTfWLkIjY/h
-         6xZfwl6+nEFYDLPNohHVmyOIjbnj/6zEX9W0F6N/1Xx3Qja3YOu6+c79mgwmhYGz/DxC
-         OpQ/0092jQvNln/uenMZVpwvm+WJZn7L4fsIgKaQK/aTTMdrH5xKbAuMRzCPM2jKde35
-         s7Cl10tvI2GxVLaNK3usQ2gchh5zDHb/wPFPGII6/mju/AuUNvkve/4Cu6I7oZt4tHub
-         LRyw==
+        bh=JLiYnDslj4QGPvPw52DJQXGshf2rhE8i4UYC6emHYJA=;
+        b=mSeVFcL/tbHM9eTF/baMaMLbu9IXfcK0WpJ+UWVfiwEkhoCeugbP3f/exZBsyp9oQL
+         lNUGj8YpdBQ2/28L7Pr++n9crG5mvIY/UPH0zuGGjyFSnKBAPFLyba/ZCiab3gtv6gmk
+         HtUx8120miroq5gbYEQhTMPf+0fcUBuH8N4oClyiOuI87DWMSTJGKYUPWgNQQurinEtl
+         IoMx2Hbml+WCi1iia2nMm/ChrW8o52nZ4yUug05c6xiO7iwLn9SstdpSBFAz2JPSxoxd
+         LkDb5h26J3WwZ7s8+lnT/lS0jlfa66c9jmSdUOt/3nANCnq2SumLCHlqqrWbXimN7aEY
+         XcPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694521591; x=1695126391;
+        d=1e100.net; s=20230601; t=1694521600; x=1695126400;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aIINcjg1K0iB3NZ3Vu0aeFoG3sVyQIACaQcxlgJYgGA=;
-        b=mZ8eLe+gsQn7ahhfd/t5VpzemA/1fnzNUTiBmQQSXb8NgiYl0aYzRFRpPdSoPCp4gp
-         ctA4R21OCPL7RR++gtCYs6jECxyBi64WV/aXQF0OndtisvLZs6uKGDtB03Xekc7axaC5
-         wDjLLus8g7sz/0j6uHSzbyxu51Ff2L9x/VX0vbczhobVpaBbmQPcStgFhlIF0c4fsAOo
-         LhcdqHelSkpuGuPuShzxZy8ONPn5HsGfpdchC/QAlAZACwx5EGVXpEfE2DkYgcF8p4eC
-         yfIWBdbKxoy/af3JVhUa6L3ED3Za/pXukCLSbQcBIXFNbJFGPn5fEpWP2z6nAXL//wJS
-         6bwg==
-X-Gm-Message-State: AOJu0YwJqlwWoZBsLvgRAZqgHbpFOu98ml5jIzPWqizWzldRZXikpaxr
-        Bbm73QYpUc4hQjDEiZ7pvR0doNVjzXdTiA==
-X-Google-Smtp-Source: AGHT+IFNqXL/mbRbfyqU9xKH+dvengeJ9YwA6QuKbMZc7kTq/yVK1regtJsMZjXQzp2/wfIu7JfzeQ==
-X-Received: by 2002:a05:6512:31c4:b0:500:b102:d1c9 with SMTP id j4-20020a05651231c400b00500b102d1c9mr906528lfe.29.1694521591426;
-        Tue, 12 Sep 2023 05:26:31 -0700 (PDT)
+        bh=JLiYnDslj4QGPvPw52DJQXGshf2rhE8i4UYC6emHYJA=;
+        b=ZZpiH/XDohXEel2QnTkiu4GsWuQRq/hnaQ6yn/i6qBNdMXnPBLCFDsBIe/3kJ4TA2n
+         askrguTL9IMFV7xMrKOxbBC0BxNEEUXWQyc0vtCslOof7/1seXxPMBc20nWkrbIkadNf
+         iSj334ls70VZNJZ0zmnAaXohCGJKto5QmbIGoIZVcxTOl9vXG4CObffOcYAYhSbxXBo8
+         rsQeTTBadUrJGub4uUGY5fhM8PyhnRcS/qX9VjGeEkngJ0keT2rfrbN80g4f1+RFgN0+
+         O8bpUAZ5igIfuX8cF+kJm0gOYnU6DHJuFnZLJOKpaletrY5vw49obEINPvuJwP4KhUrk
+         ERdQ==
+X-Gm-Message-State: AOJu0Yzf9gxrsq9jwZoA5Rdn0RzCJnuHHVVy8EQPBfzXkgk7CvI6/p2X
+        kHglgznqzGNZcBTDmc2zaZtT05zGI9kDCg==
+X-Google-Smtp-Source: AGHT+IFITTu921/xfXw8wra3PAhwjkYob1e3m7GFd3B8e9CJNX3dljG2FX2aTGGy5D92CgC16zjOTQ==
+X-Received: by 2002:a05:6512:3a92:b0:4fd:cae7:2393 with SMTP id q18-20020a0565123a9200b004fdcae72393mr11965194lfu.2.1694521600349;
+        Tue, 12 Sep 2023 05:26:40 -0700 (PDT)
 Received: from WBEC325.dom.local ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id g21-20020ac25395000000b004fe333128c0sm1737327lfh.242.2023.09.12.05.26.30
+        by smtp.gmail.com with ESMTPSA id g21-20020ac25395000000b004fe333128c0sm1737327lfh.242.2023.09.12.05.26.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 05:26:31 -0700 (PDT)
+        Tue, 12 Sep 2023 05:26:40 -0700 (PDT)
 From:   Pawel Dembicki <paweldembicki@gmail.com>
 To:     netdev@vger.kernel.org
 Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
         Simon Horman <simon.horman@corigine.com>,
         Pawel Dembicki <paweldembicki@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Russell King <linux@armlinux.org.uk>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 3/8] net: dsa: vsc73xx: Add define for max num of ports
-Date:   Tue, 12 Sep 2023 14:21:57 +0200
-Message-Id: <20230912122201.3752918-4-paweldembicki@gmail.com>
+Subject: [PATCH net-next v3 4/8] net: dsa: vsc73xx: add port_stp_state_set function
+Date:   Tue, 12 Sep 2023 14:21:58 +0200
+Message-Id: <20230912122201.3752918-5-paweldembicki@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230912122201.3752918-1-paweldembicki@gmail.com>
 References: <20230912122201.3752918-1-paweldembicki@gmail.com>
@@ -76,76 +77,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new define: VSC73XX_MAX_NUM_PORTS, which can be
-used in the future instead of a hardcoded value.
+This isn't a fully functional implementation of 802.1D, but
+port_stp_state_set is required for a future tag8021q operations.
 
-Currently, the only hardcoded value is vsc->ds->num_ports. It is being
-replaced with the new define.
+This implementation handles properly all states, but vsc73xx doesn't
+forward STP packets.
 
-Suggested-by: Vladimir Oltean <olteanv@gmail.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
-
 ---
 v3:
-  - Introduce patch
+  - use 'VSC73XX_MAX_NUM_PORTS' define
+  - add 'state == BR_STATE_DISABLED' condition
+  - fix style issues
+v2:
+  - fix kdoc
 
- drivers/net/dsa/vitesse-vsc73xx-core.c | 13 +------------
- drivers/net/dsa/vitesse-vsc73xx.h      | 13 +++++++++++++
- 2 files changed, 14 insertions(+), 12 deletions(-)
+ drivers/net/dsa/vitesse-vsc73xx-core.c | 61 +++++++++++++++++++++++---
+ drivers/net/dsa/vitesse-vsc73xx.h      |  2 +
+ 2 files changed, 57 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
-index 39d3d78f4bc3..8f2285a03e82 100644
+index 8f2285a03e82..541fbc195df1 100644
 --- a/drivers/net/dsa/vitesse-vsc73xx-core.c
 +++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
-@@ -1175,23 +1175,12 @@ int vsc73xx_probe(struct vsc73xx *vsc)
- 		 vsc->addr[0], vsc->addr[1], vsc->addr[2],
- 		 vsc->addr[3], vsc->addr[4], vsc->addr[5]);
+@@ -163,6 +163,10 @@
+ #define VSC73XX_AGENCTRL	0xf0
+ #define VSC73XX_CAPRST		0xff
  
--	/* The VSC7395 switch chips have 5+1 ports which means 5
--	 * ordinary ports and a sixth CPU port facing the processor
--	 * with an RGMII interface. These ports are numbered 0..4
--	 * and 6, so they leave a "hole" in the port map for port 5,
--	 * which is invalid.
--	 *
--	 * The VSC7398 has 8 ports, port 7 is again the CPU port.
--	 *
--	 * We allocate 8 ports and avoid access to the nonexistant
--	 * ports.
--	 */
- 	vsc->ds = devm_kzalloc(dev, sizeof(*vsc->ds), GFP_KERNEL);
- 	if (!vsc->ds)
- 		return -ENOMEM;
++#define VSC73XX_SRCMASKS_CPU_COPY		BIT(27)
++#define VSC73XX_SRCMASKS_MIRROR			BIT(26)
++#define VSC73XX_SRCMASKS_PORTS_MASK		GENMASK(7, 0)
++
+ #define VSC73XX_MACACCESS_CPU_COPY		BIT(14)
+ #define VSC73XX_MACACCESS_FWD_KILL		BIT(13)
+ #define VSC73XX_MACACCESS_IGNORE_VLAN		BIT(12)
+@@ -619,9 +623,6 @@ static int vsc73xx_setup(struct dsa_switch *ds)
+ 	vsc73xx_write(vsc, VSC73XX_BLOCK_SYSTEM, 0, VSC73XX_GMIIDELAY,
+ 		      VSC73XX_GMIIDELAY_GMII0_GTXDELAY_2_0_NS |
+ 		      VSC73XX_GMIIDELAY_GMII0_RXDELAY_2_0_NS);
+-	/* Enable reception of frames on all ports */
+-	vsc73xx_write(vsc, VSC73XX_BLOCK_ANALYZER, 0, VSC73XX_RECVMASK,
+-		      0x5f);
+ 	/* IP multicast flood mask (table 144) */
+ 	vsc73xx_write(vsc, VSC73XX_BLOCK_ANALYZER, 0, VSC73XX_IFLODMSK,
+ 		      0xff);
+@@ -864,9 +865,6 @@ static void vsc73xx_phylink_mac_link_up(struct dsa_switch *ds, int port,
+ 	if (duplex == DUPLEX_FULL)
+ 		val |= VSC73XX_MAC_CFG_FDX;
  
- 	vsc->ds->dev = dev;
--	vsc->ds->num_ports = 8;
-+	vsc->ds->num_ports = VSC73XX_MAX_NUM_PORTS;
- 	vsc->ds->priv = vsc;
+-	/* Enable port (forwarding) in the receieve mask */
+-	vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
+-			    VSC73XX_RECVMASK, BIT(port), BIT(port));
+ 	vsc73xx_adjust_enable_port(vsc, port, val);
+ }
  
- 	vsc->ds->ops = &vsc73xx_ds_ops;
+@@ -1033,9 +1031,59 @@ static int vsc73xx_get_max_mtu(struct dsa_switch *ds, int port)
+ 	return 9600 - ETH_HLEN - ETH_FCS_LEN;
+ }
+ 
++static int vsc73xx_port_setup(struct dsa_switch *ds, int port)
++{
++	/* Configure forward map to CPU <-> port only */
++	if (port == CPU_PORT)
++		vsc->forward_map[CPU_PORT] = VSC73XX_SRCMASKS_PORTS_MASK &
++					     ~BIT(CPU_PORT);
++	else
++		vsc->forward_map[port] = VSC73XX_SRCMASKS_PORTS_MASK &
++					 BIT(CPU_PORT);
++
++	return 0;
++}
++
++/* FIXME: STP frames aren't forwarded at this moment. BPDU frames are
++ * forwarded only from and to PI/SI interface. For more info see chapter
++ * 2.7.1 (CPU Forwarding) in datasheet.
++ * This function is required for tag8021q operations.
++ */
++
++static void vsc73xx_port_stp_state_set(struct dsa_switch *ds, int port,
++				       u8 state)
++{
++	struct vsc73xx *vsc = ds->priv;
++
++	if (state == BR_STATE_BLOCKING || state == BR_STATE_DISABLED)
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_RECVMASK, BIT(port), 0);
++	else
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_RECVMASK, BIT(port), BIT(port));
++
++	if (state == BR_STATE_LEARNING || state == BR_STATE_FORWARDING)
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_LEARNMASK, BIT(port), BIT(port));
++	else
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_LEARNMASK, BIT(port), 0);
++
++	if (state == BR_STATE_FORWARDING)
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_SRCMASKS + port,
++				    VSC73XX_SRCMASKS_PORTS_MASK,
++				    vsc->forward_map[port]);
++	else
++		vsc73xx_update_bits(vsc, VSC73XX_BLOCK_ANALYZER, 0,
++				    VSC73XX_SRCMASKS + port,
++				    VSC73XX_SRCMASKS_PORTS_MASK, 0);
++}
++
+ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+ 	.get_tag_protocol = vsc73xx_get_tag_protocol,
+ 	.setup = vsc73xx_setup,
++	.port_setup = vsc73xx_port_setup,
+ 	.phy_read = vsc73xx_phy_read,
+ 	.phy_write = vsc73xx_phy_write,
+ 	.phylink_get_caps = vsc73xx_phylink_get_caps,
+@@ -1049,6 +1097,7 @@ static const struct dsa_switch_ops vsc73xx_ds_ops = {
+ 	.port_disable = vsc73xx_port_disable,
+ 	.port_change_mtu = vsc73xx_change_mtu,
+ 	.port_max_mtu = vsc73xx_get_max_mtu,
++	.port_stp_state_set = vsc73xx_port_stp_state_set,
+ };
+ 
+ static int vsc73xx_gpio_get(struct gpio_chip *chip, unsigned int offset)
 diff --git a/drivers/net/dsa/vitesse-vsc73xx.h b/drivers/net/dsa/vitesse-vsc73xx.h
-index 30b1f0a36566..f79d81ef24fb 100644
+index f79d81ef24fb..224e284a5573 100644
 --- a/drivers/net/dsa/vitesse-vsc73xx.h
 +++ b/drivers/net/dsa/vitesse-vsc73xx.h
-@@ -3,6 +3,19 @@
- #include <linux/etherdevice.h>
- #include <linux/gpio/driver.h>
+@@ -18,6 +18,7 @@
  
-+/* The VSC7395 switch chips have 5+1 ports which means 5
-+ * ordinary ports and a sixth CPU port facing the processor
-+ * with an RGMII interface. These ports are numbered 0..4
-+ * and 6, so they leave a "hole" in the port map for port 5,
-+ * which is invalid.
-+ *
-+ * The VSC7398 has 8 ports, port 7 is again the CPU port.
-+ *
-+ * We allocate 8 ports and avoid access to the nonexistant
-+ * ports.
-+ */
-+#define VSC73XX_MAX_NUM_PORTS	8
-+
  /**
   * struct vsc73xx - VSC73xx state container
++ * @forward_map: Forward table cache
   */
+ struct vsc73xx {
+ 	struct device			*dev;
+@@ -28,6 +29,7 @@ struct vsc73xx {
+ 	u8				addr[ETH_ALEN];
+ 	const struct vsc73xx_ops	*ops;
+ 	void				*priv;
++	u8				forward_map[VSC73XX_MAX_NUM_PORTS];
+ };
+ 
+ struct vsc73xx_ops {
 -- 
 2.34.1
 
