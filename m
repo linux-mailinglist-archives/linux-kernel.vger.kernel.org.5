@@ -2,194 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DA679C2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1CD79C3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 05:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237451AbjILC2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
+        id S241880AbjILDIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 23:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236983AbjILC1v (ORCPT
+        with ESMTP id S241282AbjILDIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:27:51 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E1B13CC1A
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:52:17 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-564af0ac494so3640291a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 18:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694483537; x=1695088337; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kwpiguO0UbnqrBVAgkTOyqOA0TbUDGD6mC+sN7KskI0=;
-        b=SSR/t5MpaatJ+M7XunRAUauQ2DEx/YNGZ0dHkjXSA2jwlV4Scttg8nIv6Rgoizrt2q
-         AlDTg5DOoZuxDPb9LN2UnfKGss8bNt2AMuSuG25qp2MGcrviteLs/5nrg3/7/iq0lBYA
-         UkoOMM5TJ3zVzxA3rQ5OsldNN8D44E4zJVWO2hEteYhsq5QgTlWQ3MyXXsOxliW2wUqk
-         OhGxiaQn1pppEcTRJZwF6bE84z7nG8HlpDU0quo2Z2ClIb9FmcNLuwJt2QGz2a+XDlSE
-         yKvNAYHWtaAhFE08HuxxBl8pBB6ixK32BP9K89ud9E3LNQSDn1cFoCXwMvL3O1hdxn68
-         5Ozg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694483537; x=1695088337;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kwpiguO0UbnqrBVAgkTOyqOA0TbUDGD6mC+sN7KskI0=;
-        b=TicA+M6jO50YqEZRTSLgX1ltcW/HW95YOVtdsJbTlejv1NbdnQDXbbvm5pcDgY4dVd
-         jfOg+W0pSceI0+Nyrq1fdqcHQ/qVt6SO4QPJhm1svDaIanQDnffkBssqVQkVWW5vocZU
-         GXnlXR6gHJcWTXuZF4GuAJIiAJ7ibcaU1vs5oiH5tI54QChTvd7VD8m5YXQj87lA4bX5
-         FPIdCYCo3zXNREVnmZIiOd500wJol4jUGGlg70aoub4OOYX7PHtfFd3OQ4ad4ADfR4Ku
-         SwoWlNi5zsw+NHiOTxtWecalpOfVrYUYR+UWdMlLT3a4VBtPKCSCYdIbpEvH5BiVaAIs
-         vkdA==
-X-Gm-Message-State: AOJu0YzBTmJojEcrBKp57Tn0uZm9XlNdXeBohZUgTa3m2G2NThGQOPbc
-        YUnBhXBGWoKJKstJ/SeS8wHKCg==
-X-Google-Smtp-Source: AGHT+IF/LWkrzxBsF4AhQ5qgJsif8/E6lwiCAOPaiSUpQOXYS8By3op3abZdkkmIE99m2dH1kStZ6Q==
-X-Received: by 2002:a05:6a21:47ca:b0:14b:f365:288a with SMTP id as10-20020a056a2147ca00b0014bf365288amr7505296pzc.47.1694483536714;
-        Mon, 11 Sep 2023 18:52:16 -0700 (PDT)
-Received: from leoy-huanghe ([98.98.49.243])
-        by smtp.gmail.com with ESMTPSA id on10-20020a17090b1d0a00b0026b76edd607sm6414392pjb.15.2023.09.11.18.52.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 18:52:16 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 09:52:04 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf cs-etm: Fix kernel timestamp handling
-Message-ID: <20230912015204.GA122656@leoy-huanghe>
-References: <20230910092413.53538-1-leo.yan@linaro.org>
- <04823db9-ed6c-0695-b9de-5a63bfa0aa5a@arm.com>
+        Mon, 11 Sep 2023 23:08:37 -0400
+Received: from MW2PR02CU002.outbound.protection.outlook.com (mail-westus2azon11013010.outbound.protection.outlook.com [52.101.49.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECE6902A;
+        Mon, 11 Sep 2023 18:53:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kI2/ZIgR5sIC3PEXR0+vGijlqQYKy6Q7vQfjdG6XbI0BYda6hD+2RKgiQvA+thp/2mkFThKENa/Qe8x50/HZ8THfac7Ds3o6gICovZAxCk/AibE2AzmVn99vyBCiiIqmKdTUPyYP0QteiT/uspqsUJhoVvkmBa92SbRcDQCyH998X03YYNaOqkVxJeIizrAsX+IKZe1GHK+oQ24qlqJt9Fu+fgHw5XWidjeCRUzNUse3jgFk22SYeFifzm9yYDgJcFm/nPBEwZupzFhGQWYkGfXTW5pNcCddsU/Z1Wk6+bSpBW/SdFCWXoGNwEQS38Y/VrXcIQRkewCroNgudqSkzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n7AvILWJoG26yCNvlDmsALB39Q+o2Bg9ZCP6uQHnNVA=;
+ b=lUDHM2QppeFsa+Cmh+pBCsRcHzN1PfBR9vUndNXjtM3UJk+iV4h5hfGzfFbp3GpjBnnv/ca6lQRRhEvpeQgxzMnzBxQZWIqwhKTs1X7Mmub6vtWPr5dpRa2w83F1HwIVULTA9EKx8YFdBuuVGqUaNOsrCCUq0mHRiKCB7fWQ5H0eqvIEdPKXQQPEqlm2tmMPaIqNzDDmkDLPyO9sIfkULHnJ5DGNJOstpYOyBnZv3ty9I9AuDyg1TPzFHhpXvSfEMgx8/IeS0ezsp3ARzS9Zawu9fueRZmH0grSuX4BnSAGzkwXB0WluIFKQ3aTqC/vb0/0vg/E9TbBYE7bzPWUoWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n7AvILWJoG26yCNvlDmsALB39Q+o2Bg9ZCP6uQHnNVA=;
+ b=dQ4pdf58IOOkkc+1FaHMyTxXFse0nkpN3dySYClgmTCgg/xcGcgEpz02r8KqtdQhTp/sEBic7rF/hasJSvxlKjBspZxcT83zzDwBW/hg5wlP69syRNOjW95CDoBm53BqjHttFzNm8beQlMFIdQJIUVVUocT93kwPoxplJT9Fk5Q=
+Received: from IA0PR05MB9832.namprd05.prod.outlook.com (2603:10b6:208:404::6)
+ by SJ2PR05MB9900.namprd05.prod.outlook.com (2603:10b6:a03:500::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Tue, 12 Sep
+ 2023 01:53:48 +0000
+Received: from IA0PR05MB9832.namprd05.prod.outlook.com
+ ([fe80::9e05:acf:9240:addd]) by IA0PR05MB9832.namprd05.prod.outlook.com
+ ([fe80::9e05:acf:9240:addd%3]) with mapi id 15.20.6745.035; Tue, 12 Sep 2023
+ 01:53:48 +0000
+From:   Zack Rusin <zackr@vmware.com>
+To:     "nick.alcock@oracle.com" <nick.alcock@oracle.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "code@siddh.me" <code@siddh.me>,
+        "pstanner@redhat.com" <pstanner@redhat.com>,
+        "ddiss@suse.de" <ddiss@suse.de>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH v2 0/5] Introduce new wrappers to copy user-arrays
+Thread-Topic: [PATCH v2 0/5] Introduce new wrappers to copy user-arrays
+Thread-Index: AQHZ4o9xLec+33ofI0qfeDLvXJwswbAWctCA
+Date:   Tue, 12 Sep 2023 01:53:47 +0000
+Message-ID: <0f3075867d473d57e769b9a064bccf7b967e162c.camel@vmware.com>
+References: <cover.1694202430.git.pstanner@redhat.com>
+In-Reply-To: <cover.1694202430.git.pstanner@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.1-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA0PR05MB9832:EE_|SJ2PR05MB9900:EE_
+x-ms-office365-filtering-correlation-id: 8d3426fc-cf99-4de5-dece-08dbb3331afb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ylIlLGkVslyA1T7lYx/W+AwIJDZnrUUcGun+KOYV1JnspGcTOmQyHhtF0E16nG+u7a6/wZ52UqcH4P4OE3FYN5MKjyWQbXb76jPFF8k05BKAQeWMlZrE+Xa9scWEt9dYMeDPEG1jdnBKH5D01CCKqMbJBoZL79lcitgllHpMc8JvnsLo1p7DromJG7F7HdSo6WfFKovs2P48eoHu5r5XKeNkHU3w+9BsfPJoY9mlx9J1Jiyk4Uturt/2o2pyo+177ve7j48r/ARapAgL3wkl6VjOWVMTrLYCzSWtDt2yHqO6Qyk/6EW+Sb3HWC90fpS3fZqdV62oyyYOeWDywtdkpsvys8wlpH6BjptHFfcRS0jZRbzEjYvmx1N6vBGWxtW/KYqrd9ZUxI+ItaJiPFBZGgJlBg42tND0vZSgBUS2i3MsqMv//DMyrlgpt3w4KsFTHuLwQS1r7u4Axdrnu0HkkZVxldQi4C3OXBZ5495OVn15PvKxWpoBvPipq3HJ+fDA8y+fpFkA5mocFNu5p8iHRTp+vqh+ESf4lqtvpBLHvEVbYg4WVCrwpfvKaK955xRTtYQalSbowx1qGd4iSXFNtUPZCeuHV23kMvuCemFuvJKpQXLlx6Sc2Wee2WkxjuvfhCtanSEekWJggmvsqmLiTt8ei6+8bOZhgLoaARvGCvuXoyJHhPCUzK6ueljQFCCa
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR05MB9832.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(136003)(39860400002)(376002)(186009)(451199024)(1800799009)(36756003)(86362001)(54906003)(478600001)(122000001)(921005)(38070700005)(38100700002)(2616005)(26005)(83380400001)(2906002)(6512007)(41300700001)(71200400001)(5660300002)(7416002)(64756008)(6486002)(6506007)(66476007)(66446008)(66946007)(66556008)(76116006)(8936002)(110136005)(4326008)(8676002)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WDRVVjJmTldFNVJaYXBncHpzaDhya1ZJV0xRektmWTZEVnpRZTlNd2YveDBy?=
+ =?utf-8?B?Q2h0T2dUejJjU1pQU0RUYjQrVFhpTFhjQ1ZRZ3dSNlMwdERrTmUzRFJYTDQ4?=
+ =?utf-8?B?d1U3UDBPQUJLeElJSjJ5OHlsZ1hqa29CVG9RZXpVZElnNm9sREkwM09NRzJV?=
+ =?utf-8?B?ZDlTOVB6MlZka3dmdnB0a01SSTZBSVE1cmh5RDRieDFyakpNcDBwQkJzSDNE?=
+ =?utf-8?B?RzhueHdud0NJODlGTHYzdmxOTzBVYVlBRnJ2MnZWSDZnc293RW1HcGxBSmFh?=
+ =?utf-8?B?d3oxSlkrZnd1ckpyVFVhZ2pLbS84UjlFdlEyMmhXMnpHVkNPZ0RVLzhKRHFN?=
+ =?utf-8?B?cXMveVFDRWJSaGFBVnQvQVYzUWdKUzRBamRsMFl0dCtEQjlRRkVjZG8vOXls?=
+ =?utf-8?B?bVFYeUF6a3FkUlk4S2Y5eVdVS1BUT3BrdEUxU3JZaHYzMGpjZFYxdUFEYUFt?=
+ =?utf-8?B?QW9hNHU1MTYzUE1YNDdVdGxVa3NVeDVSYnZWQ0R4clA3YkNJenlTQlNORnk4?=
+ =?utf-8?B?Q2k1ZFNmc0VERTJkek5qcng0dzVPVm8xMDZMNHlJenlqeFpGYkNLQ0ZZbWgy?=
+ =?utf-8?B?OFp2S3dRUjcxR2FzYmxmWmkyeDBiZjRNN2t0SEl1T2tYbm1Sa1d5M3dYY2Z6?=
+ =?utf-8?B?aXdkYzU1VHVvSUpIZ3lVQ3o4aG1Gd1Y0RE9COEtMZ3BkRi9MTE1sYVJhM0hJ?=
+ =?utf-8?B?NW1OdG95VElFM1MxQUc5a3MzbktyZXM5RGQ3c3FHaHpXZmZYbkZGYW9GRStQ?=
+ =?utf-8?B?c3U4YXNLNG9kR015alo2cnp3eWZWaTRLQi9BZUMyNkxyVHRzbExzOGxsV28y?=
+ =?utf-8?B?N3FtYWFjN3d4MGRLYkUwSWFNaUZ0dklkbmV5MmZCT041QUhtZlB6UWdNcGZN?=
+ =?utf-8?B?d0RJaUNTcEM5SFI2YnNOT0NJazNPVjNNbnA2cUJ6L0Fncng2YXdjeGI1dTg2?=
+ =?utf-8?B?bVNWOFdoWG5EUFNHOEE4M0dXR0xBbi9WSFp3NURlU3hTamRYYnF1VldzZTRZ?=
+ =?utf-8?B?V1dIN1RRc09XclV1RWh4VXZURHkwc1A3ZE9CV0owSGs2RHBMYVFxWmgyS2Jr?=
+ =?utf-8?B?V2ZoR2QwSU95UUhSNlA2Qk1ZSEdvak1GWUk2NFNjQ2NTUUpyak5SRkp2ajk2?=
+ =?utf-8?B?eVNtVlU1MFgwVnExcmRMNnNGRUNCL3BQcThFNjViYmJybURsaUFqVk0zbDE0?=
+ =?utf-8?B?SHpPcXBMUzRLZjBKcWpzSDRXTkx2dlU1TlhPdWtkL1FQRkpKaElWWEZ0ZTVv?=
+ =?utf-8?B?RnNwWHFRWTB4QjJOOXVCZm9DcXNXeTRSa3pNNHczdUpNblIvN2NqN21Qbi9S?=
+ =?utf-8?B?bEJTSjNkM2lrQ1BDN0F4bEdmY2Zjb1RsSytOVk44ck1TajNGNVJHY2ZTcVc2?=
+ =?utf-8?B?RGlKZnpuRnBIb2MvNndKdUV4Q2VPYjRoVTNWdVJSa016MnFzaTdvM2VaU0oz?=
+ =?utf-8?B?MHo4TW5NV01SNWtpemZmOXJkNUwzWEd4NDlZMlFTOWR0LzVocnA2R0dkNTJh?=
+ =?utf-8?B?dy9RNUZHN1YzRmFIQkJsSkJtU2hzQlAxQ2dYa1VCN3VTRmhrVm9JbkNUWXc0?=
+ =?utf-8?B?aEs3ekpnSGZ6WHF5enZ3eGFNaUFjdUtnTU9EaE5POHRQVjA4WHFCNndLM2VL?=
+ =?utf-8?B?QzZnQUhsbnV5OWQ0dVdCRkUrYTBqcW5LNWZwL0RIMlFjdFlUQk5HRGtzY2xi?=
+ =?utf-8?B?RnI3d3RmcHRnUUpwY0RnTDVKYkRXRDRkOUFpNURReE5iZXg3U2VuODlkNXB0?=
+ =?utf-8?B?cVJieWUzeGgzOUZ4Q1VCTzFGTnJyU3RHSnRrcUphWEtyY0ZQOFhaUmNKUTBB?=
+ =?utf-8?B?MGQ5K2laUVMvdE13MkRiUE8vazFJdnQ0aUNVaGZOenhWMnlhc2Jod090QU1T?=
+ =?utf-8?B?TXQ5Z0crSStkU0VOcHFLekpDTEdKeFY3bkRsSnFPU3p0eTVycnNsL3dYYVkr?=
+ =?utf-8?B?aUo4NmxtTk1lYkYySzEvTENOY0VqSkhmTEJUMjRDbE9RWks1T3dmeGhHbHBC?=
+ =?utf-8?B?ZWxDc2hmSmZsbTNsT1llS1dKZ1hkS3BXK1BPd3N4b2hOanFYQTVoREFQbzhz?=
+ =?utf-8?B?RTNXaFUrV1lkZzJTR2lUOXNNcTV5NkFtdFdmb0JLQkg4eU5Sa0ZlNG4zV0Zu?=
+ =?utf-8?Q?ZROpRnnQA7AhHUyE++z4k4EXx?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <27C09B5C8E9CDA4F92992A7B549730C8@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04823db9-ed6c-0695-b9de-5a63bfa0aa5a@arm.com>
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR05MB9832.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d3426fc-cf99-4de5-dece-08dbb3331afb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2023 01:53:47.9862
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gaPaJL6X/1OL9IstrGem8lO3grTWkEqkPciM62MVXpw/IzACKlA3wpOdZjVkn0ucyAg8cLf+LFMSqLpGx/NAoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR05MB9900
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
-
-On Mon, Sep 11, 2023 at 02:24:09PM +0100, James Clark wrote:
-
-[...]
-
-> > The current code can support both timestamp sources when synthesizing
-> > samples. However, the decoding flow only relies on the hardware
-> > timestamp.  If the hardware timestamp is zero, it becomes impossible to
-> > decode the trace data.  Consequently, in this case, the commands below
-> > won't output any samples:
-> > 
-> >     perf record -e cs_etm// --per-thread --timestamp -- ls
-> >     perf script
-> 
-> Hi Leo,
-> 
-> I couldn't reproduce this issue, even when hard coding the hardware
-> timestamp to zero in cs_etm_decoder__do_hard_timestamp() like this:
-> 
->  converted_timestamp = 0;
-
-I reproduced this issue on the Juno-r2 board, its "etm->has_virtual_ts"
-is always false and Arm CoreSight timestamp packets are zeros.
-
-Besides set "converted_timestamp = 0", it might need to hard code
-"etm->has_virtual_ts" to false?
-
-> I'm not sure why this would result in no samples being generated either,
-> because we don't actually use the timestamps for anything yet [1]. We
-> always wait until the very end of the file before decoding to ensure
-> that all of the mmaps are loaded. And the timestamp is just assigned to
-> the samples, but they shouldn't affect whether they are generated or not.
-> 
-> Unless there is something else I'm missing?
-
-Let's review below code.
-
-cs_etm__queue_first_cs_timestamp() retrieves trace data and decodes it,
-and breaks the while loop until it find the timestamp is not zero or no
-trace data is avaliable.  When the timestamp is always zero, the while
-loop continues to drop the CoreSight trace data and don't synthesize
-samples.
-
-  cs_etm__queue_first_cs_timestamp()
-  {
-      ...
-
-      while(1) {
-          ret = cs_etm__get_data_block(etmq);
-          if (ret <= 0)
-              goto out;
-
-          ret = cs_etm__decode_data_block(etmq);
-          if (ret)
-              goto out;
-
-          cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-          /* We found a timestamp, no need to continue. */
-          if (cs_timestamp)
-              break;
-
-          cs_etm__clear_all_packet_queues(etmq);
-      }
-  }
-
-> Also, in cs_etm__queue_first_cs_timestamp(), cs_timestamp is used for
-> sorting the decoding order between CPUs, but if the hardware timestamp
-> is 0, then it's 0 on all trace.
-
-Correct.
-
-> So the sorting would be the same if you change that to be the kernel
-> timestamp. They're all still the same
-> static number, but just a different number (because we wait until the
-> end of the file, 'latest_kernel_timestamp' is always the timestamp of
-> the last AUX event in the file).
-
-If we use the 'latest_kernel_timestamp' as timestamp, it's non-zero
-timestamp rather than all timestamp '0'.  Yes, 'latest_kernel_timestamp'
-is a coarse kernel timestamp which is shared by all trace data recorded
-in the AUX event, though it's a static number, it can allow us to break
-the while loop mentioned above.
-
-I understand 'latest_kernel_timestamp' is inaccurate for sorting, but
-as least now it exists in current code, quotes from util/cs-etm.c:
-
-  /*
-   * Record the latest kernel timestamp available in the header   
-   * for samples so that synthesised samples occur from this point
-   * onwards.
-   */
-  if (sample->time && (sample->time != (u64)-1))
-        etm->latest_kernel_timestamp = sample->time;
-
-> [1]: I still plan to change the decoding to decode up to the current
-> time in the file, rather than waiting for the end of the file before
-> starting. That way decoding trace when there were overlapping mmap
-> regions in time will be more accurate.
-
-Thanks for heading up.  I am not sure if I understand this correctly,
-but seems to me it is a good thing to try for using overlapping mmap
-events.
-
-Just a side topic, if an Arm platform connect the Arm timer counter to
-Arm CoreSight, and detect virtual timestamp is false (thus
-etm->has_virtual_ts is 0).  I think this might happen on some legacy
-platforms, can we use some ways to allow users to still use the Arm
-CoreSight timestamp in this case?  E.g. we can force set
-etm->has_virtual_ts to 1 when user specify the config
-'-e cs_etm/timestamp/'.
-
-Thanks,
-Leo
+T24gRnJpLCAyMDIzLTA5LTA4IGF0IDIxOjU5ICswMjAwLCBQaGlsaXBwIFN0YW5uZXIgd3JvdGU6
+DQo+IEhpIQ0KPiANCj4gRGF2aWQgQWlybGllIHN1Z2dlc3RlZCB0aGF0IHdlIGNvdWxkIGltcGxl
+bWVudCBuZXcgd3JhcHBlcnMgYXJvdW5kDQo+ICh2KW1lbWR1cF91c2VyKCkgZm9yIGR1cGxpY2F0
+aW5nIHVzZXIgYXJyYXlzLg0KPiANCj4gVGhpcyBzbWFsbCBwYXRjaCBzZXJpZXMgZmlyc3QgaW1w
+bGVtZW50cyB0aGUgdHdvIG5ldyB3cmFwcGVyIGZ1bmN0aW9ucw0KPiBtZW1kdXBfYXJyYXlfdXNl
+cigpIGFuZCB2bWVtZHVwX2FycmF5X3VzZXIoKS4gVGhleSBjYWxjdWxhdGUgdGhlDQo+IGFycmF5
+LXNpemVzIHNhZmVseSwgaS5lLiwgdGhleSByZXR1cm4gYW4gZXJyb3IgaW4gY2FzZSBvZiBhbiBv
+dmVyZmxvdy4NCj4gDQo+IEl0IHRoZW4gaW1wbGVtZW50cyB0aGUgbmV3IHdyYXBwZXJzIGluIHR3
+byBjb21wb25lbnRzIGluIGtlcm5lbC8gYW5kIHR3bw0KPiBpbiB0aGUgZHJtLXN1YnN5c3RlbS4N
+Cj4gDQo+IEluIHRvdGFsLCB0aGVyZSBhcmUgMTggZmlsZXMgaW4gdGhlIGtlcm5lbCB0aGF0IHVz
+ZSAodiltZW1kdXBfdXNlcigpIHRvDQo+IGR1cGxpY2F0ZSBhcnJheXMuIE15IHBsYW4gaXMgdG8g
+cHJvdmlkZSBwYXRjaGVzIGZvciB0aGUgb3RoZXIgMTQNCj4gc3VjY2Vzc2l2ZWx5IG9uY2UgdGhp
+cyBzZXJpZXMgaGFzIGJlZW4gbWVyZ2VkLg0KPiANCj4gDQo+IENoYW5nZXMgc2luY2UgdjE6DQo+
+IC0gSW5zZXJ0IG5ldyBoZWFkZXJzIGFscGhhYmV0aWNhbGx5IG9yZGVyZWQNCj4gLSBSZW1vdmUg
+ZW1wdHkgbGluZXMgaW4gZnVuY3Rpb25zJyBkb2NzdHJpbmdzDQo+IC0gUmV0dXJuIC1FT1ZFUkZM
+T1cgaW5zdGVhZCBvZiAtRUlOVkFMIGZyb20gd3JhcHBlciBmdW5jdGlvbnMNCj4gDQo+IA0KPiBA
+QW5keToNCj4gSSB0ZXN0LWJ1aWxkIGl0IGZvciBVTSBvbiBteSB4ODZfNjQuIEJ1aWxkcyBzdWNj
+ZXNzZnVsbHkuDQo+IEEga2VybmVsIGJ1aWxkIChsb2NhbG1vZGNvbmZpZykgZm9yIG15IEZlZG9y
+YTM4IEAgeDg2XzY0IGRvZXMgYWxzbyBib290DQo+IGZpbmUuDQo+IA0KPiBJZiB0aGVyZSBpcyBt
+b3JlIEkgY2FuIGRvIHRvIHZlcmlmeSB0aGUgZWFybHkgYm9vdCBzdGFnZXMgYXJlIGZpbmUsDQo+
+IHBsZWFzZSBsZXQgbWUga25vdyENCj4gDQo+IFAuDQo+IA0KPiBQaGlsaXBwIFN0YW5uZXIgKDUp
+Og0KPiDCoCBzdHJpbmcuaDogYWRkIGFycmF5LXdyYXBwZXJzIGZvciAodiltZW1kdXBfdXNlcigp
+DQo+IMKgIGtlcm5lbDoga2V4ZWM6IGNvcHkgdXNlci1hcnJheSBzYWZlbHkNCj4gwqAga2VybmVs
+OiB3YXRjaF9xdWV1ZTogY29weSB1c2VyLWFycmF5IHNhZmVseQ0KPiDCoCBkcm1fbGVhc2UuYzog
+Y29weSB1c2VyLWFycmF5IHNhZmVseQ0KPiDCoCBkcm06IHZtZ2Z4X3N1cmZhY2UuYzogY29weSB1
+c2VyLWFycmF5IHNhZmVseQ0KPiANCj4gwqBkcml2ZXJzL2dwdS9kcm0vZHJtX2xlYXNlLmPCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDQgKy0tDQo+IMKgZHJpdmVycy9ncHUvZHJtL3Ztd2dm
+eC92bXdnZnhfc3VyZmFjZS5jIHzCoCA0ICstLQ0KPiDCoGluY2x1ZGUvbGludXgvc3RyaW5nLmjC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgNDAgKysrKysrKysrKysrKysrKysr
+KysrKysrKw0KPiDCoGtlcm5lbC9rZXhlYy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDIgKy0NCj4gwqBrZXJuZWwvd2F0Y2hfcXVldWUuY8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAyICstDQo+IMKgNSBmaWxl
+cyBjaGFuZ2VkLCA0NiBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQ0KPiANCg0KU2VyaWVz
+LCBhbmQgaW4gcGFydGljdWxhciB0aGUgdm13Z2Z4IGNoYW5nZXMsIGxvb2sgZ29vZCB0byBtZS4N
+Cg0KUmV2aWV3ZWQtYnk6IFphY2sgUnVzaW4gPHphY2tyQHZtd2FyZS5jb20+DQo=
