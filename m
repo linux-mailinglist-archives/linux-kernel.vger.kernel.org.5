@@ -2,219 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF4979D880
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C629579D882
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbjILSQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36254 "EHLO
+        id S237038AbjILSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237372AbjILSQU (ORCPT
+        with ESMTP id S237204AbjILSQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:16:20 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D721B6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:16:15 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso115600166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:16:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694542574; x=1695147374; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7G6zArsYHzwZkBqmBK6VoaHYjsTRL2QKwDCRc1siAf0=;
-        b=qGfFzfZiaxKERCfxJp4hDVoU/PYn+A5fwIgpXbymHbzEP8gHG3VJs7Rc7ayn/3CGIh
-         Djog/vSFDb8Qmnkl1bZzo92XrJV7cgX+Qjz1Dp/5X720B9swbtP4vsBWU9U/PUCbRT9S
-         HPjoeyIxmnl5NIg8dUMl78IIdHbYmUmA5Gg+Y9J1S0ucB0eisxRDK6hqnlHTnII+ND1Y
-         BjIq4aRy97FgJYdG9Qhp8Vl/hFsG/YmLT0FJhwCDfFN/jg3sOpGe8z7BWxvGGQOU95lY
-         nc2FrL3Jy5crNaTRVilDdUnZyG6Gmcs30SEgkpD+6gsDcLki+tXk4A1wCe9nDvg3xUn7
-         rGcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694542574; x=1695147374;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7G6zArsYHzwZkBqmBK6VoaHYjsTRL2QKwDCRc1siAf0=;
-        b=t2VaKtCG6FlM2f/QhQo+hZtWsfl0O2N9pUfAAescqLtIbYX/cUBT7mxHI9fbdDIcGa
-         PMdy2L3jzxr50gQwupyJwqRbUHyAh2XEJwO1x0T3o6BQ1kEeKXCTnNbp3ht6J2uEfEUb
-         vQzv5J6f68qou2K4eh+6uLvzs9sITpmNm4tUwAoQf12t2ftH3NffdbPTcZRmmBHvN4R5
-         KBB3aZnSDtuCqkDhrh1/Wh27+V0BCUyWfo12lIViUk3Uo8L6AmvrjchQ6oQ1dvwguC4W
-         rXfSKkBe5xzmTItom+Tyb/9XVR0obibrlAVTvEAhf3T49kUJ77pcKbRNTjs8oRoyGu5v
-         2n2Q==
-X-Gm-Message-State: AOJu0YyxVhv9uEJGwmwgUttJDf+7ZQL4Lei86u1aWQAIGOgSneSajUis
-        rvI5nyoPGCiR87PxEsNOkDVZPVVVNjKtnQ5ni/Vr5g==
-X-Google-Smtp-Source: AGHT+IFqq23f40V3D1ln2gU0d96bO0U35CPT0AKCN0YsmzMEFl7m8OF2w1scczWLTCpJ0oJ5Sfrod2OzJoeEKqcJLcY=
-X-Received: by 2002:a17:906:844a:b0:9a1:e8c0:7e2e with SMTP id
- e10-20020a170906844a00b009a1e8c07e2emr72791ejy.14.1694542574160; Tue, 12 Sep
- 2023 11:16:14 -0700 (PDT)
+        Tue, 12 Sep 2023 14:16:43 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302A4115;
+        Tue, 12 Sep 2023 11:16:39 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E803D66072BA;
+        Tue, 12 Sep 2023 19:16:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694542598;
+        bh=T4CTnt3171lkEG7tjYGi/cg2CuSvBVr1yDODyvXjNSg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=jBbrMzWXfqW9mhE1VCw30jKHg0Sbl4nFivnCXyMBAJ3JYsb75qdQBXOcwns0O7XBY
+         vz5RiTZrIiE+Q6R2AanpGx9PPvpIgE97eS0jWbfyiTWkmoCWrTfLCn6EuSB3CiBoXj
+         8YRaegFE5h+6WfwZjLCnm470iCS5JmH76YN9MeRJ9s4JjE4RTtHAoxEvoZ3eHueolc
+         R8smmoddGXin0Y8mMcAR91XZ1j1UibDRQFGQNK5e43wpHiGg1ZCJU+D1P6XLHFa6yA
+         M9i9LOE/xHQH6c/Wv/qjC70Q7rKjXGq5noS4EwtYcrkW3Vge6RBuAHIMYOnky4cbPh
+         gXjn0mmR9PZjg==
+Received: by mercury (Postfix, from userid 1000)
+        id 90B5C106098A; Tue, 12 Sep 2023 20:16:34 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     sre@kernel.org, Andrew Halaney <ahalaney@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        bmasney@redhat.com
+In-Reply-To: <20230817214218.638846-1-ahalaney@redhat.com>
+References: <20230817214218.638846-1-ahalaney@redhat.com>
+Subject: Re: [PATCH] power: reset: nvmem-reboot-mode: quiet some device
+ deferrals
+Message-Id: <169454259457.484856.798048052041147110.b4-ty@collabora.com>
+Date:   Tue, 12 Sep 2023 20:16:34 +0200
 MIME-Version: 1.0
-References: <20230912161518.199484-1-hshan@google.com> <ZQCayNY+8PYvfc40@google.com>
-In-Reply-To: <ZQCayNY+8PYvfc40@google.com>
-From:   Haitao Shan <hshan@google.com>
-Date:   Tue, 12 Sep 2023 11:16:02 -0700
-Message-ID: <CAGD3tSwnXFhnyw4JX_7-UgZpHpPg1Yj_JqsO_Tano1XgmcCvbQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for sending the reply twice. The former reply got rejected since
-I forgot to turn on the plain text email setting.
 
-On Tue, Sep 12, 2023 at 10:07=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
->
-> On Tue, Sep 12, 2023, Haitao Shan wrote:
-> > This issue exists in kernel version 6.3-rc1 or above. The issue is
-> > introduced by the commit 8e6ed96cdd50 ("KVM: x86: fire timer when it is
-> > migrated and expired, and in oneshot mode"). The issue occurs on Intel
-> > platform which APIC virtualization and posted interrupt processing.
->
-> I think the bug was actually introduced by:
->
->   967235d32032 ("KVM: vmx: clear pending interrupts on KVM_SET_LAPIC")
-Thanks for pointing this out. I know commit 8e6ed96cdd50 is only a
-trigger. But I
-did not go one step further and find out where the bug is coming from.
->
-> Fixing the "deadline <=3D 0" handling just made it much easier to be hit.=
-  E.g. if
-> the deadline was '1' during restore, set_target_expiration() would set ts=
-cdeadline
-> to T1+(1*N), where T1 is the current TSC and N is the multipler to get fr=
-om nanoseconds
-> to cycles.  start_sw_tscdeadline() (or vmx_set_hv_timer()) would then rer=
-ead the
-> TSC (call it T2), see T2 > T1+(1*N), and mark the timer as expired.
->
-> > The issue is first discovered when running the Android Emulator which
-> > is based on QEMU 2.12. I can reproduce the issue with QEMU 8.0.4 in
-> > Debian 12.
->
-> The above is helpful as extra context, but repeating "This issue" and "Th=
-e issue"
-> over and over without ever actually describing what the issue actualy is =
-makes it
-> quite difficult to understand what is actually being fixed.
-Got it. I will rewrite the whole commit message for v2.
->
-> > With the above commit, the timer gets fired immediately inside the
-> > KVM_SET_LAPIC call when loading the snapshot. On such Intel platforms,
-> > this eventually leads to setting the corresponding PIR bit. However,
-> > the whole PIR bits get cleared later in the same KVM_SET_LAPIC call.
-> > Missing lapic timer interrupt freeze the guest kernel.
->
-> Please phrase changelogs as commands and state what is actually being cha=
-nged.
-> Again, the context on what is broken is helpful, but the changelog really=
-, really
-> needs to state what is being changed.
-Will do.
->
-> > Signed-off-by: Haitao Shan <hshan@google.com>
-> > ---
-> >  arch/x86/kvm/lapic.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > index a983a16163b1..6f73406b875a 100644
-> > --- a/arch/x86/kvm/lapic.c
-> > +++ b/arch/x86/kvm/lapic.c
-> > @@ -2977,14 +2977,14 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, s=
-truct kvm_lapic_state *s)
-> >       apic_update_lvtt(apic);
-> >       apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0)=
-);
-> >       update_divide_count(apic);
-> > -     __start_apic_timer(apic, APIC_TMCCT);
-> > -     kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
-> >       kvm_apic_update_apicv(vcpu);
-> >       if (apic->apicv_active) {
-> >               static_call_cond(kvm_x86_apicv_post_state_restore)(vcpu);
-> >               static_call_cond(kvm_x86_hwapic_irr_update)(vcpu, apic_fi=
-nd_highest_irr(apic));
-> >               static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_hig=
-hest_isr(apic));
-> >       }
-> > +     __start_apic_timer(apic, APIC_TMCCT);
-> > +     kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
->
-> I don't think this is the ordering we want.  It currently works, but it s=
-ubtly
-> "relies" on a few things:
->
->   1. That vmx_deliver_posted_interrupt() never "fails" when APICv is enab=
-led,
->      i.e. never puts the interrupt in the IRR instead of the PIR.
->
->   2. The SVM, a.k.a. AVIC, doesn't ever sync from the IRR to a separate "=
-hardware"
->      virtual APIC, because unlike VMX, SVM does set the bit in the IRR.
->
-> I doubt #2 will ever change simply because that's tied to how AVIC works,=
- and #1
-> shouldn't actually break anything since the fallback path in vmx_deliver_=
-interrupt()
-> needs to be self-sufficient, but I don't like that the code syncs from th=
-e IRR and
-> _then_ potentially modifies the IRR.
->
-> I also don't like doing additional APIC state restoration _after_ invokin=
-g the
-> post_state_restore() hook.  Updating APICv in the middle of the restore f=
-low is
-> going to be brittle and difficult to maintain, e.g. it won't be obvious w=
-hat
-> needs to go before and what needs to go after.
->
-> IMO, vmx_apicv_post_state_restore() is blatantly broken.  It is most defi=
-nitely
-> not doing "post state restore" stuff, it's simply purging state, i.e. bel=
-ongs in
-> a "pre state restore" hook.
->
-> So rather than shuffle around the timer code, I think we should instead a=
-dd yet
-> another kvm_x86_ops hook, e.g. apicv_pre_state_restore(), and have initia=
-lize
-> the PI descriptor there.
->
-> Aha!  And I think the new apicv_pre_state_restore() needs to be invoked e=
-ven if
-> APICv is not active, because I don't see anything that purges the PIR whe=
-n APICv
-> is enabled.  VMX's APICv doesn't have many inhibits that can go away, and=
- I
-> highly doubt userspace will restore into a vCPU with pending posted inter=
-rupts,
-> so in practice this is _extremely_ unlikely to be problematic.  But it's =
-still
-> wrong.
-Thanks for sharing what you would like to fix the bug. I will write a
-v2 for that.
-Actually, I am sorry that I forgot to add RFC to the title, as I
-personally did not think
-the proposed fix looks clean. I am surprised that
-apic_post_state_restore actually
-clears the whole PIR which looks like "resetting" instead of
-"restoring". However,
-I am not sure whether this is the exact intended behavior and code sequence=
-. If
-it is intended, __restart_apic_timer should defer its interrupt
-delivery action after
-apic_post_state_restore (something like raising a request for updating PIR =
-when
-vcpu_enter_guest).
+On Thu, 17 Aug 2023 16:41:57 -0500, Andrew Halaney wrote:
+> Some errors are being logged that are really due to deferrals,
+> which is confusing to users. Use dev_err_probe() to handle when to log
+> at error level versus debug. This also has the added bonuses of logging
+> to devices_deferred and printing the error value.
+> 
+> 
 
-I will work on v2 following your suggestion. Thanks!
+Applied, thanks!
 
---=20
-Haitao @Google
+[1/1] power: reset: nvmem-reboot-mode: quiet some device deferrals
+      commit: 8e511f42ac9cdab84c692bcd0f9e0c55c75b1856
+
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
+
