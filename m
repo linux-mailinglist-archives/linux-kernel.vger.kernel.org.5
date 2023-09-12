@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8E779CE9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AD979CE9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbjILKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
+        id S234280AbjILKoJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbjILKoH (ORCPT
+        with ESMTP id S234297AbjILKoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:44:07 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691D61FEF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 03:33:52 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 38CAXdTP037668;
-        Tue, 12 Sep 2023 18:33:39 +0800 (+08)
-        (envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RlKbw5wGxz2RsNTk;
-        Tue, 12 Sep 2023 18:30:36 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 12 Sep 2023 18:33:37 +0800
-From:   "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>, <ke.wang@unisoc.com>
-Subject: [PATCH] arch: arm: remove redundant clear_page when CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on
-Date:   Tue, 12 Sep 2023 18:33:34 +0800
-Message-ID: <20230912103334.2074140-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 12 Sep 2023 06:44:06 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B5E1FF6;
+        Tue, 12 Sep 2023 03:34:06 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlKZZ4gLPz6J7jc;
+        Tue, 12 Sep 2023 18:29:26 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
+ 2023 11:34:04 +0100
+Date:   Tue, 12 Sep 2023 11:34:03 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        <intel-wired-lan@lists.osuosl.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/8] igb: Use FIELD_GET() to extract Link Width
+Message-ID: <20230912113403.00006c39@Huawei.com>
+In-Reply-To: <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com>
+References: <20230911121501.21910-1-ilpo.jarvinen@linux.intel.com>
+        <20230911121501.21910-4-ilpo.jarvinen@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.73.40]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL: SHSQR01.spreadtrum.com 38CAXdTP037668
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Mon, 11 Sep 2023 15:14:56 +0300
+Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> wrote:
 
-Double times of clear_page observed in an arm SOC(A55) when
-CONFIG_INIT_ON_ALLOC_DEFAULT_ON is on, which introduced by
-vma_alloc_zeroed_movable_folio within do_anonymous_pages.
-Since there is no D-cache operation within v6's clear_user_highpage,
-I would like to suggest to remove the redundant clear_page.
+> Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+> custom masking and shifting.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/net/ethernet/intel/igb/e1000_mac.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/igb/e1000_mac.c b/drivers/net/ethernet/intel/igb/e1000_mac.c
+> index caf91c6f52b4..5a23b9cfec6c 100644
+> --- a/drivers/net/ethernet/intel/igb/e1000_mac.c
+> +++ b/drivers/net/ethernet/intel/igb/e1000_mac.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /* Copyright(c) 2007 - 2018 Intel Corporation. */
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/if_ether.h>
+>  #include <linux/delay.h>
+>  #include <linux/pci.h>
+> @@ -50,9 +51,8 @@ s32 igb_get_bus_info_pcie(struct e1000_hw *hw)
+>  			break;
+>  		}
+>  
+> -		bus->width = (enum e1000_bus_width)((pcie_link_status &
+> -						     PCI_EXP_LNKSTA_NLW) >>
+> -						     PCI_EXP_LNKSTA_NLW_SHIFT);
+> +		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
+> +							     pcie_link_status);
 
-struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
-				   unsigned long vaddr)
-{
-	struct folio *folio;
+This cast is a bit ugly given it takes the values 0, 1, 2, 3 and
+we extra a field that the spec says contains 1, 2, 4, 8 etc
+Hence it only works because only 1 and 2 are used I think...  Not nice.
 
-//first clear_page invoked by vma_alloc_folio==>alloc_page==>post_alloc_hook
-	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, vaddr, false);
-	if (folio)
-//second clear_page which is meaningless since it do nothing to D-cache in armv6
-		clear_user_highpage(&folio->page, vaddr);
 
-	return folio;
-}
+Also, whilst looking at this I note that e1000e has it's own defines
+for PCIE_LINK_WIDTH_MASK and PCIE_LINK_WIDTH_SHIFT 
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- arch/arm/mm/copypage-v6.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Looks like those should be changed to use the standard defines.
 
-diff --git a/arch/arm/mm/copypage-v6.c b/arch/arm/mm/copypage-v6.c
-index a1a71f36d850..6f8bee1b3203 100644
---- a/arch/arm/mm/copypage-v6.c
-+++ b/arch/arm/mm/copypage-v6.c
-@@ -9,6 +9,7 @@
- #include <linux/mm.h>
- #include <linux/highmem.h>
- #include <linux/pagemap.h>
-+#include <linux/gfp.h>
- 
- #include <asm/shmparam.h>
- #include <asm/tlbflush.h>
-@@ -45,6 +46,13 @@ static void v6_copy_user_highpage_nonaliasing(struct page *to,
-  */
- static void v6_clear_user_highpage_nonaliasing(struct page *page, unsigned long vaddr)
- {
-+	/*
-+	 * This criteria only help bailing out when CONFIG_INIT_ON_ALLOC_DEFAULT_ON
-+	 * is on. The page has been memset to zero when it allocated and the
-+	 * bellowing clear_page will do it again.
-+	 */
-+	if (want_init_on_alloc(GFP_HIGHUSER_MOVABLE))
-+		return;
- 	void *kaddr = kmap_atomic(page);
- 	clear_page(kaddr);
- 	kunmap_atomic(kaddr);
--- 
-2.25.1
+For extra giggles there are two e1000_bus_width enum definitions in different
+headers.
+
+Actual patch is good - just 'interesting' stuff noticed whilst looking at it :)
+
+Jonathan
+
+
+>  	}
+>  
+>  	reg = rd32(E1000_STATUS);
 
