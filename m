@@ -2,155 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F05479C996
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC7C79C99A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbjILIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        id S232334AbjILIRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232701AbjILIQX (ORCPT
+        with ESMTP id S231605AbjILIRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:16:23 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C90FE7F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:19 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9ad8a33fd0dso38761666b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:19 -0700 (PDT)
+        Tue, 12 Sep 2023 04:17:02 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D543FE73
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:58 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d7e9d849bdfso4622724276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:16:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694506577; x=1695111377; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IQQyuvgw2Ih8CCznL4czbdJi4u/aUR5st1Zl8jdFdis=;
-        b=dLGZqD3wDITomFvFKqxhKdyEZcHC4NxHzQ9QMqagju9HbFsECAeW6WfzitYLpV34Df
-         SCBnb2zv9TvJ7bALVwEi8z8AAcEMXl+keKp9sZHrq5PLz+WkSClAdgeCnVLMKjWVk7PY
-         B6CTx3OjsAGKKFRpeCs2WPx3hlppsjtFwFQhRx4WmhBqi9e06kboN4IfkXxAtisndtqA
-         gKrTJ+f9O4+Tmzq/ydPLuQyrF8HAw7LIyHwTO9evoZZyDmoTcN360bVy6lIxvs+/UJx8
-         oj34/BNz+iphiQc9b3M9tWt69nzQ2fgXMHUUOtJ+Oztx1Cc1LGU4CWwyDRw3NUhXMC1f
-         x8mA==
+        d=linaro.org; s=google; t=1694506618; x=1695111418; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o6RGfYRFPXOdj912iVMfEgfkufAW2hfFKbw8063QGj8=;
+        b=XMesouPHqx0GDPIbSkl+Ff8EcJYB4IWw+90vgbqSa5Re2CyzcZJun47XBvDy6aZykb
+         L7tJhoBEbSrTrs3u8qpX3QLyImFip8fyRue2rjj3qpGXhTatySnlWZpLBrougTmVo+Jt
+         NsruI2tcjKbURBHA6MWpwCh9bPqFqc5K/CPz6zHzqiRjmYNbmT179F0UwuCr3PeY+/KM
+         Hf0uprT6NqCKfg0b2JMcr+0GGZm1AJtoYXPZZyLNiz7FW4ziB2UUMf7OcvcVLpXcAWbB
+         iUKCTfLzGn9Tt30N7qbqDZSHfC+R8q9SwxAbvP+M7LayhXKH3gON46/j01MIOurwKMCJ
+         KDPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694506577; x=1695111377;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IQQyuvgw2Ih8CCznL4czbdJi4u/aUR5st1Zl8jdFdis=;
-        b=GI1Ynjap8a4zn/2BXCLmkZoErGcxc/1xSa9TjUF9W1rKETn7aKzr9G3p2AHBwD7ZeJ
-         9jyUMudOpVfzNTkWBqHm6V5jNKCASiPWkxQ5jNimDx6Xy1CB4TIKzq+V27H4v5T0Jc20
-         Ou2WXMMfZvUSQpXdvI7NqnoYmhFtVFHNqzS5DMdQ/1mEB75ldLS0xy4wajSuQUHKh2pO
-         WljCyMeEBE/T20nKkCv7PiY82XWZh0IT5ldEK5P7eDCUFanY5xVSZdmflT2Y16bEBLAX
-         HHVcCRWq66jbw/UhUvc0G6deP/NgKPzg9CYno24mBxcftfnHLTV7COGRKx5/jMQ3iwzW
-         L+Iw==
-X-Gm-Message-State: AOJu0YxEsua5/hcPFDSChNzOxeI1T0rGFdSaXADPFeGZBCy/NCZdFG9o
-        DjgcsHLasEGp21973D3NqQz6OA==
-X-Google-Smtp-Source: AGHT+IGnDIjB1E0+PM78RIHPjXSnqOuV7g/f+t4r79vgK/6WUopYnar+OQmHMaOMcvof7mrFdmwNsQ==
-X-Received: by 2002:a17:906:8469:b0:9aa:165:aefc with SMTP id hx9-20020a170906846900b009aa0165aefcmr9205509ejc.33.1694506577602;
-        Tue, 12 Sep 2023 01:16:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id i19-20020a170906851300b0099297782aa9sm6357666ejx.49.2023.09.12.01.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 01:16:16 -0700 (PDT)
-Message-ID: <83b3f2eb-84e3-2daa-c63c-14b6792a1db5@linaro.org>
-Date:   Tue, 12 Sep 2023 10:16:14 +0200
+        d=1e100.net; s=20230601; t=1694506618; x=1695111418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o6RGfYRFPXOdj912iVMfEgfkufAW2hfFKbw8063QGj8=;
+        b=KBwOPZ7b4+QQ4pNJo/sDDHZInQKxzlsZ58/iwkCe5FBumxG0T5laIHHFvPLT+0hDd6
+         D3+pIqL9EgTERM5GXtSZDi6x6ihqnzsTq1J90QmWnOhYK2rmR2FHJfur3OUP1rSjuvr9
+         FmyB2KJrru+JPqCstYIuTzgFsnsPY0ABbwtr6EgKcR94a4lAFoQL3LuF9DatltNhDQep
+         mHgyaUCY1ooIzNqyyPL8u41dasVHJHfz+JZjueC0qWxfLBh/CYqobsiAlBHLtpth9bH1
+         CLPtTmrheyhwyEVUp+mb6KaXF9LAzA1uVW8qZ9CresyXb0L/PFRkyohemn05XR49VpOI
+         jXUQ==
+X-Gm-Message-State: AOJu0YxZ+uWqZstsx+Q7p+phFVjj7BFE/l2IK/QOekmrd8LPvw8XcXsN
+        hnxV+hhxOFI3HhxuHCdR/i9R54erPJqqyTIJ1qWEWA==
+X-Google-Smtp-Source: AGHT+IGjg7IAksfDlRe/Cye9RRC/1cK8ZBAaKvMgb15gIkeFfbf1pX+zTtOYhhJVTPUcDjSH5LyQ/Bse3k0BXF00j5s=
+X-Received: by 2002:a25:d697:0:b0:d47:8db3:8bcf with SMTP id
+ n145-20020a25d697000000b00d478db38bcfmr11703010ybg.49.1694506618096; Tue, 12
+ Sep 2023 01:16:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v5 2/3] dt-binding: mediatek: integrate MDP RDMA to one
- binding
-Content-Language: en-US
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230912075651.10693-1-moudy.ho@mediatek.com>
- <20230912075651.10693-3-moudy.ho@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230912075651.10693-3-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230909063613.2867-1-jernej.skrabec@gmail.com> <20230909063613.2867-2-jernej.skrabec@gmail.com>
+In-Reply-To: <20230909063613.2867-2-jernej.skrabec@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Sep 2023 10:16:47 +0200
+Message-ID: <CACRpkdbaSza1KjbeM3X4103xcWZx+4cwAnMiG9eaLF4JVZv0JA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: pinmux: Remove duplicate error message in pin_request()
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 09:56, Moudy Ho wrote:
-> Due to the same hardware design, MDP RDMA needs to
-> be integrated into the same binding.
-> 
+On Sat, Sep 9, 2023 at 8:36=E2=80=AFAM Jernej Skrabec <jernej.skrabec@gmail=
+.com> wrote:
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+> Detailed error message is already printed at the end of the function, so
+> drop redundant one a few lines earlier.
+>
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-This applies to entire patchset. It is not dt-binding, but dt-bindings.
+Patch applied!
 
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
->  .../display/mediatek/mediatek,mdp-rdma.yaml   | 88 -------------------
->  .../bindings/media/mediatek,mdp3-rdma.yaml    |  5 +-
->  2 files changed, 3 insertions(+), 90 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
-> deleted file mode 100644
-> index dd12e2ff685c..000000000000
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdma.yaml
-> +++ /dev/null
-> @@ -1,88 +0,0 @@
-> -# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> -%YAML 1.2
-> ----
-> -$id: http://devicetree.org/schemas/display/mediatek/mediatek,mdp-rdma.yaml#
-> -$schema: http://devicetree.org/meta-schemas/core.yaml#
-> -
-> -title: MediaTek MDP RDMA
-> -
-> -maintainers:
-> -  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> -  - Philipp Zabel <p.zabel@pengutronix.de>
-> -
-> -description:
-> -  The MediaTek MDP RDMA stands for Read Direct Memory Access.
-> -  It provides real time data to the back-end panel driver, such as DSI,
-> -  DPI and DP_INTF.
-> -  It contains one line buffer to store the sufficient pixel data.
-> -  RDMA device node must be siblings to the central MMSYS_CONFIG node.
-> -  For a description of the MMSYS_CONFIG binding, see
-> -  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml for details.
-> -
-> -properties:
-> -  compatible:
-> -    const: mediatek,mt8195-vdo1-rdma
-> -
-> -  reg:
-> -    maxItems: 1
-> -
-> -  interrupts:
-> -    maxItems: 1
-> -
-> -  power-domains:
-> -    maxItems: 1
-> -
-> -  clocks:
-> -    items:
-> -      - description: RDMA Clock
-
-This is different and you did not explain it in commit msg.
-
-Another difference - mboxes. Looks like you did not test your DTS...
-
-Best regards,
-Krzysztof
-
+Yours,
+Linus Walleij
