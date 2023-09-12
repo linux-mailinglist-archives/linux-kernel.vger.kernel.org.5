@@ -2,270 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE13079CA37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB9E79CA3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbjILIkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 04:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        id S232856AbjILIkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjILIkL (ORCPT
+        with ESMTP id S232800AbjILIkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 04:40:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5CCAA
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 01:40:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B646AC433C8;
-        Tue, 12 Sep 2023 08:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694508007;
-        bh=a0CyG+Fm9N1FxQvDM4Ss0c8iVzL1ahh4KEeqhhs3EOc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RejPJgHbE5cQKWxAGkyKIEVva7UZ7xy73n6B/z1MAtv8PQVFqZqfrVCnx4s31eNHh
-         wIt0nVKSeHo+zAh6SMY7UimpRQiSB6VhFHp1QJZqgnJT1J4nfKdaVNihw8DkHz4EKf
-         cBmEOa+Idq/63it1yWUgO405GKgxIsPfPQ1oi+34ZcBvs4vfreVZlyrc9Wtgg0do+/
-         mx7GyqkGB/vTAgzUWIvYt3GgPiLMZEUkjvSQ9CfJaQBlBYxQerdRJxEYEuE+yUrQFV
-         FPGbV9Ilb4Kn7TjyxYZZgRNiS2BML0gAED8BCE8oQdj1Z++6ntTntHApHT08LHrTwr
-         jYV59nMa+vK8w==
-Date:   Tue, 12 Sep 2023 10:40:04 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/ssd130x: Store the HW buffer in the
- driver-private CRTC state
-Message-ID: <x75lakzrl2awslaid5ffneepxusej7b7ojvz36bgpdwriztcru@h4bvwr2oeaov>
-References: <20230910094041.715408-1-javierm@redhat.com>
+        Tue, 12 Sep 2023 04:40:16 -0400
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7728910C4;
+        Tue, 12 Sep 2023 01:40:12 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Vrw4LF-_1694508008;
+Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vrw4LF-_1694508008)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Sep 2023 16:40:08 +0800
+Message-ID: <682f9cf8-10ab-fd89-7eea-97274f81ac4c@linux.alibaba.com>
+Date:   Tue, 12 Sep 2023 16:40:14 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hvty5qodf4v2nkrj"
-Content-Disposition: inline
-In-Reply-To: <20230910094041.715408-1-javierm@redhat.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH V2 0/6] pinctrl: sprd: Modification of UNIOC Platform
+ pinctrl Driver
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Linhua Xu <Linhua.xu@unisoc.com>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        lh xu <xulh0829@gmail.com>,
+        Zhirong Qiu <zhirong.qiu@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20230908055146.18347-1-Linhua.xu@unisoc.com>
+ <CACRpkdbUOM7KD2h+mSZ4xj7UCCe_Gj_Dzcc7hSmOfOftve_kyg@mail.gmail.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <CACRpkdbUOM7KD2h+mSZ4xj7UCCe_Gj_Dzcc7hSmOfOftve_kyg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hvty5qodf4v2nkrj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 9/11/2023 9:41 PM, Linus Walleij wrote:
+> On Fri, Sep 8, 2023 at 7:52 AM Linhua Xu <Linhua.xu@unisoc.com> wrote:
+> 
+>> From: Linhua Xu <Linhua.Xu@unisoc.com>
+>>
+>> Recently, some bugs have been discovered during use, and patch2 and patch3
+>> are bug fixes. Also, this patchset add new features: patch1 is for
+>> compatibility with more platforms, patch4 add pinctrl support for UMS512,
+>> patch5 Increase the range of register values, patch6 add pinctrl support
+>> for UMS9621.
+>>
+>> change in V2
+> 
+> V2 is starting to look good, please address Andy's comments, especially
+> move the fixes first in the series so they can be queued as fixes
+> if need be.
 
-On Sun, Sep 10, 2023 at 11:40:28AM +0200, Javier Martinez Canillas wrote:
-> The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
-> .atomic_check() callback") moved the allocation of the intermediate and
-> HW buffers from the encoder's .atomic_enable callback, to the plane's
-> .atomic_check callback.
->=20
-> This was suggested by Maxime Ripard, because drivers aren't allowed to
-> fail after the drm_atomic_helper_swap_state() function has been called.
->=20
-> And the encoder's .atomic_enable happens after the new atomic state has
-> been swapped, so allocations (that can fail) shouldn't be done there.
->=20
-> But the HW buffer isn't really tied to the plane's state. It has a fixed
-> size that only depends on the (also fixed) display resolution defined in
-> the Device Tree Blob.
->=20
-> That buffer can be considered part of the CRTC state, and for this reason
-> makes more sense to do its allocation in the CRTC .atomic_check callback.
->=20
-> The other allocated buffer (used to store a conversion from the emulated
-> XR24 format to the native R1 format) is part of the plane's state, since
-> it will be optional once the driver supports R1 and allows user-space to
-> set that pixel format.
->=20
-> So let's keep the allocation for it in the plane's .atomic_check callback,
-> this can't be moved to the CRTC's .atomic_check because changing a format
-> does not trigger a CRTC mode set.
->=20
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Closes: https://lore.kernel.org/dri-devel/CAMuHMdWv_QSatDgihr8=3D2SXHhvp=
-=3DicNxumZcZOPwT9Q_QiogNQ@mail.gmail.com/
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> ---
->=20
-> Changes in v2:
-> - Drop RFC prefix.
-> - Fix typo in commit message (Thomas Zimmermann).
-> - Store the HW buffer in the driver's private CRTC state (Thomas Zimmerma=
-nn).
-> - Just use kmalloc() kcalloc() when allocating buffers (Thomas Zimmermann=
-).
-> - Keep the allocation of the intermediate buffer in the plane's .atomic_c=
-heck
->=20
->  drivers/gpu/drm/solomon/ssd130x.c | 143 ++++++++++++++++++++++--------
->  1 file changed, 108 insertions(+), 35 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/=
-ssd130x.c
-> index 3b4dde09538a..c866dd40d163 100644
-> --- a/drivers/gpu/drm/solomon/ssd130x.c
-> +++ b/drivers/gpu/drm/solomon/ssd130x.c
-> @@ -141,14 +141,23 @@ const struct ssd130x_deviceinfo ssd130x_variants[] =
-=3D {
->  };
->  EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
-> =20
-> +struct ssd130x_crtc_state {
-> +	struct drm_crtc_state base;
-> +	/* Buffer to store pixels in HW format and written to the panel */
-> +	u8 *data_array;
-> +};
-> +
->  struct ssd130x_plane_state {
->  	struct drm_shadow_plane_state base;
->  	/* Intermediate buffer to convert pixels from XRGB8888 to HW format */
->  	u8 *buffer;
-> -	/* Buffer to store pixels in HW format and written to the panel */
-> -	u8 *data_array;
->  };
-> =20
-> +static inline struct ssd130x_crtc_state *to_ssd130x_crtc_state(struct dr=
-m_crtc_state *state)
-> +{
-> +	return container_of(state, struct ssd130x_crtc_state, base);
-> +}
-> +
->  static inline struct ssd130x_plane_state *to_ssd130x_plane_state(struct =
-drm_plane_state *state)
->  {
->  	return container_of(state, struct ssd130x_plane_state, base.base);
-> @@ -448,13 +457,11 @@ static int ssd130x_init(struct ssd130x_device *ssd1=
-30x)
->  }
-> =20
->  static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
-> -			       struct ssd130x_plane_state *ssd130x_state,
-> -			       struct drm_rect *rect)
-> +			       struct drm_rect *rect, u8 *buf,
-> +			       u8 *data_array)
->  {
->  	unsigned int x =3D rect->x1;
->  	unsigned int y =3D rect->y1;
-> -	u8 *buf =3D ssd130x_state->buffer;
-> -	u8 *data_array =3D ssd130x_state->data_array;
+Yes, agree. Please send the fix patches separately with proper Fixes tag.
 
-That's just a matter of taste I guess, but I would pass the crtc_state
-pointer there instead of an opaque byte array (without any boundary).
+> 
+> I would really appreciate if Baolin can review the patches as well as
+> he knows this hardware very well and wrote the initial version.
 
->  	unsigned int width =3D drm_rect_width(rect);
->  	unsigned int height =3D drm_rect_height(rect);
->  	unsigned int line_length =3D DIV_ROUND_UP(width, 8);
-> @@ -550,12 +557,10 @@ static int ssd130x_update_rect(struct ssd130x_devic=
-e *ssd130x,
->  	return ret;
->  }
-> =20
-> -static void ssd130x_clear_screen(struct ssd130x_device *ssd130x,
-> -				 struct ssd130x_plane_state *ssd130x_state)
-> +static void ssd130x_clear_screen(struct ssd130x_device *ssd130x, u8 *dat=
-a_array)
->  {
->  	unsigned int page_height =3D ssd130x->device_info->page_height;
->  	unsigned int pages =3D DIV_ROUND_UP(ssd130x->height, page_height);
-> -	u8 *data_array =3D ssd130x_state->data_array;
->  	unsigned int width =3D ssd130x->width;
->  	int ret, i;
-> =20
-> @@ -594,15 +599,13 @@ static void ssd130x_clear_screen(struct ssd130x_dev=
-ice *ssd130x,
->  	}
->  }
-> =20
-> -static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
-> +static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb,
->  				const struct iosys_map *vmap,
-> -				struct drm_rect *rect)
-> +				struct drm_rect *rect,
-> +				u8 *buf, u8 *data_array)
->  {
-> -	struct drm_framebuffer *fb =3D state->fb;
->  	struct ssd130x_device *ssd130x =3D drm_to_ssd130x(fb->dev);
->  	unsigned int page_height =3D ssd130x->device_info->page_height;
-> -	struct ssd130x_plane_state *ssd130x_state =3D to_ssd130x_plane_state(st=
-ate);
-> -	u8 *buf =3D ssd130x_state->buffer;
->  	struct iosys_map dst;
->  	unsigned int dst_pitch;
->  	int ret =3D 0;
-> @@ -622,7 +625,7 @@ static int ssd130x_fb_blit_rect(struct drm_plane_stat=
-e *state,
-> =20
->  	drm_gem_fb_end_cpu_access(fb, DMA_FROM_DEVICE);
-> =20
-> -	ssd130x_update_rect(ssd130x, ssd130x_state, rect);
-> +	ssd130x_update_rect(ssd130x, rect, buf, data_array);
-> =20
->  	return ret;
->  }
-> @@ -634,8 +637,6 @@ static int ssd130x_primary_plane_helper_atomic_check(=
-struct drm_plane *plane,
->  	struct ssd130x_device *ssd130x =3D drm_to_ssd130x(drm);
->  	struct drm_plane_state *plane_state =3D drm_atomic_get_new_plane_state(=
-state, plane);
->  	struct ssd130x_plane_state *ssd130x_state =3D to_ssd130x_plane_state(pl=
-ane_state);
-> -	unsigned int page_height =3D ssd130x->device_info->page_height;
-> -	unsigned int pages =3D DIV_ROUND_UP(ssd130x->height, page_height);
->  	const struct drm_format_info *fi;
->  	unsigned int pitch;
->  	int ret;
-> @@ -654,14 +655,6 @@ static int ssd130x_primary_plane_helper_atomic_check=
-(struct drm_plane *plane,
->  	if (!ssd130x_state->buffer)
->  		return -ENOMEM;
-> =20
-> -	ssd130x_state->data_array =3D kcalloc(ssd130x->width, pages, GFP_KERNEL=
-);
-> -	if (!ssd130x_state->data_array) {
-> -		kfree(ssd130x_state->buffer);
-> -		/* Set to prevent a double free in .atomic_destroy_state() */
-> -		ssd130x_state->buffer =3D NULL;
-> -		return -ENOMEM;
-> -	}
-> -
->  	return 0;
->  }
-> =20
-> @@ -671,6 +664,10 @@ static void ssd130x_primary_plane_helper_atomic_upda=
-te(struct drm_plane *plane,
->  	struct drm_plane_state *plane_state =3D drm_atomic_get_new_plane_state(=
-state, plane);
->  	struct drm_plane_state *old_plane_state =3D drm_atomic_get_old_plane_st=
-ate(state, plane);
->  	struct drm_shadow_plane_state *shadow_plane_state =3D to_drm_shadow_pla=
-ne_state(plane_state);
-> +	struct drm_crtc_state *crtc_state =3D drm_atomic_get_new_crtc_state(sta=
-te, plane_state->crtc);
-
-You can have CRTC-less commits if you only modify a property of the
-plane for example. drm_atomic_get_new_crtc_state will retrieve the CRTC
-state in the global state passed as an argument, but will not make any
-effort to retrieve the current CRTC state if it's not part of that commit.
-
-You should add a call to drm_atomic_get_crtc_state in your atomic_check
-hook to pull the CRTC state if it's not there so you can rely on it
-here.
-
-Maxime
-
---hvty5qodf4v2nkrj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQAj5AAKCRDj7w1vZxhR
-xSpLAP9z31gWbcp2x3gi9duxMKDLvHGmUCskLHHgzZLFnSuo7QD9EcKwvLbAlZ3z
-9TS4dNcR+qP6GtZ9dImTpzMoKQxwzgE=
-=D2Y6
------END PGP SIGNATURE-----
-
---hvty5qodf4v2nkrj--
+Sure.
