@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFEB79CF1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF1279CF1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 13:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbjILLB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 07:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44306 "EHLO
+        id S233882AbjILLD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 07:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbjILLBd (ORCPT
+        with ESMTP id S234593AbjILLCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 07:01:33 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986D59F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 04:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694516489; x=1726052489;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QwVU5oOHgWjfPmqwrEV3ZqF19Xp1vFXf2zAbfRKHkrA=;
-  b=PxOFMl6kkPoRw5+xcbWyDBUhlhFzb1h1fJX49oXkLN62/PjBj6IGrd3Y
-   2NjGaaKS0dxoigfGZntOP+B5fBTI7ntwdfQiJ7U9H570PpW/VwsW2ZyWf
-   eMXSu9TvMPe7tDkW+G9jGBB3zsCpT7GoEsScyMPjsOnaIxr9okp3Z0E1+
-   B+SsA6P6XF8Cggp5VPkPP8mapwoNneY5CWnXN2euiYQQQ7RiWfuUfFvxY
-   F1MuaW8gYLd1NkS4bqKtDmBR7cPemCNgRGm2skHkitHa41cFPd3zamOMH
-   rYrmeSzPLfrvFhXP+6Mm5JjHjzrNelr4AIgMjl3Xk6OcdOQIlnA/5SZeV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="381041274"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="381041274"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:01:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="833868062"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="833868062"
-Received: from mkidd-mobl.ger.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.251.217.72])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 04:01:10 -0700
-From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To:     tiwai@suse.com, perex@perex.cz, arnd@arndb.de
-Cc:     masahiroy@kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: core: Use dev_name of card_dev as debugfs directory name
-Date:   Tue, 12 Sep 2023 14:01:13 +0300
-Message-ID: <20230912110113.3166-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 12 Sep 2023 07:02:54 -0400
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9731717;
+        Tue, 12 Sep 2023 04:02:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VrwdiHG_1694516551;
+Received: from 30.97.48.71(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VrwdiHG_1694516551)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Sep 2023 19:02:31 +0800
+Message-ID: <5877cd0d-7a39-806a-e8f8-ef0c3c22dae3@linux.alibaba.com>
+Date:   Tue, 12 Sep 2023 19:02:37 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFT PATCH 1/3] gpio: eic-sprd: unregister from the irq notifier
+ on remove()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230912094519.22769-1-brgl@bgdev.pl>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230912094519.22769-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to use temporary string for the debugfs directory name as
-we can use the device name of the card.
 
-This change will also fixes the following compiler warning/error (W=1):
 
-sound/core/init.c: In function ‘snd_card_init’:
-sound/core/init.c:367:28: error: ‘%d’ directive writing between 1 and 10 bytes into a region of size 4 [-Werror=format-overflow=]
-  367 |         sprintf(name, "card%d", idx);
-      |                            ^~
-sound/core/init.c:367:23: note: directive argument in the range [0, 2147483646]
-  367 |         sprintf(name, "card%d", idx);
-      |                       ^~~~~~~~
-sound/core/init.c:367:9: note: ‘sprintf’ output between 6 and 15 bytes into a destination of size 8
-  367 |         sprintf(name, "card%d", idx);
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+On 9/12/2023 5:45 PM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> This is a tristate module, it can be unloaded. We need to cleanup properly
+> and unregister from the interrupt notifier on driver detach.
+> 
+> Fixes: b32415652a4d ("gpio: eic-sprd: use atomic notifiers to notify all chips about irqs")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The idx is guarantied to be less than SNDRV_CARDS (max 256 or 8) by the
-code in snd_card_init(), however the compiler does not see that.
+LGTM.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-The warnings got brought to light by a recent patch upstream:
-commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/core/init.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/sound/core/init.c b/sound/core/init.c
-index d61bde1225f2..22c0d217b860 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -278,9 +278,6 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
- 			 size_t extra_size)
- {
- 	int err;
--#ifdef CONFIG_SND_DEBUG
--	char name[8];
--#endif
- 
- 	if (extra_size > 0)
- 		card->private_data = (char *)card + sizeof(struct snd_card);
-@@ -364,8 +361,8 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
- 	}
- 
- #ifdef CONFIG_SND_DEBUG
--	sprintf(name, "card%d", idx);
--	card->debugfs_root = debugfs_create_dir(name, sound_debugfs_root);
-+	card->debugfs_root = debugfs_create_dir(dev_name(&card->card_dev),
-+						sound_debugfs_root);
- #endif
- 	return 0;
- 
--- 
-2.42.0
-
+> ---
+>   drivers/gpio/gpio-eic-sprd.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-eic-sprd.c b/drivers/gpio/gpio-eic-sprd.c
+> index 21a1afe358d6..9b2f9ccf8d77 100644
+> --- a/drivers/gpio/gpio-eic-sprd.c
+> +++ b/drivers/gpio/gpio-eic-sprd.c
+> @@ -580,6 +580,14 @@ static const struct irq_chip sprd_eic_irq = {
+>   	.flags		= IRQCHIP_SKIP_SET_WAKE | IRQCHIP_IMMUTABLE,
+>   	GPIOCHIP_IRQ_RESOURCE_HELPERS,
+>   };
+> +
+> +static void sprd_eic_unregister_notifier(void *data)
+> +{
+> +	struct notifier_block *nb = data;
+> +
+> +	atomic_notifier_chain_unregister(&sprd_eic_irq_notifier, nb);
+> +}
+> +
+>   static int sprd_eic_probe(struct platform_device *pdev)
+>   {
+>   	const struct sprd_eic_variant_data *pdata;
+> @@ -658,8 +666,15 @@ static int sprd_eic_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	sprd_eic->irq_nb.notifier_call = sprd_eic_irq_notify;
+> -	return atomic_notifier_chain_register(&sprd_eic_irq_notifier,
+> -					      &sprd_eic->irq_nb);
+> +	ret = atomic_notifier_chain_register(&sprd_eic_irq_notifier,
+> +					     &sprd_eic->irq_nb);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "Failed to register with the interrupt notifier");
+> +
+> +	return devm_add_action_or_reset(&pdev->dev,
+> +					sprd_eic_unregister_notifier,
+> +					&sprd_eic->irq_nb);
+>   }
+>   
+>   static const struct of_device_id sprd_eic_of_match[] = {
