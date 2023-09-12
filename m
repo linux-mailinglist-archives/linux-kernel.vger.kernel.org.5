@@ -2,118 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7972B79CE0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446C079CD75
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 12:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbjILKTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 06:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S233433AbjILKLN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 06:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234263AbjILKTF (ORCPT
+        with ESMTP id S233688AbjILKK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 06:19:05 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A97F1715;
-        Tue, 12 Sep 2023 03:10:32 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPA id E1B7040003;
-        Tue, 12 Sep 2023 10:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694513431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e9HcidEq+A9xaDn4cDf1UskGOrMSLdgPTMn8dmPNgNc=;
-        b=ORpXVav/8v2nGgIh1dhRskAUabjXdDfQkWSO1dPfulthcfojOC1x3Se99trJUjBUSLjazj
-        cZXt26HWVi8pA5p3xDR83S9/uTZzIcqKh66BH98cuE5TBUpTPboObIHEgt3e8m/ztRcZ+f
-        /zB4fS+cnSvIs3mDXIbEoIeHW2UGP7h5v/ZSpOD87nOMzEqoSgxdEKEY6qdUGSC0neU5eb
-        9tiYOYBGCBTReAwTV4JDfrYAaEIHACZqzjKK9zeeXeOsj9HoPQ4sAXzZYi7F9xzo9LxMyu
-        1t1ygsOzh0UTT1ABmjnoE/Yi9M/KRTvWe2VmQXD2MrlYNbvRnzyqCsnqK6E/Cg==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        alsa-devel@alsa-project.org, Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 08/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc: Add support for QMC HDLC
-Date:   Tue, 12 Sep 2023 12:10:18 +0200
-Message-ID: <20230912101018.225246-1-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230912081527.208499-1-herve.codina@bootlin.com>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
+        Tue, 12 Sep 2023 06:10:59 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2143172E;
+        Tue, 12 Sep 2023 03:10:38 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RlK6w4s01z6HJlZ;
+        Tue, 12 Sep 2023 18:08:56 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 12 Sep
+ 2023 11:10:35 +0100
+Date:   Tue, 12 Sep 2023 11:10:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Lizhi Hou <lizhi.hou@amd.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh@kernel.org>,
+        <max.zhen@amd.com>, <sonal.santan@amd.com>,
+        <stefano.stabellini@xilinx.com>,
+        =?ISO-8859-1?Q?C?= =?ISO-8859-1?Q?l=E9ment_L=E9ger?= 
+        <clement.leger@bootlin.com>
+Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
+Message-ID: <20230912111035.00002e9b@Huawei.com>
+In-Reply-To: <0cc232a2-1743-aeaa-cb87-ce320cc9fc39@amd.com>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+        <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
+        <20230911154856.000076c3@Huawei.com>
+        <0cc232a2-1743-aeaa-cb87-ce320cc9fc39@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The QMC (QUICC mutichannel controller) is a controller present in some
-PowerQUICC SoC such as MPC885.
-The QMC HDLC uses the QMC controller to transfer HDLC data.
+On Mon, 11 Sep 2023 09:58:04 -0700
+Lizhi Hou <lizhi.hou@amd.com> wrote:
 
-Additionally, a framer can be connected to the QMC HDLC.
-If present, this framer is the interface between the TDM bus used by the
-QMC HDLC and the E1/T1 line.
-The QMC HDLC can use this framer to get information about the E1/T1 line
-and configure the E1/T1 line.
+> On 9/11/23 07:48, Jonathan Cameron wrote:
+> > On Tue, 15 Aug 2023 10:19:57 -0700
+> > Lizhi Hou <lizhi.hou@amd.com> wrote:
+> >  
+> >> The PCI endpoint device such as Xilinx Alveo PCI card maps the register
+> >> spaces from multiple hardware peripherals to its PCI BAR. Normally,
+> >> the PCI core discovers devices and BARs using the PCI enumeration process.
+> >> There is no infrastructure to discover the hardware peripherals that are
+> >> present in a PCI device, and which can be accessed through the PCI BARs.
+> >>
+> >> Apparently, the device tree framework requires a device tree node for the
+> >> PCI device. Thus, it can generate the device tree nodes for hardware
+> >> peripherals underneath. Because PCI is self discoverable bus, there might
+> >> not be a device tree node created for PCI devices. Furthermore, if the PCI
+> >> device is hot pluggable, when it is plugged in, the device tree nodes for
+> >> its parent bridges are required. Add support to generate device tree node
+> >> for PCI bridges.
+> >>
+> >> Add an of_pci_make_dev_node() interface that can be used to create device
+> >> tree node for PCI devices.
+> >>
+> >> Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
+> >> the kernel will generate device tree nodes for PCI bridges unconditionally.
+> >>
+> >> Initially, add the basic properties for the dynamically generated device
+> >> tree nodes which include #address-cells, #size-cells, device_type,
+> >> compatible, ranges, reg.
+> >>
+> >> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> >> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>  
+> > I tried to bring this up for a custom PCIe card emulated in QEMU on an ARM ACPI
+> > machine.
+> >
+> > There are some missing parts that were present in Clements series, but not this
+> > one, particularly creation of the root pci object.  
+> Thanks for trying this. The entire effort was separated in different 
+> phases. That is why this patchset does not include creating of_root.
+> >
+> > Anyhow, hit an intermittent crash...
+> >
+> >  
+> >> ---
+> >> +static int of_pci_prop_intr_map(struct pci_dev *pdev, struct of_changeset *ocs,
+> >> +				struct device_node *np)
+> >> +{
+> >> +	struct of_phandle_args out_irq[OF_PCI_MAX_INT_PIN];
+> >> +	u32 i, addr_sz[OF_PCI_MAX_INT_PIN], map_sz = 0;
+> >> +	__be32 laddr[OF_PCI_ADDRESS_CELLS] = { 0 };
+> >> +	u32 int_map_mask[] = { 0xffff00, 0, 0, 7 };
+> >> +	struct device_node *pnode;
+> >> +	struct pci_dev *child;
+> >> +	u32 *int_map, *mapp;
+> >> +	int ret;
+> >> +	u8 pin;
+> >> +
+> >> +	pnode = pci_device_to_OF_node(pdev->bus->self);
+> >> +	if (!pnode)
+> >> +		pnode = pci_bus_to_OF_node(pdev->bus);
+> >> +
+> >> +	if (!pnode) {
+> >> +		pci_err(pdev, "failed to get parent device node");
+> >> +		return -EINVAL;
+> >> +	}
+> >> +
+> >> +	laddr[0] = cpu_to_be32((pdev->bus->number << 16) | (pdev->devfn << 8));
+> >> +	for (pin = 1; pin <= OF_PCI_MAX_INT_PIN;  pin++) {
+> >> +		i = pin - 1;
+> >> +		out_irq[i].np = pnode;
+> >> +		out_irq[i].args_count = 1;
+> >> +		out_irq[i].args[0] = pin;
+> >> +		ret = of_irq_parse_raw(laddr, &out_irq[i]);
+> >> +		if (ret) {
+> >> +			pci_err(pdev, "parse irq %d failed, ret %d", pin, ret);
+> >> +			continue;  
+> > If all the interrupt parsing fails we continue ever time...  
+> 
+> Did you use Clement's patch to create of_root? I am just wondering if 
+> parsing irq could fail on a dt-based system.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
----
- .../bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml   | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+For qemu already have of_root as there is still a device tree, it's just
+used to pass some stuff to EDK2 I think. I was carrying the Frank's
+series adding a bare device tree, it's just not doing anything on these
+systems
 
-diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-index 82d9beb48e00..b5073531f3f1 100644
---- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-+++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml
-@@ -101,6 +101,16 @@ patternProperties:
-           Channel assigned Rx time-slots within the Rx time-slots routed by the
-           TSA to this cell.
- 
-+      compatible:
-+        const: fsl,qmc-hdlc
-+
-+      fsl,framer:
-+        $ref: /schemas/types.yaml#/definitions/phandle
-+        description:
-+          phandle to the framer node. The framer is in charge of an E1/T1 line
-+          interface connected to the TDM bus. It can be used to get the E1/T1 line
-+          status such as link up/down.
-+
-     required:
-       - reg
-       - fsl,tx-ts-mask
-@@ -159,5 +169,8 @@ examples:
-             fsl,operational-mode = "hdlc";
-             fsl,tx-ts-mask = <0x00000000 0x0000ff00>;
-             fsl,rx-ts-mask = <0x00000000 0x0000ff00>;
-+
-+            compatible = "fsl,qmc-hdlc";
-+            fsl,framer = <&framer>;
-         };
-     };
--- 
-2.41.0
+I used Clements patch to add the pci root (cleaned up a bit to
+match the style of your series more closely).
+
+However, my interest is in ACPI based systems, not DT based ones.
+
+Jonathan
+
+
+> 
+> And yes, the failure case should be handled without crash. I think if 
+> irq parsing failed,  the interrupt-map pair generation should be skipped.
+> 
+> 
+> Thanks,
+> 
+> Lizhi
+> 
+> >  
+> >> +		}
+> >> +		ret = of_property_read_u32(out_irq[i].np, "#address-cells",
+> >> +					   &addr_sz[i]);
+> >> +		if (ret)
+> >> +			addr_sz[i] = 0;  
+> > This never happens.
+> >  
+> >> +	}
+> >> +
+> >> +	list_for_each_entry(child, &pdev->subordinate->devices, bus_list) {
+> >> +		for (pin = 1; pin <= OF_PCI_MAX_INT_PIN; pin++) {
+> >> +			i = pci_swizzle_interrupt_pin(child, pin) - 1;
+> >> +			map_sz += 5 + addr_sz[i] + out_irq[i].args_count;  
+> > and here we end up derefencing random memory which happens in my case to cause
+> > a massive allocation sometimes and that fails one of the assertions in the
+> > allocator.
+> >
+> > I'd suggest just setting addr_sz[xxx] = {}; above
+> > to ensure it's initialized. Then the if(ret) handling should not be needed
+> > as well as of_property_read_u32 should be side effect free I hope!
+> >  
+> >> +		}
+> >> +	}
+> >> +
+> >> +	int_map = kcalloc(map_sz, sizeof(u32), GFP_KERNEL);
+> >> +	mapp = int_map;  
 
