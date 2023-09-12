@@ -2,136 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE2F79C7D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D8079C7D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjILHOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        id S231454AbjILHO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjILHN6 (ORCPT
+        with ESMTP id S229707AbjILHO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:13:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F21C7C3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694502789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YTSpSyC5EzR4JqjtmXWa4jhow1lkJCD2XnaN08RB0m8=;
-        b=ZV82oyxX6lYliNZKE8gy0UHyXoCc/oB/F3Z0Dby9Xblcz+BRWNa4JhRSOefMlW6KhBVFa8
-        9Ll65ZGUyK1kcLa1u5o8bmYlybc8F20fT9XZJfxaa5cZkxC4yPaLhH1xrvA6Cy+WLzkS58
-        nR7R4XIXc9Be5uxhUxOlAXCj6dkpfK0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-371-ZBC7QAWDOf6rd5h5_EmeIA-1; Tue, 12 Sep 2023 03:13:07 -0400
-X-MC-Unique: ZBC7QAWDOf6rd5h5_EmeIA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31aef4011cfso3751378f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:13:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502786; x=1695107586;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YTSpSyC5EzR4JqjtmXWa4jhow1lkJCD2XnaN08RB0m8=;
-        b=TIYgMITJd3EyD8qD1MrE0v+ix5cw2a+SAMwVbqRHuB+kmDAwmy9SJvi8FqhgOkASMy
-         WhDNhkqnfG/jG7QW1OpJwceH8PvclfEU2NtUGXXP5e015XfZ97Mm92qVOib6nkGDGAtQ
-         hQQcYtLc463eBITfCdaPeXCZlkNwAT+oEg4z/uPPO0IUG0FEgyvPOtrQXLOgQuWWWkgA
-         iWGmTTN4q9/FShUD5zSaeWmg+P0fRDCHrq35fFuITBQ+lgdu17Nc+ioGQgO7KCxXUmMJ
-         nvQOgrGjhy3ViNbDGgX+qWW8gav7KLW/qooS14f18S33M4zFus2tuSogTkeku3P9MXKA
-         JGHA==
-X-Gm-Message-State: AOJu0YwIkn7yR8NCZkN/bMK9y8RimV133zsWVjM5nTVZPR2Glpezizi3
-        bUoLOLPZqBX+3OYi7DMlYNlqxElbAtda3789hdV6fDhRzUGR+3e9iYAwWSEFEvK9kR1OLlnCRkK
-        mD+TBfPvuJlCKZoTnndOWS9N6
-X-Received: by 2002:adf:ec10:0:b0:31d:1833:4135 with SMTP id x16-20020adfec10000000b0031d18334135mr9258400wrn.28.1694502786646;
-        Tue, 12 Sep 2023 00:13:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHzD/JqAKRst1uRyrpQ1ec8A47CJ05RJvD9vhfbLXgEIWlOOIOrNSivNy+JkLaFrl4za69IRw==
-X-Received: by 2002:adf:ec10:0:b0:31d:1833:4135 with SMTP id x16-20020adfec10000000b0031d18334135mr9258385wrn.28.1694502786274;
-        Tue, 12 Sep 2023 00:13:06 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c74f:d600:c705:bc25:17b2:71c9? (p200300cbc74fd600c705bc2517b271c9.dip0.t-ipconnect.de. [2003:cb:c74f:d600:c705:bc25:17b2:71c9])
-        by smtp.gmail.com with ESMTPSA id x18-20020adfdd92000000b0031aeca90e1fsm12117706wrl.70.2023.09.12.00.13.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 00:13:05 -0700 (PDT)
-Message-ID: <3a37361d-1f3b-c283-3fb0-ab3614e3d38c@redhat.com>
-Date:   Tue, 12 Sep 2023 09:13:04 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V2 2/2] proc/kcore: Do not try to access unaccepted memory
-Content-Language: en-US
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-coco@lists.linux.dev, linux-efi@vger.kernel.org,
-        kexec@lists.infradead.org
-References: <20230911112114.91323-1-adrian.hunter@intel.com>
- <20230911112114.91323-3-adrian.hunter@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230911112114.91323-3-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Sep 2023 03:14:56 -0400
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF639B9;
+        Tue, 12 Sep 2023 00:14:51 -0700 (PDT)
+Received: from mxde.zte.com.cn (unknown [10.35.20.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxct.zte.com.cn (FangMail) with ESMTPS id 4RlFFz0PmrzCh0p;
+        Tue, 12 Sep 2023 15:14:47 +0800 (CST)
+Received: from mxhk.zte.com.cn (unknown [192.168.250.137])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mxde.zte.com.cn (FangMail) with ESMTPS id 4RlFFy253qz5qYcG;
+        Tue, 12 Sep 2023 15:14:46 +0800 (CST)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RlFFq3xpSz8XrRP;
+        Tue, 12 Sep 2023 15:14:39 +0800 (CST)
+Received: from szxlzmapp07.zte.com.cn ([10.5.230.251])
+        by mse-fl1.zte.com.cn with SMTP id 38C7EPYt080948;
+        Tue, 12 Sep 2023 15:14:25 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp07[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Tue, 12 Sep 2023 15:14:28 +0800 (CST)
+Date:   Tue, 12 Sep 2023 15:14:28 +0800 (CST)
+X-Zmail-TransId: 2b0965000fd44f9-59db5
+X-Mailer: Zmail v1.0
+Message-ID: <202309121514283793475@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <bigeasy@linutronix.de>, <linux-arm-kernel@lists.infradead.org>,
+        <stable-rt@vger.kernel.org>
+Cc:     <linux-kernel@vger.kernel.org>, <he.he@windriver.com>,
+        <linux-rt-users@vger.kernel.org>, <wang.yong12@zte.com.cn>,
+        <yang.yang29@zte.com.cn>, <ran.xiaokai@zte.com.cn>,
+        <jiang.xuexin@zte.com.cn>
+Subject: =?UTF-8?B?W1BBVENIIDUuMTAtcnRdIGFybTY0OiBzaWduYWw6IFVzZSBBUkNIX1JUX0RFTEFZU19TSUdOQUxfU0VORA==?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 38C7EPYt080948
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 65000FE5.001/4RlFFz0PmrzCh0p
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.09.23 13:21, Adrian Hunter wrote:
-> Support for unaccepted memory was added recently, refer commit
-> dcdfdd40fa82 ("mm: Add support for unaccepted memory"), whereby a virtual
-> machine may need to accept memory before it can be used.
-> 
-> Do not try to access unaccepted memory because it can cause the guest to
-> fail.
-> 
-> For /proc/kcore, which is read-only and does not support mmap, this means a
-> read of unaccepted memory will return zeros.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->   fs/proc/kcore.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> 
-> Changes in V2:
-> 
->            Change patch subject and commit message
->            Do not open code pfn_is_unaccepted_memory()
-> 
-> 
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 23fc24d16b31..6422e569b080 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -546,7 +546,8 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
->   			 * and explicitly excluded physical ranges.
->   			 */
->   			if (!page || PageOffline(page) ||
-> -			    is_page_hwpoison(page) || !pfn_is_ram(pfn)) {
-> +			    is_page_hwpoison(page) || !pfn_is_ram(pfn) ||
-> +			    pfn_is_unaccepted_memory(pfn)) {
->   				if (iov_iter_zero(tsz, iter) != tsz) {
->   					ret = -EFAULT;
->   					goto out;
+From: Wang Yong <wang.yong12@zte.com.cn>
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+The ltp test prompts the following bug information under the 5.10 kernel:
+BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 796, name: cat
+Preemption disabled at:
+[<ffffffe40f433980>] do_debug_exception+0x60/0x180
+CPU: 3 PID: 796 Comm: cat Not tainted 5.10.59-rt52-KERNEL_VERSION #38
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x198
+ show_stack+0x20/0x30
+ dump_stack+0xf0/0x13c
+ ___might_sleep+0x140/0x178
+ rt_spin_lock+0x30/0x90
+ force_sig_info_to_task+0x30/0xe0
+ force_sig_fault_to_task+0x54/0x78
+ force_sig_fault+0x1c/0x28
+ arm64_force_sig_fault+0x48/0x78
+ send_user_sigtrap+0x4c/0x80
+ brk_handler+0x3c/0x68
+ do_debug_exception+0xac/0x180
+ el0_dbg+0x34/0x58
+ el0_sync_handler+0x50/0xb8
+ el0_sync+0x180/0x1c0
+
+It has been fixed by
+0c34700de5e7 ("arm64: signal: Use ARCH_RT_DELAYS_SIGNAL_SEND.") in
+higher versions of the kernel. This patch needs to be compatible with 5.10.
+5.10 kernel does not have signal.h file, so adding signal.h file to
+define ARCH_RT_DELAYS_SIGNAL_SEND.
+
+Signed-off-by: Wang Yong <wang.yong12@zte.com.cn>
+Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+Cc: Yang Yang <yang.yang29@zte.com.cn>
+Cc: Xiaokai Ran <ran.xiaokai@zte.com.cn>
+---
+ arch/arm64/include/asm/signal.h | 12 ++++++++++++
+ arch/arm64/kernel/signal.c      |  9 +++++++++
+ 2 files changed, 21 insertions(+)
+ create mode 100644 arch/arm64/include/asm/signal.h
+
+diff --git a/arch/arm64/include/asm/signal.h b/arch/arm64/include/asm/signal.h
+new file mode 100644
+index 000000000..0fb418cf4
+--- /dev/null
++++ b/arch/arm64/include/asm/signal.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ARM64_ASM_SIGNAL_H
++#define __ARM64_ASM_SIGNAL_H
++
++#include <uapi/asm/signal.h>
++#include <uapi/asm/siginfo.h>
++
++#if defined(CONFIG_PREEMPT_RT)
++#define ARCH_RT_DELAYS_SIGNAL_SEND
++#endif
++
++#endif
+diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+index fe94a3e1f..538d4aadb 100644
+--- a/arch/arm64/kernel/signal.c
++++ b/arch/arm64/kernel/signal.c
+@@ -927,6 +927,15 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
+ 		} else {
+ 			local_daif_restore(DAIF_PROCCTX);
+
++#ifdef ARCH_RT_DELAYS_SIGNAL_SEND
++			if (unlikely(current->forced_info.si_signo)) {
++				struct task_struct *t = current;
++
++				force_sig_info(&t->forced_info);
++				t->forced_info.si_signo = 0;
++			}
++#endif
++
+ 			if (thread_flags & _TIF_UPROBE)
+ 				uprobe_notify_resume(regs);
 
 -- 
-Cheers,
-
-David / dhildenb
-
+2.25.1
