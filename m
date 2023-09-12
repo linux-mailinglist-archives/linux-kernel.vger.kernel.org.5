@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C32A79D700
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9A979D713
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbjILRBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S236623AbjILRCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjILRBi (ORCPT
+        with ESMTP id S236687AbjILRCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:01:38 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D66E7A;
-        Tue, 12 Sep 2023 10:01:33 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8FE2CFF803;
-        Tue, 12 Sep 2023 17:01:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1694538092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BF1WfBhKL7Vq9HadTvieISmVBsPssfXTIlitcyfw/NQ=;
-        b=cH/VlLUYcZQzyis5KcQzKebZIwSJ3RFbWxrIGXzhAf1p50rImqpdHbmZyToYHvuCDNV7Lx
-        pFrqR/XmpuooYKBCo5qKe4HYrEfbJXSNsoyBM+EdHROf9yagdnBXd0LJqVjWI8LM0rVMHA
-        BvZ4gFQqMiT/KuChrLK+RKtka8BH+hkiv8nOnDcfXSSlnI100ku2eqiJ4YN1ZsB/Wp3Fnu
-        4YEZ8hkeO+72y2qf/3aY57uevBHgA43zZOhs6a8+bk43Hek5y+ZYDwmXnHDWYwghBUT5N7
-        UxMUEF8Q/Pn/wsHp+6gK/pBQ8fhjXTJ/1Xpf77ZRBHG6HoXRdy9Ipses2OaA+w==
-Date:   Tue, 12 Sep 2023 19:01:29 +0200
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>,
-        thomas.petazzoni@bootlin.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [RFC PATCH net-next 1/7] net: phy: introduce phy numbering and
- phy namespaces
-Message-ID: <20230912190129.21e65690@fedora>
-In-Reply-To: <63bd3a9c-dacd-47e3-a34c-6e2e6a304d6c@lunn.ch>
-References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
-        <20230907092407.647139-2-maxime.chevallier@bootlin.com>
-        <63bd3a9c-dacd-47e3-a34c-6e2e6a304d6c@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 12 Sep 2023 13:02:13 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7A031728;
+        Tue, 12 Sep 2023 10:02:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B803CC15;
+        Tue, 12 Sep 2023 10:02:45 -0700 (PDT)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 431A73F738;
+        Tue, 12 Sep 2023 10:02:03 -0700 (PDT)
+Message-ID: <3ad03f27-1f2b-a79f-130d-afb9e713fa70@arm.com>
+Date:   Tue, 12 Sep 2023 18:01:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC PATCH 30/32] KVM: arm64: Pass PSCI calls to userspace
+Content-Language: en-GB
+To:     Salil Mehta <salil.mehta@huawei.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Len Brown <lenb@kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20230203135043.409192-1-james.morse@arm.com>
+ <20230203135043.409192-31-james.morse@arm.com>
+ <7e182886f20044d09d5b269cb6224af7@huawei.com>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <7e182886f20044d09d5b269cb6224af7@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew,
+Hi Salil,
 
-On Tue, 12 Sep 2023 18:15:52 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> On Thu, Sep 07, 2023 at 11:23:59AM +0200, Maxime Chevallier wrote:
-> > Link topologies containing multiple network PHYs attached to the same
-> > net_device can be found when using a PHY as a media converter for use
-> > with an SFP connector, on which an SFP transceiver containing a PHY can
-> > be used.
-> > 
-> > With the current model, the transceiver's PHY can't be used for
-> > operations such as cable testing, timestamping, macsec offload, etc.
-> > 
-> > The reason being that most of the logic for these configuration, coming
-> > from either ethtool netlink or ioctls tend to use netdev->phydev, which
-> > in multi-phy systems will reference the PHY closest to the MAC.
-> > 
-> > Introduce a numbering scheme allowing to enumerate PHY devices that
-> > belong to any netdev, which can in turn allow userspace to take more
-> > precise decisions with regard to each PHY's configuration.  
+On 23/05/2023 10:32, Salil Mehta wrote:
+>> From: James Morse <james.morse@arm.com>
+>> Sent: Friday, February 3, 2023 1:51 PM
+>> To: linux-pm@vger.kernel.org; loongarch@lists.linux.dev;
+>> kvmarm@lists.linux.dev; kvm@vger.kernel.org; linux-acpi@vger.kernel.org;
+>> linux-arch@vger.kernel.org; linux-ia64@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+>> x86@kernel.org
 > 
-> I think we need more than a number. Topology needs to be a core
-> concept here, otherwise how is the user supposed to know which PHY to
-> use cable test on, etc.
+> [...]
 > 
-> However, it is not a simple problem. An SFP PHY should be the last in
-> a chain. So you can infer something from that. When we start adding
-> MII muxes, they will need to be part of the modal.
+> 
+>>
+>> When the KVM_CAP_ARM_PSCI_TO_USER capability is available, userspace can
+>> request to handle PSCI calls.
+>>
+>> This is required for virtual CPU hotplug to allow the VMM to enforce the
+>> online/offline policy it has advertised via ACPI. By managing PSCI in
+>> user-space, the VMM is able to return PSCI_DENIED when the guest attempts
+>> to bring a disabled vCPU online.
+>> Without this, the VMM is only able to not-run the vCPU, the kernel will
+>> have already returned PSCI_SUCCESS to the guest. This results in
+>> timeouts during boot as the OS must wait for the secondary vCPU.
+>>
+>> SMCCC probe requires PSCI v1.x. If userspace only implements PSCI v0.2,
+>> the guest won't query SMCCC support through PSCI and won't use the
+>> spectre workarounds. We could hijack PSCI_VERSION and pretend to support
+>> v1.0 if userspace does not, then handle all v1.0 calls ourselves
+>> (including guessing the PSCI feature set implemented by the guest), but
+>> that seems unnecessary. After all the API already allows userspace to
+>> force a version lower than v1.0 using the firmware pseudo-registers.
+>>
+>> The KVM_REG_ARM_PSCI_VERSION pseudo-register currently resets to either
+>> v0.1 if userspace doesn't set KVM_ARM_VCPU_PSCI_0_2, or
+>> KVM_ARM_PSCI_LATEST (1.0).
 
-You raise a good point, we need to set a cursor on the level of detail
-we want to have to describe the topology indeed.
+> I just saw the latest PSCI standard issue (Mar 2023 E Non-Confidential
+> PSCI 1.2 issue E) and it contains the DENIED return value for the CPU_ON. 
+> 
+> Should we *explicitly* check for PSCI 1.2 support before allowing vCPU
+> Hot plug support? For this we would need KVM changes.
 
-I do have a patch that adds a notion of topology by keeping track of
-the upstream device of each link component (either the ethernet
-controller, another PHY, a mux, and SFP cage), but I got carried away
-trying to find the correct granularity.
+The VMM should certainly check which version of PSCI it supports, to make sure it doesn't
+return an error code that the spec says that version of PSCI doesn't use.
 
-For example, say we have a PCS with a dedicated driver in the chain,
-should it be part of the topology ? or do we stick to MAC, PHY, MUX,
-SFP ?
+Moving the PSCI support to the VMM is a pre-requisite for supporting this mechanism,
+otherwise KVM will allow the CPUs to come online immediately.
 
-To address the topology and more specifically cable-testing, I relied
-on adding support for a phy_port, that would represent front-facing
-ports, each PHY would have zero, one or more phy_ports, and from
-userspace perspective, we would let user pick which port to use, then
-have kernel-side logic to either deal with PHYs that have 2 ports, or
-an actual mii mux with two single-port PHYs.
 
-All in all for cable-testing, this solves the problem, as we could
-include a way for users to know which PHY is attached to a port, and
-therefore users could know which PHY is the outermost one.
+Thanks,
 
-However, it's not sufficient for things like timestamping. I think you
-mentionned in another thread that there can be up to 7 devices that
-could do the timestamping, and here it could be interesting to know
-which is where, so that user can for example pick a PHY that has a
-precise timestamping unit but that is also close-enough to the physical
-port.
-
-In that case, I will include what I have for topology description in
-the next RFC.
-
-Thanks for the insightful feedback,
-
-Maxime
-
->     Andrew
-
+James
