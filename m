@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452C479C7AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99B279C7AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjILHGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        id S231377AbjILHHH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 03:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjILHGl (ORCPT
+        with ESMTP id S230394AbjILHHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:06:41 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A80C10EC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:06:35 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d80211e8df8so3546017276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694502394; x=1695107194; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FzLy3CeHuyStEoML6KUoaK0mtulfqNSCOCfn1i2FJJI=;
-        b=yRHqtYzBLQjgJuWE9K4sQopizatvQBSN4fNM08BcmBRCXYMVDF6BY4gKKgEjbH+YRu
-         wsSLsdJigci7K5o5uqSflL1dXiBqXfajOy70GYnDh4LhVkSEbwoTMC31WkGUm8EzNs4Z
-         hazGAxXQ6UCiYR8tesQJ0Mo6ECDWqYSe7KBQKh13ZAs8ZgFP3XOjPqSMA4jxTg5BfF+S
-         DTfmKL76qHXR6U4t2zuiWyTzZpwohgh/21wGFnmGpCxrtOm3tSd/XaM4U+cSrqs8fb5F
-         vvhs8y7XcxRHDdlgemgUCNeZgKNW8CTBcm/qSgHTtmFNow6XGlipSHfmjmRe/tyNB2Hg
-         BwGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694502394; x=1695107194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FzLy3CeHuyStEoML6KUoaK0mtulfqNSCOCfn1i2FJJI=;
-        b=RbOi51lZGzqhvWSO3Y/FlUH1KOBg5uXpKiOGnvrsYJ3fAwbfTNPIx3dSr+3x229oqs
-         50Gz4N63HPesMsyG37VHEWXUGY3CBamtsaoESFqycCha6p9Z3NzvYA7GDEeIMh8GMgk/
-         6kmhGFcL6RBPYlel6FzsC8OO3phi4g6LFukKiHzVUj9qFBRRU1s8QmPzXqnqdUL8gCNP
-         Bt4Xz+R7hTpK2TTFpwoVBx8Ol/SQnHm/LZQyE5XVSr5IcYhaUHNYe7u2PXwikVnoB1Qn
-         M4D65Vlc+8YPiMiUlWLipdOQOD/j3UpoQHM5kY7hr6uEhnSsmDKNpiN0jDUaySiZNc+5
-         Qd4g==
-X-Gm-Message-State: AOJu0Yyq97OCUCowz72ilgqf2Yg4IoBNHpb9myDn16vafsJCP0NYPZLq
-        B4IjcniHKxfNLdBGS6T9KhAD5IawCOYfqv1BroJDFJ6myA1NB4mU
-X-Google-Smtp-Source: AGHT+IFqwoCb2FlczC/jSfpRBfdCYvJDufpy2nX78o6xucJlsetiHtnY5ED7GaRC6DZThDKLINyW0KpFkVXeS7DJZzs=
-X-Received: by 2002:a5b:709:0:b0:d80:68d1:b826 with SMTP id
- g9-20020a5b0709000000b00d8068d1b826mr7109521ybq.6.1694502394406; Tue, 12 Sep
- 2023 00:06:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230829123524.17291-1-zhuyinbo@loongson.cn> <20230829123524.17291-3-zhuyinbo@loongson.cn>
-In-Reply-To: <20230829123524.17291-3-zhuyinbo@loongson.cn>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 Sep 2023 09:06:23 +0200
-Message-ID: <CACRpkdYrePd+m_ZoppG_XKVQEcgzom31pXhKHisCsFr=9O2NPg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] gpio: loongson: add more gpio chip support
-To:     Yinbo Zhu <zhuyinbo@loongson.cn>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn
+        Tue, 12 Sep 2023 03:07:06 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F45AE79
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:07:02 -0700 (PDT)
+X-UUID: 4c5f962676df41fd88c33b35345abea5-20230912
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:99d3588d-76c7-47f3-8d5b-9077c3b64bd4,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-4
+X-CID-INFO: VERSION:1.1.31,REQID:99d3588d-76c7-47f3-8d5b-9077c3b64bd4,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+        elease,TS:-4
+X-CID-META: VersionHash:0ad78a4,CLOUDID:17ad98ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:2309121506533HBDAXDZ,BulkQuantity:0,Recheck:0,SF:19|43|64|38|24|17|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: 4c5f962676df41fd88c33b35345abea5-20230912
+X-User: zhouzongmin@kylinos.cn
+Received: from [172.20.12.156] [(111.48.58.12)] by mailgw
+        (envelope-from <zhouzongmin@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1882865759; Tue, 12 Sep 2023 15:06:52 +0800
+Message-ID: <0fce832b81d676da8bde28bc7acf4d56932f244d.camel@kylinos.cn>
+Subject: Re: [RESEND PATCH] drm/qxl: prevent memory leak
+From:   zongmin zhou <zhouzongmin@kylinos.cn>
+To:     airlied@redhat.com, kraxel@redhat.com, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 12 Sep 2023 15:06:35 +0800
+In-Reply-To: <20230801025309.4049813-1-zhouzongmin@kylinos.cn>
+References: <20230425014543.3448839-1-zhouzongmin@kylinos.cn>
+         <20230801025309.4049813-1-zhouzongmin@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 2:35=E2=80=AFPM Yinbo Zhu <zhuyinbo@loongson.cn> wr=
-ote:
+On Tue, 2023-08-01 at 10:53 +0800, Zongmin Zhou wrote:
+> The allocated memory for qdev->dumb_heads should be released
+> in qxl_destroy_monitors_object before qxl suspend.
+> otherwise,qxl_create_monitors_object will be called to
+> reallocate memory for qdev->dumb_heads after qxl resume,
+> it will cause memory leak.
+> 
+> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
+> ---
+>  drivers/gpu/drm/qxl/qxl_display.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/qxl/qxl_display.c
+> b/drivers/gpu/drm/qxl/qxl_display.c
+> index 6492a70e3c39..404b0483bb7c 100644
+> --- a/drivers/gpu/drm/qxl/qxl_display.c
+> +++ b/drivers/gpu/drm/qxl/qxl_display.c
+> @@ -1229,6 +1229,9 @@ int qxl_destroy_monitors_object(struct
+> qxl_device *qdev)
+>         if (!qdev->monitors_config_bo)
+>                 return 0;
+>  
+> +       kfree(qdev->dumb_heads);
+> +       qdev->dumb_heads = NULL;
+> +
+>         qdev->monitors_config = NULL;
+>         qdev->ram_header->monitors_config = 0;
+>  
+Friendly ping...
 
-> This patch was to add loongson 2k0500, 2k2000 and 3a5000 gpio chip
-> driver support.
->
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+Hello, I sent this patch a few months ago.
+Could you please help me review it as well and see if there are any
+issues?
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+I'm looking forward to your reply.
+Thanks
