@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B390C79D45E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3272D79D45F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbjILPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55328 "EHLO
+        id S236273AbjILPHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236229AbjILPHV (ORCPT
+        with ESMTP id S236207AbjILPHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Sep 2023 11:07:21 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4053A10DD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC4A10DC
         for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 08:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1694531234; x=1726067234;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IiHm5qqjR8NdKDjufrZuWY5WFVXJIdbQ2oc8nS645Xw=;
-  b=DQoFv4sYqfZSTQ1FYxNoV5Qt9QUzcN3zAD9pJz1OkVoyCsJFgqy2c5Tw
-   1Org4vprZc0+MoO6+J+jmCm9EXWksb3khuFpjoqWh/OuZ+s/2Kgst97kh
-   v8lySsEsw9AqRnlGc1NdmqX3d2DJYXdMA0yIHWsgeh+fuRr/E9oXn0h8I
-   3TVtuZyQjHvctOL721+ltbaXNyLUgRNGMaIlH+wn205lyDDWBCZIAYr7J
-   Ff5r1c4nGOK4IU/WjcVIo6IMiddn/L7tXpMdOBO0tpB/UzzBbJMR+xxGY
-   7VYL/DAQeG4f+hmeZdNY5bx5e9pKNBmwD24k5ZzWC76UZiGJdaqmlddlg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409356431"
+  bh=W3PADM1uFv8tnSLMvvhvYaZtPehE/6YKdLW1n09TF9U=;
+  b=Vv4fQh649KrhtEOhWDDiluxQ0RQ9PNd5alaPppENkXKbD5RwjbUW6LX5
+   tId8+i2o4KaYVtfD3oYpWalvJzIUiTzlU5iX18fOeCj39c2RtXxyii1yc
+   TB+idrCJ5iDf24Tp1ha7Gjchx+xzVP+r1q7i7TMIYPJNuF7MwlQIXnjov
+   BwrTXE4IS37O4sia6xq7tVL9Mkm4KW445hem7DAQxwNTxXLJ/G9TacbHQ
+   u4BzCK7JpVhxDFANvni7wK4ekhO6v7KNqWVF094Z4cMjTuum3/xpvKQ+f
+   c7atHFUsAcgvONPiaRu4XkfKqv4DVZa++F7SEYXMdDd4rrDUF7p9gr989
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="409356435"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="409356431"
+   d="scan'208";a="409356435"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 08:05:57 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="858836455"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="858836453"
 X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="858836455"
+   d="scan'208";a="858836453"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga002.fm.intel.com with ESMTP; 12 Sep 2023 08:05:55 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 6CF9D1A7; Tue, 12 Sep 2023 18:05:54 +0300 (EEST)
+        id 787C8BC0; Tue, 12 Sep 2023 18:05:54 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org
 Cc:     Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v1 2/6] params: Introduce the param_unknown_fn type
-Date:   Tue, 12 Sep 2023 18:05:47 +0300
-Message-Id: <20230912150551.401537-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/6] params: Do not go over the limit when getting the string length
+Date:   Tue, 12 Sep 2023 18:05:48 +0300
+Message-Id: <20230912150551.401537-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
 References: <20230912150551.401537-1-andriy.shevchenko@linux.intel.com>
@@ -57,65 +57,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new type for the callback to parse an unknown argument.
-This unifies function prototypes which takes that as a parameter.
+We can use strnlen() even on early stages and it prevents from
+going over the string boundaries in case it's already too long.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/moduleparam.h | 6 +++---
- kernel/params.c             | 8 ++------
- 2 files changed, 5 insertions(+), 9 deletions(-)
+ kernel/params.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-index 962cd41a2cb5..3800d1e2a3ab 100644
---- a/include/linux/moduleparam.h
-+++ b/include/linux/moduleparam.h
-@@ -381,6 +381,8 @@ extern bool parameq(const char *name1, const char *name2);
-  */
- extern bool parameqn(const char *name1, const char *name2, size_t n);
- 
-+typedef int (*parse_unknown_fn)(char *param, char *val, const char *doing, void *arg);
-+
- /* Called on module insert or kernel boot */
- extern char *parse_args(const char *name,
- 		      char *args,
-@@ -388,9 +390,7 @@ extern char *parse_args(const char *name,
- 		      unsigned num,
- 		      s16 level_min,
- 		      s16 level_max,
--		      void *arg,
--		      int (*unknown)(char *param, char *val,
--				     const char *doing, void *arg));
-+		      void *arg, parse_unknown_fn unknown);
- 
- /* Called by module remove. */
- #ifdef CONFIG_SYSFS
 diff --git a/kernel/params.c b/kernel/params.c
-index 3efe6b98a600..fb594132ffc7 100644
+index fb594132ffc7..930a5dc2f004 100644
 --- a/kernel/params.c
 +++ b/kernel/params.c
-@@ -120,9 +120,7 @@ static int parse_one(char *param,
- 		     unsigned num_params,
- 		     s16 min_level,
- 		     s16 max_level,
--		     void *arg,
--		     int (*handle_unknown)(char *param, char *val,
--				     const char *doing, void *arg))
-+		     void *arg, parse_unknown_fn handle_unknown)
- {
- 	unsigned int i;
- 	int err;
-@@ -165,9 +163,7 @@ char *parse_args(const char *doing,
- 		 unsigned num,
- 		 s16 min_level,
- 		 s16 max_level,
--		 void *arg,
--		 int (*unknown)(char *param, char *val,
--				const char *doing, void *arg))
-+		 void *arg, parse_unknown_fn unknown)
- {
- 	char *param, *val, *err = NULL;
+@@ -259,7 +259,10 @@ EXPORT_SYMBOL_GPL(param_set_uint_minmax);
  
+ int param_set_charp(const char *val, const struct kernel_param *kp)
+ {
+-	if (strlen(val) > 1024) {
++	size_t len, maxlen = 1024;
++
++	len = strnlen(val, maxlen + 1);
++	if (len == maxlen + 1) {
+ 		pr_err("%s: string parameter too long\n", kp->name);
+ 		return -ENOSPC;
+ 	}
+@@ -269,7 +272,7 @@ int param_set_charp(const char *val, const struct kernel_param *kp)
+ 	/* This is a hack.  We can't kmalloc in early boot, and we
+ 	 * don't need to; this mangled commandline is preserved. */
+ 	if (slab_is_available()) {
+-		*(char **)kp->arg = kmalloc_parameter(strlen(val)+1);
++		*(char **)kp->arg = kmalloc_parameter(len + 1);
+ 		if (!*(char **)kp->arg)
+ 			return -ENOMEM;
+ 		strcpy(*(char **)kp->arg, val);
+@@ -507,7 +510,7 @@ int param_set_copystring(const char *val, const struct kernel_param *kp)
+ {
+ 	const struct kparam_string *kps = kp->str;
+ 
+-	if (strlen(val)+1 > kps->maxlen) {
++	if (strnlen(val, kps->maxlen) == kps->maxlen) {
+ 		pr_err("%s: string doesn't fit in %u chars.\n",
+ 		       kp->name, kps->maxlen-1);
+ 		return -ENOSPC;
 -- 
 2.40.0.1.gaa8946217a0b
 
