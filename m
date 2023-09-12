@@ -2,118 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A54A79D59A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D7A79D5A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjILQCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
+        id S236219AbjILQCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236452AbjILQCS (ORCPT
+        with ESMTP id S236407AbjILQCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:02:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64ADE10EB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=v/ufbF5AE1kJWZUkhHfxUWS38u59OErgU7vO9+D/zZc=; b=BkC0Kvx3yCVD5ZX3c+tL3s/w4j
-        F0gMhWxTtbpUS8TtfyTsvUMqIpvBUekNvF10dTvQ6HT/Gwap/UWRoDqN0NlX9IQiZVrS13KuvCvQa
-        CLRo1Gf1M5SYYEKkfYGgHtOfee0zp6nGabFsd8MeRk0KqqHZAqiWa93H8+PabHODYDFuhFTSvF3BI
-        GVcr0FxKWQJjLx/yyofeMxP0aixTeqxcuT3m5wPjGmLJwDx7kUFm8nd4rewwTc+TY0lO9l4+T2lWB
-        p2Z/TAiEwyIzUOt/eK3LqVgbgxUZD0vdFEGke8NWqFa2W++o0zHPkq0/zckdogDow2xMU0Kz06+wo
-        V4ZMsk7w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qg5pv-008S9t-Vc; Tue, 12 Sep 2023 16:02:00 +0000
-Date:   Tue, 12 Sep 2023 17:01:59 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        "Sang, Oliver" <oliver.sang@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        lkp <lkp@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Yin, Fengwei" <fengwei.yin@intel.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [linus:master] [shmem]  a2e459555c:  aim9.disk_src.ops_per_sec
- -19.0% regression
-Message-ID: <ZQCLdzmtVcjxZWXt@casper.infradead.org>
-References: <202309081306.3ecb3734-oliver.sang@intel.com>
- <C85F44FD-BC7D-421B-9585-C5FDFAEA9400@oracle.com>
- <ZP++GV9WURg1GhoY@xsang-OptiPlex-9020>
- <84984801-F885-4739-B4B3-DE8DE4ABE378@oracle.com>
- <ZQCAYpqu+5iD0rhh@feng-clx>
+        Tue, 12 Sep 2023 12:02:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120221704;
+        Tue, 12 Sep 2023 09:02:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EED07C433C7;
+        Tue, 12 Sep 2023 16:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694534548;
+        bh=9M8FAOyXY6Aot0630XJdXidY28/lh6QhrDiuvkNZzUk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTRmRxun5LSp7iD3J1UyiqTLEzKIXAjpktZfJY1IV7t/Nqkr7KUnG+FcGp7/J8h5I
+         W9kNGIpicuXD9+Mp1EzuTLhBo3wb+bfOGjzzPshR7jbqsRMZrsHGupcXimUgFipkcX
+         slpZknB/KUJ8fE1QzY4GwpX3Xg7P5UfNWgG3OEQWhij5CfDumDPvtllKyFKDOly3Ys
+         IY1UBaOXU+Yg50OnuI8qP5mTV1HMi+dgmqmkLRG4Cto1zSzERyNsc+OC4OA33cOTYL
+         tv8QJBADr2Hd4xH2+FVOTb/r+dUSucvWgYcpkYKAbfu+HJ9+C8AJr6YwtJnUWtSsG5
+         iGr3G1/U1aqKQ==
+Received: (nullmailer pid 864509 invoked by uid 1000);
+        Tue, 12 Sep 2023 16:02:23 -0000
+Date:   Tue, 12 Sep 2023 11:02:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     ulf.hansson@linaro.org, arnd@arndb.de, gregkh@linuxfoundation.org,
+        wsa+renesas@sang-engineering.com, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, linux-renesas-soc@vger.kernel.org,
+        robh+dt@kernel.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        nfraprado@collabora.com, krzysztof.kozlowski+dt@linaro.org,
+        linux-mmc@vger.kernel.org, neil.armstrong@linaro.org,
+        rafal@milecki.pl, linux-arm-kernel@lists.infradead.org,
+        conor+dt@kernel.org, mturquette@baylibre.com,
+        biju.das.jz@bp.renesas.com, linux-serial@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        magnus.damm@gmail.com, sboyd@kernel.org, quic_bjorande@quicinc.com,
+        catalin.marinas@arm.com, konrad.dybcio@linaro.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        will@kernel.org, geert+renesas@glider.be, jirislaby@kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 20/37] dt-bindings: clock: renesas,rzg2l-cpg: document
+ RZ/G3S SoC
+Message-ID: <169453454306.864438.17337946061239259164.robh@kernel.org>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-21-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZQCAYpqu+5iD0rhh@feng-clx>
+In-Reply-To: <20230912045157.177966-21-claudiu.beznea.uj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:14:42PM +0800, Feng Tang wrote:
-> > Well that's the problem. Since I can't run the reproducer, there's
-> > nothing I can do to troubleshoot the problem myself.
+
+On Tue, 12 Sep 2023 07:51:40 +0300, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> We dug more into the perf and other profiling data from 0Day server
-> running this case, and it seems that the new simple_offset_add()
-> called by shmem_mknod() brings extra cost related with slab,
-> specifically the 'radix_tree_node', which cause the regression.
+> Add documentation for RZ/G3S CPG. RZ/G3S CPG module is almost identical
+> with the one available in RZ/G2{L, UL} the exception being some core
+> clocks as follows:
+> - SD clock is composed by a mux and a divider and the divider
+>   has some limitation (div = 1 cannot be set if mux rate is 800MHz).
+> - there are 3 SD clocks
+> - OCTA and TSU clocks are specific to RZ/G3S
+> - PLL1/4/6 are specific to RZ/G3S with its own computation formula
+> Even with this RZ/G3S could use the same bindings as RZ/G2L.
 > 
-> Here is some slabinfo diff for commit a2e459555c5f and its parent:
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> 	23a31d87645c6527 a2e459555c5f9da3e619b7e47a6 
-> 	---------------- --------------------------- 
->  
->      26363           +40.2%      36956        slabinfo.radix_tree_node.active_objs
->     941.00           +40.4%       1321        slabinfo.radix_tree_node.active_slabs
->      26363           +40.3%      37001        slabinfo.radix_tree_node.num_objs
->     941.00           +40.4%       1321        slabinfo.radix_tree_node.num_slabs
 
-I can't find the benchmark source, but my suspicion is that this
-creates and deletes a lot of files in a directory.  The 'stable
-directory offsets' series uses xa_alloc_cyclic(), so we'll end up
-with a very sparse radix tree.  ie it'll look something like this:
-
-0 - "."
-1 - ".."
-6 - "d"
-27 - "y"
-4000 - "fzz"
-65537 - "czzz"
-643289767 - "bzzzzzz"
-
-(i didn't work out the names precisely here, but this is approximately
-what you'd get if you create files a-z, aa-zz, aaa-zzz, etc and delete
-almost all of them)
-
-The radix tree does not handle this well.  It'll allocate one node for:
-
-entries 0-63 (covers the first 4 entries)
-entries 0-4095
-entries 3968-4031 (the first 5)
-entries 0-262143
-entries 65536-69631
-entries 65536-65599 (the first 6)
-entries 0-16777215
-entries 0-1073741823
-entries 637534208-654311423
-entries 643039232-643301375
-entries 643289088-643293183
-entries 643289728-643289791 (all 7)
-
-That ends up being 12 nodes (you get 7 nodes per page) to store 7
-pointers.  Admittedly to get here, you have to do 643289765 creations
-and nearly as many deletions, so are we going to see it in a
-non-benchmark situation?
-
-The maple tree is more resilient against this kind of shenanigan, but
-we're not there in terms of supporting the kind of allocation you
-want.  For this kind of allocation pattern, you'd get all 7 pointers
-in a single 256-byte node.
+Acked-by: Rob Herring <robh@kernel.org>
 
