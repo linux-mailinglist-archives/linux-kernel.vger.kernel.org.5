@@ -2,172 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CEBB79C71E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D243A79C726
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjILGoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
+        id S230361AbjILGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjILGoW (ORCPT
+        with ESMTP id S230254AbjILGre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:44:22 -0400
-Received: from soltyk.jannau.net (soltyk.jannau.net [144.76.91.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF0CAF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:44:17 -0700 (PDT)
-Received: by soltyk.jannau.net (Postfix, from userid 1000)
-        id D9EEF270487; Tue, 12 Sep 2023 08:44:15 +0200 (CEST)
-Date:   Tue, 12 Sep 2023 08:44:15 +0200
-From:   Janne Grunau <j@jannau.net>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev
-Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
-Message-ID: <ZQAIv3KchAMsXgIr@jannau.net>
-References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
- <0b6ad379-049a-5152-12e5-77c62ffc4541@wanadoo.fr>
+        Tue, 12 Sep 2023 02:47:34 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3827E76;
+        Mon, 11 Sep 2023 23:47:30 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C6N6N2018219;
+        Tue, 12 Sep 2023 06:47:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sds1xdU1dqNFPapFsLerVH3F0XspPNYXUwFsvL5xkNs=;
+ b=fEuQWR4R/JEZzm0yCFcGAVzheHwMj0kMUHsp8VYq3dklyp5muCDu4OLBgg6aaEVSAxdv
+ QR3t6EWg47R3p9cDwG9FT9X770CaoMYtHKM6g1NTby/yhfYU1zZ6oUOKx7jQp56yjA4E
+ aZs1d9xn63gJEW4Fxe0LT98CPslJUOPFC4zFHDVyl0YIrn1E6GgxxrameX0QL+uLaAlo
+ Gm4AHCYtU96TvMuckbHvCwuEhygCKZJ086fA8wohEn3RTn0+kNMrHyMJgoKUROgrqwuC
+ CyyR+7DH1hW4z2rrHVZk+Y/SA0C+45Czkz0vJCSAfhYEx5auj1DAvulmZkLiH/cjpqNj xQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xkjtqmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 06:47:21 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C6kvm6028858
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 06:46:57 GMT
+Received: from [10.233.19.96] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 11 Sep
+ 2023 23:46:49 -0700
+Message-ID: <0e69140a-bd2f-16b1-ea34-f2d86ecfc414@quicinc.com>
+Date:   Tue, 12 Sep 2023 14:46:27 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0b6ad379-049a-5152-12e5-77c62ffc4541@wanadoo.fr>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RESEND PATCH v6 0/3] Add support for vibrator in multiple PMICs
+To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
+References: <20230828053205.218950-1-quic_fenglinw@quicinc.com>
+Content-Language: en-US
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <20230828053205.218950-1-quic_fenglinw@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: V_HtDXT30fQNn7iVzwUwXdIKNnDSwBh2
+X-Proofpoint-ORIG-GUID: V_HtDXT30fQNn7iVzwUwXdIKNnDSwBh2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_04,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309120056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-10 22:16:05 +0200, Christophe JAILLET wrote:
-> Le 10/09/2023 à 18:39, Janne Grunau via B4 Relay a écrit :
-> > From: Janne Grunau <j@jannau.net>
-> > 
-> > Multiple power domains need to be handled explicitly in each driver. The
-> > driver core can not handle it automatically since it is not aware of
-> > power sequencing requirements the hardware might have. This is not a
-> > problem for simpledrm since everything is expected to be powered on by
-> > the bootloader. simpledrm has just ensure it remains powered on during
-> > its lifetime.
-> > This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
-> > systems. The HDMI output initialized by the bootloader requires keeping
-> > the display controller and a DP phy power domain on.
-> > 
-> > Signed-off-by: Janne Grunau <j@jannau.net>
-> > ---
-> >   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 106 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
-> > index ff86ba1ae1b8..efedede57d42 100644
-> > --- a/drivers/gpu/drm/tiny/simpledrm.c
-> > +++ b/drivers/gpu/drm/tiny/simpledrm.c
-> > @@ -6,6 +6,7 @@
-> >   #include <linux/of_address.h>
-> >   #include <linux/platform_data/simplefb.h>
-> >   #include <linux/platform_device.h>
-> > +#include <linux/pm_domain.h>
-> >   #include <linux/regulator/consumer.h>
-> >   #include <drm/drm_aperture.h>
-> > @@ -227,6 +228,12 @@ struct simpledrm_device {
-> >   	unsigned int regulator_count;
-> >   	struct regulator **regulators;
-> >   #endif
-> > +	/* power-domains */
-> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> > +	int pwr_dom_count;
-> > +	struct device **pwr_dom_devs;
-> > +	struct device_link **pwr_dom_links;
-> > +#endif
-> >   	/* simplefb settings */
-> >   	struct drm_display_mode mode;
-> > @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
-> >   }
-> >   #endif
-> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
-> > +/*
-> > + * Generic power domain handling code.
-> > + *
-> > + * Here we handle the power-domains properties of our "simple-framebuffer"
-> > + * dt node. This is only necessary if there is more than one power-domain.
-> > + * A single power-domains is handled automatically by the driver core. Multiple
-> > + * power-domains have to be handled by drivers since the driver core can't know
-> > + * the correct power sequencing. Power sequencing is not an issue for simpledrm
-> > + * since the bootloader has put the power domains already in the correct state.
-> > + * simpledrm has only to ensure they remain active for its lifetime.
-> > + *
-> > + * When the driver unloads, we detach from the power-domains.
-> > + *
-> > + * We only complain about errors here, no action is taken as the most likely
-> > + * error can only happen due to a mismatch between the bootloader which set
-> > + * up the "simple-framebuffer" dt node, and the PM domain providers in the
-> > + * device tree. Chances are that there are no adverse effects, and if there are,
-> > + * a clean teardown of the fb probe will not help us much either. So just
-> > + * complain and carry on, and hope that the user actually gets a working fb at
-> > + * the end of things.
-> > + */
-> > +static void simpledrm_device_detach_genpd(void *res)
-> > +{
-> > +	int i;
-> > +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
-> > +
-> > +
-> > +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
-> > +	if (sdev->pwr_dom_count <= 1)
-> > +		return;
-> > +
-> > +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
-> > +		if (!sdev->pwr_dom_links[i])
-> > +			device_link_del(sdev->pwr_dom_links[i]);
-> > +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
-> > +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
-> > +	}
-> > +}
-> > +
-> > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
-> > +{
-> > +	struct device *dev = sdev->dev.dev;
-> > +	int i;
-> > +
-> > +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
-> > +							 "#power-domain-cells");
-> > +	/*
-> > +	 * Single power-domain devices are handled by driver core nothing to do
-> > +	 * here. The same for device nodes without "power-domains" property.
-> > +	 */
-> > +	if (sdev->pwr_dom_count <= 1)
-> > +		return 0;
-> > +
-> > +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
-> > +					       sizeof(*sdev->pwr_dom_devs),
-> > +					       GFP_KERNEL);
-> > +	if (!sdev->pwr_dom_devs)
-> > +		return -ENOMEM;
-> > +
-> > +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
-> > +						sizeof(*sdev->pwr_dom_links),
-> > +						GFP_KERNEL);
-> > +	if (!sdev->pwr_dom_links)
-> > +		return -ENOMEM;
-> > +
-> > +	for (i = 0; i < sdev->pwr_dom_count; i++) {
-> > +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
-> > +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
-> > +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
-> > +			if (ret == -EPROBE_DEFER) {
-> > +				simpledrm_device_detach_genpd(sdev);
-> > +				return PTR_ERR(sdev->pwr_dom_devs[i]);
-> > +			}
-> > +			drm_err(&sdev->dev,
-> > +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
-> > +		}
-> > +
-> 
-> sdev->pwr_dom_devs[i] can be an ERR_PTR here.
-> Maybe a break or a continue missing after drm_err() above?
-
-yes, a continue is missing, added, locally for v2.
-
+Can anyone help to review the driver changes?
 thanks
 
-Janne
+Fenglin Wu
+
+On 8/28/2023 1:32 PM, Fenglin Wu wrote:
+> Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+> It is very similar to the vibrator module inside PM8916 which is supported in
+> pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+> and the register base offset in each PMIC is different.
+> 
+> Changes in v6:
+>    1. Add "qcom,pmi632-vib" as a standalone compatible string.
+> 
+> Changes in v5:
+>    1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
+>       and use device specific compatible strings only.
+> 
+> Changes in v4:
+>    1. Update to use the combination of the HW type and register offset
+>       as the constant match data, the register base address defined in
+>       'reg' property will be added when accessing SPMI registers using
+>       regmap APIs.
+>    2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
+> 
+> Changes in v3:
+>    1. Refactor the driver to support different type of the vibrators with
+>      better flexibility by introducing the HW type with corresponding
+>      register fields definitions.
+>    2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
+>      strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
+>      spmi-vib-gen2.
+> 
+> Changes in v2:
+>    Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
+> 
+> 
+> Fenglin Wu (3):
+>    input: pm8xxx-vib: refactor to easily support new SPMI vibrator
+>    dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+>    input: pm8xxx-vibrator: add new SPMI vibrator support
+> 
+>   .../bindings/input/qcom,pm8xxx-vib.yaml       |  16 +-
+>   drivers/input/misc/pm8xxx-vibrator.c          | 171 ++++++++++++------
+>   2 files changed, 132 insertions(+), 55 deletions(-)
+> 
