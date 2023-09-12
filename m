@@ -2,190 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA55579DBF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E191879DBF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 00:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237778AbjILWg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 18:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
+        id S237783AbjILWj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 18:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjILWgz (ORCPT
+        with ESMTP id S234023AbjILWj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 18:36:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CB410E6;
-        Tue, 12 Sep 2023 15:36:51 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CMU7iL030289;
-        Tue, 12 Sep 2023 22:36:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UaTnHeO1N17XMeP3R8HyybsrVR9D1k53M3M4sUTm4Cs=;
- b=NyRI8BCeCIIu/1F0zV7YlHJjyGAQivkH0NXxeTdnSLwBe38zBn5fzOjqiGAUlpkc/vL1
- weq8UN9VWiGUyGFZNNukANOgR8o2Rqpe/Pg2FkqQToMtENMrsoxCEh6tvnmcf8wpXKZW
- lZ8sGmYK2x5IzcrauB35UW9zIm7I6O+9X8GX51kwSp/87mRQR0rNEGY06+C9+uaWB4RN
- VlSlubUe10/XgdEh/FSVKdtbzQm/PDVUOrsuNzarR3/HtI/aHYbt17/rqdjtT/ecOlP6
- AEn+ekyZcWb53ChfJQidBV3PYh38OlFQaOxkdqaTqq8qXlKDMPWpFUumqp51sZx3qMKe dQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7q85t2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 22:36:09 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CMa83Y032531
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 22:36:08 GMT
-Received: from [10.110.43.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 15:36:08 -0700
-Message-ID: <59d28227-d37f-7131-6d1c-ec55e67d65b7@quicinc.com>
-Date:   Tue, 12 Sep 2023 15:36:07 -0700
+        Tue, 12 Sep 2023 18:39:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3ADD110E6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:39:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694558347;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hw4dz052UmhVfzEQW7+Uflu1VFGZC1UKKB7LwcrU6Xs=;
+        b=P86c/NEmdqlRXNvidILtx+bZU6CFOpQbGv07TuPVpdIL5kQkr+ah8N9o4FOFNnSjIN63eD
+        GtadjLZl/7sSMppMuTSwjY+XYtHxt+Cv2Z+xtT19WGqpqVbV18PQwsXS4qvbpALQSwHQPF
+        R+g71Tuvr/FuWWbp5lVKjZqvTMbZwxE=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-500-YHekUIaBOPmT8Nn4TUypKA-1; Tue, 12 Sep 2023 18:39:06 -0400
+X-MC-Unique: YHekUIaBOPmT8Nn4TUypKA-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bf703dd21fso81587765ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 15:39:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694558345; x=1695163145;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hw4dz052UmhVfzEQW7+Uflu1VFGZC1UKKB7LwcrU6Xs=;
+        b=JRss7vdJs1Nux2wxhrvDQF8ItLyuaB7V/yPbiMJqGC7PYH+jS0RVle42PLU/Ga74Om
+         ssAUOZVyO+ECR8RGKAGsEQ0CUbKQPET4cBpyqxTFKy6haaZzhimjth391JdOghPDNTOK
+         Gev4XfFwI21uhjeNSRgoTrJLqJ5hhzWPcKh7IBXks34Xa4PMSaUU/6lyx267smeqD0Tz
+         FcL0i36Zh7rLkmT+Axab8tuxnq8j7ExiCOaL45XCQdIUYMdY1B5nUS0el1A9YZtxmd8f
+         PNsPPqaB/CWmzg5aZIV6B3cz2LCV/WVi7c+96EaIoIalVRh+BvKGcqoBqbZgpj8B2RF3
+         ybsg==
+X-Gm-Message-State: AOJu0YwAh3ASLoRPn0Fok80ItL/A7uZH3kCmH2Bbrc66Y7V4FXMe3Piu
+        IGj5zWO299TmBfQFi1LEE/9pUaXtaZMEXmyjuQPH6aSLLtKUuZkgFYu63wsxVeDWN4Ts7+GVDSX
+        /RTvUjs7FRzBhDfBMSiYilm6p
+X-Received: by 2002:a17:903:41c4:b0:1c3:3cde:7b44 with SMTP id u4-20020a17090341c400b001c33cde7b44mr1269644ple.12.1694558344877;
+        Tue, 12 Sep 2023 15:39:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHJXfeCtpozu/i9MX/Nb9C9D8rRf3TwAOO4AoonFr0CYCLCqxvZy3HNtrsprY+cWVaejgiLRA==
+X-Received: by 2002:a17:903:41c4:b0:1c3:3cde:7b44 with SMTP id u4-20020a17090341c400b001c33cde7b44mr1269621ple.12.1694558344560;
+        Tue, 12 Sep 2023 15:39:04 -0700 (PDT)
+Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
+        by smtp.gmail.com with ESMTPSA id c10-20020a170902aa4a00b001c0af36dd64sm8964168plr.162.2023.09.12.15.38.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 15:39:03 -0700 (PDT)
+Message-ID: <5a5fb237-c28b-d6b5-0425-8f8f0fe1ac79@redhat.com>
+Date:   Wed, 13 Sep 2023 08:38:51 +1000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v5 11/32] sound: usb: card: Introduce USB SND platform op
- callbacks
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH 00/32] ACPI/arm64: add support for virtual cpuhotplug
 Content-Language: en-US
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <quic_jackp@quicinc.com>, <quic_plai@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
- <20230829210657.9904-12-quic_wcheng@quicinc.com>
- <875y4matbc.wl-tiwai@suse.de>
- <c32e6983-4641-1849-cb25-d29da27bff15@quicinc.com>
-In-Reply-To: <c32e6983-4641-1849-cb25-d29da27bff15@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: pwjM0j_5nv6oOWpimdf5CMUCILqAYhjI
-X-Proofpoint-ORIG-GUID: pwjM0j_5nv6oOWpimdf5CMUCILqAYhjI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_22,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 spamscore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120192
+To:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, kvmarm@lists.linux.dev,
+        kvm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        x86@kernel.org
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Len Brown <lenb@kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20230203135043.409192-1-james.morse@arm.com>
+ <41dd71ab-a6a7-fd93-73ec-64a6b0ca468e@redhat.com>
+ <1ca1fb8f-1dec-74a3-ee44-94609f6aba2c@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <1ca1fb8f-1dec-74a3-ee44-94609f6aba2c@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takashi,
 
-On 9/11/2023 10:57 AM, Wesley Cheng wrote:
-> Hi Takashi,
+Hi James,
+
+On 9/13/23 03:01, James Morse wrote:
+> On 29/03/2023 03:35, Gavin Shan wrote:
+>> On 2/3/23 9:50 PM, James Morse wrote:
 > 
-> On 9/7/2023 8:36 AM, Takashi Iwai wrote:
->> On Tue, 29 Aug 2023 23:06:36 +0200,
->> Wesley Cheng wrote:
+>>> If folk want to play along at home, you'll need a copy of Qemu that supports this.
+>>> https://github.com/salil-mehta/qemu.git
+>>> salil/virt-cpuhp-armv8/rfc-v1-port29092022.psci.present
 >>>
->>> Allow for different platforms to be notified on USB SND 
->>> connect/disconnect
->>> seqeunces.  This allows for platform USB SND modules to properly 
->>> initialize
->>> and populate internal structures with references to the USB SND chip
->>> device.
+>>> You'll need to fix the numbers of KVM_CAP_ARM_HVC_TO_USER and KVM_CAP_ARM_PSCI_TO_USER
+>>> to match your host kernel. Replace your '-smp' argument with something like:
+>>> | -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
 >>>
->>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->>> ---
->>>   sound/usb/card.c | 45 +++++++++++++++++++++++++++++++++++++++++++++
->>>   sound/usb/card.h |  9 +++++++++
->>>   2 files changed, 54 insertions(+)
+>>> then feed the following to the Qemu montior;
+>>> | (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+>>> | (qemu) device_del cpu1
 >>>
->>> diff --git a/sound/usb/card.c b/sound/usb/card.c
->>> index 1b2edc0fd2e9..067a1e82f4bf 100644
->>> --- a/sound/usb/card.c
->>> +++ b/sound/usb/card.c
->>> @@ -118,6 +118,34 @@ MODULE_PARM_DESC(skip_validation, "Skip unit 
->>> descriptor validation (default: no)
->>>   static DEFINE_MUTEX(register_mutex);
->>>   static struct snd_usb_audio *usb_chip[SNDRV_CARDS];
->>>   static struct usb_driver usb_audio_driver;
->>> +static struct snd_usb_platform_ops *platform_ops;
->>> +
->>> +int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops)
->>> +{
->>> +    int ret;
->>> +
->>> +    mutex_lock(&register_mutex);
->>> +    if (platform_ops) {
->>> +        ret = -EEXIST;
->>> +        goto out;
->>> +    }
->>> +
->>> +    platform_ops = ops;
->>> +out:
->>> +    mutex_unlock(&register_mutex);
->>> +    return 0;
->>> +}
->>> +EXPORT_SYMBOL_GPL(snd_usb_register_platform_ops);
->>
->> For adding this kind of API, please give the proper comment.
->> Especially this API is special and need a caution, to mention that it
->> can be used only for a single instance.
->>
->> Also, it should be mentioned that all callbacks are exclusive under
->> the global register_mutex.
->>
+>>>
+>>> This series is based on v6.2-rc3, and can be retrieved from:
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/ virtual_cpu_hotplug/rfc/v1
 > 
-> Thanks for taking the time to review.  Sure, I'll add some comments in 
-> these new APIs to document what they are used for and how they are 
-> protected and limited.
+>> I give it a try, but the hot-added CPU needs to be put into online
+>> state manually. I'm not sure if it's expected or not.
 > 
->>> @@ -910,7 +938,11 @@ static int usb_audio_probe(struct usb_interface 
->>> *intf,
->>>       chip->num_interfaces++;
->>>       usb_set_intfdata(intf, chip);
->>>       atomic_dec(&chip->active);
->>> +
->>> +    if (platform_ops && platform_ops->connect_cb)
->>> +        platform_ops->connect_cb(chip);
->>>       mutex_unlock(&register_mutex);
->>
->> One uncertain thing is the argument for connect_cb and disconnect_cb.
->> Those take snd_usb_audio object, but the callback gets called per
->> interface at each probe and disconnect.  How does the callee handle
->> multiple calls?
-> 
-> I guess it should depend on how the platform driver wants to handle it? 
->   I haven't run into a device with multiple UAC interfaces before, so 
-> I'll need to mimic this configuration on a device, so I can see how it 
-> exposes itself.
-> 
-> Will investigate this a bit more on my end and come back with my findings.
+> This is expected. If you want the CPUs to be brought online automatically, you can add
+> udev rules to do that.
 > 
 
-So looks like if there is a device that has multiple UAC interfaces, 
-then it just results in one USB sound card with multiple USB streams. 
-As of now, we do expose a ksndcontrol that allows for userspace to 
-specify which card and PCM device to issue the audio playback on.  Then 
-based on the audio profile received by the audio DSP, it will narrow it 
-down to see if that substream supports the requested profile.
+Yeah, I usually execute the following command to bring the CPU into online state,
+after the vCPU is hot added by QMP command.
 
-This selection is done in the DPCM backend driver (q6usb), since the 
-overall QMI USB stream request stems from the audio dsp, and will carry 
-this information about which PCM device and card the USB offload driver 
-should use.  This may differ based on the implementation of the offload 
-path, hence why I mentioned that it might be platform specific.
+(qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+guest# echo 1 > /sys/devices/system/cpu/cpux/online
 
-There is one improvement I need to make in our QC offload driver to 
-accommodate for this scenario, and that is to avoid having to 
-re-register for the XHCI sideband if there is already a USB SND card 
-allocated, which I will fix and submit in the next revision.
+James, the series was posted a while ago and do you have plan to respin
+and post RFCv2 in near future? :)
 
-Thanks
-Wesley Cheng
+Thanks,
+Gavin
+
