@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F1C79CB90
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C435F79CB9B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbjILJVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52876 "EHLO
+        id S233181AbjILJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234009AbjILJVh (ORCPT
+        with ESMTP id S232137AbjILJYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:21:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1904CA9;
-        Tue, 12 Sep 2023 02:21:34 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C5BED21857;
-        Tue, 12 Sep 2023 09:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694510492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ZhigEvPzFDk/Sf/E+yoI9+eK/zEdWQpWelnYnakpQ4=;
-        b=HJJg6v4NOQuteCXp0om7BO8es5V0N78VWcuVrW+K5+ScI1E3R+g4Fh9SXFzAXP/369Jm9Y
-        Z8SozkqYHHA/9GnIknXo9DKI7Ol+luM5efOjN6uAhxNkWdWR98hk5suJ/8ZS2qucttM+bE
-        FX4M3kYV/6/xxB0Z3RcuaStdWR/wI+M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694510492;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ZhigEvPzFDk/Sf/E+yoI9+eK/zEdWQpWelnYnakpQ4=;
-        b=jryCrq1LLCxeBXjNScBRjOT64DUYSmSCcah9U05nshYS8f8ADYkWiMh4/0Qhi2hTzGczih
-        xmNXQK/cAIVwFNDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48A73139DB;
-        Tue, 12 Sep 2023 09:21:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id nY5cEJwtAGUTNgAAMHmgww
-        (envelope-from <aherrmann@suse.de>); Tue, 12 Sep 2023 09:21:32 +0000
-Date:   Tue, 12 Sep 2023 11:23:00 +0200
-From:   Andreas Herrmann <aherrmann@suse.de>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     x86@kernel.org, Andreas Herrmann <aherrmann@suse.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chen Yu <yu.c.chen@intel.com>, Len Brown <len.brown@intel.com>,
-        Radu Rendec <rrendec@redhat.com>,
-        Pierre Gondois <Pierre.Gondois@arm.com>,
-        Pu Wen <puwen@hygon.cn>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
-        stable@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Tue, 12 Sep 2023 05:24:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F654A9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:24:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694510640; x=1726046640;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5TdwgVKMF5KAB6b8+l6VMEuRaZtOJKaVWoHEmMbfRxE=;
+  b=SmNT0ugbHEJVz34XXDZxs4avv8jwvLvyAqLx6vlJFfClLX4tqRlla5cr
+   K0AOljMdhJAmHcg/xNSECVNGIYRdPI5bpcV1GRWKEDkwF/cqPkLofkvax
+   oHKedFPDpPe0YroznrfaOALKHEiaF59pANWabSGDkxSg6ldhmBkP2AMgV
+   UYi0twssMXOf5lNj0lB0brohNKLPvlTbsApkYqYzfdiMT0Vy9PN7zqrV3
+   ViAmF/WL+AF/Dev1lTc1DY5qCHjKzlTCTbLBZ/3/Ep85LumPHUy5y2QQY
+   qR2SBYfuQYFbZgS4YmKYEuK4JmazgrhHhMxkNfAWLDHbEwJZpuI+JIqjW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="357755758"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="357755758"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 02:23:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10830"; a="746805238"
+X-IronPort-AV: E=Sophos;i="6.02,245,1688454000"; 
+   d="scan'208";a="746805238"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Sep 2023 02:23:57 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id B60AB248; Tue, 12 Sep 2023 12:23:56 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] x86/cacheinfo: Set the number of leaves per CPU
-Message-ID: <20230912092300.GI603@alberich>
-References: <20230805012421.7002-1-ricardo.neri-calderon@linux.intel.com>
- <20230901065028.GG8103@alberich>
- <20230901075254.GH8103@alberich>
- <20230912032350.GA17008@ranerica-svr.sc.intel.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: [PATCH v3 1/1] minmax: Fix header inclusions
+Date:   Tue, 12 Sep 2023 12:23:55 +0300
+Message-Id: <20230912092355.79280-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230912032350.GA17008@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 08:23:50PM -0700, Ricardo Neri wrote:
-> Hi Andreas,
-> 
-> Agreed. Testing is important. For the specific case of these patches, I
-> booted CONFIG_PREEMPT_RT and !CONFIG_PREEMPT_RT kernels. Then I
->   a) Ensured that the splat reported in commit 5944ce092b97
->      ("arch_topology: Build cacheinfo from primary CPU") was not observed.
-> 
->   b) Ensured that /sys/devices/system/cpu/cpuX/cache is present.
-> 
->   c) Ensured that the contents /sys/devices/system/cpu/cpuX/cache is the
->      same before and after my patches.
-> 
-> I tested on the following systems: Intel Alder Lake, Intel Meteor
-> Lake, 2-socket Intel Icelake server, 2-socket Intel Cascade Lake server,
-> 2-socket Intel Skylake server, 4-socket Intel Broadwell server, 2-socket
-> Intel Haswell server, 2-socket AMD Rome server, and 2-socket AMD Milan
-> server.
-> 
-> Thanks and BR,
-> Ricardo
+BUILD_BUG_ON*() macros are defined in build_bug.h. Include it.
+Replace compiler_types.h by compiler.h, which provides the former,
+to have a definition of the __UNIQUE_ID().
 
+Reviewed-by: Herve Codina <herve.codina@bootlin.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-Thanks for all the tests and info.
+v3: rebased on top of the latest -mm patches (assumed to go via Andrew)
 
+ include/linux/minmax.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index 69bbe987fa87..ca69abd6151e 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -2,7 +2,8 @@
+ #ifndef _LINUX_MINMAX_H
+ #define _LINUX_MINMAX_H
+ 
+-#include <linux/compiler_types.h>
++#include <linux/build_bug.h>
++#include <linux/compiler.h>
+ #include <linux/const.h>
+ #include <linux/types.h>
+ 
 -- 
-Regards,
-Andreas
+2.40.0.1.gaa8946217a0b
 
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nürnberg, Germany
-GF: Ivo Totev, Andrew McDonald, Werner Knoblich
-(HRB 36809, AG Nürnberg)
