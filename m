@@ -2,154 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB8079DA30
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AAC79DA34
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 22:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbjILUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 16:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
+        id S235953AbjILUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 16:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjILUif (ORCPT
+        with ESMTP id S231858AbjILUmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 16:38:35 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248DD189
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 13:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
- s=s31663417; t=1694551100; x=1695155900; i=frank-w@public-files.de;
- bh=3f5UiZlA8nKn8viAmwMIfvgTRl8FZPm5CRqjg7mq39I=;
- h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:Referenc
- es;
- b=D77qv+r8idb/u+/830Yzd5IvchdUUOZiqLkGJZ7QD30JGftj4btmrsqHRuP1kCBKoMbkVNc
- jxwzpZRQvG9CbLxHqg0xcoYty7nHXNoHBd8pi/+paJ69URfLJyOOTRSQMTeGbPjhKKpy2f0Ac
- sSLSF5IPItEG0bKwUxw1sr0L4pzSZE6ylJ9nR+Cpmr0nuzRo+rBLsadsqhiNy8n2609AeB2qQ
- E/elxEdH8y2x6gF96piblXd0sOd6d1AACcp3vtnrpL74b0oIeYotdFd9Y1C7JUum6cSThuuyt
- PAWCb7IRWjn6oCE1ij9zlE8tv75m8tnczcCARBDxs0mIreTlvWcQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [127.0.0.1] ([217.61.158.105]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N0X8o-1rcGZr3NIq-00wV5O; Tue, 12
- Sep 2023 22:38:19 +0200
-Date:   Tue, 12 Sep 2023 22:38:21 +0200
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Markus Schneider-Pargmann <msp@baylibre.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     Fabien Parent <fparent@baylibre.com>,
-        Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Riabchenko <d3adme4t@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: =?US-ASCII?Q?Re=3A_regression_with_33140e668b10_thermal/driv?= =?US-ASCII?Q?ers/mediatek=3A_Control_buffer_enablement_tweaks?=
-User-Agent: K-9 Mail for Android
-Reply-to: frank-w@public-files.de
-In-Reply-To: <20230912134617.jwonuolt56nofifz@blmsp>
-References: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12> <trinity-f3e7d8e0-2e93-4e84-a489-3993c819d2c3-1693488871086@3c-app-gmx-bs12> <07a569b9-e691-64ea-dd65-3b49842af33d@linaro.org> <20230912134617.jwonuolt56nofifz@blmsp>
-Message-ID: <B0B3775B-B8D1-4284-814F-4F41EC22F532@public-files.de>
+        Tue, 12 Sep 2023 16:42:45 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F89B1BE;
+        Tue, 12 Sep 2023 13:42:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A5CF51F86A;
+        Tue, 12 Sep 2023 20:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694551360;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0khQAnnLIXEVlQ8G98bMnKaJSTLI6tJaKjRi0GnrL3I=;
+        b=j9L0QmMHWXdLRjKFtkySZ20cR4WZBgSf11e5qKRVM5LOtZgkMaXdgzvhgMSyXVZgThzIDk
+        UuU9gMLySqAWfRxX6pPn7Nbt7PiaRrd8MDIsfmIE1VQkYOsENH2AtIDEwvDdIhzIjRnKyz
+        pxmFbQmaedP1cuxBbCGwCfZswwbooSU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694551360;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0khQAnnLIXEVlQ8G98bMnKaJSTLI6tJaKjRi0GnrL3I=;
+        b=4ZlWKzx7Lzw8QQFHK3BeuO2hP/oC+Xih14sxcbdvakMrDieH1dxrQR0gnIHRqYBIn8URZQ
+        zXp4ExmqV9LSGIAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6928C139DB;
+        Tue, 12 Sep 2023 20:42:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id peXUGEDNAGX3AwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 12 Sep 2023 20:42:40 +0000
+Date:   Tue, 12 Sep 2023 22:42:39 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 08/11] btrfs: add raid stripe tree pretty printer
+Message-ID: <20230912204239.GF20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
+ <20230911-raid-stripe-tree-v8-8-647676fa852c@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fVM145ezhiwF/zqxfd8StOMbPCCiKOrRk4+H4gjtGd9CQfxUqUG
- XY7resjYBHZ+W/70zKN3x37/2g0wsK1vWPJhebH/OFSZNrcZxv1jt0zRMHK2SnC4VXaaZyz
- SItZHhGfBSV6xurIFj20GbMpv0CWg7Cbl2yuVj/bycPOw3nwYvaSGwwpXDsfPLc1YLrlKQN
- KMYrnyzbRzl4955oHINNQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VPrnAZmP0ik=;VULxiDso5UE0QCU2TeetDf3PdzQ
- tkpZWPGMVbtyqTXztpQsFJb7u+WpZDIpgzJ2M7AE78vWisERmtONJNiX7eJSeHEt7knn/UQ/s
- IvGW9SSBStGsuLgy8yhmUDO4qPCxrgJroWGUltJJbCcmzsMg/v2NdMjZltRBN/u1B7Gr5lCnK
- unpfU4IFqQhfa+5tPogjg41soATo//4d7q3fLotuE4/0l+f1OhwMAH8+mU8iB5e6tP6EyeJeV
- V+rPlc6K0NuNrkYsFHOuW8OvDdKD7e4RbTOCzSBEEJQjqUzEEZ4nSLSvToKVGrElde36iEWwz
- uDtlbNKkDrs5VUeF8X0dI7sC7ZbaSSRxKyTMSyp4SioTqx4xTe+D39dk1L5YsOymeBH4a1vXo
- QU/98YzRAeP/JBncwREPN7PQTJGd0pe5RP4UpuASKA1y288q/im6KiUa1oxXjKrLEAzZ/WvtR
- Y6TBSp3TQkE4cjYHikcXFMQgvzYs1h1F/Lvb6S5IF9LtBFqqcC0ZGdxhp6+r/sbTHlxUPpJp9
- YrU0aMhhB7sP1ZVD6VKbpxKX1K59xOJUQPCdPmNpxsrdxc0+Q5+N3gWkQ2htiHHz4/Rsz1xWG
- ekl4hO+zTpsax51MAqn/ghycG0SPm0y/E49dTNdPwY4T9LfC+fERiCukGjhtF3P96N4wmPkma
- WUAEeIHKUtmOgmhqkJKLYDn1SF+Xpv2vJZQNWcz2vBKZR+KSCRO2z3mxwGhH2EwkXYrvGewO6
- OIesC5UIMj17DdsLbBppQqZT5oAcXN3CFfYgSbqLlV9HHdQgVjHCzvvXQClr/6pkr8vwo0WYA
- jEmQVznHGU2TYlD8JwnkV3yIGGiHafMu+OhSbBuJKlW5JJnRVWj9bssW1bszFK1X5YA7Kl6/i
- PXQWVj9mQ7JQtG7AmzkMgOJYukoC+jjlJP4c6oB2ERRNhHzsXrhNXnh/4bWlCB1ibMMYIvoxN
- mdtlp181luHyp0qbnatRMokPcVU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911-raid-stripe-tree-v8-8-647676fa852c@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12=2E September 2023 15:46:17 MESZ schrieb Markus Schneider-Pargmann <ms=
-p@baylibre=2Ecom>:
->Hi Frank and Daniel,
->
->On Tue, Sep 12, 2023 at 02:57:45PM +0200, Daniel Lezcano wrote:
->>=20
->> Hi Frank,
->>=20
->> thanks for reporting and investigating the issue=2E
->>=20
->>=20
->> On 31/08/2023 15:34, Frank Wunderlich wrote:
->> > Hi,
->> >=20
->> > looked a bit deeper into it and it looks like i only need to add the =
-fields in the mtk_thermal_data struct
->> >=20
->> > --- a/drivers/thermal/mediatek/auxadc_thermal=2Ec
->> > +++ b/drivers/thermal/mediatek/auxadc_thermal=2Ec
->> > @@ -690,6 +690,9 @@ static const struct mtk_thermal_data mt7986_therm=
-al_data =3D {
->> >          =2Eadcpnp =3D mt7986_adcpnp,
->> >          =2Esensor_mux_values =3D mt7986_mux_values,
->> >          =2Eversion =3D MTK_THERMAL_V3,
->> > +       =2Eapmixed_buffer_ctl_reg =3D APMIXED_SYS_TS_CON1,
->> > +       =2Eapmixed_buffer_ctl_mask =3D GENMASK(31, 6) | BIT(3),
->> > +       =2Eapmixed_buffer_ctl_set =3D BIT(0),
->> >   };
->> >=20
->> > in my quick test the temprature can be read again and i'm near room t=
-emperature=2E=2E=2Ei though it was a bit higher before, but as far as i und=
-erstand the code, the values were fixed before and only made it configurabl=
-e=2E
->> >=20
->> > if someone can confirm that i'm right, i can send official patch=2E
->
->Sorry for the delay, this was in my inbox but somehow not on my todo
->list=2E
->
->The patch looks correct=2E I think I simply missed adding the fields for
->MTK_THERMAL_V3 chips=2E Sorry!
->
->>=20
->> At the first glance, it seems the proposed change is correct and could =
-be
->> proposed as a hot fix=2E
->>=20
->> However, the conditions with the version and the apmixed_buffer_ctl_reg
->> looks a bit fuzzy=2E
->>=20
->> Markus, can you revisit this part of code and consolidate the configura=
-ble
->> approach ?
->
->Yes, it indeed looks like I broke another condition there=2E I will give
->it another close look and send a fix=2E
->
->Best,
->Markus
+On Mon, Sep 11, 2023 at 05:52:09AM -0700, Johannes Thumshirn wrote:
+> Decode raid-stripe-tree entries on btrfs_print_tree().
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/print-tree.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+> 
+> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
+> index 0c93439e929f..f01919e4bb37 100644
+> --- a/fs/btrfs/print-tree.c
+> +++ b/fs/btrfs/print-tree.c
+> @@ -9,6 +9,7 @@
+>  #include "print-tree.h"
+>  #include "accessors.h"
+>  #include "tree-checker.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  struct root_name_map {
+>  	u64 id;
+> @@ -28,6 +29,7 @@ static const struct root_name_map root_map[] = {
+>  	{ BTRFS_FREE_SPACE_TREE_OBJECTID,	"FREE_SPACE_TREE"	},
+>  	{ BTRFS_BLOCK_GROUP_TREE_OBJECTID,	"BLOCK_GROUP_TREE"	},
+>  	{ BTRFS_DATA_RELOC_TREE_OBJECTID,	"DATA_RELOC_TREE"	},
+> +	{ BTRFS_RAID_STRIPE_TREE_OBJECTID,	"RAID_STRIPE_TREE"	},
+>  };
+>  
+>  const char *btrfs_root_name(const struct btrfs_key *key, char *buf)
+> @@ -189,6 +191,48 @@ static void print_uuid_item(const struct extent_buffer *l, unsigned long offset,
+>  	}
+>  }
+>  
+> +struct raid_encoding_map {
+> +	u8 encoding;
+> +	char name[16];
+> +};
+> +
+> +static const struct raid_encoding_map raid_map[] = {
+> +	{ BTRFS_STRIPE_DUP,	"DUP" },
+> +	{ BTRFS_STRIPE_RAID0,	"RAID0" },
+> +	{ BTRFS_STRIPE_RAID1,	"RAID1" },
+> +	{ BTRFS_STRIPE_RAID1C3,	"RAID1C3" },
+> +	{ BTRFS_STRIPE_RAID1C4, "RAID1C4" },
+> +	{ BTRFS_STRIPE_RAID5,	"RAID5" },
+> +	{ BTRFS_STRIPE_RAID6,	"RAID6" },
+> +	{ BTRFS_STRIPE_RAID10,	"RAID10" }
+> +};
 
-Hi
+Instead of another table tranlating constants to raid names, can you
+somehow utilize the btrfs_raid_array table? If the STRIPE values match
+the RAID (the indexes to the table) you could add a simple wrapper.
 
-I already sent the Patch below
-
-https://patchwork=2Ekernel=2Eorg/project/linux-mediatek/patch/202309071120=
-18=2E52811-1-linux@fw-web=2Ede/
-
-If it is correct (handled the same way as mt7622 before) you have not to s=
-end a patch=2E
-
-But you should maybe check condition !=3DV2 is correct when loocking on v3=
-=2E
-
-https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/torvalds/linux=2Egit/c=
-ommit/drivers/thermal/mediatek/auxadc_thermal=2Ec?id=3D33140e668b10200b7757=
-79f302b143b32e6ae7ca
-
-Regards Frank
+> +
+> +static const char *stripe_encoding_name(u8 encoding)
+> +{
+> +	for (int i = 0; i < ARRAY_SIZE(raid_map); i++) {
+> +		if (raid_map[i].encoding == encoding)
+> +			return raid_map[i].name;
+> +	}
+> +
+> +	return "UNKNOWN";
+> +}
+> +
+> +static void print_raid_stripe_key(const struct extent_buffer *eb, u32 item_size,
+> +				  struct btrfs_stripe_extent *stripe)
+> +{
+> +	int num_stripes = btrfs_num_raid_stripes(item_size);
+> +	u8 encoding = btrfs_stripe_extent_encoding(eb, stripe);
+> +	int i;
+> +
+> +	pr_info("\t\t\tencoding: %s\n", stripe_encoding_name(encoding));
+> +
+> +	for (i = 0; i < num_stripes; i++)
+> +		pr_info("\t\t\tstride %d devid %llu physical %llu length %llu\n",
+> +			i, btrfs_raid_stride_devid(eb, &stripe->strides[i]),
+> +			btrfs_raid_stride_physical(eb, &stripe->strides[i]),
+> +			btrfs_raid_stride_length(eb, &stripe->strides[i]));
+> +}
+> +
+>  /*
+>   * Helper to output refs and locking status of extent buffer.  Useful to debug
+>   * race condition related problems.
+> @@ -349,6 +393,11 @@ void btrfs_print_leaf(const struct extent_buffer *l)
+>  			print_uuid_item(l, btrfs_item_ptr_offset(l, i),
+>  					btrfs_item_size(l, i));
+>  			break;
+> +		case BTRFS_RAID_STRIPE_KEY:
+> +			print_raid_stripe_key(l, btrfs_item_size(l, i),
+> +					      btrfs_item_ptr(l, i,
+> +							     struct btrfs_stripe_extent));
+> +			break;
+>  		}
+>  	}
+>  }
+> 
+> -- 
+> 2.41.0
