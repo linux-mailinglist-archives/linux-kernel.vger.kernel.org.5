@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDF379D864
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3CC79D868
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237318AbjILSJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S237364AbjILSJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbjILSJg (ORCPT
+        with ESMTP id S237345AbjILSJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:09:36 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D31AE59;
-        Tue, 12 Sep 2023 11:09:31 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C195860003;
-        Tue, 12 Sep 2023 18:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1694542170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ebct1hV/RgqEi3G8NEb85BwUFcGmivlVqkSEYtB7E84=;
-        b=bLDN1UcL4lDbDZC7UtcXdfNNI2aazGi4BK5dwc8jUl8hHQKfsBufLYWWkQ8XuEfvVfwEMX
-        JxeSJ5bxnE3LwxC+IUOaeimN504A2Mg+d2k9DIi5aUwuCFodceuQuPOogiVoXbDEJLdNn2
-        hF03LR1k8ZDfrm9y6zYqPCtOEG38s3cSN/bDXEMSdCvmNZb2rgwAKxQjRpu2XtGQC2JK89
-        7aYvdOK4tn/WwjD4X7Z8FU7QA4F7hRPo6I6tedcbjFu4N0EnP8pzW3WzMJ66F9p/Yh80jx
-        3cxayY4bfeZ6FEkpd9rQI85yxm4MS9L5Oqsi9HkyIHgqOkYJXnLfRi3ctWN+1Q==
-Message-ID: <c2eb0222-2503-4d55-80f7-80ec7122b6ba@arinc9.com>
-Date:   Tue, 12 Sep 2023 21:09:07 +0300
+        Tue, 12 Sep 2023 14:09:46 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB50A10E6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:09:42 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2bcde83ce9fso99960331fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694542181; x=1695146981; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yWTM0f5/i1QnClAjTECf9BeOt/psp+zCb1GGDraYASQ=;
+        b=czfZb3j/SidR1NgJ7VYFOwQeFooWtDYkf5TwjrOApqlX9hDSDvzAixN3CbccRBSGvF
+         9c4658dXFrpeA/FDy5TWv2NUdpIg4W6MZjwJKn+DL6/91dQ9hSFiUOI4V5jF5z5ERGKu
+         k/PyAe2URtdinroS4Xh2OlZUMkBD6YLaG5n/A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694542181; x=1695146981;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yWTM0f5/i1QnClAjTECf9BeOt/psp+zCb1GGDraYASQ=;
+        b=mEuFk3YbnYW8WA/CnsqNBReiboqXlC5VpswYGiA/Ei3UTD+kax8qw4asP/4wMsVEh+
+         G3gihrXoeOEvI55i06nXQhEJBzuMaw72orvkuQIUwLgC6YF7OPd3wxbluhYTfpLsMM0I
+         04lRlS0JNSq7dP5nxSjdguPUXE7gDthYMsPBrFcAPLnGYk7ELsP1EX7CPYlSvQJO7nfu
+         DBG1WeIt4FEkgZaUBixwtcRimh86UMGRiAXIfkZQOPeZJq50hGYuJvFE79XLswtU3uxC
+         KP8nMONE3M5N2Euml/tKsYcH1owqOfsIjFrvKscDWG+FfE8xx+LO/kfC6nlMWykmEff9
+         rGLw==
+X-Gm-Message-State: AOJu0YxbpjDQ6FtYWVPeLY0ytCOrM7Mx9KSFkQE7kqVkYE1LeUFVzDto
+        veg8FmldGoGjOPC3ap4Lj1sVKuHBSF19IWlkO7v6Eg==
+X-Google-Smtp-Source: AGHT+IGqBTcsw26+laBvJf/I/isoneVHzrJJ9T+K2yk5azRK+zEfUSmcs/ggygm50ClDleB1KaELGwFCQfMOnw2KkGM=
+X-Received: by 2002:a2e:9dd1:0:b0:2bc:e808:e735 with SMTP id
+ x17-20020a2e9dd1000000b002bce808e735mr525680ljj.21.1694542180860; Tue, 12 Sep
+ 2023 11:09:40 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 12 Sep 2023 11:09:40 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+In-Reply-To: <20230912071205.11502-1-david@ixit.cz>
+References: <20230912071205.11502-1-david@ixit.cz>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Tue, 12 Sep 2023 11:09:40 -0700
+Message-ID: <CAE-0n50rUnwqPqDmskdaUOYc8qUPYpNoJxwsfShgsc9ha6XuGg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: sdm845: Fix PSCI power domain names
+To:     Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
- <20230813112026.ohsx6srbt2staxma@skbuf>
- <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
- <20230813190157.4y3zoro53qsz43pe@skbuf>
- <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
- <20230814143601.mnpxtcm2zybnbvoh@skbuf>
- <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
- <20230827121235.zog4c3ehu2cyd3jy@skbuf>
- <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
- <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
- <71f7c475-e111-4e4b-9e8f-4c8a6bf6bc34@lunn.ch>
-Content-Language: en-US
-In-Reply-To: <71f7c475-e111-4e4b-9e8f-4c8a6bf6bc34@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+        David Heidelberg <david@ixit.cz>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.09.2023 00:16, Andrew Lunn wrote:
-> Please trim the text when replying.
-> 
-> 
->> I'm writing below as a mix of patch log and discussion.
->>
->> Phylink bindings are required for ports that are controlled by OF-based
->> buses. DSA, like any other driver utilising the Linux MDIO infrastructure,
->> can register a bus. If I understand correctly, non-OF-based registration of
->> OpenFirmware MDIO buses is a feature specific to DSA which certain DSA
->> subdrivers make use of.
-> 
-> This is not really DSA specific. Any MAC driver, or MDIO driver, can
-> call mdiobus_regsiter(), or of_mdiobus_register() and pass a NULL
-> pointer if there is no OF node available. It then requires that the
-> MAC driver uses an function like phy_find_first(), or knows via other
-> means what address the PHY uses on the bus. For DSA, that other means
-> is assuming a 1:1 mapping between port number and bus address.
+Quoting David Heidelberg (2023-09-12 00:12:03)
+> The original commit hasn't been updated according to
+> refactoring done in sdm845.dtsi.
+>
+> Fixes: a1ade6cac5a2 ("arm64: dts: qcom: sdm845: Switch PSCI cpu idle states from PC to OSI")
+> Suggested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
 
-Understood. At least a phy-handle on the DSA user port for each PHY 
-controlled by non-DSA drivers is always needed correct? Otherwise DSA 
-wouldn't know which PHY to map the DSA switch port?
-
-And that means DSA requires OF-based buses to map the ports controlled 
-by non-DSA driver buses to PHYs?
-
-I'm trying to understand if phylink bindings for DSA user ports that are 
-controlled by non-DSA driver buses are always necessary.
-
-Would this also apply to MAC drivers that control switches?
-
-Arınç
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
