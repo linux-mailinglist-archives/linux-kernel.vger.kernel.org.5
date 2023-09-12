@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6BC79D5D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F5C79D5DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbjILQIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
+        id S236142AbjILQKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236604AbjILQIa (ORCPT
+        with ESMTP id S236582AbjILQJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:08:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1F361725
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:08:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1FBBC15;
-        Tue, 12 Sep 2023 09:08:55 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81A803F738;
-        Tue, 12 Sep 2023 09:08:17 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 17:08:14 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lucian Paul-Trifu <lucian.paul-trifu@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Coboy Chen <coboy.chen@mediatek.com>
-Subject: Re: [PATCH RFT 03/12] firmware: arm_ffa: Implement the notification
- bind and unbind interface
-Message-ID: <20230912160814.maooz77hthnja2py@bogus>
-References: <20230803-ffa_v1-1_notif-v1-0-6613ff2b1f81@arm.com>
- <20230803-ffa_v1-1_notif-v1-3-6613ff2b1f81@arm.com>
- <20230912132353.GB4160483@rayden>
+        Tue, 12 Sep 2023 12:09:44 -0400
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A481722
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:09:40 -0700 (PDT)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-577af71a2a8so741824a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:09:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694534980; x=1695139780;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AARlkl615ZUGGLFRfA9oVBXF7htkT9kJFgokf8340Ec=;
+        b=A7zZM9X7OXIcJqvFq6oedpTSTU/ky0b5sNwKi05VQYJLzZg+zTgZXlmQ3BDzwkIZel
+         VV2ONJoqFzLC2nurVt6HmaKcv1nPcKc4NYU9Nc0WYrcjj7WhBziOqvyXudnnByF7t3uS
+         70y2jdAeo0U3SjyEju7va8R3vIGGDP9GdCPwCiJTjOJw1ME1SsSlMtXBAPLTHCCCFxzc
+         v6b66e2eGLb1YbiK0LubRSmgyAm15ZoQm5N8BSulL76n+oXtQ2GqIMP3al4P0vvEzpA1
+         g81s/JdhfJugABMhc00qFSq8g6N1PldybUmngCu90Cl18vR7R4PKuNVjmcXffb1iHbDj
+         yqDQ==
+X-Gm-Message-State: AOJu0YyWOgBX+tRo1/5enHvkUV/f4C8ana6pom5aS6BHhUrxc0CHWDib
+        ky2a+GQYUBGJUCXlEyNZFCQou26XdeQC/PJrN26/Ztq2HqP0
+X-Google-Smtp-Source: AGHT+IGmbnURw9iUYORzpx4zYzKhO+uYCyE7mL3DVcRhUXuaET8MI50eU927MgZ+N8oEvTnRJI6eHK1KQne2J49J5nuKknxf1Mkr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912132353.GB4160483@rayden>
+X-Received: by 2002:a63:3409:0:b0:563:e937:5e87 with SMTP id
+ b9-20020a633409000000b00563e9375e87mr2908645pga.5.1694534979875; Tue, 12 Sep
+ 2023 09:09:39 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 09:09:39 -0700
+In-Reply-To: <00000000000019e05005ef9c1481@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000088fbf106052bab18@google.com>
+Subject: Re: [syzbot] [xfs?] KASAN: stack-out-of-bounds Read in xfs_buf_delwri_submit_buffers
+From:   syzbot <syzbot+d2cdeba65d32ed1d2c4d@syzkaller.appspotmail.com>
+To:     chandan.babu@oracle.com, davem@davemloft.net, djwong@kernel.org,
+        hdanton@sina.com, jiri@nvidia.com, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:23:53PM +0200, Jens Wiklander wrote:
-> On Thu, Aug 03, 2023 at 08:02:07PM +0100, Sudeep Holla wrote:
-> > A receiver endpoint must bind a notification to any sender endpoint
-> > before the latter can signal the notification to the former. The receiver
-> > assigns one or more doorbells to a specific sender. Only the sender can
-> > ring these doorbells.
-> > 
-> > A receiver uses the FFA_NOTIFICATION_BIND interface to bind one or more
-> > notifications to the sender. A receiver un-binds a notification from a
-> > sender endpoint to stop the notification from being signaled. It uses
-> > the FFA_NOTIFICATION_UNBIND interface to do this.
-> > 
-> > Allow the FF-A driver to be able to bind and unbind a given notification
-> > ID to a specific partition ID. This will be used to register and
-> > unregister notification callbacks from the FF-A client drivers.
-> > 
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/firmware/arm_ffa/driver.c | 29 +++++++++++++++++++++++++++++
-> >  1 file changed, 29 insertions(+)
-> > 
-> > diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-> > index 022c893c9e06..a76e5d3a2422 100644
-> > --- a/drivers/firmware/arm_ffa/driver.c
-> > +++ b/drivers/firmware/arm_ffa/driver.c
-> > @@ -575,6 +575,35 @@ static int ffa_notification_bitmap_destroy(void)
-> >  	return 0;
-> >  }
-> >  
-> > +#define NOTIFICATION_LOW_MASK		GENMASK(31, 0)
-> > +#define NOTIFICATION_HIGH_MASK		GENMASK(63, 32)
-> > +#define NOTIFICATION_BITMAP_HIGH(x)	\
-> > +		((u32)(FIELD_GET(NOTIFICATION_HIGH_MASK, (x))))
-> > +#define NOTIFICATION_BITMAP_LOW(x)	\
-> > +		((u32)(FIELD_GET(NOTIFICATION_LOW_MASK, (x))))
-> > +
-> > +static int ffa_notification_bind_common(u16 dst_id, u64 bitmap,
-> > +					u32 flags, bool is_bind)
-> > +{
-> > +	ffa_value_t ret;
-> > +	u32 func, src_dst_ids = PACK_TARGET_INFO(dst_id, drv_info->vm_id);
-> dst_id and drv_info->vm_id should be swapped in the argument to
-> PACK_TARGET_INFO().
-> 
+syzbot suspects this issue was fixed by commit:
 
-Thanks a lot for having a look at the series. I see Olivier or someone
-have already pointed this in private and I seem to have it fixed locally
-already.
+commit d772781964415c63759572b917e21c4f7ec08d9f
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Fri Jan 6 06:33:54 2023 +0000
 
--- 
-Regards,
-Sudeep
+    devlink: bump the instance index directly when iterating
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15554ba4680000
+start commit:   3ecc37918c80 Merge tag 'media/v6.1-4' of git://git.kernel...
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d58e7fe7f9cf5e24
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2cdeba65d32ed1d2c4d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=170a950b880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1625948f880000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: devlink: bump the instance index directly when iterating
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
