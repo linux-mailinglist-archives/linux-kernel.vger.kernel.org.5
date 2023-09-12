@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A45379D585
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93CA679D586
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236590AbjILQBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 12:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S235808AbjILQBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 12:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236543AbjILQBL (ORCPT
+        with ESMTP id S236589AbjILQBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 12:01:11 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F810EC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:01:07 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a9f87adfe1so4460342b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 09:01:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694534467; x=1695139267; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=syxnbBGsoOeBXpse3OW+r1GVcvCXzUeqkMjuqo6yekM=;
-        b=mB8i2Qs8IxSEGQvPRXCKR+zWJrOoS7Ls15FbxEgkuDHwwTuTuD0wIMJ6drTuFiuX3a
-         5GALkZ0OClNynxGVHn3VsdFyNlqZ1OW84dhywVhYgsmbGoEQKqy7Srfu5oZtqryYy0hM
-         +ZLUQCartbM+o4tCRzfY65KB6HACLTmRKvj35JZyab/uULb0puflKrnK4IPtI9I7pCK4
-         DsMCqG4ib0DdlaRDgw2l5+1JHkiSQFqcLCk/vzxAOViEokg6yCxQwnl697e3h5oHn0vu
-         X5yZU9qmpsPKTAbPQgmP2dktuqrwhnp1aQXYdSlteCCHuK5XGlvUcioPvG52sDbf2GcD
-         qiUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694534467; x=1695139267;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=syxnbBGsoOeBXpse3OW+r1GVcvCXzUeqkMjuqo6yekM=;
-        b=DhjGNtuGoRzoRme8PK66G8J6KVUD85fKHxpU9ifoGmse1c6MMqwRn0r7b6Dx7ETuyV
-         e57AfmManMBbmJYBsjaqxZU8gUK11wKyeNCTYlSpHccewoCHy9ds4iwlwze9EfRsKXjj
-         xyiVZVFqquHmfY+41ptrxFMegHBE/yNCuWBb0E0GgoKtAQwBe9ltOmK/1v2EIKW/Dcoi
-         k+KeTifaFpFLWfrW85mtXsKod7A2ffjUTbXgdkOpNNVsWnGBv8nHyottJKzqaAhmYSQn
-         keD1SKhzhzVsiXBm1EzF4Q9SToDG3WQfc4v/TJ4A5Aei9E5/+oNF7WtNQtldAGu+Uw8q
-         hoPA==
-X-Gm-Message-State: AOJu0YwEVFGzBd/GUpv/yT/KHDj82xrK0MAIVQoJdVIt0ZkOdHXXU5Dt
-        28KQGYuxQhfnkdxh8yiLsAgGC43qfc2yrMY0Un2JDA==
-X-Google-Smtp-Source: AGHT+IEPb29YqbZ7PWp/Jc6Ra95sT//dYJ4AYylnr28PZ+ojW0cReoL2plSjy1SSmqxxfinmFH6vxVBj5967PgbAJ6s=
-X-Received: by 2002:a05:6808:b33:b0:3a7:2390:3583 with SMTP id
- t19-20020a0568080b3300b003a723903583mr131929oij.38.1694534466928; Tue, 12 Sep
- 2023 09:01:06 -0700 (PDT)
+        Tue, 12 Sep 2023 12:01:18 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F1210DE;
+        Tue, 12 Sep 2023 09:01:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=tq30nNEn1JgDcmHrMM18jbiaohWzwQumlsnaeQ+8IIk=; b=aM2k488CKyE2crSflT163ivYer
+        ciAx3XA8NFqMOpS3fWZf/gpZfPgddwUO38cNtdcHOruuguEPo5weJzALuW5C4Nfcg994puYZ3Lgpv
+        Ui9SkVa9tqB0ajjpMOLyXwbh47S+bDscfdOJNv3FozhdoHOTMsGq2mMDvzMNKdO1HsEc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qg5p8-006FFK-Pb; Tue, 12 Sep 2023 18:01:10 +0200
+Date:   Tue, 12 Sep 2023 18:01:10 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
+        thomas.petazzoni@bootlin.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [RFC PATCH net-next 4/7] net: ethtool: add a netlink command to
+ list PHYs
+Message-ID: <72a5cd8f-d776-479c-9d7f-191900d19342@lunn.ch>
+References: <20230907092407.647139-1-maxime.chevallier@bootlin.com>
+ <20230907092407.647139-5-maxime.chevallier@bootlin.com>
+ <ZPmfOOsqoO02AcBH@shell.armlinux.org.uk>
+ <20230907141635.20bcaa59@pc-7.home>
 MIME-Version: 1.0
-References: <000000000000f392a60604a65085@google.com> <ZP/3hgDCXeceE9uU@casper.infradead.org>
- <ZQB76G/6NxVgoE9u@casper.infradead.org> <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com>
-In-Reply-To: <CAJuCfpGEa504z1pgqR9KtCWQPESTcRcu8xoyxcNOv=6t4R+ong@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 12 Sep 2023 09:00:53 -0700
-Message-ID: <CAJuCfpHYNbH0WmfDnpX6eqL3f3Z632iQrcw6oqPXtB0_QjaiiQ@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230907141635.20bcaa59@pc-7.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 8:03=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Tue, Sep 12, 2023 at 7:55=E2=80=AFAM Matthew Wilcox <willy@infradead.o=
-rg> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 06:30:46AM +0100, Matthew Wilcox wrote:
-> > > On Tue, Sep 05, 2023 at 06:03:49PM -0700, syzbot wrote:
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    a47fc304d2b6 Add linux-next specific files for 2023=
-0831
-> > > > git tree:       linux-next
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D16502dd=
-ba80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6ecd2a7=
-4f20953b9
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Db591856e0=
-f0139f83023
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils=
- for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D120e7=
-d70680000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1523f9c=
-0680000
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/b2e8f42175=
-27/disk-a47fc304.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/ed6cdcc09339/=
-vmlinux-a47fc304.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/bd9b2475=
-bf5a/bzImage-a47fc304.xz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
-e commit:
-> > > > Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
-> > >
-> > > #syz test
-> > >
-> > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > > index 42b5567e3773..90ad5fe60824 100644
-> > > --- a/mm/mempolicy.c
-> > > +++ b/mm/mempolicy.c
-> > > @@ -1342,6 +1342,7 @@ static long do_mbind(unsigned long start, unsig=
-ned long len,
-> > >       vma_iter_init(&vmi, mm, start);
-> > >       prev =3D vma_prev(&vmi);
-> > >       for_each_vma_range(vmi, vma, end) {
-> > > +             vma_start_write(vma);
-> > >               err =3D mbind_range(&vmi, vma, &prev, start, end, new);
-> > >               if (err)
-> > >                       break;
-> >
-> > Suren, can you take a look at this?  The VMA should be locked by the
-> > call to queue_pages_range(), but by the time we get to here, the VMA
-> > isn't locked.  I don't see anywhere that we cycle the mmap_lock (which
-> > would unlock the VMA), but I could have missed something.  The two
-> > VMA walks should walk over the same set of VMAs.  Certainly the VMA
-> > being dumped should have been locked by the pagewalk:
+On Thu, Sep 07, 2023 at 02:16:35PM +0200, Maxime Chevallier wrote:
+> Hello Russell,
+> 
+> On Thu, 7 Sep 2023 11:00:24 +0100
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> 
+> > On Thu, Sep 07, 2023 at 11:24:02AM +0200, Maxime Chevallier wrote:
+> > > +#define PHY_MAX_ENTRIES	16
+> > > +
+> > > +struct phy_list_reply_data {
+> > > +	struct ethnl_reply_data		base;
+> > > +	u8 n_phys;
+> > > +	u32 phy_indices[PHY_MAX_ENTRIES];  
+> > 
+> > Please could you detail the decision making behind 16 entries - is this
+> > arbitary or based on something?
+> > 
+> > Also, please consider what we should do if we happen to have more than
+> > 16 entries.
+> 
+> Ah indeed it was totally arbitrary, the idea was to have a fixed-size
+> reply struct, so that we can populate the
+> ethnl_request_ops.reply_data_size field and not do any manual memory
+> management. But I can store a pointer to the array of phy devices,
+> dynamically allocated and we won't have to deal with this fixed,
+> arbitrary-sized array anymore.
 
-Yeah, this looks strange. queue_pages_range() should have locked all
-the vmas and the tree can't change since we are holding mmap_lock for
-write. I'll try to reproduce later today and see what's going on.
+I think Jakub already commented on this somewhere, but netlink should
+allow for arbitrary long lists.
 
->
-> Sure, I'll look into this today. Somehow this report slipped by me
-> unnoticed. Thanks!
->
-> >
-> >  vma ffff888077381a00 start 0000000020c2a000 end 0000000021000000 mm ff=
-ff8880258a8980
-> >  prot 25 anon_vma 0000000000000000 vm_ops 0000000000000000
-> >  pgoff 20c2a file 0000000000000000 private_data 0000000000000000
-> >  flags: 0x8100077(read|write|exec|mayread|maywrite|mayexec|account|soft=
-dirty)
-> >
-> >   syscall(__NR_mbind, /*addr=3D*/0x20400000ul, /*len=3D*/0xc00000ul, /*=
-mode=3D*/4ul,
-> >           /*nodemask=3D*/0ul, /*maxnode=3D*/0ul, /*flags=3D*/3ul);
-> >
-> > 20400000 + c00000 should overlap 20c2a000-21000000
+      Andrew
