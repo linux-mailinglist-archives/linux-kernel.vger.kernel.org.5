@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0946379D72E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EB479D730
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 19:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236655AbjILRGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 13:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        id S236656AbjILRHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 13:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbjILRGp (ORCPT
+        with ESMTP id S235297AbjILRH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 13:06:45 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63E5110
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:06:41 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34e1757fe8fso7016665ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:06:41 -0700 (PDT)
+        Tue, 12 Sep 2023 13:07:27 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4DF410D9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:23 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68fb8e7115eso4237855b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 10:07:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1694538401; x=1695143201; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U2j/Jw9eTuzQFJfXJuPtObQqtmWRSTu+BiB0SV3hnyg=;
-        b=TGXD7Xbq8XngKWyOsz1dunxsOEvY9L29IzEpkF8h+DggHGdd/NXFEODwW8fupLKiPm
-         KA2zFx17+SM5b3PDCbVYZvcznHDw9DVkCez500Qo6ErGAXN6fyOAm3te7/h7Jidwy9SL
-         2/zsLwZR6gZyhYWLjPsUknKDInPWBcTZ9f5PvSaWpYsPGhNuG5mIsJ7clEs+2TdifZwL
-         s5VkyHNgO4HCmOzL9YVXDQRZ/xWtUOOhvS9yItKH5hlDra/b+h7DOkUKObU/PuSd79DK
-         /phFVU2oIbOONJvmIWCH/kRilMbc502jWgZShGDb+orija2ivpbm+SAV9vhUlyWRl/8H
-         SWcQ==
+        d=google.com; s=20230601; t=1694538443; x=1695143243; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/3BcICV5TcaAp/tV1Z+AiMSUHHNst5J2lkKv8Z8FT38=;
+        b=KKNi4s5FuRLHsFw73lytoakbGpwTRaZQtiXxRzNZ54teDXsAuemN2EWCJTqZHjtxnK
+         Q1+Qc62g6TzL1K6vkq1SHVRoqz65SntVWvk4neqH8P9e1X5YOeHlNInP2dAF0NpE6F5D
+         T+FLUbe7njwpjkdco4TgT49nsmATFNbzfSgxlKRp3rnbrvwYOxpZG9IfCU470ocYC2/T
+         sWgmw0A86OP1EHfDfY8Qq6Q6yugAlhafp2fRd2mWHJ2w/Jln10Soh23LDVHN29CyW37L
+         uE2ledLUb7VilpYG48fDhoqQ3IVg/csReiezmAeKDKzNvjMfNPthgqOTY/kstzS9CQUs
+         p/2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694538401; x=1695143201;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U2j/Jw9eTuzQFJfXJuPtObQqtmWRSTu+BiB0SV3hnyg=;
-        b=SvmBrc94swowwDytDS9CwFmUEHvqy78vcAO+znItRRKzH/OTn8ETDBs6JOyCBgFwMw
-         xkaW38Y1+fBdLk/Y2VdjgW2fWeV0IVi69dDd2/6zE7uIsmJudk9LRxqEeN90og0bXmVc
-         GlF/G2DrrnNF7pMWlkSIeKiAHLlsa8DICjv5P/mBd48cIQXD9LR1L65a8zaq8vdaI+yp
-         KcdphSVx9++B4k2TMHQos76lUtd/NSqk7SaAKSJDylQNayHergqS8r222GP91f57spid
-         ZsFLA+EQ4Ky7XY2Cx/r3vc4cefHYFExi+wUEmyJn01nO20g56umQs0iWkRZN3+HUi7Cs
-         MnPQ==
-X-Gm-Message-State: AOJu0Yyjq9rOqCZw2ckKwfzDQNp6BiCrMnAhghnoadKQDg6RE/7/wxIS
-        6uhUoY94gzi9poEgVdHxHDGhbw==
-X-Google-Smtp-Source: AGHT+IHdt6IRcs9hAsCNchWOsHxOoRUWUOQv41eVA5rDSet1Hyuvw3eD3NYkW2GiZ5lRJSISETXOzw==
-X-Received: by 2002:a05:6602:1489:b0:792:6be4:3dcb with SMTP id a9-20020a056602148900b007926be43dcbmr422572iow.2.1694538401048;
-        Tue, 12 Sep 2023 10:06:41 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id n7-20020a6b4107000000b007951e14b951sm3014493ioa.25.2023.09.12.10.06.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 10:06:40 -0700 (PDT)
-Message-ID: <26ddc629-e685-49b9-9786-73c0f89854d8@kernel.dk>
-Date:   Tue, 12 Sep 2023 11:06:39 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET v4 0/5] Add io_uring support for waitid
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     brauner@kernel.org, arnd@arndb.de, asml.silence@gmail.com
-References: <20230909151124.1229695-1-axboe@kernel.dk>
-In-Reply-To: <20230909151124.1229695-1-axboe@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        d=1e100.net; s=20230601; t=1694538443; x=1695143243;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/3BcICV5TcaAp/tV1Z+AiMSUHHNst5J2lkKv8Z8FT38=;
+        b=ZAskNc0qIybhv2+vogeCizUsYs4zeiuBKzRXfpzw6XAvSA7PC+wAzvG8o3czHUZD3k
+         QkL/1aDEaxW0SbQhZABpJzY6La7iz92c+AHZUV54Ieoy3u2J3ZfXV7T1W0CUxO18Zmqw
+         ubBXeVlqI5aRbQxZX+ILaouElfovEQ7qT9g8+VhCdIRVKAaCUu3oVFDW4ql9FgyYmNEP
+         1rbCiW3bfdVT326AnzomObqvgG0yTfcb7KoF7RSvxhPGFZWL5MeAe2q281cNjFjA5B/z
+         DlemnQegUAmO2hjY3nvMV8p+cceJawbZrSi9VlQBtmux81Eb4gBLL7q3hrEnH064OmXJ
+         RUJQ==
+X-Gm-Message-State: AOJu0Yz7/8zDMwiidxuEBctMiWOmyBMTHBNC+cOmSn1zrDAFT2ZmVp/t
+        yq3r8RmteaG28Gh54Dt+tBGWZ6iQQ1I=
+X-Google-Smtp-Source: AGHT+IGM3S4koFEdiAG0hKnMNdDHnWEexRx81djDvqAfRBC8MvDyYp+FSUsfdhGQL7QVMW4+/pnRlnKrycw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:188b:b0:68f:cb69:8e76 with SMTP id
+ x11-20020a056a00188b00b0068fcb698e76mr95817pfh.2.1694538443136; Tue, 12 Sep
+ 2023 10:07:23 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 10:07:20 -0700
+In-Reply-To: <20230912161518.199484-1-hshan@google.com>
+Mime-Version: 1.0
+References: <20230912161518.199484-1-hshan@google.com>
+Message-ID: <ZQCayNY+8PYvfc40@google.com>
+Subject: Re: [PATCH] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
+From:   Sean Christopherson <seanjc@google.com>
+To:     Haitao Shan <hshan@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/9/23 9:11 AM, Jens Axboe wrote:
-> Hi,
-> 
-> This adds support for IORING_OP_WAITID, which is an async variant of
-> the waitid(2) syscall. Rather than have a parent need to block waiting
-> on a child task state change, it can now simply get an async notication
-> when the requested state change has occured.
-> 
-> Patches 1..4 are purely prep patches, and should not have functional
-> changes. They split out parts of do_wait() into __do_wait(), so that
-> the prepare-to-wait and sleep parts are contained within do_wait().
-> 
-> Patch 5 adds io_uring support.
-> 
-> I wrote a few basic tests for this, which can be found in the
-> 'waitid' branch of liburing:
-> 
-> https://git.kernel.dk/cgit/liburing/log/?h=waitid
-> 
-> Also spun a custom kernel for someone to test it, and no issues reported
-> so far.
+On Tue, Sep 12, 2023, Haitao Shan wrote:
+> This issue exists in kernel version 6.3-rc1 or above. The issue is
+> introduced by the commit 8e6ed96cdd50 ("KVM: x86: fire timer when it is
+> migrated and expired, and in oneshot mode"). The issue occurs on Intel
+> platform which APIC virtualization and posted interrupt processing.
 
-Forget to mention that I also ran all the ltp testcases for any wait*
-syscall test, and everything still passes just fine.
+I think the bug was actually introduced by:
 
--- 
-Jens Axboe
+  967235d32032 ("KVM: vmx: clear pending interrupts on KVM_SET_LAPIC")
 
+Fixing the "deadline <= 0" handling just made it much easier to be hit.  E.g. if
+the deadline was '1' during restore, set_target_expiration() would set tscdeadline
+to T1+(1*N), where T1 is the current TSC and N is the multipler to get from nanoseconds
+to cycles.  start_sw_tscdeadline() (or vmx_set_hv_timer()) would then reread the
+TSC (call it T2), see T2 > T1+(1*N), and mark the timer as expired.
+
+> The issue is first discovered when running the Android Emulator which
+> is based on QEMU 2.12. I can reproduce the issue with QEMU 8.0.4 in
+> Debian 12.
+
+The above is helpful as extra context, but repeating "This issue" and "The issue"
+over and over without ever actually describing what the issue actualy is makes it
+quite difficult to understand what is actually being fixed.
+
+> With the above commit, the timer gets fired immediately inside the
+> KVM_SET_LAPIC call when loading the snapshot. On such Intel platforms,
+> this eventually leads to setting the corresponding PIR bit. However,
+> the whole PIR bits get cleared later in the same KVM_SET_LAPIC call.
+> Missing lapic timer interrupt freeze the guest kernel.
+
+Please phrase changelogs as commands and state what is actually being changed.
+Again, the context on what is broken is helpful, but the changelog really, really
+needs to state what is being changed.
+
+> Signed-off-by: Haitao Shan <hshan@google.com>
+> ---
+>  arch/x86/kvm/lapic.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index a983a16163b1..6f73406b875a 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2977,14 +2977,14 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
+>  	apic_update_lvtt(apic);
+>  	apic_manage_nmi_watchdog(apic, kvm_lapic_get_reg(apic, APIC_LVT0));
+>  	update_divide_count(apic);
+> -	__start_apic_timer(apic, APIC_TMCCT);
+> -	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
+>  	kvm_apic_update_apicv(vcpu);
+>  	if (apic->apicv_active) {
+>  		static_call_cond(kvm_x86_apicv_post_state_restore)(vcpu);
+>  		static_call_cond(kvm_x86_hwapic_irr_update)(vcpu, apic_find_highest_irr(apic));
+>  		static_call_cond(kvm_x86_hwapic_isr_update)(apic_find_highest_isr(apic));
+>  	}
+> +	__start_apic_timer(apic, APIC_TMCCT);
+> +	kvm_lapic_set_reg(apic, APIC_TMCCT, 0);
+
+I don't think this is the ordering we want.  It currently works, but it subtly
+"relies" on a few things:
+
+  1. That vmx_deliver_posted_interrupt() never "fails" when APICv is enabled,
+     i.e. never puts the interrupt in the IRR instead of the PIR.
+
+  2. The SVM, a.k.a. AVIC, doesn't ever sync from the IRR to a separate "hardware"
+     virtual APIC, because unlike VMX, SVM does set the bit in the IRR.
+
+I doubt #2 will ever change simply because that's tied to how AVIC works, and #1
+shouldn't actually break anything since the fallback path in vmx_deliver_interrupt()
+needs to be self-sufficient, but I don't like that the code syncs from the IRR and
+_then_ potentially modifies the IRR.
+
+I also don't like doing additional APIC state restoration _after_ invoking the
+post_state_restore() hook.  Updating APICv in the middle of the restore flow is
+going to be brittle and difficult to maintain, e.g. it won't be obvious what
+needs to go before and what needs to go after.
+
+IMO, vmx_apicv_post_state_restore() is blatantly broken.  It is most definitely
+not doing "post state restore" stuff, it's simply purging state, i.e. belongs in
+a "pre state restore" hook.
+
+So rather than shuffle around the timer code, I think we should instead add yet
+another kvm_x86_ops hook, e.g. apicv_pre_state_restore(), and have initialize
+the PI descriptor there.
+
+Aha!  And I think the new apicv_pre_state_restore() needs to be invoked even if
+APICv is not active, because I don't see anything that purges the PIR when APICv
+is enabled.  VMX's APICv doesn't have many inhibits that can go away, and I
+highly doubt userspace will restore into a vCPU with pending posted interrupts,
+so in practice this is _extremely_ unlikely to be problematic.  But it's still
+wrong.
