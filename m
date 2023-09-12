@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD1579CB18
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7230079CB26
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233414AbjILJGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        id S233163AbjILJHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233121AbjILJF7 (ORCPT
+        with ESMTP id S233239AbjILJGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:05:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5691310DE;
-        Tue, 12 Sep 2023 02:03:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7080DC433C7;
-        Tue, 12 Sep 2023 09:03:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1694509434;
-        bh=mvXVHwykddISCxjGxd+zXeSEBkkTdccCqUNjt0wXkhk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M3aItyTpPCH0WRFAATLYobcHCumrLbWrZEHwtiVvodGHMsJpMzaSf8aEc+40cJA2L
-         OYWJtJL9QrDtBoYC5UVaeIVoFbIvtEG+a31XZuVLsY832sGU5fhJEtBpcMh0XoEtdm
-         oZksLI0Rm9veRFQqi218uTHCwq048bfiMRxuxoYA=
+        Tue, 12 Sep 2023 05:06:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70DBB10D8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694509434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ie1aGQaIRbrMT6CzFJ4g1wwT2IOjL485vR9yiGwk0w=;
+        b=bXRbJ9ngcM/b+Ht+/cstznQ3985xqCN3l+GWXmKWmfUlXslNpFr0gniCrBDDrst3gJI6o+
+        DpJHahgVS4cma7Sa1Romy1vwWKh75yU3e0FXno4l5/X3OTBxYz/Pve229qGzxrU6LXzCQS
+        V5iinGglYmRBtlRZNSHJVam4S+P9LRo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-275-r_OPJfivNWygrvU9DDWK5A-1; Tue, 12 Sep 2023 05:03:53 -0400
+X-MC-Unique: r_OPJfivNWygrvU9DDWK5A-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-402d63aeea0so44238565e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:03:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694509432; x=1695114232;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ie1aGQaIRbrMT6CzFJ4g1wwT2IOjL485vR9yiGwk0w=;
+        b=w4i7eoxXXATdWIGg38kfX7MMy14YAFumxB80uvEVWgd0zE8+UnNoXGtUT5gNdFZk4i
+         cn3MOcCMoBZPYsoGb1tHfmG67IY9H5nO1TKCU6d6lY90RCeFKj/7U8rCPaCWAogKxnD2
+         c4VdclZmI0nTJLIHuhu/b5LxNRoGt2ABw6CmG7UFw39p0GMulTrsozF1RiM7hqWIGm55
+         xEllIR201Em5Wvmt+E/gAvdautOu8TT53f+wgetNp1pevRryvF7/XqV61Gbvmb0ijvqk
+         gYUBsRWcOzT9kTbabypza7waGEZWZtscUCPYh/oN/3t2r0uaeCe1+vfNUvD54sSJNbyp
+         vMuQ==
+X-Gm-Message-State: AOJu0YwcXT7jScDhrMkf82DHfZh37lcpE1D930W5chl41uo5jq/4GRAN
+        h+H2i6DSiVawcvYDu89wU6agANg3iSmpegm54X8c+ovyrWFuXyhE+TlG0HHua3EmdY+UngZElFt
+        392WngDYnZMIGSa9h0zvu5DyaKwIOg5TK
+X-Received: by 2002:a7b:ce07:0:b0:3fb:e4ce:cc65 with SMTP id m7-20020a7bce07000000b003fbe4cecc65mr10555499wmc.25.1694509432036;
+        Tue, 12 Sep 2023 02:03:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF8kSp3LWlS416Fsrz1DxxVgbcqE0KhWdg1a+7byaaHFe448CF3O2UiGIrVuazKuDWQYhyPQQ==
+X-Received: by 2002:a7b:ce07:0:b0:3fb:e4ce:cc65 with SMTP id m7-20020a7bce07000000b003fbe4cecc65mr10555477wmc.25.1694509431640;
+        Tue, 12 Sep 2023 02:03:51 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id 21-20020a05600c229500b00402d34ea099sm15524966wmf.29.2023.09.12.02.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 02:03:51 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2] drm/ssd130x: Store the HW buffer in the
+ driver-private CRTC state
+In-Reply-To: <x75lakzrl2awslaid5ffneepxusej7b7ojvz36bgpdwriztcru@h4bvwr2oeaov>
+References: <20230910094041.715408-1-javierm@redhat.com>
+ <x75lakzrl2awslaid5ffneepxusej7b7ojvz36bgpdwriztcru@h4bvwr2oeaov>
 Date:   Tue, 12 Sep 2023 11:03:50 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     jack@suse.cz, stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        Tom Rix <trix@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH 6.1 000/600] 6.1.53-rc1 review
-Message-ID: <2023091217-reflux-playroom-017a@gregkh>
-References: <20230911134633.619970489@linuxfoundation.org>
- <1ffe4f64-f238-859a-ab14-7559d03c4671@linaro.org>
- <CAEUSe7_XA16yZAHA+YTbJygwaUYkU5gs=FnV9BAmQRYzwgVjvQ@mail.gmail.com>
- <CA+G9fYsiWEKSV0EeU0cXsJZ3U75fbdGyCmDx07ksFMUW5jouyw@mail.gmail.com>
+Message-ID: <874jjz3gqx.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYsiWEKSV0EeU0cXsJZ3U75fbdGyCmDx07ksFMUW5jouyw@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 02:19:34PM +0530, Naresh Kamboju wrote:
-> On Tue, 12 Sept 2023 at 07:55, Daniel Díaz <daniel.diaz@linaro.org> wrote:
-> >
-> > Hello!
-> >
-> > On Mon, 11 Sept 2023 at 14:58, Daniel Díaz <daniel.diaz@linaro.org> wrote:
-> > > On 11/09/23 7:40 a. m., Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 6.1.53 release.
-> > > > There are 600 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Wed, 13 Sep 2023 13:44:56 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >       https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.53-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > We're seeing this new warning:
-> > > -----8<-----
-> > >    /builds/linux/fs/udf/inode.c:892:6: warning: variable 'newblock' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-> > >      892 |         if (*err < 0)
-> > >          |             ^~~~~~~~
-> > >    /builds/linux/fs/udf/inode.c:914:9: note: uninitialized use occurs here
-> > >      914 |         return newblock;
-> > >          |                ^~~~~~~~
-> > >    /builds/linux/fs/udf/inode.c:892:2: note: remove the 'if' if its condition is always false
-> > >      892 |         if (*err < 0)
-> > >          |         ^~~~~~~~~~~~~
-> > >      893 |                 goto out_free;
-> > >          |                 ~~~~~~~~~~~~~
-> > >    /builds/linux/fs/udf/inode.c:699:34: note: initialize the variable 'newblock' to silence this warning
-> > >      699 |         udf_pblk_t newblocknum, newblock;
-> > >          |                                         ^
-> > >          |                                          = 0
-> > >    1 warning generated.
-> > > ----->8-----
-> > >
-> > > That's with Clang 17 (and nightly) on:
-> > > * arm
-> > > * powerpc
-> > > * s390
-> >
-> > For what it's worth, bisection points to 903b487b5ba6 ("udf: Handle
-> > error when adding extent to a file").
-> 
-> I see the following commit is fixing the reported problem.
-> 
-> commit 6d5ab7c2f7cf90877dab8f2bb06eb5ca8edc73ef
-> Author: Tom Rix <trix@redhat.com>
-> Date:   Fri Dec 30 12:53:41 2022 -0500
-> 
->     udf: initialize newblock to 0
-> 
->     The clang build reports this error
->     fs/udf/inode.c:805:6: error: variable 'newblock' is used
-> uninitialized whenever 'if' condition is true
-> [-Werror,-Wsometimes-uninitialized]
->             if (*err < 0)
->                 ^~~~~~~~
->     newblock is never set before error handling jump.
->     Initialize newblock to 0 and remove redundant settings.
-> 
->     Fixes: d8b39db5fab8 ("udf: Handle error when adding extent to a file")
+Maxime Ripard <mripard@kernel.org> writes:
 
-Ah, the Fixes: tag lied!  There is no such git id in Linus's tree
-anywhere, so our scripts couldn't match this up at all.
+Hello Maxime,
 
-I'll go queue this fix up, thanks for digging it out.
+Thanks for your feedback!
 
-greg k-h
+> Hi,
+>
+> On Sun, Sep 10, 2023 at 11:40:28AM +0200, Javier Martinez Canillas wrote:
+
+[...]
+
+>>  static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
+>> -			       struct ssd130x_plane_state *ssd130x_state,
+>> -			       struct drm_rect *rect)
+>> +			       struct drm_rect *rect, u8 *buf,
+>> +			       u8 *data_array)
+>>  {
+>>  	unsigned int x = rect->x1;
+>>  	unsigned int y = rect->y1;
+>> -	u8 *buf = ssd130x_state->buffer;
+>> -	u8 *data_array = ssd130x_state->data_array;
+>
+> That's just a matter of taste I guess, but I would pass the crtc_state
+> pointer there instead of an opaque byte array (without any boundary).
+>
+
+Interesting that you mentioned, I was actually on the fence on this. The
+reason why I passed an opaque byte array was that Geert had it in his R1
+series and wanted to align with the changes that he was doing in that set:
+
+https://lists.freedesktop.org/archives/dri-devel/2023-August/419935.html
+
+But I'm OK of with passing the state pointers instead. BTW, you said
+crtc_state but is plane_state since the function uses both buffers.
+
+[...]
+
+>>  
+>> @@ -671,6 +664,10 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
+>>  	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
+>>  	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
+>>  	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
+>> +	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, plane_state->crtc);
+>
+> You can have CRTC-less commits if you only modify a property of the
+> plane for example. drm_atomic_get_new_crtc_state will retrieve the CRTC
+> state in the global state passed as an argument, but will not make any
+> effort to retrieve the current CRTC state if it's not part of that commit.
+>
+
+Oh, I see. I wasn't aware of this.
+
+> You should add a call to drm_atomic_get_crtc_state in your atomic_check
+> hook to pull the CRTC state if it's not there so you can rely on it
+> here.
+>
+
+Got it. I'll fix that in v2.
+
+> Maxime
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
