@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD96A79D28A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0334B79D292
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 15:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235620AbjILNnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 09:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S235636AbjILNok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 09:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjILNnX (ORCPT
+        with ESMTP id S235562AbjILNoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 09:43:23 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B6010CE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:43:19 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-570a432468bso4759765a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:43:19 -0700 (PDT)
+        Tue, 12 Sep 2023 09:44:37 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DC110D1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:44:33 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so94535171fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 06:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694526198; x=1695130998; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKq1CwYyAbmQWns7LQv80RiVk9XLUwPxMYeYInEJp54=;
-        b=guAxpTTY05jKIPo8RMQCRJSaBGwOKC/0N4tUCMlJ2zYM4RL5q6zU03ghQRUDpucuil
-         L1iUr1whVxsw4ZTd2b2vwrRFzZWS/GoF3eFifNcF5vYIgWlpdBA+yy0tBxcAK1ETZ0jA
-         S8c+2tIzO1Mrq79fN8oJBugnxZBEwnJfrVeBa1WP23SzsArgQpkSuG1Fm2ySVGEfu/le
-         SfaA7mXsPcEOOrxTQddNo3BT21pAY0ekpzzTZA3Tf4xs+9JX+CAp0LxZfhE6lz96iUPW
-         edj/TCrhg3th9RU3DQNpr4OwD57BFLOz0WJPnlk2bKciDK8iXCYpl1smWfZEWlbw1aVk
-         zcSQ==
+        d=linaro.org; s=google; t=1694526271; x=1695131071; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LqEXetn7S/Qdpis0iF4PB46W2IEBIemF0WMhXfkuJNg=;
+        b=WX+dwjclAPwOUZ4WmmxGfCkvvMhyCxYZ5PeCtK7SNBvc3KG7/yIHeJUq9+Mo2hZL/O
+         Sb0oCqkwsfNNztN2vBGrQfaypqR+L1WJQWY9hf9r9xJK2TcYRyE5zeWbzQilRxyG6Hbk
+         nHMcH7pbcOolTf5nzk908Us1QYPiUKBU25GcAKj++5iw2XVq2q1DjZI7Cmy8B5QrIV0Q
+         2ULQscYsJ37nv9LmO53D9f2aIPnE6ToZ9WKjDCBOyDc8VDW1bbaNmQrgd0kxTeZxIHNn
+         4/Lcs14pEn4JHEEC4nNPAivU1uG0Kw9cP7BG+LD8Os/2iTqA9KcRe5IdQPeFlirzGonU
+         pqwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694526198; x=1695130998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WKq1CwYyAbmQWns7LQv80RiVk9XLUwPxMYeYInEJp54=;
-        b=vM8BJfJwRgAoCZI+52SudD+eu0MVbDwN1xuyYiD3Rbnu5VFyIHlW+5Bt3KUW2XApRy
-         kvodZ+96yaEjrYGw+RDpOGI0qE0JmSYl9DDeXON7cwZbFPiY0MdPKHFx+kO3Ib17T/cj
-         z/rm5JIoasZ80YNs5QAlzu4ZcpBMcGiLvDD01VjacNlsNgCVSur3yDNAcdCDj1Cjq4Nt
-         ICmzOqqtqv/2Y07dPeMGsqCaM64E8Ga5XCdeWcf6vusD0MDKGSuWXqSKoPw5Fiw9py+l
-         wYnT6XkaV5Bh32nDvOa1mSeaKhh4ffgIf/t5V+aXMWAYaDc/axz1hkGiXbRcGk3gnKK6
-         iBcA==
-X-Gm-Message-State: AOJu0YzBxuE6KbpuxIVBMzhLAvgyrzm9u8mRO2WI3XL/kOFiGrNiGDBX
-        No/QS0iAwNAl952yZMBoi5Q=
-X-Google-Smtp-Source: AGHT+IFcy9pbZS0e8W0NdIZCKQVqCu4A3lrffXL4gq3cqb2foPmyJHCan3jkkHhLWAPeUwhjr9TROA==
-X-Received: by 2002:a17:90b:a4e:b0:261:219b:13b3 with SMTP id gw14-20020a17090b0a4e00b00261219b13b3mr3477418pjb.16.1694526197577;
-        Tue, 12 Sep 2023 06:43:17 -0700 (PDT)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id bf11-20020a17090b0b0b00b0026801e06ac1sm7537115pjb.30.2023.09.12.06.43.16
+        d=1e100.net; s=20230601; t=1694526271; x=1695131071;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LqEXetn7S/Qdpis0iF4PB46W2IEBIemF0WMhXfkuJNg=;
+        b=o4IOhEfqq5g3wXNaOU+X4GkyJAU0oriwF6lG6ZZiKvYZfzPE0KSSlN3wPxHfHkJm0L
+         HtL2l/14kMSqiZe0A3dZSZ9p5s1WFWH+kYnj7yjSUduNCZrh1g1EBx8pARRvTLmk63Jq
+         SxLWWtBZdmqoVXnIn9k7IrjDKlEJn6AV/P8idZBlLsbR5sifeQyts3fffP7L+E48kAmu
+         4DhR/nXfkpw/PHiSksglD9BHBskM3Wnll2hj1E4OjreqJEiYmSJxSJYp7lNIN7t5oTxb
+         FRtMLwiQ+X2cJULSn/KCK7KVYvk3rLWyju4U/PtquNEtaOcB0Z/2B+9hvohwsxllTQb5
+         6OGw==
+X-Gm-Message-State: AOJu0YyB6lBTvJhiGXwdcOadnCD2ivxHyv60t5b4nmiufK1xMRM26tqh
+        4q+x5mqHgHfIP24HQCvDQ1z2oO8zIe33XiSWI/c=
+X-Google-Smtp-Source: AGHT+IEo89uii1zTosruLmOdCqBsm5JCTq0FHFuDWHzgBJ/fnXoADgua8Rk9pZT2u0stjzt78VvlRw==
+X-Received: by 2002:a05:6512:3189:b0:500:b0e8:a899 with SMTP id i9-20020a056512318900b00500b0e8a899mr11452651lfe.30.1694526271445;
+        Tue, 12 Sep 2023 06:44:31 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id y6-20020ac255a6000000b00500a2091e30sm1755020lfg.115.2023.09.12.06.44.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 06:43:17 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 06:43:15 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/4] bitmap: define a cleanup function for bitmaps
-Message-ID: <ZQBq81QRFVOMBmnB@yury-ThinkPad>
-References: <20230912085541.13682-1-brgl@bgdev.pl>
- <20230912085541.13682-2-brgl@bgdev.pl>
+        Tue, 12 Sep 2023 06:44:31 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 0/2] Rewrite GPIO LED trigger to use trigger-sources
+Date:   Tue, 12 Sep 2023 15:44:29 +0200
+Message-Id: <20230912-gpio-led-trigger-dt-v1-0-1b50e3756dda@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912085541.13682-2-brgl@bgdev.pl>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD1rAGUC/x3MMQqAMAxA0atIZgNtnPQq4mBtrAFpJS0iSO9uc
+ XzD/y9kVuEMU/eC8i1ZUmywfQfbscbAKL4ZyNBgRmsxXJLwZI9FJQRW9AVHIueY7L4SQSsv5V2
+ e/zovtX4cyOn/ZQAAAA==
+To:     =?utf-8?q?Jan_Kundr=C3=A1t?= <jan.kundrat@cesnet.cz>,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:55:38AM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> Add support for autopointers for bitmaps allocated with bitmap_alloc()
-> et al.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  include/linux/bitmap.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index 03644237e1ef..ba8c0d733842 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -6,6 +6,7 @@
->  
->  #include <linux/align.h>
->  #include <linux/bitops.h>
-> +#include <linux/cleanup.h>
->  #include <linux/find.h>
->  #include <linux/limits.h>
->  #include <linux/string.h>
-> @@ -125,6 +126,8 @@ unsigned long *bitmap_alloc_node(unsigned int nbits, gfp_t flags, int node);
->  unsigned long *bitmap_zalloc_node(unsigned int nbits, gfp_t flags, int node);
->  void bitmap_free(const unsigned long *bitmap);
->  
-> +DEFINE_FREE(bitmap, unsigned long *, bitmap_free(_T))
+This rewrites the platform-data GPIO LED trigger to instead
+use fwnode trigger-sources to describe the LED used.
 
-So now it doesn't do weird  "if (_T) bitmap_free(_T)". Have you got any
-feedback from Peter for that?
+This will work out-of-the-box with e.g. device tree.
 
-My point is that if the above is correct, all the following
-declarations need to be revisited:
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (2):
+      dt-bindings: leds: Mention GPIO triggers
+      leds: triggers: gpio: Rewrite to use trigger-sources
 
-yury:linux$ git grep DEFINE_FREE|grep if
-include/linux/cleanup.h:25: * DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
-include/linux/device.h:1058:DEFINE_FREE(device_del, struct device *, if (_T) device_del(_T))
-include/linux/device.h:1228:DEFINE_FREE(put_device, struct device *, if (_T) put_device(_T))
-include/linux/mutex.h:224:DEFINE_FREE(mutex, struct mutex *, if (_T) mutex_unlock(_T))
-include/linux/rwsem.h:208:DEFINE_FREE(up_read, struct rw_semaphore *, if (_T) up_read(_T))
-include/linux/rwsem.h:209:DEFINE_FREE(up_write, struct rw_semaphore *, if (_T) up_write(_T))
-include/linux/sched/task.h:164:DEFINE_FREE(put_task, struct task_struct *, if (_T) put_task_struct(_T))
-include/linux/slab.h:231:DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+ Documentation/devicetree/bindings/leds/common.yaml |   2 +
+ drivers/leds/trigger/Kconfig                       |   5 +-
+ drivers/leds/trigger/ledtrig-gpio.c                | 136 ++++++---------------
+ 3 files changed, 42 insertions(+), 101 deletions(-)
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230911-gpio-led-trigger-dt-922bbe21fa22
 
-For the patch:
-Acked-by: Yury Norov <yury.norov@gmail.com>
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
+
