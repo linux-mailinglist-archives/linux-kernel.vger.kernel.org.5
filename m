@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CFC79D4EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7FE79D4F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbjILPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:32:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49770 "EHLO
+        id S236465AbjILPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236378AbjILPcI (ORCPT
+        with ESMTP id S236392AbjILPcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:32:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CB410DE;
-        Tue, 12 Sep 2023 08:32:04 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 15:32:02 -0000
+        Tue, 12 Sep 2023 11:32:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE9710E2;
+        Tue, 12 Sep 2023 08:32:05 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 15:32:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694532722;
+        s=2020; t=1694532723;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=pi/zJeqB7UUJAveq4HGyanxBdXGWZOyr+/GYdyiOyfk=;
-        b=jKoyILDd27LCuwOnKoPYDR3JjHO0o/38UrO136dpiyG22Gj6CeFOin9FdsupaM+xHsxMaz
-        MmC+wRa8aI7UJjI8TjUR0kTctoGTyXQ7hO0f8xPi6BatJD2YMJVKWEB7+Vz1flV1+aTKdW
-        pT0O+lKfH19crFLoKhQMrKBvAx7c/qlf1J+iyiGKZZLMusLPzTjbPEz2kIxPavStIiH8n7
-        xehlI1rZbd0/wEEkWHv+YsJvqFSJJ2fxte1hfcWEfuBVxuRnD6hEh5eBKETkoj9+jfnzhg
-        by8DH2MHKHcn4bb81IhsONclLy5zM4GaVLxaMwI7sqWmcE7bGxaX6IFzLe3s2g==
+        bh=PSB/sBxLFbVDwVjJ50yq+m5fPM8HndP/flearF1XETM=;
+        b=KKPXKOdQQo+GYuvier4yXC/QbafHtvMChcyoEgeXAiyPgyvj2TRFoO3gXjKir5sd/KAjvs
+        8qkO8DiNlRL10sqzFHTwTNIcYB4c1KbWDgW6m2HTqtscdlafl7SqaKQUgmELpObyB9AVUX
+        cK1pmcHniRwF3idRJdMIWNhVNPfGslwirFdz7+SsqRGaTq2qQg42shoZaGAcrEc3mQ5aTv
+        inLijJJZZxoAUm2/9f1KuCNcDZ9GglrQh604INQAeUWnHv6OKqECkxs4cKGK7smESWoDKn
+        0sFWCUu51VjRCnteZeKxNBUoi651hTr1XmnchSFWSIACKQAwW/usXfdk8hg/tQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694532722;
+        s=2020e; t=1694532723;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=pi/zJeqB7UUJAveq4HGyanxBdXGWZOyr+/GYdyiOyfk=;
-        b=7DDLGt1mX8UDc3EBANGRsBPL5WdhDUg92wloUwynKzhNACN1ASwuSUGXOJdDv8Xp/wHgko
-        9p8kCDCEKGdDuZAw==
+        bh=PSB/sBxLFbVDwVjJ50yq+m5fPM8HndP/flearF1XETM=;
+        b=44J5Mc3K8yB4GG8E7IhuxMvoRTfBR5jUnMHs1AXPspmvohISOX/CjcvsRBZ6CqPUvEAGLe
+        dEl/Pgma2/EQryDA==
 From:   "tip-bot2 for Kai Huang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/tdx] x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL
+Subject: [tip: x86/tdx] x86/tdx: Pass TDCALL/SEAMCALL input/output registers
+ via a structure
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Kai Huang <kai.huang@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169453272226.27769.16940961274508290387.tip-bot2@tip-bot2>
+Message-ID: <169453272314.27769.16658890438965080580.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,559 +58,453 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/tdx branch of tip:
 
-Commit-ID:     f9ea69e6406abf2145aba7987e7b81ea1b4ea356
-Gitweb:        https://git.kernel.org/tip/f9ea69e6406abf2145aba7987e7b81ea1b4ea356
+Commit-ID:     57a420bb8186d1d0178b857e5dd5026093641654
+Gitweb:        https://git.kernel.org/tip/57a420bb8186d1d0178b857e5dd5026093641654
 Author:        Kai Huang <kai.huang@intel.com>
-AuthorDate:    Tue, 15 Aug 2023 23:02:01 +12:00
+AuthorDate:    Tue, 15 Aug 2023 23:01:59 +12:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Mon, 11 Sep 2023 16:34:27 -07:00
+CommitterDate: Mon, 11 Sep 2023 16:33:38 -07:00
 
-x86/tdx: Make TDX_HYPERCALL asm similar to TDX_MODULE_CALL
+x86/tdx: Pass TDCALL/SEAMCALL input/output registers via a structure
 
-Now the 'struct tdx_hypercall_args' and 'struct tdx_module_args' are
-almost the same, and the TDX_HYPERCALL and TDX_MODULE_CALL asm macro
-share similar code pattern too.  The __tdx_hypercall() and __tdcall()
-should be unified to use the same assembly code.
+Currently, the TDX_MODULE_CALL asm macro, which handles both TDCALL and
+SEAMCALL, takes one parameter for each input register and an optional
+'struct tdx_module_output' (a collection of output registers) as output.
+This is different from the TDX_HYPERCALL macro which uses a single
+'struct tdx_hypercall_args' to carry all input/output registers.
 
-As a preparation to unify them, simplify the TDX_HYPERCALL to make it
-more like the TDX_MODULE_CALL.
+The newer TDX versions introduce more TDCALLs/SEAMCALLs which use more
+input/output registers.  Also, the TDH.VP.ENTER (which isn't covered
+by the current TDX_MODULE_CALL macro) basically can use all registers
+that the TDX_HYPERCALL does.  The current TDX_MODULE_CALL macro isn't
+extendible to cover those cases.
 
-The TDX_HYPERCALL takes the pointer of 'struct tdx_hypercall_args' as
-function call argument, and does below extra things comparing to the
-TDX_MODULE_CALL:
+Similar to the TDX_HYPERCALL macro, simplify the TDX_MODULE_CALL macro
+to use a single structure 'struct tdx_module_args' to carry all the
+input/output registers.  Currently, R10/R11 are only used as output
+register but not as input by any TDCALL/SEAMCALL.  Change to also use
+R10/R11 as input register to make input/output registers symmetric.
 
-1) It sets RAX to 0 (TDG.VP.VMCALL leaf) internally;
-2) It sets RCX to the (fixed) bitmap of shared registers internally;
-3) It calls __tdx_hypercall_failed() internally (and panics) when the
-   TDCALL instruction itself fails;
-4) After TDCALL, it moves R10 to RAX to return the return code of the
-   VMCALL leaf, regardless the '\ret' asm macro argument;
+Currently, the TDX_MODULE_CALL macro depends on the caller to pass a
+non-NULL 'struct tdx_module_output' to get additional output registers.
+Similar to the TDX_HYPERCALL macro, change the TDX_MODULE_CALL macro to
+take a new 'ret' macro argument to indicate whether to save the output
+registers to the 'struct tdx_module_args'.  Also introduce a new
+__tdcall_ret() for that purpose, similar to the __tdx_hypercall_ret().
 
-Firstly, change the TDX_HYPERCALL to take the same function call
-arguments as the TDX_MODULE_CALL does: TDCALL leaf ID, and the pointer
-to 'struct tdx_module_args'.  Then 1) and 2) can be moved to the
-caller:
-
- - TDG.VP.VMCALL leaf ID can be passed via the function call argument;
- - 'struct tdx_module_args' is 'struct tdx_hypercall_args' + RCX, thus
-   the bitmap of shared registers can be passed via RCX in the
-   structure.
-
-Secondly, to move 3) and 4) out of assembly, make the TDX_HYPERCALL
-always save output registers to the structure.  The caller then can:
-
- - Call __tdx_hypercall_failed() when TDX_HYPERCALL returns error;
- - Return R10 in the structure as the return code of the VMCALL leaf;
-
-With above changes, change the asm function from __tdx_hypercall() to
-__tdcall_hypercall(), and reimplement __tdx_hypercall() as the C wrapper
-of it.  This avoids having to add another wrapper of __tdx_hypercall()
-(_tdx_hypercall() is already taken).
-
-The __tdcall_hypercall() will be replaced with a __tdcall() variant
-using TDX_MODULE_CALL in a later commit as the final goal is to have one
-assembly to handle both TDCALL and TDVMCALL.
-
-Currently, the __tdx_hypercall() asm is in '.noinstr.text'.  To keep
-this unchanged, annotate __tdx_hypercall(), which is a C function now,
-as 'noinstr'.
-
-Remove the __tdx_hypercall_ret() as __tdx_hypercall() already does so.
-
-Implement __tdx_hypercall() in tdx-shared.c so it can be shared with the
-compressed code.
-
-Opportunistically fix a checkpatch error complaining using space around
-parenthesis '(' and ')' while moving the bitmap of shared registers to
-<asm/shared/tdx.h>.
+Note the tdcall(), which is a wrapper of __tdcall(), is called by three
+callers: tdx_parse_tdinfo(), tdx_get_ve_info() and tdx_early_init().
+The former two need the additional output but the last one doesn't.  For
+simplicity, make tdcall() always call __tdcall_ret() to avoid another
+"_ret()" wrapper.  The last caller tdx_early_init() isn't performance
+critical anyway.
 
 Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Kai Huang <kai.huang@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/all/0cbf25e7aee3256288045023a31f65f0cef90af4.1692096753.git.kai.huang%40intel.com
+Link: https://lore.kernel.org/all/483616c1762d85eb3a3c3035a7de061cfacf2f14.1692096753.git.kai.huang%40intel.com
 ---
- arch/x86/boot/compressed/tdx.c    |   2 +-
- arch/x86/coco/tdx/tdcall.S        | 150 +++++++++--------------------
- arch/x86/coco/tdx/tdx-shared.c    |  43 ++++++++-
- arch/x86/coco/tdx/tdx.c           |  11 +-
- arch/x86/include/asm/shared/tdx.h |  86 +++++++++++------
- arch/x86/kernel/asm-offsets.c     |  14 +---
- 6 files changed, 157 insertions(+), 149 deletions(-)
+ arch/x86/coco/tdx/tdcall.S        | 47 +++++----------
+ arch/x86/coco/tdx/tdx-shared.c    |  6 +-
+ arch/x86/coco/tdx/tdx.c           | 44 +++++++-------
+ arch/x86/include/asm/shared/tdx.h |  8 +--
+ arch/x86/kernel/asm-offsets.c     | 12 ++--
+ arch/x86/virt/vmx/tdx/tdxcall.S   | 95 ++++++++++++------------------
+ 6 files changed, 95 insertions(+), 117 deletions(-)
 
-diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
-index 8841b94..bc03eae 100644
---- a/arch/x86/boot/compressed/tdx.c
-+++ b/arch/x86/boot/compressed/tdx.c
-@@ -26,7 +26,7 @@ static inline unsigned int tdx_io_in(int size, u16 port)
- 		.r14 = port,
- 	};
- 
--	if (__tdx_hypercall_ret(&args))
-+	if (__tdx_hypercall(&args))
- 		return UINT_MAX;
- 
- 	return args.r11;
 diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
-index faf731d..6d76d7d 100644
+index 6aebac0..56b9cd3 100644
 --- a/arch/x86/coco/tdx/tdcall.S
 +++ b/arch/x86/coco/tdx/tdcall.S
-@@ -2,41 +2,12 @@
- #include <asm/asm-offsets.h>
- #include <asm/asm.h>
- #include <asm/frame.h>
--#include <asm/unwind_hints.h>
- 
- #include <linux/linkage.h>
--#include <linux/bits.h>
- #include <linux/errno.h>
- 
- #include "../../virt/vmx/tdx/tdxcall.S"
- 
--/*
-- * Bitmasks of exposed registers (with VMM).
-- */
--#define TDX_RDX		BIT(2)
--#define TDX_RBX		BIT(3)
--#define TDX_RSI		BIT(6)
--#define TDX_RDI		BIT(7)
--#define TDX_R8		BIT(8)
--#define TDX_R9		BIT(9)
--#define TDX_R10		BIT(10)
--#define TDX_R11		BIT(11)
--#define TDX_R12		BIT(12)
--#define TDX_R13		BIT(13)
--#define TDX_R14		BIT(14)
--#define TDX_R15		BIT(15)
--
--/*
-- * These registers are clobbered to hold arguments for each
-- * TDVMCALL. They are safe to expose to the VMM.
-- * Each bit in this mask represents a register ID. Bit field
-- * details can be found in TDX GHCI specification, section
-- * titled "TDCALL [TDG.VP.VMCALL] leaf".
-- */
--#define TDVMCALL_EXPOSE_REGS_MASK	\
--	( TDX_RDX | TDX_RBX | TDX_RSI | TDX_RDI | TDX_R8  | TDX_R9  | \
--	  TDX_R10 | TDX_R11 | TDX_R12 | TDX_R13 | TDX_R14 | TDX_R15 )
--
- .section .noinstr.text, "ax"
+@@ -43,37 +43,10 @@
+  * __tdcall()  - Used by TDX guests to request services from the TDX
+  * module (does not include VMM services) using TDCALL instruction.
+  *
+- * Transforms function call register arguments into the TDCALL register ABI.
+- * After TDCALL operation, TDX module output is saved in @out (if it is
+- * provided by the user).
+- *
+- *-------------------------------------------------------------------------
+- * TDCALL ABI:
+- *-------------------------------------------------------------------------
+- * Input Registers:
+- *
+- * RAX                 - TDCALL Leaf number.
+- * RCX,RDX,R8-R9       - TDCALL Leaf specific input registers.
+- *
+- * Output Registers:
+- *
+- * RAX                 - TDCALL instruction error code.
+- * RCX,RDX,R8-R11      - TDCALL Leaf specific output registers.
+- *
+- *-------------------------------------------------------------------------
+- *
+  * __tdcall() function ABI:
+  *
+- * @fn  (RDI)          - TDCALL Leaf ID,    moved to RAX
+- * @rcx (RSI)          - Input parameter 1, moved to RCX
+- * @rdx (RDX)          - Input parameter 2, moved to RDX
+- * @r8  (RCX)          - Input parameter 3, moved to R8
+- * @r9  (R8)           - Input parameter 4, moved to R9
+- *
+- * @out (R9)           - struct tdx_module_output pointer
+- *                       stored temporarily in R12 (not
+- *                       shared with the TDX module). It
+- *                       can be NULL.
++ * @fn   (RDI)	- TDCALL Leaf ID, moved to RAX
++ * @args (RSI)	- struct tdx_module_args for input
+  *
+  * Return status of TDCALL via RAX.
+  */
+@@ -82,6 +55,22 @@ SYM_FUNC_START(__tdcall)
+ SYM_FUNC_END(__tdcall)
  
  /*
-@@ -78,10 +49,13 @@ SYM_FUNC_END(__tdcall_ret)
++ * __tdcall_ret() - Used by TDX guests to request services from the TDX
++ * module (does not include VMM services) using TDCALL instruction, with
++ * saving output registers to the 'struct tdx_module_args' used as input.
++ *
++ * __tdcall_ret() function ABI:
++ *
++ * @fn   (RDI)	- TDCALL Leaf ID, moved to RAX
++ * @args (RSI)	- struct tdx_module_args for input and output
++ *
++ * Return status of TDCALL via RAX.
++ */
++SYM_FUNC_START(__tdcall_ret)
++	TDX_MODULE_CALL host=0 ret=1
++SYM_FUNC_END(__tdcall_ret)
++
++/*
   * TDX_HYPERCALL - Make hypercalls to a TDX VMM using TDVMCALL leaf of TDCALL
   * instruction
   *
-- * Transforms values in  function call argument struct tdx_hypercall_args @args
-+ * Transforms values in  function call argument struct tdx_module_args @args
-  * into the TDCALL register ABI. After TDCALL operation, VMM output is saved
-  * back in @args, if \ret is 1.
-  *
-+ * Depends on the caller to pass TDG.VP.VMCALL as the TDCALL leaf, and set
-+ * @args::rcx to TDVMCALL_EXPOSE_REGS_MASK.
-+ *
-  *-------------------------------------------------------------------------
-  * TD VMCALL ABI:
-  *-------------------------------------------------------------------------
-@@ -106,7 +80,7 @@ SYM_FUNC_END(__tdcall_ret)
-  * R8-R15              - Same as above.
-  *
+diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
+index 90631ab..a7396d0 100644
+--- a/arch/x86/coco/tdx/tdx-shared.c
++++ b/arch/x86/coco/tdx/tdx-shared.c
+@@ -5,7 +5,7 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
+ 				    enum pg_level pg_level)
+ {
+ 	unsigned long accept_size = page_level_size(pg_level);
+-	u64 tdcall_rcx;
++	struct tdx_module_args args = {};
+ 	u8 page_size;
+ 
+ 	if (!IS_ALIGNED(start, accept_size))
+@@ -34,8 +34,8 @@ static unsigned long try_accept_one(phys_addr_t start, unsigned long len,
+ 		return 0;
+ 	}
+ 
+-	tdcall_rcx = start | page_size;
+-	if (__tdcall(TDG_MEM_PAGE_ACCEPT, tdcall_rcx, 0, 0, 0, NULL))
++	args.rcx = start | page_size;
++	if (__tdcall(TDG_MEM_PAGE_ACCEPT, &args))
+ 		return 0;
+ 
+ 	return accept_size;
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 9833c81..0741a9d 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -66,10 +66,9 @@ EXPORT_SYMBOL_GPL(tdx_kvm_hypercall);
+  * should only be used for calls that have no legitimate reason to fail
+  * or where the kernel can not survive the call failing.
   */
--.macro TDX_HYPERCALL ret:req
-+.macro TDX_HYPERCALL
- 	FRAME_BEGIN
+-static inline void tdcall(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+-			  struct tdx_module_output *out)
++static inline void tdcall(u64 fn, struct tdx_module_args *args)
+ {
+-	if (__tdcall(fn, rcx, rdx, r8, r9, out))
++	if (__tdcall_ret(fn, args))
+ 		panic("TDCALL %lld failed (Buggy TDX module!)\n", fn);
+ }
  
- 	/* Save callee-saved GPRs as mandated by the x86_64 ABI */
-@@ -116,63 +90,52 @@ SYM_FUNC_END(__tdcall_ret)
- 	push %r12
- 	push %rbx
+@@ -89,11 +88,14 @@ static inline void tdcall(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+  */
+ int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport)
+ {
++	struct tdx_module_args args = {
++		.rcx = virt_to_phys(tdreport),
++		.rdx = virt_to_phys(reportdata),
++		.r8 = TDREPORT_SUBTYPE_0,
++	};
+ 	u64 ret;
  
--	/* Free RDI to be used as TDVMCALL arguments */
-+	/* Move Leaf ID to RAX */
- 	movq %rdi, %rax
+-	ret = __tdcall(TDG_MR_REPORT, virt_to_phys(tdreport),
+-			virt_to_phys(reportdata), TDREPORT_SUBTYPE_0,
+-			0, NULL);
++	ret = __tdcall(TDG_MR_REPORT, &args);
+ 	if (ret) {
+ 		if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+ 			return -EINVAL;
+@@ -141,7 +143,7 @@ static void __noreturn tdx_panic(const char *msg)
  
-+	/* Move bitmap of shared registers to RCX */
-+	movq TDX_MODULE_rcx(%rsi), %rcx
-+
- 	/* Copy hypercall registers from arg struct: */
--	movq TDX_HYPERCALL_r8(%rax),  %r8
--	movq TDX_HYPERCALL_r9(%rax),  %r9
--	movq TDX_HYPERCALL_r10(%rax), %r10
--	movq TDX_HYPERCALL_r11(%rax), %r11
--	movq TDX_HYPERCALL_r12(%rax), %r12
--	movq TDX_HYPERCALL_r13(%rax), %r13
--	movq TDX_HYPERCALL_r14(%rax), %r14
--	movq TDX_HYPERCALL_r15(%rax), %r15
--	movq TDX_HYPERCALL_rdi(%rax), %rdi
--	movq TDX_HYPERCALL_rsi(%rax), %rsi
--	movq TDX_HYPERCALL_rbx(%rax), %rbx
--	movq TDX_HYPERCALL_rdx(%rax), %rdx
--
--	push %rax
--
--	/* Mangle function call ABI into TDCALL ABI: */
--	/* Set TDCALL leaf ID (TDVMCALL (0)) in RAX */
--	xor %eax, %eax
--
--	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
-+	movq TDX_MODULE_r8(%rsi),  %r8
-+	movq TDX_MODULE_r9(%rsi),  %r9
-+	movq TDX_MODULE_r10(%rsi), %r10
-+	movq TDX_MODULE_r11(%rsi), %r11
-+	movq TDX_MODULE_r12(%rsi), %r12
-+	movq TDX_MODULE_r13(%rsi), %r13
-+	movq TDX_MODULE_r14(%rsi), %r14
-+	movq TDX_MODULE_r15(%rsi), %r15
-+	movq TDX_MODULE_rdi(%rsi), %rdi
-+	movq TDX_MODULE_rbx(%rsi), %rbx
-+	movq TDX_MODULE_rdx(%rsi), %rdx
-+
-+	pushq %rsi
-+	movq TDX_MODULE_rsi(%rsi), %rsi
+ static void tdx_parse_tdinfo(u64 *cc_mask)
+ {
+-	struct tdx_module_output out;
++	struct tdx_module_args args = {};
+ 	unsigned int gpa_width;
+ 	u64 td_attr;
  
- 	tdcall
+@@ -152,7 +154,7 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
+ 	 * Guest-Host-Communication Interface (GHCI), section 2.4.2 TDCALL
+ 	 * [TDG.VP.INFO].
+ 	 */
+-	tdcall(TDG_VP_INFO, 0, 0, 0, 0, &out);
++	tdcall(TDG_VP_INFO, &args);
  
  	/*
--	 * RAX!=0 indicates a failure of the TDVMCALL mechanism itself and that
--	 * something has gone horribly wrong with the TDX module.
-+	 * Restore the pointer of the structure to save output registers.
- 	 *
--	 * The return status of the hypercall operation is in a separate
--	 * register (in R10). Hypercall errors are a part of normal operation
--	 * and are handled by callers.
-+	 * RCX is used as bitmap of shared registers and doesn't hold any
-+	 * value provided by the VMM, thus it can be used as spare to
-+	 * restore the structure pointer.
+ 	 * The highest bit of a guest physical address is the "sharing" bit.
+@@ -161,7 +163,7 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
+ 	 * The GPA width that comes out of this call is critical. TDX guests
+ 	 * can not meaningfully run without it.
  	 */
--	testq %rax, %rax
--	jne .Lpanic\@
+-	gpa_width = out.rcx & GENMASK(5, 0);
++	gpa_width = args.rcx & GENMASK(5, 0);
+ 	*cc_mask = BIT_ULL(gpa_width - 1);
+ 
+ 	/*
+@@ -169,7 +171,7 @@ static void tdx_parse_tdinfo(u64 *cc_mask)
+ 	 * memory.  Ensure that no #VE will be delivered for accesses to
+ 	 * TD-private memory.  Only VMM-shared memory (MMIO) will #VE.
+ 	 */
+-	td_attr = out.rdx;
++	td_attr = args.rdx;
+ 	if (!(td_attr & ATTR_SEPT_VE_DISABLE)) {
+ 		const char *msg = "TD misconfiguration: SEPT_VE_DISABLE attribute must be set.";
+ 
+@@ -577,7 +579,7 @@ __init bool tdx_early_handle_ve(struct pt_regs *regs)
+ 
+ void tdx_get_ve_info(struct ve_info *ve)
+ {
+-	struct tdx_module_output out;
++	struct tdx_module_args args = {};
+ 
+ 	/*
+ 	 * Called during #VE handling to retrieve the #VE info from the
+@@ -594,15 +596,15 @@ void tdx_get_ve_info(struct ve_info *ve)
+ 	 * Note, the TDX module treats virtual NMIs as inhibited if the #VE
+ 	 * valid flag is set. It means that NMI=>#VE will not result in a #DF.
+ 	 */
+-	tdcall(TDG_VP_VEINFO_GET, 0, 0, 0, 0, &out);
++	tdcall(TDG_VP_VEINFO_GET, &args);
+ 
+ 	/* Transfer the output parameters */
+-	ve->exit_reason = out.rcx;
+-	ve->exit_qual   = out.rdx;
+-	ve->gla         = out.r8;
+-	ve->gpa         = out.r9;
+-	ve->instr_len   = lower_32_bits(out.r10);
+-	ve->instr_info  = upper_32_bits(out.r10);
++	ve->exit_reason = args.rcx;
++	ve->exit_qual   = args.rdx;
++	ve->gla         = args.r8;
++	ve->gpa         = args.r9;
++	ve->instr_len   = lower_32_bits(args.r10);
++	ve->instr_info  = upper_32_bits(args.r10);
+ }
+ 
+ /*
+@@ -799,6 +801,10 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 
+ void __init tdx_early_init(void)
+ {
++	struct tdx_module_args args = {
++		.rdx = TDCS_NOTIFY_ENABLES,
++		.r9 = -1ULL,
++	};
+ 	u64 cc_mask;
+ 	u32 eax, sig[3];
+ 
+@@ -814,7 +820,7 @@ void __init tdx_early_init(void)
+ 	cc_set_mask(cc_mask);
+ 
+ 	/* Kernel does not use NOTIFY_ENABLES and does not need random #VEs */
+-	tdcall(TDG_VM_WR, 0, TDCS_NOTIFY_ENABLES, 0, -1ULL, NULL);
++	tdcall(TDG_VM_WR, &args);
+ 
+ 	/*
+ 	 * All bits above GPA width are reserved and kernel treats shared bit
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index c11c0d9..ca8a681 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -76,11 +76,11 @@ static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
+ void __tdx_hypercall_failed(void);
+ 
+ /*
+- * Used in __tdx_module_call() to gather the output registers' values of the
++ * Used in __tdcall*() to gather the input/output registers' values of the
+  * TDCALL instruction when requesting services from the TDX module. This is a
+  * software only structure and not part of the TDX module/VMM ABI
+  */
+-struct tdx_module_output {
++struct tdx_module_args {
+ 	u64 rcx;
+ 	u64 rdx;
+ 	u64 r8;
+@@ -90,8 +90,8 @@ struct tdx_module_output {
+ };
+ 
+ /* Used to communicate with the TDX module */
+-u64 __tdcall(u64 fn, u64 rcx, u64 rdx, u64 r8, u64 r9,
+-	     struct tdx_module_output *out);
++u64 __tdcall(u64 fn, struct tdx_module_args *args);
++u64 __tdcall_ret(u64 fn, struct tdx_module_args *args);
+ 
+ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end);
+ 
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index dc35763..50383bc 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -68,12 +68,12 @@ static void __used common(void)
+ #endif
+ 
+ 	BLANK();
+-	OFFSET(TDX_MODULE_rcx, tdx_module_output, rcx);
+-	OFFSET(TDX_MODULE_rdx, tdx_module_output, rdx);
+-	OFFSET(TDX_MODULE_r8,  tdx_module_output, r8);
+-	OFFSET(TDX_MODULE_r9,  tdx_module_output, r9);
+-	OFFSET(TDX_MODULE_r10, tdx_module_output, r10);
+-	OFFSET(TDX_MODULE_r11, tdx_module_output, r11);
++	OFFSET(TDX_MODULE_rcx, tdx_module_args, rcx);
++	OFFSET(TDX_MODULE_rdx, tdx_module_args, rdx);
++	OFFSET(TDX_MODULE_r8,  tdx_module_args, r8);
++	OFFSET(TDX_MODULE_r9,  tdx_module_args, r9);
++	OFFSET(TDX_MODULE_r10, tdx_module_args, r10);
++	OFFSET(TDX_MODULE_r11, tdx_module_args, r11);
+ 
+ 	BLANK();
+ 	OFFSET(TDX_HYPERCALL_r8,  tdx_hypercall_args, r8);
+diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
+index 6bdf6e1..e9e19e7 100644
+--- a/arch/x86/virt/vmx/tdx/tdxcall.S
++++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+@@ -17,34 +17,35 @@
+  *            TDX module and hypercalls to the VMM.
+  * SEAMCALL - used by TDX hosts to make requests to the
+  *            TDX module.
++ *
++ *-------------------------------------------------------------------------
++ * TDCALL/SEAMCALL ABI:
++ *-------------------------------------------------------------------------
++ * Input Registers:
++ *
++ * RAX                 - TDCALL/SEAMCALL Leaf number.
++ * RCX,RDX,R8-R11      - TDCALL/SEAMCALL Leaf specific input registers.
++ *
++ * Output Registers:
++ *
++ * RAX                 - TDCALL/SEAMCALL instruction error code.
++ * RCX,RDX,R8-R11      - TDCALL/SEAMCALL Leaf specific output registers.
++ *
++ *-------------------------------------------------------------------------
+  */
+-.macro TDX_MODULE_CALL host:req
++.macro TDX_MODULE_CALL host:req ret=0
+ 	FRAME_BEGIN
+-	/*
+-	 * R12 will be used as temporary storage for struct tdx_module_output
+-	 * pointer. Since R12-R15 registers are not used by TDCALL/SEAMCALL
+-	 * services supported by this function, it can be reused.
+-	 */
 -
--	pop %rax
+-	/* Callee saved, so preserve it */
+-	push %r12
 -
--	.if \ret
--	movq %r8,  TDX_HYPERCALL_r8(%rax)
--	movq %r9,  TDX_HYPERCALL_r9(%rax)
--	movq %r10, TDX_HYPERCALL_r10(%rax)
--	movq %r11, TDX_HYPERCALL_r11(%rax)
--	movq %r12, TDX_HYPERCALL_r12(%rax)
--	movq %r13, TDX_HYPERCALL_r13(%rax)
--	movq %r14, TDX_HYPERCALL_r14(%rax)
--	movq %r15, TDX_HYPERCALL_r15(%rax)
--	movq %rdi, TDX_HYPERCALL_rdi(%rax)
--	movq %rsi, TDX_HYPERCALL_rsi(%rax)
--	movq %rbx, TDX_HYPERCALL_rbx(%rax)
--	movq %rdx, TDX_HYPERCALL_rdx(%rax)
--	.endif
--
--	/* TDVMCALL leaf return code is in R10 */
--	movq %r10, %rax
-+	popq %rcx
-+	movq %rsi, TDX_MODULE_rsi(%rcx)
-+	movq %rcx, %rsi
+-	/*
+-	 * Push output pointer to stack.
+-	 * After the operation, it will be fetched into R12 register.
+-	 */
+-	push %r9
+ 
+-	/* Mangle function call ABI into TDCALL/SEAMCALL ABI: */
+ 	/* Move Leaf ID to RAX */
+ 	mov %rdi, %rax
+-	/* Move input 4 to R9 */
+-	mov %r8,  %r9
+-	/* Move input 3 to R8 */
+-	mov %rcx, %r8
+-	/* Move input 1 to RCX */
+-	mov %rsi, %rcx
+-	/* Leave input param 2 in RDX */
 +
++	/* Move other input regs from 'struct tdx_module_args' */
++	movq	TDX_MODULE_rcx(%rsi), %rcx
++	movq	TDX_MODULE_rdx(%rsi), %rdx
++	movq	TDX_MODULE_r8(%rsi),  %r8
++	movq	TDX_MODULE_r9(%rsi),  %r9
++	movq	TDX_MODULE_r10(%rsi), %r10
++	movq	TDX_MODULE_r11(%rsi), %r11
+ 
+ .if \host
+ 	seamcall
+@@ -59,49 +60,31 @@
+ 	 * This value will never be used as actual SEAMCALL error code as
+ 	 * it is from the Reserved status code class.
+ 	 */
+-	jc .Lseamcall_vmfailinvalid
++	jc .Lseamcall_vmfailinvalid\@
+ .else
+ 	tdcall
+ .endif
+ 
+-	/*
+-	 * Fetch output pointer from stack to R12 (It is used
+-	 * as temporary storage)
+-	 */
+-	pop %r12
+-
+-	/*
+-	 * Since this macro can be invoked with NULL as an output pointer,
+-	 * check if caller provided an output struct before storing output
+-	 * registers.
+-	 *
+-	 * Update output registers, even if the call failed (RAX != 0).
+-	 * Other registers may contain details of the failure.
+-	 */
+-	test %r12, %r12
+-	jz .Lout
+-
+-	/* Copy result registers to output struct: */
+-	movq %rcx, TDX_MODULE_rcx(%r12)
+-	movq %rdx, TDX_MODULE_rdx(%r12)
+-	movq %r8,  TDX_MODULE_r8(%r12)
+-	movq %r9,  TDX_MODULE_r9(%r12)
+-	movq %r10, TDX_MODULE_r10(%r12)
+-	movq %r11, TDX_MODULE_r11(%r12)
+-
+-.Lout:
+-	/* Restore the state of R12 register */
+-	pop %r12
++.if \ret
++	/* Copy output registers to the structure */
++	movq %rcx, TDX_MODULE_rcx(%rsi)
++	movq %rdx, TDX_MODULE_rdx(%rsi)
 +	movq %r8,  TDX_MODULE_r8(%rsi)
 +	movq %r9,  TDX_MODULE_r9(%rsi)
 +	movq %r10, TDX_MODULE_r10(%rsi)
 +	movq %r11, TDX_MODULE_r11(%rsi)
-+	movq %r12, TDX_MODULE_r12(%rsi)
-+	movq %r13, TDX_MODULE_r13(%rsi)
-+	movq %r14, TDX_MODULE_r14(%rsi)
-+	movq %r15, TDX_MODULE_r15(%rsi)
-+	movq %rdi, TDX_MODULE_rdi(%rsi)
-+	movq %rbx, TDX_MODULE_rbx(%rsi)
-+	movq %rdx, TDX_MODULE_rdx(%rsi)
++.endif
  
- 	/*
- 	 * Zero out registers exposed to the VMM to avoid speculative execution
-@@ -198,33 +161,20 @@ SYM_FUNC_END(__tdcall_ret)
++.if \host
++.Lout\@:
++.endif
  	FRAME_END
- 
  	RET
--.Lpanic\@:
--	call __tdx_hypercall_failed
--	/* __tdx_hypercall_failed never returns */
--	REACHABLE
--	jmp .Lpanic\@
+ 
+ .if \host
+-.Lseamcall_vmfailinvalid:
++.Lseamcall_vmfailinvalid\@:
+ 	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
+-	/* pop the unused output pointer back to %r9 */
+-	pop %r9
+-	jmp .Lout
++	jmp .Lout\@
+ .endif	/* \host */
+ 
  .endm
- 
- /*
-  *
-- * __tdx_hypercall() function ABI:
-- *
-- * @args  (RDI)        - struct tdx_hypercall_args for input
-- *
-- * On successful completion, return the hypercall error code.
-- */
--SYM_FUNC_START(__tdx_hypercall)
--	TDX_HYPERCALL ret=0
--SYM_FUNC_END(__tdx_hypercall)
--
--/*
-+ * __tdcall_hypercall() function ABI:
-  *
-- * __tdx_hypercall_ret() function ABI:
-+ * @fn   (RDI)	- TDCALL leaf ID, moved to RAX
-+ * @args (RSI)	- struct tdx_module_args for input/output
-  *
-- * @args  (RDI)        - struct tdx_hypercall_args for input and output
-+ * @fn and @args::rcx from the caller must be TDG_VP_VMCALL and
-+ * TDVMCALL_EXPOSE_REGS_MASK respectively.
-  *
-  * On successful completion, return the hypercall error code.
-  */
--SYM_FUNC_START(__tdx_hypercall_ret)
--	TDX_HYPERCALL ret=1
--SYM_FUNC_END(__tdx_hypercall_ret)
-+SYM_FUNC_START(__tdcall_hypercall)
-+	TDX_HYPERCALL
-+SYM_FUNC_END(__tdcall_hypercall)
-diff --git a/arch/x86/coco/tdx/tdx-shared.c b/arch/x86/coco/tdx/tdx-shared.c
-index a7396d0..b47c8cc 100644
---- a/arch/x86/coco/tdx/tdx-shared.c
-+++ b/arch/x86/coco/tdx/tdx-shared.c
-@@ -69,3 +69,46 @@ bool tdx_accept_memory(phys_addr_t start, phys_addr_t end)
- 
- 	return true;
- }
-+
-+noinstr u64 __tdx_hypercall(struct tdx_hypercall_args *args)
-+{
-+	struct tdx_module_args margs = {
-+		.rcx = TDVMCALL_EXPOSE_REGS_MASK,
-+		.rdx = args->rdx,
-+		.r8  = args->r8,
-+		.r9  = args->r9,
-+		.r10 = args->r10,
-+		.r11 = args->r11,
-+		.r12 = args->r12,
-+		.r13 = args->r13,
-+		.r14 = args->r14,
-+		.r15 = args->r15,
-+		.rbx = args->rbx,
-+		.rdi = args->rdi,
-+		.rsi = args->rsi,
-+	};
-+
-+	/*
-+	 * Failure of __tdcall_hypercall() indicates a failure of the TDVMCALL
-+	 * mechanism itself and that something has gone horribly wrong with
-+	 * the TDX module.  __tdx_hypercall_failed() never returns.
-+	 */
-+	if (__tdcall_hypercall(TDG_VP_VMCALL, &margs))
-+		__tdx_hypercall_failed();
-+
-+	args->r8  = margs.r8;
-+	args->r9  = margs.r9;
-+	args->r10 = margs.r10;
-+	args->r11 = margs.r11;
-+	args->r12 = margs.r12;
-+	args->r13 = margs.r13;
-+	args->r14 = margs.r14;
-+	args->r15 = margs.r15;
-+	args->rdi = margs.rdi;
-+	args->rsi = margs.rsi;
-+	args->rbx = margs.rbx;
-+	args->rdx = margs.rdx;
-+
-+	/* TDVMCALL leaf return code is in R10 */
-+	return args->r10;
-+}
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index 0741a9d..8c2a4c5 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -38,7 +38,7 @@
- #define TDREPORT_SUBTYPE_0	0
- 
- /* Called from __tdx_hypercall() for unrecoverable failure */
--noinstr void __tdx_hypercall_failed(void)
-+noinstr void __noreturn __tdx_hypercall_failed(void)
- {
- 	instrumentation_begin();
- 	panic("TDVMCALL failed. TDX module bug?");
-@@ -285,7 +285,7 @@ static int read_msr(struct pt_regs *regs, struct ve_info *ve)
- 	 * can be found in TDX Guest-Host-Communication Interface
- 	 * (GHCI), section titled "TDG.VP.VMCALL<Instruction.RDMSR>".
- 	 */
--	if (__tdx_hypercall_ret(&args))
-+	if (__tdx_hypercall(&args))
- 		return -EIO;
- 
- 	regs->ax = lower_32_bits(args.r11);
-@@ -339,7 +339,7 @@ static int handle_cpuid(struct pt_regs *regs, struct ve_info *ve)
- 	 * ABI can be found in TDX Guest-Host-Communication Interface
- 	 * (GHCI), section titled "VP.VMCALL<Instruction.CPUID>".
- 	 */
--	if (__tdx_hypercall_ret(&args))
-+	if (__tdx_hypercall(&args))
- 		return -EIO;
- 
- 	/*
-@@ -366,8 +366,9 @@ static bool mmio_read(int size, unsigned long addr, unsigned long *val)
- 		.r15 = *val,
- 	};
- 
--	if (__tdx_hypercall_ret(&args))
-+	if (__tdx_hypercall(&args))
- 		return false;
-+
- 	*val = args.r11;
- 	return true;
- }
-@@ -500,7 +501,7 @@ static bool handle_in(struct pt_regs *regs, int size, int port)
- 	 * in TDX Guest-Host-Communication Interface (GHCI) section titled
- 	 * "TDG.VP.VMCALL<Instruction.IO>".
- 	 */
--	success = !__tdx_hypercall_ret(&args);
-+	success = !__tdx_hypercall(&args);
- 
- 	/* Update part of the register affected by the emulated instruction */
- 	regs->ax &= ~mask;
-diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-index 669749a..85493c4 100644
---- a/arch/x86/include/asm/shared/tdx.h
-+++ b/arch/x86/include/asm/shared/tdx.h
-@@ -11,6 +11,7 @@
- #define TDX_IDENT		"IntelTDX    "
- 
- /* TDX module Call Leaf IDs */
-+#define TDG_VP_VMCALL			0
- #define TDG_VP_INFO			1
- #define TDG_VP_VEINFO_GET		3
- #define TDG_MR_REPORT			4
-@@ -26,9 +27,64 @@
- 
- #define TDVMCALL_STATUS_RETRY		1
- 
-+/*
-+ * Bitmasks of exposed registers (with VMM).
-+ */
-+#define TDX_RDX		BIT(2)
-+#define TDX_RBX		BIT(3)
-+#define TDX_RSI		BIT(6)
-+#define TDX_RDI		BIT(7)
-+#define TDX_R8		BIT(8)
-+#define TDX_R9		BIT(9)
-+#define TDX_R10		BIT(10)
-+#define TDX_R11		BIT(11)
-+#define TDX_R12		BIT(12)
-+#define TDX_R13		BIT(13)
-+#define TDX_R14		BIT(14)
-+#define TDX_R15		BIT(15)
-+
-+/*
-+ * These registers are clobbered to hold arguments for each
-+ * TDVMCALL. They are safe to expose to the VMM.
-+ * Each bit in this mask represents a register ID. Bit field
-+ * details can be found in TDX GHCI specification, section
-+ * titled "TDCALL [TDG.VP.VMCALL] leaf".
-+ */
-+#define TDVMCALL_EXPOSE_REGS_MASK	\
-+	(TDX_RDX | TDX_RBX | TDX_RSI | TDX_RDI | TDX_R8  | TDX_R9  | \
-+	 TDX_R10 | TDX_R11 | TDX_R12 | TDX_R13 | TDX_R14 | TDX_R15)
-+
- #ifndef __ASSEMBLY__
- 
- /*
-+ * Used in __tdcall*() to gather the input/output registers' values of the
-+ * TDCALL instruction when requesting services from the TDX module. This is a
-+ * software only structure and not part of the TDX module/VMM ABI
-+ */
-+struct tdx_module_args {
-+	/* callee-clobbered */
-+	u64 rcx;
-+	u64 rdx;
-+	u64 r8;
-+	u64 r9;
-+	/* extra callee-clobbered */
-+	u64 r10;
-+	u64 r11;
-+	/* callee-saved + rdi/rsi */
-+	u64 r12;
-+	u64 r13;
-+	u64 r14;
-+	u64 r15;
-+	u64 rbx;
-+	u64 rdi;
-+	u64 rsi;
-+};
-+
-+/* Used to communicate with the TDX module */
-+u64 __tdcall(u64 fn, struct tdx_module_args *args);
-+u64 __tdcall_ret(u64 fn, struct tdx_module_args *args);
-+
-+/*
-  * Used in __tdx_hypercall() to pass down and get back registers' values of
-  * the TDCALL instruction when requesting services from the VMM.
-  *
-@@ -50,8 +106,8 @@ struct tdx_hypercall_args {
- };
- 
- /* Used to request services from the VMM */
-+u64 __tdcall_hypercall(u64 fn, struct tdx_module_args *args);
- u64 __tdx_hypercall(struct tdx_hypercall_args *args);
--u64 __tdx_hypercall_ret(struct tdx_hypercall_args *args);
- 
- /*
-  * Wrapper for standard use of __tdx_hypercall with no output aside from
-@@ -75,34 +131,6 @@ static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
- /* Called from __tdx_hypercall() for unrecoverable failure */
- void __tdx_hypercall_failed(void);
- 
--/*
-- * Used in __tdcall*() to gather the input/output registers' values of the
-- * TDCALL instruction when requesting services from the TDX module. This is a
-- * software only structure and not part of the TDX module/VMM ABI
-- */
--struct tdx_module_args {
--	/* callee-clobbered */
--	u64 rcx;
--	u64 rdx;
--	u64 r8;
--	u64 r9;
--	/* extra callee-clobbered */
--	u64 r10;
--	u64 r11;
--	/* callee-saved + rdi/rsi */
--	u64 r12;
--	u64 r13;
--	u64 r14;
--	u64 r15;
--	u64 rbx;
--	u64 rdi;
--	u64 rsi;
--};
--
--/* Used to communicate with the TDX module */
--u64 __tdcall(u64 fn, struct tdx_module_args *args);
--u64 __tdcall_ret(u64 fn, struct tdx_module_args *args);
--
- bool tdx_accept_memory(phys_addr_t start, phys_addr_t end);
- 
- /*
-diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-index 1581564..6913b37 100644
---- a/arch/x86/kernel/asm-offsets.c
-+++ b/arch/x86/kernel/asm-offsets.c
-@@ -83,20 +83,6 @@ static void __used common(void)
- 	OFFSET(TDX_MODULE_rsi, tdx_module_args, rsi);
- 
- 	BLANK();
--	OFFSET(TDX_HYPERCALL_r8,  tdx_hypercall_args, r8);
--	OFFSET(TDX_HYPERCALL_r9,  tdx_hypercall_args, r9);
--	OFFSET(TDX_HYPERCALL_r10, tdx_hypercall_args, r10);
--	OFFSET(TDX_HYPERCALL_r11, tdx_hypercall_args, r11);
--	OFFSET(TDX_HYPERCALL_r12, tdx_hypercall_args, r12);
--	OFFSET(TDX_HYPERCALL_r13, tdx_hypercall_args, r13);
--	OFFSET(TDX_HYPERCALL_r14, tdx_hypercall_args, r14);
--	OFFSET(TDX_HYPERCALL_r15, tdx_hypercall_args, r15);
--	OFFSET(TDX_HYPERCALL_rdi, tdx_hypercall_args, rdi);
--	OFFSET(TDX_HYPERCALL_rsi, tdx_hypercall_args, rsi);
--	OFFSET(TDX_HYPERCALL_rbx, tdx_hypercall_args, rbx);
--	OFFSET(TDX_HYPERCALL_rdx, tdx_hypercall_args, rdx);
--
--	BLANK();
- 	OFFSET(BP_scratch, boot_params, scratch);
- 	OFFSET(BP_secure_boot, boot_params, secure_boot);
- 	OFFSET(BP_loadflags, boot_params, hdr.loadflags);
