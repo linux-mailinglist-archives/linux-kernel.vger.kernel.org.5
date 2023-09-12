@@ -2,179 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B9379CB28
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D30C79CA08
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 10:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbjILJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S232571AbjILIev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 04:34:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbjILJHn (ORCPT
+        with ESMTP id S232084AbjILIet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:07:43 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0E81FC8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 02:07:06 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C91vIP025553;
-        Tue, 12 Sep 2023 09:06:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Y8OCtdSde7iA1uZkyu+o7yedisY27qz84tjNtsqMNEg=;
- b=L1N3JWWA0vO4qs2PA9t33mqpO5GRCth/e0c7r1OmHofpL4k3WMKb18l+IjEeUBOo/fq3
- hOu0tIqphoTl7zWjKWRnPr3bwUep7Yp1Qj4YIKwExB6Cll3GaZ6OeOsmpdtijBwkQpJE
- IL0e5cG20KcduTM78UdSaN1dsGIK/QzsyNpdBA+v01uNtVRCjhv7tCMvPRlMphQvRWhx
- rrOse1BwBDvPIkAwafQ9VvUdy2EqV6uEBwIvF16k/TsC7or7+rI3UkDu4XB7rBzIUKQh
- y/Er71hu5DJT9C9khxlSkXep03ArOVbisRM4iYKAtV7fvU29gK6k12d/aluiJh8adCyd 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2n01g8tx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:06:54 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38C91qhh025374;
-        Tue, 12 Sep 2023 09:06:51 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t2n01g881-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:06:51 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38C7XstN012005;
-        Tue, 12 Sep 2023 08:31:19 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1s348-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 08:31:19 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38C8VGL624838720
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Sep 2023 08:31:17 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D36B42004B;
-        Tue, 12 Sep 2023 08:31:16 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1CD8520040;
-        Tue, 12 Sep 2023 08:31:15 +0000 (GMT)
-Received: from [9.203.106.137] (unknown [9.203.106.137])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Sep 2023 08:31:14 +0000 (GMT)
-Message-ID: <ad792aec-412e-27da-f39e-fd9c208ba154@linux.ibm.com>
-Date:   Tue, 12 Sep 2023 14:01:14 +0530
+        Tue, 12 Sep 2023 04:34:49 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5D1B9;
+        Tue, 12 Sep 2023 01:34:45 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RlGyD5V9wzMlK5;
+        Tue, 12 Sep 2023 16:31:16 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 12 Sep 2023 16:34:42 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>
+Subject: [PATCH net-next v8 0/6] introduce page_pool_alloc() related API
+Date:   Tue, 12 Sep 2023 16:31:19 +0800
+Message-ID: <20230912083126.65484-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/3] vmcore: allow fadump to export vmcore even if
- is_kdump_kernel() is false
-Content-Language: en-US
-To:     Baoquan He <bhe@redhat.com>, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Dave Young <dyoung@redhat.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>
-References: <20230905183604.568996-1-hbathini@linux.ibm.com>
- <20230905183604.568996-2-hbathini@linux.ibm.com> <8734zltc6z.fsf@mail.lhotse>
- <ZP7si3UMVpPfYV+w@MiWiFi-R3L-srv>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <ZP7si3UMVpPfYV+w@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UmsV8Qg1inj0-tWnQ5ORHQ9HC3NGCT4b
-X-Proofpoint-GUID: GbOruLY-scl7YyZ4pQ8FUQ1KOR7yBjmF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_06,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=737 mlxscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 priorityscore=1501
- malwarescore=0 spamscore=0 phishscore=0 bulkscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120076
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In [1] & [2] & [3], there are usecases for veth and virtio_net
+to use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
+So this patchset provides a page pool API for the driver to
+allocate memory with least memory utilization and performance
+penalty when it doesn't know the size of memory it need
+beforehand.
 
-On 11/09/23 4:01 pm, Baoquan He wrote:
-> On 09/11/23 at 05:13pm, Michael Ellerman wrote:
->> Hari Bathini <hbathini@linux.ibm.com> writes:
->>> Currently, is_kdump_kernel() returns true when elfcorehdr_addr is set.
->>> While elfcorehdr_addr is set for kexec based kernel dump mechanism,
->>> alternate dump capturing methods like fadump [1] also set it to export
->>> the vmcore. Since, is_kdump_kernel() is used to restrict resources in
->>> crash dump capture kernel and such restrictions are not desirable for
->>> fadump, allow is_kdump_kernel() to be defined differently for fadump
->>> case. With that change, include is_fadump_active() check in functions
->>> is_vmcore_usable() & vmcore_unusable() to be able to export vmcore for
->>> fadump case too.
->> ...
->>> diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
->>> index 0f3a656293b0..de8a9fabfb6f 100644
->>> --- a/include/linux/crash_dump.h
->>> +++ b/include/linux/crash_dump.h
->>> @@ -50,6 +50,7 @@ void vmcore_cleanup(void);
->>>   #define vmcore_elf64_check_arch(x) (elf_check_arch(x) || vmcore_elf_check_arch_cross(x))
->>>   #endif
->>>   
->>> +#ifndef is_kdump_kernel
->>>   /*
->>>    * is_kdump_kernel() checks whether this kernel is booting after a panic of
->>>    * previous kernel or not. This is determined by checking if previous kernel
->>> @@ -64,6 +65,19 @@ static inline bool is_kdump_kernel(void)
->>>   {
->>>   	return elfcorehdr_addr != ELFCORE_ADDR_MAX;
->>>   }
->>> +#endif
->>> +
->>> +#ifndef is_fadump_active
->>> +/*
->>> + * If f/w assisted dump capturing mechanism (fadump), instead of kexec based
->>> + * dump capturing mechanism (kdump) is exporting the vmcore, then this function
->>> + * will be defined in arch specific code to return true, when appropriate.
->>> + */
->>> +static inline bool is_fadump_active(void)
->>> +{
->>> +	return false;
->>> +}
->>> +#endif
->>>   
->>>   /* is_vmcore_usable() checks if the kernel is booting after a panic and
->>>    * the vmcore region is usable.
->>> @@ -75,7 +89,8 @@ static inline bool is_kdump_kernel(void)
->>>   
->>>   static inline int is_vmcore_usable(void)
->>>   {
->>> -	return is_kdump_kernel() && elfcorehdr_addr != ELFCORE_ADDR_ERR ? 1 : 0;
->>> +	return (is_kdump_kernel() || is_fadump_active())
->>> +		&& elfcorehdr_addr != ELFCORE_ADDR_ERR ? 1 : 0;
->>>   }
->>>   
->>>   /* vmcore_unusable() marks the vmcore as unusable,
->>> @@ -84,7 +99,7 @@ static inline int is_vmcore_usable(void)
->>>   
->>>   static inline void vmcore_unusable(void)
->>>   {
->>> -	if (is_kdump_kernel())
->>> +	if (is_kdump_kernel() || is_fadump_active())
->>>   		elfcorehdr_addr = ELFCORE_ADDR_ERR;
->>>   }
->>
->> I think it would be cleaner to decouple is_vmcore_usable() and
->> vmcore_usable() from is_kdump_kernel().
->>
->> ie, make them operate solely based on the value of elforehdr_addr:
->>
->> static inline int is_vmcore_usable(void)
->> {
->> 	elfcorehdr_addr != ELFCORE_ADDR_ERR && \
->> 		elfcorehdr_addr != ELFCORE_ADDR_MAX;
-> 
-> Agree. I fell into the blind corner of thinking earlier. Above change
-> is better.
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
+3. https://github.com/alobakin/linux/tree/iavf-pp-frag
 
-Thanks for the reviews.
-Posted v3.
+V8: Store the dma addr on a shifted u32 instead of using
+    dma_addr_t explicitly for 32-bit arch with 64-bit DMA.
+    Update document according to discussion in v7.
 
-- Hari
+V7: Fix a compile error, a few typo and use kernel-doc syntax.
+
+V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
+    creation for 32-bit arch with 64-bit DMA when driver tries to
+    do the page splitting itself, adjust the requested size to
+    include head/tail room in veth, and rebased on the latest
+    next-net.
+
+v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
+        change as discussed in v4. As there seems to be three
+        comsumers that might be made use of the new API, so
+        repost it as RFC and CC the relevant authors to see
+        if the new API fits their need.
+
+V4. Fix a typo and add a patch to update document about frag
+    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
+    as we may need a different thread to discuss that.
+
+V3: Incorporate changes from the disscusion with Alexander,
+    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+    change split to separate patch and comment change.
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+V1: Drop RFC tag and page_pool_frag patch.
+
+Yunsheng Lin (6):
+  page_pool: frag API support for 32-bit arch with 64-bit DMA
+  page_pool: unify frag_count handling in page_pool_is_last_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG
+  page_pool: introduce page_pool[_cache]_alloc() API
+  page_pool: update document about frag API
+  net: veth: use newly added page pool API for veth with xdp
+
+ Documentation/networking/page_pool.rst        |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   2 +-
+ drivers/net/veth.c                            |  25 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
+ include/linux/mm_types.h                      |  13 +-
+ include/net/page_pool/helpers.h               | 225 +++++++++++++++---
+ include/net/page_pool/types.h                 |   6 +-
+ net/core/page_pool.c                          |  31 ++-
+ net/core/skbuff.c                             |   2 +-
+ 12 files changed, 240 insertions(+), 77 deletions(-)
+
+-- 
+2.33.0
+
