@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1020F79D144
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC8379D146
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 14:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbjILMmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 08:42:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S235230AbjILMoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 08:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbjILMmC (ORCPT
+        with ESMTP id S231248AbjILMoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 08:42:02 -0400
+        Tue, 12 Sep 2023 08:44:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B299F;
-        Tue, 12 Sep 2023 05:41:58 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808A3C433C8;
-        Tue, 12 Sep 2023 12:41:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B76F9F;
+        Tue, 12 Sep 2023 05:43:56 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 092B0C433C7;
+        Tue, 12 Sep 2023 12:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694522518;
-        bh=h3OJqaREq1rQ96Kkn6wCU6LIKOZUXBEtwJ0dIladPvw=;
+        s=k20201202; t=1694522636;
+        bh=vDRcqUDqXbFXurXPW7gwG53pXOp3uFkEpLpaY//XLWw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sVuQJ7dHhztQen5pysGvSzw0rwM+JroJTBHrdBw3NVSAmovSlGp2mJHZDPfZRni7m
-         L047vntKITLuxQ/Y6uIaF/2aPKqzh5+0bwLzf9bQ1HP71c1onfFnzRnVy3aHkpXpUh
-         haYNLNuAbgVVl4ndvy57N1V1P4B4A0Lwb5+XcFau4684KDaJPSqIu8siTmhiGaUTuv
-         frJL+aalFKyRWqBdNmA0k9S3dVuR3wjwsTFOAv0PgxsIWbTjdJJHEEGC4EyMN1jeLd
-         fY05MvzdWAc5T4Kn08h6g3h0pBLxzYwigNKA2OYs0TB+OEvYkPOk+W/WJx4iYpKdca
-         D0mnF5+eBzEzg==
+        b=eS3rQfqFviXYu+moVkZOlwmkwVPzUvcKYZ6kmQqhBUWYHE/xjCAQ7CXO2N5uVxw4W
+         +2NFYlBY9p3u3wuCAMoi93ZDa3HnNJpp/LL0ho1Z3ZBeDFSm5h2OZZXbt7i6lLwHir
+         N63GSMMd0zM7AJIwua+0xGV2eQAxPdHIGR/jYq141Q20Jn/J/O+F11DumpRi/gychQ
+         7UrKCfdDb9LNb1xBIXtLn5fvcodVm7sTf1NRD61uc9+Q4jyJPsNbEhRg0O9Sp1HMnR
+         hNqZxJ2MQWNbGz+DrdBXWSFfcbnQHrYhZaWA5g/G+p+Yt7/r7Q0nOoBCXyZRFS/bRT
+         tFg1/wPUaidWQ==
 Received: from [104.132.96.100] (helo=wait-a-minute.misterjones.org)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.95)
         (envelope-from <maz@kernel.org>)
-        id 1qg2iJ-00CGRW-Pl;
-        Tue, 12 Sep 2023 13:41:56 +0100
-Date:   Tue, 12 Sep 2023 13:41:50 +0100
-Message-ID: <87jzsv4l81.wl-maz@kernel.org>
+        id 1qg2kC-00CGSX-R9;
+        Tue, 12 Sep 2023 13:43:53 +0100
+Date:   Tue, 12 Sep 2023 13:43:44 +0100
+Message-ID: <87il8f4l4v.wl-maz@kernel.org>
 From:   Marc Zyngier <maz@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Update description for '#interrupt-cells' property
-In-Reply-To: <CAMuHMdW_d5isU5Y2p6ne6_9j1-uqWnRY=Qw34SqR5EC0CndG+Q@mail.gmail.com>
-References: <20220722151155.21100-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-        <20220722151155.21100-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-        <8735eqdbav.wl-maz@kernel.org>
-        <CAMuHMdVj7J442iMr0PN5jxMhLv1U22+G9jNXLWFzLYkS0JTf5A@mail.gmail.com>
-        <CAMuHMdW_d5isU5Y2p6ne6_9j1-uqWnRY=Qw34SqR5EC0CndG+Q@mail.gmail.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Tomohiro Misono <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-perf-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wenst@chromium.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v13 1/7] irqchip/gic-v3: Enable support for SGIs to act as NMIs
+In-Reply-To: <20230906090246.v13.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
+References: <20230906160505.2431857-1-dianders@chromium.org>
+        <20230906090246.v13.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
  FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
  (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 X-SA-Exim-Connect-IP: 104.132.96.100
-X-SA-Exim-Rcpt-To: geert@linux-m68k.org, prabhakar.mahadev-lad.rj@bp.renesas.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, prabhakar.csengg@gmail.com, biju.das.jz@bp.renesas.com
+X-SA-Exim-Rcpt-To: dianders@chromium.org, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, sumit.garg@linaro.org, daniel.thompson@linaro.org, linux-arm-kernel@lists.infradead.org, rafael.j.wysocki@intel.com, lecopzer.chen@mediatek.com, wens@csie.org, misono.tomohiro@fujitsu.com, peterz@infradead.org, msys.mizuma@gmail.com, eranian@google.com, ardb@kernel.org, kgdb-bugreport@lists.sourceforge.net, swboyd@chromium.org, linux-perf-users@vger.kernel.org, tglx@linutronix.de, ito-yuichi@fujitsu.com, wenst@chromium.org, linux-kernel@vger.kernel.org
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Sep 2023 10:31:35 +0100,
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->=20
-> Hi Marc,
->=20
-> On Thu, Aug 11, 2022 at 4:50=E2=80=AFPM Geert Uytterhoeven <geert@linux-m=
-68k.org> wrote:
-> > On Sun, Jul 24, 2022 at 1:01 PM Marc Zyngier <maz@kernel.org> wrote:
-> > > On Fri, 22 Jul 2022 16:11:54 +0100,
-> > > Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > >
-> > > > Update description for '#interrupt-cells' property to utilize the
-> > > > RZG2L_{NMI,IRQX} for the first cell defined in the
-> > > > include/dt-bindings/interrupt-controller/irqc-rzg2l.h file.
-> > > >
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.c=
-om>
-> > > > ---
-> > > > v3:
-> > > > * New patch
-> >
-> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/renesa=
-s,rzg2l-irqc.yaml
-> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/renesa=
-s,rzg2l-irqc.yaml
-> > > > @@ -31,8 +31,9 @@ properties:
-> > > >        - const: renesas,rzg2l-irqc
-> > > >
-> > > >    '#interrupt-cells':
-> > > > -    description: The first cell should contain external interrupt =
-number (IRQ0-7) and the
-> > > > -                 second cell is used to specify the flag.
-> > > > +    description: The first cell should contain a macro RZG2L_{NMI,=
-IRQX} included in the
-> > > > +                 include/dt-bindings/interrupt-controller/irqc-rzg=
-2l.h and the second
-> > > > +                 cell is used to specify the flag.
-> > >
-> > > I think a binding should be self describing, and not rely on an opaque
-> > > macro. Mentioning that there is a macro that encodes it is fine, but
-> > > the values are what matter, specially when considering that other OSs
-> > > could (and should be able to) write their own DTs from scratch without
-> > > depending on something that is very much Linux-specific.
-> >
-> > The macros are not Linux-specific, and are part of the bindings.
-> > But the only hard dependency on <dt-bindings/interrupt-controller/irqc-=
-rzg2l.h>
-> > is the DT source file describing the board.
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->=20
-> Looks like this fell through the cracks?
-> The two other patches from this series were applied in v6.1.
->=20
-> Note that the current DT bindings are incorrect, as they do not take into
-> account that the value of zero is used to represent the NMI.
->=20
-> Fixes: 96fed779d3d4cb3c ("dt-bindings: interrupt-controller: Add
-> Renesas RZ/G2L Interrupt Controller")
->=20
-> Should we resend instead?
+On Wed, 06 Sep 2023 17:02:56 +0100,
+Douglas Anderson <dianders@chromium.org> wrote:
+> 
+> As of commit 6abbd6988971 ("irqchip/gic, gic-v3: Make SGIs use
+> handle_percpu_devid_irq()") SGIs are treated the same as PPIs/EPPIs
+> and use handle_percpu_devid_irq() by default. Unfortunately,
+> handle_percpu_devid_irq() isn't NMI safe, and so to run in an NMI
+> context those should use handle_percpu_devid_fasteoi_nmi().
+> 
+> In order to accomplish this, we just have to make room for SGIs in the
+> array of refcounts that keeps track of which interrupts are set as
+> NMI. We also rename the array and create a new indexing scheme that
+> accounts for SGIs.
+> 
+> Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
+> as IRQs/NMIs happen as part of this routine.
+> 
+> Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-It applied cleanly to v6.6-rc1, so there should be no need.
-
-Thanks,
+Acked-by: Marc Zyngier <maz@kernel.org>
 
 	M.
 
---=20
+-- 
 Without deviation from the norm, progress is not possible.
