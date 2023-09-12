@@ -2,105 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C4979C5FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9A479C600
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 06:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjILE5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 00:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
+        id S229448AbjILE6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 00:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjILE4c (ORCPT
+        with ESMTP id S230344AbjILE6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 00:56:32 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF2130C8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:53:34 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52f31fb26e2so3131860a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 21:53:34 -0700 (PDT)
+        Tue, 12 Sep 2023 00:58:02 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3AF4ECF;
+        Mon, 11 Sep 2023 21:54:49 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68fdd5c1bbbso712450b3a.1;
+        Mon, 11 Sep 2023 21:54:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1694494413; x=1695099213; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694494488; x=1695099288; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+n7YThP1Pltmyq4edaZuVaHz4mWlqiOuma7OTx2zERo=;
-        b=Y96+ykaxR8m3gCEC7kcxEqChkPv3yYAPmLvRy7jjV2dF0bWyq1KEGs/s2IgQeH4NA1
-         RszZPisosN/9k/i428LBXFlVkQMYsbt5xEB76FNb3PW02aI2xNDiJocO0EwU2meH+Vtp
-         BFV2zR6AY7UDWqW6jtIT4LpEBRrzUsyDWGT2J4EFMpPzEe5AMjH/nn7h/vRH218XVRVB
-         qLrxtp21DY9KJuOxHC08iLmznq8ZehMtQ/P2A/1KO3D5yjGUZgTKMR/ZyYAjEX3eUzMe
-         5lKrkd51rR9NghxCTnZdzr8DTBce1siprfYQmwUDgh8gDlnzQZP0hi0cfdoyw6b72X8l
-         uogg==
+        bh=1zwpOpIh4oXz95LntC63YJlhaKyBb/bVMEz2LsKNzrA=;
+        b=jt3o8o5JrSYRQ2I1wxUh+c3uT8iBUMP50psqWb4lDImGa0eUQnXUKGm3SUvsIywcJA
+         9q+X021jNaf6FSeboSDowtOjgHEAA5AFbeuVRJKMXKsTGOuRlrNSAmqPEdWemTVsoGI+
+         9e+jtRexMuekQbFldUmCRMsVmaQQ4wWsEVQVsiWJmEGU5YI3Cw+0ERFks23g7folHF3b
+         Un005ffcQbJqawYY8tlnctPjAVu9K8fgxfyxUlSTioEWBHw6yM9RgE8lqkmUmK/kCiJP
+         Ykh6muragvU0PqkoEH3ImiB7YQK7Y5Fw6RlMOZcLjj6TloG4rIDkA6w2Sc6V+2rDJW7D
+         Os0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694494413; x=1695099213;
+        d=1e100.net; s=20230601; t=1694494488; x=1695099288;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+n7YThP1Pltmyq4edaZuVaHz4mWlqiOuma7OTx2zERo=;
-        b=c7qBHyPcJmUZ8VRHk9E/PlpxqZEi3lOraMUmvGSEBRSFoXbhvvvJ4CwXA4257PXPCh
-         iXdzIl0f/7NFAFcRmljSZdyUvo+vHvX7v+ssAVAEaBmi38iPL1inGqoV+XSfwmARN8Bu
-         F1ATT8ncc4XFaTtmLsp8Z5s725e4Ks1A85SOxlyltcqsOH9wG3id5EJrfz05ctFWlAd2
-         h5NIxV7sA7QPFPk437ppwR439zYxPVNpepYRloxj3HJBtG5+8DGbZv73rNYqGmDH7hQ6
-         YIMIGXf+62iZ9w+xKgYHnQlytrkwYT/6bQ2QmHed/Bf3jOvRteN0oEwXYY2j9Z++TbTg
-         sxWg==
-X-Gm-Message-State: AOJu0Ywo4GTu71yXOM6eLQE11mUrpvmsO+k3f2en9EIN6P/7eA/Fcw3D
-        NZAhFiOl/ZR88h3wmyHKbdrF9Q==
-X-Google-Smtp-Source: AGHT+IE4+aHEa9EXViBj8JUa5dT/DvO7i/hmQPzgNykizZhWvsOZn8AdTIStjI7MBIzcpfdOo5ENgg==
-X-Received: by 2002:a05:6402:759:b0:52e:24fd:50f4 with SMTP id p25-20020a056402075900b0052e24fd50f4mr9040084edy.18.1694494413001;
-        Mon, 11 Sep 2023 21:53:33 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id f21-20020a05640214d500b0051e22660835sm5422415edx.46.2023.09.11.21.53.30
+        bh=1zwpOpIh4oXz95LntC63YJlhaKyBb/bVMEz2LsKNzrA=;
+        b=sDpkY7Pu9uH5O7iOSpdItdBa0NP/25BrNtr+2xnWwxs/Y4fiHPvOx4fZVfGGqiiazO
+         QMNjZlXoKU8InSos26/b5T4fzkPDrU98CVwksGu8S8jBmsH06ddIDKLMY4H3Nbh6mtI1
+         AGVlbzheBf5spju/AZAKwNZLM7IlUHOeYmnvSH6SE6ijO4ySHZXpViDfNyCZwO3DKDwg
+         6ylOtARArCXuKISdPUah6dvHA2CvKOXOLSlmdAs/ay4pmpDOmI6c0IjDktTuMPr2d1AZ
+         aTV2OdZAD1ZLC7CVUSY3GpXPOxXH2qhNAwAm4BHzwuKKhjfwvk8OVaFIsT7JfvJomdy3
+         m8dw==
+X-Gm-Message-State: AOJu0Yx0AqaoEtCo5vI+RDEk728VAQFmU5nvXQvZZKKrQSW/BfstxCv0
+        VHp8bwwYssLsg82yDRbSNM0=
+X-Google-Smtp-Source: AGHT+IFT19YBlkHb1EJZ4O3rYMSCK9DGz7rd8m4B3cjYTCG/MUXs6xFhpRfTURVkGdMKlFV54vjtxA==
+X-Received: by 2002:a05:6a21:6d9f:b0:151:35ad:f331 with SMTP id wl31-20020a056a216d9f00b0015135adf331mr2062786pzb.14.1694494488100;
+        Mon, 11 Sep 2023 21:54:48 -0700 (PDT)
+Received: from localhost.localdomain (220-133-92-232.hinet-ip.hinet.net. [220.133.92.232])
+        by smtp.googlemail.com with ESMTPSA id cw22-20020a056a00451600b0068fc6570874sm2671543pfb.9.2023.09.11.21.54.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Sep 2023 21:53:32 -0700 (PDT)
-From:   Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, magnus.damm@gmail.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com
-Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 37/37] arm64: defconfig: enable RZ/G3S (R9A08G045) SoC
-Date:   Tue, 12 Sep 2023 07:51:57 +0300
-Message-Id: <20230912045157.177966-38-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+        Mon, 11 Sep 2023 21:54:47 -0700 (PDT)
+From:   Zenm Chen <zenmchen@gmail.com>
+To:     zenmchen@gmail.com
+Cc:     Jes.Sorensen@gmail.com, kvalo@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        pkshih@realtek.com, rtl8821cerfe2@gmail.com
+Subject: RE: [PATCH] wifi: rtl8xxxu: fix LED control code of RTL8192FU
+Date:   Tue, 12 Sep 2023 12:54:39 +0800
+Message-ID: <20230912045443.9821-1-zenmchen@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230910002038.56362-1-zenmchen@gmail.com>
+References: <20230910002038.56362-1-zenmchen@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Ping-Ke Shih <pkshih@realtek.com> wrote：
+>
+>
+>
+> > -----Original Message-----
+> > From: Zenm Chen <zenmchen@gmail.com>
+> > Sent: Sunday, September 10, 2023 8:21 AM
+> > To: Jes.Sorensen@gmail.com
+> > Cc: kvalo@kernel.org; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > rtl8821cerfe2@gmail.com; Ping-Ke Shih <pkshih@realtek.com>; Zenm Chen <zenmchen@gmail.com>
+> > Subject: [PATCH] wifi: rtl8xxxu: fix LED control code of RTL8192FU
+> >
+> > ASUS USB-N13 C1 is a wifi adapter based on a RTL8192FU chip and its LED
+> > doesn't blink with the rtl8xxxu driver. This patch fix this via writing
+> > the correct value to the register "REG_LEDCFG0".
+> >
+> > This was tested with these two wifi adapters:
+> > ASUS USB-N13 C1 (vid=0x0b05, pid=0x18f1, rfe_type=0x1)
+> > MERCURY MW310UH (vid=0x0bda, pid=0xf192, rfe_type=0x5)
+>
+> Did you ever try Linux vendor driver for software and hardware LED?
+> Seemingly, the vendor driver is different from yours, but I'm pretty
+> sure which one is correct because I don't have a RTL8192FU stick.
+>
+> >
+> > Signed-off-by: Zenm Chen <zenmchen@gmail.com>
+> > ---
+> >  .../realtek/rtl8xxxu/rtl8xxxu_8192f.c         | 24 ++++++++-----------
+> >  1 file changed, 10 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
+> > b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
+> > index 28e93835e05a..ab6d4e4e228e 100644
+> > --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
+> > +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
+> > @@ -2014,26 +2014,22 @@ static int rtl8192fu_led_brightness_set(struct led_classdev *led_cdev,
+> >         struct rtl8xxxu_priv *priv = container_of(led_cdev,
+> >                                                   struct rtl8xxxu_priv,
+> >                                                   led_cdev);
+> > -       u16 ledcfg;
+> > +       u32 ledcfg;
+> >
+> >         /* Values obtained by observing the USB traffic from the Windows driver. */
+> >         rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_0, 0x20080);
+> >         rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_1, 0x1b0000);
+> >
+> > -       ledcfg = rtl8xxxu_read16(priv, REG_LEDCFG0);
+> > -
+> > -       if (brightness == LED_OFF) {
+> > -               /* Value obtained like above. */
+> > -               ledcfg = BIT(1) | BIT(7);
+> > -       } else if (brightness == LED_ON) {
+> > -               /* Value obtained like above. */
+> > -               ledcfg = BIT(1) | BIT(7) | BIT(11);
+> > -       } else if (brightness == RTL8XXXU_HW_LED_CONTROL) {
+> > -               /* Value obtained by brute force. */
+> > -               ledcfg = BIT(8) | BIT(9);
+> > -       }
+>
+> The definitions are used by this driver:
+>
+> #define BIT_LED2EN BIT(21)
+> #define BIT_LED1SV BIT(11) // the same definition with BIT_LED0SV
+> #define BIT_LED1CM GENMASK(10, 8) // use the same value of BIT_LED0CM
+> #define BIT_LED0SV BIT(3)
+> #define BIT_LED0CM GENMASK(2, 0)
+> #define LED_MODE_TX_OR_RX_EVENTS 3
+> #define LED_MODE_SW_CTRL 0
+>
+>
+> > +       /* Enable LED0 GPIO and turn LED0/LED1 off. */
+> > +       ledcfg = (rtl8xxxu_read32(priv, REG_LEDCFG0) | BIT(21)) & ~0xffff;
+>
+> Split this statement into multiple lines and use definitions I provide above.
+>
+> > +
+> > +       /* Values obtained by brute force. */
+> > +       if (brightness == LED_ON)
+> > +               ledcfg |= BIT(3) | BIT(11);
+> > +       else if (brightness == RTL8XXXU_HW_LED_CONTROL)
+> > +               ledcfg |= BIT(0) | BIT(1) | BIT(8) | BIT(9);
+> >
+> > -       rtl8xxxu_write16(priv, REG_LEDCFG0, ledcfg);
+> > +       rtl8xxxu_write32(priv, REG_LEDCFG0, ledcfg);
+> >
+> >         return 0;
+> >  }
+> > --
+> > 2.42.0
+>
 
-Enable config flag for Renesas RZ/G3S (R9A08G045) SoC.
-
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5315789f4868..f597ae20959c 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1335,6 +1335,7 @@ CONFIG_ARCH_R8A774B1=y
- CONFIG_ARCH_R9A07G043=y
- CONFIG_ARCH_R9A07G044=y
- CONFIG_ARCH_R9A07G054=y
-+CONFIG_ARCH_R9A08G045=y
- CONFIG_ARCH_R9A09G011=y
- CONFIG_ROCKCHIP_IODOMAIN=y
- CONFIG_ROCKCHIP_PM_DOMAINS=y
--- 
-2.39.2
-
+Thanks for the help and suggestions, I will make these changes. :)
