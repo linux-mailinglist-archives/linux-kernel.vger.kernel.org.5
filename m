@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3C879C723
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813E279C727
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjILGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:47:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
+        id S230254AbjILGrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjILGra (ORCPT
+        with ESMTP id S230327AbjILGrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:47:30 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC90E75
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:47:26 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qfxB3-0007Ur-9J; Tue, 12 Sep 2023 08:47:13 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qfxB2-005ibv-6e; Tue, 12 Sep 2023 08:47:12 +0200
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qfxB1-005VFP-Ih; Tue, 12 Sep 2023 08:47:11 +0200
-Date:   Tue, 12 Sep 2023 08:47:11 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v4 2/2] net: dsa: microchip: Add drive strength
- configuration
-Message-ID: <20230912064711.GE780075@pengutronix.de>
-References: <20230912045459.1864085-1-o.rempel@pengutronix.de>
- <20230912045459.1864085-3-o.rempel@pengutronix.de>
- <ea39dded-7017-b6ba-8814-4722d65ba050@wanadoo.fr>
+        Tue, 12 Sep 2023 02:47:43 -0400
+Received: from soltyk.jannau.net (soltyk.jannau.net [144.76.91.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CCEA10C0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:47:39 -0700 (PDT)
+Received: by soltyk.jannau.net (Postfix, from userid 1000)
+        id 39E73270487; Tue, 12 Sep 2023 08:47:38 +0200 (CEST)
+Date:   Tue, 12 Sep 2023 08:47:38 +0200
+From:   Janne Grunau <j@jannau.net>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, asahi@lists.linux.dev
+Subject: Re: [PATCH] drm/simpledrm: Add support for multiple "power-domains"
+Message-ID: <ZQAJioLtr5LXciha@jannau.net>
+References: <20230910-simpledrm-multiple-power-domains-v1-1-f8718aefc685@jannau.net>
+ <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ea39dded-7017-b6ba-8814-4722d65ba050@wanadoo.fr>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <3efb0304-df1a-4038-a716-a910b53c1445@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 07:22:21AM +0200, Christophe JAILLET wrote:
-...
-> > +static void ksz_drive_strength_error(struct ksz_device *dev,
-> > +				     const struct ksz_drive_strength *array,
-> > +				     size_t array_size, int milliamp)
+On 2023-09-11 14:26:10 +0200, Thomas Zimmermann wrote:
+> Hi
+> 
+> Am 10.09.23 um 18:39 schrieb Janne Grunau via B4 Relay:
+> > From: Janne Grunau <j@jannau.net>
+> > 
+> > Multiple power domains need to be handled explicitly in each driver. The
+> > driver core can not handle it automatically since it is not aware of
+> > power sequencing requirements the hardware might have. This is not a
+> > problem for simpledrm since everything is expected to be powered on by
+> > the bootloader. simpledrm has just ensure it remains powered on during
+> > its lifetime.
+> > This is required on Apple silicon M2 and M2 Pro/Max/Ultra desktop
+> > systems. The HDMI output initialized by the bootloader requires keeping
+> > the display controller and a DP phy power domain on.
+> > 
+> > Signed-off-by: Janne Grunau <j@jannau.net>
+> > ---
+> >   drivers/gpu/drm/tiny/simpledrm.c | 106 +++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 106 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/tiny/simpledrm.c b/drivers/gpu/drm/tiny/simpledrm.c
+> > index ff86ba1ae1b8..efedede57d42 100644
+> > --- a/drivers/gpu/drm/tiny/simpledrm.c
+> > +++ b/drivers/gpu/drm/tiny/simpledrm.c
+> > @@ -6,6 +6,7 @@
+> >   #include <linux/of_address.h>
+> >   #include <linux/platform_data/simplefb.h>
+> >   #include <linux/platform_device.h>
+> > +#include <linux/pm_domain.h>
+> >   #include <linux/regulator/consumer.h>
+> >   #include <drm/drm_aperture.h>
+> > @@ -227,6 +228,12 @@ struct simpledrm_device {
+> >   	unsigned int regulator_count;
+> >   	struct regulator **regulators;
+> >   #endif
+> > +	/* power-domains */
+> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > +	int pwr_dom_count;
+> > +	struct device **pwr_dom_devs;
+> > +	struct device_link **pwr_dom_links;
+> > +#endif
+> >   	/* simplefb settings */
+> >   	struct drm_display_mode mode;
+> > @@ -468,6 +475,102 @@ static int simpledrm_device_init_regulators(struct simpledrm_device *sdev)
+> >   }
+> >   #endif
+> > +#if defined CONFIG_OF && defined CONFIG_PM_GENERIC_DOMAINS
+> > +/*
+> > + * Generic power domain handling code.
+> > + *
+> > + * Here we handle the power-domains properties of our "simple-framebuffer"
+> > + * dt node. This is only necessary if there is more than one power-domain.
+> > + * A single power-domains is handled automatically by the driver core. Multiple
+> > + * power-domains have to be handled by drivers since the driver core can't know
+> > + * the correct power sequencing. Power sequencing is not an issue for simpledrm
+> > + * since the bootloader has put the power domains already in the correct state.
+> > + * simpledrm has only to ensure they remain active for its lifetime.
+> > + *
+> > + * When the driver unloads, we detach from the power-domains.
+> > + *
+> > + * We only complain about errors here, no action is taken as the most likely
+> > + * error can only happen due to a mismatch between the bootloader which set
+> > + * up the "simple-framebuffer" dt node, and the PM domain providers in the
+> > + * device tree. Chances are that there are no adverse effects, and if there are,
+> > + * a clean teardown of the fb probe will not help us much either. So just
+> > + * complain and carry on, and hope that the user actually gets a working fb at
+> > + * the end of things.
+> > + */
+> > +static void simpledrm_device_detach_genpd(void *res)
 > > +{
-> > +	char supported_values[100];
-> > +	size_t remaining_size;
-> > +	int added_len;
-> > +	char *ptr;
+> > +	int i;
+> > +	struct simpledrm_device *sdev = /*(struct simpledrm_device *)*/res;
+> > +
+> > +
+> > +	drm_err(&sdev->dev, "% power-domains count:%d\n", __func__, sdev->pwr_dom_count);
+> 
+> If anything, drm_dbg()
+
+see my own reply, was never supposed to be there, removed locally
+
+> 
+> > +	if (sdev->pwr_dom_count <= 1)
+> > +		return;
+> > +
+> > +	for (i = sdev->pwr_dom_count - 1; i >= 0; i--) {
+> > +		if (!sdev->pwr_dom_links[i])
+> > +			device_link_del(sdev->pwr_dom_links[i]);
+> > +		if (!IS_ERR_OR_NULL(sdev->pwr_dom_devs[i]))
+> > +			dev_pm_domain_detach(sdev->pwr_dom_devs[i], true);
+> > +	}
+> > +}
+> > +
+> > +static int simpledrm_device_attach_genpd(struct simpledrm_device *sdev)
+> > +{
+> > +	struct device *dev = sdev->dev.dev;
 > > +	int i;
 > > +
-> > +	remaining_size = sizeof(supported_values);
-> > +	ptr = supported_values;
+> > +	sdev->pwr_dom_count = of_count_phandle_with_args(dev->of_node, "power-domains",
+> > +							 "#power-domain-cells");
+> > +	/*
+> > +	 * Single power-domain devices are handled by driver core nothing to do
+> > +	 * here. The same for device nodes without "power-domains" property.
+> > +	 */
+> > +	if (sdev->pwr_dom_count <= 1)
+> > +		return 0;
 > > +
-> > +	for (i = 0; i < array_size; i++) {
-> > +		added_len = snprintf(ptr, remaining_size,
-> > +				     i == 0 ? "%d" : ", %d", array[i].milliamp);
+> > +	sdev->pwr_dom_devs = devm_kcalloc(dev, sdev->pwr_dom_count,
+> > +					       sizeof(*sdev->pwr_dom_devs),
+> > +					       GFP_KERNEL);
+> > +	if (!sdev->pwr_dom_devs)
+> > +		return -ENOMEM;
 > > +
-> > +		if (added_len < 0 || added_len >= remaining_size)
+> > +	sdev->pwr_dom_links = devm_kcalloc(dev, sdev->pwr_dom_count,
+> > +						sizeof(*sdev->pwr_dom_links),
+> > +						GFP_KERNEL);
+> > +	if (!sdev->pwr_dom_links)
+> > +		return -ENOMEM;
+> > +
+> > +	for (i = 0; i < sdev->pwr_dom_count; i++) {
+> > +		sdev->pwr_dom_devs[i] = dev_pm_domain_attach_by_id(dev, i);
+> > +		if (IS_ERR(sdev->pwr_dom_devs[i])) {
+> > +			int ret = PTR_ERR(sdev->pwr_dom_devs[i]);
+> > +			if (ret == -EPROBE_DEFER) {
+> > +				simpledrm_device_detach_genpd(sdev);
+> > +				return PTR_ERR(sdev->pwr_dom_devs[i]);
+> > +			}
+> > +			drm_err(&sdev->dev,
+> > +				"pm_domain_attach_by_id(%u) failed: %d\n", i, ret);
 > 
-> Nit: snprintf() does not return negatives value.
+> The driver's not really failing to initialize AFAICT. CAlling drm_warn()
+> might be more appropriate.
 
-thx! will fix it
+copied from simpledrm_device_init_regulators() but I agree that 
+drm_warn() is more appropiate. change locally for v2.
 
-...
-> > +static int ksz_parse_drive_strength(struct ksz_device *dev)
-> > +{
-> > +	struct ksz_driver_strength_prop of_props[] = {
-> > +		[KSZ_DRIVER_STRENGTH_HI] = {
-> > +			.name = "microchip,hi-drive-strength-microamp",
-> > +			.offset = SW_HI_SPEED_DRIVE_STRENGTH_S,
-> > +			.value = -1
-> > +		},
-> > +		[KSZ_DRIVER_STRENGTH_LO] = {
-> > +			.name = "microchip,lo-drive-strength-microamp",
-> > +			.offset = SW_LO_SPEED_DRIVE_STRENGTH_S,
-> > +			.value = -1
-> > +		},
-> > +		[KSZ_DRIVER_STRENGTH_IO] = {
-> > +			.name = "microchip,io-drive-strength-microamp",
-> > +			.offset = 0, /* don't care */
-> > +			.value = -1
-> > +		},
-> > +	};
-> > +	struct device_node *np = dev->dev->of_node;
-> > +	bool found = false;
-> > +	int i, ret;
+> > +		}
 > > +
-> > +	for (i = 0; i < ARRAY_SIZE(of_props); i++) {
-> > +		ret = of_property_read_u32(np, of_props[i].name,
-> > +					   &of_props[i].value);
-> > +		if (ret && ret != -EINVAL)
-> > +			dev_warn(dev->dev, "Failed to read %s\n",
-> > +				 of_props[i].name);
-> > +		if (ret)
-> > +			continue;
-> > +
-> > +		found = true;
+> > +		sdev->pwr_dom_links[i] = device_link_add(dev,
+> > +							 sdev->pwr_dom_devs[i],
+> > +							 DL_FLAG_STATELESS |
+> > +							 DL_FLAG_PM_RUNTIME |
+> > +							 DL_FLAG_RPM_ACTIVE);
+> > +		if (!sdev->pwr_dom_links[i])
+> > +			drm_err(&sdev->dev, "failed to link power-domain %u\n", i);
 > 
-> Nit: break?
+> Also drm_warn() ?
 
-No, we may have more then one property.
+changed
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks,
+Janne
