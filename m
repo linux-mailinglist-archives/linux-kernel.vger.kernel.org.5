@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D55779D898
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0133779D89C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 20:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbjILSX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 14:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
+        id S237393AbjILSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 14:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbjILSXy (ORCPT
+        with ESMTP id S237275AbjILSYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 14:23:54 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9D5115;
-        Tue, 12 Sep 2023 11:23:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8926BC433C7;
-        Tue, 12 Sep 2023 18:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694543030;
-        bh=9PjwsXYdvGXo7MUL7wecpovXv5ZiPln8ttPB8U75U30=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WiVa/+22NCGW7IrffV01g/GdWC+ihuiANID47Be41qQQoSSJ9MWdaOfhEb9E0Q5VN
-         +r4kMs1yWdxu3fZxSMVAhcb1TNaDtndauRq5uWXU7mBetG9qmN4n6Ms8G4M3GnEpT6
-         IL8BpNw0B4f3QGsuR4iJODP+YKbeKGtOxcoRwXCmSfOmpw58KNwvZgqZoqFU46XehM
-         k5yjfS85vh+C4lBLsV3Gf18j3jx11EzTme/IAilZ+vPSeoagRxi7yNKtU2wB8T0SMM
-         fviEL+q+o20LzIhi5DMS0RPSpg2+62je5UWbBK2PUNRUJjbewFTZnJJWrRJjpUPVGS
-         Iyia4kBEwqV/g==
-Received: (nullmailer pid 1158307 invoked by uid 1000);
-        Tue, 12 Sep 2023 18:23:46 -0000
-Date:   Tue, 12 Sep 2023 13:23:46 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Qiang Zhao <qiang.zhao@nxp.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Simon Horman <horms@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Eric Dumazet <edumazet@google.com>,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        devicetree@vger.kernel.org,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Jaroslav Kysel a <perex@perex.cz>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lee Jones <lee@kernel.org>, Li Yang <leoyang.li@nxp.com>
-Subject: Re: [PATCH v5 07/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
- Add 'additionalProperties: false' in child nodes
-Message-ID: <169454302597.1158257.5413851001884233921.robh@kernel.org>
-References: <20230912081527.208499-1-herve.codina@bootlin.com>
- <20230912081527.208499-8-herve.codina@bootlin.com>
+        Tue, 12 Sep 2023 14:24:10 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA5E10DF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68fb898ab3bso2188886b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694543046; x=1695147846; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8/1D1hlKrwxGhPYu7s8FW0yjX/NvlYAKUyveN+rZHg=;
+        b=RoDfTMpdGYQOL3qxsM/UQYJdoVepEmmHsBXKTD8a12xDCSBeBz0M0t8fZlfFUm3Kdv
+         87RxsOHwjEmPO0JUqLr3/wfdXi73kVHbmoqDQ7ZCwg1WRfUqlitl63X3ZgCTwo9Xh9U8
+         MVRh3AdeOk7O4mqiwzXX3dDQHYsgVkGz+ExyA6aDNgy4X0a3yEW1lSamfCWt4vXbkq1g
+         m1tgZafo/dsa5rtlUjNjUAxHvd9T6Ivs9hLQLX6PLs+l7rCOsEegWhyEz8vyjL5397UE
+         eIcs6R9SbM5lmj4HjgFHhTscHIrsHOVvxv7j1BRvPr7YjldRj/ZYKpnXa4tXL9WhYQqv
+         yiuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694543046; x=1695147846;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y8/1D1hlKrwxGhPYu7s8FW0yjX/NvlYAKUyveN+rZHg=;
+        b=jzAWI2/6RZx6CouGVh9GwgR9REioWNu0s22ORPRE+dowiE6YH4UqjsNI23xSmU8Iij
+         gzkGkgj1J4uQB6ozComgkNXexSsQ44CKttFMMsf4mBDw9d82P1TH0s/SjgTr6S8l7nDr
+         Md9019VjTdPQa/n0TN1+YqBqFOlvtOeesNeMnigWtDEjuLk2rVdJaj7x0KZKDHSD+lkP
+         JAOio+egz++kAOkmKSy44iQkZX9+54ZBeMUbgoQ0itJz+6GxsbPswyDryv6VlYaDVYQC
+         ADej2866AghIBs1fTAfCLCNWHr36mXZCzdt2Qa7p3QrzcvwmG5CCkPyCRK6+7Xb6pISY
+         Q0vQ==
+X-Gm-Message-State: AOJu0YzCBTr3LMq1J8tsjRBA7Bh02c6+KlFY5mFW4tu0ZsTGeB+vMhHv
+        aE9yXerxzba1KpYqQCC13+hlnw==
+X-Google-Smtp-Source: AGHT+IG9chD/RkZ8OOUzGsLf726oa5VFCPJ0BaZ+qbex436wuU+iD6QMGqbR6s+8Yxvxt+tedk1NWA==
+X-Received: by 2002:a05:6a21:47cb:b0:153:6e99:edbb with SMTP id as11-20020a056a2147cb00b001536e99edbbmr225106pzc.31.1694543046299;
+        Tue, 12 Sep 2023 11:24:06 -0700 (PDT)
+Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
+        by smtp.gmail.com with ESMTPSA id bt10-20020a056a00438a00b006875df4773fsm3989174pfb.163.2023.09.12.11.24.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 11:24:05 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 18:24:01 +0000
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 4/6] KVM: Documentation: Add the missing description
+ for tdp_mmu_root_count into kvm_mmu_page
+Message-ID: <ZQCswf8EWAGy8QZI@google.com>
+References: <20230801002127.534020-1-mizhang@google.com>
+ <20230801002127.534020-5-mizhang@google.com>
+ <ZN1R31uo4FGQfKrQ@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912081527.208499-8-herve.codina@bootlin.com>
+In-Reply-To: <ZN1R31uo4FGQfKrQ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 12 Sep 2023 10:14:58 +0200, Herve Codina wrote:
-> Additional properties in child node should not be allowed.
+On Wed, Aug 16, 2023, Sean Christopherson wrote:
+> On Tue, Aug 01, 2023, Mingwei Zhang wrote:
+> > Add the description of tdp_mmu_root_count into kvm_mmu_page description and
+> > combine it with the description of root_count. tdp_mmu_root_count is an
+> > atomic counter used only in TDP MMU. Update the doc.
+> > 
+> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > Reviewed-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  Documentation/virt/kvm/x86/mmu.rst | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
+> > index 17d90974204e..40daf8beb9b1 100644
+> > --- a/Documentation/virt/kvm/x86/mmu.rst
+> > +++ b/Documentation/virt/kvm/x86/mmu.rst
+> > @@ -229,10 +229,14 @@ Shadow pages contain the following information:
+> >      can be calculated from the gfn field when used.  In addition, when
+> >      role.direct is set, KVM does not track access permission for each of the
+> >      gfn. See role.direct and gfn.
+> > -  root_count:
+> > -    A counter keeping track of how many hardware registers (guest cr3 or
+> > -    pdptrs) are now pointing at the page.  While this counter is nonzero, the
+> > -    page cannot be destroyed.  See role.invalid.
+> > +  root_count / tdp_mmu_root_count:
+> > +     root_count is a reference counter for root shadow pages in Shadow MMU.
+> > +     vCPUs elevate the refcount when getting a shadow page that will be used as
+> > +     a root page, i.e. page that will be loaded into hardware directly (CR3,
+> > +     PDPTRs, nCR3 EPTP). Root pages cannot be destroyed while their refcount is
+> > +     non-zero. See role.invalid. tdp_mmu_root_count is similar but exclusively
+> > +     used in TDP MMU as an atomic refcount. When the value is non-zero, it
+> > +     allows vCPUs acquire references while holding mmu_lock for read.
 > 
-> Prevent them adding 'additionalProperties: false'
+> That last sentence is wrong.  *vCPUs* can't acquire references while holding
+> mmu_lock for read.  And actually, they don't ever put references while holding
+> for read either.  vCPUs *must* hold mmu_lock for write to obtain a new root,
+> Not putting references while holding mmu_lock for read is mostly an implementation
+> quirk.
 > 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  .../devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml     | 1 +
->  1 file changed, 1 insertion(+)
+> Maybe replace it with this?
 > 
+>     tdp_mmu_root_count is similar but exclusively used in the TDP MMU as an
+>     atomic refcount (select TDP MMU flows walk all roots while holding mmu_lock
+>     for read, e.g. when clearing dirty bits).
 
-Acked-by: Rob Herring <robh@kernel.org>
+hmm, I think all the content within the bracket is details and we should
+not mention them at all. In fact, when I see the implementation, the
+last refcount of tdp_mmu_root_count is treated differently. Those
+details should be instead mentioned in code or comments instead of
+documentation as they may evolve much faster.
 
+So, I will remove the last sentence.
