@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE1E79D52C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ABC79D531
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 17:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbjILPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 11:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
+        id S232159AbjILPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 11:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjILPmN (ORCPT
+        with ESMTP id S229661AbjILPmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 11:42:13 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846DE10DE;
-        Tue, 12 Sep 2023 08:42:09 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso63864235e9.3;
-        Tue, 12 Sep 2023 08:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694533328; x=1695138128; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/Jg3m+l3nv9mAWoSPMXyNeTwQN5jCAeTIcsjB6I5Pck=;
-        b=nzxxPFgmWjz35pMQvdo4qwF0o7l1v6GKKErvZsQFIVoOHm+fpClhoxEgNgTdicGKB8
-         v0mDzMmPsmLb+HiTi0EkSSBfxrs+mBUQBX5ef7H+tcEXDqFLbVCdxHwto60xkXG2VGyp
-         s9Y12RW1a1jkCuaeQxVI1Sq9ElVg0SuR9s1grewe72DngR6Jex9wyqF+2D72QqJFWImI
-         7caBrQJ9Cbs/SijD5UQx7S0Pl9DiZVwtDsVhT6XUodCAIWHsJgb4musd/6BKcWqhCg1D
-         nAro8pPoRcqVqVRSvjwbw/QSijuAZow2SSIkqNspk0dN7W8Cm2lRTB79BTubJhx3uqNi
-         wm/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694533328; x=1695138128;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Jg3m+l3nv9mAWoSPMXyNeTwQN5jCAeTIcsjB6I5Pck=;
-        b=L2NFcYBFELYOm7APOgKjHexuNR3gHdDDRf8vP/0pe1XQ2TE+f/br8Pgw1rzAQguVvv
-         X/RSgtSt9aVLJhDZfkEao2ZeeBOXqsApEk2MMkiKombvmaObrDg6ymiNqz5vMrMhTusr
-         mohljAZ1x0lfazUHAlFrV/m9gMZXFH541bVOFG33jQfatpV6G7q3vigHV9XrPeO7d4JU
-         zHv1a1OPqcBS/YiKWaPVt3rMhGXeufGaBxmvI170BAb4NL0zTyF8oIBojeHZcs/rXpLA
-         VWu5mCk4ktxBwWvPq9jR8IE/DBa6V+OsIS9s2agVZ0D6epemsH7ElhhlqV8UaqTdPvmS
-         EFqA==
-X-Gm-Message-State: AOJu0Ywyo9XX6HgerNZSZpP4Fm+5Gkkm3dLb+TZB8rW5AhMYyzqJRH6Y
-        v7lA+hg+0L6uoP+WdjbnlPM=
-X-Google-Smtp-Source: AGHT+IG4OaWWbodV2V25GNsBTDg9QvInfQ/gyrMSZBW1KRZJg8QRHdc8G+AcywfYyJ4UduxuLUUWQw==
-X-Received: by 2002:a05:6000:10c:b0:318:f7a:e3c8 with SMTP id o12-20020a056000010c00b003180f7ae3c8mr9730024wrx.57.1694533327618;
-        Tue, 12 Sep 2023 08:42:07 -0700 (PDT)
-Received: from skbuf ([188.25.254.186])
-        by smtp.gmail.com with ESMTPSA id a5-20020aa7cf05000000b0052576969ef8sm6058701edy.14.2023.09.12.08.42.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Sep 2023 08:42:07 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 18:42:04 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     =?utf-8?B?UGF3ZcWC?= Dembicki <paweldembicki@gmail.com>
-Cc:     netdev@vger.kernel.org, Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 4/8] net: dsa: vsc73xx: add
- port_stp_state_set function
-Message-ID: <20230912154204.633wv564dih3p6we@skbuf>
-References: <20230912122201.3752918-1-paweldembicki@gmail.com>
- <20230912122201.3752918-5-paweldembicki@gmail.com>
- <20230912144802.czdpb6hpn2yiewvf@skbuf>
- <CAJN1Kkyn4V2FNVdZZMWHTSqP+=5bKacKSEpkF5t4sNptc1vtCg@mail.gmail.com>
+        Tue, 12 Sep 2023 11:42:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA50710DE;
+        Tue, 12 Sep 2023 08:42:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 134D2C433C7;
+        Tue, 12 Sep 2023 15:42:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694533363;
+        bh=A9IHpP6N316XfcpL5X56A92IaXw42P2If+Z8SUyUWI4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k3BrWE/7RbfM1QWdm8ZFo2E/rhhf/ftEQCSvzgrUU15e4Ly0NWaWQRogxrkeiGicS
+         CqhUOYHptTl+2V28epsDtyRwDLuLQ3I5bIxofPXOh376f6lWenJmazIEHdwZn2XRoq
+         C+614udDKn5KhmW96reganCO7bT++uvdkjKU/no24EUNsfc8yX+juJCFZ1RigXQOuy
+         ieSZ/PfKWmkMt/39ne26y7JonMfxcv+oJDemareMcSugualICdMOf4f/6S45dfdKFZ
+         qN9hHMTx78zki2XczUY8Zj4deB6p8rC13WBXGDVGCmK54nbCQT8M49vQ+01FMZxfJY
+         wFk5Q499efOng==
+Received: (nullmailer pid 842293 invoked by uid 1000);
+        Tue, 12 Sep 2023 15:42:39 -0000
+Date:   Tue, 12 Sep 2023 10:42:39 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
+        sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, rafael@kernel.org, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmitry.baryshkov@linaro.org,
+        Christian Marangi <ansuelsmth@gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: opp: opp-v2-kryo-cpu: Document named
+ opp-microvolt property
+Message-ID: <20230912154239.GA833216-robh@kernel.org>
+References: <20230909165739.1036263-1-robimarko@gmail.com>
+ <20230909165739.1036263-2-robimarko@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJN1Kkyn4V2FNVdZZMWHTSqP+=5bKacKSEpkF5t4sNptc1vtCg@mail.gmail.com>
+In-Reply-To: <20230909165739.1036263-2-robimarko@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:27:45PM +0200, Paweł Dembicki wrote:
-> > To forward a packet between port A and port B, both of them must be in
-> > BR_STATE_FORWARDING, not just A.
-> >
+On Sat, Sep 09, 2023 at 06:56:01PM +0200, Robert Marko wrote:
+> From: Christian Marangi <ansuelsmth@gmail.com>
 > 
-> In this patch bridges are unimplemented. Please look at 8/8 patch [0].
+> Document named opp-microvolt property for opp-v2-kryo-cpu schema.
+> This property is used to declare multiple voltage ranges selected on the
+> different values read from efuses. The selection is done based on the
+> speed pvs values and the named opp-microvolt property is selected by the
+> qcom-cpufreq-nvmem driver.
 > 
-> [0] https://lore.kernel.org/netdev/20230912122201.3752918-9-paweldembicki@gmail.com/T/#u
-
-Yes, but vsc73xx_port_stp_state_set() remains unchanged until the end.
-What am I missing? In your implementation, nothing prevents port i
-(which is in BR_STATE_FORWARDING) from forwarding packets towards a port j,
-present in vsc->forward_map[i] & BIT(j), which is *not* in BR_STATE_FORWARDING.
-If you don't have access to the STP protocol yet, you can put port j
-down and it will go to the DISABLED state and you can confirm that other
-ports in the bridge will still remain configured to forward to it.
-
-> > > diff --git a/drivers/net/dsa/vitesse-vsc73xx.h b/drivers/net/dsa/vitesse-vsc73xx.h
-> > > index f79d81ef24fb..224e284a5573 100644
-> > > --- a/drivers/net/dsa/vitesse-vsc73xx.h
-> > > +++ b/drivers/net/dsa/vitesse-vsc73xx.h
-> > > @@ -18,6 +18,7 @@
-> > >
-> > >  /**
-> > >   * struct vsc73xx - VSC73xx state container
-> > > + * @forward_map: Forward table cache
-> >
-> > If you start describing the member fields, shouldn't all be described?
-> > I think there will be kdoc warnings otherwise.
-> >
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> ---
+>  .../bindings/opp/opp-v2-kryo-cpu.yaml         | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 > 
-> Jakub in v1 series points kdoc warn in this case. I added a
-> description to the field added by me. Should I prepare in the v4
-> series a separate commit for other descriptions in this struct?
+> diff --git a/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml b/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
+> index bbbad31ae4ca..6f216306a7eb 100644
+> --- a/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
+> +++ b/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
+> @@ -63,6 +63,12 @@ patternProperties:
+>            5:  MSM8996SG, speedbin 1
+>            6:  MSM8996SG, speedbin 2
+>            7-31:  unused
+> +
+> +          Bitmap for IPQ806X SoC:
+> +          0:  IPQ8062
+> +          1:  IPQ8064/IPQ8066/IPQ8068
+> +          2:  IPQ8065/IPQ8069
+> +          3-31:  unused
+>          enum: [0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7,
+>                 0x9, 0xd, 0xe, 0xf,
+>                 0x10, 0x20, 0x30, 0x70]
+> @@ -71,6 +77,24 @@ patternProperties:
+>  
+>        required-opps: true
+>  
+> +    patternProperties:
+> +      '^opp-microvolt-speed[0-9]+-pvs[0-9]+$':
+> +        description: |
+> +          Named opp-microvolt property following the same generic
+> +          binding for named opp-microvolt.
+> +
+> +          The correct voltage range is selected based on the values
+> +          in the efuse for the speed and the pvs.
 
-Yes, but please hold off posting it until I'm done reviewing this version.
+What is "pvs"?
+
+> +
+> +          The qcom-cpufreq-nvmem driver will read all these values
+> +          and assign the correct named property.
+
+Specific driver details don't belong in binding. If there's some detail 
+or requirement of all consumers, then that is fine here.
+
+> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
+
+The common binding already defines the type. Drop.
+
+> +        minItems: 1
+> +        maxItems: 8   # Should be enough regulators
+
+Does this really vary from 1 to 8 entries? Looks like copy-n-paste.
+
+> +        items:
+> +          minItems: 1
+> +          maxItems: 3
+
+Do you really need to support both single voltage and <nom min max> 
+forms?
+
+Rob
