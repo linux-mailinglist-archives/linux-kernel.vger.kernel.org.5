@@ -2,272 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B73C79DAAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1021F79DAB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 23:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236995AbjILVZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 17:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53638 "EHLO
+        id S234525AbjILVZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 17:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233650AbjILVZG (ORCPT
+        with ESMTP id S236366AbjILVZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 17:25:06 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED48E10CC;
-        Tue, 12 Sep 2023 14:25:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694553900;
-        bh=Wmu1+Z9yrBCAmEnc1DatlQpRMBdDXqfSMezQJyU+ih8=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=U9FnZjwVVDq/gFpBj0poKZjyMq+xOqtkKuIxgzMiEEITTDD8kyEy05bjzsadaCi1H
-         R+44xIV44q9At6udAO7CH/Q8pHUUGYHvoLhKACav6DnF5qmMQ9bZwHe7u9ShppoiJm
-         IMpcP97IjxyBzpKw8tGYV8i32TBv9oPqahg95RQg=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 12 Sep 2023 23:24:44 +0200
-Subject: [PATCH 5/5] bcachefs: Avoid unused symbol warnings from headers
+        Tue, 12 Sep 2023 17:25:44 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F4310CC;
+        Tue, 12 Sep 2023 14:25:41 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CKeUFf021236;
+        Tue, 12 Sep 2023 21:25:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=c2IgGTy0wU8Mk1J81KAiAdVcGHYoEzWNe7EuFMAWAvU=;
+ b=I63ibrj91bW8oN/ePRr7hMZjsXlo9nnItBJxfr5ciQmaS+Je4YrhejWLyapOyWCIqC2F
+ RfNh6iiYvKDatDcqszv/LHAsNC+h4vwFom9LeLgJBWKoSV9eMXj+34BBVRQ2TzJoaHXp
+ lmtgV+AV4Z2ryzKMBdnQ7ZiMpELZuqs02za7Eud/0RfYbRIoWMld/E5vtl/rmLN6+Pds
+ hwx5cNtzYCErQxbIvhymEjLuTEpljTEteWwIuKtRYhpv23sJ+DdAd8m4k/6s1OLMpsoE
+ KsR3KU9Ze8h6FaQW09HyTb3OZ8KGJil9tQKkdLyrEH2zC8sUvCSwMnmSKPbo958L+FM6 3A== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7u82dh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 21:25:24 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38CLPO57014858
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Sep 2023 21:25:24 GMT
+Received: from hu-djaggi-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 12 Sep 2023 14:25:21 -0700
+From:   Deepti Jaggi <quic_djaggi@quicinc.com>
+To:     <james.morse@arm.com>, <mchehab@kernel.org>, <rric@kernel.org>,
+        <bp@alien8.de>, <tony.luck@intel.com>
+CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH RESEND] EDAC/device: Add sysfs notification for UE,CE count change
+Date:   Tue, 12 Sep 2023 14:25:08 -0700
+Message-ID: <20230912212508.4691-1-quic_djaggi@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230912-bcachefs-cleanup-v1-5-c1f717424e6a@weissschuh.net>
-References: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
-In-Reply-To: <20230912-bcachefs-cleanup-v1-0-c1f717424e6a@weissschuh.net>
-To:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694553898; l=7973;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=Wmu1+Z9yrBCAmEnc1DatlQpRMBdDXqfSMezQJyU+ih8=;
- b=6uesjb03g638/ql3k0Md5pUt3lb4dz/4y+OxV5wT8bheOXgdQ4HJVsSg9D4cGnQub5Q+RKDQd
- 5EgP5mC6dl5BRUAf9YBZ8jB5Xb2G8XLxegiTSIVqflhMwBwnSiRJlCE
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Y65G21gnF3ig8GacBINLYqKe8thMgx9S
+X-Proofpoint-ORIG-GUID: Y65G21gnF3ig8GacBINLYqKe8thMgx9S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_20,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ mlxlogscore=806 impostorscore=0 suspectscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 bulkscore=0 clxscore=1011 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309120182
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Static variables defined in headers generate unused variable compiler
-warnings in CUs that do not use said functions.
-Avoid the warnings by either replacing the variables by enums and by
-explicitly inhibiting the warning.
+A daemon running in user space collects information on correctable
+and uncorrectable errors from EDAC driver by reading corresponding
+sysfs entries and takes appropriate action.
+This patch adds support for user space daemon to wait on poll() until
+the sysfs entries for UE count and CE count change and then read updated
+counts instead of continuously monitoring the sysfs entries for
+any changes.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Deepti Jaggi <quic_djaggi@quicinc.com>
 ---
- fs/bcachefs/bcachefs.h        |  3 ++-
- fs/bcachefs/bcachefs_format.h | 15 ++++++-----
- fs/bcachefs/btree_types.h     | 63 ++++++++++++++++++++++---------------------
- fs/bcachefs/fs-ioctl.h        |  8 +++---
- fs/bcachefs/opts.h            |  3 ++-
- 5 files changed, 50 insertions(+), 42 deletions(-)
+ drivers/edac/edac_device.c       | 16 ++++++++++++++++
+ drivers/edac/edac_device.h       |  8 ++++++++
+ drivers/edac/edac_device_sysfs.c | 20 ++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
 
-diff --git a/fs/bcachefs/bcachefs.h b/fs/bcachefs/bcachefs.h
-index 30b3d7b9f9dc..b5a8ea44f9ef 100644
---- a/fs/bcachefs/bcachefs.h
-+++ b/fs/bcachefs/bcachefs.h
-@@ -186,6 +186,7 @@
- #include <linux/backing-dev-defs.h>
- #include <linux/bug.h>
- #include <linux/bio.h>
-+#include <linux/compiler.h>
- #include <linux/closure.h>
- #include <linux/kobject.h>
- #include <linux/list.h>
-@@ -371,7 +372,7 @@ BCH_DEBUG_PARAMS()
- #undef BCH_DEBUG_PARAM
- 
- #ifndef CONFIG_BCACHEFS_DEBUG
--#define BCH_DEBUG_PARAM(name, description) static const bool bch2_##name;
-+#define BCH_DEBUG_PARAM(name, description) static const __used bool bch2_##name;
- BCH_DEBUG_PARAMS_DEBUG()
- #undef BCH_DEBUG_PARAM
- #endif
-diff --git a/fs/bcachefs/bcachefs_format.h b/fs/bcachefs/bcachefs_format.h
-index 1cce2504bca6..a13455dbb32c 100644
---- a/fs/bcachefs/bcachefs_format.h
-+++ b/fs/bcachefs/bcachefs_format.h
-@@ -74,6 +74,7 @@
- 
- #include <asm/types.h>
- #include <asm/byteorder.h>
-+#include <linux/compiler.h>
- #include <linux/kernel.h>
- #include <linux/uuid.h>
- #include "vstructs.h"
-@@ -83,8 +84,8 @@ typedef uuid_t __uuid_t;
- #endif
- 
- #define BITMASK(name, type, field, offset, end)				\
--static const unsigned	name##_OFFSET = offset;				\
--static const unsigned	name##_BITS = (end - offset);			\
-+static const __used unsigned	name##_OFFSET = offset;			\
-+static const __used unsigned	name##_BITS = (end - offset);		\
- 									\
- static inline __u64 name(const type *k)					\
- {									\
-@@ -98,9 +99,9 @@ static inline void SET_##name(type *k, __u64 v)				\
- }
- 
- #define LE_BITMASK(_bits, name, type, field, offset, end)		\
--static const unsigned	name##_OFFSET = offset;				\
--static const unsigned	name##_BITS = (end - offset);			\
--static const __u##_bits	name##_MAX = (1ULL << (end - offset)) - 1;	\
-+static const __used unsigned	name##_OFFSET = offset;			\
-+static const __used unsigned	name##_BITS = (end - offset);		\
-+static const __used __u##_bits	name##_MAX = (1ULL << (end - offset)) - 1; \
- 									\
- static inline __u64 name(const type *k)					\
- {									\
-@@ -1639,7 +1640,7 @@ enum bcachefs_metadata_version {
- 	bcachefs_metadata_version_max
- };
- 
--static const unsigned bcachefs_metadata_required_upgrade_below = bcachefs_metadata_version_major_minor;
-+static const __used unsigned bcachefs_metadata_required_upgrade_below = bcachefs_metadata_version_major_minor;
- 
- #define bcachefs_metadata_version_current	(bcachefs_metadata_version_max - 1)
- 
-@@ -1946,7 +1947,7 @@ enum bch_csum_type {
- 	BCH_CSUM_NR
- };
- 
--static const unsigned bch_crc_bytes[] = {
-+static const __used unsigned bch_crc_bytes[] = {
- 	[BCH_CSUM_none]				= 0,
- 	[BCH_CSUM_crc32c_nonzero]		= 4,
- 	[BCH_CSUM_crc32c]			= 4,
-diff --git a/fs/bcachefs/btree_types.h b/fs/bcachefs/btree_types.h
-index 70398aaa095e..a9ab52e8f9d9 100644
---- a/fs/bcachefs/btree_types.h
-+++ b/fs/bcachefs/btree_types.h
-@@ -181,36 +181,39 @@ struct btree_node_iter {
- 	} data[MAX_BSETS];
- };
- 
--/*
-- * Iterate over all possible positions, synthesizing deleted keys for holes:
-- */
--static const u16 BTREE_ITER_SLOTS		= 1 << 0;
--static const u16 BTREE_ITER_ALL_LEVELS		= 1 << 1;
--/*
-- * Indicates that intent locks should be taken on leaf nodes, because we expect
-- * to be doing updates:
-- */
--static const u16 BTREE_ITER_INTENT		= 1 << 2;
--/*
-- * Causes the btree iterator code to prefetch additional btree nodes from disk:
-- */
--static const u16 BTREE_ITER_PREFETCH		= 1 << 3;
--/*
-- * Used in bch2_btree_iter_traverse(), to indicate whether we're searching for
-- * @pos or the first key strictly greater than @pos
-- */
--static const u16 BTREE_ITER_IS_EXTENTS		= 1 << 4;
--static const u16 BTREE_ITER_NOT_EXTENTS		= 1 << 5;
--static const u16 BTREE_ITER_CACHED		= 1 << 6;
--static const u16 BTREE_ITER_WITH_KEY_CACHE	= 1 << 7;
--static const u16 BTREE_ITER_WITH_UPDATES	= 1 << 8;
--static const u16 BTREE_ITER_WITH_JOURNAL	= 1 << 9;
--static const u16 __BTREE_ITER_ALL_SNAPSHOTS	= 1 << 10;
--static const u16 BTREE_ITER_ALL_SNAPSHOTS	= 1 << 11;
--static const u16 BTREE_ITER_FILTER_SNAPSHOTS	= 1 << 12;
--static const u16 BTREE_ITER_NOPRESERVE		= 1 << 13;
--static const u16 BTREE_ITER_CACHED_NOFILL	= 1 << 14;
--static const u16 BTREE_ITER_KEY_CACHE_FILL	= 1 << 15;
-+enum {
-+	/*
-+	 * Iterate over all possible positions, synthesizing deleted keys for holes:
-+	 */
-+	BTREE_ITER_SLOTS		= 1 << 0,
-+	BTREE_ITER_ALL_LEVELS		= 1 << 1,
-+	/*
-+	 * Indicates that intent locks should be taken on leaf nodes, because we expect
-+	 * to be doing updates:
-+	 */
-+	BTREE_ITER_INTENT		= 1 << 2,
-+	/*
-+	 * Causes the btree iterator code to prefetch additional btree nodes from disk:
-+	 */
-+	BTREE_ITER_PREFETCH		= 1 << 3,
+diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
+index 0689e1510721..d93c45b4beaa 100644
+--- a/drivers/edac/edac_device.c
++++ b/drivers/edac/edac_device.c
+@@ -555,12 +555,20 @@ void edac_device_handle_ce_count(struct edac_device_ctl_info *edac_dev,
+ 	if (instance->nr_blocks > 0) {
+ 		block = instance->blocks + block_nr;
+ 		block->counters.ce_count += count;
 +
-+	/*
-+	 * Used in bch2_btree_iter_traverse(), to indicate whether we're searching for
-+	 * @pos or the first key strictly greater than @pos
-+	 */
-+	BTREE_ITER_IS_EXTENTS		= 1 << 4,
-+	BTREE_ITER_NOT_EXTENTS		= 1 << 5,
-+	BTREE_ITER_CACHED		= 1 << 6,
-+	BTREE_ITER_WITH_KEY_CACHE	= 1 << 7,
-+	BTREE_ITER_WITH_UPDATES		= 1 << 8,
-+	BTREE_ITER_WITH_JOURNAL		= 1 << 9,
-+	__BTREE_ITER_ALL_SNAPSHOTS	= 1 << 10,
-+	BTREE_ITER_ALL_SNAPSHOTS	= 1 << 11,
-+	BTREE_ITER_FILTER_SNAPSHOTS	= 1 << 12,
-+	BTREE_ITER_NOPRESERVE		= 1 << 13,
-+	BTREE_ITER_CACHED_NOFILL	= 1 << 14,
-+	BTREE_ITER_KEY_CACHE_FILL	= 1 << 15,
-+};
- #define __BTREE_ITER_FLAGS_END			       16
++		/* Notify block sysfs attribute change */
++		if (block->kn_ce)
++			sysfs_notify_dirent(block->kn_ce);
+ 	}
  
- enum btree_path_uptodate {
-diff --git a/fs/bcachefs/fs-ioctl.h b/fs/bcachefs/fs-ioctl.h
-index f201980ef2c3..0ebf4106ed2f 100644
---- a/fs/bcachefs/fs-ioctl.h
-+++ b/fs/bcachefs/fs-ioctl.h
-@@ -2,10 +2,12 @@
- #ifndef _BCACHEFS_FS_IOCTL_H
- #define _BCACHEFS_FS_IOCTL_H
+ 	/* Propagate the count up the 'totals' tree */
+ 	instance->counters.ce_count += count;
+ 	edac_dev->counters.ce_count += count;
  
-+#include <linux/compiler.h>
++	/* Notify instance sysfs attribute change */
++	if (instance->kn_ce)
++		sysfs_notify_dirent(instance->kn_ce);
 +
- /* Inode flags: */
+ 	if (edac_device_get_log_ce(edac_dev))
+ 		edac_device_printk(edac_dev, KERN_WARNING,
+ 				   "CE: %s instance: %s block: %s count: %d '%s'\n",
+@@ -601,12 +609,20 @@ void edac_device_handle_ue_count(struct edac_device_ctl_info *edac_dev,
+ 	if (instance->nr_blocks > 0) {
+ 		block = instance->blocks + block_nr;
+ 		block->counters.ue_count += count;
++
++		/* Notify block sysfs attribute change */
++		if (block->kn_ue)
++			sysfs_notify_dirent(block->kn_ue);
+ 	}
  
- /* bcachefs inode flags -> vfs inode flags: */
--static const unsigned bch_flags_to_vfs[] = {
-+static const __used unsigned bch_flags_to_vfs[] = {
- 	[__BCH_INODE_SYNC]	= S_SYNC,
- 	[__BCH_INODE_IMMUTABLE]	= S_IMMUTABLE,
- 	[__BCH_INODE_APPEND]	= S_APPEND,
-@@ -13,7 +15,7 @@ static const unsigned bch_flags_to_vfs[] = {
+ 	/* Propagate the count up the 'totals' tree */
+ 	instance->counters.ue_count += count;
+ 	edac_dev->counters.ue_count += count;
+ 
++	/* Notify instance sysfs attribute change */
++	if (instance->kn_ue)
++		sysfs_notify_dirent(instance->kn_ue);
++
+ 	if (edac_device_get_log_ue(edac_dev))
+ 		edac_device_printk(edac_dev, KERN_EMERG,
+ 				   "UE: %s instance: %s block: %s count: %d '%s'\n",
+diff --git a/drivers/edac/edac_device.h b/drivers/edac/edac_device.h
+index 3f44e6b9d387..ae6ed6559c1c 100644
+--- a/drivers/edac/edac_device.h
++++ b/drivers/edac/edac_device.h
+@@ -127,6 +127,10 @@ struct edac_device_block {
+ 
+ 	/* edac sysfs device control */
+ 	struct kobject kobj;
++
++	/* kern fs node for block ue_count and ce count attributes*/
++	struct kernfs_node *kn_ue;
++	struct kernfs_node *kn_ce;
  };
  
- /* bcachefs inode flags -> FS_IOC_GETFLAGS: */
--static const unsigned bch_flags_to_uflags[] = {
-+static const __used unsigned bch_flags_to_uflags[] = {
- 	[__BCH_INODE_SYNC]	= FS_SYNC_FL,
- 	[__BCH_INODE_IMMUTABLE]	= FS_IMMUTABLE_FL,
- 	[__BCH_INODE_APPEND]	= FS_APPEND_FL,
-@@ -22,7 +24,7 @@ static const unsigned bch_flags_to_uflags[] = {
+ /* device instance control structure */
+@@ -141,6 +145,10 @@ struct edac_device_instance {
+ 
+ 	/* edac sysfs device control */
+ 	struct kobject kobj;
++
++	/* kern fs node for block ue_count and ce count attributes*/
++	struct kernfs_node *kn_ue;
++	struct kernfs_node *kn_ce;
  };
  
- /* bcachefs inode flags -> FS_IOC_FSGETXATTR: */
--static const unsigned bch_flags_to_xflags[] = {
-+static const __used unsigned bch_flags_to_xflags[] = {
- 	[__BCH_INODE_SYNC]	= FS_XFLAG_SYNC,
- 	[__BCH_INODE_IMMUTABLE]	= FS_XFLAG_IMMUTABLE,
- 	[__BCH_INODE_APPEND]	= FS_XFLAG_APPEND,
-diff --git a/fs/bcachefs/opts.h b/fs/bcachefs/opts.h
-index 8a9db110d64f..35831159e207 100644
---- a/fs/bcachefs/opts.h
-+++ b/fs/bcachefs/opts.h
-@@ -3,6 +3,7 @@
- #define _BCACHEFS_OPTS_H
  
- #include <linux/bug.h>
-+#include <linux/compiler.h>
- #include <linux/log2.h>
- #include <linux/string.h>
- #include <linux/sysfs.h>
-@@ -469,7 +470,7 @@ struct bch_opts {
- #undef x
- };
+diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
+index 010c26be5846..51a93a8a0712 100644
+--- a/drivers/edac/edac_device_sysfs.c
++++ b/drivers/edac/edac_device_sysfs.c
+@@ -564,6 +564,13 @@ static int edac_device_create_block(struct edac_device_ctl_info *edac_dev,
+ 	}
+ 	kobject_uevent(&block->kobj, KOBJ_ADD);
  
--static const struct bch_opts bch2_opts_default = {
-+static const __used struct bch_opts bch2_opts_default = {
- #define x(_name, _bits, _mode, _type, _sb_opt, _default, ...)		\
- 	._name##_defined = true,					\
- 	._name = _default,						\
-
++	/*
++	 * Save kernfs pointer for ue count and ce count
++	 * to notify from any context when attributes change
++	 */
++	block->kn_ue = sysfs_get_dirent(block->kobj.sd, "ue_count");
++	block->kn_ce = sysfs_get_dirent(block->kobj.sd, "ce_count");
++
+ 	return 0;
+ 
+ 	/* Error unwind stack */
+@@ -596,6 +603,9 @@ static void edac_device_delete_block(struct edac_device_ctl_info *edac_dev,
+ 		}
+ 	}
+ 
++	block->kn_ue = NULL;
++	block->kn_ce = NULL;
++
+ 	/* unregister this block's kobject, SEE:
+ 	 *	edac_device_ctrl_block_release() callback operation
+ 	 */
+@@ -662,6 +672,13 @@ static int edac_device_create_instance(struct edac_device_ctl_info *edac_dev,
+ 	edac_dbg(4, "Registered instance %d '%s' kobject\n",
+ 		 idx, instance->name);
+ 
++	/*
++	 * Save kernfs pointer for ue count and ce count
++	 * to notify from any context when attributes change
++	 */
++	instance->kn_ue = sysfs_get_dirent(instance->kobj.sd, "ue_count");
++	instance->kn_ce = sysfs_get_dirent(instance->kobj.sd, "ce_count");
++
+ 	return 0;
+ 
+ 	/* error unwind stack */
+@@ -684,6 +701,9 @@ static void edac_device_delete_instance(struct edac_device_ctl_info *edac_dev,
+ 
+ 	instance = &edac_dev->instances[idx];
+ 
++	instance->kn_ue = NULL;
++	instance->kn_ce = NULL;
++
+ 	/* unregister all blocks in this instance */
+ 	for (i = 0; i < instance->nr_blocks; i++)
+ 		edac_device_delete_block(edac_dev, &instance->blocks[i]);
 -- 
-2.42.0
+2.17.1
 
