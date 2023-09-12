@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 145CF79CC43
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289C179CC35
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 11:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbjILJrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 05:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
+        id S232684AbjILJql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 05:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbjILJrN (ORCPT
+        with ESMTP id S232241AbjILJqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 05:47:13 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C3B12E;
-        Tue, 12 Sep 2023 02:47:09 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C98utC000883;
-        Tue, 12 Sep 2023 09:46:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iBud7bDwgB/NkAvNOZ5XH0nzWWSfAmK24B93zv8Y0zg=;
- b=QdsGspPnJ/v9W1U1h5QbW8T9QcK8JFtFNHI5XMrahMxozMOmJcJ76YlKX2YmNmOxz5tg
- QJB2R9Mx4LIFCB5Tk2gYi8AIo9VJdJUES9Ss12CVKt+TbM2wkCd8JAZJhGj0mUwSScBu
- KFDOupZ9DdwJZ9EGVmDfFSJ380dMFQmpPTAy/CnzjvM5juqT8ZuYD6n/YtO33skUccaV
- y3s0pD1CJGkNe5oOeN8Wk4kiSH2qGsV6EwnoSHBdFp+q7TUnB0a2oFssPzv+Mo9XWzcK
- zB0y/94i4a1a4ymHBuJnxxjtI+IG3N/I2wyBKbHqCsGAs988LdMwg9GdmUKFIaTz1R54 jw== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t20yy2pbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:46:43 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C9kg95025681
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 09:46:42 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 02:46:23 -0700
-Message-ID: <78509d6a-e721-2395-b5f6-321227e76556@quicinc.com>
-Date:   Tue, 12 Sep 2023 15:16:20 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 09/17] pstore/ram: Use dynamic ramoops reserve resource
-Content-Language: en-US
-To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
-CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-10-git-send-email-quic_mojha@quicinc.com>
- <20425ace-3ef5-4eaf-8319-999bafa34a07@quicinc.com>
- <35c9d1b1-0f48-b873-d703-c880f3b91422@quicinc.com>
- <d69a1822-0972-419a-ae8b-b6979733a18b@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <d69a1822-0972-419a-ae8b-b6979733a18b@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: KKdfHQi5R8bi5R4sr-NcU0C0Fz2dstUE
-X-Proofpoint-GUID: KKdfHQi5R8bi5R4sr-NcU0C0Fz2dstUE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_07,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 mlxlogscore=841 bulkscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 clxscore=1015 spamscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309120081
+        Tue, 12 Sep 2023 05:46:40 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE6212E;
+        Tue, 12 Sep 2023 02:46:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABD8DC433C7;
+        Tue, 12 Sep 2023 09:46:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694511996;
+        bh=7DHj9Jb6FeJL+iN5c+SG2J1fsifqdWlfmhVDvfRmFmA=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=YNEWSRxx6rYG5byoNYu25NrTupZZrCJHQFsBmqTcSdHCcUA9Mcg5oN5lge5vsYtn0
+         2kwHtncXuTIcZBX2e+eBJlY1FakhW0sidIOjrD/0IPBRNHM+cKvysBeJe32QOPyG0x
+         aIYNam3ajzSElhdt/yI7YJAafhncq55xLyjQuL1Gjt1hhA7wznNtqCdAcTv5Vt6b+l
+         56EK+ScpE47SXN+JwnuyZnZfsRKvsCIFe55fWC7g1Q1IOlp0VOb4354uFRnCyUzYaw
+         CFLQ0ZgauqCIMX5nRbio2Xs6G1piGNwG6cahxvSfBGthHhQSUjZNMbDKcFVIQeTvv3
+         dN4/T8eNdKY9g==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 12 Sep 2023 12:46:32 +0300
+Message-Id: <CVGUDAU0TSNU.2KQP3U44NG61T@suppilovahvero>
+Cc:     <linux-integrity@vger.kernel.org>,
+        "Mimi Zohar" <zohar@linux.ibm.com>,
+        "Dmitry Kasatkin" <dmitry.kasatkin@gmail.com>,
+        "Paul Moore" <paul@paul-moore.com>,
+        "James Morris" <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, "joeyli" <jlee@suse.com>
+Subject: Re: [PATCH] integrity: powerpc: Do not select CA_MACHINE_KEYRING
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     =?utf-8?q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+X-Mailer: aerc 0.14.0
+References: <20230907165224.32256-1-msuchanek@suse.de>
+ <CVGF1AQT9WI4.2660NVII9NIDU@suppilovahvero>
+ <20230912075134.GM8826@kitsune.suse.cz>
+In-Reply-To: <20230912075134.GM8826@kitsune.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue Sep 12, 2023 at 10:51 AM EEST, Michal Such=C3=A1nek wrote:
+> On Tue, Sep 12, 2023 at 12:45:35AM +0300, Jarkko Sakkinen wrote:
+> > On Thu Sep 7, 2023 at 7:52 PM EEST, Michal Suchanek wrote:
+> > > No other platform needs CA_MACHINE_KEYRING, either.
+> > >
+> > > This is policy that should be decided by the administrator, not Kconf=
+ig
+> >=20
+> > s/administrator/distributor/ ?
+>
+> It depends on the situation. Ideally the administrator would pick the
+> distributor that provides a policy that is considered fitting for the
+> purpose or roll their own. Unfortunately, they don't always have the
+> choice.
+>
+> For the kerenel's part it should support wide range of policies for
+> different use cases, and not force the hand of the administrator or
+> distributor.
+>
+> >=20
+> > > dependencies.
+> > >
+> > > cc: joeyli <jlee@suse.com>
+> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > > ---
+> > >  security/integrity/Kconfig | 2 --
+> > >  1 file changed, 2 deletions(-)
+> > >
+> > > diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+> > > index 232191ee09e3..b6e074ac0227 100644
+> > > --- a/security/integrity/Kconfig
+> > > +++ b/security/integrity/Kconfig
+> > > @@ -68,8 +68,6 @@ config INTEGRITY_MACHINE_KEYRING
+> > >  	depends on INTEGRITY_ASYMMETRIC_KEYS
+> > >  	depends on SYSTEM_BLACKLIST_KEYRING
+> > >  	depends on LOAD_UEFI_KEYS || LOAD_PPC_KEYS
+> > > -	select INTEGRITY_CA_MACHINE_KEYRING if LOAD_PPC_KEYS
+> > > -	select INTEGRITY_CA_MACHINE_KEYRING_MAX if LOAD_PPC_KEYS
+> > >  	help
+> > >  	 If set, provide a keyring to which Machine Owner Keys (MOK) may
+> > >  	 be added. This keyring shall contain just MOK keys.  Unlike keys
+> > > --=20
+> > > 2.41.0
+> >=20
+> > I'd suggest to add even fixes tag.
+>
+> Here it is
+>
+> Fixes: d7d91c4743c4 ("integrity: PowerVM machine keyring enablement")
 
+commit b755dd58d180b796d21bc14d03045e4ab84222b0 (HEAD -> next, origin/next)
+Author: Michal Suchanek <msuchanek@suse.de>
+Date:   Thu Sep 7 18:52:19 2023 +0200
 
-On 9/12/2023 6:09 AM, Pavan Kondeti wrote:
-> On Mon, Sep 11, 2023 at 04:21:44PM +0530, Mukesh Ojha wrote:
->>
->>
->> On 9/11/2023 11:03 AM, Pavan Kondeti wrote:
->>> On Sun, Sep 10, 2023 at 01:46:10AM +0530, Mukesh Ojha wrote:
->>>> As dynamic ramoops command line parsing is now added, so
->>>> lets add the support in ramoops driver to get the resource
->>>> structure and add it during platform device registration.
->>>>
->>>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->>>> ---
->>>>    fs/pstore/ram.c | 10 +++++++---
->>>>    1 file changed, 7 insertions(+), 3 deletions(-)
->>>>
->>>
->>> Documentation/admin-guide/ramoops.rst might need an update as well.
->>
->> I have said in the cover-letter under changes in v5, it is open for
->> comment and not yet documented it yet.
->>
-> Sure.
-> 
-> To easy on the reviewers, the under cut portion of a specific patch could be
-> used to add footer notes like TODO/Testing etc. In this case, I was lazy to
-> read the loong cover letter posted in this series ;-)
+    integrity: powerpc: Do not select CA_MACHINE_KEYRING
 
-I have seen it, will comment related to particular patch under --- .
-Thanks for suggestion.
+    No other platform needs CA_MACHINE_KEYRING, either.
 
--Mukesh
+    This is policy that should be decided by the administrator, not Kconfig
+    dependencies.
 
-> 
-> Thanks,
-> Pavan
+    Fixes: d7d91c4743c4 ("integrity: PowerVM machine keyring enablement")
+    Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+    Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+diff --git a/security/integrity/Kconfig b/security/integrity/Kconfig
+index 232191ee09e3..b6e074ac0227 100644
+--- a/security/integrity/Kconfig
++++ b/security/integrity/Kconfig
+@@ -68,8 +68,6 @@ config INTEGRITY_MACHINE_KEYRING
+        depends on INTEGRITY_ASYMMETRIC_KEYS
+        depends on SYSTEM_BLACKLIST_KEYRING
+        depends on LOAD_UEFI_KEYS || LOAD_PPC_KEYS
+-       select INTEGRITY_CA_MACHINE_KEYRING if LOAD_PPC_KEYS
+-       select INTEGRITY_CA_MACHINE_KEYRING_MAX if LOAD_PPC_KEYS
+        help
+         If set, provide a keyring to which Machine Owner Keys (MOK) may
+         be added. This keyring shall contain just MOK keys.  Unlike keys
+
+If this look good to you, I'll put it to the -rc2 pull request.
+
+> Thanks
+>
+> Michal
+
+BR, Jarkko
