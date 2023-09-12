@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA69879C830
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FB779C832
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 09:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjILHaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 03:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41334 "EHLO
+        id S231588AbjILHa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 03:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbjILHaU (ORCPT
+        with ESMTP id S229766AbjILHa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 03:30:20 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7298110C3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:30:16 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-493639d6173so1982529e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 00:30:16 -0700 (PDT)
+        Tue, 12 Sep 2023 03:30:56 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAD8B9;
+        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so8985464e87.1;
+        Tue, 12 Sep 2023 00:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694503815; x=1695108615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TN26BfaiDJoVfg/UiN2J0tRS2gVILmjP175yRV3yNlI=;
-        b=R/qlokm+Y6EFdERhrhL9csvQ4Roy1PlshTaavKHyz5HV9/zEUJrD5WMW6DnRmjfJNi
-         XM/KLX/yCec8rGJ8KE1NyP+v5oK+AcyZb2DDCOgQCm3CN1QHpLfSPhHkbGLepEU9caRO
-         8FcqKPQhGG77rh7WPWbIsyMA1VmvrYA4i7sOEh5wn/KcAuOEDfR0Qn/1lVkPUUpSL5at
-         XHLDF54Ywl8zQfwI5E+xS2ZPJ1c6qUdy0f0z440qr2+e81gHxqnMd7hct62W/CI5kr03
-         lebUt0tOYStymZDic5xdTKVCoNL6GSYz2DYjpAix1d7QqFF6cEwIeoTXduQ9lwOm3gLy
-         Ar+w==
+        d=gmail.com; s=20221208; t=1694503851; x=1695108651; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
+        b=hfrgKc2d/H+2ZgjCxefyl2sIKXbzgm82nTyZkli6YkCg4OgM6QxNfia8EQXQ63ds7s
+         RJTAyUCJ7VdaDV7ff6djKs7rhs7S5ruCz8hIjFW7gZHq9FLSC/D3oCWYXcre4HbFbXD2
+         ZhuQFKIWjVjHffh1Ne4359y9XmtB6OFBitFp8ihcDyncPueAci/4w72vkHF3SUi0fAtR
+         XtEdpmJIGKWDZuHSNewV1SZyIIMqFmqLCZUJ3WCC+XDwdVHfpQ10oYEkUm+8VgPE481l
+         GxAO8/O2/utRE+Q5zVwe8lauG15FDyeGrfCbNw9/aB7P30BeAFzRSlBnxKpyzjQ6iZQV
+         SpNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694503815; x=1695108615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TN26BfaiDJoVfg/UiN2J0tRS2gVILmjP175yRV3yNlI=;
-        b=sv/o4dHITlqusppe6ordSSrWCgDt8AM/S36WuSIZzpdPMlFqSr9MhTz4WYYZqkJgQv
-         oQELOs7o4ZkMrgG+4on4dYNBZNm0gDKVv227eHPJODPZY3u9kASKsgydb+EZVw0io6ij
-         RQR3RFAU0gywm9Kz0vVjPJ4byKCNkISj9KhaCyf7sUpCMITC51dzW2eVnqn1SS11JSEp
-         yHKMjD4tZ4pbO6ZxgR6NkWh7mo4gSXg0I6/qASNuyESTf8CpZsOE+hPo+AtXjRQN5Qqv
-         odoJdcTjRBvUYRa+SBGlvxstLvuwzDF6FF4sWvFGsm90xrr2sXt+hjIMWgQKnNi6b8B8
-         s20A==
-X-Gm-Message-State: AOJu0YzHPK9QJ5cgdTsGWe4DyCqxVEkD3IQFSQ8S+ZsZFfXC3wl/6W9p
-        HliGT1EyhfdWe4o/2Nly0AS4oxMryNTJjBit4y8+ag==
-X-Google-Smtp-Source: AGHT+IFtzFaIKPX4W0g8Ku/Esb0yDPwbn2qjfMvsWFxv10KrDhKiHx0bBUFzOaRYfKdb9b/hbixCClPVv+oGXc9aFCo=
-X-Received: by 2002:a1f:cac3:0:b0:495:ba08:79dd with SMTP id
- a186-20020a1fcac3000000b00495ba0879ddmr8876215vkg.5.1694503815601; Tue, 12
- Sep 2023 00:30:15 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694503851; x=1695108651;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9TtWYBN3Js8MaUa6ket6IpV+Bas2UrWYZ7r9GmcPHzk=;
+        b=wXrPmXOwUMGtpwdS7WEj95yQlPRtJC+jv9gINOIqe+HhInojcJQhX+dy80lG7B81tg
+         gX7aAoyLhg/nf1Vu2l4kxslrFA1iqgfo1R42wDcyeqeqJO6Ayfo5syaIxVvSHg9+ncns
+         q2a9acx8aIwV8MDMw3j3JOmNA4r8o9z5O9LhjnghnalyOQ6KKQAJpQmwk5zXKVHuAu9F
+         /OQNYQjvyeRZWofXDtcVvOV6NRcn+634B49n9T2aSKaVy4frdAAyNlqvY1VXIccmQ8V/
+         uUKu1LAwT3XvN45gQWVDp67sDRHGE9try4YQQX6aqKgxHAqXe8CIOprDBNYUVPwmc63C
+         oaNQ==
+X-Gm-Message-State: AOJu0YxDtR37cBofQ05yjSJ4Zl++RkYn5g5CjW6RJ6jXaKfYgTbs1csG
+        rFkgfwKnwULrChww6A6W5VI=
+X-Google-Smtp-Source: AGHT+IFRU1BCT1/fxyolNXviRB2kjmrF3gbcVkz2ZdPqlwGiM/W8fLNYBMB1va+dE1XIWrPYf8LuHQ==
+X-Received: by 2002:a05:6512:15a3:b0:4fb:7cea:882a with SMTP id bp35-20020a05651215a300b004fb7cea882amr11611840lfb.3.1694503850597;
+        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
+Received: from pc636 ([155.137.26.201])
+        by smtp.gmail.com with ESMTPSA id d25-20020ac244d9000000b004ff947bea2asm1653864lfm.54.2023.09.12.00.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 00:30:50 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Tue, 12 Sep 2023 09:30:47 +0200
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Muchun Song <songmuchun@bytedance.com>, rcu@vger.kernel.org
+Subject: Re: [PATCH v6 16/45] rcu: dynamically allocate the rcu-kfree shrinker
+Message-ID: <ZQATp6yFd/GXY9hN@pc636>
+References: <20230911094444.68966-1-zhengqi.arch@bytedance.com>
+ <20230911094444.68966-17-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-References: <20230911110740.16284-1-brgl@bgdev.pl>
-In-Reply-To: <20230911110740.16284-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 12 Sep 2023 09:30:04 +0200
-Message-ID: <CAMRc=MfXe0POno6LuonTMC56+rOfHZ=mwOG3PhFxLT3yjRWK5A@mail.gmail.com>
-Subject: Re: [PATCH v5] gpio: sim: don't fiddle with GPIOLIB private members
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911094444.68966-17-zhengqi.arch@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 1:07=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> We access internals of struct gpio_device and struct gpio_desc because
-> it's easier but it can actually be avoided and we're working towards a
-> better encapsulation of GPIO data structures across the kernel so let's
-> start at home.
->
-> Instead of checking gpio_desc flags, let's just track the requests of
-> GPIOs in the driver. We also already store the information about
-> direction of simulated lines.
->
-> For kobjects needed by sysfs callbacks: we can iterate over the children
-> devices of the top-level platform device and compare their fwnodes
-> against the one passed to the init function from probe.
->
-> While at it: fix one line break and remove the untrue part about
-> configfs callbacks using dev_get_drvdata() from a comment.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, Sep 11, 2023 at 05:44:15PM +0800, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the rcu-kfree shrinker.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> CC: rcu@vger.kernel.org
 > ---
+>  kernel/rcu/tree.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index cb1caefa8bd0..06e2ed495c02 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -3449,13 +3449,6 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+>  	return freed == 0 ? SHRINK_STOP : freed;
+>  }
+>  
+> -static struct shrinker kfree_rcu_shrinker = {
+> -	.count_objects = kfree_rcu_shrink_count,
+> -	.scan_objects = kfree_rcu_shrink_scan,
+> -	.batch = 0,
+> -	.seeks = DEFAULT_SEEKS,
+> -};
+> -
+>  void __init kfree_rcu_scheduler_running(void)
+>  {
+>  	int cpu;
+> @@ -4931,6 +4924,7 @@ static void __init kfree_rcu_batch_init(void)
+>  {
+>  	int cpu;
+>  	int i, j;
+> +	struct shrinker *kfree_rcu_shrinker;
+>  
+>  	/* Clamp it to [0:100] seconds interval. */
+>  	if (rcu_delay_page_cache_fill_msec < 0 ||
+> @@ -4962,8 +4956,17 @@ static void __init kfree_rcu_batch_init(void)
+>  		INIT_DELAYED_WORK(&krcp->page_cache_work, fill_page_cache_func);
+>  		krcp->initialized = true;
+>  	}
+> -	if (register_shrinker(&kfree_rcu_shrinker, "rcu-kfree"))
+> -		pr_err("Failed to register kfree_rcu() shrinker!\n");
+> +
+> +	kfree_rcu_shrinker = shrinker_alloc(0, "rcu-kfree");
+> +	if (!kfree_rcu_shrinker) {
+> +		pr_err("Failed to allocate kfree_rcu() shrinker!\n");
+> +		return;
+> +	}
+> +
+> +	kfree_rcu_shrinker->count_objects = kfree_rcu_shrink_count;
+> +	kfree_rcu_shrinker->scan_objects = kfree_rcu_shrink_scan;
+> +
+> +	shrinker_register(kfree_rcu_shrinker);
+>  }
+>  
+>  void __init rcu_init(void)
+> -- 
+> 2.30.2
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-Patch applied.
+Makes sense to me. Thank you for improving it.
 
-Bart
+--
+Uladzislau Rezki
