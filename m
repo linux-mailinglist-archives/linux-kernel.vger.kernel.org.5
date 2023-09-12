@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF0379D41E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A0479D422
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbjILOzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
+        id S236097AbjILOzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjILOzJ (ORCPT
+        with ESMTP id S236090AbjILOzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:55:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2082B115;
-        Tue, 12 Sep 2023 07:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694530506; x=1726066506;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+08KNNthxi3J1Jr0M7Xfm3cEncr3LYOQUYNu2NOJbqg=;
-  b=YsKcXtx/zECe20wJ2s/1js8SmhHVGXRZ1OGE12a+Qxot2Pfr1K1x3qLr
-   lNvW9SbyyVPeM2uWCSzUaywqL7L02I5b0WuzX1l/Km7Eswy6oob4w6LNh
-   GXobuKPtkDieCuh2kXx2SLHaNWWJin07runAY0y0byfCk3IXFvuolVn6f
-   x/02v9S2ARxpDQA+YJyGYA5xROOFxVLCK6TG1pRbIx0BEekH7F6uhjR3d
-   YT/7q0t1XkG2APrgNyHgE3e7mr08G4DFeisfzCV5pZ8dM39JKNJjrk6xp
-   GBSKOhj/7FymEwpZy61LSYeq+dJv+TFjIS8tTbsZVswKF/BpdLIKfDEJ8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="381099274"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="381099274"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 07:55:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="1074576894"
-X-IronPort-AV: E=Sophos;i="6.02,139,1688454000"; 
-   d="scan'208";a="1074576894"
-Received: from srosalim-mobl1.ger.corp.intel.com (HELO [10.251.217.51]) ([10.251.217.51])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 07:55:01 -0700
-Message-ID: <d248ec69-9bde-d57d-5175-a413c6c94f5c@linux.intel.com>
-Date:   Tue, 12 Sep 2023 17:54:59 +0300
+        Tue, 12 Sep 2023 10:55:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0300CCD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VsIIWSCKKQ4g3J8ZWVNV3zkM3OtDKG0id+2jj8qXrsQ=; b=s28xTPpk5lPl6WWgdf0Gz2Xijk
+        p3kv3RocM0egFx9oRC9Oe8J1BIJ1rEiFsFz5XtoFKTCHkf9dXsDV7tbh2R9WFnsD5FfCckVhdd4KX
+        vpnYSdvgzVqD+T2dBCLMhvrIvG282WtKKW61MLQGENvjvbclDUVl54ySR3nVL8VShttYaAx6xiMKM
+        FkIQwwYSuHIT9J8RIr0OhArMqTMDMl7BbxPyD98ghiAeI7MGhXJMzmxTm8SXep8iZIfE+zeVmzxIX
+        TF/fcLmCIg4leOE+BBrCK5wBDXSz/t1w1V+epZwlt00TKJ6wKbLLxVReI0xmhM15DdhsbBtM5fits
+        DQmLVPdA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qg4ng-008Bt2-TA; Tue, 12 Sep 2023 14:55:36 +0000
+Date:   Tue, 12 Sep 2023 15:55:36 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     syzbot <syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in vma_replace_policy
+Message-ID: <ZQB76G/6NxVgoE9u@casper.infradead.org>
+References: <000000000000f392a60604a65085@google.com>
+ <ZP/3hgDCXeceE9uU@casper.infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RESEND PATCH 2/2] perf/core: Allow reading package events from
- perf_event_read_local
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        dave.hansen@linux.intel.com, irogers@google.com,
-        mark.rutland@arm.com, linux-perf-users@vger.kernel.org,
-        hpa@zytor.com, mingo@redhat.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        namhyung@kernel.org, jolsa@kernel.org
-References: <20230912124432.3616761-1-tero.kristo@linux.intel.com>
- <20230912124432.3616761-3-tero.kristo@linux.intel.com>
- <20230912140434.GB22127@noisy.programming.kicks-ass.net>
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-In-Reply-To: <20230912140434.GB22127@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZP/3hgDCXeceE9uU@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 06:30:46AM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 05, 2023 at 06:03:49PM -0700, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    a47fc304d2b6 Add linux-next specific files for 20230831
+> > git tree:       linux-next
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=16502ddba80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ecd2a74f20953b9
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=b591856e0f0139f83023
+> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120e7d70680000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1523f9c0680000
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/b2e8f4217527/disk-a47fc304.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/ed6cdcc09339/vmlinux-a47fc304.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/bd9b2475bf5a/bzImage-a47fc304.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+b591856e0f0139f83023@syzkaller.appspotmail.com
+> 
+> #syz test
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 42b5567e3773..90ad5fe60824 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1342,6 +1342,7 @@ static long do_mbind(unsigned long start, unsigned long len,
+>  	vma_iter_init(&vmi, mm, start);
+>  	prev = vma_prev(&vmi);
+>  	for_each_vma_range(vmi, vma, end) {
+> +		vma_start_write(vma);
+>  		err = mbind_range(&vmi, vma, &prev, start, end, new);
+>  		if (err)
+>  			break;
 
-On 12/09/2023 17:04, Peter Zijlstra wrote:
-> On Tue, Sep 12, 2023 at 03:44:32PM +0300, Tero Kristo wrote:
->> Per-package perf events are typically registered with a single CPU only,
->> however they can be read across all the CPUs within the package.
->> Currently perf_event_read maps the event CPU according to the topology
->> information to avoid an unnecessary SMP call, however
->> perf_event_read_local deals with hard values and rejects a read with a
->> failure if the CPU is not the one exactly registered. Allow similar
->> mapping within the perf_event_read_local if the perf event in question
->> can support this.
->>
->> This allows users like BPF code to read the package perf events properly
->> across different CPUs within a package.
->>
->> Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
->> ---
->>   kernel/events/core.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 4c72a41f11af..780dde646e8a 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -4528,6 +4528,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
->>   {
->>   	unsigned long flags;
->>   	int ret = 0;
->> +	int event_cpu;
->>   
->>   	/*
->>   	 * Disabling interrupts avoids all counter scheduling (context
->> @@ -4551,15 +4552,18 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
->>   		goto out;
->>   	}
->>   
->> +	event_cpu = READ_ONCE(event->oncpu);
->> +	event_cpu = __perf_event_read_cpu(event, event_cpu);
-> What happens with __perf_event_read_cpu() when event_cpu == -1 ?
+Suren, can you take a look at this?  The VMA should be locked by the
+call to queue_pages_range(), but by the time we get to here, the VMA
+isn't locked.  I don't see anywhere that we cycle the mmap_lock (which
+would unlock the VMA), but I could have missed something.  The two
+VMA walks should walk over the same set of VMAs.  Certainly the VMA
+being dumped should have been locked by the pagewalk:
 
-Good question. It looks like I need to add a check against that. Will 
-update and send v2 out.
+ vma ffff888077381a00 start 0000000020c2a000 end 0000000021000000 mm ffff8880258a8980
+ prot 25 anon_vma 0000000000000000 vm_ops 0000000000000000
+ pgoff 20c2a file 0000000000000000 private_data 0000000000000000
+ flags: 0x8100077(read|write|exec|mayread|maywrite|mayexec|account|softdirty)
 
--Tero
+  syscall(__NR_mbind, /*addr=*/0x20400000ul, /*len=*/0xc00000ul, /*mode=*/4ul,
+          /*nodemask=*/0ul, /*maxnode=*/0ul, /*flags=*/3ul);
 
-
->
->> +
->>   	/* If this is a per-CPU event, it must be for this CPU */
->>   	if (!(event->attach_state & PERF_ATTACH_TASK) &&
->> -	    event->cpu != smp_processor_id()) {
->> +	    event_cpu != smp_processor_id()) {
->>   		ret = -EINVAL;
->>   		goto out;
->>   	}
->>   
->>   	/* If this is a pinned event it must be running on this CPU */
->> -	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
->> +	if (event->attr.pinned && event_cpu != smp_processor_id()) {
->>   		ret = -EBUSY;
->>   		goto out;
->>   	}
->> @@ -4569,7 +4573,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
->>   	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
->>   	 * oncpu == -1).
->>   	 */
->> -	if (event->oncpu == smp_processor_id())
->> +	if (event_cpu == smp_processor_id())
->>   		event->pmu->read(event);
->>   
->>   	*value = local64_read(&event->count);
->> -- 
->> 2.40.1
->>
+20400000 + c00000 should overlap 20c2a000-21000000
