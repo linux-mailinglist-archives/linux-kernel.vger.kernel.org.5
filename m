@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D463E79DCEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF7679DCE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjIMACZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 20:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
+        id S231584AbjILX6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 19:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbjIMACY (ORCPT
+        with ESMTP id S229589AbjILX6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:02:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FFE10E6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:02:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c647150c254so755528276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:02:20 -0700 (PDT)
+        Tue, 12 Sep 2023 19:58:38 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA90710FE;
+        Tue, 12 Sep 2023 16:58:34 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso10039856e87.0;
+        Tue, 12 Sep 2023 16:58:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694563339; x=1695168139; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=B8O84M8nqeVG0BSKRDFPvsNkITeT3KIGbDhN0gQ/CcA=;
-        b=z3A/JYrUH6aUjaVFObA3A48277ymlDZMje7jhmuTmvsvav8LEzusi2eid4en/p1I+B
-         1jfla3LGDc2CM6iHWJH0biY+abhCFMApSWvh/Bqu0CxM/ACj3mVF4bRMweS4nvQtU1Mr
-         WoJ4mhvbLuLXsvdz7QTnjSVW04NQLJ1H29p7kzXQQjNFqokdY091MfAfWlZbygkwTex2
-         0eNPyY21/nTU/87Yi6vTwvPNF8b5bMELPbcWsOBtHqhsxJvxIM/6Oej3e9GdNJS624dZ
-         LTyWLkWkSEjWN3VAMtHxgNNVFDlG8kTQXodR2pIgTNuYozEQoc9Fye8a3v8ZMc0zgyou
-         uQcA==
+        d=gmail.com; s=20221208; t=1694563113; x=1695167913; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0zUd3C1FM/wtnOQDYKIuXXd26DTw0nV6sQuRlNb6RDU=;
+        b=PTuK0Paj3fAw3ZvDENkCy+olJ3T9K2SSYDhga2dMUSuYZ1eCEAgH7D4CyeJ5F/+NUA
+         N/Ml8s9Y2SKRMhmXa222MDOFghlbOEAfbH9DeoOgP9FxeTdYwblk0rClqR5EMHgaYs1F
+         K+yxc4BsmBd4OHwG3cY8f9+5U0C2j3qBtpDNpseWqrbESiDNHK7GzWj8UNogiyPJdmTE
+         A9AG0GcZfPYfIWfvZ5gann0+sGNZh/zk/Jw0G58JvM7GZIlNhA0QxetW3UHzpnqCxjxC
+         4G0ikqYhKkw3oUqUYnIWoZG0iVxpXNJnevtxr5O3jv5AoA8yAnz8nF5lLowXJrNUx33A
+         hYfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694563339; x=1695168139;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B8O84M8nqeVG0BSKRDFPvsNkITeT3KIGbDhN0gQ/CcA=;
-        b=YJOcaEztYLv/xKQB0srO+L3jYmCsQc+U/Hx8pwhEEDdmODCJ9p4SZEcBUT4wlsO3ld
-         Fb1riFRiqJ+qo5jKMOL3291yrMSgwHcLxUb9tqy6LokbkD6EkaZxO999mtHofna282HK
-         wC2eakCFCcXVb5UPz/FAYCYG5u/GoPBzQVhB5qtDOaz2WPfiJ5c44ScpAQXnENRZLry4
-         CNfo877OYMzVmakCMrYuD8fQpjyfXqUScWIUi+6/dtK7UHKUSuM6QQ2qncvXnOzcz7Ot
-         YEF/z5kgnSpPn9jXcOUCnWYYJrEU52J3Cj4GfGGzYR/rQcIdFQltpe09Fg00aEOouk6r
-         gCSg==
-X-Gm-Message-State: AOJu0YyS5N2NHop7PTqeCSEUtnzgmtS4jtR6YNeKfPCBc8sbtftApg+Y
-        iXJcHCCBrS2Qkk6XJrLvhLScjI1PIA==
-X-Google-Smtp-Source: AGHT+IGBoQiQuWTki2UGlib6khGZDCCRNfaIToyv6J5RX2gRNwbvmdUBIqgi7S5AFfYW/udiKrZd/4LqYA==
-X-Received: from hshan17.roam.corp.google.com ([2620:15c:211:201:2a7f:c6c4:6e3:ac5c])
- (user=hshan job=sendgmr) by 2002:a05:6902:1022:b0:ca3:3341:6315 with SMTP id
- x2-20020a056902102200b00ca333416315mr46020ybt.0.1694563339330; Tue, 12 Sep
- 2023 17:02:19 -0700 (PDT)
-Date:   Tue, 12 Sep 2023 16:55:45 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230913000215.478387-1-hshan@google.com>
-Subject: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-From:   Haitao Shan <hshan@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Haitao Shan <hshan@google.com>
+        d=1e100.net; s=20230601; t=1694563113; x=1695167913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0zUd3C1FM/wtnOQDYKIuXXd26DTw0nV6sQuRlNb6RDU=;
+        b=jjw0k9B7W/woEX4vU3+UxScaE7W9FrkvrFBf4W7sd6pimM+S1K+SKQfu5GdcEX1WG9
+         smMUpNgHTT59AkVywGxFpbK5EafsATRU1oDP5viS51kVb0PHdP5WlNl3stRJq99dU7Qr
+         aLsGmCXK2PQXdX7cGVR75OgoUkDftC4ld3FvViudi0rYv/Pcu8q+RAbe2Pk7wquIZubN
+         yZOEOq8aH5VmByfNin6+NoiFFv+sMr63BUygp8WrM42YJAjAAA0TS5SptNxQI36Aj1ER
+         dPN4Cbe3xIpcaXsvXzAhl3magHGF7OgvLZ4uAzlgtw+eGkqz6I17m064fUDmv43EGLU5
+         SJSg==
+X-Gm-Message-State: AOJu0YwEa0PDZ04rvTu7BN9KB6lel/UKxL2t+97lCE9sT580RJmAzFyG
+        LcKdN1+BGLdNiEuOed8TcWTac2NRZzhkiDYAyzEZ4rgwUF0=
+X-Google-Smtp-Source: AGHT+IGivdEcHiKXCCZRGqJ9thmtaq4JL/TKb/8uGuccY9BfUEgV5LC6kYM+Gxvp4bMzusM+JOxwKRcnE+Pm3b//vEE=
+X-Received: by 2002:a19:ca0b:0:b0:502:d85b:5de with SMTP id
+ a11-20020a19ca0b000000b00502d85b05demr584754lfg.68.1694563112699; Tue, 12 Sep
+ 2023 16:58:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230913081050.5e0862bd@canb.auug.org.au> <CAADnVQKt_oCgJpVv+jqi5yhO4XUb2RWzajNSsNWk4fJWD4cJ7A@mail.gmail.com>
+ <20230913091507.71869bba@canb.auug.org.au>
+In-Reply-To: <20230913091507.71869bba@canb.auug.org.au>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Sep 2023 16:58:21 -0700
+Message-ID: <CAADnVQ+p0d3QMbAphE5D0-kfYHZ+08WG_3MN7vTePK-spUuXtA@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the bpf tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running android emulator (which is based on QEMU 2.12) on
-certain Intel hosts with kernel version 6.3-rc1 or above, guest
-will freeze after loading a snapshot. This is almost 100%
-reproducible. By default, the android emulator will use snapshot
-to speed up the next launching of the same android guest. So
-this breaks the android emulator badly.
+On Tue, Sep 12, 2023 at 4:15=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+>
+> Hi Alexei,
+>
+> On Tue, 12 Sep 2023 15:18:45 -0700 Alexei Starovoitov <alexei.starovoitov=
+@gmail.com> wrote:
+> >
+> > On Tue, Sep 12, 2023 at 3:10=E2=80=AFPM Stephen Rothwell <sfr@canb.auug=
+.org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > Commit
+> > >
+> > >   3903802bb99a ("libbpf: Add basic BTF sanity validation")
+> > >
+> > > is missing a Signed-off-by from its committer.
+> >
+> > Hmm. It's pretty difficult to fix.
+> > We'd need to force push a bunch of commits and add a ton of
+> > unnecessary SOBs to commits after that one.
+> > Can you make a note of it somehow?
+>
+> No, I can't - git has no mechanism to do so.  However, I note that this
+> commit is signed off by one of the BPF maintainers, so maybe it can be
+> left as is and try to remember next time ;-)
 
-I tested QEMU 8.0.4 from Debian 12 with an Ubuntu 22.04 guest by
-running command "loadvm" after "savevm". The same issue is
-observed. At the same time, none of our AMD platforms is impacted.
-More experiments show that loading the KVM module with
-"enable_apicv=false" can workaround it.
+Right. Daniel's SOB is there.
 
-The issue started to show up after commit 8e6ed96cdd50 ("KVM: x86:
-fire timer when it is migrated and expired, and in oneshot mode").
-However, as is pointed out by Sean Christopherson, it is introduced
-by commit 967235d32032 ("KVM: vmx: clear pending interrupts on
-KVM_SET_LAPIC"). commit 8e6ed96cdd50 ("KVM: x86: fire timer when
-it is migrated and expired, and in oneshot mode") just makes it
-easier to hit the issue.
-
-Having both commits, the oneshot lapic timer gets fired immediately
-inside the KVM_SET_LAPIC call when loading the snapshot. On Intel
-platforms with APIC virtualization and posted interrupt processing,
-this eventually leads to setting the corresponding PIR bit. However,
-the whole PIR bits get cleared later in the same KVM_SET_LAPIC call
-by apicv_post_state_restore. This leads to timer interrupt lost.
-
-The fix is to move vmx_apicv_post_state_restore to the beginning of
-the KVM_SET_LAPIC call and rename to vmx_apicv_pre_state_restore.
-What vmx_apicv_post_state_restore does is actually clearing any
-former apicv state and this behavior is more suitable to carry out
-in the beginning.
-
-Fixes: 967235d32032 ("KVM: vmx: clear pending interrupts on KVM_SET_LAPIC")
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Haitao Shan <hshan@google.com>
----
-v1 ---> v2:
-	Rewrite the fix following Sean's suggestion.
-
-v2 ---> v3:
-	Rename and move apicv_post_state_restore in both
-	kvm_lapic_reset and kvm_apic_set_state
----
- arch/x86/include/asm/kvm-x86-ops.h | 1 +
- arch/x86/include/asm/kvm_host.h    | 1 +
- arch/x86/kvm/lapic.c               | 4 ++++
- arch/x86/kvm/vmx/vmx.c             | 4 ++--
- 4 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
-index e3054e3e46d5..9b419f0de713 100644
---- a/arch/x86/include/asm/kvm-x86-ops.h
-+++ b/arch/x86/include/asm/kvm-x86-ops.h
-@@ -108,6 +108,7 @@ KVM_X86_OP_OPTIONAL(vcpu_blocking)
- KVM_X86_OP_OPTIONAL(vcpu_unblocking)
- KVM_X86_OP_OPTIONAL(pi_update_irte)
- KVM_X86_OP_OPTIONAL(pi_start_assignment)
-+KVM_X86_OP_OPTIONAL(apicv_pre_state_restore)
- KVM_X86_OP_OPTIONAL(apicv_post_state_restore)
- KVM_X86_OP_OPTIONAL_RET0(dy_apicv_has_pending_interrupt)
- KVM_X86_OP_OPTIONAL(set_hv_timer)
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 3bc146dfd38d..af33fdc7377f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1691,6 +1691,7 @@ struct kvm_x86_ops {
- 	int (*pi_update_irte)(struct kvm *kvm, unsigned int host_irq,
- 			      uint32_t guest_irq, bool set);
- 	void (*pi_start_assignment)(struct kvm *kvm);
-+	void (*apicv_pre_state_restore)(struct kvm_vcpu *vcpu);
- 	void (*apicv_post_state_restore)(struct kvm_vcpu *vcpu);
- 	bool (*dy_apicv_has_pending_interrupt)(struct kvm_vcpu *vcpu);
- 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index a983a16163b1..c4ae3ce15f4e 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2649,6 +2649,8 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
- 	u64 msr_val;
- 	int i;
- 
-+	static_call_cond(kvm_x86_apicv_pre_state_restore)(vcpu);
-+
- 	if (!init_event) {
- 		msr_val = APIC_DEFAULT_PHYS_BASE | MSR_IA32_APICBASE_ENABLE;
- 		if (kvm_vcpu_is_reset_bsp(vcpu))
-@@ -2956,6 +2958,8 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 	int r;
- 
-+	static_call_cond(kvm_x86_apicv_pre_state_restore)(vcpu);
-+
- 	kvm_lapic_set_base(vcpu, vcpu->arch.apic_base);
- 	/* set SPIV separately to get count of SW disabled APICs right */
- 	apic_set_spiv(apic, *((u32 *)(s->regs + APIC_SPIV)));
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index df461f387e20..4fcf2448762c 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6911,7 +6911,7 @@ static void vmx_load_eoi_exitmap(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap)
- 	vmcs_write64(EOI_EXIT_BITMAP3, eoi_exit_bitmap[3]);
- }
- 
--static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
-+static void vmx_apicv_pre_state_restore(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 
-@@ -8276,7 +8276,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 	.set_apic_access_page_addr = vmx_set_apic_access_page_addr,
- 	.refresh_apicv_exec_ctrl = vmx_refresh_apicv_exec_ctrl,
- 	.load_eoi_exitmap = vmx_load_eoi_exitmap,
--	.apicv_post_state_restore = vmx_apicv_post_state_restore,
-+	.apicv_pre_state_restore = vmx_apicv_pre_state_restore,
- 	.required_apicv_inhibits = VMX_REQUIRED_APICV_INHIBITS,
- 	.hwapic_irr_update = vmx_hwapic_irr_update,
- 	.hwapic_isr_update = vmx_hwapic_isr_update,
--- 
-2.42.0.283.g2d96d420d3-goog
-
+I think the sequence of events was the following.
+We don't close bpf-next during the merge window.
+Only don't push for-next branch.
+Daniel committed that patch with his SOB.
+I committed few others. Then bpf->net got merged and net-next was
+fast forwarded. So we rebased bpf-next to the latest net-next
+and I force pushed few patches without noticing that one was
+committed by Daniel. Later we added a bunch more and a week
+later when rc1 was out we pushed for-next for the first time.
+Now that 3903802bb99a ("libbpf: Add basic BTF sanity validation")
+is pretty far from the top with myself, Daniel, Martin, Andrii
+as committers after.
+So to fix that mistakes we'd need to force push all commits
+after that one and add SOBs to all of them, since git cannot
+force push preserving older committers.
+I think the best to leave it as-is.
+We'll be more careful in the future.
