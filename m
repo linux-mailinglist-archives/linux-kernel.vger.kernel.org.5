@@ -2,90 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A09679D3C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1CF79D3CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 16:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236066AbjILOeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 10:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S236039AbjILOer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 10:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236027AbjILOeH (ORCPT
+        with ESMTP id S236028AbjILOeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 10:34:07 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7BDCCC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:34:00 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bd04558784so3760630a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 07:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694529239; x=1695134039; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/dKFEIXTO/fYJxz8BlxWUzzaN2EMr24kOQHXhchbq7s=;
-        b=flSFfbv4v1p+DGZo2JYB+vDZiCSYIPETukF1ejQN6tqcIJusd3M0yGbQgXzpuksK/K
-         +XI9R87IVpYII49ckMMciUZcWJtN+QIs/xe+wewlPXwP5hHiP8oAfB02S1zeb+ADlt+K
-         Q1M/ahwWEIYWtfQNqgLrOHZ1aEdzyEN7UUaf7CsL9QmGIW8brBW00OCjOamucZN6qaxJ
-         jR2PoKfEfmsp7KRzCr5c7ZfHh6KA84B4tRS/4NZ4Ai7rGTjM05DT5OzEm6csvmxR1gt/
-         laHiCgMRKrOen+Zi0YihouBK9EbxtPX5rfToh9KyPBi0upIl5ZZjpSNy1/8tPiInUrlx
-         ErgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694529239; x=1695134039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/dKFEIXTO/fYJxz8BlxWUzzaN2EMr24kOQHXhchbq7s=;
-        b=PQEapaigJvQBy/3jR6CNg+7T6RsecJZJ+04DJmZ7/TaV2v2JJBug6LveB/auq9L46l
-         2DtnelK9IaUBUE+UrMlMZ8IbZxvVhAhypjREUn1tW4VPTeX90akcvTkbdXVE6EG9IoIf
-         WqSAJ60RX5Ma4XctNanFPVet6YpulV17tst1YAg0QDlKy1YkRB1PjZKadEj8iQmzwaP9
-         4I3oEy6BDuzEaEnyi2obXd0fTxu1Uph0OphCsO10FFZiiAevYtlcm5F/uG0TPqsMIg7L
-         NA+CVJ44NBSb60ZIcvqHcPNJyjCz0BbsK5/jkXovVjcAH0v+PVByKFCLFVEnIzr/FoXd
-         C1TQ==
-X-Gm-Message-State: AOJu0YwqcvgkwarjKSa+UZiwvktXuXNNZUW3MmfMprYli7teRzjyG0e4
-        TclwaizdWtuN56hupzAUWNyE1RaQwpTvULTTxzo+4KXmRsLJbaXk
-X-Google-Smtp-Source: AGHT+IF7v/EH9izxfCgVuOXL5ieHjf7eZgT8Tg5KUGthUuk6ErdYwCvLnnkT7oet8ChaD58qvb4D/C9pdVwjqY8Oiiw=
-X-Received: by 2002:aca:2b15:0:b0:3a7:449c:8aae with SMTP id
- i21-20020aca2b15000000b003a7449c8aaemr15086835oik.26.1694529239541; Tue, 12
- Sep 2023 07:33:59 -0700 (PDT)
+        Tue, 12 Sep 2023 10:34:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52F1F12E;
+        Tue, 12 Sep 2023 07:34:40 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42403C15;
+        Tue, 12 Sep 2023 07:35:17 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1EF33F5A1;
+        Tue, 12 Sep 2023 07:34:38 -0700 (PDT)
+Message-ID: <ecbd165e-4213-8dd4-d5b5-309256cc64a9@arm.com>
+Date:   Tue, 12 Sep 2023 16:34:27 +0200
 MIME-Version: 1.0
-References: <20230912085541.13682-1-brgl@bgdev.pl> <ZQBpSCx9D6ktkoIk@yury-ThinkPad>
-In-Reply-To: <ZQBpSCx9D6ktkoIk@yury-ThinkPad>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 12 Sep 2023 16:33:48 +0200
-Message-ID: <CAMRc=MeZf5hXLNhO9STVN1co_z1zFgC8c-2+5Q=2nwALL-Nuuw@mail.gmail.com>
-Subject: Re: [PATCH 0/4] genirq/irq_sim: misc updates
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping
+ uclamp constraints
+Content-Language: en-US
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <20230820210640.585311-1-qyousef@layalina.io>
+ <20230820210640.585311-3-qyousef@layalina.io>
+ <7839dd5f-e7fd-7065-934d-436d012ac9d6@arm.com>
+ <20230826200829.gnha7xcrjbyipjr2@airbuntu>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230826200829.gnha7xcrjbyipjr2@airbuntu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 3:36=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
-rote:
->
-> On Tue, Sep 12, 2023 at 10:55:37AM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Here are a couple of updates to the interrupt simulator. Two are minor:
-> > remove an unused field and reorder includes for readability. The third
-> > one simplifies the error paths by using new cleanup macros. To that end
-> > we also add a cleanup definition for dynamic bitmaps.
->
-> This looks like a v2 for https://lore.kernel.org/lkml/20230812194457.6432=
--1-brgl@bgdev.pl/
-> Is it right? If so, can you keep history of submissions in the cover
-> email please?
+On 26/08/2023 22:08, Qais Yousef wrote:
+> On 08/21/23 18:39, Dietmar Eggemann wrote:
+>> On 20/08/2023 23:06, Qais Yousef wrote:
+>>> DVFS headroom is applied after we calculate the effective_cpu_util()
+>>> which is where we honour uclamp constraints. It makes more sense to
+>>> apply the headroom there once and let all users naturally get the right
+>>> thing without having to sprinkle the call around in various places.
+>>
+>> uclamp is applied in effective_cpu_util(..., FREQUENCY_UTIL, ...) which
+>> IMHO currently has 2 power callers: (1) schedutil: sugov_get_util() and
+>> (2) EAS: eenv_pd_max_util()
+>>
+>>> Before this fix running
+>>>
+>>> 	uclampset -M 800 cat /dev/zero > /dev/null
+>>>
+>>> Will cause the test system to run at max freq of 2.8GHz. After the fix
+>>> it runs at 2.2GHz instead which is the correct value that matches the
+>>> capacity of 800.
+>>
+>> IMHO, a system at util = 800 (w/o uclamp) would also run at 2.8Ghz since
+>> we would call map_util_to_perf() on 800, no matter from where we call it.
+> 
+> Sorry, I would very strongly disagree here. What you're saying the effective
+> range of uclamp_max is 800 and anything above that will always go to max. How
+> can this be acceptable?
 
-That series was mainly about fixing a resource leak. While it
-contained a part of the changes that ended up here, I consider this
-one a stand-alone enough to not make it a v2. Probably should have
-mentioned that one though.
+No that's not what I wanted to say here.
 
-Bart
+I wanted to highlight the different treatment of `(1) a task with
+(natural) util = 800` and `(2) a task with uclamp_max = 800`.
+
+(1) util = 800
+
+util = (1.25 * 800 * (1024 - irq) / 1024 + ...
+
+        <-      ->
+        uclamped(cfs+rt+headroom(cfs+rt))
+
+
+(2) uclamp_max = 800
+
+util = (800 * (1024 - irq) / 1024 + ...
+
+        <->
+        uclamped(cfs+rt+headroom(cfs+rt))
+
+So for (1) the scheduler would ask for more than in (2).
+
+That's essentially the same question which was raised here:
+
+https://lkml.kernel.org/r/CAKfTPtDY48jpO+b-2KXawzxh-ty+FMKX6YUXioNR7kpgO=ua6Q@mail.gmail.com
+
+>>> Note that similar problem exist for uclamp_min. If util was 50, and
+>>> uclamp_min is 100. Since we apply_dvfs_headroom() after apply uclamp
+>>> constraints, we'll end up with util of 125 instead of 100. IOW, we get
+>>> boosted twice, first time by uclamp_min, and second time by dvfs
+>>> headroom.
+>>
+>> I see what you want to change here but:
+>>
+>> So far we have `util -> uclamp -> map_util_to_perf()`
+> 
+> :-O
+> 
+> So when I set the system uclamp_max to 800 it will still run at max; and this
+> is normal?!!
+
+No that's an issue (A) as well. But the diff between (1) and (2) is IMHO a
+new issue introduced by this patch-set.
+
+>> which is fine when we see uclamp as an entity which constrains util, not
+>> the util after being mapped to a capacity constraint.
+> 
+> -ENOPARSE.
+
+What I meant is 'clamping the util' before scheduler hands over to
+'cpufreq' is fine:
+
+    util -> uclamp -> map_util_to_perf()
+               
+    scheduler    -->|<-- cpufreq
+
+I do understand that you guys are already discussing a new
+cpufreq_give_me_freq_for_this_utilization_ctx() between EM and CPUfreq
+in the other thread of this patch to maybe sort out (A).
+
+[...]
