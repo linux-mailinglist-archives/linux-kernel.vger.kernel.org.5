@@ -2,123 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D243A79C726
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3C879C723
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 08:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjILGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 02:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44280 "EHLO
+        id S230242AbjILGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 02:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjILGre (ORCPT
+        with ESMTP id S230041AbjILGra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 02:47:34 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3827E76;
-        Mon, 11 Sep 2023 23:47:30 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38C6N6N2018219;
-        Tue, 12 Sep 2023 06:47:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=sds1xdU1dqNFPapFsLerVH3F0XspPNYXUwFsvL5xkNs=;
- b=fEuQWR4R/JEZzm0yCFcGAVzheHwMj0kMUHsp8VYq3dklyp5muCDu4OLBgg6aaEVSAxdv
- QR3t6EWg47R3p9cDwG9FT9X770CaoMYtHKM6g1NTby/yhfYU1zZ6oUOKx7jQp56yjA4E
- aZs1d9xn63gJEW4Fxe0LT98CPslJUOPFC4zFHDVyl0YIrn1E6GgxxrameX0QL+uLaAlo
- Gm4AHCYtU96TvMuckbHvCwuEhygCKZJ086fA8wohEn3RTn0+kNMrHyMJgoKUROgrqwuC
- CyyR+7DH1hW4z2rrHVZk+Y/SA0C+45Czkz0vJCSAfhYEx5auj1DAvulmZkLiH/cjpqNj xQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t1xkjtqmj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 06:47:21 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38C6kvm6028858
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Sep 2023 06:46:57 GMT
-Received: from [10.233.19.96] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 11 Sep
- 2023 23:46:49 -0700
-Message-ID: <0e69140a-bd2f-16b1-ea34-f2d86ecfc414@quicinc.com>
-Date:   Tue, 12 Sep 2023 14:46:27 +0800
+        Tue, 12 Sep 2023 02:47:30 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC90E75
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Sep 2023 23:47:26 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qfxB3-0007Ur-9J; Tue, 12 Sep 2023 08:47:13 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qfxB2-005ibv-6e; Tue, 12 Sep 2023 08:47:12 +0200
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qfxB1-005VFP-Ih; Tue, 12 Sep 2023 08:47:11 +0200
+Date:   Tue, 12 Sep 2023 08:47:11 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v4 2/2] net: dsa: microchip: Add drive strength
+ configuration
+Message-ID: <20230912064711.GE780075@pengutronix.de>
+References: <20230912045459.1864085-1-o.rempel@pengutronix.de>
+ <20230912045459.1864085-3-o.rempel@pengutronix.de>
+ <ea39dded-7017-b6ba-8814-4722d65ba050@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RESEND PATCH v6 0/3] Add support for vibrator in multiple PMICs
-To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <dmitry.baryshkov@linaro.org>
-CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
-References: <20230828053205.218950-1-quic_fenglinw@quicinc.com>
-Content-Language: en-US
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <20230828053205.218950-1-quic_fenglinw@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: V_HtDXT30fQNn7iVzwUwXdIKNnDSwBh2
-X-Proofpoint-ORIG-GUID: V_HtDXT30fQNn7iVzwUwXdIKNnDSwBh2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_04,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309120056
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ea39dded-7017-b6ba-8814-4722d65ba050@wanadoo.fr>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can anyone help to review the driver changes?
-thanks
+On Tue, Sep 12, 2023 at 07:22:21AM +0200, Christophe JAILLET wrote:
+...
+> > +static void ksz_drive_strength_error(struct ksz_device *dev,
+> > +				     const struct ksz_drive_strength *array,
+> > +				     size_t array_size, int milliamp)
+> > +{
+> > +	char supported_values[100];
+> > +	size_t remaining_size;
+> > +	int added_len;
+> > +	char *ptr;
+> > +	int i;
+> > +
+> > +	remaining_size = sizeof(supported_values);
+> > +	ptr = supported_values;
+> > +
+> > +	for (i = 0; i < array_size; i++) {
+> > +		added_len = snprintf(ptr, remaining_size,
+> > +				     i == 0 ? "%d" : ", %d", array[i].milliamp);
+> > +
+> > +		if (added_len < 0 || added_len >= remaining_size)
+> 
+> Nit: snprintf() does not return negatives value.
 
-Fenglin Wu
+thx! will fix it
 
-On 8/28/2023 1:32 PM, Fenglin Wu wrote:
-> Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
-> It is very similar to the vibrator module inside PM8916 which is supported in
-> pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
-> and the register base offset in each PMIC is different.
+...
+> > +static int ksz_parse_drive_strength(struct ksz_device *dev)
+> > +{
+> > +	struct ksz_driver_strength_prop of_props[] = {
+> > +		[KSZ_DRIVER_STRENGTH_HI] = {
+> > +			.name = "microchip,hi-drive-strength-microamp",
+> > +			.offset = SW_HI_SPEED_DRIVE_STRENGTH_S,
+> > +			.value = -1
+> > +		},
+> > +		[KSZ_DRIVER_STRENGTH_LO] = {
+> > +			.name = "microchip,lo-drive-strength-microamp",
+> > +			.offset = SW_LO_SPEED_DRIVE_STRENGTH_S,
+> > +			.value = -1
+> > +		},
+> > +		[KSZ_DRIVER_STRENGTH_IO] = {
+> > +			.name = "microchip,io-drive-strength-microamp",
+> > +			.offset = 0, /* don't care */
+> > +			.value = -1
+> > +		},
+> > +	};
+> > +	struct device_node *np = dev->dev->of_node;
+> > +	bool found = false;
+> > +	int i, ret;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(of_props); i++) {
+> > +		ret = of_property_read_u32(np, of_props[i].name,
+> > +					   &of_props[i].value);
+> > +		if (ret && ret != -EINVAL)
+> > +			dev_warn(dev->dev, "Failed to read %s\n",
+> > +				 of_props[i].name);
+> > +		if (ret)
+> > +			continue;
+> > +
+> > +		found = true;
 > 
-> Changes in v6:
->    1. Add "qcom,pmi632-vib" as a standalone compatible string.
-> 
-> Changes in v5:
->    1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
->       and use device specific compatible strings only.
-> 
-> Changes in v4:
->    1. Update to use the combination of the HW type and register offset
->       as the constant match data, the register base address defined in
->       'reg' property will be added when accessing SPMI registers using
->       regmap APIs.
->    2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
-> 
-> Changes in v3:
->    1. Refactor the driver to support different type of the vibrators with
->      better flexibility by introducing the HW type with corresponding
->      register fields definitions.
->    2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
->      strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
->      spmi-vib-gen2.
-> 
-> Changes in v2:
->    Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
-> 
-> 
-> Fenglin Wu (3):
->    input: pm8xxx-vib: refactor to easily support new SPMI vibrator
->    dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
->    input: pm8xxx-vibrator: add new SPMI vibrator support
-> 
->   .../bindings/input/qcom,pm8xxx-vib.yaml       |  16 +-
->   drivers/input/misc/pm8xxx-vibrator.c          | 171 ++++++++++++------
->   2 files changed, 132 insertions(+), 55 deletions(-)
-> 
+> Nit: break?
+
+No, we may have more then one property.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
