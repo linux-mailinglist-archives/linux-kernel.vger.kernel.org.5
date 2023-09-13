@@ -2,177 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D8879E6DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86B179E6E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240500AbjIMLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33386 "EHLO
+        id S240382AbjIMLe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240498AbjIMLdp (ORCPT
+        with ESMTP id S240566AbjIMLes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:33:45 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4531FFD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:33:23 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F26A9660733B;
-        Wed, 13 Sep 2023 12:33:21 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694604802;
-        bh=Tt93rndTGtAd7o+182CWzlEvCDnXimjI5xCIO44d5qU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=iPLvICBCqTKl3+YY9MwjzvGIOIcg5Q6p+uYOXL3L/5A2iLFOv1yCNiktEhNYkMsZj
-         1umH5QEUtrnGUCdomLTFLB3NgKUmzOGqHBfHQq/LzSLPEnE60KWY6IdY4h5Z86qRvg
-         9pE7Xze3IuZH3pshmjM2ZJlcQpoN6joG3+S//KX/K2Tg0PLTGD1JTrHdNmVakZN4yI
-         GmZH2VW5evsn6vTzL5afbiXT4G/FVabj0vj1NNHcTxZfc7dJ/D57V2UIL5EQKF5ZF8
-         DnEW/d5E4wGjcTGWKHXWTkGol6NmwyutmVSnREzZQSdW0qZeJ/py7+iGMrmaSSCwol
-         ruRp4c6VITstA==
-Date:   Wed, 13 Sep 2023 13:33:18 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
-        matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
- dma_resv/extobj handling and GEM validation
-Message-ID: <20230913133318.15edec7c@collabora.com>
-In-Reply-To: <df85257a-02ed-4869-2421-0039a9c97db5@linux.intel.com>
-References: <20230909153125.30032-1-dakr@redhat.com>
-        <20230909153125.30032-7-dakr@redhat.com>
-        <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
-        <20230913090311.5eeb026a@collabora.com>
-        <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
-        <20230913091918.62c06a30@collabora.com>
-        <df85257a-02ed-4869-2421-0039a9c97db5@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 13 Sep 2023 07:34:48 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B392137
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:05 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c136ee106so840135966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694604843; x=1695209643; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wM5SIUdq9q8lGvXrXs9VMWSQTu6Zcs1sHBlGbNl1KLk=;
+        b=x/Am8EON2gkt1A/n8jVWiPwZOJjSM3hm/+eTcUR2VrrMDUfLCXlPdh1/LccfVnOCp2
+         VsH2Q8+fWHzvxyaua4hVFciVCl9pr5qhdq5tI5Zs91rYI5pQbVLhABlrEKhnQv1sdhV+
+         1GEiQLx3b1KodHiQEmP68xzq15KFDkCfvkA6EzHyJLk6bPE4/7MWSfSE3rDFgCp53jLc
+         yzcF2cp+UbdNfHjLC+oRK3DTc33J4PaISBSuAwwdK7ZVJViKbjB0wvceh0ehsArG9Bmx
+         e9cffcO8QwllBlQXOz6wcWBX+mQvIp9ZdFrNHsWBFWFJKS2P9CDfK9NG8Ixa+OsvkzGf
+         OaZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694604843; x=1695209643;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wM5SIUdq9q8lGvXrXs9VMWSQTu6Zcs1sHBlGbNl1KLk=;
+        b=u739Cqeji6bT53tRmY6Hfkh8GhGm/+ODOalimFCqURguXVPI9y2b6D918wI13UvK2N
+         DRVpHYharHPRaBErGziIKuZcUy2hfJ9bUssUxt/+TcOOCtczznAIyrGyYKGHA/pTu1b6
+         1aAodxYwHXdxI6XkcWYnk0g0g6Y7uld+HkQHMr9pzO12HmtEbivPKo+/xJG41QwCICUn
+         VRrAQnnt2am9UOEsr7OFh+U5DFmBQ2UAR6LFUbF1HnwoXvf9t4krKggsPikav79zJsI2
+         P6qYSTaXtPW/rRODJ8VTFuBfW0JLz/V4dpkifOIhKtbIpz8x783A5hUW/Vvc9pQrIXkj
+         NUNA==
+X-Gm-Message-State: AOJu0YxzQq4X2xIZ6YBWby2exL2bQUj+p909qFtu/x/SHycldktyHS39
+        esbKg7/eTj/RWkLcvfW17ZZagg==
+X-Google-Smtp-Source: AGHT+IFpLPaGgHkHb7TWz2h534XTfQQkS800fp8I2bYQFpK202UNLN0lz7T7mWJfEwkv5Wc31F2IBA==
+X-Received: by 2002:a17:906:32c3:b0:9a1:f5b1:c85d with SMTP id k3-20020a17090632c300b009a1f5b1c85dmr1827996ejk.12.1694604843481;
+        Wed, 13 Sep 2023 04:34:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id a22-20020a1709064a5600b00992ca779f42sm8288599ejv.97.2023.09.13.04.34.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 04:34:02 -0700 (PDT)
+Message-ID: <32e308fa-1118-e17a-8038-c28cb2484c92@linaro.org>
+Date:   Wed, 13 Sep 2023 13:34:01 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v6 2/4] remoteproc: k3: Split out data structures common
+ with M4 driver
+Content-Language: en-US
+To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
+        mathieu.poirier@linaro.org, p.zabel@pengutronix.de,
+        martyn.welch@collabora.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+References: <20230913111644.29889-1-hnagalla@ti.com>
+ <20230913111644.29889-3-hnagalla@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230913111644.29889-3-hnagalla@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 12:39:01 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+On 13/09/2023 13:16, Hari Nagalla wrote:
+> From: Martyn Welch <martyn.welch@collabora.com>
+> 
+> We will be adding the M4F driver which shares a lot of commonality
+> with the DSP driver. Common data structures are introduced here.
+> 
+> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> Changes in v6:
+>  - Created a separate patch for data structures to ease review
+> 
+>  drivers/remoteproc/ti_k3_common.h | 103 ++++++++++++++++++++++++++++++
+>  1 file changed, 103 insertions(+)
+>  create mode 100644 drivers/remoteproc/ti_k3_common.h
+> 
+> diff --git a/drivers/remoteproc/ti_k3_common.h b/drivers/remoteproc/ti_k3_common.h
+> new file mode 100644
+> index 000000000000..5e1f27741183
+> --- /dev/null
+> +++ b/drivers/remoteproc/ti_k3_common.h
+> @@ -0,0 +1,103 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * TI K3 Remote Processor(s) driver common code
+> + *
+> + * Refactored from ti_k3_dsp_remoteproc.c.
+> + *
+> + * ti_k3_dsp_remoteproc.c:
+> + * Copyright (C) 2018-2022 Texas Instruments Incorporated - https://www.ti.com/
+> + *	Suman Anna <s-anna@ti.com>
+> + */
+> +
+> +#ifndef REMOTEPROC_TI_K3_COMMON_H
+> +#define REMOTEPROC_TI_K3_COMMON_H
+> +
+> +#define KEYSTONE_RPROC_LOCAL_ADDRESS_MASK	(SZ_16M - 1)
+> +
+> +/**
+> + * struct k3_rproc_mem - internal memory structure
+> + * @cpu_addr: MPU virtual address of the memory region
+> + * @bus_addr: Bus address used to access the memory region
+> + * @dev_addr: Device address of the memory region from DSP view
+> + * @size: Size of the memory region
+> + */
+> +struct k3_rproc_mem {
+> +	void __iomem *cpu_addr;
+> +	phys_addr_t bus_addr;
+> +	u32 dev_addr;
+> +	size_t size;
 
-> Hi,
->=20
-> On 9/13/23 09:19, Boris Brezillon wrote:
-> > On Wed, 13 Sep 2023 17:05:42 +1000
-> > Dave Airlie <airlied@gmail.com> wrote:
-> > =20
-> >> On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
-> >> <boris.brezillon@collabora.com> wrote: =20
-> >>> On Tue, 12 Sep 2023 18:20:32 +0200
-> >>> Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> >>>    =20
-> >>>>> +/**
-> >>>>> + * get_next_vm_bo_from_list() - get the next vm_bo element
-> >>>>> + * @__gpuvm: The GPU VM
-> >>>>> + * @__list_name: The name of the list we're iterating on
-> >>>>> + * @__local_list: A pointer to the local list used to store alread=
-y iterated items
-> >>>>> + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_n=
-ext_cached_vm_bo()
-> >>>>> + *
-> >>>>> + * This helper is here to provide lockless list iteration. Lockles=
-s as in, the
-> >>>>> + * iterator releases the lock immediately after picking the first =
-element from
-> >>>>> + * the list, so list insertion deletion can happen concurrently. =
-=20
-> >>>> Are the list spinlocks needed for that async state update from within
-> >>>> the dma-fence critical section we've discussed previously? =20
-> >>> Any driver calling _[un]link() from its drm_gpu_scheduler::run_job()
-> >>> hook will be in this situation (Panthor at the moment, PowerVR soon).=
- I
-> >>> get that Xe and Nouveau don't need that because they update the VM
-> >>> state early (in the ioctl path), but I keep thinking this will hurt us
-> >>> if we don't think it through from the beginning, because once you've
-> >>> set this logic to depend only on resv locks, it will be pretty hard to
-> >>> get back to a solution which lets synchronous VM_BINDs take precedence
-> >>> on asynchronous request, and, with vkQueueBindSparse() passing extern=
-al
-> >>> deps (plus the fact the VM_BIND queue might be pretty deep), it can
-> >>> take a long time to get your synchronous VM_BIND executed... =20
->=20
-> So this would boil down to either (possibly opt-in) keeping the spinlock=
-=20
-> approach or pushing the unlink out to a wq then?
+Where is the split? I see only addition here.
 
-Deferred _unlink() would not be an issue, since I already defer the
-drm_gpuva destruction to a wq, it would just a be a matter of moving the
-_unlink() call there as well. But _link() also takes the GEM gpuva list
-lock, and that one is bit tricky, in that sm_map() can trigger 2 more
-_link() calls for the prev/next mappings, which we can't guess until we
-get to execute the VM update. If we mandate the use of the GEM resv
-lock, that simply means async VM updates (AKA calling
-drm_gpuvm_sm_[un]map()) are not an option. And if this is what everyone
-agrees on, then I'd like the APIs that make this sort of async VM
-update possible (drm_gpuvm_sm_[un]map(), the drm_gpuvm_ops::sm_step*
-methods, and probably other things) to be dropped, so we don't make it
-look like it's something we support.
+Where is the usage of this header? This is basically dead code. Don't
+add dead code, but instead actually move the structures here! Move is
+cut and paste, not just paste.
 
-> BTW, as also asked in a reply to Danilo, how do you call unlink from=20
-> run_job() when it was requiring the obj->dma_resv lock, or was that a WIP?
-
-_unlink() makes sure the GEM gpuva list lock is taken, but this can be
-a custom lock (see drm_gem_gpuva_set_lock()). In panthor we have
-panthor_gem_object::gpuva_list_lock that's dedicated the gpuva list
-protection. We make sure we never take this lock while allocating
-memory to guarantee the dma-signalling path can't deadlock.
-
->=20
-> >>>    =20
-> >> btw what is the use case for this? do we have actual vulkan
-> >> applications we know will have problems here? =20
-> > I don't, but I think that's a concern Faith raised at some point (dates
-> > back from when I was reading threads describing how VM_BIND on i915
-> > should work, and I was clearly discovering this whole VM_BIND thing at
-> > that time, so maybe I misunderstood).
-> > =20
-> >> it feels like a bit of premature optimisation, but maybe we have use c=
-ases. =20
-> > Might be, but that's the sort of thing that would put us in a corner if
-> > we don't have a plan for when the needs arise. Besides, if we don't
-> > want to support that case because it's too complicated, I'd recommend
-> > dropping all the drm_gpuvm APIs that let people think this mode is
-> > valid/supported (map/remap/unmap hooks in drm_gpuvm_ops,
-> > drm_gpuvm_sm_[un]map helpers, etc). Keeping them around just adds to the
-> > confusion. =20
->=20
-> Xe allows bypassing the bind-queue with another bind-queue, but to=20
-> completely avoid dependencies between queues the Operations may not=20
-> overlap.
-
-So, you check the VM state with some VM lock held (would be the VM resv
-in my case), and if the mapping is new (no overlaps with pre-existing
-mappings), you queue it to the fast-track/sync-VM_BIND queue. What would
-be missing I guess is a way to know if the mapping is active (MMU has
-been updated) or pending (MMU update queued to the bind-queue), so I can
-fast-track mapping/unmapping of active mappings. This would leave
-overlapping sync/async VM updates, which can't happen in practice
-unless userspace is doing something wrong (sparse bindings always go
-through vkQueueBindSparse).
-
-I'll give it a try.
-
-> (And the definition of overlap is currently page-table=20
-> structure updates may not overlap) but no guarantees are made about=20
-> priority.
->=20
-> /Thomas
->=20
->=20
->=20
+Best regards,
+Krzysztof
 
