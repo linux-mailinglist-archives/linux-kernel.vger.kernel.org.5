@@ -2,126 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FD379E59F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719F279E5A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239881AbjIMLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        id S239898AbjIMLDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjIMLCP (ORCPT
+        with ESMTP id S231897AbjIMLDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:02:15 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41CE1726;
-        Wed, 13 Sep 2023 04:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ph6IZOjxVfNK0j0D6FBkY/k2VECArBn3iv8gnIxi7NU=; b=LWgmBUtqijN5jZg4OTh3/n7y8S
-        CBGYD5upmZC2bNhP4tUBGRgBf/M14Iy7pfwWf1cgDMqKKCRC/khSGyEVbigMwsZOTds2JZHEEZq+b
-        RH9NQFMYUhSy04YwqbKDJELCZDNHq6Y+rgXMaaz3bhgyQR9e/oj5CAd7cGNT66jhgBj7xdh6d3JhP
-        xzI27FDLWkWJtkgbKZW/TMY5jFuysOyzUYOwZaEASTWhnDRlUwAe2iUrTaxapVtOQ7sv2T6fYkee1
-        knclwk/xz098cfRo3p/puWgRPh3Q/KNPo1bdAzBE117ZOMpSAUXMlNTVTZxZnPsZV4VjQF57m6RrP
-        jfrJ/K+w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgNcq-00DQqf-F2; Wed, 13 Sep 2023 11:01:40 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1CCF4300348; Wed, 13 Sep 2023 13:01:40 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 13:01:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] init/main: Clear boot task idle flag
-Message-ID: <20230913110139.GE692@noisy.programming.kicks-ass.net>
-References: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
+        Wed, 13 Sep 2023 07:03:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CBB1726;
+        Wed, 13 Sep 2023 04:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694602984; x=1726138984;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=tl2PB1NpiVR1OX9ewKIvOnsbXbiiP6qbvDil9+QGcmk=;
+  b=ZrQdZw3I4BlReGfihJyTQQn4qBMdyG3QSVdPAkSp1dYDVoKedILmRWGN
+   OcP+pLZJf/Y6v8ybbEyJxvAlqkPNXvlbzywZANAiPxyM1BChMN+p0w51l
+   1RzXegace+X2XuXtek4oDDltk6YyygxXlN99JQGf23JacDiJuYE0ALiLF
+   FZBYw4nvwHt7SOes4CV33clz1JpZNDxJ1/tvkVsQ1eucwuGTMNUVI7suj
+   nKkFAGCweX3vdNbRCIy0UK6G+wzbb3UvG09Nk0N+NHYPEz+j4hk+YS2eK
+   0Z16r5l6+D75HJmzV4LaFdU8ou2OgJlXS2GgBl6i2bsWTH/93gjDvKhsw
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464998542"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="464998542"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:03:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="737457082"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="737457082"
+Received: from pakurapo-mobl3.ger.corp.intel.com ([10.249.45.213])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:03:01 -0700
+Date:   Wed, 13 Sep 2023 14:02:58 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 3/5] selftests/resctrl: Refactor feature check to use
+ resource and feature name
+In-Reply-To: <b5a36b8a-c5c7-84a9-270e-bef4478d4bff@intel.com>
+Message-ID: <eac7deb6-3593-7a59-7df8-208392254f7@linux.intel.com>
+References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com> <20230911111930.16088-4-ilpo.jarvinen@linux.intel.com> <b5a36b8a-c5c7-84a9-270e-bef4478d4bff@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
+Content-Type: multipart/mixed; BOUNDARY="8323329-947309311-1694599446=:1849"
+Content-ID: <67bd5477-5f-654-0e6-7d4be5efb566@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 08:56:47PM -0400, Liam R. Howlett wrote:
-> Initial booting is setting the task flag to idle (PF_IDLE) by the call
-> path sched_init() -> init_idle().  Having the task idle and calling
-> call_rcu() in kernel/rcu/tiny.c means that TIF_NEED_RESCHED will be
-> set.  Subsequent calls to any cond_resched() will enable IRQs,
-> potentially earlier than the IRQ setup has completed.  Recent changes
-> have caused just this scenario and IRQs have been enabled early.
-> 
-> This causes a warning later in start_kernel() as interrupts are enabled
-> before they are fully set up.
-> 
-> Fix this issue by clearing the PF_IDLE flag on return from sched_init()
-> and restore the flag in rest_init().  Although the boot task was marked
-> as idle since (at least) d80e4fda576d, I am not sure that it is wrong to
-> do so.  The forced context-switch on idle task was introduced in the
-> tiny_rcu update, so I'm going to claim this fixes 5f6130fa52ee.
-> 
-> Link: https://lore.kernel.org/linux-mm/87v8cv22jh.fsf@mail.lhotse/
-> Link: https://lore.kernel.org/linux-mm/CAMuHMdWpvpWoDa=Ox-do92czYRvkok6_x6pYUH+ZouMcJbXy+Q@mail.gmail.com/
-> Fixes: 5f6130fa52ee ("tiny_rcu: Directly force QS when call_rcu_[bh|sched]() on idle_task")
-> Cc: stable@vger.kernel.org
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Andreas Schwab <schwab@linux-m68k.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Peng Zhang <zhangpeng.00@bytedance.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> ---
->  init/main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/init/main.c b/init/main.c
-> index ad920fac325c..f74772acf612 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -696,7 +696,7 @@ noinline void __ref __noreturn rest_init(void)
->  	 */
->  	rcu_read_lock();
->  	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
-> -	tsk->flags |= PF_NO_SETAFFINITY;
-> +	tsk->flags |= PF_NO_SETAFFINITY | PF_IDLE;
->  	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
->  	rcu_read_unlock();
->  
-> @@ -938,6 +938,8 @@ void start_kernel(void)
->  	 * time - but meanwhile we still have a functioning scheduler.
->  	 */
->  	sched_init();
-> +	/* Avoid early context switch, rest_init() restores PF_IDLE */
-> +	current->flags &= ~PF_IDLE;
->  
->  	if (WARN(!irqs_disabled(),
->  		 "Interrupts were enabled *very* early, fixing it\n"))
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323329-947309311-1694599446=:1849
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <f2223ced-6689-2843-d663-8356e8e1b650@linux.intel.com>
 
-Hurmph... so since this is about IRQs, would it not make sense to have
-the | PF_IDLE near 'early_boot_irqs_disabled = false' ?
+On Tue, 12 Sep 2023, Reinette Chatre wrote:
+> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
+> > Feature check in validate_resctrl_feature_request() takes in the test
+> > name string and maps that to what to check per test.
+> > 
+> > Pass resource and feature names to validate_resctrl_feature_request()
+> > directly rather than deriving them from the test name inside the
+> > function which makes the feature check easier to extend for new test
+> > cases.
+> > 
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > Cc: <stable@vger.kernel.org>
+> 
+> This does not seem to be stable material.
 
-Or, alternatively, make the tinyrcu thing check that variable?
+Alone it isn't, but both 2/5 and this 3/5 are prerequisites for 4/5 as 
+shown by the tags there.
+
+> > ---
+> >  tools/testing/selftests/resctrl/resctrl.h     |  6 +-
+> >  .../testing/selftests/resctrl/resctrl_tests.c | 10 +--
+> >  tools/testing/selftests/resctrl/resctrlfs.c   | 69 ++++++++-----------
+> >  3 files changed, 34 insertions(+), 51 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+> > index dd07463cdf48..89ced4152933 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl.h
+> > +++ b/tools/testing/selftests/resctrl/resctrl.h
+
+> > diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+> > index bd36ee206602..bd547a10791c 100644
+> > --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> > +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> > @@ -10,6 +10,8 @@
+> >   */
+> >  #include "resctrl.h"
+> >  
+> > +#include <limits.h>
+> > +
+> 
+> Could you please include <limits.h> before the local resctrl.h?
+
+Believe me I tried that first but it did not work. So this intentionally 
+in the current order as resctrl.h defines _GNU_SOURCE which is among 
+things that tends to alter many things. If I reorder them, the build gives 
+me these issues:
+
+resctrlfs.c: In function ‘taskset_benchmark’:
+resctrlfs.c:284:2: warning: implicit declaration of function ‘CPU_ZERO’; 
+did you mean ‘FP_ZERO’? [-Wimplicit-function-declaration]
+  284 |  CPU_ZERO(&my_set);
+      |  ^~~~~~~~
+      |  FP_ZERO
+resctrlfs.c:285:2: warning: implicit declaration of function ‘CPU_SET’ 
+[-Wimplicit-function-declaration]
+  285 |  CPU_SET(cpu_no, &my_set);
+      |  ^~~~~~~
+resctrlfs.c:287:6: warning: implicit declaration of function 
+‘sched_setaffinity’ [-Wimplicit-function-declaration]
+  287 |  if (sched_setaffinity(bm_pid, sizeof(cpu_set_t), &my_set)) {
+      |      ^~~~~~~~~~~~~~~~~
+
+It might be useful to move _GNU_SOURCE define into Makefile though to 
+avoid these kind of issues (but that's not material for this patch).
+
+> >  static int find_resctrl_mount(char *buffer)
+> >  {
+> >  	FILE *mounts;
+> > @@ -604,63 +606,46 @@ char *fgrep(FILE *inf, const char *str)
+> >  
+> >  /*
+> >   * validate_resctrl_feature_request - Check if requested feature is valid.
+> > - * @resctrl_val:	Requested feature
+> > + * @resource:	Required resource (e.g., MB, L3, L2, L3_MON, etc.)
+> > + * @feature:	Feature to be checked under resource (can be NULL). This path
+> > + *		is relative to the resource path.
+> 
+> I do not think "this path" is accurate. @feature is not a path but an entry
+> within the mon_features file.
+
+Yes, agreed.
+
+> Also please note that mon_features only exists for L3_MON, none of the other
+> listed resources have an associated mon_features file in resctrl. This
+> function is created to be generic has specific requirements on what
+> valid (never checked) parameters should be. This may be ok with the usage
+> but it should not pretend to be generic.
+
+So are you recommending I split this function into two where the new one 
+would do the mon_features check?
+
+> >  	char *res;
+> >  	FILE *inf;
+> >  	int ret;
+> >  
+> > -	if (!resctrl_val)
+> > +	if (!resource)
+> >  		return false;
+> >  
+> >  	ret = find_resctrl_mount(NULL);
+> >  	if (ret)
+> >  		return false;
+> >  
+> > -	if (!strncmp(resctrl_val, CAT_STR, sizeof(CAT_STR))) {
+> > -		if (!stat(L3_PATH, &statbuf))
+> > -			return true;
+> > -	} else if (!strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR))) {
+> > -		if (!stat(MB_PATH, &statbuf))
+> > -			return true;
+> > -	} else if (!strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) ||
+> > -		   !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR))) {
+> > -		if (!stat(L3_MON_PATH, &statbuf)) {
+> > -			inf = fopen(L3_MON_FEATURES_PATH, "r");
+> > -			if (!inf)
+> > -				return false;
+> > -
+> > -			if (!strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR))) {
+> > -				res = fgrep(inf, "llc_occupancy");
+> > -				if (res) {
+> > -					found = true;
+> > -					free(res);
+> > -				}
+> > -			}
+> > -
+> > -			if (!strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR))) {
+> > -				res = fgrep(inf, "mbm_total_bytes");
+> > -				if (res) {
+> > -					free(res);
+> > -					res = fgrep(inf, "mbm_local_bytes");
+> > -					if (res) {
+> > -						found = true;
+> > -						free(res);
+> > -					}
+> > -				}
+> > -			}
+> > -			fclose(inf);
+> > -		}
+> > -	}
+> > +	snprintf(res_path, sizeof(res_path), "%s/%s", INFO_PATH, resource);
+> > +
+> > +	if (stat(res_path, &statbuf))
+> > +		return false;
+> > +
+> > +	if (!feature)
+> > +		return true;
+> > +
+> > +	snprintf(res_path, sizeof(res_path), "%s/%s/mon_features", INFO_PATH, resource);
+> > +	inf = fopen(res_path, "r");
+> > +	if (!inf)
+> > +		return false;
+> > +
+> > +	res = fgrep(inf, feature);
+> > +	free(res);
+> > +	fclose(inf);
+> >  
+> > -	return found;
+> > +	return res;
+> 
+> This is unexpected. Function should return bool but instead returns a char * that
+> has been freed?
+
+Okay, I understand it looks confusing when relying on implicit conversion 
+to boolean (despite being functionally correct).
+
+I can do this instead to make it more obvious the intention is to convert 
+the result to boolean and not return a pointer:
+	return !!res;
+
+-- 
+ i.
+--8323329-947309311-1694599446=:1849--
