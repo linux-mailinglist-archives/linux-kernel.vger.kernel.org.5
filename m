@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A6D79E6C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2332979E6C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240181AbjIMLaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
+        id S240261AbjIMLad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240129AbjIMLaN (ORCPT
+        with ESMTP id S240129AbjIMLab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:30:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35F419AF;
-        Wed, 13 Sep 2023 04:30:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 99A4F1F390;
-        Wed, 13 Sep 2023 11:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694604608;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bqo0LMzZdAxqn5nqemfUNx3l7LfnmUF9NaJushiU/Rc=;
-        b=2BO6RbHWmysyd1EC8mYK9fXZSCzYK7OiUhk4ChVGLGJItm3OSvafRQMiosEPynAbANzCQc
-        nQf8vHPLlbz5LjXTAORbk8TRgv8dBxU7cAJ5jvXbYjxDIIkfqjd4ivPd1i0Y1i4+602A8v
-        aiam10YaBtoTvvhUixpuC14BjrRsYcI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694604608;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bqo0LMzZdAxqn5nqemfUNx3l7LfnmUF9NaJushiU/Rc=;
-        b=pFWT22stwK94WXrjmUIwzgXUQgWosGBqJBEP5GNpI54UVyx8z2C9WZZm9CQ9PsHMgUV1fH
-        1Fn27wDu+5ersKCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 63B4913582;
-        Wed, 13 Sep 2023 11:30:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id k0x8F0CdAWUqBwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 11:30:08 +0000
-Date:   Wed, 13 Sep 2023 13:30:06 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] btrfs: Remove some unused functions
-Message-ID: <20230913113006.GI20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
+        Wed, 13 Sep 2023 07:30:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545321726;
+        Wed, 13 Sep 2023 04:30:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E33F0C4339A;
+        Wed, 13 Sep 2023 11:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694604626;
+        bh=fys3AwpYMFkt4YpMz2d9cBa4HOo29zLSnKJq0CztGhM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=HoigTJxBqwRaERj0uhNCxnLnoW8QdbIdiKARdggVKYc4BF94U8xJ9jLO8vpKvZCIg
+         +Tc6HJXn0UBZE/QFNZw5+NBrOaFd+jr8M7WtTev9Rprbpu8Mo5ipDsK5fkQzqjQ32l
+         Q9MITKDV0bDOyh591rVUBvkCOv6bjRPKwnKdtrqaFa3Eptl/lVI0b6JvosIcrgovIo
+         fZ4DQvxukMTSyKErFxumMx6LytrSXyzI/wxB0oUIK/HFl/FqnTrgvEtm9zZhAtHK2b
+         TlyD5lw7wsfyfG1DT+8kwuIBcatUPCrzXJTfk9dJfJJGPSjV5u/b69CN4IMldbZ2lP
+         S+mjqMQup/b+w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D08B7E1C281;
+        Wed, 13 Sep 2023 11:30:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: hinic: Use devm_kasprintf()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169460462685.4298.10103672469852664707.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Sep 2023 11:30:26 +0000
+References: <198375f3b77b4a6bae4fdaefff7630414c0c89fe.1694461804.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <198375f3b77b4a6bae4fdaefff7630414c0c89fe.1694461804.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     cai.huoqing@linux.dev, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 05:43:27PM +0800, Jiapeng Chong wrote:
-> These functions are defined in the qgroup.c file, but not called
-> elsewhere, so delete these unused functions.
-> 
-> fs/btrfs/qgroup.c:149:19: warning: unused function 'qgroup_to_aux'.
-> fs/btrfs/qgroup.c:154:36: warning: unused function 'unode_aux_to_qgroup'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6566
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Hello:
 
-Added to misc-next with some wording adjusments and reference to the
-patch that removed the last use, thanks.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon, 11 Sep 2023 21:50:52 +0200 you wrote:
+> Use devm_kasprintf() instead of hand writing it.
+> This is less verbose and less error prone.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/net/ethernet/huawei/hinic/hinic_tx.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+
+Here is the summary with links:
+  - [net-next] net: hinic: Use devm_kasprintf()
+    https://git.kernel.org/netdev/net-next/c/9cc91173cf1b
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
