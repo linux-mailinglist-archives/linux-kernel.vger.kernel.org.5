@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB6E79C266
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F224C79C2AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Sep 2023 04:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235829AbjILCJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Sep 2023 22:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
+        id S237217AbjILCW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Sep 2023 22:22:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244006AbjILCGi (ORCPT
+        with ESMTP id S237215AbjILCWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Sep 2023 22:06:38 -0400
+        Mon, 11 Sep 2023 22:22:43 -0400
 Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 687C134A5C;
-        Mon, 11 Sep 2023 18:38:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 81628171A36;
+        Mon, 11 Sep 2023 18:46:11 -0700 (PDT)
 Received: from localhost.localdomain (unknown [219.141.250.2])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 149016059CE35;
-        Tue, 12 Sep 2023 09:37:50 +0800 (CST)
-X-MD-Sfrom: kunyu@nfschina.com
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 8ADAD6059D7E7;
+        Tue, 12 Sep 2023 09:46:07 +0800 (CST)
+X-MD-Sfrom: zeming@nfschina.com
 X-MD-SrcIP: 219.141.250.2
-From:   Li kunyu <kunyu@nfschina.com>
-To:     john.johansen@canonical.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com
-Cc:     apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li kunyu <kunyu@nfschina.com>
-Subject: [PATCH] apparmor/file: Removing unnecessary initial values for variable pointers
-Date:   Thu, 14 Sep 2023 02:09:03 +0800
-Message-Id: <20230913180903.3776-1-kunyu@nfschina.com>
+From:   Li zeming <zeming@nfschina.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li zeming <zeming@nfschina.com>
+Subject: [PATCH] =?UTF-8?q?crypto/api:=20Remove=20unnecessary=20=E2=80=98N?= =?UTF-8?q?ULL=E2=80=99=20values=20from=20tfm?=
+Date:   Thu, 14 Sep 2023 02:17:27 +0800
+Message-Id: <20230913181727.4004-1-zeming@nfschina.com>
 X-Mailer: git-send-email 2.18.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These variable pointers are assigned during use and do not need to be
-initialized for assignment.
+tfm is assigned first, so it does not need to initialize
+the　assignment.
 
-Signed-off-by: Li kunyu <kunyu@nfschina.com>
+Signed-off-by: Li zeming <zeming@nfschina.com>
 ---
- security/apparmor/file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ crypto/api.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/apparmor/file.c b/security/apparmor/file.c
-index 698b124e649f..12eafdf18fc0 100644
---- a/security/apparmor/file.c
-+++ b/security/apparmor/file.c
-@@ -264,7 +264,7 @@ int aa_path_perm(const char *op, struct aa_label *label,
+diff --git a/crypto/api.c b/crypto/api.c
+index b9cc0c906efe..7f402107f0cc 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -389,7 +389,7 @@ EXPORT_SYMBOL_GPL(crypto_shoot_alg);
+ struct crypto_tfm *__crypto_alloc_tfmgfp(struct crypto_alg *alg, u32 type,
+ 					 u32 mask, gfp_t gfp)
  {
- 	struct aa_perms perms = {};
- 	struct aa_profile *profile;
--	char *buffer = NULL;
-+	char *buffer;
- 	int error;
- 
- 	flags |= PATH_DELEGATE_DELETED | (S_ISDIR(cond->mode) ? PATH_IS_DIR :
-@@ -412,7 +412,7 @@ int aa_path_link(struct aa_label *label, struct dentry *old_dentry,
- 		d_backing_inode(old_dentry)->i_uid,
- 		d_backing_inode(old_dentry)->i_mode
- 	};
--	char *buffer = NULL, *buffer2 = NULL;
-+	char *buffer, *buffer2;
- 	struct aa_profile *profile;
- 	int error;
+-	struct crypto_tfm *tfm = NULL;
++	struct crypto_tfm *tfm;
+ 	unsigned int tfm_size;
+ 	int err = -ENOMEM;
  
 -- 
 2.18.2
