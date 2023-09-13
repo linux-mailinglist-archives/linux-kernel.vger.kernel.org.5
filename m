@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEEF79E5CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97579E615
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237900AbjIMLKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        id S240321AbjIMLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:13:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbjIMLKc (ORCPT
+        with ESMTP id S240185AbjIMLMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:10:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA7619A6;
-        Wed, 13 Sep 2023 04:10:28 -0700 (PDT)
+        Wed, 13 Sep 2023 07:12:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0C4269E;
+        Wed, 13 Sep 2023 04:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694603428; x=1726139428;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uqF9R+6e0mdQgOwFpYVrH+65K7xWTsBoK2ERwBn9lEo=;
-  b=DqUL5wJ9hV7rl9CYxi2lVdXWWur+r4l7lxNAc8+5mzcaH6DhhN0T4ST9
-   hOgqEf4J3wNBU7XseuaUQhvCld3wXjPBI/Sl4Ax7kbXYVxSHNKd8FCumP
-   l0k8zI5d/yS4Eak3hY87ji5Hv6vcfxArjgUeZ7esB9NQ0iQuly/N8CMy8
-   SRpenCvCsS+FKuKG4LLCeFT1QjGXk1uNIm6N+MgemBqzxDzf6gK7ruxHZ
-   6PqLZqRaNdwGbeFjivYfMc9vi75SmmqTos9lE6i88WIIMhD3F4Uhem9eV
-   q/W0f6AJGJTLfi/OrAtNvxFhxXHDbBiqNp1IxjKSaavW+s4/iI7jVVe3R
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358899721"
+  t=1694603515; x=1726139515;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=VHUWoD/roHyj/qGPGu4h28TjTTN+mTvBmIXq8WsKj3s=;
+  b=SS7wly06czLFDVyX0y3+f6EAx3RHWrdjUbZAGKrJhJitlOVpBOlsZP8r
+   Q24Y/s0lYZYWiStcFy9Q/+GGWNRfHAwy8KvxG15Uw0RP5225/O9M/e+rE
+   vAJSjPJnSKyBDqdH2cSskffFZCawGbgSD+AeaNxOSRioeXaAuyNXdgDpM
+   E0MPVaNoUGso4SHPKCrkLWSBh2BS/OCWeeta2vxlrYzpFyOroQsUANngs
+   2AyqgnPURwApbumb7dGNygc623C0kwEQyCSp7qsLucRwrEk2Lx2dhd5pS
+   PYq05Hoh8l7MvR0QXRHm05ONXJiJm0TyAcp0c7KUWvYGpGvSaS+1iqpVr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="377542830"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="358899721"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:10:28 -0700
+   d="scan'208";a="377542830"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:11:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="809639357"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="779153211"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="809639357"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:10:26 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qgNlH-008qY6-13;
-        Wed, 13 Sep 2023 14:10:23 +0300
-Date:   Wed, 13 Sep 2023 14:10:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next v1 2/2] net: core: Sort headers alphabetically
-Message-ID: <ZQGYnoHt8PAT23A4@smile.fi.intel.com>
-References: <20230911154534.4174265-1-andriy.shevchenko@linux.intel.com>
- <20230911154534.4174265-2-andriy.shevchenko@linux.intel.com>
- <20230912152031.GI401982@kernel.org>
- <ZQCTXkZcJLvzNL4F@smile.fi.intel.com>
- <20f57b1309b6df60b08ce71f2d7711fa3d6b6b44.camel@redhat.com>
- <ZQCaMHBHp/Ha29ao@smile.fi.intel.com>
- <32a8715a63b686aa0ac19fdae22b5d605d47ae35.camel@redhat.com>
+   d="scan'208";a="779153211"
+Received: from pakurapo-mobl3.ger.corp.intel.com ([10.249.45.213])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:11:52 -0700
+Date:   Wed, 13 Sep 2023 14:11:49 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/5] selftests/resctrl: Remove duplicate feature check
+ from CMT test
+In-Reply-To: <40ba8890-32d1-e440-29fd-b8f8db69acc5@intel.com>
+Message-ID: <80695068-4a6-b8e9-107f-8d29ab3543be@linux.intel.com>
+References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com> <20230911111930.16088-3-ilpo.jarvinen@linux.intel.com> <40ba8890-32d1-e440-29fd-b8f8db69acc5@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <32a8715a63b686aa0ac19fdae22b5d605d47ae35.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/mixed; BOUNDARY="8323329-1605740400-1694603126=:1849"
+Content-ID: <6ca3d189-89cb-9f2-1b72-3c212a2531aa@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 07:25:48PM +0200, Paolo Abeni wrote:
-> On Tue, 2023-09-12 at 20:04 +0300, Andy Shevchenko wrote:
-> > On Tue, Sep 12, 2023 at 06:53:23PM +0200, Paolo Abeni wrote:
-> > > On Tue, 2023-09-12 at 19:35 +0300, Andy Shevchenko wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-...
+--8323329-1605740400-1694603126=:1849
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <b25a55e8-9e13-4346-c9b4-9dc2c98a98@linux.intel.com>
 
-> > > Please repost the first patch standalone.
+On Tue, 12 Sep 2023, Reinette Chatre wrote:
+> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
+> > The test runner run_cmt_test() in resctrl_tests.c checks for CMT
+> > feature and does not run cmt_resctrl_val() if CMT is not supported.
+> > Then cmt_resctrl_val() also check is CMT is supported.
 > > 
-> > Why to repost, what did I miss? It's available via lore, just run
+> > Remove the duplicated feature check for CMT from cmt_resctrl_val().
 > > 
-> >   b4 am -slt -P _ 20230911154534.4174265-1-andriy.shevchenko@linux.intel.com
-> > 
-> > to get it :-)
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > Cc: <stable@vger.kernel.org>
 > 
-> It's fairly better if actions (changes) on patches are taken by the
-> submitter: it scales way better, and if the other path take places we
-> can be easily flooded with small (but likely increasingly less smaller)
-> requests that will soon prevent any other activity from being taken.
-> 
-> Please, repost the single patch, it would be easier to me.
+> This does not look like stable material to me. 
 
-Done.
+I know but when constructing this series I had 2 options:
+
+Either convert also this when changing validate_resctrl_feature_request() 
+or remove this call entirely.
+
+Given it's duplicate of the other CMT check, I chose to just remove it 
+(which I'd do anyway). As patch 4/5 requires 3/5 which in turn requires 
+this, this has to go stable if 4/5 goes too.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+ i.
+--8323329-1605740400-1694603126=:1849--
