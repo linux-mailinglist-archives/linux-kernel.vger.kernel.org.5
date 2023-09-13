@@ -2,175 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDED679E0C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6F979E0D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238580AbjIMHVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
+        id S238594AbjIMH1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238572AbjIMHVh (ORCPT
+        with ESMTP id S237103AbjIMH1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:21:37 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A5A1984;
-        Wed, 13 Sep 2023 00:21:33 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf7a6509deso45321545ad.3;
-        Wed, 13 Sep 2023 00:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694589693; x=1695194493; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/ngkpNgVCwSXdP3HY5FdIgEjBwwJbGVXPOVAzuvL3g=;
-        b=c3Ae2kZgj4aZSOSsK37V36RDZxn4FFKdfIK+yd2ImjQ8J8Exx+adYRwXNvLMFjymIk
-         874HD5r84TiZe9EkAupqKyTzsU3Un/bxwR0djk/oeZyFDbFiOyQi/lJKTffsXq2VrLaY
-         94tQ5jWf4Py4DlhI9eGaecFBN4XCleXJ9BIZYQ3A5QVctiXMJ2QxALeWMFq03nXQcF6t
-         vUgBALHbTIofZsXdakHs7OXcJzRvihRfsVfnsF6fl0bfC9f4n9CiiQU+NrsBoXH9AV1e
-         Xt3ZDXRLoTroz5x1jwoRBKAuRoj2gHIVIKXGkitzMyiOKFhO/b3Lm4jOYzH1/9ZOx3pQ
-         lN+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694589693; x=1695194493;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D/ngkpNgVCwSXdP3HY5FdIgEjBwwJbGVXPOVAzuvL3g=;
-        b=JLGVeEg/ZiIMkcxxGpqRus5t69Vj8FWMFq5Etfk1NqXy1SoUxFUUl4AHZGY39YZYY8
-         ZrNCh6Q3ajN3H8jRTdi5hrM4Zw900iVa9tZFEl1UHxAKe+VWmVC7xNBf+3hIr/0+ci4B
-         KkhYlaZF4VG7VcC30+6U/njP+OVhqXW1PqdoPbg+ki5Kja1TbSjrsEvZRHxj7B8XHmUe
-         lHbP0Xl1iqadlby4+UggZ8SuZ25fWJB7H6WXWpuMwC+UP9o1cZx1y+0lu9nszjyflqRi
-         P325WKzLTij4hqGFE2Dr5P0V6kSDc8FIT/0vaq7aDpH+SR/G1hs+DhFRJO0X/HwlUlqx
-         bblA==
-X-Gm-Message-State: AOJu0Yw/VOGSd6PRLrgmd/RtfDTgPKWLn9tUI6kbSc1rfBU+xyE/xtfU
-        ZOxAFvqmts90L/ahWKg+98g=
-X-Google-Smtp-Source: AGHT+IEGCHwG4VwUhvCzNTy/QaH1rjWUOgIQpid7iI3ZfdVpUimI7jnL6M4OeIfgXOuE7fbtkuQ5AA==
-X-Received: by 2002:a17:902:d70a:b0:1c3:8230:30d8 with SMTP id w10-20020a170902d70a00b001c3823030d8mr1973677ply.38.1694589693056;
-        Wed, 13 Sep 2023 00:21:33 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id n16-20020a170902e55000b001b0358848b0sm9743153plf.161.2023.09.13.00.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 00:21:32 -0700 (PDT)
-From:   Like Xu <like.xu.linux@gmail.com>
-X-Google-Original-From: Like Xu <likexu@tencent.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] KVM: x86/tsc: Don't sync TSC on the first write in state restoration
-Date:   Wed, 13 Sep 2023 15:21:13 +0800
-Message-ID: <20230913072113.78885-1-likexu@tencent.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 13 Sep 2023 03:27:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4837C1727;
+        Wed, 13 Sep 2023 00:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694590053; x=1726126053;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xdNcP7YzTuO/KtXmc0b2clcxVqK94aaCrneS0dMIvoo=;
+  b=Y+orIYEOKl68ADSyNOoH/H4417m9InkXST+aD0QCJTiJJJc+rCFMxUDP
+   Mz6RW+klKH2UCWPpQBYDIbtwppJ+YiXi90apOxzqONq7s9W1NhuGnA/K6
+   GdTZTYav4aOmmEjug8fWX2PzbDMcd97zKxrWAZStO2MEQXRscKRKPdbG5
+   WRmiCXKsaaDSZEw7DHdiUglNAO10JMYNNAop4+BLMPYXd1pBYC/3zA73c
+   ef/dQH4JHkIKZHgWM0MRsF1NpvEjvx9ejU21Da/d6deuqp3Bj4dK7rIEg
+   EmRdO6XbSxAzBEh/HjkRuTqD5vc9OQD6WXaBv9LggEohpc8hoteAXenYf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358862273"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="358862273"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 00:27:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="773349016"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="773349016"
+Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 13 Sep 2023 00:27:15 -0700
+Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgKGS-0000CX-1Q;
+        Wed, 13 Sep 2023 07:26:30 +0000
+Date:   Wed, 13 Sep 2023 15:25:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        tj@kernel.org, linux-kernel@vger.kernel.org,
+        Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
+ iterator kfuncs
+Message-ID: <202309131500.J19z0Dil-lkp@intel.com>
+References: <20230912070149.969939-5-zhouchuyi@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912070149.969939-5-zhouchuyi@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <likexu@tencent.com>
+Hi Chuyi,
 
-Add kvm->arch.user_set_tsc to avoid synchronization on the first write
-from userspace so as not to misconstrue state restoration after live
-migration as an attempt from userspace to synchronize. More precisely,
-the problem is that the sync code doesn't differentiate between userspace
-initializing the TSC and userspace attempting to synchronize the TSC.
+kernel test robot noticed the following build warnings:
 
-Reported-by: Yong He <alexyonghe@tencent.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217423
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Suggested-by: Oliver Upton <oliver.upton@linux.dev>
-Original-by: Sean Christopherson <seanjc@google.com>
-Tested-by: Like Xu <likexu@tencent.com>
-Signed-off-by: Like Xu <likexu@tencent.com>
----
-V4 -> V5 Changelog:
-- Making kvm_synchronize_tsc(@data) a pointer and passing NULL; (Sean)
-- Refine commit message in a more accurate way; (Sean)
-V4: https://lore.kernel.org/kvm/20230801034524.64007-1-likexu@tencent.com/
+[auto build test WARNING on bpf-next/master]
 
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/x86.c              | 25 ++++++++++++++++---------
- 2 files changed, 17 insertions(+), 9 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20230912-150454
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230912070149.969939-5-zhouchuyi%40bytedance.com
+patch subject: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded iterator kfuncs
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20230913/202309131500.J19z0Dil-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131500.J19z0Dil-lkp@intel.com/reproduce)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 1a4def36d5bb..9a7dfef9d32d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1324,6 +1324,7 @@ struct kvm_arch {
- 	int nr_vcpus_matched_tsc;
- 
- 	u32 default_tsc_khz;
-+	bool user_set_tsc;
- 
- 	seqcount_raw_spinlock_t pvclock_sc;
- 	bool use_master_clock;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6c9c81e82e65..0fef6ed69cbb 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2714,8 +2714,9 @@ static void __kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 offset, u64 tsc,
- 	kvm_track_tsc_matching(vcpu);
- }
- 
--static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-+static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
- {
-+	u64 data = user_value ? *user_value : 0;
- 	struct kvm *kvm = vcpu->kvm;
- 	u64 offset, ns, elapsed;
- 	unsigned long flags;
-@@ -2728,14 +2729,17 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 	elapsed = ns - kvm->arch.last_tsc_nsec;
- 
- 	if (vcpu->arch.virtual_tsc_khz) {
-+		/*
-+		 * Force synchronization when creating or hotplugging a vCPU,
-+		 * i.e. when the TSC value is '0', to help keep clocks stable.
-+		 * If this is NOT a hotplug/creation case, skip synchronization
-+		 * on the first write from userspace so as not to misconstrue
-+		 * state restoration after live migration as an attempt from
-+		 * userspace to synchronize.
-+		 */
- 		if (data == 0) {
--			/*
--			 * detection of vcpu initialization -- need to sync
--			 * with other vCPUs. This particularly helps to keep
--			 * kvm_clock stable after CPU hotplug
--			 */
- 			synchronizing = true;
--		} else {
-+		} else if (kvm->arch.user_set_tsc) {
- 			u64 tsc_exp = kvm->arch.last_tsc_write +
- 						nsec_to_cycles(vcpu, elapsed);
- 			u64 tsc_hz = vcpu->arch.virtual_tsc_khz * 1000LL;
-@@ -2749,6 +2753,9 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
- 		}
- 	}
- 
-+	if (user_value)
-+		kvm->arch.user_set_tsc = true;
-+
- 	/*
- 	 * For a reliable TSC, we can match TSC offsets, and for an unstable
- 	 * TSC, we add elapsed time in this computation.  We could let the
-@@ -3777,7 +3784,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_IA32_TSC:
- 		if (msr_info->host_initiated) {
--			kvm_synchronize_tsc(vcpu, data);
-+			kvm_synchronize_tsc(vcpu, &data);
- 		} else {
- 			u64 adj = kvm_compute_l1_tsc_offset(vcpu, data) - vcpu->arch.l1_tsc_offset;
- 			adjust_tsc_offset_guest(vcpu, adj);
-@@ -11959,7 +11966,7 @@ void kvm_arch_vcpu_postcreate(struct kvm_vcpu *vcpu)
- 	if (mutex_lock_killable(&vcpu->mutex))
- 		return;
- 	vcpu_load(vcpu);
--	kvm_synchronize_tsc(vcpu, 0);
-+	kvm_synchronize_tsc(vcpu, NULL);
- 	vcpu_put(vcpu);
- 
- 	/* poll control enabled by default */
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131500.J19z0Dil-lkp@intel.com/
 
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/task_iter.c:810:17: warning: no previous prototype for 'bpf_iter_css_task_new' [-Wmissing-prototypes]
+     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:835:33: warning: no previous prototype for 'bpf_iter_css_task_next' [-Wmissing-prototypes]
+     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
+         |                                 ^~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:844:18: warning: no previous prototype for 'bpf_iter_css_task_destroy' [-Wmissing-prototypes]
+     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:858:17: warning: no previous prototype for 'bpf_iter_process_new' [-Wmissing-prototypes]
+     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
+         |                 ^~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:870:33: warning: no previous prototype for 'bpf_iter_process_next' [-Wmissing-prototypes]
+     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
+         |                                 ^~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/task_iter.c:879:18: warning: no previous prototype for 'bpf_iter_process_destroy' [-Wmissing-prototypes]
+     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:888:17: warning: no previous prototype for 'bpf_iter_css_pre_new' [-Wmissing-prototypes]
+     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+         |                 ^~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:900:41: warning: no previous prototype for 'bpf_iter_css_pre_next' [-Wmissing-prototypes]
+     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
+         |                                         ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:908:18: warning: no previous prototype for 'bpf_iter_css_pre_destroy' [-Wmissing-prototypes]
+     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:912:17: warning: no previous prototype for 'bpf_iter_css_post_new' [-Wmissing-prototypes]
+     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
+         |                 ^~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:924:41: warning: no previous prototype for 'bpf_iter_css_post_next' [-Wmissing-prototypes]
+     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
+         |                                         ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/bpf/task_iter.c:932:18: warning: no previous prototype for 'bpf_iter_css_post_destroy' [-Wmissing-prototypes]
+     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/bpf_iter_css_pre_new +888 kernel/bpf/task_iter.c
+
+   887	
+ > 888	__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
+   889			struct cgroup_subsys_state *root)
+   890	{
+   891		struct bpf_iter_css_kern *kit = (void *)it;
+   892	
+   893		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
+   894		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_pre));
+   895		kit->root = root;
+   896		kit->pos = NULL;
+   897		return 0;
+   898	}
+   899	
+ > 900	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
+   901	{
+   902		struct bpf_iter_css_kern *kit = (void *)it;
+   903	
+   904		kit->pos = css_next_descendant_pre(kit->pos, kit->root);
+   905		return kit->pos;
+   906	}
+   907	
+ > 908	__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
+   909	{
+   910	}
+   911	
+ > 912	__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
+   913			struct cgroup_subsys_state *root)
+   914	{
+   915		struct bpf_iter_css_kern *kit = (void *)it;
+   916	
+   917		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
+   918		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_post));
+   919		kit->root = root;
+   920		kit->pos = NULL;
+   921		return 0;
+   922	}
+   923	
+ > 924	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
+   925	{
+   926		struct bpf_iter_css_kern *kit = (void *)it;
+   927	
+   928		kit->pos = css_next_descendant_post(kit->pos, kit->root);
+   929		return kit->pos;
+   930	}
+   931	
+ > 932	__bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
+   933	{
+   934	}
+   935	
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
