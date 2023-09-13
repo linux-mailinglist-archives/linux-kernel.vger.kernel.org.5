@@ -2,73 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3833379EE1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7679EE1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbjIMQPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S229983AbjIMQQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjIMQPD (ORCPT
+        with ESMTP id S230231AbjIMQQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:15:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F253B3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:14:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/UvxbVpr/bNuH2u+xtjCtQukacB0w3B75uyMebXh8Xc=; b=t4P5Kpqv+8ksntvRZSB3nYDa0v
-        WG63pskzTdKCNzhk1yvz88h8C0/7sMFTs4vqPOs6rrPak2Tp9Gh3rTRIUQoKuePe+0Wz0e3eY3aaV
-        Tmm578NTKAT9yQOOb0hHRIgfdi5Bf/IxsJNKHc7uX6zjv38hLaYb0fa6G2OoNOaN0uEpzlVm9HeCI
-        jMMl+RqiIp4//WbLd49IzjSW3fUZxsFmkDMcCX7FEKcKA/KbiOhkDgUurALaUDu97yR9vPc2EoGTh
-        MM8cXqzEXlx0i/+IqR7rL/liG69nadgVrPZANsjNBas/zOkQDnrr6L3m3B3oazzGu5TnyiqFfgagr
-        8Lx9GUoA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgSVp-00Er3t-1z; Wed, 13 Sep 2023 16:14:45 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B4D6B300348; Wed, 13 Sep 2023 18:14:44 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 18:14:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 10/11] x86/alternatives: Simplify ALTERNATIVE_n()
-Message-ID: <20230913161444.GJ692@noisy.programming.kicks-ass.net>
-References: <20230907150632.GAZPnm+Ly+Vyt8VPYr@fat_crate.local>
- <20230907153036.GBZPnsnNreLCyGpJFn@fat_crate.local>
- <20230909075009.GAZPwjsYZ4sSALN/5+@fat_crate.local>
- <20230909092554.GC2771@noisy.programming.kicks-ass.net>
- <20230910144227.GAZP3V0/mQ73C2hx/l@fat_crate.local>
- <20230912092709.GE35261@noisy.programming.kicks-ass.net>
- <20230912094441.GA13926@noisy.programming.kicks-ass.net>
- <20230913043738.GCZQE8kuw8p3WsnCXd@fat_crate.local>
- <20230913084658.GA692@noisy.programming.kicks-ass.net>
- <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913143847.GBZQHJd24PX0l0gLG+@fat_crate.local>
+        Wed, 13 Sep 2023 12:16:17 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B700FB3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:16:13 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58fc4291239so23247b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694621773; x=1695226573; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4JiE4DdxUMHfTS70Z4Y1GxX9A0Rg/BgOzVpxxMDofuU=;
+        b=d5lG24biiIxs2IX1D6Eb6aMsY6oZ5Ztz3fYvlSNYYKUXz+ljPtrdPKx1TCuu8Alu0z
+         /OrmlbfOQn2BailNLtXXvuuR5Hkc5+ydkv/wMJl35PktEUnlGuh8CGzMryhvKCrcQuJF
+         O1BUm3tN8b+KC4m1g0du+ZhfPQNaL/K93iAWKbWCJym1Pgmqx3GXwGQhPPb/sUyMJAKy
+         UQmTb4cIj65UZvLGrIKxmvfFlW+x8tU5tdJpxgl14y6piBP3kSHqq0cRcrG36RaJO8fK
+         AmpeqNIWU3XYOyB44D8bt5ioxJjPQtYSHpASnIh+WYXrKRo7b9qqK+K4lC8w/55V14+m
+         z1Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694621773; x=1695226573;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4JiE4DdxUMHfTS70Z4Y1GxX9A0Rg/BgOzVpxxMDofuU=;
+        b=jW66HclLaq76aQDyNvtUGDP21efetpQ0cg3fJ7Ufc6JsRaCpt8shwOASkwZpB2lre8
+         BjgT6fFfCaiOEp7zD27X5CREMIjTsRta2r1IXiGD+nxFxdtwyXZWqOwV3aNMEkYX3TaC
+         WuQ0AcEsyQpt4oZwbZhju5+T52in/R6FDKqXnC/O+67OYGSPgY0X/jlFQdTPdFZYWy+b
+         M3Gg1Uwni9XvfdueJGSA80s6S86OcJkjWBWqM8huZi1vbgW3O9/wdKcw0d5oiPpuIHsi
+         TZeZP4NWAzAkJhjKkpqm1t1woNhgZsdVLCJ0nSN4xi885Kgr600/i7u7PEkzW5rY3ocX
+         ba4w==
+X-Gm-Message-State: AOJu0YwchSOV0Rq59RnAMjX2unvAoa+odHgTA7cqKgP0VCQjj0XUAzQg
+        ojNpbFzx/BDmmLMZO0CQvmcMRGw5Rl4=
+X-Google-Smtp-Source: AGHT+IHPHKf4QXfFQhCv9rVUa7JrPB8sTnwxipNESGJoGValFttp6Gj7lD6PQrORyTMLg/nP1eKBYhCE38I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b71e:0:b0:583:4f82:b9d9 with SMTP id
+ v30-20020a81b71e000000b005834f82b9d9mr84623ywh.5.1694621772950; Wed, 13 Sep
+ 2023 09:16:12 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 09:16:11 -0700
+In-Reply-To: <56cd2f6f42351f2f27a07e5764bab7f689cc0059.1694599703.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1694599703.git.isaku.yamahata@intel.com> <56cd2f6f42351f2f27a07e5764bab7f689cc0059.1694599703.git.isaku.yamahata@intel.com>
+Message-ID: <ZQHgS13+QBChjYNw@google.com>
+Subject: Re: [RFC PATCH 1/6] KVM: guest_memfd: Add config to show the
+ capability to handle error page
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 04:38:47PM +0200, Borislav Petkov wrote:
-> On Wed, Sep 13, 2023 at 10:46:58AM +0200, Peter Zijlstra wrote:
-> > We've gone over this multiple times already, also see commit
-> > 6c480f222128. That made sure the kernel side adhered to this scheme by
-> > making the tail a single instruction irrespective of the length.
+On Wed, Sep 13, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 > 
-> Yes, sorry about that. I've been putting off digging deep into objtool
-> internals for a while now and there are no more excuses so lemme finally
-> read that whole thing and what it does in detail. And thanks for
-> explaining again. :-\
+> Add config, HAVE_GENERIC_PRIVATE_MEM_HANDLE_ERROR, to indicate kvm arch
+> can handle gmem error page.
+> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>  virt/kvm/Kconfig     | 3 +++
+>  virt/kvm/guest_mem.c | 3 +++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+> index 1a48cb530092..624df45baff0 100644
+> --- a/virt/kvm/Kconfig
+> +++ b/virt/kvm/Kconfig
+> @@ -112,3 +112,6 @@ config KVM_GENERIC_PRIVATE_MEM
+>         select KVM_GENERIC_MEMORY_ATTRIBUTES
+>         select KVM_PRIVATE_MEM
+>         bool
+> +
+> +config HAVE_GENERIC_PRIVATE_MEM_HANDLE_ERROR
+> +	bool
+> diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+> index 85903c32163f..35d8f03e7937 100644
+> --- a/virt/kvm/guest_mem.c
+> +++ b/virt/kvm/guest_mem.c
+> @@ -307,6 +307,9 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+>  	pgoff_t start, end;
+>  	gfn_t gfn;
+>  
+> +	if (!IS_ENABLED(CONFIG_HAVE_GENERIC_PRIVATE_MEM_HANDLE_ERROR))
+> +		return MF_IGNORED;
 
-No worries, I always seem to forget a detail or two myself :-)
-
-> As to the patch at hand, how does the below look like?
-
-Brain is fried, I'll give it a look tomorrow.
+I don't see the point, KVM can and should always zap SPTEs, i.e. can force the
+geust to re-fault on the affected memory.  At that point kvm_gmem_get_pfn() will
+return -EHWPOISON and architectures that don't support graceful recovery can
+simply terminate the VM.
