@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B680579F107
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CF479F109
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjIMSUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
+        id S231825AbjIMSUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjIMSUl (ORCPT
+        with ESMTP id S229552AbjIMSUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:20:41 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C28419BF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:37 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bf924f39f1so1488521fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:36 -0700 (PDT)
+        Wed, 13 Sep 2023 14:20:52 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A21F1BC6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:48 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso68982a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694629233; x=1695234033; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694629245; x=1695234045; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+VOQaOs8o5B9GH/mmvpD1aOyQRsVO5OINT7Nf+9h0Zg=;
-        b=aYv6Z5EEyCsF/MeaO8m0aGUzuIU/GAs6RNpvVDoHF2Gu/3PM+3Qqjsao6P0mHtFAFD
-         RO9ic2hciivZfez6BUOYb6QUndRwe5X9VJrxeIsAoRQ3LS1uZ5WKFqhBunjtDiN+/iN7
-         idW+4VD8ZH/eA5mslf+nt2ywJC1hqKNIQVv4w=
+        bh=wB9rIbKtdC8vvE0Z9iK8mxaspRNseaVhibM5IMYjY18=;
+        b=h1NRyJRynTMchvi16Y2qIDINC5tmSgi0Vew7VXt7U7/ZLYRHzahACFf9iM6aIZyJv5
+         V8yyZZtFI/vuXxq4g8IfC+Rjpp+OajQjt3uHOvz0jB6Uct2Pnd1xuyS4GGH+2kmsnNp/
+         RJ2na2akmEK78sSTez6huS/ujLUD6iHmwxRb0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694629233; x=1695234033;
+        d=1e100.net; s=20230601; t=1694629245; x=1695234045;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+VOQaOs8o5B9GH/mmvpD1aOyQRsVO5OINT7Nf+9h0Zg=;
-        b=TFj273rFLedzmh7xV/ladWVIlLkuHajQlnKFKUozIyt+IZ8aJ/eHCe1eyANRHpNjwU
-         AMYLznMdKhsiDeJocFuY/jQbt/iYPLtBjas4Z/vbSGHP1hd/DmDKvjkJwGzL9mrnEgVt
-         DMsEeMZ64x7isUm43AtB4LHu23BNWqOx8CmnZ1rTS8/JQ242gKnvrI24toX9GPFBOPSm
-         IeTyfd1BsZe92TbLfy/z5JHLy/vQp/QKEwbMBXQfVGf1aBp21CXCH6g+5Eay/gAPW6VU
-         IrBb+ciIyl/cPtWb2sw9ViUCOvrkUt9yxvMxz1hXVgthCaZ8La+2EYkeo7QyczZZ5Jj2
-         v63g==
-X-Gm-Message-State: AOJu0YxKjm6hewV+1ZJFYNCRY5Rs5zSDG2SxwNKdntD/9H9bLLEtu1cQ
-        VVkMxl2S8O+QFyHWnfEQMfSD4iMz6SYtLFBavIWO7vye
-X-Google-Smtp-Source: AGHT+IHxP8Tf6HYElCYVq4KbNSzazvpRXsQf0AQWJgSjb8ygIPCmJa0g6Wmi9OoBdC9Oyg2ODnG3GA==
-X-Received: by 2002:a2e:9556:0:b0:2b9:e304:5f82 with SMTP id t22-20020a2e9556000000b002b9e3045f82mr2881194ljh.13.1694629233159;
-        Wed, 13 Sep 2023 11:20:33 -0700 (PDT)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id v14-20020a17090690ce00b0099c53c44083sm8766700ejw.79.2023.09.13.11.20.32
+        bh=wB9rIbKtdC8vvE0Z9iK8mxaspRNseaVhibM5IMYjY18=;
+        b=N9QvbUOP9qxw+wXouOxz6VVnsJ0LErPQbtDQXaW4/LTTdHO14SYmMIUB4c1ZtEKw3P
+         Ou2eB8g1dPc/CMPuCRBA7GRhqLGLCogQzoSE53DOQbsyokuYKRqEvIyXjT4xiz7VJ8ZA
+         TLqPiASF2xoEBqtc73mMqyzC11k4fMbOJYL13dB7xEB7Q5WX8bcMsrVwjEWflkOeNgEs
+         mkC+Beazon6iMEZzxApd8Lo96Bnbv3RMxWs4fAZbhTTxmv3do1jdqq6D7KMSe3MKJ0cE
+         EoZRexQgkQFGeM8OCfMxHLb+rlRblYfGzxzGKb++oWZXVjC4mZ7L8oowow5VFS2gnXRZ
+         RfXg==
+X-Gm-Message-State: AOJu0Yy00mSbO/101rhP3XhtwXDONx+bhqOX9qegFMMPmfwsVEkVQFMV
+        4qkMAqpUrNXx5Q7yhciPTM1lrWkO5+lOBAhTHGI/LHH1
+X-Google-Smtp-Source: AGHT+IHDuXEu9istndsd5KXwxjXxC0FTcHlx//gHVCWvUTbT4DhTnla1x7u3qpXQeDd3WFf7vS4pTA==
+X-Received: by 2002:aa7:cd46:0:b0:52c:9ce1:f117 with SMTP id v6-20020aa7cd46000000b0052c9ce1f117mr2369347edw.40.1694629245683;
+        Wed, 13 Sep 2023 11:20:45 -0700 (PDT)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id m14-20020aa7d34e000000b0052a1a623267sm7627902edr.62.2023.09.13.11.20.45
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 11:20:32 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso10325e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:32 -0700 (PDT)
-X-Received: by 2002:a05:600c:3581:b0:3fe:eb42:7ec with SMTP id
- p1-20020a05600c358100b003feeb4207ecmr162996wmq.1.1694629231997; Wed, 13 Sep
- 2023 11:20:31 -0700 (PDT)
+        Wed, 13 Sep 2023 11:20:45 -0700 (PDT)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso9345e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:45 -0700 (PDT)
+X-Received: by 2002:a7b:c3c8:0:b0:400:fffe:edf6 with SMTP id
+ t8-20020a7bc3c8000000b00400fffeedf6mr157674wmj.1.1694629244702; Wed, 13 Sep
+ 2023 11:20:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230804210644.1862287-1-dianders@chromium.org> <20230804140605.RFC.1.Ia54954fd2f7645c1b86597494902973f57feeb71@changeid>
-In-Reply-To: <20230804140605.RFC.1.Ia54954fd2f7645c1b86597494902973f57feeb71@changeid>
+References: <20230804210644.1862287-1-dianders@chromium.org> <20230804140605.RFC.2.Iabafd062e70f6b6b554cf23eeb75f57a80f7e985@changeid>
+In-Reply-To: <20230804140605.RFC.2.Iabafd062e70f6b6b554cf23eeb75f57a80f7e985@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Sep 2023 11:20:19 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Vy0EALn6rEdYeSUNYBj=h3UOB+NrPfhtfgNSSQqU988A@mail.gmail.com>
-Message-ID: <CAD=FV=Vy0EALn6rEdYeSUNYBj=h3UOB+NrPfhtfgNSSQqU988A@mail.gmail.com>
-Subject: Re: [RFC PATCH 01/10] drm/panel: Don't store+check prepared/enabled
- for simple cases
+Date:   Wed, 13 Sep 2023 11:20:31 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UCMsgAgdiRiL5_a7BWsj+unGZzuJrxr+OdyNfXtzsWiw@mail.gmail.com>
+Message-ID: <CAD=FV=UCMsgAgdiRiL5_a7BWsj+unGZzuJrxr+OdyNfXtzsWiw@mail.gmail.com>
+Subject: Re: [RFC PATCH 02/10] drm/panel: s6e63m0: Don't store+check prepared/enabled
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
 Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@gmail.com>,
-        Jianhua Lu <lujianhua000@gmail.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -87,33 +85,17 @@ org> wrote:
 > double-check before, that double-check is now in the core and not
 > needed in individual drivers.
 >
-> This pile of panel drivers appears to be simple to handle. Based on
-> code inspection they seemed to be using the prepared/enabled state
-> simply for double-checking that nothing else in the kernel called them
-> inconsistently. Now that the core drm_panel is doing the double
-> checking (and warning) it should be very clear that these devices
-> don't need their own double-check.
+> For the s6e63m0 panel driver, this actually fixes a subtle/minor error
+> handling bug in s6e63m0_prepare(). In one error case s6e63m0_prepare()
+> called s6e63m0_unprepare() directly if there was an error. This call
+> to s6e63m0_unprepare() would have been a no-op since ctx->prepared
+> wasn't set yet.
 >
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
 >
->  .../drm/panel/panel-asus-z00t-tm5p5-n35596.c  |  9 -----
->  .../gpu/drm/panel/panel-boe-bf060y8m-aj0.c    |  9 -----
->  drivers/gpu/drm/panel/panel-jdi-fhd-r63452.c  |  9 -----
->  drivers/gpu/drm/panel/panel-novatek-nt35950.c |  9 -----
->  drivers/gpu/drm/panel/panel-novatek-nt36523.c | 12 ------
->  drivers/gpu/drm/panel/panel-raydium-rm68200.c | 38 -------------------
->  .../panel/panel-samsung-s6e88a0-ams452ef01.c  | 10 -----
->  drivers/gpu/drm/panel/panel-samsung-sofef00.c |  9 -----
->  .../gpu/drm/panel/panel-sharp-ls060t1sx01.c   | 10 -----
->  drivers/gpu/drm/panel/panel-sony-td4353-jdi.c |  9 -----
->  .../panel/panel-sony-tulip-truly-nt35521.c    | 18 ---------
->  .../drm/panel/panel-startek-kd070fhfid015.c   | 11 ------
->  drivers/gpu/drm/panel/panel-truly-nt35597.c   | 20 ----------
->  drivers/gpu/drm/panel/panel-visionox-r66451.c | 16 --------
->  .../gpu/drm/panel/panel-visionox-rm69299.c    |  8 ----
->  .../gpu/drm/panel/panel-visionox-vtdr6130.c   |  9 -----
->  16 files changed, 206 deletions(-)
+>  drivers/gpu/drm/panel/panel-samsung-s6e63m0.c | 25 -------------------
+>  1 file changed, 25 deletions(-)
 
 In response to the cover letter [1], I proposed landing patches #1-#3
 directly from here while we resolve the issues talked about in
@@ -121,7 +103,7 @@ response to patch #4 [2]. I didn't hear any complaints, so I took
 Linus W's review tag from the cover letter and pushed this to
 drm-misc-next.
 
-f8c37b88092e drm/panel: Don't store+check prepared/enabled for simple cases
+d43f0fe153dc drm/panel: s6e63m0: Don't store+check prepared/enabled
 
 [1] https://lore.kernel.org/r/CAD=3DFV=3DUFuUsrrZmkL8_RL5WLvkJryDwRSAy_PWTa=
 -hX_p0dF+Q@mail.gmail.com
