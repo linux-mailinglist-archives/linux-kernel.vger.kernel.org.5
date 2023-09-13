@@ -2,449 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C6279F34A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F418279F358
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbjIMUwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S232530AbjIMU6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbjIMUwL (ORCPT
+        with ESMTP id S230413AbjIMU6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:52:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B8B1998;
-        Wed, 13 Sep 2023 13:52:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6F74C433C8;
-        Wed, 13 Sep 2023 20:51:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694638326;
-        bh=0Ve/DUghFGp+XcMhWN+O1z3yiMVn2W/ga0YXkyPCU2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UVd/q2LpdOfG2KEdwqj1EjFIHe5fRJLc8x67U/67tdybl51lJhkDK73rR/9N8kBFk
-         caaWRHab/8d1/NBMPdSgY5i/pVTJ21BRlxeJMwdpUxg3RzVA7pgaYWs1eSM9Yl/ma7
-         FOLBWrGcKqNCOuo7aUmZqbRRu+FwmF+3rnf4qc0z4BPxSwvoPfERLkfZVeZHwJjw+y
-         kYkK5OGukVJaog16ticRR83z7YDys3keGjujNguubmHWXOqyxF21hn5PRrjrHYH5G2
-         6+I8NihRUYRP8yKuApChFq2UfLnP55AMccQUw//DIXzCoHNQGOcZAWTAI2ZRtn3nQq
-         945+JJrL/aHhw==
-Date:   Wed, 13 Sep 2023 23:51:25 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Sourav Panda <souravpanda@google.com>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-        akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, david@redhat.com, rdunlap@infradead.org,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        pasha.tatashin@soleen.com, yosryahmed@google.com,
-        hannes@cmpxchg.org, shakeelb@google.com,
-        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
-        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@Oracle.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 1/1] mm: report per-page metadata information
-Message-ID: <20230913205125.GA3303@kernel.org>
-References: <20230913173000.4016218-1-souravpanda@google.com>
- <20230913173000.4016218-2-souravpanda@google.com>
+        Wed, 13 Sep 2023 16:58:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BE91999;
+        Wed, 13 Sep 2023 13:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694638699; x=1726174699;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=T3XP6jsOiiK0ZYQcqHEJeUjQU5UAf2j404hnKyMuUdU=;
+  b=NQ6g7sDlCetM5UfH/yewb6mByXSDrOpCs/cK7lz6UJeWBPeK2VniGVCk
+   BpC80CPOsFkZdsOEoGOVnV63DJwE8SsUyCsKah+SLsZwTIWH+qaB0YZHv
+   npxjcn4FE0pb6hT/A2oRGKniLJuAqobBBXjk9cGQxISWSsXr0szvKqIeW
+   5fSWgnWMr/aVaUF4VnSXNqv5dUqaCt0NXmqZgwI4Bl5qd7DHNULXAYhg8
+   V4/ih23KHkYoc3ApZYdH8LEyoZ3B8QRNuGE4u+W9GQqUMbbt6beDUVvL3
+   YJ55teFYToF2n+AfIkX2AQ6DIgiOtWD40XoP6dKFQFY+BmM4qfIuI/Bj9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="445217891"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="445217891"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 13:58:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="814406235"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="814406235"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Sep 2023 13:58:18 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 13 Sep 2023 13:58:17 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Wed, 13 Sep 2023 13:58:17 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Wed, 13 Sep 2023 13:58:17 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.109)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Wed, 13 Sep 2023 13:58:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V5MBuDagegBBORNlXmLKQl4qHKV6dA7RvUa0iEJAkLCmKIeQx4gWCI0lbfDKU/eoDJeSPWc9chnGY5WlDE878aipg6JC3vZdgDYhsFt4qNQD/g9ABlKBiRGZP79+zBZbNAo3XarjeIYcK1d+naj4Rus9P1pgoaDtmEIX/XCDD4XmNUPXbK85c8SwtGOsCzznNsN4K7ZN3oQjicByrTCuY2A+5seBoO8cYsaAtmFDZYeEMFiqr7miE+6H71fmkvMQGrzED5yVI7/WY9OkuWjEA7lIUofjJYDKYs2/e+efp050bmMUYcDfN6mO9Um/g+C9UsvnoT+S9dvaYM9OOj23VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yyR9XurXQxKJzDtmzPIQ9wEu9GOiDoimldF958c4k+M=;
+ b=VW9BddlOOT2AoZ7ulb7QMPvCzaqDt3Qr2+UOjosoFhzVMsKH1S4Myn8jZcysvvS/IwXsydnhLqpWzx/uzkWSxzeMGVufUl3PRBslJDq7XaxNA7Z/gsq9oWxx3NI9uEwd8xGWPAleH1b9B5A1DMwmUFrzFnivYfC8x2L2f4wB2BflBYMK7I5fgng5KACpmq8fZWevurqq1oKmicztxJOPGPCm3xYsj/xI5KjSHooMoiE2jB03VPJG7O+iePtJ88P/HNHbkthjs2plED5w/+GRLH77oTmGZ4cu2kO+TFFBLbA6e5w5w8o0VLUvQOXHaYgrS2g+BPNqMlrR1m2rJJX6MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by BL1PR11MB5350.namprd11.prod.outlook.com (2603:10b6:208:31c::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.38; Wed, 13 Sep
+ 2023 20:58:14 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::afd6:ce92:6244:7203]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::afd6:ce92:6244:7203%5]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
+ 20:58:14 +0000
+Message-ID: <d6cc3829-9b7d-6a0b-c734-c33f6a66959c@intel.com>
+Date:   Wed, 13 Sep 2023 13:58:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.0
+Subject: Re: [PATCH 1/5] selftests/resctrl: Extend signal handler coverage to
+ unmount on receiving signal
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?Q?Maciej_Wiecz=c3=b3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        <stable@vger.kernel.org>
+References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com>
+ <20230911111930.16088-2-ilpo.jarvinen@linux.intel.com>
+ <4176a620-4cec-5d57-42a3-a15c0fe3eb73@intel.com>
+ <aab4b1cc-6eb5-c324-e97e-c6699e2d165@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <aab4b1cc-6eb5-c324-e97e-c6699e2d165@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0258.namprd04.prod.outlook.com
+ (2603:10b6:303:88::23) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913173000.4016218-2-souravpanda@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|BL1PR11MB5350:EE_
+X-MS-Office365-Filtering-Correlation-Id: 57be3e02-4d61-4daf-ac31-08dbb49c2575
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zTfMaqTEmbANDbkZBvqEOV8Aw99oYgcvAhJyzCPEFQHrDZWpy76qGhsQLW+KHZvVxxpfcXpx5leO9Ug/VSswZaRF5ZL/JHMqjI8R80P+uuMS44cnDq1/xzrzq13EmeH6DabY35i2YXC5UBpGWc/KH//CTNXc52plVV9CX0C15F+tpGiNe/0Fo3VnxyLAYNP5tEDolxTfc+t7Sx1QImfljwHmHZSs4ROPedETUl0636oj+FF2IxUXTe22l/You7uWx6JYHGK5fLe2ApJy7IR7LnqXyH1k7MaTJ1JTc7XFQKR6Y8ERpIq73N8kr9Lhj/YuDaPWw58fqlWpLwkd3b/Vkk95GGVL/S3Z3gEO6PkSE+KOaexK0d3sdvIATQWeaAHMcX5FLLl/InzWBGwDlfotSCejkB3raZxrVF49+nETzq3/RPgDF8jMsbQ8fvf+f5CMf9FteS0gKJ3RG3Rpy/lV8hIgJLFp8KkSjDMaNOOReQ6KyPP0i29xaoX6KYEDH3w5zvJTEoxXgf8uGdYsIhsv/fbI99VpVLUM4mXAz7gCncavT3Y/GC5pIzpwrFdC3/O6izg1wniq6oeEuqt3vBjBArZtJ0cPRe7kpV9RoXKzvokbglZr0DOOO68l5VFJ3mtMXnMZ8IexuusRd+HwNnt6eA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(376002)(39860400002)(451199024)(1800799009)(186009)(31696002)(8676002)(86362001)(8936002)(4326008)(5660300002)(44832011)(2906002)(36756003)(6666004)(38100700002)(83380400001)(82960400001)(53546011)(6506007)(6512007)(6486002)(26005)(478600001)(2616005)(66946007)(66556008)(66476007)(6916009)(54906003)(316002)(31686004)(41300700001)(66574015)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dE9uTmtVYjJQVURkcWhsWDNVUzBDMHNTK3p5cGhETDZvODVkd05pVGc1UHhH?=
+ =?utf-8?B?UUhibkdZUWtyRDQzTEp4TkxTT1BZdzVvM2Fwc1FON2V4TWxOU2krZXoycS9C?=
+ =?utf-8?B?dTNiamJFZWFzYk5aWGpmTC9UTm5lTDNUY3dZUDVqRFlja0V5eHlZckNTMzNJ?=
+ =?utf-8?B?M1NaNVVQRHQrNGhNM1RycU5zcUwzMGcyV0FUQnhwVnJaZElQM0Nla1FFY25V?=
+ =?utf-8?B?Q2xXQUk3QWE1SDRDMHVDM09icHFFakpvK2hSbDZQOVliQ3BvTnV0TFFWTUNS?=
+ =?utf-8?B?QmFoaU5MVHVSZ2FKQ0ZteVlyaklmMy9JYWw2SldCbFZsRTRmYWlTZmxhdTVF?=
+ =?utf-8?B?THRmY2RrMHVQVVlFMjVuSjRqbmg4dGZzMVN1V0RsY3MwM0h3RzB1djM2RFgw?=
+ =?utf-8?B?WmJzbmtuTW9XMXZUbU9ObjlIY3hZdTJvWHU5SlBPS1RLUjZNUFArcXlCb2gw?=
+ =?utf-8?B?R2p4OEtyMkhmd0UyS3hKM1hWa1IxRENmK2xoTkloOExOZUZoaTZ2YThPV2p5?=
+ =?utf-8?B?NHR2VllzQjdJZTlMaFdlR2h2QU8yemdLVTNsQVJQNVJsYnNmZUVGMEU3cDFz?=
+ =?utf-8?B?Z3J3YWNnNHY0Q0NQb2Y1MUdvTEV1WFA1YzZwdElXbFpDbVJFTWJLajZCemg1?=
+ =?utf-8?B?Y1p4QUU2bE1EV29OOC9BSHgwY0tGREZ6MUhpMXNNT1JFb2k4YVF4VENHVmtP?=
+ =?utf-8?B?R2ttdW1pNWx0YXEwdVpWWDlqUGEvU0JKalhrTnRsdHZyOXlXOEp4aVZXdnFq?=
+ =?utf-8?B?TmJaWDJia0UrV0ErT0o1aExJUzZ5NnJudVZCbVZ0bkNkaHpEZjNvY0VXL1FF?=
+ =?utf-8?B?T3ZHQnJBc0VHQVlrMSsrU0dxN3N5RjRILzR0bnMxYTc3RkV6eldiYUIxOTVz?=
+ =?utf-8?B?ZkxBUHFhMytnb0JIRytldk00THVKUzRYcjFNZmxZUnI1aGdFdkV5MlN3VkRm?=
+ =?utf-8?B?VE1IQXJkTjJucHVnY2ZBYjJ5U1lJSHlMMVZ5WkxJQUpqU0lpVEt2ZFNkeURJ?=
+ =?utf-8?B?dVRlTkZlL2tINEFKZk5KVE9GamZnZW8xdC9kOHpkTkVzNCtDRzhEakJUNlY3?=
+ =?utf-8?B?TXpPUGZ3c0RWZ0diK1ZyQmUxcC9WSHZWcUhhRDNxS1IzSVlOVVZyalJJOVRp?=
+ =?utf-8?B?WVh3L1cwM2pJUExVY0ZubWlsdnFrMWM3VDM0emRRQlZpd25uTVlac2tER2V0?=
+ =?utf-8?B?M2NaeVBkV1pPWHdFemNYOE9OZENMcFNraU9ybVZEUk5MQ2FSNXFNNm9XYkx4?=
+ =?utf-8?B?WHFHdWNVaVMxUmdMMnJpQTVuZjliOENuL0pseGJlekkyYitDL3BDR1BLZ3Ji?=
+ =?utf-8?B?ekVXZG81cW5Jdm9qR2drZTczYjVPNXREQVZKVy9KVk5KejJ4emoxYSt2NzVT?=
+ =?utf-8?B?dTQwdWg5enFjcjZOUHpHc0x4bEVwUEx3WnlkTUY5VVdOWjhoeXZHbnNHeTNa?=
+ =?utf-8?B?bzBSd2JlRjAzaTJZSEh2aDVVL3UrcncyY090RjJLdC9RaFJXdklQNERqUklo?=
+ =?utf-8?B?ZkpDakVqRy9xM0tpVk5VZksvU0xUTFl2UU1NelQySGN1bUVkbUtwRktrVlIy?=
+ =?utf-8?B?bXlRVDhIWmwwdU52Zy91Q3FERStEdVBPNlpGS1BxdEJtQ3Q3YStXVFVGSVFG?=
+ =?utf-8?B?N05HM0hTWU5TQmVaZ2t6TmpwUllQUjFVMnViM1l3cXNPVmZydndQZTl6Qndx?=
+ =?utf-8?B?N0tBcVhrQ0RTMXgxM1h2SkRIM1pxWE1SSEg0OUpFSDVyS2s3MUMxNjhiYnRU?=
+ =?utf-8?B?c2hCTWxEcWxsOWFrNUs1MjNpUGJkY01wS0RlVlh2ak9nbDQwMWZ0SnBjNE5x?=
+ =?utf-8?B?NWNyeWFTZ3ljdjcvMmlCbTRSaFVnRnFrUHJTNFhWMlBwMzd4V01keHpTSFNM?=
+ =?utf-8?B?Rm9FVkx6QU5IVDcyeCszRjJOcWw2WXo5MngrSnlnenc4bWRUQ3JaU2ZabGd5?=
+ =?utf-8?B?b3hSdkRRUlg4RGNPS3JaRjJNelhuZlBvTHJiNkhGNmZXdVFNbnJjd29CeUVX?=
+ =?utf-8?B?eTE2STJBcWh6aDM0UUljQkk3Ymwrc25IcWlOUmM3S0grUkRFY3FBRkNqc3hL?=
+ =?utf-8?B?aU5jY1M4VDY5Z05xUmR3SXdseXk3TU9aaGw3cFE2NnZ5YmJ2bDB4ajdRbXpq?=
+ =?utf-8?B?akRHQi9UWCtycWVFTk5KOThwSHBYR2FDemt5eVBvbXJVUVBZbU4vd21HUzFv?=
+ =?utf-8?B?NlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57be3e02-4d61-4daf-ac31-08dbb49c2575
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 20:58:14.1969
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NwhzmTKljE0ZbMYA9QM8iVk7XD/Pi3sDKJD0K/SNO+3FibvFBI2F874/pagf5ZRS6KX4rtyORWVZI+n9XAfzAtbNtlC5dMPheTPqJBtZndE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5350
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 10:30:00AM -0700, Sourav Panda wrote:
-> Adds a new per-node PageMetadata field to
-> /sys/devices/system/node/nodeN/meminfo
-> and a global PageMetadata field to /proc/meminfo. This information can
-> be used by users to see how much memory is being used by per-page
-> metadata, which can vary depending on build configuration, machine
-> architecture, and system use.
+Hi Ilpo,
+
+On 9/13/2023 3:01 AM, Ilpo Järvinen wrote:
+> On Tue, 12 Sep 2023, Reinette Chatre wrote:
+>> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
+>>> Unmounting resctrl FS has been moved into the per test functions in
+>>> resctrl_tests.c by commit caddc0fbe495 ("selftests/resctrl: Move
+>>> resctrl FS mount/umount to higher level"). In case a signal (SIGINT,
+>>> SIGTERM, or SIGHUP) is received, the running selftest is aborted by
+>>> ctrlc_handler() which then unmounts resctrl fs before exiting. The
+>>> current section between signal_handler_register() and
+>>> signal_handler_unregister(), however, does not cover the entire
+>>> duration when resctrl FS is mounted.
+>>>
+>>> Move signal_handler_register() and signal_handler_unregister() call
+>>> into the test functions in resctrl_tests.c to properly unmount resctrl
+>>> fs. Adjust child process kill() call in ctrlc_handler() to only be
+>>> invoked if the child was already forked.
+>>
+>> Thank you for catching this.
+>>
+>>>
+>>> Fixes: caddc0fbe495 ("selftests/resctrl: Move resctrl FS mount/umount to higher level")
+>>> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>>> Cc: <stable@vger.kernel.org>
+>>> ---
+>>>  tools/testing/selftests/resctrl/cat_test.c    |  8 -------
+>>>  .../testing/selftests/resctrl/resctrl_tests.c | 24 +++++++++++++++++++
+>>>  tools/testing/selftests/resctrl/resctrl_val.c | 22 ++++++++---------
+>>>  3 files changed, 34 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+>>> index 97b87285ab2a..224ba8544d8a 100644
+>>> --- a/tools/testing/selftests/resctrl/cat_test.c
+>>> +++ b/tools/testing/selftests/resctrl/cat_test.c
+>>> @@ -167,12 +167,6 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+>>>  		strcpy(param.filename, RESULT_FILE_NAME1);
+>>>  		param.num_of_runs = 0;
+>>>  		param.cpu_no = sibling_cpu_no;
+>>> -	} else {
+>>> -		ret = signal_handler_register();
+>>> -		if (ret) {
+>>> -			kill(bm_pid, SIGKILL);
+>>> -			goto out;
+>>> -		}
+>>>  	}
+>>>  
+>>>  	remove(param.filename);
+>>> @@ -209,10 +203,8 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+>>>  		}
+>>>  		close(pipefd[0]);
+>>>  		kill(bm_pid, SIGKILL);
+>>> -		signal_handler_unregister();
+>>>  	}
+>>>  
+>>> -out:
+>>>  	cat_test_cleanup();
+>>>  
+>>>  	return ret;
+>>> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+>>> index 823672a20a43..3d66fbdc2df3 100644
+>>> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+>>> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+>>> @@ -73,8 +73,13 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+>>>  
+>>>  	ksft_print_msg("Starting MBM BW change ...\n");
+>>>  
+>>> +	res = signal_handler_register();
+>>> +	if (res)
+>>> +		return;
+>>> +
+>>>  	res = mount_resctrlfs();
+>>>  	if (res) {
+>>> +		signal_handler_unregister();
+>>>  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+>>>  		return;
+>>>  	}
+>>> @@ -91,6 +96,7 @@ static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
+>>>  
+>>>  umount:
+>>>  	umount_resctrlfs();
+>>> +	signal_handler_unregister();
+>>>  }
+>>>  
+>>>  static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+>>> @@ -99,8 +105,13 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+>>>  
+>>>  	ksft_print_msg("Starting MBA Schemata change ...\n");
+>>>  
+>>> +	res = signal_handler_register();
+>>> +	if (res)
+>>> +		return;
+>>> +
+>>>  	res = mount_resctrlfs();
+>>>  	if (res) {
+>>> +		signal_handler_unregister();
+>>>  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
+>>>  		return;
+>>>  	}
+>>> @@ -115,6 +126,7 @@ static void run_mba_test(const char * const *benchmark_cmd, int cpu_no)
+>>>  
+>>>  umount:
+>>>  	umount_resctrlfs();
+>>> +	signal_handler_unregister();
+>>>  }
+>>>  
+>>
+>> This adds more duplicated code for every test. Have you considered a
+>> single test setup function that can be used to mount resctrl FS and setup
+>> the signal handler paired with a single test teardown function?
 > 
-> Per-page metadata is the amount of memory that Linux needs in order to
-> manage memory at the page granularity. The majority of such memory is
-> used by "struct page" and "page_ext" data structures.
-> 
-> This memory depends on build configurations, machine architectures, and
-> the way system is used:
-> 
-> Build configuration may include extra fields into "struct page",
-> and enable / disable "page_ext"
-> Machine architecture defines base page sizes. For example 4K x86,
-> 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
-> overhead is smaller on machines with larger page sizes.
-> System use can change per-page overhead by using vmemmap
-> optimizations with hugetlb pages, and emulated pmem devdax pages.
-> Also, boot parameters can determine whether page_ext is needed
-> to be allocated. This memory can be part of MemTotal or be outside
-> MemTotal depending on whether the memory was hot-plugged, booted with,
-> or hugetlb memory was returned back to the system.
-> 
-> Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> Signed-off-by: Sourav Panda <souravpanda@google.com>
-> ---
->  Documentation/filesystems/proc.rst |  3 +++
->  drivers/base/node.c                |  2 ++
->  fs/proc/meminfo.c                  |  7 +++++++
->  include/linux/mmzone.h             |  3 +++
->  include/linux/vmstat.h             |  4 ++++
->  mm/hugetlb.c                       |  8 +++++++-
->  mm/hugetlb_vmemmap.c               |  9 ++++++++-
->  mm/mm_init.c                       |  3 +++
->  mm/page_alloc.c                    |  1 +
->  mm/page_ext.c                      | 17 +++++++++++++----
->  mm/sparse-vmemmap.c                |  3 +++
->  mm/sparse.c                        |  7 ++++++-
->  mm/vmstat.c                        | 21 +++++++++++++++++++++
->  13 files changed, 81 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 2b59cff8be17..c121f2ef9432 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -987,6 +987,7 @@ Example output. You may not have all of these fields.
->      AnonPages:       4654780 kB
->      Mapped:           266244 kB
->      Shmem:              9976 kB
-> +    PageMetadata:     513419 kB
->      KReclaimable:     517708 kB
->      Slab:             660044 kB
->      SReclaimable:     517708 kB
-> @@ -1089,6 +1090,8 @@ Mapped
->                files which have been mmapped, such as libraries
->  Shmem
->                Total memory used by shared memory (shmem) and tmpfs
-> +PageMetadata
-> +              Memory used for per-page metadata
->  KReclaimable
->                Kernel allocations that the kernel will attempt to reclaim
->                under memory pressure. Includes SReclaimable (below), and other
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 493d533f8375..da728542265f 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -428,6 +428,7 @@ static ssize_t node_read_meminfo(struct device *dev,
->  			     "Node %d Mapped:         %8lu kB\n"
->  			     "Node %d AnonPages:      %8lu kB\n"
->  			     "Node %d Shmem:          %8lu kB\n"
-> +			     "Node %d PageMetadata:   %8lu kB\n"
->  			     "Node %d KernelStack:    %8lu kB\n"
->  #ifdef CONFIG_SHADOW_CALL_STACK
->  			     "Node %d ShadowCallStack:%8lu kB\n"
-> @@ -458,6 +459,7 @@ static ssize_t node_read_meminfo(struct device *dev,
->  			     nid, K(node_page_state(pgdat, NR_FILE_MAPPED)),
->  			     nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
->  			     nid, K(i.sharedram),
-> +			     nid, K(node_page_state(pgdat, NR_PAGE_METADATA)),
->  			     nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
->  #ifdef CONFIG_SHADOW_CALL_STACK
->  			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index 45af9a989d40..f141bb2a550d 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -39,7 +39,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  	long available;
->  	unsigned long pages[NR_LRU_LISTS];
->  	unsigned long sreclaimable, sunreclaim;
-> +	unsigned long nr_page_metadata;
->  	int lru;
-> +	int nid;
->  
->  	si_meminfo(&i);
->  	si_swapinfo(&i);
-> @@ -57,6 +59,10 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  	sreclaimable = global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
->  	sunreclaim = global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
->  
-> +	nr_page_metadata = 0;
-> +	for_each_online_node(nid)
-> +		nr_page_metadata += node_page_state(NODE_DATA(nid), NR_PAGE_METADATA);
-> +
->  	show_val_kb(m, "MemTotal:       ", i.totalram);
->  	show_val_kb(m, "MemFree:        ", i.freeram);
->  	show_val_kb(m, "MemAvailable:   ", available);
-> @@ -104,6 +110,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  	show_val_kb(m, "Mapped:         ",
->  		    global_node_page_state(NR_FILE_MAPPED));
->  	show_val_kb(m, "Shmem:          ", i.sharedram);
-> +	show_val_kb(m, "PageMetadata:   ", nr_page_metadata);
->  	show_val_kb(m, "KReclaimable:   ", sreclaimable +
->  		    global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
->  	show_val_kb(m, "Slab:           ", sreclaimable + sunreclaim);
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 4106fbc5b4b3..dda1ad522324 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -207,6 +207,9 @@ enum node_stat_item {
->  	PGPROMOTE_SUCCESS,	/* promote successfully */
->  	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
->  #endif
-> +	NR_PAGE_METADATA,	/* Page metadata size (struct page and page_ext)
-> +				 * in pages
-> +				 */
->  	NR_VM_NODE_STAT_ITEMS
->  };
->  
-> diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-> index fed855bae6d8..b5c292560f37 100644
-> --- a/include/linux/vmstat.h
-> +++ b/include/linux/vmstat.h
-> @@ -656,4 +656,8 @@ static inline void lruvec_stat_sub_folio(struct folio *folio,
->  {
->  	lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
->  }
-> +
-> +void __init mod_node_early_perpage_metadata(int nid, long delta);
-> +void __init writeout_early_perpage_metadata(void);
-> +
->  #endif /* _LINUX_VMSTAT_H */
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index ba6d39b71cb1..ca36751be50e 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1758,6 +1758,10 @@ static void __update_and_free_hugetlb_folio(struct hstate *h,
->  		destroy_compound_gigantic_folio(folio, huge_page_order(h));
->  		free_gigantic_folio(folio, huge_page_order(h));
->  	} else {
-> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> +		__mod_node_page_state(NODE_DATA(page_to_nid(&folio->page)),
-> +				      NR_PAGE_METADATA, -huge_page_order(h));
-
-I don't think memory map will change here with classic SPARSEMEM
-
-> +#endif
->  		__free_pages(&folio->page, huge_page_order(h));
->  	}
->  }
-> @@ -2143,7 +2147,9 @@ static struct folio *alloc_buddy_hugetlb_folio(struct hstate *h,
->  		__count_vm_event(HTLB_BUDDY_PGALLOC_FAIL);
->  		return NULL;
->  	}
-> -
-> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, huge_page_order(h));
-> +#endif
->  	__count_vm_event(HTLB_BUDDY_PGALLOC);
->  	return page_folio(page);
->  }
-> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> index 4b9734777f69..7f920bfa8e79 100644
-> --- a/mm/hugetlb_vmemmap.c
-> +++ b/mm/hugetlb_vmemmap.c
-> @@ -214,6 +214,8 @@ static inline void free_vmemmap_page(struct page *page)
->  		free_bootmem_page(page);
->  	else
->  		__free_page(page);
-> +	__mod_node_page_state(NODE_DATA(page_to_nid(page)),
-> +			      NR_PAGE_METADATA, -1);
->  }
->  
->  /* Free a list of the vmemmap pages */
-> @@ -336,6 +338,7 @@ static int vmemmap_remap_free(unsigned long start, unsigned long end,
->  			  (void *)walk.reuse_addr);
->  		list_add(&walk.reuse_page->lru, &vmemmap_pages);
->  	}
-> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, 1);
->  
->  	/*
->  	 * In order to make remapping routine most efficient for the huge pages,
-> @@ -387,8 +390,12 @@ static int alloc_vmemmap_page_list(unsigned long start, unsigned long end,
->  
->  	while (nr_pages--) {
->  		page = alloc_pages_node(nid, gfp_mask, 0);
-> -		if (!page)
-> +		if (!page) {
->  			goto out;
-> +		} else {
-> +			__mod_node_page_state(NODE_DATA(page_to_nid(page)),
-> +					      NR_PAGE_METADATA, 1);
-
-We can update this once for nr_pages outside the loop, cannot we?
-
-> +		}
->  		list_add_tail(&page->lru, list);
->  	}
->  
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 50f2f34745af..e02dce7e2e9a 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -26,6 +26,7 @@
->  #include <linux/pgtable.h>
->  #include <linux/swap.h>
->  #include <linux/cma.h>
-> +#include <linux/vmstat.h>
->  #include "internal.h"
->  #include "slab.h"
->  #include "shuffle.h"
-> @@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct pglist_data *pgdat)
->  			panic("Failed to allocate %ld bytes for node %d memory map\n",
->  			      size, pgdat->node_id);
->  		pgdat->node_mem_map = map + offset;
-> +		mod_node_early_perpage_metadata(pgdat->node_id,
-> +						PAGE_ALIGN(size) >> PAGE_SHIFT);
->  	}
->  	pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
->  				__func__, pgdat->node_id, (unsigned long)pgdat,
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 0c5be12f9336..4e295d5087f4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5443,6 +5443,7 @@ void __init setup_per_cpu_pageset(void)
->  	for_each_online_pgdat(pgdat)
->  		pgdat->per_cpu_nodestats =
->  			alloc_percpu(struct per_cpu_nodestat);
-> +	writeout_early_perpage_metadata();
-
-Why it's called here?
-You can copy early stats to actual node stats as soon as the nodes and page
-allocator are initialized.
-
->  }
->  
->  __meminit void zone_pcp_init(struct zone *zone)
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index 4548fcc66d74..b5b9d3079e20 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
->  		return -ENOMEM;
->  	NODE_DATA(nid)->node_page_ext = base;
->  	total_usage += table_size;
-> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> +			      PAGE_ALIGN(table_size) >> PAGE_SHIFT);
->  	return 0;
->  }
->  
-> @@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t size, int nid)
->  	void *addr = NULL;
->  
->  	addr = alloc_pages_exact_nid(nid, size, flags);
-> -	if (addr) {
-> +	if (addr)
->  		kmemleak_alloc(addr, size, 1, flags);
-> -		return addr;
-> -	}
-> +	else
-> +		addr = vzalloc_node(size, nid);
->  
-> -	addr = vzalloc_node(size, nid);
-> +	if (addr) {
-> +		__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> +				      PAGE_ALIGN(size) >> PAGE_SHIFT);
-> +	}
->  
->  	return addr;
->  }
-> @@ -314,6 +319,10 @@ static void free_page_ext(void *addr)
->  		BUG_ON(PageReserved(page));
->  		kmemleak_free(addr);
->  		free_pages_exact(addr, table_size);
-> +
-> +		__mod_node_page_state(NODE_DATA(page_to_nid(page)), NR_PAGE_METADATA,
-> +				      (long)-1 * (PAGE_ALIGN(table_size) >> PAGE_SHIFT));
-> +
-
-what happens with vmalloc()ed page_ext?
-
->  	}
->  }
->  
-> diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> index a2cbe44c48e1..e33f302db7c6 100644
-> --- a/mm/sparse-vmemmap.c
-> +++ b/mm/sparse-vmemmap.c
-> @@ -469,5 +469,8 @@ struct page * __meminit __populate_section_memmap(unsigned long pfn,
->  	if (r < 0)
->  		return NULL;
->  
-> +	__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> +			      PAGE_ALIGN(end - start) >> PAGE_SHIFT);
-> +
->  	return pfn_to_page(pfn);
->  }
-> diff --git a/mm/sparse.c b/mm/sparse.c
-> index 77d91e565045..db78233a85ef 100644
-> --- a/mm/sparse.c
-> +++ b/mm/sparse.c
-> @@ -14,7 +14,7 @@
->  #include <linux/swap.h>
->  #include <linux/swapops.h>
->  #include <linux/bootmem_info.h>
-> -
-> +#include <linux/vmstat.h>
->  #include "internal.h"
->  #include <asm/dma.h>
->  
-> @@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned long size, int nid)
->  	 */
->  	sparsemap_buf = memmap_alloc(size, section_map_size(), addr, nid, true);
->  	sparsemap_buf_end = sparsemap_buf + size;
-> +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> +	mod_node_early_perpage_metadata(nid, PAGE_ALIGN(size) >> PAGE_SHIFT);
-
-All early struct pages are allocated in memmap_alloc(). It'd make sense to update
-the counter there.
-
-> +#endif
->  }
->  
->  static void __init sparse_buffer_fini(void)
-> @@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned long pfn, unsigned long nr_pages,
->  	unsigned long start = (unsigned long) pfn_to_page(pfn);
->  	unsigned long end = start + nr_pages * sizeof(struct page);
->  
-> +	__mod_node_page_state(NODE_DATA(page_to_nid(pfn_to_page(pfn))), NR_PAGE_METADATA,
-> +			      (long)-1 * (PAGE_ALIGN(end - start) >> PAGE_SHIFT));
->  	vmemmap_free(start, end, altmap);
->  }
->  static void free_map_bootmem(struct page *memmap)
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 00e81e99c6ee..731eb5264b49 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1245,6 +1245,7 @@ const char * const vmstat_text[] = {
->  	"pgpromote_success",
->  	"pgpromote_candidate",
->  #endif
-> +	"nr_page_metadata",
->  
->  	/* enum writeback_stat_item counters */
->  	"nr_dirty_threshold",
-> @@ -2274,4 +2275,24 @@ static int __init extfrag_debug_init(void)
->  }
->  
->  module_init(extfrag_debug_init);
-> +
-> +// Page metadata size (struct page and page_ext) in pages
-> +unsigned long early_perpage_metadata[MAX_NUMNODES] __initdata;
-
-static?
-
-> +
-> +void __init mod_node_early_perpage_metadata(int nid, long delta)
-> +{
-> +	early_perpage_metadata[nid] += delta;
-> +}
-> +
-> +void __init writeout_early_perpage_metadata(void)
-> +{
-> +	int nid;
-> +	struct pglist_data *pgdat;
-> +
-> +	for_each_online_pgdat(pgdat) {
-> +		nid = pgdat->node_id;
-> +		__mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> +				      early_perpage_metadata[nid]);
-> +	}
-> +}
->  #endif
-> -- 
-> 2.42.0.283.g2d96d420d3-goog
+> Yes. Consolidating all these is among my not-yet submitted patches.
+> I just had to do a backport-friendly Fixes patch first for this.
 > 
 
--- 
-Sincerely yours,
-Mike.
+Could you please help me understand how the duplicate calls are more
+backport friendly?
+
+Reinette
