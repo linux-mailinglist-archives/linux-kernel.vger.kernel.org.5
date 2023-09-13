@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8FC79E4A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AE379E4A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239621AbjIMKQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S239643AbjIMKQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239536AbjIMKQX (ORCPT
+        with ESMTP id S239605AbjIMKQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:16:23 -0400
-Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B11119B0;
-        Wed, 13 Sep 2023 03:16:17 -0700 (PDT)
-Received: from mxct.zte.com.cn (unknown [192.168.251.13])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4RlxDq6Xn4z4xPGH;
-        Wed, 13 Sep 2023 18:16:11 +0800 (CST)
-Received: from mse-fl2.zte.com.cn (unknown [10.5.228.133])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mxct.zte.com.cn (FangMail) with ESMTPS id 4RlxDr1Ljdz4xVbt;
-        Wed, 13 Sep 2023 18:16:12 +0800 (CST)
-Received: from szxlzmapp04.zte.com.cn ([10.5.231.166])
-        by mse-fl2.zte.com.cn with SMTP id 38DAG1oD094580;
-        Wed, 13 Sep 2023 18:16:01 +0800 (+08)
-        (envelope-from cheng.lin130@zte.com.cn)
-Received: from mapi (szxlzmapp07[null])
-        by mapi (Zmail) with MAPI id mid14;
-        Wed, 13 Sep 2023 18:16:03 +0800 (CST)
-Date:   Wed, 13 Sep 2023 18:16:03 +0800 (CST)
-X-Zmail-TransId: 2b0965018be32b5-cea0c
-X-Mailer: Zmail v1.0
-Message-ID: <202309131816038673861@zte.com.cn>
-In-Reply-To: <ZQDlXPJJvp7wctbZ@dread.disaster.area>
-References: 202309111612569712762@zte.com.cn,ZQDlXPJJvp7wctbZ@dread.disaster.area
-Mime-Version: 1.0
-From:   <cheng.lin130@zte.com.cn>
-To:     <david@fromorbit.com>, <viro@zeniv.linux.org.uk>,
-        <brauner@kernel.org>
-Cc:     <djwong@kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jiang.yong5@zte.com.cn>,
-        <wang.liang82@zte.com.cn>, <liu.dong3@zte.com.cn>,
-        <linux-fsdevel@vger.kernel.org>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2Ml0geGZzOiBpbnRyb2R1Y2UgcHJvdGVjdGlvbiBmb3IgZHJvcCBubGluaw==?=
-Content-Type: text/plain;
-        charset="UTF-8"
-X-MAIL: mse-fl2.zte.com.cn 38DAG1oD094580
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 65018BEB.000/4RlxDq6Xn4z4xPGH
+        Wed, 13 Sep 2023 06:16:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E188A19B2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:16:39 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694600197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lsQkFEGOfI0iTMla2oxJpk+1VZ0aBz8IS1SfHikhG0E=;
+        b=4L5tv09nLX3TJ+ucf5Vl8nfFx/rchv6fs+fjF1lAuHkOo3sohpiw/pRxnvo3Ryvqmm7yHy
+        NEwMxI8yU8lr6C/XcBju/cxzFHyEecK6G4E3YiDccsk3dVWT9DyTKznqy+nGCZeDcu+AX3
+        itfu9KbPHEkweSxV1wNqIFHoThOINyIl4LNfVZNT97Lrm1pJHE1zIG7o/Ho4ogRoPG6P/U
+        AJT6HODJeUqz5nmueIA/cSu+SoT51W1P3hRaSLbIybjdT9IraDNUrIRJV4WB8YiNb6Uu4c
+        BKA2n5G78NzXR07crYDb1ev0CbXMPR1UuIArTVQgUI4oWI4gyVrTHMveCkV7qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694600197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lsQkFEGOfI0iTMla2oxJpk+1VZ0aBz8IS1SfHikhG0E=;
+        b=8h3cVqiGAikaWSGmo0PhID5kItFlKCihsyQpwglmRlXZplOk86n/4rCwnhJbuDJ8H97VMf
+        5dpbqxEsnLHcqnDA==
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] workqueue: fix duplicate wq_update_pod_attrs_buf allocation
+Date:   Wed, 13 Sep 2023 12:22:34 +0206
+Message-Id: <20230913101634.553699-1-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Sep 11, 2023 at 04:12:56PM +0800, cheng.lin130@zte.com.cn wrote:
-> > From: Cheng Lin <cheng.lin130@zte.com.cn>
-> >
-> > When abnormal drop_nlink are detected on the inode,
-> > shutdown filesystem, to avoid corruption propagation.
-> >
-> > Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
-> > ---
-> >  fs/xfs/xfs_fsops.c | 3 +++
-> >  fs/xfs/xfs_inode.c | 9 +++++++++
-> >  fs/xfs/xfs_mount.h | 1 +
-> >  3 files changed, 13 insertions(+)
-> >
-> > diff --git a/fs/xfs/xfs_fsops.c b/fs/xfs/xfs_fsops.c
-> > index 7cb75cb6b..6fc1cfe83 100644
-> > --- a/fs/xfs/xfs_fsops.c
-> > +++ b/fs/xfs/xfs_fsops.c
-> > @@ -543,6 +543,9 @@ xfs_do_force_shutdown(
-> >      } else if (flags & SHUTDOWN_CORRUPT_ONDISK) {
-> >          tag = XFS_PTAG_SHUTDOWN_CORRUPT;
-> >          why = "Corruption of on-disk metadata";
-> > +    } else if (flags & SHUTDOWN_CORRRUPT_ABN) {
-> > +        tag = XFS_PTAG_SHUTDOWN_CORRUPT;
-> > +        why = "Corruption of Abnormal conditions";
-> We don't need a new shutdown tag. We can consider this in-memory
-> corruption because we detected it in memory before it went to disk
-> (SHUTDOWN_CORRUPT_INCORE) or even on-disk corruption because the
-> reference count on disk is likely wrong at this point......
-> >      } else if (flags & SHUTDOWN_DEVICE_REMOVED) {
-> >          tag = XFS_PTAG_SHUTDOWN_IOERROR;
-> >          why = "Block device removal";
-> > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> > index 9e62cc500..2d41f2461 100644
-> > --- a/fs/xfs/xfs_inode.c
-> > +++ b/fs/xfs/xfs_inode.c
-> > @@ -919,6 +919,15 @@ xfs_droplink(
-> >      xfs_trans_t *tp,
-> >      xfs_inode_t *ip)
-> >  {
-> > +
-> > +    if (VFS_I(ip)->i_nlink == 0) {
-> > +        xfs_alert(ip->i_mount,
-> > +              "%s: Deleting inode %llu with no links.",
-> > +              __func__, ip->i_ino);
-> > +        xfs_force_shutdown(ip->i_mount, SHUTDOWN_CORRRUPT_ABN);
-> > +        return -EFSCORRUPTED;
-> > +    }
-> > +
-> >      xfs_trans_ichgtime(tp, ip, XFS_ICHGTIME_CHG);
-> >
-> >      drop_nlink(VFS_I(ip));
-> I'd kind of prefer that drop_nlink() be made to return an error on
-> underrun - if it's important enough to drop a warning in the log and
-> potentially panic the kernel, it's important enough to tell the
-> filesystem an underrun has occurred.  But that opens a whole new can
-> of worms, so I think this will be fine.
-In VFS, (drop\clear\set\inc)_nlink() all return void. 
-Is it appropriate, if let them return an error instead of WARN_ON?
-> Note that we don't actually need a call to shut the filesystem down.
-> Simply returning -EFSCORRUPTED will result in the filesystem being
-> shut down if the transaction is dirty when it gets cancelled due to
-> the droplink error.
-> Cheers,
-> Dave.
-> --
-> Dave Chinner
-> david@fromorbit.com
+One of the hunks for the patch resulting in
+commit 84193c07105c ("workqueue: Generalize unbound CPU pods") was
+applied incorrectly. This resulted in @wq_update_pod_attrs_buf
+being allocated twice.
+
+From the kmemleak detector:
+
+unreferenced object 0xc0000000040074c0 (size 64):
+  comm "swapper/0", pid 0, jiffies 4294937296 (age 1936.580s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000076b83a6e>] .kmalloc_trace+0x54/0x190
+    [<00000000898f2356>] .alloc_workqueue_attrs+0x2c/0x60
+    [<0000000063365e1f>] .workqueue_init_early+0xe4/0x4b8
+    [<00000000ca97ff39>] .start_kernel+0x8d0/0xba4
+    [<000000002ee12080>] start_here_common+0x1c/0x20
+
+Remove the redundant allocation.
+
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/workqueue.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c85825e17df8..43ab8399b72b 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -6524,9 +6524,6 @@ void __init workqueue_init_early(void)
+ 
+ 	pwq_cache = KMEM_CACHE(pool_workqueue, SLAB_PANIC);
+ 
+-	wq_update_pod_attrs_buf = alloc_workqueue_attrs();
+-	BUG_ON(!wq_update_pod_attrs_buf);
+-
+ 	/* initialize WQ_AFFN_SYSTEM pods */
+ 	pt->pod_cpus = kcalloc(1, sizeof(pt->pod_cpus[0]), GFP_KERNEL);
+ 	pt->pod_node = kcalloc(1, sizeof(pt->pod_node[0]), GFP_KERNEL);
+
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+-- 
+2.39.2
+
