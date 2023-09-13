@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A6079E4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B4079E4C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbjIMKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        id S239674AbjIMKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239536AbjIMKUY (ORCPT
+        with ESMTP id S239645AbjIMKVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:20:24 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 481BE1989;
-        Wed, 13 Sep 2023 03:20:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D4191FB;
-        Wed, 13 Sep 2023 03:20:57 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCA2C3F5A1;
-        Wed, 13 Sep 2023 03:20:16 -0700 (PDT)
-Message-ID: <c122cf68-6ceb-5441-960e-fc754b0dfdb0@arm.com>
-Date:   Wed, 13 Sep 2023 11:20:07 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 5/7] perf pmu: Move pmu__find_core_pmu() to pmus.c
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Chen Zhongjin <chenzhongjin@huawei.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230831151632.124985-1-james.clark@arm.com>
- <20230831151632.124985-6-james.clark@arm.com> <ZQC7da2AM9ih8RMz@kernel.org>
-Content-Language: en-US
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <ZQC7da2AM9ih8RMz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+        Wed, 13 Sep 2023 06:21:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39271989
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:21:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 95B2E218DF;
+        Wed, 13 Sep 2023 10:21:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1694600507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DMvt8YhFOsGC5oPhl5vhZwMZHMmUIcMLTPIDo6/nEvQ=;
+        b=sIlLC2RIyXHsQdQPFT1KdLuPEdOrDERzG0lb+LvHksG4sFUiXEt5d5Pxl6AJrmkwK0055w
+        0tYbkDybCnXi+UAMEcnZXxacglDQ+Vei2TH6p0MTCeRSBNRPqd18bOGfd7OAB5rpMsFZWy
+        hit464w7HkxqdQI19SfoJr1EchrLMo4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1694600507;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DMvt8YhFOsGC5oPhl5vhZwMZHMmUIcMLTPIDo6/nEvQ=;
+        b=clIClBwZbIvc/W0T4kJS8eaZGo6t8oQfjjZhdeWsFwKjHS4gJQKGkaugWDdt0j5WwDj0D4
+        5kQVkGIrdfqFr5Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 611C513440;
+        Wed, 13 Sep 2023 10:21:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T9nVFjuNAWUGYgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 13 Sep 2023 10:21:47 +0000
+Date:   Wed, 13 Sep 2023 12:21:46 +0200
+Message-ID: <87cyym4blx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc:     tiwai@suse.com, perex@perex.cz, arnd@arndb.de,
+        masahiroy@kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, maciej.szmigiero@oracle.com
+Subject: Re: [PATCH] ALSA: usb-audio: mixer: Remove temporary string use in parse_clock_source_unit
+In-Reply-To: <20230913093933.24564-1-peter.ujfalusi@linux.intel.com>
+References: <20230913093933.24564-1-peter.ujfalusi@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-7
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/09/2023 20:26, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Aug 31, 2023 at 04:16:16PM +0100, James Clark escreveu:
->> pmu__find_core_pmu() more logically belongs in pmus.c because it
->> iterates over all PMUs, so move it to pmus.c
->>
->> At the same time rename it to perf_pmus__find_core_pmu() to match the
->> naming convention in this file.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
+On Wed, 13 Sep 2023 11:39:33 +0200,
+Peter Ujfalusi wrote:
 > 
-> So, this one is hitting this:
+> The kctl->id.name can be directly passed to snd_usb_copy_string_desc() and
+> if the string has been fetched the suffix can be appended with the
+> append_ctl_name() call.
+> The temporary name string becomes redundant and can be removed.
 > 
->   CC      /tmp/build/perf-tools-next/util/expr.o
-> In file included from /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:7,
->                  from util/pmus.c:2:
-> In function ‘perf_pmus__scan_core’,
->     inlined from ‘perf_pmus__find_core_pmu’ at util/pmus.c:601:16:
-> /var/home/acme/git/perf-tools-next/tools/include/linux/kernel.h:36:45: error: array subscript 0 is outside array bounds of ‘struct list_head[1]’ [-Werror=array-bounds]
->    36 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
->       |                                             ^~~~~~
-> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:352:9: note: in expansion of macro ‘container_of’
->   352 |         container_of(ptr, type, member)
->       |         ^~~~~~~~~~~~
-> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:404:9: note: in expansion of macro ‘list_entry’
->   404 |         list_entry((pos)->member.next, typeof(*(pos)), member)
->       |         ^~~~~~~~~~
-> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:494:20: note: in expansion of macro ‘list_next_entry’
->   494 |         for (pos = list_next_entry(pos, member);                        \
->       |                    ^~~~~~~~~~~~~~~
-> util/pmus.c:274:9: note: in expansion of macro ‘list_for_each_entry_continue’
->   274 |         list_for_each_entry_continue(pmu, &core_pmus, list)
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> util/pmus.c: In function ‘perf_pmus__find_core_pmu’:
-> util/pmus.c:35:18: note: at offset -128 into object ‘core_pmus’ of size 16
->    35 | static LIST_HEAD(core_pmus);
->       |                  ^~~~~~~~~
-> /var/home/acme/git/perf-tools-next/tools/include/linux/list.h:23:26: note: in definition of macro ‘LIST_HEAD’
->    23 |         struct list_head name = LIST_HEAD_INIT(name)
->       |                          ^~~~
+> This change will also fixes the following compiler warning/error (W=1):
+> 
+> sound/usb/mixer.c: In function �parse_audio_unit�:
+> sound/usb/mixer.c:1972:29: error: � Validity� directive output may be truncated writing 9 bytes into a region of size between 1 and 44 [-Werror=format-truncation=]
+>  1972 |                          "%s Validity", name);
+>       |                             ^~~~~~~~~
+> In function �parse_clock_source_unit�,
+>     inlined from �parse_audio_unit� at sound/usb/mixer.c:2892:10:
+> sound/usb/mixer.c:1971:17: note: �snprintf� output between 10 and 53 bytes into a destination of size 44
+>  1971 |                 snprintf(kctl->id.name, sizeof(kctl->id.name),
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>  1972 |                          "%s Validity", name);
+>       |                          ~~~~~~~~~~~~~~~~~~~~
 > cc1: all warnings being treated as errors
-> make[4]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:97: /tmp/build/perf-tools-next/util/pmus.o] Error 1
-> make[4]: *** Waiting for unfinished jobs....
->   LD      /tmp/build/perf-tools-next/ui/browsers/perf-in.o
 > 
+> The warnings got brought to light by a recent patch upstream:
+> commit 6d4ab2e97dcf ("extrawarn: enable format and stringop overflow warnings in W=1")
 > 
-> So I applied up to 4/7
-> 
-> Please continue from what will be in tmp.perf-tools-next in some
-> jiffies.
-> 
-> - Arnaldo
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-I wasn't able to reproduce this on x86 or Arm, with either Clang or GCC.
+Thanks, applied now.
 
-That was with this patch applied onto 999b81b907e on tmp.perf-tools-next
-and a pretty normal "make WERROR=1" command.
 
-It seems like the 0 here is just to get the type rather than access
-anything, if that's the 0 that the "array subscript 0" error is about,
-so something seems a bit strange:
-
-> /var/home/acme/git/perf-tools-next/tools/include/linux/kernel.h:36:45:
-error: array subscript 0 is outside array bounds of ‘struct
-list_head[1]’ [-Werror=array-bounds]
->    36 |         const typeof(((type *)0)->member) * __mptr = (ptr);     \
+Takashi
