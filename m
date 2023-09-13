@@ -2,126 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A5879E662
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EE679E65C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240085AbjIMLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S240225AbjIMLQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240111AbjIMLPt (ORCPT
+        with ESMTP id S239981AbjIMLPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:15:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075883C02
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694603674; x=1726139674;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CO7FuKGxFldgK75QHPqN9lKBJ3RZKKyTcKvNBywVB6U=;
-  b=Zzfyg8HDA5+7XrjlfzPdCaeoNAiNFwN64a1rRZoNgMgS/fTUWiup4Xej
-   pG1agdYmu1BK7k+qeseMh+IQ/rQR4159G58JI7wNj87MHJ0nPf3J1CKe0
-   2w5cd7AUN1zHWBfXFE2XU3mBpNjV3hJDpsfyuGZp/htnk6+OoBHE0dfP6
-   77bPiWQxWkXwRO9Svl2Oq1Booci/EDFCjxXqhknsjgXjRSI8qqVCBs2E1
-   WydN4w6wuE4RVE2ZJCrR76eZIFOgNZ6F3HU0o6j4zIE3EK7NTBR6qcb2s
-   iaTM2enBVgNy4YF5IcQ2dAWJx3FZVUXrucCwnwrUoystADNCTG/dvB10G
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363660576"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="363660576"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:14:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="917791463"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="917791463"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 04:14:31 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgNpD-0000R1-29;
-        Wed, 13 Sep 2023 11:14:28 +0000
-Date:   Wed, 13 Sep 2023 19:14:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        Wed, 13 Sep 2023 07:15:50 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07471BF1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:43 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31c5c06e8bbso6763420f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694603682; x=1695208482; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sz/2Xhp1w0ethYXV/2klfVqKt4JNZvE9WLZJG9+QLJc=;
+        b=P+0XnA/g98Z3gYNQKiqVC0TlvSorTFuTzV7Yqdl6Jmzlzuw3AYl45nLI9Prw2Bsdnd
+         PdFeeL1Pl+hNhRGpTf2pE+ctLyXWBKGnWrAPnVP3Curxt/N+F7Wdf/qenoyGHevsqa+k
+         b+ch+Z2ZGEz2EcdCM1MRopTS5wFcYZQ9udcUDy8IZRTKCWevWaowH2z7twQ49nFdv149
+         mcNeVaJ+qPbwZ2IAi8i7Twi418yHqh5PO6Y301SCBqb7Q5x+5mBLrPGW8ajw8EYr7rWj
+         yqFqNFlAUQ09IwIbm2aWNDx4TGGTiCnrtzmI8YE9hSVakMobN3u2g4wuqZIuRWZ4Axnb
+         pB1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694603682; x=1695208482;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sz/2Xhp1w0ethYXV/2klfVqKt4JNZvE9WLZJG9+QLJc=;
+        b=qlV1ToEqWX4L4LgkJ0XVraymoubRMA3HlhIkbarckNuJEpQa4MMAZ+5V83G+pU+IdV
+         LeM/CnTAk0NbBMIsYS9AiOZhtXSqBC16iu+bth+8wBbK4xhKI8lfjhwzexqPqMFhDUkM
+         UzVd6J73ew0UJHHrAi0STiTS31gq5CJM2NoJSP3oXudDpqfvWk7qQediwLzBJIikS95m
+         6Duz3QAhKoyWlf6pvIxJj5JQrjtNqaMxaR0MR2Kall6bqQp5K1OcX44lpdmEF6OJGOAV
+         3R9wr2GQOQe92/FnMSgPYd9AwdfSzK2bn0OuR4LT7fa5VfQa+Ug8TQpOdu/V01UMcSr2
+         5UJg==
+X-Gm-Message-State: AOJu0YydyVQ36cs+2MLT1qxwL52G53i6JTJaRi00MctUhajpt21JVNrB
+        FemGsBeZwL9fYgWoSeNddPt9OA==
+X-Google-Smtp-Source: AGHT+IFKzaCiQkryqApXLRa+CYcF3hfZn25Ngb2HWUfxb6L7XhhpPpyalv8q/7qHay4WnBD23TidEQ==
+X-Received: by 2002:a5d:6650:0:b0:315:a1bb:4d7b with SMTP id f16-20020a5d6650000000b00315a1bb4d7bmr1947207wrw.35.1694603682309;
+        Wed, 13 Sep 2023 04:14:42 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id h17-20020a056000001100b003197c2316ecsm15115280wrx.112.2023.09.13.04.14.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 04:14:42 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 14:14:39 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Johannes Zink <j.zink@pengutronix.de>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        patchwork-jzi@pengutronix.de, kernel@pengutronix.de,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 07/19] powerpc: Untangle fixmap.h and pgtable.h and
- mmu.h
-Message-ID: <202309131942.k7EzJho8-lkp@intel.com>
-References: <c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v4 3/3] drm/panel-simple: allow LVDS format override
+Message-ID: <e6a2df72-46cb-4f22-b983-ac5ad2995da8@kadam.mountain>
+References: <20230523-simplepanel_support_nondefault_datamapping-v4-0-e6e7011f34b5@pengutronix.de>
+ <20230523-simplepanel_support_nondefault_datamapping-v4-3-e6e7011f34b5@pengutronix.de>
+ <96898dbb-3fdf-7a74-ae80-f18ae2244f50@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <96898dbb-3fdf-7a74-ae80-f18ae2244f50@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On Fri, Aug 18, 2023 at 09:04:34AM +0200, Johannes Zink wrote:
+> Hi Dan,
+> 
+> do you have any input on this for me?
+> 
 
-kernel test robot noticed the following build errors:
+Sorry, I was out of office and the truth is that I'm never going to
+catch up on all the email I missed.  :/
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.6-rc1 next-20230913]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Looks okay to me.  I can't remember what I said about this code in v3
+but it looks good now.  I'm not a DRM dev so I'm not sure my review
+counts for much.  You should always just assume that if I'm quiet
+then I'm happy.  :)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Christophe-Leroy/powerpc-8xx-Fix-pte_access_permitted-for-PAGE_NONE/20230912-031616
-base:   linus/master
-patch link:    https://lore.kernel.org/r/c94717708db817a0a0a6349431a2701252686899.1694443576.git.christophe.leroy%40csgroup.eu
-patch subject: [PATCH v1 07/19] powerpc: Untangle fixmap.h and pgtable.h and mmu.h
-config: powerpc-randconfig-r013-20230912 (https://download.01.org/0day-ci/archive/20230913/202309131942.k7EzJho8-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131942.k7EzJho8-lkp@intel.com/reproduce)
+regards,
+dan carpenter
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131942.k7EzJho8-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/platforms/83xx/misc.c: In function 'mpc83xx_setup_arch':
->> arch/powerpc/platforms/83xx/misc.c:126:28: error: implicit declaration of function 'fix_to_virt'; did you mean 'bus_to_virt'? [-Werror=implicit-function-declaration]
-     126 |         unsigned long va = fix_to_virt(FIX_IMMR_BASE);
-         |                            ^~~~~~~~~~~
-         |                            bus_to_virt
->> arch/powerpc/platforms/83xx/misc.c:126:40: error: 'FIX_IMMR_BASE' undeclared (first use in this function)
-     126 |         unsigned long va = fix_to_virt(FIX_IMMR_BASE);
-         |                                        ^~~~~~~~~~~~~
-   arch/powerpc/platforms/83xx/misc.c:126:40: note: each undeclared identifier is reported only once for each function it appears in
-   cc1: all warnings being treated as errors
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for HOTPLUG_CPU
-   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
-   Selected by [y]:
-   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
-
-
-vim +/FIX_IMMR_BASE +126 arch/powerpc/platforms/83xx/misc.c
-
-fff69fd03d1290 Kevin Hao        2016-08-23  121  
-fff69fd03d1290 Kevin Hao        2016-08-23  122  void __init mpc83xx_setup_arch(void)
-fff69fd03d1290 Kevin Hao        2016-08-23  123  {
-6b7c095a51e1ba Christophe Leroy 2019-09-16  124  	phys_addr_t immrbase = get_immrbase();
-6b7c095a51e1ba Christophe Leroy 2019-09-16  125  	int immrsize = IS_ALIGNED(immrbase, SZ_2M) ? SZ_2M : SZ_1M;
-6b7c095a51e1ba Christophe Leroy 2019-09-16 @126  	unsigned long va = fix_to_virt(FIX_IMMR_BASE);
-6b7c095a51e1ba Christophe Leroy 2019-09-16  127  
-1ce844973bb516 Christophe Leroy 2022-06-14  128  	if (ppc_md.progress)
-1ce844973bb516 Christophe Leroy 2022-06-14  129  		ppc_md.progress("mpc83xx_setup_arch()", 0);
-1ce844973bb516 Christophe Leroy 2022-06-14  130  
-6b7c095a51e1ba Christophe Leroy 2019-09-16  131  	setbat(-1, va, immrbase, immrsize, PAGE_KERNEL_NCG);
-6b7c095a51e1ba Christophe Leroy 2019-09-16  132  	update_bats();
-6b7c095a51e1ba Christophe Leroy 2019-09-16  133  }
-0deae39cec6dab Christophe Leroy 2018-12-10  134  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
