@@ -2,55 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC3E79F547
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84BB79F54A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbjIMXBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 19:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        id S233114AbjIMXCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 19:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233007AbjIMXBu (ORCPT
+        with ESMTP id S233007AbjIMXCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 19:01:50 -0400
-Received: from out-227.mta0.migadu.com (out-227.mta0.migadu.com [91.218.175.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF2A1BCC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:01:45 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 19:01:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694646103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=936FjOrJ5smwNM8opXoifLeImI0aNI7wDdh2+lfJJno=;
-        b=p9xXQT3eeIpGBB2+SQb2w8E1bHynlFI1LXkI/rh0VGAUzF8IDHgPqGkIhXXvXn+X89XW/8
-        l7+BUnexQZDrQuED0EmL/4NW8BFVuXGYYHw+0jRN8iWk4RqfuJ+GxvlrVlduHyJMpj5wWg
-        7lNT1oYTpnqhGXu56vNEc9rgWhn8diM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcachefs@vger.kernel.org
-Subject: Re: [PATCH 1/2] bcachefs: Fix a potential in the error handling path
- of use-after-free inbch2_dev_add()
-Message-ID: <20230913230135.y27i2bx244tdjhvj@moria.home.lan>
-References: <3ab17a294fd2b5fcb180d44955b0d76a28af11cb.1694623395.git.christophe.jaillet@wanadoo.fr>
+        Wed, 13 Sep 2023 19:02:37 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963DE1BCB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:02:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1694646151;
+        bh=9nwKgi53Nw3aMPL4gvYJ3xe4olH9cOVWHjkvB/aIJa8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ei0JJks17AdpLhLQiE88kxIh56GBLFTWb4JsFbgm6YICyQPFfLT7TD4a4897X+CZz
+         CSOsImUJVhSjrQC5qdb+S9g/a4YrNE0U7tybLo+TigOT4msWLVrK5I93DXDBKlkTpg
+         7Q98fH5wLEgXLsjZqzzQ4zdM1e175kcUvrvLqrHU=
+Date:   Thu, 14 Sep 2023 01:02:30 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Sebastian Ott <sebott@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>, Willy Tarreau <w@1wt.eu>,
+        linux-kernel@vger.kernel.org
+Subject: Re: aarch64 binaries using nolibc segfault before reaching the entry
+ point
+Message-ID: <1d0342f3-0474-482b-b6db-81ca7820a462@t-8ch.de>
+References: <5d49767a-fbdc-fbe7-5fb2-d99ece3168cb@redhat.com>
+ <2da5ce29-e0de-4715-aa77-453ff3cc48aa@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3ab17a294fd2b5fcb180d44955b0d76a28af11cb.1694623395.git.christophe.jaillet@wanadoo.fr>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2da5ce29-e0de-4715-aa77-453ff3cc48aa@t-8ch.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 06:44:08PM +0200, Christophe JAILLET wrote:
-> If __bch2_dev_attach_bdev() fails, bch2_dev_free() is called twice.
-> Once here and another time in the error handling path.
-> 
-> This leads to several use-after-free.
-> 
-> Remove the redundant call and only rely on the error handling path.
+On 2023-09-13 22:19:00+0200, Thomas Weißschuh wrote:
+> On 2023-09-13 20:44:59+0200, Sebastian Ott wrote:
+> > the tpidr2 selftest on an arm box segfaults before reaching the entry point.
+> > I have no clue what is to blame for this or how to debug it but for a
+> > statically linked binary there shouldn't be much stuff going on besides the
+> > elf loader?
 
-Thanks, both applied
+> [..]
+
+> 
+> I reduced it to the following reproducer:
+> 
+>     $ cat test.c
+>     int foo;  /* It works when deleting this variable */
+>     
+>     void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) _start(void)
+>     {
+>     	__asm__ volatile (
+>     		"mov x8, 93\n"       /* NR_exit == 93 */
+>     		"svc #0\n"
+>     	);
+>     	__builtin_unreachable();
+>     }
+>     
+>     $ aarch64-linux-gnu-gcc -Os -static -fno-stack-protector -Wall -nostdlib test.c
+>     $ ./a.out
+>     Segmentation fault
+> 
+> Also when running under gdb the error message is:
+> 
+>     During startup program terminated with signal SIGSEGV, Segmentation fault.
+> 
+> So it seems the error already happens during loading.
+> 
+> Could be a compiler or kernel bug?
+
+Callchain for the failure:
+
+load_elf_binary()
+  -> if (likely(elf_bss != elf_brk) && unlikely(padzero(elf_bess)))
+    -> padzero()
+      -> clear_user()
+        -> __arch_clear_user()
+	  -> failure in arch/arm64/lib/clear_user.S
+
+Resulting in a EFAULT which gets translated to SIGSEGV somewhere.
+
+
+The following patch, which seems sensible to me, fixes it for me.
+But as this is really old, heavily used code I'm a bit hesitant.
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 7b3d2d491407..13f71733ba63 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -112,7 +112,7 @@ static struct linux_binfmt elf_format = {
+ 
+ static int set_brk(unsigned long start, unsigned long end, int prot)
+ {
+-	start = ELF_PAGEALIGN(start);
++	start = ELF_PAGESTART(start);
+ 	end = ELF_PAGEALIGN(end);
+ 	if (end > start) {
+ 		/*
