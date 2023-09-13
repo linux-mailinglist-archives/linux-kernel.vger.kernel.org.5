@@ -2,212 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94B979E07D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC63979E08D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238495AbjIMHKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:10:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        id S238486AbjIMHNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238367AbjIMHKE (ORCPT
+        with ESMTP id S238419AbjIMHNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:10:04 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC65DF;
-        Wed, 13 Sep 2023 00:10:00 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-450f5be2532so91413137.3;
-        Wed, 13 Sep 2023 00:10:00 -0700 (PDT)
+        Wed, 13 Sep 2023 03:13:49 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE67A1982
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:13:44 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bce552508fso106241941fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:13:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694589000; x=1695193800; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6agKsvygWp25lreEOJlRfatFAwEsvANUhQcrOrGHn20=;
-        b=s3sbtuP2QCgn1JvtWsYKS+ZQMLSLX1ndihOGa47BkP0NLdVdBWyoUsDgqQJxb6aqMb
-         mQV9mqhOcmRhvP7vylQJTois0+d46wYuNwGe0+pMEeHgxtZlaGC6wWd8716JNIQT+H9H
-         2ldGXjBSHp+GGRPmM08oZCvOzBNhrmiv6BI15tDW63hOLrh1kUaAll+GGvVGmbZCoqTK
-         DPBjwY3a4kM6MVZzq6xqz2C2U49vIzpFXH0GUvSQxiRHK9IaOcXymsrIMTJvTSThZI+U
-         OSG2NRzNzL2Uv68MOXGcwRRDl8hRSCN0Ae7mLFtSte+Ja135/smghC16whyRVGV/Vtgg
-         Syww==
+        d=linaro.org; s=google; t=1694589223; x=1695194023; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PMH3vpvCAYv9pjz0vyXayvBqBPROq5/ItNXcUQV0q9E=;
+        b=mtjeEZowdbXhHjnFyZDRa349Gd6rAnOStuNBT20PxRHTuh/QVzMEnVvuFva9SkRkZ/
+         voNirn4chncepx1TazqcqeIBPDxPUr2nJW4FGQUj9mFdb+rc0E8KKeoH6UDcxL0Gj/zM
+         jOVquaE6UseM6m7UkaRYSQo9j3BPFWPGeUs26IyE7ihd31nLIjeuW04u41AJIRrUCyuz
+         Sx8wxwE9Uj3exUfW/pEuEEocenN3l01DlhRcyLAZ1JuHIR1z43NHRp09bBYPLN3CX6Fg
+         CtnEjky/m3EGiIMzoH6OH2Araua70u7ZN0PBYZTk02T+pb20beFIc3ca/pjEi/8uusgy
+         DdEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694589000; x=1695193800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6agKsvygWp25lreEOJlRfatFAwEsvANUhQcrOrGHn20=;
-        b=LJ/8unQICwhGK5gV8t8+2M7HnAAsXlQWOf8EGsJNSzlgK0GRgLGTkBVWIirZ4ESNic
-         fwig3hhJWPTUKBOEO1jqv6T3HolzmpDJ7p65NKY23hFz+p/0BtUlQE4BNRC4fvbTF3Te
-         jcOAIzYmAhH1oNPFTgf3vhbifRhfMjr1Wd8eyaNqbEc3SRiWGso0wFHsBDULb4k8bRij
-         9QrPKDci1k4rhZBlJ4RlTBH0ODIwxnFDjFn0lVs72/Lsh+SQmwr3yfeFAPYHyBujAzp/
-         3d3nxLfKOdI6rChwL5CXj1oU2XrYwCTi+aaslVMppGXlb1/lm7LiziheF9+iWxmWFp3S
-         3/xQ==
-X-Gm-Message-State: AOJu0YzI9oFL6jzdTz9N9gTvxNPcsYAnrX7cXhxANI6HSGVHwhonCr9N
-        O157uQcRK3aRK6pzsMRGFCeoyUd/6PLiclHujHQ=
-X-Google-Smtp-Source: AGHT+IEm50JAWQf1sRHHPjZDQceCT5ewuXWRds83LyZHROQa8EAyQhrW/W5QgSW0VPvLGI00ErNfuEg0rJPKFb1gxjo=
-X-Received: by 2002:a05:6102:15a9:b0:44e:b571:27af with SMTP id
- g41-20020a05610215a900b0044eb57127afmr1833193vsv.1.1694589000003; Wed, 13 Sep
- 2023 00:10:00 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694589223; x=1695194023;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PMH3vpvCAYv9pjz0vyXayvBqBPROq5/ItNXcUQV0q9E=;
+        b=J4JpqBaRS7HFdkX1OS1BiETJ10apuu+axrlnpJ/qfTX1PPy6SVX4i+KZdxYuzLc5XA
+         d5XT1JSMzz5oFwwrCjBsfsDiDeQOmEHXQmNulWXSjAmbW1xHmOJ30YbdzIHC5Kg/A4vG
+         f8BS2QJHxz0ncwNr60/Oz+GDHvzdaNyVIjYAbtZBFAbbftifOUZBxmZ+U8fGcMQ5tLQ+
+         m2470jO3MagwwHaZ0GCEYdOQdfwo47CPNJVRLcJPYIIfkv42v0+A6Bjc42DBxQoxS7lS
+         D+hT8+UXlczsz4uVwXVj5bx3U6u9eIDBUT8GZ14bq8RNejaTUrr7QqVs0T8BNjEVApS9
+         WQlw==
+X-Gm-Message-State: AOJu0Yzb/C6x0kji88q+wlosIsywuYtmo3dclHedTyEkGBn7HLOxeIsp
+        xsbsKu2wzhVUfQCqGPgidr/g4Q==
+X-Google-Smtp-Source: AGHT+IEaX2HHUaLs3S63J80qFOSmj6sWOrftUpS+R5qC7Xs/FsBZ7EPgP0pGvUeL/9pDbnFuXmPFwA==
+X-Received: by 2002:a2e:9e14:0:b0:2bd:1f83:8d4 with SMTP id e20-20020a2e9e14000000b002bd1f8308d4mr1400872ljk.22.1694589223002;
+        Wed, 13 Sep 2023 00:13:43 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id ce7-20020a170906b24700b0098f99048053sm8015685ejb.148.2023.09.13.00.13.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 00:13:42 -0700 (PDT)
+Message-ID: <70b2a9d7-1a3e-25da-3d78-7bfa5d3a1e05@linaro.org>
+Date:   Wed, 13 Sep 2023 09:13:40 +0200
 MIME-Version: 1.0
-References: <0000000000004f34d705ffbc2604@google.com> <0000000000005bd097060530b758@google.com>
-In-Reply-To: <0000000000005bd097060530b758@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 13 Sep 2023 10:09:48 +0300
-Message-ID: <CAOQ4uxjBAG-WA+1VCdYh6O98mU3C31qMyZZFp3iRW6_yYROdWQ@mail.gmail.com>
-Subject: Re: [syzbot] [overlayfs?] general protection fault in d_path
-To:     syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>
-Cc:     brauner@kernel.org, jlayton@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 06/14] arm64: dts: qcom: sdm630: Drop RPM bus clocks
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-6-1e506593b1bd@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 1:10=E2=80=AFAM syzbot
-<syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following issue on:
->
-> HEAD commit:    a747acc0b752 Merge tag 'linux-kselftest-next-6.6-rc2' of =
-g..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D11c8230868000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Ddf91a3034fe3f=
-122
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Da67fc5321ffb4b3=
-11c98
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1671b694680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14ec94d868000=
-0
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b28ecb88c714/dis=
-k-a747acc0.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/03dd2cd5356f/vmlinu=
-x-a747acc0.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/63365d9bf980/b=
-zImage-a747acc0.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
->
-> general protection fault, probably for non-canonical address 0xdffffc0000=
-000009: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
-> CPU: 0 PID: 5030 Comm: syz-executor173 Not tainted 6.6.0-rc1-syzkaller-00=
-014-ga747acc0b752 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 08/04/2023
-> RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline=
-]
-> RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
-> RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
-> Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c=
-4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33=
- 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
-> RSP: 0018:ffffc90003a7eee0 EFLAGS: 00010246
-> RAX: 7e73051ae5315e00 RBX: 0000000000000009 RCX: ffff88807da73b80
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffc90003a7eff0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
-> R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
-> R13: 0000000000000048 R14: dffffc0000000000 R15: ffff8880206d8000
-> FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f351862ebb8 CR3: 00000000276a7000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  audit_log_d_path+0xd3/0x310 kernel/audit.c:2138
->  dump_common_audit_data security/lsm_audit.c:224 [inline]
->  common_lsm_audit+0x7cf/0x1a90 security/lsm_audit.c:458
->  smack_log+0x421/0x540 security/smack/smack_access.c:383
->  smk_tskacc+0x2ff/0x360 security/smack/smack_access.c:253
->  smack_inode_getattr+0x203/0x270 security/smack/smack_lsm.c:1271
->  security_inode_getattr+0xd3/0x120 security/security.c:2153
->  vfs_getattr+0x2a/0x3a0 fs/stat.c:206
->  ovl_getattr+0x1b1/0xf70 fs/overlayfs/inode.c:174
->  ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
->  ima_file_free+0x26e/0x4b0 security/integrity/ima/ima_main.c:203
->  __fput+0x36a/0x910 fs/file_table.c:378
->  task_work_run+0x24a/0x300 kernel/task_work.c:179
->  exit_task_work include/linux/task_work.h:38 [inline]
->  do_exit+0x68f/0x2290 kernel/exit.c:874
->  do_group_exit+0x206/0x2c0 kernel/exit.c:1024
->  get_signal+0x175d/0x1840 kernel/signal.c:2892
->  arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:309
->  exit_to_user_mode_loop+0x6a/0x100 kernel/entry/common.c:168
->  exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
->  syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
->  do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f35185d8529
-> Code: Unable to access opcode bytes at 0x7f35185d84ff.
-> RSP: 002b:00007f3518599218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: 0000000000000001 RBX: 00007f3518662308 RCX: 00007f35185d8529
-> RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007f351866230c
-> RBP: 00007f3518662300 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f351862f064
-> R13: 0031656c69662f2e R14: 6e6f3d7865646e69 R15: 0079616c7265766f
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline=
-]
-> RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
-> RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
-> Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c=
-4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33=
- 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
-> RSP: 0018:ffffc90003a7eee0 EFLAGS: 00010246
-> RAX: 7e73051ae5315e00 RBX: 0000000000000009 RCX: ffff88807da73b80
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: ffffc90003a7eff0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
-> R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
-> R13: 0000000000000048 R14: dffffc0000000000 R15: ffff8880206d8000
-> FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f351862ebb8 CR3: 000000007e769000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->    0:   30 00                   xor    %al,(%rax)
->    2:   74 08                   je     0xc
->    4:   48 89 df                mov    %rbx,%rdi
->    7:   e8 be 20 e1 ff          call   0xffe120ca
->    c:   4c 8b 23                mov    (%rbx),%r12
->    f:   4d 8d 6c 24 48          lea    0x48(%r12),%r13
->   14:   49 81 c4 88 00 00 00    add    $0x88,%r12
->   1b:   4c 89 eb                mov    %r13,%rbx
->   1e:   48 c1 eb 03             shr    $0x3,%rbx
->   22:   4c 89 ef                mov    %r13,%rdi
->   25:   e8 00 1e 00 00          call   0x1e2a
-> * 2a:   42 0f b6 04 33          movzbl (%rbx,%r14,1),%eax <-- trapping in=
-struction
->   2f:   84 c0                   test   %al,%al
->   31:   0f 85 89 00 00 00       jne    0xc0
->   37:   45 8b 7d 00             mov    0x0(%r13),%r15d
->   3b:   44 89 fe                mov    %r15d,%esi
->   3e:   83                      .byte 0x83
->   3f:   e6                      .byte 0xe6
->
->
+On 12/09/2023 15:31, Konrad Dybcio wrote:
+> These clocks are now handled from within the icc framework and are
+> no longer registered from within the CCF. Remove them.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+>  arch/arm64/boot/dts/qcom/sdm630.dtsi | 49 +++++++-----------------------------
+>  1 file changed, 9 insertions(+), 40 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> index ec6003212c4d..f11d2a07508c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+> @@ -605,9 +605,6 @@ bimc: interconnect@1008000 {
+>  			compatible = "qcom,sdm660-bimc";
+>  			reg = <0x01008000 0x78000>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_BIMC_CLK>,
+> -				 <&rpmcc RPM_SMD_BIMC_A_CLK>;
 
-#syz set subsystems: integrity, overlayfs
+Bindings expect here two clocks, so you miss some bindings patches.
 
-#syz test: https://github.com/amir73il/linux ima-ovl-fix
+>  		};
+>  
+>  		restart@10ac000 {
+> @@ -619,28 +616,17 @@ cnoc: interconnect@1500000 {
+>  			compatible = "qcom,sdm660-cnoc";
+>  			reg = <0x01500000 0x10000>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_CNOC_CLK>,
+> -				 <&rpmcc RPM_SMD_CNOC_A_CLK>;
+>  		};
+>  
+>  		snoc: interconnect@1626000 {
+>  			compatible = "qcom,sdm660-snoc";
+>  			reg = <0x01626000 0x7090>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus", "bus_a";
+> -			clocks = <&rpmcc RPM_SMD_SNOC_CLK>,
+> -				 <&rpmcc RPM_SMD_SNOC_A_CLK>;
+>  		};
+>  
+>  		anoc2_smmu: iommu@16c0000 {
+>  			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+>  			reg = <0x016c0000 0x40000>;
+> -
+> -			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -			assigned-clock-rates = <1000>;
+> -			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -			clock-names = "bus";
+
+This is also against bindings. After your patch #4, such bus clock (or
+other combinations) is still required.
+
+
+>  			#global-interrupts = <2>;
+>  			#iommu-cells = <1>;
+>  
+> @@ -685,16 +671,12 @@ a2noc: interconnect@1704000 {
+>  			compatible = "qcom,sdm660-a2noc";
+>  			reg = <0x01704000 0xc100>;
+>  			#interconnect-cells = <1>;
+> -			clock-names = "bus",
+> -				      "bus_a",
+> -				      "ipa",
+> +			clock-names = "ipa",
+
+And which bindings does this match?
+
+Best regards,
+Krzysztof
+
