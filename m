@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C702879E960
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9831179E964
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240928AbjIMNdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S240953AbjIMNes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241016AbjIMNdY (ORCPT
+        with ESMTP id S239451AbjIMNeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:33:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65BD19B6;
-        Wed, 13 Sep 2023 06:33:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA93C433C7;
-        Wed, 13 Sep 2023 13:33:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694611999;
-        bh=U6rJDc8/HNt2MyKMpa3VX4pGAzI4l/fhGVSjCrFrw7Y=;
-        h=From:Date:Subject:To:Cc:From;
-        b=m/w8vBSxfvwIwNoF+gZag1mEhpB3sRvgkHSPbVTdZCRl9EI1gH50kSfn5VTzzH0uc
-         uIun0Oxa50ODwJ2UCl1o8sbvjU4oF6UCnnlxH4lRpfUjZ8pzlIefcSVfmCFs/lKStB
-         G/8No0HmQLFeRScz+eX1raNBVI+dls0QRUVKl0+5lyWI0TnyveiUVMsd5JoCZ88kEA
-         XEpT8uOTYX7s8ziLcSHcViIvq4/GVkUU/S7loMo+sw1oCji0WWymGebCYWocN8k2HT
-         WTRmQ2vniQwhrPWPz+3RC5cJQg8QEDnD/yskvCRYzWj7s4j1QTA2QMZu3nMnmiU6lj
-         GP23EhTE5eqrw==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Wed, 13 Sep 2023 09:33:12 -0400
-Subject: [PATCH] overlayfs: set ctime when setting mtime and atime
+        Wed, 13 Sep 2023 09:34:46 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FFB19B6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:34:42 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6F3341F385;
+        Wed, 13 Sep 2023 13:34:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694612081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4+RU0KIou9w9utdTOlx7DUMD1ZLCYn2PIUlTEIwiPpQ=;
+        b=aCFCxXd6M2W+F3UzYQaNY77FvUcYJ8khNloHjjQtvOvMWDWoOut6dh0nHef5yWXRhWn1wD
+        Wf21nb56OtPECrnLRO+jLxC2Lz/oDags+po3ayu+WQW/Je43EMNMpr2bvSm9xY0oM86Yfu
+        uLq/vyzRMBh03DbYk2YRcGGHgCw10CE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694612081;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4+RU0KIou9w9utdTOlx7DUMD1ZLCYn2PIUlTEIwiPpQ=;
+        b=l4wqlyRCrqZWIrDDXO1m6/Gv1kjwqx0BpcdarYxHEY5KwbWpK5OeZ6ThGY1Nu8OPyOTBI4
+        1TwptIIoeGmSlLBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 539EA13582;
+        Wed, 13 Sep 2023 13:34:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KYO6E3G6AWXLSAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 13 Sep 2023 13:34:41 +0000
+Message-ID: <0ab2495b-c110-c1b6-bd37-dbd163412a48@suse.cz>
+Date:   Wed, 13 Sep 2023 15:34:40 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230911195023.247694-2-hannes@cmpxchg.org>
+ <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
+ <20230912145028.GA3228@cmpxchg.org>
+ <320c16a7-96b7-65ec-3d80-2eace0ddb290@suse.cz>
+ <20230913132412.GA45543@cmpxchg.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230913132412.GA45543@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
-X-B4-Tracking: v=1; b=H4sIABi6AWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDS0Nj3eSSzNxUXSNLS0NzY3Mzg5QUSyWg2oKi1LTMCrA50bG1tQA8zQ0
- +VwAAAA==
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1513; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=U6rJDc8/HNt2MyKMpa3VX4pGAzI4l/fhGVSjCrFrw7Y=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlAboee2/mgKjU8JTLm84bfls+24apRnvKTVw2o
- o2baxy12OiJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZQG6HgAKCRAADmhBGVaC
- FZy6D/0em1kPDGpqJnR9cNODNrAjXokVlbqEB90ZRVJZs/HbLXOba7IWmkugvKyyOUM1uhEYicv
- muZGCzeaVVypehN7TDm+tFx8IcLSMRuw3jFS2mA3+vusG+eBNHM3TbfZ59XDYH0A0n5i+J32FPy
- 1Ur8B90OQZZhQLqQ+Bn4gZxsiqo1E7kmwR7Y7mBOkzSDuc8YbNjeGhR/riv5O8cbafg3Nq6T68Z
- mG8TK1XS/76DBa+moWMfco3KV+exBxGA8cUXgK9kUphMOy+eZ+5TYExPC30vU+i6zdMkZN0YIDh
- z0tTEjiq9RbkN9HTbcIgcU0tHwC1x5Ft9yO0cFnoG+ABtQSrJ5P7MosKoob0ne4kfiB5wB15LtV
- Iq5Nfm8aFAZ4KV3gycblwkq8r/1dW1yFMKuvo36gonabRkaphnhyguafjwT1jwmr6A7VfC7OGjI
- 4+KBF7NteZckElAN/MDDO2LODYp6hbEDB4PyM4HsA8igfhzkcQRIMY+HMDtro/5YIaVRqU1DfjP
- aMcrCPKLbfU6oFRhvujOAks9KGNe0pXRb8PzsF06NMb+Q+G2lJMxW3QIRThuO0wFOq4g+PL2YUr
- XwL5z3yEcFFjiv8UJ39/EX2M4ofKanO68yUYqzUzK8M9591vD/qaBV6O/NvoVV8WJCXCkwh7Q6S
- XM+A8mynNlCbqHw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nathan reported that he was seeing the new warning in
-setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-trying to set the atime and mtime via notify_change without also
-setting the ctime.
+On 9/13/23 15:24, Johannes Weiner wrote:
+> Hello Vlastimil,
+> 
+> On Wed, Sep 13, 2023 at 11:33:52AM +0200, Vlastimil Babka wrote:
+>> On 9/12/23 16:50, Johannes Weiner wrote:
+>> > From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
+>> > From: Johannes Weiner <hannes@cmpxchg.org>
+>> > Date: Tue, 12 Sep 2023 10:16:10 -0400
+>> > Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
+>> > 
+>> > Move direct freeing of isolated pages to the lock-breaking block in
+>> > the second loop. This saves an unnecessary migratetype reassessment.
+>> > 
+>> > Minor comment and local variable scoping cleanups.
+>> 
+>> Looks like batch_count and locked_zone could be moved to the loop scope as well.
+> 
+> Hm they both maintain values over multiple iterations, so I don't
+> think that's possible. Am I missing something?
 
-POSIX states that when the atime and mtime are updated via utimes() that
-we must also update the ctime to the current time. The situation with
-overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
-notify_change will fill in the value.
+True, disregard :D
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-The new WARN_ON_ONCE in setattr_copy_mgtime caught a bug! Fix up
-overlayfs to ensure that the ctime on the upper inode is also updated
-when copying up the atime and mtime.
----
- fs/overlayfs/copy_up.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>> 
+>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Thanks! I'll send this out properly with your tag.
 
-diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-index d1761ec5866a..ada3fcc9c6d5 100644
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -337,7 +337,7 @@ static int ovl_set_timestamps(struct ovl_fs *ofs, struct dentry *upperdentry,
- {
- 	struct iattr attr = {
- 		.ia_valid =
--		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET,
-+		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET | ATTR_CTIME,
- 		.ia_atime = stat->atime,
- 		.ia_mtime = stat->mtime,
- 	};
-
----
-base-commit: 9cb8e7c86ac793862e7bea7904b3426942bbd7ef
-change-id: 20230913-ctime-299173760dd9
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+np!
