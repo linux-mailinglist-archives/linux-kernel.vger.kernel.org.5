@@ -2,337 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC54D79EDC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7697E79ED51
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjIMP6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
+        id S229676AbjIMPjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjIMP63 (ORCPT
+        with ESMTP id S229514AbjIMPjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:58:29 -0400
-X-Greylist: delayed 13155 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 08:58:24 PDT
-Received: from 19.mo582.mail-out.ovh.net (19.mo582.mail-out.ovh.net [188.165.56.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54D3E54
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:58:24 -0700 (PDT)
-Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.16.135])
-        by mo582.mail-out.ovh.net (Postfix) with ESMTP id E438421566
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:19:06 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-wcl26 (unknown [10.110.171.185])
-        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 310891FE9D;
-        Wed, 13 Sep 2023 12:19:05 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.95])
-        by ghost-submission-6684bf9d7b-wcl26 with ESMTPSA
-        id AjfFB7moAWVcSQwAZu02Bw
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 13 Sep 2023 12:19:05 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-95G001570f04b8-d8ce-4485-bc59-0a46056bb914,
-                    DC2EF514C16DA978A4B56AB6E34F69DC0F88BBA7) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 91.157.108.232
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     airlied@gmail.com, daniel@ffwll.ch, skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        mripard@kernel.org, mairacanal@riseup.net, javierm@redhat.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drm/tests: provide exit function
-Date:   Wed, 13 Sep 2023 15:19:00 +0300
-Message-Id: <20230913121900.11814-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Wed, 13 Sep 2023 11:39:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C0CCCD;
+        Wed, 13 Sep 2023 08:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694619582; x=1726155582;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Qs1xzAFowV1OHGg4Me+cx2ZGEWEkE10b8u4FIoQkz5Q=;
+  b=QZEoI2HTY7pAsrnfajJYdpppDY9KQkBiWSDg/WHD1fon+gZz6WPS7vwc
+   ygyomTjbSfAHjdSl+RTWYRALrpBpDn2Xr3FQo1olDXy5aBaeW+/zBudOP
+   UPEvR+2H3ISMzWEh3rCPwVdzudFwrt/V5zvbtugVMBSQ3JCn5/wPLus3Q
+   mxrle0Pg0VG3h/AWrMwtJQuFgqnwdHOvVFvPYOS6EgHQWXUovEqSBtSui
+   AejrtIrzZ9k+FRKGWIdTV0vJzThzUJ6thRSYQDcEN6jk4DoFPKJ6lLJ3o
+   bbNsLFBtH7/cK9wg8hL+MhSj9KBfP70ubFbjChEel60vNfdttEAZR/PKS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="376030083"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="376030083"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 08:39:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="867851977"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="867851977"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO binbinwu-mobl.sh.intel.com) ([10.93.2.44])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 08:39:38 -0700
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     seanjc@google.com, pbonzini@redhat.com, chao.gao@intel.com,
+        kai.huang@intel.com, David.Laight@ACULAB.COM,
+        robert.hu@linux.intel.com, guang.zeng@intel.com,
+        binbin.wu@linux.intel.com
+Subject: [PATCH v11 00/16] LAM and LASS KVM Enabling
+Date:   Wed, 13 Sep 2023 20:42:11 +0800
+Message-Id: <20230913124227.12574-1-binbin.wu@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 12158030146281776806
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedghedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpledurdduheejrddutdekrddvfedvpdefjedrheelrddugedvrdelheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekvddpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to the drm_exec_test module, the drm_modes_test
-shows the following output on dmesg on load:
+This patch series includes KVM enabling patches for Linear-address masking
+(LAM) v11 and Linear Address Space Separation (LASS) v3 since the two features
+have overlapping prep work and concepts. Sent as a single series to reduce the
+probability of conflicts.
 
-[ 5556.674834] KTAP version 1
-[ 5556.674841] 1..1
-[ 5556.675317]     KTAP version 1
-[ 5556.675321]     # Subtest: drm_modes_analog_tv
-[ 5556.675323]     # module: drm_modes_test
-[ 5556.675327]     1..4
-[ 5556.683731] ==================================================================
-[ 5556.683777] BUG: KASAN: slab-use-after-free in drm_dev_put.part.0+0x4b/0x90 [drm]
-[ 5556.683882] Read of size 8 at addr ffff88812db30428 by task kunit_try_catch/75921
-[ 5556.683882]
-[ 5556.683882] CPU: 1 PID: 75921 Comm: kunit_try_catch Tainted: G        W        N 6.6.0-rc1-dirty #2
-[ 5556.683882] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[ 5556.683882] Call Trace:
-[ 5556.683882]  <TASK>
-[ 5556.683882]  dump_stack_lvl+0x43/0x60
-[ 5556.683882]  print_report+0xcf/0x660
-[ 5556.683882]  ? __virt_addr_valid+0xd9/0x160
-[ 5556.683882]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-[ 5556.683882]  kasan_report+0xda/0x110
-[ 5556.683882]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-[ 5556.683882]  drm_dev_put.part.0+0x4b/0x90 [drm]
-[ 5556.683882]  release_nodes+0x83/0x160
-[ 5556.683882]  devres_release_all+0xe6/0x130
-[ 5556.683882]  ? __pfx_devres_release_all+0x10/0x10
-[ 5556.683882]  ? mutex_unlock+0x80/0xd0
-[ 5556.683882]  ? __pfx_mutex_unlock+0x10/0x10
-[ 5556.683882]  device_unbind_cleanup+0x16/0xc0
-[ 5556.683882]  device_release_driver_internal+0x28b/0x2e0
-[ 5556.683882]  bus_remove_device+0x124/0x1d0
-[ 5556.683882]  device_del+0x23d/0x580
-[ 5556.683882]  ? __pfx_device_del+0x10/0x10
-[ 5556.683882]  ? kasan_set_track+0x21/0x30
-[ 5556.683882]  ? _raw_spin_lock_irqsave+0x98/0xf0
-[ 5556.683882]  platform_device_del.part.0+0x19/0xe0
-[ 5556.683882]  kunit_remove_resource+0xfa/0x140 [kunit]
-[ 5556.683882]  kunit_cleanup+0x47/0xa0 [kunit]
-[ 5556.683882]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
-[ 5556.683882]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10 [kunit]
-[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[ 5556.683882]  kthread+0x184/0x1c0
-[ 5556.683882]  ? __pfx_kthread+0x10/0x10
-[ 5556.683882]  ret_from_fork+0x30/0x50
-[ 5556.683882]  ? __pfx_kthread+0x10/0x10
-[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
-[ 5556.683882]  </TASK>
-[ 5556.683882]
-[ 5556.683882] Allocated by task 75920:
-[ 5556.683882]  kasan_save_stack+0x2f/0x50
-[ 5556.683882]  kasan_set_track+0x21/0x30
-[ 5556.683882]  __kasan_kmalloc+0xa6/0xb0
-[ 5556.683882]  __kmalloc+0x5d/0x160
-[ 5556.683882]  kunit_kmalloc_array+0x1c/0x50 [kunit]
-[ 5556.683882]  drm_test_modes_init+0xda/0x260 [drm_modes_test]
-[ 5556.683882]  kunit_try_run_case+0x6e/0x100 [kunit]
-[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[ 5556.683882]  kthread+0x184/0x1c0
-[ 5556.683882]  ret_from_fork+0x30/0x50
-[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
-[ 5556.683882]
-[ 5556.683882] Freed by task 75921:
-[ 5556.683882]  kasan_save_stack+0x2f/0x50
-[ 5556.683882]  kasan_set_track+0x21/0x30
-[ 5556.683882]  kasan_save_free_info+0x27/0x40
-[ 5556.683882]  ____kasan_slab_free+0x166/0x1c0
-[ 5556.683882]  slab_free_freelist_hook+0x9f/0x1e0
-[ 5556.683882]  __kmem_cache_free+0x187/0x2d0
-[ 5556.683882]  kunit_remove_resource+0xfa/0x140 [kunit]
-[ 5556.683882]  kunit_cleanup+0x47/0xa0 [kunit]
-[ 5556.683882]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[ 5556.683882]  kthread+0x184/0x1c0
-[ 5556.683882]  ret_from_fork+0x30/0x50
-[ 5556.683882]  ret_from_fork_asm+0x1b/0x30
-[ 5556.683882]
-[ 5556.683882] The buggy address belongs to the object at ffff88812db30400
-[ 5556.683882]  which belongs to the cache kmalloc-256 of size 256
-[ 5556.683882] The buggy address is located 40 bytes inside of
-[ 5556.683882]  freed 256-byte region [ffff88812db30400, ffff88812db30500)
-[ 5556.683882]
-[ 5556.683882] The buggy address belongs to the physical page:
-[ 5556.683882] page:00000000b3a5f157 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12db30
-[ 5556.683882] head:00000000b3a5f157 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-[ 5556.683882] ksm flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-[ 5556.683882] page_type: 0xffffffff()
-[ 5556.683882] raw: 0017ffffc0000840 ffff888100042b40 ffffea00053e2000 dead000000000003
-[ 5556.683882] raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
-[ 5556.683882] page dumped because: kasan: bad access detected
-[ 5556.683882]
-[ 5556.683882] Memory state around the buggy address:
-[ 5556.683882]  ffff88812db30300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 5556.683882]  ffff88812db30380: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 5556.683882] >ffff88812db30400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 5556.683882]                                   ^
-[ 5556.683882]  ffff88812db30480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[ 5556.683882]  ffff88812db30500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[ 5556.683882] ==================================================================
-[ 5556.687191] Disabling lock debugging due to kernel taint
-[ 5556.689341]     not ok 1 drm_test_modes_analog_tv_ntsc_480i
-[ 5556.700913]     ok 2 drm_test_modes_analog_tv_ntsc_480i_inlined
-[ 5556.713501]     ok 3 drm_test_modes_analog_tv_pal_576i
-[ 5556.724240]     ok 4 drm_test_modes_analog_tv_pal_576i_inlined
-[ 5556.724260] # drm_modes_analog_tv: pass:3 fail:1 skip:0 total:4
-[ 5556.724270] # Totals: pass:3 fail:1 skip:0 total:4
-[ 5556.724279] not ok 8 drm_modes_analog_tv
+The patch series is organized as follows:
+- Patch 1-4: Common prep work for both LAM and LASS.
+- Patch 5-13: LAM part.
+- Patch 14-16: LASS part.
 
-Unlike the drm_exec_test, this time it is required
-to guarantee that de drm mode is destroyed on the
-test that is created, otherwise it will trigger the
-following output:
+Dependency:
+- LAM has no other dependency.
+- LASS patches depends on LASS kernel enabling patches, which are not merged yet.
+  https://lore.kernel.org/all/20230609183632.48706-1-alexander.shishkin@linux.intel.com/
 
-[  876.491050] KTAP version 1
-[  876.491057] 1..1
-[  876.491467]     KTAP version 1
-[  876.491469]     # Subtest: drm_modes_analog_tv
-[  876.491473]     # module: drm_modes_test
-[  876.491477]     1..4
-[  876.502373] ==================================================================
-[  876.502386] BUG: KASAN: slab-use-after-free in drm_dev_put.part.0+0x1b/0x90 [drm]
-[  876.502531] Write of size 4 at addr ffff8881330b8004 by task kunit_try_catch/13563
-[  876.502536]
-[  876.502539] CPU: 6 PID: 13563 Comm: kunit_try_catch Tainted: G                 N 6.6.0-rc1+ #3
-[  876.502546] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[  876.502550] Call Trace:
-[  876.502554]  <TASK>
-[  876.502557]  dump_stack_lvl+0x43/0x60
-[  876.502568]  print_report+0xcf/0x660
-[  876.502577]  ? __virt_addr_valid+0xd9/0x160
-[  876.502586]  ? drm_dev_put.part.0+0x1b/0x90 [drm]
-[  876.502737]  kasan_report+0xda/0x110
-[  876.502744]  ? drm_dev_put.part.0+0x1b/0x90 [drm]
-[  876.502831]  kasan_check_range+0xfc/0x1b0
-[  876.502831]  drm_dev_put.part.0+0x1b/0x90 [drm]
-[  876.502831]  drm_test_modes_exit+0xa8/0x160 [drm_modes_test]
-[  876.502831]  ? __pfx_drm_test_modes_exit+0x10/0x10 [drm_modes_test]
-[  876.502831]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
-[  876.502831]  ? __pfx_set_cpus_allowed_ptr+0x10/0x10
-[  876.502831]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10 [kunit]
-[  876.502831]  kunit_try_run_case_cleanup+0x5f/0x70 [kunit]
-[  876.502831]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
-[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  876.502831]  kthread+0x184/0x1c0
-[  876.502831]  ? __pfx_kthread+0x10/0x10
-[  876.502831]  ret_from_fork+0x30/0x50
-[  876.502831]  ? __pfx_kthread+0x10/0x10
-[  876.502831]  ret_from_fork_asm+0x1b/0x30
-[  876.502831]  </TASK>
-[  876.502831]
-[  876.502831] Allocated by task 13562:
-[  876.502831]  kasan_save_stack+0x2f/0x50
-[  876.502831]  kasan_set_track+0x21/0x30
-[  876.502831]  __kasan_kmalloc+0xa6/0xb0
-[  876.502831]  __kmalloc+0x5d/0x160
-[  876.502831]  __devm_drm_dev_alloc+0x21/0xb0 [drm]
-[  876.502831]  __drm_kunit_helper_alloc_drm_device_with_driver+0x15/0x60 [drm_kunit_helpers]
-[  876.502831]  drm_test_modes_init+0x112/0x260 [drm_modes_test]
-[  876.502831]  kunit_try_run_case+0x6e/0x100 [kunit]
-[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  876.502831]  kthread+0x184/0x1c0
-[  876.502831]  ret_from_fork+0x30/0x50
-[  876.502831]  ret_from_fork_asm+0x1b/0x30
-[  876.502831]
-[  876.502831] Freed by task 13563:
-[  876.502831]  kasan_save_stack+0x2f/0x50
-[  876.502831]  kasan_set_track+0x21/0x30
-[  876.502831]  kasan_save_free_info+0x27/0x40
-[  876.502831]  ____kasan_slab_free+0x166/0x1c0
-[  876.502831]  slab_free_freelist_hook+0x9f/0x1e0
-[  876.502831]  __kmem_cache_free+0x187/0x2d0
-[  876.502831]  release_nodes+0x83/0x160
-[  876.502831]  devres_release_all+0xe6/0x130
-[  876.502831]  device_unbind_cleanup+0x16/0xc0
-[  876.502831]  device_release_driver_internal+0x28b/0x2e0
-[  876.502831]  bus_remove_device+0x124/0x1d0
-[  876.502831]  device_del+0x23d/0x580
-[  876.502831]  platform_device_del.part.0+0x19/0xe0
-[  876.502831]  kunit_release_action+0x1d7/0x230 [kunit]
-[  876.502831]  drm_kunit_helper_free_device+0x1d/0x50 [drm_kunit_helpers]
-[  876.502831]  drm_test_modes_exit+0x7f/0x160 [drm_modes_test]
-[  876.502831]  kunit_try_run_case_cleanup+0x5f/0x70 [kunit]
-[  876.502831]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  876.502831]  kthread+0x184/0x1c0
-[  876.502831]  ret_from_fork+0x30/0x50
-[  876.502831]  ret_from_fork_asm+0x1b/0x30
-[  876.502831]
-[  876.502831] Last potentially related work creation:
-[  876.502831]  kasan_save_stack+0x2f/0x50
-[  876.502831]  __kasan_record_aux_stack+0xaf/0xc0
-[  876.502831]  __call_rcu_common.constprop.0+0x9b/0x990
-[  876.502831]  netlink_release+0x6d3/0xb70
-[  876.502831]  __sock_release+0x66/0x120
-[  876.502831]  sock_close+0x11/0x20
-[  876.502831]  __fput+0x1db/0x450
-[  876.502831]  __x64_sys_close+0x51/0x90
-[  876.502831]  do_syscall_64+0x5b/0xc0
-[  876.502831]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  876.502831]
-[  876.502831] The buggy address belongs to the object at ffff8881330b8000
-[  876.502831]  which belongs to the cache kmalloc-2k of size 2048
-[  876.502831] The buggy address is located 4 bytes inside of
-[  876.502831]  freed 2048-byte region [ffff8881330b8000, ffff8881330b8800)
-[  876.502831]
-[  876.502831] The buggy address belongs to the physical page:
-[  876.502831] page:000000007d194834 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8881330bf000 pfn:0x1330b8
-[  876.502831] head:000000007d194834 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-[  876.502831] flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-[  876.502831] page_type: 0xffffffff()
-[  876.502831] raw: 0017ffffc0000840 ffff888100042f00 dead000000000100 dead000000000122
-[  876.502831] raw: ffff8881330bf000 0000000080080007 00000001ffffffff 0000000000000000
-[  876.502831] page dumped because: kasan: bad access detected
-[  876.502831]
-[  876.502831] Memory state around the buggy address:
-[  876.502831]  ffff8881330b7f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  876.502831]  ffff8881330b7f80: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
-[  876.502831] >ffff8881330b8000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  876.502831]                    ^
-[  876.502831]  ffff8881330b8080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  876.502831]  ffff8881330b8100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  876.502831] ==================================================================
-[  876.503733] Disabling lock debugging due to kernel taint
 
-Applying the patch, the output will look like:
+==== LAM v11 ====
 
-[ 1098.895487] KTAP version 1
-[ 1098.895499] 1..1
-[ 1098.896132]     KTAP version 1
-[ 1098.896139]     # Subtest: drm_modes_analog_tv
-[ 1098.896144]     # module: drm_modes_test
-[ 1098.896150]     1..4
-[ 1098.906634]     ok 1 drm_test_modes_analog_tv_ntsc_480i
-[ 1098.920305]     ok 2 drm_test_modes_analog_tv_ntsc_480i_inlined
-[ 1098.931438]     ok 3 drm_test_modes_analog_tv_pal_576i
-[ 1098.941509]     ok 4 drm_test_modes_analog_tv_pal_576i_inlined
-[ 1098.941533] # drm_modes_analog_tv: pass:4 fail:0 skip:0 total:4
-[ 1098.941546] # Totals: pass:4 fail:0 skip:0 total:4
-[ 1098.941556] ok 1 drm_modes_analog_tv
+Linear-address masking (LAM) [1], modifies the checking that is applied to
+*64-bit* linear addresses, allowing software to use of the untranslated
+address bits for metadata and masks the metadata bits before using them as
+linear addresses to access memory.
 
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
- drivers/gpu/drm/tests/drm_modes_test.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+When the feature is virtualized and exposed to guest, it can be used for
+efficient address sanitizers (ASAN) implementation and for optimizations in
+JITs and virtual machines.
 
-diff --git a/drivers/gpu/drm/tests/drm_modes_test.c b/drivers/gpu/drm/tests/drm_modes_test.c
-index 1e9f63fbfead..059c790810d6 100644
---- a/drivers/gpu/drm/tests/drm_modes_test.c
-+++ b/drivers/gpu/drm/tests/drm_modes_test.c
-@@ -36,6 +36,19 @@ static int drm_test_modes_init(struct kunit *test)
- 	return 0;
- }
- 
-+static void drm_test_modes_exit(struct kunit *test)
-+{
-+	struct drm_test_modes_priv *priv = test->priv;
-+
-+	drm_kunit_helper_free_device(test, priv->dev);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
-+
-+	drm_dev_put(priv->drm);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
-+
-+	kunit_kfree(test, priv);
-+}
-+
- static void drm_test_modes_analog_tv_ntsc_480i(struct kunit *test)
- {
- 	struct drm_test_modes_priv *priv = test->priv;
-@@ -64,6 +77,7 @@ static void drm_test_modes_analog_tv_ntsc_480i(struct kunit *test)
- 
- 	KUNIT_EXPECT_EQ(test, mode->vdisplay, 480);
- 	KUNIT_EXPECT_EQ(test, mode->vtotal, 525);
-+	drm_mode_destroy(priv->drm, mode);
- }
- 
- static void drm_test_modes_analog_tv_ntsc_480i_inlined(struct kunit *test)
-@@ -141,6 +155,7 @@ static struct kunit_case drm_modes_analog_tv_tests[] = {
- static struct kunit_suite drm_modes_analog_tv_test_suite = {
- 	.name = "drm_modes_analog_tv",
- 	.init = drm_test_modes_init,
-+	.exit = drm_test_modes_exit,
- 	.test_cases = drm_modes_analog_tv_tests,
- };
- 
+The patch series brings LAM virtualization support in KVM.
+
+Please review and consider applying.
+
+LAM QEMU patch:
+https://lists.gnu.org/archive/html/qemu-devel/2023-07/msg04160.html
+
+LAM kvm-unit-tests patch:
+https://lore.kernel.org/kvm/20230530024356.24870-1-binbin.wu@linux.intel.com/
+
+--- Test ---
+1. Add test cases in kvm-unit-test for LAM [2], including LAM_SUP and LAM_{U57,U48}.
+   For supervisor pointers, the test covers CR4 LAM_SUP bits toggle, Memory/MMIO
+   access with tagged pointer, and some special instructions (INVLPG, INVPCID,
+   INVVPID), INVVPID cases also used to cover VMX instruction VMExit path.
+   For user pointers, the test covers CR3 LAM bits toggle, Memory/MMIO access with
+   tagged pointer.
+   MMIO cases are used to trigger instruction emulation path.
+   Run the unit test with both LAM feature on/off (i.e. including negative cases).
+   Run the unit test in L1 guest with both LAM feature on/off.
+2. Run Kernel LAM kselftests in guest, with both EPT=Y/N.
+3. Launch a nested guest and run tests listed in 1 & 2.
+
+All tests have passed on real machine supporting LAM.
+
+[1] Intel ISE https://cdrdv2.intel.com/v1/dl/getContent/671368
+    Chapter Linear Address Masking (LAM)
+[2] https://lore.kernel.org/kvm/20230530024356.24870-1-binbin.wu@linux.intel.com/
+
+----------
+Changelog
+
+v11:
+- A separate patch to drop non-PA bits when getting GFN for guest's PGD [Sean]
+- Add a patch to remove kvm_vcpu_is_illegal_gpa() [Isaku]
+- Squash CR4 LAM bit handling with the address untag for supervisor pointers. [Sean]
+- Squash CR3 LAM bits handling with the address untag for user pointers. [Sean]
+- Adopt KVM-governed feature framework to track "LAM enabled" as a separate
+  optimization patch, and add the reason in patch change log. [Sean, Kai]
+- Some comment modifications/additions according to reviews [Sean] 
+
+v10:
+https://lore.kernel.org/kvm/20230719144131.29052-1-binbin.wu@linux.intel.com/
+
+
+==== LASS v3 ====
+
+Linear Address Space Separation (LASS)[1] is a new mechanism that
+enforces the same mode-based protections as paging, i.e. SMAP/SMEP
+but without traversing the paging structures. Because the protections
+enforced by LASS are applied before paging, "probes" by malicious
+software will provide no paging-based timing information.
+
+This patch series provide a LASS KVM solution and depends on kernel
+enabling that can be found at [2].
+
+--- Test ---
+1. Test the basic function of LASS virtualization including LASS
+enumeration and enabling in guest and nested environment.
+2. Run selftest with following cases:
+  - data access to user address space in supervisor mode
+  - data access to supervisor address space in user mode
+  - data access to linear address across space boundary
+  - Using KVM FEP mechanism to run test cases above
+  - VMX instruction execution with VMCS structure in user
+    address space
+  - instruction fetch from user address space in supervisor mode
+  - instruction fetch from supervisor address space in user mode
+
+All tests have passed on real machine supporting LASS.
+
+[1] Intel ISE spec https://cdrdv2.intel.com/v1/dl/getContent/671368
+Chapter Linear Address Space Separation (LASS)
+
+[2] LASS kernel patch series
+https://lore.kernel.org/all/20230609183632.48706-1-alexander.shishkin@linux.intel.com/
+
+----------
+Change log
+
+v3:
+1. Refine commit message [Sean/Chao Gao]
+2. Enhance the implementation of LASS violation check [Sean]
+3. Re-organize patch as Sean's suggestion [Sean]
+
+v2:
+   https://lore.kernel.org/all/20230719024558.8539-1-guang.zeng@intel.com/
+
+
+Binbin Wu (10):
+  KVM: x86: Consolidate flags for __linearize()
+  KVM: x86: Use a new flag for branch targets
+  KVM: x86: Add an emulation flag for implicit system access
+  KVM: x86: Add X86EMUL_F_INVLPG and pass it in em_invlpg()
+  KVM: x86/mmu: Drop non-PA bits when getting GFN for guest's PGD
+  KVM: x86: Add & use kvm_vcpu_is_legal_cr3() to check CR3's legality
+  KVM: x86: Remove kvm_vcpu_is_illegal_gpa()
+  KVM: x86: Introduce get_untagged_addr() in kvm_x86_ops and call it in
+    emulator
+  KVM: x86: Untag address for vmexit handlers when LAM applicable
+  KVM: x86: Use KVM-governed feature framework to track "LAM enabled"
+
+Robert Hoo (3):
+  KVM: x86: Virtualize LAM for supervisor pointer
+  KVM: x86: Virtualize LAM for user pointer
+  KVM: x86: Advertise and enable LAM (user and supervisor)
+
+Zeng Guang (3):
+  KVM: emulator: Add emulation of LASS violation checks on linear
+    address
+  KVM: VMX: Virtualize LASS
+  KVM: x86: Advertise LASS CPUID to user space
+
+ arch/x86/include/asm/kvm-x86-ops.h |   4 +-
+ arch/x86/include/asm/kvm_host.h    |   8 ++-
+ arch/x86/kvm/cpuid.c               |   4 +-
+ arch/x86/kvm/cpuid.h               |  13 ++--
+ arch/x86/kvm/emulate.c             |  39 +++++++----
+ arch/x86/kvm/governed_features.h   |   1 +
+ arch/x86/kvm/kvm_emulate.h         |  13 ++++
+ arch/x86/kvm/mmu.h                 |   8 +++
+ arch/x86/kvm/mmu/mmu.c             |   2 +-
+ arch/x86/kvm/mmu/mmu_internal.h    |   1 +
+ arch/x86/kvm/mmu/paging_tmpl.h     |   2 +-
+ arch/x86/kvm/svm/nested.c          |   4 +-
+ arch/x86/kvm/vmx/nested.c          |  14 ++--
+ arch/x86/kvm/vmx/sgx.c             |   4 +-
+ arch/x86/kvm/vmx/vmx.c             | 106 ++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h             |   5 ++
+ arch/x86/kvm/x86.c                 |  28 +++++++-
+ arch/x86/kvm/x86.h                 |   4 ++
+ 18 files changed, 226 insertions(+), 34 deletions(-)
+
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+prerequisite-patch-id: 51db36ad7156234d05f8c4004ec6a31ef609b81a
 -- 
-2.39.2
+2.25.1
 
