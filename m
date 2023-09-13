@@ -2,162 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B305D79F228
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6840A79F22B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjIMTeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S232437AbjIMTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjIMTeS (ORCPT
+        with ESMTP id S230475AbjIMTfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:34:18 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B39C91;
-        Wed, 13 Sep 2023 12:34:14 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401da71b83cso1787435e9.2;
-        Wed, 13 Sep 2023 12:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694633652; x=1695238452; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WX/i3cNXS1oWxItg2qKc6j/aqyU+E77VPxnrUO0lQCo=;
-        b=mQp2/0M6P4+BiN1YjhrxRXHR8pj82TPtWFqJxUkRRKKU44QHxXTciG8Vf8Qry/ZEPz
-         /tFpnDkO3hHwS2mt5wDejF7euQaFUMqH8qzBgA+cVcLuJ3XGqQFxvsu7Esiwhi1z2alw
-         rY3skCdqqzuA9nmK6pPKYqv4lAHxR91l/7koLNt0oWzS4/2Tv9PQrBWmQW9IWoiH2/+G
-         FSc3eNrz6eVeMuoyoi3cESQgepz2betPIFqMtCydCUUp90FuBb9qeHOBgtb3PiGYHprD
-         9AXKUra1dGXCHDAt8ywKD2gsh6uR+FVDBd0ZtGRRxy1MjxZH8VVDcilDc0/52buHwhXR
-         dIbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694633652; x=1695238452;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WX/i3cNXS1oWxItg2qKc6j/aqyU+E77VPxnrUO0lQCo=;
-        b=dez+4wFH6cBKwzUFE4XPS2o2HJP8OCg50t+dD9jxwWxBQHhF/U+UMcomQQ3MaTMMDH
-         is8MK7rWTYuLFspCoZity1q0JSV4MSW+acZEIWzBWD0Lve8d0aa9/l53C3lc9Ig6Gpm0
-         nlhtdVKhzovFl+3eZ9DmKMfj9D79yvXuNE41ETTcpYrgsqg50eims/UvT6V5PD/YiO8Q
-         /ki5lr2S2I+/MiP80MPhTyEz3h/1D9KR3JqmLQXlfDPjNoh1qoefmP2Jk4s23md3lg8X
-         SuoNbCHVwapwyJQlheFBBTPxM19cuwQIZRHJsGYUBGQZgYFQ0ZsbqNGoHvuqu3mNL2yJ
-         1K0A==
-X-Gm-Message-State: AOJu0YycmIVv1QJwTyFr/4gTKFl9Q5wgFEiU50NMi7qPAKEfAgRcuQrk
-        h1zT5mUq1Bc+ARbSqYBcuvQ=
-X-Google-Smtp-Source: AGHT+IGNs9Ohd0RDWMV5WiHbTxHTWdiuvdH47nKyV+uH98lkzRLtSYDiG05NSHMzOmqWSKTrRko3ZQ==
-X-Received: by 2002:a1c:7204:0:b0:403:442:5421 with SMTP id n4-20020a1c7204000000b0040304425421mr2949761wmc.4.1694633652230;
-        Wed, 13 Sep 2023 12:34:12 -0700 (PDT)
-Received: from Ansuel-xps. (host-87-4-207-241.retail.telecomitalia.it. [87.4.207.241])
-        by smtp.gmail.com with ESMTPSA id m25-20020a7bce19000000b003fe539b83f2sm2844488wmc.42.2023.09.13.12.34.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 12:34:11 -0700 (PDT)
-Message-ID: <65020eb3.7b0a0220.fada9.b703@mx.google.com>
-X-Google-Original-Message-ID: <ZQIOruZ/nfYK8ZQU@Ansuel-xps.>
-Date:   Wed, 13 Sep 2023 21:34:06 +0200
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        rafael@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dmitry.baryshkov@linaro.org
-Subject: Re: [PATCH v3 2/3] dt-bindings: opp: opp-v2-kryo-cpu: Document named
- opp-microvolt property
-References: <20230909165739.1036263-1-robimarko@gmail.com>
- <20230909165739.1036263-2-robimarko@gmail.com>
- <20230912154239.GA833216-robh@kernel.org>
+        Wed, 13 Sep 2023 15:35:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DF891;
+        Wed, 13 Sep 2023 12:35:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694633709; x=1726169709;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BKdDmwR0ImqwcCwZEvaS7Oi5BImbBc0gOTOmvoBXyPg=;
+  b=OPyfkHEYEUeGhdNlbRgM63qM1r/alXclHMPSuc2w9ZwsxKGOrqJ54jXR
+   dpx+Iz5H1TLjw0V+l7U0xCYtGYIW82t79Th1T1DYDb5HJgwirtpoKqRo7
+   ZMDofrcY9PNYXJcllL9pdFkqvxeputxrHME+hyE62y2gF3aI2GLEljBN1
+   CqaIR6e+2Uw9Hb2e6mhD0+NcEskKcGyTdZXGuKLudIq15mn4ARxJHU5m3
+   AQxmP6XKCvSYT207bJIzB5LPa2OarYSHX0ZxtkL/aEWmAOCiUIzM4BlIu
+   DOYXyZn9a7Ha2OirHJTUJOeS2d8qT/PokVPj1PGTsVauOU7S5ZWpXQe4Q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="376102134"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="376102134"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:35:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="737650919"
+X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
+   d="scan'208";a="737650919"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 13 Sep 2023 12:34:59 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgVdZ-0000Wr-1B;
+        Wed, 13 Sep 2023 19:34:57 +0000
+Date:   Thu, 14 Sep 2023 03:34:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, david@redhat.com,
+        rdunlap@infradead.org, chenlinxuan@uniontech.com,
+        yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com,
+        bhelgaas@google.com, ivan@cloudflare.com,
+        pasha.tatashin@soleen.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v1 1/1] mm: report per-page metadata information
+Message-ID: <202309140322.cF62Kywb-lkp@intel.com>
+References: <20230913173000.4016218-2-souravpanda@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912154239.GA833216-robh@kernel.org>
+In-Reply-To: <20230913173000.4016218-2-souravpanda@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 10:42:39AM -0500, Rob Herring wrote:
-> On Sat, Sep 09, 2023 at 06:56:01PM +0200, Robert Marko wrote:
-> > From: Christian Marangi <ansuelsmth@gmail.com>
-> > 
-> > Document named opp-microvolt property for opp-v2-kryo-cpu schema.
-> > This property is used to declare multiple voltage ranges selected on the
-> > different values read from efuses. The selection is done based on the
-> > speed pvs values and the named opp-microvolt property is selected by the
-> > qcom-cpufreq-nvmem driver.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > Signed-off-by: Robert Marko <robimarko@gmail.com>
-> > ---
-> >  .../bindings/opp/opp-v2-kryo-cpu.yaml         | 40 +++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml b/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
-> > index bbbad31ae4ca..6f216306a7eb 100644
-> > --- a/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
-> > +++ b/Documentation/devicetree/bindings/opp/opp-v2-kryo-cpu.yaml
-> > @@ -63,6 +63,12 @@ patternProperties:
-> >            5:  MSM8996SG, speedbin 1
-> >            6:  MSM8996SG, speedbin 2
-> >            7-31:  unused
-> > +
-> > +          Bitmap for IPQ806X SoC:
-> > +          0:  IPQ8062
-> > +          1:  IPQ8064/IPQ8066/IPQ8068
-> > +          2:  IPQ8065/IPQ8069
-> > +          3-31:  unused
-> >          enum: [0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7,
-> >                 0x9, 0xd, 0xe, 0xf,
-> >                 0x10, 0x20, 0x30, 0x70]
-> > @@ -71,6 +77,24 @@ patternProperties:
-> >  
-> >        required-opps: true
-> >  
-> > +    patternProperties:
-> > +      '^opp-microvolt-speed[0-9]+-pvs[0-9]+$':
-> > +        description: |
-> > +          Named opp-microvolt property following the same generic
-> > +          binding for named opp-microvolt.
-> > +
-> > +          The correct voltage range is selected based on the values
-> > +          in the efuse for the speed and the pvs.
-> 
-> What is "pvs"?
->
+Hi Sourav,
 
-I will add the meaning in ().  
+kernel test robot noticed the following build errors:
 
-> > +
-> > +          The qcom-cpufreq-nvmem driver will read all these values
-> > +          and assign the correct named property.
-> 
-> Specific driver details don't belong in binding. If there's some detail 
-> or requirement of all consumers, then that is fine here.
-> 
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.6-rc1 next-20230913]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Ok will drop.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sourav-Panda/mm-report-per-page-metadata-information/20230914-013201
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230913173000.4016218-2-souravpanda%40google.com
+patch subject: [PATCH v1 1/1] mm: report per-page metadata information
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20230914/202309140322.cF62Kywb-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140322.cF62Kywb-lkp@intel.com/reproduce)
 
-> > +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> 
-> The common binding already defines the type. Drop.
-> 
-> > +        minItems: 1
-> > +        maxItems: 8   # Should be enough regulators
-> 
-> Does this really vary from 1 to 8 entries? Looks like copy-n-paste.
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309140322.cF62Kywb-lkp@intel.com/
 
-Yes this comes from the default opp schema, actually the thing can
-support 4 regulators so I will change to that.
+All errors (new ones prefixed by >>):
 
-> > +        items:
-> > +          minItems: 1
-> > +          maxItems: 3
-> 
-> Do you really need to support both single voltage and <nom min max> 
-> forms?
->
-
-It's all part of the OPP declaration so it would be supported anyway. Ok
-for me to enforce <nom min max>. But is it really necessary?
+   ld: mm/mm_init.o: in function `free_area_init':
+>> mm_init.c:(.init.text+0x842): undefined reference to `mod_node_early_perpage_metadata'
+   ld: mm/page_alloc.o: in function `setup_per_cpu_pageset':
+>> page_alloc.c:(.init.text+0x60): undefined reference to `writeout_early_perpage_metadata'
 
 -- 
-	Ansuel
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
