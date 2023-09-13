@@ -2,159 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AADB079DD9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB84F79DD9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238038AbjIMBeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
+        id S238058AbjIMBel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbjIMBeH (ORCPT
+        with ESMTP id S231414AbjIMBej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:34:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9484210F6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:34:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 297C5C433CA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:34:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694568843;
-        bh=1cOduB5NzSAFGxdYlZ9mahDJ+zC1TtAF7RTbwxcPz4M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UlyvFtNlpxRaQjmL1KQi1Em1880aU2p17ODm9mHMtKXHSg77yoaRNUMxQ3egDP38Y
-         IWq+faLpDhlQt35WbyXJFfKIs8d46sYpo9uk0xvGc7m1cZ8EufHjKZwcUuJYQY7n6P
-         FNRP1iy/K3fwPlmvsiQdZ9CmcY3/Z0w5FoirSjK89ukIOJFvJTbH6NYxi9qMikprfJ
-         gxTzkeF5s/PVsBu96kaK24kBgymeUk+5friohyZZUm1OpuTOUqhVQxxiTOn0MPb7Wa
-         SnMIqUrkAoq4ytxvGDmlK9t7/QrD+V0cjjD5inVJrUC1s9OQCXhdJKkgajFeL4q2er
-         xa7+/BTWTqnNQ==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9ad8d0be93aso94685866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:34:03 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyA1iczUY2NIe0CDmZk4SrS5tdedde7PXasNBLLoJx3ABBCBfsF
-        9nhA+GayTklYHkkXfyb2lK6s1gyHcx4DeOFc0d0=
-X-Google-Smtp-Source: AGHT+IFitKFfgjVq2xMFZUjgUnzIxGnh2YXc/Y2i4oL1rDRwl4MnjzLDTZMWcWcvrwcsIzo8g4NOLltJnq+4hzps6CI=
-X-Received: by 2002:a17:906:5a42:b0:9a1:b528:d0f6 with SMTP id
- my2-20020a1709065a4200b009a1b528d0f6mr1515299ejc.27.1694568841506; Tue, 12
- Sep 2023 18:34:01 -0700 (PDT)
+        Tue, 12 Sep 2023 21:34:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D929D10FE;
+        Tue, 12 Sep 2023 18:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694568875; x=1726104875;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BWOxUPW3HtPNFgEFOHoQhbd+ni/5DnSj2ZCuh3rTtAc=;
+  b=gc2/i1+a6Ggyong+Hyi3NBuVgxJoss5mBmJyoxlsxTOHqcqxLK3JD2mU
+   zdNdExS27EO+uNynKx9dGD8/peBB1E/YQQ9k8QCLIjqAod3+qrvdUV4SW
+   7cxnD6vzBjcnpDtBePMb2wt+sbOf71KF2Lvku4OFEHVPUjBIDvfo60HtE
+   xgeG84dvIf0RYnGzD5tdMJIpW1/2Lz2yrbNdvHAOtGAG62F8N3Lf+s0BY
+   Kj2+CnC+7cMbHI2tTpdTVEl9AV9nGa8FS3bTzOA0pUkilRjV4wGfFYUBA
+   ukaN5PTrx19/KFX4a+3roCuq0vWMo0sshLhUeCW5oBY/C2hTlrsu3R/aL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="375868416"
+X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
+   d="scan'208";a="375868416"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 18:34:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="867581317"
+X-IronPort-AV: E=Sophos;i="6.02,141,1688454000"; 
+   d="scan'208";a="867581317"
+Received: from lkp-server02.sh.intel.com (HELO 47e905db7d2b) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 12 Sep 2023 18:34:29 -0700
+Received: from kbuild by 47e905db7d2b with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgElv-0000Zb-2H;
+        Wed, 13 Sep 2023 01:34:27 +0000
+Date:   Wed, 13 Sep 2023 09:34:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Meng Li <li.meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>, Meng Li <li.meng@amd.com>
+Subject: Re: [PATCH V6 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for
+ the expansion.
+Message-ID: <202309130938.dmI2pWUB-lkp@intel.com>
+References: <20230908074653.2799055-2-li.meng@amd.com>
 MIME-Version: 1.0
-References: <20230911092810.3108092-1-chenhuacai@loongson.cn>
- <b96c53eb-3c6f-d981-7573-10b95c3005a2@xen0n.name> <CAAhV-H6p6F6j61fiFz=KdhkRX_fN+jzhhuarJdcQ0LHtTLpzKw@mail.gmail.com>
- <bfdcbbb0-3df0-1778-6250-99e1120bb077@xen0n.name>
-In-Reply-To: <bfdcbbb0-3df0-1778-6250-99e1120bb077@xen0n.name>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 13 Sep 2023 09:33:49 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7r2iNVUstHuYHj8Ve=sY9c5JoMvZNX_pDaUVhL7oGWXw@mail.gmail.com>
-Message-ID: <CAAhV-H7r2iNVUstHuYHj8Ve=sY9c5JoMvZNX_pDaUVhL7oGWXw@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Set all reserved memblocks on Node#0 at initialization
-To:     WANG Xuerui <kernel@xen0n.name>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        WANG Xuerui <git@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908074653.2799055-2-li.meng@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 9:23=E2=80=AFAM WANG Xuerui <kernel@xen0n.name> wro=
-te:
->
-> On 9/13/23 08:49, Huacai Chen wrote:
-> > On Wed, Sep 13, 2023 at 12:08=E2=80=AFAM WANG Xuerui <kernel@xen0n.name=
-> wrote:
-> >> On 9/11/23 17:28, Huacai Chen wrote:
-> >>> After commit 61167ad5fecdea ("mm: pass nid to reserve_bootmem_region(=
-)")
-> >>> we get a panic if DEFERRED_STRUCT_PAGE_INIT is enabled:
-> >>>
-> >>> [snip]
-> >>>
-> >>> The reason is early memblock_reserve() in memblock_init() set node id
-> >> Why is it that only "early" but not "late" memblock_reserve() matters?=
- I
-> >> failed to see the reason because the arch-specific memblock_init() isn=
-'t
-> >> even in the backtrace, which means that *neither* is the culprit.
-> > Late memblock_reserve() operates on subregions of memblock.memory
-> > regions. These reserved regions will be set to the correct node at the
-> > first iteration of memmap_init_reserved_pages().
-> Thanks for the clarification. According to the code behavior (and the
-> comment I left on the reordering change below) I'm now sure the intended
-> meaning is "calling memblock_reserve() after memblock_set_node() is
-> effectively leaving those regions with nid=3DMAX_NUMNODES" (or something
-> like that, pointing out that the memblock_set_node() call actually had
-> no effect in this case). "Early" and "late" in the context of init code
-> can be especially confusing IMO :-)
-The "early call" specifically means these lines:
+Hi Meng,
 
-        /* Reserve the first 2MB */
-        memblock_reserve(PHYS_OFFSET, 0x200000);
+kernel test robot noticed the following build errors:
 
-        /* Reserve the kernel text/data/bss */
-        memblock_reserve(__pa_symbol(&_text),
-                         __pa_symbol(&_end) - __pa_symbol(&_text));
+[auto build test ERROR on rafael-pm/linux-next]
+[also build test ERROR on tip/x86/core linus/master v6.6-rc1 next-20230912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-These two regions can be out of initial memory maps. Other later
-memblock_reserve() regions must be in initial memory maps, so will get
-a correct node id.
+url:    https://github.com/intel-lab-lkp/linux/commits/Meng-Li/x86-Drop-CPU_SUP_INTEL-from-SCHED_MC_PRIO-for-the-expansion/20230908-154939
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+patch link:    https://lore.kernel.org/r/20230908074653.2799055-2-li.meng%40amd.com
+patch subject: [PATCH V6 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+config: i386-buildonly-randconfig-004-20230913 (https://download.01.org/0day-ci/archive/20230913/202309130938.dmI2pWUB-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309130938.dmI2pWUB-lkp@intel.com/reproduce)
 
-Huacai
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309130938.dmI2pWUB-lkp@intel.com/
 
-> >
-> > Huacai
-> >
-> >>> to MAX_NUMNODES, which causes NODE_DATA(nid) be a NULL dereference in
-> >> "making NODE_DATA(nid) a NULL ..."
-> >>> reserve_bootmem_region() -> init_reserved_page(). So set all reserved
-> >>> memblocks on Node#0 at initialization to avoid this panic.
-> >>>
-> >>> Reported-by: WANG Xuerui <git@xen0n.name>
-> >>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> >>> ---
-> >>>    arch/loongarch/kernel/mem.c | 4 +++-
-> >>>    1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/arch/loongarch/kernel/mem.c b/arch/loongarch/kernel/mem.=
-c
-> >>> index 4a4107a6a965..aed901c57fb4 100644
-> >>> --- a/arch/loongarch/kernel/mem.c
-> >>> +++ b/arch/loongarch/kernel/mem.c
-> >>> @@ -50,7 +50,6 @@ void __init memblock_init(void)
-> >>>        }
-> >>>
-> >>>        memblock_set_current_limit(PFN_PHYS(max_low_pfn));
-> >>> -     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
-> >>>
-> >>>        /* Reserve the first 2MB */
-> >>>        memblock_reserve(PHYS_OFFSET, 0x200000);
-> >>> @@ -58,4 +57,7 @@ void __init memblock_init(void)
-> >>>        /* Reserve the kernel text/data/bss */
-> >>>        memblock_reserve(__pa_symbol(&_text),
-> >>>                         __pa_symbol(&_end) - __pa_symbol(&_text));
-> >>> +
-> >>> +     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
-> >>> +     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.reserved, 0);
-> >> So the reordering is for being able to override the newly added
-> >> memblocks' nids to 0, and additionally doing the same for
-> >> memblock.reserved is the actual fix. Looks okay.
-> >>>    }
-> >> And I've tested the patch on the 2-way 3C5000L server, and it now
-> >> correctly boots with deferred struct page init enabled. Thanks for
-> >> providing such a quick fix!
-> >>
-> >> Tested-by: WANG Xuerui <git@xen0n.name>
-> >> Reviewed-by: WANG Xuerui <git@xen0n.name>  # with nits addressed
-> >>
-> >> --
-> >> WANG "xen0n" Xuerui
-> >>
-> >> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-> >>
-> >>
-> --
-> WANG "xen0n" Xuerui
->
-> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
->
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/cpufreq/amd-pstate.c:41:
+>> include/acpi/processor.h:226:9: error: unknown type name 'phys_cpuid_t'
+     226 |         phys_cpuid_t phys_id;   /* CPU hardware ID such as APIC ID for x86 */
+         |         ^~~~~~~~~~~~
+   include/acpi/processor.h:355:1: error: unknown type name 'phys_cpuid_t'
+     355 | phys_cpuid_t acpi_get_phys_id(acpi_handle, int type, u32 acpi_id);
+         | ^~~~~~~~~~~~
+   include/acpi/processor.h:356:1: error: unknown type name 'phys_cpuid_t'
+     356 | phys_cpuid_t acpi_map_madt_entry(u32 acpi_id);
+         | ^~~~~~~~~~~~
+   include/acpi/processor.h:357:20: error: unknown type name 'phys_cpuid_t'
+     357 | int acpi_map_cpuid(phys_cpuid_t phys_id, u32 acpi_id);
+         |                    ^~~~~~~~~~~~
+   drivers/cpufreq/amd-pstate.c: In function 'amd_pstate_acpi_pm_profile_server':
+   drivers/cpufreq/amd-pstate.c:1076:17: error: 'acpi_gbl_FADT' undeclared (first use in this function); did you mean 'acpi_table_fadt'?
+    1076 |         switch (acpi_gbl_FADT.preferred_profile) {
+         |                 ^~~~~~~~~~~~~
+         |                 acpi_table_fadt
+   drivers/cpufreq/amd-pstate.c:1076:17: note: each undeclared identifier is reported only once for each function it appears in
+   drivers/cpufreq/amd-pstate.c: In function 'amd_pstate_acpi_pm_profile_undefined':
+   drivers/cpufreq/amd-pstate.c:1087:13: error: 'acpi_gbl_FADT' undeclared (first use in this function); did you mean 'acpi_table_fadt'?
+    1087 |         if (acpi_gbl_FADT.preferred_profile == PM_UNSPECIFIED)
+         |             ^~~~~~~~~~~~~
+         |             acpi_table_fadt
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for X86_AMD_PSTATE
+   Depends on [n]: CPU_FREQ [=y] && X86 [=y] && ACPI [=n]
+   Selected by [y]:
+   - SCHED_MC_PRIO [=y] && SCHED_MC [=y] && CPU_SUP_AMD [=y]
+   WARNING: unmet direct dependencies detected for VIDEO_OV7640
+   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+   Selected by [y]:
+   - VIDEO_GO7007 [=y] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && MEDIA_ANALOG_TV_SUPPORT [=y] && VIDEO_DEV [=y] && I2C [=y] && SND [=y] && USB [=y] && MEDIA_SUBDRV_AUTOSELECT [=y] && MEDIA_CAMERA_SUPPORT [=y]
+
+
+vim +/phys_cpuid_t +226 include/acpi/processor.h
+
+^1da177e4c3f41 Linus Torvalds    2005-04-16  222  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  223  struct acpi_processor {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  224  	acpi_handle handle;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  225  	u32 acpi_id;
+828aef376d7a12 Catalin Marinas   2015-03-24 @226  	phys_cpuid_t phys_id;	/* CPU hardware ID such as APIC ID for x86 */
+af8f3f514d193e Hanjun Guo        2015-01-04  227  	u32 id;		/* CPU logical ID allocated by OS */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  228  	u32 pblk;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  229  	int performance_platform_limit;
+01854e697a77a4 Luming Yu         2007-05-26  230  	int throttling_platform_limit;
+ff55a9cebab024 Len Brown         2007-06-02  231  	/* 0 - states 0..n-th state available */
+01854e697a77a4 Luming Yu         2007-05-26  232  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  233  	struct acpi_processor_flags flags;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  234  	struct acpi_processor_power power;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  235  	struct acpi_processor_performance *performance;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  236  	struct acpi_processor_throttling throttling;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  237  	struct acpi_processor_limit limit;
+d9460fd227ed2c Zhang Rui         2008-01-17  238  	struct thermal_cooling_device *cdev;
+ac212b6980d8d5 Rafael J. Wysocki 2013-05-03  239  	struct device *dev; /* Processor device. */
+3000ce3c52f8b8 Rafael J. Wysocki 2019-10-16  240  	struct freq_qos_request perflib_req;
+3000ce3c52f8b8 Rafael J. Wysocki 2019-10-16  241  	struct freq_qos_request thermal_req;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  242  };
+^1da177e4c3f41 Linus Torvalds    2005-04-16  243  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
