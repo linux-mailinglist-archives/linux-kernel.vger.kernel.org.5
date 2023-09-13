@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE8C79E87F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE5279E885
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240714AbjIMNAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        id S235123AbjIMNBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240671AbjIMNAI (ORCPT
+        with ESMTP id S233534AbjIMNA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:00:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6882A1989;
-        Wed, 13 Sep 2023 06:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694610004; x=1726146004;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SS5UdfEd5/aGjW95PuR1Hrc1ehfo5reasMr5Jb91wy0=;
-  b=abDz9kzUWQ2kSs78Eu+X4vtTDYKdewXwQ4f83lRCbdq0qzG5xo74sORm
-   JU//2HDLl7s1TqO7EhQyhKK8RrT3jIGNiijTSuaDL6NZVNf2M0EBsXVp0
-   bbt0+TkIvbFDfpHM5zQHaiIQK4lv7/jB1ooIwWiPTz8kp/ZvDcvYIFDwi
-   u8/+rFdawT4wQH7oxpk9qQJjL3CdF64BivVoUFelVwhOSolMJEc4xUI1Z
-   tqgWr9kZ/TIGWi+Zvhv+wc1WM0twa55iPY4tyOKeTXabswx6l2E3wryZS
-   0dL99OnYx9Ep7Q94vIYE6Akqrd6mFQcfdJjvy7UKe/tJ5Pzzvd+LNQPgQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="375983355"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="375983355"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 06:00:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="990908097"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="990908097"
-Received: from asjackso-mobl2.amr.corp.intel.com (HELO tkristo-desk.intel.com) ([10.249.45.219])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:59:59 -0700
-From:   Tero Kristo <tero.kristo@linux.intel.com>
-To:     x86@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        tglx@linutronix.de
-Cc:     hpa@zytor.com, irogers@google.com, jolsa@kernel.org,
-        namhyung@kernel.org, adrian.hunter@intel.com, acme@kernel.org,
-        mingo@redhat.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com,
-        linux-perf-users@vger.kernel.org, peterz@infradead.org,
-        mark.rutland@arm.com
-Subject: [PATCHv2 2/2] perf/core: Allow reading package events from perf_event_read_local
-Date:   Wed, 13 Sep 2023 15:59:56 +0300
-Message-Id: <20230913125956.3652667-1-tero.kristo@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
-References: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
+        Wed, 13 Sep 2023 09:00:58 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F631989;
+        Wed, 13 Sep 2023 06:00:54 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a40cf952dso8999985a12.2;
+        Wed, 13 Sep 2023 06:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694610052; x=1695214852; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YrbAZ7p+q0hOYwba3y8YZqHpfIOsVvTzknQ/Q/Cixt4=;
+        b=h0yD0aAnv4+XqR7pucMoFGVVlvtqY7MRd1/KWFLgAV5vNJyqzVo6LvjTCyjF4VQ1BD
+         fmvucMUgGfxazxI6xob9M8E/N0OQ5bPpwFWnjEyjMrxcEhSSUQr/LeGXTE4paAIQt+gw
+         X4BRdAnPaZ0+HGgwAwQpKYituheU+gOBIWD5ZEolpFsVk0ZvS5s65h0NM6O2I4ShzzIZ
+         sa42Z591XrhF+7/+b0yecp4mP0teoZ+BqzA/ANIeRrHvrQcr14jmS0EHKnqHowPndOHf
+         eYrXXoI8pWezOXPQl3Nnkfg5Jr7TpAcFzoGmP1QMDsCokkEM6qdagnbL2t8Nb9Jber99
+         5dVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694610052; x=1695214852;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YrbAZ7p+q0hOYwba3y8YZqHpfIOsVvTzknQ/Q/Cixt4=;
+        b=b4bLdaUqPbCOPBNYxzmCLPgaLcm6yQf1HvEdvNSpZYuPYSelH2pKgSc6GoiSGLgY0t
+         NXlCJUoj83/LUBlX1H9iwRkEPY1Sf8qIyI0Jiv3uo35omAOPY9mT+hf0UGgQUfhGvQwJ
+         Ck5b/6bA4bz4dO+8BdStwaWzF3SGCJzHcOWgqqVPOPM1AP82oFGTd5ENku21Gw3aBgb+
+         2kMNEkmQu0hZsIkr2vehTIy3x8m59tu1JlitKapgRY9gIMGngzgpet8dmOQm/IJyxd2A
+         NVsWRROX6MGis13C30dR5K0BIPS/oUO8SJEPb+z16pxbflXyR7YuT1zUrbpLfct7B9Wt
+         SUSg==
+X-Gm-Message-State: AOJu0YyzKm2T1j1AkuZGdHVyUGHPymgYm3qvOrknaZbOgAfgCYWbooHG
+        JHonphimhisMKNDMahwEMkY=
+X-Google-Smtp-Source: AGHT+IFZY1lZRYIGtnHSSLJ5Dv9nUSo3FSHlEpmP7yJBNk19dcocL3jmULDt3kHQBRqk+jZdLrELeg==
+X-Received: by 2002:a05:6402:743:b0:52f:b405:4f21 with SMTP id p3-20020a056402074300b0052fb4054f21mr2383088edy.7.1694610052353;
+        Wed, 13 Sep 2023 06:00:52 -0700 (PDT)
+Received: from skbuf ([188.26.184.93])
+        by smtp.gmail.com with ESMTPSA id j18-20020a50ed12000000b0052996528b81sm7285107eds.45.2023.09.13.06.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 06:00:52 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 16:00:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <20230913130049.ivvl4vzjcfedsddr@skbuf>
+References: <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
+ <20230911225126.rk23g3u3bzo3agby@skbuf>
+ <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
+ <20230912193450.h5s6miubag46z623@skbuf>
+ <6cec079e-991e-4222-a76d-d6156de0daca@arinc9.com>
+ <20230913074231.5azwxqjuv2wp5nik@skbuf>
+ <89c9b84c-574c-4071-9524-9207597a3f0a@arinc9.com>
+ <20230913110404.co7earmnbzf6hhoe@skbuf>
+ <137fd54d-7d2d-4d0b-a50b-cca69875a814@arinc9.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <137fd54d-7d2d-4d0b-a50b-cca69875a814@arinc9.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per-package perf events are typically registered with a single CPU only,
-however they can be read across all the CPUs within the package.
-Currently perf_event_read maps the event CPU according to the topology
-information to avoid an unnecessary SMP call, however
-perf_event_read_local deals with hard values and rejects a read with a
-failure if the CPU is not the one exactly registered. Allow similar
-mapping within the perf_event_read_local if the perf event in question
-can support this.
+On Wed, Sep 13, 2023 at 02:35:11PM +0300, Arınç ÜNAL wrote:
+> On 13.09.2023 14:04, Vladimir Oltean wrote:
+> > I don't think they're for switch ports only. Any driver which uses
+> > phylink_fwnode_phy_connect() or its derivatives gets subject to the same
+> > bindings. But putting the sub-schema in ethernet-controller.yaml makes
+> > sense, just maybe not naming it "phylink-switch".
+> 
+> Got it. Should we disallow managed altogether when fixed-link is also
+> defined, or just with in-band-status value?
 
-This allows users like BPF code to read the package perf events properly
-across different CPUs within a package.
-
-Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
----
-v2:
-  * prevent illegal array access in case event->oncpu == -1
-  * split the event->cpu / event->oncpu handling to their own variables
-
- kernel/events/core.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 4c72a41f11af..6b343bac0a71 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4425,6 +4425,9 @@ static int __perf_event_read_cpu(struct perf_event *event, int event_cpu)
- {
- 	u16 local_pkg, event_pkg;
- 
-+	if (event_cpu < 0 || event_cpu >= nr_cpu_ids)
-+		return event_cpu;
-+
- 	if (event->group_caps & PERF_EV_CAP_READ_ACTIVE_PKG) {
- 		int local_cpu = smp_processor_id();
- 
-@@ -4528,6 +4531,8 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- {
- 	unsigned long flags;
- 	int ret = 0;
-+	int event_cpu;
-+	int event_oncpu;
- 
- 	/*
- 	 * Disabling interrupts avoids all counter scheduling (context
-@@ -4551,15 +4556,22 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 		goto out;
- 	}
- 
-+	/*
-+	 * Get the event CPU numbers, and adjust them to local if the event is
-+	 * a per-package event that can be read locally
-+	 */
-+	event_oncpu = __perf_event_read_cpu(event, event->oncpu);
-+	event_cpu = __perf_event_read_cpu(event, event->cpu);
-+
- 	/* If this is a per-CPU event, it must be for this CPU */
- 	if (!(event->attach_state & PERF_ATTACH_TASK) &&
--	    event->cpu != smp_processor_id()) {
-+	    event_cpu != smp_processor_id()) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
- 
- 	/* If this is a pinned event it must be running on this CPU */
--	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
-+	if (event->attr.pinned && event_oncpu != smp_processor_id()) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -4569,7 +4581,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
- 	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
- 	 * oncpu == -1).
- 	 */
--	if (event->oncpu == smp_processor_id())
-+	if (event_oncpu == smp_processor_id())
- 		event->pmu->read(event);
- 
- 	*value = local64_read(&event->count);
--- 
-2.40.1
-
+Just with the "in-band-status" value - just like phylink_parse_mode()
+implies. If not possible, just leave that condition out.
