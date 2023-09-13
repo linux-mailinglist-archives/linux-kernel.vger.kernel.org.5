@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B8979E2AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974B879E2B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238746AbjIMIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:54:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        id S239135AbjIMIy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239118AbjIMIyW (ORCPT
+        with ESMTP id S239119AbjIMIyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:54:22 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65756199B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:54:18 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-991c786369cso874104266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694595257; x=1695200057; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L0apUheILPMX7x2JZIBYAaTsA3mGU5O9Tt/tPbdDFV8=;
-        b=tAf5IhVRglTi+2Pe+AHLQ7lPu14wZnjPC5aMmuUb2glS2q2yWuXLJsySJ9j45EsIFV
-         oW89li52EEYtLcF4Jhrx/7+8BEqKCIzCuzGi5F14gi7hAWKEfnUx0l/kx16MZeFG4ZXz
-         ANR6Qv/57hfWBjRfpknWjxMDThxNuTCDhU06Ryk6eJfcZ1Wc3n+0/ggCkqisMO+GBg0q
-         /lPzJl/twL8D6f4NcmY4n0fqwECt0M2ACGQlJLiUjv4Lil1vj6cfuy5M0WRty2Iqb7nj
-         PXoWf5sJFwB5kB6q7B21bLsWts4os1mTOuPQrOG6GE/kXg0J0aS7r6z5EJ5FGQzQzVZV
-         7G1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694595257; x=1695200057;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L0apUheILPMX7x2JZIBYAaTsA3mGU5O9Tt/tPbdDFV8=;
-        b=tBnQf3SPK3YbASDjXy8X1maQMpGo+ZzK1NrQgo2J7hOAf1RvuaONDDi4FUQQoaaBDb
-         o6i8ewMN4DYQjpeDPxPJQPzQ7yahtvVz+Fez/SHBp9JfIBDJCeOlvc0p8Pp3y8Vmb0OF
-         JjO9By6eOBn9WjCigHrNhUy4qLX1JCgRNpA90iTAohuvg1Sp2x8V1DZL/cDYPBPoKdlP
-         JYWB7g40N42rBQLK99n5SE3ccHmsfUcLRLZGe5ZWSnkdu67OvlNLXcM39ZjVxgsW4sLh
-         0Dk/JrRWoSg5kMyA4ZzZhTydL/MThKmd+7GDu6Qlg0yCuZJbU5N/ThSuk3Z9YN1nUk/R
-         ICpA==
-X-Gm-Message-State: AOJu0Yzt9N2fQdxJDSKqEFdjIedO2SpjmlBVfdSHVLcRf7tRawxjhvJ5
-        NJNKbohAIastzCNgsxoANYffUQ==
-X-Google-Smtp-Source: AGHT+IGAbdAkyFnF5lg1Ujec9J/EHGSJnFd2ff85JSEsdS+0i7gZoSPd/Q2+TeTpPWFfv2CdQdyegw==
-X-Received: by 2002:a17:907:2cf8:b0:9a1:bb8f:17d7 with SMTP id hz24-20020a1709072cf800b009a1bb8f17d7mr1260199ejc.12.1694595256842;
-        Wed, 13 Sep 2023 01:54:16 -0700 (PDT)
-Received: from [192.168.37.232] (178235177106.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.106])
-        by smtp.gmail.com with ESMTPSA id z7-20020a1709060ac700b0099bc08862b6sm8177067ejf.171.2023.09.13.01.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 01:54:16 -0700 (PDT)
-Message-ID: <e07ae46a-2274-41d2-a079-029e1619e2b5@linaro.org>
-Date:   Wed, 13 Sep 2023 10:54:14 +0200
+        Wed, 13 Sep 2023 04:54:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A13E73;
+        Wed, 13 Sep 2023 01:54:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FAEC433CB;
+        Wed, 13 Sep 2023 08:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694595261;
+        bh=mbTrXGy+BmzVd7CtF/AdU2G0DxQ0H/p3mfygzm64JKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J8WoxwuK8V6FCY1n+mWYy5+bCOyAkqFcWG7BUD1FOR7ndl3sYlHIJqhcyMdAyhIh+
+         rhZ+P8w4Labhf5IKwVpf7oLKiqvvpo+MpotQqsBHPK6eOgzt4FWzemPdBBaNO3cUVU
+         M/SlxWAYs1gbyTzGgzFT2tUgf3sLvbI86418mb5L0dHI7l4v8cdpvHpnzSiHRPlR1C
+         Xp06dWUaAT/0cPmKViYar1GvKLtmEZJyVSvAEZKSFHdq+CbgNtmSPjpmVB2LtGKaIu
+         hyNspj6lqwtRGQO+6RNIV4v6Mtd1cCwHytO0FJgw3pT24fjKTe21wXYXzlyiSup/ao
+         FEUmh9UmrSBzw==
+Date:   Wed, 13 Sep 2023 10:54:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: Make I2C_ATR invisible
+Message-ID: <ZQF4uGd5C4l+7iWo@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] spi: qup: Parse OPP table for DVFS support
-Content-Language: en-US
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
- <20230912-spi-qup-dvfs-v1-2-3e38aa09c2bd@kernkonzept.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230912-spi-qup-dvfs-v1-2-3e38aa09c2bd@kernkonzept.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5akU66tpM0r/Hmp3"
+Content-Disposition: inline
+In-Reply-To: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.09.2023 16:30, Stephan Gerhold wrote:
-> Parse the OPP table from the device tree and use dev_pm_opp_set_rate()
-> instead of clk_set_rate() to allow making performance state for power
-> domains specified in the OPP table.
-> 
-> This is needed to guarantee correct behavior of the clock, especially
-> with the higher clock/SPI bus frequencies.
-> 
-> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-> ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+--5akU66tpM0r/Hmp3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Aug 15, 2023 at 05:29:11PM +0200, Geert Uytterhoeven wrote:
+> I2C Address Translator (ATR) support is not a stand-alone driver, but a
+> library.  All of its users select I2C_ATR.  Hence there is no need for
+> the user to enable this symbol manually, except when compile-testing.
+>=20
+> Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) su=
+pport")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Fixed checkpatch warning:
+
+WARNING: Please use correct Fixes: style 'Fixes: <12 chars of sha1> ("<titl=
+e line>")' - ie: 'Fixes: a076a860acae ("media: i2c: add I2C Address Transla=
+tor (ATR) support")'
+
+and applied to for-current, thanks!
+
+
+--5akU66tpM0r/Hmp3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUBeLgACgkQFA3kzBSg
+Kbbfzw/+Pl0XcrN3b1g2c2tE73qzJMxRO0iP5G7qQci8sYchHs1G3zm6wbtT1uAl
+0vfrArR4+HO/AyUMg5tTVk3uRHdaMClkr/IaslTYIOgZmaA9HsAorbLWgrNMW1v4
+CDmh6xq+UIhka8Edii7xY52S/0mtHlwYPijvueVjlQ9dggdWmkPzEn180N4rQCsq
+2CQnDcEGf4/lQwlfhcfmm4W1F032PppPTSRsN0Qp6MK0+wF8hybzZsRQkZuPUJhW
+FRqW/vY1EvZMvnEfIFiN4WFCq+894/GfWGH51FhslYgFuL58N9Dj1H8oLohfIEiS
+smm+KWGzglj1Wyd3GfQ0FeQkGj/hyZSQjLgYYlg1idaTgs3y1Y45EvguM7FOUm48
+IkFYXgBZG6i/SYPKsQcAA2vK11j1tuz12uqAu0GMgKC+oZM4nuyourf911sTKAZq
+ozzK4LVqjY5U0mYVIha7/HBlMQzUT7u5qSIgpzjtcbDJ1unA4S9Fw2981Oe/XSWk
+A1X5LUFWLlWJWEE3/P8qHfIhgJVyccaoJPzSS9YxhLFoGV9IQrt2+vbwB2eKXvv1
+P2aNL8tSW+sTJk0gfxqIL5Fn+ABBFbGlgO4zhQHBRV98l+SDDxBaF4t14CesZpVi
+AyKDryX5oW5w7K8xlHjimpxQ+uG4xQLNhfdMSdhU7nCnIpNw+3w=
+=u8AL
+-----END PGP SIGNATURE-----
+
+--5akU66tpM0r/Hmp3--
