@@ -2,262 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D527A79EB49
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF5C79EB4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241070AbjIMOla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36458 "EHLO
+        id S241186AbjIMOm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjIMOl3 (ORCPT
+        with ESMTP id S232390AbjIMOm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:41:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F56490
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:41:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66DD2C433C8;
-        Wed, 13 Sep 2023 14:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694616084;
-        bh=keiQAhGl1KiQuI4EQlUBS5t1hZLSooT0aQknqkd3RNw=;
-        h=From:Date:To:Cc:Subject:References:In-Reply-To:From;
-        b=foaaS8V8By/GEEvlESL1FRYWFDGeHe79QknknqA+frVW/9g7ijSn5WU+r1LQ1lGZW
-         9D3l/CGQXnabSLR/8ORf3cw8GXVj/9n7zoREKf1z4tmjPJctX5dxL4XT8I2wkc/KLI
-         XyZmlBSSd072qdV2KWsOuZUTE73bIUkX+48pptf/YKLX0B7PLFUb99f5kMH1Le1qpb
-         9OhaBaU2RJCS1ncyZnSglj87zrPz1N3NGoVO5+mo3zpyWOko5+6YH9zmbrY8mpcqEB
-         wljLjxQBKh0muJW8qtW6alwzc4WnOkXMuGlqvPEqdWopZuD7YUYuk7BYAhTVwoDbHk
-         aC9GcvW4hHkow==
-From:   mripard@kernel.org
-Date:   Wed, 13 Sep 2023 16:41:22 +0200
-To:     =?utf-8?B?Sm9zw6k=?= Pekkarinen <jose.pekkarinen@foxhound.fi>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, christian.koenig@amd.com,
-        dakr@redhat.com, boris.brezillon@collabora.com,
-        alexander.deucher@amd.com, arthurgrillo@riseup.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] drm/tests: provide exit function
-Message-ID: <4epqmvfgjlj4sz7zj6wy5z2qkezif2te3teiwhbf5wv3g3nkeo@36wbg7ksnpy4>
-References: <20230913083223.28684-1-jose.pekkarinen@foxhound.fi>
- <63yq44aikrrymqz5e5mg5mwwnaetud7sdxju2lgtsupq52b7hm@fydwmsm4yh54>
- <46d60d7e69c470e9550a2e7b7c750f12@foxhound.fi>
+        Wed, 13 Sep 2023 10:42:28 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8001C91;
+        Wed, 13 Sep 2023 07:42:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=78e/zywheKAkHCXsMGqm/WMh0+p3InU4SR7PCIbHTG8=;
+        t=1694616144; x=1695825744; b=Uf7KXfSoydcBBTVWdJYApQXm4dUud6XHE4sqWYQJ3XV3tHW
+        iVYc4xxuBbBk65Cy6Yp8UdSS9XVJGlVlDr2S7NWrX8yfbvXYNu75YENVH2QkQofNk2B1xndczsWQV
+        9sWcjwSg46svbJevzg1N59Bc2eUCbNREFlEaoRPBNPcr6ehRSheIIooBW/IUVsv/1yT0QkRHqET2l
+        mn7pNlcCczTK/a/IsobOxl8TRCDvnloGM+TKjPyngQz5Y+tNky/V2ovaUDUrr0YpvsdqOuUqzbsiH
+        xEVku0gq+PpXTvFh2iTYbPrkrAWOATNK3TJmkVnsHUF7p2Df0VPQS8zQGlHXVyMw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qgR3z-00F2Np-0G;
+        Wed, 13 Sep 2023 16:41:55 +0200
+Message-ID: <6b1c6996da5d215371e164b54e8854541dee0ded.camel@sipsolutions.net>
+Subject: Re: [PATCH v3] workqueue: don't skip lockdep work dependency in
+ cancel_work_sync()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heyi Guo <guoheyi@linux.alibaba.com>, netdev@vger.kernel.org
+Date:   Wed, 13 Sep 2023 16:41:53 +0200
+In-Reply-To: <e0717628-e436-4091-8b2e-2f4dcb646ec8@roeck-us.net>
+References: <21b9c1ac-64b7-7f4b-1e62-bf2f021fffcd@I-love.SAKURA.ne.jp>
+         <YuK78Jiy12BJG/Tp@slm.duckdns.org>
+         <0ad532b2-df5f-331a-ae7f-21460fc62fe2@I-love.SAKURA.ne.jp>
+         <97cbf8a9-d5e1-376f-6a49-3474871ea6b4@I-love.SAKURA.ne.jp>
+         <afa1ac2c-a023-a91e-e596-60931b38247e@I-love.SAKURA.ne.jp>
+         <7d034f7b-af42-4dbc-0887-60f4bdb3dcca@I-love.SAKURA.ne.jp>
+         <0a85696a-b0b9-0f4a-7c00-cd89edc9304c@I-love.SAKURA.ne.jp>
+         <77d47eed-6a22-7e81-59de-4d45852ca4de@I-love.SAKURA.ne.jp>
+         <e0717628-e436-4091-8b2e-2f4dcb646ec8@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="upz45bzpjfn2lqwm"
-Content-Disposition: inline
-In-Reply-To: <46d60d7e69c470e9550a2e7b7c750f12@foxhound.fi>
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guenter,
 
---upz45bzpjfn2lqwm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> This patch results in the attached lockdep splat when running the
+> ast2600-evb emulation in qemu with aspeed_g5_defconfig and lock debugging
+> enabled. Reverting this patch fixes the problem.
 
-On Wed, Sep 13, 2023 at 05:01:40PM +0300, Jos=E9 Pekkarinen wrote:
-> On 2023-09-13 12:50, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Wed, Sep 13, 2023 at 11:32:23AM +0300, Jos=E9 Pekkarinen wrote:
-> > > Running drm_exec_test by modprobing the module I
-> > > observe the following output:
-> > >=20
-> > > [  424.471936] KTAP version 1
-> > > [  424.471942] 1..1
-> > > [  424.472446]     KTAP version 1
-> > > [  424.472450]     # Subtest: drm_exec
-> > > [  424.472453]     # module: drm_exec_test
-> > > [  424.472459]     1..7
-> > > [  424.479082]
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+Umm ... That's only true if you think the problem is the lockdep splat,
+rather than the actual potential deadlock?!
+
+> [    9.809960] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > [  424.479095] BUG: KASAN: slab-use-after-free in
-> > > drm_dev_put.part.0+0x4b/0x90 [drm]
-> > > [  424.479426] Read of size 8 at addr ffff888132d3e028 by task
-> > > kunit_try_catch/1866
-> > > [  424.479436]
-> > > [  424.479442] CPU: 1 PID: 1866 Comm: kunit_try_catch Tainted: G
-> > > N 6.6.0-rc1-dirty #2
-> >=20
-> > That's suspicious
-> >=20
-> > > [  424.479446] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> > > BIOS 0.0.0 02/06/2015
-> > > [  424.479446] Call Trace:
-> > > [  424.479446]  <TASK>
-> > > [  424.479446]  dump_stack_lvl+0x43/0x60
-> > > [  424.479446]  print_report+0xcf/0x660
-> > > [  424.479446]  ? __virt_addr_valid+0xd9/0x160
-> > > [  424.479446]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-> > > [  424.479446]  kasan_report+0xda/0x110
-> > > [  424.479446]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-> > > [  424.479446]  drm_dev_put.part.0+0x4b/0x90 [drm]
-> > > [  424.479446]  release_nodes+0x83/0x160
-> > > [  424.479446]  devres_release_all+0xe6/0x130
-> > > [  424.479446]  ? __pfx_devres_release_all+0x10/0x10
-> > > [  424.479446]  ? mutex_unlock+0x80/0xd0
-> > > [  424.479446]  ? __pfx_mutex_unlock+0x10/0x10
-> > > [  424.479446]  device_unbind_cleanup+0x16/0xc0
-> > > [  424.479446]  device_release_driver_internal+0x28b/0x2e0
-> > > [  424.479446]  bus_remove_device+0x124/0x1d0
-> > > [  424.479446]  device_del+0x23d/0x580
-> > > [  424.479446]  ? __pfx_device_del+0x10/0x10
-> > > [  424.479446]  ? kasan_set_track+0x21/0x30
-> > > [  424.479446]  ? _raw_spin_lock_irqsave+0x98/0xf0
-> > > [  424.479446]  platform_device_del.part.0+0x19/0xe0
-> > > [  424.479446]  kunit_remove_resource+0xfa/0x140 [kunit]
-> > > [  424.479446]  kunit_cleanup+0x47/0xa0 [kunit]
-> > > [  424.479446]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
-> > > [  424.479446]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
-> > > [kunit]
-> > > [  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-> > > [  424.479446]  kthread+0x184/0x1c0
-> > > [  424.479446]  ? __pfx_kthread+0x10/0x10
-> > > [  424.479446]  ret_from_fork+0x30/0x50
-> > > [  424.479446]  ? __pfx_kthread+0x10/0x10
-> > > [  424.479446]  ret_from_fork_asm+0x1b/0x30
-> > > [  424.479446]  </TASK>
-> > > [  424.479446]
-> > > [  424.479446] Allocated by task 1865:
-> > > [  424.479446]  kasan_save_stack+0x2f/0x50
-> > > [  424.479446]  kasan_set_track+0x21/0x30
-> > > [  424.479446]  __kasan_kmalloc+0xa6/0xb0
-> > > [  424.479446]  __kmalloc+0x5d/0x160
-> > > [  424.479446]  kunit_kmalloc_array+0x1c/0x50 [kunit]
-> > > [  424.479446]  drm_exec_test_init+0xef/0x260 [drm_exec_test]
-> > > [  424.479446]  kunit_try_run_case+0x6e/0x100 [kunit]
-> > > [  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-> > > [  424.479446]  kthread+0x184/0x1c0
-> > > [  424.479446]  ret_from_fork+0x30/0x50
-> > > [  424.479446]  ret_from_fork_asm+0x1b/0x30
-> > > [  424.479446]
-> > > [  424.479446] Freed by task 1866:
-> > > [  424.479446]  kasan_save_stack+0x2f/0x50
-> > > [  424.479446]  kasan_set_track+0x21/0x30
-> > > [  424.479446]  kasan_save_free_info+0x27/0x40
-> > > [  424.479446]  ____kasan_slab_free+0x166/0x1c0
-> > > [  424.479446]  slab_free_freelist_hook+0x9f/0x1e0
-> > > [  424.479446]  __kmem_cache_free+0x187/0x2d0
-> > > [  424.479446]  kunit_remove_resource+0xfa/0x140 [kunit]
-> > > [  424.479446]  kunit_cleanup+0x47/0xa0 [kunit]
-> > > [  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-> > > [  424.479446]  kthread+0x184/0x1c0
-> > > [  424.479446]  ret_from_fork+0x30/0x50
-> > > [  424.479446]  ret_from_fork_asm+0x1b/0x30
-> > > [  424.479446]
-> > > [  424.479446] The buggy address belongs to the object at
-> > > ffff888132d3e000
-> > > [  424.479446]  which belongs to the cache kmalloc-256 of size 256
-> > > [  424.479446] The buggy address is located 40 bytes inside of
-> > > [  424.479446]  freed 256-byte region [ffff888132d3e000,
-> > > ffff888132d3e100)
-> > > [  424.479446]
-> > > [  424.479446] The buggy address belongs to the physical page:
-> > > [  424.479446] page:0000000092ff6551 refcount:1 mapcount:0
-> > > mapping:0000000000000000 index:0xffff888132d3f600 pfn:0x132d3c
-> > > [  424.479446] head:0000000092ff6551 order:2 entire_mapcount:0
-> > > nr_pages_mapped:0 pincount:0
-> > > [  424.479446] ksm flags:
-> > > 0x17ffffc0000840(slab|head|node=3D0|zone=3D2|lastcpupid=3D0x1fffff)
-> > > [  424.479446] page_type: 0xffffffff()
-> > > [  424.479446] raw: 0017ffffc0000840 ffff888100042b40
-> > > ffffea00042c8000 dead000000000003
-> > > [  424.479446] raw: ffff888132d3f600 000000008020001f
-> > > 00000001ffffffff 0000000000000000
-> > > [  424.479446] page dumped because: kasan: bad access detected
-> > > [  424.479446]
-> > > [  424.479446] Memory state around the buggy address:
-> > > [  424.479446]  ffff888132d3df00: fc fc fc fc fc fc fc fc fc fc fc
-> > > fc fc fc fc fc
-> > > [  424.479446]  ffff888132d3df80: fc fc fc fc fc fc fc fc fc fc fc
-> > > fc fc fc fc fc
-> > > [  424.479446] >ffff888132d3e000: fa fb fb fb fb fb fb fb fb fb fb
-> > > fb fb fb fb fb
-> > > [  424.479446]                                   ^
-> > > [  424.479446]  ffff888132d3e080: fb fb fb fb fb fb fb fb fb fb fb
-> > > fb fb fb fb fb
-> > > [  424.479446]  ffff888132d3e100: fc fc fc fc fc fc fc fc fc fc fc
-> > > fc fc fc fc fc
-> > > [  424.479446]
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > [  424.481686] Disabling lock debugging due to kernel taint
-> > > [  424.484124]     not ok 1 sanitycheck
-> > > [  424.492981]     ok 2 test_lock
-> > > [  424.503610]     ok 3 test_lock_unlock
-> > > [  424.515058]     ok 4 test_duplicates
-> > > [  424.530453]     ok 5 test_prepare
-> > > [  424.539099]     ok 6 test_prepare_array
-> > > [  424.550730]     ok 7 test_multiple_loops
-> > > [  424.550743] # drm_exec: pass:6 fail:1 skip:0 total:7
-> > > [  424.550750] # Totals: pass:6 fail:1 skip:0 total:7
-> > > [  424.550756] not ok 5 drm_exec
-> > >=20
-> > > The ouptut suggest the init function is allocating a drm_device
-> > > that is not being freed. This patch provides the function and
-> > > add it to the kunit_suite to produce the following result of
-> > > the test:
-> > >=20
-> > > [ 3363.342560] KTAP version 1
-> > > [ 3363.342571] 1..1
-> > > [ 3363.343090]     KTAP version 1
-> > > [ 3363.343095]     # Subtest: drm_exec
-> > > [ 3363.343098]     # module: drm_exec_test
-> > > [ 3363.343103]     1..7
-> > > [ 3363.353659]     ok 1 sanitycheck
-> > > [ 3363.364281]     ok 2 test_lock
-> > > [ 3363.375616]     ok 3 test_lock_unlock
-> > > [ 3363.388741]     ok 4 test_duplicates
-> > > [ 3363.402544]     ok 5 test_prepare
-> > > [ 3363.413163]     ok 6 test_prepare_array
-> > > [ 3363.424614]     ok 7 test_multiple_loops
-> > > [ 3363.424630] # drm_exec: pass:7 fail:0 skip:0 total:7
-> > > [ 3363.424637] # Totals: pass:7 fail:0 skip:0 total:7
-> > > [ 3363.424643] ok 1 drm_exec
-> > >=20
-> > > Signed-off-by: Jos=E9 Pekkarinen <jose.pekkarinen@foxhound.fi>
-> > > ---
-> > >  drivers/gpu/drm/tests/drm_exec_test.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/tests/drm_exec_test.c
-> > > b/drivers/gpu/drm/tests/drm_exec_test.c
-> > > index 563949d777dd..7ff6bc6467d4 100644
-> > > --- a/drivers/gpu/drm/tests/drm_exec_test.c
-> > > +++ b/drivers/gpu/drm/tests/drm_exec_test.c
-> > > @@ -42,6 +42,19 @@ static int drm_exec_test_init(struct kunit *test)
-> > >  	return 0;
-> > >  }
-> > >=20
-> > > +static void drm_exec_test_exit(struct kunit *test)
-> > > +{
-> > > +	struct drm_exec_priv *priv =3D test->priv;
-> > > +
-> > > +	drm_kunit_helper_free_device(test, priv->dev);
-> > > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
-> >=20
-> > This shouldn't be necessary at all since 4f2b0b583baa.
->=20
->
-> Reading this suggested patch I see only references to
-> platform_driver_unregister, platform_device_put, and
-> platform_device_del, not the ones used in this patch.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [    9.810053] WARNING: possible circular locking dependency detected
+> [    9.810196] 6.6.0-rc1-00004-g6faca50f629f #1 Tainted: G               =
+  N
 
-I mean, what is drm_kunit_helper_free_device calling?
+I don't have this exact tree, but on 6.6-rc1,
 
-Maxime
---upz45bzpjfn2lqwm
-Content-Type: application/pgp-signature; name="signature.asc"
+> [    9.810327] ------------------------------------------------------
+> [    9.810406] ip/357 is trying to acquire lock:
+> [    9.810501] 83af6c40 ((work_completion)(&(&dev->state_queue)->work)){+=
+.+.}-{0:0}, at: __flush_work+0x40/0x550
+> [    9.811052]=20
+> [    9.811052] but task is already holding lock:
+> [    9.811133] 81639924 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0=
+x124/0x514
+> [    9.811264]=20
+> [    9.811264] which lock already depends on the new lock.
+> [    9.811264]=20
+> [    9.811361]=20
+> [    9.811361] the existing dependency chain (in reverse order) is:
+> [    9.811466]=20
+> [    9.811466] -> #1 (rtnl_mutex){+.+.}-{3:3}:
+> [    9.811616]        lock_acquire+0xfc/0x368
+> [    9.811717]        __mutex_lock+0x90/0xf00
+> [    9.811782]        mutex_lock_nested+0x24/0x2c
+> [    9.811845]        ftgmac100_reset+0x1c/0x1dc
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZQHKDAAKCRDj7w1vZxhR
-xRy0AQD64PRpRQr2oE8ifP25UReMHkkoQA+V4DFE3ifHwC4JlwD/Q97uVJogsdT6
-Up2HFbxP7eQYpBketEKT0iSsQs6qxwQ=
-=et4w
------END PGP SIGNATURE-----
+This does indeed take the RTNL:
 
---upz45bzpjfn2lqwm--
+static void ftgmac100_reset(struct ftgmac100 *priv)
+{
+        struct net_device *netdev =3D priv->netdev;
+        int err;
+
+        netdev_dbg(netdev, "Resetting NIC...\n");
+
+        /* Lock the world */
+        rtnl_lock();
+
+and is called from
+
+> [    9.811907]        ftgmac100_adjust_link+0xc0/0x13c
+> [    9.811972]        phy_link_change+0x30/0x5c
+> [    9.812035]        phy_check_link_status+0x9c/0x11c
+> [    9.812100]        phy_state_machine+0x1c0/0x2c0
+
+this work (phy_state_machine is the function), which
+
+> [    9.812405] -> #0 ((work_completion)(&(&dev->state_queue)->work)){+.+.=
+}-{0:0}:
+> [    9.812531]        check_prev_add+0x128/0x15ec
+> [    9.812594]        __lock_acquire+0x16ec/0x20cc
+> [    9.812656]        lock_acquire+0xfc/0x368
+> [    9.812712]        __flush_work+0x70/0x550
+> [    9.812769]        __cancel_work_timer+0x1e4/0x264
+> [    9.812833]        phy_stop+0x78/0x128
+
+is cancelled by phy_stop() in phy_stop_machine():
+
+void phy_stop_machine(struct phy_device *phydev)
+{
+        cancel_delayed_work_sync(&phydev->state_queue);
+
+but of course that's called by the driver under RTNL:
+
+> [    9.812889]        ftgmac100_stop+0x5c/0xac
+> [    9.812949]        __dev_close_many+0xb8/0x140
+
+(__dev_close_many requires RTNL)
+
+
+So you have a potential deadlock in this driver. Yes, workqueue items
+and RTNL are basically incompatible. Don't do that. Now this bug was
+_probably_ added by commit 1baf2e50e48f ("drivers/net/ftgmac100: fix
+DHCP potential failure with systemd") which added a call to
+ftgmac100_reset() in ftgmac100_adjust_link() which is the thing called
+from the PHY state machine in the first place.
+
+Should that be reverted? I don't know ... maybe it can be fixed
+differently.
+
+
+But anyway ... as far as lockdep/workqueue stuff is concerned I'd
+definitely call it a win rather than a bug! Yay for making lockdep
+useful - it found a deadlock situation for you! :-) No need to blame
+lockdep for that :P
+
+johannes
