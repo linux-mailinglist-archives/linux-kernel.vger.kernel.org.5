@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B62779E951
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE8679E957
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjIMNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
+        id S236693AbjIMNcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjIMNc0 (ORCPT
+        with ESMTP id S230414AbjIMNc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:32:26 -0400
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2080.outbound.protection.outlook.com [40.107.8.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73CF19B1;
-        Wed, 13 Sep 2023 06:32:21 -0700 (PDT)
+        Wed, 13 Sep 2023 09:32:28 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2057.outbound.protection.outlook.com [40.107.7.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A95619B1;
+        Wed, 13 Sep 2023 06:32:24 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MS+MtThwPQ1d2Fa7c317avHwiFx8KMhFId1fFoMm8j42Jexgi1VSEt1M9g4pEmmPKVEifDSjjiwOCwPWLIoOr2lrQcQ3oJC3rcwuAMH2xhOnAEGbc6mLOqePrAk3TURQ5pWloHIaJXqZ+Ugw/vVWf8c8iZhSsSjfSof6rUEiW69tihnpuNBpdt69MvM/XDKhR6189TiRdzJwtCormO6moS9dadF2s4x5XQlFcVseZ2f1WEYIpbWC/IIba25ix1iKbgx7Vl8omqOBr2n/+mE6m1s4gvBd+UaWgKgo8yiwtEuQfvLWEDYQDmQ7/6PftiM+zvNP/EpKyFW96+o6DZMsCw==
+ b=VEdya08FVJY8iFHgvBlHwxaO0+rMlOLSfgSCmQ/qBqRmSWhl7YZ5Q2ADWp+Pg+c1s1epOIGTEaQCjbEVxZ502BzY8oCyaSFEh928ELDOPzRiCsMtVlNbkB3xbBPDaMnjTv+F2xUQnVcYTD5Tr9mXQ5/ejEa0SCM8JUY9FL3OQ23t2p46ThQXfNdnghtcAqFT1K+EuXsXyM/ZJ6bgnFZO2rIZLmiI78RG1L3r7tPaCjTf1EY0xt0/Hnwt6Fg1Tb73Kz5T1YB1Iti1F0BMnmn/adBSQ6PKDMaPEI6IFv5sm6RkqpDl/OChEUFYXD3KmoTgJGfGnlDeRmjaZvjf8BDjZw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k5C6Nx/jjbKwh5gLGOGiID34Oli/r9fS50e0pApsFrA=;
- b=JUHSGv9zo3+ZuL7mnJXuWNNAMxWs7ZmEKMKeeuEddl3bZus75IK7yO2XOgjPFPd0DLvlgYMcygKLIgC/fWnyLgiaMncwbBzkU5waR0vYWj1O9JKll+sCjBWIXkjw+CDBMn6RaR61Pt0dWIahNl0zaKDZw6KZ4AGPDdIMNrp1/zxwv76Nxz3O1lXLWuqsQjWpgpO1nMbXdFITHQaTVnkcvbXDCKqaF4RU5e3j+2NTzyu+9e4YNC0AfMG0w1F4zKUD88UgfWs8YfWx5c5P65191iUhEMnkCHX4/U6OiJlhVFzTvQDV2Miik5Qpcz+SMI7ty4mKRILdaLy7CQhaPAj6hA==
+ bh=V/QVSMU//ln76QfWoNai3w+YiPU+zOvJ6qePJsE16GY=;
+ b=iD34C3fOSpmuNfia60JZcVJe2TeMIX0bVSlEEAlAahbQTdfLiyzTcPIEXMhxwBgtpN3GoySe3schFJR7y0XpZTZ704X/pYRAj5yzpbnoWuXqquWQ5nSsiV/+9wI5kb9rBeYSk/YtU94qO10VCS9/2WYSM1hWHIydA0by4o10JAeJXRFuWm4v2GZLFFXDar/sIPyRtKn6wZuux2oYZjcKXAMG9e2qptIGVA8I1nyauxV0ki7tDRtYiCbjbKkaY3nm/YOePs5tSnXYrw+PjRd/ZJttm3jwqqJlT8heAGpCpEt5MzrmFyCL6sknFwGCS5jWt9VroY+F6saBjGPZmdeNdg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k5C6Nx/jjbKwh5gLGOGiID34Oli/r9fS50e0pApsFrA=;
- b=bGwHf0qH1Eh6vuJb+91rdZn6qKBH9A5RiXPP/K86nMRcHJo/obF0UvuCwqMEdZf0lAuU4wC6X2XeMG0TCmBYH7POfutgNbZ8YUIOPpdFs/rFhuoaCWEh0DjVEM9XiXnvMk/vWkV23DU6MFvu3RKTg9cCUx+ltpEygMgyXaOptE4=
+ bh=V/QVSMU//ln76QfWoNai3w+YiPU+zOvJ6qePJsE16GY=;
+ b=c9st6lR0IDDauqnQYOAM6JK7x5EVgMjDn1iTc72QqnxxJf0ROxXsjHVB3FSPUS6Qg58sYuzfKau+FYCmqrKXu3g2iGDvXG40RpLizQmEe76Q1RTJRZJevU8mWEq8/GfOMv6FbZaTaf0LmWVVzaxguFw8AmHMz+NLHYEMzUiZh3g=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
  by AM8PR04MB7235.eurprd04.prod.outlook.com (2603:10a6:20b:1d1::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
- 2023 13:32:18 +0000
+ 2023 13:32:21 +0000
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::e109:7026:7d76:5617]) by AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::e109:7026:7d76:5617%7]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
- 13:32:18 +0000
+ 13:32:21 +0000
 From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
@@ -48,10 +48,12 @@ To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         sebastian.tobuschat@nxp.com
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [RFC net-next v4 0/7] Add MACsec support for TJA11XX C45 PHYs
-Date:   Wed, 13 Sep 2023 16:31:58 +0300
-Message-Id: <20230913133205.3749628-1-radu-nicolae.pirea@oss.nxp.com>
+Subject: [RFC net-next v4 1/7] net: macsec: move sci_to_cpu to macsec header
+Date:   Wed, 13 Sep 2023 16:31:59 +0300
+Message-Id: <20230913133205.3749628-2-radu-nicolae.pirea@oss.nxp.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230913133205.3749628-1-radu-nicolae.pirea@oss.nxp.com>
+References: <20230913133205.3749628-1-radu-nicolae.pirea@oss.nxp.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: WA2P291CA0007.POLP291.PROD.OUTLOOK.COM
@@ -61,92 +63,101 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|AM8PR04MB7235:EE_
-X-MS-Office365-Filtering-Correlation-Id: 27c5cf95-4e1c-4e6b-b5b8-08dbb45dd9a9
+X-MS-Office365-Filtering-Correlation-Id: a6be29dd-7be2-43bd-fb8d-08dbb45ddbae
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ojWp3y6inkbMQz8VhtfOJnYzzBifVwBgoQl/3m9PgO1jxY0dUECX1kPf9/PwlMTqw/zhAs8SuOJdeLGJ8gAVgSKou2VPWDyVKGT3NSUZZXIVi4GXSCbSbxM0hQoyyqqLkvLaI2oUb/JpfG5ukn0ji0ydpAf4520dMa533jkfLJvnuIKGq6iBEA1FL4UONvDainGACZykC1PMO1Y6BTmEyKbhRe4Up9UtAyz2AfuDgC5WjT7woiVrRhYKmSW4LTmg98H3aNdkLRcNo83eMb8Zn33iCwMcykn38O+3WX+/Lsd0Hs9Tmk3Br98ndypp9d2ivomJ6p49Cr6gem8TjAbdoPqUkXa48KiRxj1clk05J8nw6oNjBx5AbAoGmIQmMDiPmNyxcTWwynhc3FN4JGRY/DHO7H6BJvz9xQNSuynSIkKQAv0DfjUTZP61/trcLFE7yjkySOwM37tPKuRiADGt/y1hxP9FD/DxDmq8gYegj543ZcpLHABUJL+tLPcHRayTdVIi1THe/7HCGTgnrhp5ET7EbMWCbM/vYEkz0f1I+qzwweReadPZl6pD8NJJ+5CdGQFGCLY0ys9QQR4UBZDBZkN8v9hCGRq2dMlGrZq7W+RO3CEgGowIdkcYxKrlZtUZefzaR0+bW8xaSPUzetSBVw==
+X-Microsoft-Antispam-Message-Info: 1I0p6SWwMTifcHe+bRVhYsas2+IfoA9pp2yLv55TAejqRvLEgeNFURO3qS2d7zWX8sZuOHwjNDvk7m42Ck1Gb7z0XWDl2RBzJ0asfU40+voWKKXiZX7oQhGPye3zk275cysu4vGy/YOWTn/47G6NorKWAjrndFoR+20S/6BrBRYD4OYWcRoXrFlrEMAe2qKsoKs9jeYQUJpiQD7Q4BA6UKTKYDKc959ahVX6dKGL71vb8+Da1SBAJd6tvOrnY1f5OnmGp75aI0tACz51shpR9k9fmY6UX9sTRHs6BXQ96tUJqjEj7KiIDBcQfuGr6V19INu0YBfDR7QROXh0objzvxJJlEe14BVhTJ3XBYrvCLbX5pGwr971cA8nLHZHrIoybIDkAKkjALLBaA0z5uJR8f/PrUjzzcz84tjh3C5C9hNoMx04AgKmt8RkgZt+OtycZAtz9HeTf8/uda0JYG9bOieTMtyIk4PxdQCiT24F2P0ohvfiMCJlEkAnsP9n9+5b3pGa/i1CfWEanD+FRP9waLHZI50985suT8nqNN+Adnaskg3xxKwDvv19VF08EHhodCEiEhvAP8ie7FJWRypuZyPI2j6lS+8hglkuoeNti5TtTt0sAGAe0rnFjkvpML0J3tdkgR1i6qtwXDyurryybg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(136003)(366004)(186009)(451199024)(1800799009)(26005)(4326008)(8936002)(8676002)(52116002)(6666004)(1076003)(38100700002)(921005)(2616005)(478600001)(83380400001)(5660300002)(66476007)(66556008)(66946007)(41300700001)(6506007)(6486002)(316002)(6512007)(7416002)(2906002)(86362001)(38350700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w0W9zyy+seWx0FQMb7eR48T04yXPdfqvem4wv0fjlus61rhvPCmkn+Wxwrwz?=
- =?us-ascii?Q?I9ZfN+CdXO0KF3NxWaMeYnwI1UR6uBQ8QxA6V8axlWgzoqU/7nNtArNbEuwV?=
- =?us-ascii?Q?6kr2dFBEEtjm8YBLCelRML0HHh4fDTpJojvY2sSy9VaJrLIRclkxXEEAaSIE?=
- =?us-ascii?Q?FrxqOabgltlYph/yI87yVvZLTBVKGiwWBr0++YTeXY8PFw1KJCZ8MnAS3Y93?=
- =?us-ascii?Q?FYw4QprQhusMQZrxXuhJ+GsM9/KBXWxCzFAAB0OlFDDnBt2nmFjwfiR8TeLv?=
- =?us-ascii?Q?mGCFgfd+RW/A3LzAj4GnduVzwDYUBKK8VnAExFzbBDoHmgz/fTtPBlQlYEq0?=
- =?us-ascii?Q?1+k1rtp3UsjjvtcJje0QYS277m01xh/BpMAmLLN8PU1HxPFuPhF0HWBpmScp?=
- =?us-ascii?Q?koKEe9Ts7BMqoovIUCNCgV3gzny+Ox8oX4BlFw+tOLkEa/XTg4r4MDboUhBO?=
- =?us-ascii?Q?5u0I6HONqet3TvPO7ssVOBaBamU6M6AjIvAmXKg4P///tHJVXScFnZXzWiKu?=
- =?us-ascii?Q?ATbZbc7Owy8O0c4D0omhf//uDE9y/rDynj91vhYXe+CpNjwn2uo8/9t/QGQv?=
- =?us-ascii?Q?fa2yVeCQG0uRLdI2DvluCm3lnmiTnfyBQAk0efFM6sDghZ0i6Q9UJ0jcDuue?=
- =?us-ascii?Q?xhyHsEaFG15QAob6D4R3KT3GfQ49YTH84szJpar8VB3wjGf9SvL+0kmSA4J4?=
- =?us-ascii?Q?spTbLsH7AZh8LQfIM1/vZLOpOElrncFkVHgwVElo89g7IE+jWHi5NXcUQAL+?=
- =?us-ascii?Q?Pb0nvUy20N6tuL1cyfiRUdyKU/UH0kkWi7/t6eqUZw5x2hRiNUNxkwpauym9?=
- =?us-ascii?Q?ZkMyJq86rE2lODJ1G4sKYA/d+x5zzVA4cdYNzFjsM6GNPTQ5BEPGxY5Rby6z?=
- =?us-ascii?Q?U6UUylZt2xJIoy31zVxsqeHaanORpfP+LR39XNLyMpckgaBGMO37cHQ541Oq?=
- =?us-ascii?Q?lRGrUCUt1lkWYUE4fncrhDU+u4C+xVUVCdERkF+3ALl9OWuGK1qaj5xXDWdW?=
- =?us-ascii?Q?CyBaBv7z0O+LmE8/Wb+KxZkmBrHBJRwL4YF/upDo6c5Ylk/Z1qq8AvaLAKew?=
- =?us-ascii?Q?eg/SKRfat002FPBNIEXjjJ0FL12qIfXPYTwS9mOHOigTOxrk3g1WRzyLGSHe?=
- =?us-ascii?Q?9ug1PFeTmAANlQySMwI5lN/rUaZQluEyiVUu5UrZ3UOp/F2JA8iE6CjX89Fr?=
- =?us-ascii?Q?9hJszxyRbdAp0CFrWphFzjOUgkGkuNeDHK55UEZe8j79q1UVbXOMse2z7Kf+?=
- =?us-ascii?Q?sHhE9SFSO9kM9qvWDKwxBVBfOI18J75x1OScKTOKjY5wntPjx78QF9fiYfOG?=
- =?us-ascii?Q?aR4LJnTxiNbMm9VgQAj+PCaD6xptIKJjcuencA3AaAHbUJPE6QGDIFzGQGF0?=
- =?us-ascii?Q?sAaB/h3rtYrVXGYCZCGCbEoIYdhUi7ljqo3+GZyxzX8nZoPSmLAYq121up9C?=
- =?us-ascii?Q?u1qfA/srZxKbFTKSedN0zJBXe9m4sNky1GWVlIp1p+B2WfpXMdd/MVthSrGN?=
- =?us-ascii?Q?fs2Unbiyy/Y01dqg8CXHkE8EfbK8aXnPSPe4iuYB9Z2QpgSfkm5vpG+RmH3h?=
- =?us-ascii?Q?bvVEPd07Qr0bWdKjYD3ya6cj1GmA26yAEpCEwvSwLjDypk+ehudg+PBUhAAc?=
- =?us-ascii?Q?nw=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TCOPvhINPMehukBfF20ASmGfAusXZDGLpbx9h1qbJLwLxrn3pkWpUl01XCc3?=
+ =?us-ascii?Q?rc1DUBnfhPZvMuBTK/Wc0n2KkW5L6nrpXpTWp5gmuQOFDOX9aH6Ll5T+FpM2?=
+ =?us-ascii?Q?MUicfmxdqbz5t+QMrMMMCFIoQdiRSt6U8qyzOWCs2sGeI6tInDXwWr39AM29?=
+ =?us-ascii?Q?5FL8qzt13p1f/fraFQRkNmlcE8YJZE9SzpV5bHNUHWP5CzagUcFWKT8pGHCp?=
+ =?us-ascii?Q?N9WTnJNx73DsZ+HUi23ii0I+nSJBXjlTA5oOTywhZJeu8USiNtlecykebJAt?=
+ =?us-ascii?Q?MlbXkegux0BWYyjqVuV/Rz0AUTNBWsDLWMNk0voP9wkdCAPnkv0w1SkBYxSs?=
+ =?us-ascii?Q?yiJW6Cv7AReIlIhYhOwYKgBfqSe2qQNoGkEpXttHZYnpkSFpKw2xsI3bM3Jn?=
+ =?us-ascii?Q?WrLGWKjw5HrglEv6X5VAnT7JKqcwMSo3F05x5Pz9EgLrPG9EG0inc+2nIJuS?=
+ =?us-ascii?Q?CU32VSRfl9S9vl8+hGMANrSF+hY7R+ChGOK62M7tLq1JvnWUfpDpxVskMNmj?=
+ =?us-ascii?Q?OcJXhQhfjG+MOOA8C5LEXFxLzDoaHZPntgt+ftAMmrTfIPeFMi1rRr3SQ7/K?=
+ =?us-ascii?Q?dXRfaZbdTLqDSPAIC9bMt+7fdYlpaYdbg909BYY0OuEh8gbxrEEr3mVdFZyl?=
+ =?us-ascii?Q?hF4dDnHvUrkqxGuTvooB1UPOxe6OgW/AKKal5lSkD5axCoiJ7O6uy1tEdDHR?=
+ =?us-ascii?Q?jWrBQYeW4U/9ZmXtFVbFXNzJrcF/XrstWOQ+qv32Xey12kG5hktXxHcmT/kp?=
+ =?us-ascii?Q?dw5U4x6QhtqV+BUl3U5gA+3b3pD3gPXQeedh+0GmSiHsN7xMwE5d2RqtZAtK?=
+ =?us-ascii?Q?0AOMVQYJoA/elBAF3DyoknK9cDOJyORAW/JUd8NOE7ifygbPWp6ItmRSj8xu?=
+ =?us-ascii?Q?R74XugeJjBG57nlM0ckoZAzOvu5Vh0FXAxONcB0Ii/d6VrBAV8DUjaJJue+3?=
+ =?us-ascii?Q?FeI9ZCcwAUjRaLyDu0uAw+MoxG7dvi2SL2wPBBETyJXShkQfSNABsFy5TG7i?=
+ =?us-ascii?Q?2SSU4KOoaIIkbzvdl3sugxPBQpk59+4LUJHmzyLeoXDxT0o1El894Wi4rk5x?=
+ =?us-ascii?Q?YkLMG3gFMaoSxOZok/WdJ12+C/UEWZl1Vtp/ELr8+E4iwTzuWeNaq6xb0bZ3?=
+ =?us-ascii?Q?fzuzBfVlqvQxKhfvWtdO9hO7oCgnLaRLSQey8FjHiPEkDjnHruBg0iJ1AIEX?=
+ =?us-ascii?Q?aE4HZc3XbM+TF011phDtrG57r56k/eGv3CSWLzz11CadUF/qbrQ3GXQCyCgw?=
+ =?us-ascii?Q?kX5MMbCRMphXGwZF3+8pNYaeKAVGwozH8/aa+w/nlGSmT5uaS5MMmDqGkekj?=
+ =?us-ascii?Q?ViscPItPqAsKLbLEoyN/7jHgQVXKec4mIrtpYjuuKjq5axi5ZSzuCgWOwjl7?=
+ =?us-ascii?Q?bPbFiTo/qV9q+4uuEtdlvyEyZeMKwN+0AC304yW1uBSjEfE0KeLzAIM6twrf?=
+ =?us-ascii?Q?JVb09ZEAj7Ml83jQSvUaz/+eItbD6OwcYe0oCyzJMu3/UCNQePtIzQacOCCa?=
+ =?us-ascii?Q?OAEEFS3V+t/2l11oICpv09BH0k39D2MG4TUDeXjT+L1yscIF6d7Hb3kJPWzi?=
+ =?us-ascii?Q?CDUFzV3FvRlAEexQg7hh19AFemr0Q2wcPcQuThgpkow104QcVrEMgN26aOQ+?=
+ =?us-ascii?Q?tA=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27c5cf95-4e1c-4e6b-b5b8-08dbb45dd9a9
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6be29dd-7be2-43bd-fb8d-08dbb45ddbae
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 13:32:18.2498
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 13:32:21.5723
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6PJpiatDfPxIS3ZDQ1w2arj4UQXmD8XSetKs6JtUFjzlOzHo8o3OuKywH3cuUQSmoCWRSIwzyMYML8o7wbA8PdpcJjrs52Q4pAeYe3D2Vwo=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3MGjXmPi2SI+6033vCeQtgFb19/fWZ2xpmqfYc2wwYFSupG7QHvepsbcoyTAajfHH0v0f0DbhJfXRxTRhGsDbaLEbTkLGIVkf9jAZpc6eTU=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7235
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the MACsec support for TJA11XX PHYs. The MACsec block encrypts
-the ethernet frames on the fly and has no buffering. This operation will
-grow the frames by 32 bytes. If the frames are sent back to back, the
-MACsec block will not have enough room to insert the SecTAG and the ICV
-and the frames will be dropped.
+Move sci_to_cpu to the MACsec header to use it in drivers.
 
-To mitigate this, the PHY can parse a specific ethertype with some
-padding bytes and replace them with the SecTAG and ICV. These padding
-bytes might be dummy or might contain information about TX SC that must
-be used to encrypt the frame.
+Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+---
+Changes in v4:
+- none
 
-Radu P.
+Changes in v3:
+- patch added in v3
 
-Radu Pirea (NXP OSS) (7):
-  net: macsec: move sci_to_cpu to macsec header
-  net: macsec: documentation for macsec_context and macsec_ops
-  net: macsec: indicate next pn update when offloading
-  net: macsec: introduce mdo_insert_tx_tag
-  net: phy: nxp-c45-tja11xx: add MACsec support
-  net: phy: nxp-c45-tja11xx: add MACsec statistics
-  net: phy: nxp-c45-tja11xx: implement mdo_insert_tx_tag
+ drivers/net/netdevsim/macsec.c | 5 -----
+ include/net/macsec.h           | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- MAINTAINERS                              |    2 +-
- drivers/net/macsec.c                     |   94 +-
- drivers/net/netdevsim/macsec.c           |    5 -
- drivers/net/phy/Kconfig                  |    2 +-
- drivers/net/phy/Makefile                 |    6 +-
- drivers/net/phy/nxp-c45-tja11xx-macsec.c | 1723 ++++++++++++++++++++++
- drivers/net/phy/nxp-c45-tja11xx.c        |   75 +-
- drivers/net/phy/nxp-c45-tja11xx.h        |   62 +
- include/net/macsec.h                     |   55 +
- 9 files changed, 1986 insertions(+), 38 deletions(-)
- create mode 100644 drivers/net/phy/nxp-c45-tja11xx-macsec.c
- create mode 100644 drivers/net/phy/nxp-c45-tja11xx.h
-
+diff --git a/drivers/net/netdevsim/macsec.c b/drivers/net/netdevsim/macsec.c
+index 0d5f50430dd3..aa007b1e4b78 100644
+--- a/drivers/net/netdevsim/macsec.c
++++ b/drivers/net/netdevsim/macsec.c
+@@ -3,11 +3,6 @@
+ #include <net/macsec.h>
+ #include "netdevsim.h"
+ 
+-static inline u64 sci_to_cpu(sci_t sci)
+-{
+-	return be64_to_cpu((__force __be64)sci);
+-}
+-
+ static int nsim_macsec_find_secy(struct netdevsim *ns, sci_t sci)
+ {
+ 	int i;
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index 75a6f4863c83..75216efe4818 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -324,4 +324,9 @@ static inline void *macsec_netdev_priv(const struct net_device *dev)
+ 	return netdev_priv(dev);
+ }
+ 
++static inline u64 sci_to_cpu(sci_t sci)
++{
++	return be64_to_cpu((__force __be64)sci);
++}
++
+ #endif /* _NET_MACSEC_H_ */
 -- 
 2.34.1
 
