@@ -2,382 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442EA79DF63
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5D779DF6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbjIMF2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 01:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S235850AbjIMFaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 01:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIMF2r (ORCPT
+        with ESMTP id S238313AbjIMFag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 01:28:47 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2063.outbound.protection.outlook.com [40.107.243.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D45C172A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:28:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AH1ShOKNWsXt4WSKZbccxGOMOnLiBU4aekiBMexDJlFm+8tvVLbVXPIVkb1+fCtpFEA3n5guKDH1aq4nlf/EiqGKPQbBZJC9JxmdU0bMAiTDKeX9Cet6iaGw6gduO2Ep+3vhNqHSt+8qMiNTpdqFxfjIilMEp+ZwpAsDHAFBzYkLD5yUDMDaU4xBOA6Ixx1hV+0mH/lTRBSvJc6CJDg4ATOHKqf2l6GFycKghjkJt+3CG8SE0Ny5Uo8Vjui0KBTaRDw2j5TU+SnUSwd9UUeLFEo7JdqNU6Pk0443WH2Q8E8bB5mNhU3kNL1tt853qaCnMtHMmeG+1EANMvji9KWJFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Z2au59qRqjaMSUUkSSLw943aW3hNabK+k4Sajg2bgzc=;
- b=gkOPl70DrCU3+Zz6KBdjnRixu1zYwXN2es9M/xsVt9/KO8rAgzK1d/63OV0vJVnRbXMea/KdyGVUq6WvFQQG9OSlF8Fl4yr3jt+jxYQxGizz/C/fJstCEHqE5omISs1u7zd7Ta6FX/NPYN9WTdx/hjUqJSDJkGWEtmDOsjSG+ZQxCv/s++nS+QY6GmTSNhP/8EiXEyZvtKZp2vNbz7OVAcwM3605pobUbvCa2Gd0WesEdW+zagwP+Jj7GTx214gdQB42Nekg8AiHsV7Q8kW9yNwcj4XNlFLJCnaJQS+LiS12GzOAkgHFVPz2T44+HBvtnIivVNXwHuT5EomLgcCS7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Z2au59qRqjaMSUUkSSLw943aW3hNabK+k4Sajg2bgzc=;
- b=P/UActJxpQzmLS7gh1MkA/zhgisA91GutDuMrUyFeiIBv5O8xpZ8ZnCFG72ZOkCPyC9OdNUQKY5z44uECejp0MQVj1cZxeW6+/3oifsDpT8SsPijLX3ahtn4a/h3SQqUI9C7xSfw+wOiKCi9xu4QELPr+HKY6cCdGvHxgOb3BTY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6165.namprd12.prod.outlook.com (2603:10b6:8:9a::21) by
- SA3PR12MB7784.namprd12.prod.outlook.com (2603:10b6:806:317::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.30; Wed, 13 Sep
- 2023 05:28:38 +0000
-Received: from DS7PR12MB6165.namprd12.prod.outlook.com
- ([fe80::208c:3910:f2d8:e43a]) by DS7PR12MB6165.namprd12.prod.outlook.com
- ([fe80::208c:3910:f2d8:e43a%2]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
- 05:28:38 +0000
-Message-ID: <54fa32a9-36a8-f296-9be8-d2b28770f82e@amd.com>
-Date:   Wed, 13 Sep 2023 10:58:23 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [RFC PATCH V1 0/6] sched/numa: Enhance disjoint VMA scanning
-To:     Raghavendra K T <raghavendra.kt@amd.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>, rppt@kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bharata B Rao <bharata@amd.com>,
-        Aithal Srikanth <sraithal@amd.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-References: <cover.1693287931.git.raghavendra.kt@amd.com>
-Content-Language: en-US
-From:   Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-In-Reply-To: <cover.1693287931.git.raghavendra.kt@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0080.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:23::25) To DS7PR12MB6165.namprd12.prod.outlook.com
- (2603:10b6:8:9a::21)
+        Wed, 13 Sep 2023 01:30:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D1D5172A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694582985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4Vi9gfyH7HmX8XDIkP0nm2cnVk3gGqThLeUs4kUh4/Y=;
+        b=BSBYL+HlR3MuSn+ISomnJpzMc7vk3MaLbN4xVUQ93SlGbmBQOAhIRhxYD3Wc3BsGhyy6sJ
+        zHRunfQsvzII9NQfEcmtbqSirZbv9XOc6izuAkItrjIsEqlQ3bqNOge74ukQjnXR0/HS7H
+        JT5Rxlu+IZxV+fj7e/mZWY2SU75qn3g=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-117-7awWSSfcOamSzUIwXSyVXQ-1; Wed, 13 Sep 2023 01:29:44 -0400
+X-MC-Unique: 7awWSSfcOamSzUIwXSyVXQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40298cbbcdbso46152755e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:29:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694582982; x=1695187782;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4Vi9gfyH7HmX8XDIkP0nm2cnVk3gGqThLeUs4kUh4/Y=;
+        b=ZhcTErJkh6DFEXJWWmd3eQwn8WXBuZ7KY3Tld7g2wtMypTiR8PPysf/oV9YT90/AhH
+         1PebX5m/tYU3pwjzq+xtus3/jTmdYJL+AePHuX5ZFwAl65t/msMxj3rYlv1fwX4E4g5S
+         /XjONA9eh1nNIFtP4MSEvltQPPF3WIDs4hlYve8ZGJMVnuqOO5nfdU6HRcNsJ1ZcLK9q
+         qenYmmR/0vNBkTwdsb6gAkadUQ6TziA0wGctrerE8sFYCf0P2TYGNqnZUkwteOyMd942
+         H37i+D9X4QZBsHL+LpHX9sA6JVplfzLZ4KzjjnAYrC4KCHriYt8eJ7TRjD2QkFCgrwz1
+         dLnA==
+X-Gm-Message-State: AOJu0YzXU7k0GBibKCcFRZctRScC2tMtL69f5cU20eW+MSHf6b1PC/OQ
+        iDuz4RJ1b5+eZaFrRRJXMd1pDmXIpSFlU/ZjtmkKi6xmutbMWEswPF5XoVii7PD68Vvh42oByaj
+        jNopYMLItr+AjMFko7wFC8Wze+xzqOk//ktSgCh0pqQMnQAPWBFPk26wGdl0ub5Ucw7lUZmpSMZ
+        amQjDhiEE=
+X-Received: by 2002:a1c:7212:0:b0:401:c636:8f4c with SMTP id n18-20020a1c7212000000b00401c6368f4cmr1159654wmc.3.1694582982492;
+        Tue, 12 Sep 2023 22:29:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHBPrqpBFWrM1upDqqQ8JTAFRsOV+DxccVfhsV98ND78rArdbUvqZBQpC+loiTKDgUL+TD16A==
+X-Received: by 2002:a1c:7212:0:b0:401:c636:8f4c with SMTP id n18-20020a1c7212000000b00401c6368f4cmr1159636wmc.3.1694582982070;
+        Tue, 12 Sep 2023 22:29:42 -0700 (PDT)
+Received: from minerva.home (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id o1-20020a5d6841000000b003143b14848dsm14358033wrw.102.2023.09.12.22.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 22:29:41 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4] drm/ssd130x: Store the HW buffer in the driver-private CRTC state
+Date:   Wed, 13 Sep 2023 07:29:25 +0200
+Message-ID: <20230913052938.1114651-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6165:EE_|SA3PR12MB7784:EE_
-X-MS-Office365-Filtering-Correlation-Id: ee7328f3-1ac4-45d8-b7a6-08dbb41a4852
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +45aiZHUPDhXItNAwd8kcbMLL0YTXkXxq3k7TJJF7rM3MurLPRI49a7uJ0bugljaX7PnMnaOQR5S04odyd9dXrdEWz7zs/XEvLlyVPme9rXyIbmUtpLm8ghi05Tyr7sFlChV1NAjV1dpnnMQJ6B/pLeFbrhAG4sMToV9sGYUYcAyqoUyUWywN7wGaw6x8K6qy721c3y+If9dpzXLt0I4fbKE7n3zh5ifo5SvsT59tXb4ZZ/zoHR7DOy5/q6QuHUbV/vXpy2BncZxsjD8+62r7L/Q2b+Sx6rjngN8Po9lTch99D3F1KAY/IYRMWlrrOGMdRYw20/GlhoUrzW1UGYjOzrh5SIUabDMCFyFHsUXanFfGLEf39yY8PwmkooEicdj5j1uolm8iKJ3vYjOo3yt7+yH3PgiVxVRXzLmgSpN7kpT03KX3yovPKjs3iTbQrZA4NPe+MbUHNpHpqS4yBTxfXkO7DT/rOg6aMPo5X7+Ns/0v5anitQyzEiXSlGPYB7kxzLNp9FDCnQbtgAG7mJH4a3NfG1cV/1O1cNmtFmjoTR0tgcsmaqfPPrCklijWwZcuXS+TJjptD6JZpGE0VlqS7A7l96lha6MwKicaIoYzYA8F/lFrUaJfebJ7rCIuEc3c2FkEg0iY+wkTmHDomDjRzPXWZCKTLh1LU1adk7wlqQZXrYLEIsCrabZ78bhPK0t
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6165.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(136003)(39860400002)(1800799009)(186009)(451199024)(31686004)(6486002)(6666004)(53546011)(6506007)(86362001)(36756003)(38100700002)(4326008)(31696002)(41300700001)(2616005)(83380400001)(966005)(478600001)(6512007)(66946007)(26005)(316002)(5660300002)(8936002)(8676002)(7416002)(2906002)(66556008)(66476007)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YnlmeEQ5QWd1ZmhIUEtiUzhXQlNPTUJjRXpMQ3FqN2NkL2t3SnNHTk54bEtV?=
- =?utf-8?B?VE9TZDllb2NvZWxuVFd1QW1TcjFXc1R4WlpFc2xIZUxKb3pLcHJISnBMYTNs?=
- =?utf-8?B?NFNCdDR0eDA2RGI0TTFjM3VwVHRCYVFsRnNWa0tKVHFqMThPbGRmVXdPekNa?=
- =?utf-8?B?S0tlT1gyMk91SktDSEFpUmhRQkd2MitwbWk0MWQ2SnVGSHlPbFF1dHZ4UWdj?=
- =?utf-8?B?dDQ0aXViSE42ZVFhZHJ2WU5qZENIVHBOd2svZ1FObjZDYVQvMHg4ZS9UcTJz?=
- =?utf-8?B?RW1mY2I3cDFvVmhZY2l0K2gzc0c4SEsxRkJJTDNJMEMyZjlVcU9GNXN6czRS?=
- =?utf-8?B?eHN3bFlmN0kzek5zaHJDekt5V0xxdU5LRS9QUSt3a3IwVVh5UVFaeXIrampp?=
- =?utf-8?B?L1AvUTVKVWxlWDBQQTBOSmNFUjNSMGNQMTRXNlk3UGJBQitIS29DNm0vSU0y?=
- =?utf-8?B?aC9rVGFjeVBuYy8rWFd0cWE3UEpnc0ZxbVVZK3FsUWNjWTVRVTd3all0ZHpt?=
- =?utf-8?B?RE95elZqWSs5ckhMOXg4YWdvWGpyQmZCU1BibWtDTEFjd1M2ekx6OU1BTHA0?=
- =?utf-8?B?eC9rOENubWNnWTRHL0QxNm1tUjRGcThiSFArTHpXelNnUFZ3SnRqaG01TEl3?=
- =?utf-8?B?NTh5d0hXaFpYVHdlYVpmRndxTjR0WENaVEVFNGVvVFZHVmtQNjFmNVFaSlBx?=
- =?utf-8?B?aVpCUlAwUzFFcUZXSFBsVGFPYmcyTldGVWdrdFIwRzBjTVBnN3RTamlnN0g3?=
- =?utf-8?B?bk51V2pPaGxSbXphSEZvSUsyOERmZ3U1dSt3QTFDM3ZBTVZodnYweHZnTC9P?=
- =?utf-8?B?MmpHc3NUeEE4b3ZGbnlyOGQyQWQvalRKWFVHeEJqUlNaTUJwa0tGdjBzeEw2?=
- =?utf-8?B?VG8xaXA4Z01kTGkyRlFnWCtPbnlOL1V0WHJEa1dWMmNOL0ZXSkhqTERoN1lN?=
- =?utf-8?B?V21YUFBEK3N3WE5KVExhQXd0ei9QZlBPYi9VY1NJZCtZRnVsMmthUGt0UU1B?=
- =?utf-8?B?TWFJaFBGVEZBTFQ0QkprV0tTOEFFaGlPbEZTVUl4djdEQjB1dmx6OGlrWmND?=
- =?utf-8?B?a0RQMDB2ZS9VTGdDOFV2YWh5S1FWRTBUUWdtQTJ3dkRMRStxWnE1Skk0TEsw?=
- =?utf-8?B?S0xiNnB2K2RSTUJGWnF2cHBpaFRUU2VIbUtreERlR2RmYXhkUnpvUHNOWjNK?=
- =?utf-8?B?eUJUd25YSzhrM3NUdFUrSUFSNTRYVkhwK1JWbGtoaEN1Q3BtTFZxMUF5SnVM?=
- =?utf-8?B?S0RTRFMvWTlHRGsvRHd3Q3NTeDVieGIwckUzT29jVjhKQVJqUDV4RlM2V21j?=
- =?utf-8?B?TWdNYmdlV1p3TDFORWdBM0prY0FsbFord0VuQUczbXM2bWFlcllYQW5SaTky?=
- =?utf-8?B?RkFCNkFzOUFkZk1Ec1hkcjZXMFozWmVkZVkvb2RGOExhaDBBOWVEVVBoaXdv?=
- =?utf-8?B?NWtVeU5pTm1wOHVDdDRtWHFKRnBLVUxhVzNYQ0pkN1NybEtZcFBRZmJ3OFNX?=
- =?utf-8?B?N29nSFY2ZE02eStKZTMwVE41T21jSTZ0V2FoZm1uc2dNNTNwRlYvSzl0ZGNp?=
- =?utf-8?B?RHErbWhHYzhVcGVSYmRDT25xN2dFS0w0ZVJTOFNhQUUyUnNJY2tHUXdxUHo4?=
- =?utf-8?B?Mk5NOCtXbUozZ1AxaC9ycWJRMDNzZ0d2NVVDSjV1UXpMT1lNMW5JcFJtU2FF?=
- =?utf-8?B?V21pTFlJZnBOZEtJbmxVRHpGUUI4akt3Z3QvR0pXQ2ZJWGtTbVJZWXd2Zzl6?=
- =?utf-8?B?NkxLQXExejhRY3YzeFpremVDYktPV0pNNXQ0bWwxZzJHYWpLcjh1dTdMWWpl?=
- =?utf-8?B?a3hPZ1ZDbEhCMHlpeVpDV25IV2ZtbnRLZ1VPSHhaK1hVWjI2eWpFMEUwSXVL?=
- =?utf-8?B?bTZlWkh0SDRQcHlCQjFNdnYrMUd6MFNlSUZWSmY5MzVmSWdqYlBsUjV5WjFN?=
- =?utf-8?B?clRNTHpzRzdjRlgvV0tCZlRpQTJ1OU1IOVRoaVdFYndId1VuMFE5RGRBaC9W?=
- =?utf-8?B?cVFBWkNBUVRWN0FKTnpXNTRNOVIrQ2FYNmY1Wjd1U1lHaWpaUVcrNTVBS0w5?=
- =?utf-8?B?ZWFMUmE5N0RTUndzMFFNeHppWGNZWWtPOHlPU25EdkN4TmRLMmxKbEppbHdh?=
- =?utf-8?Q?4mmOYUn/GjDQ0a6ZLFV0id5I8?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee7328f3-1ac4-45d8-b7a6-08dbb41a4852
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6165.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 05:28:38.2669
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WvXBBF39CC7FM0S5am0SGz4qGVQ0WhJEq/T9yyr4vwjHbEAZO3NabXxubgKzRhVHtC7oeghe/U+qIckbwhnUJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7784
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Raghu,
+The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
+.atomic_check() callback") moved the allocation of the intermediate and
+HW buffers from the encoder's .atomic_enable callback, to the plane's
+.atomic_check callback.
 
-On 8/29/2023 11:36 AM, Raghavendra K T wrote:
-> Since commit fc137c0ddab2 ("sched/numa: enhance vma scanning logic") [1]
-> VMA scanning is allowed if:
-> 1) The task had accessed the VMA.
->   Rationale: Reduce overhead for the tasks that had not
-> touched VMA. Also filter out unnecessary scanning.
-> 
-> 2) Early phase of the VMA scan where mm->numa_scan_seq is less than 2.
->   Rationale: Understanding initial characteristics of VMAs and also
->   prevent VMA scanning unfairness.
-> 
-> While that works for most of the times to reduce scanning overhead,
->   there are some corner cases associated with it.
-> 
-> This was found in an internal LKP run and also reported by [2]. There was
-> an attempt to fix.
-> 
-> Link: https://lore.kernel.org/linux-mm/cover.1685506205.git.raghavendra.kt@amd.com/T/
-> 
-> This is a fully different series after Mel's feedback to address the issue
->   and also a continuation of enhancing VMA scanning for NUMA balancing.
-> 
-> Problem statement (Disjoint VMA set):
-> ======================================
-> Let's look at some of the corner cases with a below example of tasks and their
-> access pattern.
-> 
-> Consider N tasks (threads) of a process.
-> Set1 tasks accessing vma_x (group of VMAs)
-> Set2 tasks accessing vma_y (group of VMAs)
-> 
->               Set1                      Set2
->          -------------------         --------------------
->          | task_1..task_n/2 |       | task_n/2+1..task_n |
->          -------------------         --------------------	
->                   |                             |
->                   V                             V
->          -------------------         --------------------
->          |     vma_x       |         |     vma_y         |
->          -------------------         --------------------	
-> 
-> Corner cases:
-> (a) Out of N tasks, not all of them gets fair opportunity to scan. (PeterZ).
-> suppose Set1 tasks gets more opportunity to scan (May be because of the
-> activity pattern of tasks or other reasons in current design) in the above
-> example, then vma_x gets scanned more number of times than vma_y.
-> 
-> some experiment is also done here which illustrates this unfairness:
-> Link: https://lore.kernel.org/lkml/c730dee0-a711-8a8e-3eb1-1bfdd21e6add@amd.com/
-> 
-> (b) Sizes of vmas can differ.
-> Suppose size of vma_y is far greater than the size of vma_x, then a bigger
-> portion of vma_y can potentially be left unscanned since scanning is bounded
-> by scan_size of 256MB (default) for each iteration.
-> 
-> (c) Highly active threads trap a few VMAs frequently, and some of the VMAs not
-> accessed for long time can potentially get starved of scanning indefinitely
-> (Mel). There is a possibility of lack of enough hints/details about VMAs if it
-> is needed later for migration.
-> 
-> (d) Allocation of memory in some specific manner (Mel).
-> One example could be, Suppose a main thread allocates memory and it is not
-> active. When other threads tries to act upon it, they may not have much
-> hints about it, if the corresponding VMA was not scanned.
-> 
-> (e) VMAs that are created after two full scans of mm (mm->numa_scan_seq > 2)
-> will never get scanned. (Observed rarely but very much possible depending on
-> workload behaviour).
-> 
-> Above this, a combination of some of the above (e.g., (a) and (b)) can
-> potentially amplifyi/worsen the side effect.
-> 
-> This patchset, tries to address the above issues by enhancing unconditional
-> VMA scanning logic.
-> 
-> High level ideas:
-> =================
-> Idea-1) Depending on vma_size, populate a per vma_scan_select value, decrement it
-> and when it hits zero do force scan (Mel).
-> vma_scan_select value is again repopulated when it hits zero.
-> 
-> This is how VMA scanning phases looks like after implementation:
-> 
-> |<---p1--->|<-----p2----->|<-----p2----->|...
-> 
-> Algorithm:
-> p1: New VMA, initial phase do not scan till scan_delay.
-> 
-> p2: Allow scanning if the task has accessed VMA or vma_scan_select hit zero.
-> 
-> Reinitialize vma_scan_select and repeat p2.
-> 
-> pros/cons:
-> +  : Ratelimiting is inbuilt to the approach
-> +  : vma_size is taken into account for scanning
-> +/-: Scanning continues forever
-> -  : Changes in vma size is taken care after force scan. i.e.,
->     vma_scan_select is repopulated only after vma_scan_select hits zero.
-> 
-> Idea-1 can potentially cover all the issues mentioned above.
-> 
-> Idea-2) Take bitmask_weight of latest access_pids value (suggested by Bharata).
-> If number of tasks accessing vma is >= 1, unconditionally allow scanning.
-> 
-> Idea-3 ) Take bitmask_weight of access_pid history of VMA. If number of tasks
-> accessing VMA is > THRESHOLD (=3), unconditionally allow scanning.
-> 
-> Rationale (Idea-2,3): Do not miss out scanning of critical VMAs.
-> 
-> Idea-4) Have a per vma_scan_seq. allow the unconditional scan till vma_scan_seq
-> reaches a value proportional (or equal) to vma_size/scan_size.
-> This a complimentary to Idea-1.
-> 
-> this is how VMA scanning phases looks like after implementation:
-> 
-> |<--p1--->|<-----p2----->|<-----p3----->|<-----p4----->...||<-----p2----->|<-----p3----->|<-----p4-----> ...||
->                                                          RESET                                               RESET
-> Algorithm:
-> p1: New VMA, initial phase do not scan till scan_delay.
-> 
-> p2: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
->   f(vma_size)/scan_size) for e.g., f = 1/2 * vma_size/scan_size.
-> 
-> p3: Allow scanning if task has accessed VMA or vma_scan_seq has reached till
->   f(vma_size)/scan_size in a rate limited manner. This is an optional phase.
-> 
-> p4: Allow scanning iff task has accessed VMA.
-> 
-> Reset after p4 (optional).
-> 
-> Repeat p2, p3 p4
-> 
-> Motivation: Allow agressive scanning in the beginning followed by a rate
-> limited scanning. And then completely disallow scanning to avoid unnecessary
-> scanning. Reset time could be a function of scan_delay and chosen long enough
-> to aid long running task to forget history and start afresh.
-> 
-> +  : Ratelimiting need to be taken care separately if needed.
-> +/-: Scanning continues only if RESET of vma_scan_seq is implemented.
-> +  : changes in vma size is taken care in every scan.
-> 
->   Current patch series implements Ideas 1, 2, 3 + extension of access PID history
-> idea from PeterZ.
-> 
-> Results:
-> ======
-> Base: 6.5.0-rc6+ (4853c74bd7ab)
-> SUT: Milan w/ 2 numa nodes 256 cpus
-> 
-> mmtest		numa01_THREAD_ALLOC manual run:
-> 
-> 		base		patched
-> real		1m22.758s	1m9.200s
-> user		249m49.540s	229m30.039s
-> sys		0m25.040s	3m10.451s
-> 	
-> numa_pte_updates 	6985	1573363
-> numa_hint_faults 	2705	1022623
-> numa_hint_faults_local 	2279	389633
-> numa_pages_migrated 	426	632990
-> 
-> kernbench
-> 			base			patched
-> Amean     user-256    21989.09 (   0.00%)    21677.36 *   1.42%*
-> Amean     syst-256    10171.34 (   0.00%)    10818.28 *  -6.36%*
-> Amean     elsp-256      166.81 (   0.00%)      168.40 *  -0.95%*
-> 
-> Duration User       65973.18    65038.00
-> Duration System     30538.92    32478.59
-> Duration Elapsed      529.52      533.09
-> 
-> Ops NUMA PTE updates                  976844.00      962680.00
-> Ops NUMA hint faults                  226763.00      245620.00
-> Ops NUMA pages migrated               220146.00      207025.00
-> Ops AutoNUMA cost                       1144.84        1238.77
-> 
-> Improvements in other benchmarks I have tested.
-> Time based:
-> Hashjoin	4.21%
-> Btree	 	2.04%
-> XSbench		0.36%
-> 
-> Throughput based:
-> Graph500 	-3.62%
-> Nas.bt		3.69%
-> Nas.ft		21.91%
-> 
-> Note: VMA scanning improvements [1] has refined scanning so much that
-> system overhead we re-introduce with additional scan look glaringly
-> high. But If we consider the difference between before [1] and current
-> series, overall scanning overhead is considerably reduced.
-> 
-> 1. Link: https://lore.kernel.org/lkml/cover.1677672277.git.raghavendra.kt@amd.com/T/#t
-> 2. Link: https://lore.kernel.org/lkml/cover.1683033105.git.raghavendra.kt@amd.com/
-> 
-> Note: Patch description is again repeated in some patches to avoid any
-> need to copy from cover letter again.
-> 
-> Peter Zijlstra (1):
->    sched/numa: Increase tasks' access history
-> 
-> Raghavendra K T (5):
->    sched/numa: Move up the access pid reset logic
->    sched/numa: Add disjoint vma unconditional scan logic
->    sched/numa: Remove unconditional scan logic using mm numa_scan_seq
->    sched/numa: Allow recently accessed VMAs to be scanned
->    sched/numa: Allow scanning of shared VMAs
-> 
->   include/linux/mm.h       |  12 +++--
->   include/linux/mm_types.h |   5 +-
->   kernel/sched/fair.c      | 109 ++++++++++++++++++++++++++++++++-------
->   3 files changed, 102 insertions(+), 24 deletions(-)
-> 
+This was suggested by Maxime Ripard, because drivers aren't allowed to
+fail after the drm_atomic_helper_swap_state() function has been called.
 
-I have tested this series on 4th generation EPYC processor. I am seeing improvement in autonuma-benchmark with the series.
+And the encoder's .atomic_enable happens after the new atomic state has
+been swapped, so allocations (that can fail) shouldn't be done there.
 
-o System Details
+But the HW buffer isn't really tied to the plane's state. It has a fixed
+size that only depends on the (also fixed) display resolution defined in
+the Device Tree Blob.
 
-- 4th Generation EPYC System
-- 2 x 128C/256T
-- NPS1 mode
+That buffer can be considered part of the CRTC state, and for this reason
+makes more sense to do its allocation in the CRTC .atomic_check callback.
 
-o Kernels
+The other allocated buffer (used to store a conversion from the emulated
+XR24 format to the native R1 format) is part of the plane's state, since
+it will be optional once the driver supports R1 and allows user-space to
+set that pixel format.
 
-base:   4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux
+So let's keep the allocation for it in the plane's .atomic_check callback,
+this can't be moved to the CRTC's .atomic_check because changing a format
+does not trigger a CRTC mode set.
 
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Closes: https://lore.kernel.org/dri-devel/CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com/
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-==================================================================
-Test          : autonuma-benchmark
-Units         : Time in seconds
-Interpretation: Lower is better
-Statistic     : AMean
-==================================================================
-commit:
-   base (4853c74bd7ab)
-   base + this_series
+Changes in v4:
+- Fix a build warning reported by the robot (missing static in helper function).
 
-   base (4853c74bd7ab)         base + this_series
----------------- ---------------------------
-          %stddev     %change         %stddev
-              \          |                \
-     522.58           -11.2%     464.23        autonuma-benchmark.numa01.seconds
-     273.93            -1.2%     270.75        autonuma-benchmark.numa01_THREAD_ALLOC.seconds
-       0.60            +0.0%       0.60        autonuma-benchmark.numa02.seconds
-     102.68            +3.7%     106.50        autonuma-benchmark.numa02_SMT.seconds
+Changes in v3:
+- Call drm_atomic_get_crtc_state() in the plane's .atomic_check (Maxime Ripard).
 
-Tested-by: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Changes in v2:
+- Drop RFC prefix.
+- Fix typo in commit message (Thomas Zimmermann).
+- Store the HW buffer in the driver's private CRTC state (Thomas Zimmermann).
+- Just use kmalloc() kcalloc() when allocating buffers (Thomas Zimmermann).
+- Keep the allocation of the intermediate buffer in the plane's .atomic_check
 
---
-Thanks and Regards,
-Swapnil
+ drivers/gpu/drm/solomon/ssd130x.c | 153 +++++++++++++++++++++++-------
+ 1 file changed, 118 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/gpu/drm/solomon/ssd130x.c b/drivers/gpu/drm/solomon/ssd130x.c
+index 3b4dde09538a..8ab02724f65f 100644
+--- a/drivers/gpu/drm/solomon/ssd130x.c
++++ b/drivers/gpu/drm/solomon/ssd130x.c
+@@ -141,14 +141,23 @@ const struct ssd130x_deviceinfo ssd130x_variants[] = {
+ };
+ EXPORT_SYMBOL_NS_GPL(ssd130x_variants, DRM_SSD130X);
+ 
++struct ssd130x_crtc_state {
++	struct drm_crtc_state base;
++	/* Buffer to store pixels in HW format and written to the panel */
++	u8 *data_array;
++};
++
+ struct ssd130x_plane_state {
+ 	struct drm_shadow_plane_state base;
+ 	/* Intermediate buffer to convert pixels from XRGB8888 to HW format */
+ 	u8 *buffer;
+-	/* Buffer to store pixels in HW format and written to the panel */
+-	u8 *data_array;
+ };
+ 
++static inline struct ssd130x_crtc_state *to_ssd130x_crtc_state(struct drm_crtc_state *state)
++{
++	return container_of(state, struct ssd130x_crtc_state, base);
++}
++
+ static inline struct ssd130x_plane_state *to_ssd130x_plane_state(struct drm_plane_state *state)
+ {
+ 	return container_of(state, struct ssd130x_plane_state, base.base);
+@@ -448,13 +457,11 @@ static int ssd130x_init(struct ssd130x_device *ssd130x)
+ }
+ 
+ static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
+-			       struct ssd130x_plane_state *ssd130x_state,
+-			       struct drm_rect *rect)
++			       struct drm_rect *rect, u8 *buf,
++			       u8 *data_array)
+ {
+ 	unsigned int x = rect->x1;
+ 	unsigned int y = rect->y1;
+-	u8 *buf = ssd130x_state->buffer;
+-	u8 *data_array = ssd130x_state->data_array;
+ 	unsigned int width = drm_rect_width(rect);
+ 	unsigned int height = drm_rect_height(rect);
+ 	unsigned int line_length = DIV_ROUND_UP(width, 8);
+@@ -550,12 +557,10 @@ static int ssd130x_update_rect(struct ssd130x_device *ssd130x,
+ 	return ret;
+ }
+ 
+-static void ssd130x_clear_screen(struct ssd130x_device *ssd130x,
+-				 struct ssd130x_plane_state *ssd130x_state)
++static void ssd130x_clear_screen(struct ssd130x_device *ssd130x, u8 *data_array)
+ {
+ 	unsigned int page_height = ssd130x->device_info->page_height;
+ 	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
+-	u8 *data_array = ssd130x_state->data_array;
+ 	unsigned int width = ssd130x->width;
+ 	int ret, i;
+ 
+@@ -594,15 +599,13 @@ static void ssd130x_clear_screen(struct ssd130x_device *ssd130x,
+ 	}
+ }
+ 
+-static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
++static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb,
+ 				const struct iosys_map *vmap,
+-				struct drm_rect *rect)
++				struct drm_rect *rect,
++				u8 *buf, u8 *data_array)
+ {
+-	struct drm_framebuffer *fb = state->fb;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(fb->dev);
+ 	unsigned int page_height = ssd130x->device_info->page_height;
+-	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(state);
+-	u8 *buf = ssd130x_state->buffer;
+ 	struct iosys_map dst;
+ 	unsigned int dst_pitch;
+ 	int ret = 0;
+@@ -622,7 +625,7 @@ static int ssd130x_fb_blit_rect(struct drm_plane_state *state,
+ 
+ 	drm_gem_fb_end_cpu_access(fb, DMA_FROM_DEVICE);
+ 
+-	ssd130x_update_rect(ssd130x, ssd130x_state, rect);
++	ssd130x_update_rect(ssd130x, rect, buf, data_array);
+ 
+ 	return ret;
+ }
+@@ -634,12 +637,19 @@ static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+ 	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
+ 	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane_state);
+-	unsigned int page_height = ssd130x->device_info->page_height;
+-	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
++	struct drm_crtc *crtc = plane_state->crtc;
++	struct drm_crtc_state *crtc_state;
+ 	const struct drm_format_info *fi;
+ 	unsigned int pitch;
+ 	int ret;
+ 
++	if (!crtc)
++		return -EINVAL;
++
++	crtc_state = drm_atomic_get_crtc_state(state, crtc);
++	if (IS_ERR(crtc_state))
++		return PTR_ERR(crtc_state);
++
+ 	ret = drm_plane_helper_atomic_check(plane, state);
+ 	if (ret)
+ 		return ret;
+@@ -654,14 +664,6 @@ static int ssd130x_primary_plane_helper_atomic_check(struct drm_plane *plane,
+ 	if (!ssd130x_state->buffer)
+ 		return -ENOMEM;
+ 
+-	ssd130x_state->data_array = kcalloc(ssd130x->width, pages, GFP_KERNEL);
+-	if (!ssd130x_state->data_array) {
+-		kfree(ssd130x_state->buffer);
+-		/* Set to prevent a double free in .atomic_destroy_state() */
+-		ssd130x_state->buffer = NULL;
+-		return -ENOMEM;
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -671,6 +673,10 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
+ 	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
+ 	struct drm_plane_state *old_plane_state = drm_atomic_get_old_plane_state(state, plane);
+ 	struct drm_shadow_plane_state *shadow_plane_state = to_drm_shadow_plane_state(plane_state);
++	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, plane_state->crtc);
++	struct ssd130x_crtc_state *ssd130x_crtc_state =  to_ssd130x_crtc_state(crtc_state);
++	struct ssd130x_plane_state *ssd130x_plane_state = to_ssd130x_plane_state(plane_state);
++	struct drm_framebuffer *fb = plane_state->fb;
+ 	struct drm_atomic_helper_damage_iter iter;
+ 	struct drm_device *drm = plane->dev;
+ 	struct drm_rect dst_clip;
+@@ -687,7 +693,9 @@ static void ssd130x_primary_plane_helper_atomic_update(struct drm_plane *plane,
+ 		if (!drm_rect_intersect(&dst_clip, &damage))
+ 			continue;
+ 
+-		ssd130x_fb_blit_rect(plane_state, &shadow_plane_state->data[0], &dst_clip);
++		ssd130x_fb_blit_rect(fb, &shadow_plane_state->data[0], &dst_clip,
++				     ssd130x_plane_state->buffer,
++				     ssd130x_crtc_state->data_array);
+ 	}
+ 
+ 	drm_dev_exit(idx);
+@@ -698,13 +706,21 @@ static void ssd130x_primary_plane_helper_atomic_disable(struct drm_plane *plane,
+ {
+ 	struct drm_device *drm = plane->dev;
+ 	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
+-	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(plane->state);
++	struct drm_plane_state *plane_state = drm_atomic_get_new_plane_state(state, plane);
++	struct drm_crtc_state *crtc_state;
++	struct ssd130x_crtc_state *ssd130x_crtc_state;
+ 	int idx;
+ 
++	if (!plane_state->crtc)
++		return;
++
++	crtc_state = drm_atomic_get_new_crtc_state(state, plane_state->crtc);
++	ssd130x_crtc_state = to_ssd130x_crtc_state(crtc_state);
++
+ 	if (!drm_dev_enter(drm, &idx))
+ 		return;
+ 
+-	ssd130x_clear_screen(ssd130x, ssd130x_state);
++	ssd130x_clear_screen(ssd130x, ssd130x_crtc_state->data_array);
+ 
+ 	drm_dev_exit(idx);
+ }
+@@ -737,9 +753,8 @@ static struct drm_plane_state *ssd130x_primary_plane_duplicate_state(struct drm_
+ 	if (!ssd130x_state)
+ 		return NULL;
+ 
+-	/* The buffers are not duplicated and are allocated in .atomic_check */
++	/* The buffer is not duplicated and is allocated in .atomic_check */
+ 	ssd130x_state->buffer = NULL;
+-	ssd130x_state->data_array = NULL;
+ 
+ 	new_shadow_plane_state = &ssd130x_state->base;
+ 
+@@ -753,7 +768,6 @@ static void ssd130x_primary_plane_destroy_state(struct drm_plane *plane,
+ {
+ 	struct ssd130x_plane_state *ssd130x_state = to_ssd130x_plane_state(state);
+ 
+-	kfree(ssd130x_state->data_array);
+ 	kfree(ssd130x_state->buffer);
+ 
+ 	__drm_gem_destroy_shadow_plane_state(&ssd130x_state->base);
+@@ -793,6 +807,75 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
+ 	return MODE_OK;
+ }
+ 
++static int ssd130x_crtc_helper_atomic_check(struct drm_crtc *crtc,
++					    struct drm_atomic_state *state)
++{
++	struct drm_device *drm = crtc->dev;
++	struct ssd130x_device *ssd130x = drm_to_ssd130x(drm);
++	struct drm_crtc_state *crtc_state = drm_atomic_get_new_crtc_state(state, crtc);
++	struct ssd130x_crtc_state *ssd130x_state = to_ssd130x_crtc_state(crtc_state);
++	unsigned int page_height = ssd130x->device_info->page_height;
++	unsigned int pages = DIV_ROUND_UP(ssd130x->height, page_height);
++	int ret;
++
++	ret = drm_crtc_helper_atomic_check(crtc, state);
++	if (ret)
++		return ret;
++
++	ssd130x_state->data_array = kmalloc(ssd130x->width * pages, GFP_KERNEL);
++	if (!ssd130x_state->data_array)
++		return -ENOMEM;
++
++	return 0;
++}
++
++/* Called during init to allocate the CRTC's atomic state. */
++static void ssd130x_crtc_reset(struct drm_crtc *crtc)
++{
++	struct ssd130x_crtc_state *ssd130x_state;
++
++	WARN_ON(crtc->state);
++
++	ssd130x_state = kzalloc(sizeof(*ssd130x_state), GFP_KERNEL);
++	if (!ssd130x_state)
++		return;
++
++	__drm_atomic_helper_crtc_reset(crtc, &ssd130x_state->base);
++}
++
++static struct drm_crtc_state *ssd130x_crtc_duplicate_state(struct drm_crtc *crtc)
++{
++	struct ssd130x_crtc_state *old_ssd130x_state;
++	struct ssd130x_crtc_state *ssd130x_state;
++
++	if (WARN_ON(!crtc->state))
++		return NULL;
++
++	old_ssd130x_state = to_ssd130x_crtc_state(crtc->state);
++	ssd130x_state = kmemdup(old_ssd130x_state, sizeof(*ssd130x_state), GFP_KERNEL);
++	if (!ssd130x_state)
++		return NULL;
++
++	/* The buffer is not duplicated and is allocated in .atomic_check */
++	ssd130x_state->data_array = NULL;
++
++	__drm_atomic_helper_crtc_duplicate_state(crtc, &ssd130x_state->base);
++
++	return &ssd130x_state->base;
++}
++
++static void ssd130x_crtc_destroy_state(struct drm_crtc *crtc,
++				       struct drm_crtc_state *state)
++{
++	struct ssd130x_crtc_state *ssd130x_state = to_ssd130x_crtc_state(state);
++
++	kfree(ssd130x_state->data_array);
++
++	__drm_atomic_helper_crtc_destroy_state(state);
++
++	kfree(ssd130x_state);
++}
++
+ /*
+  * The CRTC is always enabled. Screen updates are performed by
+  * the primary plane's atomic_update function. Disabling clears
+@@ -800,16 +883,16 @@ static enum drm_mode_status ssd130x_crtc_helper_mode_valid(struct drm_crtc *crtc
+  */
+ static const struct drm_crtc_helper_funcs ssd130x_crtc_helper_funcs = {
+ 	.mode_valid = ssd130x_crtc_helper_mode_valid,
+-	.atomic_check = drm_crtc_helper_atomic_check,
++	.atomic_check = ssd130x_crtc_helper_atomic_check,
+ };
+ 
+ static const struct drm_crtc_funcs ssd130x_crtc_funcs = {
+-	.reset = drm_atomic_helper_crtc_reset,
++	.reset = ssd130x_crtc_reset,
+ 	.destroy = drm_crtc_cleanup,
+ 	.set_config = drm_atomic_helper_set_config,
+ 	.page_flip = drm_atomic_helper_page_flip,
+-	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
++	.atomic_duplicate_state = ssd130x_crtc_duplicate_state,
++	.atomic_destroy_state = ssd130x_crtc_destroy_state,
+ };
+ 
+ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+-- 
+2.41.0
+
