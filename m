@@ -2,154 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6465F79F160
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F81479F161
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjIMStm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S231903AbjIMSuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjIMStl (ORCPT
+        with ESMTP id S230311AbjIMSuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:49:41 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28741B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:49:36 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf7423ef3eso750165ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:49:36 -0700 (PDT)
+        Wed, 13 Sep 2023 14:50:05 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9F610DF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:50:01 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58fc448ee4fso1538797b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:50:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura.hr; s=sartura; t=1694630976; x=1695235776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=amClRN/VUv0+/E7NKSkW+OQty+wplVkcs/ReeLsV3aM=;
-        b=fnfPP2GoK3OzCWhNQ5loGTLdVXGUu9CAbAnRDWhyxuuTesF2XjjCTw1pxxQSfAhGfo
-         jTbG285tRPXuHfL8qz8/TUfkcSs4CWBPusbgPVFdbhH8b18E8/o89abC8PxYZaENQhvk
-         8vqcH3AmdJv8dyAVz2kKg4LeH3DE4w3V0+soliwrx8+9szWXfx81/T9P7biVOt70HZHx
-         2/3F/bW4OmQPW1vm/J/aaEgsirKR0QNsI6Uk27D1uE5EbcmycXRRHHtZRvLD9xN1hWOk
-         CMEzzKsMjFeZ+HKIFwc7UHZ8OTeqYY9pMqAgOBU+lEq9Br/08vbAIg7aADmg2R2sAlbU
-         H0Hg==
+        d=google.com; s=20230601; t=1694631000; x=1695235800; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qPAgyrXwVifCgs8YcSIJJHY71Xaauw3uUQtmqIC6VZw=;
+        b=VC/aUfJSLUD322l8VLNpCyQBoOLkyS/EaUegtC7OA5mGf6zxDGSl/T+jsdBFcXH5UP
+         8MueJJnfn/JizBtldwcYxCKzV2JGRQ3vR4q3cUP7TYTQ2YB9DTxLOEX29i8iwOdFc8Gt
+         Z57uzqrcRP+Qey81gBp33dFPP2+N0xBZXL1Xe/SpsZp4mOxTEBuBT1OjCQ/26CWnZqp+
+         CYg/wGPkzRobbYm9q8ayw6vEG+fA+lcn2T99xuOk08YP8YQBMcSYZfuV1vd9SKMgG1EX
+         Ro9YEA+ym66bCKTL4eu80Jvro0rzpbCZByWqWYdyvcVKfrbr57DPCtQyU/ZQn2qebi2J
+         RJ/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694630976; x=1695235776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=amClRN/VUv0+/E7NKSkW+OQty+wplVkcs/ReeLsV3aM=;
-        b=vYa/KiiWhLbeHpYGE4+VTNWK/LNAO0/n3BdonIrF2EOelF6j/c9BN/KgucYZnikHce
-         T9TFIfm+gwG/j24p9TWkoX1Z8zhId41x7RLnEuOtUm4CaVUPrepxtVMp/Ilyly1/lKbA
-         HU3w6td538I7tKZyPa2Ev0f545vL+71i3hRi/JkGLJz3L4Eg9JyfiC+TMZM5r4tw4wEk
-         5tgEtXZsaolZypuIaDOIBXyPSPCR9ll4hgprbP2D+TwDQwKJU9RmLqe7M8LmFXkabtzJ
-         VWxNUvKfVZL3mHMNSZdVUynMldJwOPv3AffKOZH8B2ckwdT9ekuLKmWfWylGivdzE9kS
-         YcXg==
-X-Gm-Message-State: AOJu0YzvbCR5QOPRXGwpQzuE88c94fxBJ0BMPeTX57c6zOZ0tBOY16jw
-        6re7yDmarWYY6bsFFPHsuQ5ktCZLW/ztsVUzhnUEmg==
-X-Google-Smtp-Source: AGHT+IEdOY9pPgankq2/rE9MCXo+P1HVEeCrNPN9oS48Z6z1ENvqB3cGPyhl0gjGbkJtvw/IaYfx3831MZzDQLYdsp4=
-X-Received: by 2002:a17:90a:8b0d:b0:269:621e:a673 with SMTP id
- y13-20020a17090a8b0d00b00269621ea673mr3178462pjn.1.1694630976379; Wed, 13 Sep
- 2023 11:49:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901114936.1319844-1-robert.marko@sartura.hr>
- <CA+HBbNEM6AfwX87DLRNAuJSWPKboGuuJJDRK_E+G3sJDF73oZA@mail.gmail.com> <ZPivHKd0LWWnhPr/@shell.armlinux.org.uk>
-In-Reply-To: <ZPivHKd0LWWnhPr/@shell.armlinux.org.uk>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Wed, 13 Sep 2023 20:49:25 +0200
-Message-ID: <CA+HBbNG9uXEhYjaKR6ixhN1uESmypgjqmCTayvWknUt03BYQNg@mail.gmail.com>
-Subject: Re: [RFC PATCH] i2c: core: dont change pinmux state to GPIO during
- recovery setup
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     wsa@kernel.org, codrin.ciubotariu@microchip.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luka.perkov@sartura.hr
+        d=1e100.net; s=20230601; t=1694631000; x=1695235800;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qPAgyrXwVifCgs8YcSIJJHY71Xaauw3uUQtmqIC6VZw=;
+        b=l/xb9u/E3rgYfl+2aWSx+v7fRf88XeI31b40DAQdrL3OkaI0RW5vxnTKGxga23EfFR
+         PB8SKtpIaFO0yMY7DjlM3/y08dTeH58j1JGgPmQxEfqjuBunxLVkG5BQWAQneupLTtlC
+         T6Z0OvWAKXCO5dpv/LOluvPDgr3lL1oC6gM0KpWZI0QCDS7RUav+t/DdZx2mW9ykJiJ6
+         0TgWmWn4fX7452NaPDaM8S0byqK3wsxkxXQY8MUMWe3E0hN92G4ckYzQGAohZTDMMhTn
+         /dRDSNfmhhpaKs1p6IpsckSX26Vs3EKmh2uyG6Sl+qtbrj0d1yT8eGlobaP1vaj1RWYh
+         5yoQ==
+X-Gm-Message-State: AOJu0YyWS9zz/bKt/uEBf/1qgjlctV2vqF6LZ1AIigOmCU3bx4WEov9w
+        UbMYLT2yv9AusZDPxRyqJn7TKiewFSJk
+X-Google-Smtp-Source: AGHT+IGsHx+kaHfl63g3U+7aSP4ap1F2ajOv98JBdUwuZaW3YgiloBSxM9+4YpOZlykSC2AeodbWFKOxMdI7
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:f3b:42d0:4853:6022])
+ (user=irogers job=sendgmr) by 2002:a25:6c03:0:b0:d80:2916:c3eb with SMTP id
+ h3-20020a256c03000000b00d802916c3ebmr72569ybc.12.1694631000618; Wed, 13 Sep
+ 2023 11:50:00 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 11:49:57 -0700
+Message-Id: <20230913184957.230076-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Subject: [PATCH v1] perf trace: Avoid compile error wrt redefining bool
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 6, 2023 at 6:55=E2=80=AFPM Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
->
-> On Wed, Sep 06, 2023 at 04:41:33PM +0200, Robert Marko wrote:
-> > On Fri, Sep 1, 2023 at 1:49=E2=80=AFPM Robert Marko <robert.marko@sartu=
-ra.hr> wrote:
-> > >
-> > > Ever since PXA I2C driver was moved to the generic I2C recovery, I2C =
-has
-> > > stopped working completely on Armada 3720 if the pins are specified i=
-n DTS.
-> > >
-> > > After a while it was traced down to the only difference being that PX=
-A
-> > > driver did not change the pinmux state to GPIO before trying to acqui=
-re the
-> > > GPIO pins.
-> > > And indeed as soon as this call is removed I2C starts working.
-> > >
-> > > To me it seems that this call is not required at all as devm_gpiod_ge=
-t()
-> > > will result in the pinmux state being changed to GPIO via the pinmux
-> > > set_mux() op.
-> > >
-> > > Fixes: 0b01392c18b9 ("i2c: pxa: move to generic GPIO recovery")
-> > > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > > ---
-> > > I am aware this probably isnt the correct fix, so I am sending it as =
-RFC
-> > > cause I have ran out of ideas.
-> >
-> > CC-ing Russel as well since I forgot him.
->
-> So the generic recovery decided to set the pinmux state before calling
-> devm_gpiod_get(), where as the driver (and my code) originally did this
-> after calling devm_gpiod_get():
->
-> -       /*
-> -        * Claiming GPIOs can change the pinmux state, which confuses the
-> -        * pinctrl since pinctrl's idea of the current setting is unaffec=
-ted
-> -        * by the pinmux change caused by claiming the GPIO. Work around =
-that
-> -        * by switching pinctrl to the GPIO state here. We do it this way=
- to
-> -        * avoid glitching the I2C bus.
-> -        */
-> -       pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_recovery);
-> -
-> -       return pinctrl_select_state(i2c->pinctrl, i2c->pinctrl_default);
->
-> I'd suggest re-implementing my original scheme in the generic code
-> because this _does_ work on Armada 3720 hardware.
->
-> Removing the pinmux frobbing is likely to break stuff.
+Make part of an existing TODO conditional to avoid the following build
+error:
+```
+tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c:26:14: error: cannot combine with previous 'char' declaration specifier
+   26 | typedef char bool;
+      |              ^
+include/stdbool.h:20:14: note: expanded from macro 'bool'
+   20 | #define bool _Bool
+      |              ^
+tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c:26:1: error: typedef requires a name [-Werror,-Wmissing-declarations]
+   26 | typedef char bool;
+      | ^~~~~~~~~~~~~~~~~
+2 errors generated.
+```
 
-Hi Russel,
-Sorry for the late reply, its been a busy week.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I have tried doing exactly that and calling:
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index 90ce22f9c1a9..939ec769bf4a 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -23,7 +23,9 @@
+ #define MAX_CPUS  4096
+ 
+ // FIXME: These should come from system headers
++#ifndef bool
+ typedef char bool;
++#endif
+ typedef int pid_t;
+ typedef long long int __s64;
+ typedef __s64 time64_t;
+-- 
+2.42.0.283.g2d96d420d3-goog
 
-if (bri->pinctrl)
-pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
-/* change the state of the pins back to their default state */
-if (bri->pinctrl)
-pinctrl_select_state(bri->pinctrl, bri->pins_default);
-
-However doing that in the generic code does not work, only thing that has
-worked so far is removing the GPIO pinctrl call completely.
-
-Regards,
-Robert
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
-
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
