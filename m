@@ -2,85 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 120B279E2E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA4879E2ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239193AbjIMJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
+        id S239210AbjIMJEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239149AbjIMJEP (ORCPT
+        with ESMTP id S239201AbjIMJE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:04:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6BF1999
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CcPs1loMse6j9I5mnXT5xMOl9FMdZpWS3PB4AoazHUs=; b=AigZBCojNkNHoE2JG0mWdvw/9K
-        sp7rSb1+2jyE9ucAnnmaCkpP7G3qGMM5TgaW53nO1FZe1SP5R6IDPtxbj5mBqCndi8I7fjGT8Dl4I
-        MFpibKiyVZs9Ja0evQ4cj/7m7eQ6MeAlmfZxG1U4bJBcJz2WJHUTYq/lwFNTwYT09OqrYKURvvNok
-        bM2lHthmhE+9qc9aF53OGTwZx5vS8YQxRtAz3VHadqmIPc+cU/ARt/mVyTcH74VgpGPW/wd/ZYAeo
-        RTayjqrZQ5+LDt8Cu0WqYxapvjsEb2DXTqME6KM/SnAx/IsfMCRb6dz0i7GENYB0HELSOezSmViLH
-        tPvJeKbQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgLmT-006wJM-0Z;
-        Wed, 13 Sep 2023 09:03:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 48F39300348; Wed, 13 Sep 2023 11:03:30 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 11:03:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
-        qyousef@layalina.io, chris.hyser@oracle.com,
-        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
-        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
-        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
-        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
-        tglx@linutronix.de
-Subject: Re: [PATCH 07/15] sched/smp: Use lag to simplify cross-runqueue
- placement
-Message-ID: <20230913090330.GC692@noisy.programming.kicks-ass.net>
-References: <20230531115839.089944915@infradead.org>
- <20230531124604.068911180@infradead.org>
- <20230912153221.lSL8YgJJ@linutronix.de>
+        Wed, 13 Sep 2023 05:04:27 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027961997
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:04:22 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qgLn3-0005KH-BZ; Wed, 13 Sep 2023 11:04:05 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qgLn1-005yTW-MW; Wed, 13 Sep 2023 11:04:03 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qgLn0-001Htc-UT; Wed, 13 Sep 2023 11:04:02 +0200
+Date:   Wed, 13 Sep 2023 11:04:00 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20230913090400.ujxm7zv66qe4weuj@pengutronix.de>
+References: <20230913110939.574c7ec2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="clcng7srrdwctgdk"
 Content-Disposition: inline
-In-Reply-To: <20230912153221.lSL8YgJJ@linutronix.de>
+In-Reply-To: <20230913110939.574c7ec2@canb.auug.org.au>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:32:21PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2023-05-31 13:58:46 [+0200], Peter Zijlstra wrote:
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -12492,22 +12440,9 @@ static void task_fork_fair(struct task_s
-> >  
-> >  	cfs_rq = task_cfs_rq(current);
-> >  	curr = cfs_rq->curr;
-> > -	if (curr) {
-> > +	if (curr)
-> >  		update_curr(cfs_rq);
-> > -		se->vruntime = curr->vruntime;
-> > -	}
-> >  	place_entity(cfs_rq, se, 1);
-> > -
-> > -	if (sysctl_sched_child_runs_first && curr && entity_before(curr, se)) {
-> 
-> Since the removal of sysctl_sched_child_runs_first there is no user of
-> this anymore. There is still the sysctl file sched_child_runs_first with
-> no functionality.
-> Is this intended or should it be removed?
 
-Hurmph... I think that knob has been somewat dysfunctional for a long
-while and it might be time to remove it.
+--clcng7srrdwctgdk
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ingo?
+On Wed, Sep 13, 2023 at 11:09:39AM +1000, Stephen Rothwell wrote:
+> Today's linux-next merge of the drm-misc tree got a conflict in:
+>=20
+>   drivers/gpu/drm/mediatek/mtk_dpi.c
+>=20
+> between commits:
+>=20
+>   47d4bb6bbcdb ("drm/mediatek: mtk_dpi: Simplify with devm_drm_bridge_add=
+()")
+>   90c95c3892dd ("drm/mediatek: mtk_dpi: Switch to .remove_new() void call=
+back")
+>=20
+> from Linus' tree and commit:
+>=20
+>   c04ca6bbb7ea ("drm/mediatek: Convert to platform remove callback return=
+ing void")
+>=20
+> from the drm-misc tree.
+>=20
+> I fixed it up (the latter is the same as 90c95c3892dd)
+
+That's not entirely true:
+
+uwe@taurus:~/gsrc/linux$ git show --oneline --stat 90c95c3892dd
+90c95c3892dd drm/mediatek: mtk_dpi: Switch to .remove_new() void callback
+ drivers/gpu/drm/mediatek/mtk_dpi.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+uwe@taurus:~/gsrc/linux$ git show --oneline --stat c04ca6bbb7ea
+c04ca6bbb7ea drm/mediatek: Convert to platform remove callback returning vo=
+id
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c   | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_color.c | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c   | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c  | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_dp.c         | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_dpi.c        | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c    | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_dsi.c        | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_hdmi.c       | 5 ++---
+ drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c   | 6 ++----
+ drivers/gpu/drm/mediatek/mtk_mdp_rdma.c   | 5 ++---
+ 14 files changed, 28 insertions(+), 54 deletions(-)
+
+But yes, restricted to drivers/gpu/drm/mediatek/mtk_dpi.c the patches do
+the same (but have a different base, so there is some fuzz):
+
+$ diff -u <(git show c04ca6bbb7ea drivers/gpu/drm/mediatek/mtk_dpi.c ) <(gi=
+t show 90c95c3892dd)
+--- /dev/fd/63	2023-09-13 10:22:37.368055450 +0200
++++ /dev/fd/62	2023-09-13 10:22:37.372055516 +0200
+@@ -1,46 +1,36 @@
+-commit c04ca6bbb7ea6ea7cba9ba8d3d4d4c767008d189
+-Author: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+-Date:   Sun May 7 18:25:52 2023 +0200
++commit 90c95c3892dde019182ceac984d4ca1f3c85844b
++Author: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.co=
+m>
++Date:   Wed Jul 26 10:22:43 2023 +0200
+
+[...]
+
+ diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek=
+/mtk_dpi.c
+-index 28bdb1f427ff..0ef722c24150 100644
++index e9c5a0f44537..3a140498c98a 100644
+ --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+ +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+-@@ -1101,14 +1101,12 @@ static int mtk_dpi_probe(struct platform_device *p=
+dev)
++@@ -1087,11 +1087,9 @@ static int mtk_dpi_probe(struct platform_device *pd=
+ev)
+  	return 0;
+  }
+
+ -static int mtk_dpi_remove(struct platform_device *pdev)
+ +static void mtk_dpi_remove(struct platform_device *pdev)
+  {
+- 	struct mtk_dpi *dpi =3D platform_get_drvdata(pdev);
+-
+  	component_del(&pdev->dev, &mtk_dpi_component_ops);
+- 	drm_bridge_remove(&dpi->bridge);
+ -
+ -	return 0;
+  }
+
+  static const struct of_device_id mtk_dpi_of_ids[] =3D {
+-@@ -1139,7 +1137,7 @@ MODULE_DEVICE_TABLE(of, mtk_dpi_of_ids);
++@@ -1122,7 +1120,7 @@ MODULE_DEVICE_TABLE(of, mtk_dpi_of_ids);
+
+  struct platform_driver mtk_dpi_driver =3D {
+  	.probe =3D mtk_dpi_probe,
+
+
+e44dd16393896b2545a6d57b2c11381fe7628aa0 looks right.
+
+Best regards and thanks,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--clcng7srrdwctgdk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUBev8ACgkQj4D7WH0S
+/k4qSAf+OV1nuZBGo6mnwuIyxTR3yFNLsReHPsPo/eGwdbSr8OPllw1tww+TVmBm
+rejF5b22dIqLvQri5u1qfc9vNhgU+re7zvsL2xwT6kSnfc21kShAIV7sq/qt9wui
+JDLdvtR6q2SR1C5JxUOeOB/fxEb6W2SD5SZklt4v7Kw0OAHzcAcYJisaUps8dKfS
+Pf2hhnGP6mvgM2N1uxoRo973zzWQk3RinM6vBY0l201ddUpAisyqaSDWlzK/I80J
+fVz3isnr81e8scItpDW9PuOnqjgM5kP9guGK8bAl/k/KMulTTHhVyCnuyjLcSjPU
+egLhqdY/KoxwPtK66jQXxuKAqJj08w==
+=hXQN
+-----END PGP SIGNATURE-----
+
+--clcng7srrdwctgdk--
