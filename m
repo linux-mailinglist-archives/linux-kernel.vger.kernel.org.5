@@ -2,520 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F2979DEC8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E0D79DECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238228AbjIMDww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 23:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
+        id S238246AbjIMDxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 23:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbjIMDw1 (ORCPT
+        with ESMTP id S233304AbjIMDxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 23:52:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467DA1BD4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 20:52:00 -0700 (PDT)
+        Tue, 12 Sep 2023 23:53:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C71A1725;
+        Tue, 12 Sep 2023 20:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694577120; x=1726113120;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Rj+PGROzrOy+ixHMVyeKUEW8GhRus5TfuBK1dgAmkuk=;
-  b=dI8U6BmPrDPml6KBc16EBwF9uSDQ+457nwBCzPZy20iysYXFI5t2J+0m
-   3OaVIYeFMeppToRuxDpnoTQgig6dM2uByMcCY+OxZ3kggrcGoV6TEUeqr
-   3sitZk/yJ4yN2T85jlDfsB5gBEFTNtKDT/7peNHYoXcEkmqHuwFaHAp6m
-   rrCyW+hHchNBUlqOFbtwij7+aqTpj2c9fh/0saWBccKLNdH3ri6xTwVdW
-   D0AE39gnoFTrPMm+kwcgSMexTP22LjREWaoZ8o9O9gG+1Vh3BSmc1jN/q
-   kzDZg1qwg2DP7TrSuhhzjMJYStBTuKRCRjvMRD58O5w8c6kondVQiCIOV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="357987693"
+  t=1694577186; x=1726113186;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6idy3UYoXF16We1idYVG4dqF8greOcgN+lbURYPntWs=;
+  b=oDiHLadFEGl9nvWVEG15V5Bz+JOjS1cpBDFCRtChXNa/PnZzlvW4xD9W
+   bNFBSW0wtePiEvuTJloW7h6xeKdNDqYiQrh374skfEc+MNboHDHrqE+gL
+   Lv9tArrIfkF/0FCpca7Qj4bNEPfdaitJTB6F08skpGh3qXUnuaPoguoh2
+   0u/dw+xhyPHtPMg2XlyMd8TvRfaho1pB0BhRh0+1VFtNUBlfwcC58wiyC
+   8tYP7t9tu9TB3fciVpdQciZshd6olHUYdWguSM2IXnV1EZ9+FAGu2V0MC
+   VQmTvDPIqC0fGyzQRcncfwC4F3p1QwhP+hXhKSvVb6b8qFXTluyMHVhTE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358829969"
 X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="357987693"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 20:51:59 -0700
+   d="scan'208";a="358829969"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 20:53:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="773288616"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="743960962"
 X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="773288616"
-Received: from pranga-mobl.amr.corp.intel.com (HELO [10.209.20.198]) ([10.209.20.198])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 20:51:58 -0700
-Message-ID: <5fe6d55e-4fd5-4f81-bfcf-535817d521dc@linux.intel.com>
-Date:   Tue, 12 Sep 2023 20:51:58 -0700
+   d="scan'208";a="743960962"
+Received: from lkp-server02.sh.intel.com (HELO e6439d5ea182) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 12 Sep 2023 20:53:02 -0700
+Received: from kbuild by e6439d5ea182 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgGvz-00003B-2v;
+        Wed, 13 Sep 2023 03:52:59 +0000
+Date:   Wed, 13 Sep 2023 11:52:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Dikshita Agarwal <quic_dikshita@quicinc.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-media@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH RFT 19/20] media: venus: pm_helpers: Commonize vdec_get()
+Message-ID: <202309131132.yfX42orR-lkp@intel.com>
+References: <20230911-topic-mars-v1-19-a7d38bf87bdb@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] virt: tdx-guest: Add Quote generation support using
- TSM_REPORTS
-Content-Language: en-US
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Qinkun Bao <qinkun@apache.org>,
-        Guorui Yu <GuoRui.Yu@linux.alibaba.com>,
-        linux-coco@lists.linux.dev, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230907025405.2310931-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAAYXXYzWMaruiTm84d=djM1Jekk-Ua9cEEZWWuZ-mh6knsCvTg@mail.gmail.com>
- <57469499-b150-4132-bd26-9a66991c9ce3@linux.intel.com>
- <64fa9e9bcb164_68a129421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <64fa9e9bcb164_68a129421@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911-topic-mars-v1-19-a7d38bf87bdb@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Konrad,
 
+kernel test robot noticed the following build errors:
 
-On 9/7/2023 9:10 PM, Dan Williams wrote:
-> Kuppuswamy Sathyanarayanan wrote:
->> Hi Erdem,
->>
->> Thanks for the review.
->>
->> On 9/7/2023 6:30 PM, Erdem Aktas wrote:
->>> On Wed, Sep 6, 2023 at 7:54 PM Kuppuswamy Sathyanarayanan
->>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->>>>
->>>> In TDX guest, the attestation process is used to verify the TDX guest
->>>> trustworthiness to other entities before provisioning secrets to the
->>>> guest. The First step in the attestation process is TDREPORT
->>>> generation, which involves getting the guest measurement data in the
->>>> format of TDREPORT, which is further used to validate the authenticity
->>>> of the TDX guest. TDREPORT by design is integrity-protected and can
->>>> only be verified on the local machine.
->>>>
->>>> To support remote verification of the TDREPORT (in a SGX-based
->>>> attestation), the TDREPORT needs to be sent to the SGX Quoting Enclave
->>>> (QE) to convert it to a remote verifiable Quote. SGX QE by design can
->>> s/remote/remotely ?
->>>> only run outside of the TDX guest (i.e. in a host process or in a
->>>> normal VM) and guest can use communication channels like vsock or
->>>> TCP/IP to send the TDREPORT to the QE. But for security concerns, the
->>>> TDX guest may not support these communication channels. To handle such
->>>> cases, TDX defines a GetQuote hypercall which can be used by the guest
->>>> to request the host VMM to communicate with the SGX QE. More details
->>>> about GetQuote hypercall can be found in TDX Guest-Host Communication
->>>> Interface (GHCI) for Intel TDX 1.0, section titled
->>>> "TDG.VP.VMCALL<GetQuote>".
->>>>
->>>> Trusted Security Module (TSM) [1] exposes a common ABI for Confidential
->>>> Computing Guest platforms to get the measurement data via ConfigFS.
->>>> Extend the TSM framework and add support to allow an attestation agent
->>>> to get the TDX Quote data (included usage example below).
->>>>
->>>>   report=/sys/kernel/config/tsm/report/report0
->>>>   mkdir $report
->>>>   dd if=/dev/urandom bs=64 count=1 > $report/inblob
->>>>   hexdump -C $report/outblob
->>>>   rmdir $report
->>>>
->>>> GetQuote TDVMCALL requires TD guest pass a 4K aligned shared buffer
->>>> with TDREPORT data as input, which is further used by the VMM to copy
->>>> the TD Quote result after successful Quote generation. To create the
->>>> shared buffer, allocate a large enough memory and mark it shared using
->>>> set_memory_decrypted() in tdx_guest_init(). This buffer will be re-used
->>>> for GetQuote requests in the TDX TSM handler.
->>>>
->>>> Although this method reserves a fixed chunk of memory for GetQuote
->>>> requests, such one time allocation can help avoid memory fragmentation
->>>> related allocation failures later in the uptime of the guest.
->>>>
->>>> Since the Quote generation process is not time-critical or frequently
->>>> used, the current version uses a polling model for Quote requests and
->>>> it also does not support parallel GetQuote requests.
->>>>
->>>> Link: https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/ [1]
->>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>>> ---
->>>>
->>>> Hi All,
->>>>
->>>> The previous version of this patch series [1] added support for TDX
->>>> Guest Quote generation via an IOCTL interface. Since we have multiple
->>>> vendors implementing such interface, to avoid ABI proliferation, Dan
->>>> proposed using a common ABI for it and submitted the Trusted Secure
->>>> module (TSM) report ABI support [2]. This patchset extends the
->>>> TSM REPORTS to implement the TDX Quote generation support. Since there
->>>> is a change in interface type, I have dropped the previous Acks.
->>>>
->>>> [1] https://lore.kernel.org/lkml/3c57deb0-a311-2aad-c06b-4938e33491b5@linux.intel.com/
->>>> [2] https://lore.kernel.org/lkml/169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com/
->>>>
->>>> Changes since previous version:
->>>> * Used ConfigFS interface instead of IOCTL interface.
->>>> * Used polling model for Quote generation and dropped the event notification IRQ support.
->>>>
->>>>  arch/x86/coco/tdx/tdx.c                 |  21 +++
->>>>  arch/x86/include/asm/shared/tdx.h       |   1 +
->>>>  arch/x86/include/asm/tdx.h              |   2 +
->>>>  drivers/virt/coco/tdx-guest/Kconfig     |   1 +
->>>>  drivers/virt/coco/tdx-guest/tdx-guest.c | 205 +++++++++++++++++++++++-
->>>>  5 files changed, 229 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
->>>> index 1d6b863c42b0..20414ed82fc5 100644
->>>> --- a/arch/x86/coco/tdx/tdx.c
->>>> +++ b/arch/x86/coco/tdx/tdx.c
->>>> @@ -104,6 +104,27 @@ int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport)
->>>>  }
->>>>  EXPORT_SYMBOL_GPL(tdx_mcall_get_report0);
->>>>
->>>> +/**
->>>> + * tdx_hcall_get_quote() - Wrapper to request TD Quote using GetQuote
->>>> + *                         hypercall.
->>>> + * @buf: Address of the directly mapped shared kernel buffer which
->>>> + *      contains TDREPORT data. The same buffer will be used by
->>>> + *      VMM to store the generated TD Quote output.
->>>> + * @size: size of the tdquote buffer (4KB-aligned).
->>>> + *
->>>> + * Refer to section titled "TDG.VP.VMCALL<GetQuote>" in the TDX GHCI
->>>> + * v1.0 specification for more information on GetQuote hypercall.
->>>> + * It is used in the TDX guest driver module to get the TD Quote.
->>>> + *
->>>> + * Return 0 on success or error code on failure.
->>>> + */
->>>> +u64 tdx_hcall_get_quote(u8 *buf, size_t size)
->>>> +{
->>>> +       /* Since buf is a shared memory, set the shared (decrypted) bits */
->>>> +       return _tdx_hypercall(TDVMCALL_GET_QUOTE, cc_mkdec(virt_to_phys(buf)), size, 0, 0);
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(tdx_hcall_get_quote);
->>>> +
->>>>  static void __noreturn tdx_panic(const char *msg)
->>>>  {
->>>>         struct tdx_hypercall_args args = {
->>>> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
->>>> index 7513b3bb69b7..9eab19950f39 100644
->>>> --- a/arch/x86/include/asm/shared/tdx.h
->>>> +++ b/arch/x86/include/asm/shared/tdx.h
->>>> @@ -22,6 +22,7 @@
->>>>
->>>>  /* TDX hypercall Leaf IDs */
->>>>  #define TDVMCALL_MAP_GPA               0x10001
->>>> +#define TDVMCALL_GET_QUOTE             0x10002
->>>>  #define TDVMCALL_REPORT_FATAL_ERROR    0x10003
->>>>
->>>>  #ifndef __ASSEMBLY__
->>>> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
->>>> index 603e6d1e9d4a..ebd1cda4875f 100644
->>>> --- a/arch/x86/include/asm/tdx.h
->>>> +++ b/arch/x86/include/asm/tdx.h
->>>> @@ -52,6 +52,8 @@ bool tdx_early_handle_ve(struct pt_regs *regs);
->>>>
->>>>  int tdx_mcall_get_report0(u8 *reportdata, u8 *tdreport);
->>>>
->>>> +u64 tdx_hcall_get_quote(u8 *buf, size_t size);
->>>> +
->>>>  #else
->>>>
->>>>  static inline void tdx_early_init(void) { };
->>>> diff --git a/drivers/virt/coco/tdx-guest/Kconfig b/drivers/virt/coco/tdx-guest/Kconfig
->>>> index 14246fc2fb02..22dd59e19431 100644
->>>> --- a/drivers/virt/coco/tdx-guest/Kconfig
->>>> +++ b/drivers/virt/coco/tdx-guest/Kconfig
->>>> @@ -1,6 +1,7 @@
->>>>  config TDX_GUEST_DRIVER
->>>>         tristate "TDX Guest driver"
->>>>         depends on INTEL_TDX_GUEST
->>>> +       select TSM_REPORTS
->>>>         help
->>>>           The driver provides userspace interface to communicate with
->>>>           the TDX module to request the TDX guest details like attestation
->>>> diff --git a/drivers/virt/coco/tdx-guest/tdx-guest.c b/drivers/virt/coco/tdx-guest/tdx-guest.c
->>>> index 5e44a0fa69bd..135d89a7e418 100644
->>>> --- a/drivers/virt/coco/tdx-guest/tdx-guest.c
->>>> +++ b/drivers/virt/coco/tdx-guest/tdx-guest.c
->>>> @@ -12,12 +12,59 @@
->>>>  #include <linux/mod_devicetable.h>
->>>>  #include <linux/string.h>
->>>>  #include <linux/uaccess.h>
->>>> +#include <linux/set_memory.h>
->>>> +#include <linux/io.h>
->>>> +#include <linux/delay.h>
->>>> +#include <linux/tsm.h>
->>>>
->>>>  #include <uapi/linux/tdx-guest.h>
->>>>
->>>>  #include <asm/cpu_device_id.h>
->>>>  #include <asm/tdx.h>
->>>>
->>>> +/*
->>>> + * Intel's SGX QE implementation generally uses Quote size less
->>>> + * than 8K (2K Quote data + ~5K of ceritificate blob).
->>> s/ceritificate/certificate
->>>> + */
->>>> +#define GET_QUOTE_BUF_SIZE             SZ_8K
->>>> +
->>>> +#define GET_QUOTE_CMD_VER              1
->>>> +
->>>> +/* TDX GetQuote status codes */
->>>> +#define GET_QUOTE_SUCCESS              0
->>>> +#define GET_QUOTE_IN_FLIGHT            0xffffffffffffffff
->>>> +
->>>> +/* struct tdx_quote_buf: Format of Quote request buffer.
->>>> + * @version: Quote format version, filled by TD.
->>>> + * @status: Status code of Quote request, filled by VMM.
->>>> + * @in_len: Length of TDREPORT, filled by TD.
->>>> + * @out_len: Length of Quote data, filled by VMM.
->>>> + * @data: Quote data on output or TDREPORT on input.
->>>> + *
->>>> + * More details of Quote request buffer can be found in TDX
->>>> + * Guest-Host Communication Interface (GHCI) for Intel TDX 1.0,
->>>> + * section titled "TDG.VP.VMCALL<GetQuote>"
->>>> + */
->>>> +struct tdx_quote_buf {
->>>> +       u64 version;
->>>> +       u64 status;
->>>> +       u32 in_len;
->>>> +       u32 out_len;
->>>> +       u8 data[];
->>>> +};
->>>> +
->>>> +/* Quote data buffer */
->>>> +static void *quote_data;
->>>> +
->>>> +/* Lock to streamline quote requests */
->>>> +static DEFINE_MUTEX(quote_lock);
->>>> +
->>>> +/*
->>>> + * GetQuote request timeout in seconds. Expect that 30 seconds
->>>> + * is enough time for QE to respond to any Quote requests.
->>>> + */
->>>> +static u32 getquote_timeout = 30;
->>>> +
->>>>  static long tdx_get_report0(struct tdx_report_req __user *req)
->>>>  {
->>>>         u8 *reportdata, *tdreport;
->>>> @@ -53,6 +100,131 @@ static long tdx_get_report0(struct tdx_report_req __user *req)
->>>>         return ret;
->>>>  }
->>>>
->>>> +static void free_quote_buf(void *buf)
->>>> +{
->>>> +       size_t len = PAGE_ALIGN(GET_QUOTE_BUF_SIZE);
->>>> +       unsigned int count = len >> PAGE_SHIFT;
->>>> +
->>>> +       set_memory_encrypted((unsigned long)buf, count);
->>> Why not check the return error? if conversion fails (even though
->>> unlikely), we should at least print an error message.
->>
->> Ok. Since it is unlikely to fail, we can use WARN_ON().
->>
->> WARN_ON(set_memory_encrypted((unsigned long)buf, count))
-> 
-> No, panic_on_warn turns recoverable errors into fatal errors. Just
-> pr_err(). I also assume you don't want memory that failed to be set back
-> to encrypted into the free page pool, so it seems safer to leak the
-> memory at this point.
-> 
->>
->>>> +
->>>> +       free_pages_exact(buf, len);
->>>> +}
->>>> +
->>>> +static void *alloc_quote_buf(void)
->>>> +{
->>>> +       size_t len = PAGE_ALIGN(GET_QUOTE_BUF_SIZE);
->>>> +       unsigned int count = len >> PAGE_SHIFT;
->>>> +       void *addr;
->>>> +       int ret;
->>>> +
->>>> +       addr = alloc_pages_exact(len, GFP_KERNEL | __GFP_ZERO);
->>>> +       if (!addr)
->>>> +               return NULL;
->>>> +
->>>> +       ret = set_memory_decrypted((unsigned long)addr, count);
->>>> +       if (ret) {
->>>> +               free_pages_exact(addr, len);
->>>> +               return NULL;
->>>> +       }
->>>> +
->>>> +       return addr;
->>>> +}
->>>> +
->>>> +/*
->>>> + * wait_for_quote_completion() - Wait for Quote request completion
->>>> + * @quote_buf: Address of Quote buffer.
->>>> + * @timeout: Timeout in seconds to wait for the Quote generation.
->>>> + *
->>>> + * As per TDX GHCI v1.0 specification, sec titled "TDG.VP.VMCALL<GetQuote>",
->>>> + * the status field in the Quote buffer will be set to GET_QUOTE_IN_FLIGHT
->>>> + * while VMM processes the GetQuote request, and will change it to success
->>>> + * or error code after processing is complete. So wait till the status
->>>> + * changes from GET_QUOTE_IN_FLIGHT or the request timedout.
->>> s/timedout/being timed out?
->>>> + */
->>>> +static int wait_for_quote_completion(struct tdx_quote_buf *quote_buf, u32 timeout)
->>>> +{
->>>> +       int i = 0;
->>>> +
->>>> +       /*
->>>> +        * Quote requests usually take a few seconds to complete, so waking up
->>>> +        * once per second to recheck the status is fine for this use case.
->>>> +        */
->>>> +       while (quote_buf->status == GET_QUOTE_IN_FLIGHT && i++ < timeout)
->>>> +               ssleep(1);
->>> Would not this loop cause soft lock (or even panic) if getquote waits
->>> for 30s? Should we not yield?
->>
->> Since we are sleeping for a second in each cycle (which will relinquish the CPU
->> to other threads), it should not create a soft lockup.
-> 
-> No, this would need to release the lock while sleeping or otherwise make
-> this interruptible to make that happen. In fact it should release the
-> lock or use mutex_lock_interruptible() and configfs-tsm should switch to
-> interruptible synchronization.
-> 
->>
->>>> +
->>>> +       return (i == timeout) ? -ETIMEDOUT : 0;
->>>> +}
->>>> +
->>>> +static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
->>>> +{
->>>> +       struct tdx_quote_buf *quote_buf = quote_data;
->>>> +       int ret;
->>>> +       u8 *buf;
->>>> +       u64 err;
->>>> +
->>>> +       guard(mutex)(&quote_lock);
->>> I understand that this does not support parallel getQuote requests but
->>> if the user space for some reason makes multiple requests, each
->>> request will finish until the previous ones are completed in kernel
->>
->> Softlockup will only happen if a thread hogs the CPU for a long time without
->> relinquishing it. In our case, user processes waiting for the lock will be in
->> sleep state. So it should not create a lockup issue.
-> 
-> Stuck in uninterruptible sleep is another failure mode of the lockup
-> detector. The other threads waiting to acquire the mutex will fire being
-> stuck behind this thread.
-> 
+[auto build test ERROR on 7bc675554773f09d88101bf1ccfc8537dc7c0be9]
 
-Used interruptible variants for sleep and quote_lock. Final version looks like
-below.
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/media-venus-pm_helpers-Only-set-rate-of-the-core-clock-in-core_clks_enable/20230912-051942
+base:   7bc675554773f09d88101bf1ccfc8537dc7c0be9
+patch link:    https://lore.kernel.org/r/20230911-topic-mars-v1-19-a7d38bf87bdb%40linaro.org
+patch subject: [PATCH RFT 19/20] media: venus: pm_helpers: Commonize vdec_get()
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20230913/202309131132.yfX42orR-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131132.yfX42orR-lkp@intel.com/reproduce)
 
-+/*
-+ * wait_for_quote_completion() - Wait for Quote request completion
-+ * @quote_buf: Address of Quote buffer.
-+ * @timeout: Timeout in seconds to wait for the Quote generation.
-+ *
-+ * As per TDX GHCI v1.0 specification, sec titled "TDG.VP.VMCALL<GetQuote>",
-+ * the status field in the Quote buffer will be set to GET_QUOTE_IN_FLIGHT
-+ * while VMM processes the GetQuote request, and will change it to success
-+ * or error code after processing is complete. So wait till the status
-+ * changes from GET_QUOTE_IN_FLIGHT or the request being timed out.
-+ */
-+static int wait_for_quote_completion(struct tdx_quote_buf *quote_buf, u32 timeout)
-+{
-+	int i = 0;
-+
-+	/*
-+	 * Quote requests usually take a few seconds to complete, so waking up
-+	 * once per second to recheck the status is fine for this use case.
-+	 */
-+	while (quote_buf->status == GET_QUOTE_IN_FLIGHT && i++ < timeout) {
-+		if (msleep_interruptible(MSEC_PER_SEC))
-+			return -EINTR;
-+	}
-+
-+	return (i == timeout) ? -ETIMEDOUT : 0;
-+}
-+
-+static u8 *tdx_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-+{
-+	struct tdx_quote_buf *quote_buf = quote_data;
-+	int ret;
-+	u8 *buf;
-+	u64 err;
-+
-+	if (mutex_lock_interruptible(&quote_lock))
-+		return ERR_PTR(-EINTR);
-+
-+	/*
-+	 * If the previous request is timedout or interrupted, and the
-+	 * Quote buf status is still in GET_QUOTE_IN_FLIGHT (owned by
-+	 * VMM), don't permit any new request.
-+	 */
-+	if (quote_buf->status == GET_QUOTE_IN_FLIGHT) {
-+		ret = -EBUSY;
-+		goto done;
-+	}
-+
-+	if (desc->inblob_len != TDX_REPORTDATA_LEN) {
-+		ret = -EINVAL;
-+		goto done;
-+	}
-+
-+	/* TDX attestation only supports default format request */
-+	if (desc->outblob_format != TSM_FORMAT_DEFAULT) {
-+		ret = -EINVAL;
-+		goto done;
-+	}
-+
-+	u8 *reportdata __free(kfree) = kmalloc(TDX_REPORTDATA_LEN, GFP_KERNEL);
-+	if (!reportdata) {
-+		ret = -ENOMEM;
-+		goto done;
-+	}
-+
-+	u8 *tdreport __free(kfree) = kzalloc(TDX_REPORT_LEN, GFP_KERNEL);
-+	if (!tdreport) {
-+		ret = -ENOMEM;
-+		goto done;
-+	}
-+
-+	memcpy(reportdata, desc->inblob, desc->inblob_len);
-+
-+	/* Generate TDREPORT0 using "TDG.MR.REPORT" TDCALL */
-+	ret = tdx_mcall_get_report0(reportdata, tdreport);
-+	if (ret) {
-+		pr_err("GetReport call failed\n");
-+		goto done;
-+	}
-+
-+	memset(quote_data, 0, GET_QUOTE_BUF_SIZE);
-+
-+	/* Update Quote buffer header */
-+	quote_buf->version = GET_QUOTE_CMD_VER;
-+	quote_buf->in_len = TDX_REPORT_LEN;
-+
-+	memcpy(quote_buf->data, tdreport, TDX_REPORT_LEN);
-+
-+	err = tdx_hcall_get_quote(quote_data, GET_QUOTE_BUF_SIZE);
-+	if (err) {
-+		pr_err("GetQuote hypercall failed, status:%llx\n", err);
-+		ret = -EIO;
-+		goto done;
-+	}
-+
-+	ret = wait_for_quote_completion(quote_buf, getquote_timeout);
-+	if (ret) {
-+		pr_err("GetQuote request timedout\n");
-+		goto done;
-+	}
-+
-+	buf = kvmemdup(quote_buf->data, quote_buf->out_len, GFP_KERNEL);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto done;
-+	}
-+
-+	*outblob_len = quote_buf->out_len;
-+
-+done:
-+	mutex_unlock(&quote_lock);
-+	return ret ? ERR_PTR(ret) : buf;
-+}
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131132.yfX42orR-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_rr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wrr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wlc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_fo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ovf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblcr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_dh.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sh.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_nq.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_twos.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ftp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_pe_sip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_defrag_ipv4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_reject_ipv4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/inet_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tcp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/raw_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/unix/unix_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_defrag_ipv6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_reject_ipv6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ar9331.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_brcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_dsa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_gswip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_hellcreek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ksz.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_lan9303.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_mtk.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_none.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot_8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_qca.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl4_a.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl8_4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rzn1_a5psw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_sja1105.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_trailer.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_xrs700x.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xdp/xsk_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_crypto_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_token_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/nf_conntrack_bridge.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtables.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_broute.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_filter.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/sunrpc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/auth_rpcgss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/rpcsec_gss_krb5.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/kcm/kcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sctp/sctp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/tipc/diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/smc/smc_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/chnl_net.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_socket.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_usb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci_spi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nfc_digital.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/hsr/hsr.o
+>> ERROR: modpost: "vcodec_clks_get" [drivers/media/platform/qcom/venus/venus-dec.ko] undefined!
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
