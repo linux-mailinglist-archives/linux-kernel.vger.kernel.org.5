@@ -2,147 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3371579ECC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A751279ECD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229450AbjIMP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
+        id S229529AbjIMP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjIMP1r (ORCPT
+        with ESMTP id S229509AbjIMP2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:27:47 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C26E54
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:27:43 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-495e3d1edb4so708648e0c.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694618862; x=1695223662; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZSmC0s21CEToS8tT8/hcVHG8zlJnCs3gFSAowj5TofQ=;
-        b=O/YQl8YeczH8YccBwr2fU3w7x515nnv5UNEkKB8hk9zGCI3Bf158GNNwrptLS7DNOb
-         mddGay6+YLPz2U1bvb0vUZwq+KJA2lDx4ueueNv/b+ip3dPZSa8pgRsun99tzGAzIKh1
-         GcaMTC4IVynVkO79NWqxfBANR6PFgZFheYEQofQ0xeu9GY/n4IslpxoUkiYATjLsYhIT
-         zJoqi/oyE0hka2WbKN/t5H81MRzjCNOWgvnO+gJ+ZdbnyBMpHMV+vB13YxThnqSjvst6
-         Vyq5CROWiZ6QWdR0yPWc2LXgh0bFvQ/Kba8E0Vxicxws+x2jy8ysumibYoj8/WkmjtAa
-         15pw==
+        Wed, 13 Sep 2023 11:28:05 -0400
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E581BC6;
+        Wed, 13 Sep 2023 08:28:01 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-9ad810be221so288255566b.2;
+        Wed, 13 Sep 2023 08:28:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694618862; x=1695223662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZSmC0s21CEToS8tT8/hcVHG8zlJnCs3gFSAowj5TofQ=;
-        b=QSI5+AbR0PFl+533G5SVueZ/4AzlP4ROMThXIu8Mxx9vVfc6F8dNP0DXXYFtNhf0C5
-         GZlTvKgsiwWCSobCPjdX7FmmxT3JFleN01jCoRBp+DNPyHbZXfSthLgFZZZ2osbbU5Oc
-         VzxzPhBao0zBBCp4ikd4loDx9Pr2GY7NeSFG5zFup9gFBe8V7q3PMCJ5dIfCJ6f5mNvi
-         z722u1rOGgwQNYyzEBE2qteNfO1gzyNvqHhUfD55qA5NVhOtFIMW4+T1MnwPv5IdJLl3
-         mg4qY3bqJN07uHtXfdXEnD3RhLWkQUs/MEPDv05p7HS/U6FmSIIorC1YKruWSOos1GIm
-         Aa7Q==
-X-Gm-Message-State: AOJu0Ywq73XLwhtuIEE1x3G+O47lEQagwdWa716HZCtTQ2Q/Fm6gli8O
-        i/J0oL5VZKnEtTafys3XPNXkRX+1JPnjV9Gw8Yj4ng==
-X-Google-Smtp-Source: AGHT+IGJvSLa8C0RY/pr1gb/IZEvzflaY24bVdWemEE/cCm0VktS9dQ2lxieIG0IxGCKKXQOFQUu8JrCk0IMybi8d6g=
-X-Received: by 2002:a1f:c743:0:b0:490:1723:a491 with SMTP id
- x64-20020a1fc743000000b004901723a491mr1488004vkf.5.1694618862617; Wed, 13 Sep
- 2023 08:27:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694618880; x=1695223680;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XbHM2NAzX89/YGfOI9fGVWUqll7zX9HRYixE0CiaEic=;
+        b=amrAmVchPnonggk2kwYDAGcR8vpCvpPC+oz9pw5YpwiTf82Apy7CnxBapFOPJdJIjy
+         6m792BQROjRUzYxhR6iYmsPQOKxkk+5HRpLFU6Gdh0wB712bzts9K4XFE1Ya6gPDhJqL
+         66wcLm+T+keajbK7pt1fhUrm1GsrZFjxrAeHME0FlD5elx9t2fk9NYrSbMjZMo/NiV2S
+         xHmfkd/+BG9CZ1RMtnT279diElrH4otrpczBLwf3U8hnxHotRICsenpUKcEa41C62Sl2
+         NRljxSfU9b9gTkYei7CQLgdOxDqS61qP9+20yu/4crqeNdY7q5KIbeZ9ltvob/Tse+Om
+         tNSQ==
+X-Gm-Message-State: AOJu0YzwyZXy5xcq9SnMEGlWa7NJpFaZG5k7zQmT+cqRKGpd90ILQIvk
+        LLsmqMJEv9HpbY/kMmI4EYY=
+X-Google-Smtp-Source: AGHT+IFW/YM3vbwQkx6qo2tVcSp414LxDhv6Kd3ehhhK5r6QzI47TnRjUxS/qD4Yz4lM08Q2AZpoOA==
+X-Received: by 2002:a17:906:18aa:b0:9a1:c42e:5e5e with SMTP id c10-20020a17090618aa00b009a1c42e5e5emr2354685ejf.42.1694618879486;
+        Wed, 13 Sep 2023 08:27:59 -0700 (PDT)
+Received: from localhost (fwdproxy-cln-021.fbsv.net. [2a03:2880:31ff:15::face:b00c])
+        by smtp.gmail.com with ESMTPSA id dx22-20020a170906a85600b0099d959f9536sm8712216ejb.12.2023.09.13.08.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 08:27:59 -0700 (PDT)
+From:   Breno Leitao <leitao@debian.org>
+To:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, kuba@kernel.org,
+        pabeni@redhat.com, martin.lau@linux.dev, krisman@suse.de
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org
+Subject: [PATCH v6 0/8] io_uring: Initial support for {s,g}etsockopt commands
+Date:   Wed, 13 Sep 2023 08:27:36 -0700
+Message-Id: <20230913152744.2333228-1-leitao@debian.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com>
- <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com> <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org>
-In-Reply-To: <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 13 Sep 2023 17:27:31 +0200
-Message-ID: <CAMRc=Merdmv_gFm58y1iHWmYmT=t_OmXyQgOXCxqwr7wsmjjYQ@mail.gmail.com>
-Subject: Re: [PATCH v1 05/10] gpio: pca953x: Simplify code with cleanup helpers
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 4:35=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
->         Hi Andy,
->
-> On Fri, 1 Sep 2023, Andy Shevchenko wrote:
-> > Use macros defined in linux/cleanup.h to automate resource lifetime
-> > control in gpio-pca953x.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Thanks for your patch, which is now commit 8e471b784a720f6f
-> ("gpio: pca953x: Simplify code with cleanup helpers") in
-> gpio/gpio/for-next.
->
-> > --- a/drivers/gpio/gpio-pca953x.c
-> > +++ b/drivers/gpio/gpio-pca953x.c
-> > @@ -557,9 +554,8 @@ static int pca953x_gpio_get_value(struct gpio_chip =
-*gc, unsigned off)
-> >       u32 reg_val;
-> >       int ret;
-> >
-> > -     mutex_lock(&chip->i2c_lock);
-> > -     ret =3D regmap_read(chip->regmap, inreg, &reg_val);
-> > -     mutex_unlock(&chip->i2c_lock);
-> > +     scoped_guard(mutex, &chip->i2c_lock)
-> > +             ret =3D regmap_read(chip->regmap, inreg, &reg_val);
->
-> I can't say I'm thrilled about the lack of curly braces.  I was also
-> surprised to discover that checkpatch nor gcc W=3D1 complain about the
-> indentation change.
-> I know we don't use curly braces in single-statement for_each_*() loops,
-> but at least these have the familiar "for"-prefix.  And having the scope
-> is very important here, so using braces, this would stand out more.
->
-> Hence can we please get curly braces, like
->
->      scoped_guard(mutex, &chip->i2c_lock) {
->             ret =3D regmap_read(chip->regmap, inreg, &reg_val);
->      }
->
-> ?
->
-> Thanks! ;-)
+This patchset adds support for getsockopt (SOCKET_URING_OP_GETSOCKOPT)
+and setsockopt (SOCKET_URING_OP_SETSOCKOPT) in io_uring commands.
+SOCKET_URING_OP_SETSOCKOPT and SOCKET_URING_OP_GETSOCKOPT implement generic
+case, covering all levels and optnames.
 
-I strongly disagree. The scope here is very clear - just like it is in
-a for loop, in a while loop or in an if block:
+In order to keep the implementation (and tests) simple, some refactors
+were done prior to the changes, as follows:
 
-if (foo)
-    bar()
+Patch 1-2:  Remove the core {s,g}etsockopt() core function from
+__sys_{g,s}etsockopt, so, the code could be reused by other callers,
+such as io_uring.
 
-if (foo) {
-    bar();
-    baz();
-}
+Patch 3: Pass compat mode to the file/socket callbacks
 
-Only compound statements need curly braces in the kernel and it has
-been like this forever. I don't really see a need to make it an
-exception.
+Patch 4: Move io_uring helpers from io_uring_zerocopy_tx to a generic
+io_uring headers. This simplify the test case (last patch)
 
-That being said - I don't think the coding style for guard has ever
-been addressed yet, so maybe bring it up with Peter Zijlstra?
+Patch 5: Protect io_uring_cmd_sock() to not be called if CONFIG_NET is
+disabled.
 
-Bart
+PS: The userspace pointers need to be alive until the operation is
+completed.
 
->
-> Gr{oetje,eeting}s,
->
->                                                 Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                                             -- Linus Torv=
-alds
+These changes were tested with a new test[1] in liburing, LTP sockopt*
+tests, as also with bpf/progs/sockopt test case, which is now adapted to
+run using both system calls and io_uring commands.
+
+[1] Link: https://github.com/leitao/liburing/blob/getsock/test/socket-getsetsock-cmd.c
+
+RFC -> V1:
+	* Copy user memory at io_uring subsystem, and call proto_ops
+	  callbacks using kernel memory
+	* Implement all the cases for SOCKET_URING_OP_SETSOCKOPT
+
+V1 -> V2
+	* Implemented the BPF part
+	* Using user pointers from optval to avoid kmalloc in io_uring part.
+
+V2 -> V3:
+	* Break down __sys_setsockopt and reuse the core code, avoiding
+	  duplicated code. This removed the requirement to expose
+	  sock_use_custom_sol_socket().
+	* Added io_uring test to selftests/bpf/sockopt.
+	* Fixed compat argument, by passing it to the issue_flags.
+
+V3 -> V4:
+	* Rebase on top of commit 1ded5e5a5931b ("net: annotate data-races around sock->ops")
+	* Also broke down __sys_setsockopt() to reuse the core function
+	  from io_uring.
+	* Create a new patch to return -EOPNOTSUPP if CONFIG_NET is
+	  disabled.
+	* Added two SOL_SOCKET tests in bpf/prog_tests/sockopt.
+
+V4 -> V5:
+	* Do not use sockptr anymore, by changing the optlen getsock argument
+	  to be a user pointer (instead of a kernel pointer). This change also drop
+	  the limitation on getsockopt from previous versions, and now all
+	  levels are supported.
+	* Simplified the BPF sockopt test, since there is no more limitation on
+	  the io_uring commands.
+	* No more changes in the BPF subsystem.
+	* Moved the optlen field in the SQE struct. It is now a pointer instead
+	  of u32.
+
+V5 -> V6:
+	* Removed the need for #ifdef CONFIG_NET as suggested by Gabriel
+	  Krisman.
+	* Changed the variable declaration order to respect the reverse
+	  xmas declaration as suggested by Paolo Abeni.
+
+Breno Leitao (8):
+  net/socket: Break down __sys_setsockopt
+  net/socket: Break down __sys_getsockopt
+  io_uring/cmd: Pass compat mode in issue_flags
+  selftests/net: Extract uring helpers to be reusable
+  io_uring/cmd: return -EOPNOTSUPP if net is disabled
+  io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+  io_uring/cmd: Introduce SOCKET_URING_OP_SETSOCKOPT
+  selftests/bpf/sockopt: Add io_uring support
+
+ include/linux/io_uring.h                      |   1 +
+ include/net/sock.h                            |   5 +
+ include/uapi/linux/io_uring.h                 |  10 +
+ io_uring/uring_cmd.c                          |  35 +++
+ net/socket.c                                  |  86 ++++--
+ tools/include/io_uring/mini_liburing.h        | 292 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockopt.c        |  95 +++++-
+ tools/testing/selftests/net/Makefile          |   1 +
+ .../selftests/net/io_uring_zerocopy_tx.c      | 268 +---------------
+ 9 files changed, 490 insertions(+), 303 deletions(-)
+ create mode 100644 tools/include/io_uring/mini_liburing.h
+
+-- 
+2.34.1
+
