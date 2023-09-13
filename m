@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB5B79F10B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051E979F10F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjIMSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S231864AbjIMSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbjIMSVH (ORCPT
+        with ESMTP id S231777AbjIMSV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:21:07 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA5A1BC6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:21:03 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bcf2de59cso22237866b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:21:03 -0700 (PDT)
+        Wed, 13 Sep 2023 14:21:29 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177C019BF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:21:25 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso17897966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694629260; x=1695234060; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1694629282; x=1695234082; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2GTNFmg4KNiHvvcZa1WQZtY848dk0rdfmjYkArIU+oo=;
-        b=ImVfGelj9av4SZZo5uNZrhZWyVOPuEQkXDl2hKVSM1hHxAfX4r3izbLNUQ3R206BCC
-         1N77yF7THE3YC6iTJOKuHi/FxJSbP/jeUCZhQBxJZitpfaK4Xcpd11RmKthGmI85EIme
-         4APef53YhDnvAvp+PjM1nQde1FShew+fokhrI=
+        bh=nc0iKQaFbvx2OY31KmNWuTwAoAIg4JTwX3WveSIcUxk=;
+        b=oUZ9PV8e935ursdhAkBJgyDO4xxPe7LrX7oO7sjvS2fgPJv+swVso6crjlJgyBp3yT
+         HatF1znbxHj6NNqJPnhza4FwLhQEaeq86dsaAgyqa+bjje2HL6nj9r5N0t67Rz8FYCXw
+         99tJtLL6gfdDsC2EkLbWisoUEY0KLGP+V12bc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694629260; x=1695234060;
+        d=1e100.net; s=20230601; t=1694629282; x=1695234082;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2GTNFmg4KNiHvvcZa1WQZtY848dk0rdfmjYkArIU+oo=;
-        b=WokVdZsG3H3iW72IWqxkOInQdgx1F2wighHuq8ljyHls0I5sP3vSqaFhl31NoaAbWD
-         F1jaV4a1qfXCX89pJUZrz9LfoE0OuJid4hcZ+NpqMF7qZIBhrw0/N+wDNgI1cT4zW1vO
-         3DKpBkdSMKEeP+YfxNXbSKfhTsVU10IpzgEL3Gjfac0R3Ibi0ERKJSuvjtrU94VI5Irg
-         NZSC0uyG4EkfJketGemCCvuiU8VObmkd5mLTz8bY3/QdnO7yTiMWcdMMl4KrdFcGz49m
-         3m361/oLk5l+RwW1B7R+xYLog0FTVerys4n47eoMt987XRR6//9I1/Zew6JoZScucwiN
-         PvqQ==
-X-Gm-Message-State: AOJu0YwaUH37Ljlm9d9InYPDS97lBYKTK3PKY2srPIEKapeHVzT1vPDL
-        CCSizDfGXGSYvIbeUCymbdwQOFU+5ZjvUXpIDt4ODzi1
-X-Google-Smtp-Source: AGHT+IFnuMcs2hCVlMGp9vLZSKqSPq7w5rdI5eJrp8ZJuksCt+o0NkKRymJ9Rqt582+86JQekvDcHA==
-X-Received: by 2002:a17:906:8a5a:b0:9a1:cdf1:ba7 with SMTP id gx26-20020a1709068a5a00b009a1cdf10ba7mr2327167ejc.15.1694629260540;
-        Wed, 13 Sep 2023 11:21:00 -0700 (PDT)
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
-        by smtp.gmail.com with ESMTPSA id hb19-20020a170906b89300b009a1fd22257fsm8727458ejb.207.2023.09.13.11.20.59
+        bh=nc0iKQaFbvx2OY31KmNWuTwAoAIg4JTwX3WveSIcUxk=;
+        b=XWWSBKaj5S0IsJSZFaPi9FBYzv8ZQ8tC5LPmN5x2cVqprmvNvImvJzZQs4124SarRI
+         wqyykmO8/WlSbpA4NioUA4KyLcEFxvQVTVAgioo+CkZsN0t2vFXvxMwucMHkAcczzVYs
+         gkIdA8VdFMqnhBksPmr6/X9wmeGN6X8PYTGScg0DdjuK9UjMOcnDV+Tv+YucXjA5O8B4
+         IdjVgXJb1jyFKZKRbr08SqyWcGgtcfLf+tdaVjxMqK5gHuLKVc038c6qHzHm+zu0IdYb
+         RXdSy4U29kMiQl/iD3N8eWkjsqaeGAqzmGM5QkPCCmKf3VxWk3AlFDX+fh9LD2Rud7AR
+         RJlA==
+X-Gm-Message-State: AOJu0YwyWMy4KbDZF0rlBCqttjSHxDYJWRCBnchuSQ8LYteDGRjqVUEJ
+        o3Tt+N8zoyObTy53nwNKRHaKSGbiu5FXJrZtcEVrJuum
+X-Google-Smtp-Source: AGHT+IF4Y5/DjehuGw6TgmuPdI7jhRo2fJSRUYTaWgMCexrsbNh9OcetrWoJBhhxcun4W700Witjdg==
+X-Received: by 2002:a17:907:2cc8:b0:9ad:7c48:3239 with SMTP id hg8-20020a1709072cc800b009ad7c483239mr2719000ejc.51.1694629282213;
+        Wed, 13 Sep 2023 11:21:22 -0700 (PDT)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id z19-20020a170906715300b009a2202bfce5sm8718813ejj.118.2023.09.13.11.21.21
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 11:21:00 -0700 (PDT)
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso10465e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:20:59 -0700 (PDT)
+        Wed, 13 Sep 2023 11:21:21 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-402c80b71ecso11615e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:21:21 -0700 (PDT)
 X-Received: by 2002:a05:600c:1c24:b0:401:a494:2bbb with SMTP id
- j36-20020a05600c1c2400b00401a4942bbbmr160314wms.5.1694629259696; Wed, 13 Sep
- 2023 11:20:59 -0700 (PDT)
+ j36-20020a05600c1c2400b00401a4942bbbmr160360wms.5.1694629281276; Wed, 13 Sep
+ 2023 11:21:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230804210644.1862287-1-dianders@chromium.org> <20230804140605.RFC.3.I6a4a3c81c78acf5acdc2e5b5d936e19bf57ec07a@changeid>
-In-Reply-To: <20230804140605.RFC.3.I6a4a3c81c78acf5acdc2e5b5d936e19bf57ec07a@changeid>
+References: <20230901234202.566951-1-dianders@chromium.org> <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid>
+In-Reply-To: <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Sep 2023 11:20:47 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WtN_Ag5JsmZGb2arPr8RjhkaBPb14j+a2-+FB-aeTeXw@mail.gmail.com>
-Message-ID: <CAD=FV=WtN_Ag5JsmZGb2arPr8RjhkaBPb14j+a2-+FB-aeTeXw@mail.gmail.com>
-Subject: Re: [RFC PATCH 03/10] drm/panel: otm8009a: Don't double check prepared/enabled
+Date:   Wed, 13 Sep 2023 11:21:02 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VFQUDP+_MoamvSW71ieGCZD5M9FJpZLgQWd_KZcj3OnA@mail.gmail.com>
+Message-ID: <CAD=FV=VFQUDP+_MoamvSW71ieGCZD5M9FJpZLgQWd_KZcj3OnA@mail.gmail.com>
+Subject: Re: [RFT PATCH 03/15] drm/ingenic: Call drm_atomic_helper_shutdown()
+ at shutdown time
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org
+Cc:     airlied@gmail.com, daniel@ffwll.ch, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, paul@crapouillou.net
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -75,64 +73,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Fri, Aug 4, 2023 at 2:07=E2=80=AFPM Douglas Anderson <dianders@chromium.=
+On Fri, Sep 1, 2023 at 4:42=E2=80=AFPM Douglas Anderson <dianders@chromium.=
 org> wrote:
 >
-> As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-> prepared/enabled in drm_panel"), we want to remove needless code from
-> panel drivers that was storing and double-checking the
-> prepared/enabled state. Even if someone was relying on the
-> double-check before, that double-check is now in the core and not
-> needed in individual drivers.
+> Based on grepping through the source code this driver appears to be
+> missing a call to drm_atomic_helper_shutdown() at system shutdown
+> time. Among other things, this means that if a panel is in use that it
+> won't be cleanly powered off at system shutdown time.
 >
-> For the "otm8009a" driver we fully remove the storing of the "enabled"
-> state and we remove the double-checking, but we still keep the storing
-> of the "prepared" state since the backlight code in the driver checks
-> it. This backlight code may not be perfectly safe since there doesn't
-> appear to be sufficient synchronization between the backlight driver
-> (which userspace can call into directly) and the code that's
-> unpreparing the panel. However, this lack of safety is not new and can
-> be addressed in a future patch.
+> The fact that we should call drm_atomic_helper_shutdown() in the case
+> of OS shutdown/restart comes straight out of the kernel doc "driver
+> instance overview" in drm_drv.c.
 >
+> Since this driver uses the component model and shutdown happens at the
+> base driver, we communicate whether we have to call
+> drm_atomic_helper_shutdown() by seeing if drvdata is non-NULL.
+>
+> Suggested-by: Maxime Ripard <mripard@kernel.org>
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
-> From quick inspection, I think the right way to handle the backlight
-> properly is:
-> 1. Start calling backlight_get_brightness() instead of directly
->    getting "bd->props.brightness" and bd->props.power. This should
->    return 0 for a disabled (or blanked or powered off) backlight.
-> 2. Cache the backlight level in "struct otm8009a"
-> 3. If the backlight isn't changing compared to the cached value, make
->    otm8009a_backlight_update_status() a no-op.
-> 4. Remove the caching of the "prepared" value.
+> This commit is only compile-time tested.
 >
-> That should work and always be safe because we always enable/disable
-> the backlight in the panel's enable() and disable() functions. The
-> backlight core has proper locking in this case. A disabled backlight
-> will always return a level of 0 which will always make the backlight's
-> update_status a no-op when the panel is disabled and keep us from
-> trying to talk to the panel when it's off. Userspace can't directly
-> cause a backlight to be enabled/disabled, it can only affect the other
-> blanking modes.
+> NOTE: this patch touches a lot more than other similar patches since
+> the bind() function is long and we want to make sure that we unset the
+> drvdata if bind() fails.
+>
+> While making this patch, I noticed that the bind() function of this
+> driver is using "devm" and thus assumes it doesn't need to do much
+> explicit error handling. That's actually a bug. As per kernel docs [1]
+> "the lifetime of the aggregate driver does not align with any of the
+> underlying struct device instances. Therefore devm cannot be used and
+> all resources acquired or allocated in this callback must be
+> explicitly released in the unbind callback". Fixing that is outside
+> the scope of this commit.
+>
+> [1] https://docs.kernel.org/driver-api/component.html
+>
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 66 +++++++++++++++--------
+>  1 file changed, 44 insertions(+), 22 deletions(-)
 
-Note: I'm not planning to take on the cleanup of making the backlight
-of this driver work better. Ideally someone who uses / maintains the
-affected hardware could give it a shot.
+[ ... cut ... ]
 
+> @@ -1612,6 +1633,7 @@ static struct platform_driver ingenic_drm_driver =
+=3D {
+>         },
+>         .probe =3D ingenic_drm_probe,
+>         .remove =3D ingenic_drm_remove,
+> +       .shutdown =3D ingenic_drm_shutdown,
 
->  .../gpu/drm/panel/panel-orisetech-otm8009a.c    | 17 -----------------
->  1 file changed, 17 deletions(-)
+I resolved the trivial conflict with commit 2b9b0a9fc548
+("drm/ingenic: Convert to platform remove callback returning void"),
+then pushed to drm-misc-next:
 
-
-In response to the cover letter [1], I proposed landing patches #1-#3
-directly from here while we resolve the issues talked about in
-response to patch #4 [2]. I didn't hear any complaints, so I took
-Linus W's review tag from the cover letter and pushed this to
-drm-misc-next.
-
-1e0465eb16a4 drm/panel: otm8009a: Don't double check prepared/enabled
-
-[1] https://lore.kernel.org/r/CAD=3DFV=3DUFuUsrrZmkL8_RL5WLvkJryDwRSAy_PWTa=
--hX_p0dF+Q@mail.gmail.com
-[2] https://lore.kernel.org/r/20230804140605.RFC.4.I930069a32baab6faf46d6b2=
-34f89613b5cec0f14@changeid/
+c3ca98396ffa (HEAD -> drm-misc-next) drm/ingenic: Call
+drm_atomic_helper_shutdown() at shutdown time
