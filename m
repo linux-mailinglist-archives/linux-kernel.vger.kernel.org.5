@@ -2,212 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2966679EE45
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B354779EE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjIMQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:31:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S229718AbjIMQcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjIMQbs (ORCPT
+        with ESMTP id S229583AbjIMQcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:31:48 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECE919A8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:31:44 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34df0f0a5beso705ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694622704; x=1695227504; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DpztZBQJl10oqU07wK0IFzN+LLamje8BENXZn/FkHvA=;
-        b=eFlf0VfguD9/Yi2hXCPcn0IBj01XvuunXpGNEwPrk5EYZyVlO7JdFWaBhJhEE/R0q0
-         cspg+EPQZUX9ZyNxQCcYe0IUJ/+GKVW7WaALLOLWs0wSYqiNMrL0rfYH5MrFDjt8ygiz
-         A8yWOlNwo666KO9DdA0tn23DrjVFX9nyPVa5l8gMVBnPkSgS4m22cMym8LHA75ywVoE4
-         w5EjZvARORDKG2v77Grm1g/iP0beNj/a02LgyTvXpEhdWF5voAxFE13omWUY3r1jPRTy
-         wEBI9cZe5nujr/ZjJoqtnSLR6hIPWFSrcOfaJAyQ1fp1D9Q+ZAZJLlQAuLPcGFFPSJ9U
-         Hydw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622704; x=1695227504;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DpztZBQJl10oqU07wK0IFzN+LLamje8BENXZn/FkHvA=;
-        b=Oqz1l6qxQoI7E46+au9RSFxyV+u4RfFp5lHeBIBfbFF4NfwjyzWBFqc/yIqbcdDm1o
-         r7zFcI6PPtWH/AVDnHOpSfLJp/NDP9eE8Zq9DzgxwpiRb30tRgI2z6VF89c3/HbLy7Xw
-         k+CAMgbxQO3tq5eu4QcjmRRRaROp9/eW1DYbtJbx9h2VZKqifaMT6jfdsVVJX/sankHo
-         zMhYD/HliB6yLXZZfmD/giiRTrAyM5g4Oo3rugyhAyTkKkWy3ysj9aaCKc0osUTbdKtm
-         LTMj8O1q6JCI1FzIi+0edBwfrwhNzKRkkX/1G+aox0eUvx9zBvW+aEOjweZfosBnBzfS
-         KlOA==
-X-Gm-Message-State: AOJu0Ywt5VjXDHLVnS5SqJ2Rv0BQTK/UspP8Bg2W0AENj+EOqec43lvF
-        qZu99PDICsY8/tkYc2OYcwN/juIFuXPazB3Ra34Rig==
-X-Google-Smtp-Source: AGHT+IGuPWoe04ycLchJdkh7wvembyi6qnEngJiQFtN2crYzRc0IPOXpa69VDDgEUH+ZMtq1ZYIRzXLuOnRGiErGM/c=
-X-Received: by 2002:a05:6e02:12cd:b0:349:3dd2:3cf1 with SMTP id
- i13-20020a056e0212cd00b003493dd23cf1mr207318ilm.23.1694622704010; Wed, 13 Sep
- 2023 09:31:44 -0700 (PDT)
+        Wed, 13 Sep 2023 12:32:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E51F19AC;
+        Wed, 13 Sep 2023 09:32:32 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 18:32:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694622750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4gwsCbtaC/KCP2BoXEK3NS8uDKgrnFzIZ7+loZXK6g=;
+        b=F92ndIr+WDdrx4JuPNU0rZtELDMxoKPv8Nabki68NizO4Aou9gUF2WZN34yowN7COsgXGd
+        dAKOfAyYDx9Mqduge5FKPnqSlELFHbes8kF69r4lVYba+3jWI+ymi39idi6HmUckHxfbs6
+        t01BBoeDcqYHg7zbBUYQzoF8flrNdHpbIChvVOI4++6NOfT4K6a5o72g19+fKcBKAh4vj6
+        xRuPHcU/eDgfor3KUSyOeUFD+HMfsDqqDv2VS73ojXty6c+prhZ/8RDp8nnNa4Nn+vgU8j
+        ir+X3b8AL2fFqXKkD9esqBNCuMiO85tGm8cBJ9JhR/FxtUR13dYY7f7MqSDydw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694622750;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4gwsCbtaC/KCP2BoXEK3NS8uDKgrnFzIZ7+loZXK6g=;
+        b=j9bYN7ZwjbxQ1gOcDwGpUIQnOLQiDIeJMb+daOcEYVPYBnieDJNVTK0Kk6yAnIab7lMexa
+        4QCJMJIwvLFLdSDA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kristian Overskeid <koverskeid@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Oetken <ennoerlangen@gmail.com>
+Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
+ decoding
+Message-ID: <20230913163227.ysmJocR0@linutronix.de>
+References: <20230825153111.228768-1-lukma@denx.de>
+ <20230905080614.ImjTS6iw@linutronix.de>
+ <20230905115512.3ac6649c@wsk>
+ <20230911165708.0bc32e3c@wsk>
+ <20230911150144.cG1ZHTCC@linutronix.de>
+ <20230912101828.06cb403d@wsk>
 MIME-Version: 1.0
-References: <20230913125157.2790375-1-tmricht@linux.ibm.com>
-In-Reply-To: <20230913125157.2790375-1-tmricht@linux.ibm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 13 Sep 2023 09:31:29 -0700
-Message-ID: <CAP-5=fUiHMRPVYhbQv-YM+EMKyBF6TEopea=PPX2thbtdmhGsg@mail.gmail.com>
-Subject: Re: [PATCH] perf jevent: fix core dump on software events on s390
-To:     Thomas Richter <tmricht@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, sumanthk@linux.ibm.com, dengler@linux.ibm.com,
-        svens@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230912101828.06cb403d@wsk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 5:52=E2=80=AFAM Thomas Richter <tmricht@linux.ibm.c=
-om> wrote:
->
-> Running commands such as
->  # ./perf stat -e cs -- true
->  Segmentation fault (core dumped)
->  # ./perf stat -e cpu-clock-- true
->  Segmentation fault (core dumped)
->  #
->
-> dump core. This should not happen as these events are defined
-> even when no hardware PMU is available.
-> Debugging this reveals this call chain:
->
->   perf_pmus__find_by_type(type=3D1)
->   +--> pmu_read_sysfs(core_only=3Dfalse)
->        +--> perf_pmu__find2(dirfd=3D3, name=3D0x152a113 "software")
->             +--> perf_pmu__lookup(pmus=3D0x14f0568 <other_pmus>, dirfd=3D=
-3,
->                                   lookup_name=3D0x152a113 "software")
->                  +--> perf_pmu__find_events_table (pmu=3D0x1532130)
->
-> Now the pmu is "software" and it tries to find a proper table
-> generated by the pmu-event generation process for s390:
->
->  # cd pmu-events/
->  # ./jevents.py  s390 all /root/linux/tools/perf/pmu-events/arch |\
->         grep -E '^const struct pmu_table_entry'
->  const struct pmu_table_entry pmu_events__cf_z10[] =3D {
->  const struct pmu_table_entry pmu_events__cf_z13[] =3D {
->  const struct pmu_table_entry pmu_metrics__cf_z13[] =3D {
->  const struct pmu_table_entry pmu_events__cf_z14[] =3D {
->  const struct pmu_table_entry pmu_metrics__cf_z14[] =3D {
->  const struct pmu_table_entry pmu_events__cf_z15[] =3D {
->  const struct pmu_table_entry pmu_metrics__cf_z15[] =3D {
->  const struct pmu_table_entry pmu_events__cf_z16[] =3D {
->  const struct pmu_table_entry pmu_metrics__cf_z16[] =3D {
->  const struct pmu_table_entry pmu_events__cf_z196[] =3D {
->  const struct pmu_table_entry pmu_events__cf_zec12[] =3D {
->  const struct pmu_table_entry pmu_metrics__cf_zec12[] =3D {
->  const struct pmu_table_entry pmu_events__test_soc_cpu[] =3D {
->  const struct pmu_table_entry pmu_metrics__test_soc_cpu[] =3D {
->  const struct pmu_table_entry pmu_events__test_soc_sys[] =3D {
->  #
->
-> However event "software" is not listed, as can be seen in the
-> generated const struct pmu_events_map pmu_events_map[].
-> So in function perf_pmu__find_events_table(), the variable
-> table is initialized to NULL, but never set to a proper
-> value. The function scans all generated &pmu_events_map[]
-> tables, but no table matches, because the tables are
-> s390 CPU Measurement unit specific:
->
->   i =3D 0;
->   for (;;) {
->       const struct pmu_events_map *map =3D &pmu_events_map[i++];
->       if (!map->arch)
->            break;
->
->       --> the maps are there because the build generated them
->
->            if (!strcmp_cpuid_str(map->cpuid, cpuid)) {
->                 table =3D &map->event_table;
->                 break;
->            }
->       --> Since no matching CPU string the table var remains 0x0
->       }
->       free(cpuid);
->       if (!pmu)
->            return table;
->
->       --> The pmu is "software" so it exists and no return
->
->       --> and here perf dies because table is 0x0
->       for (i =3D 0; i < table->num_pmus; i++) {
->               ...
->       }
->       return NULL;
->
-> Fix this and do not access the table variable. Instead return 0x0
-> which is the same return code when the for-loop was not successful.
->
-> Output after:
->  # ./perf stat -e cs -- true
->
->  Performance counter stats for 'true':
->
->                  0      cs
->
->        0.000853105 seconds time elapsed
->
->        0.000061000 seconds user
->        0.000827000 seconds sys
->
->  # ./perf stat -e cpu-clock -- true
->
->  Performance counter stats for 'true':
->
->               0.25 msec cpu-clock #    0.341 CPUs utilized
->
->        0.000728383 seconds time elapsed
->
->        0.000055000 seconds user
->        0.000706000 seconds sys
->
->  # ./perf stat -e cycles -- true
->
->  Performance counter stats for 'true':
->
->    <not supported>      cycles
->
->        0.000767298 seconds time elapsed
->
->        0.000055000 seconds user
->        0.000739000 seconds sys
->
->  #
->
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+On 2023-09-12 10:18:28 [+0200], Lukasz Majewski wrote:
+> Hi Sebastian,
+Hi Lukasz,
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> Ok. No problem. Thanks for the information.
 
-Thanks!
-Ian
+So what happens if you try this:
 
-> ---
->  tools/perf/pmu-events/jevents.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jev=
-ents.py
-> index a7e88332276d..72ba4a9239c6 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -991,7 +991,7 @@ const struct pmu_events_table *perf_pmu__find_events_=
-table(struct perf_pmu *pmu)
->                  }
->          }
->          free(cpuid);
-> -        if (!pmu)
-> +        if (!pmu || !table)
->                  return table;
->
->          for (i =3D 0; i < table->num_pmus; i++) {
-> --
-> 2.41.0
->
+diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+index b77f1189d19d1..6d14d935ee828 100644
+--- a/net/hsr/hsr_framereg.c
++++ b/net/hsr/hsr_framereg.c
+@@ -288,13 +288,13 @@ void hsr_handle_sup_frame(struct hsr_frame_info *frame)
+ 
+ 	/* And leave the HSR tag. */
+ 	if (ethhdr->h_proto == htons(ETH_P_HSR)) {
+-		pull_size = sizeof(struct ethhdr);
++		pull_size = sizeof(struct hsr_tag);
+ 		skb_pull(skb, pull_size);
+ 		total_pull_size += pull_size;
+ 	}
+ 
+ 	/* And leave the HSR sup tag. */
+-	pull_size = sizeof(struct hsr_tag);
++	pull_size = sizeof(struct hsr_sup_tag);
+ 	skb_pull(skb, pull_size);
+ 	total_pull_size += pull_size;
+ 
+
+Sebastian
