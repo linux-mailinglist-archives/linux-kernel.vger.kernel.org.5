@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 293E379F3BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8820E79F3C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjIMVXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
+        id S232006AbjIMV1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjIMVXq (ORCPT
+        with ESMTP id S229457AbjIMV1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:23:46 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707A41739
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1694640220;
-        bh=7UMXyUu1H7AInb4Jf1UkOFSbvi8aI+lZ+c555okXulk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LD4NZh66O4MJk7Y9JGURpc7BrqLSXa+ZkQkaeR0V2UdefICVXhMUpkBFN3sGQRg56
-         82zT9QNobZLmMPa0TOyFybnriF7s2lDZFWLjsfuCwc2pR5XROAzPAI7Gj6wmccXXJO
-         F8vms5XZ4j7Zh0mDK3bJdwsEm32Fvaa9ILjIkgWA=
-Date:   Wed, 13 Sep 2023 23:23:40 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Sebastian Ott <sebott@redhat.com>, Mark Brown <broonie@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: aarch64 binaries using nolibc segfault before reaching the entry
- point
-Message-ID: <af79d880-9b0c-49c2-83b3-09ce5bd75093@t-8ch.de>
-References: <5d49767a-fbdc-fbe7-5fb2-d99ece3168cb@redhat.com>
- <2da5ce29-e0de-4715-aa77-453ff3cc48aa@t-8ch.de>
- <20230913205838.GA21038@1wt.eu>
+        Wed, 13 Sep 2023 17:27:30 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD511724
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:27:26 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68fb898ab3bso188115b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694640446; x=1695245246; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NJ8fqic/uomWgpsKqJ7x61RUWZmvyUYZyTh0hpMJdiM=;
+        b=LsdFju0yd2M783C96YJe2N2eVqo72OAyMq9SeZFW+p65Vdqvg3x74ZiBDevIl+RoG6
+         KuWIWY0dNq+tNcCsQIz7qWgMNNNDXQlako1livF9DJIWvVSgXB9uOSRxtQV4dfn9Pzud
+         OKNOSvjO4RNxte2DCECG2DQgesAK5ahS3FNMI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694640446; x=1695245246;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NJ8fqic/uomWgpsKqJ7x61RUWZmvyUYZyTh0hpMJdiM=;
+        b=U3YrT9RbSdUoQJ94FBjgf/E8DKVcT+pA62qbw98n8kW2LRVTeN0n2lngQhU4i0cknZ
+         1eDMk9UAagRU4++djH1kqWi9EDVQtmKaFiP/AQik9f2L1xHlbTIj1rGp7mfzZCqm3NB1
+         yW1rOm0elGkUbAmQw0Hf4QhWHFAgjFEqKzMdDS8T5hXJShwe8i9Vypgzdn/akYD18kaK
+         4szcwcJkGHU4DeOl5pe6sgmjEk4uV/YHjAgC8vfUfLSjP9jijBsBUDHeNf+U9hgEFe+Y
+         XHivG1eEVDOuEaPcq12C4Big8Yd3bOf9Qy2cUJ3w053+838St9fFKkX4q3eapsgCXaYG
+         J36Q==
+X-Gm-Message-State: AOJu0YyEzgBrqjyp1DV7pIwCnezI4upr65tjL5Pybtnpf/1TXPt6rorI
+        /5ObDYFC94kxHvat6DGi4A4P7A==
+X-Google-Smtp-Source: AGHT+IGyI6LR0X+sTt85Dc5hyaU3kiSenLO/6Xn71Ljenu4d72Yi/579Xsvyp40g93KRVbpEbnHMVA==
+X-Received: by 2002:a05:6a20:1445:b0:144:5d5b:8e24 with SMTP id a5-20020a056a20144500b001445d5b8e24mr4250764pzi.24.1694640445852;
+        Wed, 13 Sep 2023 14:27:25 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:11a:201:ae97:c6dc:1d98:494f])
+        by smtp.gmail.com with ESMTPSA id a10-20020a17090ad80a00b0025bdc3454c6sm1923976pjv.8.2023.09.13.14.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 14:27:25 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: [PATCH v4 0/4] platform/x86: intel_scu_ipc: Timeout fixes
+Date:   Wed, 13 Sep 2023 14:27:18 -0700
+Message-ID: <20230913212723.3055315-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230913205838.GA21038@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-13 22:58:38+0200, Willy Tarreau wrote:
-> On Wed, Sep 13, 2023 at 10:19:00PM +0200, Thomas Weißschuh wrote:
-> > > All on aarch64 running fedora37 + upstream kernel. Any hints on what could
-> > > be borken here or how to actually fix it?
-> > 
-> > I reduced it to the following reproducer:
-> > 
-> >     $ cat test.c
-> >     int foo;  /* It works when deleting this variable */
-> >     
-> >     void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) _start(void)
-> >     {
-> >     	__asm__ volatile (
-> >     		"mov x8, 93\n"       /* NR_exit == 93 */
-> >     		"svc #0\n"
-> >     	);
-> >     	__builtin_unreachable();
-> >     }
-> >     
-> >     $ aarch64-linux-gnu-gcc -Os -static -fno-stack-protector -Wall -nostdlib test.c
-> >     $ ./a.out
-> >     Segmentation fault
-> > 
-> > Also when running under gdb the error message is:
-> > 
-> >     During startup program terminated with signal SIGSEGV, Segmentation fault.
-> > 
-> > So it seems the error already happens during loading.
-> > 
-> > Could be a compiler or kernel bug?
-> 
-> I tried here with gcc-11.4.0 native on an ubuntu-22.04 and using a
-> cross gcc-9.5 executed on another box and couldn't reproduce the issue
-> at all. It could be that the compiler inserts whatever, did someone
-> try to disassemble de resulting program to see what it looks like ?
-> Maybe we're even dealing with issues related to random stack alignment
-> that causes issues past a function call due to some garbage being placed
-> at the wrong place in the stack. Also, dmesg should generally report
-> what (and where) the segv happened. Similarly, gdb with "info reg"
-> and "disassemble $pc" should report some info.
+I recently looked at some crash reports on ChromeOS devices that call
+into this intel_scu_ipc driver. They were hitting timeouts, and it
+certainly looks possible for those timeouts to be triggering because of
+scheduling issues. Once things started going south, the timeouts kept
+coming. Maybe that's because the other side got seriously confused? I
+don't know.
 
-Im using:
+I added some sleeps to these paths to trigger the timeout behavior to
+make sure the code works. Simply sleeping for a long time in busy_loop()
+hits the timeout, which could happen if the system is scheduling lots of
+other things at the time.
 
-aarch64-linux-gnu-gcc (GCC) 13.2.0
+I couldn't really test the last patch because forcing a timeout or
+returning immediately wasn't fast enough to trigger the second
+transaction to run into the first one being processed.
 
-It's reproducible reliably.
+Changes from v3 (https://lore.kernel.org/r/20230911193937.302552-1-swboyd@chromium.org):
+ * Use readx_poll_timeout() to shorten a line
 
-No output in dmesg, binary works in qemu-user.
-There should be no function calls at all, or?
-GDB also doesn't show any registers, it seems to fail before anything is
-executed.
+Changes from v2 (https://lore.kernel.org/r/20230906180944.2197111-1-swboyd@chromium.org):
+ * Use read_poll_timeout() helper in patch #1 (again)
+ * New patch #3 to fix bug pointed out by Andy
+ * Consolidate more code into busy check in patch #4
 
-> 
-> In my case, I just have this:
-> 
->   $ objdump -d a.out 
-> 
->   a.out:     file format elf64-littleaarch64
-> 
-> 
->   Disassembly of section .text:
-> 
->   0000000000400144 <_start>:
->     400144:       d2800ba8        mov     x8, #0x5d                       // #93
->     400148:       d4000001        svc     #0x0
+Changes from v1 (https://lore.kernel.org/r/20230831011405.3246849-1-swboyd@chromium.org):
+ * Don't use read_poll_timeout() helper in patch 1, just add code
+ * Rewrite patch 2 to be simpler
+ * Make intel_scu_ipc_busy() return -EBUSY when busy
+ * Downgrade dev_err() to dev_dbg() in intel_scu_ipc_busy()
 
-Looks absolutely identical for me.
+Stephen Boyd (4):
+  platform/x86: intel_scu_ipc: Check status after timeout in busy_loop()
+  platform/x86: intel_scu_ipc: Check status upon timeout in
+    ipc_wait_for_interrupt()
+  platform/x86: intel_scu_ipc: Don't override scu in
+    intel_scu_ipc_dev_simple_command()
+  platform/x86: intel_scu_ipc: Fail IPC send if still busy
 
-> 
-> The kernel is a 6.2:
-> 
->   $ uname -a
->   Linux ampere 6.2.0-26-generic #26~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Jul 13 20:49:15 UTC 2 aarch64 aarch64 aarch64 GNU/Linux
+ drivers/platform/x86/intel_scu_ipc.c | 66 +++++++++++++++++-----------
+ 1 file changed, 40 insertions(+), 26 deletions(-)
 
-Linux fedora-4gb-fsn1-1 6.4.11-200.fc38.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Aug 16 18:01:59 UTC 2023 aarch64 GNU/Linux
+Cc: Prashant Malani <pmalani@chromium.org>
 
-(Just a default ARM VM on Hetzner with Fedora 38)
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+https://chromeos.dev
+
