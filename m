@@ -2,295 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 512F879EF76
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5350D79EFB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjIMQ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        id S229533AbjIMRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbjIMQ5Q (ORCPT
+        with ESMTP id S231422AbjIMRAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:57:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C0F1BE2;
-        Wed, 13 Sep 2023 09:57:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 70ADA1F383;
-        Wed, 13 Sep 2023 16:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694624230;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZCUJIvSAdfq2/FYSl4AeA+MvtXsJkXBjw1qDBWVvC0E=;
-        b=m6FXeNKU0el+A4CbL0q8LJTrgsL7x+VelfnZkvubqyUiLjE+KxxdqeFkWdbaC2xEmiVSYU
-        2NHQD67GwQUoyp7dfSwKarlRreEQJXA2FTW1lv9Q6jS2sBfC+bc9iqFrPF3SFfB8esN+lV
-        DqtFSHHcquBnvuxJ3VBWvZJDcLFMNS8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694624230;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZCUJIvSAdfq2/FYSl4AeA+MvtXsJkXBjw1qDBWVvC0E=;
-        b=rPMdukcVliWd+qcxQ32gbOPFHBjD+oQDtdcG7rRVo3P55r2q1vG1R67WmHy4s6WHac8YfB
-        hFfG6uigNlw1udBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A3BB13582;
-        Wed, 13 Sep 2023 16:57:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4F+gBebpAWUxLAAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 16:57:10 +0000
-Date:   Wed, 13 Sep 2023 18:57:08 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 03/11] btrfs: add support for inserting raid stripe
- extents
-Message-ID: <20230913165708.GR20408@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
- <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
+        Wed, 13 Sep 2023 13:00:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0239719B1;
+        Wed, 13 Sep 2023 09:59:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89ACFC433C8;
+        Wed, 13 Sep 2023 16:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694624397;
+        bh=BnteqCpF/CAUK7DK9U9Ghtfp5dt4d9MfOz2/eAS/u7s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cPc5I0ZLysgdFaSm9d3iPjGsHib6No1WDfTfDNmZ8EJftw2ukgPJqbdTvFwfII6h5
+         XsjFCfQwy0hAhvcNI/zC1jAxOZx+xj3WkJy3PnXdFgBaTdKUmzEXfr8r119FUpA9ws
+         uEyzFAjE2f/LP5rj9F/N4Be4pbP/BK9uPoheaZ2R88lgsiTu9NUbtgyaz2XOX1oPZT
+         eklyhY3ZUUL2hQtxVd/re7fFxkttitCrig5ohr9Pm1WOgM5lChR8UOojrbVvjicS9G
+         gipMxf05N4nYGfN5v5g6bWOTb7T8iOMYlMWHXGVTPRzp+C5LHyalJK3Qgj/yIop80d
+         GuvQxVLkJ3wdg==
+Date:   Wed, 13 Sep 2023 17:59:48 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 24/31] net: wan: Add framer framework support
+Message-ID: <e3245053-1d4c-4ee3-9e03-8a6ca54e26d1@sirena.org.uk>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+ <20230912101436.225781-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3d4xnD0OBUXwj5Mp"
 Content-Disposition: inline
-In-Reply-To: <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20230912101436.225781-1-herve.codina@bootlin.com>
+X-Cookie: Use extra care when cleaning on stairs.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 05:52:04AM -0700, Johannes Thumshirn wrote:
-> +static int btrfs_insert_striped_mirrored_raid_extents(
-> +				      struct btrfs_trans_handle *trans,
-> +				      struct btrfs_ordered_extent *ordered,
-> +				      u64 map_type)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	struct btrfs_io_context *rbioc;
-> +	const int nstripes = list_count_nodes(&ordered->bioc_list);
-> +	const int index = btrfs_bg_flags_to_raid_index(map_type);
-> +	const int substripes = btrfs_raid_array[index].sub_stripes;
-> +	const int max_stripes = trans->fs_info->fs_devices->rw_devices / 2;
-> +	int left = nstripes;
-> +	int stripe = 0, j = 0;
-> +	int i = 0;
 
-Please move the initialization right before the block that uses the
-variables.
+--3d4xnD0OBUXwj5Mp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	int ret = 0;
-> +	u64 stripe_end;
-> +	u64 prev_end;
-> +
-> +	if (nstripes == 1)
-> +		return btrfs_insert_mirrored_raid_extents(trans, ordered, map_type);
-> +
-> +	rbioc = kzalloc(struct_size(rbioc, stripes, nstripes * substripes),
-> +			GFP_KERNEL);
-> +	if (!rbioc)
-> +		return -ENOMEM;
-> +
-> +	rbioc->map_type = map_type;
-> +	rbioc->logical = list_first_entry(&ordered->bioc_list, typeof(*rbioc),
-> +					   ordered_entry)->logical;
-> +
-> +	stripe_end = rbioc->logical;
-> +	prev_end = stripe_end;
+On Tue, Sep 12, 2023 at 12:14:36PM +0200, Herve Codina wrote:
+> A framer is a component in charge of an E1/T1 line interface.
+> Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
+> frames. It also provides information related to the E1/T1 line.
+>=20
+> The framer framework provides a set of APIs for the framer drivers
+> (framer provider) to create/destroy a framer and APIs for the framer
+> users (framer consumer) to obtain a reference to the framer, and
+> use the framer.
 
-Like here, initializing i
+If people are fine with this could we perhaps get it applied on a branch
+with a tag?  That way we could cut down the size of the series a little
+and I could apply the generic ASoC bit too, neither of the two patches
+have any dependency on the actual hardware.
 
-> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-> +
-> +		rbioc->size += bioc->size;
-> +		for (j = 0; j < substripes; j++) {
+--3d4xnD0OBUXwj5Mp
+Content-Type: application/pgp-signature; name="signature.asc"
 
-And if you don't use 'j' outside of the for cycle you can use the
-delcarations inside the for (...).
+-----BEGIN PGP SIGNATURE-----
 
-> +			stripe = i + j;
-> +			rbioc->stripes[stripe].dev = bioc->stripes[j].dev;
-> +			rbioc->stripes[stripe].physical = bioc->stripes[j].physical;
-> +			rbioc->stripes[stripe].length = bioc->size;
-> +		}
-> +
-> +		stripe_end += rbioc->size;
-> +		if (i >= nstripes ||
-> +		    (stripe_end - prev_end >= max_stripes * BTRFS_STRIPE_LEN)) {
-> +			ret = btrfs_insert_one_raid_extent(trans,
-> +							   nstripes * substripes,
-> +							   rbioc);
-> +			if (ret)
-> +				goto out;
-> +
-> +			left -= nstripes;
-> +			i = 0;
-> +			rbioc->logical += rbioc->size;
-> +			rbioc->size = 0;
-> +		} else {
-> +			i += substripes;
-> +			prev_end = stripe_end;
-> +		}
-> +	}
-> +
-> +	if (left) {
-> +		bioc = list_prev_entry(bioc, ordered_entry);
-> +		ret = btrfs_insert_one_raid_extent(trans, substripes, bioc);
-> +	}
-> +
-> +out:
-> +	kfree(rbioc);
-> +	return ret;
-> +}
-> +
-> +static int btrfs_insert_striped_raid_extents(struct btrfs_trans_handle *trans,
-> +				     struct btrfs_ordered_extent *ordered,
-> +				     u64 map_type)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	struct btrfs_io_context *rbioc;
-> +	const int nstripes = list_count_nodes(&ordered->bioc_list);
-> +	int i = 0;
-> +	int ret = 0;
-> +
-> +	rbioc = kzalloc(struct_size(rbioc, stripes, nstripes), GFP_KERNEL);
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUB6oMACgkQJNaLcl1U
+h9C6Xgf/eVzH2ZK88zsRlmvtdc+p6XZjgKPJFkUlIhE9Ma70SkaA+GvjpzFrSISC
+0oFzEllaNXg3QA5Dql2eFFYQgtr5ubist5gEg7ySisIk/3GFEx1+bOqfE8Hd0wxS
+EOmSRrnORoEywUsp1tI/CIh6s+FkPAwH0ZLtXwvWiKeWjQc8q9wKDnqqahC84N6Q
+NESewhcaX2cQNfQXdyKGrnV9RVVSaVml3mQ4OvcjG21+FFq8IFvmn1HuLyhzj7ka
+ACjNRWS9xgBsIqVyOOaYB2Ji62cf+WK4/DJig11BI34n9N7Tnbi80+kb0JX/WVno
+ncpqIK4/jpD4JNn+BxeAIiICNG0cQw==
+=nBcU
+-----END PGP SIGNATURE-----
 
-You can't use GFP_KERNEL generally in any function that takes a
-transaction handle parameter. Either GFP_NOFS or with the
-memalloc_nofs_* protection.
-
-> +	if (!rbioc)
-> +		return -ENOMEM;
-> +	rbioc->map_type = map_type;
-> +	rbioc->logical = list_first_entry(&ordered->bioc_list, typeof(*rbioc),
-> +					   ordered_entry)->logical;
-> +
-
-Maybe initializing 'i' here would be better so it's consistent with
-other code.
-
-> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
-> +		rbioc->size += bioc->size;
-> +		rbioc->stripes[i].dev = bioc->stripes[0].dev;
-> +		rbioc->stripes[i].physical = bioc->stripes[0].physical;
-> +		rbioc->stripes[i].length = bioc->size;
-> +
-> +		if (i == nstripes - 1) {
-> +			ret = btrfs_insert_one_raid_extent(trans, nstripes, rbioc);
-> +			if (ret)
-> +				goto out;
-> +
-> +			i = 0;
-> +			rbioc->logical += rbioc->size;
-> +			rbioc->size = 0;
-> +		} else {
-> +			i++;
-> +		}
-> +	}
-> +
-> +	if (i && i < nstripes - 1)
-> +		ret = btrfs_insert_one_raid_extent(trans, i, rbioc);
-> +
-> +out:
-> +	kfree(rbioc);
-> +	return ret;
-> +}
-> +
-> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-> +			     struct btrfs_ordered_extent *ordered_extent)
-> +{
-> +	struct btrfs_io_context *bioc;
-> +	u64 map_type;
-> +	int ret;
-> +
-> +	if (!trans->fs_info->stripe_root)
-> +		return 0;
-> +
-> +	map_type = list_first_entry(&ordered_extent->bioc_list, typeof(*bioc),
-> +				    ordered_entry)->map_type;
-> +
-> +	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
-> +	case BTRFS_BLOCK_GROUP_DUP:
-> +	case BTRFS_BLOCK_GROUP_RAID1:
-> +	case BTRFS_BLOCK_GROUP_RAID1C3:
-> +	case BTRFS_BLOCK_GROUP_RAID1C4:
-> +		ret = btrfs_insert_mirrored_raid_extents(trans, ordered_extent,
-> +							 map_type);
-> +		break;
-> +	case BTRFS_BLOCK_GROUP_RAID0:
-> +		ret = btrfs_insert_striped_raid_extents(trans, ordered_extent,
-> +							map_type);
-> +		break;
-> +	case BTRFS_BLOCK_GROUP_RAID10:
-> +		ret = btrfs_insert_striped_mirrored_raid_extents(trans, ordered_extent, map_type);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	while (!list_empty(&ordered_extent->bioc_list)) {
-> +		bioc = list_first_entry(&ordered_extent->bioc_list,
-> +					typeof(*bioc), ordered_entry);
-> +		list_del(&bioc->ordered_entry);
-> +		btrfs_put_bioc(bioc);
-> +	}
-> +
-> +	return ret;
-> +}
-> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
-> new file mode 100644
-> index 000000000000..f36e4c2d46b0
-> --- /dev/null
-> +++ b/fs/btrfs/raid-stripe-tree.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
-> + */
-> +
-> +#ifndef BTRFS_RAID_STRIPE_TREE_H
-> +#define BTRFS_RAID_STRIPE_TREE_H
-> +
-> +#include "disk-io.h"
-> +
-> +struct btrfs_io_context;
-> +struct btrfs_io_stripe;
-
-Please add more forward declarations, btrfs_trans_handle,
-btrfs_ordered_extent or fs_info.
-
-> +
-> +int btrfs_insert_raid_extent(struct btrfs_trans_handle *trans,
-> +			     struct btrfs_ordered_extent *ordered_extent);
-> +
-> +static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
-> +						 u64 map_type)
-> +{
-> +	u64 type = map_type & BTRFS_BLOCK_GROUP_TYPE_MASK;
-> +	u64 profile = map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK;
-> +
-> +	if (!btrfs_stripe_tree_root(fs_info))
-> +		return false;
-> +
-> +	if (type != BTRFS_BLOCK_GROUP_DATA)
-> +		return false;
-> +
-> +	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +#endif
+--3d4xnD0OBUXwj5Mp--
