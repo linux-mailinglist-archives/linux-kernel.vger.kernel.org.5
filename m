@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D8A79F0FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A8B79F0D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbjIMSSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:18:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S231654AbjIMSF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjIMSST (ORCPT
+        with ESMTP id S231577AbjIMSFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:18:19 -0400
-X-Greylist: delayed 1298 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 11:18:15 PDT
-Received: from fallback21.i.mail.ru (fallback21.i.mail.ru [79.137.243.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95AC619B6;
-        Wed, 13 Sep 2023 11:18:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
-        h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=7V7fgWewNPhaoafpaVwA8Q3E6JLlDZh/BU6Y8rgxinM=;
-        t=1694629095;x=1694719095; 
-        b=VR0pPNrsYqsJ/fZVI9B50Nc+JT7QzYny8papghMo7Z4NKVh7zcfQr6Z/RIUU0lp3FEekQxatdLMVHneB5nLkOaqrgyIFcATjrEfLkyQPo1YR1sfC6va1hpyGkZ3I8h439EZ5ncTs9kSkHi+z+o0eoVhjG7E2mvcZ3oFUvNkL5iA=;
-Received: from [10.12.4.15] (port=35676 helo=smtp40.i.mail.ru)
-        by fallback21.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
-        id 1qgU6N-00Fs6p-Pq; Wed, 13 Sep 2023 20:56:36 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-        ; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
-        X-Cloud-Ids:Disposition-Notification-To;
-        bh=7V7fgWewNPhaoafpaVwA8Q3E6JLlDZh/BU6Y8rgxinM=; t=1694627795; x=1694717795; 
-        b=kTMC7Q2VxXxGCQIEGeiZeSFO7kaACSk64ClEooWRbrIGk+KjcCNbzMy0u9ldLax10ZsleDxZqi8
-        oq8QyGKeqBbZxgi4UC/xiCOf+plrZTvJylhKiEFQ5S3ZYhXc+qtV3Fw+Q86r+YkoRdNjMhEDLn4mx
-        dvO+vGHNhBnisV6su0s=;
-Received: by smtp40.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-        id 1qgU62-009eHm-1D; Wed, 13 Sep 2023 20:56:15 +0300
-From:   Danila Tikhonov <danila@jiaxyga.com>
-To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, vkoul@kernel.org,
-        quic_tdas@quicinc.com, dkatraga@codeaurora.org
-Cc:     danila@jiaxyga.com, adomerlee@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: qcom: gcc-sm8150: Fix gcc_sdcc2_apps_clk_src
-Date:   Wed, 13 Sep 2023 20:56:11 +0300
-Message-ID: <20230913175612.8685-1-danila@jiaxyga.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 13 Sep 2023 14:05:24 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84CB19BB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:05:20 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so2688261a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694628319; x=1695233119; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EA+rhaOJb0CMGu7EIM3OJMimctfMG2s/Yf58LoBvEr8=;
+        b=Rx3I9RFDGCbyFKvsxLe5lY3inC6G/UVb1Tp5pwGyEL9MXZHNfdpR6BxUTgpah0uK/Q
+         81Opbq+50gMgXDGhj8LYF9cjjZlZbCm/9nEBWX8LCfY/LfdI1kQPLpESnO8tVnOvLUTt
+         T5HO6kf0qUIxvboaJlzd6ZmP73ho5Fvt7zFQjrPQ0MtALPF4VYRWNLEgnw2dMMXfUU57
+         frnnG+5CrfO6X2uDHp7IgqdREKAr462gqrBDh4LMQ7qCk6RBPWMbVB6wD0dzoURosAFZ
+         QC8o4EbP8xYpH1Vlo3k7aDv1v2WY6HL5n+vv/Bd9vQC99aquxCxXTAeIrLA98kJz0Et9
+         QrMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694628319; x=1695233119;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EA+rhaOJb0CMGu7EIM3OJMimctfMG2s/Yf58LoBvEr8=;
+        b=wFd26qCDoQg/3Ps6NNi8jkp/PCUDG6ZbzLZwkd0niwbxdDzxTi70RVDEFfIfguq5WR
+         pxsDUvHu6zXpddrNFPSwrKkVehObPSflfD7cvROzot8edZAhOA6Q50y8s3DX/qUXUByG
+         8j3Xrzw4LI+1yItWg5Jxt5iAqrAJMxkYsB6pSLO16NvavCPeHyDbt9s5ak376+fkY7sT
+         EOtOixfwlwKvtqLkcM0NUhXmMC/QjpMQYPNcFUQ1fjByPyU2uIESDUAcsQ4mcrQz0ona
+         ecSwrYkb7JCM/0LML9b/PWpsWxRXk8j6Muly7tXG06+LZ659iaFrQQJObF89m5s9hLb+
+         IFCA==
+X-Gm-Message-State: AOJu0YxB1Dof3+SXiPzcve94xNtXQcqfL4ucgyulv11+dh1VxVXgokhD
+        GRnCBtn4/+7X6EyhilFyDELemA==
+X-Google-Smtp-Source: AGHT+IE6LRy4QiQj7s2KglzqfydLIrqvv+25l+GZ5+5U6g45Mb5TaSZqKrfnEizhaQ4ROgtQfM8BmA==
+X-Received: by 2002:aa7:d782:0:b0:522:3149:159b with SMTP id s2-20020aa7d782000000b005223149159bmr4704053edq.2.1694628319116;
+        Wed, 13 Sep 2023 11:05:19 -0700 (PDT)
+Received: from [192.168.37.232] (178235177172.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.172])
+        by smtp.gmail.com with ESMTPSA id cn27-20020a0564020cbb00b0052718577668sm1453733edb.11.2023.09.13.11.05.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 11:05:18 -0700 (PDT)
+Message-ID: <e4a40052-8e16-449a-92c0-f7c822aa49ad@linaro.org>
+Date:   Wed, 13 Sep 2023 20:05:16 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-7564579A: B8F34718100C35BD
-X-77F55803: 4F1203BC0FB41BD927CFE6CA1630A10CA056C88976AC17650012AE68F2FF28C300894C459B0CD1B97671123999B959D22C506DC8172E2629501B2FA9F0FF42E1424FBDF045C422AE
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE76D34FAA3D8B31588C2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE7C2204D4F9A221771EA1F7E6F0F101C6723150C8DA25C47586E58E00D9D99D84E1BDDB23E98D2D38BE5CCB53A13BC8DBAF04F44DFBD239A49D8F576AEE60187B1CC7F00164DA146DAFE8445B8C89999728AA50765F7900637F3E38EE449E3E2AE389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC821E93C0F2A571C7BF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947CDBD6BAFA574C8444C0837EA9F3D197644AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C390DD3ED15DE76207BA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF3D321E7403792E342EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7464A38C3DB54FF7A731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A5BD7A6635C31D49E6F02C1F4858285CAE3FE6D546EE1A1C12F87CCE6106E1FC07E67D4AC08A07B9B01F9513A7CA91E5559C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFE439756843D9CD0821AABF7E60D9C6A7842409843C015F9A15A7B32FEF9B5A6EAE7801A017AB3E4AC4B8F2E8CFB8F57124344E548B300FD2CA67E0404E2B444304DA52CF61C1B8024C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbL9S8ysBdXgEdfe8YzmBg5d2bTk6IuVE
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C7394981A9073215D3F65785E204FA114A373AF3A02093AA449391CF643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4CCFDD92D2340B86DAE84E8624EAA1CB8D92F4515634B556D049FFFDB7839CE9EA21101AE4D7A6B829DFF42F0DA616BF4912090F4AD4902AFC6914ADF4A538DBC
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5xhPKz0ZEsZ5k6NOOPWz5QAiZSCXKGQRq3/7KxbCLSB2ESzQkaOXqCBFZPLWFrEGlV1shfWe2EVcxl5toh0c/aCGOghz/frdRhzMe95NxDFdaloFI76w+pKBqvRsLl5dbw==
-X-Mailru-MI: C000000000000800
-X-Mras: Ok
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sa8775p: enable the inline crypto
+ engine
+Content-Language: en-US
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913153529.32777-1-bartosz.golaszewski@linaro.org>
+ <20230913153529.32777-2-bartosz.golaszewski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230913153529.32777-2-bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set .flags = CLK_OPS_PARENT_ENABLE to fix "gcc_sdcc2_apps_clk_src: rcg
-didn't update its configuration" error.
+On 13.09.2023 17:35, Bartosz Golaszewski wrote:
+> Add an ICE node to sa8775p SoC description and enable it by adding a
+> phandle to the UFS node.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+I don't have any sources backing this up, but 8350 seems to
+have the exact same register ranges for this block, so I'm
+inclined to believe it's ok
 
-Fixes: 2a1d7eb854bb ("clk: qcom: gcc: Add global clock controller driver for SM8150")
-Tested-by: Arseniy Velikanov <adomerlee@gmail.com>
-Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
----
- drivers/clk/qcom/gcc-sm8150.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-diff --git a/drivers/clk/qcom/gcc-sm8150.c b/drivers/clk/qcom/gcc-sm8150.c
-index 41ab210875fb..05d115c52dfe 100644
---- a/drivers/clk/qcom/gcc-sm8150.c
-+++ b/drivers/clk/qcom/gcc-sm8150.c
-@@ -774,7 +774,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
- 		.name = "gcc_sdcc2_apps_clk_src",
- 		.parent_data = gcc_parents_6,
- 		.num_parents = ARRAY_SIZE(gcc_parents_6),
--		.flags = CLK_SET_RATE_PARENT,
-+		.flags = CLK_OPS_PARENT_ENABLE,
- 		.ops = &clk_rcg2_floor_ops,
- 	},
- };
--- 
-2.41.0
-
+Konrad
