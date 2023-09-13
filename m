@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A2379E394
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D42379E398
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239269AbjIMJ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:26:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        id S239282AbjIMJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbjIMJ02 (ORCPT
+        with ESMTP id S232138AbjIMJ1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:26:28 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0935B1999;
-        Wed, 13 Sep 2023 02:26:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1694597180; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=jh7vTyw05MY3zs1yjcJ7pQj1CQ+ha8bZo1IOR5kK6OuUcV1N3H7AmaMnAoRG+n0pyL
-    aN4CsHlampUTHKLKXmjvXLdK7wKALf2NeINRTBVfyh5l8qJrCUoDy/oBA54omuhNjzHM
-    Re352kNT1/fR7+EPLUT+sEb/7/d+rMok+0kakMzaJ12EQnaORvO0PSWFJG4EIAF/nwJH
-    U/f+Gpay5o8PzDa9W1KguC7ryvnwIWwb6MeVOfcARUsdRU13hgTixtGYaXcUUioJMyGB
-    +qxbTfkJRs0nNeHIew/za2JQaRRm80DjnwMqVAWk1kKZ94hZ9vHx7VFMOg+59FH5gQs6
-    bY6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694597180;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
-    b=m+SEcaRbLb3aeHI3A8S1TxnxXahRpvT9usblEcgfbiSb8cXez+zxn2W3OdT1jzdcxV
-    7GcD8ZBQ4t0dOgcmWRxYUwm4XRefV09pRu3pYWwl4gwOb/SvwBXjMJ+Oe9J1ttjx8oMa
-    0xmkV8XxOx5J/O74UErrLmmabDOZiJWLQRY49h5JoD6gMIefDtEAjB+l+IZekyetwh2Y
-    Q7YaU18XxWW3/nX8KFTtG2g3wgLdwmSeMiutnzgGiOiVGFB94agzpOiGZUKJujmCVjPI
-    E5o/JbAKgYXir5peewd2hctyCXhN8vPt8G/9DFe7dw6d6TKfbSlISLSNlig+G26IHASd
-    OpEQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694597180;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
-    b=lpWL5oJWRMe707OfzSm3HnsRmfuMrrl3zKQPhdGaXlETRhIeLEL+MZ88cx2bfvXEUu
-    BB6oRV4JJLlDig+QBnw6k/2uLlojFuO47FfNaSOWpgeCXJVpB1Vc/MCTNSwG7fXf5pmt
-    Brmj1ujU5swIXrb+jQ5ZwvHzB9PuPmu6sSQPPp/7918VovTEUatJC9fKeshYReFmVDwv
-    63oXmIM48baCoJ2fAEKWuEJ0DkCjoaSLLzsA8YeVW+8Z2GGJtp5My9yEEhJqlE/3f7dB
-    5kdkxZx5GU7biXExwlc0kYKO8roXedbNMXo9B/exOa32NeWuHVX83o5p6+RWEnxm7j+D
-    VA5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694597180;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
-    b=Wvj+Z/LffVVSMzHsH2wr1O4pVcD0LB48YLwdXRgRNAEldlw1OiJkJQiuOi+XruZ6Ur
-    EgWFW+JOmT0zkUnkeRBg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z/h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id 60372az8D9QJgbQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 13 Sep 2023 11:26:19 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 11:26:12 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] spi: qup: Vote for interconnect bandwidth to DRAM
-Message-ID: <ZQGANOwy97w0RIHV@gerhold.net>
-References: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
- <20230912-spi-qup-dvfs-v1-4-3e38aa09c2bd@kernkonzept.com>
+        Wed, 13 Sep 2023 05:27:06 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C0A1999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:27:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-501cef42bc9so10822052e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1694597221; x=1695202021; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QGfCIQ2uXeaGjAP1vJHhSYENJ4MSWSNEKMncc6vme3A=;
+        b=XyT+y+VvcEVYjk5tgqdG90zYV580vel1Tmj/WyF/7nZjk67DQsvcAVss9WQrjs6KM7
+         2nt4HLxAqupqZC37fVMxStjDf77Zz2Eq/3AHP0LPpL7CNIP2VVLozaH/XHJqXBVmHLr9
+         EGabpQbAdYjmdKmKAicw7DJPI2uumzDq10pWtVGlRMK+gtOCAunghRP8mVmDG6VLC4HX
+         4f5NWlkQ53CIig/1dgjXPprOTM4yG9phKiaNdnfTfIvsWE0bvabOlWqMMizTcXJo11kA
+         bjcoeOwukuVnea6MbaaaBzeyR6MWlzdfhq5N8vkoPGJ6H7RqnOgVkJCMI+WnN4vxfNmi
+         yLzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694597221; x=1695202021;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QGfCIQ2uXeaGjAP1vJHhSYENJ4MSWSNEKMncc6vme3A=;
+        b=d+5ImoWplXmXs9MuGO0Oq0zGnzGzGW3ewEbyJVZL3PRtdjXkiodTSkY1uhMRCSnRzK
+         w6c+C91CuZZp9dN7tUqvlMkx8fuIiKD1s9w/BxGkvoKhTd4xjgDZMtksBqAO8/eZNavt
+         UUVcMYE6vS+4OY45zGJ7AbF8sF4C5LyF1OsehrZNbpMhjFufu0oafeXw7REksCsnWW69
+         NsQO+LMHugw9Lv1ZoUWB9R7PnG2igCy8xETxtB7H3nyndFxSrsyJFY6kmfqdYWRGKa25
+         qGMSUf0JgJRmpdMFHnUAGArPWQ4fIdOG+yk34xTE/lc4C/Wym+IUUfdcSLDKtsOSfXdh
+         hzFA==
+X-Gm-Message-State: AOJu0Yyev8eynHaaeUfiTQbOBt4MacGp3GEVqphi3g+bT/TWpDEn6eg2
+        BxEWPUh/oxxD41J1dbtUaj6tXw==
+X-Google-Smtp-Source: AGHT+IECKPCiYRZXbmWqtRPtTFo/PY54Z5r0OM1fAoe4cIDECnaByX4QUdoEQokQtY4OTXuIq41+8w==
+X-Received: by 2002:a05:6512:3196:b0:500:b5db:990b with SMTP id i22-20020a056512319600b00500b5db990bmr1845665lfe.47.1694597220264;
+        Wed, 13 Sep 2023 02:27:00 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id az34-20020a05600c602200b00402e942561fsm1489986wmb.38.2023.09.13.02.26.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 02:26:59 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 11:26:58 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jinjian Song <songjinjian@hotmail.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
+        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
+        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nmarupaka@google.com,
+        vsankar@lenovo.com, danielwinkler@google.com
+Subject: Re: [net-next v4 0/5] net: wwan: t7xx: fw flashing & coredump support
+Message-ID: <ZQGAYiuOYnI/gvXl@nanopsycho>
+References: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912-spi-qup-dvfs-v1-4-3e38aa09c2bd@kernkonzept.com>
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 04:30:39PM +0200, Stephan Gerhold wrote:
-> When the SPI QUP controller is used together with a DMA engine it needs
-> to vote for the interconnect path to the DRAM. Otherwise it may be
-> unable to access the memory quickly enough.
+Tue, Sep 12, 2023 at 11:48:40AM CEST, songjinjian@hotmail.com wrote:
 
-I realized that I argue here that the interconnect vote is for DMA to
-DRAM...
-
-> [...]
-> @@ -675,6 +698,12 @@ static int spi_qup_io_prep(struct spi_device *spi, struct spi_transfer *xfer)
->  		return -EIO;
->  	}
->  
-> +	ret = spi_qup_vote_bw(controller, xfer->speed_hz);
-> +	if (ret) {
-> +		dev_err(controller->dev, "fail to vote for ICC bandwidth: %d\n", ret);
-> +		return -EIO;
-> +	}
-> +
-
-... but here I vote for the bandwidth even if PIO is used instead of DMA.
-
-I think it would be more logical to only do the bandwidth vote in the
-DMA setup path. I'll fix this in v2.
-
-Thanks,
-Stephan
+pw-bot: changes-requested
