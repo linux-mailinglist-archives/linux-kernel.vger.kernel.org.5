@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7132579E83E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781C079E83F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240660AbjIMMoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
+        id S240641AbjIMMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236200AbjIMMoX (ORCPT
+        with ESMTP id S231132AbjIMMoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:44:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8D619B1;
-        Wed, 13 Sep 2023 05:44:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E77DC433C9;
-        Wed, 13 Sep 2023 12:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694609059;
-        bh=IiwoPpnvt0R5H+88ZLjuFyVUwkaVr0IlZjHEWMkr3ng=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YpEHN3Hx/ZZLvFtkFquV6WIcGkgDFzLPLDXh0UxsRn965nJytPjmLkhXJBT53su/3
-         Z8fS7CzIYKdV2mwBhYDiIGksonc2mPNiuDR2l1rXVowecXdx6eF9naa9hVkjz2+t5Z
-         Czn9Ob6nkI5f0ve56MjaXvZYDyRri84yG84bKs+lsu4yKXYtTgMNJotLAGEc9FxUZR
-         vZxK82dR6wP0i+y/lIX/deYrM0vkv95V8Nu/grPO1nBqKvF7RfrNN2VMD5xESvyHon
-         92605YYTd20qzRTw0dQ9WCgSOG34djBv8qJ//eL5ifhDEm77Kju4NJhRUZKYAMjwf8
-         RqV8D8cs31XYg==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-501bd7711e8so11750048e87.1;
-        Wed, 13 Sep 2023 05:44:19 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwtI6Vin6FD+rRN4kS1yrxLi1x0hIVRl5GkSvvIZfTadkDTWmWE
-        AGYPhUCkugDgNkW7DFZ524/zrBgrBVqrLoefTQ==
-X-Google-Smtp-Source: AGHT+IFWl2lGThpj/Ri14G/ai+csuSXfqbufoqWAQymPnRgDfPkByJ1KkxRmGht5fgilf18q2crJEcXCNlSvINpzU/A=
-X-Received: by 2002:a05:6512:3e16:b0:500:863e:fc57 with SMTP id
- i22-20020a0565123e1600b00500863efc57mr2409837lfv.25.1694609057312; Wed, 13
- Sep 2023 05:44:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <7dfaf999-30ad-491c-9615-fb1138db121c@moroto.mountain>
- <CAL_JsqJB_pK-Q-Y-v6mWV1KwfL8sjFGgCcSL5gdrZm-TqxvBJg@mail.gmail.com>
- <CAMuHMdVep4Hib0iBabGdFfbCxdftWcJ8wfySGLB8GbmbSmBNhg@mail.gmail.com>
- <06327197-9b17-481f-8ecc-3f9c5ba3e391@kadam.mountain> <CAL_JsqKZuG4dK2ThuTaFKk9b9HtGcvmuJMgZFMeVw7ADg2+_kQ@mail.gmail.com>
- <e6cba9f9-2d90-473d-a6b3-5b74b520617d@kadam.mountain>
-In-Reply-To: <e6cba9f9-2d90-473d-a6b3-5b74b520617d@kadam.mountain>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 13 Sep 2023 07:44:04 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK3aC4RoKDEfhepz9=Vo5+1MLG9Kcm=-tcFCNc6-hkYgA@mail.gmail.com>
-Message-ID: <CAL_JsqK3aC4RoKDEfhepz9=Vo5+1MLG9Kcm=-tcFCNc6-hkYgA@mail.gmail.com>
-Subject: Re: [PATCH] of: dynamic: Fix potential memory leak in of_changeset_action()
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        kbuild test robot <lkp@intel.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Sep 2023 08:44:37 -0400
+X-Greylist: delayed 106189 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 05:44:33 PDT
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5571B19B6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:44:33 -0700 (PDT)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mxhk.zte.com.cn (FangMail) with ESMTPS id 4Rm0Wv3bX0z8XrRF;
+        Wed, 13 Sep 2023 20:44:27 +0800 (CST)
+Received: from szxlzmapp02.zte.com.cn ([10.5.231.79])
+        by mse-fl1.zte.com.cn with SMTP id 38DCiMrQ097700;
+        Wed, 13 Sep 2023 20:44:22 +0800 (+08)
+        (envelope-from yang.yang29@zte.com.cn)
+Received: from mapi (szxlzmapp01[null])
+        by mapi (Zmail) with MAPI id mid14;
+        Wed, 13 Sep 2023 20:44:26 +0800 (CST)
+Date:   Wed, 13 Sep 2023 20:44:26 +0800 (CST)
+X-Zmail-TransId: 2b036501aeaa159-29757
+X-Mailer: Zmail v1.0
+Message-ID: <202309132044261713252@zte.com.cn>
+Mime-Version: 1.0
+From:   <yang.yang29@zte.com.cn>
+To:     <hannes@cmpxchg.org>, <surenb@google.com>
+Cc:     <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <juri.lelli@redhat.com>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIHNjaGVkL3BzaTogQXZvaWTCoHVwZGF0ZSB0cmlnZ2VycyBhbmQgcnRwb2xsX3RvdGFsIHdoZW7CoGl0IGlzIHVubmVjZXNzYXJ5?=
+Content-Type: text/plain;
+        charset="UTF-8"
+X-MAIL: mse-fl1.zte.com.cn 38DCiMrQ097700
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6501AEAB.000/4Rm0Wv3bX0z8XrRF
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 1:29=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro=
-.org> wrote:
->
-> On Tue, Sep 12, 2023 at 10:32:08AM -0500, Rob Herring wrote:
-> > On Fri, Sep 8, 2023 at 11:14=E2=80=AFAM Dan Carpenter <dan.carpenter@li=
-naro.org> wrote:
-> > >
-> > > On Fri, Sep 08, 2023 at 05:34:53PM +0200, Geert Uytterhoeven wrote:
-> > > > > > Fixes: 914d9d831e61 ("of: dynamic: Refactor action prints to no=
-t use "%pOF" inside devtree_lock")
-> > > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > Closes: https://lore.kernel.org/r/202309011059.EOdr4im9-lkp@int=
-el.com/
-> > > > >
-> > > > > Despite what that says, it was never reported to me. IOW, the add=
-ed TO
-> > > > > and CC lines don't seem to have any effect.
-> > > >
-> > > > The copy I received did list you in the "To"-header, though.
-> >
-> > Are you sure that's the header and not in the body?
-> >
->
-> How these warnings work is that the kbuild bot sends the email to me and
-> the oe-kbuild@lists.linux.dev list.  I look it over and send it out
-> publicly if the warning seems right.
->
-> You're seeing the first email that I hadn't forwarded yet but the second
-> forwarded email went out and it reached lkml.
->
-> https://lore.kernel.org/lkml/eaa86211-436d-445b-80bd-84cea5745b5a@kadam.m=
-ountain/raw
->
-> You're on the To: header so it should have reached you as well...
+From: Yang Yang <yang.yang29@zte.com.cn>
 
-Ah, okay. I have that one. It just got dumped off to my lkml folder
-rather than one I have for 0-day which I actually look at.
+When psimon wakes up and there are no state changes for rtpoll_states,
+it's unnecessary to update triggers and rtpoll_total because the pressures
+being monitored by user have not changed.
 
-Thanks for the explanation. Looks like I need to adjust my filters for thes=
-e.
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+---
+ kernel/sched/psi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 81fca77397f6..e4463bb267c3 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -701,7 +701,7 @@ static void psi_rtpoll_work(struct psi_group *group)
+ 		goto out;
+ 	}
+
+-	if (now >= group->rtpoll_next_update) {
++	if ((changed_states & group->rtpoll_states) && (now >= group->rtpoll_next_update)) {
+ 		group->rtpoll_next_update = update_triggers(group, now, &update_total, PSI_POLL);
+ 		if (update_total)
+ 			memcpy(group->rtpoll_total, group->total[PSI_POLL],
+-- 
+2.25.1
