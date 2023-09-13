@@ -2,222 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E5079E74A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7372C79E759
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240546AbjIMLzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S240591AbjIML5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjIMLze (ORCPT
+        with ESMTP id S240588AbjIML5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:55:34 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D401996
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:55:30 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DBrcAH021355;
-        Wed, 13 Sep 2023 11:55:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=yOTFMpdLBjG3KdGU2YoRK7ZhCYbCcO1Zs94cnlyiyYo=;
- b=eTtvemVB/NtvBFsqXJ+Pd6mmJUHaMy4h91MTvQkntlspAl0DqzpBThFG+zGu05VN4Whg
- Hg4lSLMhELKsuid/5BrL3eBZ08+jW3COpmuW1ZHGJedPMxyDuGlpax7eeNgfem4t9/xb
- Ej/ExiHBLKMA7103n20t3wdvQhznVh7nV0/cC8KVeBDP382fqcdEXAC9nVaLGigcqYIU
- FLO71zfIRM+NaTnVWW9KNHLnB4qTSVvabUw+2USIjJ3+PrWcDWgZi7yP71QQCKXKCfP/
- 29YXxsYg7hLvGK5diJ4DrvnzEBnJUZDDe7G4q5DH9F86IhNE42QOrkW49YMbs6RScv/n aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ckyg186-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 11:55:10 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DBrj7A021623;
-        Wed, 13 Sep 2023 11:55:10 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ckyg17j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 11:55:10 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38DBbT83002362;
-        Wed, 13 Sep 2023 11:55:09 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t158kaeya-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 11:55:09 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38DBt8Vn43909430
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 11:55:09 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B46555803F;
-        Wed, 13 Sep 2023 11:55:08 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7D5D5804E;
-        Wed, 13 Sep 2023 11:55:02 +0000 (GMT)
-Received: from [9.171.0.21] (unknown [9.171.0.21])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Sep 2023 11:55:02 +0000 (GMT)
-Message-ID: <e5a7d048-3eff-f204-1698-e7298cc8d94c@linux.vnet.ibm.com>
-Date:   Wed, 13 Sep 2023 17:25:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
-Content-Language: en-US
-To:     Pierre Gondois <pierre.gondois@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
-        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com
-References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
- <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
- <d2c945d6-c4f0-a096-0623-731b11484f51@linux.vnet.ibm.com>
- <08e39be6-2815-4385-7703-7acc93f85c7f@arm.com>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <08e39be6-2815-4385-7703-7acc93f85c7f@arm.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NLDSZJhRIsMX8msBcADOSAdl1_dET5GC
-X-Proofpoint-GUID: pO97cQPTtZIijPcmv0JH0xDnI8ns52nD
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 13 Sep 2023 07:57:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C0D1996;
+        Wed, 13 Sep 2023 04:57:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42F75C433C8;
+        Wed, 13 Sep 2023 11:57:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694606259;
+        bh=ni8EdsyIaMOoJTwUMqc4jWnupbNY7F33IKQELHp2m+E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KfZkCsIIPKOUc2N5H/7SjjnJD0hVIcef5K5b8vjRd3b22OWZGiFfSGXWWRJw40QS+
+         WMnapiaXplumxGp15SCAWJ1KE86cgZ3ptGalPtSgzQ3vJ7BsUMgp6wxfXZJFA3vQUy
+         +fgjZBgUAglbukYJAczetUAt1dZk0xiBk7VJyl5awQ5dz5QrNuaS6K/+dlwYOMWSrH
+         OQ06v3hkymBOusTu8IXqsvzeM9cRXe8z3XktLUwLW+xpSxUMQQqrd50d6mHwJEICfn
+         aulS2dCknYqkRKXokVt3lqUpatYrgfiTXskf8dSorxsnFQUVhqR2d7DiIqF67vFTM4
+         hC41VBYT+Ln4w==
+Date:   Wed, 13 Sep 2023 06:57:37 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
+ which IDA
+Message-ID: <20230913115737.GA426735@bhelgaas>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_04,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 bulkscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- priorityscore=1501 phishscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309130092
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU0PR04MB941790B85BCDD60ACA2601A588F0A@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/7/23 4:04 PM, Pierre Gondois wrote:
-> Hello Shrikanth,
+On Wed, Sep 13, 2023 at 02:49:37AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
+> > which IDA
+> > 
+> > On Wed, Sep 13, 2023 at 01:24:26AM +0000, Peng Fan wrote:
+> > > > Subject: Re: [PATCH V2] pci: introduce static_nr to indicate
+> > > > domain_nr from which IDA
+> > > >
+> > > > On Tue, Aug 15, 2023 at 09:37:44AM +0800, Peng Fan (OSS) wrote:
+> > > > > From: Peng Fan <peng.fan@nxp.com>
+> > > > >
+> > > > > When PCI node was created using an overlay and the overlay is
+> > > > > reverted/destroyed, the "linux,pci-domain" property no longer
+> > > > > exists, so of_get_pci_domain_nr will return failure.
+> > > >
+> > > > I'm not familiar with how overlays work.  What's the call path where
+> > > > the overlay is removed?  I see an of_overlay_remove(), but I don't
+> > > > see any callers except test cases.
+> > >
+> > > We are using an out of tree hypervisor driver:
+> > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgith
+> > >
+> > ub.com%2Fsiemens%2Fjailhouse%2Fblob%2Fmaster%2Fdriver%2Fpci.c%23L
+> > 483&d
+> > >
+> > ata=05%7C01%7Cpeng.fan%40nxp.com%7C1bf0364c585f42dae7f108dbb3fe
+> > fcc4%7C
+> > >
+> > 686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63830167996269745
+> > 6%7CUnknow
+> > >
+> > n%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> > WwiLC
+> > >
+> > JXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=raIsz2HIH%2FQ0nmolBBwd81
+> > WxQh2vmFeXN
+> > > t3n6OIQaSU%3D&reserved=0
+> > > >
+> > > > I guess the problem happens in a PCI host bridge remove path, e.g.,
+> > > >
+> > > >   pci_host_common_remove
+> > > >     pci_remove_root_bus
+> > > >       pci_bus_release_domain_nr
+> > > >         of_pci_bus_release_domain_nr
+> > > >
+> > > > But I don't know how that's related to the overlay removal.
+> > >
+> > > When the overlay node got removed, the device removal will be invoked
+> > > and the domain number indicated by linux,pci-domain should also get freed.
+> > >
+> > > But actually the domain number not got freed because of bug as this
+> > > patch shows. "of_pci_bus_release_domain_nr will actually use the
+> > > dynamic IDA, even if the IDA was allocated in static IDA."
+> > >
+> > > So after the overlay node got destroyed and our test recreate the
+> > > overlay node with same domain number, issue triggered, the device
+> > > could not be created.
+> > >
+> > > > Is this an ordering issue?  It seems possibly problematic that the
+> > > > OF overlay is destroyed before the device it describes (e.g., the
+> > > > host
+> > >
+> > > No. it is "of_pci_bus_release_domain_nr will actually use the dynamic
+> > > IDA, even if the IDA was allocated in static IDA "
+> > 
+> > Yes, that's the *symptom*, to be sure.  My question was why the overlay was
+> > removed before the host bridge.
 > 
-> On 9/6/23 13:35, Shrikanth Hegde wrote:
->>
->>
->> On 9/5/23 7:33 PM, Pierre Gondois wrote:
->>> Hello Shrikanth,
->>> I tried the patch (on a platform using the cppc_cpufreq driver). The
->>> platform
->>> normally has EAS enabled, but the patch removed the sched_energy_aware
->>> sysctl.
->>> It seemed the following happened (in the below order):
->>>
->>> 1. sched_energy_aware_sysctl_init()
->>> Doesn't set sysctl_sched_energy_aware as cpufreq_freq_invariance
->>> isn't set
->>> and arch_scale_freq_invariant() returns false
->>>
->>> 2. cpufreq_register_driver()
->>> Sets cpufreq_freq_invariance during cpufreq initialization
->>> sched_energy_set()
->>>
->>> 3. sched_energy_set()
->>> Is called with has_eas=0 since build_perf_domains() doesn't see the
->>> platform
->>> as EAS compatible. Indeed sysctl_sched_energy_aware=0.
->>> So with sysctl_sched_energy_aware=0 and has_eas=0, sched_energy_aware
->>> sysctl
->>> is not enabled even though EAS should be possible.
->>>
->>>
->>> On 9/1/23 08:52, Shrikanth Hegde wrote:
->>>> Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
->>>> some of the architectures. IIUC its meant to either force rebuild the
->>>> perf domains or cleanup the perf domains by echoing 1 or 0
->>>> respectively.
->>>
->>> There is a definition of the sysctl at:
->>> Documentation/admin-guide/sysctl/kernel.rst::sched_energy_aware
->> [...]
->>>>
->>>>
->>>> +static unsigned int sysctl_sched_energy_aware;
->>>> +static struct ctl_table_header *sysctl_eas_header;
->>>
->>> The variables around the presence/absence of EAS are:
->>> - sched_energy_present:
->>> EAS is up and running
->>>
->>> - sysctl_sched_energy_aware:
->>> The user wants to use EAS (or not). Doesn't mean EAS can run on the
->>> platform.
->>>
->>> - sched_energy_set/partition_sched_domains_locked's "has_eas":
->>> Local variable. Represent whether EAS can run on the platform.
->>>
->>> IMO it would be simpler to (un)register sched_energy_aware sysctl
->>> in partition_sched_domains_locked(), based on the value of "has_eas".
->>> This would allow to let all the logic as it is right now, inside
->>> build_perf_domains(), and then advertise sched_energy_aware sysctl
->>> if EAS can run on the platform.
->>> sched_energy_aware_sysctl_init() would be deleted then.
->>>
->>>
->> yes. that is true. and there is no variable which holds the info if
->> the system
->> is capable of EAS.
->>
->> Retrospecting, the reason for starting this patch series was this,
->> sysctl_sched_energy_aware didnt make sense on power10 platform since it
->> has SMT and symmetric CPU capacities.  with current code writing 1 to
->> it cause rebuild of sched domains but EAS wouldn't be possible.
->>
->>
->> Possible Approaches:
->>
->> 1.
->> Make this sysctl write as NOP if the platform doesn't has EAS
->> capabilities at
->> the moment.  Do those checks in sched_energy_aware_handler before
->> handling  the
->> change in value. Return EINVAL.  And Update sysctl description that on
->> such
->> platforms value change is NOP. Relatively simpler change.
->>
->> 2.
->> Current patch approach, remove the sysctl completely on non supported
->> architectures and re-enable it if the system becomes capable of doing
->> EAS.
->> With the current patch, instead of using sched_energy_update, use another
->> variable called sched_energy_change_in_sysctl(maybe different name). 
->> I think
->> that would handle all the cases. Another variable can be avoided by
->> encoding
->> the info in sysctl_sched_energy_aware itself in the handler call,
->> since it
->> takes only 1 or 0 as the value. upper bits are free to use. update the
->> sysctl
->> as well with this behavior. plus minor cleanup to remove the init of
->> sysctl.
->>
+> I am not sure.
+> I added a dump_stack, would this help to understand?
+> root@imx93evk:~# jailhouse disable
+> [  595.150529] CPU: 1 PID: 582 Comm: jailhouse Tainted: G           O       6.5.0-rc4-next-20230804-05021-g3d4cc14b42ef-dirty #355
+> [  595.161998] Hardware name: NXP i.MX93 11X11 EVK board (DT)
+> [  595.167475] Call trace:
+> [  595.169908]  dump_backtrace+0x94/0xec
+> [  595.173573]  show_stack+0x18/0x24
+> [  595.176884]  dump_stack_lvl+0x48/0x60
+> [  595.180541]  dump_stack+0x18/0x24
+> [  595.183843]  pci_bus_release_domain_nr+0x34/0x84
+> [  595.188453]  pci_remove_root_bus+0xa0/0xa4
+> [  595.192544]  pci_host_common_remove+0x28/0x40
+> [  595.196895]  platform_remove+0x54/0x6c
+> [  595.200641]  device_remove+0x4c/0x80
+> [  595.204209]  device_release_driver_internal+0x1d4/0x230
+> [  595.209430]  device_release_driver+0x18/0x24
+> [  595.213691]  bus_remove_device+0xcc/0x10c
+> [  595.217686]  device_del+0x15c/0x41c
+> [  595.221170]  platform_device_del.part.0+0x1c/0x88
+> [  595.225861]  platform_device_unregister+0x24/0x40
+> [  595.230557]  of_platform_device_destroy+0xfc/0x10c
+> [  595.235344]  of_platform_notify+0x13c/0x178
+> [  595.239518]  blocking_notifier_call_chain+0x6c/0xa0
+> [  595.244389]  __of_changeset_entry_notify+0x148/0x16c
+> [  595.249346]  of_changeset_revert+0xa8/0xcc
+> [  595.253437]  jailhouse_pci_virtual_root_devices_remove+0x50/0x74 [jailhouse]
+> [  595.260484]  jailhouse_cmd_disable+0x70/0x1ac [jailhouse]
+> [  595.265883]  jailhouse_ioctl+0x60/0xf0 [jailhouse]
+> [  595.270674]  __arm64_sys_ioctl+0xac/0xf0
+> [  595.274595]  invoke_syscall+0x48/0x114
+> [  595.278336]  el0_svc_common.constprop.0+0xc4/0xe4
+> > 
+> > The current ordering is this, where A happens before B:
+> > 
+> >   A overlay is removed
+> >   B pci_host_common_remove
+> >       pci_bus_release_domain_nr
+> >         of_pci_bus_release_domain_nr
+> >           of_get_pci_domain_nr      # fails because overlay is gone
+> >           ida_free(&pci_domain_nr_dynamic_ida)
+> > 
+> > But if the host bridge were removed first, the ordering would be as follows,
+> > and the problem would not occur:
+> > 
+> >   B pci_host_common_remove
+> >       pci_bus_release_domain_nr
+> >         of_pci_bus_release_domain_nr
+> >           of_get_pci_domain_nr      # succeeds in this order
+> >           ida_free(&pci_domain_nr_static_ida)
+> >   A overlay is removed
+> > 
+> > Is there a reason the overlay should be removed before the host bridge?
+> > 
+> > Obviously the overlay is loaded before the host bridge is created, and
+> > symmetry would suggest that the overlay should be removed after the host
+> > bridge is removed.
 > 
-> FWIW I think it makes more sense to remove the sysctl if EAS isn't
-> possible on
-> the platform, as this patch intends to do.
-> From a code perspective I m not sure I follow exactly your intend. I can
-> test
-> your v3 if necessary,
-> 
+> Hmm, I need check more. But do you think this patch is fix a real issue or
+> If order is did as you say above, this patch is not required anymore?
 
-Hi Pierre,
+It looks like you're using a notifier call chain to remove the devices
+when the of_changeset is removed.  I think that's the wrong approach.
+The only in-tree user of of_changeset_revert() is i2c-demux-pinctrl.c,
+which uses the ordering I suggested:
 
-Just sent out v3 of the series. 
-https://lore.kernel.org/lkml/20230913114807.665094-1-sshegde@linux.vnet.ibm.com/
+  i2c_demux_activate_master
+    of_changeset_apply               # add OF changeset
+    i2c_add_adapter                  # add device
 
-It would really help if you can test this out. I don't have system where EAS can be 
-enabled at the moment. 
+  i2c_demux_deactivate_master
+    i2c_del_adapter                  # remove device
+    of_changeset_revert              # remove OF changeset
 
-> Regards,
-> Pierre
-> 
+> > > > bridge) is removed.  I would expect the device to be removed before
+> > > > the description of the device is removed.
+> > > >
+> > > > > Then of_pci_bus_release_domain_nr will actually use the dynamic
+> > > > > IDA, even if the IDA was allocated in static IDA.
+> > > > >
+> > > > > Introduce a static_nr field in pci_bus to indicate whether the IDA
+> > > > > is a dynamic or static in order to free the correct one.
+> > > > >
+> > > > > Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
+> > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > > ---
+> > > > >
+> > > > > V2:
+> > > > >  Update commit message
+> > > > >  Move static_nr:1 to stay besides others :1 fields.
+> > > > >
+> > > > >  drivers/pci/pci.c   | 22 ++++++++++++++--------
+> > > > >  include/linux/pci.h |  1 +
+> > > > >  2 files changed, 15 insertions(+), 8 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c index
+> > > > > 60230da957e0..5c98502bcda6 100644
+> > > > > --- a/drivers/pci/pci.c
+> > > > > +++ b/drivers/pci/pci.c
+> > > > > @@ -6881,10 +6881,10 @@ static void
+> > > > of_pci_reserve_static_domain_nr(void)
+> > > > >  	}
+> > > > >  }
+> > > > >
+> > > > > -static int of_pci_bus_find_domain_nr(struct device *parent)
+> > > > > +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct
+> > > > > +device *parent)
+> > > > >  {
+> > > > >  	static bool static_domains_reserved = false;
+> > > > > -	int domain_nr;
+> > > > > +	int domain_nr, ret;
+> > > > >
+> > > > >  	/* On the first call scan device tree for static allocations. */
+> > > > >  	if (!static_domains_reserved) {
+> > > > > @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct
+> > > > device *parent)
+> > > > >  		static_domains_reserved = true;
+> > > > >  	}
+> > > > >
+> > > > > +	bus->static_nr = 0;
+> > > > > +
+> > > > >  	if (parent) {
+> > > > >  		/*
+> > > > >  		 * If domain is in DT, allocate it in static IDA.  This @@ -
+> > > > 6899,10
+> > > > > +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device
+> > > > > +*parent)
+> > > > >  		 * in DT.
+> > > > >  		 */
+> > > > >  		domain_nr = of_get_pci_domain_nr(parent->of_node);
+> > > > > -		if (domain_nr >= 0)
+> > > > > -			return ida_alloc_range(&pci_domain_nr_static_ida,
+> > > > > -					       domain_nr, domain_nr,
+> > > > > -					       GFP_KERNEL);
+> > > > > +		if (domain_nr >= 0) {
+> > > > > +			ret = ida_alloc_range(&pci_domain_nr_static_ida,
+> > > > > +					      domain_nr, domain_nr,
+> > > > GFP_KERNEL);
+> > > > > +			if (ret >= 0)
+> > > > > +				bus->static_nr = 1;
+> > > > > +
+> > > > > +			return ret;
+> > > > > +		}
+> > > > >  	}
+> > > > >
+> > > > >  	/*
+> > > > > @@ -6920,7 +6926,7 @@ static void
+> > > > > of_pci_bus_release_domain_nr(struct
+> > > > pci_bus *bus, struct device *par
+> > > > >  		return;
+> > > > >
+> > > > >  	/* Release domain from IDA where it was allocated. */
+> > > > > -	if (of_get_pci_domain_nr(parent->of_node) == bus->domain_nr)
+> > > > > +	if (bus->static_nr)
+> > > > >  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
+> > > > >  	else
+> > > > >  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
+> > > > @@ -6928,7
+> > > > > +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus
+> > > > > *bus, struct device *par
+> > > > >
+> > > > >  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device
+> > > > > *parent)  {
+> > > > > -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
+> > > > > +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
+> > > > >  			       acpi_pci_bus_find_domain_nr(bus);  }
+> > > > >
+> > > > > diff --git a/include/linux/pci.h b/include/linux/pci.h index
+> > > > > eeb2e6f6130f..222a1729ea7e 100644
+> > > > > --- a/include/linux/pci.h
+> > > > > +++ b/include/linux/pci.h
+> > > > > @@ -677,6 +677,7 @@ struct pci_bus {
+> > > > >  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
+> > > > >  	unsigned int		is_added:1;
+> > > > >  	unsigned int		unsafe_warn:1;	/* warned about RW1C
+> > > > config write */
+> > > > > +	unsigned int		static_nr:1;
+> > > > >  };
+> > > > >
+> > > > >  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
+> > > > > --
+> > > > > 2.37.1
+> > > > >
