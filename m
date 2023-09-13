@@ -2,112 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7350279F3EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137C879F3F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjIMVnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S232525AbjIMVoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjIMVnt (ORCPT
+        with ESMTP id S229546AbjIMVoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:43:49 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581761739
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7983b202929so10552839f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694641424; x=1695246224; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
-        b=z9SMGeeCnAahU4w37gRdubNuNIWAlcY0lSpKN9caI91xeuEaFeIImhr607geAvw5uo
-         0M8nGp+hZICMldY3Oczy+oXjbuMKHciPyMxAGjZHSExJPuotCHTCr3Gpl1mO/7Ydj3FV
-         Q7X+kGmbhxgZdHnAyvISD2pHir3ztW0Q/BTESaNrVGYVZE6SZxb+0fLg/s6Tq3odP+6e
-         URNHVdhFaY+G/GOHt6Xn72cHpxHQJodw94mNEA1ozImsQyd/7m5AJu+A0nErEztEK4f9
-         XqQMdssFP62kvlLQ+srZZcSBixJbnMWJd1Z1mojhO6fLs+e/JBC7dCkGi7Y5xJMcA6nt
-         gs3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694641424; x=1695246224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
-        b=ai9cxrC2XOUtWEHsT3x8u7hCUHFdFZ+WiWJlDwYYQq+/zZtrYwfenhH1EsjgDdouao
-         hXoxHAcWmKrhej/TpuzRQiY4S3YIpVgAjFHrETPWicnieW4GtIRuMavDVoN2IW/Zkrjj
-         cIt/RIuviVzAe8w+I1CBivRQpwzQM5LyvQd4TxZSBZWPwpdiFLnOk60EtV1gm0GoQBCh
-         fSuRwc07MBVlgQhqyKwtgaIgCyV+TfX6obZYhDMyJlTaKKRYKzaMGW4cl3UF4BX/g1HJ
-         idr2tutmVW/rmRZmo9m1Erljos0RraeM0KLz51M3zYfyHH22Sr4x/KnAU8l9i/TJvS3K
-         z6wg==
-X-Gm-Message-State: AOJu0YxBU18tBjAuzy3wpG/JeHyGmz6hV6hb+G63B3RB7FiW7oXPJhJG
-        itL9L4ZQIVq3wECaPYh5vsb3Gg==
-X-Google-Smtp-Source: AGHT+IFO/zPVL+GskkRXe3VhmvyBnlW+kHMrQL8DvF+HjBFPQoUGhuvzyAvTppC+0h0D/069z/uhyQ==
-X-Received: by 2002:a05:6e02:1a87:b0:34c:cc37:3064 with SMTP id k7-20020a056e021a8700b0034ccc373064mr4518209ilv.15.1694641424661;
-        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
-Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
-        by smtp.gmail.com with ESMTPSA id e17-20020a056638021100b00431824abeccsm26753jaq.42.2023.09.13.14.43.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 21:43:41 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 2/7] bcachefs: Fix -Wformat in
- bch2_btree_key_cache_to_text()
-Message-ID: <20230913214341.7qucftdltsljrzpf@google.com>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
- <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
+        Wed, 13 Sep 2023 17:44:14 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDFB1724;
+        Wed, 13 Sep 2023 14:44:10 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DL8kqB006229;
+        Wed, 13 Sep 2023 21:43:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=3ktUZzx4skK+EYkllRdew50DeWD6jEQFGMxfbmu3he4=;
+ b=pveGPapC4PuUieN1USsCBtqXyrIhMt1iEr8jN9EEEzPCxVxpjRJfGBVuV5oiOnVzendk
+ +nQWLz/bA6pPW1a1DQFRe4KUL+R2Zt2Laz4YGJuT1PipjssHAkQ+IvBhFvA2itd0F5+1
+ +0uVK5mPWI0DGA1w/JnlwIX15Ohs+IG3ZG+MLW+Oi6D1ztIphA/LVO5IQ8e34PvC0Wxj
+ 087RILH5cOBvTnahtqrhx65xAoBaQInXF16098X+XoYUUCTWHbMAlBK+gwgEho9ySo+5
+ YE5qsq40/98TRf/ZQ8fmDHhiCiSgeLxWA/Bew4fys/CDqKaWasYXsFrV36i+WIUTgI65 UQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7w2wnr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 21:43:45 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38DLhiil013917
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 21:43:44 GMT
+Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 13 Sep
+ 2023 14:43:44 -0700
+Message-ID: <977a8de9-26ec-1789-4c72-fd36f34480c3@quicinc.com>
+Date:   Wed, 13 Sep 2023 14:43:43 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/8] drm/panel: nv3052c: Document known register names
+Content-Language: en-US
+To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
+CC:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>
+References: <20230911090206.3121440-1-contact@jookia.org>
+ <20230911090206.3121440-2-contact@jookia.org>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <20230911090206.3121440-2-contact@jookia.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 9n7pJaxv6ZzJzK1Yi8Sa6ZJRyfgg2cUS
+X-Proofpoint-GUID: 9n7pJaxv6ZzJzK1Yi8Sa6ZJRyfgg2cUS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_16,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 suspectscore=0 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309130178
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:39PM -0700, Nathan Chancellor wrote:
-> When building bcachefs for 32-bit ARM, there is a compiler warning in
-> bch2_btree_key_cache_to_text() due to use of an incorrect format
-> specifier:
->
->   fs/bcachefs/btree_key_cache.c:1060:36: error: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'long' [-Werror,-Wformat]
->    1060 |         prt_printf(out, "nr_freed:\t%zu",       atomic_long_read(&c->nr_freed));
->         |                                     ~~~         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->         |                                     %ld
->   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
->     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
->         |                                                               ^~~~~~~~~~~
->   1 error generated.
->
-> On 64-bit architectures, size_t is 'unsigned long', so there is no
-> warning when using %zu but on 32-bit architectures, size_t is
-> 'unsigned int'. Use '%lu' to match the other format specifiers used in
-> this function for printing values returned from atomic_long_read().
->
-> Fixes: 6d799930ce0f ("bcachefs: btree key cache pcpu freedlist")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+
+
+On 9/11/2023 2:01 AM, John Watts wrote:
+> Many of these registers have a known name in the public datasheet.
+> Document them as comments for reference.
+> 
+> Signed-off-by: John Watts <contact@jookia.org>
 > ---
->  fs/bcachefs/btree_key_cache.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
-> index 505e7c365ab7..a74ee6d8a7cf 100644
-> --- a/fs/bcachefs/btree_key_cache.c
-> +++ b/fs/bcachefs/btree_key_cache.c
-> @@ -1053,7 +1053,7 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
->
->  void bch2_btree_key_cache_to_text(struct printbuf *out, struct btree_key_cache *c)
->  {
-> -	prt_printf(out, "nr_freed:\t%zu",	atomic_long_read(&c->nr_freed));
-> +	prt_printf(out, "nr_freed:\t%lu",	atomic_long_read(&c->nr_freed));
->  	prt_newline(out);
->  	prt_printf(out, "nr_keys:\t%lu",	atomic_long_read(&c->nr_keys));
->  	prt_newline(out);
->
-> --
+>   .../gpu/drm/panel/panel-newvision-nv3052c.c   | 261 +++++++++---------
+>   1 file changed, 132 insertions(+), 129 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> index 71e57de6d8b2..589431523ce7 100644
+> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> @@ -42,9 +42,9 @@ struct nv3052c_reg {
+>   };
+>   
+>   static const struct nv3052c_reg nv3052c_panel_regs[] = {
+> -	{ 0xff, 0x30 },
+> -	{ 0xff, 0x52 },
+> -	{ 0xff, 0x01 },
+> +	// EXTC Command set enable, select page 1
+> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x01 },
+> +	// Mostly unknown registers
+
+Hi John,
+
+Just curious, what do you mean by these registers being mostly unknown?
+
+I do see them specified in the online specs -- some even seem to map to 
+existing MIPI_DCS_* enums (ex. 0x01 to MIPI_DCS_SOFT_RESET, and 0x04 to 
+MIPI_DCS_GET_DISPLAY_ID).
+
+Thanks,
+
+Jessica Zhang
+
+>   	{ 0xe3, 0x00 },
+>   	{ 0x40, 0x00 },
+>   	{ 0x03, 0x40 },
+> @@ -62,15 +62,15 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
+>   	{ 0x25, 0x06 },
+>   	{ 0x26, 0x14 },
+>   	{ 0x27, 0x14 },
+> -	{ 0x38, 0xcc },
+> -	{ 0x39, 0xd7 },
+> -	{ 0x3a, 0x4a },
+> +	{ 0x38, 0xcc }, // VCOM_ADJ1
+> +	{ 0x39, 0xd7 }, // VCOM_ADJ2
+> +	{ 0x3a, 0x4a }, // VCOM_ADJ3
+>   	{ 0x28, 0x40 },
+>   	{ 0x29, 0x01 },
+>   	{ 0x2a, 0xdf },
+>   	{ 0x49, 0x3c },
+> -	{ 0x91, 0x77 },
+> -	{ 0x92, 0x77 },
+> +	{ 0x91, 0x77 }, // EXTPW_CTRL2
+> +	{ 0x92, 0x77 }, // EXTPW_CTRL3
+>   	{ 0xa0, 0x55 },
+>   	{ 0xa1, 0x50 },
+>   	{ 0xa4, 0x9c },
+> @@ -94,123 +94,126 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
+>   	{ 0xb8, 0x26 },
+>   	{ 0xf0, 0x00 },
+>   	{ 0xf6, 0xc0 },
+> -	{ 0xff, 0x30 },
+> -	{ 0xff, 0x52 },
+> -	{ 0xff, 0x02 },
+> -	{ 0xb0, 0x0b },
+> -	{ 0xb1, 0x16 },
+> -	{ 0xb2, 0x17 },
+> -	{ 0xb3, 0x2c },
+> -	{ 0xb4, 0x32 },
+> -	{ 0xb5, 0x3b },
+> -	{ 0xb6, 0x29 },
+> -	{ 0xb7, 0x40 },
+> -	{ 0xb8, 0x0d },
+> -	{ 0xb9, 0x05 },
+> -	{ 0xba, 0x12 },
+> -	{ 0xbb, 0x10 },
+> -	{ 0xbc, 0x12 },
+> -	{ 0xbd, 0x15 },
+> -	{ 0xbe, 0x19 },
+> -	{ 0xbf, 0x0e },
+> -	{ 0xc0, 0x16 },
+> -	{ 0xc1, 0x0a },
+> -	{ 0xd0, 0x0c },
+> -	{ 0xd1, 0x17 },
+> -	{ 0xd2, 0x14 },
+> -	{ 0xd3, 0x2e },
+> -	{ 0xd4, 0x32 },
+> -	{ 0xd5, 0x3c },
+> -	{ 0xd6, 0x22 },
+> -	{ 0xd7, 0x3d },
+> -	{ 0xd8, 0x0d },
+> -	{ 0xd9, 0x07 },
+> -	{ 0xda, 0x13 },
+> -	{ 0xdb, 0x13 },
+> -	{ 0xdc, 0x11 },
+> -	{ 0xdd, 0x15 },
+> -	{ 0xde, 0x19 },
+> -	{ 0xdf, 0x10 },
+> -	{ 0xe0, 0x17 },
+> -	{ 0xe1, 0x0a },
+> -	{ 0xff, 0x30 },
+> -	{ 0xff, 0x52 },
+> -	{ 0xff, 0x03 },
+> -	{ 0x00, 0x2a },
+> -	{ 0x01, 0x2a },
+> -	{ 0x02, 0x2a },
+> -	{ 0x03, 0x2a },
+> -	{ 0x04, 0x61 },
+> -	{ 0x05, 0x80 },
+> -	{ 0x06, 0xc7 },
+> -	{ 0x07, 0x01 },
+> -	{ 0x08, 0x03 },
+> -	{ 0x09, 0x04 },
+> -	{ 0x70, 0x22 },
+> -	{ 0x71, 0x80 },
+> -	{ 0x30, 0x2a },
+> -	{ 0x31, 0x2a },
+> -	{ 0x32, 0x2a },
+> -	{ 0x33, 0x2a },
+> -	{ 0x34, 0x61 },
+> -	{ 0x35, 0xc5 },
+> -	{ 0x36, 0x80 },
+> -	{ 0x37, 0x23 },
+> -	{ 0x40, 0x03 },
+> -	{ 0x41, 0x04 },
+> -	{ 0x42, 0x05 },
+> -	{ 0x43, 0x06 },
+> -	{ 0x44, 0x11 },
+> -	{ 0x45, 0xe8 },
+> -	{ 0x46, 0xe9 },
+> -	{ 0x47, 0x11 },
+> -	{ 0x48, 0xea },
+> -	{ 0x49, 0xeb },
+> -	{ 0x50, 0x07 },
+> -	{ 0x51, 0x08 },
+> -	{ 0x52, 0x09 },
+> -	{ 0x53, 0x0a },
+> -	{ 0x54, 0x11 },
+> -	{ 0x55, 0xec },
+> -	{ 0x56, 0xed },
+> -	{ 0x57, 0x11 },
+> -	{ 0x58, 0xef },
+> -	{ 0x59, 0xf0 },
+> -	{ 0xb1, 0x01 },
+> -	{ 0xb4, 0x15 },
+> -	{ 0xb5, 0x16 },
+> -	{ 0xb6, 0x09 },
+> -	{ 0xb7, 0x0f },
+> -	{ 0xb8, 0x0d },
+> -	{ 0xb9, 0x0b },
+> -	{ 0xba, 0x00 },
+> -	{ 0xc7, 0x02 },
+> -	{ 0xca, 0x17 },
+> -	{ 0xcb, 0x18 },
+> -	{ 0xcc, 0x0a },
+> -	{ 0xcd, 0x10 },
+> -	{ 0xce, 0x0e },
+> -	{ 0xcf, 0x0c },
+> -	{ 0xd0, 0x00 },
+> -	{ 0x81, 0x00 },
+> -	{ 0x84, 0x15 },
+> -	{ 0x85, 0x16 },
+> -	{ 0x86, 0x10 },
+> -	{ 0x87, 0x0a },
+> -	{ 0x88, 0x0c },
+> -	{ 0x89, 0x0e },
+> -	{ 0x8a, 0x02 },
+> -	{ 0x97, 0x00 },
+> -	{ 0x9a, 0x17 },
+> -	{ 0x9b, 0x18 },
+> -	{ 0x9c, 0x0f },
+> -	{ 0x9d, 0x09 },
+> -	{ 0x9e, 0x0b },
+> -	{ 0x9f, 0x0d },
+> -	{ 0xa0, 0x01 },
+> -	{ 0xff, 0x30 },
+> -	{ 0xff, 0x52 },
+> -	{ 0xff, 0x02 },
+> +	// EXTC Command set enable, select page 2
+> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x02 },
+> +	// Set gray scale voltage to adjust gamma
+> +	{ 0xb0, 0x0b }, // PGAMVR0
+> +	{ 0xb1, 0x16 }, // PGAMVR1
+> +	{ 0xb2, 0x17 }, // PGAMVR2
+> +	{ 0xb3, 0x2c }, // PGAMVR3
+> +	{ 0xb4, 0x32 }, // PGAMVR4
+> +	{ 0xb5, 0x3b }, // PGAMVR5
+> +	{ 0xb6, 0x29 }, // PGAMPR0
+> +	{ 0xb7, 0x40 }, // PGAMPR1
+> +	{ 0xb8, 0x0d }, // PGAMPK0
+> +	{ 0xb9, 0x05 }, // PGAMPK1
+> +	{ 0xba, 0x12 }, // PGAMPK2
+> +	{ 0xbb, 0x10 }, // PGAMPK3
+> +	{ 0xbc, 0x12 }, // PGAMPK4
+> +	{ 0xbd, 0x15 }, // PGAMPK5
+> +	{ 0xbe, 0x19 }, // PGAMPK6
+> +	{ 0xbf, 0x0e }, // PGAMPK7
+> +	{ 0xc0, 0x16 }, // PGAMPK8
+> +	{ 0xc1, 0x0a }, // PGAMPK9
+> +	// Set gray scale voltage to adjust gamma
+> +	{ 0xd0, 0x0c }, // NGAMVR0
+> +	{ 0xd1, 0x17 }, // NGAMVR0
+> +	{ 0xd2, 0x14 }, // NGAMVR1
+> +	{ 0xd3, 0x2e }, // NGAMVR2
+> +	{ 0xd4, 0x32 }, // NGAMVR3
+> +	{ 0xd5, 0x3c }, // NGAMVR4
+> +	{ 0xd6, 0x22 }, // NGAMPR0
+> +	{ 0xd7, 0x3d }, // NGAMPR1
+> +	{ 0xd8, 0x0d }, // NGAMPK0
+> +	{ 0xd9, 0x07 }, // NGAMPK1
+> +	{ 0xda, 0x13 }, // NGAMPK2
+> +	{ 0xdb, 0x13 }, // NGAMPK3
+> +	{ 0xdc, 0x11 }, // NGAMPK4
+> +	{ 0xdd, 0x15 }, // NGAMPK5
+> +	{ 0xde, 0x19 }, // NGAMPK6
+> +	{ 0xdf, 0x10 }, // NGAMPK7
+> +	{ 0xe0, 0x17 }, // NGAMPK8
+> +	{ 0xe1, 0x0a }, // NGAMPK9
+> +	// EXTC Command set enable, select page 3
+> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x03 },
+> +	// Set various timing settings
+> +	{ 0x00, 0x2a }, // GIP_VST_1
+> +	{ 0x01, 0x2a }, // GIP_VST_2
+> +	{ 0x02, 0x2a }, // GIP_VST_3
+> +	{ 0x03, 0x2a }, // GIP_VST_4
+> +	{ 0x04, 0x61 }, // GIP_VST_5
+> +	{ 0x05, 0x80 }, // GIP_VST_6
+> +	{ 0x06, 0xc7 }, // GIP_VST_7
+> +	{ 0x07, 0x01 }, // GIP_VST_8
+> +	{ 0x08, 0x03 }, // GIP_VST_9
+> +	{ 0x09, 0x04 }, // GIP_VST_10
+> +	{ 0x70, 0x22 }, // GIP_ECLK1
+> +	{ 0x71, 0x80 }, // GIP_ECLK2
+> +	{ 0x30, 0x2a }, // GIP_CLK_1
+> +	{ 0x31, 0x2a }, // GIP_CLK_2
+> +	{ 0x32, 0x2a }, // GIP_CLK_3
+> +	{ 0x33, 0x2a }, // GIP_CLK_4
+> +	{ 0x34, 0x61 }, // GIP_CLK_5
+> +	{ 0x35, 0xc5 }, // GIP_CLK_6
+> +	{ 0x36, 0x80 }, // GIP_CLK_7
+> +	{ 0x37, 0x23 }, // GIP_CLK_8
+> +	{ 0x40, 0x03 }, // GIP_CLKA_1
+> +	{ 0x41, 0x04 }, // GIP_CLKA_2
+> +	{ 0x42, 0x05 }, // GIP_CLKA_3
+> +	{ 0x43, 0x06 }, // GIP_CLKA_4
+> +	{ 0x44, 0x11 }, // GIP_CLKA_5
+> +	{ 0x45, 0xe8 }, // GIP_CLKA_6
+> +	{ 0x46, 0xe9 }, // GIP_CLKA_7
+> +	{ 0x47, 0x11 }, // GIP_CLKA_8
+> +	{ 0x48, 0xea }, // GIP_CLKA_9
+> +	{ 0x49, 0xeb }, // GIP_CLKA_10
+> +	{ 0x50, 0x07 }, // GIP_CLKB_1
+> +	{ 0x51, 0x08 }, // GIP_CLKB_2
+> +	{ 0x52, 0x09 }, // GIP_CLKB_3
+> +	{ 0x53, 0x0a }, // GIP_CLKB_4
+> +	{ 0x54, 0x11 }, // GIP_CLKB_5
+> +	{ 0x55, 0xec }, // GIP_CLKB_6
+> +	{ 0x56, 0xed }, // GIP_CLKB_7
+> +	{ 0x57, 0x11 }, // GIP_CLKB_8
+> +	{ 0x58, 0xef }, // GIP_CLKB_9
+> +	{ 0x59, 0xf0 }, // GIP_CLKB_10
+> +	// Map internal GOA signals to GOA output pad
+> +	{ 0xb1, 0x01 }, // PANELD2U2
+> +	{ 0xb4, 0x15 }, // PANELD2U5
+> +	{ 0xb5, 0x16 }, // PANELD2U6
+> +	{ 0xb6, 0x09 }, // PANELD2U7
+> +	{ 0xb7, 0x0f }, // PANELD2U8
+> +	{ 0xb8, 0x0d }, // PANELD2U9
+> +	{ 0xb9, 0x0b }, // PANELD2U10
+> +	{ 0xba, 0x00 }, // PANELD2U11
+> +	{ 0xc7, 0x02 }, // PANELD2U24
+> +	{ 0xca, 0x17 }, // PANELD2U27
+> +	{ 0xcb, 0x18 }, // PANELD2U28
+> +	{ 0xcc, 0x0a }, // PANELD2U29
+> +	{ 0xcd, 0x10 }, // PANELD2U30
+> +	{ 0xce, 0x0e }, // PANELD2U31
+> +	{ 0xcf, 0x0c }, // PANELD2U32
+> +	{ 0xd0, 0x00 }, // PANELD2U33
+> +	// Map internal GOA signals to GOA output pad
+> +	{ 0x81, 0x00 }, // PANELU2D2
+> +	{ 0x84, 0x15 }, // PANELU2D5
+> +	{ 0x85, 0x16 }, // PANELU2D6
+> +	{ 0x86, 0x10 }, // PANELU2D7
+> +	{ 0x87, 0x0a }, // PANELU2D8
+> +	{ 0x88, 0x0c }, // PANELU2D9
+> +	{ 0x89, 0x0e }, // PANELU2D10
+> +	{ 0x8a, 0x02 }, // PANELU2D11
+> +	{ 0x97, 0x00 }, // PANELU2D24
+> +	{ 0x9a, 0x17 }, // PANELU2D27
+> +	{ 0x9b, 0x18 }, // PANELU2D28
+> +	{ 0x9c, 0x0f }, // PANELU2D29
+> +	{ 0x9d, 0x09 }, // PANELU2D30
+> +	{ 0x9e, 0x0b }, // PANELU2D31
+> +	{ 0x9f, 0x0d }, // PANELU2D32
+> +	{ 0xa0, 0x01 }, // PANELU2D33
+> +	// EXTC Command set enable, select page 2
+> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x02 },
+> +	// Unknown registers
+>   	{ 0x01, 0x01 },
+>   	{ 0x02, 0xda },
+>   	{ 0x03, 0xba },
+> @@ -227,10 +230,10 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
+>   	{ 0x0e, 0x48 },
+>   	{ 0x0f, 0x38 },
+>   	{ 0x10, 0x2b },
+> -	{ 0xff, 0x30 },
+> -	{ 0xff, 0x52 },
+> -	{ 0xff, 0x00 },
+> -	{ 0x36, 0x0a },
+> +	// EXTC Command set enable, select page 0
+> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x00 },
+> +	// Display Access Control
+> +	{ 0x36, 0x0a }, // bgr = 1, ss = 1, gs = 0
+>   };
+>   
+>   static inline struct nv3052c *to_nv3052c(struct drm_panel *panel)
+> -- 
 > 2.42.0
->
+> 
