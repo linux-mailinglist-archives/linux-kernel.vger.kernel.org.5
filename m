@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005B179EACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564DC79EADF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241312AbjIMORL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42782 "EHLO
+        id S241251AbjIMOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241292AbjIMORI (ORCPT
+        with ESMTP id S241236AbjIMOTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:17:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0D9E64;
-        Wed, 13 Sep 2023 07:17:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C816C433CA;
-        Wed, 13 Sep 2023 14:17:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694614624;
-        bh=/rNYMfmPg+JGRzNdRuWzEsyg8yvemb1m47ESpOOafwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g2uI7QNFhk6zUFRfrqsp17vuk306nqCbi1llBnDYOLVTtrliQ/6/ZwRYO2+Sfd8dI
-         4YO8yO1WYcDralnrpJOr0S0tMlBVyM1UhkQaNOzyxMsa1wq+rb4a6RSRbf/+F3n2mE
-         Fuz2gEUz/ChF5Ovx3MwHuiGcEmBFiKjCQJiRrSBHiMjA5mArn2IptGVJ2D+q5UqJ46
-         Wbj1wUHByl1bRy9D3W+m21+zRz9t7xTEcFLZx0BIzDX0UpvnFmL5F2+uj/98ynr7X9
-         y+UWsgniWcFR6vVMV/CuZ03JeFhxRhbSxqrnAua2l4SZSKWy347zlVnVZF58Acl3EO
-         gc01oA5q58odA==
-Date:   Wed, 13 Sep 2023 16:16:58 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Jinjian Song <songjinjian@hotmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
-        ryazanov.s.a@gmail.com, jiri@resnulli.us,
-        johannes@sipsolutions.net, chandrashekar.devegowda@intel.com,
-        linuxwwan@intel.com, chiranjeevi.rapolu@linux.intel.com,
-        haijun.liu@mediatek.com, m.chetan.kumar@linux.intel.com,
-        ricardo.martinez@linux.intel.com, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nmarupaka@google.com, vsankar@lenovo.com, danielwinkler@google.com,
-        Jinjian Song <jinjian.song@fibocom.com>
-Subject: Re: [net-next v4 4/5] net: wwan: t7xx: Adds sysfs attribute of modem
- event
-Message-ID: <20230913141658.GV401982@kernel.org>
-References: <20230912094845.11233-1-songjinjian@hotmail.com>
- <ME3P282MB27032EB049D5135D68ADE09FBBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+        Wed, 13 Sep 2023 10:19:31 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32699E;
+        Wed, 13 Sep 2023 07:19:27 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-655cee6f752so28400496d6.0;
+        Wed, 13 Sep 2023 07:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694614767; x=1695219567; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ccpm8M63tUVRb8cHltFDbsSiHscuT20er3PFEGjsiBE=;
+        b=ZcViTpCrbhEJrmj5DkK7Hozt4KfzX97S3Ldjy2g/abgY1E9H4ra2Dy3PbQTG3yRArZ
+         ZEUsSEVtddGb8MZqEohfLmBYvR+2HKqFslo5BAvEwFgPH6HOrN2hvb8bdDIxN1+osJpZ
+         GN0XP+ohVg1OwREXZScyhL4Omuk+oxkcymxFyCthKMXV6pXCt0Y6VzWZrhN4amXPDtGN
+         gk7r5OBSO70ZZeSIiV/LFtTGOVy0qS6VH58JWv/VoWbuG313eaeUglZH8S+fRYx0vclw
+         nrlmFa2x/XJnak3cT9zo9ZjwEwY9i/AdK/BWFqa/iGWO8GQBEnpej6XEtMztKJWan7X9
+         nACQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694614767; x=1695219567;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ccpm8M63tUVRb8cHltFDbsSiHscuT20er3PFEGjsiBE=;
+        b=kR90jlnm8xFry6LoIhrQ3NFhVZG80n7ABufj749rWfBMv8HIeSppwriv2FmTuTu5BT
+         CKrKMuawGCSJAdNMrPv6P2XF/+/ZlXkTTaQeSE6Dw/2cZ/7L9vYNcY40P3Hz90oQVDw4
+         t1dxHnAtLnXIkY9UjqeG6oAXyhBlLUfBJddOGoUpjgnFBACW3ygADlp1DdGf7swddlqV
+         hsE4w9Wk5NNldO+7cROPdtjpq/nAx5kunwmwgq6SkAWr3pbBFb/EwJAcplmSiqDOdgsF
+         bG2ZpneTL1M1TjCiz2WEHl2/0Fknz3GeZSOF3QAGGDY5UrvCxsVGwRvLXe+B2d1y3sOw
+         XDtg==
+X-Gm-Message-State: AOJu0YxGzUIzUXjdfCI+vfvsY0AmV0GtaIXVEjvNlNcFBgJmuupQdtjL
+        UWzxwPthdIsnF72zu+ciUcC0qbVJbuAwt/bxZ4k=
+X-Google-Smtp-Source: AGHT+IFo1VDju5+RiN1hu/MS6i6AKwAXlvWCwJjHPS8cruvNNP/FSBt27kTgEjJDuN5FKtcGF2oBBFdq/A3wg7SPo8I=
+X-Received: by 2002:a05:6214:5c06:b0:655:dc84:d744 with SMTP id
+ ly6-20020a0562145c0600b00655dc84d744mr2477721qvb.25.1694614766962; Wed, 13
+ Sep 2023 07:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ME3P282MB27032EB049D5135D68ADE09FBBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+References: <20230912140532.3797736-1-yangchen.openbmc@gmail.com>
+ <20230912140532.3797736-2-yangchen.openbmc@gmail.com> <26a53f62-d8d0-9583-e675-a3db99c60c8a@linaro.org>
+ <CALFa7M_Gov4jd3wxrXWhxuPKbDr+cp8xmuWJCQH_N=a+q03M1A@mail.gmail.com> <605e4577-1e01-cd0b-9d42-34401bd7f3a7@linaro.org>
+In-Reply-To: <605e4577-1e01-cd0b-9d42-34401bd7f3a7@linaro.org>
+From:   Yang Chen <yangchen.openbmc@gmail.com>
+Date:   Wed, 13 Sep 2023 22:19:15 +0800
+Message-ID: <CALFa7M9uaFuX4OEy9XdRa7xtKECOvJvg=MH_jkJ+jrfRe4M_SQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: aspeed: document board compatibles
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        joel@jms.id.au, andrew@aj.id.au, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        patrick@stwcx.xyz, Jerry.Lin@quantatw.com, Eddie.Chen@quantatw.com,
+        EasonChen1@quantatw.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 05:48:44PM +0800, Jinjian Song wrote:
-> From: Jinjian Song <jinjian.song@fibocom.com>
-> 
-> Adds support for t7xx wwan device firmware flashing & coredump collection
-> using devlink.
-> 
-> Provides sysfs attribute on user space to query the event from modem
-> about flashing/coredump/reset.
-> 
-> Base on the v5 patch version of follow series:
-> 'net: wwan: t7xx: fw flashing & coredump support'
-> (https://patchwork.kernel.org/project/netdevbpf/patch/fc8bbb0b66a5ff3a489ea9857d79b374508090ef.1674307425.git.m.chetan.kumar@linux.intel.com/)
-> 
-> Signed-off-by: Jinjian Song <jinjian.song@fibocom.com>
+> On 13/09/2023 11:52, Yang Chen wrote:
+> > Hi Krzysztof,
+> >
+> > Thanks for your reply, Minerva is a project of Facebook server that
+> > includes two types of boards. One is the motherboard that includes a BMC
+> > and another is the Chassis Management Board that includes a CMC and both
+> > use the Aspeed SoC (AST2600). These patches are for the CMC and the link
+> > you provided is for the BMC and they need to use different DTS.
+>
+> Are they similar? Maybe you should share board DTSI?
+>
+> Best regards,
+> Krzysztof
+>
 
-Hi Jinjian Song,
+No, they are not similar. They just use the same SoC but they are on
+different system boards with different electronic schematic.
 
-some minor feedback from my side.
-
-...
-
-> diff --git a/drivers/net/wwan/t7xx/t7xx_pci.c b/drivers/net/wwan/t7xx/t7xx_pci.c
-
-...
-
-> +static ssize_t t7xx_event_show(struct device *dev, struct device_attribute *attr,
-> +			       char *buf)
-> +{
-> +	enum t7xx_event event = T7XX_UNKNOWN;
-> +	struct pci_dev *pdev;
-> +	struct t7xx_pci_dev *t7xx_dev;
-
-Please arrange local variables in networking code in reverse xmas tree
-order - longest line to shortest.
-
-https://github.com/ecree-solarflare/xmastree can be helpful here.
-
-...
-
-> diff --git a/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c b/drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
-
-...
-
-> @@ -361,6 +367,10 @@ static int t7xx_devlink_flash_update(struct devlink *devlink,
->  	clear_bit(T7XX_FLASH_STATUS, &flash_dump->status);
->  
->  err_out:
-> +	if (ret)
-> +		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_FAILURE);
-> +	else
-> +		atomic_set(&port->t7xx_dev->event, T7XX_FLASH_SUCCESS);
-
-If the lines immediately above are reached as the result of jumping
-to err_out, then port is not initialised.
-
->  	return ret;
->  }
-
-...
+Thanks,
+Yang Chen
