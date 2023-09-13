@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954A279DF6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B74379DF75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238315AbjIMFan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 01:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
+        id S237048AbjIMFcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 01:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbjIMFai (ORCPT
+        with ESMTP id S235905AbjIMFck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 01:30:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6D71734;
-        Tue, 12 Sep 2023 22:30:34 -0700 (PDT)
-Received: from [192.168.100.7] (unknown [59.103.218.185])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D6A996607319;
-        Wed, 13 Sep 2023 06:30:29 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694583031;
-        bh=QyQihaw5qvrloeqI+myxpbxwvzMeDS3foepHXVwjQpg=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=ZDI7OQhyXJvrX3SKacW3VISdi1FqmRGm/wF2bwhpujO8jzBeQtjSOFn2NW/plAISU
-         FUBtY29z7WshWYMh2hGLlXg+wFDTUQKg+b+U73BGbvyh04N7iNIHco0/ybVBWt3qpF
-         R5Rn1XElYJKXuN6/vkSI7shgA5a6hButrq7lZ/1Boyumcp7uL3bAKQieKyT4vUHzQY
-         429fXkpw1EQGOonGbFMFvNmqsoqdpC9LUkV73vWYt0LiDQuVSopISBEGDzt2TXR/No
-         9VIBOegGV1BO87lVfqzXKQYNhFtQiGwv0AZtN5/Ab+Qr8+mJDWPH1OQM4SD7wzAJeZ
-         v5Q6GBuy0cy2Q==
-Message-ID: <120e7e65-debc-4677-a080-49b9bc917e36@collabora.com>
-Date:   Wed, 13 Sep 2023 10:30:25 +0500
+        Wed, 13 Sep 2023 01:32:40 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDA51734
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:32:36 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31ad779e6b3so6469350f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1694583155; x=1695187955; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N4nYj22yWcBXT0fLmDHEet6LUruNho+epuPQlZMk6rA=;
+        b=QfIuB7m5npkIjdxEqLwP/UTYKoi0Aid+CBgxNJNeQIm29w78Vckcx7Xl158RrQriHm
+         xyiGqFkjn3hIa0/7pWc861IvFuMza8/zGM2B+I2u7h7bHvuUksUjHaadTjYzA/pM/xLy
+         Qk9UgnBw6wB84kjy/C4l9s08ndOqkKSGutvIcPlFEPDbcSmZszD8iVI9i5vE8zq0QZIc
+         6qyd4oiKPk0pKo6mWzFO86Ar48M3F41sxmRFdMGG5jdKPGgW3rZ3aJV6kyjdDFatqk8n
+         t+Q6Svjl9DWSxn8u4+g4Rbb8JnmqhgpQSOGaoA1F0HlkATlg22ZTh+6OzNBeMAehpw2J
+         13Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694583155; x=1695187955;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N4nYj22yWcBXT0fLmDHEet6LUruNho+epuPQlZMk6rA=;
+        b=nLCjy6EaC6nQycMrtIF7uKOocWLYLTHZj7WmhAmQcAza6ST0rGjYzjeL6vZa2fcaiA
+         G0jVemYJ3DynNpO+IuZEMGl/+OdiTyH1MjUCwuUMro4UVcoGPDFDXQYyIpTLw9hBkvUM
+         eCPLWCgZTgfo1/V6hdpZMT5Qxk9LlZ8fwiD4Hv99O6vs8QQZfYqHT5eh076xGd4fYg3t
+         Ntsg0QpRZ96hMkOq0xZ9dp34/Byj/HM2ksOL29bdL7hzj8Yjf7+a1J+PYiHA+Q4t1QmC
+         e+ggE9Y0Dztf4eRHXQRsATbpNtjmEY5Hf+vMbITn4fs9q0d5MvE6GJ4GaXCrvvfcXa4Y
+         kcEw==
+X-Gm-Message-State: AOJu0YxNGn+RR/SGvagpFp8gpITZ8Df03R8nQ0fPa0mzmDf2KS088xhC
+        U17rKop8IiFavP0H1mCwe8tsFQ==
+X-Google-Smtp-Source: AGHT+IER9H3VVgLr+hfSKE6vI6LgtgJgyvA5sBGY5z57WD3YPKGjBTuZJ6vz2gIvOl0O6kav/COyJg==
+X-Received: by 2002:adf:e350:0:b0:319:7787:54a9 with SMTP id n16-20020adfe350000000b00319778754a9mr1037074wrj.24.1694583155059;
+        Tue, 12 Sep 2023 22:32:35 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.145])
+        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b0031fba0a746bsm3448003wri.9.2023.09.12.22.32.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Sep 2023 22:32:34 -0700 (PDT)
+Message-ID: <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
+Date:   Wed, 13 Sep 2023 08:32:31 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3] tty/sysrq: replace smp_processor_id() with get_cpu()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20230822102606.2821311-1-usama.anjum@collabora.com>
- <2023082258-lethargic-hazily-5c7e@gregkh>
- <deab26bd-7db4-422a-8e58-6ea56ed0b200@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 35/37] dt-bindings: arm: renesas: document SMARC
+ Carrier-II EVK
 Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <deab26bd-7db4-422a-8e58-6ea56ed0b200@collabora.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-36-claudiu.beznea.uj@bp.renesas.com>
+ <20230912161635.GA877089-robh@kernel.org>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20230912161635.GA877089-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/23 4:06 PM, Muhammad Usama Anjum wrote:
-> On 8/22/23 6:24 PM, Greg Kroah-Hartman wrote:
->> On Tue, Aug 22, 2023 at 03:26:06PM +0500, Muhammad Usama Anjum wrote:
->>> The smp_processor_id() shouldn't be called from preemptible code.
->>> Instead use get_cpu() and put_cpu() which disables preemption in
->>> addition to getting the processor id. This fixes the following bug:
->>>
->>> [  119.143590] sysrq: Show backtrace of all active CPUs
->>> [  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
->>> [  119.144586] caller is debug_smp_processor_id+0x20/0x30
->>> [  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
->>> [  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
->>> [  119.145053] Call trace:
->>> [  119.145093]  dump_backtrace+0x0/0x1a0
->>> [  119.145122]  show_stack+0x18/0x70
->>> [  119.145141]  dump_stack+0xc4/0x11c
->>> [  119.145159]  check_preemption_disabled+0x100/0x110
->>> [  119.145175]  debug_smp_processor_id+0x20/0x30
->>> [  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
->>> [  119.145211]  __handle_sysrq+0x8c/0x1a0
->>> [  119.145227]  write_sysrq_trigger+0x94/0x12c
->>> [  119.145247]  proc_reg_write+0xa8/0xe4
->>> [  119.145266]  vfs_write+0xec/0x280
->>> [  119.145282]  ksys_write+0x6c/0x100
->>> [  119.145298]  __arm64_sys_write+0x20/0x30
->>> [  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
->>> [  119.145332]  do_el0_svc+0x24/0x8c
->>> [  119.145348]  el0_svc+0x10/0x20
->>> [  119.145364]  el0_sync_handler+0x134/0x140
->>> [  119.145381]  el0_sync+0x180/0x1c0
->>>
->>> Cc: stable@vger.kernel.org
->>> Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")This commit had introduced the smp_processor_id() function in
-> sysrq_handle_showallcpus().
-> 
->>
->> How has this never shown up before now?  What changed to cause this to
->> now be triggered?  This feels odd that no one has seen this in the past
->> 20+ years :(
-> Not sure. Probably the combination of reproduction has happened now. The
-> following three conditions are needed for the warning to appear:
-> * Enable CONFIG_DEBUG_PREEMPT
-> * Arch which doesn't define arch_trigger_all_cpu_backtrace such as arm64
-> * Trigger showallcpu's stack sysrq
 
-Any thoughts about the patch?
 
+On 12.09.2023 19:16, Rob Herring wrote:
+> On Tue, Sep 12, 2023 at 07:51:55AM +0300, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Document Renesas SMARC Carrier-II EVK board which is based on RZ/G3S
+>> (R9A08G045) SoC. The SMARC Carrier-II EVK consists of RZ/G3S SoM module and
+>> SMARC Carrier-II carrier board, the SoM module sits on top of carrier
+>> board.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>  Documentation/devicetree/bindings/soc/renesas/renesas.yaml | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+>> index 822faf081e84..f4964445e5ab 100644
+>> --- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+>> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+>> @@ -476,6 +476,8 @@ properties:
+>>  
+>>        - description: RZ/G3S (R9A08G045)
+>>          items:
+>> +          - enum:
+>> +              - renesas,smarc2-evk # SMARC Carrier-II EVK
 > 
->>
->>
->>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>> ---
->>> Changes since v2:
->>> - Add changelog and resend
->>>
->>> Changes since v1:
->>> - Add "Cc: stable@vger.kernel.org" tag
->>> ---
->>>  drivers/tty/sysrq.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
->>> index 23198e3f1461a..6b4a28bcf2f5f 100644
->>> --- a/drivers/tty/sysrq.c
->>> +++ b/drivers/tty/sysrq.c
->>> @@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
->>>  		if (in_hardirq())
->>>  			regs = get_irq_regs();
->>>  
->>> -		pr_info("CPU%d:\n", smp_processor_id());
->>> +		pr_info("CPU%d:\n", get_cpu());
->>>  		if (regs)
->>>  			show_regs(regs);
->>>  		else
->>>  			show_stack(NULL, NULL, KERN_INFO);
->>>  
->>>  		schedule_work(&sysrq_showallcpus);
->>> +		put_cpu();
->>
->> Why are you putting the cpu _after_ you schedule the work?
-> The sysrq_showallcpus work prints stack traces on all CPUs other than the
-> current CPU. So we are re-enabling preemption after scheduling work from
-> current CPU. So that it doesn't get changed.
->>
->> thanks,
->>
->> greg k-h
+> You just changed the existing binding...
 > 
+>>            - enum:
+>>                - renesas,r9a08g045s33 # PCIe support
+> 
+> This is the SoM module? 
 
--- 
-BR,
-Muhammad Usama Anjum
+No, this is a SoC variant which supports PCIe.
+
+> You either need to squash this change or add 
+> another case with 3 entries and maintain the 2 entry case. (there's no 
+> way to express any entry at the beginning or middle can be optional)
+> 
+>>            - const: renesas,r9a08g045
+>> -- 
+>> 2.39.2
+>>
