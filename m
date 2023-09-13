@@ -2,173 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F160079F091
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C39379F08F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbjIMRq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S231409AbjIMRqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjIMRqZ (ORCPT
+        with ESMTP id S231531AbjIMRqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:46:25 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E552B19BF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:21 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59bcd927b45so988457b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:21 -0700 (PDT)
+        Wed, 13 Sep 2023 13:46:17 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6581219AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:13 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81841ef79bso113372276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694627181; x=1695231981; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0rAjF4LhtdLaI9RXtmV+TNTtCFAloczNHFo4emLf7hI=;
-        b=fLUh5y+3uCffnkGreN6T1KVxy5t1w0EmmX+Srm4dcGEjxn/EvnlYfvCLaEAZFUG2rw
-         Uoms1NfHR/UH0utNW6EUbvkihMmYDaRxjKtwqejQqSOPIgDDT6+4M5tJr0dkYIToflj8
-         7bsaNFNqptJUz9xCXxPx4GKpH6XdQJLq85QsCZIfEKKaa+uPfOn63c9+6WLEVM4LWQPn
-         NB5ZPWLNptuYtkS65t0wBtTL0Jodj7tZifkE1eZwzOLP89SNu24vCBMIzvVlYNkszFf3
-         5T50TOfoaFrFiCPIyAgzujvgwJDjZyhN6NEF2FPlnWxfhmLdQtapBn3MzFWGNS3dSEHV
-         OvvA==
+        d=google.com; s=20230601; t=1694627172; x=1695231972; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ocbK288Al1DpwUeolIoLVHrflqgxdyru7h8mWey0wo=;
+        b=bRX+fw1+7a8iLbidTBYkBFr230SoMZaQINwo5EkmKFYmLyz9FO0777ON+9CDsoGgrP
+         RaIqSQ2eWPwWpntXBcu+yu6b6IDeZBcDQy76lEtrZOqoVYHIByG2RM18r0FkRlb0CsP1
+         t6uY/IL3he/h3anC+mQ/mBRJcfSJsFqXYbnGzHhnz8T+kFeBxbbqw8iTj/2EpoULBWSi
+         8rnbNQVjIejAYZNqTB4vhu9dmBzMVho3SkfEyZv0DYFIkFn6dxjx806hFB+K9XeNTHJy
+         a0gEN8EwkaivFPpkJcw+0ZzIxaXZM18f4G9XxABHYxy84fFWU7whDgIWALFZwAQfyMl/
+         LOZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694627181; x=1695231981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0rAjF4LhtdLaI9RXtmV+TNTtCFAloczNHFo4emLf7hI=;
-        b=tuIw1kfgeLzyJUEtqxoxQ2vmlQ+A0nFtyDVhl8Xfyrma+0YMjJ3wj3TuXfZLpIBlK4
-         zBM9DnHPoZlwD9Y2bBE4O4lP/mT71hPPIiWCSYKi1FB0jlU+1JCqbtKWFfV2urlu3++K
-         mxNnJ3q2hy59B6aw9Bo+/k6z35zg78fs2Kd5Io/LhU8BEhZn27mPFFw0Gyc0hpqjLW2t
-         Hv6BNctC4skTE55v/KsOjrvgzEJVcRRLJTGm+4SgHMTkT+iSCU95tMnLDggvN09ytBA2
-         N19xMOuRcu8HoZpp/7HEn5md5/SG11zB69RreXT/oopbeJZAqiURr1fhY6w1eGxAbdK8
-         g55A==
-X-Gm-Message-State: AOJu0YxTf3QLYkJyegkcUQteBn8XvgxuPsV9tJUuhZGgeTB512Ml6hVf
-        N+IjPt4TjWm/bVbuynosj8YQW2GkA/9EETYy6uuxDzwH6H9b/eIypg==
-X-Google-Smtp-Source: AGHT+IEcQ7YUx53xPdhufgWCS1R0Jw297fj8GL2vljjt3scAQXKeaKl1n1oJzB2Gh90UjFE04WZhp0Hy0kARe4yEB3w=
-X-Received: by 2002:a0d:d456:0:b0:59b:52d6:9a34 with SMTP id
- w83-20020a0dd456000000b0059b52d69a34mr3109595ywd.11.1694627181097; Wed, 13
- Sep 2023 10:46:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230818151220.166215-1-cgzones@googlemail.com>
- <20230818151220.166215-5-cgzones@googlemail.com> <CAEjxPJ53LiT79=0L81QVgmfW+yKC6Fyq=sd0o1xF8ginCQjSew@mail.gmail.com>
-In-Reply-To: <CAEjxPJ53LiT79=0L81QVgmfW+yKC6Fyq=sd0o1xF8ginCQjSew@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Sep 2023 13:46:10 -0400
-Message-ID: <CAHC9VhRskKj7LyPDv99zvwmuWYhNqKmTsNYsMyi38mX3zgm+Cw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] selinux: improve symtab string hashing
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1694627172; x=1695231972;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ocbK288Al1DpwUeolIoLVHrflqgxdyru7h8mWey0wo=;
+        b=fzc9yiCtq5F76h0smbG9SAy29/V+hTKWtHgOMslbJWyEqEd3erwj3gQTTjItTpNVpw
+         6AlwqznfwlvmGEBUPVxqrWH8+sQcVeX3ezpNhujt4JfhEl+cXiCEV0VXSWF3Or7xVexf
+         wHQqJR1edfcgPjbkQsnONWF/PfsWw2jGXUlaArcmOg9TJH4QgLZO+20UCCmL/ZxOOY9J
+         Ouv9QxRkD/MzCXMHXIRbcwgq0479N/UT/vGlkw8+MowRn0/kV0+tH+1UWrvFloi450tb
+         trFB9fxGX9UxNWygJvnnAKHiYU8rp8qCpYpqymc34os6Dgo4JcPfLOqJI/4I6IJfviiD
+         HAqw==
+X-Gm-Message-State: AOJu0YxQaHeSVsE93CES+DM21bH3huiCIz2/LUsP8NzQ/1JEP8BNixCY
+        5l2xqzSOeRqNfMCrKLK/CvrzFuh/Zcs=
+X-Google-Smtp-Source: AGHT+IEL/dshnjsgmjdfGSman4r0qxwjXyMs+hXHniVftyWUrPYv6azBgo0B81bsYJN3JcUy4Fmp/3PNp8E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1102:b0:d0b:d8cd:e661 with SMTP id
+ o2-20020a056902110200b00d0bd8cde661mr95997ybu.12.1694627172692; Wed, 13 Sep
+ 2023 10:46:12 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 10:46:11 -0700
+In-Reply-To: <852b6fa117bf3767a99353d908bc566a5dd9c61a.1694599703.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1694599703.git.isaku.yamahata@intel.com> <852b6fa117bf3767a99353d908bc566a5dd9c61a.1694599703.git.isaku.yamahata@intel.com>
+Message-ID: <ZQH1YzB5YaeCwHii@google.com>
+Subject: Re: [RFC PATCH 4/6] KVM: guest_memfd: Implemnet bmap inode operation
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 7, 2023 at 1:44=E2=80=AFPM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
-> On Fri, Aug 18, 2023 at 11:12=E2=80=AFAM Christian G=C3=B6ttsche
-> <cgzones@googlemail.com> wrote:
-> >
-> > The number of buckets is calculated by performing a binary AND against
-> > the mask of the hash table, which is one less than its size (which is a
-> > power of two).  This leads to all top bits being discarded, requiring
-> > for short or similar inputs a hash function with a good avalanche
-> > effect.
-> >
-> > Use djb2a:
-> >
-> >     # current
-> >     common prefixes:  7 entries and 5/8 buckets used, longest chain len=
-gth 2, sum of chain length^2 11
-> >     classes:  134 entries and 100/256 buckets used, longest chain lengt=
-h 5, sum of chain length^2 234
-> >     roles:  15 entries and 6/16 buckets used, longest chain length 5, s=
-um of chain length^2 57
-> >     types:  4448 entries and 3016/8192 buckets used, longest chain leng=
-th 41, sum of chain length^2 14922
-> >     users:  7 entries and 3/8 buckets used, longest chain length 3, sum=
- of chain length^2 17
-> >     bools:  306 entries and 221/512 buckets used, longest chain length =
-4, sum of chain length^2 524
-> >     levels:  1 entries and 1/1 buckets used, longest chain length 1, su=
-m of chain length^2 1
-> >     categories:  1024 entries and 400/1024 buckets used, longest chain =
-length 4, sum of chain length^2 2740
-> >
-> >     # patch
-> >     common prefixes:  7 entries and 5/8 buckets used, longest chain len=
-gth 2, sum of chain length^2 11
-> >     classes:  134 entries and 101/256 buckets used, longest chain lengt=
-h 3, sum of chain length^2 210
-> >     roles:  15 entries and 9/16 buckets used, longest chain length 3, s=
-um of chain length^2 31
-> >     types:  4448 entries and 3459/8192 buckets used, longest chain leng=
-th 5, sum of chain length^2 6778
-> >     users:  7 entries and 5/8 buckets used, longest chain length 3, sum=
- of chain length^2 13
-> >     bools:  306 entries and 236/512 buckets used, longest chain length =
-5, sum of chain length^2 470
-> >     levels:  1 entries and 1/1 buckets used, longest chain length 1, su=
-m of chain length^2 1
-> >     categories:  1024 entries and 518/1024 buckets used, longest chain =
-length 7, sum of chain length^2 2992
-> >
-> > Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> > ---
-> >  security/selinux/ss/symtab.c | 18 ++++++++----------
-> >  1 file changed, 8 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/security/selinux/ss/symtab.c b/security/selinux/ss/symtab.=
-c
-> > index 43d7f0319ccd..b6761b96eee4 100644
-> > --- a/security/selinux/ss/symtab.c
-> > +++ b/security/selinux/ss/symtab.c
-> > @@ -11,16 +11,14 @@
-> >
-> >  static unsigned int symhash(const void *key)
-> >  {
-> > -       const char *p, *keyp;
-> > -       unsigned int size;
-> > -       unsigned int val;
-> > -
-> > -       val =3D 0;
-> > -       keyp =3D key;
-> > -       size =3D strlen(keyp);
-> > -       for (p =3D keyp; (p - keyp) < size; p++)
-> > -               val =3D (val << 4 | (val >> (8*sizeof(unsigned int)-4))=
-) ^ (*p);
-> > -       return val;
-> > +       /* djb2a */
->
-> Do we need/want something that specifies the author/license (I assume
-> public domain) of this code?
+On Wed, Sep 13, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> To inject memory failure, physical address of the page is needed.
+> Implement bmap() method to convert the file offset into physical address.
+> 
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>  virt/kvm/Kconfig     |  4 ++++
+>  virt/kvm/guest_mem.c | 28 ++++++++++++++++++++++++++++
+>  2 files changed, 32 insertions(+)
+> 
+> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+> index 624df45baff0..eb008f0e7cc3 100644
+> --- a/virt/kvm/Kconfig
+> +++ b/virt/kvm/Kconfig
+> @@ -115,3 +115,7 @@ config KVM_GENERIC_PRIVATE_MEM
+>  
+>  config HAVE_GENERIC_PRIVATE_MEM_HANDLE_ERROR
+>  	bool
+> +
+> +config KVM_GENERIC_PRIVATE_MEM_BMAP
+> +	depends on KVM_GENERIC_PRIVATE_MEM
+> +	bool
+> diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+> index 3678287d7c9d..90dfdfab1f8c 100644
+> --- a/virt/kvm/guest_mem.c
+> +++ b/virt/kvm/guest_mem.c
+> @@ -355,12 +355,40 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+>  	return MF_DELAYED;
+>  }
+>  
+> +#ifdef CONFIG_KVM_GENERIC_PRIVATE_MEM_BMAP
+> +static sector_t kvm_gmem_bmap(struct address_space *mapping, sector_t block)
+> +{
+> +	struct folio *folio;
+> +	sector_t pfn = 0;
+> +
+> +	filemap_invalidate_lock_shared(mapping);
+> +
+> +	if (block << PAGE_SHIFT > i_size_read(mapping->host))
+> +		goto out;
+> +
+> +	folio = filemap_get_folio(mapping, block);
+> +	if (IS_ERR_OR_NULL(folio))
+> +		goto out;
+> +
+> +	pfn = folio_pfn(folio) + (block - folio->index);
+> +	folio_put(folio);
+> +
+> +out:
+> +	filemap_invalidate_unlock_shared(mapping);
+> +	return pfn;
 
-It would be a good idea, yes.  I spent some time looking around, and
-while there are many references to djb2 (and the djb2a xor version), I
-had a hard time finding an explicit license statement from DJB.
-However, in the cdb v0.75 release there is a source file, cdb_hash.c,
-which has effectively the same hash (same algorithm, different
-implementation) with a "/* Public domain. */" statement at the top.
-IANAL, but I think that is good enough.
+IIUC, hijacking bmap() is a gigantic hack to propagate a host pfn to userspace
+without adding a new ioctl() or syscall.  If we want to support target injection,
+I would much, much rather add a KVM ioctl(), e.g. to let userspace inject errors
+for a gfn.  Returning a pfn for something that AFAICT has nothing to do with pfns
+is gross, e.g. the whole "0 is the error code" thing is technically wrong because
+'0' is a perfectly valid pfn.
 
-Christian, can you update this patch comments with this info?
+My vote is to drop this and not extend the injection information for the initial
+merge, i.e. rely on point testing to verify kvm_gmem_error_page(), and defer adding
+uAPI to let selftests inject errors.
 
-http://cr.yp.to/cdb.html
-
-> > +       unsigned int hash =3D 5381;
-> > +       unsigned char c;
-> > +
-> > +       while ((c =3D *(const unsigned char *)key++))
-> > +               hash =3D ((hash << 5) + hash) ^ c;
-> > +
-> > +       return hash;
-> >  }
-> >
-> >  static int symcmp(const void *key1, const void *key2)
-> > --
-> > 2.40.1
-
---=20
-paul-moore.com
+> +
+> +}
+> +#endif
+> +
+>  static const struct address_space_operations kvm_gmem_aops = {
+>  	.dirty_folio = noop_dirty_folio,
+>  #ifdef CONFIG_MIGRATION
+>  	.migrate_folio	= kvm_gmem_migrate_folio,
+>  #endif
+>  	.error_remove_page = kvm_gmem_error_page,
+> +#ifdef CONFIG_KVM_GENERIC_PRIVATE_MEM_BMAP
+> +	.bmap = kvm_gmem_bmap,
+> +#endif
+>  };
+>  
+>  static int  kvm_gmem_getattr(struct mnt_idmap *idmap,
+> -- 
+> 2.25.1
+> 
