@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A1779F4CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C1779F4CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjIMWNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 18:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
+        id S233017AbjIMWOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 18:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjIMWNK (ORCPT
+        with ESMTP id S232994AbjIMWOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:13:10 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF96B198B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:13:05 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41215efeb1aso1577901cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694643185; x=1695247985; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:to:from:message-id:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2p17mow8jOToGHzl/reGSy5sg/JPF1WcbOesSQaNA64=;
-        b=Fbb5HPISxCDtWGpl9r3GRmDhaUeVYIxqa/1sg3oUyaCODR7H7YtjdVKfm5TgrSdI2W
-         CYQjkRmu1bdtMzeHAnIfXefzKarvguH2nD5PWKaIcVDe5VxHuJM7OHMNhVIblIJSe0Hs
-         XFTGtdCC10260Pg255cABzIPiQUxPG2E2WbCB8Gn8i1Nu8uI6XKWipqGAOmlO8jZ+GM4
-         t/dGefIWmD4X1OUL6UkoNcrM6QjIykoAmgnUXdYEfn2JxFFoBM5Gu1twISGfZKpyNfkQ
-         Hdqt4L4TG0QqHzm+iuKmAI53+ytfdMUWr3lN3RoI0zhS+W8GzswF10JomlybLIs10mP2
-         seeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694643185; x=1695247985;
-        h=in-reply-to:references:subject:to:from:message-id:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2p17mow8jOToGHzl/reGSy5sg/JPF1WcbOesSQaNA64=;
-        b=ThlS6ady6NAUxAaipm3WLIQ/61BgHSHxDgYLUDGW+t4QR3tKhAEq1s1Bu6v9/VCVM+
-         yhMpbGlCpisPbwUQILeroma5cigSYi/8CSAQiYSTNUc/Jtm6mKWazc3pllw06V6Wyfgr
-         gULeW+nkxeD+vCQYAdQv+rQQYsIk8xypRWOZbQ4USzIJlybIvx7oVnQ6rH+qcww6ojUP
-         cTyqvuapQMOA0rWUkYKe4pj3U0sbK/+kX3otJfc7KfPWbySqi/YMqgpAtpJT2XXFc7Vr
-         4xNoa42WO0K9iHO3Tm5pOPVKXlxY9NTAxQ+2Q9jxirBy3shNiCZqRFNhbT9t+ucflV/0
-         10Qg==
-X-Gm-Message-State: AOJu0YwVa7lo7EVFRra7f6somsoLmfCSFqt4YOXT4pYks1RPXy6jSqIf
-        DaXUdiVGGME5kYlquUby62Irodw+91WR12b+Nw==
-X-Google-Smtp-Source: AGHT+IF2ufzmX0mgSW8tYUOIhjgdVWAPVJoSNbm23WjMTFdbfD9qge9HiUsqmQYmCws2E0YhK7FVzg==
-X-Received: by 2002:ac8:5e49:0:b0:415:15bd:94d2 with SMTP id i9-20020ac85e49000000b0041515bd94d2mr4259821qtx.43.1694643184892;
-        Wed, 13 Sep 2023 15:13:04 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id m4-20020ac807c4000000b00410ab3c78efsm73610qth.11.2023.09.13.15.13.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 15:13:04 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 18:13:03 -0400
-Message-ID: <82e3a9c95fdc838943802d9a22d83aa8.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-To:     Khadija Kamran <kamrankhadijadj@gmail.com>,
-        John Johansen <john.johansen@canonical.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, apparmor@lists.ubuntu.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        ztarkhani@microsoft.com, alison.schofield@intel.com
-Subject: Re: [PATCH] lsm: constify 'bprm' parameter in  security_bprm_committing_creds()
-References: <ZOW5rC1MngXvPQLz@gmail.com>
-In-Reply-To: <ZOW5rC1MngXvPQLz@gmail.com>
+        Wed, 13 Sep 2023 18:14:08 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C311996;
+        Wed, 13 Sep 2023 15:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694643243;
+        bh=Yc79kZstegY2MgDJ+A93XCaJaTftTDq8DtZ/AeBZWgE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nqaDFJzNBxhN71nHpw2Fjuj3yUferW24HDRwvvGCglXoEjybqrVUrc6xGLT2vl8FK
+         d1wm5ypI0Kc7SJPECo5wO4IJvhcYG7p5tKrOtdiyN0BjfKmAOnfpPC4hlMSfQi/cAW
+         SBvNqG38KvDGeFnAsXQbq87QN11A2ni5zr7xMKXGQXM73Iq5QtqVWCNufbpuI/Ssjz
+         Jh0XWwbaRcOX9Acffruj0CmP5rtTwNDMsRXspVhY9UtszApSN6EualnhOcO28MsRlb
+         W/78TwgaNLJV20rX+cW5Bl4q2T35QZEMS592bszoAUycLAUoaFe+uMm2IKMrlErPFD
+         xwFqy7GcKPPRQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmF966DxFz4wxf;
+        Thu, 14 Sep 2023 08:14:02 +1000 (AEST)
+Date:   Thu, 14 Sep 2023 08:14:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the bcachefs tree
+Message-ID: <20230914081400.5d9e5b8f@canb.auug.org.au>
+In-Reply-To: <20230912120429.7852428f@canb.auug.org.au>
+References: <20230912120429.7852428f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/TJF0qsaXAVjLHvoEJXlN/8F";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 23, 2023 Khadija Kamran <kamrankhadijadj@gmail.com> wrote:
-> 
-> The 'bprm_committing_creds' hook has implementations registered in
-> SELinux and Apparmor. Looking at the function implementations we observe
-> that the 'bprm' parameter is not changing.
-> 
-> Mark the 'bprm' parameter of LSM hook security_bprm_committing_creds()
-> as 'const' since it will not be changing in the LSM hook.
-> 
-> Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
-> ---
->  include/linux/lsm_hook_defs.h | 2 +-
->  include/linux/security.h      | 4 ++--
->  security/apparmor/lsm.c       | 2 +-
->  security/security.c           | 2 +-
->  security/selinux/hooks.c      | 2 +-
->  5 files changed, 6 insertions(+), 6 deletions(-)
+--Sig_/TJF0qsaXAVjLHvoEJXlN/8F
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Merged into lsm/next, thanks!
+Hi all,
 
---
-paul-moore.com
+On Tue, 12 Sep 2023 12:04:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> After merging the bcachefs tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_exit':
+> fs/bcachefs/btree_cache.c:403:9: error: implicit declaration of function =
+'unregister_shrinker'; did you mean 'unregister_chrdev'? [-Werror=3Dimplici=
+t-function-declaration]
+>   403 |         unregister_shrinker(&bc->shrink);
+>       |         ^~~~~~~~~~~~~~~~~~~
+>       |         unregister_chrdev
+> fs/bcachefs/btree_cache.c: In function 'bch2_fs_btree_cache_init':
+> fs/bcachefs/btree_cache.c:479:15: error: implicit declaration of function=
+ 'register_shrinker'; did you mean 'register_chrdev'? [-Werror=3Dimplicit-f=
+unction-declaration]
+>   479 |         ret =3D register_shrinker(&bc->shrink, "%s/btree_cache", =
+c->name);
+>       |               ^~~~~~~~~~~~~~~~~
+>       |               register_chrdev
+> cc1: all warnings being treated as errors
+>=20
+> Caused by commits
+>=20
+>   5ec30115c066 ("bcachefs: Initial commit")
+>=20
+> interacting with commit
+>=20
+>   eba045d9350d ("mm: shrinker: remove old APIs")
+>=20
+> from v6.6-rc1.
+
+This latter commit is actually in the mm tree and is now commit
+
+  d3ed57149dec ("mm: shrinker: remove old APIs")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/TJF0qsaXAVjLHvoEJXlN/8F
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCNCgACgkQAVBC80lX
+0Gx5WQgAjnorkenbowZRRxj7bh6wVE9bBrQqFhyKbXhx/L+Tf04wm2m2CarbrNdN
+FE0QCovckdbN9N/2jBpAd1tuTNW8g+a2IFCvwTh1IIrXUv9cUry1Pz4kkWiRXeso
+oJ0fFAHPQkCVJ8RGZdCj4zf53RtWyJkFZ7GRElmD+hsVFZdbF8DHMOuq2nnam7yn
+8cnlEX20jRQUWXb35wSBJwh/f89U3QjgTtce98QFZ9hJWnMPRv6SP8PnbxUxiXWQ
+KCe/B4fErMci4KdkJJKPyS6Hfzdi5SvrtF7lP0QZu/0pOzUtlevheWWmdYJq4Xun
+mqPJWTpcLPzhaNZf2Qs4vTgC9pDohA==
+=3jSd
+-----END PGP SIGNATURE-----
+
+--Sig_/TJF0qsaXAVjLHvoEJXlN/8F--
