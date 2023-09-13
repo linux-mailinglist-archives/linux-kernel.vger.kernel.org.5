@@ -2,151 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDB379ED75
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D9279ED7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjIMPlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S230313AbjIMPll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbjIMPlG (ORCPT
+        with ESMTP id S230353AbjIMPlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:41:06 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428672108
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:40:39 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bf5bf33bcdso113000341fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694619637; x=1695224437; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6Hbh6ZXKDhz/KGGt8fE9NnsA0nrENPPs+dh7XyDcr6Q=;
-        b=yrem6MrLesXG2KS3JgTkCT2FTmW5jsLargh35ebvQ5PLnpHO1Q8dvUDuiiNFvuN+qx
-         PZWIP2Xp2bFfjK6vV+f38t5KZSI4hzzj9xp5X4ctYTxT0Y5jgS9pzmuKMehpB3BL1ELx
-         9qmNisJKsbRidifYzmhE3LCLX1phf1ylOIi+Kxg9YbBoP9Fs72ohsfZKBSYhzMNNl07f
-         6vTHu8tXMQrg82Cw2hnngCboELcknhxXBOHs8enf8mUTH4x7Z9K8unD86iQ5PMrA5nGi
-         UGBooD8MfMYuXM/cTdWaNzBn7Tm+1dFzXcNSsX4exyNhnoC4qnwh2g+h3+bnqHHhR44m
-         K7DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694619637; x=1695224437;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Hbh6ZXKDhz/KGGt8fE9NnsA0nrENPPs+dh7XyDcr6Q=;
-        b=s3gCOQ3H7G/r+gwvoL+xddXvjPHuyoMrDTRRMfZRbHAZewZxdqOp+faPmqa8hTp8Rb
-         4yNTqrsjaybhvy3HpRbkdOaDyGQAmbsqM7jcyQfKadQb5yA9vcDVq2Qhr1/e+IkMF71B
-         eDbzD9Au4IK0m2p/qS8hVbC19uV2VqCmlZ585cLeZ1XCGd8gZcbDGpp2/SMv4Z2rZ9kU
-         Uyxw3Okx4oXdew654UfyoaMfiUfZBwOumgNRYDJ+A932zwrCbQX/iB/bI9MPbxE3/usf
-         2gKnpF6dgQagi0JZ41H93qoY0jq+LPgrG8Xdm3uWL2QE6MabKch/inA1Z4KAc+V18Adf
-         13Bg==
-X-Gm-Message-State: AOJu0YxLqWYxj2q+/j77DnntGUImPQThQ1VUwdHsKqtcFlKQQcTjTP6a
-        6v4rGfWlWFAReyKJKnvbQQyWp4XGxCGXk1XhL6U=
-X-Google-Smtp-Source: AGHT+IGIQlJGO3sBAtR5nD8DNpUZLzgzVbqsdyqIkbN1GwHI5WbfyunvrUH8ZxR4K05vPJG5eAuV3Q==
-X-Received: by 2002:a2e:7c19:0:b0:2b6:bb21:8d74 with SMTP id x25-20020a2e7c19000000b002b6bb218d74mr2620372ljc.1.1694619637390;
-        Wed, 13 Sep 2023 08:40:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id oz13-20020a170906cd0d00b0098951bb4dc3sm8623318ejb.184.2023.09.13.08.40.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 08:40:36 -0700 (PDT)
-Message-ID: <177ef05b-0cca-be25-afad-ac518d9f6473@linaro.org>
-Date:   Wed, 13 Sep 2023 17:40:35 +0200
+        Wed, 13 Sep 2023 11:41:18 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067D52696;
+        Wed, 13 Sep 2023 08:40:54 -0700 (PDT)
+Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4Rm4RS1gprz49Q8K;
+        Wed, 13 Sep 2023 18:40:52 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1694619652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3PxqXy1uEoE/I7MNGiTPJMLnRS1V7BcFjruxaq9ULFA=;
+        b=hi8STi2PX5RSxWXYf53WlSw/RjFtaKpYpbW9OpGQ3ToZOL7Ed2O9GX8AgNOi+Agw2YW27/
+        7fIG4gLdiYSuXmLzPAfHCSl3yGTXRDe/d6XyZLLXZEjP0MS3WhySLjdywnAkLlzRh4R4nb
+        O8iRXTHDJRBQ6H4otf2BI7Yk5eNikEqKD6GHixHDaXLUeP3GYuxAqZMIRQqIwYvxe7mCzE
+        itUQ6vSVMhSYSYZsnRjdqFAL7btTj52LXC4s6COHr1y68pmqy37BGn9EZSoO1JSDE7V3jR
+        fEixfEW2IHFuoTLaBVR15AE4y3y6IqttEcq0zC6OMiOKZurjfLCNpeJnX2rJZg==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1694619652; a=rsa-sha256;
+        cv=none;
+        b=YjkRjWLsUrAmqUnySig9pWMIwdIv4vsJC02uljNnOfkgU1hLJtyLqWGpNqMpKXE1XfBSLL
+        CRrUZIQbZI87GsniXgRq3SX46Dy+P4V76gJ675/43gKw8pCTpG5RVS3McbGnrkmoun8uYG
+        n0P1KN0rwHE9bdhfSFuUxpsnVeMs5DFpELygSAW5K6ytiWrILj+A4RCxBzhIaOJxCLjzCl
+        7TTP1UQoICJEtTgBK5twxXhJMwwtJCf2EI7KcALeBG1IO8QpcP6SmnhAINiaP65qKidoEx
+        GA93YB1aZL6mwkbDSY8pA5NbjK7P7TLVuOAPJZU94qHavSfCDmu1qI86vKKxkw==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1694619652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3PxqXy1uEoE/I7MNGiTPJMLnRS1V7BcFjruxaq9ULFA=;
+        b=i5b7OWGnTkhOn31ZjdrotdGaqRwM6h3+kN+Z6ghYKyA1vyNYL5h10+Db6u3GwmSipZHkAH
+        vqzpLB8tU9cPzi9ga408D3cUXbyhUpTXLsukn2BM8n5s++Qf33gvzW6/HJudV/emZrsbrI
+        oH8qA6qAZ91DsWpqYksqX5x7bE6FyMGOnzJRFdOkmISFPs48HCC/Cm+cWXIY/ccRcP9cN1
+        b6edEZHJpxtrZ3loG1N2vrVCRfPhYXY/zDTBKJIUMHbvOyq2F5mIvEEVQvWW64xzQm+C9M
+        LEgboxmTdfHulhn4iVXz0aZ/ky0qNtaJQAVaUtfxQ/QWDjCXjXYaYUMaSk7JUA==
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 9DD5D634C93;
+        Wed, 13 Sep 2023 18:40:51 +0300 (EEST)
+Date:   Wed, 13 Sep 2023 15:40:51 +0000
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Fabio Estevam <festevam@denx.de>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        linux-media@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3] dt-bindings: media: Add OV5642
+Message-ID: <ZQHYAxAZxD1JMRHr@valkosipuli.retiisi.eu>
+References: <20230802160326.293420-1-festevam@denx.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 2/4] dt-bindings: hwmon: Added new properties to the
- devicetree
-To:     Daniel Matyas <daniel.matyas@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230913152135.457892-1-daniel.matyas@analog.com>
- <20230913152135.457892-3-daniel.matyas@analog.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913152135.457892-3-daniel.matyas@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802160326.293420-1-festevam@denx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 17:21, Daniel Matyas wrote:
+Hi Fabio,
 
-Subject: not much improved. I am sorry, but you are not adding new
-properties to entire devicetree of entire world. You are actually not
-adding anything to any devicetree, because these are bindings (which is
-obvious, as said by prefix).
-
-You got comments on this.
-
-> These attributes are:
-> 	- adi,comp-int - boolean property
-> 	- adi,alrm-pol - can be 0, 1 (if not present, default value)
-> 	- adi,flt-q - can be 1, 2, 4, 8 (if not present, default value)
-> 	- adi,timeout-enable - boolean property
-
-Don't repeat what the code does. Explain why you are adding it, what is
-the purpose.
-
+On Wed, Aug 02, 2023 at 01:03:26PM -0300, Fabio Estevam wrote:
+> As explained in the description text from trivial-devices.yaml:
 > 
-> These modify the corresponding bits in the configuration register.
+> "This is a list of trivial I2C and SPI devices that have simple device tree
+> bindings, consisting only of a compatible field, an address and possibly an
+> interrupt line."
 > 
-> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+> A camera device does not fall into this category as it needs other
+> properties such as regulators, reset and powerdown GPIOs, clocks,
+> media endpoint.
+> 
+> Remove the OV5642 entry from trivial-devices.yaml and add its own
+> ovti,ov5642.yaml.
+> 
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
->  .../bindings/hwmon/adi,max31827.yaml          | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
+> Changes since v2:
+> - Made ovti,ov5642.yaml dual-licensed (Conor)
+> - Fixed whitespace warning (Conor)
+> - Squased both patches (Conor)
+> - Added Conor's Reviewed-by tag.
+> - Added linux-media on Cc.
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> index 2dc8b07b4d3b..6bde71bdb8dd 100644
-> --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> +++ b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
-> @@ -32,6 +32,37 @@ properties:
->        Must have values in the interval (1.6V; 3.6V) in order for the device to
->        function correctly.
->  
-> +  adi,comp-int:
-> +    description:
-> +      If present interrupt mode is used. If not present comparator mode is used
-> +      (default).
-
-Why this is a property of hardware?
-
-> +    type: boolean
+>  .../bindings/media/i2c/ovti,ov5642.yaml       | 118 ++++++++++++++++++
+>  .../devicetree/bindings/trivial-devices.yaml  |   2 -
+>  2 files changed, 118 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+> new file mode 100644
+> index 000000000000..b48f1bc6aca4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+> @@ -0,0 +1,118 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov5642.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +  adi,alrm-pol:
-> +    description:
-> +      Sets the alarms active state.
-> +            - 0 = active low
-> +            - 1 = active high
-> +      For max31827 and max31828 the default alarm polarity is low. For max31829
-> +      it is high.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1]
+> +title: OmniVision OV5642 Image Sensor
 > +
-> +  adi,flt-q:
-> +    description:
-> +      Select how many consecutive temperature faults must occur before
-> +      overtemperature or undertemperature faults are indicated in the
-> +      corresponding status bits.
-> +      For max31827 default fault queue is 1. For max31828 and max31829 it is 4.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 4, 8]
+> +maintainers:
+> +  - Fabio Estevam <festevam@gmail.com>
 > +
-> +  adi,timeout-enable:
-> +    description:
-> +      Enables timeout. Bus timeout resets the I2C-compatible interface when SCL
-> +      is low for more than 30ms (nominal).
+> +allOf:
+> +  - $ref: /schemas/media/video-interface-devices.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: ovti,ov5642
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: XCLK Input Clock
+> +
+> +  clock-names:
+> +    const: xclk
+> +
+> +  AVDD-supply:
+> +    description: Analog voltage supply, 2.8V.
+> +
+> +  DVDD-supply:
+> +    description: Digital core voltage supply, 1.5V.
+> +
+> +  DOVDD-supply:
+> +    description: Digital I/O voltage supply, 1.8V.
+> +
+> +  powerdown-gpios:
+> +    maxItems: 1
+> +    description: Reference to the GPIO connected to the powerdown pin, if any.
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +    description: Reference to the GPIO connected to the reset pin, if any.
+> +
+> +  rotation:
+> +    enum:
+> +      - 0
+> +      - 180
+> +
+> +  port:
+> +    description: Digital Output Port
+> +    $ref: /schemas/graph.yaml#/$defs/port-base
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          clock-lanes:
+> +            const: 0
+> +
+> +          data-lanes:
+> +            minItems: 1
+> +            maxItems: 2
+> +            items:
+> +              enum: [1, 2]
+> +
+> +          bus-width:
+> +            enum: [8, 10]
+> +
+> +          data-shift:
+> +            enum: [0, 2]
 
-Why this is a property of hardware?
+You seem to have properties here that are specific to both parallel and
+CSI-2 buses. Which one does the sensor use?
 
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +      #include <dt-bindings/gpio/gpio.h>
+> +
+> +      i2c {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +
+> +          camera@3c {
+> +              compatible = "ovti,ov5642";
+> +              pinctrl-names = "default";
+> +              pinctrl-0 = <&pinctrl_ov5642>;
+> +              reg = <0x3c>;
+> +              clocks = <&clk_ext_camera>;
+> +              clock-names = "xclk";
+> +              DOVDD-supply = <&vgen4_reg>;
+> +              AVDD-supply = <&vgen3_reg>;
+> +              DVDD-supply = <&vgen2_reg>;
+> +              powerdown-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
+> +              reset-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
+> +
+> +              port {
+> +                  /* Parallel bus endpoint */
+> +                  ov5642_to_parallel: endpoint {
+> +                      remote-endpoint = <&parallel_from_ov5642>;
+> +                      bus-width = <8>;
+> +                      data-shift = <2>; /* lines 9:2 are used */
+> +                      hsync-active = <0>;
+> +                      vsync-active = <0>;
+> +                      pclk-sample = <1>;
+> +                  };
+> +              };
+> +          };
+> +      };
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> index 40bc475ee7e1..ab1423a4aa7f 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -313,8 +313,6 @@ properties:
+>            - nuvoton,w83773g
+>              # OKI ML86V7667 video decoder
+>            - oki,ml86v7667
+> -            # OV5642: Color CMOS QSXGA (5-megapixel) Image Sensor with OmniBSI and Embedded TrueFocus
+> -          - ovti,ov5642
+>              # 48-Lane, 12-Port PCI Express Gen 2 (5.0 GT/s) Switch
+>            - plx,pex8648
+>              # Pulsedlight LIDAR range-finding sensor
 
-Best regards,
-Krzysztof
+-- 
+Regards,
 
+Sakari Ailus
