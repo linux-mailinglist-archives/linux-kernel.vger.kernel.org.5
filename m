@@ -2,113 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8A779DCF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE7479DCF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbjIMAGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 20:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39316 "EHLO
+        id S233468AbjIMAHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjIMAGp (ORCPT
+        with ESMTP id S229589AbjIMAHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:06:45 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF68C10E6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:06:40 -0700 (PDT)
-Received: from [192.168.2.112] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4C2166607186;
-        Wed, 13 Sep 2023 01:06:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694563598;
-        bh=RYQEfSbXS7icZ90VHcjg9Rfm4OG1Af8Gjmm95/x4NmU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TBTri2Oqslf+5RuTlsy+AOU7f92nLds/RoO7MtlBbljNEHWSpGQw9lGLPGPJzS/uB
-         Q0d9tQ/H5E52iRMZlj7RsvCYBXPUIEDC29NZk5LINDnqVrsl6xNfpIc7iig0DLJD5i
-         QKFP01nfkFNUqHH2kmbiTcXsyv3wAKAgyKiC9YIV/6wHDY4+F6t4hmi2PVMcLssoMa
-         d1C8MWbcIkF82p7qRt3NJ9Vi4Dwtw13bFUTlSeAJdg4uC8JuYgeWJvVUaDDQ/TObnl
-         6orjtPjjg7C9zBFOV09qEbxQTc1VDxAwdfrNH+i9YCpTPhfUc/h6se3ZmKPCbVVMRu
-         PB1hE4mk48WCA==
-Message-ID: <b77955c6-b034-d0f0-f022-7c7523d7bef0@collabora.com>
-Date:   Wed, 13 Sep 2023 03:06:33 +0300
+        Tue, 12 Sep 2023 20:07:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D414B10E6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:07:11 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 751FAC433C9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694563631;
+        bh=VlNGzwkcnkJZZXfSRX8hKY5qTg4+EZPM0eItVOjG+20=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=schTMMJEfg+jjXT9+frPlcDC5efg7e3IPfn6Ck6UpB5H4fGqx8yNncINIeFJiFA32
+         7eNIYOSyWrBWn+irAiiBzOraXk4+tOlKst92rJe8jquI150N0UJZqr7VhDWnmbKAK7
+         fWITfUKCuKEX5MGfr4sox7esR6etPJPeeMutQ3v3r4iNU1BMcAUtYnOwAVkJ5HhHuV
+         BHx56lrDWQH7o5N6VZ8tTtz/ouiDE2THZwthVzz8KA9lZT9iHo8e2UHxyn3+KKt4KM
+         HcXTvpZgpwA2n/lcccD6CH5QVqWz8XCjyDb4GaXeEYxUYIxR3DG57xl8akB09afKoC
+         2SHX014YjzgQw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2bd6611873aso99789271fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:07:11 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxawEAocqtg5w3WeJ+rjfs459uFqOvwdl2pCd7H1HsPyBxhfMKM
+        c5a/C7YOaMspVn9HHvzzl10CcTgi8dS93Aed+54=
+X-Google-Smtp-Source: AGHT+IE+Cfy03Y3DQ3ReswGyUEc/fUhcSgTx9WkXbjssO2OdIeMMGdlSG5596efE/MuKp5ThNy0fRHqFKfAMoPLR/kc=
+X-Received: by 2002:a2e:501d:0:b0:2bf:b770:ac2e with SMTP id
+ e29-20020a2e501d000000b002bfb770ac2emr295798ljb.33.1694563629560; Tue, 12 Sep
+ 2023 17:07:09 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v16 09/20] drm/shmem-helper: Remove obsoleted is_iomem
- test
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
- <20230903170736.513347-10-dmitry.osipenko@collabora.com>
- <20230905084611.6a404ff1@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230905084611.6a404ff1@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230912072740.2544-1-jszhang@kernel.org> <ZQBDFa0fGNiaqAgh@gmail.com>
+ <C1EDD7DE-A0A9-4F43-9EC1-1C5A212A7033@jrtc27.com>
+In-Reply-To: <C1EDD7DE-A0A9-4F43-9EC1-1C5A212A7033@jrtc27.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 13 Sep 2023 08:06:56 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTB3dghWivn6HwL8d8L7w5apU6rjYp_fvut1AeybZVe1w@mail.gmail.com>
+Message-ID: <CAJF2gTTB3dghWivn6HwL8d8L7w5apU6rjYp_fvut1AeybZVe1w@mail.gmail.com>
+Subject: Re: [PATCH] riscv: errata: thead: use riscv_nonstd_cache_ops for CMO
+To:     Jessica Clarke <jrtc27@jrtc27.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 09:46, Boris Brezillon wrote:
-> On Sun,  3 Sep 2023 20:07:25 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> Everything that uses the mapped buffer should be agnostic to is_iomem.
->> The only reason for the is_iomem test is that we're setting shmem->vaddr
->> to the returned map->vaddr. Now that the shmem->vaddr code is gone, remove
->> the obsoleted is_iomem test to clean up the code.
->>
->> Suggested-by: Thomas Zimmermann <tzimmermann@suse.de>
->> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> ---
->>  drivers/gpu/drm/drm_gem_shmem_helper.c | 6 ------
->>  1 file changed, 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> index 2b50d1a7f718..25e99468ced2 100644
->> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->> @@ -317,12 +317,6 @@ int drm_gem_shmem_vmap_locked(struct drm_gem_shmem_object *shmem,
->>  
->>  	if (obj->import_attach) {
->>  		ret = dma_buf_vmap(obj->import_attach->dmabuf, map);
->> -		if (!ret) {
->> -			if (drm_WARN_ON(obj->dev, map->is_iomem)) {
->> -				dma_buf_vunmap(obj->import_attach->dmabuf, map);
->> -				return -EIO;
->> -			}
->> -		}
-> 
-> Given there's nothing to unroll for the dmabuf case, I think it'd be
-> good to return directly and skip all the error paths. It would also
-> allow you to get rid of one indentation level for the !dmabuf path.
-> 
-> 	if (obj->import_attach)
-> 		return dma_buf_vmap(obj->import_attach->dmabuf, map);
-> 
-> 	// non-dmabuf vmap logic here...
+On Wed, Sep 13, 2023 at 3:00=E2=80=AFAM Jessica Clarke <jrtc27@jrtc27.com> =
+wrote:
+>
+> On 12 Sep 2023, at 11:53, Guo Ren <guoren@kernel.org> wrote:
+> >
+> > On Tue, Sep 12, 2023 at 03:27:40PM +0800, Jisheng Zhang wrote:
+> >> Previously, we use alternative mechanism to dynamically patch
+> >> the CMO operations for THEAD C906/C910 during boot for performance
+> >> reason. But as pointed out by Arnd, "there is already a significant
+> >> cost in accessing the invalidated cache lines afterwards, which is
+> >> likely going to be much higher than the cost of an indirect branch".
+> >> And indeed, there's no performance difference with GMAC and EMMC per
+> >> my test on Sipeed Lichee Pi 4A board.
+> >>
+> >> Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
+> >> the alternative code, and to acchieve Arnd's goal -- "I think
+> >> moving the THEAD ops at the same level as all nonstandard operations
+> >> makes sense, but I'd still leave CMO as an explicit fast path that
+> >> avoids the indirect branch. This seems like the right thing to do both
+> >> for readability and for platforms on which the indirect branch has a
+> >> noticeable overhead."
+> >>
+> >> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> >> ---
+> >> arch/riscv/Kconfig.errata            |  1 +
+> >> arch/riscv/errata/thead/errata.c     | 76 +++++++++++++++++++++++++++-
+> >> arch/riscv/include/asm/errata_list.h | 50 +++---------------
+> >> 3 files changed, 81 insertions(+), 46 deletions(-)
+> >>
+> >> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+> >> index 566bcefeab50..d7972914f9de 100644
+> >> --- a/arch/riscv/Kconfig.errata
+> >> +++ b/arch/riscv/Kconfig.errata
+> >> @@ -78,6 +78,7 @@ config ERRATA_THEAD_CMO
+> >> bool "Apply T-Head cache management errata"
+> >> depends on ERRATA_THEAD && MMU
+> >> select RISCV_DMA_NONCOHERENT
+> >> + select RISCV_NONSTANDARD_CACHE_OPS
+> >> default y
+> >> help
+> >>   This will apply the cache management errata to handle the
+> >> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thea=
+d/errata.c
+> >> index 0554ed4bf087..1c320abfe446 100644
+> >> --- a/arch/riscv/errata/thead/errata.c
+> >> +++ b/arch/riscv/errata/thead/errata.c
+> >> @@ -12,8 +12,10 @@
+> >> #include <asm/alternative.h>
+> >> #include <asm/cacheflush.h>
+> >> #include <asm/cpufeature.h>
+> >> +#include <asm/dma-noncoherent.h>
+> >> #include <asm/errata_list.h>
+> >> #include <asm/hwprobe.h>
+> >> +#include <asm/io.h>
+> >> #include <asm/patch.h>
+> >> #include <asm/vendorid_list.h>
+> >>
+> >> @@ -33,6 +35,75 @@ static bool errata_probe_pbmt(unsigned int stage,
+> >> return false;
+> >> }
+> >>
+> >> +/*
+> >> + * dcache.ipa rs1 (invalidate, physical address)
+> >> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> + *   0000001    01010      rs1       000      00000  0001011
+> >> + * dache.iva rs1 (invalida, virtual address)
+> >> + *   0000001    00110      rs1       000      00000  0001011
+> > Remove dache.iva rs1 ...
+> >
+> >> + *
+> >> + * dcache.cpa rs1 (clean, physical address)
+> >> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> + *   0000001    01001      rs1       000      00000  0001011
+> > Remove dcache.cpa rs1 ...
+> >
+> >> + * dcache.cva rs1 (clean, virtual address)
+> >> + *   0000001    00101      rs1       000      00000  0001011
+> > Remove dcache.cva rs1 ...
+> >
+> >> + *
+> >> + * dcache.cipa rs1 (clean then invalidate, physical address)
+> >> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> + *   0000001    01011      rs1       000      00000  0001011
+> >> + * dcache.civa rs1 (... virtual address)
+> >> + *   0000001    00111      rs1       000      00000  0001011
+> > Remove dcache.civa rs1 ...
+> >
+> >> + *
+> >> + * sync.s (make sure all cache operations finished)
+> >> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> + *   0000000    11001     00000      000      00000  0001011
+> >> + */
+> >> +#define THEAD_inval_A0 ".long 0x0265000b"
+> >> +#define THEAD_clean_A0 ".long 0x0255000b"
+> >> +#define THEAD_flush_A0 ".long 0x0275000b"
+> >> +#define THEAD_SYNC_S ".long 0x0190000b"
+> >> +
+> >> +#define THEAD_CMO_OP(_op, _start, _size, _cachesize) \
+> >> +asm volatile("mv a0, %1\n\t" \
+> >> +      "j 2f\n\t" \
+> >> +      "3:\n\t" \
+> >> +      THEAD_##_op##_A0 "\n\t" \
+> >> +      "add a0, a0, %0\n\t" \
+> >> +      "2:\n\t" \
+> >> +      "bltu a0, %2, 3b\n\t" \
+> >> +      THEAD_SYNC_S \
+> >> +      : : "r"(_cachesize), \
+> >> +  "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)), \
+> >> +  "r"((unsigned long)(_start) + (_size)) \
+> >> +      : "a0")
+> >> +
+> >> +static void thead_errata_cache_inv(phys_addr_t paddr, size_t size)
+> >> +{
+> >> + void *vaddr =3D phys_to_virt(paddr);
+> > No need to phys_to_virt, and we could use paddr directly (dcache.ipa
+> > rs1).
+> >
+> >> +
+> >> + THEAD_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
+> >> +}
+> >> +
+> >> +static void thead_errata_cache_wback(phys_addr_t paddr, size_t size)
+> >> +{
+> >> + void *vaddr =3D phys_to_virt(paddr);
+> >> +
+> >> + THEAD_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+> >> +}
+> > Please remove the thead_errata_cache_wback because T-HEAD processors
+> > would prioritize using an invalid cacheline instead of evicting an
+> > existing cacheline. When we do dcache clean, the following operations
+> > are to let other interconnect masters read. So, keeping wback_inv for
+> > T-HEAD processors is the best choice, and maybe some other processors'
+> > vendor has a different idea, but please use the wback_inv instead of
+> > wback_only for the T-HEAD processors.
+>
+> Unless you can demonstrate that your cores have significantly worse
+> performance when using wback instead of wback_inv I do not think the
+> non-standard implementation should deviate from the semantics of the
+> standard one. There are efforts to unify the implemented semantics of
+> the operations across architectures and this would obstruct those.
+I'm afraid I have to disagree with the view that this obstructs
+"unifying the implemented semantics of the operations across
+architectures."
 
-There is a common error message there that uses the common ret. The
-error unwinding could be improved, but then it should be a separate
-patch as it's unrelated to the change made here.
+static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops =3D {
+-       .wback =3D &thead_errata_cache_wback,
++      .wback =3D &thead_errata_cache_wback_inv,
+       .inv =3D &thead_errata_cache_inv,
+       .wback_inv =3D &thead_errata_cache_wback_inv,
 
--- 
-Best regards,
-Dmitry
+I don't see how the above patch obstructs unifying. On the contrary,
+it decreases the custom function, which could help unify. Could you
+give the least respect for the vendor's choice?
 
+>
+> Jess
+>
+> >> +
+> >> +static void thead_errata_cache_wback_inv(phys_addr_t paddr, size_t si=
+ze)
+> >> +{
+> >> + void *vaddr =3D phys_to_virt(paddr);
+> > Ditto.
+> >
+> >> +
+> >> + THEAD_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
+> >> +}
+> >> +
+> >> +static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops =3D {
+> >> + .wback =3D &thead_errata_cache_wback,
+> > Please  .wback =3D &thead_errata_cache_wback_inv,
+> >
+> >
+> >> + .inv =3D &thead_errata_cache_inv,
+> >> + .wback_inv =3D &thead_errata_cache_wback_inv,
+> >> +};
+> >> +
+> >> static bool errata_probe_cmo(unsigned int stage,
+> >>      unsigned long arch_id, unsigned long impid)
+> >> {
+> >> @@ -48,6 +119,8 @@ static bool errata_probe_cmo(unsigned int stage,
+> >> if (stage =3D=3D RISCV_ALTERNATIVES_BOOT) {
+> >> riscv_cbom_block_size =3D L1_CACHE_BYTES;
+> >> riscv_noncoherent_supported();
+> >> + if (IS_ENABLED(CONFIG_RISCV_NONSTANDARD_CACHE_OPS))
+> >> + riscv_noncoherent_register_cache_ops(&thead_errata_cmo_ops);
+> >> }
+> >>
+> >> return true;
+> >> @@ -77,8 +150,7 @@ static u32 thead_errata_probe(unsigned int stage,
+> >> if (errata_probe_pbmt(stage, archid, impid))
+> >> cpu_req_errata |=3D BIT(ERRATA_THEAD_PBMT);
+> >>
+> >> - if (errata_probe_cmo(stage, archid, impid))
+> >> - cpu_req_errata |=3D BIT(ERRATA_THEAD_CMO);
+> >> + errata_probe_cmo(stage, archid, impid);
+> >>
+> >> if (errata_probe_pmu(stage, archid, impid))
+> >> cpu_req_errata |=3D BIT(ERRATA_THEAD_PMU);
+> >> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include=
+/asm/errata_list.h
+> >> index b55b434f0059..ea33288f8a25 100644
+> >> --- a/arch/riscv/include/asm/errata_list.h
+> >> +++ b/arch/riscv/include/asm/errata_list.h
+> >> @@ -24,9 +24,8 @@
+> >>
+> >> #ifdef CONFIG_ERRATA_THEAD
+> >> #define ERRATA_THEAD_PBMT 0
+> >> -#define ERRATA_THEAD_CMO 1
+> >> -#define ERRATA_THEAD_PMU 2
+> >> -#define ERRATA_THEAD_NUMBER 3
+> >> +#define ERRATA_THEAD_PMU 1
+> >> +#define ERRATA_THEAD_NUMBER 2
+> >> #endif
+> >>
+> >> #ifdef __ASSEMBLY__
+> >> @@ -94,54 +93,17 @@ asm volatile(ALTERNATIVE( \
+> >> #define ALT_THEAD_PMA(_val)
+> >> #endif
+> >>
+> >> -/*
+> >> - * dcache.ipa rs1 (invalidate, physical address)
+> >> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> - *   0000001    01010      rs1       000      00000  0001011
+> >> - * dache.iva rs1 (invalida, virtual address)
+> >> - *   0000001    00110      rs1       000      00000  0001011
+> >> - *
+> >> - * dcache.cpa rs1 (clean, physical address)
+> >> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> - *   0000001    01001      rs1       000      00000  0001011
+> >> - * dcache.cva rs1 (clean, virtual address)
+> >> - *   0000001    00101      rs1       000      00000  0001011
+> >> - *
+> >> - * dcache.cipa rs1 (clean then invalidate, physical address)
+> >> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> - *   0000001    01011      rs1       000      00000  0001011
+> >> - * dcache.civa rs1 (... virtual address)
+> >> - *   0000001    00111      rs1       000      00000  0001011
+> >> - *
+> >> - * sync.s (make sure all cache operations finished)
+> >> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
+> >> - *   0000000    11001     00000      000      00000  0001011
+> >> - */
+> >> -#define THEAD_inval_A0 ".long 0x0265000b"
+> >> -#define THEAD_clean_A0 ".long 0x0255000b"
+> >> -#define THEAD_flush_A0 ".long 0x0275000b"
+> >> -#define THEAD_SYNC_S ".long 0x0190000b"
+> >> -
+> >> #define ALT_CMO_OP(_op, _start, _size, _cachesize) \
+> >> -asm volatile(ALTERNATIVE_2( \
+> >> - __nops(6), \
+> >> +asm volatile(ALTERNATIVE( \
+> >> + __nops(5), \
+> >> "mv a0, %1\n\t" \
+> >> "j 2f\n\t" \
+> >> "3:\n\t" \
+> >> CBO_##_op(a0) \
+> >> "add a0, a0, %0\n\t" \
+> >> "2:\n\t" \
+> >> - "bltu a0, %2, 3b\n\t" \
+> >> - "nop", 0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM, \
+> >> - "mv a0, %1\n\t" \
+> >> - "j 2f\n\t" \
+> >> - "3:\n\t" \
+> >> - THEAD_##_op##_A0 "\n\t" \
+> >> - "add a0, a0, %0\n\t" \
+> >> - "2:\n\t" \
+> >> - "bltu a0, %2, 3b\n\t" \
+> >> - THEAD_SYNC_S, THEAD_VENDOR_ID, \
+> >> - ERRATA_THEAD_CMO, CONFIG_ERRATA_THEAD_CMO) \
+> >> + "bltu a0, %2, 3b\n\t", \
+> >> + 0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM) \
+> >> : : "r"(_cachesize), \
+> >>     "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)), \
+> >>     "r"((unsigned long)(_start) + (_size)) \
+> >> --
+> >> 2.40.1
+> >>
+> >>
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >>
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+>
+
+
+--=20
+Best Regards
+ Guo Ren
