@@ -2,234 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 245CD79E550
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7A479E555
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239779AbjIMKwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        id S239771AbjIMKxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239771AbjIMKwa (ORCPT
+        with ESMTP id S239774AbjIMKxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:52:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE9419AF;
-        Wed, 13 Sep 2023 03:52:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694602346; x=1726138346;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uIXZmLagWKHpKAxrnpcZV9CNBqds5leMt0sK3E0/sCc=;
-  b=b3UIbLKk3LKG2bCFPqbfU3zUxGGKZ0BkoTl91ZMC1NJ1g6PjeetZxuHR
-   bGQ4IO53sb/M7ZHutm/zInIshmV1LaVD5ltZSeQT8Fyti48bF+NZlVonZ
-   3E11+QksACaPtyXSsMOJbe1yF0JY/ZUFvsYleTtgPHI9M9FU736ALfivv
-   puf3pStxlKgn/xy2IjldY/e/+V7X0ewuuzRqBdaIrFJAi8ee3yUBUXBcC
-   Xf/g8JOTvpX3qKlRBXHF44bQmDpYyq0837THTKwdvrBaDZzU69G5KrgyK
-   M/Q0YQnLacyD9frBEMfMfSEhSx+BElTt71bOmth2TfEV0pfUL5ETb5w4x
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="377538670"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="377538670"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 03:52:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="809636480"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="809636480"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Sep 2023 03:52:22 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgNTo-0000Px-2m;
-        Wed, 13 Sep 2023 10:52:20 +0000
-Date:   Wed, 13 Sep 2023 18:52:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "guojinhui.liam" <guojinhui.liam@bytedance.com>, rafael@kernel.org,
-        lenb@kernel.org, gregkh@linuxfoundation.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        lizefan.x@bytedance.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "guojinhui.liam" <guojinhui.liam@bytedance.com>
-Subject: Re: [PATCH] driver core: platform: set numa_node before
- platform_add_device()
-Message-ID: <202309131848.CgiiHpZu-lkp@intel.com>
-References: <20230912070900.1862-1-guojinhui.liam@bytedance.com>
+        Wed, 13 Sep 2023 06:53:00 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C3DCA;
+        Wed, 13 Sep 2023 03:52:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
+ s=s31663417; t=1694602352; x=1695207152; i=frank-w@public-files.de;
+ bh=Ww1mJyzDjTYs1kiuvu9JwKCRtrZkVm5UBxhogIXBc+M=;
+ h=X-UI-Sender-Class:Date:From:To:CC:Subject:Reply-to:In-Reply-To:References;
+ b=WzdF8yJrs/LmwLwvwWapUB5NaH2xWmUy1M52B/iNsaeD2q5zcV6zNOmfnWhsVA1ZA9RlAlZ3JYQ
+ z3F8QKOdLg7+i2Oo/Lk+sINpLPdCr4uCUGyyOR+n3cY18+of9adykfchPn5yfUSf+NJHvLZOmjIiU
+ Z0TACC3mfNYUleKdA6GKZYjG46WWGdRC8j1DZC82jiQZmB45PUvxwx8DgXFixqsGziK/te8UdiDqC
+ VMU+5dnr7TAX+/9mobCR5+c3b7idtGiLKkqQB17AySXSyIxayUfwaHAFjwQZA+qoeF9IJMzbdH9ID
+ M3I+7TKUWVfdBbiHkiEDyGBXfAyVW2aNe/MQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [IPv6:::1] ([80.187.70.211]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MTRMs-1rABOd48E8-00ThSc; Wed, 13
+ Sep 2023 12:52:32 +0200
+Date:   Wed, 13 Sep 2023 12:52:29 +0200
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Daniel Golle <daniel@makrotopia.org>
+Subject: =?US-ASCII?Q?Re=3A_=5BRFC_v1_3/3=5D_thermal/drivers/medi?= =?US-ASCII?Q?atek/lvts=5Fthermal=3A_add_mt7988_support?=
+User-Agent: K-9 Mail for Android
+Reply-to: frank-w@public-files.de
+In-Reply-To: <8949cbfa-acae-d6ac-e5fb-f238a29630bc@collabora.com>
+References: <20230911183354.11487-1-linux@fw-web.de> <20230911183354.11487-4-linux@fw-web.de> <8949cbfa-acae-d6ac-e5fb-f238a29630bc@collabora.com>
+Message-ID: <465DDC1C-D687-47A7-966C-73FB42CFC5DD@public-files.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912070900.1862-1-guojinhui.liam@bytedance.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:L7b7/3vlJqiK9clXTp9802DVzVqAZMwttJN+9iGUAhZZHaV6OSy
+ 7BUGp6yda4GZj2iMqEKvvkANIvXYPg/3GXzBV4HlsNsolYPL9Rt+Oj6QpV34eHcokVbGPVR
+ WkdkNpi4XJqLdEg1Ji4nt5Usejxyel6vID/utZYR07ZfN46yVCcudjvckPDbrHrclPP7OMh
+ 0q7BYXIqsNYn1T8+ATojg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:j6FRPAxwTHg=;WJHkeOXGVVFss1sYZOexXfgn3f5
+ bo9Opg/eegbc+RzJsn5Bx1hdWmURIo/tgZ2w6It2i9uY8xP3iBOdcAOMnb0nU02Jpa3z07FQ2
+ WeuZ1w7JTNLPOrT9CN0nwxB+EtwFPrOEUjp6/OQLpSzXKDf5E0bZOYTIKidz4/lSmrFXjfzrF
+ dqUTFnN/QeXAftgepoPE8fOZ1A3B8CsFeRcqkNSoJLR9mj7dmM78fWJJeuui2L1lZaCZn7Hb+
+ LMYg7kr9n0KI2vRAQarI55AoP3RK2ESXg63sJz5369S/H0wUfG64/MwK+XoYOMYH82k1IohtL
+ EPvVR/PdmWR5oHk5H2lvCTFaFRwHmHUse7CxvPPvrng3qTi+hkTiCa7HXibsJaffQ/SM61E0g
+ rkl6Bao9Rvc1V3EKX0fNRixJ3BdgIkQ5GyTDKDua+WC49Rd4HKf452DrEfnpVqQU/yGzHQGuX
+ qo2RiYyqj6F+2m/avrVmCBhJTPhFpz2ifFIIqH4sgkJdSzEAmG2RFzylDXM0D/u9eu7aOpB9d
+ 1RkNE2tkrQlLpmLOwSc48B++qgbsyK/otMXVFSS+GH9Ne2Cj8MIuV8l2ESCrt0o37AJagjemr
+ iVzfeEjoTu+ivR6fC6rC/S2AV6VU9gP5DP3zn/iIgPfwo7UjjOi2Y80fg2V/62dYkQCKDTArL
+ VQL2c59QDvJX3j+euvbk5cYzYs9TPMaWNI2wCkpWkjLQLTJPVsutO+GoslLf+EC1Zg6ed06vc
+ 0KJ5/91BKp2yfsFSDkFfxSS2fodeTuuvtJ9t0EY9+MzIqC++K2LtLFtgAb0xQfNum/Irf+qED
+ kWt0lMBnzGRWZR3MmPK5/jBFFWVXcNYNdUhL0dU+3EKJRh+NoyAFN31OTQnmZbEPow8m7sgVF
+ j+Vu+qMdSAapjxtMfdnoLevEfA51qh40yzN30iOKo0Oz918eRi1KlXdyrNeNHQM0/pu4wvb+m
+ K/TaaQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guojinhui.liam,
+Am 13=2E September 2023 10:16:51 MESZ schrieb AngeloGioacchino Del Regno <a=
+ngelogioacchino=2Edelregno@collabora=2Ecom>:
+Hi angelo,
 
-kernel test robot noticed the following build errors:
+thanks for first look
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.6-rc1 next-20230913]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>Il 11/09/23 20:33, Frank Wunderlich ha scritto:
+>> From: Frank Wunderlich <frank-w@public-files=2Ede>
+>>=20
+>> Add Support for mediatek fologic 880/MT7988=2E
+>>=20
+>> Signed-off-by: Frank Wunderlich <frank-w@public-files=2Ede>
+>> ---
+>>   drivers/thermal/mediatek/lvts_thermal=2Ec | 73 ++++++++++++++++++++++=
++++
+>>   1 file changed, 73 insertions(+)
+>>=20
+>> diff --git a/drivers/thermal/mediatek/lvts_thermal=2Ec b/drivers/therma=
+l/mediatek/lvts_thermal=2Ec
+>> index c1004b4da3b6=2E=2E48b257a3c80e 100644
+>> --- a/drivers/thermal/mediatek/lvts_thermal=2Ec
+>> +++ b/drivers/thermal/mediatek/lvts_thermal=2Ec
+>> @@ -82,6 +82,8 @@
+>>   #define LVTS_GOLDEN_TEMP_DEFAULT	50
+>>   #define LVTS_COEFF_A_MT8195			-250460
+>>   #define LVTS_COEFF_B_MT8195			250460
+>> +#define LVTS_COEFF_A_MT7988			-204650
+>> +#define LVTS_COEFF_B_MT7988			204650
+>>     #define LVTS_MSR_IMMEDIATE_MODE		0
+>>   #define LVTS_MSR_FILTERED_MODE		1
+>> @@ -1272,6 +1274,67 @@ static int lvts_remove(struct platform_device *p=
+dev)
+>>   	return 0;
+>>   }
+>>   +/*
+>> + * LVTS MT7988
+>> + */
+>> +#define LVTS_HW_SHUTDOWN_MT7988	117000
+>
+>Are you sure that this chip's Tj is >117=C2=B0C ?!
+>
+>Looks a bit high=2E=2E=2E if it is exactly 117=C2=B0C, I would suggest cu=
+tting earlier,
+>either at 110 (safe side) or 115: after all, this is a life-saver feature=
+ and
+>the chip is actually never meant to *constantly* work at 110=C2=B0C (as i=
+t would
+>degrade fast and say goodbye earlier than "planned")=2E
 
-url:    https://github.com/intel-lab-lkp/linux/commits/guojinhui-liam/driver-core-platform-set-numa_node-before-platform_add_device/20230912-151119
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230912070900.1862-1-guojinhui.liam%40bytedance.com
-patch subject: [PATCH] driver core: platform: set numa_node before platform_add_device()
-config: um-allyesconfig (https://download.01.org/0day-ci/archive/20230913/202309131848.CgiiHpZu-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131848.CgiiHpZu-lkp@intel.com/reproduce)
+I took values from SDK
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131848.CgiiHpZu-lkp@intel.com/
+https://git01=2Emediatek=2Ecom/plugins/gitiles/openwrt/feeds/mtk-openwrt-f=
+eeds/+/refs/heads/master/target/linux/mediatek/files-5=2E4/drivers/thermal/=
+mediatek/soc_temp_lvts=2Ec#1483
 
-All errors (new ones prefixed by >>):
+>> +//enum mt7988_lvts_domain { MT7988_AP_DOMAIN, MT7988_NUM_DOMAIN };
+>> +
+>> +enum mt7988_lvts_sensor_enum {
+>> +	MT7988_TS3_0,
+>> +	MT7988_TS3_1,
+>> +	MT7988_TS3_2,
+>> +	MT7988_TS3_3,
+>> +	MT7988_TS4_0,
+>> +	MT7988_TS4_1,
+>> +	MT7988_TS4_2,
+>> +	MT7988_TS4_3,
+>> +	MT7988_NUM_TS
+>> +};
 
-   In file included from drivers/base/platform.c:15:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/base/platform.c:15:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/base/platform.c:15:
-   In file included from include/linux/of_irq.h:7:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/um/include/asm/io.h:24:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsb(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsw(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           readsl(PCI_IOBASE + addr, buffer, count);
-                  ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesb(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesw(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           writesl(PCI_IOBASE + addr, buffer, count);
-                   ~~~~~~~~~~ ^
->> drivers/base/platform.c:846:28: error: implicit declaration of function 'acpi_get_node' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                   set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-                                            ^
-   drivers/base/platform.c:846:28: note: did you mean 'acpi_get_name'?
-   include/acpi/acpixf.h:525:9: note: 'acpi_get_name' declared here
-                                acpi_get_name(acpi_handle object, u32 name_type,
-                                ^
-   include/acpi/platform/aclinux.h:93:21: note: expanded from macro 'ACPI_EXTERNAL_RETURN_STATUS'
-           static ACPI_INLINE prototype {return(AE_NOT_CONFIGURED);}
-                              ^
-   drivers/base/platform.c:846:46: error: incomplete definition of type 'struct acpi_device'
-                   set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-                                                          ~~~~^
-   include/linux/acpi.h:788:8: note: forward declaration of 'struct acpi_device'
-   struct acpi_device;
-          ^
-   12 warnings and 2 errors generated.
+>This enumeration should be definitions in bindings (mediatek,lvts-thermal=
+=2Eh)=2E
+>
+>Besides, the LVTS is about internal temperatures, so those TS3_x and 4_x =
+can
+>be renamed like what was done for MT8192 and MT8195: this is because you =
+will
+>never see TS3_2 being CPU2 on a board and CPU4 on another, being those - =
+again -
+>internal to the SoC, hence unchangeable=2E
 
+Right these sensors are internally only and i took naming from sdk to avoi=
+d confusion=2E And i have not more information about these internal sensors=
+ (special meaning),but their values are packed together to get the resultin=
+g (average) temperature=2E
 
-vim +/acpi_get_node +846 drivers/base/platform.c
+>Another reason is that you'll anyway have to refer to those sensors in th=
+e
+>devicetree to configure thermal trips and such, so=2E=2E=2E :-)
 
-   797	
-   798	/**
-   799	 * platform_device_register_full - add a platform-level device with
-   800	 * resources and platform-specific data
-   801	 *
-   802	 * @pdevinfo: data used to create device
-   803	 *
-   804	 * Returns &struct platform_device pointer on success, or ERR_PTR() on error.
-   805	 */
-   806	struct platform_device *platform_device_register_full(
-   807			const struct platform_device_info *pdevinfo)
-   808	{
-   809		int ret;
-   810		struct platform_device *pdev;
-   811		struct acpi_device *adev = to_acpi_device_node(pdevinfo->fwnode);
-   812	
-   813		pdev = platform_device_alloc(pdevinfo->name, pdevinfo->id);
-   814		if (!pdev)
-   815			return ERR_PTR(-ENOMEM);
-   816	
-   817		pdev->dev.parent = pdevinfo->parent;
-   818		pdev->dev.fwnode = pdevinfo->fwnode;
-   819		pdev->dev.of_node = of_node_get(to_of_node(pdev->dev.fwnode));
-   820		pdev->dev.of_node_reused = pdevinfo->of_node_reused;
-   821	
-   822		if (pdevinfo->dma_mask) {
-   823			pdev->platform_dma_mask = pdevinfo->dma_mask;
-   824			pdev->dev.dma_mask = &pdev->platform_dma_mask;
-   825			pdev->dev.coherent_dma_mask = pdevinfo->dma_mask;
-   826		}
-   827	
-   828		ret = platform_device_add_resources(pdev,
-   829				pdevinfo->res, pdevinfo->num_res);
-   830		if (ret)
-   831			goto err;
-   832	
-   833		ret = platform_device_add_data(pdev,
-   834				pdevinfo->data, pdevinfo->size_data);
-   835		if (ret)
-   836			goto err;
-   837	
-   838		if (pdevinfo->properties) {
-   839			ret = device_create_managed_software_node(&pdev->dev,
-   840								  pdevinfo->properties, NULL);
-   841			if (ret)
-   842				goto err;
-   843		}
-   844	
-   845		if (adev)
- > 846			set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-   847	
-   848		ret = platform_device_add(pdev);
-   849		if (ret) {
-   850	err:
-   851			ACPI_COMPANION_SET(&pdev->dev, NULL);
-   852			platform_device_put(pdev);
-   853			return ERR_PTR(ret);
-   854		}
-   855	
-   856		return pdev;
-   857	}
-   858	EXPORT_SYMBOL_GPL(platform_device_register_full);
-   859	
+In device tree it will look like this:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+https://github=2Ecom/frank-w/BPI-Router-Linux/blob/6=2E5-lvts/arch/arm64/b=
+oot/dts/mediatek/mt7988a=2Edtsi#L771
+
+Daniel has also defined thermal trips there,but these are untested atm=2E =
+I only verified temperature itself i get from sysfs as far as i can (start =
+at ~40=C2=B0C and reaching ~70 while running)=2E
+
+>Regards,
+>Angelo
+
+regards Frank
