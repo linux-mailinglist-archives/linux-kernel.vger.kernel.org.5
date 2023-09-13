@@ -2,153 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F2379F52D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD9F79F53F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbjIMWrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 18:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
+        id S233036AbjIMW5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 18:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjIMWrl (ORCPT
+        with ESMTP id S230270AbjIMW53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:47:41 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2124.outbound.protection.outlook.com [40.107.220.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359EC1BCB;
-        Wed, 13 Sep 2023 15:47:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TJIivye3r117JSbaSGbf4zNpbUWwrOeJF7c1I/DUWIqI8K+5vUI7uHL6u10XxnkU67Pqm1yVg6eX5tTyF3d9DK7kebrxOqeb9yW5eBO8Pbqrd4UAaiGMv3k2YYode0MgQ0QjlGJ1DZ44jUhqZ4xZbeaI1rcmXs+Y6dJijl6W+cXXzjDE8Jd2KFBafLyPur/BJWRIQzF3NgF6nkB/lRMAFe/zA6Vra7he6UVgq/ZzyPOewgrk6vE/LNkz0WkjgQpr/a4AX7yT+8xjCZF33tvneRyuTdoq9mQe8MrLxr1RouvESgl43Dw4GW8H7G9qfsUSprsqTUPUWmnnu0c6UmZBNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6FvacNeVeaRPoHFAcj+5cm0qk9nHbrpLOHPr5pfLJ8o=;
- b=hcCZnIONmK1zZ4p5YiDbNFfGcadkodJC6j1ClFIRUZpOUCohEeby2RpzcMwXo/ga9DOxNVGgSuVYInB6MRbZ1g3ThGAlw/Qs3w1Dtg7195WDTcA1hqgkJGbnkuJt2owRbXOyRQZKDT69PBn0SqJRZWrrLWRXesVBRKzk71n8XraS4tz3q4Mb9i6WgggdUXUV1mHYAylfcxYND0uHzkw5H2bKfRvubPx5uXok6Z5SG0oCz1HSQG4V+Le7ROHp8aCrc+qJlsPm5tn2LmoaeaSXoC/jmusL59s5zJWOMnhTRO56J14oyd839RR/hL0vizMCpYNCT6eGJNrt1WplOPPVKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6FvacNeVeaRPoHFAcj+5cm0qk9nHbrpLOHPr5pfLJ8o=;
- b=CpL3YQtyc5GudK2Z2SU05/b2V5qoTU+blv2E2YORjxk2jseNBVHXbXyAmyqkWHpdyCO5rnZSf/pFbgRzkPpqgzio91CZm9ef1nrnSLdR+Lt7QG3Y3lMVoyo5XqOnS5XJpVCqAR9f0sSSU9QuErSDyf96M0WiG3UqIRTaEbJhIOM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM6PR01MB4044.prod.exchangelabs.com (2603:10b6:5:2c::17) by
- PH7PR01MB8417.prod.exchangelabs.com (2603:10b6:510:2f9::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.34; Wed, 13 Sep 2023 22:47:29 +0000
-Received: from DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2]) by DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2%6]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
- 22:47:28 +0000
-From:   Jan Bottorff <janb@os.amperecomputing.com>
-To:     Jan Bottorff <janb@os.amperecomputing.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] i2c: designware: Fix corrupted memory seen in the ISR
-Date:   Wed, 13 Sep 2023 15:46:02 -0700
-Message-ID: <20230913224602.420279-1-janb@os.amperecomputing.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH0PR03CA0342.namprd03.prod.outlook.com
- (2603:10b6:610:11a::16) To DM6PR01MB4044.prod.exchangelabs.com
- (2603:10b6:5:2c::17)
+        Wed, 13 Sep 2023 18:57:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AAAF1BCD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694645799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SlZmFA3mny3eQxGa9tRIBZq7N+QtRNVX8d1cv7/lgp4=;
+        b=c4FZ0pf7I/Jm7sbsQ8c+QJBvQ1ilDARczZYNXIlCllXXfSiw5/2KhjuHcgD/4+tv6fkGqj
+        G9ZkPcGOurUs6SlnxZxLlgjGu/MfqqxRgB2nAXmG3Eq7HKl7JV85NCU2gw7KjHB9Elqssf
+        gJJbOBc8R7t3ejifalG5IGrLD9ywpr0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-325-2c62WKgCP6qrxy-xiLZT3w-1; Wed, 13 Sep 2023 18:56:33 -0400
+X-MC-Unique: 2c62WKgCP6qrxy-xiLZT3w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 23EA881B194;
+        Wed, 13 Sep 2023 22:56:33 +0000 (UTC)
+Received: from localhost (unknown [10.22.17.0])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75563403CFA0;
+        Wed, 13 Sep 2023 22:56:32 +0000 (UTC)
+Date:   Wed, 13 Sep 2023 19:56:30 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     yang.yang29@zte.com.cn
+Cc:     catalin.marinas@arm.com, will@kernel.org, bigeasy@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, stable-rt@vger.kernel.org,
+        linux-kernel@vger.kernel.org, he.he@windriver.com,
+        linux-rt-users@vger.kernel.org, wang.yong12@zte.com.cn,
+        ran.xiaokai@zte.com.cn, jiang.xuexin@zte.com.cn
+Subject: Re: [PATCH 5.10-rt] arm64: signal: Use ARCH_RT_DELAYS_SIGNAL_SEND
+Message-ID: <ZQI+HoVcy6ueRXxk@uudg.org>
+References: <202309121514283793475@zte.com.cn>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4044:EE_|PH7PR01MB8417:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed5083e0-0004-4e84-82d6-08dbb4ab6729
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AzoGhNn9Dx/FXvrKG7FIknuqwz0IIKDotFFjUM4Ck++tl58svMKFxcEDFZoVpS7RNxnf2iugkrqsvx1MvZYAeON7oldxDIgCO6S6l2IemdlOF7hxi07w44G3c+PGO52QYtyQdK8m0beV9bYC5LumdGA8AjVgey3ubaVE4S7npWRijDopcTQglXTix1qEOYiYybd60mWUDAJpSzu5x6Kn8wmI9jmHw1fnYNJBLpMRAv/7AhBt0OF4XExr2RISQiITbjXJqyBZZuw40EAe45lH94/T5vcYGfp0jhUA6T5RxHQTjsGnB9J0weZfuM+1OnDEiLFeNRT0bC5stD7Ki2Vw9W15EBMFqZxn9CGqgeQfY74KKOg4VgjHSl2z5+Rn6L/fI5yRTNwlvRXdiDf69rH/5PqpTtKnG3gaQWNJ6ugtq2/u9AQlz/RWw6KdS7zRHFmfaFQ5H6jjC0RVHGiEqMM/XfzgV24VCOHRlpIhDnCT/kgz0WlifXy+OgesDaua/zDbB5/DEiAsoh3Tdd60epg0fbWcISifoidC9FOyrZku9Rg9F+5V9GDApOrO9FAkAYs7BhDJnaiHY6uUEzsr2I6Jrno2z+Tf2VGKOJHsCN65X9T8kD6J7x5VKZPcENMD0Zqq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4044.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(366004)(396003)(136003)(346002)(1800799009)(451199024)(186009)(110136005)(83380400001)(6666004)(52116002)(6506007)(6486002)(478600001)(2906002)(5660300002)(6512007)(41300700001)(66946007)(66556008)(66476007)(316002)(4326008)(8676002)(8936002)(2616005)(26005)(38350700002)(38100700002)(86362001)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?T8fHG49BknA7dQwg8VXrv2+n5C5ZHA/B6OoN5gZMHu96hZzdBJsGsAS7juZa?=
- =?us-ascii?Q?IRnqHewvRPYp+TCgrQjC2U4QVcceYLTqERS08/HVsjnWKYvfEPxeMzLgTOjJ?=
- =?us-ascii?Q?hB5pwpkx0NlhUEaseZw3dQoR+447RHHg9f9GGYy3OmaXPYJtQNBn+0yTbEu4?=
- =?us-ascii?Q?aPETNnD5Mr07YOkJ12X3o2C9g5bUlvggaUzEaKq4/ZSx7jRW2GUuZQv3/0mz?=
- =?us-ascii?Q?oT1UCL3DKnmZyblx+jthpa6CSbmZvZ2M34eNQzqSBaKVKGPGZfjtBV/kaZB2?=
- =?us-ascii?Q?U9fWrvcrVXZFp9xEpdQE6VQTnYhwhxiMl1zlB0WaEZTiCDXkLk/1PUG00pZF?=
- =?us-ascii?Q?wfWfKn+goEuaFEEfgn2OPWeTySsvYcNXU0PaHAaSU32vcPzpD0+T+rUG1AZi?=
- =?us-ascii?Q?TVR57WuBlGQc4oNmpTFeBypqyYovuzo9yYQth4YZ8CiuQtc00pEfP+jap4Vg?=
- =?us-ascii?Q?JfLNOLQhJc1Ku0oG2bbOemIfT3tZ3K3F3rAhkRj5B21ZLTMpx1xsEIlifb5C?=
- =?us-ascii?Q?PF23LkPQXVlX8R8Af45YG5dj74nXREb/R/dxnuG3vDJj/fR3mVzdl0m/IEw6?=
- =?us-ascii?Q?iFlRqN9fw7qa9aBNJiz5jpCEWl2xvh4JomLmRXdUFacVwZ7H0xfcY02J1/tf?=
- =?us-ascii?Q?MWnek8OOZQj7D9oJlPpIXhsU+Qi0blGUYCrMbyua5+M+QhfIBEwrGoQwtdMn?=
- =?us-ascii?Q?a7FWcn+dWFvfuzVA/AXBMxpBLv9QNslx9wGZWqiq8PTVrYBFOmDusIViaibr?=
- =?us-ascii?Q?B0LsWbRf7Nfu0M2ROGn6QRiQyHNkaSQ1G7lZRFgnpUgHS/uvFpW0Zydxe1ui?=
- =?us-ascii?Q?VIQ1n/1KJDty1So5kQQCrCKFnF2s5BLrnzQXk3V6A0IPb0OxeLZCmanwr5mH?=
- =?us-ascii?Q?82WqTt03SVQZ4M6b0lFFI3m7d8KI4jWdimolPpUTQ0hJUUBFQ5svZfQ+Cr5z?=
- =?us-ascii?Q?VGUYadYxIuDQ3sY8g7Ew3lYqfj5TEBIXkWMJQ0XquWshSrT6MeWavI0QIn+d?=
- =?us-ascii?Q?7krK4qBtIyZuy8xCdLpiFBSvmurNPXHQGc8FWpgv0ujluljHXfoy9vilQZjy?=
- =?us-ascii?Q?bgz/WhD1I1y1OtLgjjFnbp5UOZYbp2GMtxc+va2oLq81k4ltsP+MpNzaN209?=
- =?us-ascii?Q?FF8KeLAurai6PaUIaHKETF3dOdf6btPdx76x2wt5Z5AGXiLuqn5ToVlFPiq3?=
- =?us-ascii?Q?gLIi/ku61RK72d0bd585jIVxG9N4Kqp3ccXrbsUOd9LyMKAUrseX1dIKmohS?=
- =?us-ascii?Q?8J0BUVg/jTdBBf0Zr/Idp3Xjb0DeN5AWVsAx3ztCMB/2Ed1w5sHQYYN+9e9l?=
- =?us-ascii?Q?42acTPVoYDfah3mGl2jkrtRR7TDN//WAoxysgfJyw7J98Cgu2SXI/MFIlCFx?=
- =?us-ascii?Q?o3pFoXcImmKm6yp+JqhKhR7wm9JQg9d3STFf+9MfRwn2/kU+mtzYTpqoaz9l?=
- =?us-ascii?Q?24aqWSeWbl9YNoD+WK2gh4NQ+TmMZsvfscliHC56iAsZlseumBXTuNR3R8eL?=
- =?us-ascii?Q?1Ey2zapWMRbwjJrqDdxwlW/j4TVkK8ouU8F5jW/O1eNw3s26M/0eqXOvi422?=
- =?us-ascii?Q?XjhyBGwKIVZUiFzV1b7PSVq/kTblYew/1+zdgexws9GQ3N23kcQPygVqfz+k?=
- =?us-ascii?Q?/80k20KfAk+FrrQCAOhvjs8=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed5083e0-0004-4e84-82d6-08dbb4ab6729
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4044.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 22:47:28.4046
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sXnuf2Qv70LG4EnyjWqpOJzESkR+42Cj0wfrWcMv57YFudstYR9Yo0vzNIAnpy+cbN/7v7pB0X9SJEfuR7Eztz3MnIS9uGwBgvkdj8vdO9w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR01MB8417
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202309121514283793475@zte.com.cn>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Errors were happening in the ISR that looked like corrupted
-memory. This was because memory writes from the core enabling
-interrupts were not yet visible to the core running the ISR. The
-kernel log would get the message "i2c_designware APMC0D0F:00:
-controller timed out" during in-band IPMI SSIF stress tests.
+On Tue, Sep 12, 2023 at 03:14:28PM +0800, yang.yang29@zte.com.cn wrote:
+> From: Wang Yong <wang.yong12@zte.com.cn>
+> 
+> The ltp test prompts the following bug information under the 5.10 kernel:
+> BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:969
+> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 796, name: cat
+> Preemption disabled at:
+> [<ffffffe40f433980>] do_debug_exception+0x60/0x180
+> CPU: 3 PID: 796 Comm: cat Not tainted 5.10.59-rt52-KERNEL_VERSION #38
+> Hardware name: linux,dummy-virt (DT)
+> Call trace:
+>  dump_backtrace+0x0/0x198
+>  show_stack+0x20/0x30
+>  dump_stack+0xf0/0x13c
+>  ___might_sleep+0x140/0x178
+>  rt_spin_lock+0x30/0x90
+>  force_sig_info_to_task+0x30/0xe0
+>  force_sig_fault_to_task+0x54/0x78
+>  force_sig_fault+0x1c/0x28
+>  arm64_force_sig_fault+0x48/0x78
+>  send_user_sigtrap+0x4c/0x80
+>  brk_handler+0x3c/0x68
+>  do_debug_exception+0xac/0x180
+>  el0_dbg+0x34/0x58
+>  el0_sync_handler+0x50/0xb8
+>  el0_sync+0x180/0x1c0
+> 
+> It has been fixed by
+> 0c34700de5e7 ("arm64: signal: Use ARCH_RT_DELAYS_SIGNAL_SEND.") in
+> higher versions of the kernel. This patch needs to be compatible with 5.10.
+> 5.10 kernel does not have signal.h file, so adding signal.h file to
+> define ARCH_RT_DELAYS_SIGNAL_SEND.
+> 
+> Signed-off-by: Wang Yong <wang.yong12@zte.com.cn>
+> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+> Cc: Yang Yang <yang.yang29@zte.com.cn>
+> Cc: Xiaokai Ran <ran.xiaokai@zte.com.cn>
+> ---
 
-Add a write barrier before enabling interrupts to assure data written
-by the current core is visible to all cores before the interrupt fires.
+Thank you for this fix. I will add it to the release candidate that will
+be posted on Friday.
 
-The ARM Barrier Litmus Tests and Cookbook has an example under
-Sending Interrupts and Barriers that matches the usage in this
-driver. That document says a DSB barrier is required.
+Best regards,
+Luis
 
-Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
----
- drivers/i2c/busses/i2c-designware-master.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index ca1035e010c7..1694ac6bb592 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -248,6 +248,14 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
- 	/* Dummy read to avoid the register getting stuck on Bay Trail */
- 	regmap_read(dev->map, DW_IC_ENABLE_STATUS, &dummy);
- 
-+	/*
-+	 * To guarantee data written by the current core is visible to
-+	 * all cores, a write barrier is required. This needs to be
-+	 * before an interrupt causes execution on another core.
-+	 * For ARM processors, this needs to be a DSB barrier.
-+	 */
-+	wmb();
-+
- 	/* Clear and enable interrupts */
- 	regmap_read(dev->map, DW_IC_CLR_INTR, &dummy);
- 	regmap_write(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_MASTER_MASK);
--- 
-2.41.0
+>  arch/arm64/include/asm/signal.h | 12 ++++++++++++
+>  arch/arm64/kernel/signal.c      |  9 +++++++++
+>  2 files changed, 21 insertions(+)
+>  create mode 100644 arch/arm64/include/asm/signal.h
+> 
+> diff --git a/arch/arm64/include/asm/signal.h b/arch/arm64/include/asm/signal.h
+> new file mode 100644
+> index 000000000..0fb418cf4
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/signal.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __ARM64_ASM_SIGNAL_H
+> +#define __ARM64_ASM_SIGNAL_H
+> +
+> +#include <uapi/asm/signal.h>
+> +#include <uapi/asm/siginfo.h>
+> +
+> +#if defined(CONFIG_PREEMPT_RT)
+> +#define ARCH_RT_DELAYS_SIGNAL_SEND
+> +#endif
+> +
+> +#endif
+> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+> index fe94a3e1f..538d4aadb 100644
+> --- a/arch/arm64/kernel/signal.c
+> +++ b/arch/arm64/kernel/signal.c
+> @@ -927,6 +927,15 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
+>  		} else {
+>  			local_daif_restore(DAIF_PROCCTX);
+> 
+> +#ifdef ARCH_RT_DELAYS_SIGNAL_SEND
+> +			if (unlikely(current->forced_info.si_signo)) {
+> +				struct task_struct *t = current;
+> +
+> +				force_sig_info(&t->forced_info);
+> +				t->forced_info.si_signo = 0;
+> +			}
+> +#endif
+> +
+>  			if (thread_flags & _TIF_UPROBE)
+>  				uprobe_notify_resume(regs);
+> 
+> -- 
+> 2.25.1
+> 
+---end quoted text---
 
