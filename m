@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B1079E59C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FD379E59F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239858AbjIMLB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58006 "EHLO
+        id S239881AbjIMLCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjIMLB1 (ORCPT
+        with ESMTP id S231897AbjIMLCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:01:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06E719A6;
-        Wed, 13 Sep 2023 04:01:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81941C433C7;
-        Wed, 13 Sep 2023 11:01:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694602883;
-        bh=njWoZyjVfNLBeTuRkPaCYOoH5IOVyF7UqVGkU/ZLhaE=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=lOGGc71M3PzJIruz0pNtMlJmyc2d/NBhzOpmekVSfvro4RoXb9hZgM35vFymdEdmp
-         kP0heobKPtubsoEjs7oEsWD2bKYGIXYICuQ9HU/Ndsi2Xhvr8VrjxSYoPDd5FwAVMy
-         8Fck0MHX5bH8yUzLRNWk4CXyCksH5MvrLuDMp6pdlGQkZh7RnJUVtjgWuqkMheRjfu
-         kJ15mFkdiqsxKbpSdBb6zn6krVeLebsOd6F15O4or49gr1xO2nJ7ER31ZVTTxI/lPv
-         X1aiJ0g6PK/v2RjlfUfGVm61uH14dWHAEq7eqaRsv/GkTjTY0JX4+matdkLVe8eckE
-         tdtcKw4dNfUkw==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, marcan@marcan.st, keescook@chromium.org,
-        gustavoars@kernel.org, hdegoede@redhat.com,
-        ryohei.kondo@cypress.com
-Subject: Re: [PATCH] wifi: brcmfmac: Replace 1-element arrays with flexible
- arrays
-References: <20230913065421.12615-1-juerg.haefliger@canonical.com>
-        <87msxqlaao.fsf@kernel.org> <20230913111747.35839fd8@gollum>
-Date:   Wed, 13 Sep 2023 14:01:18 +0300
-In-Reply-To: <20230913111747.35839fd8@gollum> (Juerg Haefliger's message of
-        "Wed, 13 Sep 2023 11:17:47 +0200")
-Message-ID: <87jzsucp6p.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 13 Sep 2023 07:02:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41CE1726;
+        Wed, 13 Sep 2023 04:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ph6IZOjxVfNK0j0D6FBkY/k2VECArBn3iv8gnIxi7NU=; b=LWgmBUtqijN5jZg4OTh3/n7y8S
+        CBGYD5upmZC2bNhP4tUBGRgBf/M14Iy7pfwWf1cgDMqKKCRC/khSGyEVbigMwsZOTds2JZHEEZq+b
+        RH9NQFMYUhSy04YwqbKDJELCZDNHq6Y+rgXMaaz3bhgyQR9e/oj5CAd7cGNT66jhgBj7xdh6d3JhP
+        xzI27FDLWkWJtkgbKZW/TMY5jFuysOyzUYOwZaEASTWhnDRlUwAe2iUrTaxapVtOQ7sv2T6fYkee1
+        knclwk/xz098cfRo3p/puWgRPh3Q/KNPo1bdAzBE117ZOMpSAUXMlNTVTZxZnPsZV4VjQF57m6RrP
+        jfrJ/K+w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qgNcq-00DQqf-F2; Wed, 13 Sep 2023 11:01:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1CCF4300348; Wed, 13 Sep 2023 13:01:40 +0200 (CEST)
+Date:   Wed, 13 Sep 2023 13:01:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Peng Zhang <zhangpeng.00@bytedance.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] init/main: Clear boot task idle flag
+Message-ID: <20230913110139.GE692@noisy.programming.kicks-ass.net>
+References: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Juerg Haefliger <juerg.haefliger@canonical.com> writes:
+On Tue, Sep 12, 2023 at 08:56:47PM -0400, Liam R. Howlett wrote:
+> Initial booting is setting the task flag to idle (PF_IDLE) by the call
+> path sched_init() -> init_idle().  Having the task idle and calling
+> call_rcu() in kernel/rcu/tiny.c means that TIF_NEED_RESCHED will be
+> set.  Subsequent calls to any cond_resched() will enable IRQs,
+> potentially earlier than the IRQ setup has completed.  Recent changes
+> have caused just this scenario and IRQs have been enabled early.
+> 
+> This causes a warning later in start_kernel() as interrupts are enabled
+> before they are fully set up.
+> 
+> Fix this issue by clearing the PF_IDLE flag on return from sched_init()
+> and restore the flag in rest_init().  Although the boot task was marked
+> as idle since (at least) d80e4fda576d, I am not sure that it is wrong to
+> do so.  The forced context-switch on idle task was introduced in the
+> tiny_rcu update, so I'm going to claim this fixes 5f6130fa52ee.
+> 
+> Link: https://lore.kernel.org/linux-mm/87v8cv22jh.fsf@mail.lhotse/
+> Link: https://lore.kernel.org/linux-mm/CAMuHMdWpvpWoDa=Ox-do92czYRvkok6_x6pYUH+ZouMcJbXy+Q@mail.gmail.com/
+> Fixes: 5f6130fa52ee ("tiny_rcu: Directly force QS when call_rcu_[bh|sched]() on idle_task")
+> Cc: stable@vger.kernel.org
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Andreas Schwab <schwab@linux-m68k.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Peng Zhang <zhangpeng.00@bytedance.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> ---
+>  init/main.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index ad920fac325c..f74772acf612 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -696,7 +696,7 @@ noinline void __ref __noreturn rest_init(void)
+>  	 */
+>  	rcu_read_lock();
+>  	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
+> -	tsk->flags |= PF_NO_SETAFFINITY;
+> +	tsk->flags |= PF_NO_SETAFFINITY | PF_IDLE;
+>  	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
+>  	rcu_read_unlock();
+>  
+> @@ -938,6 +938,8 @@ void start_kernel(void)
+>  	 * time - but meanwhile we still have a functioning scheduler.
+>  	 */
+>  	sched_init();
+> +	/* Avoid early context switch, rest_init() restores PF_IDLE */
+> +	current->flags &= ~PF_IDLE;
+>  
+>  	if (WARN(!irqs_disabled(),
+>  		 "Interrupts were enabled *very* early, fixing it\n"))
 
-> On Wed, 13 Sep 2023 11:58:07 +0300
-> Kalle Valo <kvalo@kernel.org> wrote:
->
->> Juerg Haefliger <juerg.haefliger@canonical.com> writes:
->> 
->> > Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
->> > UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
->> > 'element' and 'channel_list' will trigger warnings, so make them proper
->> > flexible arrays.
->> >
->> > False positive warnings were:
->> >
->> >   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:6984:20
->> >   index 1 is out of range for type '__le32 [1]'
->> >
->> >   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1126:27
->> >   index 1 is out of range for type '__le16 [1]'
->> >
->> > for these lines of code:
->> >
->> >   6884  ch.chspec = (u16)le32_to_cpu(list->element[i]);
->> >
->> >   1126  params_le->channel_list[i] = cpu_to_le16(chanspec);
->> >
->> > Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>  
->> 
->> Should this be queued for v6.6?
->
-> I would think so. It's a problem since 6.5. Which reminds me that I should
-> have added:
->
-> Cc: stable@vger.kernel.org # 6.5+
 
-I can add that during commit.
+Hurmph... so since this is about IRQs, would it not make sense to have
+the | PF_IDLE near 'early_boot_irqs_disabled = false' ?
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Or, alternatively, make the tinyrcu thing check that variable?
