@@ -2,218 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7C079E897
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366CD79E8AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240691AbjIMNG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        id S240742AbjIMNIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbjIMNG6 (ORCPT
+        with ESMTP id S240728AbjIMNH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:06:58 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC411BC0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:06:54 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rm0vz0v1Bz6D95T;
-        Wed, 13 Sep 2023 21:01:51 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 13 Sep
- 2023 14:06:30 +0100
-Date:   Wed, 13 Sep 2023 14:06:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-CC:     guojinhui <guojinhui.liam@bytedance.com>,
-        <catalin.marinas@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <lizefan.x@bytedance.com>,
-        <will@kernel.org>
-Subject: Re: [PATCH] arm64: cpufeature: Expose the real mpidr value to EL0
-Message-ID: <20230913140629.000052ad@Huawei.com>
-In-Reply-To: <381a2abc-1597-c179-99f2-477d7f41b91b@arm.com>
-References: <759c91b9-856e-a778-0e0a-e52240e5c8ce@arm.com>
-        <20230913094426.2787-1-guojinhui.liam@bytedance.com>
-        <381a2abc-1597-c179-99f2-477d7f41b91b@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 13 Sep 2023 09:07:59 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B608219B1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:07:55 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-401da71b7faso79117945e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694610474; x=1695215274; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nzBzuf6LZxvtpnAI8wecn9jFiyl9Zko7Y9Xwbf3eRWY=;
+        b=tfOIOL5JYGPzw5EGyEFk4IKpeFcycASB27c7NiyPgD30M5DgOvIvoy1lhe7cPbnv15
+         8WYqChwsdWQ3c5gEu9iD/9plnWJPdRXylZ4VLAlROdDGii/ZmmRHzmCILm5l08VvNHWC
+         hHWuXlELKV6WTaQKXb2QnVJItniLvVD5ZLxbW+B3ncESDlwhLboCtEkDoIqoq1NeHxPI
+         zXRoZL40++ntDrJtSZ7FC/LGOEF66iqwOsyb/nUSZC2JrUGGRRdbSxOgSSFaBXYaiOom
+         2smu9lQdMrpl50rYrqfp2uqiqmJAzYaGUPhoLUSJeamT3aOyMjlKbgeniPLARtbd/UL+
+         0bfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694610474; x=1695215274;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nzBzuf6LZxvtpnAI8wecn9jFiyl9Zko7Y9Xwbf3eRWY=;
+        b=gUhmYGdAiOHodAxsnaw35NFnN7aYcqvwUglU0T/E54nwOuMWPWE+GE5s/MNpf0uk43
+         elvYFGJQkD6atsPKec0/iMfQf+gL5HvSo9/cJlZRQGNnZrjEC0WjJ9XyMfvIbkKXpP/O
+         SlJNA17FzsybxejIMIPnYN3IH1srHWWQlN20h6VYgwfGE+0r8CNK9RYAmYUJg4fsajU7
+         Hk+dDgI5DXzPdFtWYfE0hBhev+vOmdwbtMGbsKV25TVny+ce3DhNQL2AU0JhwzJtZqTw
+         eyOYq0T1rwxF4Ggs0tLQJtMJEjZkN2JN4BxQhePYrymBy2K+Q/BWuzoZ0zqLAsLKUt1f
+         SbWQ==
+X-Gm-Message-State: AOJu0YyU0v1u1cGELMin5tQH0DXWzamNvr4Z0CarEFsyzE1xWpuf2Miq
+        D4vufhdZLvV2U20pXjy6LCe38MTEZCMb+n3dUu0n3A==
+X-Google-Smtp-Source: AGHT+IEavyoLFycfTD/7cvjDsZ8SgcJkuLwQCv9ZCCzkk1PYhVhOzDZCKuVayZ/OAS4swCRCMMrJqfnYGSZw6eaIS3g=
+X-Received: by 2002:a05:600c:2205:b0:3fa:97ad:2ba5 with SMTP id
+ z5-20020a05600c220500b003fa97ad2ba5mr2078275wml.31.1694610474088; Wed, 13 Sep
+ 2023 06:07:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
+References: <000000000000fc6ba706053be013@google.com> <4e400095-7205-883b-c8fd-4aa95a1b6423@gmail.com>
+In-Reply-To: <4e400095-7205-883b-c8fd-4aa95a1b6423@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 13 Sep 2023 15:07:15 +0200
+Message-ID: <CANpmjNPY7eD100LNcRJLocprTBuZrZ48hH6FPjMzhPSe6UMy0A@mail.gmail.com>
+Subject: Re: [syzbot] [io-uring?] KCSAN: data-race in io_wq_activate_free_worker
+ / io_wq_worker_running
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     syzbot <syzbot+a36975231499dc24df44@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 12:23:37 +0100
-Robin Murphy <robin.murphy@arm.com> wrote:
+On Wed, 13 Sept 2023 at 14:13, Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> On 9/13/23 12:29, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    f97e18a3f2fb Merge tag 'gpio-updates-for-v6.6' of git://gi..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=12864667a80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=fe440f256d065d3b
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=a36975231499dc24df44
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/b1781aaff038/disk-f97e18a3.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/5b915468fd6d/vmlinux-f97e18a3.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/abc8ece931f3/bzImage-f97e18a3.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+a36975231499dc24df44@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KCSAN: data-race in io_wq_activate_free_worker / io_wq_worker_running
+> >
+> > write to 0xffff888127f736c4 of 4 bytes by task 4731 on cpu 1:
+> >   io_wq_worker_running+0x64/0xa0 io_uring/io-wq.c:668
+> >   schedule_timeout+0xcc/0x230 kernel/time/timer.c:2167
+> >   io_wq_worker+0x4b2/0x840 io_uring/io-wq.c:633
+> >   ret_from_fork+0x2e/0x40 arch/x86/kernel/process.c:145
+> >   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+> >
+> > read to 0xffff888127f736c4 of 4 bytes by task 4719 on cpu 0:
+> >   io_wq_get_acct io_uring/io-wq.c:168 [inline]
+> >   io_wq_activate_free_worker+0xfa/0x280 io_uring/io-wq.c:267
+> >   io_wq_enqueue+0x262/0x450 io_uring/io-wq.c:914
+>
+> 1) the worst case scenario we'll choose a wrong type of
+> worker, which is inconsequential.
+>
+> 2) we're changing the IO_WORKER_F_RUNNING bit, but checking
+> for IO_WORKER_F_BOUND. The latter one is set at the very
+> beginning, it would require compiler to be super inventive
+> to actually hit the problem.
+>
+> I don't believe it's a problem, but it'll nice to attribute
+> it properly, READ_ONCE?, or split IO_WORKER_F_BOUND out into
+> a separate field.
 
-> On 2023-09-13 10:44, guojinhui wrote:
-> >>> In EL0, it can get the register midr's value to distinguish vendor.
-> >>> But it won't return real value of the register mpidr by using mrs
-> >>> in EL0. The register mpidr's value is useful to obtain the cpu
-> >>> topology information.  
-> >>
-> >> ...except there's no guarantee that the MPIDR value is anything other
-> >> than a unique identifier. Proper topology information is already exposed
-> >> to userspace[1], as described by ACPI PPTT or Devicetree[2]. Userspace
-> >> should be using that.
-> >>
-> >> Not to mention that userspace fundamentally can't guarantee it won't be
-> >> migrated at just the wrong point and read the MPIDR of a different CPU
-> >> anyway. (This is why the MIDRs and REVIDRs are also reported via sysfs,
-> >> such that userspace has a stable and reliable source of information in
-> >> case it needs to consider potential errata.)
-> >>
-> >> Thanks,
-> >> Robin.
-> >>
-> >> [1] https://www.kernel.org/doc/html/latest/admin-guide/cputopology.html
-> >> [2]
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/cpu/cpu-topology.txt  
-> > 
-> > 1. If we can get the infomation of the vendor (by MIDR), i think it possible to obtain
-> > the die infomation from the MPIDR value. Such as the kunpeng-920,
-> > 4 cores per cluster, 8 clusters per die, whose MPIDR value is as follow:
-> > 
-> > ```
-> > <DIE>.<CLUSTER>.<CORE>.<HT>
-> > 
-> > cpu = 0, 81080000
-> > cpu = 1, 81080100
-> > ...
-> > cpu = 3, 81080300
-> > cpu = 4, 81090000
-> > ...
-> > cpu = 7, 81090300
-> > cpu = 8, 810a0000
-> > ...
-> > cpu = 11, 810a0300
-> > cpu = 12, 810b0000
-> > ...
-> > cpu = 15, 810b0300
-> > cpu = 16, 810c0000
-> > ...
-> > cpu = 19, 810c0300
-> > cpu = 20, 810d0000
-> > ...
-> > cpu = 31, 810f0300
-> > cpu = 32, 81180000
-> > ...
-> > cpu = 63, 811f0300
-> > ```
-> > 
-> > we can get the die infomation by 0x810, 0x811.  
-> 
-> This is very much a platform-specific assumption, though, and once 
-> you're assuming enough to be able to derive anything meaningful from a 
-> raw MPIDR, you could equally derive the same thing from existing sources 
-> like NUMA topology (if you know the SoC, then for sure you can know how 
-> nodes relate to dies).
-> 
-> > 2. we can bind the task to the specific cpu to obtain the MPIDR value.  
-> 
-> ...unless that CPU then gets offlined, the task is forcibly migrated 
-> elsewhere, and ends up obtaining the *wrong* MPIDR value :(
-> 
-> > 3. I have checked the sysfs interface `/sys/devices/system/cpu/cpuN/topology/*`
-> > in Ampere and kunpeng-920 with the latest linux kernel before i submit the patch,
-> > but it doesn't provide the information of die.
-> > 
-> > ```
-> > # ls /sys/devices/system/cpu/cpu0/topology/
-> > cluster_cpus  cluster_cpus_list  cluster_id  core_cpus  core_cpus_list  core_id  core_siblings  core_siblings_list  package_cpus  package_cpus_list  physical_package_id  thread_siblings  thread_siblings_list
-> > # cat /sys/devices/system/cpu/cpu0/topology/*
-> > 00000000,00000000,00000000,00000003
-> > 0-1
-> > 616
-> > 00000000,00000000,00000000,00000001
-> > 0
-> > 6656
-> > 00000000,00000000,ffffffff,ffffffff
-> > 0-63
-> > 00000000,00000000,ffffffff,ffffffff
-> > 0-63
-> > 0
-> > 00000000,00000000,00000000,00000001
-> > 0
-> > 
-> > # uname -r
-> > 6.6.0-rc1
-> > ```
-> > 
-> > Then I check the code which parses the cpu topology infomation from PPTT:
-> > 
-> > ```
-> > int __init parse_acpi_topology(void)
-> > {
-> >          int cpu, topology_id;
-> > 
-> >          if (acpi_disabled)
-> >                  return 0;
-> > 
-> >          for_each_possible_cpu(cpu) {
-> >                  topology_id = find_acpi_cpu_topology(cpu, 0);
-> >                  if (topology_id < 0)
-> >                          return topology_id;
-> > 
-> >                  if (acpi_cpu_is_threaded(cpu)) {
-> >                          cpu_topology[cpu].thread_id = topology_id;
-> >                          topology_id = find_acpi_cpu_topology(cpu, 1);
-> >                          cpu_topology[cpu].core_id   = topology_id;
-> >                  } else {
-> >                          cpu_topology[cpu].thread_id  = -1;
-> >                          cpu_topology[cpu].core_id    = topology_id;
-> >                  }
-> >                  topology_id = find_acpi_cpu_topology_cluster(cpu);
-> >                  cpu_topology[cpu].cluster_id = topology_id;
-> >                  topology_id = find_acpi_cpu_topology_package(cpu);
-> >                  cpu_topology[cpu].package_id = topology_id;
-> >          }
-> > 
-> >          return 0;
-> > }
-> > ```
-> > 
-> > Actually, it just gives the infomation of thread, cluster and package
-> > though the PPTT provides the dies infomation.
-> > 
-> > May be we can implement some code to obtain die information from PPTT?  
-> 
-> I guess if any additional levels of hierarchy exist between the root 
-> "package" level and what we infer to be the "cluster" level, then it 
-> seems reasonable to me to infer the next level above "package" to be 
-> "die". Then it looks like pretty much just a case of wiring up 
-> topology_die_id() through the generic topology code.
+It's a simple bit flag set & read, I'd go for READ_ONCE() (and
+WRITE_ONCE() - but up to you, these bitflag sets & reads have been ok
+with just the READ_ONCE(), and KCSAN currently doesn't care if there's
+a WRITE_ONCE() or not).
 
-Cluster was a vague enough concept that it was safe to define
-it as the layer above a core.  Die is a lot less obvious because it
-has more direct physical meaning.  There are interconnect and cache
-topologies where something is shared above the cluster where it
-doesn't correspond to a die (in the sense of a chiplet / one
-piece of silicon).  For those you'd have another level in PPTT before
-you reach the one that can be thought of as a die.
+> value changed: 0x0000000d -> 0x0000000b
 
-What about the die is of relevance for a userspace scheduler?
-Sharing of L3, NUMA proximity domain / DDR controller locations?
-
-All that is visible either via the cache topology or the NUMA node
-topology.
-
-If there is a strong reason (beyond 'x86 has it in a system register')
-for having die explicitly provided in PPTT, then file a code first ACPI
-proposal to add a flags, similar to the existing one that indicates
-Physical Package.  Note that a strong justification would be needed.
-
-Jonathan
-
-
-
-> 
-> Thanks,
-> Robin.
-> 
-
+This is interesting though - it says that it observed 2 bits being
+flipped. We don't see where IO_WORKER_F_FREE was unset though.
