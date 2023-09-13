@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B74379DF75
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959D679DF82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 07:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbjIMFcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 01:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
+        id S235715AbjIMFlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 01:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235905AbjIMFck (ORCPT
+        with ESMTP id S230003AbjIMFlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 01:32:40 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDA51734
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:32:36 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31ad779e6b3so6469350f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1694583155; x=1695187955; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N4nYj22yWcBXT0fLmDHEet6LUruNho+epuPQlZMk6rA=;
-        b=QfIuB7m5npkIjdxEqLwP/UTYKoi0Aid+CBgxNJNeQIm29w78Vckcx7Xl158RrQriHm
-         xyiGqFkjn3hIa0/7pWc861IvFuMza8/zGM2B+I2u7h7bHvuUksUjHaadTjYzA/pM/xLy
-         Qk9UgnBw6wB84kjy/C4l9s08ndOqkKSGutvIcPlFEPDbcSmZszD8iVI9i5vE8zq0QZIc
-         6qyd4oiKPk0pKo6mWzFO86Ar48M3F41sxmRFdMGG5jdKPGgW3rZ3aJV6kyjdDFatqk8n
-         t+Q6Svjl9DWSxn8u4+g4Rbb8JnmqhgpQSOGaoA1F0HlkATlg22ZTh+6OzNBeMAehpw2J
-         13Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694583155; x=1695187955;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N4nYj22yWcBXT0fLmDHEet6LUruNho+epuPQlZMk6rA=;
-        b=nLCjy6EaC6nQycMrtIF7uKOocWLYLTHZj7WmhAmQcAza6ST0rGjYzjeL6vZa2fcaiA
-         G0jVemYJ3DynNpO+IuZEMGl/+OdiTyH1MjUCwuUMro4UVcoGPDFDXQYyIpTLw9hBkvUM
-         eCPLWCgZTgfo1/V6hdpZMT5Qxk9LlZ8fwiD4Hv99O6vs8QQZfYqHT5eh076xGd4fYg3t
-         Ntsg0QpRZ96hMkOq0xZ9dp34/Byj/HM2ksOL29bdL7hzj8Yjf7+a1J+PYiHA+Q4t1QmC
-         e+ggE9Y0Dztf4eRHXQRsATbpNtjmEY5Hf+vMbITn4fs9q0d5MvE6GJ4GaXCrvvfcXa4Y
-         kcEw==
-X-Gm-Message-State: AOJu0YxNGn+RR/SGvagpFp8gpITZ8Df03R8nQ0fPa0mzmDf2KS088xhC
-        U17rKop8IiFavP0H1mCwe8tsFQ==
-X-Google-Smtp-Source: AGHT+IER9H3VVgLr+hfSKE6vI6LgtgJgyvA5sBGY5z57WD3YPKGjBTuZJ6vz2gIvOl0O6kav/COyJg==
-X-Received: by 2002:adf:e350:0:b0:319:7787:54a9 with SMTP id n16-20020adfe350000000b00319778754a9mr1037074wrj.24.1694583155059;
-        Tue, 12 Sep 2023 22:32:35 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.145])
-        by smtp.gmail.com with ESMTPSA id n15-20020a5d598f000000b0031fba0a746bsm3448003wri.9.2023.09.12.22.32.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 22:32:34 -0700 (PDT)
-Message-ID: <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
-Date:   Wed, 13 Sep 2023 08:32:31 +0300
+        Wed, 13 Sep 2023 01:41:35 -0400
+X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 12 Sep 2023 22:41:31 PDT
+Received: from forward206b.mail.yandex.net (forward206b.mail.yandex.net [178.154.239.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD21172A
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 22:41:31 -0700 (PDT)
+Received: from forward101b.mail.yandex.net (forward101b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d101])
+        by forward206b.mail.yandex.net (Yandex) with ESMTP id E0A3C630D7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:33:51 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:440b:0:640:fa3a:0])
+        by forward101b.mail.yandex.net (Yandex) with ESMTP id 2C24E60031;
+        Wed, 13 Sep 2023 08:33:46 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id hXX1UA6DUGk0-5KRTeYJK;
+        Wed, 13 Sep 2023 08:33:45 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ya.ru; s=mail;
+        t=1694583225; bh=sB2ZQ7DHWeq2GnlLubNW3gqh2dptT89YWo7Pu1Ab5Pg=;
+        h=Message-ID:Date:Cc:Subject:To:From;
+        b=FAdJJjkMCOJfN98f6Bcm3hbOA1whkXEhiTT1agCQsOUL97bZaoaz4de2Osh8sg14p
+         /wkPH67sIa8FA2llz+YKmFoVzfi1zYyKhdpSC1C5ryTe2AA2vSY5cGjMRdzjcKhmmk
+         K6lNyQu7XLuYL6yNEO/VeCYVtINtKDI1jxUipPe8=
+Authentication-Results: mail-nwsmtp-smtp-production-main-44.sas.yp-c.yandex.net; dkim=pass header.i=@ya.ru
+From:   poseaydone@ya.ru
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Knyazev Arseniy <poseaydone@ya.ru>, Takashi Iwai <tiwai@suse.com>,
+        "Luke D. Jones" <luke@ljones.dev>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Andy Chi <andy.chi@canonical.com>,
+        Shenghao Ding <shenghao-ding@ti.com>,
+        Matthew Anderson <ruinairas1992@gmail.com>,
+        Luka Guzenko <l.guzenko@web.de>,
+        Yuchi Yang <yangyuchi66@gmail.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] patch_realtek: Splitting the UX3402 into two separate models.
+Date:   Wed, 13 Sep 2023 10:33:43 +0500
+Message-ID: <20230913053343.119798-1-poseaydone@ya.ru>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 35/37] dt-bindings: arm: renesas: document SMARC
- Carrier-II EVK
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        ulf.hansson@linaro.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
-        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
-        nfraprado@collabora.com, rafal@milecki.pl,
-        wsa+renesas@sang-engineering.com,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
- <20230912045157.177966-36-claudiu.beznea.uj@bp.renesas.com>
- <20230912161635.GA877089-robh@kernel.org>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230912161635.GA877089-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Knyazev Arseniy <poseaydone@ya.ru>
 
+UX3402VA and UX3402ZA models require different hex values, so comibining
+them into one model is incorrect.
 
-On 12.09.2023 19:16, Rob Herring wrote:
-> On Tue, Sep 12, 2023 at 07:51:55AM +0300, Claudiu wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> Document Renesas SMARC Carrier-II EVK board which is based on RZ/G3S
->> (R9A08G045) SoC. The SMARC Carrier-II EVK consists of RZ/G3S SoM module and
->> SMARC Carrier-II carrier board, the SoM module sits on top of carrier
->> board.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>  Documentation/devicetree/bindings/soc/renesas/renesas.yaml | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
->> index 822faf081e84..f4964445e5ab 100644
->> --- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
->> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
->> @@ -476,6 +476,8 @@ properties:
->>  
->>        - description: RZ/G3S (R9A08G045)
->>          items:
->> +          - enum:
->> +              - renesas,smarc2-evk # SMARC Carrier-II EVK
-> 
-> You just changed the existing binding...
-> 
->>            - enum:
->>                - renesas,r9a08g045s33 # PCIe support
-> 
-> This is the SoM module? 
+Signed-off-by: Knyazev Arseniy <poseaydone@ya.ru>
+---
+ sound/pci/hda/patch_realtek.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-No, this is a SoC variant which supports PCIe.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b7e78bfcffd8..b002f947b0d2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9812,7 +9812,8 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1d1f, "ASUS ROG Strix G17 2023 (G713PV)", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
+ 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+-	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
+ 	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
+-- 
+2.42.0
 
-> You either need to squash this change or add 
-> another case with 3 entries and maintain the 2 entry case. (there's no 
-> way to express any entry at the beginning or middle can be optional)
-> 
->>            - const: renesas,r9a08g045
->> -- 
->> 2.39.2
->>
