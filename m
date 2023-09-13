@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9957379E41A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D7D79E41C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239462AbjIMJsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40274 "EHLO
+        id S239466AbjIMJsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjIMJs3 (ORCPT
+        with ESMTP id S239396AbjIMJsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:48:29 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47690198C;
-        Wed, 13 Sep 2023 02:48:25 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38D8M8Xc021910;
-        Wed, 13 Sep 2023 09:48:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Gyzp7W0KHU087D+/0uH5jMA9TVCUiQFVZ9mTNREIz3Q=;
- b=RZybnIz2BneGNMW5x2l2/8vfbt1iwIZ54qTGThQ5w10lCeDdobWWUkV0au8Be3GRnw4N
- +74Ur8rvxCNrioAFx/XXnbHo/y/QlvZLp7AgSQEqbgEPG6SXvHiv8MtSIwiwPmYmxX77
- oqfsiTJULRB+IanWA7ksRdoQ19uEa+pfpPKZCfNNVXCQmU5DqdjbyED1TEngCgOxImx3
- Q6oyaxil7hd/1wd5CiCjb6Q6MFLE1jvDVz5D0uOUw+k+iSp8g/PxmWUZrZFYnL2AkM5o
- B8Dcvqpzkr4Gl296f/2K/urFXOTuZoDnjLDLvqIjsxGVdeJRaK7PxZyom+Jw5RwVorMa Hw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2ygr9a7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 09:48:13 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38D9mCZf031836
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 09:48:12 GMT
-Received: from [10.217.217.202] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 13 Sep
- 2023 02:48:06 -0700
-Message-ID: <13571aeb-7f99-4f59-b528-5555c7ed9cf5@quicinc.com>
-Date:   Wed, 13 Sep 2023 15:17:58 +0530
+        Wed, 13 Sep 2023 05:48:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A700199D
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:48:50 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694598521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQEwfUkV8H19i9zBZle+8XE3Io4n8Wakgi4pw+rr94s=;
+        b=cfMaOQ6rQZAD2Zc4V2zUNZHFXIgLD5qG6gKy+n0PsD+3BnxmYeRsFnxmEDQZ2o8IHYqcVm
+        IBNtCxYoabCJIRLKUlucfIz8LPDjJRs8JZMFTTEiCzezDppDQxEgPEZ4LqGGL+sbuag9S3
+        VeGNkRyGBZzyteKxlR2xBpcSbsn4m1VYOD5EvrUG9H02HxIvLTu2U6b3uvymslwONJbhRn
+        IdRJSniOC1if1uR/4tf25DrP36U5xIrNusDQnqs+rprUaa8gfu8jupmjC9mLLdgMm9jGN6
+        cSAGO+fPdGIad0ykCLnXPEdYtdPJbu1AZNaoq1bQ/vzej2sQw7XedNMD1/U6hA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694598521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQEwfUkV8H19i9zBZle+8XE3Io4n8Wakgi4pw+rr94s=;
+        b=8uagnMXnIBVrl6gPJF8zV32bJI6rtXhJcw2+1XovNqnxhAxxbK4SkN6o8GHntBn8Bn0ExM
+        iaAESFgbAl7PikCA==
+To:     Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firewire: core: obsolete usage of GFP_ATOMIC at
+ building node tree
+In-Reply-To: <20230604070255.172700-1-o-takashi@sakamocchi.jp>
+References: <20230604070255.172700-1-o-takashi@sakamocchi.jp>
+Date:   Wed, 13 Sep 2023 11:54:39 +0206
+Message-ID: <87jzsuv1xk.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] arm64: dts: qcom: sa8775p: pmic: rectify phandle for
- gpio-ranges used by pmm8654au_1_gpios
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <bartosz.golaszewski@linaro.org>, <kernel@quicinc.com>,
-        <quic_anantg@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230913094111.14744-1-quic_shazhuss@quicinc.com>
- <c373345b-6b6b-429d-9a62-5b325b34527b@linaro.org>
-Content-Language: en-US
-From:   Shazad Hussain <quic_shazhuss@quicinc.com>
-In-Reply-To: <c373345b-6b6b-429d-9a62-5b325b34527b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S82VZWkAEOpGAL49QJqrzRNugXisc8h-
-X-Proofpoint-ORIG-GUID: S82VZWkAEOpGAL49QJqrzRNugXisc8h-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_02,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 impostorscore=0 bulkscore=0 phishscore=0 mlxscore=0
- adultscore=0 mlxlogscore=306 malwarescore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130076
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-06-04, Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
+> The flag of GFP_ATOMIC is given to the call of kmalloc when building node
+> tree, but the call is not atomic context. The call of
+> fw_core_handle_bus_reset() and fw_core_remove_card() builds the tree,
+> while they are done in specific workqueue or pci remove callback.
 
+The comment is incorrect about not being in atomic
+context. fw_core_handle_bus_reset() calls build_tree() with the
+card->lock spinlock held. With 6.6-rc1 I see:
 
-On 9/13/2023 3:15 PM, Konrad Dybcio wrote:
-> On 13.09.2023 11:41, Shazad Hussain wrote:
->> Use correct phandle pmm8654au_1_gpios referred by gpio-ranges for
->> pmic pmm8654au_1.
->>
->> Fixes: e5a893a7cec5 ("arm64: dts: qcom: sa8775p: add PMIC GPIO controller nodes")
->> Reported-by: Anant Goel <quic_anantg@quicinc.com>
->> Signed-off-by: Shazad Hussain <quic_shazhuss@quicinc.com>
->> ---
-> https://lore.kernel.org/linux-arm-msm/20230818135538.47481-1-krzysztof.kozlowski@linaro.org/
-> 
-> Konrad
+[   12.555784] BUG: sleeping function called from invalid context at include/linux/sched/mm.h:306
+[   12.555808] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 70, name: kworker/1:2
+[   12.555814] preempt_count: 1, expected: 0
+[   12.555820] INFO: lockdep is turned off.
+[   12.555824] irq event stamp: 208
+[   12.555828] hardirqs last  enabled at (207): [<c00000000111e414>] ._raw_spin_unlock_irq+0x44/0x80
+[   12.555850] hardirqs last disabled at (208): [<c00000000110ff94>] .__schedule+0x854/0xfe0
+[   12.555859] softirqs last  enabled at (188): [<c000000000f73504>] .addrconf_verify_rtnl+0x2c4/0xb70
+[   12.555872] softirqs last disabled at (182): [<c000000000f732b0>] .addrconf_verify_rtnl+0x70/0xb70
+[   12.555884] CPU: 1 PID: 70 Comm: kworker/1:2 Tainted: G S                 6.6.0-rc1 #1
+[   12.555893] Hardware name: PowerMac7,2 PPC970 0x390202 PowerMac
+[   12.555898] Workqueue: firewire_ohci .bus_reset_work [firewire_ohci]
+[   12.555939] Call Trace:
+[   12.555944] [c000000009677830] [c0000000010d83c0] .dump_stack_lvl+0x8c/0xd0 (unreliable)
+[   12.555963] [c0000000096778b0] [c000000000140270] .__might_resched+0x320/0x340
+[   12.555978] [c000000009677940] [c000000000497600] .__kmem_cache_alloc_node+0x390/0x460
+[   12.555993] [c000000009677a10] [c0000000003fe620] .__kmalloc+0x70/0x310
+[   12.556007] [c000000009677ac0] [c0003d00004e2268] .fw_core_handle_bus_reset+0x2c8/0xba0 [firewire_core]
+[   12.556060] [c000000009677c20] [c0003d0000491190] .bus_reset_work+0x330/0x9b0 [firewire_ohci]
+[   12.556079] [c000000009677d10] [c00000000011d0d0] .process_one_work+0x280/0x6f0
+[   12.556094] [c000000009677e10] [c00000000011d8a0] .worker_thread+0x360/0x500
+[   12.556107] [c000000009677ef0] [c00000000012e3b4] .kthread+0x154/0x160
+[   12.556120] [c000000009677f90] [c00000000000bfa8] .start_kernel_thread+0x10/0x14
 
-Thanks Konrad for pointing this out :)
-
--Shazad
+John Ogness
