@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E11079E967
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAC279E973
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240974AbjIMNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S240893AbjIMNgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:36:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240950AbjIMNe5 (ORCPT
+        with ESMTP id S239451AbjIMNf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:34:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C707C1BC2;
-        Wed, 13 Sep 2023 06:34:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7736DC433C7;
-        Wed, 13 Sep 2023 13:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694612093;
-        bh=MFeimr0DIDPO6o9ZoxuaDIxx2Q83zZVFEoaPaVha1Xs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MAFWhsjGgOaFx6m3fEdBnZ8zllzmp1PsOQ2YRNblZyV5oteDXkCZ3ljKi02ctQQ5L
-         ZnaZ5St3rUUbQLTCUtwwuNLNjg9XA/9vqZitiQLIXWIf3Ma71jFt4Pn6PeeOOqdXl5
-         6llM1ZKU55Niu6JIk5ciEiOMLjckqIg5V3qyrFIniTFTqyjKFTwEFxmDe8r2a2Ak55
-         23sZwasiRTXw/9RY9EPxVxVTzbCIyH6iqyRjloIoQys72KG9PB3yF1Nk5kiEQhAby0
-         w8s4YTTJqThLOEtN0WS/79wCJVNbZbc0+vc8KJpNvFvJN17iNqNZRMSQt3vgn+dsSc
-         v/9cg5kpFVowg==
-Received: (nullmailer pid 2855562 invoked by uid 1000);
-        Wed, 13 Sep 2023 13:34:51 -0000
-Date:   Wed, 13 Sep 2023 08:34:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
-        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wed, 13 Sep 2023 09:35:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5878E19B9;
+        Wed, 13 Sep 2023 06:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694612155; x=1726148155;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pj/V2UP2unub0wz1wILtsfcstjsxnGVCuZljE+FR6is=;
+  b=hwFMlmw/Vpz1TIdSWWVzkDj2SrdocYj2Mc8TkpyDn6Gby0/vZf6IchS5
+   Z8RgMCbQbbQGkPWGTfFNY9tUtrr18IT+tXtCmGsT/GsX9tcNP+0tKX6fe
+   sxlamtAzS1LaG48cj/hRNoBYK1Y9vKn2qmOcHYUREMYxs3myo8Aduq4uh
+   TnPa+GypGZYMGSneFHau27qyrSQ1tLAV3WJIkU+wjc6HuehIcLa1YsuK+
+   1CrWblBZw8f76eo9GHhV6NBnTgkh/ZcTJad8/AE6USNWKgmuwTPNn6LEY
+   UpWjT1DA21mEPwrz+cxmth9qJcGY7wh7EI+SpbaD4+yxySAKpk5tcLT+y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="375993253"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="375993253"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 06:35:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="859269609"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="859269609"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Sep 2023 06:35:50 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgQ1z-00006X-2b;
+        Wed, 13 Sep 2023 13:35:47 +0000
+Date:   Wed, 13 Sep 2023 21:35:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: leds: Mention GPIO triggers
-Message-ID: <20230913133451.GA2841610-robh@kernel.org>
-References: <20230912-gpio-led-trigger-dt-v1-0-1b50e3756dda@linaro.org>
- <20230912-gpio-led-trigger-dt-v1-1-1b50e3756dda@linaro.org>
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, tjmercier@google.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Yong Wu <yong.wu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
+        kuohong.wang@mediatek.com
+Subject: Re: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+Message-ID: <202309132148.UABRshAB-lkp@intel.com>
+References: <20230911023038.30649-6-yong.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912-gpio-led-trigger-dt-v1-1-1b50e3756dda@linaro.org>
+In-Reply-To: <20230911023038.30649-6-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:44:30PM +0200, Linus Walleij wrote:
-> We reuse the trigger-sources phandle to just point to
-> GPIOs we may want to use as LED triggers.
-> 
-> Example:
-> 
-> gpio: gpio@0 {
->     compatible "my-gpio";
->     gpio-controller;
->     #gpio-cells = <2>;
->     interrupt-controller;
->     #interrupt-cells = <2>;
->     #trigger-source-cells = <2>;
+Hi Yong,
 
-BTW, this is not documented for any GPIO binding. If we want to specify 
-the cell size, then it has to be added to every GPIO controller binding. 
-If not, we then need to reference gpio.yaml in every GPIO controller 
-binding (along with unevaluatedProperties). Doesn't have to be done for 
-this patch to go in though.
+kernel test robot noticed the following build errors:
 
-> };
-> 
-> leds {
->     compatible = "gpio-leds";
->     led-my-gpio {
->         label = "device:blue:myled";
->         gpios = <&gpio 0 GPIO_ACTIVE_HIGH>;
->         default-state = "off";
->         linux,default-trigger = "gpio";
->         trigger-sources = <&gpio 1 GPIO_ACTIVE_HIGH>;
->     };
-> };
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  Documentation/devicetree/bindings/leds/common.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
-> index 5fb7007f3618..b42950643b9d 100644
-> --- a/Documentation/devicetree/bindings/leds/common.yaml
-> +++ b/Documentation/devicetree/bindings/leds/common.yaml
-> @@ -191,6 +191,8 @@ properties:
->        each of them having its own LED assigned (assuming they are not
->        hardwired). In such cases this property should contain phandle(s) of
->        related source device(s).
-> +      Another example is a GPIO line that will be monitored and mirror the
-> +      state of the line (with or without inversion flags) to the LED.
->        In many cases LED can be related to more than one device (e.g. one USB LED
->        vs. multiple USB ports). Each source should be represented by a node in
->        the device tree and be referenced by a phandle and a set of phandle
-> 
-> -- 
-> 2.34.1
-> 
+[auto build test ERROR on drm-misc/drm-misc-next]
+[also build test ERROR on robh/for-next linus/master v6.6-rc1 next-20230912]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yong-Wu/dma-buf-heaps-Deduplicate-docs-and-adopt-common-format/20230911-103308
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230911023038.30649-6-yong.wu%40mediatek.com
+patch subject: [PATCH 5/9] dma-buf: heaps: mtk_sec_heap: Initialise tee session
+config: loongarch-allmodconfig (https://download.01.org/0day-ci/archive/20230913/202309132148.UABRshAB-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309132148.UABRshAB-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309132148.UABRshAB-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `mtk_kree_secure_session_init':
+>> mtk_secure_heap.c:(.text+0x130): undefined reference to `tee_client_open_context'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L10':
+>> mtk_secure_heap.c:(.text+0x19c): undefined reference to `tee_client_open_session'
+   loongarch64-linux-ld: drivers/dma-buf/heaps/mtk_secure_heap.o: in function `.L12':
+>> mtk_secure_heap.c:(.text+0x1dc): undefined reference to `tee_client_close_context'
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
