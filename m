@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEA579F00B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3411C79F00C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjIMRPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S231311AbjIMRPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjIMRO4 (ORCPT
+        with ESMTP id S230327AbjIMRO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:14:56 -0400
-Received: from out-220.mta0.migadu.com (out-220.mta0.migadu.com [91.218.175.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568399B
+        Wed, 13 Sep 2023 13:14:57 -0400
+Received: from out-228.mta0.migadu.com (out-228.mta0.migadu.com [91.218.175.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05173DC
         for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:14:52 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1694625290;
+        t=1694625291;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9Tw+dU2o5sfOuuXbX4FJVP/5BAKc6p0/nQ7cBmUzv5Q=;
-        b=ctPU1P8PjzANEZxxufrmMlhavpf6MSmIQazNfrOE3GkL3F/j/nvFZZSEB8ovVp30c7s6MY
-        CBKIkfoanapClJxqvm57Tjw1Y2V8mO/SFzga+leuMilEeLfLnIn8oak/3JOrpDVDpm0SEr
-        N49MYNSPajkSI5g7JXyddu5oLOfkpEI=
+        bh=gml8DcgHPrqnYJfUQnrXQLUWDOAsSsS+HJ/vnfgqmKg=;
+        b=S9us7jlkKOCVp2Io5I0Tx7rlmHRdUo7dp4fSfiusTxeMqFjArjUdWXOxPxa7TRsS+UTSGt
+        szqyWIxKS4Bt5+b4uJDHImZmEPS4RWHjhTLuJQarfEMznDy8FYztx69TSQNHWeON9BhC+T
+        q2mjKPkhq8D4BrojemcgDiouTfk4yj8=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -37,9 +37,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v2 04/19] lib/stackdepot: add depot_fetch_stack helper
-Date:   Wed, 13 Sep 2023 19:14:29 +0200
-Message-Id: <74e0a28a38b05f27f3a4b54d5fa93213672fcd30.1694625260.git.andreyknvl@google.com>
+Subject: [PATCH v2 05/19] lib/stackdepot: use fixed-sized slots for stack records
+Date:   Wed, 13 Sep 2023 19:14:30 +0200
+Message-Id: <658f5f34d4f94721844ad8ba41452d54b4f8ace5.1694625260.git.andreyknvl@google.com>
 In-Reply-To: <cover.1694625260.git.andreyknvl@google.com>
 References: <cover.1694625260.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -51,100 +51,95 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Add a helper depot_fetch_stack function that fetches the pointer to
-a stack record.
+Instead of storing stack records in stack depot pools one right after
+another, use fixed-sized slots.
 
-With this change, all static depot_* functions now operate on stack pools
-and the exported stack_depot_* functions operate on the hash table.
+Add a new Kconfig option STACKDEPOT_MAX_FRAMES that allows to select
+the size of the slot in frames. Use 64 as the default value, which is
+the maximum stack trace size both KASAN and KMSAN use right now.
 
-Reviewed-by: Alexander Potapenko <glider@google.com>
+Also add descriptions for other stack depot Kconfig options.
+
+This is preparatory patch for implementing the eviction of stack records
+from the stack depot.
+
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
 
 Changes v1->v2:
-- Minor comment fix as suggested by Alexander.
+- Add and use STACKDEPOT_MAX_FRAMES Kconfig option.
 ---
- lib/stackdepot.c | 45 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 28 insertions(+), 17 deletions(-)
+ lib/Kconfig      | 10 ++++++++--
+ lib/stackdepot.c | 13 +++++++++----
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
+diff --git a/lib/Kconfig b/lib/Kconfig
+index c686f4adc124..7c32f424a6f3 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -708,13 +708,19 @@ config ARCH_STACKWALK
+        bool
+ 
+ config STACKDEPOT
+-	bool
++	bool "Stack depot: stack trace storage that avoids duplication"
+ 	select STACKTRACE
+ 
+ config STACKDEPOT_ALWAYS_INIT
+-	bool
++	bool "Always initialize stack depot during early boot"
+ 	select STACKDEPOT
+ 
++config STACKDEPOT_MAX_FRAMES
++	int "Maximum number of frames in trace saved in stack depot"
++	range 1 256
++	default 64
++	depends on STACKDEPOT
++
+ config REF_TRACKER
+ 	bool
+ 	depends on STACKTRACE_SUPPORT
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 482eac40791e..9a004f15f59d 100644
+index 9a004f15f59d..128ece21afe9 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -304,6 +304,7 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
- 	stack->handle.extra = 0;
- 	memcpy(stack->entries, entries, flex_array_size(stack, entries, size));
- 	pool_offset += required_size;
-+
- 	/*
- 	 * Let KMSAN know the stored stack record is initialized. This shall
- 	 * prevent false positive reports if instrumented code accesses it.
-@@ -313,6 +314,32 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
- 	return stack;
- }
+@@ -58,9 +58,12 @@ struct stack_record {
+ 	u32 hash;			/* Hash in the hash table */
+ 	u32 size;			/* Number of stored frames */
+ 	union handle_parts handle;
+-	unsigned long entries[];	/* Variable-sized array of frames */
++	unsigned long entries[CONFIG_STACKDEPOT_MAX_FRAMES];	/* Frames */
+ };
  
-+static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
-+{
-+	union handle_parts parts = { .handle = handle };
-+	/*
-+	 * READ_ONCE pairs with potential concurrent write in
-+	 * depot_alloc_stack().
-+	 */
-+	int pool_index_cached = READ_ONCE(pool_index);
-+	void *pool;
-+	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
-+	struct stack_record *stack;
++#define DEPOT_STACK_RECORD_SIZE \
++	ALIGN(sizeof(struct stack_record), 1 << DEPOT_STACK_ALIGN)
 +
-+	if (parts.pool_index > pool_index_cached) {
-+		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
-+		     parts.pool_index, pool_index_cached, handle);
-+		return NULL;
-+	}
-+
-+	pool = stack_pools[parts.pool_index];
-+	if (!pool)
-+		return NULL;
-+
-+	stack = pool + offset;
-+	return stack;
-+}
-+
- /* Calculates the hash for a stack. */
- static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+ static bool stack_depot_disabled;
+ static bool __stack_depot_early_init_requested __initdata = IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT);
+ static bool __stack_depot_early_init_passed __initdata;
+@@ -258,9 +261,7 @@ static struct stack_record *
+ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
  {
-@@ -456,14 +483,6 @@ EXPORT_SYMBOL_GPL(stack_depot_save);
- unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 			       unsigned long **entries)
- {
--	union handle_parts parts = { .handle = handle };
--	/*
--	 * READ_ONCE pairs with potential concurrent write in
--	 * depot_alloc_stack.
--	 */
--	int pool_index_cached = READ_ONCE(pool_index);
--	void *pool;
--	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
  	struct stack_record *stack;
+-	size_t required_size = struct_size(stack, entries, size);
+-
+-	required_size = ALIGN(required_size, 1 << DEPOT_STACK_ALIGN);
++	size_t required_size = DEPOT_STACK_RECORD_SIZE;
  
- 	*entries = NULL;
-@@ -476,15 +495,7 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 	if (!handle || stack_depot_disabled)
- 		return 0;
+ 	/* Check if there is not enough space in the current pool. */
+ 	if (unlikely(pool_offset + required_size > DEPOT_POOL_SIZE)) {
+@@ -295,6 +296,10 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ 	if (stack_pools[pool_index] == NULL)
+ 		return NULL;
  
--	if (parts.pool_index > pool_index_cached) {
--		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
--			parts.pool_index, pool_index_cached, handle);
--		return 0;
--	}
--	pool = stack_pools[parts.pool_index];
--	if (!pool)
--		return 0;
--	stack = pool + offset;
-+	stack = depot_fetch_stack(handle);
- 
- 	*entries = stack->entries;
- 	return stack->size;
++	/* Limit number of saved frames to CONFIG_STACKDEPOT_MAX_FRAMES. */
++	if (size > CONFIG_STACKDEPOT_MAX_FRAMES)
++		size = CONFIG_STACKDEPOT_MAX_FRAMES;
++
+ 	/* Save the stack trace. */
+ 	stack = stack_pools[pool_index] + pool_offset;
+ 	stack->hash = hash;
 -- 
 2.25.1
 
