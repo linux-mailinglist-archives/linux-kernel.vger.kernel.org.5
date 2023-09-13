@@ -2,392 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5320979F312
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D848079F31A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbjIMUpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50648 "EHLO
+        id S232540AbjIMUr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232171AbjIMUpj (ORCPT
+        with ESMTP id S232171AbjIMUr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:45:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A716A1BCB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:45:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5AD7C433C8;
-        Wed, 13 Sep 2023 20:45:34 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 16:45:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [for-linus][PATCH] tracefs: Add show_events_dentries
-Message-ID: <20230913164554.17f77997@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 13 Sep 2023 16:47:56 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DAB1BCC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:47:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=NXR+
+        PgvUKjcXgRWB0xP/Amy8Pv4iykX+WMhdQpNglaE=; b=RiYWF6VMU2rLP8usYSEX
+        HDPhnc2/jiURiA2xnbiasJemLw+54IxuUUrQehQqBV73eIKcZQPu9BNE4uOKEPfe
+        AbaLYeEvyKTNfKDxPxIUYg2yXMopckUwWjDHluYPE/ZqIDspe52flAzB3ICgk1Tc
+        W1ibHmu40kWEFN0xGg23fvrFLakrW+5Vd7oxKxAMWB8svjJLIvm33L4bj4BzMf3x
+        iNseINfKSj53mYs0K+Vl/MNMMmoUIuNJATlSzW66hZZ6E78zrlCmVKTgNOssOf79
+        AluGP9EYRNRDr4OUzSKd0iFT/VyR/TFTjCTKzScB4KrKgHABhp+2sQzFpktvm/d+
+        4Q==
+Received: (qmail 718964 invoked from network); 13 Sep 2023 22:47:50 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Sep 2023 22:47:50 +0200
+X-UD-Smtp-Session: l3s3148p1@+6M1rEMF4sEujnuS
+Date:   Wed, 13 Sep 2023 22:47:50 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Maximilian Heyne <mheyne@amazon.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        virtualization@lists.linux-foundation.org, stable@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] virtio-mmio: fix memory leak of vm_dev
+Message-ID: <ZQIf9uwjnk7DQUf3@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Maximilian Heyne <mheyne@amazon.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        virtualization@lists.linux-foundation.org, stable@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org
+References: <20230911090328.40538-1-mheyne@amazon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wDMOp1ZdvPgGkrx+"
+Content-Disposition: inline
+In-Reply-To: <20230911090328.40538-1-mheyne@amazon.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-While debugging the eventfs dynamic file creation issues, creating a file
-in tracefs that exposed what dentries that were created along with their ref
-counts proved invaluable.
+--wDMOp1ZdvPgGkrx+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace/urgent
+On Mon, Sep 11, 2023 at 09:03:29AM +0000, Maximilian Heyne wrote:
+> With the recent removal of vm_dev from devres its memory is only freed
+> via the callback virtio_mmio_release_dev. However, this only takes
+> effect after device_add is called by register_virtio_device. Until then
+> it's an unmanaged resource and must be explicitly freed on error exit.
+>=20
+> This bug was discovered and resolved using Coverity Static Analysis
+> Security Testing (SAST) by Synopsys, Inc.
+>=20
+> Cc: <stable@vger.kernel.org>
+> Fixes: 55c91fedd03d ("virtio-mmio: don't break lifecycle of vm_dev")
+> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Tested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Head SHA1: d6f358d6fff619cebbc547f2bdd3ec66ade04954
+Sorry for overlooking this in 55c91fedd03d and thanks for fixing it!
+
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
 
-Steven Rostedt (Google) (1):
-      tracefs: Add show_events_dentries
+--wDMOp1ZdvPgGkrx+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----
- fs/tracefs/Makefile         |   1 +
- fs/tracefs/event_inode.c    |  42 +------------
- fs/tracefs/event_show.c     | 147 ++++++++++++++++++++++++++++++++++++++++++++
- fs/tracefs/internal.h       |  44 +++++++++++++
- include/linux/tracefs.h     |   2 +
- kernel/trace/trace_events.c |   3 +
- 6 files changed, 198 insertions(+), 41 deletions(-)
- create mode 100644 fs/tracefs/event_show.c
----------------------------
-commit d6f358d6fff619cebbc547f2bdd3ec66ade04954
-Author: Steven Rostedt (Google) <rostedt@goodmis.org>
-Date:   Wed Sep 13 11:36:28 2023 -0400
+-----BEGIN PGP SIGNATURE-----
 
-    tracefs: Add show_events_dentries
-    
-    Add a file in tracefs that shows the "events" allocated entries and the
-    dentries that are attached to them. This is used to see what dentries have
-    been dynamically allocated as well as their current ref counts.
-    
-     ~# cat /sys/kernel/tracing/events/sched/sched_switch/enable
-     0
-     ~# grep -A4 sched_switch /sys/kernel/tracing/show_events_dentries
-     sched_switch/ dentry: (1)
-     enable dentry: (0)
-     id
-     filter
-     trigger
-    
-    The first value is the name of the file or directory. If a dentry is
-    allocated, then a "dentry: (<ref-count>)" is displayed showing the address
-    of the dentry as well as its ref count.
-    
-    Link: https://lore.kernel.org/linux-trace-kernel/20230913113628.172907b7@gandalf.local.home
-    
-    Cc: Masami Hiramatsu <mhiramat@kernel.org>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Ajay Kaher <akaher@vmware.com>
-    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUCH/EACgkQFA3kzBSg
+KbaqGRAApFfEH92qT8AznnA5HRP2oURDPWolKwozQbtl98b4GWUGOo6EjNGgn97z
+tYqC+hAp18eklFzM/m9byVHllqLUmRH/b8JQVhPDUJuhhjVpUMbDXxltD20+MbVw
+OYkyxD8jJu4zUUQC1yiXCzH2kkcj0zYW3dBIOg21xFKnH5JUFOjQjNb8esTgbZKZ
+JJKzs0W0Y5ZkOIJbveyqbVCBzzsrGjRaovPbEXJ4LRiHanF9Dcrg90sdHpKGYxMQ
+JEZG4sS0+Z1xZkT0kZpSq2Lti09Ku/P41TweZabpgWlEHIlAap4Rkh3WC4wzN3og
+uwzWjJQ3UyzTbpTuBT4c0JDIigr3HAdGJaOXLaBOkHnki8DyLkG117dBiaWOZMJz
+WUP7NM2PPt78vE8l/hgr26E9mtuzNS7XVmMZ2wEVCnHRdYchNI8OuZCJ45067T1q
+srkLIu3+fZt+wIkeQEg8EhO+BjeJbTV4+65z4zwOb2/g/56KMP+bg4zn6ICVKtas
+6V/aohAs76jLjBX219S0aabyGXQqBdnUCgFvQoLUcMfxy8DLYvL1NdEE0Ufn3RQo
+kj4dPJNLnWTiohc66FK0m0vUC7eVdj0I3bGLru+tWFa0UW3K7HQ+lIc7cQZNt+hH
+Rb1IO4u8hxJy44XezL1swxDz0Y7uvMNaOjn8ks1V9hybjUZ2dyg=
+=/HT2
+-----END PGP SIGNATURE-----
 
-diff --git a/fs/tracefs/Makefile b/fs/tracefs/Makefile
-index 73c56da8e284..8f48f4fc6698 100644
---- a/fs/tracefs/Makefile
-+++ b/fs/tracefs/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- tracefs-objs	:= inode.o
- tracefs-objs	+= event_inode.o
-+tracefs-objs	+= event_show.o
- 
- obj-$(CONFIG_TRACING)	+= tracefs.o
- 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 9f64e7332796..b23bb0957bb4 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -23,47 +23,7 @@
- #include <linux/delay.h>
- #include "internal.h"
- 
--struct eventfs_inode {
--	struct list_head	e_top_files;
--};
--
--/*
-- * struct eventfs_file - hold the properties of the eventfs files and
-- *                       directories.
-- * @name:	the name of the file or directory to create
-- * @d_parent:   holds parent's dentry
-- * @dentry:     once accessed holds dentry
-- * @list:	file or directory to be added to parent directory
-- * @ei:		list of files and directories within directory
-- * @fop:	file_operations for file or directory
-- * @iop:	inode_operations for file or directory
-- * @data:	something that the caller will want to get to later on
-- * @mode:	the permission that the file or directory should have
-- */
--struct eventfs_file {
--	const char			*name;
--	struct dentry			*d_parent;
--	struct dentry			*dentry;
--	struct list_head		list;
--	struct eventfs_inode		*ei;
--	const struct file_operations	*fop;
--	const struct inode_operations	*iop;
--	/*
--	 * Union - used for deletion
--	 * @del_list:	list of eventfs_file to delete
--	 * @rcu:	eventfs_file to delete in RCU
--	 * @is_freed:	node is freed if one of the above is set
--	 */
--	union {
--		struct list_head	del_list;
--		struct rcu_head		rcu;
--		unsigned long		is_freed;
--	};
--	void				*data;
--	umode_t				mode;
--};
--
--static DEFINE_MUTEX(eventfs_mutex);
-+DEFINE_MUTEX(eventfs_mutex);
- DEFINE_STATIC_SRCU(eventfs_srcu);
- 
- static struct dentry *eventfs_root_lookup(struct inode *dir,
-diff --git a/fs/tracefs/event_show.c b/fs/tracefs/event_show.c
-new file mode 100644
-index 000000000000..66dece7cc810
---- /dev/null
-+++ b/fs/tracefs/event_show.c
-@@ -0,0 +1,147 @@
-+#include <linux/seq_file.h>
-+#include <linux/tracefs.h>
-+#include "internal.h"
-+
-+/*
-+ * This will iterate three lists that correspond to the directory level
-+ * of the eventfs directory.
-+ *
-+ * level 0 : /sys/kernel/tracing/events
-+ * level 1 : /sys/kernel/tracing/events/<system>
-+ * level 2 : /sys/kernel/tracing/events/<system>/event
-+ *
-+ * The iterator needs to see all levels as they all contain dynamically
-+ * allocated dentries and inodes.
-+ */
-+struct event_list {
-+	int			level;
-+	struct list_head	*head[3];
-+	struct list_head	*next[3];
-+};
-+
-+static void *e_next(struct seq_file *m, void *v, loff_t *pos)
-+{
-+	struct event_list *elist = m->private;
-+	int level = elist->level;
-+	struct list_head *head = elist->head[level];
-+	struct list_head *next = elist->next[level];
-+	struct eventfs_file *ef;
-+
-+	(*pos)++;
-+
-+	/* If next is equal to head, then the list is complete */
-+	while (next == head) {
-+		if (!level)
-+			return NULL;
-+
-+		/* sublevel below top level, go up one */
-+		elist->level = --level;
-+		head = elist->head[level];
-+		/* Going down does not update next, so do it here */
-+		next = elist->next[level]->next;
-+		elist->next[level] = next;
-+	}
-+
-+	ef = list_entry(next, struct eventfs_file, list);
-+
-+	/* For each entry (not at the bottom) do a breadth first search */
-+	if (ef->ei && !list_empty(&ef->ei->e_top_files) && level < 2) {
-+		elist->level = ++level;
-+		head = &ef->ei->e_top_files;
-+		elist->head[level] = head;
-+		next = head;
-+		/*
-+		 * Note, next is now pointing to the next sub level.
-+		 * Need to update the next for the previous level on the way up.
-+		 */
-+	}
-+
-+	elist->next[level] = next->next;
-+	return ef;
-+}
-+
-+static void *e_start(struct seq_file *m, loff_t *pos)
-+{
-+	struct event_list *elist = m->private;
-+	struct eventfs_file *ef = NULL;
-+	loff_t l;
-+
-+	mutex_lock(&eventfs_mutex);
-+
-+	elist->level = 0;
-+	elist->next[0] = elist->head[0]->next;
-+
-+	for (l = 0; l <= *pos; ) {
-+		ef = e_next(m, ef, &l);
-+		if (!ef)
-+			break;
-+	}
-+	return ef;
-+}
-+
-+static int e_show(struct seq_file *m, void *v)
-+{
-+	struct eventfs_file *ef = v;
-+
-+	seq_printf(m, "%s", ef->name);
-+	if (ef->ei)
-+		seq_putc(m, '/');
-+
-+	if (ef->dentry)
-+		seq_printf(m, " dentry: (%d)", d_count(ef->dentry));
-+	seq_putc(m, '\n');
-+
-+	return 0;
-+}
-+
-+static void e_stop(struct seq_file *m, void *p)
-+{
-+	mutex_unlock(&eventfs_mutex);
-+}
-+
-+static const struct seq_operations eventfs_show_dentry_seq_ops = {
-+	.start = e_start,
-+	.next = e_next,
-+	.show = e_show,
-+	.stop = e_stop,
-+};
-+
-+static int
-+eventfs_show_dentry_open(struct inode *inode, struct file *file)
-+{
-+	const struct seq_operations *seq_ops = &eventfs_show_dentry_seq_ops;
-+	struct event_list *elist;
-+	struct tracefs_inode *ti;
-+	struct eventfs_inode *ei;
-+	struct dentry *dentry;
-+
-+	/* The inode private should have the dentry of the "events" directory */
-+	dentry = inode->i_private;
-+	if (!dentry)
-+		return -EINVAL;
-+
-+	elist = __seq_open_private(file, seq_ops, sizeof(*elist));
-+	if (!elist)
-+		return -ENOMEM;
-+
-+	ti = get_tracefs(dentry->d_inode);
-+	ei = ti->private;
-+
-+	/*
-+	 * Start off at level 0 (/sys/kernel/tracing/events)
-+	 * Initialize head to the events files and next to the
-+	 * first file.
-+	 */
-+	elist->level = 0;
-+	elist->head[0] = &ei->e_top_files;
-+	elist->next[0] = ei->e_top_files.next;
-+
-+	return 0;
-+}
-+
-+const struct file_operations eventfs_show_dentry_fops = {
-+	.open = eventfs_show_dentry_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = seq_release,
-+};
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 4f2e49e2197b..461920f0133f 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -2,11 +2,55 @@
- #ifndef _TRACEFS_INTERNAL_H
- #define _TRACEFS_INTERNAL_H
- 
-+#include <linux/mutex.h>
-+
- enum {
- 	TRACEFS_EVENT_INODE		= BIT(1),
- 	TRACEFS_EVENT_TOP_INODE		= BIT(2),
- };
- 
-+struct eventfs_inode {
-+	struct list_head	e_top_files;
-+};
-+
-+/*
-+ * struct eventfs_file - hold the properties of the eventfs files and
-+ *                       directories.
-+ * @name:	the name of the file or directory to create
-+ * @d_parent:   holds parent's dentry
-+ * @dentry:     once accessed holds dentry
-+ * @list:	file or directory to be added to parent directory
-+ * @ei:		list of files and directories within directory
-+ * @fop:	file_operations for file or directory
-+ * @iop:	inode_operations for file or directory
-+ * @data:	something that the caller will want to get to later on
-+ * @mode:	the permission that the file or directory should have
-+ */
-+struct eventfs_file {
-+	const char			*name;
-+	struct dentry			*d_parent;
-+	struct dentry			*dentry;
-+	struct list_head		list;
-+	struct eventfs_inode		*ei;
-+	const struct file_operations	*fop;
-+	const struct inode_operations	*iop;
-+	/*
-+	 * Union - used for deletion
-+	 * @del_list:	list of eventfs_file to delete
-+	 * @rcu:	eventfs_file to delete in RCU
-+	 * @is_freed:	node is freed if one of the above is set
-+	 */
-+	union {
-+		struct list_head	del_list;
-+		struct rcu_head		rcu;
-+		unsigned long		is_freed;
-+	};
-+	void				*data;
-+	umode_t				mode;
-+};
-+
-+extern struct mutex eventfs_mutex;
-+
- struct tracefs_inode {
- 	unsigned long           flags;
- 	void                    *private;
-diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
-index 009072792fa3..f76c7d74b23d 100644
---- a/include/linux/tracefs.h
-+++ b/include/linux/tracefs.h
-@@ -58,6 +58,8 @@ struct dentry *tracefs_create_instance_dir(const char *name, struct dentry *pare
- 
- bool tracefs_initialized(void);
- 
-+extern const struct file_operations eventfs_show_dentry_fops;
-+
- #endif /* CONFIG_TRACING */
- 
- #endif
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 91951d038ba4..5b0cc40910b2 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -3639,6 +3639,9 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
- 		return -ENOMEM;
- 	}
- 
-+	trace_create_file("show_events_dentries", TRACE_MODE_READ, parent, d_events,
-+			  &eventfs_show_dentry_fops);
-+
- 	error = eventfs_add_events_file("enable", TRACE_MODE_WRITE, d_events,
- 				  tr, &ftrace_tr_enable_fops);
- 	if (error)
+--wDMOp1ZdvPgGkrx+--
