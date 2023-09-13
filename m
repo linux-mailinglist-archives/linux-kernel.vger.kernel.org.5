@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA6579E52C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F44C79E532
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbjIMKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        id S233697AbjIMKsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbjIMKrb (ORCPT
+        with ESMTP id S233408AbjIMKsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:47:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6949319AD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694602000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+0qvkYwtrcO7faarFMzFVDao1vw9b8jVL6GtDEUP0I=;
-        b=WTj01NCVWSGr4hCEntOAiPsOv6ibY7Q0x0ch/m/587cYcMxE5lBpzpJaJ1MljkCgtDORqg
-        6+GrNcfcd8q3wzA8ZSef8CH3sAeko44OL/mlgAqPdl53qkWD/BR/ms1vXNWFjY9y4HrMVR
-        ghcLuav+fiyCJNjSxEwVvWoCwQb7YOQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-177-ZzJ2EiniOcmqFAl0bZmDzA-1; Wed, 13 Sep 2023 06:46:39 -0400
-X-MC-Unique: ZzJ2EiniOcmqFAl0bZmDzA-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4120b583ab4so69874311cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:46:39 -0700 (PDT)
+        Wed, 13 Sep 2023 06:48:41 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FAF19B3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:48:37 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502b0d23f28so6320226e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694602115; x=1695206915; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p16cqlEMd92dBAoEF5vuQJ+lywDLoY/B9Jgb5zxp2p0=;
+        b=LjQ4YNxwyEuEVVbZCl3cbXU1A0qTSXmzVEJS0wxnrY3B6inoa1zwiTXIxw61iAq+uP
+         j4IMkBOaFPAm2ivvdw3G1UNzETiNTfMejxPT2/vGCvoHeNrPCJlpqQBuhd1yMEdPMv+r
+         hxamMG5ByWA4+KwRXCkoDtyeHvbp1oGJuPXQxFZQvvnvgO9dt3EvdcZI5tMdkr/h0PIY
+         igoqcctZwamnak3rk6PcJCzklS5xnWEAcqrvuWGXkzCTTJ+QOm4Yprp8DPovkq11BLnT
+         WobdSyAC/Ax0vCQ8owGwgGruZi1KNFefx19Rp1bOBLFbf47sU7mPXS4huenCcAPFGC+0
+         wjuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694601998; x=1695206798;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+0qvkYwtrcO7faarFMzFVDao1vw9b8jVL6GtDEUP0I=;
-        b=NETXjvJ5N4V/FJVN7Z1WK8dv70ULqvbGRmM6DpdANeS/0NORFkGxgbOD1gRkg6Ijfu
-         nwiOw33SZnt8GemO9a0YJQHvTlTcdhKsgXhpizYjJ0L/o953PoHZ0GCVstxQm9gPHBfy
-         QIZvkWkxc3EJFpR7b9s14873TI906OIrMo4qB9+qFbez4/CEIT8tnCocIGQ7NlUzr50d
-         zvbtTAVzPzd0IJqVM9V5g/UCDm6Oz7XArO6/yapyL/T4OO8/1tDhtDmqs9wsXWTnCHxs
-         tQuyslhYD60m6eon+kihHY7oDuacVT4knYlnAdfxIhJ5HJ0xFEGdd1GN7wQh83yj74M9
-         BtpA==
-X-Gm-Message-State: AOJu0Yz6s1kizgClALR7ahnikm6cgh1ZHN0BkghcARWiW5q88TN/RorF
-        1UOTIUrTTupvtojoAOf1ieWEiCHGMmo3GJQP755UwejJuBuph+ut3RtwS2ggsDOjIZef8jIXJ02
-        Q9nMEXeu1z1xEnuBqMLxfRtn/ju5VdGmo
-X-Received: by 2002:ac8:5b4b:0:b0:410:aa40:e8f7 with SMTP id n11-20020ac85b4b000000b00410aa40e8f7mr2169642qtw.33.1694601998662;
-        Wed, 13 Sep 2023 03:46:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF9nyWwUy1CH3HJQRTdKOYwxVUjUhlXskTR/aVLu8Suwo13+Oim4pqSh5PsL8p6XGj5kL9c/Q==
-X-Received: by 2002:ac8:5b4b:0:b0:410:aa40:e8f7 with SMTP id n11-20020ac85b4b000000b00410aa40e8f7mr2169630qtw.33.1694601998388;
-        Wed, 13 Sep 2023 03:46:38 -0700 (PDT)
-Received: from bfoster (c-24-60-61-41.hsd1.ma.comcast.net. [24.60.61.41])
-        by smtp.gmail.com with ESMTPSA id h20-20020a05622a171400b00411fcc18cc1sm3905003qtk.64.2023.09.13.03.46.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 03:46:38 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 06:46:49 -0400
-From:   Brian Foster <bfoster@redhat.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     kent.overstreet@linux.dev, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] bcachefs: Remove unneeded semicolon
-Message-ID: <ZQGTGV0LRqkKBF6p@bfoster>
-References: <20230913005756.6827-1-yang.lee@linux.alibaba.com>
+        d=1e100.net; s=20230601; t=1694602115; x=1695206915;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p16cqlEMd92dBAoEF5vuQJ+lywDLoY/B9Jgb5zxp2p0=;
+        b=C4tYrorYWtPq9ZHbXAafga63hExFCRoIQsx3y80U3jJEoa+g2DYZ+5L1bD10Ev7ZCe
+         iTMtbH2cNSh/Jdr+T8+xqW1eTNZFhF1LSKXCTkw/8foBplf8zU4lTicWEbWFbHw+cn16
+         +31HTpzNN3t6miXlt7yrwloHy+EwA1ydkn7d1D0kqQa2ku822scoTGB9XqcJ68OtkGw5
+         1nSpz+noz9AyYLhjXWd2a9o0hpP9geHC0i5N+TPk++OY/PW6F1FcJMC6ZufPC6L7t764
+         +OrmxL7McP2mwGBSkDusszVdjTYkpMl1BLaLG5aez/297w2Yks3A3GwTBINOm4YZxN5Z
+         L+bA==
+X-Gm-Message-State: AOJu0YyRVdZwHcgS5FttcDB1Q5tSvfogCH6xcW2KPx/YRM01qay32d9e
+        Vsgqi66OMt8CZw1AUrS+jFRmEQ==
+X-Google-Smtp-Source: AGHT+IG48WWjkEWSjFk2Tm3UfkWLLr5E+apDU8n7m6FZ9NqSOJmFHWSuYVjzkSlqyQtdjNNAxFQjHw==
+X-Received: by 2002:a19:2d08:0:b0:4fe:1681:9378 with SMTP id k8-20020a192d08000000b004fe16819378mr1770190lfj.66.1694602115188;
+        Wed, 13 Sep 2023 03:48:35 -0700 (PDT)
+Received: from [192.168.37.232] (178235177106.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.106])
+        by smtp.gmail.com with ESMTPSA id f10-20020a170906390a00b00992e94bcfabsm8185483eje.167.2023.09.13.03.48.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 03:48:34 -0700 (PDT)
+Message-ID: <9a0ab5a9-d4d8-41b8-94b0-9c62bd686254@linaro.org>
+Date:   Wed, 13 Sep 2023 12:48:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913005756.6827-1-yang.lee@linux.alibaba.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] arm64: dts: qcom: msm8916: Drop RPM bus clocks
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org
+References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
+ <20230721-topic-rpm_clk_cleanup-v2-1-1e506593b1bd@linaro.org>
+ <bd11d1b1-efe5-4f96-43e7-163fca5d3278@linaro.org>
+ <ac501bcc-80a1-4b65-ba24-272152d1c95c@linaro.org>
+ <7b500bba-3091-f425-a60d-e58a3d9e4c1a@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <7b500bba-3091-f425-a60d-e58a3d9e4c1a@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 08:57:56AM +0800, Yang Li wrote:
-> ./fs/bcachefs/btree_gc.c:1249:2-3: Unneeded semicolon
-> ./fs/bcachefs/btree_gc.c:1521:2-3: Unneeded semicolon
-> ./fs/bcachefs/btree_gc.c:1575:2-3: Unneeded semicolon
-> ./fs/bcachefs/counters.c:46:2-3: Unneeded semicolon
+On 13.09.2023 10:53, Krzysztof Kozlowski wrote:
+> On 13/09/2023 10:47, Konrad Dybcio wrote:
+>> On 13.09.2023 09:07, Krzysztof Kozlowski wrote:
+>>> On 12/09/2023 15:31, Konrad Dybcio wrote:
+>>>> These clocks are now handled from within the icc framework and are
+>>>
+>>> That's a driver behavior, not hardware.
+>> I believe we've been over this already..
+>>
+>> The rationale behind this change is: that hardware, which falls
+>> under the "interconnect" class, was previously misrepresented as
+>> a bunch of clocks. There are clocks underneath, but accessing them
+>> directly would be equivalent to e.g. circumventing the PHY subsystem
+>> and initializing your UFS PHY from within the UFS device.
 > 
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
+> And every time one write such commit msg, how should we remember there
+> is some exception and actually it is about clock representation not CCF
+> or ICC framework.
+So is your reply essentially "fine, but please make it clear in
+each commit message"?
 
-What produces these warnings? It would be help to add a sentence or two
-of such context in the commit log.. even just a "XYZ reports the
-following: ..."
-
-Nit aside, patch seems fine to me:
-
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-
->  fs/bcachefs/btree_gc.c | 6 +++---
->  fs/bcachefs/counters.c | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/bcachefs/btree_gc.c b/fs/bcachefs/btree_gc.c
-> index dac2eb76c985..56c671638c43 100644
-> --- a/fs/bcachefs/btree_gc.c
-> +++ b/fs/bcachefs/btree_gc.c
-> @@ -1246,7 +1246,7 @@ static int bch2_gc_done(struct bch_fs *c,
->  			copy_dev_field(d[i].sectors,	"%s sectors", bch2_data_types[i]);
->  			copy_dev_field(d[i].fragmented,	"%s fragmented", bch2_data_types[i]);
->  		}
-> -	};
-> +	}
->  
->  	{
->  		unsigned nr = fs_usage_u64s(c);
-> @@ -1518,7 +1518,7 @@ static int bch2_gc_alloc_start(struct bch_fs *c, bool metadata_only)
->  		buckets->first_bucket	= ca->mi.first_bucket;
->  		buckets->nbuckets	= ca->mi.nbuckets;
->  		rcu_assign_pointer(ca->buckets_gc, buckets);
-> -	};
-> +	}
->  
->  	bch2_trans_init(&trans, c, 0, 0);
->  
-> @@ -1572,7 +1572,7 @@ static void bch2_gc_alloc_reset(struct bch_fs *c, bool metadata_only)
->  			g->dirty_sectors = 0;
->  			g->cached_sectors = 0;
->  		}
-> -	};
-> +	}
->  }
->  
->  static int bch2_gc_write_reflink_key(struct btree_trans *trans,
-> diff --git a/fs/bcachefs/counters.c b/fs/bcachefs/counters.c
-> index 442a9b806a3c..26eb3d82b1cb 100644
-> --- a/fs/bcachefs/counters.c
-> +++ b/fs/bcachefs/counters.c
-> @@ -43,7 +43,7 @@ static void bch2_sb_counters_to_text(struct printbuf *out, struct bch_sb *sb,
->  		prt_tab(out);
->  		prt_printf(out, "%llu", le64_to_cpu(ctrs->d[i]));
->  		prt_newline(out);
-> -	};
-> +	}
->  };
->  
->  int bch2_sb_counters_to_cpu(struct bch_fs *c)
-> -- 
-> 2.20.1.7.g153144c
-> 
-
+Konrad
