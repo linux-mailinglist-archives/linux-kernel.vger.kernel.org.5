@@ -2,278 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F9B79ED0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2347579ED12
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229520AbjIMPbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
+        id S229541AbjIMPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIMPbx (ORCPT
+        with ESMTP id S229456AbjIMPdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:31:53 -0400
+        Wed, 13 Sep 2023 11:33:10 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A89CE;
-        Wed, 13 Sep 2023 08:31:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3937C433C8;
-        Wed, 13 Sep 2023 15:31:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06FB93;
+        Wed, 13 Sep 2023 08:33:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB9CC433C8;
+        Wed, 13 Sep 2023 15:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694619109;
-        bh=EhqItz+H2MsjFJz+/18Og8YWkFsd0T+r6eF7rONaPsA=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=Lry9K9RseL4bki8X0L8Y8PgMZ0xUYqultkRbXCfCIN6VuPdY4g096ZE0VypQP4NUv
-         zhNKUx+di9rKrPRc27mKWtas+aKBvdgAE9lAVFOeo0RnTdllahUh9Pj9IgxEoPYVLH
-         QofZq94vJd82GNFPs9pN0pbsqtIrIV5ESskFRY4ZWFEnC4m1RBOUdW24zl8CmAseyZ
-         yA2kAosgB8Xi9Sd5BFdjjV6GpHCYuGuGm/l8nnOkIU/8MYU2Y9ePnqskj4N80EHY5y
-         Fg4fhJyx0lTR7OVjboq4aBbzZlZKRmEgEU955o4MYSm+5IHK3h7ssC+Yef9OhR63kQ
-         /rm5aqLLZfN9w==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 13 Sep 2023 18:31:43 +0300
-Message-Id: <CVHWC4XXK3DH.MKY8N7CE2JE6@suppilovahvero>
-Subject: Re: [PATCH v4 09/18] x86/sgx: Store struct sgx_encl when allocating
- new VA pages
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-X-Mailer: aerc 0.14.0
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-10-haitao.huang@linux.intel.com>
-In-Reply-To: <20230913040635.28815-10-haitao.huang@linux.intel.com>
+        s=k20201202; t=1694619186;
+        bh=w4eOXdxxEVpvJRthlhaH92nifcMz3GmSivudS7jagvk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CSdc05swdFI+Usg6TPK+loCrKdjcCDoD1l3eV91+bwpg9zqRnvz5+aPx2ibFa2Fo+
+         uRXQRALXPUo+Ctds8aJoAih2KTot+U3jqSStD6Ik+9HHGu73OA7p0UXd476CdW2ebO
+         sq7OXF18Qa4JIGGYdSmXiZeHIrRv2Lp/1p4E4FTtArHa4yvdivVEZsS3XuE3c8a7tK
+         UkuqyAMJOc7oxW6WwGVXFKy+fnXsrgER+81eHlo5tvcZ1abF082K1Wahmkkkt4hXM+
+         Ixh57M0SW2OStwN98jdOiHFiTDnEKlVpltLqON9IY6n7Aln2jSEuwLkRHH8rDaoxIG
+         hxNzcOcJ7MpmA==
+Date:   Wed, 13 Sep 2023 16:33:00 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
+        Jaroslav Kysela <perex@perex.cz>,
+        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards
+ are available
+Message-ID: <ae381a70-3236-4792-9c3e-19d67a4377a1@sirena.org.uk>
+References: <20230908181242.95714-1-nfraprado@collabora.com>
+ <0fa0901e-d271-438d-bc2b-11399ad3b07c@sirena.org.uk>
+ <868a8f08-ba39-4550-8e7b-0572ea03c4e7@notapiano>
+ <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
+ <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HVlTO/OC556kjwhz"
+Content-Disposition: inline
+In-Reply-To: <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
+X-Cookie: Use extra care when cleaning on stairs.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
-> In a later patch, when a cgroup has exceeded the max capacity for EPC
-> pages, it may need to identify and OOM kill a less active enclave to
-> make room for other enclaves within the same group. Such a victim
-> enclave would have no active pages other than the unreclaimable Version
-> Array (VA) and SECS pages.  Therefore, the cgroup needs examine its
-> unreclaimable page list, and finding an enclave given a SECS page or a
-> VA page. This will require a backpointer from a page to an enclave,
-> which is not available for VA pages.
->
-> Because struct sgx_epc_page instances of VA pages are not owned by an
-> sgx_encl_page instance, mark their owner as sgx_encl: pass the struct
-> sgx_encl of the enclave allocating the VA page to sgx_alloc_epc_page(),
-> which will store this value in the owner field of the struct
-> sgx_epc_page.  In a later patch, VA pages will be placed in an
-> unreclaimable queue that can be examined by the cgroup to select the OOM
-> killed enclave.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> ---
-> V4:
-> - Changes needed for patch reordering
-> - Revised commit messages (Jarkko)
-> ---
->  arch/x86/kernel/cpu/sgx/encl.c  |  5 +++--
->  arch/x86/kernel/cpu/sgx/encl.h  |  2 +-
->  arch/x86/kernel/cpu/sgx/ioctl.c |  2 +-
->  arch/x86/kernel/cpu/sgx/main.c  | 20 ++++++++++----------
->  arch/x86/kernel/cpu/sgx/sgx.h   |  5 ++++-
->  5 files changed, 19 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/enc=
-l.c
-> index d11d4111aa98..1aee0ad00e66 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.c
-> +++ b/arch/x86/kernel/cpu/sgx/encl.c
-> @@ -1238,6 +1238,7 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, un=
-signed long addr)
-> =20
->  /**
->   * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-> + * @encl:    The enclave that this page is allocated to.
 
-Maybe would more clear:
+--HVlTO/OC556kjwhz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-* @encl:	The new owner of the page
+On Tue, Sep 12, 2023 at 03:23:34PM -0400, N=EDcolas F. R. A. Prado wrote:
+> On Mon, Sep 11, 2023 at 03:29:00PM +0100, Mark Brown wrote:
 
->   * @reclaim: Reclaim EPC pages directly if none available. Enclave
->   *           mutex should not be held if this is set.
->   *
-> @@ -1247,12 +1248,12 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, =
-unsigned long addr)
->   *   a VA page,
->   *   -errno otherwise
->   */
-> -struct sgx_epc_page *sgx_alloc_va_page(bool reclaim)
-> +struct sgx_epc_page *sgx_alloc_va_page(struct sgx_encl *encl, bool recla=
-im)
->  {
->  	struct sgx_epc_page *epc_page;
->  	int ret;
-> =20
-> -	epc_page =3D sgx_alloc_epc_page(NULL, reclaim);
-> +	epc_page =3D sgx_alloc_epc_page(encl, reclaim);
->  	if (IS_ERR(epc_page))
->  		return ERR_CAST(epc_page);
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/enc=
-l.h
-> index f94ff14c9486..831d63f80f5a 100644
-> --- a/arch/x86/kernel/cpu/sgx/encl.h
-> +++ b/arch/x86/kernel/cpu/sgx/encl.h
-> @@ -116,7 +116,7 @@ struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_=
-encl *encl,
->  					  unsigned long offset,
->  					  u64 secinfo_flags);
->  void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr);
-> -struct sgx_epc_page *sgx_alloc_va_page(bool reclaim);
-> +struct sgx_epc_page *sgx_alloc_va_page(struct sgx_encl *encl, bool recla=
-im);
->  unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
->  void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
->  bool sgx_va_page_full(struct sgx_va_page *va_page);
-> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/io=
-ctl.c
-> index c28f074d5d71..3ab8c050e665 100644
-> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
-> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-> @@ -30,7 +30,7 @@ struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl=
-, bool reclaim)
->  		if (!va_page)
->  			return ERR_PTR(-ENOMEM);
-> =20
-> -		va_page->epc_page =3D sgx_alloc_va_page(reclaim);
-> +		va_page->epc_page =3D sgx_alloc_va_page(encl, reclaim);
->  		if (IS_ERR(va_page->epc_page)) {
->  			err =3D ERR_CAST(va_page->epc_page);
->  			kfree(va_page);
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index fba06dc5abfe..ed813288af44 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -107,7 +107,7 @@ static unsigned long __sgx_sanitize_pages(struct list=
-_head *dirty_page_list)
-> =20
->  static bool sgx_reclaimer_age(struct sgx_epc_page *epc_page)
->  {
-> -	struct sgx_encl_page *page =3D epc_page->owner;
-> +	struct sgx_encl_page *page =3D epc_page->encl_page;
->  	struct sgx_encl *encl =3D page->encl;
->  	struct sgx_encl_mm *encl_mm;
->  	bool ret =3D true;
-> @@ -139,7 +139,7 @@ static bool sgx_reclaimer_age(struct sgx_epc_page *ep=
-c_page)
-> =20
->  static void sgx_reclaimer_block(struct sgx_epc_page *epc_page)
->  {
-> -	struct sgx_encl_page *page =3D epc_page->owner;
-> +	struct sgx_encl_page *page =3D epc_page->encl_page;
->  	unsigned long addr =3D page->desc & PAGE_MASK;
->  	struct sgx_encl *encl =3D page->encl;
->  	int ret;
-> @@ -196,7 +196,7 @@ void sgx_ipi_cb(void *info)
->  static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
->  			 struct sgx_backing *backing)
->  {
-> -	struct sgx_encl_page *encl_page =3D epc_page->owner;
-> +	struct sgx_encl_page *encl_page =3D epc_page->encl_page;
->  	struct sgx_encl *encl =3D encl_page->encl;
->  	struct sgx_va_page *va_page;
->  	unsigned int va_offset;
-> @@ -249,7 +249,7 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_pag=
-e,
->  static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
->  				struct sgx_backing *backing)
->  {
-> -	struct sgx_encl_page *encl_page =3D epc_page->owner;
-> +	struct sgx_encl_page *encl_page =3D epc_page->encl_page;
->  	struct sgx_encl *encl =3D encl_page->encl;
->  	struct sgx_backing secs_backing;
->  	int ret;
-> @@ -309,7 +309,7 @@ static void sgx_reclaim_pages(void)
->  			break;
-> =20
->  		list_del_init(&epc_page->list);
-> -		encl_page =3D epc_page->owner;
-> +		encl_page =3D epc_page->encl_page;
-> =20
->  		if (kref_get_unless_zero(&encl_page->encl->refcount) !=3D 0) {
->  			sgx_epc_page_set_state(epc_page, SGX_EPC_PAGE_RECLAIM_IN_PROGRESS);
-> @@ -329,7 +329,7 @@ static void sgx_reclaim_pages(void)
-> =20
->  	i =3D 0;
->  	list_for_each_entry_safe(epc_page, tmp, &iso, list) {
-> -		encl_page =3D epc_page->owner;
-> +		encl_page =3D epc_page->encl_page;
-> =20
->  		if (!sgx_reclaimer_age(epc_page))
->  			goto skip;
-> @@ -362,7 +362,7 @@ static void sgx_reclaim_pages(void)
-> =20
->  	i =3D 0;
->  	list_for_each_entry_safe(epc_page, tmp, &iso, list) {
-> -		encl_page =3D epc_page->owner;
-> +		encl_page =3D epc_page->encl_page;
->  		sgx_reclaimer_write(epc_page, &backing[i++]);
-> =20
->  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
-> @@ -562,7 +562,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
-bool reclaim)
->  	for ( ; ; ) {
->  		page =3D __sgx_alloc_epc_page();
->  		if (!IS_ERR(page)) {
-> -			page->owner =3D owner;
-> +			page->encl_page =3D owner;
->  			break;
->  		}
-> =20
-> @@ -607,7 +607,7 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
-> =20
->  	spin_lock(&node->lock);
-> =20
-> -	page->owner =3D NULL;
-> +	page->encl_page =3D NULL;
->  	if (page->poison)
->  		list_add(&page->list, &node->sgx_poison_page_list);
->  	else
-> @@ -642,7 +642,7 @@ static bool __init sgx_setup_epc_section(u64 phys_add=
-r, u64 size,
->  	for (i =3D 0; i < nr_pages; i++) {
->  		section->pages[i].section =3D index;
->  		section->pages[i].flags =3D 0;
-> -		section->pages[i].owner =3D NULL;
-> +		section->pages[i].encl_page =3D NULL;
->  		section->pages[i].poison =3D 0;
->  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
->  	}
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
-h
-> index 764cec23f4e5..c75ddc7168fa 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -68,7 +68,10 @@ struct sgx_epc_page {
->  	unsigned int section;
->  	u16 flags;
->  	u16 poison;
-> -	struct sgx_encl_page *owner;
+> > So, I would interpret the overall result for the suite as being "No
+> > errors were found in any of the cards discovered" if there is no
+> > configuration file specified which enumerates the set of cards that are
+> > expected (if there is a config file that's a different matter, we know
+> > what we're expecting).  I'm not sure that the different behaviour for 0
+> > cards is super useful.
 
-	/* possible owner types */
-> +	union {
-> +		struct sgx_encl_page *encl_page;
-> +		struct sgx_encl *encl;
-> +	};
->  	struct list_head list;
->  };
-> =20
-> --=20
-> 2.25.1
+> Right... So what we want to be doing is adding a config file for every pl=
+atform
+> defining the card(s) and PCMs expected, so that when they're missing a te=
+st
+> failure will be triggered which is even more helpful. Although I've notic=
+ed that
+> only missing PCMs are detected currently, but I imagine it should be poss=
+ible to
+> to extend the code to detect missing cards as well.
 
-BR, Jarkko
+It seems like a reasonable approach for systems that do want to have
+this confirmation.
+
+> I take it the intention is to expand the conf.d directory with configs fo=
+r all
+> platforms currently being tested then? There's only one example file ther=
+e so I
+> wasn't sure.
+
+I think it's a question for people working on individual systems if they
+want that coverage, for example I don't really care for the things in my
+CI because I have higher level stuff which will notice any newly missing
+tests so I don't need the test to do anything here.
+
+--HVlTO/OC556kjwhz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUB1isACgkQJNaLcl1U
+h9B5dgf/cLXB70t6XRr3Q6R/yRGtT8S2hofbEAcc5/fjzyJfBGpuC9e2QDtn43LX
+nz2xx0PD72h2gg4yD3s80zc4wiGHOSaPAeDVCS/7VmxA37k18yP7pinIl/0LM+3s
+6vAOZvpQCRqNjIWJo9F/2/FfUVTKkYZ6rhXPfsTLG2de4U2oTe3zi5qc5/4hBpTh
+PteqY+OK6m6/27zm3uva3vJml6vnpeofBwo+IHp6+RYLMcF1xWw3rJFv4VlOSGOf
+GgbfY5xaOqnTHaCGVGRqQhQXRly3/iKRqv+goyPm/s/0PFgQfzIWtot9O0+0OIum
+4v44q+DWxTLjtgGlJh0VINsZdWiBFw==
+=ivXT
+-----END PGP SIGNATURE-----
+
+--HVlTO/OC556kjwhz--
