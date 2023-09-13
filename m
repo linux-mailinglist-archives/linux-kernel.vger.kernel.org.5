@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3027579E494
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA3F79E498
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbjIMKIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
+        id S239597AbjIMKJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236742AbjIMKI0 (ORCPT
+        with ESMTP id S233917AbjIMKJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:08:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527FA19B3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694599702; x=1726135702;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=yzqMZbUkE5IAiTLtJyHUMRqGU4HUARopLDxLmEnhssk=;
-  b=XmYvpD0EjpnksKKvI9y4+yL4RyiOQt1J9KI8LXZDijypYWfxi73qdNG2
-   mN4uVEz3qEByt6TXu/2/wCVICkPVp+gOqbb0XT0dC3CrkK2uo772qRGyb
-   5ci5AiV2ExiTvGccuzw4dMQKXfwHjRwsr649owEK2jyCq7I5wLXCHjtUc
-   ZIxjWfEyyfWiqtGkFqLcujmu8xrEOiuopzAGDag167khd4MiU++G4dlhH
-   MLEcrHZ0UBE5l1K63GjBDDUa0apCxh5chdH8gF3xjeFi/KVhlgnHnF89d
-   jtrdPIiKCP5vPEjnA+tGRBIz1SQtx6OkQvyraNkY21JpktiT17GNI1/vw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358052262"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="358052262"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 03:08:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="887271678"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="887271678"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2023 03:07:51 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgMnC-0000N7-1l;
-        Wed, 13 Sep 2023 10:08:18 +0000
-Date:   Wed, 13 Sep 2023 18:07:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: arch/mips/include/asm/barrier.h:(.text.db1100_mmc_cd+0x1c):
- undefined reference to `mmc_detect_change'
-Message-ID: <202309131725.kaSjigzn-lkp@intel.com>
+        Wed, 13 Sep 2023 06:09:10 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FD71996
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:09:06 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bcf2de59cso848385066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694599745; x=1695204545; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RBuDcsIBg3E//Vv/9g5CCU2fgfEAOAgpt5kUuVffHJ0=;
+        b=vBYnAR+NAGQeH9kr41dbTEgv+Sq5ADtvV/zAXfSUzrLqFKmrP9vYuVwBySRwBhEm88
+         sSh5d1z/BHBrxbZocBrd2kUHb88QMXEcjPySGQfdxB0JOwKygOSA26kt3JuZHPaw/5E/
+         jeYDNpPiHDXTGBjOXYQvKX92wDxIS81f2+R7+ZDwCG0d6uB8UcgrkdQVkNm1SlExCO/c
+         O3UaarS25hxnT2x0/zA75NVDsXq8RxfJp3WVZxQOSu/bBm7QDb0NVdlxPzgz+IMd/Xh4
+         KveQddKXEC5kqBoCSwV46Sn31iy0r9PvPqYevNgWgSSkOmNf+s0GYBcdxsiqSmKvyzx3
+         vd5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694599745; x=1695204545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RBuDcsIBg3E//Vv/9g5CCU2fgfEAOAgpt5kUuVffHJ0=;
+        b=YY868NurLb2njMEdl8vfV/WXyt7rc7S6xqpscovzdjkgDfo9JaMAgzY+URXvVg9WjB
+         HO9dYrwtpcVpIaTS+XZrJo9Vv+w40+oyyOqzh6f+5JKqmjIBJyhAYxkzdoCjK4ZgW0D+
+         mBVpial7eKJh4P57/ba/34Gi9rhI2zUllCb43Nf3lMFdfuGAyyL3TGKHosIaV0TTBQMc
+         Hme1Q73TT9rrPeh4TP8d/slkMJskvMVPr/58jPeOJA7jKrTOzecQJ6LLpW5obHXTq6gC
+         3pf1rmNNDqkA6c4w64avI21Il/Yz8a2lWplAdfwiXNJGqQ1qW8EZXtyK7Cr66oFMaDeq
+         ri7g==
+X-Gm-Message-State: AOJu0YwVFKhOXn5NXk53w1VNBkUbS/C2/C3l+u13oP6oax16G9UYBkwf
+        hY04dk/6yScNsLf7jJ//cpHnpw==
+X-Google-Smtp-Source: AGHT+IF/yRHvcLucaXStR591Lxu4VFassY8xgrQ/r0PBfb2nok2oOPNsZ7YjEkUux11cIYQqO3UCgw==
+X-Received: by 2002:a17:907:270e:b0:9a1:c00e:60cb with SMTP id w14-20020a170907270e00b009a1c00e60cbmr1779516ejk.10.1694599744967;
+        Wed, 13 Sep 2023 03:09:04 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id c13-20020a170906340d00b00982a352f078sm8119757ejb.124.2023.09.13.03.09.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 03:09:04 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ARM: dts: aspeed: drop unused ref_voltage ADC property
+Date:   Wed, 13 Sep 2023 12:09:01 +0200
+Message-Id: <20230913100901.100365-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3669558bdf354cd352be955ef2764cde6a9bf5ec
-commit: d4a5c59a955bba96b273ec1a5885bada24c56979 mmc: au1xmmc: force non-modular build and remove symbol_get usage
-date:   6 weeks ago
-config: mips-randconfig-r013-20211017 (https://download.01.org/0day-ci/archive/20230913/202309131725.kaSjigzn-lkp@intel.com/config)
-compiler: mipsel-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131725.kaSjigzn-lkp@intel.com/reproduce)
+Aspeed ADC "ref_voltage" property is neither documented nor used.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131725.kaSjigzn-lkp@intel.com/
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts   | 2 --
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts | 2 --
+ arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts  | 2 --
+ 3 files changed, 6 deletions(-)
 
-All errors (new ones prefixed by >>):
-
-   mipsel-linux-ld: arch/mips/alchemy/devboards/db1000.o: in function `db1100_mmc_cd':
->> arch/mips/include/asm/barrier.h:(.text.db1100_mmc_cd+0x1c): undefined reference to `mmc_detect_change'
-   mipsel-linux-ld: arch/mips/alchemy/devboards/db1200.o: in function `pb1200_mmc1_cdfn':
->> arch/mips/include/asm/barrier.h:(.text.pb1200_mmc1_cdfn+0x28): undefined reference to `mmc_detect_change'
-   mipsel-linux-ld: arch/mips/alchemy/devboards/db1200.o: in function `db1200_mmc_cdfn':
->> arch/mips/include/asm/barrier.h:(.text.db1200_mmc_cdfn+0x28): undefined reference to `mmc_detect_change'
-   mipsel-linux-ld: arch/mips/alchemy/devboards/db1300.o: in function `db1300_mmc_cdfn':
->> arch/mips/include/asm/barrier.h:(.text.db1300_mmc_cdfn+0x28): undefined reference to `mmc_detect_change'
-   mipsel-linux-ld: arch/mips/alchemy/devboards/db1300.o: in function `db1300_wm97xx_probe':
-   arch/mips/include/asm/barrier.h:(.text.db1300_wm97xx_probe+0x30): undefined reference to `wm97xx_config_gpio'
-   mipsel-linux-ld: arch/mips/include/asm/barrier.h:(.text.db1300_wm97xx_probe+0x50): undefined reference to `wm97xx_config_gpio'
-   mipsel-linux-ld: arch/mips/include/asm/barrier.h:(.text.db1300_wm97xx_probe+0x70): undefined reference to `wm97xx_register_mach_ops'
-
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+index 0715cb9ab30c..d7baa02e4666 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ampere-mtmitchell.dts
+@@ -541,7 +541,6 @@ bmc_ast2600_cpu: temperature-sensor@35 {
+ };
+ 
+ &adc0 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 
+ 	pinctrl-names = "default";
+@@ -552,7 +551,6 @@ &pinctrl_adc4_default &pinctrl_adc5_default
+ };
+ 
+ &adc1 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 
+ 	pinctrl-names = "default";
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
+index 7a53f54833a0..a86bc75a9182 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-greatlakes.dts
+@@ -211,7 +211,6 @@ &i2c13 {
+ };
+ 
+ &adc0 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
+ 			&pinctrl_adc2_default &pinctrl_adc3_default
+@@ -220,7 +219,6 @@ &pinctrl_adc4_default &pinctrl_adc5_default
+ };
+ 
+ &adc1 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc10_default
+ 			&pinctrl_adc11_default &pinctrl_adc12_default
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+index 64075cc41d92..4097e3d355cb 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+@@ -596,7 +596,6 @@ i2c-mux@72 {
+ };
+ 
+ &adc0 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
+ 			&pinctrl_adc2_default &pinctrl_adc3_default
+@@ -605,7 +604,6 @@ &pinctrl_adc4_default &pinctrl_adc5_default
+ };
+ 
+ &adc1 {
+-	ref_voltage = <2500>;
+ 	status = "okay";
+ 	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default>;
+ };
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
