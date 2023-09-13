@@ -2,329 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A83279EE3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D3B79EE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjIMQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
+        id S229556AbjIMQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjIMQ1H (ORCPT
+        with ESMTP id S229471AbjIMQ3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:27:07 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A88EB3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:27:03 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-502defbb0c3so1240669e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:27:03 -0700 (PDT)
+        Wed, 13 Sep 2023 12:29:02 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CC4B3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:28:58 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b5d4a8242so170127b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694622421; x=1695227221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ImOmWwyz3HgbNLgn7J7BpKMz/6LOvIVMJphJtWNdFH8=;
-        b=dpu132IaVVp+relroyqnNAL3TlUDIujgrY3YhrTsTK3iIdtO2UvXmDXiGT6R5kpxC6
-         2kc38y4vntXBfNjsZhUnrxCofD5mi/1AMvh1Dp/1UJma/QlDNu5A/sN820r0pPQ8v90r
-         aD4IxQ87mKb3ch18nY83HFrIYkAPPng0G+R635TasScQb7LkUGrz0iu2OsI3cqIVwwNw
-         yl4TCrm4w39n6T06UaCRx8c41rtrN7hKKMF+Gt/wzKcwrYBWTKJN/dt/tsIjHHfBymQH
-         sJm0rzU3MoiJLfBAKBVortdvjzpwac3aIq7Tl4QyjBm2xnuBej9F5LD4c48LVYGIKP19
-         IzsQ==
+        d=google.com; s=20230601; t=1694622537; x=1695227337; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uTzciLAK1rHaLd0gWzMb/fWg9Lw/LcXOlDJsQ/Mdv44=;
+        b=l4uOP3MY34hzAUeOFJRXJSa4hc4X+OKjFiAf3+yOoxNVo4Rw0QwAFImWyXdQmTLVfD
+         XWoYg0Ld3mi2akEqFtf8B9f9Muzn526V9HZJZ7VYhQF66Sy67eFXO1Ff8KxveH79ng2v
+         oMTx5HB/F9K6d0zkjZke5o0xvieu7YvP7hGXwr+xpkl9hl4VQ0y27D9G/rI6UN/9c0pq
+         B4hU5ZWL/J3Ro4qEs3uUnJSPHWcdX4OlUjCE8K3o376ixNnwRmBokA2iEnUjiHYQl5mC
+         LIe+nAmd76ITkUaRgptmNFBrf5vQKlUkG6FoV7btwXNaV8Z39UB3/J+O4/KZ1iQzRfIC
+         cvvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622421; x=1695227221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ImOmWwyz3HgbNLgn7J7BpKMz/6LOvIVMJphJtWNdFH8=;
-        b=JyHEREt9t1W3+9K5YABmflastdpOzcYEHUUFlL0iaPTfSggllW+8LhEQ+DCYERPbXP
-         C97EVPJSWRZhXynuC3a4vrMZ3qNsmUsNjokMI9Iqm7flGBdGAd9ppHiJ7yaGQz+Nl4ed
-         OAmsMJDkQG76HwreTYpOY9ryKXEgYV1h9RsHPSNwAa0hD/sOxlFvCdaur3+X4O3DLMxl
-         YLRjjwMbq0gIaj9K8I+qTlMmzqnZ1L+LEJ43Zjw+W9/YcNiAfnqDb+FizR+iUMOmRko0
-         sLMymkbrqa0bexsN1LCcxAgsTqcteIwg1SJebqcqn6BavI7cREJ6mywbK2wys5PlaSSB
-         42AQ==
-X-Gm-Message-State: AOJu0YwbplP4coMy4I42Yv4P45EdAhAmtE82XwB63KIfcuDbpAcgjWeo
-        YOafU72cZx0RDkRiATfK8n0dw77ABL/2CvrrCHPtcQ==
-X-Google-Smtp-Source: AGHT+IEVdrBXV15I+ebTdMHsS+CO9RcO+hxE2cChEkzf2US6/FybJsU7ff11kqhIJmPbKyT3SJ5hc475zEtcYSVRnv4=
-X-Received: by 2002:a05:6512:3486:b0:500:d960:8b6d with SMTP id
- v6-20020a056512348600b00500d9608b6dmr2284441lfr.33.1694622420933; Wed, 13 Sep
- 2023 09:27:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230913073846.1528938-1-yosryahmed@google.com>
- <20230913073846.1528938-4-yosryahmed@google.com> <20230913153758.GB45543@cmpxchg.org>
-In-Reply-To: <20230913153758.GB45543@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 13 Sep 2023 09:26:21 -0700
-Message-ID: <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1694622537; x=1695227337;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uTzciLAK1rHaLd0gWzMb/fWg9Lw/LcXOlDJsQ/Mdv44=;
+        b=LUfy24hNXO9gfqnN4p7iyPpVDEZnD8L0JysUqSNxp/ZirErCQx0f1khNqLS0LGAb+4
+         7x8OnR6X3+5P9QITflHKiqPYNtPnNpJ9aeZn0G9XW47YFufLbsJFdtXyLtT2Hq7nNcDZ
+         9Pr8nU/h34B65dVxErrJujW8GWTL9xyyR6I0AqZ11/DF4EQlDoULzkHY6k2rDCMQaW0r
+         ORvB2rn+3OXiF7/DUgPGC+m8QNsvQBNyW9yWgRO5ulMkEaOsATU+ZzcF3CmumFEnYInn
+         gPOw21H21Ar3EKymUWi3yGNaDhTBRjFXLo9glSAJLfXGftTSIDsdRTWkZiKeKaqRJPCe
+         0lbA==
+X-Gm-Message-State: AOJu0YzIQ2UBRQB09FvmWATW7lg7ymKcvM3B0xajn/sTxLuhJMoO42QH
+        bnJ1DcTGNK9v9Y377EQvkZ/KQzL5eqU=
+X-Google-Smtp-Source: AGHT+IF46GoZBpBu9T03PtWbv2UJpHn9Ww4IDx0PCBEgrZzLs7mJmzm5VD2skhuBuxBH34J0c2R8ha4gffg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:8210:0:b0:d7e:8dee:7813 with SMTP id
+ q16-20020a258210000000b00d7e8dee7813mr66802ybk.8.1694622537338; Wed, 13 Sep
+ 2023 09:28:57 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 09:28:55 -0700
+In-Reply-To: <d6601227769ec82eed95270053ef58e13c2c0a09.1694599703.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1694599703.git.isaku.yamahata@intel.com> <d6601227769ec82eed95270053ef58e13c2c0a09.1694599703.git.isaku.yamahata@intel.com>
+Message-ID: <ZQHjR8ZAwRUJGDzi@google.com>
+Subject: Re: [RFC PATCH 2/6] KVM: guestmem_fd: Make error_remove_page callback
+ to unmap guest memory
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 8:38=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Wed, Sep 13, 2023 at 07:38:46AM +0000, Yosry Ahmed wrote:
-> > Stats flushing for memcg currently follows the following rules:
-> > - Always flush the entire memcg hierarchy (i.e. flush the root).
-> > - Only one flusher is allowed at a time. If someone else tries to flush
-> >   concurrently, they skip and return immediately.
-> > - A periodic flusher flushes all the stats every 2 seconds.
-> >
-> > The reason this approach is followed is because all flushes are
-> > serialized by a global rstat spinlock. On the memcg side, flushing is
-> > invoked from userspace reads as well as in-kernel flushers (e.g.
-> > reclaim, refault, etc). This approach aims to avoid serializing all
-> > flushers on the global lock, which can cause a significant performance
-> > hit under high concurrency.
-> >
-> > This approach has the following problems:
-> > - Occasionally a userspace read of the stats of a non-root cgroup will
-> >   be too expensive as it has to flush the entire hierarchy [1].
-> > - Sometimes the stats accuracy are compromised if there is an ongoing
-> >   flush, and we skip and return before the subtree of interest is
-> >   actually flushed. This is more visible when reading stats from
-> >   userspace, but can also affect in-kernel flushers.
-> >
-> > This patch aims to solve both problems by reworking how flushing
-> > currently works as follows:
-> > - Without contention, there is no need to flush the entire tree. In thi=
-s
-> >   case, only flush the subtree of interest. This avoids the latency of =
-a
-> >   full root flush if unnecessary.
-> > - With contention, fallback to a coalesced (aka unified) flush of the
-> >   entire hierarchy, a root flush. In this case, instead of returning
-> >   immediately if a root flush is ongoing, wait for it to finish
-> >   *without* attempting to acquire the lock or flush. This is done using
-> >   a completion. Compared to competing directly on the underlying lock,
-> >   this approach makes concurrent flushing a synchronization point
-> >   instead of a serialization point. Once  a root flush finishes, *all*
-> >   waiters can wake up and continue at once.
-> > - Finally, with very high contention, bound the number of waiters to th=
-e
-> >   number of online cpus. This keeps the flush latency bounded at the ta=
-il
-> >   (very high concurrency). We fallback to sacrificing stats freshness o=
-nly
-> >   in such cases in favor of performance.
-> >
-> > This was tested in two ways on a machine with 384 cpus:
-> > - A synthetic test with 5000 concurrent workers doing allocations and
-> >   reclaim, as well as 1000 readers for memory.stat (variation of [2]).
-> >   No significant regressions were noticed in the total runtime.
-> >   Note that if concurrent flushers compete directly on the spinlock
-> >   instead of waiting for a completion, this test shows 2x-3x slowdowns.
-> >   Even though subsequent flushers would have nothing to flush, just the
-> >   serialization and lock contention is a major problem. Using a
-> >   completion for synchronization instead seems to overcome this problem=
-.
-> >
-> > - A synthetic stress test for concurrently reading memcg stats provided
-> >   by Wei Xu.
-> >   With 10k threads reading the stats every 100ms:
-> >   - 98.8% of reads take <100us
-> >   - 1.09% of reads take 100us to 1ms.
-> >   - 0.11% of reads take 1ms to 10ms.
-> >   - Almost no reads take more than 10ms.
-> >   With 10k threads reading the stats every 10ms:
-> >   - 82.3% of reads take <100us.
-> >   - 4.2% of reads take 100us to 1ms.
-> >   - 4.7% of reads take 1ms to 10ms.
-> >   - 8.8% of reads take 10ms to 100ms.
-> >   - Almost no reads take more than 100ms.
-> >
-> > [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43=
-KO9ME4-dsgfoQ@mail.gmail.com/
-> > [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcO=
-BZcz6POYTV-4g@mail.gmail.com/
-> > [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=3DiF5Lf_cRnKxUfkiEe0AMDTu6=
-yhrUAzX0b6a6rDg@mail.gmail.com/
-> >
-> > [weixugc@google.com: suggested the fallback logic and bounding the
-> > number of waiters]
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->
-> >       /*
-> > +      * Opportunistically try to only flush the requested subtree. Oth=
-erwise
-> > +      * fallback to a coalesced flush below.
-> >        */
-> > -     if (atomic_read(&stats_flush_ongoing) ||
-> > -         atomic_xchg(&stats_flush_ongoing, 1))
-> > +     if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mu=
-tex)) {
-> > +             cgroup_rstat_flush(memcg->css.cgroup);
-> > +             mutex_unlock(&subtree_flush_mutex);
-> >               return;
-> > +     }
-> >
-> > -     WRITE_ONCE(flush_last_time, jiffies_64);
-> > -
-> > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-> > +     /* A coalesced root flush is in order. Are we the designated flus=
-her? */
-> > +     spin_lock(&root_flusher_lock);
->
-> I can't say I'm crazy about this.
->
-> Let's say you have a fairly sprawling and active cgroup tree with lots
-> of updates in lots of groups in the system.
->
-> Add a periodic memory.stat reader to one of the subgroups, and that
-> reader will do very fast, localized aggregation.
->
-> Now add a periodic memory.stat reader to some other subgroup. They
-> might still both do very fast, localized aggregation. Or they might
-> collide; and now - despite having nothing in common, and sharing no
-> data besides the rstat lock - will have to flush the entire massive
-> tree. The rate at which this happens is purely dependent on timing of
-> what should be independent actors. This is really not great for the
-> p50 vs p99 gap.
+On Wed, Sep 13, 2023, isaku.yamahata@intel.com wrote:
+> @@ -316,26 +316,43 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+>  	end = start + thp_nr_pages(page);
+>  
+>  	list_for_each_entry(gmem, gmem_list, entry) {
+> +		struct kvm *kvm = gmem->kvm;
+> +
+> +		KVM_MMU_LOCK(kvm);
+> +		kvm_mmu_invalidate_begin(kvm);
+> +		KVM_MMU_UNLOCK(kvm);
+> +
+> +		flush = false;
+>  		xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
+> -			for (gfn = start; gfn < end; gfn++) {
+> -				if (WARN_ON_ONCE(gfn < slot->base_gfn ||
+> -						gfn >= slot->base_gfn + slot->npages))
+> -					continue;
+> -
+> -				/*
+> -				 * FIXME: Tell userspace that the *private*
+> -				 * memory encountered an error.
+> -				 */
+> -				send_sig_mceerr(BUS_MCEERR_AR,
+> -						(void __user *)gfn_to_hva_memslot(slot, gfn),
+> -						PAGE_SHIFT, current);
+> -			}
+> +			pgoff_t pgoff;
+> +
+> +			if (WARN_ON_ONCE(end < slot->base_gfn ||
+> +					 start >= slot->base_gfn + slot->npages))
+> +				continue;
+> +
+> +			pgoff = slot->gmem.pgoff;
+> +			struct kvm_gfn_range gfn_range = {
+> +				.slot = slot,
+> +				.start = slot->base_gfn + max(pgoff, start) - pgoff,
+> +				.end = slot->base_gfn + min(pgoff + slot->npages, end) - pgoff,
+> +				.arg.page = page,
+> +				.may_block = true,
+> +				.memory_error = true,
 
-Initially I had a few retry iterations for the subtree flush, where we
-fsleep for a bit and trylock again. I thought it was a little bit too
-complicated and the fsleep duration would be a magic value.
+Why pass arg.page and memory_error?  There's no usage in this mini-series, and no
+explanation of what arch code would do the information.  And I can't think of why
+arch would need to do anything but zap the SPTEs.  If the memory error is directly
+related to the current instruction, the vCPU will fault on the zapped SPTE, see
+-HWPOISON, and exit to userspace.  If the memory is unrelated, then the delayed
+notification is less than ideal, but not fundamentally broken, e.g. it's no worse
+than TDX's behavior of not signaling #MC until a poisoned cache line is actually
+accessed.
 
->
-> I think this whole thing is getting away from us.
->
-> When we first switched to rstat, every reader would take the global
-> rstat lock and then flush its local subtree of interest.
->
-> This was changed in the following commit:
->
-> commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
-> Author: Shakeel Butt <shakeelb@google.com>
-> Date:   Fri Nov 5 13:37:34 2021 -0700
->
->     memcg: unify memcg stat flushing
->
->     The memcg stats can be flushed in multiple context and potentially in
->     parallel too.  For example multiple parallel user space readers for
->     memcg stats will contend on the rstat locks with each other.  There i=
-s
->     no need for that.  We just need one flusher and everyone else can
->     benefit.
->
->     In addition after aa48e47e3906 ("memcg: infrastructure to flush memcg
->     stats") the kernel periodically flush the memcg stats from the root, =
-so,
->     the other flushers will potentially have much less work to do.
->
->     Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb@googl=
-e.com
->     Signed-off-by: Shakeel Butt <shakeelb@google.com>
->     Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->     Cc: Michal Hocko <mhocko@kernel.org>
->     Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
->
-> The idea was that we can avoid lock contention if somebody is already
-> doing the flushing. However, you're now bringing global serialization.
-> Clearly that idea didn't work out. What would be an obstacle to go
-> back to the original way of doing it?
+I don't get arg.page in particular, because having the gfn should be enough for
+arch code to take action beyond zapping SPTEs.
 
-The obstacle is high concurrency among flushers. A good example is
-reclaim code, we can have a lot of concurrent reclaimers. When I tried
-to go back to the original way of doing it, a stress test with high
-reclaim concurrency (100s or 1000s) would be 2x-3x slower. I think
-high concurrency among userspace reads would have a similar outcome,
-but I hadn't really checked.
+And _if_ we want to communicate the error to arch code, it would be much better
+to add a dedicated arch hook instead of piggybacking kvm_mmu_unmap_gfn_range()
+with a "memory_error" flag. 
 
-Basically this patch is trying to switch to root flushing when the
-cost of contending on the lock is roughly the same as a root flush (or
-waiting for one). It's doing that too eagerly now of course (if
-contenders > 1), we can try to calibrate this better.
+If we just zap SPTEs, then can't this simply be?
 
->
-> With one reader, this will work the same as in your proposal.
->
-> With two readers, just like in your proposal, flushing must be
-> serialized against the root level. But at least the two flushes only
-> aggregate the local data they actually care about - not the entire
-> tree data that doesn't even have readers! This is much better for lock
-> contention and performance.
+  static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
+  {
+	struct list_head *gmem_list = &mapping->private_list;
+	struct kvm_gmem *gmem;
+	pgoff_t start, end;
 
-Keep in mind that in my testing, I noticed that synchronization using
-a completion is more performant than serialization on a lock. I am
-assuming because when we contend on the underlying lock, we serially
-wake up and do the flush. Even if there is nothing to do (as you
-mention below), we still do this work. On the contrary, in this
-proposal we just wait for the root flush to finish and return
-immediately, and all waiters return at once (that's a lie because of
-scheduling internals).
+	filemap_invalidate_lock_shared(mapping);
 
-Also, in the current code, in the two reader scenario, the first
-reader will flush the entire tree anyway. The only difference is that
-the second reader will wait for it to finish instead of just skipping,
-which is the right thing to do from a correctness point of view. Right
-now it's a coin flip on whether you get updated stats if someone else
-is already flushing.
+	start = page->index;
+	end = start + thp_nr_pages(page);
 
-Having said that, I understand your concern, but I am not really sure
-how to bring back subtree flushing for all cases without regressing
-in-kernel flushers with high concurrency. I tried and it seemed to
-harm performance (at least of synthetic benchmarks). I also tried to
-break down the underlying rstat global lock, but that didn't turn out
-to be simple either.
+	list_for_each_entry(gmem, gmem_list, entry)
+		kvm_gmem_invalidate_begin(gmem, start, end);
 
->
-> One concern is the thresholding code. The cost of flushing on every
-> read is too high: even when there is no flush work, checking for it is
-> kind of expensive due to the locks and the for_each_possible_cpu().
->
-> Could we do something like the following?
->
->         mem_cgroup_flush(memcg)
->         {
->                 mutex_lock(&memcg_flush_mutex);
->                 if (atomic_read(&memcg->stat_delta) > THRESHOLD)
->                         cgroup_rstat_flush(memcg);
->                 mutex_unlock(&memcg_flush_mutex);
->         }
->
->         mem_cgroup_css_rstat_flush(css, cpu)
->         {
->                 ...
->                 /*
->                  * Reset here instead of mem_cgroup_flush()
->                  * so that each flushed subgroup is reset
->                  * recursively. A recent parent flush will
->                  * allow a child flush to skip.
->                  */
->                 atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0);
->         }
->
->         memcg_rstat_updated(memcg, val)
->         {
->                 atomic_add(&memcg->stat_delta, val);
+	/*
+	 * Do not truncate the range, what action is taken in response to the
+	 * error is userspace's decision (assuming the architecture supports
+	 * gracefully handling memory errors).  If/when the guest attempts to
+	 * access a poisoned page, kvm_gmem_get_pfn() will return -EHWPOISON,
+	 * at which point KVM can either terminate the VM or propagate the
+	 * error to userspace.
+	 */
 
-We need to do this for each parent in the hierarchy, not just the
-memcg being updated, right? I guess that may be too expensive for the
-update path.
+	list_for_each_entry(gmem, gmem_list, entry)
+		kvm_gmem_invalidate_end(gmem, start, end);
 
-I thought about doing it percpu and propagating to global "stat
-deltas" when each cpu has enough updates, similar to what we do now
-with the global delta. To do this efficiently we would want to move
-that to the cgroup core code, since we already have parents iteration
-in cgroup_rstat_updated() and we might want to reuse that. I also
-thought that may be too complex.
+	filemap_invalidate_unlock_shared(mapping);
 
-Anyway, I am open to suggestions on how to improve this.
-
->         }
+	return MF_DELAYED;
+  }
