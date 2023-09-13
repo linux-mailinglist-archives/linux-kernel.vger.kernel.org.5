@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B532B79E0BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C96A79E0BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238549AbjIMHTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S238571AbjIMHT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238541AbjIMHTX (ORCPT
+        with ESMTP id S238575AbjIMHT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:19:23 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95CD1727
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:19:19 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so8559844a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694589558; x=1695194358; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A3hr2Dkoscy8OKR4lP2RVrqnAFjnoPD9KTW+WVQxYRY=;
-        b=HedRivCyAvpHBOt/GY55mQe0+gM33dbCrhqcCnrF3SFFqKaMqfnk9D9E2E4RlPWSgH
-         KJN76WNvfWGoS+3z3EA6OXncqmvkFOPqXDPxAlNyOOyl29csuz4tQ0L2g8rWvlM4V2rd
-         3Pz0HDknYfOKAJFoaZErcJKjMhdbvMUQy6uRAcYxKvjgbUnNpw/frO4GlKN8OMTOhhhe
-         1QGMfPFJvl3QWLJDRmQ3rRFzQL+KFDAE40WdKnRkTtWTlcKZZqhYHsm94q4YsL8lY7bP
-         CA3dnulhM8fksmMvb/Qp4shpY2dWqJvbmmB8nIr1w/Ll5Mz0qDdaj3CtXBsVjprkAYCF
-         p/mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694589558; x=1695194358;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A3hr2Dkoscy8OKR4lP2RVrqnAFjnoPD9KTW+WVQxYRY=;
-        b=f7UHZH1+mJMQ1MRMtukLLqZkOKBa7jUVYuD9bxJT/Qy4P1JcqwIYPODDFKkYMe5Nfp
-         AgsWsSF9fRbDYfA33JahUm5NAUmIC79EF/Si22h02iDt9wNMZG5/JPa/exJxErz9OhUV
-         Rzb6hQRrR7TwDua4ug2mtzN8QtRXL5uOp9sxUm8M6px5YO8urFGg8P549L0t1k/MaWWo
-         52CGNoo1GNBQ4dbt+BPLqdf6GxIF5Up3TVhM+VB8KKCJDald3RsK0NpOaPicM2vgedzr
-         KSpXU9b9kO2Z1y+qJNE0M7/An5qkCEKu9EBNgb5k0St9HAQT4RYGNO+Rs9sq5mej1TXm
-         QseA==
-X-Gm-Message-State: AOJu0Yya25W/68cGYTPkssng/U3YSF/VF7a+35IR2Inds+10ERx84jil
-        zoth1UCqMK2dAvAhTLR7RUQtmQ==
-X-Google-Smtp-Source: AGHT+IE6YcmXnG2kZ7MVJ5DQQSPqKNTw5IPlBCUXbJfyxM9ZFvK7mh0xGHZANganLb81Af/8FOzTiQ==
-X-Received: by 2002:a05:6402:48f:b0:528:90d7:a19 with SMTP id k15-20020a056402048f00b0052890d70a19mr1734134edv.11.1694589558276;
-        Wed, 13 Sep 2023 00:19:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id b7-20020aa7c6c7000000b0052328d4268asm6841519eds.81.2023.09.13.00.19.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 00:19:17 -0700 (PDT)
-Message-ID: <43cd38f5-20ce-a97d-0906-55faf228b377@linaro.org>
-Date:   Wed, 13 Sep 2023 09:19:15 +0200
+        Wed, 13 Sep 2023 03:19:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7621986
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:19:23 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A478A66072BB;
+        Wed, 13 Sep 2023 08:19:21 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694589562;
+        bh=qRz9tPhMotdbCCNrMsna8quRbeFGkC6nsVVFqUDbq5E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Kzf9uz3R9ZeHfByQCDLX+j6OfkcOmaGBKFw8y+VeZTyNV819pX+DinMWSGl+wOIaL
+         9jOTZ637ZmNnITFEYNr2HukkhIXs8zsfd4jYhICL2260ACg9Wi20LQ44Nr9eWFlZu3
+         4JbeWHUPWFUaKM84K2A+GTGEf2G1aqzXhprOVqoGjzgT84xiLs4KZPYkCVp4Tr+4YS
+         pBjOvrH7q61KvUrjRDa9sXgobr/IyAt8/e0W0mY7Eo7BwhpchRaLqXLJZ3ar3YxrSR
+         6z4NHprWHg56Wy7gP46fAhFdzf7BoxIsI4thnwGjr4FjY4TfUfTrcU+ntlNi/jvfNA
+         P0dJv7jKQk6fA==
+Date:   Wed, 13 Sep 2023 09:19:18 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Danilo Krummrich <dakr@redhat.com>, daniel@ffwll.ch,
+        matthew.brost@intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, christian.koenig@amd.com,
+        faith.ekstrand@collabora.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v3 6/7] drm/gpuvm: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <20230913091918.62c06a30@collabora.com>
+In-Reply-To: <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
+References: <20230909153125.30032-1-dakr@redhat.com>
+        <20230909153125.30032-7-dakr@redhat.com>
+        <a9ef04d2-2525-65c0-2eda-45ca9a95a3a0@linux.intel.com>
+        <20230913090311.5eeb026a@collabora.com>
+        <CAPM=9tyf4m6gtUQ0BCraf0gB06_pxXV8gpQQsvWjeJnczmJkQQ@mail.gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 14/14] arm64: dts: qcom: sdm630: Fix USB2 clock-names
- order
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v2-14-1e506593b1bd@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-14-1e506593b1bd@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 15:31, Konrad Dybcio wrote:
-> The last 2 clock-names entries for the USB2 controller were swapped,
-> resulting in schema warnings:
-> 
-> ['cfg_noc', 'core', 'mock_utmi', 'sleep'] is too short
->         'iface' was expected
->         'sleep' was expected
->         'mock_utmi' was expected
-> 
-> Fix it and take the liberty to make the clock-names entries more
-> readable.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm630.dtsi | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> index f11d2a07508c..316c8fd224e0 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-> @@ -1394,8 +1394,10 @@ usb2: usb@c2f8800 {
->  				 <&gcc GCC_USB20_MASTER_CLK>,
->  				 <&gcc GCC_USB20_MOCK_UTMI_CLK>,
->  				 <&gcc GCC_USB20_SLEEP_CLK>;
-> -			clock-names = "cfg_noc", "core",
-> -				      "mock_utmi", "sleep";
-> +			clock-names = "cfg_noc",
-> +				      "core",
-> +				      "sleep",
-> +				      "mock_utmi";
+On Wed, 13 Sep 2023 17:05:42 +1000
+Dave Airlie <airlied@gmail.com> wrote:
 
-Plus this is just incorrect... :(
+> On Wed, 13 Sept 2023 at 17:03, Boris Brezillon
+> <boris.brezillon@collabora.com> wrote:
+> >
+> > On Tue, 12 Sep 2023 18:20:32 +0200
+> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+> > =20
+> > > > +/**
+> > > > + * get_next_vm_bo_from_list() - get the next vm_bo element
+> > > > + * @__gpuvm: The GPU VM
+> > > > + * @__list_name: The name of the list we're iterating on
+> > > > + * @__local_list: A pointer to the local list used to store alread=
+y iterated items
+> > > > + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_n=
+ext_cached_vm_bo()
+> > > > + *
+> > > > + * This helper is here to provide lockless list iteration. Lockles=
+s as in, the
+> > > > + * iterator releases the lock immediately after picking the first =
+element from
+> > > > + * the list, so list insertion deletion can happen concurrently. =
+=20
+> > >
+> > > Are the list spinlocks needed for that async state update from within
+> > > the dma-fence critical section we've discussed previously? =20
+> >
+> > Any driver calling _[un]link() from its drm_gpu_scheduler::run_job()
+> > hook will be in this situation (Panthor at the moment, PowerVR soon). I
+> > get that Xe and Nouveau don't need that because they update the VM
+> > state early (in the ioctl path), but I keep thinking this will hurt us
+> > if we don't think it through from the beginning, because once you've
+> > set this logic to depend only on resv locks, it will be pretty hard to
+> > get back to a solution which lets synchronous VM_BINDs take precedence
+> > on asynchronous request, and, with vkQueueBindSparse() passing external
+> > deps (plus the fact the VM_BIND queue might be pretty deep), it can
+> > take a long time to get your synchronous VM_BIND executed... =20
+>=20
+> btw what is the use case for this? do we have actual vulkan
+> applications we know will have problems here?
 
-Best regards,
-Krzysztof
+I don't, but I think that's a concern Faith raised at some point (dates
+back from when I was reading threads describing how VM_BIND on i915
+should work, and I was clearly discovering this whole VM_BIND thing at
+that time, so maybe I misunderstood).
 
+>=20
+> it feels like a bit of premature optimisation, but maybe we have use case=
+s.
+
+Might be, but that's the sort of thing that would put us in a corner if
+we don't have a plan for when the needs arise. Besides, if we don't
+want to support that case because it's too complicated, I'd recommend
+dropping all the drm_gpuvm APIs that let people think this mode is
+valid/supported (map/remap/unmap hooks in drm_gpuvm_ops,
+drm_gpuvm_sm_[un]map helpers, etc). Keeping them around just adds to the
+confusion.
