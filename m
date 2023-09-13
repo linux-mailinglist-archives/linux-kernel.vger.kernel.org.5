@@ -2,112 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D412779F3F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F58279F400
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjIMVql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38652 "EHLO
+        id S232769AbjIMVsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjIMVqf (ORCPT
+        with ESMTP id S229543AbjIMVsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:46:35 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB641996
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:30 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34df008b0e7so989295ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694641590; x=1695246390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QowXTRSSOC8IB4ueS9Xc0NCSyyqp5xMMkI7wePQSkak=;
-        b=I7g0e7aQ8TUPL+cBdyf68fqBnNwBC67NO0vKP5MRG20/M5u3zTlp1zm6KznJcLq+NK
-         wv9tB5PNakaKiLkwhtaqogQRBYuPn8VHAjDdaiHeToB8JGDaOLCP7nuU8d+XwXNo78sn
-         ZH2bqYf4GYJnuq3LyP11++q1Aq3AoleewMjQO83xXsWpMjz5SftIn6OME9PXHzHyOs+B
-         avL4sSPmTh2PqApzP2szzjA9Cq64TMFbrhdUFOt3ObvLnA5o4/M90gzmZ2/YwWoPwJVe
-         5bF7UgfRpkM9vmy5rwSJgLD88aWe2UQXL82rBcrwL/UvBT1luwLVIXsSFKE9jkRu3y4l
-         z6cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694641590; x=1695246390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QowXTRSSOC8IB4ueS9Xc0NCSyyqp5xMMkI7wePQSkak=;
-        b=PgMFhxnh1pFLmRXFwjaxmz/GlHgBB51x5Am9vyfHxZI2he/KR1aYb85TEyrNjW2zbZ
-         +oZyNtBhoS7Telysr5ADR22X49j/96DJY/krMf8eC5e7URuGWwicpp2EVClPM5OGW50r
-         yJHcStczsDX8bpOjol4FPgeHoxwyDWZg7M9Xt5uHZgnLn4/MGrwnVyLjTrxt1Y9dtnIE
-         qdrX19CQYB2LgTZ+WyxoXs5idcjacVxIj7O6LvUK14wMWHforzehTiFydy+anSdxshrO
-         TmYVE3aUdL79nN5OOUzb/bdQHbIvbs61mO6U1wdx1M+mrtAYsiOmZqLfwfx6Nz+O2isH
-         c2jg==
-X-Gm-Message-State: AOJu0YzWc9SLn7pU8YyEkio6KLOCBTLZalF4h8/fEzPEkUHJMJwdDdqV
-        jy+s72sGrl+uDJgPn7TvXWpxaA==
-X-Google-Smtp-Source: AGHT+IHU/gkz+MAiiC6NWDNP87Txd53/KstTmyp3J9ijsGKI32VL8YatV9xSuNpaaWqc2Xy5X4aa3w==
-X-Received: by 2002:a05:6e02:1bee:b0:34f:1e9c:45d9 with SMTP id y14-20020a056e021bee00b0034f1e9c45d9mr4553258ilv.12.1694641590231;
-        Wed, 13 Sep 2023 14:46:30 -0700 (PDT)
-Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
-        by smtp.gmail.com with ESMTPSA id r5-20020a92c505000000b0034f37a27bb4sm44105ilg.72.2023.09.13.14.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 14:46:29 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 21:46:27 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 4/7] bcachefs: Fix -Wformat in bch2_bucket_gens_invalid()
-Message-ID: <20230913214627.ankymdgklzwob4ij@google.com>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
- <20230912-bcachefs-warning-fixes-v1-4-a1cc83a38836@kernel.org>
+        Wed, 13 Sep 2023 17:48:02 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558601739;
+        Wed, 13 Sep 2023 14:47:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA8D2C433C8;
+        Wed, 13 Sep 2023 21:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694641677;
+        bh=ulSrj+T9NqdrdSB2rEZPgPGJhO75blW4ggcLU8BdGdE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=osJIR1cgrxYhGHFRhlduP+Bo7ARo6ROashTdOMScqrYSyg4nXzBZDGjVtCRyQeyqv
+         EFx9znGeYXOXrykfXgMNcr+NGVKvqapyeSpjV1QAU0MpYxye+57Av+zozUwyZ5LK2P
+         SwYz9JIwKj8dhFWm/ObQVc4k/XtN8FwnBRrgLmbJ7lpi3QicUgtTO7Oec1G0XXI5vC
+         U1PwoUeHKAW1PAKR9xO4JFd15AnqNMIIaBpGcC+mhy/A+FqeffgoCNgywaJ2Bsc4sG
+         r2YQU15jldMHuI3FZVpUPloQ15idG6MZz95tQbsDbbAqSGcvwsQQyhqan3m7oaLFHI
+         AkVyP/iT8+POg==
+Date:   Wed, 13 Sep 2023 23:47:53 +0200
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: Tree for Sep 13 (objtool)
+Message-ID: <20230913214753.3xqemkqjhxcwqaz4@treble>
+References: <20230913150445.49bee094@canb.auug.org.au>
+ <a53f9840-8581-44cc-beaf-6fb644c8cacc@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-4-a1cc83a38836@kernel.org>
+In-Reply-To: <a53f9840-8581-44cc-beaf-6fb644c8cacc@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:41PM -0700, Nathan Chancellor wrote:
-> When building bcachefs for 32-bit ARM, there is a compiler warning in
-> bch2_bucket_gens_invalid() due to use of an incorrect format specifier:
->
->   fs/bcachefs/alloc_background.c:530:10: error: format specifies type 'unsigned long' but the argument has type 'size_t' (aka 'unsigned int') [-Werror,-Wformat]
->     529 |                 prt_printf(err, "bad val size (%lu != %zu)",
->         |                                                ~~~
->         |                                                %zu
->     530 |                        bkey_val_bytes(k.k), sizeof(struct bch_bucket_gens));
->         |                        ^~~~~~~~~~~~~~~~~~~
->   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
->     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
->         |                                                               ^~~~~~~~~~~
->
-> On 64-bit architectures, size_t is 'unsigned long', so there is no
-> warning when using %lu but on 32-bit architectures, size_t is 'unsigned
-> int'. Use '%zu', the format specifier for 'size_t', to eliminate the
-> warning.
->
-> Fixes: 4be0d766a7e9 ("bcachefs: bucket_gens btree")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+On Wed, Sep 13, 2023 at 01:34:11PM -0700, Randy Dunlap wrote:
+> 
+> 
+> On 9/12/23 22:04, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20230912:
+> > 
+> > The bpf-next tree (I think) gained a boot time warning due to a semantic
+> > interaction with changes in the bpf tree.
+> > 
+> > The drm-misc tree gained a conflict against Linus' tree.
+> > 
+> > Non-merge commits (relative to Linus' tree): 4427
+> >  1907 files changed, 354449 insertions(+), 27039 deletions(-)
+> > 
+> > ----------------------------------------------------------------------------
+> 
+> on x86_64:
+> 
+> drivers/media/common/siano/smscoreapi.o: warning: objtool: .text.unlikely: unexpected end of section
+> 
+> Full randconfig file is attached.
 
-> ---
->  fs/bcachefs/alloc_background.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-> index 67e73864823c..2b0d155d1ed5 100644
-> --- a/fs/bcachefs/alloc_background.c
-> +++ b/fs/bcachefs/alloc_background.c
-> @@ -526,7 +526,7 @@ int bch2_bucket_gens_invalid(const struct bch_fs *c, struct bkey_s_c k,
->  			     struct printbuf *err)
->  {
->  	if (bkey_val_bytes(k.k) != sizeof(struct bch_bucket_gens)) {
-> -		prt_printf(err, "bad val size (%lu != %zu)",
-> +		prt_printf(err, "bad val size (%zu != %zu)",
->  		       bkey_val_bytes(k.k), sizeof(struct bch_bucket_gens));
->  		return -BCH_ERR_invalid_bkey;
->  	}
->
-> --
-> 2.42.0
->
+Objtool is correct:
+
+  Disassembly of section .text.unlikely:
+
+  0000000000000000 <smscore_set_device_mode.cold>:
+     0:   48 83 05 00 00 00 00 01         addq   $0x1,0x0(%rip)        # 8 <__UNIQUE_ID___addressable_smscore_unregister_client433>       3: R_X86_64_PC32        .bss+0xa03
+
+It's not really a functional bug, it's just gcov somehow keeping GCC
+from finishing an optimization.
+
+In smscore_load_firmware_from_file(), which gets inlined by
+smscore_set_device_mode(), GCC is smart enough to know that
+
+  'coredev->device_flags & SMS_DEVICE_FAMILY2'
+
+is always true, so it half-optimizes out the ':' condition:
+
+		rc = (coredev->device_flags & SMS_DEVICE_FAMILY2) ?
+			smscore_load_firmware_family2(coredev, fw_buf, fw_buf_size)
+			: loadfirmware_handler(coredev->context, fw_buf,
+			fw_buf_size);
+
+Though it actually still keeps the branch.  It goes to
+smscore_set_device_mode.cold so it can set the GCOV "branch taken" bit
+for the !SMS_DEVICE_FAMILY2 case.  But then it just falls off the edge
+off .text.unlikely.
+
+Peter, any opinions how to handle this?
+
+We could just make smscore_load_firmware_from_file() noinline.
+
+Or we could hard-code the fact that smscore_load_firmware_from_file() is
+only called in the SMS_DEVICE_FAMILY2 case, like:
+
+diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+index 7d4bc2733f2b..58d951903e93 100644
+--- a/drivers/media/common/siano/smscoreapi.c
++++ b/drivers/media/common/siano/smscoreapi.c
+@@ -1127,19 +1127,19 @@ static char *smscore_get_fw_filename(struct smscore_device_t *coredev,
+  * @param coredev pointer to a coredev object returned by
+  *                smscore_register_device
+  * @param filename null-terminated string specifies firmware file name
+- * @param loadfirmware_handler device handler that loads firmware
+  *
+  * return: 0 on success, <0 on error.
+  */
+ static int smscore_load_firmware_from_file(struct smscore_device_t *coredev,
+-					   int mode,
+-					   loadfirmware_t loadfirmware_handler)
++					   int mode)
+ {
+ 	int rc = -ENOENT;
+ 	u8 *fw_buf;
+ 	u32 fw_buf_size;
+ 	const struct firmware *fw;
+ 
++	BUG_ON(coredev->device_flags != SMS_DEVICE_FAMILY2);
++
+ 	char *fw_filename = smscore_get_fw_filename(coredev, mode);
+ 	if (!fw_filename) {
+ 		pr_err("mode %d not supported on this device\n", mode);
+@@ -1147,10 +1147,6 @@ static int smscore_load_firmware_from_file(struct smscore_device_t *coredev,
+ 	}
+ 	pr_debug("Firmware name: %s\n", fw_filename);
+ 
+-	if (!loadfirmware_handler &&
+-	    !(coredev->device_flags & SMS_DEVICE_FAMILY2))
+-		return -EINVAL;
+-
+ 	rc = request_firmware(&fw, fw_filename, coredev->device);
+ 	if (rc < 0) {
+ 		pr_err("failed to open firmware file '%s'\n", fw_filename);
+@@ -1166,10 +1162,7 @@ static int smscore_load_firmware_from_file(struct smscore_device_t *coredev,
+ 		memcpy(fw_buf, fw->data, fw->size);
+ 		fw_buf_size = fw->size;
+ 
+-		rc = (coredev->device_flags & SMS_DEVICE_FAMILY2) ?
+-			smscore_load_firmware_family2(coredev, fw_buf, fw_buf_size)
+-			: loadfirmware_handler(coredev->context, fw_buf,
+-			fw_buf_size);
++		rc = smscore_load_firmware_family2(coredev, fw_buf, fw_buf_size);
+ 	}
+ 
+ 	kfree(fw_buf);
+@@ -1353,8 +1346,7 @@ int smscore_set_device_mode(struct smscore_device_t *coredev, int mode)
+ 		}
+ 
+ 		if (!(coredev->modes_supported & (1 << mode))) {
+-			rc = smscore_load_firmware_from_file(coredev,
+-							     mode, NULL);
++			rc = smscore_load_firmware_from_file(coredev, mode);
+ 			if (rc >= 0)
+ 				pr_debug("firmware download success\n");
+ 		} else {
