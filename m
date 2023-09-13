@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 647FA79DE42
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E0C79DE46
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238181AbjIMCVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 22:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
+        id S235662AbjIMC20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 22:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238166AbjIMCVF (ORCPT
+        with ESMTP id S229719AbjIMC2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 22:21:05 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1242E1716;
-        Tue, 12 Sep 2023 19:21:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2810DC433C8;
-        Wed, 13 Sep 2023 02:21:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694571660;
-        bh=yCdyENSSr2jBoqcU5uuhQp9Eg5ZiZzpyIfgAEWQFG08=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G+l4nTmJpLTnnS7zeMq7sUR0wx9A3+mSu7hZCG0AI8qsphhiKn/LA+9HqEahsbJkW
-         0VIYo5N/jkiNWdz5mJ70XL49dQ1xejMgCB+uYW73vVraKzDPiM3zegf5Y/bgvYN7IZ
-         GFK1gmEqs8YH7k18ckYgFZfPa9qs/iuxvztNwWFzkudCTmJxoaqxbL2/lTf1DP9WWV
-         H5iXINSUW0dB57rg3MTW4mQnxqtXQMBWidwbBIrWXua4awmxZq9qLDfCQrCqK3P3wK
-         uKb+G+s+SL95eFpdJuOuJMiT5S4CRPUVwuI/bAZipHgcHpNPnNf8KjGOw7iRv3DTw1
-         rjAKkU//Pz6RA==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v2 2/2] Docs/admin-guide/mm/damon/usage: document damos_before_apply tracepoint
-Date:   Wed, 13 Sep 2023 02:20:50 +0000
-Message-Id: <20230913022050.2109-3-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230913022050.2109-1-sj@kernel.org>
-References: <20230913022050.2109-1-sj@kernel.org>
+        Tue, 12 Sep 2023 22:28:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7BB1713
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 19:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694572101; x=1726108101;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ADJXPAGxhH/KIzMbrba+LZ+A/B+nI3RN78Cnn9H+UvU=;
+  b=HlGVOA8HzfXnnFEFccthZd8uVd8ho4rzUs6Wl5BeB+RyBP85nT1lQaNL
+   OElLuMupR9LRM6FB9JCG0WtnK82ECXo6HRyMBRP31liFjVEFZ8DYL2YtN
+   k6YwtAeygbjh4KKGXb6rsxA5XGzyev3+HycUJ5e0n9U/6ozBgQgLxY/Xi
+   37Umx9D9H/Vs4o8TPcmWD9sTE6B4G7FgXPwra+tsjW+JVZTyo8R1LaLI5
+   aPXeExOur/4FPyFgIPB9wmfD+vZpBHKgnHrh8PqbIBYlIY8xlXoaA/3Tu
+   Z9SSWgNt8TKwFXjH2Vw/aUHKnHSCRu1R4BeX8e5rl09f3xLDv7zTBDZma
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="377454858"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="377454858"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2023 19:28:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="693689531"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="693689531"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga003.jf.intel.com with ESMTP; 12 Sep 2023 19:28:17 -0700
+Message-ID: <0f4fb712-28e3-8620-6a65-59c9b9d77740@linux.intel.com>
+Date:   Wed, 13 Sep 2023 10:25:16 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, Michael Shavit <mshavit@google.com>,
+        Vasant Hegde <vasant.hegde@amd.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/6] iommu/vt-d: Remove mm->pasid in
+ intel_sva_bind_mm()
+Content-Language: en-US
+To:     Tina Zhang <tina.zhang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>
+References: <20230912125936.722348-1-tina.zhang@intel.com>
+ <20230912125936.722348-3-tina.zhang@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230912125936.722348-3-tina.zhang@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document damos_before_apply tracepoint on the usage document.
+On 9/12/23 8:59 PM, Tina Zhang wrote:
+> The pasid is passed in as a parameter through .set_dev_pasid() callback.
+> Thus, intel_sva_bind_mm() can directly use it instead of retrieving the
+> pasid value from mm->pasid.
+> 
+> Suggested-by: Lu Baolu<baolu.lu@linux.intel.com>
+> Signed-off-by: Tina Zhang<tina.zhang@intel.com>
+> ---
+>   drivers/iommu/intel/svm.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/admin-guide/mm/damon/usage.rst | 37 ++++++++++++++++----
- 1 file changed, 30 insertions(+), 7 deletions(-)
+The intel_svm_bind_mm() could be further merged into
+intel_svm_set_dev_pasid(). It's fine if you keep it as is since we need
+more cleanup and refactoring work after this series get merged.
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 282062b6f134..6272cd36590a 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -496,15 +496,24 @@ the files as above.  Above is only for an example.
- 
- .. _tracepoint:
- 
--Tracepoint for Monitoring Results
--=================================
-+Tracepoints for Monitoring Results
-+==================================
- 
- Users can get the monitoring results via the :ref:`tried_regions
--<sysfs_schemes_tried_regions>` or a tracepoint, ``damon:damon_aggregated``.
--While the tried regions directory is useful for getting a snapshot, the
--tracepoint is useful for getting a full record of the results.  While the
--monitoring is turned on, you could record the tracepoint events and show
--results using tracepoint supporting tools like ``perf``.  For example::
-+<sysfs_schemes_tried_regions>`.  The interface is useful for getting a
-+snapshot, but it could be inefficient for fully recording all the monitoring
-+results.  For the purpose, two trace points, namely ``damon:damon_aggregated``
-+and ``damon:damos_before_apply``, are provided.  ``damon:damon_aggregated``
-+provides the whole monitoring results, while ``damon:damos_before_apply``
-+provides the monitoring results for regions that each DAMON-based Operation
-+Scheme (:ref:`DAMOS <damon_design_damos>`) is gonna be applied.  Hence,
-+``damon:damos_before_apply`` is more useful for recording internal behavior of
-+DAMOS, or DAMOS target access
-+:ref:`pattern <damon_design_damos_access_pattern>` based query-like efficient
-+monitoring results recording.
-+
-+While the monitoring is turned on, you could record the tracepoint events and
-+show results using tracepoint supporting tools like ``perf``.  For example::
- 
-     # echo on > monitor_on
-     # perf record -e damon:damon_aggregated &
-@@ -527,6 +536,20 @@ counter).  Finally the tenth field (``X``) shows the ``age`` of the region
- (refer to :ref:`design <damon_design_age_tracking>` for more details of the
- counter).
- 
-+If the event was ``damon:damos_beofre_apply``, the ``perf script`` output would
-+be somewhat like below::
-+
-+    kdamond.0 47293 [000] 80801.060214: damon:damos_before_apply: ctx_idx=0 scheme_idx=0 target_idx=0 nr_regions=11 121932607488-135128711168: 0 136
-+    [...]
-+
-+Each line of the output represents each monitoring region that each DAMON-based
-+Operation Scheme was about to be applied at the traced time.  The first five
-+fields are as usual.  It shows the index of the DAMON context (``ctx_idx=X``)
-+of the scheme in the list of the contexts of the context's kdamond, the index
-+of the scheme (``scheme_idx=X``) in the list of the schemes of the context, in
-+addition to the output of ``damon_aggregated`` tracepoint.
-+
-+
- .. _debugfs_interface:
- 
- debugfs Interface (DEPRECATED!)
--- 
-2.25.1
+So,
 
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
