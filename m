@@ -2,83 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D678D79EC22
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2632A79EC25
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240896AbjIMPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S241154AbjIMPIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjIMPHj (ORCPT
+        with ESMTP id S240639AbjIMPIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:07:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B7B7;
-        Wed, 13 Sep 2023 08:07:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D54C1C433C8;
-        Wed, 13 Sep 2023 15:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694617655;
-        bh=SYzUOpvEWA+yyqFFVtA92rfi3iMtgTA3kqi44w7DWsk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sK8vGcMPpRNYhDpRYfwH/9KknVNkBCBwMjnCJ+uPuDQYPqN/G2Vu75ziBRwFhUaQ4
-         dpDON6WakckbrSsU+lv+faFmsX14Gz3ML2PXVwK+vWOHp4bWsqv2RPkjsg/ohAb4bH
-         glRlXqtvF67qTtbsubSMOq9Y79ZPgcICMMAr4nsAXhrPrrrODwmnzVOjWKt4ySzkYu
-         hCi9Ig06KgXS0ZjOMbA6Dys4acf6rYdK8xhQGOu4wjDiYjUlXVL5Pv8YgqsJgDiqAn
-         6JA1SBbPJ49x+pvBHSw6C08enJ35TR+2KFlwreS2b5HR3EVDJU6i8VG7yRXbGXgewS
-         buDvy7lYjZ8lA==
-Date:   Wed, 13 Sep 2023 16:07:27 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Myunguk Kim <mwkim@gaonchips.com>
-Cc:     alsa-devel@alsa-project.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, fido_max@inbox.ru,
-        joabreu@synopsys.com, krzysztof.kozlowski+dt@linaro.org,
-        kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, perex@perex.cz, robh+dt@kernel.org,
-        tiwai@suse.com, u.kleine-koenig@pengutronix.de,
-        xingyu.wu@starfivetech.com
-Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
-Message-ID: <71628b39-fd59-45ee-bad9-3e6bd42cb97d@sirena.org.uk>
-References: <ZP8Irf6g+sG6Ax9j@finisterre.sirena.org.uk>
- <20230913040902.1496711-1-mwkim@gaonchips.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JskZn6gM/rV4+uuO"
-Content-Disposition: inline
-In-Reply-To: <20230913040902.1496711-1-mwkim@gaonchips.com>
-X-Cookie: Use extra care when cleaning on stairs.
+        Wed, 13 Sep 2023 11:08:10 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C38CBD;
+        Wed, 13 Sep 2023 08:08:06 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id A55FC32009BD;
+        Wed, 13 Sep 2023 11:08:04 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute6.internal (MEProxy); Wed, 13 Sep 2023 11:08:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1694617684; x=1694704084; bh=vj
+        M/jYFR2qdUh2vuA7Pk/tqRh3E9vy5+10ysE/89vhE=; b=b2F8aD1gtCXrwZhtv5
+        vkwJmMDY/m9eSkSa5n/UEZBY1Js6HmjQDwNeOp1Irpabs2QyzmqKvttg6tvOji8e
+        0M4omAVdjJj4H4HjmgtbwEihUieUhgFF1mmsS5FcxlV7HwzVZ7Vgvd+3pcEbV2zf
+        yXVsDfstjVdCeNHGnAwMgHOXe94yE4UFkLiIlWsnELZM55MqOGs5xAsNQWq8qbUd
+        YnnefeAEcfVcJ9mt5yi8R8C3S048oiYK12R1vdh6KQ0JM79RLoSXPwCEDIjK72Ou
+        HXjxhInZAqxUhFodEAO4n+DXwy/+hN7eZncxpsmv8Xw9wwS700VLMX/N0UHeLKcB
+        zXJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1694617684; x=1694704084; bh=vjM/jYFR2qdUh
+        2vuA7Pk/tqRh3E9vy5+10ysE/89vhE=; b=h9gS6lu305E8O+X9qLML8SHJwX+bQ
+        GI8Ih6blkYGxMCgPOXYBDOlUF3epbOpOz50n1/hVwJ3ZLt7SZFCL49dfVGOaUhi7
+        lzc2pBoE7k45ULIUG723A2mFHQaPQltiXd+cVqcrsjMnkF5gMIh3EiUNHwpox/3Z
+        vIOyDL1+foQIgd92TJ0DHYoN85V3HoLmbYQTn2os/4kXI1K2zmwOu5RAEc0Z881i
+        tB4SkmB1jVEvcPSVcud+0SPIN0fY53xMHRkgKwLFA4sZUGIl42r1oKwsYoGUY/Y4
+        fYmmTdg+tXA0+GiR+lpGAyzi/8GdUth1xsYUAnWeDK377OmZC8Hj4DjJw==
+X-ME-Sender: <xms:U9ABZR57fqM-ECMePEbGwjqIYB1TNtmU8Tw5IUYfjSb0BOIeePU4fQ>
+    <xme:U9ABZe57FQvZlaVWE4o2JTtbtV_FwEa73gEmla97dkQtSiJtAx9DVv7NWDFjm9JEY
+    BYye_TXze5hdj5jI8w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedgkeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdluddtmdenucfjughrpefofgggkfgjfhffhffvvefutgesthdtredt
+    reertdenucfhrhhomhepfdflrghnucfjvghnughrihhkucfhrghrrhdfuceokhgvrhhnvg
+    hlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepleetheegueekvdeihfffffff
+    teefledtjeeileetheejudekheetvdethffgffelnecuffhomhgrihhnpehkvghrnhgvlh
+    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
+    pehkvghrnhgvlhesjhhfrghrrhdrtggt
+X-ME-Proxy: <xmx:U9ABZYfwRaAlKaM2arHGAk0mIVTl_br5eymeZ_B4xmYEGzYjxjVlDQ>
+    <xmx:U9ABZaIfOCcV0P7644ryWyx6PUfSfZdqLPnk3oo2X2HsyosfAqNdHw>
+    <xmx:U9ABZVLI7AA2hmzqGDki3koSt4-QvHhuaPxHEEZKFj45GBjPixYVDw>
+    <xmx:VNABZSATPivrCvjn6reba6ZUjp5OQjehD4tZf4omNsl2NiLv3_VKNA>
+Feedback-ID: i0fc947c4:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8AA6C15A0091; Wed, 13 Sep 2023 11:08:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <11e0aff9-0388-4a6c-8986-301d4edc482d@app.fastmail.com>
+In-Reply-To: <CVHVCHYZT8KG.3L0IH30QYT0WH@suppilovahvero>
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+ <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+ <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
+ <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
+ <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
+ <CVH4GZXQFZ1F.2V5BIZNSKQ1FA@suppilovahvero>
+ <5a67051d-eb21-4a96-acc4-40f829a59e23@app.fastmail.com>
+ <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
+ <1c342231-7672-450e-b945-e57cd17b4ae7@app.fastmail.com>
+ <CVHVCHYZT8KG.3L0IH30QYT0WH@suppilovahvero>
+Date:   Wed, 13 Sep 2023 17:07:31 +0200
+From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     kexec@lists.infradead.org, x86@kernel.org, tglx@linutronix.de,
+        dhowells@redhat.com, vgoyal@redhat.com, keyrings@vger.kernel.org,
+        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
+        bhelgaas@google.com, lennart@poettering.net,
+        "Luca Boccassi" <bluca@debian.org>
+Subject: Re: [PATCH 0/1] x86/kexec: UKI support
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 13, 2023, at 4:45 PM, Jarkko Sakkinen wrote:
+> On Tue Sep 12, 2023 at 11:49 PM EEST, Jan Hendrik Farr wrote:
+>>
+>> > These are sort of "tautological" arguments. There must be some
+>> > objective reasons why this architecture was chosen instead of other
+>> > (i.e. using what already pre-exists).
+>>
+>> I think I misunderstood you in my earlier reply. I do not understand
+>> in what way you think my arguments are tautological. Can you
+>> elaborate?
+>
+> current Linux kernel has these features *already* in place:
+>
+> 1. CONFIG_EFI_STUB
+> 2. CONFIG_CMDLINE
+> 3. CONFIG_INITRAMFS_SOURCE
+> 4. Secure boot with MOK keys and .machine keyring to manage them.
 
---JskZn6gM/rV4+uuO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, you also have to add
+5. CONFIG_CMDLINE_OVERRIDE
+6. CONFIG_INITRAMFS_FORCE
 
-On Wed, Sep 13, 2023 at 01:09:03PM +0900, Myunguk Kim wrote:
+Otherwise the bootloader can supply an unsinged initramfs/cmdline and
+the kernel will use them.
 
-> In this case, it is not used through the DMA API.=20
-> The connection relationship is as follows.
->   i2s --- pcm_dmaengine ---  DMA IP (ie. pl330)
-> So, control was possible only by directly setting the maxburst property.
+And then you do not get all the features. One of your earlier responses
+asks how a user might change the cmdline with UKIs. With UKIs all they
+have to do is create a small addon file and sign that (with their MOK if
+they are using a generic distro with shim, instead of using their own
+secure boot keys). With the bzImage alternative they would have to
+recompile the kernel. This was reason #1.
 
-pcm_dmaengine is a wrapper binding the DMA API into ASoC...
+Also what about #3? How would you pass PCR signatures using the normal
+EFI stub / bzImage?
 
---JskZn6gM/rV4+uuO
-Content-Type: application/pgp-signature; name="signature.asc"
+I can see how #4 is kinda tautological, but please don't dismiss the
+other arguments without even responding.
 
------BEGIN PGP SIGNATURE-----
+> Given that every single feature in IKU does exists in some form in the
+> Linux kernel, I think it is fair to ask why scrape away this all
+> existing science and reinvent the wheel?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUB0C4ACgkQJNaLcl1U
-h9CYPwf/eIOjdsbfVUtd+7nrcZMXcCeLgXOgT8xemnVvr78ESGnp7aH/Ke/IloW/
-5cFGLOAQJfUeknUFd/X5Cp0UJpqgBwvQYheCaRU8wLr7vV6B7KBkIaOB7ZEfurT3
-kupI6QMqDaey8qlwKeO0YC6nMGVlDE+1Fef86159QscpyReQJcGOa/f9zbiS+ohl
-WkDgQbWBZCao8OUtgyE1uwJnPy6K2HxrJTpb4OwP1Bx40W3d4Hj1arAPpKUL+lv+
-x/iUSv+fA/4JY0Rtem4HKlFIOhVxer9u1WAvBMTMM6wWhTOS5biVXGXb2kjm5/O4
-+g414PVgdcpHlHA3iBf2v21S9zGLnQ==
-=5GdS
------END PGP SIGNATURE-----
+No, not every single feature of *UKI*s exist in the linux kernel today.
 
---JskZn6gM/rV4+uuO--
+> If your reponse is "systemd", it is a tautological answerk, i.e. same
+> as sayig that "it is good because it is good". Not very motivating.
+
+Again for #4 I see the point, but what about #1 , and #3 (#2 is not that
+important, tooling can be fixed)? Also, do you see how your argument is
+basically: "The current way is better because it is the current way."
+I'm not trying to be snarky. But I'm coming from the perspective of a
+user that actually experienced a problem (not being able to kexec my
+UKIs) and trying to come up with a fix. I'm not trying to push something
+for the heck of it.
+
+Also the UKI spec at this point is not ready for the kernel, so this is
+not going in anyways right now. See the discussion on v2:
+https://lore.kernel.org/kexec/ZP+41JvEFjsnEG19@MiWiFi-R3L-srv/T/#t
