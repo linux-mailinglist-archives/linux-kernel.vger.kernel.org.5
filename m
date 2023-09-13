@@ -2,279 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B87479EA97
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3FF79EADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241293AbjIMOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S241315AbjIMOTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241290AbjIMOI5 (ORCPT
+        with ESMTP id S241297AbjIMOTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:08:57 -0400
-Received: from cantor.telenet-ops.be (cantor.telenet-ops.be [195.130.132.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854451BC9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:51 -0700 (PDT)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by cantor.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PF56Qjz4x7bD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:08:49 +0200 (CEST)
-Received: from ramsan.of.borg ([84.195.187.55])
-        by laurent.telenet-ops.be with bizsmtp
-        id lS8o2A00D1C8whw01S8omP; Wed, 13 Sep 2023 16:08:49 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXe-003cuH-Os;
-        Wed, 13 Sep 2023 16:08:48 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXw-00FV7X-3J;
-        Wed, 13 Sep 2023 16:08:48 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 52/52] m68k: sun3/3x: Add and use "sun3.h"
-Date:   Wed, 13 Sep 2023 16:08:42 +0200
-Message-Id: <87856ef9ef8955f459fb691faca921c0a688bc80.1694613528.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
-References: <cover.1694613528.git.geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Wed, 13 Sep 2023 10:19:09 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF4E5BA3;
+        Wed, 13 Sep 2023 07:11:07 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DBe3Cl017669;
+        Wed, 13 Sep 2023 14:11:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=2Vvyz3kaBR5K9Mp05wf4x59Bwusl+MEdOtqRu7dB39g=;
+ b=ovFsknzEC/G1nM8AGwgRFO3ZzNkt7GFbTG+o1w1sV6XX0BOMTYddjDI0/L7Y8mtLasp4
+ Jflpq4rwnN67+M0cqkagWqQjcYwc0Pxf1BjetgE2bMVXf/Rdo5Gmq4PoV7nqnY0yvMhA
+ o5xbNENw4j47UioVeIwD6i3zB+yA3GvoHuYsXZ405AltrTJxYuQejsA/zaafGHqmGY40
+ wPiWq8UW5Re7WHgEogqkpu8zPc/C0QafJR0lTqktWOyJLzqbRDDgWbAQCIDjXdEMhL2L
+ cO8eCbBm7k+TR52PKrj95L4RSpMTJOnzBd9mETzwCRjukXHJjDpxMQFKxobdU4H1VXgO /A== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t314chhh6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 14:11:02 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38DEAwSN007638;
+        Wed, 13 Sep 2023 14:10:58 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t0hskt7mn-1;
+        Wed, 13 Sep 2023 14:10:58 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DEAwR4007624;
+        Wed, 13 Sep 2023 14:10:58 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38DEAwFb007620;
+        Wed, 13 Sep 2023 14:10:58 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
+        id 71BED1D52; Wed, 13 Sep 2023 19:40:57 +0530 (+0530)
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        djakov@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com, Rohit Agarwal <quic_rohiagar@quicinc.com>
+Subject: [PATCH v3 0/2] Add interconnect driver for SDX75
+Date:   Wed, 13 Sep 2023 19:40:54 +0530
+Message-Id: <1694614256-24109-1-git-send-email-quic_rohiagar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: KDkr9WnQBeOnhZtwmHZfYZk9z3KoZ3Pm
+X-Proofpoint-ORIG-GUID: KDkr9WnQBeOnhZtwmHZfYZk9z3KoZ3Pm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_07,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ clxscore=1015 phishscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=727 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309130115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1:
+Hi,
 
-    arch/m68k/sun3/idprom.c:86:6: warning: no previous prototype for ‘sun3_get_model’ [-Wmissing-prototypes]
-       86 | void sun3_get_model(char *model)
-	  |      ^~~~~~~~~~~~~~
-    arch/m68k/sun3/config.c:53:24: warning: no previous prototype for ‘sun3_init’ [-Wmissing-prototypes]
-       53 | asmlinkage void __init sun3_init(void)
-	  |                        ^~~~~~~~~
-    arch/m68k/sun3/mmu_emu.c:117:6: warning: no previous prototype for ‘print_pte_vaddr’ [-Wmissing-prototypes]
-      117 | void print_pte_vaddr (unsigned long vaddr)
-	  |      ^~~~~~~~~~~~~~~
-    arch/m68k/sun3/mmu_emu.c:126:13: warning: no previous prototype for ‘mmu_emu_init’ [-Wmissing-prototypes]
-      126 | void __init mmu_emu_init(unsigned long bootmem_end)
-	  |             ^~~~~~~~~~~~
-    arch/m68k/sun3/mmu_emu.c:353:5: warning: no previous prototype for ‘mmu_emu_handle_fault’ [-Wmissing-prototypes]
-      353 | int mmu_emu_handle_fault (unsigned long vaddr, int read_flag, int kernel_fault)
-	  |     ^~~~~~~~~~~~~~~~~~~~
-    arch/m68k/sun3/leds.c:6:6: warning: no previous prototype for ‘sun3_leds’ [-Wmissing-prototypes]
-	6 | void sun3_leds(unsigned char byte)
-	  |      ^~~~~~~~~
-    arch/m68k/sun3/intersil.c:27:5: warning: no previous prototype for ‘sun3_hwclk’ [-Wmissing-prototypes]
-       27 | int sun3_hwclk(int set, struct rtc_time *t)
-	  |     ^~~~~~~~~~
-    arch/m68k/sun3x/config.c:30:6: warning: no previous prototype for ‘sun3_leds’ [-Wmissing-prototypes]
-       30 | void sun3_leds(unsigned char byte)
-	  |      ^~~~~~~~~
+Changes in v3:
+ - Removed the unnecessary declaration of a struct from patch 2/2
+ - Collected the reviewed by tag
 
-Fix this by introducing a new header file "sun3.h" for holding the
-prototypes of functions implemented in arch/m68k/sun3/ and
-arch/m68k/sun3x/.
+Changes in v2:
+ - Updated the bindings to merge the if clauses and updated the maintainer.
+ - Updated the drivers file to a latest template to add the missing const
+   keyword.
+ - Rebased on v6.6-rc1
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
-v2:
-  - Add Acked-by.
----
- arch/m68k/kernel/traps.c  |  2 +-
- arch/m68k/mm/sun3kmap.c   |  6 ++----
- arch/m68k/mm/sun3mmu.c    |  2 +-
- arch/m68k/sun3/config.c   |  4 ++--
- arch/m68k/sun3/idprom.c   |  2 ++
- arch/m68k/sun3/intersil.c |  1 +
- arch/m68k/sun3/leds.c     |  2 ++
- arch/m68k/sun3/mmu_emu.c  |  1 +
- arch/m68k/sun3/sun3.h     | 22 ++++++++++++++++++++++
- arch/m68k/sun3/sun3ints.c |  2 +-
- arch/m68k/sun3x/config.c  |  3 +--
- 11 files changed, 36 insertions(+), 11 deletions(-)
- create mode 100644 arch/m68k/sun3/sun3.h
+This series adds interconnect driver support for SDX75 platform.
 
-diff --git a/arch/m68k/kernel/traps.c b/arch/m68k/kernel/traps.c
-index 129c89349e1a40aa..8ee773d29954921c 100644
---- a/arch/m68k/kernel/traps.c
-+++ b/arch/m68k/kernel/traps.c
-@@ -364,7 +364,7 @@ static inline void access_error040(struct frame *fp)
- #if defined(CONFIG_SUN3)
- #include <asm/sun3mmu.h>
- 
--extern int mmu_emu_handle_fault (unsigned long, int, int);
-+#include "../sun3/sun3.h"
- 
- /* sun3 version of bus_error030 */
- 
-diff --git a/arch/m68k/mm/sun3kmap.c b/arch/m68k/mm/sun3kmap.c
-index 4f2a7ef8348bc1a6..ac091892d82f8a06 100644
---- a/arch/m68k/mm/sun3kmap.c
-+++ b/arch/m68k/mm/sun3kmap.c
-@@ -18,11 +18,9 @@
- #include <asm/io.h>
- #include <asm/sun3mmu.h>
- 
--#undef SUN3_KMAP_DEBUG
-+#include "../sun3/sun3.h"
- 
--#ifdef SUN3_KMAP_DEBUG
--extern void print_pte_vaddr(unsigned long vaddr);
--#endif
-+#undef SUN3_KMAP_DEBUG
- 
- extern void mmu_emu_map_pmeg (int context, int vaddr);
- 
-diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
-index c5e6a23e0262128d..494739c1783e4dea 100644
---- a/arch/m68k/mm/sun3mmu.c
-+++ b/arch/m68k/mm/sun3mmu.c
-@@ -24,7 +24,7 @@
- #include <asm/machdep.h>
- #include <asm/io.h>
- 
--extern void mmu_emu_init (unsigned long bootmem_end);
-+#include "../sun3/sun3.h"
- 
- const char bad_pmd_string[] = "Bad pmd in pte_alloc: %08lx\n";
- 
-diff --git a/arch/m68k/sun3/config.c b/arch/m68k/sun3/config.c
-index 40796c3e84400def..cd8af809e0cad1e4 100644
---- a/arch/m68k/sun3/config.c
-+++ b/arch/m68k/sun3/config.c
-@@ -35,11 +35,11 @@
- #include <asm/sun3ints.h>
- #include <asm/config.h>
- 
-+#include "sun3.h"
-+
- char sun3_reserved_pmeg[SUN3_PMEGS_NUM];
- 
- static void sun3_sched_init(void);
--extern void sun3_get_model (char* model);
--extern int sun3_hwclk(int set, struct rtc_time *t);
- 
- volatile char* clock_va;
- extern unsigned long availmem;
-diff --git a/arch/m68k/sun3/idprom.c b/arch/m68k/sun3/idprom.c
-index 9ffd6515ad74a7fa..ca633a5f5eb1281a 100644
---- a/arch/m68k/sun3/idprom.c
-+++ b/arch/m68k/sun3/idprom.c
-@@ -17,6 +17,8 @@
- #include <asm/idprom.h>
- #include <asm/machines.h>  /* Fun with Sun released architectures. */
- 
-+#include "sun3.h"
-+
- struct idprom *idprom;
- EXPORT_SYMBOL(idprom);
- 
-diff --git a/arch/m68k/sun3/intersil.c b/arch/m68k/sun3/intersil.c
-index 8fc74864de81962b..29674cfa9bb3aa35 100644
---- a/arch/m68k/sun3/intersil.c
-+++ b/arch/m68k/sun3/intersil.c
-@@ -17,6 +17,7 @@
- #include <asm/intersil.h>
- #include <asm/machdep.h>
- 
-+#include "sun3.h"
- 
- /* bits to set for start/run of the intersil */
- #define STOP_VAL (INTERSIL_STOP | INTERSIL_INT_ENABLE | INTERSIL_24H_MODE)
-diff --git a/arch/m68k/sun3/leds.c b/arch/m68k/sun3/leds.c
-index 7c67b58ebf13fa4a..4bb95318fd548302 100644
---- a/arch/m68k/sun3/leds.c
-+++ b/arch/m68k/sun3/leds.c
-@@ -3,6 +3,8 @@
- #include <asm/sun3mmu.h>
- #include <asm/io.h>
- 
-+#include "sun3.h"
-+
- void sun3_leds(unsigned char byte)
- {
- 	unsigned char dfc;
-diff --git a/arch/m68k/sun3/mmu_emu.c b/arch/m68k/sun3/mmu_emu.c
-index 7ec9bbf8a3644a10..e5a92da43d1978df 100644
---- a/arch/m68k/sun3/mmu_emu.c
-+++ b/arch/m68k/sun3/mmu_emu.c
-@@ -27,6 +27,7 @@
- #include <asm/mmu_context.h>
- #include <asm/dvma.h>
- 
-+#include "sun3.h"
- 
- #undef DEBUG_MMU_EMU
- #define DEBUG_PROM_MAPS
-diff --git a/arch/m68k/sun3/sun3.h b/arch/m68k/sun3/sun3.h
-new file mode 100644
-index 0000000000000000..8d98c0aaedc0c686
---- /dev/null
-+++ b/arch/m68k/sun3/sun3.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#include <linux/linkage.h>
-+
-+struct rtc_time;
-+
-+/* config.c */
-+asmlinkage void sun3_init(void);
-+
-+/* idprom.c */
-+void sun3_get_model(char *model);
-+
-+/* intersil.c */
-+int sun3_hwclk(int set, struct rtc_time *t);
-+
-+/* leds.c */
-+void sun3_leds(unsigned char byte);
-+
-+/* mmu_emu.c */
-+void mmu_emu_init(unsigned long bootmem_end);
-+int mmu_emu_handle_fault(unsigned long vaddr, int read_flag, int kernel_fault);
-+void print_pte_vaddr(unsigned long vaddr);
-diff --git a/arch/m68k/sun3/sun3ints.c b/arch/m68k/sun3/sun3ints.c
-index 36cc280a4505f5d2..781e7c0a6f523a2b 100644
---- a/arch/m68k/sun3/sun3ints.c
-+++ b/arch/m68k/sun3/sun3ints.c
-@@ -17,7 +17,7 @@
- #include <asm/irq_regs.h>
- #include <linux/seq_file.h>
- 
--extern void sun3_leds (unsigned char);
-+#include "sun3.h"
- 
- void sun3_disable_interrupts(void)
- {
-diff --git a/arch/m68k/sun3x/config.c b/arch/m68k/sun3x/config.c
-index e2a5d84df6d214d1..798ea72a0ea3c3e2 100644
---- a/arch/m68k/sun3x/config.c
-+++ b/arch/m68k/sun3x/config.c
-@@ -22,11 +22,10 @@
- #include <asm/config.h>
- 
- #include "time.h"
-+#include "../sun3/sun3.h"
- 
- volatile char *clock_va;
- 
--extern void sun3_get_model(char *model);
--
- void sun3_leds(unsigned char byte)
- {
- 
+Thanks,
+Rohit.
+
+Rohit Agarwal (2):
+  dt-bindings: interconnect: Add compatibles for SDX75
+  interconnect: qcom: Add SDX75 interconnect provider driver
+
+ .../bindings/interconnect/qcom,sdx75-rpmh.yaml     |   92 ++
+ drivers/interconnect/qcom/Kconfig                  |    9 +
+ drivers/interconnect/qcom/Makefile                 |    2 +
+ drivers/interconnect/qcom/sdx75.c                  | 1107 ++++++++++++++++++++
+ drivers/interconnect/qcom/sdx75.h                  |   97 ++
+ include/dt-bindings/interconnect/qcom,sdx75.h      |  102 ++
+ 6 files changed, 1409 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
+ create mode 100644 drivers/interconnect/qcom/sdx75.c
+ create mode 100644 drivers/interconnect/qcom/sdx75.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sdx75.h
+
 -- 
-2.34.1
+2.7.4
 
