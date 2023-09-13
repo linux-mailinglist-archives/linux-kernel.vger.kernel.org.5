@@ -2,225 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF0079E743
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD23579E744
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbjIMLw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S235826AbjIMLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjIMLw6 (ORCPT
+        with ESMTP id S231334AbjIMLx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:52:58 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D91198B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:52:53 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 38DBqFdj069069;
-        Wed, 13 Sep 2023 19:52:15 +0800 (+08)
-        (envelope-from zhifeng.tang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RlzJ66cY2z2RwGmC;
-        Wed, 13 Sep 2023 19:49:10 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 13 Sep
- 2023 19:52:14 +0800
-From:   Zhifeng Tang <zhifeng.tang@unisoc.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Zhifeng Tang <zhifeng.tang@unisoc.com>,
-        Maxime Ripard <mripard@kernel.org>
-CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zhifeng Tang <zhifeng.tang23@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH V2] clk: sprd: Composite driver support offset config
-Date:   Wed, 13 Sep 2023 19:52:11 +0800
-Message-ID: <20230913115211.11512-1-zhifeng.tang@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 13 Sep 2023 07:53:26 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BF6198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:53:22 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68fb2e9ebbfso2927059b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694606002; x=1695210802; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=txo6BrtzsDRNaEZGpUrtKI7Bla2kdgHJ0hJV7p2Zrw0=;
+        b=odl8vf75Q1uV1emB9CRqo2g+LNya7ItpbboK2JUxr2CND5gjZ6BWPndoPUg939s52Y
+         iWhcnHTVUApUFruPAqRyaDFk/FCwSg/DbrAVTr/CiQnLAzGklJCndWmWjn5FaTaj3uC8
+         LCk25uTxqmEai7/Gl7OnZiS2EECviQSLRT7EobFDL4q2XCvqteeoou2BGE1Lpdpd81p+
+         0YrVquT239QFNN+1FT32Nm9r7BuuMTgScIDu4xZJUlcGUIuUa3d92mM8y/UiOFRhrZiR
+         k+bB6L8cQDBXgzKRQJYo1LkhIqaFqaeyX16Ug5TCjsuZNihGcSdOV8N28/+P3qBYa+YR
+         fyGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694606002; x=1695210802;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=txo6BrtzsDRNaEZGpUrtKI7Bla2kdgHJ0hJV7p2Zrw0=;
+        b=l9oq12FeyND11lATkTSn+ZZ8Gy17BAI8EsAzRmqnadJIQBgPtqh4SWhvc5uHg77/5F
+         MnEbKWloXGPDO5ExwmZPb4n8p5p9zpHjVytT4ucOMkRmSp5z1ptNQVhDCG5TajFVa8QT
+         JCA197zF0bqrD8IuS4rkx9UlWaLbDuyq1LpVSoCmyM4nzHFFVcF8hNdJVKW7jLcfufh1
+         DrJOW4DlvPAEnViqfRFr5y9Cp8uonehtyQEoxJa+CGZ+Bg9a75+OWueTlP+JXp3k8sDm
+         11OEGUmempvaaT+b85mIudddJRwvJwUnesuryiu+sRNHTk4+1z8PEXgvDmWFi3tiORPB
+         Mk8Q==
+X-Gm-Message-State: AOJu0YzpGfq7YEKIA5vrQ4uVSjKaVyPI3FAGWkSsZ/rxE8Ba2Jyna0Lt
+        CyNAAsCe3NJrsNzsFa4S878=
+X-Google-Smtp-Source: AGHT+IGbgoTo2RvBzKjh9GfwnT9NZRJ9a9RTK6ZJEujchnEVcUAKSI7fxMTZQPzPHLo8Tpk1veoFlQ==
+X-Received: by 2002:a05:6a00:1747:b0:68e:3b0b:8192 with SMTP id j7-20020a056a00174700b0068e3b0b8192mr2793651pfc.21.1694606002311;
+        Wed, 13 Sep 2023 04:53:22 -0700 (PDT)
+Received: from ubuntu.myguest.virtualbox.org ([106.205.101.29])
+        by smtp.gmail.com with ESMTPSA id j22-20020a62e916000000b006870ed427b2sm9211275pfh.94.2023.09.13.04.53.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 04:53:22 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 17:23:12 +0530
+From:   Pavan Bobba <opensource206@gmail.com>
+To:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] staging: vt6655: Type encoding info dropped from array
+ name "byVT3253B0_"
+Message-ID: <ZQGiqA2GoDp/WiPK@ubuntu.myguest.virtualbox.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL: SHSQR01.spreadtrum.com 38DBqFdj069069
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The composite interface support the offset configuration,
-which is used to support mux and div in different registers.
-Because some sprd projects, the divider has different
-addresses from mux for one composite clk.
+Array names starting with "byVT3253B0_" updated like below:
 
-Signed-off-by: Zhifeng Tang <zhifeng.tang@unisoc.com>
-Reviewed-by: Chunyan Zhang <zhang.lyra@gmail.com>
----
-Change in V2: fixed Chunyan review comments.
--Fixed the typo "userd" and add more detail in commit message.
--The **_OFFSET() function adds an offset parameter,and offset
- is of type 'signed' int,which would be cover the cases no 
- matter whether the divider register offset is up or down based
- on the mux register address.That would be more flexible.
----
- drivers/clk/sprd/composite.h | 36 +++++++++++++++++++++++++++---------
- drivers/clk/sprd/div.c       |  6 +++---
- drivers/clk/sprd/div.h       | 17 ++++++++++++-----
- 3 files changed, 42 insertions(+), 17 deletions(-)
+a.type encoding info dropped from names
+b.camelcase names replaced by snakecase
 
-diff --git a/drivers/clk/sprd/composite.h b/drivers/clk/sprd/composite.h
-index adbabbe596b7..15cec97d2aa7 100644
---- a/drivers/clk/sprd/composite.h
-+++ b/drivers/clk/sprd/composite.h
-@@ -19,24 +19,24 @@ struct sprd_comp {
- };
+Issue found by checkpatch
+
+Signed-off-by: Pavan Bobba <opensource206@gmail.com>
+---
+v1 -> v2: Name of the tool added in the body of explanation,
+            which found this issue
+
+v2 -> v3: subject modified to more specific detail
+
+v3 -> v4: changelog modified as per patch submission guidelines
+
+v4 -> v5: sent previouse version of patch twice by mistake.this is to
+          avoid confusion.nothing is changed
+
+ drivers/staging/vt6655/baseband.c | 32 +++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
+index 696d4dd03aa2..55224918794b 100644
+--- a/drivers/staging/vt6655/baseband.c
++++ b/drivers/staging/vt6655/baseband.c
+@@ -761,7 +761,7 @@ static const unsigned char vt3253b0_rfmd[CB_VT3253B0_INIT_FOR_RFMD][2] = {
+ #define CB_VT3253B0_AGC_FOR_RFMD2959 195
+ /* For RFMD2959 */
+ static
+-unsigned char byVT3253B0_AGC4_RFMD2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
++unsigned char vt3253b0_agc4_rfmd2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
+ 	{0xF0, 0x00},
+ 	{0xF1, 0x3E},
+ 	{0xF0, 0x80},
+@@ -962,7 +962,7 @@ unsigned char byVT3253B0_AGC4_RFMD2959[CB_VT3253B0_AGC_FOR_RFMD2959][2] = {
+ #define CB_VT3253B0_INIT_FOR_AIROHA2230 256
+ /* For AIROHA */
+ static
+-unsigned char byVT3253B0_AIROHA2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
++unsigned char vt3253b0_airoha2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
+ 	{0x00, 0x31},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -1223,7 +1223,7 @@ unsigned char byVT3253B0_AIROHA2230[CB_VT3253B0_INIT_FOR_AIROHA2230][2] = {
  
- #define SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
--				 _mshift, _mwidth, _dshift, _dwidth,	\
--				 _flags, _fn)				\
-+				 _mshift, _mwidth, _doffset, _dshift,	\
-+				 _dwidth, _flags, _fn)			\
- 	struct sprd_comp _struct = {					\
- 		.mux	= _SPRD_MUX_CLK(_mshift, _mwidth, _table),	\
--		.div	= _SPRD_DIV_CLK(_dshift, _dwidth),		\
-+		.div	= _SPRD_DIV_CLK(_doffset, _dshift, _dwidth),	\
- 		.common = {						\
- 			.regmap		= NULL,				\
- 			.reg		= _reg,				\
- 			.hw.init = _fn(_name, _parent,			\
- 				       &sprd_comp_ops, _flags),		\
--			 }						\
-+		}							\
- 	}
+ #define CB_VT3253B0_INIT_FOR_UW2451 256
+ /* For UW2451 */
+-static unsigned char byVT3253B0_UW2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
++static unsigned char vt3253b0_uw2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
+ 	{0x00, 0x31},
+ 	{0x01, 0x00},
+ 	{0x02, 0x00},
+@@ -1484,7 +1484,7 @@ static unsigned char byVT3253B0_UW2451[CB_VT3253B0_INIT_FOR_UW2451][2] = {
  
- #define SPRD_COMP_CLK_TABLE(_struct, _name, _parent, _reg, _table,	\
- 			    _mshift, _mwidth, _dshift, _dwidth, _flags)	\
- 	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
--				 _mshift, _mwidth, _dshift, _dwidth,	\
--				 _flags, CLK_HW_INIT_PARENTS)
-+				 _mshift, _mwidth, 0x0, _dshift,	\
-+				 _dwidth, _flags, CLK_HW_INIT_PARENTS)
+ #define CB_VT3253B0_AGC 193
+ /* For AIROHA */
+-static unsigned char byVT3253B0_AGC[CB_VT3253B0_AGC][2] = {
++static unsigned char vt3253b0_agc[CB_VT3253B0_AGC][2] = {
+ 	{0xF0, 0x00},
+ 	{0xF1, 0x00},
+ 	{0xF0, 0x80},
+@@ -2010,8 +2010,8 @@ bool bb_vt3253_init(struct vnt_private *priv)
  
- #define SPRD_COMP_CLK(_struct, _name, _parent, _reg, _mshift,		\
- 		      _mwidth, _dshift, _dwidth, _flags)		\
-@@ -47,15 +47,33 @@ struct sprd_comp {
- 				 _mshift, _mwidth, _dshift,		\
- 				 _dwidth, _flags)			\
- 	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
--				 _mshift, _mwidth, _dshift, _dwidth,	\
--				 _flags, CLK_HW_INIT_PARENTS_DATA)
-+				 _mshift, _mwidth, 0x0, _dshift,	\
-+				 _dwidth, _flags,			\
-+				 CLK_HW_INIT_PARENTS_DATA)
+ 			for (ii = 0; ii < CB_VT3253B0_AGC_FOR_RFMD2959; ii++)
+ 				result &= bb_write_embedded(priv,
+-					byVT3253B0_AGC4_RFMD2959[ii][0],
+-					byVT3253B0_AGC4_RFMD2959[ii][1]);
++					vt3253b0_agc4_rfmd2959[ii][0],
++					vt3253b0_agc4_rfmd2959[ii][1]);
  
- #define SPRD_COMP_CLK_DATA(_struct, _name, _parent, _reg, _mshift,	\
- 			   _mwidth, _dshift, _dwidth, _flags)		\
--	SPRD_COMP_CLK_DATA_TABLE(_struct, _name, _parent, _reg,	NULL,	\
-+	SPRD_COMP_CLK_DATA_TABLE(_struct, _name, _parent, _reg, NULL,	\
- 				 _mshift, _mwidth, _dshift, _dwidth,	\
- 				 _flags)
+ 			iowrite32(0x23, iobase + MAC_REG_ITRTMSET);
+ 			vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+@@ -2027,12 +2027,12 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if ((by_rf_type == RF_AIROHA) || (by_rf_type == RF_AL2230S)) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AIROHA2230[ii][0],
+-				byVT3253B0_AIROHA2230[ii][1]);
++				vt3253b0_airoha2230[ii][0],
++				vt3253b0_airoha2230[ii][1]);
  
-+#define SPRD_COMP_CLK_DATA_TABLE_OFFSET(_struct, _name, _parent, _reg,	\
-+					_table, _mshift, _mwidth,	\
-+					_doffset, _dshift, _dwidth,	\
-+					_flags)				\
-+	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
-+				 _mshift, _mwidth, _doffset, _dshift,	\
-+				 _dwidth, _flags,			\
-+				 CLK_HW_INIT_PARENTS_DATA)
-+
-+#define SPRD_COMP_CLK_DATA_OFFSET(_struct, _name, _parent, _reg,	\
-+				  _mshift, _mwidth, _doffset, _dshift,	\
-+				  _dwidth, _flags)			\
-+	SPRD_COMP_CLK_DATA_TABLE_OFFSET(_struct, _name, _parent, _reg,	\
-+					NULL, _mshift, _mwidth,		\
-+					_doffset, _dshift, _dwidth,	\
-+					_flags)
-+
- static inline struct sprd_comp *hw_to_sprd_comp(const struct clk_hw *hw)
- {
- 	struct sprd_clk_common *common = hw_to_sprd_clk_common(hw);
-diff --git a/drivers/clk/sprd/div.c b/drivers/clk/sprd/div.c
-index c7261630cab4..936782c24127 100644
---- a/drivers/clk/sprd/div.c
-+++ b/drivers/clk/sprd/div.c
-@@ -25,7 +25,7 @@ unsigned long sprd_div_helper_recalc_rate(struct sprd_clk_common *common,
- 	unsigned long val;
- 	unsigned int reg;
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0], byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
  
--	regmap_read(common->regmap, common->reg, &reg);
-+	regmap_read(common->regmap, common->reg + div->offset, &reg);
- 	val = reg >> div->shift;
- 	val &= (1 << div->width) - 1;
+ 		priv->abyBBVGA[0] = 0x1C;
+ 		priv->abyBBVGA[1] = 0x10;
+@@ -2045,13 +2045,13 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if (by_rf_type == RF_UW2451) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_UW2451; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_UW2451[ii][0],
+-				byVT3253B0_UW2451[ii][1]);
++				vt3253b0_uw2451[ii][0],
++				vt3253b0_uw2451[ii][1]);
  
-@@ -53,10 +53,10 @@ int sprd_div_helper_set_rate(const struct sprd_clk_common *common,
- 	val = divider_get_val(rate, parent_rate, NULL,
- 			      div->width, 0);
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0],
+-				byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0],
++				vt3253b0_agc[ii][1]);
  
--	regmap_read(common->regmap, common->reg, &reg);
-+	regmap_read(common->regmap, common->reg + div->offset, &reg);
- 	reg &= ~GENMASK(div->width + div->shift - 1, div->shift);
+ 		iowrite8(0x23, iobase + MAC_REG_ITRTMSET);
+ 		vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
+@@ -2067,12 +2067,12 @@ bool bb_vt3253_init(struct vnt_private *priv)
+ 	} else if (by_rf_type == RF_VT3226) {
+ 		for (ii = 0; ii < CB_VT3253B0_INIT_FOR_AIROHA2230; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AIROHA2230[ii][0],
+-				byVT3253B0_AIROHA2230[ii][1]);
++				vt3253b0_airoha2230[ii][0],
++				vt3253b0_airoha2230[ii][1]);
  
--	regmap_write(common->regmap, common->reg,
-+	regmap_write(common->regmap, common->reg + div->offset,
- 			  reg | (val << div->shift));
+ 		for (ii = 0; ii < CB_VT3253B0_AGC; ii++)
+ 			result &= bb_write_embedded(priv,
+-				byVT3253B0_AGC[ii][0], byVT3253B0_AGC[ii][1]);
++				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
  
- 	return 0;
-diff --git a/drivers/clk/sprd/div.h b/drivers/clk/sprd/div.h
-index f5d614b3dcf1..a0bcad80498f 100644
---- a/drivers/clk/sprd/div.h
-+++ b/drivers/clk/sprd/div.h
-@@ -20,12 +20,14 @@
-  * classes.
-  */
- struct sprd_div_internal {
-+	s32	offset;
- 	u8	shift;
- 	u8	width;
- };
- 
--#define _SPRD_DIV_CLK(_shift, _width)	\
-+#define _SPRD_DIV_CLK(_offset, _shift, _width)	\
- 	{				\
-+		.offset = _offset,	\
- 		.shift	= _shift,	\
- 		.width	= _width,	\
- 	}
-@@ -35,10 +37,10 @@ struct sprd_div {
- 	struct sprd_clk_common	common;
- };
- 
--#define SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
-+#define SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _offset,	\
- 				_shift, _width, _flags, _fn)		\
- 	struct sprd_div _struct = {					\
--		.div	= _SPRD_DIV_CLK(_shift, _width),		\
-+		.div	= _SPRD_DIV_CLK(_offset, _shift, _width),	\
- 		.common	= {						\
- 			.regmap		= NULL,				\
- 			.reg		= _reg,				\
-@@ -49,12 +51,17 @@ struct sprd_div {
- 
- #define SPRD_DIV_CLK(_struct, _name, _parent, _reg,			\
- 		     _shift, _width, _flags)				\
--	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
-+	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
- 				_shift, _width, _flags, CLK_HW_INIT)
- 
-+#define SPRD_DIV_CLK_FW_NAME(_struct, _name, _parent, _reg,		\
-+			_shift, _width, _flags)				\
-+	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
-+				_shift, _width, _flags, CLK_HW_INIT_FW_NAME)
-+
- #define SPRD_DIV_CLK_HW(_struct, _name, _parent, _reg,			\
- 			_shift, _width, _flags)				\
--	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
-+	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
- 				_shift, _width, _flags, CLK_HW_INIT_HW)
- 
- static inline struct sprd_div *hw_to_sprd_div(const struct clk_hw *hw)
+ 		priv->abyBBVGA[0] = 0x1C;
+ 		priv->abyBBVGA[1] = 0x10;
 -- 
-2.17.1
+2.34.1
 
