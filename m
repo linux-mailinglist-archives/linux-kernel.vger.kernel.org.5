@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC7879E852
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067B779E84F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240525AbjIMMvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
+        id S240184AbjIMMun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238125AbjIMMu6 (ORCPT
+        with ESMTP id S231620AbjIMMum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:50:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4681119B1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=66j4LpC4FkxboVA4ELkFlwA3s9erD6zM+Bkl1ZbmvNs=; b=vzAIjuHVFwzSZ+jmF8W8PUR+jX
-        h/0d3pu00H6MwztFn+DD9n5qhlrm4BdAwuTumla3TY/DvJAzCQY8e8jcJ5h8U4m0J5kqfMwdPqch3
-        EqnpUxTjGNo96gntkkgtI9VGIVo7XfjvbXmb4Q3MxlE40M9FjzfcPV5kSjDosg3dP8YrD0QeWguor
-        3LKNRtxReQz0aiMLYRMzLjRx+7536mnBHihJ8kd2ro19Qod9rQyhAM1jpD6OSmpmZic6QPA9RsPjL
-        1VA7EVk5zrR5pLP63Vu5cMA4pGveJrkIL3ayrcdrR5TtZX2DFTJ7IEtOLcUuRDFkebvQIUxjZe4gs
-        r7/78SiA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgPK4-00DuuQ-BZ; Wed, 13 Sep 2023 12:50:24 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 08FCA300348; Wed, 13 Sep 2023 14:50:24 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 14:50:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Nikolay Borisov <nik.borisov@suse.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
- overhead
-Message-ID: <20230913125023.GG692@noisy.programming.kicks-ass.net>
-References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
- <20230821112723.3995187-5-andrew.cooper3@citrix.com>
- <20230821151636.onk2e6tlhmjg5yz5@treble>
- <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
- <20230822022229.xlctyccmgdxiy6ic@treble>
- <9565380a-4654-f267-c8ac-a4d6ab81156a@suse.com>
- <20230822221828.htnwidmr22gtjhcd@treble>
+        Wed, 13 Sep 2023 08:50:42 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 817CD19B1;
+        Wed, 13 Sep 2023 05:50:38 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id EC6FE8088;
+        Wed, 13 Sep 2023 12:50:37 +0000 (UTC)
+Date:   Wed, 13 Sep 2023 15:50:36 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>
+Subject: Re: [PATCH] drm/omap: dsi: Fix deferred probe warnings
+Message-ID: <20230913125036.GM5285@atomide.com>
+References: <20230412073954.20601-1-tony@atomide.com>
+ <9daacd2f-0dbf-dddc-9403-b802447896a2@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230822221828.htnwidmr22gtjhcd@treble>
+In-Reply-To: <9daacd2f-0dbf-dddc-9403-b802447896a2@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 03:18:28PM -0700, Josh Poimboeuf wrote:
+* Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> [230913 11:59]:
+> On 12/04/2023 10:39, Tony Lindgren wrote:
+> > We may not have dsi->dsidev initialized during probe, and that can
+> > lead into various dsi related warnings as omap_dsi_host_detach() gets
+> > called with dsi->dsidev set to NULL.
+> > 
+> > The warnings can be "Fixed dependency cycle(s)" followed by a
+> > WARNING: CPU: 0 PID: 787 at drivers/gpu/drm/omapdrm/dss/dsi.c:4414.
+> > 
+> > Let's fix the warnings by checking for a valid dsi->dsidev.
+> > 
+> > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > ---
+> >   drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_host *host,
+> >   {
+> >   	struct dsi_data *dsi = host_to_omap(host);
+> > -	if (WARN_ON(dsi->dsidev != client))
+> > +	if (dsi->dsidev && WARN_ON(dsi->dsidev != client))
+> >   		return -EINVAL;
+> >   	cancel_delayed_work_sync(&dsi->dsi_disable_work);
+> 
+> Shouldn't this rather be
+> 
+> if (!dsi->dsidev)
+> 	return 0;
+> 
+> before the if (WARN_ON(dsi->dsidev != client)) line?
+> 
+> If dsi->dsidev is NULL, then attach hasn't been called, and we shouldn't do
+> anything in the detach callback either.
+> 
+> With your change we'll end up doing all the work in the detach callback,
+> without ever doing their counterpart in the attach side.
 
-> The problem is the call-site, not the thunk.  Ideally we'd have an
-> option which adds an INT3 after the 'JMP __x86_return_thunk'.
+Oops, I'll check that thanks.
 
-The -mharden-sls=all option *SHOULD* be extended to unconditionally emit
-INT3 after everyt JMP instruction -- including the one used for
--mfunction-return=thunk-extern.
-
-This is a known missing mitigation for an AMD SLS issue.
-
-Due to the whole branch-type-confusion thing, AMD CPUs can predict the
-JMP as 'not-a-branch' and continue to the next instruction.
-
-I'm sure Andrew has the proper name and CVE stashed away somewhere. IIRC
-he even has a GCC bugzilla entry for it.
+Tony
