@@ -2,126 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFB679DD92
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDD879DD94
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238046AbjIMBaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S238031AbjIMBca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238057AbjIMBa3 (ORCPT
+        with ESMTP id S230113AbjIMBc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:30:29 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3172171B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:30:24 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52e5900cf77so8059246a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:30:24 -0700 (PDT)
+        Tue, 12 Sep 2023 21:32:28 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3D610E6;
+        Tue, 12 Sep 2023 18:32:24 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-5733789a44cso3710090eaf.2;
+        Tue, 12 Sep 2023 18:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694568623; x=1695173423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NS8SEj+1zaeA13vnr/L8JD68DOc4KH8YhBKHOXjjHQI=;
-        b=0CKsJXsxQ8TswVwNwUNdDH7eLV67PcFnQSsd6nrwoVNNT/T5txHT+CSsm5tFWRHcaI
-         vei6NMkoP25iFoBCh23Rv5/tnX0iZsy7eI2ZOnq7lMVA+vqeowkFUhpVohO1rrwPmRng
-         vpb5jmF9eH/RqDAn6IfJYFBbAdjL2SLMEfNeTxEqVy3iLJ1X1o80qP+5N+q1uJ5Gz1oX
-         YOkx0BdbtO9Q+hwnOc+/lP1UlYejo2pCEob92QWEfFsZ+MozWpS2d7iRp+VyXKSQkNnn
-         tG3S9KEmddNSRVgYJIoo/naXGPQ9l0ztchsQLRwrt0xyDzjTM0yqMNwNqbhgv9+ZqwL6
-         DkGQ==
+        d=gmail.com; s=20221208; t=1694568744; x=1695173544; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vq8SgHFXKS/TzFJSEmQtwxfAWXj6dXC3+mc9FsXzQZg=;
+        b=J3CNpbC7FRbJefEBec8UWlsQjDcTEuiKYu0lkWTW+y86SBEmecHkjgOdXQf51lKmla
+         pUxLluAEXD6lG1T6XLh3RlOwVsjFq1jkmYat40WMWUba1RCL6WL9KoNtYRLch0jQkZPl
+         KR+tVWfYUB7enIlq/XZUuGWUaYom0r1iXznVjOqRp560EgszpIv/0zNU1jQJqGk6/aiR
+         1UGSsWMfYewf7ap5x0FgbI+CkkRsj7MgGvB+yrlqL+pvgjXpjkbb3siEcBCroMAoQMaF
+         4TJyT2yy7nTAkxVGIpR78OJPJn0V9lHJWG6t9/q+IuYjBaFUW9BKk8pRWtqPq2IvOJ2V
+         Q0YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694568623; x=1695173423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NS8SEj+1zaeA13vnr/L8JD68DOc4KH8YhBKHOXjjHQI=;
-        b=e14vb76q1wwJGLEdqlisuN0H4oA5mDQX5qKHZW4TnsY5Y5phzdQsNJuRCmCey2g7yj
-         Zt2n3hX485Zt2dJ8rt8cePM4GaRemPNC7GCHVOIQuvQeYETZjhiYXRv6Kt2MPB/gT8S4
-         d43qUPkxOr01NMVUFcTN8dQLQrHFHH040ViM/kf/3J4/4Xlo98z97m8YtOLLp6Z6SoiN
-         +Cf/1FJmd4d4bKWvc2MDRrnAuurWT/cq/p3E71+o1YJAtRUTqx4bmYMmSLy9foUqWKZM
-         M36KldSlTu5D+2quBYijj6DRrIItvEbHlLDtggumfLHMwOnLMtLprKYtKxQ51YLMb1uU
-         MAzg==
-X-Gm-Message-State: AOJu0YwyyKize0WD8WJ9GlriaZgKNrxNVnSuu/Id3gERqrwIUjsm0wQi
-        zj7qDbkdjqO0oEqZNIn8utDNIkMkLP3azEoDKxeRbg==
-X-Google-Smtp-Source: AGHT+IF+8PrFLp3wpewuEVn+bHYYKVvRzHZnMOswySbpEt5vKlsjn5f/ngk42dnNqgqMGcsc86hGujDbw+1tV3NCYD8=
-X-Received: by 2002:a17:907:762f:b0:9a9:fb1c:34ff with SMTP id
- jy15-20020a170907762f00b009a9fb1c34ffmr682229ejc.73.1694568622990; Tue, 12
- Sep 2023 18:30:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694568744; x=1695173544;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vq8SgHFXKS/TzFJSEmQtwxfAWXj6dXC3+mc9FsXzQZg=;
+        b=xQAHU/SVoHsio+lvNZDcoDZ9LJypq7fVbfu2t45q/4zWYHTCNS6/+oBoUMSfd5sStK
+         fE7ha506K/THFmWmAu/btYPXXkpTQXd059J7j/WGj+M7miMMAqwWPbxgilkIfXiMrXq7
+         wS+qPJIrxq9IGZ+doE1QTsG+nymY545DH4nE+XLkgZYfYzApOlXAg2/UfpUyAeG7pSo3
+         rDyq7sDgSV3+Iqd2LOkHpncCBRYlk+CAQQKD98krPk+Fim5qAKQxhzwryt/SVEKF6H1Y
+         mVEyK+BHY25UCu307RlCeJUybt/9CCX8HqDXgJIx6y0SS03kmKxu/ytf5tNXeySwBrCj
+         BtJQ==
+X-Gm-Message-State: AOJu0YwrvYzfd1zoGHzpwNBPr0sdLVDnfLgoGKCsK03sdT1HGD/ooS8V
+        MdF4hZiDNPrTf9etqdZEmAxjQqi2lac=
+X-Google-Smtp-Source: AGHT+IEt/bNpU0mRtK+AR7hsEVoqnuNX7FLGK81vCmsCoUDqeDEL7zNOB7lGTmHbnmb1jDXtdgZqDQ==
+X-Received: by 2002:a05:6358:2611:b0:135:3f5c:9675 with SMTP id l17-20020a056358261100b001353f5c9675mr1730097rwc.19.1694568743861;
+        Tue, 12 Sep 2023 18:32:23 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id c14-20020aa781ce000000b00687dde8ae5dsm7997630pfn.154.2023.09.12.18.32.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 18:32:23 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 6773E89F3BBE; Wed, 13 Sep 2023 08:32:20 +0700 (WIB)
+Date:   Wed, 13 Sep 2023 08:32:20 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Angus Gardner <angusg778@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: fbtft: Removed unnecessary parenthesis around
+ conditions to comply with the checkpatch coding style.
+Message-ID: <ZQERJIGOOeYxgX3E@debian.me>
+References: <ZQEKFR1OPoXGI2lO@midnight>
 MIME-Version: 1.0
-References: <20230913-strncpy-drivers-edac-edac_mc_sysfs-c-v1-1-d232891b05b0@google.com>
-In-Reply-To: <20230913-strncpy-drivers-edac-edac_mc_sysfs-c-v1-1-d232891b05b0@google.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 12 Sep 2023 18:30:12 -0700
-Message-ID: <CAFhGd8pGikrizmQPF7qD6C4NcYqBVqECEUqb0j_4fuS3rqeeXA@mail.gmail.com>
-Subject: Re: [PATCH] EDAC/mc_sysfs: refactor deprecated strncpy
-To:     Borislav Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Richter <rric@kernel.org>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="x1+FQVa4UDBiUUPt"
+Content-Disposition: inline
+In-Reply-To: <ZQEKFR1OPoXGI2lO@midnight>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 6:26=E2=80=AFPM Justin Stitt <justinstitt@google.co=
-m> wrote:
->
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1]=
-.
->
-> We should prefer more robust and less ambiguous string interfaces.
->
-> A suitable replacement is `strscpy_pad` [2] due to the fact that it guara=
-ntees
-> NUL-termination on the destination buffer whilst maintaining the
-> NUL-padding behavior that `strncpy` provides. This may not be strictly
-> necessary but as I couldn't understand what this code does I wanted to
-> ensure that the functionality is the same.
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strn=
-cpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.h=
-tml [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> ---
->  drivers/edac/edac_mc_sysfs.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/edac/edac_mc_sysfs.c b/drivers/edac/edac_mc_sysfs.c
-> index 15f63452a9be..b303309a63cf 100644
-> --- a/drivers/edac/edac_mc_sysfs.c
-> +++ b/drivers/edac/edac_mc_sysfs.c
-> @@ -229,8 +229,7 @@ static ssize_t channel_dimm_label_store(struct device=
- *dev,
->         if (copy_count =3D=3D 0 || copy_count >=3D sizeof(rank->dimm->lab=
-el))
->                 return -EINVAL;
->
-> -       strncpy(rank->dimm->label, data, copy_count);
-> -       rank->dimm->label[copy_count] =3D '\0';
-> +       strscpy_pad(rank->dimm->label, data, copy_count);
->
->         return count;
->  }
->
-> ---
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> change-id: 20230913-strncpy-drivers-edac-edac_mc_sysfs-c-e619b00124a3
->
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
->
 
-I typo'd my grep and initially missed refactoring another instance of
-strncpy in this same file. v2 [1] resolves this.
+--x1+FQVa4UDBiUUPt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1]: https://lore.kernel.org/r/20230913-strncpy-drivers-edac-edac_mc_sysfs-=
-c-v2-1-2d2e6bd43642@google.com
+On Wed, Sep 13, 2023 at 11:02:13AM +1000, Angus Gardner wrote:
+> ---
+>  drivers/staging/fbtft/fb_ra8875.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+
+No patch description and SoB, so Greg can't take this as-is.
+
+> -	if ((par->info->var.xres =3D=3D 320) && (par->info->var.yres =3D=3D 240=
+)) {
+> +	if (par->info->var.xres =3D=3D 320 && par->info->var.yres =3D=3D 240) {
+
+Greg prefers explicit parentheses on complex expressions (see [1] and [2]
+for examples), hence NAK.
+
+Thanks.
+
+[1]: https://lore.kernel.org/linux-staging/ZCWGOZqdH1kWtOEq@kroah.com/
+[2]: https://lore.kernel.org/linux-staging/Y%2FiaYtKk4VSokAFz@kroah.com/
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--x1+FQVa4UDBiUUPt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQERHgAKCRD2uYlJVVFO
+o73FAQCZr9WVvTPdXrwCR23Z8ew/F2TTSZkLjZY6t94QNZFc4gD8CN1oD399IWU0
+p9IhzWXKtA85w37Q5pwbRZUfvAEcmwg=
+=8y2y
+-----END PGP SIGNATURE-----
+
+--x1+FQVa4UDBiUUPt--
