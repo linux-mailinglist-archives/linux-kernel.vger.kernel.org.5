@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 955B879EFDD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F43379EFE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjIMRHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38672 "EHLO
+        id S231545AbjIMRH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbjIMRHh (ORCPT
+        with ESMTP id S231286AbjIMRHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:07:37 -0400
-Received: from smtp112.iad3a.emailsrvr.com (smtp112.iad3a.emailsrvr.com [173.203.187.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB351BD6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:07:33 -0700 (PDT)
+        Wed, 13 Sep 2023 13:07:45 -0400
+Received: from smtp115.iad3a.emailsrvr.com (smtp115.iad3a.emailsrvr.com [173.203.187.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234811BE4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694624852;
-        bh=T1VSgJgZFQT7hlTIaOmx6j9S8YLzd9tknmB5plLkuJo=;
+        s=20221208-6x11dpa4; t=1694624854;
+        bh=JgtIYmwmV6xYy/QUX+4Tkq/fmp98+9vB4JgNe0IQwNA=;
         h=From:To:Subject:Date:From;
-        b=pig1GM0ccDUY3HoHYwxFALB8TnQ32akaeK3N2QXhG6XND9sgKDydSUY+Y59cdE4Kb
-         IPwx+DQqfVlNPbODwoX5ECXrxVFhVjk1AoZZfI6O+DRErouuahl64gRSmWDTKBoBo7
-         jxcHvi4iiZlPoT8roUEZ2rdGFomrRAEVxMHIBwkw=
+        b=A2Og4qbnBND7NV5B9mvFsrIz/09mMXpRlPFsbcoOSb6iR+HXm5ano8s9YpoW5182M
+         t5P63jFv8mcbooqgWOFlKvCvcwaoR8/niSdeaZylNJCG6vGtp3XQIQ+8yF1nVQ985h
+         UAbbaEieNfGbHnr7Vwqh8LHGFZuXxoFOnafK9vD8=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp39.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id D0458425E;
-        Wed, 13 Sep 2023 13:07:31 -0400 (EDT)
+Received: by smtp39.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3270C54E5;
+        Wed, 13 Sep 2023 13:07:33 -0400 (EDT)
 From:   Ian Abbott <abbotti@mev.co.uk>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,16 +32,16 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         H Hartley Sweeten <hsweeten@visionengravers.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH v3 08/13] comedi: ni_labpc_common: Conditionally remove I/O port support
-Date:   Wed, 13 Sep 2023 18:07:07 +0100
-Message-Id: <20230913170712.111719-9-abbotti@mev.co.uk>
+Subject: [PATCH v3 09/13] comedi: ni_mio_common: Conditionally use I/O port or MMIO
+Date:   Wed, 13 Sep 2023 18:07:08 +0100
+Message-Id: <20230913170712.111719-10-abbotti@mev.co.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230913170712.111719-1-abbotti@mev.co.uk>
 References: <20230913164013.107520-1-abbotti@mev.co.uk>
  <20230913170712.111719-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: 19793052-af61-4898-a406-82596fa230be-9-1
+X-Classification-ID: 19793052-af61-4898-a406-82596fa230be-10-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -50,72 +50,169 @@ In a future patch, the port I/O functions (`inb()`, `outb()`, and
 friends will only be declared in the `HAS_IOPORT` configuration option
 is enabled.
 
-The ni_labpc_common module is used by the ni_labpc module (for ISA
-cards), the ni_labpc_cs module (for PCMCIA cards), and the ni_labpc_pci
-module (for PCI cards).  The ISA and PCMCIA cards use port I/O and the
-PCI cards use memory-mapped I/O.
+The "ni_mio_common.c" file contains calls to both port I/O functions and
+memory-mapped I/O functions.  The file is `#include`d by "ni_atmio.c",
+"ni_mio_cs.c", and "ni_pcimio.c" for the ni_atmio, ni_mio_cs, and
+ni_pcimio modules, respectively.  Only "ni_pcimio.c" defines the
+`PCIDMA` macro before including "ni_mio_common.c" and various bits of
+code in "ni_mio_common.c" is conditionally compiled according to whether
+that macro is defined or not.  Currently, the port I/O function calls
+are compiled in regardless of whether the `PCIDMA` macro is defined or
+not.  However, the fact is that the ni_atmio and ni_mio_cs modules will
+never call the memory-mapped I/O functions, and the ni_pcimio module
+will never call the port I/O functions.
 
-Conditionally compile the parts of the module that use the port I/O
-functions so they are compiled if and only if the `CONFIG_HAS_IOPORT`
-macro is defined, so that the module can be built if the port I/O
-functions have not been declared.
+Calls to the port I/O and memory-mapped I/O functions is confined to the
+`ni_writel()`, `ni_writew()`, `ni_writeb()`, `ni_readl()`, `ni_readw()`,
+and `ni_readb()` functions which do a run-time test to decide whether to
+call the port I/O functions or the memory-mapped I/O functions.
+Conditionally compile two variants of the functions so they only call
+the port I/O functions if the `PCIDMA` macro is undefined (for the
+ni_atmio and ni_mio_cs modules), and only call the memory-mapped I/O
+functions if the `PCIDMA` macro is defined (for the ni_pcimio module).
 
-Add a run-time check in the `labpc_common_attach()` to return an error
-if the comedi device wants to use port I/O when the `CONFIG_HAS_IOPORT`
-macro is undefined.
+Add a run-time check in the `ni_E_init()` function to return an error if
+the comedi device has been set up to use port I/O if `PCIDMA` is
+defined, or has been set up to use memory-mapped I/O if `PCIDMA` is not
+defined.
 
-The changes allow the module to be built even if the port I/O functions
-have not been declared.
+The changes make it possible to build the ni_pcimio module even if the
+port I/O functions have not been declared.  (The ni_atmio and ni_mio_cs
+modules do still require the port I/O functions to be declared.)
 
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Niklas Schnelle <schnelle@linux.ibm.com>
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
-v2: Correct `CONFIG_HAS_PORTIO` to `CONFIG_HAS_IOPORT`.  Edit commit
-message to describe run-time check in `labpc_common_attach()`, and to
-mention that the changes allow the module to be built even if the port
-I/O functions have not been declared.
-v3: N/A.
+v2: N/A.
+v3: Add missing `---` divider before patch changelog.
 ---
- drivers/comedi/drivers/ni_labpc_common.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/comedi/drivers/ni_mio_common.c | 70 ++++++++++++++++++--------
+ 1 file changed, 50 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/comedi/drivers/ni_labpc_common.c b/drivers/comedi/drivers/ni_labpc_common.c
-index 5d5c1d0e9cb6..7e0ce0ce0adf 100644
---- a/drivers/comedi/drivers/ni_labpc_common.c
-+++ b/drivers/comedi/drivers/ni_labpc_common.c
-@@ -78,6 +78,9 @@ static const struct comedi_lrange range_labpc_ao = {
-  * functions that do inb/outb and readb/writeb so we can use
-  * function pointers to decide which to use
-  */
+diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
+index 638be08b43e4..980f309d6de7 100644
+--- a/drivers/comedi/drivers/ni_mio_common.c
++++ b/drivers/comedi/drivers/ni_mio_common.c
+@@ -46,6 +46,12 @@
+ #include <linux/comedi/comedi_8255.h>
+ #include "mite.h"
+ 
++#ifdef PCIDMA
++#define IS_PCIMIO 1
++#else
++#define IS_PCIMIO 0
++#endif
 +
-+#ifdef CONFIG_HAS_IOPORT
+ /* A timeout count */
+ #define NI_TIMEOUT 1000
+ 
+@@ -219,54 +225,72 @@ enum timebase_nanoseconds {
+ 
+ static const int num_adc_stages_611x = 3;
+ 
++#ifdef PCIDMA
 +
- static unsigned int labpc_inb(struct comedi_device *dev, unsigned long reg)
+ static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
  {
- 	return inb(dev->iobase + reg);
-@@ -89,6 +92,8 @@ static void labpc_outb(struct comedi_device *dev,
- 	outb(byte, dev->iobase + reg);
+-	if (dev->mmio)
+-		writel(data, dev->mmio + reg);
+-	else
+-		outl(data, dev->iobase + reg);
++	writel(data, dev->mmio + reg);
  }
  
-+#endif	/* CONFIG_HAS_IOPORT */
-+
- static unsigned int labpc_readb(struct comedi_device *dev, unsigned long reg)
+ static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
  {
- 	return readb(dev->mmio + reg);
-@@ -1200,8 +1205,12 @@ int labpc_common_attach(struct comedi_device *dev,
- 		devpriv->read_byte = labpc_readb;
- 		devpriv->write_byte = labpc_writeb;
- 	} else {
-+#ifdef CONFIG_HAS_IOPORT
- 		devpriv->read_byte = labpc_inb;
- 		devpriv->write_byte = labpc_outb;
-+#else
-+		return -ENXIO;
-+#endif
- 	}
+-	if (dev->mmio)
+-		writew(data, dev->mmio + reg);
+-	else
+-		outw(data, dev->iobase + reg);
++	writew(data, dev->mmio + reg);
+ }
  
- 	/* initialize board's command registers */
+ static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
+ {
+-	if (dev->mmio)
+-		writeb(data, dev->mmio + reg);
+-	else
+-		outb(data, dev->iobase + reg);
++	writeb(data, dev->mmio + reg);
+ }
+ 
+ static unsigned int ni_readl(struct comedi_device *dev, int reg)
+ {
+-	if (dev->mmio)
+-		return readl(dev->mmio + reg);
++	return readl(dev->mmio + reg);
++}
++
++static unsigned int ni_readw(struct comedi_device *dev, int reg)
++{
++	return readw(dev->mmio + reg);
++}
++
++static unsigned int ni_readb(struct comedi_device *dev, int reg)
++{
++	return readb(dev->mmio + reg);
++}
+ 
++#else /* PCIDMA */
++
++static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
++{
++	outl(data, dev->iobase + reg);
++}
++
++static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
++{
++	outw(data, dev->iobase + reg);
++}
++
++static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
++{
++	outb(data, dev->iobase + reg);
++}
++
++static unsigned int ni_readl(struct comedi_device *dev, int reg)
++{
+ 	return inl(dev->iobase + reg);
+ }
+ 
+ static unsigned int ni_readw(struct comedi_device *dev, int reg)
+ {
+-	if (dev->mmio)
+-		return readw(dev->mmio + reg);
+-
+ 	return inw(dev->iobase + reg);
+ }
+ 
+ static unsigned int ni_readb(struct comedi_device *dev, int reg)
+ {
+-	if (dev->mmio)
+-		return readb(dev->mmio + reg);
+-
+ 	return inb(dev->iobase + reg);
+ }
+ 
++#endif /* PCIDMA */
++
+ /*
+  * We automatically take advantage of STC registers that can be
+  * read/written directly in the I/O space of the board.
+@@ -5977,6 +6001,12 @@ static int ni_E_init(struct comedi_device *dev,
+ 	int i;
+ 	const char *dev_family = devpriv->is_m_series ? "ni_mseries"
+ 						      : "ni_eseries";
++	if (!IS_PCIMIO != !dev->mmio) {
++		dev_err(dev->class_dev,
++			"%s: bug! %s device not supported.\n",
++			KBUILD_MODNAME, board->name);
++		return -ENXIO;
++	}
+ 
+ 	/* prepare the device for globally-named routes. */
+ 	if (ni_assign_device_routes(dev_family, board->name,
 -- 
 2.40.1
 
