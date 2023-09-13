@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C1C79DEE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 06:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F08179DF1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 06:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237562AbjIMEH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 00:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
+        id S238273AbjIMEQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 00:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjIMEH4 (ORCPT
+        with ESMTP id S233222AbjIMEQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 00:07:56 -0400
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47091E4B;
-        Tue, 12 Sep 2023 21:07:52 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 251C3300002A0;
-        Wed, 13 Sep 2023 06:07:50 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 12E466F3DF; Wed, 13 Sep 2023 06:07:50 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 06:07:50 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v4 1/3] PCI: pciehp: Add support for async hotplug with
- native AER and DPC/EDR
-Message-ID: <20230913040750.GA1359@wunner.de>
-References: <20230815212043.114913-1-Smita.KoralahalliChannabasappa@amd.com>
- <20230815212043.114913-2-Smita.KoralahalliChannabasappa@amd.com>
- <20230828073542.GA12658@wunner.de>
- <440ad7c8-35f7-5b15-5de6-f220cae2cde0@amd.com>
+        Wed, 13 Sep 2023 00:16:52 -0400
+Received: from smtp3.hiworks.co.kr (smtp3.hiworks.co.kr [121.254.168.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316A192
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 21:16:46 -0700 (PDT)
+Received: (qmail 5274 invoked from network); 13 Sep 2023 13:16:45 +0900
+Received: from unknown (HELO hiworks.co.kr) (192.168.10.38)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        13 Sep 2023 13:16:45 +0900
+Received: (qmail 9269 invoked from network); 13 Sep 2023 13:16:45 +0900
+Received: from unknown (HELO saram-MINIPC-PN53..) (mwkim@gaonchips.com@220.88.49.178)
+        by 0 (qmail 1.03 + ejcp v14) with SMTP;
+        13 Sep 2023 13:16:45 +0900
+X-Authinfo: HIWORKS SMTP authenticated <mwkim@gaonchips.com|220.88.49.178|mwkim@gaonchips.com|230913131645_26618989>
+X-MailFrom-INFO: Info <country_code:KR|rbl_level:0>
+From:   Myunguk Kim <mwkim@gaonchips.com>
+To:     broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, fido_max@inbox.ru,
+        joabreu@synopsys.com, krzysztof.kozlowski+dt@linaro.org,
+        kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, mwkim@gaonchips.com, perex@perex.cz,
+        robh+dt@kernel.org, tiwai@suse.com, u.kleine-koenig@pengutronix.de,
+        xingyu.wu@starfivetech.com
+Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
+Date:   Wed, 13 Sep 2023 13:09:03 +0900
+Message-Id: <20230913040902.1496711-1-mwkim@gaonchips.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZP8Irf6g+sG6Ax9j@finisterre.sirena.org.uk>
+References: <ZP8Irf6g+sG6Ax9j@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <440ad7c8-35f7-5b15-5de6-f220cae2cde0@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 03:45:34PM -0700, Smita Koralahalli wrote:
-> Thanks for the review. Would it be possible to consider this patch as a
-> standalone while I work on 10-bit tags enumeration? I can do v5 for this
-> patch with $SUBJECT changes and also include clearing Atomic Ops and 10-bit
-> tags unconditionally on hot-remove if that works..
+> This feels like something we ought to be discovering from the DMA API
+> somehow, while it's not quite a property of the DMA controller (but
+> rather of the SoC integration) in this case it could be a property of
+> some DMA controller elsewhere and the whole process of finding and
+> figuring out the properties of the DMA controler is handled by the DMA
+> API.
 
-Right, this patch is still in state "New" in patchwork:
+In this case, it is not used through the DMA API. 
+The connection relationship is as follows.
+  i2s --- pcm_dmaengine ---  DMA IP (ie. pl330)
+So, control was possible only by directly setting the maxburst property.
 
-https://patchwork.kernel.org/project/linux-pci/patch/20230815212043.114913-2-Smita.KoralahalliChannabasappa@amd.com/
-
-Which means Bjorn probably hasn't gotten a chance to look at it.
-Indeed it can be applied standalone if Bjorn gets to it this cycle
-and doesn't have any objections.
-
-Feel free to include my Reviewed-by tag if/when resending.
+And, I will send v2 (separate code and bindings)
 
 Thanks,
+myunguk
 
-Lukas
