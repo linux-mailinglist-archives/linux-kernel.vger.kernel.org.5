@@ -2,404 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA5A79E0FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EE079E0FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238612AbjIMHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        id S238605AbjIMHkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238614AbjIMHjA (ORCPT
+        with ESMTP id S233816AbjIMHkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:39:00 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A7D1727
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:38:56 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-57787e29037so2651199a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694590736; x=1695195536; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8wFSE4R6tL7pv8rA6Rke9m26hzyRIxknt8a2PL5Y0/4=;
-        b=zvqGHrsYQLEWdL37E9GhBc1pvdSBzBKYoeDJst6KnjmRVf4xPPtLS2Qa1ZgSB3T1Ki
-         C3l+iUWBbdRdyLGvvaUARoVBLQ4IG+xZT4ePLCeFsm9NGaJ0Aq7V8mHw1TTb4s4awXEx
-         q/fdeHRGshjwXc/mV6kgZfbmMdcs5Mz+jwV5xpVoD8E391x5coZdQ/6Rs2fy2+isLa3K
-         B2SuX+nQGDc3eGkM+8fOhxu3wpO0HumijHxGKhXTO2VQ56hgTesnU4eL41VbDKrgWlGa
-         7H553DTeEndbpr2uVT9EcQbzA0mg1ufjBDC1xNWL8GWINXP9bl8vRMAwTnUgGgWP2AbP
-         EbeQ==
+        Wed, 13 Sep 2023 03:40:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF1721988
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694590756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sYYjlKSyI0N+e9ZStGE/9ze2JKyx5yEs6Fwz5PyU9eo=;
+        b=PYWJ2iwyhB71LXhIMyzv9aZYIh+bQJidr2DsgI/12ybZedtBN9UZVPEUWcjoCJCG0DyNpe
+        BFK0wfnCyoWOyosjXtctYi00DSAp8KpoM+TDd/9Fya/PGcSvLrVEI0b0swFrz3/qUCmd89
+        E4O0rgXZj6n1h/jrI3JtEZOucHPg8r8=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-VGikUYjuOk-ill4-Tio9QA-1; Wed, 13 Sep 2023 03:39:14 -0400
+X-MC-Unique: VGikUYjuOk-ill4-Tio9QA-1
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6bd899e2d3aso7194096a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:39:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694590736; x=1695195536;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8wFSE4R6tL7pv8rA6Rke9m26hzyRIxknt8a2PL5Y0/4=;
-        b=a0aUxM5VRi1HECyk8cl97hayHDnxdvIvMCYIqd45WM9Rzeir/d2Fgl+JTo1tWXsLGy
-         87ZZlSmhgNWwmnld2NUz+QBF+yO9Dn5Ix/3NSX0n2vOJQlI2MT+Gn28pk/UzyhEqc4II
-         ptM7LoBFjmFKlvtVnGobtg3H2Ja8i4uZWyXvelL5kd6YXtKZKMhZorD/nV9xSqQVYK6U
-         6PSlkR35q/iFBFJkktZfUrxFwI9ixAIK7/H+AblyJWk2pMF65NOT0o1h+P7ZlAKR0weN
-         KkjT7i2SpGEXm2WItxS3Vi2w+hUWJM02s2bVqjk+gn5KE74gaW1846eLlptHytdhArd5
-         AzYA==
-X-Gm-Message-State: AOJu0Yw1wxhjGmBDHAq+ckcpVlKPvSsJ1i9d49vSMInUTIzKjvKq/1XY
-        EkUKUE6IOG7vPGcdTsfhirfWmyGTfQLnmSeN
-X-Google-Smtp-Source: AGHT+IH7x+NeMXFHRZHoocEmERPyLyLuDI56svfvzejgbaWkciesmXJkInMLMzn2vBpTjTv7kSbwSzaXeRtqWs08
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a63:8c4b:0:b0:577:b70e:56b5 with SMTP
- id q11-20020a638c4b000000b00577b70e56b5mr38740pgn.5.1694590736054; Wed, 13
- Sep 2023 00:38:56 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 07:38:46 +0000
-In-Reply-To: <20230913073846.1528938-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20230913073846.1528938-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230913073846.1528938-4-yosryahmed@google.com>
-Subject: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1694590754; x=1695195554;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sYYjlKSyI0N+e9ZStGE/9ze2JKyx5yEs6Fwz5PyU9eo=;
+        b=UBB5EhTCJEGL/apaX9bjsvy4gR/ITQ1u3Un2aDf2kshZw9J2poA8wS0Nez4oB1twMe
+         E6KFSEq4siZli5MDJ4Lj0MNRYX+tnAfLwhHl5YeGLi3FxD5twtHZFoQs5DLWO/RShDP7
+         jNC1Su/Vqcp9+GwNSAZZo22Xo65E+7F3dtZgernS7QrGs5LQy+OEJ4nab6kFsXvd7dO8
+         aTI6tQEdhKohA2FiwNzNsoa9vMAwUXA/Jp8ABRVQTX/jCBuNZy00LcTLytBy/IjTgNbH
+         v6DVyk3JCT2CmTTPW8g30xcMCCxKUYFEZWtQxpBIm9Pdy0RgGBWaeZSdvquwyfRkwfMK
+         WgUA==
+X-Gm-Message-State: AOJu0Yx2Ot1ZH2p6oS9kCkATXqksrJKx8gNamrBNUNvjjFoN4akqUQgE
+        OdwlXHuTPVfpiS/aNeCTeLqaY4uKpedGdwMNAd6mYiGlHfibdTwRRFgE3OMyCluGH7DEpD0lPQS
+        wl4swB7m2/gzuM8xQIR9RBlJ8
+X-Received: by 2002:a9d:6191:0:b0:6b9:b1b0:fcd1 with SMTP id g17-20020a9d6191000000b006b9b1b0fcd1mr2303581otk.31.1694590754010;
+        Wed, 13 Sep 2023 00:39:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFuqtQgYHuSyFF6T7G3cN/9sPtiURr7v0zS/GiqE8UaaW8u+i+n0fArFIRi9PdAjloTZinhLg==
+X-Received: by 2002:a9d:6191:0:b0:6b9:b1b0:fcd1 with SMTP id g17-20020a9d6191000000b006b9b1b0fcd1mr2303569otk.31.1694590753742;
+        Wed, 13 Sep 2023 00:39:13 -0700 (PDT)
+Received: from redhat.com ([2804:1b3:a803:4ff9:7c29:fe41:6aa7:43df])
+        by smtp.gmail.com with ESMTPSA id f3-20020a4ab003000000b00562f3936c01sm4552213oon.45.2023.09.13.00.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 00:39:13 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 04:39:08 -0300
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/1] scripts: Introduce a default git.orderFile
+Message-ID: <ZQFnHC2ApnUVFrXO@redhat.com>
+References: <20230911234418.38154-2-leobras@redhat.com>
+ <CAK7LNASKRoxLwz1jvsbbxv0=JQtySG4O7eN2+_PT6q20G7YT9g@mail.gmail.com>
+ <ZQDBU7BcIe7XKWGz@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZQDBU7BcIe7XKWGz@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stats flushing for memcg currently follows the following rules:
-- Always flush the entire memcg hierarchy (i.e. flush the root).
-- Only one flusher is allowed at a time. If someone else tries to flush
-  concurrently, they skip and return immediately.
-- A periodic flusher flushes all the stats every 2 seconds.
+On Tue, Sep 12, 2023 at 04:51:47PM -0300, Leonardo Bras wrote:
+> On Tue, Sep 12, 2023 at 04:53:11PM +0900, Masahiro Yamada wrote:
+> > On Tue, Sep 12, 2023 at 8:45 AM Leonardo Bras <leobras@redhat.com> wrote:
+> > >
+> > > When reviewing patches, it looks much nicer to have some changes shown
+> > > before others, which allow better understanding of the patch before the
+> > > the .c files reviewing.
+> > >
+> > > Introduce a default git.orderFile, in order to help developers getting the
+> > > best ordering easier.
+> > >
+> > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > ---
+> > >
+> > > Please provide feedback on what else to add / remove / reorder here!
+> > >
+> > > Changes since RFCv1:
+> > > - Added Kconfig* (thanks Randy Dunlap!)
+> > > - Changed Kbuild to Kbuild* (improve matching)
+> > >
+> > >  scripts/git.orderFile | 32 ++++++++++++++++++++++++++++++++
+> > >  1 file changed, 32 insertions(+)
+> > >  create mode 100644 scripts/git.orderFile
+> > >
+> > > diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+> > > new file mode 100644
+> > > index 000000000000..819f0a957fe3
+> > > --- /dev/null
+> > > +++ b/scripts/git.orderFile
+> > > @@ -0,0 +1,32 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +
+> > 
+> > 
+> > Please use "# SPDX-License-Identifier: GPL-2.0".
+> > 
+> > /* ... */ is not a valid comment style for the orderfile.
+> 
+> Oh, you are right.
+> My bad, it was a last minute change.
+> 
+> > 
+> > 
+> > 
+> > 
+> > > +# order file for git, to produce patches which are easier to review
+> > > +# by diffing the important stuff like header changes first.
+> > > +#
+> > > +# one-off usage:
+> > > +#   git diff -O scripts/git.orderfile ...
+> > > +#
+> > > +# add to git config:
+> > > +#   git config diff.orderFile scripts/git.orderfile
+> > 
+> > 
+> > These comments are bogus.
+> > 
+> > 
+> > I guess this comment header was copied from QEMU,
+> 
+> Yes, I tried to adapt it from QEMU to kernel needs.
+> 
+> 
+> > but you changed the file path
+> > from scripts/git.orderfile to scripts/git.orderFile.
+> > 
+> > 
+> > You need to adjust the comment lines to
+> > 
+> > 
+> >     git diff -O scripts/git.orderFile ...
+> > 
+> >     git config diff.orderFile scripts/git.orderFile
+> > 
+> >
+> 
+> Adjusted, thanks!
+>  
+> > 
+> > Or, you need to get the file path back to scripts/git.orderfile
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > > +#
+> > > +
+> > > +MAINTAINERS
+> > > +
+> > > +# Documentation
+> > > +Documentation/*
+> > > +*.rst
+> > > +
+> > > +# build system
+> > > +Kbuild*
+> > > +Kconfig*
+> > > +Makefile*
+> > 
+> > 
+> > Kbuild* and Makefile* are interchangeable.
+> > (both are for GNU Make)
+> > 
+> > Kconfig* are different types.
+> > 
+> > 
+> > Better to arrange the order to
+> > 
+> > Kconfig*
+> > Kbuild*
+> > Makefile*
+> > 
+> > 
+> 
+> Oh, that makes sense.
+> Done!
+> 
+> > 
+> > 
+> > 
+> > > +*.mak
+> > 
+> > QEMU consistently uses only *.mak.
+> > 
+> > I just realized the kernel tree uses both *.mak and *.mk
+> > 
+> > masahiro@zoe:~/ref/linux(master)$ find .  -name '*.mak'
+> > ./tools/scripts/utilities.mak
+> > masahiro@zoe:~/ref/linux(master)$ find .  -name '*.mk'
+> > ./tools/testing/selftests/lib.mk
+> > ./tools/testing/selftests/ptp/testptp.mk
+> 
+> Sure, I will add '*.mk' after '*.mak', getting:
+> 
+> # build system
+> Kconfig*
+> Kbuild*
+> Makefile*
+> *.mak
+> *.mk
+> 
+> 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > BTW, I quickly tested this, but
+> > it did not work as I expected.
+> > 
+> > 
+> > 
+> > 
+> > 
+> > masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only d34599b^..d34599b
+> > MAINTAINERS
+> > drivers/Kconfig
+> > drivers/Makefile
+> > drivers/cache/Kconfig
+> > drivers/cache/Makefile
+> > drivers/cache/ax45mp_cache.c
+> > 
+> > masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only -O
+> > scripts/git.orderFile d34599b^..d34599b
+> > MAINTAINERS
+> > drivers/cache/ax45mp_cache.c
+> > drivers/Kconfig
+> > drivers/Makefile
+> > drivers/cache/Kconfig
+> > drivers/cache/Makefile
+> > 
+> > masahiro@zoe:~/ref/linux(aaa)$ git diff --name-only -O
+> > scripts/git.orderFile d34599b..d34599b^
+> > MAINTAINERS
+> > drivers/cache/ax45mp_cache.c
+> > drivers/Kconfig
+> > drivers/Makefile
+> > drivers/cache/Kconfig
+> > drivers/cache/Makefile
+> > 
+> > 
+> > 
+> > 
+> > 
+> > My expectation was the following:
+> > 
+> > MAINTAINERS
+> > drivers/Kconfig
+> > drivers/cache/Kconfig
+> > drivers/Makefile
+> > drivers/cache/Makefile
+> > drivers/cache/ax45mp_cache.c
+> > 
+> > 
+> > It did not work like that.
+> > Am I missing something?
+> 
+> I can reproduce this same behavior for this commit list, and this is odd.
+> 
+> When I added a line-end at the .c extension, it works as expected:
+> 
+> *.c$
+> 
+> I think this makes sense. 
+> Just to make sure, I will add an line-end at every pattern with extension:
+> 
+> *.h$
+> *.c$
+> *.mk$
 
-The reason this approach is followed is because all flushes are
-serialized by a global rstat spinlock. On the memcg side, flushing is
-invoked from userspace reads as well as in-kernel flushers (e.g.
-reclaim, refault, etc). This approach aims to avoid serializing all
-flushers on the global lock, which can cause a significant performance
-hit under high concurrency.
+Oh, nevermind. This breaks the matching, and results are crazy.
+I will revert it on a v4.
 
-This approach has the following problems:
-- Occasionally a userspace read of the stats of a non-root cgroup will
-  be too expensive as it has to flush the entire hierarchy [1].
-- Sometimes the stats accuracy are compromised if there is an ongoing
-  flush, and we skip and return before the subtree of interest is
-  actually flushed. This is more visible when reading stats from
-  userspace, but can also affect in-kernel flushers.
+The real solver is:
+*/Kconfig*
+*/Kbuild*
+*/Makefile*
 
-This patch aims to solve both problems by reworking how flushing
-currently works as follows:
-- Without contention, there is no need to flush the entire tree. In this
-  case, only flush the subtree of interest. This avoids the latency of a
-  full root flush if unnecessary.
-- With contention, fallback to a coalesced (aka unified) flush of the
-  entire hierarchy, a root flush. In this case, instead of returning
-  immediately if a root flush is ongoing, wait for it to finish
-  *without* attempting to acquire the lock or flush. This is done using
-  a completion. Compared to competing directly on the underlying lock,
-  this approach makes concurrent flushing a synchronization point
-  instead of a serialization point. Once  a root flush finishes, *all*
-  waiters can wake up and continue at once.
-- Finally, with very high contention, bound the number of waiters to the
-  number of online cpus. This keeps the flush latency bounded at the tail
-  (very high concurrency). We fallback to sacrificing stats freshness only
-  in such cases in favor of performance.
+The thing is that if I add just "Kconfig*" it only matches a Kconfig* in
+the root dir.
 
-This was tested in two ways on a machine with 384 cpus:
-- A synthetic test with 5000 concurrent workers doing allocations and
-  reclaim, as well as 1000 readers for memory.stat (variation of [2]).
-  No significant regressions were noticed in the total runtime.
-  Note that if concurrent flushers compete directly on the spinlock
-  instead of waiting for a completion, this test shows 2x-3x slowdowns.
-  Even though subsequent flushers would have nothing to flush, just the
-  serialization and lock contention is a major problem. Using a
-  completion for synchronization instead seems to overcome this problem.
 
-- A synthetic stress test for concurrently reading memcg stats provided
-  by Wei Xu.
-  With 10k threads reading the stats every 100ms:
-  - 98.8% of reads take <100us
-  - 1.09% of reads take 100us to 1ms.
-  - 0.11% of reads take 1ms to 10ms.
-  - Almost no reads take more than 10ms.
-  With 10k threads reading the stats every 10ms:
-  - 82.3% of reads take <100us.
-  - 4.2% of reads take 100us to 1ms.
-  - 4.7% of reads take 1ms to 10ms.
-  - 8.8% of reads take 10ms to 100ms.
-  - Almost no reads take more than 100ms.
+> 
+> and so on.
+> Does that work for you?
+> 
+> 
+> I will send a v3 soon.
+> Thanks!
+> Leo
+> 
+> > 
+> > 
+> > 
+> > 
+> > 
+> > > +
+> > > +# semantic patches
+> > > +*.cocci
+> > > +
+> > > +# headers
+> > > +*.h
 
-[1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
-[3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
+I was talking on a previous thread, and it would probably be interesting
+to add "*types.h" before *.h.
 
-[weixugc@google.com: suggested the fallback logic and bounding the
-number of waiters]
+I need to think about a way to filter them out when matching "*.h", or it
+won't work because of:
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- include/linux/memcontrol.h |   4 +-
- mm/memcontrol.c            | 100 ++++++++++++++++++++++++++++---------
- mm/vmscan.c                |   2 +-
- mm/workingset.c            |   8 ++-
- 4 files changed, 85 insertions(+), 29 deletions(-)
+Git doc:
+"The output order is determined by the order of glob patterns in <orderfile>.
+All files with pathnames that match the first pattern are output first, all
+files with pathnames that match the second pattern (but not the first) are
+output next, and so on."
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 11810a2cfd2d..4453cd3fc4b8 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1034,7 +1034,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return x;
- }
- 
--void mem_cgroup_flush_stats(void);
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
- void mem_cgroup_flush_stats_ratelimited(void);
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-@@ -1519,7 +1519,7 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return node_page_state(lruvec_pgdat(lruvec), idx);
- }
- 
--static inline void mem_cgroup_flush_stats(void)
-+static inline void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d729870505f1..edff41e4b4e7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -588,7 +588,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
- static void flush_memcg_stats_dwork(struct work_struct *w);
- static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
- static DEFINE_PER_CPU(unsigned int, stats_updates);
--static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- /* stats_updates_order is in multiples of MEMCG_CHARGE_BATCH */
- static atomic_t stats_updates_order = ATOMIC_INIT(0);
- static u64 flush_last_time;
-@@ -639,36 +638,87 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
- 
--static void do_flush_stats(void)
-+/*
-+ * do_flush_stats - flush the statistics of a memory cgroup and its tree
-+ * @memcg: the memory cgroup to flush
-+ * @wait: wait for an ongoing root flush to complete before returning
-+ *
-+ * All flushes are serialized by the underlying rstat global lock. If there is
-+ * no contention, we try to only flush the subtree of the passed @memcg to
-+ * minimize the work. Otherwise, we coalesce multiple flushing requests into a
-+ * single flush of the root memcg. When there is an ongoing root flush, we wait
-+ * for its completion (unless otherwise requested), to get fresh stats. If the
-+ * number of waiters exceeds the number of cpus just skip the flush to bound the
-+ * flush latency at the tail with very high concurrency.
-+ *
-+ * This is a trade-off between stats accuracy and flush latency.
-+ */
-+static void do_flush_stats(struct mem_cgroup *memcg, bool wait)
- {
-+	static DECLARE_COMPLETION(root_flush_done);
-+	static DEFINE_SPINLOCK(root_flusher_lock);
-+	static DEFINE_MUTEX(subtree_flush_mutex);
-+	static atomic_t waiters = ATOMIC_INIT(0);
-+	static bool root_flush_ongoing;
-+	bool root_flusher = false;
-+
-+	/* Ongoing root flush, just wait for it (unless otherwise requested) */
-+	if (READ_ONCE(root_flush_ongoing))
-+		goto root_flush_or_wait;
-+
- 	/*
--	 * We always flush the entire tree, so concurrent flushers can just
--	 * skip. This avoids a thundering herd problem on the rstat global lock
--	 * from memcg flushers (e.g. reclaim, refault, etc).
-+	 * Opportunistically try to only flush the requested subtree. Otherwise
-+	 * fallback to a coalesced flush below.
- 	 */
--	if (atomic_read(&stats_flush_ongoing) ||
--	    atomic_xchg(&stats_flush_ongoing, 1))
-+	if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mutex)) {
-+		cgroup_rstat_flush(memcg->css.cgroup);
-+		mutex_unlock(&subtree_flush_mutex);
- 		return;
-+	}
- 
--	WRITE_ONCE(flush_last_time, jiffies_64);
--
--	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	/* A coalesced root flush is in order. Are we the designated flusher? */
-+	spin_lock(&root_flusher_lock);
-+	if (!READ_ONCE(root_flush_ongoing)) {
-+		reinit_completion(&root_flush_done);
-+		/*
-+		 * We must reset the completion before setting
-+		 * root_flush_ongoing. Otherwise, waiters may call
-+		 * wait_for_completion() and immediately return before we flush.
-+		 */
-+		smp_wmb();
-+		WRITE_ONCE(root_flush_ongoing, true);
-+		root_flusher = true;
-+	}
-+	spin_unlock(&root_flusher_lock);
- 
--	atomic_set(&stats_updates_order, 0);
--	atomic_set(&stats_flush_ongoing, 0);
-+root_flush_or_wait:
-+	if (root_flusher) {
-+		cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+		complete_all(&root_flush_done);
-+		atomic_set(&stats_updates_order, 0);
-+		WRITE_ONCE(flush_last_time, jiffies_64);
-+		WRITE_ONCE(root_flush_ongoing, false);
-+	} else if (wait && atomic_add_unless(&waiters, 1, num_online_cpus())) {
-+		smp_rmb(); /* see smp_wmb() above */
-+		wait_for_completion_interruptible(&root_flush_done);
-+		atomic_dec(&waiters);
-+	}
- }
- 
--void mem_cgroup_flush_stats(void)
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
-+	if (!memcg)
-+		memcg = root_mem_cgroup;
-+
- 	if (atomic_read(&stats_updates_order) > STATS_FLUSH_THRESHOLD)
--		do_flush_stats();
-+		do_flush_stats(memcg, true);
- }
- 
- void mem_cgroup_flush_stats_ratelimited(void)
- {
- 	/* Only flush if the periodic flusher is one full cycle late */
- 	if (time_after64(jiffies_64, READ_ONCE(flush_last_time) + 2*FLUSH_TIME))
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(root_mem_cgroup);
- }
- 
- static void flush_memcg_stats_dwork(struct work_struct *w)
-@@ -677,7 +727,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
- 	 * Deliberately ignore stats_updates_order here so that flushing in
- 	 * latency-sensitive paths is as cheap as possible.
- 	 */
--	do_flush_stats();
-+	do_flush_stats(root_mem_cgroup, false);
- 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
- }
- 
-@@ -1577,7 +1627,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	 *
- 	 * Current memory state:
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -4019,7 +4069,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -4094,7 +4144,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -4596,7 +4646,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
- 	struct mem_cgroup *parent;
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
- 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-@@ -6606,7 +6656,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
-@@ -7764,7 +7814,7 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- 			break;
- 		}
- 
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		mem_cgroup_flush_stats(memcg);
- 		pages = memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_SIZE;
- 		if (pages < max)
- 			continue;
-@@ -7829,8 +7879,10 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
--	cgroup_rstat_flush(css->cgroup);
--	return memcg_page_state(mem_cgroup_from_css(css), MEMCG_ZSWAP_B);
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+
-+	mem_cgroup_flush_stats(memcg);
-+	return memcg_page_state(memcg, MEMCG_ZSWAP_B);
- }
- 
- static int zswap_max_show(struct seq_file *m, void *v)
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 6f13394b112e..fc356b9bc003 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2923,7 +2923,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
- 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
- 	 * lruvec stats for heuristics.
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(sc->target_mem_cgroup);
- 
- 	/*
- 	 * Determine the scan balance between anon and file LRUs.
-diff --git a/mm/workingset.c b/mm/workingset.c
-index da58a26d0d4d..13cbccf907f1 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -519,7 +519,11 @@ void workingset_refault(struct folio *folio, void *shadow)
- 		return;
- 	}
- 
--	/* Flush stats (and potentially sleep) before holding RCU read lock */
-+	/*
-+	 * Flush stats (and potentially sleep) before holding RCU read lock
-+	 * XXX: This can be reworked to pass in a memcg, similar to
-+	 * mem_cgroup_flush_stats().
-+	 */
- 	mem_cgroup_flush_stats_ratelimited();
- 
- 	rcu_read_lock();
-@@ -664,7 +668,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
- 		struct lruvec *lruvec;
- 		int i;
- 
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(sc->memcg);
- 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
- 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
- 			pages += lruvec_page_state_local(lruvec,
--- 
-2.42.0.283.g2d96d420d3-goog
+i.e. the file will be put in the category of the last pattern it matches,
+and it makes harder to get "*types.h" before "*.h".
+
+Trying to think on some solution.
+
+> > > +
+> > > +# code
+> > > +*.c
+> > > --
+> > > 2.42.0
+> > >
+> > 
+> > 
+> > 
+> > 
+> > 
+> > -- 
+> > Best Regards
+> > Masahiro Yamada
+> > 
 
