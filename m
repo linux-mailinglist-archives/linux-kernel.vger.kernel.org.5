@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7556E79E075
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653C479E078
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238478AbjIMHHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S238463AbjIMHJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238416AbjIMHHv (ORCPT
+        with ESMTP id S238367AbjIMHJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:07:51 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B61E1738
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:07:47 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so331301a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694588866; x=1695193666; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aQ2nEJFL1xkjEyk0YmCbI44Cb7r640D/NpFhcEOFdXM=;
-        b=rfJWOudOsHoTrFcRlxv2qkeUB4Bg3qM8JS2/V8KUjYls6/fD4I80f/4HgAHdLvXXKH
-         /nOGnSNT14SD9EZfjC/cGsSP0D6cmhAC11nHqqXbR0XL4FjjpOAqI4ft5TU22qm0/jSs
-         MvQYlf4+NAWNk9vlu73FQKJe5QO69t0i8uenBlOVD1B0F2Zw9j8vsFPG6s7vx9RLPNd5
-         krrw0S4XTOuQRFlLn1txQbWB4Fsy4W2qCZXKnaurKUz525DUxwPO0SG3KJ9o5S6E3hTp
-         vJulbzuP6ul1MW5WchMidEwooYpuoMYkrfFJ+0juR0mYSOl0P0jpbuTl/x3VtWJETXFw
-         nboQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694588866; x=1695193666;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aQ2nEJFL1xkjEyk0YmCbI44Cb7r640D/NpFhcEOFdXM=;
-        b=ji+AEoCwBwIbNCe2EyGGw0WSxp83+EoLhe9NiY1nlgKcryTg7cjXj7svDVWEdrPsma
-         isMpo5oKCHz7MrnVvPshRjErzfcW5PNwxkcf8Ff1Qt/D81qs2Cn/Zp13rWtrsCXuRj0V
-         Nr0I9LmP3C/48B1oStkIaO0Q1HeM3w6z9M4rCps9OFprUVKDM3EjDkGrF5zn0hMD5kOG
-         tYpfsg9Bm8hIbibP2u42u0yjKKZKiAMpMI5yJCGmmQUBalR/4XiteZDn1ho58+G1C/Zs
-         RGx5sH1p18qLUAezWDz+yYbLzuc+C8WFWutqssthi5ZaDHQxJ0s+5XC4PN2pWx0OwHNv
-         cRjQ==
-X-Gm-Message-State: AOJu0Yyg+DsP2sPJwJ2mWn7aZe8aQpww7TXploEctNrVZsNtRPSdpm2Y
-        Rwvwl9TMeLKcvizYaMDe8Uv+qg==
-X-Google-Smtp-Source: AGHT+IEDdTdAYJBvC/NTElwaroM1jCmLl9Ptm9/vSLtcb32A5skuiBvr0hCVl70ozremDvSEn4TN4w==
-X-Received: by 2002:a17:906:32c9:b0:9a1:bd82:de1c with SMTP id k9-20020a17090632c900b009a1bd82de1cmr1165437ejk.41.1694588865733;
-        Wed, 13 Sep 2023 00:07:45 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id b9-20020a170906490900b00992f2befcbcsm7892650ejq.180.2023.09.13.00.07.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 00:07:45 -0700 (PDT)
-Message-ID: <bd11d1b1-efe5-4f96-43e7-163fca5d3278@linaro.org>
-Date:   Wed, 13 Sep 2023 09:07:42 +0200
+        Wed, 13 Sep 2023 03:09:13 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D8ADF;
+        Wed, 13 Sep 2023 00:09:09 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38D6eLGe012023;
+        Wed, 13 Sep 2023 07:09:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nbXt39d+Uly5Prlmsw8HTG2GrjIJiHnSfcz+v/XS12Y=;
+ b=kz2Y1XsrHUeKwbroTWpqOpdNA3x3b/ZH3U9AvnMuCHan6iv5oenKawH8KBoIz4uV2oUj
+ QLn07+Iz+zb4gS9p0GwDi5zRlPsEtqtjEDhuDfJRTGWncbRffvRvOJEWQHvV6u/SCyCU
+ LeKJtiorHK6bUzmy4nu9TXG23fAmlW0ktGyxEvAK4JcWVId1i90MdnrxXOVKCxSM0mQ2
+ WSYV+1DrzZYSs5cz4BgB6NBKFr/Qyqv8ZDnyu/B0TUCTjtOICWgrzPOsaUkfcRQeyEaA
+ 5/aRKVVvlovQ2nGMQhtBhEPvqa5hiXmsAw1kI3Z05VybNQ5n+30RI8HAbS54atXwb7TL UA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y8q0x58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 07:09:00 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38D78xbK028098
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 07:08:59 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 13 Sep
+ 2023 00:08:53 -0700
+Message-ID: <6e1ab09c-6eb0-4e70-a97d-2b96f095d7a7@quicinc.com>
+Date:   Wed, 13 Sep 2023 12:38:48 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 01/14] arm64: dts: qcom: msm8916: Drop RPM bus clocks
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] mtd: rawnand: qcom: Unmap the right resource upon
+ probe failure
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-usb@vger.kernel.org
-References: <20230721-topic-rpm_clk_cleanup-v2-0-1e506593b1bd@linaro.org>
- <20230721-topic-rpm_clk_cleanup-v2-1-1e506593b1bd@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230721-topic-rpm_clk_cleanup-v2-1-1e506593b1bd@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     Miquel Raynal <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, <quic_charante@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_pkondeti@quicinc.com>
+References: <20230912115903.1007-1-quic_bibekkum@quicinc.com>
+ <20230912142847.4610c0a0@xps-13>
+ <5e80e600-b523-476a-81bd-93d2c517b7b6@quicinc.com>
+ <20230912143726.GE6404@thinkpad>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <20230912143726.GE6404@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: rOdNNTYoqFsrUD7Y6yU-GG5R_MU-Q-A7
+X-Proofpoint-GUID: rOdNNTYoqFsrUD7Y6yU-GG5R_MU-Q-A7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
+ adultscore=0 phishscore=0 suspectscore=0 mlxlogscore=588 bulkscore=0
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309130059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 15:31, Konrad Dybcio wrote:
-> These clocks are now handled from within the icc framework and are
 
-That's a driver behavior, not hardware.
 
-> no longer registered from within the CCF. Remove them.
+On 9/12/2023 8:07 PM, Manivannan Sadhasivam wrote:
+> On Tue, Sep 12, 2023 at 08:02:07PM +0530, Bibek Kumar Patro wrote:
+>>
+>>
+>> On 9/12/2023 5:58 PM, Miquel Raynal wrote:
+>>>> We currently provide the physical address of the DMA region
+>>>> rather than the output of dma_map_resource() which is obviously wrong.
+>>>>
+>>>> Fixes: 7330fc505af4 ("mtd: rawnand: qcom: stop using phys_to_dma()")
+>>> Cc: stable?
+>> Cc: stable@vger.kernel.org
+> 
+> You need to send another version adding the CC tag.
+
+Sure Mani, sent a new patch with cc tag. Addressed in v5 patchset.
+
+> 
+> With the tag added,
+> 
+> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 > 
 
-Changes in Linux clock drivers should not cause some clocks to disappear
-from DTS...
+Added in v5 patch.
 
+> - Mani
+> 
 
-Best regards,
-Krzysztof
-
+Thanks & regards,
+Bibek
