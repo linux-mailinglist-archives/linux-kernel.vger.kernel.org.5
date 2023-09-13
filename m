@@ -2,254 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1161779EA94
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075C279EA79
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241550AbjIMOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:10:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        id S241209AbjIMOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241377AbjIMOJW (ORCPT
+        with ESMTP id S231767AbjIMOIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:09:22 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440381BD4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:52 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by laurent.telenet-ops.be with bizsmtp
-        id lS8n2A00D3fvA4V01S8nmG; Wed, 13 Sep 2023 16:08:48 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXe-003csx-3N;
-        Wed, 13 Sep 2023 16:08:47 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV5w-Ej;
-        Wed, 13 Sep 2023 16:08:47 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Philip Blundell <philb@gnu.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 32/52] m68k: mac: Add and use "mac.h"
-Date:   Wed, 13 Sep 2023 16:08:22 +0200
-Message-Id: <d1fe0014a9e472a305333de4fa17f335c93d73af.1694613528.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
-References: <cover.1694613528.git.geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Wed, 13 Sep 2023 10:08:51 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F1D19B1;
+        Wed, 13 Sep 2023 07:08:47 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 027BB5C01DF;
+        Wed, 13 Sep 2023 10:08:45 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 13 Sep 2023 10:08:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1694614124; x=1694700524; bh=zfvZBncMMU2YSvF8BUaOv/NK0XFFKo70iWy
+        d6Cf7xKA=; b=mIsTU+Vay1BOgsSssEi9pxqX8d5xjC2FAs0wEWGO6ZUo2g7XGQ2
+        tdveal2n+J7T+8kCLJa/w1DI6ggOWzeBtSHYCTw9BPHWy+oebP7+E7QhiFwrni3K
+        oQUJjYaY7LZuftI86fVOooWFakp5Oa9wfA/FTfpNqZC/wrJI6Wd0PadD/lzwNfgz
+        hVTsPrdiErVsIUtA5fVNRxU/NN+UrFnP1LyaI44V01KCgdJltDegaEgzmIY4urVx
+        Gd8mHwiCSnXBV4v5ZWq+KLSZ6/nitS+h2OsrwXNpRz7Pl856YVBBObJhwJGGO4o0
+        cxeWXfhV+ypMsBQoflNrghozpNlRZeCNqCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1694614124; x=1694700524; bh=zfvZBncMMU2YSvF8BUaOv/NK0XFFKo70iWy
+        d6Cf7xKA=; b=CDD267g20qfHMUwkKynraI/D+GMQKjjYBbBkySm+B0gaYPgN31R
+        c1wsnopuAmZw4zrVA+C1eHCxSCBaJP3Q6BWuDUHd1u4oj5C7+7+4aKWDEiSTySol
+        poy5SA/ijkT7TKjLMqcilvyQRbgDWPoi0zkQwYpWKNfMRcHoiT1qeJKvFhf8tXjT
+        CUGKuhS7rKEFVVuvO0corSteXY8xRsnb3xppaOVUZfssuZWD9Z1UzKsOpzKqzOU6
+        9uKK6vqGZPNPPpDVhs2dEGvjilJEsbE3ynIrJmBFFEQQC2EbXDFjhwYgyUQ9vl6G
+        bgwEqbo7kCsHCPkcmF/52Zm7ZY5pC9yy4Og==
+X-ME-Sender: <xms:bMIBZamlhTi-8sXNxckLiMjxdz0sUVZA2AfbDWFBFn2eS47nD7lz_Q>
+    <xme:bMIBZR17f7GU2-RLWWBTgNMfyK_mzX0nxXwnu7kmqhu1_RHTGZOeko-H6UD9QYIJF
+    pRnsSjHJIu3wJqBWa0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:bMIBZYrR_7eUvsOPuQgj0_Hayh0rYpBTxAArvCpo4h8ukZwO4xC1OA>
+    <xmx:bMIBZemfSUrrprzMjv_PzTxDBN679MuTpwvX6cODFVKm8ASMKuIzUg>
+    <xmx:bMIBZY0wFHylEvtf6-B15yCAajVg2A2wliNxvg96kTuiXky5IzmuVA>
+    <xmx:bMIBZbSqafD-EyKimLawZYZjVvncvzhMb_S5_ra_otgdU_JtEXDysA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 48B49B60089; Wed, 13 Sep 2023 10:08:44 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+In-Reply-To: <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+References: <20230802184849.1019466-1-arnd@kernel.org>
+ <20230802184849.1019466-4-arnd@kernel.org>
+ <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com>
+Date:   Wed, 13 Sep 2023 16:08:23 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        linux-sh@vger.kernel.org, "Rich Felker" <dalias@libc.org>,
+        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1:
+On Wed, Sep 13, 2023, at 14:32, Geert Uytterhoeven wrote:
+> On Wed, Aug 2, 2023 at 8:49=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>>
+>> These functions were only used on the microdev
+>> board that is now gone, so remove them to simplify
+>> the ioport handling.
+>>
+>> This could be further simplified to use the generic
+>> I/O port accessors now.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+>> --- a/arch/sh/include/asm/io.h
+>> +++ b/arch/sh/include/asm/io.h
+>> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, un=
+signed long port)  \
+>>  {                                                                   =
+   \
+>>         volatile type *__addr;                                       =
+   \
+>>                                                                      =
+   \
+>> -       __addr =3D __ioport_map(port, sizeof(type));                 =
+     \
+>> +       __addr =3D (void __iomem *)sh_io_port_base + port;           =
+     \
+>
+> Note that this adds unconditional users of sh_io_port_base, while
+> sh_io_port_base is provided by arch/sh/kernel/ioport.c, which is
+> currently only built if CONFIG_GENERIC_IOMAP=3Dn.
+>
+> This is not a problem yet, as the final part to enable GENERIC_IOMAP
+> on SH never made it upstream.  However, Sato-san's series enables
+> GENERIC_IOMAP for SH_DEVICE_TREE=3Dy builds, leading to a link failure.
 
-    arch/m68k/mac/iop.c:235:13: warning: no previous prototype for ‘iop_init’ [-Wmissing-prototypes]
-      235 | void __init iop_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/via.c:112:13: warning: no previous prototype for ‘via_init’ [-Wmissing-prototypes]
-      111 | void __init via_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/via.c:623:13: warning: no previous prototype for ‘via_init_clock’ [-Wmissing-prototypes]
-      593 | void __init via_init_clock(void)
-	  |             ^~~~~~~~~~~~~~
-    arch/m68k/mac/oss.c:37:13: warning: no previous prototype for ‘oss_init’ [-Wmissing-prototypes]
-       37 | void __init oss_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/psc.c:76:13: warning: no previous prototype for ‘psc_init’ [-Wmissing-prototypes]
-       76 | void __init psc_init(void)
-	  |             ^~~~~~~~
-    arch/m68k/mac/baboon.c:25:13: warning: no previous prototype for ‘baboon_init’ [-Wmissing-prototypes]
-       25 | void __init baboon_init(void)
-	  |             ^~~~~~~~~~~
-    arch/m68k/mac/macboing.c:155:6: warning: no previous prototype for ‘mac_mksound’ [-Wmissing-prototypes]
-      155 | void mac_mksound( unsigned int freq, unsigned int length )
-	  |      ^~~~~~~~~~~
-    arch/m68k/mac/misc.c:608:5: warning: no previous prototype for ‘mac_hwclk’ [-Wmissing-prototypes]
-      608 | int mac_hwclk(int op, struct rtc_time *t)
-	  |     ^~~~~~~~~
+Do you have a link to that series? I don't understand why you'd
+want to enable GENERIC_IOMAP on sh, given that its PIO accesses
+are always memory mapped in the end.
 
-Fix this by introducing a new header file "mac.h" for holding the
-prototypes of functions implemented in arch/m68k/mac/.
+Is this needed for the trapped_io CF stuff?
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
-v2:
-  - Add Acked-by.
----
- arch/m68k/mac/baboon.c   |  2 ++
- arch/m68k/mac/config.c   | 12 ++----------
- arch/m68k/mac/iop.c      |  2 ++
- arch/m68k/mac/mac.h      | 25 +++++++++++++++++++++++++
- arch/m68k/mac/macboing.c |  2 ++
- arch/m68k/mac/misc.c     |  2 ++
- arch/m68k/mac/oss.c      |  2 ++
- arch/m68k/mac/psc.c      |  2 ++
- arch/m68k/mac/via.c      |  2 ++
- 9 files changed, 41 insertions(+), 10 deletions(-)
- create mode 100644 arch/m68k/mac/mac.h
-
-diff --git a/arch/m68k/mac/baboon.c b/arch/m68k/mac/baboon.c
-index a7d280220662c747..5c97a7058bcdee2e 100644
---- a/arch/m68k/mac/baboon.c
-+++ b/arch/m68k/mac/baboon.c
-@@ -15,6 +15,8 @@
- #include <asm/macints.h>
- #include <asm/mac_baboon.h>
- 
-+#include "mac.h"
-+
- int baboon_present;
- static volatile struct baboon *baboon;
- 
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index d56affefd5cabeb5..e324410ef239c09f 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -50,22 +50,14 @@
- #include <asm/mac_psc.h>
- #include <asm/config.h>
- 
-+#include "mac.h"
-+
- /* Mac bootinfo struct */
- struct mac_booter_data mac_bi_data;
- 
- /* The phys. video addr. - might be bogus on some machines */
- static unsigned long mac_orig_videoaddr;
- 
--extern int mac_hwclk(int, struct rtc_time *);
--extern void iop_init(void);
--extern void via_init(void);
--extern void via_init_clock(void);
--extern void oss_init(void);
--extern void psc_init(void);
--extern void baboon_init(void);
--
--extern void mac_mksound(unsigned int, unsigned int);
--
- static void mac_get_model(char *str);
- static void mac_identify(void);
- static void mac_report_hardware(void);
-diff --git a/arch/m68k/mac/iop.c b/arch/m68k/mac/iop.c
-index 010b3b5ae8e8584a..a92740d530ac4fbe 100644
---- a/arch/m68k/mac/iop.c
-+++ b/arch/m68k/mac/iop.c
-@@ -119,6 +119,8 @@
- #include <asm/macints.h>
- #include <asm/mac_iop.h>
- 
-+#include "mac.h"
-+
- #ifdef DEBUG
- #define iop_pr_debug(fmt, ...) \
- 	printk(KERN_DEBUG "%s: " fmt, __func__, ##__VA_ARGS__)
-diff --git a/arch/m68k/mac/mac.h b/arch/m68k/mac/mac.h
-new file mode 100644
-index 0000000000000000..d3d142cea3b4b911
---- /dev/null
-+++ b/arch/m68k/mac/mac.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+struct rtc_time;
-+
-+/* baboon.c */
-+void baboon_init(void);
-+
-+/* iop.c */
-+void iop_init(void);
-+
-+/* misc.c */
-+int mac_hwclk(int op, struct rtc_time *t);
-+
-+/* macboing.c */
-+void mac_mksound(unsigned int freq, unsigned int length);
-+
-+/* oss.c */
-+void oss_init(void);
-+
-+/* psc.c */
-+void psc_init(void);
-+
-+/* via.c */
-+void via_init(void);
-+void via_init_clock(void);
-diff --git a/arch/m68k/mac/macboing.c b/arch/m68k/mac/macboing.c
-index 76431241347682fc..faea2265a540192d 100644
---- a/arch/m68k/mac/macboing.c
-+++ b/arch/m68k/mac/macboing.c
-@@ -16,6 +16,8 @@
- #include <asm/macintosh.h>
- #include <asm/mac_asc.h>
- 
-+#include "mac.h"
-+
- static int mac_asc_inited;
- /*
-  * dumb triangular wave table
-diff --git a/arch/m68k/mac/misc.c b/arch/m68k/mac/misc.c
-index 65107abc8848232c..4c8f8cbfa05f3404 100644
---- a/arch/m68k/mac/misc.c
-+++ b/arch/m68k/mac/misc.c
-@@ -25,6 +25,8 @@
- 
- #include <asm/machdep.h>
- 
-+#include "mac.h"
-+
- /*
-  * Offset between Unix time (1970-based) and Mac time (1904-based). Cuda and PMU
-  * times wrap in 2040. If we need to handle later times, the read_time functions
-diff --git a/arch/m68k/mac/oss.c b/arch/m68k/mac/oss.c
-index 921e6c092f2c6626..1641607f300d981c 100644
---- a/arch/m68k/mac/oss.c
-+++ b/arch/m68k/mac/oss.c
-@@ -27,6 +27,8 @@
- #include <asm/mac_via.h>
- #include <asm/mac_oss.h>
- 
-+#include "mac.h"
-+
- int oss_present;
- volatile struct mac_oss *oss;
- 
-diff --git a/arch/m68k/mac/psc.c b/arch/m68k/mac/psc.c
-index 0d0965b19c09b439..b4183cf66efef7f5 100644
---- a/arch/m68k/mac/psc.c
-+++ b/arch/m68k/mac/psc.c
-@@ -26,6 +26,8 @@
- #include <asm/macints.h>
- #include <asm/mac_psc.h>
- 
-+#include "mac.h"
-+
- #define DEBUG_PSC
- 
- volatile __u8 *psc;
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 3d11d6219cdd56da..01e6b0e37f8dd0e8 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -38,6 +38,8 @@
- #include <asm/mac_psc.h>
- #include <asm/mac_oss.h>
- 
-+#include "mac.h"
-+
- volatile __u8 *via1, *via2;
- int rbv_present;
- int via_alt_mapping;
--- 
-2.34.1
-
+       Arnd
