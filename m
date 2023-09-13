@@ -2,100 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2899079E3AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3C079E3B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbjIMJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
+        id S238973AbjIMJ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbjIMJ3Q (ORCPT
+        with ESMTP id S234921AbjIMJ3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:29:16 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2440EDD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:29:12 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d7b79a4899bso5777141276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:29:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694597351; x=1695202151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n+MFrQb049CZGpD5Zjrkdb/5Mi4AniQ9UI6VaAP+DKI=;
-        b=nqobbugR0J71jJav4XvddP5C8S7awiekldJ/jzjRx4AKyl50wOWNzjflUI14AUFAIO
-         NM36yEiaa1NpqZ+DcgBUF0JAjxW/OPyeSs6YtcchwUXDg7en7kZhoJIEqE9JhA4+yEwY
-         ZxtDc+u8gZEO2lymribJBvOBKBLdcj+x07jWQbbblHp6mZVbwgcyMJRK0MERUMMVc29F
-         f837xFMA4HZhlzc7VaLYVOOsRwkLo97BDf1mvnQkmfGb5BF2TwneSYG65etoN9hECm8R
-         p1YjFYcl8Ag+7LRrnCCNNKXa2flTdYMII8ejoinlsqUS79+UxZ7GlriQfTxtvEMYkneH
-         ekyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694597351; x=1695202151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n+MFrQb049CZGpD5Zjrkdb/5Mi4AniQ9UI6VaAP+DKI=;
-        b=Jgs/CsY8fnxvTPmEVAlcYKGyXk5eQVgCjWR/azF18Y184op3SE/T9X3vmVGF/mt9RI
-         FaMV7WVbuoAHNQlkhASosW5rXqfXzhqkFjLnSWN26eoBo7XYooH9B3qhc/xROauNehD7
-         so5n413SQsTBqJEx6dpLNnyTclvd5hqFm+k/0ipz5TztzoY4Ck1LFqzeBC06occ0LAGo
-         oq8f5/EPXmIR7vsNiHV2cjp5yzCXobvDFl3UjgMObCu7c1N7HJJWVrk5BAk8n4HN1Kt+
-         xCnaqLwRrmwXHX7l61MMngswK1FjwzDQQiQ3BlFKmaHqRgK7F4XQUlTLCuVO8HCAH3Gv
-         Aidg==
-X-Gm-Message-State: AOJu0Yzzt1SkhKNJRIOqJBGxnJPmNW+k6r4/6i3cRJaIUSnPIMYgdyV1
-        zdP9KTxjyCwHSnOyXQJ6bbOT86Bnc8fbztNNs92TtQ==
-X-Google-Smtp-Source: AGHT+IGVYATgybqJdQWccuvKju5FLYK1upeu8sUATvMnSclQgqyxQgb2vhtl1TPyVBSLk/BEp3cBzJWvCfm+nCEdZeA=
-X-Received: by 2002:a5b:982:0:b0:d78:341d:e475 with SMTP id
- c2-20020a5b0982000000b00d78341de475mr1702968ybq.44.1694597351319; Wed, 13 Sep
- 2023 02:29:11 -0700 (PDT)
+        Wed, 13 Sep 2023 05:29:41 -0400
+Received: from cstnet.cn (smtp20.cstnet.cn [159.226.251.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4846410DD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:29:36 -0700 (PDT)
+Received: from sunying$isrc.iscas.ac.cn ( [180.111.102.117] ) by
+ ajax-webmail-APP-10 (Coremail) ; Wed, 13 Sep 2023 17:29:33 +0800
+ (GMT+08:00)
+X-Originating-IP: [180.111.102.117]
+Date:   Wed, 13 Sep 2023 17:29:33 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   sunying@isrc.iscas.ac.cn
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-crypto@vger.kernel.org,
+        "pengpeng@iscas.ac.cn" <pengpeng@iscas.ac.cn>,
+        "renyanjie01@gmail.com" <renyanjie01@gmail.com>
+Subject: Non-existing CONFIG_ options are used in source code
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.15 build 20230321(1bf45b10)
+ Copyright (c) 2002-2023 www.mailtech.cn cnic.cn
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-References: <20230913065421.12615-1-juerg.haefliger@canonical.com>
-In-Reply-To: <20230913065421.12615-1-juerg.haefliger@canonical.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 13 Sep 2023 11:28:59 +0200
-Message-ID: <CACRpkdaJd9PA96ryKnJbxotT_+sH-qKgOq=xJDQdXXwTvYBC0w@mail.gmail.com>
-Subject: Re: [PATCH] wifi: brcmfmac: Replace 1-element arrays with flexible arrays
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, kvalo@kernel.org,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        marcan@marcan.st, keescook@chromium.org, gustavoars@kernel.org,
-        hdegoede@redhat.com, ryohei.kondo@cypress.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4e8525fe.607e2.18a8ddfdce8.Coremail.sunying@isrc.iscas.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: tACowAC3H+T9gAFlOXAKAA--.25517W
+X-CM-SenderInfo: 5vxq5x1qj6x21ufox2xfdvhtffof0/1tbiCQgNCmUBTe3BqAAAsr
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 8:54=E2=80=AFAM Juerg Haefliger
-<juerg.haefliger@canonical.com> wrote:
-
-> Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
-> UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
-> 'element' and 'channel_list' will trigger warnings, so make them proper
-> flexible arrays.
->
-> False positive warnings were:
->
->   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm8=
-0211/brcmfmac/cfg80211.c:6984:20
->   index 1 is out of range for type '__le32 [1]'
->
->   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm8=
-0211/brcmfmac/cfg80211.c:1126:27
->   index 1 is out of range for type '__le16 [1]'
->
-> for these lines of code:
->
->   6884  ch.chspec =3D (u16)le32_to_cpu(list->element[i]);
->
->   1126  params_le->channel_list[i] =3D cpu_to_le16(chanspec);
->
-> Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
-
-Obviously the right solution, thanks for looking into this!
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+VGhlIGZvbGxvd2luZyBjb25maWd1cmF0aW9uIG9wdGlvbnMgYXJlIG5vdCBkZWZpbmVkCiAodGhl
+eSBtYXkgaGF2ZSBiZWVuIGRlbGV0ZWQgb3Igbm90IHlldCBhZGRlZCkKIGJ1dCBhcmUgdXNlZCBp
+biB0aGUgc291cmNlIGZpbGVzLgoKSXMgdGhlcmUgc29tZXRoaW5nIGluIHRoZXNlIHRoYXQgbWln
+aHQgbmVlZCBmaXhpbmc/Cgo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQoxLiBDT05GSUdfTkVURlNfREVCVUcKZnMvbmV0ZnMvaW50ZXJuYWwuaDoxMjI6I2Vs
+aWYgZGVmaW5lZChDT05GSUdfTkVURlNfREVCVUcpCgoyLiBDT05GSUdfU1NCX0RFQlVHCmluY2x1
+ZGUvbGludXgvc3NiL3NzYi5oOjYyNjojaWZkZWYgQ09ORklHX1NTQl9ERUJVRwoKMy4gQ09ORklH
+X0NSWVBUT19ERVZfQVNQRUVEX0hBQ0VfQ1JZUFRPX0RFQlVHCmRyaXZlcnMvY3J5cHRvL2FzcGVl
+ZC9hc3BlZWQtaGFjZS1jcnlwdG8uYzoxOTojaWZkZWYgQ09ORklHX0NSWVBUT19ERVZfQVNQRUVE
+X0hBQ0VfQ1JZUFRPX0RFQlVHCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09CgoKCkJlc3QgcmVnYXJkcywKWWFuamllIFJlbgpZaW5nIFN1bgo=
