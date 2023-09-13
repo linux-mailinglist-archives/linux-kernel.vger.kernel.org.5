@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6014579EDC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AF079EDC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbjIMP4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S230198AbjIMP4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjIMP4F (ORCPT
+        with ESMTP id S230213AbjIMP4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:56:05 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28ECE54
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:56:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso8802275a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694620559; x=1695225359; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tv7XJDdl6834GzjvqOGD358bBmTKqyHRIi14XwGDvOI=;
-        b=J2ZjKir7vSkCqej4qUKm9JqDXFoT3PvKmsv/mv6U/czvSP7bf8ftGLzee73NxJP+gk
-         muLEKF7m7KNI9Wl3TpPNyJDuj5qZOXESe4jSSvqmC0dDtmLD1QEvu7j66M+8VIYtlQ0j
-         dR45cjAK0vNDU8gNLOzk6nJ/NDneEnoH3nRwWL/TX1hrVpolaWE6XFhuPQj6uffCvGJ8
-         uH6eSAio+IAKamfGng+FrJ3AzOwZ1kviURh2oMu6xO9qLZPWyorsKXW7fEs88BQq95f1
-         FZaErb1KZSIxGD/C5QtttikCfdUbyEmBfICeKi9FR9ECMkVcgWQWxwFHIJgzvWn18h2h
-         vX8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694620559; x=1695225359;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tv7XJDdl6834GzjvqOGD358bBmTKqyHRIi14XwGDvOI=;
-        b=YxCG7F2os00qYq+40etxu07VFFQc/237J++nJ+aE355+XcFcXUwJzFSJ4e3aUHg3y6
-         acUVpJ/aq9JE4Rx8mRJlqKNdCdIxTdbO1IcqBliLoMqKvAaymJNAqCc9xt9wOX9bMvd2
-         xqh9Kar67GfSG9gZC9a8NJ0WTFxgXiTnHzzPWJV6LHhx/ELRPRgx4BLBOx5ZfUplWbEd
-         +HJlXbsGAWg7V30QG8S8QbdS2YIPbiIYFPDN/nq2H4vSLV5bddtxqYCi4gDL1KFfxG7f
-         Z0XyH9ueubFPLUQM81tHOla8ePcF7Ntov8aYTDglGnpw9y21ZNJpZhguLBF3ba7X8NyJ
-         gisQ==
-X-Gm-Message-State: AOJu0YzXfPEkljv6YKUVjEGuBdEU5L0mIcaibowg/QGnTczOCt3uJJW1
-        xiOL55KS97AgWy6pp6HfZjvCTsSl32RG8xapHes=
-X-Google-Smtp-Source: AGHT+IHBr64ssqYpCba2U1MbEZa4hifW1e1oF7df36c+VnVjR01KmwawFQH8SGOjBmUtG5VCp8p4kw==
-X-Received: by 2002:aa7:c90c:0:b0:523:1ce9:1f41 with SMTP id b12-20020aa7c90c000000b005231ce91f41mr2521929edt.18.1694620559143;
-        Wed, 13 Sep 2023 08:55:59 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id m16-20020aa7c490000000b005236410a16bsm7565230edq.35.2023.09.13.08.55.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 08:55:58 -0700 (PDT)
-Message-ID: <c574c47e-9ceb-ef83-cc92-cdc6cd4982e5@linaro.org>
-Date:   Wed, 13 Sep 2023 17:55:56 +0200
+        Wed, 13 Sep 2023 11:56:35 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FD119BB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:56:31 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DEk1Z4030010
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:56:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=22ok7B2PvqkfYpwpJ7o1ydqnVK288ID8TPWPyMwUpkc=;
+ b=WQtwkF0oDXlT2fcSv0kWupviemeqjGr5Y331rfPJy0R6pXn0fq0WGzeA2ixvDemcRsbI
+ M5zKkDXvCsU7QpBiz2EI3S9F4H6aUfsFN0EZfzw4tEKV9BTg1JNeN5uuiSzG/A3+RlGC
+ juAMWbnogCYOidIsFujVpUuoMVFWDL42ac7a0suW5ED/JqzZya2cbT/hXfoTLoaQSC2U
+ a0omo5uy9tdbp/NS44CVrWTwG710J02HgxgBxvochxqg8q8s+4INHb/o18wTdCM9oLTa
+ tSrBqavmB4X0T5ThBQktj3cuM+ixjUXNka47sVP+j+9Fp+3T5jCGbc6kwgOpJyBWPRY3 uQ== 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3t2y8thcpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:56:30 -0700
+Received: from twshared24695.38.frc1.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 13 Sep 2023 08:56:29 -0700
+Received: by devvm715.rva0.facebook.com (Postfix, from userid 240176)
+        id 7EDD52954BBFD; Wed, 13 Sep 2023 08:56:27 -0700 (PDT)
+From:   Michal Grzedzicki <mge@meta.com>
+To:     Michal Grzedzicki <mge@meta.com>
+CC:     <jinpu.wang@cloud.ionos.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jack Wang <jinpu.wang@ionos.com>
+Subject: [PATCH v2 1/2] pm80xx: Use phy specific sas address when sending PHY_START command
+Date:   Wed, 13 Sep 2023 08:56:10 -0700
+Message-ID: <20230913155611.3183612-1-mge@meta.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CAMGffE=kWc1rsNfn6n8d1qkYw2U8sz+n5E-GEkWB7=835j=66g@mail.gmail.com>
+References: <CAMGffE=kWc1rsNfn6n8d1qkYw2U8sz+n5E-GEkWB7=835j=66g@mail.gmail.com>
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: k8CN-VpHXw8kupVN6c3fDidXT3m3rIuQ
+X-Proofpoint-ORIG-GUID: k8CN-VpHXw8kupVN6c3fDidXT3m3rIuQ
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: ice: document the sa8775p inline
- crypto engine
-Content-Language: en-US
-To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230913153529.32777-1-bartosz.golaszewski@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230913153529.32777-1-bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_10,2023-09-13_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 17:35, Bartosz Golaszewski wrote:
-> Add the compatible string for QCom ICE on sa8775p SoCs.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
+Some cards have more than one sas addresses. Using incorrect
+address causes communication issues with some devices like expanders.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Closes: https://lore.kernel.org/linux-kernel/A57AEA84-5CA0-403E-8053-106033=
+C73C70@fb.com/
+Signed-off-by: Michal Grzedzicki <mge@meta.com>
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+---
+Changes in v2: add Closes tag
 
-Best regards,
-Krzysztof
+ drivers/scsi/pm8001/pm8001_hwi.c | 2 +-
+ drivers/scsi/pm8001/pm80xx_hwi.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_=
+hwi.c
+index 33053db5a713..90069c7b1642 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -4180,7 +4180,7 @@ pm8001_chip_phy_start_req(struct pm8001_hba_info *pm8=
+001_ha, u8 phy_id)
+ 	payload.sas_identify.dev_type =3D SAS_END_DEVICE;
+ 	payload.sas_identify.initiator_bits =3D SAS_PROTOCOL_ALL;
+ 	memcpy(payload.sas_identify.sas_addr,
+-		pm8001_ha->sas_addr, SAS_ADDR_SIZE);
++		&pm8001_ha->phy[phy_id].dev_sas_addr, SAS_ADDR_SIZE);
+ 	payload.sas_identify.phy_id =3D phy_id;
+=20
+ 	return pm8001_mpi_build_cmd(pm8001_ha, 0, opcode, &payload,
+diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_=
+hwi.c
+index f6857632dc7c..1b2c40b1381c 100644
+--- a/drivers/scsi/pm8001/pm80xx_hwi.c
++++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+@@ -4671,7 +4671,7 @@ pm80xx_chip_phy_start_req(struct pm8001_hba_info *pm8=
+001_ha, u8 phy_id)
+ 	payload.sas_identify.dev_type =3D SAS_END_DEVICE;
+ 	payload.sas_identify.initiator_bits =3D SAS_PROTOCOL_ALL;
+ 	memcpy(payload.sas_identify.sas_addr,
+-	  &pm8001_ha->sas_addr, SAS_ADDR_SIZE);
++		&pm8001_ha->phy[phy_id].dev_sas_addr, SAS_ADDR_SIZE);
+ 	payload.sas_identify.phy_id =3D phy_id;
+=20
+ 	return pm8001_mpi_build_cmd(pm8001_ha, 0, opcode, &payload,
+--=20
+2.34.1
 
