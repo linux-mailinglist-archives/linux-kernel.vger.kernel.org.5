@@ -2,107 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B370879E405
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBA979E404
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239428AbjIMJon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54054 "EHLO
+        id S239391AbjIMJok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239380AbjIMJoj (ORCPT
+        with ESMTP id S239390AbjIMJoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:44:39 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7F2198C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:44:35 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-64a5bc53646so40860396d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:44:35 -0700 (PDT)
+        Wed, 13 Sep 2023 05:44:37 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C33199E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:44:33 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6c0822f46a1so4383424a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694598273; x=1695203073; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1694598273; x=1695203073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R9pWS5RKacUJB+Dks28jDzi/RTSOwkJtyGFeCb9s9pw=;
-        b=fFLDJHG/ehIv5uE6W/xrd+cyq4pSuwHnR+Xt81evRx0L6ZqVnSviiCzI1TfVCT+don
-         DCf28hoqRRUvK5iX6e2e41ppB1nZ0CnzmpYR9PUzSFmZXDxzn1fBmowhGRIFujNFfxjX
-         xrlF7Q+jkFOoXbP0nt9sG81QOT24MUyUi3bCw=
+        bh=SWFwqBTg42FzEjeZenH3abFymmd/sjkvDp9dR8Hpb+I=;
+        b=Ts48pPJ+8OtzPYlWMJx/vSU4pLkmtB4PPgiFYJA1tm8blBYR7qXflVCInOyZ/mKg0r
+         U4+Gk60O8yUNS9+4fsZyAasmuOC08nH+f3rHnnW19Gha46UKznLXtcR54fyn9YQe/pFX
+         R5oti7pQ8MDt13PBY2k0oxVp6P5voVGGLVF7qqUlnMcWGsvxAjGZtRm0gjACxLwFIqPl
+         rnUTYneQquO71wy3CKekgyonKLy1AsoIoirmiECfNtS+OiHLj6w2kXJOGMPMy4W0P9KN
+         44Zz7Kfju9GV0638sW1ITBkY0ABP78Ttm1T9yRqYKb0wGQBZnZyH401NSf6W1F+JRjsj
+         sNng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1694598273; x=1695203073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R9pWS5RKacUJB+Dks28jDzi/RTSOwkJtyGFeCb9s9pw=;
-        b=V6Rmtir0Gz6VL8ul5w/Yrql0GbDj7axPj+SuVeQ61ymyjJYo1af8KKseOzr8U+QuYj
-         xX2D96vdgoZsve+2iw2oFCRfPqgWYNfMODqTLhOzxsa9VjZgfqZFF6xJxL0m+KNs4eim
-         vPU/pLHBPdwRlSl6L8p1l8dfSq/MEw8QlkBRIDxNsjUQWIp4zg6EfvUAn4PvN9aAlZvr
-         96SWWJmI0SpRzMvnMb6NEO9rOkC4TmgVsETlOiL1ifABiT7uYl4rfB2AR4fbFiSBPEhr
-         h55emvJGgKdUIDXEX6TVlhO2qr3GA44Mq73lvPDUwRWlp7tErmQ621rBdC7kVf2GmDUn
-         CHlg==
-X-Gm-Message-State: AOJu0YyGS27gs0+X9vc6uWjJW1aYcrZAwNOtF72nH7enXx8xVst3sdLq
-        umpe205woaeT/A91hg23FVcBYrEpplFuqTkEj6s=
-X-Google-Smtp-Source: AGHT+IETuh3wr/GAC5U8ZeLRitdkL5MVSgZnvbexRSaM5X61tp+BFW2ohBapwL6pC4Pd4C0mz1eHyg==
-X-Received: by 2002:ad4:44af:0:b0:63f:9aa3:867b with SMTP id n15-20020ad444af000000b0063f9aa3867bmr2095170qvt.40.1694598273559;
-        Wed, 13 Sep 2023 02:44:33 -0700 (PDT)
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com. [209.85.219.47])
-        by smtp.gmail.com with ESMTPSA id x15-20020ad4458f000000b00655e5724eebsm2538373qvu.66.2023.09.13.02.44.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 02:44:33 -0700 (PDT)
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-64c2e2572f7so40842156d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:44:32 -0700 (PDT)
-X-Received: by 2002:a05:6214:8ce:b0:64f:518d:ac91 with SMTP id
- da14-20020a05621408ce00b0064f518dac91mr2055205qvb.8.1694598271822; Wed, 13
- Sep 2023 02:44:31 -0700 (PDT)
+        bh=SWFwqBTg42FzEjeZenH3abFymmd/sjkvDp9dR8Hpb+I=;
+        b=kTyzYArTrT3dFVizHQpuTYUHm5MhZrD47T6gzMm6ZSaL3UmL9GJBQPekYrnLrGgc3v
+         P4SwHBGlNKbpe2jfFpMsoowg/DrWCbFrD/6TrbSkzJmdWrNo1tzLDevyDYOY43qncnI2
+         4rGMqqotgQtWkwLvB0Q/e9a0qansvuTUUmTksfAliaWnRt7iktIaigHMK94Asv29XFbb
+         owlu1Ac5xqHpXGvNw771riuk53e/coCd3FC+e06AhNvAgyqGGG3Cqp2JBARR6NUr5GxE
+         kcCM76PtyqrpxWUNgLkBu1bGEd2Tspv1dRHiB/ge2o+KXJL5uaCwdkUC5OJucdHMVv/L
+         kqHg==
+X-Gm-Message-State: AOJu0Ywd+j9zSicmPbhV+LHipGZYBAOy0flRur9tN1w6uiQuKzdNlA6Z
+        F1Kl8tX3Yn9SJPWB2edasZ74bQ==
+X-Google-Smtp-Source: AGHT+IEzsIpJlV/49NAghRov86goyt9rsAYRDsP4bYudI9e8SJcY1zheqBcLVqc74vCe3iV8uDLOWA==
+X-Received: by 2002:a05:6358:2906:b0:13a:a094:737d with SMTP id y6-20020a056358290600b0013aa094737dmr2198056rwb.18.1694598272723;
+        Wed, 13 Sep 2023 02:44:32 -0700 (PDT)
+Received: from PF2LML5M-SMJ.bytedance.net ([220.243.131.6])
+        by smtp.gmail.com with ESMTPSA id 3-20020a056a00070300b00689f1ce7dacsm4989474pfl.23.2023.09.13.02.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 02:44:32 -0700 (PDT)
+From:   guojinhui <guojinhui.liam@bytedance.com>
+To:     robin.murphy@arm.com
+Cc:     catalin.marinas@arm.com, guojinhui.liam@bytedance.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lizefan.x@bytedance.com, will@kernel.org
+Subject: Re: [PATCH] arm64: cpufeature: Expose the real mpidr value to EL0
+Date:   Wed, 13 Sep 2023 17:44:26 +0800
+Message-Id: <20230913094426.2787-1-guojinhui.liam@bytedance.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <759c91b9-856e-a778-0e0a-e52240e5c8ce@arm.com>
+References: <759c91b9-856e-a778-0e0a-e52240e5c8ce@arm.com>
 MIME-Version: 1.0
-References: <20230828075420.2009568-1-anle.pan@nxp.com> <DB9PR04MB9284AA58AA71655C9C0C7C9A87E6A@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5DYxwX+JdXQ_-ba5B9y+gyWPjvUpCBnKM1zz1W2EkO_vA@mail.gmail.com>
- <DB9PR04MB928460023FB3CCCBC3EACE1487E9A@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5BGJX7=Z1ukFRq_ktaQ0d7FbvV-ob5gs8hfGaNHUXPTww@mail.gmail.com>
- <DB9PR04MB9284A0CDB1FC7CAADE0A394F87EFA@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5AugUGh7Z=9Qh7SS4=-0ddGBmRAOOyCGDfPdT-=eurtUg@mail.gmail.com>
- <DB9PR04MB9284A45033B3E24F44C5AA3987F2A@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5Bk0DUq5jgFDHV2wGYEcfQzNVQ2KYJ2ZYLubwFLgqW4kQ@mail.gmail.com>
- <DB9PR04MB92846D75C93A9B2B8C8A998D87F1A@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5Ar18TvFE3jXBuphpCiwWAb8O99wqkiwEVDSs3+MXvW0w@mail.gmail.com>
- <DB9PR04MB9284404C1E1F1300EEF5A70487F1A@DB9PR04MB9284.eurprd04.prod.outlook.com>
- <CAAFQd5Aq=ZrNGQU6psXJXt1ak2SkoRrZ=QBzp+xxHmWre0zBVg@mail.gmail.com> <DB9PR04MB9284A1DAB3C642C57298893A87F0A@DB9PR04MB9284.eurprd04.prod.outlook.com>
-In-Reply-To: <DB9PR04MB9284A1DAB3C642C57298893A87F0A@DB9PR04MB9284.eurprd04.prod.outlook.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 13 Sep 2023 18:44:15 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BQ+FsuKipxE-yh3P-NbPdc_U=FHp7PBkWY-xunxthKuA@mail.gmail.com>
-Message-ID: <CAAFQd5BQ+FsuKipxE-yh3P-NbPdc_U=FHp7PBkWY-xunxthKuA@mail.gmail.com>
-Subject: Re: [EXT] Re: [PATCH] media: videobuf2-dma-sg: limit the sg segment size
-To:     Hui Fang <hui.fang@nxp.com>
-Cc:     Anle Pan <anle.pan@nxp.com>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jindong Yue <jindong.yue@nxp.com>,
-        Xuegang Liu <xuegang.liu@nxp.com>, Xu Yang <xu.yang_2@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 6:14=E2=80=AFPM Hui Fang <hui.fang@nxp.com> wrote:
->
-> On Tue, Sep 12, 2023 at 16:52=E2=80=AFPM Tomasz Figa <tfiga@chromium.org>=
- wrote:
-> > Right. You may want to try modifying vb2_dma_sg_alloc_compacted() to us=
-e
-> > dma_alloc_pages() instead of alloc_pages().
->
-> Thanks for your suggestion, it works. And it's a better resolution since =
-no need
-> an extra copy from high buffer to low buffer.
+> > In EL0, it can get the register midr's value to distinguish vendor.
+> > But it won't return real value of the register mpidr by using mrs
+> > in EL0. The register mpidr's value is useful to obtain the cpu
+> > topology information.
+> 
+> ...except there's no guarantee that the MPIDR value is anything other 
+> than a unique identifier. Proper topology information is already exposed 
+> to userspace[1], as described by ACPI PPTT or Devicetree[2]. Userspace 
+> should be using that.
+> 
+> Not to mention that userspace fundamentally can't guarantee it won't be 
+> migrated at just the wrong point and read the MPIDR of a different CPU 
+> anyway. (This is why the MIDRs and REVIDRs are also reported via sysfs, 
+> such that userspace has a stable and reliable source of information in 
+> case it needs to consider potential errata.)
+> 
+> Thanks,
+> Robin.
+> 
+> [1] https://www.kernel.org/doc/html/latest/admin-guide/cputopology.html
+> [2] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/cpu/cpu-topology.txt
 
-Great to hear! Could you submit a patch? Would appreciate adding
+1. If we can get the infomation of the vendor (by MIDR), i think it possible to obtain
+the die infomation from the MPIDR value. Such as the kunpeng-920, 
+4 cores per cluster, 8 clusters per die, whose MPIDR value is as follow:
 
-Suggested-by: Tomasz Figa <tfiga@chromium.org>
+```
+<DIE>.<CLUSTER>.<CORE>.<HT>
 
-above the Signed-off-by line if you don't mind. Thanks.
+cpu = 0, 81080000
+cpu = 1, 81080100
+...
+cpu = 3, 81080300
+cpu = 4, 81090000
+...
+cpu = 7, 81090300
+cpu = 8, 810a0000
+...
+cpu = 11, 810a0300
+cpu = 12, 810b0000
+...
+cpu = 15, 810b0300
+cpu = 16, 810c0000
+...
+cpu = 19, 810c0300
+cpu = 20, 810d0000
+...
+cpu = 31, 810f0300
+cpu = 32, 81180000
+...
+cpu = 63, 811f0300
+```
 
-Best regards,
-Tomasz
+we can get the die infomation by 0x810, 0x811.
+
+2. we can bind the task to the specific cpu to obtain the MPIDR value.
+
+3. I have checked the sysfs interface `/sys/devices/system/cpu/cpuN/topology/*`
+in Ampere and kunpeng-920 with the latest linux kernel before i submit the patch,
+but it doesn't provide the information of die.
+
+```
+# ls /sys/devices/system/cpu/cpu0/topology/
+cluster_cpus  cluster_cpus_list  cluster_id  core_cpus  core_cpus_list  core_id  core_siblings  core_siblings_list  package_cpus  package_cpus_list  physical_package_id  thread_siblings  thread_siblings_list
+# cat /sys/devices/system/cpu/cpu0/topology/*
+00000000,00000000,00000000,00000003
+0-1
+616
+00000000,00000000,00000000,00000001
+0
+6656
+00000000,00000000,ffffffff,ffffffff
+0-63
+00000000,00000000,ffffffff,ffffffff
+0-63
+0
+00000000,00000000,00000000,00000001
+0
+
+# uname -r
+6.6.0-rc1
+```
+
+Then I check the code which parses the cpu topology infomation from PPTT:
+
+```
+int __init parse_acpi_topology(void)
+{
+        int cpu, topology_id;
+
+        if (acpi_disabled)
+                return 0;
+
+        for_each_possible_cpu(cpu) {
+                topology_id = find_acpi_cpu_topology(cpu, 0);
+                if (topology_id < 0)
+                        return topology_id;
+
+                if (acpi_cpu_is_threaded(cpu)) {
+                        cpu_topology[cpu].thread_id = topology_id;
+                        topology_id = find_acpi_cpu_topology(cpu, 1);
+                        cpu_topology[cpu].core_id   = topology_id;
+                } else {
+                        cpu_topology[cpu].thread_id  = -1;
+                        cpu_topology[cpu].core_id    = topology_id;
+                }
+                topology_id = find_acpi_cpu_topology_cluster(cpu);
+                cpu_topology[cpu].cluster_id = topology_id;
+                topology_id = find_acpi_cpu_topology_package(cpu);
+                cpu_topology[cpu].package_id = topology_id;
+        }
+
+        return 0;
+}
+```
+
+Actually, it just gives the infomation of thread, cluster and package
+though the PPTT provides the dies infomation.
+
+May be we can implement some code to obtain die information from PPTT?
+
+thanks,
+
+guojinhui
