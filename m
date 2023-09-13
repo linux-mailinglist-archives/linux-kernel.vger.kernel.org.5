@@ -2,156 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC41A79F588
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4660479F581
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233191AbjIMXbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 19:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50634 "EHLO
+        id S233144AbjIMXaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 19:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjIMXa4 (ORCPT
+        with ESMTP id S233145AbjIMXaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 19:30:56 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2090.outbound.protection.outlook.com [40.107.220.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A98E6;
-        Wed, 13 Sep 2023 16:30:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I6gPCLuaCK4bul3QkrQ7yR4DkLmwOL54JXHyhcED/KMytdeTiJktbWGCzBoMGPAZh9Q6Rs0+GV8WH35Yd1OdJDGTh43MNMapAhgl2lz+rcQlv/40gt3otafG/pyEpzMzlWYnXjXqa1T25+nepn3mOoQM/RLhp3U0OseU7WWWxn7ADuFKl/eUXwlkrbNhgjtmbK8sKGMBMMv5C3MDO5ekEjWbheEJTbXxEehByVfkA+A21IuSkI8ZkUHV4/yckTer6C5CwSYU3Vblrrm69l3mVUgoR7DHuKDTUVPj0FKMJe+NrQfpe5xfUIVJCFyM+vaCahldnTYorqnp2rztWjWRiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pVsrI28jGvdEoHdXN0ZJVw8jUg6ZhiDWu8OnbohOE0o=;
- b=g6gJzn4aknsTUJnUZHfPGAM3ooj8GikB2T/MxEj9B1hg4sOpLiZ/YSaiQRANUB8uGVVYa4WXAfsIff4Gqg0u3mcx/rgoEshLB/pUuojKG3wB8VN59lbRwMPCseL5S5iOig3+9cq7i0zO6MOSNJuuTjrVOSinaiJfsuGctG34cvy2H9hIP4lu0ZWxfbHOuPdYRK34jFylQRZEDqklT8ep0KKdpJPj3bjcFCGJWL1Vu50v+AutE/0SjIDGLlfca/k/n+VGOhYOBHKDmkRbCqLRAJRgaB8NIRoz4rReWxEg+mXu1hPrEmm0KNd7yuNWNEhjNrLSDPNnZaq1ln2o60wZ9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Wed, 13 Sep 2023 19:30:11 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABAF1BD1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:30:06 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c1f8aaab9aso2799485ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:30:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pVsrI28jGvdEoHdXN0ZJVw8jUg6ZhiDWu8OnbohOE0o=;
- b=EZid2LO7HeMnkPAeNL18u9+KUEad+FQa528MkOBoRT5p9rO/zbB+V2Oi5UzNNkwcvy2ocASX9aeSZuE5forL+Mufqq/7qlbnJOdCQ4hd87ZkBgmQv+J9+snxH3jklew7hZAi2I1eJ1GUOOWOaKE7nouNppOx+8elXgk8L+gFcx8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM6PR01MB4044.prod.exchangelabs.com (2603:10b6:5:2c::17) by
- SA3PR01MB7985.prod.exchangelabs.com (2603:10b6:806:311::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.35; Wed, 13 Sep 2023 23:30:49 +0000
-Received: from DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2]) by DM6PR01MB4044.prod.exchangelabs.com
- ([fe80::eb8:cca2:6858:a0c2%6]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
- 23:30:49 +0000
-From:   Jan Bottorff <janb@os.amperecomputing.com>
-To:     Jan Bottorff <janb@os.amperecomputing.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalrayinc.com>
-Subject: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-Date:   Wed, 13 Sep 2023 16:29:38 -0700
-Message-ID: <20230913232938.420423-1-janb@os.amperecomputing.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH2PR12CA0002.namprd12.prod.outlook.com
- (2603:10b6:610:57::12) To DM6PR01MB4044.prod.exchangelabs.com
- (2603:10b6:5:2c::17)
+        d=chromium.org; s=google; t=1694647806; x=1695252606; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D8BEuyRIkqA0kbODSrFEJ9LM8ANlZ5MuwmNVEnUG8nE=;
+        b=I4RzppyNU7YncV55OkMU8+X7/vBgwDYhwMxCBR4uY4skKChXESvRr+7E+KlXzjFx4B
+         GiF6oG6O3ISAtK24b99DyXtYHSwHIjVWf54C8Is5hE+yI2PLfEAjTwZraqo/yI8bEQmt
+         c+IxHuUrPaEZu7du/wbjChuhUgZamRR80fvL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694647806; x=1695252606;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D8BEuyRIkqA0kbODSrFEJ9LM8ANlZ5MuwmNVEnUG8nE=;
+        b=BAqJiAvhxfF08UCXAzTENhYQ+LXap2emAyiikp1U4etrp3x3y5OCWOUZXBho0WOkpJ
+         l1kV1TgawXMNz1meLqHg9vRPsxqKfSRpVdVDjXXU+b4mIp9PIGDsVBPc5bJPsjXd8/AY
+         hK1nMZUUsDU+NNEz6+CbZt1UpAv+ExqsFL7jazS3CFc0lshiN+XXfHlYCWktITA0d2Qs
+         5GgBupTnkFVPVATV6+Ygre+eIgX1v948n9Pvw+wsZzzWdtjrxoED0o9dPl+Cv6TqdSyQ
+         m6AeK9z3WFBOtPo6fXl9YOVeECxDoTQzHqgrnN6ZUgprDds/58TF8obeKEFJUcgQtYxp
+         XFxw==
+X-Gm-Message-State: AOJu0YxHxLoEMenMy+wGlsz6tCVtZvwzvnctvIoH3UH0GRqZtX+PpQgm
+        SL40BXQudKnN+4Zyr6KNOMzpPA==
+X-Google-Smtp-Source: AGHT+IG6+9IB6uFxWZM3GIOXMU3BPqs4EX0RKLfedlqEvbvt0BgIgu7ki0WNkT/tohlFIibQd5bGSA==
+X-Received: by 2002:a17:902:db11:b0:1bc:9651:57c6 with SMTP id m17-20020a170902db1100b001bc965157c6mr5121186plx.57.1694647806167;
+        Wed, 13 Sep 2023 16:30:06 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u15-20020a170902e5cf00b001b3bf8001a9sm167730plf.48.2023.09.13.16.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 16:30:05 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 16:30:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>
+Cc:     corbet@lwn.net, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        tony.luck@intel.com, gpiccoli@igalia.com,
+        mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        will@kernel.org, linus.walleij@linaro.org,
+        andy.shevchenko@gmail.com, vigneshr@ti.com, nm@ti.com,
+        matthias.bgg@gmail.com, kgene@kernel.org, alim.akhtar@samsung.com,
+        bmasney@redhat.com, quic_tsoni@quicinc.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [REBASE PATCH v5 11/17] qcom_minidump: Register ramoops region
+ with minidump
+Message-ID: <202309131624.0371D7E@keescook>
+References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
+ <1694429639-21484-12-git-send-email-quic_mojha@quicinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB4044:EE_|SA3PR01MB7985:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3b856f94-2e66-489d-4bc0-08dbb4b176aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WfZuQ8RTxQzZ4vB7EHR3Kh6D3BCXW8Uo1rpoxesPsMyVyy04SwENxqBDsk4fqkIcbVGiCPkbCwfBimwGdBn9Yzhat7APVZYljhvDYrEpzSJG9saHhwDW1nrQI3sVK3PzJ6ZWiBEU1c015RRmR2rxJhHF1MKy10mn3PBfXkfEM33hcUr0SY1mxJ5vBe2Y/YFg4y7kfdFkBDvZYo3kvXWSAVgdMOHBnFHDikWzow+thhnYBJMvhxFVp1WIZnb52BAdk7Pgk7T0bZw9NARJLn878ZB8yM1CfvSj7oU/eMO10CmV27WRlX+CmbOc9W+kTOLcmRb/H3+nFg9FSv1Dy2FNcMoXWiVgV7ee6F3nvle4ESqc9kuqXwgDyvA7l7gEeZ/nYO4JgCkM48W4BsXiueZ5ZB9jvu7+k46j8y+SYYOrjKlPN1V7ulmk8QLRZtmDIxGaEIIQfJsG+ZCLOlYNQaoxYfvM75hv8a4mVhfEme/ozyzsBwYLo++IKRApiwAHMftuZBQGQouQ9SJMqAktC3pwXQ+ItTVNSfxNzaXnNbYjcfQ0GzeIefYp0PhbOVK2M6uvu46JBSbajtGz3Z8DvvDTqqmG128L9NuuZLfms6Jxz3Lk5N+txOglPvbBLcdUlilp
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4044.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(136003)(39850400004)(186009)(1800799009)(451199024)(8676002)(66556008)(4326008)(5660300002)(2906002)(38100700002)(38350700002)(86362001)(6666004)(478600001)(8936002)(66476007)(83380400001)(316002)(66946007)(1076003)(41300700001)(52116002)(2616005)(6512007)(6506007)(26005)(6486002)(110136005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zllMrhLZVNj6FFi19IjJ0a7pvVdxxWOxZDnAnDGCeHqZ2CIkOXCNiXHXT4zr?=
- =?us-ascii?Q?ghBusuCLLCJyJDQ73IJnXKTjCdydsLWrQtyvdi0UfpjWV/ZEDsK86jk1yQPV?=
- =?us-ascii?Q?aPoiYszwmYdE7J4lWyOdxKm/+24AoeKNydOkFdiWfp3R3uKliA3j0RJzi1Px?=
- =?us-ascii?Q?aCaHlCh5cd57o8BFwG080vbWXyjwIZZ1pEHqRle7n0eHjlp3It7/OSCdypIv?=
- =?us-ascii?Q?6lig0VWf2ngHsNOrILcp2qh/z9j+921ZutxoHrKtjC3PnVjUtVBU3eO7uykU?=
- =?us-ascii?Q?dY5OBUELz0dXGwB1Fcj8u6WrZT2oMZpvTABOIz08X827XIjJQczg/KyWTh6j?=
- =?us-ascii?Q?bOPmK856qb9DAd7zK5e+3nOwtYD8zdIafDYYMmAbH8uy73HejKuC+28ZVGcS?=
- =?us-ascii?Q?BcqkxrJ18+hJNupZatBt5SIin95KBPLY5k3eZz54hVTa9oWgMgLBybv9QQAp?=
- =?us-ascii?Q?Vpl3PCBTszu09leEIZyFeQJHbkRgRnIb3r/p73kycgLZE95KPnJlWnr6yday?=
- =?us-ascii?Q?CGl2OfSbA2tHBiXzjRI6BYThA/uNFDZRdNHcRd7tTvm9rDsdUtWJdX/NNcEK?=
- =?us-ascii?Q?VKZTGKgj73dbjMUQWiH0yfBX4u4508s/IyL39ZToXh9FcCNHGV2lu+mfnNDH?=
- =?us-ascii?Q?k4GCxxFod8fapfVpVZtGwjfoj5PKZUPqzmUqDJdJc0Ci+oD2tVF26yfDI60O?=
- =?us-ascii?Q?gHk46UVhT8lXAld0mRhj18XplWr2Md7ycWPCZ+dvMRE9KbLq1W+DmkEfgWEf?=
- =?us-ascii?Q?wbpPQt7aoBCSirLnrmyCWDb5vsIZMJ4qTTV8toCXLHkxNgni7ixhQ0oOaqgG?=
- =?us-ascii?Q?k6/YQT08ReyJmBcT4ZAui8lNR1s6+4/cg5thUsyNfmEB+Wa4ojI2ZiNIYKut?=
- =?us-ascii?Q?H3hj4q80g93ITI6zTJ0MQoi2NmmU1puIgaOgSgzmFv9pM6waOtQ5eSVUvPS/?=
- =?us-ascii?Q?1pxVizDFYP9/PTZLwW64eiCQwrrsPpzDsK5mqv9+74HLD8Vpmy19hE9zgk0R?=
- =?us-ascii?Q?JYud418/FXWRCCqkYNhUXXiqL1aVODQrKOtPZVoFEZuNtlzySdArW9saBvZ+?=
- =?us-ascii?Q?8MuqNMZNrZs2ouUn/LYiYaL65I6VEcEZdE2AILt19DNaTS/k3Mlbsgdu7zR1?=
- =?us-ascii?Q?TRZKD2Ar+CklfHelzA3wy8jdzaPay5HKGi157eNlKLlh2FpirHWdMB/xrGZk?=
- =?us-ascii?Q?OLA8Gu/oyf1aXb40Xy221UNbJPiGmMr8I/V9Opy/5Eh0d4RMV+4YjngEfLnQ?=
- =?us-ascii?Q?M1ByDxX3MnTfGfIa6DmvsGOvIJ9YGKgCjl7/Ru+gCbakyg8POXwNRRrJNYUW?=
- =?us-ascii?Q?jun+XAbUPNGzfCsZFnHM4hDOFg8+DW+1bhhn++TzYAchtcoeth+JWnrXrKLV?=
- =?us-ascii?Q?3HUuHNR0GqkmyQ/B5l0JyfEEUJw9xqPlVSLBv9r32cTqthTxlDbTI25bFuw1?=
- =?us-ascii?Q?i7Sp2fMnaNeiLHJPSb7SUXwZOXTTWelzLjRiXp+uyXfzi+dSHUlrQsh4fHju?=
- =?us-ascii?Q?qbKK6gs1vG5XSkfyJNWiuTIr4EuRCdae26pxXfXrBkofnbMvcwCKBNBaNHB2?=
- =?us-ascii?Q?/dcvOmiwOydPKP57ar3Xvfjr1fuP0UllZO8NMqXG07TbvttwgFI65rCL0d5a?=
- =?us-ascii?Q?o3qaWuJzAs2Y40LYyG80iDM=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b856f94-2e66-489d-4bc0-08dbb4b176aa
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4044.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 23:30:49.7435
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HaR+/k7BOkofdaMPwr4pcZvlCJB21b4IPHR6VDpg7yTqEpqX5IzbN1WeXO5BIvjSNI0fIwPtRU6P1teO2YwPtCd7Z8+7/hMwtDisLnFXlME=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR01MB7985
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1694429639-21484-12-git-send-email-quic_mojha@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Errors were happening in the ISR that looked like corrupted
-memory. This was because memory writes from the core enabling
-interrupts were not yet visible to the core running the ISR. The
-kernel log would get the message "i2c_designware APMC0D0F:00:
-controller timed out" during in-band IPMI SSIF stress tests.
+On Mon, Sep 11, 2023 at 04:23:53PM +0530, Mukesh Ojha wrote:
+> Register all the pstore frontend with minidump, so that they can
+> be dumped as default Linux minidump region to be collected on
+> SoC where minidump is enabled.
+> 
+> Helper functions is written in separate file and built along with
+> the minidump driver, since it is client of minidump and also call
+> it at appropriate place from minidump probe so that they always
+> get registered.
+> 
+> While at it also rename the out minidump module object name during
+> build as qcom_apss_minidump which basically depicts as Qualcomm
+> Application processor subsystem minidump.
+> 
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+>  drivers/soc/qcom/Kconfig                 |  1 +
+>  drivers/soc/qcom/Makefile                |  3 +-
+>  drivers/soc/qcom/qcom_minidump.c         |  4 ++
+>  drivers/soc/qcom/qcom_ramoops_minidump.c | 88 ++++++++++++++++++++++++++++++++
+>  drivers/soc/qcom/qcom_ramoops_minidump.h | 10 ++++
+>  5 files changed, 105 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.c
+>  create mode 100644 drivers/soc/qcom/qcom_ramoops_minidump.h
+> 
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 0ac7afc2c67d..9f1a1e128fef 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -306,6 +306,7 @@ config QCOM_MINIDUMP
+>  	tristate "QCOM APSS Minidump driver"
+>  	depends on ARCH_QCOM || COMPILE_TEST
+>  	depends on QCOM_SMEM
+> +	depends on PSTORE
+>  	help
+>  	  This config enables linux core infrastructure for Application
+>  	  processor subsystem (APSS) minidump collection i.e, it enables
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index 4b5f72f78d3c..69df41aba7a9 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -33,4 +33,5 @@ obj-$(CONFIG_QCOM_ICC_BWMON)	+= icc-bwmon.o
+>  qcom_ice-objs			+= ice.o
+>  obj-$(CONFIG_QCOM_INLINE_CRYPTO_ENGINE)	+= qcom_ice.o
+>  obj-$(CONFIG_QCOM_RPROC_MINIDUMP)	+= qcom_rproc_minidump.o
+> -obj-$(CONFIG_QCOM_MINIDUMP)		+= qcom_minidump.o
+> +obj-$(CONFIG_QCOM_MINIDUMP)		+= qcom_apss_minidump.o
+> +qcom_apss_minidump-objs			+= qcom_minidump.o qcom_ramoops_minidump.o
+> diff --git a/drivers/soc/qcom/qcom_minidump.c b/drivers/soc/qcom/qcom_minidump.c
+> index 4ce36f154e89..7930a80b9100 100644
+> --- a/drivers/soc/qcom/qcom_minidump.c
+> +++ b/drivers/soc/qcom/qcom_minidump.c
+> @@ -23,6 +23,7 @@
+>  #include <soc/qcom/qcom_minidump.h>
+>  
+>  #include "qcom_minidump_internal.h"
+> +#include "qcom_ramoops_minidump.h"
+>  
+>  /**
+>   * struct minidump_ss_data - Minidump subsystem private data
+> @@ -688,6 +689,8 @@ static int qcom_apss_minidump_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	qcom_ramoops_minidump_register(md->dev);
+> +
+>  	mutex_lock(&md_plist.plock);
+>  	platform_set_drvdata(pdev, md);
+>  	qcom_apss_register_pending_regions(md);
+> @@ -701,6 +704,7 @@ static int qcom_apss_minidump_remove(struct platform_device *pdev)
+>  	struct minidump *md = platform_get_drvdata(pdev);
+>  	struct minidump_ss_data *mdss_data;
+>  
+> +	qcom_ramoops_minidump_unregister();
+>  	mdss_data = md->apss_data;
+>  	memset(mdss_data->md_ss_toc, cpu_to_le32(0), sizeof(struct minidump_subsystem));
+>  	md = NULL;
+> diff --git a/drivers/soc/qcom/qcom_ramoops_minidump.c b/drivers/soc/qcom/qcom_ramoops_minidump.c
+> new file mode 100644
+> index 000000000000..eb97310e3858
+> --- /dev/null
+> +++ b/drivers/soc/qcom/qcom_ramoops_minidump.c
+> @@ -0,0 +1,88 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/device.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/pstore.h>
+> +#include <linux/slab.h>
+> +#include <soc/qcom/qcom_minidump.h>
+> +
+> +#include "qcom_ramoops_minidump.h"
+> +
+> +static LIST_HEAD(ramoops_region_list);
+> +
+> +struct md_region_list {
+> +	struct qcom_minidump_region md_region;
+> +	struct list_head list;
+> +};
+> +
+> +static int qcom_ramoops_region_register(struct device *dev, int type)
+> +{
+> +	struct qcom_minidump_region *md_region;
+> +	struct md_region_list *mdr_list;
+> +	struct pstore_record record;
+> +	unsigned int max_dump_cnt;
+> +	phys_addr_t phys;
+> +	const char *name;
+> +	void *virt;
+> +	size_t size;
+> +	int ret;
+> +
+> +	record.type = type;
+> +	record.id = 0;
+> +	max_dump_cnt = 0;
+> +	name = pstore_type_to_name(record.type);
+> +	do {
+> +		ret = pstore_region_defined(&record, &virt, &phys, &size, &max_dump_cnt);
 
-Add a write barrier before enabling interrupts to assure data written
-by the current core is visible to all cores before the interrupt fires.
+I really don't want this happening: you're building your own pstore_record
+(which has a common initializer that isn't used here) and manually
+scraping the ramoops regions.
 
-The ARM Barrier Litmus Tests and Cookbook has an example under
-Sending Interrupts and Barriers that matches the usage in this
-driver. That document says a DSB barrier is required.
+It looks to me like you just want a way to talk all the records in
+pstore and then export their location to minidump. The record walker
+needs to be in the pstore core, and likely should be shared with
+fs/pstore/inode.c which does the same thing.
 
-Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
-Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
-Tested-by: Yann Sionneau <ysionneau@kalrayinc.com>
----
- drivers/i2c/busses/i2c-designware-master.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Then, in this code, you can just do something like:
 
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index ca1035e010c7..1694ac6bb592 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -248,6 +248,14 @@ static void i2c_dw_xfer_init(struct dw_i2c_dev *dev)
- 	/* Dummy read to avoid the register getting stuck on Bay Trail */
- 	regmap_read(dev->map, DW_IC_ENABLE_STATUS, &dummy);
- 
-+	/*
-+	 * To guarantee data written by the current core is visible to
-+	 * all cores, a write barrier is required. This needs to be
-+	 * before an interrupt causes execution on another core.
-+	 * For ARM processors, this needs to be a DSB barrier.
-+	 */
-+	wmb();
-+
- 	/* Clear and enable interrupts */
- 	regmap_read(dev->map, DW_IC_CLR_INTR, &dummy);
- 	regmap_write(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_MASTER_MASK);
+	for (record = pstore_get_record(NULL); record; record = pstore_get_record(record)) {
+		if (ramoops_get_record_details(record, &virt, &phys) < 0)
+			continue
+		...
+		md_region->virt_addr = virt;
+		md_region->phys_addr = phys;
+		md_region->size = record->size;
+
+		ret = qcom_minidump_region_register(md_region);
+		...
+	}
+
+Probably some way to check the backend is ramoops is needed too.
+
 -- 
-2.41.0
-
+Kees Cook
