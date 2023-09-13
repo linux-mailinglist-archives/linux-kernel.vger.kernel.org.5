@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A7D79E6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7102F79E6AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240136AbjIMLZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
+        id S237447AbjIML0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240140AbjIMLZn (ORCPT
+        with ESMTP id S240195AbjIML0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:25:43 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEED19BE;
-        Wed, 13 Sep 2023 04:25:36 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf7a6509deso46795345ad.3;
-        Wed, 13 Sep 2023 04:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694604336; x=1695209136; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U+snWdPw4OwpiJyYyKW+q+QdDJNbVDVuE7cCYvKasOM=;
-        b=sKsV+IUYxLdwt5cxFuM2gCePh2mHyys5NDnL78hhOOHOz70l6FlJELNsL36Vwv1JKf
-         ECgr5qdgpQxAACF+fItM+1HaFw2Ku7hGc1O+I/GU39dNq18fL+TiJhcFBUB6OpYmlmoQ
-         1ELeMtOSlw6YYHG9ICwQLn2e682nSF90on8ay+3Xowe7SRDL7faeaguF4axWMMbhvTZZ
-         C4KpT8E70bBXLkR1IMFFPnmTUeEonKuk/9/mZIMylN/sKRwPcfXu/M+8nW1PQtz8Q2Rm
-         wm4sYdQE78CwSl8T36nmXxyCJ6TqmZO0zuoMZ/Wl8wRIhtq7yREJUTEWQuJtQQhF+dJs
-         U2NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694604336; x=1695209136;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=U+snWdPw4OwpiJyYyKW+q+QdDJNbVDVuE7cCYvKasOM=;
-        b=L1SwDb0PJtB0UrtaWtwCsM9to4rzTUZayEGRGkwYJOkYAxoYeE7rvd9Dz3GGct5aBJ
-         GAc9uKMWgP7q0Ht1DEAn9aaGX2XuDPZCXKHadJTikKBqMkX8dTE3eMDDaUndzTeuAQJN
-         t5LqsZNzIKTies3XRHWucAF5SB+4yRMHY1uPOKsDHO/iqJzSq6SOviV+LZjg/o5vBod9
-         RmgUrbjrGF4ucJmjugyuRGEIPEtzEk3DamsuEdXUk/03paNacGDF3fDXxvkMFnrQtcWC
-         a5UNmpgwBWoKvtzy9Ur7NQXlbTz56QDpE7c+p9e4MBZZ1kazDAxlA/OTbYP96eBNoEXj
-         kalQ==
-X-Gm-Message-State: AOJu0YxoHPGBS8s6u7PuZ1mmF/KNYyWcKBSt89Z3xZEYVe8UMdDXFs25
-        /eXs0nPr5FnwDORahnfkubmsaaXjJAg=
-X-Google-Smtp-Source: AGHT+IG6qnNRjP8VGlU50n41ujtaU5WA8G9CE3Sr2eMhkVR7KTZlFt9dF+9n+pjjZ8ne4icdXU8kdQ==
-X-Received: by 2002:a17:902:d70a:b0:1c3:8230:30d8 with SMTP id w10-20020a170902d70a00b001c3823030d8mr2375056ply.38.1694604336213;
-        Wed, 13 Sep 2023 04:25:36 -0700 (PDT)
-Received: from [192.168.0.106] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902d38400b001b890009634sm10230532pld.139.2023.09.13.04.25.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 04:25:35 -0700 (PDT)
-Message-ID: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
-Date:   Wed, 13 Sep 2023 18:25:31 +0700
+        Wed, 13 Sep 2023 07:26:18 -0400
+Received: from smtp67.ord1d.emailsrvr.com (smtp67.ord1d.emailsrvr.com [184.106.54.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E05A173E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20221208-6x11dpa4; t=1694604372;
+        bh=EviTs6VTawLw+lToHOPpFX2/rBSg74IWtHHaKlKo1nI=;
+        h=Date:Subject:From:To:From;
+        b=s6FGYkA6TJr+E+vQ8Ij7Sd6rZUFL82xKkjJeFlYGPPEVyj9xDVXEDJPGUlYNgzPzi
+         YZ07D9X9+DfhUTFxJ4MfIicqSh1Crikw4z/xDREUNgGMypiIN7sg2pNwZL90DG/oKd
+         NtdY5OQ/f+ZuO7TB/3ZaB5n9t3/K1i6ueHqoaVX8=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp1.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 4CF2640157;
+        Wed, 13 Sep 2023 07:26:12 -0400 (EDT)
+Message-ID: <657d4c4c-cf21-4488-8007-a799cfc7632b@mev.co.uk>
+Date:   Wed, 13 Sep 2023 12:26:11 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        patenteng <dimitar@daskalov.co.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe SATA
- to Constantly Reset
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/13] comedi: Re-do HAS_IOPORT dependencies
+From:   Ian Abbott <abbotti@mev.co.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+References: <20230913112032.90618-1-abbotti@mev.co.uk>
+Content-Language: en-GB
+Organization: MEV Ltd.
+In-Reply-To: <20230913112032.90618-1-abbotti@mev.co.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Classification-ID: 6dfe0409-b725-4570-a1a2-9d7e8033b4cc-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> After upgrading to 6.5.2 from 6.4.12 I keep getting the following kernel messages around three times per second:
+On 13/09/2023 12:20, Ian Abbott wrote:
+> Commit b5c75b68b7de ("comedi: add HAS_IOPORT dependencies") was reverted
+> because it made it impossible to select configuration options that
+> depend on the COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
+> COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
+> 'depends on' directives and there being no other way to select those
+> codependent configuration options.
 > 
-> [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> [ 9683.270399] ata16.00: configured for UDMA/66
+> This patch series conditionally removes port I/O support from various
+> comedi modules so they still be built when a future patch removes the
+> port I/O functions (inb(), outb() and friends) unless the HAS_IOPORT
+> configuration option is selected.  The final patch 13 adds HAS_IOPORT
+> dependencies to the configuration options as in the reverted patch, but
+> there are now fewer options that need to depend on HAS_IOPORT, and the
+> 'select' directives have not been replaced with 'depends on' directives.
 > 
-> So I've tracked the offending device:
+> 01) comedi: Correct dependencies for COMEDI_NI_PCIDIO
+> 02) comedi: comedi_8254: Use a call-back function for register access
+> 03) comedi: comedi_8254: Replace comedi_8254_init() and comedi_8254_mm_init()
+> 04) comedi: comedi_8254: Conditionally remove I/O port support
+> 05) comedi: 8255_pci: Conditionally remove devices that use port I/O
+> 06) comedi: comedi_8255: Rework subdevice initialization functions
+> 07) comedi: comedi_8255: Conditionally remove I/O port support
+> 08) comedi: ni_labpc_common: Conditionally remove I/O port support
+> 09) comedi: ni_mio_common: Conditionally use I/O port or MMIO
+> 10) comedi: amplc_dio200_pci: Conditionally remove devices that use port I/O
+> 11) comedi: amplc_dio200_common: Refactor register access functions
+> 12) comedi: amplc_dio200_common: Conditionally remove I/O port support
+> 13) comedi: add HAS_IOPORT dependencies again
 > 
-> ll /sys/class/ata_port/ata16
-> lrwxrwxrwx 1 root root 0 Sep 10 21:51 /sys/class/ata_port/ata16 -> ../../devices/pci0000:00/0000:00:1c.7/0000:0a:00.0/ata16/ata_port/ata16
+>   drivers/comedi/Kconfig                       |  45 +++++-
+>   drivers/comedi/drivers.c                     |   3 +-
+>   drivers/comedi/drivers/8255.c                |   2 +-
+>   drivers/comedi/drivers/8255_pci.c            |  15 +-
+>   drivers/comedi/drivers/adl_pci9111.c         |   8 +-
+>   drivers/comedi/drivers/adl_pci9118.c         |   8 +-
+>   drivers/comedi/drivers/adv_pci1710.c         |   8 +-
+>   drivers/comedi/drivers/adv_pci_dio.c         |  14 +-
+>   drivers/comedi/drivers/aio_aio12_8.c         |  10 +-
+>   drivers/comedi/drivers/amplc_dio200_common.c | 104 +++++++++---
+>   drivers/comedi/drivers/amplc_dio200_pci.c    |  12 +-
+>   drivers/comedi/drivers/amplc_pc236_common.c  |   2 +-
+>   drivers/comedi/drivers/amplc_pci224.c        |   8 +-
+>   drivers/comedi/drivers/amplc_pci230.c        |  10 +-
+>   drivers/comedi/drivers/cb_das16_cs.c         |   8 +-
+>   drivers/comedi/drivers/cb_pcidas.c           |  23 +--
+>   drivers/comedi/drivers/cb_pcidas64.c         |   7 +-
+>   drivers/comedi/drivers/cb_pcidda.c           |   2 +-
+>   drivers/comedi/drivers/cb_pcimdas.c          |  12 +-
+>   drivers/comedi/drivers/cb_pcimdda.c          |   2 +-
+>   drivers/comedi/drivers/comedi_8254.c         | 234 ++++++++++++++++++---------
+>   drivers/comedi/drivers/comedi_8255.c         | 123 +++++++-------
+>   drivers/comedi/drivers/daqboard2000.c        |   4 +-
+>   drivers/comedi/drivers/das08.c               |  11 +-
+>   drivers/comedi/drivers/das16.c               |  10 +-
+>   drivers/comedi/drivers/das16m1.c             |  22 +--
+>   drivers/comedi/drivers/das1800.c             |   8 +-
+>   drivers/comedi/drivers/das6402.c             |   8 +-
+>   drivers/comedi/drivers/das800.c              |   8 +-
+>   drivers/comedi/drivers/dmm32at.c             |   3 +-
+>   drivers/comedi/drivers/me4000.c              |   6 +-
+>   drivers/comedi/drivers/ni_at_a2150.c         |   8 +-
+>   drivers/comedi/drivers/ni_at_ao.c            |   8 +-
+>   drivers/comedi/drivers/ni_atmio16d.c         |   2 +-
+>   drivers/comedi/drivers/ni_daq_dio24.c        |   2 +-
+>   drivers/comedi/drivers/ni_labpc_common.c     |  51 +++---
+>   drivers/comedi/drivers/ni_mio_common.c       |  74 ++++++---
+>   drivers/comedi/drivers/pcl711.c              |   8 +-
+>   drivers/comedi/drivers/pcl724.c              |   6 +-
+>   drivers/comedi/drivers/pcl812.c              |  10 +-
+>   drivers/comedi/drivers/pcl816.c              |   8 +-
+>   drivers/comedi/drivers/pcl818.c              |   8 +-
+>   drivers/comedi/drivers/pcm3724.c             |   2 +-
+>   drivers/comedi/drivers/rtd520.c              |   6 +-
+>   include/linux/comedi/comedi_8254.h           |  51 ++++--
+>   include/linux/comedi/comedi_8255.h           |  24 ++-
+>   46 files changed, 649 insertions(+), 359 deletions(-)
 > 
-> cat /sys/bus/pci/devices/0000:0a:00.0/uevent
-> DRIVER=ahci
-> PCI_CLASS=10601
-> PCI_ID=1B4B:9130
-> PCI_SUBSYS_ID=1043:8438
-> PCI_SLOT_NAME=0000:0a:00.0
-> MODALIAS=pci:v00001B4Bd00009130sv00001043sd00008438bc01sc06i01
-> 
-> lspci | grep 0a:00.0
-> 0a:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9128 PCIe SATA 6 Gb/s RAID controller with HyperDuo (rev 11)
-> 
-> I am not using the 88SE9128, so I have no way of knowing whether it works or not. It may simply be getting reset a couple of times per second or it may not function at all.
 
-See Bugzilla for the full thread.
-
-patenteng: I have asked you to bisect this regression. Any conclusion?
-
-Anyway, I'm adding this regression to regzbot:
-
-#regzbot: introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217902
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217902
+Sorry people, I need to repost this series with more Cc: entries because 
+I neglected the fact that the git send-email --cc option causes all cc 
+lines in the .gitconfig to be ignored!
 
 -- 
-An old man doll... just what I always wanted! - Clara
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+
