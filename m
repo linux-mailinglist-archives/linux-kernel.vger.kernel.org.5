@@ -2,187 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD34779E7E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E402679E7DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240450AbjIMM1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S240436AbjIMM0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240320AbjIMM1A (ORCPT
+        with ESMTP id S240320AbjIMM0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:27:00 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298019AC;
-        Wed, 13 Sep 2023 05:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1694608017; x=1726144017;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:reply-to:mime-version:
-   content-transfer-encoding;
-  bh=N31oCUU7CHkmI4vyS7k5OHuBwDNqQwrdeueOu92um7M=;
-  b=ZDQA5bMnR1OzmVVyqQQv3X9SwULIjvfA//mLcN5pIf51AuOXefg3TM9P
-   BZFq7GBRO5DfTY1D5baDzMuEdIbseRoJdZ19o017wnhVJWfMzKK6GNOoY
-   fcgbJqvwnZRB0ueLEVtxOm8olPu7aTeEc8yCky6fYmrfF2VsYKWXecM5O
-   k=;
-X-IronPort-AV: E=Sophos;i="6.02,143,1688428800"; 
-   d="scan'208";a="356058087"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:26:54 +0000
-Received: from EX19D017EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-96feee09.us-east-1.amazon.com (Postfix) with ESMTPS id 4CF2C47E7A;
-        Wed, 13 Sep 2023 12:26:49 +0000 (UTC)
-Received: from dev-dsk-gerhorst-1c-a6f23d20.eu-west-1.amazon.com
- (10.15.21.113) by EX19D017EUA004.ant.amazon.com (10.252.50.239) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Wed, 13 Sep
- 2023 12:26:42 +0000
-From:   Luis Gerhorst <gerhorst@amazon.de>
-To:     <alexei.starovoitov@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <haoluo@google.com>,
-        <john.fastabend@gmail.com>, <jolsa@kernel.org>,
-        <kpsingh@kernel.org>, <laoar.shao@gmail.com>,
-        <martin.lau@linux.dev>, <sdf@google.com>, <song@kernel.org>,
-        <yonghong.song@linux.dev>, <mykolal@fb.com>, <shuah@kernel.org>,
-        <gerhorst@amazon.de>, <iii@linux.ibm.com>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Luis Gerhorst <gerhorst@cs.fau.de>
-Subject: [PATCH 1/3] Revert "selftests/bpf: Add selftest for allow_ptr_leaks"
-Date:   Wed, 13 Sep 2023 12:25:15 +0000
-Message-ID: <20230913122514.89078-1-gerhorst@amazon.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
-References: <CAADnVQLid7QvukhnqRoY2VVFi1tCfkPFsMGUUeHDtCgf0SAJCg@mail.gmail.com>
-Reply-To: <gerhorst@cs.fau.de>
+        Wed, 13 Sep 2023 08:26:50 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B31819A8;
+        Wed, 13 Sep 2023 05:26:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694608003; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=JTSmR/6ETpbi0uwjyDU97x1BjHLQso5BodTIIkziKs/BELGtBVqA4GOrL3h9e0351S
+    cwkjAebGYQgm1ezPtlpHy0OYveFtwgURKFZlOnQsdWLms5UuSQz4eCT5UUK+Odc2g5MP
+    XqNvY7vHkKmwEbK5ciO1kO3vqlEm356+AyaAfxUwkhDSxtF3g6okMHXEpOh5xAhGRUyn
+    Dfqge6qektsUrZj+IleEOPl6ejiDKAnxKWI4FgWlG8lXSvuTa/jINMwtmtAduFsy0qbz
+    xCpORXyXIWVZ+jgN0Do/CzDg8WdFLS4572G9EzIyOBRePjyirGQzNT2MrFNNb0E2r0Hg
+    aW2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694608003;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=zhdv2FQe74GDYo6+S9T5NhlkCfIw7X/kW3Qtxk4kjH4=;
+    b=iE7mB2CP2NATK32oV+viiPzSe/lhQwHgYalz0SkYwhdMClTQ8n0sKnUXSaSiqMRnog
+    eG38frZ6RbeiTDkFCDPwggskCBTKzx4FxLC90ApnXnaTZq6CyGs3IUAPK91rCobzo1UF
+    JCQ3cYAYidAjWwhbuF+n1nlb0v5IrFmNCKLRgeLQXNmTX4hBbjPLB7Jba8VBwsMVqZM+
+    7doOXDZpe0eUFIUJXHzHaDWmRZUfB+BhSerSzF/f1XJrDPFxdcBTeCHQUrs+L5ipJFYS
+    X9Rp1Kk1JKh4ntCn/3YehF+YDBqgiwSQWw8P3c0dXNZTUmGR5iyBzDcs9ZQjt56eRGse
+    OZww==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694608003;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=zhdv2FQe74GDYo6+S9T5NhlkCfIw7X/kW3Qtxk4kjH4=;
+    b=pQqZLsnR5ruF9UUMsuzglnSh2RJQQSzieMLd13p91f8cU/Vv5aFdYFQOIgIsrEXInF
+    KpQYkfIPquP3/w0xDOLZiuNDBLZrXnjBWIFleP9fjx7sCeHSSgbjgKcmxuRgsDNLIYDV
+    a9Xk5oBthvR9VgI0DfRtXNafr8976/jgNy5gpHmN01KwelxZIJFIGqMfduScVw9ZYBzF
+    c05zd4HH0geiHTXW7/mb8Uy8WrFP0HwjLeCQA2GSW1EyVDHIHa3IDdH+q4qYwVKZkosO
+    LNZUuzAgLEaVhpdFcciNTRSiBq2wrSgzaXkcq4pIB0Tzfr2YCGL0oK1kK8kMMVhWSDT2
+    2VeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694608003;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=zhdv2FQe74GDYo6+S9T5NhlkCfIw7X/kW3Qtxk4kjH4=;
+    b=S63ltOhMHN80NiyrOQKiTl6lt9vygvAshpVYnE7NSFbUFYjoV2Y4HQeV6BSJAM2HmI
+    PzxfWJKY8TwdZPw8C/Dw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z/h"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id xb560bz8DCQgtpe
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 13 Sep 2023 14:26:42 +0200 (CEST)
+Date:   Wed, 13 Sep 2023 14:26:36 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] cpufreq: qcom-nvmem: Enable virtual power domain
+ devices
+Message-ID: <ZQGqfMigCFZP_HLA@gerhold.net>
+References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
+ <20230912-msm8909-cpufreq-v1-1-767ce66b544b@kernkonzept.com>
+ <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.15.21.113]
-X-ClientProxiedBy: EX19D040UWA002.ant.amazon.com (10.13.139.113) To
- EX19D017EUA004.ant.amazon.com (10.252.50.239)
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 0072e3624b463636c842ad8e261f1dc91deb8c78.
+On Wed, Sep 13, 2023 at 12:56:16PM +0200, Ulf Hansson wrote:
+> On Tue, 12 Sept 2023 at 11:40, Stephan Gerhold
+> <stephan.gerhold@kernkonzept.com> wrote:
+> >
+> > The genpd core ignores performance state votes from devices that are
+> > runtime suspended as of commit 5937c3ce2122 ("PM: domains: Drop/restore
+> > performance state votes for devices at runtime PM").
+> 
+> I think you are referring to the wrong commit above. Please have a
+> look at commit 3c5a272202c2 ("PM: domains: Improve runtime PM
+> performance state handling"), instead.
+> 
+> I also suggest rephrasing the above into saying that the performance
+> state vote for a device is cached rather than carried out, if
+> pm_runtime_suspended() returns true for it.
+> 
+> Another relevant information in the commit message would be to add
+> that during device-attach (genpd_dev_pm_attach_by_id()), calls
+> pm_runtime_enable() the device.
+> 
 
-The test tests behavior which can not be permitted because of Spectre
-v1. See the following commit
+Thanks, I will try to clarify this a bit! I was actually looking at that
+commit originally but decided to reference the commit that "started the
+change", since the this commit is marked as fix of the one I referenced.
+But I think you're right, it would be more clear to reference "PM:
+domains: Improve runtime PM performance state handling" directly.
 
-  Revert "bpf: Fix issue in verifying allow_ptr_leaks"
+> > However, at the
+> > moment nothing ever enables the virtual devices created in
+> > qcom-cpufreq-nvmem for the cpufreq power domain scaling, so they are
+> > permanently runtime-suspended.
+> >
+> > Fix this by enabling the devices after attaching them and use
+> > dev_pm_syscore_device() to ensure the power domain also stays on when
+> > going to suspend. Since it supplies the CPU we can never turn it off
+> > from Linux. There are other mechanisms to turn it off when needed,
+> > usually in the RPM firmware or the cpuidle path.
+> >
+> > Without this fix performance states votes are silently ignored, and the
+> > CPU/CPR voltage is never adjusted. This has been broken since 5.14 but
+> > for some reason no one noticed this on QCS404 so far.
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: 1cb8339ca225 ("cpufreq: qcom: Add support for qcs404 on nvmem driver")
+> > Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> > ---
+> >  drivers/cpufreq/qcom-cpufreq-nvmem.c | 21 ++++++++++++++++++++-
+> >  1 file changed, 20 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > index 84d7033e5efe..17d6ab14c909 100644
+> > --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > @@ -25,6 +25,7 @@
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_domain.h>
+> >  #include <linux/pm_opp.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/soc/qcom/smem.h>
+> >
+> > @@ -280,6 +281,7 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+> >         }
+> >
+> >         for_each_possible_cpu(cpu) {
+> > +               struct device **virt_devs = NULL;
+> >                 struct dev_pm_opp_config config = {
+> >                         .supported_hw = NULL,
+> >                 };
+> > @@ -300,7 +302,7 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+> >
+> >                 if (drv->data->genpd_names) {
+> >                         config.genpd_names = drv->data->genpd_names;
+> > -                       config.virt_devs = NULL;
+> > +                       config.virt_devs = &virt_devs;
+> >                 }
+> >
+> >                 if (config.supported_hw || config.genpd_names) {
+> > @@ -311,6 +313,23 @@ static int qcom_cpufreq_probe(struct platform_device *pdev)
+> >                                 goto free_opp;
+> >                         }
+> >                 }
+> > +
+> > +               if (virt_devs) {
+> > +                       const char * const *name = config.genpd_names;
+> > +                       int i;
+> > +
+> > +                       for (i = 0; *name; i++, name++) {
+> > +                               ret = pm_runtime_resume_and_get(virt_devs[i]);
+> > +                               if (ret) {
+> > +                                       dev_err(cpu_dev, "failed to resume %s: %d\n",
+> > +                                               *name, ret);
+> > +                                       goto free_opp;
+> > +                               }
+> 
+> Shouldn't we restore the usage count at ->remove() too?
+> 
+> > +
+> > +                               /* Keep CPU power domain always-on */
+> > +                               dev_pm_syscore_device(virt_devs[i], true);
+> 
+> Is this really correct? cpufreq is suspended/resumed by the PM core
+> during system wide suspend/resume. See dpm_suspend|resume(). Isn't
+> that sufficient?
+> 
+> Moreover, it looks like the cpr genpd provider supports genpd's
+> ->power_on|off() callbacks. Is there something wrong with this, that I
+> am missing?
+> 
 
-which reverts commit d75e30dddf73449bc2d10bb8e2f1a2c446bc67a2 for a
-detailed description of the issue.
+I think this question is a quite fundamental one. To explain this
+properly I will need to delve a bit into the implementation details of
+the two different GENPD providers that are applicable here:
 
-Reported-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Luis Gerhorst <gerhorst@amazon.de>
-Signed-off-by: Luis Gerhorst <gerhorst@cs.fau.de>
----
- .../testing/selftests/bpf/prog_tests/tc_bpf.c | 36 +------------------
- .../testing/selftests/bpf/progs/test_tc_bpf.c | 13 -------
- 2 files changed, 1 insertion(+), 48 deletions(-)
+Fundamentally, we are describing the main power supply for the CPU here.
+Consider a simple regulator with adjustable voltage. From the Linux
+point of view this regulator should be marked as "regulator-always-on".
+If we would turn off this regulator, the CPU would be immediately dead
+without proper shutdown done by firmware or hardware.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-index 48b55539331e..e873766276d1 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-@@ -3,7 +3,6 @@
- #include <test_progs.h>
- #include <linux/pkt_cls.h>
- 
--#include "cap_helpers.h"
- #include "test_tc_bpf.skel.h"
- 
- #define LO_IFINDEX 1
-@@ -328,7 +327,7 @@ static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
- 	return 0;
- }
- 
--void tc_bpf_root(void)
-+void test_tc_bpf(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
- 			    .attach_point = BPF_TC_INGRESS);
-@@ -394,36 +393,3 @@ void tc_bpf_root(void)
- 	}
- 	test_tc_bpf__destroy(skel);
- }
--
--void tc_bpf_non_root(void)
--{
--	struct test_tc_bpf *skel = NULL;
--	__u64 caps = 0;
--	int ret;
--
--	/* In case CAP_BPF and CAP_PERFMON is not set */
--	ret = cap_enable_effective(1ULL << CAP_BPF | 1ULL << CAP_NET_ADMIN, &caps);
--	if (!ASSERT_OK(ret, "set_cap_bpf_cap_net_admin"))
--		return;
--	ret = cap_disable_effective(1ULL << CAP_SYS_ADMIN | 1ULL << CAP_PERFMON, NULL);
--	if (!ASSERT_OK(ret, "disable_cap_sys_admin"))
--		goto restore_cap;
--
--	skel = test_tc_bpf__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "test_tc_bpf__open_and_load"))
--		goto restore_cap;
--
--	test_tc_bpf__destroy(skel);
--
--restore_cap:
--	if (caps)
--		cap_enable_effective(caps, NULL);
--}
--
--void test_tc_bpf(void)
--{
--	if (test__start_subtest("tc_bpf_root"))
--		tc_bpf_root();
--	if (test__start_subtest("tc_bpf_non_root"))
--		tc_bpf_non_root();
--}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-index ef7da419632a..d28ca8d1f3d0 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-@@ -2,8 +2,6 @@
- 
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
--#include <linux/if_ether.h>
--#include <linux/ip.h>
- 
- /* Dummy prog to test TC-BPF API */
- 
-@@ -12,14 +10,3 @@ int cls(struct __sk_buff *skb)
- {
- 	return 0;
- }
--
--/* Prog to verify tc-bpf without cap_sys_admin and cap_perfmon */
--SEC("tcx/ingress")
--int pkt_ptr(struct __sk_buff *skb)
--{
--	struct iphdr *iph = (void *)(long)skb->data + sizeof(struct ethhdr);
--
--	if ((long)(iph + 1) > (long)skb->data_end)
--		return 1;
--	return 0;
--}
--- 
-2.40.1
+Representing the regulator as power domain does not change much, except
+that we now have abstract "performance states" instead of actual voltages.
+However, for power domains there is currently no generic mechanism like
+"regulator-always-on" in the DT, only drivers can specify
+GENPD_FLAG_ALWAYS_ON.
 
+The special situation on MSM8909 is that there are two possible setups
+for the CPU power supply depending on the PMIC that is used (see
+"[PATCH 4/4] cpufreq: qcom-nvmem: Add MSM8909"): CPR or RPMPD. Both are
+GENPD providers so in theory we can just have either
 
+  cpu@0 { power-domains = <&cpr>; }; // or
+  cpu@0 { power-domains = <&rpmpd MSM8909_VDDCX_AO>; };
 
+in the DT, without handling this specifically on the cpufreq side.
 
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
+The two GENPD providers behave quite differently though:
 
+ - CPR: CPR is not really a power domain itself. It's more like a monitor
+   on a power supply line coming from some other regulator. CPR provides
+   suggestions how to adjust the voltage for best power/stability.
 
+   The GENPD .power_off() disables the CPR state machine and forwards
+   this to the regulator with regulator_disable(). On QCS404 the
+   regulator is marked regulator-always-on, so it will never be disabled
+   from Linux. The SAW/SPM hardware component on Qualcomm SoCs will
+   usually disable the regulator during deep cpuidle states.
 
+ - RPMPD: This is the generic driver for all the SoC power domains
+   managed by the RPM firmware. It's not CPU-specific. However, as
+   special feature each power domain is exposed twice in Linux, e.g.
+   "MSM8909_VDDCX" and "MSM8909_VDDCX_AO". The _AO ("active-only")
+   variant tells the RPM firmware that the performance/enable vote only
+   applies when the CPU is active (not in deep cpuidle state).
+
+   The GENPD .power_off() drops all performance state votes and also
+   releases the "enable" vote for the power domain.
+
+Now, imagine what happens during system wide suspend/resume:
+
+ - CPR: The CPR state machine gets disabled. The voltage stays as-is.
+     - With "regulator-always-on": The CPU keeps running until WFI.
+     - Without: I would expect the CPU is dead immediately(?)
+
+ - RPMPD: The performance/enable vote is dropped. The power domain might
+   go to minimal voltage or even turn off completely. However, the CPU
+   actually needs to keep running at the same frequency until WFI!
+   Worst case, the CPU is dead immediately when the power domain votes
+   get dropped.
+
+In case of RPMPD, the votes must remain even during system wide suspend.
+The special _AO variant of the power domain tells the firmware to
+release the votes once the CPU has been shut down cleanly. It will also
+restore them once the CPU wakes up (long before the resume handlers run).
+
+My conclusion was that in both cases we want to keep the "power domain"
+enabled, since the CPU must keep running for a short while even after
+the system suspend handlers have been called.
+
+Does this help with understanding the problem? It's a bit complicated. :D
+
+Thanks!
+Stephan
+
+PS: This is essentially just another manifestation of a discussion we
+had a few times already over the years about where to enable power
+domains used by cpufreq, e.g. [1, 2, 3, 4]. Apparently I already
+mentioned back in 2021 already that QCS404 is broken [5] (I forgot
+about that :')).
+
+[1]: https://lore.kernel.org/linux-pm/YLi5N06Qs+gYHgYg@gerhold.net/
+[2]: https://lore.kernel.org/linux-pm/20200826093328.88268-1-stephan@gerhold.net/
+[3]: https://lore.kernel.org/linux-pm/20200730080146.25185-1-stephan@gerhold.net/
+[4]: https://lore.kernel.org/linux-arm-msm/20200426123140.GA190483@gerhold.net/
+[5]: https://lore.kernel.org/linux-pm/YLoTl7MfMfq2g10h@gerhold.net/
