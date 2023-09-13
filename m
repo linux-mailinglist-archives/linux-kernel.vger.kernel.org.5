@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6E979DCF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9BE79DCFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236470AbjIMAH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 20:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S233378AbjIMALA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbjIMAH0 (ORCPT
+        with ESMTP id S229589AbjIMAK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:07:26 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A7F1705
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:07:22 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cf4cb742715so5970550276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:07:22 -0700 (PDT)
+        Tue, 12 Sep 2023 20:10:59 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DBD10F2;
+        Tue, 12 Sep 2023 17:10:55 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5009d4a4897so10577925e87.0;
+        Tue, 12 Sep 2023 17:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694563642; x=1695168442; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rS41v4+xCLukMHjrW3MQeGbkMoVH4JjPq9tKkeyfYe0=;
-        b=r/ms0MahvvLg1nsm9lhDohSbOVvs1L7d74dODp2hppTOQ/vw9bEW0QyMN/JiWDaFEk
-         29nLDqYTg/nGjJqyEj7+fTr/jVsRNLhbZR+brsIbzh5wdg7LlhxtDbtSGHVeCAJYIovc
-         c542UyNxiJixMZ0XRRGna+q/kdEA5vysSLkERBDF3BM/5i/P9wbynsJf8FKRXaWNSpTf
-         2cM2SI1pUNyAxTIurK3nPFahSpTgDs+ZqZmT0z8a+FeLdcYVEKEHZKKfzkw79n7zh/DB
-         5vewTu+5WTTaThk4ZsdPR62caPvKiUwGWDQXOHWwC7v4+HMJHgfUHZ/KiYZ0gV+EO6K0
-         mZCw==
+        d=gmail.com; s=20221208; t=1694563854; x=1695168654; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lDU5pSKkCf+ROG6Vvo9qMmmrl9dENDhQwvux9jW53fk=;
+        b=CVyz6mj2IOl6ZWa3h6yHaDn88UJAmI459eSDxjXlKtaJpQjW8BHLm24w1AgA3xQoMD
+         pHQ1FD5hSRFV4Xh1BKAQwXaXK2jpUHQc6eYZG7jrCtRupzu/fzVFENNDLJxbyGyJ9PPc
+         fH/itVFaXbbnVIg2ipf6s3T4Z3FWpYM5E92nRP5HN4nl4xePNf7aehiFIfDvKHxQe60G
+         KIko1QarmwKnGHdil8Tke9T1AhD8vEqc4nrECcj9FMBCrwUj5MW79lKUvWCEyifkNRLO
+         MZJaljWTb4MWNi7if4UbMmGkK5djCeup7IR0PIM7gvUSojs4fWXXLEJLkHoil9VsfbN2
+         Rw6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694563642; x=1695168442;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rS41v4+xCLukMHjrW3MQeGbkMoVH4JjPq9tKkeyfYe0=;
-        b=jJQH1Jguhj0tONqIyPFHawOvZcg+vC68WU9AljJVaZrn22x6OkHj/R84CaNVdxs6v+
-         RguxWPbTpyO51AxDC4JadlTkaUkjy1Oyhb+XkCJ4SEqn2vSIsKODnR46sdx2m31jCf5i
-         Qop32F0KufM4tGa40EmBzhtt5BvPLOlbfpi/9Qi2VkD+iM+hn8qeLaPJEYUC+7fqo9lJ
-         emO5yW9r/eL9em9LA9NrgjrZA2ee1dhcU16o5T241PoXaYkRO0G2/sMBfooVTxd/AA4g
-         uqGxYZ4Iprz14RLZn72RtDB6wWOfNt4pfGLclXD6RQ6fVoTTokWw6mMCLh+K7LQfcNLg
-         xLrg==
-X-Gm-Message-State: AOJu0YzoUH4DFvYtgKdV7ZTgw6hkL5/PVHxi9W/OLBeXgJ8jhMDxQG64
-        Vb7P0MnGJ/cvtJ1epChIfmrIUGz5rO/q2x+OZw==
-X-Google-Smtp-Source: AGHT+IHIVm0Y6CAUhP6pTC/2mO7JZoleKN3YbmYHQgE9jlZqdE0XdYPULc48BnN1X81SSWxwtvxK4rrqznD65lYe/w==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:c708:0:b0:d47:4b58:a19e with SMTP
- id w8-20020a25c708000000b00d474b58a19emr23433ybe.11.1694563642045; Tue, 12
- Sep 2023 17:07:22 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 00:07:21 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIADj9AGUC/0WNMQ6DMAwAv4I815ITkIB+pepQEgNe0tQuqAjxd
- 6IuTKdb7nYwVmGDe7WD8iom71TE3SoI8ytNjBKLgydfU+882ldTyBtGlZXVMORlVP5cRBc7Imq agaiF0snKo/z+j8fzOE45Cw4wcwAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694563641; l=1848;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=d3eQRnRSox3gQAlO9beeck6HgLvQ+IwgKHU5fYXPsic=; b=jGth39PpsB/iSIfhy+Tf1rrdgm6kZNr+Tn0YEGuIUABXOvuFXngcCGXpB1DsuuWOFHCV0K07J
- SXvBj9oQFzDAQ3vAMxAu789ZhsgNqJwmeEHaN9k4hPqccCKoOLw2uBa
-X-Mailer: b4 0.12.3
-Message-ID: <20230913-strncpy-drivers-cpufreq-cpufreq-c-v1-1-f1608bfeff63@google.com>
-Subject: [PATCH] cpufreq: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1694563854; x=1695168654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lDU5pSKkCf+ROG6Vvo9qMmmrl9dENDhQwvux9jW53fk=;
+        b=l0M+Z+wKqg7JyIRRqf2kZDB9klGYcgIEWQFTkcpD7DCvsGRR+8CeSwSOf9a1WH/cH9
+         LlTGbASgkT1vnXCFzMvA1K9r5ooeFbNCpfeAtJcT8xGhGjnL9+tC44rXafxRVjf/Teoz
+         2Xpf1k69c5FzZ6ji/SYsKjOxL+v57doli++52S9qpIwbL7yT/ECNsMe8g1usQM9TsJmP
+         RZd0pQZSiZsRHCyuuk0BB3DoS0JoFWmh7zbJI9w8tN7bgyNNGxo6lyWX2BXg9H/SBO6I
+         J9quGX1vVKZsYbJ12wOBSgtjCIhJatqOPN7MnEGX6YXHawGl6sVf9Jgno1Z5RUNp1Z+3
+         wLWQ==
+X-Gm-Message-State: AOJu0YxJjhiJybii4mTJt1SajdD7QgAw7Ea6GdpAgu9uOEYk/liR8DW0
+        +r0Fq5Xn+poy7KEypk1YjRPR+eJOYsla0MbC+aA=
+X-Google-Smtp-Source: AGHT+IE0DJ1yIeH5yZxGYgPrqT6xeFSkjh5Zl6R/0fUeOPfMg57L6CIwSvBEee3CSY3IGdEklD5DOU0AfhXdAtHa5js=
+X-Received: by 2002:a19:e012:0:b0:502:9dc3:9c68 with SMTP id
+ x18-20020a19e012000000b005029dc39c68mr597128lfg.63.1694563853416; Tue, 12 Sep
+ 2023 17:10:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230912224654.6556-1-puranjay12@gmail.com> <20230912224654.6556-6-puranjay12@gmail.com>
+ <ZQDuVTSycDcjDkvi@shell.armlinux.org.uk> <CANk7y0iFdgHgu+RXYJvP3swaRS+-Lr0CgOAdcQWtjs4VkrOzdQ@mail.gmail.com>
+In-Reply-To: <CANk7y0iFdgHgu+RXYJvP3swaRS+-Lr0CgOAdcQWtjs4VkrOzdQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Sep 2023 17:10:42 -0700
+Message-ID: <CAADnVQLzbyG3xWVDFyTsDPRSC=fnAskaeyc1erQVLYo_b6Lg_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/6] bpf, arm32: Always zero extend for LDX with B/H/W
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Wang YanQing <udknight@gmail.com>, bpf <bpf@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Tue, Sep 12, 2023 at 4:17=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
+m> wrote:
+>
+> On Wed, Sep 13, 2023 at 1:04=E2=80=AFAM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Tue, Sep 12, 2023 at 10:46:53PM +0000, Puranjay Mohan wrote:
+> > > The JITs should not depend on the verifier for zero extending the upp=
+er
+> > > 32 bits of the destination register when loading a byte, half-word, o=
+r
+> > > word.
+> > >
+> > > A following patch will make the verifier stop patching zext instructi=
+ons
+> > > after LDX.
+> >
+> > This was introduced by:
+> >
+> > 163541e6ba34 ("arm: bpf: eliminate zero extension code-gen")
+> >
+> > along with an additional function. So three points:
+> >
+> > 1) the commit should probably explain why it has now become undesirable
+> > to access this verifier state, whereas it appears it was explicitly
+> > added to permit this optimisation.
+>
+> I added some details in the cover letter.
+>
+> For the complete discussion see: [1]
+>
+> > 2) you state that jits should not depend on this state, but the above
+> > commit adds more references than you're removing, so aren't there still
+> > references to the verifier remaining after this patch? I count a total
+> > of 10, and the patch below removes three.
+>
+> The JITs should not depend on this state for LDX (loading
+> a B/H/W.
+> This patch removes the usage only for LDX.
+>
+> > 3) what about the bpf_jit_needs_zext() function that was added to
+> > support the export of this zext state?
+>
+> That is still applicable, The verifier will still emit zext
+> instructions for other
+> instructions like BPF_ALU / BPF_ALU64
+>
+> >
+> > Essentially, the logic stated in the commit message doesn't seem to be
+> > reflected by the proposed code change.
+>
+> I will try to provide more information.
+> Currently I have asked Alexei if we really need this in [2].
+> I still think this optimization is useful and we should keep it.
 
-We should prefer more robust and less ambiguous string interfaces.
-
-Both `policy->last_governor` and `default_governor` are expected to be
-NUL-terminated which is shown by their heavy usage with other string
-apis like `strcmp`.
-
-A suitable replacement is `strscpy` [2] due to the fact that it guarantees
-NUL-termination on the destination buffer.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested
----
- drivers/cpufreq/cpufreq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 50bbc969ffe5..3eb851a03fce 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1607,7 +1607,7 @@ static void __cpufreq_offline(unsigned int cpu, struct cpufreq_policy *policy)
- 	}
- 
- 	if (has_target())
--		strncpy(policy->last_governor, policy->governor->name,
-+		strscpy(policy->last_governor, policy->governor->name,
- 			CPUFREQ_NAME_LEN);
- 	else
- 		policy->last_policy = policy->policy;
-@@ -2951,7 +2951,7 @@ static int __init cpufreq_core_init(void)
- 	BUG_ON(!cpufreq_global_kobject);
- 
- 	if (!strlen(default_governor))
--		strncpy(default_governor, gov->name, CPUFREQ_NAME_LEN);
-+		strscpy(default_governor, gov->name, CPUFREQ_NAME_LEN);
- 
- 	return 0;
- }
-
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230912-strncpy-drivers-cpufreq-cpufreq-c-1d800044b007
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+Right. subreg tracking is indeed functional for narrow loads.
+Let's drop this patch set.
