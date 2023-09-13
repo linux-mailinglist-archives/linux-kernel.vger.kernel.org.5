@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1EA179E11C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C960179E125
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238655AbjIMHsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
+        id S238665AbjIMHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238622AbjIMHsk (ORCPT
+        with ESMTP id S238645AbjIMHtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:48:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723B71989
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:48:36 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 88D0F6607319;
-        Wed, 13 Sep 2023 08:48:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694591315;
-        bh=EGLX0+KxN7hUT9YpTYg5LgU9mcegZL1wrYeI+JeqTiA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ny8/LDYyxVRceVVvo1mDSez4K8treZJHNLwGat1Kx7Ch8uyC4nbACQ38l2HmCMepj
-         9EmeCTADZ9KYKBjFmJ3llXRgUxX/n4xa1IzopwnvvTH0KtaLYHKWMH12Xqr1/2GLOY
-         2iWGVJDd5Pt7oAAh4k0jw0iMGEMoEbkyD4HBGcm3ZOoWUOporKCd1xJJ7+eqyEQGkQ
-         jBS9nqhtV09nauFdB/+3HKQJeNuCMHSzPGLO4zV6Nmey7D1mmu0ZEXCmNeM7HT9o9c
-         rGp9yblZmNpUHGWmvZBkgXR2a96y+P4UUFtNVe6n2u71/F3iptvf/XVusa2clwzM3a
-         CSneCkV3NNjWg==
-Date:   Wed, 13 Sep 2023 09:48:32 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v16 15/20] drm/shmem-helper: Add memory shrinker
-Message-ID: <20230913094832.3317c2df@collabora.com>
-In-Reply-To: <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
-        <20230903170736.513347-16-dmitry.osipenko@collabora.com>
-        <20230905100306.3564e729@collabora.com>
-        <26f7ba6d-3520-0311-35e2-ef5706a98232@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 13 Sep 2023 03:49:41 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7B2198B;
+        Wed, 13 Sep 2023 00:49:37 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38D7IYCY012197;
+        Wed, 13 Sep 2023 09:49:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=qvNrnSqmnkbcVN82Gdh3SbGyVzQj2Bekue7XEA12AWI=; b=Yc
+        y2NwhjcV7oUxZHalY/c3jSPAgKLENTGyEzJISuOlGDDe6iSlhgartrpn74UjLtBD
+        1Q795kytgQP29NvHjGU1R1MrZW72i7U2Zw0IEk34IyJLZBa43EbNV3Ki7uC0Ew1O
+        C7kAqKzm8Ni2fCylkWdpodRzI07K0boBGbs0okVx7+g90pqlBYoK4gX26kmbtZzW
+        Qe220r8ssdGysZWC4Db+U5tOyYlUa/x9N/q52DSiWAZi/x4Dk9W6Luyreze7opue
+        i5G1mnInh/IdIdMscobI22EEt0hQ3qAeaffx5gmI4VCUYLahWbmrUYH9CTwsS5pM
+        Vl8nUu/JbDB2fB0mAJoA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t2y7n9y2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 09:49:06 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D39E100057;
+        Wed, 13 Sep 2023 09:49:03 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 43A8F226FC7;
+        Wed, 13 Sep 2023 09:49:03 +0200 (CEST)
+Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 13 Sep
+ 2023 09:49:02 +0200
+Message-ID: <d5f2d1b3-fc91-76f0-af3d-bcdf6c4b5703@foss.st.com>
+Date:   Wed, 13 Sep 2023 09:48:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2 07/10] dt-bindings: rng: add st,rng-lock-conf
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Olivia Mackall <olivia@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
+ <20230911120203.774632-8-gatien.chevallier@foss.st.com>
+ <28ec58a3-63d5-f604-cef9-571b062fe244@linaro.org>
+Content-Language: en-US
+From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
+In-Reply-To: <28ec58a3-63d5-f604-cef9-571b062fe244@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.20.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 03:56:14 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> On 9/5/23 11:03, Boris Brezillon wrote:
-> >>                * But
-> >> +		 * acquiring the obj lock in drm_gem_shmem_release_pages_locked() can
-> >> +		 * cause a locking order inversion between reservation_ww_class_mutex
-> >> +		 * and fs_reclaim.
-> >> +		 *
-> >> +		 * This deadlock is not actually possible, because no one should
-> >> +		 * be already holding the lock when drm_gem_shmem_free() is called.
-> >> +		 * Unfortunately lockdep is not aware of this detail.  So when the
-> >> +		 * refcount drops to zero, don't touch the reservation lock.
-> >> +		 */
-> >> +		if (shmem->got_pages_sgt &&
-> >> +		    refcount_dec_and_test(&shmem->pages_use_count)) {
-> >> +			drm_gem_shmem_do_release_pages_locked(shmem);
-> >> +			shmem->got_pages_sgt = false;
-> >>  		}  
-> > Leaking memory is the right thing to do if pages_use_count > 1 (it's
-> > better to leak than having someone access memory it no longer owns), but
-> > I think it's worth mentioning in the above comment.  
+On 9/12/23 16:38, Krzysztof Kozlowski wrote:
+> On 11/09/2023 14:02, Gatien Chevallier wrote:
+>> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
+>> and RNG_NSCR will be locked. It is supported starting from the RNG
+>> version present in the STM32MP13
+>>
+>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
 > 
-> It's unlikely that it will be only a leak without a following up
-> use-after-free. Neither is acceptable.
-
-Not necessarily, if you have a page leak, it could be that the GPU has
-access to those pages, but doesn't need the GEM object anymore
-(pages are mapped by the iommu, which doesn't need shmem->sgt or
-shmem->pages after the mapping is created). Without a WARN_ON(), this
-can go unnoticed and lead to memory corruptions/information leaks.
-
+> How did you implement the comment? There is no changelog, so was it ignored?
 > 
-> The drm_gem_shmem_free() could be changed such that kernel won't blow up
-> on a refcnt bug, but that's not worthwhile doing because drivers
-> shouldn't have silly bugs.
+> Best regards,
+> Krzysztof
+> 
 
-We definitely don't want to fix that, but we want to complain loudly
-(WARN_ON()), and make sure the risk is limited (preventing memory from
-being re-assigned to someone else by not freeing it).
+Hello Krzysztof,
 
+I've sent V2 before Rob's review. I'll apply Rob's comment for V3.
+
+Best regards,
+Gatien
