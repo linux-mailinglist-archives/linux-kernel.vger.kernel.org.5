@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6E279F27D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED0679F294
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbjIMT5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
+        id S232134AbjIMUF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjIMT5i (ORCPT
+        with ESMTP id S232063AbjIMUF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:57:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE9D9E;
-        Wed, 13 Sep 2023 12:57:34 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57B0AC433CC;
-        Wed, 13 Sep 2023 19:57:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694635053;
-        bh=8s2Z1d1m3xuRoijuegAF7XDzYLIWy1+XSu3/xCTkOGU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bKNQUkL1wCDZ/gm59APeTdRTYc1TQhIDHGTt+vC8/7wftu+kCz5uohuq79uNm62eS
-         uEeqVtIu5SN8F8Jqs8GfRUbQVgSdWaJanEGOw4VkV426meePVQmAvqG1P83G6n2u4g
-         GlqylAHiVR/yZxYYVQJAAFCWyiAhXhzstAY9+OCq23xLvlrqDaxRbRVtUa7XAaXwDm
-         8KakiD8ydMsHMy4mP/KC8SeBWBkXsryAsC2to77GPy/wm8dSIGWcvzld5Ljm+8Nc9j
-         kqrZeCZvK163CtW4GRTIb7S+QSKYmDyQn7i4HLTkpaz6mh/pFndc22UxzhORnsznAl
-         aBCfHLzvi8LBA==
-Date:   Wed, 13 Sep 2023 12:57:31 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
-Message-ID: <20230913195731.GA2922283@dev-arch.thelio-3990X>
-References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
+        Wed, 13 Sep 2023 16:05:57 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21841BC3;
+        Wed, 13 Sep 2023 13:05:53 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-572a7141434so144223eaf.2;
+        Wed, 13 Sep 2023 13:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694635553; x=1695240353; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mgnusj9WNYseansm6Kr1sUnhgtykfnbfz9TfjOoUKuQ=;
+        b=sg5+CtQlyAZLRAB1atZXHOqxCJhSBMUrLUYpr7pZsxwMqaelYwbMlwGTBHk2F0I2Vi
+         BDrUn96udFImnQhLJZCgSacjwq/LJfKgbypS4RBZqp/M2PoGOrY0DLHtfDYhOU3q4QOr
+         6aR+RxllmvJ4qw2cVjyYBDMQrCibxqPF8jU5vAFG1X0rRxz+ADV5nd17XWvyruGRCLjx
+         jFCCjpSlw/VEuFp5A/LdqA9rbsDkbtU6eHkK4tS7LIsNl3eBzmBkOB47IeP/U3OGCrli
+         rLVWKDC2zv3xwyNrK3VgRvNhb8VbxWLB4WJb9lOIsXXny4VkroyQzUUHZiKaUYSiD+IR
+         s2og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694635553; x=1695240353;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mgnusj9WNYseansm6Kr1sUnhgtykfnbfz9TfjOoUKuQ=;
+        b=mU6lBT4ngu67aBfmB17Dv7pdDmIGCvRpoyX3Z3aYb0d/tPvvxmW2lIDzzB/nTvKiX+
+         5tgv+N3ve3fTsCnYkIqMrKZwx85mGyGl11Wj4oMptqx33/Firdq6fdL3iZSxFGm5ZifF
+         7/OeEQ2XjjeQXSDF6K6CXApMvkR5MMgtZ1e4hid+tA/n4H+9bJlTZOHvWEC4rM9GIlEJ
+         RHElSLFq9QyZIxznkLCJE26+Pm2OhOfPzxy+PgZUYmvnuMDUMUrYf0BlY4oN/MDdpLIZ
+         2O/DSzLf+Z+rfdZL7tw9RppuoIfoGPRoa795arypEA/butbyK/lSF/cimQPzzmvirzIC
+         G9cQ==
+X-Gm-Message-State: AOJu0Yz9WbjXAWKQBJ2PAITsX/9d/PEeWU5pcYZo5ZvMezQ1jDSB6zqx
+        8HPFoD6pQKLfTTfnHHS3qnD6goRWdIXoBCBIeB8=
+X-Google-Smtp-Source: AGHT+IHLm6apn4O09uKTNNT9VekVtTLxkHf0LthInAJoGoVn7WoUR/7/0i7XlogpEbA/UKANyFR7+IGCoBQWnFUT1bg=
+X-Received: by 2002:a05:6870:90d5:b0:1c1:e6da:f88d with SMTP id
+ s21-20020a05687090d500b001c1e6daf88dmr3607766oab.56.1694635553050; Wed, 13
+ Sep 2023 13:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
+References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-3-brgl@bgdev.pl>
+In-Reply-To: <20230913115001.23183-3-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 Sep 2023 23:05:16 +0300
+Message-ID: <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 09:33:12AM -0400, Jeff Layton wrote:
-> Nathan reported that he was seeing the new warning in
-> setattr_copy_mgtime pop when starting podman containers. Overlayfs is
-> trying to set the atime and mtime via notify_change without also
-> setting the ctime.
-> 
-> POSIX states that when the atime and mtime are updated via utimes() that
-> we must also update the ctime to the current time. The situation with
-> overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
-> notify_change will fill in the value.
-> 
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+On Wed, Sep 13, 2023 at 2:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Use the new, less cumbersome interface for setting the GPIO as
+> active-high that doesn't require first checking the current state.
 
-I applied this patch on top of next-20230913 and I do not see the
-warning I reported on any of my machines. Thanks for the quick fix!
+...
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+>          * here for older DTs so we can re-use the generic nand_gpio_wait=
+rdy()
+>          * helper, and be consistent with what other drivers do.
+>          */
+> -       if (of_machine_is_compatible("qi,lb60") &&
+> -           gpiod_is_active_low(nand->busy_gpio))
+> -               gpiod_toggle_active_low(nand->busy_gpio);
+> +       if (of_machine_is_compatible("qi,lb60"))
+> +               gpiod_set_active_high(nand->busy_gpio);
 
-> ---
-> The new WARN_ON_ONCE in setattr_copy_mgtime caught a bug! Fix up
-> overlayfs to ensure that the ctime on the upper inode is also updated
-> when copying up the atime and mtime.
-> ---
->  fs/overlayfs/copy_up.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-> index d1761ec5866a..ada3fcc9c6d5 100644
-> --- a/fs/overlayfs/copy_up.c
-> +++ b/fs/overlayfs/copy_up.c
-> @@ -337,7 +337,7 @@ static int ovl_set_timestamps(struct ovl_fs *ofs, struct dentry *upperdentry,
->  {
->  	struct iattr attr = {
->  		.ia_valid =
-> -		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET,
-> +		     ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIME_SET | ATTR_CTIME,
->  		.ia_atime = stat->atime,
->  		.ia_mtime = stat->mtime,
->  	};
-> 
-> ---
-> base-commit: 9cb8e7c86ac793862e7bea7904b3426942bbd7ef
-> change-id: 20230913-ctime-299173760dd9
-> 
-> Best regards,
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
+Why not moving this quirk to gpiolib-of.c?
+
+--=20
+With Best Regards,
+Andy Shevchenko
