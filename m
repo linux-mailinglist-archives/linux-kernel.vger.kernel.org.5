@@ -2,234 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3257479DD23
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405CC79DD28
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237957AbjIMA1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 20:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
+        id S233455AbjIMAch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjIMA1a (ORCPT
+        with ESMTP id S231704AbjIMAcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:27:30 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA6C10CC;
-        Tue, 12 Sep 2023 17:27:26 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38D08gwA019846;
-        Wed, 13 Sep 2023 00:27:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vJ47LIlyMN6BcmeJQaZ+TSvAsnWDFx+CGPLVYoUMJMg=;
- b=Xai9qt3q8ndV/PNBfxS7QCXdrMaeQiAerixJV6Qt4NKeTNsrmH+U3pSl/xfdqVWDLP7o
- wkI4XsWMNAQSuLlC4Bn9Qllc/jmm8KOS1idnQPh0PKCGLLOVkbBtymf/6iUJj3LDfC1+
- jTMTrx1PjxbwcgTdEKKbi8lIh0jNoIp8ld4DPVN+L4bhDQUHpWUfKpW1t6zkFJIQSpmt
- kNAoRTVxxYyLSY9RfyNz8olm+cruSF8b6ZeRLxPVJWTkQReHcpVkFiOTOVEEVy0+BCBy
- PhTrub0p/b1To2XW06S/YYyW03Tw/BZzfNPVxJORqeAVhEVkCorCmmyEBXghUGumnsd/ bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t31w18rp6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 00:27:01 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38D0GGLG015456;
-        Wed, 13 Sep 2023 00:27:00 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t31w18rp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 00:27:00 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38CMOSwJ011967;
-        Wed, 13 Sep 2023 00:26:59 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t15r1xpht-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 00:26:59 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38D0QvIY15270576
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 00:26:57 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AE8D92004B;
-        Wed, 13 Sep 2023 00:26:57 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ACB3820040;
-        Wed, 13 Sep 2023 00:26:56 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Sep 2023 00:26:56 +0000 (GMT)
-Received: from [10.61.2.107] (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 9206B600D2;
-        Wed, 13 Sep 2023 10:26:53 +1000 (AEST)
-Message-ID: <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
-Date:   Wed, 13 Sep 2023 10:26:53 +1000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 5/7] tools/perf: fix Python string escapes
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, llvm@lists.linux.dev,
-        linux-pm@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org,
-        Todd E Brandt <todd.e.brandt@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-6-bgray@linux.ibm.com>
- <340eae90-d270-5e52-4982-a67459bc46dd@intel.com>
-Content-Language: en-US, en-AU
-From:   Benjamin Gray <bgray@linux.ibm.com>
-In-Reply-To: <340eae90-d270-5e52-4982-a67459bc46dd@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nPp4DIV1vcd4fwS4D0Cqs57ORl3eAsK5
-X-Proofpoint-ORIG-GUID: AEImhDdKX-tnhwvE_4BGBdHirF0d-OVB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_23,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 suspectscore=0 priorityscore=1501 clxscore=1015
- impostorscore=0 mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309120205
+        Tue, 12 Sep 2023 20:32:36 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DED1708
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:32:32 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7e7e70fa52so5921863276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694565151; x=1695169951; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cQl22gfvlENoqC9ZXlr6AUA6g9l8rOoYr5Ou8EedNjo=;
+        b=TOXMPhmVpM30/v3Ym1W6cdGCRVibsfIJLOLJuMfjfT6sEFT//4WtFgtG0UXWa2OCLk
+         LsRtjpUG44wbUYYb32scmeJuItVfmjfQ5tKIfYEas9kLtcT6UT9QYUxZJsYj/xR7+PZp
+         ELZcwn/CSvBcmo577/p3DQs6bXyZaB5WzETWa9Bt0/C0hQn4s74CTxQol/z8jkew+5t0
+         6mCxABgWwFN1QvGhaqa/Sj+N7WheRzwJG0cDjoq1/bG8oWdVRnDOGsxpijrD4P0dJYhV
+         EHNogQoppCtbXx1YyfUruvexHA5ML5DUoEVwM9e5RkF2ZLF+VEI9QMpMaZQhqDc9RlG4
+         /raQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694565151; x=1695169951;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cQl22gfvlENoqC9ZXlr6AUA6g9l8rOoYr5Ou8EedNjo=;
+        b=W/ahf4XjjwYiklWWWwrw5cWhtxDcblhoxe2pJga0ZfLNne4Y8Lj+Q3Wvk3RD+kVfPA
+         hQFTDTpCkrX3CKCA1HybBTyIe63s0EhKQ0OmDMGEYMy5qOvHwrN8xsMoS/VC4Uh0Q+3i
+         S+v9hazNHvV34sEfELFHTYnU1Qx3lCMTbYtTxrAeqcHY/gcucXF13XkuH+HqGs74oLL2
+         NBKfx9pHBciSd5/ufNkGDfm56291HJaSvnv1Yk7M0UovaIvlmBCHFawvsYi8lkmuKPpF
+         9e2g5v4RNPe3YDFiLP2nnYs2p3P1ciO3J1m5RnhLiS7XAFpw4QhW4eHXqvKPB7QWQdnk
+         MTvw==
+X-Gm-Message-State: AOJu0Ywz+eBGBv+D6lz5qNrmU/3rAricA1wm5I8t7a+3tLUY24dVrxVn
+        7AYusBk6a44Pf/tRqDWkpzaTVGOKuYofnecoMw==
+X-Google-Smtp-Source: AGHT+IHoVWkYS1QIi63uxbOLxBnLNCBYs5NDQ+6C3gkVkJrVL7u/DLT38IB8YsEgrz4fMCxjhNeLFvbuEF8Pyu7LvA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:f824:0:b0:d07:7001:495b with SMTP
+ id u36-20020a25f824000000b00d077001495bmr23740ybd.11.1694565151782; Tue, 12
+ Sep 2023 17:32:31 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 00:32:31 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAB4DAWUC/y2NQQrCMBAAv1L27ELaiqV+RaTE7cYuaBI2MbSU/
+ t0gnoa5zOyQWIUTXJsdlIskCb5Ke2qAFuufjDJXh850vRnbHlNWT3HDWaWwJiTdYg5ItsjnjV6 yhvWPabEvJHQXGgcarDOPM9RuVHay/p63+3F8ARydvrWDAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694565150; l=1681;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=bOgFzN8SV0Qi4vEgDu2BIfI1a2yF4o5ibhxUCjl2z5s=; b=WToZdgDM5Ly/+mHpiu1w7j8NAZvAWbO/Dnsor3phmGalGk7ChrcEfY8n208HdrWqz2DC/h2HV
+ 5U4mxlaEIuxD9LgvsFARKZ9O2ZBhpeaKhEsFEFYxbz+EAERaz0Gnbto
+X-Mailer: b4 0.12.3
+Message-ID: <20230913-strncpy-drivers-crypto-cavium-nitrox-nitrox_hal-c-v1-1-937411a7bc7d@google.com>
+Subject: [PATCH] crypto: cavium/nitrox - refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/9/23 8:56 pm, Adrian Hunter wrote:
-> On 12/09/23 09:07, Benjamin Gray wrote:
->> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
->> index a7e88332276d..980f080a5a2c 100755
->> --- a/tools/perf/pmu-events/jevents.py
->> +++ b/tools/perf/pmu-events/jevents.py
->> @@ -83,7 +83,7 @@ def c_len(s: str) -> int:
->>     """Return the length of s a C string
->>   
->>     This doesn't handle all escape characters properly. It first assumes
->> -  all \ are for escaping, it then adjusts as it will have over counted
->> +  all \\ are for escaping, it then adjusts as it will have over counted
-> 
-> It looks like the whole string should be a raw string
-> 
-...
->> -				s = value.replace("%", "\%")
->> -				s = s.replace("_", "\_")
->> +				s = value.replace("%", "\\%")
->> +				s = s.replace("_", "\\_")
-> 
-> Raw strings seem more readable, so could be
-> used here too
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Yeah, sounds good. I normally use r strings only for regex, but there 
-shouldn't be any ambiguity here (it might have been misleading if the 
-search argument to replace looked like a regex).
+We know `hw.partname` is supposed to be NUL-terminated by its later use with seq_printf:
+| nitrox_debugfs.c +25
+|      seq_printf(s, "  Part Name: %s\n", ndev->hw.partname);
 
-Having the docstring be an r string is a good catch. There's probably a 
-few like that in the kernel, but finding them is a little more 
-complicated because they might be 'valid' syntax (e.g., the '\000' just 
-becomes a null byte. This series is focused on the syntax errors though, 
-so I'll just leave it be.
+Let's prefer a more robust and less ambiguous string interface.
 
-How is the following?
+A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
-Subject: [PATCH] tools/perf: fix Python string escapes
-
-Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-be a syntax error.
-
-Fix these now to get ahead of it before it's an error.
-
-Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
+Note: build-tested only.
 ---
-  tools/perf/pmu-events/jevents.py                 | 2 +-
-  tools/perf/scripts/python/arm-cs-trace-disasm.py | 4 ++--
-  tools/perf/scripts/python/compaction-times.py    | 2 +-
-  tools/perf/scripts/python/exported-sql-viewer.py | 4 ++--
-  4 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/crypto/cavium/nitrox/nitrox_hal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/jevents.py 
-b/tools/perf/pmu-events/jevents.py
-index a7e88332276d..1b4519333a28 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -80,7 +80,7 @@ def file_name_to_table_name(prefix: str, parents: 
-Sequence[str],
+diff --git a/drivers/crypto/cavium/nitrox/nitrox_hal.c b/drivers/crypto/cavium/nitrox/nitrox_hal.c
+index 13b137410b75..1b5abdb6cc5e 100644
+--- a/drivers/crypto/cavium/nitrox/nitrox_hal.c
++++ b/drivers/crypto/cavium/nitrox/nitrox_hal.c
+@@ -647,7 +647,7 @@ void nitrox_get_hwinfo(struct nitrox_device *ndev)
+ 		 ndev->hw.revision_id);
+ 
+ 	/* copy partname */
+-	strncpy(ndev->hw.partname, name, sizeof(ndev->hw.partname));
++	strscpy(ndev->hw.partname, name, sizeof(ndev->hw.partname));
+ }
+ 
+ void enable_pf2vf_mbox_interrupts(struct nitrox_device *ndev)
 
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230913-strncpy-drivers-crypto-cavium-nitrox-nitrox_hal-c-f6c97c7af0b4
 
-  def c_len(s: str) -> int:
--  """Return the length of s a C string
-+  r"""Return the length of s a C string
-
-    This doesn't handle all escape characters properly. It first assumes
-    all \ are for escaping, it then adjusts as it will have over counted
-diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py 
-b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-index d59ff53f1d94..de58991c78bb 100755
---- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
-+++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-@@ -45,8 +45,8 @@ parser = OptionParser(option_list=option_list)
-  # Initialize global dicts and regular expression
-  disasm_cache = dict()
-  cpu_data = dict()
--disasm_re = re.compile("^\s*([0-9a-fA-F]+):")
--disasm_func_re = re.compile("^\s*([0-9a-fA-F]+)\s.*:")
-+disasm_re = re.compile(r"^\s*([0-9a-fA-F]+):")
-+disasm_func_re = re.compile(r"^\s*([0-9a-fA-F]+)\s.*:")
-  cache_size = 64*1024
-
-  glb_source_file_name	= None
-diff --git a/tools/perf/scripts/python/compaction-times.py 
-b/tools/perf/scripts/python/compaction-times.py
-index 2560a042dc6f..9401f7c14747 100644
---- a/tools/perf/scripts/python/compaction-times.py
-+++ b/tools/perf/scripts/python/compaction-times.py
-@@ -260,7 +260,7 @@ def pr_help():
-
-  comm_re = None
-  pid_re = None
--pid_regex = "^(\d*)-(\d*)$|^(\d*)$"
-+pid_regex = r"^(\d*)-(\d*)$|^(\d*)$"
-
-  opt_proc = popt.DISP_DFL
-  opt_disp = topt.DISP_ALL
-diff --git a/tools/perf/scripts/python/exported-sql-viewer.py 
-b/tools/perf/scripts/python/exported-sql-viewer.py
-index 13f2d8a81610..78763531fe5a 100755
---- a/tools/perf/scripts/python/exported-sql-viewer.py
-+++ b/tools/perf/scripts/python/exported-sql-viewer.py
-@@ -677,8 +677,8 @@ class CallGraphModelBase(TreeModel):
-  			#   sqlite supports GLOB (text only) which uses * and ? and is case 
-sensitive
-  			if not self.glb.dbref.is_sqlite3:
-  				# Escape % and _
--				s = value.replace("%", "\%")
--				s = s.replace("_", "\_")
-+				s = value.replace("%", r"\%")
-+				s = s.replace("_", r"\_")
-  				# Translate * and ? into SQL LIKE pattern characters % and _
-  				trans = string.maketrans("*?", "%_")
-  				match = " LIKE '" + str(s).translate(trans) + "'"
--- 
-2.41.0
-
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
