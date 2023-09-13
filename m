@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573AF79E721
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7831079E729
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240441AbjIMLsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
+        id S240279AbjIMLuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235715AbjIMLsg (ORCPT
+        with ESMTP id S233040AbjIMLuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:48:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E833110E6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:48:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 620DEC433C8;
-        Wed, 13 Sep 2023 11:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694605712;
-        bh=Vb33qlf0ZwjYVrEHkwd4Hitu/bcjtnaGY47clFBlEh0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hHdnDVQtMAz1N4rWXipk/2tlW2VtQpoQblEp6kRsV9+ywz5deHrMFobG3aqYukla3
-         JM2tZqplzO2v4M7GhqN80/ODQoGcr0VyLE3poPmhWNMRnyO2i0Ew6toEbDL1VBKGpr
-         NS1362FjxluAZBP/IKNCv6aInuLMFE6VIZ7JuBIgjTwIQxxjy6rqSnftY7s5muwNfG
-         JN/juiZwVmz8b1bPsyBFylk3tpZL6c4VUeq4NxnsAD8uLj64FrJKLAyhyJtRDJthHT
-         WI2/QWqgnaDDfPk3+806p7L5jWC+Ntz9vQTOsrl1RkNsBiNfxVFVeQmOrA2dCP88Mw
-         rJVABKRyBH+AA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 95B5A403F4; Wed, 13 Sep 2023 08:48:29 -0300 (-03)
-Date:   Wed, 13 Sep 2023 08:48:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrei Vagin <avagin@google.com>, linux-kernel@vger.kernel.org
-Cc:     Kees Kook <keescook@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 2/2 fyi] perf bench sched-seccomp-notify: Use the tools copy
- of seccomp.h UAPI
-Message-ID: <ZQGhjaojgOGtSNk6@kernel.org>
+        Wed, 13 Sep 2023 07:50:23 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8688A198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:50:19 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401b0d97850so73909595e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:50:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605818; x=1695210618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wE2ORVq287JLkcnuWpgymLTUjppVm5JnqXblhoOF+yE=;
+        b=0OOsdDHBRtrLCVZElwuZ1wNqoib2sJOpZLkK56+PrfcUd3OBHx3EGYOp8VemCfHxcz
+         dKy1GmsVheKR+fs2u7NWbawiLo+QVOS6awLxDoxsyFjZkKSFsCBCZUIG6bGO+39RtqRu
+         Leyy7DgAfveKRcsG82LB0WUgz3SsHtrolpN0zR/VM5/bG61OCo9jSXWKHJJaXiJqElNh
+         7A2zDr8i4aMFDD/ETCuI86ZLswFQqki1Jjaj5qdF8sxbSWPMcmJv1MdQtDfA+3KAYejU
+         C7bH2zGLfVz2N8wg3+bVxHwh8qn/GclO0sPWHD6KI0ylQLA4xWzBBRm5jnuQLyQ7PCk7
+         z4qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694605818; x=1695210618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wE2ORVq287JLkcnuWpgymLTUjppVm5JnqXblhoOF+yE=;
+        b=NFQscgggwES+uRiU8QboWjyQGVlotRyFKsrLszTPDnaCfs60oAUkss/+g4xyL+XcNu
+         QcHc4wEilh2dqyu+VbSzIgH/Sgq09OFIuADvP5ViV0+PS0BErx2Cq1eU3m48Ia2nr74Z
+         UM8hfE3A+Yjd/8jyzglgSilavyBDswRMyiHSpGW4sz/naZCtV6SI8jFLKXbisG11AxGJ
+         88UxCm3aiz20nlr4et+oMlB8Td2ULVkMFj4uhc4Njm3HCw4DOgiKCN+5Qdsh0LD/O1m+
+         P4ZF06kf54QF7/5H4oGW/miByAgsS7aat0K60O44B9eBnMIACXqpBEqRwP06bKKRBWR4
+         rm/Q==
+X-Gm-Message-State: AOJu0Yzx9YxP4dkSb0kOnEAJlURcfFFrESfw/klkaxNuuy2geQ9WMntA
+        oJxntUawo284WqsShLIztY6hng==
+X-Google-Smtp-Source: AGHT+IFXSSuEq9wtyazcQ7l1hh+jAkGlzZwC0/98tI2tsHjMXKI3a8JB3xTIjBmtqjgeTD74oF6Sxg==
+X-Received: by 2002:adf:fe47:0:b0:31a:b3aa:d19b with SMTP id m7-20020adffe47000000b0031ab3aad19bmr1937928wrs.23.1694605817854;
+        Wed, 13 Sep 2023 04:50:17 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3b50:bca5:a754:7463])
+        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 04:50:17 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 0/5] gpio: remove gpiod_toggle_active_low()
+Date:   Wed, 13 Sep 2023 13:49:56 +0200
+Message-Id: <20230913115001.23183-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To keep perf building in systems where types and defines used in this
-new benchmark are not available, such as:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-  12    13.46 centos:stream                 : FAIL gcc version 8.5.0 20210514 (Red Hat 8.5.0-20) (GCC)
-    bench/sched-seccomp-notify.c: In function 'user_notif_syscall':
-    bench/sched-seccomp-notify.c:55:27: error: 'SECCOMP_RET_USER_NOTIF' undeclared (first use in this function); did you mean 'SECCOMP_RET_ERRNO'?
-       BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
-                               ^~~~~~~~~~~~~~~~~~~~~~
-    /git/perf-6.6.0-rc1/tools/include/uapi/linux/filter.h:49:59: note: in definition of macro 'BPF_STMT'
-     #define BPF_STMT(code, k) { (unsigned short)(code), 0, 0, k }
-                                                               ^
-    bench/sched-seccomp-notify.c:55:27: note: each undeclared identifier is reported only once for each function it appears in
-       BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
-                               ^~~~~~~~~~~~~~~~~~~~~~
-    /git/perf-6.6.0-rc1/tools/include/uapi/linux/filter.h:49:59: note: in definition of macro 'BPF_STMT'
-     #define BPF_STMT(code, k) { (unsigned short)(code), 0, 0, k }
-                                                               ^
-    bench/sched-seccomp-notify.c:55:3: error: missing initializer for field 'k' of 'struct sock_filter' [-Werror=missing-field-initializers]
-       BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
-       ^~~~~~~~
-    In file included from bench/sched-seccomp-notify.c:5:
-    /git/perf-6.6.0-rc1/tools/include/uapi/linux/filter.h:28:8: note: 'k' declared here
-      __u32 k;      /* Generic multiuse field */
-            ^
-    bench/sched-seccomp-notify.c: In function 'user_notification_sync_loop':
-    bench/sched-seccomp-notify.c:70:28: error: storage size of 'resp' isn't known
-      struct seccomp_notif_resp resp;
-                                ^~~~
-    bench/sched-seccomp-notify.c:71:23: error: storage size of 'req' isn't known
-      struct seccomp_notif req;
-                           ^~~
-    bench/sched-seccomp-notify.c:76:23: error: 'SECCOMP_IOCTL_NOTIF_RECV' undeclared (first use in this function); did you mean 'SECCOMP_MODE_STRICT'?
-       if (ioctl(listener, SECCOMP_IOCTL_NOTIF_RECV, &req))
-                           ^~~~~~~~~~~~~~~~~~~~~~~~
-                           SECCOMP_MODE_STRICT
-    bench/sched-seccomp-notify.c:86:23: error: 'SECCOMP_IOCTL_NOTIF_SEND' undeclared (first use in this function); did you mean 'SECCOMP_RET_ACTION'?
-       if (ioctl(listener, SECCOMP_IOCTL_NOTIF_SEND, &resp))
-                           ^~~~~~~~~~~~~~~~~~~~~~~~
-                           SECCOMP_RET_ACTION
-    bench/sched-seccomp-notify.c:71:23: error: unused variable 'req' [-Werror=unused-variable]
-      struct seccomp_notif req;
-                           ^~~
-    bench/sched-seccomp-notify.c:70:28: error: unused variable 'resp' [-Werror=unused-variable]
-      struct seccomp_notif_resp resp;
-                                ^~~~
+The semantics of gpiod_toggle_active_low() are just bad and in almost
+all cases require users to check the current state anyway. Let's replace
+it with something clearer and more useful.
 
-  14    11.31 debian:10                     : FAIL gcc version 8.3.0 (Debian 8.3.0-6)
+For getting this upstream: I'm thinking that I should apply patch 1/5,
+provide other subsystems with an immutable tag and then we can apply
+patch 5/5 for the next release once first four are in master.
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Andrei Vagin <avagin@google.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kees Kook <keescook@chromium.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/bench/sched-seccomp-notify.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Bartosz Golaszewski (5):
+  gpiolib: provide gpiod_set_active_[low/high]()
+  mtd: rawnand: ingenic: use gpiod_set_active_high()
+  mmc: slot-gpio: use gpiod_set_active_[low|high]()
+  platform/x86: int3472/discrete: use gpiod_set_active_low()
+  gpiolib: remove gpiod_toggle_active_low()
 
-diff --git a/tools/perf/bench/sched-seccomp-notify.c b/tools/perf/bench/sched-seccomp-notify.c
-index b04ebcde40361636..a01c40131493b76d 100644
---- a/tools/perf/bench/sched-seccomp-notify.c
-+++ b/tools/perf/bench/sched-seccomp-notify.c
-@@ -9,7 +9,7 @@
- #include <sys/syscall.h>
- #include <sys/ioctl.h>
- #include <linux/time64.h>
--#include <linux/seccomp.h>
-+#include <uapi/linux/seccomp.h>
- #include <sys/prctl.h>
- 
- #include <unistd.h>
+ drivers/gpio/gpiolib.c                        | 21 ++++++++++++++-----
+ drivers/mmc/core/slot-gpio.c                  | 11 +++++-----
+ .../mtd/nand/raw/ingenic/ingenic_nand_drv.c   |  5 ++---
+ .../x86/intel/int3472/clk_and_regulator.c     |  2 +-
+ drivers/platform/x86/intel/int3472/led.c      |  2 +-
+ include/linux/gpio/consumer.h                 | 11 ++++++++--
+ 6 files changed, 34 insertions(+), 18 deletions(-)
+
 -- 
-2.37.1
+2.39.2
 
