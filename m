@@ -2,149 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066D279E866
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE5379E86E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239951AbjIMMzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S240672AbjIMM6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbjIMMzP (ORCPT
+        with ESMTP id S231620AbjIMM6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:55:15 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1B19B4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:55:11 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-501ce655fcbso10952195e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:55:11 -0700 (PDT)
+        Wed, 13 Sep 2023 08:58:00 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42BD19B4;
+        Wed, 13 Sep 2023 05:57:56 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-495ea3299b0so1284888e0c.2;
+        Wed, 13 Sep 2023 05:57:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694609709; x=1695214509; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FBLmprqMznqvsNo4BlY3BI8teGbJT5a4oyp31xLgPZc=;
-        b=EfvuG5IhpO9s/BOLvdfd9W1RBXSQqtnVEVrxcd5SxrcEEqNGKcxAn5p9qyJC+kCrlI
-         160iV0iuwsgdyhyfstozKoZvICCjkuCzyZBma/nBD1cHX8cgU6edJaPGLIqc1weKxfef
-         4ad+vNdbrplJGjX4W+JhAR7VB7MOSibQ/sUcmEZa8aj4s5YT385PwbbIcUpchqjLEetW
-         QuzXEDTPy7RUSFkQmbo9A5G9DlHyGcjSrb5XzU1PCks/9hJT2iVMfy8pzTEdZnkQmnX2
-         85Os8DEzTIQrk2n1I5JVIM/uvqndSLte5KltUPqV00FLVeCj/FxlHBHZp2K+5CFwmAo8
-         ZtBQ==
+        d=beagleboard-org.20230601.gappssmtp.com; s=20230601; t=1694609876; x=1695214676; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UtrxdtTp1EW7h6+dg/+5k5x050r9bil5U5brlIW9E/E=;
+        b=RcpZYdwiMI3zsLUS0FmtFzHUsbybUN5Qqmv9Uoxo64RRInw/PB175oLLCrMpVAt1Pi
+         /6a8seSMR/lpUaHvqjTgD9Asw7kMIaHhOixp71MaSiKZrXGTpF8pGhRRBKQX3+WObzWw
+         49iqFQ0ROv7V7uLmLydv9PxdaJc+YpAntRaRraeiQMeJQYEEPZWYttgyQ9OmOt/AUDOY
+         4i61QdYT9ZwX8jGN8++VBgRzU6M0uhqyM6K891ZRoETUErScaxXrFWsK9yOQcZv4LkQ+
+         XJ8CGWkJrAhg/EAmV/je2VrHNptaec7t4d2lXJXePpJiou0gSexm3T+/qMewy7p2ExfD
+         Ab3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694609709; x=1695214509;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FBLmprqMznqvsNo4BlY3BI8teGbJT5a4oyp31xLgPZc=;
-        b=nxPkpk8/juokyZ1vsVOKTntmHYpOsvc1TleK1zntUIUvs3/qpgj1kuiIbzhEkO7D4c
-         QzNPkQf/0m/4wPHsw7dHMM6AlX9arttAcwMocELWjmPZwkHehkPHfFHmP8GPu1KJncVF
-         8WObUCeN65IzEHAur+fhnycsPrT1lhLDeHt4NfNxyuhJa6BY358hOZJGnf+PUCaHT2h5
-         pmPX5G+uYkqWeYaJPK7lajdt9d8rcT6IalqBAJKhsjfaeSakVc3k6mQ19huJIVM0syYp
-         mEeYQo32staIyZMqJHdBBsWf4qDBKP0zdFB9U7M88L1xT/stzNUzu9Yhv5nZ82vLud+R
-         +ySw==
-X-Gm-Message-State: AOJu0YybyAV5EqSrapGCJ3wGNuWEU1hl/OTNAS/FvqrDLCTkxp4mpmcF
-        ZyXPdD9qj88eqG5nmmFMLmJLlQ==
-X-Google-Smtp-Source: AGHT+IEg2jjdFCghXpK0VKM5rNLUqnXfSFdE9B4y6LBztGWV/ddOAMCFxBCTTvTQ53MRyH3o0P6YKQ==
-X-Received: by 2002:a05:6512:3f15:b0:500:bffa:5b85 with SMTP id y21-20020a0565123f1500b00500bffa5b85mr2378368lfa.32.1694609709518;
-        Wed, 13 Sep 2023 05:55:09 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id r21-20020ac252b5000000b00501be736dc8sm2138848lfm.300.2023.09.13.05.55.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 05:55:08 -0700 (PDT)
-Message-ID: <e16ebefd-2014-4089-baad-6c0d09813144@linaro.org>
-Date:   Wed, 13 Sep 2023 15:55:08 +0300
+        d=1e100.net; s=20230601; t=1694609876; x=1695214676;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UtrxdtTp1EW7h6+dg/+5k5x050r9bil5U5brlIW9E/E=;
+        b=v/z/McaRU28i8BT6uFAkFErTjjwAz1DwEOdF9cPZA1rXpHaVeWmchneSfCX9wr6YXJ
+         pnIuH8qcEGZVRfmYE2quhxtZ2EfAwSYSn7WUI8+tXMolWhLliVVSGZZXaWa0Q459pa4f
+         KiVIaPwCwAlXkyykNqvJdlylahxnq25HeNZ+MSAoO+zyy5QsAUCnYHpHb49yKr0WLL4a
+         MvK+AaIMJohnLZE6HrdGle69CBZS5AIz5wHpB1ZHOKPJ2oDo7nCfAAuRTlUynvT22VOm
+         lsvnjdet/SaGEjcz5zjMMAG2j+Knw6nAzdlEyU6F+y3zBWP3rLpoAckYkXUReDtenVe3
+         8v9Q==
+X-Gm-Message-State: AOJu0Yy68vcIob9BrqXTF4/oizBPChG/4qiOkFDxvwBHzYrV6QCupvBx
+        o2Vg5Qsa6WDRItNYE8lvf0nNipatNLdpSXNxasRP5D2n490=
+X-Google-Smtp-Source: AGHT+IGBce9XpFUrQp4LmmTK00Ooh3AHj870mZ2euVBCDMHGPLWGSh+Dc6c9O1KrbGAnxc3aABrxwymZEOJokUcdp4w=
+X-Received: by 2002:a1f:6d82:0:b0:493:7df9:bcc4 with SMTP id
+ i124-20020a1f6d82000000b004937df9bcc4mr1747762vkc.4.1694609875558; Wed, 13
+ Sep 2023 05:57:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 0/3] drm/bridge_connector: implement OOB HPD handling
-Content-Language: en-GB
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20230824235636.1436665-1-dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230824235636.1436665-1-dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+In-Reply-To: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+From:   Jason Kridner <jkridner@beagleboard.org>
+Date:   Wed, 13 Sep 2023 08:57:43 -0400
+Message-ID: <CA+T6QP=gWS+7WzzyFmMtuN48cExThSQHXGgjAtQQsy_u-bhYDw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/3] greybus: Add BeaglePlay Greybus Driver
+To:     Ayush Singh <ayushdevel1325@gmail.com>
+Cc:     greybus-dev@lists.linaro.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Nishanth Menon <nm@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/08/2023 02:56, Dmitry Baryshkov wrote:
-> Note, numbering for this series starts from v5, since there were several
-> revisions for this patchset under a different series title ([1]).
-> 
-> USB altmodes code would send OOB notifications to the drm_connector
-> specified in the device tree. However as the MSM DP driver uses
-> drm_bridge_connector, there is no way to receive these event directly.
-> Implement a bridge between oob_hotplug_event and drm_bridge's
-> hpd_notify.
-> 
-> Merge strategy: since this series touches i915 code, it might make sense
-> to merge all three patches through drm-intel.
+On Sat, Sep 2, 2023 at 2:28=E2=80=AFPM Ayush Singh <ayushdevel1325@gmail.co=
+m> wrote:
+>
+> BeaglePlay is a board by BeagleBoard.org. It contains a main AM62
+> processor with a CC1352 co-processor. They are connected over UART.
+>
+> Greybus is a hardware protocol that was designed to provide Unipro with a
+> sane application layer. It can be used in IOT and IIOT applications
+> keeping the intelligence on the host.
+>
+> This driver has been tested on BeaglePlay by BeagleBoard.org. It serves
+> as Greybus Host device and communicates with BeaglePlay CC1352
+> co-processor which serves as Greybus SVC. This replaces the old setup wit=
+h
+> bcfserial, wpanusb and GBridge. This driver also contains async HDLC code
+> since communication with SVC take place over UART using HDLC.
 
-Dear drm-misc and drm-intel maintainers. Since the merge window has 
-ended and the trees are fully open for the patches, I'd like to massage 
-this patch series. We have R-B on all three patches. Heikki has acked 
-the first patch, so it seems to be fine from the i915 point of view.
+Ayush,
 
-Is it fine to be merged via drm-misc? Would you like to pick it up into 
-drm-intel?
+I think part of the problem you are seeing in getting this patch set
+accepted is due to a lack of clarity from me on branding. Yes, this is
+a Greybus driver that runs on BeaglePlay and talks to specific
+firmware running on a CC1352P7 on BeaglePlay, but none of those
+individual things explains what this is on its own, it has to be
+comprehended a bit more collectively. Together, I've been calling this
+the "BeagleConnect" concept and I need to do a bit more to smooth out
+the rough edges in the communications, just as you have smoothed out
+the rough edges in the implementation by moving GBridge out of
+userspace and made a proper Greybus driver.
+
+I have a draft of the concept at
+https://docs.beagleboard.org/latest/boards/beagleconnect/index.html,
+but it is really in rough form. Let me try to state it here for
+clarity and I think you might paraphrase part of it in your next patch
+set as I see you've had some comments that likely need to be addressed
+such that a v5 will be on the way.
+
+BeagleConnect is both a technology concept and a line of board designs
+that implement the technology. Born from Greybus, a mechanism for
+dynamically extending a Linux system with embedded peripherals,
+BeagleConnect adds two key elements: a 6LoWPAN transport and mikroBUS
+manifests. The 6LoWPAN transport provides for arbitrary connections,
+including the IEEE802.15.4g long-range wireless transport supported
+between BeaglePlay and BeagleConnect Freedom (the first BeagleConnect
+board design). The mikroBUS manifests provide for rapid prototyping
+and low-node-count production with sensor boards following the
+mikroBUS freely-licensable embedded bus standard such that existing
+Linux drivers can be loaded upon Greybus discovery of the nodes.
+
+This patch set provides the Linux-side hooks required for the 6LoWPAN
+transport for BeagleConnect on BeaglePlay. A different patch set,
+currently in RFC, provides the mikroBUS manifest support to complete
+the BeagleConnect functionality. (Be sure to use imperative mode if
+paraphrasing this in the patch submission).
+
+(If wondering, Beagle hasn't done any patent applications and
+considers all public record of describing BeagleConnect technology as
+evidence of prior art in public that will hopefully prevent anyone
+else from trying to patent it. The name BeagleConnect is a trademark
+owned by the BeagleBoard.org Foundation, but anyone should naturally
+be able to implement Greybus over 6LoWPAN without any sort of
+royalty--we just need to call it something so that people can
+recognize compatible devices, so don't implement anything that isn't
+interoperable and call it BeagleConnect, please.)
+
+With this said, maybe the names can be a bit more clear? If I haven't
+defined terms well enough, let me know.
+
+So, when naming the binding, I'd think something like
+"beagle,play-cc1352-connecthost". I removed the redundant use of
+"beagle" if that seems right. I think it is accurate from a
+hierarchical perspective because it runs on BeaglePlay, it talks to
+the cc1352 and the cc1352 needs to be running the BeagleConnect host
+firmware.
+
+Hope this helps.
+
+--Jason
+(Board president at BeagleBoard.org Foundation)
+
+>
+> This driver has been created as a part of my Google Summer of Code 2023.
+> For more information, take a look at my blog.
+>
+> This patchset has been tested over `next-20230825`.
+>
+> My GSoC23 Blog: https://programmershideaway.xyz/tags/gsoc23/
+> Zephyr App: https://git.beagleboard.org/gsoc/greybus/cc1352-firmware
+> GitHub Branch: https://github.com/Ayush1325/linux/tree/gb-beagleplay
+> Video Demo: https://youtu.be/GVuIB7i5pjk
+>
+> This the v4 of this patch
+> v3 -> v4:
+> - Add DT Bindings
+> - Reorder commits
+> - Improve commit messages
+>
+> v2 -> v3:
+> - Move gb-beagleplay out of staging
+>
+> v1 -> v2:
+> - Combine the driver into a single file
+> - Remove redundant code
+> - Fix Checkpatch complaints
+> - Other suggested changes
+>
+> Ayush Singh (3):
+>   dt-bindings: Add beaglecc1352
+>   greybus: Add BeaglePlay Linux Driver
+>   dts: ti: k3-am625-beagleplay: Add beaglecc1352
+>
+>  .../bindings/serial/beaglecc1352.yaml         |  25 +
+>  MAINTAINERS                                   |   7 +
+>  .../arm64/boot/dts/ti/k3-am625-beagleplay.dts |   4 +
+>  drivers/greybus/Kconfig                       |  10 +
+>  drivers/greybus/Makefile                      |   3 +-
+>  drivers/greybus/gb-beagleplay.c               | 494 ++++++++++++++++++
+>  6 files changed, 542 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/serial/beaglecc1352=
+.yaml
+>  create mode 100644 drivers/greybus/gb-beagleplay.c
+>
+> --
+> 2.41.0
+>
 
 
-> 
-> [1] https://patchwork.freedesktop.org/series/103449/
-> 
-> Changes since v6:
-> - Rebased on top of linux-next. Fixed the freshly added
->    new drm_connector_oob_hotplug_event() call.
-> 
-> Changes since v5:
-> - Fixed checkpatch warning in the first patch (noted by intel-gfx CI).
-> 
-> Changes since v4:
-> - Picked up the patchset
-> - Dropped msm-specific patches
-> - Changed drm_bridge_connector_oob_hotplug_event to call connector's HPD
->    callback directly, rather than going through the last bridge's
->    hpd_notify
-> - Added proper fwnode for the drm_bridge_connector
-> 
-> Bjorn Andersson (1):
->    drm: Add HPD state to drm_connector_oob_hotplug_event()
-> 
-> Dmitry Baryshkov (2):
->    drm/bridge_connector: stop filtering events in
->      drm_bridge_connector_hpd_cb()
->    drm/bridge_connector: implement oob_hotplug_event
-> 
->   drivers/gpu/drm/drm_bridge_connector.c        | 34 ++++++++++++++-----
->   drivers/gpu/drm/drm_connector.c               |  6 ++--
->   .../gpu/drm/i915/display/intel_display_core.h |  3 ++
->   drivers/gpu/drm/i915/display/intel_dp.c       | 17 ++++++++--
->   drivers/usb/typec/altmodes/displayport.c      | 17 +++++-----
->   include/drm/drm_connector.h                   |  6 ++--
->   6 files changed, 60 insertions(+), 23 deletions(-)
-> 
-
--- 
-With best wishes
-Dmitry
-
+--=20
+https://beagleboard.org/about/jkridner - a 501c3 non-profit educating
+around open hardware computing
