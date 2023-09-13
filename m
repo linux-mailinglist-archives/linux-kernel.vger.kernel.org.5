@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EAB79E684
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C7D79E682
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240366AbjIMLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        id S240016AbjIMLVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240091AbjIMLVE (ORCPT
+        with ESMTP id S240017AbjIMLVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:21:04 -0400
-Received: from smtp109.iad3b.emailsrvr.com (smtp109.iad3b.emailsrvr.com [146.20.161.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D81FE5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:59 -0700 (PDT)
+        Wed, 13 Sep 2023 07:21:05 -0400
+Received: from smtp105.iad3b.emailsrvr.com (smtp105.iad3b.emailsrvr.com [146.20.161.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A87210B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:21:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694604059;
-        bh=Pb/sSDvfoGCIM5lyU2VkooMFMiSDDoheHXCljC1iffc=;
+        s=20221208-6x11dpa4; t=1694604060;
+        bh=uLhfAgflV0leHcWKdgbLK0rcyQ0A5RWhfZPt2aW2IHY=;
         h=From:To:Subject:Date:From;
-        b=qzYsEG3UkGWpEIz/rKa0vr5FS3kDQsPDQ9kLlTCdeuI5xgLN9D838QvbYS5qyp782
-         TO+YJtQnZLRktwuno664y9PgIs3/1nlnf/unk8kZxf0FX0PXZdI5WtWevQLphPPJ4q
-         HS8vS7YPDf8Mlq4AmxaseJUNwWSZmrdq9Q+tC53w=
+        b=cmh089HeyFx56EyimmAT4Z185FfAiSVDat1ZzQnP39bAoCThURqgo39pGodeIy4T9
+         QKYwPNoaxIzB9YKPPTPKwiur8k00LChb646p0q4prMjR6pdppX2mI6zqUJUCvIqlOZ
+         vE4ubjRWaNEPme0xPe5aLTPqyV/bj5Hwl58yjHCk=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 9A1B2200C0;
-        Wed, 13 Sep 2023 07:20:58 -0400 (EDT)
+Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id B160C200CF;
+        Wed, 13 Sep 2023 07:20:59 -0400 (EDT)
 From:   Ian Abbott <abbotti@mev.co.uk>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@kernel.org>,
         Niklas Schnelle <schnelle@linux.ibm.com>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 09/13] comedi: ni_mio_common: Conditionally use I/O port or MMIO
-Date:   Wed, 13 Sep 2023 12:20:28 +0100
-Message-Id: <20230913112032.90618-10-abbotti@mev.co.uk>
+Subject: [PATCH 10/13] comedi: amplc_dio200_pci: Conditionally remove devices that use port I/O
+Date:   Wed, 13 Sep 2023 12:20:29 +0100
+Message-Id: <20230913112032.90618-11-abbotti@mev.co.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230913112032.90618-1-abbotti@mev.co.uk>
 References: <20230913112032.90618-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-10-1
+X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-11-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,166 +47,79 @@ In a future patch, the port I/O functions (`inb()`, `outb()`, and
 friends will only be declared in the `HAS_IOPORT` configuration option
 is enabled.
 
-The "ni_mio_common.c" file contains calls to both port I/O functions and
-memory-mapped I/O functions.  The file is `#include`d by "ni_atmio.c",
-"ni_mio_cs.c", and "ni_pcimio.c" for the ni_atmio, ni_mio_cs, and
-ni_pcimio modules, respectively.  Only "ni_pcimio.c" defines the
-`PCIDMA` macro before including "ni_mio_common.c" and various bits of
-code in "ni_mio_common.c" is conditionally compiled according to whether
-that macro is defined or not.  Currently, the port I/O function calls
-are compiled in regardless of whether the `PCIDMA` macro is defined or
-not.  However, the fact is that the ni_atmio and ni_mio_cs modules will
-never call the memory-mapped I/O functions, and the ni_pcimio module
-will never call the port I/O functions.
+The amplc_dio200_pci module supports various Amplicon PCI and PCI
+Express devices.  Some of the supported devices (the PCI ones) use port
+I/O, and some of them (the PCIe ones) only use memory-mapped I/O.
 
-Calls to the port I/O and memory-mapped I/O functions is confined to the
-`ni_writel()`, `ni_writew()`, `ni_writeb()`, `ni_readl()`, `ni_readw()`,
-and `ni_readb()` functions which do a run-time test to decide whether to
-call the port I/O functions or the memory-mapped I/O functions.
-Conditionally compile two variants of the functions so they only call
-the port I/O functions if the `PCIDMA` macro is undefined (for the
-ni_atmio and ni_mio_cs modules), and only call the memory-mapped I/O
-functions if the `PCIDMA` macro is defined (for the ni_pcimio module).
+Conditionally compile in support for the devices that need port I/O if
+and only if the `CONFIG_HAS_PORTIO` macro is defined.
 
-Add a run-time check in the `ni_E_init()` function to return an error if
-the comedi device has been set up to use port I/O if `PCIDMA` is
-defined, or has been set up to use memory-mapped I/O if `PCIDMA` is not
-defined.
-
-The changes make it possible to build the ni_pcimio module even if the
-port I/O functions have not been declared.  (The ni_atmio and ni_mio_cs
-modules do still require the port I/O functions to be declared.)
+Add a run-time check in `dio200_pci_auto_attach()` to return an error if
+the device actually requires port I/O (based on the PCI BAR resource
+flags) but the `HAS_IOPORT` configuration option is not enabled.
 
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Niklas Schnelle <schnelle@linux.ibm.com>
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
- drivers/comedi/drivers/ni_mio_common.c | 70 ++++++++++++++++++--------
- 1 file changed, 50 insertions(+), 20 deletions(-)
+ drivers/comedi/drivers/amplc_dio200_pci.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-index 638be08b43e4..980f309d6de7 100644
---- a/drivers/comedi/drivers/ni_mio_common.c
-+++ b/drivers/comedi/drivers/ni_mio_common.c
-@@ -46,6 +46,12 @@
- #include <linux/comedi/comedi_8255.h>
- #include "mite.h"
+diff --git a/drivers/comedi/drivers/amplc_dio200_pci.c b/drivers/comedi/drivers/amplc_dio200_pci.c
+index 527994d82a1f..cb5b328a28e3 100644
+--- a/drivers/comedi/drivers/amplc_dio200_pci.c
++++ b/drivers/comedi/drivers/amplc_dio200_pci.c
+@@ -223,14 +223,17 @@
+  */
  
-+#ifdef PCIDMA
-+#define IS_PCIMIO 1
-+#else
-+#define IS_PCIMIO 0
-+#endif
-+
- /* A timeout count */
- #define NI_TIMEOUT 1000
+ enum dio200_pci_model {
++#ifdef CONFIG_HAS_IOPORT
+ 	pci215_model,
+ 	pci272_model,
++#endif /* CONFIG_HAS_IOPORT */
+ 	pcie215_model,
+ 	pcie236_model,
+ 	pcie296_model
+ };
  
-@@ -219,54 +225,72 @@ enum timebase_nanoseconds {
- 
- static const int num_adc_stages_611x = 3;
- 
-+#ifdef PCIDMA
-+
- static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writel(data, dev->mmio + reg);
--	else
--		outl(data, dev->iobase + reg);
-+	writel(data, dev->mmio + reg);
- }
- 
- static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writew(data, dev->mmio + reg);
--	else
--		outw(data, dev->iobase + reg);
-+	writew(data, dev->mmio + reg);
- }
- 
- static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writeb(data, dev->mmio + reg);
--	else
--		outb(data, dev->iobase + reg);
-+	writeb(data, dev->mmio + reg);
- }
- 
- static unsigned int ni_readl(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readl(dev->mmio + reg);
-+	return readl(dev->mmio + reg);
-+}
-+
-+static unsigned int ni_readw(struct comedi_device *dev, int reg)
-+{
-+	return readw(dev->mmio + reg);
-+}
-+
-+static unsigned int ni_readb(struct comedi_device *dev, int reg)
-+{
-+	return readb(dev->mmio + reg);
-+}
- 
-+#else /* PCIDMA */
-+
-+static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outl(data, dev->iobase + reg);
-+}
-+
-+static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outw(data, dev->iobase + reg);
-+}
-+
-+static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outb(data, dev->iobase + reg);
-+}
-+
-+static unsigned int ni_readl(struct comedi_device *dev, int reg)
-+{
- 	return inl(dev->iobase + reg);
- }
- 
- static unsigned int ni_readw(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readw(dev->mmio + reg);
--
- 	return inw(dev->iobase + reg);
- }
- 
- static unsigned int ni_readb(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readb(dev->mmio + reg);
--
- 	return inb(dev->iobase + reg);
- }
- 
-+#endif /* PCIDMA */
-+
- /*
-  * We automatically take advantage of STC registers that can be
-  * read/written directly in the I/O space of the board.
-@@ -5977,6 +6001,12 @@ static int ni_E_init(struct comedi_device *dev,
- 	int i;
- 	const char *dev_family = devpriv->is_m_series ? "ni_mseries"
- 						      : "ni_eseries";
-+	if (!IS_PCIMIO != !dev->mmio) {
+ static const struct dio200_board dio200_pci_boards[] = {
++#ifdef CONFIG_HAS_IOPORT
+ 	[pci215_model] = {
+ 		.name		= "pci215",
+ 		.mainbar	= 2,
+@@ -252,6 +255,7 @@ static const struct dio200_board dio200_pci_boards[] = {
+ 		.sdinfo		= { 0x00, 0x08, 0x10, 0x3f },
+ 		.has_int_sce	= true,
+ 	},
++#endif /* CONFIG_HAS_IOPORT */
+ 	[pcie215_model] = {
+ 		.name		= "pcie215",
+ 		.mainbar	= 1,
+@@ -364,8 +368,12 @@ static int dio200_pci_auto_attach(struct comedi_device *dev,
+ 				"error! cannot remap registers\n");
+ 			return -ENOMEM;
+ 		}
+-	} else {
++	} else if (IS_ENABLED(CONFIG_HAS_IOPORT)) {
+ 		dev->iobase = pci_resource_start(pci_dev, bar);
++	} else {
 +		dev_err(dev->class_dev,
-+			"%s: bug! %s device not supported.\n",
-+			KBUILD_MODNAME, board->name);
++			"error! need I/O port support\n");
 +		return -ENXIO;
-+	}
+ 	}
  
- 	/* prepare the device for globally-named routes. */
- 	if (ni_assign_device_routes(dev_family, board->name,
+ 	if (board->is_pcie) {
+@@ -385,8 +393,10 @@ static struct comedi_driver dio200_pci_comedi_driver = {
+ };
+ 
+ static const struct pci_device_id dio200_pci_table[] = {
++#ifdef CONFIG_HAS_IOPORT
+ 	{ PCI_VDEVICE(AMPLICON, 0x000b), pci215_model },
+ 	{ PCI_VDEVICE(AMPLICON, 0x000a), pci272_model },
++#endif /* CONFIG_HAS_IOPORT */
+ 	{ PCI_VDEVICE(AMPLICON, 0x0011), pcie236_model },
+ 	{ PCI_VDEVICE(AMPLICON, 0x0012), pcie215_model },
+ 	{ PCI_VDEVICE(AMPLICON, 0x0014), pcie296_model },
 -- 
 2.40.1
 
