@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3E979F3F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7350279F3EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232675AbjIMVoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S232052AbjIMVnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjIMVoS (ORCPT
+        with ESMTP id S229546AbjIMVnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:44:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E9A173A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694641454; x=1726177454;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=w8pYPEU5ySCBd2IkgwPJpd5edhiFfbd4sBCnimZKkvM=;
-  b=X6RQfboZFiQZGm3tB3nNbD4fOynWWtE71fC5L9MLamx74Tj3JNz4BF6o
-   JMKTxOVvkFsiw9uBdGSjlaT9KfIM1U1LNS+WCZY5gYkIznxeN2V3HcbmH
-   aSd4u3wsiPpx7SJFGZ04wPz7uN+DCZnK5yXXNH0lQtCtHTXZ8j0nhuSzq
-   BpYO7f7sJCyoSo66Zk4P1KhQrCncKWeNpRqXFKyB8weqZRm0+ikIQ3Q0o
-   kYpNQ8q7sTDXEdh19v68O7qJrTkWcVjfMm9nJ853UucKwzUFpm7vBzNsK
-   DYxPgghP9hCjCqxpKyl0J1/E9rwfZV3p4Tsttr0DILKWlgz2M2PpKAoOf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="445225563"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="445225563"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 14:44:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="887508194"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="887508194"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2023 14:43:42 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgXeR-0000hb-1x;
-        Wed, 13 Sep 2023 21:44:03 +0000
-Date:   Thu, 14 Sep 2023 05:43:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for
- 'arch_report_meminfo'
-Message-ID: <202309140530.CBISqBas-lkp@intel.com>
+        Wed, 13 Sep 2023 17:43:49 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581761739
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7983b202929so10552839f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694641424; x=1695246224; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
+        b=z9SMGeeCnAahU4w37gRdubNuNIWAlcY0lSpKN9caI91xeuEaFeIImhr607geAvw5uo
+         0M8nGp+hZICMldY3Oczy+oXjbuMKHciPyMxAGjZHSExJPuotCHTCr3Gpl1mO/7Ydj3FV
+         Q7X+kGmbhxgZdHnAyvISD2pHir3ztW0Q/BTESaNrVGYVZE6SZxb+0fLg/s6Tq3odP+6e
+         URNHVdhFaY+G/GOHt6Xn72cHpxHQJodw94mNEA1ozImsQyd/7m5AJu+A0nErEztEK4f9
+         XqQMdssFP62kvlLQ+srZZcSBixJbnMWJd1Z1mojhO6fLs+e/JBC7dCkGi7Y5xJMcA6nt
+         gs3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694641424; x=1695246224;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2uTbHoVjqIh4YniElhtNqUimTSs8A7qRExDkzz0sEF0=;
+        b=ai9cxrC2XOUtWEHsT3x8u7hCUHFdFZ+WiWJlDwYYQq+/zZtrYwfenhH1EsjgDdouao
+         hXoxHAcWmKrhej/TpuzRQiY4S3YIpVgAjFHrETPWicnieW4GtIRuMavDVoN2IW/Zkrjj
+         cIt/RIuviVzAe8w+I1CBivRQpwzQM5LyvQd4TxZSBZWPwpdiFLnOk60EtV1gm0GoQBCh
+         fSuRwc07MBVlgQhqyKwtgaIgCyV+TfX6obZYhDMyJlTaKKRYKzaMGW4cl3UF4BX/g1HJ
+         idr2tutmVW/rmRZmo9m1Erljos0RraeM0KLz51M3zYfyHH22Sr4x/KnAU8l9i/TJvS3K
+         z6wg==
+X-Gm-Message-State: AOJu0YxBU18tBjAuzy3wpG/JeHyGmz6hV6hb+G63B3RB7FiW7oXPJhJG
+        itL9L4ZQIVq3wECaPYh5vsb3Gg==
+X-Google-Smtp-Source: AGHT+IFO/zPVL+GskkRXe3VhmvyBnlW+kHMrQL8DvF+HjBFPQoUGhuvzyAvTppC+0h0D/069z/uhyQ==
+X-Received: by 2002:a05:6e02:1a87:b0:34c:cc37:3064 with SMTP id k7-20020a056e021a8700b0034ccc373064mr4518209ilv.15.1694641424661;
+        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
+Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
+        by smtp.gmail.com with ESMTPSA id e17-20020a056638021100b00431824abeccsm26753jaq.42.2023.09.13.14.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 14:43:44 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 21:43:41 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 2/7] bcachefs: Fix -Wformat in
+ bch2_btree_key_cache_to_text()
+Message-ID: <20230913214341.7qucftdltsljrzpf@google.com>
+References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+ <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230912-bcachefs-warning-fixes-v1-2-a1cc83a38836@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   23f108dc9ed26100b1489f6a9e99088d4064f56b
-commit: ef104443bffa004f631729dfc924f0b84abbd602 procfs: consolidate arch_report_meminfo declaration
-date:   4 months ago
-config: parisc-randconfig-002-20230914 (https://download.01.org/0day-ci/archive/20230914/202309140530.CBISqBas-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140530.CBISqBas-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140530.CBISqBas-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> arch/parisc/kernel/pdt.c:65:6: warning: no previous prototype for 'arch_report_meminfo' [-Wmissing-prototypes]
-      65 | void arch_report_meminfo(struct seq_file *m)
-         |      ^~~~~~~~~~~~~~~~~~~
-
-
-vim +/arch_report_meminfo +65 arch/parisc/kernel/pdt.c
-
-c9c2877d08d9aa Helge Deller 2017-05-11  63  
-c9c2877d08d9aa Helge Deller 2017-05-11  64  /* report PDT entries via /proc/meminfo */
-c9c2877d08d9aa Helge Deller 2017-05-11 @65  void arch_report_meminfo(struct seq_file *m)
-c9c2877d08d9aa Helge Deller 2017-05-11  66  {
-c9c2877d08d9aa Helge Deller 2017-05-11  67  	if (pdt_type == PDT_NONE)
-c9c2877d08d9aa Helge Deller 2017-05-11  68  		return;
-c9c2877d08d9aa Helge Deller 2017-05-11  69  
-c9c2877d08d9aa Helge Deller 2017-05-11  70  	seq_printf(m, "PDT_max_entries: %7lu\n",
-c9c2877d08d9aa Helge Deller 2017-05-11  71  			pdt_status.pdt_size);
-c9c2877d08d9aa Helge Deller 2017-05-11  72  	seq_printf(m, "PDT_cur_entries: %7lu\n",
-c9c2877d08d9aa Helge Deller 2017-05-11  73  			pdt_status.pdt_entries);
-c9c2877d08d9aa Helge Deller 2017-05-11  74  }
-c9c2877d08d9aa Helge Deller 2017-05-11  75  
-
-:::::: The code at line 65 was first introduced by commit
-:::::: c9c2877d08d9aa0ca0a5c227ac795fbb76269300 parisc: Add Page Deallocation Table (PDT) support
-
-:::::: TO: Helge Deller <deller@gmx.de>
-:::::: CC: Helge Deller <deller@gmx.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On Tue, Sep 12, 2023 at 12:15:39PM -0700, Nathan Chancellor wrote:
+> When building bcachefs for 32-bit ARM, there is a compiler warning in
+> bch2_btree_key_cache_to_text() due to use of an incorrect format
+> specifier:
+>
+>   fs/bcachefs/btree_key_cache.c:1060:36: error: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'long' [-Werror,-Wformat]
+>    1060 |         prt_printf(out, "nr_freed:\t%zu",       atomic_long_read(&c->nr_freed));
+>         |                                     ~~~         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>         |                                     %ld
+>   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
+>     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
+>         |                                                               ^~~~~~~~~~~
+>   1 error generated.
+>
+> On 64-bit architectures, size_t is 'unsigned long', so there is no
+> warning when using %zu but on 32-bit architectures, size_t is
+> 'unsigned int'. Use '%lu' to match the other format specifiers used in
+> this function for printing values returned from atomic_long_read().
+>
+> Fixes: 6d799930ce0f ("bcachefs: btree key cache pcpu freedlist")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  fs/bcachefs/btree_key_cache.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/bcachefs/btree_key_cache.c b/fs/bcachefs/btree_key_cache.c
+> index 505e7c365ab7..a74ee6d8a7cf 100644
+> --- a/fs/bcachefs/btree_key_cache.c
+> +++ b/fs/bcachefs/btree_key_cache.c
+> @@ -1053,7 +1053,7 @@ int bch2_fs_btree_key_cache_init(struct btree_key_cache *bc)
+>
+>  void bch2_btree_key_cache_to_text(struct printbuf *out, struct btree_key_cache *c)
+>  {
+> -	prt_printf(out, "nr_freed:\t%zu",	atomic_long_read(&c->nr_freed));
+> +	prt_printf(out, "nr_freed:\t%lu",	atomic_long_read(&c->nr_freed));
+>  	prt_newline(out);
+>  	prt_printf(out, "nr_keys:\t%lu",	atomic_long_read(&c->nr_keys));
+>  	prt_newline(out);
+>
+> --
+> 2.42.0
+>
