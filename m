@@ -2,189 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 763FF79E788
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D97279E78D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:04:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240154AbjIMMDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S240216AbjIMMEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236689AbjIMMDo (ORCPT
+        with ESMTP id S235205AbjIMMEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:03:44 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E418A19AD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:03:40 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7a50574dc0dso2100360241.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694606619; x=1695211419; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gWMUVlPMdZwPxM8OGL1HLsy3K8ryzTavoZi5zJxR92s=;
-        b=UwTfB19Ez7Wtc0/zZ1sQdCylbMVU3BFP6CjulH6rHMbqo+KKCI2yzQae1zxbUxumoV
-         b4+nAQNX2FBa6WFgQD8spC2Oa6ej7tH5Lm2QXzAFg1uzTt2slFWcrRYNO/Pdjt02JSVo
-         KJldha509G+M1ZzUpwIYHcv9QzHQ6hRRfb9n2S6RutgW8hLk5GoT8a3ecVGAHSO2oFAb
-         9Zb498y1OMMhFVxWC7agDa4Zf2z/80pM0ZuKlztCz2j3I0fgiJ7YuNDPckPNN7g0iVxb
-         2kcs4iMD9Wdv+wtIfOkVrjk2UNmcSSck+fcQ0GpBU2UfE2CAlP+mTx7V8EOKIFHs01RB
-         1ELw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694606619; x=1695211419;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gWMUVlPMdZwPxM8OGL1HLsy3K8ryzTavoZi5zJxR92s=;
-        b=oR+lAyvCo5A2iUHWAKwYZNgjvbw9IMAnpt5Y+t/masxi+VHEdSPR0eixUQ0e8jt/k8
-         CQ6NgJwcG+v6Mrcz3qYuqOws5gL4MUk9qmJvLMZ6SnaYjpLOv59EhLD9/zFmMSkRcJJ5
-         JStrzCTXIZksWMi1PoNUOQEo/Xm4mQ8hkFBZO8TEm7iw5OEgG/EFfM38uY0vBpgegeau
-         MIX//tvVezgwNp9MmYE/q7HZzPmNYSuJPUb4OVblkMXM17oBYegFKXqvnDq3VT5L6/sh
-         axSBrdkWWf7VyzC5M4J2T95njls2cfaRkRe92CtgzeP1yWYmKmRSZaVM5NxDjke/aVJb
-         Vn5g==
-X-Gm-Message-State: AOJu0Yy49w1QmyFHnoC7NhNS5DlzbosMUNkfV53NekrTBAXwKq/eJny6
-        OJ7Wfc5khWRmPr0rVAOvIAOoB+53fpzTFcAtzq8I9LGAbEN+tOu+q+appA==
-X-Google-Smtp-Source: AGHT+IEj4asuOgWJLW73zrrxOPXYRDigNysM+h1qglN2GVf3TIz6gqi5aI8VyHhwVdcOkV9H5J4O2iBhR5+KYAXlsc0=
-X-Received: by 2002:a05:6122:1820:b0:48d:3b80:fba9 with SMTP id
- ay32-20020a056122182000b0048d3b80fba9mr2280983vkb.11.1694606619560; Wed, 13
- Sep 2023 05:03:39 -0700 (PDT)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 13 Sep 2023 17:33:28 +0530
-Message-ID: <CA+G9fYtC0iTRSRj8WSw5KMDwrx4Z3Djo89OXXdHjna9r3qy3Kg@mail.gmail.com>
-Subject: kvm: arm64: WARNING: CPU: 3 PID: 1 at arch/arm64/kvm/hyp/pgtable.c:453
- hyp_map_walker+0xa8/0x120
-To:     open list <linux-kernel@vger.kernel.org>,
-        kvmarm@lists.cs.columbia.edu, kvm list <kvm@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Yu Zhao <yuzhao@google.com>, Reiji Watanabe <reijiw@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, rananta@google.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Sep 2023 08:04:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD1419A7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:04:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1098BC433C8;
+        Wed, 13 Sep 2023 12:04:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694606658;
+        bh=UDg0s7wg1AHZ02vnovZRJjJnJM/odDz8x2qPN11Cjt0=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=GBpdFEhnj1S+t8m5Kdtk7+yAUbjGV282+HVn7GHEFcLewWYKIhUVlq6UEBd5R8Gd7
+         1Xc1/FA2QxqzIKzcyx7rCFtn7+v+CEUn38lJsDmDMcaDuwXkTf1cpKDZTafUF4RTY3
+         rIyaaYWcLTMNvBEuZd/2yiMr1qMJ/g83D1Q2jJ7yk0j/YZxUcJ/v/3XIW9SnnjHJaK
+         cPT5FLryZM/KVLy2yCOGGGcKzR8TsRaLlSJDvFHwkbYnJHfyl9zcKzngxJUnM8Etn/
+         G+jZGqBoa/9VtKS0VmVrNOviwMQWK/sNRDkpJlnqY0PP1KxRLm8evvecG+K6cOMJ1g
+         wTST/wBj5NswA==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id EE06D27C005C;
+        Wed, 13 Sep 2023 08:04:16 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 13 Sep 2023 08:04:16 -0400
+X-ME-Sender: <xms:QKUBZVaz02byhFggCINCoQCgo52Ksr-X-8t8qdjtKDgwxmewKgJ-pQ>
+    <xme:QKUBZca7gCrDgPB3UFu7qnGePGUmNcIYogXAacu-_Wr_VKIXLDUcEL0lvcW5GUQug
+    PBPSVUd3_9BoJXZVx4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
+    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
+    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
+    guvg
+X-ME-Proxy: <xmx:QKUBZX8vbIe4PQqiKrzuY0G-LHFu9x-6AMK6ydgL1dpvUCrmA0ioGg>
+    <xmx:QKUBZTq_swv-wly34_DOtTrmk-7Gr5P7SzBnFZ3GRXTFvmhvMBR8Ew>
+    <xmx:QKUBZQpMEkufZ1fqr5S3Io1l0BVKFnbFzDczAFVaywCYnuP2yTCK7g>
+    <xmx:QKUBZXQdGo26set1UF_m9chpK7DbG0dwrv77yG1SopGHI7sCokc_tQ>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 79DCEB60089; Wed, 13 Sep 2023 08:04:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
+Mime-Version: 1.0
+Message-Id: <51a9af18-a5e4-4cb1-9f95-491bf73d35f1@app.fastmail.com>
+In-Reply-To: <20230913112032.90618-6-abbotti@mev.co.uk>
+References: <20230913112032.90618-1-abbotti@mev.co.uk>
+ <20230913112032.90618-6-abbotti@mev.co.uk>
+Date:   Wed, 13 Sep 2023 14:03:55 +0200
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Ian Abbott" <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
+Cc:     "Niklas Schnelle" <schnelle@linux.ibm.com>
+Subject: Re: [PATCH 05/13] comedi: 8255_pci: Conditionally remove devices that use port
+ I/O
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following kernel warning noticed on arm64 Raspberry Pi 4 Model B and
-Juno-r2 devices while booting the mainline 6.6.0-rc1 kernel.
+On Wed, Sep 13, 2023, at 13:20, Ian Abbott wrote:
+> In a future patch, the port I/O functions (`inb()`, `outb()`, and
+> friends will only be declared in the `HAS_IOPORT` configuration option
+> is enabled.
+>
+> The 8255_pci module supports PCI digital I/O devices from various
+> manufacturers that consist of one or more 8255 Programmable Peripheral
+> Interface chips (or equivalent hardware) to provide their digital I/O
+> ports.  Some of the devices use port I/O and some only use memory-mapped
+> I/O.
+>
+> Conditionally compile in support for the devices that need port I/O if
+> and only if the `CONFIG_HAS_PORTIO` macro is defined.  Change
+> `pci_8255_auto_attach()` to return an error if the device actually
+> requires port I/O (based on the PCI BAR resource flags) but the
+> `HAS_IOPORT` configuration is not enabled.
+>
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+> Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+> ---
+>  drivers/comedi/drivers/8255_pci.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/comedi/drivers/8255_pci.c 
+> b/drivers/comedi/drivers/8255_pci.c
+> index 0fec048e3a53..4c4c0ef1db05 100644
+> --- a/drivers/comedi/drivers/8255_pci.c
+> +++ b/drivers/comedi/drivers/8255_pci.c
+> @@ -57,6 +57,7 @@
+>  #include <linux/comedi/comedi_8255.h>
+> 
+>  enum pci_8255_boardid {
+> +#ifdef CONFIG_HAS_PORTIO
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+I think this is a typo: HAS_IOPORT vs HAS_PORTIO?
 
-Boot log:
----------
-Starting kernel ...
-
-[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd083]
-[    0.000000] Linux version 6.6.0-rc1 (tuxmake@tuxmake)
-(aarch64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0, GNU ld (GNU Binutils
-for Debian) 2.41) #1 SMP PREEMPT @1694546723
-[    0.000000] KASLR disabled due to lack of seed
-[    0.000000] Machine model: Raspberry Pi 4 Model B
-...
-[    0.181598] kvm [1]: IPA Size Limit: 44 bits
-[    0.184681] ------------[ cut here ]------------
-[    0.184689] WARNING: CPU: 3 PID: 1 at
-arch/arm64/kvm/hyp/pgtable.c:453 hyp_map_walker+0xa8/0x120
-[    0.184726] Modules linked in:
-[    0.184740] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1 #1
-[    0.184753] Hardware name: Raspberry Pi 4 Model B (DT)
-[    0.184759] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    0.184772] pc : hyp_map_walker+0xa8/0x120
-[    0.184787] lr : hyp_map_walker+0x3c/0x120
-[    0.184800] sp : ffff80008352b850
-[    0.184806] x29: ffff80008352b850 x28: ffff8000823f4008 x27: 0000000000000003
-[    0.184829] x26: ffff000040c46000 x25: ffff000040c46000 x24: 0000000000000004
-[    0.184849] x23: fffffffffffff000 x22: ffff80008352bbc0 x21: ffff800082ec1b20
-[    0.184868] x20: 00400000ff844753 x19: ffff80008352b8e8 x18: ffffffffffffffff
-[    0.184888] x17: ffff80008327c990 x16: 0000000083346a16 x15: 0000000000000000
-[    0.184907] x14: 0000000000000000 x13: 0000000000000000 x12: ffff80008389ffff
-[    0.184927] x11: 0000000000000000 x10: ffff0000fbfff010 x9 : ffff80008008cefc
-[    0.184946] x8 : ffff80008352bad8 x7 : ffff80008352bbc0 x6 : ffff80008352bbc0
-[    0.184964] x5 : 0000000000000000 x4 : 0000000000002000 x3 : 0000ffffffffffff
-[    0.184983] x2 : 00400000feef1090 x1 : 0000000000000003 x0 : 00400000ff844750
-[    0.185004] Call trace:
-[    0.185009]  hyp_map_walker+0xa8/0x120
-[    0.185024]  __kvm_pgtable_walk+0x2e0/0x320
-[    0.185038]  __kvm_pgtable_walk+0x100/0x320
-[    0.185052]  __kvm_pgtable_walk+0x100/0x320
-[    0.185065]  __kvm_pgtable_walk+0x100/0x320
-[    0.185077]  kvm_pgtable_walk+0xd0/0x170
-[    0.185091]  kvm_pgtable_hyp_map+0x94/0x120
-[    0.185105]  __create_hyp_mappings+0x68/0xc0
-[    0.185119]  __create_hyp_private_mapping+0xe4/0x140
-[    0.185131]  create_hyp_io_mappings+0x94/0x120
-[    0.185143]  vgic_v2_probe+0xc4/0x218
-[    0.185154]  kvm_vgic_hyp_init+0xcc/0x200
-[    0.185163]  kvm_arm_init+0x6c4/0x1068
-[    0.185181]  do_one_initcall+0x5c/0x2b8
-[    0.185192]  kernel_init_freeable+0x1fc/0x3f8
-[    0.185208]  kernel_init+0x2c/0x1f8
-[    0.185222]  ret_from_fork+0x10/0x20
-[    0.185235] ---[ end trace 0000000000000000 ]---
-[    0.185248] ------------[ cut here ]------------
-[    0.185252] WARNING: CPU: 3 PID: 1 at
-arch/arm64/kvm/hyp/pgtable.c:470 hyp_map_walker+0x100/0x120
-[    0.185272] Modules linked in:
-[    0.185280] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G        W
-   6.6.0-rc1 #1
-[    0.185290] Hardware name: Raspberry Pi 4 Model B (DT)
-[    0.185296] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[    0.185308] pc : hyp_map_walker+0x100/0x120
-[    0.185321] lr : hyp_map_walker+0x3c/0x120
-[    0.185334] sp : ffff80008352b850
-[    0.185339] x29: ffff80008352b850 x28: ffff8000823f4008 x27: 0000000000000003
-[    0.185358] x26: ffff000040c46000 x25: ffff000040c46000 x24: 0000000000000004
-[    0.185377] x23: fffffffffffff000 x22: ffff80008352bbc0 x21: ffff800082ec1b20
-[    0.185396] x20: 00400000ff844753 x19: ffff80008352b8e8 x18: ffffffffffffffff
-[    0.185415] x17: ffff80008327c990 x16: 0000000083346a16 x15: 0000000000000000
-[    0.185435] x14: 0000000000000000 x13: 0000000000000000 x12: ffff80008389ffff
-[    0.185454] x11: 0000000000000000 x10: ffff0000fbfff010 x9 : ffff80008008cefc
-[    0.185472] x8 : ffff80008352bad8 x7 : ffff80008352bbc0 x6 : ffff80008352bbc0
-[    0.185491] x5 : 0000000000000000 x4 : 0000000000002000 x3 : 0000ffffffffffff
-[    0.185510] x2 : 00400000feef1090 x1 : 0000000000000003 x0 : 00400000ff844750
-[    0.185529] Call trace:
-[    0.185534]  hyp_map_walker+0x100/0x120
-[    0.185547]  __kvm_pgtable_walk+0x2e0/0x320
-[    0.185561]  __kvm_pgtable_walk+0x100/0x320
-[    0.185574]  __kvm_pgtable_walk+0x100/0x320
-[    0.185587]  __kvm_pgtable_walk+0x100/0x320
-[    0.185600]  kvm_pgtable_walk+0xd0/0x170
-[    0.185614]  kvm_pgtable_hyp_map+0x94/0x120
-[    0.185627]  __create_hyp_mappings+0x68/0xc0
-[    0.185639]  __create_hyp_private_mapping+0xe4/0x140
-[    0.185650]  create_hyp_io_mappings+0x94/0x120
-[    0.185662]  vgic_v2_probe+0xc4/0x218
-[    0.185672]  kvm_vgic_hyp_init+0xcc/0x200
-[    0.185681]  kvm_arm_init+0x6c4/0x1068
-[    0.185696]  do_one_initcall+0x5c/0x2b8
-[    0.185707]  kernel_init_freeable+0x1fc/0x3f8
-[    0.185722]  kernel_init+0x2c/0x1f8
-[    0.185733]  ret_from_fork+0x10/0x20
-[    0.185745] ---[ end trace 0000000000000000 ]---
-[    0.185760] kvm [1]: Cannot map VCTRL into hyp
-
-
-Links,
- - https://lkft.validation.linaro.org/scheduler/job/6780041#L587
- - https://qa-reports.linaro.org/lkft/linux-mainline-master-sanity/build/v6.6-rc1-33-g3669558bdf35/testrun/19913903/suite/log-parser-boot/test/check-kernel-exception/details/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VJFncJcwoozdfQkO3ZUjZq4KTd/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2VJFncJcwoozdfQkO3ZUjZq4KTd/config
-
-metadata:
-  git_ref: master
-  git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
-  git_sha: 3669558bdf354cd352be955ef2764cde6a9bf5ec
-  git_describe: v6.6-rc1-33-g3669558bdf35
-  kernel_version: 6.6.0-rc1
-  kernel-config:
-    https://storage.tuxsuite.com/public/linaro/lkft/builds/2VJFncJcwoozdfQkO3ZUjZq4KTd/config
-  artifact-location:
-    https://storage.tuxsuite.com/public/linaro/lkft/builds/2VJFncJcwoozdfQkO3ZUjZq4KTd/
-  toolchain: gcc-13
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+     Arnd
