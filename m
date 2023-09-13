@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3F979E0EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536A579E0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237775AbjIMHg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:36:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        id S238575AbjIMHh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237103AbjIMHgz (ORCPT
+        with ESMTP id S233816AbjIMHhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:36:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855341727;
-        Wed, 13 Sep 2023 00:36:51 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 09:36:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1694590604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bmLhWNMdCNCt+b18kzcGWD6nsvJhmYroDlitMnMerXg=;
-        b=QMg10drs1H8OelN7dqFkjCJxlKaJAlQwQpfA6uEi4MGFXPvLBD7mwFyDwO3lG9lEXbZ/Dw
-        Nds4esAvx/+95nLXdjzwSHe8pai2IVppi5s0VVZrNiHoGzZmPFNVp3W8MFS/UfnNS/UsNg
-        LUQpImu0g9P+zSlFral7tFM0aTgT+4H2VHLbzWs0Rd7dCKyshzBAP0PgnbQhk/PJVe3GU4
-        EmxyOs/4YTK+kZzrv/37n+y7FGBmMbz3ZYDa8istupmX6MsnZ3GrmA2r+uauHt/2lWw+iu
-        GyFlq3g0C93MA/ThHXbkywVpOeHxvDHPlxLuJ8FShhepBO1etqiZ5i7WE6BNtA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1694590604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bmLhWNMdCNCt+b18kzcGWD6nsvJhmYroDlitMnMerXg=;
-        b=dEnFiMN6OlOkovlszaeFzM4G+MzAYPsRwjD8CXt/e/QS75MAxuNi1REYD9KS392DyJvvIQ
-        SBwYTWUeGQ1ci7BA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.6-rc1-rt1
-Message-ID: <20230913073640.aAHOYCgP@linutronix.de>
+        Wed, 13 Sep 2023 03:37:53 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8113C1729;
+        Wed, 13 Sep 2023 00:37:49 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf55a81eeaso45603615ad.0;
+        Wed, 13 Sep 2023 00:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694590669; x=1695195469; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jmJN9dyFxG0ZDa5DUc653tNGEVo7z94noVDJ6MnTyRc=;
+        b=R3FoEAXc7B0UfN97a0G1ynfJstGAcrgP4KTjDD6WABCKpDm+y2jx/bIcg+D5iykYNU
+         F1v1Gu/zXMAmrO5gtXbvQNzjHJeZ5+JFKYwweqZFZH0htn0hn28uS6aaBTHD3qAWlepN
+         8ikFG6QVn8x0RmlV3Q8QUoo0U1XqzRIZ0dcc1kdadJiYeCVTy4QTlzGHeRaKH1XlEhY7
+         kf3KNRLNyHlxjS7Dr84SAUvwiDA7n7sfRsMQLABIHeHTiJFAJeQkXD/OCtDpGP9JoFqb
+         n4fzEWJ/XWhA/MyShq9PLqC3jPFeS0Z0tg5faFeHyDP4Ql2nzBYffxgrrdHHA8iN52ap
+         AZKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694590669; x=1695195469;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jmJN9dyFxG0ZDa5DUc653tNGEVo7z94noVDJ6MnTyRc=;
+        b=pabAndoN0J2n6bQ1+iCeK6qYtMnGaGk6tebsIqo8PYiBwLnsZPROe6Qe/87n4k23yN
+         Yo4ypWgE1KTDexcsIitpvmkvsfAOAe9VTYRTsm0iz9xiRSNtzOWscNa5EnjJDTd3xYI8
+         mPYwSNTcuYDXbCi47e07WOiw6tfBwOejIgepVXO3wlyn/mXCkORE3ltSoYiUjeNcKF6l
+         VqLkcwn+gYkiW0yKwzwSS6i3Dmpw0WvAbgO82mSR/Djn+aXRNMnDrjYNcs8+dSTr+LgW
+         jeVTUWV+d2lvgHnPjqfJWTj62xjFq2I9hFIQAijVeI4nx358OVhJMCUu4A6CKIRFQBi2
+         /YqA==
+X-Gm-Message-State: AOJu0Yw+ZWwoSdYjh9qLiapzm6++dhfFFtOM521y6XwkM2J17F0fq9kC
+        PAgpgYt2ZM+VYYqWO1z4vRk=
+X-Google-Smtp-Source: AGHT+IG8v5u1glfIsOlMbXwpIzlNTqHACo4fi2tLfh/TxG/xGwlW2tjOWqfB5SssmaJC5IzWRPLeyg==
+X-Received: by 2002:a17:902:efd3:b0:1bf:148b:58ff with SMTP id ja19-20020a170902efd300b001bf148b58ffmr1696100plb.69.1694590668864;
+        Wed, 13 Sep 2023 00:37:48 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id a15-20020a170902eccf00b001bf044dc1a6sm9757434plh.39.2023.09.13.00.37.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 00:37:48 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 688EF821F321; Wed, 13 Sep 2023 14:37:46 +0700 (WIB)
+Date:   Wed, 13 Sep 2023 14:37:46 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Teng Wang" <wangteng13@nudt.edu.cn>, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, edumazet@google.com,
+        netdev@vger.kernel.org
+Subject: Re: Bug: rcu detected stall in sys_nanosleep
+Message-ID: <ZQFmyp-cK_ensG_u@debian.me>
+References: <13067197.3b9a.18a8d519137.Coremail.wangteng13@nudt.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w0Zxr0zYupWMykcF"
 Content-Disposition: inline
+In-Reply-To: <13067197.3b9a.18a8d519137.Coremail.wangteng13@nudt.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
 
-I'm pleased to announce the v6.6-rc1-rt1 patch set. 
+--w0Zxr0zYupWMykcF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changes since v6.5.2-rt8:
+On Wed, Sep 13, 2023 at 02:54:07PM +0800, Teng Wang wrote:
+> Dear All,
+> This bug was found in linux Kernel v6.2.10
+>=20
+> Syzkaller hit 'INFO: rcu detected stall in sys_nanosleep' bug.
 
-  - Update to v6.6-rc1.
+v6.2.y has been EOLed, please reproduce with current mainline (v6.6-rc1).
 
-Known issues
-     None
+Thanks.
 
-You can get this release via the git tree at:
+--=20
+An old man doll... just what I always wanted! - Clara
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rc1-rt1
+--w0Zxr0zYupWMykcF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The RT patch against v6.6-rc1 can be found here:
+-----BEGIN PGP SIGNATURE-----
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rc1-rt1.patch.xz
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQFmyQAKCRD2uYlJVVFO
+oxxNAP9UwsejSNGrmCcyQae/pmO3CSLTtZiG0xFJEQJPUFd3YwD/TH1bP+L3ieT6
+TIgoi5A6pzQUqQ8ipI+J5prYDl2xGAw=
+=j/Yh
+-----END PGP SIGNATURE-----
 
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rc1-rt1.tar.xz
-
-Sebastian
+--w0Zxr0zYupWMykcF--
