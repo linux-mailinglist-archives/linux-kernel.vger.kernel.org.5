@@ -2,232 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1524B79EC65
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D3B79EC8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241336AbjIMPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36806 "EHLO
+        id S235726AbjIMPW3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 11:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241683AbjIMPRM (ORCPT
+        with ESMTP id S230188AbjIMPW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:17:12 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFF6C6;
-        Wed, 13 Sep 2023 08:16:53 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6D5061F461;
-        Wed, 13 Sep 2023 15:16:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694618212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BFK28ZsfwA0eG1jJ0A5JLDN+cBxNTTlKg+5tpbEt3rY=;
-        b=a1DfTFLdh8NhAmkegwqPo8ale2psz7WYh+NMBgUtIv9m/Zc3BrfsT8hN0KYIy6O2iuFEjb
-        xoUjVUgd2jNwvz70ZeBuyJCj2stgv70/rnncNJccGCqeK+OAGWdftLdPFoPr9FBLIT8Vx+
-        beFObFcfca6EWBwPa1+9DUcbxqduQ7Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694618212;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BFK28ZsfwA0eG1jJ0A5JLDN+cBxNTTlKg+5tpbEt3rY=;
-        b=XjWQa8kMR7udhZ/0uLHF3Njba+OOboiq3COz0MVR9+BrfsgQr8mbnNu66b7+PC8/QhMziN
-        9ufKqcB5GGTwovDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6037813440;
-        Wed, 13 Sep 2023 15:16:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZMh1F2TSAWVzegAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 13 Sep 2023 15:16:52 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id DE3E0A07C2; Wed, 13 Sep 2023 17:16:51 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 17:16:51 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chunhai Guo <guochunhai@vivo.com>
-Cc:     jack@suse.cz, chao@kernel.org, jaegeuk@kernel.org,
-        brauner@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs-writeback: writeback_sb_inodes: Do not increase
- 'total_wrote' when nothing is written
-Message-ID: <20230913151651.gzmyjvqwan3euhwi@quack3>
-References: <20230913131501.478516-1-guochunhai@vivo.com>
+        Wed, 13 Sep 2023 11:22:27 -0400
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDED7CE;
+        Wed, 13 Sep 2023 08:22:23 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-770ef353b8fso326351585a.0;
+        Wed, 13 Sep 2023 08:22:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694618543; x=1695223343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7YO1tPkDOEwQyc/Dv+HaOfcjogh4Es5EpVUGisTZOW4=;
+        b=sHTB26XNZ8teze6yZ9Ixw9kqdAyYVWnLlDSTGSBflM3o/T8d/XnR0ltTMjN15mwhMe
+         vAch7EnHtODeg9nb4fnZvSlCSxj0nMzfH0NA6iQn2K/AKhZHCUpd1uu4/cBDRMt4/Hx2
+         zw4Rp7dEaHm5T8mKrygsErZOCXUBcHeq0m/IHBMUuapBhjadQoptgQYqi3Se4dpyxn1D
+         ZkN7TiLaUjfZCH9dJUpSCuT0K33qCgrcPNjE1suEoU2X6PpWnp0VAUfraAy9RcfsQL/h
+         5eHFyugAlBv5blCIvJp9geqtNvPX5Usbjh8YdTWKlDqYvTqCfqS6Yc0aP3DE74SNi0u1
+         JIpQ==
+X-Gm-Message-State: AOJu0YwYWS6hYq5QxE0zM8N8KayeOi75z2kpba2NetgULvXQ8O36SDxe
+        QUiFn5RQiBCW5EYYAhW9sPfNcX2Pe5D5KQ==
+X-Google-Smtp-Source: AGHT+IEWLMHZWuUElViNkfPsqVJNkVnRs/obn/xLwb7A1rORq0QfqkXdEdSkStvIeU9CQexjOYe1kg==
+X-Received: by 2002:a0c:e147:0:b0:64a:131f:b214 with SMTP id c7-20020a0ce147000000b0064a131fb214mr2907571qvl.12.1694618542767;
+        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
+        by smtp.gmail.com with ESMTPSA id a17-20020a05620a125100b0076f039d87c6sm3966650qkl.82.2023.09.13.08.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-76dc77fd01fso436119885a.3;
+        Wed, 13 Sep 2023 08:22:22 -0700 (PDT)
+X-Received: by 2002:a25:ad08:0:b0:d7f:8e1e:a95f with SMTP id
+ y8-20020a25ad08000000b00d7f8e1ea95fmr2686664ybi.6.1694618224901; Wed, 13 Sep
+ 2023 08:17:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913131501.478516-1-guochunhai@vivo.com>
+References: <20230912045157.177966-1-claudiu.beznea.uj@bp.renesas.com>
+ <20230912045157.177966-36-claudiu.beznea.uj@bp.renesas.com>
+ <20230912161635.GA877089-robh@kernel.org> <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
+In-Reply-To: <56cf08f2-5d8e-6098-6218-081d8f620abe@tuxon.dev>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Sep 2023 17:16:52 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWntLTk9ZmAF1voE-tdB+4vVzE804h=qsfaoN-8_6RN_Q@mail.gmail.com>
+Message-ID: <CAMuHMdWntLTk9ZmAF1voE-tdB+4vVzE804h=qsfaoN-8_6RN_Q@mail.gmail.com>
+Subject: Re: [PATCH 35/37] dt-bindings: arm: renesas: document SMARC
+ Carrier-II EVK
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc:     Rob Herring <robh@kernel.org>, mturquette@baylibre.com,
+        sboyd@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, ulf.hansson@linaro.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, quic_bjorande@quicinc.com,
+        arnd@arndb.de, konrad.dybcio@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, rafal@milecki.pl,
+        wsa+renesas@sang-engineering.com,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-09-23 07:15:01, Chunhai Guo wrote:
-> > On Wed 13-09-23 10:42:21, Christian Brauner wrote:
-> > > [+Cc Jan]
-> > 
-> > Thanks!
-> > 
-> > > On Tue, Sep 12, 2023 at 08:20:43AM -0600, Chunhai Guo wrote:
-> > > > I am encountering a deadlock issue as shown below. There is a commit 
-> > > > 344150999b7f ("f2fs: fix to avoid potential deadlock") can fix this
-> > > > issue.
-> > > > However, from log analysis, it appears that this is more likely a 
-> > > > fake progress issue similar to commit 68f4c6eba70d ("fs-writeback:
-> > > > writeback_sb_inodes: Recalculate 'wrote' according skipped pages"). 
-> > > > In each writeback iteration, nothing is written, while 
-> > > > writeback_sb_inodes() increases 'total_wrote' each time, causing an 
-> > > > infinite loop. This patch fixes this issue by not increasing
-> > > > 'total_wrote' when nothing is written.
-> > > >
-> > > >     wb_writeback        fsync (inode-Y)
-> > > > blk_start_plug(&plug)
-> > > > for (;;) {
-> > > >   iter i-1: some reqs with page-X added into plug->mq_list // f2fs node
-> > > >   page-X with PG_writeback
-> > > >                         filemap_fdatawrite
-> > > >                           __filemap_fdatawrite_range // write inode-Y
-> > > >                           with sync_mode WB_SYNC_ALL
-> > > >                            do_writepages
-> > > >                             f2fs_write_data_pages
-> > > >                              __f2fs_write_data_pages //
-> > > >                              wb_sync_req[DATA]++ for WB_SYNC_ALL
-> > > >                               f2fs_write_cache_pages
-> > > >                                f2fs_write_single_data_page
-> > > >                                 f2fs_do_write_data_page
-> > > >                                  f2fs_outplace_write_data
-> > > >                                   f2fs_update_data_blkaddr
-> > > >                                    f2fs_wait_on_page_writeback
-> > > >                                      wait_on_page_writeback // wait for
-> > > >                                      f2fs node page-X
-> > > >   iter i:
-> > > >     progress = __writeback_inodes_wb(wb, work)
-> > > >     . writeback_sb_inodes
-> > > >     .   __writeback_single_inode // write inode-Y with sync_mode
-> > > >     WB_SYNC_NONE
-> > > >     .   . do_writepages
-> > > >     .   .   f2fs_write_data_pages
-> > > >     .   .   .  __f2fs_write_data_pages // skip writepages due to
-> > > >     (wb_sync_req[DATA]>0)
-> > > >     .   .   .   wbc->pages_skipped += get_dirty_pages(inode) //
-> > > >     wbc->pages_skipped = 1
-> > > >     .   if (!(inode->i_state & I_DIRTY_ALL)) // i_state = I_SYNC |
-> > > >     I_SYNC_QUEUED
-> > > >     .    total_wrote++;  // total_wrote = 1
-> > > >     .   requeue_inode // requeue inode-Y to wb->b_dirty queue due to
-> > > >     non-zero pages_skipped
-> > > >     if (progress) // progress = 1
-> > > >       continue;
-> > > >   iter i+1:
-> > > >       queue_io
-> > > >       // similar process with iter i, infinite for-loop !
-> > > > }
-> > > > blk_finish_plug(&plug)   // flush plug won't be called
-> > > >
-> > > > Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
-> > 
-> > Thanks for the patch but did you test this patch fixed your deadlock?
-> > Because the patch seems like a noop to me. Look:
-> 
-> Yes. I have tested this patch and it indeed fixed this deadlock issue, too.
+Hi Claudiu,
 
-OK, thanks for letting me know!
+On Wed, Sep 13, 2023 at 7:32 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
+> On 12.09.2023 19:16, Rob Herring wrote:
+> > On Tue, Sep 12, 2023 at 07:51:55AM +0300, Claudiu wrote:
+> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>
+> >> Document Renesas SMARC Carrier-II EVK board which is based on RZ/G3S
+> >> (R9A08G045) SoC. The SMARC Carrier-II EVK consists of RZ/G3S SoM module and
+> >> SMARC Carrier-II carrier board, the SoM module sits on top of carrier
+> >> board.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-> > > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c index 
-> > > > 969ce991b0b0..54cdee906be9 100644
-> > > > --- a/fs/fs-writeback.c
-> > > > +++ b/fs/fs-writeback.c
-> > > > @@ -1820,6 +1820,7 @@ static long writeback_sb_inodes(struct
-> > > > super_block *sb,
-> > > >             struct inode *inode = wb_inode(wb->b_io.prev);
-> > > >             struct bdi_writeback *tmp_wb;
-> > > >             long wrote;
-> > > > +           bool is_dirty_before;
-> > > >
-> > > >             if (inode->i_sb != sb) {
-> > > >                     if (work->sb) {
-> > > > @@ -1881,6 +1882,7 @@ static long writeback_sb_inodes(struct
-> > > > super_block *sb,
-> > > >                     continue;
-> > > >             }
-> > > >             inode->i_state |= I_SYNC;
-> > > > +           is_dirty_before = inode->i_state & I_DIRTY_ALL;
-> > 
-> > is_dirty_before is going to be set if there's anything dirty - inode, page,
-> > timestamp. So it can be unset only if there are no dirty pages, in which
-> > case there are no pages that can be skipped during page writeback, which
-> > means that requeue_inode() will go and remove inode from b_io/b_dirty lists
-> > and it will not participate in writeback anymore.
-> > 
-> > So I don't see how this patch can be helping anything... Please correct me
-> > if I'm missing anything.
-> >                                                                 Honza
-> 
-> From the dump info, there are only two pages as shown below. One is updated
-> and another is under writeback. Maybe f2fs counts the writeback page as a
-> dirty one, so get_dirty_pages() got one. As you said, maybe this is
-> unreasonable.
-> 
-> Jaegeuk & Chao, what do you think of this?
-> 
-> 
-> crash_32> files -p 0xE5A44678
->  INODE    NRPAGES
-> e5a44678        2
-> 
->   PAGE    PHYSICAL   MAPPING    INDEX CNT FLAGS
-> e8d0e338  641de000  e5a44810         0  5 a095 locked,waiters,uptodate,lru,private,writeback
-> e8ad59a0  54528000  e5a44810         1  2 2036 referenced,uptodate,lru,active,private
+Thanks for your patch!
 
-Indeed, incrementing pages_skipped when there's no dirty page is a bit odd.
-That being said we could also harden requeue_inode() - in particular we
-could do there:
+> >> --- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+> >> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+> >> @@ -476,6 +476,8 @@ properties:
+> >>
+> >>        - description: RZ/G3S (R9A08G045)
+> >>          items:
+> >> +          - enum:
+> >> +              - renesas,smarc2-evk # SMARC Carrier-II EVK
+> >
+> > You just changed the existing binding...
+> >
+> >>            - enum:
+> >>                - renesas,r9a08g045s33 # PCIe support
+> >
+> > This is the SoM module?
+>
+> No, this is a SoC variant which supports PCIe.
 
-	if (wbc->pages_skipped) {
-		/*
-		 * Writeback is not making progress due to locked buffers.
-		 * Skip this inode for now. Although having skipped pages
-		 * is odd for clean inodes, it can happen for some
-		 * filesystems so handle that gracefully.
-		 */
-		if (inode->i_state & I_DIRTY_ALL)
-			redirty_tail_locked(inode, wb);
-		else
-			inode_cgwb_move_to_attached(inode, wb);
-	}
+Ideally, we need a compatible value for the SoM as well, as the SoM
+can be used stand-alone, or plugged in a different carrier board.
 
-Does this fix your problem as well?
+For iWave Systems RZ/G1E SODIMM, we have that.
+For the existing RZ/G2L variants, we forgot, but it can still be added...
 
-								Honza
-> 
-> Thanks,
-> 
-> > 
-> > 
-> > > >             wbc_attach_and_unlock_inode(&wbc, inode);
-> > > >
-> > > >             write_chunk = writeback_chunk_size(wb, work); @@ -1918,7 
-> > > > +1920,7 @@ static long writeback_sb_inodes(struct super_block *sb,
-> > > >              */
-> > > >             tmp_wb = inode_to_wb_and_lock_list(inode);
-> > > >             spin_lock(&inode->i_lock);
-> > > > -           if (!(inode->i_state & I_DIRTY_ALL))
-> > > > +           if (!(inode->i_state & I_DIRTY_ALL) && is_dirty_before)
-> > > >                     total_wrote++;
-> > > >             requeue_inode(inode, tmp_wb, &wbc);
-> > > >             inode_sync_complete(inode);
-> > > > --
-> > > > 2.25.1
-> > > >
-> > --
-> > Jan Kara <jack@suse.com>
-> > SUSE Labs, CR
-> 
+>
+> > You either need to squash this change or add
+> > another case with 3 entries and maintain the 2 entry case. (there's no
+> > way to express any entry at the beginning or middle can be optional)
+> >
+> >>            - const: renesas,r9a08g045
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
