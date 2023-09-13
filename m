@@ -2,1012 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F4179ED9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B108C79EDA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbjIMPsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
+        id S229956AbjIMPtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjIMPsl (ORCPT
+        with ESMTP id S229655AbjIMPtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:48:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2D1C1;
-        Wed, 13 Sep 2023 08:48:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F0BAC433C7;
-        Wed, 13 Sep 2023 15:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694620116;
-        bh=KS6XvetQdTJTSeReb2FUympaLkn0D94njfBOI8wXPMQ=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=t6nl/AtCzoOjT0V6YsBN23z8SyPHmjB2gZXdnk6jkLrNrGa8c3c4q+eTh9N40Kf7v
-         s9m3QK1fX/cKq//ZcBpyEUvRCYggb7ChYRFZhfpeu/rSzhDw1oFVCbj9drT6R89UMd
-         1FVcDf2D6EHcK7z7lJ1sn7YcXeEkzn/CCqjEheVD4Zrk0xQawUZ0nZGVZoK4kxlCtL
-         P3CaD1PHX5i/e/NNO1ROsHYZxprQfkfm7x9pfPM9rfugmHBTn34BYmP30ZyiEwRzKe
-         66ZaUkIK2snmec9RdjQT0l/F41BQwzkC5LZcg3dCNdoIXB2PrwggZ/XmtShV1uZYkR
-         BaBgRRZOboWhQ==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 13 Sep 2023 18:48:31 +0300
-Message-Id: <CVHWOZS4OGWP.1ZFY0YLJHPHXO@suppilovahvero>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v4 16/18] x86/sgx: Limit process EPC usage with misc
- cgroup controller
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-X-Mailer: aerc 0.14.0
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-17-haitao.huang@linux.intel.com>
-In-Reply-To: <20230913040635.28815-17-haitao.huang@linux.intel.com>
+        Wed, 13 Sep 2023 11:49:08 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79D9CE;
+        Wed, 13 Sep 2023 08:49:04 -0700 (PDT)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38DD3ZJD006426;
+        Wed, 13 Sep 2023 11:48:44 -0400
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3t2y8f5b7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 11:48:43 -0400 (EDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cJnlMwvG5stofTwU8/VoNaRb5ddHQHS+gu/SwSYNaNat1CIhmGZNLHPDgRJuUmGj3Fb0OM8fhgethQkHVjZ0dktv8hBfnGFsM8slvFMP94MtSi795eO6oJ3DxUvzjwbIyj33dQdbe6zwcY7NMNM0gPNa1pvNzNiLZh23dGG+eoPfEWwAjYJ8f07WEaqW7ihf4/brXiQiqQKWT0CmqnWZuYcPtDuWw/WHy1ecWubRp233xL7sBNS1TVQCxnBNZ8VFRpVg6D5jC2kr42nB5XDFA254pXCq4P/drHzrItzammaO8PajkHkM7Zgr4JTANNzMFvwXEri+KZxv8ns3hJg0YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t7Hw2f/pe3o/VHrPPrrrlek9IUbFe6uWPjE0W1pcX+0=;
+ b=OfEVLdP2n0JT1WEa2m3YwzxhzoOD8HnyzT64jbyDrYbOxytLK3Ld0U5S2jKf4QVik0ziUnoZZ0qWKwu6NBc4Z0jwt0o2RHdJEKxA08FGXLfLgPtzV8GE6bbhlr41Z0aYHcBMZWFlenGeQpgUa5W215m8KcNKfthCl0WkCfZUSYQ3luuEh+BTaLgR7BskmjwmzUiZ5oDLlb7KygstGNhGL8dd0ttjlX6kUm9Ip39FjInCEhHz4usMb6mSx1E4EJl8bXsPEkUGNTpndQuMs/W5hWKzRgDXYykeaKFFC8iM6nPWZ3MoxmQVhxWVVuSjVDW1oq25WEh50U5xNVe2C8KQFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t7Hw2f/pe3o/VHrPPrrrlek9IUbFe6uWPjE0W1pcX+0=;
+ b=b4HylbrmSP6zjBZojnuZl4bMkaZUKvNi5sqPqzCGGYa78kBP7zJzVUhyg35IpvZVtr4Y1KHPZa7oGmgKP1QDWgLtuAFkyq5bpGlR2pzFJwkKOtJ98DXKWvz6d9gDzzbVZ651Yvblvca7A5N6e2P/TwPYjOBnjjbmVl0DXQ8v9Hs=
+Received: from PH0PR03MB6771.namprd03.prod.outlook.com (2603:10b6:510:122::17)
+ by PH7PR03MB7136.namprd03.prod.outlook.com (2603:10b6:510:2b8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 15:48:41 +0000
+Received: from PH0PR03MB6771.namprd03.prod.outlook.com
+ ([fe80::4134:3c8a:c35e:3d4a]) by PH0PR03MB6771.namprd03.prod.outlook.com
+ ([fe80::4134:3c8a:c35e:3d4a%4]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
+ 15:48:41 +0000
+From:   "Matyas, Daniel" <Daniel.Matyas@analog.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: RE: [PATCH 2/4] dt-bindings: hwmon: Added new properties to the
+ devicetree
+Thread-Topic: [PATCH 2/4] dt-bindings: hwmon: Added new properties to the
+ devicetree
+Thread-Index: AQHZ5lYkIsiOGL6qF0yUOvCqqNlnVLAY5JmAgAABkUA=
+Date:   Wed, 13 Sep 2023 15:48:41 +0000
+Message-ID: <PH0PR03MB67716A8AA5139C407BB0712989F0A@PH0PR03MB6771.namprd03.prod.outlook.com>
+References: <20230913152135.457892-1-daniel.matyas@analog.com>
+ <20230913152135.457892-3-daniel.matyas@analog.com>
+ <177ef05b-0cca-be25-afad-ac518d9f6473@linaro.org>
+In-Reply-To: <177ef05b-0cca-be25-afad-ac518d9f6473@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jWkcxaGRIbGhjMXhoY0hCa1lYUmhYSEp2WVcxcGJtZGNNRGxrT0RRNVlq?=
+ =?utf-8?B?WXRNekprTXkwMFlUUXdMVGcxWldVdE5tSTROR0poTWpsbE16VmlYRzF6WjNO?=
+ =?utf-8?B?Y2JYTm5MVEF3WkRJek9XVXdMVFV5TkdRdE1URmxaUzFpTnpJeUxUQXdaVEF5?=
+ =?utf-8?B?TW1ReE9HRTRZVnhoYldVdGRHVnpkRnd3TUdReU16bGxNaTAxTWpSa0xURXha?=
+ =?utf-8?B?V1V0WWpjeU1pMHdNR1V3TWpKa01UaGhPR0ZpYjJSNUxuUjRkQ0lnYzNvOUlq?=
+ =?utf-8?B?YzJPREFpSUhROUlqRXpNek01TURrek56RTRORGc1TlRrMU1pSWdhRDBpU1dS?=
+ =?utf-8?B?VGVIbFNiWGhuV25aT1NUUjJRak15UVdSVFpuaGFTR3c0UFNJZ2FXUTlJaUln?=
+ =?utf-8?B?WW13OUlqQWlJR0p2UFNJeElpQmphVDBpWTBGQlFVRkZVa2hWTVZKVFVsVkdU?=
+ =?utf-8?B?a05uVlVGQlJXOURRVUZFVVdkNWJrUlhaV0phUVdFcllXNXNUMDVoVDFKaWNq?=
+ =?utf-8?B?VnhaVlUwTVc4MVJuTkVRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVaEJRVUZCUkdGQlVVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVWQlFWRkJRa0ZCUVVGc1IxUkhWbWRCUVVGQlFVRkJRVUZCUVVGQlFVRktO?=
+ =?utf-8?B?RUZCUVVKb1FVZFJRV0ZSUW1aQlNFMUJXbEZDYWtGSVZVRmpaMEpzUVVZNFFX?=
+ =?utf-8?B?TkJRbmxCUnpoQllXZENiRUZIVFVGa1FVSjZRVVk0UVZwblFtaEJSM2RCWTNk?=
+ =?utf-8?B?Q2JFRkdPRUZhWjBKMlFVaE5RV0ZSUWpCQlIydEJaR2RDYkVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?blFVRkJRVUZCYm1kQlFVRkhSVUZhUVVKd1FVWTRRV04zUW14QlIwMUJaRkZD?=
+ =?utf-8?B?ZVVGSFZVRllkMEozUVVoSlFXSjNRbkZCUjFWQldYZENNRUZJVFVGWWQwSXdR?=
+ =?utf-8?B?VWRyUVZwUlFubEJSRVZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCV1ZGQ2EwRkhhMEZZZDBKNlFV?=
+ =?utf-8?B?ZFZRVmwzUWpGQlNFbEJXbEZDWmtGSVFVRmpaMEoyUVVkdlFWcFJRbXBCU0ZG?=
+ =?utf-8?B?QlkzZENaa0ZJVVVGaFVVSnNRVWhKUVUxblFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVUU5UFNJdlBqd3ZiV1Yw?=
+ =?utf-8?Q?YT4=3D?=
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR03MB6771:EE_|PH7PR03MB7136:EE_
+x-ms-office365-filtering-correlation-id: 37937064-302f-4242-acd4-08dbb470e753
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bxSFBCVlrJdrfsO4Bq3Tuc1FwnguGRxJ63M6WOloWRoahOvFSspZh38i59/4Yav8N6PXHKZUmbhUbxe5o/xcIp7g7nBcdCsT/neutCttlYn+47+8e5CQ9fONt5ZEhhcAPtQMGNV2+uVn1j9+Ro22RigrFVNyAnpGGwzw7jYw6LW22gt0V5XtPTyCFsE84nRhW0b9A52vZFzfVjhZFwQKC6TBQt5iamVTj1qqVEoNW7GebA3XF08OPJbt45D55OWC+gEC+r/Ax1xjKTUqLN9maKmMDaflnMoR0HuwkOGoMaAXe9b0C7nRqXP9V4LOl5uYHOFeC52fW1WO0WQ4XZEA6fgrHY2GYQbd87Uy3pBSFToXCTupMNQ1Yguf3YrjGmYq+a7WcR8630A1g8eqFhoUf2DlMpSrff2fK3D7jJbo/jZoMWe7w4UmczckXAqfVlelbgodOvdiZGvEZPXjOOt/Au722BaI98NvYo3wnOFF2RpmtZqNI63gqJpy1Uh1+tMKisc/OfAxa8A8IqF/yPW4rb30m+vj7/C84eFa9eRVDw0RNvUhD1TBor9gzryUNQC7LanXa7DizVJuBztThyG06uvaWEVqJ9hXa06G4ZAkoa8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR03MB6771.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(396003)(346002)(136003)(451199024)(1800799009)(186009)(38100700002)(38070700005)(122000001)(33656002)(86362001)(55016003)(7696005)(6506007)(478600001)(53546011)(54906003)(52536014)(64756008)(66446008)(66476007)(66946007)(76116006)(66556008)(2906002)(8676002)(8936002)(71200400001)(4326008)(966005)(9686003)(83380400001)(5660300002)(7416002)(41300700001)(316002)(6916009)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TFdZbm9QYld1dkxlRWIvRzRpd3Q0SEMvMThScXM2VjZtWlVLaVlibFFIMytq?=
+ =?utf-8?B?TGVKYVF6QjdpY0NNT1gzcFRBWkJZZEIyNzJlWTIvWlpJQ0VYdEhlbjZiZTY5?=
+ =?utf-8?B?eFFvSDh4cVFSV2RpNU01ckJEZDd1WXZGNHhqR0RYcnRlcEJkcEduR1AxQWZL?=
+ =?utf-8?B?eEh4aHIyY2dyVHdHTkNOamo0M3VCVkppbzl3S1JzaVZFd3ZsT1J6NVZpcFdC?=
+ =?utf-8?B?cDlGMm5EcCtXYWRUa1pZVXpEZGt5OHdwZEdHQnltUmFiZkpGSklrQkV5TEh0?=
+ =?utf-8?B?anFxNDNGaEFSVzNNUklPUUxka1A0dnd6cVhUbGZsamZNbmMvNnZUS3piVWpF?=
+ =?utf-8?B?Q2NIeGFQVGhLclhTVlI0SThHd3U4THFpSENuaFdkN1dTa1Z6S3BFek5uTnUy?=
+ =?utf-8?B?YnU0eTZQK0I2ODNydWhzSTJOKzYycVN0R2hLSk44WkZsWXB2ek9oZVd1QWZs?=
+ =?utf-8?B?OW5NTjVLSmRBdWc5Z3dKNDJPTFY0eC9SeitQSjZ3d0hNNVNmUStYNmNGUVgv?=
+ =?utf-8?B?ZThPTS90YTFLNmR3UlBPbDN4VVlvREdhaDFrZG9uRmlqaGpEK0ZxS2pjejlt?=
+ =?utf-8?B?TkJMbEk1dDBaeEhrUHU4VzJ2SkVVbUN2S1hra04vdEZZVzR3dVAvYkRRSjF2?=
+ =?utf-8?B?aHBEZkFUUldVSVBaK1JJOTlGd0U5RVZ3NEh0TDlBb1pHTnF4aVZFdkc2RTc1?=
+ =?utf-8?B?eHNyc2NVOHFqY2ZKSUd6MEpvUkxsaEhsNVB4M25NK2tEM0JnYWErSEhEaThj?=
+ =?utf-8?B?WUswRXlROXpVMXd5RTAzTzgrSE1RMXlhdUZ2VGR5NzRmdURGMmZUZmVFNUds?=
+ =?utf-8?B?WTVNTmlUa0hNQXA5UkJCRGN5MDJUbk1yNHdTVkFabjFSNkF1aUxacWN6cDJh?=
+ =?utf-8?B?SjlqblRhVUVkV2RCbmJlOE5GU1ZJbzhQOG05UnY0c3FFS1grUXZMZHNHblRR?=
+ =?utf-8?B?L0trVDN4RDZ5WDZLRE5icDIrYS9Ec1FCc2cwelhRODFkcVhvaElVVUZQNXJI?=
+ =?utf-8?B?ZWJUT1l6RU9obDF1OFVqSWpySFc1QkJEL09yNW9BNjAyUFBia2Nib3hUTys3?=
+ =?utf-8?B?bTFKbWJCUVVzYi8weTVycjIySEpEcUw4R01LTjRZRHJvY2wzcFQrRGIvc0Rl?=
+ =?utf-8?B?M0JOa0hXRHFrV2VSOVp1OW5oSTlWNmFvbTI1QW1pd0FHS3Y2cnVDQ2R1aHQw?=
+ =?utf-8?B?eklNMkpQbWtFLzExaTJ3cDVZd1l4bFpCRStXZTRST2VWdEJVQ0ZkNGcrRVJU?=
+ =?utf-8?B?Y1JYekhGb2xvMmZaR2g0MTVvL1RNWUk1ZmdSQWlEWmJFN2tWS09tTWpYaDNY?=
+ =?utf-8?B?N0lKYzRPTkV0YTFpUTBQRTQ2MTZWQ25YTXErbzNBTWVNdFRkTXoza1dVZm1V?=
+ =?utf-8?B?K1ZoSzBvWXVWZkJMTTFWaFhMVkYrdlFWVFU4ZmpTOWZYc0NDVFNSTVFpdEJY?=
+ =?utf-8?B?Y1prZGFWRmErT2hzdGdQcVczVzNoMVROQ0RJcnBZSUNCdWozMXIyaVFadGJp?=
+ =?utf-8?B?bFREcWkyanM0L1RKSHp1dkRaUDUrMHJmVUxEYm5hdG9rWkhGSmJxUTd3aVJG?=
+ =?utf-8?B?RUpWRkRoSkFXY2h1UGErTzZnNi9pUnRvT2JDTzhqSWRvaXdVOXIxckw1OHJE?=
+ =?utf-8?B?RXJBa0hpR2Z0MnhsRFZmUGdKVEloNnpaRyt3Z0p5dDJ5dHVLNDJpQ2IwSTNW?=
+ =?utf-8?B?V2tYU21TVzh1TG83TnBGVE1ETEFMVFhFVEJVZUV3K1llZlBBaEg3bmZ3cTRq?=
+ =?utf-8?B?K3g3eElVWFVSeStXMnY0ZFBCN3FGNFVWMXJLZHk4Wlk2R2tnUlViUjBCbXhS?=
+ =?utf-8?B?ZnNoS0V4d1dtWURFMXkzeW9XbHlDUlRaQi9RRG9iR3IzQnZtSzdDRE9TVWRh?=
+ =?utf-8?B?VzlLdE9VRTlNa1FROTNod2w0bEUwVVJjMzlCQ2owRS9lZHc2cWdCek01QlZF?=
+ =?utf-8?B?d3dLdm5HYk5QWXFURXJxcmtZcGZNMzY1NjhzL1R3WGEyaW1MR3FieWZqa3Vv?=
+ =?utf-8?B?SGFabVNkWElkcUplWHhyaFVzSXp2cU9ZNWhveWdHV01vYklvY05Gb0g0bEp4?=
+ =?utf-8?B?NzR6dm1YRUpmclgxaHZTdXQyclMvNjQ0R0lXaGloZXF2a3htZ1ZMSERWTDhl?=
+ =?utf-8?Q?yfsiF0GdGlHcbRXKLtLoad3VB?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR03MB6771.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37937064-302f-4242-acd4-08dbb470e753
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 15:48:41.3134
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: azzxXnF5ZJxB1XeciA5aryXj55yLcCRlWjArwklBvlN1V3F2NmMtsNDgQfBSOq9x2KZ1/X4LkQSde4nNDork1g6eVLw+efsHXmBGiyeE2Lo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR03MB7136
+X-Proofpoint-ORIG-GUID: mBjv6yMrwdWlz3UDtzvxyhB6CTTcmDKv
+X-Proofpoint-GUID: mBjv6yMrwdWlz3UDtzvxyhB6CTTcmDKv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_10,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 impostorscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2308100000
+ definitions=main-2309130130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->
-> Implement support for cgroup control of SGX Enclave Page Cache (EPC)
-> memory using the misc cgroup controller. EPC memory is independent
-> from normal system memory, e.g. must be reserved at boot from RAM and
-> cannot be converted between EPC and normal memory while the system is
-> running. EPC is managed by the SGX subsystem and is not accounted by
-> the memory controller.
->
-> Much like normal system memory, EPC memory can be overcommitted via
-> virtual memory techniques and pages can be swapped out of the EPC to
-> their backing store (normal system memory, e.g. shmem).  The SGX EPC
-> subsystem is analogous to the memory subsystem and the SGX EPC controller
-> is in turn analogous to the memory controller; it implements limit and
-> protection models for EPC memory.
->
-> The misc controller provides a mechanism to set a hard limit of EPC
-> usage via the "sgx_epc" resource in "misc.max". The total EPC memory
-> available on the system is reported via the "sgx_epc" resource in
-> "misc.capacity".
->
-> This patch was modified from its original version to use the misc cgroup
-> controller instead of a custom controller.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Tested-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
->
-> Cc: Sean Christopherson <seanjc@google.com>
-> ---
-> V4:
-> - Fix a white space issue in Kconfig (Randy).
-> - Update comments for LRU list as it can be owned by a cgroup.
-> - Fix comments for sgx_reclaim_epc_pages() and use IS_ENABLED consistentl=
-y (Mikko)
->
-> V3:
->
-> 1) Use the same maximum number of reclaiming candidate pages to be
-> processed, SGX_NR_TO_SCAN_MAX, for each reclaiming iteration in both
-> cgroup worker function and ksgxd. This fixes an overflow in the
-> backing store buffer with the same fixed size allocated on stack in
-> sgx_reclaim_epc_pages().
->
-> 2) Initialize max for root EPC cgroup. Otherwise, all
-> misc_cg_try_charge() calls would fail as it checks for all limits of
-> ancestors all the way to the root node.
->
-> 3) Start reclaiming whenever misc_cg_try_charge fails. Removed all
-> re-checks for limits and current usage. For all purposes and intent,
-> when misc_try_charge() fails, reclaiming is needed. This also corrects
-> an error of not reclaiming when the child limit is larger than one of
-> its ancestors.
->
-> 4) Handle failure on charging to the root EPC cgroup. Failure on charging
-> to root means we are at or above capacity, so start reclaiming or return
-> OOM error.
->
-> 5) Removed the custom cgroup tree walking iterator with epoch tracking
-> logic. Replaced it with just the plain css_for_each_descendant_pre
-> iterator. The custom iterator implemented a rather complex epoch scheme
-> I believe was intended to prevent extra reclaiming from multiple worker
-> threads doing the same walk but it turned out not matter much as each
-> thread would only reclaim when usage is above limit. Using the plain
-> css_for_each_descendant_pre iterator simplified code a bit.
->
-> 6) Do not reclaim synchronously in misc_max_write callback which would
-> block the user. Instead queue an async work item to run the reclaiming
-> loop.
->
-> 7) Other minor refactoring:
-> - Remove unused params in epc_cgroup APIs
-> - centralize uncharge into sgx_free_epc_page()
-> ---
->  arch/x86/Kconfig                     |  13 +
->  arch/x86/kernel/cpu/sgx/Makefile     |   1 +
->  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 406 +++++++++++++++++++++++++++
->  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  59 ++++
->  arch/x86/kernel/cpu/sgx/main.c       |  67 ++++-
->  arch/x86/kernel/cpu/sgx/sgx.h        |  17 +-
->  6 files changed, 547 insertions(+), 16 deletions(-)
->  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
->  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 982b777eadc7..55fcf182d4a3 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1921,6 +1921,19 @@ config X86_SGX
-> =20
->  	  If unsure, say N.
-> =20
-> +config CGROUP_SGX_EPC
-> +	bool "Miscellaneous Cgroup Controller for Enclave Page Cache (EPC) for =
-Intel SGX"
-> +	depends on X86_SGX && CGROUP_MISC
-> +	help
-> +	  Provides control over the EPC footprint of tasks in a cgroup via
-> +	  the Miscellaneous cgroup controller.
-> +
-> +	  EPC is a subset of regular memory that is usable only by SGX
-> +	  enclaves and is very limited in quantity, e.g. less than 1%
-> +	  of total DRAM.
-> +
-> +	  Say N if unsure.
-> +
->  config X86_USER_SHADOW_STACK
->  	bool "X86 userspace shadow stack"
->  	depends on AS_WRUSS
-> diff --git a/arch/x86/kernel/cpu/sgx/Makefile b/arch/x86/kernel/cpu/sgx/M=
-akefile
-> index 9c1656779b2a..12901a488da7 100644
-> --- a/arch/x86/kernel/cpu/sgx/Makefile
-> +++ b/arch/x86/kernel/cpu/sgx/Makefile
-> @@ -4,3 +4,4 @@ obj-y +=3D \
->  	ioctl.o \
->  	main.o
->  obj-$(CONFIG_X86_SGX_KVM)	+=3D virt.o
-> +obj-$(CONFIG_CGROUP_SGX_EPC)	       +=3D epc_cgroup.o
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.c
-> new file mode 100644
-> index 000000000000..7b86eb074abe
-> --- /dev/null
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> @@ -0,0 +1,406 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright(c) 2022 Intel Corporation.
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/kernel.h>
-> +#include <linux/ratelimit.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/slab.h>
-> +#include <linux/threads.h>
-> +
-> +#include "epc_cgroup.h"
-> +
-> +#define SGX_EPC_RECLAIM_MIN_PAGES		16UL
-> +#define SGX_EPC_RECLAIM_IGNORE_AGE_THRESHOLD	5
-> +#define SGX_EPC_RECLAIM_OOM_THRESHOLD		5
-> +
-> +static struct workqueue_struct *sgx_epc_cg_wq;
-> +static bool sgx_epc_cgroup_oom(struct sgx_epc_cgroup *root);
-> +
-> +struct sgx_epc_reclaim_control {
-> +	struct sgx_epc_cgroup *epc_cg;
-> +	int nr_fails;
-> +	bool ignore_age;
-> +};
-> +
-> +static inline u64 sgx_epc_cgroup_page_counter_read(struct sgx_epc_cgroup=
- *epc_cg)
-> +{
-> +	return atomic64_read(&epc_cg->cg->res[MISC_CG_RES_SGX_EPC].usage) / PAG=
-E_SIZE;
-> +}
-> +
-> +static inline u64 sgx_epc_cgroup_max_pages(struct sgx_epc_cgroup *epc_cg=
-)
-> +{
-> +	return READ_ONCE(epc_cg->cg->res[MISC_CG_RES_SGX_EPC].max) / PAGE_SIZE;
-> +}
-> +
-
-/*
- * A brief explanation of the calculation below.
- */
-> +static inline u64 sgx_epc_cgroup_max_pages_to_root(struct sgx_epc_cgroup=
- *epc_cg)
-> +{
-> +	struct misc_cg *i =3D epc_cg->cg;
-> +	u64 m =3D U64_MAX;
-> +
-> +	while (i) {
-> +		m =3D min(m, READ_ONCE(i->res[MISC_CG_RES_SGX_EPC].max));
-> +		i =3D misc_cg_parent(i);
-> +	}
-
-I'd add an empty line here.
-
-> +	return m / PAGE_SIZE;
-> +}
-> +
-> +static inline struct sgx_epc_cgroup *sgx_epc_cgroup_from_misc_cg(struct =
-misc_cg *cg)
-> +{
-> +	if (cg)
-> +		return (struct sgx_epc_cgroup *)(cg->res[MISC_CG_RES_SGX_EPC].priv);
-> +
-> +	return NULL;
-> +}
-> +
-> +static inline bool sgx_epc_cgroup_disabled(void)
-> +{
-> +	return !cgroup_subsys_enabled(misc_cgrp_subsys);
-> +}
-> +
-> +/**
-> + * sgx_epc_cgroup_lru_empty - check if a cgroup tree has no pages on its=
- lrus
-
-Does not have "()":
-
-https://www.kernel.org/doc/Documentation/kernel-doc-nano-HOWTO.txt
-
-> + * @root:	root of the tree to check
-> + *
-> + * Return: %true if all cgroups under the specified root have empty LRU =
-lists.
-> + * Used to avoid livelocks due to a cgroup having a non-zero charge coun=
-t but
-> + * no pages on its LRUs, e.g. due to a dead enclave waiting to be releas=
-ed or
-> + * because all pages in the cgroup are unreclaimable.
-> + */
-> +bool sgx_epc_cgroup_lru_empty(struct sgx_epc_cgroup *root)
-> +{
-> +	struct cgroup_subsys_state *css_root =3D NULL;
-> +	struct cgroup_subsys_state *pos =3D NULL;
-> +	struct sgx_epc_cgroup *epc_cg =3D NULL;
-> +	bool ret =3D true;
-> +
-> +	/*
-> +	 * Caller ensure css_root ref acquired
-> +	 */
-> +	css_root =3D root ? &root->cg->css : &(misc_cg_root()->css);
-> +
-> +	rcu_read_lock();
-> +	css_for_each_descendant_pre(pos, css_root) {
-> +		if (!css_tryget(pos))
-> +			break;
-> +
-> +		rcu_read_unlock();
-> +
-> +		epc_cg =3D sgx_epc_cgroup_from_misc_cg(css_misc(pos));
-> +
-> +		spin_lock(&epc_cg->lru.lock);
-> +		ret =3D list_empty(&epc_cg->lru.reclaimable);
-> +		spin_unlock(&epc_cg->lru.lock);
-> +
-> +		rcu_read_lock();
-> +		css_put(pos);
-> +		if (!ret)
-> +			break;
-> +	}
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +/**
-> + * sgx_epc_cgroup_isolate_pages - walk a cgroup tree and separate pages
-
-Ditto.
-
-> + * @root:	root of the tree to start walking
-> + * @nr_to_scan: The number of pages that need to be isolated
-> + * @dst:	Destination list to hold the isolated pages
-
-Not correctly aligned.
-
-> + *
-> + * Walk the cgroup tree and isolate the pages in the hierarchy
-> + * for reclaiming.
-> + */
-> +void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *root,
-> +				  size_t *nr_to_scan, struct list_head *dst)
-> +{
-> +	struct cgroup_subsys_state *css_root =3D NULL;
-
-Spurious initialization to NULL.
-
-> +	struct cgroup_subsys_state *pos =3D NULL;
-
-Ditto.
-
-> +	struct sgx_epc_cgroup *epc_cg =3D NULL;
-
-Ditto.
-
-> +
-> +	if (!*nr_to_scan)
-> +		return;
-> +
-> +	 /* Caller ensure css_root ref acquired */
-> +	css_root =3D root ? &root->cg->css : &(misc_cg_root()->css);
-> +
-> +	rcu_read_lock();
-> +	css_for_each_descendant_pre(pos, css_root) {
-> +		if (!css_tryget(pos))
-> +			break;
-> +		rcu_read_unlock();
-> +
-> +		epc_cg =3D sgx_epc_cgroup_from_misc_cg(css_misc(pos));
-> +		sgx_isolate_epc_pages(&epc_cg->lru, nr_to_scan, dst);
-> +
-> +		rcu_read_lock();
-> +		css_put(pos);
-> +		if (!*nr_to_scan)
-> +			break;
-> +	}
-
-I'd add an empty line here.
-
-> +	rcu_read_unlock();
-> +}
-> +
-> +static int sgx_epc_cgroup_reclaim_pages(unsigned long nr_pages,
-> +					struct sgx_epc_reclaim_control *rc)
-> +{
-> +	/*
-> +	 * Ensure sgx_reclaim_pages is called with a minimum and maximum
-> +	 * number of pages.  Attempting to reclaim only a few pages will
-> +	 * often fail and is inefficient, while reclaiming a huge number
-> +	 * of pages can result in soft lockups due to holding various
-> +	 * locks for an extended duration.
-> +	 */
-> +	nr_pages =3D max(nr_pages, SGX_EPC_RECLAIM_MIN_PAGES);
-> +	nr_pages =3D min(nr_pages, SGX_NR_TO_SCAN_MAX);
-> +
-> +	return sgx_reclaim_epc_pages(nr_pages, rc->ignore_age, rc->epc_cg);
-> +}
-> +
-> +static int sgx_epc_cgroup_reclaim_failed(struct sgx_epc_reclaim_control =
-*rc)
-> +{
-> +	if (sgx_epc_cgroup_lru_empty(rc->epc_cg))
-> +		return -ENOMEM;
-> +
-> +	++rc->nr_fails;
-> +	if (rc->nr_fails > SGX_EPC_RECLAIM_IGNORE_AGE_THRESHOLD)
-> +		rc->ignore_age =3D true;
-> +
-> +	return 0;
-> +}
-> +
-> +static inline
-> +void sgx_epc_reclaim_control_init(struct sgx_epc_reclaim_control *rc,
-> +				  struct sgx_epc_cgroup *epc_cg)
-> +{
-> +	rc->epc_cg =3D epc_cg;
-> +	rc->nr_fails =3D 0;
-> +	rc->ignore_age =3D false;
-> +}
-> +
-> +/*
-> + * Scheduled by sgx_epc_cgroup_try_charge() to reclaim pages from the
-> + * cgroup when the cgroup is at/near its maximum capacity
-> + */
-> +static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
-> +{
-> +	struct sgx_epc_reclaim_control rc;
-> +	struct sgx_epc_cgroup *epc_cg;
-> +	u64 cur, max;
-> +
-> +	epc_cg =3D container_of(work, struct sgx_epc_cgroup, reclaim_work);
-> +
-> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
-> +
-> +	for (;;) {
-> +		max =3D sgx_epc_cgroup_max_pages_to_root(epc_cg);
-> +
-> +		/*
-> +		 * Adjust the limit down by one page, the goal is to free up
-> +		 * pages for fault allocations, not to simply obey the limit.
-> +		 * Conditionally decrementing max also means the cur vs. max
-> +		 * check will correctly handle the case where both are zero.
-> +		 */
-> +		if (max)
-> +			max--;
-> +
-> +		/*
-> +		 * Unless the limit is extremely low, in which case forcing
-> +		 * reclaim will likely cause thrashing, force the cgroup to
-> +		 * reclaim at least once if it's operating *near* its maximum
-> +		 * limit by adjusting @max down by half the min reclaim size.
-> +		 * This work func is scheduled by sgx_epc_cgroup_try_charge
-> +		 * when it cannot directly reclaim due to being in an atomic
-> +		 * context, e.g. EPC allocation in a fault handler.  Waiting
-> +		 * to reclaim until the cgroup is actually at its limit is less
-> +		 * performant as it means the faulting task is effectively
-> +		 * blocked until a worker makes its way through the global work
-> +		 * queue.
-> +		 */
-> +		if (max > SGX_NR_TO_SCAN_MAX)
-> +			max -=3D (SGX_EPC_RECLAIM_MIN_PAGES / 2);
-> +
-> +		max =3D min(max, sgx_epc_total_pages);
-> +		cur =3D sgx_epc_cgroup_page_counter_read(epc_cg);
-> +		if (cur <=3D max)
-> +			break;
-> +		/* Nothing reclaimable */
-> +		if (sgx_epc_cgroup_lru_empty(epc_cg)) {
-> +			if (!sgx_epc_cgroup_oom(epc_cg))
-> +				break;
-> +
-> +			continue;
-> +		}
-> +
-> +		if (!sgx_epc_cgroup_reclaim_pages(cur - max, &rc)) {
-> +			if (sgx_epc_cgroup_reclaim_failed(&rc))
-> +				break;
-> +		}
-> +	}
-> +}
-> +
-> +static int __sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg,
-> +				       bool reclaim)
-> +{
-> +	struct sgx_epc_reclaim_control rc;
-> +	unsigned int nr_empty =3D 0;
-> +
-> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
-> +
-> +	for (;;) {
-> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
-> +					PAGE_SIZE))
-> +			break;
-> +
-> +		if (sgx_epc_cgroup_lru_empty(epc_cg))
-> +			return -ENOMEM;
-> +
-> +		if (signal_pending(current))
-> +			return -ERESTARTSYS;
-> +
-> +		if (!reclaim) {
-> +			queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
-> +			return -EBUSY;
-> +		}
-> +
-> +		if (!sgx_epc_cgroup_reclaim_pages(1, &rc)) {
-> +			if (sgx_epc_cgroup_reclaim_failed(&rc)) {
-> +				if (++nr_empty > SGX_EPC_RECLAIM_OOM_THRESHOLD)
-> +					return -ENOMEM;
-> +				schedule();
-> +			}
-> +		}
-> +	}
-> +	if (epc_cg->cg !=3D misc_cg_root())
-> +		css_get(&epc_cg->cg->css);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * sgx_epc_cgroup_try_charge - hierarchically try to charge a single EPC=
- page
-
-"()"
-
-> + * @mm:			the mm_struct of the process to charge
-> + * @reclaim:		whether or not synchronous reclaim is allowed
-> + *
-> + * Returns EPC cgroup or NULL on success, -errno on failure.
-> + */
-> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(bool reclaim)
-> +{
-> +	struct sgx_epc_cgroup *epc_cg;
-> +	int ret;
-> +
-> +	if (sgx_epc_cgroup_disabled())
-> +		return NULL;
-> +
-> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
-> +	ret =3D __sgx_epc_cgroup_try_charge(epc_cg, reclaim);
-> +	put_misc_cg(epc_cg->cg);
-> +
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	return epc_cg;
-> +}
-> +
-> +/**
-> + * sgx_epc_cgroup_uncharge - hierarchically uncharge EPC pages
-
-"()"
-
-> + * @epc_cg:	the charged epc cgroup
-> + */
-> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg)
-> +{
-> +	if (sgx_epc_cgroup_disabled())
-> +		return;
-> +
-> +	misc_cg_uncharge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
-> +
-> +	if (epc_cg->cg !=3D misc_cg_root())
-> +		put_misc_cg(epc_cg->cg);
-> +}
-> +
-> +static bool sgx_epc_cgroup_oom(struct sgx_epc_cgroup *root)
-> +{
-> +	struct cgroup_subsys_state *css_root =3D NULL;
-> +	struct cgroup_subsys_state *pos =3D NULL;
-> +	struct sgx_epc_cgroup *epc_cg =3D NULL;
-
-Please check also these initializations through.
-
-> +	bool oom =3D false;
-> +
-> +	 /* Caller ensure css_root ref acquired */
-> +	css_root =3D root ? &root->cg->css : &(misc_cg_root()->css);
-> +
-> +	rcu_read_lock();
-> +	css_for_each_descendant_pre(pos, css_root) {
-> +		/* skip dead ones */
-> +		if (!css_tryget(pos))
-> +			continue;
-> +
-> +		rcu_read_unlock();
-> +
-> +		epc_cg =3D sgx_epc_cgroup_from_misc_cg(css_misc(pos));
-> +		oom =3D sgx_epc_oom(&epc_cg->lru);
-> +
-> +		rcu_read_lock();
-> +		css_put(pos);
-> +		if (oom)
-> +			break;
-> +	}
-> +	rcu_read_unlock();
-> +	return oom;
-> +}
-> +
-> +static void sgx_epc_cgroup_free(struct misc_cg *cg)
-> +{
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
-> +	cancel_work_sync(&epc_cg->reclaim_work);
-> +	kfree(epc_cg);
-> +}
-> +
-> +static void sgx_epc_cgroup_max_write(struct misc_cg *cg)
-> +{
-> +	struct sgx_epc_reclaim_control rc;
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg =3D sgx_epc_cgroup_from_misc_cg(cg);
-> +
-> +	sgx_epc_reclaim_control_init(&rc, epc_cg);
-> +	/* Let the reclaimer to do the work so user is not blocked */
-> +	queue_work(sgx_epc_cg_wq, &rc.epc_cg->reclaim_work);
-> +}
-> +
-> +static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
-> +{
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg =3D kzalloc(sizeof(*epc_cg), GFP_KERNEL);
-> +	if (!epc_cg)
-> +		return -ENOMEM;
-> +
-> +	sgx_lru_init(&epc_cg->lru);
-> +	INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
-> +	cg->res[MISC_CG_RES_SGX_EPC].misc_cg_alloc =3D sgx_epc_cgroup_alloc;
-> +	cg->res[MISC_CG_RES_SGX_EPC].misc_cg_free =3D sgx_epc_cgroup_free;
-> +	cg->res[MISC_CG_RES_SGX_EPC].misc_cg_max_write =3D sgx_epc_cgroup_max_w=
-rite;
-> +	cg->res[MISC_CG_RES_SGX_EPC].priv =3D epc_cg;
-> +	epc_cg->cg =3D cg;
-> +	return 0;
-> +}
-> +
-> +static int __init sgx_epc_cgroup_init(void)
-> +{
-> +	struct misc_cg *cg;
-> +
-> +	if (!boot_cpu_has(X86_FEATURE_SGX))
-> +		return 0;
-> +
-> +	sgx_epc_cg_wq =3D alloc_workqueue("sgx_epc_cg_wq",
-> +					WQ_UNBOUND | WQ_FREEZABLE,
-> +					WQ_UNBOUND_MAX_ACTIVE);
-> +	BUG_ON(!sgx_epc_cg_wq);
-> +
-> +	cg =3D misc_cg_root();
-> +	BUG_ON(!cg);
-> +	WRITE_ONCE(cg->res[MISC_CG_RES_SGX_EPC].max, U64_MAX);
-> +	atomic64_set(&cg->res[MISC_CG_RES_SGX_EPC].usage, 0UL);
-> +	return sgx_epc_cgroup_alloc(cg);
-> +}
-> +subsys_initcall(sgx_epc_cgroup_init);
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.h
-> new file mode 100644
-> index 000000000000..dfc902f4d96f
-> --- /dev/null
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
-> @@ -0,0 +1,59 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright(c) 2022 Intel Corporation. */
-> +#ifndef _INTEL_SGX_EPC_CGROUP_H_
-> +#define _INTEL_SGX_EPC_CGROUP_H_
-> +
-> +#include <asm/sgx.h>
-> +#include <linux/cgroup.h>
-> +#include <linux/list.h>
-> +#include <linux/misc_cgroup.h>
-> +#include <linux/page_counter.h>
-> +#include <linux/workqueue.h>
-> +
-> +#include "sgx.h"
-> +
-> +#ifndef CONFIG_CGROUP_SGX_EPC
-> +#define MISC_CG_RES_SGX_EPC MISC_CG_RES_TYPES
-> +struct sgx_epc_cgroup;
-> +
-> +static inline struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(bool recl=
-aim)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg=
-) { }
-> +
-> +static inline void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *r=
-oot,
-> +						size_t *nr_to_scan,
-> +						struct list_head *dst) { }
-> +
-> +static inline struct sgx_epc_lru_lists *epc_cg_lru(struct sgx_epc_cgroup=
- *epc_cg)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static bool sgx_epc_cgroup_lru_empty(struct sgx_epc_cgroup *root)
-> +{
-> +	return true;
-> +}
-> +#else
-> +struct sgx_epc_cgroup {
-> +	struct misc_cg *cg;
-> +	struct sgx_epc_lru_lists	lru;
-> +	struct work_struct	reclaim_work;
-> +};
-> +
-> +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(bool reclaim);
-> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg);
-> +bool sgx_epc_cgroup_lru_empty(struct sgx_epc_cgroup *root);
-> +void sgx_epc_cgroup_isolate_pages(struct sgx_epc_cgroup *root,
-> +				  size_t *nr_to_scan, struct list_head *dst);
-> +static inline struct sgx_epc_lru_lists *epc_cg_lru(struct sgx_epc_cgroup=
- *epc_cg)
-> +{
-> +	if (epc_cg)
-> +		return &epc_cg->lru;
-> +	return NULL;
-> +}
-> +#endif
-> +
-> +#endif /* _INTEL_SGX_EPC_CGROUP_H_ */
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index 3d396fe5ec09..20de17f4f576 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -6,6 +6,7 @@
->  #include <linux/highmem.h>
->  #include <linux/kthread.h>
->  #include <linux/miscdevice.h>
-> +#include <linux/misc_cgroup.h>
->  #include <linux/node.h>
->  #include <linux/pagemap.h>
->  #include <linux/ratelimit.h>
-> @@ -17,11 +18,9 @@
->  #include "driver.h"
->  #include "encl.h"
->  #include "encls.h"
-> -/**
-> - * Maximum number of pages to scan for reclaiming.
-> - */
-> -#define SGX_NR_TO_SCAN_MAX	32
-> +#include "epc_cgroup.h"
-> =20
-> +u64 sgx_epc_total_pages;
->  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
->  static int sgx_nr_epc_sections;
->  static struct task_struct *ksgxd_tsk;
-> @@ -36,11 +35,17 @@ static struct sgx_epc_lru_lists sgx_global_lru;
-> =20
->  static inline struct sgx_epc_lru_lists *sgx_lru_lists(struct sgx_epc_pag=
-e *epc_page)
->  {
-> +	if (IS_ENABLED(CONFIG_CGROUP_SGX_EPC))
-> +		return epc_cg_lru(epc_page->epc_cg);
-> +
->  	return &sgx_global_lru;
->  }
-> =20
->  static inline bool sgx_can_reclaim(void)
->  {
-> +	if (IS_ENABLED(CONFIG_CGROUP_SGX_EPC))
-> +		return !sgx_epc_cgroup_lru_empty(NULL);
-> +
->  	return !list_empty(&sgx_global_lru.reclaimable);
->  }
-> =20
-> @@ -299,14 +304,14 @@ static void sgx_reclaimer_write(struct sgx_epc_page=
- *epc_page,
->   * @nr_to_scan:	Number of pages to scan for reclaim
->   * @dst:	Destination list to hold the isolated pages
->   */
-> -void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *lru, size_t nr_to_s=
-can,
-> +void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *lru, size_t *nr_to_=
-scan,
->  			   struct list_head *dst)
->  {
->  	struct sgx_encl_page *encl_page;
->  	struct sgx_epc_page *epc_page;
-> =20
->  	spin_lock(&lru->lock);
-> -	for (; nr_to_scan > 0; --nr_to_scan) {
-> +	for (; *nr_to_scan > 0; --(*nr_to_scan)) {
->  		epc_page =3D list_first_entry_or_null(&lru->reclaimable, struct sgx_ep=
-c_page, list);
->  		if (!epc_page)
->  			break;
-> @@ -331,6 +336,7 @@ void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *=
-lru, size_t nr_to_scan,
->   * sgx_reclaim_epc_pages() - Reclaim EPC pages from the consumers
->   * @nr_to_scan:		 Number of EPC pages to scan for reclaim
->   * @ignore_age:		 Reclaim a page even if it is young
-> + * @epc_cg:		 EPC cgroup from which to reclaim
->   *
->   * Take a fixed number of pages from the head of the active page pool an=
-d
->   * reclaim them to the enclave's private shmem files. Skip the pages, wh=
-ich have
-> @@ -344,7 +350,8 @@ void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *=
-lru, size_t nr_to_scan,
->   * problematic as it would increase the lock contention too much, which =
-would
->   * halt forward progress.
->   */
-> -size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age)
-> +size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age,
-> +			     struct sgx_epc_cgroup *epc_cg)
->  {
->  	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
->  	struct sgx_epc_page *epc_page, *tmp;
-> @@ -355,7 +362,15 @@ size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool=
- ignore_age)
->  	size_t ret;
->  	size_t i;
-> =20
-> -	sgx_isolate_epc_pages(&sgx_global_lru, nr_to_scan, &iso);
-> +	/*
-> +	 * If a specific cgroup is not being targeted, take from the global
-> +	 * list first, even when cgroups are enabled.  If there are
-> +	 * pages on the global LRU then they should get reclaimed asap.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_CGROUP_SGX_EPC) || !epc_cg)
-> +		sgx_isolate_epc_pages(&sgx_global_lru, &nr_to_scan, &iso);
-> +
-> +	sgx_epc_cgroup_isolate_pages(epc_cg, &nr_to_scan, &iso);
-> =20
->  	if (list_empty(&iso))
->  		return 0;
-> @@ -422,7 +437,7 @@ static bool sgx_should_reclaim(unsigned long watermar=
-k)
->  void sgx_reclaim_direct(void)
->  {
->  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-> -		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
-> +		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false, NULL);
->  }
-> =20
->  static int ksgxd(void *p)
-> @@ -445,7 +460,7 @@ static int ksgxd(void *p)
->  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
-> =20
->  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
-> -			sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
-> +			sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false, NULL);
-> =20
->  		cond_resched();
->  	}
-> @@ -599,6 +614,11 @@ int sgx_drop_epc_page(struct sgx_epc_page *page)
->  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->  {
->  	struct sgx_epc_page *page;
-> +	struct sgx_epc_cgroup *epc_cg;
-> +
-> +	epc_cg =3D sgx_epc_cgroup_try_charge(reclaim);
-> +	if (IS_ERR(epc_cg))
-> +		return ERR_CAST(epc_cg);
-> =20
->  	for ( ; ; ) {
->  		page =3D __sgx_alloc_epc_page();
-> @@ -607,8 +627,10 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner,=
- bool reclaim)
->  			break;
->  		}
-> =20
-> -		if (!sgx_can_reclaim())
-> -			return ERR_PTR(-ENOMEM);
-> +		if (!sgx_can_reclaim()) {
-> +			page =3D ERR_PTR(-ENOMEM);
-> +			break;
-> +		}
-> =20
->  		if (!reclaim) {
->  			page =3D ERR_PTR(-EBUSY);
-> @@ -620,10 +642,17 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner=
-, bool reclaim)
->  			break;
->  		}
-> =20
-> -		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false);
-> +		sgx_reclaim_epc_pages(SGX_NR_TO_SCAN, false, NULL);
->  		cond_resched();
->  	}
-> =20
-> +	if (!IS_ERR(page)) {
-> +		WARN_ON_ONCE(page->epc_cg);
-> +		page->epc_cg =3D epc_cg;
-> +	} else {
-> +		sgx_epc_cgroup_uncharge(epc_cg);
-> +	}
-> +
->  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
->  		wake_up(&ksgxd_waitq);
-> =20
-> @@ -646,6 +675,11 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
-> =20
->  	WARN_ON_ONCE(page->flags & (SGX_EPC_PAGE_STATE_MASK));
-> =20
-> +	if (page->epc_cg) {
-> +		sgx_epc_cgroup_uncharge(page->epc_cg);
-> +		page->epc_cg =3D NULL;
-> +	}
-> +
->  	spin_lock(&node->lock);
-> =20
->  	page->encl_page =3D NULL;
-> @@ -656,6 +690,7 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
->  	page->flags =3D SGX_EPC_PAGE_FREE;
-> =20
->  	spin_unlock(&node->lock);
-> +
->  	atomic_long_inc(&sgx_nr_free_pages);
->  }
-> =20
-> @@ -825,6 +860,7 @@ static bool __init sgx_setup_epc_section(u64 phys_add=
-r, u64 size,
->  		section->pages[i].flags =3D 0;
->  		section->pages[i].encl_page =3D NULL;
->  		section->pages[i].poison =3D 0;
-> +		section->pages[i].epc_cg =3D NULL;
->  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_list);
->  	}
-> =20
-> @@ -969,6 +1005,7 @@ static void __init arch_update_sysfs_visibility(int =
-nid) {}
->  static bool __init sgx_page_cache_init(void)
->  {
->  	u32 eax, ebx, ecx, edx, type;
-> +	u64 capacity =3D 0;
->  	u64 pa, size;
->  	int nid;
->  	int i;
-> @@ -1019,6 +1056,7 @@ static bool __init sgx_page_cache_init(void)
-> =20
->  		sgx_epc_sections[i].node =3D  &sgx_numa_nodes[nid];
->  		sgx_numa_nodes[nid].size +=3D size;
-> +		capacity +=3D size;
-> =20
->  		sgx_nr_epc_sections++;
->  	}
-> @@ -1028,6 +1066,9 @@ static bool __init sgx_page_cache_init(void)
->  		return false;
->  	}
-> =20
-> +	misc_cg_set_capacity(MISC_CG_RES_SGX_EPC, capacity);
-> +	sgx_epc_total_pages =3D capacity >> PAGE_SHIFT;
-> +
->  	return true;
->  }
-> =20
-> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
-h
-> index 7e21192b87a8..bf746d2af96d 100644
-> --- a/arch/x86/kernel/cpu/sgx/sgx.h
-> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
-> @@ -19,6 +19,11 @@
-> =20
->  #define SGX_MAX_EPC_SECTIONS		8
->  #define SGX_EEXTEND_BLOCK_SIZE		256
-> +
-> +/*
-> + * Maximum number of pages to scan for reclaiming.
-> + */
-> +#define SGX_NR_TO_SCAN_MAX		32UL
->  #define SGX_NR_TO_SCAN			16
->  #define SGX_NR_LOW_PAGES		32
->  #define SGX_NR_HIGH_PAGES		64
-> @@ -70,6 +75,8 @@ enum sgx_epc_page_state {
->  /* flag for pages owned by a sgx_encl struct */
->  #define SGX_EPC_OWNER_ENCL		BIT(4)
-> =20
-> +struct sgx_epc_cgroup;
-> +
->  struct sgx_epc_page {
->  	unsigned int section;
->  	u16 flags;
-> @@ -79,6 +86,7 @@ struct sgx_epc_page {
->  		struct sgx_encl *encl;
->  	};
->  	struct list_head list;
-> +	struct sgx_epc_cgroup *epc_cg;
->  };
-> =20
->  static inline void sgx_epc_page_reset_state(struct sgx_epc_page *page)
-> @@ -127,6 +135,7 @@ struct sgx_epc_section {
->  	struct sgx_numa_node *node;
->  };
-> =20
-> +extern u64 sgx_epc_total_pages;
->  extern struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
-> =20
->  static inline unsigned long sgx_get_epc_phys_addr(struct sgx_epc_page *p=
-age)
-> @@ -150,7 +159,8 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_=
-epc_page *page)
->  }
-> =20
->  /*
-> - * Contains EPC pages tracked by the reclaimer (ksgxd).
-> + * Contains EPC pages tracked by the global reclaimer (ksgxd) or an EPC
-> + * cgroup.
->   */
->  struct sgx_epc_lru_lists {
->  	spinlock_t lock;
-> @@ -177,8 +187,9 @@ void sgx_record_epc_page(struct sgx_epc_page *page, u=
-nsigned long flags);
->  int sgx_drop_epc_page(struct sgx_epc_page *page);
->  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
->  bool sgx_epc_oom(struct sgx_epc_lru_lists *lrus);
-> -size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age);
-> -void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *lrus, size_t nr_to_=
-scan,
-> +size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool ignore_age,
-> +			     struct sgx_epc_cgroup *epc_cg);
-> +void sgx_isolate_epc_pages(struct sgx_epc_lru_lists *lrus, size_t *nr_to=
-_scan,
->  			   struct list_head *dst);
-> =20
->  void sgx_ipi_cb(void *info);
-> --=20
-> 2.25.1
-
-BR, Jarkko
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBXZWRuZXNkYXks
+IFNlcHRlbWJlciAxMywgMjAyMyA2OjQxIFBNDQo+IFRvOiBNYXR5YXMsIERhbmllbCA8RGFuaWVs
+Lk1hdHlhc0BhbmFsb2cuY29tPg0KPiBDYzogSmVhbiBEZWx2YXJlIDxqZGVsdmFyZUBzdXNlLmNv
+bT47IEd1ZW50ZXIgUm9lY2sgPGxpbnV4QHJvZWNrLQ0KPiB1cy5uZXQ+OyBSb2IgSGVycmluZyA8
+cm9iaCtkdEBrZXJuZWwub3JnPjsgS3J6eXN6dG9mIEtvemxvd3NraQ0KPiA8a3J6eXN6dG9mLmtv
+emxvd3NraStkdEBsaW5hcm8ub3JnPjsgQ29ub3IgRG9vbGV5DQo+IDxjb25vcitkdEBrZXJuZWwu
+b3JnPjsgSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRAbHduLm5ldD47IGxpbnV4LQ0KPiBod21vbkB2
+Z2VyLmtlcm5lbC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj4ga2Vy
+bmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtZG9jQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0
+OiBSZTogW1BBVENIIDIvNF0gZHQtYmluZGluZ3M6IGh3bW9uOiBBZGRlZCBuZXcgcHJvcGVydGll
+cyB0bw0KPiB0aGUgZGV2aWNldHJlZQ0KPiANCj4gW0V4dGVybmFsXQ0KPiANCj4gT24gMTMvMDkv
+MjAyMyAxNzoyMSwgRGFuaWVsIE1hdHlhcyB3cm90ZToNCj4gDQo+IFN1YmplY3Q6IG5vdCBtdWNo
+IGltcHJvdmVkLiBJIGFtIHNvcnJ5LCBidXQgeW91IGFyZSBub3QgYWRkaW5nIG5ldw0KPiBwcm9w
+ZXJ0aWVzIHRvIGVudGlyZSBkZXZpY2V0cmVlIG9mIGVudGlyZSB3b3JsZC4gWW91IGFyZSBhY3R1
+YWxseSBub3QNCj4gYWRkaW5nIGFueXRoaW5nIHRvIGFueSBkZXZpY2V0cmVlLCBiZWNhdXNlIHRo
+ZXNlIGFyZSBiaW5kaW5ncyAod2hpY2ggaXMNCj4gb2J2aW91cywgYXMgc2FpZCBieSBwcmVmaXgp
+Lg0KPiANCj4gWW91IGdvdCBjb21tZW50cyBvbiB0aGlzLg0KPiANCj4gPiBUaGVzZSBhdHRyaWJ1
+dGVzIGFyZToNCj4gPiAJLSBhZGksY29tcC1pbnQgLSBib29sZWFuIHByb3BlcnR5DQo+ID4gCS0g
+YWRpLGFscm0tcG9sIC0gY2FuIGJlIDAsIDEgKGlmIG5vdCBwcmVzZW50LCBkZWZhdWx0IHZhbHVl
+KQ0KPiA+IAktIGFkaSxmbHQtcSAtIGNhbiBiZSAxLCAyLCA0LCA4IChpZiBub3QgcHJlc2VudCwg
+ZGVmYXVsdCB2YWx1ZSkNCj4gPiAJLSBhZGksdGltZW91dC1lbmFibGUgLSBib29sZWFuIHByb3Bl
+cnR5DQo+IA0KPiBEb24ndCByZXBlYXQgd2hhdCB0aGUgY29kZSBkb2VzLiBFeHBsYWluIHdoeSB5
+b3UgYXJlIGFkZGluZyBpdCwgd2hhdCBpcw0KPiB0aGUgcHVycG9zZS4NCj4gDQo+ID4NCj4gPiBU
+aGVzZSBtb2RpZnkgdGhlIGNvcnJlc3BvbmRpbmcgYml0cyBpbiB0aGUgY29uZmlndXJhdGlvbiBy
+ZWdpc3Rlci4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBNYXR5YXMgPGRhbmllbC5t
+YXR5YXNAYW5hbG9nLmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL2JpbmRpbmdzL2h3bW9uL2FkaSxt
+YXgzMTgyNy55YW1sICAgICAgICAgIHwgMzUNCj4gKysrKysrKysrKysrKysrKysrKw0KPiA+ICAx
+IGZpbGUgY2hhbmdlZCwgMzUgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdA0KPiBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9od21vbi9hZGksbWF4MzE4MjcueWFt
+bA0KPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2h3bW9uL2FkaSxtYXgz
+MTgyNy55YW1sDQo+ID4gaW5kZXggMmRjOGIwN2I0ZDNiLi42YmRlNzFiZGI4ZGQgMTAwNjQ0DQo+
+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2h3bW9uL2FkaSxtYXgz
+MTgyNy55YW1sDQo+ID4gKysrDQo+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L2h3bW9uL2FkaSxtYXgzMTgyNy55YW1sDQo+ID4gQEAgLTMyLDYgKzMyLDM3IEBAIHByb3BlcnRp
+ZXM6DQo+ID4gICAgICAgIE11c3QgaGF2ZSB2YWx1ZXMgaW4gdGhlIGludGVydmFsICgxLjZWOyAz
+LjZWKSBpbiBvcmRlciBmb3IgdGhlIGRldmljZQ0KPiB0bw0KPiA+ICAgICAgICBmdW5jdGlvbiBj
+b3JyZWN0bHkuDQo+ID4NCj4gPiArICBhZGksY29tcC1pbnQ6DQo+ID4gKyAgICBkZXNjcmlwdGlv
+bjoNCj4gPiArICAgICAgSWYgcHJlc2VudCBpbnRlcnJ1cHQgbW9kZSBpcyB1c2VkLiBJZiBub3Qg
+cHJlc2VudCBjb21wYXJhdG9yIG1vZGUNCj4gaXMgdXNlZA0KPiA+ICsgICAgICAoZGVmYXVsdCku
+DQo+IA0KPiBXaHkgdGhpcyBpcyBhIHByb3BlcnR5IG9mIGhhcmR3YXJlPw0KPiANCj4gPiArICAg
+IHR5cGU6IGJvb2xlYW4NCj4gPiArDQo+ID4gKyAgYWRpLGFscm0tcG9sOg0KPiA+ICsgICAgZGVz
+Y3JpcHRpb246DQo+ID4gKyAgICAgIFNldHMgdGhlIGFsYXJtcyBhY3RpdmUgc3RhdGUuDQo+ID4g
+KyAgICAgICAgICAgIC0gMCA9IGFjdGl2ZSBsb3cNCj4gPiArICAgICAgICAgICAgLSAxID0gYWN0
+aXZlIGhpZ2gNCj4gPiArICAgICAgRm9yIG1heDMxODI3IGFuZCBtYXgzMTgyOCB0aGUgZGVmYXVs
+dCBhbGFybSBwb2xhcml0eSBpcyBsb3cuIEZvcg0KPiBtYXgzMTgyOQ0KPiA+ICsgICAgICBpdCBp
+cyBoaWdoLg0KPiA+ICsgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMv
+dWludDMyDQo+ID4gKyAgICBlbnVtOiBbMCwgMV0NCj4gPiArDQo+ID4gKyAgYWRpLGZsdC1xOg0K
+PiA+ICsgICAgZGVzY3JpcHRpb246DQo+ID4gKyAgICAgIFNlbGVjdCBob3cgbWFueSBjb25zZWN1
+dGl2ZSB0ZW1wZXJhdHVyZSBmYXVsdHMgbXVzdCBvY2N1cg0KPiBiZWZvcmUNCj4gPiArICAgICAg
+b3ZlcnRlbXBlcmF0dXJlIG9yIHVuZGVydGVtcGVyYXR1cmUgZmF1bHRzIGFyZSBpbmRpY2F0ZWQg
+aW4gdGhlDQo+ID4gKyAgICAgIGNvcnJlc3BvbmRpbmcgc3RhdHVzIGJpdHMuDQo+ID4gKyAgICAg
+IEZvciBtYXgzMTgyNyBkZWZhdWx0IGZhdWx0IHF1ZXVlIGlzIDEuIEZvciBtYXgzMTgyOCBhbmQg
+bWF4MzE4MjkNCj4gaXQgaXMgNC4NCj4gPiArICAgICRyZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwj
+L2RlZmluaXRpb25zL3VpbnQzMg0KPiA+ICsgICAgZW51bTogWzEsIDIsIDQsIDhdDQo+ID4gKw0K
+PiA+ICsgIGFkaSx0aW1lb3V0LWVuYWJsZToNCj4gPiArICAgIGRlc2NyaXB0aW9uOg0KPiA+ICsg
+ICAgICBFbmFibGVzIHRpbWVvdXQuIEJ1cyB0aW1lb3V0IHJlc2V0cyB0aGUgSTJDLWNvbXBhdGli
+bGUgaW50ZXJmYWNlDQo+IHdoZW4gU0NMDQo+ID4gKyAgICAgIGlzIGxvdyBmb3IgbW9yZSB0aGFu
+IDMwbXMgKG5vbWluYWwpLg0KPiANCj4gV2h5IHRoaXMgaXMgYSBwcm9wZXJ0eSBvZiBoYXJkd2Fy
+ZT8NCj4gDQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQpUaGFuayB5b3UgZm9y
+IHlvdXIgcXVpY2sgcmVwbHksIEtyenlzenRvZiEgSSBkbyBub3Qga25vdyBleGFjdGx5IHdoeSBk
+b2VzIGFyZQ0KYSBwcm9wZXJ0eSBvZiBoYXJkd2FyZS4gSSBqdXN0IGRpZCB3aGF0IEd1ZW50ZXIg
+c3VnZ2VzdGVkIGhlcmU6DQpodHRwczovL21hcmMuaW5mby8/bD1saW51eC1pMmMmbT0xNjkyMDE3
+OTU3MTU2ODcmdz0yDQphbmQgaGVyZToNCmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJv
+amVjdC9saW51eC1od21vbi9wYXRjaC8yMDIzMDkxMTA4MzczNS4xMTc5NS0yLWRhbmllbC5tYXR5
+YXNAYW5hbG9nLmNvbS8NCg0KRGFuaWVsDQoNCg==
