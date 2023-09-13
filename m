@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3466D79E1F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDB079E1FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238532AbjIMIYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S238745AbjIMIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238745AbjIMIYh (ORCPT
+        with ESMTP id S234331AbjIMIZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:24:37 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DFA1998
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:24:32 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31f615afa52so6926130f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694593471; x=1695198271; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ggBtgbLm5SRuIxjEQCR6fuKEBJ2k5vc95TNuMoN5/ZQ=;
-        b=DDaOo+qw7hHbp4PDorXm6rDfWBnPLe9yv8JtiqRd0/wmNz0sA2YMq8xcsRog8qalC3
-         PsF6U3EBmt5RPXDOGLiYmNmDMiZUKEau0BNorIJZaBnXDzNPDpo2xuXyLdnu8wywxu+E
-         pNo10dXTbvsi/e3yKeBV5IfD8M9r3kVHA9QsmA7Fg2Nr6ELTZO1O7UKSPTp8UtEtgYE8
-         pilvmSKP0uEsdl+ILmtT+SgTlhEOvj4YFRam8nuu7ilQZupT7U1/AeiNFevRFlKmAv7J
-         T1d2kZSLXnHNzXL9M8jxAWHwnaEmMBRlZkg7GUeiT/vc9//HIJRqmrJNa8u/j6jOtJMG
-         /Y3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694593471; x=1695198271;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ggBtgbLm5SRuIxjEQCR6fuKEBJ2k5vc95TNuMoN5/ZQ=;
-        b=eJs++tb+R1NUEOO2la4j6+iKSq+N1ah3WhGWnZp/oTwjsUxq3ITm/tvRgBRjdb1YHD
-         FuN13gXJnz+VAeEvTk/khRjzaACJBmidd+RyMZFQZdVBpIs1A1jD2jTV4VSVeqf+Q2sq
-         mdw9UHwFiG0Ck1PTQ2I+JDXn7w6wF53uWdnIM2RK+33aDErDsaydvZlEt4/LR522ULtK
-         1reOr17swXKHYgyqkQUDv+Ff1l6/DdIvUbM+8DB6ivMo4uVbvoCNu4Y5Sfi6X2sD6ERQ
-         cC3yN+H7Mee86gnb3PBhAVfqg2tlR3DzHYkQeyeWCzHZXAxY0PAVtbyHDuqgDB5Y4KIP
-         WC8w==
-X-Gm-Message-State: AOJu0YzHUDzO2J+UJwmUZExXBNvBEh94AzOyGAwnjCfUTQhnXrB+rZMZ
-        3B4YMZPqSJLYjYjqTdx9CYa4qg==
-X-Google-Smtp-Source: AGHT+IFXabWAiPieo98hnbDGr9uxhTqkqa82VC7vCktG6bVMPMlapg+rIO/G/+Q7tHCURas6Bl2+Lg==
-X-Received: by 2002:a05:6000:1a54:b0:317:6470:3271 with SMTP id t20-20020a0560001a5400b0031764703271mr1425384wry.45.1694593471335;
-        Wed, 13 Sep 2023 01:24:31 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id z12-20020a1c4c0c000000b003fee6e170f9sm1274208wmf.45.2023.09.13.01.24.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 01:24:30 -0700 (PDT)
-Message-ID: <793f87d4-129c-33bc-38dd-b4b2c93dd241@linaro.org>
-Date:   Wed, 13 Sep 2023 10:24:28 +0200
+        Wed, 13 Sep 2023 04:25:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BF87E73
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:25:52 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-192-lGiFXdsMNTWbQGXrkH0Nsw-1; Wed, 13 Sep 2023 09:25:43 +0100
+X-MC-Unique: lGiFXdsMNTWbQGXrkH0Nsw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 13 Sep
+ 2023 09:25:40 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Wed, 13 Sep 2023 09:25:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     Mateusz Guzik <mjguzik@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>
+Subject: RE: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Topic: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Index: AQHZ23Vdq8Esj5k0zUGYupOb09r6RrAF7nHAgAAb1ICAABQQEIANxBwAgAGZkGCAAg/ggIAAEt9wgAAOawCAAM6MQA==
+Date:   Wed, 13 Sep 2023 08:25:40 +0000
+Message-ID: <e0228468e054426c9737530fed594ad0@AcuMS.aculab.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com>
+ <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
+ <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+ <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
+ <CAGudoHEuY1cMFStdRAjb8aWbHNqy8Pbeavk6tPB+u=rYzFDF+Q@mail.gmail.com>
+ <ed0ac0937cdf4bb99b273fc0396b46b9@AcuMS.aculab.com>
+ <CAHk-=wiXw+NSW6usWH31Y6n4CnF5LiOs_vJREb8_U290W9w3KQ@mail.gmail.com>
+ <fa01f553d57e436c8a7f5b1c2aae23a9@AcuMS.aculab.com>
+ <CAHk-=whC8TaarEhz2ie_w01r34hQHNCTiZLAs6e42ewP7+cvoA@mail.gmail.com>
+In-Reply-To: <CAHk-=whC8TaarEhz2ie_w01r34hQHNCTiZLAs6e42ewP7+cvoA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: interconnect: Add compatibles for
- SDX75
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, djakov@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com
-References: <1694513046-24064-1-git-send-email-quic_rohiagar@quicinc.com>
- <1694513046-24064-2-git-send-email-quic_rohiagar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1694513046-24064-2-git-send-email-quic_rohiagar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/09/2023 12:04, Rohit Agarwal wrote:
-> Add dt-bindings compatibles and interconnect IDs for
-> Qualcomm SDX75 platform.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTIgU2VwdGVtYmVyIDIwMjMgMjE6NDgNCj4g
+DQo+IE9uIFR1ZSwgMTIgU2VwdCAyMDIzIGF0IDEyOjQxLCBEYXZpZCBMYWlnaHQgPERhdmlkLkxh
+aWdodEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdoYXQgSSBmb3VuZCBzZWVtZWQgdG8g
+aW1wbHkgdGhhdCAncmVwIG1vdnNxJyB1c2VkIHRoZSBzYW1lIGludGVybmFsDQo+ID4gbG9naWMg
+YXMgJ3JlcCBtb3ZzYicgKHByZXR0eSBlYXN5IHRvIGRvIGluIGhhcmR3YXJlKQ0KPiANCj4gQ2hy
+aXN0Lg0KPiANCj4gSSB0b2xkIHlvdS4gSXQncyBwcmV0dHkgZWFzeSBpbiBoYXJkd2FyZSAgQVMg
+TE9ORyBBUyBJVCdTIEFMSUdORUQuDQo+IA0KPiBBbmQgaWYgaXQncyB1bmFsaWduZWQsICJyZXAg
+bW92c3EiIGlzIEZVTkRBTUVOVEFMTFkgSEFSREVSLg0KDQpGb3IgY2FjaGVkIG1lbW9yeSBpdCBv
+bmx5IGhhcyB0byBhcHBlYXIgdG8gaGF2ZSB1c2VkIDggYnl0ZQ0KYWNjZXNzZXMuDQpTbyBpbiB0
+aGUgc2FtZSB3YXkgdGhhdCAncmVwIG1vdnNiJyBjb3VsZCBiZSBvcHRpbWlzZWQgdG8gZG8NCmNh
+Y2hlIGxpbmUgc2l6ZWQgcmVhZHMgYW5kIHdyaXRlcyBldmVuIGlmIHRoZSBhZGRyZXNzIGFyZQ0K
+Y29tcGxldGVseSBtaXNhbGlnbmVkICdyZXAgbW92c3EnIGNvdWxkIHVzZSBleGFjdGx5IHRoZSBz
+YW1lDQpoYXJkd2FyZSBsb2dpYyB3aXRoIGEgYnl0ZSBjb3VudCB0aGF0IGlzIDggdGltZXMgbGFy
+Z2VyLg0KDQpUaGUgb25seSBzdWJ0bGV0eSBpcyB0aGF0IHRoZSByZWFkIGxlbmd0aCB3b3VsZCBu
+ZWVkIG1hc2tpbmcNCnRvIGEgbXVsdGlwbGUgb2YgOCBpZiB0aGVyZSBpcyBhIHBhZ2UgZmF1bHQg
+b24gYSBtaXNhbGlnbmVkDQpyZWFkIHNpZGUgKHNvIHRoYXQgYSBtdWx0aXBsZSBvZiA4IGJ5dGVz
+IHdvdWxkIGJlIHdyaXR0ZW4pLg0KVGhhdCB3b3VsZG4ndCByZWFsbHkgYmUgaGFyZC4NCg0KSSBk
+ZWZpbml0ZWx5IHNhdyBleGFjdGx5IHRoZSBzYW1lIG51bWJlciBvZiBieXRlcy9jbG9jaw0KZm9y
+ICdyZXAgbW92c2InIGFuZCAncmVwIG1vdnNxJyB3aGVuIHRoZSBkZXN0aW5hdGlvbiB3YXMNCm1p
+c2FsaWduZWQuDQpUaGUgYWxpZ25tZW50IG1hZGUgbm8gZGlmZmVyZW5jZSBleGNlcHQgdGhhdCBh
+IG11bHRpcGxlDQpvZiAzMiByYW4gKGFib3V0KSB0d2ljZSBhcyBmYXN0Lg0KSSBldmVuIGRvdWJs
+ZS1jaGVja2VkIHRoZSBkaXNhc3NlbWJseSB0byBtYWtlIHN1cmUgSSB3YXMNCnJ1bm5pbmcgdGhl
+IHJpZ2h0IGNvZGUuDQoNClNvIGl0IGxvb2tzIGxpa2UgdGhlIEludGVsIGhhcmR3YXJlIGVuZ2lu
+ZWVycyBoYXZlIHNvbHZlZA0KdGhlICdGVU5EQU1FTlRBTExZIEhBUkRFUicgcHJvYmxlbS4NCg0K
+CURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
+b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
+Mzk3Mzg2IChXYWxlcykNCg==
 
