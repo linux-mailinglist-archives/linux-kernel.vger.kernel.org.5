@@ -2,129 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843F979E3AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2978B79E3D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238946AbjIMJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S239015AbjIMJdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237229AbjIMJ31 (ORCPT
+        with ESMTP id S234521AbjIMJds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:29:27 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAF4EC;
-        Wed, 13 Sep 2023 02:29:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 15779218E8;
-        Wed, 13 Sep 2023 09:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694597362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3zkN0jprRlNgAWBNnwR9+n4RWOVj4MMw+4ONI9DbmTg=;
-        b=sy/7mX2iw7iKv8P9spaqJzKhuvhMTMG7zNwc5tSfPCX0r8mq5sC5YkIUe+u9AxXK4XSUqs
-        cR6JPoEcWTiAwdkObk2E+nbLNrdNFostv0/2Cn4Az6qCOMdUEl8g1Et3jILR0xBH8KbkpP
-        Ci0yCSTsutSN0D9fjp49FPxHDkzu0ck=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694597362;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3zkN0jprRlNgAWBNnwR9+n4RWOVj4MMw+4ONI9DbmTg=;
-        b=CNYrhCga/C9N/KHhBo2n4aWMUeeYw4VKE6KPB/ijC8ftosBsahMcvFujh2F7XJFh61XT6b
-        jBGdb8BTnnSy0jAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 05FCC13582;
-        Wed, 13 Sep 2023 09:29:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id j0s1APKAAWUvRAAAMHmgww
-        (envelope-from <chrubis@suse.cz>); Wed, 13 Sep 2023 09:29:22 +0000
-Date:   Wed, 13 Sep 2023 11:30:08 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        LTP List <ltp@lists.linux.it>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wei Gao <wegao@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Martin Doucha <mdoucha@suse.cz>
-Subject: Re: Qemu-arm64: LTP: cfs_bandwidth01: Unable to handle kernel NULL
- pointer dereference at virtual address 0000000000000038
-Message-ID: <ZQGBINUoRuEhTFwQ@yuki>
-References: <CA+G9fYvHhiiGKhNd=L9+xYFVwv0Q8k6gUBeFQGWCWw1cWhb50Q@mail.gmail.com>
+        Wed, 13 Sep 2023 05:33:48 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E561726
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:33:44 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qgMFW-00005k-SA; Wed, 13 Sep 2023 11:33:30 +0200
+Message-ID: <c54d19b8-eb5c-9977-b7e4-d2806054b5ae@pengutronix.de>
+Date:   Wed, 13 Sep 2023 11:33:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvHhiiGKhNd=L9+xYFVwv0Q8k6gUBeFQGWCWw1cWhb50Q@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 0/3] Support non-default LVDS data mapping for simple
+ panel
+Content-Language: en-US, de-DE
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Dan Carpenter <error27@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        kernel@pengutronix.de, patchwork-jzi@pengutronix.de
+References: <20230523-simplepanel_support_nondefault_datamapping-v4-0-e6e7011f34b5@pengutronix.de>
+From:   Johannes Zink <j.zink@pengutronix.de>
+In-Reply-To: <20230523-simplepanel_support_nondefault_datamapping-v4-0-e6e7011f34b5@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> Following kernel crash noticed on Linux stable-rc 6.5.3-rc1 on qemu-arm64 while
-> running LTP sched tests cases.
+Hi everyone,
+
+gentle ping - is there any feedback you can give me for moving this series forward?
+
+Best regards
+Johannes
+
+On 7/28/23 16:16, Johannes Zink wrote:
+> Some LVDS panels, such as the innolux,g101ice-l01 support multiple LVDS
+> data mapping modes, which can be configured by strapping a dataformat
+> pin on the display to a specific voltage.
 > 
-> This is not always reproducible.
-
-What the test does is to create three levels of cgroups, sets CPU
-quotas for them, runs bussy loop proceses in the groups and changes the
-quotas during the time the bussy processes runs.
-
-And the test is regression test for quite a few commits:
-
-commit 39f23ce07b9355d05a64ae303ce20d1c4b92b957
-Author: Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed May 13 15:55:28 2020 +0200
-
-    sched/fair: Fix unthrottle_cfs_rq() for leaf_cfs_rq list
-
-
-commit b34cb07dde7c2346dec73d053ce926aeaa087303
-Author: Phil Auld <pauld@redhat.com>
-Date:   Tue May 12 09:52:22 2020 -0400
-
-    sched/fair: Fix enqueue_task_fair() warning some more
-
-commit fe61468b2cbc2b7ce5f8d3bf32ae5001d4c434e9
-Author: Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri Mar 6 14:52:57 2020 +0100
-
-    sched/fair: Fix enqueue_task_fair warning
-
-commit 5ab297bab984310267734dfbcc8104566658ebef
-Author: Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri Mar 6 09:42:08 2020 +0100
-
-    sched/fair: Fix reordering of enqueue/dequeue_task_fair()
-
-commit 6d4d22468dae3d8757af9f8b81b848a76ef4409d
-Author: Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon Feb 24 09:52:14 2020 +0000
-
-    sched/fair: Reorder enqueue/dequeue_task_fair path
-
-commit fdaba61ef8a268d4136d0a113d153f7a89eb9984
-Author: Rik van Riel <riel@surriel.com>
-Date:   Mon Jun 21 19:43:30 2021 +0200
-
-    sched/fair: Ensure that the CFS parent is added after unthrottling
-
-
-Unless this is a random corruption we should look closer at scheduller
-changes.
+> This can be particularly useful for using the jeida-18 format, which
+> requires only 3 instead of 4 LVDS lanes.
+> 
+> This series moves the data-mapping property for LVDS panels in a
+> separate file and optionally adds it to simple-panel when matching to
+> the innolux,g101ice-l01 compatible. This property allows to override
+> the default data mapping set in the panel description in simple-panel.
+> 
+> The last patch in this series actually adds the driver support for
+> parsing the data format override device tree property and modifying the
+> corresponding values for bit per color and media bus format in the panel
+> descriptor.
+> 
+> Best regards
+> Johannes
+> 
+> ---
+> 
+> Changelog:
+> 
+> v3 -> v4:  - driver: worked in Dan's Feedback:
+>               - return with proper error in case the call into
+> 	       panel_simple_override_nondefault_lvds_datamapping()
+> 	       failed
+> 	     - drop the unneeded and ambiguous ret local value
+> 
+> - Link to v3: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v3-0-78ede374d3d9@pengutronix.de
+> v2 -> v3:  - dt bindings: Worked in Conor's and Laurent's Feedback
+> 	     (thanks for your review): Drop the chomping indicator
+> 	   - dt bindings: Worked in Laurent's Feedback: fix typos
+> 	   - driver: worked in Laurent's review findings:
+> 	     - extract function for fixing up the bus format
+> 	     - only call this function on LVDS panels
+> 	     - fix typo
+>             - Link to v2: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v2-0-87196f0d0b64@pengutronix.de
+> 
+> v1 -> v2:  - dt bindings: Worked in Rob's review findings (thanks for your
+>               review), refactored to use common include instead of duplication
+>             - driver: added missing error unwinding goto, as found by Dan
+>               Carpenter's test robot:
+>               Reported-by: kernel test robot <lkp@intel.com>
+>               Reported-by: Dan Carpenter <error27@gmail.com>
+>               Link: https://lore.kernel.org/r/202304160359.4LHmFOlU-lkp@intel.com/
+> 
+> To: David Airlie <airlied@gmail.com>
+> To: Daniel Vetter <daniel@ffwll.ch>
+> To: Rob Herring <robh+dt@kernel.org>
+> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> To: Conor Dooley <conor+dt@kernel.org>
+> To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> To: Thierry Reding <thierry.reding@gmail.com>
+> To: Neil Armstrong <neil.armstrong@linaro.org>
+> To: Sam Ravnborg <sam@ravnborg.org>
+> Cc: patchwork-jzi@pengutronix.de
+> Cc: kernel@pengutronix.de
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+> 
+> ---
+> 
+> ---
+> Johannes Zink (3):
+>        dt-bindings: display: move LVDS data-mapping definition to separate file
+>        dt-bindings: display: simple: support non-default data-mapping
+>        drm/panel-simple: allow LVDS format override
+> 
+>   .../bindings/display/lvds-data-mapping.yaml        | 84 ++++++++++++++++++++++
+>   .../devicetree/bindings/display/lvds.yaml          | 77 +++-----------------
+>   .../bindings/display/panel/panel-simple.yaml       | 26 ++++++-
+>   drivers/gpu/drm/panel/panel-simple.c               | 53 ++++++++++++++
+>   4 files changed, 171 insertions(+), 69 deletions(-)
+> ---
+> base-commit: 52920704df878050123dfeb469aa6ab8022547c1
+> change-id: 20230523-simplepanel_support_nondefault_datamapping-13c3f2ea28f8
+> 
+> Best regards,
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Pengutronix e.K.                | Johannes Zink                  |
+Steuerwalder Str. 21            | https://www.pengutronix.de/    |
+31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
+
