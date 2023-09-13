@@ -2,160 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C39379F08F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AD179F095
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbjIMRqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S231594AbjIMRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjIMRqR (ORCPT
+        with ESMTP id S231425AbjIMRqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:46:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6581219AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:13 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81841ef79bso113372276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:13 -0700 (PDT)
+        Wed, 13 Sep 2023 13:46:55 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FEA19AE
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:51 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-502a4f33440so73314e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694627172; x=1695231972; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ocbK288Al1DpwUeolIoLVHrflqgxdyru7h8mWey0wo=;
-        b=bRX+fw1+7a8iLbidTBYkBFr230SoMZaQINwo5EkmKFYmLyz9FO0777ON+9CDsoGgrP
-         RaIqSQ2eWPwWpntXBcu+yu6b6IDeZBcDQy76lEtrZOqoVYHIByG2RM18r0FkRlb0CsP1
-         t6uY/IL3he/h3anC+mQ/mBRJcfSJsFqXYbnGzHhnz8T+kFeBxbbqw8iTj/2EpoULBWSi
-         8rnbNQVjIejAYZNqTB4vhu9dmBzMVho3SkfEyZv0DYFIkFn6dxjx806hFB+K9XeNTHJy
-         a0gEN8EwkaivFPpkJcw+0ZzIxaXZM18f4G9XxABHYxy84fFWU7whDgIWALFZwAQfyMl/
-         LOZQ==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1694627209; x=1695232009; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GaTGM+r0T4ix55Ks/rV8r7oM4itiRsvvp6UH3VlxOdQ=;
+        b=nLNYT44B2Hmz5KRFu6b/7oFMIkxs6cpiAJOUCwiB5bgI3Fn6IOEU5hBc11IbhnzNNM
+         hP/1EppfpsYGdLS7IWWm/7gQyzQY8gMJkDAy/yLbdOvnFj70EJD4Xjw/xnwKxCa/0ZEz
+         AZjQR4YQEnovO2UtMQ2FyxVN4Y0dUpgtDc0vE7C68mlw0m61dYY2cUL6SFCfpgRcbPZV
+         /PvQZejQJezoB/6QvbnJUKazk8gQr8G4TBvHrjosHt9Ts7GEjG4TxzdvwpwL80bMCXOG
+         /2M4Qy18VF+oe+/zVsY87g177JveQm9zMunSJoEwIfgQATnH4IYHCzp6uM/8aESvQIBt
+         xsVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694627172; x=1695231972;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ocbK288Al1DpwUeolIoLVHrflqgxdyru7h8mWey0wo=;
-        b=fzc9yiCtq5F76h0smbG9SAy29/V+hTKWtHgOMslbJWyEqEd3erwj3gQTTjItTpNVpw
-         6AlwqznfwlvmGEBUPVxqrWH8+sQcVeX3ezpNhujt4JfhEl+cXiCEV0VXSWF3Or7xVexf
-         wHQqJR1edfcgPjbkQsnONWF/PfsWw2jGXUlaArcmOg9TJH4QgLZO+20UCCmL/ZxOOY9J
-         Ouv9QxRkD/MzCXMHXIRbcwgq0479N/UT/vGlkw8+MowRn0/kV0+tH+1UWrvFloi450tb
-         trFB9fxGX9UxNWygJvnnAKHiYU8rp8qCpYpqymc34os6Dgo4JcPfLOqJI/4I6IJfviiD
-         HAqw==
-X-Gm-Message-State: AOJu0YxQaHeSVsE93CES+DM21bH3huiCIz2/LUsP8NzQ/1JEP8BNixCY
-        5l2xqzSOeRqNfMCrKLK/CvrzFuh/Zcs=
-X-Google-Smtp-Source: AGHT+IEL/dshnjsgmjdfGSman4r0qxwjXyMs+hXHniVftyWUrPYv6azBgo0B81bsYJN3JcUy4Fmp/3PNp8E=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1102:b0:d0b:d8cd:e661 with SMTP id
- o2-20020a056902110200b00d0bd8cde661mr95997ybu.12.1694627172692; Wed, 13 Sep
- 2023 10:46:12 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 10:46:11 -0700
-In-Reply-To: <852b6fa117bf3767a99353d908bc566a5dd9c61a.1694599703.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1694599703.git.isaku.yamahata@intel.com> <852b6fa117bf3767a99353d908bc566a5dd9c61a.1694599703.git.isaku.yamahata@intel.com>
-Message-ID: <ZQH1YzB5YaeCwHii@google.com>
-Subject: Re: [RFC PATCH 4/6] KVM: guest_memfd: Implemnet bmap inode operation
-From:   Sean Christopherson <seanjc@google.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1694627209; x=1695232009;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GaTGM+r0T4ix55Ks/rV8r7oM4itiRsvvp6UH3VlxOdQ=;
+        b=dfOUQ85+1Xu+uQ3quMvxmZEtFz2xtgwfgi6Kvs9J+q7FCp/bhg/cPogl/0ZC/YRiHi
+         qrPMFqv9GoxckndMGEkEmgbznSwoeH8NTmIqsufqLv3duT0sP2tmaxNbNTNX0c99l5pY
+         DavlsBVHkcJkWtBANm/ADUjMiM6bZv+St8q/nNiuPniPE2aJa8XoyHpvOFswGeGUl3bq
+         hmq6MWD1bNmei9qyXCPpCoJhxsmQfDtvBPMD0NeFY0Y4pvBh0rOyDVa7uUmMOmihsiBJ
+         id0R/414gywJuGChXKFbsmZspmjBeVLk8koMbAT1i267tkpv7ACQ2LsF1tbxrXNkaxh9
+         KWGg==
+X-Gm-Message-State: AOJu0YwzKW7VvfvBpPSs9RzVVS63LB2gr1SKyu1I0MI1uSZtzqLDK/Lr
+        ty7C+mYs/VyRd1xv28cF3JK9OZ1sYndgBKrRv7HUwA==
+X-Google-Smtp-Source: AGHT+IE8E3aGdajd07Jo/Ih9J3B6jb58k/6rIP3DKaSrxVurSVnQGYrTxs5UZkMcis8uKeqpgsLkQQJT1GTPpmQeX2Q=
+X-Received: by 2002:a05:6512:3e26:b0:4fd:ddbc:1577 with SMTP id
+ i38-20020a0565123e2600b004fdddbc1577mr3100760lfv.2.1694627209317; Wed, 13 Sep
+ 2023 10:46:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230818194136.4084400-1-evan@rivosinc.com> <20230818194136.4084400-2-evan@rivosinc.com>
+ <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=Fw4jL3fcp4wO1etzQ@mail.gmail.com>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Wed, 13 Sep 2023 10:46:13 -0700
+Message-ID: <CALs-Hsvu7BsK8P0+xeuLmKEqg-q=kQANbf8FkiPGPhwhnSXpmA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] RISC-V: Probe for unaligned access speed
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-doc@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-riscv@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
+        Sia Jee Heng <jeeheng.sia@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Simon Hosie <shosie@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        linux-kernel@vger.kernel.org,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andy Chiu <andy.chiu@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> To inject memory failure, physical address of the page is needed.
-> Implement bmap() method to convert the file offset into physical address.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  virt/kvm/Kconfig     |  4 ++++
->  virt/kvm/guest_mem.c | 28 ++++++++++++++++++++++++++++
->  2 files changed, 32 insertions(+)
-> 
-> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-> index 624df45baff0..eb008f0e7cc3 100644
-> --- a/virt/kvm/Kconfig
-> +++ b/virt/kvm/Kconfig
-> @@ -115,3 +115,7 @@ config KVM_GENERIC_PRIVATE_MEM
->  
->  config HAVE_GENERIC_PRIVATE_MEM_HANDLE_ERROR
->  	bool
-> +
-> +config KVM_GENERIC_PRIVATE_MEM_BMAP
-> +	depends on KVM_GENERIC_PRIVATE_MEM
-> +	bool
-> diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
-> index 3678287d7c9d..90dfdfab1f8c 100644
-> --- a/virt/kvm/guest_mem.c
-> +++ b/virt/kvm/guest_mem.c
-> @@ -355,12 +355,40 @@ static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
->  	return MF_DELAYED;
->  }
->  
-> +#ifdef CONFIG_KVM_GENERIC_PRIVATE_MEM_BMAP
-> +static sector_t kvm_gmem_bmap(struct address_space *mapping, sector_t block)
-> +{
-> +	struct folio *folio;
-> +	sector_t pfn = 0;
-> +
-> +	filemap_invalidate_lock_shared(mapping);
-> +
-> +	if (block << PAGE_SHIFT > i_size_read(mapping->host))
-> +		goto out;
-> +
-> +	folio = filemap_get_folio(mapping, block);
-> +	if (IS_ERR_OR_NULL(folio))
-> +		goto out;
-> +
-> +	pfn = folio_pfn(folio) + (block - folio->index);
-> +	folio_put(folio);
-> +
-> +out:
-> +	filemap_invalidate_unlock_shared(mapping);
-> +	return pfn;
+On Wed, Sep 13, 2023 at 5:36=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Evan,
+>
+> On Fri, Aug 18, 2023 at 9:44=E2=80=AFPM Evan Green <evan@rivosinc.com> wr=
+ote:
+> > Rather than deferring unaligned access speed determinations to a vendor
+> > function, let's probe them and find out how fast they are. If we
+> > determine that an unaligned word access is faster than N byte accesses,
+> > mark the hardware's unaligned access as "fast". Otherwise, we mark
+> > accesses as slow.
+> >
+> > The algorithm itself runs for a fixed amount of jiffies. Within each
+> > iteration it attempts to time a single loop, and then keeps only the be=
+st
+> > (fastest) loop it saw. This algorithm was found to have lower variance =
+from
+> > run to run than my first attempt, which counted the total number of
+> > iterations that could be done in that fixed amount of jiffies. By takin=
+g
+> > only the best iteration in the loop, assuming at least one loop wasn't
+> > perturbed by an interrupt, we eliminate the effects of interrupts and
+> > other "warm up" factors like branch prediction. The only downside is it
+> > depends on having an rdtime granular and accurate enough to measure a
+> > single copy. If we ever manage to complete a loop in 0 rdtime ticks, we
+> > leave the unaligned setting at UNKNOWN.
+> >
+> > There is a slight change in user-visible behavior here. Previously, all
+> > boards except the THead C906 reported misaligned access speed of
+> > UNKNOWN. C906 reported FAST. With this change, since we're now measurin=
+g
+> > misaligned access speed on each hart, all RISC-V systems will have this
+> > key set as either FAST or SLOW.
+> >
+> > Currently, we don't have a way to confidently measure the difference be=
+tween
+> > SLOW and EMULATED, so we label anything not fast as SLOW. This will
+> > mislabel some systems that are actually EMULATED as SLOW. When we get
+> > support for delegating misaligned access traps to the kernel (as oppose=
+d
+> > to the firmware quietly handling it), we can explicitly test in Linux t=
+o
+> > see if unaligned accesses trap. Those systems will start to report
+> > EMULATED, though older (today's) systems without that new SBI mechanism
+> > will continue to report SLOW.
+> >
+> > I've updated the documentation for those hwprobe values to reflect
+> > this, specifically: SLOW may or may not be emulated by software, and FA=
+ST
+> > represents means being faster than equivalent byte accesses. The change
+> > in documentation is accurate with respect to both the former and curren=
+t
+> > behavior.
+> >
+> > Signed-off-by: Evan Green <evan@rivosinc.com>
+> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>
+> Thanks for your patch, which is now commit 584ea6564bcaead2 ("RISC-V:
+> Probe for unaligned access speed") in v6.6-rc1.
+>
+> On the boards I have, I get:
+>
+>     rzfive:
+>         cpu0: Ratio of byte access time to unaligned word access is
+> 1.05, unaligned accesses are fast
 
-IIUC, hijacking bmap() is a gigantic hack to propagate a host pfn to userspace
-without adding a new ioctl() or syscall.  If we want to support target injection,
-I would much, much rather add a KVM ioctl(), e.g. to let userspace inject errors
-for a gfn.  Returning a pfn for something that AFAICT has nothing to do with pfns
-is gross, e.g. the whole "0 is the error code" thing is technically wrong because
-'0' is a perfectly valid pfn.
+Hrm, I'm a little surprised to be seeing this number come out so close
+to 1. If you reboot a few times, what kind of variance do you get on
+this?
 
-My vote is to drop this and not extend the injection information for the initial
-merge, i.e. rely on point testing to verify kvm_gmem_error_page(), and defer adding
-uAPI to let selftests inject errors.
+>
+>     icicle:
+>
+>         cpu1: Ratio of byte access time to unaligned word access is
+> 0.00, unaligned accesses are slow
+>         cpu2: Ratio of byte access time to unaligned word access is
+> 0.00, unaligned accesses are slow
+>         cpu3: Ratio of byte access time to unaligned word access is
+> 0.00, unaligned accesses are slow
+>
+>         cpu0: Ratio of byte access time to unaligned word access is
+> 0.00, unaligned accesses are slow
+>
+>     k210:
+>
+>         cpu1: Ratio of byte access time to unaligned word access is
+> 0.02, unaligned accesses are slow
+>         cpu0: Ratio of byte access time to unaligned word access is
+> 0.02, unaligned accesses are slow
+>
+>     starlight:
+>
+>         cpu1: Ratio of byte access time to unaligned word access is
+> 0.01, unaligned accesses are slow
+>         cpu0: Ratio of byte access time to unaligned word access is
+> 0.02, unaligned accesses are slow
+>
+>     vexriscv/orangecrab:
+>
+>         cpu0: Ratio of byte access time to unaligned word access is
+> 0.00, unaligned accesses are slow
+>
+> I am a bit surprised by the near-zero values.  Are these expected?
+> Thanks!
 
-> +
-> +}
-> +#endif
-> +
->  static const struct address_space_operations kvm_gmem_aops = {
->  	.dirty_folio = noop_dirty_folio,
->  #ifdef CONFIG_MIGRATION
->  	.migrate_folio	= kvm_gmem_migrate_folio,
->  #endif
->  	.error_remove_page = kvm_gmem_error_page,
-> +#ifdef CONFIG_KVM_GENERIC_PRIVATE_MEM_BMAP
-> +	.bmap = kvm_gmem_bmap,
-> +#endif
->  };
->  
->  static int  kvm_gmem_getattr(struct mnt_idmap *idmap,
-> -- 
-> 2.25.1
-> 
+This could be expected, if firmware is trapping the unaligned accesses
+and coming out >100x slower than a native access. If you're interested
+in getting a little more resolution, you could try to print a few more
+decimal places with something like (sorry gmail mangles the whitespace
+on this):
+
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.=
+c
+index 1cfbba65d11a..2c094037658a 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -632,11 +632,11 @@ void check_unaligned_access(int cpu)
+        if (word_cycles < byte_cycles)
+                speed =3D RISCV_HWPROBE_MISALIGNED_FAST;
+
+-       ratio =3D div_u64((byte_cycles * 100), word_cycles);
+-       pr_info("cpu%d: Ratio of byte access time to unaligned word
+access is %d.%02d, unaligned accesses are %s\n",
++       ratio =3D div_u64((byte_cycles * 100000), word_cycles);
++       pr_info("cpu%d: Ratio of byte access time to unaligned word
+access is %d.%05d, unaligned accesses are %s\n",
+                cpu,
+-               ratio / 100,
+-               ratio % 100,
++               ratio / 100000,
++               ratio % 100000,
+                (speed =3D=3D RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "sl=
+ow");
+
+        per_cpu(misaligned_access_speed, cpu) =3D speed;
+
+If you did, I'd be interested to see the results.
+-Evan
