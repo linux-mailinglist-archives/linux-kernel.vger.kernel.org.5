@@ -2,146 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAEE79EB92
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F39279EBA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbjIMOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        id S241180AbjIMOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbjIMOue (ORCPT
+        with ESMTP id S230190AbjIMOvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:50:34 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E3FB7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:50:30 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-570096f51acso869808a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694616629; x=1695221429; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q41llD3aO1ZBdbxd4yEGR7UuhY6UnD3ZTPq+ctmbTzk=;
-        b=j2XQEjJAwF3a79kZbyVFFjs/4gUpLaNauNZrrSeekpWXr8Srj4P9psd0BOpPqQJUGL
-         GGjvUXWrC1ZsSRIt9ztMssW8VK7XG8Y7oWL0UiTObCKHo7iIEZ9b4xZgYODHWDCdpE0S
-         oOaFdZwOi7/ikDi+PMaL5dfddR2nilFkLPiaM4Du+FIJPUYIfX6Qdadir/Y5JlHvZlSj
-         XzTXB0lo9jxb9d6V9XJIanTSBKEiKjGpfVos/9Rc0JP2QyjrxrQGPwvHbjm7H5stdUfa
-         cuv46TNBQwnaACDN08ettIVGmQ1DeJNtXBKkhmF5HWL5T9LxGR/z99ogdG9a6kKfaozK
-         EM0A==
+        Wed, 13 Sep 2023 10:51:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3359CBB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694616653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=48dU2hQLagIX9Pt08ex4VtPwEkzu69KnmACTk65vyqM=;
+        b=SmPunnbk63JOIeDlEFY4SyMEudQEApGoa9etxptuCXALxxDchcouYiMHLipQe5mXz7rBoh
+        oTtbGbz45x0WFDh/4iHsHppG5UiXj3VBS3jfsCltq4lbm5P8vmCIrvPTntsTAtlwM3I8v+
+        5mySHhLeq5+E+7eipkYfOxM7DvQQ/yU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-170-Qz_T4v8gNZKT5wpOch3Myw-1; Wed, 13 Sep 2023 10:50:52 -0400
+X-MC-Unique: Qz_T4v8gNZKT5wpOch3Myw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a9d5e60944so446677666b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:50:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694616629; x=1695221429;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Q41llD3aO1ZBdbxd4yEGR7UuhY6UnD3ZTPq+ctmbTzk=;
-        b=Y1p0nXQJWIsd3vQJcYzPZqaXYjYp5BD0vagd2rrgRMUgVyd0OoAfceRtYoztOPAQRy
-         A3CYI/QLaoosQMKcb9R9Sx4zrUqXIrEqDRfJ/tcM7B5lEUXRgwSQ3Ki2FMbKnQUlWI15
-         FKTZl2TAKop1x3ebgThS9yUFNKbhyncoCXxn5ubXErUfYB9ijozZqS6faVGlK5yngTQH
-         vItHtL70M2w8hH72JArpbI9tgAfqC7+zfqckrrMMDZMFVGU/eoXbPIKxCRmaZrrE0ZFJ
-         NGoIwOavPoiXNAxAHil9z3g5Tk2ue+MRGYrn1CD9OekfNvmBsix0QpR/7MT6mpCF9iG8
-         ENCA==
-X-Gm-Message-State: AOJu0YyG/AIKI1m0vqEvY/uWqpiwrHWRC3VdHWqFIlltJRJVzcfjKA1n
-        USS/Srx3ahUANWYfVX1CUXnOYhR9TVA=
-X-Google-Smtp-Source: AGHT+IF6OLHFs3rc4zlDaaJJlMjjFatCSnlFXp9JVMtBirdNZQaMQNAvUPI9DJwp3ilRUBYHX9sLm/FMmBE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:348c:0:b0:563:dced:3f3a with SMTP id
- b134-20020a63348c000000b00563dced3f3amr127344pga.0.1694616629594; Wed, 13 Sep
- 2023 07:50:29 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 07:50:27 -0700
-In-Reply-To: <055482bec09cae1ea56f979893c6b67e9d6b26a2.camel@infradead.org>
-Mime-Version: 1.0
-References: <20230801034524.64007-1-likexu@tencent.com> <ZNa9QyRmuAjNAonC@google.com>
- <055482bec09cae1ea56f979893c6b67e9d6b26a2.camel@infradead.org>
-Message-ID: <ZQHMM8/7xXReZHdD@google.com>
-Subject: Re: [PATCH v4] KVM: x86/tsc: Don't sync user changes to TSC with
- KVM-initiated change
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Like Xu <like.xu.linux@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20230601; t=1694616651; x=1695221451;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=48dU2hQLagIX9Pt08ex4VtPwEkzu69KnmACTk65vyqM=;
+        b=FiPlonh+gI4sPREihRTcg+9QrQ8G7KLoLlBcwTTH8zU09lHsoRQh/HIitqT/Iect5V
+         fT4J8piMAOF34Dv7aYyx9BiFAzSDl7MXQJW9haHAo4Mmt8WQo1cCXrMXT8NuS4LRRXF1
+         N6uia6O08BTJQrLnAPNBEJJ/84r9hvArOvYV7mBnAnAFUDI48wu/s2Q8Zvx9M7QuXCjn
+         vrOi7DtayURsF6ZF6CgnBgQ0i6ls8W70Sp4QYhIEa+JIZUqjnIUav2a1QuhPqp/KGN7s
+         5qJxYP+CSy0WKiSQXeZZQ3R4z3sQmL2i4AMk7LfCDmDhuPfPY8d8rbx2p7jxvWdsxO2J
+         SlQw==
+X-Gm-Message-State: AOJu0YznR7UmfYNhCP5tU57JSJKzBILTVUGOVzyi9neZj4vo1kbeiWmI
+        zUyI+n911+rlC+ikaJOJlaLwXw1zqJqHLsdk9SpZdUKZ5ud7Koae131/2IABzwAlbNJyaLytyVS
+        Fd1WzLyqVgwdjJuHOSdvmvBZK
+X-Received: by 2002:a17:906:74c7:b0:9aa:1020:8c39 with SMTP id z7-20020a17090674c700b009aa10208c39mr2278131ejl.18.1694616650915;
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGhdz7s3zxkxrAka/iFct75EEOhxMraFKGaGoggnTBpq6sAIlALbnFygNuVs1AGvDyAjsOScA==
+X-Received: by 2002:a17:906:74c7:b0:9aa:1020:8c39 with SMTP id z7-20020a17090674c700b009aa10208c39mr2278116ejl.18.1694616650569;
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id n3-20020a17090695c300b0099bc8bd9066sm8613848ejy.150.2023.09.13.07.50.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 07:50:50 -0700 (PDT)
+Message-ID: <5cff2031-e25f-4222-4d1f-b0b7d87b355b@redhat.com>
+Date:   Wed, 13 Sep 2023 16:50:49 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/5] platform/x86: int3472/discrete: use
+ gpiod_set_active_low()
+Content-Language: en-US, nl
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20230913115001.23183-1-brgl@bgdev.pl>
+ <20230913115001.23183-5-brgl@bgdev.pl>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230913115001.23183-5-brgl@bgdev.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023, David Woodhouse wrote:
-> On Fri, 2023-08-11 at 15:59 -0700, Sean Christopherson wrote:
-> > On Tue, Aug 01, 2023, Like Xu wrote:
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index 278dbd37dab2..eeaf4ad9174d 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -2713,7 +2713,7 @@ static void __kvm_synchronize_tsc(struct kvm_vc=
-pu *vcpu, u64 offset, u64 tsc,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kvm_track_tsc_matchin=
-g(vcpu);
-> > > =C2=A0 }
-> > > =C2=A0=20
-> > > -static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-> > > +static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data, boo=
-l user_initiated)
-> >=20
-> > Rather than pass two somewhat magic values for the KVM-internal call, w=
-hat about
-> > making @data a pointer and passing NULL?
->=20
-> Why change that at all?
->=20
-> Userspace used to be able to force a sync by writing zero. You are
-> removing that from the ABI without any explanation about why;
+Hi,
 
-No, my suggestion did not remove that from the ABI.  A @user_value of '0' w=
-ould
-still force synchronization.
+On 9/13/23 13:50, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Use the new polarity setter instead of the more cumbersome toggle
+> function.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/platform/x86/intel/int3472/clk_and_regulator.c | 2 +-
+>  drivers/platform/x86/intel/int3472/led.c               | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/int3472/clk_and_regulator.c b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> index ef4b3141efcd..31e520838b95 100644
+> --- a/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> +++ b/drivers/platform/x86/intel/int3472/clk_and_regulator.c
+> @@ -183,7 +183,7 @@ int skl_int3472_register_gpio_clock(struct int3472_discrete_device *int3472,
+>  	}
+>  
+>  	if (polarity == GPIO_ACTIVE_LOW)
+> -		gpiod_toggle_active_low(int3472->clock.ena_gpio);
+> +		gpiod_set_active_low(int3472->clock.ena_gpio);
+>  
+>  	/* Ensure the pin is in output mode and non-active state */
+>  	gpiod_direction_output(int3472->clock.ena_gpio, 0);
+> diff --git a/drivers/platform/x86/intel/int3472/led.c b/drivers/platform/x86/intel/int3472/led.c
+> index bca1ce7d0d0c..46c9c569df5e 100644
+> --- a/drivers/platform/x86/intel/int3472/led.c
+> +++ b/drivers/platform/x86/intel/int3472/led.c
+> @@ -32,7 +32,7 @@ int skl_int3472_register_pled(struct int3472_discrete_device *int3472,
+>  				     "getting privacy LED GPIO\n");
+>  
+>  	if (polarity == GPIO_ACTIVE_LOW)
+> -		gpiod_toggle_active_low(int3472->pled.gpio);
+> +		gpiod_set_active_low(int3472->pled.gpio);
+>  
+>  	/* Ensure the pin is in output mode and non-active state */
+>  	gpiod_direction_output(int3472->pled.gpio, 0);
 
--static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 data)
-+static void kvm_synchronize_tsc(struct kvm_vcpu *vcpu, u64 *user_value)
- {
-+       u64 data =3D user_value ? *user_value : 0;  <=3D=3D=3D "*user_value=
-" is '0'
-        struct kvm *kvm =3D vcpu->kvm;
-        u64 offset, ns, elapsed;
-        unsigned long flags;
-@@ -2712,14 +2713,17 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *vc=
-pu, u64 data)
-        elapsed =3D ns - kvm->arch.last_tsc_nsec;
 
-        if (vcpu->arch.virtual_tsc_khz) {
-+               /*
-+                * Force synchronization when creating or hotplugging a vCP=
-U,
-+                * i.e. when the TSC value is '0', to help keep clocks stab=
-le.
-+                * If this is NOT a hotplug/creation case, skip synchroniza=
-tion
-+                * on the first write from userspace so as not to misconstr=
-ue
-+                * state restoration after live migration as an attempt fro=
-m
-+                * userspace to synchronize.
-+                */
-                if (data =3D=3D 0) { <=3D=3D "data" still '0', still forces=
- synchronization
--                       /*
--                        * detection of vcpu initialization -- need to sync
--                        * with other vCPUs. This particularly helps to kee=
-p
--                        * kvm_clock stable after CPU hotplug
--                        */
-                        synchronizing =3D true;
+Thanks. I agree that the new API is much better:
 
-> it doesn't seem necessary for fixing the original issue.
+Acked-by: Hans de Goede <hdegoede@redhat.com>
 
-It's necessary for "user_set_tsc" to be an accurate name.  The code in v6 y=
-ields
-"user_set_tsc_to_non_zero_value".  And I don't think it's just a naming iss=
-ue,
-e.g. if userspace writes '0' immediately after creating, and then later wri=
-tes a
-small delta, the v6 code wouldn't trigger synchronization because "user_set=
-_tsc"
-would be left unseft by the write of '0'.
+Feel free to merge this through the GPIO tree.
+
+Regards,
+
+Hans
+
+
+
