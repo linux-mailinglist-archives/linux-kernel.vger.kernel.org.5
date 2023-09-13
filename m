@@ -2,177 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290CC79E57E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0263279E584
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239839AbjIMK6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
+        id S239844AbjIMK6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239845AbjIMK6R (ORCPT
+        with ESMTP id S239854AbjIMK6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:58:17 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E833819B4;
-        Wed, 13 Sep 2023 03:58:10 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bc63e0d8cdso106900581fa.2;
-        Wed, 13 Sep 2023 03:58:10 -0700 (PDT)
+        Wed, 13 Sep 2023 06:58:42 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138F819B3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:58:38 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bc0d39b52cso50718045ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694602689; x=1695207489; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4TLaPjJGYtbUUUt+F/f79z+dkxxZ0mIyqX82iiNHCQ=;
-        b=MdLwo/5VdbXxKQ4WGN7kCw7GubUS/dCRh6cXWzO7BFioKy9ONzVNuScE7Rfxy/98kn
-         YuMWJQhbswTTLYhYBK5Va9nxurRXByj+ywoe50yZtlnq3gvxoK2MMUJbTa1O3FKp+D3V
-         NrMIukbMBnPNtm1sVesegegWFKBKde9g+QAjSiL2qoth0fzxynxehX+vScj/XWzRQ7XP
-         rJoGZJtg0nU3wqmzhtvYqEgJV/CQzg26yV/aCqOBsbup5e23NS8rb6/KR3FSANhjtM06
-         tbe5IOVE8pLph7i27QAHqrlMUeYU53gaLBYSjlAvoW5djPvGXDdyOpTea94tl3+7PEcs
-         LRzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694602689; x=1695207489;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1694602718; x=1695207518; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q4TLaPjJGYtbUUUt+F/f79z+dkxxZ0mIyqX82iiNHCQ=;
-        b=cqFT2hgwZH0K5W939tyPxNUNns1ZOe8CtX+rbzrMUSIhlpKh98jFKp7e3RAJge8Ap7
-         8U3ARWnm9zEL44aIYuoiYDwBKwgMvJnk++yqw96DNuwjLKXEbwdmIuRUVIvYGYIei0r7
-         iaf18WYodqyeR6GVkEPVaXfwkUKG6w8qYtE96qLs+QP5m6E672Mnti8A4ej2Byfu7oFJ
-         CuoJPQM2Q3jOjoG+5BNWNwu4ptn6/FsbOslaxY1gnbUfAtvtJz998f/P0ri2Im2EQc36
-         g3A/l86+757KNbU+opzjZOF/vnMRhl31YayKtXRogPxqUpLS8wrF4vKRxBmphc1hPEC0
-         NK9g==
-X-Gm-Message-State: AOJu0YzD6nXMbMfEyTji+ZbowMgQURDzQDUOBdEERZZJSfQRmEhC/zBV
-        VsGmPqdUP1E91huQ/fbW554=
-X-Google-Smtp-Source: AGHT+IFFyJ3lay9NUjZa8DkRXOc64IKh4AwAlNwAsNz+WvyuperImNu9KHg1tt3Nsri2FStsctBAPA==
-X-Received: by 2002:a2e:8349:0:b0:2bc:be93:6d3c with SMTP id l9-20020a2e8349000000b002bcbe936d3cmr1961460ljh.32.1694602688771;
-        Wed, 13 Sep 2023 03:58:08 -0700 (PDT)
-Received: from skbuf ([188.26.184.93])
-        by smtp.gmail.com with ESMTPSA id ga17-20020a170906b85100b009a1e0349c4csm8211559ejb.23.2023.09.13.03.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 03:58:08 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 13:58:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20230913105806.g5p3wck675gbw5fo@skbuf>
-References: <20230911165848.0741c03c@wsk>
- <20230911160501.5vc4nttz6fnww56h@skbuf>
- <20230912101748.0ca4eec8@wsk>
- <20230912092909.4yj4b2b4xrhzdztu@skbuf>
- <20230912160326.188e1d13@wsk>
- <20230912160326.188e1d13@wsk>
- <20230912142644.u4sdkveei3e5hwaf@skbuf>
- <20230912170641.5bfc3cfe@wsk>
- <20230912215523.as4puqamj65dikip@skbuf>
- <20230913102219.773e38f8@wsk>
+        bh=slAYSc7DXITgYyvEajQT1IvP1sCKjir5q1RLHoLv0QE=;
+        b=lHXTy4V2/DPEia7bKMeROFxaQOdlYGrgTV7BJldEp6x/Fd06NbiAefV/ei1jb4z8zn
+         XSF5hGrqCjECzK0fYkWOV+ZrmCtALJZZX3kWneeXwg/U29spaRzY//EIKdLIUYNqamNl
+         C/mZcnsZtWE+ZmP3r7l8b5Phghout9bxNpd/gY93h/UrOi8PXm8wUuhWlCU44TXqz7yw
+         4Ag0aq8YjZNrn021jW8aknOZfOEpfloRuQ+6LEqj48caZwobJpe2b4EF3t1xGlh9fpM9
+         zElTb3UU0unDs0SBVJhObm0lZ/Y6vzrnfX4MonpwhvUwlW/U4i/zpMEIpUUEMfzOkU/z
+         hOqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694602718; x=1695207518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=slAYSc7DXITgYyvEajQT1IvP1sCKjir5q1RLHoLv0QE=;
+        b=iTyz3JyIgpEI68++lw7QHyBGJJH3stF7V0iOGG3QBHjp5vazBK5PC7iy8wJp9AToiS
+         0pgLyAqcTj6TFSSbOhE+DwRnRqhctbjTNGn/ItKeL+zNcRHxBhWEVt9n4aOEhj/52LZ4
+         0lbaRFyj1P6WQFS1y1F9Nn/zdJUheQXcLMm0mOHUr9lQWCvtSXXAWrTUKHJVcPu5P6ml
+         DJKvywluMTQdKnmM78HspKs1AVnQ9sa+cOFVKsvYBvP8HomZGJDt2PiCTiWAhbkil0fQ
+         kZy7y2KH/1HN6FMbXr3v49/XkFkOsgkE1hcOgYRsr/WV5GbMgc76PS/TX6q+qTcsyh7n
+         A2gA==
+X-Gm-Message-State: AOJu0YxUZqU1DQ8z9OqYP2SwHut6u6PA3LO8sXWW2a9V5BfgWmntI3hf
+        c72WsvQVOIh2IhZSCuUX+RRI27uyjDgrfnBk/tbShg==
+X-Google-Smtp-Source: AGHT+IHhp8xAYoISqZ8W0p9FXmeWV3zP/Z5Om6OyMdci0swqhikS+acjYkCBKmSioXQ31oB/6sDWnxOU/OnMAcLT9Wg=
+X-Received: by 2002:a17:90b:1892:b0:273:f017:cac0 with SMTP id
+ mn18-20020a17090b189200b00273f017cac0mr1714830pjb.39.1694602718311; Wed, 13
+ Sep 2023 03:58:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913102219.773e38f8@wsk>
+References: <20230912174928.528414-1-apatel@ventanamicro.com>
+ <20230912174928.528414-4-apatel@ventanamicro.com> <CAGETcx8vXifmS2U5PTtmBySA=dih3GUOQ93A_qA5nm3faQqcGg@mail.gmail.com>
+In-Reply-To: <CAGETcx8vXifmS2U5PTtmBySA=dih3GUOQ93A_qA5nm3faQqcGg@mail.gmail.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 13 Sep 2023 16:28:25 +0530
+Message-ID: <CAK9=C2Wj0=2NNaXLBbNOcmHaJfV4DpAXqSayQtqF0eHsbki3_A@mail.gmail.com>
+Subject: Re: [PATCH v8 03/16] of: property: Add fw_devlink support for msi-parent
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 10:22:19AM +0200, Lukasz Majewski wrote:
-> Why we cannot have even simpler solution - in the HSR/Wol code we read
-> content of REG_SW_MAC_ADDR_0 (the actually programmed MAC) and:
-> 
-> - If not programmed - use DSA master one (like done in mine patches)
+On Wed, Sep 13, 2023 at 4:30=E2=80=AFAM Saravana Kannan <saravanak@google.c=
+om> wrote:
+>
+> On Tue, Sep 12, 2023 at 10:50=E2=80=AFAM Anup Patel <apatel@ventanamicro.=
+com> wrote:
+> >
+> > This allows fw_devlink to create device links between consumers of
+> > a MSI and the supplier of the MSI.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/of/property.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > index cf8dacf3e3b8..758ea822e46d 100644
+> > --- a/drivers/of/property.c
+> > +++ b/drivers/of/property.c
+> > @@ -1267,6 +1267,7 @@ DEFINE_SIMPLE_PROP(resets, "resets", "#reset-cell=
+s")
+> >  DEFINE_SIMPLE_PROP(leds, "leds", NULL)
+> >  DEFINE_SIMPLE_PROP(backlight, "backlight", NULL)
+> >  DEFINE_SIMPLE_PROP(panel, "panel", NULL)
+> > +DEFINE_SIMPLE_PROP(msi_parent, "msi-parent", "#msi-cells")
+> >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+> >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> >
+> > @@ -1361,6 +1362,7 @@ static const struct supplier_bindings of_supplier=
+_bindings[] =3D {
+> >         { .parse_prop =3D parse_regulators, },
+> >         { .parse_prop =3D parse_gpio, },
+> >         { .parse_prop =3D parse_gpios, },
+> > +       { .parse_prop =3D parse_msi_parent, },
+>
+> Please follow the same ordering here as the DEFINE_SIMPLE_PROP macros.
+> So, this should come after the panel one.
+>
 
-You said here https://lore.kernel.org/netdev/20230912160326.188e1d13@wsk/
-that using the DSA master address is a complication that can be avoided,
-no? So why is it now part of the solution that you propose?
+Okay, I will update in the next revision.
 
-I thought we were in agreement to program the actual DSA user ports' MAC
-addresses to hardware.
-
-> - If already programmed:
-> 	 - check if equal to DSA master - proceed with HSR.
-> 	 - if not equal to DSA master (e.g. WoL altered) - exit HSR join
-> 	   with information that offloading is not possible
-
-With KSZ switches, a single CPU port is supported, so all ports share
-the same DSA master. So if the contents of REG_SW_MAC_ADDR_0 is different
-from the DSA master (the same DSA master that was used for an earlier
-HSR offload), why do you infer that it was altered by WoL? It makes no
-sense.
-
-> Then, the content of REG_SW_MAC_ADDR_X would determine what to do with
-> it.
-> 
-> > There are probably hundreds of implementations of this idea in the
-> > kernel, but the one that comes to my mind is ocelot_mirror_get() +
-> > ocelot_mirror_put(). Again, I need to mention that I know that port
-> > mirroring != HSR - I'm just talking about the technique.
-> > 
-> > There is one more thing that your reply to my observation fails to
-> > address. Even with this refcount thing, you will still need to add
-> > code to dsa_slave_set_mac_address() which notifies the ksz driver, so
-> > that the driver can refuse MAC address changes, which would break the
-> > offloads. Ack?
-> 
-> And the above problem is not related to the DSA slave address change
-> discussed earlier?
-
-"Discussed earlier" is a bit imprecise and I don't know what you're
-talking about.
-
-There are 3 netdev kinds at play here: (a) DSA master, (b) DSA user port, (c) HSR device.
-
-- Changing the MAC address of (a) triggers a pre-existing bug. That bug
-  can be separated from the HSR offload discussion if the HSR offload
-  decides to not program the DSA master's MAC address to hardware, but a
-  different MAC address. The pre-existence of the DSA bug is not a strong
-  enough argument per se to avoid programming the DSA master's address to
-  hardware. But there may be others. Like the fact that DSA user ports may
-  inherit the DSA master's MAC address, or they may have their own.
-  Limiting HSR offload and WoL to just the "inherit" case may seem a bit
-  arbitrary, considering that the self-address filtering from
-  hsr_handle_frame() looks at the port_A and port_B MAC addresses.
-
-- Changing the MAC address of (c) does not seem directly possible, but:
-
-- Changing the MAC address of (b) also triggers (c) - see hsr_netdev_notify().
-  This is because the HSR driver makes sure that the addresses of
-  port_A, port_B and the HSR device are equal at all times.
-
-The simple matter is: if you program the MAC address of a netdev (any
-netdev) to hardware, then for a correct and robust implementation, you
-need to make sure that the hardware will always be in sync with that
-address, keeping in mind that the user may change it. Either you deny
-changes, or you update the hardware when the address is updated.
-
-It's not quite clear to me that you're making a distinction between
-changing (a) and (b).
-
-> > In principle it sounds like a plan. It just needs to be implemented.
-> 
-> To clarify:
-> 
-> 0. It looks like described above prevention from REG_SW_MAC_ADDR_X
-> overwriting and DSA slave port MAC address change are needed.
-> 
-> Then questions about time line:
-> 
-> 1. The HSR code is accepted without fixes from 0. and then when other
-> user (WoL) patches are posted problems from 0. needs to be addressed.
-> 
-> or 
-> 
-> 2. To accept the HSR code you (and other community members? Russell,
-> Andrew) require the fixes from 0. first. 
-
-If the DSA user port MAC address changes, and REG_SW_MAC_ADDR_0 was
-previously programmed with it, and nothing is done in reaction to this,
-then this is a problem with the HSR offload. So no, it's not just a
-problem with upcoming WoL patches as you imply. You need to integrate a
-solution to that problem as part of your HSR patches.
+Regards,
+Anup
