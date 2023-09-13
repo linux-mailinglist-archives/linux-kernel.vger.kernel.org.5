@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA97579E615
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F1279E651
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240321AbjIMLNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41196 "EHLO
+        id S239977AbjIMLOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240185AbjIMLMo (ORCPT
+        with ESMTP id S240154AbjIMLOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:12:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0C4269E;
-        Wed, 13 Sep 2023 04:11:55 -0700 (PDT)
+        Wed, 13 Sep 2023 07:14:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49892D4C;
+        Wed, 13 Sep 2023 04:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694603515; x=1726139515;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=VHUWoD/roHyj/qGPGu4h28TjTTN+mTvBmIXq8WsKj3s=;
-  b=SS7wly06czLFDVyX0y3+f6EAx3RHWrdjUbZAGKrJhJitlOVpBOlsZP8r
-   Q24Y/s0lYZYWiStcFy9Q/+GGWNRfHAwy8KvxG15Uw0RP5225/O9M/e+rE
-   vAJSjPJnSKyBDqdH2cSskffFZCawGbgSD+AeaNxOSRioeXaAuyNXdgDpM
-   E0MPVaNoUGso4SHPKCrkLWSBh2BS/OCWeeta2vxlrYzpFyOroQsUANngs
-   2AyqgnPURwApbumb7dGNygc623C0kwEQyCSp7qsLucRwrEk2Lx2dhd5pS
-   PYq05Hoh8l7MvR0QXRHm05ONXJiJm0TyAcp0c7KUWvYGpGvSaS+1iqpVr
+  t=1694603561; x=1726139561;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=tGJ4M6q95QKK9r+I8xoFUhp9gNf1DYxmXMPssTAzTm0=;
+  b=cSm2JPzVuP61ry5vjVpGqgiFCvbi4DQAL/IIjZR14Eamj+FagrM7u8xg
+   Gb0AZbEaVAY+unuhInFCb5W3TK7PihJHo9OPtwpy2y22I5tq4XVVKwwh6
+   LGOQWLbVOH3MABvF/ZiM2+chf0kJpcL8CJW6c8Q3jS+IL/7a9E/ITX7Xp
+   XiIKF1iE2jGMa/IUF+38RYRZwBNyLSky4Vg+mKT4oXS6c4SkrtPU0+uSw
+   Lz0Jdw5N2nDk5Ikb/CV6Ycf8DPNAyqMsnKhOuEpYyvO9Fkra2dy22mBwz
+   TjJCdXH8aYkBjfpNSfq6cPD+4rnymlF9Nt0f/IQ5aVo17/0ZQkSFBiSwM
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="377542830"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="358899934"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="377542830"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:11:54 -0700
+   d="scan'208";a="358899934"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:12:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="779153211"
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="990879528"
 X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="779153211"
-Received: from pakurapo-mobl3.ger.corp.intel.com ([10.249.45.213])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:11:52 -0700
-Date:   Wed, 13 Sep 2023 14:11:49 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/5] selftests/resctrl: Remove duplicate feature check
- from CMT test
-In-Reply-To: <40ba8890-32d1-e440-29fd-b8f8db69acc5@intel.com>
-Message-ID: <80695068-4a6-b8e9-107f-8d29ab3543be@linux.intel.com>
-References: <20230911111930.16088-1-ilpo.jarvinen@linux.intel.com> <20230911111930.16088-3-ilpo.jarvinen@linux.intel.com> <40ba8890-32d1-e440-29fd-b8f8db69acc5@intel.com>
+   d="scan'208";a="990879528"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:12:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qgNnO-008qa5-20;
+        Wed, 13 Sep 2023 14:12:34 +0300
+Date:   Wed, 13 Sep 2023 14:12:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: 8250_bcm7271: Use dev_err_probe() instead
+ of dev_err()
+Message-ID: <ZQGZItGcauus7l9F@smile.fi.intel.com>
+References: <20230912165550.402540-1-andriy.shevchenko@linux.intel.com>
+ <412c5225-e9c0-6a8d-1b39-2ce60cbf8074@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1605740400-1694603126=:1849"
-Content-ID: <6ca3d189-89cb-9f2-1b72-3c212a2531aa@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <412c5225-e9c0-6a8d-1b39-2ce60cbf8074@wanadoo.fr>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Sep 12, 2023 at 08:20:49PM +0200, Christophe JAILLET wrote:
+> Le 12/09/2023 à 18:55, Andy Shevchenko a écrit :
 
---8323329-1605740400-1694603126=:1849
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <b25a55e8-9e13-4346-c9b4-9dc2c98a98@linux.intel.com>
+...
 
-On Tue, 12 Sep 2023, Reinette Chatre wrote:
-> On 9/11/2023 4:19 AM, Ilpo Järvinen wrote:
-> > The test runner run_cmt_test() in resctrl_tests.c checks for CMT
-> > feature and does not run cmt_resctrl_val() if CMT is not supported.
-> > Then cmt_resctrl_val() also check is CMT is supported.
-> > 
-> > Remove the duplicated feature check for CMT from cmt_resctrl_val().
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > Cc: <stable@vger.kernel.org>
+> > -			ret = dma_irq;
+> > -			dev_err(dev, "no IRQ resource info\n");
+> > +			dev_err_probe(dev, dma_irq, "no IRQ resource info\n");
 > 
-> This does not look like stable material to me. 
+> ret = dev_err_probe(dev, dma_irq, "no IRQ resource info\n");
 
-I know but when constructing this series I had 2 options:
+Good catch, thanks!
 
-Either convert also this when changing validate_resctrl_feature_request() 
-or remove this call entirely.
-
-Given it's duplicate of the other CMT check, I chose to just remove it 
-(which I'd do anyway). As patch 4/5 requires 3/5 which in turn requires 
-this, this has to go stable if 4/5 goes too.
+> >   			goto err1;
+> >   		}
 
 -- 
- i.
---8323329-1605740400-1694603126=:1849--
+With Best Regards,
+Andy Shevchenko
+
+
