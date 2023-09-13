@@ -2,225 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CCA79E28D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E590C79E231
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239066AbjIMIsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S238953AbjIMIdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239076AbjIMIsy (ORCPT
+        with ESMTP id S238880AbjIMIdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:48:54 -0400
-X-Greylist: delayed 971 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 01:48:49 PDT
-Received: from 1.mo582.mail-out.ovh.net (1.mo582.mail-out.ovh.net [46.105.56.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EF9E73
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:48:49 -0700 (PDT)
-Received: from director11.ghost.mail-out.ovh.net (unknown [10.109.146.213])
-        by mo582.mail-out.ovh.net (Postfix) with ESMTP id A18E826074
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:32:36 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-c88lw (unknown [10.110.103.253])
-        by director11.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 29CA21FD87;
-        Wed, 13 Sep 2023 08:32:34 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.98])
-        by ghost-submission-6684bf9d7b-c88lw with ESMTPSA
-        id ILxbD6JzAWVKNAAAV6PKcA
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 13 Sep 2023 08:32:34 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-98R00241428889-f3c2-4350-b7c2-ccf44e00b95d,
-                    DC2EF514C16DA978A4B56AB6E34F69DC0F88BBA7) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 91.157.108.232
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     airlied@gmail.com, daniel@ffwll.ch
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        christian.koenig@amd.com, dakr@redhat.com,
-        boris.brezillon@collabora.com, alexander.deucher@amd.com,
-        mripard@kernel.org, arthurgrillo@riseup.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] drm/tests: provide exit function
-Date:   Wed, 13 Sep 2023 11:32:23 +0300
-Message-Id: <20230913083223.28684-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Wed, 13 Sep 2023 04:33:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3F8E73
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:33:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E02C433C7;
+        Wed, 13 Sep 2023 08:33:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1694594007;
+        bh=rPnckKz1MYdU330yUqXYFeZi3oxOU3A8T8nVPMp+cqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jWV5kJiwtYCiyIJS3ly/pdMPInls1PpYW5bXT0tN2eCNBjowv/OPFIh/qTocAyw/s
+         M2uVSJULIW8QuLRmYMGYjdh0voDo5WygtEXbR6WrSF3bvtyq86LpADxXvDhaM1bd7s
+         2nJnbcd8wkvgTi6pIWIS9HREEwQ0k8iynw5tHqGo=
+Date:   Wed, 13 Sep 2023 10:33:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jonathan Bergh <bergh.jonathan@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] staging: vme_user: Fix block comments where '*' on
+ each line should be aligned
+Message-ID: <2023091339-mountain-asleep-9439@gregkh>
+References: <20230909184818.699987-1-bergh.jonathan@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 8332785210841409190
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedgtdegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpledurdduheejrddutdekrddvfedvpdefjedrheelrddugedvrdelkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekvddpmhhouggvpehsmhhtphhouhht
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230909184818.699987-1-bergh.jonathan@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Running drm_exec_test by modprobing the module I
-observe the following output:
+On Sat, Sep 09, 2023 at 08:48:18PM +0200, Jonathan Bergh wrote:
+> Fixed checkpatch warnings where lines with '*' in block comments should
+> be aligned and were not as well as incorrect tab spacings at the start of
+> comment lines.
+> 
+> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> ---
+>  drivers/staging/vme_user/vme_tsi148.h | 140 +++++++++++++-------------
+>  1 file changed, 70 insertions(+), 70 deletions(-)
+> 
+> diff --git a/drivers/staging/vme_user/vme_tsi148.h b/drivers/staging/vme_user/vme_tsi148.h
+> index dbdf5dabaf90..9748b7897527 100644
+> --- a/drivers/staging/vme_user/vme_tsi148.h
+> +++ b/drivers/staging/vme_user/vme_tsi148.h
+> @@ -251,28 +251,28 @@ static const int TSI148_LCSR_VIACK[8] = { 0, TSI148_LCSR_VIACK1,
+>   */
+>  #define TSI148_LCSR_VMEFL	0x250
+>  
+> -	/*
+> -	 * VME exception.
+> -	 * offset  260
+> +/*
+> + * VME exception.
+> + * offset  0x260
 
-[  424.471936] KTAP version 1
-[  424.471942] 1..1
-[  424.472446]     KTAP version 1
-[  424.472450]     # Subtest: drm_exec
-[  424.472453]     # module: drm_exec_test
-[  424.472459]     1..7
-[  424.479082] ==================================================================
-[  424.479095] BUG: KASAN: slab-use-after-free in drm_dev_put.part.0+0x4b/0x90 [drm]
-[  424.479426] Read of size 8 at addr ffff888132d3e028 by task kunit_try_catch/1866
-[  424.479436]
-[  424.479442] CPU: 1 PID: 1866 Comm: kunit_try_catch Tainted: G                 N 6.6.0-rc1-dirty #2
-[  424.479446] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[  424.479446] Call Trace:
-[  424.479446]  <TASK>
-[  424.479446]  dump_stack_lvl+0x43/0x60
-[  424.479446]  print_report+0xcf/0x660
-[  424.479446]  ? __virt_addr_valid+0xd9/0x160
-[  424.479446]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-[  424.479446]  kasan_report+0xda/0x110
-[  424.479446]  ? drm_dev_put.part.0+0x4b/0x90 [drm]
-[  424.479446]  drm_dev_put.part.0+0x4b/0x90 [drm]
-[  424.479446]  release_nodes+0x83/0x160
-[  424.479446]  devres_release_all+0xe6/0x130
-[  424.479446]  ? __pfx_devres_release_all+0x10/0x10
-[  424.479446]  ? mutex_unlock+0x80/0xd0
-[  424.479446]  ? __pfx_mutex_unlock+0x10/0x10
-[  424.479446]  device_unbind_cleanup+0x16/0xc0
-[  424.479446]  device_release_driver_internal+0x28b/0x2e0
-[  424.479446]  bus_remove_device+0x124/0x1d0
-[  424.479446]  device_del+0x23d/0x580
-[  424.479446]  ? __pfx_device_del+0x10/0x10
-[  424.479446]  ? kasan_set_track+0x21/0x30
-[  424.479446]  ? _raw_spin_lock_irqsave+0x98/0xf0
-[  424.479446]  platform_device_del.part.0+0x19/0xe0
-[  424.479446]  kunit_remove_resource+0xfa/0x140 [kunit]
-[  424.479446]  kunit_cleanup+0x47/0xa0 [kunit]
-[  424.479446]  ? __pfx_kunit_try_run_case_cleanup+0x10/0x10 [kunit]
-[  424.479446]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10 [kunit]
-[  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  424.479446]  kthread+0x184/0x1c0
-[  424.479446]  ? __pfx_kthread+0x10/0x10
-[  424.479446]  ret_from_fork+0x30/0x50
-[  424.479446]  ? __pfx_kthread+0x10/0x10
-[  424.479446]  ret_from_fork_asm+0x1b/0x30
-[  424.479446]  </TASK>
-[  424.479446]
-[  424.479446] Allocated by task 1865:
-[  424.479446]  kasan_save_stack+0x2f/0x50
-[  424.479446]  kasan_set_track+0x21/0x30
-[  424.479446]  __kasan_kmalloc+0xa6/0xb0
-[  424.479446]  __kmalloc+0x5d/0x160
-[  424.479446]  kunit_kmalloc_array+0x1c/0x50 [kunit]
-[  424.479446]  drm_exec_test_init+0xef/0x260 [drm_exec_test]
-[  424.479446]  kunit_try_run_case+0x6e/0x100 [kunit]
-[  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  424.479446]  kthread+0x184/0x1c0
-[  424.479446]  ret_from_fork+0x30/0x50
-[  424.479446]  ret_from_fork_asm+0x1b/0x30
-[  424.479446]
-[  424.479446] Freed by task 1866:
-[  424.479446]  kasan_save_stack+0x2f/0x50
-[  424.479446]  kasan_set_track+0x21/0x30
-[  424.479446]  kasan_save_free_info+0x27/0x40
-[  424.479446]  ____kasan_slab_free+0x166/0x1c0
-[  424.479446]  slab_free_freelist_hook+0x9f/0x1e0
-[  424.479446]  __kmem_cache_free+0x187/0x2d0
-[  424.479446]  kunit_remove_resource+0xfa/0x140 [kunit]
-[  424.479446]  kunit_cleanup+0x47/0xa0 [kunit]
-[  424.479446]  kunit_generic_run_threadfn_adapter+0x29/0x50 [kunit]
-[  424.479446]  kthread+0x184/0x1c0
-[  424.479446]  ret_from_fork+0x30/0x50
-[  424.479446]  ret_from_fork_asm+0x1b/0x30
-[  424.479446]
-[  424.479446] The buggy address belongs to the object at ffff888132d3e000
-[  424.479446]  which belongs to the cache kmalloc-256 of size 256
-[  424.479446] The buggy address is located 40 bytes inside of
-[  424.479446]  freed 256-byte region [ffff888132d3e000, ffff888132d3e100)
-[  424.479446]
-[  424.479446] The buggy address belongs to the physical page:
-[  424.479446] page:0000000092ff6551 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888132d3f600 pfn:0x132d3c
-[  424.479446] head:0000000092ff6551 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-[  424.479446] ksm flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-[  424.479446] page_type: 0xffffffff()
-[  424.479446] raw: 0017ffffc0000840 ffff888100042b40 ffffea00042c8000 dead000000000003
-[  424.479446] raw: ffff888132d3f600 000000008020001f 00000001ffffffff 0000000000000000
-[  424.479446] page dumped because: kasan: bad access detected
-[  424.479446]
-[  424.479446] Memory state around the buggy address:
-[  424.479446]  ffff888132d3df00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  424.479446]  ffff888132d3df80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  424.479446] >ffff888132d3e000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  424.479446]                                   ^
-[  424.479446]  ffff888132d3e080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  424.479446]  ffff888132d3e100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  424.479446] ==================================================================
-[  424.481686] Disabling lock debugging due to kernel taint
-[  424.484124]     not ok 1 sanitycheck
-[  424.492981]     ok 2 test_lock
-[  424.503610]     ok 3 test_lock_unlock
-[  424.515058]     ok 4 test_duplicates
-[  424.530453]     ok 5 test_prepare
-[  424.539099]     ok 6 test_prepare_array
-[  424.550730]     ok 7 test_multiple_loops
-[  424.550743] # drm_exec: pass:6 fail:1 skip:0 total:7
-[  424.550750] # Totals: pass:6 fail:1 skip:0 total:7
-[  424.550756] not ok 5 drm_exec
+This change is not documented :(
 
-The ouptut suggest the init function is allocating a drm_device
-that is not being freed. This patch provides the function and
-add it to the kunit_suite to produce the following result of
-the test:
+Also I have two 2/2 patches, yet they are both different :(
 
-[ 3363.342560] KTAP version 1
-[ 3363.342571] 1..1
-[ 3363.343090]     KTAP version 1
-[ 3363.343095]     # Subtest: drm_exec
-[ 3363.343098]     # module: drm_exec_test
-[ 3363.343103]     1..7
-[ 3363.353659]     ok 1 sanitycheck
-[ 3363.364281]     ok 2 test_lock
-[ 3363.375616]     ok 3 test_lock_unlock
-[ 3363.388741]     ok 4 test_duplicates
-[ 3363.402544]     ok 5 test_prepare
-[ 3363.413163]     ok 6 test_prepare_array
-[ 3363.424614]     ok 7 test_multiple_loops
-[ 3363.424630] # drm_exec: pass:7 fail:0 skip:0 total:7
-[ 3363.424637] # Totals: pass:7 fail:0 skip:0 total:7
-[ 3363.424643] ok 1 drm_exec
+Please fix this up and send a whole new series, properly versioned,
+as-is, I have no idea what to do here.
 
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
- drivers/gpu/drm/tests/drm_exec_test.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+thanks,
 
-diff --git a/drivers/gpu/drm/tests/drm_exec_test.c b/drivers/gpu/drm/tests/drm_exec_test.c
-index 563949d777dd..7ff6bc6467d4 100644
---- a/drivers/gpu/drm/tests/drm_exec_test.c
-+++ b/drivers/gpu/drm/tests/drm_exec_test.c
-@@ -42,6 +42,19 @@ static int drm_exec_test_init(struct kunit *test)
- 	return 0;
- }
- 
-+static void drm_exec_test_exit(struct kunit *test)
-+{
-+	struct drm_exec_priv *priv = test->priv;
-+
-+	drm_kunit_helper_free_device(test, priv->dev);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
-+
-+	drm_dev_put(priv->drm);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
-+
-+	kunit_kfree(test, priv);
-+}
-+
- static void sanitycheck(struct kunit *test)
- {
- 	struct drm_exec exec;
-@@ -204,6 +217,7 @@ static struct kunit_case drm_exec_tests[] = {
- static struct kunit_suite drm_exec_test_suite = {
- 	.name = "drm_exec",
- 	.init = drm_exec_test_init,
-+	.exit = drm_exec_test_exit,
- 	.test_cases = drm_exec_tests,
- };
- 
--- 
-2.39.2
-
+greg k-h
