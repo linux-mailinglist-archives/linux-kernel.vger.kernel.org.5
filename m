@@ -2,404 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 137C879F3F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40B179F3F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjIMVoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        id S232754AbjIMVqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbjIMVoO (ORCPT
+        with ESMTP id S230270AbjIMVqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:44:14 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDFB1724;
-        Wed, 13 Sep 2023 14:44:10 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DL8kqB006229;
-        Wed, 13 Sep 2023 21:43:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3ktUZzx4skK+EYkllRdew50DeWD6jEQFGMxfbmu3he4=;
- b=pveGPapC4PuUieN1USsCBtqXyrIhMt1iEr8jN9EEEzPCxVxpjRJfGBVuV5oiOnVzendk
- +nQWLz/bA6pPW1a1DQFRe4KUL+R2Zt2Laz4YGJuT1PipjssHAkQ+IvBhFvA2itd0F5+1
- +0uVK5mPWI0DGA1w/JnlwIX15Ohs+IG3ZG+MLW+Oi6D1ztIphA/LVO5IQ8e34PvC0Wxj
- 087RILH5cOBvTnahtqrhx65xAoBaQInXF16098X+XoYUUCTWHbMAlBK+gwgEho9ySo+5
- YE5qsq40/98TRf/ZQ8fmDHhiCiSgeLxWA/Bew4fys/CDqKaWasYXsFrV36i+WIUTgI65 UQ== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7w2wnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 21:43:45 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38DLhiil013917
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 21:43:44 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 13 Sep
- 2023 14:43:44 -0700
-Message-ID: <977a8de9-26ec-1789-4c72-fd36f34480c3@quicinc.com>
-Date:   Wed, 13 Sep 2023 14:43:43 -0700
+        Wed, 13 Sep 2023 17:46:15 -0400
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF4199F;
+        Wed, 13 Sep 2023 14:46:11 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,144,1688428800"; 
+   d="scan'208";a="238514835"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 21:46:08 +0000
+Received: from EX19MTAUEC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id 6D00360DE4;
+        Wed, 13 Sep 2023 21:46:07 +0000 (UTC)
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19MTAUEC002.ant.amazon.com (10.252.135.253) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Wed, 13 Sep 2023 21:45:54 +0000
+Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (10.15.97.110) by
+ mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Wed, 13 Sep 2023 21:45:54 +0000
+Received: by dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (Postfix, from userid 22993570)
+        id 9CB32207F8; Wed, 13 Sep 2023 21:45:54 +0000 (UTC)
+From:   Puranjay Mohan <puranjay12@gmail.com>
+To:     <puranjaymohan@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH bpf-next 0/1] bpf, arm64: support exceptions
+Date:   Wed, 13 Sep 2023 21:45:54 +0000
+Message-ID: <20230913214554.97356-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/8] drm/panel: nv3052c: Document known register names
-Content-Language: en-US
-To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
-CC:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-2-contact@jookia.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20230911090206.3121440-2-contact@jookia.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9n7pJaxv6ZzJzK1Yi8Sa6ZJRyfgg2cUS
-X-Proofpoint-GUID: 9n7pJaxv6ZzJzK1Yi8Sa6ZJRyfgg2cUS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_16,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- malwarescore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 bulkscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309130178
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kumar is working on adding exceptions to BPF and enabling it on x86 [1].
+I am working with him to enable it on ARM64 and will later do it for
+other architectures when the basic exceptions support is upstream.
 
+This patch enables the support on ARM64, all sefltests are passing:
 
-On 9/11/2023 2:01 AM, John Watts wrote:
-> Many of these registers have a known name in the public datasheet.
-> Document them as comments for reference.
-> 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->   .../gpu/drm/panel/panel-newvision-nv3052c.c   | 261 +++++++++---------
->   1 file changed, 132 insertions(+), 129 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> index 71e57de6d8b2..589431523ce7 100644
-> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> @@ -42,9 +42,9 @@ struct nv3052c_reg {
->   };
->   
->   static const struct nv3052c_reg nv3052c_panel_regs[] = {
-> -	{ 0xff, 0x30 },
-> -	{ 0xff, 0x52 },
-> -	{ 0xff, 0x01 },
-> +	// EXTC Command set enable, select page 1
-> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x01 },
-> +	// Mostly unknown registers
+# ./test_progs -a exceptions
+#74/1    exceptions/exception_throw_always_1:OK
+#74/2    exceptions/exception_throw_always_2:OK
+#74/3    exceptions/exception_throw_unwind_1:OK
+#74/4    exceptions/exception_throw_unwind_2:OK
+#74/5    exceptions/exception_throw_default:OK
+#74/6    exceptions/exception_throw_default_value:OK
+#74/7    exceptions/exception_tail_call:OK
+#74/8    exceptions/exception_ext:OK
+#74/9    exceptions/exception_ext_mod_cb_runtime:OK
+#74/10   exceptions/exception_throw_subprog:OK
+#74/11   exceptions/exception_assert_nz_gfunc:OK
+#74/12   exceptions/exception_assert_zero_gfunc:OK
+#74/13   exceptions/exception_assert_neg_gfunc:OK
+#74/14   exceptions/exception_assert_pos_gfunc:OK
+#74/15   exceptions/exception_assert_negeq_gfunc:OK
+#74/16   exceptions/exception_assert_poseq_gfunc:OK
+#74/17   exceptions/exception_assert_nz_gfunc_with:OK
+#74/18   exceptions/exception_assert_zero_gfunc_with:OK
+#74/19   exceptions/exception_assert_neg_gfunc_with:OK
+#74/20   exceptions/exception_assert_pos_gfunc_with:OK
+#74/21   exceptions/exception_assert_negeq_gfunc_with:OK
+#74/22   exceptions/exception_assert_poseq_gfunc_with:OK
+#74/23   exceptions/exception_bad_assert_nz_gfunc:OK
+#74/24   exceptions/exception_bad_assert_zero_gfunc:OK
+#74/25   exceptions/exception_bad_assert_neg_gfunc:OK
+#74/26   exceptions/exception_bad_assert_pos_gfunc:OK
+#74/27   exceptions/exception_bad_assert_negeq_gfunc:OK
+#74/28   exceptions/exception_bad_assert_poseq_gfunc:OK
+#74/29   exceptions/exception_bad_assert_nz_gfunc_with:OK
+#74/30   exceptions/exception_bad_assert_zero_gfunc_with:OK
+#74/31   exceptions/exception_bad_assert_neg_gfunc_with:OK
+#74/32   exceptions/exception_bad_assert_pos_gfunc_with:OK
+#74/33   exceptions/exception_bad_assert_negeq_gfunc_with:OK
+#74/34   exceptions/exception_bad_assert_poseq_gfunc_with:OK
+#74/35   exceptions/exception_assert_range:OK
+#74/36   exceptions/exception_assert_range_with:OK
+#74/37   exceptions/exception_bad_assert_range:OK
+#74/38   exceptions/exception_bad_assert_range_with:OK
+#74/39   exceptions/non-throwing fentry -> exception_cb:OK
+#74/40   exceptions/throwing fentry -> exception_cb:OK
+#74/41   exceptions/non-throwing fexit -> exception_cb:OK
+#74/42   exceptions/throwing fexit -> exception_cb:OK
+#74/43   exceptions/throwing extension (with custom cb) -> exception_cb:OK
+#74/44   exceptions/throwing extension -> global func in exception_cb:OK
+#74/45   exceptions/exception_ext_mod_cb_runtime:OK
+#74/46   exceptions/throwing extension (with custom cb) -> global func in exception_cb:OK
+#74/47   exceptions/exception_ext:OK
+#74/48   exceptions/non-throwing fentry -> non-throwing subprog:OK
+#74/49   exceptions/throwing fentry -> non-throwing subprog:OK
+#74/50   exceptions/non-throwing fentry -> throwing subprog:OK
+#74/51   exceptions/throwing fentry -> throwing subprog:OK
+#74/52   exceptions/non-throwing fexit -> non-throwing subprog:OK
+#74/53   exceptions/throwing fexit -> non-throwing subprog:OK
+#74/54   exceptions/non-throwing fexit -> throwing subprog:OK
+#74/55   exceptions/throwing fexit -> throwing subprog:OK
+#74/56   exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
+#74/57   exceptions/non-throwing fmod_ret -> non-throwing global subprog:OK
+#74/58   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/59   exceptions/non-throwing extension -> throwing subprog:OK
+#74/60   exceptions/non-throwing extension -> non-throwing subprog:OK
+#74/61   exceptions/non-throwing extension -> throwing global subprog:OK
+#74/62   exceptions/throwing extension -> throwing global subprog:OK
+#74/63   exceptions/throwing extension -> non-throwing global subprog:OK
+#74/64   exceptions/non-throwing extension -> main subprog:OK
+#74/65   exceptions/throwing extension -> main subprog:OK
+#74/66   exceptions/reject_exception_cb_type_1:OK
+#74/67   exceptions/reject_exception_cb_type_2:OK
+#74/68   exceptions/reject_exception_cb_type_3:OK
+#74/69   exceptions/reject_exception_cb_type_4:OK
+#74/70   exceptions/reject_async_callback_throw:OK
+#74/71   exceptions/reject_with_lock:OK
+#74/72   exceptions/reject_subprog_with_lock:OK
+#74/73   exceptions/reject_with_rcu_read_lock:OK
+#74/74   exceptions/reject_subprog_with_rcu_read_lock:OK
+#74/75   exceptions/reject_with_rbtree_add_throw:OK
+#74/76   exceptions/reject_with_reference:OK
+#74/77   exceptions/reject_with_cb_reference:OK
+#74/78   exceptions/reject_with_cb:OK
+#74/79   exceptions/reject_with_subprog_reference:OK
+#74/80   exceptions/reject_throwing_exception_cb:OK
+#74/81   exceptions/reject_exception_cb_call_global_func:OK
+#74/82   exceptions/reject_exception_cb_call_static_func:OK
+#74/83   exceptions/reject_multiple_exception_cb:OK
+#74/84   exceptions/reject_exception_throw_cb:OK
+#74/85   exceptions/reject_exception_throw_cb_diff:OK
+#74/86   exceptions/reject_set_exception_cb_bad_ret1:OK
+#74/87   exceptions/reject_set_exception_cb_bad_ret2:OK
+#74/88   exceptions/check_assert_eq_int_min:OK
+#74/89   exceptions/check_assert_eq_int_max:OK
+#74/90   exceptions/check_assert_eq_zero:OK
+#74/91   exceptions/check_assert_eq_llong_min:OK
+#74/92   exceptions/check_assert_eq_llong_max:OK
+#74/93   exceptions/check_assert_lt_pos:OK
+#74/94   exceptions/check_assert_lt_zero:OK
+#74/95   exceptions/check_assert_lt_neg:OK
+#74/96   exceptions/check_assert_le_pos:OK
+#74/97   exceptions/check_assert_le_zero:OK
+#74/98   exceptions/check_assert_le_neg:OK
+#74/99   exceptions/check_assert_gt_pos:OK
+#74/100  exceptions/check_assert_gt_zero:OK
+#74/101  exceptions/check_assert_gt_neg:OK
+#74/102  exceptions/check_assert_ge_pos:OK
+#74/103  exceptions/check_assert_ge_zero:OK
+#74/104  exceptions/check_assert_ge_neg:OK
+#74/105  exceptions/check_assert_range_s64:OK
+#74/106  exceptions/check_assert_range_u64:OK
+#74/107  exceptions/check_assert_single_range_s64:OK
+#74/108  exceptions/check_assert_single_range_u64:OK
+#74/109  exceptions/check_assert_generic:OK
+#74/110  exceptions/check_assert_with_return:OK
+#74      exceptions:OK
+Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
 
-Hi John,
+[1] https://lore.kernel.org/bpf/20230912233214.1518551-1-memxor@gmail.com/
 
-Just curious, what do you mean by these registers being mostly unknown?
+Puranjay Mohan (1):
+  bpf, arm64: support exceptions
 
-I do see them specified in the online specs -- some even seem to map to 
-existing MIPI_DCS_* enums (ex. 0x01 to MIPI_DCS_SOFT_RESET, and 0x04 to 
-MIPI_DCS_GET_DISPLAY_ID).
+ arch/arm64/net/bpf_jit_comp.c | 98 ++++++++++++++++++++++++++++-------
+ 1 file changed, 79 insertions(+), 19 deletions(-)
 
-Thanks,
+-- 
+2.40.1
 
-Jessica Zhang
-
->   	{ 0xe3, 0x00 },
->   	{ 0x40, 0x00 },
->   	{ 0x03, 0x40 },
-> @@ -62,15 +62,15 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
->   	{ 0x25, 0x06 },
->   	{ 0x26, 0x14 },
->   	{ 0x27, 0x14 },
-> -	{ 0x38, 0xcc },
-> -	{ 0x39, 0xd7 },
-> -	{ 0x3a, 0x4a },
-> +	{ 0x38, 0xcc }, // VCOM_ADJ1
-> +	{ 0x39, 0xd7 }, // VCOM_ADJ2
-> +	{ 0x3a, 0x4a }, // VCOM_ADJ3
->   	{ 0x28, 0x40 },
->   	{ 0x29, 0x01 },
->   	{ 0x2a, 0xdf },
->   	{ 0x49, 0x3c },
-> -	{ 0x91, 0x77 },
-> -	{ 0x92, 0x77 },
-> +	{ 0x91, 0x77 }, // EXTPW_CTRL2
-> +	{ 0x92, 0x77 }, // EXTPW_CTRL3
->   	{ 0xa0, 0x55 },
->   	{ 0xa1, 0x50 },
->   	{ 0xa4, 0x9c },
-> @@ -94,123 +94,126 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
->   	{ 0xb8, 0x26 },
->   	{ 0xf0, 0x00 },
->   	{ 0xf6, 0xc0 },
-> -	{ 0xff, 0x30 },
-> -	{ 0xff, 0x52 },
-> -	{ 0xff, 0x02 },
-> -	{ 0xb0, 0x0b },
-> -	{ 0xb1, 0x16 },
-> -	{ 0xb2, 0x17 },
-> -	{ 0xb3, 0x2c },
-> -	{ 0xb4, 0x32 },
-> -	{ 0xb5, 0x3b },
-> -	{ 0xb6, 0x29 },
-> -	{ 0xb7, 0x40 },
-> -	{ 0xb8, 0x0d },
-> -	{ 0xb9, 0x05 },
-> -	{ 0xba, 0x12 },
-> -	{ 0xbb, 0x10 },
-> -	{ 0xbc, 0x12 },
-> -	{ 0xbd, 0x15 },
-> -	{ 0xbe, 0x19 },
-> -	{ 0xbf, 0x0e },
-> -	{ 0xc0, 0x16 },
-> -	{ 0xc1, 0x0a },
-> -	{ 0xd0, 0x0c },
-> -	{ 0xd1, 0x17 },
-> -	{ 0xd2, 0x14 },
-> -	{ 0xd3, 0x2e },
-> -	{ 0xd4, 0x32 },
-> -	{ 0xd5, 0x3c },
-> -	{ 0xd6, 0x22 },
-> -	{ 0xd7, 0x3d },
-> -	{ 0xd8, 0x0d },
-> -	{ 0xd9, 0x07 },
-> -	{ 0xda, 0x13 },
-> -	{ 0xdb, 0x13 },
-> -	{ 0xdc, 0x11 },
-> -	{ 0xdd, 0x15 },
-> -	{ 0xde, 0x19 },
-> -	{ 0xdf, 0x10 },
-> -	{ 0xe0, 0x17 },
-> -	{ 0xe1, 0x0a },
-> -	{ 0xff, 0x30 },
-> -	{ 0xff, 0x52 },
-> -	{ 0xff, 0x03 },
-> -	{ 0x00, 0x2a },
-> -	{ 0x01, 0x2a },
-> -	{ 0x02, 0x2a },
-> -	{ 0x03, 0x2a },
-> -	{ 0x04, 0x61 },
-> -	{ 0x05, 0x80 },
-> -	{ 0x06, 0xc7 },
-> -	{ 0x07, 0x01 },
-> -	{ 0x08, 0x03 },
-> -	{ 0x09, 0x04 },
-> -	{ 0x70, 0x22 },
-> -	{ 0x71, 0x80 },
-> -	{ 0x30, 0x2a },
-> -	{ 0x31, 0x2a },
-> -	{ 0x32, 0x2a },
-> -	{ 0x33, 0x2a },
-> -	{ 0x34, 0x61 },
-> -	{ 0x35, 0xc5 },
-> -	{ 0x36, 0x80 },
-> -	{ 0x37, 0x23 },
-> -	{ 0x40, 0x03 },
-> -	{ 0x41, 0x04 },
-> -	{ 0x42, 0x05 },
-> -	{ 0x43, 0x06 },
-> -	{ 0x44, 0x11 },
-> -	{ 0x45, 0xe8 },
-> -	{ 0x46, 0xe9 },
-> -	{ 0x47, 0x11 },
-> -	{ 0x48, 0xea },
-> -	{ 0x49, 0xeb },
-> -	{ 0x50, 0x07 },
-> -	{ 0x51, 0x08 },
-> -	{ 0x52, 0x09 },
-> -	{ 0x53, 0x0a },
-> -	{ 0x54, 0x11 },
-> -	{ 0x55, 0xec },
-> -	{ 0x56, 0xed },
-> -	{ 0x57, 0x11 },
-> -	{ 0x58, 0xef },
-> -	{ 0x59, 0xf0 },
-> -	{ 0xb1, 0x01 },
-> -	{ 0xb4, 0x15 },
-> -	{ 0xb5, 0x16 },
-> -	{ 0xb6, 0x09 },
-> -	{ 0xb7, 0x0f },
-> -	{ 0xb8, 0x0d },
-> -	{ 0xb9, 0x0b },
-> -	{ 0xba, 0x00 },
-> -	{ 0xc7, 0x02 },
-> -	{ 0xca, 0x17 },
-> -	{ 0xcb, 0x18 },
-> -	{ 0xcc, 0x0a },
-> -	{ 0xcd, 0x10 },
-> -	{ 0xce, 0x0e },
-> -	{ 0xcf, 0x0c },
-> -	{ 0xd0, 0x00 },
-> -	{ 0x81, 0x00 },
-> -	{ 0x84, 0x15 },
-> -	{ 0x85, 0x16 },
-> -	{ 0x86, 0x10 },
-> -	{ 0x87, 0x0a },
-> -	{ 0x88, 0x0c },
-> -	{ 0x89, 0x0e },
-> -	{ 0x8a, 0x02 },
-> -	{ 0x97, 0x00 },
-> -	{ 0x9a, 0x17 },
-> -	{ 0x9b, 0x18 },
-> -	{ 0x9c, 0x0f },
-> -	{ 0x9d, 0x09 },
-> -	{ 0x9e, 0x0b },
-> -	{ 0x9f, 0x0d },
-> -	{ 0xa0, 0x01 },
-> -	{ 0xff, 0x30 },
-> -	{ 0xff, 0x52 },
-> -	{ 0xff, 0x02 },
-> +	// EXTC Command set enable, select page 2
-> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x02 },
-> +	// Set gray scale voltage to adjust gamma
-> +	{ 0xb0, 0x0b }, // PGAMVR0
-> +	{ 0xb1, 0x16 }, // PGAMVR1
-> +	{ 0xb2, 0x17 }, // PGAMVR2
-> +	{ 0xb3, 0x2c }, // PGAMVR3
-> +	{ 0xb4, 0x32 }, // PGAMVR4
-> +	{ 0xb5, 0x3b }, // PGAMVR5
-> +	{ 0xb6, 0x29 }, // PGAMPR0
-> +	{ 0xb7, 0x40 }, // PGAMPR1
-> +	{ 0xb8, 0x0d }, // PGAMPK0
-> +	{ 0xb9, 0x05 }, // PGAMPK1
-> +	{ 0xba, 0x12 }, // PGAMPK2
-> +	{ 0xbb, 0x10 }, // PGAMPK3
-> +	{ 0xbc, 0x12 }, // PGAMPK4
-> +	{ 0xbd, 0x15 }, // PGAMPK5
-> +	{ 0xbe, 0x19 }, // PGAMPK6
-> +	{ 0xbf, 0x0e }, // PGAMPK7
-> +	{ 0xc0, 0x16 }, // PGAMPK8
-> +	{ 0xc1, 0x0a }, // PGAMPK9
-> +	// Set gray scale voltage to adjust gamma
-> +	{ 0xd0, 0x0c }, // NGAMVR0
-> +	{ 0xd1, 0x17 }, // NGAMVR0
-> +	{ 0xd2, 0x14 }, // NGAMVR1
-> +	{ 0xd3, 0x2e }, // NGAMVR2
-> +	{ 0xd4, 0x32 }, // NGAMVR3
-> +	{ 0xd5, 0x3c }, // NGAMVR4
-> +	{ 0xd6, 0x22 }, // NGAMPR0
-> +	{ 0xd7, 0x3d }, // NGAMPR1
-> +	{ 0xd8, 0x0d }, // NGAMPK0
-> +	{ 0xd9, 0x07 }, // NGAMPK1
-> +	{ 0xda, 0x13 }, // NGAMPK2
-> +	{ 0xdb, 0x13 }, // NGAMPK3
-> +	{ 0xdc, 0x11 }, // NGAMPK4
-> +	{ 0xdd, 0x15 }, // NGAMPK5
-> +	{ 0xde, 0x19 }, // NGAMPK6
-> +	{ 0xdf, 0x10 }, // NGAMPK7
-> +	{ 0xe0, 0x17 }, // NGAMPK8
-> +	{ 0xe1, 0x0a }, // NGAMPK9
-> +	// EXTC Command set enable, select page 3
-> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x03 },
-> +	// Set various timing settings
-> +	{ 0x00, 0x2a }, // GIP_VST_1
-> +	{ 0x01, 0x2a }, // GIP_VST_2
-> +	{ 0x02, 0x2a }, // GIP_VST_3
-> +	{ 0x03, 0x2a }, // GIP_VST_4
-> +	{ 0x04, 0x61 }, // GIP_VST_5
-> +	{ 0x05, 0x80 }, // GIP_VST_6
-> +	{ 0x06, 0xc7 }, // GIP_VST_7
-> +	{ 0x07, 0x01 }, // GIP_VST_8
-> +	{ 0x08, 0x03 }, // GIP_VST_9
-> +	{ 0x09, 0x04 }, // GIP_VST_10
-> +	{ 0x70, 0x22 }, // GIP_ECLK1
-> +	{ 0x71, 0x80 }, // GIP_ECLK2
-> +	{ 0x30, 0x2a }, // GIP_CLK_1
-> +	{ 0x31, 0x2a }, // GIP_CLK_2
-> +	{ 0x32, 0x2a }, // GIP_CLK_3
-> +	{ 0x33, 0x2a }, // GIP_CLK_4
-> +	{ 0x34, 0x61 }, // GIP_CLK_5
-> +	{ 0x35, 0xc5 }, // GIP_CLK_6
-> +	{ 0x36, 0x80 }, // GIP_CLK_7
-> +	{ 0x37, 0x23 }, // GIP_CLK_8
-> +	{ 0x40, 0x03 }, // GIP_CLKA_1
-> +	{ 0x41, 0x04 }, // GIP_CLKA_2
-> +	{ 0x42, 0x05 }, // GIP_CLKA_3
-> +	{ 0x43, 0x06 }, // GIP_CLKA_4
-> +	{ 0x44, 0x11 }, // GIP_CLKA_5
-> +	{ 0x45, 0xe8 }, // GIP_CLKA_6
-> +	{ 0x46, 0xe9 }, // GIP_CLKA_7
-> +	{ 0x47, 0x11 }, // GIP_CLKA_8
-> +	{ 0x48, 0xea }, // GIP_CLKA_9
-> +	{ 0x49, 0xeb }, // GIP_CLKA_10
-> +	{ 0x50, 0x07 }, // GIP_CLKB_1
-> +	{ 0x51, 0x08 }, // GIP_CLKB_2
-> +	{ 0x52, 0x09 }, // GIP_CLKB_3
-> +	{ 0x53, 0x0a }, // GIP_CLKB_4
-> +	{ 0x54, 0x11 }, // GIP_CLKB_5
-> +	{ 0x55, 0xec }, // GIP_CLKB_6
-> +	{ 0x56, 0xed }, // GIP_CLKB_7
-> +	{ 0x57, 0x11 }, // GIP_CLKB_8
-> +	{ 0x58, 0xef }, // GIP_CLKB_9
-> +	{ 0x59, 0xf0 }, // GIP_CLKB_10
-> +	// Map internal GOA signals to GOA output pad
-> +	{ 0xb1, 0x01 }, // PANELD2U2
-> +	{ 0xb4, 0x15 }, // PANELD2U5
-> +	{ 0xb5, 0x16 }, // PANELD2U6
-> +	{ 0xb6, 0x09 }, // PANELD2U7
-> +	{ 0xb7, 0x0f }, // PANELD2U8
-> +	{ 0xb8, 0x0d }, // PANELD2U9
-> +	{ 0xb9, 0x0b }, // PANELD2U10
-> +	{ 0xba, 0x00 }, // PANELD2U11
-> +	{ 0xc7, 0x02 }, // PANELD2U24
-> +	{ 0xca, 0x17 }, // PANELD2U27
-> +	{ 0xcb, 0x18 }, // PANELD2U28
-> +	{ 0xcc, 0x0a }, // PANELD2U29
-> +	{ 0xcd, 0x10 }, // PANELD2U30
-> +	{ 0xce, 0x0e }, // PANELD2U31
-> +	{ 0xcf, 0x0c }, // PANELD2U32
-> +	{ 0xd0, 0x00 }, // PANELD2U33
-> +	// Map internal GOA signals to GOA output pad
-> +	{ 0x81, 0x00 }, // PANELU2D2
-> +	{ 0x84, 0x15 }, // PANELU2D5
-> +	{ 0x85, 0x16 }, // PANELU2D6
-> +	{ 0x86, 0x10 }, // PANELU2D7
-> +	{ 0x87, 0x0a }, // PANELU2D8
-> +	{ 0x88, 0x0c }, // PANELU2D9
-> +	{ 0x89, 0x0e }, // PANELU2D10
-> +	{ 0x8a, 0x02 }, // PANELU2D11
-> +	{ 0x97, 0x00 }, // PANELU2D24
-> +	{ 0x9a, 0x17 }, // PANELU2D27
-> +	{ 0x9b, 0x18 }, // PANELU2D28
-> +	{ 0x9c, 0x0f }, // PANELU2D29
-> +	{ 0x9d, 0x09 }, // PANELU2D30
-> +	{ 0x9e, 0x0b }, // PANELU2D31
-> +	{ 0x9f, 0x0d }, // PANELU2D32
-> +	{ 0xa0, 0x01 }, // PANELU2D33
-> +	// EXTC Command set enable, select page 2
-> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x02 },
-> +	// Unknown registers
->   	{ 0x01, 0x01 },
->   	{ 0x02, 0xda },
->   	{ 0x03, 0xba },
-> @@ -227,10 +230,10 @@ static const struct nv3052c_reg nv3052c_panel_regs[] = {
->   	{ 0x0e, 0x48 },
->   	{ 0x0f, 0x38 },
->   	{ 0x10, 0x2b },
-> -	{ 0xff, 0x30 },
-> -	{ 0xff, 0x52 },
-> -	{ 0xff, 0x00 },
-> -	{ 0x36, 0x0a },
-> +	// EXTC Command set enable, select page 0
-> +	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x00 },
-> +	// Display Access Control
-> +	{ 0x36, 0x0a }, // bgr = 1, ss = 1, gs = 0
->   };
->   
->   static inline struct nv3052c *to_nv3052c(struct drm_panel *panel)
-> -- 
-> 2.42.0
-> 
