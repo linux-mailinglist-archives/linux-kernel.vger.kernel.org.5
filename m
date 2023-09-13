@@ -2,343 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243E979EA01
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6EF79EA11
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241054AbjIMNra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        id S241045AbjIMNvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237931AbjIMNr2 (ORCPT
+        with ESMTP id S230063AbjIMNvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:47:28 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC11F19B6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:47:24 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d7e741729a2so6413293276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:47:24 -0700 (PDT)
+        Wed, 13 Sep 2023 09:51:12 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41ED719BB;
+        Wed, 13 Sep 2023 06:51:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so2159501a12.0;
+        Wed, 13 Sep 2023 06:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694612844; x=1695217644; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=is9cdLO5+cOFX9KoTOVrU11g6HK91XFN6r2/gXT1uNU=;
-        b=QUwknmHIuuVI5m1JUM4joh32I4sh8NcHW9at3xRaogY7zwueaVwuf9uwevmW7POP50
-         8bJyjCr91p0XWCqw10bFAcE635geCEeYkfweK+RhBZwWh4zE9UqpVvj8hOOmKrWZ8szM
-         hw1EfzmYLTpMS5DJKoUMgTILrMcETdd/JzE1XC7FsHlJRQ63dhOdNwlTCr7tzXNpz+tO
-         3kkG1hB23u+gudbakkO6WOB67X+1m7Nx39l7omwGDuu2CA7q5WX5hVQQcAwwsK7LeGuT
-         c1UrbOW6BBZ1Vw8DfBn386sE00K4QJuMfzQRgLdNJ9huq4Q18/TU/QZ+1eO4oNiPSY4P
-         D+KQ==
+        d=gmail.com; s=20221208; t=1694613066; x=1695217866; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lb+LM+ZDdQI9OIeprWbW5Lt9+J1VMC934dt3tpSk4bQ=;
+        b=JcSwK72MCW4vXucxb8ogFiRwaTnovAARfc4tDeu0AeBB4uT+3TOFsaeLzgj6Ph6f8q
+         jdebxsdmjywG+Pa5/yohy+Zn2mvCHSpPWu7uZknrOyuMCkWdOe9oVJpK+B7tvw67L145
+         I9JDLGFjpWqQSkCEjmUd3750KkGJtqlabbjsR0fxzEHWi43Be+s+G5izH+ydtePhtrFF
+         adCcRjuMVSslPwjDgXga6s3dM7ETviegFCC+GZXIoAFYC5cQ1VjU5jrN9vtMBKntqyDo
+         2P/xkitBswLUwdQK9ltuz8YnXucnPubyPi//AVTReITHi7TYtnBmKyxyJRyHhphO9y5O
+         D9Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694612844; x=1695217644;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=is9cdLO5+cOFX9KoTOVrU11g6HK91XFN6r2/gXT1uNU=;
-        b=iBKsU8A316dAOT2ZbiYL/wLpYNuzarANTrtQy5sl1bb2j79haCzADgLfY0H4KYXmpk
-         ZV0Bh/OD5XF7QkWOVyBelGeFgL3wbyDzpdyVQe7hCNBSRUT95IXLOjTLPdrdMC4s0Cli
-         ns1IaPbh2CM78mA6TaqhabtKFVu2Cdji0iIbJeUAEDLi0cfm6eNTGpXbU2UCle9RqnuL
-         G739v/JJuhC9+fLXMtnECG2xeAUcSMmi3rLfWMRTBXvx+3eGAhh6Th8gBekope9lIN1N
-         MulAd8kBZxZnpCW+MGcYAZOJLFeuQ/7YQWxrCSNBd5rU7pj3elgDVkbC6Y4ms9Um4o0C
-         Ky1Q==
-X-Gm-Message-State: AOJu0YzkspjXHF0T503Lj5XLHHKw4IG6aNS9qKEsjKEGsH2EneqkPp6g
-        O7LGxInzVmeCAi207MY9mAIsjQjuGQNr5Kp2cb12FQ==
-X-Google-Smtp-Source: AGHT+IFxCiG9u6lIipgUoy0QS1uO4PJPB3nTYZBJw50uTJqek9gf1nKD/yCjVXaUf2NNCT7T+LgQUT8ewycoL/GkLa4=
-X-Received: by 2002:a25:9108:0:b0:d7f:2cb6:7d89 with SMTP id
- v8-20020a259108000000b00d7f2cb67d89mr1865898ybl.39.1694612843877; Wed, 13 Sep
- 2023 06:47:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694613066; x=1695217866;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lb+LM+ZDdQI9OIeprWbW5Lt9+J1VMC934dt3tpSk4bQ=;
+        b=YnFqEafy6zgH76QXvW2I+krDEDrYXj7OzEI2fhRuLHXygQN9RIZebBG8AKXOOhxWJ2
+         0k+4Z7OvM5kC0EpI1SKTXnALRIVWIaalT1qqoIDTcWYvG6t5FBk6e2eMeLRZAFvg3jBk
+         4lvI91kb9U/jG0sEx4dDgx7XU5WTb6e7QF4E//aXNWZsvBHH8zsPmFIYiV/TmT6zcFEd
+         MjMl2RVFhHJqpG+lm0MS9izty5RF0hzkHGWtNPMKrwAn7kKy0WvkELecAqOEfbP7DLk5
+         u/cIH/1xx9/j8MxV3UUSXrK33sz9HYL8lMnmZ13E3AOuaJkzJ8Y5kRu4W1UErE8O+cZk
+         0e/w==
+X-Gm-Message-State: AOJu0YxyNmA/n8huihDkG4Ul7Z8KJC97zHFS1nb25y4XnJfz7o4nka+M
+        DKEbC5hT2f908Mmox3sJ3Vs=
+X-Google-Smtp-Source: AGHT+IG1406b7TTyghxC15ezkviidLxqJA+81L0g0HplA0o6MWKwbaEiP1CVBcEBjbX59rvhxlMhyg==
+X-Received: by 2002:a17:906:5a42:b0:9a1:b528:d0f6 with SMTP id my2-20020a1709065a4200b009a1b528d0f6mr3223359ejc.27.1694613066466;
+        Wed, 13 Sep 2023 06:51:06 -0700 (PDT)
+Received: from skbuf ([188.26.184.93])
+        by smtp.gmail.com with ESMTPSA id vl9-20020a170907b60900b009ada9f7217asm643778ejc.88.2023.09.13.06.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 06:51:05 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 16:51:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Tristram.Ha@microchip.com,
+        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
+ offloading for KSZ9477
+Message-ID: <20230913135102.hoyl4tifyf77kdo2@skbuf>
+References: <20230912101748.0ca4eec8@wsk>
+ <20230912092909.4yj4b2b4xrhzdztu@skbuf>
+ <20230912160326.188e1d13@wsk>
+ <20230912160326.188e1d13@wsk>
+ <20230912142644.u4sdkveei3e5hwaf@skbuf>
+ <20230912170641.5bfc3cfe@wsk>
+ <20230912215523.as4puqamj65dikip@skbuf>
+ <20230913102219.773e38f8@wsk>
+ <20230913105806.g5p3wck675gbw5fo@skbuf>
+ <20230913141548.70658940@wsk>
 MIME-Version: 1.0
-References: <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com> <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
- <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com> <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
- <ZPiAwOf00RREiYPr@kuha.fi.intel.com> <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
- <ZQBGD8CY5OVKYX63@kuha.fi.intel.com> <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
- <ZQGAfnKt9HMB7j6H@kuha.fi.intel.com> <CAA8EJpqaipCT66x698R6dKDTSMk-D2iNHv8NSnMzPy-X_jFJ1Q@mail.gmail.com>
- <ZQG1zMbjWNLtx8lk@kuha.fi.intel.com>
-In-Reply-To: <ZQG1zMbjWNLtx8lk@kuha.fi.intel.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 13 Sep 2023 16:47:12 +0300
-Message-ID: <CAA8EJprSH1jTa74c2P91SEC84eM8w=ACC4o2xM8t9eShvC9UeQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
- corresponding Type-C connectors"
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913141548.70658940@wsk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sept 2023 at 16:15, Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Wed, Sep 13, 2023 at 01:26:14PM +0300, Dmitry Baryshkov wrote:
-> > Hi Heikki,
-> >
-> > On Wed, 13 Sept 2023 at 12:27, Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> > > On Tue, Sep 12, 2023 at 08:39:45PM +0300, Dmitry Baryshkov wrote:
-> > > > On 12/09/2023 14:05, Heikki Krogerus wrote:
-> > > > > On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
-> > > > > > On 06/09/2023 16:38, Heikki Krogerus wrote:
-> > > > > > > On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
-> > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > Hi Heikki,
-> > > > > > > > > >
-> > > > > > > > > > On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
-> > > > > > > > > > <heikki.krogerus@linux.intel.com> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > Hi Dmitry,
-> > > > > > > > > > >
-> > > > > > > > > > > On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > > > > > > The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
-> > > > > > > > > > > > dev_fwnode() checks never succeed, making the respective commit NOP.
-> > > > > > > > > > >
-> > > > > > > > > > > That's not true. The dev->fwnode is assigned when the device is
-> > > > > > > > > > > created on ACPI platforms automatically. If the drm_connector fwnode
-> > > > > > > > > > > member is assigned before the device is registered, then that fwnode
-> > > > > > > > > > > is assigned also to the device - see drm_connector_acpi_find_companion().
-> > > > > > > > > > >
-> > > > > > > > > > > But please note that even if drm_connector does not have anything in
-> > > > > > > > > > > its fwnode member, the device may still be assigned fwnode, just based
-> > > > > > > > > > > on some other logic (maybe in drivers/acpi/acpi_video.c?).
-> > > > > > > > > > >
-> > > > > > > > > > > > And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
-> > > > > > > > > > > > breaks drivers already using components (as it was pointed at [1]),
-> > > > > > > > > > > > resulting in a deadlock. Lockdep trace is provided below.
-> > > > > > > > > > > >
-> > > > > > > > > > > > Granted these two issues, it seems impractical to fix this commit in any
-> > > > > > > > > > > > sane way. Revert it instead.
-> > > > > > > > > > >
-> > > > > > > > > > > I think there is already user space stuff that relies on these links,
-> > > > > > > > > > > so I'm not sure you can just remove them like that. If the component
-> > > > > > > > > > > framework is not the correct tool here, then I think you need to
-> > > > > > > > > > > suggest some other way of creating them.
-> > > > > > > > > >
-> > > > > > > > > > The issue (that was pointed out during review) is that having a
-> > > > > > > > > > component code in the framework code can lead to lockups. With the
-> > > > > > > > > > patch #2 in place (which is the only logical way to set kdev->fwnode
-> > > > > > > > > > for non-ACPI systems) probing of drivers which use components and set
-> > > > > > > > > > drm_connector::fwnode breaks immediately.
-> > > > > > > > > >
-> > > > > > > > > > Can we move the component part to the respective drivers? With the
-> > > > > > > > > > patch 2 in place, connector->fwnode will be copied to the created
-> > > > > > > > > > kdev's fwnode pointer.
-> > > > > > > > > >
-> > > > > > > > > > Another option might be to make this drm_sysfs component registration optional.
-> > > > > > > > >
-> > > > > > > > > You don't need to use the component framework at all if there is
-> > > > > > > > > a better way of determining the connection between the DP and its
-> > > > > > > > > Type-C connector (I'm assuming that that's what this series is about).
-> > > > > > > > > You just need the symlinks, not the component.
-> > > > > > > >
-> > > > > > > > The problem is that right now this component registration has become
-> > > > > > > > mandatory. And if I set the kdev->fwnode manually (like in the patch
-> > > > > > > > 2), the kernel hangs inside the component code.
-> > > > > > > > That's why I proposed to move the components to the place where they
-> > > > > > > > are really necessary, e.g. i915 and amd drivers.
-> > > > > > >
-> > > > > > > So why can't we replace the component with the method you are
-> > > > > > > proposing in this series of finding out the Type-C port also with
-> > > > > > > i915, AMD, or whatever driver and platform (that's the only thing that
-> > > > > > > component is used for)?
-> > > > > >
-> > > > > > The drm/msm driver uses drm_bridge for the pipeline (including the last DP
-> > > > > > entry) and the drm_bridge_connector to create the connector. I think that
-> > > > > > enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
-> > > > > > series.
-> > > > > >
-> > > > > >
-> > > > > > > Determining the connection between a DP and its Type-C connector is
-> > > > > > > starting to get really important, so ideally we have a common solution
-> > > > > > > for that.
-> > > > > >
-> > > > > > Yes. This is what we have been discussing with Simon for quite some time on
-> > > > > > #dri-devel.
-> > > > > >
-> > > > > > Unfortunately I think the solution that got merged was pretty much hastened
-> > > > > > in instead of being well-thought. For example, it is also not always
-> > > > > > possible to provide the drm_connector / typec_connector links (as you can
-> > > > > > see from the patch7. Sometimes we can only express that this is a Type-C DP
-> > > > > > connector, but we can not easily point it to the particular USB-C port.
-> > > > > >
-> > > > > > So, I'm not sure, how can we proceed here. Currently merged patch breaks
-> > > > > > drm/msm if we even try to use it by setting kdef->fwnode to
-> > > > > > drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
-> > > > > > an ACPI-only thing, which is not expected to work in a non-ACPI cases.
-> > > > >
-> > > > > You really have to always supply not only the Type-C ports and partners,
-> > > > > but also the alt modes. You need them, firstly to keep things sane
-> > > > > inside kernel, but more importantly, so they are always exposed to the
-> > > > > user space, AND, always the same way. We have ABIs for all this stuff,
-> > > > > including the DP alt mode. Use them. No shortcuts.
-> > > > >
-> > > > > So here's what you need to do. UCSI does not seem to bring you
-> > > > > anything useful, so just disable it for now. You don't need it. Your
-> > > > > port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
-> > > > > that's where you need to register all these components - the ports,
-> > > > > partners and alt modes. You have all the needed information there.
-> > > >
-> > > > To make things even more complicate, UCSI is necessary for the USB part of
-> > > > the story. It handles vbus and direction.
-> > > >
-> > > > > Only after you've done that we can start to look at how should the
-> > > > > connection between the DPs and their USB Type-C connectors be handled.
-> > > >
-> > > > But sure enough, I can add typec port registration to the altmode driver.
-> > > > This will solve the 'port not existing' part of the story.
-> > > >
-> > > > I'd like to hear your opinion on:
-> > > >
-> > > > - components. Using them breaks drm/msm. How can we proceed?
-> > >
-> > > I don't think replacing the components is going to be a problem once
-> > > you have described everything properly in you DT. I'm fairly certain now
-> > > that that is the main problem here. You don't have this connection
-> > > described in your DT as it should.
-> >
-> > We have. See https://lore.kernel.org/linux-arm-msm/20230817145940.9887-1-dmitry.baryshkov@linaro.org/
-> > (for non-PMIC-GLINK platform)
-> > Or arch/arm64/boot/dts/qcom/sm8350-hdk.dts, which already has a full
-> > description of USB-C connector and signal flow.
-> >
-> > In fact, thanks to this representation I can properly set
-> > 'connector->fwnode' to point to the OF node corresponding to the
-> > connector's drm_bridge. I can even propagate it to the kdef->fwnode /
-> > kdev->of_node in drm_sysfs_connector_add(). But then a component_add()
-> > call looks the kernel up.
-> >
-> > And to add on top of that, here is another reason why I think that
-> > this sysfs links ABI/implementation was not well thought. The
-> > typec_connector_ops are added to all fwnode-enabled connector devices.
-> > It doesn't even bother checking that the device is really the DP
-> > connector and that the device on the other side of fwnode link is a
-> > typec port device. The symlink is named 'typec_connector', so one can
-> > not easily extend this ABI to support SlimPort aka MyDP (which uses
-> > micro-USB-B connectors instead of USB-C). Neither can we extend it to
-> > represent MHL connections (again, micro-USB-B).
-> >
-> > > > - PATH property usage. This way we make USB-C DisplayPort behave like the
-> > > > MST ports.
-> > >
-> > > That looks to me like an attempt to exploit a feature that is not
-> > > designed for this purposes at all. Just drop all that.
-> >
-> > But why? From the docs: 'Connector path property to identify how this
-> > sink is physically connected.'
-> >
-> > So far we have been using it for MST only. But the description above
-> > also suits properly for the 'connected to the Type-C port0 device'
-> > kind of data. Then the userspace can use this property to change the
-> > representation of the controller. Or to rename it as it does for
-> > DP-MST connectors. Or just add the USB-C icon in the UI.
-> >
-> > Having this data in sysfs only requires userspace first to map the
-> > connector to the device under sysfs (which is not trivial since Xorg
-> > renames DP-MST connectors), then to look for the symlink value. Quite
-> > complicated compared to checking the DRM property.
-> >
-> > Moreover, once we get to the SlimPort / MyDP / MHL, we can extend the
-> > schema to support 'microusb:something' values for this property.
-> >
-> > > The connection has to be first described in your DT, and the way you
-> > > usually describe connections in DT is by using the device graph (OF
-> > > graph). It seems that you have everything needed for that - the USB
-> > > Type-C connectors have their own OF nodes (what you register as
-> > > drm_bridges are in fact USB Type-C connectors), and presumable you
-> > > also have OF nodes for all your video ports (DisplayPorts) - so
-> > > applying the graph between the two really should not be a problem. The
-> > > DP is endpoint for the USB Type-C connector, and vice versa.
-> >
-> > Not quite. There is no direct connection between the USB Type-C
-> > connector and DP controller. The USB-C connector has three ports.
-> >
-> > port@0 goes to theHS-USB controller. This is simple.
-> >
-> > port@1 goes to the USB+DP PHY. All retimers and SS line muxes are
-> > included in between. And it is the USB+DP PHY that is connected to the
-> > DP and USB-SS controllers.
-> >
-> > port@2 goes to SBU lines mux (e.g. fsa4480).
-> >
-> > > After you have everything needed in your DT, the problem here isn't
-> > > actually much of a problem at all. We will have options how to move
-> > > forward after that.
-> >
-> > Could you please describe what is missing there?
->
-> We are not after the direct connections here, we are after the final
-> endpoints. So you are missing description of the logical connection
-> between your DP and Type-C connector.
+On Wed, Sep 13, 2023 at 02:15:48PM +0200, Lukasz Majewski wrote:
+> > I thought we were in agreement to program the actual DSA user ports'
+> > MAC addresses to hardware.
+> 
+> No - v4 of this solution uses HSR net device MAC address, which is
+> supposed to be the same as DSA master.
 
-Adding Krzysztof, as one of DT maintainers, to the CC list.
+By "in agreement" I mean "as a result of the discussion on v4 [ this discussion ],
+where it became obvious that the DSA master solution is not so robust".
+I hope the 12 emails already exchanged on this patch set weren't for nothing.
 
-From what I understand, DT describes hardware. There is no description
-for the 'logical' connections.
+> > With KSZ switches, a single CPU port is supported, so all ports share
+> > the same DSA master. So if the contents of REG_SW_MAC_ADDR_0 is
+> > different from the DSA master (the same DSA master that was used for
+> > an earlier HSR offload), why do you infer that it was altered by WoL?
+> > It makes no sense.
+> 
+> So where is the issue? The only issue is that somebody would change DSA
+> master (and hence HSR) MAC address, so the REG_SW_MAC_ADDR_0 would not
+> be changed. Or do I miss something?
 
->
-> I understand that the idea is to build the graph to describe only the
-> physical connections, but with just the physical connections you are
-> doomed to write separate software solution for almost every single
-> platform, even though the final endpoints are always the same (DP to
-> Type-C). You just can not generalise the components (muxes, phys,
-> retimers, etc.) behind USB Type-C connectors (or anything else for
-> that matter), it's not possible. The components and their order vary
-> on almost every single platform. On some platforms the stack of parts
-> after the connector is also incredibly complex.
+Changing the DSA master address and changing the HSR MAC address
+(indirectly through the ports' address) are different operations.
+The DSA master's address and the user ports' address are not necessarily
+in sync.
 
-Yes. And this is why we have a chain of DRM bridges, going from the DP
-controller to the final drm_bridge at the Type-C port manager. When
-there is the altmode event, it gets sent via this chain using the
-normal DRM HPD event.
+Each address change is problematic in its own way, and each problem
+needs to be tackled in its own way, depending on which MAC address you
+desire for REG_SW_MAC_ADDR_0 to track.
 
-> Having the logical final endpoint connection described in your DT/ACPI
-> on top of the physical connections costs very little, but at the same
-> time it's usually the only thing that the software needs (like in this
-> case).
+But yes, the only issue is that the MAC address can be changed at
+runtime, after the initial offload.
 
-Maybe there is some misunderstanding here. We have this connection. We
-have connector->fwnode and connector->of_node pointing to the correct
-device - the last bridge in the chain. Each TCPM driver knows the
-relationship between the in-built drm_bridge and the Type-C port. The
-DP host controller port can be terminated with other endpoints, e.g.
-eDP panel. Or there can be a non-DP host, which is then connected
-through a series of bridges to the eDP or external DP port. This is
-what anx78xx bridge does: it converts the HDMI link into an external
-DP (SlimPort) connection. Bridge chains permit this to be handled in a
-seamless way.
+> > - Changing the MAC address of (a) triggers a pre-existing bug. That
+> > bug can be separated from the HSR offload discussion if the HSR
+> > offload decides to not program the DSA master's MAC address to
+> > hardware, but a different MAC address. The pre-existence of the DSA
+> > bug is not a strong enough argument per se to avoid programming the
+> > DSA master's address to hardware.
+> 
+> And this is how v4 is implemented. Or not?
 
-What you are asking for looks like a step backwards to me: it requires
-the host to know that there is a USB-C connector.
+If A == B initially, then there are 2 ways you can change that condition.
+You can change A, or you can change B. Replace "A" with "the DSA
+master's address" and "B" with "the HSR device's address".
 
->
-> So, either you add one more port to your graph for the DP to Type-C
-> connection, or, if that's not an option, then you need to describe
-> that connection in some other way. Named references work also quite
-> well in my experience.
+> > - Changing the MAC address of (c) does not seem directly possible,
+> > but:
+> > 
+> > - Changing the MAC address of (b) also triggers (c) - see
+> > hsr_netdev_notify(). This is because the HSR driver makes sure that
+> > the addresses of port_A, port_B and the HSR device are equal at all
+> > times.
+> 
+> Why changing HSR port would affect HSR device MAC address?
 
-Named references were considered and frowned upon by DT maintainers.
+I don't have a simpler answer than "because that's what the code does".
 
--- 
-With best wishes
-Dmitry
+If you don't have time to experiment to convince yourself that this is
+the case, below is a set of commands that should hopefully clarify.
+
+$ ip link
+6: eno2: <BROADCAST,MULTICAST> mtu 1508 qdisc noop state DOWN group default qlen 1000
+    link/ether 2a:af:42:b7:73:11 brd ff:ff:ff:ff:ff:ff
+    altname end0
+    altname enp0s0f2
+7: swp0@eno2: <BROADCAST,MULTICAST,M-DOWN> mtu 1504 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+8: swp1@eno2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+9: swp2@eno2: <BROADCAST,MULTICAST,M-DOWN> mtu 1504 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+10: sw0p0@swp0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+11: sw0p1@swp0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+12: sw0p2@swp0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+13: sw2p0@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+14: sw2p1@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+15: sw2p2@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+16: sw2p3@swp2: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether a6:f4:af:fd:fc:73 brd ff:ff:ff:ff:ff:ff
+# Simplified in a table for brevity. The format will be kept below
+$ ip link show ...
+     sw0p0              sw0p1              DSA master          hsr0
+addr a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73   n/a
+
+$ ip link add hsr0 type hsr slave1 sw0p0 slave2 sw0p1 version 1
+[   70.033711] sja1105 spi2.0 sw0p0: entered promiscuous mode
+[   70.058066] sja1105 spi2.0 sw0p1: entered promiscuous mode
+Warning: dsa_core: Offloading not supported.
+
+$ ip link show ...
+     sw0p0              sw0p1              DSA master          hsr0
+addr a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73   a6:f4:af:fd:fc:73
+
+$ ip link set swp0 address 00:01:02:03:04:05 # DSA master
+
+$ ip link show ...
+     sw0p0              sw0p1              DSA master          hsr0
+addr a6:f4:af:fd:fc:73  a6:f4:af:fd:fc:73  00:01:02:03:04:05   a6:f4:af:fd:fc:73
+
+$ ip link set sw0p0 address 00:01:02:03:04:06
+
+$ ip link show ...
+     sw0p0              sw0p1              DSA master          hsr0
+addr 00:01:02:03:04:06  a6:f4:af:fd:fc:73  00:01:02:03:04:05   00:01:02:03:04:06
+
+$ ip link set sw0p1 address 00:01:02:03:04:07
+
+$ ip link show ...
+     sw0p0              sw0p1              DSA master          hsr0
+addr 00:01:02:03:04:06  00:01:02:03:04:07  00:01:02:03:04:05   00:01:02:03:04:06
+
+> Shouldn't it be forbidden, and HSR ports shall inherit MAC address of
+> HSR device (hsr0) ?
+
+Since HSR does _actually_ track the MAC address of port_A (sw0p0 above),
+I guess it would be best if the API introduced would always program
+REG_SW_MAC_ADDR_0 with the MAC address of the first port that joins the
+HSR (and requests a reference to REG_SW_MAC_ADDR_0). That way, the API
+should work with no changing for WoL as well. Anyway - minor difference
+between first user port and HSR dev_addr.
+
+> > The simple matter is: if you program the MAC address of a netdev (any
+> > netdev) to hardware
+> 
+> Which netdev in this case? lan1, lan2, hsr0 or eth0 ?
+
+Any netdev. It is a general statement which had a continuation, which
+you've interrupted.
+
+> > , then for a correct and robust implementation, you
+> > need to make sure that the hardware will always be in sync with that
+> > address, keeping in mind that the user may change it. Either you deny
+> > changes, or you update the hardware when the address is updated.
+> > 
+> 
+> Why I cannot just:
+> 
+> 1. Check on hsr_join if lan1, lan2, hsr0 and eth0 MAC is equal and
+> write it to REG_SW_MAC_ADDR_0?
+
+This is actually unnecessary if you implement the reference scheme on
+REG_SW_MAC_ADDR_0 that I've suggested. Checking the MAC address of eth0
+is unnecessary in any case, if you don't program it to hardware.
+
+> 2. Forbid the change of lan1/lan2/eth0/hsr0 if it may affect HSR HW
+> offloading? If user want to change it - then one shall delete hsr0 net
+> device, change MAC and create it again.
+
+I've been saying since yesterday that you should do this.
+
+> How point 2 can be achieved (if possible) ?
+
+Re-read earlier emails.
+
+> > If the DSA user port MAC address changes,
+> 
+> You mean lan1, lan2, which are joined with hsr0?
+
+Yup. I've been saying this for a number of emails already:
+https://lore.kernel.org/netdev/20230912092909.4yj4b2b4xrhzdztu@skbuf/
+
+| The ports which hold a reference on REG_SW_MAC_ADDR_0 cannot have their
+| MAC address changed - and for this, you'd have to add a hook to
+| dsa_switch_ops (and thus to the driver) from
+| dsa_slave_set_mac_address().
+
+> > and REG_SW_MAC_ADDR_0 was
+> > previously programmed with it, and nothing is done in reaction to
+> > this, then this is a problem with the HSR offload. 
+> 
+> This shall be just forbidden?
+
+Yup.
+
+> > So no, it's not
+> > just a problem with upcoming WoL patches as you imply. You need to
+> > integrate a solution to that problem as part of your HSR patches.
+> 
+> I'm really stunned, how much extra work is required to add two
+> callbacks to DSA subsystem (to have already implemented feature) for a
+> single chip IC.
+
+Some observations are best kept to yourself. This is only the second HSR
+offload in the entire kernel. To complain that the infrastructure needs
+some extensions, for something that wasn't even needed for the first
+implementation (tracking a MAC address), is unrealistic.
