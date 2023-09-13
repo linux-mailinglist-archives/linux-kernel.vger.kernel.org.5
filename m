@@ -2,114 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C7379E6CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA25479E6CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240272AbjIMLbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        id S240194AbjIMLcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240194AbjIMLbj (ORCPT
+        with ESMTP id S240208AbjIMLcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:31:39 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158721726;
-        Wed, 13 Sep 2023 04:31:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net; s=s31663417;
- t=1694604676; x=1695209476; i=wahrenst@gmx.net;
- bh=28UftcTBRZ6helOYZnhliSx5p5LHun67O1lu6Xhm8Ig=;
- h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
- b=MyagVk0GEzc/rKdlwS5PzESKtkYq0Nf6cWuUra2ZHvtCgX2vjRnEPbU+JsbfJKpDzYbFmGi/McI
- FRPiQ/BgTf2ujLvaJn3sjGkGCNkOozTSokMOeCa/wZ04AbkfGfbOa+qFRQ/0zwE00wavBpdrvL4IY
- w2rhGsFV8Zu7H3nVIIlsQ4OJtcvX1qxLvUUUbx0IKTTT/2xp1k1ug+kOsR8C4piqv64h9pLaw3hfS
- 1lnkBScVLvJjvqZ4e5fIUt/sV2KRgi9ZDf3AOe48Xt8BdPuxQ5PUjC1kj6Y5BXC3RujGb1Wg078/W
- lvffdQHRErnY/l1+xCRziKS2WbtTBDT0AhWA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M6Udt-1qmgYP26np-006vkL; Wed, 13
- Sep 2023 13:31:16 +0200
-Message-ID: <66a6c513-7277-255d-dd56-eed1d6a8efe8@gmx.net>
-Date:   Wed, 13 Sep 2023 13:31:15 +0200
+        Wed, 13 Sep 2023 07:32:20 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B01173E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:32:16 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a645e54806so839351366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694604735; x=1695209535; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5j+vOlqz3f4oxafJPXTsw7TQpxVIHCk4693pzx0c94w=;
+        b=j5zsfOwwFvT0XBAEEnzwdg3+Juy6FufuPTuUSRSZUxFkHpsyIVxRow7RFRXmJMhvwy
+         mXNffXJ3s+xyyTChSgiVQQNL7WK/FZfkFY9fEb7Gwo+NfFadVmTgqzqk6ZGWSk/y4iSd
+         JKmYrnSg8w0ntigiOoHzf2fVugEBs8I1TTYH0QLc76pv0K6ELcRxIMdZ98Ic90dNaHVS
+         StqAWt8DhIW42BabvecYxiTkRYfXOK5hHEUi/wPyhb6K9cOdBDW+Cor0EArGuH1wXRB9
+         XdhXAgtzqOs5c5ndl0tCgVZqp30HlmBw5exnZdW6OjfhbSu0cVydFQW2+xf5AB47nS+P
+         lCWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694604735; x=1695209535;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5j+vOlqz3f4oxafJPXTsw7TQpxVIHCk4693pzx0c94w=;
+        b=YXmIeWgWoW1e3C+HYokJzMpmfJtaSRGTrDLVg1ILTIdOAfrzYNE4R3lvTfoOG7YWMn
+         er9LimKi+4vrTyp96tGfRHFrw+zHEoFaOaP/CEEjbrxfkn/k8CCKW04dSiBsIGYhqMwR
+         4RI6/UWUqkVR7zkN0TF/vfxbF4adB9tBl2x9Yot/lBM/6QU5bpXAZplywYRZRvUdphik
+         EiCQcIP4xr0I3YURJ2bQrbLnyIQOxl9yexozox/o6y7gtEH985rdGj/KcYMk9Jekxxfx
+         lsohEkuOkvULMzVZ9LTITNvnI0rRMvwYIzqPCOYBew2BuKaBD+ICGSMOzRRI7cla5S4L
+         Z/fg==
+X-Gm-Message-State: AOJu0Yzc+MbNS1/bmrqYNpfwEwMAKPTPSFkIRzOXW+kr21eDiklCQRHJ
+        vZPzICxkL3wxtiQGPBb9agLtqw==
+X-Google-Smtp-Source: AGHT+IFXgY8RifaZBzIgEcrovRfTJIFYuVf95XlpZfa3lhurVCngM06VSVipO+09NlPwOMdF7/xX9A==
+X-Received: by 2002:a17:906:2cf:b0:9a1:aa7b:482e with SMTP id 15-20020a17090602cf00b009a1aa7b482emr1622499ejk.26.1694604735038;
+        Wed, 13 Sep 2023 04:32:15 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id c22-20020a17090603d600b0099ce025f8ccsm8289621eja.186.2023.09.13.04.32.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 04:32:13 -0700 (PDT)
+Message-ID: <052be57d-4081-43ca-6c9f-9afedb030a58@linaro.org>
+Date:   Wed, 13 Sep 2023 13:32:12 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v10 1/5] staging: vc04_services: vchiq_arm: Add new bus
- type and device type
-From:   Stefan Wahren <wahrenst@gmx.net>
-To:     Umang Jain <umang.jain@ideasonboard.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     gregkh@linuxfoundation.org, f.fainelli@gmail.com,
-        athierry@redhat.com, error27@gmail.com,
-        kieran.bingham@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        dave.stevenson@raspberrypi.com, linux-kernel@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20230911140712.180751-1-umang.jain@ideasonboard.com>
- <20230911140712.180751-2-umang.jain@ideasonboard.com>
- <c96262e7-9bd9-c75d-7584-e6ff62f69530@gmx.net>
- <d006e31a-33df-51b1-c8cf-9c7e5590adb6@ideasonboard.com>
- <7b7d322d-5ea6-5048-0cbe-8d292853ba12@gmx.net>
+Subject: Re: [PATCH v6 1/4] dt-bindings: remoteproc: k3-m4f: Add K3 AM64x SoCs
 Content-Language: en-US
-In-Reply-To: <7b7d322d-5ea6-5048-0cbe-8d292853ba12@gmx.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:J3aK1TsqiktJsf7+0PTG00rcEOkVlbMc3Ux6kZqx1ZcLBD2VqER
- snLZGlzHKbA1aKZcxgBUjapCgacwK30bDRXQkvZfGtmDSy9thlorNODA7nzs6wq6YxWjhzA
- r3fCuVhgYW5xuZNxbQuOoOlOVMhT4NMh25lcM3LPeUEgLPw3Qbq6IHks5lSZsNtzKIYLbTQ
- qyfZb4FnvwqwmR09bQRsA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Aa5zqFzzW6Q=;TSWzz8UOW2Vrt7q1EYQ7JyeekD0
- M+7Y4SFDSO+xdOqfCDjRpApbN5hZI14riCM5UsU6vFcrmWW82Svc7KuBdelxTx1Z9lBKm/Roe
- QTfAck/dmZYo0L2pam5cPN3OENeHAE5IxL/mJJ0x3ZTx6xQ8UkfGhuGlTDtJ/XZLeRyf7dupD
- ib3VyCS7vkjDODHyKfKrIW5pnlAfKWTWFjNOjMLDJhfqB2mxrxeP5/vdQAbty5/nhHaypPKfI
- hw1vQtloYDs0Xao4EeihkjRxDfUxO8Z8+tzYzmQ1rvWtcM26zxTf3cwKII4NxmwvrZ/E3DT/t
- IfEWI67d0tc6snnI2N6EsgxaysXvK40C7YlB3OqAqGjQE/HtOOM5Ym/rrQzWNyBXrolcC/T9s
- z43f1kotSPl/PT8JXdvI3xRiou7QBYGy8ChoI3xiEwGdHp14kYauzz4O9G0j+vkAubabfve9P
- q0TtwBj4gVZ0i9md8IlMFLWf/u8ez6ddl5+2irvJ9Pr2qrUrsocrRbvUsxhaQP45Wq/e2QCw3
- rMtkkmzOUC0gYVxswc+dxpa1bKazq9E7y3zib0ShUm8u1ZDtoe/bduVvJPiPY750WWtmWmiDN
- bzPrt2TR3uHisyfSy8j2cndFAudj4nqHguL8yAD+MroQLU0TAwV0Av4jGJuwW2TQOVTdTgeBy
- LHzb7sqtc4vBP/OQiWQIoxNUhz2UGA55BK9bHWNodU5OMGGfdpMPike3ENoKlOZNceuT6az9F
- HxWfUR5BOIqftK62M8bVrpwAU00keHnU45XQTlpey0swdgv6b0qKpFF6BQPm+6wEotlPHVZTg
- I1cjzvxWr5Y2Co8ZZygeEfSHXvn5PxmBvwZxCJO3hmc3pksduuzoSXto9DLfn1JLb5Ex8Q0BB
- f8Jf7Q66yFsnREfh8tpHQV7OYVOuRTaICWj8O57GuG3fqfPEtnuMzZBaGmhWWyQakN48S8zqv
- FYfVNkEj5knalnKKuK0vjRYsC90=
+To:     Hari Nagalla <hnagalla@ti.com>, andersson@kernel.org,
+        mathieu.poirier@linaro.org, p.zabel@pengutronix.de,
+        martyn.welch@collabora.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+References: <20230913111644.29889-1-hnagalla@ti.com>
+ <20230913111644.29889-2-hnagalla@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230913111644.29889-2-hnagalla@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Umang,
+On 13/09/2023 13:16, Hari Nagalla wrote:
+> K3 AM64x SoC has a Cortex M4F subsystem in the MCU voltage domain.
+> The remote processor's life cycle management and IPC mechanisms are
+> similar across the R5F and M4F cores from remote processor driver
+> point of view. However, there are subtle differences in image loading
+> and starting the M4F subsystems.
+> 
+> The YAML binding document provides the various node properties to be
+> configured by the consumers of the M4F subsystem.
+> 
+> Signed-off-by: Martyn Welch <martyn.welch@collabora.com>
+> Signed-off-by: Hari Nagalla <hnagalla@ti.com>
+> ---
+> Changes since v1:
+>  - Spelling corrections
+>  - Corrected to pass DT checks
+> 
+> Changes since v2:
+>  - Missed spelling correction to commit message
+> 
+> Changes since v3:
+>  - Removed unnecessary descriptions and used generic memory region names
+>  - Made mboxes and memory-region optional
+>  - Removed unrelated items from examples
+> 
+> Changes since v4:
+>  - Rebased to the latest kernel-next tree
+>  - Added optional sram memory region for m4f device node
+> 
+> Changes since v5:
+>  - None
 
-Am 12.09.23 um 09:23 schrieb Stefan Wahren:
-> Hi Umang,
->
-> Am 12.09.23 um 07:50 schrieb Umang Jain:
->> Hi Stephan
->>
->> On 9/12/23 1:52 AM, Stefan Wahren wrote:
->>> Hi Umang,
->>>
->>> Am 11.09.23 um 16:07 schrieb Umang Jain:
->>>> ...
->>>
->>> Unfortunately the call of of_dma_configure() generates warnings likes
->>> this (Raspberry Pi 3A+ with multi_v7_defconfig + VCHIQ):
->>>
->>> [=C2=A0=C2=A0=C2=A0 9.206802] vchiq-bus bcm2835-audio: DMA mask not se=
-t
->>> [=C2=A0=C2=A0=C2=A0 9.206892] vchiq-bus bcm2835-camera: DMA mask not s=
-et
->>
->> huh, really weird, as on my RPi-3-b I get these set correctly and I
->> don't any such warning.
-> This warning comes from this line [1]. Did you test with the mainline
-> devicetree from [2] which must be specified in the config.txt? Be
-> aware the arm dts files has moved into a sub directory just like
-> arm64. I don't use U-Boot, just the vendor bootloader from Raspberry
-> Pi OS. Please look at [3] for the details.
-please look at [4], which is possible a solution. AFAIK the dwc2 also
-had the same problem.
+Hm, why none? There were errors in the binding to which you did not
+respond. Did you just ignore them?
 
-[4] -
-https://elixir.bootlin.com/linux/latest/source/drivers/usb/dwc2/platform.c=
-#L448
+> 
+>  .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 136 ++++++++++++++++++
+>  1 file changed, 136 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> new file mode 100644
+> index 000000000000..21b7f14d9dc4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+> @@ -0,0 +1,136 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/remoteproc/ti,k3-m4f-rproc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI K3 M4F processor subsystems
+> +
+> +maintainers:
+> +  - Hari Nagalla <hnagalla@ti.com>
+> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Are you sure Mathieu has this device and is a maintainer of this device?
+
+> +
+> +description: |
+> +  Some K3 family SoCs have Arm Cortex M4F cores. AM64x is a SoC in K3
+> +  family with a M4F core. Typically safety oriented applications may use
+> +  the M4F core in isolation without an IPC. Where as some industrial and
+> +  home automation applications, may use the M4F core as a remote processor
+> +  with IPC communications.
+> +
+> +$ref: /schemas/arm/keystone/ti,k3-sci-common.yaml#
+> +
+> +properties:
+> +
+
+Drop blank line.
+
+> +  compatible:
+> +    enum:
+> +      - ti,am64-m4fss
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 2
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +  reg:
+> +    items:
+> +      - description: IRAM internal memory region
+> +      - description: DRAM internal memory region
+> +
+> +  reg-names:
+> +    items:
+> +      - const: iram
+> +      - const: dram
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  firmware-name:
+> +    $ref: /schemas/types.yaml#/definitions/string
+
+Wrong type. This is an array. You need maxItems instead.
+
+> +    description: Name of firmware to load for the M4F core
+> +
+> +  mboxes:
+> +    description: |
+> +      Mailbox specifier denoting the sub-mailbox, to be used for communication
+> +      with the remote processor. This property should match with the
+> +      sub-mailbox node used in the firmware image.
+> +    maxItems: 2
+
+You need to describe the items instead.
+
+> +
+> +  memory-region:
+> +    description: |
+> +      phandle to the reserved memory nodes to be associated with the
+> +      remoteproc device. The reserved memory nodes should be carveout nodes,
+> +      and should be defined with a "no-map" property as per the bindings in
+> +      Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
+> +      Optional memory regions available for firmware specific purposes.
+> +    maxItems: 8
+> +    items:
+> +      - description: regions used for DMA allocations like vrings, vring buffers
+> +                     and memory dedicated to firmware's specific purposes.
+> +    additionalItems: true
+
+
+Best regards,
+Krzysztof
+
