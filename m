@@ -2,181 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0AA79EE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB55E79EE30
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjIMQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S229811AbjIMQYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjIMQXw (ORCPT
+        with ESMTP id S229437AbjIMQYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:23:52 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A9C90
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:23:48 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52c9be5e6f0so8463759a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694622226; x=1695227026; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q1QrA3uGZF06KrP9j43FE5bJJzYHcP6Hm4nSeW3w90g=;
-        b=iDIE/5lN6zISDZN1wNSKoEfWaz3iH9L5lWAMFWE+kO/T0graoR0GAmR0WKDeq7+IKY
-         jguJI9g+r7bGJrahSrKQGjMhjKuug9+mlb7eocNWFV/Y4WUnTWEx2IStI7fEF6pmATcX
-         R57NW5Ha7JUlXt3wvBOH3hZCBYcbCVE6aAH00=
+        Wed, 13 Sep 2023 12:24:16 -0400
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A381CB7;
+        Wed, 13 Sep 2023 09:24:11 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2bcfdadd149so122280831fa.0;
+        Wed, 13 Sep 2023 09:24:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622226; x=1695227026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q1QrA3uGZF06KrP9j43FE5bJJzYHcP6Hm4nSeW3w90g=;
-        b=P+Qj1elHo76LgqmHE00/xJuAd+mpoAsgRc+WgcOiq8pBPV+li8YX7t4Zr9YgPdQSb4
-         i15nEy+IgjT4VdgQUH5Ljd0Bnk8TCHUrVfR+jXbna4vTxOOjSxb0SgeCZNt7GAKriOIk
-         5oMj24mrzrIpWS1YgigphP75u1lxj0qsARksb19LdPx9Xcga8mQqEkA8KmLmTHyYN4j/
-         Y59xHLo2g7VsOb3t/cpWw+J14FLb4kq/Uo7GEnlw9Gv1FsjC5bxnhdsIqi/u6B9Z3v0r
-         7iy81bCmStkkmNPGrOfVOsBECL+6WS6Gf5BvrtgHprBEUR2HeMhfH2U/f8EeAAnu5O/z
-         UdMw==
-X-Gm-Message-State: AOJu0YyUf99QDq0yvdfEbI7M7InKLTyE7uhRJFaSf/F7UzKQJ6uL1tfT
-        nxZMFfOT5Y2UlNtu7VvmYJBToh/dcsdB/Gt7tAnM4gD4
-X-Google-Smtp-Source: AGHT+IHau3i02cAqebGw1H9bUsw/XFaC3phDJuThfDI/Ab00JXIP78k99Hla8jzBWrQgdtvsOtOQXA==
-X-Received: by 2002:aa7:cd19:0:b0:523:364b:e6a9 with SMTP id b25-20020aa7cd19000000b00523364be6a9mr2687565edw.38.1694622225874;
-        Wed, 13 Sep 2023 09:23:45 -0700 (PDT)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id s10-20020aa7d78a000000b00523653295f9sm7493886edq.94.2023.09.13.09.23.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 09:23:45 -0700 (PDT)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-52fa364f276so14573a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:23:45 -0700 (PDT)
-X-Received: by 2002:a50:a41e:0:b0:523:bdc9:48a9 with SMTP id
- u30-20020a50a41e000000b00523bdc948a9mr195524edb.0.1694622224847; Wed, 13 Sep
- 2023 09:23:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694622250; x=1695227050;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=x3ECGprZP4G16RGe+qK7GG+eKrejw2q8snMfK2wTP5I=;
+        b=QeMMBU+S4obMebTMJcHgvMXpBsmJZ1tucPtQgFbL/NPKIRrpPYCW95ah7EJvG4y4Pt
+         7PggYk5nH6ZIObBljKsK449/+pD5981WVbVEaXUmvHveK9lpUOB/shHMThC/kttQgtSZ
+         CHZzCUBvHKJ7W4Ytpgt2+GnwrYRcnBzEtwCTuRe5jIH0FwwQnvF2gJ1SROGLDrdhG/Km
+         3LnBFN9FpGqpU/PWa2cHU+8tP/BN9lfUNYLHDCXp1w2mnS0BocvHCZkUJMewwViFcIiG
+         gkNdeaB9B79rsZ3TZkGaXLNdU7tM8Ai15YgoTqSCPVaHeSrT88hiw+hkZWdJL0CNNdli
+         nbNA==
+X-Gm-Message-State: AOJu0YzKZuUkHY0r0oam5c55+t1NBsPArGFpvuyf6PgBx0NVrjYkFCdk
+        3r7/DRAHQRt2sblTqcjBXp0=
+X-Google-Smtp-Source: AGHT+IHO5Kq5jnlqD456UUl2gN6+Shv9hSaOmkEwYv9JE6WU+wHrHGCw09hJY98aUmnyFSMf89EOLQ==
+X-Received: by 2002:a05:651c:451:b0:2bc:b8f5:aaf1 with SMTP id g17-20020a05651c045100b002bcb8f5aaf1mr2578881ljg.35.1694622249757;
+        Wed, 13 Sep 2023 09:24:09 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-112.fbsv.net. [2a03:2880:31ff:70::face:b00c])
+        by smtp.gmail.com with ESMTPSA id kj13-20020a170907764d00b009a1b857e3a5sm8630869ejc.54.2023.09.13.09.24.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 09:24:09 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 09:24:07 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sandipan Das <sandipan.das@amd.com>, leit@fb.com,
+        dcostantino@meta.com,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-perf-users@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
+        <linux-kernel@vger.kernel.org>, Jirka Hladky <jhladky@redhat.com>
+Subject: Re: [PATCH] perf/x86/amd: Do not WARN on every IRQ
+Message-ID: <ZQHiJxHSSGNk+ul5@gmail.com>
+References: <20230616115316.3652155-1-leitao@debian.org>
+ <20230616132954.GG4253@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid>
- <288af70dafc5e73d0fdfac71a33449385d4d6bd3.camel@crapouillou.net>
- <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com> <3prgpsxxnf3hzeqcpjs5r37nfojbkuwk4ezizrwfrcthm666k6@t2q2qcpnfkiu>
-In-Reply-To: <3prgpsxxnf3hzeqcpjs5r37nfojbkuwk4ezizrwfrcthm666k6@t2q2qcpnfkiu>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Sep 2023 09:23:29 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VSTP2g1RttMu_9+AGQbMK87MzQO+tw1cZBEJ3g-jAmYg@mail.gmail.com>
-Message-ID: <CAD=FV=VSTP2g1RttMu_9+AGQbMK87MzQO+tw1cZBEJ3g-jAmYg@mail.gmail.com>
-Subject: Re: [RFT PATCH 03/15] drm/ingenic: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        dri-devel@lists.freedesktop.org, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230616132954.GG4253@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Peter,
 
-On Wed, Sep 6, 2023 at 1:39=E2=80=AFAM Maxime Ripard <mripard@kernel.org> w=
-rote:
->
-> On Tue, Sep 05, 2023 at 01:16:08PM -0700, Doug Anderson wrote:
-> > > > ---
-> > > > This commit is only compile-time tested.
-> > > >
-> > > > NOTE: this patch touches a lot more than other similar patches sinc=
-e
-> > > > the bind() function is long and we want to make sure that we unset
-> > > > the
-> > > > drvdata if bind() fails.
-> > > >
-> > > > While making this patch, I noticed that the bind() function of this
-> > > > driver is using "devm" and thus assumes it doesn't need to do much
-> > > > explicit error handling. That's actually a bug. As per kernel docs
-> > > > [1]
-> > > > "the lifetime of the aggregate driver does not align with any of th=
-e
-> > > > underlying struct device instances. Therefore devm cannot be used a=
-nd
-> > > > all resources acquired or allocated in this callback must be
-> > > > explicitly released in the unbind callback". Fixing that is outside
-> > > > the scope of this commit.
-> > > >
-> > > > [1] https://docs.kernel.org/driver-api/component.html
-> > > >
-> > >
-> > > Noted, thanks.
-> >
-> > FWIW, I think that at least a few other DRM drivers handle this by
-> > doing some of their resource allocation / acquiring in the probe()
-> > function and then only doing things in the bind() that absolutely need
-> > to be in the bind. ;-)
->
-> That doesn't change much. The fundamental issue is that the DRM device
-> sticks around until the last application that has an open fd to it
-> closes it.
->
-> So it doesn't have any relationship with the unbind/remove timing, and
-> for all we know it can be there indefinitely, while the application
-> continues to interact with the driver.
+On Fri, Jun 16, 2023 at 03:29:54PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 16, 2023 at 04:53:15AM -0700, Breno Leitao wrote:
+> > On some systems, the Performance Counter Global Status Register is
+> > coming with reserved bits set, which causes the system to be unusable
+> > if a simple `perf top` runs. The system hits the WARN() thousands times
+> > while perf runs.
+> > 
+> > WARNING: CPU: 18 PID: 20608 at arch/x86/events/amd/core.c:944 amd_pmu_v2_handle_irq+0x1be/0x2b0
+> > 
+> > This happens because the "Performance Counter Global Status Register"
+> > (PerfCntGlobalStatus) MSR has bit 7 set. Bit 7 should be reserved according
+> > to the documentation (Figure 13-12 from "AMD64 Architecture Programmer’s
+> > Manual, Volume 2: System Programming, 24593"[1]
+> 
+> Would it then not make more sense to mask out bit7 before:
+> 
+> +	status &= ~AMD_PMU_V2_GLOBAL_STATUS_RESERVED;
+> 	if (!status)
+> 		goto done;
 
-I spent some time thinking about similar issues recently and, assuming
-my understanding is correct, I'd at least partially disagree.
+Instead of masking `status` against AMD_PMU_V2_GLOBAL_STATUS_RESERVED
+(AMD64_NUM_COUNTERS?), I opted for using the `amd_pmu_global_cntr_mask`
+global variable because it seems to represent what the loop below is
+iterating over:
 
-Specifically, I _think_ the only thing that's truly required to remain
-valid until userspace closes the last open "fd" is the memory for the
-"struct drm_device" itself, right? My understanding is that this is
-similar to how "struct device" works. The memory backing a "struct
-device" has to live until the last client releases a reference to it
-even if everything else about a device has gone away. So if it was all
-working perfectly then if the Linux driver backing the "struct
-drm_device" goes away then we'd release resources and NULL out a bunch
-of stuff in the "struct drm_device" but still keep the actual "struct
-drm_device" around since userspace still has a reference. Pretty much
-all userspace calls would fail, but at least they wouldn't crash. Is
-that roughly the gist?
+	/* PMC Enable and Overflow bits for PerfCntrGlobal* registers */
+	static u64 amd_pmu_global_cntr_mask __read_mostly;
 
-Assuming that's correct, then _most_ of the resource acquiring /
-memory allocation can still happen in the device probe() routine and
-can still use devm as long as we do something to ensure that any
-resources released are no longer pointed to by anything in the "struct
-drm_device".
+Also, I think we want to WARN_ON_ONCE() if we see this problem. Right
+now, it warns at every time we call this function, which makes the
+machine unusable, but, warning it once could be helpful to figure out
+there is something wrong with the machine/firmware.
 
-To make it concrete, I think we want this (feel free to correct). For
-simplicity, I'm assuming a driver that _doesn't_ use the component
-framework:
-
-a) Linux driver probe() happens. The "struct drm_device" is allocated
-in probe() by devm_drm_dev_alloc(). This takes a reference to the
-"struct drm_device". The device also acquires resources / allocates
-memory.
-
-b) Userspace acquires a reference to the "struct drm_device". Refcount
-is now 2 (one from userspace, one from the Linux driver).
-
-c) The Linux driver unbinds, presumably because userspace requested
-it. From earlier I think we decided that we can't (by design) block
-unbind. Once unbind happens then we shouldn't try to keep operating
-the device and the driver should stop running. As part of the unbind,
-the remove() is called and also "devm" resources are deallocated. If
-any of the things freed are pointed to by the "struct drm_device" then
-the code needs to NULL them out at this time. Also we should make sure
-that any callback functions that userspace could cause to be invoked
-return errors. Our code could go away at any point here since
-userspace could "rmmod" our module.
-
-d) Eventually userspace releases the reference and the "struct
-drm_device" memory gets automatically freed because it was allocated
-by devm_drm_dev_alloc()
-
-
-NOTE: potentially some things could be allocated / managed by
-drmm_xyz() function, like drmm_kmalloc() and that could simplify some
-things. However, it's not a panacea for everything. Specifically once
-the Linux driver unbind finishes then the device isn't functional
-anymore.
-
-
-
--Doug
+Anyway, please let me know whatever is your preferred way and I will
+submit a v2.
