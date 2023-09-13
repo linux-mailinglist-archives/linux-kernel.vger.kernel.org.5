@@ -2,97 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A20E79E166
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A9479E169
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238731AbjIMIDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        id S238744AbjIMID7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238695AbjIMIDe (ORCPT
+        with ESMTP id S238736AbjIMID5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:03:34 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E306D3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:03:30 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so810220366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694592208; x=1695197008; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1kjOm+yO1bEpK06tIac4VtD/LcBLpSROVXeAOIcQH5M=;
-        b=SQrHhEiMPGVaAGg2kk6tdcb0hK9lY3w/tpEjPljPCnAPTnQ8rVz6uODjNONYpIzqxS
-         o1LdVFrKWmEg/EZoZGrVXLgTNKoveQPPgNd3695nlQ2MEXJCYMo7DMmexWRTwV1r/C+g
-         FiPESkpLUA3EHWMSbuDxy0szFmsNOyyxihKS9AmV4SHKV84twrGAQmwonNUhLAs1goNr
-         +48b+IO1GJktwtCF25UJn2Re3Mm0CTAHCuSDG7MM+KbZnL9Icc+coEhqwpuFNE0Xjv/m
-         DSGBvwS+5xtuX9xEUr8VS0ihZgWERvF885Oj/0xUYIWV2oZfjsKY5ueuKImWJ3mx5qsC
-         UEQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694592208; x=1695197008;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1kjOm+yO1bEpK06tIac4VtD/LcBLpSROVXeAOIcQH5M=;
-        b=kyXdbRx8FLgDJxVgwnALalf6t25iaMXI8iMCEVy4aFvxbOso78cijbPC9FsnegU3di
-         xp+qlyRSpODmigRiyWL9wX50Sei14uYr8qWcUp2PtCblSwH16Rg+5f9gYv7fkTzzL50L
-         MPT4nXjKZMshCE5oiRjrm1/Cw1/TCtcojxbU6KL5nBVyqS9LqP4HfSLdl1q6xeTWNUbk
-         ZXubdet75XKJyMR2etAGblY/0ttb6vLNVTnZuvUNMDYdWxFFI4FUzuFnkjfLzLl2G9js
-         b+GwoNeuszem58BfQoGPsDKiop5waR3EIKrd9BGawDI9bvIuCopkrGglWqEi9puBRQdU
-         4tbA==
-X-Gm-Message-State: AOJu0YwgwIdBgZqwz4QejkgQ8axK6I8XiNVTGIvfJO6kkLNJet1Gp0+V
-        g5vS+fFyGO9+w4epnJsY+hm9IQ==
-X-Google-Smtp-Source: AGHT+IG3mCSisdpUbOJbDzS4VuyhZpOae5IS8BiUDI4Gst+a+ZzqN5sEd3+j3W8X0yWL0L35+WbCkA==
-X-Received: by 2002:a17:906:3158:b0:9a2:5bf:8b14 with SMTP id e24-20020a170906315800b009a205bf8b14mr1215035eje.22.1694592208501;
-        Wed, 13 Sep 2023 01:03:28 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id ho15-20020a1709070e8f00b009ad8ba6976bsm1974171ejc.9.2023.09.13.01.03.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 01:03:27 -0700 (PDT)
-Message-ID: <c75ef5f8-5c37-0ac4-bce5-05de81368dc9@linaro.org>
-Date:   Wed, 13 Sep 2023 10:03:25 +0200
+        Wed, 13 Sep 2023 04:03:57 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53971995;
+        Wed, 13 Sep 2023 01:03:53 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AB7F86607319;
+        Wed, 13 Sep 2023 09:03:51 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694592232;
+        bh=t9KoOwcPeScao1MYesE9b6L7TzTy764UcXMcMpPCPJU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FCDD979BiGVdfX/z2uopgN86c3vSzNQ4M6YyY6qryuAJ0Sl/5d20edOrvwXd1V791
+         RioBld6ip9bTvkWuDHsrLhKKyyrX/GvyeqK6KecOlZyoOMUQLLzribqoFECCQFyfkM
+         XtErTAr+groQ/WoYh/zubWRzwMj1510DSXXVvYcyOZ5eQlYGD1XNwlxdw28VF3NqR3
+         BTC7Um07JZ/MCqsJkz2DiWKFYSgp3zKapWJFAWrzdUUrBqLgkO5FeCWuYUfPJWOZxs
+         dgsZrDVkDMhHSP97aWUxjRi5cXNdmIESLpHLz8Dj0Ar3Y+kgGej1zWIafBgmfKQRhP
+         8BcPeUesWHBkg==
+Message-ID: <99ef1b62-0676-a912-20fb-c04c427c4d01@collabora.com>
+Date:   Wed, 13 Sep 2023 10:03:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v2 3/7] thermal: exynos: switch from workqueue-driven
- interrupt handling to threaded interrupts
+Subject: Re: [RFC v1 2/3] thermal/drivers/mediatek/lvts_thermal: make coeff
+ configurable
 Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Amit Kucheria <amitk@kernel.org>,
         Zhang Rui <rui.zhang@intel.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20230911133435.14061-1-m.majewski2@samsung.com>
- <CGME20230911133615eucas1p123b3bed5bfa998bda65196d425f9b49d@eucas1p1.samsung.com>
- <20230911133435.14061-4-m.majewski2@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230911133435.14061-4-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Daniel Golle <daniel@makrotopia.org>
+References: <20230911183354.11487-1-linux@fw-web.de>
+ <20230911183354.11487-3-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230911183354.11487-3-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2023 15:34, Mateusz Majewski wrote:
-> The workqueue boilerplate is mostly one-to-one what the threaded
-> interrupts do.
+Il 11/09/23 20:33, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
+> The upcoming mt7988 has different temperature coefficients so we
+> cannot use constants in the functions lvts_golden_temp_init,
+> lvts_golden_temp_init and lvts_raw_to_temp anymore.
+> 
+> Add a field in the lvts_ctrl pointing to the lvts_data which now
+> contains the soc-specific temperature coefficents.
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 > ---
-> v1 -> v2: devm_request_threaded_irq call formatting change.
+>   drivers/thermal/mediatek/lvts_thermal.c | 56 ++++++++++++++++++-------
+>   1 file changed, 41 insertions(+), 15 deletions(-)
 > 
+> diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
+> index effd9b00a424..c1004b4da3b6 100644
+> --- a/drivers/thermal/mediatek/lvts_thermal.c
+> +++ b/drivers/thermal/mediatek/lvts_thermal.c
+> @@ -80,8 +80,8 @@
+>   #define LVTS_SENSOR_MAX				4
+>   #define LVTS_GOLDEN_TEMP_MAX		62
+>   #define LVTS_GOLDEN_TEMP_DEFAULT	50
+> -#define LVTS_COEFF_A				-250460
+> -#define LVTS_COEFF_B				250460
+> +#define LVTS_COEFF_A_MT8195			-250460
+> +#define LVTS_COEFF_B_MT8195			250460
+>   
+>   #define LVTS_MSR_IMMEDIATE_MODE		0
+>   #define LVTS_MSR_FILTERED_MODE		1
+> @@ -94,7 +94,7 @@
+>   #define LVTS_MINIMUM_THRESHOLD		20000
+>   
+>   static int golden_temp = LVTS_GOLDEN_TEMP_DEFAULT;
+> -static int coeff_b = LVTS_COEFF_B;
+> +static int coeff_b;
 
+This could be renamed to `golden_temp_offset`
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>   
+>   struct lvts_sensor_data {
+>   	int dt_id;
+> @@ -109,9 +109,15 @@ struct lvts_ctrl_data {
+>   	int mode;
+>   };
+>   
+> +struct formula_coeff {
+> +	int a;
+> +	int b;
+> +};
+> +
+>   struct lvts_data {
+>   	const struct lvts_ctrl_data *lvts_ctrl;
+>   	int num_lvts_ctrl;
+> +	struct formula_coeff coeff;
 
-Best regards,
-Krzysztof
+You can just add the coefficients here directly... and while at it you can
+also make it self explanatory, because the "A" coefficient is a factor while
+the "B" coefficient is just an offset.
+
+	int temp_factor; <--- coeff_a
+	int temp_offset; <--- coeff_b
+
+>   };
+>   
+>   struct lvts_sensor {
+> @@ -126,6 +132,7 @@ struct lvts_sensor {
+>   
+>   struct lvts_ctrl {
+>   	struct lvts_sensor sensors[LVTS_SENSOR_MAX];
+> +	const struct lvts_data *lvts_data;
+>   	u32 calibration[LVTS_SENSOR_MAX];
+>   	u32 hw_tshut_raw_temp;
+>   	int num_lvts_sensor;
+> @@ -247,21 +254,21 @@ static void lvts_debugfs_exit(struct lvts_domain *lvts_td) { }
+>   
+>   #endif
+>   
+> -static int lvts_raw_to_temp(u32 raw_temp)
+> +static int lvts_raw_to_temp(u32 raw_temp, struct formula_coeff coeff)
+>   {
+>   	int temperature;
+>   
+> -	temperature = ((s64)(raw_temp & 0xFFFF) * LVTS_COEFF_A) >> 14;
+> +	temperature = ((s64)(raw_temp & 0xFFFF) * coeff.a) >> 14;
+
+so that this also becomes more readable:
+
+static int lvts_raw_to_temp(u32 raw_temp, int temp_factor)
+{
+	int temperature;
+
+	temperature = ((s64)(raw_temp & 0xFFFF) * temp_factor) >> 14;
+	temperature += golden_temp_offset;
+
+	return temperature;
+}
+
+where temp_factor is lvts_data.temp_factor, and golden_temp_offset is a
+rename of `static int coeff_b`.
+
+Cheers,
+Angelo
 
