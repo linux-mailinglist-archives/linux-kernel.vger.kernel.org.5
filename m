@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5BF79E84A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC7879E852
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbjIMMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S240525AbjIMMvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234730AbjIMMtW (ORCPT
+        with ESMTP id S238125AbjIMMu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:49:22 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025F719B6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:49:19 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-77a62a84855so249493139f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694609358; x=1695214158; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Vy7JcxjX2sI8J+tYRSHZ5xGLUxgOH8JQq+vqCf2qAy4=;
-        b=B5vkjBE7s2YR6tOPvaE3ybgBDPwNvwLdUSEAViLJLq+eSpclJNAu7NWB5dHVHm5xE6
-         DRMKT9MkFciRNlkafqNOdANn1/cmC2gn7rLXk4zKmFje4fW70FDlbUusxnT4ZTTxL1MK
-         t/qSzFBLhURwtZZj/HAif8yRkx9RVz/HWgB56KTfaAVN9sI1F9pDO7U7K0+Au+E4WuWK
-         6weWy8kgvzNfMiYB4CZgCh+Za2Y4GZxk+ThQBEhMLpn04JVPByoMfN6LNoelcGnJS/vx
-         PpZBNZtrFiMGGt3lJ6CIqtCdOj7TJKTigZAq8uS/cNPYp8UBvv0l3lhUkqoMpUj7QHYC
-         HHWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694609358; x=1695214158;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vy7JcxjX2sI8J+tYRSHZ5xGLUxgOH8JQq+vqCf2qAy4=;
-        b=fhuwaO1dOVKUUU1kLRlyToQ+TCGu6ibagskfHu/tng7DxaZquTXwrOgjZnMWVBcDnX
-         BHfpOXQE8TIp3/qR725MrxMFqb6D8TSo6gOb8kAxaw+aPsEB/FH3RTq9lgR4Dj9cwQPb
-         NuSl4h5DaO/DEfyiMfpL3lX1sL0ZQzcJ9X9ok/4I9bgci07zW6wKZYXFWMZ86hD3iYur
-         nJn6wEsGpoZgcm+qiUaX6jqyc6dw//qV1mHGZ7gKSI/FLGbIFPO/JOBfd0xt9U1c7j1T
-         +gY6iwK+aYMY8ZwEpr0925Lo2uNAx8Y2aqe7rqNwjoXoWO1rid1aHQBRUwoqyp7Hgrs1
-         lkvQ==
-X-Gm-Message-State: AOJu0YxeHabqi2T918nQbdUf0KqjRWlis0YjiSLJXretD3bXlP/PtWGv
-        3Uxm7y2l9mHtuVSTvrLBGRuqtq1XZ5dJgTM9IX7Cyg==
-X-Google-Smtp-Source: AGHT+IHejtFz+fyDC+oWroZbIidC71O4LjojvEegaaQWtYalzVCdqXMkq27FUcCV6IhcmsYH9IUxJCB3abCP90+Y7vk=
-X-Received: by 2002:a6b:7a4a:0:b0:780:d76c:b640 with SMTP id
- k10-20020a6b7a4a000000b00780d76cb640mr2811549iop.9.1694609358299; Wed, 13 Sep
- 2023 05:49:18 -0700 (PDT)
+        Wed, 13 Sep 2023 08:50:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4681119B1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=66j4LpC4FkxboVA4ELkFlwA3s9erD6zM+Bkl1ZbmvNs=; b=vzAIjuHVFwzSZ+jmF8W8PUR+jX
+        h/0d3pu00H6MwztFn+DD9n5qhlrm4BdAwuTumla3TY/DvJAzCQY8e8jcJ5h8U4m0J5kqfMwdPqch3
+        EqnpUxTjGNo96gntkkgtI9VGIVo7XfjvbXmb4Q3MxlE40M9FjzfcPV5kSjDosg3dP8YrD0QeWguor
+        3LKNRtxReQz0aiMLYRMzLjRx+7536mnBHihJ8kd2ro19Qod9rQyhAM1jpD6OSmpmZic6QPA9RsPjL
+        1VA7EVk5zrR5pLP63Vu5cMA4pGveJrkIL3ayrcdrR5TtZX2DFTJ7IEtOLcUuRDFkebvQIUxjZe4gs
+        r7/78SiA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qgPK4-00DuuQ-BZ; Wed, 13 Sep 2023 12:50:24 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 08FCA300348; Wed, 13 Sep 2023 14:50:24 +0200 (CEST)
+Date:   Wed, 13 Sep 2023 14:50:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Nikolay Borisov <nik.borisov@suse.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
+ overhead
+Message-ID: <20230913125023.GG692@noisy.programming.kicks-ass.net>
+References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
+ <20230821112723.3995187-5-andrew.cooper3@citrix.com>
+ <20230821151636.onk2e6tlhmjg5yz5@treble>
+ <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+ <20230822022229.xlctyccmgdxiy6ic@treble>
+ <9565380a-4654-f267-c8ac-a4d6ab81156a@suse.com>
+ <20230822221828.htnwidmr22gtjhcd@treble>
 MIME-Version: 1.0
-From:   Suleiman Souhlal <suleiman@google.com>
-Date:   Wed, 13 Sep 2023 21:49:07 +0900
-Message-ID: <CABCjUKBXPLNaBjELHqz=Oke_JsxXLQauTWrsNmTp3KToW3-9MQ@mail.gmail.com>
-Subject: NOHZ interaction between IPI-less kick_ilb() and nohz_csd_func().
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Vineeth Pillai <vineethrp@google.com>,
-        Youssef Esmat <youssefesmat@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822221828.htnwidmr22gtjhcd@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 22, 2023 at 03:18:28PM -0700, Josh Poimboeuf wrote:
 
-I noticed that on x86 machines that have MWAIT, with NOHZ, when the
-kernel decides to kick the idle load balance on another CPU in
-kick_ilb(), there's an optimization that makes it avoid using an IPI
-and instead exploit the fact that the remote CPU is MWAITing on the
-thread_info flags, by just setting TIF_NEED_RESCHED, in
-call_function_single_prep_ipi().
-However, on the remote CPU, in nohz_csd_func(), we end up not raising
-the sched softirq due to NEED_RESCHED being set, so the ILB doesn't
-end up getting done.
+> The problem is the call-site, not the thunk.  Ideally we'd have an
+> option which adds an INT3 after the 'JMP __x86_return_thunk'.
 
-Is this intended?
+The -mharden-sls=all option *SHOULD* be extended to unconditionally emit
+INT3 after everyt JMP instruction -- including the one used for
+-mfunction-return=thunk-extern.
 
-Thanks,
--- Suleiman
+This is a known missing mitigation for an AMD SLS issue.
+
+Due to the whole branch-type-confusion thing, AMD CPUs can predict the
+JMP as 'not-a-branch' and continue to the next instruction.
+
+I'm sure Andrew has the proper name and CVE stashed away somewhere. IIRC
+he even has a GCC bugzilla entry for it.
