@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 536A579E0F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B4D79E0F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238575AbjIMHh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S238604AbjIMHiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbjIMHhx (ORCPT
+        with ESMTP id S238597AbjIMHiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:37:53 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8113C1729;
-        Wed, 13 Sep 2023 00:37:49 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf55a81eeaso45603615ad.0;
-        Wed, 13 Sep 2023 00:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694590669; x=1695195469; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmJN9dyFxG0ZDa5DUc653tNGEVo7z94noVDJ6MnTyRc=;
-        b=R3FoEAXc7B0UfN97a0G1ynfJstGAcrgP4KTjDD6WABCKpDm+y2jx/bIcg+D5iykYNU
-         F1v1Gu/zXMAmrO5gtXbvQNzjHJeZ5+JFKYwweqZFZH0htn0hn28uS6aaBTHD3qAWlepN
-         8ikFG6QVn8x0RmlV3Q8QUoo0U1XqzRIZ0dcc1kdadJiYeCVTy4QTlzGHeRaKH1XlEhY7
-         kf3KNRLNyHlxjS7Dr84SAUvwiDA7n7sfRsMQLABIHeHTiJFAJeQkXD/OCtDpGP9JoFqb
-         n4fzEWJ/XWhA/MyShq9PLqC3jPFeS0Z0tg5faFeHyDP4Ql2nzBYffxgrrdHHA8iN52ap
-         AZKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694590669; x=1695195469;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jmJN9dyFxG0ZDa5DUc653tNGEVo7z94noVDJ6MnTyRc=;
-        b=pabAndoN0J2n6bQ1+iCeK6qYtMnGaGk6tebsIqo8PYiBwLnsZPROe6Qe/87n4k23yN
-         Yo4ypWgE1KTDexcsIitpvmkvsfAOAe9VTYRTsm0iz9xiRSNtzOWscNa5EnjJDTd3xYI8
-         mPYwSNTcuYDXbCi47e07WOiw6tfBwOejIgepVXO3wlyn/mXCkORE3ltSoYiUjeNcKF6l
-         VqLkcwn+gYkiW0yKwzwSS6i3Dmpw0WvAbgO82mSR/Djn+aXRNMnDrjYNcs8+dSTr+LgW
-         jeVTUWV+d2lvgHnPjqfJWTj62xjFq2I9hFIQAijVeI4nx358OVhJMCUu4A6CKIRFQBi2
-         /YqA==
-X-Gm-Message-State: AOJu0Yw+ZWwoSdYjh9qLiapzm6++dhfFFtOM521y6XwkM2J17F0fq9kC
-        PAgpgYt2ZM+VYYqWO1z4vRk=
-X-Google-Smtp-Source: AGHT+IG8v5u1glfIsOlMbXwpIzlNTqHACo4fi2tLfh/TxG/xGwlW2tjOWqfB5SssmaJC5IzWRPLeyg==
-X-Received: by 2002:a17:902:efd3:b0:1bf:148b:58ff with SMTP id ja19-20020a170902efd300b001bf148b58ffmr1696100plb.69.1694590668864;
-        Wed, 13 Sep 2023 00:37:48 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id a15-20020a170902eccf00b001bf044dc1a6sm9757434plh.39.2023.09.13.00.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 00:37:48 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 688EF821F321; Wed, 13 Sep 2023 14:37:46 +0700 (WIB)
-Date:   Wed, 13 Sep 2023 14:37:46 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "Teng Wang" <wangteng13@nudt.edu.cn>, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, edumazet@google.com,
-        netdev@vger.kernel.org
-Subject: Re: Bug: rcu detected stall in sys_nanosleep
-Message-ID: <ZQFmyp-cK_ensG_u@debian.me>
-References: <13067197.3b9a.18a8d519137.Coremail.wangteng13@nudt.edu.cn>
+        Wed, 13 Sep 2023 03:38:01 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A34681727;
+        Wed, 13 Sep 2023 00:37:57 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id E3D438088;
+        Wed, 13 Sep 2023 07:37:56 +0000 (UTC)
+Date:   Wed, 13 Sep 2023 10:37:55 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sebastian Reichel <sre@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/omap: dsi: Fix deferred probe warnings
+Message-ID: <20230913073755.GE5285@atomide.com>
+References: <20230412073954.20601-1-tony@atomide.com>
+ <20230412085044.GP11253@pendragon.ideasonboard.com>
+ <2bf56c04-733b-24a5-a344-166a94cd51f7@ideasonboard.com>
+ <20230412085926.GR11253@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w0Zxr0zYupWMykcF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <13067197.3b9a.18a8d519137.Coremail.wangteng13@nudt.edu.cn>
+In-Reply-To: <20230412085926.GR11253@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Laurent Pinchart <laurent.pinchart@ideasonboard.com> [230412 11:59]:
+> On Wed, Apr 12, 2023 at 11:55:34AM +0300, Tomi Valkeinen wrote:
+> > On 12/04/2023 11:50, Laurent Pinchart wrote:
+> > > Hi Tony,
+> > > 
+> > > Thank you for the patch.
+> > > 
+> > > On Wed, Apr 12, 2023 at 10:39:53AM +0300, Tony Lindgren wrote:
+> > >> We may not have dsi->dsidev initialized during probe, and that can
+> > >> lead into various dsi related warnings as omap_dsi_host_detach() gets
+> > >> called with dsi->dsidev set to NULL.
+> > >>
+> > >> The warnings can be "Fixed dependency cycle(s)" followed by a
+> > >> WARNING: CPU: 0 PID: 787 at drivers/gpu/drm/omapdrm/dss/dsi.c:4414.
+> > > 
+> > > How can this happen ? I assume .detach() can't be called without a
+> > > priori successful call to .attach(), that that sets dsi->dsidev.
+> > 
+> > I had a quick look, and the driver calls mipi_dsi_host_register() in 
+> > probe, and mipi_dsi_host_unregister() in remove.
+> > 
+> > mipi_dsi_host_unregister() always calls mipi_dsi_detach(), but I don't 
+> > think mipi_dsi_host_register() always calls attach, which happens later 
+> > when the peripheral probes.
+> 
+> Is this something that should be addressed in the DRM MIPI DSI helpers,
+> to only detach after an attach ?
 
---w0Zxr0zYupWMykcF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tomi, any comments on detach after attach?
 
-On Wed, Sep 13, 2023 at 02:54:07PM +0800, Teng Wang wrote:
-> Dear All,
-> This bug was found in linux Kernel v6.2.10
->=20
-> Syzkaller hit 'INFO: rcu detected stall in sys_nanosleep' bug.
+Regards,
 
-v6.2.y has been EOLed, please reproduce with current mainline (v6.6-rc1).
+Tony
 
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---w0Zxr0zYupWMykcF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZQFmyQAKCRD2uYlJVVFO
-oxxNAP9UwsejSNGrmCcyQae/pmO3CSLTtZiG0xFJEQJPUFd3YwD/TH1bP+L3ieT6
-TIgoi5A6pzQUqQ8ipI+J5prYDl2xGAw=
-=j/Yh
------END PGP SIGNATURE-----
-
---w0Zxr0zYupWMykcF--
+> > >> Let's fix the warnings by checking for a valid dsi->dsidev.
+> > >>
+> > >> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > >> ---
+> > >>   drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
+> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > >> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > >> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> > >> @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_host *host,
+> > >>   {
+> > >>   	struct dsi_data *dsi = host_to_omap(host);
+> > >>   
+> > >> -	if (WARN_ON(dsi->dsidev != client))
+> > >> +	if (dsi->dsidev && WARN_ON(dsi->dsidev != client))
+> > >>   		return -EINVAL;
+> > >>   
+> > >>   	cancel_delayed_work_sync(&dsi->dsi_disable_work);
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
+> 
