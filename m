@@ -2,76 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D42379E398
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CE779E39C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239282AbjIMJ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        id S239323AbjIMJ1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjIMJ1G (ORCPT
+        with ESMTP id S239259AbjIMJ1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:27:06 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C0A1999
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:27:02 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-501cef42bc9so10822052e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1694597221; x=1695202021; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QGfCIQ2uXeaGjAP1vJHhSYENJ4MSWSNEKMncc6vme3A=;
-        b=XyT+y+VvcEVYjk5tgqdG90zYV580vel1Tmj/WyF/7nZjk67DQsvcAVss9WQrjs6KM7
-         2nt4HLxAqupqZC37fVMxStjDf77Zz2Eq/3AHP0LPpL7CNIP2VVLozaH/XHJqXBVmHLr9
-         EGabpQbAdYjmdKmKAicw7DJPI2uumzDq10pWtVGlRMK+gtOCAunghRP8mVmDG6VLC4HX
-         4f5NWlkQ53CIig/1dgjXPprOTM4yG9phKiaNdnfTfIvsWE0bvabOlWqMMizTcXJo11kA
-         bjcoeOwukuVnea6MbaaaBzeyR6MWlzdfhq5N8vkoPGJ6H7RqnOgVkJCMI+WnN4vxfNmi
-         yLzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694597221; x=1695202021;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QGfCIQ2uXeaGjAP1vJHhSYENJ4MSWSNEKMncc6vme3A=;
-        b=d+5ImoWplXmXs9MuGO0Oq0zGnzGzGW3ewEbyJVZL3PRtdjXkiodTSkY1uhMRCSnRzK
-         w6c+C91CuZZp9dN7tUqvlMkx8fuIiKD1s9w/BxGkvoKhTd4xjgDZMtksBqAO8/eZNavt
-         UUVcMYE6vS+4OY45zGJ7AbF8sF4C5LyF1OsehrZNbpMhjFufu0oafeXw7REksCsnWW69
-         NsQO+LMHugw9Lv1ZoUWB9R7PnG2igCy8xETxtB7H3nyndFxSrsyJFY6kmfqdYWRGKa25
-         qGMSUf0JgJRmpdMFHnUAGArPWQ4fIdOG+yk34xTE/lc4C/Wym+IUUfdcSLDKtsOSfXdh
-         hzFA==
-X-Gm-Message-State: AOJu0Yyev8eynHaaeUfiTQbOBt4MacGp3GEVqphi3g+bT/TWpDEn6eg2
-        BxEWPUh/oxxD41J1dbtUaj6tXw==
-X-Google-Smtp-Source: AGHT+IECKPCiYRZXbmWqtRPtTFo/PY54Z5r0OM1fAoe4cIDECnaByX4QUdoEQokQtY4OTXuIq41+8w==
-X-Received: by 2002:a05:6512:3196:b0:500:b5db:990b with SMTP id i22-20020a056512319600b00500b5db990bmr1845665lfe.47.1694597220264;
-        Wed, 13 Sep 2023 02:27:00 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id az34-20020a05600c602200b00402e942561fsm1489986wmb.38.2023.09.13.02.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 02:26:59 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 11:26:58 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jinjian Song <songjinjian@hotmail.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
-        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
-        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
-        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
-        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nmarupaka@google.com,
-        vsankar@lenovo.com, danielwinkler@google.com
-Subject: Re: [net-next v4 0/5] net: wwan: t7xx: fw flashing & coredump support
-Message-ID: <ZQGAYiuOYnI/gvXl@nanopsycho>
-References: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+        Wed, 13 Sep 2023 05:27:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8445199E;
+        Wed, 13 Sep 2023 02:27:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694597227; x=1726133227;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jWur+JX9CJPEdIOhhwD8UkpAw5f715+nAiJqnxYPswY=;
+  b=CWhMvJt/BmdxMJT1BxTe6I5ZLpmsdey+f7kaN8kPU1A1GiHK/vqg/r9w
+   0jxMGDZGhqWqWahQQS1kVSJsO2f67vz1LGfa1AzHG/1Gq7UY0bK6JS7s/
+   RmacgYmw7djStn0Y7q94+V5vcO2OFc3iXvswOkznbHsuxlSVKDqvravV7
+   OFDlstJ8QHjHaWMU3YcXPNrrgZjofr/3eZroCXbvdXh6MnLaINgBVm6ZA
+   ghSQP0BuGgKdzy6aArLSwkr5FJIkMYV6kWf3xmqTGKlNSUJVMYk5pPV14
+   82z2btdfjMF8zujclpJG+dq83wWnKC/Zg/x1x+UFCUoRLpR4kW5jB4/MR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="464979127"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="464979127"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:27:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="867717321"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="867717321"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 13 Sep 2023 02:27:04 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A3A331E5; Wed, 13 Sep 2023 12:27:03 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Pearson <mpearson-lenovo@squebb.ca>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mark Pearson <markpearson@lenovo.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/2] platform/x86: think-lmi: Replace kstrdup() + strreplace() with kstrdup_and_replace()
+Date:   Wed, 13 Sep 2023 12:27:00 +0300
+Message-Id: <20230913092701.440959-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 12, 2023 at 11:48:40AM CEST, songjinjian@hotmail.com wrote:
+Replace open coded functionalify of kstrdup_and_replace() with a call.
 
-pw-bot: changes-requested
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/platform/x86/think-lmi.c | 43 +++++++++++---------------------
+ 1 file changed, 15 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
+index 79346881cadb..94a3c7a74bc4 100644
+--- a/drivers/platform/x86/think-lmi.c
++++ b/drivers/platform/x86/think-lmi.c
+@@ -15,7 +15,7 @@
+ #include <linux/errno.h>
+ #include <linux/fs.h>
+ #include <linux/mutex.h>
+-#include <linux/string.h>
++#include <linux/string_helpers.h>
+ #include <linux/types.h>
+ #include <linux/dmi.h>
+ #include <linux/wmi.h>
+@@ -432,13 +432,11 @@ static ssize_t new_password_store(struct kobject *kobj,
+ 	if (!tlmi_priv.can_set_bios_password)
+ 		return -EOPNOTSUPP;
+ 
+-	new_pwd = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present, setting password won't work if it is present */
++	new_pwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_pwd)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present, setting password won't work if it is present */
+-	strip_cr(new_pwd);
+-
+ 	/* Use lock in case multiple WMI operations needed */
+ 	mutex_lock(&tlmi_mutex);
+ 
+@@ -709,13 +707,11 @@ static ssize_t cert_to_password_store(struct kobject *kobj,
+ 	if (!setting->signature || !setting->signature[0])
+ 		return -EACCES;
+ 
+-	passwd = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	passwd = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!passwd)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(passwd);
+-
+ 	/* Format: 'Password,Signature' */
+ 	auth_str = kasprintf(GFP_KERNEL, "%s,%s", passwd, setting->signature);
+ 	if (!auth_str) {
+@@ -765,11 +761,10 @@ static ssize_t certificate_store(struct kobject *kobj,
+ 		return ret ?: count;
+ 	}
+ 
+-	new_cert = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_cert = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_cert)
+ 		return -ENOMEM;
+-	/* Strip out CR if one is present */
+-	strip_cr(new_cert);
+ 
+ 	if (setting->cert_installed) {
+ 		/* Certificate is installed so this is an update */
+@@ -817,13 +812,11 @@ static ssize_t signature_store(struct kobject *kobj,
+ 	if (!tlmi_priv.certificate_support)
+ 		return -EOPNOTSUPP;
+ 
+-	new_signature = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_signature)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_signature);
+-
+ 	/* Free any previous signature */
+ 	kfree(setting->signature);
+ 	setting->signature = new_signature;
+@@ -846,13 +839,11 @@ static ssize_t save_signature_store(struct kobject *kobj,
+ 	if (!tlmi_priv.certificate_support)
+ 		return -EOPNOTSUPP;
+ 
+-	new_signature = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_signature = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_signature)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_signature);
+-
+ 	/* Free any previous signature */
+ 	kfree(setting->save_signature);
+ 	setting->save_signature = new_signature;
+@@ -985,13 +976,11 @@ static ssize_t current_value_store(struct kobject *kobj,
+ 	if (!tlmi_priv.can_set_bios_settings)
+ 		return -EOPNOTSUPP;
+ 
+-	new_setting = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_setting)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_setting);
+-
+ 	/* Use lock in case multiple WMI operations needed */
+ 	mutex_lock(&tlmi_mutex);
+ 
+@@ -1163,13 +1152,11 @@ static ssize_t debug_cmd_store(struct kobject *kobj, struct kobj_attribute *attr
+ 	if (!tlmi_priv.can_debug_cmd)
+ 		return -EOPNOTSUPP;
+ 
+-	new_setting = kstrdup(buf, GFP_KERNEL);
++	/* Strip out CR if one is present */
++	new_setting = kstrdup_and_replace(buf, '\n', '\0', GFP_KERNEL);
+ 	if (!new_setting)
+ 		return -ENOMEM;
+ 
+-	/* Strip out CR if one is present */
+-	strip_cr(new_setting);
+-
+ 	if (tlmi_priv.pwd_admin->valid && tlmi_priv.pwd_admin->password[0]) {
+ 		auth_str = kasprintf(GFP_KERNEL, "%s,%s,%s;",
+ 				tlmi_priv.pwd_admin->password,
+-- 
+2.40.0.1.gaa8946217a0b
+
