@@ -2,190 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A40B179F3F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834FE79F3F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjIMVqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:46:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S232483AbjIMVqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbjIMVqP (ORCPT
+        with ESMTP id S229743AbjIMVqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:46:15 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF4199F;
-        Wed, 13 Sep 2023 14:46:11 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,144,1688428800"; 
-   d="scan'208";a="238514835"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 21:46:08 +0000
-Received: from EX19MTAUEC002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id 6D00360DE4;
-        Wed, 13 Sep 2023 21:46:07 +0000 (UTC)
-Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
- EX19MTAUEC002.ant.amazon.com (10.252.135.253) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 13 Sep 2023 21:45:54 +0000
-Received: from dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (10.15.97.110) by
- mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Wed, 13 Sep 2023 21:45:54 +0000
-Received: by dev-dsk-pjy-1a-76bc80b3.eu-west-1.amazon.com (Postfix, from userid 22993570)
-        id 9CB32207F8; Wed, 13 Sep 2023 21:45:54 +0000 (UTC)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     <puranjaymohan@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH bpf-next 0/1] bpf, arm64: support exceptions
-Date:   Wed, 13 Sep 2023 21:45:54 +0000
-Message-ID: <20230913214554.97356-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 13 Sep 2023 17:46:08 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A821739
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7927f24140eso9661039f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694641564; x=1695246364; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hS6LHZP97enWTuQrtj4p55fJQ0mnk4aMtCPKI4xtC9M=;
+        b=18tlNagWct2lJErMpBBze8hACFvX5AZfJLqUoJDTdn8+tzMzPrIui3pb2PRkgj3YRu
+         f3PuBDz4ls1YMRvPhgpSyYyA6cuJ4I5XNaR6KVrZiBdpZf4zJxTuT43MBLxiREBUSS0h
+         n0rMasvjPs+aSvU1ZoLuE4EJrbCDGYGXaOjaTabw0jAPqvNi8OB2Zs35x0jwYYoeZL1t
+         GCazIk56jwrycpvcVMZDZuY4cmhHxFrFJYFGDTEOghy3vcv022pDC3ofYa/CDup4TApO
+         zsqta+wTSCB6mC7WWxEw7SwfhbeBOm48l4Kvz/qeKWRo2I6tLda2b1MaCpapl6aCnH08
+         4F2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694641564; x=1695246364;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hS6LHZP97enWTuQrtj4p55fJQ0mnk4aMtCPKI4xtC9M=;
+        b=V7pPtgwR96A99sRG7MGfP41+ZBXL4WnVrFwzQEgGdFKoAE80AWpZRq12YpRPqkh7gY
+         l2Yd++BR3VyrandtaID5+fSl+9x+jIqnwkCWpRFeQ8iXAO9NfI4N9mYSfNqxY/BaP2bD
+         X2bkCt0i/zBvELGhTCPMeikbQfCDzLReH37VSqmFOTpLG3Adr44gIsaFYes7goI18Vr0
+         24TKiSOEnEsi1Md+FyNzPjzsfAQslzBhQ0+cWpf78GCuwkWhuBiBkOkPHmexl6nLC5NL
+         juo0Ubls/lcQEmqmbn2adKb/oLAnkNbMJpnTw8ZK3+8H3TgAEhxMmehILe7TjsOtXGa/
+         fiiA==
+X-Gm-Message-State: AOJu0Yz6FQeCSew2buelE5kkayBji0zbqCKyDqjGLVrVB/zYSIKJ8lzN
+        AVrjouDTAcK7m33uiV3RsYCNPg==
+X-Google-Smtp-Source: AGHT+IEB+MklxqwnlrjkpN5LSD98xUtIFfRsg2kZyYkJD4SxmRxnVtsxRjGe7HwbeANhxquKJjnX0g==
+X-Received: by 2002:a05:6e02:214d:b0:349:9af9:d412 with SMTP id d13-20020a056e02214d00b003499af9d412mr4794802ilv.0.1694641564057;
+        Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
+Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
+        by smtp.gmail.com with ESMTPSA id f15-20020a056638118f00b004316bbe1d4csm24843jas.78.2023.09.13.14.46.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 14:46:03 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 21:46:00 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 3/7] bcachefs: Fix -Wformat in bch2_alloc_v4_invalid()
+Message-ID: <20230913214600.y3eo3emayljnxfuy@google.com>
+References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+ <20230912-bcachefs-warning-fixes-v1-3-a1cc83a38836@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912-bcachefs-warning-fixes-v1-3-a1cc83a38836@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kumar is working on adding exceptions to BPF and enabling it on x86 [1].
-I am working with him to enable it on ARM64 and will later do it for
-other architectures when the basic exceptions support is upstream.
+On Tue, Sep 12, 2023 at 12:15:40PM -0700, Nathan Chancellor wrote:
+> When building bcachefs for 32-bit ARM, there is a compiler warning in
+> bch2_alloc_v4_invalid() due to use of an incorrect format specifier:
+>
+>   fs/bcachefs/alloc_background.c:246:30: error: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Werror,-Wformat]
+>     245 |                 prt_printf(err, "bad val size (%u > %lu)",
+>         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>         |                                                     %u
+>     246 |                        alloc_v4_u64s(a.v), bkey_val_u64s(k.k));
+>         |                        ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+>   fs/bcachefs/bkey.h:58:27: note: expanded from macro 'bkey_val_u64s'
+>      58 | #define bkey_val_u64s(_k)       ((_k)->u64s - BKEY_U64s)
+>         |                                 ^
+>   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
+>     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
+>         |                                                               ^~~~~~~~~~~
+>
+> This expression is of type 'size_t'. On 64-bit architectures, size_t is
+> 'unsigned long', so there is no warning when using %lu but on 32-bit
+> architectures, size_t is 'unsigned int'. Use '%zu', the format specifier
+> for 'size_t' to eliminate the warning.
+>
+> Fixes: 11be8e8db283 ("bcachefs: New on disk format: Backpointers")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
-This patch enables the support on ARM64, all sefltests are passing:
-
-# ./test_progs -a exceptions
-#74/1    exceptions/exception_throw_always_1:OK
-#74/2    exceptions/exception_throw_always_2:OK
-#74/3    exceptions/exception_throw_unwind_1:OK
-#74/4    exceptions/exception_throw_unwind_2:OK
-#74/5    exceptions/exception_throw_default:OK
-#74/6    exceptions/exception_throw_default_value:OK
-#74/7    exceptions/exception_tail_call:OK
-#74/8    exceptions/exception_ext:OK
-#74/9    exceptions/exception_ext_mod_cb_runtime:OK
-#74/10   exceptions/exception_throw_subprog:OK
-#74/11   exceptions/exception_assert_nz_gfunc:OK
-#74/12   exceptions/exception_assert_zero_gfunc:OK
-#74/13   exceptions/exception_assert_neg_gfunc:OK
-#74/14   exceptions/exception_assert_pos_gfunc:OK
-#74/15   exceptions/exception_assert_negeq_gfunc:OK
-#74/16   exceptions/exception_assert_poseq_gfunc:OK
-#74/17   exceptions/exception_assert_nz_gfunc_with:OK
-#74/18   exceptions/exception_assert_zero_gfunc_with:OK
-#74/19   exceptions/exception_assert_neg_gfunc_with:OK
-#74/20   exceptions/exception_assert_pos_gfunc_with:OK
-#74/21   exceptions/exception_assert_negeq_gfunc_with:OK
-#74/22   exceptions/exception_assert_poseq_gfunc_with:OK
-#74/23   exceptions/exception_bad_assert_nz_gfunc:OK
-#74/24   exceptions/exception_bad_assert_zero_gfunc:OK
-#74/25   exceptions/exception_bad_assert_neg_gfunc:OK
-#74/26   exceptions/exception_bad_assert_pos_gfunc:OK
-#74/27   exceptions/exception_bad_assert_negeq_gfunc:OK
-#74/28   exceptions/exception_bad_assert_poseq_gfunc:OK
-#74/29   exceptions/exception_bad_assert_nz_gfunc_with:OK
-#74/30   exceptions/exception_bad_assert_zero_gfunc_with:OK
-#74/31   exceptions/exception_bad_assert_neg_gfunc_with:OK
-#74/32   exceptions/exception_bad_assert_pos_gfunc_with:OK
-#74/33   exceptions/exception_bad_assert_negeq_gfunc_with:OK
-#74/34   exceptions/exception_bad_assert_poseq_gfunc_with:OK
-#74/35   exceptions/exception_assert_range:OK
-#74/36   exceptions/exception_assert_range_with:OK
-#74/37   exceptions/exception_bad_assert_range:OK
-#74/38   exceptions/exception_bad_assert_range_with:OK
-#74/39   exceptions/non-throwing fentry -> exception_cb:OK
-#74/40   exceptions/throwing fentry -> exception_cb:OK
-#74/41   exceptions/non-throwing fexit -> exception_cb:OK
-#74/42   exceptions/throwing fexit -> exception_cb:OK
-#74/43   exceptions/throwing extension (with custom cb) -> exception_cb:OK
-#74/44   exceptions/throwing extension -> global func in exception_cb:OK
-#74/45   exceptions/exception_ext_mod_cb_runtime:OK
-#74/46   exceptions/throwing extension (with custom cb) -> global func in exception_cb:OK
-#74/47   exceptions/exception_ext:OK
-#74/48   exceptions/non-throwing fentry -> non-throwing subprog:OK
-#74/49   exceptions/throwing fentry -> non-throwing subprog:OK
-#74/50   exceptions/non-throwing fentry -> throwing subprog:OK
-#74/51   exceptions/throwing fentry -> throwing subprog:OK
-#74/52   exceptions/non-throwing fexit -> non-throwing subprog:OK
-#74/53   exceptions/throwing fexit -> non-throwing subprog:OK
-#74/54   exceptions/non-throwing fexit -> throwing subprog:OK
-#74/55   exceptions/throwing fexit -> throwing subprog:OK
-#74/56   exceptions/non-throwing fmod_ret -> non-throwing subprog:OK
-#74/57   exceptions/non-throwing fmod_ret -> non-throwing global subprog:OK
-#74/58   exceptions/non-throwing extension -> non-throwing subprog:OK
-#74/59   exceptions/non-throwing extension -> throwing subprog:OK
-#74/60   exceptions/non-throwing extension -> non-throwing subprog:OK
-#74/61   exceptions/non-throwing extension -> throwing global subprog:OK
-#74/62   exceptions/throwing extension -> throwing global subprog:OK
-#74/63   exceptions/throwing extension -> non-throwing global subprog:OK
-#74/64   exceptions/non-throwing extension -> main subprog:OK
-#74/65   exceptions/throwing extension -> main subprog:OK
-#74/66   exceptions/reject_exception_cb_type_1:OK
-#74/67   exceptions/reject_exception_cb_type_2:OK
-#74/68   exceptions/reject_exception_cb_type_3:OK
-#74/69   exceptions/reject_exception_cb_type_4:OK
-#74/70   exceptions/reject_async_callback_throw:OK
-#74/71   exceptions/reject_with_lock:OK
-#74/72   exceptions/reject_subprog_with_lock:OK
-#74/73   exceptions/reject_with_rcu_read_lock:OK
-#74/74   exceptions/reject_subprog_with_rcu_read_lock:OK
-#74/75   exceptions/reject_with_rbtree_add_throw:OK
-#74/76   exceptions/reject_with_reference:OK
-#74/77   exceptions/reject_with_cb_reference:OK
-#74/78   exceptions/reject_with_cb:OK
-#74/79   exceptions/reject_with_subprog_reference:OK
-#74/80   exceptions/reject_throwing_exception_cb:OK
-#74/81   exceptions/reject_exception_cb_call_global_func:OK
-#74/82   exceptions/reject_exception_cb_call_static_func:OK
-#74/83   exceptions/reject_multiple_exception_cb:OK
-#74/84   exceptions/reject_exception_throw_cb:OK
-#74/85   exceptions/reject_exception_throw_cb_diff:OK
-#74/86   exceptions/reject_set_exception_cb_bad_ret1:OK
-#74/87   exceptions/reject_set_exception_cb_bad_ret2:OK
-#74/88   exceptions/check_assert_eq_int_min:OK
-#74/89   exceptions/check_assert_eq_int_max:OK
-#74/90   exceptions/check_assert_eq_zero:OK
-#74/91   exceptions/check_assert_eq_llong_min:OK
-#74/92   exceptions/check_assert_eq_llong_max:OK
-#74/93   exceptions/check_assert_lt_pos:OK
-#74/94   exceptions/check_assert_lt_zero:OK
-#74/95   exceptions/check_assert_lt_neg:OK
-#74/96   exceptions/check_assert_le_pos:OK
-#74/97   exceptions/check_assert_le_zero:OK
-#74/98   exceptions/check_assert_le_neg:OK
-#74/99   exceptions/check_assert_gt_pos:OK
-#74/100  exceptions/check_assert_gt_zero:OK
-#74/101  exceptions/check_assert_gt_neg:OK
-#74/102  exceptions/check_assert_ge_pos:OK
-#74/103  exceptions/check_assert_ge_zero:OK
-#74/104  exceptions/check_assert_ge_neg:OK
-#74/105  exceptions/check_assert_range_s64:OK
-#74/106  exceptions/check_assert_range_u64:OK
-#74/107  exceptions/check_assert_single_range_s64:OK
-#74/108  exceptions/check_assert_single_range_u64:OK
-#74/109  exceptions/check_assert_generic:OK
-#74/110  exceptions/check_assert_with_return:OK
-#74      exceptions:OK
-Summary: 1/110 PASSED, 0 SKIPPED, 0 FAILED
-
-[1] https://lore.kernel.org/bpf/20230912233214.1518551-1-memxor@gmail.com/
-
-Puranjay Mohan (1):
-  bpf, arm64: support exceptions
-
- arch/arm64/net/bpf_jit_comp.c | 98 ++++++++++++++++++++++++++++-------
- 1 file changed, 79 insertions(+), 19 deletions(-)
-
--- 
-2.40.1
-
+> ---
+>  fs/bcachefs/alloc_background.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
+> index 540d94c0cceb..67e73864823c 100644
+> --- a/fs/bcachefs/alloc_background.c
+> +++ b/fs/bcachefs/alloc_background.c
+> @@ -242,7 +242,7 @@ int bch2_alloc_v4_invalid(const struct bch_fs *c, struct bkey_s_c k,
+>  	struct bkey_s_c_alloc_v4 a = bkey_s_c_to_alloc_v4(k);
+>
+>  	if (alloc_v4_u64s(a.v) > bkey_val_u64s(k.k)) {
+> -		prt_printf(err, "bad val size (%u > %lu)",
+> +		prt_printf(err, "bad val size (%u > %zu)",
+>  		       alloc_v4_u64s(a.v), bkey_val_u64s(k.k));
+>  		return -BCH_ERR_invalid_bkey;
+>  	}
+>
+> --
+> 2.42.0
+>
