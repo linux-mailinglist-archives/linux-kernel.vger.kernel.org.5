@@ -2,138 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053CE79E87E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE8C79E87F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240696AbjIMM7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S240714AbjIMNAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239713AbjIMM7w (ORCPT
+        with ESMTP id S240671AbjIMNAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:59:52 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047A61981;
-        Wed, 13 Sep 2023 05:59:49 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F574C433C8;
-        Wed, 13 Sep 2023 12:59:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694609988;
-        bh=rFv3UZPb9fdmzw07pDBoa07LMxHvW2MjxczSaQMIrpU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=olLwFu/LCuqXQbjOkMht/YsrXr9Aid437J1Bcu1zRNjvYI+noQJa8lkQlqIJ2fG5O
-         nFIDhV6a56cBXxSifBeVBpoPFua6oXCJwoePgJj94uCj/tQyD4zo9jKf++QnW7sawt
-         ZEw1w0TqTqtMCosLNz3Ir9CFzK/xDrT4U0D4M7blR3w00abVlfgHOr5Lf3QrPPvdsx
-         DohDVRCMlrmQohnj2Z/vN3cDK2/b3WcAykK45RqHnwrW+ri/xCdycaKl6pI8z4Ektb
-         +apnhrrmjNtHqeXzDgBJI7oGzqJWMD+5XZDb68G4/lBzuKeTg9rlizqMjHULRHoe1u
-         RWiIKjqfoAvcw==
-Date:   Wed, 13 Sep 2023 07:59:46 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "D M, Sharath Kumar" <sharath.kumar.d.m@intel.com>
-Cc:     "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-        "kw@linux.com" <kw@linux.com>, "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] PCI: altera: refactor driver for supporting new
- platform
-Message-ID: <20230913125946.GA429409@bhelgaas>
+        Wed, 13 Sep 2023 09:00:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6882A1989;
+        Wed, 13 Sep 2023 06:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694610004; x=1726146004;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SS5UdfEd5/aGjW95PuR1Hrc1ehfo5reasMr5Jb91wy0=;
+  b=abDz9kzUWQ2kSs78Eu+X4vtTDYKdewXwQ4f83lRCbdq0qzG5xo74sORm
+   JU//2HDLl7s1TqO7EhQyhKK8RrT3jIGNiijTSuaDL6NZVNf2M0EBsXVp0
+   bbt0+TkIvbFDfpHM5zQHaiIQK4lv7/jB1ooIwWiPTz8kp/ZvDcvYIFDwi
+   u8/+rFdawT4wQH7oxpk9qQJjL3CdF64BivVoUFelVwhOSolMJEc4xUI1Z
+   tqgWr9kZ/TIGWi+Zvhv+wc1WM0twa55iPY4tyOKeTXabswx6l2E3wryZS
+   0dL99OnYx9Ep7Q94vIYE6Akqrd6mFQcfdJjvy7UKe/tJ5Pzzvd+LNQPgQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="375983355"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="375983355"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 06:00:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="990908097"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="990908097"
+Received: from asjackso-mobl2.amr.corp.intel.com (HELO tkristo-desk.intel.com) ([10.249.45.219])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:59:59 -0700
+From:   Tero Kristo <tero.kristo@linux.intel.com>
+To:     x86@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        tglx@linutronix.de
+Cc:     hpa@zytor.com, irogers@google.com, jolsa@kernel.org,
+        namhyung@kernel.org, adrian.hunter@intel.com, acme@kernel.org,
+        mingo@redhat.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com,
+        linux-perf-users@vger.kernel.org, peterz@infradead.org,
+        mark.rutland@arm.com
+Subject: [PATCHv2 2/2] perf/core: Allow reading package events from perf_event_read_local
+Date:   Wed, 13 Sep 2023 15:59:56 +0300
+Message-Id: <20230913125956.3652667-1-tero.kristo@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
+References: <20230912124432.3616761-2-tero.kristo@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911200808.GA388026@bhelgaas>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 03:08:08PM -0500, Bjorn Helgaas wrote:
-> On Fri, Sep 08, 2023 at 01:40:13PM +0000, D M, Sharath Kumar wrote:
-> > > -----Original Message-----
-> > > From: Bjorn Helgaas <helgaas@kernel.org>
-> > > Sent: Friday, September 8, 2023 6:14 PM
-> > > To: D M, Sharath Kumar <sharath.kumar.d.m@intel.com>
-> > > Cc: lpieralisi@kernel.org; kw@linux.com; robh@kernel.org;
-> > > bhelgaas@google.com; linux-pci@vger.kernel.org; dinguyen@kernel.org;
-> > > linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH v2 1/2] PCI: altera: refactor driver for supporting new
-> > > platform
-> > > 
-> > > On Fri, Sep 08, 2023 at 09:09:34AM +0000, D M, Sharath Kumar wrote:
-> > > > > -----Original Message-----
-> > > > > From: Bjorn Helgaas <helgaas@kernel.org> ...
-> > > 
-> > > > > > +	int (*ep_read_cfg)(struct altera_pcie *pcie, u8 busno,
-> > > > > > +			unsigned int devfn, int where, int size, u32 *value);
-> > > > > > +	int (*ep_write_cfg)(struct altera_pcie *pcie, u8 busno,
-> > > > > > +			unsigned int devfn, int where, int size, u32 value);
-> > > > >
-> > > > > "ep_read_cfg" isn't the ideal name because it suggests "endpoint",
-> > > > > but it may be either an endpoint or a switch upstream port.  The
-> > > > > rockchip driver uses "other", which isn't super descriptive either but
-> > > might be better.
-> > > > >
-> > > > Ok will change to "nonrp_read_cfg" ?
-> > > 
-> > > I think the important point is not whether it's a Root Port or not, but whether
-> > > it's on the root *bus* or not.  In other words, I think the driver has to
-> > > determine whether to generate a Type 0 (targeting something on the root
-> > > bus) or a Type 1 (targeting something below a
-> > > bridge) config transaction (see PCI-to-PCI Bridge spec r1.2, sec 3.1.2.1).
-> > > 
-> > > There can be non-Root Ports on the root bus, so "nonrp" doesn't seem quite
-> > > right.  "Other" would be OK, since that's already used by other drivers.
-> > > Maybe "type0" and "type1" would be better and would fit well with the
-> > > root_bus_nr check you use to distinguish them?
-> >
-> > Situation is
-> > Root port configuration space  - memory mapped
-> 
-> I don't quite believe the idea that the access method is based on
-> whether it's a root port.  For one thing, you decide whether to use
-> the memory-mapped accessor or the indirect accessor based on whether
-> the read targets the *root bus*, not whether it targets a root port.
-> And obviously you don't *know* whether the device at a B/D/F address
-> is a root port until after you read the PCIe type.
+Per-package perf events are typically registered with a single CPU only,
+however they can be read across all the CPUs within the package.
+Currently perf_event_read maps the event CPU according to the topology
+information to avoid an unnecessary SMP call, however
+perf_event_read_local deals with hard values and rejects a read with a
+failure if the CPU is not the one exactly registered. Allow similar
+mapping within the perf_event_read_local if the perf event in question
+can support this.
 
-I see eight copies of "[PATCH v3 0/2]" on the list:
-https://lore.kernel.org/linux-pci/20230616063313.862996-2-sharath.kumar.d.m@intel.com/T/#t
-The duplication just causes confusion and slows things down.
+This allows users like BPF code to read the package perf events properly
+across different CPUs within a package.
 
-I do think the naming as root port config accessors and endpoint
-config accessors is fundamentally broken and needs to be fixed.  It's
-not a *functional* issue, but it is important to avoid misleading
-names.
+Signed-off-by: Tero Kristo <tero.kristo@linux.intel.com>
+---
+v2:
+  * prevent illegal array access in case event->oncpu == -1
+  * split the event->cpu / event->oncpu handling to their own variables
 
-> I think using names similar to other drivers will be helpful.
-> 
-> These all work on the root bus:
-> 
->   exynos_pcie_rd_own_conf
->   meson_pcie_rd_own_conf
->   rockchip_pcie_rd_own_conf
-> 
-> These work on non-root buses:
-> 
->   dw_pcie_rd_other_conf
->   rockchip_pcie_rd_other_conf
-> 
-> > Non root port configuration space - indirect access/proprietary access
-> >     Type 0 for devices directly connected to root port
-> >     Type 1 for others
-> 
-> > > > > > +static int _altera_pcie_cfg_read(struct altera_pcie *pcie, u8 busno,
-> > > > > > +				 unsigned int devfn, int where, int size,
-> > > > > > +				 u32 *value)
-> > > > > > +{
-> > > > > > +	if (busno == pcie->root_bus_nr && pcie->pcie_data->ops-
-> > > > > >rp_read_cfg)
-> > > > > > +		return pcie->pcie_data->ops->rp_read_cfg(pcie, busno,
-> > > > > devfn,
-> > > > > > +							where, size, value);
-> > > > > > +
-> > > > > > +	if (pcie->pcie_data->ops->ep_read_cfg)
-> > > > > > +		return pcie->pcie_data->ops->ep_read_cfg(pcie, busno,
-> > > > > devfn,
-> > > > > > +							where, size, value);
-> > > > > > +	return PCIBIOS_FUNC_NOT_SUPPORTED; }
+ kernel/events/core.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4c72a41f11af..6b343bac0a71 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4425,6 +4425,9 @@ static int __perf_event_read_cpu(struct perf_event *event, int event_cpu)
+ {
+ 	u16 local_pkg, event_pkg;
+ 
++	if (event_cpu < 0 || event_cpu >= nr_cpu_ids)
++		return event_cpu;
++
+ 	if (event->group_caps & PERF_EV_CAP_READ_ACTIVE_PKG) {
+ 		int local_cpu = smp_processor_id();
+ 
+@@ -4528,6 +4531,8 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ {
+ 	unsigned long flags;
+ 	int ret = 0;
++	int event_cpu;
++	int event_oncpu;
+ 
+ 	/*
+ 	 * Disabling interrupts avoids all counter scheduling (context
+@@ -4551,15 +4556,22 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ 		goto out;
+ 	}
+ 
++	/*
++	 * Get the event CPU numbers, and adjust them to local if the event is
++	 * a per-package event that can be read locally
++	 */
++	event_oncpu = __perf_event_read_cpu(event, event->oncpu);
++	event_cpu = __perf_event_read_cpu(event, event->cpu);
++
+ 	/* If this is a per-CPU event, it must be for this CPU */
+ 	if (!(event->attach_state & PERF_ATTACH_TASK) &&
+-	    event->cpu != smp_processor_id()) {
++	    event_cpu != smp_processor_id()) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
+ 	/* If this is a pinned event it must be running on this CPU */
+-	if (event->attr.pinned && event->oncpu != smp_processor_id()) {
++	if (event->attr.pinned && event_oncpu != smp_processor_id()) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+@@ -4569,7 +4581,7 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+ 	 * or local to this CPU. Furthermore it means its ACTIVE (otherwise
+ 	 * oncpu == -1).
+ 	 */
+-	if (event->oncpu == smp_processor_id())
++	if (event_oncpu == smp_processor_id())
+ 		event->pmu->read(event);
+ 
+ 	*value = local64_read(&event->count);
+-- 
+2.40.1
+
