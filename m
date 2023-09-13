@@ -2,247 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9220279E3D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2792879E3E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239318AbjIMJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
+        id S239329AbjIMJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239027AbjIMJd6 (ORCPT
+        with ESMTP id S239027AbjIMJh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:33:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2963199F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:33:54 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 87E95218E2;
-        Wed, 13 Sep 2023 09:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1694597633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 13 Sep 2023 05:37:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10DB2196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:36:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694597800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pqk2WVOxbseyPwLAufOCZjtPP927ewD0tk02pn9sP0E=;
-        b=ji1etq0JMbhoyRdK9wX+2P7mx7Q2/6NkbjoYB8likMTX6RbaoXjyc1AS8DRfVJ6HDUeFhn
-        /QPaeQtQHsxH8awrAFCAHFJPWU5OFDCmV0gqoMoJ0QJYBXFF4aUwj8wrNpFIB+81jHcToT
-        XCP8FZ1bqGc5FhfbIZFwQnCaN7GPVac=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1694597633;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pqk2WVOxbseyPwLAufOCZjtPP927ewD0tk02pn9sP0E=;
-        b=ioJqudl2oOQ7dPKezfhMIPlCUCuMoSASbGHeCZ6Xe2PW22Q97syJIL9bMHSsF484QlQ44Y
-        XBAwAavc8qDD88Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59E4313582;
-        Wed, 13 Sep 2023 09:33:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Bph/FAGCAWWcRgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Wed, 13 Sep 2023 09:33:53 +0000
-Message-ID: <320c16a7-96b7-65ec-3d80-2eace0ddb290@suse.cz>
-Date:   Wed, 13 Sep 2023 11:33:52 +0200
+        bh=DJ+QIh3H2QPLinO4CDP/6iKCpBl9xv64ep1natwynMA=;
+        b=CRGTInFr6zASshKW8fUSPJt94EphRYGpdcRCipi/xirr9cKpiNeUzZBwUwCUJBwzyVKioE
+        oFDrO0cE3gF3xE57KP5qOnjwltylER1FJP+pGsRJuVDJz9y9KyzA2gKlRYtjwi0XQHbPQp
+        xt4s/6tzbEiCCoFYWi14mfJY4Lxqw9A=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-8-v7DkTYH5MDyuyTdxJfNwiA-1; Wed, 13 Sep 2023 05:36:37 -0400
+X-MC-Unique: v7DkTYH5MDyuyTdxJfNwiA-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3ac97b9577cso1494954b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:36:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694597797; x=1695202597;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DJ+QIh3H2QPLinO4CDP/6iKCpBl9xv64ep1natwynMA=;
+        b=v/xSW4lwiKp/26T6d1tkStMQVa9sNvzb1Pc6ATvABkuRAzrXCSjWfcyKg5v1Wtl33o
+         uVSqryrN0w5ugGlr7NiOcglyzcq7Akka/zLrEYeU1/Z3ZDKXraNJbXzJ7QB8aZgGSZji
+         6OZLs4+REdkqaaQAfIfSiivphG5/v/BggGBXqcM1wzFfn4P07L+xJkA8ESQGQ/gfpNOn
+         z2ykVZ9Lfd6MRuPMZItIj4ef48Jt3+ZaZr5d15CVqsnDhzjYfl/jw+Rmz3Sm+b/Ojp7h
+         Gg42vPksoMAXsWJjTollv/4jhjUCZAXf2KK2cm0EdeTYEJHeqC3ADZ82SZGI5mBLbnlu
+         aXBw==
+X-Gm-Message-State: AOJu0Yz5V6zU56OjSzv4oU/JrTfMRMs5U0JFAjq7ZRM4XGmgzDyK+OXj
+        rjSCnp4juMXGfJ5ch4K6ncO0p6gnX0w4Vc0bSV6t3kAqgZpZUqPl3vnYEK/JjQ1K2HIEkgV1jT8
+        BFimp6h0+jx/AtM6YimS81Qow5w2d/Wjx
+X-Received: by 2002:a05:6808:3ce:b0:3a7:4914:23ce with SMTP id o14-20020a05680803ce00b003a7491423cemr2063425oie.18.1694597796841;
+        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHvjKOmMhtyjJ532/geuZfUf3OFFZTDFonEaSQPBLq+sck2pHXEaLfPfI857g5j08bJ8heIFQ==
+X-Received: by 2002:a05:6808:3ce:b0:3a7:4914:23ce with SMTP id o14-20020a05680803ce00b003a7491423cemr2063411oie.18.1694597796633;
+        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
+Received: from redhat.com ([2804:1b3:a803:4ff9:7c29:fe41:6aa7:43df])
+        by smtp.gmail.com with ESMTPSA id a11-20020a05680802cb00b003a1d29f0549sm4978523oid.15.2023.09.13.02.36.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 06:36:31 -0300
+From:   Leonardo Bras <leobras@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: Re: [RFC PATCH v4 1/1] scripts: Introduce a default git.orderFile
+Message-ID: <ZQGCnwDMTQ6cH2ZJ@redhat.com>
+References: <20230913075550.90934-2-leobras@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-2-hannes@cmpxchg.org>
- <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
- <20230912145028.GA3228@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230912145028.GA3228@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913075550.90934-2-leobras@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 16:50, Johannes Weiner wrote:
-> On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
->> On 9/11/23 21:41, Johannes Weiner wrote:
-> 
->> > @@ -1577,7 +1556,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
->> >  			continue;
->> >  		del_page_from_free_list(page, zone, current_order);
->> >  		expand(zone, page, order, current_order, migratetype);
->> > -		set_pcppage_migratetype(page, migratetype);
->> 
->> Hm interesting, just noticed that __rmqueue_fallback() never did this
->> AFAICS, sounds like a bug.
-> 
-> I don't quite follow. Which part?
-> 
-> Keep in mind that at this point __rmqueue_fallback() doesn't return a
-> page. It just moves pages to the desired freelist, and then
-> __rmqueue_smallest() gets called again. This changes in 5/6, but until
-> now at least all of the above would apply to fallback pages.
+CC: linux-kbuild@vger.kernel.org
+(typo on the original Cc: line)
 
-Yep, missed that "doesn't return a page", thanks.
 
->> > @@ -2145,7 +2123,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
->> >  		 * pages are ordered properly.
->> >  		 */
->> >  		list_add_tail(&page->pcp_list, list);
->> > -		if (is_migrate_cma(get_pcppage_migratetype(page)))
->> > +		if (is_migrate_cma(get_pageblock_migratetype(page)))
->> >  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
->> >  					      -(1 << order));
->> 
->> This is potentially a source of overhead, I assume patch 6/6 might
->> change that.
+On Wed, Sep 13, 2023 at 04:55:50AM -0300, Leonardo Bras wrote:
+> When reviewing patches, it looks much nicer to have some changes shown
+> before others, which allow better understanding of the patch before the
+> the .c files reviewing.
 > 
-> Yes, 6/6 removes it altogether.
+> Introduce a default git.orderFile, in order to help developers getting the
+> best ordering easier.
 > 
-> But the test results in this patch's changelog are from this patch in
-> isolation, so it doesn't appear to be a concern even on its own.
-> 
->> > @@ -2457,7 +2423,7 @@ void free_unref_page_list(struct list_head *list)
->> >  		 * Free isolated pages directly to the allocator, see
->> >  		 * comment in free_unref_page.
->> >  		 */
->> > -		migratetype = get_pcppage_migratetype(page);
->> > +		migratetype = get_pfnblock_migratetype(page, pfn);
->> >  		if (unlikely(is_migrate_isolate(migratetype))) {
->> >  			list_del(&page->lru);
->> >  			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
->> 
->> I think after this change we should move the isolated pages handling to
->> the second loop below, so that we wouldn't have to call
->> get_pfnblock_migratetype() twice per page. Dunno yet if some later patch
->> does that. It would need to unlock pcp when necessary.
-> 
-> That sounds like a great idea. Something like the following?
-> 
-> Lightly tested. If you're good with it, I'll beat some more on it and
-> submit it as a follow-up.
-> 
+> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
 > ---
 > 
-> From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Tue, 12 Sep 2023 10:16:10 -0400
-> Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
+> Please provide feedback on what else to add / remove / reorder here!
 > 
-> Move direct freeing of isolated pages to the lock-breaking block in
-> the second loop. This saves an unnecessary migratetype reassessment.
+> Changes since RFCv3:
+> - Added "*types.h" matching so type headers appear before reguler headers
+> - Removed line ends ($) in patterns: they previously provided a 
+>   false-positive
+> - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
+>   in any subdirectory
 > 
-> Minor comment and local variable scoping cleanups.
-
-Looks like batch_count and locked_zone could be moved to the loop scope as well.
-
+> Changes since RFCv2:
+> - Fixed licence comment to from /**/ to #
+> - Fixed filename in how-to comment
+> - Fix build order: Kconfig -> Kbuild -> Makefile
+> - Add *.mk extension 
+> - Add line-ends ($) to make sure and get the correct extensions
+> - Thanks Masahiro Yamada for above suggestions!
+> - 1 Ack, thanks Randy!
 > 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
->  mm/page_alloc.c | 49 +++++++++++++++++++++----------------------------
->  1 file changed, 21 insertions(+), 28 deletions(-)
+> Changes since RFCv1:
+> - Added Kconfig* (thanks Randy Dunlap!)
+> - Changed Kbuild to Kbuild* (improve matching)
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index e3f1c777feed..9cad31de1bf5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2408,48 +2408,41 @@ void free_unref_page_list(struct list_head *list)
->  	struct per_cpu_pages *pcp = NULL;
->  	struct zone *locked_zone = NULL;
->  	int batch_count = 0;
-> -	int migratetype;
-> -
-> -	/* Prepare pages for freeing */
-> -	list_for_each_entry_safe(page, next, list, lru) {
-> -		unsigned long pfn = page_to_pfn(page);
->  
-> -		if (!free_pages_prepare(page, 0, FPI_NONE)) {
-> +	list_for_each_entry_safe(page, next, list, lru)
-> +		if (!free_pages_prepare(page, 0, FPI_NONE))
->  			list_del(&page->lru);
-> -			continue;
-> -		}
-> -
-> -		/*
-> -		 * Free isolated pages directly to the allocator, see
-> -		 * comment in free_unref_page.
-> -		 */
-> -		migratetype = get_pfnblock_migratetype(page, pfn);
-> -		if (unlikely(is_migrate_isolate(migratetype))) {
-> -			list_del(&page->lru);
-> -			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
-> -			continue;
-> -		}
-> -	}
->  
->  	list_for_each_entry_safe(page, next, list, lru) {
->  		unsigned long pfn = page_to_pfn(page);
->  		struct zone *zone = page_zone(page);
-> +		int migratetype;
->  
->  		list_del(&page->lru);
->  		migratetype = get_pfnblock_migratetype(page, pfn);
->  
->  		/*
-> -		 * Either different zone requiring a different pcp lock or
-> -		 * excessive lock hold times when freeing a large list of
-> -		 * pages.
-> +		 * Zone switch, batch complete, or non-pcp freeing?
-> +		 * Drop the pcp lock and evaluate.
->  		 */
-> -		if (zone != locked_zone || batch_count == SWAP_CLUSTER_MAX) {
-> +		if (unlikely(zone != locked_zone ||
-> +			     batch_count == SWAP_CLUSTER_MAX ||
-> +			     is_migrate_isolate(migratetype))) {
->  			if (pcp) {
->  				pcp_spin_unlock(pcp);
->  				pcp_trylock_finish(UP_flags);
-> +				locked_zone = NULL;
->  			}
->  
-> -			batch_count = 0;
-> +			/*
-> +			 * Free isolated pages directly to the
-> +			 * allocator, see comment in free_unref_page.
-> +			 */
-> +			if (is_migrate_isolate(migratetype)) {
-> +				free_one_page(zone, page, pfn, 0,
-> +					      migratetype, FPI_NONE);
-> +				continue;
-> +			}
->  
->  			/*
->  			 * trylock is necessary as pages may be getting freed
-> @@ -2459,12 +2452,12 @@ void free_unref_page_list(struct list_head *list)
->  			pcp = pcp_spin_trylock(zone->per_cpu_pageset);
->  			if (unlikely(!pcp)) {
->  				pcp_trylock_finish(UP_flags);
-> -				free_one_page(zone, page, pfn,
-> -					      0, migratetype, FPI_NONE);
-> -				locked_zone = NULL;
-> +				free_one_page(zone, page, pfn, 0,
-> +					      migratetype, FPI_NONE);
->  				continue;
->  			}
->  			locked_zone = zone;
-> +			batch_count = 0;
->  		}
->  
->  		/*
+> 
+>  scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>  create mode 100644 scripts/git.orderFile
+> 
+> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
+> new file mode 100644
+> index 000000000000..7cef02cbba3c
+> --- /dev/null
+> +++ b/scripts/git.orderFile
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +# order file for git, to produce patches which are easier to review
+> +# by diffing the important stuff like header changes first.
+> +#
+> +# one-off usage:
+> +#   git diff -O scripts/git.orderFile ...
+> +#
+> +# add to git config:
+> +#   git config diff.orderFile scripts/git.orderFile
+> +#
+> +
+> +MAINTAINERS
+> +
+> +# Documentation
+> +Documentation/*
+> +*.rst
+> +
+> +# build system
+> +*Kconfig*
+> +*Kbuild*
+> +*Makefile*
+> +*.mak
+> +*.mk
+> +
+> +# semantic patches
+> +*.cocci
+> +
+> +# headers
+> +*types.h
+> +*.h
+> +
+> +# code
+> +*.c
+> -- 
+> 2.42.0
+> 
 
