@@ -2,196 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 770FF79ED85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6280379ED82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjIMPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S229667AbjIMPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjIMPnd (ORCPT
+        with ESMTP id S229775AbjIMPnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Sep 2023 11:43:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C6A1FFD;
-        Wed, 13 Sep 2023 08:42:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19948C433C8;
-        Wed, 13 Sep 2023 15:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694619777;
-        bh=dSRv1cBIDROgqqiss/h2glTw3xEXdiH3Jh5rhTdY2To=;
-        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-        b=HBbUlFJTs74XooeS4O0KNQljjycjjwKZQzoLMo8ziUkQYkD2DYcGxdcUzqTpx6Ak3
-         n3esjPzKLD0BasbPWjTUYBV5730/FdMZk9dTk9YMPETHzXTPsfUPy5I+v8ijjJCi1q
-         lU+Kd43ARxKHzWwCe7C0tbOYJzoddKuunYIQ3v7aRw/I5+ldy2Z7xI83bF7GekJKut
-         +JEyyHRydX0Qk519NyPfXBL8KiKl9AHC6uVFRKwi7Bf/yhRgsDGLnJkkzS06cL7bNn
-         uAajshy/k3UyEKALiGzDoFnQq05F9MSOL97h2fEpb0UKH0Z/03EfhrjsA01U/E881O
-         Ya11RmDcJxrXA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 13 Sep 2023 18:42:52 +0300
-Message-Id: <CVHWKO25RFOU.24Z5A88M1VZA1@suppilovahvero>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-Subject: Re: [PATCH v4 15/18] x86/sgx: Prepare for multiple LRUs
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
- <20230913040635.28815-16-haitao.huang@linux.intel.com>
-In-Reply-To: <20230913040635.28815-16-haitao.huang@linux.intel.com>
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248641FFB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:42:57 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b962535808so119286721fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694619775; x=1695224575; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xZy/ik6yCjiyz1H5HblZSgJgBstuh1f5EQmTPAK0KFU=;
+        b=S+vbavs90M3Wr0aexwXIVR7IdosM+kl6ElGWeSPc9FVbrSlLBHTCosMzy2G643ISRX
+         bmYixCZgt1uNKi3J0mJjxPEonu16d1r9/a90yOTQCB4fkxXssgAS/lUtoRmecpCQHzbz
+         55u+sFn+L5qyXRmQr/zJs34v43gYevYEpLfsaWpeLvIsAsHueaSO1aziFgO+ObIA0t4O
+         eRfdVlMs6M6Bh1u8wKdrIm/xfd8r6LeuSi5Ly2J2F/XO/UGk3/jqgzxJz7Q8CiI+WSWB
+         9FEIhvK+64HogkMGn/W1m16HLdiR+7wH+nMUB9AgBkMyVTixYEcQaplKxiDtoGbpQ6vp
+         Hjxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694619775; x=1695224575;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xZy/ik6yCjiyz1H5HblZSgJgBstuh1f5EQmTPAK0KFU=;
+        b=gBOSQxzhZcWVWM80HBPyAi1T0JbJfi400jCbMhqwCzPVBYb5oqWZiEfbMSn6GFPRHR
+         epuROTui0SR0hL8Ii3T0Jkck+uraBiml7r8kxV6rGmkHq2rxcZ08VKOAwiQPJ3IhOPIg
+         ZVziOtUFUSt3tAmDvL0KFLK7s5pOaZfA+r5Xjm7hXhkvYzqkXS73I3/gZwetXPNfCx0L
+         LGeHJ5nFpWfwXi8MVLq1HeGFaOXkcAke5OAJukavLNCAxGBadufd6Zq2IvYDEj0d5h1M
+         tRtSGeSy3Vpx09ldHfdVL1EhzmwoPByvT0IiariBLLqj1Ggwxp6V3G1FeQuhdsZEF9D6
+         3+nw==
+X-Gm-Message-State: AOJu0YwdU2UIb4ygLQvLUKZQMXijduA+Je37r0TVUEiHIszJRf8WnTbY
+        xJrRC6XVWU45WN8N5CjFc8s=
+X-Google-Smtp-Source: AGHT+IFIJsojZFdmY9DxysMoa+ylnVzD6rIejsrMQlBfnlmAY/9rao7NpwYHkxUHzg7NAXEeWXEKzQ==
+X-Received: by 2002:a2e:96cf:0:b0:2bc:d38e:65ab with SMTP id d15-20020a2e96cf000000b002bcd38e65abmr2765042ljj.37.1694619775104;
+        Wed, 13 Sep 2023 08:42:55 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id z7-20020a2e9b87000000b002b9fe77d00dsm2455243lji.93.2023.09.13.08.42.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 08:42:54 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 13 Sep 2023 17:42:52 +0200
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v2 7/9] mm: vmalloc: Support multiple nodes in vread_iter
+Message-ID: <ZQHYfO0GTco4qPEF@pc636>
+References: <20230829081142.3619-1-urezki@gmail.com>
+ <20230829081142.3619-8-urezki@gmail.com>
+ <ZP6QVTQmDGx7tx1a@MiWiFi-R3L-srv>
+ <ZP9ZdRc4FDSH2ej4@pc636>
+ <ZQBqyDxVuCphprk2@MiWiFi-R3L-srv>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQBqyDxVuCphprk2@MiWiFi-R3L-srv>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
-> Add sgx_can_reclaim() wrapper and encapsulate direct references to the
-> global LRU list in the reclaimer functions so that they can be called wit=
-h
-> an LRU list per EPC cgroup.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> ---
-> V4:
-> - Re-organized this patch to include all changes related to
-> encapsulation of the global LRU
-> - Moved this patch to precede the EPC cgroup patch
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 41 +++++++++++++++++++++++-----------
->  1 file changed, 28 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index ce316bd5e5bb..3d396fe5ec09 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -34,6 +34,16 @@ static DEFINE_XARRAY(sgx_epc_address_space);
->   */
->  static struct sgx_epc_lru_lists sgx_global_lru;
-> =20
-> +static inline struct sgx_epc_lru_lists *sgx_lru_lists(struct sgx_epc_pag=
-e *epc_page)
-> +{
-> +	return &sgx_global_lru;
-> +}
+On Tue, Sep 12, 2023 at 09:42:32PM +0800, Baoquan He wrote:
+> On 09/11/23 at 08:16pm, Uladzislau Rezki wrote:
+> > On Mon, Sep 11, 2023 at 11:58:13AM +0800, Baoquan He wrote:
+> > > On 08/29/23 at 10:11am, Uladzislau Rezki (Sony) wrote:
+> > > > Extend the vread_iter() to be able to perform a sequential
+> > > > reading of VAs which are spread among multiple nodes. So a
+> > > > data read over the /dev/kmem correctly reflects a vmalloc
+> > > > memory layout.
+> > > > 
+> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > ---
+> > > >  mm/vmalloc.c | 67 +++++++++++++++++++++++++++++++++++++++++-----------
+> > > >  1 file changed, 53 insertions(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> > > > index 4fd4915c532d..968144c16237 100644
+> > > > --- a/mm/vmalloc.c
+> > > > +++ b/mm/vmalloc.c
+> > > ......  
+> > > > @@ -4057,19 +4093,15 @@ long vread_iter(struct iov_iter *iter, const char *addr, size_t count)
+> > > >  
+> > > >  	remains = count;
+> > > >  
+> > > > -	/* Hooked to node_0 so far. */
+> > > > -	vn = addr_to_node(0);
+> > > > -	spin_lock(&vn->busy.lock);
+> > > 
+> > > This could change the vread behaviour a little bit. Before, once we take
+> > > vmap_area_lock, the vread will read out the content of snapshot at the
+> > > moment. Now, reading out in one node's tree won't disrupt other nodes'
+> > > tree accessing. Not sure if this matters when people need access
+> > > /proc/kcore, e.g dynamic debugging.
+> > >
+> > With one big tree you anyway drop the lock after one cycle of reading.
+> > As far as i see, kcore.c's read granularity is a PAGE_SIZE.
+> 
+> With my understanding, kcore reading on vmalloc does read page by page,
+> it will continue after one page reading if the required size is bigger
+> than one page. Please see aligned_vread_iter() code. During the complete
+> process, vmap_area_lock is held before this patch.
+> 
+> > 
+> > > 
+> > > And, the reading will be a little slower because each va finding need
+> > > iterate all vmap_nodes[].
+> > > 
+> > Right. It is a bit tough here, because we have multiple nodes which
+> > represent zones(address space), i.e. there is an offset between them,
+> > it means that, reading fully one tree, will not provide a sequential
+> > reading.
+> 
+> Understood. Suppose the kcore reading on vmalloc is not critical. If I
+> get chance to test on a machine with 256 cpu, I will report here.
+> 
+It would be great! Unfortunately i do not have an access to such big
+systems. What i have is 64 CPUs max system. If you, by chance can test
+on bigger systems or can provide a temporary ssh access that would be
+awesome.
 
-I'd simply export sgx_global_lru.
-
-> +static inline bool sgx_can_reclaim(void)
-> +{
-> +	return !list_empty(&sgx_global_lru.reclaimable);
-> +}
-
-
-Accessors for the object should be named so that this fact is reflected,
-e.g. sgx_global_lru_can_reclaim() in this case.
-
-I would just open code this to the call sites though.
-
-> +
->  static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
-> =20
->  /* Nodes with one or more EPC sections. */
-> @@ -339,6 +349,7 @@ size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool =
-ignore_age)
->  	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
->  	struct sgx_epc_page *epc_page, *tmp;
->  	struct sgx_encl_page *encl_page;
-> +	struct sgx_epc_lru_lists *lru;
->  	pgoff_t page_index;
->  	LIST_HEAD(iso);
->  	size_t ret;
-> @@ -372,10 +383,11 @@ size_t sgx_reclaim_epc_pages(size_t nr_to_scan, boo=
-l ignore_age)
->  		continue;
-> =20
->  skip:
-> -		spin_lock(&sgx_global_lru.lock);
-> +		lru =3D sgx_lru_lists(epc_page);
-> +		spin_lock(&lru->lock);
->  		sgx_epc_page_set_state(epc_page, SGX_EPC_PAGE_RECLAIMABLE);
-> -		list_move_tail(&epc_page->list, &sgx_global_lru.reclaimable);
-> -		spin_unlock(&sgx_global_lru.lock);
-> +		list_move_tail(&epc_page->list, &lru->reclaimable);
-> +		spin_unlock(&lru->lock);
-> =20
->  		kref_put(&encl_page->encl->refcount, sgx_encl_release);
->  	}
-> @@ -399,7 +411,7 @@ size_t sgx_reclaim_epc_pages(size_t nr_to_scan, bool =
-ignore_age)
->  static bool sgx_should_reclaim(unsigned long watermark)
->  {
->  	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
-> -	       !list_empty(&sgx_global_lru.reclaimable);
-> +		sgx_can_reclaim();
->  }
-> =20
->  /*
-> @@ -529,14 +541,16 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
->   */
->  void sgx_record_epc_page(struct sgx_epc_page *page, unsigned long flags)
->  {
-> -	spin_lock(&sgx_global_lru.lock);
-> +	struct sgx_epc_lru_lists *lru =3D sgx_lru_lists(page);
-> +
-> +	spin_lock(&lru->lock);
->  	WARN_ON_ONCE(sgx_epc_page_reclaimable(page->flags));
->  	page->flags |=3D flags;
->  	if (sgx_epc_page_reclaimable(flags))
-> -		list_add_tail(&page->list, &sgx_global_lru.reclaimable);
-> +		list_add_tail(&page->list, &lru->reclaimable);
->  	else
-> -		list_add_tail(&page->list, &sgx_global_lru.unreclaimable);
-> -	spin_unlock(&sgx_global_lru.lock);
-> +		list_add_tail(&page->list, &lru->unreclaimable);
-> +	spin_unlock(&lru->lock);
->  }
-> =20
->  /**
-> @@ -551,15 +565,16 @@ void sgx_record_epc_page(struct sgx_epc_page *page,=
- unsigned long flags)
->   */
->  int sgx_drop_epc_page(struct sgx_epc_page *page)
->  {
-> -	spin_lock(&sgx_global_lru.lock);
-> +	struct sgx_epc_lru_lists *lru =3D sgx_lru_lists(page);
-> +
-> +	spin_lock(&lru->lock);
->  	if (sgx_epc_page_reclaim_in_progress(page->flags)) {
-> -		spin_unlock(&sgx_global_lru.lock);
-> +		spin_unlock(&lru->lock);
->  		return -EBUSY;
->  	}
-> -
->  	list_del(&page->list);
->  	sgx_epc_page_reset_state(page);
-> -	spin_unlock(&sgx_global_lru.lock);
-> +	spin_unlock(&lru->lock);
-> =20
->  	return 0;
->  }
-> @@ -592,7 +607,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
-bool reclaim)
->  			break;
->  		}
-> =20
-> -		if (list_empty(&sgx_global_lru.reclaimable))
-> +		if (!sgx_can_reclaim())
->  			return ERR_PTR(-ENOMEM);
-> =20
->  		if (!reclaim) {
-> --=20
-> 2.25.1
-
-BR, Jarkko
+--
+Uladzislau Rezki
