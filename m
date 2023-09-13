@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE5279E885
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6024379E886
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbjIMNBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        id S236192AbjIMNBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233534AbjIMNA6 (ORCPT
+        with ESMTP id S231326AbjIMNBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:00:58 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F631989;
-        Wed, 13 Sep 2023 06:00:54 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52a40cf952dso8999985a12.2;
-        Wed, 13 Sep 2023 06:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694610052; x=1695214852; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YrbAZ7p+q0hOYwba3y8YZqHpfIOsVvTzknQ/Q/Cixt4=;
-        b=h0yD0aAnv4+XqR7pucMoFGVVlvtqY7MRd1/KWFLgAV5vNJyqzVo6LvjTCyjF4VQ1BD
-         fmvucMUgGfxazxI6xob9M8E/N0OQ5bPpwFWnjEyjMrxcEhSSUQr/LeGXTE4paAIQt+gw
-         X4BRdAnPaZ0+HGgwAwQpKYituheU+gOBIWD5ZEolpFsVk0ZvS5s65h0NM6O2I4ShzzIZ
-         sa42Z591XrhF+7/+b0yecp4mP0teoZ+BqzA/ANIeRrHvrQcr14jmS0EHKnqHowPndOHf
-         eYrXXoI8pWezOXPQl3Nnkfg5Jr7TpAcFzoGmP1QMDsCokkEM6qdagnbL2t8Nb9Jber99
-         5dVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694610052; x=1695214852;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YrbAZ7p+q0hOYwba3y8YZqHpfIOsVvTzknQ/Q/Cixt4=;
-        b=b4bLdaUqPbCOPBNYxzmCLPgaLcm6yQf1HvEdvNSpZYuPYSelH2pKgSc6GoiSGLgY0t
-         NXlCJUoj83/LUBlX1H9iwRkEPY1Sf8qIyI0Jiv3uo35omAOPY9mT+hf0UGgQUfhGvQwJ
-         Ck5b/6bA4bz4dO+8BdStwaWzF3SGCJzHcOWgqqVPOPM1AP82oFGTd5ENku21Gw3aBgb+
-         2kMNEkmQu0hZsIkr2vehTIy3x8m59tu1JlitKapgRY9gIMGngzgpet8dmOQm/IJyxd2A
-         NVsWRROX6MGis13C30dR5K0BIPS/oUO8SJEPb+z16pxbflXyR7YuT1zUrbpLfct7B9Wt
-         SUSg==
-X-Gm-Message-State: AOJu0YyzKm2T1j1AkuZGdHVyUGHPymgYm3qvOrknaZbOgAfgCYWbooHG
-        JHonphimhisMKNDMahwEMkY=
-X-Google-Smtp-Source: AGHT+IFZY1lZRYIGtnHSSLJ5Dv9nUSo3FSHlEpmP7yJBNk19dcocL3jmULDt3kHQBRqk+jZdLrELeg==
-X-Received: by 2002:a05:6402:743:b0:52f:b405:4f21 with SMTP id p3-20020a056402074300b0052fb4054f21mr2383088edy.7.1694610052353;
-        Wed, 13 Sep 2023 06:00:52 -0700 (PDT)
-Received: from skbuf ([188.26.184.93])
-        by smtp.gmail.com with ESMTPSA id j18-20020a50ed12000000b0052996528b81sm7285107eds.45.2023.09.13.06.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 06:00:52 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 16:00:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
-Message-ID: <20230913130049.ivvl4vzjcfedsddr@skbuf>
-References: <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
- <87325ce9-595a-4dda-a6a1-b5927d25719b@arinc9.com>
- <20230911225126.rk23g3u3bzo3agby@skbuf>
- <036c0763-f1b2-49ff-bc82-1ff16eec27ab@arinc9.com>
- <20230912193450.h5s6miubag46z623@skbuf>
- <6cec079e-991e-4222-a76d-d6156de0daca@arinc9.com>
- <20230913074231.5azwxqjuv2wp5nik@skbuf>
- <89c9b84c-574c-4071-9524-9207597a3f0a@arinc9.com>
- <20230913110404.co7earmnbzf6hhoe@skbuf>
- <137fd54d-7d2d-4d0b-a50b-cca69875a814@arinc9.com>
+        Wed, 13 Sep 2023 09:01:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658B51989
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:01:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C846C433C8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694610090;
+        bh=9VsP3SfBCgbMmQLBpB/Uo49Wn9M5w2DLBgBZIQ+HGZY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eBwi1wzuMcJHorOJFaidjvD1g0sslam5fE0VCNZnON9u86OwI8LlZMgo5btiA7NIz
+         aKZK97qXupU2Owa2R8oW+fJcsRfETAu3anhuTFqEXLDBrV8K4ggG7NZRxr55sYk1Lz
+         BB5dblB6lPWF7p7zqGn6gf5gPQtHQ9D85MXQe1oushCZB9p2677+X4pXEZ/t6p8Ze4
+         KPqkDSOMpYCPLG7rtLf/DweQ417zEmMipsbqUfN4R20MOnrl5c/3HNkSeOv7kq9dO2
+         PSU3EktjrIsOdGXIAgpcEHBp0efaEiSjQTQt3l0MWnIcsgdx2URSg27NqhDmXicyIj
+         qOI5bPYzRiZQw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-500cfb168c6so11145901e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:01:29 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxNAQhsW9lduCTelGiWkL499ro98hUiwNti5qJ6ds3M1leNstjm
+        yWERbgqEVLsOF2oLRioMOwScULdnfgYkdDp3qA==
+X-Google-Smtp-Source: AGHT+IEgTKRhLIPGhgkZulS6vA3X/owGoKjXEe0+hsm23KxCVGEZHPZ12keLOPHwSyoAmUIskv58vWHJ1QLVCZN/0Wc=
+X-Received: by 2002:a05:6512:3e08:b0:500:77c4:108 with SMTP id
+ i8-20020a0565123e0800b0050077c40108mr2444873lfv.9.1694610088278; Wed, 13 Sep
+ 2023 06:01:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <137fd54d-7d2d-4d0b-a50b-cca69875a814@arinc9.com>
+References: <20220615090517.3961621-1-windhl@126.com>
+In-Reply-To: <20220615090517.3961621-1-windhl@126.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Wed, 13 Sep 2023 08:01:15 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+609wEjMLsiLAMjSfAcMc-ashF9+f0rhbZRhM2FVPhmA@mail.gmail.com>
+Message-ID: <CAL_Jsq+609wEjMLsiLAMjSfAcMc-ashF9+f0rhbZRhM2FVPhmA@mail.gmail.com>
+Subject: Re: [PATCH] arch: arm: mach-versatile: Add missing of_node_put in integrator.c
+To:     heliang <windhl@126.com>
+Cc:     linus.walleij@linaro.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 02:35:11PM +0300, Arınç ÜNAL wrote:
-> On 13.09.2023 14:04, Vladimir Oltean wrote:
-> > I don't think they're for switch ports only. Any driver which uses
-> > phylink_fwnode_phy_connect() or its derivatives gets subject to the same
-> > bindings. But putting the sub-schema in ethernet-controller.yaml makes
-> > sense, just maybe not naming it "phylink-switch".
-> 
-> Got it. Should we disallow managed altogether when fixed-link is also
-> defined, or just with in-band-status value?
+On Wed, Jun 15, 2022 at 4:06=E2=80=AFAM heliang <windhl@126.com> wrote:
+>
+> In cm_init(), of_find_matching_node() will return a node pointer with
+> refcount incremented. We should use of_node_put() when the pointer is
+> not used anymore.
+>
+> Signed-off-by: heliang <windhl@126.com>
+> ---
+>  arch/arm/mach-versatile/integrator.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm/mach-versatile/integrator.c b/arch/arm/mach-versati=
+le/integrator.c
+> index fdf9c4db08a7..fba19357171a 100644
+> --- a/arch/arm/mach-versatile/integrator.c
+> +++ b/arch/arm/mach-versatile/integrator.c
+> @@ -76,6 +76,7 @@ void cm_init(void)
+>                 return;
+>         }
+>         cm_base =3D of_iomap(cm, 0);
+> +       of_node_put(cm);
 
-Just with the "in-band-status" value - just like phylink_parse_mode()
-implies. If not possible, just leave that condition out.
+Not really sure this is right. It is in the sense that the DT node is
+never accessed again. However, the device itself is still accessed and
+I tend to think a ref to the DT node should be held for that lifetime
+which in this case is forever. Really, none of this matters because
+nodes are never removed and these fixes are kind of pointless.
+
+Note that cm_get() and cm_control() are never used and can be removed.
+That would be the more useful clean-up.
+
+Rob
