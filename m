@@ -2,95 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B19979EAF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E245079EAFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241442AbjIMOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S240989AbjIMOYp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 10:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238630AbjIMOYM (ORCPT
+        with ESMTP id S241201AbjIMOYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:24:12 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1A27289
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:11:42 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so110960731fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:11:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694614300; x=1695219100; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C321/cfg/f7c5esgrz3dlVUWp6WruYXG3a348g1J+F4=;
-        b=dcnLuT+u9Ou7Ku7PQptWJN/qlFV04XBDYsm92HsMqjF3N24cia6+ADyZxytD9/7F1Z
-         bEM4kLbV//UOBqpkMv45Z6LK4aQWS65T6rXK9brZ7qXFqgOvxma1DGTtwx8CZCzIa8/Q
-         bbyKXKlEA0/3y2J2rXGQekGn6VstiiwHKrpwHZMdw9QldhzaM/yaJsuaPVgbnGeGSr5C
-         0COUY+hC7fIcBwWjdWFRakRiFyLXe/gJsbqnH/vpLpuStkHaOlbx720BLpCokTQTapNO
-         V8yJzE8PyFWUKCnhwu4YGu8EdteSy4Xz9y/AcwLXXBa8xFdylWDKzlvvexrfrfbgV9Eu
-         I+oQ==
+        Wed, 13 Sep 2023 10:24:30 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922D32716;
+        Wed, 13 Sep 2023 07:13:18 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-59b8f5b6c0aso31953027b3.0;
+        Wed, 13 Sep 2023 07:13:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694614300; x=1695219100;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C321/cfg/f7c5esgrz3dlVUWp6WruYXG3a348g1J+F4=;
-        b=hxjhuehBiVpZEljwxSi5I6FqLH+X+KbiX/bo3K4Yp/gKh4NnFDhRTsl+D+1xMXrUsc
-         MxPdHKFLQPp3LgEOhXKCI7YUCvM02DzsDluhViL5tWF6y2tMoOxOtz5SUZwAB5UFcSrM
-         V86krhaqt+bgugPQmZxPcLx/aRfgDXOgLBSEIK+IH4gFBK9GHrxV8Artmg084dyj1Kyh
-         GQQOEDomKSbfma1AZnhSS0rWRDIAH0ybG/i72WT370ZlJarAt9vjV0R56cjyOBm5wbN6
-         +DtwvpnJtPrrQ5+J1EU05hp2xgC3rugwWjeHFY6uqe36NxUshRLl3s6LbM632B3olzwJ
-         GDRA==
-X-Gm-Message-State: AOJu0YwGro9d3WS2krSZX6aCwSZHnb7KSzkpJcq6kXX5Bc04wdvWVcF2
-        x8nopEMiTHNfOFgF9EY4tT2l+pCmHzE91cDp3dI=
-X-Google-Smtp-Source: AGHT+IEGSe+tz7mMhI3N99nVu25pqf6fwq83aIUSEsjG1T2YN4aKBn7ePTXazQzdsR30JHjUT8WhbWdieKe2n5zxUtM=
-X-Received: by 2002:a2e:88da:0:b0:2b9:c4f6:fdd with SMTP id
- a26-20020a2e88da000000b002b9c4f60fddmr2426299ljk.14.1694614299976; Wed, 13
- Sep 2023 07:11:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694614397; x=1695219197;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QRpbpxG9eEjGpyBn7Kr+3oxPttjTha6vURJi3KhijJQ=;
+        b=Uau3NgWSGCkQ1+x31JG3pmeIX3d41+gO7alrOVH1u+V3Pof4PUwxqcK38OC/bHXhmM
+         1XS0npU56eSkKmKMCl9dJCN4kL9+Sg6Z+lURtTOba2CT/j1bM+Tu3d5RX4/YS9sYh3Pg
+         tYk1Iv0AFwCygf34zZ0g8SriNT+S9GICmlOtnnLlPdH1Dcpr3mOBhWq1YSU/Dfw+hwZK
+         TNoOHhqWzJ8GHVswExzEKIb3mvmd32Am75T8QMvA57OZyugBB9KH1dmMK8QXyutKtv3x
+         HOBs2CNKH3lp1BhvD2i31F3rXyVRs43Y0Z+hD6d8l7z+A1lmqIJgefKltarYdWOzdUNF
+         OP1g==
+X-Gm-Message-State: AOJu0Yy+iAmrk8xpABm9MRGXT7/zcYAhJXVDDiiPolQNzMKy5rZGrdpV
+        ibvn+pYUdxY3QM3yCll241hFAjTC0OnNUw==
+X-Google-Smtp-Source: AGHT+IHaxE1vFJ+272ldJhzTtPcpmgXRoJny6sCrqdKLc0zizQ2XED8qC2dTaG8bEJeZ/jjNxR49rg==
+X-Received: by 2002:a0d:d752:0:b0:59b:b894:eb98 with SMTP id z79-20020a0dd752000000b0059bb894eb98mr2852057ywd.19.1694614397583;
+        Wed, 13 Sep 2023 07:13:17 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id i190-20020a0dc6c7000000b0057a0e5b18e0sm3125175ywd.142.2023.09.13.07.13.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 07:13:17 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-d7b8d2631fdso6551415276.3;
+        Wed, 13 Sep 2023 07:13:17 -0700 (PDT)
+X-Received: by 2002:a25:4217:0:b0:d78:26a0:ab8b with SMTP id
+ p23-20020a254217000000b00d7826a0ab8bmr2248584yba.55.1694614397158; Wed, 13
+ Sep 2023 07:13:17 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ab3:6f53:0:b0:240:3e6d:6c8e with HTTP; Wed, 13 Sep 2023
- 07:11:39 -0700 (PDT)
-Reply-To: lanbeldamus001@yahoo.com
-From:   "Mr. Lanbel Damus" <handasee01@gmail.com>
-Date:   Wed, 13 Sep 2023 15:11:39 +0100
-Message-ID: <CA+_ejypQAbdQN3YucjuJgbNL7NNKG2GxtE89rwFPVH2O0i3SBA@mail.gmail.com>
-Subject: Good Day//../
-To:     undisclosed-recipients:;
+References: <20230802184849.1019466-1-arnd@kernel.org> <20230802184849.1019466-4-arnd@kernel.org>
+ <CAMuHMdVjmD357K-yxxW-jn-6vKsXTg+u1Psw9DftyxH=dQoMEg@mail.gmail.com> <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+In-Reply-To: <5dad2d86-78ea-4a39-8ee1-98e3eb134d36@app.fastmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Sep 2023 16:13:04 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+Message-ID: <CAMuHMdVYcvPL+JpPw9sA48=615cdfwa8d0LP-bVp0NWqbQ+JOw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+Hi Arnd,
 
-My name is Mr. Lanbel Damus. I am working with one of the prime banks
-here in Burkina Faso. Here in this bank existed a dormant account for
-many years, which belong to one of our late foreign customer Mr.
-Oleksiy Vadatursky from Ukraine.
+On Wed, Sep 13, 2023 at 4:08 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Wed, Sep 13, 2023, at 14:32, Geert Uytterhoeven wrote:
+> > On Wed, Aug 2, 2023 at 8:49 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >> From: Arnd Bergmann <arnd@arndb.de>
+> >>
+> >> These functions were only used on the microdev
+> >> board that is now gone, so remove them to simplify
+> >> the ioport handling.
+> >>
+> >> This could be further simplified to use the generic
+> >> I/O port accessors now.
+> >>
+> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> >
+> >> --- a/arch/sh/include/asm/io.h
+> >> +++ b/arch/sh/include/asm/io.h
+> >> @@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)  \
+> >>  {                                                                      \
+> >>         volatile type *__addr;                                          \
+> >>                                                                         \
+> >> -       __addr = __ioport_map(port, sizeof(type));                      \
+> >> +       __addr = (void __iomem *)sh_io_port_base + port;                \
+> >
+> > Note that this adds unconditional users of sh_io_port_base, while
+> > sh_io_port_base is provided by arch/sh/kernel/ioport.c, which is
+> > currently only built if CONFIG_GENERIC_IOMAP=n.
+> >
+> > This is not a problem yet, as the final part to enable GENERIC_IOMAP
+> > on SH never made it upstream.  However, Sato-san's series enables
+> > GENERIC_IOMAP for SH_DEVICE_TREE=y builds, leading to a link failure.
+>
+> Do you have a link to that series? I don't understand why you'd
+> want to enable GENERIC_IOMAP on sh, given that its PIO accesses
+> are always memory mapped in the end.
 
-You can get more information's as regards to this on below website:
-https://www.bbc.com/news/world-europe-62367356
-When I discovered that there had been neither deposits nor withdrawals
-from this account for this long period, I decided to carry out a
-system investigation and discovered that none of the family member or
-relations of the late person are aware of this account, which means
-nobody will come to take it.
+"[RESEND RFC PATCH 00/12] DeviceTree support for SH7751 based boards."
+https://lore.kernel.org/linux-sh/cover.1693444193.git.ysato@users.sourceforge.jp/
 
-The amount in this account stands at $18,300, 000.00 (Eighteen Million
-Three Hundred Thousand USA Dollars). I want a foreign account where
-the bank will transfer this fund, I will front you in the bank as the
-Next of Kin to the late customer and back you up with relevant
-information.
+In the meantime, there is a v2, which I wasn't aware of when I wrote
+my previous email, so perhaps my comment is no longer valid.
+"[RFC PATCH v2 00/30] Device Tree support for SH7751 based board"
+https://lore.kernel.org/linux-sh/cover.1694596125.git.ysato@users.sourceforge.jp
 
-What the bank need is proof and information about the late customer
-which I will assist you on. his is a genuine, risk free and legal
-business transaction, All details shall be sent to you once I hear
-from you.
+> Is this needed for the trapped_io CF stuff?
 
-The information as contained herein be accorded the necessary
-attention, urgency as well as the secrecy it deserves.
+I don't know.
 
-If you are really sure of your integrity, trustworthy and
-confidentiality reply back to me urgently through my private email
-here: ( lanbeldamus001@yahoo.com ).
+Gr{oetje,eeting}s,
 
-Best regards,
-Mr. Lanbel Damus
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
