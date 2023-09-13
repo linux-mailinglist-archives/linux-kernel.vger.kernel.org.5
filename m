@@ -2,88 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EF579E676
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506E379E67B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239350AbjIMLSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        id S239951AbjIMLUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239952AbjIMLRr (ORCPT
+        with ESMTP id S239864AbjIMLUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:17:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718BC212F;
-        Wed, 13 Sep 2023 04:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694603856; x=1726139856;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=EINwWwU3qdAxq238HtvPTy5ZZC9fwj5Kb64aFwlmnKA=;
-  b=hCgtB19j3gze5LQduMLa2fAsAlqLqw+L4ENuunch4Tg43U6dpjmNkQX6
-   Gj6ZpKRlvZY1y17F1HS1L/1z1hfWz+m/mlApsK8XL4/TAq6S+uHRElVjV
-   B9xJS2Le3k49L6N0hl2htiUQ+MLiVKEnSVQyIjcNJ4EcfRfrIC0DnTBGj
-   LHRdOzLoeL6okjwjqnf7S20/z778ispEQO/6lr+8LJZzNW1rHTFH6Q6aO
-   da4IHcAA4bj09mdRWcy9Kmztu3UvGcLo+6Sid4/b2WD1HAo2lOu1T92O6
-   +lIigPsBo0ipTNjxvP0bXfKiM9ITXdY9Mccm60McTBQK5nFUQ+Ogu7D6u
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="382435268"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="382435268"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:17:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="867753665"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="867753665"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 04:17:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qgNsA-008qeM-1X;
-        Wed, 13 Sep 2023 14:17:30 +0300
-Date:   Wed, 13 Sep 2023 14:17:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lizhi Hou <lizhi.hou@amd.com>, Andrew Lunn <andrew@lunn.ch>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, max.zhen@amd.com,
-        sonal.santan@amd.com, stefano.stabellini@xilinx.com
-Subject: Re: [PATCH V13 0/5] Generate device tree node for pci devices
-Message-ID: <ZQGaSr+G5qu/8nJZ@smile.fi.intel.com>
-References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
- <ZP96feVs2ev7098Y@smile.fi.intel.com>
- <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
+        Wed, 13 Sep 2023 07:20:53 -0400
+Received: from smtp108.iad3b.emailsrvr.com (smtp108.iad3b.emailsrvr.com [146.20.161.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA221BD1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20221208-6x11dpa4; t=1694604049;
+        bh=2QE/y+ihMfM27V3AweiLu31+YrznzVqxxNO4urLqQxo=;
+        h=From:To:Subject:Date:From;
+        b=H6hHYfKHsFKXnOlcbW10W6Wkk73y04nF+uYkb1nOJgYWGPV5sJzMP/Bj+CtBsSK+j
+         EguZ8HNmyJaaek5m9FCIH59GrBsbhs85izZS9RnsB44oHH38Q2Wk5KbYo992l//K1P
+         knZL4u1CNOyK1bRCXjmW2RcQWHT0DkXE9P8KT5dk=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 4F279200C0;
+        Wed, 13 Sep 2023 07:20:48 -0400 (EDT)
+From:   Ian Abbott <abbotti@mev.co.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 00/13] comedi: Re-do HAS_IOPORT dependencies
+Date:   Wed, 13 Sep 2023 12:20:19 +0100
+Message-Id: <20230913112032.90618-1-abbotti@mev.co.uk>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqKfQJFrd8MOdjW55cYdEb8yyPyR+P3ran9+X3dCwUgdyA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 02:12:04PM -0500, Rob Herring wrote:
-> On Mon, Sep 11, 2023 at 3:37 PM Andy Shevchenko
-> <andriy.shevchenko@intel.com> wrote:
-> > On Tue, Aug 15, 2023 at 10:19:55AM -0700, Lizhi Hou wrote:
+Commit b5c75b68b7de ("comedi: add HAS_IOPORT dependencies") was reverted
+because it made it impossible to select configuration options that
+depend on the COMEDI_8254, COMEDI_DAS08, COMEDI_NI_LABPC, or
+COMEDI_AMPLC_DIO200 options due to changing 'select' directives to
+'depends on' directives and there being no other way to select those
+codependent configuration options.
 
-...
+This patch series conditionally removes port I/O support from various
+comedi modules so they still be built when a future patch removes the
+port I/O functions (inb(), outb() and friends) unless the HAS_IOPORT
+configuration option is selected.  The final patch 13 adds HAS_IOPORT
+dependencies to the configuration options as in the reverted patch, but
+there are now fewer options that need to depend on HAS_IOPORT, and the
+'select' directives have not been replaced with 'depends on' directives.
 
-> > Can you point out to the ACPI excerpt(s) of the description of anything related
-> > to the device(s) in question?
-> 
-> I don't understand what you are asking for.
+01) comedi: Correct dependencies for COMEDI_NI_PCIDIO
+02) comedi: comedi_8254: Use a call-back function for register access
+03) comedi: comedi_8254: Replace comedi_8254_init() and comedi_8254_mm_init()
+04) comedi: comedi_8254: Conditionally remove I/O port support
+05) comedi: 8255_pci: Conditionally remove devices that use port I/O
+06) comedi: comedi_8255: Rework subdevice initialization functions
+07) comedi: comedi_8255: Conditionally remove I/O port support
+08) comedi: ni_labpc_common: Conditionally remove I/O port support
+09) comedi: ni_mio_common: Conditionally use I/O port or MMIO
+10) comedi: amplc_dio200_pci: Conditionally remove devices that use port I/O
+11) comedi: amplc_dio200_common: Refactor register access functions
+12) comedi: amplc_dio200_common: Conditionally remove I/O port support
+13) comedi: add HAS_IOPORT dependencies again
 
-Through the email thread it was mentioned that this series was tested on the
-ACPI enabled platform, Jonathan (IIRC) asked why do we need to have a shadow
-DT for the something that ACPI already describes. That's why I'm trying to
-understand if it's the case. and if so, how can we improve the approach.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+ drivers/comedi/Kconfig                       |  45 +++++-
+ drivers/comedi/drivers.c                     |   3 +-
+ drivers/comedi/drivers/8255.c                |   2 +-
+ drivers/comedi/drivers/8255_pci.c            |  15 +-
+ drivers/comedi/drivers/adl_pci9111.c         |   8 +-
+ drivers/comedi/drivers/adl_pci9118.c         |   8 +-
+ drivers/comedi/drivers/adv_pci1710.c         |   8 +-
+ drivers/comedi/drivers/adv_pci_dio.c         |  14 +-
+ drivers/comedi/drivers/aio_aio12_8.c         |  10 +-
+ drivers/comedi/drivers/amplc_dio200_common.c | 104 +++++++++---
+ drivers/comedi/drivers/amplc_dio200_pci.c    |  12 +-
+ drivers/comedi/drivers/amplc_pc236_common.c  |   2 +-
+ drivers/comedi/drivers/amplc_pci224.c        |   8 +-
+ drivers/comedi/drivers/amplc_pci230.c        |  10 +-
+ drivers/comedi/drivers/cb_das16_cs.c         |   8 +-
+ drivers/comedi/drivers/cb_pcidas.c           |  23 +--
+ drivers/comedi/drivers/cb_pcidas64.c         |   7 +-
+ drivers/comedi/drivers/cb_pcidda.c           |   2 +-
+ drivers/comedi/drivers/cb_pcimdas.c          |  12 +-
+ drivers/comedi/drivers/cb_pcimdda.c          |   2 +-
+ drivers/comedi/drivers/comedi_8254.c         | 234 ++++++++++++++++++---------
+ drivers/comedi/drivers/comedi_8255.c         | 123 +++++++-------
+ drivers/comedi/drivers/daqboard2000.c        |   4 +-
+ drivers/comedi/drivers/das08.c               |  11 +-
+ drivers/comedi/drivers/das16.c               |  10 +-
+ drivers/comedi/drivers/das16m1.c             |  22 +--
+ drivers/comedi/drivers/das1800.c             |   8 +-
+ drivers/comedi/drivers/das6402.c             |   8 +-
+ drivers/comedi/drivers/das800.c              |   8 +-
+ drivers/comedi/drivers/dmm32at.c             |   3 +-
+ drivers/comedi/drivers/me4000.c              |   6 +-
+ drivers/comedi/drivers/ni_at_a2150.c         |   8 +-
+ drivers/comedi/drivers/ni_at_ao.c            |   8 +-
+ drivers/comedi/drivers/ni_atmio16d.c         |   2 +-
+ drivers/comedi/drivers/ni_daq_dio24.c        |   2 +-
+ drivers/comedi/drivers/ni_labpc_common.c     |  51 +++---
+ drivers/comedi/drivers/ni_mio_common.c       |  74 ++++++---
+ drivers/comedi/drivers/pcl711.c              |   8 +-
+ drivers/comedi/drivers/pcl724.c              |   6 +-
+ drivers/comedi/drivers/pcl812.c              |  10 +-
+ drivers/comedi/drivers/pcl816.c              |   8 +-
+ drivers/comedi/drivers/pcl818.c              |   8 +-
+ drivers/comedi/drivers/pcm3724.c             |   2 +-
+ drivers/comedi/drivers/rtd520.c              |   6 +-
+ include/linux/comedi/comedi_8254.h           |  51 ++++--
+ include/linux/comedi/comedi_8255.h           |  24 ++-
+ 46 files changed, 649 insertions(+), 359 deletions(-)
 
