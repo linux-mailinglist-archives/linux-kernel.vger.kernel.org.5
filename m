@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6C079E837
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D1E79E83C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240581AbjIMMmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49312 "EHLO
+        id S236164AbjIMMoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbjIMMmJ (ORCPT
+        with ESMTP id S230425AbjIMMoW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:42:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384DC19B1;
-        Wed, 13 Sep 2023 05:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694608925; x=1726144925;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=IvFLjYsEpiHrR+BQ0j+mSxRo0C5kF8/dWX+/TG66kjI=;
-  b=flu41bUCRPBzBG45zGVW6uuxROm9dYbNiAYir9Za81esHg2vkvIlvy0B
-   MRjMbSHEd1lRzOJwLT9ukXANDnqxckjaYGbHoYbGty8zDUPdExZb9ihMg
-   IfpnvoBfjTbvbAl+F7LF46k7JFAOZOISUDWsXes1k+TszwebSFxkCc6o3
-   3qwZ50X9aNZDFGwmrX7ZEuPhuCikCJ2+PKFJ1GH4aZ2Fu4mK3FA0Bq5mM
-   9XfZj9zcAbgfFTcmoC23rqJH5OXK90s6z+YBmoDgV3mE3JKxQkGGi1CGz
-   B8KfyrYVmao/2joAPe77I1XZDdf9c+aDlmxfXtuJ7LzQpyHFHSWkYLH5u
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="358918745"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="358918745"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:42:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="867775703"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="867775703"
-Received: from pakurapo-mobl3.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.45.213])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 05:42:01 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH 1/1] selftests/resctrl: Move _GNU_SOURCE define into Makefile
-Date:   Wed, 13 Sep 2023 15:41:53 +0300
-Message-Id: <20230913124153.32077-1-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 13 Sep 2023 08:44:22 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD2D19B1;
+        Wed, 13 Sep 2023 05:44:17 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7668420008;
+        Wed, 13 Sep 2023 12:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1694609055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jOWHnup71AUlA2pdfGiWMAnf7L7N7R7hXAeXu+YYNpk=;
+        b=LoVXclUT4ag/ho/8wurTwZ89GnA2gA+DpO1lpnb6s8GY4d5cD124trIxlVkUZ0egL/1LET
+        sXeP8RWQPMYk/chORC/sv4Wo/pTkSwLQUV7+yC2nVNfv07CDYikZ6HIYPVjf8s35jtl3zn
+        c4OeEWb0mOT9DVwFgbTo/TYSTiivS9zgKA0tinbGJ506oJ1h3h+HIpKN/VpWExKOv0t1De
+        tzcfmiKZmJ3+a8IxyEtWNStEeyu9mNjCqWhZNVCMnU3gv8MrjqqcWgcr1i0azI/R7ecWH6
+        lHOIK0FYfDcTMHMPamOLZRJmJ+lR7xLMRcOJcpw/QH/hAKpcxgy+nxSgiqc66g==
+Message-ID: <f891b3b6-0cab-4aa3-beee-b20f45a3ce57@arinc9.com>
+Date:   Wed, 13 Sep 2023 15:44:03 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230812091708.34665-3-arinc.unal@arinc9.com>
+ <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <617c51cf-2c09-4865-ac60-96599db597e7@lunn.ch>
+ <563ac27a-22f2-463e-b5c1-9df721842976@arinc9.com>
+ <c7eddf45-c259-47de-ac59-2569c09ed5f7@lunn.ch>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <c7eddf45-c259-47de-ac59-2569c09ed5f7@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, _GNU_SOURCE is defined in resctrl.h. Defining _GNU_SOURCE
-has a large impact on what gets defined when including headers either
-before or after it. This can result in compile failures if .c file
-decides to include a standard header file before resctrl.h.
+On 13.09.2023 04:21, Andrew Lunn wrote:
+>>> The marvell switch can have up to 2 MDIO busses. If i remember
+>>> correctly, there is also one switch which has one MDIO bus per port.
+>>
+>> I'm writing the json-schema for Marvell switches. I've checked a few
+>> devicetree source files on Linus's Linux tree, I only see two buses used at
+>> the most.
+> 
+> Sorry, i was ambiguous. Its not a Marvell switch which can have one
+> MDIO bus per port. I don't remember which switch it is, and it might
+> be a pure switchdev switch, not a DSA switch.
+> 
+>> The internal bus and another bus with
+>> marvell,mv88e6xxx-mdio-external. I've never seen a devicetree with
+>> marvell,mv88e6250 though. Could the switch that has one MDIO bus per port
+>> be this one? Also, is every bus of this switch a
+>> marvell,mv88e6xxx-mdio-external bus or, one internal bus and the remaining
+>> are marvell mv88e6xxx-mdio-external buses?
+> 
+> Only the 6390 family has two busses. It has an internal MDIO bus with
+> the same register API as all the other switches. However, unlike the
+> other families, it is not exposed on pins. And the 6390 has a second
+> MDIO bus using a slight variant of the registers, which is connected
+> to the outside world via pins. This second bus then has a compatible
+> to separate it from the normal MDIO bus.
 
-It is safer to define _GNU_SOURCE in Makefile so it is always defined
-regardless of in which order includes are done.
+OK, I will disallow the external mdio bus for the compatible strings other
+than marvell,mv88e6190.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- tools/testing/selftests/resctrl/Makefile  | 2 +-
- tools/testing/selftests/resctrl/resctrl.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/Makefile b/tools/testing/selftests/resctrl/Makefile
-index 5073dbc96125..2deac2031de9 100644
---- a/tools/testing/selftests/resctrl/Makefile
-+++ b/tools/testing/selftests/resctrl/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--CFLAGS = -g -Wall -O2 -D_FORTIFY_SOURCE=2
-+CFLAGS = -g -Wall -O2 -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE
- CFLAGS += $(KHDR_INCLUDES)
- 
- TEST_GEN_PROGS := resctrl_tests
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 838d1a438f33..eff178befe4a 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -1,5 +1,4 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#define _GNU_SOURCE
- #ifndef RESCTRL_H
- #define RESCTRL_H
- #include <stdio.h>
--- 
-2.30.2
-
+Arınç
