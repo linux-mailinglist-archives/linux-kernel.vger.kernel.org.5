@@ -2,180 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D0E79EF57
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD16479EF5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbjIMQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
+        id S230492AbjIMQuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjIMQtw (ORCPT
+        with ESMTP id S230421AbjIMQuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:49:52 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37FCBDC;
-        Wed, 13 Sep 2023 09:49:48 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c39a4f14bcso39929925ad.3;
-        Wed, 13 Sep 2023 09:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694623787; x=1695228587; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=08hV17UrGwqSsOU/Pj3BP46JQZzZQz8kR1HYrZEWtOg=;
-        b=Uvk3EXHB4F1Wel64AQWHSstm1WwyAzHkxqerazJ3z69W5Dq2pRdsMzfrn//NACTGCQ
-         f5PwdB2pb1IvxrAePz0VQEMwy51nhIqaRdqqfBQtFdJ8IviQFSLrbO6QwqSF2mz9q88V
-         zzHixbz7igLOamF+/crLXQ9DP6HfhVTtrBiRmd0w0DGT+M/fZYORfDItVUP1gs3MhLVg
-         lwrYqRbQCrP2Pggq51zTU8+wXU8g6a5KahY4WBr/mZkvy8MgtTJ/k/U2g6WR+whXqky/
-         bVjZoBNv6CkrXf6nwm1phc98d/5kvlPqghJs9U4MifD93AhO1IajyDVlwYzsXtX3R7Ch
-         gTNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694623787; x=1695228587;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=08hV17UrGwqSsOU/Pj3BP46JQZzZQz8kR1HYrZEWtOg=;
-        b=at/fl8QBU1+VWjLcYKdRSs6rnrHHWORuNa3WGc9xLLV95KXGm6wfu/6kQq7lwJIJYc
-         AyasWh3aC9RM/S4uApgWX4ztZZcc01l5te7M82LReDcopv46hRGcDcGlOnCdBLZv9j+i
-         8zrgEELux2hbN+L+JFq86wVbdjrLh4qWKrnbK6Z1MV3n5Cqx5/X8UkA+zxlgAawMKa9/
-         F56poBH/cnyWRBb1qVfZnO8CskWpRCcPnn3H/XV6/xCAkzkLZ2NqA82i1Wpc2FUJ6qkr
-         RY5yRPD+Y+SIonN0/mthw61M9r0gmZ1bZg1lxpSU3lfIuFMx8GUUhRlZgi644mPZO12n
-         dWXw==
-X-Gm-Message-State: AOJu0YyoE7nd1TX+ypVOrnFytv1J5ydm2NonK+WcJJE4W08TTmSLT78p
-        iXjTnQD209oTvVfNAZALD0M=
-X-Google-Smtp-Source: AGHT+IFk2+aD7lidOi2/i3oxl3cOgOhU3i2C7yGs/iI4FsnaTfNcKp01QUXLj8ZiS9xV1h9E60++zw==
-X-Received: by 2002:a17:902:dac9:b0:1b8:6987:de84 with SMTP id q9-20020a170902dac900b001b86987de84mr4035325plx.48.1694623787574;
-        Wed, 13 Sep 2023 09:49:47 -0700 (PDT)
-Received: from VERNHAO-MC1.tencent.com ([111.197.253.118])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902724100b001b89536974bsm1707520pll.202.2023.09.13.09.49.43
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 13 Sep 2023 09:49:47 -0700 (PDT)
-From:   Vern Hao <haoxing990@gmail.com>
-X-Google-Original-From: Vern Hao <vernhao@tencent.com>
-To:     hannes@cmpxchg.org
-Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        haoxing990@gmail.com, Xin Hao <vernhao@tencent.com>
-Subject: [PATCH v3] mm: memcg: add THP swap out info for anonymous reclaim
-Date:   Thu, 14 Sep 2023 00:49:37 +0800
-Message-ID: <20230913164938.16918-1-vernhao@tencent.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 13 Sep 2023 12:50:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E26AB7;
+        Wed, 13 Sep 2023 09:50:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1A17D1F385;
+        Wed, 13 Sep 2023 16:50:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694623817;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZEDylc6Q+vP4LACrE432bUao8n4Rpm17QzWar3DLHqk=;
+        b=tgu7/MgWtkLg8uEyZS4QfEmc+5qs8gYwbxdrQ2sbo8Hp+g325gXG/CG7XeGWC5X80iMTxj
+        6ilXtp9gaZ5pieyBac0WFilHtv7bKw+dpoB0GmUwjnqORuZbiDu/TYygN9vk2lbELpykS2
+        gM2MoGclgTvEojrsJyMh1iZDAkPvlrU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694623817;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZEDylc6Q+vP4LACrE432bUao8n4Rpm17QzWar3DLHqk=;
+        b=LktuC4K+Ne95kAA1uyJ/R3qXdnh0OZsRgUw5J6Sv5GTatgLYJO1LopA6Gsu6dCGN8cC6rg
+        8zHiawxspHFzL4Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C1C2213582;
+        Wed, 13 Sep 2023 16:50:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9LR7LkjoAWXrKAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 16:50:16 +0000
+Date:   Wed, 13 Sep 2023 18:50:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/11] btrfs: add support for inserting raid stripe
+ extents
+Message-ID: <20230913165014.GQ20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
+ <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911-raid-stripe-tree-v8-3-647676fa852c@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Hao <vernhao@tencent.com>
+On Mon, Sep 11, 2023 at 05:52:04AM -0700, Johannes Thumshirn wrote:
+> Add support for inserting stripe extents into the raid stripe tree on
+> completion of every write that needs an extra logical-to-physical
+> translation when using RAID.
+> 
+> Inserting the stripe extents happens after the data I/O has completed,
+> this is done to a) support zone-append and b) rule out the possibility of
+> a RAID-write-hole.
+> 
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/Makefile           |   2 +-
+>  fs/btrfs/bio.c              |  23 ++++
+>  fs/btrfs/extent-tree.c      |   1 +
+>  fs/btrfs/inode.c            |   8 +-
+>  fs/btrfs/ordered-data.c     |   1 +
+>  fs/btrfs/ordered-data.h     |   2 +
+>  fs/btrfs/raid-stripe-tree.c | 266 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/raid-stripe-tree.h |  34 ++++++
+>  fs/btrfs/volumes.c          |   4 +-
+>  fs/btrfs/volumes.h          |  15 ++-
+>  10 files changed, 347 insertions(+), 9 deletions(-)
+> 
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index c57d80729d4f..525af975f61c 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -33,7 +33,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>  	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
+>  	   block-rsv.o delalloc-space.o block-group.o discard.o reflink.o \
+>  	   subpage.o tree-mod-log.o extent-io-tree.o fs.o messages.o bio.o \
+> -	   lru_cache.o
+> +	   lru_cache.o raid-stripe-tree.o
+>  
+>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 31ff36990404..ddbe6f8d4ea2 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -14,6 +14,7 @@
+>  #include "rcu-string.h"
+>  #include "zoned.h"
+>  #include "file-item.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  static struct bio_set btrfs_bioset;
+>  static struct bio_set btrfs_clone_bioset;
+> @@ -415,6 +416,9 @@ static void btrfs_orig_write_end_io(struct bio *bio)
+>  	else
+>  		bio->bi_status = BLK_STS_OK;
+>  
+> +	if (bio_op(bio) == REQ_OP_ZONE_APPEND && !bio->bi_status)
+> +		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +
+>  	btrfs_orig_bbio_end_io(bbio);
+>  	btrfs_put_bioc(bioc);
+>  }
+> @@ -426,6 +430,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+>  	if (bio->bi_status) {
+>  		atomic_inc(&stripe->bioc->error);
+>  		btrfs_log_dev_io_error(bio, stripe->dev);
+> +	} else if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+> +		stripe->physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+>  	}
+>  
+>  	/* Pass on control to the original bio this one was cloned from */
+> @@ -487,6 +493,7 @@ static void btrfs_submit_mirrored_bio(struct btrfs_io_context *bioc, int dev_nr)
+>  	bio->bi_private = &bioc->stripes[dev_nr];
+>  	bio->bi_iter.bi_sector = bioc->stripes[dev_nr].physical >> SECTOR_SHIFT;
+>  	bioc->stripes[dev_nr].bioc = bioc;
+> +	bioc->size = bio->bi_iter.bi_size;
+>  	btrfs_submit_dev_bio(bioc->stripes[dev_nr].dev, bio);
+>  }
+>  
+> @@ -496,6 +503,8 @@ static void __btrfs_submit_bio(struct bio *bio, struct btrfs_io_context *bioc,
+>  	if (!bioc) {
+>  		/* Single mirror read/write fast path. */
+>  		btrfs_bio(bio)->mirror_num = mirror_num;
+> +		if (bio_op(bio) != REQ_OP_READ)
+> +			btrfs_bio(bio)->orig_physical = smap->physical;
+>  		bio->bi_iter.bi_sector = smap->physical >> SECTOR_SHIFT;
+>  		if (bio_op(bio) != REQ_OP_READ)
+>  			btrfs_bio(bio)->orig_physical = smap->physical;
+> @@ -688,6 +697,20 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  			bio->bi_opf |= REQ_OP_ZONE_APPEND;
+>  		}
+>  
+> +		if (is_data_bbio(bbio) && bioc &&
+> +		    btrfs_need_stripe_tree_update(bioc->fs_info,
+> +						  bioc->map_type)) {
+> +			/*
+> +			 * No locking for the list update, as we only add to
+> +			 * the list in the I/O submission path, and list
+> +			 * iteration only happens in the completion path,
+> +			 * which can't happen until after the last submission.
+> +			 */
+> +			btrfs_get_bioc(bioc);
+> +			list_add_tail(&bioc->ordered_entry,
+> +				      &bbio->ordered->bioc_list);
+> +		}
+> +
+>  		/*
+>  		 * Csum items for reloc roots have already been cloned at this
+>  		 * point, so they are handled as part of the no-checksum case.
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 6f6838226fe7..2e11a699ab77 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -42,6 +42,7 @@
+>  #include "file-item.h"
+>  #include "orphan.h"
+>  #include "tree-checker.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  #undef SCRAMBLE_DELAYED_REFS
+>  
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index bafca05940d7..6f71630248da 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -71,6 +71,7 @@
+>  #include "super.h"
+>  #include "orphan.h"
+>  #include "backref.h"
+> +#include "raid-stripe-tree.h"
+>  
+>  struct btrfs_iget_args {
+>  	u64 ino;
+> @@ -3091,6 +3092,10 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+>  
+>  	trans->block_rsv = &inode->block_rsv;
+>  
+> +	ret = btrfs_insert_raid_extent(trans, ordered_extent);
+> +	if (ret)
+> +		goto out;
+> +
+>  	if (test_bit(BTRFS_ORDERED_COMPRESSED, &ordered_extent->flags))
+>  		compress_type = ordered_extent->compress_type;
+>  	if (test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags)) {
+> @@ -3224,7 +3229,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
+>  int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered)
+>  {
+>  	if (btrfs_is_zoned(btrfs_sb(ordered->inode->i_sb)) &&
+> -	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags))
+> +	    !test_bit(BTRFS_ORDERED_IOERR, &ordered->flags) &&
+> +	    list_empty(&ordered->bioc_list))
+>  		btrfs_finish_ordered_zoned(ordered);
+>  	return btrfs_finish_one_ordered(ordered);
+>  }
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 345c449d588c..55c7d5543265 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -191,6 +191,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+>  	INIT_LIST_HEAD(&entry->log_list);
+>  	INIT_LIST_HEAD(&entry->root_extent_list);
+>  	INIT_LIST_HEAD(&entry->work_list);
+> +	INIT_LIST_HEAD(&entry->bioc_list);
+>  	init_completion(&entry->completion);
+>  
+>  	/*
+> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> index 173bd5c5df26..1c51ac57e5df 100644
+> --- a/fs/btrfs/ordered-data.h
+> +++ b/fs/btrfs/ordered-data.h
+> @@ -151,6 +151,8 @@ struct btrfs_ordered_extent {
+>  	struct completion completion;
+>  	struct btrfs_work flush_work;
+>  	struct list_head work_list;
+> +
+> +	struct list_head bioc_list;
+>  };
+>  
+>  static inline void
+> diff --git a/fs/btrfs/raid-stripe-tree.c b/fs/btrfs/raid-stripe-tree.c
+> new file mode 100644
+> index 000000000000..2415698a8fef
+> --- /dev/null
+> +++ b/fs/btrfs/raid-stripe-tree.c
+> @@ -0,0 +1,266 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#include <linux/btrfs_tree.h>
+> +
+> +#include "ctree.h"
+> +#include "fs.h"
+> +#include "accessors.h"
+> +#include "transaction.h"
+> +#include "disk-io.h"
+> +#include "raid-stripe-tree.h"
+> +#include "volumes.h"
+> +#include "misc.h"
+> +#include "print-tree.h"
+> +
+> +static u8 btrfs_bg_type_to_raid_encoding(u64 map_type)
+> +{
+> +	switch (map_type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> +	case BTRFS_BLOCK_GROUP_DUP:
+> +		return BTRFS_STRIPE_DUP;
+> +	case BTRFS_BLOCK_GROUP_RAID0:
+> +		return BTRFS_STRIPE_RAID0;
+> +	case BTRFS_BLOCK_GROUP_RAID1:
+> +		return BTRFS_STRIPE_RAID1;
+> +	case BTRFS_BLOCK_GROUP_RAID1C3:
+> +		return BTRFS_STRIPE_RAID1C3;
+> +	case BTRFS_BLOCK_GROUP_RAID1C4:
+> +		return BTRFS_STRIPE_RAID1C4;
+> +	case BTRFS_BLOCK_GROUP_RAID5:
+> +		return BTRFS_STRIPE_RAID5;
+> +	case BTRFS_BLOCK_GROUP_RAID6:
+> +		return BTRFS_STRIPE_RAID6;
+> +	case BTRFS_BLOCK_GROUP_RAID10:
+> +		return BTRFS_STRIPE_RAID10;
+> +	default:
+> +		ASSERT(0);
+> +	}
+> +}
+> +
+> +static int btrfs_insert_one_raid_extent(struct btrfs_trans_handle *trans,
+> +				 int num_stripes,
+> +				 struct btrfs_io_context *bioc)
+> +{
+> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+> +	struct btrfs_key stripe_key;
+> +	struct btrfs_root *stripe_root = btrfs_stripe_tree_root(fs_info);
+> +	u8 encoding = btrfs_bg_type_to_raid_encoding(bioc->map_type);
+> +	struct btrfs_stripe_extent *stripe_extent;
+> +	size_t item_size;
+> +	int ret;
+> +
+> +	item_size = struct_size(stripe_extent, strides, num_stripes);
+> +
+> +	stripe_extent = kzalloc(item_size, GFP_NOFS);
+> +	if (!stripe_extent) {
+> +		btrfs_abort_transaction(trans, -ENOMEM);
+> +		btrfs_end_transaction(trans);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	btrfs_set_stack_stripe_extent_encoding(stripe_extent, encoding);
+> +	for (int i = 0; i < num_stripes; i++) {
+> +		u64 devid = bioc->stripes[i].dev->devid;
+> +		u64 physical = bioc->stripes[i].physical;
+> +		u64 length = bioc->stripes[i].length;
+> +		struct btrfs_raid_stride *raid_stride =
+> +						&stripe_extent->strides[i];
+> +
+> +		if (length == 0)
+> +			length = bioc->size;
+> +
+> +		btrfs_set_stack_raid_stride_devid(raid_stride, devid);
+> +		btrfs_set_stack_raid_stride_physical(raid_stride, physical);
+> +		btrfs_set_stack_raid_stride_length(raid_stride, length);
+> +	}
+> +
+> +	stripe_key.objectid = bioc->logical;
+> +	stripe_key.type = BTRFS_RAID_STRIPE_KEY;
+> +	stripe_key.offset = bioc->size;
+> +
+> +	ret = btrfs_insert_item(trans, stripe_root, &stripe_key, stripe_extent,
+> +				item_size);
+> +	if (ret)
+> +		btrfs_abort_transaction(trans, ret);
+> +
+> +	kfree(stripe_extent);
+> +
+> +	return ret;
+> +}
+> +
+> +static int btrfs_insert_mirrored_raid_extents(struct btrfs_trans_handle *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	int num_stripes = btrfs_bg_type_to_factor(map_type);
+> +	struct btrfs_io_context *bioc;
+> +	int ret;
+> +
+> +	list_for_each_entry(bioc, &ordered->bioc_list, ordered_entry) {
+> +		ret = btrfs_insert_one_raid_extent(trans, num_stripes, bioc);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int btrfs_insert_striped_mirrored_raid_extents(
+> +				      struct btrfs_trans_handle *trans,
+> +				      struct btrfs_ordered_extent *ordered,
+> +				      u64 map_type)
+> +{
+> +	struct btrfs_io_context *bioc;
+> +	struct btrfs_io_context *rbioc;
+> +	const int nstripes = list_count_nodes(&ordered->bioc_list);
+> +	const int index = btrfs_bg_flags_to_raid_index(map_type);
+> +	const int substripes = btrfs_raid_array[index].sub_stripes;
+> +	const int max_stripes = trans->fs_info->fs_devices->rw_devices / 2;
 
-At present, we support per-memcg reclaim strategy, however we do not
-know the number of transparent huge pages being reclaimed, as we know
-the transparent huge pages need to be splited before reclaim them, and
-they will bring some performance bottleneck effect. for example, when
-two memcg (A & B) are doing reclaim for anonymous pages at same time,
-and 'A' memcg is reclaiming a large number of transparent huge pages, we
-can better analyze that the performance bottleneck will be caused by 'A'
-memcg.  therefore, in order to better analyze such problems, there add
-THP swap out info for per-memcg.
-
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Xin Hao <vernhao@tencent.com>
----
-v2 -> v3
-	- Do little fix as Johannes Weiner suggestion.
-	- add 'thp_swpout' and 'thp_swpout_fallback' to Documentation/admin-guide/cgroup-v2.rst
-v1 -> v2
-	- Do some fix as Johannes Weiner suggestion.
-v2:
-https://lore.kernel.org/linux-mm/20230912021727.61601-1-vernhao@tencent.com/
-v1: 
-https://lore.kernel.org/linux-mm/20230911160824.GB103342@cmpxchg.org/T/
-
- Documentation/admin-guide/cgroup-v2.rst | 9 +++++++++
- mm/memcontrol.c                         | 2 ++
- mm/page_io.c                            | 8 ++++----
- mm/vmscan.c                             | 1 +
- 4 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index b26b5274eaaf..622a7f28db1f 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1532,6 +1532,15 @@ PAGE_SIZE multiple when read back.
- 		collapsing an existing range of pages. This counter is not
- 		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
- 
-+	  thp_swpout (npn)
-+		Number of transparent hugepages which are swapout in one piece
-+		without splitting.
-+
-+	  thp_swpout_fallback (npn)
-+		Number of transparent hugepages which were split before swapout.
-+		Usually because failed to allocate some continuous swap space
-+		for the huge page.
-+
-   memory.numa_stat
- 	A read-only nested-keyed file which exists on non-root cgroups.
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 811491b99e3e..9f84b3f7b469 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -704,6 +704,8 @@ static const unsigned int memcg_vm_event_stat[] = {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	THP_FAULT_ALLOC,
- 	THP_COLLAPSE_ALLOC,
-+	THP_SWPOUT,
-+	THP_SWPOUT_FALLBACK,
- #endif
- };
- 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index fe4c21af23f2..7cf358158cf1 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -208,8 +208,10 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
- static inline void count_swpout_vm_event(struct folio *folio)
- {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (unlikely(folio_test_pmd_mappable(folio)))
-+	if (unlikely(folio_test_pmd_mappable(folio))) {
-+		count_memcg_folio_events(folio, THP_SWPOUT, 1);
- 		count_vm_event(THP_SWPOUT);
-+	}
- #endif
- 	count_vm_events(PSWPOUT, folio_nr_pages(folio));
- }
-@@ -278,9 +280,6 @@ static void sio_write_complete(struct kiocb *iocb, long ret)
- 			set_page_dirty(page);
- 			ClearPageReclaim(page);
- 		}
--	} else {
--		for (p = 0; p < sio->pages; p++)
--			count_swpout_vm_event(page_folio(sio->bvec[p].bv_page));
- 	}
- 
- 	for (p = 0; p < sio->pages; p++)
-@@ -296,6 +295,7 @@ static void swap_writepage_fs(struct page *page, struct writeback_control *wbc)
- 	struct file *swap_file = sis->swap_file;
- 	loff_t pos = page_file_offset(page);
- 
-+	count_swpout_vm_event(page_folio(sio->bvec[p].bv_page));
- 	set_page_writeback(page);
- 	unlock_page(page);
- 	if (wbc->swap_plug)
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 00b24c3b2b04..661615fa709b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1227,6 +1227,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 								folio_list))
- 						goto activate_locked;
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+					count_memcg_folio_events(folio, THP_SWPOUT_FALLBACK, 1);
- 					count_vm_event(THP_SWPOUT_FALLBACK);
- #endif
- 					if (!add_to_swap(folio))
--- 
-2.42.0
-
+This could use the table based mirroring factor, right? Though we have
+only raid10 and not the other C3 and C4 it's better to avoid the
+hard coded constants.
