@@ -2,91 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D142179E765
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3F479E76B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240562AbjIML77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        id S240538AbjIMMBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240492AbjIML76 (ORCPT
+        with ESMTP id S240593AbjIMMBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:59:58 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CA219A8;
-        Wed, 13 Sep 2023 04:59:54 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E5E7316C4;
-        Wed, 13 Sep 2023 13:58:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694606300;
-        bh=ayRV34rsRfdF8woE+GQhfjAi3GQIYlaUEPoIV8k2xps=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UzGe5cj2D9Tns1M8L6m3ueyaS3BOi0cZ6U8xa77eVjNqMDeB2lpW5SjpYkc7PUj1O
-         xotPgAXmXDHIbb1fbJ+pSFqnpf6qFXGh5Ir0Rw0iGrMXuTd/M3+vO7WFTyNFb/yqsB
-         pNOzj4czWbm/JROAS7pIQt3sO+ZCfzZ35sFTdhKs=
-Message-ID: <9daacd2f-0dbf-dddc-9403-b802447896a2@ideasonboard.com>
-Date:   Wed, 13 Sep 2023 14:59:48 +0300
+        Wed, 13 Sep 2023 08:01:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2398519AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:01:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BE28C433C8;
+        Wed, 13 Sep 2023 12:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694606474;
+        bh=KQnu+yUCS+TKdothFVSmgo4xOTdtd4pcUkwXpwy1VEg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gOayipHD1lN/DDCe+sKON940dcJsQBpGBouZht80YMme10+nCV72kT8ZGqze0mx2K
+         Ch7onIBwYr47VCGTpq/A4L8DDfLbYlB7bUTbe/F3k5V5PS8xEgPC1GJ/kjS3Vb0qQG
+         5cwRduoRllZr8tidBncIx11+qaY6FNaXmUYuuyClmqIkvSsxjHs6CHU9dgPzVrwlvo
+         8G3nuhxBbdf9YCEvbUjXDcA+pd+6sfajM6sBx2VmCaN1yngQn8N8NH5c10pUOmSUIK
+         3W82F6FZZT0Dk3h5kKYBklRdA6yLmS1Legs1kr5xYa67qw7fRM/tdPL6uEcxm9FWtU
+         CFzTTS7Cg0Tdw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 872D1403F4; Wed, 13 Sep 2023 09:01:11 -0300 (-03)
+Date:   Wed, 13 Sep 2023 09:01:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Simon Ser <contact@emersion.fr>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 1/1 fyi] tools headers UAPI: Update tools's copy of drm.h
+ headers
+Message-ID: <ZQGkh9qlhpKA/SMY@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] drm/omap: dsi: Fix deferred probe warnings
-Content-Language: en-US
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>
-References: <20230412073954.20601-1-tony@atomide.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230412073954.20601-1-tony@atomide.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2023 10:39, Tony Lindgren wrote:
-> We may not have dsi->dsidev initialized during probe, and that can
-> lead into various dsi related warnings as omap_dsi_host_detach() gets
-> called with dsi->dsidev set to NULL.
-> 
-> The warnings can be "Fixed dependency cycle(s)" followed by a
-> WARNING: CPU: 0 PID: 787 at drivers/gpu/drm/omapdrm/dss/dsi.c:4414.
-> 
-> Let's fix the warnings by checking for a valid dsi->dsidev.
-> 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> ---
->   drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
-> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
-> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
-> @@ -4411,7 +4411,7 @@ static int omap_dsi_host_detach(struct mipi_dsi_host *host,
->   {
->   	struct dsi_data *dsi = host_to_omap(host);
->   
-> -	if (WARN_ON(dsi->dsidev != client))
-> +	if (dsi->dsidev && WARN_ON(dsi->dsidev != client))
->   		return -EINVAL;
->   
->   	cancel_delayed_work_sync(&dsi->dsi_disable_work);
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-Shouldn't this rather be
+- Arnaldo
 
-if (!dsi->dsidev)
-	return 0;
+Full explanation:
 
-before the if (WARN_ON(dsi->dsidev != client)) line?
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
-If dsi->dsidev is NULL, then attach hasn't been called, and we shouldn't 
-do anything in the detach callback either.
+The way these headers are used in perf are not restricted to just
+including them to compile something.
 
-With your change we'll end up doing all the work in the detach callback, 
-without ever doing their counterpart in the attach side.
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
 
-  Tomi
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
+
+---
+
+Picking the changes from:
+
+  ad9ee11fdf113f96 ("drm/doc: document that PRIME import/export is always supported")
+  2ff4f6d410afa762 ("drm/doc: document drm_event and its types")
+  9a2eabf48ade4fba ("drm/doc: use proper cross-references for sections")
+  c7a4722971691562 ("drm/syncobj: add IOCTL to register an eventfd")
+
+Addressing these perf build warnings:
+
+  Warning: Kernel ABI header differences:
+    diff -u tools/include/uapi/drm/drm.h include/uapi/drm/drm.h
+
+Now 'perf trace' and other code that might use the
+tools/perf/trace/beauty autogenerated tables will be able to translate
+this new ioctl code into a string:
+
+  $ tools/perf/trace/beauty/drm_ioctl.sh > before
+  $ cp include/uapi/drm/drm.h tools/include/uapi/drm/drm.h
+  $ tools/perf/trace/beauty/drm_ioctl.sh > after
+  $ diff -u before after
+  --- before	2023-09-13 08:54:45.170134002 -0300
+  +++ after	2023-09-13 08:55:06.612712776 -0300
+  @@ -108,6 +108,7 @@
+   	[0xCC] = "SYNCOBJ_TRANSFER",
+   	[0xCD] = "SYNCOBJ_TIMELINE_SIGNAL",
+   	[0xCE] = "MODE_GETFB2",
+  +	[0xCF] = "SYNCOBJ_EVENTFD",
+   	[DRM_COMMAND_BASE + 0x00] = "I915_INIT",
+   	[DRM_COMMAND_BASE + 0x01] = "I915_FLUSH",
+   	[DRM_COMMAND_BASE + 0x02] = "I915_FLIP",
+  $
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Simon Ser <contact@emersion.fr>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/include/uapi/drm/drm.h | 84 +++++++++++++++++++++++++++++-------
+ 1 file changed, 69 insertions(+), 15 deletions(-)
+
+diff --git a/tools/include/uapi/drm/drm.h b/tools/include/uapi/drm/drm.h
+index a87bbbbca2d48ada..794c1d857677d9b9 100644
+--- a/tools/include/uapi/drm/drm.h
++++ b/tools/include/uapi/drm/drm.h
+@@ -673,8 +673,11 @@ struct drm_gem_open {
+  * Bitfield of supported PRIME sharing capabilities. See &DRM_PRIME_CAP_IMPORT
+  * and &DRM_PRIME_CAP_EXPORT.
+  *
+- * PRIME buffers are exposed as dma-buf file descriptors. See
+- * Documentation/gpu/drm-mm.rst, section "PRIME Buffer Sharing".
++ * Starting from kernel version 6.6, both &DRM_PRIME_CAP_IMPORT and
++ * &DRM_PRIME_CAP_EXPORT are always advertised.
++ *
++ * PRIME buffers are exposed as dma-buf file descriptors.
++ * See :ref:`prime_buffer_sharing`.
+  */
+ #define DRM_CAP_PRIME			0x5
+ /**
+@@ -682,6 +685,8 @@ struct drm_gem_open {
+  *
+  * If this bit is set in &DRM_CAP_PRIME, the driver supports importing PRIME
+  * buffers via the &DRM_IOCTL_PRIME_FD_TO_HANDLE ioctl.
++ *
++ * Starting from kernel version 6.6, this bit is always set in &DRM_CAP_PRIME.
+  */
+ #define  DRM_PRIME_CAP_IMPORT		0x1
+ /**
+@@ -689,6 +694,8 @@ struct drm_gem_open {
+  *
+  * If this bit is set in &DRM_CAP_PRIME, the driver supports exporting PRIME
+  * buffers via the &DRM_IOCTL_PRIME_HANDLE_TO_FD ioctl.
++ *
++ * Starting from kernel version 6.6, this bit is always set in &DRM_CAP_PRIME.
+  */
+ #define  DRM_PRIME_CAP_EXPORT		0x2
+ /**
+@@ -756,15 +763,14 @@ struct drm_gem_open {
+ /**
+  * DRM_CAP_SYNCOBJ
+  *
+- * If set to 1, the driver supports sync objects. See
+- * Documentation/gpu/drm-mm.rst, section "DRM Sync Objects".
++ * If set to 1, the driver supports sync objects. See :ref:`drm_sync_objects`.
+  */
+ #define DRM_CAP_SYNCOBJ		0x13
+ /**
+  * DRM_CAP_SYNCOBJ_TIMELINE
+  *
+  * If set to 1, the driver supports timeline operations on sync objects. See
+- * Documentation/gpu/drm-mm.rst, section "DRM Sync Objects".
++ * :ref:`drm_sync_objects`.
+  */
+ #define DRM_CAP_SYNCOBJ_TIMELINE	0x14
+ 
+@@ -909,6 +915,27 @@ struct drm_syncobj_timeline_wait {
+ 	__u32 pad;
+ };
+ 
++/**
++ * struct drm_syncobj_eventfd
++ * @handle: syncobj handle.
++ * @flags: Zero to wait for the point to be signalled, or
++ *         &DRM_SYNCOBJ_WAIT_FLAGS_WAIT_AVAILABLE to wait for a fence to be
++ *         available for the point.
++ * @point: syncobj timeline point (set to zero for binary syncobjs).
++ * @fd: Existing eventfd to sent events to.
++ * @pad: Must be zero.
++ *
++ * Register an eventfd to be signalled by a syncobj. The eventfd counter will
++ * be incremented by one.
++ */
++struct drm_syncobj_eventfd {
++	__u32 handle;
++	__u32 flags;
++	__u64 point;
++	__s32 fd;
++	__u32 pad;
++};
++
+ 
+ struct drm_syncobj_array {
+ 	__u64 handles;
+@@ -1169,6 +1196,8 @@ extern "C" {
+  */
+ #define DRM_IOCTL_MODE_GETFB2		DRM_IOWR(0xCE, struct drm_mode_fb_cmd2)
+ 
++#define DRM_IOCTL_SYNCOBJ_EVENTFD	DRM_IOWR(0xCF, struct drm_syncobj_eventfd)
++
+ /*
+  * Device specific ioctls should only be in their respective headers
+  * The device specific ioctl range is from 0x40 to 0x9f.
+@@ -1180,25 +1209,50 @@ extern "C" {
+ #define DRM_COMMAND_BASE                0x40
+ #define DRM_COMMAND_END			0xA0
+ 
+-/*
+- * Header for events written back to userspace on the drm fd.  The
+- * type defines the type of event, the length specifies the total
+- * length of the event (including the header), and user_data is
+- * typically a 64 bit value passed with the ioctl that triggered the
+- * event.  A read on the drm fd will always only return complete
+- * events, that is, if for example the read buffer is 100 bytes, and
+- * there are two 64 byte events pending, only one will be returned.
++/**
++ * struct drm_event - Header for DRM events
++ * @type: event type.
++ * @length: total number of payload bytes (including header).
+  *
+- * Event types 0 - 0x7fffffff are generic drm events, 0x80000000 and
+- * up are chipset specific.
++ * This struct is a header for events written back to user-space on the DRM FD.
++ * A read on the DRM FD will always only return complete events: e.g. if the
++ * read buffer is 100 bytes large and there are two 64 byte events pending,
++ * only one will be returned.
++ *
++ * Event types 0 - 0x7fffffff are generic DRM events, 0x80000000 and
++ * up are chipset specific. Generic DRM events include &DRM_EVENT_VBLANK,
++ * &DRM_EVENT_FLIP_COMPLETE and &DRM_EVENT_CRTC_SEQUENCE.
+  */
+ struct drm_event {
+ 	__u32 type;
+ 	__u32 length;
+ };
+ 
++/**
++ * DRM_EVENT_VBLANK - vertical blanking event
++ *
++ * This event is sent in response to &DRM_IOCTL_WAIT_VBLANK with the
++ * &_DRM_VBLANK_EVENT flag set.
++ *
++ * The event payload is a struct drm_event_vblank.
++ */
+ #define DRM_EVENT_VBLANK 0x01
++/**
++ * DRM_EVENT_FLIP_COMPLETE - page-flip completion event
++ *
++ * This event is sent in response to an atomic commit or legacy page-flip with
++ * the &DRM_MODE_PAGE_FLIP_EVENT flag set.
++ *
++ * The event payload is a struct drm_event_vblank.
++ */
+ #define DRM_EVENT_FLIP_COMPLETE 0x02
++/**
++ * DRM_EVENT_CRTC_SEQUENCE - CRTC sequence event
++ *
++ * This event is sent in response to &DRM_IOCTL_CRTC_QUEUE_SEQUENCE.
++ *
++ * The event payload is a struct drm_event_crtc_sequence.
++ */
+ #define DRM_EVENT_CRTC_SEQUENCE	0x03
+ 
+ struct drm_event_vblank {
+-- 
+2.37.1
 
