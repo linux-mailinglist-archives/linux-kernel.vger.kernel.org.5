@@ -2,255 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A80579EBA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF0C79EBA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241126AbjIMOwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S238311AbjIMOw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:52:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjIMOwU (ORCPT
+        with ESMTP id S230190AbjIMOw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:52:20 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0315BAF;
-        Wed, 13 Sep 2023 07:52:17 -0700 (PDT)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DCPkXc005556;
-        Wed, 13 Sep 2023 14:51:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=WySQqKjwlKswxdNm4YGZAbqiADOLQstUIlzOlsupMOk=;
- b=T6P9MZfb0nxfySQDsoMM8rF3LEiw/nobGlqFOXgaze2kWQYsDAwb3puMshh+UGQ/FL/p
- DLrpgJWbZqegJz8F0rAMbQy0do6zrWdy6k3NMLy6Hef2NDIqBToSIpk5pQ0Mz+DFcthK
- js3TJnCsjxWPiRZf4aBJbFtEuuQVVEel8S928hOaxfDfyqREFeXVlVlslXbDKd2Mfb9M
- A9lRi5ENbpg2Gpb8B0NWgChYku7BLmCdd8anxyQyuCb05AUT9KlV3A9J40vOwp53j7Fs
- 7uPgsMotKeqVMWi/YWf8JpivNwCflry9hh2qJYoSAW60wnC0J8vRjG+Ez3Cfv1qUi3UC Iw== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t2y9kt8qn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 14:51:32 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38DEZO8C004510;
-        Wed, 13 Sep 2023 14:51:31 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t0f583h5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 14:51:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HNK0TmfCl3i+mMhczer47FiupS+uqSKAymw8Ou2HLL5zHq3YOLGucRLy5VnF3T+DkHnRE7iz/glRDYqEXCzAc/p2GECHmc5YSYZRqoRpRyk4a7k2KFzbNSBvOm1HkZwVm3hxMlV5vtE+3o+frF1JeoRXmB+Oj1jOcykOCM4jrSzcqqGdKMLNwka6qLHWxYp0aoj0shiweQl0V2YO/ZnKmlVsK3rZhrvoRSrbP3hmay5+l9dEB7uFHyRMiuGN444qsM+6xCYAFMgP5eS0V66x6RDoGu3N8125pFFmHGKivf/VBnMPVZTNugkYmm1QfnvRSnSkcyxArp+Dsl8VEIu5nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WySQqKjwlKswxdNm4YGZAbqiADOLQstUIlzOlsupMOk=;
- b=fi6L7dj1jEi72WxUV99b0XgnUYj8YJf7rC+TVvwGUmyDDeLX16qvmJO9FL1DzkT9PdPFju6gFwrSsHtBvFiDaMuklC5WdzJ1sDvQsJALnaXpxILe7Qw/vytaxmwrIJx32ii/X+xXxEXCFf92MrnTncSiDUonxbgPBGiOV0pYthcuKkQZQgrPbIqyJ/bzuHPF/M8vxiVoy+GM86KqY58WyzIElvYefeoBaY/d7N+zjQGzwf+z1UOZarKKS6ZA+/kvSt6OWEw0FKx8Wy6BAVAs0eFOc7R9wtOxp9xZ6kQcvbdeS0tijtpM9y68U9A+VkAhqSyMBxHyHdyDrsOLb03SIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WySQqKjwlKswxdNm4YGZAbqiADOLQstUIlzOlsupMOk=;
- b=mHGh0RwgJ9mWGkYnkdFhVrM8t0t/Uu9mQI83LEJIiKSDKPzGFVkDSbTFoTY+zopHVJK0q7HA0DhkcIxF+Cmn+iAMfc/CueUXjKRkk4N/dbqRHGxLoRpTWpwpaYaAvbyeU0HXt5eamP+IfIwinmva0698qh4d5EOnb3ERjUBp/kA=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by SJ0PR10MB4464.namprd10.prod.outlook.com (2603:10b6:a03:2d0::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
- 2023 14:51:29 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6768.036; Wed, 13 Sep 2023
- 14:51:29 +0000
-Date:   Wed, 13 Sep 2023 10:51:25 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] init/main: Clear boot task idle flag
-Message-ID: <20230913145125.xssion4ygykunzrc@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peng Zhang <zhangpeng.00@bytedance.com>,
-        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20230913005647.1534747-1-Liam.Howlett@oracle.com>
- <20230913135246.GH692@noisy.programming.kicks-ass.net>
+        Wed, 13 Sep 2023 10:52:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B139AAC;
+        Wed, 13 Sep 2023 07:52:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 70B4D218E5;
+        Wed, 13 Sep 2023 14:52:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694616770;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XrV8GF8432YR23nIP/OiT5cXUNGehzNZd8GOPZThzKE=;
+        b=HKWQ4go2OhHwGXr554jWce4BEB3pKl+QfB4nQ6E5BytT9tZqAYcjeEZ9l7L01JySmJp/KP
+        JSgAkx04kNq0mHbq+VUw7/DLAju0EkbvVeRFWiZT07WqwPPQifxBQ6j1OZLXGGDAac9V5L
+        G9WNmVV1ImT7zmBBsHOBJ/3oYe5sKvQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694616770;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XrV8GF8432YR23nIP/OiT5cXUNGehzNZd8GOPZThzKE=;
+        b=COwc6ZAi7b50z1wKWxsi94G3tjWJIgWGxVgLhBkO4r14RPisNAdi8nlHoHdVBvXzqzieqn
+        RiQbVnd5476ggtCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2327D13440;
+        Wed, 13 Sep 2023 14:52:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 3yWIB8LMAWVSbwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Wed, 13 Sep 2023 14:52:50 +0000
+Date:   Wed, 13 Sep 2023 16:52:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>, Qu Wenruo <wqu@suse.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 07/11] btrfs: zoned: allow zoned RAID
+Message-ID: <20230913145248.GM20408@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230911-raid-stripe-tree-v8-0-647676fa852c@wdc.com>
+ <20230911-raid-stripe-tree-v8-7-647676fa852c@wdc.com>
+ <20230912204906.GH20408@twin.jikos.cz>
+ <27b68e26-d6b7-406a-9a55-6f298fd82ad2@wdc.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913135246.GH692@noisy.programming.kicks-ass.net>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0504.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10c::26) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|SJ0PR10MB4464:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f555c77-27a9-4183-1650-08dbb468e989
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YvyDDprgoeDOMiO6x69WmrzPKSajy3Xg/Kxqy5AHRsWkiiJwBAX63MlyVBNQTfypz8CXJPQj0S8JYdbg3WygVzRCBqKJ0PkqhcNBRq03syapF+hr0AF/1KxdLmjgJUVKfUFDC7IaPrgEO7agvLWyXKAn5/h+5DV7Hij88gF0C033ImSMXh2UUYSgXezS3D/vbkIbteNs9rX8BE3sikiLTSlbhsE2nKNKPbBbHbgaoF2OByZ11r/ip43rmNbU2vMIhAihYMpi7GZioeZNQZhL31/V8PWZEcu1CDTF/5XvQksCFsQAeNK54FHyU3v0eV3Z9FnvG8B1THiibKmT1jEUqenm1otI2kVK3KIHuDjXIcZn9tabUtaZhANH6Plg5lpigOtSV454yDPWc4CCYhNhC05Ggu4nAenbdRHEGOLqzfwYqdt/rtkkWnRyOS7oSApQfFOD9aW/x6CIRmPj2QpkT1cI9D03NBsaTdiger814NhCaQP37m12+eUgS4QDzcPNKWQiPK3dcSeWGN0NGu/yxdUJt+x8sQd2f793pXhR+MyvX/vlK5JZBVwxM+2se+ST
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(346002)(376002)(136003)(39860400002)(186009)(1800799009)(451199024)(6666004)(6506007)(6486002)(6512007)(9686003)(478600001)(83380400001)(1076003)(26005)(2906002)(7416002)(33716001)(6916009)(66946007)(54906003)(66556008)(66476007)(316002)(5660300002)(8676002)(8936002)(41300700001)(4326008)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jhqR2Wb361xH5s/2HvFVcqP5M8m2bW6yBipfZdvb407JAf1w6BfrdGQLiHGp?=
- =?us-ascii?Q?kDdLlaMk00a9Yt7NOUTRqbL7BepH23M92SNn9AQkZLJYSxuyo83WjiO9Beip?=
- =?us-ascii?Q?bkTwAqReUtDKaIE/hNMttWXDsmyOOqNuoGjcXX7spKNffJAhAml0MHyVfuMq?=
- =?us-ascii?Q?y9x8E5gMXCtviD9dBFlzWO8+4e2HIA25xdEJ6E0+O6ueAcsh41zrQKz33Y8D?=
- =?us-ascii?Q?cOF8LWfJQYzIDMsFRL00caMujo77lK8LcCFi8C6+A8Wq3e8AZEoCfPjfe87e?=
- =?us-ascii?Q?WLerIQK/PkFz/5drh1qzHla0r67YpTkCKZb9MlzG/JMUB6NTHgHBzh2561bJ?=
- =?us-ascii?Q?cW0Es2ZSi1N1mW4Lcyi0hJfHah8wWEXv2BAEf16xK9KAY7waGeYGBBAjKS51?=
- =?us-ascii?Q?VxhhhksTwYD28+UkLH9dYGJJSxsJo87i42T6nG0a6U4KNX8OmivnoW4b1u9X?=
- =?us-ascii?Q?fjnb6MOLHGoABkh2ZGFq3xiQ42l5QWlLXO4zyFD86DRaBEUW6DD0ZChItpQ0?=
- =?us-ascii?Q?9FpJu8KaBIQP8NwKd5laM63MZ1cg21H1UEcZPp7AdEPffRLsvC/BhDL+VLI2?=
- =?us-ascii?Q?7D/08xmbqJ4zSYu0skTXBbovwB3W2WY0hKspCucZGS14/ngvEoh3AxG6UNVO?=
- =?us-ascii?Q?REo/X65d/c514CERCu7pc3OVGfAETdFLwi+wncaw4PI8eyWY4Y/E7LCc+Iph?=
- =?us-ascii?Q?JQvcsfiVSJMKqO+yfJ31n3bgAXHPl2Fbnc8Nc6luozBJLQbkEnwaWAEC/nfu?=
- =?us-ascii?Q?SwYChLjZlFeyT1xCHQF/kW//p8eREXnPMbddFfyipIqPqZhm9zdqC6rwEI6z?=
- =?us-ascii?Q?vmQmW4QRNTBalTVsHOXmy1Hd/RxZ4z1wbd4zNuuLE/JYZ0ExGD2gqoHVtpxM?=
- =?us-ascii?Q?JsIE27XMtA5Q6rKu55LpEY33JkjtMoX7J825JL0NzKIAYLDT7XFs2mwXJiJg?=
- =?us-ascii?Q?THCpGVBoDOAbOROV4/Lj07H8+dmnwzebnMKLuEaWOkuqgNPWzsnA/afnPnVA?=
- =?us-ascii?Q?6LEX/HmKjdhAAYjlk1OjtW2Vwr645XZ7jmu/iuIeygu5PgZHYaDWL9bwIwwc?=
- =?us-ascii?Q?7quX6vIlS874CZTJwkqjAkzcGcHfS6P80ENnW14nAAUqRZbTfzUCjCKE0KZQ?=
- =?us-ascii?Q?ebeyGyJx4y1mSQxNXuY2jSzxNyLamBH5+uIl0PdqK90Cfl4npZRPWEGa5TIf?=
- =?us-ascii?Q?YfxH3KJexw13F9xiv7IqL/7NkSTAi6raaS5yMVgoBKxceyMlmR4otoh8btFa?=
- =?us-ascii?Q?JW9z7zDWLNdLhmaxM1+k4/5Nqbx8e6oj3KJOTrb1WBMerxHRElck+23eMPML?=
- =?us-ascii?Q?dNFoATKRMdmTml0JpwCXHRx31sIxRjK1vD1QMHjebDVMDzwZqajX1kQiBipk?=
- =?us-ascii?Q?LTmSqgzf0T4b5W0P5FObTJ6angwwzPqHSmOnB1K0EoMWEq6m78drb8hm1YXR?=
- =?us-ascii?Q?DCwCQZq2KW5IswUUp7EaWUqUoTWXP7F/qnlIw99E7dWJoG+7MLW8Oo3R2u/6?=
- =?us-ascii?Q?66rqyzNrVfwordi27Wq1yt0pvokYDpnjrR15GF9RFkGeJAQS2Rnv+a0t/uH7?=
- =?us-ascii?Q?hAHkpyE5pd5QRaSQiNSmFDzLj28H1p6qIc7jH65KOyEJVgIsHmAwzfBJqDh3?=
- =?us-ascii?Q?Fw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?tiXXUa6W0b/tUbNT4fd+/rwEeZajfgdb4Yj1Z29DrJrYQwgnXhLnTNNlmN3Z?=
- =?us-ascii?Q?DaOSv5Jdrb4JoZVT1eG+9RQwqSPTr5OPMnoWl0jUtqG0vmIQSDVZucOcAKJ+?=
- =?us-ascii?Q?LRtmEeqtdlphPFm6MSLfi6GUATGnt/RMLxJFkiomXpqvMbOBMe4afgXzp3Jy?=
- =?us-ascii?Q?AhoDvWz2CBvzLka2b4H52IJVN0ypm/tigpcJRx3UoG4H2KzLePUkkVNhZFWt?=
- =?us-ascii?Q?d/LCugYWHHaR1bvMRNNyfNhjOadir20GcbBGgNr30gl/L8z5GvhwjbZ6n7od?=
- =?us-ascii?Q?p8dI+UUx36aYUQGPCNUXgJMiXJQub4+mrhCS2t/+NXSULWIPJVtx9VoULbZp?=
- =?us-ascii?Q?KknAimR9CIIwBB80WbL9a5v1Omh9VCExACUoQlb3yJIIjbu/I2Mmky8kMg9m?=
- =?us-ascii?Q?Q12OwU606bygjmQwTD7R4kx14Pl9Sv3ZqeVYRH2CdnfYePc2Z/tEkYaIY2pe?=
- =?us-ascii?Q?9ZBQ2Q+OtEMhcSXlyNgOnMrPEbbp3g6VqH0chX8R3VaWEdcX9B0+4CAiC+7d?=
- =?us-ascii?Q?wRp3aI13OJ+1R3YnTsr8bqYZYwtmGLXOwx5pVJtQhGGwgtcNtjhRU1ZRLRXy?=
- =?us-ascii?Q?yxJaZb51GCen8OmMEWhp5UJFTQASX7D7q95Y4G1mMvz1zkAXdo+t0oRzBCzm?=
- =?us-ascii?Q?dMPOjloIc4qaW3mQYHQ6jApWUUPWqqP0Jshk1JjiYrGsNuGdhPTs+pPNpqIU?=
- =?us-ascii?Q?uHtsUvC2/TLT8a3rEV38ogqjJA4EZfpjDroq9XqEi236ePS3X/tAEBusyh/I?=
- =?us-ascii?Q?HRurlSD8Kg5uUL1x47QVZ+6gLXrB3DTHfDDdXyos6DthlqwlGWuu44sAj0NV?=
- =?us-ascii?Q?XTrFmoYpb/sw/a/RnjEvU853SvnzquHt+tWEg5LG69x/Hv2DnyS4C7X1THaN?=
- =?us-ascii?Q?pVf0mWODvJVaJMplVJuN68sA21kelRcs3xqG5eWACzo9oyWtmWlZQQrtigx5?=
- =?us-ascii?Q?EeJRR1nMf5jENv9n4HSuqBXwEH109hJza7nuiWzIBgJrf9gts6QZxW1RL2wX?=
- =?us-ascii?Q?liXEwzgBQ8V1Ver3QT6INXQoiXSV5Zw0x2NHYnONwbrJEIhJP3TznHoi+UKA?=
- =?us-ascii?Q?NetQNDey7O8uGGsKxpapWBUiZ/sE25pp59ygAiQ3tRkaLjl+uoeZkzoCNZ8W?=
- =?us-ascii?Q?JiJ5S1NK2ZvsSUO4TLr1hXN6RRK3IDAkNg=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f555c77-27a9-4183-1650-08dbb468e989
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 14:51:29.1931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6COpEo8ELLrS+9girUr6wO1DDMpcqTIGQwn+u9rHaxOqx7pH/kpTpI5OkHUDD931PX6CEw24cRuSmTH8dZebeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4464
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_08,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309130122
-X-Proofpoint-GUID: GyMLAMxRjRR0hLEcz-aXvUSrVNZMeRa2
-X-Proofpoint-ORIG-GUID: GyMLAMxRjRR0hLEcz-aXvUSrVNZMeRa2
+In-Reply-To: <27b68e26-d6b7-406a-9a55-6f298fd82ad2@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra <peterz@infradead.org> [230913 09:53]:
-> On Tue, Sep 12, 2023 at 08:56:47PM -0400, Liam R. Howlett wrote:
+On Wed, Sep 13, 2023 at 05:41:52AM +0000, Johannes Thumshirn wrote:
+> On 12.09.23 22:49, David Sterba wrote:
+> > On Mon, Sep 11, 2023 at 05:52:08AM -0700, Johannes Thumshirn wrote:
+> >> When we have a raid-stripe-tree, we can do RAID0/1/10 on zoned devices for
+> >> data block-groups. For meta-data block-groups, we don't actually need
+> >> anything special, as all meta-data I/O is protected by the
+> >> btrfs_zoned_meta_io_lock() already.
+> >>
+> >> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> >> ---
+> >>   fs/btrfs/raid-stripe-tree.h |   7 ++-
+> >>   fs/btrfs/volumes.c          |   2 +
+> >>   fs/btrfs/zoned.c            | 113 +++++++++++++++++++++++++++++++++++++++++++-
+> >>   3 files changed, 119 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/fs/btrfs/raid-stripe-tree.h b/fs/btrfs/raid-stripe-tree.h
+> >> index 40aa553ae8aa..30c7d5981890 100644
+> >> --- a/fs/btrfs/raid-stripe-tree.h
+> >> +++ b/fs/btrfs/raid-stripe-tree.h
+> >> @@ -8,6 +8,11 @@
+> >>   
+> >>   #include "disk-io.h"
+> >>   
+> >> +#define BTRFS_RST_SUPP_BLOCK_GROUP_MASK		(BTRFS_BLOCK_GROUP_DUP |\
+> >> +						 BTRFS_BLOCK_GROUP_RAID1_MASK |\
+> >> +						 BTRFS_BLOCK_GROUP_RAID0 |\
+> >> +						 BTRFS_BLOCK_GROUP_RAID10)
+> >> +
+> >>   struct btrfs_io_context;
+> >>   struct btrfs_io_stripe;
+> >>   
+> >> @@ -32,7 +37,7 @@ static inline bool btrfs_need_stripe_tree_update(struct btrfs_fs_info *fs_info,
+> >>   	if (type != BTRFS_BLOCK_GROUP_DATA)
+> >>   		return false;
+> >>   
+> >> -	if (profile & BTRFS_BLOCK_GROUP_RAID1_MASK)
+> >> +	if (profile & BTRFS_RST_SUPP_BLOCK_GROUP_MASK)
+> >>   		return true;
+> >>   
+> >>   	return false;
+> >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> >> index 7c25f5c77788..9f17e5f290f4 100644
+> >> --- a/fs/btrfs/volumes.c
+> >> +++ b/fs/btrfs/volumes.c
+> >> @@ -6438,6 +6438,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+> >>   	 * I/O context structure.
+> >>   	 */
+> >>   	if (smap && num_alloc_stripes == 1 &&
+> >> +	    !(btrfs_need_stripe_tree_update(fs_info, map->type) &&
+> >> +	      op != BTRFS_MAP_READ) &&
+> >>   	    !((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) && mirror_num > 1)) {
+> >>   		ret = set_io_stripe(fs_info, op, logical, length, smap, map,
+> >>   				    stripe_index, stripe_offset, stripe_nr);
+> >> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> >> index c6eedf4bfba9..4ca36875058c 100644
+> >> --- a/fs/btrfs/zoned.c
+> >> +++ b/fs/btrfs/zoned.c
+> >> @@ -1481,8 +1481,9 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+> >>   			set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &cache->runtime_flags);
+> >>   		break;
+> >>   	case BTRFS_BLOCK_GROUP_DUP:
+> >> -		if (map->type & BTRFS_BLOCK_GROUP_DATA) {
+> >> -			btrfs_err(fs_info, "zoned: profile DUP not yet supported on data bg");
+> >> +		if (map->type & BTRFS_BLOCK_GROUP_DATA &&
+> >> +		    !btrfs_stripe_tree_root(fs_info)) {
+> >> +			btrfs_err(fs_info, "zoned: data DUP profile needs stripe_root");
+> >>   			ret = -EINVAL;
+> >>   			goto out;
+> >>   		}
+> >> @@ -1520,8 +1521,116 @@ int btrfs_load_block_group_zone_info(struct btrfs_block_group *cache, bool new)
+> >>   		cache->zone_capacity = min(caps[0], caps[1]);
+> >>   		break;
+> >>   	case BTRFS_BLOCK_GROUP_RAID1:
+> >> +	case BTRFS_BLOCK_GROUP_RAID1C3:
+> >> +	case BTRFS_BLOCK_GROUP_RAID1C4:
+> > 
+> > This
+> > 
+> >> +		if (map->type & BTRFS_BLOCK_GROUP_DATA &&
+> >> +		    !btrfs_stripe_tree_root(fs_info)) {
+> >> +			btrfs_err(fs_info,
+> >> +				  "zoned: data %s needs stripe_root",
+> >> +				  btrfs_bg_type_to_raid_name(map->type));
+> >> +			ret = -EIO;
+> >> +			goto out;
+> >> +
+> >> +		}
+> >> +
+> >> +		for (i = 0; i < map->num_stripes; i++) {
+> >> +			if (alloc_offsets[i] == WP_MISSING_DEV ||
+> >> +			    alloc_offsets[i] == WP_CONVENTIONAL)
+> >> +				continue;
+> >> +
+> >> +			if ((alloc_offsets[0] != alloc_offsets[i]) &&
+> >> +			    !btrfs_test_opt(fs_info, DEGRADED)) {
+> >> +				btrfs_err(fs_info,
+> >> +					  "zoned: write pointer offset mismatch of zones in %s profile",
+> >> +					  btrfs_bg_type_to_raid_name(map->type));
+> >> +				ret = -EIO;
+> >> +				goto out;
+> >> +			}
+> >> +			if (test_bit(0, active) != test_bit(i, active)) {
+> >> +				if (!btrfs_test_opt(fs_info, DEGRADED) &&
+> >> +				    !btrfs_zone_activate(cache)) {
+> >> +					ret = -EIO;
+> >> +					goto out;
+> >> +				}
+> >> +			} else {
+> >> +				if (test_bit(0, active))
+> >> +					set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE,
+> >> +						&cache->runtime_flags);
+> >> +			}
+> >> +			/*
+> >> +			 * In case a device is missing we have a cap of 0, so don't
+> >> +			 * use it.
+> >> +			 */
+> >> +			cache->zone_capacity = min_not_zero(caps[0], caps[i]);
+> >> +		}
+> >> +
+> >> +		if (alloc_offsets[0] != WP_MISSING_DEV)
+> >> +			cache->alloc_offset = alloc_offsets[0];
+> >> +		else
+> >> +			cache->alloc_offset = alloc_offsets[i - 1];
+> > 
+> > whole block
+> > 
+> >> +		break;
+> >>   	case BTRFS_BLOCK_GROUP_RAID0:
+> > 
+> > and
+> > 
+> >> +		if (map->type & BTRFS_BLOCK_GROUP_DATA &&
+> >> +		    !btrfs_stripe_tree_root(fs_info)) {
+> >> +			btrfs_err(fs_info,
+> >> +				  "zoned: data %s needs stripe_root",
+> >> +				  btrfs_bg_type_to_raid_name(map->type));
+> >> +			ret = -EIO;
+> >> +			goto out;
+> >> +
+> >> +		}
+> >> +		for (i = 0; i < map->num_stripes; i++) {
+> >> +			if (alloc_offsets[i] == WP_MISSING_DEV ||
+> >> +			    alloc_offsets[i] == WP_CONVENTIONAL)
+> >> +				continue;
+> >> +
+> >> +			if (test_bit(0, active) != test_bit(i, active)) {
+> >> +				if (!btrfs_zone_activate(cache)) {
+> >> +					ret = -EIO;
+> >> +					goto out;
+> >> +				}
+> >> +			} else {
+> >> +				if (test_bit(0, active))
+> >> +					set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE,
+> >> +						&cache->runtime_flags);
+> >> +			}
+> >> +			cache->zone_capacity += caps[i];
+> >> +			cache->alloc_offset += alloc_offsets[i];
+> >> +
+> >> +		}
+> >> +		break;
+> >>   	case BTRFS_BLOCK_GROUP_RAID10:
+> >> +		if (map->type & BTRFS_BLOCK_GROUP_DATA &&
+> >> +		    !btrfs_stripe_tree_root(fs_info)) {
+> >> +			btrfs_err(fs_info,
+> >> +				  "zoned: data %s needs stripe_root",
+> >> +				  btrfs_bg_type_to_raid_name(map->type));
+> >> +			ret = -EIO;
+> >> +			goto out;
+> >> +
+> >> +		}
+> >> +		for (i = 0; i < map->num_stripes; i++) {
+> >> +			if (alloc_offsets[i] == WP_MISSING_DEV ||
+> >> +			    alloc_offsets[i] == WP_CONVENTIONAL)
+> >> +				continue;
+> >> +
+> >> +			if (test_bit(0, active) != test_bit(i, active)) {
+> >> +				if (!btrfs_zone_activate(cache)) {
+> >> +					ret = -EIO;
+> >> +					goto out;
+> >> +				}
+> >> +			} else {
+> >> +				if (test_bit(0, active))
+> >> +					set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE,
+> >> +						&cache->runtime_flags);
+> >> +			}
+> >> +			if ((i % map->sub_stripes) == 0) {
+> >> +				cache->zone_capacity += caps[i];
+> >> +				cache->alloc_offset += alloc_offsets[i];
+> >> +			}
+> >> +
+> >> +		}
+> >> +		break;
+> > 
+> > Seem to be quite long and nested for a case, can they be factored to
+> > helpers?
 > 
-> > diff --git a/init/main.c b/init/main.c
-> > index ad920fac325c..f74772acf612 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -696,7 +696,7 @@ noinline void __ref __noreturn rest_init(void)
-> >  	 */
-> >  	rcu_read_lock();
-> >  	tsk = find_task_by_pid_ns(pid, &init_pid_ns);
-> > -	tsk->flags |= PF_NO_SETAFFINITY;
-> > +	tsk->flags |= PF_NO_SETAFFINITY | PF_IDLE;
-> >  	set_cpus_allowed_ptr(tsk, cpumask_of(smp_processor_id()));
-> >  	rcu_read_unlock();
-> >  
-> 
-> Hmm, isn't that pid-1 you're setting PF_IDLE on?
+> Sure, but I'd love to have
+> https://lore.kernel.org/all/20230605085108.580976-1-hch@lst.de/
+> pulled in first. This patchset handles (among other things) the DUP and 
+> single cases as well.
 
-Yes, thanks.  I think that is what Geert is hitting with my patch.
-
-debug __might_resched() in kernel/sched/core.c is failing to return in
-that first (complex) if statement.  His report says pid 1 so this is
-likely the issue.
-
-> 
-> The task becoming idle is 'current' at this point, see the
-> cpu_startup_entry() call below.
-> 
-> Would not something like so be the right thing?
-> 
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 2299a5cfbfb9..802551e0009b 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -9269,7 +9269,7 @@ void __init init_idle(struct task_struct *idle, int cpu)
->  	 * PF_KTHREAD should already be set at this point; regardless, make it
->  	 * look like a proper per-CPU kthread.
->  	 */
-> -	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
-> +	idle->flags |= PF_KTHREAD | PF_NO_SETAFFINITY;
-
-I am concerned this will alter more than just the current task, which
-would mean more modifications later.  There is a comment about it being
-called 'more than once' and 'per cpu' so I am hesitant to change the
-function itself.
-
-Although I am unsure of the call path.. fork_idle() -> init_idle() I
-guess?
-
->  	kthread_set_per_cpu(idle, cpu);
->  
->  #ifdef CONFIG_SMP
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index 342f58a329f5..5007b25c5bc6 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -373,6 +373,7 @@ EXPORT_SYMBOL_GPL(play_idle_precise);
->  
->  void cpu_startup_entry(enum cpuhp_state state)
->  {
-> +	current->flags |= PF_IDLE;
->  	arch_cpu_idle_prepare();
->  	cpuhp_online_idle(state);
->  	while (1)
+I see, the patches still apply cleanly so I'll add them to misc-next.
