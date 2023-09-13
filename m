@@ -2,236 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C88879F0EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59DB79F0ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231686AbjIMSLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:11:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S231701AbjIMSM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:12:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjIMSLq (ORCPT
+        with ESMTP id S229552AbjIMSM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:11:46 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECE919B6;
-        Wed, 13 Sep 2023 11:11:42 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (unknown [IPv6:2606:6d00:15:bae9::7a9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B64436607326;
-        Wed, 13 Sep 2023 19:11:40 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694628701;
-        bh=Q/2ZVzOmXtoAMeegoI61slO6Pby1hty1OaYRm6U4jXM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Er+xidLBZUBl72WOavOGxCKhHkb/opmoEzMz17i1GTrySEswEijS3/uZ2cZT6h3Im
-         ucMoUlhMU4XbbhXdv9GwKjlt6nDMCXMyKbdFXnuaqgyb671At+2sDXiM7w6OB+LLy+
-         SQAuwiAqONuMPm2081DPlne0r3fhXE1zLacOBB3y/y0djPy5APoRQvwKS8D3n0GqQw
-         cF1crmk2DyGFVPi44gGAXnUSjCkvMs+LnVv7YAtqOOqixOBWDNeahb8oE2HFFKUR/L
-         jaZbxe+XxKdNWActhudY0Q4PDxdfPou5z05aygqA1us7f2/aEZIWcqcPa1soO7FXnB
-         1L3/wLnkIJ3sg==
-Message-ID: <847cf170d56d5590a7aa46b80f63de6ee27690ec.camel@collabora.com>
-Subject: Re: [PATCH 3/5] docs: uapi: media: Add common documentation of
- tiled NV15
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     kernel@collabora.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 13 Sep 2023 14:11:32 -0400
-In-Reply-To: <f5ede7a6-66ee-cf69-e1c9-2d75d8f37a02@collabora.com>
-References: <20230804192737.19016-1-nicolas.dufresne@collabora.com>
-         <20230804192737.19016-4-nicolas.dufresne@collabora.com>
-         <f5ede7a6-66ee-cf69-e1c9-2d75d8f37a02@collabora.com>
+        Wed, 13 Sep 2023 14:12:28 -0400
+Received: from sipsolutions.net (unknown [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F241919B6;
+        Wed, 13 Sep 2023 11:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=M5bGmoUyQupKtGvvQEF+4JyDxHWZgmyPOatv62PK+Lo=;
+        t=1694628744; x=1695838344; b=fqtZmpMdJZCJxxa0Uu90BFUXm2D5DdfzjFeKWD8H+DEMpbN
+        w6HA052efdF35jLmeq3PDMPbob2aB9ZBIiirWIgt/LpJyQfpFqNkfgnbzFT8Y+tuF4H6atJBMNz+0
+        YFF5+DxMi7uXq1FVddLXkgLQaMdyylK75KSJFpvWZFQxoxw1DDdgPAlufHiT0ciDCbwJlm113wOX9
+        w3cIg0lg+GfU85nF+24vqJy4qknNkrooz4NoStLrYr7u8rvg40dFO1FSqZwG7FO2y7VTTgjc3zx+Q
+        /bNsNaL7zjvCUv6rkPWMc0aF1BWmvr3rDzFxxR94zohWPumB6fVPfN5TGMrfFKZw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qgUKz-00FFbN-1l;
+        Wed, 13 Sep 2023 20:11:41 +0200
+Message-ID: <515a7435bd83ecc8a9d63306d4bc076c762f22bf.camel@sipsolutions.net>
+Subject: Re: [PATCH v3] workqueue: don't skip lockdep work dependency in
+ cancel_work_sync()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heyi Guo <guoheyi@linux.alibaba.com>, netdev@vger.kernel.org
+Date:   Wed, 13 Sep 2023 20:11:39 +0200
+In-Reply-To: <a50218b6-fc42-7f12-155a-5e01fc8dd1a0@roeck-us.net>
+References: <21b9c1ac-64b7-7f4b-1e62-bf2f021fffcd@I-love.SAKURA.ne.jp>
+         <YuK78Jiy12BJG/Tp@slm.duckdns.org>
+         <0ad532b2-df5f-331a-ae7f-21460fc62fe2@I-love.SAKURA.ne.jp>
+         <97cbf8a9-d5e1-376f-6a49-3474871ea6b4@I-love.SAKURA.ne.jp>
+         <afa1ac2c-a023-a91e-e596-60931b38247e@I-love.SAKURA.ne.jp>
+         <7d034f7b-af42-4dbc-0887-60f4bdb3dcca@I-love.SAKURA.ne.jp>
+         <0a85696a-b0b9-0f4a-7c00-cd89edc9304c@I-love.SAKURA.ne.jp>
+         <77d47eed-6a22-7e81-59de-4d45852ca4de@I-love.SAKURA.ne.jp>
+         <e0717628-e436-4091-8b2e-2f4dcb646ec8@roeck-us.net>
+         <6b1c6996da5d215371e164b54e8854541dee0ded.camel@sipsolutions.net>
+         <a50218b6-fc42-7f12-155a-5e01fc8dd1a0@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 07 ao=C3=BBt 2023 =C3=A0 13:37 +0200, Andrzej Pietrasiewicz a =C3=
-=A9crit=C2=A0:
-> Hi Nicolas,
+On Wed, 2023-09-13 at 08:59 -0700, Guenter Roeck wrote:
 >=20
-> W dniu 4.08.2023 o=C2=A021:27, Nicolas Dufresne pisze:
-> > This way we don't have to repeat over and over how the pixels are
-> > packed in NV15.
-> >=20
-> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> > ---
-> >   .../media/v4l/pixfmt-yuv-planar.rst           | 79 ++++++++++++++++--=
--
-> >   1 file changed, 68 insertions(+), 11 deletions(-)
-> >=20
-> > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rs=
-t b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > index 1d43532095c0..052927bd9396 100644
-> > --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > @@ -373,10 +373,74 @@ two non-contiguous planes.
-> >   Tiled NV15
-> >   ----------
-> >  =20
-> > -``V4L2_PIX_FMT_NV15_4L4`` Semi-planar 10-bit YUV 4:2:0 formats, using =
-4x4 tiling.
-> > -All components are packed without any padding between each other.
-> > -As a side-effect, each group of 4 components are stored over 5 bytes
-> > -(YYYY or UVUV =3D 4 * 10 bits =3D 40 bits =3D 5 bytes).
-> > +Semi-planar 10-bit YUV 4:2:0 formats. All components are packed
-> > +without any padding between each other. Each pixels occupy 15 bits
->=20
-> Maybe "Each pixel group"?
+> So you are saying that anything running in a workqueue must not
+> acquire rtnl_lock because cancel_[delayed_]work_sync() may be called
+> under rtnl_lock.
 
-ack.
+No no, sorry if I wasn't clear. I mean this particular function / work
+struct cannot acquire the RTNL because the cancel _for it_ is called
+under RTNL.
 
->=20
->=20
->=20
-> > +and are usually stored in group of 4 components stored over 5 bytes
-> > +(YYYY or UVUV =3D 4 * 10 bits =3D 40 bits =3D 5 bytes) or partitioned =
-into
-> > +upper 8 bit and lower 2 bits.
-> > +
-> > +.. flat-table:: Sample of 4 NV15 luma pixels
-> > +    :header-rows:  2
-> > +    :stub-columns: 0
-> > +
-> > +    * -
-> > +      - 8
-> > +      - 7
-> > +      - 6
-> > +      - 5
-> > +      - 4
-> > +      - 3
-> > +      - 2
-> > +      - 1
-> > +      - 0
-> > +    * - byte 0
-> > +      - Y'\ :sub:`0:0`
-> > +      - Y'\ :sub:`0:1`
-> > +      - Y'\ :sub:`0:2`
-> > +      - Y'\ :sub:`0:3`
-> > +      - Y'\ :sub:`0:4`
-> > +      - Y'\ :sub:`0:5`
-> > +      - Y'\ :sub:`0:6`
-> > +      - Y'\ :sub:`0:7`
->=20
-> So byte 0 contains Y0, bits 0..7 but then...
->=20
-> > +    * - byte 1
-> > +      - Y'\ :sub:`0:8`
-> > +      - Y'\ :sub:`0:9`
-> > +      - Y'\ :sub:`1:0`
-> > +      - Y'\ :sub:`1:1`
-> > +      - Y'\ :sub:`1:2`
-> > +      - Y'\ :sub:`1:3`
-> > +      - Y'\ :sub:`1:4`
-> > +      - Y'\ :sub:`1:5`
-> > +    * - byte 2
-> > +      - Y'\ :sub:`1:6`
-> > +      - Y'\ :sub:`1:7`
-> > +      - Y'\ :sub:`1:8`
-> > +      - Y'\ :sub:`1:9`
-> > +      - Y'\ :sub:`2:0`
-> > +      - Y'\ :sub:`2:1`
-> > +      - Y'\ :sub:`2:2`
-> > +      - Y'\ :sub:`2:3`
-> > +    * - byte 3
-> > +      - Y'\ :sub:`2:4`
-> > +      - Y'\ :sub:`2:5`
-> > +      - Y'\ :sub:`2:6`
-> > +      - Y'\ :sub:`2:7`
-> > +      - Y'\ :sub:`2:8`
-> > +      - Y'\ :sub:`2:9`
-> > +      - Y'\ :sub:`3:0`
-> > +      - Y'\ :sub:`3:1`
-> > +    * - byte 4
-> > +      - Y'\ :sub:`3:2`
-> > +      - Y'\ :sub:`3:3`
-> > +      - Y'\ :sub:`3:4`
-> > +      - Y'\ :sub:`3:5`
-> > +      - Y'\ :sub:`3:6`
-> > +      - Y'\ :sub:`3:7`
-> > +      - Y'\ :sub:`3:8`
-> > +      - Y'\ :sub:`3:9`
-> > +
-> > +``V4L2_PIX_FMT_NV15_4L4`` stores pixels in 4x4 tiles, and stores tiles=
- linearly
-> > +in memory.
-> >  =20
-> >   ``V4L2_PIX_FMT_NV12M_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M`=
-` but stores
-> >   10 bits pixels in 2D 8x128 tiles, and stores tiles linearly in memory=
-.
-> > @@ -385,13 +449,6 @@ The image height must be aligned to a multiple of =
-128.
-> >   The layouts of the luma and chroma planes are identical.
-> >   Note the tile size is 8bytes multiplied by 128 bytes,
-> >   it means that the low bits and high bits of one pixel may be in diffe=
-rent tiles.
-> > -The 10 bit pixels are packed, so 5 bytes contain 4 10-bit pixels layou=
-t like
-> > -this (for luma):
-> > -byte 0: Y0(bits 9-2)
->=20
-> ...here it says byts 9-2? Is it a mistake or are you cleaning up the doc
-> and the table above is the correct version?
+It used to be that this was also tied to the entire workqueue, but this
+is no longer true due to the way workqueues work these days.
 
-Thanks a lot for spotting. I did miss the endianess aspect and just assumed=
- all
-NV15 implementation was the same. So digging further, Hantro/RK version of =
-NV15
-is  using a little endian representation form. So you have in memory:
 
-Byte 0: Y0 bits 7-0
-Byte 1: Y1 bits 5-0 in MSB | Y0 bits 9-8 in LSB
-Byte 3: Y2 bits 3-0 in MSB | Y1 bits 9-6 in LSB
-Byte 4: Y3 bits 1-0 in MSB | Y2 bits 9-4 in LSB
-Byte 5: Y3 bits 9-2
+> FWIW, it would be nice if the lockdep code would generate some other
+> message in this situation. Complaining about a deadlock involving a
+> lock that doesn't exist if lock debugging isn't enabled is not really
+> helpful and, yes, may result in reporters to falsely assume that this
+> lock is responsible for the potential deadlock.
 
-If we represent the reads in 16bits words (as an illustration), you'd read =
-Y0
-with:
+Well, I don't know of any way to tell lockdep that, but I guess ideas
+welcome? I mean, I'm not even sure what else it would tell you, other
+than that you have a deadlock?
 
-Y0: 0x[Byte 1][Byte 0] & 0x3ff
-Y1: 0x[Byte 2][Byte 1] >> 2 & 0x3ff
-Y2: 0x[Byte 3][Byte 2] >> 4 & 0x3ff
-Y3: 0x[Byte 4][Byte 3] >> 6
+I mean, OK, I guess it's fair - it says "acquire lock" when it says
 
-Which makes the 10 bits of data always adjacent (of course not that practic=
-al
-for a CPU since its unaligned, but let's not bother ;-P).=20
+[    9.810406] ip/357 is trying to acquire lock:
+[    9.810501] 83af6c40 ((work_completion)(&(&dev->state_queue)->work)){+.+=
+.}-{0:0}, at: __flush_work+0x40/0x550
 
-I can see now that Amphion is big endian, as the bytes get pushed into the =
-MSB.
-So with the originally documented bit placement we'd have:
+and it's not really a lock, but I'm not even sure how to phrase it
+better? Note the scenario may be more complex than here.
 
-Y0: 0x[Byte 0][Byte 1] >> 6
-Y1: 0x[Byte 1][Byte 2] >> 4 & 0x3ff
-Y2: 0x[Byte 2][Byte 3] >> 2 & 0x3ff
-Y3: 0x[Byte 3][Byte 4] & 0x3ff
-=20
-I'll drop the generalization here, and only introduce NV15 family as fully
-packed 10 bit semi-planar formats, which often stores 4 pixel per 5 bytes, =
-but
-may partition lower bits (aka MT2110).
+I mean, perhaps we could add an optional message somehow and it could
+say
 
->=20
-> Regards,
->=20
-> Andrzej
->=20
-> > -byte 1: Y0(bits 1-0) Y1(bits 9-4)
-> > -byte 2: Y1(bits 3-0) Y2(bits 9-6)
-> > -byte 3: Y2(bits 5-0) Y3(bits 9-8)
-> > -byte 4: Y3(bits 7-0)
-> >  =20
-> >   ``V4L2_PIX_FMT_NV12_10BE_8L128`` is similar to ``V4L2_PIX_FMT_NV12M_1=
-0BE_8L128`` but stores
-> >   two planes in one memory.
->=20
+"ip/357 is waiting for the work:"
 
+but then we'd also have to update the scenario message to something like
+
+[    9.813938]        CPU0                    CPU1
+[    9.813999]        ----                    ----
+[    9.814062]   lock(rtnl_mutex);
+[    9.814139]                                run((work_completion)(&(&dev-=
+>state_queue)->work));
+[    9.814258]                                lock(rtnl_mutex);
+[    9.814354]   wait((work_completion)(&(&dev->state_queue)->work));
+
+
+which is really hard to do because how should lockdep know that the two
+ways of "acquiring the lock" are actually different, and which one is
+which? I'm not even convinced it could really do that.
+
+In any case, I'd rather have a bug report from this than not, even if
+it's not trivial to read.
+
+
+... and here I thought we went through all of this 15+ years ago when I
+added it in commit 4e6045f13478 ("workqueue: debug flushing deadlocks
+with lockdep"), at which time the situation was actually worse because
+you had to not only pay attention to the work struct, but also the
+entire workqueue - which is today only true for ordered workqueues... Oh
+well :)
+
+johannes
