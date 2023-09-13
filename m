@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638B979F3EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B6879F3EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbjIMVkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
+        id S231543AbjIMVnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjIMVj7 (ORCPT
+        with ESMTP id S229546AbjIMVnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:39:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF6B1724;
-        Wed, 13 Sep 2023 14:39:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=48r3LmrgWqvz5u5eIUpGGEPK/Lk9nbvvc+00TP93HT4=; b=Ly53LDjNPUK0msN20agsJpsFB9
-        tu4g3paJXuQX0CBlid9vm9cOfN03q5znld30M+1NwbjwQsX2mFB2j8m2YOepDPLFmKKzhT0VBDY7/
-        jEUjb0cEd1O5vI49ztluO98TzjOtx3Sz+g/0ZmrjDYQVVzqRKUNv/RRZATv6k2hyVXb1qZO5peiDF
-        VIJlofYQDAXrtdnFCCXcVMu/A++ydwfEEfulzVk09HgBwcPPgxIWmtO941FwpZYjeG0FGisgcHGud
-        zE+MCSYnk0Y3okBn+vPICWqaU5SHHjAUIm9c6d90m9Z8E/Ka9pwCJqL5QsBolgExKkrYOmhbLyfDn
-        QrdDR+Iw==;
-Received: from [2601:1c2:980:9ec0::9fed]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgXaS-006l98-18;
-        Wed, 13 Sep 2023 21:39:52 +0000
-Message-ID: <28c68588-401e-4207-8b83-f68761f0a137@infradead.org>
-Date:   Wed, 13 Sep 2023 14:39:51 -0700
+        Wed, 13 Sep 2023 17:43:06 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134701739
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:02 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79565370a93so11106839f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694641381; x=1695246181; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WWw/GgRkO6GSoA0lYdFcK3fV5kiUwH+NqpK5ZJCXdHU=;
+        b=fZRPU2JQXjGIqE6BxLzRuKqifOnMq65jd/CEON042Z5bdNJQyzlvee3KVCpHvveAI5
+         IdSQP+aq9zWdcAPM4i8sTaFWrJ9garZ3K5SPXd+FKcFAmo8ElNSfrqsRraf8MkLV1CKE
+         6gmk4YJfA+vLdmCsGaHfAQ4iKPmErifV62LuBRTZ63BKH2qrcuVo/BCjmV2NHFNJT2zT
+         NiIlk+gkReHUfrv8NmxFkt4oqNJHkMBZZ7BOg++1OIm5xAezQY7KaxAP3Pn4RH6KFj3d
+         YCYEvX21/YHVadGkILkIne4nbqOyCkKTVermjoZOi5ggcSQnA/8AmIwWzeIYuav7zQYs
+         8cdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694641381; x=1695246181;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WWw/GgRkO6GSoA0lYdFcK3fV5kiUwH+NqpK5ZJCXdHU=;
+        b=ODhsjzWCnnN1Yn+3wPfM/cWEIuhMO0ySPnFotbrEaIKkC1NS6EMMfiwZFgqma11jBF
+         zajZpmBFZtAClFVeVGR0PiY8fioClL9gozSEoiw9715dSdeN2EbTJZ0mkMDqm5yNbXvQ
+         ePu7kVOir1/DSvaemUY6bHztxz1aaF+O6ubUvoiYAL6wdYL2IMgrWqwVEpX4TOUBnXWW
+         rGMSz+oaSMz5w8MVXfhvDOvz/EwoRc1mdfOWM+YpbabukmFD8Y6SdpZvBr/U8gcVVQwh
+         rcK2ydcE13mjfIKMAnwKRJRvoqFSWbsova8/G9RdYhBCmI8Qs7legG/UKbVe6K3cp0G1
+         Derg==
+X-Gm-Message-State: AOJu0YzIhJeX9gUOPBdg+5kdPsFcNXnMssRsdMi6XVH/KYVyHWbJsiek
+        kMPWr84gGFvCTezONtosmOZNIA==
+X-Google-Smtp-Source: AGHT+IEW9tSNFuxjhVWsQo//UJue72qdTRJDT7UqhRqtQNQzNxPtNM01ZBxmyCinF0Ee+0CnJZ1m9Q==
+X-Received: by 2002:a05:6e02:1d93:b0:34b:aa34:a5c4 with SMTP id h19-20020a056e021d9300b0034baa34a5c4mr4118911ila.30.1694641381373;
+        Wed, 13 Sep 2023 14:43:01 -0700 (PDT)
+Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
+        by smtp.gmail.com with ESMTPSA id b11-20020a02a58b000000b0042b09036e5fsm21283jam.175.2023.09.13.14.43.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 14:43:00 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 21:42:57 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, patches@lists.linux.dev
+Subject: Re: [PATCH 1/7] bcachefs: Fix -Wformat in
+ bch2_set_bucket_needs_journal_commit()
+Message-ID: <20230913214257.vsjt5qrpa57sjcg7@google.com>
+References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
+ <20230912-bcachefs-warning-fixes-v1-1-a1cc83a38836@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Sep 12 (bcachefs, objtool)
-Content-Language: en-US
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20230912152645.0868a96a@canb.auug.org.au>
- <d60dac60-1e38-4a8c-98ad-a769ab1dfccd@infradead.org>
- <20230913210829.zkxv6qqlamymhatr@treble>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230913210829.zkxv6qqlamymhatr@treble>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912-bcachefs-warning-fixes-v1-1-a1cc83a38836@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/13/23 14:08, Josh Poimboeuf wrote:
-> On Tue, Sep 12, 2023 at 04:36:55PM -0700, Randy Dunlap wrote:
->>
->>
->> On 9/11/23 22:26, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20230911:
->>>
->>> New tree: bcachefs
->>>
->>> The bcachefs tree gained a semantic conflict against Linus' tree for
->>> which I applied a patch.
->>>
->>> The wireless-next tree gaind a conflict against the wireless tree.
->>>
->>> Non-merge commits (relative to Linus' tree): 4095
->>>  1552 files changed, 346893 insertions(+), 22945 deletions(-)
->>>
->>> ----------------------------------------------------------------------------
->>
->> on x86_64:
->>
->> vmlinux.o: warning: objtool: bch2_dev_buckets_reserved.part.0() is missing an ELF size annotation
-> 
-> Here ya go:
-> 
-> ---8<---
-> 
-> From: Josh Poimboeuf <jpoimboe@kernel.org>
-> Subject: [PATCH] bcachefs: Remove undefined behavior in bch2_dev_buckets_reserved()
-> 
-> In general it's a good idea to avoid using bare unreachable() because it
-> introduces undefined behavior in compiled code.  In this case it even
-> confuses GCC into emitting an empty unused
-> bch2_dev_buckets_reserved.part.0() function.
-> 
-> Use BUG() instead, which is nice and defined.  While in theory it should
-> never trigger, if something were to go awry and the BCH_WATERMARK_NR
-> case were to actually hit, the failure mode is much more robust.
-> 
-> Fixes the following warnings:
-> 
->   vmlinux.o: warning: objtool: bch2_bucket_alloc_trans() falls through to next function bch2_reset_alloc_cursors()
->   vmlinux.o: warning: objtool: bch2_dev_buckets_reserved.part.0() is missing an ELF size annotation
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks, Josh.
-
+On Tue, Sep 12, 2023 at 12:15:38PM -0700, Nathan Chancellor wrote:
+> When building bcachefs for 32-bit ARM, there is a compiler warning in
+> bch2_set_bucket_needs_journal_commit() due to a debug print using the
+> wrong specifier:
+>
+>   fs/bcachefs/buckets_waiting_for_journal.c:137:30: error: format specifies type 'size_t' (aka 'unsigned int') but the argument has type 'unsigned long' [-Werror,-Wformat]
+>     136 |         pr_debug("took %zu rehashes, table at %zu/%zu elements",
+>         |                                                   ~~~
+>         |                                                   %lu
+>     137 |                  nr_rehashes, nr_elements, 1UL << b->t->bits);
+>         |                                            ^~~~~~~~~~~~~~~~~
+>   include/linux/printk.h:579:26: note: expanded from macro 'pr_debug'
+>     579 |         dynamic_pr_debug(fmt, ##__VA_ARGS__)
+>         |                          ~~~    ^~~~~~~~~~~
+>   include/linux/dynamic_debug.h:270:22: note: expanded from macro 'dynamic_pr_debug'
+>     270 |                            pr_fmt(fmt), ##__VA_ARGS__)
+>         |                                   ~~~     ^~~~~~~~~~~
+>   include/linux/dynamic_debug.h:250:59: note: expanded from macro '_dynamic_func_call'
+>     250 |         _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+>         |                                                                  ^~~~~~~~~~~
+>   include/linux/dynamic_debug.h:248:65: note: expanded from macro '_dynamic_func_call_cls'
+>     248 |         __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+>         |                                                                        ^~~~~~~~~~~
+>   include/linux/dynamic_debug.h:224:15: note: expanded from macro '__dynamic_func_call_cls'
+>     224 |                 func(&id, ##__VA_ARGS__);                       \
+>         |                             ^~~~~~~~~~~
+>   1 error generated.
+>
+> On 64-bit architectures, size_t is 'unsigned long', so there is no
+> warning when using %zu but on 32-bit architectures, size_t is
+> 'unsigned int'. Use the correct specifier to resolve the warning.
+>
+> Fixes: 7a82e75ddaef ("bcachefs: New data structure for buckets waiting on journal commit")
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
 > ---
->  fs/bcachefs/buckets.h | 2 +-
+>  fs/bcachefs/buckets_waiting_for_journal.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/bcachefs/buckets.h b/fs/bcachefs/buckets.h
-> index f192809f50cf..0eff05c79c65 100644
-> --- a/fs/bcachefs/buckets.h
-> +++ b/fs/bcachefs/buckets.h
-> @@ -180,7 +180,7 @@ static inline u64 bch2_dev_buckets_reserved(struct bch_dev *ca, enum bch_waterma
->  
->  	switch (watermark) {
->  	case BCH_WATERMARK_NR:
-> -		unreachable();
-> +		BUG();
->  	case BCH_WATERMARK_stripe:
->  		reserved += ca->mi.nbuckets >> 6;
->  		fallthrough;
-
--- 
-~Randy
+>
+> diff --git a/fs/bcachefs/buckets_waiting_for_journal.c b/fs/bcachefs/buckets_waiting_for_journal.c
+> index 81ab685cdef9..ec1b636ef78d 100644
+> --- a/fs/bcachefs/buckets_waiting_for_journal.c
+> +++ b/fs/bcachefs/buckets_waiting_for_journal.c
+> @@ -133,7 +133,7 @@ int bch2_set_bucket_needs_journal_commit(struct buckets_waiting_for_journal *b,
+>  	b->t = n;
+>  	kvfree(t);
+>
+> -	pr_debug("took %zu rehashes, table at %zu/%zu elements",
+> +	pr_debug("took %zu rehashes, table at %zu/%lu elements",
+>  		 nr_rehashes, nr_elements, 1UL << b->t->bits);
+>  out:
+>  	mutex_unlock(&b->lock);
+>
+> --
+> 2.42.0
+>
