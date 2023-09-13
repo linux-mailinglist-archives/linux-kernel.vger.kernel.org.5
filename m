@@ -2,196 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3AB79F143
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70B679F128
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbjIMSi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S231272AbjIMSei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjIMSiC (ORCPT
+        with ESMTP id S229552AbjIMSeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:38:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DF51BCA;
-        Wed, 13 Sep 2023 11:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694630278; x=1726166278;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EjDox062EDhdZ+SfdzKgsTzvA5pkiDGzCn8j0HCk/Ec=;
-  b=EBL9DFrlx/JtolH2StcwXFQdYscbhb+WjWSOcUKhahrSwEebs+Nhsnze
-   zNlfrbbbgaLs+T6+Vec61SzySXlZslpF8d79YirO7wiC8Agcswbnwq+Rz
-   94x4E+soRh058eqBmDHPwTbgWygc5MMBk0IQNi+oDFtOU+SmNwT/tQ2yD
-   7XvZzPlnEkwDsNYTp/lIMb/VJQFg1YzATM3thBWRjfwNEqPJIAnOZ18A1
-   bbS8XJmNPFtv8KVNdxq02z4qnrs7EYflmsz+vHc9S8RcAVBcH3EZucuQ8
-   2hutSuNpCmlGWjD5rWmQzAcCgJRdxQJENmGSiqLSbl92XMm4mAxnoG8bj
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="369019212"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="369019212"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 11:37:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="744238606"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="744238606"
-Received: from jithujos.sc.intel.com ([172.25.103.66])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 11:37:57 -0700
-From:   Jithu Joseph <jithu.joseph@intel.com>
-To:     hdegoede@redhat.com, markgross@kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, jithu.joseph@intel.com, ashok.raj@intel.com,
-        tony.luck@intel.com, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com
-Subject: [PATCH 10/10] platform/x86/intel/ifs: ARRAY BIST for Sierra Forest
-Date:   Wed, 13 Sep 2023 11:33:48 -0700
-Message-Id: <20230913183348.1349409-11-jithu.joseph@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230913183348.1349409-1-jithu.joseph@intel.com>
-References: <20230913183348.1349409-1-jithu.joseph@intel.com>
+        Wed, 13 Sep 2023 14:34:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE1BA3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 11:34:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E92B3C433C8;
+        Wed, 13 Sep 2023 18:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694630072;
+        bh=24jGWq19/rv3+6J5AgpLm/HbwyWq/3uIYq2kxo6jB8Q=;
+        h=From:Date:Subject:To:Cc:From;
+        b=MX+kGbDvofFkEwStch87Uzmw14ffdjzzAnYyfV1KWNeN0kbxrcqzH+KfaBXWme27H
+         zuE/iNUfDr6UXMLTuUlbPaHpObWHnpNcUNBm3iJ7KHqHet2PByBlIH42OYrvpKUCSY
+         SgL+vr8OcrD4lTT6v0jfvbPDRmG28Ml2buetfE1McFH44S/IkXBXmMMgwUe+HlsnUX
+         K3hWhcLmRf8mA2phK7ioY0Kjq9THyazyqMZcIt4qVKRfb4hPbzCCeBD7XR0E1+PZmi
+         H5HjL6RM5XZqwFjmm2/93Gjcf1SfVVw5+jvgqYoZ4VkIza4lQqXEg0jH6a34KBjzgt
+         xLE2GIVY05Phg==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Wed, 13 Sep 2023 19:34:16 +0100
+Subject: [PATCH] KVM: arm64: Only default to enabling SVE when present
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230913-kvm-arm64-fp-init-v1-1-8ce9ba1cc4c4@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKcAAmUC/x3MQQqAIBBA0avIrBuwstCuEi0kpxoiCw0JpLsnL
+ d/i/wyRAlOEQWQIlDjy6QvqSsC8Wb8SsiuGRjatNFLjng604egVLhey5xu1Udpq13WkFJTuCrT
+ w8z/H6X0/Yv5G5GMAAAA=
+To:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-034f2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2331; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=24jGWq19/rv3+6J5AgpLm/HbwyWq/3uIYq2kxo6jB8Q=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlAgC0g4V1utvnFCrJGRX/IIAlVdEhwtsmuZXB/psP
+ +m6cleCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZQIAtAAKCRAk1otyXVSH0Et1B/
+ wPRc04N8fDXXPVzS0NHrRGqRG/AcAcViQkowmHjW+vL2/C0b/eG0Xz37VnUiyuHK4q2CELDMuSGmib
+ 6uJ0KBu0HqR7OMsgId8D6rCS14TNxW+uu8SecUtpdA/t73FISy04yo/IP0FJZ19ejd8enjS+x3xuP7
+ gX+pdRN9t2qL6SmNEvCFiQEK3vYd/qcY9+GB8XkcelPKW/0kHtlYR2lo7pZk0STfmioks5Snh4gkcT
+ 5d6TWha3oqAs2WPh+ndqb8AcaZ4i5mEC0M9yjkMP741Rx3peFV7/rR5UC372VGBM4sUs5fvR5+iQtZ
+ 19geP4n7PqrahE+jTpib3X3W37LNhN
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Array BIST MSR addresses, bit definition and semantics
-are different for Sierra Forest. Branch into a separate
-Array BIST flow on Sierra Forest when user invokes Array Test.
+For unclear reasons our handling of SVE and SME when setting the default
+value of CPTR_EL2 for VHE mode is inconsistent. For normal VHE we
+unconditionally set CPTR_EL2.ZEN to 0b01 but only set the equivalent
+field CPTR_EL2.SMEN to 0b01 if SME is present, for hVHE we will always
+set the field 0b11 if SVE is not supported. Given the similarities
+between the two extensions it would generally be expected that the code
+handling SVE and SME would be very similar.
 
-Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Since CPTR_ELx.ZEN is RES0 when SVE is not implemented it is probably not
+harmful to try to set the bits but it is better practice to not set
+unimplemented bits so resolve the inconsistency in favour of checking if
+SVE is present too.
+
+FPSIMD is also in theory optional though there's probably much more work to
+handle the case where it is not implemented properly and that is not
+something we see in practical systems.
+
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/platform/x86/intel/ifs/ifs.h     |  4 +++
- drivers/platform/x86/intel/ifs/core.c    | 15 +++++-----
- drivers/platform/x86/intel/ifs/runtest.c | 37 +++++++++++++++++++++++-
- 3 files changed, 48 insertions(+), 8 deletions(-)
+ arch/arm64/include/asm/kvm_emulate.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-index 3265a6d8a6f3..2f20588a71f1 100644
---- a/drivers/platform/x86/intel/ifs/ifs.h
-+++ b/drivers/platform/x86/intel/ifs/ifs.h
-@@ -137,6 +137,8 @@
- #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
- #define MSR_ACTIVATE_SCAN			0x000002c6
- #define MSR_SCAN_STATUS				0x000002c7
-+#define MSR_ARRAY_TRIGGER			0x000002d6
-+#define MSR_ARRAY_STATUS			0x000002d7
- #define MSR_SAF_CTRL				0x000004f0
+diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+index 3d6725ff0bf6..4cf53b4aa226 100644
+--- a/arch/arm64/include/asm/kvm_emulate.h
++++ b/arch/arm64/include/asm/kvm_emulate.h
+@@ -584,15 +584,17 @@ static __always_inline u64 kvm_get_reset_cptr_el2(struct kvm_vcpu *vcpu)
+ 	u64 val;
  
- #define SCAN_NOT_TESTED				0
-@@ -270,6 +272,7 @@ struct ifs_test_caps {
-  * @cur_batch: number indicating the currently loaded test file
-  * @generation: IFS test generation enumerated by hardware
-  * @chunk_size: size of a test chunk
-+ * @array_gen: test generation of array test
-  */
- struct ifs_data {
- 	int	loaded_version;
-@@ -281,6 +284,7 @@ struct ifs_data {
- 	u32	cur_batch;
- 	u32	generation;
- 	u32	chunk_size;
-+	u32	array_gen;
- };
+ 	if (has_vhe()) {
+-		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN |
+-		       CPACR_EL1_ZEN_EL1EN);
++		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN);
++		if (cpus_have_final_cap(ARM64_SVE))
++			val |= CPACR_EL1_ZEN_EL1EN;
+ 		if (cpus_have_final_cap(ARM64_SME))
+ 			val |= CPACR_EL1_SMEN_EL1EN;
+ 	} else if (has_hvhe()) {
+ 		val = (CPACR_EL1_FPEN_EL0EN | CPACR_EL1_FPEN_EL1EN);
  
- struct ifs_work {
-diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-index 0938bfbd9086..e8b570930c16 100644
---- a/drivers/platform/x86/intel/ifs/core.c
-+++ b/drivers/platform/x86/intel/ifs/core.c
-@@ -10,16 +10,16 @@
- 
- #include "ifs.h"
- 
--#define X86_MATCH(model)				\
-+#define X86_MATCH(model, array_gen)				\
- 	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,	\
--		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, NULL)
-+		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, array_gen)
- 
- static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
--	X86_MATCH(SAPPHIRERAPIDS_X),
--	X86_MATCH(EMERALDRAPIDS_X),
--	X86_MATCH(GRANITERAPIDS_X),
--	X86_MATCH(GRANITERAPIDS_D),
--	X86_MATCH(ATOM_CRESTMONT_X),
-+	X86_MATCH(SAPPHIRERAPIDS_X, 0),
-+	X86_MATCH(EMERALDRAPIDS_X, 0),
-+	X86_MATCH(GRANITERAPIDS_X, 0),
-+	X86_MATCH(GRANITERAPIDS_D, 0),
-+	X86_MATCH(ATOM_CRESTMONT_X, 1),
- 	{}
- };
- MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
-@@ -99,6 +99,7 @@ static int __init ifs_init(void)
- 			continue;
- 		ifs_devices[i].rw_data.generation = (msrval & MSR_INTEGRITY_CAPS_SAF_GEN_REV_MASK)
- 							>> MSR_INTEGRITY_CAPS_SAF_GEN_REV_SHIFT;
-+		ifs_devices[i].rw_data.array_gen = (u32)m->driver_data;
- 		ret = misc_register(&ifs_devices[i].misc);
- 		if (ret)
- 			goto err_exit;
-diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
-index 997d2f07aa0c..9cfd5c015cb2 100644
---- a/drivers/platform/x86/intel/ifs/runtest.c
-+++ b/drivers/platform/x86/intel/ifs/runtest.c
-@@ -327,6 +327,38 @@ static void ifs_array_test_core(int cpu, struct device *dev)
- 		ifsd->status = SCAN_TEST_PASS;
- }
- 
-+#define ARRAY_GEN1_TEST_ALL_ARRAYS	(0x0ULL)
-+#define ARRAY_GEN1_STATUS_FAIL		(0x1ULL)
-+
-+static int do_array_test_gen1(void *status)
-+{
-+	int cpu = smp_processor_id();
-+	int first;
-+
-+	first = cpumask_first(cpu_smt_mask(cpu));
-+
-+	if (cpu == first) {
-+		wrmsrl(MSR_ARRAY_TRIGGER, ARRAY_GEN1_TEST_ALL_ARRAYS);
-+		rdmsrl(MSR_ARRAY_STATUS, *((u64 *)status));
-+	}
-+
-+	return 0;
-+}
-+
-+static void ifs_array_test_gen1(int cpu, struct device *dev)
-+{
-+	struct ifs_data *ifsd = ifs_get_data(dev);
-+	u64	status = 0;
-+
-+	stop_core_cpuslocked(cpu, do_array_test_gen1, &status);
-+	ifsd->scan_details = status;
-+
-+	if (status & ARRAY_GEN1_STATUS_FAIL)
-+		ifsd->status = SCAN_TEST_FAIL;
-+	else
-+		ifsd->status = SCAN_TEST_PASS;
-+}
-+
- /*
-  * Initiate per core test. It wakes up work queue threads on the target cpu and
-  * its sibling cpu. Once all sibling threads wake up, the scan test gets executed and
-@@ -354,7 +386,10 @@ int do_core_test(int cpu, struct device *dev)
- 		ifs_test_core(cpu, dev);
- 		break;
- 	case IFS_TYPE_ARRAY_BIST:
--		ifs_array_test_core(cpu, dev);
-+		if (ifsd->array_gen == 0)
-+			ifs_array_test_core(cpu, dev);
-+		else
-+			ifs_array_test_gen1(cpu, dev);
- 		break;
- 	default:
- 		return -EINVAL;
+-		if (!vcpu_has_sve(vcpu) ||
+-		    (vcpu->arch.fp_state != FP_STATE_GUEST_OWNED))
++		if (cpus_have_final_cap(ARM64_SVE) &&
++		    (!vcpu_has_sve(vcpu) ||
++		     (vcpu->arch.fp_state != FP_STATE_GUEST_OWNED)))
+ 			val |= CPACR_EL1_ZEN_EL1EN | CPACR_EL1_ZEN_EL0EN;
+ 		if (cpus_have_final_cap(ARM64_SME))
+ 			val |= CPACR_EL1_SMEN_EL1EN | CPACR_EL1_SMEN_EL0EN;
+
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230908-kvm-arm64-fp-init-8948a8d55e44
+
+Best regards,
 -- 
-2.25.1
+Mark Brown <broonie@kernel.org>
 
