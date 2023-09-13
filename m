@@ -2,108 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A390579F25A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0D379F25D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbjIMTqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:46:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35828 "EHLO
+        id S232347AbjIMTuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbjIMTqq (ORCPT
+        with ESMTP id S229642AbjIMTuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:46:46 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E54B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:46:42 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59bdad64411so2091277b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694634401; x=1695239201; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G/OX7SUI+TV9lsk0zyT19UZ7Vdm3M4MGEQYsybw2ZhA=;
-        b=LqAHEMNlR6CRb9x/uCTC0bvAmrxfALOTZPhn0tJBPuuzjxYQm9NGPCzMbWjYMnxHGn
-         E95IcaLupBO5wbbRaKjbnJAb0u62dV+GW6PBH3n2+nNGtEwWKrd5fL/cWO5BfCxla3+5
-         d7qXYcUsEWbm2fRcFJDS/AEyxCtiVndUq6UD/kQJUklGGwDreETiezDJqaTJdDCTv1la
-         76Fx2cwX0k8o3pqzjEMcuSE8+5VNlKAtVvy3Ns5DBYjQkS+0oEN2ZdyqdsXqUE1nnUy8
-         ktqXe6OlRxGf6SkjNCjXR57tVYKpk1IFQQYcWKo68Q2hSQmJA8luGCBZ45YPGZGlabL+
-         YjnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694634401; x=1695239201;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G/OX7SUI+TV9lsk0zyT19UZ7Vdm3M4MGEQYsybw2ZhA=;
-        b=aGwRg6BF4PlIPA0REVd2hPIsRFJredGTMxPHKrDNlmeqkhjtkUFO7IcPctRlRGLaGx
-         DixWo88hH8Kn6tZ8ZN4YLdj+fijZd9fKQoqrJKFWtZJP3lomtdBnPfw5oapcLELCh80G
-         9CsX4l9oCIkFq4Vqy46PCRSJxgjRzXdCv8vbsNKrLc1MPyIgPt7nYlLcEns+7EUi5Sr5
-         ru3k5px4R38pAr/f7zlY5TQrM5vVBlNcGxIALZQP7q6BQhps+erJq1km2Sa6hK60GHcL
-         R1cchNfZ3SUJYoyJOD81pOtkKgrU9BmdRfwVpvOxin0p5G0fbdacU/wpVYNg2CzJIUkd
-         uGww==
-X-Gm-Message-State: AOJu0YxWWHx+HTCyOxmaAjLO1QjQ09eq/Cg7p4ziX30nkkKWXJm405gF
-        2buN91/uPPTLyQy0BB8AJEecHjSommSeq1bEMQXU
-X-Google-Smtp-Source: AGHT+IEUYEj3pCHmYPs/MV/l+zmgRpa8oA0zWigLy+E71zw0bdC0l4mRdGHHMouTJX24bfby8ruk+XKd89KWikpapXc=
-X-Received: by 2002:a0d:e406:0:b0:586:9ce4:14e8 with SMTP id
- n6-20020a0de406000000b005869ce414e8mr2889046ywe.52.1694634401218; Wed, 13 Sep
- 2023 12:46:41 -0700 (PDT)
+        Wed, 13 Sep 2023 15:50:07 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61B3B7;
+        Wed, 13 Sep 2023 12:50:01 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.99.40]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N4yuK-1rhSFF1ufU-010y5j; Wed, 13 Sep 2023 21:48:45 +0200
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id 96B483E928; Wed, 13 Sep 2023 21:48:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1694634522; bh=dNCzMB7kZKbtu0SVV6D5vezQPGOeLJzdXPIlY9nn0HY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=geeh/i7seOFMHSGVnQ+Sj/uRyKKjwcvJl5CNhOXyrSrFDp6gwJvkdktKjxdM1rF6b
+         X7smwIJYI2wKSqnwC9zKw/vql8yLkMlXw1WEr6FhD3NTpbxsrtPqt7orN/y5DktjwA
+         3AEXv8Dw7URUCG3krehbxcFdeomCZq3ShPrvM4jQ=
+Date:   Wed, 13 Sep 2023 21:48:42 +0200
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: kbuild: explain handling optional
+ dependencies
+Message-ID: <ZQISGujwlH00B8KJ@fjasle.eu>
+References: <20230913113801.1901152-1-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20230729024026.32228-1-yuehaibing@huawei.com> <CAHC9VhRW0Jt0pitVx1cw-zJGWfTmvTU4RSmOFKANYJA7CeEF7g@mail.gmail.com>
- <CAHC9VhSisEfQd0KCu7f8yKBwnrduFOPhP2SzWDfXiuvGh2g13A@mail.gmail.com> <CVI1FHKRSG47.2CV547I19B9ZT@suppilovahvero>
-In-Reply-To: <CVI1FHKRSG47.2CV547I19B9ZT@suppilovahvero>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Sep 2023 15:46:30 -0400
-Message-ID: <CAHC9VhRA-V==Q-H_0V=-ic4eBrVJtDfpUvUX9Sp80SRt3DQUTQ@mail.gmail.com>
-Subject: Re: [PATCH v3 -next] keys: Remove unused extern declarations
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     dhowells@redhat.com, Yue Haibing <yuehaibing@huawei.com>,
-        jmorris@namei.org, serge@hallyn.com, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qj5NqfuKdfJbnsCm"
+Content-Disposition: inline
+In-Reply-To: <20230913113801.1901152-1-arnd@kernel.org>
+X-Provags-ID: V03:K1:iov+urfCVmemenuqZraQFTvmuNIwec5MwwsVygNgb5VgPZRcRFa
+ QM7bFZWPE2qmRpIDd0eXsnnlb0iTv65I3DihInST+a7rHu/LeYuiHMMEwa0F8tszNYw4nP2
+ ZO8hNBGZ/ApwY2MFMNkWF3pWdG0/SEZvHWo2PjPA5F7uQETqlzVhEuLTMB9MZmWXvRUk0nZ
+ 1+aq6jXzluTS8bI2UHYfA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:CgZAQY0OLjY=;Fux1I7niPh29pTUhtkaavJ0GIgG
+ 1ZW4aV3JsJVWnnhLwRAeoPRf0iV8ppt8mqVghSTfBi+CB0zKLHEb1jfMSgEySlzkjRmCLQjaz
+ bGCy1mls/cUX2U7q7+tPxUhJNhSM18BVXhSqoyEy2ndim2Z3MZ1voCGJVMjDjCAn8IJO7D+IJ
+ SkdJIMTJRD4mzRAlrEF6ELnn2b77lFISbroBuPWjflMDLUbk/wHEaMcyzESOC8MF+/p5zr2j2
+ KqJcozzCNqYGhCxL1AJ5ueT0a6x0wET9kxU1z3WbLCR9J4ogoSdXVvFSvAHUwZLHLqXleCfMR
+ RCSVkR1I9kt44BWTU5nl9Zq0uJMRJ+7gxn3+d9Nn/xtR1delOlpdAuF277Hn0kI7B9rDEixVi
+ uUkg8C3ChBNnX7CgIe7xgkDQjPDDQ+0kF4I/xKgKBFC9C2+tfPjha1ePzXWh7axftF6XWOsa/
+ hS+a/taZnDdp+83ue0nMOA3BGJUw/IFdquZevOXIiz8UJXwxDN+EUUqIdSt/SxZOPnFI3qSpe
+ wWS+8hiEAyq4dSMqR8diz2pqmPqTi87m/mxxafXM+C5ZZzTfbfhES/5WnJ5dcNE1hL6elPAGG
+ qDgnPIgIQUK1s/UXEBhhC9xuC4YLijg7UIMJILzQnilLODThDEuJ/7MHnItTJeL0U6lmTVmRH
+ p+eAzwAoAy4rzr2ruE6/n7gaalR0/dWF5gAqdu5gVrzbnypB8GobaJgdy89FCQkjp3txggNP6
+ zD78D9wcdShhomR6V5qtKCwnpVTKbjbTdwmquL3gn2GbHxao/ui/waNDHlDqDks4qIvEUs4Al
+ 9ElJI9WOLEHdsKv4v3fKluIRIlVhOGO5pd5m54eM93PWxRCatw/G5fPkmAHERb7neOWPWTRnj
+ 4iY0Iv74ZqrC+iA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 3:31=E2=80=AFPM Jarkko Sakkinen <jarkko@kernel.org>=
- wrote:
-> On Wed Sep 13, 2023 at 9:00 PM EEST, Paul Moore wrote:
-> > On Mon, Aug 7, 2023 at 5:46=E2=80=AFPM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > > On Fri, Jul 28, 2023 at 10:40=E2=80=AFPM Yue Haibing <yuehaibing@huaw=
-ei.com> wrote:
-> > > >
-> > > > From: YueHaibing <yuehaibing@huawei.com>
-> > > >
-> > > > Since commit b2a4df200d57 ("KEYS: Expand the capacity of a keyring"=
-)
-> > > > iterate_over_keyring() is never used, so can be removed.
-> > > >
-> > > > And commit b5f545c880a2 ("[PATCH] keys: Permit running process to i=
-nstantiate keys")
-> > > > left behind keyring_search_instkey().
-> > > >
-> > > > Fixes: b2a4df200d57 ("KEYS: Expand the capacity of a keyring")
-> > > > Fixes: b5f545c880a2 ("[PATCH] keys: Permit running process to insta=
-ntiate keys")
-> > > > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> > > > ---
-> > > > v3: Add Fixes tag
-> > > > v2: Also remove keyring_search_instkey()
-> > > > ---
-> > > >  security/keys/internal.h | 7 -------
-> > > >  1 file changed, 7 deletions(-)
-> > >
-> > > Reviewed-by: Paul Moore <paul@paul-moore.com>
-> >
-> > Jarkko or David, please merge this or explain what is wrong with this p=
-atch.
->
-> Sorry, I was aiming to pick this, and thanks for reminding.
->
-> Applied.
 
-Thanks.
+--qj5NqfuKdfJbnsCm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---=20
-paul-moore.com
+On Wed, Sep 13, 2023 at 01:37:52PM +0200 Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> This problem frequently comes up in randconfig testing, with
+> drivers failing to link because of a dependency on an optional
+> feature.
+>=20
+> The Kconfig language for this is very confusing, so try to
+> document it in "Kconfig hints" section.
+>=20
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+
+Hi Arnd,
+
+thanks for documenting this!  Three questions below:
+
+>  Documentation/kbuild/kconfig-language.rst | 26 +++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>=20
+> diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kb=
+uild/kconfig-language.rst
+> index 858ed5d80defe..89dea587a469a 100644
+> --- a/Documentation/kbuild/kconfig-language.rst
+> +++ b/Documentation/kbuild/kconfig-language.rst
+> @@ -573,6 +573,32 @@ above, leading to:
+>  	bool "Support for foo hardware"
+>  	depends on ARCH_FOO_VENDOR || COMPILE_TEST
+> =20
+> +Optional dependencies
+> +~~~~~~~~~~~~~~~~~~~~~
+> +
+> +Some drivers are able to optionally use a feature from another module
+> +or build cleanly with that module disabled, but cause a link failure
+> +when trying to use that loadable module from a built-in driver.
+> +
+> +The most common way to express this optional dependency in Kconfig logic
+> +uses the slighly counterintuitive
+
+slighly -> slightly
+
+For better RST compliance: could you explicitly start the code block e.g. by
+appending '::' as in "... counterintuitive::"?
+
+> +
+> +  config FOO
+> +	bool "Support for foo hardware"
+> +	depends on BAR || !BAR
+
+are you sure that this is enough?  While testing, I needed to explicitly use
+=3Dy|=3Dn:
+
+    depends on BAR=3Dy || BAR=3Dn
+
+to prevent FOO to be selectable iff BAR=3Dm.
+
+> +
+> +This means that there is either a dependency on BAR that disallows
+> +the combination of FOO=3Dy with BAR=3Dm, or BAR is completely disabled.
+
+For me, this sentence is hard to parse (but I am not a native speaker); what
+about something like this:
+
+This means that FOO can only be enabled, iff BAR is either built-in or
+completely disabled.  If BAR is built as a module, FOO cannot be enabled.
+
+Kind regards,
+Nicolas
+
+--qj5NqfuKdfJbnsCm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmUCEhkACgkQB1IKcBYm
+EmmgJA/+Juye9CK9p1ddXxiVaMgnc0h6bNPW2duYWRcI3EvdQmVnb6RO0Obvf62D
+fp/lSkg4z6DIGnW3/LKEcx/3AAi6bjSF/TLgrURxUY6gHnRwgkj0NWR067iAXLkJ
+vXlzAOk6eNLk6NvewHxeLtsBK32lInNbHfg3hw3GpP20DY9HFevVVe/painn/a9r
+9TM9XVjwdxMsWLgTvc5s7JicyDMk/PdW2ByZVFINZ7Q/86E9z1eeS5SvUszxsgX5
+gZp2C8nKx90/nuT4Sif9EOMvqjRZvtXuQew8TYVh195J0Fry+zPMjcOyKOSv8Fub
+SRKsPg8hheICkmD3tHFxprKbRash+TgUGEo1+Vzi1p/NhASH5kzLGxKadvy+54Z/
+DJWPlMr6ZSj9vUJngeyqFxvwTVnts2i9oJpRpkQs9qcpmxyg84k5IDlCZxTAnNmp
+1wmAtNH/F2LfQaybnFHshNDDgK+0b6Vz6cSyj2V3godwdsB4Ecq7wqpbKdE6ioeH
+x78t0sWS7eeYcZmduJKxbspuAJ2KwUFZZjMPPwaFXvwNeetM8BsDwZ9Dqyv5owZI
+DTCagFieqmdvIg+jy8KVkAk2BoR0+STsTTFpf5wDtvXYFZIk2/0aq02moN7snAbm
+k23lPOWs9h/sRhXxXW+Hg5D10Jhh5zSqf1Fk0ba3SZb+nZbIT10=
+=N9EP
+-----END PGP SIGNATURE-----
+
+--qj5NqfuKdfJbnsCm--
