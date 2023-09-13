@@ -2,229 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1254979E4C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5750979E4CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239679AbjIMKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S239688AbjIMKZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239678AbjIMKWJ (ORCPT
+        with ESMTP id S239536AbjIMKZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:22:09 -0400
-Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [84.16.66.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D225619B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:22:04 -0700 (PDT)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RlxMZ6NS9zMq8Nl;
-        Wed, 13 Sep 2023 10:22:02 +0000 (UTC)
-Received: from unknown by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RlxMZ26RrzMpnPp;
-        Wed, 13 Sep 2023 12:22:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1694600522;
-        bh=OGBBrriytXbTynlMIGX4UlwFwmABh13hm5bjEeypW5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wod3nnQbGgopFRU2P/IIdAFbDbftXNxK/tsR7jgQxqeOM8XvaX633IHba6epF5pRC
-         OyoBf+N8L2zz/gsX3XPkqKBYQgLbLjWJ66rkZgQBqykFQJsO3d1h/RHTX1NF0z2B2O
-         sMrRPjyC3fEayBkck2jPHgiOf4TwfwLwQUkercMA=
-Date:   Wed, 13 Sep 2023 12:21:58 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "mic@linux.microsoft.com" <mic@linux.microsoft.com>,
-        Kanth Ghatraju <kanth.ghatraju@oracle.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH] certs: Restrict blacklist updates to the secondary
- trusted keyring
-Message-ID: <20230913.Ceifae7ievei@digikod.net>
-References: <20230908213428.731513-1-eric.snowberg@oracle.com>
- <097a0413b27ed9792dc598ff184730bcf6ae8fcf.camel@linux.ibm.com>
- <20230911.chaeghaeJ4ei@digikod.net>
- <CEA476C1-4CE5-4FFC-91D7-6061C8605B18@oracle.com>
- <ba2f5560800608541e81fbdd28efa9875b35e491.camel@linux.ibm.com>
- <932231F5-8050-4436-84B8-D7708DC43845@oracle.com>
- <7335a4587233626a39ce9bc8a969957d7f43a34c.camel@linux.ibm.com>
- <FD6FB139-F901-4E55-9705-E7B0023BDBA8@oracle.com>
- <1149b6dbfdaabef3e48dc2852cc76aa11a6dd6b0.camel@linux.ibm.com>
- <4A0505D0-2933-43BD-BEEA-94350BB22AE7@oracle.com>
+        Wed, 13 Sep 2023 06:25:21 -0400
+X-Greylist: delayed 441 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 03:25:17 PDT
+Received: from mail-4324.protonmail.ch (mail-4324.protonmail.ch [185.70.43.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A342719B2;
+        Wed, 13 Sep 2023 03:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1694600715; x=1694859915;
+        bh=j2bZUbHn1fYvLLZAU6epHZ10YTHV4Zbb2PaB882T1Us=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=nS505dD0/EbnrmYip73Pl4Ik5XTe3GnsP1SIdmtdCjOtSMaQer2JrTDY4QmXBLMX0
+         Ux5Hn+FmKi1Cdu3n5rl0V7NB4H00VAr4LgIACw/2WKzudJ4GsqZVMf03fjH3O8w7YV
+         8gLxI+QaLyVWCckZ5RQx6+gxbeUReMhcIfqmXLT+O9ha8Skyo3VNYw6tm/1Rc9ok94
+         xNSkxpGcKpEUfvMx/dSr1/OKP+MkyC5FfjFyAxKHYKLhnZvChqAslh6m2NBuEeOfsp
+         oJHeFQt+yFpns3Q3VWCHWIIj6uUcEhdHk7qWIoFWb8OwrdztXfPBAwo6Rpb2GlvnNO
+         79HoMuvnqhpuA==
+Date:   Wed, 13 Sep 2023 10:25:05 +0000
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Alexey Minnekhanov <alexeymin@postmarketos.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 12/14] arm64: dts: qcom: msm8996: Remove AGGRE2 clock from SLPI
+Message-ID: <d72b7d68-afa4-45a4-ab2a-7c86954cde12@protonmail.com>
+Feedback-ID: 6882736:user:proton
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4A0505D0-2933-43BD-BEEA-94350BB22AE7@oracle.com>
-X-Infomaniak-Routing: alpha
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 02:40:17AM +0000, Eric Snowberg wrote:
-> 
-> 
-> > On Sep 12, 2023, at 4:47 PM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > 
-> > On Tue, 2023-09-12 at 17:11 +0000, Eric Snowberg wrote:
-> >> 
-> >>> On Sep 12, 2023, at 5:54 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >>> 
-> >>> On Tue, 2023-09-12 at 02:00 +0000, Eric Snowberg wrote:
-> >>>> 
-> >>>>> On Sep 11, 2023, at 5:08 PM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >>>>> 
-> >>>>> On Mon, 2023-09-11 at 22:17 +0000, Eric Snowberg wrote:
-> >>>>>> 
-> >>>>>>> On Sep 11, 2023, at 10:51 AM, Mickaël Salaün <mic@digikod.net> wrote:
-> >>>>>>> 
-> >>>>>>> On Mon, Sep 11, 2023 at 09:29:07AM -0400, Mimi Zohar wrote:
-> >>>>>>>> Hi Eric,
-> >>>>>>>> 
-> >>>>>>>> On Fri, 2023-09-08 at 17:34 -0400, Eric Snowberg wrote:
-> >>>>>>>>> Currently root can dynamically update the blacklist keyring if the hash
-> >>>>>>>>> being added is signed and vouched for by the builtin trusted keyring.
-> >>>>>>>>> Currently keys in the secondary trusted keyring can not be used.
-> >>>>>>>>> 
-> >>>>>>>>> Keys within the secondary trusted keyring carry the same capabilities as
-> >>>>>>>>> the builtin trusted keyring.  Relax the current restriction for updating
-> >>>>>>>>> the .blacklist keyring and allow the secondary to also be referenced as
-> >>>>>>>>> a trust source.  Since the machine keyring is linked to the secondary
-> >>>>>>>>> trusted keyring, any key within it may also be used.
-> >>>>>>>>> 
-> >>>>>>>>> An example use case for this is IMA appraisal.  Now that IMA both
-> >>>>>>>>> references the blacklist keyring and allows the machine owner to add
-> >>>>>>>>> custom IMA CA certs via the machine keyring, this adds the additional
-> >>>>>>>>> capability for the machine owner to also do revocations on a running
-> >>>>>>>>> system.
-> >>>>>>>>> 
-> >>>>>>>>> IMA appraisal usage example to add a revocation for /usr/foo:
-> >>>>>>>>> 
-> >>>>>>>>> sha256sum /bin/foo | awk '{printf "bin:" $1}' > hash.txt
-> >>>>>>>>> 
-> >>>>>>>>> openssl smime -sign -in hash.txt -inkey machine-private-key.pem \
-> >>>>>>>>>    -signer machine-certificate.pem -noattr -binary -outform DER \
-> >>>>>>>>>    -out hash.p7s
-> >>>>>>>>> 
-> >>>>>>>>> keyctl padd blacklist "$(< hash.txt)" %:.blacklist < hash.p7s
-> >>>>>>>>> 
-> >>>>>>>>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> >>>>>>>> 
-> >>>>>>>> The secondary keyring may include both CA and code signing keys.  With
-> >>>>>>>> this change any key loaded onto the secondary keyring may blacklist a
-> >>>>>>>> hash.  Wouldn't it make more sense to limit blacklisting
-> >>>>>>>> certificates/hashes to at least CA keys? 
-> >>>>>>> 
-> >>>>>>> Some operational constraints may limit what a CA can sign.
-> >>>>>> 
-> >>>>>> Agreed.  
-> >>>>>> 
-> >>>>>> Is there precedents for requiring this S/MIME to be signed by a CA? 
-> >>>>>> 
-> >>>>>>> This change is critical and should be tied to a dedicated kernel config
-> >>>>>>> (disabled by default), otherwise existing systems using this feature
-> >>>>>>> will have their threat model automatically changed without notice.
-> >>>>>> 
-> >>>>>> Today we have INTEGRITY_CA_MACHINE_KEYRING_MAX.  This can 
-> >>>>>> be enabled to enforce CA restrictions on the machine keyring.  Mimi, would 
-> >>>>>> this be a suitable solution for what you are after?
-> >>>>> 
-> >>>>> There needs to be some correlation between the file hashes being added
-> >>>>> to the blacklist and the certificate that signed them.  Without that
-> >>>>> correlation, any key on the secondary trusted keyring could add any
-> >>>>> file hashes it wants to the blacklist.
-> >>>> 
-> >>>> Today any key in the secondary trusted keyring can be used to validate a 
-> >>>> signed kernel module.  At a later time, if a new hash is added to the blacklist 
-> >>>> keyring to revoke loading a signed kernel module,  the ability to do the 
-> >>>> revocation with this additional change would be more restrictive than loading 
-> >>>> the original module.
-> >>> 
-> >>> A public key on the secondary keyring is used to verify code that it
-> >>> signed, but does not impact any other code. Allowing any public key on
-> >>> the secondary keyring to blacklist any file hash is giving it more
-> >>> privileges than it originally had.
-> >>> 
-> >>> This requirement isn't different than how Certificate Revocation List
-> >>> (CRL) work.  Not any CA can revoke a certificate.
-> >> 
-> >> In UEFI Secure Boot we have the Forbidden Signature Database (DBX).  
-> >> Root can update the DBX on a host.  The requirement placed on updating 
-> >> it is the new DBX entry must be signed by any key contained within the 
-> >> KEK.  Following a reboot, all DBX entries load into the .blacklist keyring.  
-> >> There is not a requirement similar to how CRL’s work here, any KEK key 
-> >> can be used.
-> >> 
-> >> With architectures booted through a shim there is the MOKX.  Similar to 
-> >> DBX, MOKX have the same capabilities, however they do not need to be 
-> >> signed by any key, the machine owner must show they have physical 
-> >> presence (and potentially a MOK password) for inclusion.  Again there 
-> >> is not a requirement similar to how CRL’s work here either.  The machine 
-> >> owner can decide what is included.
-> >> 
-> >> Today when a kernel is built, any number of keys may be included within 
-> >> the builtin trusted keyring.  The keys included in the kernel may not have 
-> >> a single usage field set or the CA bit set.  There are no requirements on 
-> >> how these keys get used later on.  Any key in the builtin trusted keyring 
-> >> can be used to sign a revocation that can be added to the blacklist keyring.  
-> >> Additionally, any key in the MOK can be used to sign this kernel and it will 
-> >> boot.  Before booting the kernel, MOK keys have more privileges than 
-> >> after the kernel is booted in some instances.
-> >> 
-> >> Today MOK keys can be loaded into the machine keyring.  These keys get 
-> >> linked to the secondary trusted keyring.  Currently key usage enforcement
-> >> is being applied to these keys behind some Kconfig options.  By default 
-> >> anything in the secondary has the same capabilities as the builtin trusted 
-> >> keyring.  What is challenging here with this request is the inconsistency 
-> >> between how everything else currently works. 
-> >> 
-> >> Root can not arbitrarily add things to the secondary trusted keyring.  These 
-> >> keys must be signed by something in either the machine or the builtin.  In 
-> >> this thread [1], Jarkko is saying CA based infrastructure should be a policy 
-> >> decision not to be enforced by the kernel. Wouldn’t this apply here as well?
-> >> 
-> >> 1. https://lore.kernel.org/lkml/CVGUFUEQVCHS.37OA20PNG9EVB@suppilovahvero/
-> > 
-> > Mickaël said, "This change is critical and should be tied to a
-> > dedicated kernel config
-> > (disabled by default), otherwise existing systems using this feature
-> > will have their threat model automatically changed without notice."
-> 
-> I was thinking he meant it is critical not to change the current behavior
-> by limiting blacklisting to only CA keys.  Not that it was critical to add
-> CA enforcement.  Maybe Mickaël can comment?
+On 12/09/2023 4:31 pm, Konrad Dybcio wrote:
+> The AGGRE2 clock is a clock for the entire AGGRE2 bus, managed from
+> within the interconnect driver. Attaching it to SLPI was a total hack.
+> Get rid of it.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/msm8996.dtsi | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/=
+qcom/msm8996.dtsi
+> index acef67ab0581..7061a8e12c81 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+> @@ -2433,9 +2433,8 @@ slpi_pil: remoteproc@1c00000 {
+>   =09=09=09=09=09  "handover",
+>   =09=09=09=09=09  "stop-ack";
+>  =20
+> -=09=09=09clocks =3D <&xo_board>,
+> -=09=09=09=09 <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
+> -=09=09=09clock-names =3D "xo", "aggre2";
+> +=09=09=09clocks =3D <&xo_board>;
+> +=09=09=09clock-names =3D "xo";
+>  =20
+>   =09=09=09memory-region =3D <&slpi_mem>;
+>  =20
 
-I meant that applying this patch as-is may change the threat model used
-by some users. Currently, only signed hashes vouched by the builtin
-trusted keyring are valid. If we extend this mechanism to the secondary
-trusted keyring without notice, this means that more certificates could
-vouch blacklisted hashes, which may include some certificates with an
-initial different usage.
+Tested-by: Yassine Oudjana <y.oudjana@protonmail.com>
 
-See commit 4da8f8c8a1e0 ("dm verity: Add support for signature
-verification with 2nd keyring") that adds
-CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING:
-https://lore.kernel.org/all/20201023170512.201124-1-mic@digikod.net/
-
-> 
-> > As a possible alternative I suggested limiting which file hashes the
-> > certs on the secondary (or machine) keyring could blacklist.
-> 
-> I’m not sure I completely understand your suggestion here.
-> Do you mean, verify the CA bit is set for secondary keys, but
-> ignore the bit for builtin?  And then only use those keys to add
-> hashes to the blacklist keyring?  If I have that right, what would 
-> be the justification for the change based on how things currently
-> get included in the blacklist keyring?  Thanks.
-
-I'd like to be able to specify which kind of certificate can vouch for
-blacklisting hashes, and for other usages, but AFAIK this is not the
-path Linux has followed (e.g. unlike Windows). We only have the keyring
-to identify an usage, which is unfortunate. On the other side, this
-approach lets users manage their certificates without constraint, which
-is quite (too?) flexible. A complementary approach would be to create an
-LSM (or a dedicated interface) to tie certificate properties to a set of
-kernel usages, while still letting users configure these constraints.
