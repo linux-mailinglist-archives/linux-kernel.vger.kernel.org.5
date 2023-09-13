@@ -2,305 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2411079E2E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120B279E2E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239180AbjIMJDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S239193AbjIMJEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236929AbjIMJDO (ORCPT
+        with ESMTP id S239149AbjIMJEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:03:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5D81997;
-        Wed, 13 Sep 2023 02:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694595790; x=1726131790;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Dxa1s4XwKeXVgdc9qv9AkmCDwZA82OCSSHsyB65KS+w=;
-  b=RApvCs1+K2BlokCwi0aOEewPYwRUu2LPzKhERISVwBQx3ekDzsHeff1n
-   oCAZa6Nd5cRzx6u9fOiUuZiwGWv/mXQl1m95KFql29kxbHO68Jh19fsjj
-   cdG3D5lDBwOIjm3Fnha502+yjJByENBPWKM3uwNx1yPuMY80Sj3gNKHLx
-   hv8FEwCWlXQ1QaLyUHI3ETqokoZASdVYzx9cm4ARjJjwWsBr9c9aYGex3
-   g0Wv07yIEArU3proOf113Z9DyF3HEbCeMISqj4y65MU9VuAVbkA0w+l+B
-   rKbLl5KhmkJe9vEOMqbJQS+4egplVyjXHdYnJUYcZCnl3/DraKyxOYOZZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="442637177"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="442637177"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:03:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="887253870"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="887253870"
-Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Sep 2023 02:02:36 -0700
-Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgLm3-0000It-1b;
-        Wed, 13 Sep 2023 09:03:03 +0000
-Date:   Wed, 13 Sep 2023 17:02:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, bpf@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
-        Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: Re: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-Message-ID: <202309131621.h5ogfV0Z-lkp@intel.com>
-References: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+        Wed, 13 Sep 2023 05:04:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6BF1999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CcPs1loMse6j9I5mnXT5xMOl9FMdZpWS3PB4AoazHUs=; b=AigZBCojNkNHoE2JG0mWdvw/9K
+        sp7rSb1+2jyE9ucAnnmaCkpP7G3qGMM5TgaW53nO1FZe1SP5R6IDPtxbj5mBqCndi8I7fjGT8Dl4I
+        MFpibKiyVZs9Ja0evQ4cj/7m7eQ6MeAlmfZxG1U4bJBcJz2WJHUTYq/lwFNTwYT09OqrYKURvvNok
+        bM2lHthmhE+9qc9aF53OGTwZx5vS8YQxRtAz3VHadqmIPc+cU/ARt/mVyTcH74VgpGPW/wd/ZYAeo
+        RTayjqrZQ5+LDt8Cu0WqYxapvjsEb2DXTqME6KM/SnAx/IsfMCRb6dz0i7GENYB0HELSOezSmViLH
+        tPvJeKbQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qgLmT-006wJM-0Z;
+        Wed, 13 Sep 2023 09:03:31 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 48F39300348; Wed, 13 Sep 2023 11:03:30 +0200 (CEST)
+Date:   Wed, 13 Sep 2023 11:03:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, corbet@lwn.net,
+        qyousef@layalina.io, chris.hyser@oracle.com,
+        patrick.bellasi@matbug.net, pjt@google.com, pavel@ucw.cz,
+        qperret@google.com, tim.c.chen@linux.intel.com, joshdon@google.com,
+        timj@gnu.org, kprateek.nayak@amd.com, yu.c.chen@intel.com,
+        youssefesmat@chromium.org, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH 07/15] sched/smp: Use lag to simplify cross-runqueue
+ placement
+Message-ID: <20230913090330.GC692@noisy.programming.kicks-ass.net>
+References: <20230531115839.089944915@infradead.org>
+ <20230531124604.068911180@infradead.org>
+ <20230912153221.lSL8YgJJ@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912070149.969939-5-zhouchuyi@bytedance.com>
+In-Reply-To: <20230912153221.lSL8YgJJ@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chuyi,
+On Tue, Sep 12, 2023 at 05:32:21PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2023-05-31 13:58:46 [+0200], Peter Zijlstra wrote:
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -12492,22 +12440,9 @@ static void task_fork_fair(struct task_s
+> >  
+> >  	cfs_rq = task_cfs_rq(current);
+> >  	curr = cfs_rq->curr;
+> > -	if (curr) {
+> > +	if (curr)
+> >  		update_curr(cfs_rq);
+> > -		se->vruntime = curr->vruntime;
+> > -	}
+> >  	place_entity(cfs_rq, se, 1);
+> > -
+> > -	if (sysctl_sched_child_runs_first && curr && entity_before(curr, se)) {
+> 
+> Since the removal of sysctl_sched_child_runs_first there is no user of
+> this anymore. There is still the sysctl file sched_child_runs_first with
+> no functionality.
+> Is this intended or should it be removed?
 
-kernel test robot noticed the following build warnings:
+Hurmph... I think that knob has been somewat dysfunctional for a long
+while and it might be time to remove it.
 
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Chuyi-Zhou/cgroup-Prepare-for-using-css_task_iter_-in-BPF/20230912-150454
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20230912070149.969939-5-zhouchuyi%40bytedance.com
-patch subject: [PATCH bpf-next v2 4/6] bpf: Introduce css_descendant open-coded iterator kfuncs
-config: hexagon-randconfig-r032-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131621.h5ogfV0Z-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131621.h5ogfV0Z-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309131621.h5ogfV0Z-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from kernel/bpf/task_iter.c:9:
-   In file included from include/linux/filter.h:9:
-   In file included from include/linux/bpf.h:31:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   kernel/bpf/task_iter.c:820:7: error: use of undeclared identifier 'CSS_TASK_ITER_PROCS'
-     820 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-         |              ^
-   kernel/bpf/task_iter.c:820:29: error: use of undeclared identifier 'CSS_TASK_ITER_THREADED'
-     820 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
-         |                                    ^
-   kernel/bpf/task_iter.c:821:7: error: use of undeclared identifier 'CSS_TASK_ITER_PROCS'
-     821 |         case CSS_TASK_ITER_PROCS:
-         |              ^
-   kernel/bpf/task_iter.c:828:24: error: invalid application of 'sizeof' to an incomplete type 'struct css_task_iter'
-     828 |         kit->css_it = kzalloc(sizeof(struct css_task_iter), GFP_KERNEL);
-         |                               ^     ~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/task_iter.c:807:9: note: forward declaration of 'struct css_task_iter'
-     807 |         struct css_task_iter *css_it;
-         |                ^
-   kernel/bpf/task_iter.c:831:2: error: call to undeclared function 'css_task_iter_start'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     831 |         css_task_iter_start(css, flags, kit->css_it);
-         |         ^
-   kernel/bpf/task_iter.c:831:2: note: did you mean '__sg_page_iter_start'?
-   include/linux/scatterlist.h:573:6: note: '__sg_page_iter_start' declared here
-     573 | void __sg_page_iter_start(struct sg_page_iter *piter,
-         |      ^
-   kernel/bpf/task_iter.c:810:17: warning: no previous prototype for function 'bpf_iter_css_task_new' [-Wmissing-prototypes]
-     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-         |                 ^
-   kernel/bpf/task_iter.c:810:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     810 | __bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:841:9: error: call to undeclared function 'css_task_iter_next'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     841 |         return css_task_iter_next(kit->css_it);
-         |                ^
-   kernel/bpf/task_iter.c:841:9: error: incompatible integer to pointer conversion returning 'int' from a function with result type 'struct task_struct *' [-Wint-conversion]
-     841 |         return css_task_iter_next(kit->css_it);
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/task_iter.c:835:33: warning: no previous prototype for function 'bpf_iter_css_task_next' [-Wmissing-prototypes]
-     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-         |                                 ^
-   kernel/bpf/task_iter.c:835:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     835 | __bpf_kfunc struct task_struct *bpf_iter_css_task_next(struct bpf_iter_css_task *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:850:2: error: call to undeclared function 'css_task_iter_end'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     850 |         css_task_iter_end(kit->css_it);
-         |         ^
-   kernel/bpf/task_iter.c:844:18: warning: no previous prototype for function 'bpf_iter_css_task_destroy' [-Wmissing-prototypes]
-     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-         |                  ^
-   kernel/bpf/task_iter.c:844:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     844 | __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:858:17: warning: no previous prototype for function 'bpf_iter_process_new' [-Wmissing-prototypes]
-     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-         |                 ^
-   kernel/bpf/task_iter.c:858:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     858 | __bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:870:33: warning: no previous prototype for function 'bpf_iter_process_next' [-Wmissing-prototypes]
-     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
-         |                                 ^
-   kernel/bpf/task_iter.c:870:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     870 | __bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_process *it)
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:879:18: warning: no previous prototype for function 'bpf_iter_process_destroy' [-Wmissing-prototypes]
-     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
-         |                  ^
-   kernel/bpf/task_iter.c:879:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     879 | __bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
-         |             ^
-         |             static 
->> kernel/bpf/task_iter.c:888:17: warning: no previous prototype for function 'bpf_iter_css_pre_new' [-Wmissing-prototypes]
-     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-         |                 ^
-   kernel/bpf/task_iter.c:888:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     888 | __bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:904:13: error: call to undeclared function 'css_next_descendant_pre'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     904 |         kit->pos = css_next_descendant_pre(kit->pos, kit->root);
-         |                    ^
-   kernel/bpf/task_iter.c:904:11: error: incompatible integer to pointer conversion assigning to 'struct cgroup_subsys_state *' from 'int' [-Wint-conversion]
-     904 |         kit->pos = css_next_descendant_pre(kit->pos, kit->root);
-         |                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/task_iter.c:900:41: warning: no previous prototype for function 'bpf_iter_css_pre_next' [-Wmissing-prototypes]
-     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-         |                                         ^
-   kernel/bpf/task_iter.c:900:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     900 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-         |             ^
-         |             static 
->> kernel/bpf/task_iter.c:908:18: warning: no previous prototype for function 'bpf_iter_css_pre_destroy' [-Wmissing-prototypes]
-     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-         |                  ^
-   kernel/bpf/task_iter.c:908:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     908 | __bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-         |             ^
-         |             static 
->> kernel/bpf/task_iter.c:912:17: warning: no previous prototype for function 'bpf_iter_css_post_new' [-Wmissing-prototypes]
-     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-         |                 ^
-   kernel/bpf/task_iter.c:912:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     912 | __bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-         |             ^
-         |             static 
-   kernel/bpf/task_iter.c:928:13: error: call to undeclared function 'css_next_descendant_post'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     928 |         kit->pos = css_next_descendant_post(kit->pos, kit->root);
-         |                    ^
-   kernel/bpf/task_iter.c:928:11: error: incompatible integer to pointer conversion assigning to 'struct cgroup_subsys_state *' from 'int' [-Wint-conversion]
-     928 |         kit->pos = css_next_descendant_post(kit->pos, kit->root);
-         |                  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/task_iter.c:924:41: warning: no previous prototype for function 'bpf_iter_css_post_next' [-Wmissing-prototypes]
-     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-         |                                         ^
-   kernel/bpf/task_iter.c:924:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     924 | __bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-         |             ^
-         |             static 
->> kernel/bpf/task_iter.c:932:18: warning: no previous prototype for function 'bpf_iter_css_post_destroy' [-Wmissing-prototypes]
-     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-         |                  ^
-   kernel/bpf/task_iter.c:932:13: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     932 | __bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-         |             ^
-         |             static 
-   18 warnings and 12 errors generated.
-
-
-vim +/bpf_iter_css_pre_new +888 kernel/bpf/task_iter.c
-
-   878	
- > 879	__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
-   880	{
-   881	}
-   882	
-   883	struct bpf_iter_css_kern {
-   884		struct cgroup_subsys_state *root;
-   885		struct cgroup_subsys_state *pos;
-   886	} __attribute__((aligned(8)));
-   887	
- > 888	__bpf_kfunc int bpf_iter_css_pre_new(struct bpf_iter_css_pre *it,
-   889			struct cgroup_subsys_state *root)
-   890	{
-   891		struct bpf_iter_css_kern *kit = (void *)it;
-   892	
-   893		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_pre));
-   894		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_pre));
-   895		kit->root = root;
-   896		kit->pos = NULL;
-   897		return 0;
-   898	}
-   899	
- > 900	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_pre_next(struct bpf_iter_css_pre *it)
-   901	{
-   902		struct bpf_iter_css_kern *kit = (void *)it;
-   903	
- > 904		kit->pos = css_next_descendant_pre(kit->pos, kit->root);
-   905		return kit->pos;
-   906	}
-   907	
- > 908	__bpf_kfunc void bpf_iter_css_pre_destroy(struct bpf_iter_css_pre *it)
-   909	{
-   910	}
-   911	
- > 912	__bpf_kfunc int bpf_iter_css_post_new(struct bpf_iter_css_post *it,
-   913			struct cgroup_subsys_state *root)
-   914	{
-   915		struct bpf_iter_css_kern *kit = (void *)it;
-   916	
-   917		BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) != sizeof(struct bpf_iter_css_post));
-   918		BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) != __alignof__(struct bpf_iter_css_post));
-   919		kit->root = root;
-   920		kit->pos = NULL;
-   921		return 0;
-   922	}
-   923	
- > 924	__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_post_next(struct bpf_iter_css_post *it)
-   925	{
-   926		struct bpf_iter_css_kern *kit = (void *)it;
-   927	
- > 928		kit->pos = css_next_descendant_post(kit->pos, kit->root);
-   929		return kit->pos;
-   930	}
-   931	
- > 932	__bpf_kfunc void bpf_iter_css_post_destroy(struct bpf_iter_css_post *it)
-   933	{
-   934	}
-   935	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Ingo?
