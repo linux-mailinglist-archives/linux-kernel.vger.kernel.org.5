@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97DA79E685
+	by mail.lfdr.de (Postfix) with ESMTP id F404979E686
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240030AbjIMLVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
+        id S240076AbjIMLVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239981AbjIMLU6 (ORCPT
+        with ESMTP id S239982AbjIMLU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:20:58 -0400
-Received: from smtp105.iad3b.emailsrvr.com (smtp105.iad3b.emailsrvr.com [146.20.161.105])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E8D1BF4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:54 -0700 (PDT)
+        Wed, 13 Sep 2023 07:20:59 -0400
+Received: from smtp108.iad3b.emailsrvr.com (smtp108.iad3b.emailsrvr.com [146.20.161.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685911BFE
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694604053;
-        bh=RUuuQK6RPlCA9X76BGMNc6q5fXGNjtOHgTDLxmsqyIk=;
+        s=20221208-6x11dpa4; t=1694604054;
+        bh=vGdISjzSsCl7AP5nEB0MZrEzyOvgK8VcBZUCftmqT4w=;
         h=From:To:Subject:Date:From;
-        b=m/DGlLRubMjTxPlyNkNAT/jCu8dPo1jZOq/18UXdT3t2qpSqnov8NKgPl+3aFfvNZ
-         qnr3RwcXZ31dRlbhT0A2pY5mN2I/4WTv7KGUW50xvKHhteLgOS285TUZl2wL0tiR7F
-         OPPtdbCgbb133+98xLvF5KnXxTem6i5jCYSTDe9c=
+        b=RegFVuA+9Dy4eSuo0TfwAyYMVg/x6QZd8ZGPpNLarZE4DAsP4ws/ARX9cb2RPwbk6
+         flgFAQCqCDJ+jkzmTN0TDyTnjaZbBPpK+dBp8d9kqBtZb6rw1reYEc4OiHtg1oAmb0
+         YzDELyI/P6O3wVK5bs2uVP7eG/pjwSVKv1/dC4QA=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id EB4B0200E5;
-        Wed, 13 Sep 2023 07:20:52 -0400 (EDT)
+Received: by smtp6.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 0C5AD200EF;
+        Wed, 13 Sep 2023 07:20:53 -0400 (EDT)
 From:   Ian Abbott <abbotti@mev.co.uk>
 To:     linux-kernel@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@kernel.org>,
         Niklas Schnelle <schnelle@linux.ibm.com>,
         Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 04/13] comedi: comedi_8254: Conditionally remove I/O port support
-Date:   Wed, 13 Sep 2023 12:20:23 +0100
-Message-Id: <20230913112032.90618-5-abbotti@mev.co.uk>
+Subject: [PATCH 05/13] comedi: 8255_pci: Conditionally remove devices that use port I/O
+Date:   Wed, 13 Sep 2023 12:20:24 +0100
+Message-Id: <20230913112032.90618-6-abbotti@mev.co.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230913112032.90618-1-abbotti@mev.co.uk>
 References: <20230913112032.90618-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-5-1
+X-Classification-ID: e346d63c-f057-4595-b974-8be9cf32e1c1-6-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The comedi_8254 module supports both port I/O and memory-mapped I/O.
 In a future patch, the port I/O functions (`inb()`, `outb()`, and
-friends) will only be declared if the `HAS_IOPORT` configuration option
+friends will only be declared in the `HAS_IOPORT` configuration option
 is enabled.
 
-Conditionally compile the parts of the module that use port I/O so they
-are compiled if and only if the `CONFIG_HAS_IOPORT` macro is defined, so
-that it can still be built if the port I/O functions have not been
-declared.  If `CONFIG_HAS_IOPORT` is undefined, replace the GPL-exported
-`comedi_8254_io_alloc()` function with a dummy static inline version
-that just returns `ERR_PTR(-ENXIO)`.
+The 8255_pci module supports PCI digital I/O devices from various
+manufacturers that consist of one or more 8255 Programmable Peripheral
+Interface chips (or equivalent hardware) to provide their digital I/O
+ports.  Some of the devices use port I/O and some only use memory-mapped
+I/O.
+
+Conditionally compile in support for the devices that need port I/O if
+and only if the `CONFIG_HAS_PORTIO` macro is defined.  Change
+`pci_8255_auto_attach()` to return an error if the device actually
+requires port I/O (based on the PCI BAR resource flags) but the
+`HAS_IOPORT` configuration is not enabled.
 
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Niklas Schnelle <schnelle@linux.ibm.com>
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
- drivers/comedi/drivers/comedi_8254.c |  8 ++++++++
- include/linux/comedi/comedi_8254.h   | 13 +++++++++++++
- 2 files changed, 21 insertions(+)
+ drivers/comedi/drivers/8255_pci.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/comedi/drivers/comedi_8254.c b/drivers/comedi/drivers/comedi_8254.c
-index 696596944506..6beca2a6d66e 100644
---- a/drivers/comedi/drivers/comedi_8254.c
-+++ b/drivers/comedi/drivers/comedi_8254.c
-@@ -122,6 +122,8 @@
- #include <linux/comedi/comedidev.h>
- #include <linux/comedi/comedi_8254.h>
+diff --git a/drivers/comedi/drivers/8255_pci.c b/drivers/comedi/drivers/8255_pci.c
+index 0fec048e3a53..4c4c0ef1db05 100644
+--- a/drivers/comedi/drivers/8255_pci.c
++++ b/drivers/comedi/drivers/8255_pci.c
+@@ -57,6 +57,7 @@
+ #include <linux/comedi/comedi_8255.h>
  
-+#ifdef CONFIG_HAS_IOPORT
-+
- static unsigned int i8254_io8_cb(struct comedi_8254 *i8254, int dir,
- 				unsigned int reg, unsigned int val)
- {
-@@ -164,6 +166,8 @@ static unsigned int i8254_io32_cb(struct comedi_8254 *i8254, int dir,
+ enum pci_8255_boardid {
++#ifdef CONFIG_HAS_PORTIO
+ 	BOARD_ADLINK_PCI7224,
+ 	BOARD_ADLINK_PCI7248,
+ 	BOARD_ADLINK_PCI7296,
+@@ -65,6 +66,7 @@ enum pci_8255_boardid {
+ 	BOARD_CB_PCIDIO48H_OLD,
+ 	BOARD_CB_PCIDIO48H_NEW,
+ 	BOARD_CB_PCIDIO96H,
++#endif	/* CONFIG_HAS_PORTIO */
+ 	BOARD_NI_PCIDIO96,
+ 	BOARD_NI_PCIDIO96B,
+ 	BOARD_NI_PXI6508,
+@@ -82,6 +84,7 @@ struct pci_8255_boardinfo {
+ };
+ 
+ static const struct pci_8255_boardinfo pci_8255_boards[] = {
++#ifdef CONFIG_HAS_PORTIO
+ 	[BOARD_ADLINK_PCI7224] = {
+ 		.name		= "adl_pci-7224",
+ 		.dio_badr	= 2,
+@@ -122,6 +125,7 @@ static const struct pci_8255_boardinfo pci_8255_boards[] = {
+ 		.dio_badr	= 2,
+ 		.n_8255		= 4,
+ 	},
++#endif	/* CONFIG_HAS_PORTIO */
+ 	[BOARD_NI_PCIDIO96] = {
+ 		.name		= "ni_pci-dio-96",
+ 		.dio_badr	= 1,
+@@ -219,8 +223,11 @@ static int pci_8255_auto_attach(struct comedi_device *dev,
+ 		dev->mmio = pci_ioremap_bar(pcidev, board->dio_badr);
+ 		if (!dev->mmio)
+ 			return -ENOMEM;
+-	} else {
++	} else if (IS_ENABLED(CONFIG_HAS_PORTIO)) {
+ 		dev->iobase = pci_resource_start(pcidev, board->dio_badr);
++	} else {
++		dev_err(dev->class_dev, "error! need I/O port support\n");
++		return -ENXIO;
  	}
+ 
+ 	/*
+@@ -259,6 +266,7 @@ static int pci_8255_pci_probe(struct pci_dev *dev,
  }
  
-+#endif	/* CONFIG_HAS_IOPORT */
-+
- static unsigned int i8254_mmio8_cb(struct comedi_8254 *i8254, int dir,
- 				   unsigned int reg, unsigned int val)
- {
-@@ -648,6 +652,8 @@ static struct comedi_8254 *__i8254_init(comedi_8254_iocb_fn *iocb,
- 	return i8254;
- }
- 
-+#ifdef CONFIG_HAS_IOPORT
-+
- /**
-  * comedi_8254_io_alloc - allocate and initialize the 8254 device for pio access
-  * @iobase:	port I/O base address
-@@ -682,6 +688,8 @@ struct comedi_8254 *comedi_8254_io_alloc(unsigned long iobase,
- }
- EXPORT_SYMBOL_GPL(comedi_8254_io_alloc);
- 
-+#endif	/* CONFIG_HAS_IOPORT */
-+
- /**
-  * comedi_8254_mm_alloc - allocate and initialize the 8254 device for mmio access
-  * @mmio:	memory mapped I/O base address
-diff --git a/include/linux/comedi/comedi_8254.h b/include/linux/comedi/comedi_8254.h
-index 393ccb301028..d527f04400df 100644
---- a/include/linux/comedi/comedi_8254.h
-+++ b/include/linux/comedi/comedi_8254.h
-@@ -12,6 +12,8 @@
- #define _COMEDI_8254_H
- 
- #include <linux/types.h>
-+#include <linux/errno.h>
-+#include <linux/err.h>
- 
- struct comedi_device;
- struct comedi_insn;
-@@ -136,10 +138,21 @@ void comedi_8254_set_busy(struct comedi_8254 *i8254,
- void comedi_8254_subdevice_init(struct comedi_subdevice *s,
- 				struct comedi_8254 *i8254);
- 
-+#ifdef CONFIG_HAS_IOPORT
- struct comedi_8254 *comedi_8254_io_alloc(unsigned long iobase,
- 					 unsigned int osc_base,
- 					 unsigned int iosize,
- 					 unsigned int regshift);
-+#else
-+static inline struct comedi_8254 *comedi_8254_io_alloc(unsigned long iobase,
-+						       unsigned int osc_base,
-+						       unsigned int iosize,
-+						       unsigned int regshift)
-+{
-+	return ERR_PTR(-ENXIO);
-+}
-+#endif
-+
- struct comedi_8254 *comedi_8254_mm_alloc(void __iomem *mmio,
- 					 unsigned int osc_base,
- 					 unsigned int iosize,
+ static const struct pci_device_id pci_8255_pci_table[] = {
++#ifdef CONFIG_HAS_PORTIO
+ 	{ PCI_VDEVICE(ADLINK, 0x7224), BOARD_ADLINK_PCI7224 },
+ 	{ PCI_VDEVICE(ADLINK, 0x7248), BOARD_ADLINK_PCI7248 },
+ 	{ PCI_VDEVICE(ADLINK, 0x7296), BOARD_ADLINK_PCI7296 },
+@@ -269,6 +277,7 @@ static const struct pci_device_id pci_8255_pci_table[] = {
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_CB, 0x000b, PCI_VENDOR_ID_CB, 0x000b),
+ 	  .driver_data = BOARD_CB_PCIDIO48H_NEW },
+ 	{ PCI_VDEVICE(CB, 0x0017), BOARD_CB_PCIDIO96H },
++#endif	/* CONFIG_HAS_PORTIO */
+ 	{ PCI_VDEVICE(NI, 0x0160), BOARD_NI_PCIDIO96 },
+ 	{ PCI_VDEVICE(NI, 0x1630), BOARD_NI_PCIDIO96B },
+ 	{ PCI_VDEVICE(NI, 0x13c0), BOARD_NI_PXI6508 },
 -- 
 2.40.1
 
