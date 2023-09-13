@@ -2,213 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F80779E6DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A271679E6D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240291AbjIMLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S240283AbjIMLcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240437AbjIMLd0 (ORCPT
+        with ESMTP id S240267AbjIMLcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:33:26 -0400
-Received: from smtp77.iad3a.emailsrvr.com (smtp77.iad3a.emailsrvr.com [173.203.187.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAE71BDA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:33:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694604799;
-        bh=Pb/sSDvfoGCIM5lyU2VkooMFMiSDDoheHXCljC1iffc=;
-        h=From:To:Subject:Date:From;
-        b=E8LuFcbUXkD7j7Li6ahhQ7Zu4MqX0GXUgt5AQkSEPJmNv0u//xmLgOLXQbsXZiIAZ
-         tObwlKHFbTEcl2Oz2X2m3k2VEzIXZ+ziUB4Fk8Q4k0021F1gBeldpTxsL/wgPC42Dq
-         s5BXKrtEoi75bTEjuXHHou89TXHntuXJ7EXVmEAU=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp26.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 077B44247;
-        Wed, 13 Sep 2023 07:33:17 -0400 (EDT)
-From:   Ian Abbott <abbotti@mev.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 09/13] comedi: ni_mio_common: Conditionally use I/O port or MMIO
-Date:   Wed, 13 Sep 2023 12:32:43 +0100
-Message-Id: <20230913113247.91749-10-abbotti@mev.co.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230913113247.91749-1-abbotti@mev.co.uk>
-References: <20230913113247.91749-1-abbotti@mev.co.uk>
-MIME-Version: 1.0
+        Wed, 13 Sep 2023 07:32:53 -0400
+Received: from smtpout30.security-mail.net (smtpout30.security-mail.net [85.31.212.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385F6173E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:32:49 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by fx301.security-mail.net (Postfix) with ESMTP id 8E02C5D94CC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:32:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
+        s=sec-sig-email; t=1694604767;
+        bh=Nq/+Jy5ugASIood7OhjT9QGuTZxZktIE6EUVygk8FpI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Glt8z62DwSGyPKxfeBq/5kvxC50PouK8Ks+v4ulhwBgbaamLR9bjRwgkDNAcKsn2Y
+         8NncJMO3AjfrTG7KdD+WJ05Dsxo3iiuK2r0M6+jZMtfb/gWdjBDDtnpuJ5kLzqaDrp
+         ffWWCLX4C0KNmziQuHqmSKZHXu27wdu21VYqLscc=
+Received: from fx301 (localhost [127.0.0.1]) by fx301.security-mail.net
+ (Postfix) with ESMTP id 665C65D9262; Wed, 13 Sep 2023 13:32:47 +0200 (CEST)
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com
+ (mail-mr2fra01on0102.outbound.protection.outlook.com [104.47.25.102]) by
+ fx301.security-mail.net (Postfix) with ESMTPS id DA46F5D946C; Wed, 13 Sep
+ 2023 13:32:46 +0200 (CEST)
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
+ by PR0P264MB3388.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:144::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 11:32:45 +0000
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2a88:7ccc:780c:c9f9]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2a88:7ccc:780c:c9f9%5]) with mapi id 15.20.6792.019; Wed, 13 Sep
+ 2023 11:32:45 +0000
+X-Virus-Scanned: E-securemail
+Secumail-id: <9b85.65019dde.d9678.0>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eqJSeG2bOnEwIdXmVRbm2d0VrpLMAR3M7VFelVRafSSbV09GCOMthYwPcWWSSOdBGgP+5+SFaw58a+RFsYGFomxsS5PdjrxziJ3qp+uRQDz0MzIBrEYHKUEjQNfwBfpRnSH6UeOHtxgKesgPNIqJid//UtiWGqRSYx1p2+09fb8xWFP0NHiDn1fLrJZ+fcsux0I+ga0GELtzx1P18+o09nawuXvr9Uv6P+yBGdkEYsmG13MBvCFuM4M6SsEOmwtzZoMfpiRoIM5ZwClj5bWi33Bi2djy79JHIYrOuJtRA6Ol6cb5b3LrVxZmx4pWoFn2EiQ40NA5HpA479cRxob7xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microsoft.com; s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GBwHhdjABNJBRgzhyE76Eggp7oldAax0peyN3oSQwlk=;
+ b=ZhJcXcaUefdM+rqEFgWfqlw+NCepEs4QNCLbOkRjLSDnQnwPP1KWJC373A+NJGy1dcqhLFSV8zUVyTTTCAcgWzmGgccPz1KwXY/c733T2Bg5i0zQ5oN0WGzp/c3eczFi7UEjOmohbI/g7l534CBuqAQsH5qgwqoxsydBQF47bu6nMT2Av3qrgUnXUMu0FGjrbJa4FXNVTdevp/6vYfDRT0Cad/4JYBR5F22Cuk/KOpJtwhZKC/MHogvGRXg8LZMb9jRAlhE/4YcL/HNqNB2msInT+XJ2l5XPf1C1oXz+o/LLPU9rVklrMJhCnXmq7lWmGUBmGQwVoib2CV0cXCUqBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
+ header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GBwHhdjABNJBRgzhyE76Eggp7oldAax0peyN3oSQwlk=;
+ b=aTTV2umdoCdPxAlUddO5oK87Dlf8vuvTDuid9PlwyEzu6o5eMHwqmdraOYy5n8digYe9cMFGQFsbdfdMJ9ANWEAkXnkwAt2mTQd+TIwmmUCVxNMcUIt9JFrLZMsWwqHa9TFonwfMpCMpdPnW+Pb2sVb7foVUv7JriJLLeAsTMYZWKqO8uqNyzj6AFvNZgl6HL8nxteKnNIvw+opr4Bt23fEYwZ/M7TJXzR9xnXFawxHrvaMsHZBv7kuaWJO+dfMPuZTVwzR7hMY3P0dJwXMI7J3EIdttOKK5eC8ZkSoHX6TJqxZiqgYBptuu/rCLO/IMkYTwURzQJKlBJkiT92VKXw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kalrayinc.com;
+Message-ID: <038e40c8-d6cd-150e-933e-5b2d2d7af7c5@kalrayinc.com>
+Date:   Wed, 13 Sep 2023 13:32:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] i2c: designware: Fix corrupted memory seen in the ISR
+Content-Language: en-us
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jan Bottorff <janb@os.amperecomputing.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230913010313.418159-1-janb@os.amperecomputing.com>
+ <4537fa1c-b622-674c-026e-8453eda0a4d1@kalrayinc.com>
+ <ZQGbaXTnIk0NIZbK@smile.fi.intel.com>
+From:   Yann Sionneau <ysionneau@kalrayinc.com>
+In-Reply-To: <ZQGbaXTnIk0NIZbK@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: 007ec4bd-2574-475a-9bbd-5a4f93b29aec-10-1
+X-ClientProxiedBy: PA7P264CA0300.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:370::12) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:13::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|PR0P264MB3388:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5fafa474-35e8-4b24-24e0-08dbb44d2636
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mOC9JvZsgzodgmg6lTEAuWYPbUNeglDlT0sTEs454C6hKTr5pnvj6b8Ku5QeZ0fLwC4yx/SjoY29KtNo1AspigodZwcspWKAtsz1ab9EdUz9db2pPaqklM7/ExSmwYt5M+sKErwOvdsoUYkpqqoBruVvCxSoXZtZ28JEAg8nwctMXdb+9XpAHYvPWMj3xcYumRDmPbyWyM8gtjmYKgYFKQWtOZPoW4AXEn2MlnShhfsSaAHzJcMr8RZqRIUTGsYqe/ihh38SWqH2d6+KAvKnLjahvxYUg96fTTOMKN/7CKy7dT7nhyc/JrJcCU6mwTbsYcQZ7h9atdtUloLMA49cBi8e4IxDnjjpU5mYrr2X8ZfKDbY4JC2TVt2Q6nzchgzfcBON00Ga/ege5/hA+UcyM26zYLlDzshODkWiz8lNJOQ4+vYgOiAjdntKLM82BTpTAWgKR9qjWuWWFIH2MENmyGUYCbkBjAlOB73dxAZyQeZmoWKvRQ2XD3k/UlWS9ZMbIKLKKnEQP9mRON1QPG3M8MdiP9D8zyjP8LsyofOOSD85UtSQ9LQDtsgj4tKqu3SgUfFYEpDdjSX7PF4FtRgmqLKUlJ3Yqy4dR//YXOWOh+YXYMGUxF4B1/R2AotvaNp3hyZ3uBxwufP6//fct+mtNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(396003)(346002)(366004)(1800799009)(186009)(451199024)(31686004)(6506007)(6486002)(53546011)(36756003)(86362001)(31696002)(38100700002)(2906002)(2616005)(6512007)(478600001)(83380400001)(5660300002)(4326008)(8676002)(8936002)(41300700001)(6916009)(66476007)(66946007)(54906003)(316002)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: UabJUu16zVTLvgfbjm/EVTYqK8RKreOFg3hPLlmlh/dRZ/paqavgrqfyXQPYcXYbALHzLIK/qHXXTQyXKEyJiAx765JgrIevF9GMr+VAFStBeHeKAlbZYR3igKHHemTPebAc3DkGE72dPKN7MZHwtG2OOmBSHv4qXxRBRVcWX1Ui2AQWWjbWErmiEQhWppwVW5E74uGQ0F+6KFToVebw2pLUXRY/XkHCqVIiYevuEoFWKN8XPkVHdGFxG9Fkw6gtvmYKtP1O5wRabEbRikOufDrTavBhgUtGNEwlcuWhB/Y9cl4xJ3o+Y+We4bafTiGe1D5X0mRKt/cm0ux4Cm3YHgpuGdinV+kQd+DAffq67RQ2TCW3GJ/tQArH9GzyZK87yLSaeZ3SXeuvDyLVCmqnwyEKYHwHWlu/vyjlHIWRL2HlC8Kjf6XTjfFCwNwRE1QMav44jaQaUEHt6sqGHIw4LsbQl4LQWGAcUKhHAQ5uMBosOFDykwrY9hdFvES7AYx5AmMoaAFI2fxFL3oqNVfuwZcfidKHrwaC+KGh8XMoLibtLNL0s9PTQL3R5OzZ9NMzdrqkIG1Vn5D0gQycBAZa6oq3izEvEvvly5GJGCFxLIxxQ+T6oI84pDxNYa9/NYI1tGuVEG7vIzuaJzaEO1yYinS2fpb0W43Ej4Olz/irLajYwBXyixPnU2FX0bsVPWjflk5gxwUkK9l1UmiTjap0JgFKMYDu4C/yHuzP8RMZBkd4yWxvDBgMJRgIW26OlLGX0DL5VKyBoM1DSI/15y+bgA3wxd7T5N0N7qQM8w1RbowYYsEhjqmtWH4TfcOpMWfJA3LNzerpmouGqOfOqb235kQWzUI0/SDbVN9cThYmheWzMhLv2BfTY4PNFZCdUGiXvAEXTYB+sM091rZgWAoidPIf8VbAUMJnEKUOshisZBNGkUAWktNJKcOQRGzDw55R
+ hr6jiviaI5AVBxI4wUHYDIxRxfyN8KEDKDA+PwMJcmsKaQsWSiJ85lJGsBG77YWnQwELnumLLVbTQf576LOB+hykrQnAC0YR13BoGqLxQEHHHw5vn1gSKaGIg0y6OFNIh1ouSizwj+xYPri8a9k/wTXCoA6pCKyAxPpxS/fI4YeQCN11dYcZNwkiVVcc3QRJEG2da1JEW6OyYJEU+Y3hwTNGeCYKlSGvU0cDSJbLR47xSel7V9D9T4X8vGBv3rBqj40NMrTcPQpJrOLeVRotldjkkwBqqb2fxYlhEB4boAU0PTzeGiZ2eT3O5xiJZOKNcYIz7l1hsOZDtWCL6O7JS0kqyqYjj+O+FCCuCp6g76NHBPgKRhKftYaI/yI0kKhrT78psA5y00stQucmQxA4UhCPS4f/VZKVOV2MTJZ3Sx3uidIF8M+uYmXLRbi/ObfZvGrI7MdG2UFUN4X6/zlAyyMipHa8zd+1y33ssadnOT6JWGkRvm4Vm4TvEDOUn9eVvS9fuFKtG2q4cGI4QVj7bCVt6D1/DmxQ2g3s7VhXjB5Tya3ADR8wAob5wcieTK0a4Aw0KKbAaBqd/bLuMJ4+NsenQKkKM7T6krkN6eDbhXEguihbmeEWmkEBA1hd/CBj1Nb2wC1T9BrwZKtOeBIViXYt67Dv1YRUQrfYllB9QLTAMA5Q35kmydREeiL6bSGASg+uC8tLPTQjE0/ck3jmcQ==
+X-OriginatorOrg: kalrayinc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fafa474-35e8-4b24-24e0-08dbb44d2636
+X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 11:32:45.5130
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ueiTytRGPiH3WvvgrH+LbbTchjsDn4f++jwUrnHL+snDvL0y+rw02mhYranEnYNS0P9ZKy+DEDhxBQgWBQqCng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3388
+X-ALTERMIMEV2_out: done
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future patch, the port I/O functions (`inb()`, `outb()`, and
-friends will only be declared in the `HAS_IOPORT` configuration option
-is enabled.
 
-The "ni_mio_common.c" file contains calls to both port I/O functions and
-memory-mapped I/O functions.  The file is `#include`d by "ni_atmio.c",
-"ni_mio_cs.c", and "ni_pcimio.c" for the ni_atmio, ni_mio_cs, and
-ni_pcimio modules, respectively.  Only "ni_pcimio.c" defines the
-`PCIDMA` macro before including "ni_mio_common.c" and various bits of
-code in "ni_mio_common.c" is conditionally compiled according to whether
-that macro is defined or not.  Currently, the port I/O function calls
-are compiled in regardless of whether the `PCIDMA` macro is defined or
-not.  However, the fact is that the ni_atmio and ni_mio_cs modules will
-never call the memory-mapped I/O functions, and the ni_pcimio module
-will never call the port I/O functions.
+On 13/09/2023 13:22, Andy Shevchenko wrote:
+> On Wed, Sep 13, 2023 at 11:04:00AM +0200, Yann Sionneau wrote:
+>> On 13/09/2023 03:03, Jan Bottorff wrote:
+> ...
+>
+>>> +	/*
+>>> +	 * To guarantee data written by the current core is visible to
+>>> +	 * all cores, a write barrier is required. This needs to be
+>>> +	 * before an interrupt causes execution on another core.
+>>> +	 * For ARM processors, this needs to be a DSB barrier.
+>>> +	 */
+>>> +	wmb();
+>> Apart from the commit message it looks good to me.
+>>
+>> If I understand correctly without this wmb() it is possible that the writes
+>> to dev->msg_write_idx , dev->msg_read_idx = 0 etc would not yet be visible
+>> to another CPU running the ISR handler right after enabling those.
+> If this is the case, shouldn't we rather use READ_ONCE()/WRITE_ONCE() where
+> appropriate?
+>
+To my knowledge the READ_ONCE()/WRITE_ONCE() only imply the use of 
+volatile to access memory thus preventing the compiler to do weird 
+optimizations like merging store/loads, moving store/loads, removing 
+them etc
 
-Calls to the port I/O and memory-mapped I/O functions is confined to the
-`ni_writel()`, `ni_writew()`, `ni_writeb()`, `ni_readl()`, `ni_readw()`,
-and `ni_readb()` functions which do a run-time test to decide whether to
-call the port I/O functions or the memory-mapped I/O functions.
-Conditionally compile two variants of the functions so they only call
-the port I/O functions if the `PCIDMA` macro is undefined (for the
-ni_atmio and ni_mio_cs modules), and only call the memory-mapped I/O
-functions if the `PCIDMA` macro is defined (for the ni_pcimio module).
+They don't imply a memory barrier.
 
-Add a run-time check in the `ni_E_init()` function to return an error if
-the comedi device has been set up to use port I/O if `PCIDMA` is
-defined, or has been set up to use memory-mapped I/O if `PCIDMA` is not
-defined.
+Some systems need a memory barrier, to emit a "fence" like instruction, 
+so that the pipeline stalls waiting for the store to "finish", for 
+systems where the writes are posted.
 
-The changes make it possible to build the ni_pcimio module even if the
-port I/O functions have not been declared.  (The ni_atmio and ni_mio_cs
-modules do still require the port I/O functions to be declared.)
+Regards,
 
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
----
- drivers/comedi/drivers/ni_mio_common.c | 70 ++++++++++++++++++--------
- 1 file changed, 50 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-index 638be08b43e4..980f309d6de7 100644
---- a/drivers/comedi/drivers/ni_mio_common.c
-+++ b/drivers/comedi/drivers/ni_mio_common.c
-@@ -46,6 +46,12 @@
- #include <linux/comedi/comedi_8255.h>
- #include "mite.h"
- 
-+#ifdef PCIDMA
-+#define IS_PCIMIO 1
-+#else
-+#define IS_PCIMIO 0
-+#endif
-+
- /* A timeout count */
- #define NI_TIMEOUT 1000
- 
-@@ -219,54 +225,72 @@ enum timebase_nanoseconds {
- 
- static const int num_adc_stages_611x = 3;
- 
-+#ifdef PCIDMA
-+
- static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writel(data, dev->mmio + reg);
--	else
--		outl(data, dev->iobase + reg);
-+	writel(data, dev->mmio + reg);
- }
- 
- static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writew(data, dev->mmio + reg);
--	else
--		outw(data, dev->iobase + reg);
-+	writew(data, dev->mmio + reg);
- }
- 
- static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
- {
--	if (dev->mmio)
--		writeb(data, dev->mmio + reg);
--	else
--		outb(data, dev->iobase + reg);
-+	writeb(data, dev->mmio + reg);
- }
- 
- static unsigned int ni_readl(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readl(dev->mmio + reg);
-+	return readl(dev->mmio + reg);
-+}
-+
-+static unsigned int ni_readw(struct comedi_device *dev, int reg)
-+{
-+	return readw(dev->mmio + reg);
-+}
-+
-+static unsigned int ni_readb(struct comedi_device *dev, int reg)
-+{
-+	return readb(dev->mmio + reg);
-+}
- 
-+#else /* PCIDMA */
-+
-+static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outl(data, dev->iobase + reg);
-+}
-+
-+static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outw(data, dev->iobase + reg);
-+}
-+
-+static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
-+{
-+	outb(data, dev->iobase + reg);
-+}
-+
-+static unsigned int ni_readl(struct comedi_device *dev, int reg)
-+{
- 	return inl(dev->iobase + reg);
- }
- 
- static unsigned int ni_readw(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readw(dev->mmio + reg);
--
- 	return inw(dev->iobase + reg);
- }
- 
- static unsigned int ni_readb(struct comedi_device *dev, int reg)
- {
--	if (dev->mmio)
--		return readb(dev->mmio + reg);
--
- 	return inb(dev->iobase + reg);
- }
- 
-+#endif /* PCIDMA */
-+
- /*
-  * We automatically take advantage of STC registers that can be
-  * read/written directly in the I/O space of the board.
-@@ -5977,6 +6001,12 @@ static int ni_E_init(struct comedi_device *dev,
- 	int i;
- 	const char *dev_family = devpriv->is_m_series ? "ni_mseries"
- 						      : "ni_eseries";
-+	if (!IS_PCIMIO != !dev->mmio) {
-+		dev_err(dev->class_dev,
-+			"%s: bug! %s device not supported.\n",
-+			KBUILD_MODNAME, board->name);
-+		return -ENXIO;
-+	}
- 
- 	/* prepare the device for globally-named routes. */
- 	if (ni_assign_device_routes(dev_family, board->name,
 -- 
-2.40.1
+
+Yann
+
+
+
+
 
