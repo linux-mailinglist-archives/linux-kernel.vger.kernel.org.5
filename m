@@ -2,141 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9F379E740
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF0079E743
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240579AbjIMLui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S233040AbjIMLw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240574AbjIMLu3 (ORCPT
+        with ESMTP id S231334AbjIMLw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:50:29 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368B419B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:50:25 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-401b0d97850so73911315e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605823; x=1695210623; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qakrc9HB1O5Iu/mhnl/aqGs6dWn+CSwn3hlAKhsYM7Q=;
-        b=K59dYPUIHZTckXjn/bieXANY+l9Grc0I7HeuaZku2GSM0xmOT8f6oYUEL+r8A6Audd
-         K64NQ5MSwHAEul4mNOjFFizn7isndvft5Yvjs6zvyP/88+zeF0dKiGOv00E/ikMfQZz2
-         sN9+grflFK8efEyxB98FD1NdNtAYJXREV0hWSBpiGmUUqbAyBUV2dxHJS9SI0PuWF2Ub
-         hc9nyEwu4PnsWLwAfUxhp+xCQhUzgGlNnpT6vQqfOutJrw6eK0xFuAm4i8cPk4OrN4BE
-         IocjF1H4qhRmDT70bfVHh3bEGn4sMAdQzii3oS91UoPKhvBB+IXXjwg/ozV21AYwFBPk
-         HU7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694605823; x=1695210623;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qakrc9HB1O5Iu/mhnl/aqGs6dWn+CSwn3hlAKhsYM7Q=;
-        b=hkeWM8iaiVaXL/Zv7mPhqam7PiaoaSu3K31S1UKqnOqqCRyxjrsuyzTh/ICl+90nml
-         tSOQOVnJFnbfHW6s5hO0caR5vzRU10p2NFwY48HHijwltP8JjMaFwX8IXyHwBvNzDP4D
-         871T8YqqUNo+D00SVWPHsow8zYVpJpCqvDkhmn1zamZcqJJuCEggY5H+RUR+Jbssvqnt
-         KCdjSorOloNjnFU7TuCQxFNiNzWsbYo/oiKxHg5TCxrK70ByhWrCTZOh7LCXihaJZ3N2
-         4wO6iepLD/IphDPdFA7Gkb/CpCcD9+2IqMDo4U3CPYtiv1ENoVtOWioOztXFjSZdcDOT
-         CICA==
-X-Gm-Message-State: AOJu0YxUv3YnNPI0aINjtGWF3KCrNYniP8YF2BSygksN6AEcVeF/nm9v
-        4CCzmKe6ibbS8KE0lC9uBFGCVA==
-X-Google-Smtp-Source: AGHT+IHSaGvQEu7p/aPUxTrIpzTkMdMiNylYl6uXXTnV4TP4nHCU3quUTmCv138dyfMb7wv/N8jbvw==
-X-Received: by 2002:a5d:56ca:0:b0:311:1dba:ca65 with SMTP id m10-20020a5d56ca000000b003111dbaca65mr1878093wrw.51.1694605823533;
-        Wed, 13 Sep 2023 04:50:23 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3b50:bca5:a754:7463])
-        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 04:50:23 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 5/5] gpiolib: remove gpiod_toggle_active_low()
-Date:   Wed, 13 Sep 2023 13:50:01 +0200
-Message-Id: <20230913115001.23183-6-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230913115001.23183-1-brgl@bgdev.pl>
-References: <20230913115001.23183-1-brgl@bgdev.pl>
+        Wed, 13 Sep 2023 07:52:58 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D91198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:52:53 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 38DBqFdj069069;
+        Wed, 13 Sep 2023 19:52:15 +0800 (+08)
+        (envelope-from zhifeng.tang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RlzJ66cY2z2RwGmC;
+        Wed, 13 Sep 2023 19:49:10 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
+ (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 13 Sep
+ 2023 19:52:14 +0800
+From:   Zhifeng Tang <zhifeng.tang@unisoc.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Zhifeng Tang <zhifeng.tang@unisoc.com>,
+        Maxime Ripard <mripard@kernel.org>
+CC:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zhifeng Tang <zhifeng.tang23@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH V2] clk: sprd: Composite driver support offset config
+Date:   Wed, 13 Sep 2023 19:52:11 +0800
+Message-ID: <20230913115211.11512-1-zhifeng.tang@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx04.spreadtrum.com (10.0.1.214)
+X-MAIL: SHSQR01.spreadtrum.com 38DBqFdj069069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+The composite interface support the offset configuration,
+which is used to support mux and div in different registers.
+Because some sprd projects, the divider has different
+addresses from mux for one composite clk.
 
-With all users now having switched to gpiod_set_active_[low|high](), we
-can now remove gpiod_toggle_active_low().
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Zhifeng Tang <zhifeng.tang@unisoc.com>
+Reviewed-by: Chunyan Zhang <zhang.lyra@gmail.com>
 ---
- drivers/gpio/gpiolib.c        | 11 -----------
- include/linux/gpio/consumer.h |  7 -------
- 2 files changed, 18 deletions(-)
+Change in V2: fixed Chunyan review comments.
+-Fixed the typo "userd" and add more detail in commit message.
+-The **_OFFSET() function adds an offset parameter,and offset
+ is of type 'signed' int,which would be cover the cases no 
+ matter whether the divider register offset is up or down based
+ on the mux register address.That would be more flexible.
+---
+ drivers/clk/sprd/composite.h | 36 +++++++++++++++++++++++++++---------
+ drivers/clk/sprd/div.c       |  6 +++---
+ drivers/clk/sprd/div.h       | 17 ++++++++++++-----
+ 3 files changed, 42 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 131965814a7c..14b84bad93ea 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -2714,17 +2714,6 @@ int gpiod_is_active_low(const struct gpio_desc *desc)
- }
- EXPORT_SYMBOL_GPL(gpiod_is_active_low);
+diff --git a/drivers/clk/sprd/composite.h b/drivers/clk/sprd/composite.h
+index adbabbe596b7..15cec97d2aa7 100644
+--- a/drivers/clk/sprd/composite.h
++++ b/drivers/clk/sprd/composite.h
+@@ -19,24 +19,24 @@ struct sprd_comp {
+ };
  
--/**
-- * gpiod_toggle_active_low - toggle whether a GPIO is active-low or not
-- * @desc: the gpio descriptor to change
-- */
--void gpiod_toggle_active_low(struct gpio_desc *desc)
--{
--	VALIDATE_DESC_VOID(desc);
--	change_bit(FLAG_ACTIVE_LOW, &desc->flags);
--}
--EXPORT_SYMBOL_GPL(gpiod_toggle_active_low);
--
- /**
-  * gpiod_set_active_low() - set the GPIO as active-low
-  * @desc: the GPIO descriptor to set the active-low setting for
-diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
-index ddbf0d8e4a75..395e1a67c4c8 100644
---- a/include/linux/gpio/consumer.h
-+++ b/include/linux/gpio/consumer.h
-@@ -159,7 +159,6 @@ int gpiod_set_raw_array_value_cansleep(unsigned int array_size,
+ #define SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
+-				 _mshift, _mwidth, _dshift, _dwidth,	\
+-				 _flags, _fn)				\
++				 _mshift, _mwidth, _doffset, _dshift,	\
++				 _dwidth, _flags, _fn)			\
+ 	struct sprd_comp _struct = {					\
+ 		.mux	= _SPRD_MUX_CLK(_mshift, _mwidth, _table),	\
+-		.div	= _SPRD_DIV_CLK(_dshift, _dwidth),		\
++		.div	= _SPRD_DIV_CLK(_doffset, _dshift, _dwidth),	\
+ 		.common = {						\
+ 			.regmap		= NULL,				\
+ 			.reg		= _reg,				\
+ 			.hw.init = _fn(_name, _parent,			\
+ 				       &sprd_comp_ops, _flags),		\
+-			 }						\
++		}							\
+ 	}
  
- int gpiod_set_config(struct gpio_desc *desc, unsigned long config);
- int gpiod_set_debounce(struct gpio_desc *desc, unsigned int debounce);
--void gpiod_toggle_active_low(struct gpio_desc *desc);
- void gpiod_set_active_low(struct gpio_desc *desc);
- void gpiod_set_active_high(struct gpio_desc *desc);
+ #define SPRD_COMP_CLK_TABLE(_struct, _name, _parent, _reg, _table,	\
+ 			    _mshift, _mwidth, _dshift, _dwidth, _flags)	\
+ 	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
+-				 _mshift, _mwidth, _dshift, _dwidth,	\
+-				 _flags, CLK_HW_INIT_PARENTS)
++				 _mshift, _mwidth, 0x0, _dshift,	\
++				 _dwidth, _flags, CLK_HW_INIT_PARENTS)
  
-@@ -495,12 +494,6 @@ static inline int gpiod_set_debounce(struct gpio_desc *desc, unsigned int deboun
- 	return -ENOSYS;
- }
+ #define SPRD_COMP_CLK(_struct, _name, _parent, _reg, _mshift,		\
+ 		      _mwidth, _dshift, _dwidth, _flags)		\
+@@ -47,15 +47,33 @@ struct sprd_comp {
+ 				 _mshift, _mwidth, _dshift,		\
+ 				 _dwidth, _flags)			\
+ 	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
+-				 _mshift, _mwidth, _dshift, _dwidth,	\
+-				 _flags, CLK_HW_INIT_PARENTS_DATA)
++				 _mshift, _mwidth, 0x0, _dshift,	\
++				 _dwidth, _flags,			\
++				 CLK_HW_INIT_PARENTS_DATA)
  
--static inline void gpiod_toggle_active_low(struct gpio_desc *desc)
--{
--	/* GPIO can never have been requested */
--	WARN_ON(desc);
--}
--
- static inline void gpiod_set_active_low(struct gpio_desc *desc
+ #define SPRD_COMP_CLK_DATA(_struct, _name, _parent, _reg, _mshift,	\
+ 			   _mwidth, _dshift, _dwidth, _flags)		\
+-	SPRD_COMP_CLK_DATA_TABLE(_struct, _name, _parent, _reg,	NULL,	\
++	SPRD_COMP_CLK_DATA_TABLE(_struct, _name, _parent, _reg, NULL,	\
+ 				 _mshift, _mwidth, _dshift, _dwidth,	\
+ 				 _flags)
+ 
++#define SPRD_COMP_CLK_DATA_TABLE_OFFSET(_struct, _name, _parent, _reg,	\
++					_table, _mshift, _mwidth,	\
++					_doffset, _dshift, _dwidth,	\
++					_flags)				\
++	SPRD_COMP_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _table,	\
++				 _mshift, _mwidth, _doffset, _dshift,	\
++				 _dwidth, _flags,			\
++				 CLK_HW_INIT_PARENTS_DATA)
++
++#define SPRD_COMP_CLK_DATA_OFFSET(_struct, _name, _parent, _reg,	\
++				  _mshift, _mwidth, _doffset, _dshift,	\
++				  _dwidth, _flags)			\
++	SPRD_COMP_CLK_DATA_TABLE_OFFSET(_struct, _name, _parent, _reg,	\
++					NULL, _mshift, _mwidth,		\
++					_doffset, _dshift, _dwidth,	\
++					_flags)
++
+ static inline struct sprd_comp *hw_to_sprd_comp(const struct clk_hw *hw)
  {
- 	/* GPIO can never have been requested */
+ 	struct sprd_clk_common *common = hw_to_sprd_clk_common(hw);
+diff --git a/drivers/clk/sprd/div.c b/drivers/clk/sprd/div.c
+index c7261630cab4..936782c24127 100644
+--- a/drivers/clk/sprd/div.c
++++ b/drivers/clk/sprd/div.c
+@@ -25,7 +25,7 @@ unsigned long sprd_div_helper_recalc_rate(struct sprd_clk_common *common,
+ 	unsigned long val;
+ 	unsigned int reg;
+ 
+-	regmap_read(common->regmap, common->reg, &reg);
++	regmap_read(common->regmap, common->reg + div->offset, &reg);
+ 	val = reg >> div->shift;
+ 	val &= (1 << div->width) - 1;
+ 
+@@ -53,10 +53,10 @@ int sprd_div_helper_set_rate(const struct sprd_clk_common *common,
+ 	val = divider_get_val(rate, parent_rate, NULL,
+ 			      div->width, 0);
+ 
+-	regmap_read(common->regmap, common->reg, &reg);
++	regmap_read(common->regmap, common->reg + div->offset, &reg);
+ 	reg &= ~GENMASK(div->width + div->shift - 1, div->shift);
+ 
+-	regmap_write(common->regmap, common->reg,
++	regmap_write(common->regmap, common->reg + div->offset,
+ 			  reg | (val << div->shift));
+ 
+ 	return 0;
+diff --git a/drivers/clk/sprd/div.h b/drivers/clk/sprd/div.h
+index f5d614b3dcf1..a0bcad80498f 100644
+--- a/drivers/clk/sprd/div.h
++++ b/drivers/clk/sprd/div.h
+@@ -20,12 +20,14 @@
+  * classes.
+  */
+ struct sprd_div_internal {
++	s32	offset;
+ 	u8	shift;
+ 	u8	width;
+ };
+ 
+-#define _SPRD_DIV_CLK(_shift, _width)	\
++#define _SPRD_DIV_CLK(_offset, _shift, _width)	\
+ 	{				\
++		.offset = _offset,	\
+ 		.shift	= _shift,	\
+ 		.width	= _width,	\
+ 	}
+@@ -35,10 +37,10 @@ struct sprd_div {
+ 	struct sprd_clk_common	common;
+ };
+ 
+-#define SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
++#define SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, _offset,	\
+ 				_shift, _width, _flags, _fn)		\
+ 	struct sprd_div _struct = {					\
+-		.div	= _SPRD_DIV_CLK(_shift, _width),		\
++		.div	= _SPRD_DIV_CLK(_offset, _shift, _width),	\
+ 		.common	= {						\
+ 			.regmap		= NULL,				\
+ 			.reg		= _reg,				\
+@@ -49,12 +51,17 @@ struct sprd_div {
+ 
+ #define SPRD_DIV_CLK(_struct, _name, _parent, _reg,			\
+ 		     _shift, _width, _flags)				\
+-	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
++	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
+ 				_shift, _width, _flags, CLK_HW_INIT)
+ 
++#define SPRD_DIV_CLK_FW_NAME(_struct, _name, _parent, _reg,		\
++			_shift, _width, _flags)				\
++	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
++				_shift, _width, _flags, CLK_HW_INIT_FW_NAME)
++
+ #define SPRD_DIV_CLK_HW(_struct, _name, _parent, _reg,			\
+ 			_shift, _width, _flags)				\
+-	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg,		\
++	SPRD_DIV_CLK_HW_INIT_FN(_struct, _name, _parent, _reg, 0x0,	\
+ 				_shift, _width, _flags, CLK_HW_INIT_HW)
+ 
+ static inline struct sprd_div *hw_to_sprd_div(const struct clk_hw *hw)
 -- 
-2.39.2
+2.17.1
 
