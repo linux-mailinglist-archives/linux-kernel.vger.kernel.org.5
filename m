@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C19279EB83
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2728179EB9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbjIMOrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S236344AbjIMOvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:51:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241506AbjIMOrf (ORCPT
+        with ESMTP id S230190AbjIMOvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:47:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3827AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:47:30 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9E30C1F385;
-        Wed, 13 Sep 2023 14:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1694616449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=91ytSZhAZZJxRLS51DPAMbgyIGi3HFabuhDgqq8+ZcY=;
-        b=pqlznT6UI67IMPdHtm8FZNrlprjno9lQRxR/VNssD6mG4gJMCHrMmzrN2gwPJeb6GxBC0B
-        bWPDmDYM8Z4KwfYEDP09Csi0E7YrqjnA6DQ+3BzmZv2h6zXZMjoUcxRdaZRwxENDje5pdG
-        2e1Ug5Swug0e0lzs0YBrtjGk9BeF728=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1694616449;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=91ytSZhAZZJxRLS51DPAMbgyIGi3HFabuhDgqq8+ZcY=;
-        b=dtYqore8nc2Jlv7dpegTaDv40gsMQCTVkFUEzhxShCWbxdRvoN4pCFIdbBK1zENcYRL/3N
-        HAZb6p0s7GZSs1DA==
-Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
-        by relay2.suse.de (Postfix) with ESMTP id 077842C142;
-        Wed, 13 Sep 2023 14:47:29 +0000 (UTC)
-Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
-        id D571C4A04B1; Wed, 13 Sep 2023 16:47:28 +0200 (CEST)
-From:   Andreas Schwab <schwab@suse.de>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     suagrfillet@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, anup@brainfault.org, alex@ghiti.fr,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: BUG Report: Some issues about vmlinux with emit-relocs
-In-Reply-To: <mhng-0208249f-0619-4be7-bbc7-e1c0ee6e3c8c@palmer-ri-x1c9>
-        (Palmer Dabbelt's message of "Wed, 13 Sep 2023 07:30:48 -0700 (PDT)")
-References: <20230808085438.3445957-1-suagrfillet@gmail.com>
-        <mhng-0208249f-0619-4be7-bbc7-e1c0ee6e3c8c@palmer-ri-x1c9>
-X-Yow:  My nose feels like a bad Ronald Reagan movie...
-Date:   Wed, 13 Sep 2023 16:47:28 +0200
-Message-ID: <mvmcyymxh8f.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 13 Sep 2023 10:51:10 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC41B2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:51:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BAB2C433C7;
+        Wed, 13 Sep 2023 14:51:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694616666;
+        bh=Q9n9fiC6Q6HwDd/AL7ztrfunSyqcBsNnDmEcjMyEQ80=;
+        h=From:Subject:Date:To:Cc:From;
+        b=sMo9mBM94SKNpAKVwEY3N+WL+529FRRcmErvsjWyPCvTxiltzR51H4FJXoNpHXsr7
+         uQvd8QnpiVKAFvvRLbZ9YSotFLvCLw2fyRDSvFh6Lke4gu8vAwag7df6+CuIJYFZCU
+         qILKdc7VpIBdzRr/qPkPGWJluU9AOCOuxYqDoM9JANDEf3VSMVa4VII7FWy9Ld80fC
+         PzZ2rWmxk27hQ2SwXW3t/t/citFQf73U0O9x1Vd3twW2SWT7ZX7pjEyf6cm28mHS6N
+         BteT8UDBY7GtEFvwJoMA7Bl15LU1SkLYHWq7o2wga1aQfeYU7SLNxEUNSyq3qNuvje
+         28jj3vmFv3iKg==
+From:   Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/2] arm64/fp: Remove vector length pseudo registers
+Date:   Wed, 13 Sep 2023 15:48:11 +0100
+Message-Id: <20230913-arm64-vec-len-cpufeature-v1-0-cc69b0600a8a@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKvLAWUC/x3MQQqDMBBG4avIrDsQR6lNr1K6CPFXB2wqE5WCe
+ HdDl9/ivYMyTJHpWR1k2DXrNxXUt4riFNII1r6YxEnjfC0c7HNveUfkGYnjsg0I62Zg8a7vHvC
+ uFaGSL4ZBf//1632eF+94+MhqAAAA
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-034f2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1030; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=Q9n9fiC6Q6HwDd/AL7ztrfunSyqcBsNnDmEcjMyEQ80=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlAcxWvbk0rTwu4c5V3rE6Vh3eT44cxERh5gDv9WVz
+ oTE6qv6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZQHMVgAKCRAk1otyXVSH0Km/B/
+ 9Cr2mB7rJlT39j903Qoesb4rZzZLrWKk014H6NcGAQpQNV8G4WQ+ykt66sfJqCMpCRebyLUgvY9WYK
+ i7tZ8Exrekbumh0zI2b9O89o1KnbwYthV/8j3rvdwNzz00xFtqf+y145I4rNln5FOayymTU3qdMGDa
+ GF0wiEnVFxk5XYL6A7ikt67wO0wUgZvWkJ7yUbE3P+M1mPcSXJAVIqobTsdtNGVikpMFSh/CLLyatB
+ kJtZsUkhVq9+K+hmgcqA9zD3E0384OP/x0N5Cu4nZx92aPHhqBJ7nEN3U8VnqhwFovet4uydIRUynM
+ IEnBK3pAmbTcVOAwCZI0SaAsIevFPa
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 13 2023, Palmer Dabbelt wrote:
+Since the pseudo registers used by the cpufeature code for the maximum
+SVE and SME vector length appear to be unneeded other than as a double
+check of the full vector length enumeration.  As discussed when fixing
+warnings from the pseudo register code let's simplify things by just
+removing those registers and relying entirely on the full enumeration.
 
-> Having R_RISCV_NONE in any binary is a bug, it's not a real relocation
-> just an internal binutils thing.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Mark Brown (2):
+      arm64/sve: Remove ZCR pseudo register from cpufeature code
+      arm64/sve: Remove SMCR pseudo register from cpufeature code
 
-That's not true.  It's an official part of the ELF psABI.
+ arch/arm64/include/asm/cpu.h    |  6 ----
+ arch/arm64/include/asm/fpsimd.h |  1 -
+ arch/arm64/kernel/cpufeature.c  | 58 ++++++-------------------------
+ arch/arm64/kernel/fpsimd.c      | 75 +++++------------------------------------
+ 4 files changed, 19 insertions(+), 121 deletions(-)
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230912-arm64-vec-len-cpufeature-290d78e90422
 
+Best regards,
 -- 
-Andreas Schwab, SUSE Labs, schwab@suse.de
-GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
-"And now for something completely different."
+Mark Brown <broonie@kernel.org>
+
