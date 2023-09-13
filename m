@@ -2,132 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1182A79F0F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392B279F0F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjIMSNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S231720AbjIMSRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjIMSNq (ORCPT
+        with ESMTP id S229552AbjIMSRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:13:46 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C519BB;
-        Wed, 13 Sep 2023 11:13:42 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DI8dtM018677;
-        Wed, 13 Sep 2023 18:13:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=wIo3ra5cexcm4uIo62gOHb+hXHCxB95TaHhFkEaiUhc=;
- b=NBjxY9I2H5I8i++KpsO9e+/0lPgQaIjLuI7s8TtmZMoP0PojnyUGHu4ef3GDThGsbqFa
- sb7ii514qfZ2iL7ptFyV8CFKePzTFSzV3pyR8xe3NlsQzzyPgfSFZB5WoiiFazCoccW0
- Ii8Pql25k1I1z2Qfi4HCGW8Mh9BnxnsBEC8fi718bs5Lol2qnLuFpwkfhJp7YrfTdApi
- AZR/3vJCcbkEr+M8Kl7ASmFT7tw9759huBmF8MuKXXkVN23Ytd6pqGQ7/7FoRnBCECqC
- jYy+bqVAzXq95kYVeuW8QU34n+vng97FMMMoA25IKFSbGtUWmzOgtr0+kPFPPYUYk1t0 VA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ge9k7un-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 18:13:40 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DIBEMZ031753;
-        Wed, 13 Sep 2023 18:13:40 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ge9k7uf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 18:13:40 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38DI2GNW002752;
-        Wed, 13 Sep 2023 18:13:39 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hm4ybu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 18:13:39 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38DIDcA361407710
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 18:13:38 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7BD5558045;
-        Wed, 13 Sep 2023 18:13:38 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BFBD58050;
-        Wed, 13 Sep 2023 18:13:37 +0000 (GMT)
-Received: from [9.61.141.121] (unknown [9.61.141.121])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Sep 2023 18:13:37 +0000 (GMT)
-Message-ID: <83cab22d-71c3-2bbc-856f-6527479f10ec@linux.ibm.com>
-Date:   Wed, 13 Sep 2023 14:13:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] a couple of corrections to the IRQ enablement
- function
-Content-Language: en-US
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Michael Mueller <mimu@linux.ibm.com>
-References: <20230913130626.217665-1-akrowiak@linux.ibm.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-In-Reply-To: <20230913130626.217665-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: M2bZ_BChkxBySh3rmR-2UANJPDsN3GVA
-X-Proofpoint-ORIG-GUID: 0T3GprBonVwS2HpKoHAKwVsz-fnGoUBn
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 13 Sep 2023 14:17:32 -0400
+X-Greylist: delayed 1270 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Sep 2023 11:17:28 PDT
+Received: from smtp42.i.mail.ru (smtp42.i.mail.ru [95.163.41.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E2419B6;
+        Wed, 13 Sep 2023 11:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
+        ; s=mailru; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
+        Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+        X-Cloud-Ids:Disposition-Notification-To;
+        bh=W9JGMoPFPXMkSf4UYnYVsPP/a6ZBsBJHVJVEnoIzgoM=; t=1694629048; x=1694719048; 
+        b=ReqjgoUhH09jzXPIZyoDmz92k7aK/r7gEgJFWJxlpryjpOoVStfjPO/wcgXlJxjx60Oiba1eKIh
+        chXhWgQuLNBSU2HsXV14J+t6WPR2ClB1Sw14oRS3TavYo4zzTfQTQBJoApf+W4fYynuyYT6D9QX9L
+        sRerAJyBm3a2st7rNRw=;
+Received: by smtp42.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
+        id 1qgUQW-002CNz-2y; Wed, 13 Sep 2023 21:17:25 +0300
+From:   Danila Tikhonov <danila@jiaxyga.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Danila Tikhonov <danila@jiaxyga.com>
+Subject: [PATCH 0/2]  soc: qcom: socinfo: Add SM7150P ID
+Date:   Wed, 13 Sep 2023 21:17:20 +0300
+Message-ID: <20230913181722.13917-1-danila@jiaxyga.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_12,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- clxscore=1015 priorityscore=1501 impostorscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130151
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp42.i.mail.ru; auth=pass smtp.auth=danila@jiaxyga.com smtp.mailfrom=danila@jiaxyga.com
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD927CFE6CA1630A10CC7C637228D9AC5849E3361C131A0BCD300894C459B0CD1B9EA37E3C1DEA3CDF812E2907643693695E810CAF9E72F1A4271C70EC916F3F42B
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE727FD6E7FC3A8F857EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006377CC130305260E47D8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8D83AD9A91DF818CDB60591FB868C59A0117882F4460429724CE54428C33FAD305F5C1EE8F4F765FC55D5BE2F85BDEC5FA471835C12D1D9774AD6D5ED66289B52BA9C0B312567BB23117882F44604297287769387670735201E561CDFBCA1751F2CC0D3CB04F14752D2E47CDBA5A96583BA9C0B312567BB2376E601842F6C81A19E625A9149C048EE4B6963042765DA4B28F6BDBBAB179F4ED8FC6C240DEA76429C9F4D5AE37F343AA9539A8B242431040A6AB1C7CE11FEE368E4D7E803FA7AD5C0837EA9F3D19764C4224003CC836476E2F48590F00D11D6E2021AF6380DFAD1A18204E546F3947CB11811A4A51E3B096D1867E19FE1407959CC434672EE6371089D37D7C0E48F6C8AA50765F7900637A33AF67571422614731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A5AE340BF9E998A78642B845A496872F882E5E8D42E22D1635F87CCE6106E1FC07E67D4AC08A07B9B08ED1AC82D843A2BB9C5DF10A05D560A950611B66E3DA6D700B0A020F03D25A0997E3FB2386030E77
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFD9413153F9493B6132B4CEC344CA3ABB17CF3CBB77DADEF3A1964E96C1933445ACCA692FBCDC96C2C4B8F2E8CFB8F5713A23E06EBA107BE72E4EEC99511919C66E346BF9FA413E554C41F94D744909CE4BCAC77546666B612CC0CD5AA9A1B9887EE09F5AAA95A50543082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojoMTWofjSWSQGtLx7gbZW0Q==
+X-Mailru-Sender: 9EB879F2C80682A09F26F806C7394981796B0F5A6336A7084CF0F33EB09DA5F02FE1B90895D89C7D643683D8C0F3ED1CA3C71A376745D86BBE86167304C7680C3980CE5AAA35C7CD60F22E8815EDE5EAEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/13/23 9:06 AM, Tony Krowiak wrote:
-> This series corrects two issues related to enablement of interrupts in 
-> response to interception of the PQAP(AQIC) command:
-> 
-> 1. Returning a status response code 06 (Invalid address of AP-queue 
->    notification byte) when the call to register a guest ISC fails makes no
->    sense.
->    
-> 2. The pages containing the interrupt notification-indicator byte are not
->    freed after a failure to register the guest ISC fails.
-> 
+This series adds ID for Qualcomm SM7150P SoC.
 
-Hi Tony,
+The SM7150P does not have Qualcomm IP Accelerator (IPA), unlike the SM7150.
+And also has a different SoC id. SM7150P is used in
+Lenovo Tab P11 Pro (lenovo-j706f) for example.
 
-3. Since you're already making changes related to gisc registration, you might consider a 3rd patch that looks at the return code for kvm_s390_gisc_unregister and tags the unexpected error rc somehow.  This came up in a recent conversation I had with Michael, see this conversation towards the bottom:
+Danila Tikhonov (2):
+  dt-bindings: arm: qcom,ids: Add Soc ID for SM7150P
+  soc: qcom: socinfo: Add Soc ID for SM7150P
 
-https://lore.kernel.org/linux-s390/0ddf808c-e929-c975-1b39-5ebc1f2fab62@linux.ibm.com/ 
+ drivers/soc/qcom/socinfo.c         | 1 +
+ include/dt-bindings/arm/qcom,ids.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-4. While looking at patch 1 I also had a question re: the AP_RESPONSE_OTHERWISE_CHANGED path in vfio_ap_irq_enable.  Here's a snippet of the current code:
-
-	case AP_RESPONSE_OTHERWISE_CHANGED:
-		/* We could not modify IRQ settings: clear new configuration */
-		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
-		kvm_s390_gisc_unregister(kvm, isc);
-		break;
-
-Is it safe to unpin the page before unregistering the gisc in this case?  Or shouldn't the unpin happen after we have unregistered the gisc / set the IAM?
-
-> Anthony Krowiak (2):
->   s390/vfio-ap: unpin pages on gisc registration failure
->   s390/vfio-ap: set status response code to 06 on gisc registration
->     failure
-> 
->  drivers/s390/crypto/vfio_ap_ops.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
+-- 
+2.41.0
 
