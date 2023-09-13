@@ -2,91 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D02B79E8B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA4F79E8B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240704AbjIMNK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
+        id S231579AbjIMNKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbjIMNK2 (ORCPT
+        with ESMTP id S240779AbjIMNKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:10:28 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D7F19B9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:10:23 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4018af1038cso73861405e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694610622; x=1695215422; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lhylJXVHu1y/JGAQAiQbLZVjvUVFnXfhI4SjrH0o0KY=;
-        b=bOPVLz2/iYEgxXqilRq5ckSvGAs2EuwzWzcYdolBx5i1zK6WPtbc7yptYilZOg3URf
-         13RrwClMyHvliMUFHLBbx3aAR8hr4EU/n3NguP6jjyIkVqmszfpscO4Ah9QGSSIvIzS1
-         f7K7FV7t+ugYooV9pGkNxesgX4a93Ko+SuvObEdHGNqWELFRZ0yuSYehmunui/g5hH0i
-         YaFPu8l/2wXCyEmBXweYAUIuuTIzWjsFk2Ujt/KvS3FR0NVCOqCIMcPOG8B5NcdEXZKx
-         iTAuGrxMFoJMB8v1EvGW8mKsngUmP34rZcWjhM6qSOv4jnFt6WrUu8xwAidrDq0MQl57
-         +BBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694610622; x=1695215422;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lhylJXVHu1y/JGAQAiQbLZVjvUVFnXfhI4SjrH0o0KY=;
-        b=eJ/7kPXsjpy2RV6B5HKwcnVN8AUUHOolFz1BfyM0RsskpoqVYRVu/184IbwsS7a2eM
-         DUhkk9j0P1wHyhL3iJLXsoTY6Sem2uPMnzOVFTRKR+a7HcdFwK8gjY++Dp+UdMzFTH1N
-         KJrt+yzlEWTiODXtDNlALxi57YezQcjoIaBAH+NgC1LFYkLgNyy2m7+jMlJnBnEMayLL
-         60j5X05YUnohI3c0zv0d1xuLSJ/hL0uc3kR7Qv2XuTIibiahCoVsjS5y8yAuOp6SofaK
-         zDc07gSXhHFWxP4D5UurwzaWeJbSvAA7G6Una3BbWrtq7jAIYa7WJTgHdgJ080BqgB6F
-         h76A==
-X-Gm-Message-State: AOJu0Ywa0CbiPd7cJ2kViNCpQanif9W+z+Pq+gb3guw6gSfVP/K8XFI2
-        txqxw6/XSGsSFV1HrPAuT7135A==
-X-Google-Smtp-Source: AGHT+IHiJzJhe1Xrs12iA0t2UFcejF5aY0fuGShabimjAwKWm+vmmwmawqlnxHfAfdo7W9D+0o04pg==
-X-Received: by 2002:a1c:4c1a:0:b0:400:57d1:4915 with SMTP id z26-20020a1c4c1a000000b0040057d14915mr2173211wmf.37.1694610622229;
-        Wed, 13 Sep 2023 06:10:22 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.137])
-        by smtp.gmail.com with ESMTPSA id z12-20020a1c4c0c000000b003fee6e170f9sm1972778wmf.45.2023.09.13.06.10.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 06:10:21 -0700 (PDT)
-Message-ID: <9486b1f0-9c5f-4c2e-9032-18efc4a63b24@linaro.org>
-Date:   Wed, 13 Sep 2023 14:10:20 +0100
+        Wed, 13 Sep 2023 09:10:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7C71BC0;
+        Wed, 13 Sep 2023 06:10:34 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 13:10:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1694610632;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TZqxVEGK4kLTjqiI5TlNyUfCYKdpoexEMO8Nc7Yn7r0=;
+        b=cyYNH51cp1BvNtdCFz3Wf+jYQdnWgivDrHM2k0RpU7JYtQ6PhDazZEL3NUL89qLOzWZpmh
+        1KC+HSZ++TRdPL+hvQ2lMaj3pQYiZUs0NnOMOEwVfL2sQke0qESCUsMoXFa23ueG+oKdKl
+        SqmWq210VCt/BvY2zSIEZchorDNrRdGQmdSIpceqRTa+Zl7vjp7o973yaWc6/f6sV1y5qG
+        PvA8mOiIj0/zMf2YM3a/PTE9J0fqFuUNlSsJI+/3J9xk8P14szZVPdkZgfxZNU89qFdDYi
+        3xuMMN2nkXzt4wqdG8MF70/7Fxopja6CvAcs4PlcXSxcab589hW0sipZrjHrfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1694610632;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TZqxVEGK4kLTjqiI5TlNyUfCYKdpoexEMO8Nc7Yn7r0=;
+        b=H9ijjwoTkmjyFdsN5ZlZslsZTdewoHwGCMfDFX70XOIItyoxpiswsYIh8wGBldaWotOprn
+        nElCKRgXYVOxQICA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] cleanup: Make no_free_ptr() __must_check
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230816103102.GF980931@hirez.programming.kicks-ass.net>
+References: <20230816103102.GF980931@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/8] dt-bindings: mtd: add basic bindings for UBI
-Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>, linux-mtd@lists.infradead.org
-Cc:     Zhihao Cheng <chengzhihao1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-References: <cover.1691717480.git.daniel@makrotopia.org>
- <a640bb10e6fbaeef96efdb9e8b666ca39e993589.1691717480.git.daniel@makrotopia.org>
- <169263908218.2000617.16931192155432403196.robh@kernel.org>
- <ZP9kJYHMFwZ8GFnA@makrotopia.org>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <ZP9kJYHMFwZ8GFnA@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <169461063154.27769.7093220616808262713.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+The following commit has been merged into the locking/core branch of tip:
 
-On 9/11/23 20:01, Daniel Golle wrote:
-> Is there anything I can do from my end to have this series moving forward?
+Commit-ID:     85be6d842447067ce76047a14d4258c96fd33b7b
+Gitweb:        https://git.kernel.org/tip/85be6d842447067ce76047a14d4258c96fd33b7b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 15 Aug 2023 12:52:04 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 13 Sep 2023 14:59:54 +02:00
 
-You could review other UBI submissions to reduce the review load on
-Richard. I guess the queue of UBI pending patches is at:
-https://patchwork.ozlabs.org/project/linux-mtd/list/?series=&submitter=&state=&q=ubi&archive=&delegate=
+cleanup: Make no_free_ptr() __must_check
 
-Cheers,
-ta
+recent discussion brought about the realization that it makes sense for
+no_free_ptr() to have __must_check semantics in order to avoid leaking
+the resource.
+
+Additionally, add a few comments to clarify why/how things work.
+
+All credit to Linus on how to combine __must_check and the
+stmt-expression.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20230816103102.GF980931@hirez.programming.kicks-ass.net
+---
+ include/linux/cleanup.h | 39 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 53f1a7a..9f1a9c4 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -7,8 +7,9 @@
+ /*
+  * DEFINE_FREE(name, type, free):
+  *	simple helper macro that defines the required wrapper for a __free()
+- *	based cleanup function. @free is an expression using '_T' to access
+- *	the variable.
++ *	based cleanup function. @free is an expression using '_T' to access the
++ *	variable. @free should typically include a NULL test before calling a
++ *	function, see the example below.
+  *
+  * __free(name):
+  *	variable attribute to add a scoped based cleanup to the variable.
+@@ -17,6 +18,9 @@
+  *	like a non-atomic xchg(var, NULL), such that the cleanup function will
+  *	be inhibited -- provided it sanely deals with a NULL value.
+  *
++ *	NOTE: this has __must_check semantics so that it is harder to accidentally
++ *	leak the resource.
++ *
+  * return_ptr(p):
+  *	returns p while inhibiting the __free().
+  *
+@@ -24,6 +28,8 @@
+  *
+  * DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
+  *
++ * void *alloc_obj(...)
++ * {
+  *	struct obj *p __free(kfree) = kmalloc(...);
+  *	if (!p)
+  *		return NULL;
+@@ -32,6 +38,24 @@
+  *		return NULL;
+  *
+  *	return_ptr(p);
++ * }
++ *
++ * NOTE: the DEFINE_FREE()'s @free expression includes a NULL test even though
++ * kfree() is fine to be called with a NULL value. This is on purpose. This way
++ * the compiler sees the end of our alloc_obj() function as:
++ *
++ *	tmp = p;
++ *	p = NULL;
++ *	if (p)
++ *		kfree(p);
++ *	return tmp;
++ *
++ * And through the magic of value-propagation and dead-code-elimination, it
++ * eliminates the actual cleanup call and compiles into:
++ *
++ *	return p;
++ *
++ * Without the NULL test it turns into a mess and the compiler can't help us.
+  */
+ 
+ #define DEFINE_FREE(_name, _type, _free) \
+@@ -39,8 +63,17 @@
+ 
+ #define __free(_name)	__cleanup(__free_##_name)
+ 
++#define __get_and_null_ptr(p) \
++	({ __auto_type __ptr = &(p); \
++	   __auto_type __val = *__ptr; \
++	   *__ptr = NULL;  __val; })
++
++static inline __must_check
++const volatile void * __must_check_fn(const volatile void *val)
++{ return val; }
++
+ #define no_free_ptr(p) \
+-	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
++	((typeof(p)) __must_check_fn(__get_and_null_ptr(p)))
+ 
+ #define return_ptr(p)	return no_free_ptr(p)
+ 
