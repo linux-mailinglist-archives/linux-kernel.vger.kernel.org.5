@@ -2,115 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834FE79F3F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4C379F3F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbjIMVqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        id S232813AbjIMVqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjIMVqI (ORCPT
+        with ESMTP id S232800AbjIMVqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:46:08 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A821739
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7927f24140eso9661039f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694641564; x=1695246364; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hS6LHZP97enWTuQrtj4p55fJQ0mnk4aMtCPKI4xtC9M=;
-        b=18tlNagWct2lJErMpBBze8hACFvX5AZfJLqUoJDTdn8+tzMzPrIui3pb2PRkgj3YRu
-         f3PuBDz4ls1YMRvPhgpSyYyA6cuJ4I5XNaR6KVrZiBdpZf4zJxTuT43MBLxiREBUSS0h
-         n0rMasvjPs+aSvU1ZoLuE4EJrbCDGYGXaOjaTabw0jAPqvNi8OB2Zs35x0jwYYoeZL1t
-         GCazIk56jwrycpvcVMZDZuY4cmhHxFrFJYFGDTEOghy3vcv022pDC3ofYa/CDup4TApO
-         zsqta+wTSCB6mC7WWxEw7SwfhbeBOm48l4Kvz/qeKWRo2I6tLda2b1MaCpapl6aCnH08
-         4F2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694641564; x=1695246364;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hS6LHZP97enWTuQrtj4p55fJQ0mnk4aMtCPKI4xtC9M=;
-        b=V7pPtgwR96A99sRG7MGfP41+ZBXL4WnVrFwzQEgGdFKoAE80AWpZRq12YpRPqkh7gY
-         l2Yd++BR3VyrandtaID5+fSl+9x+jIqnwkCWpRFeQ8iXAO9NfI4N9mYSfNqxY/BaP2bD
-         X2bkCt0i/zBvELGhTCPMeikbQfCDzLReH37VSqmFOTpLG3Adr44gIsaFYes7goI18Vr0
-         24TKiSOEnEsi1Md+FyNzPjzsfAQslzBhQ0+cWpf78GCuwkWhuBiBkOkPHmexl6nLC5NL
-         juo0Ubls/lcQEmqmbn2adKb/oLAnkNbMJpnTw8ZK3+8H3TgAEhxMmehILe7TjsOtXGa/
-         fiiA==
-X-Gm-Message-State: AOJu0Yz6FQeCSew2buelE5kkayBji0zbqCKyDqjGLVrVB/zYSIKJ8lzN
-        AVrjouDTAcK7m33uiV3RsYCNPg==
-X-Google-Smtp-Source: AGHT+IEB+MklxqwnlrjkpN5LSD98xUtIFfRsg2kZyYkJD4SxmRxnVtsxRjGe7HwbeANhxquKJjnX0g==
-X-Received: by 2002:a05:6e02:214d:b0:349:9af9:d412 with SMTP id d13-20020a056e02214d00b003499af9d412mr4794802ilv.0.1694641564057;
-        Wed, 13 Sep 2023 14:46:04 -0700 (PDT)
-Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
-        by smtp.gmail.com with ESMTPSA id f15-20020a056638118f00b004316bbe1d4csm24843jas.78.2023.09.13.14.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 14:46:03 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 21:46:00 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 3/7] bcachefs: Fix -Wformat in bch2_alloc_v4_invalid()
-Message-ID: <20230913214600.y3eo3emayljnxfuy@google.com>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
- <20230912-bcachefs-warning-fixes-v1-3-a1cc83a38836@kernel.org>
+        Wed, 13 Sep 2023 17:46:42 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D977198B;
+        Wed, 13 Sep 2023 14:46:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=pxR15M8m/2jQvnaKDy+BPuzL4T3YF99oD14Zf47np38=; b=Mr6D63mKVH8NczbhL9tkCUyxux
+        A+b1D8qAjfSU317ZnsjIXoMj+spxJyMBltkXRZsMxzlVcNQ4B2+Xrr6yKuTh/b2xrQS7BBfluObbZ
+        NeNKhNS/+8SfYcadZngjmQW59heY0uAE6odYTVRriO6r/6zTGzy9O4UkAfzx9LwZQ4hA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qgXgm-006LM2-K6; Wed, 13 Sep 2023 23:46:24 +0200
+Date:   Wed, 13 Sep 2023 23:46:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v4 1/2] dt-bindings: net: dsa: microchip: Update
+ ksz device tree bindings for drive strength
+Message-ID: <daa063e8-d245-4b67-be2c-c67c16ddb36b@lunn.ch>
+References: <20230912045459.1864085-1-o.rempel@pengutronix.de>
+ <20230912045459.1864085-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-3-a1cc83a38836@kernel.org>
+In-Reply-To: <20230912045459.1864085-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:40PM -0700, Nathan Chancellor wrote:
-> When building bcachefs for 32-bit ARM, there is a compiler warning in
-> bch2_alloc_v4_invalid() due to use of an incorrect format specifier:
->
->   fs/bcachefs/alloc_background.c:246:30: error: format specifies type 'unsigned long' but the argument has type 'unsigned int' [-Werror,-Wformat]
->     245 |                 prt_printf(err, "bad val size (%u > %lu)",
->         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->         |                                                     %u
->     246 |                        alloc_v4_u64s(a.v), bkey_val_u64s(k.k));
->         |                        ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
->   fs/bcachefs/bkey.h:58:27: note: expanded from macro 'bkey_val_u64s'
->      58 | #define bkey_val_u64s(_k)       ((_k)->u64s - BKEY_U64s)
->         |                                 ^
->   fs/bcachefs/util.h:223:54: note: expanded from macro 'prt_printf'
->     223 | #define prt_printf(_out, ...)           bch2_prt_printf(_out, __VA_ARGS__)
->         |                                                               ^~~~~~~~~~~
->
-> This expression is of type 'size_t'. On 64-bit architectures, size_t is
-> 'unsigned long', so there is no warning when using %lu but on 32-bit
-> architectures, size_t is 'unsigned int'. Use '%zu', the format specifier
-> for 'size_t' to eliminate the warning.
->
-> Fixes: 11be8e8db283 ("bcachefs: New on disk format: Backpointers")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+On Tue, Sep 12, 2023 at 06:54:58AM +0200, Oleksij Rempel wrote:
+> Extend device tree bindings to support drive strength configuration for the
+> ksz* switches. Introduced properties:
+> - microchip,hi-drive-strength-microamp: Controls the drive strength for
+>   high-speed interfaces like GMII/RGMII and more.
+> - microchip,lo-drive-strength-microamp: Governs the drive strength for
+>   low-speed interfaces such as LEDs, PME_N, and others.
+> - microchip,io-drive-strength-microamp: Controls the drive strength for
+>   for undocumented Pads on KSZ88xx variants.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-> ---
->  fs/bcachefs/alloc_background.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/bcachefs/alloc_background.c b/fs/bcachefs/alloc_background.c
-> index 540d94c0cceb..67e73864823c 100644
-> --- a/fs/bcachefs/alloc_background.c
-> +++ b/fs/bcachefs/alloc_background.c
-> @@ -242,7 +242,7 @@ int bch2_alloc_v4_invalid(const struct bch_fs *c, struct bkey_s_c k,
->  	struct bkey_s_c_alloc_v4 a = bkey_s_c_to_alloc_v4(k);
->
->  	if (alloc_v4_u64s(a.v) > bkey_val_u64s(k.k)) {
-> -		prt_printf(err, "bad val size (%u > %lu)",
-> +		prt_printf(err, "bad val size (%u > %zu)",
->  		       alloc_v4_u64s(a.v), bkey_val_u64s(k.k));
->  		return -BCH_ERR_invalid_bkey;
->  	}
->
-> --
-> 2.42.0
->
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
