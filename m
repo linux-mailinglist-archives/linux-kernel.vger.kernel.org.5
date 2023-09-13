@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFCD79EFF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC4379EFF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjIMRJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
+        id S229843AbjIMRLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjIMRJg (ORCPT
+        with ESMTP id S229468AbjIMRLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:09:36 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD64F2698
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:09:07 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26f57f02442so55242a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:09:07 -0700 (PDT)
+        Wed, 13 Sep 2023 13:11:13 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C127D91
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:11:09 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-273ca7ab3f5so47741a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:11:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694624947; x=1695229747; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694625069; x=1695229869; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wp3RFNUyA36WKs+LwiEbI6IPse2t1rgKYPkaJa9C0u8=;
-        b=l6iHoEqiHmB+5EyqIZH2iCAfePHVATuunNVv3G9TJhy1QPkbrqgXn9Hh2myLc9Tcvr
-         v6cTZ02np5aGyHuZ2rLnTJ1dEpRBiKl03dolp57DWqcT8lkbJqppw4rdJd/a2FrDwgp2
-         UhjwprFIxntcm6kgA9UhjCVLnIuHZdh8o8OV5h9vP/OJnZ9z8cCBSiIjl/Ce2paHH/Dm
-         j2iwQmUX3oC3j0Aq78yUcDj6KJ39xsgeiai/dKkWGBk93za9GqVsawihCVocrO8Sksj2
-         Li2z+HlV8TRN5jM1PB95kAcUPbASgEhroswmvi0/IgDbf22GMyEcj7LYMwOU1nZr9chN
-         db2A==
+        bh=D31NnAlVX5Nwr4SVKiIWrR2mdDlx525lDafc4aXdb/s=;
+        b=cCXLtaKNSk2R6I5ywPWb//Z2ajBJLxWam2qb8dkp8uaJVtAIjvTW9Gn1xv9H69GVQl
+         FXt1020abyL41t59SqvygGNcoo7nt6pfil6f4yG92IHXSk8/oUg06on2malKhIfAoBta
+         T9PUY7XrGq2y6oqn09LcUQz4UvDW6ZNwTn4wts1XYSsaNJZDrShGvtOUJDETBwhpyx8/
+         B4j2xtZll8t+IMlEU4KQlITxcxQ0o/Cw/+8XIqrtpZNu8u1dEkJy78TT6xjsSgSve9Io
+         l0mtVb8a7ip1bab0ch0i0w44/9/se6rJ7FmcGw4fpLbigY+MS2ruD/Ud1+VeDsZIYNxy
+         7Pig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694624947; x=1695229747;
+        d=1e100.net; s=20230601; t=1694625069; x=1695229869;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wp3RFNUyA36WKs+LwiEbI6IPse2t1rgKYPkaJa9C0u8=;
-        b=eZw2cML++FJkHXbYigObbZjrEkto/jtkaEdb2KkTcTFm1DM2Zf9hkZjVNsPy2raiHI
-         jSxkBuObq5ELZqVk1Oq2JPx5P/quADfmjD+sUfmFZ3m59Z4BaBD7QHJ0kkkEfBqO2BhH
-         XdHu0PCCMu6pXx4Z4rg8yf8jHmbr/m0NHO04bKH7FcdbA/5rm2p3/PvQLZff9laFBxuT
-         dndW0xB8IxBT7JDvrXUnnIQJjgcmDT0KdaTuC4BeU6wJVKhWA0JflQR1X0T85yCcbNQj
-         zCSBG55X4xRc+G6beytv9gJJZkXHpZeK71+a8ukKPPTrGt6oYFwppfQjc5EP2sK13Kgl
-         82YQ==
-X-Gm-Message-State: AOJu0YxQTbwXNCBMuadlpygzxsRDTtgGVCIm1vmSZ6a/PKxABFPBGd+8
-        hVH+WEZPV0hSZ/bnM5+RWqO6G5MHxL5gtIaaKUHQBJ6K
-X-Google-Smtp-Source: AGHT+IFnTsfCCAvjTTXF0tw2ZjaYgJSLdBeKAwtaOvthb4sutpsXgC+kai/BftmKmoVEf73flhLQZSaEOoNtYm/UprA=
-X-Received: by 2002:a17:90a:c584:b0:26d:d2d:1a90 with SMTP id
- l4-20020a17090ac58400b0026d0d2d1a90mr2912368pjt.1.1694624947292; Wed, 13 Sep
- 2023 10:09:07 -0700 (PDT)
+        bh=D31NnAlVX5Nwr4SVKiIWrR2mdDlx525lDafc4aXdb/s=;
+        b=mjHntz9RUnE2vLs1QDQCCtvdGNE+s5JWa0IDUwwR54bs2x4sxBXUfn9wGWJYvNoirm
+         4DiffVVK8lXBCqqhGwlITadXUskDgyhyXwojtGe6xR2xLZwiyBuuoKmjz52c3+0a0pRs
+         pP2piAO+FEIKwW0b6us/AYqca9E3vamtV9N00M/Qki1+DHF7duB7ZMNZC2k5h8ITnxxJ
+         PQIpiCPW4RrCy3cZ6NCkWOTjWXA4kV735ZxKNIv7TfoC5YKWE/zgk2StFSlNpSngjBvM
+         CQfRXvyoCD8rnj/Dgn5hjYpdy+z0ehBPSohT270BNr//MSEkfq1Wi5Tnm69ige3L1nZX
+         P/gA==
+X-Gm-Message-State: AOJu0Yzi5GGxKM1Q586rgKVTi4hM6qUMhCyYl9r+6muGpupFMqMWGCEd
+        u++dnJ1elh4PguGQgguDPjNlNtQTfGYShmfOJMM=
+X-Google-Smtp-Source: AGHT+IHJBrpc+51Wtf9cEI/jY8K45N8F3VDEx/1h6NR6LwF4lgqOW46uLJMdOZT66ww/3TlWoZ2DAV9oNIPpyGNvScE=
+X-Received: by 2002:a17:90b:f17:b0:268:2d92:55d3 with SMTP id
+ br23-20020a17090b0f1700b002682d9255d3mr2851674pjb.39.1694625069172; Wed, 13
+ Sep 2023 10:11:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <6db160185d3bd9b3312da4ccc073adcdac58709e.1693328501.git.andreyknvl@google.com>
- <ZO8IMysDIT7XnN9Z@elver.google.com> <CA+fCnZdLi3g999PeBWf36Z3RB1ObHyZDR_xS0kwJWm6fNUqSrA@mail.gmail.com>
- <CANpmjNNtT1WUpJu_n5x_tA2sL4+utP0a6oGUzqrU5JuEu3mowg@mail.gmail.com>
-In-Reply-To: <CANpmjNNtT1WUpJu_n5x_tA2sL4+utP0a6oGUzqrU5JuEu3mowg@mail.gmail.com>
+References: <cover.1693328501.git.andreyknvl@google.com> <3948766e-5ebd-5e13-3c0d-f5e30c3ed724@suse.cz>
+ <CA+fCnZdRkJTG0Z1t00YGuzH4AFAicGUVyxFc63djewRz0vj=pQ@mail.gmail.com> <3a372d658246c5dd1ab1d95f4b601267b0fb154e.camel@mediatek.com>
+In-Reply-To: <3a372d658246c5dd1ab1d95f4b601267b0fb154e.camel@mediatek.com>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 13 Sep 2023 19:08:56 +0200
-Message-ID: <CA+fCnZdAUo1CKDK4kiUyR+Fxc_F++CFezanPDVujx3u7fBmw=A@mail.gmail.com>
-Subject: Re: [PATCH 11/15] stackdepot: use read/write lock
-To:     Marco Elver <elver@google.com>
-Cc:     andrey.konovalov@linux.dev,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
+Date:   Wed, 13 Sep 2023 19:10:57 +0200
+Message-ID: <CA+fCnZf7eHV3Mb27x6HnNyS9RoS2AYQTtYxxLrv5QXKhMKEqcg@mail.gmail.com>
+Subject: Re: [PATCH 00/15] stackdepot: allow evicting stack traces
+To:     =?UTF-8?B?S3Vhbi1ZaW5nIExlZSAo5p2O5Yag56mOKQ==?= 
+        <Kuan-Ying.Lee@mediatek.com>
+Cc:     "vbabka@suse.cz" <vbabka@suse.cz>,
+        "andreyknvl@google.com" <andreyknvl@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "elver@google.com" <elver@google.com>,
+        "eugenis@google.com" <eugenis@google.com>,
+        "andrey.konovalov@linux.dev" <andrey.konovalov@linux.dev>,
+        "glider@google.com" <glider@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 6:19=E2=80=AFPM Marco Elver <elver@google.com> wrote=
-:
+On Tue, Sep 5, 2023 at 4:48=E2=80=AFAM 'Kuan-Ying Lee (=E6=9D=8E=E5=86=A0=
+=E7=A9=8E)' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
 >
-> > Good suggestion. I propose that we keep the rwlock for now, and I'll
-> > check whether the performance is better with percpu-rwsem once I get
-> > to implementing and testing the performance changes. I'll also check
-> > whether percpu-rwsem makes sense for stack ring in tag-based KASAN
-> > modes.
+> > > 3. With the number of stackdepot users increasing, each having
+> > > their
+> > > distinct set of stacks from others, would it make sense to create
+> > > separate
+> > > "storage instance" for each user instead of putting everything in a
+> > > single
+> > > shared one?
+> >
+> > This shouldn't be hard to implement. However, do you see any
+> > particular use cases for this?
+> >
+> > One thing that comes to mind is that the users will then be able to
+> > create/destroy stack depot instances when required. But I don't know
+> > if any of the users need this: so far they all seem to require stack
+> > depot throughout the whole lifetime of the system.
+> >
+> Maybe we can use evition in page_owner and slub_debug
+> (SLAB_STORE_USER).
 >
-> I think it's quite obvious that the percpu-rwsem is better. A simple
-> experiment is to measure the ratio of stackdepot hits vs misses. If
-> the ratio is obviously skewed towards hits, then I'd just go with the
-> percpu-rwsem.
->
-> The performance benefit may not be measurable if you use a small system.
+> After we update page_owner->handle, we could evict the previous
+> handle?
 
-I started looking into using percpu-rwsem, but it appears that it
-doesn't have the irqsave/irqrestore API flavor. I suspect that it
-shouldn't be hard to add it, but I'd rather not pursue this as a part
-of this series.
+We can definitely adapt more users to the new API. My comment was
+related to the suggestion of splitting stack depot storages for
+different users.
 
-So I still propose to keep the rwlock for now, and switch to
-percpu-rwsem later together with the other perf changes.
+But actually I have a response to my question about the split: if each
+user has a separate stack depot storage instance, they can set the
+maximum stack trace size as they desire, and thus save up on memory.
