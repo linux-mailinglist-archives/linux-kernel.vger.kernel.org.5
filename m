@@ -2,93 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F22579F4D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA68179F4E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233018AbjIMWTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 18:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
+        id S232969AbjIMWZX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 18:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjIMWTT (ORCPT
+        with ESMTP id S229743AbjIMWZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:19:19 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9E919A0;
-        Wed, 13 Sep 2023 15:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694643554;
-        bh=zLywpBXGPVjbMPp/0mEgBcEgMQCavtFgVgs4YNmeboQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kxzJhbH1+28KFnuIyD0+hA0t5IgqfMR06PjSVd7E3LfFAnNu1EkaktoyihADutvG4
-         uOuXO0xDpd1GHYOTuyn0djgunqNDUiK8rlL+7xqghDxV7rWkko5VKINEJtkTMcNaNI
-         84yY3mrOnek7UV643Dy9BZ7OnT3o2twYuXbOi9jpFVH3Or4dXloUmPCQ0CJo9fhuMW
-         FK3+LvJP2pVa94TGOKyszXptJ3KAgwQfTYgVelWFOfiUfjeMqny7H3iRSQAxuNvtLL
-         OM//u3h/FKqrceui/SNciBouBnD6Rlk+iVo8ZOPPaWbFmVxfvUDMpkdVbXLfqd9+V1
-         0iBiw16UjCprg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmFH55Zglz4wxl;
-        Thu, 14 Sep 2023 08:19:13 +1000 (AEST)
-Date:   Thu, 14 Sep 2023 08:19:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: linux-next: boot warning from the bpf-next tree
-Message-ID: <20230914081912.33b30cc8@canb.auug.org.au>
-In-Reply-To: <64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
-References: <20230913133436.0eeec4cb@canb.auug.org.au>
-        <20230913145919.6060ae61@canb.auug.org.au>
-        <64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
+        Wed, 13 Sep 2023 18:25:21 -0400
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3A7198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:25:17 -0700 (PDT)
+Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay05.hostedemail.com (Postfix) with ESMTP id 329B34020C;
+        Wed, 13 Sep 2023 22:25:16 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id E706332;
+        Wed, 13 Sep 2023 22:25:13 +0000 (UTC)
+Message-ID: <5d5e987a4a1a624f1d8a99a2b7f76c7c3db70241.camel@perches.com>
+Subject: Re: [PATCH 2/2] checkpatch: Add a couple new alloc functions to
+ alloc with multiplies check
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Gustavo Silva <gustavoars@kernel.org>, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Sep 2023 15:25:12 -0700
+In-Reply-To: <968f8168-1a0f-c916-86fb-fe4d89bb6250@embeddedor.com>
+References: <cover.1694636817.git.joe@perches.com>
+         <edb667e19211652a32ef6069159bb85dbc3bcdfc.1694636817.git.joe@perches.com>
+         <968f8168-1a0f-c916-86fb-fe4d89bb6250@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/orKwvZW7.iPNQ9_UONq7tER";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: E706332
+X-Stat-Signature: 7gjm3q4bxfmdiegb695hbn9th6upufuh
+X-Spam-Status: No, score=1.39
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19aeweXyRZthNUjkll/JFexJWdOyvB9iU8=
+X-HE-Tag: 1694643913-423633
+X-HE-Meta: U2FsdGVkX18fqRU8wzCJaUlDMNllcQdcJ27I+y+n4LwiGejRCdo5jnDUEal3RItGx0/scPDOWxe0XRHV333MlMl/5dMmOp+oM4iyx2Blfqr56ZAb90cMDvAL5KtzpfH+U4M793SEA+fJiYoktzNuZkmYub6NyTPBXStVEMY9YQL5xIzCEGMVulxyxWGI2dByAxGum0QQk4vaGiZvgXKzd2KfeqyJmzsBXvG5CcLuea1Dp8jUNQpgjv1NKjhWupr3mSGhixI/PFN/3dSUfJx0Qn34PPC9euv3FfVC08jw5wiwKha9H/12sK7PFB+1gOMVEEJB3995e/B0g9oAGXZjhng6fDO4DwLOVSkmE4nbCrHxvIzQYD46Q47dLThZZSHU8xnbdfUjFrm+lfNK8FsyIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/orKwvZW7.iPNQ9_UONq7tER
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2023-09-13 at 16:14 -0600, Gustavo A. R. Silva wrote:
+> 
+> On 9/13/23 14:37, Joe Perches wrote:
+> > vmalloc() and vzalloc() functions have now 2-factor multiplication
+> > argument forms vmalloc_array() and vcalloc(), correspondingly.
+> > 
+> > Add alloc-with-multiplies checks for these new functions.
+> > 
+> > Simplify the original codes repeated else to use a hash.
+> > 
+> > Link: https://github.com/KSPP/linux/issues/342
+> > 
+> > Original-patch-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 
+> Why don't you wait for a response or a v2 from the original
+> submitter?
 
-Hi Hou,
-
-On Wed, 13 Sep 2023 15:56:04 +0800 Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Yes. The warning is due to the checking added in commit c93047255202
-> ("bpf: Ensure unit_size is matched with slab cache object size").
-> Considering that bpf-next has not merged the patch-set yet, should I
-> post a patch to bpf tree to fix it ? A fix patch is attached which can
-> fix the warning in my local setup.
-
-I will apply your patch as a merge resolution for the bpf-next tree
-merge until something better is done.   Please make sure to let me know
-if it is not longer needed (in case it is not obvious).
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/orKwvZW7.iPNQ9_UONq7tER
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCNWAACgkQAVBC80lX
-0GwuOQf+KWBTqY7eObPbFTZBSZSSIanAEyD/PV0bdtfB9zxa74+OE5mutDSDTYEv
-6Pf72Z1PNxdZzhOdufqE/XVx7rXfy9vIp++vkE7+Uz1J21f5Ilfn7gbbsTYu6N9u
-9RG+JENpbroJtRT/LLyRerXT+q7Q5fyBcB/kL5B3CfOataLF9usI7sv/hifhPu8U
-I0CnAV3SsUVDD2gqOtI16maGXhabtHM/Hzl+vRz53oX9Z+bMcSwSJ2GGDkV7WHKi
-XYq7BjlrllIOXPxLtacWpTB/HADKoLierClCWeDXc0K1otS9ZMy7D7+UD2Db4clc
-T5u+IhRq0Y7NPQQ0DtRXVd4gLVjt9w==
-=PvI8
------END PGP SIGNATURE-----
-
---Sig_/orKwvZW7.iPNQ9_UONq7tER--
+Because there really is no need to wait.
