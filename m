@@ -2,123 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CCC79EFC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C9079EFCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbjIMREc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
+        id S229973AbjIMREg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbjIMREb (ORCPT
+        with ESMTP id S229660AbjIMREd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:04:31 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCAECE
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:04:27 -0700 (PDT)
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DAcB0g016759;
-        Wed, 13 Sep 2023 17:03:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=AlDDlB01SiTBasPbc9DUiDivgebSGgeD2l8rr6NGVYw=;
- b=f2U023wQxTTk1eYb2V5VDF5MDHAr1A+bJCjEUWvudnhtOpKqIsZfquvmW1vONf2WWpby
- LYsen7zXNfBKhYa0Ma0EDZDXcDgbFY4mpwBVrAPGSN4NSAn1Gpnx++XBlmWmfkCglXbT
- K3fV4YVqy1/DbZc2fMrTHcpgc5c2T3Rc9hg3oDQMczmWKotFx99nE/nMSHm26WFXBAiA
- /oKRqM9YyHyEqdUnws+pAho1o08p3aU1xOeppGoRKvJSCJJvnxAllqrDfStuZqxsYWy9
- heHZU+2hef7ez0AK0AG8+7+J4ga3t8mQf4devBzd9IANA0ph9B8yRg0wUPKORXH+H34X TQ== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3t349tfn7d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 17:03:43 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 9FA20805E57;
-        Wed, 13 Sep 2023 17:03:42 +0000 (UTC)
-Received: from swahl-linux (unknown [16.231.227.36])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 25FCE80362F;
-        Wed, 13 Sep 2023 17:03:41 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 12:03:39 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Steve Wahl <steve.wahl@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Kyle Meyer <kyle.meyer@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Subject: Re: [PATCH] x86/platform/uv: Use sysfs_match_string() for string
- parsing in param_set_action()
-Message-ID: <ZQHray72BRX+mSrL@swahl-linux>
-References: <20230913151656.52792-1-hdegoede@redhat.com>
- <ZQHpC/oKLwfJuvRu@swahl-linux>
- <4f41e78e-5e47-0726-c64a-82559d1f799b@redhat.com>
+        Wed, 13 Sep 2023 13:04:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1906CE;
+        Wed, 13 Sep 2023 10:04:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2ECAC433C8;
+        Wed, 13 Sep 2023 17:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694624669;
+        bh=7rv3Solh0betRWknM4KbpX2Yzq/6PuTa+8pHyrMJGLA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QVJnA+aBoPDbHvk8YrLqfUO2xt+TBAZSJweq0lY30J46pjlEIWz3WjieCmseON/88
+         ylqNWd3Laqfh+ek+uk2rL22H18Z85BL7UfSb2gVDwUXpEVyORdsFZZcEuOMXkrNchE
+         G/cYB0p2d05fshkD+v+Em9SVX3aKdTCEriBBlgAAVk5WfLZf2nevRk2F1LYhY0EZtk
+         GvD91tOsCEJSP4pnT1hbbFVThhMaOCPNLXIT0xtdBNrW8XZI3VP8+EqiNkKwU1QHTP
+         sQmVfyt/mJcyLPUIsIZF/9Uuepm1Ra4kKz6ie5D1prKqWtU41V+f3jHT4Cf3npsv+M
+         JClNNDAK/RJng==
+Message-ID: <c57b71b5109942d7c66d8466fb26f82211c1a175.camel@kernel.org>
+Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 13 Sep 2023 13:04:27 -0400
+In-Reply-To: <20230913-hausbank-wortlaut-b2bb3cee6156@brauner>
+References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
+         <20230913-hausbank-wortlaut-b2bb3cee6156@brauner>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f41e78e-5e47-0726-c64a-82559d1f799b@redhat.com>
-X-Proofpoint-ORIG-GUID: XzImk9e6nKuvDvn2EHaFXruU_Qo993hk
-X-Proofpoint-GUID: XzImk9e6nKuvDvn2EHaFXruU_Qo993hk
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_11,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- bulkscore=0 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 clxscore=1015 phishscore=0 spamscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 07:01:31PM +0200, Hans de Goede wrote:
-> Hi Steve,
-> 
-> On 9/13/23 18:56, Steve Wahl wrote:
-> > On Wed, Sep 13, 2023 at 05:16:56PM +0200, Hans de Goede wrote:
-> >> Remove the custom, hard to read code to:
-> >>
-> >> 1. Make a copy of "val" with any potential '\n' at the end stripped
-> >> 2. Compare the copy against an array of allowed string values
-> >>
-> >> Linux has the sysfs_match_string() helper exactly for cases like this,
-> >> switch to this.
-> > 
-> > Hans,
-> > 
-> > I like this patch, compiling and testing now.
-> > 
-> > I was wondering, as long as we're in the neighborhood, how you feel
-> > about changing the stored variable uv_nmi_action to an int or enum
-> > rather than a string, since it can only be one of 6 values, and the
-> > string compare while processing an NMI strikes me as inefficent.
-> > 
-> > It could extend this patch, or be done as a follow on.  And I'm
-> > willing to supply the effort if you want me to.
-> 
-> I must admit I did not look at the code consuming uv_nmi_action
-> and I did wonder why this was not an enum from day 1.
-> 
-> I'll prepare a v2 of this patch which changes uv_nmi_action
-> to an enum.
-> 
-> Note I can compile test this only, so I gope you will be able to
-> test the v2 a bit more thoroughly :)
+On Wed, 2023-09-13 at 18:45 +0200, Christian Brauner wrote:
+> On Wed, Sep 13, 2023 at 09:33:12AM -0400, Jeff Layton wrote:
+> > Nathan reported that he was seeing the new warning in
+> > setattr_copy_mgtime pop when starting podman containers. Overlayfs is
+> > trying to set the atime and mtime via notify_change without also
+> > setting the ctime.
+> >=20
+> > POSIX states that when the atime and mtime are updated via utimes() tha=
+t
+> > we must also update the ctime to the current time. The situation with
+> > overlayfs copy-up is analogies, so add ATTR_CTIME to the bitmask.
+> > notify_change will fill in the value.
+> >=20
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+>=20
+> Looks good to me,
+> Acked-by: Christian Brauner <brauner@kernel.org>
+>=20
+> So we can wait for ovl to upstream this fix next and then we'll delay
+> sending the ctime fixes or we'll take this fixup as well. Just let me
+> know what you all prefer.
 
-I will!
-
---> Steve Wahl
-
--- 
-Steve Wahl, Hewlett Packard Enterprise
+No preference here.
+--=20
+Jeff Layton <jlayton@kernel.org>
