@@ -2,132 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 567A079DF48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 06:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AA279DF4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 06:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237401AbjIME5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 00:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        id S238269AbjIME71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 00:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235603AbjIME52 (ORCPT
+        with ESMTP id S230127AbjIME70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 00:57:28 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A37E173A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 21:57:03 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26f57f02442so4553328a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 21:57:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694581022; x=1695185822; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jUuT6xhrpskEbCzNwuseee5gbPTwHN5TLgP+3rePu4A=;
-        b=OYwhRxFuUjVxZfcHZ7wgGCoQdIUN6L4GmpZ/ndjFKwo6oml/cofDN4bl2DlhmPoM6Y
-         djSigpzXOR9epFla3Mb7nFkmPU321XdAZWzp791ib1Or5Jg5XWb/rvOiFY/37L7cbrve
-         BUyYLR8H7p5Dc+00fO/0rbAKHkjx4SNDj+qFjw6gPUEQUsxHJsHFRpYsHe0GKf4LiAlf
-         wSafCTEf+bxf+2M6f/wK6INowxkMw6jwTvqBHQbeX4UO/lodcW1840bLjYuDsv4hRj5O
-         WSMe2JtI/su14tL1M9AryR0zbf5qTI8zAHVq5t7K2U0qYroRVIIUKwQUDZLtalV8InWR
-         PnAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694581022; x=1695185822;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jUuT6xhrpskEbCzNwuseee5gbPTwHN5TLgP+3rePu4A=;
-        b=vKS3FvvDL4zk8ppak0ScVpMnRlelMWFWJP6OEqnOwRDeTwj3L2cjH+p5fUj7fltoa0
-         czXl3qgj6vC6innd1x/d13QhWkSXwOmTIJZoK/x556evFXeFpBmoJ2VdFsKQnmD9FKhL
-         C890F2t/Yk5CD/k8s2HZhJuM3dtpfTOPxfP0t9a0EpcUX2JhSNHixkB55HlWES2qrQUf
-         FG+RxEFgoCzpGRBqRS7ASU5W1fAYDs+PY4MWDuepLaAfrLUOi3LOZuWGST1lQcILEfUs
-         4omGvFohEmO2Q7UE2N+aLo8jv/QsI+ciS4oSEfO0toMXLNhAPatwR9FYYEbWB3ovk/sK
-         eR5w==
-X-Gm-Message-State: AOJu0YxRCS9XG8iec9O4AQ4ekwJDTbTKB4yTHCYKZ9n3j12Lc+9kUXh9
-        Dp9V/QeVu7SVUWB/meROUXRZeg==
-X-Google-Smtp-Source: AGHT+IEBec3QFxac/FCTbUrO0hwTGE1AiPM5bwc+ak1kXddh13Nhapx5BBORG5ZLIDtUcmXbPQmexA==
-X-Received: by 2002:a17:90a:b297:b0:269:3cdb:4edf with SMTP id c23-20020a17090ab29700b002693cdb4edfmr1184930pjr.16.1694581022410;
-        Tue, 12 Sep 2023 21:57:02 -0700 (PDT)
-Received: from [10.84.145.144] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id fv23-20020a17090b0e9700b0026d6ad176c6sm2182802pjb.0.2023.09.12.21.56.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Sep 2023 21:57:02 -0700 (PDT)
-Message-ID: <88825625-283a-d521-3e7e-058784455577@bytedance.com>
-Date:   Wed, 13 Sep 2023 12:56:55 +0800
+        Wed, 13 Sep 2023 00:59:26 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E76172A;
+        Tue, 12 Sep 2023 21:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694581160;
+        bh=BQWQxVgtDq67jRQfNxeUs/YY/NSz0gkDxgXPDiLLg4Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ox7p/ixZ4XdLZb7vURtOdqoQjj/ecaEwbncvnBgOqT3tTmsuN0O2a3cMbMyFBquQD
+         TnvHstGG7e/t5hECabxAgouneLH5VM4aExCobQD8N1t/H8lySAmJCB1ljn7wwL4GYc
+         eAbjC8uzV6XsMtxaY4Q7cxpEwpKADca3EvFrxrUamcWh5PpBgEKabXUFVWCAFY4MGj
+         mH1Nb4zHofGCOw1Eiw4E9CBgPT/XSdh1bzPQms6WKGCcISbSgjhmRvIeZwU8aH32HJ
+         ZbI8W36fhtEoo302Pkp958hplz79Ah+aqFlh97kAwlgxMn+kYIEYQXcA9W3HiH53du
+         9egLxkWgDcMyQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RlpCC68Bmz4wbj;
+        Wed, 13 Sep 2023 14:59:19 +1000 (AEST)
+Date:   Wed, 13 Sep 2023 14:59:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: boot warning from the bpf-next tree
+Message-ID: <20230913145919.6060ae61@canb.auug.org.au>
+In-Reply-To: <20230913133436.0eeec4cb@canb.auug.org.au>
+References: <20230913133436.0eeec4cb@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Introduce css_task open-coded
- iterator kfuncs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, tj@kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20230912070149.969939-1-zhouchuyi@bytedance.com>
- <20230912070149.969939-3-zhouchuyi@bytedance.com>
- <8b272d63-5dd7-13bd-7691-d061895fdbe1@linux.dev>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <8b272d63-5dd7-13bd-7691-d061895fdbe1@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/PXHm/nlbskOi1ycBzy=CONu";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Martin.
+--Sig_/PXHm/nlbskOi1ycBzy=CONu
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/9/13 03:57, Martin KaFai Lau 写道:
-> On 9/12/23 12:01 AM, Chuyi Zhou wrote:
->> +__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
->> +        struct cgroup_subsys_state *css, unsigned int flags)
->> +{
->> +    struct bpf_iter_css_task_kern *kit = (void *)it;
->> +
->> +    BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) != 
->> sizeof(struct bpf_iter_css_task));
->> +    BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=
->> +                    __alignof__(struct bpf_iter_css_task));
->> +
->> +    switch (flags) {
->> +    case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->> +    case CSS_TASK_ITER_PROCS:
->> +    case 0:
->> +        break;
->> +    default:
->> +        return -EINVAL;
->> +    }
->> +
->> +    kit->css_it = kzalloc(sizeof(struct css_task_iter), GFP_KERNEL);
->> +    if (!kit->css_it)
->> +        return -ENOMEM;
->> +    css_task_iter_start(css, flags, kit->css_it);
->> +    return 0;
->> +}
->> +
-> 
->> +static bool check_css_task_iter_allowlist(struct bpf_verifier_env *env)
->> +{
->> +    enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
->> +
->> +    switch (prog_type) {
->> +    case BPF_PROG_TYPE_LSM:
-> 
-> This will allow the non-sleepable lsm prog to call 
-> bpf_iter_css_task_new. The above kzalloc(GFP_KERNEL) in 
-> bpf_iter_css_task_new should trigger a lockdep error in the lsm selftest 
-> in patch 6.
+Hi all,
 
-Thanks for your test. I missed the dmesg error since I did not set 
-CONFIG_LOCKDEP.
+On Wed, 13 Sep 2023 13:34:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next boot tests (powerpc pseries_le_defconfig) produced
+> this warning:
+>=20
+>  ------------[ cut here ]------------
+>  bpf_mem_cache[0]: unexpected object size 16, expect 96
+>  WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init+0=
+x410/0x440
+>  Modules linked in:
+>  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-04964-g2e08ed1d459f =
+#1
+>  Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf0=
+00004 of:SLOF,HEAD pSeries
+>  NIP:  c0000000003c0890 LR: c0000000003c088c CTR: 0000000000000000
+>  REGS: c000000004783890 TRAP: 0700   Not tainted  (6.6.0-rc1-04964-g2e08e=
+d1d459f)
+>  MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000280  XER: 00=
+000000
+>  CFAR: c00000000014cfa0 IRQMASK: 0=20
+>  GPR00: c0000000003c088c c000000004783b30 c000000001578c00 00000000000000=
+36=20
+>  GPR04: 0000000000000000 c000000002667e18 0000000000000001 00000000000000=
+00=20
+>  GPR08: c000000002667ce0 0000000000000001 0000000000000000 00000000440002=
+80=20
+>  GPR12: 0000000000000000 c000000002b00000 c000000000011188 00000000000000=
+60=20
+>  GPR16: c0000000011f9a30 c000000002920f68 c0000000021fac40 c0000000021fac=
+40=20
+>  GPR20: c000000002a3ed88 c000000002921560 c0000000014867f0 c00000000291cc=
+d8=20
+>  GPR24: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+10=20
+>  GPR28: c0000000011f9a30 0000000000000000 000000000000000b c00000007fc9ac=
+40=20
+>  NIP [c0000000003c0890] bpf_mem_alloc_init+0x410/0x440
+>  LR [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440
+>  Call Trace:
+>  [c000000004783b30] [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440 (un=
+reliable)
+>  [c000000004783c20] [c00000000203d0c0] bpf_global_ma_init+0x5c/0x9c
+>  [c000000004783c50] [c000000000010bc0] do_one_initcall+0x80/0x300
+>  [c000000004783d20] [c000000002004978] kernel_init_freeable+0x30c/0x3b4
+>  [c000000004783df0] [c0000000000111b0] kernel_init+0x30/0x1a0
+>  [c000000004783e50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0=
+x1c
+>  --- interrupt: 0 at 0x0
+>  NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
+>  REGS: c000000004783e80 TRAP: 0000   Not tainted  (6.6.0-rc1-04964-g2e08e=
+d1d459f)
+>  MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
+>  CFAR: 0000000000000000 IRQMASK: 0=20
+>  GPR00: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR04: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR08: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR12: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR16: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR20: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR24: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  GPR28: 0000000000000000 0000000000000000 0000000000000000 00000000000000=
+00=20
+>  NIP [0000000000000000] 0x0
+>  LR [0000000000000000] 0x0
+>  --- interrupt: 0
+>  Code: 3b000000 4bfffcbc 78650020 3c62ffe7 39200001 3d420130 7cc607b4 7ba=
+40020 386382f0 992a1e24 4bd8c631 60000000 <0fe00000> 4bffff40 ea410080 3860=
+fff4=20
+>  ---[ end trace 0000000000000000 ]---
+>=20
+> Presumably related to commit
+>=20
+>   41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+>=20
+> (or other commist in that series) from the bpf-next tree.
 
-I think here we can use kzalloc(GFP_ATOMIC) to eliminate this error if 
-we want to use this iter in non-sleepable lsm prog. I just tested, it 
-works well.
+Actually it looks like it is some interaction between that commit a
+commits in the bpf tree.
 
-> 
->> +        return true;
->> +    case BPF_TRACE_ITER:
->> +        return env->prog->aux->sleepable;
->> +    default:
->> +        return false;
->> +    }
->> +}
-> 
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/PXHm/nlbskOi1ycBzy=CONu
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUBQacACgkQAVBC80lX
+0Gwh9gf+NxNxIq7gQtNipwJYuIA0IKO1UYtFeQYprv/zknhJrGIwuBk1/YIolPfF
+R1MGdnszYqdVr76FRZ7tODn32QsRAmyus220G6TW9P4JYIeMHrgZ/mF4ji0GsAcV
+gF+de4mLrgJlvBVQhdqp04NKR9UmHzluV4kQH/IFTm8QMCBGr91fOC4kEfjvtbKT
+FGqpvkR6q0xrzUrnbC+N9sEO6YurXRuQ01clAHEwOx2i2NKGaYURAnIODNG7eJY7
+AwZ/FE/lec1Y2jHV8nIKTrJU7WvLgiA+mIbl4fKJOTESUYKCTMOnq4ihb5E9UXJe
+aIUyIVPBV41c7EDT6ypCyiQRmj4g3Q==
+=8q4r
+-----END PGP SIGNATURE-----
+
+--Sig_/PXHm/nlbskOi1ycBzy=CONu--
