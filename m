@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B88379E043
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41B379E041
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238369AbjIMGzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 02:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S238338AbjIMGy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 02:54:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjIMGzX (ORCPT
+        with ESMTP id S233675AbjIMGy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 02:55:23 -0400
-Received: from hzbj-sdnproxy-1.icoremail.net (hzxs-sdnproxy-1.icoremail.net [223.252.214.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8041E173F;
-        Tue, 12 Sep 2023 23:55:18 -0700 (PDT)
-Received: from wangteng13$nudt.edu.cn ( [116.162.3.180] ) by
- ajax-webmail-app2 (Coremail) ; Wed, 13 Sep 2023 14:54:07 +0800 (GMT+08:00)
-X-Originating-IP: [116.162.3.180]
-Date:   Wed, 13 Sep 2023 14:54:07 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Teng Wang" <wangteng13@nudt.edu.cn>
-To:     brauner@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        edumazet@google.com, netdev@vger.kernel.org
-Subject: Bug: rcu detected stall in sys_nanosleep
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT5 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn nudt.edu.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 13 Sep 2023 02:54:56 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DA8173E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 23:54:52 -0700 (PDT)
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com [209.85.128.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C8C603F66D
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1694588088;
+        bh=AuUP4uMpEXV7NNGmRh7ocQP9g6lCntCtTGB6qti7vSI=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=dbVnMbrWmQxKxpmeBZn21P37wx8Jwy7Q9l+qoco8L82/3oDWEdQgRo5NAdwY6ilPD
+         GoAxWx7bJ+wFO5q1Jw+ZbdyEmGDRODVJTJIuqO9/8V2g78kLtuw9E+y1JRmps8a5rS
+         vBRbRuBZgjo0cIpEp4UyFDx/Bmd+baQAnZNvjiZ+9Ha9jkg0POvuGwyY3oNtUIMCSI
+         qJBZRj3A2Gdqbyhjs5Qn/C1Rkl4xa2qutFWHIHKWyeoMjR0BfLJXcJzKQNhjKu7isO
+         8CB998WmKFCYotnosfYnXCmMd66M7UK3V83FOpCiGb9artwIoZzM13zDQRyQb+yyj8
+         WmfxOc9J5PI7A==
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-401c19fc097so50559395e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 23:54:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694588088; x=1695192888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AuUP4uMpEXV7NNGmRh7ocQP9g6lCntCtTGB6qti7vSI=;
+        b=ZMDOyjJTwSqfm7kSKKLSX2QVdRL59d1fMKKR7GZbAbqI4eG/JhPgD2WCxxVC+gZpj6
+         +8JFs4EkB51UwCN4339akXrfFOcAJBob+iWFkayyEH3n/C7uBtvSqJhfsifnlg21LUAn
+         DerMgmx3tXtj1pjq9b04kpH3Vv1I2QZ0TRdq8zZqcwLC9r0BZ5lqnr8XrwxY67SUh0X0
+         XLmdO/5GWTpLQkH6qXuxehfU6/wSMSP3fRwAyR5Nbq3aZBGx7TKSTwZcCgPOPeCXQx2G
+         1q3JGN3kiwB0Z9+25m8cR0ONYPnkhCXfCLEWsh7sjpsg8QwJt+H8F2aVdFtc0S/phhu6
+         89bA==
+X-Gm-Message-State: AOJu0YyJIUk0SQPOX1wv+gSQec4/2oygkUIleb7QDNChE5WF4iYezVoG
+        D3l8aF1wuc7YOdC+CEvhh9lbUvU8nXUhzZmeWC2ZQf8lzkG3e2j+zZzCkQkZUn6o9WCZNJl3bl0
+        7BHgSZ2tO04XU3FPEIdV+zKe5t9cGT/E1n0mquA93ow==
+X-Received: by 2002:a7b:c44b:0:b0:3f7:f2d0:b904 with SMTP id l11-20020a7bc44b000000b003f7f2d0b904mr1142857wmi.8.1694588088526;
+        Tue, 12 Sep 2023 23:54:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IELX8SVPWke/bYJiSBu4DzxplQdTDhwPyJaq++ur+9HfRMtx7dEx/+eEpgz3KK0VkuN7saPKA==
+X-Received: by 2002:a7b:c44b:0:b0:3f7:f2d0:b904 with SMTP id l11-20020a7bc44b000000b003f7f2d0b904mr1142836wmi.8.1694588088217;
+        Tue, 12 Sep 2023 23:54:48 -0700 (PDT)
+Received: from localhost ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id 22-20020a05600c231600b003fef6881350sm1097497wmo.25.2023.09.12.23.54.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 23:54:47 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+To:     aspriel@gmail.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com
+Cc:     linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        marcan@marcan.st, keescook@chromium.org, gustavoars@kernel.org,
+        hdegoede@redhat.com, juerg.haefliger@canonical.com,
+        ryohei.kondo@cypress.com
+Subject: [PATCH] wifi: brcmfmac: Replace 1-element arrays with flexible arrays
+Date:   Wed, 13 Sep 2023 08:54:21 +0200
+Message-Id: <20230913065421.12615-1-juerg.haefliger@canonical.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Message-ID: <13067197.3b9a.18a8d519137.Coremail.wangteng13@nudt.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: ZhYUCgDHPG2PXAFl1es7AQ--.5743W
-X-CM-SenderInfo: pzdqw35hqjijg6qxv3oohg3hdfq/1tbiAQENBGUAjM8DMgAAse
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW3Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhciBBbGwsClRoaXMgYnVnIHdhcyBmb3VuZCBpbiBsaW51eCBLZXJuZWwgdjYuMi4xMAoKU3l6
-a2FsbGVyIGhpdCAnSU5GTzogcmN1IGRldGVjdGVkIHN0YWxsIGluIHN5c19uYW5vc2xlZXAnIGJ1
-Zy4KCnJjdTogSU5GTzogcmN1X3ByZWVtcHQgc2VsZi1kZXRlY3RlZCBzdGFsbCBvbiBDUFUKcmN1
-OiAwLS4uLi46ICg1NjU0IHRpY2tzIHRoaXMgR1ApIGlkbGU9NDQwNC8xLzB4NDAwMDAwMDAwMDAw
-MDAwMCBzb2Z0aXJxPTExMDc1My8xMTA3NTMgZnFzPTUwMzgKKHQ9MjEwMDYgamlmZmllcyBnPTE1
-NTM0MSBxPTY2NSBuY3B1cz0yKQpDUFU6IDAgUElEOiAyNzkxMiBDb21tOiBzeXotZXhlY3V0b3Iu
-MSBOb3QgdGFpbnRlZCA2LjIuMTAgIzEKSGFyZHdhcmUgbmFtZTogUUVNVSBTdGFuZGFyZCBQQyAo
-aTQ0MEZYICsgUElJWCwgMTk5NiksIEJJT1MgVWJ1bnR1LTEuOC4yLTF1YnVudHUxIDA0LzAxLzIw
-MTQKUklQOiAwMDEwOnB1dF9waWRfbnMrMHgyLzB4ZjAKQ29kZTogMDAgNDggOGIgN2IgNDggYmUg
-MDEgMDAgMDAgMDAgZTggZjkgMzYgZjQgZmYgNDggOGQgNzMgZTggNDggOGIgM2QgMmUgMDYgNDIg
-MDIgNWIgZTkgYjggNmEgMTMgMDAgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgNDEgNTYgPDQxPiA1
-NSA0MSA1NCA1NSA0OCA4OSBmZCA1MyBlOCBkMCAyYiAwMSAwMCA0OCA4MSBmZCAyMCAwZiBlNSBh
-YSA3NApSU1A6IDAwMTg6ZmZmZjliYWUwMDAwM2VmOCBFRkxBR1M6IDAwMDAwMjQ2ClJBWDogMDAw
-MDAwMDAwMDAwMDAwMCBSQlg6IGZmZmY4YjM4NTc4MGNlMDAgUkNYOiAwMDAwMDAwMDgwMjAwMDFm
-ClJEWDogMDAwMDAwMDAwMDAwMDAwMSBSU0k6IGZmZmZmZmZmYWFiODBiMDkgUkRJOiBmZmZmOGIz
-ODU2NmQ0MTk4ClJCUDogMDAwMDAwMDAwMDAwMDAwMSBSMDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5
-OiBmZmZmZmZmZmE5NGJhOTI3ClIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAw
-MDAwMDAgUjEyOiBmZmZmOGIzODU2NmQ0MTk4ClIxMzogZmZmZjhiMzhiZGMyYWUzOCBSMTQ6IDAw
-MDAwMDAwMDAwMDAwMGEgUjE1OiAwMDAwMDAwMDAwMDAwMDAwCkZTOiAgMDAwMDAwMDAwMmVmMjk4
-MCgwMDAwKSBHUzpmZmZmOGIzOGJkYzAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDAK
-Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMwpDUjI6IDAw
-MDA3ZmE5NGEyMjBhMDggQ1IzOiAwMDAwMDAwMDE3OTA2MDA1IENSNDogMDAwMDAwMDAwMDM3MDZm
-MApDYWxsIFRyYWNlOgogPElSUT4KIHB1dF9waWQucGFydC40KzB4NWYvMHg5MAogZGVsYXllZF9w
-dXRfcGlkKzB4MWMvMHgzMAogcmN1X2NvcmUrMHgzNTMvMHg4ZjAKIF9fZG9fc29mdGlycSsweGQ5
-LzB4MmNiCiBpcnFfZXhpdF9yY3UrMHg5MS8weGMwCiBzeXN2ZWNfYXBpY190aW1lcl9pbnRlcnJ1
-cHQrMHg4YS8weGIwCiA8L0lSUT4KIDxUQVNLPgogYXNtX3N5c3ZlY19hcGljX3RpbWVyX2ludGVy
-cnVwdCsweDE2LzB4MjAKUklQOiAwMDEwOmZpbmlzaF90YXNrX3N3aXRjaCsweDkwLzB4MjYwCkNv
-ZGU6IDQxIGM3IDQ2IDM0IDAwIDAwIDAwIDAwIDQ4IDhiIDgzIGQ4IDA5IDAwIDAwIDQ4IDg1IGMw
-IDBmIDg1IDdjIDAxIDAwIDAwIDQ4IDg5IGRmIGU4IGVhIGZkIGZmIDAwIGZiIDY1IDQ4IDhiIDA0
-IDI1IDQwIDk5IDAyIDAwIDw4MT4gYTAgMTAgMGEgMDAgMDAgZmYgZmYgZmYgYmYgNGQgODUgZWQg
-NzQgMTggNGMgM2IgYTggYTggMDQgMDAgMDAKUlNQOiAwMDE4OmZmZmY5YmFlMDg5MWJkNzAgRUZM
-QUdTOiAwMDAwMDI4MgpSQVg6IGZmZmY4YjM4NTdlNTgwMDAgUkJYOiBmZmZmOGIzOGJkYzJhMGMw
-IFJDWDogMDAwMDAwMDAwMDAwMDAwMgpSRFg6IDAwMDAwMDAwODAwMDAwMDIgUlNJOiAwMDAwMDAw
-MDAwMDAwMDAwIFJESTogMDAwMDAwMDBmZmZmZmZmZgpSQlA6IGZmZmY5YmFlMDg5MWJkYTggUjA4
-OiBmZmZmOGIzOGJkYzFlNWMwIFIwOTogMDAwMDAwMDAwMDAwOTI3NwpSMTA6IGZmZmY5YmFlMDg5
-MWJiNzggUjExOiAwMDAwMDAwMDAwMjU5NDAwIFIxMjogZmZmZjhiMzg1N2U1ODAwMApSMTM6IDAw
-MDAwMDAwMDAwMDAwMDAgUjE0OiBmZmZmOGIzODU3ZTVhMDAwIFIxNTogMDAwMDAwMDAwMDAwMjAw
-MQogX19zY2hlZHVsZSsweDJlMC8weDc5MAogc2NoZWR1bGUrMHg0Yi8weGEwCiBkb19uYW5vc2xl
-ZXArMHhhNy8weDE4MAogaHJ0aW1lcl9uYW5vc2xlZXArMHhiNC8weDE2MAogX194NjRfc3lzX25h
-bm9zbGVlcCsweGM0LzB4MTEwCiBkb19zeXNjYWxsXzY0KzB4MzcvMHg5MAogZW50cnlfU1lTQ0FM
-TF82NF9hZnRlcl9od2ZyYW1lKzB4NjMvMHhjZApSSVA6IDAwMzM6MHg0NjkzNDAKQ29kZTogZmYg
-NzcgNDcgZjMgYzMgMGYgMWYgNDQgMDAgMDAgNTUgNTMgNDggODkgZjUgNDggODkgZmIgNDggODMg
-ZWMgMTggZTggMGYgMzggMDAgMDAgNDggODkgZWUgODkgYzIgNDggODkgZGYgYjggMjMgMDAgMDAg
-MDAgMGYgMDUgPDQ4PiAzZCAwMCBmMCBmZiBmZiA3NyAyYSA4OSBkNyA4OSA0NCAyNCAwYyBlOCA0
-ZCAzOCAwMCAwMCA4YiA0NCAyNApSU1A6IDAwMmI6MDAwMDdmZmNkN2VhMDJjMCBFRkxBR1M6IDAw
-MDAwMjkzIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDIzClJBWDogZmZmZmZmZmZmZmZmZmZkYSBS
-Qlg6IDAwMDA3ZmZjZDdlYTAzMDAgUkNYOiAwMDAwMDAwMDAwNDY5MzQwClJEWDogMDAwMDAwMDAw
-MDAwMDAwMCBSU0k6IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiAwMDAwN2ZmY2Q3ZWEwMzAwClJCUDog
-MDAwMDAwMDAwMDAwMDAwMCBSMDg6IDAwMDA3ZjIzZDgxNmI3MDAgUjA5OiAwMDAwMDAwMDAwMDAw
-MDAwClIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyOTMgUjEyOiAwMDAw
-MDAwMDAwMDRmNWI2ClIxMzogMDAwMDAwMDAwMDAwMDAwNSBSMTQ6IDAwMDAwMDAwMDExYWMxNGMg
-UjE1OiBmZmZmZmZmZmZmZmZmZmZmCiA8L1RBU0s+CnJjdTogSU5GTzogcmN1X3ByZWVtcHQgZGV0
-ZWN0ZWQgZXhwZWRpdGVkIHN0YWxscyBvbiBDUFVzL3Rhc2tzOiB7IDAtLi4uLiB9IDIxNTExIGpp
-ZmZpZXMgczogMjc0NzMgcm9vdDogMHgxLy4KcmN1OiBibG9ja2luZyByY3Vfbm9kZSBzdHJ1Y3R1
-cmVzIChpbnRlcm5hbCBSQ1UgZGVidWcpOgpTZW5kaW5nIE5NSSBmcm9tIENQVSAxIHRvIENQVXMg
-MDoKTk1JIGJhY2t0cmFjZSBmb3IgY3B1IDAKQ1BVOiAwIFBJRDogMjc5MTIgQ29tbTogc3l6LWV4
-ZWN1dG9yLjEgTm90IHRhaW50ZWQgNi4yLjEwICMxCkhhcmR3YXJlIG5hbWU6IFFFTVUgU3RhbmRh
-cmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TIFVidW50dS0xLjguMi0xdWJ1bnR1MSAw
-NC8wMS8yMDE0ClJJUDogMDAxMDphc21fc3lzdmVjX2FwaWNfdGltZXJfaW50ZXJydXB0KzB4MC8w
-eDIwCkNvZGU6IGU5IDE1IDA2IDAwIDAwIDBmIDFmIDQ0IDAwIDAwIDBmIDAxIGNhIGZjIDZhIGZm
-IGU4IGU1IDA0IDAwIDAwIDQ4IDg5IGM0IDQ4IDg5IGU3IGU4IDZhIDIyIGVjIGZmIGU5IGY1IDA1
-IDAwIDAwIDBmIDFmIDQ0IDAwIDAwIDwwZj4gMDEgY2EgZmMgNmEgZmYgZTggYzUgMDQgMDAgMDAg
-NDggODkgYzQgNDggODkgZTcgZTggZGEgMjAgZWMgZmYKUlNQOiAwMDE4OmZmZmY5YmFlMDAwMDNl
-ZDggRUZMQUdTOiAwMDAwMDA0NgpSQVg6IDAwMDAwMDAwMDAwMDAwMDAgUkJYOiBmZmZmOGIzOGJk
-YzJhZGMwIFJDWDogZmZmZmZmZmZhOTQ5MjZlNQpSRFg6IGZmZmY4YjM4NTdlNTgwMDAgUlNJOiAw
-MDAwMDAwMDAwMDAwMTAwIFJESTogZmZmZjhiMzg1NzU5MDAwMApSQlA6IGZmZmY4YjM4NTc1OTA5
-YjggUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogZmZmZmZmZmZhOTRiYTkyNwpSMTA6IDAwMDAw
-MDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogZmZmZjhiMzg1NzU5MDAwMApS
-MTM6IGZmZmY4YjM4YmRjMmFlMzggUjE0OiAwMDAwMDAwMDAwMDAwMDBhIFIxNTogMDAwMDAwMDAw
-MDAwMDAwMApGUzogIDAwMDAwMDAwMDJlZjI5ODAoMDAwMCkgR1M6ZmZmZjhiMzhiZGMwMDAwMCgw
-MDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwCkNTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBD
-UjA6IDAwMDAwMDAwODAwNTAwMzMKQ1IyOiAwMDAwN2ZhOTRhMjIwYTA4IENSMzogMDAwMDAwMDAx
-NzkwNjAwNSBDUjQ6IDAwMDAwMDAwMDAzNzA2ZjAKQ2FsbCBUcmFjZToKIDxJUlE+ClJJUDogMDAx
-MDpyZXRob29rX2ZsdXNoX3Rhc2srMHgxLzB4ODAKQ29kZTogNzUgYjQgZWIgZDAgZTggODAgNTcg
-ZmIgZmYgNDggODkgZGYgNDggYzcgYzYgZjAgM2MgNWUgYTkgZTggOTEgNDUgZjQgZmYgNWIgNWQg
-NDEgNWMgNDEgNWQgZTkgNjYgNTcgZmIgZmYgNjYgMGYgMWYgNDQgMDAgMDAgNTUgPDUzPiA0OCA4
-OSBmZCBlOCA1NiA1NyBmYiBmZiA0OCA4YiA5ZCBkOCAwYSAwMCAwMCA0OCBjNyA4NSBkOCAwYSAw
-MApSU1A6IDAwMTg6ZmZmZjliYWUwMDAwM2YwMCBFRkxBR1M6IDAwMDAwMjQ2CiBkZWxheWVkX3B1
-dF90YXNrX3N0cnVjdCsweDFkLzB4MTEwCiByY3VfY29yZSsweDM1My8weDhmMAogX19kb19zb2Z0
-aXJxKzB4ZDkvMHgyY2IKIGlycV9leGl0X3JjdSsweDkxLzB4YzAKIHN5c3ZlY19hcGljX3RpbWVy
-X2ludGVycnVwdCsweDhhLzB4YjAKIDwvSVJRPgogPFRBU0s+CiBhc21fc3lzdmVjX2FwaWNfdGlt
-ZXJfaW50ZXJydXB0KzB4MTYvMHgyMApSSVA6IDAwMTA6ZmluaXNoX3Rhc2tfc3dpdGNoKzB4OTAv
-MHgyNjAKQ29kZTogNDEgYzcgNDYgMzQgMDAgMDAgMDAgMDAgNDggOGIgODMgZDggMDkgMDAgMDAg
-NDggODUgYzAgMGYgODUgN2MgMDEgMDAgMDAgNDggODkgZGYgZTggZWEgZmQgZmYgMDAgZmIgNjUg
-NDggOGIgMDQgMjUgNDAgOTkgMDIgMDAgPDgxPiBhMCAxMCAwYSAwMCAwMCBmZiBmZiBmZiBiZiA0
-ZCA4NSBlZCA3NCAxOCA0YyAzYiBhOCBhOCAwNCAwMCAwMApSU1A6IDAwMTg6ZmZmZjliYWUwODkx
-YmQ3MCBFRkxBR1M6IDAwMDAwMjgyClJBWDogZmZmZjhiMzg1N2U1ODAwMCBSQlg6IGZmZmY4YjM4
-YmRjMmEwYzAgUkNYOiAwMDAwMDAwMDAwMDAwMDAyClJEWDogMDAwMDAwMDA4MDAwMDAwMiBSU0k6
-IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiAwMDAwMDAwMGZmZmZmZmZmClJCUDogZmZmZjliYWUwODkx
-YmRhOCBSMDg6IGZmZmY4YjM4YmRjMWU1YzAgUjA5OiAwMDAwMDAwMDAwMDA5Mjc3ClIxMDogZmZm
-ZjliYWUwODkxYmI3OCBSMTE6IDAwMDAwMDAwMDAyNTk0MDAgUjEyOiBmZmZmOGIzODU3ZTU4MDAw
-ClIxMzogMDAwMDAwMDAwMDAwMDAwMCBSMTQ6IGZmZmY4YjM4NTdlNWEwMDAgUjE1OiAwMDAwMDAw
-MDAwMDAyMDAxCiBfX3NjaGVkdWxlKzB4MmUwLzB4NzkwCiBzY2hlZHVsZSsweDRiLzB4YTAKIGRv
-X25hbm9zbGVlcCsweGE3LzB4MTgwCiBocnRpbWVyX25hbm9zbGVlcCsweGI0LzB4MTYwCiBfX3g2
-NF9zeXNfbmFub3NsZWVwKzB4YzQvMHgxMTAKIGRvX3N5c2NhbGxfNjQrMHgzNy8weDkwCiBlbnRy
-eV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg2My8weGNkClJJUDogMDAzMzoweDQ2OTM0MApD
-b2RlOiBmZiA3NyA0NyBmMyBjMyAwZiAxZiA0NCAwMCAwMCA1NSA1MyA0OCA4OSBmNSA0OCA4OSBm
-YiA0OCA4MyBlYyAxOCBlOCAwZiAzOCAwMCAwMCA0OCA4OSBlZSA4OSBjMiA0OCA4OSBkZiBiOCAy
-MyAwMCAwMCAwMCAwZiAwNSA8NDg+IDNkIDAwIGYwIGZmIGZmIDc3IDJhIDg5IGQ3IDg5IDQ0IDI0
-IDBjIGU4IDRkIDM4IDAwIDAwIDhiIDQ0IDI0ClJTUDogMDAyYjowMDAwN2ZmY2Q3ZWEwMmMwIEVG
-TEFHUzogMDAwMDAyOTMgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAwMjMKUkFYOiBmZmZmZmZmZmZm
-ZmZmZmRhIFJCWDogMDAwMDdmZmNkN2VhMDMwMCBSQ1g6IDAwMDAwMDAwMDA0NjkzNDAKUkRYOiAw
-MDAwMDAwMDAwMDAwMDAwIFJTSTogMDAwMDAwMDAwMDAwMDAwMCBSREk6IDAwMDA3ZmZjZDdlYTAz
-MDAKUkJQOiAwMDAwMDAwMDAwMDAwMDAwIFIwODogMDAwMDdmMjNkODE2YjcwMCBSMDk6IDAwMDAw
-MDAwMDAwMDAwMDAKUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI5MyBS
-MTI6IDAwMDAwMDAwMDAwNGY1YjYKUjEzOiAwMDAwMDAwMDAwMDAwMDA1IFIxNDogMDAwMDAwMDAw
-MTFhYzE0YyBSMTU6IGZmZmZmZmZmZmZmZmZmZmYKIDwvVEFTSz4KCgoKCg==
+Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
+UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
+'element' and 'channel_list' will trigger warnings, so make them proper
+flexible arrays.
+
+False positive warnings were:
+
+  UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:6984:20
+  index 1 is out of range for type '__le32 [1]'
+
+  UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1126:27
+  index 1 is out of range for type '__le16 [1]'
+
+for these lines of code:
+
+  6884  ch.chspec = (u16)le32_to_cpu(list->element[i]);
+
+  1126  params_le->channel_list[i] = cpu_to_le16(chanspec);
+
+Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+---
+ .../wireless/broadcom/brcm80211/brcmfmac/fwil_types.h    | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+index bece26741d3a..ed723a5b5d54 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+@@ -442,7 +442,12 @@ struct brcmf_scan_params_v2_le {
+ 				 * fixed parameter portion is assumed, otherwise
+ 				 * ssid in the fixed portion is ignored
+ 				 */
+-	__le16 channel_list[1];	/* list of chanspecs */
++	union {
++		__le16 padding;	/* Reserve space for at least 1 entry for abort
++				 * which uses an on stack brcmf_scan_params_v2_le
++				 */
++		DECLARE_FLEX_ARRAY(__le16, channel_list);	/* chanspecs */
++	};
+ };
+ 
+ struct brcmf_scan_results {
+@@ -702,7 +707,7 @@ struct brcmf_sta_info_le {
+ 
+ struct brcmf_chanspec_list {
+ 	__le32	count;		/* # of entries */
+-	__le32	element[1];	/* variable length uint32 list */
++	DECLARE_FLEX_ARRAY(__le32, element);	/* variable length uint32 list */
+ };
+ 
+ /*
+-- 
+2.39.2
+
