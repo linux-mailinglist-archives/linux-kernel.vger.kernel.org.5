@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CFB79F43A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C3679F489
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbjIMV7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S232806AbjIMWB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 18:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbjIMV7J (ORCPT
+        with ESMTP id S229743AbjIMWBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:59:09 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4318B173A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:59:05 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34deefc2016so1065205ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 14:59:05 -0700 (PDT)
+        Wed, 13 Sep 2023 18:01:55 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E352F173A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:01:51 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-591ba8bd094so3234557b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:01:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694642344; x=1695247144; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+zCQ2BjBgtFZ2NhlAiFIzP/Im5wW1vWUYChl7lp+s88=;
-        b=C0/FLksVXCzrSsWv6Olgk6TH/DNyfcQuLtXkWD1j3DYxHeTnumPet4iuR3/EjGWfKZ
-         tNq+JHOOYtcjy6nBgMUvo3X8ejCAPUv6QjJ22sjTmPZWLvFwHQ/nx6Wtn9q/MZjIO/UP
-         MumGtm52a2kwj6vQ3wQpcadrWI3wyHK1k4Fa9urFAMmEr8KZzrSBvvsE8+h8YlHIVU1U
-         ntPmPQXnq+hFXbdeaSdPqZ/Oybb8O76uk5layqSCoPsIFWgzKwu0d5fghbAGhpZG5Wu3
-         ee/v3dYRg+MT3oZdE6JBCsX4NuXfGI8yXoyITSRNqMQgoQyVer7nMuy4i82Z2EqPsaQ3
-         FcDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694642344; x=1695247144;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1694642511; x=1695247311; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+zCQ2BjBgtFZ2NhlAiFIzP/Im5wW1vWUYChl7lp+s88=;
-        b=O6XsOW41QuN6+tJxfJiMLzlaOpkVj3Qd8RMLo3YYcdC9wJx2OxCcewtiL4zNHGdmdM
-         NKqkdS/6rKaBMrOnX54pLe2MxzsGsGF5whZWRtIZQbBzukfQQn5ULwGdxpMGS91k14P3
-         gEEFGz44O/1V2WyzmrUEmag3XMLCI13YwOxwaWkSd9rxN0IQPGpZX+VRT73vlxKyvKJa
-         iJH+BepxxRAoFvaZi9ZjUBAh0v2zoo6Nn3lMevR2aPdmkEIRKpd8NN3wHCGu1NZ0UPbO
-         8LHW5P0mrJauormsH9CJMIcd4qWj+XRk+eVomlMpz+MA7a1ZpnRCX8MlvQYo0hhJPUzG
-         WkbQ==
-X-Gm-Message-State: AOJu0Yw2y7O6SXmV4xiOadjaJFgUOYzSfNyZ4SinR8Tp/sGsZD6RQP1D
-        xjubQPRF0zubzE6FCFHh1cm78Q==
-X-Google-Smtp-Source: AGHT+IHqayyFOTET4Oxr9mF0S5RGQHFaeK9o3on7YXY3s2SYxwil2JxnMX2Joby5fXJ//kuV/gya1Q==
-X-Received: by 2002:a05:6e02:1d8b:b0:349:2d61:8631 with SMTP id h11-20020a056e021d8b00b003492d618631mr5002348ila.10.1694642344560;
-        Wed, 13 Sep 2023 14:59:04 -0700 (PDT)
-Received: from google.com (26.103.132.34.bc.googleusercontent.com. [34.132.103.26])
-        by smtp.gmail.com with ESMTPSA id ee18-20020a056638293200b0042b57bbbaf2sm34665jab.26.2023.09.13.14.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 14:59:03 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 21:59:01 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     kent.overstreet@linux.dev, bfoster@redhat.com,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH 6/7] bcachefs: Fix -Wcompare-distinct-pointer-types in
- do_encrypt()
-Message-ID: <20230913215901.kffbnpkosg7pkxd6@google.com>
-References: <20230912-bcachefs-warning-fixes-v1-0-a1cc83a38836@kernel.org>
- <20230912-bcachefs-warning-fixes-v1-6-a1cc83a38836@kernel.org>
+        bh=J1BzhoPhb2//zdQEYrBqERcWxq7EXQZgg5EE9xLjsNE=;
+        b=LuZacEr4T49S9dYehNHwcdL+HHWpbtTipqgkL/fQ3wwsOeHDCHOBglFEHAzGa5a1qr
+         T0xZxk4PUlkGLQZEGKJSCywWAg/F/PDM4HcWOBC+seSjtcatOKFbJuRFL1s/g7QGKv1z
+         zfa1VcQeVyhh5t9X1vbTg2THofL8+PCxdWD8O66DZjKWbrCICZM9fVa1Dsx6ngHaKIIk
+         g7O219biUD3FuyGnMfUGoKAy4yemS4x9U50wY/+CkChdM+4rbfGjodAVey2wPsqqbCHb
+         yixBRqkpajxc/4daptt3p047jWQSIUBtwvhmyn7Fgpw7OGgojtP7K7GVi0OnaRSc4VO1
+         PmoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694642511; x=1695247311;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J1BzhoPhb2//zdQEYrBqERcWxq7EXQZgg5EE9xLjsNE=;
+        b=MSRCBcNWiCONk9z+L/N/5wQK5nVCHNbH6tLB90zfoCIpwKFtrIjFqJVZymAWCg324T
+         a1yAUPe0/HUeYtnKNWXWM0Ap6WrIGqxJgEuZEtT/Lbhiswo4wyOh+gHHK7WspNJI+45o
+         qWHAwnr9zG0DqUL8LahdoBrqOZVtmuKSOEo3Fn+3BJZXVVZUdUJ5UAN3uwMFVuLDlTfh
+         2gksTN+bNg8K6jFd6W0PbxqsMTSZuGTy1yePgpJ5N4sC4rjfMDNguo6UhlaG+5AltReA
+         zduGbDwzpDax65MdeWr2uvYU1v0aAo8TzPkhlHGjGmLImzhBcqnaYXU8BZt0Cb2amUeZ
+         m9QA==
+X-Gm-Message-State: AOJu0YyCJsFrI+wr92TSk0wQeZtNhzM4WxZKc0YO9Gh0G+eCgRt5zZlY
+        W26CzyYrmi1gvTLCw4wdtbg+7SJIp1yI/87PZDqN
+X-Google-Smtp-Source: AGHT+IE/S8VnWj48T5HhcdZ/RxneEfjJCCSGxot8kBZp01rmiH8JIaXQtCkeGNS/ETtaApzkkbtjU52xB6QNSy4jSfg=
+X-Received: by 2002:a81:8392:0:b0:595:2de4:c991 with SMTP id
+ t140-20020a818392000000b005952de4c991mr3691240ywf.29.1694642511140; Wed, 13
+ Sep 2023 15:01:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912-bcachefs-warning-fixes-v1-6-a1cc83a38836@kernel.org>
+References: <ZOWtBTKkfcc8sKkY@gmail.com> <ZOX2XDdrfk8rO9+t@casper.infradead.org>
+In-Reply-To: <ZOX2XDdrfk8rO9+t@casper.infradead.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 13 Sep 2023 18:01:40 -0400
+Message-ID: <CAHC9VhRBMmt9UG+FM6ZUERJdoa8UDO-LqoqMK_WadvUvCzTBcw@mail.gmail.com>
+Subject: Re: [PATCH] lsm: constify the 'mm' parameter in security_vm_enough_memory_mm()
+To:     Khadija Kamran <kamrankhadijadj@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        linux-security-module@vger.kernel.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        ztarkhani@microsoft.com, alison.schofield@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 12:15:43PM -0700, Nathan Chancellor wrote:
-> When building bcachefs for 32-bit ARM, there is a warning when using
-> min() to compare a variable of type 'size_t' with an expression of type
-> 'unsigned long':
+On Wed, Aug 23, 2023 at 8:07=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+> On Wed, Aug 23, 2023 at 11:53:57AM +0500, Khadija Kamran wrote:
+> > +++ b/include/linux/mm.h
+> > @@ -3064,7 +3064,7 @@ void anon_vma_interval_tree_verify(struct anon_vm=
+a_chain *node);
+> >            avc; avc =3D anon_vma_interval_tree_iter_next(avc, start, la=
+st))
+> >
+> >  /* mmap.c */
+> > -extern int __vm_enough_memory(struct mm_struct *mm, long pages, int ca=
+p_sys_admin);
+> > +extern int __vm_enough_memory(const struct mm_struct *mm, long pages, =
+int cap_sys_admin);
 >
->   fs/bcachefs/checksum.c:142:22: error: comparison of distinct pointer types ('typeof (len) *' (aka 'unsigned int *') and 'typeof (((1UL) << 12) - offset) *' (aka 'unsigned long *')) [-Werror,-Wcompare-distinct-pointer-types]
->     142 |                         unsigned pg_len = min(len, PAGE_SIZE - offset);
->         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   include/linux/minmax.h:69:19: note: expanded from macro 'min'
->      69 | #define min(x, y)       __careful_cmp(x, y, <)
->         |                         ^~~~~~~~~~~~~~~~~~~~~~
->   include/linux/minmax.h:38:24: note: expanded from macro '__careful_cmp'
->      38 |         __builtin_choose_expr(__safe_cmp(x, y), \
->         |                               ^~~~~~~~~~~~~~~~
->   include/linux/minmax.h:28:4: note: expanded from macro '__safe_cmp'
->      28 |                 (__typecheck(x, y) && __no_side_effects(x, y))
->         |                  ^~~~~~~~~~~~~~~~~
->   include/linux/minmax.h:22:28: note: expanded from macro '__typecheck'
->      22 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
->         |                    ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
->   1 error generated.
->
-> On 64-bit architectures, size_t is 'unsigned long', so there is no
-> warning when comparing these two expressions. Use min_t(size_t, ...) for
-> this situation, eliminating the warning.
->
-> Fixes: 1fb50457684f ("bcachefs: Fix memory corruption in encryption path")
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+> Could you remove the 'extern' when you touch a function prototype?
 
-> ---
->  fs/bcachefs/checksum.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/bcachefs/checksum.c b/fs/bcachefs/checksum.c
-> index 36939020f67d..ff0c3cd39ee2 100644
-> --- a/fs/bcachefs/checksum.c
-> +++ b/fs/bcachefs/checksum.c
-> @@ -139,7 +139,7 @@ static inline int do_encrypt(struct crypto_sync_skcipher *tfm,
->
->  		for (i = 0; i < pages; i++) {
->  			unsigned offset = offset_in_page(buf);
-> -			unsigned pg_len = min(len, PAGE_SIZE - offset);
-> +			unsigned pg_len = min_t(size_t, len, PAGE_SIZE - offset);
->
->  			sg_set_page(sg + i, vmalloc_to_page(buf), pg_len, offset);
->  			buf += pg_len;
->
-> --
-> 2.42.0
->
+Khadija, can you please make the change Matthew is requesting?
+
+--=20
+paul-moore.com
