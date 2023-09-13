@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C9079ED70
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028A679EA66
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbjIMPl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        id S240967AbjIMOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjIMPkz (ORCPT
+        with ESMTP id S239563AbjIMOEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:40:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698531BE4;
-        Wed, 13 Sep 2023 08:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694619626; x=1726155626;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=aFM3zDu49yerMd0myGuj4WSkYy3hmOJ/G+i4h2Pdn1k=;
-  b=JTSU3LpLXQkZih1l9A7e0m1vMi5A70qT3GqcPE8GWzVwSiPx1ZfbfaVF
-   xleR7R2n/UTqcxApmem35ztrMQ6hDEf8EYk2XdINPv62tyng/b+d9ljHU
-   mgTili5s3hrtQu7+0G9lY6E6ejNugnOPRQklHC7zqh+wWoN8YACxP6uSi
-   +STP1hPCRxaOBlRfKQrCRTHd7CGhCRqDA8jNrhkZ3tHfUfkJ+pSRO+812
-   XMUajGTzFz4Wa5sW8OrFSnAP6Ei9D4PP06RDbzRz9dRY7+Pz8rqEh7p+k
-   60LQ1gLmcNHuIkEimo3RT+1tPkXV9xvrx1RkRwswMxN6ex3Hc/nwanBn6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="376030312"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="376030312"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 08:40:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="867852277"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="867852277"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO binbinwu-mobl.sh.intel.com) ([10.93.2.44])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 08:40:23 -0700
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     seanjc@google.com, pbonzini@redhat.com, chao.gao@intel.com,
-        kai.huang@intel.com, David.Laight@ACULAB.COM,
-        robert.hu@linux.intel.com, guang.zeng@intel.com,
-        binbin.wu@linux.intel.com
-Subject: [PATCH v11 16/16] KVM: x86: Advertise LASS CPUID to user space
-Date:   Wed, 13 Sep 2023 20:42:27 +0800
-Message-Id: <20230913124227.12574-17-binbin.wu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230913124227.12574-1-binbin.wu@linux.intel.com>
-References: <20230913124227.12574-1-binbin.wu@linux.intel.com>
+        Wed, 13 Sep 2023 10:04:01 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4B119B6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:03:57 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c0e7e3d170so111535ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694613837; x=1695218637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fbf4pzJMJn3E/mF4AbfFpdKloLbf3OXmB4MymT49h4o=;
+        b=3DkpnCwhC+omEKwlN9o1Iz67MaSZ3DQFjVqT6dtud2iyVPHx5OjzLpmon1RfttylPe
+         8jral7t0M+rwE05F2CElNGSNECWRh7QesKicZZtRa7zqoA2SdcUrPsi0WtvLYmtiK4OE
+         5YUTEpOAgYpKyfNZHg/Wq6zT5iDPfBUQ+gfWCfs0WlUSI68O5p5mCbBiI5FShaEvKCck
+         nFiH9aS7rt2htAJCqjEZmp5G4a3p7suDIiPrNfpp49pvCwiNfuOtQOahohnNj3L/lVQi
+         8svkpCRdo9/PZCaAOzZQnDuZPedLRtmcFrtCU+Oz3nu2r+n9gGEHqNgXbtoYGJv+qYGi
+         PHjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694613837; x=1695218637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fbf4pzJMJn3E/mF4AbfFpdKloLbf3OXmB4MymT49h4o=;
+        b=gQGI1W8Pku+Ji7GqXSpvwmeNdNglyZnbByttH8ERIzr4lKZ2GRQGebB4wiRP3TYbti
+         2u7VqaE4u2IVfBHqxnAiaQBmId9sNz2NY+IVFvN15TPQw6Nc+m0KUbRgsAA+Xvhp7BM5
+         x1tWX9oJQnU0MFdxBuZlyi6TggSqAuu21JarMYX7DNRiWYba5ocaQmaGOjCX4kyhewXH
+         diOongbEkJq49kUqmbLxbqZaBT5GkkSiBLIReUrlDG/y17SzihUFZ7O4y1kMHPZfx/7/
+         lir1LC6FWYuGSHEmZ0NdAQuGD2qvjvRV+JB0T32eC19BilJVzdlEtJdGj3ugTKCwiU84
+         dR8Q==
+X-Gm-Message-State: AOJu0YzA5sZ/dUKOofNuKlGNzD70KB3Auehrl2vKZd93FAwa2diWJj5y
+        u/FWcpknq8xGYbn00Uk/17LY8iXc7Kntv8JHS3is2g==
+X-Google-Smtp-Source: AGHT+IE8lDuQw5HXkiPu6QKS/G01K1tdv3YfjR7YUC81eAfVhxONIXWM/2mgAad7LSSicACipvJqALHXy149G9Cpqsk=
+X-Received: by 2002:a17:902:e808:b0:1c3:a396:25c5 with SMTP id
+ u8-20020a170902e80800b001c3a39625c5mr160302plg.27.1694613836733; Wed, 13 Sep
+ 2023 07:03:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000fcf6d705ee1d8947@google.com> <00000000000029cdd406050ccfff@google.com>
+In-Reply-To: <00000000000029cdd406050ccfff@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 13 Sep 2023 16:03:45 +0200
+Message-ID: <CANp29Y7DrVYZj+1Nw9HLD6JF0NAJgFE+kuJHm1Q1dC_yqckCuA@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] WARNING in do_chunk_alloc
+To:     syzbot <syzbot+88247ec7a18c953867d5@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zeng Guang <guang.zeng@intel.com>
+On Mon, Sep 11, 2023 at 5:20=E2=80=AFAM syzbot
+<syzbot+88247ec7a18c953867d5@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit cd361199ff23776481c37023a55d855d5ad5c0f5
+> Author: Josef Bacik <josef@toxicpanda.com>
+> Date:   Mon Jul 31 20:28:43 2023 +0000
+>
+>     btrfs: wait on uncached block groups on every allocation loop
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1582bf1468=
+0000
+> start commit:   eb7081409f94 Linux 6.1-rc6
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D8cdf448d3b352=
+34
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D88247ec7a18c953=
+867d5
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10b80ab1880=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12dd6d4588000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: btrfs: wait on uncached block groups on every allocation loop
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
 
-Linear address space separation (LASS) is an independent mechanism
-to enforce the mode-based protection that can prevent user-mode
-accesses to supervisor-mode addresses, and vice versa. Because the
-LASS protections are applied before paging, malicious software can
-not acquire any paging-based timing information to compromise the
-security of system.
+It looks related.
 
-The CPUID bit definition to support LASS:
-CPUID.(EAX=07H.ECX=1):EAX.LASS[bit 6]
-
-Advertise LASS to user space to support LASS virtualization.
-
-Note: KVM LASS feature exposure also depends on cpuid capability
-held by host kernel. It will be masked to guest if host vsyscall
-is in emulate mode which actually disables LASS.
-
-Signed-off-by: Zeng Guang <guang.zeng@intel.com>
-Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-Tested-by: Xuelian Guo <xuelian.guo@intel.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index a0db266bab73..81a52218c20f 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -675,7 +675,7 @@ void kvm_set_cpu_caps(void)
- 		kvm_cpu_cap_set(X86_FEATURE_SPEC_CTRL_SSBD);
- 
- 	kvm_cpu_cap_mask(CPUID_7_1_EAX,
--		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
-+		F(AVX_VNNI) | F(AVX512_BF16) | F(LASS) | F(CMPCCXADD) |
- 		F(FZRM) | F(FSRS) | F(FSRC) |
- 		F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
- 	);
--- 
-2.25.1
-
+#syz fix: btrfs: wait on uncached block groups on every allocation loop
