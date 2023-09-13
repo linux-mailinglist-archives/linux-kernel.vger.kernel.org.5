@@ -2,163 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2792879E3E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E0979E3E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239329AbjIMJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58292 "EHLO
+        id S239305AbjIMJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239027AbjIMJh2 (ORCPT
+        with ESMTP id S239011AbjIMJi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:37:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 10DB2196
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694597800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DJ+QIh3H2QPLinO4CDP/6iKCpBl9xv64ep1natwynMA=;
-        b=CRGTInFr6zASshKW8fUSPJt94EphRYGpdcRCipi/xirr9cKpiNeUzZBwUwCUJBwzyVKioE
-        oFDrO0cE3gF3xE57KP5qOnjwltylER1FJP+pGsRJuVDJz9y9KyzA2gKlRYtjwi0XQHbPQp
-        xt4s/6tzbEiCCoFYWi14mfJY4Lxqw9A=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-8-v7DkTYH5MDyuyTdxJfNwiA-1; Wed, 13 Sep 2023 05:36:37 -0400
-X-MC-Unique: v7DkTYH5MDyuyTdxJfNwiA-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3ac97b9577cso1494954b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:36:37 -0700 (PDT)
+        Wed, 13 Sep 2023 05:38:28 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136EE196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:38:24 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so71462845e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694597902; x=1695202702; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HghA1siuHL9d2wGLlLawICtcF9c56YFhd/CcEs0FY+k=;
+        b=iiPKVJSOG3ZGrC6dcr1Ux7U5ou6IYyHd2gQ+DpL/FIVNgQXhElRBlj4laZFzRXPiYC
+         A8smT592Q1tHVoXdghgI3BDDE4Kis70VFiprreaPM27JeJfyg+V2V0lOzcN+Gl76R0/J
+         4waY9++NJSkROFpXrAy/gpidifh3WxHWp3vns1T7mqIRjIVcpuANFeAW/bKkyVzhGv4+
+         +V74+ZI0AOIHMu0K2e6A0BGXo9UGjgnWCgbIncocXHItVKdXhNybM0ZVN8SFAF7D2uaN
+         l5aNtaXOS5a5kvXPyXbS1HOSnAMjev5M6rmfuE/c4QkbrP92rG3qe4T7R7f8aVU9dv7G
+         //LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694597797; x=1695202597;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DJ+QIh3H2QPLinO4CDP/6iKCpBl9xv64ep1natwynMA=;
-        b=v/xSW4lwiKp/26T6d1tkStMQVa9sNvzb1Pc6ATvABkuRAzrXCSjWfcyKg5v1Wtl33o
-         uVSqryrN0w5ugGlr7NiOcglyzcq7Akka/zLrEYeU1/Z3ZDKXraNJbXzJ7QB8aZgGSZji
-         6OZLs4+REdkqaaQAfIfSiivphG5/v/BggGBXqcM1wzFfn4P07L+xJkA8ESQGQ/gfpNOn
-         z2ykVZ9Lfd6MRuPMZItIj4ef48Jt3+ZaZr5d15CVqsnDhzjYfl/jw+Rmz3Sm+b/Ojp7h
-         Gg42vPksoMAXsWJjTollv/4jhjUCZAXf2KK2cm0EdeTYEJHeqC3ADZ82SZGI5mBLbnlu
-         aXBw==
-X-Gm-Message-State: AOJu0Yz5V6zU56OjSzv4oU/JrTfMRMs5U0JFAjq7ZRM4XGmgzDyK+OXj
-        rjSCnp4juMXGfJ5ch4K6ncO0p6gnX0w4Vc0bSV6t3kAqgZpZUqPl3vnYEK/JjQ1K2HIEkgV1jT8
-        BFimp6h0+jx/AtM6YimS81Qow5w2d/Wjx
-X-Received: by 2002:a05:6808:3ce:b0:3a7:4914:23ce with SMTP id o14-20020a05680803ce00b003a7491423cemr2063425oie.18.1694597796841;
-        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHvjKOmMhtyjJ532/geuZfUf3OFFZTDFonEaSQPBLq+sck2pHXEaLfPfI857g5j08bJ8heIFQ==
-X-Received: by 2002:a05:6808:3ce:b0:3a7:4914:23ce with SMTP id o14-20020a05680803ce00b003a7491423cemr2063411oie.18.1694597796633;
-        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
-Received: from redhat.com ([2804:1b3:a803:4ff9:7c29:fe41:6aa7:43df])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05680802cb00b003a1d29f0549sm4978523oid.15.2023.09.13.02.36.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 02:36:36 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 06:36:31 -0300
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Subject: Re: [RFC PATCH v4 1/1] scripts: Introduce a default git.orderFile
-Message-ID: <ZQGCnwDMTQ6cH2ZJ@redhat.com>
-References: <20230913075550.90934-2-leobras@redhat.com>
+        d=1e100.net; s=20230601; t=1694597902; x=1695202702;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=HghA1siuHL9d2wGLlLawICtcF9c56YFhd/CcEs0FY+k=;
+        b=FMCRl0tTWgQbAcQWgHHA3lfqlmu1sJwImgF4nkYUSAsSs7c7khmZZdYEcqxwMomY53
+         SWo2VgnKvWHrhy3aqVRxTL8ML77LrevkXoq1cJAKnsQfeq9H8FO27QXYdPF15fCSgxDO
+         7Y5hItFT2NHFbeNW0VHD2NBMe3rhMa8HKP00D8MJ2WjTEjdIZ2Oy28RfaV+EOljS7aGZ
+         t/p+82fHdlZAmXKYJ8CXAbZb2VhkxFhNiC5znO7ylM0GwBg4R8J7ql78r59UWxPOYzEB
+         w3hQroeIioIrsc5e95w7rxBm4qoU9ot7pCuCd6OtXDt8BBUVkeSVXrBdmbwHjhtmpcLz
+         G/RQ==
+X-Gm-Message-State: AOJu0YymDFNKDyqlI9W5jRPTcAoMdmJsPsVG1Kkm3QK1Hbt82NVFYgOq
+        Qi5L5Fi5fYunl/dCGnyeyemozw==
+X-Google-Smtp-Source: AGHT+IGzPFZa4ciCM9gg7jqd6a4bYXRlZBRHfHrRnIoKHfsBinXmu8RJMCcG+sl9GZOOhjAlfWeKow==
+X-Received: by 2002:a7b:c8c4:0:b0:3fb:e2af:49f6 with SMTP id f4-20020a7bc8c4000000b003fbe2af49f6mr1461695wml.39.1694597902398;
+        Wed, 13 Sep 2023 02:38:22 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:47c3:1e57:f54:3370? ([2a01:e0a:982:cbb0:47c3:1e57:f54:3370])
+        by smtp.gmail.com with ESMTPSA id m13-20020a7bca4d000000b003fe4548188bsm1501531wml.48.2023.09.13.02.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 02:38:21 -0700 (PDT)
+Message-ID: <a36d7b75-b072-4202-8f09-9eab0dfd52ed@linaro.org>
+Date:   Wed, 13 Sep 2023 11:38:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913075550.90934-2-leobras@redhat.com>
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to
+ corresponding Type-C connectors"
+Content-Language: en-US, fr
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
+References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
+ <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
+ <ZPbrtAlO2Y+bjDhf@kuha.fi.intel.com>
+ <CAA8EJpqUg2-k7LLBL38RHU1sThkXB54ca68xEMd1yMnHQcQ++w@mail.gmail.com>
+ <ZPh0Ps9UJ3HLzdeR@kuha.fi.intel.com>
+ <CAA8EJpratbBybgk8woD3maA=J_HuQis44Unq0n+c_UvaFs__AA@mail.gmail.com>
+ <ZPiAwOf00RREiYPr@kuha.fi.intel.com>
+ <6b6bacee-f7b6-4cfe-be3d-24bda44bfbcf@linaro.org>
+ <ZQBGD8CY5OVKYX63@kuha.fi.intel.com>
+ <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <a97a33f4-71f3-4610-a59e-0c2d5ae86670@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC: linux-kbuild@vger.kernel.org
-(typo on the original Cc: line)
+On 12/09/2023 19:39, Dmitry Baryshkov wrote:
+> On 12/09/2023 14:05, Heikki Krogerus wrote:
+>> On Tue, Sep 12, 2023 at 12:15:10AM +0300, Dmitry Baryshkov wrote:
+>>> On 06/09/2023 16:38, Heikki Krogerus wrote:
+>>>> On Wed, Sep 06, 2023 at 03:48:35PM +0300, Dmitry Baryshkov wrote:
+>>>>> On Wed, 6 Sept 2023 at 15:44, Heikki Krogerus
+>>>>> <heikki.krogerus@linux.intel.com> wrote:
+>>>>>>
+>>>>>> On Tue, Sep 05, 2023 at 01:56:59PM +0300, Dmitry Baryshkov wrote:
+>>>>>>> Hi Heikki,
+>>>>>>>
+>>>>>>> On Tue, 5 Sept 2023 at 11:50, Heikki Krogerus
+>>>>>>> <heikki.krogerus@linux.intel.com> wrote:
+>>>>>>>>
+>>>>>>>> Hi Dmitry,
+>>>>>>>>
+>>>>>>>> On Mon, Sep 04, 2023 at 12:41:39AM +0300, Dmitry Baryshkov wrote:
+>>>>>>>>> The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
+>>>>>>>>> dev_fwnode() checks never succeed, making the respective commit NOP.
+>>>>>>>>
+>>>>>>>> That's not true. The dev->fwnode is assigned when the device is
+>>>>>>>> created on ACPI platforms automatically. If the drm_connector fwnode
+>>>>>>>> member is assigned before the device is registered, then that fwnode
+>>>>>>>> is assigned also to the device - see drm_connector_acpi_find_companion().
+>>>>>>>>
+>>>>>>>> But please note that even if drm_connector does not have anything in
+>>>>>>>> its fwnode member, the device may still be assigned fwnode, just based
+>>>>>>>> on some other logic (maybe in drivers/acpi/acpi_video.c?).
+>>>>>>>>
+>>>>>>>>> And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
+>>>>>>>>> breaks drivers already using components (as it was pointed at [1]),
+>>>>>>>>> resulting in a deadlock. Lockdep trace is provided below.
+>>>>>>>>>
+>>>>>>>>> Granted these two issues, it seems impractical to fix this commit in any
+>>>>>>>>> sane way. Revert it instead.
+>>>>>>>>
+>>>>>>>> I think there is already user space stuff that relies on these links,
+>>>>>>>> so I'm not sure you can just remove them like that. If the component
+>>>>>>>> framework is not the correct tool here, then I think you need to
+>>>>>>>> suggest some other way of creating them.
+>>>>>>>
+>>>>>>> The issue (that was pointed out during review) is that having a
+>>>>>>> component code in the framework code can lead to lockups. With the
+>>>>>>> patch #2 in place (which is the only logical way to set kdev->fwnode
+>>>>>>> for non-ACPI systems) probing of drivers which use components and set
+>>>>>>> drm_connector::fwnode breaks immediately.
+>>>>>>>
+>>>>>>> Can we move the component part to the respective drivers? With the
+>>>>>>> patch 2 in place, connector->fwnode will be copied to the created
+>>>>>>> kdev's fwnode pointer.
+>>>>>>>
+>>>>>>> Another option might be to make this drm_sysfs component registration optional.
+>>>>>>
+>>>>>> You don't need to use the component framework at all if there is
+>>>>>> a better way of determining the connection between the DP and its
+>>>>>> Type-C connector (I'm assuming that that's what this series is about).
+>>>>>> You just need the symlinks, not the component.
+>>>>>
+>>>>> The problem is that right now this component registration has become
+>>>>> mandatory. And if I set the kdev->fwnode manually (like in the patch
+>>>>> 2), the kernel hangs inside the component code.
+>>>>> That's why I proposed to move the components to the place where they
+>>>>> are really necessary, e.g. i915 and amd drivers.
+>>>>
+>>>> So why can't we replace the component with the method you are
+>>>> proposing in this series of finding out the Type-C port also with
+>>>> i915, AMD, or whatever driver and platform (that's the only thing that
+>>>> component is used for)?
+>>>
+>>> The drm/msm driver uses drm_bridge for the pipeline (including the last DP
+>>> entry) and the drm_bridge_connector to create the connector. I think that
+>>> enabling i915 and AMD drivers to use drm_bridge fells out of scope for this
+>>> series.
+>>>
+>>>
+>>>> Determining the connection between a DP and its Type-C connector is
+>>>> starting to get really important, so ideally we have a common solution
+>>>> for that.
+>>>
+>>> Yes. This is what we have been discussing with Simon for quite some time on
+>>> #dri-devel.
+>>>
+>>> Unfortunately I think the solution that got merged was pretty much hastened
+>>> in instead of being well-thought. For example, it is also not always
+>>> possible to provide the drm_connector / typec_connector links (as you can
+>>> see from the patch7. Sometimes we can only express that this is a Type-C DP
+>>> connector, but we can not easily point it to the particular USB-C port.
+>>>
+>>> So, I'm not sure, how can we proceed here. Currently merged patch breaks
+>>> drm/msm if we even try to use it by setting kdef->fwnode to
+>>> drm_connector->fwnode. The pointed out `drivers/usb/typec/port-mapper.c` is
+>>> an ACPI-only thing, which is not expected to work in a non-ACPI cases.
+>>
+>> You really have to always supply not only the Type-C ports and partners,
+>> but also the alt modes. You need them, firstly to keep things sane
+>> inside kernel, but more importantly, so they are always exposed to the
+>> user space, AND, always the same way. We have ABIs for all this stuff,
+>> including the DP alt mode. Use them. No shortcuts.
+>>
+>> So here's what you need to do. UCSI does not seem to bring you
+>> anything useful, so just disable it for now. You don't need it. Your
+>> port driver is clearly drivers/soc/qcom/pmic_glink_altmode.c, so
+>> that's where you need to register all these components - the ports,
+>> partners and alt modes. You have all the needed information there.
+> 
+> To make things even more complicate, UCSI is necessary for the USB part of the story. It handles vbus and direction.
 
+On new platforms (starting from SM8450) UCSI is mandatory to have pmic_glink_altmode events triggering.
 
-On Wed, Sep 13, 2023 at 04:55:50AM -0300, Leonardo Bras wrote:
-> When reviewing patches, it looks much nicer to have some changes shown
-> before others, which allow better understanding of the patch before the
-> the .c files reviewing.
+Neil
+
 > 
-> Introduce a default git.orderFile, in order to help developers getting the
-> best ordering easier.
+>> Only after you've done that we can start to look at how should the
+>> connection between the DPs and their USB Type-C connectors be handled.
 > 
-> Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
+> But sure enough, I can add typec port registration to the altmode driver. This will solve the 'port not existing' part of the story.
 > 
-> Please provide feedback on what else to add / remove / reorder here!
+> I'd like to hear your opinion on:
 > 
-> Changes since RFCv3:
-> - Added "*types.h" matching so type headers appear before reguler headers
-> - Removed line ends ($) in patterns: they previously provided a 
->   false-positive
-> - Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
->   in any subdirectory
+> - components. Using them breaks drm/msm. How can we proceed?
 > 
-> Changes since RFCv2:
-> - Fixed licence comment to from /**/ to #
-> - Fixed filename in how-to comment
-> - Fix build order: Kconfig -> Kbuild -> Makefile
-> - Add *.mk extension 
-> - Add line-ends ($) to make sure and get the correct extensions
-> - Thanks Masahiro Yamada for above suggestions!
-> - 1 Ack, thanks Randy!
-> 
-> Changes since RFCv1:
-> - Added Kconfig* (thanks Randy Dunlap!)
-> - Changed Kbuild to Kbuild* (improve matching)
-> 
-> 
->  scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
->  create mode 100644 scripts/git.orderFile
-> 
-> diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-> new file mode 100644
-> index 000000000000..7cef02cbba3c
-> --- /dev/null
-> +++ b/scripts/git.orderFile
-> @@ -0,0 +1,34 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +# order file for git, to produce patches which are easier to review
-> +# by diffing the important stuff like header changes first.
-> +#
-> +# one-off usage:
-> +#   git diff -O scripts/git.orderFile ...
-> +#
-> +# add to git config:
-> +#   git config diff.orderFile scripts/git.orderFile
-> +#
-> +
-> +MAINTAINERS
-> +
-> +# Documentation
-> +Documentation/*
-> +*.rst
-> +
-> +# build system
-> +*Kconfig*
-> +*Kbuild*
-> +*Makefile*
-> +*.mak
-> +*.mk
-> +
-> +# semantic patches
-> +*.cocci
-> +
-> +# headers
-> +*types.h
-> +*.h
-> +
-> +# code
-> +*.c
-> -- 
-> 2.42.0
+> - PATH property usage. This way we make USB-C DisplayPort behave like the MST ports.
 > 
 
