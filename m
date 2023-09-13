@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F63679F071
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED1679F076
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbjIMRfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        id S230476AbjIMRhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjIMRfk (ORCPT
+        with ESMTP id S229451AbjIMRhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:35:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25F8A8;
-        Wed, 13 Sep 2023 10:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694626536; x=1726162536;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3/kfAqbdJ1Jw40JpAhtowZlrzIpwtchpP4+yODy4jDQ=;
-  b=SWQvjKzSG3eVvW4+1ddUcmc2w8Vq2dF1+Kr3B0Qi15zQbWNNEwYCTZWo
-   c5xxe0A5aG3xoBe4xue7SJbaRpglef+H0JcY+xqhsuoL6r27B5SuJtNVf
-   doHvxqx+ffW3QE24TqUgF1t3Sfp9mGxDy7ehjiAl36bycBWOYhb2XV6/+
-   L/UoH2aohvL7y/zcO1tH+A2RCwXkI0G/M752xKc7bQe8GIGb9pjjQ9aTW
-   NBFcRHtdNCbdGJwGBlmq3sQYsC7L45ULkYIlc8R9kRJtxuVijW0tV6Odp
-   G1d/zQX6zmq/I0WOxxWdWviX+w0k7tj7pA7+4J0hCE+aTsEll2JKG39Ts
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="445168516"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="445168516"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 10:35:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="737603953"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="737603953"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by orsmga007.jf.intel.com with ESMTP; 13 Sep 2023 10:35:36 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] thermal: int340x: Add ArrowLake-S PCI ID
-Date:   Wed, 13 Sep 2023 10:35:10 -0700
-Message-Id: <20230913173510.3963561-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 13 Sep 2023 13:37:02 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046D0A8;
+        Wed, 13 Sep 2023 10:36:58 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7a505727e7eso59670241.0;
+        Wed, 13 Sep 2023 10:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694626617; x=1695231417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yUBTHLHMdVrFtqCVTI9npNAUNxOv53pR5xqiTxGy/z4=;
+        b=ltuvVGdONvIKlvwk2W8dWK0O7Bz8lZG3Q0Fo9ie3+DF0onqsskDOI5hFVoqDhDdkSh
+         SA67qvyX0epiZI76QFWKGHXbyvRNft9s3ZNg9OQITwvlORj/rMsEuVIGkap1Jo4Gjau1
+         TOwwVFNwskW3YId4fFrQYJg+w5yMB93eqiVsbyPSwDhYkeGIkR1Dr+GnQoOSnkgpDhuJ
+         rJy+MOXakH8vJ4/OWGTe0Z0q+2qCDwIBleV6uEbUo/3RiVvutIMYn9y+LNvWZUEwu49k
+         BLWfrI3lLRnNHOyn6fSP2FvHpecboq5apMOdB3PPkopIQcBHrWrA3zI88l522THoK4/v
+         LLSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694626617; x=1695231417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yUBTHLHMdVrFtqCVTI9npNAUNxOv53pR5xqiTxGy/z4=;
+        b=DOcJvirKFSlhlFP8aj8i+kymldOpDUN3yo+10A78n+3uMvQh445IKOL5teV7z5ON5U
+         DuMWZXIUa5wS8h8HpQrBrGRENOAB0BB2jEQROU2RSZTnpzSyWCgtMmiHzNDB6/10Eehu
+         0FNo+GtoZxLJd1oLL/U3YjYXXcoPNsto4MqTZwvqJx8ls/19dEE6XZfck2Ue3k48J6yZ
+         4JwAUAPR0o7XdJyAYWwpBykA9lc5q3bQNnezIB3Gn3AE0opixIP1vQ2h76ayXD7UydK5
+         Rf+xdFsWMOGXuK9PezKPZ+IEeGKRZLWod0vTb5FIhrWZuw36YrTpzf36Kvcl6naNDpMG
+         k1Kw==
+X-Gm-Message-State: AOJu0Yz0oFh8kUgMV+AOJy5weXpzOibxsBPol9UZqc+htyP/9mZ/1wIz
+        LTPBlNQ+iRiut68awOw1tfeBpKvQyqBHxfL0+Ck=
+X-Google-Smtp-Source: AGHT+IHnZ5RMnSyqYQIJ0YQlL3YDIavATqGNsUT6AgecvkVsZb9etm/KfUc34JO5eovfCyjImlWLzbmGQ7ux4RqYSY4=
+X-Received: by 2002:a1f:4b85:0:b0:495:bc26:d110 with SMTP id
+ y127-20020a1f4b85000000b00495bc26d110mr3150824vka.12.1694626616904; Wed, 13
+ Sep 2023 10:36:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
+In-Reply-To: <20230913-ctime-v1-1-c6bc509cbc27@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 13 Sep 2023 20:36:45 +0300
+Message-ID: <CAOQ4uxhYRnX0NChCU2tsEi7eUPqbqQDeOwQT4ubWUgtCN0OVfA@mail.gmail.com>
+Subject: Re: [PATCH] overlayfs: set ctime when setting mtime and atime
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ArrowLake-S PCI ID for processor thermal device.
+On Wed, Sep 13, 2023 at 4:33=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
+ote:
+>
+> Nathan reported that he was seeing the new warning in
+> setattr_copy_mgtime pop when starting podman containers. Overlayfs is
+> trying to set the atime and mtime via notify_change without also
+> setting the ctime.
+>
+> POSIX states that when the atime and mtime are updated via utimes() that
+> we must also update the ctime to the current time. The situation with
+> overlayfs copy-up is analogous, so add ATTR_CTIME to the bitmask.
+> notify_change will fill in the value.
+>
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- .../thermal/intel/int340x_thermal/processor_thermal_device.h    | 1 +
- .../intel/int340x_thermal/processor_thermal_device_pci.c        | 2 ++
- 2 files changed, 3 insertions(+)
+IDGI, if ctime always needs to be set along with ATIME / MTIME, why not
+let notify_change() set the bit instead of assert and fix all the callers?
+But maybe I am missing something.
 
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-index b974583c5c11..dd025c8c2bac 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-@@ -10,6 +10,7 @@
- #include <linux/intel_rapl.h>
- 
- #define PCI_DEVICE_ID_INTEL_ADL_THERMAL	0x461d
-+#define PCI_DEVICE_ID_INTEL_ARL_S_THERMAL 0xAD03
- #define PCI_DEVICE_ID_INTEL_BDW_THERMAL	0x1603
- #define PCI_DEVICE_ID_INTEL_BSW_THERMAL	0x22DC
- 
-diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-index 7253277e476a..44b179ce9bc9 100644
---- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-+++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-@@ -390,6 +390,8 @@ static const struct pci_device_id proc_thermal_pci_ids[] = {
- 	{ PCI_DEVICE_DATA(INTEL, MTLP_THERMAL, PROC_THERMAL_FEATURE_RAPL |
- 	  PROC_THERMAL_FEATURE_FIVR | PROC_THERMAL_FEATURE_DVFS | PROC_THERMAL_FEATURE_DLVR |
- 	  PROC_THERMAL_FEATURE_WT_HINT) },
-+	{ PCI_DEVICE_DATA(INTEL, ARL_S_THERMAL, PROC_THERMAL_FEATURE_RAPL |
-+	  PROC_THERMAL_FEATURE_DVFS | PROC_THERMAL_FEATURE_DLVR | PROC_THERMAL_FEATURE_WT_HINT) },
- 	{ PCI_DEVICE_DATA(INTEL, RPL_THERMAL, PROC_THERMAL_FEATURE_RAPL |
- 	  PROC_THERMAL_FEATURE_FIVR | PROC_THERMAL_FEATURE_DVFS | PROC_THERMAL_FEATURE_WT_REQ) },
- 	{ },
--- 
-2.40.1
+Anyway, I have no objection to the ovl patch.
+It's fine by me if Christian applies it to the vfs.ctime branch with my ACK=
+.
 
+Thanks,
+Amir.
+
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> The new WARN_ON_ONCE in setattr_copy_mgtime caught a bug! Fix up
+> overlayfs to ensure that the ctime on the upper inode is also updated
+> when copying up the atime and mtime.
+> ---
+>  fs/overlayfs/copy_up.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> index d1761ec5866a..ada3fcc9c6d5 100644
+> --- a/fs/overlayfs/copy_up.c
+> +++ b/fs/overlayfs/copy_up.c
+> @@ -337,7 +337,7 @@ static int ovl_set_timestamps(struct ovl_fs *ofs, str=
+uct dentry *upperdentry,
+>  {
+>         struct iattr attr =3D {
+>                 .ia_valid =3D
+> -                    ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIM=
+E_SET,
+> +                    ATTR_ATIME | ATTR_MTIME | ATTR_ATIME_SET | ATTR_MTIM=
+E_SET | ATTR_CTIME,
+>                 .ia_atime =3D stat->atime,
+>                 .ia_mtime =3D stat->mtime,
+>         };
+>
+> ---
+> base-commit: 9cb8e7c86ac793862e7bea7904b3426942bbd7ef
+> change-id: 20230913-ctime-299173760dd9
+>
+> Best regards,
+> --
+> Jeff Layton <jlayton@kernel.org>
+>
