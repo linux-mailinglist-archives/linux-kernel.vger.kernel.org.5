@@ -2,139 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 683FB79E89E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7C079E897
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbjIMNHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S240691AbjIMNG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240711AbjIMNHK (ORCPT
+        with ESMTP id S231326AbjIMNG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:07:10 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2099019B6;
-        Wed, 13 Sep 2023 06:07:06 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DCRWOI016469;
-        Wed, 13 Sep 2023 13:07:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=U6m79bn53R80K62WnFpoCyhwSnR4yQVNhqrLWqqZQwk=;
- b=e96pzpA0D/LpdPvP69j0Grf4IDP3ysXoivr94YT+362omeS1wFuGjf/Ygv8J3vMJZJDK
- gq3B5JdYyEeczlYhKJ8RsOevvLti1KP+pC7eLYIhU43sH6iVnmW/PVsUHaD8gOllypV/
- BeBs/few4NGfsG9adVArhNt8Kymb6Pcb9qtem5p37UBRyzxSfyPY8UbmrJWbE7I7kBqp
- qqinfGg9xfR96FMqsT6O3gwtdnfH+/ikzBir9e3QjrnEduv02L94fofnKkns8J8ZOE5Z
- wpc85/02p7U9YuCrk/mjBR2oq1uIoaz6l0qW3bELb+UooHJGpx/fYhM87L/7GkrHfBnr Lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3d3qs6cu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 13:07:03 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DCc9Gh002970;
-        Wed, 13 Sep 2023 13:06:44 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3d3qs627-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 13:06:44 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38DC14AA024021;
-        Wed, 13 Sep 2023 13:06:30 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3t131tbka0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 13:06:30 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38DD6UOf2032354
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 13:06:30 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3925D58059;
-        Wed, 13 Sep 2023 13:06:30 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B58758058;
-        Wed, 13 Sep 2023 13:06:29 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.101.13])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Sep 2023 13:06:29 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Anthony Krowiak <akrowiak@linux.ibm.com>
-Subject: [PATCH 2/2] s390/vfio-ap: set status response code to 06 on gisc registration failure
-Date:   Wed, 13 Sep 2023 09:06:22 -0400
-Message-ID: <20230913130626.217665-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230913130626.217665-1-akrowiak@linux.ibm.com>
-References: <20230913130626.217665-1-akrowiak@linux.ibm.com>
+        Wed, 13 Sep 2023 09:06:58 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC411BC0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:06:54 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rm0vz0v1Bz6D95T;
+        Wed, 13 Sep 2023 21:01:51 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 13 Sep
+ 2023 14:06:30 +0100
+Date:   Wed, 13 Sep 2023 14:06:29 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+CC:     guojinhui <guojinhui.liam@bytedance.com>,
+        <catalin.marinas@arm.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <lizefan.x@bytedance.com>,
+        <will@kernel.org>
+Subject: Re: [PATCH] arm64: cpufeature: Expose the real mpidr value to EL0
+Message-ID: <20230913140629.000052ad@Huawei.com>
+In-Reply-To: <381a2abc-1597-c179-99f2-477d7f41b91b@arm.com>
+References: <759c91b9-856e-a778-0e0a-e52240e5c8ce@arm.com>
+        <20230913094426.2787-1-guojinhui.liam@bytedance.com>
+        <381a2abc-1597-c179-99f2-477d7f41b91b@arm.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lU2LQRYLG9tuGBlkzrvvtPDdHVoJbi4C
-X-Proofpoint-ORIG-GUID: q5sFbLFVHWMbtwh9T3ABJjGAKtNL1md0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_06,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 suspectscore=0 spamscore=0 adultscore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309130101
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anthony Krowiak <akrowiak@linux.ibm.com>
+On Wed, 13 Sep 2023 12:23:37 +0100
+Robin Murphy <robin.murphy@arm.com> wrote:
 
-The interception handler for the PQAP(AQIC) command calls the
-kvm_s390_gisc_register function to register the guest ISC with the channel
-subsystem. If that call fails, the status response code 08 - indicating
-Invalid ZONE/GISA designation - is returned to the guest. This response
-code does not make sense because the non-zero return code from the
-kvm_s390_gisc_register function can be due one of two things: Either the
-ISC passed as a parameter by the guest to the PQAP(AQIC) command is greater
-than the maximum ISC value allowed, or the guest is not using a GISA.
+> On 2023-09-13 10:44, guojinhui wrote:
+> >>> In EL0, it can get the register midr's value to distinguish vendor.
+> >>> But it won't return real value of the register mpidr by using mrs
+> >>> in EL0. The register mpidr's value is useful to obtain the cpu
+> >>> topology information.  
+> >>
+> >> ...except there's no guarantee that the MPIDR value is anything other
+> >> than a unique identifier. Proper topology information is already exposed
+> >> to userspace[1], as described by ACPI PPTT or Devicetree[2]. Userspace
+> >> should be using that.
+> >>
+> >> Not to mention that userspace fundamentally can't guarantee it won't be
+> >> migrated at just the wrong point and read the MPIDR of a different CPU
+> >> anyway. (This is why the MIDRs and REVIDRs are also reported via sysfs,
+> >> such that userspace has a stable and reliable source of information in
+> >> case it needs to consider potential errata.)
+> >>
+> >> Thanks,
+> >> Robin.
+> >>
+> >> [1] https://www.kernel.org/doc/html/latest/admin-guide/cputopology.html
+> >> [2]
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/cpu/cpu-topology.txt  
+> > 
+> > 1. If we can get the infomation of the vendor (by MIDR), i think it possible to obtain
+> > the die infomation from the MPIDR value. Such as the kunpeng-920,
+> > 4 cores per cluster, 8 clusters per die, whose MPIDR value is as follow:
+> > 
+> > ```
+> > <DIE>.<CLUSTER>.<CORE>.<HT>
+> > 
+> > cpu = 0, 81080000
+> > cpu = 1, 81080100
+> > ...
+> > cpu = 3, 81080300
+> > cpu = 4, 81090000
+> > ...
+> > cpu = 7, 81090300
+> > cpu = 8, 810a0000
+> > ...
+> > cpu = 11, 810a0300
+> > cpu = 12, 810b0000
+> > ...
+> > cpu = 15, 810b0300
+> > cpu = 16, 810c0000
+> > ...
+> > cpu = 19, 810c0300
+> > cpu = 20, 810d0000
+> > ...
+> > cpu = 31, 810f0300
+> > cpu = 32, 81180000
+> > ...
+> > cpu = 63, 811f0300
+> > ```
+> > 
+> > we can get the die infomation by 0x810, 0x811.  
+> 
+> This is very much a platform-specific assumption, though, and once 
+> you're assuming enough to be able to derive anything meaningful from a 
+> raw MPIDR, you could equally derive the same thing from existing sources 
+> like NUMA topology (if you know the SoC, then for sure you can know how 
+> nodes relate to dies).
+> 
+> > 2. we can bind the task to the specific cpu to obtain the MPIDR value.  
+> 
+> ...unless that CPU then gets offlined, the task is forcibly migrated 
+> elsewhere, and ends up obtaining the *wrong* MPIDR value :(
+> 
+> > 3. I have checked the sysfs interface `/sys/devices/system/cpu/cpuN/topology/*`
+> > in Ampere and kunpeng-920 with the latest linux kernel before i submit the patch,
+> > but it doesn't provide the information of die.
+> > 
+> > ```
+> > # ls /sys/devices/system/cpu/cpu0/topology/
+> > cluster_cpus  cluster_cpus_list  cluster_id  core_cpus  core_cpus_list  core_id  core_siblings  core_siblings_list  package_cpus  package_cpus_list  physical_package_id  thread_siblings  thread_siblings_list
+> > # cat /sys/devices/system/cpu/cpu0/topology/*
+> > 00000000,00000000,00000000,00000003
+> > 0-1
+> > 616
+> > 00000000,00000000,00000000,00000001
+> > 0
+> > 6656
+> > 00000000,00000000,ffffffff,ffffffff
+> > 0-63
+> > 00000000,00000000,ffffffff,ffffffff
+> > 0-63
+> > 0
+> > 00000000,00000000,00000000,00000001
+> > 0
+> > 
+> > # uname -r
+> > 6.6.0-rc1
+> > ```
+> > 
+> > Then I check the code which parses the cpu topology infomation from PPTT:
+> > 
+> > ```
+> > int __init parse_acpi_topology(void)
+> > {
+> >          int cpu, topology_id;
+> > 
+> >          if (acpi_disabled)
+> >                  return 0;
+> > 
+> >          for_each_possible_cpu(cpu) {
+> >                  topology_id = find_acpi_cpu_topology(cpu, 0);
+> >                  if (topology_id < 0)
+> >                          return topology_id;
+> > 
+> >                  if (acpi_cpu_is_threaded(cpu)) {
+> >                          cpu_topology[cpu].thread_id = topology_id;
+> >                          topology_id = find_acpi_cpu_topology(cpu, 1);
+> >                          cpu_topology[cpu].core_id   = topology_id;
+> >                  } else {
+> >                          cpu_topology[cpu].thread_id  = -1;
+> >                          cpu_topology[cpu].core_id    = topology_id;
+> >                  }
+> >                  topology_id = find_acpi_cpu_topology_cluster(cpu);
+> >                  cpu_topology[cpu].cluster_id = topology_id;
+> >                  topology_id = find_acpi_cpu_topology_package(cpu);
+> >                  cpu_topology[cpu].package_id = topology_id;
+> >          }
+> > 
+> >          return 0;
+> > }
+> > ```
+> > 
+> > Actually, it just gives the infomation of thread, cluster and package
+> > though the PPTT provides the dies infomation.
+> > 
+> > May be we can implement some code to obtain die information from PPTT?  
+> 
+> I guess if any additional levels of hierarchy exist between the root 
+> "package" level and what we infer to be the "cluster" level, then it 
+> seems reasonable to me to infer the next level above "package" to be 
+> "die". Then it looks like pretty much just a case of wiring up 
+> topology_die_id() through the generic topology code.
 
-Since this scenario is very unlikely to happen and there is no status
-response code to indicate an invalid ISC value, let's set the
-response code to 06 indicating 'Invalid address of AP-queue notification
-byte'. While this is not entirely accurate, it is better than indicating
-that the ZONE/GISA designation is invalid which is something the guest
-can do nothing about since those values are set by the hypervisor.
+Cluster was a vague enough concept that it was safe to define
+it as the layer above a core.  Die is a lot less obvious because it
+has more direct physical meaning.  There are interconnect and cache
+topologies where something is shared above the cluster where it
+doesn't correspond to a die (in the sense of a chiplet / one
+piece of silicon).  For those you'd have another level in PPTT before
+you reach the one that can be thought of as a die.
 
-Signed-off-by: Anthony Krowiak <akrowiak@linux.ibm.com>
-Suggested-by: Halil Pasic <pasic@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What about the die is of relevance for a userspace scheduler?
+Sharing of L3, NUMA proximity domain / DDR controller locations?
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 9cb28978c186..e7e4dbbf5ad3 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -394,7 +394,7 @@ static int ensure_nib_shared(unsigned long addr, struct gmap *gmap)
-  * host ISC to issue the host side PQAP/AQIC
-  *
-  * Response.status may be set to AP_RESPONSE_INVALID_ADDRESS in case the
-- * vfio_pin_pages failed.
-+ * vfio_pin_pages or kvm_s390_gisc_register failed.
-  *
-  * Otherwise return the ap_queue_status returned by the ap_aqic(),
-  * all retry handling will be done by the guest.
-@@ -458,7 +458,7 @@ static struct ap_queue_status vfio_ap_irq_enable(struct vfio_ap_queue *q,
- 				 __func__, nisc, isc, q->apqn);
- 
- 		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
--		status.response_code = AP_RESPONSE_INVALID_GISA;
-+		status.response_code = AP_RESPONSE_INVALID_ADDRESS;
- 		return status;
- 	}
- 
--- 
-2.41.0
+All that is visible either via the cache topology or the NUMA node
+topology.
+
+If there is a strong reason (beyond 'x86 has it in a system register')
+for having die explicitly provided in PPTT, then file a code first ACPI
+proposal to add a flags, similar to the existing one that indicates
+Physical Package.  Note that a strong justification would be needed.
+
+Jonathan
+
+
+
+> 
+> Thanks,
+> Robin.
+> 
 
