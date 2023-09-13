@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1687279F552
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EB779F562
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbjIMXHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 19:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
+        id S233121AbjIMXRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 19:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjIMXHI (ORCPT
+        with ESMTP id S233118AbjIMXRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 19:07:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FE51BCB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:07:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F26D2C433C7;
-        Wed, 13 Sep 2023 23:07:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694646424;
-        bh=ff4Xglxtnbq7pMTBdXo/zVGkPU3zPuCRWBB6q8+lHzQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Ro3uh6ilWqg62WQdB59QKFPdBxd9k5F9ZvjGq9dmM++9OsZJBn8IDIV/KSIzTNYWt
-         jo0VWNH50+2+vTCvsrxad6rGpp+BDrZGVrr2XhLHpL4/5/D7NAd+vsypFnvV1KyOzQ
-         /OPFMGnuApBQqNp/UNo2U1MloPOzrE/7smTfoQWaFP6m49jE35lust8QTw2wIvIgnr
-         kTN3cVHzDRLzQwBPsMMBc3gTPAOaQ0e8wPtrGvRUzuWMgVBkXqoajEGd4CfZepBISJ
-         PTzDDWYctZMwpG5vY7YXYw+QbHmMH1t7//Gwm03ZbWj2ES5HqFmebnOpdTwXVzqI0x
-         /2JS6TWueCfbg==
-Date:   Wed, 13 Sep 2023 16:07:01 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
-To:     Juergen Gross <jgross@suse.com>
-cc:     linux-kernel@vger.kernel.org,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 1/3] arm/xen: remove lazy mode related definitions
-In-Reply-To: <20230913113828.18421-2-jgross@suse.com>
-Message-ID: <alpine.DEB.2.22.394.2309131606560.2295162@ubuntu-linux-20-04-desktop>
-References: <20230913113828.18421-1-jgross@suse.com> <20230913113828.18421-2-jgross@suse.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 13 Sep 2023 19:17:35 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C2F1BD1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:17:31 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-573ccec985dso249854a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694647050; x=1695251850; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e1a1XS5FwL95wVQ3U0hOYK16YJk3gJb5vChvM9EJIak=;
+        b=NovGamzA9VvBNl1NvPwObRG4Yw8PVqhR4W2GbES9EwqPPd8vZ4mFtfrvBaSYXGLaA4
+         MAz6DE7lN9SXDmizvtRaBovZL69KvTwI6z/vEVlwZTg/wvvDDcU6p+r1DdhMEYVF7wG0
+         EwreFS0fKayZ4E+M2fxYwOseRYK3+5S9+DSOA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694647050; x=1695251850;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e1a1XS5FwL95wVQ3U0hOYK16YJk3gJb5vChvM9EJIak=;
+        b=Uj536mDx2XZQ7BiPfQUqMwrlUxFL+nVAhOAxKObggSfypdQlqk+Wcs4EoFxlvO/h9g
+         i7sBlh/ix0J4/OAe3sw+Oyfn25IqLzwnfYV2eB29zKSTDj0VQTSC59TxeHIIwftNsUqR
+         h3AZzeFqR45N+IgLzgNdMzS9yYBITHPnawFMVJpIkzGPsaj7Csy/RPv3FaqC3F/+YoKo
+         sYpEqa0rYPIy8ileDRlyVcDzgFj4Mr4e4ZanwiuxCcpzK9oLthU0Qilo6c6kH7yAM+uu
+         3oaU1dLYfNmLRLCwhrbhQgAyLFEdibrtMETtpZKGgRBtuUILhuclA3Zy9e/Ae1OVhwrV
+         AAEA==
+X-Gm-Message-State: AOJu0YyODyy3l00aJzdajP1tdRPtagKcK7hy1mjBggiEPZA3doqJPYSF
+        ifmszFXl/Lkl1rkt0qnVzHIcsg==
+X-Google-Smtp-Source: AGHT+IGClTtKAGRhwBX0rTWyQayaNUFl7oUgqH9imWkdIjnn/sGMkGEiuN74YRWSvEaa6g5mBChF6w==
+X-Received: by 2002:a17:90a:a008:b0:26b:24ed:e0d9 with SMTP id q8-20020a17090aa00800b0026b24ede0d9mr3570072pjp.33.1694647050628;
+        Wed, 13 Sep 2023 16:17:30 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e15-20020a17090a684f00b0026b4d215627sm128652pjm.21.2023.09.13.16.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 16:17:30 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 16:17:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Mukesh Ojha <quic_mojha@quicinc.com>, corbet@lwn.net,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        mathieu.poirier@linaro.org, catalin.marinas@arm.com,
+        linus.walleij@linaro.org, andy.shevchenko@gmail.com,
+        vigneshr@ti.com, nm@ti.com, matthias.bgg@gmail.com,
+        kgene@kernel.org, alim.akhtar@samsung.com, bmasney@redhat.com,
+        quic_tsoni@quicinc.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, kernel@quicinc.com
+Subject: Re: [REBASE PATCH v5 08/17] arm64: mm: Add dynamic ramoops region
+ support through command line
+Message-ID: <202309131613.C0E12D0D14@keescook>
+References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
+ <1694429639-21484-9-git-send-email-quic_mojha@quicinc.com>
+ <20230912101820.GA10884@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912101820.GA10884@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023, Juergen Gross wrote:
-> include/xen/arm/hypervisor.h contains definitions related to paravirt
-> lazy mode, which are used nowhere in the code.
+On Tue, Sep 12, 2023 at 11:18:20AM +0100, Will Deacon wrote:
+> On Mon, Sep 11, 2023 at 04:23:50PM +0530, Mukesh Ojha wrote:
+> > The reserved memory region for ramoops is assumed to be at a fixed
+> > and known location when read from the devicetree. This may not be
+> > required for something like Qualcomm's minidump which is interested
+> > in knowing addresses of ramoops region but it does not put hard
+> > requirement of address being fixed as most of it's SoC does not
+> > support warm reset and does not use pstorefs at all instead it has
+> > firmware way of collecting ramoops region if it gets to know the
+> > address and register it with apss minidump table which is sitting
+> > in shared memory region in DDR and firmware will have access to
+> > these table during reset and collects it on crash of SoC.
+> > 
+> > So, add the support of reserving ramoops region to be dynamically
+> > allocated early during boot if it is request through command line
+> > via 'dyn_ramoops_size=' and fill up reserved resource structure and
+> > export the structure, so that it can be read by ramoops driver.
+> > 
+> > Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> > ---
+> >  arch/arm64/mm/init.c       | 94 ++++++++++++++++++++++++++++++++++++++++++++++
 > 
-> All paravirt lazy mode related users are in x86 code, so remove the
-> definitions on Arm side.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Why does this need to be in the arch code? There's absolutely nothing
+> arm64-specific here.
 
-Acked-by: Stefano Stabellini <sstabellini@kernel.org>
+I would agree: this needs to be in ramoops itself, IMO. It should be a
+ramoops module argument, too.
 
+It being unhelpful for systems that don't have an external consumer is
+certainly true, but I think it would still make more sense for this
+change to live entirely within ramoops. Specifically: you're
+implementing a pstore backend behavioral change. In the same way that
+patch 10 is putting the "output" side of this into pstore/, I'd expect
+the "input" side also in pstore/
 
-> ---
->  include/xen/arm/hypervisor.h | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/include/xen/arm/hypervisor.h b/include/xen/arm/hypervisor.h
-> index 43ef24dd030e..9995695204f5 100644
-> --- a/include/xen/arm/hypervisor.h
-> +++ b/include/xen/arm/hypervisor.h
-> @@ -7,18 +7,6 @@
->  extern struct shared_info *HYPERVISOR_shared_info;
->  extern struct start_info *xen_start_info;
->  
-> -/* Lazy mode for batching updates / context switch */
-> -enum paravirt_lazy_mode {
-> -	PARAVIRT_LAZY_NONE,
-> -	PARAVIRT_LAZY_MMU,
-> -	PARAVIRT_LAZY_CPU,
-> -};
-> -
-> -static inline enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
-> -{
-> -	return PARAVIRT_LAZY_NONE;
-> -}
-> -
->  #ifdef CONFIG_XEN
->  void __init xen_early_init(void);
->  #else
-> -- 
-> 2.35.3
-> 
+More comments there, though.
+
+-- 
+Kees Cook
