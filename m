@@ -2,153 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A72479EC7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA3079EC82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbjIMPUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S229870AbjIMPVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjIMPTf (ORCPT
+        with ESMTP id S236915AbjIMPUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:19:35 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4412BD;
-        Wed, 13 Sep 2023 08:19:30 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DEnsnh019322;
-        Wed, 13 Sep 2023 15:18:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=DMmTuX4BUuWS71fg2UcymHdYuzTLXzic08tXaQHFJkE=;
- b=WKJFL+yVdMYVyWo+0mT5jzwKC14sNMa8xFF3QB8uIZkVOTAGBV+pYc+IHz4T4Ajr+s9R
- E9qSIkMrLyFXn860cgrx2nqnUJlKlg+UXGukFB7EZQsSYx56AmrdqoB7OKaJC5UPrmcR
- FVRVPYtVn3uv/34PIPn6qi6tSnZDv++gJnxThPAyw1UAghSI2Qn/VkH9UjK6Gu1CPsFf
- nRmM9XrE178nMeybkQmS17kclJ4soqJItMluEuit8poP2DsU6xjm9BdD2I1mJNqsyACE
- EA/kKAkXO6KAYZDhCAu2pi42eC9AEa1IGCoudSHHHEyKrtPozIlWXp16fCbVQucJUyCu PQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y8q1xfp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 15:18:48 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38DFIlhM025985
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 15:18:47 GMT
-Received: from [10.216.62.56] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 13 Sep
- 2023 08:18:34 -0700
-Message-ID: <5e5359d0-6f32-7312-b344-2d84be63d03d@quicinc.com>
-Date:   Wed, 13 Sep 2023 20:48:30 +0530
+        Wed, 13 Sep 2023 11:20:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D697219B1;
+        Wed, 13 Sep 2023 08:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694618446; x=1726154446;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1LTANdPAE8m2PHoe4hG/3j6oI5p3jyUM3ew3Mdwah6w=;
+  b=jiYKS/gOLBjZh23IsE6wEHnQmcKATipXhTd+3wRmxvqyGFBBn4GsgfQl
+   dXZx9q2Hz9XyuxYc6jEoI6dJ5tFkqLWRXPsEU9+q0l6SHKYf0S1W0f0Qu
+   T6vtLXFITVSVAjiaPucsmqgx3y3whZeoGj9qWafHytLZqhqzsCrrkcVmt
+   ZWcLTEU5ynnmstugP0ONTGA3bVW/4Sf3XVOIEoWnSjhpzAuXPRWPN9hmG
+   0CA0HNcunfYU7VyzwdMGdYs9n66EXnTTFeh9Ui3nHNDC2x04+pDo+5qAg
+   HVSxkHaF/ORVkW4vwLYwvFmfRgXeVtdfEYjpO7Nvookd4Gwjwwf9qQsks
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363723884"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="363723884"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 08:20:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="814249794"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="814249794"
+Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Sep 2023 08:20:11 -0700
+Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgRez-0000E4-0J;
+        Wed, 13 Sep 2023 15:20:09 +0000
+Date:   Wed, 13 Sep 2023 23:19:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
+Message-ID: <202309132304.Uw3cYH9C-lkp@intel.com>
+References: <20230913115001.23183-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 06/17] soc: qcom: Add Qualcomm APSS minidump kernel
- driver
-Content-Language: en-US
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-References: <1694290578-17733-1-git-send-email-quic_mojha@quicinc.com>
- <1694290578-17733-7-git-send-email-quic_mojha@quicinc.com>
- <e35a8b4f-ba1a-514e-9c59-a74442f0cb1f@linaro.org>
- <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <36d9bd32-7ea4-4d84-b1e9-3cfcc3bec85c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: fZxGkFPM9RluezOm5Frm40HM8FUFEa5k
-X-Proofpoint-GUID: fZxGkFPM9RluezOm5Frm40HM8FUFEa5k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_08,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
- adultscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130124
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230913115001.23183-2-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Bartosz,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on brgl/gpio/for-next]
+[also build test ERROR on mtd/nand/next linus/master ulf-hansson-mmc-mirror/next v6.6-rc1 next-20230913]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/gpiolib-provide-gpiod_set_active_-low-high/20230913-195053
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+patch link:    https://lore.kernel.org/r/20230913115001.23183-2-brgl%40bgdev.pl
+patch subject: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
+config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20230913/202309132304.Uw3cYH9C-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309132304.Uw3cYH9C-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309132304.Uw3cYH9C-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/nvmem-provider.h:15,
+                    from include/linux/rtc.h:18,
+                    from include/linux/efi.h:20,
+                    from block/partitions/efi.h:19,
+                    from block/partitions/msdos.c:32:
+>> include/linux/gpio/consumer.h:505:1: error: expected ';', ',' or ')' before '{' token
+     505 | {
+         | ^
 
 
-On 9/12/2023 12:39 AM, Jeff Johnson wrote:
-> On 9/11/2023 4:07 AM, Krzysztof Kozlowski wrote:
->> On 09/09/2023 22:16, Mukesh Ojha wrote:
->>> +/**
->>> + * qcom_minidump_region_register() - Register region in APSS 
->>> Minidump table.
->>> + * @region: minidump region.
->>> + *
->>> + * Return: On success, it returns 0 and negative error value on 
->>> failure.
->>> + */
->>> +int qcom_minidump_region_register(const struct qcom_minidump_region 
->>> *region)
->>> +{
->>> +    struct minidump *md;
->>> +    int ret;
->>> +
->>> +    md = qcom_smem_minidump_ready();
->>> +    if (!md)
->>> +        return -EPROBE_DEFER;
->>> +
->>> +    if (!qcom_minidump_valid_region(region))
->>> +        return -EINVAL;
->>> +
->>> +    mutex_lock(&md->md_lock);
->>> +    ret = qcom_md_region_register(md, region);
->>> +    if (ret)
->>> +        goto unlock;
->>> +
->>> +    qcom_md_update_elfheader(md, region);
->>> +unlock:
->>> +    mutex_unlock(&md->md_lock);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(qcom_minidump_region_register);
->>
->> NAK, there is no user for this.
->>
->> Drop all exports from minidump drivers. Your upstream driver *must not*
->> expose stuff to your vendor drivers.
-> 
-> Do we not expect that upstream drivers would want to register?
+vim +505 include/linux/gpio/consumer.h
 
-As of current version of patch, there is no user. Let's avoid till
-any upstream QCOM driver uses it .
+   503	
+   504	static inline void gpiod_set_active_low(struct gpio_desc *desc
+ > 505	{
+   506		/* GPIO can never have been requested */
+   507		WARN_ON(desc);
+   508	}
+   509	
 
-
-> Mind you, in the downstream code the following was a bad limitation:
-> #define MAX_NUM_OF_SS           10
-
-I don't think, there is any problem with above macro, instead there is
-restriction on total number of APSS region can be registered.
-
-#define MAX_NUM_ENTRIES	  201
-
--Mukesh
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
