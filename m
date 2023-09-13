@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E814579E2C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF5F79E2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239160AbjIMI5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
+        id S239155AbjIMI4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238884AbjIMI5P (ORCPT
+        with ESMTP id S239144AbjIMI4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:57:15 -0400
+        Wed, 13 Sep 2023 04:56:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BCBE73;
-        Wed, 13 Sep 2023 01:57:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 258B6C433C8;
-        Wed, 13 Sep 2023 08:57:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F548196;
+        Wed, 13 Sep 2023 01:56:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 653BCC433C8;
+        Wed, 13 Sep 2023 08:56:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694595431;
-        bh=llGJetdIb1dUjrzIZCcYNGwpbB9eVWan8YT4tpPq6SI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oh68BCdRZubTrl/ZMiuumqN4cN4http1sVkZ8tCPDwNPcNokpVhMfwbnQw1apVu5Z
-         fCAYZCnxdAP94Yh2lL0KmWE62tnusTgyVF5nrvSjPPdb3g2FufJh/8D3Jmx/B7C7zA
-         knujcquHlKQdnB4YTu1FYcFeTO6Rah1n3/ruwSiBWgyWqXaqvwaXAaYayxHGSF75nS
-         AshOQwcmKaDFTb+flzzrKeDwvWJ/7nYOZBOoiqhh+sSezUyUlwQaj+vzZvDcvrDGEp
-         eIN7hU6qw/dkaxSLbj8H31xF/Jc4aG84oOUmneEb+bESwvO7kmadt+v/vnMOli+2mr
-         UTjYHbI9G76gQ==
-Date:   Wed, 13 Sep 2023 10:57:07 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Michael Shych <michaelsh@nvidia.com>,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] i2c: I2C_MLXCPLD on ARM64 should depend on ACPI
-Message-ID: <ZQF5Y2crg3TuyHOn@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Michael Shych <michaelsh@nvidia.com>, linux-i2c@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1693828363.git.geert+renesas@glider.be>
- <71c8d6d8c2c7ef31040ff5a0266cde0a6b3cd189.1693828363.git.geert+renesas@glider.be>
+        s=k20201202; t=1694595392;
+        bh=Y1yF1JdFEipuLJy5XAg3taX2OJcsThXzbTWKAi9GM7A=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=BYKmIMGtAducsE7GoVP9h6mT5cBvkFzI7Bnc3M+pD3ZA082kYg+PiYKPAdKrLhqEg
+         YgHE7RGP9ZWXEKsPcte9uykWkElvhA5bHgCgCQPQRgTKJIEFzBtjhjfgtGBsdwnXNs
+         MwsazLQyneXwK0j1if2CQ/0b+o3npFT+n8Y5pwAF1/TA/I7Npd+LjLmJm+V5HpnRYh
+         ujl7zLsemZOYAbDdH664hTXOh8TlbiSSYkZMxj6t6eLSDXpYWFE/whcL9fhF7ewjqZ
+         2NikhTrhkLD4bwY3B1SI3G2wZ01onhBfG1TY/gxgRiimA7tH8otpoOTY0Ct7guif+k
+         zqt5cZxk3Cpmw==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>
+Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
+        hante.meuleman@broadcom.com, linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        linus.walleij@linaro.org, marcan@marcan.st, keescook@chromium.org,
+        gustavoars@kernel.org, hdegoede@redhat.com,
+        ryohei.kondo@cypress.com
+Subject: Re: [PATCH] wifi: brcmfmac: Replace 1-element arrays with flexible
+ arrays
+References: <20230913065421.12615-1-juerg.haefliger@canonical.com>
+Date:   Wed, 13 Sep 2023 11:58:07 +0300
+In-Reply-To: <20230913065421.12615-1-juerg.haefliger@canonical.com> (Juerg
+        Haefliger's message of "Wed, 13 Sep 2023 08:54:21 +0200")
+Message-ID: <87msxqlaao.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="SnrQN+jefm+egFHi"
-Content-Disposition: inline
-In-Reply-To: <71c8d6d8c2c7ef31040ff5a0266cde0a6b3cd189.1693828363.git.geert+renesas@glider.be>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Juerg Haefliger <juerg.haefliger@canonical.com> writes:
 
---SnrQN+jefm+egFHi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
+> UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
+> 'element' and 'channel_list' will trigger warnings, so make them proper
+> flexible arrays.
+>
+> False positive warnings were:
+>
+>   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:6984:20
+>   index 1 is out of range for type '__le32 [1]'
+>
+>   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1126:27
+>   index 1 is out of range for type '__le16 [1]'
+>
+> for these lines of code:
+>
+>   6884  ch.chspec = (u16)le32_to_cpu(list->element[i]);
+>
+>   1126  params_le->channel_list[i] = cpu_to_le16(chanspec);
+>
+> Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
 
-On Mon, Sep 04, 2023 at 02:00:36PM +0200, Geert Uytterhoeven wrote:
-> The "i2c_mlxcpld" platform device is only instantiated on X86 systems
-> (through drivers/platform/x86/mlx-platform.c), or on ARM64 systems with
-> ACPI (through drivers/platform/mellanox/nvsw-sn2201.c).  Hence further
-> restrict the dependency on ARM64 to ACPI, to prevent asking the user
-> about this driver when configuring an ARM64 kernel without ACPI support.
->=20
-> While at it, document in the Kconfig help text that the driver supports
-> ARM64/ACPI based systems, too.
->=20
-> Fixes: d7cf993f832ad2a4 ("i2c: mlxcpld: Allow driver to run on ARM64 arch=
-itecture")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Should this be queued for v6.6?
 
-Removed Fixes tag and applied to for-current, thanks!
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
---SnrQN+jefm+egFHi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUBeWMACgkQFA3kzBSg
-KbYmIA//eXo9hXtMmtePqnxWOfzUsnh8OGfXlRbKD4prbAY+1ErvPXDbq81hTrWh
-koefQSU44ey7uuoYHB9L52esYxoaUiRB437FYd7oItNeQY45QHhpSwEVSw20zRg5
-1mOkmRTkQhDnIOy2OqPp07jn81uFHX2TmS0Vd6YQGcT5lpW2R27Rbpn7oPdT1u25
-GElK9zHfKJb4/ueQouEOkb6d1alyRSqsOziibiLMqowpEQK3nNTg3gCxJHO3gM3P
-hhdqcBRrjgdFnAiVYBuubbosu0ouq7NlvjEzI4QKVtS2s5cZA9QIzrBZb7hTtQaj
-Cg+EZhBZs4BXejSM/aMTXEByAwahcFrKjNpuTiNKJoWRXfdor1X5vYCIycm1GaRc
-JT/BhUj5C29AuN6fh95lyoxCS/wNAwHo1b/VR77YJxPzwKDH0//1BzwqeUvTR4z6
-zDkzfVQSU9dvGyRqKg712ptXwSBQnlPa+qNvyNhoh0b4EG8xPIe6iUCIzGX5XfDC
-gE0LZ3cKOQ+HlXsZaKAZA/LyDyIButpfE+l4MGbEd8Rs3s0Ut2Hswb8Pcf8Fies2
-EhubuDfveb780Do1rJem0nx+lg1LIuOJu9Zp+/nH8Q2wOfLudb4e4pkkwRrCjEXD
-9CGrKwO7QSyHT1gVjkTJrQj4WU6QV0zEGoJEwi9HMknjtF9Qn54=
-=LGcb
------END PGP SIGNATURE-----
-
---SnrQN+jefm+egFHi--
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
