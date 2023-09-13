@@ -2,219 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DF279E1F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E9079E1F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbjIMIYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
+        id S238678AbjIMIYJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 04:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbjIMIYY (ORCPT
+        with ESMTP id S231301AbjIMIYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:24:24 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4937010C0;
-        Wed, 13 Sep 2023 01:24:20 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-49032a0ff13so2382666e0c.0;
-        Wed, 13 Sep 2023 01:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694593459; x=1695198259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pvSkwLLGuwL6+FzTiaUPYz7u0MiA133oxHxQzz8keyY=;
-        b=f3NkL39qpplvUFN3+/u9KzP5YUp4KczTSkjEUNDgN4Yu4Hf+c2FY3qNsl6Wskwbxlg
-         sh3SpIqQIJ5jbm/mfU8gBKRSuijxsL8Hk7BjfGie6zGm0/pumK1k+JR+JS9VwWbOl9Ix
-         z7n8gzVL7pe/K7TOwx14Am6ietoIn2FFf5E3Mx2CDrLuSDUnHGzdjl2hUoW7pBtWB7CU
-         pLUwfp+KVyomlTHUCw3f5uPOYeGcIQyLhMdhYSQ7aLjMQkgjlYFo5aUlPA6lR4geY89q
-         5zK+kCYcqcIAlF7u75dxzuVg+S1xjtBxz4VBYwpHz1N7guIJx0mY6Swxr3bqvNDHNS99
-         Nhcw==
+        Wed, 13 Sep 2023 04:24:08 -0400
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB581E73;
+        Wed, 13 Sep 2023 01:24:04 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-58c92a2c52dso62440907b3.2;
+        Wed, 13 Sep 2023 01:24:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694593459; x=1695198259;
+        d=1e100.net; s=20230601; t=1694593444; x=1695198244;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pvSkwLLGuwL6+FzTiaUPYz7u0MiA133oxHxQzz8keyY=;
-        b=ilEQKFqftNMuQISc3rV9+RU2RiIYrTKuMdD6J9qkHOhDjETWKrqS4Je4/1ltzieoMv
-         Dd4vQuDWPp/xcb3gknoD7jOppkh6QaBN2O8O3CVE292zMJvOk2bZXoMeOpsKvzHN5UOy
-         h7Bf1jIx9BURCjvff0N3iZLTAPZ0Z12JKWWKjcJDDQnREHfJIZjSyHPHH57nnWCzjZ7/
-         oTUt3teBfPob5ktRQsRAVXGpKKqmsTIzrI0AF1cT9YTaJeSlYGExWSk/++50SzBD4sXd
-         QrbQ2caXKlMQvxUSyswTlHEefk+PuspANwV3OkF8TCM/N5OOAnxSxmzu2o8sStc27SGd
-         bEow==
-X-Gm-Message-State: AOJu0YxPqM7q4SiLCUqLvkF7xpyfmaOMPLg+TE3033sdu0/vmY+Guhaj
-        vlG481g70oT/b/A4FzNfaZhLOiOrrLEA3o2O5SM=
-X-Google-Smtp-Source: AGHT+IFO0NSs41b73GFK5JRqE11oXhcmyBkl1ReBcxdhr7hcXRn9Fd+MyqqH9Ssyk1jO/UvqE7kpKxzJ24mPzPRKrQc=
-X-Received: by 2002:a1f:6d03:0:b0:48d:2a1:5d26 with SMTP id
- i3-20020a1f6d03000000b0048d02a15d26mr2126287vkc.4.1694593459187; Wed, 13 Sep
- 2023 01:24:19 -0700 (PDT)
+        bh=3YpGKJuDtrl+7ORYHXXZK89Axri0zAtMDBhXftL8Qjk=;
+        b=j54TWAR9li5C7xEsZHsgXo6RsgGYG5XzSWx9lNk82ObL8fqqP0NGL/2+iT7FcPZvof
+         a012o0kUvxTF2SDj/qWNW5yXa3HUpdM+JdtEiC6c1lIGZTW33o0Fa4jH2O+4mpZruJcK
+         BoKMp+XgHbIJgSOWndCutmrtNwZkgbhlhPZ0AZ9lVhwKt8v0xX5IxP0+h8Iiq0aLlWHi
+         eVuomBVQgw09aK3gk4ZbWF0FMJ0ERrU5EuffuShU4MCAlUpZ5R8P0DWS3gGroP91jNe6
+         POgEbq+04nqRZ4rHpVUczxujEPypQARlunErJslo0bJoemvqrTyfg0Rl8giVm0t5JN/n
+         hzlA==
+X-Gm-Message-State: AOJu0YwT6srZY6+ATzceF+J+Do3VoNk2kOQ0z2b72yVKHqzD8fU1z8WU
+        MdEwE0i6sU2Y8O+8BCq1VS2AiBH41ASsbg==
+X-Google-Smtp-Source: AGHT+IGVwk+ycTXGeEGKkEi3H5eUGCLRXcodxKTCwu8p7OaPp8DF+PtdafJgwCLuJjD1jBYPpz/qkg==
+X-Received: by 2002:a0d:ea0b:0:b0:59b:4116:cf12 with SMTP id t11-20020a0dea0b000000b0059b4116cf12mr1931803ywe.8.1694593443927;
+        Wed, 13 Sep 2023 01:24:03 -0700 (PDT)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id m4-20020a819c04000000b0059b20231f1dsm2964940ywa.121.2023.09.13.01.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 01:24:02 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-58c92a2c52dso62440617b3.2;
+        Wed, 13 Sep 2023 01:24:02 -0700 (PDT)
+X-Received: by 2002:a25:d045:0:b0:d74:6c9f:e734 with SMTP id
+ h66-20020a25d045000000b00d746c9fe734mr1738982ybg.47.1694593442162; Wed, 13
+ Sep 2023 01:24:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230911131224.61924-1-alexghiti@rivosinc.com>
- <20230911131224.61924-5-alexghiti@rivosinc.com> <CAHVXubiVH=q9pnTLQyjS3X3W-hvuA=ZMM2D2xYPFkGjFnAgbWg@mail.gmail.com>
-In-Reply-To: <CAHVXubiVH=q9pnTLQyjS3X3W-hvuA=ZMM2D2xYPFkGjFnAgbWg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Wed, 13 Sep 2023 09:23:08 +0100
-Message-ID: <CA+V-a8tYzee-cX8rMiQ66ENWb+rLLFHmkOdovft0L-8ASQ3eog@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] riscv: Improve flush_tlb_kernel_range()
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        Andrew Jones <ajones@ventanamicro.com>
+References: <20230825091234.32713-1-quic_devipriy@quicinc.com>
+ <20230825091234.32713-7-quic_devipriy@quicinc.com> <CAA8EJpo75zWLXuF-HC-Xz+6mvu_S1ET-9gzW=mOq+FjKspDwhw@mail.gmail.com>
+In-Reply-To: <CAA8EJpo75zWLXuF-HC-Xz+6mvu_S1ET-9gzW=mOq+FjKspDwhw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Sep 2023 10:23:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXx_b-uubonRH5=Tcxo+ddxg2wXvRNQNjhMrfvSFh0Xcw@mail.gmail.com>
+Message-ID: <CAMuHMdXx_b-uubonRH5=Tcxo+ddxg2wXvRNQNjhMrfvSFh0Xcw@mail.gmail.com>
+Subject: Re: [PATCH V2 6/7] arm64: dts: qcom: ipq9574: Add support for nsscc node
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Devi Priya <quic_devipriy@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        richardcochran@gmail.com, arnd@arndb.de, geert+renesas@glider.be,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        quic_saahtoma@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+Hi Dmitry,
 
-On Wed, Sep 13, 2023 at 9:04=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> @Lad, Prabhakar Any chance you give a try to this new patchset? So
-> that we make sure Samuel found your issue :)
->
-I have given the patches a try and not seen the module load failures
-as seen previously. I have some rigorous tests which test the complete
-platform. I'm just waiting for it to complete before I give Tested by.
-
-Cheers,
-Prabhakar
-
-> On Mon, Sep 11, 2023 at 3:16=E2=80=AFPM Alexandre Ghiti <alexghiti@rivosi=
-nc.com> wrote:
+On Fri, Aug 25, 2023 at 1:28 PM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+> On Fri, 25 Aug 2023 at 12:15, Devi Priya <quic_devipriy@quicinc.com> wrote:
+> > Add a node for the nss clock controller found on ipq9574 based devices.
 > >
-> > This function used to simply flush the whole tlb of all harts, be more
-> > subtile and try to only flush the range.
-> >
-> > The problem is that we can only use PAGE_SIZE as stride since we don't =
-know
-> > the size of the underlying mapping and then this function will be impro=
-ved
-> > only if the size of the region to flush is < threshold * PAGE_SIZE.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 > > ---
-> >  arch/riscv/include/asm/tlbflush.h | 11 ++++++-----
-> >  arch/riscv/mm/tlbflush.c          | 33 ++++++++++++++++++++++---------
-> >  2 files changed, 30 insertions(+), 14 deletions(-)
+> >  Changes in V2:
+> >         - Dropped the fixed clock node gcc_gpll0_out_aux and added
+> >           support for the same in gcc driver
+> >         - Updated the node name to clock-controller@39b00000
+> >         - Added clock-names to retrieve the nssnoc clocks and add them
+> >           to the list of pm clocks in nss driver
 > >
-> > diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm=
-/tlbflush.h
-> > index 170a49c531c6..8f3418c5f172 100644
-> > --- a/arch/riscv/include/asm/tlbflush.h
-> > +++ b/arch/riscv/include/asm/tlbflush.h
-> > @@ -40,6 +40,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigne=
-d long start,
-> >  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr);
-> >  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> >                      unsigned long end);
-> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end);
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  #define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
-rt,
-> > @@ -56,15 +57,15 @@ static inline void flush_tlb_range(struct vm_area_s=
-truct *vma,
-> >         local_flush_tlb_all();
-> >  }
+> >  arch/arm64/boot/dts/qcom/ipq9574.dtsi | 48 +++++++++++++++++++++++++++
+> >  1 file changed, 48 insertions(+)
 > >
-> > -#define flush_tlb_mm(mm) flush_tlb_all()
-> > -#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> > -#endif /* !CONFIG_SMP || !CONFIG_MMU */
-> > -
-> >  /* Flush a range of kernel pages */
-> >  static inline void flush_tlb_kernel_range(unsigned long start,
-> >         unsigned long end)
-> >  {
-> > -       flush_tlb_all();
-> > +       local_flush_tlb_all();
-> >  }
-> >
-> > +#define flush_tlb_mm(mm) flush_tlb_all()
-> > +#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
-> > +#endif /* !CONFIG_SMP || !CONFIG_MMU */
+> > diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> > index 51aba071c1eb..903311547e96 100644
+> > --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+> > @@ -722,6 +742,34 @@ frame@b128000 {
+> >                                 status = "disabled";
+> >                         };
+> >                 };
 > > +
-> >  #endif /* _ASM_RISCV_TLBFLUSH_H */
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index 2c1136d73411..28cd8539b575 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -97,19 +97,27 @@ static void __flush_tlb_range(struct mm_struct *mm,=
- unsigned long start,
-> >                               unsigned long size, unsigned long stride)
-> >  {
-> >         struct flush_tlb_range_data ftd;
-> > -       struct cpumask *cmask =3D mm_cpumask(mm);
-> > +       struct cpumask *cmask, full_cmask;
-> >         unsigned long asid =3D FLUSH_TLB_NO_ASID;
-> > -       unsigned int cpuid;
-> >         bool broadcast;
-> >
-> > -       if (cpumask_empty(cmask))
-> > -               return;
-> > +       if (mm) {
-> > +               unsigned int cpuid;
-> > +
-> > +               cmask =3D mm_cpumask(mm);
-> > +               if (cpumask_empty(cmask))
-> > +                       return;
-> >
-> > -       cpuid =3D get_cpu();
-> > -       /* check if the tlbflush needs to be sent to other CPUs */
-> > -       broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_ids;
-> > +               cpuid =3D get_cpu();
-> > +               /* check if the tlbflush needs to be sent to other CPUs=
- */
-> > +               broadcast =3D cpumask_any_but(cmask, cpuid) < nr_cpu_id=
-s;
-> > +       } else {
-> > +               cpumask_setall(&full_cmask);
-> > +               cmask =3D &full_cmask;
-> > +               broadcast =3D true;
-> > +       }
-> >
-> > -       if (static_branch_unlikely(&use_asid_allocator))
-> > +       if (static_branch_unlikely(&use_asid_allocator) && mm)
-> >                 asid =3D atomic_long_read(&mm->context.id) & asid_mask;
-> >
-> >         if (broadcast) {
-> > @@ -128,7 +136,8 @@ static void __flush_tlb_range(struct mm_struct *mm,=
- unsigned long start,
-> >                 local_flush_tlb_range_asid(start, size, stride, asid);
-> >         }
-> >
-> > -       put_cpu();
-> > +       if (mm)
-> > +               put_cpu();
-> >  }
-> >
-> >  void flush_tlb_mm(struct mm_struct *mm)
-> > @@ -189,6 +198,12 @@ void flush_tlb_range(struct vm_area_struct *vma, u=
-nsigned long start,
-> >
-> >         __flush_tlb_range(vma->vm_mm, start, end - start, stride_size);
-> >  }
-> > +
-> > +void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-> > +{
-> > +       __flush_tlb_range(NULL, start, end - start, PAGE_SIZE);
-> > +}
-> > +
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >  void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long sta=
-rt,
-> >                         unsigned long end)
-> > --
-> > 2.39.2
-> >
+> > +               nsscc: clock-controller@39b00000 {
+> > +                       compatible = "qcom,ipq9574-nsscc";
+> > +                       reg = <0x39b00000 0x80000>;
+> > +                       clocks = <&gcc GCC_NSSNOC_NSSCC_CLK>,
+> > +                                <&gcc GCC_NSSNOC_SNOC_CLK>,
+> > +                                <&gcc GCC_NSSNOC_SNOC_1_CLK>,
+> > +                                <&bias_pll_cc_clk>,
+> > +                                <&bias_pll_nss_noc_clk>,
+> > +                                <&bias_pll_ubi_nc_clk>,
+> > +                                <&gcc GPLL0_OUT_AUX>,
+> > +                                <0>,
+> > +                                <0>,
+> > +                                <0>,
+> > +                                <0>,
+> > +                                <0>,
+> > +                                <0>,
+> > +                                <&xo_board_clk>;
+>
+> If you move xo_board closer to the start of the list, it will be
+> slightly easier to review.
+>
+> > +                       clock-names = "nssnoc_nsscc", "nssnoc_snoc", "nssnoc_snoc_1",
+> > +                                     "bias_pll_cc_clk", "bias_pll_nss_noc_clk",
+> > +                                     "bias_pll_ubi_nc_clk", "gpll0_out_aux", "uniphy0_nss_rx_clk",
+> > +                                     "uniphy0_nss_tx_clk", "uniphy1_nss_rx_clk",
+> > +                                     "uniphy1_nss_tx_clk", "uniphy2_nss_rx_clk",
+> > +                                     "uniphy2_nss_tx_clk", "xo_board_clk";
+>
+> You are using clock indices. Please drop clock-names.
+
+What do you mean by "using clock indices"?
+Note that the "clock-names" property is required according to the DT bindings.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
