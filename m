@@ -2,146 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB4C79F29E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667EF79F2A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbjIMUMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:12:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S232029AbjIMUM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbjIMUM3 (ORCPT
+        with ESMTP id S231918AbjIMUM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:12:29 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5617C1BC6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:12:25 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgWDi-0001jv-1g; Wed, 13 Sep 2023 22:12:18 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgWDd-0069Er-3M; Wed, 13 Sep 2023 22:12:13 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qgWDc-001Q1d-Pi; Wed, 13 Sep 2023 22:12:12 +0200
-Date:   Wed, 13 Sep 2023 22:12:12 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        Samuel Holland <samuel@sholland.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Chen-Yu Tsai <wens@csie.org>, linux-sunxi@lists.linux.dev,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org,
-        Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [REGRESSION] [PATCH net-next v5 2/2] net: stmmac: use per-queue
- 64 bit statistics where necessary
-Message-ID: <20230913201212.eiedub5rsztuwaa7@pengutronix.de>
-References: <20230717160630.1892-1-jszhang@kernel.org>
- <20230717160630.1892-3-jszhang@kernel.org>
- <20230911171102.cwieugrpthm7ywbm@pengutronix.de>
- <ZQAa3277GC4c9W1D@xhacker>
- <99695befef06b025de2c457ea5f861aa81a0883c.camel@pengutronix.de>
- <20230912092411.pprnpvrbxwz77x6a@pengutronix.de>
- <2fcc9fb0e40ceff8ea4ae55cca3ce0aff75a20ca.camel@sipsolutions.net>
- <ZQHIgmcnCNoZwtwu@xhacker>
+        Wed, 13 Sep 2023 16:12:57 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9DF1BC3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:12:53 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-579de633419so2370197b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694635972; x=1695240772; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Su1HKHhLigyzqYlZO3Q6GiJPuDvWadoF+8eJgSHSJSM=;
+        b=aiRSgXPbdPszjUbrmOvfo8VAbkCooNj2DlaPadFcfWqONmI1e1Ks9j2Zmtg9KMhvVx
+         PX/x5k/D0b1WEwZtEzWZRkPA8IrfbYHsqP+tjC85HjqExhu7XheGk8CdHWuLCAz3ZOOM
+         VCuoKtlcFasz019GO6zGs8sPXIZkq+03b5o4kMViuZUBPfWD1EkVMI5jbh/AGXOoQe5Y
+         +rHm/yIuaKSCA/OMPD1AyTCabMcwJEvRXFYuODEV110l2EF96r0v5ZHKr67DsB0HExr7
+         FK463fHavC8jhL1xEhQSum117HDUvYlfT7mfteSZTabEAvtcsAgJS/4vcWp6RjQJUIQO
+         KsSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694635972; x=1695240772;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Su1HKHhLigyzqYlZO3Q6GiJPuDvWadoF+8eJgSHSJSM=;
+        b=fwak2HnhXTNXabD836hsZ7zprbijjR1YhWdASiKSL1FiNPHCvgUFa5066UqGvmWqeU
+         0y6O1YYgvsrKCgZ1dHEQaTSAGrTEvAX01JwAQ2hZYU9scD3aRlipBqBowbfxiWc43obM
+         WEjBEpHf/Tf2R5CkIOpwO8ZwnRK2/K088aQkQK1zGUpT58q3YRan5VlSxqAabSitev+p
+         hBXLsFWXpME/qSbH+oxvHq9fgFZ1kVbr4QWuWVREM2mclbUfyCXHruLOIijq7wQMadR9
+         NMsGfyNeZvOhtaLF7qsG25WEgmpl8IEYwPbkLlC0kvdDI+QUlk/q8owolQ44z4iDvAVR
+         dqHQ==
+X-Gm-Message-State: AOJu0YwknyNwQjDrMS18AfwFUtZlFGFw/3xAdnRnvNludJkw4hyptl8J
+        +0BSlTgGXUdIIdSXUAsv4IO7czzc2fULkPdjAenAZQ==
+X-Google-Smtp-Source: AGHT+IGNdHiKi9h+VMupJWAnl7lkQjZz2lyGhzlQ4y/m/GOS5wCeU4E04eoE42Ydser353023glv4MnCjnMPMHjH7ys=
+X-Received: by 2002:a25:d246:0:b0:d81:6a54:48f0 with SMTP id
+ j67-20020a25d246000000b00d816a5448f0mr2205331ybg.22.1694635972595; Wed, 13
+ Sep 2023 13:12:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dpbv4jds3tisu2kp"
-Content-Disposition: inline
-In-Reply-To: <ZQHIgmcnCNoZwtwu@xhacker>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-3-brgl@bgdev.pl>
+ <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
+In-Reply-To: <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 13 Sep 2023 22:12:40 +0200
+Message-ID: <CACRpkdYtYDJa6fo6RnizHNzUsyazBQxEaNMznaij8rBF4ie+ew@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 13, 2023 at 10:05=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Wed, Sep 13, 2023 at 2:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+> >
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Use the new, less cumbersome interface for setting the GPIO as
+> > active-high that doesn't require first checking the current state.
+>
+> ...
+>
+> >          * here for older DTs so we can re-use the generic nand_gpio_wa=
+itrdy()
+> >          * helper, and be consistent with what other drivers do.
+> >          */
+> > -       if (of_machine_is_compatible("qi,lb60") &&
+> > -           gpiod_is_active_low(nand->busy_gpio))
+> > -               gpiod_toggle_active_low(nand->busy_gpio);
+> > +       if (of_machine_is_compatible("qi,lb60"))
+> > +               gpiod_set_active_high(nand->busy_gpio);
+>
+> Why not moving this quirk to gpiolib-of.c?
 
---dpbv4jds3tisu2kp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's a better idea here I think, it's clearly a quirk for a
+buggy device tree.
 
-Hello,
-
-On Wed, Sep 13, 2023 at 10:34:42PM +0800, Jisheng Zhang wrote:
-> On Tue, Sep 12, 2023 at 11:30:14AM +0200, Johannes Berg wrote:
-> > On Tue, 2023-09-12 at 11:24 +0200, Uwe Kleine-K=F6nig wrote:
-> > > >=20
-> > > > The newly added "struct u64_stats_sync syncp" uses a seqlock
-> > > > internally, which is broken into multiple words on 32bit machines, =
-and
-> > > > needs to be initialized properly. You need to call u64_stats_init on
-> > > > syncp before first usage.
-> > >=20
-> > > This is done. The problematic thing is that in stmmac_open() ->
-> > > __stmmac_open() the syncp initialized before is overwritten by
-> > >=20
-> > > 	memcpy(&priv->dma_conf, dma_conf, sizeof(*dma_conf));
->=20
-> Thank Johannes and Uwe for pointing out the issue.
->=20
-> > >=20
-> > > Do I need to point out that this is ugly?
-> >=20
-> > I think it also leaks the (lockdep) state since it reinits the syncp
-> > (and a lot of other state) doing this. This is also called when the MTU
-> > changes.
-> >=20
-> > Also, I couldn't convince myself that it's even race-free? Even if it
-> > is, it's not really obvious, IMHO.
-> >=20
-> > So it seems to me that really this needs to be split into data that
-> > actually should be reinitialized, and data that shouldn't, or just not
-> > use memcpy() here but copy only the relevant state?
->=20
-> Since we are in rc1, I need to fix the bug with as small changes as
-> possible. so another solution could be: replace rx/tx stats structure
-> with pointers, then setup pointers in the new allocated dma_conf with
-> the old one as current code did for dma_tx_size/dma_rx_size in
-> stmmac_setup_dma_desc():
->=20
-> dma_conf->dma_tx_size =3D priv->dma_conf.dma_tx_size
->=20
-> Is it acceptable?
-
-I wondered if you can just initialize the data directly in *priv, instead
-of setting up a local copy, initialize that one + copy it over?!
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---dpbv4jds3tisu2kp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUCF5sACgkQj4D7WH0S
-/k5YqAf/QoHjd1H4OMaQOFFZq5Z1GnCqzupN9tFvF4XnK2Y0RUzjcmrLVkjEZSvA
-GbuGtwdxWJr8ixqCzqbfibyZAY7i8nK6se1X4wOUikFWfsd4VVlMAvLwyvZDIeEM
-6EmLYW1jMo6O+PvxapPzIKtKkNuO51/BmZ1pLy40UKINT8txpwMrCLSvCJgGTbhr
-abaJvfJZS2Pel0QVCkYpm7dqX7pNPmLiNlDXwJwatnQrT2FmSxH1ftchDS3KE4Rl
-QSFlKi7cYMQydd8QZp3i4NzQ+xeTWL0WROSxm7p376NFUYItnDXIBmMw0MvkyL82
-XY/qJUJCraljLXTiRlSGhrHVHDMUqQ==
-=fL1E
------END PGP SIGNATURE-----
-
---dpbv4jds3tisu2kp--
+Yours,
+Linus Walleij
