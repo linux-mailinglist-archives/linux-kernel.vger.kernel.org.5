@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6AD79E24A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1616879E250
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239003AbjIMIij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S239019AbjIMIix convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 04:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238983AbjIMIii (ORCPT
+        with ESMTP id S239005AbjIMIio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:38:38 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D0D196
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:38:34 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf7a6509deso45784235ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694594314; x=1695199114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0GxVMeNb/eVsL5k6yegenMY0uKehAcu5sJKI/IuX61Q=;
-        b=TQ606CQ/XNc0d6LRzKEeveRJMj17fIFhZVKbBLROhRf4Gp46fa9GZhxK7q2oH/DXab
-         PNSzSrCa91yRnMNEHQQ2PRAsnve9FQBfXePaKnJATHrM5ON7UGIxf0B3ngFITaTOLw/j
-         yQmrJq3FAq8EzW8XxAfU9F+2ZBPyVljqSh8mFArG+LKHy7UeCn5TkWorKb/bhaX2EyY3
-         w2fPwMErd7ZEkkBnWT4su14/SzVv1MR/xcin+yCF8vFVcIVbl1p7iH79ZkBI1R8Fe21j
-         /F1Ph4lD4wFBJq3lmyQ7I9R4Hcd4PC7psf7TPrMr6hK6C9lSd52M6WW8BkWxCMuGRHFT
-         7QUg==
+        Wed, 13 Sep 2023 04:38:44 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E688A199F;
+        Wed, 13 Sep 2023 01:38:40 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59bbdb435bfso6613747b3.3;
+        Wed, 13 Sep 2023 01:38:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694594314; x=1695199114;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0GxVMeNb/eVsL5k6yegenMY0uKehAcu5sJKI/IuX61Q=;
-        b=LMvoOepOe4wzG1jKtqwvJTo6lLHmFPI2d9A4agEBx4Hb2oHItTMk6cUJPQ+Pf2z2Iw
-         KN6DENMwmp9jT9l+oT+miqCJ7PjyJP/ujevEcgOhpTxqWSbFAJjT+/sE+1K/UZ8kEVYE
-         hhOSspgQskGBrMqI5JZx6JK1uklkM1oB7jChDjvZOlrqEu3kgDEZwPsDPW23qFfwaUeq
-         BS08YAnK6pKfVBCH7tr2sSnn9b1AlpnlXKDBSaidGCvue83ikXqIbRQzqR8DQVov7kOC
-         umXfAahRVnpqbqNgxF6PfdJBwsUnXvLoFdO6JDUTp/stncImTJOfNhuZA/Y4TiU7aD+0
-         Emkw==
-X-Gm-Message-State: AOJu0YzLb1xa4kfs5o/yECl3bGkddKqXfi9VP7Hz2E+iGUP1VEId6bik
-        2Ch2pWybF5vdlKoWuhVPB8RlnA==
-X-Google-Smtp-Source: AGHT+IFWBPA0XW9K/VWSg6ZZN+P8wcn1hKSWwcd0lGMvhnBB+1hQSKCALcQ1XEhRqqNvk13bStTGJg==
-X-Received: by 2002:a17:902:ab95:b0:1c1:fe97:bf34 with SMTP id f21-20020a170902ab9500b001c1fe97bf34mr2055525plr.24.1694594314083;
-        Wed, 13 Sep 2023 01:38:34 -0700 (PDT)
-Received: from PF2LML5M-SMJ.bytedance.net ([220.243.131.6])
-        by smtp.gmail.com with ESMTPSA id p6-20020a170902a40600b001c3adb4f9e3sm6105837plq.120.2023.09.13.01.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 01:38:33 -0700 (PDT)
-From:   guojinhui <guojinhui.liam@bytedance.com>
-To:     rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org
-Cc:     lizefan.x@bytedance.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "guojinhui" <guojinhui.liam@bytedance.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] driver core: platform: set numa_node before platform_add_device()
-Date:   Wed, 13 Sep 2023 16:38:25 +0800
-Message-Id: <20230913083825.2670-1-guojinhui.liam@bytedance.com>
-X-Mailer: git-send-email 2.30.2
+        d=1e100.net; s=20230601; t=1694594320; x=1695199120;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j0APiHDSlu5OFa6XpaHfv4wijVgZqQAKCVQiiG02fVU=;
+        b=c0sVSqYN2GUA/n+vd4t8S9JUXxFHrj4N58hIjjPcaXK6kio5Xm9wNajH5xXAkiLTxU
+         K3usW2hZhariB+uYh9p76gq2AP7jUjTcwCDUBsKPlzM57S7xPWyyw9/dJ9gxMs+R86ae
+         IRf6gkdoSd1yzPcfF7TFsdCp/ckPEkltMM3TbQjvLe6dwxmSc0FNiPbIkk2dXFAIPnFZ
+         pWBpUUgEoF8yCDLEu6JUA1QHjtHGpfHmu9g34QeCBX0aF5DcpVj/QMqgLLHHdZlKk2f2
+         S9VFjepad+aleGqN/g+r9DdUtSvOczcZjhGnqwkWrPLGe/Pwe7FEtnitg0YbgM9SWxLp
+         xnaQ==
+X-Gm-Message-State: AOJu0YwPVNCJUp9VkorwBKNWZzVrEmi0tyNtK7ATpLmOAoTLn+5B10Cz
+        LSpHfEsTgsZY2NYx20QOkTShZKJqPznQUw==
+X-Google-Smtp-Source: AGHT+IHVR1+9XMXuviKpXqSnEBQklVh/VeXvICR2YKqFtFEjdRzIK2Ko+TN+Tgm7CUbabYghun5aNA==
+X-Received: by 2002:a81:65d5:0:b0:595:8e80:30ef with SMTP id z204-20020a8165d5000000b005958e8030efmr1565503ywb.51.1694594319962;
+        Wed, 13 Sep 2023 01:38:39 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id h20-20020a81b414000000b00583f8f41cb8sm2917443ywi.63.2023.09.13.01.38.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 01:38:39 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d7b91422da8so5681095276.2;
+        Wed, 13 Sep 2023 01:38:39 -0700 (PDT)
+X-Received: by 2002:a25:3717:0:b0:d81:4168:3a83 with SMTP id
+ e23-20020a253717000000b00d8141683a83mr1659380yba.25.1694594319149; Wed, 13
+ Sep 2023 01:38:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230825091234.32713-1-quic_devipriy@quicinc.com>
+ <20230825091234.32713-7-quic_devipriy@quicinc.com> <CAA8EJpo75zWLXuF-HC-Xz+6mvu_S1ET-9gzW=mOq+FjKspDwhw@mail.gmail.com>
+ <CAMuHMdXx_b-uubonRH5=Tcxo+ddxg2wXvRNQNjhMrfvSFh0Xcw@mail.gmail.com> <daed3270-847e-f4c6-17ad-4d1962ae7d49@linaro.org>
+In-Reply-To: <daed3270-847e-f4c6-17ad-4d1962ae7d49@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Sep 2023 10:38:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVxykGwyrKKSHBv9AHy4gAeH7DT7caZarbs-F40zz5Jpw@mail.gmail.com>
+Message-ID: <CAMuHMdVxykGwyrKKSHBv9AHy4gAeH7DT7caZarbs-F40zz5Jpw@mail.gmail.com>
+Subject: Re: [PATCH V2 6/7] arm64: dts: qcom: ipq9574: Add support for nsscc node
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Devi Priya <quic_devipriy@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        richardcochran@gmail.com, arnd@arndb.de, geert+renesas@glider.be,
+        nfraprado@collabora.com, rafal@milecki.pl, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        quic_saahtoma@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "guojinhui" <guojinhui.liam@bytedance.com>
+Hi Krzysztof,
 
-platform_add_device creates numa_node attribute of sysfs according to
-whether dev_to_node(dev) is equal to NUMA_NO_NODE. So set the numa node
-of the device before creating numa_node attribute of sysfs.
+On Wed, Sep 13, 2023 at 10:26 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 13/09/2023 10:23, Geert Uytterhoeven wrote:
+> >>
+> >>> +                       clock-names = "nssnoc_nsscc", "nssnoc_snoc", "nssnoc_snoc_1",
+> >>> +                                     "bias_pll_cc_clk", "bias_pll_nss_noc_clk",
+> >>> +                                     "bias_pll_ubi_nc_clk", "gpll0_out_aux", "uniphy0_nss_rx_clk",
+> >>> +                                     "uniphy0_nss_tx_clk", "uniphy1_nss_rx_clk",
+> >>> +                                     "uniphy1_nss_tx_clk", "uniphy2_nss_rx_clk",
+> >>> +                                     "uniphy2_nss_tx_clk", "xo_board_clk";
+> >>
+> >> You are using clock indices. Please drop clock-names.
+> >
+> > What do you mean by "using clock indices"?
+> > Note that the "clock-names" property is required according to the DT bindings.
+>
+> Indeed, thanks for pointing this out. Probably bindings should be changed.
 
-Fixes: 4a60406d3592 ("driver core: platform: expose numa_node to users in sysfs")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202309122309.mbxAnAIe-lkp@intel.com/
-Signed-off-by: guojinhui <guojinhui.liam@bytedance.com>
----
- drivers/acpi/acpi_platform.c |  4 +---
- drivers/base/platform.c      | 13 +++++++++++++
- 2 files changed, 14 insertions(+), 3 deletions(-)
+But what's so great about not having "clock-names"?
+There are _14_ input clocks.
 
-diff --git a/drivers/acpi/acpi_platform.c b/drivers/acpi/acpi_platform.c
-index 48d15dd785f6..adcbfbdc343f 100644
---- a/drivers/acpi/acpi_platform.c
-+++ b/drivers/acpi/acpi_platform.c
-@@ -178,11 +178,9 @@ struct platform_device *acpi_create_platform_device(struct acpi_device *adev,
- 	if (IS_ERR(pdev))
- 		dev_err(&adev->dev, "platform device creation failed: %ld\n",
- 			PTR_ERR(pdev));
--	else {
--		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-+	else
- 		dev_dbg(&adev->dev, "created platform device %s\n",
- 			dev_name(&pdev->dev));
--	}
- 
- 	kfree(resources);
- 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index 76bfcba25003..206dc7b020cd 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -795,6 +795,18 @@ void platform_device_unregister(struct platform_device *pdev)
- }
- EXPORT_SYMBOL_GPL(platform_device_unregister);
- 
-+#ifdef CONFIG_ACPI
-+static inline void platform_set_dev_node(struct platform_device *pdev)
-+{
-+	struct acpi_device *adev = to_acpi_device_node(pdev->dev.fwnode);
-+
-+	if (adev && adev->handle)
-+		set_dev_node(&pdev->dev, acpi_get_node(adev->handle));
-+}
-+#else
-+static inline void platform_set_dev_node(struct platform_device *pdev) {}
-+#endif
-+
- /**
-  * platform_device_register_full - add a platform-level device with
-  * resources and platform-specific data
-@@ -841,6 +853,7 @@ struct platform_device *platform_device_register_full(
- 			goto err;
- 	}
- 
-+	platform_set_dev_node(pdev);
- 	ret = platform_device_add(pdev);
- 	if (ret) {
- err:
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
