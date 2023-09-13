@@ -2,195 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8626779E25F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BD779E264
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237946AbjIMIl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S238985AbjIMImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235083AbjIMIl5 (ORCPT
+        with ESMTP id S238958AbjIMImT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:41:57 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4412C3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:41:53 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-414ba610766so247981cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694594513; x=1695199313; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8vYkKTZQhnheseFWELcIvsSRa/uxYdJJ6yMzg5vRWAE=;
-        b=2vd0F4oCuk+DtBaN+uD00WDYr86iAhXwNjty5dr+KL/jDtYw8hi8udgjC5U9Vj+JA8
-         qWKGDho+DBBf5r7h3QO/zhtbwV8zISA78O+5nHCrDSg6PKjL705FL4QoUQFGeCDXmyIk
-         STDMq7ABkePe1yLLgIC9YHSX7hs6xZaiG2NEWSuPzvIkzB1MvQy6r6MQ+/GbMX4zAoQ1
-         5dMzADNE6EWzuK5FWGZb6+AJFSn1Q5Q9M5fEcfiPYb6tnc0hnUK3IUuLOzSwJtdHRznE
-         WB2FlViAcWiBYC59LKeiAmoSubwubdrF/oUk50tcOx7UDe9nziXf6U2nd8Cc9JqF4KFW
-         0s/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694594513; x=1695199313;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8vYkKTZQhnheseFWELcIvsSRa/uxYdJJ6yMzg5vRWAE=;
-        b=fn7aTRN4eiCxkytjMvbEooiR3vzYRuqjQ7EoJ/SOb3IzNWYrWF5S3dMuRuPWkOn+uX
-         Ih1p2hS5h4M3A1lVOkoDtS6GCjXyNSjPxVyGB0vnmRXjP14PxtESWEvkpOQzbrxY4wep
-         +XoJAYoW5YgsF2TxMS7IYVGuPyZAY2pfpSSU0q870cmiFKb98Yd9Hk4/D7BoZslI3+zt
-         obYi7P+5NxcRwJvovL6oJ+RYRYeq0+j7A1xt/mVgvP6Gh4BhyvuvOIjbLY/W7NXXbfRC
-         XX0vwKjZI3szu+nPJXBqkSH/2H7I07Pj2tmzByFfY3ksDK110SdaqQHkEfGk4dBKwb7r
-         zbSQ==
-X-Gm-Message-State: AOJu0Yzz6AIHMRMqKABqmYWta+SgjaezeMQM+Tzq5KgcdbJUXBVvNVQN
-        bM8trbjgxm9AF5thHQs8nmP6kZgRLbqY24tvG8/36A==
-X-Google-Smtp-Source: AGHT+IEPvPoP/N4UVak/L9vq8/rjuLTHtSXPO7S3/p/Eobnv657JE1/x30F6I/MdThy/U3lOsYs1DTPdAcl+Npdj0bo=
-X-Received: by 2002:a05:622a:547:b0:3f6:97b4:1a4d with SMTP id
- m7-20020a05622a054700b003f697b41a4dmr150643qtx.23.1694594512584; Wed, 13 Sep
- 2023 01:41:52 -0700 (PDT)
+        Wed, 13 Sep 2023 04:42:19 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7506910C0;
+        Wed, 13 Sep 2023 01:42:15 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CKesBK014882;
+        Wed, 13 Sep 2023 01:42:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0220;
+ bh=NUevUetpd87fHFVlXkqG1gYoA4+HNk0VhI7PisrEu00=;
+ b=KCMfuNfWxplSvCcILvtIOAsipS4tPpfle/xqyTUYY/im419LK9pcwU6FkdRGQqf3ffNm
+ fvnBy9XjL/IoZjs/cOudhrmWsU/TrxDoemkaAqZ+i4Zs35Xkuj+7Cgs+YQKEFliKm/vI
+ Is0BrCg6x8jbeil2gaiJzsWFdhpZ7v1eToozsnNhi5r1tef+wqea0INknYYxx2T9pp49
+ CMH56kuT8JgGNNm5DKAkQXjQaLya5IROewOL0i8Q+3XnSUGRoMyp18ArpMdIKhxEkFZx
+ Llx9jpd2MGdmZKrCiJuQbmEQY8+GWbPhRdDaD0PtcRLAC5H0L9+01GDXbEf2XfHrfPTz sg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3t2y84t293-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 01:42:05 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 13 Sep
+ 2023 01:42:03 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 13 Sep 2023 01:42:03 -0700
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 6787A3F707F;
+        Wed, 13 Sep 2023 01:42:03 -0700 (PDT)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <srasheed@marvell.com>
+CC:     <aayarekar@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <egallen@redhat.com>, <hgani@marvell.com>,
+        <horms@kernel.org>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mschmidt@redhat.com>,
+        <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+        <sburla@marvell.com>, <sedara@marvell.com>, <vburru@marvell.com>,
+        <vimleshk@marvell.com>
+Subject: [net PATCH v2] octeon_ep: fix tx dma unmap len values in SG
+Date:   Wed, 13 Sep 2023 01:41:56 -0700
+Message-ID: <20230913084156.2147106-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <PH0PR18MB47346CADA6D087CB1BF2234CC7F0A@PH0PR18MB4734.namprd18.prod.outlook.com>
+References: <PH0PR18MB47346CADA6D087CB1BF2234CC7F0A@PH0PR18MB4734.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-References: <0000000000001c12b30605378ce8@google.com>
-In-Reply-To: <0000000000001c12b30605378ce8@google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 13 Sep 2023 10:41:41 +0200
-Message-ID: <CANn89iLwMhOnrmQTZJ+BqZJSbJZ+Q4W6xRknAAr+uSrk5TX-EQ@mail.gmail.com>
-Subject: Re: [syzbot] [net?] WARNING in __ip6_append_data
-To:     syzbot <syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com>,
-        David Howells <dhowells@redhat.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Juqmh0BqqHsvmTlZu-fWJZ_vI7OnMgJF
+X-Proofpoint-ORIG-GUID: Juqmh0BqqHsvmTlZu-fWJZ_vI7OnMgJF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 8:19=E2=80=AFAM syzbot
-<syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    65d6e954e378 Merge tag 'gfs2-v6.5-rc5-fixes' of git://git=
-...
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D142177f468000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Db273cdfbc13e9=
-a4b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D62cbf263225ae13=
-ff153
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D11f37a0c680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10034f3fa8000=
-0
->
+Lengths of SG pointers are kept in the following order in
+the SG entries in hardware.
+ 63      48|47     32|31     16|15       0
+ -----------------------------------------
+ |  Len 0  |  Len 1  |  Len 2  |  Len 3  |
+ -----------------------------------------
+ |                Ptr 0                  |
+ -----------------------------------------
+ |                Ptr 1                  |
+ -----------------------------------------
+ |                Ptr 2                  |
+ -----------------------------------------
+ |                Ptr 3                  |
+ -----------------------------------------
+Dma pointers have to be unmapped based on their
+respective lengths given in this format.
 
-CC David
+Fixes: 37d79d059606 ("octeon_ep: add Tx/Rx processing and interrupt support")
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
+---
+ .../net/ethernet/marvell/octeon_ep/octep_main.c  |  8 ++++----
+ .../net/ethernet/marvell/octeon_ep/octep_tx.c    |  8 ++++----
+ .../net/ethernet/marvell/octeon_ep/octep_tx.h    | 16 +++++++++++++++-
+ 3 files changed, 23 insertions(+), 9 deletions(-)
 
-Warning added in
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index 4424de2ffd70..dbc518ff8276 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -734,13 +734,13 @@ static netdev_tx_t octep_start_xmit(struct sk_buff *skb,
+ dma_map_sg_err:
+ 	if (si > 0) {
+ 		dma_unmap_single(iq->dev, sglist[0].dma_ptr[0],
+-				 sglist[0].len[0], DMA_TO_DEVICE);
+-		sglist[0].len[0] = 0;
++				 sglist[0].len[3], DMA_TO_DEVICE);
++		sglist[0].len[3] = 0;
+ 	}
+ 	while (si > 1) {
+ 		dma_unmap_page(iq->dev, sglist[si >> 2].dma_ptr[si & 3],
+-			       sglist[si >> 2].len[si & 3], DMA_TO_DEVICE);
+-		sglist[si >> 2].len[si & 3] = 0;
++			       sglist[si >> 2].len[3 - (si & 3)], DMA_TO_DEVICE);
++		sglist[si >> 2].len[3 - (si & 3)] = 0;
+ 		si--;
+ 	}
+ 	tx_buffer->gather = 0;
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
+index 5a520d37bea0..d0adb82d65c3 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.c
+@@ -69,12 +69,12 @@ int octep_iq_process_completions(struct octep_iq *iq, u16 budget)
+ 		compl_sg++;
+ 
+ 		dma_unmap_single(iq->dev, tx_buffer->sglist[0].dma_ptr[0],
+-				 tx_buffer->sglist[0].len[0], DMA_TO_DEVICE);
++				 tx_buffer->sglist[0].len[3], DMA_TO_DEVICE);
+ 
+ 		i = 1; /* entry 0 is main skb, unmapped above */
+ 		while (frags--) {
+ 			dma_unmap_page(iq->dev, tx_buffer->sglist[i >> 2].dma_ptr[i & 3],
+-				       tx_buffer->sglist[i >> 2].len[i & 3], DMA_TO_DEVICE);
++				       tx_buffer->sglist[i >> 2].len[3 - (i & 3)], DMA_TO_DEVICE);
+ 			i++;
+ 		}
+ 
+@@ -131,13 +131,13 @@ static void octep_iq_free_pending(struct octep_iq *iq)
+ 
+ 		dma_unmap_single(iq->dev,
+ 				 tx_buffer->sglist[0].dma_ptr[0],
+-				 tx_buffer->sglist[0].len[0],
++				 tx_buffer->sglist[0].len[3],
+ 				 DMA_TO_DEVICE);
+ 
+ 		i = 1; /* entry 0 is main skb, unmapped above */
+ 		while (frags--) {
+ 			dma_unmap_page(iq->dev, tx_buffer->sglist[i >> 2].dma_ptr[i & 3],
+-				       tx_buffer->sglist[i >> 2].len[i & 3], DMA_TO_DEVICE);
++				       tx_buffer->sglist[i >> 2].len[3 - (i & 3)], DMA_TO_DEVICE);
+ 			i++;
+ 		}
+ 
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
+index 2ef57980eb47..21e75ff9f5e7 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_tx.h
+@@ -17,7 +17,21 @@
+ #define TX_BUFTYPE_NET_SG        2
+ #define NUM_TX_BUFTYPES          3
+ 
+-/* Hardware format for Scatter/Gather list */
++/* Hardware format for Scatter/Gather list
++ *
++ * 63      48|47     32|31     16|15       0
++ * -----------------------------------------
++ * |  Len 0  |  Len 1  |  Len 2  |  Len 3  |
++ * -----------------------------------------
++ * |                Ptr 0                  |
++ * -----------------------------------------
++ * |                Ptr 1                  |
++ * -----------------------------------------
++ * |                Ptr 2                  |
++ * -----------------------------------------
++ * |                Ptr 3                  |
++ * -----------------------------------------
++ */
+ struct octep_tx_sglist_desc {
+ 	u16 len[4];
+ 	dma_addr_t dma_ptr[4];
+-- 
+2.25.1
 
-commit ce650a1663354a6cad7145e7f5131008458b39d4
-Author: David Howells <dhowells@redhat.com>
-Date:   Wed Aug 2 08:36:50 2023 +0100
-
-    udp6: Fix __ip6_append_data()'s handling of MSG_SPLICE_PAGES
-
-
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/74df7181e630/dis=
-k-65d6e954.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/8455d5988dfe/vmlinu=
-x-65d6e954.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/8ee7b79f0dfd/b=
-zImage-65d6e954.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+62cbf263225ae13ff153@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 5042 at net/ipv6/ip6_output.c:1800 __ip6_append_data=
-.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:1800
-> Modules linked in:
-> CPU: 1 PID: 5042 Comm: syz-executor133 Not tainted 6.5.0-syzkaller-11938-=
-g65d6e954e378 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 07/26/2023
-> RIP: 0010:__ip6_append_data.isra.0+0x1be8/0x47f0 net/ipv6/ip6_output.c:18=
-00
-> Code: db f6 ff ff e8 09 d5 97 f8 49 8d 44 24 ff 48 89 44 24 60 49 8d 6c 2=
-4 07 e9 c2 f6 ff ff 4c 8b b4 24 90 01 00 00 e8 e8 d4 97 f8 <0f> 0b 48 8b 44=
- 24 10 45 89 f4 48 8d 98 74 02 00 00 e8 d2 d4 97 f8
-> RSP: 0018:ffffc90003a1f3b8 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000001004 RCX: 0000000000000000
-> RDX: ffff88801fe70000 RSI: ffffffff88efcf18 RDI: 0000000000000006
-> RBP: 0000000000001000 R08: 0000000000000006 R09: 0000000000001004
-> R10: 0000000000001000 R11: 0000000000000000 R12: 0000000000000001
-> R13: dffffc0000000000 R14: 0000000000001004 R15: ffff888019f31000
-> FS:  0000555557280380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000045ad50 CR3: 0000000072666000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  ip6_append_data+0x1e6/0x510 net/ipv6/ip6_output.c:1895
->  l2tp_ip6_sendmsg+0xdf9/0x1cc0 net/l2tp/l2tp_ip6.c:631
->  inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:840
->  sock_sendmsg_nosec net/socket.c:730 [inline]
->  sock_sendmsg+0xd9/0x180 net/socket.c:753
->  splice_to_socket+0xade/0x1010 fs/splice.c:881
->  do_splice_from fs/splice.c:933 [inline]
->  direct_splice_actor+0x118/0x180 fs/splice.c:1142
->  splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
->  do_splice_direct+0x1af/0x280 fs/splice.c:1194
->  do_sendfile+0xb88/0x1390 fs/read_write.c:1254
->  __do_sys_sendfile64 fs/read_write.c:1322 [inline]
->  __se_sys_sendfile64 fs/read_write.c:1308 [inline]
->  __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f6b11150469
-> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
- ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fffd14e71a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-> RAX: ffffffffffffffda RBX: 00007fffd14e7378 RCX: 00007f6b11150469
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000005
-> RBP: 00007f6b111c3610 R08: 00007fffd14e7378 R09: 00007fffd14e7378
-> R10: 000000010000a006 R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007fffd14e7368 R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
->
-> If you want to overwrite bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
