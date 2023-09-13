@@ -2,518 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E69179E3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9220279E3D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239033AbjIMJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
+        id S239318AbjIMJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238980AbjIMJef (ORCPT
+        with ESMTP id S239027AbjIMJd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:34:35 -0400
-Received: from mail-m127207.xmail.ntesmail.com (mail-m127207.xmail.ntesmail.com [115.236.127.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E22196;
-        Wed, 13 Sep 2023 02:34:30 -0700 (PDT)
-Received: from [10.128.10.193] (unknown [123.120.52.233])
-        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 346384A032D;
-        Wed, 13 Sep 2023 17:33:54 +0800 (CST)
-Message-ID: <9dd5520b-ae33-4783-a7df-1461c31bca20@sangfor.com.cn>
-Date:   Wed, 13 Sep 2023 17:33:50 +0800
+        Wed, 13 Sep 2023 05:33:58 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2963199F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:33:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 87E95218E2;
+        Wed, 13 Sep 2023 09:33:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694597633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pqk2WVOxbseyPwLAufOCZjtPP927ewD0tk02pn9sP0E=;
+        b=ji1etq0JMbhoyRdK9wX+2P7mx7Q2/6NkbjoYB8likMTX6RbaoXjyc1AS8DRfVJ6HDUeFhn
+        /QPaeQtQHsxH8awrAFCAHFJPWU5OFDCmV0gqoMoJ0QJYBXFF4aUwj8wrNpFIB+81jHcToT
+        XCP8FZ1bqGc5FhfbIZFwQnCaN7GPVac=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694597633;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pqk2WVOxbseyPwLAufOCZjtPP927ewD0tk02pn9sP0E=;
+        b=ioJqudl2oOQ7dPKezfhMIPlCUCuMoSASbGHeCZ6Xe2PW22Q97syJIL9bMHSsF484QlQ44Y
+        XBAwAavc8qDD88Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59E4313582;
+        Wed, 13 Sep 2023 09:33:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Bph/FAGCAWWcRgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Wed, 13 Sep 2023 09:33:53 +0000
+Message-ID: <320c16a7-96b7-65ec-3d80-2eace0ddb290@suse.cz>
+Date:   Wed, 13 Sep 2023 11:33:52 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To:     Eduard Zingerman <eddyz87@gmail.com>, martin.lau@linux.dev,
-        ast@kernel.org
-Cc:     song@kernel.org, yhs@fb.com, rostedt@goodmis.org,
-        mhiramat@kernel.org, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, bpf@vger.kernel.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
+Content-Language: en-US
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
- <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
- <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
-From:   pengdonglin <pengdonglin@sangfor.com.cn>
-In-Reply-To: <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <20230911195023.247694-1-hannes@cmpxchg.org>
+ <20230911195023.247694-2-hannes@cmpxchg.org>
+ <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
+ <20230912145028.GA3228@cmpxchg.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230912145028.GA3228@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaTEJJVhoaTU1LSB9PHxlLTVUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKTU9JTE5VSktLVUpCS0tZBg
-        ++
-X-HM-Tid: 0a8a8de3da27b212kuuu346384a032d
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oio6FDo5Vj1CNw8DCS8OLDwo
-        TjZPCixVSlVKTUJPTkJMTUhOSU1CVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
-        WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBSk5PTkM3Bg++
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/12 22:19, Eduard Zingerman wrote:
-> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
->> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
->>> Currently, we are only using the linear search method to find the type id
->>> by the name, which has a time complexity of O(n). This change involves
->>> sorting the names of btf types in ascending order and using binary search,
->>> which has a time complexity of O(log(n)). This idea was inspired by the
->>> following patch:
->>>
->>> 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
->>>
->>> At present, this improvement is only for searching in vmlinux's and
->>> module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_STRUCT.
->>>
->>> Another change is the search direction, where we search the BTF first and
->>> then its base, the type id of the first matched btf_type will be returned.
->>>
->>> Here is a time-consuming result that finding all the type ids of 67,819 kernel
->>> functions in vmlinux's BTF by their names:
->>>
->>> Before: 17000 ms
->>> After:     10 ms
->>>
->>> The average lookup performance has improved about 1700x at the above scenario.
->>>
->>> However, this change will consume more memory, for example, 67,819 kernel
->>> functions will allocate about 530KB memory.
->>
->> Hi Donglin,
->>
->> I think this is a good improvement. However, I wonder, why did you
->> choose to have a separate name map for each BTF kind?
->>
->> I did some analysis for my local testing kernel config and got such numbers:
->> - total number of BTF objects: 97350
->> - number of FUNC and STRUCT objects: 51597
->> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC objects: 56817
->>    (these are all kinds for which lookup by name might make sense)
->> - number of named objects: 54246
->> - number of name collisions:
->>    - unique names: 53985 counts
->>    - 2 objects with the same name: 129 counts
->>    - 3 objects with the same name: 3 counts
->>
->> So, it appears that having a single map for all named objects makes
->> sense and would also simplify the implementation, what do you think?
+On 9/12/23 16:50, Johannes Weiner wrote:
+> On Tue, Sep 12, 2023 at 03:47:45PM +0200, Vlastimil Babka wrote:
+>> On 9/11/23 21:41, Johannes Weiner wrote:
 > 
-> Some more numbers for my config:
-> - 13241 types (struct, union, typedef, enum), log2 13241 = 13.7
-> - 43575 funcs, log2 43575 = 15.4
-> Thus, having separate map for types vs functions might save ~1.7
-> search iterations. Is this a significant slowdown in practice?
+>> > @@ -1577,7 +1556,6 @@ struct page *__rmqueue_smallest(struct zone *zone, unsigned int order,
+>> >  			continue;
+>> >  		del_page_from_free_list(page, zone, current_order);
+>> >  		expand(zone, page, order, current_order, migratetype);
+>> > -		set_pcppage_migratetype(page, migratetype);
+>> 
+>> Hm interesting, just noticed that __rmqueue_fallback() never did this
+>> AFAICS, sounds like a bug.
 > 
+> I don't quite follow. Which part?
+> 
+> Keep in mind that at this point __rmqueue_fallback() doesn't return a
+> page. It just moves pages to the desired freelist, and then
+> __rmqueue_smallest() gets called again. This changes in 5/6, but until
+> now at least all of the above would apply to fallback pages.
 
-Thank you, I haven't conducted such a comparative test yet, but I agree
-with your point of view.
+Yep, missed that "doesn't return a page", thanks.
 
->>
->> Thanks,
->> Eduard
->>
->>>
->>> Signed-off-by: Donglin Peng <pengdonglin@sangfor.com.cn>
->>> ---
->>> Changes in RFC v2:
->>>   - Fix the build issue reported by kernel test robot <lkp@intel.com>
->>> ---
->>>   include/linux/btf.h |   1 +
->>>   kernel/bpf/btf.c    | 300 ++++++++++++++++++++++++++++++++++++++++++--
->>>   2 files changed, 291 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/include/linux/btf.h b/include/linux/btf.h
->>> index cac9f304e27a..6260a0668773 100644
->>> --- a/include/linux/btf.h
->>> +++ b/include/linux/btf.h
->>> @@ -201,6 +201,7 @@ bool btf_is_kernel(const struct btf *btf);
->>>   bool btf_is_module(const struct btf *btf);
->>>   struct module *btf_try_get_module(const struct btf *btf);
->>>   u32 btf_nr_types(const struct btf *btf);
->>> +u32 btf_type_cnt(const struct btf *btf);
->>>   bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
->>>   			   const struct btf_member *m,
->>>   			   u32 expected_offset, u32 expected_size);
->>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->>> index 817204d53372..51aa9f27853b 100644
->>> --- a/kernel/bpf/btf.c
->>> +++ b/kernel/bpf/btf.c
->>> @@ -240,6 +240,26 @@ struct btf_id_dtor_kfunc_tab {
->>>   	struct btf_id_dtor_kfunc dtors[];
->>>   };
->>>   
->>> +enum {
->>> +	BTF_ID_NAME_FUNC,	/* function */
->>> +	BTF_ID_NAME_STRUCT,	/* struct */
->>> +	BTF_ID_NAME_MAX
->>> +};
->>> +
->>> +struct btf_id_name {
->>> +	int id;
->>> +	u32 name_off;
->>> +};
->>> +
->>> +struct btf_id_name_map {
->>> +	struct btf_id_name *id_name;
->>> +	u32 count;
->>> +};
->>> +
->>> +struct btf_id_name_maps {
->>> +	struct btf_id_name_map map[BTF_ID_NAME_MAX];
->>> +};
->>> +
->>>   struct btf {
->>>   	void *data;
->>>   	struct btf_type **types;
->>> @@ -257,6 +277,7 @@ struct btf {
->>>   	struct btf_kfunc_set_tab *kfunc_set_tab;
->>>   	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
->>>   	struct btf_struct_metas *struct_meta_tab;
->>> +	struct btf_id_name_maps *id_name_maps;
->>>   
->>>   	/* split BTF support */
->>>   	struct btf *base_btf;
->>> @@ -532,22 +553,142 @@ u32 btf_nr_types(const struct btf *btf)
->>>   	return total;
->>>   }
->>>   
->>> +u32 btf_type_cnt(const struct btf *btf)
->>> +{
->>> +	return btf->start_id + btf->nr_types;
->>> +}
->>> +
->>> +static inline u8 btf_id_name_idx_to_kind(int index)
->>> +{
->>> +	u8 kind;
->>> +
->>> +	switch (index) {
->>> +	case BTF_ID_NAME_FUNC:
->>> +		kind = BTF_KIND_FUNC;
->>> +		break;
->>> +	case BTF_ID_NAME_STRUCT:
->>> +		kind = BTF_KIND_STRUCT;
->>> +		break;
->>> +	default:
->>> +		kind = BTF_KIND_UNKN;
->>> +		break;
->>> +	}
->>> +
->>> +	return kind;
->>> +}
->>> +
->>> +static inline int btf_id_name_kind_to_idx(u8 kind)
->>> +{
->>> +	int index;
->>> +
->>> +	switch (kind) {
->>> +	case BTF_KIND_FUNC:
->>> +		index = BTF_ID_NAME_FUNC;
->>> +		break;
->>> +	case BTF_KIND_STRUCT:
->>> +		index = BTF_ID_NAME_STRUCT;
->>> +		break;
->>> +	default:
->>> +		index = -1;
->>> +		break;
->>> +	}
->>> +
->>> +	return index;
->>> +}
->>> +
->>> +static s32 btf_find_by_name_bsearch(struct btf_id_name *id_name,
->>> +				    u32 size, const char *name,
->>> +				    struct btf_id_name **start,
->>> +				    struct btf_id_name **end,
->>> +				    const struct btf *btf)
->>> +{
->>> +	int ret;
->>> +	int low, mid, high;
->>> +	const char *name_buf;
->>> +
->>> +	low = 0;
->>> +	high = size - 1;
->>> +
->>> +	while (low <= high) {
->>> +		mid = low + (high - low) / 2;
->>> +		name_buf = btf_name_by_offset(btf, id_name[mid].name_off);
->>> +		ret = strcmp(name, name_buf);
->>> +		if (ret > 0)
->>> +			low = mid + 1;
->>> +		else if (ret < 0)
->>> +			high = mid - 1;
->>> +		else
->>> +			break;
->>> +	}
->>> +
->>> +	if (low > high)
->>> +		return -ESRCH;
->>> +
->>> +	if (start) {
->>> +		low = mid;
->>> +		while (low) {
->>> +			name_buf = btf_name_by_offset(btf, id_name[low-1].name_off);
->>> +			if (strcmp(name, name_buf))
->>> +				break;
->>> +			low--;
->>> +		}
->>> +		*start = &id_name[low];
->>> +	}
->>> +
->>> +	if (end) {
->>> +		high = mid;
->>> +		while (high < size - 1) {
->>> +			name_buf = btf_name_by_offset(btf, id_name[high+1].name_off);
->>> +			if (strcmp(name, name_buf))
->>> +				break;
->>> +			high++;
->>> +		}
->>> +		*end = &id_name[high];
->>> +	}
->>> +
->>> +	return id_name[mid].id;
->>> +}
->>> +
->>>   s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
->>>   {
->>> +	const struct btf_id_name_maps *maps;
->>> +	const struct btf_id_name_map *map;
->>> +	struct btf_id_name *start;
->>>   	const struct btf_type *t;
->>>   	const char *tname;
->>> -	u32 i, total;
->>> +	int index = btf_id_name_kind_to_idx(kind);
->>> +	s32 id, total;
->>>   
->>> -	total = btf_nr_types(btf);
->>> -	for (i = 1; i < total; i++) {
->>> -		t = btf_type_by_id(btf, i);
->>> -		if (BTF_INFO_KIND(t->info) != kind)
->>> -			continue;
->>> +	do {
->>> +		maps = btf->id_name_maps;
->>> +		if (index >= 0 && maps && maps->map[index].id_name) {
->>> +			/* binary search */
->>> +			map = &maps->map[index];
->>> +			id = btf_find_by_name_bsearch(map->id_name,
->>> +				map->count, name, &start, NULL, btf);
->>> +			if (id > 0) {
->>> +				/*
->>> +				 * Return the first one that
->>> +				 * matched
->>> +				 */
->>> +				return start->id;
->>> +			}
->>> +		} else {
->>> +			/* linear search */
->>> +			total = btf_type_cnt(btf);
->>> +			for (id = btf->start_id; id < total; id++) {
->>> +				t = btf_type_by_id(btf, id);
->>> +				if (BTF_INFO_KIND(t->info) != kind)
->>> +					continue;
->>> +
->>> +				tname = btf_name_by_offset(btf, t->name_off);
->>> +				if (!strcmp(tname, name))
->>> +					return id;
->>> +			}
->>> +		}
->>>   
->>> -		tname = btf_name_by_offset(btf, t->name_off);
->>> -		if (!strcmp(tname, name))
->>> -			return i;
->>> -	}
->>> +		btf = btf->base_btf;
->>> +	} while (btf);
->>>   
->>>   	return -ENOENT;
->>>   }
->>> @@ -1639,6 +1780,32 @@ static void btf_free_id(struct btf *btf)
->>>   	spin_unlock_irqrestore(&btf_idr_lock, flags);
->>>   }
->>>   
->>> +static void btf_destroy_id_name(struct btf *btf, int index)
->>> +{
->>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
->>> +	struct btf_id_name_map *map = &maps->map[index];
->>> +
->>> +	if (map->id_name) {
->>> +		kvfree(map->id_name);
->>> +		map->id_name = NULL;
->>> +		map->count = 0;
->>> +	}
->>> +}
->>> +
->>> +static void btf_destroy_id_name_map(struct btf *btf)
->>> +{
->>> +	int i;
->>> +
->>> +	if (!btf->id_name_maps)
->>> +		return;
->>> +
->>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++)
->>> +		btf_destroy_id_name(btf, i);
->>> +
->>> +	kfree(btf->id_name_maps);
->>> +	btf->id_name_maps = NULL;
->>> +}
->>> +
->>>   static void btf_free_kfunc_set_tab(struct btf *btf)
->>>   {
->>>   	struct btf_kfunc_set_tab *tab = btf->kfunc_set_tab;
->>> @@ -1689,6 +1856,7 @@ static void btf_free_struct_meta_tab(struct btf *btf)
->>>   
->>>   static void btf_free(struct btf *btf)
->>>   {
->>> +	btf_destroy_id_name_map(btf);
->>>   	btf_free_struct_meta_tab(btf);
->>>   	btf_free_dtor_kfunc_tab(btf);
->>>   	btf_free_kfunc_set_tab(btf);
->>> @@ -5713,6 +5881,107 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
->>>   	return kctx_type_id;
->>>   }
->>>   
->>> +static int btf_compare_id_name(const void *a, const void *b, const void *priv)
->>> +{
->>> +	const struct btf_id_name *ia = (const struct btf_id_name *)a;
->>> +	const struct btf_id_name *ib = (const struct btf_id_name *)b;
->>> +	const struct btf *btf = priv;
->>> +	int ret;
->>> +
->>> +	/*
->>> +	 * Sort names in ascending order, if the name is same, sort ids in
->>> +	 * ascending order.
->>> +	 */
->>> +	ret = strcmp(btf_name_by_offset(btf, ia->name_off),
->>> +		     btf_name_by_offset(btf, ib->name_off));
->>> +	if (!ret)
->>> +		ret = ia->id - ib->id;
->>> +
->>> +	return ret;
->>> +}
->>> +
->>> +static int btf_create_id_name(struct btf *btf, int index)
->>> +{
->>> +	struct btf_id_name_maps *maps = btf->id_name_maps;
->>> +	struct btf_id_name_map *map = &maps->map[index];
->>> +	const struct btf_type *t;
->>> +	struct btf_id_name *id_name;
->>> +	const char *name;
->>> +	int i, j = 0;
->>> +	u32 total, count = 0;
->>> +	u8 kind;
->>> +
->>> +	kind = btf_id_name_idx_to_kind(index);
->>> +	if (kind == BTF_KIND_UNKN)
->>> +		return -EINVAL;
->>> +
->>> +	if (map->id_name || map->count != 0)
->>> +		return -EINVAL;
->>> +
->>> +	total = btf_type_cnt(btf);
->>> +	for (i = btf->start_id; i < total; i++) {
->>> +		t = btf_type_by_id(btf, i);
->>> +		if (BTF_INFO_KIND(t->info) != kind)
->>> +			continue;
->>> +		name = btf_name_by_offset(btf, t->name_off);
->>> +		if (str_is_empty(name))
->>> +			continue;
->>> +		count++;
->>> +	}
->>> +
->>> +	if (count == 0)
->>> +		return 0;
->>> +
->>> +	id_name = kvcalloc(count, sizeof(struct btf_id_name),
->>> +			   GFP_KERNEL);
->>> +	if (!id_name)
->>> +		return -ENOMEM;
->>> +
->>> +	for (i = btf->start_id; i < total; i++) {
->>> +		t = btf_type_by_id(btf, i);
->>> +		if (BTF_INFO_KIND(t->info) != kind)
->>> +			continue;
->>> +		name = btf_name_by_offset(btf, t->name_off);
->>> +		if (str_is_empty(name))
->>> +			continue;
->>> +
->>> +		id_name[j].id = i;
->>> +		id_name[j].name_off = t->name_off;
->>> +		j++;
->>> +	}
->>> +
->>> +	sort_r(id_name, count, sizeof(id_name[0]), btf_compare_id_name,
->>> +	       NULL, btf);
->>> +
->>> +	map->id_name = id_name;
->>> +	map->count = count;
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static int btf_create_id_name_map(struct btf *btf)
->>> +{
->>> +	int err, i;
->>> +	struct btf_id_name_maps *maps;
->>> +
->>> +	if (btf->id_name_maps)
->>> +		return -EBUSY;
->>> +
->>> +	maps = kzalloc(sizeof(struct btf_id_name_maps), GFP_KERNEL);
->>> +	if (!maps)
->>> +		return -ENOMEM;
->>> +
->>> +	btf->id_name_maps = maps;
->>> +
->>> +	for (i = 0; i < BTF_ID_NAME_MAX; i++) {
->>> +		err = btf_create_id_name(btf, i);
->>> +		if (err < 0)
->>> +			break;
->>> +	}
->>> +
->>> +	return err;
->>> +}
->>> +
->>>   BTF_ID_LIST(bpf_ctx_convert_btf_id)
->>>   BTF_ID(struct, bpf_ctx_convert)
->>>   
->>> @@ -5760,6 +6029,10 @@ struct btf *btf_parse_vmlinux(void)
->>>   	if (err)
->>>   		goto errout;
->>>   
->>> +	err = btf_create_id_name_map(btf);
->>> +	if (err)
->>> +		goto errout;
->>> +
->>>   	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
->>>   	bpf_ctx_convert.t = btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
->>>   
->>> @@ -5777,6 +6050,7 @@ struct btf *btf_parse_vmlinux(void)
->>>   errout:
->>>   	btf_verifier_env_free(env);
->>>   	if (btf) {
->>> +		btf_destroy_id_name_map(btf);
->>>   		kvfree(btf->types);
->>>   		kfree(btf);
->>>   	}
->>> @@ -5844,13 +6118,19 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
->>>   	if (err)
->>>   		goto errout;
->>>   
->>> +	err = btf_create_id_name_map(btf);
->>> +	if (err)
->>> +		goto errout;
->>> +
->>>   	btf_verifier_env_free(env);
->>>   	refcount_set(&btf->refcnt, 1);
->>> +
->>>   	return btf;
->>>   
->>>   errout:
->>>   	btf_verifier_env_free(env);
->>>   	if (btf) {
->>> +		btf_destroy_id_name_map(btf);
->>>   		kvfree(btf->data);
->>>   		kvfree(btf->types);
->>>   		kfree(btf);
->>
+>> > @@ -2145,7 +2123,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>> >  		 * pages are ordered properly.
+>> >  		 */
+>> >  		list_add_tail(&page->pcp_list, list);
+>> > -		if (is_migrate_cma(get_pcppage_migratetype(page)))
+>> > +		if (is_migrate_cma(get_pageblock_migratetype(page)))
+>> >  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
+>> >  					      -(1 << order));
+>> 
+>> This is potentially a source of overhead, I assume patch 6/6 might
+>> change that.
 > 
+> Yes, 6/6 removes it altogether.
 > 
+> But the test results in this patch's changelog are from this patch in
+> isolation, so it doesn't appear to be a concern even on its own.
+> 
+>> > @@ -2457,7 +2423,7 @@ void free_unref_page_list(struct list_head *list)
+>> >  		 * Free isolated pages directly to the allocator, see
+>> >  		 * comment in free_unref_page.
+>> >  		 */
+>> > -		migratetype = get_pcppage_migratetype(page);
+>> > +		migratetype = get_pfnblock_migratetype(page, pfn);
+>> >  		if (unlikely(is_migrate_isolate(migratetype))) {
+>> >  			list_del(&page->lru);
+>> >  			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
+>> 
+>> I think after this change we should move the isolated pages handling to
+>> the second loop below, so that we wouldn't have to call
+>> get_pfnblock_migratetype() twice per page. Dunno yet if some later patch
+>> does that. It would need to unlock pcp when necessary.
+> 
+> That sounds like a great idea. Something like the following?
+> 
+> Lightly tested. If you're good with it, I'll beat some more on it and
+> submit it as a follow-up.
+> 
+> ---
+> 
+> From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Tue, 12 Sep 2023 10:16:10 -0400
+> Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
+> 
+> Move direct freeing of isolated pages to the lock-breaking block in
+> the second loop. This saves an unnecessary migratetype reassessment.
+> 
+> Minor comment and local variable scoping cleanups.
+
+Looks like batch_count and locked_zone could be moved to the loop scope as well.
+
+> 
+> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  mm/page_alloc.c | 49 +++++++++++++++++++++----------------------------
+>  1 file changed, 21 insertions(+), 28 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index e3f1c777feed..9cad31de1bf5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2408,48 +2408,41 @@ void free_unref_page_list(struct list_head *list)
+>  	struct per_cpu_pages *pcp = NULL;
+>  	struct zone *locked_zone = NULL;
+>  	int batch_count = 0;
+> -	int migratetype;
+> -
+> -	/* Prepare pages for freeing */
+> -	list_for_each_entry_safe(page, next, list, lru) {
+> -		unsigned long pfn = page_to_pfn(page);
+>  
+> -		if (!free_pages_prepare(page, 0, FPI_NONE)) {
+> +	list_for_each_entry_safe(page, next, list, lru)
+> +		if (!free_pages_prepare(page, 0, FPI_NONE))
+>  			list_del(&page->lru);
+> -			continue;
+> -		}
+> -
+> -		/*
+> -		 * Free isolated pages directly to the allocator, see
+> -		 * comment in free_unref_page.
+> -		 */
+> -		migratetype = get_pfnblock_migratetype(page, pfn);
+> -		if (unlikely(is_migrate_isolate(migratetype))) {
+> -			list_del(&page->lru);
+> -			free_one_page(page_zone(page), page, pfn, 0, migratetype, FPI_NONE);
+> -			continue;
+> -		}
+> -	}
+>  
+>  	list_for_each_entry_safe(page, next, list, lru) {
+>  		unsigned long pfn = page_to_pfn(page);
+>  		struct zone *zone = page_zone(page);
+> +		int migratetype;
+>  
+>  		list_del(&page->lru);
+>  		migratetype = get_pfnblock_migratetype(page, pfn);
+>  
+>  		/*
+> -		 * Either different zone requiring a different pcp lock or
+> -		 * excessive lock hold times when freeing a large list of
+> -		 * pages.
+> +		 * Zone switch, batch complete, or non-pcp freeing?
+> +		 * Drop the pcp lock and evaluate.
+>  		 */
+> -		if (zone != locked_zone || batch_count == SWAP_CLUSTER_MAX) {
+> +		if (unlikely(zone != locked_zone ||
+> +			     batch_count == SWAP_CLUSTER_MAX ||
+> +			     is_migrate_isolate(migratetype))) {
+>  			if (pcp) {
+>  				pcp_spin_unlock(pcp);
+>  				pcp_trylock_finish(UP_flags);
+> +				locked_zone = NULL;
+>  			}
+>  
+> -			batch_count = 0;
+> +			/*
+> +			 * Free isolated pages directly to the
+> +			 * allocator, see comment in free_unref_page.
+> +			 */
+> +			if (is_migrate_isolate(migratetype)) {
+> +				free_one_page(zone, page, pfn, 0,
+> +					      migratetype, FPI_NONE);
+> +				continue;
+> +			}
+>  
+>  			/*
+>  			 * trylock is necessary as pages may be getting freed
+> @@ -2459,12 +2452,12 @@ void free_unref_page_list(struct list_head *list)
+>  			pcp = pcp_spin_trylock(zone->per_cpu_pageset);
+>  			if (unlikely(!pcp)) {
+>  				pcp_trylock_finish(UP_flags);
+> -				free_one_page(zone, page, pfn,
+> -					      0, migratetype, FPI_NONE);
+> -				locked_zone = NULL;
+> +				free_one_page(zone, page, pfn, 0,
+> +					      migratetype, FPI_NONE);
+>  				continue;
+>  			}
+>  			locked_zone = zone;
+> +			batch_count = 0;
+>  		}
+>  
+>  		/*
 
