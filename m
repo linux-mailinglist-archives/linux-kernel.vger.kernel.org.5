@@ -2,100 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 914D379E2F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD9079E2F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239212AbjIMJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
+        id S239216AbjIMJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239134AbjIMJFd (ORCPT
+        with ESMTP id S239134AbjIMJGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:05:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B915F199B;
-        Wed, 13 Sep 2023 02:05:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B174DC433C7;
-        Wed, 13 Sep 2023 09:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694595929;
-        bh=6FecySnQuRhCzbTetrFBUb76t576bbB7ARX9N22lPOk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RgKAHHOWf4RKi3bmN34LKt0UiUCGxSPXtPevmz8Ivwp28OMwfDvS9BYrO+Jt9U0/U
-         OXiTOFzzTnm3wngTZVcsN+LwXUeBEL8kYg5cAsDK1RO23Ph/sdujxOfQyGpT3eHMuU
-         4EEumlI2a4RykpayWdFKUXeGEE0z6EUKD3XqVx3juQDF/zhTaqNareNmcQAn4l5O11
-         c2FIw3A/uT1OQDQ5secn0ICnX7AiVxim9olwjYDHq0jbThvr8XI5EHexMnAzyjz7x+
-         xqWVGCq7BwqVde5A/IHj0wi7M36Qs05ZddHubkLuBMORJl3oiBF2X0yOUlDGrn2dmd
-         Qqw9sWC+3pfEg==
-Date:   Wed, 13 Sep 2023 11:05:25 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Tommy Huang <tommy_huang@aspeedtech.com>
-Cc:     brendan.higgins@linux.dev, andi.shyti@kernel.org,
-        p.zabel@pengutronix.de, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, benh@kernel.crashing.org, joel@jms.id.au,
-        andrew@aj.id.au, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        BMC-SW@aspeedtech.com, jae.hyun.yoo@linux.intel.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: aspeed: Reset the i2c controller when timeout
- occurs
-Message-ID: <ZQF7VeckiRciWMRI@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Tommy Huang <tommy_huang@aspeedtech.com>, brendan.higgins@linux.dev,
-        andi.shyti@kernel.org, p.zabel@pengutronix.de,
-        linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
-        benh@kernel.crashing.org, joel@jms.id.au, andrew@aj.id.au,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, BMC-SW@aspeedtech.com,
-        jae.hyun.yoo@linux.intel.com, stable@vger.kernel.org
-References: <20230906004910.4157305-1-tommy_huang@aspeedtech.com>
+        Wed, 13 Sep 2023 05:06:39 -0400
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DA81999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:35 -0700 (PDT)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1b07f5f7b96so7472524fac.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694595994; x=1695200794;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0NW59RIKDbz8mVsGvymDfel7fBTuaoCrD+ZCQk3ssXs=;
+        b=pnkfTGoPD0GxXqkWUSNeR94bBbx4IVhYMsfV3nxpHY5TnxSdst2xJM8odJ+TgO8k2A
+         +wV4BdzsKCM0IxBwmmcytdogbD/y5UVOqm1MT8iHaw2BjHpb8dDM9OBzPszUupZAvO2V
+         fosCXkxdQ7V6l23rlFvjIED/VnRaaVUISI9aGiNGN5Epc9wfMH/4wqFQYpgaezM2BHpk
+         bgAbzsWOBWwBqp7kLxqahz918BE/xfjTAlVYtlc5tUwLIM29xvR2oNJEoZPMMAjIxJsM
+         HWbab5EmjbZ7CmQU1a5nqxEeMxv6arINXyBhlbUh3e214jO3mixzoBBjcTPLh5nqQouI
+         7GEw==
+X-Gm-Message-State: AOJu0Yzrbwk3cHY2TO81jRrpEBcYSaOj/Er7UjsJuKJucfqXtjmPimvb
+        GuUtAWhIBCKlYf+wPk3/W3GrvUqAqyADXPLS1pjScw25o5PN
+X-Google-Smtp-Source: AGHT+IEB7sUvhAKx5WqXd9NYothDm9L9bvOnVzvh78qyvkHx+I8OPHDQJw2qK9tPUo5r6VfTNCQ1uj/HkpOuP6/O8XzyyccprNeK
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dUIDfYP66VOSGajJ"
-Content-Disposition: inline
-In-Reply-To: <20230906004910.4157305-1-tommy_huang@aspeedtech.com>
+X-Received: by 2002:a05:6870:c788:b0:1d5:5101:e821 with SMTP id
+ dy8-20020a056870c78800b001d55101e821mr598635oab.11.1694595994747; Wed, 13 Sep
+ 2023 02:06:34 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 02:06:34 -0700
+In-Reply-To: <CAOQ4uxjBAG-WA+1VCdYh6O98mU3C31qMyZZFp3iRW6_yYROdWQ@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004e08ee060539e0a2@google.com>
+Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in d_path
+From:   syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>
+To:     amir73il@gmail.com, brauner@kernel.org, jlayton@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---dUIDfYP66VOSGajJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in d_path
 
-On Wed, Sep 06, 2023 at 08:49:10AM +0800, Tommy Huang wrote:
-> Reset the i2c controller when an i2c transfer timeout occurs.
-> The remaining interrupts and device should be reset to avoid
-> unpredictable controller behavior.
->=20
-> Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
-> Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> Cc: <stable@vger.kernel.org> # v5.1+
-> Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+general protection fault, probably for non-canonical address 0xdffffc0000000009: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
+CPU: 0 PID: 5465 Comm: syz-executor.0 Not tainted 6.6.0-rc1-syzkaller-00004-g965067e2f71e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
+RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline]
+RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
+RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
+Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
+RSP: 0018:ffffc90005056ec0 EFLAGS: 00010246
+RAX: be27ea831a7ad800 RBX: 0000000000000009 RCX: ffff88801c713b80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90005056fd0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
+R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
+R13: 0000000000000048 R14: dffffc0000000000 R15: ffff888076dcc000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4b67d70420 CR3: 0000000016f66000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ audit_log_d_path+0xd3/0x310 kernel/audit.c:2138
+ dump_common_audit_data security/lsm_audit.c:224 [inline]
+ common_lsm_audit+0x7cf/0x1a90 security/lsm_audit.c:458
+ smack_log+0x421/0x540 security/smack/smack_access.c:383
+ smk_tskacc+0x2ff/0x360 security/smack/smack_access.c:253
+ smack_inode_getattr+0x203/0x270 security/smack/smack_lsm.c:1271
+ security_inode_getattr+0xd3/0x120 security/security.c:2153
+ vfs_getattr+0x2a/0x3a0 fs/stat.c:206
+ ovl_getattr+0x1b1/0xf70 fs/overlayfs/inode.c:174
+ ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
+ ima_file_free+0x2c3/0x560 security/integrity/ima/ima_main.c:203
+ __fput+0x36a/0x910 fs/file_table.c:378
+ task_work_run+0x24a/0x300 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x68f/0x2290 kernel/exit.c:874
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1024
+ get_signal+0x175d/0x1840 kernel/signal.c:2892
+ arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop+0x6a/0x100 kernel/entry/common.c:168
+ exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
+ syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
+ do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f2a67a7cae9
+Code: Unable to access opcode bytes at 0x7f2a67a7cabf.
+RSP: 002b:00007f2a6875c178 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: 0000000000000001 RBX: 00007f2a67b9bf88 RCX: 00007f2a67a7cae9
+RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007f2a67b9bf8c
+RBP: 00007f2a67b9bf80 R08: 00007fffba3690b0 R09: 00007f2a6875c6c0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2a67b9bf8c
+R13: 000000000000000b R14: 00007fffba21b880 R15: 00007fffba21b968
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline]
+RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
+RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
+Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
+RSP: 0018:ffffc90005056ec0 EFLAGS: 00010246
+RAX: be27ea831a7ad800 RBX: 0000000000000009 RCX: ffff88801c713b80
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90005056fd0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
+R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
+R13: 0000000000000048 R14: dffffc0000000000 R15: ffff888076dcc000
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4b67d70420 CR3: 0000000016f66000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	30 00                	xor    %al,(%rax)
+   2:	74 08                	je     0xc
+   4:	48 89 df             	mov    %rbx,%rdi
+   7:	e8 be 20 e1 ff       	call   0xffe120ca
+   c:	4c 8b 23             	mov    (%rbx),%r12
+   f:	4d 8d 6c 24 48       	lea    0x48(%r12),%r13
+  14:	49 81 c4 88 00 00 00 	add    $0x88,%r12
+  1b:	4c 89 eb             	mov    %r13,%rbx
+  1e:	48 c1 eb 03          	shr    $0x3,%rbx
+  22:	4c 89 ef             	mov    %r13,%rdi
+  25:	e8 00 1e 00 00       	call   0x1e2a
+* 2a:	42 0f b6 04 33       	movzbl (%rbx,%r14,1),%eax <-- trapping instruction
+  2f:	84 c0                	test   %al,%al
+  31:	0f 85 89 00 00 00    	jne    0xc0
+  37:	45 8b 7d 00          	mov    0x0(%r13),%r15d
+  3b:	44 89 fe             	mov    %r15d,%esi
+  3e:	83                   	.byte 0x83
+  3f:	e6                   	.byte 0xe6
 
-Applied to for-current, thanks!
 
+Tested on:
 
---dUIDfYP66VOSGajJ
-Content-Type: application/pgp-signature; name="signature.asc"
+commit:         965067e2 ima: fix wrong dereferences of file->f_path
+git tree:       https://github.com/amir73il/linux ima-ovl-fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=109b00e8680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+dashboard link: https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUBe1UACgkQFA3kzBSg
-KbagKhAAlPB23FAYIEs98C82AzXuSnnGgVlMDEeeo2Usaq4u44eE1q9+cIfz4tGz
-a2ER6xUsGLuwY7D9Rpopcrw0d+awaUvoN2uJuquBhoVww3K7FkYtPnJ3XuubA8jp
-ljcdyrMEvQxwTWz4FFTYxFQNQUIyk1j5idSdrwpqc5Qhg2Ftz3Ta+y66uEAIJA+u
-nBfvsy93Cq1/TKDHeG3CS6LGFWE2YVD9XQ7NwXKSnCRjLxssWUYUuxTrJSAI5NwY
-Z5IpvbmxyOu30hOJdibuTSP8w0LhbQCZbB7Sx2pYTKhKln5NfUDtZRBxOO7obTMO
-7NxS2AzU3otP20ydbtxdJ81S1N7VJ84CAIVHAzUs+65Puq1+vDS/IgTdtmNaG7Ak
-vE+rIt0PpRjExnlh5Bssd4JVg1WcRdGlpknHLqoaZ1pGMcbSuvyU8VcZSCi9LfKb
-d64zGCbmssdTbgEPRPBKqlf1KL4ob0rjnReMIjbIZ+D1iTll9MnOsPSaQlV3B1rC
-4aoWqtnXr23WX73FK/Pv40CT2/QVFX4Bityn+Be8BqD97R+M2yoFBS/d95hVf2is
-RYf+fLTqCyh4TqsouJJnL5PRDMuxdoHA5DK9RCIQ09fvPuWcGkRxBbhucmXM4JCl
-OiS1uN/a+fDDFj84vMxXLgC5QxKRyGpXuBZFrcCUdNE+kV0iarw=
-=OD/J
------END PGP SIGNATURE-----
-
---dUIDfYP66VOSGajJ--
+Note: no patches were applied.
