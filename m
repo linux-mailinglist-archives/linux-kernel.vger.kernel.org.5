@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BA579E923
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCAE79E92D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240843AbjIMNYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        id S240889AbjIMNZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbjIMNYS (ORCPT
+        with ESMTP id S234046AbjIMNZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:24:18 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A65F19B1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:24:14 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-655d81971ceso24032216d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 06:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694611454; x=1695216254; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IAf3ai1JuGA4NVKNvsJwZNxVrsDBH8DKtDQzp9gt1XQ=;
-        b=RMZagdEjGVAB6Kr6edTbwYoCmks45nPeJ2ZdAryJbpvmbXyBcUoHdA2DZ7zmFguyK/
-         j4yodQCkyKqOX8WnO5+b/2bmn4JUai9uhQEurDEDk92qENJbl6RWr0NuskzS39tRQRhx
-         exiidvrQbYoNU5PUfRLNBlDQjk2dv0FGY8oaMnTCSEOXDFyr+BKoKQDCgBY21uVTjpuR
-         mj1IEm0EFyFLEdx413tkGT7StVHvv2oNnsJPLX8QIAlXYfxplDry4DQ5d+0GU1S5sSQZ
-         u+xJYGo09x0S+EYScN9SHlfumHOcBMVb93dW1ERTWR90xbarAz8l2eEMce4g4/eSP8OD
-         eK/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694611454; x=1695216254;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IAf3ai1JuGA4NVKNvsJwZNxVrsDBH8DKtDQzp9gt1XQ=;
-        b=sctbxZkPzOtBmrjfpL38hK6SiCRLQSP1ktxnjZiqBS7C5h/hyRcfTA1kl4LJpqD5HM
-         JbdCulRpXyrlTKsny8dVJX3z4HcrcAKyIxT8Gz9WfVUzjecEmASIlJQSghkQwGlxBRye
-         5OChro1K7ABwDqrGxaEH+083fRmRYj41NQ2RIaBzfKGZSzo0WKoXTxc+xFIf2/OJOcP5
-         clqciZedEhmNb32hc6tjXzgQeyHq/c1Y523iK43QtaucIo8ityiwYhlehYA1omlj0tJQ
-         EUFRjhiGFnsRTcCKdNyiAZviDHQ6Q9p13VvzRfQMrCnSSVNHNh5bEN9nmvwmiddIsnGa
-         Tq2A==
-X-Gm-Message-State: AOJu0Yyp7eWdtF/caLUIFINPbGchNRLBxvgNkDUw3LLdEdt82gASrhjK
-        J92lO8cNPOymSs4YiHyTuL4GPQ==
-X-Google-Smtp-Source: AGHT+IF9vwW2GPRldJIXMKcI9WkYNOX1cr4N2/uc5cVdKkGOWzuOZPuHQccnppK9u1pfdDZCHqAGnQ==
-X-Received: by 2002:a0c:f804:0:b0:64f:5228:d4bf with SMTP id r4-20020a0cf804000000b0064f5228d4bfmr2241319qvn.62.1694611453706;
-        Wed, 13 Sep 2023 06:24:13 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id d3-20020a0caa03000000b0064f741d2a97sm4480552qvb.40.2023.09.13.06.24.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 06:24:13 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 09:24:12 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-Message-ID: <20230913132412.GA45543@cmpxchg.org>
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-2-hannes@cmpxchg.org>
- <a389d846-c19a-42d3-6206-0a1c80e40b37@suse.cz>
- <20230912145028.GA3228@cmpxchg.org>
- <320c16a7-96b7-65ec-3d80-2eace0ddb290@suse.cz>
+        Wed, 13 Sep 2023 09:25:55 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D5519B1;
+        Wed, 13 Sep 2023 06:25:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694611535; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=LeX5saRTr+At6MzyVh7+sXPc0NqRVuiaP1Ch1Jk+WoDev33+xd982ReLjqPSK7am8m
+    pjDqrs5KZy/tc6wIIzHX5isdZ3siv3337Tr+8AbHkDBJa9FwHrNbrai83ytiavkztzhb
+    gvfYeczSNBUZExMnypVd+CMxaHzPLUuNmPO9BokvrfDQvdJGjDD1GQ5+wUvwY3dDsDoo
+    9wwYsCrxx8BYBPZW0mvejy4zqRmWsYxKH88LvSSLijks2N3uKgwg1qv+DWr9zHoTVcH2
+    yNZjwPjZK1Oe2fzaDHWvZxElE0t+bEduY86s5SwAyqjvplTqyijvh1cvKnCF5UhDUgNq
+    X/wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694611535;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=2yYfFfmY5L7Akn5oP+M8fMk+qOUch7gWpcmspCBJC10=;
+    b=XOkFFIzthoqY6IcoWQhZQUa44uIYcgK/7UUdkygpp62uwdVEiANwgGMuhIIDoWjLBv
+    eZ9GktJRynxGIuWxVd8NJYl9fzSZ991/k9upSzAA6hT9xxby16yqWXtmEaLkAFubrTOj
+    IqhgWXQPDVd580aubLJjr4QeltO6UluZeGJPqILmtv4QGsQeXBSh5p8BH9tilj6LEXiO
+    BCpVkOA4gcka26j3KnoHThAWnfahY6J2APwcWtOpw+4JaXNg/ncdpIgtYPToQwzquKOQ
+    bycJRHJ+NkR+aokCeYOnkx1JcjTuKEYIeSeBPYEvDPwoX9CvFqmdqqb9UpabC7/hIN1S
+    M+Qw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694611535;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=2yYfFfmY5L7Akn5oP+M8fMk+qOUch7gWpcmspCBJC10=;
+    b=H1JEV+mcJatiM9wpsTmlPXO49b82lMTKd8ZsFpB0Co/TEdRQ/Fp4f2Y8sHu04oVdSP
+    cTxuBnCwoNO0GbGTezT9WQIzO4dbATa07j3RyhD4vd3gXb3/a05bkagHHCyuGxh2aMcM
+    XZZgcBVIJQ/cmLrTNh46m3avuqI5F3r6m/IzpephZJLJI8T5K8o+VjgnwS9u6DyL1K4R
+    v/acdK5RjGLVIrc82Z9OuHH8vCF92qZ08RRXj872TuShzBDHBEsYy7LSTeJi3UZ+4vOa
+    2DDARiRQoJBA+vDbovvFtadfyHdxoIvV6w9VZ7acJmhpJ0NfZV3zEmYIWpykUNuRM6CG
+    /oJA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694611535;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
+    bh=2yYfFfmY5L7Akn5oP+M8fMk+qOUch7gWpcmspCBJC10=;
+    b=v0wJetINySkyDEtRwAQQDmmWmmRAybXLk/t315YJBqvhYfdaIDTAbwc7kzM6N9FjEW
+    Sq/tQ8SVyNJxtMWTb1AQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4p3mw=="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id xb560bz8DDPZuEG
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 13 Sep 2023 15:25:35 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH 0/2] Input: add Himax HX852x(ES) touchscreen driver
+Date:   Wed, 13 Sep 2023 15:25:28 +0200
+Message-Id: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <320c16a7-96b7-65ec-3d80-2eace0ddb290@suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEi4AWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDC0Mz3YwKC1OjCl1jE0uDFCNzc2NjIyMloOKCotS0zAqwQdGxtbUAYgG
+ x7VgAAAA=
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeff LaBundy <jeff@labundy.com>,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>,
+        Stephan Gerhold <stephan@gerhold.net>
+X-Mailer: b4 0.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vlastimil,
+Add DT schema and driver for the Himax HX852x(ES) touch panel 
+controller, with support for multi-touch and capacitive touch keys.
 
-On Wed, Sep 13, 2023 at 11:33:52AM +0200, Vlastimil Babka wrote:
-> On 9/12/23 16:50, Johannes Weiner wrote:
-> > From 429d13322819ab38b3ba2fad6d1495997819ccc2 Mon Sep 17 00:00:00 2001
-> > From: Johannes Weiner <hannes@cmpxchg.org>
-> > Date: Tue, 12 Sep 2023 10:16:10 -0400
-> > Subject: [PATCH] mm: page_alloc: optimize free_unref_page_list()
-> > 
-> > Move direct freeing of isolated pages to the lock-breaking block in
-> > the second loop. This saves an unnecessary migratetype reassessment.
-> > 
-> > Minor comment and local variable scoping cleanups.
-> 
-> Looks like batch_count and locked_zone could be moved to the loop scope as well.
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+Jonathan Albrieux (1):
+      Input: add Himax HX852x(ES) touchscreen driver
 
-Hm they both maintain values over multiple iterations, so I don't
-think that's possible. Am I missing something?
+Stephan Gerhold (1):
+      dt-bindings: input: touchscreen: document Himax HX852x(ES)
 
-> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+ .../bindings/input/touchscreen/himax,hx852es.yaml  |  81 ++++
+ MAINTAINERS                                        |   7 +
+ drivers/input/touchscreen/Kconfig                  |  10 +
+ drivers/input/touchscreen/Makefile                 |   1 +
+ drivers/input/touchscreen/himax_hx852x.c           | 491 +++++++++++++++++++++
+ 5 files changed, 590 insertions(+)
+---
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+change-id: 20230816-hx852x-3490d2773322
 
-Thanks! I'll send this out properly with your tag.
+Best regards,
+-- 
+Stephan Gerhold <stephan@gerhold.net>
+
