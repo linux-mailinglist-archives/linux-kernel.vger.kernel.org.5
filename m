@@ -2,175 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EDF79F07A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E5E79F07C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjIMRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
+        id S231309AbjIMRiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjIMRiD (ORCPT
+        with ESMTP id S229468AbjIMRiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:38:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1879AB8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:37:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694626679; x=1726162679;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aBkxSLFEBrjJTjfiWHBMc0aPx08qq1ybjekmSlov7iM=;
-  b=NpBvh1e51omc9h3UInOrF3dGqqKWMTJCYbz74yKFqOO5GcqbNVWl9FRk
-   WfZ70cYrWO7fEWyrUBScepuyTuH7qiR+In4ur1440UUEoTslktRZnLmpN
-   D2nDSpbAASm90ocm2lOuk948kds+TwjixY1EeOTpO4rTXrCYiGU8tstYY
-   te8tgbUlkcGHOkN7JDlaONebdABOMO1sCh+uVWYEcLxscs2KBwD/AeIt0
-   2/Z0vOiAaSUubUf5IBySLP2vXnUqFtyxpTuXZmNcu3LfpjJe6lqX5HYE2
-   ikQsUdFKcQPw/AJgBhPgTkZ7XXwsKOkYyxxIjt4lP4KQP8Yz7nFe/gXTQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="363768565"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="363768565"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 10:37:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="867882237"
-X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
-   d="scan'208";a="867882237"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 13 Sep 2023 10:37:55 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgToG-0000Pt-3A;
-        Wed, 13 Sep 2023 17:37:52 +0000
-Date:   Thu, 14 Sep 2023 01:37:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Oleg Nesterov <oleg@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] seqlock: change __seqprop() to return the function
- pointer
-Message-ID: <202309140117.J5VH7p4z-lkp@intel.com>
-References: <20230913154956.GA26245@redhat.com>
+        Wed, 13 Sep 2023 13:38:09 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1E9198B
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:38:04 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-770ef4d36f2so6645985a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1694626684; x=1695231484; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMB8mr1jou6Rc6ugTyWCVcw7o80clyz1E9xOmdaAf/g=;
+        b=kTwi6NX3V/9UWzNvuUpTDpwNW0VyZNo2IExCr5YnmiInC1mQy40SbrCZyC74Foy3E+
+         BQiwkLCpcA5Cenolto1lWgjYYgoDbncayWfuOIwkhWn2xQmAoMg+OWzFTUdVhJ9yR24U
+         6PVpmgZKa5RNkaZaT3h31KPr6ENVlVDvMFLlFP0rAMCcfrj3eN1hlRPSg1x6e0xIjUgt
+         SOvXKcr62/1fY5MGWVvVxifyyICOvC7DIfB6kyg4KXx8HU935fhHFG7RLrT9SVJk4246
+         yFNBAjeIfY1/L+UlYjmE4VGuGXJHDCaWFeE08bgYXPu7uetoFeDCVYibPPKBQ1sfi5qP
+         rDXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694626684; x=1695231484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FMB8mr1jou6Rc6ugTyWCVcw7o80clyz1E9xOmdaAf/g=;
+        b=cUj9D+qcK4TGFmdWyerp/KwxNKjIDiZTXG9qvlFWVCFL5jyR4a8u8NZ4BWdn9IP9+2
+         f0h8zVtILC9xaUTzig60kyAkkgHnGfjaBUDgr/tDB9JkvWkCyanmB64iijW+59elE7ig
+         j2mL449cJI46ICo5nH2QJDs/eGhH5Oj9tsus/X3yU8VGeLMuAQb0uF1OSjpmKRz1LFGI
+         vbCAah4WWO7mhCqRCjok4zh2ScBvlMlNOvRnr2UJH6Zpl9dli53pt+oM3ZChqrddWZ2B
+         snPWYK4whJLTc5xwK1Vu1e1Tu8/g1QdrQvJ2jyOZRQuW9/ZM+7n30Houye0hZen2lOHm
+         epvA==
+X-Gm-Message-State: AOJu0Yz7PrFEPmdRbQbp80j6BYyzI1tBc+K1AOhizKCaKeBn/LT7Ejy0
+        F22RTMLqpxukf7g1z321kWUHsw==
+X-Google-Smtp-Source: AGHT+IEOZNIjnmaONDw+RYYdhNTLQJe5QV/sjKmIyj9HhVFvHP1lNCA+hxznbQf+EyW13xiyrZY91g==
+X-Received: by 2002:a05:6214:4c0d:b0:635:e0dd:db4b with SMTP id qh13-20020a0562144c0d00b00635e0dddb4bmr2786283qvb.37.1694626683942;
+        Wed, 13 Sep 2023 10:38:03 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05620a10a800b0076dae4753efsm4050120qkk.14.2023.09.13.10.38.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 10:38:03 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 13:38:02 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Vern Hao <haoxing990@gmail.com>
+Cc:     mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xin Hao <vernhao@tencent.com>
+Subject: Re: [PATCH v3] mm: memcg: add THP swap out info for anonymous reclaim
+Message-ID: <20230913173802.GA48476@cmpxchg.org>
+References: <20230913164938.16918-1-vernhao@tencent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913154956.GA26245@redhat.com>
+In-Reply-To: <20230913164938.16918-1-vernhao@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleg,
+On Thu, Sep 14, 2023 at 12:49:37AM +0800, Vern Hao wrote:
+> From: Xin Hao <vernhao@tencent.com>
+> 
+> At present, we support per-memcg reclaim strategy, however we do not
+> know the number of transparent huge pages being reclaimed, as we know
+> the transparent huge pages need to be splited before reclaim them, and
+> they will bring some performance bottleneck effect. for example, when
+> two memcg (A & B) are doing reclaim for anonymous pages at same time,
+> and 'A' memcg is reclaiming a large number of transparent huge pages, we
+> can better analyze that the performance bottleneck will be caused by 'A'
+> memcg.  therefore, in order to better analyze such problems, there add
+> THP swap out info for per-memcg.
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Xin Hao <vernhao@tencent.com>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on tip/locking/core]
-[also build test WARNING on tip/sched/core linus/master v6.6-rc1 next-20230913]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Oleg-Nesterov/seqlock-simplify-SEQCOUNT_LOCKNAME/20230913-235245
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230913154956.GA26245%40redhat.com
-patch subject: [PATCH 2/5] seqlock: change __seqprop() to return the function pointer
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230914/202309140117.J5VH7p4z-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140117.J5VH7p4z-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140117.J5VH7p4z-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/rbtree_latch.h:37,
-                    from include/linux/bpf.h:14,
-                    from include/linux/filter.h:9,
-                    from kernel/bpf/core.c:21:
-   include/linux/u64_stats_sync.h: In function '__u64_stats_fetch_retry':
->> include/linux/u64_stats_sync.h:176:36: warning: passing argument 1 of '__seqprop_ptr' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                                    ^~~~~~~~~~~
-   include/linux/seqlock.h:304:59: note: in definition of macro 'seqprop_ptr'
-     304 | #define seqprop_ptr(s)                  __seqprop(s, ptr)(s)
-         |                                                           ^
-   include/linux/u64_stats_sync.h:176:16: note: in expansion of macro 'read_seqcount_retry'
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                ^~~~~~~~~~~~~~~~~~~
-   include/linux/seqlock.h:250:53: note: expected 'seqcount_t *' {aka 'struct seqcount *'} but argument is of type 'const seqcount_t *' {aka 'const struct seqcount *'}
-     250 | static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-         |                                         ~~~~~~~~~~~~^
-   kernel/bpf/core.c: At top level:
-   kernel/bpf/core.c:1638:12: warning: no previous prototype for 'bpf_probe_read_kernel' [-Wmissing-prototypes]
-    1638 | u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
-         |            ^~~~~~~~~~~~~~~~~~~~~
---
-   In file included from include/linux/rbtree_latch.h:37,
-                    from include/linux/bpf.h:14,
-                    from kernel/bpf/syscall.c:4:
-   include/linux/u64_stats_sync.h: In function '__u64_stats_fetch_retry':
->> include/linux/u64_stats_sync.h:176:36: warning: passing argument 1 of '__seqprop_ptr' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                                    ^~~~~~~~~~~
-   include/linux/seqlock.h:304:59: note: in definition of macro 'seqprop_ptr'
-     304 | #define seqprop_ptr(s)                  __seqprop(s, ptr)(s)
-         |                                                           ^
-   include/linux/u64_stats_sync.h:176:16: note: in expansion of macro 'read_seqcount_retry'
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                ^~~~~~~~~~~~~~~~~~~
-   include/linux/seqlock.h:250:53: note: expected 'seqcount_t *' {aka 'struct seqcount *'} but argument is of type 'const seqcount_t *' {aka 'const struct seqcount *'}
-     250 | static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-         |                                         ~~~~~~~~~~~~^
---
-   In file included from include/linux/hrtimer.h:20,
-                    from include/linux/sched.h:20,
-                    from include/linux/ptrace.h:6,
-                    from include/uapi/asm-generic/bpf_perf_event.h:4,
-                    from ./arch/m68k/include/generated/uapi/asm/bpf_perf_event.h:1,
-                    from include/uapi/linux/bpf_perf_event.h:11,
-                    from kernel/bpf/btf.c:6:
-   include/linux/u64_stats_sync.h: In function '__u64_stats_fetch_retry':
->> include/linux/u64_stats_sync.h:176:36: warning: passing argument 1 of '__seqprop_ptr' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                                    ^~~~~~~~~~~
-   include/linux/seqlock.h:304:59: note: in definition of macro 'seqprop_ptr'
-     304 | #define seqprop_ptr(s)                  __seqprop(s, ptr)(s)
-         |                                                           ^
-   include/linux/u64_stats_sync.h:176:16: note: in expansion of macro 'read_seqcount_retry'
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                ^~~~~~~~~~~~~~~~~~~
-   include/linux/seqlock.h:250:53: note: expected 'seqcount_t *' {aka 'struct seqcount *'} but argument is of type 'const seqcount_t *' {aka 'const struct seqcount *'}
-     250 | static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-         |                                         ~~~~~~~~~~~~^
-   kernel/bpf/btf.c: In function 'btf_seq_show':
-   kernel/bpf/btf.c:7075:29: warning: function 'btf_seq_show' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-    7075 |         seq_vprintf((struct seq_file *)show->target, fmt, args);
-         |                             ^~~~~~~~
-   kernel/bpf/btf.c: In function 'btf_snprintf_show':
-   kernel/bpf/btf.c:7112:9: warning: function 'btf_snprintf_show' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-    7112 |         len = vsnprintf(show->target, ssnprintf->len_left, fmt, args);
-         |         ^~~
-
-
-vim +176 include/linux/u64_stats_sync.h
-
-68107df5f2cb5d Frederic Weisbecker 2016-09-26  172  
-68107df5f2cb5d Frederic Weisbecker 2016-09-26  173  static inline bool __u64_stats_fetch_retry(const struct u64_stats_sync *syncp,
-16b8a4761cbe50 Eric Dumazet        2010-06-22  174  					   unsigned int start)
-16b8a4761cbe50 Eric Dumazet        2010-06-22  175  {
-16b8a4761cbe50 Eric Dumazet        2010-06-22 @176  	return read_seqcount_retry(&syncp->seq, start);
-44b0c2957adc62 Thomas Gleixner     2022-08-25  177  }
-44b0c2957adc62 Thomas Gleixner     2022-08-25  178  #endif /* !64 bit */
-44b0c2957adc62 Thomas Gleixner     2022-08-25  179  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
