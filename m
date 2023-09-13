@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC6879F1F9
+	by mail.lfdr.de (Postfix) with ESMTP id C594B79F1FB
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjIMTYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        id S232353AbjIMTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbjIMTYG (ORCPT
+        with ESMTP id S232192AbjIMTYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:24:06 -0400
+        Wed, 13 Sep 2023 15:24:09 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44027B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:24:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2F7B7;
+        Wed, 13 Sep 2023 12:24:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694633042; x=1726169042;
+  t=1694633045; x=1726169045;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=9Um2MtTfHVP3AhNYPuGkHR/IlcPV4IcwmbHNi4nWhmw=;
-  b=XJinCfo9v73ttMVjB2J5PlJ5TZYhEEy3ylr3oAeSKwWbjZWLDz2BNlPJ
-   yaxAXM8Rjis1VkTvVwOa6uUWRCykGXF06GeltOfI5J6LQlBtnGGT1+o+R
-   O7vm/rHazCeGk1x6yIdRIPurwMR9DBUJ70ujeR7jC/ZHYt8IdeZeQS7MG
-   XZmksDn9aTq/Evlr2e/lNwsRHwB9wxJgzP5YslMXHjd9bjGhOYNzEqwSv
-   GkNnTYb3cD4KVdFsel7q+r8+mfXjbgUkCR0ARIVD3NSHKltwWym3ZzH1g
-   wwrAB43cBCKXdOthA/EVzyFIu1cnzFp1fdG8jtDTnrljQPQV/WZ+Q4azQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377673274"
+  bh=JKUb9rL4FzUyXqKQxYbktD4DL6Zic8jMxxL3DCtChfE=;
+  b=CVpz+bWK60Co1Dyl3SQfjTY9nefzJ5p7OiLphhGVI34e3NdMPurpQmx1
+   2bggxqBKyFWdkNFxEmPUCFT1U61IATBY/ei2DBdU8I5/7wk+IA+7VUMoj
+   wN2Lv7W8R7bj41S1BZSTJ/rY+BFNz3iEiPuNKi2cQi3limyZ92GfZg1nR
+   D0kyei/G+LLA/qYsXhi+mVf816AcZAbbCS1J8Y+YjlZMF7kQV5iA6G2s1
+   JiZHNS+CLcpnnVhW6VTDRb4V9dNUmmz/6Q9SM6GdIq4TQVvXfWxlE+ANf
+   laDg7XkFFlItXcNT6rQnif/T1NcMz/QVZEplxeaRHe5CmYaJXXA1kiH31
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377673288"
 X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="377673274"
+   d="scan'208";a="377673288"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:24:01 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:24:04 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="917962140"
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="917962143"
 X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="917962140"
+   d="scan'208";a="917962143"
 Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 12:23:58 -0700
+  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 12:23:59 -0700
 Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qgVSu-0000Vn-2B;
+        id 1qgVSu-0000Vl-1z;
         Wed, 13 Sep 2023 19:23:56 +0000
-Date:   Thu, 14 Sep 2023 03:23:49 +0800
+Date:   Thu, 14 Sep 2023 03:23:50 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Oleg Nesterov <oleg@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] seqlock: change __seqprop() to return the function
- pointer
-Message-ID: <202309140355.Sglwk06B-lkp@intel.com>
-References: <20230913154956.GA26245@redhat.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
+Message-ID: <202309140338.TPkz7l7g-lkp@intel.com>
+References: <20230913115001.23183-2-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230913154956.GA26245@redhat.com>
+In-Reply-To: <20230913115001.23183-2-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleg,
+Hi Bartosz,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on tip/locking/core]
-[also build test ERROR on tip/sched/core linus/master v6.6-rc1 next-20230913]
+[auto build test WARNING on brgl/gpio/for-next]
+[also build test WARNING on mtd/nand/next linus/master ulf-hansson-mmc-mirror/next v6.6-rc1 next-20230913]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oleg-Nesterov/seqlock-simplify-SEQCOUNT_LOCKNAME/20230913-235245
-base:   tip/locking/core
-patch link:    https://lore.kernel.org/r/20230913154956.GA26245%40redhat.com
-patch subject: [PATCH 2/5] seqlock: change __seqprop() to return the function pointer
-config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20230914/202309140355.Sglwk06B-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140355.Sglwk06B-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/gpiolib-provide-gpiod_set_active_-low-high/20230913-195053
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
+patch link:    https://lore.kernel.org/r/20230913115001.23183-2-brgl%40bgdev.pl
+patch subject: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
+config: m68k-defconfig (https://download.01.org/0day-ci/archive/20230914/202309140338.TPkz7l7g-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140338.TPkz7l7g-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140355.Sglwk06B-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309140338.TPkz7l7g-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   In file included from include/linux/hrtimer.h:20,
-                    from include/linux/sched.h:20,
-                    from arch/powerpc/kernel/syscalls.c:18:
-   include/linux/u64_stats_sync.h: In function '__u64_stats_fetch_retry':
->> include/linux/u64_stats_sync.h:176:36: error: passing argument 1 of '__seqprop_ptr' discards 'const' qualifier from pointer target type [-Werror=discarded-qualifiers]
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                                    ^~~~~~~~~~~
-   include/linux/seqlock.h:304:59: note: in definition of macro 'seqprop_ptr'
-     304 | #define seqprop_ptr(s)                  __seqprop(s, ptr)(s)
-         |                                                           ^
-   include/linux/u64_stats_sync.h:176:16: note: in expansion of macro 'read_seqcount_retry'
-     176 |         return read_seqcount_retry(&syncp->seq, start);
-         |                ^~~~~~~~~~~~~~~~~~~
-   include/linux/seqlock.h:250:53: note: expected 'seqcount_t *' {aka 'struct seqcount *'} but argument is of type 'const seqcount_t *' {aka 'const struct seqcount *'}
-     250 | static inline seqcount_t *__seqprop_ptr(seqcount_t *s)
-         |                                         ~~~~~~~~~~~~^
-   cc1: all warnings being treated as errors
+   In file included from drivers/net/ethernet/smsc/smc91x.c:60:
+   include/linux/gpio/consumer.h:505:1: error: expected ';', ',' or ')' before '{' token
+     505 | {
+         | ^
+>> drivers/net/ethernet/smsc/smc91x.c:47:19: warning: 'version' defined but not used [-Wunused-const-variable=]
+      47 | static const char version[] =
+         |                   ^~~~~~~
 
 
-vim +176 include/linux/u64_stats_sync.h
+vim +/version +47 drivers/net/ethernet/smsc/smc91x.c
 
-68107df5f2cb5d Frederic Weisbecker 2016-09-26  172  
-68107df5f2cb5d Frederic Weisbecker 2016-09-26  173  static inline bool __u64_stats_fetch_retry(const struct u64_stats_sync *syncp,
-16b8a4761cbe50 Eric Dumazet        2010-06-22  174  					   unsigned int start)
-16b8a4761cbe50 Eric Dumazet        2010-06-22  175  {
-16b8a4761cbe50 Eric Dumazet        2010-06-22 @176  	return read_seqcount_retry(&syncp->seq, start);
-44b0c2957adc62 Thomas Gleixner     2022-08-25  177  }
-44b0c2957adc62 Thomas Gleixner     2022-08-25  178  #endif /* !64 bit */
-44b0c2957adc62 Thomas Gleixner     2022-08-25  179  
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16 @47  static const char version[] =
+6389aa458ed995 drivers/net/ethernet/smsc/smc91x.c Ben Boeckel     2013-11-01  48  	"smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre <nico@fluxnic.net>";
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  49  
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  50  /* Debugging level */
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  51  #ifndef SMC_DEBUG
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  52  #define SMC_DEBUG		0
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  53  #endif
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  54  
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  55  
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  56  #include <linux/module.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  57  #include <linux/kernel.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  58  #include <linux/sched.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  59  #include <linux/delay.h>
+c0e906a953f03c drivers/net/ethernet/smsc/smc91x.c Andy Shevchenko 2023-03-16 @60  #include <linux/gpio/consumer.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  61  #include <linux/interrupt.h>
+476c32c47a84fc drivers/net/smc91x.c               David Howells   2010-10-07  62  #include <linux/irq.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  63  #include <linux/errno.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  64  #include <linux/ioport.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  65  #include <linux/crc32.h>
+d052d1beff7069 drivers/net/smc91x.c               Russell King    2005-10-29  66  #include <linux/platform_device.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  67  #include <linux/spinlock.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  68  #include <linux/ethtool.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  69  #include <linux/mii.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  70  #include <linux/workqueue.h>
+682a1694115ec1 drivers/net/smc91x.c               Thomas Chou     2011-01-25  71  #include <linux/of.h>
+3f823c15d53dc7 drivers/net/ethernet/smsc/smc91x.c Tony Lindgren   2013-12-11  72  #include <linux/of_device.h>
+^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  73  
 
 -- 
 0-DAY CI Kernel Test Service
