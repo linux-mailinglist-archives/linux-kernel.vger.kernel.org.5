@@ -2,208 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3920379E9F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A166679E9FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241165AbjIMNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S241028AbjIMNqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241060AbjIMNpQ (ORCPT
+        with ESMTP id S237931AbjIMNqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:45:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A770419B1;
-        Wed, 13 Sep 2023 06:45:12 -0700 (PDT)
-Received: from ideasonboard.com (unknown [IPv6:2001:b07:5d2e:52c9:72c3:346:a663:c82d])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94F0072E;
-        Wed, 13 Sep 2023 15:43:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1694612618;
-        bh=1Utp4+wXedh3YwkwcOGvZuEmlvqMt4KuKWejkPVuL9I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bGNpFzcZluIVT/SGm+cu7SzzCm0XUa1er6ku4n1qpbQGJBkX0tA2Ae9jkV7Gdca4o
-         zt5gAmNqbSWIY/MKzEA3ow5Lnk1d48kIjqynX/Z8C0HRfR8rGM9wm266YWHbOfnDnJ
-         pkOeX4qzXTV+uUOXDUvIWWJGmnNyUNsMscNP2iLY=
-Date:   Wed, 13 Sep 2023 15:45:07 +0200
-From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH 1/2] media: mt9p031: Extend match support for OF tables
-Message-ID: <l2uzd3oxclnaokvs2wkuobt27pg3dixrhc3dvp2ucwciczuhq4@6ruxrnyiyko4>
-References: <20230910160126.70122-1-biju.das.jz@bp.renesas.com>
- <20230910160126.70122-2-biju.das.jz@bp.renesas.com>
- <tlaikk73c5gc6y3bk6evuwtlizletaws7tuc5nk36hz2adkydp@duv2tjpqnios>
- <OS0PR01MB59226056EAA42B93D123CFB586F2A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <spi52a754wa4ghwvfa6hkoqiz5rws27jlrdfnintx7dfm5ccqv@cngal3bh6eje>
+        Wed, 13 Sep 2023 09:46:07 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD32619B6;
+        Wed, 13 Sep 2023 06:46:03 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-502e0b7875dso724820e87.0;
+        Wed, 13 Sep 2023 06:46:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694612762; x=1695217562; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=asTT2XBzDAvCymnsddbZfuEFjnNzqFtFMyBqPDTsn2k=;
+        b=rkGmj/1wQbn8lfsCNOSUf/LTSOVGRdkIL98JseDbd+Xx29NG0hnZBeZhJYf0/mU8rK
+         QtDfFEiDFuH0fLgq+A9ZHaoPO5Z5g69FTPhYpW8LOKcGNXE7pX9jfZRS+YdPk5tpQ/7Z
+         HXqrZCCageMrlyXzndN8M87Do8VW5jtL+Al57pclFyE69lFrMotjnjhjES9SNXNV2/aQ
+         hwL7x0z+amoKz1t9yJbHrMHzf9pdmkDtnznHXzqxkhxu0zbAYJdiu+BQ94ys6hM3S1s2
+         tEvA2kGnQ1Nib0L/MjEHp3UhQ7JE5HwxsL8og0vONpv4lZFZF+I8SkIx7xAeT7DE2g8L
+         SgSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694612762; x=1695217562;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=asTT2XBzDAvCymnsddbZfuEFjnNzqFtFMyBqPDTsn2k=;
+        b=F/nou8Ohb2P2unE1JG1UOwSfteTFU94LYcZ0vXSi2rrL4mGwhu4mptTyntvgytPxON
+         OVlM+arXqU276DXb1oKYPiNUgieeFSHMxNhXf/kKMEDlx4EvkMxcxw5b5UZtiIPmWHGd
+         NXX31johJYlJrCzw+slPYowzLN2eXhB9l45xV54dNqMqpXCN8B9qr7RV2Td063Hz4DcP
+         tEwtu+ajU8puGLYHidXFs1FD0z/oU7422dOl1PWEIs2+9EP0SfZDlz/bIhFxfP6lQNCr
+         zm8iWRs3zOyVXsekf9k5Nyoc4eB4FzYXhZ24BG4EcN7W8B50wgST/hfK/qXA3FMGdIK/
+         tAVQ==
+X-Gm-Message-State: AOJu0YwaAfot8key9dJLwWbT9ACTQQTmN5BoaNkvfu9Hpdizstqqp6ri
+        0EsWH+9EcDXzV7CMr8G9sA8=
+X-Google-Smtp-Source: AGHT+IHeqTpFDj8gdtbM6wEOs4/ayNLLJSdjfRCoZQZFqxXEeXPY2r3kbGKj3QWKpIBsVc6nLse8nw==
+X-Received: by 2002:a05:6512:3d8e:b0:500:bb99:69a9 with SMTP id k14-20020a0565123d8e00b00500bb9969a9mr2310285lfv.64.1694612761027;
+        Wed, 13 Sep 2023 06:46:01 -0700 (PDT)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id t26-20020a056402241a00b0052febc781bfsm715340eda.36.2023.09.13.06.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 06:46:00 -0700 (PDT)
+Message-ID: <0bef11aa061a425f276a539a47b786ec6b661987.camel@gmail.com>
+Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>,
+        pengdonglin <pengdonglin@sangfor.com.cn>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn,
+        huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 13 Sep 2023 16:45:58 +0300
+In-Reply-To: <e564b0e9-3497-a133-3094-afefc0cd1f7e@oracle.com>
+References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
+         <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
+         <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
+         <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
+         <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
+         <CAADnVQLMHUNE95eBXdy6=+gHoFHRsihmQ75GZvGy-hSuHoaT5A@mail.gmail.com>
+         <5f8d82c3-838e-4d75-bb25-7d98a6d0a37c@sangfor.com.cn>
+         <e564b0e9-3497-a133-3094-afefc0cd1f7e@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <spi52a754wa4ghwvfa6hkoqiz5rws27jlrdfnintx7dfm5ccqv@cngal3bh6eje>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello again
+On Wed, 2023-09-13 at 14:34 +0100, Alan Maguire wrote:
+> On 13/09/2023 11:32, pengdonglin wrote:
+> > On 2023/9/13 2:46, Alexei Starovoitov wrote:
+> > > On Tue, Sep 12, 2023 at 10:03=E2=80=AFAM Eduard Zingerman <eddyz87@gm=
+ail.com>
+> > > wrote:
+> > > >=20
+> > > > On Tue, 2023-09-12 at 09:40 -0700, Alexei Starovoitov wrote:
+> > > > > On Tue, Sep 12, 2023 at 7:19=E2=80=AFAM Eduard Zingerman <eddyz87=
+@gmail.com>
+> > > > > wrote:
+> > > > > >=20
+> > > > > > On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
+> > > > > > > On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
+> > > > > > > > Currently, we are only using the linear search method to fi=
+nd the
+> > > > > > > > type id
+> > > > > > > > by the name, which has a time complexity of O(n). This chan=
+ge
+> > > > > > > > involves
+> > > > > > > > sorting the names of btf types in ascending order and using
+> > > > > > > > binary search,
+> > > > > > > > which has a time complexity of O(log(n)). This idea was ins=
+pired
+> > > > > > > > by the
+> > > > > > > > following patch:
+> > > > > > > >=20
+> > > > > > > > 60443c88f3a8 ("kallsyms: Improve the performance of
+> > > > > > > > kallsyms_lookup_name()").
+> > > > > > > >=20
+> > > > > > > > At present, this improvement is only for searching in vmlin=
+ux's and
+> > > > > > > > module's BTFs, and the kind should only be BTF_KIND_FUNC or
+> > > > > > > > BTF_KIND_STRUCT.
+> > > > > > > >=20
+> > > > > > > > Another change is the search direction, where we search the=
+ BTF
+> > > > > > > > first and
+> > > > > > > > then its base, the type id of the first matched btf_type wi=
+ll be
+> > > > > > > > returned.
+> > > > > > > >=20
+> > > > > > > > Here is a time-consuming result that finding all the type i=
+ds of
+> > > > > > > > 67,819 kernel
+> > > > > > > > functions in vmlinux's BTF by their names:
+> > > > > > > >=20
+> > > > > > > > Before: 17000 ms
+> > > > > > > > After:=C2=A0=C2=A0=C2=A0=C2=A0 10 ms
+> > > > > > > >=20
+> > > > > > > > The average lookup performance has improved about 1700x at =
+the
+> > > > > > > > above scenario.
+> > > > > > > >=20
+> > > > > > > > However, this change will consume more memory, for example,
+> > > > > > > > 67,819 kernel
+> > > > > > > > functions will allocate about 530KB memory.
+> > > > > > >=20
+> > > > > > > Hi Donglin,
+> > > > > > >=20
+> > > > > > > I think this is a good improvement. However, I wonder, why di=
+d you
+> > > > > > > choose to have a separate name map for each BTF kind?
+> > > > > > >=20
+> > > > > > > I did some analysis for my local testing kernel config and go=
+t
+> > > > > > > such numbers:
+> > > > > > > - total number of BTF objects: 97350
+> > > > > > > - number of FUNC and STRUCT objects: 51597
+> > > > > > > - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATAS=
+EC
+> > > > > > > objects: 56817
+> > > > > > > =C2=A0=C2=A0 (these are all kinds for which lookup by name mi=
+ght make sense)
+> > > > > > > - number of named objects: 54246
+> > > > > > > - number of name collisions:
+> > > > > > > =C2=A0=C2=A0 - unique names: 53985 counts
+> > > > > > > =C2=A0=C2=A0 - 2 objects with the same name: 129 counts
+> > > > > > > =C2=A0=C2=A0 - 3 objects with the same name: 3 counts
+> > > > > > >=20
+> > > > > > > So, it appears that having a single map for all named objects=
+ makes
+> > > > > > > sense and would also simplify the implementation, what do you=
+ think?
+> > > > > >=20
+> > > > > > Some more numbers for my config:
+> > > > > > - 13241 types (struct, union, typedef, enum), log2 13241 =3D 13=
+.7
+> > > > > > - 43575 funcs, log2 43575 =3D 15.4
+> > > > > > Thus, having separate map for types vs functions might save ~1.=
+7
+> > > > > > search iterations. Is this a significant slowdown in practice?
+> > > > >=20
+> > > > > What do you propose to do in case of duplicates ?
+> > > > > func and struct can have the same name, but they will have two
+> > > > > different
+> > > > > btf_ids. How do we store them ?
+> > > > > Also we might add global vars to BTF. Such request came up severa=
+l
+> > > > > times.
+> > > > > So we need to make sure our search approach scales to
+> > > > > func, struct, vars. I don't recall whether we search any other ki=
+nds.
+> > > > > Separate arrays for different kinds seems ok.
+> > > > > It's a bit of code complexity, but it's not an increase in memory=
+.
+> > > >=20
+> > > > Binary search gives, say, lowest index of a thing with name A, then
+> > > > increment index while name remains A looking for correct kind.
+> > > > Given the name conflicts info from above, 99% of times there would =
+be
+> > > > no need to iterate and in very few cases there would a couple of
+> > > > iterations.
+> > > >=20
+> > > > Same logic would be necessary with current approach if different BT=
+F
+> > > > kinds would be allowed in BTF_ID_NAME_* cohorts. I figured that the=
+se
+> > > > cohorts are mainly a way to split the tree for faster lookups, but
+> > > > maybe that is not the main intent.
+> > > >=20
+> > > > > With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyt=
+e
+> > > > > extra memory. That's quite a bit. Anything we can do to compress =
+it?
+> > > >=20
+> > > > That's an interesting question, from the top of my head:
+> > > > pre-sort in pahole (re-assign IDs so that increasing ID also would
+> > > > mean "increasing" name), shouldn't be that difficult.
+> > >=20
+> > > That sounds great. kallsyms are pre-sorted at build time.
+> > > We should do the same with BTF.
+> > > I think GCC can emit BTF directly now and LLVM emits it for bpf progs
+> > > too,
+> > > but since vmlinux and kernel module BTFs will keep being processed
+> > > through pahole we don't have to make gcc/llvm sort things right away.
+> > > pahole will be enough. The kernel might do 'is it sorted' check
+> > > during BTF validation and then use binary search or fall back to line=
+ar
+> > > when not-sorted =3D=3D old pahole.
+> > >=20
+> >=20
+> > Yeah, I agree and will attempt to modify the pahole and perform a test.
+> > Do we need
+> > to introduce a new macro to control the behavior when the BTF is not
+> > sorted? If
+> > it is not sorted, we can use the method mentioned in this patch or use
+> > linear
+> > search.
+> >=20
+> >=20
+>=20
+> One challenge with pahole is that it often runs in parallel mode, so I
+> suspect any sorting would have to be done after merging across threads.
+> Perhaps BTF deduplication time might be a useful time to re-sort by
+> name? BTF dedup happens after BTF has been merged, and a new "sorted"
+> btf_dedup_opts option could be added and controlled by a pahole
+> option. However dedup is pretty complicated already..
 
-On Mon, Sep 11, 2023 at 11:25:03AM +0200, Jacopo Mondi wrote:
-> Hi Biju
->
-> On Mon, Sep 11, 2023 at 09:14:35AM +0000, Biju Das wrote:
-> > Hi Jacopo Mondi,
-> >
-> > Thanks for the feedback.
-> >
-> > > Subject: Re: [PATCH 1/2] media: mt9p031: Extend match support for OF tables
-> > >
-> > > Hi Biju
-> > >
-> > > On Sun, Sep 10, 2023 at 05:01:25PM +0100, Biju Das wrote:
-> > > > The driver has an OF match table, still, it uses an ID lookup table
-> > > > for retrieving match data. Currently, the driver is working on the
-> > > > assumption that an I2C device registered via OF will always match a
-> > > > legacy I2C device ID. The correct approach is to have an OF device ID
-> > > > table using i2c_get_match_data() if the devices are registered via OF/ID.
-> > > >
-> > > > Unify the OF/ID table by using MEDIA_BUS_FMT as match data for both
-> > > > these tables and replace the ID lookup table for the match data by
-> > > > i2c_get_match_data() and simplifly probe() and mt9p031_init_cfg()
-> > > >
-> > > > Drop mt9p031_init_cfg as there is no user.
-> > > >
-> > > > While at it, remove the trailing comma in the terminator entry for the
-> > > > OF table making code robust against (theoretical) misrebases or other
-> > > > similar things where the new entry goes _after_ the termination
-> > > > without the compiler noticing.
-> > > >
-> > > > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > > > ---
-> > > >  drivers/media/i2c/mt9p031.c | 33 +++++++++++----------------------
-> > > >  1 file changed, 11 insertions(+), 22 deletions(-)
-> > > >
-> > > > diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-> > > > index 348f1e1098fb..540cb519915c 100644
-> > > > --- a/drivers/media/i2c/mt9p031.c
-> > > > +++ b/drivers/media/i2c/mt9p031.c
-> > > > @@ -112,11 +112,6 @@
-> > > >  #define MT9P031_TEST_PATTERN_RED			0xa2
-> > > >  #define MT9P031_TEST_PATTERN_BLUE			0xa3
-> > > >
-> > > > -enum mt9p031_model {
-> > > > -	MT9P031_MODEL_COLOR,
-> > > > -	MT9P031_MODEL_MONOCHROME,
-> > > > -};
-> > > > -
-> > > >  struct mt9p031 {
-> > > >  	struct v4l2_subdev subdev;
-> > > >  	struct media_pad pad;
-> > > > @@ -129,7 +124,7 @@ struct mt9p031 {
-> > > >  	struct clk *clk;
-> > > >  	struct regulator_bulk_data regulators[3];
-> > > >
-> > > > -	enum mt9p031_model model;
-> > > > +	u32 code;
-> > > >  	struct aptina_pll pll;
-> > > >  	unsigned int clk_div;
-> > > >  	bool use_pll;
-> > > > @@ -714,12 +709,7 @@ static int mt9p031_init_cfg(struct v4l2_subdev
-> > > *subdev,
-> > > >  	crop->height = MT9P031_WINDOW_HEIGHT_DEF;
-> > > >
-> > > >  	format = __mt9p031_get_pad_format(mt9p031, sd_state, 0, which);
-> > > > -
-> > > > -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
-> > > > -		format->code = MEDIA_BUS_FMT_Y12_1X12;
-> > > > -	else
-> > > > -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
-> > > > -
-> > > > +	format->code = mt9p031->code;
-> > > >  	format->width = MT9P031_WINDOW_WIDTH_DEF;
-> > > >  	format->height = MT9P031_WINDOW_HEIGHT_DEF;
-> > > >  	format->field = V4L2_FIELD_NONE;
-> > > > @@ -1104,7 +1094,6 @@ mt9p031_get_pdata(struct i2c_client *client)
-> > > >
-> > > >  static int mt9p031_probe(struct i2c_client *client)  {
-> > > > -	const struct i2c_device_id *did = i2c_client_get_device_id(client);
-> > > >  	struct mt9p031_platform_data *pdata = mt9p031_get_pdata(client);
-> > > >  	struct i2c_adapter *adapter = client->adapter;
-> > > >  	struct mt9p031 *mt9p031;
-> > > > @@ -1129,7 +1118,7 @@ static int mt9p031_probe(struct i2c_client *client)
-> > > >  	mt9p031->pdata = pdata;
-> > > >  	mt9p031->output_control	= MT9P031_OUTPUT_CONTROL_DEF;
-> > > >  	mt9p031->mode2 = MT9P031_READ_MODE_2_ROW_BLC;
-> > > > -	mt9p031->model = did->driver_data;
-> > > > +	mt9p031->code = (uintptr_t)i2c_get_match_data(client);
-> > > >
-> > > >  	mt9p031->regulators[0].supply = "vdd";
-> > > >  	mt9p031->regulators[1].supply = "vdd_io";
-> > > > @@ -1226,19 +1215,19 @@ static void mt9p031_remove(struct i2c_client
-> > > *client)
-> > > >  }
-> > > >
-> > > >  static const struct i2c_device_id mt9p031_id[] = {
-> > > > -	{ "mt9p006", MT9P031_MODEL_COLOR },
-> > > > -	{ "mt9p031", MT9P031_MODEL_COLOR },
-> > > > -	{ "mt9p031m", MT9P031_MODEL_MONOCHROME },
-> > > > -	{ }
-> > > > +	{ "mt9p006", MEDIA_BUS_FMT_SGRBG12_1X12 },
-> > > > +	{ "mt9p031", MEDIA_BUS_FMT_SGRBG12_1X12 },
-> > > > +	{ "mt9p031m", MEDIA_BUS_FMT_Y12_1X12 },
-> > > > +	{ /* sentinel */ }
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(i2c, mt9p031_id);
-> > > >
-> > > >  #if IS_ENABLED(CONFIG_OF)
-> > > >  static const struct of_device_id mt9p031_of_match[] = {
-> > > > -	{ .compatible = "aptina,mt9p006", },
-> > > > -	{ .compatible = "aptina,mt9p031", },
-> > > > -	{ .compatible = "aptina,mt9p031m", },
-> > > > -	{ /* sentinel */ },
-> > > > +	{ .compatible = "aptina,mt9p006", .data = (void
-> > > *)MEDIA_BUS_FMT_SGRBG12_1X12 },
-> > > > +	{ .compatible = "aptina,mt9p031", .data = (void
-> > > *)MEDIA_BUS_FMT_SGRBG12_1X12 },
-> > > > +	{ .compatible = "aptina,mt9p031m", .data = (void
-> > > *)MEDIA_BUS_FMT_Y12_1X12 },
-> > > > +	{ /* sentinel */ }
-> > >
-> > > I know it might sound not necessary, but isn't it better to wrap the
-> > > format in some sort of per-model structure. It would avoid a few type
-> > > casts too. Up to you though
-> >
-> > The problem with structure is, it will have one
-> > variable entry. I got some feedback related to similar
-> > patches not to add a single variable to structure
-> > and use the value directly instead.
-> >
->
-> Ok then, a matter of preferences I think. Up to you, really.
+Hi Alan,
 
-Seems like I forgot to send a tag after your reply!
+libbpf might be the right place to do this, however, I think that it is
+also doable in pahole's btf_encoder__encode(), e.g. as follows:
+- after a call to btf__dedup():
+  - create a sorted by name IDs ordering;
+  - create a new BTF object;
+  - add records to the new BTF according to the sorted ordering;
+  - remap id references while adding;
+  - use the new BTF object instead of old one to write BTF output.
 
-Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+I assume that implementation would be similar regardless whether it is
+done in pahole or in libbpf.
 
-Thanks
-  j
+Thanks,
+Eduard
 
->
-> Cheers
->   j
->
-> > Cheers,
-> > Biju
-> >
-> > >
-> > > >  };
-> > > >  MODULE_DEVICE_TABLE(of, mt9p031_of_match);
-> > > >  #endif
-> > > > --
-> > > > 2.25.1
-> > > >
+> One thing we should weigh up though is if there are benefits to the
+> way BTF is currently laid out. It tends to start with base types,
+> and often-encountered types end up being located towards the start
+> of the BTF data. For example
+>=20
+>=20
+> [1] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 encodin=
+g=3D(none)
+> [2] CONST '(anon)' type_id=3D1
+> [3] VOLATILE '(anon)' type_id=3D1
+> [4] ARRAY '(anon)' type_id=3D1 index_type_id=3D21 nr_elems=3D2
+> [5] PTR '(anon)' type_id=3D8
+> [6] CONST '(anon)' type_id=3D5
+> [7] INT 'char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DSIGNED
+> [8] CONST '(anon)' type_id=3D7
+> [9] INT 'unsigned int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3D(=
+none)
+> [10] CONST '(anon)' type_id=3D9
+> [11] TYPEDEF '__s8' type_id=3D12
+> [12] INT 'signed char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DSI=
+GNED
+> [13] TYPEDEF '__u8' type_id=3D14
+>=20
+> So often-used types will be found quickly, even under linear search
+> conditions.
+>=20
+> When we look at how many lookups by id (which are O(1), since they are
+> done via the btf->types[] array) versus by name, we see:
+>=20
+> $ grep btf_type_by_id kernel/bpf/*.c|wc -l
+> 120
+> $ grep btf_find_by_nam kernel/bpf/*.c|wc -l
+> 15
+>=20
+> I don't see a huge number of name-based lookups, and I think most are
+> outside of the hotter codepaths, unless I'm missing some. All of which
+> is to say it would be a good idea to have a clear sense of what will get
+> faster with sorted-by-name BTF. Thanks!
+>=20
+> Alan
