@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0C379F093
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D3979F098
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjIMRqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:46:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
+        id S231757AbjIMRrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjIMRqq (ORCPT
+        with ESMTP id S231474AbjIMRrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:46:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6DE19AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAABC433C9;
-        Wed, 13 Sep 2023 17:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694627202;
-        bh=C69XA7WhlnFGCOFGMTb5QDKicj6hLtK+9Kr20IL8P4Y=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=JUEWMTyAew0CYabud9NhLZvJlGPjv1y/e2NNN95RAQicKEpm6NXCVijFlNqp/Ab0Q
-         gsh+0ltas9250WlXXupFNGTQghBTWk+fNRtKklquF6b+MVyAwaNxqoKgcsO0i6RxN9
-         FltuYHu3jK6IV9ebTncvGo7deftNOWM+bIvLetqPsYGJ6qqq8dC9KiJBeLisAlf18j
-         4iKOjE2GxpJepr6iNgoIkTSxHi1eKjAAidGIx0Z9pYOrAuvfkhIv1eb3DiaiADHff+
-         /aUMY0w3S7gJX31TRd8d10Jfwag9pnI9xNBj52ki2ZuarAYfsoPxISpY35/3PlI6H4
-         hvrtn+Ynv/RQQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
-        tiwai@suse.com, perex@perex.cz, arnd@arndb.de,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org
-In-Reply-To: <20230913091325.16877-1-peter.ujfalusi@linux.intel.com>
-References: <20230913091325.16877-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: hdac_hdmi: Remove temporary string use in
- create_fill_jack_kcontrols
-Message-Id: <169462719996.54382.1348437312266956494.b4-ty@kernel.org>
-Date:   Wed, 13 Sep 2023 18:46:39 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.13-dev-034f2
+        Wed, 13 Sep 2023 13:47:01 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA26F1BC3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:54 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-450a670565dso68934137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:46:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1694627214; x=1695232014; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nZcFS3iOYkQO2W9mwcWv2JH1y1FxtklhD4Z215kPDlM=;
+        b=GFNdi1KOqfLdtuk0R1uPPHQzi+NX4UlLmaO+Ul0vl0+LR0T/KSld967e7+FCf6rl4C
+         G4OZiOFmLWNmcVLbrz14ELqZ4JKoqsbbvfBX6PyES8lmmDOZgI5/9zBmJ5chOeVDdrR5
+         fHPPoIDnYybgONYGq7oBU0hnz80HplDYUtyOA/J4fCkvT5luh7WUANL4HAREBK1ZWsSU
+         TVAsQwmyc8sRXdUn7uxAWAaVm3Y/06AAyojp2ZwzpIn2BaGm+vU3wcobMpEL8fsbH5za
+         SDZuiYJVu+8IhXRULzasgJnqj73iB3zWD66v89Qw/dR9JidB8xTPVxOr98avigOPBlvM
+         S5Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694627214; x=1695232014;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nZcFS3iOYkQO2W9mwcWv2JH1y1FxtklhD4Z215kPDlM=;
+        b=hH0WA/icxUyxtpzQePxVsY/0//MClM24FbJHEF9ff2RsC1VQF5Dc+O1yczCaK8PR9x
+         JrIYmJeBOK/FtadxHHlKIKf6AsoWlibDTRHcUoYC4MPLO0F3zExhU1y10Vhylks/AcE4
+         ootL5Gig0sTs2w13nNGYPyGCwPytg3a+m2l3mCvJRZ48alfmk2WJ+2LQ1CEBVTDgPON+
+         bz5S+AKGtBPhXIh3dvM96F3sdf0A/XD1mSoZILtPrsc4qZFDAtUDPL/xumnYA8XYLzRQ
+         pfrUF8nY631xzncOj+x3UUWUbcXH4ZYq9GImsaFccenq14aeLBpFVo7nWjBuIV515Ex1
+         dDgw==
+X-Gm-Message-State: AOJu0YxQj0Rw5zxj0L5MWer6Wl/+JFDEb3mvT+mU+FB5LygPEeMeey1S
+        Cd8GZvPJhcZI846oh+P+hkMo
+X-Google-Smtp-Source: AGHT+IEsLy5oMnv35nf0coOHBYWP0U4cJdBDcW5tlQYuaToqfLvM4OCZlHGLBbkzQBzrLXaeY6z4dA==
+X-Received: by 2002:a67:fd97:0:b0:44d:5c61:e475 with SMTP id k23-20020a67fd97000000b0044d5c61e475mr2535485vsq.32.1694627214045;
+        Wed, 13 Sep 2023 10:46:54 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id x18-20020ae9f812000000b00767da10efb6sm4026837qkh.97.2023.09.13.10.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 10:46:52 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 13:46:51 -0400
+Message-ID: <186da545d95255f5ba2368d09fb1a667.paul@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc:     selinux@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] selinux: print sum of chain lengths^2 for hash tables
+References: <20230818151220.166215-6-cgzones@googlemail.com>
+In-Reply-To: <20230818151220.166215-6-cgzones@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 12:13:25 +0300, Peter Ujfalusi wrote:
-> There is no need to use temporary strings to construct the kcontrol names,
-> devm_kasprintf can be used to replace the snprintf + devm_kstrdup pairs.
+On Aug 18, 2023 Stephen Smalley <stephen.smalley.work@gmail.com> wrote:
 > 
-> This change will also fixes the following compiler warning/error (W=1):
+> Print the sum of chain lengths squared as a metric for hash tables to
+> provide more insights, similar to avtabs.
 > 
-> sound/soc/codecs/hdac_hdmi.c: In function ‘hdac_hdmi_jack_port_init’:
-> sound/soc/codecs/hdac_hdmi.c:1793:63: error: ‘ Switch’ directive output may be truncated writing 7 bytes into a region of size between 1 and 32 [-Werror=format-truncation=]
->  1793 |                         snprintf(kc_name, sizeof(kc_name), "%s Switch", xname);
->       |                                                               ^~~~~~~
-> In function ‘create_fill_jack_kcontrols’,
->     inlined from ‘hdac_hdmi_jack_port_init’ at sound/soc/codecs/hdac_hdmi.c:1871:8:
-> sound/soc/codecs/hdac_hdmi.c:1793:25: note: ‘snprintf’ output between 8 and 39 bytes into a destination of size 32
->  1793 |                         snprintf(kc_name, sizeof(kc_name), "%s Switch", xname);
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
+> While on it add a comma in the avtab message to improve readability of
+> the output.
 > 
-> [...]
+> Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+> Reviewed-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> ---
+>  security/selinux/ss/avtab.c    | 2 +-
+>  security/selinux/ss/hashtab.c  | 5 +++++
+>  security/selinux/ss/hashtab.h  | 1 +
+>  security/selinux/ss/policydb.c | 4 ++--
+>  4 files changed, 9 insertions(+), 3 deletions(-)
 
-Applied to
+Merged into selinux/next, thanks.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: hdac_hdmi: Remove temporary string use in create_fill_jack_kcontrols
-      commit: 67a810b6f37a7805474add2d003034a288b94fa4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--
+paul-moore.com
