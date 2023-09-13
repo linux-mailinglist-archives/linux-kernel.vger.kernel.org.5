@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C8779E234
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B084C79E238
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238959AbjIMIfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
+        id S238964AbjIMIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238880AbjIMIfK (ORCPT
+        with ESMTP id S233174AbjIMIfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:35:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB35EC3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:06 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5251D660732B;
-        Wed, 13 Sep 2023 09:35:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694594105;
-        bh=b1+U2pGflwc/V1Z4xgUhLMPjPG7gNXIcxF/u4aJVNLw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HIt2c3/+tufCzvGPr6PR1hR57aag53jqn1I5ql+1dQscZQAyXpGYCsLgTUuEJ9nDM
-         yVYqUD7YtKlFfXn4vrkeKKBSVsgPsGsX2jxEIU+NoxwY38Q5I98qWrbYqxROUcm4MM
-         pCp0Q1vqc8ICoTFYzmUCNJu9IsglY8B9QQv6zSJGZyHqL+tmhHqZiUovsu+hIyd5kJ
-         cJEPdxyhYZyIgZIBg2qU5Qn/Htrv9I8OKECZr+psUWMXjqjoCY/6dCG4KJyjKGgmqg
-         Jbtq0fjIVYDIa5SKatpvytljZluz9rXCE9vswZWrb5018EtXV/vCsQ5dFoUiPaaEjS
-         SNPvtrFk6Hykg==
-Message-ID: <5a4a0d12-d16a-0836-f6c5-6e6c2f3a9097@collabora.com>
-Date:   Wed, 13 Sep 2023 10:35:01 +0200
+        Wed, 13 Sep 2023 04:35:37 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE806196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:33 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a9d6b98845so153575566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1694594132; x=1695198932; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vzZ6MgD3pf8m+rx1Xv6RC5XGWASwhi1UIBmWgNbxJHM=;
+        b=WiqwXqpCw5ZCaEqOwUSFTsfNpCtAmJ/kyuxym9ki+G6ezs+Jz+wxdVawpkPlg43+e8
+         cF/OznCHufRkwjpKX5k2zxGz0bqDLbnclKoTBPtKQvIXnU8lekABqWnKjfkEGkxc30Oy
+         HkuVqoxSYUo5XOpnE+8IksqyGNrrfmiSHJ8BZFCtTbNRcWeOuDfhwqEnM0k2vnWWbIlR
+         kPTTysAppwaHdpmMVKbclk5QX+NYVyBrCupVPxJeN3gFHW0KnAlMERmOW9jylvlFFI7h
+         X7UH/zD73yUD5avrjkopjm8Wd/hbazAAhl9D4O/pKXnhtQPCKd0+pTRUjWVEWV46D7Y0
+         SeMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694594132; x=1695198932;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vzZ6MgD3pf8m+rx1Xv6RC5XGWASwhi1UIBmWgNbxJHM=;
+        b=I98KGqMmo6nU6IdYsCbfTWAPNVCZTe1tsvOxY0f6U2Q2V7BVvg/N5mQc/BRkEgKPIm
+         qK4O/RpDgNWwpM1lc6A0ecCtXclsxX5595tM0EE1ik4F8SpYTJfMyJP7UJH7H5irDWWU
+         yQGWyxYo1vDDMd1HM3fbDcsmb6fxlnGjRPGxt2YxjvYRVs0b3pZYCu9ho11IGGQSKfZy
+         vSleJ+JlWnTsEkVLo4DBMPdk31F+vtEyJoDugi8nnY5LfnKO4gmHU1btCod+OxFmpytG
+         8uyLcKuiabYP38nho3pBTp62wRM/o0onFJn6y9KJKm5cnywjVHdO6Hf1w76N5Co/9ywA
+         5Iow==
+X-Gm-Message-State: AOJu0YyJ59A7TmocI3hmWalnWpyonL1U5Ey7gJYDZhC4dGOAk/eFt+px
+        IWhU+tUCFHwfLm0d80kqaMEPYg==
+X-Google-Smtp-Source: AGHT+IGZ4W6oHcVWa6n5e3HT26skU4k3V7FAnm2BWzLS+1RwRT1pMvQIlK0HWxcVOFIXwB+8acOF1Q==
+X-Received: by 2002:a17:906:c112:b0:9a4:11a3:c32b with SMTP id do18-20020a170906c11200b009a411a3c32bmr7346391ejc.29.1694594132177;
+        Wed, 13 Sep 2023 01:35:32 -0700 (PDT)
+Received: from blmsp ([2001:4091:a246:82a0:6611:d59a:8ba3:9a66])
+        by smtp.gmail.com with ESMTPSA id lz5-20020a170906fb0500b0098e78ff1a87sm7990464ejb.120.2023.09.13.01.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 01:35:30 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 10:35:29 +0200
+From:   Markus Schneider-Pargmann <msp@baylibre.com>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Golle <daniel@makrotopia.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] thermal/drivers/mediatek: Fix control buffer enablement
+ on MT7896
+Message-ID: <20230913083529.3bgjl6rvfmixgjnd@blmsp>
+References: <20230907112018.52811-1-linux@fw-web.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] drm/mediatek: Add spinlock for setting vblank event in
- atomic_begin
-Content-Language: en-US
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Alexandre Mergnat <amergnat@baylibre.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Fei Shao <fshao@chromium.org>
-References: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230907112018.52811-1-linux@fw-web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 22/08/23 15:26, Jason-JH.Lin ha scritto:
-> Add spinlock protection to avoid race condition on vblank event
-> between mtk_drm_crtc_atomic_begin() and mtk_drm_finish_page_flip().
+On Thu, Sep 07, 2023 at 01:20:18PM +0200, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
+> Reading thermal sensor on mt7986 devices returns invalid temperature:
+> 
+> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
+>  -274000
+> 
+> Fix this by adding missing members in mtk_thermal_data struct which were
+> used in mtk_thermal_turn_on_buffer after commit 33140e668b10.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 33140e668b10 ("thermal/drivers/mediatek: Control buffer enablement tweaks")
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-Hello Jason,
+Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Can you please provide more information about this race condition?
-(check below)
+Thanks for fixing!
 
-> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+Best,
+Markus
+
 > ---
->   drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 5 +++++
->   1 file changed, 5 insertions(+)
+>  drivers/thermal/mediatek/auxadc_thermal.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> index d40142842f85..128a672fe3c9 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-> @@ -746,6 +746,9 @@ static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
->   									  crtc);
->   	struct mtk_crtc_state *mtk_crtc_state = to_mtk_crtc_state(crtc_state);
->   	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&crtc->dev->event_lock, flags);
->   
->   	if (mtk_crtc->event && mtk_crtc_state->base.event)
->   		DRM_ERROR("new event while there is still a pending event\n");
-> @@ -756,6 +759,8 @@ static void mtk_drm_crtc_atomic_begin(struct drm_crtc *crtc,
-
-...because my suspect is that what creates the race condition in this function is
-the unlocked *assignment* to mtk_crtc->event, not the rest.
-
-If I'm right, you don't need to unconditionally spinlock at the beginning of this
-function hence ever-so-slightly improving performance compared to this version.
-
-Can you please try this one and check if this *also* solves the issue?
-
-	if (mtk_crtc_state->base.event) {
-		mtk_crtc_state->base.event->pipe = drm_crtc_index(crtc);
-		WARN_ON(drm_crtc_vblank_get(crtc) != 0);
-
-		spin_lock_irqsave(&crtc->dev->event_lock, flags);
-		mtk_crtc->event = mtk_crtc_state->base.event;
-		spin_lock_irqrestore(&crtc->dev->event_lock, flags);
-
-		mtk_crtc_state->base.event = NULL;
-	}
-
-P.S.: I'd try that myself, but I can't seem to reproduce the issue.
-
-Regards,
-Angelo
-
+> diff --git a/drivers/thermal/mediatek/auxadc_thermal.c b/drivers/thermal/mediatek/auxadc_thermal.c
+> index 843214d30bd8..967b9a1aead4 100644
+> --- a/drivers/thermal/mediatek/auxadc_thermal.c
+> +++ b/drivers/thermal/mediatek/auxadc_thermal.c
+> @@ -690,6 +690,9 @@ static const struct mtk_thermal_data mt7986_thermal_data = {
+>  	.adcpnp = mt7986_adcpnp,
+>  	.sensor_mux_values = mt7986_mux_values,
+>  	.version = MTK_THERMAL_V3,
+> +	.apmixed_buffer_ctl_reg = APMIXED_SYS_TS_CON1,
+> +	.apmixed_buffer_ctl_mask = GENMASK(31, 6) | BIT(3),
+> +	.apmixed_buffer_ctl_set = BIT(0),
+>  };
+>  
+>  static bool mtk_thermal_temp_is_valid(int temp)
+> -- 
+> 2.34.1
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
