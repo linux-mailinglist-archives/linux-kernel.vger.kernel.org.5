@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C1779E713
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C96179E714
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 13:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbjIMLqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 07:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        id S238876AbjIMLrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 07:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjIMLqs (ORCPT
+        with ESMTP id S235749AbjIMLq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 07:46:48 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C691996
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:46:44 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso5630969a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:46:44 -0700 (PDT)
+        Wed, 13 Sep 2023 07:46:58 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD2319AD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:46:54 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c3bd829b86so25608545ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 04:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1694605604; x=1695210404; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7nITPxVDnC41/6mqrOtoGNiOb/yuzadv3G0v6KlC07k=;
-        b=e10G3CcsM+tsqLRo77+uBRn4SQGzB2pc+6TcoR3xqGDaXoxSJv+TPWWUKl8GeKsrhX
-         Bcbi+W8O7GMSFhrUnWPUpa4Ox+UPAX1m1K9E76o5J5pj/zDSH2LFoiOZy/X+rv7j3/xi
-         bFFgFqL6Lc9O3HdoJjgh9jp1/MGPa2Q/5b9TDJz9wI6KW2w43xVOcAAQYwOLnDvXBmKu
-         XqrfvTpx2jrCm2epmOdX3hkvScfc7dps96TkA/2IzaDsxA+AVe6axOfH4n0DZsFTDXgE
-         +hoKVGpL/z5n43MZSrG5+L8kqKacKsRr/iyf3ofJfWy7NbJszkrGmAGke2AtYtJm4SZ/
-         WajA==
+        d=gmail.com; s=20221208; t=1694605614; x=1695210414; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t8G7CBFVeKBYWJi3/h4tOeDyucqZ1aEGQkR5n5w67CE=;
+        b=etArX+lWomyHFetQeDw5gb58YLlU3OdF/Xpw1h8LwrgWiuboqrIzyNeQIeMVNuro4V
+         vVkd4rhtpGSmLAUcVmADTYQbbltVvbh4d8jDV8LJQAqxtbNb0pSKiSa2gi4VWdhN+ofC
+         tcRx7ej+k3ODMvoHJC1WGAl2lM9mxfKlWaDfDAYdTnreVMWXvAz659PLYHvhm66Au/Tg
+         LvgjNyoJ/ADoyZLwXv63wdpQwSm2Sp+IQPmeFHU7zdZ6kfENPdvHd1R/eemEIbEzGVAT
+         JfFNkL8/YCXBpY4X0tvP2D7Ix5m+SCO7081IgbypeaE6JsMy0yP33lyXhbmLxRzWKGH6
+         Boaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694605604; x=1695210404;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7nITPxVDnC41/6mqrOtoGNiOb/yuzadv3G0v6KlC07k=;
-        b=YtVXowapW/OeA/W3pox5mRUsPCnJVWGraD330aHpArmudzPzoZ6+pLK2SmWDAkPDX8
-         tj45k8raszzXkU3JaypBZB6fkwLCz/ThDiTFztqRAMnuCxnIbI7HIB5hIDvBYx1DsQfL
-         pNfQaCqQGzpU5NRWZzt1F1MliAbdnxxV33+s35gJlADpvTnuyf7HLy0zQZBRDGP08fRJ
-         gy6Yju5gCQeD1ysp6rjKvupEurNUx8gmMUnCuaAC/VGheDc/+HzlKAGduUv3RaXpkuuc
-         ydbvvW+1iLC0Ln1exyBWJ3gz+yCeLIzq6N0k8lM1Xv0nDq6MWd4icpBdE2b677eq9sgL
-         XEIg==
-X-Gm-Message-State: AOJu0YwzwLcgxSUI9WX4zrNYwFfarSsOU+iWBFlzZccjOZ9lI98sG1lM
-        Nuoqwj93Z2z4NgkCNWSvXpxeYg==
-X-Google-Smtp-Source: AGHT+IF5VM5hzkBEO13mv1Q/VU2jY3YJ+ax2K89xqvIKqKVeOhgZo4a5+WbdKRLdhkgdM/NeHs6qXg==
-X-Received: by 2002:a05:6a21:3e09:b0:14e:b4d5:782e with SMTP id bk9-20020a056a213e0900b0014eb4d5782emr2104693pzc.29.1694605603948;
-        Wed, 13 Sep 2023 04:46:43 -0700 (PDT)
-Received: from PF2LML5M-SMJ.bytedance.net ([220.243.131.6])
-        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001b5656b0bf9sm10246025plb.286.2023.09.13.04.46.36
+        d=1e100.net; s=20230601; t=1694605614; x=1695210414;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t8G7CBFVeKBYWJi3/h4tOeDyucqZ1aEGQkR5n5w67CE=;
+        b=kRc+Z7efzbDtSdg6r5ORukLIY6jQPaXXjMkPnG7yZHGoWkPycremienhywpDvvNM2Z
+         hlTk1NZFi/79FrFZysSGyhy1Iner8AaFW0taspOYcwzWB7Ge17Yf+EdU2d/K4BVRoEso
+         LE6bAbItOs5ut1gXedq5m+wT3oH/t2w7TW7Rka54BFjCFJ+kduQEc5AWGh5B4tMIq//h
+         YVGoZvPT9hI6W1lA2x38H4B86VyJQgtNCZXsXmUjAYS6C9VRaEaZ39oK6gxui3Ig04dO
+         OfFSTXtYy8M+heW+ODNJFKBnzn3+XV2Rk6XNo/DH0+1C88oU5oSSdeAUZKBrcrNRYH3y
+         ZKcg==
+X-Gm-Message-State: AOJu0YxCG6CcPpnKin66CA+5dwPUIt2VNUvGZds2LOivvPuF9Xw3tFFB
+        8FsvzoKoxkMUP7o75YxBqdvgI4FR2G8=
+X-Google-Smtp-Source: AGHT+IEuFaFLKsJwuEVKSOqqT8tBBTn1CG95mnBnNPn5WZFZi74cXWpTD+xF+pEYnzAuND8luPllBg==
+X-Received: by 2002:a17:902:ecc8:b0:1bf:22b7:86d with SMTP id a8-20020a170902ecc800b001bf22b7086dmr3001733plh.3.1694605613617;
+        Wed, 13 Sep 2023 04:46:53 -0700 (PDT)
+Received: from ubuntu.myguest.virtualbox.org ([106.205.101.29])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170902c3cc00b001b869410ed2sm10220458plj.72.2023.09.13.04.46.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 04:46:43 -0700 (PDT)
-From:   Jinhui Guo <guojinhui.liam@bytedance.com>
-To:     lkp@intel.com
-Cc:     gregkh@linuxfoundation.org, guojinhui.liam@bytedance.com,
-        lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        rafael@kernel.org
-Subject: Re: [PATCH] driver core: platform: set numa_node before platform_add_device()
-Date:   Wed, 13 Sep 2023 19:46:31 +0800
-Message-Id: <20230913114631.2966-1-guojinhui.liam@bytedance.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <202309131848.CgiiHpZu-lkp@intel.com>
-References: <202309131848.CgiiHpZu-lkp@intel.com>
+        Wed, 13 Sep 2023 04:46:53 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 17:16:38 +0530
+From:   Pavan Bobba <opensource206@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] staging: vt6655: Type encoding info dropped from
+ array name "byVT3253B0_"
+Message-ID: <ZQGhHj0q5ISLkfzN@ubuntu.myguest.virtualbox.org>
+References: <ZP8Iu+Hh8YD+VhYH@ubuntu.myguest.virtualbox.org>
+ <2023091210-wok-laziness-b64e@gregkh>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023091210-wok-laziness-b64e@gregkh>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi guojinhui.liam,
+On Tue, Sep 12, 2023 at 03:58:32PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Sep 11, 2023 at 06:01:55PM +0530, Pavan Bobba wrote:
+> > Array names starting with "byVT3253B0_" updated like below:
+> > 
+> > a.type encoding info dropped from names
+> > b.camelcase names replaced by snakecase
+> > 
+> > Issue found by checkpatch
+> > 
+> > Signed-off-by: Pavan Bobba <opensource206@gmail.com>
+> > ---
+> > 
+> >  v1 -> v2: Name of the tool added in the body of explanation,
+> >            which found this issue
+> > 
+> >  v2 -> v3: subject modified to more specific detail
+> > 
+> >  v3 -> v4: changelog modified as per patch submission guidelines
+> > 
 > 
-> kernel test robot noticed the following build errors:
+> I see 2 v4 patches on the mailing list, sent on different days.  Which
+> one is correct?
 > 
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v6.6-rc1 next-20230913]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> I'll drop both and wait for a v5.
 > 
-> url:    https://github.com/intel-lab-lkp/linux/commits/guojinhui-liam/driver-core-platform-set-numa_node-before-platform_add_device/20230912-151119
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/20230912070900.1862-1-guojinhui.liam%40bytedance.com
-> patch subject: [PATCH] driver core: platform: set numa_node before platform_add_device()
-> config: um-allyesconfig (https://download.01.org/0day-ci/archive/20230913/202309131848.CgiiHpZu-lkp@intel.com/config)
-> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131848.CgiiHpZu-lkp@intel.com/reproduce)
+> thanks,
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202309131848.CgiiHpZu-lkp@intel.com/
-> ...
+> greg k-h
 
-Is there anyone known how to stop this test for my first patch? I have sent a new one to review, which fixes the compile bug.
+apologies for the confusion greg. second v4 patch i sent since 
+in first v4 patch mail , you are not there in mail receipents.
+
+anyway, i will send v5 to avoid confusion
 
 thanks,
-
-Jinhui Guo
+pavan
