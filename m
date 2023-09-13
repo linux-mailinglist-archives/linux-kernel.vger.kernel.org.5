@@ -2,481 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826F379EDB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E976979ED92
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbjIMPwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S229882AbjIMPqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbjIMPwg (ORCPT
+        with ESMTP id S229655AbjIMPqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:52:36 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D316E54;
-        Wed, 13 Sep 2023 08:52:32 -0700 (PDT)
-Received: from mercury (dyndsl-091-248-208-175.ewe-ip-backbone.de [91.248.208.175])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 02456660733C;
-        Wed, 13 Sep 2023 16:52:30 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1694620350;
-        bh=209wXsxSZBrcXc1sF/cqq9MwjzpBMifpYz5borqlIIQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VoISHmQU2fkCjS9EiyA3Iy4z8b3lfiZypGySs1VuXDmcuWHPaGZTqUzyRVSMgdVlo
-         EuHslf5fSbR9SgzOGjGUdauhMmDp/j/8vmfJvI/BXKUHkspMTr3nj+gtSHNDQQZkbo
-         EyLJ5YHubJ3/CHByYdvPJL3+bZzdOgEuQbz7opOtXhdnpAmXscgwoYjz1tDVFfLXA1
-         BwtVxxf3s6kc4dzVnfRs6Rv6LEjOSprfbPEsafu8JXH0aPoxwLkzqUFu5XJ1LFKsso
-         mSh+gTBLd11Cwqy+c70LQtyfl50Aq+7BaJ0ZM20I5w1t/nSUUtXUBGW76Q1dp2GqY0
-         wp4NQMM2klFkQ==
-Received: by mercury (Postfix, from userid 1000)
-        id AF85F106098A; Wed, 13 Sep 2023 17:45:52 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 17:45:52 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH RESEND v2 3/3] power: supply: Introduce MM8013 fuel gauge
- driver
-Message-ID: <20230913154552.okinfq6gdxf2d7ab@mercury.elektranox.org>
-References: <20230621-topic-mm8013-v2-0-9f1b41f4bc06@linaro.org>
- <20230621-topic-mm8013-v2-3-9f1b41f4bc06@linaro.org>
+        Wed, 13 Sep 2023 11:46:04 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA109CE
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:45:59 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ad810be221so290702266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694619958; x=1695224758; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yWMmHby+0Ho6yfR2tcaVbJfSP8pJ0Ogv81Df7xoDU78=;
+        b=S6V0qjdhXqzXmU7lSA6fFc5Zz7QZLykBGd5c91lcWcw7eicz4QLGCUtFDiC4qb3qgF
+         L/559aDHwxQ40wMuBReylB7me+apQkS8fFoZwCN3nO0S4YI6KfrhQnhJGRK8sS0JOO2n
+         rDE5pNSksPVkQouhcKMtW6J82AZF/BDa+f9QE+ChTeGBlomZ5x51f9sYL1IutaAet2Gy
+         fQLAb4z7YWCpn4hOE2bgYpWrA2m9MjLH8lPHOwsG9GYxBWhjz5aM8ij92+Z1SCBaVLXa
+         vSSCJ867eJBpyFFJ0U9atMZAaWHtTGY6lgnh6o55xq3hVutvH0pMmNmkKRG8ak6AryxL
+         Er5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694619958; x=1695224758;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yWMmHby+0Ho6yfR2tcaVbJfSP8pJ0Ogv81Df7xoDU78=;
+        b=DSrjuOfrFwp1ICfgo9ezmjRQe3h3ezbQqV44aWbvCwVMZw98U622KPjeUuCKg0LdWP
+         DQtAV82SBoPBRUZ9l2m/pCxHrvTU84ULhvw+wD/+Q5PLiAHe+wNZVvIqAP2Jouq9G5cH
+         aRq5P92xy77uyB7WAXlL6ZJcJnhjKn3qv/b5/O7w34mlKq7GNRAghEJ+5H/3TERbphwu
+         wWEP4UOY01goZFZ2j7Afe/v3j5YzxhH74S+k6CL23u51Z+FHV70LQBLuPL/sA8Lfz1VI
+         gdTJpkyFNBZu3jlTVKJeJ29yz6NyAcebkE+rDbEiXl1YZOO2Wmfwd8CBBRAPXiqxaMxJ
+         CrdQ==
+X-Gm-Message-State: AOJu0YxLpV1FmAXSTZxJXBtUCDEYUf42ec+46PgNVix2B1YjB9MXbz8V
+        ck22OlssR+UU7AF5lDt7+nDLLw==
+X-Google-Smtp-Source: AGHT+IG+j7fagSsVnPo1xWjGNdW2WcBfrquWrkAv0F12qO6ETU4PsXAeD0r9nP+0+/bEg76v7UR5Vg==
+X-Received: by 2002:a17:906:2091:b0:99d:dc0b:a89a with SMTP id 17-20020a170906209100b0099ddc0ba89amr2762962ejq.63.1694619958378;
+        Wed, 13 Sep 2023 08:45:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id z24-20020a170906075800b0099b7276235esm8557639ejb.93.2023.09.13.08.45.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 08:45:57 -0700 (PDT)
+Message-ID: <588db15e-62f1-ca9e-211c-21d58e15bd73@linaro.org>
+Date:   Wed, 13 Sep 2023 17:45:54 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3m4hn2luzy5bgxji"
-Content-Disposition: inline
-In-Reply-To: <20230621-topic-mm8013-v2-3-9f1b41f4bc06@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH net-next 0/6] Add support for OPEN Alliance 10BASE-T1x
+ MACPHY Serial Interface
+Content-Language: en-US
+To:     Parthiban.Veerasooran@microchip.com
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Horatiu.Vultur@microchip.com, Woojung.Huh@microchip.com,
+        Nicolas.Ferre@microchip.com, UNGLinuxDriver@microchip.com,
+        Thorsten.Kummermehr@microchip.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, corbet@lwn.net, Steen.Hegelund@microchip.com,
+        rdunlap@infradead.org, horms@kernel.org, casper.casan@gmail.com,
+        andrew@lunn.ch
+References: <20230908142919.14849-1-Parthiban.Veerasooran@microchip.com>
+ <eef69aa5-73c2-9789-9f6d-c3300553c44d@linaro.org>
+ <fab8908e-ce74-eff0-8e67-6259b3ad5e1e@microchip.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <fab8908e-ce74-eff0-8e67-6259b3ad5e1e@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/09/2023 15:26, Parthiban.Veerasooran@microchip.com wrote:
+> Hi Krzysztof,
+> 
+> On 10/09/23 4:25 pm, Krzysztof Kozlowski wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>>
+>> On 08/09/2023 16:29, Parthiban Veerasooran wrote:
+>>> This patch series contain the below updates,
+>>> - Adds support for OPEN Alliance 10BASE-T1x MACPHY Serial Interface in the
+>>>    net/ethernet/oa_tc6.c.
+>>> - Adds driver support for Microchip LAN8650/1 Rev.B0 10BASE-T1S MACPHY
+>>>    Ethernet driver in the net/ethernet/microchip/lan865x.c.
+>>
+>> And why is this RFC? Do you mean by that it is buggy and not finished,
+>> so we should not review?
+> 
+> No, this is not a buggy/unfinished patch series. I have added RFC as 
 
---3m4hn2luzy5bgxji
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't understand how people name their stuff RFC. Some send totally
+buggy and untested bindings under RFC and, after receiving feedback,
+respond surprised - it was just RFC!
 
-Hi,
+Other send RFC and expect review.
 
-On Wed, Aug 23, 2023 at 04:36:15PM +0200, Konrad Dybcio wrote:
-> Add a driver for the Mitsumi MM8013 fuel gauge. The driver is a vastly
-> cleaned up and improved version of the one that shipped in some obscure
-> Lenovo downstream kernel [1], with some register definitions borrowed from
-> ChromeOS EC platform code [2].
->=20
-> [1] https://github.com/adazem009/kernel_lenovo_bengal/commit/b6b346427a87=
-1715709bd22aae449b9383f3b66b
-> [2] https://chromium.googlesource.com/chromiumos/platform/ec/+/master/dri=
-ver/battery/mm8013.h
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  MAINTAINERS                   |   5 +
->  drivers/power/supply/Kconfig  |   9 ++
->  drivers/power/supply/Makefile |   1 +
->  drivers/power/supply/mm8013.c | 283 ++++++++++++++++++++++++++++++++++++=
-++++++
->  4 files changed, 298 insertions(+)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 5ce188b58eaa..ba5f075a2ca8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14296,6 +14296,11 @@ W:	https://linuxtv.org
->  T:	git git://linuxtv.org/media_tree.git
->  F:	drivers/media/radio/radio-miropcm20*
-> =20
-> +MITSUMI MM8013 FG DRIVER
-> +M:	Konrad Dybcio <konradybcio@kernel.org>
-> +F:	Documentation/devicetree/bindings/power/supply/mitsumi,mm8013.yaml
-> +F:	drivers/power/supply/mm8013.c
-> +
->  MMP SUPPORT
->  R:	Lubomir Rintel <lkundrak@v3.sk>
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-> index 663a1c423806..c19e8287d80f 100644
-> --- a/drivers/power/supply/Kconfig
-> +++ b/drivers/power/supply/Kconfig
-> @@ -951,4 +951,13 @@ config CHARGER_QCOM_SMB2
->  	  adds support for the SMB2 switch mode battery charger found
->  	  in PMI8998 and related PMICs.
-> =20
-> +config FUEL_GAUGE_MM8013
-> +	tristate "Mitsumi MM8013 fuel gauge driver"
-> +	depends on I2C
-> +	help
-> +	  Say Y here to enable the Mitsumi MM8013 fuel gauge driver.
-> +	  It enables the monitoring of many battery parameters, including
-> +	  the state of charge, temperature, cycle count, actual and design
-> +	  capacity, etc.
-> +
->  endif # POWER_SUPPLY
-> diff --git a/drivers/power/supply/Makefile b/drivers/power/supply/Makefile
-> index a8a9fa6de1e9..ba2c41f060be 100644
-> --- a/drivers/power/supply/Makefile
-> +++ b/drivers/power/supply/Makefile
-> @@ -111,3 +111,4 @@ obj-$(CONFIG_BATTERY_SURFACE)	+=3D surface_battery.o
->  obj-$(CONFIG_CHARGER_SURFACE)	+=3D surface_charger.o
->  obj-$(CONFIG_BATTERY_UG3105)	+=3D ug3105_battery.o
->  obj-$(CONFIG_CHARGER_QCOM_SMB2)	+=3D qcom_pmi8998_charger.o
-> +obj-$(CONFIG_FUEL_GAUGE_MM8013)	+=3D mm8013.o
-> diff --git a/drivers/power/supply/mm8013.c b/drivers/power/supply/mm8013.c
-> new file mode 100644
-> index 000000000000..ce20c6078116
-> --- /dev/null
-> +++ b/drivers/power/supply/mm8013.c
-> @@ -0,0 +1,283 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2016-2019 The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023, Linaro Limited
-> + */
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/power_supply.h>
-> +
-> +#define REG_BATID			0x00 /* This one is very unclear */
-> + #define BATID_101			0x0101 /* 107kOhm */
-> + #define BATID_102			0x0102 /* 10kOhm */
-> +#define REG_TEMPERATURE			0x06
-> +#define REG_VOLTAGE			0x08
-> +#define REG_FLAGS			0x0a
-> + #define MM8013_FLAG_OTC		BIT(15)
-> + #define MM8013_FLAG_OTD		BIT(14)
-> + #define MM8013_FLAG_BATHI		BIT(13)
-> + #define MM8013_FLAG_FC			BIT(9)
-> + #define MM8013_FLAG_CHG		BIT(8)
-> + #define MM8013_FLAG_DSG		BIT(0)
-> +#define REG_FULL_CHARGE_CAPACITY	0x0e
-> +#define REG_AVERAGE_CURRENT		0x14
-> +#define REG_AVERAGE_TIME_TO_EMPTY	0x16
-> +#define REG_AVERAGE_TIME_TO_FULL	0x18
-> +#define REG_CYCLE_COUNT			0x2a
-> +#define REG_STATE_OF_CHARGE		0x2c
-> +#define REG_DESIGN_CAPACITY		0x3c
-> +/* TODO: 0x62-0x68 seem to contain 'MM8013C' in a length-prefixed, non-t=
-erminated string */
-> +
-> +#define DECIKELVIN_TO_DECIDEGC(t)	(t - 2731)
-> +
-> +struct mm8013_chip {
-> +	struct i2c_client *client;
-> +};
-> +
-> +static int mm8013_write_reg(struct i2c_client *client, u8 reg, u16 value)
-> +{
-> +	int ret;
-> +
-> +	ret =3D i2c_smbus_write_word_data(client, reg, value);
-> +	if (ret < 0)
-> +		dev_err(&client->dev, "%s: err %d\n", __func__, ret);
-> +
-> +	usleep_range(4000, 5000);
-> +	return ret;
-> +}
-> +
-> +static int mm8013_read_reg(struct i2c_client *client, u8 reg)
-> +{
-> +	int ret;
-> +
-> +	ret =3D i2c_smbus_read_word_data(client, reg);
-> +	if (ret < 0)
-> +		dev_err(&client->dev, "%s: err %d\n", __func__, ret);
-> +
-> +	usleep_range(4000, 5000);
-> +	return ret;
-> +}
+Just call it a PATCH. PATCH is Requesting for Comments.
 
-Please use regmap.
+Best regards,
+Krzysztof
 
-> +static int mm8013_checkdevice(struct mm8013_chip *chip)
-> +{
-> +	int battery_id, ret;
-> +
-> +	ret =3D mm8013_write_reg(chip->client, REG_BATID, 0x0008);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret =3D mm8013_read_reg(chip->client, REG_BATID);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret =3D=3D BATID_102)
-> +		battery_id =3D 2;
-> +	else if (ret =3D=3D BATID_101)
-> +		battery_id =3D 1;
-> +	else
-> +		return -EINVAL;
-> +
-> +	dev_dbg(&chip->client->dev, "battery_id: %d\n", battery_id);
-> +
-> +	return 0;
-> +}
-> +
-> +static enum power_supply_property mm8013_battery_props[] =3D {
-> +	POWER_SUPPLY_PROP_CAPACITY,
-> +	POWER_SUPPLY_PROP_CHARGE_FULL,
-> +	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> +	POWER_SUPPLY_PROP_CURRENT_NOW,
-> +	POWER_SUPPLY_PROP_CYCLE_COUNT,
-> +	POWER_SUPPLY_PROP_HEALTH,
-> +	POWER_SUPPLY_PROP_PRESENT,
-> +	POWER_SUPPLY_PROP_STATUS,
-> +	POWER_SUPPLY_PROP_TEMP,
-> +	POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG,
-> +	POWER_SUPPLY_PROP_TIME_TO_FULL_AVG,
-> +	POWER_SUPPLY_PROP_VOLTAGE_NOW,
-> +};
-> +
-> +static int mm8013_get_property(struct power_supply *psy,
-> +			       enum power_supply_property psp,
-> +			       union power_supply_propval *val)
-> +{
-> +	struct mm8013_chip *chip =3D psy->drv_data;
-> +	struct i2c_client *client =3D chip->client;
-> +	int ret =3D 0;
-> +
-> +	switch (psp) {
-> +	case POWER_SUPPLY_PROP_CAPACITY:
-
-this is in %, while the next two are in uAh. So the fuel gauge does
-not provide the current capacity in uAh
-(POWER_SUPPLY_PROP_CHARGE_NOW)?
-
-> +		ret =3D mm8013_read_reg(client, REG_STATE_OF_CHARGE);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_CHARGE_FULL:
-> +		ret =3D mm8013_read_reg(client, REG_FULL_CHARGE_CAPACITY);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-> +		ret =3D mm8013_read_reg(client, REG_DESIGN_CAPACITY);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_CURRENT_NOW:
-> +		ret =3D mm8013_read_reg(client, REG_AVERAGE_CURRENT);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (ret > S16_MAX)
-> +			val->intval -=3D (1 << 16);
-> +		else
-> +			val->intval =3D ret;
-
-this is just 'val->intval =3D (s16) ret;'.
-
-> +		val->intval *=3D -1000;
-
-and this seems to be the only property, that properly scales its
-values, assuming the hardware reports data in mA.
-
-> +		break;
-> +	case POWER_SUPPLY_PROP_CYCLE_COUNT:
-> +		ret =3D mm8013_read_reg(client, REG_CYCLE_COUNT);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_HEALTH:
-> +		ret =3D mm8013_read_reg(client, REG_FLAGS);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (ret & MM8013_FLAG_BATHI)
-> +			val->intval =3D POWER_SUPPLY_HEALTH_OVERVOLTAGE;
-> +		else if (ret & (MM8013_FLAG_OTD | MM8013_FLAG_OTC))
-> +			val->intval =3D POWER_SUPPLY_HEALTH_OVERHEAT;
-> +		else
-> +			val->intval =3D POWER_SUPPLY_HEALTH_GOOD;
-> +		break;
-> +	case POWER_SUPPLY_PROP_PRESENT:
-> +		val->intval =3D mm8013_read_reg(client, REG_TEMPERATURE) > 0;
-> +		break;
-> +	case POWER_SUPPLY_PROP_STATUS:
-> +		ret =3D mm8013_read_reg(client, REG_FLAGS);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		if (ret & MM8013_FLAG_DSG)
-> +			val->intval =3D POWER_SUPPLY_STATUS_DISCHARGING;
-> +		else if (ret & MM8013_FLAG_CHG)
-> +			val->intval =3D POWER_SUPPLY_STATUS_CHARGING;
-> +		else if (ret & MM8013_FLAG_FC)
-> +			val->intval =3D POWER_SUPPLY_STATUS_FULL;
-> +		else
-> +			val->intval =3D POWER_SUPPLY_STATUS_UNKNOWN;
-> +		break;
-> +	case POWER_SUPPLY_PROP_TEMP:
-> +		ret =3D mm8013_read_reg(client, REG_TEMPERATURE);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D DECIKELVIN_TO_DECIDEGC(ret);
-> +		break;
-> +	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG:
-> +		ret =3D mm8013_read_reg(client, REG_AVERAGE_TIME_TO_EMPTY);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		/* The estimation is not yet ready */
-> +		if (ret =3D=3D U16_MAX)
-> +			return -ENODATA;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_TIME_TO_FULL_AVG:
-> +		ret =3D mm8013_read_reg(client, REG_AVERAGE_TIME_TO_FULL);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		/* The estimation is not yet ready */
-> +		if (ret =3D=3D U16_MAX)
-> +			return -ENODATA;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-
-that's in **micro** volts
-
-> +		ret =3D mm8013_read_reg(client, REG_VOLTAGE);
-
-this effectively does i2c_smbus_read_word_data() and thus the
-maximum is is 65536. 65536uV =3D 65mV. I have serious doubts, that
-this code does what you want. The same is true for a couple of
-the other properties.
-
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		val->intval =3D ret;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct power_supply_desc mm8013_desc =3D {
-> +	.name			=3D "mm8013",
-> +	.type			=3D POWER_SUPPLY_TYPE_BATTERY,
-> +	.properties		=3D mm8013_battery_props,
-> +	.num_properties		=3D ARRAY_SIZE(mm8013_battery_props),
-> +	.get_property		=3D mm8013_get_property,
-> +};
-> +
-> +static int mm8013_probe(struct i2c_client *client)
-> +{
-> +	struct power_supply_config psy_cfg =3D {};
-> +	struct device *dev =3D &client->dev;
-> +	struct power_supply *psy;
-> +	struct mm8013_chip *chip;
-> +	int ret =3D 0;
-> +
-> +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WORD_DATA))
-> +		return dev_err_probe(dev, -EIO,
-> +				     "I2C_FUNC_SMBUS_WORD_DATA not supported\n");
-> +
-> +	chip =3D devm_kzalloc(dev, sizeof(struct mm8013_chip), GFP_KERNEL);
-> +	if (!chip)
-> +		return -ENOMEM;
-> +
-> +	chip->client =3D client;
-> +
-> +	ret =3D mm8013_checkdevice(chip);
-> +	if (ret)
-> +		return dev_err_probe(dev, -ENODEV, "MM8013 not found\n");
-
-dev_err_probe(dev, ret, ... ?
-
-> +
-> +	psy_cfg.drv_data =3D chip;
-> +	psy_cfg.of_node =3D dev->of_node;
-> +
-> +	psy =3D devm_power_supply_register(dev, &mm8013_desc, &psy_cfg);
-> +	if (IS_ERR(psy))
-> +		return PTR_ERR(psy);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id mm8013_id_table[] =3D {
-> +	{ "mm8013", 0 },
-> +	{},
-
-please remove the last ,
-
-> +};
-> +MODULE_DEVICE_TABLE(i2c, mm8013_id_table);
-> +
-> +static const struct of_device_id mm8013_match_table[] =3D {
-> +	{ .compatible =3D "mitsumi,mm8013" },
-> +	{ },
-
-extra space in the Terminator, also terminator should not have a
-comma at the end.
-
-> +};
-> +
-> +static struct i2c_driver mm8013_i2c_driver =3D {
-> +	.probe =3D mm8013_probe,
-> +	.id_table =3D mm8013_id_table,
-> +	.driver =3D {
-> +		.name =3D "mm8013",
-> +		.of_match_table =3D mm8013_match_table,
-> +	},
-> +};
-> +module_i2c_driver(mm8013_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("MM8013 fuel gauge driver");
-> +MODULE_LICENSE("GPL");
-
-With the next submission please include a dump of the uevent
-in sysfs in the cover letter or below the fold, so that its
-easy to validty check if the reported values look sensible.
-
-Thanks and sorry for the slow processing,
-
--- Sebastian
-
---3m4hn2luzy5bgxji
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUB2SsACgkQ2O7X88g7
-+poocg//YMPacx5c1reHRCcJV3M1O7h4xJzUg3r1VRpu5fdfTngFU2/eOMD932mv
-YEQ0GUKr2qaiF27bsJykZa3fLIlRCwkcEDzH/TZkZMw6Em2MA5swHsABA5ouCBWJ
-BQFTeidpmSDtZsV4Vt0zuKQVuDnvIa2krQXIuZT2EBt7MnX8Lpc/I/pd71CDklp9
-xCF5R3ZHVDOBk2pODprv2/H+QQIMdBN+Dx1y5CTNX4bJCb2hi4j2XGucqnG9XQ2N
-L0bqsH47x7PjJP/jLPrmGapdY5zvinyyr/SaQVu4Q7vYXvXHVsRywiIOF7OW8dsL
-W66gH/cEvbAQKl2VeeJMXAJAjkxWmMczF11JPiNyrpu6dLeCQ6VrgBGCrsgNkzBh
-FLQ9eLDofY1wSN1Mz1GwrlwzPRn2rdRyLF3RJLfknhyCtDoRUPOdwNrmlAO8EtqM
-R3keetl7XnQRxkUZa6AqXdStazR2PklTwcQKP9tlg8BE3Y6VqcxL+MlAzrprkE9U
-LCiSNV/tetwA3suxj2s6idJR1tf4YkCrJaYDf/fSJDnerFDJKIVkXitr0VZ/IHbL
-yRxjKmvitJi4WgVWktvzeiWnTiHFKvSN3k0mzTRHzYHHZQ5kZfhZZrE8J0GP5zUF
-mnz6YJ8ZN+LfbWfjXztkhzaIJ0VqHf/gUQaYKZ7XAph2nFAiaxg=
-=mWEr
------END PGP SIGNATURE-----
-
---3m4hn2luzy5bgxji--
