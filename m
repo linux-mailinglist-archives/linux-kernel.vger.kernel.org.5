@@ -2,110 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2347579ED12
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DB579ED15
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbjIMPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
+        id S229584AbjIMPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjIMPdK (ORCPT
+        with ESMTP id S229583AbjIMPdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:33:10 -0400
+        Wed, 13 Sep 2023 11:33:16 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06FB93;
-        Wed, 13 Sep 2023 08:33:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDB9CC433C8;
-        Wed, 13 Sep 2023 15:33:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8927E3;
+        Wed, 13 Sep 2023 08:33:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6B0C433BC;
+        Wed, 13 Sep 2023 15:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694619186;
-        bh=w4eOXdxxEVpvJRthlhaH92nifcMz3GmSivudS7jagvk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CSdc05swdFI+Usg6TPK+loCrKdjcCDoD1l3eV91+bwpg9zqRnvz5+aPx2ibFa2Fo+
-         uRXQRALXPUo+Ctds8aJoAih2KTot+U3jqSStD6Ik+9HHGu73OA7p0UXd476CdW2ebO
-         sq7OXF18Qa4JIGGYdSmXiZeHIrRv2Lp/1p4E4FTtArHa4yvdivVEZsS3XuE3c8a7tK
-         UkuqyAMJOc7oxW6WwGVXFKy+fnXsrgER+81eHlo5tvcZ1abF082K1Wahmkkkt4hXM+
-         Ixh57M0SW2OStwN98jdOiHFiTDnEKlVpltLqON9IY6n7Aln2jSEuwLkRHH8rDaoxIG
-         hxNzcOcJ7MpmA==
-Date:   Wed, 13 Sep 2023 16:33:00 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Takashi Iwai <tiwai@suse.com>, kernel@collabora.com,
-        Jaroslav Kysela <perex@perex.cz>,
-        Shuah Khan <shuah@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] kselftest/alsa: Mark test plan as skipped when no cards
- are available
-Message-ID: <ae381a70-3236-4792-9c3e-19d67a4377a1@sirena.org.uk>
-References: <20230908181242.95714-1-nfraprado@collabora.com>
- <0fa0901e-d271-438d-bc2b-11399ad3b07c@sirena.org.uk>
- <868a8f08-ba39-4550-8e7b-0572ea03c4e7@notapiano>
- <ZP8kLM5ln2YBCHap@finisterre.sirena.org.uk>
- <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HVlTO/OC556kjwhz"
-Content-Disposition: inline
-In-Reply-To: <a12b1144-bea0-4bd7-a429-da800dc8f568@notapiano>
-X-Cookie: Use extra care when cleaning on stairs.
+        s=k20201202; t=1694619192;
+        bh=wVm1k0TOJbmKVKWtuApWJmUkPsOLAVzqcEkW45pG0t8=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=UHmcKKx5qUnYnb3/0P1QEmNeWfQB7o945kzpJpRvn/Z92HHaHAUML/t2cTbqRoidQ
+         E2pLQDQJIagjk3Q0tdjmgeQArmROhqE4QgDVcP2tBGPi4Y7UI4xHsZ6ALXSG/28bvJ
+         tktQcKyEvje4mTuClGdKF/gQsXLPD2rZKXwt9PHsITYO78CNA0AUnpwqQ73L7a6/eL
+         O5RwXhxJgwOAnMPXULx9759yl+CSF5PLCblaAj0vx+J1o6oWDgsJRjgLTIyUKKxL3i
+         Uh/3aaoXHCiYixp2HWNgAHdoGOC9O3+vHCxrNKtcQ+0V+koodiJ6WNknO4l+vMM1tO
+         eWbZHrXoeDDYQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 13 Sep 2023 18:33:07 +0300
+Message-Id: <CVHWD79XTNDZ.11P43GDNRS5U0@suppilovahvero>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v4 11/18] x86/sgx: store unreclaimable pages in LRU
+ lists
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
+ <20230913040635.28815-12-haitao.huang@linux.intel.com>
+In-Reply-To: <20230913040635.28815-12-haitao.huang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>
+> When an OOM event occurs, all pages associated with an enclave will need
+> to be freed, including pages that are not currently tracked by the
+> cgroup LRU lists.
+>
+> Add a new "unreclaimable" list to the sgx_epc_lru_lists struct and
+> update the "sgx_record/drop_epc_pages()" functions for adding/removing
+> VA and SECS pages to/from this "unreclaimable" list.
+>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> ---
+> V4:
+> - Updates for patch reordering.
+> - Revised commit messages.
+> - Revised comments for the list.
+>
+> V3:
+> - Removed tracking virtual EPC pages in unreclaimable list as host
+> kernel does not reclaim them. The EPC cgroups implemented later only
+> blocks allocating for a guest if the limit is reached by returning
+> -ENOMEM from sgx_alloc_epc_page() called by virt_epc, and does nothing
+> else. Therefore, no need to track those in LRU lists.
+> ---
+>  arch/x86/kernel/cpu/sgx/encl.c  | 2 ++
+>  arch/x86/kernel/cpu/sgx/ioctl.c | 1 +
+>  arch/x86/kernel/cpu/sgx/main.c  | 3 +++
+>  arch/x86/kernel/cpu/sgx/sgx.h   | 8 +++++++-
+>  4 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/enc=
+l.c
+> index 91f83a5e543d..bf0ac3677ca8 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -748,6 +748,7 @@ void sgx_encl_release(struct kref *ref)
+>  	xa_destroy(&encl->page_array);
+> =20
+>  	if (!encl->secs_child_cnt && encl->secs.epc_page) {
+> +		sgx_drop_epc_page(encl->secs.epc_page);
+>  		sgx_encl_free_epc_page(encl->secs.epc_page);
+>  		encl->secs.epc_page =3D NULL;
+>  	}
+> @@ -756,6 +757,7 @@ void sgx_encl_release(struct kref *ref)
+>  		va_page =3D list_first_entry(&encl->va_pages, struct sgx_va_page,
+>  					   list);
+>  		list_del(&va_page->list);
+> +		sgx_drop_epc_page(va_page->epc_page);
+>  		sgx_encl_free_epc_page(va_page->epc_page);
+>  		kfree(va_page);
+>  	}
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/io=
+ctl.c
+> index 95ec20a6992f..8c23bb524674 100644
+> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -48,6 +48,7 @@ void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_=
+va_page *va_page)
+>  	encl->page_cnt--;
+> =20
+>  	if (va_page) {
+> +		sgx_drop_epc_page(va_page->epc_page);
+>  		sgx_encl_free_epc_page(va_page->epc_page);
+>  		list_del(&va_page->list);
+>  		kfree(va_page);
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index ed813288af44..f3a3ed894616 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -268,6 +268,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *=
+epc_page,
+>  			goto out;
+> =20
+>  		sgx_encl_ewb(encl->secs.epc_page, &secs_backing);
+> +		sgx_drop_epc_page(encl->secs.epc_page);
+>  		sgx_encl_free_epc_page(encl->secs.epc_page);
+>  		encl->secs.epc_page =3D NULL;
+> =20
+> @@ -510,6 +511,8 @@ void sgx_record_epc_page(struct sgx_epc_page *page, u=
+nsigned long flags)
+>  	page->flags |=3D flags;
+>  	if (sgx_epc_page_reclaimable(flags))
+>  		list_add_tail(&page->list, &sgx_global_lru.reclaimable);
+> +	else
+> +		list_add_tail(&page->list, &sgx_global_lru.unreclaimable);
+>  	spin_unlock(&sgx_global_lru.lock);
+>  }
+> =20
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index e06b4aadb6a1..e210af77f0cf 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -150,17 +150,23 @@ static inline void *sgx_get_epc_virt_addr(struct sg=
+x_epc_page *page)
+>  }
+> =20
+>  /*
+> - * Tracks EPC pages reclaimable by the reclaimer (ksgxd).
+> + * Contains EPC pages tracked by the reclaimer (ksgxd).
+>   */
+>  struct sgx_epc_lru_lists {
+>  	spinlock_t lock;
+>  	struct list_head reclaimable;
+> +	/*
+> +	 * Tracks SECS, VA pages,etc., pages only freeable after all its
+> +	 * dependent reclaimables are freed.
+> +	 */
+> +	struct list_head unreclaimable;
+>  };
+> =20
+>  static inline void sgx_lru_init(struct sgx_epc_lru_lists *lrus)
+>  {
+>  	spin_lock_init(&lrus->lock);
+>  	INIT_LIST_HEAD(&lrus->reclaimable);
+> +	INIT_LIST_HEAD(&lrus->unreclaimable);
+>  }
+> =20
+>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+> --=20
+> 2.25.1
 
---HVlTO/OC556kjwhz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LGTM
 
-On Tue, Sep 12, 2023 at 03:23:34PM -0400, N=EDcolas F. R. A. Prado wrote:
-> On Mon, Sep 11, 2023 at 03:29:00PM +0100, Mark Brown wrote:
-
-> > So, I would interpret the overall result for the suite as being "No
-> > errors were found in any of the cards discovered" if there is no
-> > configuration file specified which enumerates the set of cards that are
-> > expected (if there is a config file that's a different matter, we know
-> > what we're expecting).  I'm not sure that the different behaviour for 0
-> > cards is super useful.
-
-> Right... So what we want to be doing is adding a config file for every pl=
-atform
-> defining the card(s) and PCMs expected, so that when they're missing a te=
-st
-> failure will be triggered which is even more helpful. Although I've notic=
-ed that
-> only missing PCMs are detected currently, but I imagine it should be poss=
-ible to
-> to extend the code to detect missing cards as well.
-
-It seems like a reasonable approach for systems that do want to have
-this confirmation.
-
-> I take it the intention is to expand the conf.d directory with configs fo=
-r all
-> platforms currently being tested then? There's only one example file ther=
-e so I
-> wasn't sure.
-
-I think it's a question for people working on individual systems if they
-want that coverage, for example I don't really care for the things in my
-CI because I have higher level stuff which will notice any newly missing
-tests so I don't need the test to do anything here.
-
---HVlTO/OC556kjwhz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUB1isACgkQJNaLcl1U
-h9B5dgf/cLXB70t6XRr3Q6R/yRGtT8S2hofbEAcc5/fjzyJfBGpuC9e2QDtn43LX
-nz2xx0PD72h2gg4yD3s80zc4wiGHOSaPAeDVCS/7VmxA37k18yP7pinIl/0LM+3s
-6vAOZvpQCRqNjIWJo9F/2/FfUVTKkYZ6rhXPfsTLG2de4U2oTe3zi5qc5/4hBpTh
-PteqY+OK6m6/27zm3uva3vJml6vnpeofBwo+IHp6+RYLMcF1xWw3rJFv4VlOSGOf
-GgbfY5xaOqnTHaCGVGRqQhQXRly3/iKRqv+goyPm/s/0PFgQfzIWtot9O0+0OIum
-4v44q+DWxTLjtgGlJh0VINsZdWiBFw==
-=ivXT
------END PGP SIGNATURE-----
-
---HVlTO/OC556kjwhz--
+BR, Jarkko
