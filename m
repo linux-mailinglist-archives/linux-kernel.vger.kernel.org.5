@@ -2,115 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2D279DEB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1749279DE96
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbjIMDkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 23:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S238220AbjIMDYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 23:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjIMDkR (ORCPT
+        with ESMTP id S234151AbjIMDYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 23:40:17 -0400
+        Tue, 12 Sep 2023 23:24:32 -0400
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C40C171E;
-        Tue, 12 Sep 2023 20:40:12 -0700 (PDT)
-X-UUID: 3be74c3051e711eea33bb35ae8d461a2-20230913
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD28170E;
+        Tue, 12 Sep 2023 20:24:28 -0700 (PDT)
+X-UUID: 07e0e2f451e511eea33bb35ae8d461a2-20230913
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=lC7bgmSlZln0cFB4s9uuryXpkVp8q7XbGutF3dBD6iM=;
-        b=mHPj3IOGBU5FEZQ/28dsEfX9qKBdFefCUT5c7zjV5Pf8IH73L/vrwgIQuV/n4DIGHo8X1rl5P9rsHrirbv66fyXvg8Fg/AsMvVIn4nDwCf/7xVj8Zqov/RENrqYyRio4hhovkPD5KpmGDpytEGSsmOqiprlFfyMIWsaG4EGjIfg=;
-X-CID-CACHE: Type:Local,Time:202309131122+08,HitQuantity:1
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=FWIKK1/ZS53ok7+bu/0uJ8Kzv+di/hf128cxVMXk9So=;
+        b=oW/UVMMRJnZgPu6qnu/R3vqyBljsFX/Mi5quvRSO6pS2VclkGR8vWxKdw/HimWtgy2jJ5/gqgN/RwTDq6NpCMRyjA57J79pQ1W8xnhFW84yXwLvyp4Q+lsWGFY2vdDGgCSQ3uECWNStaeVJ+iNtsBfZaJj933AzlKj4oydprZds=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:558ce61c-3d9e-4bba-b90d-3f1e9a4e46fa,IP:0,U
+X-CID-O-INFO: VERSION:1.1.31,REQID:86599d3c-0fd9-45d2-8edc-6e46922225e0,IP:0,U
         RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
         release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:99b8df13-4929-4845-9571-38c601e9c3c9,B
+X-CID-META: VersionHash:0ad78a4,CLOUDID:908fc5be-14cc-44ca-b657-2d2783296e72,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
         DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: 3be74c3051e711eea33bb35ae8d461a2-20230913
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
+X-UUID: 07e0e2f451e511eea33bb35ae8d461a2-20230913
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
         (envelope-from <macpaul.lin@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 771012949; Wed, 13 Sep 2023 11:40:07 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with ShadowRedundancy id
- 15.2.1118.7; Wed, 13 Sep 2023 03:39:58 +0000
+        with ESMTP id 2124483253; Wed, 13 Sep 2023 11:24:21 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 13 Sep 2023 11:22:32 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 13 Sep 2023 11:22:32 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+ 15.2.1118.26; Wed, 13 Sep 2023 11:24:20 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Wed, 13 Sep 2023 11:24:20 +0800
+Message-ID: <6821fede-5f08-52a5-5d3b-14fc0a5af4b2@mediatek.com>
+Date:   Wed, 13 Sep 2023 11:24:17 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: add mt8390-evk
+ board
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>
 CC:     Bear Wang <bear.wang@mediatek.com>,
         Pablo Sun <pablo.sun@mediatek.com>,
         Macpaul Lin <macpaul@gmail.com>
-Subject: [PATCH v5 1/1] arm64: dts: mediatek: rename mt8365-evk to mt8365-genio-350-evk
-Date:   Wed, 13 Sep 2023 11:22:26 +0800
-Message-ID: <20230913032226.4092-1-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK:  N
+References: <20230912140613.6528-1-macpaul.lin@mediatek.com>
+ <d147a163-3696-8fdf-4c76-ec8375243d2c@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <d147a163-3696-8fdf-4c76-ec8375243d2c@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename mt8365-evk to mt8365-genio-350-evk for following the
-naming rules for MediaTek boards.
+On 9/12/23 22:31, Krzysztof Kozlowski wrote:
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On 12/09/2023 16:06, Macpaul Lin wrote:
+>> 1. Add compatible for MT8390.
+>> 2. Add bindings for the MediaTek mt8390-evk board, also known
+>> as the "Genio 700-EVK".
+>> 
+>> The MT8390 and MT8188 belong to the same SoC family,
+>> with only minor differences in their physical characteristics.
+>> They utilize unique efuse values for differentiation.
+>> 
+>> The booting process and configurations are managed by boot
+>> loaders, firmware, and TF-A. Consequently, the part numbers
+>> and procurement channels vary.
+>> 
+>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>> ---
+>>  Documentation/devicetree/bindings/arm/mediatek.yaml | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>> 
+>> dependencies for v1:
+>>  - This patch should be applied after the following patch set
+>>   - mt8365's bindings
+>>    - https://lore.kernel.org/linux-arm-kernel/20230912092444.31635-1-macpaul.lin@mediatek.com/T/
+>>   - mt8395's bindings
+>>    - https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
+>>   - mt8188's bindings
+>>    - https://lore.kernel.org/lkml/a4e1a80ebd19896410f50b0297e05dce06fb47cc.camel@mediatek.com/T/
+>> 
+>> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> index d8e449c6a7d7..047204a4aff5 100644
+>> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+>> @@ -251,6 +251,12 @@ properties:
+>>        - items:
+>>            - const: mediatek,mt8365-evk
+>>            - const: mediatek,mt8365
+>> +      - description: MediaTek Genio 700 Boards (Genio 700 EVK)
+> 
+> We had a long discussion, so again: drop description.
+> 
 
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/Makefile                           | 2 +-
- .../dts/mediatek/{mt8365-evk.dts => mt8365-genio-350-evk.dts}   | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename arch/arm64/boot/dts/mediatek/{mt8365-evk.dts => mt8365-genio-350-evk.dts} (100%)
+Okay, will drop description and send v2 series.
 
-Changes for v1:
-Changes for v2:
- - None.
-Changes for v3:
- - New patch added into this patch set v3.
- - depends on https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@mediatek.com/T/
-Changes for v4:
- - No change.
-Changes for v5:
- - No change for this patch, advance version because the first patch of this
-   patch set has been dropped.
+> Best regards,
+> Krzysztof
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 10e640c6ae08..b5d529d66393 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -52,6 +52,6 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r2.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-cherry-tomato-r3.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-demo.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8195-evb.dtb
--dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-evk.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8365-genio-350-evk.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8395-genio-1200-evk.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-genio-350-evk.dts
-similarity index 100%
-rename from arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-rename to arch/arm64/boot/dts/mediatek/mt8365-genio-350-evk.dts
--- 
-2.18.0
-
+Thanks
+Macpaul Lin
