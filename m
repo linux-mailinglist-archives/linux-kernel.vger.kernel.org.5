@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 685AD79DDFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E621B79DE06
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbjIMBye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        id S234301AbjIMB6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjIMBye (ORCPT
+        with ESMTP id S229543AbjIMB6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:54:34 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 814C910DF;
-        Tue, 12 Sep 2023 18:54:29 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38D1s8hhD3344280, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38D1s8hhD3344280
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 09:54:08 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 13 Sep 2023 09:54:08 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 13 Sep 2023 09:54:08 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
- RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
- 15.01.2375.007; Wed, 13 Sep 2023 09:54:08 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] usb: dwc3: core: configure TX/RX threshold for DWC3_IP
-Thread-Topic: [PATCH v3 1/2] usb: dwc3: core: configure TX/RX threshold for
- DWC3_IP
-Thread-Index: AQHZ5TBP8fUNKWCfYE6yDInCdRDucrAXVCeAgAAYdYCAAJKfEA==
-Date:   Wed, 13 Sep 2023 01:54:08 +0000
-Message-ID: <608f80dc54164ef5be822890701362ad@realtek.com>
-References: <20230912041904.30721-1-stanley_chang@realtek.com>
- <90e27f2b-4512-6121-c5f4-e7cb87b259ab@quicinc.com>
- <20230913010637.c4eukssffviugkhl@synopsys.com>
-In-Reply-To: <20230913010637.c4eukssffviugkhl@synopsys.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 12 Sep 2023 21:58:53 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D121710EB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:58:49 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-570a432468bso352932a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 18:58:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694570329; x=1695175129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IWYBlc9fX+NrYYXcR1aoALLzzFrwI8piW2a3vusS9vc=;
+        b=IcTR2+R4Y7hLGmLMteX9HfAOLb15Lzzx8LmCDsH6epQsyfvdb/68WT/Oquxk2cSywa
+         3i+OLMJN3g3r47zr2VRp91EFi8KlCX1/4SSEz4BrDDjl6IeHDYNr9XRMwKVPeOxE45Ni
+         +I4NpSPLXN9lI5WQC3N1VDcOkugqvMZwBEnbvAII/nDDj5DOlP9LyqZy7nL58Kg9Q5Ey
+         w0hgaIBkq5NTVJtdeiWgmQu30+dSvudV1JY5TPEh6nQdYbXW4wqSD3tvw9jad/7q8b/p
+         Gjny962LQCmjG1FmSIcs5ZEl46hOk/Ct2iqMnbGxQEfyKYJUwJ0t5m+/AxZnMQKZdVUV
+         fsGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694570329; x=1695175129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IWYBlc9fX+NrYYXcR1aoALLzzFrwI8piW2a3vusS9vc=;
+        b=FKp/FHXocmYG/fkI10mB2RGw119fQ0ASAITNWGr58K1aWp9FOqNe1z0jMxNJqiMXXT
+         4PiA67V4X7VY3t3PNzpsS+U8rCHOCRTpQl0AV//b5D8NBB1SB+O6bShaXgP1M+IfTWI5
+         t6mHWDMK3VahBR66xf9Ny3/fWDD79K0EVpHJEUG5XxdW9DJhkIBLDz8nZXCQRKrnwDLg
+         jDb36pS5nlGyvsDWMt2NfWPHWTroeLuNuG1WhlV+Jj8mXhlQL7TsaXb78WRc13Hdaw5a
+         bwfEMhKN1qrJ3XUuW5UJdwYaptaIOV7ImBtsWo4L/9Xd4+yAJ4WNJoZNbpmG9f5MjAdg
+         8ArQ==
+X-Gm-Message-State: AOJu0YxgbzGJcoyQrTOHUzhPDqD9DEBrYavkmu9OhyNqCvUT1uNAMo85
+        eSVo8Gfcl0YkASrkwg8qn2M2QqZeB5Hru/OAAhU=
+X-Google-Smtp-Source: AGHT+IHsPeAEi+Pt7uDHC/LSLO186AhqFY1MS7mJupHG/wYqca31PB6IIXjOpC7ed6FIDlsT7m27Br4CeepGA1g4R9g=
+X-Received: by 2002:a17:90a:b790:b0:26b:36a4:feeb with SMTP id
+ m16-20020a17090ab79000b0026b36a4feebmr5652532pjr.8.1694570329218; Tue, 12 Sep
+ 2023 18:58:49 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+References: <20230912063329.2260360-1-chancel.liu@nxp.com>
+In-Reply-To: <20230912063329.2260360-1-chancel.liu@nxp.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 13 Sep 2023 09:58:37 +0800
+Message-ID: <CAA+D8APddGVWXEH7kmAeuwOyd9S-CcbOQcpo8NjeB4YRtU0+gg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: imx-rpmsg: Set ignore_pmdown_time for dai_link
+To:     Chancel Liu <chancel.liu@nxp.com>
+Cc:     Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV2VzbGV5IGFuZCBUaGluaCwNCg0KPiA+IEFyZW4ndCB0aGVyZSB2YWx1ZSBsaW1pdGF0aW9u
-cyBmb3Igc29tZSBvZiB0aGVzZSAoaWYgbm90IGFsbCkNCj4gPiBzZXR0aW5ncz8gIEZvciBleGFt
-cGxlLCBpbiB0aGUgRFdDMyBwcm9ncmFtbWluZyBndWlkZSwgdGhlIG1heCBidXJzdA0KPiA+IGZp
-ZWxkcyBzYXkgKGZvcg0KPiA+IERXQzMxKToNCj4gPiAgICAgICAiTm90ZTogVGhpcyBmaWVsZCBj
-YW4gb25seSBiZSBzZXQgdG8gMiwgNCwgOCBvciAxNi4iDQo+ID4NCj4gPiBBbmQgZm9yIHRoZSBw
-YWNrZXQgdGhyZXNob2xkIGNvdW50Og0KPiA+ICAgICAgICJWYWxpZCB2YWx1ZXMgYXJlIGZyb20g
-MSB0byAxNi4iDQo+ID4NCj4gDQo+IFN0YW5sZXkgZG9jdW1lbnRlZCB0aGlzIGluIHRoZSBkdCBi
-aW5kaW5nLiBJIHRoaW5rIHdoYXQgaGUgaGFkIHdyaXR0ZW4gdGhlcmUgaXMNCj4gZmluZS4NCj4g
-DQoNClRoYW5rcyBmb3IgVGhpbmgncyByZXNwb25zZS4NCg0KU3RhbmxleQ0K
+On Tue, Sep 12, 2023 at 2:34=E2=80=AFPM Chancel Liu <chancel.liu@nxp.com> w=
+rote:
+>
+> i.MX rpmsg sound cards work on codec slave mode. MCLK will be disabled
+> by CPU DAI driver in hw_free(). Some codec requires MCLK present at
+> power up/down sequence. So need to set ignore_pmdown_time to power down
+> codec immediately before MCLK is turned off.
+>
+> Take WM8962 as an example, if MCLK is disabled before DAPM power down
+> playback stream, FIFO error will arise in WM8962 which will have bad
+> impact on playback next.
+>
+> Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
+> ---
+>  sound/soc/fsl/imx-rpmsg.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
+> index 3c7b95db2eac..d2ecd5e821b1 100644
+> --- a/sound/soc/fsl/imx-rpmsg.c
+> +++ b/sound/soc/fsl/imx-rpmsg.c
+> @@ -89,6 +89,13 @@ static int imx_rpmsg_probe(struct platform_device *pde=
+v)
+>                             SND_SOC_DAIFMT_NB_NF |
+>                             SND_SOC_DAIFMT_CBC_CFC;
+>
+> +       /* i.MX rpmsg sound cards work on codec slave mode. MCLK will be
+
+Comments for multi line start from empty line with "/* "
+
+Best regards
+wang Shengjiu
+> +        * disabled by CPU DAI driver in hw_free(). Some codec requires M=
+CLK
+> +        * present at power up/down sequence. So need to set ignore_pmdow=
+n_time
+> +        * to power down codec immediately before MCLK is turned off.
+> +        */
+> +       data->dai.ignore_pmdown_time =3D 1;
+> +
+>         /* Optional codec node */
+>         ret =3D of_parse_phandle_with_fixed_args(np, "audio-codec", 0, 0,=
+ &args);
+>         if (ret) {
+> --
+> 2.25.1
+>
