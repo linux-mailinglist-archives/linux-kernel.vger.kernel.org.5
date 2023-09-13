@@ -2,168 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9E579DD3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8875B79DD3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237690AbjIMArD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 20:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41442 "EHLO
+        id S237975AbjIMAuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjIMArB (ORCPT
+        with ESMTP id S229680AbjIMAuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:47:01 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1C54CF3;
-        Tue, 12 Sep 2023 17:46:56 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 38D0khalF3256447, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.92/5.92) with ESMTPS id 38D0khalF3256447
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Sep 2023 08:46:43 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 13 Sep 2023 08:46:37 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 13 Sep 2023 08:46:36 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c]) by
- RTEXMBS04.realtek.com.tw ([fe80::7445:d92b:d0b3:f79c%5]) with mapi id
- 15.01.2375.007; Wed, 13 Sep 2023 08:46:36 +0800
-From:   Ping-Ke Shih <pkshih@realtek.com>
-To:     Zenm Chen <zenmchen@gmail.com>,
-        "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>
-CC:     "kvalo@kernel.org" <kvalo@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rtl8821cerfe2@gmail.com" <rtl8821cerfe2@gmail.com>
-Subject: RE: [PATCH v2] wifi: rtl8xxxu: fix LED control code of RTL8192FU
-Thread-Topic: [PATCH v2] wifi: rtl8xxxu: fix LED control code of RTL8192FU
-Thread-Index: AQHZ5WwYvP5lze30skyDvzKTfg2eG7AX5lFQ
-Date:   Wed, 13 Sep 2023 00:46:36 +0000
-Message-ID: <1cf3a01b90e74a528c884246b9fbf531@realtek.com>
-References: <20230912112709.22456-1-zenmchen@gmail.com>
-In-Reply-To: <20230912112709.22456-1-zenmchen@gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-x-originating-ip: [172.21.69.25]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 12 Sep 2023 20:50:03 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA53C125
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:49:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44AD9C433C9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:49:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694566199;
+        bh=JW8eFTbL5Zu4+gvs9EK1EjcoupsFINoxnXaQNhFvMsI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cOhcaKTbX6hq4EYkMnux9p7Z1U7/j+nx+uvA0cfWJdqRCgPcSwxV72N97zM826Xnn
+         jQP9b4Cm1+h8WNOHb3LmPnVDtSYskpUI+t5l0JQepAqWQOhIKdjbA74A3GbHk3HdBJ
+         xSQJNspwYeIlLkiREkbf+b5+KKqTDopChwv+GNFWS1cZB8kSgDOSDBf6DSVhvOEOWS
+         Ce6yUGQlaJTwx+5OWiPDIh4oy326mWfPQY/BJkidQX5lf37C4Xk9Yn8PefH1w/9DLt
+         2KIoZVSMDM6fZugzx+VVyKiT6pXiuy7t5Hyt+dFc2p8Luc7s1cq0CMuG7Z9i6uStJO
+         lJW2tQNDCliTQ==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so106713201fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:49:59 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yxb/5AFUjHg10KFMSBTvQnQV+gL4XQnDiJ9RX7aE/BUHfEz9aZs
+        XEXZYCNdRhNSuYHHzbbjq6bgvEu2fTlmUNEjv10=
+X-Google-Smtp-Source: AGHT+IFPeWbANP5jSE7BsZE5UtVXIzW1xbzm2QPBWZXcSBugS5Vq+2TMylhVh4EsL8RXgn5R+hlWEGTiu6nhQbCijZA=
+X-Received: by 2002:a2e:8802:0:b0:2b5:80c9:1266 with SMTP id
+ x2-20020a2e8802000000b002b580c91266mr1041477ljh.43.1694566197491; Tue, 12 Sep
+ 2023 17:49:57 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
+References: <20230911092810.3108092-1-chenhuacai@loongson.cn> <b96c53eb-3c6f-d981-7573-10b95c3005a2@xen0n.name>
+In-Reply-To: <b96c53eb-3c6f-d981-7573-10b95c3005a2@xen0n.name>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 13 Sep 2023 08:49:45 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6p6F6j61fiFz=KdhkRX_fN+jzhhuarJdcQ0LHtTLpzKw@mail.gmail.com>
+Message-ID: <CAAhV-H6p6F6j61fiFz=KdhkRX_fN+jzhhuarJdcQ0LHtTLpzKw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Set all reserved memblocks on Node#0 at initialization
+To:     WANG Xuerui <kernel@xen0n.name>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        WANG Xuerui <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 13, 2023 at 12:08=E2=80=AFAM WANG Xuerui <kernel@xen0n.name> wr=
+ote:
+>
+> On 9/11/23 17:28, Huacai Chen wrote:
+> > After commit 61167ad5fecdea ("mm: pass nid to reserve_bootmem_region()"=
+)
+> > we get a panic if DEFERRED_STRUCT_PAGE_INIT is enabled:
+> >
+> > [snip]
+> >
+> > The reason is early memblock_reserve() in memblock_init() set node id
+> Why is it that only "early" but not "late" memblock_reserve() matters? I
+> failed to see the reason because the arch-specific memblock_init() isn't
+> even in the backtrace, which means that *neither* is the culprit.
+Late memblock_reserve() operates on subregions of memblock.memory
+regions. These reserved regions will be set to the correct node at the
+first iteration of memmap_init_reserved_pages().
 
+Huacai
 
-> -----Original Message-----
-> From: Zenm Chen <zenmchen@gmail.com>
-> Sent: Tuesday, September 12, 2023 7:27 PM
-> To: Jes.Sorensen@gmail.com
-> Cc: kvalo@kernel.org; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
-> rtl8821cerfe2@gmail.com; Ping-Ke Shih <pkshih@realtek.com>; Zenm Chen <zenmchen@gmail.com>
-> Subject: [PATCH v2] wifi: rtl8xxxu: fix LED control code of RTL8192FU
-> 
-> Some of the RTL8192FU-based wifi adapters use the register "REG_LEDCFG1"
-> to control the LED, and some of them use the register "REG_LEDCFG0"
-> instead. Currently rtl8xxxu controls the LED via writing the values
-> to the register "REG_LEDCFG1" only. This caused a few RTL8192FU-based wifi
-> adapters's LED don't blink according to the network activity. This patch
-> will make rtl8xxxu write the correct values to the both register
-> "REG_LEDCFG0" and "REG_LEDCFG1" to fix this issue.
-> 
-> This was tested with these two wifi adapters:
-> ASUS USB-N13 C1 (vid=0x0b05, pid=0x18f1, rfe_type=0x1)
-> MERCURY MW310UH (vid=0x0bda, pid=0xf192, rfe_type=0x5)
-> 
-> Signed-off-by: Zenm Chen <zenmchen@gmail.com>
-> ---
-> v2:
->  - Explain why to fix the issue in this way in the commit message.
->  - Split a long statement into short ones.
->  - Use some of the definitions suggested by Ping-Ke Shih.
-> ---
->  .../realtek/rtl8xxxu/rtl8xxxu_8192f.c         | 26 ++++++++++++-------
->  .../wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h |  3 +++
->  2 files changed, 20 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> index 28e93835e05a..779f93afc22b 100644
-> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192f.c
-> @@ -2014,26 +2014,34 @@ static int rtl8192fu_led_brightness_set(struct led_classdev *led_cdev,
->         struct rtl8xxxu_priv *priv = container_of(led_cdev,
->                                                   struct rtl8xxxu_priv,
->                                                   led_cdev);
-> -       u16 ledcfg;
-> +       u32 ledcfg;
-> 
->         /* Values obtained by observing the USB traffic from the Windows driver. */
->         rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_0, 0x20080);
->         rtl8xxxu_write32(priv, REG_SW_GPIO_SHARE_CTRL_1, 0x1b0000);
-> 
-> -       ledcfg = rtl8xxxu_read16(priv, REG_LEDCFG0);
-> +       ledcfg = rtl8xxxu_read32(priv, REG_LEDCFG0);
-> +
-> +       /* Set LED0 GPIO enabled */
-> +       ledcfg |= LEDCFG0_LED0_GPIO_ENABLE;
-> 
->         if (brightness == LED_OFF) {
-> -               /* Value obtained like above. */
-> -               ledcfg = BIT(1) | BIT(7);
-> +               /* Setting REG_LEDCFG0[15:0] to 0x0000 turns LED0/LED1 off. */
-> +               ledcfg &= ~GENMASK(15, 0);
->         } else if (brightness == LED_ON) {
-> -               /* Value obtained like above. */
-> -               ledcfg = BIT(1) | BIT(7) | BIT(11);
-> +               /* Setting REG_LEDCFG0[15:0] to 0x0808 turns LED0/LED1 on. */
-> +               ledcfg &= ~GENMASK(15, 0);
-> +               ledcfg |= LEDCFG0_LED1SV | LEDCFG0_LED0SV;
->         } else if (brightness == RTL8XXXU_HW_LED_CONTROL) {
-> -               /* Value obtained by brute force. */
-> -               ledcfg = BIT(8) | BIT(9);
-> +               /* Setting REG_LEDCFG0[15:0] to 0x0303 enables
-> +                * hardware-controlled blinking for LED0/LED1.
-> +                * The value 0x0303 is obtained by brute force.
-
-I suppose this would not be a brute force if you can use register definitions
-I provided by v1. 
-
-> +                */
-> +               ledcfg &= ~GENMASK(15, 0);
-> +               ledcfg |= BIT(9) | BIT(8) | BIT(1) | BIT(0);
->         }
-> 
-> -       rtl8xxxu_write16(priv, REG_LEDCFG0, ledcfg);
-> +       rtl8xxxu_write32(priv, REG_LEDCFG0, ledcfg);
-> 
->         return 0;
->  }
-> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h
-> b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h
-> index 920ee50e2115..5ce845f1d069 100644
-> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h
-> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_regs.h
-> @@ -146,6 +146,9 @@
->  #define  GPIO_INTM_EDGE_TRIG_IRQ       BIT(9)
-> 
->  #define REG_LEDCFG0                    0x004c
-> +#define  LEDCFG0_LED0SV                        BIT(3)
-> +#define  LEDCFG0_LED1SV                        BIT(11)
-> +#define  LEDCFG0_LED0_GPIO_ENABLE      BIT(21)
->  #define  LEDCFG0_DPDT_SELECT           BIT(23)
->  #define REG_LEDCFG1                    0x004d
->  #define  LEDCFG1_HW_LED_CONTROL                BIT(1)
+> > to MAX_NUMNODES, which causes NODE_DATA(nid) be a NULL dereference in
+> "making NODE_DATA(nid) a NULL ..."
+> > reserve_bootmem_region() -> init_reserved_page(). So set all reserved
+> > memblocks on Node#0 at initialization to avoid this panic.
+> >
+> > Reported-by: WANG Xuerui <git@xen0n.name>
+> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > ---
+> >   arch/loongarch/kernel/mem.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/loongarch/kernel/mem.c b/arch/loongarch/kernel/mem.c
+> > index 4a4107a6a965..aed901c57fb4 100644
+> > --- a/arch/loongarch/kernel/mem.c
+> > +++ b/arch/loongarch/kernel/mem.c
+> > @@ -50,7 +50,6 @@ void __init memblock_init(void)
+> >       }
+> >
+> >       memblock_set_current_limit(PFN_PHYS(max_low_pfn));
+> > -     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
+> >
+> >       /* Reserve the first 2MB */
+> >       memblock_reserve(PHYS_OFFSET, 0x200000);
+> > @@ -58,4 +57,7 @@ void __init memblock_init(void)
+> >       /* Reserve the kernel text/data/bss */
+> >       memblock_reserve(__pa_symbol(&_text),
+> >                        __pa_symbol(&_end) - __pa_symbol(&_text));
+> > +
+> > +     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
+> > +     memblock_set_node(0, PHYS_ADDR_MAX, &memblock.reserved, 0);
+> So the reordering is for being able to override the newly added
+> memblocks' nids to 0, and additionally doing the same for
+> memblock.reserved is the actual fix. Looks okay.
+> >   }
+>
+> And I've tested the patch on the 2-way 3C5000L server, and it now
+> correctly boots with deferred struct page init enabled. Thanks for
+> providing such a quick fix!
+>
+> Tested-by: WANG Xuerui <git@xen0n.name>
+> Reviewed-by: WANG Xuerui <git@xen0n.name>  # with nits addressed
+>
 > --
-> 2.42.0
-
+> WANG "xen0n" Xuerui
+>
+> Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+>
+>
