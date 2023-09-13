@@ -2,178 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1986B79F2C3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FD79F2C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjIMUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49430 "EHLO
+        id S232272AbjIMUXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjIMUU2 (ORCPT
+        with ESMTP id S229527AbjIMUXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:20:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 012641BC6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:20:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9776D1FB;
-        Wed, 13 Sep 2023 13:21:00 -0700 (PDT)
-Received: from [10.57.93.239] (unknown [10.57.93.239])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E20A63F738;
-        Wed, 13 Sep 2023 13:20:21 -0700 (PDT)
-Message-ID: <157d5041-96ac-6bad-9137-19a78fbf3591@arm.com>
-Date:   Wed, 13 Sep 2023 21:20:15 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] iommu/sun50i: Convert to map_pages/unmap_pages
-Content-Language: en-GB
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     wens@csie.org, samuel@sholland.org, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230912181941.2971036-1-jernej.skrabec@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230912181941.2971036-1-jernej.skrabec@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Wed, 13 Sep 2023 16:23:07 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2581BC8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:23:03 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59b52554914so2971297b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1694636583; x=1695241383; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XLVs+6bnfHlUZtqtSLrfEVAUEdElqt9QJcV0k0rrN6k=;
+        b=Y6tP84ERqkDKcGxAVmZeOsN/6uvjKSNey2wMz4IBgzyXgZnA6NqK3yiBSY1fvjrT3q
+         lfRhCUMp6QUwQulGXeuOfctXBwaAK+ATBzSFvzR5f7N5ZRINgNOf2yooIho7Ruv1mMUs
+         G3ROcRsoupfRYWqIjbp5Wq2D7X3u/wkAu6tXkogBjEsAtOEsgS5qc34Q15qD2bkalbjo
+         nKEKkcZ2trK8dDXJmwQVJ1p2/95e0frU+k0KrXCzSwM3t3U4JlhhkGAaQimlDd/3kdV4
+         rBOZbQkns4oSbMcC7PxIDd4nuZzrWACFSBB8+wFg1Qb+wgpu1irK997WubD2WUVC5RoR
+         yKpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694636583; x=1695241383;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XLVs+6bnfHlUZtqtSLrfEVAUEdElqt9QJcV0k0rrN6k=;
+        b=w0L+WJkRohLrIRR6/buqVqzDTvOovF3soikjfO85RlF+FQd6tx3ehfHzHRBCmIUlmM
+         fSmLkQNwk9KzOdIrvxoiPP22mMUBOYfhD1/H3BEV9D5fBXQNoPyZNG/F9D9Jqfbd44T7
+         EsLXL2JRv+aXRRBLVAVK7RrcSlSh4hdx66OrrQSKdzXAYmArbZy+dkF/+LhUK6YjIUq3
+         WWY47inW3Fx9zwetaA2StnvAl6APBPp0SQ83ap29zm2mz25lo7w0cVFFpl3iZlYYZZLJ
+         EdTCpWWW7zJ61KMpVijx3NN99G4lxI7lqOdDPEBEruwMiYPnRGDaaZbHXTZ3oyjhKnNF
+         rxxQ==
+X-Gm-Message-State: AOJu0Yy82eNbxoxqgVBgqZS53ZUhJgC/ucAg0I+Ha8pU2IqL1ge79CAk
+        Oe+nrvY6kqQEZNwAwVfpNDaA1ddRqz6b/4n0Qg==
+X-Google-Smtp-Source: AGHT+IH6PBuI/9PEyPLMURyvaLd2wWJ5nq4Nq4LzMK+VjpjvcMFoH6Veim3KBZowhXINgmUEpT7BsE4SUJC+BkTBkw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:3108:b0:59b:e97e:f7d7 with
+ SMTP id fb8-20020a05690c310800b0059be97ef7d7mr10791ywb.1.1694636583064; Wed,
+ 13 Sep 2023 13:23:03 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 20:23:02 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACUaAmUC/x3NywrCQAxG4VcpWRvozJR6eRURKWlG/4VjSUpVS
+ t/doctvc85KrgZ1ujQrmS5wvEtFODQkz6E8lDFWU2xjas8hsc9WZPrxaFjUnDPs9RlMecbdBSw cY98fu5AknDLVzmSa8d0f19u2/QEyILlDcwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1694636581; l=1662;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=SaJSLsGfiwN8Z9qDzVTnJDfBIIvce2p/HX14tKRLMrc=; b=isyfhr2IybzgbSgYpUiLNvFNLLapon+q44khS63C6lQdJpD07Owf7rFKWlnZSjXr/pvfX+d9M
+ 0S8wXWPqEHHC6Q4LPImWcaxPhpnnxPUrHci8d0JQRBWvVp9SeWxgjZZ
+X-Mailer: b4 0.12.3
+Message-ID: <20230913-strncpy-drivers-firmware-ti_sci-c-v1-1-740db471110d@google.com>
+Subject: [PATCH] firmware: ti_sci: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-12 19:19, Jernej Skrabec wrote:
-> Convert driver to use map_pages and unmap_pages. Since functions operate
-> on page table, extend them to be able to operate on whole table, not
-> just one entry.
-> 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-> ---
-> Hi!
-> 
-> I'm not sure if it makes sense to check validity of page table entry when
-> unmaping pages makes sense. What do you think?
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-As things currently stand it's largely a matter of opinion - some 
-drivers consider that unmapping something which hasn't been mapped is 
-nonsensical, and almost always represents the caller having gone wrong, 
-thus report it as an error; others take the view that as long as they 
-can achieve the requested end result, they're not going to think too 
-hard about how they got there. The same arguments apply to whether you'd 
-quietly replace an existing PTE or not when mapping, so I'd say the main 
-thing is to at least be self-consistent one way or the other.
+We should prefer more robust and less ambiguous string interfaces.
 
-Cheers,
-Robin.
+A suitable replacement is `strscpy` [2] due to the fact that it guarantees
+NUL-termination on the destination buffer.
 
-> 
-> Best regards,
-> Jernej
-> 
->   drivers/iommu/sun50i-iommu.c | 55 +++++++++++++++++++++---------------
->   1 file changed, 33 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/iommu/sun50i-iommu.c b/drivers/iommu/sun50i-iommu.c
-> index 74c5cb93e900..be6102730a56 100644
-> --- a/drivers/iommu/sun50i-iommu.c
-> +++ b/drivers/iommu/sun50i-iommu.c
-> @@ -589,11 +589,12 @@ static u32 *sun50i_dte_get_page_table(struct sun50i_iommu_domain *sun50i_domain,
->   }
->   
->   static int sun50i_iommu_map(struct iommu_domain *domain, unsigned long iova,
-> -			    phys_addr_t paddr, size_t size, int prot, gfp_t gfp)
-> +			    phys_addr_t paddr, size_t pgsize, size_t pgcount,
-> +			    int prot, gfp_t gfp, size_t *mapped)
->   {
->   	struct sun50i_iommu_domain *sun50i_domain = to_sun50i_domain(domain);
->   	struct sun50i_iommu *iommu = sun50i_domain->iommu;
-> -	u32 pte_index;
-> +	u32 pte_index, count, i;
->   	u32 *page_table, *pte_addr;
->   	int ret = 0;
->   
-> @@ -604,45 +605,55 @@ static int sun50i_iommu_map(struct iommu_domain *domain, unsigned long iova,
->   	}
->   
->   	pte_index = sun50i_iova_get_pte_index(iova);
-> -	pte_addr = &page_table[pte_index];
-> -	if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> -		phys_addr_t page_phys = sun50i_pte_get_page_address(*pte_addr);
-> -		dev_err(iommu->dev,
-> -			"iova %pad already mapped to %pa cannot remap to %pa prot: %#x\n",
-> -			&iova, &page_phys, &paddr, prot);
-> -		ret = -EBUSY;
-> -		goto out;
-> +	count = min(pgcount, (size_t)NUM_PT_ENTRIES - pte_index);
-> +	for (i = 0; i < count; i++) {
-> +		pte_addr = &page_table[pte_index + i];
-> +		if (unlikely(sun50i_pte_is_page_valid(*pte_addr))) {
-> +			phys_addr_t page_phys = sun50i_pte_get_page_address(*pte_addr);
-> +
-> +			dev_err(iommu->dev,
-> +				"iova %pad already mapped to %pa cannot remap to %pa prot: %#x\n",
-> +				&iova, &page_phys, &paddr, prot);
-> +			ret = -EBUSY;
-> +			goto out;
-> +		}
-> +		*pte_addr = sun50i_mk_pte(paddr, prot);
-> +		paddr += SPAGE_SIZE;
->   	}
->   
-> -	*pte_addr = sun50i_mk_pte(paddr, prot);
-> -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> +	sun50i_table_flush(sun50i_domain, &page_table[pte_index], i);
-> +	*mapped = i * SPAGE_SIZE;
->   
->   out:
->   	return ret;
->   }
->   
->   static size_t sun50i_iommu_unmap(struct iommu_domain *domain, unsigned long iova,
-> -				 size_t size, struct iommu_iotlb_gather *gather)
-> +				 size_t pgsize, size_t pgcount,
-> +				 struct iommu_iotlb_gather *gather)
->   {
->   	struct sun50i_iommu_domain *sun50i_domain = to_sun50i_domain(domain);
-> +	u32 dte, count, i, pte_index;
->   	phys_addr_t pt_phys;
->   	u32 *pte_addr;
-> -	u32 dte;
->   
->   	dte = sun50i_domain->dt[sun50i_iova_get_dte_index(iova)];
->   	if (!sun50i_dte_is_pt_valid(dte))
->   		return 0;
->   
->   	pt_phys = sun50i_dte_get_pt_address(dte);
-> -	pte_addr = (u32 *)phys_to_virt(pt_phys) + sun50i_iova_get_pte_index(iova);
-> +	pte_index = sun50i_iova_get_pte_index(iova);
-> +	pte_addr = (u32 *)phys_to_virt(pt_phys) + pte_index;
->   
-> -	if (!sun50i_pte_is_page_valid(*pte_addr))
-> -		return 0;
-> +	count = min(pgcount, (size_t)NUM_PT_ENTRIES - pte_index);
-> +	for (i = 0; i < count; i++)
-> +		if (!sun50i_pte_is_page_valid(pte_addr[i]))
-> +			break;
->   
-> -	memset(pte_addr, 0, sizeof(*pte_addr));
-> -	sun50i_table_flush(sun50i_domain, pte_addr, 1);
-> +	memset(pte_addr, 0, sizeof(*pte_addr) * i);
-> +	sun50i_table_flush(sun50i_domain, pte_addr, i);
->   
-> -	return SZ_4K;
-> +	return i * SPAGE_SIZE;
->   }
->   
->   static phys_addr_t sun50i_iommu_iova_to_phys(struct iommu_domain *domain,
-> @@ -838,8 +849,8 @@ static const struct iommu_ops sun50i_iommu_ops = {
->   		.iotlb_sync_map = sun50i_iommu_iotlb_sync_map,
->   		.iotlb_sync	= sun50i_iommu_iotlb_sync,
->   		.iova_to_phys	= sun50i_iommu_iova_to_phys,
-> -		.map		= sun50i_iommu_map,
-> -		.unmap		= sun50i_iommu_unmap,
-> +		.map_pages	= sun50i_iommu_map,
-> +		.unmap_pages	= sun50i_iommu_unmap,
->   		.free		= sun50i_iommu_domain_free,
->   	}
->   };
+It does not seem like `ver->firmware_description` requires NUL-padding
+(which is a behavior that strncpy provides) but if it does let's opt for
+`strscpy_pad()`.
+
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
+---
+ drivers/firmware/ti_sci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/ti_sci.c b/drivers/firmware/ti_sci.c
+index 26a37f47f4ca..ce546f391959 100644
+--- a/drivers/firmware/ti_sci.c
++++ b/drivers/firmware/ti_sci.c
+@@ -485,7 +485,7 @@ static int ti_sci_cmd_get_revision(struct ti_sci_info *info)
+ 	ver->abi_major = rev_info->abi_major;
+ 	ver->abi_minor = rev_info->abi_minor;
+ 	ver->firmware_revision = rev_info->firmware_revision;
+-	strncpy(ver->firmware_description, rev_info->firmware_description,
++	strscpy(ver->firmware_description, rev_info->firmware_description,
+ 		sizeof(ver->firmware_description));
+ 
+ fail:
+
+---
+base-commit: 3669558bdf354cd352be955ef2764cde6a9bf5ec
+change-id: 20230913-strncpy-drivers-firmware-ti_sci-c-22667413c18f
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
