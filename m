@@ -2,184 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E11FF79DE61
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7DF79DE63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 04:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238153AbjIMCth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 22:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S238188AbjIMCtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 22:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjIMCtg (ORCPT
+        with ESMTP id S229557AbjIMCtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 22:49:36 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEAB10F6;
-        Tue, 12 Sep 2023 19:49:32 -0700 (PDT)
-X-UUID: 272c8b2251e011eea33bb35ae8d461a2-20230913
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
-        b=Wk5IPaEVWqW1+Vo2vuB/SUHfpgQ0d62wZF5fZDq4cI3afJWiiGotUsugArt7LTGDZgxxQjMv5uICzvffioY/Fz6PEPO6Ly+CyUQAn6WXeLrcLmIx5DPsnMn45NiTNisdTwlQjjh8YAfgQD8p+qet9KIhAAxPWkoM+MXlFSYdNS0=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:62090bca-1050-4eb8-a172-74b1c253cce1,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:14cbf5c2-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 272c8b2251e011eea33bb35ae8d461a2-20230913
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 666528851; Wed, 13 Sep 2023 10:49:26 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 13 Sep 2023 10:49:26 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 13 Sep 2023 10:49:25 +0800
+        Tue, 12 Sep 2023 22:49:45 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2041.outbound.protection.outlook.com [40.107.105.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0842A1724;
+        Tue, 12 Sep 2023 19:49:41 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AP8tuNPb4/z0Ms1pokW92FOFASRV7goWJ+/BGUacueT9f3kO+TQLWneJCMBxWcndhRG2h7X5SLOWhuizhMo1Hm/dadC1aI/1SDnnq+Z/HkW16qHWCLYxG4ldv2CoYi/ewWqMmo0b9CfnyBt+Ik7/cXLmj/3bk5pelsZ5dPM68jV3dOnR4mMJAaJ74KHm52Wv4WEFY3N96eJye864BtNsO/c5S7a/JjtzFOxb2vN3iEXhuFNKD7RdaCRI6LQ0yYE9OLt0FA0y7J4wOFN6PNocUy7OaCQDejbW6Eku920uIU//58ybjmvrun5HyeAcoM/eCTokOFAmZ07a28tTFxq28w==
+ b=fELRAigxp86sDcY1cBq6AWi3eezT0glzKe+MHV06RQc71PMLak/7mwtFgiZK8gm3seuB6PM8AKUWLJfyvyLQ0Q3GhpZHfgsxzcJyDTCMPb4pnYm+/RPDtJNtftMIJp5+H3N+4Xa3+TsBdYidA4ySgu7p+HW0iE6/OphC0HJqCcoG8g09v/okUGuPx5ZVivUdJiqMGogqt45hwCEnVEkR+LM1nSiejCb0btYRz/Rk9JLduo/rzGrjYu1BlBhHkFDoJTbglgX82mrro+PUM9UTv1mpfyUqQCbZDMM+qV901IswkEomRrItgzIxjLa7onuVOPK00+GCieB7RW/fwNy9gg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
- b=oaQ8M8wDUW7iYv0BBWe8LwZqnVoVyjnaZWMcOsuc/tk4rYQxZj00i3FS1ZfSRS7zlz5gh0uBqu8RPpaj70Rv4g23utr0BbWb3RIE5CgCqsu4pXYOyhAw/gnTLVPSwtzNng8LNHVkJxgVJ3Ug1iY2oo2/TvN1fAMZpz6bfOEUgXGBa0nJwKIioDJIRorJDuK6Ne71xdRLejED41f5YxLb6RN5pI7ebz3J4i/o1JmfZ9bcWfXlMluzKzUyxFU74j2Q2whryZkdNGNhJ9PzogZoC71ewjRGuxxOndELk47HA5bdAPi1sbjmIbQT4/Xiiz9/9dIuGCSk8b6OZIjDqEcuvw==
+ bh=VPT8WA6NTtkZvz8aG90l+RoiXPtgEYNVmvkOwIGPY1c=;
+ b=basIlytAxRufRWDt8bKWUvEOpWqYLaj3Q0bcwiibSL7ProVfvlxhrknuALsO/eHnMSEvoaP5dkgaN9bpMWuKqaF3hluPUy5gmdFR9RPHrfSRnImDz8ukVNhBn2BqqByrsMNyFYdrv4CdYsZbOL7MQWoMMahippyIMFaDr+vfdWd9mnnvVAvldrW5Jycp71OBx/fYJBY93lzEMDE765Eznm3ukEN6Rr67IUOwMayu0ZroUmU0+x08od5Dq4UdFsONnR5KRY5g+0WxwfPVdQmiW6vr4FrFFshG48Q97pC8ieQdiLCCs1J/jA3PflSaoWbg/LJIMG9pgSBrg0mIWzuSFA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VNyUy66FTp18/z0FdkcoZvTdNJOLPICEzhw69BHG3zc=;
- b=mCS23YjTdq8K5G0bmozY39qvdEBNmizo/YbYsB/AJ+f5wNls84ImYn7C2P5btbPWvGYp8+/Q1vGWV7qcU0U26ZBXe5Ozrk/GGRy411WCBr9zxSVDKh9PDIZfWUIRjmetNTAhKOvaZ1na0NJScNUqh1EGjFebj5bcD0e68oQjJoQ=
-Received: from TY0PR03MB6356.apcprd03.prod.outlook.com (2603:1096:400:14c::9)
- by TYSPR03MB7329.apcprd03.prod.outlook.com (2603:1096:400:433::13) with
+ bh=VPT8WA6NTtkZvz8aG90l+RoiXPtgEYNVmvkOwIGPY1c=;
+ b=MnebWpbkvH8Qs5i0y4JZWioSyXgR+cax26uuoR2Gcv0uZ4nhfh/1H2nr1YYGo83L2s8h95wCwyUL0+abcVEy9Pr39GWI8qwUBWUxWFo6R2t0SpCm0Ji5k+NQxOUddpwhCj4foT47s0rjaSedY36au8EEKTrcGeNEuynjVL4BL+A=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB8167.eurprd04.prod.outlook.com (2603:10a6:20b:3f9::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
- 2023 02:49:24 +0000
-Received: from TY0PR03MB6356.apcprd03.prod.outlook.com
- ([fe80::492f:b5e4:51a:5ecc]) by TY0PR03MB6356.apcprd03.prod.outlook.com
- ([fe80::492f:b5e4:51a:5ecc%6]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
- 02:49:24 +0000
-From:   =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
-To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v5 02/14] arm64: dts: mediatek: mt8195: add MDP3 nodes
-Thread-Topic: [PATCH v5 02/14] arm64: dts: mediatek: mt8195: add MDP3 nodes
-Thread-Index: AQHZ5U7fe9fbI0C8pEKUFmZap9QRdLAW2jqAgAE09YA=
-Date:   Wed, 13 Sep 2023 02:49:23 +0000
-Message-ID: <457fa572774d7a3ccd9cdb525b517aa8f1b5f937.camel@mediatek.com>
-References: <20230912075805.11432-1-moudy.ho@mediatek.com>
-         <20230912075805.11432-3-moudy.ho@mediatek.com>
-         <c64efa17-704d-0bb0-da91-5658bc0bf34e@linaro.org>
-In-Reply-To: <c64efa17-704d-0bb0-da91-5658bc0bf34e@linaro.org>
-Accept-Language: zh-TW, en-US
+ 2023 02:49:38 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6768.029; Wed, 13 Sep 2023
+ 02:49:37 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
+ which IDA
+Thread-Topic: [PATCH V2] pci: introduce static_nr to indicate domain_nr from
+ which IDA
+Thread-Index: AQHZzxhuyRkzZgDao0KEaKWaunEMhbAX8PmAgAAxQqCAAA8+AIAACMAg
+Date:   Wed, 13 Sep 2023 02:49:37 +0000
+Message-ID: <DU0PR04MB941790B85BCDD60ACA2601A588F0A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <DU0PR04MB9417E04B52A553984D83540188F0A@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <20230913021306.GA418113@bhelgaas>
+In-Reply-To: <20230913021306.GA418113@bhelgaas>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
+ header.d=none;dmarc=none action=none header.from=nxp.com;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY0PR03MB6356:EE_|TYSPR03MB7329:EE_
-x-ms-office365-filtering-correlation-id: 964a12ef-715b-4fb8-1b40-08dbb40409c8
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8167:EE_
+x-ms-office365-filtering-correlation-id: 019e0d65-aedf-49a0-581f-08dbb40411f5
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NYJCtRoZ3nPQX24kDp2xGWyb6yfUZ/n1gkKeqKSB8FZf5L56GlMDSdBBvD+EBcAlKT4+Sy3OCMeSQD063xPeQhJBHmvb1sEgEhiMQeboJPtCk0t+bKETc3Ii5iltCI5sQH5KCWxizSZEDmmBMPOdSpS72FPTY/Opg/Sqpxx8EUyWLGONRiZj2v9k12ojRkpwWS96gloUtQi6P5TxgNRV9vf6y+UU16n8ZcX1h+582en4NUJ1cKLiZU5Du9ykg9jVG3wLiGcboJ7S77bAULzsSbbxroUS44keOGIjm18QVHJL+9J3tsj7W4s/82Wl0XmIKLIBDYVHTYeqVCOuELRU0lAxztQwgVv4VF5y3LR+RlO3P6Y1DhasqQcYxKkTej83cAEm966QfVXQdt/Vu8jbHNUNNLeMCJJkFMyvURG4Ul+UemathrrlakFwPQitF8Zl6Y6fzGUIq0Rr7uXiP5hK1buo5YC452mmZkhCQAjAI8psMuANYtSTHTL27wBs6eo6puOmS1wSnYYyVXqvheyIZPqatcO8CZRMRw7sbAyUrhw6y61qp8fXx028HUVkvf+pDo2ScCp4B6zHH3NYSEu3CVx6Cj2FfUmpxZ0BKkiyVJRfVcAE8jJO7wSXdELdCaFuWmaTp8zCYaKqX3QV75mXiElQfCDB8zCUFr45WuCd9F3oHdeWGLlT29yTa6sNXvCv9UbyczKyJ3rBz3xc8A03dg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY0PR03MB6356.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(1800799009)(451199024)(186009)(6512007)(6486002)(6506007)(53546011)(71200400001)(38100700002)(38070700005)(2616005)(110136005)(76116006)(66946007)(86362001)(478600001)(122000001)(83380400001)(921005)(26005)(66556008)(66446008)(2906002)(5660300002)(7416002)(85182001)(4326008)(36756003)(64756008)(54906003)(316002)(8936002)(8676002)(41300700001)(66476007)(4744005)(99106002);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: FIV10PzO/cIkMdaAWW73rBI8e4hTVA8CdhytCohGUnCU3L5gCJu3+u77Z4uFXWIsDi9Dl3CmP7IDe88hdOdnYmN91fc3nHTCl6bCqYsK57bHb/R6MAJGauXyG0BN5KRok2tY1dTAk/NcTDzetR5tjtMbemnmVpbJ5KJGtKcE8jXzFhl5GmCGpB98wdQ825+iJir8YhF3JSrdjLtL5FguGCbpzljWAFaI0J+aHq6Qu8LSePfsVs6ZBdK1vlpH1ZCkPlsR9qRWTWpVlM4JcWCS6rIw81WEqH0aCwLKx8KRbgsQ0X01yEUUgbHCtG4Nl5KR1xEp0bo8EWtFJ7TmoDnlgFp2+8JPd1Xfd/1cH57mQhIdVgjHbwaEs/o4Js5X+Y6VWylvD/eT2ctUvDacHxo9ziVLp+xz7ppMADezp7XSOA9olxJKjF5VnzZm2cWqyCtlUAGB2fyJqrJLIo9yI78lgtcAgGtxL3kI3fnzYKdIImGf7+mBBJVKhlJ8bt6SW8/oBK+69146IsViEEXFRd+hskw3W66zkdOShIMthAi0IFRqej+2ai0B/tR1icu5MKc6P6npEH6CYqBRtaYPRoMkHggT9c4JHlokWsktBKO/xPKTmKx3RTQJ51GBoMdUWfkM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(39860400002)(376002)(396003)(186009)(1800799009)(451199024)(316002)(66446008)(66556008)(66476007)(66946007)(76116006)(6916009)(54906003)(64756008)(26005)(83380400001)(45080400002)(9686003)(7696005)(6506007)(71200400001)(33656002)(122000001)(86362001)(38100700002)(38070700005)(55016003)(478600001)(966005)(2906002)(4326008)(8936002)(8676002)(41300700001)(52536014)(44832011)(5660300002);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VGlRbG9ON3ZrMUFtZDErbHc3YmxtaUlNZWVpTFYvdTd2L0V1a0w0MGFjeXFX?=
- =?utf-8?B?M0pQcGNLS2orMERscENQenJWaWZ1aWd1aHlTalQxY3A2K1pndnRzYkJ2MzRs?=
- =?utf-8?B?V2JZNnl1dzJSRW9wWlB3YjhwVnNmZVVjSU03eTFMR2pSWEhTTnhMc3lvRW8y?=
- =?utf-8?B?anliYkFsRXRSciszdHVWa0I1c0ltKzVEOHZBVVY2NGp6Q3lZbWpDbGdmbU9L?=
- =?utf-8?B?dmdwQlk3QnlmM0ZsNXhhT1Z0VTllazRvU2VGMm5RSTl6WUJmWXJBWWV2blpv?=
- =?utf-8?B?OGNOSTArVFg5cWZCempLckt3dHJWWGluM1lvdUFDUUY3RCt6OXI5YnJ3aElR?=
- =?utf-8?B?NjY4M1hLRUVZcHlzTXU4WW1BenRLNDQ3QndoZ01xOTNKWDBYWHJ4VUtRRnIy?=
- =?utf-8?B?NktEOG1zaEIrVUY0MlI3cDlEcHRsWGs5Tkt4UWtiN1MxY1l6Qks1TUNuM3cx?=
- =?utf-8?B?Tms5OWRXK1lheXM4RVRZemdvVUkwUmV4dGZhaGZlSzlYL2xKVGo2bGk3Z3pl?=
- =?utf-8?B?UDI5TGR3MVpxdHhBOWExYy9peGp1NUZZeDdGWFFLd0xTSU8wMmhUZDdZSkF2?=
- =?utf-8?B?S2hXUjdUL2luTmljMllsN05VYm5uTEtqMGtBRVBvbmU0ODA0c2JtdkRncVJE?=
- =?utf-8?B?d2NSZllSSWtFdGVrWHFGdWxiY0NDMENnUkpURkl4cSsxWGNLcWtFRG1yQWR3?=
- =?utf-8?B?WWxRMk9hZXdPeUhtVFc0TDBMYWozWkJqTGRQdDJyWkZYS295U3pENXFQWE1o?=
- =?utf-8?B?aDVKWHhPbjZJNUVMbzdHMWlaWk5hYW8wQ0VIZzAvN0pWME8remJJTjAzSUFt?=
- =?utf-8?B?M0hrendnd1M3UVp6K2ZQc3pBeEIrKy9PZ2tJaDFycW9pVGkveXJ6cU5USkZw?=
- =?utf-8?B?V0hGcXV2QkVWOTdpTHVqZ0FVSndGT3kycFdFbkEzdlNoT1h6dzN1ejZzbGN1?=
- =?utf-8?B?alZXSGJEbEF0OUxZZmIxSjJtMVRrTWQzOXlXN1NCYk5EdmlpM1lIWmdmMG5a?=
- =?utf-8?B?OHdHQUFMU2U2b2dzL2xUQlhia2JnMmo2dkwxRklPN1pVNmtCNUtHMElmdHhS?=
- =?utf-8?B?LzhVbmo5S2lIMmh6QkpVRkpHRmRIMTR3UDVYMG9TM2FCRENEVmZtakYrTXBa?=
- =?utf-8?B?czNpdEdsVUxXN3FjdHh3WnMzSC9NNEVMd2RPalEzL1dYTDlEd0RFS2VmNUZE?=
- =?utf-8?B?YVpVL2JteGJHVUZuaDJHTFhkNzM0Z0R4YjRFOExFQytVY1BIc2dTckpnSVUz?=
- =?utf-8?B?VktjNEpITXFuSWpObHBCTVlDRm5lVENEaFFEYXEwU01xRXJFTFVBWGR4WlVa?=
- =?utf-8?B?VytQYWRGK1FhU0ZGbVljN1J2V3RJeVlzTHgzZ0pXRFVxWFV4YjdpczNmNTNl?=
- =?utf-8?B?OVJYTFF1Z1E0WFlNQXAvanJCMlQzQi9Zc2VCeS96a0ZUZHpmejdoQWJRZTBz?=
- =?utf-8?B?blZEZGNaZkYzRjZ6M0ZrRFpZdHN2Vy9SNmlOUHVQemgzTnNPbEttNHh3Q3RO?=
- =?utf-8?B?c2ZGOE1TK2N2VVpZd0RRMHVxd3RUUFVkNmVyWVE5SjdtRVE1ZEorOGxmVnFx?=
- =?utf-8?B?YWhVNFdEdjBOcFc0Qm9ZVDdsdVkrOExmR09vS29PREhEWXgyR1gxcG5lZ3NS?=
- =?utf-8?B?eUthUjNFV2tZYUNMRTcxQlJsY1NOb0R6MVVGa09MMHpjNGgwWXNIMmwrczV2?=
- =?utf-8?B?SUdUK0JVeVpTMG5HcnE5ZEZHc21XMDhjWVhGSXNmU3JHeHZ4RzVrMGd0RFpm?=
- =?utf-8?B?UGhGa2pmalAvazkvbGc3cklYSmoySlRNMjQ5SFJXMTVLOEdQUmdlN1crdjJa?=
- =?utf-8?B?TjRnV05teUFxaDU5Y2gwb3hZM3habUpuOWZCZ2M4QmRiQ0FxR3NsdURjVVQx?=
- =?utf-8?B?UzJnZTZreHBlWUVINFNadmp2WEluR2pHTUhVR2tLQTVKS05rNWFiTTFueWdw?=
- =?utf-8?B?SUUwRTRDNURIdUdkTHlKaG14ZTNvQ29vSm82UlZ2dWI0RUxmS0xSMGVYTW13?=
- =?utf-8?B?TllVdWNWeTZsMThNRTVyNjQzMmp3dVZGRzV2N1p4M01mdlIxcnhyYTV3em5v?=
- =?utf-8?B?RHJnOEZUQ0NRdVNJN3NyL1E2QzMwaFREOU1IdG1MNmVvTG9MdjJqWXhLN3Qx?=
- =?utf-8?B?bGsxck9kUmVLQ3QvWGJCZjVjTXlvemltYmpraVU5bzN1RTRZaTBZMC85eWV0?=
- =?utf-8?B?VVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9E59AB1F5F031C4993F441958C4A4AFF@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+4uiVUilp8V+2dWUJ3ScSauHNET6hMDt6ewnO9W68jgXMTvhiChHPBnc0Nba?=
+ =?us-ascii?Q?5uLK3D5Qhd8WF+mdHHuCFnckRvT5kMIhnAHz1fGfJV3B8pqo66R8eAQ3Cu0c?=
+ =?us-ascii?Q?7EGzIF5+MxPVvAnP6Y4i62pgX9XL/vs9CTJfdFNu+MgRlESkk4rfBmfEA6p6?=
+ =?us-ascii?Q?315lbeO8T14cJ2Y1KlQbWKtS2XRxRQqNoTF2LFE1n7UbYvgDbcNewsbxRJXB?=
+ =?us-ascii?Q?fW1ynZukVvUkKrUheesp3QzJKwTIgjdmPZA47vx9vLAJ7RFZBLZaaE4p7X8S?=
+ =?us-ascii?Q?CalchC3IYRco3ocM9EsCONF2UjdcYFll+MOcYB2yCY9MVBaucd86ODFWCQr4?=
+ =?us-ascii?Q?sgwGxoDDW9Yfdwtds89RDANXbV3RRviEU/QvMbZ8PMhEuXm7HNsjjqvg4HF3?=
+ =?us-ascii?Q?WrisCEH8CsS/SJ9+B5Egd2tAPNWM0aE6dPMoKm8qwLN44mwzsOqym9j6v0Bi?=
+ =?us-ascii?Q?G4EJpvzi5WdO8zVwlkvpSUhdHb6pCVWTuyGmWCFpEIbaSG3klYtls/R6SQuL?=
+ =?us-ascii?Q?BvyGS+MgZRrCRQNbkJbUjghiPMv4h1TzYdy+zM7ugQ3UQyrIDv9CWnRf+EgS?=
+ =?us-ascii?Q?2EqRzXPX7TabD0O92pVE7AKEFmSCuclIZNG5KoRce8hZGSRt8JJvUczA1uER?=
+ =?us-ascii?Q?89Bc0GuwzxD3YH2gCvci5OPwxV1/twbyCree4GUOT4Rv0LLPWwYlggw+r20j?=
+ =?us-ascii?Q?qPtGXqTh0S9Zn9U0HS9qCb9raUOFzPJsAdjIoIIz3/+0K49DZc9BQfeX+mcv?=
+ =?us-ascii?Q?soPE0+EiWvzEHaBVPZReKVlrgVvvdQ/FKi6jRmQ+H7boApnjhYiasnkQsvW1?=
+ =?us-ascii?Q?SJsvCUbHvWIc/DFE4MxNC4omYF9w/noABRhrC/AFT7GlvvdSayqDCzbVnLJ9?=
+ =?us-ascii?Q?XorvIxX/nFSdzXGZP/Y8c52tZKqoRaBRRr/4Qrz9IYftZ5bODffBw0zpqIb3?=
+ =?us-ascii?Q?mZoyekEEOYLo56fZ4iIjVC/bN09OEIkgB1e4r8pM5hPYbIwkzbBlGTfF/KcN?=
+ =?us-ascii?Q?wGme2xOqpcVK3jWmUIehPkHBr4S/NTsHAZFnXZIvY/Jn/Mh/B+qJ7g3BVS+m?=
+ =?us-ascii?Q?7lq01RQpn52qc29EYlkAQELrYpJkRB7y3sk8z18lJGohFZYMbKTMV7LuAjmo?=
+ =?us-ascii?Q?n8nmKaJxxE6lPQf/s0ntYOnsci9wZiAN5shX1zXWT6KJzHJqyAJof2IV0Feq?=
+ =?us-ascii?Q?gUxSlTM4TIgKHclKiJxZ239ZTXcKpNr7XwKJ//Llpc2X3Q/6HJT96p5A1oiK?=
+ =?us-ascii?Q?cgzyhO4ODphm8wAyiVNRX4xEftYWsM7J0yoK1dnPUgXwhwN6YmR5qpgKMcJy?=
+ =?us-ascii?Q?ihPdCipO326AEitRfecj/puTI3w8a9vNrjOuS2lQXo5xRcraXDmX3D6SBs71?=
+ =?us-ascii?Q?eHqeEwxMPJVIpI3ct9UINDAetqfkgJvBzH7l0jpUtUPg49MueT38CvCuZgJm?=
+ =?us-ascii?Q?xs69um/vQgo+nhm8LinbWhjAPjwLXeKHFFK1at4vjfhgJ2ORcbMte8/3cWvs?=
+ =?us-ascii?Q?expDo6Jbmgz6XkLf9T+nwe2qP3GqaaSBnZKOeD+r3kvIgetNYI6NvJ2y+9zm?=
+ =?us-ascii?Q?W6WCjB2K46eJTnOzhWs=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY0PR03MB6356.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 964a12ef-715b-4fb8-1b40-08dbb40409c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 02:49:23.9945
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 019e0d65-aedf-49a0-581f-08dbb40411f5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 02:49:37.6751
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3PduhPuKdr9XefN58jhJvigJDBHXt1/0qUd87TGw2cSiPgnI99CnePc4Aq3JmbYrpyinv/bF6RaXcJ12Ie8F/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR03MB7329
-X-MTK:  N
+X-MS-Exchange-CrossTenant-userprincipalname: Tyn8ncdINyY5wlr1aOEhaMd8gmuHCDjX4pRMfxktvvUkIKjUDXDc6u9v3bZMydRxSu51LLB61sNJvAvjf+ZMBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA5LTEyIGF0IDEwOjIzICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
-b3RlOg0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtz
-IG9yIG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRl
-ciBvciB0aGUgY29udGVudC4NCj4gIE9uIDEyLzA5LzIwMjMgMDk6NTcsIE1vdWR5IEhvIHdyb3Rl
-Og0KPiA+IEFkZCBkZXZpY2Ugbm9kZXMgZm9yIE1lZGlhIERhdGEgUGF0aCAzIChNRFAzKSBtb2R1
-bGVzLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1vdWR5IEhvIDxtb3VkeS5ob0BtZWRpYXRl
-ay5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTk1
-LmR0c2kgfCAzNzgNCj4gKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5n
-ZWQsIDM3OCBpbnNlcnRpb25zKCspDQo+IA0KPiBXaHkgaXMgdGhpcyB0YXJnZXRpbmcgbWVkaWE/
-IE5vLCBkb24ndC4gRFRTIGdvZXMgdmlhIFNvQywgbm90IG1lZGlhLg0KPiBEb24ndCBtaXggcGF0
-Y2hlcy4NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQo+IA0KDQpIaSBLcnp5c3p0
-b2YsDQoNCk15IGFwb2xvZ2llcy4gSSdsbCBzcGxpdCB0aGVzZSBEVFMgaW50byBzZXBhcmF0ZSBz
-ZXJpZXMuDQoNClNpbmNlcmVseSwNCk1vdWR5DQo=
+> Subject: Re: [PATCH V2] pci: introduce static_nr to indicate domain_nr fr=
+om
+> which IDA
+>=20
+> On Wed, Sep 13, 2023 at 01:24:26AM +0000, Peng Fan wrote:
+> > > Subject: Re: [PATCH V2] pci: introduce static_nr to indicate
+> > > domain_nr from which IDA
+> > >
+> > > On Tue, Aug 15, 2023 at 09:37:44AM +0800, Peng Fan (OSS) wrote:
+> > > > From: Peng Fan <peng.fan@nxp.com>
+> > > >
+> > > > When PCI node was created using an overlay and the overlay is
+> > > > reverted/destroyed, the "linux,pci-domain" property no longer
+> > > > exists, so of_get_pci_domain_nr will return failure.
+> > >
+> > > I'm not familiar with how overlays work.  What's the call path where
+> > > the overlay is removed?  I see an of_overlay_remove(), but I don't
+> > > see any callers except test cases.
+> >
+> > We are using an out of tree hypervisor driver:
+> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgit=
+h
+> >
+> ub.com%2Fsiemens%2Fjailhouse%2Fblob%2Fmaster%2Fdriver%2Fpci.c%23L
+> 483&d
+> >
+> ata=3D05%7C01%7Cpeng.fan%40nxp.com%7C1bf0364c585f42dae7f108dbb3fe
+> fcc4%7C
+> >
+> 686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63830167996269745
+> 6%7CUnknow
+> >
+> n%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha
+> WwiLC
+> >
+> JXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DraIsz2HIH%2FQ0nmolBBwd81
+> WxQh2vmFeXN
+> > t3n6OIQaSU%3D&reserved=3D0
+> > >
+> > > I guess the problem happens in a PCI host bridge remove path, e.g.,
+> > >
+> > >   pci_host_common_remove
+> > >     pci_remove_root_bus
+> > >       pci_bus_release_domain_nr
+> > >         of_pci_bus_release_domain_nr
+> > >
+> > > But I don't know how that's related to the overlay removal.
+> >
+> > When the overlay node got removed, the device removal will be invoked
+> > and the domain number indicated by linux,pci-domain should also get fre=
+ed.
+> >
+> > But actually the domain number not got freed because of bug as this
+> > patch shows. "of_pci_bus_release_domain_nr will actually use the
+> > dynamic IDA, even if the IDA was allocated in static IDA."
+> >
+> > So after the overlay node got destroyed and our test recreate the
+> > overlay node with same domain number, issue triggered, the device
+> > could not be created.
+> >
+> > > Is this an ordering issue?  It seems possibly problematic that the
+> > > OF overlay is destroyed before the device it describes (e.g., the
+> > > host
+> >
+> > No. it is "of_pci_bus_release_domain_nr will actually use the dynamic
+> > IDA, even if the IDA was allocated in static IDA "
+>=20
+> Yes, that's the *symptom*, to be sure.  My question was why the overlay w=
+as
+> removed before the host bridge.
+
+I am not sure.
+I added a dump_stack, would this help to understand?
+root@imx93evk:~# jailhouse disable
+[  595.150529] CPU: 1 PID: 582 Comm: jailhouse Tainted: G           O      =
+ 6.5.0-rc4-next-20230804-05021-g3d4cc14b42ef-dirty #355
+[  595.161998] Hardware name: NXP i.MX93 11X11 EVK board (DT)
+[  595.167475] Call trace:
+[  595.169908]  dump_backtrace+0x94/0xec
+[  595.173573]  show_stack+0x18/0x24
+[  595.176884]  dump_stack_lvl+0x48/0x60
+[  595.180541]  dump_stack+0x18/0x24
+[  595.183843]  pci_bus_release_domain_nr+0x34/0x84
+[  595.188453]  pci_remove_root_bus+0xa0/0xa4
+[  595.192544]  pci_host_common_remove+0x28/0x40
+[  595.196895]  platform_remove+0x54/0x6c
+[  595.200641]  device_remove+0x4c/0x80
+[  595.204209]  device_release_driver_internal+0x1d4/0x230
+[  595.209430]  device_release_driver+0x18/0x24
+[  595.213691]  bus_remove_device+0xcc/0x10c
+[  595.217686]  device_del+0x15c/0x41c
+[  595.221170]  platform_device_del.part.0+0x1c/0x88
+[  595.225861]  platform_device_unregister+0x24/0x40
+[  595.230557]  of_platform_device_destroy+0xfc/0x10c
+[  595.235344]  of_platform_notify+0x13c/0x178
+[  595.239518]  blocking_notifier_call_chain+0x6c/0xa0
+[  595.244389]  __of_changeset_entry_notify+0x148/0x16c
+[  595.249346]  of_changeset_revert+0xa8/0xcc
+[  595.253437]  jailhouse_pci_virtual_root_devices_remove+0x50/0x74 [jailho=
+use]
+[  595.260484]  jailhouse_cmd_disable+0x70/0x1ac [jailhouse]
+[  595.265883]  jailhouse_ioctl+0x60/0xf0 [jailhouse]
+[  595.270674]  __arm64_sys_ioctl+0xac/0xf0
+[  595.274595]  invoke_syscall+0x48/0x114
+[  595.278336]  el0_svc_common.constprop.0+0xc4/0xe4
+>=20
+> The current ordering is this, where A happens before B:
+>=20
+>   A overlay is removed
+>   B pci_host_common_remove
+>       pci_bus_release_domain_nr
+>         of_pci_bus_release_domain_nr
+>           of_get_pci_domain_nr      # fails because overlay is gone
+>           ida_free(&pci_domain_nr_dynamic_ida)
+>=20
+> But if the host bridge were removed first, the ordering would be as follo=
+ws,
+> and the problem would not occur:
+>=20
+>   B pci_host_common_remove
+>       pci_bus_release_domain_nr
+>         of_pci_bus_release_domain_nr
+>           of_get_pci_domain_nr      # succeeds in this order
+>           ida_free(&pci_domain_nr_static_ida)
+>   A overlay is removed
+>=20
+> Is there a reason the overlay should be removed before the host bridge?
+>=20
+> Obviously the overlay is loaded before the host bridge is created, and
+> symmetry would suggest that the overlay should be removed after the host
+> bridge is removed.
+
+Hmm, I need check more. But do you think this patch is fix a real issue or
+If order is did as you say above, this patch is not required anymore?
+
+Thanks,
+Peng.
+
+>=20
+> > > bridge) is removed.  I would expect the device to be removed before
+> > > the description of the device is removed.
+> > >
+> > > > Then of_pci_bus_release_domain_nr will actually use the dynamic
+> > > > IDA, even if the IDA was allocated in static IDA.
+> > > >
+> > > > Introduce a static_nr field in pci_bus to indicate whether the IDA
+> > > > is a dynamic or static in order to free the correct one.
+> > > >
+> > > > Fixes: c14f7ccc9f5d ("PCI: Assign PCI domain IDs by ida_alloc()")
+> > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > ---
+> > > >
+> > > > V2:
+> > > >  Update commit message
+> > > >  Move static_nr:1 to stay besides others :1 fields.
+> > > >
+> > > >  drivers/pci/pci.c   | 22 ++++++++++++++--------
+> > > >  include/linux/pci.h |  1 +
+> > > >  2 files changed, 15 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c index
+> > > > 60230da957e0..5c98502bcda6 100644
+> > > > --- a/drivers/pci/pci.c
+> > > > +++ b/drivers/pci/pci.c
+> > > > @@ -6881,10 +6881,10 @@ static void
+> > > of_pci_reserve_static_domain_nr(void)
+> > > >  	}
+> > > >  }
+> > > >
+> > > > -static int of_pci_bus_find_domain_nr(struct device *parent)
+> > > > +static int of_pci_bus_find_domain_nr(struct pci_bus *bus, struct
+> > > > +device *parent)
+> > > >  {
+> > > >  	static bool static_domains_reserved =3D false;
+> > > > -	int domain_nr;
+> > > > +	int domain_nr, ret;
+> > > >
+> > > >  	/* On the first call scan device tree for static allocations. */
+> > > >  	if (!static_domains_reserved) {
+> > > > @@ -6892,6 +6892,8 @@ static int of_pci_bus_find_domain_nr(struct
+> > > device *parent)
+> > > >  		static_domains_reserved =3D true;
+> > > >  	}
+> > > >
+> > > > +	bus->static_nr =3D 0;
+> > > > +
+> > > >  	if (parent) {
+> > > >  		/*
+> > > >  		 * If domain is in DT, allocate it in static IDA.  This @@ -
+> > > 6899,10
+> > > > +6901,14 @@ static int of_pci_bus_find_domain_nr(struct device
+> > > > +*parent)
+> > > >  		 * in DT.
+> > > >  		 */
+> > > >  		domain_nr =3D of_get_pci_domain_nr(parent->of_node);
+> > > > -		if (domain_nr >=3D 0)
+> > > > -			return ida_alloc_range(&pci_domain_nr_static_ida,
+> > > > -					       domain_nr, domain_nr,
+> > > > -					       GFP_KERNEL);
+> > > > +		if (domain_nr >=3D 0) {
+> > > > +			ret =3D ida_alloc_range(&pci_domain_nr_static_ida,
+> > > > +					      domain_nr, domain_nr,
+> > > GFP_KERNEL);
+> > > > +			if (ret >=3D 0)
+> > > > +				bus->static_nr =3D 1;
+> > > > +
+> > > > +			return ret;
+> > > > +		}
+> > > >  	}
+> > > >
+> > > >  	/*
+> > > > @@ -6920,7 +6926,7 @@ static void
+> > > > of_pci_bus_release_domain_nr(struct
+> > > pci_bus *bus, struct device *par
+> > > >  		return;
+> > > >
+> > > >  	/* Release domain from IDA where it was allocated. */
+> > > > -	if (of_get_pci_domain_nr(parent->of_node) =3D=3D bus->domain_nr)
+> > > > +	if (bus->static_nr)
+> > > >  		ida_free(&pci_domain_nr_static_ida, bus->domain_nr);
+> > > >  	else
+> > > >  		ida_free(&pci_domain_nr_dynamic_ida, bus->domain_nr);
+> > > @@ -6928,7
+> > > > +6934,7 @@ static void of_pci_bus_release_domain_nr(struct pci_bus
+> > > > *bus, struct device *par
+> > > >
+> > > >  int pci_bus_find_domain_nr(struct pci_bus *bus, struct device
+> > > > *parent)  {
+> > > > -	return acpi_disabled ? of_pci_bus_find_domain_nr(parent) :
+> > > > +	return acpi_disabled ? of_pci_bus_find_domain_nr(bus, parent) :
+> > > >  			       acpi_pci_bus_find_domain_nr(bus);  }
+> > > >
+> > > > diff --git a/include/linux/pci.h b/include/linux/pci.h index
+> > > > eeb2e6f6130f..222a1729ea7e 100644
+> > > > --- a/include/linux/pci.h
+> > > > +++ b/include/linux/pci.h
+> > > > @@ -677,6 +677,7 @@ struct pci_bus {
+> > > >  	struct bin_attribute	*legacy_mem;	/* Legacy mem */
+> > > >  	unsigned int		is_added:1;
+> > > >  	unsigned int		unsafe_warn:1;	/* warned about RW1C
+> > > config write */
+> > > > +	unsigned int		static_nr:1;
+> > > >  };
+> > > >
+> > > >  #define to_pci_bus(n)	container_of(n, struct pci_bus, dev)
+> > > > --
+> > > > 2.37.1
+> > > >
