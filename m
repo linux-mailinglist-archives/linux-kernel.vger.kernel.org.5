@@ -2,153 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A09179E430
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED0979E424
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239514AbjIMJw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S239396AbjIMJv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239529AbjIMJwO (ORCPT
+        with ESMTP id S236400AbjIMJvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:52:14 -0400
-Received: from mail-m12738.qiye.163.com (mail-m12738.qiye.163.com [115.236.127.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885DF19BB;
-        Wed, 13 Sep 2023 02:52:09 -0700 (PDT)
-Received: from [10.128.10.193] (unknown [123.120.52.233])
-        by mail-m12739.qiye.163.com (Hmail) with ESMTPA id 72B584A01D2;
-        Wed, 13 Sep 2023 17:51:35 +0800 (CST)
-Message-ID: <44030794-4baa-4207-af75-4c600a3626f9@sangfor.com.cn>
-Date:   Wed, 13 Sep 2023 17:51:31 +0800
+        Wed, 13 Sep 2023 05:51:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDD7199E;
+        Wed, 13 Sep 2023 02:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XfpygDLDkqB2bwEWEf6mvs152AUbfDN+/5uofqP+Y+4=; b=rJLiFqQX9ZPumgfMZxt3b77mMh
+        kIqTT4KTKSGUgbDG5vzpSb9mupJ1p96HhW+8tiuP28tk1ljHJ1ExjTTLvk6yfh+9DVKeKfj8P73WE
+        pmevE3lxRaFzWYnJHgAcV1r26jsdlVt/iW1gkPakyiaTkM8/L5ajiqbt/cmXyt8KrHVEcgamAxN7l
+        UbqMLNgW7Vf2QroqVaWkLQq0kQcFkurRughS7zVBWj76y+DXYBGE0Xx1MzdajsNsi6i58E5B1BN6Y
+        ThvYdpBJ/n5H21gOylcQB8Swhv47v93TyaQyafKIJ30T+tFdnZ9WnZ5wh1kvIND9peZ326C5Mn/Tf
+        qOd09D8w==;
+Received: from [89.27.170.32] (helo=[127.0.0.1])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qgMXD-00D5yH-3s; Wed, 13 Sep 2023 09:51:47 +0000
+Date:   Wed, 13 Sep 2023 11:51:46 +0200
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Like Xu <like.xu.linux@gmail.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oliver.upton@linux.dev>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v5=5D_KVM=3A_x86/tsc=3A_Don=27t_sync_T?= =?US-ASCII?Q?SC_on_the_first_write_in_state_restoration?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <38859747-d4f1-b4e2-98c7-bd529cd09976@gmail.com>
+References: <20230913072113.78885-1-likexu@tencent.com> <e506ceb2d837344999c4899525a3490d8c46c95b.camel@infradead.org> <90194cd0-61d8-18b9-980a-b46f903409b4@gmail.com> <461B7217-7AA7-479E-9060-772E243CB03D@infradead.org> <38859747-d4f1-b4e2-98c7-bd529cd09976@gmail.com>
+Message-ID: <6E4A54F1-B8C0-44AD-B2A9-6EDF7059D0EC@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] bpf: Using binary search to improve the
- performance of btf_find_by_name_kind
-To:     Eduard Zingerman <eddyz87@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, dinghui@sangfor.com.cn,
-        huangcun@sangfor.com.cn, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230909091646.420163-1-pengdonglin@sangfor.com.cn>
- <20ef8441084c9d5fd54f84987afa77eed7fe148e.camel@gmail.com>
- <e78dc807b54f80fd3db836df08f71c7d2fb33387.camel@gmail.com>
- <CAADnVQL0O_WFYcYQRig7osO0piPdOH2yHkdH0CxCfNV7NkA0Lw@mail.gmail.com>
- <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
-From:   pengdonglin <pengdonglin@sangfor.com.cn>
-In-Reply-To: <035ab912d7d6bd11c54c038464795da01dbed2de.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVlDGEseVk8YS04aHUkZTUJDTVUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUpJSFVKSUtVTklVSUhIWVdZFhoPEhUdFFlBWU9LSFVKSEpCSE9VSktLVUtZBg++
-X-HM-Tid: 0a8a8df40bf7b212kuuu72b584a01d2
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6Pww4KD1IHQ8CGCk4Pjg6
-        ExkKFAJVSlVKTUJPTkJDTUJNTkhLVTMWGhIXVQseFRwfFBUcFxIVOwgaFRwdFAlVGBQWVRgVRVlX
-        WRILWUFZSklIVUpJS1VOSVVJSEhZV1kIAVlBTUxISTcG
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/9/13 1:03, Eduard Zingerman wrote:
-> On Tue, 2023-09-12 at 09:40 -0700, Alexei Starovoitov wrote:
->> On Tue, Sep 12, 2023 at 7:19 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->>>
->>> On Tue, 2023-09-12 at 16:51 +0300, Eduard Zingerman wrote:
->>>> On Sat, 2023-09-09 at 02:16 -0700, Donglin Peng wrote:
->>>>> Currently, we are only using the linear search method to find the type id
->>>>> by the name, which has a time complexity of O(n). This change involves
->>>>> sorting the names of btf types in ascending order and using binary search,
->>>>> which has a time complexity of O(log(n)). This idea was inspired by the
->>>>> following patch:
->>>>>
->>>>> 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
->>>>>
->>>>> At present, this improvement is only for searching in vmlinux's and
->>>>> module's BTFs, and the kind should only be BTF_KIND_FUNC or BTF_KIND_STRUCT.
->>>>>
->>>>> Another change is the search direction, where we search the BTF first and
->>>>> then its base, the type id of the first matched btf_type will be returned.
->>>>>
->>>>> Here is a time-consuming result that finding all the type ids of 67,819 kernel
->>>>> functions in vmlinux's BTF by their names:
->>>>>
->>>>> Before: 17000 ms
->>>>> After:     10 ms
->>>>>
->>>>> The average lookup performance has improved about 1700x at the above scenario.
->>>>>
->>>>> However, this change will consume more memory, for example, 67,819 kernel
->>>>> functions will allocate about 530KB memory.
->>>>
->>>> Hi Donglin,
->>>>
->>>> I think this is a good improvement. However, I wonder, why did you
->>>> choose to have a separate name map for each BTF kind?
->>>>
->>>> I did some analysis for my local testing kernel config and got such numbers:
->>>> - total number of BTF objects: 97350
->>>> - number of FUNC and STRUCT objects: 51597
->>>> - number of FUNC, STRUCT, UNION, ENUM, ENUM64, TYPEDEF, DATASEC objects: 56817
->>>>    (these are all kinds for which lookup by name might make sense)
->>>> - number of named objects: 54246
->>>> - number of name collisions:
->>>>    - unique names: 53985 counts
->>>>    - 2 objects with the same name: 129 counts
->>>>    - 3 objects with the same name: 3 counts
->>>>
->>>> So, it appears that having a single map for all named objects makes
->>>> sense and would also simplify the implementation, what do you think?
->>>
->>> Some more numbers for my config:
->>> - 13241 types (struct, union, typedef, enum), log2 13241 = 13.7
->>> - 43575 funcs, log2 43575 = 15.4
->>> Thus, having separate map for types vs functions might save ~1.7
->>> search iterations. Is this a significant slowdown in practice?
->>
->> What do you propose to do in case of duplicates ?
->> func and struct can have the same name, but they will have two different
->> btf_ids. How do we store them ?
->> Also we might add global vars to BTF. Such request came up several times.
->> So we need to make sure our search approach scales to
->> func, struct, vars. I don't recall whether we search any other kinds.
->> Separate arrays for different kinds seems ok.
->> It's a bit of code complexity, but it's not an increase in memory.
-> 
-> Binary search gives, say, lowest index of a thing with name A, then
-> increment index while name remains A looking for correct kind.
-> Given the name conflicts info from above, 99% of times there would be
-> no need to iterate and in very few cases there would a couple of iterations.
 
-Yeah, I agree.
 
-> 
-> Same logic would be necessary with current approach if different BTF
-> kinds would be allowed in BTF_ID_NAME_* cohorts. I figured that these
-> cohorts are mainly a way to split the tree for faster lookups, but
-> maybe that is not the main intent.
-Yeah, I thought it may be faster for some kinds, but I didn't perform a
-comparative test.
+On 13 September 2023 11:43:56 CEST, Like Xu <like=2Exu=2Elinux@gmail=2Ecom=
+> wrote:
 
-> 
->> With 13k structs and 43k funcs it's 56k * (4 + 4) that's 0.5 Mbyte
->> extra memory. That's quite a bit. Anything we can do to compress it?
-> 
-> That's an interesting question, from the top of my head:
-> pre-sort in pahole (re-assign IDs so that increasing ID also would
-> mean "increasing" name), shouldn't be that difficult.
+>> Why? Can't we treat an explicit zero write just the same as when the ke=
+rnel does it?
+>
+>Not sure if it meets your simplified expectations:
 
-Thank you, I agree.
+Think that looks good, thanks=2E One minor nit=2E=2E=2E
 
-> 
->> Folks requested vmlinux BTF to be a module, so it's loaded on demand.
->> BTF memory consumption is a concern to many.
->> I think before we add these per-kind search arrays we better make
->> BTF optional as a module.
-> 
-> 
 
+>diff --git a/arch/x86/kvm/x86=2Ec b/arch/x86/kvm/x86=2Ec
+>index 6c9c81e82e65=2E=2E0f05cf90d636 100644
+>--- a/arch/x86/kvm/x86=2Ec
+>+++ b/arch/x86/kvm/x86=2Ec
+>@@ -2735,20 +2735,35 @@ static void kvm_synchronize_tsc(struct kvm_vcpu *=
+vcpu, u64 data)
+> 			 * kvm_clock stable after CPU hotplug
+> 			 */
+> 			synchronizing =3D true;
+>-		} else {
+>+		} else if (!data || kvm->arch=2Euser_set_tsc) {
+
+If data is zero here, won't the first if() case have been taken, and set s=
+ynchronizing=3Dtrue?
+
+So this is equivalent to "else if (kvm->arch=2Euser_set_tsc)"=2E (Which is=
+ fine and what what I intended)=2E
+
+> 			u64 tsc_exp =3D kvm->arch=2Elast_tsc_write +
+> 						nsec_to_cycles(vcpu, elapsed);
+> 			u64 tsc_hz =3D vcpu->arch=2Evirtual_tsc_khz * 1000LL;
+> 			/*
+>-			 * Special case: TSC write with a small delta (1 second)
+>-			 * of virtual cycle time against real time is
+>-			 * interpreted as an attempt to synchronize the CPU=2E
+>+			 * Here lies UAPI baggage: when a user-initiated TSC write has
+>+			 * a small delta (1 second) of virtual cycle time against the
+>+			 * previously set vCPU, we assume that they were intended to be
+>+			 * in sync and the delta was only due to the racy nature of the
+>+			 * legacy API=2E
+>+			 *
+>+			 * This trick falls down when restoring a guest which genuinely
+>+			 * has been running for less time than the 1 second of imprecision
+>+			 * which we allow for in the legacy API=2E In this case, the first
+>+			 * value written by userspace (on any vCPU) should not be subject
+>+			 * to this 'correction' to make it sync up with values that only
+>+			 * from from the kernel's default vCPU creation=2E Make the 1-second
+>+			 * slop hack only trigger if flag is already set=2E
+>+			 *
+>+			 * The correct answer is for the VMM not to use the legacy API=2E
+> 			 */
+> 			synchronizing =3D data < tsc_exp + tsc_hz &&
+> 					data + tsc_hz > tsc_exp;
+> 		}
+> 	}
+>
+>+	if (data)
+>+		kvm->arch=2Euser_set_tsc =3D true;
+>+
+> 	/*
+> 	 * For a reliable TSC, we can match TSC offsets, and for an unstable
+> 	 * TSC, we add elapsed time in this computation=2E  We could let the
+>@@ -5536,6 +5551,7 @@ static int kvm_arch_tsc_set_attr(struct kvm_vcpu *v=
+cpu,
+> 		tsc =3D kvm_scale_tsc(rdtsc(), vcpu->arch=2El1_tsc_scaling_ratio) + of=
+fset;
+> 		ns =3D get_kvmclock_base_ns();
+>
+>+		kvm->arch=2Euser_set_tsc =3D true;
+> 		__kvm_synchronize_tsc(vcpu, offset, tsc, ns, matched);
+> 		raw_spin_unlock_irqrestore(&kvm->arch=2Etsc_write_lock, flags);
+>
+>
