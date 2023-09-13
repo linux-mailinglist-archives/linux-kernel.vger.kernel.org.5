@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53ABF79F491
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BAF79F49A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 00:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbjIMWDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 18:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45246 "EHLO
+        id S232629AbjIMWEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 18:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjIMWDB (ORCPT
+        with ESMTP id S229645AbjIMWEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 18:03:01 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2121981
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:02:57 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59be9a09c23so2370837b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 15:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1694642576; x=1695247376; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A4SsNeA7U0usJeRe6/MvYC8slcbYiO1urihjwDxXGIg=;
-        b=WUKOjrBZZkIezeRKvDw/FI6bWpoyr2JEDvLSjlESt5gvLlr8FlAKafkL0oc5cHJ6Cw
-         kuN2EKDZkVGaJT4erj4TPs7MZDd+suOR+vBMbukHJI6jGl36OL6o6wRGGA5aGosbFBgf
-         d/NNHok3JCrYLk8bf4Zk/twqEECObr3UZaL4Uu5gaNNnc5XHM6jnie2DPNiajFnL5B81
-         AoF5um8XjpJtv+ia9n8RTb43MjO1SsEpcBIU9em2DZypraRVZVpGo4pfA23nIFxxgUlF
-         /ASjBquc6KZ9qKcNie/GRQU/bpWNOTabcWsGQu0gv4gB3kD1LixKEr4/6NRJYrlVk4e1
-         A6bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694642576; x=1695247376;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A4SsNeA7U0usJeRe6/MvYC8slcbYiO1urihjwDxXGIg=;
-        b=wPZWSVUPKHrxhpssriTpAQU3P2RC4NX7QDCC/tw+THQUF1xl1U07zJwpQOF9q/GyY2
-         9iYWI3l+5NCyqjzdjSj9LAKsFd71jQX7VBFEEa7swMK8i8X+0eQNTTWFSI0VvGtN8KCW
-         rpHmH3XFuU1eT/iq62y5GEPhKU1Oflc0z+oYnrHxRnaWwmeFoMd8sxPTOvvxTHihRxHn
-         zOtnaY9FoSJFFQrCZ2/KPBLbJgTJfMCGq583W4Ee0X9ffUWyDaT9y3arf0Bte6cD9x2X
-         3dbLjfNd5509JTvXgSIkoZmYc3rGyteyxhO/ijofJXs0J4dl14IhAPvBiHKI72mR8hX/
-         xRJw==
-X-Gm-Message-State: AOJu0YzsMyOWrJEXfNH9AMXLr+BFZm4SzenNXW1+OImGwQaTgENPKmXb
-        oWR/F1v8IGQVk7Ynrck3ddJPPZhlNP12vapxtDf4
-X-Google-Smtp-Source: AGHT+IEWoV5AQmrQ+WZDEiLviSL6/m45o/xQQJ5rA2gxQNy6tVzjhvfWH1S1L3H9j4tZAE0UGwJ0pkSfgQONBfyaGzQ=
-X-Received: by 2002:a0d:e406:0:b0:586:9ce4:14e8 with SMTP id
- n6-20020a0de406000000b005869ce414e8mr3142470ywe.52.1694642576622; Wed, 13 Sep
- 2023 15:02:56 -0700 (PDT)
+        Wed, 13 Sep 2023 18:04:49 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDFD173A;
+        Wed, 13 Sep 2023 15:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1694642678;
+        bh=o5UOedjQ0eThaD+EoFINpueurA3AJmuhtUKUTG2QjzI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=G62FAX7IioveCgH7PnnSQKwBhITumXMynU5DZ/zvr0c2IWgiBpqgPO0xrg/3WrxiZ
+         IGxk8Jp8H8xInh2Lv8um45dsicm03p9vXFDy37ulESkmWDMYoIu09bxu9gfx9nLV0G
+         omQ93X17x2+zqZiC3bMo9IkzNec0vfPUiMILnW2PcKV18e/4S46PWb4tr6+THmN93i
+         tjc2/1JS0pKQaD/9SgZPxMLt34oGd01/uspJYTWQ3+uTczbnl75Tv4AgNEaIJG24oY
+         oitQ8y/lReSYKB84a2DLt/YAHQYMzJWEafWf8IsC7kjQU8esaKaPNEViCJrYo6Y3D6
+         KdoY7xspe6a7A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmDyG4XSfz4wbj;
+        Thu, 14 Sep 2023 08:04:38 +1000 (AEST)
+Date:   Thu, 14 Sep 2023 08:04:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the v4l-dvb-next
+ tree
+Message-ID: <20230914080429.31008f8c@canb.auug.org.au>
 MIME-Version: 1.0
-References: <ZOWtBTKkfcc8sKkY@gmail.com> <202308242024.q4KF0YIN-lkp@intel.com>
-In-Reply-To: <202308242024.q4KF0YIN-lkp@intel.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 13 Sep 2023 18:02:45 -0400
-Message-ID: <CAHC9VhRWL6VDLGVU_L=v_T7KzAf911YJvy8_V2NVUE+Bp-i0Og@mail.gmail.com>
-Subject: Re: [PATCH] lsm: constify the 'mm' parameter in security_vm_enough_memory_mm()
-To:     kernel test robot <lkp@intel.com>
-Cc:     Khadija Kamran <kamrankhadijadj@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        ztarkhani@microsoft.com, alison.schofield@intel.com,
-        oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/FUpps_TXheCfq+8REMeRn39";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 9:04=E2=80=AFAM kernel test robot <lkp@intel.com> w=
-rote:
->
-> Hi Khadija,
->
-> kernel test robot noticed the following build errors:
->
-> [auto build test ERROR on akpm-mm/mm-everything]
-> [also build test ERROR on pcmoore-selinux/next pcmoore-audit/next linus/m=
-aster v6.5-rc7 next-20230824]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Khadija-Kamran/lsm=
--constify-the-mm-parameter-in-security_vm_enough_memory_mm/20230823-145455
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-ev=
-erything
-> patch link:    https://lore.kernel.org/r/ZOWtBTKkfcc8sKkY%40gmail.com
-> patch subject: [PATCH] lsm: constify the 'mm' parameter in security_vm_en=
-ough_memory_mm()
-> config: arc-randconfig-001-20230824 (https://download.01.org/0day-ci/arch=
-ive/20230824/202308242024.q4KF0YIN-lkp@intel.com/config)
-> compiler: arc-elf-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230824/202308242024=
-.q4KF0YIN-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308242024.q4KF0YIN-lkp=
-@intel.com/
->
-> All errors (new ones prefixed by >>):
->
-> >> mm/util.c:928:5: error: conflicting types for '__vm_enough_memory'; ha=
-ve 'int(struct mm_struct *, long int,  int)'
->      928 | int __vm_enough_memory(struct mm_struct *mm, long pages, int c=
-ap_sys_admin)
->          |     ^~~~~~~~~~~~~~~~~~
->    In file included from mm/util.c:2:
->    include/linux/mm.h:3199:12: note: previous declaration of '__vm_enough=
-_memory' with type 'int(const struct mm_struct *, long int,  int)'
->     3199 | extern int __vm_enough_memory(const struct mm_struct *mm, long=
- pages, int cap_sys_admin);
->          |            ^~~~~~~~~~~~~~~~~~
+--Sig_/FUpps_TXheCfq+8REMeRn39
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It looks like you will also need to update the __vm_enough_memory()
-definition to take a const mm_struct parameter.  I looked quickly at
-the function just now and I don't think that will be a problem.
+Hi all,
+
+Commits
+
+  99de9266e8ef ("media: uvcvideo: Fix OOB read")
+  14f36ff244d8 ("media: via: Use correct dependency for camera sensor drive=
+rs")
+  a498bdab9b61 ("media: v4l: Use correct dependency for camera sensor drive=
+rs")
+  cb655c1231ca ("media: pci: ivsc: Select build dependencies")
+  f4a868d4fa93 ("media: cx231xx: Add EP5_BUF_SIZE and EP5_TIMEOUT_MS macros=
+")
+  12594fb031bf ("media: cx231xx: Switch to use kmemdup() helper")
+  91ec353f03cc ("media: videobuf2: fix typo: vb2_dbuf -> vb2_qbuf")
+  ca8b68a315af ("media: gspca: cpia1: shift-out-of-bounds in set_flicker")
+  ab13c53f86cf ("media: verisilicon: Do not enable G2 postproc downscale if=
+ source is narrower than destination")
+  20ab3a43a4d4 ("media: hantro: Check whether reset op is defined before us=
+e")
+  a3151c26be76 ("media: cobalt: Use list_for_each_entry() helper")
+  9ad839e1226f ("media: imx-jpeg: initiate a drain of the capture queue in =
+dynamic resolution change")
+  932f47fcee79 ("media: c8sectpfe: Use the devm_clk_get_enabled() helper fu=
+nction")
+  af44b9fcfb6b ("media: usb: siano: Use kmemdup to simplify kmalloc and mem=
+cpy logic")
+  58388a29f2fb ("media: dvb-usb: gp8psk: Remove an unnecessary ternary oper=
+ator")
+  03f06466a839 ("media: radio-wl1273: Remove an unnecessary ternary operato=
+r")
+  5ced7579b14f ("media: dvb-frontends: drx39xyj: Remove unnecessary ternary=
+ operators")
+  040060e2cf33 ("media: platform: cros-ec: Add Boxy to the match table")
+  7bd537181a9e ("media: cros-ec-cec: Add Constitution to the match table")
+  1856eed9b6f1 ("media: cros-ec-cec: Add Dibbi to the match table")
+  e4a11835ea04 ("media: cros-ec-cec: Get number of CEC ports from EC")
+  f7d0d4c5d7f7 ("media: cros-ec-cec: Allow specifying multiple HDMI connect=
+ors")
+  295ce88b2082 ("media: cros-ec-cec: Support receiving messages from multip=
+le ports")
+  34868a5ab106 ("media: cros-ec-cec: Support multiple ports in MKBP cec_eve=
+nts")
+  0a7289495852 ("media: cros-ec-cec: Support multiple ports in write comman=
+d")
+  ab0eec439a90 ("media: cros-ec-cec: Support multiple ports in set/get host=
+ commands")
+  8103cacfe0b5 ("media: cros-ec-cec: Manage an array of ports")
+  b99bdc411d12 ("media: cros-ec-cec: Use cros_ec_cmd to send host commands")
+  44de4ef42941 ("media: qcom/camss: use 1X16 formats instead of 2X8")
+  e2ef17c0b1fc ("dt-bindings: media: qcom,sdm845-venus-v2: Allow interconne=
+ct properties")
+  c474f66bf41d ("media: qcom: camss: Fix csid-gen2 for test pattern generat=
+or")
+  0359f60508d6 ("media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE when VC i=
+s greater than 3")
+  caab1680cf45 ("media: qcom: camss: Fix invalid clock enable bit disjuncti=
+on")
+  ccb20696f699 ("media: qcom: camss: Fix missing vfe_lite clocks check")
+  06f6bc968ebc ("media: qcom: camss: Fix VFE-480 vfe_disable_output()")
+  5ecfd54e099c ("media: qcom: camss: Fix VFE-17x vfe_disable_output()")
+  7e4a7f099cdf ("media: qcom: camss: Fix vfe_get() error jump")
+  7d73971878f1 ("media: qcom: camss: Fix genpd cleanup")
+  a0879d596273 ("media: qcom: camss: Fix V4L2 async notifier error path")
+  2c1bae27df78 ("media: qcom: camss: Fix pm_domain_on sequence in probe")
+
+are missing a Signed-off-by from their committers.
 
 --=20
-paul-moore.com
+Cheers,
+Stephen Rothwell
+
+--Sig_/FUpps_TXheCfq+8REMeRn39
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCMe0ACgkQAVBC80lX
+0GxTKgf/SBKU1uWtR2Oh3KkY7hlGuRPEg8CMy4oAp4EKjd46+ZvzFSIhrIkV0z+x
+btbWXW9O37G7eSDLPzj5mm1qT4hzZX3uaRtDBwFF7Idg5hBH4jy2RRsjmqQ7sqpi
+NeUKVT65srApbO156feIkxmtIxifhmK2A3OOeLPP4majOqql3Fq4ZvfOyrxpehym
+HsH367kxrklWrgJTRUX2LxbHbXVOkHiPqBdVMmc9llTBMxLFOe+SY5MQbhzZURS3
+1rMjqlX9QQDjQWBOug6v8wBrJK8JPDHTpdPxL1MIZzcv7cTjlc6GfhtxISZC518V
++RlZZjXxLJdeRwTrF9JAQ/fvg3JCFQ==
+=Qf5N
+-----END PGP SIGNATURE-----
+
+--Sig_/FUpps_TXheCfq+8REMeRn39--
