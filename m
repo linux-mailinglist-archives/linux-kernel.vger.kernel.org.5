@@ -2,160 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD9079E2F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACCE79E2F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbjIMJGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42590 "EHLO
+        id S239231AbjIMJGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239134AbjIMJGj (ORCPT
+        with ESMTP id S239220AbjIMJGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:06:39 -0400
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DA81999
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:35 -0700 (PDT)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1b07f5f7b96so7472524fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:35 -0700 (PDT)
+        Wed, 13 Sep 2023 05:06:49 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69471999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:44 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9ad8bba8125so202496066b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694596003; x=1695200803; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=npEEuvyrxe+edVufA31/hnBZZi0ug9NLaKIp4p/ndJU=;
+        b=Xvn4CJCpxccWWP327LNQr8IDea+UDcYsi8wbMOgppKzVl+7Bb9RAOmVpk71auaQoMN
+         a/fMYZenHYKZWbPrSjHLWNf84Po2md99716Vfm426BsPZbCzvDJOHcD0iGnGG0gEa/hK
+         ISd33SV34lzSw9R4Okz36hWy1PCSXklwsXtL6EAp1Q3A5ktaSFhQTrd6X5kPk+lv7N60
+         wcbNrksrKNB+OEqzLLUQbs2kT7qnd7WIrrhBqE/jbsoWXwVx5O6f++Wh10PUPBq26L3m
+         DHjShSVNe19x4p5x8ZZx+0FKGTMlqvhIvw7hL525e6q3o/SjBsZWU4uGADXL1vaoZ1fB
+         zoiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694595994; x=1695200794;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1694596003; x=1695200803;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0NW59RIKDbz8mVsGvymDfel7fBTuaoCrD+ZCQk3ssXs=;
-        b=pnkfTGoPD0GxXqkWUSNeR94bBbx4IVhYMsfV3nxpHY5TnxSdst2xJM8odJ+TgO8k2A
-         +wV4BdzsKCM0IxBwmmcytdogbD/y5UVOqm1MT8iHaw2BjHpb8dDM9OBzPszUupZAvO2V
-         fosCXkxdQ7V6l23rlFvjIED/VnRaaVUISI9aGiNGN5Epc9wfMH/4wqFQYpgaezM2BHpk
-         bgAbzsWOBWwBqp7kLxqahz918BE/xfjTAlVYtlc5tUwLIM29xvR2oNJEoZPMMAjIxJsM
-         HWbab5EmjbZ7CmQU1a5nqxEeMxv6arINXyBhlbUh3e214jO3mixzoBBjcTPLh5nqQouI
-         7GEw==
-X-Gm-Message-State: AOJu0Yzrbwk3cHY2TO81jRrpEBcYSaOj/Er7UjsJuKJucfqXtjmPimvb
-        GuUtAWhIBCKlYf+wPk3/W3GrvUqAqyADXPLS1pjScw25o5PN
-X-Google-Smtp-Source: AGHT+IEB7sUvhAKx5WqXd9NYothDm9L9bvOnVzvh78qyvkHx+I8OPHDQJw2qK9tPUo5r6VfTNCQ1uj/HkpOuP6/O8XzyyccprNeK
+        bh=npEEuvyrxe+edVufA31/hnBZZi0ug9NLaKIp4p/ndJU=;
+        b=Svsw0P1IjTlOOCJxhD13k0u7ls68VH8/kG+nURRAOqt/xPp7Ej7X+VtLfRFzMrI0Xo
+         PIxWmES4laQVpx0o1xMrpccexOHPUbJKuHiHdCr3SaDOtgIsqN2C2fWwNRwKCy6ZgI1X
+         ExCoRBMWIRVjzY62wTQjkCYZuGT0qvs8yfkyaPbUBdIemKMDJWVQCJYlDBXHA37IGkDf
+         00piodZhMwy5a82ZfzfFXh6nUsi3A2ASRFw5JhJ4voyv9yH4jUduha2xJ5aSMFdejQ+N
+         FkNVbt+TNehQZMnhl5ZelT+65962scpEbC/qJF9nvqF1Wgisn2uGXW/qW5UowbUi9d4X
+         rKyQ==
+X-Gm-Message-State: AOJu0YzBLrRf6skhFCDglJLJpXR6ZcJ8vWfQnNnDoViJGTSNoy1maiNV
+        lpBUTW2gUShnJc2T4Jmvcf4c1Q==
+X-Google-Smtp-Source: AGHT+IHW/dXSiduZfAbMj6mTqkDXHu3qLtn5ysXMD28wFKkFjNoGUtumPoAq5mYa+7vNfzsF4RlDew==
+X-Received: by 2002:a17:907:761a:b0:9a2:185b:5376 with SMTP id jx26-20020a170907761a00b009a2185b5376mr1302033ejc.49.1694596003287;
+        Wed, 13 Sep 2023 02:06:43 -0700 (PDT)
+Received: from [192.168.37.232] (178235177106.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.106])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170906528f00b00992b2c55c67sm8061434ejm.156.2023.09.13.02.06.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 02:06:42 -0700 (PDT)
+Message-ID: <912f90ee-0816-43ae-bc6f-a9a9a3e33d8a@linaro.org>
+Date:   Wed, 13 Sep 2023 11:06:40 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c788:b0:1d5:5101:e821 with SMTP id
- dy8-20020a056870c78800b001d55101e821mr598635oab.11.1694595994747; Wed, 13 Sep
- 2023 02:06:34 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 02:06:34 -0700
-In-Reply-To: <CAOQ4uxjBAG-WA+1VCdYh6O98mU3C31qMyZZFp3iRW6_yYROdWQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004e08ee060539e0a2@google.com>
-Subject: Re: [syzbot] [integrity] [overlayfs] general protection fault in d_path
-From:   syzbot <syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com>
-To:     amir73il@gmail.com, brauner@kernel.org, jlayton@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        syzkaller-bugs@googlegroups.com, zohar@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] arm64: dts: qcom: msm8916: Reserve firmware memory
+ dynamically
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20230911-msm8916-rmem-v1-0-b7089ec3e3a1@gerhold.net>
+ <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230911-msm8916-rmem-v1-4-b7089ec3e3a1@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11.09.2023 19:41, Stephan Gerhold wrote:
+> Most of the reserved firmware memory on MSM8916 can be relocated when
+> respecting the required alignment. To avoid having to precompute the
+> reserved memory regions in every board DT, describe the actual
+> requirements (size, alignment, alloc-ranges) using the dynamic reserved
+> memory allocation.
+> 
+> This approach has several advantages:
+> 
+>  1. We can define "templates" for the reserved memory regions in
+>     msm8916.dtsi and keep only device-specific details in the board DT.
+>     This is useful for the "mpss" region size for example, which varies
+>     from device to device. It is no longer necessary to redefine all
+>     firmware regions to shift their addresses.
+> 
+>  2. When some of the functionality (e.g. WCNSS, Modem, Venus) is not
+>     enabled or needed for a device, the reserved memory can stay
+>     disabled, freeing up the unused reservation for Linux.
+> 
+>  3. Devices with special requirements for one of the firmware regions
+>     are handled automatically. For example, msm8916-longcheer-l8150
+>     has non-relocatable "wcnss" firmware that must be loaded exactly
+>     at address 0x8b600000. When this is defined as a static region,
+>     the other dynamic allocations automatically adjust to a different
+>     place with suitable alignment.
+> 
+> All in all this approach significantly reduces the boilerplate necessary
+> to define the different firmware regions, and makes it easier to enable
+> functionality on the different devices.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+[...]
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-general protection fault in d_path
+>  
+>  		mpss_mem: mpss@86800000 {
+> +			/*
+> +			 * The memory region for the mpss firmware is generally
+> +			 * relocatable and could be allocated dynamically.
+> +			 * However, many firmware versions tend to fail when
+> +			 * loaded to some special addresses, so it is hard to
+> +			 * define reliable alloc-ranges.
+> +			 *
+> +			 * alignment = <0x0 0x400000>;
+> +			 * alloc-ranges = <0x0 0x86800000 0x0 0x8000000>;
+> +			 */
+Do we know of any devices that this would actually work on?
 
-general protection fault, probably for non-canonical address 0xdffffc0000000009: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000048-0x000000000000004f]
-CPU: 0 PID: 5465 Comm: syz-executor.0 Not tainted 6.6.0-rc1-syzkaller-00004-g965067e2f71e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline]
-RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
-RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
-Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
-RSP: 0018:ffffc90005056ec0 EFLAGS: 00010246
-RAX: be27ea831a7ad800 RBX: 0000000000000009 RCX: ffff88801c713b80
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90005056fd0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
-R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
-R13: 0000000000000048 R14: dffffc0000000000 R15: ffff888076dcc000
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4b67d70420 CR3: 0000000016f66000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- audit_log_d_path+0xd3/0x310 kernel/audit.c:2138
- dump_common_audit_data security/lsm_audit.c:224 [inline]
- common_lsm_audit+0x7cf/0x1a90 security/lsm_audit.c:458
- smack_log+0x421/0x540 security/smack/smack_access.c:383
- smk_tskacc+0x2ff/0x360 security/smack/smack_access.c:253
- smack_inode_getattr+0x203/0x270 security/smack/smack_lsm.c:1271
- security_inode_getattr+0xd3/0x120 security/security.c:2153
- vfs_getattr+0x2a/0x3a0 fs/stat.c:206
- ovl_getattr+0x1b1/0xf70 fs/overlayfs/inode.c:174
- ima_check_last_writer security/integrity/ima/ima_main.c:171 [inline]
- ima_file_free+0x2c3/0x560 security/integrity/ima/ima_main.c:203
- __fput+0x36a/0x910 fs/file_table.c:378
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0x68f/0x2290 kernel/exit.c:874
- do_group_exit+0x206/0x2c0 kernel/exit.c:1024
- get_signal+0x175d/0x1840 kernel/signal.c:2892
- arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop+0x6a/0x100 kernel/entry/common.c:168
- exit_to_user_mode_prepare+0xb1/0x140 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x64/0x280 kernel/entry/common.c:296
- do_syscall_64+0x4d/0xc0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f2a67a7cae9
-Code: Unable to access opcode bytes at 0x7f2a67a7cabf.
-RSP: 002b:00007f2a6875c178 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: 0000000000000001 RBX: 00007f2a67b9bf88 RCX: 00007f2a67a7cae9
-RDX: 00000000000f4240 RSI: 0000000000000081 RDI: 00007f2a67b9bf8c
-RBP: 00007f2a67b9bf80 R08: 00007fffba3690b0 R09: 00007f2a6875c6c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f2a67b9bf8c
-R13: 000000000000000b R14: 00007fffba21b880 R15: 00007fffba21b968
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__seqprop_spinlock_sequence include/linux/seqlock.h:275 [inline]
-RIP: 0010:get_fs_root_rcu fs/d_path.c:244 [inline]
-RIP: 0010:d_path+0x2f0/0x6e0 fs/d_path.c:286
-Code: 30 00 74 08 48 89 df e8 be 20 e1 ff 4c 8b 23 4d 8d 6c 24 48 49 81 c4 88 00 00 00 4c 89 eb 48 c1 eb 03 4c 89 ef e8 00 1e 00 00 <42> 0f b6 04 33 84 c0 0f 85 89 00 00 00 45 8b 7d 00 44 89 fe 83 e6
-RSP: 0018:ffffc90005056ec0 EFLAGS: 00010246
-RAX: be27ea831a7ad800 RBX: 0000000000000009 RCX: ffff88801c713b80
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90005056fd0 R08: ffffffff82068d08 R09: 1ffffffff1d34ccd
-R10: dffffc0000000000 R11: fffffbfff1d34cce R12: 0000000000000088
-R13: 0000000000000048 R14: dffffc0000000000 R15: ffff888076dcc000
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4b67d70420 CR3: 0000000016f66000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	30 00                	xor    %al,(%rax)
-   2:	74 08                	je     0xc
-   4:	48 89 df             	mov    %rbx,%rdi
-   7:	e8 be 20 e1 ff       	call   0xffe120ca
-   c:	4c 8b 23             	mov    (%rbx),%r12
-   f:	4d 8d 6c 24 48       	lea    0x48(%r12),%r13
-  14:	49 81 c4 88 00 00 00 	add    $0x88,%r12
-  1b:	4c 89 eb             	mov    %r13,%rbx
-  1e:	48 c1 eb 03          	shr    $0x3,%rbx
-  22:	4c 89 ef             	mov    %r13,%rdi
-  25:	e8 00 1e 00 00       	call   0x1e2a
-* 2a:	42 0f b6 04 33       	movzbl (%rbx,%r14,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	0f 85 89 00 00 00    	jne    0xc0
-  37:	45 8b 7d 00          	mov    0x0(%r13),%r15d
-  3b:	44 89 fe             	mov    %r15d,%esi
-  3e:	83                   	.byte 0x83
-  3f:	e6                   	.byte 0xe6
-
-
-Tested on:
-
-commit:         965067e2 ima: fix wrong dereferences of file->f_path
-git tree:       https://github.com/amir73il/linux ima-ovl-fix
-console output: https://syzkaller.appspot.com/x/log.txt?x=109b00e8680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
-dashboard link: https://syzkaller.appspot.com/bug?extid=a67fc5321ffb4b311c98
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
+Konrad
