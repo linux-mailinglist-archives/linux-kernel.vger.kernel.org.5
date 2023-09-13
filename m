@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C73AC79E150
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40C979E156
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbjIMH7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
+        id S238720AbjIMIAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238673AbjIMH7D (ORCPT
+        with ESMTP id S238705AbjIMIAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:59:03 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1155198A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:58 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31f8a05aa24so4306729f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1694591937; x=1695196737; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EkdGZYQrwA4ll/7xTuDvjPfd4MTlNtu+sDVCgPZq2hM=;
-        b=fDj6Pg+QybGFCjKOebH0swOZ+enPGTuJmqrxMxg9BozYR2t35AEvdUCMHsIqzGNHma
-         Kj53e6YM3/CfYAz/G7lLIGUFDWdZ7h5h7vRaUbbu2vxs6CwLV1h2mB8YjPxiCFSJfnRC
-         1kuwY1nwWyw7OHUZrYms+gK6x1Oe8GsTsu+lxmWhLTvZvKbQnH/TTqlTIsBGc7VK8WCd
-         BYXIKxQ1tBBBF8B9oZGtjcoPMfRzIIS1d/luKYyKQbsjdk8lEpyHY3KNNrGQ8SVHcVqS
-         oIG352Hi9ueyP1KkVwm5WLcYxjEQUulQR71iDxHVTSln/ciuqd6B75e0pgDdpMGie4Yj
-         5+hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694591937; x=1695196737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EkdGZYQrwA4ll/7xTuDvjPfd4MTlNtu+sDVCgPZq2hM=;
-        b=BdwWqhda6eaMaXRoJhk4Zq2T5Z9jDa4k0Zx36/y2JjHxdc2MH+5EedU+kS4XerSoSK
-         NVKcFvHqQu0E7EYSpmZ1nnGHkrf3ECkSVpAbkNBJSRGRqGiT0AVGiPL0iP5a6w7ZJeNw
-         q9hre3PHOusDGtWuuCf1CDszi5VG4VLbmP9BtnM9lXgKJxy0vmIF7l6fzOuNeJ036BTW
-         86t67DlzC5KLfHmRz8ozX4s7pnUQzOkkFzhO94WndAqryGDORf5tYoVCndKq4sglhRFP
-         odsELO9wr36irUanRfd7qxl6zAfatdrY+GvvkPDH3GvYjomTyO9V1gJy3TS31fVN+mXl
-         /+pQ==
-X-Gm-Message-State: AOJu0YyLt8+bDhofH8h5cJjOr4g2eRcXP1zIMahiqgxFNKCq5Wsjwwq2
-        wOIkGKGX8HxGXQiwzy7ioUfnug==
-X-Google-Smtp-Source: AGHT+IEXU002BF4gZvckDLmB/m507XPZeHi5Or79qEm1/eb14IbkNOzOzkoHnUocfn03vmeh+czvxg==
-X-Received: by 2002:adf:f782:0:b0:31a:d551:c2c9 with SMTP id q2-20020adff782000000b0031ad551c2c9mr1382336wrp.6.1694591937140;
-        Wed, 13 Sep 2023 00:58:57 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id y18-20020adfd092000000b003179d5aee67sm14854979wrh.94.2023.09.13.00.58.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 00:58:56 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 09:58:55 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        MD Danish Anwar <danishanwar@ti.com>,
-        Roger Quadros <rogerq@ti.com>, Arnd Bergmann <arnd@arndb.de>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ti: icssg-prueth: add PTP dependency
-Message-ID: <ZQFrv4W70ijXWTFZ@nanopsycho>
-References: <20230912185509.2430563-1-arnd@kernel.org>
+        Wed, 13 Sep 2023 04:00:35 -0400
+Received: from out28-121.mail.aliyun.com (out28-121.mail.aliyun.com [115.124.28.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4414B1992;
+        Wed, 13 Sep 2023 01:00:30 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1324828|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00210616-0.000271328-0.997623;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=28;RT=28;SR=0;TI=SMTPD_---.Ue3l8iB_1694592017;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.Ue3l8iB_1694592017)
+          by smtp.aliyun-inc.com;
+          Wed, 13 Sep 2023 16:00:26 +0800
+From:   wangweidong.a@awinic.com
+To:     krzysztof.kozlowski@linaro.org
+Cc:     13916275206@139.com, alsa-devel@alsa-project.org, arnd@arndb.de,
+        broonie@kernel.org, ckeepax@opensource.cirrus.com,
+        colin.i.king@gmail.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, fido_max@inbox.ru,
+        harshit.m.mogalapalli@oracle.com, herve.codina@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        liweilei@awinic.com, perex@perex.cz, povik+lin@cutebit.org,
+        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+        sebastian.reichel@collabora.com, shumingf@realtek.com,
+        tiwai@suse.com, trix@redhat.com, wangweidong.a@awinic.com,
+        yijiangtao@awinic.com
+Subject: Re: [PATCH V2 4/5] ASoC: codecs: Change the aw88261 variable name and i2c driver name
+Date:   Wed, 13 Sep 2023 16:00:17 +0800
+Message-ID: <20230913080017.364430-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <3ee11823-a441-b646-bdd7-aedd3a3a55e5@linaro.org>
+References: <3ee11823-a441-b646-bdd7-aedd3a3a55e5@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230912185509.2430563-1-arnd@kernel.org>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 12, 2023 at 08:54:51PM CEST, arnd@kernel.org wrote:
->From: Arnd Bergmann <arnd@arndb.de>
->
->The driver can now use PTP if enabled but fails to link built-in
->if PTP is a loadable module:
->
->aarch64-linux-ld: drivers/net/ethernet/ti/icssg/icss_iep.o: in function `icss_iep_get_ptp_clock_idx':
->icss_iep.c:(.text+0x200): undefined reference to `ptp_clock_index'
->
->Add the usual dependency to avoid this.
->
->Fixes: 186734c158865 ("net: ti: icssg-prueth: add packet timestamping and ptp support")
->Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Thank you very much for your review.=0D
+=0D
+On 13/09/2023 09:03, krzysztof.kozlowski@linaro.org wrote:=0D
+> On 12/09/2023 08:58, wangweidong.a@awinic.com wrote:=0D
+>> From: Weidong Wang <wangweidong.a@awinic.com>=0D
+>> =0D
+>> Change "sound-channel" to "awinic,audio-channel"=0D
+>> Change "aw88261_smartpa" to "aw88261"=0D
+=0D
+I'll add "This change is for consistency with yaml properties" to the commi=
+t message.=0D
+=0D
+>> -	prof_name =3D aw88261_dev_get_prof_name(aw88261->aw_pa, count);=0D
+>> -	if (!prof_name) {=0D
+>> +	ret =3D aw88261_dev_get_prof_name(aw88261->aw_pa, count, &prof_name);=
+=0D
+>> +	if (ret) {=0D
+>>  		strscpy(uinfo->value.enumerated.name, "null",=0D
+>>  						strlen("null") + 1);=0D
+>>  		return 0;=0D
+>> @@ -1189,7 +1190,7 @@ static void aw88261_parse_channel_dt(struct aw8826=
+1 *aw88261)=0D
+>>  	u32 channel_value =3D AW88261_DEV_DEFAULT_CH;=0D
+>>  	u32 sync_enable =3D false;=0D
+>>  =0D
+>> -	of_property_read_u32(np, "sound-channel", &channel_value);=0D
+>> +	of_property_read_u32(np, "awinic,audio-channel", &channel_value);=0D
+>>  	of_property_read_u32(np, "sync-flag", &sync_enable);=0D
+=0D
+> What about this?=0D
+=0D
+This change is to be consistent with the name in the yaml file=0D
+=0D
+Best regards,=0D
+Weidong Wang=
