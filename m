@@ -2,184 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D1279E285
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F158279E290
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239054AbjIMIsA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 04:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        id S239088AbjIMItx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 04:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237278AbjIMIr7 (ORCPT
+        with ESMTP id S234532AbjIMItw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:47:59 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AAF91993
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:47:55 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-266-m12S0s3ZOouc56uUjgkHeA-1; Wed, 13 Sep 2023 09:47:52 +0100
-X-MC-Unique: m12S0s3ZOouc56uUjgkHeA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 13 Sep
- 2023 09:47:49 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 13 Sep 2023 09:47:49 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Charlie Jenkins' <charlie@rivosinc.com>
-CC:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: RE: [PATCH v4 2/5] riscv: Add checksum library
-Thread-Topic: [PATCH v4 2/5] riscv: Add checksum library
-Thread-Index: AQHZ5QNmAqaxDkDqBUuW+t+6iXe0brAW2+/wgAEox4CAAGmkUA==
-Date:   Wed, 13 Sep 2023 08:47:49 +0000
-Message-ID: <b503e341f2334d6b9b902a6e621ed7c3@AcuMS.aculab.com>
-References: <20230911-optimize_checksum-v4-0-77cc2ad9e9d7@rivosinc.com>
- <20230911-optimize_checksum-v4-2-77cc2ad9e9d7@rivosinc.com>
- <1818c4114b0e4144a9df21f235984840@AcuMS.aculab.com> <ZQEn+8Bi8dxNgg3g@ghost>
-In-Reply-To: <ZQEn+8Bi8dxNgg3g@ghost>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 13 Sep 2023 04:49:52 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17000196
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:49:48 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-502934c88b7so10662226e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694594986; x=1695199786; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M6OWBjAU1cxgbQTAWQU05/QpiwZ7u1WWxVUcWDMnlOc=;
+        b=Y/GjTeBzhUUXf6ng/8VdFF6+XjCkqWeWjWk4/sQoR7RbMAre9aSgwXRei1dD26wBNK
+         oZcobKWGD0dPwRSPBw4LWSyGVtcoSCqVn1ORQhkZ65mk0BUr8HndosUbIiyuJh7b7mqm
+         QnWXqAMyGZAbokgLZBH2BtVYVaUY9BUePpJ+M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694594986; x=1695199786;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M6OWBjAU1cxgbQTAWQU05/QpiwZ7u1WWxVUcWDMnlOc=;
+        b=WP2Dw50V1CJiv0eqb+lI6P4+Tert4VR979sgm/yRCKrfHkdmbne80SG5t1baP5rFsx
+         dgk8R4UVvJRXkzQsA8UlzZswh1VW/F2TDl0vPjhxAwo/YS7DSGrpXJsI3PSdJK+XflAG
+         +fdsWLQJU3R2EVtzRc1UidIzi4DycJdZ4zwJ/I3guSXm0uuarBNzgYEYCprbQxrwRGH0
+         I4heSNZeMrg4eu4RuSbyIPlUaDG8dmHfKKI/nD42T/1OFaSJEtPoarwqxmyT8JN4t/LO
+         IWOiGh857O+EAU0/iWRkvf+zCLGRB+m168giqL0t+NoAKMf+0j2c18iVLscuZqh5/umh
+         Iz+Q==
+X-Gm-Message-State: AOJu0YynYxQ7Q4GdDC0zFqqGxqqVD4/m6UjVcGBqfJ5e2SlJlVlz5By3
+        yLTkYCfmlOx+BS9JX3er1XlZKADHJR8z4zk1Qe/LlQ==
+X-Google-Smtp-Source: AGHT+IF326eu3RL07fH01eFNOizyYWT0naK68BbkFy0V0EwYECudUIkcOek+Rh5jKTj4V8DX9iBXAl4EHd5E1HbBXZE=
+X-Received: by 2002:a05:6512:32aa:b0:500:94c3:8e3b with SMTP id
+ q10-20020a05651232aa00b0050094c38e3bmr1304740lfe.57.1694594986120; Wed, 13
+ Sep 2023 01:49:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20230804225813.12493-1-robh@kernel.org> <f8759d51-f808-8082-ceaf-6c6dcaebe2d9@collabora.com>
+ <4c99c180-3b79-6aef-6ff2-d430e575957d@baylibre.com>
+In-Reply-To: <4c99c180-3b79-6aef-6ff2-d430e575957d@baylibre.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 13 Sep 2023 16:49:34 +0800
+Message-ID: <CAGXv+5FWhEab_wHs9+Q3begEBXCVrE4fK1S3sntDuRRE9iGFpg@mail.gmail.com>
+Subject: Re: [RESEND PATCH] arm64: dts: mediatek: Fix "status" values
+To:     Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Rob Herring <robh@kernel.org>, soc@kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charlie Jenkins
-> Sent: 13 September 2023 04:10
-> 
-> On Tue, Sep 12, 2023 at 08:45:38AM +0000, David Laight wrote:
-> > From: Charlie Jenkins
-> > > Sent: 11 September 2023 23:57
-> > >
-> > > Provide a 32 and 64 bit version of do_csum. When compiled for 32-bit
-> > > will load from the buffer in groups of 32 bits, and when compiled for
-> > > 64-bit will load in groups of 64 bits. Benchmarking by proxy compiling
-> > > csum_ipv6_magic (64-bit version) for an x86 chip as well as running
-> > > the riscv generated code in QEMU, discovered that summing in a
-> > > tree-like structure is about 4% faster than doing 64-bit reads.
-> > >
-> > ...
-> > > +	sum   = saddr->s6_addr32[0];
-> > > +	sum  += saddr->s6_addr32[1];
-> > > +	sum1  = saddr->s6_addr32[2];
-> > > +	sum1 += saddr->s6_addr32[3];
-> > > +
-> > > +	sum2  = daddr->s6_addr32[0];
-> > > +	sum2 += daddr->s6_addr32[1];
-> > > +	sum3  = daddr->s6_addr32[2];
-> > > +	sum3 += daddr->s6_addr32[3];
-> > > +
-> > > +	sum4  = csum;
-> > > +	sum4 += ulen;
-> > > +	sum4 += uproto;
-> > > +
-> > > +	sum  += sum1;
-> > > +	sum2 += sum3;
-> > > +
-> > > +	sum += sum2;
-> > > +	sum += sum4;
+On Tue, Sep 12, 2023 at 9:10=E2=80=AFPM Alexandre Mergnat <amergnat@baylibr=
+e.com> wrote:
+>
+>
+>
+> On 12/09/2023 14:54, AngeloGioacchino Del Regno wrote:
+> > Il 05/08/23 00:58, Rob Herring ha scritto:
+> >> The defined value for "status" is "disabled", not "disable".
+> >>
+> >> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> >> Reviewed-by: AngeloGioacchino Del Regno
+> >> <angelogioacchino.delregno@collabora.com>
+> >> Signed-off-by: Rob Herring <robh@kernel.org>
+> >> ---
+> >> Arnd, Please take this directly I guess. I think Mediatek maintainersh=
+ip
+> >> needs some help. Maybe AngeloGioacchino should be co-maintainer as
+> >> that's the only response I seem to be getting.
 > >
-> > Have you got gcc to compile that as-is?
+> > Sorry but I've seen this message just now as I've been on holiday in
+> > August.
 > >
-> > Whenever I've tried to get a 'tree add' compiled so that the
-> > early adds can be executed in parallel gcc always pessimises
-> > it to a linear sequence of adds.
+> > Thing is, the MediaTek scene is starting to see more and more code,
+> > bringing
+> > an obvious increase in the amount of reviews to be done and in the requ=
+ired
+> > efforts to maintain the MTK bits - and we will possibly (hopefully) see
+> > even
+> > more of that.
 > >
-> > But I agree that adding 32bit values to a 64bit register
-> > may be no slower than trying to do an 'add carry' sequence
-> > that is guaranteed to only do one add/clock.
-> > (And on Intel cpu from core-2 until IIRC Haswell adc took 2 clocks!)
+> > If Matthias needs/wants a co-maintainer for MediaTek I'm here and I wil=
+l be
+> > proud to become one.
 > >
-> > IIRC RISCV doesn't have a carry flag, so the adc sequence
-> > is hard - probably takes two extra instructions per value.
-> > Although with parallel execute it may not matter.
-> > Consider:
-> > 	val = buf[offset];
-> > 	sum += val;
-> > 	carry += sum < val;
-> > 	val = buf[offset1];
-> > 	sum += val;
-> > 	...
-> > the compare and 'carry +=' can be executed at the same time
-> > as the following two instructions.
-> > You do then a final sum += carry; sum += sum < carry;
+> > Cheers,
+> > Angelo
 > >
-> > Assuming all instructions are 1 clock and any read delays
-> > get filled with other instructions (by source or hardware
-> > instruction re-ordering) even without parallel execute
-> > that is 4 clocks for 64 bits, which is much the same as the
-> > 2 clocks for 32 bits.
+>
+> I started reviewing MediaTek patches for some months now, so I'm still
+> new. From my PoV, I'm agree with Angelo when he say the amount of patch
+> is increasing. I support Angelo if he wants to become a co-maintainer
+> and continue to do my best to review patches. ;)
+
+I might not have enough time to do a lot of reviews, but if help is needed
+for administrative tasks like queueing patches and sending pull requests,
+that's something I can do.
+
+ChenYu
+
+> >>
+> >> I think for future .dts patches I will not bother splitting them up by
+> >> sub-arch because it's a pain to chase down the maintainers to apply
+> >> stuff in a timely manner. /rant
+> >>
+> >>   arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts | 4 ++--
+> >>   1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> >> b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> >> index e4605d23fdc8..86cedb0bf1a9 100644
+> >> --- a/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> >> +++ b/arch/arm64/boot/dts/mediatek/mt7622-bananapi-bpi-r64.dts
+> >> @@ -585,11 +585,11 @@ &pwrap {
+> >>   };
+> >>   &sata {
+> >> -    status =3D "disable";
+> >> +    status =3D "disabled";
+> >>   };
+> >>   &sata_phy {
+> >> -    status =3D "disable";
+> >> +    status =3D "disabled";
+> >>   };
+> >>   &spi0 {
 > >
-> > Remember that all the 32bit values can summed first as
-> > they won't overflow.
 > >
-> > 	David
-
-> Yeah it does seem like the tree-add does just do a linear add. All three
-> of them were pretty much the same on riscv so I used the version that
-> did best on x86 with the knowledge that my QEMU setup does not
-> accurately represent real hardware.
-
-The problem there is that any measurement on x86 has pretty much
-no relevance to what any RISCV cpu might do.
-The multiple execution units and out of order execution on x86
-are far different from anything any RISCV cpu is likely to have
-for many years.
-You might get nearer running on one of the Atom cpu - but it won't
-really match.
-There are too many fundamental differences between the architectures.
-
-All you can do is to find and read the instruction timings for
-a target physical cpu and look for things like:
-- Whether arithmetic results are available next clock.
-  (It probably is)
-- How many clocks it takes for read data to be available.
-  I suspect the cpu will stall if the data is needed.
-  A block of sequential reads is one way to avoid the stall.
-  On x86 the instruction that needs the data is just deferred
-  until it is available, the following instructions execute
-  (provided their input are all available).
-- Clock delays for taken/not taken predicted/not predicted branches.
-  
-> I don't quite understand how doing the carry in the middle of each
-> stage, even though it can be executed at the same time, would be faster
-> than just doing a single overflow check at the end.
-
-You need to do half as many reads and adds.
-
-> I can just revert
-> back to the non-tree add version since there is no improvement on riscv.
-
-The 'tree' version is only likely to be faster on cpu (like x86)
-that can (at least sometimes) do two memory reads in one clock
-and can do two adds and two read in the same clock.
-Even then, without out of order execution, it is hard to get right.
-
-Oh, you might want to try getting the default csum_fold() to
-be the faster 'arc' version rather than adding your own version.
-
-	David
-
-> I can also revert back to the default version that uses carry += sum < val
-> as well.
-> 
-> - Charlie
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+>
+> --
+> Regards,
+> Alexandre
+>
