@@ -2,166 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E88679EB56
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D3F79EB52
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241380AbjIMOnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S241373AbjIMOm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjIMOnM (ORCPT
+        with ESMTP id S232390AbjIMOm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:43:12 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694F09E;
-        Wed, 13 Sep 2023 07:43:08 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 2ADF33200124;
-        Wed, 13 Sep 2023 10:43:05 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute6.internal (MEProxy); Wed, 13 Sep 2023 10:43:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jfarr.cc; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1694616184; x=1694702584; bh=I6
-        KW7EN8WvVpcxWfprs/LJK5tndoIFl6DB/6pYFRPh0=; b=IsVydtLgKseG3i3ML8
-        4b/WocveJKvs59G51DXEWtVbu7hHrUwVUyOEyVRtn/2UyVUVUNi2dT/E4U9cODza
-        xkMIkOP1ZdPlWVLcFwIDXTVz7OGV5cwhEZM6v6fI4BnNrcKBZYNoJbQ0ChDyoTds
-        4I2+JjcJIUKsjGzIOkfs6lzsdVIzsBswI7jGtDxs+YF70JHZX1kLtwUmQBVPWRLg
-        HgipqwZTqTGY6p/YNlnCK1n60vjv5HV1XEb7xMKCBwQMMde5HWB1/96xrS5D+lph
-        +fgykQNo3DCHkbwEH58sgXUOPoErO2Hlz/QNMaePc9eT5MRUch6DD9rmPHHTsOj8
-        L1dg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1694616184; x=1694702584; bh=I6KW7EN8WvVpc
-        xWfprs/LJK5tndoIFl6DB/6pYFRPh0=; b=Vf0KujZYCawZbS+XrCdJUmeTAc7Gg
-        7ywQukNuFVgldRRrsbK9lrfuSoTVoi2WNPbE/BwDJmW+TGeexiSFAvFKOZn/3LOH
-        Tuit06RIOD5rVZzLQPHjL1l0DGQAgEloIr4lxLtcqeKM5YJnoZwnN3ZXabUK3gxY
-        VfE0zyKOymr9uOLxyMC/2UW2CL8cix20TLNr+7mSRfGXhK5Ko9parr5aQPVUaoG9
-        Of9CrdX75lqC8nga6LGXod8KEJUWQuqrQh6Y6OEagZwVrzt39kwfbd3uxTLQtxkh
-        flalktSwldhtrREIM0ri5vCtee5zcKMV7sfFCnanBQdI1iN0cq58x7PWg==
-X-ME-Sender: <xms:eMoBZd81D9U4PG1S6KuDuT32xq8PMoyJimrSqgXEuJxyKo33trJHnw>
-    <xme:eMoBZRtmarVCRCNVbulJfPtXuR0a-PoWjyiCAAw26Cy1H0jz97FBjIfBUOfsA0foP
-    RPV5_IU1_XMnSqh3b8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeikedgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdluddtmdenucfjughrpefofgggkfgjfhffhffvvefutgesthdtredt
-    reertdenucfhrhhomhepfdflrghnucfjvghnughrihhkucfhrghrrhdfuceokhgvrhhnvg
-    hlsehjfhgrrhhrrdgttgeqnecuggftrfgrthhtvghrnhepfeeftdevveeihfetieduieeg
-    teeftedttedtheefgfektdffueeujefftefhleeunecuffhomhgrihhnpehurghpihdqgh
-    hrohhuphdrohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptden
-    ucfrrghrrghmpehmrghilhhfrhhomhepkhgvrhhnvghlsehjfhgrrhhrrdgttg
-X-ME-Proxy: <xmx:eMoBZbATTlioymGAWf1Fl-90l4ZJkWDsZPLfWpKGbJ_7U-Jum5-YOg>
-    <xmx:eMoBZRfuEcqcQxhFdajq8p0L8Nq_4oMSJ1DzLd323HZDTrN2O6ZoSg>
-    <xmx:eMoBZSPOAtE83vmeOskNNhRUI1tEMouXukMkSNCDAfEPlobsQo6WJw>
-    <xmx:eMoBZTEvlS-KDl4IqW3rE7EEl36sT1jSoPoxFPqonA_xDPlq8tIeJA>
-Feedback-ID: i0fc947c4:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3428D15A0091; Wed, 13 Sep 2023 10:43:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-745-g95dd7bea33-fm-20230905.001-g95dd7bea
-Mime-Version: 1.0
-Message-Id: <63952cb0-5217-42a8-9b62-8be6d03f5844@app.fastmail.com>
-In-Reply-To: <20230913160045.40d377f9@rotkaeppchen>
-References: <20230911052535.335770-1-kernel@jfarr.cc>
- <20230913160045.40d377f9@rotkaeppchen>
-Date:   Wed, 13 Sep 2023 16:42:33 +0200
-From:   "Jan Hendrik Farr" <kernel@jfarr.cc>
-To:     "Philipp Rudo" <prudo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, tglx@linutronix.de, dhowells@redhat.com,
-        vgoyal@redhat.com, keyrings@vger.kernel.org,
-        akpm@linux-foundation.org, "Baoquan He" <bhe@redhat.com>,
-        bhelgaas@google.com, "Luca Boccassi" <bluca@debian.org>,
-        lennart@poettering.net
-Subject: Re: [PATCH v2 0/2] x86/kexec: UKI Support
-Content-Type: text/plain
+        Wed, 13 Sep 2023 10:42:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B4791;
+        Wed, 13 Sep 2023 07:42:53 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 904A6C433C8;
+        Wed, 13 Sep 2023 14:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694616173;
+        bh=ghmd2vE6l3/YQAYcdHB/Auew4n3efVE8LafRtaXbVHc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YGMCHCaS7LV+IgxR8JwzA2LNP/JAobSO7VFWJqFuLotcrNli1S/nHKVzF//aJ2S6V
+         oyTmUUNwYQcB2nInr2C8Ez39iVMQmhLWasrm56DXWToBj15FazV/Kl6X9Oqd98l7vq
+         xYCSySPKPtfqvA4b/JjwavRqFP6IGhDc7F3DFnWpvbrbrOP/iHL2RUh7HiB9Nfi1ae
+         OAv6grpPZpsAP5EFZJg6+L0GXuBVZ6JskfXUivQah7NoYp1WtIsK8dxArv+axEEnrs
+         p+KoYbQrGGzwtNfTaPkj8pd6Rp9GlH1mROzy40I5zjPv5zmvE+yp4nzsVVzTdwFELZ
+         0zorZ83mPn+fA==
+Date:   Wed, 13 Sep 2023 15:42:45 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Simon Horman <horms@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v5 08/31] dt-bindings: soc: fsl: cpm_qe: cpm1-scc-qmc:
+ Add support for QMC HDLC
+Message-ID: <20230913-unruly-recite-7dbbbd7e63e0@spud>
+References: <20230912081527.208499-1-herve.codina@bootlin.com>
+ <20230912101018.225246-1-herve.codina@bootlin.com>
+ <20230912-capable-stash-c7a3e33078ac@spud>
+ <20230913092640.76934b31@bootlin.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="D/KR2KGuouPtsCp2"
+Content-Disposition: inline
+In-Reply-To: <20230913092640.76934b31@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--D/KR2KGuouPtsCp2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 13, 2023, at 4:00 PM, Philipp Rudo wrote:
-> Hi Jan,
->
-> All in all the code looks fine to me. Nevertheless I don't think UKI
-> support should be added at the moment. This is because IMHO you
-> basically reinterpret the kexec_file systemcall and thus add a new
-> uapi to the kernel. Once introduced it is extremely hard to remove or
-> change an uapi again. The problem I see is that the spec you based
-> your work on is in such a poor shape that I don't feel comfortable to
-> add any new uapi based on it.
->
-> For example there are two definitions for the UKI which contradict
-> each other. The dedicated one [1] you have cited earlier and the one
-> in the BLS for type #2 entries [2]. In [1] the .linux and .initrd
-> sections are mandatory and the .osrel and .cmdline sections are
-> optional while in [2] it is the other way round. Which definition
-> should the kernel follow?
->
-> Furthermore, I absolutely don't understand how the spec should be
-> read. All the spec does is defining some file formats. There is no
-> word about which component in the boot chain is supposed to handle
-> them and what exactly this component is supposed to do with it. But
-> that is crucial if we want to add UKI support for kexec as the kexec
-> systemcall will replace the stub. So we need to know what tasks the
-> stub is supposed to perform. Currently this is only some
-> implementation detail of the systemd-stub [3] that can change any
-> moment and I strongly oppose to base any uapi on it.
->
+On Wed, Sep 13, 2023 at 09:26:40AM +0200, Herve Codina wrote:
+> Hi Conor,
+>=20
+> On Tue, 12 Sep 2023 18:21:58 +0100
+> Conor Dooley <conor@kernel.org> wrote:
+>=20
+> > On Tue, Sep 12, 2023 at 12:10:18PM +0200, Herve Codina wrote:
+> > > The QMC (QUICC mutichannel controller) is a controller present in some
+> > > PowerQUICC SoC such as MPC885.
+> > > The QMC HDLC uses the QMC controller to transfer HDLC data.
+> > >=20
+> > > Additionally, a framer can be connected to the QMC HDLC.
+> > > If present, this framer is the interface between the TDM bus used by =
+the
+> > > QMC HDLC and the E1/T1 line.
+> > > The QMC HDLC can use this framer to get information about the E1/T1 l=
+ine
+> > > and configure the E1/T1 line.
+> > >=20
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > ---
+> > >  .../bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-qmc.yaml   | 13 +++++++++++=
+++
+> > >  1 file changed, 13 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm=
+1-scc-qmc.yaml b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-=
+scc-qmc.yaml
+> > > index 82d9beb48e00..b5073531f3f1 100644
+> > > --- a/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-q=
+mc.yaml
+> > > +++ b/Documentation/devicetree/bindings/soc/fsl/cpm_qe/fsl,cpm1-scc-q=
+mc.yaml
+> > > @@ -101,6 +101,16 @@ patternProperties:
+> > >            Channel assigned Rx time-slots within the Rx time-slots ro=
+uted by the
+> > >            TSA to this cell.
+> > > =20
+> > > +      compatible:
+> > > +        const: fsl,qmc-hdlc
+> > > +
+> > > +      fsl,framer:
+> > > +        $ref: /schemas/types.yaml#/definitions/phandle
+> > > +        description:
+> > > +          phandle to the framer node. The framer is in charge of an =
+E1/T1 line
+> > > +          interface connected to the TDM bus. It can be used to get =
+the E1/T1 line
+> > > +          status such as link up/down. =20
+> >=20
+> > Sounds like this fsl,framer property should depend on the compatible
+> > being present, no?
+>=20
+> Well from the implementation point of view, only the QMC HDLC driver uses=
+ this
+> property.
+>=20
+> From the hardware description point of view, this property means that the=
+ time slots
+> handled by this channel are connected to the framer. So I think it makes =
+sense for
+> any channel no matter the compatible (even if compatible is not present).
+>=20
+> Should I change and constraint the fsl,framer property to the compatible =
+presence ?
+> If so, is the following correct for this contraint ?
+>    --- 8< ---
+>    dependencies:
+>      - fsl,framer: [ compatible ];
+>    --- 8< ---
 
+The regular sort of
+if:
+	compatible:
+		contains:
+			const: foo
+then:
+	required:
+		- fsl,framer
+would fit the bill, no?
 
+--D/KR2KGuouPtsCp2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I think I have to agree with you on this one.
+-----BEGIN PGP SIGNATURE-----
 
-I kinda experienced this first hand. My initial patch required a kernel
-command line, because the spec in [1] didn't say it was optional. Then
-I got a response saying that it's actually optional. And the spec got
-changed in PR [2] (I have a WIP v3 that allows a manual cmdline if the
-.cmdline section is empty as explained by Lennart in [2] and now
-also in the spec since [3]). So there's already 2 changes in the spec
-in the last few days related to my patch. That shows that the spec is
-not stable.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQHKZQAKCRB4tDGHoIJi
+0jE/AP0awmyeu05CVKleLo13y3Fjt4HP0do7dEhQGNt4rxVmsAEAtTdqxGH2EmC6
+3WhT1AVUi21kX6VzpxFlrQiNmHgB/A4=
+=zHjw
+-----END PGP SIGNATURE-----
 
-What's even worse IMO is that the reason given in [2] to change the spec
-is simply that systemd-stub has a different behavior than the spec and
-therefore the spec should be updated. At this point it's not really a
-specification but simply a flawed documentation of the behavior of systemd-
-stub / ukify.
-
-I also discovered that ukify treats the initrd as optional [4]. So is
-this the next change in the spec?
-
-In [5] Luca writes:
-> [...] we fully intend for the UKI format to be an open and stable
-> specification, that anybody can support and rely on.
-But that is unfortunately not where the format is at this point.
-
-What is annoying though is where this leaves a user that actually
-wants this feature. They can carry a patch or they might have to wait
-a long time.
-
-Can you indicate what it would take for the kernel community to consider
-this spec as stable enough?
-
-
-> In the end the only benefit this series brings is to extend the
-> signature checking on the whole UKI except of just the kernel image.
-> Everything else can also be done in user space. Compared to the
-> problems described above this is a very small gain for me.
-
-Correct. That is the benefit of pulling the UKI apart in the
-kernel. However having to sign the kernel inside the UKI defeats
-the whole point.
-
-
-[1] https://uapi-group.org/specifications/specs/unified_kernel_image/
-[2] https://github.com/uapi-group/specifications/pull/72
-[3] https://github.com/uapi-group/specifications/pull/73
-[4] https://github.com/uapi-group/specifications/issues/74
-[5] https://github.com/systemd/systemd/issues/28538
+--D/KR2KGuouPtsCp2--
