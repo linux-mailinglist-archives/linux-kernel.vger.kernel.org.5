@@ -2,224 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2250479EDCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74D879EDCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjIMP65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
+        id S230237AbjIMP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjIMP64 (ORCPT
+        with ESMTP id S230143AbjIMP7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:58:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6D720CCD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694620685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8oFlWNsBoPiP27e6QLLTn7WyeRku9K4oycwIoawQoLA=;
-        b=gZ1Qjuo2rcmLWcbNoUVTVfrYy+1YmwNyl6A2+VnGJeHeUVPUzxpaaVFrA5shGh4pdh3Jh7
-        9yFbKkvGmrUg9PYkuVGF0pK8vDCzftvf89aCPSNC703yzdFSWB+DfLfZBuMC2qiH4X6dTd
-        CVaCgxpchY2PZaoNzlU3oPi4ElyPBmw=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-X_4_YaQoOq2SDaphS8e5Xg-1; Wed, 13 Sep 2023 11:58:04 -0400
-X-MC-Unique: X_4_YaQoOq2SDaphS8e5Xg-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-51d981149b5so4645556a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694620683; x=1695225483;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8oFlWNsBoPiP27e6QLLTn7WyeRku9K4oycwIoawQoLA=;
-        b=joh13HmanqTYGN/DE+4y7tj0YTxJxPrd6rP43m8Nd2UMpBrzweUjDyvyMVxJkXBJnm
-         PbYvInlPH9+x7ZAuqAIzuaN3p6wXXjBVeOtoAC/mgyYHq7ZhZvq5amBiWpm7FAHCyujI
-         jXXkD0Qo08Am+xsX2RKmuSHbVccFE3bZjNDnLMo2UK9iqUc+omu0PQLyC+Ecr98DFfK1
-         k/9po0HW+eNr9isIZLoMIEHVWe9iS5JVxBylcqRmmccDKWi0mtg0Wnrj9S576RQFj5GB
-         inwmXdByw7KN9/MccgcePzw2K5qKlgLP53Fc6jb4ea+R9nDhMcgWvPTuwPPEa1FI5VE/
-         KtCg==
-X-Gm-Message-State: AOJu0YxywOupjWOq8/EXdNfYwijHW3KSGGr+xlxcApYGkg5LO36akI5v
-        jGYc8ogr266ZNNF4ac6KBCoEm76scAnA8TXu+Vdb6WLYth4UsHWHxYwhaB8uq1OlDkH9emwgqXI
-        3w9QyU7hm/D5IJrjKIe48zERF
-X-Received: by 2002:a05:6402:1484:b0:52f:b00a:99be with SMTP id e4-20020a056402148400b0052fb00a99bemr2638847edv.33.1694620683026;
-        Wed, 13 Sep 2023 08:58:03 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHWdV0KLFyUcrOIrlW9A4stCQfGP5LxWC94fX/K6+RReONlj26k4SqNBtFWTgx5SelVrWKEsg==
-X-Received: by 2002:a05:6402:1484:b0:52f:b00a:99be with SMTP id e4-20020a056402148400b0052fb00a99bemr2638832edv.33.1694620682667;
-        Wed, 13 Sep 2023 08:58:02 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id o1-20020a056402444100b0052ff9bae873sm336955edb.5.2023.09.13.08.58.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 08:58:02 -0700 (PDT)
-Message-ID: <d26d4b15-765b-a444-b740-97f95f2db58d@redhat.com>
-Date:   Wed, 13 Sep 2023 17:58:01 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: sysfs interface to auxmac
-Content-Language: en-US, nl
-To:     Fernando Eckhardt Valle <fevalle@ipt.br>, hmh@hmh.eng.br,
-        markgross@kernel.org, ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mpearson-lenovo@squebb.ca
-References: <20230906195204.4478-1-fevalle@ipt.br>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230906195204.4478-1-fevalle@ipt.br>
+        Wed, 13 Sep 2023 11:59:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABFE92;
+        Wed, 13 Sep 2023 08:58:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 114FEC433C7;
+        Wed, 13 Sep 2023 15:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694620737;
+        bh=OBuLdZYhtqW9duG/3BeKvKGUdSBgTL3slH5X/g4fjwM=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=de/SmuILmLafq3M8LKRDYntRlxwPHNKSXo+jO55fT6mw8uw5BTyXqbTAgjUi8o5Az
+         4ExInWUCL4lhprhQzeavrkB6rPA+2mG4UzEV2bl/acI0+a33wAZuQGLB3Gr0tMSSw6
+         r5lmn0Bmaqox2w5o7QloLJvWe6O8AtPzsGoWJcTEcEw0BgenttpEfmQl6DFfw9P6Ac
+         d513s+LnFCXHg68lMueV851UhOI23qKeRhsUd/jVI+HtHYi85unKMcb4ek2y9xc/+U
+         hicROU0KvR9BsjjvxqXXgxTRU/CfR4LBMB/D5BnaKeeyxHxb5/E5osSmes/s2EMdaL
+         WhnUZ3MsteOOQ==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date:   Wed, 13 Sep 2023 18:58:53 +0300
+Message-Id: <CVHWWXJJLNO5.25DGTKFOPD35Y@suppilovahvero>
+Cc:     <kexec@lists.infradead.org>, <x86@kernel.org>,
+        <tglx@linutronix.de>, <dhowells@redhat.com>, <vgoyal@redhat.com>,
+        <keyrings@vger.kernel.org>, <akpm@linux-foundation.org>,
+        "Baoquan He" <bhe@redhat.com>, <bhelgaas@google.com>,
+        <lennart@poettering.net>, "Luca Boccassi" <bluca@debian.org>
+Subject: Re: [PATCH 0/1] x86/kexec: UKI support
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jan Hendrik Farr" <kernel@jfarr.cc>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230909161851.223627-1-kernel@jfarr.cc>
+ <CVGFE6FRWFHR.DVG9NUQID4EA@suppilovahvero>
+ <1d974586-1bf7-42e8-9dae-e5e41a3dbc9f@app.fastmail.com>
+ <CVGVCYUGNKAI.1WYRZGI9HYDMC@suppilovahvero>
+ <9580df76-c143-4077-8a39-b1fcc0ed37bd@app.fastmail.com>
+ <CVH4GZXQFZ1F.2V5BIZNSKQ1FA@suppilovahvero>
+ <5a67051d-eb21-4a96-acc4-40f829a59e23@app.fastmail.com>
+ <CVH6NGLENMPH.271W6X80061M@suppilovahvero>
+ <1c342231-7672-450e-b945-e57cd17b4ae7@app.fastmail.com>
+ <CVHVCHYZT8KG.3L0IH30QYT0WH@suppilovahvero>
+ <11e0aff9-0388-4a6c-8986-301d4edc482d@app.fastmail.com>
+In-Reply-To: <11e0aff9-0388-4a6c-8986-301d4edc482d@app.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fernando,
+On Wed Sep 13, 2023 at 6:07 PM EEST, Jan Hendrik Farr wrote:
+> On Wed, Sep 13, 2023, at 4:45 PM, Jarkko Sakkinen wrote:
+> > On Tue Sep 12, 2023 at 11:49 PM EEST, Jan Hendrik Farr wrote:
+> >>
+> >> > These are sort of "tautological" arguments. There must be some
+> >> > objective reasons why this architecture was chosen instead of other
+> >> > (i.e. using what already pre-exists).
+> >>
+> >> I think I misunderstood you in my earlier reply. I do not understand
+> >> in what way you think my arguments are tautological. Can you
+> >> elaborate?
+> >
+> > current Linux kernel has these features *already* in place:
+> >
+> > 1. CONFIG_EFI_STUB
+> > 2. CONFIG_CMDLINE
+> > 3. CONFIG_INITRAMFS_SOURCE
+> > 4. Secure boot with MOK keys and .machine keyring to manage them.
+>
+> Well, you also have to add
+> 5. CONFIG_CMDLINE_OVERRIDE
+> 6. CONFIG_INITRAMFS_FORCE
+>
+> Otherwise the bootloader can supply an unsinged initramfs/cmdline and
+> the kernel will use them.
+>
+> And then you do not get all the features. One of your earlier responses
+> asks how a user might change the cmdline with UKIs. With UKIs all they
+> have to do is create a small addon file and sign that (with their MOK if
+> they are using a generic distro with shim, instead of using their own
+> secure boot keys). With the bzImage alternative they would have to
+> recompile the kernel. This was reason #1.
+>
+> Also what about #3? How would you pass PCR signatures using the normal
+> EFI stub / bzImage?
 
-On 9/6/23 21:52, Fernando Eckhardt Valle wrote:
-> Newer Thinkpads have a feature called Mac Address Passthrough.
-> This patch provides a sysfs interface that userspace can use
-> to get this auxiliary mac address.
-> 
-> Signed-off-by: Fernando Eckhardt Valle <fevalle@ipt.br>
+I did not notice anything in the description about PCRs but this
+counter-question does really enlighten what I've been trying to say. You
+should take time to explain where's the gain, and why it makes sense for
+the users.
 
-Thank you for your patch. 
+It does not really make sense for me to "defend" anything if I'm against
+something that I don't understand what it is and is capable of and such
+and so forth. I don't really care if e.g. systemd is using it, if it
+does not make me understand the topic better. It is then just argument
+by authority, which not a real argument in the first place.
 
-At a minimum for this patch to be accepted you will need
-to document the new sysfs interface in:
+Linking URL to the specification is good enough for *details* but it
+does not save you from trouble of painting the picture what we are
+looking at.
 
-Documentation/admin-guide/laptops/thinkpad-acpi.rst
-
-But I wonder if we should export this information to
-userspace in this way ?
-
-The reason why I'm wondering is because mac-address passthrough
-in case of using e.g. Lenovo Thunderbolt docks is already
-supported by the kernel by code for this in drivers/net/usb/r8152.c :
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/usb/r8152.c#n1613
-
-So I'm wondering if we really need this, is there a planned
-userspace API consumer of the new sysfs interface ?
-
-Or is this only intended as a way for a user to query this, iow
-is this purely intended for informational purposes ?
-
-Regards,
-
-Hans
-
-
-
-
-
-
-> ---
->  drivers/platform/x86/thinkpad_acpi.c | 77 ++++++++++++++++++++++++++++
->  1 file changed, 77 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index d70c89d32..0b1c36b0d 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -10785,6 +10785,78 @@ static struct ibm_struct dprc_driver_data = {
->  	.name = "dprc",
->  };
->  
-> +/*
-> + * Auxmac
-> + *
-> + * This auxiliary mac address is enabled in the bios through the
-> + * Mac Address Passthrough feature. In most cases, there are three
-> + * possibilities: Internal Mac, Second Mac, and disabled.
-> + *
-> + */
-> +
-> +#define AUXMAC_LEN 12
-> +#define AUXMAC_START 9
-> +#define AUXMAC_STRLEN 22
-> +static char auxmac[AUXMAC_LEN];
-> +
-> +static int auxmac_init(struct ibm_init_struct *iibm)
-> +{
-> +	acpi_status status;
-> +	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	union acpi_object *obj;
-> +
-> +	status = acpi_evaluate_object(NULL, "\\MACA", NULL, &buffer);
-> +
-> +	if (ACPI_FAILURE(status))
-> +		return -ENODEV;
-> +
-> +	obj = (union acpi_object *)buffer.pointer;
-> +
-> +	if (obj->type != ACPI_TYPE_STRING || obj->string.length != AUXMAC_STRLEN) {
-> +		pr_info("Invalid buffer for mac addr passthrough.\n");
-> +		goto auxmacinvalid;
-> +	}
-> +
-> +	if (strncmp(obj->string.pointer + 0x8, "#", 1) != 0 ||
-> +	    strncmp(obj->string.pointer + 0x15, "#", 1) != 0) {
-> +		pr_info("Invalid header for mac addr passthrough.\n");
-> +		goto auxmacinvalid;
-> +	}
-> +
-> +	memcpy(auxmac, obj->string.pointer + AUXMAC_START, AUXMAC_LEN);
-> +	kfree(obj);
-> +	return 0;
-> +
-> +auxmacinvalid:
-> +	kfree(obj);
-> +	memcpy(auxmac, "unavailable", 11);
-> +	return 0;
-> +}
-> +
-> +static struct ibm_struct auxmac_data = {
-> +	.name = "auxmac",
-> +};
-> +
-> +static ssize_t auxmac_show(struct device *dev,
-> +			   struct device_attribute *attr,
-> +			   char *buf)
-> +{
-> +	if (strncmp(auxmac, "XXXXXXXXXXXX", AUXMAC_LEN) == 0)
-> +		memcpy(auxmac, "disabled", 9);
-> +
-> +	return sysfs_emit(buf, "%s\n", auxmac);
-> +}
-> +static DEVICE_ATTR_RO(auxmac);
-> +
-> +static struct attribute *auxmac_attributes[] = {
-> +	&dev_attr_auxmac.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group auxmac_attr_group = {
-> +	.attrs = auxmac_attributes,
-> +};
-> +
->  /* --------------------------------------------------------------------- */
->  
->  static struct attribute *tpacpi_driver_attributes[] = {
-> @@ -10843,6 +10915,7 @@ static const struct attribute_group *tpacpi_groups[] = {
->  	&proxsensor_attr_group,
->  	&kbdlang_attr_group,
->  	&dprc_attr_group,
-> +	&auxmac_attr_group,
->  	NULL,
->  };
->  
-> @@ -11414,6 +11487,10 @@ static struct ibm_init_struct ibms_init[] __initdata = {
->  		.init = tpacpi_dprc_init,
->  		.data = &dprc_driver_data,
->  	},
-> +	{
-> +		.init = auxmac_init,
-> +		.data = &auxmac_data,
-> +	},
->  };
->  
->  static int __init set_ibm_param(const char *val, const struct kernel_param *kp)
-
+BR, Jarkko
