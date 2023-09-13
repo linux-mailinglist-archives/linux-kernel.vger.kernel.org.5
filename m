@@ -2,270 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE51279E009
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1421679E00F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 08:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238392AbjIMGaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 02:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        id S238390AbjIMGeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 02:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238351AbjIMGaD (ORCPT
+        with ESMTP id S229780AbjIMGd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 02:30:03 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1466E173D
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 23:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=k1; bh=YXJOhBKin2MR8tV4lFJR3XpMrEsZzUkf4neCg226l1I=; b=ACLq9W
-        YeE62kLkVpcDzBtalbM3TiPekub5kK8UEhvcH8pO7DAIM1gsGj4KctjQ+LRqi89u
-        BqoJ7Yav4nOmYWK5PAxjAHQlj2+/iw6wbnDKAMNoc/mpuqE1LQeaMYVAr0SLGpXP
-        DY8JLRMTQ5afK+lOEH4mkZTL96vXN6mVwRIHdnuEjCOj2tCIaM4r8Klgw2/bLpI1
-        +ZOKB6zqPrYpKcOT9tm1AWkPVKfdw31Yy3bX60PpSXrNeIMh9dEmdo4TYdf6TLTX
-        AOSZq2jNNvTxauXCpwpg5WVNUTv7/DHxa5msNNEAn3ngRcm5Q22ZeXmocaXBIkwy
-        3+J+4dzcTEDOFW3A==
-Received: (qmail 489585 invoked from network); 13 Sep 2023 08:29:57 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 13 Sep 2023 08:29:57 +0200
-X-UD-Smtp-Session: l3s3148p1@ohMosDcFlqMujnuS
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFT 2/2] i2c: rcar: improve accuracy for R-Car Gen3+
-Date:   Wed, 13 Sep 2023 08:29:49 +0200
-Message-Id: <20230913062950.4968-3-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230913062950.4968-1-wsa+renesas@sang-engineering.com>
-References: <20230913062950.4968-1-wsa+renesas@sang-engineering.com>
+        Wed, 13 Sep 2023 02:33:58 -0400
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2045.outbound.protection.outlook.com [40.107.12.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175E81735;
+        Tue, 12 Sep 2023 23:33:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bdzg8ZGnXCo/1zrTxJf16sV3rXqvJr+OEfdjbUtmnEQ48tPuJsz+JuorznyXjS6TeUJ5W4kOXg8tmY5xbvovg6EKdaqazU55SlUynlSblcwksaZPnf/WZD5NuPyJtNTMCvWgC27VAY/aMKR9iPqKQjWVTKQUdgxiU9ByKLaFR69kmh37flVw4r6vyeK/eS3ao8nk6J1YHRp8fT8qxod9iHd1g+AnQoGHDSnGq6bv77z6xlntkMnpPkowvyLUPg+MRWKFT7HwwQEuMooPBk9wgxXokuA/HgMCSWmwX8jGVv7Srp2iON2jCnpAXfwvP8OJ+MD7bwn7t4Nz6PtG6E+mBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wrurouRHBHmsKFP2yXVE6h9ZcQ6HHXsgwlWpaJRAjoE=;
+ b=nJbXXyhhAeJqOifcsvbILUSoNNq+5OkBF9KefJgYw8Y/wCUVw2iHMCZdjaFAi5dI3bBIenXH927KEv21JAz+auXp828J6QWJgxKEGQ6GxctBda2nP5IEhzot6CYgD56YJ9gjktNd6g078EMrC0rIw3ZUI1qkd6pBlibFakMuS9FngJG48QOnwneEo136QQZPUvmYzM+mLI5u3gi/mIjVhYHzRVsocY6olEjTYWBeWkHq8cMOFowzuGHZ9cB60SrSZjUIJQfOBzuniSLq2UDpz3YPX7QAjpw7QlezXdZjvhfadR5JoXP8F0JBaEr58/yRrIPb8Cs98pHiHoQj/3DSGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wrurouRHBHmsKFP2yXVE6h9ZcQ6HHXsgwlWpaJRAjoE=;
+ b=cbL6ef4KuI5QWPTyROdzaF+t8C6uYXsLSVeTHULFfcv+z8GtlYQUf9BzjDn1YiHW+oX41oltHmcLjK4ZhVVdss39cNt/Jbgk7DCGvim0ALCZUA2ADP0G/tvwYxtuCFEhW7oFpMg7uvICc55i/UvsVwt4W9YLCCMdo8Dc8GRyjccDKkr9Lxp2qYAT/FBOE4qVBAjckORWvRJGjw3aapu2dpwAcpxO1Nb9ovdHdSW6oNl5/6GPzGXlqJQaDCkmbShqVW/+6+BtWcMrtccvpukHPRJd0ZsGanJ/J0gz3MbWJZycqaxdOEQKytmu03R4O4cz918psy0JxqQJCqZT21Tpyg==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MR1P264MB1619.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:15::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 06:33:51 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
+ 06:33:51 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+Thread-Topic: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+Thread-Index: AQHZ0jZLGonsLT7psk6V57DL3sI7p7ABi0MAgAx8eICAACGXAIAAAcAAgAAJOoCACD39AIAAi4MAgAACooCAAAHPAIAAAUwAgAAX4ICAAEH3gIAAE8cAgAAKbYCAABIXAIAAA7GAgADiu4A=
+Date:   Wed, 13 Sep 2023 06:33:51 +0000
+Message-ID: <cf189103-5b42-cf82-41b7-d73df2e34d0f@csgroup.eu>
+References: <495849d6-1dc6-4f38-bce7-23c50df3a99f@paulmck-laptop>
+ <20230911235452.xhtnt7ply7ayr53x@revolver>
+ <33150b55-970c-4607-9015-af0e50e4112d@paulmck-laptop>
+ <CAMuHMdWKwdxjRf031aD=Ko7vRdvFW-OR48QAc=ZFy=FP_LNAoA@mail.gmail.com>
+ <f9b0a88c-8a64-439f-a488-85d500c9f2aa@paulmck-laptop>
+ <CAMuHMdX89u6wL9W+8ZOn-OTT1FreYjEqYnvEip4Aq3k1gOP0EQ@mail.gmail.com>
+ <62936d98-6353-486e-8535-86c9f90bc7f4@paulmck-laptop>
+ <20230912135617.dnhyk4h5c555l2yg@revolver>
+ <9e85adf9-2e1f-4bed-a58e-9ca629c03579@paulmck-laptop>
+ <20230912154423.gcb5rzwzh4jbcaw7@revolver>
+ <1189edca-9029-4c2e-ba71-b3a1c15b61dc@paulmck-laptop>
+ <f12ba12c-4625-1b13-a0c8-376138d94b45@csgroup.eu>
+In-Reply-To: <f12ba12c-4625-1b13-a0c8-376138d94b45@csgroup.eu>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB1619:EE_
+x-ms-office365-filtering-correlation-id: 4b675582-4597-4db9-9207-08dbb423651a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3gD+40Km66g1ZelyVBrwzToJk4TI46FvUScDFYBXWsRvQ3gO2xcSi8F+KsiVPXgaPHTLzD2LvKQiNcNLu+NtmgqQgLb/js/OtLaS3R6UivPvhK9P98v5qGj/2SzmWz32NJTm0MzDoI3JIsknXaUAykUvufbRz/DLDSFx7rMJlucxZQ4J4F3koa/QuofGlNh2LQHoVKhvMd6T//h66OFtXQ5lhSRyWobOZgqqqqiUCi6CSreftX3AiIKcgfNrGrym+50ss2651KUbaZACQleGi93kRm2ZksSJ4QUO/LsHlqAf/ZKyaSBe2K/awLTugf2W3e+9CiGOAbQshEH2aS5Jls5+deRNZRLUpseplz7aAkUjPapXJvBMAB0KhBq4sJMAbhMd5BNVQXU9u4qdUexC4s33lSR51pA+CD5mBzLXqiIGYO3v/6y8F3CGnHUz5fDMLnmETPDfNFYUhv+VJLT8r0Qq05xCyDhgEzhrH9f78jPooGift7G4SOtA+UvFZnitqlCIVLyKdWErK3U2ierSueHmiEpCm+2GiH6T2EDEXuFQU1CrQ1AEoK2eB1IMcwMJKjoNCkeXkgsWtVI6XUa5Tiv+SpqFmiTZXnUpddsSjdNL5Sd/pH7kEnDBRTp3+vLxsq34Lb4Y3Q6Y7cvbnCfwZFImVkkRjqay8QenrKHl57mAblVyAnn0+uWnD4f0eRpbKHEBzELpgHF2AejRhl8wSg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(39860400002)(376002)(396003)(346002)(451199024)(186009)(1800799009)(26005)(71200400001)(122000001)(921005)(478600001)(6486002)(6506007)(38100700002)(36756003)(38070700005)(31686004)(64756008)(66476007)(66556008)(66946007)(66446008)(76116006)(91956017)(110136005)(6512007)(2616005)(316002)(41300700001)(8936002)(44832011)(2906002)(5660300002)(86362001)(31696002)(8676002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VnErSGZLVEd3elEzZ2JXTklsQVBwaEtncGVxK1lPdEtXMlVhT1c3TnJybFcy?=
+ =?utf-8?B?MWoxSUZvSDVTd1N1YjNYYTVXOHhqcngrTnlLTzN0WjBoRk5ZVzNLYmNObGFM?=
+ =?utf-8?B?SjFhTlNld0VPeUFIZEg4T3pBZWk2d1RFM25BR0g0ZjJtTUJ6d2Q3YTBha3dB?=
+ =?utf-8?B?TUQvNE9sMTFodEtLN2s0dlFrcTd4MjkwRXZ0S2JJQllSSGxMMTB6Z0R3NTZC?=
+ =?utf-8?B?dDZwc1RqSHU1UGNpWDc2N0xzSlJEbVNGSWFxamJOUEdhVUhJekJ3NUgvSTla?=
+ =?utf-8?B?LytCaEtHRGdhRXJBWWYwbjI0c1pYcVBFelZxTUxQa1c3bWw5SkIvSGhSSDBs?=
+ =?utf-8?B?cWJGR2VleEplMk04NGVPcDZlc2YwaE5oVHI0ZVhTWGkzMmZXVVJMd29rcFZB?=
+ =?utf-8?B?UmxWN1JFSXAxejBqM1Q3U2VqYVRSSWpyWWUvbmczK3ZuMVJlNTJmOFdibUZQ?=
+ =?utf-8?B?eXJOMVlIUlhjOTFPZ1Z6clBPUUlEdUsrQ3ZWVlhLM2w2NjNWaVM5VkRibm5o?=
+ =?utf-8?B?ZE9ub2JTMnY4QW9xcUZVNjFIaUh6ZGpDUE5WOEJUZktNaHVjOWpudURRQnZ1?=
+ =?utf-8?B?UlZhL0xac1dQVjY0U2hPTU0vU296YjBLUzRFQkxSb0E5NUJ6eGR0YitCblFt?=
+ =?utf-8?B?YkNudUNXUjJjMDJZZFhnU0hwdGtZRnJIRU9WbFEydVBYU1gvdU50aVhqOHpu?=
+ =?utf-8?B?SUFuNk01WXVQOG02SmhKRlVlbjJGdEcwRDVXbjBucE9YVmhJemxxZmJnMy9P?=
+ =?utf-8?B?WlRJY1hTRERPTGxoVDRvdWFXSDBFR0p4TENvVUxURXhyWUxsVVNOVHZ3NkFF?=
+ =?utf-8?B?V21LbXE5MDRBRFZXM2ZvYnBMWmhScTFJTURvMDVDUlc3T0dHRFhkSTkxTHkx?=
+ =?utf-8?B?aitiRERsbXBXbjRFc2kwMkhabXFIMjN1K0htTUVoVFRmclV2ZkJDSFVldXMx?=
+ =?utf-8?B?RWdQYkluNys3REpIWnl0dXdweGNnb3d0bW5VVG9WZGg3aWF1M0o1NlpJM3pS?=
+ =?utf-8?B?cFJCSW1qSGxTQkVQOURuSVd6ZVF4REFLTHVHVmVJWDJUQ0ZjYzRVWjNINUFr?=
+ =?utf-8?B?SHV6S1JIMVhUYlNNbWg4TkdxSkZmWi8zTGRJeDNqMkRSUTcraGpmRDFxd05P?=
+ =?utf-8?B?L1FqN29JQVhGMGlMOUxFK013TUlEdW12bnNzVzExL0NqZHZKSWlMUnBrV05Z?=
+ =?utf-8?B?MllSdW5SVU1wTjltZkttTHFIL0ZLbEw5U1UzRHVUalBMK3YxOVhhaElFZVY2?=
+ =?utf-8?B?Vko2V0RRODlOQ0YrcVBXTEp5eUpwNURYZHZLeVpxSHVaaExoQ0pBM1QvVnhL?=
+ =?utf-8?B?VTF6c3o0aTlzS3V0enFYSm54WFo3akpCUXNUK0xaZHFEanN4M3hHenNuRytB?=
+ =?utf-8?B?cDZ0NkZTZjU4MEoyR0xiZWpUVWRHSVIvUENrSWFrWVlBanA0Yjl5bnpoY3RV?=
+ =?utf-8?B?d3pTRTZzS3h0UTQyVGlkSVUzZ29Sa3JSMmgrT0lBU3kzNTJ2TzFsR0NPd0Vs?=
+ =?utf-8?B?NDI5Rm1zNXJaa0FkLzA1SE9ac2M5Z29MYitEeHNXL21HTWxsWkEwTzUrWWg2?=
+ =?utf-8?B?eU5wZldscGZWV2JlMU5mSG54dEI4ek02RmR2ckxFZE53eDVJam0zMWp1QlJn?=
+ =?utf-8?B?QklZWUlkNTJnMVJuUEEyZFcxZjVWRTVMY2NPcDVhNnV0R1VsVVF6dXJ2Z2Qy?=
+ =?utf-8?B?UzFhQkIvRWZ3SVk2VUptYXQ5REh6RWQrZDQxcXJLRTV4RVNyRkdyMVFkUFdo?=
+ =?utf-8?B?Wm5jaHg4eXd2UzRabVNGa3J3Nk00VXhEMDAveEFVVm1paVZ0R0R0RGZYdFFT?=
+ =?utf-8?B?ZVlReVp1aFJva0NDRkpuT3I4U1BPOUJRemRxY1IrWkcvaWRMNk1Jd1RPMTQ2?=
+ =?utf-8?B?RHhseDladUw5RjBoSUZTSGpUc0dRaGJLNm1Iayt1eng5ZjZHeVBGUXBOLytk?=
+ =?utf-8?B?eDY4ZVRvL29tRURhREppUFJEdk5FMVZ4RC8zdXdnZnlBUkc3ckJsRGx0TUs1?=
+ =?utf-8?B?V3JHemhnMzNjVVBycnVnWitCcTdPZmJTZ3NsTEF6WlBNYnBEMXZxNTJkbDBL?=
+ =?utf-8?B?QmZONmRMUzl1OUxEQnFxUG0xZEVHQSt6TWFWZ1JqQTNkektMaVNHWmR3aTVL?=
+ =?utf-8?B?VzdOUVpWVUpyNHpjQXFoUm9FQi9CeGtYV1V2SnNSSjVwNzVBbEtlL2E2Z0xT?=
+ =?utf-8?B?blE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AFCD98DDED9D4A458339F88796511BC6@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b675582-4597-4db9-9207-08dbb423651a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 06:33:51.5902
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: irTXPaNN2rm4XJ4jBDceKzRN1vKegCVPdlyXJCSkYL0B938SE7P2AXQuzqLIbscb09XzGRNMghKWxQqGKTSaEFSNKXH8y9eDcnY6wF8knC8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB1619
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With some new registers, SCL can be calculated to be closer to the
-desired rate. Apply the new formula for R-Car Gen3 device types.
-
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
-
-The base for this patch was a BSP patch adding FM+ support. However,
-this clock calculation is significantly different:
-
-* it calculates the divider instead of trying values until it fits
-* as there was no information about reasonable SMD calculation, it uses
-  a fixed value suggested from recommended settings in the docs
-* the SCL low/high ratio is 5:4 instead of 1:1. Otherwise the specs for
-  Fastmode are slightly not met
-* it doesn't use soc_device_match
-
- drivers/i2c/busses/i2c-rcar.c | 126 +++++++++++++++++++++++-----------
- 1 file changed, 87 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-rcar.c b/drivers/i2c/busses/i2c-rcar.c
-index 342c3747f415..bc5c7a0050eb 100644
---- a/drivers/i2c/busses/i2c-rcar.c
-+++ b/drivers/i2c/busses/i2c-rcar.c
-@@ -41,6 +41,10 @@
- #define ICSAR	0x1C	/* slave address */
- #define ICMAR	0x20	/* master address */
- #define ICRXTX	0x24	/* data port */
-+#define ICCCR2	0x28	/* Clock control 2 */
-+#define ICMPR	0x2C	/* SCL mask control */
-+#define ICHPR	0x30	/* SCL HIGH control */
-+#define ICLPR	0x34	/* SCL LOW control */
- #define ICFBSCR	0x38	/* first bit setup cycle (Gen3) */
- #define ICDMAER	0x3c	/* DMA enable (Gen3) */
- 
-@@ -84,11 +88,25 @@
- #define RMDMAE	BIT(1)	/* DMA Master Received Enable */
- #define TMDMAE	BIT(0)	/* DMA Master Transmitted Enable */
- 
-+/* ICCCR2 */
-+#define CDFD	BIT(2)	/* CDF Disable */
-+#define HLSE	BIT(1)	/* HIGH/LOW Separate Control Enable */
-+#define SME	BIT(0)	/* SCL Mask Enable */
-+
- /* ICFBSCR */
- #define TCYC17	0x0f		/* 17*Tcyc delay 1st bit between SDA and SCL */
- 
- #define RCAR_MIN_DMA_LEN	8
- 
-+/* SCL low/high ratio 5:4 to meet all I2C timing specs (incl safety margin) */
-+#define RCAR_SCLD_RATIO		5
-+#define RCAR_SCHD_RATIO		4
-+/*
-+ * SMD should be smaller than SCLD/SCHD and is always around 20 in the docs.
-+ * Thus, we simply use 20 which works for low and high speeds.
-+*/
-+#define RCAR_DEFAULT_SMD	20
-+
- #define RCAR_BUS_PHASE_START	(MDBS | MIE | ESG)
- #define RCAR_BUS_PHASE_DATA	(MDBS | MIE)
- #define RCAR_BUS_PHASE_STOP	(MDBS | MIE | FSB)
-@@ -128,6 +146,7 @@ struct rcar_i2c_priv {
- 
- 	int pos;
- 	u32 icccr;
-+	u32 scl_gran;
- 	u8 recovery_icmcr;	/* protected by adapter lock */
- 	enum rcar_i2c_type devtype;
- 	struct i2c_client *slave;
-@@ -216,11 +235,16 @@ static void rcar_i2c_init(struct rcar_i2c_priv *priv)
- 	rcar_i2c_write(priv, ICMCR, MDBS);
- 	rcar_i2c_write(priv, ICMSR, 0);
- 	/* start clock */
--	rcar_i2c_write(priv, ICCCR, priv->icccr);
--
--	if (priv->devtype == I2C_RCAR_GEN3)
-+	if (priv->devtype < I2C_RCAR_GEN3) {
-+		rcar_i2c_write(priv, ICCCR, priv->icccr);
-+	} else {
-+		rcar_i2c_write(priv, ICCCR2, CDFD | HLSE | SME);
-+		rcar_i2c_write(priv, ICCCR, priv->icccr);
-+		rcar_i2c_write(priv, ICMPR, RCAR_DEFAULT_SMD);
-+		rcar_i2c_write(priv, ICHPR, RCAR_SCHD_RATIO * priv->scl_gran);
-+		rcar_i2c_write(priv, ICLPR, RCAR_SCLD_RATIO * priv->scl_gran);
- 		rcar_i2c_write(priv, ICFBSCR, TCYC17);
--
-+	}
- }
- 
- static int rcar_i2c_bus_barrier(struct rcar_i2c_priv *priv)
-@@ -241,7 +265,7 @@ static int rcar_i2c_bus_barrier(struct rcar_i2c_priv *priv)
- 
- static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
- {
--	u32 scgd, cdf, round, ick, sum, scl, cdf_width;
-+	u32 cdf, round, ick, sum, scl, cdf_width;
- 	unsigned long rate;
- 	struct device *dev = rcar_i2c_priv_to_dev(priv);
- 	struct i2c_timings t = {
-@@ -254,27 +278,17 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
- 	/* Fall back to previously used values if not supplied */
- 	i2c_parse_fw_timings(dev, &t, false);
- 
--	switch (priv->devtype) {
--	case I2C_RCAR_GEN1:
--		cdf_width = 2;
--		break;
--	case I2C_RCAR_GEN2:
--	case I2C_RCAR_GEN3:
--		cdf_width = 3;
--		break;
--	default:
--		dev_err(dev, "device type error\n");
--		return -EIO;
--	}
--
- 	/*
- 	 * calculate SCL clock
- 	 * see
--	 *	ICCCR
-+	 *	ICCCR (and ICCCR2 for Gen3+)
- 	 *
- 	 * ick	= clkp / (1 + CDF)
- 	 * SCL	= ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
- 	 *
-+	 * for Gen3+:
-+	 * SCL	= clkp / (8 + SMD * 2 + SCLD + SCHD +F[(ticf + tr + intd) * clkp])
-+	 *
- 	 * ick  : I2C internal clock < 20 MHz
- 	 * ticf : I2C SCL falling time
- 	 * tr   : I2C SCL rising  time
-@@ -284,11 +298,12 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
- 	 */
- 	rate = clk_get_rate(priv->clk);
- 	cdf = rate / 20000000;
--	if (cdf >= 1U << cdf_width) {
--		dev_err(dev, "Input clock %lu too high\n", rate);
--		return -EIO;
--	}
--	ick = rate / (cdf + 1);
-+	cdf_width = (priv->devtype == I2C_RCAR_GEN1) ? 2 : 3;
-+	if (cdf >= 1U << cdf_width)
-+		goto err_no_val;
-+
-+	/* On Gen3+, we use cdf only for the filters, not as a SCL divider */
-+	ick = rate / (priv->devtype < I2C_RCAR_GEN3 ? (cdf + 1) : 1);
- 
- 	/*
- 	 * It is impossible to calculate a large scale number on u32. Separate it.
-@@ -301,24 +316,57 @@ static int rcar_i2c_clock_calculate(struct rcar_i2c_priv *priv)
- 	round = DIV_ROUND_CLOSEST(ick, 1000000);
- 	round = DIV_ROUND_CLOSEST(round * sum, 1000);
- 
--	/*
--	 * SCL	= ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
--	 * 20 + 8 * SCGD + F[...] = ick / SCL
--	 * SCGD = ((ick / SCL) - 20 - F[...]) / 8
--	 * Result (= SCL) should be less than bus_speed for hardware safety
--	 */
--	scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
--	scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
--	scl = ick / (20 + 8 * scgd + round);
-+	if (priv->devtype < I2C_RCAR_GEN3) {
-+		u32 scgd;
-+		/*
-+		 * SCL	= ick / (20 + 8 * SCGD + F[(ticf + tr + intd) * ick])
-+		 * 20 + 8 * SCGD + F[...] = ick / SCL
-+		 * SCGD = ((ick / SCL) - 20 - F[...]) / 8
-+		 * Result (= SCL) should be less than bus_speed for hardware safety
-+		 */
-+		scgd = DIV_ROUND_UP(ick, t.bus_freq_hz ?: 1);
-+		scgd = DIV_ROUND_UP(scgd - 20 - round, 8);
-+		scl = ick / (20 + 8 * scgd + round);
- 
--	if (scgd > 0x3f)
--		goto err_no_val;
-+		if (scgd > 0x3f)
-+			goto err_no_val;
- 
--	dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
--		scl, t.bus_freq_hz, rate, round, cdf, scgd);
-+		dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u, SCGD: %u\n",
-+			scl, t.bus_freq_hz, rate, round, cdf, scgd);
- 
--	/* keep icccr value */
--	priv->icccr = scgd << cdf_width | cdf;
-+		priv->icccr = scgd << cdf_width | cdf;
-+	} else {
-+		u32 x, sum_ratio = RCAR_SCHD_RATIO + RCAR_SCLD_RATIO;
-+		/*
-+		 * SCLD/SCHD ratio and SMD default value are explained above
-+		 * where they are defined. With these definitions, we can compute
-+		 * x as a base value for the SCLD/SCHD ratio:
-+		 *
-+		 * SCL = clkp / (8 + 2 * SMD + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
-+		 * SCL = clkp / (8 + 2 * RCAR_DEFAULT_SMD + RCAR_SCLD_RATIO * x
-+		 * 		 + RCAR_SCHD_RATIO * x + F[...])
-+		 *
-+		 * with: sum_ratio = RCAR_SCLD_RATIO + RCAR_SCHD_RATIO
-+		 * and:  smd = 2 * RCAR_DEFAULT_SMD
-+		 *
-+		 * SCL = clkp / (8 + smd + sum_ratio * x + F[...])
-+		 * 8 + smd + sum_ratio * x + F[...] = SCL / clkp
-+		 * x = ((SCL / clkp) - 8 - smd - F[...]) / sum_ratio
-+		 */
-+		x = DIV_ROUND_UP(rate, t.bus_freq_hz ?: 1);
-+		x = DIV_ROUND_UP(x - 8 - 2 * RCAR_DEFAULT_SMD - round, sum_ratio);
-+		scl = rate / (8 + 2 * RCAR_DEFAULT_SMD + sum_ratio * x + round);
-+
-+		/* Bail out if values don't fit into 16 bit or SMD became too large */
-+		if (x * RCAR_SCLD_RATIO > 0xffff || RCAR_DEFAULT_SMD > x * RCAR_SCHD_RATIO)
-+			goto err_no_val;
-+
-+		dev_dbg(dev, "clk %u/%u(%lu), round %u, CDF: %u SCL gran %u\n",
-+			scl, t.bus_freq_hz, rate, round, cdf, x);
-+
-+		priv->icccr = cdf;
-+		priv->scl_gran = x;
-+	}
- 
- 	return 0;
- 
--- 
-2.35.1
-
+DQoNCkxlIDEyLzA5LzIwMjMgw6AgMTk6MDIsIENocmlzdG9waGUgTGVyb3kgYSDDqWNyaXTCoDoN
+Cj4gDQo+IA0KPiBMZSAxMi8wOS8yMDIzIMOgIDE4OjQ5LCBQYXVsIEUuIE1jS2VubmV5IGEgw6lj
+cml0wqA6DQo+PiBPbiBUdWUsIFNlcCAxMiwgMjAyMyBhdCAxMTo0NDoyM0FNIC0wNDAwLCBMaWFt
+IFIuIEhvd2xldHQgd3JvdGU6DQo+Pj4+IFNvIG15IHF1ZXN0aW9uIGlzIHdoeSBpcyBpdCB1c2Vm
+dWwgdG8gc2V0dXAgaW50ZXJydXB0cyB0aGF0IGVhcmx5LCBnaXZlbg0KPj4+PiB0aGF0IGludGVy
+cnVwdHMgY2Fubm90IHBvc3NpYmx5IGhhcHBlbiB1bnRpbCB0aGUgYm9vdCBDUFUgZW5hYmxlcyB0
+aGVtPw0KPj4+DQo+Pj4gSSBkb24ndCBrbm93IGZvciBzdXJlLCBidXQgdGhlcmUgYXJlICdwcmVh
+bGxvY2F0ZWQgSVJRcycgd2hpY2ggZW5kIHVwDQo+Pj4gZ3JvdXBlZCAwLTE1LCB0aGVuIEkgc2Vl
+IGFub3RoZXIgb25lIGFkZGVkIGF0IDU1IGFmdGVyIHRoZSBtcGljIGNvbnNvbGUNCj4+PiBvdXRw
+dXQuICBJIHN1c3BlY3QgaXQncyBzbyB0aGF0IHRoZXkgY2FuIGJlIGFkZGVkIGFzIHRoZXkgYXJl
+IGRpc2NvdmVyZWQNCj4+PiBkdXJpbmcgZWFybHkgYm9vdD8NCj4+DQo+PiBDaHJpc3RvcGhlIGFy
+Z3VlcyB0aGF0IHRoZSBpbnRlcnJ1cHQgc3RhY2tzIG11c3QgYmUgYWxsb2NhdGVkIGVhcmx5DQo+
+PiBvbiwgYW5kIHRoYXQgdGhpcyBhY3F1aXJlcyBhIG11dGV4Lg0KPj4NCj4gDQo+IFdlbGwsIHdl
+IGNhbiBwcm9iYWJseSBhbGxvY2F0ZSB0aGVtIGxhdGVyIHRoYW4gaXQgaXMgdG9kYXkuDQo+IA0K
+PiBJbiBjb21taXQgNTQ3ZGIxMmZkOGEwICgicG93ZXJwYy8zMjogVXNlIHZtYXBwZWQgc3RhY2tz
+IGZvciBpbnRlcnJ1cHRzIikNCj4gSSBhbHJlYWR5IHB1c2hlZCB0aGUgYWxsb2NhdGlvbiBhdCBh
+IGxhdGVyIHN0YWdlIHRoYW4gaXQgaW5pdGlhbHkgd2FzLg0KPiANCj4gV2UgY2FuIHByb2JhYmx5
+IGRvIGl0IGxhdGVyIGlmIGl0IGhlbHBzLCBob3dldmVyIGl0IGRlZmluaXRlbHkgbmVlZHMgdG8N
+Cj4gYmUgZG9uZSBiZWZvcmUgZW5hYmxpbmcgSVJRcyBmb3Igb2J2aW91cyByZWFzb25zLCBzbyBp
+dCBpcyBhIHByb2JsZW0NCj4gdGhhdCBhbGxvY192bV9zdGFjaygpIGNhbGxpbmcgX192bWFsbG9j
+X25vZGUoKSBlbmFibGVzIElSUXMuDQoNCkZvciBGV0lXLCBsb29rcyBsaWtlIGFybTMyIGlzIGRv
+aW5nIHNpbWlsYXIgc28gdGhlIHByb2JsZW0gaXMgbGlrZWx5IHRvIA0KaGFwcGVuIGZvciB0aGVt
+IHRvby4gRm9yIHRoYXQgYm90aCBDT05GSUdfSVJRU1RBQ0tTIGFuZCANCkNPTkZJR19WTUFQX1NU
+QUNLIG11c3QgYmUgc2V0IGl0IHNlZW1zLg0KDQpDaHJpc3RvcGhlDQo=
