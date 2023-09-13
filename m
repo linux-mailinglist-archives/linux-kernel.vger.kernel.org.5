@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C960179E125
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CBE79E121
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238665AbjIMHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
+        id S238660AbjIMHtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238645AbjIMHtl (ORCPT
+        with ESMTP id S233874AbjIMHtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:49:41 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7B2198B;
-        Wed, 13 Sep 2023 00:49:37 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38D7IYCY012197;
-        Wed, 13 Sep 2023 09:49:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=qvNrnSqmnkbcVN82Gdh3SbGyVzQj2Bekue7XEA12AWI=; b=Yc
-        y2NwhjcV7oUxZHalY/c3jSPAgKLENTGyEzJISuOlGDDe6iSlhgartrpn74UjLtBD
-        1Q795kytgQP29NvHjGU1R1MrZW72i7U2Zw0IEk34IyJLZBa43EbNV3Ki7uC0Ew1O
-        C7kAqKzm8Ni2fCylkWdpodRzI07K0boBGbs0okVx7+g90pqlBYoK4gX26kmbtZzW
-        Qe220r8ssdGysZWC4Db+U5tOyYlUa/x9N/q52DSiWAZi/x4Dk9W6Luyreze7opue
-        i5G1mnInh/IdIdMscobI22EEt0hQ3qAeaffx5gmI4VCUYLahWbmrUYH9CTwsS5pM
-        Vl8nUu/JbDB2fB0mAJoA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3t2y7n9y2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 09:49:06 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4D39E100057;
-        Wed, 13 Sep 2023 09:49:03 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 43A8F226FC7;
-        Wed, 13 Sep 2023 09:49:03 +0200 (CEST)
-Received: from [10.201.20.32] (10.201.20.32) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 13 Sep
- 2023 09:49:02 +0200
-Message-ID: <d5f2d1b3-fc91-76f0-af3d-bcdf6c4b5703@foss.st.com>
-Date:   Wed, 13 Sep 2023 09:48:55 +0200
+        Wed, 13 Sep 2023 03:49:15 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDE2173E;
+        Wed, 13 Sep 2023 00:49:12 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 31DC26607319;
+        Wed, 13 Sep 2023 08:49:10 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1694591350;
+        bh=O9CO6wpscQ25gSXId4JSpQF3dW+cZrAGglKuHmq0w8k=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=DUxO7fNLz9nzGjZFSrbleJZ3aZ1M9wGDs5FruQWelZUIqm9QzVtGjOrsS3aKb1Kys
+         OU+mz5kS52QwTZ7H4ykQRNqn5WZFhPS1xuNHgMnYKaO+as4K6eKUjWr3PZVdk2pRsi
+         6XKF35tyWHerWlJcW27H0QgbbP8CBd9rQG+JNcBL27zqwOpWiiUC0YWn3pZ9jtQd/p
+         hbCSfrTj9EfX7HvFaKcbvvpSj0+eJQod+cWjXEv3uZvyjf2jk+I0oWu++4QSuWVjjK
+         ZTGipyXoQjHxWG/zV8HBI+5q45rRdI+a4TlwWFrpWVJOAvsSCbPRO+vJzaZGqqaDp8
+         PQD9+1o/iWk1w==
+Message-ID: <e93aa8a6-e088-2864-6ffa-050b211be21f@collabora.com>
+Date:   Wed, 13 Sep 2023 09:49:08 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.0
-Subject: Re: [PATCH v2 07/10] dt-bindings: rng: add st,rng-lock-conf
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+Subject: Re: [RFC v1 1/3] dt-bindings: thermal: mediatek: add mt7988
+ compatible
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
- <20230911120203.774632-8-gatien.chevallier@foss.st.com>
- <28ec58a3-63d5-f604-cef9-571b062fe244@linaro.org>
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Daniel Golle <daniel@makrotopia.org>
+References: <20230911183354.11487-1-linux@fw-web.de>
+ <20230911183354.11487-2-linux@fw-web.de>
 Content-Language: en-US
-From:   Gatien CHEVALLIER <gatien.chevallier@foss.st.com>
-In-Reply-To: <28ec58a3-63d5-f604-cef9-571b062fe244@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230911183354.11487-2-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.32]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/23 16:38, Krzysztof Kozlowski wrote:
-> On 11/09/2023 14:02, Gatien Chevallier wrote:
->> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
->> and RNG_NSCR will be locked. It is supported starting from the RNG
->> version present in the STM32MP13
->>
->> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+Il 11/09/23 20:33, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> How did you implement the comment? There is no changelog, so was it ignored?
+> Add compatible string for mt7988.
 > 
-> Best regards,
-> Krzysztof
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>   .../devicetree/bindings/thermal/mediatek,lvts-thermal.yaml       | 1 +
+>   1 file changed, 1 insertion(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml b/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
+> index fe9ae4c425c0..49effe561963 100644
+> --- a/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
+> +++ b/Documentation/devicetree/bindings/thermal/mediatek,lvts-thermal.yaml
+> @@ -18,6 +18,7 @@ description: |
+>   properties:
+>     compatible:
+>       enum:
+> +      - mediatek,mt7988-lvts
 
-Hello Krzysztof,
+Are you sure that MT7988 has only one LVTS controller, and that it is global?
 
-I've sent V2 before Rob's review. I'll apply Rob's comment for V3.
+>         - mediatek,mt8192-lvts-ap
+>         - mediatek,mt8192-lvts-mcu
+>         - mediatek,mt8195-lvts-ap
 
-Best regards,
-Gatien
