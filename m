@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF7679DCE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 01:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E98679DCEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjILX6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 19:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S232142AbjIMABY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjILX6i (ORCPT
+        with ESMTP id S230151AbjIMABW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 19:58:38 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA90710FE;
-        Tue, 12 Sep 2023 16:58:34 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso10039856e87.0;
-        Tue, 12 Sep 2023 16:58:34 -0700 (PDT)
+        Tue, 12 Sep 2023 20:01:22 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B209F10E6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:01:18 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26934bc3059so280928a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Sep 2023 17:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694563113; x=1695167913; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0zUd3C1FM/wtnOQDYKIuXXd26DTw0nV6sQuRlNb6RDU=;
-        b=PTuK0Paj3fAw3ZvDENkCy+olJ3T9K2SSYDhga2dMUSuYZ1eCEAgH7D4CyeJ5F/+NUA
-         N/Ml8s9Y2SKRMhmXa222MDOFghlbOEAfbH9DeoOgP9FxeTdYwblk0rClqR5EMHgaYs1F
-         K+yxc4BsmBd4OHwG3cY8f9+5U0C2j3qBtpDNpseWqrbESiDNHK7GzWj8UNogiyPJdmTE
-         A9AG0GcZfPYfIWfvZ5gann0+sGNZh/zk/Jw0G58JvM7GZIlNhA0QxetW3UHzpnqCxjxC
-         4G0ikqYhKkw3oUqUYnIWoZG0iVxpXNJnevtxr5O3jv5AoA8yAnz8nF5lLowXJrNUx33A
-         hYfA==
+        d=gmail.com; s=20221208; t=1694563278; x=1695168078; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y/Q7bkPiUIkagJc1JU2t5jAEeKH7MiIhHAkk2p3uzGo=;
+        b=pSprO7GBpG11Thf5c5i9699ROwAbl3e2YNZt6b/GFfteuKgWZyjjm3XpxDn0fcEoYw
+         ly7ID+4AJNlK0BvWP5acrb2SYZz4U9DFzF54zqq2n9DJpx3n2KoaxNeXey4NcKccZtc2
+         /1tb8VrqwiKFW9cpyevWnV7rw0vXeCDzMLAVxxfpFv7n0MGSxS8gLW0MGPOBCPqhmbiu
+         Lc2sEVxG8dRZCydvuRrWSqQxA++MCSJs6f8MKg1p4JeTZ2y7zAKRxIFlWMcPFsJsCW97
+         wtqCzj8HswBTM9+IperGLaO61h+KBeIuSBXkQiSfFOF3Rnan6TWHJ9JUpJHS2lbD/f5W
+         7lKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694563113; x=1695167913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0zUd3C1FM/wtnOQDYKIuXXd26DTw0nV6sQuRlNb6RDU=;
-        b=jjw0k9B7W/woEX4vU3+UxScaE7W9FrkvrFBf4W7sd6pimM+S1K+SKQfu5GdcEX1WG9
-         smMUpNgHTT59AkVywGxFpbK5EafsATRU1oDP5viS51kVb0PHdP5WlNl3stRJq99dU7Qr
-         aLsGmCXK2PQXdX7cGVR75OgoUkDftC4ld3FvViudi0rYv/Pcu8q+RAbe2Pk7wquIZubN
-         yZOEOq8aH5VmByfNin6+NoiFFv+sMr63BUygp8WrM42YJAjAAA0TS5SptNxQI36Aj1ER
-         dPN4Cbe3xIpcaXsvXzAhl3magHGF7OgvLZ4uAzlgtw+eGkqz6I17m064fUDmv43EGLU5
-         SJSg==
-X-Gm-Message-State: AOJu0YwEa0PDZ04rvTu7BN9KB6lel/UKxL2t+97lCE9sT580RJmAzFyG
-        LcKdN1+BGLdNiEuOed8TcWTac2NRZzhkiDYAyzEZ4rgwUF0=
-X-Google-Smtp-Source: AGHT+IGivdEcHiKXCCZRGqJ9thmtaq4JL/TKb/8uGuccY9BfUEgV5LC6kYM+Gxvp4bMzusM+JOxwKRcnE+Pm3b//vEE=
-X-Received: by 2002:a19:ca0b:0:b0:502:d85b:5de with SMTP id
- a11-20020a19ca0b000000b00502d85b05demr584754lfg.68.1694563112699; Tue, 12 Sep
- 2023 16:58:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694563278; x=1695168078;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y/Q7bkPiUIkagJc1JU2t5jAEeKH7MiIhHAkk2p3uzGo=;
+        b=MVM3f50eNJVAAVBCWyFqwf+5A96FcHRPfwuWVa0ccKyqF+uSGv9jkvwRXKkQnMBdMd
+         10oreOv41QBKJEmQFX8K8Z8RL0gvPPOFEAJ/drCOlkdmNK6iLfj86ID1rQ2oelLnFZ7C
+         7W8Z5bZeqkcYIGsmIOW/b8bbSen3IBeqJdClks8imnhIfNeQxBOOwmGy1c4ejTOXEI/S
+         nD8ruEBzUtXP9z5JcpVvfOoC8p/0GNbtjMfuxc9yXNCQH8qJuaMMTsC+9hlJDbWZMV4L
+         KL0xuwedEbwtiRIxnKwo38c2oi4x0np9FQa6qrGvVaNpFntvjRb2NCIrM1CB3vykRi7c
+         JG1g==
+X-Gm-Message-State: AOJu0YxWQQRQbq6liIYU5n+TmUkeTV9jcH3qQQZ6qDZsLTHw0yHlhCQA
+        O31rnEQ7HS7xPETxfC/fTARUDxB4K40=
+X-Google-Smtp-Source: AGHT+IGcglZ2x/MlceOhu/+LsvqEGp+O/m7oFsUO1srinD7/I5SKcqgvDjUC+N+ZJ8bJ6y28e6Avdw==
+X-Received: by 2002:a17:90b:4b82:b0:26d:689f:4253 with SMTP id lr2-20020a17090b4b8200b0026d689f4253mr5532999pjb.6.1694563277551;
+        Tue, 12 Sep 2023 17:01:17 -0700 (PDT)
+Received: from localhost ([216.228.127.131])
+        by smtp.gmail.com with ESMTPSA id a10-20020a17090ad80a00b0025bdc3454c6sm165381pjv.8.2023.09.12.17.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 17:01:17 -0700 (PDT)
+Date:   Tue, 12 Sep 2023 17:01:15 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        shiju.jose@huawei.com, jonathan.cameron@huawei.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com,
+        yangyicong@hisilicon.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v2 0/6] sched fixes
+Message-ID: <ZQD7yy0aGUpCoG6C@yury-ThinkPad>
+References: <20230819141239.287290-1-yury.norov@gmail.com>
+ <ZOiRHPvVfB8Q7TLv@yury-ThinkPad>
 MIME-Version: 1.0
-References: <20230913081050.5e0862bd@canb.auug.org.au> <CAADnVQKt_oCgJpVv+jqi5yhO4XUb2RWzajNSsNWk4fJWD4cJ7A@mail.gmail.com>
- <20230913091507.71869bba@canb.auug.org.au>
-In-Reply-To: <20230913091507.71869bba@canb.auug.org.au>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Sep 2023 16:58:21 -0700
-Message-ID: <CAADnVQ+p0d3QMbAphE5D0-kfYHZ+08WG_3MN7vTePK-spUuXtA@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the bpf tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOiRHPvVfB8Q7TLv@yury-ThinkPad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 4:15=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi Alexei,
->
-> On Tue, 12 Sep 2023 15:18:45 -0700 Alexei Starovoitov <alexei.starovoitov=
-@gmail.com> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 3:10=E2=80=AFPM Stephen Rothwell <sfr@canb.auug=
-.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > Commit
-> > >
-> > >   3903802bb99a ("libbpf: Add basic BTF sanity validation")
-> > >
-> > > is missing a Signed-off-by from its committer.
-> >
-> > Hmm. It's pretty difficult to fix.
-> > We'd need to force push a bunch of commits and add a ton of
-> > unnecessary SOBs to commits after that one.
-> > Can you make a note of it somehow?
->
-> No, I can't - git has no mechanism to do so.  However, I note that this
-> commit is signed off by one of the BPF maintainers, so maybe it can be
-> left as is and try to remember next time ;-)
+Another ping... 
 
-Right. Daniel's SOB is there.
-
-I think the sequence of events was the following.
-We don't close bpf-next during the merge window.
-Only don't push for-next branch.
-Daniel committed that patch with his SOB.
-I committed few others. Then bpf->net got merged and net-next was
-fast forwarded. So we rebased bpf-next to the latest net-next
-and I force pushed few patches without noticing that one was
-committed by Daniel. Later we added a bunch more and a week
-later when rc1 was out we pushed for-next for the first time.
-Now that 3903802bb99a ("libbpf: Add basic BTF sanity validation")
-is pretty far from the top with myself, Daniel, Martin, Andrii
-as committers after.
-So to fix that mistakes we'd need to force push all commits
-after that one and add SOBs to all of them, since git cannot
-force push preserving older committers.
-I think the best to leave it as-is.
-We'll be more careful in the future.
+On Fri, Aug 25, 2023 at 04:31:44AM -0700, Yury Norov wrote:
+> Ping?
+> 
+> On Sat, Aug 19, 2023 at 07:12:32AM -0700, Yury Norov wrote:
+> > Fixes for recently introduced sched_numa_find_nth_cpu(), and minor
+> > improvements in sched/fair.
+> > 
+> > v1: https://lore.kernel.org/lkml/20230810162442.9863-1-yury.norov@gmail.com/T/
+> > v2:
+> >  - fix wording in commit messages;
+> >  - move nearest node search inside rcu lock section in
+> >    sched_numa_find_nth_cpu();
+> >  - move NUMA_NO_NODE handling inside sched_numa_find_nth_cpu();
+> >  - rewrite comment for sched_numa_find_nth_cpu().
+> >  - add review tag from Yicong Yang.
+> > 
+> > Yury Norov (6):
+> >   numa: generalize numa_map_to_online_node()
+> >   sched/fair: fix opencoded numa_nearest_node()
+> >   sched: fix sched_numa_find_nth_cpu() in CPU-less case
+> >   sched: fix sched_numa_find_nth_cpu() in non-NUMA case
+> >   sched: handle NUMA_NO_NODE in sched_numa_find_nth_cpu()
+> >   sched: fix sched_numa_find_nth_cpu() comment
+> > 
+> >  include/linux/numa.h     |  7 +++++--
+> >  include/linux/topology.h |  2 +-
+> >  kernel/sched/fair.c      | 14 +-------------
+> >  kernel/sched/topology.c  | 25 +++++++++++++++++--------
+> >  lib/cpumask.c            |  4 +---
+> >  mm/mempolicy.c           | 18 +++++++++++-------
+> >  6 files changed, 36 insertions(+), 34 deletions(-)
+> > 
+> > -- 
+> > 2.39.2
