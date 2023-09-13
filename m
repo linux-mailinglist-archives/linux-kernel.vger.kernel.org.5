@@ -2,150 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B10879E38F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A2379E394
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239338AbjIMJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52168 "EHLO
+        id S239269AbjIMJ03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239264AbjIMJZT (ORCPT
+        with ESMTP id S229897AbjIMJ02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:25:19 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063A21999;
-        Wed, 13 Sep 2023 02:25:16 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68fb70fca9fso2843405b3a.2;
-        Wed, 13 Sep 2023 02:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694597115; x=1695201915; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NpFYAXnOqxjLWxlwZ45c7Msf6OlbS0bhBMJrCMsl3zg=;
-        b=nSnCf0cK4xpn5q4uEWbi4jgNyj0YzEsrtBBZ271rYq2sgh5We1k0YxkCtQ4fazBZos
-         ePABUdjDWp3xK7NGi+9pyFeYQ+QTnstMkVdat7uZJ5NbLR9n8dbjmW8xRKh/+ntPtm/t
-         oUGiR4lOAqjyCbO8F7DNfmFHHourggWUIRInKRKcg5U2dqbbjcVD+ZqM93L6n0T8nLsO
-         XMX8CsWd79cvTgVmZ7TgOcknUcS0XNVwiJ7feFCfM3xcVou08AeFHBLCddNMP+i935Bc
-         yKIfxiEyRC8B60TNfKYiBx4wnKx+/K3gLTEHH2+Q7etVfYAqgw/G544/zGAdvKpsDqwO
-         JXHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694597115; x=1695201915;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NpFYAXnOqxjLWxlwZ45c7Msf6OlbS0bhBMJrCMsl3zg=;
-        b=AIAkg9YnxQsQyiVbRqg5n1xUNLOyholxgx3Vu+bHGBI9x+wTDYBDKenAOFvotQJ90E
-         q34z4mzNhzLFtBFErH5UcizFWYzfXw+xv6MUoLPqzEruIez3z24qfkhmW8uBPfVuUsrI
-         Ic/yC2lctMPuDp9R6Wk0bwq61Qt8WTN/9oGEzmzja0XYalSglKYQ/sOcB+Az2gj7sVpi
-         fos8mUV+SRAe0qQU0nH7bktWS1CSAo44sPTvLXKvSunJkU6xAG4OQT3/Bg8Vq1xLxldA
-         wEbbVS5qx8lADAwmvchVdn9TQwnc7dpENfJIgR2yAz1NeB/n/vm1SMbnaw2zy6Gx6WRG
-         vVVg==
-X-Gm-Message-State: AOJu0Yxf/9b3naYXtLDUcMuj/0suPI5XXpl4TQQ0+GUKlt1Q+W2d3eQ0
-        SYGJeyE5PeKBdTZM1oZ3SXI=
-X-Google-Smtp-Source: AGHT+IG/3WIzQMbIKyGZtuuCHIWrLbl2lrCKitCBZEZyOjDkgyQfkCiMeKwYbJrLvyEtH8At6O8gvQ==
-X-Received: by 2002:a05:6a20:8f1f:b0:13f:c40c:379 with SMTP id b31-20020a056a208f1f00b0013fc40c0379mr2117577pzk.13.1694597115404;
-        Wed, 13 Sep 2023 02:25:15 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170902eb4400b001b8b26fa6c1sm9914334pli.115.2023.09.13.02.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 02:25:14 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 9D86780666AA; Wed, 13 Sep 2023 16:25:11 +0700 (WIB)
-Date:   Wed, 13 Sep 2023 16:25:11 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>, <corbet@lwn.net>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linus.walleij@linaro.org>, <andy.shevchenko@gmail.com>,
-        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
-        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
-        <bmasney@redhat.com>, <quic_tsoni@quicinc.com>
-Cc:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
-Subject: Re: [REBASE PATCH v5 01/17] docs: qcom: Add qualcomm minidump guide
-Message-ID: <ZQF_9-nX47QUCycO@debian.me>
-References: <1694429639-21484-1-git-send-email-quic_mojha@quicinc.com>
- <1694429639-21484-2-git-send-email-quic_mojha@quicinc.com>
+        Wed, 13 Sep 2023 05:26:28 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0935B1999;
+        Wed, 13 Sep 2023 02:26:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1694597180; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=jh7vTyw05MY3zs1yjcJ7pQj1CQ+ha8bZo1IOR5kK6OuUcV1N3H7AmaMnAoRG+n0pyL
+    aN4CsHlampUTHKLKXmjvXLdK7wKALf2NeINRTBVfyh5l8qJrCUoDy/oBA54omuhNjzHM
+    Re352kNT1/fR7+EPLUT+sEb/7/d+rMok+0kakMzaJ12EQnaORvO0PSWFJG4EIAF/nwJH
+    U/f+Gpay5o8PzDa9W1KguC7ryvnwIWwb6MeVOfcARUsdRU13hgTixtGYaXcUUioJMyGB
+    +qxbTfkJRs0nNeHIew/za2JQaRRm80DjnwMqVAWk1kKZ94hZ9vHx7VFMOg+59FH5gQs6
+    bY6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1694597180;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
+    b=m+SEcaRbLb3aeHI3A8S1TxnxXahRpvT9usblEcgfbiSb8cXez+zxn2W3OdT1jzdcxV
+    7GcD8ZBQ4t0dOgcmWRxYUwm4XRefV09pRu3pYWwl4gwOb/SvwBXjMJ+Oe9J1ttjx8oMa
+    0xmkV8XxOx5J/O74UErrLmmabDOZiJWLQRY49h5JoD6gMIefDtEAjB+l+IZekyetwh2Y
+    Q7YaU18XxWW3/nX8KFTtG2g3wgLdwmSeMiutnzgGiOiVGFB94agzpOiGZUKJujmCVjPI
+    E5o/JbAKgYXir5peewd2hctyCXhN8vPt8G/9DFe7dw6d6TKfbSlISLSNlig+G26IHASd
+    OpEQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1694597180;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
+    b=lpWL5oJWRMe707OfzSm3HnsRmfuMrrl3zKQPhdGaXlETRhIeLEL+MZ88cx2bfvXEUu
+    BB6oRV4JJLlDig+QBnw6k/2uLlojFuO47FfNaSOWpgeCXJVpB1Vc/MCTNSwG7fXf5pmt
+    Brmj1ujU5swIXrb+jQ5ZwvHzB9PuPmu6sSQPPp/7918VovTEUatJC9fKeshYReFmVDwv
+    63oXmIM48baCoJ2fAEKWuEJ0DkCjoaSLLzsA8YeVW+8Z2GGJtp5My9yEEhJqlE/3f7dB
+    5kdkxZx5GU7biXExwlc0kYKO8roXedbNMXo9B/exOa32NeWuHVX83o5p6+RWEnxm7j+D
+    VA5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1694597180;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=5CTXZnt4j2zCunCFXLIFwLCfjyTQk4HWDhbePahSWMo=;
+    b=Wvj+Z/LffVVSMzHsH2wr1O4pVcD0LB48YLwdXRgRNAEldlw1OiJkJQiuOi+XruZ6Ur
+    EgWFW+JOmT0zkUnkeRBg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z/h"
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id 60372az8D9QJgbQ
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 13 Sep 2023 11:26:19 +0200 (CEST)
+Date:   Wed, 13 Sep 2023 11:26:12 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Mark Brown <broonie@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] spi: qup: Vote for interconnect bandwidth to DRAM
+Message-ID: <ZQGANOwy97w0RIHV@gerhold.net>
+References: <20230912-spi-qup-dvfs-v1-0-3e38aa09c2bd@kernkonzept.com>
+ <20230912-spi-qup-dvfs-v1-4-3e38aa09c2bd@kernkonzept.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1694429639-21484-2-git-send-email-quic_mojha@quicinc.com>
+In-Reply-To: <20230912-spi-qup-dvfs-v1-4-3e38aa09c2bd@kernkonzept.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 04:23:43PM +0530, Mukesh Ojha wrote:
-> +Qualcomm APSS Minidump kernel driver concept
-> +--------------------------------------------
-> +::
+On Tue, Sep 12, 2023 at 04:30:39PM +0200, Stephan Gerhold wrote:
+> When the SPI QUP controller is used together with a DMA engine it needs
+> to vote for the interconnect path to the DRAM. Otherwise it may be
+> unable to access the memory quickly enough.
+
+I realized that I argue here that the interconnect vote is for DMA to
+DRAM...
+
+> [...]
+> @@ -675,6 +698,12 @@ static int spi_qup_io_prep(struct spi_device *spi, struct spi_transfer *xfer)
+>  		return -EIO;
+>  	}
+>  
+> +	ret = spi_qup_vote_bw(controller, xfer->speed_hz);
+> +	if (ret) {
+> +		dev_err(controller->dev, "fail to vote for ICC bandwidth: %d\n", ret);
+> +		return -EIO;
+> +	}
 > +
-> <snipped>...
-> +Dump collection
-> +---------------
-> +
-> +	+-----------+
-> +	|           |
-> +	|           |         +------+
-> +	|           |         |      |
-> +	|           |         +--+---+ Product(Qualcomm SoC)
-> +	+-----------+             |
-> +	|+++++++++++|<------------+
-> +	|+++++++++++|    usb cable
-> +	+-----------+
-> +            x86_64 PC
-> +
 
-Sphinx reports htmldocs warnings:
+... but here I vote for the bandwidth even if PIO is used instead of DMA.
 
-/home/bagas/repo/linux-kernel/Documentation/admin-guide/qcom_minidump.rst:100: WARNING: Literal block expected; none found.
-/home/bagas/repo/linux-kernel/Documentation/admin-guide/qcom_minidump.rst:243: WARNING: Unexpected indentation.
-/home/bagas/repo/linux-kernel/Documentation/admin-guide/qcom_minidump.rst:234: WARNING: Malformed table.
+I think it would be more logical to only do the bandwidth vote in the
+DMA setup path. I'll fix this in v2.
 
-+-----------+
-|           |
-|           |         +------+
-|           |         |      |
-|           |         +--+---+ Product(Qualcomm SoC)
-+-----------+             |
-|+++++++++++|<------------+
-|+++++++++++|    usb cable
-+-----------+
-/home/bagas/repo/linux-kernel/Documentation/admin-guide/qcom_minidump.rst:243: WARNING: Blank line required after table.
-
-I have to apply the fixup:
-
----- >8 ----
-diff --git a/Documentation/admin-guide/qcom_minidump.rst b/Documentation/admin-guide/qcom_minidump.rst
-index 20202da8ca40b9..5709a3853ae7ea 100644
---- a/Documentation/admin-guide/qcom_minidump.rst
-+++ b/Documentation/admin-guide/qcom_minidump.rst
-@@ -95,7 +95,6 @@ could be anywhere scattered in the DDR.
- 
- Qualcomm APSS Minidump kernel driver concept
- --------------------------------------------
--::
- 
- Qualcomm APSS minidump kernel driver adds the capability to add Linux
- region to be dumped as part of RAM dump collection. At the moment,
-@@ -231,6 +230,8 @@ respective dump as per set download mode.
- Dump collection
- ---------------
- 
-+::
-+
- 	+-----------+
- 	|           |
- 	|           |         +------+
-
-Thanks.
-
--- 
-An old man doll... just what I always wanted! - Clara
+Thanks,
+Stephan
