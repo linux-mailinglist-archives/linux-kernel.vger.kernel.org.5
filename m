@@ -2,87 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5A279E4DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648AB79E4E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239671AbjIMK1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 06:27:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
+        id S235703AbjIMK2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 06:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235450AbjIMK1b (ORCPT
+        with ESMTP id S232818AbjIMK23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:27:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979A11989;
-        Wed, 13 Sep 2023 03:27:27 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B55C433C8;
-        Wed, 13 Sep 2023 10:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694600847;
-        bh=V3lpNZExinvJ7sElkKRa9XZCuf6kPmAXcMMplgPNDl4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JZwOIE7VN94u2rpU7L20jZRmjtCK8CdeOqVWc8kTw9OveDj2Ni0wV0l2u1+Gi9B1v
-         pkd0YNIQ56+eiw0NfY+/EWbBPVaUS/ltH+it5KYmv8eLEpQHY0Bxgp0m4gSndrPK6W
-         MycPUViihGLMhB08gSDO6X0B02kbl9P8bfKqm/nnt57qkYxMT4C1nLrcHZDhURqLRy
-         Pi4YhqvIFF4JwThNvXtw2dfk5W2euzxx06/4Z2GzjO2n/4ry67CIfscUeXP+2gH8Gw
-         z/SA/EN03SJHjBLxFayozzs2kEdrvC3DtXQdxjU8NKUQ+5n7cQPGjQlmgL4/h8N2QW
-         EnozEduJy+yxg==
-Date:   Wed, 13 Sep 2023 11:27:21 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Oza Pawandeep <quic_poza@quicinc.com>, catalin.marinas@arm.com,
-        rafael@kernel.org, lenb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v5] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
- timer
-Message-ID: <20230913102721.GB12021@willie-the-truck>
-References: <20230912172933.3561144-1-quic_poza@quicinc.com>
- <20230913083908.dfanwizomj5i536k@bogus>
+        Wed, 13 Sep 2023 06:28:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BFA519B6;
+        Wed, 13 Sep 2023 03:28:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694600905; x=1726136905;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BOm7IybDAePeWd4TLpHqIfUxkm0hIFIrRWXa31Z5Nis=;
+  b=F23BHJmf145ATC4Q8X0mTTw7o5wV2wZOmxyCt9jv1zD+LO9k9pBjeKWY
+   P01QGG7gRtx5IzTkFEXZh6EHR0cuvwqLuXE3Bct8lCo6UWu0LwJ/Wp5zy
+   aGRTk7jTt1pOwC8ECAYp+22eKaUBm/LSftclGYtgaLac+PoZBogz26Upw
+   bt3xyvoiG/Zt63ixyonJbZVvr0xMCLjltrDALfIlhK7MLObbh1Ab7CEWd
+   MGDKi3D3j55+ur6imyZZThYCqdpZ/vIsx7yWifAo1d0XVtu3SMhwEJvfl
+   SX2iDhXOILANZ8Vs1panmmnROiwYYLFyW3fhvlYvJbJZbOQxqzsdBUokq
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="363652640"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="363652640"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 03:28:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="917773493"
+X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
+   d="scan'208";a="917773493"
+Received: from lkp-server02.sh.intel.com (HELO cf13c67269a2) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 03:28:22 -0700
+Received: from kbuild by cf13c67269a2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qgN6Z-0000Oh-2V;
+        Wed, 13 Sep 2023 10:28:19 +0000
+Date:   Wed, 13 Sep 2023 18:28:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
+        zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Naresh Solanki <naresh.solanki@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v3] regulator (max5970): Add hwmon support
+Message-ID: <202309131847.4GIyTQIO-lkp@intel.com>
+References: <20230911113647.1259204-1-naresh.solanki@9elements.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230913083908.dfanwizomj5i536k@bogus>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20230911113647.1259204-1-naresh.solanki@9elements.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 09:43:01AM +0100, Sudeep Holla wrote:
-> On Tue, Sep 12, 2023 at 10:29:33AM -0700, Oza Pawandeep wrote:
-> > Arm® Functional Fixed Hardware Specification defines LPI states,
-> > which provide an architectural context loss flags field that can
-> > be used to describe the context that might be lost when an LPI
-> > state is entered.
-> > 
-> > - Core context Lost
-> >         - General purpose registers.
-> >         - Floating point and SIMD registers.
-> >         - System registers, include the System register based
-> >         - generic timer for the core.
-> >         - Debug register in the core power domain.
-> >         - PMU registers in the core power domain.
-> >         - Trace register in the core power domain.
-> > - Trace context loss
-> > - GICR
-> > - GICD
-> > 
-> > Qualcomm's custom CPUs preserves the architectural state,
-> > including keeping the power domain for local timers active.
-> > when core is power gated, the local timers are sufficient to
-> > wake the core up without needing broadcast timer.
-> > 
-> > The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-> > broadcast timer if core context lost is defined in ACPI LPI.
-> > 
-> > Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-> 
-> IIRC, Rafael had acked this, perhaps missing the tag ?
-> Also just add a note to Will/Catalin that Rafael has acked and prefer to
-> take it via arm64 tree.
+Hi Naresh,
 
-Is this a fix? If so, please can I have a "Fixes:" tag (and does it need to
-go into stable?)
+kernel test robot noticed the following build errors:
 
-Will
+[auto build test ERROR on 41f02a383ac652f1a0b5538c5901b7ec93e37290]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-max5970-Add-hwmon-support/20230912-072321
+base:   41f02a383ac652f1a0b5538c5901b7ec93e37290
+patch link:    https://lore.kernel.org/r/20230911113647.1259204-1-naresh.solanki%409elements.com
+patch subject: [PATCH v3] regulator (max5970): Add hwmon support
+config: i386-randconfig-062-20230913 (https://download.01.org/0day-ci/archive/20230913/202309131847.4GIyTQIO-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230913/202309131847.4GIyTQIO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309131847.4GIyTQIO-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: drivers/regulator/max5970-regulator.o: in function `max597x_regulator_probe':
+>> drivers/regulator/max5970-regulator.c:606: undefined reference to `devm_hwmon_device_register_with_info'
+
+
+vim +606 drivers/regulator/max5970-regulator.c
+
+   541	
+   542	static int max597x_regulator_probe(struct platform_device *pdev)
+   543	{
+   544		struct max5970_data *max597x;
+   545		struct regmap *regmap = dev_get_regmap(pdev->dev.parent, NULL);
+   546		struct max5970_regulator *data;
+   547		struct i2c_client *i2c = to_i2c_client(pdev->dev.parent);
+   548		struct regulator_config config = { };
+   549		struct regulator_dev *rdev;
+   550		struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
+   551		struct device *hwmon_dev;
+   552		int num_switches;
+   553		int ret, i;
+   554	
+   555		if (!regmap)
+   556			return -EPROBE_DEFER;
+   557	
+   558		max597x = devm_kzalloc(&i2c->dev, sizeof(struct max5970_data), GFP_KERNEL);
+   559		if (!max597x)
+   560			return -ENOMEM;
+   561	
+   562		i2c_set_clientdata(i2c, max597x);
+   563	
+   564		if (of_device_is_compatible(i2c->dev.of_node, "maxim,max5978"))
+   565			max597x->num_switches = MAX5978_NUM_SWITCHES;
+   566		else if (of_device_is_compatible(i2c->dev.of_node, "maxim,max5970"))
+   567			max597x->num_switches = MAX5970_NUM_SWITCHES;
+   568		else
+   569			return -ENODEV;
+   570	
+   571		i2c_set_clientdata(i2c, max597x);
+   572		num_switches = max597x->num_switches;
+   573	
+   574		for (i = 0; i < num_switches; i++) {
+   575			data =
+   576			    devm_kzalloc(&i2c->dev, sizeof(struct max5970_regulator),
+   577					 GFP_KERNEL);
+   578			if (!data)
+   579				return -ENOMEM;
+   580	
+   581			data->num_switches = num_switches;
+   582			data->regmap = regmap;
+   583	
+   584			ret = max597x_adc_range(regmap, i, &max597x->irng[i], &max597x->mon_rng[i]);
+   585			if (ret < 0)
+   586				return ret;
+   587	
+   588			data->irng = max597x->irng[i];
+   589			data->mon_rng = max597x->mon_rng[i];
+   590	
+   591			config.dev = &i2c->dev;
+   592			config.driver_data = (void *)data;
+   593			config.regmap = data->regmap;
+   594			rdev = devm_regulator_register(&i2c->dev,
+   595						       &regulators[i], &config);
+   596			if (IS_ERR(rdev)) {
+   597				dev_err(&i2c->dev, "failed to register regulator %s\n",
+   598					regulators[i].name);
+   599				return PTR_ERR(rdev);
+   600			}
+   601			rdevs[i] = rdev;
+   602			max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
+   603		}
+   604	
+   605		if (IS_ENABLED(CONFIG_HWMON)) {
+ > 606			hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970", max597x,
+   607									 &max5970_chip_info, NULL);
+   608			if (IS_ERR(hwmon_dev)) {
+   609				return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev),
+   610						     "Unable to register hwmon device\n");
+   611			}
+   612		}
+   613	
+   614		if (i2c->irq) {
+   615			ret =
+   616			    max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
+   617					      data);
+   618			if (ret) {
+   619				dev_err(&i2c->dev, "IRQ setup failed");
+   620				return ret;
+   621			}
+   622		}
+   623	
+   624		return ret;
+   625	}
+   626	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
