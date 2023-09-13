@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDA379EB31
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23F779EB33
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241367AbjIMOfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S236415AbjIMOgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235721AbjIMOfo (ORCPT
+        with ESMTP id S230000AbjIMOgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:35:44 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE78690
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:35:39 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by baptiste.telenet-ops.be with bizsmtp
-        id lSbe2A0063fvA4V01Sberm; Wed, 13 Sep 2023 16:35:38 +0200
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qgQxu-003cyS-25;
-        Wed, 13 Sep 2023 16:35:38 +0200
-Date:   Wed, 13 Sep 2023 16:35:38 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: Re: [PATCH v1 05/10] gpio: pca953x: Simplify code with cleanup
- helpers
-In-Reply-To: <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
-Message-ID: <71232fcf-98c4-373a-805-141a349fd25@linux-m68k.org>
-References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com> <20230901134041.1165562-5-andriy.shevchenko@linux.intel.com>
+        Wed, 13 Sep 2023 10:36:41 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFEE90;
+        Wed, 13 Sep 2023 07:36:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ACA5C433C7;
+        Wed, 13 Sep 2023 14:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694615797;
+        bh=l/HLN/NV+mFI79hNIP6t/1/MsWeZvJq9VBZFuP7L0SM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aI/4Xcwr+/SuDZ5RkIVFKe9vn9OzdOumSxTas1jMNhT+/73O1+a0lXXTJBML0z3LU
+         StRAQNvoVbDofRUBdveADi1CI+u4Yy9CSzbWb7bJHILn3duxC5skYh7TAWTQMg6JuZ
+         CKVkcDM0YAIIEGVFsll5G9mqeKOl+gfSnuNjVqhGg9vN7LMEvGTOJEGCOLRPSv/Y6x
+         IQ0arNn2a3ROxugi/vYgxqg/vJ88kF8HvkMdLzawcLJ21Vmn+1E5gKwIYuTz8jFmMu
+         PpnrwSAE6hT8PmjI3unD7rnKGBRJGpqX4WAyZZFNtLoWCSzCtloCa7roZmHcudeAMN
+         JleoCQvuhV7Nw==
+Date:   Wed, 13 Sep 2023 15:36:32 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Bernhard =?iso-8859-1?Q?Rosenkr=E4nzer?= <bero@baylibre.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: dts: mediatek: add mt8390-evk
+ board
+Message-ID: <20230913-scoop-agnostic-66e65d426134@spud>
+References: <20230913040449.29560-1-macpaul.lin@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iUv/m+HGu/hljI90"
+Content-Disposition: inline
+In-Reply-To: <20230913040449.29560-1-macpaul.lin@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- 	Hi Andy,
 
-On Fri, 1 Sep 2023, Andy Shevchenko wrote:
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in gpio-pca953x.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+--iUv/m+HGu/hljI90
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch, which is now commit 8e471b784a720f6f
-("gpio: pca953x: Simplify code with cleanup helpers") in
-gpio/gpio/for-next.
+Yo,
 
-> --- a/drivers/gpio/gpio-pca953x.c
-> +++ b/drivers/gpio/gpio-pca953x.c
-> @@ -557,9 +554,8 @@ static int pca953x_gpio_get_value(struct gpio_chip *gc, unsigned off)
-> 	u32 reg_val;
-> 	int ret;
->
-> -	mutex_lock(&chip->i2c_lock);
-> -	ret = regmap_read(chip->regmap, inreg, &reg_val);
-> -	mutex_unlock(&chip->i2c_lock);
-> +	scoped_guard(mutex, &chip->i2c_lock)
-> +		ret = regmap_read(chip->regmap, inreg, &reg_val);
+For $subject, the "dts: " can be dropped.
 
-I can't say I'm thrilled about the lack of curly braces.  I was also
-surprised to discover that checkpatch nor gcc W=1 complain about the
-indentation change.
-I know we don't use curly braces in single-statement for_each_*() loops,
-but at least these have the familiar "for"-prefix.  And having the scope
-is very important here, so using braces, this would stand out more.
+On Wed, Sep 13, 2023 at 12:04:48PM +0800, Macpaul Lin wrote:
+> 1. Add compatible for MT8390.
+> 2. Add bindings for the MediaTek mt8390-evk board, also known
+> as the "Genio 700-EVK".
+>=20
+> The MT8390 and MT8188 belong to the same SoC family,
+> with only minor differences in their physical characteristics.
+> They utilize unique efuse values for differentiation.
+>=20
+> The booting process and configurations are managed by boot
+> loaders, firmware, and TF-A. Consequently, the part numbers
+> and procurement channels vary.
+>=20
+> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> dependencies for v1:
+>  - This patch should be applied after the following patch set
+>   - mt8365's bindings
+>    - https://lore.kernel.org/linux-arm-kernel/20230912092444.31635-1-macp=
+aul.lin@mediatek.com/T/
+>   - mt8395's bindings: v6
+>    - https://lore.kernel.org/lkml/20230911115717.26184-1-macpaul.lin@medi=
+atek.com/T/
+>   - mt8188's bindings
+>    - https://lore.kernel.org/lkml/a4e1a80ebd19896410f50b0297e05dce06fb47c=
+c.camel@mediatek.com/T/
+>=20
+> Changess for v2:
+>  - drop description for multiple boards
+>  - update dependencies with the following patch sets
+>   - mt8395's bindings: v7
+>    - https://lore.kernel.org/linux-arm-kernel/20230913032057.3197-1-macpa=
+ul.lin@mediatek.com/T/ =20
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Docume=
+ntation/devicetree/bindings/arm/mediatek.yaml
+> index 0248bb458180..3968d5934fa2 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -252,6 +252,11 @@ properties:
+>            - enum:
+>                - mediatek,mt8365-evk
+>            - const: mediatek,mt8365
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt8390-evk
+> +          - const: mediatek,mt8390
+> +          - const: mediatek,mt8188
 
-Hence can we please get curly braces, like
+This is prob a little unusual (at least I don't think I've seen a patch
+doing this so far), but the mediatek maintainers can do as they wish
+here I think.
 
-     scoped_guard(mutex, &chip->i2c_lock) {
- 	    ret = regmap_read(chip->regmap, inreg, &reg_val);
-     }
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-?
+Thanks,
+Conor.
 
-Thanks! ;-)
+>        - items:
+>            - enum:
+>                - mediatek,mt8395-evk
+> --=20
+> 2.18.0
+>=20
 
-Gr{oetje,eeting}s,
+--iUv/m+HGu/hljI90
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 						Geert
+-----BEGIN PGP SIGNATURE-----
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZQHI7wAKCRB4tDGHoIJi
+0ll7AQDZ+UG2u+qicKq6nOFt/uOuzVVJA4Fv1p7iu8KWnBvSIwD7B0k3SXfuHDhe
+2TnPbFUp4xoHPLJaJt4Oe/zhg3/Y/Ak=
+=ky4l
+-----END PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+--iUv/m+HGu/hljI90--
