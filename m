@@ -2,178 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB7D79F3E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EB679F3E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 23:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbjIMVfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 17:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S231316AbjIMVhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 17:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjIMVfJ (ORCPT
+        with ESMTP id S229543AbjIMVhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 17:35:09 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A301724;
-        Wed, 13 Sep 2023 14:35:05 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DLM1iD013279;
-        Wed, 13 Sep 2023 21:34:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iMlTnaroKZ9nRGZVKhyWFjjAvtP4hFgeb9nX/asKSwQ=;
- b=AyX1jMzPvGcvRCaKy9IIp/9nkJ+U96okm+SkbYj2Y3J23Sui05PTNK5mchVGryg2thuO
- gELw8u3NB9aKHuCsWQq2wmso7PJ1nIIOnM5GV9ppdm9M8f4SFxaTtVI37qinhY6BrN6n
- bf4puRHE2KBXkiDqxNDaEHm/CXQeKJoIdosDR8c8bbt2cLnhH28pLDQ8rVwwMuNm/U7H
- DymLM6n2dS/w51j0iljeJNnuSq7uRdp6RHDwngauim2Z2Vb+PGirP0WhQUXyMX8SpC/X
- VHnZreNhiGvB1lUKg4nNk1/d6++pNrQseNsfQHOPHhdY1rjWWnroyDBshHQHgOhHJeCZ tQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2yp3jpm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 21:34:54 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38DLYr3J006174
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 21:34:53 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 13 Sep
- 2023 14:34:53 -0700
-Message-ID: <d46ee183-a010-e585-c47c-fa3229eafb33@quicinc.com>
-Date:   Wed, 13 Sep 2023 14:34:38 -0700
+        Wed, 13 Sep 2023 17:37:34 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816AE1724;
+        Wed, 13 Sep 2023 14:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=WgAB9SAfkpGIabHV4CqdvtxhlA1ScpVv8kzv92uGnyM=; b=Hv/YvKQov0SoJ8rTHsgChXNdgZ
+        e0bGH6agSkcEtOoEXsZmt0aLiwPIlE4e39u95QoWkZvn9dSNFnaHt/YRPsoZ21wUXrNrazh7Zvois
+        vjOSuUv/U/u4GA8evFI10ATj7pLLzu+H1Uc6qcN3E/RjvtyPWRcRL7uDa6wg/B+I2zNk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qgXY1-006LK5-8V; Wed, 13 Sep 2023 23:37:21 +0200
+Date:   Wed, 13 Sep 2023 23:37:21 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Lai <justinlai0215@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v7 02/13] net:ethernet:realtek:rtase: Implement
+ the .ndo_open function
+Message-ID: <a7a4d7b6-84cd-49fc-9fde-1a6a232bf7af@lunn.ch>
+References: <20230912091830.338164-1-justinlai0215@realtek.com>
+ <20230912091830.338164-3-justinlai0215@realtek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 5/8] drm/panel: nv3052c: Allow specifying registers
- per panel
-Content-Language: en-US
-To:     John Watts <contact@jookia.org>, <dri-devel@lists.freedesktop.org>
-CC:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        <linux-kernel@vger.kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>
-References: <20230911090206.3121440-1-contact@jookia.org>
- <20230911090206.3121440-6-contact@jookia.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20230911090206.3121440-6-contact@jookia.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dgQBajD7WHk4_83fTZM1vvg3kRDGX8bp
-X-Proofpoint-ORIG-GUID: dgQBajD7WHk4_83fTZM1vvg3kRDGX8bp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-13_16,2023-09-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 phishscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309130178
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912091830.338164-3-justinlai0215@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 12, 2023 at 05:18:19PM +0800, Justin Lai wrote:
+> Implement the .ndo_open function to set default hardware settings
+> and initialize the descriptor ring and interrupts. Among them,
+> when requesting irq, because the first group of interrupts needs to
+> process more events, the overall structure will be different from
+> other groups of interrupts, so it needs to be processed separately.
 
+Please take a look at the page pool code.
 
-On 9/11/2023 2:02 AM, John Watts wrote:
-> Panel initialization registers are per-display and not tied to the
-> controller itself. Different panels will specify their own registers.
-> Attach the sequences to the panel info struct so future panels
-> can specify their own sequences.
-> 
-> Signed-off-by: John Watts <contact@jookia.org>
-> ---
->   .../gpu/drm/panel/panel-newvision-nv3052c.c   | 25 ++++++++++++-------
->   1 file changed, 16 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> index 307335d0f1fc..b2ad9b3a5eb7 100644
-> --- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> @@ -20,11 +20,18 @@
->   #include <drm/drm_modes.h>
->   #include <drm/drm_panel.h>
->   
-> +struct nv3052c_reg {
-> +	u8 cmd;
-> +	u8 val;
-> +};
-> +
->   struct nv3052c_panel_info {
->   	const struct drm_display_mode *display_modes;
->   	unsigned int num_modes;
->   	u16 width_mm, height_mm;
->   	u32 bus_format, bus_flags;
-> +	const struct nv3052c_reg *panel_regs;
-> +	int panel_regs_len;
-
-Hi John,
-
-Having a separate panel_regs_len field seems a bit unnecessary to me.
-
-Looks like it's only being called in the panel prepare() and I don't 
-seen any reason why we shouldn't just call the ARRAY_SIZE() macro there.
-
-Thanks,
-
-Jessica Zhang
-
->   };
->   
->   struct nv3052c {
-> @@ -36,12 +43,7 @@ struct nv3052c {
->   	struct gpio_desc *reset_gpio;
->   };
->   
-> -struct nv3052c_reg {
-> -	u8 cmd;
-> -	u8 val;
-> -};
-> -
-> -static const struct nv3052c_reg nv3052c_panel_regs[] = {
-> +static const struct nv3052c_reg ltk035c5444t_panel_regs[] = {
->   	// EXTC Command set enable, select page 1
->   	{ 0xff, 0x30 }, { 0xff, 0x52 }, { 0xff, 0x01 },
->   	// Mostly unknown registers
-> @@ -244,6 +246,7 @@ static inline struct nv3052c *to_nv3052c(struct drm_panel *panel)
->   static int nv3052c_prepare(struct drm_panel *panel)
->   {
->   	struct nv3052c *priv = to_nv3052c(panel);
-> +	const struct nv3052c_reg *panel_regs = priv->panel_info->panel_regs;
->   	struct mipi_dbi *dbi = &priv->dbi;
->   	unsigned int i;
->   	int err;
-> @@ -260,9 +263,11 @@ static int nv3052c_prepare(struct drm_panel *panel)
->   	gpiod_set_value_cansleep(priv->reset_gpio, 0);
->   	msleep(150);
->   
-> -	for (i = 0; i < ARRAY_SIZE(nv3052c_panel_regs); i++) {
-> -		err = mipi_dbi_command(dbi, nv3052c_panel_regs[i].cmd,
-> -				       nv3052c_panel_regs[i].val);
-> +	int panel_regs_len = priv->panel_info->panel_regs_len;
-> +
-> +	for (i = 0; i < panel_regs_len; i++) {
-> +		err = mipi_dbi_command(dbi, panel_regs[i].cmd,
-> +				       panel_regs[i].val);
->   
->   		if (err) {
->   			dev_err(priv->dev, "Unable to set register: %d\n", err);
-> @@ -466,6 +471,8 @@ static const struct nv3052c_panel_info ltk035c5444t_panel_info = {
->   	.height_mm = 64,
->   	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->   	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-> +	.panel_regs = ltk035c5444t_panel_regs,
-> +	.panel_regs_len = ARRAY_SIZE(ltk035c5444t_panel_regs),
->   };
->   
->   static const struct spi_device_id nv3052c_ids[] = {
-> -- 
-> 2.42.0
-> 
+       Andrew
