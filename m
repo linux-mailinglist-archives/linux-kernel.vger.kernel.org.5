@@ -2,153 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F264879EFFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4211479F008
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbjIMRNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
+        id S230020AbjIMROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjIMRNL (ORCPT
+        with ESMTP id S229468AbjIMROy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:13:11 -0400
-Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com [IPv6:2607:f8b0:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A22691
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:13:07 -0700 (PDT)
-Received: by mail-oi1-x249.google.com with SMTP id 5614622812f47-3a6e180e49aso53605b6e.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:13:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694625187; x=1695229987; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TycX59E5b3dlFgGY1L+jzKDgDIrRQ3+jS2g/Ms9VN9A=;
-        b=aTJ69jXNunqkfhvzcfdypL8zLLwX28MbgYnrm1Ky66WzsuYqRju/86npjIUDKZxOaU
-         cp/ryRqGV0GkTTGfxHi5TNmTqNK7B9Uvng3VjAKmeyI/sCrObopn+DllRyYiZ4+MzBpS
-         yavsfqeuLoSRhmWupYZeS90dVySONaH5Ao3xC+8QsTmAUedLp68QlCytQmV1CI4mmYrB
-         X1o5LIFv7hoVmbhly0wBguzB8vSDYfjBT5TybK+jKnAKRYyiWtAl4JcQ4lCoLX2vFmvw
-         sPP5igotMX3vZMNsupqBIavg7c7yHJNoWWZd03qyEo0R1VO6oMhI4G5oe9Uu00JM/sbo
-         se8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694625187; x=1695229987;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TycX59E5b3dlFgGY1L+jzKDgDIrRQ3+jS2g/Ms9VN9A=;
-        b=eC6IrhAyW6svCpxaJNDyF8meT59rmamNljD8o5k7UDQpedmT3EPHcnLPvPSXVeC1UU
-         rycFjSc17u7aQ4z+TXYoJEYobCRn3u1pbuP8l0Pj3aI5yd6/+sTmIyoXUTwPhYYX8Qmc
-         ZhjKyIvIBP+UQKIqEcKFoj5zherXK8joDA93uUR3uaNyY4UICQ++mFraoCQDUiGlZN30
-         90qRW0LP5bOwMdAEvu4KJbZZhVbal5svDolmyiRC7w47wYsadwMDd8WTPg1z6UDpvbon
-         6cFznLo9ONLSQksQUb6LVD7xHUMFAVyipN/hByT8YIMd86gqodi7Io8vbqQVq2+wm+jK
-         E4og==
-X-Gm-Message-State: AOJu0YweaTxxik0PmRoUCg3dknNA2YzbL7qz0jFi26KwRox0x4/WyRFQ
-        9U8vXanlUudywHe0cvFaOJmtJlUr9Fcn/f9WOw==
-X-Google-Smtp-Source: AGHT+IGpv77TMcvUEUVSFcCbF4UPPntDMLB3+Kcq3GEi15wPVZGQhJZUau9yW/l4BvE2Ks/L2ADHNSyMWbN06O58bw==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6808:1443:b0:397:f54a:22d6 with
- SMTP id x3-20020a056808144300b00397f54a22d6mr1310455oiv.9.1694625186953; Wed,
- 13 Sep 2023 10:13:06 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 17:13:04 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJ/tAWUC/42NQQqDMBBFryKz7hSTSEO76j2KC5uMcaAamUioi
- Hdvai/QzYf3+by/QSJhSnCrNhDKnDhOBfSpAjd0UyBkXxh0rU19VRrTIpObV/TCmSRhWQnyPPI
- vvO8a+zTWmt5DkcxCPb+Pg0dbeOC0RFmPv6y+7d/qrFChc42h2ivX0eUeYgwvOrs4Qrvv+wdjT 2SwzQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1694625185; l=2941;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=FDmfRrAoS66Rbbc25XcYmCZjZlwmE2RZWNS4Ok/5S0k=; b=E2uwLU3YiJUf5HxNMMXdX8SkcKNpi07uqk0WHe0v9DIfto0Upi/ltttoRVU6rUSIFiESIwDYh
- nM6tsROJ+DDDhGrrDYB1vZqhyjHrUVXazVor5thhRkpcNSlrEop/x7D
-X-Mailer: b4 0.12.3
-Message-ID: <20230913-strncpy-drivers-char-ipmi-ipmi-v2-1-e3bc0f6e599f@google.com>
-Subject: [PATCH v2] ipmi: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+        Wed, 13 Sep 2023 13:14:54 -0400
+Received: from out-212.mta0.migadu.com (out-212.mta0.migadu.com [91.218.175.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61F3A3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:14:49 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1694625288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Gc6HzykR+A0L83xKMiWxb5E3eMlheJobgexoepcnfG0=;
+        b=ODwSiHcis3mdddO8WgNkr0OX4CFlXGCtxXFw1qh2OkYCRDvsJp2kKgsnNbJ8Ge1HWYw6Gg
+        qFyB7nW3syZF3lt4fEZE89uDLMmQd0mlYzmeI+kPXZAt1II6Wy6iHHDK6XeYOtxVHOkOq+
+        EPv9hZtm5/AmnbNkbRVPkdVPGebLbzw=
+From:   andrey.konovalov@linux.dev
+To:     Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH v2 00/19] stackdepot: allow evicting stack traces
+Date:   Wed, 13 Sep 2023 19:14:25 +0200
+Message-Id: <cover.1694625260.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+From: Andrey Konovalov <andreyknvl@google.com>
 
-In this case, strncpy is being used specifically for its NUL-padding
-behavior (and has been commented as such). Moreover, the destination
-string is not required to be NUL-terminated [2].
+Currently, the stack depot grows indefinitely until it reaches its
+capacity. Once that happens, the stack depot stops saving new stack
+traces.
 
-We can use a more robust and less ambiguous interface in
-`memcpy_and_pad` which makes the code more readable and even eliminates
-the need for that comment.
+This creates a problem for using the stack depot for in-field testing
+and in production.
 
-Let's also use `strnlen` instead of `strlen()` with an upper-bounds
-check as this is intrinsically a part of `strnlen`.
+For such uses, an ideal stack trace storage should:
 
-Also included in this patch is a simple 1:1 change of `strncpy` to
-`strscpy` for ipmi_ssif.c. If NUL-padding is wanted here as well then we
-should opt again for `strscpy_pad`.
+1. Allow saving fresh stack traces on systems with a large uptime while
+   limiting the amount of memory used to store the traces;
+2. Have a low performance impact.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://lore.kernel.org/all/ZQEADYBl0uZ1nX60@mail.minyard.net/ [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use memcpy_and_pad (thanks Corey)
-- Link to v1: https://lore.kernel.org/r/20230912-strncpy-drivers-char-ipmi-ipmi-v1-1-cc43e0d1cae6@google.com
----
- drivers/char/ipmi/ipmi_msghandler.c | 11 +++--------
- drivers/char/ipmi/ipmi_ssif.c       |  2 +-
- 2 files changed, 4 insertions(+), 9 deletions(-)
+Implementing #1 in the stack depot is impossible with the current
+keep-forever approach. This series targets to address that. Issue #2 is
+left to be addressed in a future series.
 
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index 186f1fee7534..d6f14279684d 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -5377,20 +5377,15 @@ static void send_panic_events(struct ipmi_smi *intf, char *str)
- 
- 	j = 0;
- 	while (*p) {
--		int size = strlen(p);
-+		int size = strnlen(p, 11);
- 
--		if (size > 11)
--			size = 11;
- 		data[0] = 0;
- 		data[1] = 0;
- 		data[2] = 0xf0; /* OEM event without timestamp. */
- 		data[3] = intf->addrinfo[0].address;
- 		data[4] = j++; /* sequence # */
--		/*
--		 * Always give 11 bytes, so strncpy will fill
--		 * it with zeroes for me.
--		 */
--		strncpy(data+5, p, 11);
-+
-+		memcpy_and_pad(data+5, 11, p, size, '\0');
- 		p += size;
- 
- 		ipmi_panic_request_and_wait(intf, &addr, &msg);
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index 3b921c78ba08..edcb83765dce 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -1940,7 +1940,7 @@ static int new_ssif_client(int addr, char *adapter_name,
- 		}
- 	}
- 
--	strncpy(addr_info->binfo.type, DEVICE_NAME,
-+	strscpy(addr_info->binfo.type, DEVICE_NAME,
- 		sizeof(addr_info->binfo.type));
- 	addr_info->binfo.addr = addr;
- 	addr_info->binfo.platform_data = addr_info;
+This series changes the stack depot implementation to allow evicting
+unneeded stack traces from the stack depot. The users of the stack depot
+can do that via new stack_depot_save_flags(STACK_DEPOT_FLAG_GET) and
+stack_depot_put APIs.
+
+Internal changes to the stack depot code include:
+
+1. Storing stack traces in fixed-frame-sized slots; the slot size is
+   controlled via CONFIG_STACKDEPOT_MAX_FRAMES (vs precisely-sized
+   slots in the current implementation);
+2. Keeping available slots in a freelist (vs keeping an offset to the next
+   free slot);
+3. Using a read/write lock for synchronization (vs a lock-free approach
+   combined with a spinlock).
+
+This series also integrates the eviction functionality in the tag-based
+KASAN modes.
+
+Despite wasting some space on rounding up the size of each stack record,
+with CONFIG_STACKDEPOT_MAX_FRAMES=32, the tag-based KASAN modes end up
+consuming ~5% less memory in stack depot during boot (with the default
+stack ring size of 32k entries). The reason for this is the eviction of
+irrelevant stack traces from the stack depot, which frees up space for
+other stack traces.
+
+For other tools that heavily rely on the stack depot, like Generic KASAN
+and KMSAN, this change leads to the stack depot capacity being reached
+sooner than before. However, as these tools are mainly used in fuzzing
+scenarios where the kernel is frequently rebooted, this outcome should
+be acceptable.
+
+There is no measurable boot time performance impact of these changes for
+KASAN on x86-64. I haven't done any tests for arm64 modes (the stack
+depot without performance optimizations is not suitable for intended use
+of those anyway), but I expect a similar result. Obtaining and copying
+stack trace frames when saving them into stack depot is what takes the
+most time.
+
+This series does not yet provide a way to configure the maximum size of
+the stack depot externally (e.g. via a command-line parameter). This will
+be added in a separate series, possibly together with the performance
+improvement changes.
 
 ---
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230912-strncpy-drivers-char-ipmi-ipmi-dda47b3773fd
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+Changes v1->v2:
+- Rework API to stack_depot_save_flags(STACK_DEPOT_FLAG_GET) +
+  stack_depot_put.
+- Add CONFIG_STACKDEPOT_MAX_FRAMES Kconfig option.
+- Switch stack depot to using list_head's.
+- Assorted minor changes, see the commit message for each path.
+
+Andrey Konovalov (19):
+  lib/stackdepot: check disabled flag when fetching
+  lib/stackdepot: simplify __stack_depot_save
+  lib/stackdepot: drop valid bit from handles
+  lib/stackdepot: add depot_fetch_stack helper
+  lib/stackdepot: use fixed-sized slots for stack records
+  lib/stackdepot: fix and clean-up atomic annotations
+  lib/stackdepot: rework helpers for depot_alloc_stack
+  lib/stackdepot: rename next_pool_required to new_pool_required
+  lib/stackdepot: store next pool pointer in new_pool
+  lib/stackdepot: store free stack records in a freelist
+  lib/stackdepot: use read/write lock
+  lib/stackdepot: use list_head for stack record links
+  kmsan: use stack_depot_save instead of __stack_depot_save
+  lib/stackdepot, kasan: add flags to __stack_depot_save and rename
+  lib/stackdepot: add refcount for records
+  lib/stackdepot: allow users to evict stack traces
+  kasan: remove atomic accesses to stack ring entries
+  kasan: check object_size in kasan_complete_mode_report_info
+  kasan: use stack_depot_put for tag-based modes
+
+ include/linux/stackdepot.h |  59 ++++--
+ lib/Kconfig                |  10 +-
+ lib/stackdepot.c           | 410 ++++++++++++++++++++++++-------------
+ mm/kasan/common.c          |   7 +-
+ mm/kasan/generic.c         |   9 +-
+ mm/kasan/kasan.h           |   2 +-
+ mm/kasan/report_tags.c     |  27 +--
+ mm/kasan/tags.c            |  24 ++-
+ mm/kmsan/core.c            |   7 +-
+ 9 files changed, 356 insertions(+), 199 deletions(-)
+
+-- 
+2.25.1
 
