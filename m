@@ -2,150 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9BE79DCFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A6C79DD16
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 02:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233378AbjIMALA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 20:11:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S237950AbjIMATe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 20:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjIMAK7 (ORCPT
+        with ESMTP id S237899AbjIMATc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 20:10:59 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DBD10F2;
-        Tue, 12 Sep 2023 17:10:55 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5009d4a4897so10577925e87.0;
-        Tue, 12 Sep 2023 17:10:55 -0700 (PDT)
+        Tue, 12 Sep 2023 20:19:32 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F5518D;
+        Tue, 12 Sep 2023 17:19:28 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57355a16941so3954365eaf.2;
+        Tue, 12 Sep 2023 17:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694563854; x=1695168654; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1694564368; x=1695169168; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lDU5pSKkCf+ROG6Vvo9qMmmrl9dENDhQwvux9jW53fk=;
-        b=CVyz6mj2IOl6ZWa3h6yHaDn88UJAmI459eSDxjXlKtaJpQjW8BHLm24w1AgA3xQoMD
-         pHQ1FD5hSRFV4Xh1BKAQwXaXK2jpUHQc6eYZG7jrCtRupzu/fzVFENNDLJxbyGyJ9PPc
-         fH/itVFaXbbnVIg2ipf6s3T4Z3FWpYM5E92nRP5HN4nl4xePNf7aehiFIfDvKHxQe60G
-         KIko1QarmwKnGHdil8Tke9T1AhD8vEqc4nrECcj9FMBCrwUj5MW79lKUvWCEyifkNRLO
-         MZJaljWTb4MWNi7if4UbMmGkK5djCeup7IR0PIM7gvUSojs4fWXXLEJLkHoil9VsfbN2
-         Rw6g==
+        bh=PfghF8uM8XDGpkVqp5zNnFzbHxUr4fq3CDSPLr1OUm4=;
+        b=m88zUcd8670VEgvBbw32sDZZTG0H/RcXPgEiMx9JujO/Pacc7PSxSwS7InXuGIQ5E2
+         WuW8YW90fdTNqNFZf/idI2STRXvzjMzlsbBQhmd5gp/gpiWI/bTYNRfnkO2qus6w8Gwf
+         nccT8BxUQc9RO3YfeG987K5NUqOEpxfS/5xPn2akxmFV2gpSbX9+Atenfziq9C8TTakS
+         49ECIDps5y24yuOhmnMNE/OO69K1dviscVgnvtw/JkcILHoDTK2lmUWcM9qu7hD0UGTA
+         K6nvcP37ZXirXaq+QauzUFy5J2VYNFzZ8e+n2iC7f9qQig0epxtLJ1kb2BCdSPzjy3kM
+         /aYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694563854; x=1695168654;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lDU5pSKkCf+ROG6Vvo9qMmmrl9dENDhQwvux9jW53fk=;
-        b=l0M+Z+wKqg7JyIRRqf2kZDB9klGYcgIEWQFTkcpD7DCvsGRR+8CeSwSOf9a1WH/cH9
-         LlTGbASgkT1vnXCFzMvA1K9r5ooeFbNCpfeAtJcT8xGhGjnL9+tC44rXafxRVjf/Teoz
-         2Xpf1k69c5FzZ6ji/SYsKjOxL+v57doli++52S9qpIwbL7yT/ECNsMe8g1usQM9TsJmP
-         RZd0pQZSiZsRHCyuuk0BB3DoS0JoFWmh7zbJI9w8tN7bgyNNGxo6lyWX2BXg9H/SBO6I
-         J9quGX1vVKZsYbJ12wOBSgtjCIhJatqOPN7MnEGX6YXHawGl6sVf9Jgno1Z5RUNp1Z+3
-         wLWQ==
-X-Gm-Message-State: AOJu0YxJjhiJybii4mTJt1SajdD7QgAw7Ea6GdpAgu9uOEYk/liR8DW0
-        +r0Fq5Xn+poy7KEypk1YjRPR+eJOYsla0MbC+aA=
-X-Google-Smtp-Source: AGHT+IE0DJ1yIeH5yZxGYgPrqT6xeFSkjh5Zl6R/0fUeOPfMg57L6CIwSvBEee3CSY3IGdEklD5DOU0AfhXdAtHa5js=
-X-Received: by 2002:a19:e012:0:b0:502:9dc3:9c68 with SMTP id
- x18-20020a19e012000000b005029dc39c68mr597128lfg.63.1694563853416; Tue, 12 Sep
- 2023 17:10:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1694564368; x=1695169168;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PfghF8uM8XDGpkVqp5zNnFzbHxUr4fq3CDSPLr1OUm4=;
+        b=p6CWeufUy4TGJ1oyPdJ5wgiU1CC6Sb3rau3KLq9iEjJhCvKqHXBB4cWoJ8tE5YBRo8
+         gZQCBqvQYGTff5JaaLAplLZDxIykhBxmS3FkpmR7UCUylVhM3sSlgcsW/7wz3orzjjM2
+         jh1Uk64HUCxxo9nY0EmE50QnCgy7tGq+eL2HsQt//2h5HYKT28oeu0Pz6S+/5FSNYC7V
+         U5eUV4ObqdwjCEUeWZZIjakj6vumLKcarrMKcQgH5vR+EqI5b5utK5x55ZTlpTusO2Hy
+         CPzGjljMFfQhMwGvxCBJmGEiV3FlJlGDl3rHlrRRiknwt1vnFdIeKyul1zME+Dz4fA2B
+         BuwA==
+X-Gm-Message-State: AOJu0YxNIznxftCi4TeLMirYPy6nW4s6h9DK73suWiNTX4t7DVJjSbSi
+        VorfHhSCq4Tl3jmrIKwQGyp8eGNPCA==
+X-Google-Smtp-Source: AGHT+IEBrNjwofXj6G2wwq3+fhWd4+Zn4fUTHi6Gsb1GQmmfdRCAV8o1YXWULOlI5YyVG6stpJilMQ==
+X-Received: by 2002:a4a:9cd6:0:b0:56e:4dea:bc5c with SMTP id d22-20020a4a9cd6000000b0056e4deabc5cmr1246154ook.8.1694564368168;
+        Tue, 12 Sep 2023 17:19:28 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id a42-20020a4a98ad000000b0057327cecdd8sm4871916ooj.10.2023.09.12.17.19.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Sep 2023 17:19:27 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:be75:f593:c65b:4578])
+        by serve.minyard.net (Postfix) with ESMTPSA id EB8A41800E8;
+        Wed, 13 Sep 2023 00:19:26 +0000 (UTC)
+Date:   Tue, 12 Sep 2023 19:19:25 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ipmi: refactor deprecated strncpy
+Message-ID: <ZQEADYBl0uZ1nX60@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20230912-strncpy-drivers-char-ipmi-ipmi-v1-1-cc43e0d1cae6@google.com>
 MIME-Version: 1.0
-References: <20230912224654.6556-1-puranjay12@gmail.com> <20230912224654.6556-6-puranjay12@gmail.com>
- <ZQDuVTSycDcjDkvi@shell.armlinux.org.uk> <CANk7y0iFdgHgu+RXYJvP3swaRS+-Lr0CgOAdcQWtjs4VkrOzdQ@mail.gmail.com>
-In-Reply-To: <CANk7y0iFdgHgu+RXYJvP3swaRS+-Lr0CgOAdcQWtjs4VkrOzdQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Sep 2023 17:10:42 -0700
-Message-ID: <CAADnVQLzbyG3xWVDFyTsDPRSC=fnAskaeyc1erQVLYo_b6Lg_w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] bpf, arm32: Always zero extend for LDX with B/H/W
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Wang YanQing <udknight@gmail.com>, bpf <bpf@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912-strncpy-drivers-char-ipmi-ipmi-v1-1-cc43e0d1cae6@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 4:17=E2=80=AFPM Puranjay Mohan <puranjay12@gmail.co=
-m> wrote:
->
-> On Wed, Sep 13, 2023 at 1:04=E2=80=AFAM Russell King (Oracle)
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Tue, Sep 12, 2023 at 10:46:53PM +0000, Puranjay Mohan wrote:
-> > > The JITs should not depend on the verifier for zero extending the upp=
-er
-> > > 32 bits of the destination register when loading a byte, half-word, o=
-r
-> > > word.
-> > >
-> > > A following patch will make the verifier stop patching zext instructi=
-ons
-> > > after LDX.
-> >
-> > This was introduced by:
-> >
-> > 163541e6ba34 ("arm: bpf: eliminate zero extension code-gen")
-> >
-> > along with an additional function. So three points:
-> >
-> > 1) the commit should probably explain why it has now become undesirable
-> > to access this verifier state, whereas it appears it was explicitly
-> > added to permit this optimisation.
->
-> I added some details in the cover letter.
->
-> For the complete discussion see: [1]
->
-> > 2) you state that jits should not depend on this state, but the above
-> > commit adds more references than you're removing, so aren't there still
-> > references to the verifier remaining after this patch? I count a total
-> > of 10, and the patch below removes three.
->
-> The JITs should not depend on this state for LDX (loading
-> a B/H/W.
-> This patch removes the usage only for LDX.
->
-> > 3) what about the bpf_jit_needs_zext() function that was added to
-> > support the export of this zext state?
->
-> That is still applicable, The verifier will still emit zext
-> instructions for other
-> instructions like BPF_ALU / BPF_ALU64
->
-> >
-> > Essentially, the logic stated in the commit message doesn't seem to be
-> > reflected by the proposed code change.
->
-> I will try to provide more information.
-> Currently I have asked Alexei if we really need this in [2].
-> I still think this optimization is useful and we should keep it.
+On Tue, Sep 12, 2023 at 11:43:05PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> In this case, strncpy is being used specifically for its NUL-padding
+> behavior (and has been commented as such). We can use a more robust and
+> less ambiguous interface in `strscpy_pad` which makes the code more
+> readable and even eliminates the need for that comment.
+> 
+> Let's also use `strnlen` instead of `strlen()` with an upper-bounds
+> check as this is intrinsically a part of `strnlen`.
+> 
+> Also included in this patch is a simple 1:1 change of `strncpy` to
+> `strscpy` for ipmi_ssif.c. If NUL-padding is wanted here as well then we
+> should opt again for `strscpy_pad`.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/char/ipmi/ipmi_msghandler.c | 11 +++--------
+>  drivers/char/ipmi/ipmi_ssif.c       |  2 +-
+>  2 files changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+> index 186f1fee7534..04f7622cb703 100644
+> --- a/drivers/char/ipmi/ipmi_msghandler.c
+> +++ b/drivers/char/ipmi/ipmi_msghandler.c
+> @@ -5377,20 +5377,15 @@ static void send_panic_events(struct ipmi_smi *intf, char *str)
+>  
+>  	j = 0;
+>  	while (*p) {
+> -		int size = strlen(p);
+> +		int size = strnlen(p, 11);
+>  
+> -		if (size > 11)
+> -			size = 11;
+>  		data[0] = 0;
+>  		data[1] = 0;
+>  		data[2] = 0xf0; /* OEM event without timestamp. */
+>  		data[3] = intf->addrinfo[0].address;
+>  		data[4] = j++; /* sequence # */
+> -		/*
+> -		 * Always give 11 bytes, so strncpy will fill
+> -		 * it with zeroes for me.
+> -		 */
+> -		strncpy(data+5, p, 11);
+> +
+> +		strscpy_pad(data+5, p, 11);
 
-Right. subreg tracking is indeed functional for narrow loads.
-Let's drop this patch set.
+This is incorrect, the destination should *not* be nil terminated if the
+destination is full.  strncpy does exactly what is needed here.
+
+A comment should be added here, this is not the first time this has been
+brought up.
+
+>  		p += size;
+>  
+>  		ipmi_panic_request_and_wait(intf, &addr, &msg);
+> diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
+> index 3b921c78ba08..edcb83765dce 100644
+> --- a/drivers/char/ipmi/ipmi_ssif.c
+> +++ b/drivers/char/ipmi/ipmi_ssif.c
+> @@ -1940,7 +1940,7 @@ static int new_ssif_client(int addr, char *adapter_name,
+>  		}
+>  	}
+>  
+> -	strncpy(addr_info->binfo.type, DEVICE_NAME,
+> +	strscpy(addr_info->binfo.type, DEVICE_NAME,
+>  		sizeof(addr_info->binfo.type));
+
+This one is good.
+
+-corey
+
+>  	addr_info->binfo.addr = addr;
+>  	addr_info->binfo.platform_data = addr_info;
+> 
+> ---
+> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+> change-id: 20230912-strncpy-drivers-char-ipmi-ipmi-dda47b3773fd
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
