@@ -2,142 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C594B79F1FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E6E79F1F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 21:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjIMTYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 15:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
+        id S232316AbjIMTYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 15:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbjIMTYJ (ORCPT
+        with ESMTP id S232236AbjIMTYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 15:24:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2F7B7;
-        Wed, 13 Sep 2023 12:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694633045; x=1726169045;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JKUb9rL4FzUyXqKQxYbktD4DL6Zic8jMxxL3DCtChfE=;
-  b=CVpz+bWK60Co1Dyl3SQfjTY9nefzJ5p7OiLphhGVI34e3NdMPurpQmx1
-   2bggxqBKyFWdkNFxEmPUCFT1U61IATBY/ei2DBdU8I5/7wk+IA+7VUMoj
-   wN2Lv7W8R7bj41S1BZSTJ/rY+BFNz3iEiPuNKi2cQi3limyZ92GfZg1nR
-   D0kyei/G+LLA/qYsXhi+mVf816AcZAbbCS1J8Y+YjlZMF7kQV5iA6G2s1
-   JiZHNS+CLcpnnVhW6VTDRb4V9dNUmmz/6Q9SM6GdIq4TQVvXfWxlE+ANf
-   laDg7XkFFlItXcNT6rQnif/T1NcMz/QVZEplxeaRHe5CmYaJXXA1kiH31
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="377673288"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="377673288"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 12:24:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="917962143"
-X-IronPort-AV: E=Sophos;i="6.02,144,1688454000"; 
-   d="scan'208";a="917962143"
-Received: from lkp-server02.sh.intel.com (HELO 9ef86b2655e5) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 13 Sep 2023 12:23:59 -0700
-Received: from kbuild by 9ef86b2655e5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qgVSu-0000Vl-1z;
-        Wed, 13 Sep 2023 19:23:56 +0000
-Date:   Thu, 14 Sep 2023 03:23:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
-Message-ID: <202309140338.TPkz7l7g-lkp@intel.com>
-References: <20230913115001.23183-2-brgl@bgdev.pl>
+        Wed, 13 Sep 2023 15:24:01 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D43C1999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:23:57 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b962535808so2917911fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 12:23:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1694633035; x=1695237835; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yb6IOfY9+vEec+6xIf+iuXQW3Hl/QkNUzvliIRsca1Y=;
+        b=i4YlHtPfORwaUiaqbNeUYTOfaZU6dRbuZ9GlZF/S1VWYDJ8cnki5ZJYwgHsg8Xek6d
+         lZgvX26fXY0iS5PX4NjWlcV//NqOAcMS5uESZgjoYXk4L3cXtrc6ywJN64qyRFzSU7fN
+         lD4xtgg5bTzWjafIMyoCfotWiwSbz1PGMjpx21y10a/kLbypO3OnIU9IMsgN0oedVPvx
+         IduXZS7fc1K0I1JJnMzFFN4yWIWOiSpEVDjEwxuK4jDf5gikiDcCsgmZEylBAIJ7zSTr
+         65RBqgAHRnSiGZtjq2DdMDnXJMFqluo5xNLd2YLON7ouNSKhLMsNQjzzIpz/Xiph/itt
+         BgAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694633035; x=1695237835;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yb6IOfY9+vEec+6xIf+iuXQW3Hl/QkNUzvliIRsca1Y=;
+        b=KxEBDClj5uQsVTZeBbdZm+yw6lJGiTdvoNf7ybg5Ozmi0cV9I2yD6hqaDqNkKo0JLg
+         mSq8BKGLL+5pjaYEGyoq1MZ71ZwBs5DLC1Sn0OYK0QKJ2hrm59HOaKRkaSrlXPCUFG6S
+         kLG7Dq+e/QTYeE/0BrFauFCBAREKX4zYg7SS3ReO2zrHn0ukHu3lFr0SePTjx4n3kXYE
+         nIWcUgBUqKE5wHVdbe0gBKuHQqoqMsorVdTwtCQ7Qa/s2Mz6RkF3x1jafC4/5Gs+bOil
+         24fu3fvlBWJc68BpbHzeVCcBuKAEvsLdqPd9+K9JAWVe0L5QeL87VUzwnirSz81BHz+D
+         Cg+Q==
+X-Gm-Message-State: AOJu0YwXfiP2+RdetoXdgfGyrKinEgZ8IW43Ncfxn1KLlqb1g4sC8bSo
+        4bvNCPe28tD8LTDFj+U1IL278w==
+X-Google-Smtp-Source: AGHT+IHibaQxC9XZMGvabyKpHwLmuXyW3R2maLcNHh7+1SVimBcufnescH/IK6NeInai3SZgIMv2kg==
+X-Received: by 2002:a2e:8182:0:b0:2bf:a0d1:b122 with SMTP id e2-20020a2e8182000000b002bfa0d1b122mr2926640ljg.5.1694633035453;
+        Wed, 13 Sep 2023 12:23:55 -0700 (PDT)
+Received: from [192.168.37.232] (178235177172.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.172])
+        by smtp.gmail.com with ESMTPSA id q18-20020a170906a09200b0099b8234a9fesm8901041ejy.1.2023.09.13.12.23.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Sep 2023 12:23:54 -0700 (PDT)
+Message-ID: <7671aa93-3967-45c0-bf09-a2d63a99ced6@linaro.org>
+Date:   Wed, 13 Sep 2023 21:23:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230913115001.23183-2-brgl@bgdev.pl>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/msm/adreno: Add support for SM7150 SoC machine
+Content-Language: en-US
+To:     Danila Tikhonov <danila@jiaxyga.com>, robdclark@gmail.com,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
+        daniel@ffwll.ch, johan+linaro@kernel.org, andersson@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230913191957.26537-1-danila@jiaxyga.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230913191957.26537-1-danila@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+On 13.09.2023 21:19, Danila Tikhonov wrote:
+> SM7150 has 5 power levels which correspond to 5 speed-bin values: 0,
+> 128, 146, 167, 172. Speed-bin value is calulated as FMAX/4.8MHz round up
+> to zero decimal places.
+> 
+> The vendor's FW GMU is called a618_gmu.bin. And also a618 on SM7150 uses
+> a615 zapfw.
+Interesting.
 
-kernel test robot noticed the following build warnings:
+GMU fw comes from Qualcomm and should not(?) have any
+vendor modifications, btw.
 
-[auto build test WARNING on brgl/gpio/for-next]
-[also build test WARNING on mtd/nand/next linus/master ulf-hansson-mmc-mirror/next v6.6-rc1 next-20230913]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Can you try loading the upstream a630_gmu.bin or a619_gmu.bin
+from linux-firmware and seeing if anything changes?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bartosz-Golaszewski/gpiolib-provide-gpiod_set_active_-low-high/20230913-195053
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-next
-patch link:    https://lore.kernel.org/r/20230913115001.23183-2-brgl%40bgdev.pl
-patch subject: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
-config: m68k-defconfig (https://download.01.org/0day-ci/archive/20230914/202309140338.TPkz7l7g-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230914/202309140338.TPkz7l7g-lkp@intel.com/reproduce)
+> +	}, {
+> +		.machine = "qcom,sm7150",
+> +		.chip_ids = ADRENO_CHIP_IDS(0x06010800),
+> +		.family = ADRENO_6XX_GEN1,
+> +		.revn = 618,
+I'm not sure what Rob's stance on using revn is for values
+that have already been used before..
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309140338.TPkz7l7g-lkp@intel.com/
+Konrad
+> +		.fw = {
+> +			[ADRENO_FW_SQE] = "a630_sqe.fw",
+> +			[ADRENO_FW_GMU] = "a618_gmu.bin",
+> +		},
+> +		.gmem = SZ_512K,
+> +		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
+> +		.quirks = ADRENO_QUIRK_HAS_CACHED_COHERENT,
+> +		.init = a6xx_gpu_init,
+> +		.zapfw = "a615_zap.mdt",
+.mbn?
 
-All warnings (new ones prefixed by >>):
+> +		.hwcg = a615_hwcg,
+> +		.speedbins = ADRENO_SPEEDBINS(
+> +			{ 0,   0 },
+> +			{ 128, 1 },
+> +			{ 146, 2 },
+> +			{ 167, 3 },
+> +			{ 172, 4 },
+> +		),
+>  	}, {
+>  		.chip_ids = ADRENO_CHIP_IDS(0x06010800),
+>  		.family = ADRENO_6XX_GEN1,
+> @@ -507,6 +529,10 @@ MODULE_FIRMWARE("qcom/a530_zap.b00");
+>  MODULE_FIRMWARE("qcom/a530_zap.b01");
+>  MODULE_FIRMWARE("qcom/a530_zap.b02");
+>  MODULE_FIRMWARE("qcom/a540_gpmu.fw2");
+> +MODULE_FIRMWARE("qcom/a615_zap.mbt");
+> +MODULE_FIRMWARE("qcom/a615_zap.b00");
+> +MODULE_FIRMWARE("qcom/a615_zap.b01");
+> +MODULE_FIRMWARE("qcom/a615_zap.b02");
+and here too?
 
-   In file included from drivers/net/ethernet/smsc/smc91x.c:60:
-   include/linux/gpio/consumer.h:505:1: error: expected ';', ',' or ')' before '{' token
-     505 | {
-         | ^
->> drivers/net/ethernet/smsc/smc91x.c:47:19: warning: 'version' defined but not used [-Wunused-const-variable=]
-      47 | static const char version[] =
-         |                   ^~~~~~~
-
-
-vim +/version +47 drivers/net/ethernet/smsc/smc91x.c
-
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16 @47  static const char version[] =
-6389aa458ed995 drivers/net/ethernet/smsc/smc91x.c Ben Boeckel     2013-11-01  48  	"smc91x.c: v1.1, sep 22 2004 by Nicolas Pitre <nico@fluxnic.net>";
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  49  
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  50  /* Debugging level */
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  51  #ifndef SMC_DEBUG
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  52  #define SMC_DEBUG		0
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  53  #endif
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  54  
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  55  
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  56  #include <linux/module.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  57  #include <linux/kernel.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  58  #include <linux/sched.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  59  #include <linux/delay.h>
-c0e906a953f03c drivers/net/ethernet/smsc/smc91x.c Andy Shevchenko 2023-03-16 @60  #include <linux/gpio/consumer.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  61  #include <linux/interrupt.h>
-476c32c47a84fc drivers/net/smc91x.c               David Howells   2010-10-07  62  #include <linux/irq.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  63  #include <linux/errno.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  64  #include <linux/ioport.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  65  #include <linux/crc32.h>
-d052d1beff7069 drivers/net/smc91x.c               Russell King    2005-10-29  66  #include <linux/platform_device.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  67  #include <linux/spinlock.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  68  #include <linux/ethtool.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  69  #include <linux/mii.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  70  #include <linux/workqueue.h>
-682a1694115ec1 drivers/net/smc91x.c               Thomas Chou     2011-01-25  71  #include <linux/of.h>
-3f823c15d53dc7 drivers/net/ethernet/smsc/smc91x.c Tony Lindgren   2013-12-11  72  #include <linux/of_device.h>
-^1da177e4c3f41 drivers/net/smc91x.c               Linus Torvalds  2005-04-16  73  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
