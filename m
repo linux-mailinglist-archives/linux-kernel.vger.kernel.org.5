@@ -2,156 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AA879E142
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D74979E13F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238682AbjIMH5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        id S238675AbjIMH4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238663AbjIMH5E (ORCPT
+        with ESMTP id S238679AbjIMH4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:57:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 129B11989
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1694591774;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+2YZeWGnhtLtLKWmmtDa9+kw7Cib/DF3yutI/cbgQ0s=;
-        b=FzyE05m0Mk2EPnvhyJQfwRq+37i7bx8kpiPpaoJ3VhLxkmgNCTpMOLXb3lw0EUPuD65hUt
-        Uzjl+QShoFE1WS3b2BUkV9iRkkbszUBP/GAzeaN3rWOnRMxh5sXw3xh1bplva2In4XIC5m
-        wKeirwYS/SAzcYfRZpuQtDOoDnaL4RY=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-139-B6fTUf5bM72yMrRfZeayow-1; Wed, 13 Sep 2023 03:56:10 -0400
-X-MC-Unique: B6fTUf5bM72yMrRfZeayow-1
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-57617c2528dso6499510eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:56:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694591770; x=1695196570;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+2YZeWGnhtLtLKWmmtDa9+kw7Cib/DF3yutI/cbgQ0s=;
-        b=DyDcaBDOXJIrGqLH1XtCfX4k3O1OFKlAoIfLEMciI3EhPI41lC/Ty7zpOcf11hw1s4
-         tHP1AMkLPNApBcLwO0lGw+YOyzO5+NoyPv1O/SioocI+Qm5me+c8mwvhKUDoeZ5djAut
-         +1VUhgoJXT/JFm16e3UkhTI3+RYd4q6PfxOrN3hzheN1ZYPyLUbuyxC8kQq2QU4/KVKN
-         Ah6igNs596OmFicNBKkcfQtakuol7ox9YG01GfZfnmcFhnoI+a+ZSn/lSAOntWWC6/OH
-         2kRU/xkYkMI7JglTrZEY2LtljiveCxwHJxZb7VtK9h/SkJJtEOJYwPFONJ+Iw+HVJmTG
-         h+ig==
-X-Gm-Message-State: AOJu0YydJSrrqrQvbXA+2LBEor1vFQVu5DV0w8/tv5VPnuNIENYlRGRG
-        ZXqP59q/lNtw90Cag2iofM1sW9H5fdFcRPXqH+fhBjW1oPY1hWaH+Gi9FpDuInpeqTDENIKz9nH
-        bq3bUWNf5bmQP8JLAKW3qQwO8
-X-Received: by 2002:a4a:925d:0:b0:576:8c2c:c869 with SMTP id g29-20020a4a925d000000b005768c2cc869mr1992890ooh.7.1694591769771;
-        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IETWXxBvUyReXyaN1A1TR+W1jjzsiQKEmfbD3TbDliUontlhrXfdDCeVcvCyU7EdBmLiDCw1A==
-X-Received: by 2002:a4a:925d:0:b0:576:8c2c:c869 with SMTP id g29-20020a4a925d000000b005768c2cc869mr1992885ooh.7.1694591769591;
-        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
-Received: from LeoBras.redhat.com ([2804:1b3:a803:4ff9:7c29:fe41:6aa7:43df])
-        by smtp.gmail.com with ESMTPSA id a42-20020a4a98ad000000b0057327cecdd8sm5137519ooj.10.2023.09.13.00.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 00:56:09 -0700 (PDT)
-From:   Leonardo Bras <leobras@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Leonardo Bras <leobras@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.or
-Subject: [RFC PATCH v4 1/1] scripts: Introduce a default git.orderFile
-Date:   Wed, 13 Sep 2023 04:55:50 -0300
-Message-ID: <20230913075550.90934-2-leobras@redhat.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 13 Sep 2023 03:56:15 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8175E1729;
+        Wed, 13 Sep 2023 00:56:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rlt7B6MbKz4f3mHR;
+        Wed, 13 Sep 2023 15:56:06 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgC3RtYUawFlzwxoAQ--.53713S2;
+        Wed, 13 Sep 2023 15:56:08 +0800 (CST)
+Subject: Re: linux-next: boot warning from the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+References: <20230913133436.0eeec4cb@canb.auug.org.au>
+ <20230913145919.6060ae61@canb.auug.org.au>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <64f1f578-17e7-a8a8-12f2-6a1a0d98a4af@huaweicloud.com>
+Date:   Wed, 13 Sep 2023 15:56:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230913145919.6060ae61@canb.auug.org.au>
+Content-Type: multipart/mixed;
+ boundary="------------B6581E172DB28EDFDE8542E4"
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgC3RtYUawFlzwxoAQ--.53713S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw15AFWrGF1xZw4kKF15Arb_yoWrAr47pr
+        1UJr1UCr48Jr1UJr1UJF15Jr1UJr1UAF1UJr1kJryUJr1UJr1UJr1UJr1UJr1UJr4UXr1U
+        Jw1Dtr1Utr1UGw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487M2AExVA0xI801c8C04v7Mc02
+        F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI
+        0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CE
+        bIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJ
+        UUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When reviewing patches, it looks much nicer to have some changes shown
-before others, which allow better understanding of the patch before the
-the .c files reviewing.
+This is a multi-part message in MIME format.
+--------------B6581E172DB28EDFDE8542E4
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
 
-Introduce a default git.orderFile, in order to help developers getting the
-best ordering easier.
+Hi,
 
-Signed-off-by: Leonardo Bras <leobras@redhat.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+On 9/13/2023 12:59 PM, Stephen Rothwell wrote:
+> Hi all,
+>
+> On Wed, 13 Sep 2023 13:34:36 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>> Today's linux-next boot tests (powerpc pseries_le_defconfig) produced
+>> this warning:
+>>
+>>  ------------[ cut here ]------------
+>>  bpf_mem_cache[0]: unexpected object size 16, expect 96
+>>  WARNING: CPU: 0 PID: 1 at kernel/bpf/memalloc.c:500 bpf_mem_alloc_init+0x410/0x440
+>>  Modules linked in:
+>>  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc1-04964-g2e08ed1d459f #1
+>>  Hardware name: IBM pSeries (emulated by qemu) POWER8 (raw) 0x4d0200 0xf000004 of:SLOF,HEAD pSeries
+>>  NIP:  c0000000003c0890 LR: c0000000003c088c CTR: 0000000000000000
+>>  REGS: c000000004783890 TRAP: 0700   Not tainted  (6.6.0-rc1-04964-g2e08ed1d459f)
+>>  MSR:  8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 24000280  XER: 00000000
+>>  CFAR: c00000000014cfa0 IRQMASK: 0 
+>>  GPR00: c0000000003c088c c000000004783b30 c000000001578c00 0000000000000036 
+>>  GPR04: 0000000000000000 c000000002667e18 0000000000000001 0000000000000000 
+>>  GPR08: c000000002667ce0 0000000000000001 0000000000000000 0000000044000280 
+>>  GPR12: 0000000000000000 c000000002b00000 c000000000011188 0000000000000060 
+>>  GPR16: c0000000011f9a30 c000000002920f68 c0000000021fac40 c0000000021fac40 
+>>  GPR20: c000000002a3ed88 c000000002921560 c0000000014867f0 c00000000291ccd8 
+>>  GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000010 
+>>  GPR28: c0000000011f9a30 0000000000000000 000000000000000b c00000007fc9ac40 
+>>  NIP [c0000000003c0890] bpf_mem_alloc_init+0x410/0x440
+>>  LR [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440
+>>  Call Trace:
+>>  [c000000004783b30] [c0000000003c088c] bpf_mem_alloc_init+0x40c/0x440 (unreliable)
+>>  [c000000004783c20] [c00000000203d0c0] bpf_global_ma_init+0x5c/0x9c
+>>  [c000000004783c50] [c000000000010bc0] do_one_initcall+0x80/0x300
+>>  [c000000004783d20] [c000000002004978] kernel_init_freeable+0x30c/0x3b4
+>>  [c000000004783df0] [c0000000000111b0] kernel_init+0x30/0x1a0
+>>  [c000000004783e50] [c00000000000debc] ret_from_kernel_user_thread+0x14/0x1c
+>>  --- interrupt: 0 at 0x0
+>>  NIP:  0000000000000000 LR: 0000000000000000 CTR: 0000000000000000
+>>  REGS: c000000004783e80 TRAP: 0000   Not tainted  (6.6.0-rc1-04964-g2e08ed1d459f)
+>>  MSR:  0000000000000000 <>  CR: 00000000  XER: 00000000
+>>  CFAR: 0000000000000000 IRQMASK: 0 
+>>  GPR00: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR08: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR12: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  GPR28: 0000000000000000 0000000000000000 0000000000000000 0000000000000000 
+>>  NIP [0000000000000000] 0x0
+>>  LR [0000000000000000] 0x0
+>>  --- interrupt: 0
+>>  Code: 3b000000 4bfffcbc 78650020 3c62ffe7 39200001 3d420130 7cc607b4 7ba40020 386382f0 992a1e24 4bd8c631 60000000 <0fe00000> 4bffff40 ea410080 3860fff4 
+>>  ---[ end trace 0000000000000000 ]---
+>>
+>> Presumably related to commit
+>>
+>>   41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+>>
+>> (or other commist in that series) from the bpf-next tree.
+> Actually it looks like it is some interaction between that commit a
+> commits in the bpf tree.
+
+Yes. The warning is due to the checking added in commit c93047255202
+("bpf: Ensure unit_size is matched with slab cache object size").
+Considering that bpf-next has not merged the patch-set yet, should I
+post a patch to bpf tree to fix it ? A fix patch is attached which can
+fix the warning in my local setup.
+
+>
+>
+
+
+--------------B6581E172DB28EDFDE8542E4
+Content-Type: text/plain; charset=UTF-8;
+ name="0001-bpf-Skip-unit_size-checking-for-global-per-cpu-alloc.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-bpf-Skip-unit_size-checking-for-global-per-cpu-alloc.pa";
+ filename*1="tch"
+
+From 395d19f1ac747070fce43356cea336b4430afed2 Mon Sep 17 00:00:00 2001
+From: Hou Tao <houtao1@huawei.com>
+Date: Wed, 13 Sep 2023 15:33:13 +0800
+Subject: [PATCH] bpf: Skip unit_size checking for global per-cpu allocator
+
+For global per-cpu allocator, the size of free object in free list
+doesn't match with unit_size and now there is no way to get the size of
+per-cpu pointer saved in free object, so just skip the checking.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
+ kernel/bpf/memalloc.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Please provide feedback on what else to add / remove / reorder here!
-
-Changes since RFCv3:
-- Added "*types.h" matching so type headers appear before reguler headers
-- Removed line ends ($) in patterns: they previously provided a 
-  false-positive
-- Fixed build patterns to allow matching Kconfig, Kbuild & Makefile
-  in any subdirectory
-
-Changes since RFCv2:
-- Fixed licence comment to from /**/ to #
-- Fixed filename in how-to comment
-- Fix build order: Kconfig -> Kbuild -> Makefile
-- Add *.mk extension 
-- Add line-ends ($) to make sure and get the correct extensions
-- Thanks Masahiro Yamada for above suggestions!
-- 1 Ack, thanks Randy!
-
-Changes since RFCv1:
-- Added Kconfig* (thanks Randy Dunlap!)
-- Changed Kbuild to Kbuild* (improve matching)
-
-
- scripts/git.orderFile | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
- create mode 100644 scripts/git.orderFile
-
-diff --git a/scripts/git.orderFile b/scripts/git.orderFile
-new file mode 100644
-index 000000000000..7cef02cbba3c
---- /dev/null
-+++ b/scripts/git.orderFile
-@@ -0,0 +1,34 @@
-+# SPDX-License-Identifier: GPL-2.0
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index aad558cdc70f..0ad175277f89 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -491,6 +491,13 @@ static int check_obj_size(struct bpf_mem_cache *c, unsigned int idx)
+ 	struct llist_node *first;
+ 	unsigned int obj_size;
+ 
++	/* For per-cpu allocator, the size of free objects in free list doesn't
++	 * match with unit_size and now there is no way to get the size of
++	 * per-cpu pointer saved in free object, so just skip the checking.
++	 */
++	if (c->percpu_size)
++		return 0;
 +
-+# order file for git, to produce patches which are easier to review
-+# by diffing the important stuff like header changes first.
-+#
-+# one-off usage:
-+#   git diff -O scripts/git.orderFile ...
-+#
-+# add to git config:
-+#   git config diff.orderFile scripts/git.orderFile
-+#
-+
-+MAINTAINERS
-+
-+# Documentation
-+Documentation/*
-+*.rst
-+
-+# build system
-+*Kconfig*
-+*Kbuild*
-+*Makefile*
-+*.mak
-+*.mk
-+
-+# semantic patches
-+*.cocci
-+
-+# headers
-+*types.h
-+*.h
-+
-+# code
-+*.c
+ 	first = c->free_llist.first;
+ 	if (!first)
+ 		return 0;
 -- 
-2.42.0
+2.29.2
+
+
+--------------B6581E172DB28EDFDE8542E4--
 
