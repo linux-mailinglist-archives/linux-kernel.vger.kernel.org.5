@@ -2,94 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7D379DDCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C3F79DDE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238094AbjIMBnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
+        id S238115AbjIMBrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjIMBnd (ORCPT
+        with ESMTP id S230323AbjIMBrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:43:33 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7F6115;
-        Tue, 12 Sep 2023 18:43:29 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38CMfnKN022593;
-        Wed, 13 Sep 2023 01:43:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=KgnrvvmpqVf8ybI9GD5xikjAqw2tZ8lUw09C/wzwsf8=;
- b=U0L/ZrttT9mZCtvNzxPRQOOoc2kBb2Qd+J892xTa32ZpfZ6lj+lGvTcqGu8Q7remO100
- oZxcJ/6Jd07aXfod6mMnWO0dQQ/U2hqGIz91AaxzFrDGbnHgDIEnBRdwYVr8KEK4/e4r
- 9Yix0kFT3khoFvp8aUZnRaDpmfxdqt794qOYl3NSF2QPJr5jTho4y7LyS+hmm9d84277
- NRWjU54kdfTeZ4/Yzti8B+Qu7kkUYE03sbH8kIscNIa5VK5gdD++Jy8RgsCxEG/rmWO3
- BHZ2yE+6igiAjoVXXv+ooC2a8tP5aNxfvlMh2ij4DDJOEnBVqtKINWHh1gFmmGHV0Vjp eg== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3t2y7u8ey0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 01:43:01 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38D1h0qg029321
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Sep 2023 01:43:00 GMT
-Received: from [10.110.7.172] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 12 Sep
- 2023 18:42:57 -0700
-Message-ID: <ed4de855-12e9-7f57-b384-aeed71b4afb3@quicinc.com>
-Date:   Tue, 12 Sep 2023 18:42:56 -0700
+        Tue, 12 Sep 2023 21:47:11 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077BF10FE;
+        Tue, 12 Sep 2023 18:47:07 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c93638322so93834766b.1;
+        Tue, 12 Sep 2023 18:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1694569625; x=1695174425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nw2vbwh9Prl2aL4eCjxqEEuY3ibeNqCIYYpwmGgbBKk=;
+        b=SjDVSpklyFl0ahhstDHlPV9V5HFEkoBRVgRi5VbJ8Pxe/LoLwEMrtwOODaTYyp+QzD
+         KCCrTD2Lj4U/E1hh3mvyiGZDLsljrGLnbFbXDv345O57B6Y6GQn+DbwR1ufppJZJJF4D
+         6JCwXFZ2CtgyXIYc5rYhMzmfGKfg0z5nhr4N71RVQzV/jcadQufxfTIZiWq3go2TNOV0
+         usZtd1XDDsoni3EyBBMPjjgtWW0Qcxy9HWUr+XkneVEFrCIZQJayHYzI+d3iO0icwQeB
+         txvPGQbJZoxAEztZRsAiULy/jwB34yvZt8pRvYvshCkm1/CPLQj9hGDl+NFOqa+Yvuu/
+         AiRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694569625; x=1695174425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Nw2vbwh9Prl2aL4eCjxqEEuY3ibeNqCIYYpwmGgbBKk=;
+        b=fkRCH09T+Ul1Cs18ltGdemIG5MvhBoPu/P9ToNT//Ct1jpeqV7z6Mu/07DWr5lNSgy
+         o7tB85qmn6wD9iP4yMKtc4wdtkeylrZP8rHMN8qYMO6h0VDYbx+s2vh+Lez2oCCCOkqC
+         hUuYqnR3dwNtAFEblN40Rq5ScRcVNZzuLx1S4T9xvkQ6dPwb7b/gznOkKoosBOcA1k2K
+         aHUMmWruL/dwdoR3jn4kZAobmENn7fyVMtsrTL6EbAt1+lu7XIulFWnOF/iaUohxD3vw
+         CG01orwcJq9hL52rbKo5+f2w0DnAk/Fv9WkRmXewYd4j22Ih+9LBwLBIRbse9B/zXttU
+         OehA==
+X-Gm-Message-State: AOJu0YyjWXy5RzMKbu1aDmAaICZofl0MdKhX3AVw0XEO3JlkV7q5msev
+        OUda7PF+tp8fszkYkCcop+jBFhyqIt7Gc8A2vxU=
+X-Google-Smtp-Source: AGHT+IH9cpCU/7Zs/hX2BjtG9840MbiSgk277qyUw73/CDt/MTKZHbRGAldZh5h9dMja6DQe2blemM8bcrEFXPMnBd0=
+X-Received: by 2002:a17:906:cc0d:b0:9a2:86a:f9c0 with SMTP id
+ ml13-20020a170906cc0d00b009a2086af9c0mr1955824ejb.1.1694569625097; Tue, 12
+ Sep 2023 18:47:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH RESEND] EDAC/device: Add sysfs notification for UE,CE
- count change
-Content-Language: en-US
-To:     Deepti Jaggi <quic_djaggi@quicinc.com>, <james.morse@arm.com>,
-        <mchehab@kernel.org>, <rric@kernel.org>, <bp@alien8.de>,
-        <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230912212508.4691-1-quic_djaggi@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230912212508.4691-1-quic_djaggi@quicinc.com>
+References: <20230912084044.955864-1-adrian.larumbe@collabora.com>
+ <20230912084044.955864-7-adrian.larumbe@collabora.com> <20230912113210.65897aab@collabora.com>
+In-Reply-To: <20230912113210.65897aab@collabora.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 12 Sep 2023 18:46:52 -0700
+Message-ID: <CAF6AEGtzOS89V1vbobpSEb9KX8x9T0FfmkW2OAaxAKLs+GugKA@mail.gmail.com>
+Subject: Re: [PATCH v4 6/6] drm/drm-file: Show finer-grained BO sizes in drm_show_memory_stats
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com,
+        freedreno@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VX00M3KnQ5x8I8-bFcAl1XkBCvGoevDg
-X-Proofpoint-ORIG-GUID: VX00M3KnQ5x8I8-bFcAl1XkBCvGoevDg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-12_24,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=624 impostorscore=0 suspectscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 bulkscore=0 clxscore=1011 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309130012
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/12/2023 2:25 PM, Deepti Jaggi wrote:
-> A daemon running in user space collects information on correctable
-> and uncorrectable errors from EDAC driver by reading corresponding
-> sysfs entries and takes appropriate action.
-> This patch adds support for user space daemon to wait on poll() until
-> the sysfs entries for UE count and CE count change and then read updated
-> counts instead of continuously monitoring the sysfs entries for
-> any changes.
-> 
-> Signed-off-by: Deepti Jaggi <quic_djaggi@quicinc.com>
+On Tue, Sep 12, 2023 at 2:32=E2=80=AFAM Boris Brezillon
+<boris.brezillon@collabora.com> wrote:
+>
+> On Tue, 12 Sep 2023 09:37:00 +0100
+> Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> wrote:
+>
+> > The current implementation will try to pick the highest available size
+> > display unit as soon as the BO size exceeds that of the previous
+> > multiplier. That can lead to loss of precision in BO's whose size is
+> > not a multiple of a MiB.
+> >
+> > Fix it by changing the unit selection criteria.
+> >
+> > For much bigger BO's, their size will naturally be aligned on something
+> > bigger than a 4 KiB page, so in practice it is very unlikely their disp=
+lay
+> > unit would default to KiB.
+>
+> Let's wait for Rob's opinion on this.
 
-Can we please continue the discussion on the original thread? I don't see need of doing RESEND. 
+This would mean that if you have SZ_1G + SZ_1K worth of buffers, you'd
+report the result in KiB.. which seems like overkill to me, esp given
+that the result is just a snapshot in time of a figure that
+realistically is dynamic.
 
--- 
----Trilok Soni
+Maybe if you have SZ_1G+SZ_1K worth of buffers you should report the
+result with more precision than GiB, but more than MiB seems a bit
+overkill.
 
+BR,
+-R
+
+> >
+> > Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
+> > ---
+> >  drivers/gpu/drm/drm_file.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
+> > index 762965e3d503..bf7d2fe46bfa 100644
+> > --- a/drivers/gpu/drm/drm_file.c
+> > +++ b/drivers/gpu/drm/drm_file.c
+> > @@ -879,7 +879,7 @@ static void print_size(struct drm_printer *p, const=
+ char *stat,
+> >       unsigned u;
+> >
+> >       for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
+> > -             if (sz < SZ_1K)
+> > +             if (sz & (SZ_1K - 1))
+> >                       break;
+> >               sz =3D div_u64(sz, SZ_1K);
+> >       }
+>
