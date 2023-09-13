@@ -2,141 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA0F79E1D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D26E79E1C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 10:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238494AbjIMITH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 04:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S238799AbjIMIPq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 04:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbjIMITF (ORCPT
+        with ESMTP id S230404AbjIMIPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 04:19:05 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC15199D
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:12:01 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50079d148aeso11166292e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 01:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694592719; x=1695197519; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Eia8zDzv+HtcosL0sFP1xVfmwcdZSEW7E/46TEr37W0=;
-        b=aPG7MYuphs06h2MiTJoIP3w48iXxygjRv9Wpg3RbzNSW88KW0dDZ/duMIsBR4eDWOY
-         q58R68pCXif+VM1LZCGpgo5Tf8dTUEFLdIKNkc7NSUwQZ8Sy4vPOFPFcjN5Mm9Q89vYH
-         IyaGKkuDz6J65ipA/W016TopVjK8q6XN98QXf8BHnYKn1m5+ZYJEbUuLi/BH45+vIrvj
-         WLyNP+G8kfZe/3MtEkHAbnVM3JpiysEnYjuo9kGdVBto2mzDkOPU2tEfa4w7Z5VRkB+6
-         ePUHT6OFormAetsQsFd/VMoMEPkMYXsR/xTP0DybdjMdLaCK9avO3wFIsjt5RsYB/7Wy
-         zY4g==
+        Wed, 13 Sep 2023 04:15:43 -0400
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80D0DA;
+        Wed, 13 Sep 2023 01:15:39 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1a2dd615ddcso1883282fac.0;
+        Wed, 13 Sep 2023 01:15:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694592719; x=1695197519;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eia8zDzv+HtcosL0sFP1xVfmwcdZSEW7E/46TEr37W0=;
-        b=ipNIZ7oesIveGKof71e8K3XdOsS3mC41KEo3isQxOFowQ65KVErXR7Q7MsRVgy3r0g
-         OiBJbrBO7OxDayzFIG6ktNOYFUqnIbn6hWfooaDhqedFsP3whAojWDN3KE554BXrJAxV
-         vIcIV9zfVvJRxAf7YcrIvK3NtYQJTL/DAh6hly1FBhyAvNZ/APDSIVbChZ+yPIVVdki4
-         IGisUz/LD2IqFUDNLpPbRR42kTDS03shezTSXd6y+UsL+VdQmKlg9TnkVt4F3slO8460
-         6iq5kr70XUoVhqXNlQ5bjjkhjY99QZitxpktkoKE8AJwc/5QhVrk7xqzq6Q4J0U2Jlam
-         Qi2A==
-X-Gm-Message-State: AOJu0Yw7/XchI/DYGQ2DhWQWM/SA5agoRcfnpmAvrmlhQCoRisjyUqbZ
-        5pjtiw8A+fhyZ6nqosCuJNor9A==
-X-Google-Smtp-Source: AGHT+IHp5o0wXS0xcvX2jwn9i5O9G2Ix9P6EWjUc3OAKHKI6CAMbJiUEbTX5kD1YW/2b/KBnTbb5rA==
-X-Received: by 2002:a05:6512:551:b0:4fb:8435:3efc with SMTP id h17-20020a056512055100b004fb84353efcmr1283002lfl.16.1694592719163;
-        Wed, 13 Sep 2023 01:11:59 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id v1-20020a5d6b01000000b0031f300a4c26sm14741521wrw.93.2023.09.13.01.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 01:11:58 -0700 (PDT)
-Message-ID: <bf9a07ff-5628-05ab-2362-a917d3d38313@linaro.org>
-Date:   Wed, 13 Sep 2023 10:11:56 +0200
+        d=1e100.net; s=20230601; t=1694592939; x=1695197739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sPRE4yk+prnW+5k5MNZC6JcZxfgppCicb6DWP07tpq0=;
+        b=xHwgU9x0uTqV2qSEMJbutSA5mX2kwOBe8DzOPY/I40jsK+1BN7izsHOXJxrLEWKJhs
+         rJrByaDi3zGwJ6WxiW/Tm28gKKUonSiUaWnorJB14CeZan7M1x1KQWQEIs+ruUqM7SvC
+         sWnhDdBnyVxxl+JyitnFey2BW7d3+3TFMZ/sxuOOB9we84M2WGT18OuF/aVXDuN05aZw
+         L6CQq+DJp+LoXloqcXho5Ca2VgW7F1tiZkmZ0k/K2KNoLhypgc3OHRL27y0lkTjgTl1c
+         JeKhK6dZW38/CK3MeD2wiWLoAyPNPHzXqFUvEMJgYrSfjYmhsLZtwxQ24ncwGiyl2LYk
+         9R3Q==
+X-Gm-Message-State: AOJu0YyVUBHiCcoIgmUTDRVZZcVOMREzQ1k2xMomLWkqapyiVZ0Y/z4G
+        Z+Z/uDoUg7d0CfJ9j5UvorRDhkm7BC0ShlQ5E6o=
+X-Google-Smtp-Source: AGHT+IG5Q2z6Sv8LLbImvaAeMv6mk0zCwM4ngapHNGNv4KRlhkAnqotHMsa36/nAJ1PGhXROO8P4kUDlp6lWu8TXiyk=
+X-Received: by 2002:a05:6870:1493:b0:1d5:f814:56a3 with SMTP id
+ k19-20020a056870149300b001d5f81456a3mr2131916oab.2.1694592938219; Wed, 13 Sep
+ 2023 01:15:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 4/7] thermal: exynos: simplify regulator
- (de)initialization
-Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20230911133435.14061-1-m.majewski2@samsung.com>
- <CGME20230911133616eucas1p10c5eeb0f0240dde975ccc5935cb5c311@eucas1p1.samsung.com>
- <20230911133435.14061-5-m.majewski2@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230911133435.14061-5-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230829002346.2104251-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0jrKSUOGG72w-EdzhQqC==CA7zYUofNSEW1wV-58TOnLw@mail.gmail.com> <275e34c2e67a85c087ff983354bf74b5257b2fc4.camel@linux.intel.com>
+In-Reply-To: <275e34c2e67a85c087ff983354bf74b5257b2fc4.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Sep 2023 10:15:26 +0200
+Message-ID: <CAJZ5v0j7hBxprVN0vamaF74Ns3+hZk0qSQfPJqEROBbk1K4g-g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] thermal: processor_thermal: Suport workload hint
+To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, daniel.lezcano@linaro.org,
+        rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/09/2023 15:34, Mateusz Majewski wrote:
-> This does reduce the error granularity a bit, but the code
-> simplification seems to be worth it.
-> 
-> Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
-> ---
->  drivers/thermal/samsung/exynos_tmu.c | 33 +++++++---------------------
->  1 file changed, 8 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
-> index ba9414b419ef..8451deb65f43 100644
-> --- a/drivers/thermal/samsung/exynos_tmu.c
-> +++ b/drivers/thermal/samsung/exynos_tmu.c
-> @@ -157,7 +157,6 @@ enum soc_type {
->   * @reference_voltage: reference voltage of amplifier
->   *	in the positive-TC generator block
->   *	0 < reference_voltage <= 31
-> - * @regulator: pointer to the TMU regulator structure.
->   * @tzd: pointer to thermal_zone_device structure
->   * @ntrip: number of supported trip points.
->   * @enabled: current status of TMU device
-> @@ -183,7 +182,6 @@ struct exynos_tmu_data {
->  	u16 temp_error1, temp_error2;
->  	u8 gain;
->  	u8 reference_voltage;
-> -	struct regulator *regulator;
->  	struct thermal_zone_device *tzd;
->  	unsigned int ntrip;
->  	bool enabled;
-> @@ -994,42 +992,34 @@ static int exynos_tmu_probe(struct platform_device *pdev)
->  	 * TODO: Add regulator as an SOC feature, so that regulator enable
->  	 * is a compulsory call.
->  	 */
-> -	data->regulator = devm_regulator_get_optional(&pdev->dev, "vtmu");
-> -	if (!IS_ERR(data->regulator)) {
-> -		ret = regulator_enable(data->regulator);
-> -		if (ret) {
-> -			dev_err(&pdev->dev, "failed to enable vtmu\n");
-> -			return ret;
-> -		}
-> -	} else {
-> -		if (PTR_ERR(data->regulator) == -EPROBE_DEFER)
-> +	ret = devm_regulator_get_enable_optional(&pdev->dev, "vtmu");
-> +	if (ret) {
-> +		if (ret == -EPROBE_DEFER)
->  			return -EPROBE_DEFER;
-> -		dev_info(&pdev->dev, "Regulator node (vtmu) not found\n");
-> +		dev_info(&pdev->dev, "Failed to get regulator node (vtmu)\n");
+On Tue, Sep 12, 2023 at 9:44 PM srinivas pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> Hi Rafael,
+>
+> On Tue, 2023-09-12 at 16:09 +0200, Rafael J. Wysocki wrote:
+> > On Tue, Aug 29, 2023 at 2:23 AM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > >
+> > >
+>
+> [...]
+>
+> > > --
+> >
+> > There is a slight issue with the patch ordering in this series,
+> > because the interface to enable the interrupt should only be provided
+> > after implementing the interrupt handlers.  I don't think that anyone
+> > will apply the series partially and try to enable the feature,
+> > though.
+> Thanks!
+>
+> >
+> > Also, I'm not actually sure if proc_thermal_wt_intr_callback() can
+> > run
+> > safely against the work item scheduled in proc_thermal_irq_handler()
+> > in case the workload hint one triggers along with a thermal threshold
+> > one.  I think that the access to MMIO is cached, so what if they both
+> > try to update the same cache line at the same time?  Or are they
+> > guaranteed to be different cache lines?
+> These two registers are 90 cache lines apart. Looking at all the
+> registers on this bar for status offsets, they are several cache lines
+> apart. Also this bar is non prefetchable, so continuous data can't be
+> fetched ahead.
 
-This is not equivalent. If regulator is provided and enable fails, the
-old code is nicely returning error. Now, it will print misleading
-message - failed to get regulator - and continue.
+OK
 
-While this simplifies the code, it ignores important running condition -
-having regulator enabled.
+> >
+> > Anyway, tentatively applied as 6.7 material, but I've changed the
+> > second patch somewhat, because I couldn't convince myself that the
+> > implicit type conversions in
+> > processor_thermal_mbox_interrupt_config()
+> > would always do the right thing regardless of the numbers involved,
+> > so
+> > please check the result in my bleeding-edge branch.
+> >
+> If I diff, there is only one change in processor_thermal_mbox.c. Tested
+> that change and works fine.
 
-Best regards,
-Krzysztof
-
+Good, thanks!
