@@ -2,128 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59DB79F0ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1182A79F0F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 20:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbjIMSM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 14:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
+        id S231737AbjIMSNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 14:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjIMSM2 (ORCPT
+        with ESMTP id S229552AbjIMSNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 14:12:28 -0400
-Received: from sipsolutions.net (unknown [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F241919B6;
-        Wed, 13 Sep 2023 11:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=M5bGmoUyQupKtGvvQEF+4JyDxHWZgmyPOatv62PK+Lo=;
-        t=1694628744; x=1695838344; b=fqtZmpMdJZCJxxa0Uu90BFUXm2D5DdfzjFeKWD8H+DEMpbN
-        w6HA052efdF35jLmeq3PDMPbob2aB9ZBIiirWIgt/LpJyQfpFqNkfgnbzFT8Y+tuF4H6atJBMNz+0
-        YFF5+DxMi7uXq1FVddLXkgLQaMdyylK75KSJFpvWZFQxoxw1DDdgPAlufHiT0ciDCbwJlm113wOX9
-        w3cIg0lg+GfU85nF+24vqJy4qknNkrooz4NoStLrYr7u8rvg40dFO1FSqZwG7FO2y7VTTgjc3zx+Q
-        /bNsNaL7zjvCUv6rkPWMc0aF1BWmvr3rDzFxxR94zohWPumB6fVPfN5TGMrfFKZw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qgUKz-00FFbN-1l;
-        Wed, 13 Sep 2023 20:11:41 +0200
-Message-ID: <515a7435bd83ecc8a9d63306d4bc076c762f22bf.camel@sipsolutions.net>
-Subject: Re: [PATCH v3] workqueue: don't skip lockdep work dependency in
- cancel_work_sync()
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>, Tejun Heo <tj@kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heyi Guo <guoheyi@linux.alibaba.com>, netdev@vger.kernel.org
-Date:   Wed, 13 Sep 2023 20:11:39 +0200
-In-Reply-To: <a50218b6-fc42-7f12-155a-5e01fc8dd1a0@roeck-us.net>
-References: <21b9c1ac-64b7-7f4b-1e62-bf2f021fffcd@I-love.SAKURA.ne.jp>
-         <YuK78Jiy12BJG/Tp@slm.duckdns.org>
-         <0ad532b2-df5f-331a-ae7f-21460fc62fe2@I-love.SAKURA.ne.jp>
-         <97cbf8a9-d5e1-376f-6a49-3474871ea6b4@I-love.SAKURA.ne.jp>
-         <afa1ac2c-a023-a91e-e596-60931b38247e@I-love.SAKURA.ne.jp>
-         <7d034f7b-af42-4dbc-0887-60f4bdb3dcca@I-love.SAKURA.ne.jp>
-         <0a85696a-b0b9-0f4a-7c00-cd89edc9304c@I-love.SAKURA.ne.jp>
-         <77d47eed-6a22-7e81-59de-4d45852ca4de@I-love.SAKURA.ne.jp>
-         <e0717628-e436-4091-8b2e-2f4dcb646ec8@roeck-us.net>
-         <6b1c6996da5d215371e164b54e8854541dee0ded.camel@sipsolutions.net>
-         <a50218b6-fc42-7f12-155a-5e01fc8dd1a0@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 13 Sep 2023 14:13:46 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C519BB;
+        Wed, 13 Sep 2023 11:13:42 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38DI8dtM018677;
+        Wed, 13 Sep 2023 18:13:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=wIo3ra5cexcm4uIo62gOHb+hXHCxB95TaHhFkEaiUhc=;
+ b=NBjxY9I2H5I8i++KpsO9e+/0lPgQaIjLuI7s8TtmZMoP0PojnyUGHu4ef3GDThGsbqFa
+ sb7ii514qfZ2iL7ptFyV8CFKePzTFSzV3pyR8xe3NlsQzzyPgfSFZB5WoiiFazCoccW0
+ Ii8Pql25k1I1z2Qfi4HCGW8Mh9BnxnsBEC8fi718bs5Lol2qnLuFpwkfhJp7YrfTdApi
+ AZR/3vJCcbkEr+M8Kl7ASmFT7tw9759huBmF8MuKXXkVN23Ytd6pqGQ7/7FoRnBCECqC
+ jYy+bqVAzXq95kYVeuW8QU34n+vng97FMMMoA25IKFSbGtUWmzOgtr0+kPFPPYUYk1t0 VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ge9k7un-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 18:13:40 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38DIBEMZ031753;
+        Wed, 13 Sep 2023 18:13:40 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3t3ge9k7uf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 18:13:40 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38DI2GNW002752;
+        Wed, 13 Sep 2023 18:13:39 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3t14hm4ybu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Sep 2023 18:13:39 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38DIDcA361407710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Sep 2023 18:13:38 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BD5558045;
+        Wed, 13 Sep 2023 18:13:38 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2BFBD58050;
+        Wed, 13 Sep 2023 18:13:37 +0000 (GMT)
+Received: from [9.61.141.121] (unknown [9.61.141.121])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Sep 2023 18:13:37 +0000 (GMT)
+Message-ID: <83cab22d-71c3-2bbc-856f-6527479f10ec@linux.ibm.com>
+Date:   Wed, 13 Sep 2023 14:13:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] a couple of corrections to the IRQ enablement
+ function
+Content-Language: en-US
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Michael Mueller <mimu@linux.ibm.com>
+References: <20230913130626.217665-1-akrowiak@linux.ibm.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+In-Reply-To: <20230913130626.217665-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: M2bZ_BChkxBySh3rmR-2UANJPDsN3GVA
+X-Proofpoint-ORIG-GUID: 0T3GprBonVwS2HpKoHAKwVsz-fnGoUBn
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-13_12,2023-09-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ clxscore=1015 priorityscore=1501 impostorscore=0 suspectscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309130151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-09-13 at 08:59 -0700, Guenter Roeck wrote:
->=20
-> So you are saying that anything running in a workqueue must not
-> acquire rtnl_lock because cancel_[delayed_]work_sync() may be called
-> under rtnl_lock.
+On 9/13/23 9:06 AM, Tony Krowiak wrote:
+> This series corrects two issues related to enablement of interrupts in 
+> response to interception of the PQAP(AQIC) command:
+> 
+> 1. Returning a status response code 06 (Invalid address of AP-queue 
+>    notification byte) when the call to register a guest ISC fails makes no
+>    sense.
+>    
+> 2. The pages containing the interrupt notification-indicator byte are not
+>    freed after a failure to register the guest ISC fails.
+> 
 
-No no, sorry if I wasn't clear. I mean this particular function / work
-struct cannot acquire the RTNL because the cancel _for it_ is called
-under RTNL.
+Hi Tony,
 
-It used to be that this was also tied to the entire workqueue, but this
-is no longer true due to the way workqueues work these days.
+3. Since you're already making changes related to gisc registration, you might consider a 3rd patch that looks at the return code for kvm_s390_gisc_unregister and tags the unexpected error rc somehow.  This came up in a recent conversation I had with Michael, see this conversation towards the bottom:
 
+https://lore.kernel.org/linux-s390/0ddf808c-e929-c975-1b39-5ebc1f2fab62@linux.ibm.com/ 
 
-> FWIW, it would be nice if the lockdep code would generate some other
-> message in this situation. Complaining about a deadlock involving a
-> lock that doesn't exist if lock debugging isn't enabled is not really
-> helpful and, yes, may result in reporters to falsely assume that this
-> lock is responsible for the potential deadlock.
+4. While looking at patch 1 I also had a question re: the AP_RESPONSE_OTHERWISE_CHANGED path in vfio_ap_irq_enable.  Here's a snippet of the current code:
 
-Well, I don't know of any way to tell lockdep that, but I guess ideas
-welcome? I mean, I'm not even sure what else it would tell you, other
-than that you have a deadlock?
+	case AP_RESPONSE_OTHERWISE_CHANGED:
+		/* We could not modify IRQ settings: clear new configuration */
+		vfio_unpin_pages(&q->matrix_mdev->vdev, nib, 1);
+		kvm_s390_gisc_unregister(kvm, isc);
+		break;
 
-I mean, OK, I guess it's fair - it says "acquire lock" when it says
+Is it safe to unpin the page before unregistering the gisc in this case?  Or shouldn't the unpin happen after we have unregistered the gisc / set the IAM?
 
-[    9.810406] ip/357 is trying to acquire lock:
-[    9.810501] 83af6c40 ((work_completion)(&(&dev->state_queue)->work)){+.+=
-.}-{0:0}, at: __flush_work+0x40/0x550
+> Anthony Krowiak (2):
+>   s390/vfio-ap: unpin pages on gisc registration failure
+>   s390/vfio-ap: set status response code to 06 on gisc registration
+>     failure
+> 
+>  drivers/s390/crypto/vfio_ap_ops.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
 
-and it's not really a lock, but I'm not even sure how to phrase it
-better? Note the scenario may be more complex than here.
-
-I mean, perhaps we could add an optional message somehow and it could
-say
-
-"ip/357 is waiting for the work:"
-
-but then we'd also have to update the scenario message to something like
-
-[    9.813938]        CPU0                    CPU1
-[    9.813999]        ----                    ----
-[    9.814062]   lock(rtnl_mutex);
-[    9.814139]                                run((work_completion)(&(&dev-=
->state_queue)->work));
-[    9.814258]                                lock(rtnl_mutex);
-[    9.814354]   wait((work_completion)(&(&dev->state_queue)->work));
-
-
-which is really hard to do because how should lockdep know that the two
-ways of "acquiring the lock" are actually different, and which one is
-which? I'm not even convinced it could really do that.
-
-In any case, I'd rather have a bug report from this than not, even if
-it's not trivial to read.
-
-
-... and here I thought we went through all of this 15+ years ago when I
-added it in commit 4e6045f13478 ("workqueue: debug flushing deadlocks
-with lockdep"), at which time the situation was actually worse because
-you had to not only pay attention to the work struct, but also the
-entire workqueue - which is today only true for ordered workqueues... Oh
-well :)
-
-johannes
