@@ -2,33 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D5279EA8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625CE79EA9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241333AbjIMOJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
+        id S241425AbjIMOK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbjIMOI5 (ORCPT
+        with ESMTP id S241383AbjIMOJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:08:57 -0400
-Received: from weierstrass.telenet-ops.be (weierstrass.telenet-ops.be [195.130.137.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8615D1BE9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:51 -0700 (PDT)
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by weierstrass.telenet-ops.be (Postfix) with ESMTPS id 4Rm2PG1JWnz4xHCS
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:08:50 +0200 (CEST)
+        Wed, 13 Sep 2023 10:09:23 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CB61BF7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:08:52 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f674:9611:cd05:f25a])
-        by xavier.telenet-ops.be with bizsmtp
-        id lS8o2A00x3fvA4V01S8o3c; Wed, 13 Sep 2023 16:08:50 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id lS8n2A00F3fvA4V06S8n47; Wed, 13 Sep 2023 16:08:48 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXd-003csc-Uk;
+        id 1qgQXd-003csi-VU;
         Wed, 13 Sep 2023 16:08:47 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qgQXv-00FV5X-9x;
+        id 1qgQXv-00FV5c-Ai;
         Wed, 13 Sep 2023 16:08:47 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     linux-m68k@lists.linux-m68k.org
@@ -41,9 +38,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Finn Thain <fthain@linux-m68k.org>,
         Laurent Vivier <laurent@vivier.eu>,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 27/52] m68k: bvme6000: Make bvme6000_abort_int() static
-Date:   Wed, 13 Sep 2023 16:08:17 +0200
-Message-Id: <4da40748e1d7d56b73840a1d7ab1cb9c9a59cef2.1694613528.git.geert@linux-m68k.org>
+Subject: [PATCH v2 28/52] m68k: hp300: Include "time.h" for hp300_sched_init()
+Date:   Wed, 13 Sep 2023 16:08:18 +0200
+Message-Id: <630ee35241dc753a30b69adedc2ffa8fc6d551dd.1694613528.git.geert@linux-m68k.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1694613528.git.geert@linux-m68k.org>
 References: <cover.1694613528.git.geert@linux-m68k.org>
@@ -56,12 +53,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 When building with W=1:
 
-    arch/m68k/bvme6000/config.c:133:13: warning: no previous prototype for ‘bvme6000_abort_int’ [-Wmissing-prototypes]
-      133 | irqreturn_t bvme6000_abort_int (int irq, void *dev_id)
-	  |             ^~~~~~~~~~~~~~~~~~
+    arch/m68k/hp300/time.c:101:13: warning: no previous prototype for ‘hp300_sched_init’ [-Wmissing-prototypes]
+      101 | void __init hp300_sched_init(void)
+	  |             ^~~~~~~~~~~~~~~~
 
-Fix this by making bvme6000_abort_int() static.
-There was never a user outside arch/m68k/bvme6000/config.c.
+Fix this by including "time.h".
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Arnd Bergmann <arnd@arndb.de>
@@ -69,22 +65,22 @@ Acked-by: Arnd Bergmann <arnd@arndb.de>
 v2:
   - Add Acked-by.
 ---
- arch/m68k/bvme6000/config.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/m68k/hp300/time.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/m68k/bvme6000/config.c b/arch/m68k/bvme6000/config.c
-index 3a1d90e399e016cf..e604fe6602461334 100644
---- a/arch/m68k/bvme6000/config.c
-+++ b/arch/m68k/bvme6000/config.c
-@@ -130,7 +130,7 @@ void __init config_bvme6000(void)
- }
+diff --git a/arch/m68k/hp300/time.c b/arch/m68k/hp300/time.c
+index 1d1b7b3b5dd41583..72621fb9f3e663bd 100644
+--- a/arch/m68k/hp300/time.c
++++ b/arch/m68k/hp300/time.c
+@@ -20,6 +20,8 @@
+ #include <asm/traps.h>
+ #include <asm/blinken.h>
  
++#include "time.h"
++
+ static u64 hp300_read_clk(struct clocksource *cs);
  
--irqreturn_t bvme6000_abort_int (int irq, void *dev_id)
-+static irqreturn_t bvme6000_abort_int(int irq, void *dev_id)
- {
-         unsigned long *new = (unsigned long *)vectors;
-         unsigned long *old = (unsigned long *)0xf8000000;
+ static struct clocksource hp300_clk = {
 -- 
 2.34.1
 
