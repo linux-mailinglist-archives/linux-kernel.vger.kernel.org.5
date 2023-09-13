@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4211479F008
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6310079F009
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbjIMROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S230368AbjIMRPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjIMROy (ORCPT
+        with ESMTP id S229468AbjIMRO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:14:54 -0400
-Received: from out-212.mta0.migadu.com (out-212.mta0.migadu.com [91.218.175.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61F3A3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:14:49 -0700 (PDT)
+        Wed, 13 Sep 2023 13:14:56 -0400
+Received: from out-220.mta0.migadu.com (out-220.mta0.migadu.com [91.218.175.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E0598
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:14:52 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
         t=1694625288;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Gc6HzykR+A0L83xKMiWxb5E3eMlheJobgexoepcnfG0=;
-        b=ODwSiHcis3mdddO8WgNkr0OX4CFlXGCtxXFw1qh2OkYCRDvsJp2kKgsnNbJ8Ge1HWYw6Gg
-        qFyB7nW3syZF3lt4fEZE89uDLMmQd0mlYzmeI+kPXZAt1II6Wy6iHHDK6XeYOtxVHOkOq+
-        EPv9hZtm5/AmnbNkbRVPkdVPGebLbzw=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dA6zDrMISQ9ixV+61d0CbJSFq6N+6qPUyMdB5Zjx2Sw=;
+        b=NRb1zL107/rDRfFWZsp0fzET+7d1A+RLuXbBLhV7sSeKYAUQEbzOobo5W1rWEVCjdjE0Dd
+        pknESjG2AuY5ulwmpFZM53Irkq/aSdHZnmh8PdDGcyQD9/nZGmn8edi4yz2Zs/OVi2gb63
+        BiRpglut78hvsz84TfRJUgNxqmxUdqU=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +37,11 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v2 00/19] stackdepot: allow evicting stack traces
-Date:   Wed, 13 Sep 2023 19:14:25 +0200
-Message-Id: <cover.1694625260.git.andreyknvl@google.com>
+Subject: [PATCH v2 01/19] lib/stackdepot: check disabled flag when fetching
+Date:   Wed, 13 Sep 2023 19:14:26 +0200
+Message-Id: <66bf1f0ad22d2c49ef500893340c71355b71d092.1694625260.git.andreyknvl@google.com>
+In-Reply-To: <cover.1694625260.git.andreyknvl@google.com>
+References: <cover.1694625260.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -48,107 +51,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Currently, the stack depot grows indefinitely until it reaches its
-capacity. Once that happens, the stack depot stops saving new stack
-traces.
+Do not try fetching a stack trace from the stack depot if the
+stack_depot_disabled flag is enabled.
 
-This creates a problem for using the stack depot for in-field testing
-and in production.
-
-For such uses, an ideal stack trace storage should:
-
-1. Allow saving fresh stack traces on systems with a large uptime while
-   limiting the amount of memory used to store the traces;
-2. Have a low performance impact.
-
-Implementing #1 in the stack depot is impossible with the current
-keep-forever approach. This series targets to address that. Issue #2 is
-left to be addressed in a future series.
-
-This series changes the stack depot implementation to allow evicting
-unneeded stack traces from the stack depot. The users of the stack depot
-can do that via new stack_depot_save_flags(STACK_DEPOT_FLAG_GET) and
-stack_depot_put APIs.
-
-Internal changes to the stack depot code include:
-
-1. Storing stack traces in fixed-frame-sized slots; the slot size is
-   controlled via CONFIG_STACKDEPOT_MAX_FRAMES (vs precisely-sized
-   slots in the current implementation);
-2. Keeping available slots in a freelist (vs keeping an offset to the next
-   free slot);
-3. Using a read/write lock for synchronization (vs a lock-free approach
-   combined with a spinlock).
-
-This series also integrates the eviction functionality in the tag-based
-KASAN modes.
-
-Despite wasting some space on rounding up the size of each stack record,
-with CONFIG_STACKDEPOT_MAX_FRAMES=32, the tag-based KASAN modes end up
-consuming ~5% less memory in stack depot during boot (with the default
-stack ring size of 32k entries). The reason for this is the eviction of
-irrelevant stack traces from the stack depot, which frees up space for
-other stack traces.
-
-For other tools that heavily rely on the stack depot, like Generic KASAN
-and KMSAN, this change leads to the stack depot capacity being reached
-sooner than before. However, as these tools are mainly used in fuzzing
-scenarios where the kernel is frequently rebooted, this outcome should
-be acceptable.
-
-There is no measurable boot time performance impact of these changes for
-KASAN on x86-64. I haven't done any tests for arm64 modes (the stack
-depot without performance optimizations is not suitable for intended use
-of those anyway), but I expect a similar result. Obtaining and copying
-stack trace frames when saving them into stack depot is what takes the
-most time.
-
-This series does not yet provide a way to configure the maximum size of
-the stack depot externally (e.g. via a command-line parameter). This will
-be added in a separate series, possibly together with the performance
-improvement changes.
-
+Reviewed-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
+ lib/stackdepot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes v1->v2:
-- Rework API to stack_depot_save_flags(STACK_DEPOT_FLAG_GET) +
-  stack_depot_put.
-- Add CONFIG_STACKDEPOT_MAX_FRAMES Kconfig option.
-- Switch stack depot to using list_head's.
-- Assorted minor changes, see the commit message for each path.
-
-Andrey Konovalov (19):
-  lib/stackdepot: check disabled flag when fetching
-  lib/stackdepot: simplify __stack_depot_save
-  lib/stackdepot: drop valid bit from handles
-  lib/stackdepot: add depot_fetch_stack helper
-  lib/stackdepot: use fixed-sized slots for stack records
-  lib/stackdepot: fix and clean-up atomic annotations
-  lib/stackdepot: rework helpers for depot_alloc_stack
-  lib/stackdepot: rename next_pool_required to new_pool_required
-  lib/stackdepot: store next pool pointer in new_pool
-  lib/stackdepot: store free stack records in a freelist
-  lib/stackdepot: use read/write lock
-  lib/stackdepot: use list_head for stack record links
-  kmsan: use stack_depot_save instead of __stack_depot_save
-  lib/stackdepot, kasan: add flags to __stack_depot_save and rename
-  lib/stackdepot: add refcount for records
-  lib/stackdepot: allow users to evict stack traces
-  kasan: remove atomic accesses to stack ring entries
-  kasan: check object_size in kasan_complete_mode_report_info
-  kasan: use stack_depot_put for tag-based modes
-
- include/linux/stackdepot.h |  59 ++++--
- lib/Kconfig                |  10 +-
- lib/stackdepot.c           | 410 ++++++++++++++++++++++++-------------
- mm/kasan/common.c          |   7 +-
- mm/kasan/generic.c         |   9 +-
- mm/kasan/kasan.h           |   2 +-
- mm/kasan/report_tags.c     |  27 +--
- mm/kasan/tags.c            |  24 ++-
- mm/kmsan/core.c            |   7 +-
- 9 files changed, 356 insertions(+), 199 deletions(-)
-
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 2f5aa851834e..3a945c7206f3 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -477,7 +477,7 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+ 	 */
+ 	kmsan_unpoison_memory(entries, sizeof(*entries));
+ 
+-	if (!handle)
++	if (!handle || stack_depot_disabled)
+ 		return 0;
+ 
+ 	if (parts.pool_index > pool_index_cached) {
 -- 
 2.25.1
 
