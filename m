@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58F079E40F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1651779E411
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239385AbjIMJqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S239445AbjIMJq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjIMJqI (ORCPT
+        with ESMTP id S229644AbjIMJq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:46:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD10198C;
-        Wed, 13 Sep 2023 02:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1694598364; x=1726134364;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3buEeqBxdUMtlGYl0/iS7ECl7NUmPipZ2waf6U7e+oE=;
-  b=ZMqOhcNP2VnuwFA7KYFA3goLKRdU2CKRJPD0lcUPfztkHRvk8TLicXG6
-   NxRcY3nQOQifpmZXBNIHzwH61ktIkSYgYk0aF7ExGlfTxakH00NC1SuYw
-   GOk0xZWg3tIe5YyPvYsqKop//1deoFDRggFBUCN4mYf4mWkArTXgMWdAt
-   B54yfegAjyEjpf7Atja+r8wIRiooo49kgpMlagT6IXHaXcbKyrx94daqF
-   BjO/JKW+NI/ygvZ1VUIiIoWFccfF96YdTTelj6TajSXylJvcwJFdYayZM
-   UQ8MgqH/jraGOwbBeY+8ojHg02mwgc5aKHPxta8LSJWeDl5CHX7NtY2Qm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="377524885"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="377524885"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 02:46:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10831"; a="1074890994"
-X-IronPort-AV: E=Sophos;i="6.02,142,1688454000"; 
-   d="scan'208";a="1074890994"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 13 Sep 2023 02:46:02 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 38FCD8C9; Wed, 13 Sep 2023 12:46:00 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>
-Subject: [PATCH v1 1/1] lib/string_helpers: Don't copy a tail in kstrdup_and_replace() if 'new' is \0
-Date:   Wed, 13 Sep 2023 12:45:57 +0300
-Message-Id: <20230913094557.451463-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 13 Sep 2023 05:46:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AC9199E;
+        Wed, 13 Sep 2023 02:46:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5994AC433C8;
+        Wed, 13 Sep 2023 09:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694598381;
+        bh=TAuV6GLlzFJQ0bcVvBb3QY5ZH6PaZoo0XdL+52Pgtuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/13rqsUiPDMmHD9VWDHTbqsJaNpGA11cTKPDjP4oG/c+WCkr0vbuhN1l9hXFj+vP
+         9OAImUb5s4eaqcw3AonTOX1njYNZYagpu86/pIj/JEt94V3DRiHIyJLErMis5fQQgJ
+         pQipWwYFU6tr5jzYHDLocr4llbHftb8tVxbC3xEj4+FsedSnmkGsDgddD51vK37D5s
+         vGA3avJUK445jHoei9o3ernFZ8PpRNeNlooULEgghfQ2t5p+SyWjTMM36wmGEG/DG4
+         XIAR2eMET9cODcaTuPt/9RgYjk+TENyCkLu6syLQQS86WMo5NeJ7GZQhxopjzRBCZw
+         Ls6lYmHxdJA1w==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 13 Sep 2023 12:46:16 +0300
+Message-Id: <CVHOZMZHDPIE.225HW6UH95GX9@suppilovahvero>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v4 03/18] x86/sgx: Add sgx_epc_lru_lists to encapsulate
+ LRU lists
+X-Mailer: aerc 0.14.0
+References: <20230913040635.28815-1-haitao.huang@linux.intel.com>
+ <20230913040635.28815-4-haitao.huang@linux.intel.com>
+In-Reply-To: <20230913040635.28815-4-haitao.huang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kstrdup_and_replace() takes two characters, old and new, to replace
-former with latter after the copying of the original string. But in case
-when new is a NUL, there is no point to copy the rest of the string,
-the contract with the callers is that that the function returns a
-NUL-terminated string and not a buffer of the size filled with a given
-data. With this we can optimize the memory consumption by copying only
-meaningful part of the original string and drop the rest.
+On Wed Sep 13, 2023 at 7:06 AM EEST, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>
+> Introduce a data structure to wrap the existing reclaimable list and its
+> spinlock. Each cgroup later will have one instance of this structure to
+> track EPC pages allocated for processes associated with the same cgroup.
+> Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
+> from the reclaimable list in this structure when its usage reaches near
+> its limit.
+>
+> Currently, ksgxd does not track the VA, SECS pages. They are considered
+> as 'unreclaimable' pages that are only deallocated when their respective
+> owning enclaves are destroyed and all associated resources released.
+>
+> When an EPC cgroup can not reclaim any more reclaimable EPC pages to
+> reduce its usage below its limit, the cgroup must also reclaim those
+> unreclaimables by killing their owning enclaves. The VA and SECS pages
+> later are also tracked in an 'unreclaimable' list added to this structure
+> to support this OOM killing of enclaves.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> ---
+> V4:
+> - Removed unneeded comments for the spinlock and the non-reclaimables.
+> (Kai, Jarkko)
+> - Revised the commit to add introduction comments for unreclaimables and
+> multiple LRU lists.(Kai)
+> - Reordered the patches: delay all changes for unreclaimables to
+> later, and this one becomes the first change in the SGX subsystem.
+>
+> V3:
+> - Removed the helper functions and revised commit messages.
+> ---
+>  arch/x86/kernel/cpu/sgx/sgx.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.=
+h
+> index d2dad21259a8..018414b2abe8 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -83,6 +83,20 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_e=
+pc_page *page)
+>  	return section->virt_addr + index * PAGE_SIZE;
+>  }
+> =20
+> +/*
+> + * Tracks EPC pages reclaimable by the reclaimer (ksgxd).
+> + */
+> +struct sgx_epc_lru_lists {
+> +	spinlock_t lock;
+> +	struct list_head reclaimable;
+> +};
+> +
+> +static inline void sgx_lru_init(struct sgx_epc_lru_lists *lrus)
+> +{
+> +	spin_lock_init(&lrus->lock);
+> +	INIT_LIST_HEAD(&lrus->reclaimable);
+> +}
+> +
+>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+>  void sgx_free_epc_page(struct sgx_epc_page *page);
+> =20
+> --=20
+> 2.25.1
+>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+Looks good but not yet time for ack'ing.
 
-The first user of this is pending:
-https://lore.kernel.org/platform-driver-x86/20230913092701.440959-1-andriy.shevchenko@linux.intel.com/
-
- lib/string_helpers.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/lib/string_helpers.c b/lib/string_helpers.c
-index 7713f73e66b0..e385bf3cc2de 100644
---- a/lib/string_helpers.c
-+++ b/lib/string_helpers.c
-@@ -723,11 +723,17 @@ EXPORT_SYMBOL_GPL(kstrdup_quotable_file);
- 
- /*
-  * Returns duplicate string in which the @old characters are replaced by @new.
-+ *
-+ * If @new is NUL, copy the string up to the first occurrence of @old, which
-+ * will be replaced by a NUL.
-  */
- char *kstrdup_and_replace(const char *src, char old, char new, gfp_t gfp)
- {
- 	char *dst;
- 
-+	if (new == '\0')
-+		return kmemdup_nul(src, strchrnul(src, old) - src, gfp);
-+
- 	dst = kstrdup(src, gfp);
- 	if (!dst)
- 		return NULL;
--- 
-2.40.0.1.gaa8946217a0b
-
+BR, Jarkko
