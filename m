@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED0679F294
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7473B79F298
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 22:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232134AbjIMUF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 16:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        id S232007AbjIMUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 16:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbjIMUF5 (ORCPT
+        with ESMTP id S229642AbjIMUJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 16:05:57 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21841BC3;
-        Wed, 13 Sep 2023 13:05:53 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-572a7141434so144223eaf.2;
-        Wed, 13 Sep 2023 13:05:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694635553; x=1695240353; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mgnusj9WNYseansm6Kr1sUnhgtykfnbfz9TfjOoUKuQ=;
-        b=sg5+CtQlyAZLRAB1atZXHOqxCJhSBMUrLUYpr7pZsxwMqaelYwbMlwGTBHk2F0I2Vi
-         BDrUn96udFImnQhLJZCgSacjwq/LJfKgbypS4RBZqp/M2PoGOrY0DLHtfDYhOU3q4QOr
-         6aR+RxllmvJ4qw2cVjyYBDMQrCibxqPF8jU5vAFG1X0rRxz+ADV5nd17XWvyruGRCLjx
-         jFCCjpSlw/VEuFp5A/LdqA9rbsDkbtU6eHkK4tS7LIsNl3eBzmBkOB47IeP/U3OGCrli
-         rLVWKDC2zv3xwyNrK3VgRvNhb8VbxWLB4WJb9lOIsXXny4VkroyQzUUHZiKaUYSiD+IR
-         s2og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694635553; x=1695240353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mgnusj9WNYseansm6Kr1sUnhgtykfnbfz9TfjOoUKuQ=;
-        b=mU6lBT4ngu67aBfmB17Dv7pdDmIGCvRpoyX3Z3aYb0d/tPvvxmW2lIDzzB/nTvKiX+
-         5tgv+N3ve3fTsCnYkIqMrKZwx85mGyGl11Wj4oMptqx33/Firdq6fdL3iZSxFGm5ZifF
-         7/OeEQ2XjjeQXSDF6K6CXApMvkR5MMgtZ1e4hid+tA/n4H+9bJlTZOHvWEC4rM9GIlEJ
-         RHElSLFq9QyZIxznkLCJE26+Pm2OhOfPzxy+PgZUYmvnuMDUMUrYf0BlY4oN/MDdpLIZ
-         2O/DSzLf+Z+rfdZL7tw9RppuoIfoGPRoa795arypEA/butbyK/lSF/cimQPzzmvirzIC
-         G9cQ==
-X-Gm-Message-State: AOJu0Yz9WbjXAWKQBJ2PAITsX/9d/PEeWU5pcYZo5ZvMezQ1jDSB6zqx
-        8HPFoD6pQKLfTTfnHHS3qnD6goRWdIXoBCBIeB8=
-X-Google-Smtp-Source: AGHT+IHLm6apn4O09uKTNNT9VekVtTLxkHf0LthInAJoGoVn7WoUR/7/0i7XlogpEbA/UKANyFR7+IGCoBQWnFUT1bg=
-X-Received: by 2002:a05:6870:90d5:b0:1c1:e6da:f88d with SMTP id
- s21-20020a05687090d500b001c1e6daf88dmr3607766oab.56.1694635553050; Wed, 13
- Sep 2023 13:05:53 -0700 (PDT)
+        Wed, 13 Sep 2023 16:09:15 -0400
+Received: from kozue.soulik.info (kozue.soulik.info [108.61.200.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F9B19AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 13:09:11 -0700 (PDT)
+Received: from [192.168.10.7] (unknown [10.0.12.132])
+        by kozue.soulik.info (Postfix) with ESMTPSA id A549D300219;
+        Thu, 14 Sep 2023 05:08:56 +0900 (JST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info A549D300219
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
+        t=1694635737; bh=8LpVTPUsCPQXr1wiITeRmr4X6XXYzbnyOzSEdKAjgqk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ttd6MdBo3xG/+DtOGGfYck1YuM4HBVhWOleDEu+59FeyRZpaA86Zb4vw5cOiIgreB
+         Uidv7Gl+GevqpR4vQdE+sXGfLIJUw2Wzt1vDHRCWqyLjLi9FyJ5HF4tk183MwhrdRi
+         5EUpJJMm0mtk495jt7KDh7ZaCM2aDTKSPKEaWb0U=
+Message-ID: <c0f75cbb-4d5d-0954-4bb6-20a82cfe5e2f@soulik.info>
+Date:   Thu, 14 Sep 2023 04:09:06 +0800
 MIME-Version: 1.0
-References: <20230913115001.23183-1-brgl@bgdev.pl> <20230913115001.23183-3-brgl@bgdev.pl>
-In-Reply-To: <20230913115001.23183-3-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 13 Sep 2023 23:05:16 +0300
-Message-ID: <CAHp75Ve8aK4Pfid1JYWH86mKy-Zb-G2QDPrJYmRzPCYOsn1TqQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mtd: rawnand: ingenic: use gpiod_set_active_high()
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: USB: DMA: mapping existing buffer is not supported?
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org
+References: <1e783efe-8659-8be1-82b7-15186302e88c@soulik.info>
+ <2023091323-trombone-storeroom-cbd3@gregkh>
+From:   Randy Li <ayaka@soulik.info>
+In-Reply-To: <2023091323-trombone-storeroom-cbd3@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 2:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+
+On 2023/9/14 03:19, Greg KH wrote:
+> On Thu, Sep 14, 2023 at 03:06:58AM +0800, Randy Li wrote:
+>> Hello
+>>
+>> I was trying to understand why USB webcams (UVC) have to copy video data
+>> through the CPU (uvc_video_complete() schedules uvc_video_copy_data_work()
+>> for this purpose). During my investigation, I noticed that functions
+>> like|usb_sg_*() and |usb_buffer_*() are not available since kernel version
+>> 2.6.12.
+> What do you mean by "not available"?  I see them in the tree today, why
+> do you think they are not present?
 >
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+usb_buffer_dmasync_sg(), usb_buffer_map(), usb_buffer_dmasync() and usb_buffer_unmap() are all disabled
+by #if 0 in include/usb/usb.h
+
+usb_buffer_map_sg() and usb_buffer_unmap_sg() are just declaration without definition.
+
+>> I can comprehend that USB host controllers such as xHCI, commonly found in
+>> embedded implementations like dwc3, do not support IOMMU. However, this
+>> should not prevent them from operating on a contiguous buffer.
+> Are you sure that the protocol for these devices allow this?
+I thought that is what hcd_buffer_alloc() does.
 >
-> Use the new, less cumbersome interface for setting the GPIO as
-> active-high that doesn't require first checking the current state.
-
-...
-
->          * here for older DTs so we can re-use the generic nand_gpio_wait=
-rdy()
->          * helper, and be consistent with what other drivers do.
->          */
-> -       if (of_machine_is_compatible("qi,lb60") &&
-> -           gpiod_is_active_low(nand->busy_gpio))
-> -               gpiod_toggle_active_low(nand->busy_gpio);
-> +       if (of_machine_is_compatible("qi,lb60"))
-> +               gpiod_set_active_high(nand->busy_gpio);
-
-Why not moving this quirk to gpiolib-of.c?
-
---=20
-With Best Regards,
-Andy Shevchenko
+>> If the USB subsystem can no longer work with existing buffers, I propose
+>> that we consider removing the remaining documentation in the "Working with
+>> existing buffers" section of Documentation/driver-api/usb/dma.rst.
+> I don't understand, what is wrong with the information there exactly?
+> Have you tried following the suggestions there?
+Besides my answer to first question, I found no code use them today.
+>
+> thanks,
+>
+> greg k-h
