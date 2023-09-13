@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EA379E14C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73AC79E150
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 09:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238704AbjIMH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 03:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        id S238701AbjIMH7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 03:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238694AbjIMH6d (ORCPT
+        with ESMTP id S238673AbjIMH7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 03:58:33 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A27F198A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:29 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-313e742a787so377985f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:29 -0700 (PDT)
+        Wed, 13 Sep 2023 03:59:03 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1155198A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:58 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31f8a05aa24so4306729f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 00:58:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1694591907; x=1695196707; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nFueJl78mh+PKTiVs6I5JpNS70hNWQMI7pbyEB+VCP4=;
-        b=XHEPFG3YTQIVJJ7ZQK8w3pYkzpQbJT4n4GkBIVBv+u1i2+CPDrRYtPqUkvWkilI/6l
-         ziCtydPGH+UsKSDaWOpJtflVWxrpV1y/hXDWzURTHTbUxosxZzot2TaXFVqJMiZfocN7
-         kiX+fEfTaLa191+QVSyjFx++u6VFf8vtAnV7/YlJY6ZItXTADrDl9yXQqGAHc1hudKJh
-         r5sRpT6sM5gBWZeYdzPsg0E5A4uXvXKSWsJMQN1wjKJTm1d7N65CUsZ/iuswTziUr0A0
-         cr6K6pDzwnkrAokPS6FojU0wX/gRBa+7WnnIvxLj0nG92zThwEivfVtTbLkxx8Tq5Apx
-         v/sA==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1694591937; x=1695196737; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EkdGZYQrwA4ll/7xTuDvjPfd4MTlNtu+sDVCgPZq2hM=;
+        b=fDj6Pg+QybGFCjKOebH0swOZ+enPGTuJmqrxMxg9BozYR2t35AEvdUCMHsIqzGNHma
+         Kj53e6YM3/CfYAz/G7lLIGUFDWdZ7h5h7vRaUbbu2vxs6CwLV1h2mB8YjPxiCFSJfnRC
+         1kuwY1nwWyw7OHUZrYms+gK6x1Oe8GsTsu+lxmWhLTvZvKbQnH/TTqlTIsBGc7VK8WCd
+         BYXIKxQ1tBBBF8B9oZGtjcoPMfRzIIS1d/luKYyKQbsjdk8lEpyHY3KNNrGQ8SVHcVqS
+         oIG352Hi9ueyP1KkVwm5WLcYxjEQUulQR71iDxHVTSln/ciuqd6B75e0pgDdpMGie4Yj
+         5+hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694591907; x=1695196707;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nFueJl78mh+PKTiVs6I5JpNS70hNWQMI7pbyEB+VCP4=;
-        b=hmPvQbi/hH4SWGWzaDFJLbk7WAfbaadRcyllVT7Wddylu/VzCxnut9t31Uw0O+WKSn
-         1s64v2IBy8FCAePLpT3mR1ORKb5MF5yo/nFsZ+7uHJqqEidLYoOvpMB+dBjnMwHNmW0w
-         kmMKbfBjt44zvcbkSn5TODx8bfOnXRrFEGByx2do0iYQiCaHnEyiPzy/JLOtTAMfchuZ
-         86DRL+BTC9SeQS3U048muPmRaT5oYyufzb978NufKn6Njo1YZ+8cN5DGTK8sFrZi6W4w
-         dZVF6jivH2Vq/tv4ZI41r7HVtZsp+reZ+bCurEIXnNXkV4CW2uKItjbdKa4zAuOW1cAw
-         pv9g==
-X-Gm-Message-State: AOJu0Yw1taC+bRujZTcWf3teoMvf2oLAEc0MiOu8wtfURq3gCGaJV3SR
-        1bg2MLnNNO9njnEDBzCautaJIg==
-X-Google-Smtp-Source: AGHT+IHUg+HymGtIogUF6zI/UwDj8czk/y4R74TkkVBPkkz6kjD4I29RU6Ea65Zrv7c1m/0uHXvrjA==
-X-Received: by 2002:a05:6000:1364:b0:31c:8c5f:877e with SMTP id q4-20020a056000136400b0031c8c5f877emr3711400wrz.33.1694591907432;
-        Wed, 13 Sep 2023 00:58:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id f2-20020a7bc8c2000000b003fefca26c72sm1244434wml.23.2023.09.13.00.58.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 00:58:26 -0700 (PDT)
-Message-ID: <a74d0d3b-1729-c4e0-eb79-e7653e87e862@linaro.org>
-Date:   Wed, 13 Sep 2023 09:58:24 +0200
+        d=1e100.net; s=20230601; t=1694591937; x=1695196737;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EkdGZYQrwA4ll/7xTuDvjPfd4MTlNtu+sDVCgPZq2hM=;
+        b=BdwWqhda6eaMaXRoJhk4Zq2T5Z9jDa4k0Zx36/y2JjHxdc2MH+5EedU+kS4XerSoSK
+         NVKcFvHqQu0E7EYSpmZ1nnGHkrf3ECkSVpAbkNBJSRGRqGiT0AVGiPL0iP5a6w7ZJeNw
+         q9hre3PHOusDGtWuuCf1CDszi5VG4VLbmP9BtnM9lXgKJxy0vmIF7l6fzOuNeJ036BTW
+         86t67DlzC5KLfHmRz8ozX4s7pnUQzOkkFzhO94WndAqryGDORf5tYoVCndKq4sglhRFP
+         odsELO9wr36irUanRfd7qxl6zAfatdrY+GvvkPDH3GvYjomTyO9V1gJy3TS31fVN+mXl
+         /+pQ==
+X-Gm-Message-State: AOJu0YyLt8+bDhofH8h5cJjOr4g2eRcXP1zIMahiqgxFNKCq5Wsjwwq2
+        wOIkGKGX8HxGXQiwzy7ioUfnug==
+X-Google-Smtp-Source: AGHT+IEXU002BF4gZvckDLmB/m507XPZeHi5Or79qEm1/eb14IbkNOzOzkoHnUocfn03vmeh+czvxg==
+X-Received: by 2002:adf:f782:0:b0:31a:d551:c2c9 with SMTP id q2-20020adff782000000b0031ad551c2c9mr1382336wrp.6.1694591937140;
+        Wed, 13 Sep 2023 00:58:57 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id y18-20020adfd092000000b003179d5aee67sm14854979wrh.94.2023.09.13.00.58.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 00:58:56 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 09:58:55 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ti: icssg-prueth: add PTP dependency
+Message-ID: <ZQFrv4W70ijXWTFZ@nanopsycho>
+References: <20230912185509.2430563-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v2 07/10] dt-bindings: rng: add st,rng-lock-conf
-Content-Language: en-US
-To:     Gatien CHEVALLIER <gatien.chevallier@foss.st.com>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     Lionel Debieve <lionel.debieve@foss.st.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230911120203.774632-1-gatien.chevallier@foss.st.com>
- <20230911120203.774632-8-gatien.chevallier@foss.st.com>
- <28ec58a3-63d5-f604-cef9-571b062fe244@linaro.org>
- <d5f2d1b3-fc91-76f0-af3d-bcdf6c4b5703@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <d5f2d1b3-fc91-76f0-af3d-bcdf6c4b5703@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230912185509.2430563-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/09/2023 09:48, Gatien CHEVALLIER wrote:
-> On 9/12/23 16:38, Krzysztof Kozlowski wrote:
->> On 11/09/2023 14:02, Gatien Chevallier wrote:
->>> If st,rng-lock-conf is set, the RNG configuration in RNG_CR, RNG_HTCR
->>> and RNG_NSCR will be locked. It is supported starting from the RNG
->>> version present in the STM32MP13
->>>
->>> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
->>
->> How did you implement the comment? There is no changelog, so was it ignored?
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> Hello Krzysztof,
-> 
-> I've sent V2 before Rob's review. I'll apply Rob's comment for V3.
+Tue, Sep 12, 2023 at 08:54:51PM CEST, arnd@kernel.org wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
+>
+>The driver can now use PTP if enabled but fails to link built-in
+>if PTP is a loadable module:
+>
+>aarch64-linux-ld: drivers/net/ethernet/ti/icssg/icss_iep.o: in function `icss_iep_get_ptp_clock_idx':
+>icss_iep.c:(.text+0x200): undefined reference to `ptp_clock_index'
+>
+>Add the usual dependency to avoid this.
+>
+>Fixes: 186734c158865 ("net: ti: icssg-prueth: add packet timestamping and ptp support")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Ah, ok.
-
-Best regards,
-Krzysztof
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
