@@ -2,91 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D80979EAF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F8879EAFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 16:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236505AbjIMOXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 10:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        id S235572AbjIMOZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 10:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbjIMOXk (ORCPT
+        with ESMTP id S241488AbjIMOZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 10:23:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEB498;
-        Wed, 13 Sep 2023 07:23:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA890C433C7;
-        Wed, 13 Sep 2023 14:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1694615016;
-        bh=YiQrzuAh1fMDV3leNvWvYNpRFAWU7q18Jvl/4gilNQw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Xw95oeyZTs8tiMck+I72MQ6IqeSOdGtF+CxXy5/7/Whah8lHm4lFw7iJOgZtC0HGf
-         9y3j8VosYGPgeMF3Dc7PKJ4WtWbfb/QmYOWLYRuIHZvuW/+6FzKCwd5sOv2u93pSDY
-         /Tz1++6Y+PpHgIiO8HLhRpaHMdpYlMpaQ2lwN+cwhsSvKaUiIu6rtLGyAvlVtfMw6+
-         N+6JmuMx4TOF7rbzqNtFif1tTBgtDG1Ya65fHbnUFtTERWmfSw6YP6LR0/6tSmqDeK
-         4aM2XCKmWEEHiV3JdPgU9L4CqGJv0nTwEzxVCUu3BFcBush9Ng4IkSSiOinuknKm5l
-         C+03B2XfnXrLw==
-Date:   Wed, 13 Sep 2023 09:23:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Damien Le Moal <dlemoal@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        patenteng <dimitar@daskalov.co.uk>,
+        Wed, 13 Sep 2023 10:25:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFFAB7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 07:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694615099; x=1726151099;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XKOsmvZaoSUNMXOhheZXkeEtZd0F/hnfQCZH/hf2+EQ=;
+  b=ZVy0keU/LpWSInV6ELDhSTBbXyAYXqMXZWIGaAAPk4zHQ+3/dfoFihwc
+   q/XtQt4D4rExzKt1/BxiEPRtdIdW7RTqhX/0H9K/7UfyQdZiRGAPYErx0
+   n5iPvhEzbbgkqbBZoQCJ1epx7Gb7eWuASduh1zagVOCKnYUgABGpP+uhZ
+   YZy78LBNAMXfsXP0s5vZaMnYy5ra1HpiuX1ReoeBFubNwc+YxBNYyoLGo
+   IX3CrvVAOtuz+Gmjx5mk1nty6zviwfIkgW8iEQP/9N19PO6ycEKnLR330
+   qHQRX0Ydxi64n8TuaQrZOpnelf/1EGzEdtiSMvdFEgrFVSKm79VKUbrzm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="442705093"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="442705093"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 07:24:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10832"; a="747322619"
+X-IronPort-AV: E=Sophos;i="6.02,143,1688454000"; 
+   d="scan'208";a="747322619"
+Received: from mdhaisne-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.45.137])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2023 07:24:18 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id D49C310940B; Wed, 13 Sep 2023 17:24:10 +0300 (+03)
+Date:   Wed, 13 Sep 2023 17:24:10 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Ard Biesheuvel <ardb@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Regressions <regressions@lists.linux.dev>,
-        Linux IDE and libata <linux-ide@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: Fwd: Kernel 6.5.2 Causes Marvell Technology Group 88SE9128 PCIe
- SATA to Constantly Reset
-Message-ID: <20230913142333.GA431715@bhelgaas>
+        kexec@lists.infradead.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        x86@kernel.org
+Subject: Re: kexec reboot failed due to commit 75d090fd167ac
+Message-ID: <20230913142410.dfqsg3l5v44mr5j3@box>
+References: <20230829125939.bcg2r6hwqf45npko@box.shutemov.name>
+ <20230829140451.GA509854@ziqianlu-dell>
+ <20230907131409.masxz42ik6u456qp@box.shutemov.name>
+ <20230908060230.GA283801@ziqianlu-dell>
+ <20230908123233.dpbpohgrbyyxekzk@box.shutemov.name>
+ <202309080856.F066F92C98@keescook>
+ <CAGnOC3aG9BuoVEGs4LQhhczdhAF0gFBmXR7GXKAf4Z8FPTb1PQ@mail.gmail.com>
+ <20230909113209.actnan6hczrclz2d@box.shutemov.name>
+ <CALu+AoSKpgbbKmsL8iuWpQB2ANqnhhfXR5pN5m0EsKZeFUBPkw@mail.gmail.com>
+ <20230911145707.hslq47ngknshrlyk@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <dacb34e4-ce58-bc0e-8206-672d743a3e34@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230911145707.hslq47ngknshrlyk@box.shutemov.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 13, 2023 at 06:25:31PM +0700, Bagas Sanjaya wrote:
-> I notice a regression report on Bugzilla [1]. Quoting from it:
+On Mon, Sep 11, 2023 at 05:57:07PM +0300, Kirill A. Shutemov wrote:
+> On Mon, Sep 11, 2023 at 10:56:36PM +0800, Dave Young wrote:
+> > > early console in extract_kernel
+> > > input_data: 0x000000807eb433a8
+> > > input_len: 0x0000000000d26271
+> > > output: 0x000000807b000000
+> > > output_len: 0x0000000004800c10
+> > > kernel_total_size: 0x0000000003e28000
+> > > needed_size: 0x0000000004a00000
+> > > trampoline_32bit: 0x000000000009d000
+> > >
+> > > Decompressing Linux... out of pgt_buf in arch/x86/boot/compressed/ident_map_64.c!?
+> > > pages->pgt_buf_offset: 0x0000000000006000
+> > > pages->pgt_buf_size: 0x0000000000006000
+> > >
+> > >
+> > > Error: kernel_ident_mapping_init() failed
+> > >
+> > > It crashes on #PF due to stbl->nr_tables dereference in
+> > > efi_get_conf_table() called from init_unaccepted_memory().
+> > >
+> > > I don't see anything special about stbl location: 0x775d6018.
+> > >
+> > > One other bit of information: disabling 5-level paging also helps the
+> > > issue.
+> > >
+> > > I will debug further.
 > 
-> > After upgrading to 6.5.2 from 6.4.12 I keep getting the following kernel messages around three times per second:
-> > 
-> > [ 9683.269830] ata16: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
-> > [ 9683.270399] ata16.00: configured for UDMA/66
-> > 
-> > So I've tracked the offending device:
-> > 
-> > ll /sys/class/ata_port/ata16
-> > lrwxrwxrwx 1 root root 0 Sep 10 21:51 /sys/class/ata_port/ata16 -> ../../devices/pci0000:00/0000:00:1c.7/0000:0a:00.0/ata16/ata_port/ata16
-> > 
-> > cat /sys/bus/pci/devices/0000:0a:00.0/uevent
-> > DRIVER=ahci
-> > PCI_CLASS=10601
-> > PCI_ID=1B4B:9130
-> > PCI_SUBSYS_ID=1043:8438
-> > PCI_SLOT_NAME=0000:0a:00.0
-> > MODALIAS=pci:v00001B4Bd00009130sv00001043sd00008438bc01sc06i01
-> > 
-> > lspci | grep 0a:00.0
-> > 0a:00.0 SATA controller: Marvell Technology Group Ltd. 88SE9128 PCIe SATA 6 Gb/s RAID controller with HyperDuo (rev 11)
-> > 
-> > I am not using the 88SE9128, so I have no way of knowing whether it works or not. It may simply be getting reset a couple of times per second or it may not function at all.
+> The problem is not limited to unaccepted memory, it also triggers if we
+> reach efi_get_rsdp_addr() in the same setup.
 > 
-> See Bugzilla for the full thread.
+> I think we have several problems here.
 > 
-> patenteng: I have asked you to bisect this regression. Any conclusion?
-> ... 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217902
+> - 6 pages for !RANDOMIZE_BASE is only enough for kernel, cmdline,
+>   boot_data and setup_data if we assume that they are in different 1G
+>   regions and do not cross the 1G boundaries. 4-level paging: 1 for PGD, 1
+>   for PUD, 4 for PMD tables.
+> 
+>   Looks like we never map EFI/ACPI memory explicitly.
+> 
+>   It might work if kernel/cmdline/... are in single 1G and we have
+>   spare pages to handle page faults.
+> 
+> - No spare memory to handle mapping for cc_info and cc_info->cpuid_phys;
+> 
+> - I didn't increase BOOT_INIT_PGT_SIZE when added 5-level paging support.
+>   And if start pagetables from scratch ('else' case of 'if (p4d_offset...))
+>   we run out of memory.
+> 
+> I believe similar logic would apply for BOOT_PGT_SIZE for RANDOMIZE_BASE=y
+> case.
+> 
+> I don't know what the right fix here. We can increase the constants to be
+> enough to cover existing cases, but it is very fragile. I am not sure I
+> saw all users. Some of them could silently handled with pagefault handler
+> in some setups. And it is hard to catch new users during code review.
+> 
+> Also I'm not sure why do we need pagefault handler there. Looks like it
+> just masking problems. I think everything has to be mapped explicitly.
+> 
+> Any comments?
 
-Thanks for the heads-up.  I can't tell whether PCI is involved here.
-The bugzilla only mentions the SATA link, which is on the downstream
-side of the PCI SATA device.
+I struggle to come up with anything better than increasing the constant to
+a value that "ought to be enough for anybody" ©, let's say 128K.
 
-If PCI is involved, e.g., if the PCI core reset the SATA device
-because of an error, there may be hints in the dmesg log.  Can you
-attach the complete dmesg log and "sudo lspci -vv" output to the
-bugzillla?
+And we can eliminate logic on no-KASLR vs. KASLR vs. KASLR+VERBOSE_BOOTUP.
 
-Bjorn
+Objections?
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
