@@ -2,149 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8C679E360
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9144379E35A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 11:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239202AbjIMJSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 05:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S234326AbjIMJR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 05:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239245AbjIMJSD (ORCPT
+        with ESMTP id S230169AbjIMJR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 05:18:03 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A92B1999
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:17:59 -0700 (PDT)
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7034A3F675
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1694596676;
-        bh=YOII/3O27Az9SG2nD11VPnmQx6Ck7v8vZGr+bu9t/Fo=;
-        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=oKdbfuCgNld38ZZCLcH75o28222kOSwzRkmyx/xr2OQYt9uA191yAoexBJSFRSM3z
-         4j3ACapaswvqSgAobbSU4ao8xlY5VaNKGtCC1JXonJ7s4R3PUDBhUzkGHtSwOhOhf/
-         dZpvpwy0fkdYpSpr7u+kjD/cY9IBTXgTxU/unadG/RbpykQDT/O5MBAYx/B5kbkNsI
-         Jh5JlTMz6Y3VImkB0gHicKYUFqzBXeKboNd/YqmGShaI3Oa0BOVnXypxfo3UP03m6T
-         W9CTzfO0S/elWV0jZhZV97NmF272DzOUPMxuSsO5bWTT0bq1jLbm1ZZE2pOsd6skjB
-         Pf6Xsy0hpyFMA==
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31f79595669so278963f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:17:56 -0700 (PDT)
+        Wed, 13 Sep 2023 05:17:56 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4E31999
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:17:51 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-401bbfc05fcso72352715e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 02:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1694596670; x=1695201470; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pAjwj3vFJAui/OGA0IHuJXUUcCG/qk5wDLNVjB5au/s=;
+        b=18+d0PIpCYfc4xrPlb6/2mgS+3+jK2Ue8dFX6/LDI5x17PaCpmMvi9N2UJ0s+g7kAC
+         XuhCMqKbzFqelftL9VT8dSYNxaH8Ec/nL02krxzI1Y2g8vw3oVvOhUOf4Bn/25ttbNka
+         CUgn6eQP71Ib9NiYSE6Bfhj87SP0PuTBfZgPrKOXf1h3GhWSdJBj42CSCFmTFAcvN94F
+         naQKNFECoQbWglKsjDBveMr2cDmL2rV6AQcwwKKf6SvgHchr7Io85wAtD3YhkJSGVXLu
+         n/g7TfX4SsRv9TWUjV2EfvHdVpRTEOtV1STIA4c8d2oPA+dMGIal6fJQVSSglqZZSVnn
+         c5HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694596673; x=1695201473;
-        h=mime-version:organization:references:in-reply-to:message-id:subject
-         :cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1694596670; x=1695201470;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YOII/3O27Az9SG2nD11VPnmQx6Ck7v8vZGr+bu9t/Fo=;
-        b=rodvLgMT8n0OWhxhF7VZdcERGBrUzej2gjGCjKhfFCXBJ6RpxT49nKrFb7Y8ILjd7i
-         4jucBFveG3y2qDYGjJFb89+P4YDrZaWfaYlA5c7/JeOyufMQxhpUEejdtG35PH6RR7Ct
-         3wGzqNumi3bCJfTFrcLKTrqZLSPIDYkITnjtpTdQ1CE2U2/zpLMWKRsQGMq48nMbkh6z
-         1nWWOFpdxrSf9ya0SXQRIqP7gOC/bggS3J5CVl1SyU7QEy5SIseVBKl8G0WSXnlKAPM8
-         +mgrQr4xACxaE393WQQh1VbnTmkyNSXI5lHiVqvwnPfjLVT2pXB9mZDJRfytoc9deMlv
-         NKzg==
-X-Gm-Message-State: AOJu0Yx0+J/Nq/aOlZ2T8rRNelbejk7ta8sgidw/p73ZsGv2D1FL+qrT
-        oiCwu2+NtJhk1qaJaNIjt/UhpQBnlGWMauW/EzmaQj3zjXJWE64yKUomafctYfNxoHo42//jq60
-        Dp/SEJaPqb7OB8+YwLGRSroumInEDwJyc6daERvQsaA==
-X-Received: by 2002:a5d:526f:0:b0:314:1096:6437 with SMTP id l15-20020a5d526f000000b0031410966437mr1551485wrc.19.1694596673128;
-        Wed, 13 Sep 2023 02:17:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEzZpbc5eKZXXiI/rQ4cz9Po8Dhm8unDuLJ1pm1qT0dvDqRwRkliciQI48iSOie4UN/NJ49IQ==
-X-Received: by 2002:a5d:526f:0:b0:314:1096:6437 with SMTP id l15-20020a5d526f000000b0031410966437mr1551467wrc.19.1694596672814;
-        Wed, 13 Sep 2023 02:17:52 -0700 (PDT)
-Received: from gollum ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id z17-20020a5d4c91000000b003179b3fd837sm14942590wrs.33.2023.09.13.02.17.52
+        bh=pAjwj3vFJAui/OGA0IHuJXUUcCG/qk5wDLNVjB5au/s=;
+        b=afz+S9yBgWL9+teh3INy480KVmnlBhjT4jSPKWKDoWHylNlrEyhB+ilox5k5JhfjXT
+         IHIGx12/eqiXcB+k7NlqusnRFq74v+ygyhjRXbda60uAQ5Id/8v2QL88H8EIE2RQgOen
+         dTx2auMK+IVgV7/v8EJx0Ibap41O/0SLVHDIK+M//hGmduI5OMj3tOlFXUblY51IrLHx
+         +h0xxDyibi5fzE7WK7vGeLD7jZEdaMD0zIGVCPV+6VkfOeDNPPSR3gonHlk81yYLD3dJ
+         d2ZJD+mSj7nQsspYEQC2VW/bBAk4kX8QwexoOwrPv6nOvujlaUXcDWXngQDZVcg2xcsd
+         QTnQ==
+X-Gm-Message-State: AOJu0YxYb6qLZxOAdmSg8pfehS5r5l+k8rTcDDQAVUJeEevtq1MLrR7E
+        JeWPAVMT6Z7xNosiuwQqBI4PuQ==
+X-Google-Smtp-Source: AGHT+IGYrZIoH7RVHwDTt7jAikBWmHKVtRJY8VFrQZWdVrpcxA9ztB//ZndOBHoEMjiTRYDolro5tw==
+X-Received: by 2002:a05:600c:2212:b0:401:b2c7:349b with SMTP id z18-20020a05600c221200b00401b2c7349bmr1553594wml.7.1694596670178;
+        Wed, 13 Sep 2023 02:17:50 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id m13-20020a7bca4d000000b003fe4548188bsm1450437wml.48.2023.09.13.02.17.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 02:17:52 -0700 (PDT)
-Date:   Wed, 13 Sep 2023 11:17:47 +0200
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, marcan@marcan.st, keescook@chromium.org,
-        gustavoars@kernel.org, hdegoede@redhat.com,
-        ryohei.kondo@cypress.com
-Subject: Re: [PATCH] wifi: brcmfmac: Replace 1-element arrays with flexible
- arrays
-Message-ID: <20230913111747.35839fd8@gollum>
-In-Reply-To: <87msxqlaao.fsf@kernel.org>
-References: <20230913065421.12615-1-juerg.haefliger@canonical.com>
-        <87msxqlaao.fsf@kernel.org>
-Organization: Canonical Ltd
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Wed, 13 Sep 2023 02:17:49 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 11:17:48 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Jinjian Song <songjinjian@hotmail.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
+        ryazanov.s.a@gmail.com, johannes@sipsolutions.net,
+        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nmarupaka@google.com,
+        vsankar@lenovo.com, danielwinkler@google.com
+Subject: Re: [net-next v4 0/5] net: wwan: t7xx: fw flashing & coredump support
+Message-ID: <ZQF+PHTYDZRX1gql@nanopsycho>
+References: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Cu_SgLCiae9uFjwQIJE6=+Z";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ME3P282MB270323F98B97A1A98A50F8F7BBF1A@ME3P282MB2703.AUSP282.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Cu_SgLCiae9uFjwQIJE6=+Z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Tue, Sep 12, 2023 at 11:48:40AM CEST, songjinjian@hotmail.com wrote:
+>Adds support for t7xx wwan device firmware flashing & coredump collection
+>using devlink.
 
-On Wed, 13 Sep 2023 11:58:07 +0300
-Kalle Valo <kvalo@kernel.org> wrote:
+I don't believe that use of devlink is correct here. It seems like a
+misfit. IIUC, what you need is to communicate with the modem. Basically
+a communication channel to modem. The other wwan drivers implement these
+channels in _ctrl.c files, using multiple protocols. Why can't you do
+something similar and let devlink out of this please?
 
-> Juerg Haefliger <juerg.haefliger@canonical.com> writes:
->=20
-> > Since commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC"),
-> > UBSAN_BOUNDS no longer pretends 1-element arrays are unbounded. Walking
-> > 'element' and 'channel_list' will trigger warnings, so make them proper
-> > flexible arrays.
-> >
-> > False positive warnings were:
-> >
-> >   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brc=
-m80211/brcmfmac/cfg80211.c:6984:20
-> >   index 1 is out of range for type '__le32 [1]'
-> >
-> >   UBSAN: array-index-out-of-bounds in drivers/net/wireless/broadcom/brc=
-m80211/brcmfmac/cfg80211.c:1126:27
-> >   index 1 is out of range for type '__le16 [1]'
-> >
-> > for these lines of code:
-> >
-> >   6884  ch.chspec =3D (u16)le32_to_cpu(list->element[i]);
-> >
-> >   1126  params_le->channel_list[i] =3D cpu_to_le16(chanspec);
-> >
-> > Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com> =20
->=20
-> Should this be queued for v6.6?
+Until you put in arguments why you really need devlink and why is it a
+good fit, I'm against this. Please don't send any other versions of this
+patchset that use devlink.
 
-I would think so. It's a problem since 6.5. Which reminds me that I should
-have added:
-
-Cc: stable@vger.kernel.org # 6.5+
-
-...Juerg
-
-
-
---Sig_/Cu_SgLCiae9uFjwQIJE6=+Z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmUBfjsACgkQD9OLCQum
-Qrcu2g//VfE5J5Fsa8NX7kn7uJX0G9v1OLJIRJ/A9HYWNJ9CWWp0coKnWy0rdrWm
-kJYut2/zOC/sjvKaXLIfSIRvmpL/4jl6/9Uesacah+7bfBszcYbNGStwa5sGx1zf
-ntzc9RM0vRoYZYHfYyEootuzqQZ9ZSr2OZkCBnHe1KnAKz1NkoUOag+l6l76HMI+
-XjtpXC5EHOmGCyWebWBUOv3SQl8g81bKKu+DwtW2zsKYpuJcYcQv9Y0GZgl0Bu6u
-rrKXTGyZpyrQ4H9lqI0LP1GAwpbuinYgW0Xft6MUkVgQUS3qDhOBJCa1Nfb5xS0v
-wMNH8KNZNT4vREH3LKOlRP/SdtP4lPH4udoONveHfGLXt+VXlgq02jRr/Jxj6ICM
-dkIpY54ND8+I+psaH5Oi8s3qhcSzY8xuwJeZzQRh+wh7X8h8aj67N9hv6tQZkDEe
-3WQmb3slanRnMGSgJhCkp3M1IrR38nNBgQe6nb9UagiWXW6l1kar5sQ+uQkPAgZz
-Z3AE0rQt0SV2EHfyWGkwUSSTVKAP7mSb3jsVr+3UExOTLnNq1GsPr+dJ8oG3baHL
-UDe3xw2TrXv+cSOUKuWqef3/C6xeqM7Jjz2fyYwKP+hjr5smf5QMzfdGif4Nv9x5
-cmID/ABkY+GOGkFNE+68Qr+DOy/3CglizPfsB7ESqVdJFgLa1rU=
-=Yn1Y
------END PGP SIGNATURE-----
-
---Sig_/Cu_SgLCiae9uFjwQIJE6=+Z--
+NACK.
