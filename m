@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5EB79EC1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D678D79EC22
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 17:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241055AbjIMPG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 11:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
+        id S240896AbjIMPHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 11:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240124AbjIMPG5 (ORCPT
+        with ESMTP id S230471AbjIMPHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 11:06:57 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1621B9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 08:06:53 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E345840E01A2;
-        Wed, 13 Sep 2023 15:06:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qYYmjcbtHk0r; Wed, 13 Sep 2023 15:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1694617609; bh=lw76Xn1SKDONOIBRlL8Ui7kdbzGlQ8LjfZ8Dhdktty4=;
+        Wed, 13 Sep 2023 11:07:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B7B7;
+        Wed, 13 Sep 2023 08:07:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D54C1C433C8;
+        Wed, 13 Sep 2023 15:07:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694617655;
+        bh=SYzUOpvEWA+yyqFFVtA92rfi3iMtgTA3kqi44w7DWsk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dzHx2qKkj3zfvN7j8JBr8uEDepb4Z+vP8RNgJl5FNtE+/5BkuicRHi+TjntySCHJb
-         wncmzTPUYV+t72jz81MmDapKLTKpRd0YnpkVPua1jbFJPIVk+6tm6E4hSHkeCa/L4P
-         fAp7FT8bqJWNpx2HjfklRMJ8ZrEdCbBASvNwKvIHPQB3J58AMi3M2tFl09/tqo3xTW
-         U+Tysen/SmAuzspUBVNrOMVgQG+5EOflcudj1MOO0n09ApMIiNTckTrxg26cRFg5MW
-         gFFuTKguxXtruO2O2ka8hn+r+YUpgYKN6epfNCVWjU3akRshf8DMYt/vsML/qwaCY+
-         02MaGTdAPv15t40yO4yPJMws+rn6RXvp2gyNOXMo4IRilh074Id3TJEWXM69OlkOKY
-         /BYAgHx+Tj0DgIcxFNRGFqA8mIxJqtdFvwNU9hUMyvXhhgGXMoGR8GqVfi9+wUod/l
-         1NQMGco0GKiafeAid/13ZGibQUZ0cwmoRImslq+Ib0SMoo1TFNd9R+a8/Z8UNwJKVY
-         eVj7PalVBv8u4Ubk8LujG67sskIEO7s2Rxn6eM5DTH2zgaw+JEkOY7Ku9VLT+uirmx
-         H01AZEKj1dayK9mNkk8Ibhu8yOUJenn/at+ZE4I5/ucrwFXCshZpadIhhnRheNCBcG
-         kOPWZl+ruNzdWZDb37mmALkQ=
-Received: from nazgul.tnic (unknown [93.123.97.133])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B12AB40E0198;
-        Wed, 13 Sep 2023 15:06:40 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 17:06:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Fenghua Yu <fenghua.yu@intel.com>, Peter Anvin <hpa@zytor.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 01/30] x86/microcode/32: Move early loading after
- paging enable
-Message-ID: <20230913150649.GEZQHQCVz615l8PoSr@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065500.823314239@linutronix.de>
+        b=sK8vGcMPpRNYhDpRYfwH/9KknVNkBCBwMjnCJ+uPuDQYPqN/G2Vu75ziBRwFhUaQ4
+         dpDON6WakckbrSsU+lv+faFmsX14Gz3ML2PXVwK+vWOHp4bWsqv2RPkjsg/ohAb4bH
+         glRlXqtvF67qTtbsubSMOq9Y79ZPgcICMMAr4nsAXhrPrrrODwmnzVOjWKt4ySzkYu
+         hCi9Ig06KgXS0ZjOMbA6Dys4acf6rYdK8xhQGOu4wjDiYjUlXVL5Pv8YgqsJgDiqAn
+         6JA1SBbPJ49x+pvBHSw6C08enJ35TR+2KFlwreS2b5HR3EVDJU6i8VG7yRXbGXgewS
+         buDvy7lYjZ8lA==
+Date:   Wed, 13 Sep 2023 16:07:27 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Myunguk Kim <mwkim@gaonchips.com>
+Cc:     alsa-devel@alsa-project.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, fido_max@inbox.ru,
+        joabreu@synopsys.com, krzysztof.kozlowski+dt@linaro.org,
+        kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, perex@perex.cz, robh+dt@kernel.org,
+        tiwai@suse.com, u.kleine-koenig@pengutronix.de,
+        xingyu.wu@starfivetech.com
+Subject: Re: [PATCH] ASoC: dwc: Add Single DMA mode support
+Message-ID: <71628b39-fd59-45ee-bad9-3e6bd42cb97d@sirena.org.uk>
+References: <ZP8Irf6g+sG6Ax9j@finisterre.sirena.org.uk>
+ <20230913040902.1496711-1-mwkim@gaonchips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="JskZn6gM/rV4+uuO"
 Content-Disposition: inline
-In-Reply-To: <20230912065500.823314239@linutronix.de>
+In-Reply-To: <20230913040902.1496711-1-mwkim@gaonchips.com>
+X-Cookie: Use extra care when cleaning on stairs.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:57:44AM +0200, Thomas Gleixner wrote:
-> 32-bit loads microcode before paging is enabled. The commit which
-> introduced that has zero justification in the changelog. The cover letter
-> has slightly more content, but it does not give any technical justification
-> either:
-> 
->   "The problem in current microcode loading method is that we load a
->    microcode way, way too late; ideally we should load it before turning
->    paging on.  This may only be practical on 32 bits since we can't get to
->    64-bit mode without paging on, but we should still do it as early as at
->    all possible."
-> 
-> Handwaving word salad with zero technical content.
->
-> Someone claimed in an offlist conversation that this is required for curing
-> the ATOM erratum AAE44/AAF40/AAG38/AAH41. That erratum requires an
-> microcode update in order to make the usage of PSE safe. But during early
-> boot PSE is completely irrelevant and it is evaluated way later.
 
-...
+--JskZn6gM/rV4+uuO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Cure this and move the microcode loading after the early paging enable and
-> remove the gunk in the microcode loader which is required to handle
-> physical address mode.
+On Wed, Sep 13, 2023 at 01:09:03PM +0900, Myunguk Kim wrote:
 
-That same someone from the offlist conversation loves this change - 32-bit
-PA loading gunk has been a major PITA ever since it got added - just
-look at the code you're removing and cringe.
+> In this case, it is not used through the DMA API.=20
+> The connection relationship is as follows.
+>   i2s --- pcm_dmaengine ---  DMA IP (ie. pl330)
+> So, control was possible only by directly setting the maxburst property.
 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: Peter Anvin <hpa@zytor.com>
+pcm_dmaengine is a wrapper binding the DMA API into ASoC...
 
-I guess those gents could chime in now - lemme put them in To:, perhaps
-they'll look at this then.
+--JskZn6gM/rV4+uuO
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If not, I'd say we do this. The erratum in question is for pretty much
-dying hw anyway - Atom n270 of which I actually have *two* machines
-even. I can "accidentally" drop them on the concrete floor while
-carrying and problem solved => dying hardware.
+-----BEGIN PGP SIGNATURE-----
 
-:-P
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUB0C4ACgkQJNaLcl1U
+h9CYPwf/eIOjdsbfVUtd+7nrcZMXcCeLgXOgT8xemnVvr78ESGnp7aH/Ke/IloW/
+5cFGLOAQJfUeknUFd/X5Cp0UJpqgBwvQYheCaRU8wLr7vV6B7KBkIaOB7ZEfurT3
+kupI6QMqDaey8qlwKeO0YC6nMGVlDE+1Fef86159QscpyReQJcGOa/f9zbiS+ohl
+WkDgQbWBZCao8OUtgyE1uwJnPy6K2HxrJTpb4OwP1Bx40W3d4Hj1arAPpKUL+lv+
+x/iUSv+fA/4JY0Rtem4HKlFIOhVxer9u1WAvBMTMM6wWhTOS5biVXGXb2kjm5/O4
++g414PVgdcpHlHA3iBf2v21S9zGLnQ==
+=5GdS
+-----END PGP SIGNATURE-----
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--JskZn6gM/rV4+uuO--
