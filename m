@@ -2,127 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D96B079DE81
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB30579DE89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 05:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbjIMDOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 23:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
+        id S233907AbjIMDSs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Sep 2023 23:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235792AbjIMDOH (ORCPT
+        with ESMTP id S229948AbjIMDSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 23:14:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A93B1719;
-        Tue, 12 Sep 2023 20:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=hMw+EHIIuZCaUHXysWAaBm/VYKzBkzXqLptqFJBEf84=; b=3d7WTKkW2p+sWEJhOfhuEstZ6O
-        Qgkfw0sboYBpbY8FnunXsjNam0yOOG9z/HlNwkgfwwt6amKIjudHQqzNOt+t4e1Pqvw0s+W5COobG
-        rFCkjGREbYa19iGuESOVqHkr8mVvMp/eSYXFFkXeeycxVAFkFo4yBsiLRdcGb8GASq+DwL8u6Nl2r
-        uXcD6Px15tGtm212nDoQ0G3uAVtr1rnAlbOYqM6I7q4JopqukDMUeQ2tuSnkh3dIrmQryVAdMtjvI
-        Gex3Ohon6Ni7BWsLh2U+QtOFIW+dDcvY4xPIi/plSFajcjnpaNfnUHg2FS6Dtp21ICH36fKdJDBGE
-        aTJugQ4g==;
-Received: from [2601:1c2:980:9ec0::9fed]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qgGKG-004U8Q-1B;
-        Wed, 13 Sep 2023 03:14:00 +0000
-Message-ID: <bd285959-1f45-45c3-9d47-2b96f85601a3@infradead.org>
-Date:   Tue, 12 Sep 2023 20:13:58 -0700
+        Tue, 12 Sep 2023 23:18:46 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A312171E;
+        Tue, 12 Sep 2023 20:18:40 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 8D03C8143;
+        Wed, 13 Sep 2023 11:18:38 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
+ 2023 11:18:38 +0800
+Received: from localhost.localdomain (202.188.176.82) by EXMBX066.cuchost.com
+ (172.16.6.66) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Sep
+ 2023 11:18:32 +0800
+From:   Joshua Yeong <joshua.yeong@starfivetech.com>
+To:     <pgaj@cadence.com>, <miquel.raynal@bootlin.com>
+CC:     <alexandre.belloni@bootlin.com>, <linux-i3c@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        Joshua Yeong <joshua.yeong@starfivetech.com>
+Subject: [PATCH v2 0/1] Cadence I3C Status Register Bit Mask Error
+Date:   Wed, 13 Sep 2023 11:17:43 +0800
+Message-ID: <20230913031743.11439-1-joshua.yeong@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Sep 11
- (drivers/gpu/drm/i915/display/intel_backlight.o)
-Content-Language: en-US
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-References: <20230911121131.006d3fec@canb.auug.org.au>
- <eac933bb-eb6d-8b21-422a-b8c6255facc3@infradead.org>
- <87a5tresu8.fsf@intel.com>
- <4364d453-3560-c3c2-15b1-146f9578755b@infradead.org>
-In-Reply-To: <4364d453-3560-c3c2-15b1-146f9578755b@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [202.188.176.82]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jani,
+I3C ibirfifodepth and cmdrfifodepth field should read from status0 instead of
+status1. Update I3C slave macro.
 
-On 9/12/23 07:52, Randy Dunlap wrote:
-> 
-> 
-> On 9/12/23 00:47, Jani Nikula wrote:
->> On Mon, 11 Sep 2023, Randy Dunlap <rdunlap@infradead.org> wrote:
->>> On 9/10/23 19:11, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> Please do *not* include material destined for v6.7 in your linux-next
->>>> included branches until *after* v6.6-rc1 has been released.  Also,
->>>> do *not* rebase your linu-next included branches onto v6.5.
->>>>
->>>> Changes since 20230908:
->>>>
->>>> Non-merge commits (relative to Linus' tree): 643
->>>>  614 files changed, 227990 insertions(+), 9502 deletions(-)
->>>>
->>>> ----------------------------------------------------------------------------
->>>
->>> on x86_64:
->>>
->>> # CONFIG_ACPI is not set
->>> CONFIG_DRM_I915=y
->>> CONFIG_BACKLIGHT_CLASS_DEVICE=m
->>>
->>> I915 selects BACKLIGHT_CLASS_DEVICE if ACPI is set.
->>>
->>> ld: drivers/gpu/drm/i915/display/intel_backlight.o: in function `intel_backlight_device_register':
->>> intel_backlight.c:(.text+0x4988): undefined reference to `backlight_device_get_by_name'
->>> ld: intel_backlight.c:(.text+0x4a1b): undefined reference to `backlight_device_register'
->>> ld: drivers/gpu/drm/i915/display/intel_backlight.o: in function `intel_backlight_device_unregister':
->>> intel_backlight.c:(.text+0x4b56): undefined reference to `backlight_device_unregister'
->>
->> This comes up periodically. The fix is for i915 to depend on backlight,
->> but it's not possible to fix just i915, as it'll lead to circular deps
->> unless *all* select backlight is switched to depend on backlight.
->>
->> I've gone through it once [1], and not keen on doing it again unless
->> there's buy-in.
->>
->> IS_REACHABLE() is often suggested as a workaround, but I think it's just
->> plain wrong. i915=y backlight=m is not a configuration that makes
->> sense. Kernel configuration is hard enough, there's no point in allowing
->> dumb configs that just silently don't work.
->>
-> 
-> Yes, IS_REACHABLE() is just fugly nonsense.
-> 
-> Thanks for the reminder of your attempt(s).
-> 
->>
->> BR,
->> Jani.
->>
->>
->> [1] https://lore.kernel.org/r/1413580403-16225-1-git-send-email-jani.nikula@intel.com
+Joshua Yeong (1):
+  i3c: master: cdns: Fix reading status register
 
-I did a partial patch series (eliminated the I915 problems with 9 patches,
-without build testing -- only kconfig testing -- so more changes may be
-needed), then I looked at your patch [1] above.
+ drivers/i3c/master/i3c-master-cdns.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I like it but even if Tomi and Daniel didn't have problems with it,
-I am concerned that it would cause problems with existing working .config files.
+--
+2.25.1
 
-Still, something should be done about the mixed usage of select and depends on
-for BACKLIGHT_CLASS_DEVICE (et al).
-
-thanks.
--- 
-~Randy
