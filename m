@@ -2,283 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA9679E8E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7379E8A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240818AbjIMNPQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Sep 2023 09:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33404 "EHLO
+        id S240711AbjIMNH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240825AbjIMNPO (ORCPT
+        with ESMTP id S240733AbjIMNHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:15:14 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692431BC2;
-        Wed, 13 Sep 2023 06:15:10 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-59b50b4556eso56900037b3.1;
-        Wed, 13 Sep 2023 06:15:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694610909; x=1695215709;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fFiAnOhwKs2lmFqJqrAudE7XU8aOsnd0WSox5jtYe4U=;
-        b=DwRis7b9cgzZwKrwWFLgEZC6sTnOy/C9REK5vo9C75anQnLmW+/h/5nbxQ4oH6nyMz
-         BFwW2u8rZtGU1g6xE8VBPXMWn19UlINM9huoaAmDpksaTDYjpUKorJcI07zZ0c0zSRWc
-         NrBO3zWgI2GTa5V1qoYM1TmknP5TcKL7RCZQJqQfJgoaiKQHluK9XjGCXCWqr5I0yqbW
-         oBhGXWzWiI6XH115Ak/AyqHTJpYrVK7keJkoFYUXnn5SHrFW20AJ//61Znlr73ip833q
-         b+cFB0TpzMuWBcCvLAMunQe5PQDLhLPOvo/7l+WiOx5ryKI+7OLpFwWzwSDUgbQxizuz
-         aLRw==
-X-Gm-Message-State: AOJu0YxjlGgYa7Ue7En4fNVdBpgv3M9C3ylLj+AkEvxcCjopYiCbRSEl
-        v3FNmKED5Di19R25UvIg4cJAs9axYzuuJw==
-X-Google-Smtp-Source: AGHT+IGflha2alWW8grcM/dRWkE3vDpe4sjjEHQj0HteC1giqW28s2s3hwp2U+QmH3GWWsKQRqnbrg==
-X-Received: by 2002:a0d:d856:0:b0:579:16e0:b1bf with SMTP id a83-20020a0dd856000000b0057916e0b1bfmr2705614ywe.12.1694610909068;
-        Wed, 13 Sep 2023 06:15:09 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id u8-20020a814708000000b005869ca8da8esm3099867ywa.146.2023.09.13.06.15.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 06:15:08 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d78328bc2abso6486763276.2;
-        Wed, 13 Sep 2023 06:15:08 -0700 (PDT)
-X-Received: by 2002:a25:2d03:0:b0:d47:d267:26fe with SMTP id
- t3-20020a252d03000000b00d47d26726femr2582741ybt.21.1694610908416; Wed, 13 Sep
- 2023 06:15:08 -0700 (PDT)
+        Wed, 13 Sep 2023 09:07:21 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2135.outbound.protection.outlook.com [40.107.255.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7181BE9;
+        Wed, 13 Sep 2023 06:07:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XTm4eAbQP5p+spsqqgEEjn8uL+cW4O1BOWcYeh4DHuB65GZbWzN5MGfDWiuM0Xlgz35sWNf/uJkfBNh6ju1J7lS+5iu7TqzYcusgCpanwrky+wcjd31TOlnOguQtqCs5YA36KxLxV11dOYrFUWRAUZnjfy6q6yonOEacHF/0RJHDdIz+eWe19SL1+Nph+ViOzqPgJwa2vdiP3aQCHi9YGkcHjSGy9MoqEdE5j6MI/67q5VdoypbcSixhyCM2JkwdTOQavTvViLOcEZzkB9r9zE5WwaUmzhhrWJgHt8FKJVpib4rKwm/vByzj0/MtaDpYKQtWm4cRnDrzrOnfgcF2wA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=da6UkFhcUZtN0di/RgUj8uUwhO2IYDTpM6amaUM13Ts=;
+ b=jsHLbHxw1JF9Y9aaC4VrfjJKKnZf+Kfp1E65VyyPN986g18JiyACXSb6mhmndQafGX/AT1ex/QJcxOapt68VMIFYPKB/5UUgUQ2UxU0Som1L4GVbH54D862W1sAYUUncFiwpr4shOoPo+6tZzHUdFu2leAS2bChk1VNbP168vzBPkDyFdAvVkghDhXNFKFjm+oq6Z6krv6/ay6iuunDbXq6ZgP92lCxOV5q4EeKowcVZfDhwznEjhQ6JNlGcHplxCO8ZA+ZNsp0KBxHgab9R9PgmON5QW33GLgyv+9wBQsgAu/jqX4CTRAqw7lGLLcrFndOkGGmOtr8z8+Dx++u8TQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=da6UkFhcUZtN0di/RgUj8uUwhO2IYDTpM6amaUM13Ts=;
+ b=ejkTaPAXPMCXp5OkBpxWrblTR1bkwS7hqKrlKmk0AGNJOrAUMWEbeoDTCug+l1Js9xczoVGSXKRitEE6cGvQEhonpr0g0PoLpHUz/ftoSGVn2Djv1AfepPLc4zlHOeCsO7LmITRXk0eLxyiVWCwcI1TMPrA8ad3CAGtHpk1XsnGcy0Fc4Xil/ecTwbGI5/O/40rEm9w5F4H/2rmOzdqnMVwfqPXJAjSLMREoFrqjwMXPnzzbApaUQseMn14qAH62yrcmA5ApCrQQyK6GMWe4qjH21ArVS15JjQuZ9iR0VNqo5m2476x+NVwXALzNvNQz+QyaxLhdqhrG2CxPavhKDw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from TY2PR06MB3342.apcprd06.prod.outlook.com (2603:1096:404:fb::23)
+ by SEYPR06MB6455.apcprd06.prod.outlook.com (2603:1096:101:166::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 13:07:10 +0000
+Received: from TY2PR06MB3342.apcprd06.prod.outlook.com
+ ([fe80::60d3:1ef9:d644:3959]) by TY2PR06MB3342.apcprd06.prod.outlook.com
+ ([fe80::60d3:1ef9:d644:3959%4]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
+ 13:07:10 +0000
+From:   Chunhai Guo <guochunhai@vivo.com>
+To:     jack@suse.cz, chao@kernel.org, jaegeuk@kernel.org
+Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs-writeback: writeback_sb_inodes: Do not increase 'total_wrote' when nothing is written
+Date:   Wed, 13 Sep 2023 07:15:01 -0600
+Message-Id: <20230913131501.478516-1-guochunhai@vivo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0275.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3c9::17) To TY2PR06MB3342.apcprd06.prod.outlook.com
+ (2603:1096:404:fb::23)
 MIME-Version: 1.0
-References: <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
- <20230906152325.dblzauybyoq5kd35@revolver> <ad298077-fca8-437e-b9e3-66e31424afb1@paulmck-laptop>
- <20230906172954.oq4vogeuco25zam7@revolver> <495849d6-1dc6-4f38-bce7-23c50df3a99f@paulmck-laptop>
- <20230911235452.xhtnt7ply7ayr53x@revolver> <33150b55-970c-4607-9015-af0e50e4112d@paulmck-laptop>
- <CAMuHMdWKwdxjRf031aD=Ko7vRdvFW-OR48QAc=ZFy=FP_LNAoA@mail.gmail.com>
- <f9b0a88c-8a64-439f-a488-85d500c9f2aa@paulmck-laptop> <CAMuHMdX89u6wL9W+8ZOn-OTT1FreYjEqYnvEip4Aq3k1gOP0EQ@mail.gmail.com>
- <62936d98-6353-486e-8535-86c9f90bc7f4@paulmck-laptop>
-In-Reply-To: <62936d98-6353-486e-8535-86c9f90bc7f4@paulmck-laptop>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Sep 2023 15:14:54 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVp10=AQDcC31OEvy2LPWSdjvHnbCKVtRtt-Re=7wr=1w@mail.gmail.com>
-Message-ID: <CAMuHMdVp10=AQDcC31OEvy2LPWSdjvHnbCKVtRtt-Re=7wr=1w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
- readers are possible
-To:     paulmck@kernel.org
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Shanker Donthineni <sdonthineni@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TY2PR06MB3342:EE_|SEYPR06MB6455:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8a2b480-c88d-4f39-6b3c-08dbb45a5725
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xO8gebk0tn7ykmpoQrnnxG61z9XXG1GYXP/+jqWYn1LpbqxrlOkq7p38LBuCkPsLXd1bYfT1hgB2miJEK4xRnqOSHWTL8gXrrZubWySTR3j5tqoD0oFsg0gYhR+BK2ge2gHTPRn2S5WFDrKncDeIJbxVZ7mmP/mBsW0ZKKHuLzdccucRrmczpkIX8+j2svB+O1IuvnyiViPR7axVq3+GoiiVwJhFPQhOQXao76S4O5mr1K4q+vEEfT+tniziKuXUppcTsFVQaE5tr22mteaIzyxrqgWdR1kHxgeatYbC0pMGQjl+MNRooWIBdYby8Gi6X4SF7A0RUjN0+wfuBRFSlmpwv8Z2F344Y1Qc6M5My27q0tt7ngjCKpfsFRU6Nkt0vDen5ZpbsNSw0GJ7cwI+79eOoC3nP815L/JQoTAdP03ayfaO42rKvuR85FW7ICjVhU5hcI3eKvRPVwf9pOcc5qFy7Rrsyh9r6TCC/rCFnl1k8/tdao3jmh+Th39PPKEH4Jx1Z/87Y7xxA3i4tWDcx1JR8Tcucnj3VaXrrtLNI16hip+mss93XO6RQEZj0mYaNGYre90Y0o7f8iyiho6Winfdk3bc9RA4gM+ZE0GyLkunR4rCp/4akr/DnBOpDxOS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR06MB3342.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(366004)(396003)(136003)(186009)(451199024)(1800799009)(83380400001)(6666004)(26005)(38350700002)(478600001)(6486002)(6506007)(52116002)(36756003)(38100700002)(1076003)(66476007)(66556008)(66946007)(6512007)(41300700001)(2616005)(316002)(8676002)(8936002)(4326008)(2906002)(5660300002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3CuDhN7P6JKARB7v2s1B2ien0qNbj/4UOT1BiMsieGtlSz6CrOA25bVxKfFB?=
+ =?us-ascii?Q?fa2ziRX0AUAFYtPFQrHS+q4mBxb0fOuefdMVw0GVaVeuYXFTFzAblNT6Pr5Q?=
+ =?us-ascii?Q?71XGf2V+imLXzCo9o24EI/0ydnn5/uckv0Xpv6Vegttr6frUT6xLRxMXzjrz?=
+ =?us-ascii?Q?iCcF3+Uq21OT14Nc6pnFnXeIu1VM4lPbaHmcaeRY/PuUS8s54OfZlJsGUGCJ?=
+ =?us-ascii?Q?wZ7OlPo0z5tzPg7uijmVkO90PMtcrpABkaFQCbv68FtFfV5HslItH3sqUf9B?=
+ =?us-ascii?Q?fhtWGUsidkE7on15PV+ZOMdUcUd26UPdg3qqu78QkOU3jlqu9r+7GEblYzw8?=
+ =?us-ascii?Q?QL62fhf9ZBK4a294rwL47Fnn1YpINsYohXp1bPfHxz+Y1ue1zFy5n7cUgFyz?=
+ =?us-ascii?Q?XjUTOxfGMD2iSn4SCt2IaXYF0jXQNzMkpUUGWu7/m+ZboHHRING/YhQnBVl/?=
+ =?us-ascii?Q?S069tKl9z39AVzuN1swC/S6ftzTyP+LCsu+zOy4WNNL/mtmQfWxQgmxZHMrg?=
+ =?us-ascii?Q?l/3vywertcBoFt8gk3QKjA6tcCMtx2PkTabi+hnOljEdjHrQA/JFxda+Vr3B?=
+ =?us-ascii?Q?XR5825ZuiChatid+dm8QxZVENDLScLbufnum/VRytkk9mu2VW1N38j2VuXF5?=
+ =?us-ascii?Q?RIxnXrwXCuZJO7Z+JqGnqFCdnogkzac+eqkfP9sea5NC8wuTN26LFCbOy+zw?=
+ =?us-ascii?Q?O2z9bo8h7MaDerjRIYu4hLJ2XvTwH37CZ6WVLJZsMjr764aHf+mosR3mnF1O?=
+ =?us-ascii?Q?WOBhbaC0YiekXYJhqzZCkG2pirxI/t/i67/PILQUyLvBsmPK5F1y9FrLXF0e?=
+ =?us-ascii?Q?W4U8OZ1yGl2fyH2WfEr8/55wnr4J0zYGMyobtH6DuPTxYqkAJdmohx/bBQGy?=
+ =?us-ascii?Q?34jZBddb4hsmTXwG4+nlk7E+feQq48qjfuCrgxfL1P7t1Zd/JJ0b+yBcap83?=
+ =?us-ascii?Q?4d9ff9aObCvNSJeCAxf58pfOd8/7NCKeLnNRNm2+LlJAyXDUSU/AVdv/C6mo?=
+ =?us-ascii?Q?RmNoNOJwwJ4+6k0s7GVYyevuFL2vD6KaUQCNxFVaMmu3a+Mw4jdkcfxcreEL?=
+ =?us-ascii?Q?2GrRLWUvkau2ABchksMtF9ShuYz9WN8qZ/Os7E0mBtZaNl8wOfEj8v5L77QT?=
+ =?us-ascii?Q?2N6h6CJxwIoRkFghNV28pqBL8/Cjm/R2B/A0gwL/S6v9ny7WE4h6QU3QG1jO?=
+ =?us-ascii?Q?7VxI2BjhxDKKrb8SSHxD/j8dNz4jIXlX+gseXbVRcKkO+aR37mv+gsp9p5Hk?=
+ =?us-ascii?Q?EXRWLa9hI3Iid38WhjPwVGuOiNqAbxaOI+fSInRNRBvYc41t0mXbhcyGqLhq?=
+ =?us-ascii?Q?eQBc3CSlSzaxYFtuOUYDVlMi5lpdAVsUusq6gq7jkKxtDpgs1TEoYJS3H9Io?=
+ =?us-ascii?Q?YaKjc3ORj/hIa1ffB56Moqbje63ambvTfMj77Ajr3TFrgZwZminsTdoNSHdJ?=
+ =?us-ascii?Q?Ib05el/lh1gjH1yH6/tm3UTn/vh8I6xuMpfcG36/HVkaarYBxDagwdPHp52R?=
+ =?us-ascii?Q?J800EZauw/1IkW7zeHgpcPV/cCncxfdn7ivseS7q3++htcKaTnFNQisoJdBq?=
+ =?us-ascii?Q?sgEpu7PYRcK1nYs9Pvm+nKkUgAqdthfTY/3ryCIz?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8a2b480-c88d-4f39-6b3c-08dbb45a5725
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR06MB3342.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 13:07:10.7306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RiTGCzTZhG0yAnu9DSJ6M8J1cZ5uY1LY013l6bxIYs8iS5roHFrYhUxL7hPSGxd9BCvcCPMUwJrxz84PJXBYvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6455
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On Tue, Sep 12, 2023 at 12:00 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> On Tue, Sep 12, 2023 at 10:34:44AM +0200, Geert Uytterhoeven wrote:
-> > On Tue, Sep 12, 2023 at 10:30 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Tue, Sep 12, 2023 at 10:23:37AM +0200, Geert Uytterhoeven wrote:
-> > > > On Tue, Sep 12, 2023 at 10:14 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > > > On Mon, Sep 11, 2023 at 07:54:52PM -0400, Liam R. Howlett wrote:
-> > > > > > * Paul E. McKenney <paulmck@kernel.org> [230906 14:03]:
-> > > > > > > On Wed, Sep 06, 2023 at 01:29:54PM -0400, Liam R. Howlett wrote:
-> > > > > > > > * Paul E. McKenney <paulmck@kernel.org> [230906 13:24]:
-> > > > > > > > > On Wed, Sep 06, 2023 at 11:23:25AM -0400, Liam R. Howlett wrote:
-> > > > > > > > > > (Adding Paul & Shanker to Cc list.. please see below for why)
-> > > > > > > > > >
-> > > > > > > > > > Apologies on the late response, I was away and have been struggling to
-> > > > > > > > > > get a working PPC32 test environment.
-> > > > > > > > > >
-> > > > > > > > > > * Geert Uytterhoeven <geert@linux-m68k.org> [230829 12:42]:
-> > > > > > > > > > >     Hi Liam,
-> > > > > > > > > > >
-> > > > > > > > > > > On Fri, 18 Aug 2023, Liam R. Howlett wrote:
-> > > > > > > > > > > > The current implementation of append may cause duplicate data and/or
-> > > > > > > > > > > > incorrect ranges to be returned to a reader during an update.  Although
-> > > > > > > > > > > > this has not been reported or seen, disable the append write operation
-> > > > > > > > > > > > while the tree is in rcu mode out of an abundance of caution.
-> > > > > > > > > >
-> > > > > > > > > > ...
-> > > > > > > > > > > >
-> > > > > >
-> > > > > > ...
-> > > > > >
-> > > > > > > > > > > RCU-related configs:
-> > > > > > > > > > >
-> > > > > > > > > > >     $ grep RCU .config
-> > > > > > > > > > >     # RCU Subsystem
-> > > > > > > > > > >     CONFIG_TINY_RCU=y
-> > > > >
-> > > > > I must have been asleep last time I looked at this.  I was looking at
-> > > > > Tree RCU.  Please accept my apologies for my lapse.  :-/
-> > > > >
-> > > > > However, Tiny RCU's call_rcu() also avoids enabling IRQs, so I would
-> > > > > have said the same thing, albeit after looking at a lot less RCU code.
-> > > > >
-> > > > > TL;DR:
-> > > > >
-> > > > > 1.      Try making the __setup_irq() function's call to mutex_lock()
-> > > > >         instead be as follows:
-> > > > >
-> > > > >         if (!mutex_trylock(&desc->request_mutex))
-> > > > >                 mutex_lock(&desc->request_mutex);
-> > > > >
-> > > > >         This might fail if __setup_irq() has other dependencies on a
-> > > > >         fully operational scheduler.
-> > > > >
-> > > > > 2.      Move that ppc32 call to __setup_irq() much later, most definitely
-> > > > >         after interrupts have been enabled and the scheduler is fully
-> > > > >         operational.  Invoking mutex_lock() before that time is not a
-> > > > >         good idea.  ;-)
-> > > >
-> > > > There is no call to __setup_irq() from arch/powerpc/?
+> On Wed 13-09-23 10:42:21, Christian Brauner wrote:
+> > [+Cc Jan]
+> 
+> Thanks!
+> 
+> > On Tue, Sep 12, 2023 at 08:20:43AM -0600, Chunhai Guo wrote:
+> > > I am encountering a deadlock issue as shown below. There is a commit 
+> > > 344150999b7f ("f2fs: fix to avoid potential deadlock") can fix this
+> > > issue.
+> > > However, from log analysis, it appears that this is more likely a 
+> > > fake progress issue similar to commit 68f4c6eba70d ("fs-writeback:
+> > > writeback_sb_inodes: Recalculate 'wrote' according skipped pages"). 
+> > > In each writeback iteration, nothing is written, while 
+> > > writeback_sb_inodes() increases 'total_wrote' each time, causing an 
+> > > infinite loop. This patch fixes this issue by not increasing
+> > > 'total_wrote' when nothing is written.
 > > >
-> > > Glad it is not just me, given that I didn't see a direct call, either.  So
-> > > later in this email, I asked Liam to put a WARN_ON_ONCE(irqs_disabled())
-> > > just before that mutex_lock() in __setup_irq().
+> > >     wb_writeback        fsync (inode-Y)
+> > > blk_start_plug(&plug)
+> > > for (;;) {
+> > >   iter i-1: some reqs with page-X added into plug->mq_list // f2fs node
+> > >   page-X with PG_writeback
+> > >                         filemap_fdatawrite
+> > >                           __filemap_fdatawrite_range // write inode-Y
+> > >                           with sync_mode WB_SYNC_ALL
+> > >                            do_writepages
+> > >                             f2fs_write_data_pages
+> > >                              __f2fs_write_data_pages //
+> > >                              wb_sync_req[DATA]++ for WB_SYNC_ALL
+> > >                               f2fs_write_cache_pages
+> > >                                f2fs_write_single_data_page
+> > >                                 f2fs_do_write_data_page
+> > >                                  f2fs_outplace_write_data
+> > >                                   f2fs_update_data_blkaddr
+> > >                                    f2fs_wait_on_page_writeback
+> > >                                      wait_on_page_writeback // wait for
+> > >                                      f2fs node page-X
+> > >   iter i:
+> > >     progress = __writeback_inodes_wb(wb, work)
+> > >     . writeback_sb_inodes
+> > >     .   __writeback_single_inode // write inode-Y with sync_mode
+> > >     WB_SYNC_NONE
+> > >     .   . do_writepages
+> > >     .   .   f2fs_write_data_pages
+> > >     .   .   .  __f2fs_write_data_pages // skip writepages due to
+> > >     (wb_sync_req[DATA]>0)
+> > >     .   .   .   wbc->pages_skipped += get_dirty_pages(inode) //
+> > >     wbc->pages_skipped = 1
+> > >     .   if (!(inode->i_state & I_DIRTY_ALL)) // i_state = I_SYNC |
+> > >     I_SYNC_QUEUED
+> > >     .    total_wrote++;  // total_wrote = 1
+> > >     .   requeue_inode // requeue inode-Y to wb->b_dirty queue due to
+> > >     non-zero pages_skipped
+> > >     if (progress) // progress = 1
+> > >       continue;
+> > >   iter i+1:
+> > >       queue_io
+> > >       // similar process with iter i, infinite for-loop !
+> > > }
+> > > blk_finish_plug(&plug)   // flush plug won't be called
 > > >
-> > > Either way, invoking mutex_lock() early in boot before interrupts have
-> > > been enabled is a bad idea.  ;-)
-> >
-> > I'll add that WARN_ON_ONCE() too, and will report back later today...
->
-> Thank you, looking forward to hearing the outcome!
+> > > Signed-off-by: Chunhai Guo <guochunhai@vivo.com>
+> 
+> Thanks for the patch but did you test this patch fixed your deadlock?
+> Because the patch seems like a noop to me. Look:
 
-On a typical arm32 system with global or architectured timer, I get:
+Yes. I have tested this patch and it indeed fixed this deadlock issue, too.
 
-WARNING: CPU: 0 PID: 0 at kernel/irq/manage.c:1587 __setup_irq+0xcc/0x6d0
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-6.6.0-rc1-shmobile-02354-g24e058b77f5a #1655
-Hardware name: Generic R-Car Gen2 (Flattened Device Tree)
- unwind_backtrace from show_stack+0x10/0x14
- show_stack from dump_stack_lvl+0x40/0x4c
- dump_stack_lvl from __warn+0x78/0x10c
- __warn from warn_slowpath_fmt+0x90/0x11c
- warn_slowpath_fmt from __setup_irq+0xcc/0x6d0
- __setup_irq from __request_percpu_irq+0xb8/0xd0
- __request_percpu_irq from set_smp_ipi_range+0x88/0xdc
- set_smp_ipi_range from gic_of_init+0x1a4/0x4d8
- gic_of_init from of_irq_init+0x1f0/0x320
- of_irq_init from init_IRQ+0x74/0x104
- init_IRQ from start_kernel+0x360/0x5d0
- start_kernel from 0x0
-
-Likewise on arm64 with architectured timer.
-But on these systems I do not see the issue I reported.
-
-On RISC-V:
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at kernel/irq/manage.c:1587 __setup_irq+0x4e6/0x5ee
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 6.6.0-rc1-02355-g63165363c6a3 #63
-Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
-epc : __setup_irq+0x4e6/0x5ee
- ra : __setup_irq+0x38/0x5ee
-epc : ffffffff80049472 ra : ffffffff80048fc4 sp : ffffffff81203cd0
- gp : ffffffff812ee760 tp : ffffffff8120d5c0 t0 : ffffffd801854300
- t1 : 0000000000000000 t2 : ffffffff81000ad8 s0 : ffffffff81203d20
- s1 : ffffffd801855000 a0 : 0000000000000001 a1 : ffffffd801855000
- a2 : ffffffd801854280 a3 : 0000000000000001 a4 : 0000000000000000
- a5 : 0000000000000000 a6 : ffffffd801852108 a7 : ffffffd801852100
- s2 : ffffffd801854280 s3 : 0000000000000005 s4 : ffffffff812c54c0
- s5 : 0000000000000005 s6 : ffffffff80dd83a0 s7 : ffffffff805c0cc0
- s8 : ffffffd801855018 s9 : 0000000000000000 s10: 0000000000000000
- s11: 000000007bf638a0 t3 : 0000000000000000 t4 : 0000000000000002
- t5 : ffffffff812882a0 t6 : 0000000000000001
-status: 0000000200000100 badaddr: 0000000000000000 cause: 0000000000000003
-[<ffffffff80049472>] __setup_irq+0x4e6/0x5ee
-[<ffffffff800497a8>] __request_percpu_irq+0x98/0xcc
-[<ffffffff8082501e>] riscv_timer_init_dt+0x186/0x22e
-[<ffffffff80824b62>] timer_probe+0x62/0xd2
-[<ffffffff80803c36>] time_init+0x86/0xa6
-[<ffffffff80800ae2>] start_kernel+0x436/0x618
----[ end trace 0000000000000000 ]---
-
-Also, no issue here.
-
-On the affected systems (RZ/A1 and RZ/A2), the WARN_ON_ONCE() did
-not trigger, until I applied Liam's patch ("init/main: Clear boot task
-idle flag"), which got rid of the "Interrupts were enabled early" warning,
-and now tells me, as expected:
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at kernel/irq/manage.c:1587 __setup_irq+0xc8/0x654
-CPU: 0 PID: 0 Comm: swapper Not tainted
-6.6.0-rc1-rskrza1-02357-g237e09fd64b8-dirty #829
-Hardware name: Generic R7S72100 (Flattened Device Tree)
- unwind_backtrace from show_stack+0x10/0x14
- show_stack from dump_stack_lvl+0x24/0x3c
- dump_stack_lvl from __warn+0x74/0xb8
- __warn from warn_slowpath_fmt+0x78/0xb0
- warn_slowpath_fmt from __setup_irq+0xc8/0x654
- __setup_irq from request_threaded_irq+0xac/0x13c
- request_threaded_irq from timer_of_init+0x238/0x2c8
- timer_of_init from ostm_init+0x98/0x208
- ostm_init from timer_probe+0x90/0xe4
- timer_probe from start_kernel+0x2c0/0x488
- start_kernel from 0x0
----[ end trace 0000000000000000 ]---
-
-However, Liam's patch causes lots of warnings on the other systems...
-
-> > > > Note that there are (possibly different) issues seen on ppc32 and on arm32
-> > > > (Renesas RZ/A in particular, but not on other Renesas ARM systems).
-> > > >
-> > > > I saw an issue on arm32 with cfeb6ae8bcb96ccf, but not with cfeb6ae8bcb96ccf^.
-> > > > Other people saw an issue on ppc32 with both cfeb6ae8bcb96ccf and
-> > > > cfeb6ae8bcb96ccf^.
+> 
+> > > diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c index 
+> > > 969ce991b0b0..54cdee906be9 100644
+> > > --- a/fs/fs-writeback.c
+> > > +++ b/fs/fs-writeback.c
+> > > @@ -1820,6 +1820,7 @@ static long writeback_sb_inodes(struct
+> > > super_block *sb,
+> > >             struct inode *inode = wb_inode(wb->b_io.prev);
+> > >             struct bdi_writeback *tmp_wb;
+> > >             long wrote;
+> > > +           bool is_dirty_before;
 > > >
-> > > I look forward to hearing what is the issue in both cases.
-> >
-> > For RZ/A, my problem report is
-> > https://lore.kernel.org/all/3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org/
->
-> Thank you, Geert!
->
-> Huh.  Is that patch you reverted causing Maple Tree or related code
-> to attempt to acquire mutexes in early boot before interrupts have
-> been enabled?
->
-> If that added WARN_ON_ONCE() doesn't trigger early, another approach
-> would be to put it at the beginning of mutex_lock().  Or for that matter
-> at the beginning of might_sleep().
+> > >             if (inode->i_sb != sb) {
+> > >                     if (work->sb) {
+> > > @@ -1881,6 +1882,7 @@ static long writeback_sb_inodes(struct
+> > > super_block *sb,
+> > >                     continue;
+> > >             }
+> > >             inode->i_state |= I_SYNC;
+> > > +           is_dirty_before = inode->i_state & I_DIRTY_ALL;
+> 
+> is_dirty_before is going to be set if there's anything dirty - inode, page,
+> timestamp. So it can be unset only if there are no dirty pages, in which
+> case there are no pages that can be skipped during page writeback, which
+> means that requeue_inode() will go and remove inode from b_io/b_dirty lists
+> and it will not participate in writeback anymore.
+> 
+> So I don't see how this patch can be helping anything... Please correct me
+> if I'm missing anything.
+>                                                                 Honza
 
-With the WARN_ON_ONCE() moved from __setup_irq() to mutex_lock(),
-it does trigger on RZ/A1:
+From the dump info, there are only two pages as shown below. One is updated
+and another is under writeback. Maybe f2fs counts the writeback page as a
+dirty one, so get_dirty_pages() got one. As you said, maybe this is
+unreasonable.
 
- Dentry cache hash table entries: 4096 (order: 2, 16384 bytes, linear)
- Inode-cache hash table entries: 2048 (order: 1, 8192 bytes, linear)
- Built 1 zonelists, mobility grouping off.  Total pages: 8128
-+------------[ cut here ]------------
-+WARNING: CPU: 0 PID: 0 at kernel/locking/mutex.c:283 mutex_lock+0x3c/0x68
-+CPU: 0 PID: 0 Comm: swapper Not tainted
-6.6.0-rc1-rskrza1-02360-gd762084b1737-dirty #831
-+Hardware name: Generic R7S72100 (Flattened Device Tree)
-+ unwind_backtrace from show_stack+0x10/0x14
-+ show_stack from dump_stack_lvl+0x24/0x3c
-+ dump_stack_lvl from __warn+0x74/0xb8
-+ __warn from warn_slowpath_fmt+0x78/0xb0
-+ warn_slowpath_fmt from mutex_lock+0x3c/0x68
-+ mutex_lock from __cpuhp_setup_state_cpuslocked+0x44/0x1c0
-+ __cpuhp_setup_state_cpuslocked from page_alloc_init_cpuhp+0x28/0x64
-+ page_alloc_init_cpuhp from mm_core_init+0x18/0x2a4
-+ mm_core_init from start_kernel+0x250/0x47c
-+ start_kernel from 0x0
-+---[ end trace 0000000000000000 ]---
- mem auto-init: stack:off, heap alloc:off, heap free:off
- Memory: 22876K/32768K available (5120K kernel code, 951K rwdata,
-1208K rodata, 1024K init, 321K bss, 9892K reserved, 0K cma-reserved)
- SLUB: HWalign=64, Order=0-1, MinObjects=0, CPUs=1, Nodes=1
+Jaegeuk & Chao, what do you think of this?
 
-Thanks!
 
-Gr{oetje,eeting}s,
+crash_32> files -p 0xE5A44678
+ INODE    NRPAGES
+e5a44678        2
 
-                        Geert
+  PAGE    PHYSICAL   MAPPING    INDEX CNT FLAGS
+e8d0e338  641de000  e5a44810         0  5 a095 locked,waiters,uptodate,lru,private,writeback
+e8ad59a0  54528000  e5a44810         1  2 2036 referenced,uptodate,lru,active,private
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
+> 
+> > >             wbc_attach_and_unlock_inode(&wbc, inode);
+> > >
+> > >             write_chunk = writeback_chunk_size(wb, work); @@ -1918,7 
+> > > +1920,7 @@ static long writeback_sb_inodes(struct super_block *sb,
+> > >              */
+> > >             tmp_wb = inode_to_wb_and_lock_list(inode);
+> > >             spin_lock(&inode->i_lock);
+> > > -           if (!(inode->i_state & I_DIRTY_ALL))
+> > > +           if (!(inode->i_state & I_DIRTY_ALL) && is_dirty_before)
+> > >                     total_wrote++;
+> > >             requeue_inode(inode, tmp_wb, &wbc);
+> > >             inode_sync_complete(inode);
+> > > --
+> > > 2.25.1
+> > >
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+
