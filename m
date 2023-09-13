@@ -2,160 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A64079EE3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A83279EE3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbjIMQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        id S229876AbjIMQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbjIMQZh (ORCPT
+        with ESMTP id S229556AbjIMQ1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:25:37 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19EFCCD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:25:32 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bf66a32f25so93686351fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:25:32 -0700 (PDT)
+        Wed, 13 Sep 2023 12:27:07 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A88EB3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:27:03 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-502defbb0c3so1240669e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1694622329; x=1695227129; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694622421; x=1695227221; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=x/h8LhBCMwqwCfF1tLU1WVlQTqaYSvf4SN9SeoE8D3o=;
-        b=CC0DUK8W79ou8EyZqzDOPLEw1iIRzmJS2I2fumA5K6siDjj+D4LdKJHaehJH9Cwhsj
-         9TqmwQwzSWh9DJ+2E4I6/p/0ASUqUyuXxTMA+Y40HMQteIXO3qKNcjEA62GR3TV9b0Oq
-         uo8KNJId1LJnp8ika7JC5F4UOKFJY7VvNnjLw=
+        bh=ImOmWwyz3HgbNLgn7J7BpKMz/6LOvIVMJphJtWNdFH8=;
+        b=dpu132IaVVp+relroyqnNAL3TlUDIujgrY3YhrTsTK3iIdtO2UvXmDXiGT6R5kpxC6
+         2kc38y4vntXBfNjsZhUnrxCofD5mi/1AMvh1Dp/1UJma/QlDNu5A/sN820r0pPQ8v90r
+         aD4IxQ87mKb3ch18nY83HFrIYkAPPng0G+R635TasScQb7LkUGrz0iu2OsI3cqIVwwNw
+         yl4TCrm4w39n6T06UaCRx8c41rtrN7hKKMF+Gt/wzKcwrYBWTKJN/dt/tsIjHHfBymQH
+         sJm0rzU3MoiJLfBAKBVortdvjzpwac3aIq7Tl4QyjBm2xnuBej9F5LD4c48LVYGIKP19
+         IzsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694622329; x=1695227129;
+        d=1e100.net; s=20230601; t=1694622421; x=1695227221;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=x/h8LhBCMwqwCfF1tLU1WVlQTqaYSvf4SN9SeoE8D3o=;
-        b=EGezZAr3hbxPePGgG+gno3II/YNquynCD2teedEWZ7nux7UnVQjF57fvpqwYp6oBiB
-         o9xLrZr3mHCKo9N8Se81u/EOe/WkSYs65nVd+X1J2bgdNiBsCBzmf1sF5VwJGhxChqWK
-         1Abautt4+D++WAXA64Ym1r6mAv/fIAlBCvjhf+AIrkZwV6cXR6hlPNXGaXDkfqgSPfKI
-         T5gzoGj/QBRf6vxOYaiS7M5TY7JDQ+2SzSBZGv8uC+gaePZBzvFdk2p5HLJYgiPdSilQ
-         0M6+g+yOU4S+rfXTClBvfNd8ZldJLLOAeFGoFudRGF4WNB7mw6/r+XK37E3z4QH9WExK
-         IDPg==
-X-Gm-Message-State: AOJu0YztvU8c+LlHZRzLlwUVCqhqWrNGkddTTYtPEsawjo7w8oOE1bjq
-        TKKvCf/qOKAuEkNTbRutNjuoqTlbElGZg9AxTCfxkbyQ
-X-Google-Smtp-Source: AGHT+IEJm8vS8Xy4iGcJKSSem6+XAYpcwJ0ZjapwS2MCe0zZdhtx1YKDKSfiFGWnxvGE/Ll11nUucw==
-X-Received: by 2002:a2e:9f4e:0:b0:2bc:b75e:b88 with SMTP id v14-20020a2e9f4e000000b002bcb75e0b88mr3296018ljk.18.1694622328748;
-        Wed, 13 Sep 2023 09:25:28 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id si28-20020a170906cedc00b009786c8249d6sm8758578ejb.175.2023.09.13.09.25.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 09:25:28 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-52fa364f276so14604a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:25:28 -0700 (PDT)
-X-Received: by 2002:a50:baef:0:b0:51a:1ffd:10e with SMTP id
- x102-20020a50baef000000b0051a1ffd010emr139918ede.3.1694622327845; Wed, 13 Sep
- 2023 09:25:27 -0700 (PDT)
+        bh=ImOmWwyz3HgbNLgn7J7BpKMz/6LOvIVMJphJtWNdFH8=;
+        b=JyHEREt9t1W3+9K5YABmflastdpOzcYEHUUFlL0iaPTfSggllW+8LhEQ+DCYERPbXP
+         C97EVPJSWRZhXynuC3a4vrMZ3qNsmUsNjokMI9Iqm7flGBdGAd9ppHiJ7yaGQz+Nl4ed
+         OAmsMJDkQG76HwreTYpOY9ryKXEgYV1h9RsHPSNwAa0hD/sOxlFvCdaur3+X4O3DLMxl
+         YLRjjwMbq0gIaj9K8I+qTlMmzqnZ1L+LEJ43Zjw+W9/YcNiAfnqDb+FizR+iUMOmRko0
+         sLMymkbrqa0bexsN1LCcxAgsTqcteIwg1SJebqcqn6BavI7cREJ6mywbK2wys5PlaSSB
+         42AQ==
+X-Gm-Message-State: AOJu0YwbplP4coMy4I42Yv4P45EdAhAmtE82XwB63KIfcuDbpAcgjWeo
+        YOafU72cZx0RDkRiATfK8n0dw77ABL/2CvrrCHPtcQ==
+X-Google-Smtp-Source: AGHT+IEVdrBXV15I+ebTdMHsS+CO9RcO+hxE2cChEkzf2US6/FybJsU7ff11kqhIJmPbKyT3SJ5hc475zEtcYSVRnv4=
+X-Received: by 2002:a05:6512:3486:b0:500:d960:8b6d with SMTP id
+ v6-20020a056512348600b00500d9608b6dmr2284441lfr.33.1694622420933; Wed, 13 Sep
+ 2023 09:27:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid>
- <288af70dafc5e73d0fdfac71a33449385d4d6bd3.camel@crapouillou.net> <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Sep 2023 09:25:15 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UFkTHhsxFZGPqFVOX6ra+bx=1P-jAdh1wz-_Q=GBJc4Q@mail.gmail.com>
-Message-ID: <CAD=FV=UFkTHhsxFZGPqFVOX6ra+bx=1P-jAdh1wz-_Q=GBJc4Q@mail.gmail.com>
-Subject: Re: [RFT PATCH 03/15] drm/ingenic: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
+References: <20230913073846.1528938-1-yosryahmed@google.com>
+ <20230913073846.1528938-4-yosryahmed@google.com> <20230913153758.GB45543@cmpxchg.org>
+In-Reply-To: <20230913153758.GB45543@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 13 Sep 2023 09:26:21 -0700
+Message-ID: <CAJD7tka20+zB1aFfmdEBX5a3bLDTbGHuZP7sV3cvLvT8dvvaAA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: memcg: optimize stats flushing for latency and accuracy
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Sep 5, 2023 at 1:16=E2=80=AFPM Doug Anderson <dianders@chromium.org=
+On Wed, Sep 13, 2023 at 8:38=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
 > wrote:
 >
-> Paul,
->
-> On Mon, Sep 4, 2023 at 2:15=E2=80=AFAM Paul Cercueil <paul@crapouillou.ne=
-t> wrote:
+> On Wed, Sep 13, 2023 at 07:38:46AM +0000, Yosry Ahmed wrote:
+> > Stats flushing for memcg currently follows the following rules:
+> > - Always flush the entire memcg hierarchy (i.e. flush the root).
+> > - Only one flusher is allowed at a time. If someone else tries to flush
+> >   concurrently, they skip and return immediately.
+> > - A periodic flusher flushes all the stats every 2 seconds.
 > >
-> > Hi Douglas,
+> > The reason this approach is followed is because all flushes are
+> > serialized by a global rstat spinlock. On the memcg side, flushing is
+> > invoked from userspace reads as well as in-kernel flushers (e.g.
+> > reclaim, refault, etc). This approach aims to avoid serializing all
+> > flushers on the global lock, which can cause a significant performance
+> > hit under high concurrency.
 > >
-> > Le vendredi 01 septembre 2023 =C3=A0 16:41 -0700, Douglas Anderson a =
-=C3=A9crit :
-> > > Based on grepping through the source code this driver appears to be
-> > > missing a call to drm_atomic_helper_shutdown() at system shutdown
-> > > time. Among other things, this means that if a panel is in use that
-> > > it
-> > > won't be cleanly powered off at system shutdown time.
-> > >
-> > > The fact that we should call drm_atomic_helper_shutdown() in the case
-> > > of OS shutdown/restart comes straight out of the kernel doc "driver
-> > > instance overview" in drm_drv.c.
-> > >
-> > > Since this driver uses the component model and shutdown happens at
-> > > the
-> > > base driver, we communicate whether we have to call
-> > > drm_atomic_helper_shutdown() by seeing if drvdata is non-NULL.
-> > >
-> > > Suggested-by: Maxime Ripard <mripard@kernel.org>
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > This approach has the following problems:
+> > - Occasionally a userspace read of the stats of a non-root cgroup will
+> >   be too expensive as it has to flush the entire hierarchy [1].
+> > - Sometimes the stats accuracy are compromised if there is an ongoing
+> >   flush, and we skip and return before the subtree of interest is
+> >   actually flushed. This is more visible when reading stats from
+> >   userspace, but can also affect in-kernel flushers.
 > >
-> > LGTM.
-> > Acked-by: Paul Cercueil <paul@crapouillou.net>
->
-> Thanks for the Ack! Would you expect this patch to land through
-> "drm-misc", or do you expect it to go through some other tree?
-> Running:
->
-> ./scripts/get_maintainer.pl --scm -f drivers/gpu/drm/ingenic/ingenic-drm-=
-drv.c
->
-> ...does not show that this driver normally goes through drm-misc, but
-> it also doesn't show that it goes through any other tree so maybe it's
-> just an artifact of the way it's tagged in the MAINTAINERS file? If
-> it's fine for this to go through drm-misc, I'll probably land it (with
-> your Ack and Maxime's Review) sooner rather than later just to make
-> this patch series less unwieldy.
->
->
-> > > ---
-> > > This commit is only compile-time tested.
-> > >
-> > > NOTE: this patch touches a lot more than other similar patches since
-> > > the bind() function is long and we want to make sure that we unset
-> > > the
-> > > drvdata if bind() fails.
-> > >
-> > > While making this patch, I noticed that the bind() function of this
-> > > driver is using "devm" and thus assumes it doesn't need to do much
-> > > explicit error handling. That's actually a bug. As per kernel docs
-> > > [1]
-> > > "the lifetime of the aggregate driver does not align with any of the
-> > > underlying struct device instances. Therefore devm cannot be used and
-> > > all resources acquired or allocated in this callback must be
-> > > explicitly released in the unbind callback". Fixing that is outside
-> > > the scope of this commit.
-> > >
-> > > [1] https://docs.kernel.org/driver-api/component.html
-> > >
+> > This patch aims to solve both problems by reworking how flushing
+> > currently works as follows:
+> > - Without contention, there is no need to flush the entire tree. In thi=
+s
+> >   case, only flush the subtree of interest. This avoids the latency of =
+a
+> >   full root flush if unnecessary.
+> > - With contention, fallback to a coalesced (aka unified) flush of the
+> >   entire hierarchy, a root flush. In this case, instead of returning
+> >   immediately if a root flush is ongoing, wait for it to finish
+> >   *without* attempting to acquire the lock or flush. This is done using
+> >   a completion. Compared to competing directly on the underlying lock,
+> >   this approach makes concurrent flushing a synchronization point
+> >   instead of a serialization point. Once  a root flush finishes, *all*
+> >   waiters can wake up and continue at once.
+> > - Finally, with very high contention, bound the number of waiters to th=
+e
+> >   number of online cpus. This keeps the flush latency bounded at the ta=
+il
+> >   (very high concurrency). We fallback to sacrificing stats freshness o=
+nly
+> >   in such cases in favor of performance.
 > >
-> > Noted, thanks.
+> > This was tested in two ways on a machine with 384 cpus:
+> > - A synthetic test with 5000 concurrent workers doing allocations and
+> >   reclaim, as well as 1000 readers for memory.stat (variation of [2]).
+> >   No significant regressions were noticed in the total runtime.
+> >   Note that if concurrent flushers compete directly on the spinlock
+> >   instead of waiting for a completion, this test shows 2x-3x slowdowns.
+> >   Even though subsequent flushers would have nothing to flush, just the
+> >   serialization and lock contention is a major problem. Using a
+> >   completion for synchronization instead seems to overcome this problem=
+.
+> >
+> > - A synthetic stress test for concurrently reading memcg stats provided
+> >   by Wei Xu.
+> >   With 10k threads reading the stats every 100ms:
+> >   - 98.8% of reads take <100us
+> >   - 1.09% of reads take 100us to 1ms.
+> >   - 0.11% of reads take 1ms to 10ms.
+> >   - Almost no reads take more than 10ms.
+> >   With 10k threads reading the stats every 10ms:
+> >   - 82.3% of reads take <100us.
+> >   - 4.2% of reads take 100us to 1ms.
+> >   - 4.7% of reads take 1ms to 10ms.
+> >   - 8.8% of reads take 10ms to 100ms.
+> >   - Almost no reads take more than 100ms.
+> >
+> > [1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43=
+KO9ME4-dsgfoQ@mail.gmail.com/
+> > [2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcO=
+BZcz6POYTV-4g@mail.gmail.com/
+> > [3] https://lore.kernel.org/lkml/CAAPL-u9D2b=3DiF5Lf_cRnKxUfkiEe0AMDTu6=
+yhrUAzX0b6a6rDg@mail.gmail.com/
+> >
+> > [weixugc@google.com: suggested the fallback logic and bounding the
+> > number of waiters]
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 >
-> FWIW, I think that at least a few other DRM drivers handle this by
-> doing some of their resource allocation / acquiring in the probe()
-> function and then only doing things in the bind() that absolutely need
-> to be in the bind. ;-)
+> >       /*
+> > +      * Opportunistically try to only flush the requested subtree. Oth=
+erwise
+> > +      * fallback to a coalesced flush below.
+> >        */
+> > -     if (atomic_read(&stats_flush_ongoing) ||
+> > -         atomic_xchg(&stats_flush_ongoing, 1))
+> > +     if (!mem_cgroup_is_root(memcg) && mutex_trylock(&subtree_flush_mu=
+tex)) {
+> > +             cgroup_rstat_flush(memcg->css.cgroup);
+> > +             mutex_unlock(&subtree_flush_mutex);
+> >               return;
+> > +     }
+> >
+> > -     WRITE_ONCE(flush_last_time, jiffies_64);
+> > -
+> > -     cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
+> > +     /* A coalesced root flush is in order. Are we the designated flus=
+her? */
+> > +     spin_lock(&root_flusher_lock);
+>
+> I can't say I'm crazy about this.
+>
+> Let's say you have a fairly sprawling and active cgroup tree with lots
+> of updates in lots of groups in the system.
+>
+> Add a periodic memory.stat reader to one of the subgroups, and that
+> reader will do very fast, localized aggregation.
+>
+> Now add a periodic memory.stat reader to some other subgroup. They
+> might still both do very fast, localized aggregation. Or they might
+> collide; and now - despite having nothing in common, and sharing no
+> data besides the rstat lock - will have to flush the entire massive
+> tree. The rate at which this happens is purely dependent on timing of
+> what should be independent actors. This is really not great for the
+> p50 vs p99 gap.
 
-I've been collecting patches that are ready to land in drm-misc but,
-right now, I'm not taking this patch since I didn't get any
-clarification of whether it should land through drm-misc or somewhere
-else.
+Initially I had a few retry iterations for the subtree flush, where we
+fsleep for a bit and trylock again. I thought it was a little bit too
+complicated and the fsleep duration would be a magic value.
 
--Doug
+>
+> I think this whole thing is getting away from us.
+>
+> When we first switched to rstat, every reader would take the global
+> rstat lock and then flush its local subtree of interest.
+>
+> This was changed in the following commit:
+>
+> commit fd25a9e0e23b995fd0ba5e2f00a1099452cbc3cf
+> Author: Shakeel Butt <shakeelb@google.com>
+> Date:   Fri Nov 5 13:37:34 2021 -0700
+>
+>     memcg: unify memcg stat flushing
+>
+>     The memcg stats can be flushed in multiple context and potentially in
+>     parallel too.  For example multiple parallel user space readers for
+>     memcg stats will contend on the rstat locks with each other.  There i=
+s
+>     no need for that.  We just need one flusher and everyone else can
+>     benefit.
+>
+>     In addition after aa48e47e3906 ("memcg: infrastructure to flush memcg
+>     stats") the kernel periodically flush the memcg stats from the root, =
+so,
+>     the other flushers will potentially have much less work to do.
+>
+>     Link: https://lkml.kernel.org/r/20211001190040.48086-2-shakeelb@googl=
+e.com
+>     Signed-off-by: Shakeel Butt <shakeelb@google.com>
+>     Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>     Cc: Michal Hocko <mhocko@kernel.org>
+>     Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+>
+> The idea was that we can avoid lock contention if somebody is already
+> doing the flushing. However, you're now bringing global serialization.
+> Clearly that idea didn't work out. What would be an obstacle to go
+> back to the original way of doing it?
+
+The obstacle is high concurrency among flushers. A good example is
+reclaim code, we can have a lot of concurrent reclaimers. When I tried
+to go back to the original way of doing it, a stress test with high
+reclaim concurrency (100s or 1000s) would be 2x-3x slower. I think
+high concurrency among userspace reads would have a similar outcome,
+but I hadn't really checked.
+
+Basically this patch is trying to switch to root flushing when the
+cost of contending on the lock is roughly the same as a root flush (or
+waiting for one). It's doing that too eagerly now of course (if
+contenders > 1), we can try to calibrate this better.
+
+>
+> With one reader, this will work the same as in your proposal.
+>
+> With two readers, just like in your proposal, flushing must be
+> serialized against the root level. But at least the two flushes only
+> aggregate the local data they actually care about - not the entire
+> tree data that doesn't even have readers! This is much better for lock
+> contention and performance.
+
+Keep in mind that in my testing, I noticed that synchronization using
+a completion is more performant than serialization on a lock. I am
+assuming because when we contend on the underlying lock, we serially
+wake up and do the flush. Even if there is nothing to do (as you
+mention below), we still do this work. On the contrary, in this
+proposal we just wait for the root flush to finish and return
+immediately, and all waiters return at once (that's a lie because of
+scheduling internals).
+
+Also, in the current code, in the two reader scenario, the first
+reader will flush the entire tree anyway. The only difference is that
+the second reader will wait for it to finish instead of just skipping,
+which is the right thing to do from a correctness point of view. Right
+now it's a coin flip on whether you get updated stats if someone else
+is already flushing.
+
+Having said that, I understand your concern, but I am not really sure
+how to bring back subtree flushing for all cases without regressing
+in-kernel flushers with high concurrency. I tried and it seemed to
+harm performance (at least of synthetic benchmarks). I also tried to
+break down the underlying rstat global lock, but that didn't turn out
+to be simple either.
+
+>
+> One concern is the thresholding code. The cost of flushing on every
+> read is too high: even when there is no flush work, checking for it is
+> kind of expensive due to the locks and the for_each_possible_cpu().
+>
+> Could we do something like the following?
+>
+>         mem_cgroup_flush(memcg)
+>         {
+>                 mutex_lock(&memcg_flush_mutex);
+>                 if (atomic_read(&memcg->stat_delta) > THRESHOLD)
+>                         cgroup_rstat_flush(memcg);
+>                 mutex_unlock(&memcg_flush_mutex);
+>         }
+>
+>         mem_cgroup_css_rstat_flush(css, cpu)
+>         {
+>                 ...
+>                 /*
+>                  * Reset here instead of mem_cgroup_flush()
+>                  * so that each flushed subgroup is reset
+>                  * recursively. A recent parent flush will
+>                  * allow a child flush to skip.
+>                  */
+>                 atomic_set(&mem_cgroup_from_css(css)->stat_delta, 0);
+>         }
+>
+>         memcg_rstat_updated(memcg, val)
+>         {
+>                 atomic_add(&memcg->stat_delta, val);
+
+We need to do this for each parent in the hierarchy, not just the
+memcg being updated, right? I guess that may be too expensive for the
+update path.
+
+I thought about doing it percpu and propagating to global "stat
+deltas" when each cpu has enough updates, similar to what we do now
+with the global delta. To do this efficiently we would want to move
+that to the cgroup core code, since we already have parents iteration
+in cgroup_rstat_updated() and we might want to reuse that. I also
+thought that may be too complex.
+
+Anyway, I am open to suggestions on how to improve this.
+
+>         }
