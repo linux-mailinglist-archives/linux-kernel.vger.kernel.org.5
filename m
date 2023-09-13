@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F21379E934
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CE879E946
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 15:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240903AbjIMN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 09:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        id S240935AbjIMN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 09:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240899AbjIMN0d (ORCPT
+        with ESMTP id S240886AbjIMN1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 09:26:33 -0400
+        Wed, 13 Sep 2023 09:27:31 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE87E1BC9;
-        Wed, 13 Sep 2023 06:26:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFCFC433C7;
-        Wed, 13 Sep 2023 13:26:27 +0000 (UTC)
-Date:   Wed, 13 Sep 2023 09:26:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-trace-kernel@vger.kernel.org, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        xen-devel@lists.xenproject.org
-Subject: Re: [PATCH 2/3] x86/xen: move paravirt lazy code
-Message-ID: <20230913092646.5b087871@gandalf.local.home>
-In-Reply-To: <20230913113828.18421-3-jgross@suse.com>
-References: <20230913113828.18421-1-jgross@suse.com>
-        <20230913113828.18421-3-jgross@suse.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D67819B1;
+        Wed, 13 Sep 2023 06:27:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 543BBC433C7;
+        Wed, 13 Sep 2023 13:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694611646;
+        bh=tofNiE93U3IaqeBAYFxACX+5De+6Y1VRyuvZ5K22Ag0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EO9WY8KJHPsM2QmuPdVtf+Wu9sc//W8+E9ReFVCsnXq80hDJiv6ZLwYGMZjbAveI2
+         EG/+UtJ8DClVKi5dqsIDPNTPfHiRTrTQfKtYrIwMEgMlI0n6OIlB8DscP/kUjAS1lB
+         6HLfjNVN0QMgvxoLIudSH+m1JRoLfjt87ZJkjY2gMMr6I2zJkBKnnk7jzLIELPsuZb
+         4Imde23QiiVGfyO5/r61n9cGMIGA6z6tJcsyVBqLpF12DZhDdch2yNVLSz8XgD0xpS
+         VSrSn2829uaB1JQTpe2eKfqc2lMPORxZ8On42Uf7rcAlduwdm951rX2X5H2O8+JplE
+         PXRqN7d070nFA==
+From:   Conor Dooley <conor@kernel.org>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>
+Cc:     conor@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [-next v2 1/2] riscv: dts: starfive: visionfive 2: Enable usb0
+Date:   Wed, 13 Sep 2023 14:26:49 +0100
+Message-Id: <20230913-hybrid-passerby-606345c74a14@spud>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230829020511.26844-1-hal.feng@starfivetech.com>
+References: <20230829020511.26844-1-hal.feng@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=406; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=kN8TZYfWHNsAZO+4+tMUbkf2PgLIm9b2uFw6FtgFYC4=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDKmMO6Zt+LYy+h2PteQ99qDdC5Rvvv/ItPP2jFuTuOa6C L4+cWHXs45SFgYxDgZZMUWWxNt9LVLr/7jscO55CzOHlQlkCAMXpwBMpGEuI8ORehleed9tzSpL HTiVF7U+mPtbJdjpQSjTk4ulbysnLWFnZLjhVfM+tmP++XtFSa87pvUEqacFtk8sErT5n5N3RDV 1KRsA
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Sep 2023 13:38:27 +0200
-Juergen Gross <jgross@suse.com> wrote:
+From: Conor Dooley <conor.dooley@microchip.com>
 
-> diff --git a/include/trace/events/xen.h b/include/trace/events/xen.h
-> index 44a3f565264d..0577f0cdd231 100644
-> --- a/include/trace/events/xen.h
-> +++ b/include/trace/events/xen.h
-> @@ -6,26 +6,26 @@
->  #define _TRACE_XEN_H
->  
->  #include <linux/tracepoint.h>
-> -#include <asm/paravirt_types.h>
-> +#include <asm/xen/hypervisor.h>
->  #include <asm/xen/trace_types.h>
->  
->  struct multicall_entry;
->  
->  /* Multicalls */
->  DECLARE_EVENT_CLASS(xen_mc__batch,
-> -	    TP_PROTO(enum paravirt_lazy_mode mode),
-> +	    TP_PROTO(enum xen_lazy_mode mode),
->  	    TP_ARGS(mode),
->  	    TP_STRUCT__entry(
-> -		    __field(enum paravirt_lazy_mode, mode)
-> +		    __field(enum xen_lazy_mode, mode)
->  		    ),
->  	    TP_fast_assign(__entry->mode = mode),
->  	    TP_printk("start batch LAZY_%s",
-> -		      (__entry->mode == PARAVIRT_LAZY_MMU) ? "MMU" :
-> -		      (__entry->mode == PARAVIRT_LAZY_CPU) ? "CPU" : "NONE")
-> +		      (__entry->mode == XEN_LAZY_MMU) ? "MMU" :
-> +		      (__entry->mode == XEN_LAZY_CPU) ? "CPU" : "NONE")
+On Tue, 29 Aug 2023 10:05:10 +0800, Hal Feng wrote:
+> usb0 was disabled by mistake when merging, so enable it.
+> 
+> 
 
-There's helper functions that make the above easier to implement as well as
-exports the symbols so that user space can parse this better:
+Applied to riscv-dt-fixes, thanks!
 
-TRACE_DEFINE_ENUM(XEN_LAZY_NONE);
-TRACE_DEFINE_ENUM(XEN_LAZY_MMU);
-TRACE_DEFINE_ENUM(XEN_LAZY_CPU);
+[1/2] riscv: dts: starfive: visionfive 2: Enable usb0
+      https://git.kernel.org/conor/c/2f9f488e7b14
+[2/2] riscv: dts: starfive: visionfive 2: Fix uart0 pins sort order
+      https://git.kernel.org/conor/c/1558209533f1
 
-[..]
+I'll try to get these out before the weekend, the other pending patch
+has been sitting since mid merge window.
 
-  	    TP_printk("start batch LAZY_%s",
-		      __print_symbolic(mode,
-				       { XEN_LAZY_NONE, "NONE" },
-				       { XEN_LAZY_MMU,  "MMU   },
-				       { XEN_LAZY_CPU,  "CPU"  }))
-
-Then user space parsers that read the raw data can convert these events
-into something humans can read.
-
--- Steve
-
->  	);
->  #define DEFINE_XEN_MC_BATCH(name)			\
->  	DEFINE_EVENT(xen_mc__batch, name,		\
-> -		TP_PROTO(enum paravirt_lazy_mode mode),	\
-> +		TP_PROTO(enum xen_lazy_mode mode),	\
->  		     TP_ARGS(mode))
->  
->  DEFINE_XEN_MC_BATCH(xen_mc_batch);
+Thanks,
+Conor.
