@@ -2,271 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D176579E48B
+	by mail.lfdr.de (Postfix) with ESMTP id 8760379E48A
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 12:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239571AbjIMKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S239559AbjIMKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 13 Sep 2023 06:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239525AbjIMKF7 (ORCPT
+        with ESMTP id S231367AbjIMKF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 06:05:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE151986
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 03:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2uYk474/2dy22kIvYnZbSOm6RcEuwDrN7aN2t6DJjLg=; b=bNhF8iH4gJvfQSRaDGqDwBEund
-        vm2J4zFMVa61SXPDtEuBFxdEmL4UE37pbFPQwLAeRSW7FXGIAQm7TU6xOJvkazlBDCxnQUFowO94I
-        Ijp7vJvJu19owRVKshsm/1mjeJc84cj85U6iwCRYE9xKJQv8LkaFV7rvpN9z8anZJZ+HSmwFjegKa
-        BFgAI6GP0owx1BavaDnw7V3lALcUzRIpUdXdtQ/+o65VzGxppuNaekjqwGkEfWPqojGM/bEQhF/fj
-        ZqmOkCN2UsNeyRRlU0R4718bxXdxvySUu23MSHSyb+FJRyeUHBMJg5He4kAAZTdiu4hnxWYv68Ucj
-        PKOInzXQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qgMkY-00DAxs-17; Wed, 13 Sep 2023 10:05:34 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AD8E0300348; Wed, 13 Sep 2023 12:05:33 +0200 (CEST)
-Date:   Wed, 13 Sep 2023 12:05:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sanan Hasanov <Sanan.Hasanov@ucf.edu>
-Cc:     "paulmck@kernel.org" <paulmck@kernel.org>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "yury.norov@gmail.com" <yury.norov@gmail.com>,
+        Wed, 13 Sep 2023 06:05:58 -0400
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D856F196;
+        Wed, 13 Sep 2023 03:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1694599554; x=1726135554;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=46BXg1nh3lKGD1XoYMghHJHZ9HSYDw6vkIy6ZjiCceQ=;
+  b=ZTzlHQAZERN2JRDgrAtOiN9mklBiVzjuXDGXqKjjFg8zBqfY+MRWs0p8
+   ee8JxM3F0/IRJ046kvqF27tS/YbjgeEJsp9LB0yi20VKV1+ufMeXm6IJ9
+   3D/3duCQQa7vcd4nJH+BEDYWIpyM+4/KZaUCOTsH1UezhlmizADrbP7JC
+   bVdR3oG4c9LiDiH9IDeBDcugUz4evrGy+1UW1n4Qr08ftbt5rRgg2coqr
+   dEiDIxVst4YyWGKWbqYl5yaB7FyZtQgqVDzp9cE704PMKpuSyeXmBDGCR
+   TivFb3ShRUYDglxtqbneTyBq12Z+jZcbXbgWUz2YU6q0lEq83oWPGG6i1
+   Q==;
+X-CSE-ConnectionGUID: hqq2jSMuQBesMuyIvehSEg==
+X-CSE-MsgGUID: EfNIOeONSOSMUdGuSIOKnA==
+X-IronPort-AV: E=Sophos;i="6.02,142,1688400000"; 
+   d="scan'208";a="244175597"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Sep 2023 18:05:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=irAjbqhFYgJSUu2X0UtWV6vuBCNi+0SeO1tZe+DHiuFKIOcCjl8PA0gE+kg6dYvQL8v/k83fYqOIeLZp/DhRX1cgL03FgqSWR1PeDlPmR47vgzBByUUknaFQdTlj6/sjI/4FuqHpY4inJpKYzY5xdpiQ+xEfHumYS4oJKa3djSP6Kdl+etNgOSkX60H0aSbU3tPUvKPgIyucXDo5U3FcMX8Dl06+QD4s527DfcOHpcK8MaR5clfHD6Yk0IO/v/Vlm/7E9Nk+qQsKKhFYDKvU8EcP8lo5OVctAeQeKvUoQ1LEjzmAuZ3YGGN0YwykIEHJzLY6GsZOx3W/DDPu5Bosqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=46BXg1nh3lKGD1XoYMghHJHZ9HSYDw6vkIy6ZjiCceQ=;
+ b=WTAY/YpDaKGvwooa7dEv83cFtHyYPGCz+v8+Qgzt0Fw+FkRPuaERfV2zHOqSaxrTXFiXZVJGIOq5I4VM3K2VZ02E5yO/KD4rZbS7WJeUrZaFEPIyOWYwhFLQIeP9nHz4t78rSBxnxPk5DATjkmq8fiYQI+QU8wHS+BgdJU+JumORKs0aaZevCb1DHKdWL6R3oeywxt7RpMCPY1v5jBa6Of0Wrk9RpFsJBwHegfWOw3sYbBYWANWH+0NxHb3K3VYuTii9nJCQDiYkHLtTQRVhjr02WtM5ZoaMOlAnCzfWBvnbYKQlU4yf+ZaEVWSyGWjPRZmF9saPS/ozOBvfkqxAtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46BXg1nh3lKGD1XoYMghHJHZ9HSYDw6vkIy6ZjiCceQ=;
+ b=EbR8bKPczVgYXvGTFedu9+5zczeFvvxTVqL75+BlltNwIZq/+JRZQUYaYCYGW0wRbffkECmQPA7zBgiaQQE+meOveZoibVyPJXe+hTOWgo/eiYUBHk3pGTZlHNzwLP4v1j7LUufIdo460F9f8a6Ry3BnSccSjLF5FbGVu+i1tVA=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by BN0PR04MB7935.namprd04.prod.outlook.com (2603:10b6:408:152::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.19; Wed, 13 Sep
+ 2023 10:05:51 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f694:b5b5:8e42:b8f6]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::f694:b5b5:8e42:b8f6%4]) with mapi id 15.20.6792.019; Wed, 13 Sep 2023
+ 10:05:51 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "clm@fb.com" <clm@fb.com>
+CC:     "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller@googlegroups.com" <syzkaller@googlegroups.com>,
-        "contact@pgazz.com" <contact@pgazz.com>,
-        rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        mairacanal@riseup.net, hamohammed.sa@gmail.com, daniel@ffwll.ch,
-        airlied@gmail.com
-Subject: Re: BUG: soft lockup in smp_call_function
-Message-ID: <20230913100533.GD692@noisy.programming.kicks-ass.net>
-References: <BL0PR11MB310606A8674B391DEA659089E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] btrfs: Remove some unused functions
+Thread-Topic: [PATCH] btrfs: Remove some unused functions
+Thread-Index: AQHZ5ibih9q4qahaDkC97zQazhf24rAYh3EA
+Date:   Wed, 13 Sep 2023 10:05:50 +0000
+Message-ID: <4399a6f7-b1b5-4b5d-a36a-7e1719db6b57@wdc.com>
+References: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20230913094327.98852-1-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|BN0PR04MB7935:EE_
+x-ms-office365-filtering-correlation-id: 593727a2-7063-4e6c-a446-08dbb4410278
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A33233LMmgprG8drOu23dL2V7hGYgFETq9Ms0GkSpdjpsOKIE9hPIXb8VHtpF09ozB3mLGrsGBvIFM/qA2kzb+ejKgtypywSpaKBBAVuv/wot8gZHSxXPJh2C1yqKT7YeYjmTdgp4FMHsIoX19RJf+lcvHMu2U0NVZ/YVC3Dfrnebc2dvLNyddIkD/q9RhGw9WdFGhlhgJ+SKAix8VBarnVKjaA0+oPP0RULj97Op/Umj8YplBK3NBE0RjHkok9aFU+UQ7HwK3fdvsMNZICZYNix20KzStbBPM4V5Xo9RQx0krIDxhK4VUKt6OKh9dwlHLVnPb2+dajSmovE/GMgO75d302oJtjRS6jwkaYOUL56+TCrE0ah4uMNvNr34e9Gx7PYuUNAYSza/IQAyZEAa452bNRsz93ucK5r9tMYyiJODnLATInGaLjAvmCKrSLzRef0djqjEaXexkwEszdzHOpFMyK/iaIAsnKklMz/yMDmpNNM5ac3/Hh3kU8ikfFiGc97C7UhRyd83g0T9lD255Gqi5sBwT6XClkMHAQ+mn6bdiqyAsVr7iMBv7O0BuByMEuFeCHPTPLMyv0toV3AbxTvzwj9DYuHYgG843v7kNn5V8MrCunMu//sKum2dNZ9uoab5HYCIx7U8J3bzlNicxD7g75+znoLSz5jMLHyEYexKm5c5j3AH+Fe5LwvMMqb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(39860400002)(366004)(346002)(1800799009)(451199024)(186009)(31686004)(122000001)(53546011)(71200400001)(6486002)(6506007)(36756003)(86362001)(31696002)(38070700005)(38100700002)(82960400001)(2616005)(26005)(4744005)(2906002)(6512007)(478600001)(83380400001)(110136005)(316002)(4326008)(91956017)(76116006)(8676002)(5660300002)(8936002)(41300700001)(54906003)(66446008)(64756008)(66946007)(66556008)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TFdySGp4UVJPajd1YzI0TXZPVHV6MEZGcm1aRWtRMndZWkVQcXFodG9aYVUx?=
+ =?utf-8?B?Q3N1aUczMDhRMVFGdk5ZV1dvTTF0cE5mbEZVVnMwZWJaWkxPeDNyc29jY3lF?=
+ =?utf-8?B?aWZXQS9jempHaUVweGl1UGw3TEQzQ0N5TGlVWVRCN3p1YkVRdVRkU05wSTc2?=
+ =?utf-8?B?QmFSajJPV1g5RE45aXhwTHRFK2J5WDY1RENzTzhna0FreVd1SHFoRVBxR0N6?=
+ =?utf-8?B?TzIwYXhjK2xkSVpuMDc5TWN1K2ZlTHZsTEtSUlFtM0pFTkhScDlCVzFjcjdN?=
+ =?utf-8?B?QjQ1cmVHNDkyYVArdWRoQmhDOElrYkxsclZwMDk4VUJtYkZZNjQ5TnptazRG?=
+ =?utf-8?B?ZDgwdFpIVHNXSXRlWlRVYmF4S3Q1ZXV2WHNEb2dYSUlpTmp3R0xkb3BKMnoz?=
+ =?utf-8?B?NUExRGQvSG43dVkvSkErd2JvUGdsQ3k3OFI5ODZvY1Q4ODRiN3FQYXNTVldP?=
+ =?utf-8?B?em00YXI2VzN1OUU3ellwWFptMlB0Q3dPUlVlNzVxUDJWQzk0cTA5T0RNL0hQ?=
+ =?utf-8?B?NFVPUmUxUkZKcGh0aU1KNkRsZVFHUk9kOE9QYUtsQlVEUkJKZDM5ZWprK2dK?=
+ =?utf-8?B?OVRCc1pHWWdkRVEwRUJqMEJCYVVxQ3o5blNQaWVIYUE4anBlVVhBeXZpcitQ?=
+ =?utf-8?B?ODFmTTR3aVErL0J6c1ZMUGdReDJ6bWJENFdCa2J0VVBtalhVVVl3Q2JUclp1?=
+ =?utf-8?B?blBabkpzQ2h0MVJlU0k0ZEtKdUdQQjFQYmwvN2ZmWm9iTm9VOUl3Z3pRUGpi?=
+ =?utf-8?B?aG1sODhySVRNMzlWT1JZZFl4Ny8yZnZmWUtZWDIzMGZaUCt6alEzM3U3ZTV2?=
+ =?utf-8?B?RXl2MExOWk5rOTU3Q0dna0htTFVpMVdyckMzYngwMnE1SkRUNFd6SkFRbGhY?=
+ =?utf-8?B?bU9BQm5JNkg2RmpsZGVFV2cwSXFPVEFGUEFiZTRDdjNudFNpdTZySFNiUFVJ?=
+ =?utf-8?B?K3NLY0pLajdCdkRYSGFraVhsQkpJQnRxbm1BQ3pFSExGS2lIdE1Sc1M4cUE4?=
+ =?utf-8?B?VzhRYU5CM0RuMjA4TkpRSmQxb1dWNVZiNktxZjNJQWZXOGpISlJ4d290MlJt?=
+ =?utf-8?B?cUJTd2hmUUMrSVVYcGpWVVhydFo2ZFZGaGcraTU4dmpweHVJRWNRdXQzVDI4?=
+ =?utf-8?B?V1hVdnR5SHBwL3d2alZBSlFLdEJGV285bHF2aXVlbDRmUGcrQUdPMnBUdmw2?=
+ =?utf-8?B?cS9HVlNqaVZPd1NJQ21LbnYxQ0hYZnh4MmtCVnJRbEZrSDQzUk5Zdks4bjJP?=
+ =?utf-8?B?WjBHc3JFbWYvSkxkeEZGa0lXQXZUYjJQa3ljajBwN0dpWXpNNGVQWm1YNy9q?=
+ =?utf-8?B?VEJuZWU5WktXeDhMVnh2L1RmSUJyb2o2TjEzdjVmT1dOQjR3L0JQZGxZNUlI?=
+ =?utf-8?B?R3FuTXZQUmRiTzNkcGpibUw2TjRDclZWcjlnd3dwQ3FNWDUxTUIrSDA2UkJF?=
+ =?utf-8?B?WHV1SGl0Q0xZZUM0dmJTZVMwWEo4OHZMNGkwVTQ3dzQ4LzJadXJNcFBLMk0x?=
+ =?utf-8?B?bmpHT0FYbU1NeXFxWTJuUlZMbUJHM1NCQm9scTFxdEZhRkJrRXlTVWFuQzM5?=
+ =?utf-8?B?U2tMRjcwazBXaDMwM2haY2xNYzV1Mk40c2VCMFp4ZEgrQnJNRHdXRGNGcHYz?=
+ =?utf-8?B?Y0w5U3JvZkZjWncwTkxXMnpYWnJZVXZrSiswaG03OGErK3N1akUydDczMll3?=
+ =?utf-8?B?RHJnN0Q2ZUN6RjNMSW9sK3p1QkhUTEU1U1R6K3ZzY0Mxd1NZZEtLM3Q4L0Vi?=
+ =?utf-8?B?OFY3MDBwT09Zejc5QkRCMW5Qb3JVYjVYeDYvRW9kNFZKL0JSak9OOU5QRHl2?=
+ =?utf-8?B?Q0NNVjBTSFVpWFQ1RjQ5em5yOGord2tZWFVGTCtPVkZ0SldLOXg1ZFNSMFpT?=
+ =?utf-8?B?VEJSbFdBenE3OTJobk80UVhzbzhKdTgyMlE0R2VnQ1lvRlNuTGVoY3hienhR?=
+ =?utf-8?B?QTdBZGhMNXNUMkRCVnYyUTdNSFJiSmFoT0RqdVhRdWlHa1hKd0J5Z3dLcWU1?=
+ =?utf-8?B?S1FEbGhucmtKdlQvR1BHWTM5WmZTRGRBOEw3dDRuQVRDL1JoclhEd3htNU0r?=
+ =?utf-8?B?SWJrMnc2MnM0Ry9MWmhUbE1VYmxsdXhuUm1SbmoyU3FqZzNjYTREaEY3azN3?=
+ =?utf-8?B?TjZnRDV1K1NRV3g0Z3g0SFNHM3hBWFVLMUpDVys1MUNNNktua2hMT1VRa0hP?=
+ =?utf-8?B?VGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <256B588A087E0644A21FE07FF8083CC1@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BL0PR11MB310606A8674B391DEA659089E1EEA@BL0PR11MB3106.namprd11.prod.outlook.com>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: hA9UYCVMkoq0yQWF22Oic2xOZIVszr2+IohGE0keXlw5FSIiso6s+c48db+o1gxV84MWgoKmj0uFvHLoFAA1MaXg7RPcEX/qvpsKXD/5sl10YaMGidmi2y4jfQoyobaTTSiIi9inMxgKmUDY48f1iTsIxnuAvLQD0wYoe/bUl74dTCIUjScUrwJIKwc+B/1WwS6WDqZpgrXUXo2GvI02IvtTzuRKom3mz6JFWH/acXwMnmOKolbwoX6svmi8zt8WwQqwtudhcpfEd248V0mgibB3D5JTJJwpQwPjmEPS63wyLB60BdL4aqlr0kFaALFtH6T1nCjY1bYPRA798vcjs43w4K0oRVrU+QZ8wQyOdE4ddV3PnFz3Z19d0jPjLXQYJrKRoQgS9FTBO0VUNGB0juwvCp6ApUJwYswo89ZVfu6/1+earVgK3IplK2b/39OdBaGhdBojwdruz+EM+iRPCM/7RD4vmwNAhnlKmFqqJzKi5KGYu/hG+zvHY6M3zj9oC5hiGjoNfgr1m5a1IivT5Pweoqh2Y4Pm9lnzEpchaboDAjpBZ1U/oOqpsB89Y3YjY2Gy5rG2OlH3P+/ETwBFLKeDriC5urYUNjzYMktxovR8TvwcroygxPhgSk9kNO/B6hv21NYorUIhaTXi+xJrYapkUcFdTp1SqYjaoSLq/ypLQ0zeJfvI0HmlUDbiiVaNEG6TIcS0qerGDE/2pAtVZFh+/yGBec5F4Z6j+SXAKW0lFm1aU6AC7mfj+5hGGuN7L2dbzJZGlHVvf/NQWjcvlXAR7qnbiVizsuWBXZWMWisPVIPSPVaVVBsBFPFBimQ5teh7aKFjs4tXoSI0ALA3MjVAI9wgKEfJoZaZ2MylKhgK7Ps3fHFDNzvpF4X/PtdSMJksnC2LXhdnYDJWRTbupSyOKPDTIvbxMcwk9gu8Z8A=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 593727a2-7063-4e6c-a446-08dbb4410278
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2023 10:05:51.0126
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q2W0JV+Q7gXBYKQt6sKYTSBLXL17qLqv/fSK8lNpS/e8zXztiyvHfpUA0EkDNSHF7Q3utfOTAAUDc3y5iWYkZk1dwRU86yxUohb7nLIgA70=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR04MB7935
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 11:02:56PM +0000, Sanan Hasanov wrote:
-> Good day, dear maintainers,
-> 
-> We found a bug using a modified kernel configuration file used by syzbot.
-> 
-> We enhanced the coverage of the configuration file using our tool, klocalizer.
-> 
-> Kernel Branch: 6.3.0-next-20230426
-> Kernel Config: https://drive.google.com/file/d/1WSUEWrith9-539qo6xRqmwy4LfDtmKpp/view?usp=sharing
-> Reproducer: https://drive.google.com/file/d/1pN6FfcjuUs6Wx94g1gufuYGjRbMMgiZ4/view?usp=sharing
-> Thank you!
-
-AFAICT the thing is stuck in DRM somewhere...
-
-> watchdog: BUG: soft lockup - CPU#5 stuck for 26s! [kworker/u16:1:12]
-> Modules linked in:
-> irq event stamp: 192794
-> hardirqs last  enabled at (192793): [<ffffffff89a0140a>] asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-> hardirqs last disabled at (192794): [<ffffffff89975d4f>] sysvec_apic_timer_interrupt+0xf/0xc0 arch/x86/kernel/apic/apic.c:1106
-> softirqs last  enabled at (187764): [<ffffffff814b94bd>] invoke_softirq kernel/softirq.c:445 [inline]
-> softirqs last  enabled at (187764): [<ffffffff814b94bd>] __irq_exit_rcu+0x11d/0x190 kernel/softirq.c:650
-> softirqs last disabled at (187671): [<ffffffff814b94bd>] invoke_softirq kernel/softirq.c:445 [inline]
-> softirqs last disabled at (187671): [<ffffffff814b94bd>] __irq_exit_rcu+0x11d/0x190 kernel/softirq.c:650
-> CPU: 5 PID: 12 Comm: kworker/u16:1 Not tainted 6.3.0-next-20230426 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> Workqueue: events_unbound toggle_allocation_gate
-> RIP: 0010:csd_lock_wait kernel/smp.c:294 [inline]
-> RIP: 0010:smp_call_function_many_cond+0x5bd/0x1020 kernel/smp.c:828
-> Code: 0b 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 49 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 b5 07 0b 00 f3 90 <41> 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 46 08 00 00 8b 43 08 31
-> RSP: 0018:ffffc900000cf9e8 EFLAGS: 00000293
-> RAX: 0000000000000000 RBX: ffff888119cc4d80 RCX: 0000000000000000
-> RDX: ffff888100325940 RSI: ffffffff8176807b RDI: 0000000000000005
-> RBP: 0000000000000003 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000001 R12: ffffed10233989b1
-> R13: 0000000000000001 R14: ffff888119cc4d88 R15: 0000000000000001
-> FS:  0000000000000000(0000) GS:ffff888119e80000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000555556a6cc88 CR3: 000000000bb73000 CR4: 0000000000350ee0
-> Call Trace:
->  <TASK>
->  on_each_cpu_cond_mask+0x40/0x90 kernel/smp.c:996
->  on_each_cpu include/linux/smp.h:71 [inline]
->  text_poke_sync arch/x86/kernel/alternative.c:1770 [inline]
->  text_poke_bp_batch+0x237/0x770 arch/x86/kernel/alternative.c:1970
->  text_poke_flush arch/x86/kernel/alternative.c:2161 [inline]
->  text_poke_flush arch/x86/kernel/alternative.c:2158 [inline]
->  text_poke_finish+0x1a/0x30 arch/x86/kernel/alternative.c:2168
->  arch_jump_label_transform_apply+0x17/0x30 arch/x86/kernel/jump_label.c:146
->  jump_label_update+0x321/0x400 kernel/jump_label.c:829
->  static_key_enable_cpuslocked+0x1b5/0x270 kernel/jump_label.c:205
->  static_key_enable+0x1a/0x20 kernel/jump_label.c:218
->  toggle_allocation_gate mm/kfence/core.c:831 [inline]
->  toggle_allocation_gate+0xf4/0x220 mm/kfence/core.c:823
->  process_one_work+0x993/0x15e0 kernel/workqueue.c:2405
->  worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
->  kthread+0x33e/0x440 kernel/kthread.c:379
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
->  </TASK>
-
-Right, so this is waiting for an IPI to be processed.. while #1 has IRQs
-disabled
-
-> Sending NMI from CPU 5 to CPUs 0-4,6-7:
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 20602 Comm: syz-executor.3 Not tainted 6.3.0-next-20230426 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:hlock_class kernel/locking/lockdep.c:228 [inline]
-> RIP: 0010:check_wait_context kernel/locking/lockdep.c:4747 [inline]
-> RIP: 0010:__lock_acquire+0x489/0x5d00 kernel/locking/lockdep.c:5024
-> Code: 41 81 e5 ff 1f 45 0f b7 ed be 08 00 00 00 4c 89 e8 48 c1 e8 06 48 8d 3c c5 00 6b 2c 90 e8 5f 90 6e 00 4c 0f a3 2d d7 35 c9 0e <0f> 83 5c 0c 00 00 4f 8d 6c 6d 00 49 c1 e5 06 49 81 c5 20 6f 2c 90
-> RSP: 0018:ffffc90002aa7350 EFLAGS: 00000047
-> RAX: 0000000000000001 RBX: 0000000000000001 RCX: ffffffff81633521
-> RDX: fffffbfff2058d62 RSI: 0000000000000008 RDI: ffffffff902c6b08
-> RBP: ffff888042995940 R08: 0000000000000000 R09: ffffffff902c6b0f
-> R10: fffffbfff2058d61 R11: 0000000000000001 R12: ffff888119e2b818
-> R13: 0000000000000063 R14: 0000000000000002 R15: ffff888042996598
-> FS:  00007fdaad065700(0000) GS:ffff888119c80000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b30623000 CR3: 0000000101969000 CR4: 0000000000350ee0
-> Call Trace:
->  <TASK>
->  lock_acquire kernel/locking/lockdep.c:5691 [inline]
->  lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5656
->  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
->  _raw_spin_lock_irqsave+0x3d/0x60 kernel/locking/spinlock.c:162
->  lock_hrtimer_base kernel/time/hrtimer.c:173 [inline]
->  hrtimer_try_to_cancel kernel/time/hrtimer.c:1331 [inline]
->  hrtimer_try_to_cancel+0xa9/0x2e0 kernel/time/hrtimer.c:1316
->  hrtimer_cancel+0x17/0x40 kernel/time/hrtimer.c:1443
-
-And this is trying to cancel a hrtimer which is ran on CPU4 and won't be
-making much progress.
-
->  __disable_vblank drivers/gpu/drm/drm_vblank.c:434 [inline]
-
-So we're here, holding vbl_lock, vblank_time_lock one of which is what
-#4 is waiting on.
-
-This also has IRQs disabled, which is what #1 is waiting on.
-
->  drm_vblank_disable_and_save+0x282/0x3d0 drivers/gpu/drm/drm_vblank.c:478
->  drm_crtc_vblank_off+0x312/0x970 drivers/gpu/drm/drm_vblank.c:1366
->  disable_outputs+0x7c7/0xbb0 drivers/gpu/drm/drm_atomic_helper.c:1202
->  drm_atomic_helper_commit_modeset_disables+0x1d/0x40 drivers/gpu/drm/drm_atomic_helper.c:1397
->  vkms_atomic_commit_tail+0x51/0x240 drivers/gpu/drm/vkms/vkms_drv.c:71
->  commit_tail+0x288/0x420 drivers/gpu/drm/drm_atomic_helper.c:1812
->  drm_atomic_helper_commit drivers/gpu/drm/drm_atomic_helper.c:2052 [inline]
->  drm_atomic_helper_commit+0x306/0x390 drivers/gpu/drm/drm_atomic_helper.c:1985
->  drm_atomic_commit+0x20a/0x2d0 drivers/gpu/drm/drm_atomic.c:1503
->  drm_client_modeset_commit_atomic+0x698/0x7e0 drivers/gpu/drm/drm_client_modeset.c:1045
->  drm_client_modeset_dpms+0x174/0x200 drivers/gpu/drm/drm_client_modeset.c:1226
->  drm_fb_helper_dpms drivers/gpu/drm/drm_fb_helper.c:323 [inline]
->  drm_fb_helper_blank+0xd1/0x260 drivers/gpu/drm/drm_fb_helper.c:356
->  fb_blank+0x105/0x190 drivers/video/fbdev/core/fbmem.c:1088
->  do_fb_ioctl+0x390/0x760 drivers/video/fbdev/core/fbmem.c:1180
->  fb_ioctl+0xeb/0x150 drivers/video/fbdev/core/fbmem.c:1204
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl fs/ioctl.c:856 [inline]
->  __x64_sys_ioctl+0x197/0x210 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0x80 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7fdaabe8edcd
-> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fdaad064bf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007fdaabfbbf80 RCX: 00007fdaabe8edcd
-> RDX: 0000000000000004 RSI: 0000000000004611 RDI: 0000000000000003
-> RBP: 00007fdaabefc59c R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffdadeffe9f R14: 00007ffdadf00040 R15: 00007fdaad064d80
->  </TASK>
-
-
-
-> CPU: 4 PID: 20623 Comm: syz-executor.6 Not tainted 6.3.0-next-20230426 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:kvm_wait+0xb7/0x110 arch/x86/kernel/kvm.c:1064
-> Code: 40 38 c6 74 1b 48 83 c4 10 c3 c3 e8 93 d3 50 00 eb 07 0f 00 2d 4a 04 92 08 fb f4 48 83 c4 10 c3 eb 07 0f 00 2d 3a 04 92 08 f4 <48> 83 c4 10 c3 89 74 24 0c 48 89 3c 24 e8 d7 d4 50 00 8b 74 24 0c
-> RSP: 0018:ffffc90000300b50 EFLAGS: 00000046
-> RAX: 0000000000000003 RBX: 0000000000000000 RCX: dffffc0000000000
-> RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffff88810b0803d8
-> RBP: ffff88810b0803d8 R08: 0000000000000001 R09: ffff88810b0803d8
-> R10: ffffed102161007b R11: ffffc90000300ff8 R12: 0000000000000000
-> R13: ffffed102161007b R14: 0000000000000001 R15: ffff888119e3d3c0
-> FS:  0000000000000000(0000) GS:ffff888119e00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f28183bd0b0 CR3: 000000000bb73000 CR4: 0000000000350ee0
-> Call Trace:
->  <IRQ>
->  pv_wait arch/x86/include/asm/paravirt.h:598 [inline]
->  pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
->  __pv_queued_spin_lock_slowpath+0x8e4/0xb80 kernel/locking/qspinlock.c:511
->  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:586 [inline]
->  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
->  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
->  do_raw_spin_lock+0x20d/0x2b0 kernel/locking/spinlock_debug.c:115
->  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
->  _raw_spin_lock_irqsave+0x45/0x60 kernel/locking/spinlock.c:162
->  drm_handle_vblank+0x11e/0xb80 drivers/gpu/drm/drm_vblank.c:1986
-
-stuck on a spinlock held by #5
-
->  vkms_vblank_simulate+0xe8/0x3e0 drivers/gpu/drm/vkms/vkms_crtc.c:29
->  __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
->  __hrtimer_run_queues+0x599/0xa30 kernel/time/hrtimer.c:1749
->  hrtimer_interrupt+0x320/0x7b0 kernel/time/hrtimer.c:1811
->  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1095 [inline]
->  __sysvec_apic_timer_interrupt+0x14a/0x430 arch/x86/kernel/apic/apic.c:1112
->  sysvec_apic_timer_interrupt+0x92/0xc0 arch/x86/kernel/apic/apic.c:1106
->  </IRQ>
->  <TASK>
->  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-> RIP: 0010:check_kcov_mode kernel/kcov.c:173 [inline]
-> RIP: 0010:__sanitizer_cov_trace_pc+0x11/0x70 kernel/kcov.c:207
-> Code: a8 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 65 8b 05 0d 33 82 7e 89 c1 48 8b 34 24 <81> e1 00 01 00 00 65 48 8b 14 25 40 bb 03 00 a9 00 01 ff 00 74 0e
-> RSP: 0018:ffffc90002be76d8 EFLAGS: 00000286
-> RAX: 0000000080000001 RBX: 0000000000000001 RCX: 0000000080000001
-> RDX: 00007f2817c77000 RSI: ffffffff81bcd756 RDI: ffffc90002be7ad8
-> RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> R10: 0000000000000001 R11: 0000000000000001 R12: ffffea00014fc480
-> R13: 0000000000000000 R14: dffffc0000000000 R15: 8000000053f12007
->  zap_drop_file_uffd_wp mm/memory.c:1352 [inline]
->  zap_install_uffd_wp_if_needed mm/memory.c:1371 [inline]
->  zap_pte_range mm/memory.c:1417 [inline]
->  zap_pmd_range mm/memory.c:1564 [inline]
->  zap_pud_range mm/memory.c:1593 [inline]
->  zap_p4d_range mm/memory.c:1614 [inline]
->  unmap_page_range+0x1046/0x4470 mm/memory.c:1635
->  unmap_single_vma+0x19a/0x2b0 mm/memory.c:1681
->  unmap_vmas+0x234/0x380 mm/memory.c:1720
->  exit_mmap+0x190/0x930 mm/mmap.c:3111
->  __mmput+0x128/0x4c0 kernel/fork.c:1351
->  mmput+0x60/0x70 kernel/fork.c:1373
->  exit_mm kernel/exit.c:564 [inline]
->  do_exit+0x9d1/0x29f0 kernel/exit.c:858
->  do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
->  get_signal+0x2311/0x25c0 kernel/signal.c:2874
->  arch_do_signal_or_restart+0x79/0x5a0 arch/x86/kernel/signal.c:307
->  exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
->  exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
->  syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
->  do_syscall_64+0x46/0x80 arch/x86/entry/common.c:86
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f281828edcd
-> Code: Unable to access opcode bytes at 0x7f281828eda3.
-> RSP: 002b:00007f28194c0c98 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> RAX: fffffffffffffe00 RBX: 00007f28183bbf80 RCX: 00007f281828edcd
-> RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f28183bbf88
-> RBP: 00007f28183bbf88 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f28183bbf8c
-> R13: 00007ffd5038e1ef R14: 00007ffd5038e390 R15: 00007f28194c0d80
->  </TASK>
-
-
+T24gMTMuMDkuMjMgMTE6NDQsIEppYXBlbmcgQ2hvbmcgd3JvdGU6DQo+IFRoZXNlIGZ1bmN0aW9u
+cyBhcmUgZGVmaW5lZCBpbiB0aGUgcWdyb3VwLmMgZmlsZSwgYnV0IG5vdCBjYWxsZWQNCj4gZWxz
+ZXdoZXJlLCBzbyBkZWxldGUgdGhlc2UgdW51c2VkIGZ1bmN0aW9ucy4NCg0KYW55d2hlcmUNCg0K
+PiBmcy9idHJmcy9xZ3JvdXAuYzoxNDk6MTk6IHdhcm5pbmc6IHVudXNlZCBmdW5jdGlvbiAncWdy
+b3VwX3RvX2F1eCcNCj4gZnMvYnRyZnMvcWdyb3VwLmM6MTU0OjM2OiB3YXJuaW5nOiB1bnVzZWQg
+ZnVuY3Rpb24gJ3Vub2RlX2F1eF90b19xZ3JvdXAnLg0KDQpUaGUgbGFzdCB1c2VyIG9mIHRoZW0g
+aXMgZ29uZSBzaW5jZToNCg0KZDg1MmE5MWE2OTZhICgiYnRyZnM6IHFncm91cDogdXNlIHFncm91
+cF9pdGVyYXRvcl9uZXN0ZWQgdG8gaW4gDQpxZ3JvdXBfdXBkYXRlX3JlZmNudCgpIikNCg0KDQpS
+ZXZpZXdlZC1ieTogSm9oYW5uZXMgVGh1bXNoaXJuIDxqb2hhbm5lcy50aHVtc2hpcm5Ad2RjLmNv
+bT4NCg0KDQo=
