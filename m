@@ -2,88 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 626F779F5B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCAA79F5BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Sep 2023 01:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbjIMXyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 19:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S233204AbjIMXyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 19:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbjIMXyQ (ORCPT
+        with ESMTP id S233157AbjIMXyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 19:54:16 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0105E4B;
-        Wed, 13 Sep 2023 16:54:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1694649247;
-        bh=HeU4wwPrVEU9zsogKgnhmorT3Fd04M54kOE3V3kzWqI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UcLEkhEjunpacZgVNBolWdEAjsiTdA6a5D+8blcZmRXKNMQaQQigQIn0qszyx6qt4
-         6vf24MRcsrpH58bLo90qINZg3SQMZilxBof3JrRpnuyEebJlsaTSo+cETV4SajEMvL
-         dszBmhfhpm1x6kyebeitqyjNjIx/CtAGhT1cJ1lreasERtbMGTQGzAHtIsq6gucZR/
-         29Fn8OyqaAwnb5ZM7VOtjO9RNgSaPoG4Jj5h0m2uO25zfEQ2wo3QNkwLaQUmYRevy5
-         DCvrZ5c6Zo6XSyKvq6qCipiRUld/GAVXDD/jVvgQe4XSnHvT8Pb+qZ1U2oZxEEtoyc
-         F63ehM86zfuDg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RmHNb2R9Xz4wxj;
-        Thu, 14 Sep 2023 09:54:06 +1000 (AEST)
-Date:   Thu, 14 Sep 2023 09:54:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the btrfs tree
-Message-ID: <20230914095405.45b58b11@canb.auug.org.au>
+        Wed, 13 Sep 2023 19:54:22 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D94BE69
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:54:18 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso2682745ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 16:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1694649257; x=1695254057; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TmQ1vlrBfUMvjYgfJYVMsqlQZ4GMxfIJbcG1jqAE/6c=;
+        b=KYGwYidmtfdn/dlj8oYuvfxjws2xHrEMd1iOLoC73SvwTPuBPVk/NAVOoZucY9ON2W
+         pVP7B0D8lORNTfDupoplEYpU+aNS0d75NfcbJHeVO7n7ViWQgLVu2W2Dvp0ioDx2MUw4
+         zUS+XOy3nJ0xTf+v3jtCiX2uAuA2VX1mgIIsE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1694649257; x=1695254057;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TmQ1vlrBfUMvjYgfJYVMsqlQZ4GMxfIJbcG1jqAE/6c=;
+        b=hoVU/K/CRsQqSB+PGw7XXXtBKFR7upsbKZKgL9BQXBlFvu70OeGpErReQOcX/twoLt
+         m+Ozy82fsCkdjREirwTZE/TBTUbr6QPAGDTSTEwJOdEv1OPPk3us2qFXVTLQaVsGvfir
+         mgnmu7GLnDkxtTYhMUbOnz1xMKmeSKQo47a0fD/vXnacO458Pmrl+ZOl5qkkcSax9a0Z
+         IsODDuc3T/OfNbOLPp+oTz8Ew+BpUvrcWb3khxxg6aevKb6ZA8TwtlnmNF0mjA5K19pi
+         /whJoB0Iw2r1xUp24K66oxDi3Eu9Suqr7XX48wSxVVo+IH1mEqp/ZzHmMZihuDnIZLZs
+         9g9w==
+X-Gm-Message-State: AOJu0YxPV0RczbtF1PPCZxc+iJIymYzCVCtLSpurpo1roKAmgqzs9OoI
+        W3tmjik8ZKffeeOIS07cR3b3Ag==
+X-Google-Smtp-Source: AGHT+IHHGiBglQQYGl+V0dzdJ7yOnXC6bJL5bkPKwBmwTtLt+2HI3ODYI/P87KBasDHTHHpBjUAVCA==
+X-Received: by 2002:a17:903:32cf:b0:1bc:6c00:a2cf with SMTP id i15-20020a17090332cf00b001bc6c00a2cfmr5268838plr.53.1694649257342;
+        Wed, 13 Sep 2023 16:54:17 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001b9d7c8f44dsm175831pli.182.2023.09.13.16.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 16:54:16 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Johan Hovold <johan@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2] module: Clarify documentation of module_param_call()
+Date:   Wed, 13 Sep 2023 16:54:14 -0700
+Message-Id: <20230913235407.gonna.817-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/s5GJCna9tRdWGYhNCpjDbm9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2680; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=pNcngmHYrvDvUxoczJLnyZVd+nVJiePsfxEYP+mQ0xQ=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlAkuma27fQb+IVRynpM5+rd9HXGa5bQURQdPIS
+ Wt4kC4XqSeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZQJLpgAKCRCJcvTf3G3A
+ JqnbD/42vpNafZEmP4ggRIZjSYnTNljv/5iB7eQ3O5HsbD5EckktJlskTx4nh5U8W6Aq19QK2ud
+ cpUdzg+pXwtgB6Cc8dE/tSxo48uWZInMrTT2ImA75OAgvHUoTukoDigzVuGNfNSrj8wwOCRNOgp
+ 5Z9CVTPYynY4j4HAk0gix5Vb7hKvTofXGIvDZxeKISf6PHd9GQaF+u90y3eC5GXv7jbXG2nUWMd
+ 4NXLlFB0iZ5C+DHn4YK8I3agbJcRGR8AQlUunhBMMCJxeU3HUju5BiP3kEbx4DBIYjBrSA/QU1O
+ 8/tjv6OGGs3fYvAQ3xMFWvy2TbCupCo1lfgi3O6BiRNEv50X+1mcQkXNI54EXvhubFgNuxReHZH
+ 2fm2UDFT/B5IPWfve0GeE0NEa0xOIb917g8ValpzTBbn1wwa4Cb37YnEqKyRG22SBqa0NqTjB0S
+ iHnXFAqAXLpyx//pUD7Ks9PGgleLZaU8eJRa/nFsbK56NHu5jc7aUphIaQMXjJqqPskKe0Nh2cp
+ a9nfclOGfgol2VuYRRce2AEQ7ntXiAMeFWHx2QThOLBUaiUJmwsZgGsG00gYWZtg80rEv3BEcAB
+ Wn7nkaHEBmeBdG64VcXqh1BpeLkTj3RmG8xmxghATmcI4X+1ERuTGdwGWV+cPvnJFVQAOrI4S6w
+ a+qnLUI SM27XxvQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/s5GJCna9tRdWGYhNCpjDbm9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Commit 9bbb9e5a3310 ("param: use ops in struct kernel_param, rather than
+get and set fns directly") added the comment that module_param_call()
+was deprecated, during a large scale refactoring to bring sanity to type
+casting back then. In 2017 following more cleanups, it became useful
+again as it wraps a common pattern of creating an ops struct for a
+given get/set pair:
 
-Hi all,
+  b2f270e87473 ("module: Prepare to convert all module_param_call() prototypes")
+  ece1996a21ee ("module: Do not paper over type mismatches in module_param_call()")
 
-The following commits are also in the btrfs-fixes tree as different
-commits (but the same patches):
+        static const struct kernel_param_ops __param_ops_##name = \
+                { .flags = 0, .set = _set, .get = _get }; \
+        __module_param_call(MODULE_PARAM_PREFIX, \
+                            name, &__param_ops_##name, arg, perm, -1, 0)
 
-  0a1996a411b5 ("btrfs: set last dir index to the current last index when o=
-pening dir")
-  568ff9d3df2f ("btrfs: fix race when refilling delayed refs block reserve")
-  75a1897cb7f1 ("btrfs: don't clear uptodate on write errors")
-  d257cd9f609e ("btrfs: convert btrfs_read_merkle_tree_page() to use a foli=
-o")
-  d354d8aa8b40 ("btrfs: file_remove_privs needs an exclusive lock in direct=
- io write")
-  e6b292f9d6bb ("btrfs: refresh dir last index during a rewinddir(3) call")
-  f93cae0fa843 ("btrfs: prevent transaction block reserve underflow when st=
-arting transaction")
+        __module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1, 0)
 
---=20
-Cheers,
-Stephen Rothwell
+Many users of module_param_cb() appear to be almost universally
+open-coding the same thing that module_param_call() does now. Don't
+discourage[1] people from using module_param_call(): clarify the comment
+to show that module_param_cb() is useful if you repeatedly use the same
+pair of get/set functions.
 
---Sig_/s5GJCna9tRdWGYhNCpjDbm9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+[1] https://lore.kernel.org/lkml/202308301546.5C789E5EC@keescook/
 
------BEGIN PGP SIGNATURE-----
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Nick Desaulniers <ndesaulniers@gooogle.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Joe Perches <joe@perches.com>
+Cc: linux-modules@vger.kernel.org
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Luis, I note that include/linux/moduleparam.h isn't in the MAINTAINERS
+file pattern. Perhaps you want to use include/linux/module*.h?
+---
+ include/linux/moduleparam.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUCS50ACgkQAVBC80lX
-0GzhbwgAjzZ+Kl0IsU+DMpIOt9T/3dn3/FJZcflJ5Z23XWznZ8l0wkyHITDCrxiS
-3WU8gdexggW1G1tLxCxfRkCWT9X8tG7aroRjZnMJpNdHytPZyyElghY/97aGBIs6
-b95dKUfE68UTRNpWlzaYiCdNU8l0ibh1H9Jv57d8ahNrZKbhfcja/2YHyVvHVGl8
-5WPmpB26FBT85Eu67RYCfMa3k3kN/FPelNirnVMTNGEhCGUCCGMbqyw8bppwniyF
-+XwLVC6FSpdUKN5HI3WT35GI/+ao9H/VELTkoOnb3lQs29oeVHvl6xqFBk6l2uG0
-kS1Vft6ivRcma2JJwRdfWUDnMImD3g==
-=Acln
------END PGP SIGNATURE-----
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 962cd41a2cb5..d4452f93d060 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -293,7 +293,11 @@ struct kparam_array
+ 	= { __param_str_##name, THIS_MODULE, ops,			\
+ 	    VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg } }
+ 
+-/* Obsolete - use module_param_cb() */
++/*
++ * Useful for describing a set/get pair used only once (i.e. for this
++ * parameter). For repeated set/get pairs (i.e. the same struct
++ * kernel_param_ops), use module_param_cb() instead.
++ */
+ #define module_param_call(name, _set, _get, arg, perm)			\
+ 	static const struct kernel_param_ops __param_ops_##name =	\
+ 		{ .flags = 0, .set = _set, .get = _get };		\
+-- 
+2.34.1
 
---Sig_/s5GJCna9tRdWGYhNCpjDbm9--
