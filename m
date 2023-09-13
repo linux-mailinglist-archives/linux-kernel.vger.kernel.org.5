@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875CF79EFF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFCD79EFF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 19:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231593AbjIMRJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 13:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        id S229750AbjIMRJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 13:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjIMRIs (ORCPT
+        with ESMTP id S229660AbjIMRJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 13:08:48 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767A62680
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:08:24 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-27405bafa2eso45502a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:08:24 -0700 (PDT)
+        Wed, 13 Sep 2023 13:09:36 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD64F2698
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:09:07 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26f57f02442so55242a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 10:09:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694624904; x=1695229704; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1694624947; x=1695229747; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0ihId+82HD26SjvNufvLy8at2aoRO48c9rDf8oEccLw=;
-        b=NH+35ieV5I21W1NWcBjrpFrIPZiI/Rrp5wRiFL2nSAFhyJppHGLkkHVMKjamdHep/3
-         Re0Y0MUyqUwuMfPp01jFfDriRjLQrfo9kV7TAY+uwNMxNdCzxrtYb3qDij5MdXu/dTKD
-         FFrROH3NXo86y5uZoMXr8k8c+AQ7ltbtgdO1CYn8qPdIe0IPLtJjAjc5mTgtXAIxZEyz
-         jioRIg7aXfif00FSqgyEYzb3KLGz4QL7u2s0j89/H+CfUWOytr4Z+O8idlUjL2zWfQ3u
-         y7j3xyNjJSlvFmAPoSTZN8AVziuJ6i1ognTWP8WAxZcLlgaR5CkQWdSvTngSf2tmv5c/
-         kQHw==
+        bh=wp3RFNUyA36WKs+LwiEbI6IPse2t1rgKYPkaJa9C0u8=;
+        b=l6iHoEqiHmB+5EyqIZH2iCAfePHVATuunNVv3G9TJhy1QPkbrqgXn9Hh2myLc9Tcvr
+         v6cTZ02np5aGyHuZ2rLnTJ1dEpRBiKl03dolp57DWqcT8lkbJqppw4rdJd/a2FrDwgp2
+         UhjwprFIxntcm6kgA9UhjCVLnIuHZdh8o8OV5h9vP/OJnZ9z8cCBSiIjl/Ce2paHH/Dm
+         j2iwQmUX3oC3j0Aq78yUcDj6KJ39xsgeiai/dKkWGBk93za9GqVsawihCVocrO8Sksj2
+         Li2z+HlV8TRN5jM1PB95kAcUPbASgEhroswmvi0/IgDbf22GMyEcj7LYMwOU1nZr9chN
+         db2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694624904; x=1695229704;
+        d=1e100.net; s=20230601; t=1694624947; x=1695229747;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0ihId+82HD26SjvNufvLy8at2aoRO48c9rDf8oEccLw=;
-        b=w0S9fjCDZ2mo3/A29CaYm7uhXWM8RGXipCak0H/DIWeppyIbAMwoCYBuk/EiZIK8ak
-         nduOfA/PwNXxR+97V6aUFzulIBYscVy9Th7PZigG56hRVwvm9/JgA3vcAV9rf0gzgQui
-         fuJF42fhBhSq4ICo3vkuidheIgCGUy8goRyLCpOHO+JepMXi8prIsBV8KbFWZxrWeaxx
-         qKcuy80pBDXB+G2+Iy35uw4SU+s2UFRMAOUJF83yTFrfWuoqY1PMsbSVAqlVvfpdozGd
-         i7ypOCPssWx8gYhekD097zvIumfpLf9G4PtWfCpMP7RYpKDcMNw0YrOLC8tnJNL8Yvo8
-         ZjDQ==
-X-Gm-Message-State: AOJu0Yxe0rITuAacEoK1Q0RYZnavmIzs1oNoBXfHlX7mrL+G1Eti4gSS
-        IIJEGJpakaCm9HWcXokc2W2sogwhuJR0EVApkT0=
-X-Google-Smtp-Source: AGHT+IHgiQ8z5tN0ALwsvGlsUSCEXYg0ZH0auo5wSXDXFlo7mzqgdWX5va8aVRhWMLnkBf8b6BXXgxzoyfzz+TMcHIQ=
-X-Received: by 2002:a17:90b:357:b0:269:2682:11fb with SMTP id
- fh23-20020a17090b035700b00269268211fbmr2891842pjb.8.1694624903831; Wed, 13
- Sep 2023 10:08:23 -0700 (PDT)
+        bh=wp3RFNUyA36WKs+LwiEbI6IPse2t1rgKYPkaJa9C0u8=;
+        b=eZw2cML++FJkHXbYigObbZjrEkto/jtkaEdb2KkTcTFm1DM2Zf9hkZjVNsPy2raiHI
+         jSxkBuObq5ELZqVk1Oq2JPx5P/quADfmjD+sUfmFZ3m59Z4BaBD7QHJ0kkkEfBqO2BhH
+         XdHu0PCCMu6pXx4Z4rg8yf8jHmbr/m0NHO04bKH7FcdbA/5rm2p3/PvQLZff9laFBxuT
+         dndW0xB8IxBT7JDvrXUnnIQJjgcmDT0KdaTuC4BeU6wJVKhWA0JflQR1X0T85yCcbNQj
+         zCSBG55X4xRc+G6beytv9gJJZkXHpZeK71+a8ukKPPTrGt6oYFwppfQjc5EP2sK13Kgl
+         82YQ==
+X-Gm-Message-State: AOJu0YxQTbwXNCBMuadlpygzxsRDTtgGVCIm1vmSZ6a/PKxABFPBGd+8
+        hVH+WEZPV0hSZ/bnM5+RWqO6G5MHxL5gtIaaKUHQBJ6K
+X-Google-Smtp-Source: AGHT+IFnTsfCCAvjTTXF0tw2ZjaYgJSLdBeKAwtaOvthb4sutpsXgC+kai/BftmKmoVEf73flhLQZSaEOoNtYm/UprA=
+X-Received: by 2002:a17:90a:c584:b0:26d:d2d:1a90 with SMTP id
+ l4-20020a17090ac58400b0026d0d2d1a90mr2912368pjt.1.1694624947292; Wed, 13 Sep
+ 2023 10:09:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <f7ab7ad4013669f25808bb0e39b3613b98189063.1693328501.git.andreyknvl@google.com>
- <ZO8OACjoGtRuy1Rm@elver.google.com> <CA+fCnZcAuipLKDiNY6LJAs6ODaOG9i6goVLQSdbALrzUDsnv5w@mail.gmail.com>
- <CANpmjNPVu10Y+gO=r3eaU9GP8VL_dqmch3QQXYX8g9D-+HjVPg@mail.gmail.com>
-In-Reply-To: <CANpmjNPVu10Y+gO=r3eaU9GP8VL_dqmch3QQXYX8g9D-+HjVPg@mail.gmail.com>
+References: <cover.1693328501.git.andreyknvl@google.com> <6db160185d3bd9b3312da4ccc073adcdac58709e.1693328501.git.andreyknvl@google.com>
+ <ZO8IMysDIT7XnN9Z@elver.google.com> <CA+fCnZdLi3g999PeBWf36Z3RB1ObHyZDR_xS0kwJWm6fNUqSrA@mail.gmail.com>
+ <CANpmjNNtT1WUpJu_n5x_tA2sL4+utP0a6oGUzqrU5JuEu3mowg@mail.gmail.com>
+In-Reply-To: <CANpmjNNtT1WUpJu_n5x_tA2sL4+utP0a6oGUzqrU5JuEu3mowg@mail.gmail.com>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 13 Sep 2023 19:08:12 +0200
-Message-ID: <CA+fCnZdempKJg13K5HsRyB9oeR0AKeYVkUg487dR510m_avqDQ@mail.gmail.com>
-Subject: Re: [PATCH 15/15] kasan: use stack_depot_evict for tag-based modes
+Date:   Wed, 13 Sep 2023 19:08:56 +0200
+Message-ID: <CA+fCnZdAUo1CKDK4kiUyR+Fxc_F++CFezanPDVujx3u7fBmw=A@mail.gmail.com>
+Subject: Re: [PATCH 11/15] stackdepot: use read/write lock
 To:     Marco Elver <elver@google.com>
 Cc:     andrey.konovalov@linux.dev,
         Alexander Potapenko <glider@google.com>,
@@ -71,19 +71,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 8:59=E2=80=AFPM Marco Elver <elver@google.com> wrote=
+On Tue, Sep 5, 2023 at 6:19=E2=80=AFPM Marco Elver <elver@google.com> wrote=
 :
 >
-> >
-> > Hm, I actually suspect we don't need these READ/WRITE_ONCE to entry
-> > fields at all. This seems to be a leftover from the initial series
-> > when I didn't yet have the rwlock. The rwlock prevents the entries
-> > from being read (in kasan_complete_mode_report_info) while being
-> > written and the try_cmpxchg prevents the same entry from being
-> > rewritten (in the unlikely case of wrapping during writing).
-> >
-> > Marco, do you think we can drop these READ/WRITE_ONCE?
+> > Good suggestion. I propose that we keep the rwlock for now, and I'll
+> > check whether the performance is better with percpu-rwsem once I get
+> > to implementing and testing the performance changes. I'll also check
+> > whether percpu-rwsem makes sense for stack ring in tag-based KASAN
+> > modes.
 >
-> Yes, I think they can be dropped.
+> I think it's quite obvious that the percpu-rwsem is better. A simple
+> experiment is to measure the ratio of stackdepot hits vs misses. If
+> the ratio is obviously skewed towards hits, then I'd just go with the
+> percpu-rwsem.
+>
+> The performance benefit may not be measurable if you use a small system.
 
-Will drop in v2, thanks!
+I started looking into using percpu-rwsem, but it appears that it
+doesn't have the irqsave/irqrestore API flavor. I suspect that it
+shouldn't be hard to add it, but I'd rather not pursue this as a part
+of this series.
+
+So I still propose to keep the rwlock for now, and switch to
+percpu-rwsem later together with the other perf changes.
