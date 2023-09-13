@@ -2,110 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 969EC79E829
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEA579E82C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 14:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240677AbjIMMhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 08:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50714 "EHLO
+        id S234339AbjIMMjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 08:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240671AbjIMMhC (ORCPT
+        with ESMTP id S231132AbjIMMjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 08:37:02 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5651BC7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:36:58 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76dcf1d8957so416936585a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1694608617; x=1695213417; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=x+9MtCGEueIzcQpF/feyfAWnqDz9Etq09hyqW4Rc828=;
-        b=CUziXboxV4nwEAAXEV3v0b+3PiIKWbY1l6afchqbO8zc/CsHUs2BvM8LoUzagcgCqL
-         xOqrHoEtDMEztkvBSA4hUx4cYlDeNZ+Gb1km/02+g0dUZ9KDRmgp5zu/HZJo24k3ZUNn
-         1Sjq+NHwOeLpvDql0g/dSjGNCiypX36qBM+d2wp3DBsVYR3ssOI9aDsvdsheuWV1q9N4
-         3enfHfjPNyT0KiV603VJTljcMBV9UTJ64N0toTmtGvkzZIBuA2Qoog5fuU0OOivmo+/4
-         utux3/SUCNH2Axu0T4IJZkfBXIJdkB+CDc0qladQD7fyohX9L3uol8ny8OTlwCf6Eg5P
-         Tfdw==
+        Wed, 13 Sep 2023 08:39:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED73D19AD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1694608702;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a99oLOwjNNMyzFFsHd0MXUMcklXas63C6jeF9Gj5oJI=;
+        b=Bqk8amhDhtaPdwJhf0cIsXk4ee9IIQsbuwJDbHm1nx2EYm0v9MwML2LfJ9BcJoyp2DKgZe
+        DVdUx+34LX+JVLns95tn8i6uIp7acPMYsBUmz3IGyBIL/9QEcjPC0tYjeOFkLOw9bMLShO
+        hIqqWUd2kyu9Ntdi8GLAriA+WGzh8Ak=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-8T3gjMQ_MHWVk6quJKdEcQ-1; Wed, 13 Sep 2023 08:38:20 -0400
+X-MC-Unique: 8T3gjMQ_MHWVk6quJKdEcQ-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5925fb6087bso72702947b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 05:38:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694608617; x=1695213417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x+9MtCGEueIzcQpF/feyfAWnqDz9Etq09hyqW4Rc828=;
-        b=MrZulBkHPHsIxHyX4p+XyizKCEmIP0+w/3KRFBSkkbbhr+YmT6o5Zz6VCvPWc/zRfR
-         5hY4mmWSNdYeOkpisFq6uNBYkxN33VXY0eBn3YOMkNhWGUNlevcgPNgjV+5PokfOk2tL
-         7wBwcri9Mc1Ea/0S4k3hNY2Luj08OIhCfrQpnwBT9/sNnX1OLiASStdAElmoDSX0S4GU
-         VZ2MgKXQssM+43LnLiaORH/LHQXjavVyiUcNp/D/YVdG/wQA1eDSUC49WdDAKErdanI1
-         2jeuMhkAgwUNzc2jJDmhPdaD9sLAsHoGkNsZbdNkLJzL7MWG4UO3uOEPPFpME4vTBSbF
-         lrMA==
-X-Gm-Message-State: AOJu0YxPufTiRN1G6sBH82iir/OcOVCKcmiNHoMwqCchKEvfCXPZY8qZ
-        FtwYkIKlb9vdOPBHE7t3qDS44g==
-X-Google-Smtp-Source: AGHT+IHja35eyM2w6DM8prbQrCFJxW9MQxkLI97jHjz96wdOf2zYulupSJPYBTFWVCdbAhq5aUfc6Q==
-X-Received: by 2002:a05:620a:3881:b0:76e:e352:667a with SMTP id qp1-20020a05620a388100b0076ee352667amr1775918qkn.35.1694608617245;
-        Wed, 13 Sep 2023 05:36:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-134-41-202-196.dhcp-dynamic.fibreop.ns.bellaliant.net. [134.41.202.196])
-        by smtp.gmail.com with ESMTPSA id o14-20020ae9f50e000000b0076cdb0afbc4sm3870133qkg.118.2023.09.13.05.36.56
+        d=1e100.net; s=20230601; t=1694608700; x=1695213500;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a99oLOwjNNMyzFFsHd0MXUMcklXas63C6jeF9Gj5oJI=;
+        b=MXJ+hTlS1csA0GZnb3gS/ih96byyyzVlOC42MxROCWJKIZWUqi16n/nm/aYOONFMCG
+         qoGMFwwX4Kdy1Q6it/HxrEHjRaNjYEUobzGh9uFiqf/HLg5mv9VJLDPSeHSY53yVxLql
+         dDoAKoGQGTmxc2roYaiSCn0UabRb5lKDP+c889l9OPfpkpcPtTHGf5oM6kQKzVp4w6AX
+         PtKSdJZNtJOL+c0+NYmuZ6gggiJjo49zp7D5ItJ+2L4KMsHv7bGbVVLPsvtG/mYVM1Rx
+         06l939fhw22fj64rV9uJyafnqIg8wPDC/GfuB4Y5zQQrjTaOrtb/QW5NRePhysO68xKZ
+         zlzQ==
+X-Gm-Message-State: AOJu0YxjLR0gW5OreS/dawFhDL3AFhIwbCc1Nhv4IOJQpRs3lfVr314x
+        AmLdxn/ScBIFLGSGpJ/V7gAge6DkQV0RD3zq/oUpms0iHgFs74DGucb1Bcy3UZp37pF3jWInFGH
+        zq5o6kl0eN90Pj6Ua6tYuxv2t
+X-Received: by 2002:a81:840d:0:b0:592:227f:7964 with SMTP id u13-20020a81840d000000b00592227f7964mr2260156ywf.47.1694608700355;
+        Wed, 13 Sep 2023 05:38:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHkbtdNrR0YTB2Q5btwwGtmqxiH9pOyvhyovj8vNZpVcBvf93C7I4xQpOhZ3c2r3zgxp2VXpw==
+X-Received: by 2002:a81:840d:0:b0:592:227f:7964 with SMTP id u13-20020a81840d000000b00592227f7964mr2260142ywf.47.1694608700123;
+        Wed, 13 Sep 2023 05:38:20 -0700 (PDT)
+Received: from brian-x1 (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
+        by smtp.gmail.com with ESMTPSA id y198-20020a0dd6cf000000b005707fb5110bsm3106302ywd.58.2023.09.13.05.38.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Sep 2023 05:36:56 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qgP72-002Rzs-3w;
-        Wed, 13 Sep 2023 09:36:56 -0300
-Date:   Wed, 13 Sep 2023 09:36:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Cong Liu <liucong2@kylinos.cn>
-Cc:     alex.williamson@redhat.com, kvm@vger.kernel.org,
+        Wed, 13 Sep 2023 05:38:19 -0700 (PDT)
+Date:   Wed, 13 Sep 2023 08:38:17 -0400
+From:   Brian Masney <bmasney@redhat.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fix build error in function vfio_combine_iova_ranges
-Message-ID: <ZQGs6F5y3YzlAJaL@ziepe.ca>
-References: <20230911124431.5e09f53b.alex.williamson@redhat.com>
- <20230912010736.19481-1-liucong2@kylinos.cn>
+Subject: Re: [PATCH] arm64: dts: qcom: sa8775p: correct PMIC GPIO label in
+ gpio-ranges
+Message-ID: <ZQGtObktGq3tvEuf@brian-x1>
+References: <20230818135538.47481-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230912010736.19481-1-liucong2@kylinos.cn>
+In-Reply-To: <20230818135538.47481-1-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/2.2.9 (2022-11-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:07:36AM +0800, Cong Liu wrote:
-> when compiling with smatch check, the following errors were encountered:
+On Fri, Aug 18, 2023 at 03:55:38PM +0200, Krzysztof Kozlowski wrote:
+> There are several PMICs with GPIO nodes and one of the nodes referenced
+> other's in gpio-ranges which could result in deferred-probes like:
 > 
-> drivers/vfio/vfio_main.c:957 vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
-> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
-> drivers/vfio/vfio_main.c:978 vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
+>   qcom-spmi-gpio c440000.spmi:pmic@2:gpio@8800: can't add gpio chip
 > 
-> this patch fix these error.
-> 
-> Signed-off-by: Cong Liu <liucong2@kylinos.cn>
-> ---
->  drivers/vfio/vfio_main.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index 40732e8ed4c6..68a0a5081161 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -938,12 +938,13 @@ static int vfio_ioctl_device_feature_migration(struct vfio_device *device,
->  void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
->  			      u32 req_nodes)
->  {
-> -	struct interval_tree_node *prev, *curr, *comb_start, *comb_end;
-> +	struct interval_tree_node *prev, *curr;
-> +	struct interval_tree_node *comb_start = NULL, *comb_end = NULL;
->  	unsigned long min_gap, curr_gap;
->  
->  	/* Special shortcut when a single range is required */
->  	if (req_nodes == 1) {
-> -		unsigned long last;
-> +		unsigned long last = 0;
->  
->  		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
->  		curr = comb_start;
+> Reported-by: Brian Masney <bmasney@redhat.com>
+> Closes: https://lore.kernel.org/all/ZN5KIlI+RDu92jsi@brian-x1/
+> Fixes: e5a893a7cec5 ("arm64: dts: qcom: sa8775p: add PMIC GPIO controller nodes")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-These are not possible unless the list is empty, and assigning
-zero/null isn't an improvement for that case it will just crash
+Reviewed-by: Brian Masney <bmasney@redhat.com>
 
-Jason
