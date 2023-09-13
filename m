@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC15679EF1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249C079EF18
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 18:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbjIMQnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Sep 2023 12:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S230409AbjIMQnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Sep 2023 12:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjIMQnR (ORCPT
+        with ESMTP id S231598AbjIMQnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Sep 2023 12:43:17 -0400
-Received: from smtp70.iad3a.emailsrvr.com (smtp70.iad3a.emailsrvr.com [173.203.187.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A326D421C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:40:41 -0700 (PDT)
+        Wed, 13 Sep 2023 12:43:18 -0400
+Received: from smtp65.iad3a.emailsrvr.com (smtp65.iad3a.emailsrvr.com [173.203.187.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC7A4227
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Sep 2023 09:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1694623241;
-        bh=3DYoyucexyp3NqVzJwqSlUjI+W/qqxsbxRCtw8SQXNI=;
+        s=20221208-6x11dpa4; t=1694623242;
+        bh=Gqt0xUEjwvsOjmZu6WszvumHXpWvipdZWDL6ltORHoQ=;
         h=From:To:Subject:Date:From;
-        b=WUwaPRFnrEwUYx9OhkC9SGBLTd1kGg1IgqecM8VgkAZPsac33Zni09nRGXGkt8ZER
-         gtmgyFYKq+PaxMvO/9C8iKCELS35GrbkTtzLZddobKH5T5FbsKB8oBOAdtzt/tqo7X
-         +NKWRukLpJmuoFNBXS/a/8Nn7/+pQtb1iohBCpR8=
+        b=qAVcf1DckYYJOLI5uqe3x8sEsRd2q6K9E7QazxFLM8YXAGfcH0ukD38Aj6gLLdeqJ
+         q+K4y73WGFXHXJ7ZL6duQzgjRIlKA4r7VLdW70/draL4XsCk1PMLQPWKjr0U+H9Hhn
+         5yUKQiYIyVs97lWPwdwTOuIBbZjwj3JP51HZNGQA=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp25.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 0EF7E2391B;
-        Wed, 13 Sep 2023 12:40:39 -0400 (EDT)
+Received: by smtp25.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 57C3E239A1;
+        Wed, 13 Sep 2023 12:40:41 -0400 (EDT)
 From:   Ian Abbott <abbotti@mev.co.uk>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,100 +32,129 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         H Hartley Sweeten <hsweeten@visionengravers.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH v2 10/13] comedi: amplc_dio200_pci: Conditionally remove devices that use port I/O
-Date:   Wed, 13 Sep 2023 17:40:10 +0100
-Message-Id: <20230913164013.107520-11-abbotti@mev.co.uk>
+Subject: [PATCH v2 11/13] comedi: amplc_dio200_common: Refactor register access functions
+Date:   Wed, 13 Sep 2023 17:40:11 +0100
+Message-Id: <20230913164013.107520-12-abbotti@mev.co.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230913164013.107520-1-abbotti@mev.co.uk>
 References: <Message-Id: <20230913113247.91749-1-abbotti@mev.co.uk>
  <20230913164013.107520-1-abbotti@mev.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: bb5231ff-a70f-4c9d-8b55-93f03f91465d-11-1
+X-Classification-ID: bb5231ff-a70f-4c9d-8b55-93f03f91465d-12-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a future patch, the port I/O functions (`inb()`, `outb()`, and
-friends will only be declared in the `HAS_IOPORT` configuration option
-is enabled.
-
-The amplc_dio200_pci module supports various Amplicon PCI and PCI
-Express devices.  Some of the supported devices (the PCI ones) use port
-I/O, and some of them (the PCIe ones) only use memory-mapped I/O.
-
-Conditionally compile in support for the devices that need port I/O if
-and only if the `CONFIG_HAS_IOPORT` macro is defined.
-
-Add a run-time check in `dio200_pci_auto_attach()` to return an error if
-the device actually requires port I/O (based on the PCI BAR resource
-flags) but the `HAS_IOPORT` configuration option is not enabled.
+The `dio200_read8()`, `dio200_write8()`, `dio200_read32()` and
+`dio200_write32()` functions apply a right-shift to the register offset
+for some devices and then perform the actual register access.  Factor
+the register access part out to new functions `dio200___read8()`,
+`dio200___write8()`, `dio200___read32()`, and `dio200___write32()`.
+This will reduce duplicated code in a subsequent patch that will
+conditionally compile support for port I/O as part of the `HAS_IOPORT`
+changes.
 
 Cc: Arnd Bergmann <arnd@kernel.org>
 Cc: Niklas Schnelle <schnelle@linux.ibm.com>
 Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
 ---
-v2: Correct `CONFIG_HAS_PORTIO` to `CONFIG_HAS_IOPORT` in commit
-description.
+v2: Correct `HAS_PORTIO` to `HAS_IOPORT` in commit description.
 ---
- drivers/comedi/drivers/amplc_dio200_pci.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/comedi/drivers/amplc_dio200_common.c | 52 ++++++++++++++------
+ 1 file changed, 38 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/comedi/drivers/amplc_dio200_pci.c b/drivers/comedi/drivers/amplc_dio200_pci.c
-index 527994d82a1f..cb5b328a28e3 100644
---- a/drivers/comedi/drivers/amplc_dio200_pci.c
-+++ b/drivers/comedi/drivers/amplc_dio200_pci.c
-@@ -223,14 +223,17 @@
-  */
- 
- enum dio200_pci_model {
-+#ifdef CONFIG_HAS_IOPORT
- 	pci215_model,
- 	pci272_model,
-+#endif /* CONFIG_HAS_IOPORT */
- 	pcie215_model,
- 	pcie236_model,
- 	pcie296_model
+diff --git a/drivers/comedi/drivers/amplc_dio200_common.c b/drivers/comedi/drivers/amplc_dio200_common.c
+index 19166cb26f5e..e6d63e89e7bf 100644
+--- a/drivers/comedi/drivers/amplc_dio200_common.c
++++ b/drivers/comedi/drivers/amplc_dio200_common.c
+@@ -86,6 +86,40 @@ struct dio200_subdev_intr {
+ 	unsigned int active:1;
  };
  
- static const struct dio200_board dio200_pci_boards[] = {
-+#ifdef CONFIG_HAS_IOPORT
- 	[pci215_model] = {
- 		.name		= "pci215",
- 		.mainbar	= 2,
-@@ -252,6 +255,7 @@ static const struct dio200_board dio200_pci_boards[] = {
- 		.sdinfo		= { 0x00, 0x08, 0x10, 0x3f },
- 		.has_int_sce	= true,
- 	},
-+#endif /* CONFIG_HAS_IOPORT */
- 	[pcie215_model] = {
- 		.name		= "pcie215",
- 		.mainbar	= 1,
-@@ -364,8 +368,12 @@ static int dio200_pci_auto_attach(struct comedi_device *dev,
- 				"error! cannot remap registers\n");
- 			return -ENOMEM;
- 		}
--	} else {
-+	} else if (IS_ENABLED(CONFIG_HAS_IOPORT)) {
- 		dev->iobase = pci_resource_start(pci_dev, bar);
-+	} else {
-+		dev_err(dev->class_dev,
-+			"error! need I/O port support\n");
-+		return -ENXIO;
- 	}
++static unsigned char dio200___read8(struct comedi_device *dev,
++				    unsigned int offset)
++{
++	if (dev->mmio)
++		return readb(dev->mmio + offset);
++	return inb(dev->iobase + offset);
++}
++
++static void dio200___write8(struct comedi_device *dev,
++			    unsigned int offset, unsigned char val)
++{
++	if (dev->mmio)
++		writeb(val, dev->mmio + offset);
++	else
++		outb(val, dev->iobase + offset);
++}
++
++static unsigned int dio200___read32(struct comedi_device *dev,
++				    unsigned int offset)
++{
++	if (dev->mmio)
++		return readl(dev->mmio + offset);
++	return inl(dev->iobase + offset);
++}
++
++static void dio200___write32(struct comedi_device *dev,
++			     unsigned int offset, unsigned int val)
++{
++	if (dev->mmio)
++		writel(val, dev->mmio + offset);
++	else
++		outl(val, dev->iobase + offset);
++}
++
+ static unsigned char dio200_read8(struct comedi_device *dev,
+ 				  unsigned int offset)
+ {
+@@ -94,9 +128,7 @@ static unsigned char dio200_read8(struct comedi_device *dev,
+ 	if (board->is_pcie)
+ 		offset <<= 3;
  
- 	if (board->is_pcie) {
-@@ -385,8 +393,10 @@ static struct comedi_driver dio200_pci_comedi_driver = {
- };
+-	if (dev->mmio)
+-		return readb(dev->mmio + offset);
+-	return inb(dev->iobase + offset);
++	return dio200___read8(dev, offset);
+ }
  
- static const struct pci_device_id dio200_pci_table[] = {
-+#ifdef CONFIG_HAS_IOPORT
- 	{ PCI_VDEVICE(AMPLICON, 0x000b), pci215_model },
- 	{ PCI_VDEVICE(AMPLICON, 0x000a), pci272_model },
-+#endif /* CONFIG_HAS_IOPORT */
- 	{ PCI_VDEVICE(AMPLICON, 0x0011), pcie236_model },
- 	{ PCI_VDEVICE(AMPLICON, 0x0012), pcie215_model },
- 	{ PCI_VDEVICE(AMPLICON, 0x0014), pcie296_model },
+ static void dio200_write8(struct comedi_device *dev,
+@@ -107,10 +139,7 @@ static void dio200_write8(struct comedi_device *dev,
+ 	if (board->is_pcie)
+ 		offset <<= 3;
+ 
+-	if (dev->mmio)
+-		writeb(val, dev->mmio + offset);
+-	else
+-		outb(val, dev->iobase + offset);
++	dio200___write8(dev, offset, val);
+ }
+ 
+ static unsigned int dio200_read32(struct comedi_device *dev,
+@@ -121,9 +150,7 @@ static unsigned int dio200_read32(struct comedi_device *dev,
+ 	if (board->is_pcie)
+ 		offset <<= 3;
+ 
+-	if (dev->mmio)
+-		return readl(dev->mmio + offset);
+-	return inl(dev->iobase + offset);
++	return dio200___read32(dev, offset);
+ }
+ 
+ static void dio200_write32(struct comedi_device *dev,
+@@ -134,10 +161,7 @@ static void dio200_write32(struct comedi_device *dev,
+ 	if (board->is_pcie)
+ 		offset <<= 3;
+ 
+-	if (dev->mmio)
+-		writel(val, dev->mmio + offset);
+-	else
+-		outl(val, dev->iobase + offset);
++	dio200___write32(dev, offset, val);
+ }
+ 
+ static unsigned int dio200_subdev_8254_offset(struct comedi_device *dev,
 -- 
 2.40.1
 
