@@ -2,143 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA7379DD78
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E879DD7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Sep 2023 03:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbjIMBTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Sep 2023 21:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59548 "EHLO
+        id S238018AbjIMBWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Sep 2023 21:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbjIMBTP (ORCPT
+        with ESMTP id S232433AbjIMBV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Sep 2023 21:19:15 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2137.outbound.protection.outlook.com [40.107.215.137])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D9A410E6;
-        Tue, 12 Sep 2023 18:19:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HWPXEuRGt1lvo5kn77t/2xSmPQ7PR1R4ggU1z8Oxj18o6B9Nfmt1PMWs0HTdSCCibvGx1FIV/tq1EbUvtMvq6b0FmDStttjaQlteVavImlgkI+2kgz+uZKxdc3PZ0yH/724YQYuTRz+on3gecBbiWXXa1SZ/ybsUUNtez9CByPXZqnaapRyWPkc7FwJMD9KTZVm1hROeorrii0G4DCDnL26qHeGMIZLh6E4tmxxE5a5NYh8x9db1jkCQ2goO8erxhRgnzN4XerCFqzjlBPV4Hw2iaj4d3WeovOvafnv/7BfTBQBVn/rbLuHnAs6b7c9Nydiznu8m2UvyXR7ej47dlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bDokQxTJ0jffqX/Y66WuwuB93YZVIl5tg9oW8SVuRPs=;
- b=kkvSmh1tYPzG/heGDiFXJF641jwZwBLs7fV7CbRG20ooRH5tP77kK9p2SllYEpbUr1JSB8n134tq0sa61UuURTQtwSAJmh5AE61GHAd9WruuWeJcbHFEGQLyaGcLlhNCrdRt2RTxBeVgBBGZXRMqpn7Sbmbx5FbAA8+4BUys5ZIP+Wiqf0PUdOSvTjp+zJDXfCgIgPqU8UTAPNsJr+s+Sy70tXQ22MpIt0evZsGsCQuGXaWMqNiw9mzjcY0PLjIr+NuAqD6/nAulZX+DH+tl5KT3VC7dT87ntFu2/PGHLqCedY2G+ofei7wpheNNGlSJv+bwgXn4zWTBb8FYOI6Ujg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bDokQxTJ0jffqX/Y66WuwuB93YZVIl5tg9oW8SVuRPs=;
- b=EEfQhLRWtX60N9dH3hj4Actvi8AfY2M3xYdneS1nU8SdX5L0laaaSiS6j+IzTOPTX3N9eqP3Bab/Fk2lg6rhEDtC3OAG0vkjOdDLaf1tOufvz/82GbKIKTwytrqnv7I25gCRmHRzFx6JqKF/aYQ96F9xP0rAlquzoUMqY/WByQEYGcWM+NcBp99jgynp3aL1lKCrDs6XXVuLzYdtvVYgSs2d2T93OAuwKzzxyUci2Z4Q3cSF/Ju6PjcsrUMe7/mmzI0r6yytpbHazaHH4D5PjdsG3zFsdYeiwj+5VyfL59bFu2hQAKmKSTlP8EgZ7KmIlmv6xHxOHYA9oKacMhyO1Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com (2603:1096:400:21::8)
- by PUZPR06MB5772.apcprd06.prod.outlook.com (2603:1096:301:f0::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.35; Wed, 13 Sep
- 2023 01:19:05 +0000
-Received: from TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::1c25:781c:9638:960d]) by TYZPR06MB4045.apcprd06.prod.outlook.com
- ([fe80::1c25:781c:9638:960d%7]) with mapi id 15.20.6768.036; Wed, 13 Sep 2023
- 01:19:04 +0000
-Message-ID: <e88fe274-cd53-40d4-9a8e-7c6a4e1d8c44@vivo.com>
-Date:   Wed, 13 Sep 2023 09:18:55 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/5] mm, oom: Introduce bpf_oom_evaluate_task
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com,
-        Michal Hocko <mhocko@suse.com>
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-2-zhouchuyi@bytedance.com>
-From:   Bixuan Cui <cuibixuan@vivo.com>
-In-Reply-To: <20230810081319.65668-2-zhouchuyi@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR01CA0003.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::16) To TYZPR06MB4045.apcprd06.prod.outlook.com
- (2603:1096:400:21::8)
+        Tue, 12 Sep 2023 21:21:59 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C5C10E6;
+        Tue, 12 Sep 2023 18:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=6zXsjXXg4yAxPy7RTYj+3TPJv5GOPPfAy0rQXae3yUw=; b=RK94NkYKrPO8rFX0Ykdbce0JCi
+        Sc3JDva8axrlw4H6CDU2Lrz/PVJCqC5kgEFFtz4QBUZTgOnP12qTIlxbel5EJK5ggAwi/X9hr3Z62
+        lWRhMeAFQhAf3c9gUZJC/PcFmTRrXKjiacyiUtqJQixe13gn9l2o8bIyIOhz2wjnDd7M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qgEZL-006Gpu-HU; Wed, 13 Sep 2023 03:21:27 +0200
+Date:   Wed, 13 Sep 2023 03:21:27 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <c7eddf45-c259-47de-ac59-2569c09ed5f7@lunn.ch>
+References: <20230812091708.34665-3-arinc.unal@arinc9.com>
+ <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <617c51cf-2c09-4865-ac60-96599db597e7@lunn.ch>
+ <563ac27a-22f2-463e-b5c1-9df721842976@arinc9.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR06MB4045:EE_|PUZPR06MB5772:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2a8ac6c-afbc-4917-c946-08dbb3f76b27
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E9USDeATdyATBgWDWP5MzNwa1OytbGe2g8duJZAg0ULCNdZLB/1ZEx/vya2suNvXwoN7wFPf3XdleStgR9Zh1KIuL2yAkhdTJl7oCS7d78Ct4DXdrXsOzr8CQ2I9gye63nTO84q3g29Zz56tOnYD+5x4PBfZRTlFGCZ2yBtRr7v/5IJB9qFbXKVbF4+AwBX1NCcs37CRW5ecpgbmWYjAbgWIf0jA5KBP20sx9IQYl3CPQN32tESTBfupHBDbhhqCFZJtQdm2WX8bfPZPbLEAXHi5SGl69oF0NM4ULmkCyUqgy6cNyIH4DZ9VEFnLhpm0z0Q5OhF71qv4s/XLnOWM2tW7t7Ud71vfq/mpEiQ/ArfGhJB9UGfFnGpLA8BWas8zG5ZJtq+EyytaF5bNKHGiELQefMISm8GYcjkZjrFk9V4n7bn1NwK4moLmL1WRWZX1m79weakb13TRAF1nT6QWRfLjMVS9AObdOd1pQTsybGyHxz52zI9iWP0KPAKFapqiFLJu6UCerbehLnCB4pMdtOobV8ARBnZi3IYyslSXWVki9z+h+4JGP2U6Mkp4HC+DrkNR3KlYlQGemxETN0+z0meokeFe1//aqcHDOdwq4R8piMNW0nCMhmmajcjaegSFnrarLgIuWvbn6Ym3A7DjS9ekSLP8kcImP9bAC2mt8OsVcQHLVXjwlOMY3C3qdS9H
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB4045.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(376002)(396003)(136003)(186009)(451199024)(1800799009)(478600001)(41300700001)(4326008)(8936002)(8676002)(6486002)(6666004)(6506007)(6512007)(52116002)(316002)(5660300002)(26005)(4744005)(2906002)(2616005)(66946007)(66556008)(66476007)(7416002)(38100700002)(38350700002)(86362001)(31696002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bG1OWC9pSzFXcGpOa1lYQjh1QWJxb0RReTgzQnhhRGNsZ1ZNRElkTUI3bys3?=
- =?utf-8?B?dVhLTkcrZ01YU2xOeG12OGovMzV4UG91eXJBam1qWFAwcC8yQndJUEtSbWVm?=
- =?utf-8?B?eHQ4YjFoMXFudWZOaXplMmk5OEpmNkFHVjN0QjNWb0RKMjJ1OEJKSng4eFY0?=
- =?utf-8?B?UXl5RVR4VGM4SytBZFVnSEI0T3V6azQwNGE0N3RnTzhTWXI0K0gvbTdaalZ2?=
- =?utf-8?B?U3V4eklFY25xMUp2d3BYOTB5VHBmNjk0U2VJbTlPMHFZcUtRK1JrOUJraWl3?=
- =?utf-8?B?dmxXUUlqTGhDWlJWQUh1YjJiOTMzaHZycmFKUEFlYzVFTkNYdG9WTUhEVW5G?=
- =?utf-8?B?bkk2SEU1V0E2KzloWkZzUzNueVBjU1lDS2s0ZHcrK1hRZW10b1IwclZBa2hP?=
- =?utf-8?B?eEZVcGhTaWkwTkF5V2RPL1hpQ3VpMUtnaWErOVA5NTZSOUNsL1VCb010bWlU?=
- =?utf-8?B?UEVxZGdabHBYM2FsWDZ2UEhLbUhyc2VhR21ESXlEK3lvVXUzSHpkSWN5Sklt?=
- =?utf-8?B?dFRkblh5MFdVbENNWnJ2UERpQ2VjN3VlMHY1SEdLMHFiaDZ2V0k4QTlRU3BJ?=
- =?utf-8?B?UktVeU9CQkNHQ0RZSURkYThQSTZiYjVlek9jMEhYWEcxQVN6cU02SzhLaHly?=
- =?utf-8?B?SWZadjIyT0lGQkpoOU5QNnRONVZjb2VwVTdYL055TGR1K3N3cDEvOTNvQy9s?=
- =?utf-8?B?Wkp4MEtlWEJYYStNUGV4L2NjQmNkcS9CSXFPcUJjUkJxcWg4SXN2dWdSbHpL?=
- =?utf-8?B?REJEdWozOUpzRmxGTVIwSjRpY0ZGNkdSTTFyZDZ0d1dUR2ljMzVEaDd3OEg0?=
- =?utf-8?B?aHZqc2JJTkdmYUlmTlpJR2ZDblhwSkwyK0N4L0VPbHdaMUpYRmpnV2V3SXBm?=
- =?utf-8?B?MlhreU9VeXN0SDNDZWtXa05XNFdYUHFVU1ROZGVvcHhFaHBnRnUrbDYvS01P?=
- =?utf-8?B?bzBtOUpyZjA4THB2VFBra3IwTmp5eWNoSnFaQVFCbTd4bERLRVduaElQMmpK?=
- =?utf-8?B?NGs1alRIcGVxazVWdHhRZDBlV0dqK0xtY3JDMXk1NmRnZHlOZXpBUXhEYS9D?=
- =?utf-8?B?Y1AwNGFqZUxDZ0lFd3dBa2ljM3h3NTVEaC85QVBUeFIwd1pqSlFEam5qS0R6?=
- =?utf-8?B?T2Nlc2l3ak1rWWZBSkVqZGhSZXFKSmZnQ1FJTU82c1pJUi9TVW43RVFXdkM3?=
- =?utf-8?B?cUx1ZExHVGJtNE9oNDkzdXlkU1RCUHRYOWVGV0pzU0hXalJMeElTY0lCdk9N?=
- =?utf-8?B?N21xcmZyMHlHUUt5dnlFTUU5NThwTmlxcTNGNytnbnhXM2ZNUksyalhuNlZN?=
- =?utf-8?B?a3lNdExzdGk2Rkp5TUlRelhPRGJnQ3B2cU95clVPVWlOQTNXSkEzanFkb2ZU?=
- =?utf-8?B?QUVoRWpBbVpIYW8vNGtXZWZRTThxN3dqNnBMSmJ2UVdFQmVzcUJGVkhmWkNu?=
- =?utf-8?B?bldET3BwckdaWFlWdDlONkZzdDdIUEoybnd3OGJzc2RCTDM3SjYyZmVpQm1n?=
- =?utf-8?B?czBKYnJwRmoxSGQwNDV6Slhlak8xZERMeEtNUmN6RVIwTm05TnJzUmVTMjNu?=
- =?utf-8?B?V0F0dngxOVZ4ZzVWNURTSTZZbjNyRWl4ampaZ01NanRsRFhnZzZQeVR5cXdy?=
- =?utf-8?B?NTBQMnF5YnM1bGFFUTE2cWhNN2NmUjhacDNVVW1WZ0pjSit3OTZqRjdIYTM5?=
- =?utf-8?B?VlVrNzIvZXlNSnpDZlRFZjhWdE1vMVVaVGFMS21NUXo0OTlLeTdibHRnWjBO?=
- =?utf-8?B?NXRiM2x4aEt1NXlVOVZudmtjSFVvV0ZWRFdCS2tCemFsRzNPSmlXdHVQdnJG?=
- =?utf-8?B?RFVZcy9zcmxsV0hVWmJ6Vyt2aUVPc2F0dVB6dnIzK29weGlzVmVPbWZpclcx?=
- =?utf-8?B?Z3dsWmlKanJkZGdBZE8wUHNpQnF0ck5LUS82STZ2TnJVZUNmS1VGQVh2eG9z?=
- =?utf-8?B?Z2JsWkpHdnhUMTVIZDhTMHBIVFdTWTBXc2tZUU9PWkNwSVV2SFlrOE53cGJs?=
- =?utf-8?B?SWJGQm9vUytHUjk1cWpFV0tGRVVNWEgwa0lLYlV2RzQrQXpHVDI4cTlxQk0r?=
- =?utf-8?B?T0hIRy8vT1BIVXpNVFNLQ1duUk1OZkszOGc1K0orcmRFRU5OT3U2WWQ1VG5I?=
- =?utf-8?Q?Dqq9JWXtOm2fCzyOdSM4MWtfW?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2a8ac6c-afbc-4917-c946-08dbb3f76b27
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4045.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2023 01:19:04.2050
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BLq+ifzBwvBGromgJuW4JOJMz/ksa1RV9qAotaGtlENXxqDk0DwV/+mVS3pIDdXXKNcnofAVXYsjb7IHhXnzfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB5772
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <563ac27a-22f2-463e-b5c1-9df721842976@arinc9.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> > The marvell switch can have up to 2 MDIO busses. If i remember
+> > correctly, there is also one switch which has one MDIO bus per port.
+> 
+> I'm writing the json-schema for Marvell switches. I've checked a few
+> devicetree source files on Linus's Linux tree, I only see two buses used at
+> the most.
 
+Sorry, i was ambiguous. Its not a Marvell switch which can have one
+MDIO bus per port. I don't remember which switch it is, and it might
+be a pure switchdev switch, not a DSA switch.
 
-在 2023/8/10 16:13, Chuyi Zhou 写道:
-> +#include <linux/bpf.h> #include <linux/oom.h> #include <linux/mm.h> 
-> #include <linux/err.h> @@ -305,6 +306,27 @@ static enum oom_constraint 
-> constrained_alloc(struct oom_control *oc) return CONSTRAINT_NONE; } 
-> +enum { + NO_BPF_POLICY, + BPF_EVAL_ABORT, + BPF_EVAL_NEXT, + 
-> BPF_EVAL_SELECT, +}; +
+> The internal bus and another bus with
+> marvell,mv88e6xxx-mdio-external. I've never seen a devicetree with
+> marvell,mv88e6250 though. Could the switch that has one MDIO bus per port
+> be this one? Also, is every bus of this switch a
+> marvell,mv88e6xxx-mdio-external bus or, one internal bus and the remaining
+> are marvell mv88e6xxx-mdio-external buses?
 
-I saw that tools/testing/selftests/bpf/progs/oom_policy.c is also using 
-NO_BPF_POLICY etc. I think
-+enum {
-+	NO_BPF_POLICY,
-+	BPF_EVAL_ABORT,
-+	BPF_EVAL_NEXT,
-+	BPF_EVAL_SELECT,
-+};
-+
-definitions can be placed in include/linux/oom.h
+Only the 6390 family has two busses. It has an internal MDIO bus with
+the same register API as all the other switches. However, unlike the
+other families, it is not exposed on pins. And the 6390 has a second
+MDIO bus using a slight variant of the registers, which is connected
+to the outside world via pins. This second bus then has a compatible
+to separate it from the normal MDIO bus.
 
-Thanks
-Bixuan Cui
+	Andrew
